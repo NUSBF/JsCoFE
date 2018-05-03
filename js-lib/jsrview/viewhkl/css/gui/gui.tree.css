@@ -1,0 +1,14 @@
+
+.tree-content {
+/*    background-color: rgba(255,255,255,0.35); */
+    overflow: auto;
+    padding: 0px;
+/*   box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2); */
+}
+
+.vakata-context { z-index: 200; }  /* this is for context menu to be "always" on top */
+
+.toolbar-content {
+    background-color: rgba(127,127,127,0.5);
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+}

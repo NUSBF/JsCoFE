@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta charset="utf-8">
+  <meta http-equiv="pragma"  content="no-cache">
+  <meta http-equiv="expires" content="0">
+  <title>jsCoFE Help - Job Dialog</title>
+</head>
+
+<link rel="stylesheet" type="text/css" href="jscofe-help.css">
+<script src="jscofe-help-header.js"></script>
+
+<body>
+
+<div style="width:100%;height:auto;overflow:auto;">
+
+<script>
+makeHeader ([
+  ['Contents','index.html'],
+  ['Project Management','jscofe_project.html'],
+  ['Job Dialog','jscofe_jobdialog.html']
+]);
+</script>
+
+<h2><i>Job Dialog</i></h2>
+
+Job Dialog is one of most central to jsCoFE functionality. It is used for
+forming a job (choosing/setting input data and parameters), running it and
+inspecting the results. The Dialog opens automatically upon selecting a task
+in the <a href="jscofe_tasklist.html">Task List</a> or pressing the
+<img src="../images/openjob.svg" class="toolbutton"/> button in the
+<a href="jscofe_project.html">Project Page</a> toolbar (also available through
+right-click on the Job's line of the Job Tree).
+
+<br>&nbsp;<h3>1. General Layout</h3>
+
+The dialog has two pages: <i>Input</i> and <i>Output</i>, and a toolbar in the
+upper part of the dialog:
+
+<p><center><img src='images/job_dialog_toolbar.png' width='700px'/></center><p>
+
+The radiobuttons in the left-hand-side of the toolbar
+switch between the <i>Input</i> and <i>Output</i> pages (the buttons are
+disabled if <i>Output</i> page is not formed yet). Central part of the toolbar
+may show either the <i>Run</i> button for starting the job, or show a "busy"
+indicator and <i>Stop</i> button while the job is running, or the final job
+status (<i><b>"completed", "failed", "terminated"</b></i>) if job is finished.
+The <i>Ref.</i> button displays reference documentation on the task currently
+represented by the Dialog, while <i>Help</i> button provides the Dialog's
+manual you are currently reading. The <i>Close</i> button in the right-hand-side
+of the toolbar closes the Dialog without running the job.
+
+<br>&nbsp;<h3>2. Input Page</h3>
+
+The <i>Input</i> page has three parts: the Header, Data Section and Parameters
+Section.
+
+<h4>2.1 The Header</h4>
+
+The Header displays the Job Title and two input fields: <i><b>job description</b></i>
+and <i><b>ouput id</b></i>:
+
+<p><center><img src='images/job_dialog_header.png' width='700px'/></center><p>
+
+Both fields always have default parameters, which may be found suitable in many
+cases. However, sometimes you will want to adjust them.
+<p>
+<table>
+  <tr><td nowrap valign="top"><i><b>job description</b></i>&nbsp;&nbsp;</td>
+  <td>Provides a brief job description for displaying in the Job Tree. This field
+      may be used to annotate your project, for example "2nd molecular replacement
+      attempt using sequence correction of the model". The field may be changed
+      both before and after running the job.
+  </td></tr>
+  <tr><td nowrap valign="top"><i><b>output id</b></i>&nbsp;&nbsp;</td>
+  <td>Provides a template name output data. Please see the "Naming" section in
+      <a href="jscofe_data.html#naming">Data Management</a>. Using this field will help
+      to obtain and download output files with more meaningful names.
+  </td></tr>
+</table>
+
+<h4>2.2 Data Section</h4>
+
+Data Section contains selection widgets (comboboxes) for data objects needed by
+given job. Typically, a job takes several types of data, each of which will be
+represented by own combobox. Some jobs may accept several data objects of a
+particular type, in which case the comboboxes are repeated. In the following
+example:
+
+<p><center><img src='images/job_dialog_data_section_1.png' width='700px'/></center><p>
+
+the job takes one <i>Structure Revision</i>, one or more anomalous <i>HKL Datasets</i>,
+and one native <i>HKL Dataset</i> (see data object summary <a href="jscofe_data.html">
+here</a>). Correspondingly, the Data Section presents one combobox for structure
+revision, one for native dataset, and a variable number of comboboxes for anomalous
+reflection datasets. Initial selections in all comboboxes are chosen according to
+intrinsic task and project's logics and should be suitable in most cases; however,
+this must be checked in each and every case.
+<p>
+In the above example, second combobox for anomalous dataset shows <i>[do not use]</i>.
+This means that only one anomalous HKL dataset, selected in first combobox, will
+be passed on to the job. If a user selects a dataset in second combobox as well,
+it will be passed as second anomalous dataset to the job, and another combobox
+with title <b>"Anomalous reflection data (3)"</b> and initial value
+<i>[do not use]</i> will be displayed, thus suggesting that yet another dataset
+may be passed on to the job, if needed and available.
+<p>
+The comboboxes may be accompanied by additional input widgets, related to
+particular data object. In the above example, each anomalous dataset chosen
+must be annotated by wavelength as <i>"low-remote"</i>, <i>"peak"</i>,
+<i>"inflection"</i> or <i>"high-remote"</i>, which is done using additional
+comboboxes displayed right below the relevant input. Similarly, the input of
+native dataset is accompanied by a checkbox for specifying whether this dataset
+shoud be used for phasing in addition to model building and refinement.
+<p>
+Finally, there is an inspection button on the left from all comboboxes with
+a data object selected. Pressing this button will launch a data inspector
+window, containing many useful details related to the object selected, such as
+space group, cell parameters, descriptions of macromolaular chains and many
+others.
+<p>
+Note that input widgets for optional data input will not be displayed if the
+corresponding data is not found in the Project. For example, second widget for
+anomalous reflection dataset in the above example would not appear if there were
+only one such dataset imported or generated.
+
+<h4>2.3 Parameters Section</h4>
+
+Parameters Section contains various parameters of the task given. They are usually
+arranged in one or more collapsable sections, like in the example below:
+
+<p><center><img src='images/job_dialog_parameters_section.png' width='700px'/></center><p>
+
+Individual parameters may be hidden depending on choices made by user in both
+Data Section and Parameters Section, if such choices make the parameter not
+applicable.
+
+
+<br>&nbsp;<h3>3. Output Page</h3>
+
+Output Page uses tabbed layout to present job results. Common tabs include
+<i>"Report"</i>, <i>"Log file"</i> and <i>"Errors"</i>, some tasks may introduce
+additional tabs for better structuring the output. The output is dynamic, i.e.
+it progresses in real time as the corresponding job progresses, and may be viewed
+at any stage.
+<p>
+Tabs <i>"Log file"</i> and <i>"Errors"</i> display the standard output and standard
+error streams from the running job. Usually, a job involves execution of several
+programs one after another, in which case their standard outputs are
+concatenated. Before each program's output, <i>"Log file"</i> displays the command
+line, used to invoke the program, and the the corresponding standard input stream,
+which contain data and parameters read from the Input Page.
+<p>
+The <i>"Report"</i> tab's content and structure may vary, but you may expect it
+to present the job title, report body and summary of generated data, which may be
+used in subsequent tasks. A typical example of report is shown below:
+
+<p><center><img src='images/job_dialog_output_page.png' width='750px'/></center><p>
+
+In this Example, the report body is given by the set of sections, which are
+initially folded for the brevity of presentation. Unfolding the sections reveals
+fine report details, including tables, graphs and intermediate results, which
+may be inspected using built-in viewers.
+<p>
+After the report body, there is a summary of <i>Structure Revisions</i> and
+<i>Structure Data</i> generated by the job. These data objects are available for
+all tasks descending from the given one, and will appear in Data Sections of
+their Job Dialogs.
+<p>
+All generated data object references are accompanied with either inspector
+buttons (as in case of <i>Structure Revisions</i>) or corresponding viewers
+(in case of <i>Structure Data</i>). Thus, <i>"Coot"</i>, <i>"ccp4mg"</i> and
+<i>"UglyMol"</i> buttons will launch Coot, CCP4mg or UglyMol viewers with XYZ
+coordinates and density map loaded (<i>"Coot"</i> and <i>"ccp4mg"</i> buttons
+will appear only if your client machine has CCP4 Suite installed and a dedicated
+jsCoFE client server running). <i>"ViewHKL"</i> will laucnch a utility for the
+inspection of MTZ file content. <i>"Display"</i> launches a viewer for the
+inspection of XYZ file (typically in PDB format).
+
+
+<div style="height:120px;">&nbsp;</div></div>
+
+</body>
+</html>

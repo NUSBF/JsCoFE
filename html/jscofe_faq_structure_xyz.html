@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta charset="utf-8">
+  <meta http-equiv="pragma"  content="no-cache">
+  <meta http-equiv="expires" content="0">
+  <title>jsCoFE Help - FAQ: "Structure Data" and XYZ Coordinates</title>
+</head>
+
+<link rel="stylesheet" type="text/css" href="jscofe-help.css">
+<script src="jscofe-help-header.js"></script>
+
+<body>
+
+<div style="width:100%;height:auto;overflow:auto;">
+
+<script>
+makeHeader ( [['Contents','index.html'],
+              ['Frequently Asked Questions','jscofe_faq.html'],
+              ['Structure Revision, Structure Data and XYZ','jscofe_faq_structure_xyz.html']] );
+</script>
+
+<h2><i>"Structure Revision"</i>, <i>"Structure Data"</i> and <i>"XYZ Coordinates"</i></h2>
+
+<i>"Structure Revision"</i>, <i>"Structure Data"</i> and <i>"XYZ Coordinates"</i>
+are different data types, related to each other by encapsulation.
+<p>
+<i>"XYZ Coordinates"</i> is a primitive data type, which represents bare atomic
+coordinates, commonly obtained from a PDB or mmCIF-formatted files.
+<p>
+<i>"Structure Data"</i> is a complex type used to represent a solution (possibly
+incomplete or approximate) to the crystallographic problem. It includes XYZ
+coordinates of asymmetric unit, phases and density map.
+<p>
+<i>"Structure Revision"</i> is the most general data type in jsCoFE, used to
+represent a snapshot of the structure solution process. It contains the definition of
+<i>Asymmetric Unit</i> (set of macromolecular chains and their stoichiometric
+coefficients), <i>HKL reflection dataset</i>, <i>Structure Data</i> and many other
+details such as solvent content, ligand descriptions etc.
+<p>
+Some tasks, such as, e.g., Gesamt or PISA, use only XYZ coordnates in no
+connection to reflection data, and they usually can take both <i>"Structure Data"</i>
+and <i>"XYZ Coordinates"</i> on input. Other tasks, such as Refinement or
+Model Building, need additional data, such as reflection datasets and sequences,
+therefore, <i>"Structure Revision"</i> type is used in their input.
+
+<h3><image src="../images/task_formstructure.png"
+           style="width:30px;vertical-align:middle;"/>&nbsp;
+    Convert <i>"XYZ Coordinates"</i> to <i>"Structure Revision"</i></h3>
+
+Using <i>"Structure Revision"</i>, <i>"Structure Data"</i> or
+<i>"XYZ Coordinates"</i> data types should pose no confusion except in rare cases
+when derived data is imported in jsCoFE project, rather than created in
+the course of it. For example, a user imports a pair of PDB and MTZ files, which
+results in the formation of <i>"XYZ Coordinates"</i> and <i>"HKL"</i> data types,
+but no <i>"Structure Data"</i> and <i>"Structure Revision"</i>. Then, tasks
+such as Refinement or Model Building, cannot be formed.
+<p>
+Such cases should be rare and treated as special, therefore avoided whenever
+possible. In cases when import of derived data is absolutely necessary, jsCoFE
+includes task <a href="jscofe_task_xyz2revision.html">Convert Coordinates to
+Structure Revision</a>, which creates new <i>"Structure Data"</i> and the
+corresponding <i>"Structure Revision"</i> objects. Then, the newly created
+objects can be used in subsequent jobs. Note that the conversion job also serves
+as import validator by checking that imported coordinates are complient with
+the reflection data.
+
+<div style="height:120px;">&nbsp;</div></div>
+
+</body>
+</html>

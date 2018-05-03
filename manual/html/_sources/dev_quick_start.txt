@@ -1,0 +1,175 @@
+
+=====================================
+jsCoFE Task Development: Hello World!
+=====================================
+
+jsCoFE runs *tasks*. A *task* may be anything; it may or may not have input
+data and parameters, it may or may not produce output data, and the least what
+a *task* should do is to print messages. jsCoFE is designed to run complex
+*tasks*, way beyond just printing messages, operating with and producing
+complex data structures, passable from one *task* to another. However, we start
+introduction into task development for jsCoFE with a simplest possible task
+that only prints "Hello World!".
+
+First, let's overview parts of jsCoFE code relevant to task development.
+
+----------------------------
+jsCoFE source code structure
+----------------------------
+
+From task developer perspective, jsCoFE source code has 6 main parts:
+
+* ``js-client``: javascript code that runs on client side (browser). Task
+  developer need to modify only one file from this part:
+  ``js-client/cofe.dialog_tasklist.js``.
+
+* ``js-common``: javascript code that runs on both client and server. Task
+  developer is supposed to contribute relevant data classes in
+  ``js-common/dtypes`` (only if necessary), and new task classes in
+  ``js-common/tasks``.
+
+* ``pycofe``: python code that actually runs tasks on number crunchers.
+  ``pycofe/dtypes`` must include python equivalents of all data classes from
+  ``js-common/dtypes``, and ``pycofe/tasks`` must include task drivers for all
+  task classes from ``js-common/tasks``.
+
+* ``images``: icons used in task's web-pages. Task developer is supposed to
+  design a task icon and place 2 copies of it: one of size 20x20px, and one
+  of size at least 96x96px (unless in svg format), conventionally named
+  (see below), and copy them in this directory.
+
+* ``jscofe.html``: a bootstrap HTML file, where URLs to newly developed
+  javascript classes need to be inserted.
+
+* ``html``: task documentation (HTML). Task developers should document the use
+  of their tasks by placing properly named html files in this directory.
+
+File locations in jsCoFE source code are fixed, which is essential for
+jsCoFE framework. In addition, data and task classes and respective file names
+must follow conventions as described below.
+
+
+------------------------------
+"Hello, World!" task in stages
+------------------------------
+
+.. _task-class:
+
+~~~~~~~~~~~~~~~~~
+Create Task Class
+~~~~~~~~~~~~~~~~~
+
+In jsCoFE, task classes must be named as ``TaskClassName`` and be placed in
+file named ``js-common/tasks/common.tasks.classname.js``. The absolute minimal
+class should be defined as follows:
+
+.. literalinclude:: examples/common.tasks.helloworld.js
+  :language: javascript
+  :linenos:
+
+Obviously, the significance of various statements in this code cannot be clear
+without knowing fine details of jsCoFE frameworks, but this knowledge is not
+required for the development of most tasks. One should perceive this example as
+a set of formal statements, which may be modified to specific needs.
+
+You may download the source code file from
+:download:`here <examples/common.tasks.helloworld.js>`,
+and copy it into ``js-common/tasks`` directory of your jsCoFE setup. The source
+code mentions ``helloworld`` icons; download them both
+:download:`small (20x20) <examples/images/task_helloworld_20x20.png>` and
+:download:`large <examples/images/task_helloworld.png>`, and copy them into
+``images`` directory of your jsCoFE setup. Make sure that file names are exactly
+as specified in the source code.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~
+Create Task Documentation
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Task Documentation should be written in HTML and placed in ``html`` directory
+under the name given by ``helpURL`` variable of the task class (*cf.*
+:ref:`task-class`). In order to comply with with the rest of documentation on
+style, use template downloadable from
+:download:`here <examples/jscofe_task_helloworld.html>`:
+
+.. literalinclude:: examples/jscofe_task_helloworld.html
+  :language: html
+  :linenos:
+
+:download:`Download <examples/jscofe_task_helloworld.html>` this file, edit
+as necessary and copy it in ``html`` directory of your jsCoFE setup.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Insert New Task in the Task List
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Open file ``js-client/cofe.dialog_tasklist.js`` in any text editor and look for
+the following fragment: ::
+
+  if (__login_user=='Developer')
+    this.makeSection ( 'Tasks in Development',[
+    ]);
+
+This code makes section of tasks called *Tasks in Development* in the very end
+of the task list. Furthermore, this section is created only for for user with
+name *Developer*. This is a special user that always exists in jsCoFE, with
+login name ``devel`` and initial password ``devel``. Insert the newly created
+class ``TaskHelloWorld`` in this section: ::
+
+  if (__login_user=='Developer')
+    this.makeSection ( 'Tasks in Development',[
+      new TaskHelloWorld()
+    ]);
+
+and save the file.
+
+Now we need to modify the HTML bootstrap file such that it loads javascript file
+with the new task in browser. Open file ``jscofe.html`` in a suitable editor.
+Although the task code may be loaded in any point before ``<body>`` statement,
+it would be more accurate to keep task in developments in a separate, easily
+identifiable place. Look for the following fragment in the file: ::
+
+  <!-- Tasks in Development -->
+  <!-- ~~~~~~~~~~~~~~~~~~~~ -->
+
+and insert the link to the ``Hello World!`` task script: ::
+
+  <!-- Tasks in Development -->
+  <script src="js-common/tasks/common.tasks.helloworld.js"></script>
+  <!-- ~~~~~~~~~~~~~~~~~~~~ -->
+
+and save the file.
+
+Now restart jsCoFE servers and (re)load the HTML bootstrap file in your browser.
+Login as *Developer* (login name ``devel``), create new project if you do not
+have any, open it and start the *Task List Dialog* (it will start automatically
+for empty projects; otherwise, click the *Add job* button in the toolbar). Scroll
+down to the last section, open it and click on *Hello World!* icon. The task
+should appear in the *Job Tree*, and the corresponding *Job Dialog* should
+start.
+
+
+~~~~~~~~~~~~~~~~~~~~~~
+Making the Task Driver
+~~~~~~~~~~~~~~~~~~~~~~
+
+At this point, the new *task* appears on the client side, but it cannot be
+started as we have not supplied the corresponding module, called *Task Driver*,
+to run on a number cruncher. *Task Driver* is a program, which is started with
+command line returned by the  ``getCommandLine(...)`` function of the
+*Task Class*. Principally, it may be written in any language and do its job
+in a number of different ways. Current version of jsCoFE comes with a developed
+support for *Task Drivers* written in Python, which includes many service
+functions simplifying data exchange between the tasks and report writing.
+
+The simplest possible *Task Driver* for the *Hello World!* task is represented
+by the following Python script:
+
+.. literalinclude:: examples/helloworld.py
+  :language: html
+  :linenos:
+
+:download:`Download <examples/helloworld.py>` this file and copy it in
+``pycofe/tasks`` directories of all jsCoFE number crunchers. Now you can
+press *Run* button in *Hello World!* job dialog to run the task, which only
+prints "Hellow World!" messages in the main output tab and output tabs for
+standard output and standard error streams.

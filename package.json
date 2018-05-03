@@ -1,0 +1,17 @@
+{
+  "name"         : "jsCoFE-Server",
+  "version"      : "1.0.0",
+  "dependencies" : {
+      "fs-extra"      : "*",
+      "url"           : "*",
+      "util"          : "*",
+      "http"          : "*",
+      "crypto"        : "*",
+      "nodemailer"    : "<3.0.0",
+      "formidable"    : "*",
+      "request"       : ">0.2.0",
+      "child_process" : "*",
+      "tmp"           : "*",
+      "ps-tree"       : "*"
+    }
+}

@@ -1,0 +1,320 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>1. Quick start: jsCoFE Desktop &#8212; jsCoFE v0.1.0</title>
+    
+    <link rel="stylesheet" href="_static/agogo.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="top" title="jsCoFE v0.1.0" href="index.html" />
+    <link rel="next" title="2. General jsCoFE Setup" href="setup.html" />
+    <link rel="prev" title="jsCoFE Setup Guide" href="index.html" /> 
+  </head>
+  <body role="document">
+    <div class="header-wrapper" role="banner">
+      <div class="header">
+        <div class="headertitle"><a
+          href="index.html">jsCoFE v0.1.0</a></div>
+        <div class="rel" role="navigation" aria-label="related navigation">
+          <a href="index.html" title="jsCoFE Setup Guide"
+             accesskey="P">previous</a> |
+          <a href="setup.html" title="2. General jsCoFE Setup"
+             accesskey="N">next</a> |
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a>
+        </div>
+       </div>
+    </div>
+
+    <div class="content-wrapper">
+      <div class="content">
+        <div class="document">
+            
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="quick-start-jscofe-desktop">
+<h1>1. Quick start: jsCoFE Desktop<a class="headerlink" href="#quick-start-jscofe-desktop" title="Permalink to this headline">¶</a></h1>
+<p>jsCoFE provides a nearly out-of-box solution for installation as a desktop
+application.</p>
+<ol class="arabic simple">
+<li><em>Install Node JS</em></li>
+<li><em>Install CCP4</em></li>
+<li><em>Checkout jsCoFE source code directory</em></li>
+<li><em>Install Node JS modules</em></li>
+<li><em>Adjust the desktop configuration file</em></li>
+<li><em>Adjust the start shell script</em></li>
+<li><em>Start jsCoFE.</em></li>
+<li><em>jsCoFE client.</em></li>
+</ol>
+<dl class="docutils">
+<dt><strong>1. Install Node JS</strong></dt>
+<dd><p class="first">The minimum required Node JS version is 4.4.3. Check if you have it on your
+system already. In Terminal, type <cite>node -v</cite>, and if Node JS is installed then
+the result will be similar to</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>$ node -v
+v4.4.3
+</pre></div>
+</div>
+<p>Otherwise, download and install Node JS together with the Node Package Manager,
+<code class="docutils literal"><span class="pre">npm</span></code>, from <a class="reference external" href="https://nodejs.org">https://nodejs.org</a> (consider taking an LTS version rather than
+the current one). In Linux operating systems, a suitable version of Node JS
+may be available from OS repositories. For example, on Ubuntu:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>$ sudo apt-get update
+$ sudo apt-get install nodejs
+$ sudo apt-get install npm
+</pre></div>
+</div>
+<p>On Centos:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>$ yum install nodejs
+</pre></div>
+</div>
+<p>On Fedora:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>$ sudo dnf install nodejs
+$ sudo dnf install npm
+</pre></div>
+</div>
+<p class="last">After installation, verify it by running <code class="docutils literal"><span class="pre">node</span> <span class="pre">-v</span></code> and <code class="docutils literal"><span class="pre">npm</span> <span class="pre">-v</span></code>. If installed
+correctly, both commands should report the corresponding version numbers.</p>
+</dd>
+<dt><strong>2. Install CCP4</strong></dt>
+<dd>Download and install CCP4 from <a class="reference external" href="http://www.ccp4.ac.uk/download">http://www.ccp4.ac.uk/download</a>. Make sure that
+you download <code class="docutils literal"><span class="pre">MoRDa</span></code> database and link it to <code class="docutils literal"><span class="pre">morda</span></code> pipeline.</dd>
+<dt><strong>3. Checkout jsCoFE source code directory</strong></dt>
+<dd><p class="first">The source code is obtainable from CCP4&#8217;s Bazaar repositories:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>$ bzr checkout http://fg.oisin.rc-harwell.ac.uk/anonscm/bzr/jscofe/trunk /path/to/jscofe
+</pre></div>
+</div>
+<p>(if <code class="docutils literal"><span class="pre">bzr</span></code> is not installed on your system, download and install it from
+<a class="reference external" href="http://bazaar.canonical.com">http://bazaar.canonical.com</a> . On Linux, you may find <code class="docutils literal"><span class="pre">bzr</span></code> available from
+OS repositories).</p>
+<p>Alternatively, check out jsCoFE source code from GitHub:</p>
+<div class="last highlight-default"><div class="highlight"><pre><span></span>$ git clone https://github.com/ekr-ccp4/jsCoFE.git
+</pre></div>
+</div>
+</dd>
+<dt><strong>4. Install Node JS modules</strong></dt>
+<dd><p class="first">Run the Node Package Manager in the source code directory:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>$ cd /path/to/jscofe
+$ npm install
+</pre></div>
+</div>
+<p>In future, jsCoFE may be updated as following:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>$ cd /path/to/jscofe
+$ bzr update
+$ npm install
+</pre></div>
+</div>
+<p>or, if jsCoFE was originally checked out from GutHub:</p>
+<div class="last highlight-default"><div class="highlight"><pre><span></span>$ cd /path/to/jscofe
+$ git pull origin master
+$ npm install
+</pre></div>
+</div>
+</dd>
+<dt><strong>5. Adjust the desktop configuration file</strong></dt>
+<dd><p class="first">Type the following in the Terminal:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>$ cd /path/to/jscofe
+$ vi config/conf.desktop.json
+</pre></div>
+</div>
+<p>(you may use any text editor of your choice). In the file, find and edit
+the following lines:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="s2">&quot;userDataPath&quot;</span> <span class="p">:</span> <span class="s2">&quot;./cofe-users&quot;</span><span class="p">,</span>
+<span class="s2">&quot;projectsPath&quot;</span> <span class="p">:</span> <span class="s2">&quot;./cofe-projects&quot;</span><span class="p">,</span>
+<span class="s2">&quot;storage&quot;</span>      <span class="p">:</span> <span class="s2">&quot;./cofe-nc-storage&quot;</span><span class="p">,</span>
+<span class="s2">&quot;storage&quot;</span>      <span class="p">:</span> <span class="s2">&quot;./cofe-client-storage&quot;</span><span class="p">,</span>
+</pre></div>
+</div>
+<p>These configuration lines refer to directories for keeping user data,
+user projects, temporary storage for non-interactive and interactive (like
+Coot) jobs, respectively. Either absolute or relative (to jscofe source code
+directory) paths and any names can be used, and the corresponding directories
+<em>must exist and be writable in the account that will run jsCoFE</em>. Expect large
+amounts of data (up to tens of gigabytes) in the projects directory.</p>
+<p>Then, specify your preferable browser in the following line:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="s2">&quot;args&quot;</span> <span class="p">:</span> <span class="p">[</span><span class="s2">&quot;-c&quot;</span><span class="p">,</span><span class="s2">&quot;open -a Firefox $feURL$clientURL&quot;</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>The above line starts Firefox browser in Mac OSX. In Linux, you could use</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="s2">&quot;args&quot;</span> <span class="p">:</span> <span class="p">[</span><span class="s2">&quot;-c&quot;</span><span class="p">,</span><span class="s2">&quot;firefox $feURL$clientURL&quot;</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>Finally, configure jsCoFE&#8217;s e-mailer. This configuration is found in the end
+of configuration file, and initially should look like the following:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="s2">&quot;Emailer&quot;</span> <span class="p">:</span> <span class="p">{</span>
+  <span class="s2">&quot;type&quot;</span>               <span class="p">:</span> <span class="s2">&quot;nodemailer&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;emailFrom&quot;</span>          <span class="p">:</span> <span class="s2">&quot;My Name &lt;my.name@gmail.com&gt;&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;maintainerEmail&quot;</span>    <span class="p">:</span> <span class="s2">&quot;my.name@gmail.com&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;host&quot;</span>               <span class="p">:</span> <span class="s2">&quot;smtp.gmail.com&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;port&quot;</span>               <span class="p">:</span> <span class="mi">465</span><span class="p">,</span>
+  <span class="s2">&quot;secure&quot;</span>             <span class="p">:</span> <span class="n">true</span><span class="p">,</span>
+  <span class="s2">&quot;auth&quot;</span>               <span class="p">:</span> <span class="p">{</span>
+    <span class="s2">&quot;user&quot;</span> <span class="p">:</span> <span class="s2">&quot;my.name@gmail.com&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;pass&quot;</span> <span class="p">:</span> <span class="s2">&quot;***&quot;</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>If you can use GMail for this purpose, simply put your data (<em>my.name</em>) and
+password in the configuration. If you prefer to use another SMTP server,
+you will also need to adjust urls and port number.</p>
+<p>jsCoFE can also send e-mails via telnet, in which case the configuration
+should be replaced for the following template:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="s2">&quot;Emailer&quot;</span> <span class="p">:</span> <span class="p">{</span>
+  <span class="s2">&quot;type&quot;</span>            <span class="p">:</span> <span class="s2">&quot;telnet&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;emailFrom&quot;</span>       <span class="p">:</span> <span class="s2">&quot;my.name@my.server.uk&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;maintainerEmail&quot;</span> <span class="p">:</span> <span class="s2">&quot;maintainer.name@maintainer.address.uk&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;host&quot;</span>            <span class="p">:</span> <span class="s2">&quot;telnet.host.server.uk&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;port&quot;</span>            <span class="p">:</span> <span class="mi">25</span><span class="p">,</span>
+  <span class="s2">&quot;headerFrom&quot;</span>      <span class="p">:</span> <span class="s2">&quot;My Name &lt;my.name@my.server.uk&gt;&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>jsCoFE will run even with a misconfigured e-mailer. The only important effect
+will be then that, upon creation of user account, the temporary password is
+printed in standard output rather than e-mailed to user.</p>
+<p>You may find it more convenient in desktop setup, if jsCoFE does not send any
+e-mails and, instead, presents message boxes with same content. Then, e-mailer
+configuration may be reduced to</p>
+<div class="last highlight-default"><div class="highlight"><pre><span></span><span class="s2">&quot;Emailer&quot;</span> <span class="p">:</span> <span class="p">{</span>
+  <span class="s2">&quot;type&quot;</span> <span class="p">:</span> <span class="s2">&quot;desktop&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</dd>
+<dt><strong>6. Adjust the start shell script</strong></dt>
+<dd><p class="first">Type the following in the Terminal:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>$ cd /path/to/jscofe
+$ vi ./start-desktop.sh
+</pre></div>
+</div>
+<p class="last">In the file, assign correct paths to variables <code class="docutils literal"><span class="pre">server_dir</span></code> (the jsCoFE source
+directory) and <code class="docutils literal"><span class="pre">ccp4_dir</span></code> (CCP4 setup directory). It is useful to have PDB
+archive installed locally, in which case assign its path to <code class="docutils literal"><span class="pre">pdb_dir</span></code>.
+<code class="docutils literal"><span class="pre">gesamt_dir</span></code> may specify path to GESAMT archive for fast structural queries.
+Run <code class="docutils literal"><span class="pre">gesamt</span></code> without parameters in CCP4-sourced environment in order to get
+instructions on generating GESAMT archive from the PDB archive installed.</p>
+</dd>
+<dt><strong>7. Start jsCoFE.</strong></dt>
+<dd><p class="first">In Terminal, type:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>$ /path/to/jscofe/start-desktop.sh
+</pre></div>
+</div>
+<p class="last">Note that you can copy the <code class="docutils literal"><span class="pre">start-desktop.sh</span></code> script to any other location
+and start jsCoFE from there.</p>
+</dd>
+<dt><strong>8. jsCoFE client.</strong></dt>
+<dd><p class="first">jsCoFE client is used for running special CCP4 desktop applications, like Coot,
+CCP4mg and ViewHKL, while working with jsCoFE installed remotely (not on a
+local host). You may need to adjust the corresponding configuration file in
+exactly the same way as described above in Section 5 for the desktop
+configuration file):</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>$ cd /path/to/jscofe
+$ vi config/conf.remote.json
+</pre></div>
+</div>
+<p>and further edit the corresponding start shell script:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>$ vi ./start-remote.sh
+</pre></div>
+</div>
+<p>Then just type type:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>$ /path/to/jscofe/start-remote.sh
+</pre></div>
+</div>
+<p class="last">which will fire up your browser with remote jsCoFE web-site loaded, and local
+jsCoFE client ready for communication. Note that you can copy the
+<code class="docutils literal"><span class="pre">start-remote.sh</span></code> script to any other location and start jsCoFE from there.</p>
+</dd>
+</dl>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+        </div>
+        <div class="sidebar">
+          <h3>Table Of Contents</h3>
+          <ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">1. Quick start: jsCoFE Desktop</a></li>
+<li class="toctree-l1"><a class="reference internal" href="setup.html">2. General jsCoFE Setup</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="dev_hello_world.html">1. jsCoFE Task Development: Hello World!</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dev_task_input.html">2. jsCoFE Task Development: Input Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dev_task_parameters.html">3. jsCoFE Task Development: Input Parameters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dev_run_application.html">4. jsCoFE Task Development: Run Applications</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="ref_input_data.html">1. Reference: Input Data Descriptors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ref_parameters.html">2. Reference: Description of Input Parameters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ref_pyrvapi.html">3. Reference: PyRVAPI Interface</a></li>
+</ul>
+
+          <div role="search">
+            <h3 style="margin-top: 1.5em;">Search</h3>
+            <form class="search" action="search.html" method="get">
+                <input type="text" name="q" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+            </form>
+          </div>
+        </div>
+        <div class="clearer"></div>
+      </div>
+    </div>
+
+    <div class="footer-wrapper">
+      <div class="footer">
+        <div class="left">
+          <div role="navigation" aria-label="related navigaton">
+            <a href="index.html" title="jsCoFE Setup Guide"
+              >previous</a> |
+            <a href="setup.html" title="2. General jsCoFE Setup"
+              >next</a> |
+            <a href="genindex.html" title="General Index"
+              >index</a>
+          </div>
+          <div role="note" aria-label="source link">
+              <br/>
+              <a href="_sources/desktop.txt"
+                rel="nofollow">Show Source</a>
+          </div>
+        </div>
+
+        <div class="right">
+          
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, E. Krissinel and A. Lebedev.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.8.
+    </div>
+        </div>
+        <div class="clearer"></div>
+      </div>
+    </div>
+
+  </body>
+</html>

@@ -1,0 +1,405 @@
+//
+//  =================================================================
+//
+//    10.05.16   <--  Date of Last Modification.
+//                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//  -----------------------------------------------------------------
+//
+//  **** Module  :  jsrview.window.js  <interface>
+//       ~~~~~~~~~
+//  **** Project :  HTML5-based presentation system
+//       ~~~~~~~~~
+//  **** Content :  RVAPI javascript layer's window module
+//       ~~~~~~~~~
+//
+//  (C) E. Krissinel 2013-2016
+//
+//  =================================================================
+//
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <script src="js/ngl.embedded.min.js"></script>
+  <script>
+
+    NGL.mainScriptFilePath = "js/ngl.embedded.min.js";
+
+    //  Input parameters
+    var windowTitle         = "Title";
+    var initialStyle        = "cartoon";
+    var initialBckgColor    = "black";
+    var initialColorScheme  = "chainindex";
+    var predefinedColorName = "predefined";
+    var quality             = "high";
+    var colorSelection      = [
+        [ "red", "64-74 or 134-154 or 222-254 or 310-310 or 322-326" ],
+        [ "green", "311-322" ],
+        [ "yellow", "40-63 or 75-95 or 112-133 or 155-173 or 202-221 or 255-277 or 289-309" ],
+        [ "blue", "1-39 or 96-112 or 174-201 or 278-288" ],
+        [ "white", "*" ]
+    ];
+    var dataSource  = "tmp/1E94.pdb";
+
+  </script>
+
+</head>
+<body>
+
+  <script>
+
+    // ---------------------------------------------------------------
+
+    var color_types = [
+      ["sstruc"        ,"by secondary structure"],
+      ["chainindex"    ,"by chain"              ],
+      ["element"       ,"by chemical element"   ],
+      ["bfactor"       ,"by B-factor"           ],
+      ["occupancy"     ,"by occupancy"          ],
+      ["hydrophobicity","by hydrophobicity"     ],
+      ["atomindex"     ,"by atom index"         ],
+      ["resname"       ,"by residue name"       ],
+      ["atomindex"     ,"by atom index"         ],
+      ["modelindex"    ,"by model"              ],
+//      ["value"       ,"by 'value'"            ],
+//      ["volume"      ,"by volume"             ],
+      ["picking"       ,"picking"               ],
+      ["random"        ,"random"                ],
+      ["uniform"       ,"uniform"               ]
+    ];
+
+    var predefinedColorScheme;
+    if (colorSelection)  {
+      predefinedColorScheme = NGL.ColorMakerRegistry.addSelectionScheme(
+                      colorSelection,predefinedColorName );
+      color_types.unshift([predefinedColorScheme,predefinedColorName]);
+    } else
+      predefinedColorScheme = 0;
+
+    var bckg_colors = [
+      ['aliceblue'            , 0xF0F8FF],
+      ['antiquewhite'         , 0xFAEBD7],
+      ['aqua'                 , 0x00FFFF],
+      ['aquamarine'           , 0x7FFFD4],
+      ['azure'                , 0xF0FFFF],
+      ['beige'                , 0xF5F5DC],
+      ['bisque'               , 0xFFE4C4],
+      ['black'                , 0x010101],
+      ['blanchedalmond'       , 0xFFEBCD],
+      ['blue'                 , 0x0000FF],
+      ['blueviolet'           , 0x8A2BE2],
+      ['brown'                , 0xA52A2A],
+      ['burlywood'            , 0xDEB887],
+      ['cadetblue'            , 0x5F9EA0],
+      ['chartreuse'           , 0x7FFF00],
+      ['chocolate'            , 0xD2691E],
+      ['coral'                , 0xFF7F50],
+      ['cornflowerblue'       , 0x6495ED],
+      ['cornsilk'             , 0xFFF8DC],
+      ['crimson'              , 0xDC143C],
+      ['cyan'                 , 0x00FFFF],
+      ['darkblue'             , 0x00008B],
+      ['darkcyan'             , 0x008B8B],
+      ['darkgoldenrod'        , 0xB8860B],
+      ['darkgray'             , 0xA9A9A9],
+      ['darkgreen'            , 0x006400],
+      ['darkgrey'             , 0xA9A9A9],
+      ['darkkhaki'            , 0xBDB76B],
+      ['darkmagenta'          , 0x8B008B],
+      ['darkolivegreen'       , 0x556B2F],
+      ['darkorange'           , 0xFF8C00],
+      ['darkorchid'           , 0x9932CC],
+      ['darkred'              , 0x8B0000],
+      ['darksalmon'           , 0xE9967A],
+      ['darkseagreen'         , 0x8FBC8F],
+      ['darkslateblue'        , 0x483D8B],
+      ['darkslategray'        , 0x2F4F4F],
+      ['darkslategrey'        , 0x2F4F4F],
+      ['darkturquoise'        , 0x00CED1],
+      ['darkviolet'           , 0x9400D3],
+      ['deeppink'             , 0xFF1493],
+      ['deepskyblue'          , 0x00BFFF],
+      ['dimgray'              , 0x696969],
+      ['dodgerblue'           , 0x1E90FF],
+      ['firebrick'            , 0xB22222],
+      ['floralwhite'          , 0xFFFAF0],
+      ['forestgreen'          , 0x228B22],
+      ['fuchsia'              , 0xFF00FF],
+      ['gainsboro'            , 0xDCDCDC],
+      ['ghostwhite'           , 0xF8F8FF],
+      ['gold'                 , 0xFFD700],
+      ['goldenrod'            , 0xDAA520],
+      ['gray'                 , 0x808080],
+      ['green'                , 0x008000],
+      ['greenyellow'          , 0xADFF2F],
+      ['grey'                 , 0x808080],
+      ['honeydew'             , 0xF0FFF0],
+      ['hotpink'              , 0xFF69B4],
+      ['indianred'            , 0xCD5C5C],
+      ['indigo'               , 0x4B0082],
+      ['ivory'                , 0xFFFFF0],
+      ['khaki'                , 0xF0E68C],
+      ['lavender'             , 0xE6E6FA],
+      ['lavenderblush'        , 0xFFF0F5],
+      ['lawngreen'            , 0x7CFC00],
+      ['lemonchiffon'         , 0xFFFACD],
+      ['lightblue'            , 0xADD8E6],
+      ['lightcoral'           , 0xF08080],
+      ['lightcyan'            , 0xE0FFFF],
+      ['lightgoldenrodyellow' , 0xFAFAD2],
+      ['lightgray'            , 0xD3D3D3],
+      ['lightgreen'           , 0x90EE90],
+      ['lightgrey'            ,  0xD3D3D3],
+      ['lightpink'            , 0xFFB6C1],
+      ['lightsalmon'          , 0xFFA07A],
+      ['lightseagreen'        , 0x20B2AA],
+      ['lightskyblue'         , 0x87CEFA],
+      ['lightslategray'       , 0x778899],
+      ['lightslategrey'       , 0x778899],
+      ['lightsteelblue'       , 0xB0C4DE],
+      ['lightyellow'          , 0xFFFFE0],
+      ['lime'                 , 0x00FF00],
+      ['limegreen'            , 0x32CD32],
+      ['linen'                , 0xFAF0E6],
+      ['magenta'              , 0xFF00FF],
+      ['maroon'               , 0x800000],
+      ['mediumaquamarine'     , 0x66CDAA],
+      ['mediumblue'           , 0x0000CD],
+      ['mediumorchid'         , 0xBA55D3],
+      ['mediumpurple'         , 0x9370DB],
+      ['mediumseagreen'       , 0x3CB371],
+      ['mediumslateblue'      , 0x7B68EE],
+      ['mediumspringgreen'    , 0x00FA9A],
+      ['mediumturquoise'      , 0x48D1CC],
+      ['mediumvioletred'      , 0xC71585],
+      ['midnightblue'         , 0x191970],
+      ['mintcream'            , 0xF5FFFA],
+      ['mistyrose'            , 0xFFE4E1],
+      ['moccasin'             , 0xFFE4B5],
+      ['navajowhite'          , 0xFFDEAD],
+      ['navy'                 , 0x000080],
+      ['oldlace'              , 0xFDF5E6],
+      ['olive'                , 0x808000],
+      ['olivedrab'            , 0x6B8E23],
+      ['orange'               , 0xFFA500],
+      ['orangered'            , 0xFF4500],
+      ['orchid'               , 0xDA70D6],
+      ['palegoldenrod'        , 0xEEE8AA],
+      ['palegreen'            , 0x98FB98],
+      ['paleturquoise'        , 0xAFEEEE],
+      ['palevioletred'        , 0xDB7093],
+      ['papayawhip'           , 0xFFEFD5],
+      ['peachpuff'            , 0xFFDAB9],
+      ['peru'                 , 0xCD853F],
+      ['pink'                 , 0xFFC0CB],
+      ['plum'                 , 0xDDA0DD],
+      ['powderblue'           , 0xB0E0E6],
+      ['purple'               , 0x800080],
+      ['red'                  , 0xFF0000],
+      ['rosybrown'            , 0xBC8F8F],
+      ['royalblue'            , 0x4169E1],
+      ['saddlebrown'          , 0x8B4513],
+      ['salmon'               , 0xFA8072],
+      ['sandybrown'           , 0xF4A460],
+      ['seagreen'             , 0x2E8B57],
+      ['seashell'             , 0xFFF5EE],
+      ['sienna'               , 0xA0522D],
+      ['silver'               , 0xC0C0C0],
+      ['skyblue'              , 0x87CEEB],
+      ['slateblue'            , 0x6A5ACD],
+      ['slategray'            , 0x708090],
+      ['slategrey'            , 0x708090],
+      ['snow'                 , 0xFFFAFA],
+      ['springgreen'          , 0x00FF7F],
+      ['steelblue'            , 0x4682B4],
+      ['tan'                  , 0xD2B48C],
+      ['teal'                 , 0x008080],
+      ['thistle'              , 0xD8BFD8],
+      ['tomato'               , 0xFF6347],
+      ['turquoise'            , 0x40E0D0],
+      ['violet'               , 0xEE82EE],
+      ['wheat'                , 0xF5DEB3],
+      ['white'                , 0xFFFFFF],
+      ['whitesmoke'           , 0xF5F5F5],
+      ['yellow'               , 0xFFFF00],
+      ['yellowgreen'          , 0x9ACD32]
+    ];
+
+    var colorScheme_cbx = 0;
+
+    var types = Object.keys( NGL.representationTypes );
+    var reprDict = {};
+
+    function initStructure ( o )  {
+
+      types.forEach ( function ( name ) {
+
+        if ( !name ) return;
+        if ( [ "distance" ].indexOf( name ) !== -1 ) return;
+
+        var colorScheme;
+        if (predefinedColorScheme && (initialColorScheme==predefinedColorName))
+              colorScheme = predefinedColorScheme;
+        else  colorScheme = initialColorScheme;
+
+        if ( name === "label" )  {
+          reprDict[ name ] = o.addRepresentation ( name,
+              { visible: false, colorScheme: "element",
+                sele   : ".C",  quality: quality } );
+        } else if ( name === initialStyle )  {
+          reprDict[ name ] = o.addRepresentation ( name,
+              { visible: true, colorScheme: colorScheme,
+                quality: quality  } );
+        } else  {
+          reprDict[ name ] = o.addRepresentation ( name,
+              { visible: false, colorScheme: colorScheme,
+                quality: quality } );
+        }
+
+        var checkbox = document.getElementById ( "cbx_" + name );
+        var repr = reprDict[ name ];
+        checkbox.addEventListener ( "click", function() {
+          repr.setVisibility ( !repr.visible );
+        } );
+        colorScheme_cbx.addEventListener ( "change", function ( v )  {
+          repr.setColor (
+               color_types[colorScheme_cbx.options.selectedIndex][0] );
+        } );
+
+      } );
+
+      o.centerView();
+
+    }
+
+
+    // Make Control Panel layout
+
+    document.addEventListener ( "DOMContentLoaded", function() {
+
+      document.getElementById ( "title" ).innerHTML =
+                                        "<b>" + windowTitle + "</b>";
+
+      var controls = document.getElementById ( "controls" );
+
+      function addHtml ( htmlText )  {
+        var span = document.createElement ( "span" );
+        span.innerHTML = htmlText;
+        controls.appendChild ( span );
+        return span;
+      }
+
+      function addElement ( type )  {
+        var element = document.createElement ( type );
+        controls.appendChild ( element );
+        return element;
+      }
+
+      function option ( value,text )  {
+        var z = document.createElement("option");
+        z.setAttribute ( "value",value );
+        z.appendChild ( document.createTextNode(text) );
+        return z;
+      }
+
+      // create render controls
+
+      addHtml ( "<b><i>Rendering</i></b><p>" );
+
+      types.forEach ( function(name)  {
+        if ( !name ) return;
+        if ( [ "distance" ].indexOf( name ) !== -1 ) return;
+        var checkbox = document.createElement ( "input" );
+        checkbox.setAttribute ( "type","checkbox" );
+        checkbox.id = "cbx_" + name;
+        checkbox.checked = (name == initialStyle);
+        label = addElement ( "label" );
+        label.appendChild ( checkbox );
+        label.appendChild ( document.createTextNode(name) );
+        addElement ( "br" );
+      } );
+
+      // create color scheme controls
+
+      addHtml ( "<hr><p><b><i>Colour Scheme</i></b><p>" );
+
+      colorScheme_cbx = document.createElement("SELECT");
+      colorScheme_cbx.setAttribute ( "id", "colorScheme" );
+      controls.appendChild ( colorScheme_cbx );
+
+      var i = 0;
+      var k = 0;
+      color_types.forEach ( function ( ct )  {
+        colorScheme_cbx.appendChild ( option(ct[0],ct[1]) );
+        if (ct[0]==initialColorScheme)
+          k = i;
+        i++;
+      } );
+      colorScheme_cbx.options.selectedIndex = k;
+
+      var stage = new NGL.Stage ( "viewport" );
+      stage.setTheme( "light" );
+      stage.viewer.container.addEventListener ( "dblclick", function() {
+        stage.toggleFullscreen();
+      } );
+
+      stage.loadFile ( dataSource ).then ( initStructure );
+      /*
+      var blob = new Blob( [document.getElementById("input_data").value], {type : 'application/octet-binary'} );
+      var url = URL.createObjectURL(blob);
+      stage.loadFile ( url ).then ( initStructure );
+      */
+
+      window.addEventListener ( "resize",function()  {
+//        var z = document.createElement("viewport");
+//          controls.style.width = 0.2*document.body.clientWidth + "px";
+//        z.style.width = 0.8*document.body.clientWidth;
+        stage.handleResize();
+      });
+
+      addHtml ( "<hr><p><b><i>Background</i></b><p>" );
+
+      var bckgColor_cbx = document.createElement("SELECT");
+      bckgColor_cbx.setAttribute ( "id", "bckgColor" );
+      bckgColor_cbx.style.width = "97%";
+      controls.appendChild ( bckgColor_cbx );
+
+      var i = 0;
+      var k = 0;
+      bckg_colors.forEach ( function ( bc )  {
+        bckgColor_cbx.appendChild ( option(bc[1],bc[0]) );
+        if (bc[0]==initialBckgColor)
+          k = i;
+        i++;
+      } );
+      stage.viewer.setBackground ( bckg_colors[k][1] );
+      bckgColor_cbx.options.selectedIndex = k;
+
+      bckgColor_cbx.addEventListener ( "change", function ( v )  {
+        stage.viewer.setBackground (
+                 bckg_colors[bckgColor_cbx.options.selectedIndex][1] );
+      } );
+
+    } );
+
+	</script>
+
+  <font id="title" size="+1">XXX</font>
+  <table style="width:100%">
+  <tr><td style="width:100%;text-align:left;">
+     <div id="viewport" style="width:99%;height:93vh;"></div>
+  </td><td style="text-align:left;padding-right:6pt;">
+     <div id="controls" style="width:99%;margin-left:6pt;"></div>
+  </td></tr>
+  </table>
+
+<textarea style="display: none;" id="input_data">
+PDB Data here?
+</textarea>
+
+
+</body>
+</html>

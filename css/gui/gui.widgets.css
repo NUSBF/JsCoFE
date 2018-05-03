@@ -1,0 +1,82 @@
+
+body {
+  font-family : "Trebuchet MS", "Helvetica", "Arial",  "Verdana", "sans-serif";
+  font-size   : 100.0%;
+}
+
+/* grid-layout defines a grid to lay widgets in,
+   spanning all width of the grid holder */
+
+.grid-layout {
+  width       : 100%;
+  height      : auto;
+  table-layout: auto;
+  border      : 0px ;
+  margin-top  : 0px ;
+  padding-top : 0px ;
+}
+.grid-layout td {
+  vertical-align: top ;
+  margin-top    : 0px ;
+  padding-top   : 0px ;
+}
+
+/* grid-layout-full defines a grid to lay widgets in,
+   spanning all width and height of the grid holder */
+
+.grid-layout-full {
+  width          : 100%;
+  height         : 98vh;
+  table-layout   : auto;
+  border         : 0px ;
+  margin-top     : 0px ;
+  padding-top    : 0px ;
+  margin-bottom  : 0px ;
+  padding-bottom : 0px ;
+}
+.grid-layout-full td {
+  vertical-align : top ;
+  margin-top     : 0px ;
+  padding-top    : 0px ;
+  margin-bottom  : 0px ;
+  padding-bottom : 0px ;
+}
+
+/* grid-layout-compact defines a grid to lay widgets in,
+   taking as much as necessary width in the left-hand
+   side part if the grid holder */
+
+.grid-layout-compact {
+  width          : auto;
+  height         : auto;
+  table-layout   : auto;
+  border         : 0px ;
+  margin-top     : 0px ;
+  padding-top    : 0px ;
+  margin-bottom  : 0px ;
+  padding-bottom : 0px ;
+}
+.grid-layout-compact td {
+  vertical-align : top ;
+  margin-top     : 0px ;
+  margin-bottom  : 0px ;
+  padding-top    : 0px ;
+  padding-bottom : 0px ;
+  padding-left   : 0px ;
+  padding-right  : 8px ;
+}
+
+
+.toolbar {
+    width  : 100%;
+    padding: 4px;
+    /*    display: inline-block; */
+}
+/* support: IE7
+*+html .toolbar {
+    display: inline;
+}
+*/
+
+
+.combobox-overflow { height: 100px; }

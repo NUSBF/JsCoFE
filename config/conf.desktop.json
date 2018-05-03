@@ -1,0 +1,93 @@
+{
+
+  "_comment"  : [
+    "====================================================================================",
+    "                    jsCoFE Configuration for desktop setup mode                     ",
+    "===================================================================================="
+  ],
+
+  "Desktop"  : {
+    "clientApp"  : "/bin/bash",
+    "args"       : ["-c","open -a Firefox $feURL$clientURL"]
+  },
+
+  "FrontEnd" : {
+    "protocol"         : "http",
+    "host"             : "localhost",
+    "port"             : 8081,
+    "externalURL"      : "http://localhost:8081",
+    "exclusive"        : true,
+    "stoppable"        : false,
+    "fsmount"          : "/",
+    "userDataPath"     : "./cofe-users",
+    "projectsPath"     : "./cofe-projects",
+    "facilitiesPath"   : "./cofe-facilities",
+    "ICAT_wdsl"        : "https://icat02.diamond.ac.uk/ICATService/ICAT?wsdl",
+    "ICAT_ids"         : "https://ids01.diamond.ac.uk/ids",
+    "bootstrapHTML"    : "jscofe.html",
+    "fileCapSize"      : 500000
+  },
+
+  "NumberCrunchers" : [
+    {
+      "serNo"            : 0,
+      "name"             : "local-nc",
+      "in_use"           : true,
+      "protocol"         : "http",
+      "host"             : "localhost",
+      "port"             : 8082,
+      "externalURL"      : "http://localhost:8082",
+      "exclusive"        : true,
+      "stoppable"        : false,
+      "fsmount"          : "/",
+      "capacity"         : 4,
+      "exclude_tasks"    : [],
+      "fasttrack"        : 1,
+      "storage"          : "./cofe-nc-storage",
+      "exeType"          : "SHELL",
+      "exeData"          : "",
+      "jobCheckPeriod"   : 2000,
+      "sendDataWaitTime" : 1000,
+      "maxSendTrials"    : 10,
+      "jobRemoveTimeout" : 10000,
+      "fileCapSize"      : 500000
+    },
+    {
+      "serNo"            : 1,
+      "name"             : "client",
+      "in_use"           : true,
+      "protocol"         : "http",
+      "host"             : "localhost",
+      "port"             : 8083,
+      "externalURL"      : "http://localhost:8083",
+      "exclusive"        : true,
+      "stoppable"        : false,
+      "fsmount"          : "/",
+      "capacity"         : 4,
+      "exclude_tasks"    : [],
+      "fasttrack"        : 1,
+      "storage"          : "./cofe-client-storage",
+      "exeType"          : "CLIENT",
+      "exeData"          : "",
+      "jobCheckPeriod"   : 2000,
+      "sendDataWaitTime" : 1000,
+      "maxSendTrials"    : 10,
+      "jobRemoveTimeout" : 10000,
+      "fileCapSize"      : 500000
+    }
+  ],
+
+  "Emailer" : {
+    "type"               : "nodemailer",
+    "emailFrom"          : "CCP4 on-line <ccp4.cofe@gmail.com>",
+    "maintainerEmail"    : "ccp4.cofe@gmail.com",
+    "host"               : "smtp.gmail.com",
+    "port"               : 465,
+    "secure"             : true,
+    "auth"               : {
+      "user" : "ccp4.cofe@gmail.com",
+      "pass" : "ccp4.cofe.2016"
+    }
+  }
+
+}

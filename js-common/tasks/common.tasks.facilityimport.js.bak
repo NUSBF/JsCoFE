@@ -1,0 +1,303 @@
+
+/*
+ *  =================================================================
+ *
+ *    02.04.18   <--  Date of Last Modification.
+ *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ *  -----------------------------------------------------------------
+ *
+ *  **** Module  :  js-common/cofe.tasks.phasermr.js
+ *       ~~~~~~~~~
+ *  **** Project :  jsCoFE - javascript-based Cloud Front End
+ *       ~~~~~~~~~
+ *  **** Content :  Facility Import Task Class
+ *       ~~~~~~~~~
+ *
+ *  (C) E. Krissinel, A. Lebedev 2016-2018
+ *
+ *  =================================================================
+ *
+ */
+
+
+var __template = null;
+
+if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
+  __template = require ( './common.tasks.template' );
+
+
+// ===========================================================================
+
+function TaskFacilityImport()  {
+
+  if (__template)  __template.TaskTemplate.call ( this );
+             else  TaskTemplate.call ( this );
+
+  this._type      = 'TaskFacilityImport';
+  this.name       = 'facility import';
+  this.oname      = '*';   // asterisk here means do not use
+  this.title      = 'Facility Import';
+  this.helpURL    = './html/jscofe_task_fimport.html';
+  this.fasttrack  = true;  // enforces immediate execution
+  this.inprogress = false; // indicates whether facility request is in progress
+
+}
+
+if (__template)
+      TaskFacilityImport.prototype = Object.create ( __template.TaskTemplate.prototype );
+else  TaskFacilityImport.prototype = Object.create ( TaskTemplate.prototype );
+TaskFacilityImport.prototype.constructor = TaskFacilityImport;
+
+
+// ===========================================================================
+
+TaskFacilityImport.prototype.icon_small = function()  { return './images/task_fimport_20x20.svg'; }
+TaskFacilityImport.prototype.icon_large = function()  { return './images/task_fimport.svg';       }
+
+TaskFacilityImport.prototype.currentVersion = function()  { return 0; }
+
+// export such that it could be used in both node and a browser
+if (!__template)  {
+  // for client side
+
+  // reserved function name
+  TaskFacilityImport.prototype.makeInputPanel = function ( dataBox )  {
+  // makes input panel for ICAT task; dataBox is not used as icat task
+  // does not have any input data from the project
+
+    var div = this.makeInputLayout();
+
+    if ((this.state==job_code.new) || (this.state==job_code.running)) {
+      div.header.setLabel ( ' ',2,0,1,1 );
+      div.header.setLabel ( ' ',2,1,1,1 );
+      div.header.setLabel ( '<hr/>Use iCAT catalogue below to select files ' +
+            'needed (<b><i>double-click or right-click</i></b> on items to '  +
+            'update them), and then hit <b><i>Import</i></b> button to process them.<hr/>',
+            3,0, 1,4 ).setFontSize('90%');
+    } else
+      div.header.uname_inp.setValue ( this.uname.replace(/<(?:.|\n)*?>/gm, '') );
+
+    div.tree_panel = div.grid.setPanel ( 0,0,1,1 );
+    div.tree_panel.element.setAttribute ( 'class','tree-content' );
+
+    //this.onResize ( window.innerWidth,window.innerHeight );
+
+    //this.inputPanel  = div;
+    div.facilityTree = null;
+
+    this.loadFacilityTree ( div );
+
+    return div;
+
+  }
+
+  TaskFacilityImport.prototype.onTreeLoaded = function ( inputPanel )  {
+    if (this.inprogress)
+      this.startWaitLoop ( inputPanel.facilityTree );
+  }
+
+  TaskFacilityImport.prototype.onTreeContextMenu = function ( node,inputPanel )  {
+    var items = {};
+    (function(task){
+      items.updateItem = { // The "Add job" menu item
+        label  : "Update",
+        icon   : './images/refresh_20x20.svg',
+        action : function(){ task.openItem(inputPanel); }
+      };
+    }(this))
+    return items;
+  }
+
+  TaskFacilityImport.prototype.openItem = function ( inputPanel )  {
+    var item = inputPanel.facilityTree.getSelectedItem();
+    if (['Facility','FacilityUser','FacilityVisit'].indexOf(item._type)>=0)
+      this.updateItem ( inputPanel,false );
+  }
+
+  TaskFacilityImport.prototype.onTreeItemSelect = function ( inputPanel )  {}
+
+  TaskFacilityImport.prototype.loadFacilityTree = function ( inputPanel )  {
+    //jobTree.closeAllJobDialogs();
+    // jobTree.stopTaskLoop();
+    if (inputPanel.facilityTree)
+      inputPanel.facilityTree.delete();
+    inputPanel.facilityTree = new FacilityTree();
+    inputPanel.facilityTree.element.style.paddingTop    = '0px';
+    inputPanel.facilityTree.element.style.paddingBottom = '25px';
+    inputPanel.facilityTree.element.style.paddingLeft   = '10px';
+    inputPanel.facilityTree.element.style.paddingRight  = '40px';
+    (function(task){
+      inputPanel.facilityTree.readFacilitiesData ( 'Facilities',
+                function()    { task.onTreeLoaded     ( inputPanel    ); },
+                function(node){ return task.onTreeContextMenu(node,inputPanel); },
+                function()    { task.openItem         ( inputPanel    ); },
+                function()    { task.onTreeItemSelect ( inputPanel    ); }
+      );
+      inputPanel.tree_panel.addWidget ( inputPanel.facilityTree );
+      inputPanel.facilityTree.inputPanel = inputPanel;
+    }(this))
+  }
+
+  TaskFacilityImport.prototype.startWaitLoop = function ( facilityTree )  {
+    (function(task){
+      task.inprogress = true;
+      new FacilityCheckDialog ( task,function(data){
+        task.inprogress = false;
+        if (data.status==fe_retcode.ok)
+          task.loadFacilityTree ( facilityTree.inputPanel );
+        else if (data.status==fe_retcode.askPassword)
+          task.updateItem ( facilityTree.inputPanel,true );
+      });
+    }(this))
+  }
+
+  TaskFacilityImport.prototype.updateItem = function ( inputPanel,askpwd )  {
+    var facilityTree = inputPanel.facilityTree;
+    var meta      = {};
+    meta.facility = facilityTree.getFacility();  // facility item
+    meta.user     = facilityTree.getUser    ();  // facility user item
+    meta.visit    = facilityTree.getVisit   ();  // facility visit item
+    meta.uid      = '';                          // facility user id
+    meta.pwd      = '';                          // facility user password
+    meta.tid      = this.id;                     // task id
+    meta.project  = this.project;
+    meta.item     = shallowCopy ( facilityTree.getSelectedItem() );
+
+    if (meta.user)
+      meta.uid = meta.user.id;
+
+    (function(task){
+
+      function requestUpdate ( req_meta )  {
+        serverRequest ( fe_reqtype.updateFacility,req_meta,task.title,
+          function(data){
+            if (data.status==fe_retcode.ok)
+              task.startWaitLoop ( facilityTree );
+            else {
+              alert ( 'server replied data=' + JSON.stringify(data) );
+            }
+          });
+      }
+
+      function askPassword ( request_meta )  {
+        new FacilityUserDialog ( request_meta,function(uid,pwd){
+          if (uid && pwd)  {
+            request_meta.uid = uid;
+            request_meta.pwd = pwd;
+            requestUpdate ( request_meta );
+          }
+        });
+      }
+
+      if (meta.item._type=='FacilityFile')  { // for fetching files, first asking
+                             // without password in case file is already in cache
+        // add all selected file entries in the request meta
+        meta.selFiles = [];  // selected files to fetch and import
+        var nodeList  = inputPanel.facilityTree.calcSelectedNodeId();
+        for (var i=0;i<nodeList.length;i++)  {
+          var item = inputPanel.facilityTree.item_map[nodeList[i]];
+          if (item._type=='FacilityFile')  {
+            var file = shallowCopy ( item );
+            file.did = inputPanel.facilityTree.getDatasetID1 ( nodeList[i].id );
+            meta.selFiles.push ( file );
+          }
+        }
+        if (askpwd)  askPassword   ( meta );
+               else  requestUpdate ( meta );
+      } else  {  // password is required in all other cases
+        askPassword ( meta );
+      }
+
+    }(this))
+
+  }
+
+
+  //  This function is called just before the task is finally sent to FE to run.
+  // It should execute function given as argument if run should not be done.
+  TaskFacilityImport.prototype.doRun = function ( inputPanel,run_func )  {
+    this.updateItem ( inputPanel,false );
+    //run_func();
+  }
+
+
+  TaskFacilityImport.prototype.disableInputWidgets = function ( widget,disable_bool ) {
+    TaskTemplate.prototype.disableInputWidgets.call ( this,widget,disable_bool );
+    /*
+    if (widget.hasOwnProperty('upload'))  {
+      widget.upload.button.setDisabled ( disable_bool );
+      if (widget.upload.link_button)
+        widget.upload.link_button.setDisabled ( disable_bool );
+      //if (this.upload_files.length<=0)
+        //this.sendTaskStateSignal ( widget,'hide_run_button' );
+    }
+    */
+  }
+
+  // reserved function name
+  TaskFacilityImport.prototype.collectInput = function ( inputPanel )  {
+    // collects data from input widgets, created in makeInputPanel() and
+    // stores it in internal fields
+    var nodeList     = inputPanel.facilityTree.calcSelectedNodeId();
+    var selNofFiles  = 0;
+    var selNofOthers = 0;
+    var fclNames     = [];
+    var visitIds     = [];
+    var userIds      = [];
+    var message      = '';  // Ok by default
+    var nodeList     = inputPanel.facilityTree.calcSelectedNodeId();
+
+    for (var i=0;i<nodeList.length;i++)  {
+      var item = inputPanel.facilityTree.item_map[nodeList[i]];
+      if (item._type=='FacilityFile')  {
+        selNofFiles++;
+        var vid = inputPanel.facilityTree.getVisitID1      ( nodeList[i].id );
+        var uid = inputPanel.facilityTree.getUserID1       ( nodeList[i].id );
+        var fid = inputPanel.facilityTree.getFacilityName1 ( nodeList[i].id );
+        if (vid && (visitIds.indexOf(vid)<0))  visitIds.push(vid);
+        if (uid && (userIds .indexOf(uid)<0))  userIds .push(uid);
+        if (fid && (fclNames.indexOf(fid)<0))  fclNames.push(fid);
+      } else
+        selNofOthers++;
+    }
+
+    if (selNofFiles<=0)  {
+      message = '#Select <b><i>files</i></b> to import. Any number of files ' +
+                'may be specified<br><i>(hold Alt (cmd/æ for Mac OSX) button for ' +
+                'multiple selections)</i><br>as long as they belong to the ' +
+                'same Visit, User and Facility.';
+    } else if (selNofOthers>0)  {
+      message = '#Select <b><i>only files</i></b> to import. Any number of files ' +
+                'may be specified<br><i>(hold Alt (cmd/æ for Mac OSX) button for ' +
+                'multiple selections)</i><br>as long as they belong to the ' +
+                'same Visit, User and Facility.';
+    } else if ((fclNames.length>1) || (userIds.length>1) || (visitIds.length>1)) {
+      // it looks like only facility should be enforced, because file is
+      // obtained using the dataset id and file id only
+      message = '#Select <b><i>only files belonging to same visit, user and ' +
+                'facility</i></b> to import.<br>Any number of files ' +
+                'may be specified <i>(hold Alt (cmd/æ for Mac OSX) button for<br>' +
+                'multiple selections)</i> as long as they belong to the ' +
+                'same<br>Visit, User and Facility.';
+      // this.sendTaskStateSignal ( inputPanel,'' );
+    }
+
+    return message;
+
+  }
+
+  // reserved function name
+  TaskFacilityImport.prototype.runButtonName = function()  { return 'Import'; }
+
+} else  {
+  // for server side
+
+  var conf = require('../../js-server/server.configuration');
+
+  TaskFacilityImport.prototype.getCommandLine = function ( exeType,jobDir )  {
+    return [conf.pythonName(), '-m', 'pycofe.tasks.icat_task', exeType, jobDir, this.id];
+  }
+
+  module.exports.TaskFacilityImport = TaskFacilityImport;
+
+}
