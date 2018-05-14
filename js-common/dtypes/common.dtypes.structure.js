@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    18.10.17   <--  Date of Last Modification.
+ *    10.05.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Common Client/Server Modules -- Structure Data Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2017
+ *  (C) E. Krissinel, A. Lebedev 2016-2018
  *
  *  =================================================================
  *
@@ -199,7 +199,7 @@ if (!__template)  {
         setBFthresh ( row,0,this.BFthresh );
       }
 
-    } else if (dropdown.layCustom=='chain-sel')  {
+    } else if (dropdown.layCustom.startsWith('chain-sel'))  {
       DataXYZ.prototype.layCustomDropdownInput.call ( this,dropdown );
     }
 
@@ -225,7 +225,7 @@ if (!__template)  {
       if (this.subtype.indexOf('xyz')>=0)  {
         this.BFthresh = customGrid.BFthresh.getValue();
       }
-    } else if (dropdown.layCustom=='chain-sel')  {
+    } else if (dropdown.layCustom.startsWith('chain-sel'))  {
       DataXYZ.prototype.collectCustomDropdownInput.call ( this,dropdown );
     }
 

@@ -20,7 +20,7 @@ import json
 from   suds.client import Client
 import requests
 import time
-import StringIO
+#import StringIO
 import shutil
 
 # ============================================================================
@@ -103,16 +103,28 @@ def getDatasets ( fdata,wdsl ):
     if len(session) != 2:
         result["status"] = session
     else:
-        icat      = session[0]
-        sessionId = session[1]
-        vid       = fdata["visit"]["id"]
+        icat         = session[0]
+        sessionId    = session[1]
+        vid          = fdata["visit"]["id"]
+        query_spec   = "FROM Dataset ds WHERE ds.investigation.visitId='" +\
+                       vid + "' ORDER BY ds.id"
+        datasetIDs   = []
+        datasetNames = []
 
         try:
-
-            query_spec   = "FROM Dataset ds WHERE ds.investigation.visitId='" + vid + "' ORDER BY ds.id"
+            writeLog ( " --- getting list of datasets\n" )
             datasetIDs   = icat.search ( sessionId,"SELECT ds.id   " + query_spec )
+            writeLog ( "     success on list of ids.\n" )
             datasetNames = icat.search ( sessionId,"SELECT ds.name " + query_spec )
+            writeLog ( "     success on list of names.\n" )
+        except:
+            writeLog ( "     failed.\n" )
+            datasetIDs   = []
+            datasetNames = []
+            result["status"] = "failed to acquire the list of datasets"
 
+        try:
+            writeLog ( " --- getting datasets\n" )
             datasets = []
             for j in range(len(datasetIDs)):
 
@@ -121,15 +133,20 @@ def getDatasets ( fdata,wdsl ):
                 dataset = {}
                 dataset["id"]   = str(did)
                 dataset["path"] = str(datasetNames[j])
+                writeLog ( "     id=" + str(did) + "  name=" + str(datasetNames[j]) + "\n" )
 
                 query_spec  = "FROM Datafile df WHERE df.dataset.id='" + str(did) + "'"
                 query_spec += " AND df.name LIKE '%.mtz'"
                 query_spec += " ORDER BY df.name"
 
                 datafileIDs   = icat.search ( sessionId,"SELECT df.id         " + query_spec )
+                writeLog ( "     file ids fetched\n" )
                 datafileNames = icat.search ( sessionId,"SELECT df.name       " + query_spec )
+                writeLog ( "     file names fetched.\n" )
                 datafileSizes = icat.search ( sessionId,"SELECT df.fileSize   " + query_spec )
+                writeLog ( "     file sizes fetched.\n" )
                 datafileDates = icat.search ( sessionId,"SELECT df.createTime " + query_spec )
+                writeLog ( "     create times fetched.\n" )
                 # can select description
 
                 files = []
@@ -149,7 +166,8 @@ def getDatasets ( fdata,wdsl ):
             result["status"]   = "ok"
 
         except:
-            result["status"] = "fail"
+            writeLog ( "     failed.\n" )
+            result["status"] = "failed to acquire a dataset"
 
     return result
 

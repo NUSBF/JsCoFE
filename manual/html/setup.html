@@ -150,8 +150,8 @@ The code is obtainable from CCP4&#8217;s Bazaar repositories:</p>
 </pre></div>
 </div>
 <p>If <code class="docutils literal"><span class="pre">bzr</span></code> is not installed on your system, download and install it from
-<a class="reference external" href="http://bazaar.canonical.com">http://bazaar.canonical.com</a>, or get jsCoFE source code from GitHub:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span>$ git clone https://github.com/ekr-ccp4/jsCoFE.git
+<a class="reference external" href="http://bazaar.canonical.com">http://bazaar.canonical.com</a>, or get jsCoFE source code from GitLab:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>$ git clone https://gitlab.com/CCP4/jsCoFE.git
 </pre></div>
 </div>
 <p>All jsCoFE servers: FE, NC and CS, use the same source code, and the source code
@@ -172,7 +172,7 @@ $ bzr update
 $ npm install
 </pre></div>
 </div>
-<p>or, if jsCoFE was originally checked out from GutHub:</p>
+<p>or, if jsCoFE was originally checked out from GutLab:</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span>$ cd /path/to/jscofe
 $ git pull origin master
 $ npm install
@@ -314,7 +314,11 @@ easier for any reason.</p>
   <span class="s2">&quot;fsmount&quot;</span>          <span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
   <span class="s2">&quot;userDataPath&quot;</span>     <span class="p">:</span> <span class="s2">&quot;./cofe-users&quot;</span><span class="p">,</span>
   <span class="s2">&quot;projectsPath&quot;</span>     <span class="p">:</span> <span class="s2">&quot;./cofe-projects&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;facilitiesPath&quot;</span>   <span class="p">:</span> <span class="s2">&quot;./cofe-facilities&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;ICAT_wdsl&quot;</span>        <span class="p">:</span> <span class="s2">&quot;https://icat02.diamond.ac.uk/ICATService/ICAT?wsdl&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;ICAT_ids&quot;</span>         <span class="p">:</span> <span class="s2">&quot;https://ids01.diamond.ac.uk/ids&quot;</span><span class="p">,</span>
   <span class="s2">&quot;bootstrapHTML&quot;</span>    <span class="p">:</span> <span class="s2">&quot;jscofe.html&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;maxRestarts&quot;</span>      <span class="p">:</span> <span class="mi">100</span><span class="p">,</span>
   <span class="s2">&quot;fileCapSize&quot;</span>      <span class="p">:</span> <span class="mi">500000</span>
 <span class="p">}</span>
 </pre></div>
@@ -376,10 +380,23 @@ in respect to jscofe directory on the front-end server.</dd>
 the front-end server. Both the relative (starting with <code class="docutils literal"><span class="pre">./</span></code>) and absolute
 (starting with slash <code class="docutils literal"><span class="pre">/</span></code>) paths may be given. Relative paths are calculated
 in respect to jsCoFE source code directory on the front-end server.</dd>
+<dt><strong>facilitiesPath</strong></dt>
+<dd>Path to directory for caching data obtained from data producing facilities such
+as synchrotrons. The directory must exist before starting the front-end server.
+Both the relative (starting with <code class="docutils literal"><span class="pre">./</span></code>) and absolute (starting with slash <code class="docutils literal"><span class="pre">/</span></code>)
+paths may be given. Relative paths are calculated in respect to jsCoFE source
+code directory on the front-end server.</dd>
+<dt><strong>ICAT_wdsl</strong></dt>
+<dd>URL to ICAT&#8217;s WDSL catalogue (used to obtain data from ICAT).</dd>
+<dt><strong>ICAT_ids</strong></dt>
+<dd>URL to ICAT&#8217;s IDS data storage (used to obtain data from ICAT).</dd>
 <dt><strong>bootstrapHTML</strong></dt>
 <dd>Relative path to jsCoFE bootstrap file, which is <code class="docutils literal"><span class="pre">jscofe.html</span></code> in the root
 of the jsCoFE source code directory. There is little need to move or rename
 this file.</dd>
+<dt><strong>maxRestarts</strong></dt>
+<dd>Maximum number of server auto-restarts allowed (used to recover after errors
+and exceptions). If &#8220;-1&#8221; is given, auto-restarts will not be limited.</dd>
 <dt><strong>fileCapSize</strong></dt>
 <dd>Size limit on particular type of files (such as log files) sent to client
 while job is running. If a file exceeds the cap size, it will be truncated
@@ -413,6 +430,7 @@ finished.</dd>
   <span class="s2">&quot;sendDataWaitTime&quot;</span> <span class="p">:</span> <span class="mi">1000</span><span class="p">,</span>
   <span class="s2">&quot;maxSendTrials&quot;</span>    <span class="p">:</span> <span class="mi">10</span><span class="p">,</span>
   <span class="s2">&quot;jobRemoveTimeout&quot;</span> <span class="p">:</span> <span class="mi">10000</span><span class="p">,</span>
+  <span class="s2">&quot;maxRestarts&quot;</span>      <span class="p">:</span> <span class="mi">100</span><span class="p">,</span>
   <span class="s2">&quot;fileCapSize&quot;</span>      <span class="p">:</span> <span class="mi">500000</span>
 <span class="p">}</span>
 </pre></div>
@@ -535,6 +553,9 @@ issued to the user.</dd>
 <dd>Time period, in milliseconds, for NC to delete job director after the the job
 has finished and all job data was delivered to the Front End server, or all
 delivery attempts have failed.</dd>
+<dt><strong>maxRestarts</strong></dt>
+<dd>Maximum number of server auto-restarts allowed (used to recover after errors
+and exceptions). If &#8220;-1&#8221; is given, auto-restarts will not be limited.</dd>
 <dt><strong>fileCapSize</strong></dt>
 <dd>Size limit on particular type of files (such as log files) sent to front end
 while job is running. If a file exceeds the cap size, it will be truncated

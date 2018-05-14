@@ -269,12 +269,12 @@ var alink = document.getElementById(hiddenALinkID);
 
 
 function downloadJobFile ( jobId,filePath )  {
-  var url = '@/';
+  var url = special_url_tag + '/';
   if (__login_token)
         url += __login_token;
   else  url += '404';
   url += '/' + __current_project + '/' + jobId + '/' + filePath;
-  downloadFile ( url );
+  downloadFile ( replaceAll(url,'/','@') );
 }
 
 

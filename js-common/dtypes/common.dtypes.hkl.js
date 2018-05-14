@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    06.12.17   <--  Date of Last Modification.
+ *    10.05.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  HKL Data Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2017
+ *  (C) E. Krissinel, A. Lebedev 2016-2018
  *
  *  =================================================================
  *
@@ -53,6 +53,8 @@ function DataHKL()  {
   this.new_spg       = '';     // new space group for reindexing
   this.spg_alt       = '';     // alternative space groups for Phaser
   this.freeRds       = null;   // reference to freeR dataset meta
+  //this.useHKLSet     = 'F';    // if given, forces use of F,I,Fpm,Ipm (Refmac)
+  this.useHKLSet     = 'F';    // if given, forces use of F,Fpm,TI,TF (Refmac)
 
 }
 
@@ -70,7 +72,7 @@ DataHKL.prototype.icon_small = function()  { return './images/data_20x20.svg'; }
 DataHKL.prototype.icon_large = function()  { return './images/data.svg';       }
 
 // change this synchronously with the version in dtype.hkl.py
-DataHKL.prototype.currentVersion = function()  { return 1; }
+DataHKL.prototype.currentVersion = function()  { return 2; }
 
 // export such that it could be used in both node and a browser
 if (!__template)  {
@@ -122,6 +124,27 @@ if (!__template)  {
     else  return null;
   }
 
+  DataHKL.prototype.isImean = function() {
+    return this.getMeta('Imean.value','') && this.getMeta('Imean.sigma','');
+  }
+
+  DataHKL.prototype.isFmean = function()  {
+    return this.getMeta('Fmean.value','') && this.getMeta('Fmean.sigma','');
+  }
+
+  DataHKL.prototype.isIpm = function()  {
+    return  this.getMeta('Ipm.plus.value' ,'') &&
+            this.getMeta('Ipm.plus.sigma' ,'') &&
+            this.getMeta('Ipm.minus.value','') &&
+            this.getMeta('Ipm.minus.sigma','');
+  }
+
+  DataHKL.prototype.isFpm = function()  {
+    return  this.getMeta('Fpm.plus.value' ,'') &&
+            this.getMeta('Fpm.plus.sigma' ,'') &&
+            this.getMeta('Fpm.minus.value','') &&
+            this.getMeta('Fpm.minus.sigma','');
+  }
 
   DataHKL.prototype.makeDataSummaryPage = function ( task )  {
   var dsp = new DataSummaryPage ( this );
@@ -303,7 +326,7 @@ if (!__template)  {
       customGrid.spaceGroup.make();
     }
 
-    this.phaserMRLayout = function()  {
+    this.makeResolutionLimits = function()  {
       setLabel ( 'Resolution range (&Aring;):&nbsp;',++r,0 );
       var res_low  = round ( this.getLowResolution (),2 );
       var res_high = round ( this.getHighResolution(),2 );
@@ -317,6 +340,20 @@ if (!__template)  {
           res_low + ', or leave blank for automatic choice.',r,3 );
       customGrid.setLabel    ( ' ',r,4,1,1 );
       customGrid.setCellSize ( '90%','',r,4 );
+    }
+
+    this.makeWavelengthInput = function()  {
+      var wavelength = this.getWavelength();
+      if (wavelength==null)
+        wavelength = '';
+      setLabel ( 'Wavelength (&Aring;):&nbsp;',++r,0 );
+      customGrid.wavelength = makeRealInput ( this.wavelength,wavelength,
+          'Set wavelength value, or leave blank for automatic choice.',r,1 );
+    }
+
+    this.phaserMRLayout = function()  {
+      this.makeResolutionLimits();
+      var res_high = round ( this.getHighResolution(),2 );
       setLabel ( 'High res-n for final refinement (&Aring;):&nbsp;',++r,0 );
       customGrid.res_ref = makeRealInput ( this.res_ref,res_high,
           'Set a value equal or larger than ' + round(this.getHighResolution(),2) +
@@ -325,15 +362,11 @@ if (!__template)  {
     }
 
     this.phaserEPLayout = function()  {
-
+      this.makeResolutionLimits();
+      /*
       setLabel ( 'Resolution range (&Aring;):&nbsp;',r,0 );
-
       var res_low    = round ( this.getLowResolution (),2 );
       var res_high   = round ( this.getHighResolution(),2 );
-      var wavelength = this.getWavelength();
-      if (wavelength==null)
-        wavelength = '';
-
       customGrid.res_low = makeRealInput ( this.res_low,res_low,
           'Low resolution limit. Set a value between ' + res_high + ' and ' +
           res_low + ', or leave blank for automatic choice.',r,1 );
@@ -344,10 +377,18 @@ if (!__template)  {
           res_low + ', or leave blank for automatic choice.',r,3 );
       customGrid.setLabel    ( ' ',r,4,1,1 );
       customGrid.setCellSize ( '90%','',r,4 );
+      */
+
+      this.makeWavelengthInput();
+      /*
+      var wavelength = this.getWavelength();
+      if (wavelength==null)
+        wavelength = '';
 
       setLabel ( 'Wavelength (&Aring;):&nbsp;',++r,0 );
       customGrid.wavelength = makeRealInput ( this.wavelength,wavelength,
           'Set wavelength value, or leave blank for automatic choice.',r,1 );
+      */
 
       setLabel ( 'Fluorescent Scan Data:&nbsp;',++r,0 );
       customGrid.f_use_mode = new Dropdown();
@@ -390,6 +431,49 @@ if (!__template)  {
 
     }
 
+    this.refmacLayout = function()  {
+      this.makeResolutionLimits();
+      var is_Imean = this.isImean();
+      var is_Fmean = this.isFmean();
+      var is_Ipm   = this.isIpm  ();
+      var is_Fpm   = this.isFpm  ();
+      n = 0;
+      if (is_Imean)  n++;
+      if (is_Fmean)  n++;
+      if (is_Ipm)    n++;
+      if (is_Fpm)    n++;
+      if (n>0)  {
+        setLabel ( 'Refine using:&nbsp;',++r,0 );
+        customGrid.useHKLSet = new Dropdown();
+        //customGrid.useDataset.setWidth ( '125%' );
+        //customGrid.useHKLSet.addItem  ( 'Auto','','auto',this.useHKLSet=='auto' );
+        //if (is_Ipm)
+        //  customGrid.useHKLSet.addItem  ( 'Anomalous Intensities','','Ipm',this.useHKLSet=='Ipm' );
+        if (is_Fmean)
+          customGrid.useHKLSet.addItem  ( 'Mean Amplitudes only','','F',this.useHKLSet=='F' );
+        if (is_Fpm)
+          customGrid.useHKLSet.addItem  ( 'Anomalous Differences','','Fpm',this.useHKLSet=='Fpm' );
+        if (is_Imean)
+          customGrid.useHKLSet.addItem  ( 'Mean Intensities assuming twinning','','TI',this.useHKLSet=='TI' );
+        if (is_Fmean)
+          customGrid.useHKLSet.addItem  ( 'Mean Amplitudes assuming twinning','','TF',this.useHKLSet=='TF' );
+
+        customGrid.setWidget   ( customGrid.useHKLSet, r,1,1,4 );
+        //customGrid.setCellSize ( '60px','',r,1 );
+        customGrid.useHKLSet.make();
+      }
+      if (is_Fpm)  {
+        this.makeWavelengthInput();
+        (function(grid,row,useHKLSet){
+          grid.useHKLSet.addSignalHandler ( 'state_changed',function(){
+            grid.setRowVisible ( row,(grid.useHKLSet.getValue()=='Fpm') );
+          });
+          customGrid.setRowVisible ( r,(useHKLSet=='Fpm') );
+        }(customGrid,r,this.useHKLSet))
+      }
+      customGrid.setLabel ( ' ',++r,0,1,1 ).setHeight_px ( 8 );
+    }
+
     switch (dropdown.layCustom)  {
       case 'anomData'        :  this.anomDataLayout   ();  break;
       case 'anomData-Shelx'  :  this.setWType         ();  break;
@@ -400,6 +484,7 @@ if (!__template)  {
       case 'phaser-mr'       :  this.spgLayout        (); // should be no break here!
       case 'phaser-mr-fixed' :  this.phaserMRLayout   ();  break;
       case 'phaser-ep'       :  this.phaserEPLayout   ();  break;
+      case 'refmac'          :  this.refmacLayout     ();  break;
       default : ;
     }
 
@@ -487,6 +572,18 @@ if (!__template)  {
       }
     }
 
+    this.collectRefmac = function()  {
+      this.res_low  = customGrid.res_low .getValue();
+      this.res_high = customGrid.res_high.getValue();
+      if ('wavelength' in customGrid)
+        this.wavelength = customGrid.wavelength.getValue();
+      if (this.res_low   =='') this.res_low  = round ( this.getLowResolution (),2 );
+      if (this.res_high  =='') this.res_high = round ( this.getHighResolution(),2 );
+      if (this.wavelength=='') this.wavelength = this.getWavelength();
+      if ('useHKLSet' in customGrid)
+            this.useHKLSet = customGrid.useHKLSet.getValue();
+      else  this.useHKLSet = 'auto';
+    }
 
     switch (dropdown.layCustom)  {
       case 'anomData'        : this.collectAnom     ();  break;
@@ -496,6 +593,7 @@ if (!__template)  {
       case 'phaser-mr'       : this.collectSpG      (); // should be no break here!
       case 'phaser-mr-fixed' : this.collectPhaserMR ();  break;
       case 'phaser-ep'       : this.collectPhaserEP ();  break;
+      case 'refmac'          : this.collectRefmac   ();  break;
       default : ;
     }
 

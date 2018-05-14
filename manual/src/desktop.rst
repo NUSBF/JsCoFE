@@ -57,9 +57,9 @@ application.
   http://bazaar.canonical.com . On Linux, you may find ``bzr`` available from
   OS repositories).
 
-  Alternatively, check out jsCoFE source code from GitHub: ::
+  Alternatively, check out jsCoFE source code from GitLab: ::
 
-    $ git clone https://github.com/ekr-ccp4/jsCoFE.git
+    $ git clone https://gitlab.com/CCP4/jsCoFE.git
 
 
 **4. Install Node JS modules**
@@ -74,7 +74,7 @@ application.
     $ bzr update
     $ npm install
 
-  or, if jsCoFE was originally checked out from GutHub: ::
+  or, if jsCoFE was originally checked out from GutLab: ::
 
       $ cd /path/to/jscofe
       $ git pull origin master

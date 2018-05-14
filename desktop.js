@@ -171,10 +171,10 @@ function startClientApplication()  {
 
     var job = child_process.spawn ( desktopConfig.clientApp,command );
 
-    log.standard ( 4,'client application "' + msg + '" started, pid=' + job.pid );
+    log.standard ( 5,'client application "' + msg + '" started, pid=' + job.pid );
 
     job.on ( 'close',function(code){
-      log.standard ( 5,'client application "' + msg + '" quit with code ' + code );
+      log.standard ( 6,'client application "' + msg + '" quit with code ' + code );
     });
 
   }
@@ -217,7 +217,7 @@ conf.assignPorts ( function(){
         if (startNC[i])
           startNCServer ( i,cfgpath );
 
-      // if necessary, start number cruncher
+      // if necessary, start Front End
       if (startFE)  {
         fe_start.start ( function(){
           startClientApplication();

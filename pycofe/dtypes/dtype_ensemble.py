@@ -59,7 +59,7 @@ class DType(dtype_template.DType):
 def register ( sequence,ensembleFilePath,dataSerialNo,job_id,outDataBox,outputDir ):
     if os.path.isfile(ensembleFilePath):
         ensemble = DType ( job_id )
-        fname    = os.path.basename(ensembleFilePath)
+        fname    = ensemble.lessDataId ( os.path.basename(ensembleFilePath) )
         ensemble.setFile ( fname  )
         if type(sequence) == list:
             ensemble.addSubtypes ( sequence )
@@ -68,11 +68,15 @@ def register ( sequence,ensembleFilePath,dataSerialNo,job_id,outDataBox,outputDi
         else:
             ensemble.putSequence ( sequence )
         ensemble.makeDName ( dataSerialNo )
+        """
         if not fname.startswith(ensemble.dataId):
             newFileName = ensemble.dataId + "_" + fname
             ensemble.setFile   ( newFileName  )
         else:
             newFileName = fname
+        """
+        newFileName = ensemble.dataId + "_" + fname
+        ensemble.setFile ( newFileName  )
         if outDataBox:
             outDataBox.add_data ( ensemble )
         os.rename ( ensembleFilePath, os.path.join(outputDir,newFileName) )

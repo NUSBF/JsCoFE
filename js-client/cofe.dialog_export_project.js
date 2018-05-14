@@ -73,9 +73,9 @@ function ExportProjectDialog ( projectList )  {
                 if (__login_token)
                       token = __login_token;
                 else  token = '404';
-                url = '@/' + token + '/' + projectList.current + '/' +
-                                           projectList.current + '.tar.gz';
-                downloadFile ( url );
+                url = special_url_tag + '/' + token + '/' + projectList.current +
+                                        '/' + projectList.current + '.tar.gz';
+                downloadFile ( replaceAll(url,'/','@') );
                 $( "#cancel_btn" ).button ( "option","label","Close" );
                 //$(dlg).dialog("close");
             }

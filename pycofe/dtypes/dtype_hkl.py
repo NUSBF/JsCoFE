@@ -33,7 +33,7 @@ class DType(dtype_template.DType):
         if not json_str:
             self._type         = dtype()
             self.dname         = "hkl"
-            self.version       = 1
+            self.version       = 2
             self.wtype         = "peak" # 'low-remote', 'peak', 'native', 'high-remote'
             self.f_use_mode    = "NO"   # 'NO','EDGE','ON','OFF' (Phaser-EP)
             self.f1            = ""     # amplitude shift  (Crank-2, Phaser-EP)
@@ -47,6 +47,8 @@ class DType(dtype_template.DType):
             self.new_spg       = ""     # new space group for reindexing
             self.spg_alt       = ""     # alternative space groups for Phaser
             self.freeRds       = None   # reference to freeR dataset
+            #self.useHKLSet     = "auto" # if given, forces use of F,I,Fpm,Ipm (Refmac)
+            self.useHKLSet     = 'F';   # if given, forces use of F,Fpm,TI,TF (Refmac)
         return
 
 

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    27.03.18   <--  Date of Last Modification.
+ *    01.05.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -54,6 +54,7 @@ function Communicate ( server_request )  {
   this.command  = url_path.toLowerCase();
   this.search   = url_parse.search;
   this.ncURL    = '';
+//console.log ( "requested " + server_request.url );
 
   if ((this.command=='') || (this.command==cmd.fe_command.cofe))
         this.filePath = conf.getFEConfig().bootstrapHTML;
@@ -66,7 +67,7 @@ function Communicate ( server_request )  {
     this.job_token = '';
 
   log.debug2 ( 1,"requested path " + this.filePath );
-  //console.log ( "requested path " + this.filePath );
+//console.log ( "requested path " + this.filePath );
   var ix = this.filePath.indexOf('jsrview');
   if (ix<0)
     ix = this.filePath.indexOf('ccp4i2_support');
@@ -76,7 +77,7 @@ function Communicate ( server_request )  {
     this.filePath = path.join ( 'js-lib',this.filePath.substr(ix) );
     log.debug2 ( 2,"calculated path " + this.filePath);
 
-  } else if (this.filePath.startsWith('@/'))  {  // special access to files not
+  } else if (this.filePath.startsWith(cmd.special_url_tag))  { // special access to files not
                                                  // supposed to be on http path
 
     var flist = this.filePath.split('/');
@@ -104,8 +105,10 @@ function Communicate ( server_request )  {
       var jobEntry = rj.getEFJobEntry ( login,flist[2],flist[3] );
       if (jobEntry && (jobEntry.nc_type=='ordinary'))  {  // yes the job is running
         // form a URL request to forward
-        this.ncURL = conf.getNCConfig(jobEntry.nc_number).url() + '/@/' +
-                                      jobEntry.job_token + '/'  + localPath;
+        this.ncURL = conf.getNCConfig(jobEntry.nc_number).url() + '/' +
+                                      cmd.special_url_tag + '/' +
+                                      jobEntry.job_token + '/' +
+                                      localPath;
         if (this.search)
           this.ncURL += this.search;
       }
@@ -167,7 +170,7 @@ Communicate.prototype.sendFile = function ( server_response )  {
         log.error ( 6,'Read file errors, file = ' + fpath );
         log.error ( 6,'Error: ' + err );
         server_response.writeHead ( 404, {'Content-Type':'text/html;charset=UTF-8'} );
-        server_response.end ( '<p><b>FILE NOT FOUND</b></p>' );
+        server_response.end ( '<p><b>[05-0006] FILE NOT FOUND</b></p>' );
       } else if ((!cap) || (stats.size<=conf.getFEConfig().fileCapSize))  {
         server_response.writeHeader ( 200, {
            'Content-Type'   : mtype,
@@ -177,6 +180,12 @@ Communicate.prototype.sendFile = function ( server_response )  {
         fReadStream.on ( 'data',function(chunk){
           if (!server_response.write(chunk))
             fReadStream.pause();
+        });
+        fReadStream.on ( 'error',function(e){
+          log.error ( 7,'Read file errors, file = ' + fpath );
+          console.error ( e.stack || e );
+          server_response.writeHead ( 404, {'Content-Type':'text/html;charset=UTF-8'} );
+          server_response.end ( '<p><b>[05-0007] FILE READ ERRORS</b></p>' );
         });
         fReadStream.on ( 'end',function(){
           server_response.end();
@@ -189,10 +198,10 @@ Communicate.prototype.sendFile = function ( server_response )  {
       } else  {
         fs.readFile ( fpath, function(err,data) {
           if (err)  {
-            log.error ( 6,'Read file errors, file = ' + fpath );
-            log.error ( 6,'Error: ' + err );
+            log.error ( 8,'Read file errors, file = ' + fpath );
+            log.error ( 8,'Error: ' + err );
             server_response.writeHead ( 404, {'Content-Type':'text/html;charset=UTF-8'} );
-            server_response.end ( '<p><b>FILE NOT FOUND</b></p>' );
+            server_response.end ( '<p><b>[05-0008] FILE NOT FOUND OR FILE READ ERRORS</b></p>' );
           } else  {
             server_response.writeHeader ( 200, {'Content-Type':mtype} );
             server_response.end ( utils.capData(data,conf.getFEConfig().fileCapSize) );
@@ -210,18 +219,23 @@ Communicate.prototype.sendFile = function ( server_response )  {
     (function(ncURL){
       tmp.tmpName(function(err,fpath) {
         if (err) {
-          log.error ( 7,'cannot create temporary storage for file ' +
+          log.error ( 9,'cannot create temporary storage for file ' +
                         'request redirection' );
         } else  {
-          log.debug2 ( 8,'tmp file ' + fpath );
+          log.debug2 ( 10,'tmp file ' + fpath );
           request
             .get ( ncURL )
             .on('error', function(err) {
-              log.error ( 9,'Download errors from ' + ncURL );
-              log.error ( 9,'Error: ' + err );
+              log.error ( 11,'Download errors from ' + ncURL );
+              log.error ( 11,'Error: ' + err );
               utils.removeFile ( fpath );
             })
             .pipe(fs.createWriteStream(fpath))
+            .on('error', function(err) {
+              log.error ( 12,'Download errors or stream read errors from ' + ncURL );
+              log.error ( 12,'Error: ' + err );
+              utils.removeFile ( fpath );
+            })
             .on('close',function(){   // finish,end,
               send_file ( fpath,true,false );
             });

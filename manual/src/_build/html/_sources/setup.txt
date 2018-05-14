@@ -106,9 +106,10 @@ The code is obtainable from CCP4's Bazaar repositories: ::
   $ bzr checkout http://fg.oisin.rc-harwell.ac.uk/anonscm/bzr/jscofe/trunk /path/to/jscofe
 
 If ``bzr`` is not installed on your system, download and install it from
-http://bazaar.canonical.com, or get jsCoFE source code from GitHub: ::
+http://bazaar.canonical.com, or get jsCoFE source code from GitLab: ::
 
-      $ git clone https://github.com/ekr-ccp4/jsCoFE.git
+  $ git clone https://gitlab.com/CCP4/jsCoFE.git
+
 
 All jsCoFE servers: FE, NC and CS, use the same source code, and the source code
 directory may be shared by any number and types of servers, if permitted by
@@ -129,7 +130,7 @@ directories: ::
   $ bzr update
   $ npm install
 
-or, if jsCoFE was originally checked out from GutHub: ::
+or, if jsCoFE was originally checked out from GutLab: ::
 
   $ cd /path/to/jscofe
   $ git pull origin master
@@ -283,7 +284,11 @@ The FE Configuration Module represents the following JSON object: ::
     "fsmount"          : "",
     "userDataPath"     : "./cofe-users",
     "projectsPath"     : "./cofe-projects",
+    "facilitiesPath"   : "./cofe-facilities",
+    "ICAT_wdsl"        : "https://icat02.diamond.ac.uk/ICATService/ICAT?wsdl",
+    "ICAT_ids"         : "https://ids01.diamond.ac.uk/ids",
     "bootstrapHTML"    : "jscofe.html",
+    "maxRestarts"      : 100,
     "fileCapSize"      : 500000
   }
 
@@ -352,10 +357,27 @@ The FE Configuration Module represents the following JSON object: ::
   (starting with slash ``/``) paths may be given. Relative paths are calculated
   in respect to jsCoFE source code directory on the front-end server.
 
+**facilitiesPath**
+  Path to directory for caching data obtained from data producing facilities such
+  as synchrotrons. The directory must exist before starting the front-end server.
+  Both the relative (starting with ``./``) and absolute (starting with slash ``/``)
+  paths may be given. Relative paths are calculated in respect to jsCoFE source
+  code directory on the front-end server.
+
+**ICAT_wdsl**
+  URL to ICAT's WDSL catalogue (used to obtain data from ICAT).
+
+**ICAT_ids**
+  URL to ICAT's IDS data storage (used to obtain data from ICAT).
+
 **bootstrapHTML**
   Relative path to jsCoFE bootstrap file, which is ``jscofe.html`` in the root
   of the jsCoFE source code directory. There is little need to move or rename
   this file.
+
+**maxRestarts**
+  Maximum number of server auto-restarts allowed (used to recover after errors
+  and exceptions). If "-1" is given, auto-restarts will not be limited.
 
 **fileCapSize**
   Size limit on particular type of files (such as log files) sent to client
@@ -393,6 +415,7 @@ The NC Configuration Module represents the following JSON object: ::
     "sendDataWaitTime" : 1000,
     "maxSendTrials"    : 10,
     "jobRemoveTimeout" : 10000,
+    "maxRestarts"      : 100,
     "fileCapSize"      : 500000
   }
 
@@ -531,6 +554,10 @@ The NC Configuration Module represents the following JSON object: ::
   Time period, in milliseconds, for NC to delete job director after the the job
   has finished and all job data was delivered to the Front End server, or all
   delivery attempts have failed.
+
+**maxRestarts**
+  Maximum number of server auto-restarts allowed (used to recover after errors
+  and exceptions). If "-1" is given, auto-restarts will not be limited.
 
 **fileCapSize**
   Size limit on particular type of files (such as log files) sent to front end

@@ -166,7 +166,7 @@ class Deposition(basic.TaskDriver):
                 structure.copyAssociations   ( istruct )
                 structure.addDataAssociation ( hkl.dataId     )
                 structure.addDataAssociation ( istruct.dataId )  # ???
-                structure.setRefmacLabels    ( hkl     )
+                structure.setRefmacLabels    ( hkl    )
                 structure.copySubtype        ( istruct )
                 structure.copyLigands        ( istruct )
                 self.putStructureWidget      ( "structure_btn",

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    23.03.18   <--  Date of Last Modification.
+ *    11.05.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -516,8 +516,9 @@ var response = 0;  // must become a cmd.Response object to return
           'Login name: <b>' + userData.login + '</b><br>' +
           'Password: <b>*****</b><br>' +
           'E-mail: <b>' + userData.email + '</b><p>' +
-          'This e-mail is sent only for your information. However, if update ' +
-          'request<br>was not initiated by you, please contact CCP4 team at ' +
+          'This e-mail is sent only for your information. However, if<br>' +
+          'update request was not initiated by you, please contact<br>' +
+          'CCP4 team at ' +
           conf.getEmailerConfig().maintainerEmail + ' .<p>' +
           'Best Regards,<p>' +
           'CCP4 on-line.' )
@@ -528,6 +529,71 @@ var response = 0;  // must become a cmd.Response object to return
                                     'User file cannot be written.','' );
     }
 
+  } else  {
+    response  = new cmd.Response ( cmd.fe_retcode.wrongLogin,'','' );
+  }
+
+  return response;
+
+}
+
+
+// ===========================================================================
+
+function deleteUser ( login,userData )  {
+var response = null;  // must become a cmd.Response object to return
+
+  log.standard ( 8,'delete user, login ' + login );
+
+  var pwd = userData.pwd;
+  userData.pwd = hashPassword ( pwd );
+
+  // Check that we're having a new login name
+  var userFilePath = getUserDataFName ( login );
+
+  if (utils.fileExists(userFilePath))  {
+    var uData = utils.readObject ( userFilePath );
+    if (uData)  {
+      if (userData.pwd==uData.pwd)  {
+
+        var userProjectsDir = pl.getUserProjectsDirPath ( login );
+        if (!utils.removePath(userProjectsDir))
+          log.error ( 11,'User directory: ' + userProjectsDir + ' cannot be removed.' );
+
+        if (utils.removeFile(userFilePath))  {
+
+          response = new cmd.Response ( cmd.fe_retcode.ok,'',
+            emailer.send ( userData.email,'jsCoFE Account Deleted',
+              'Dear ' + userData.name + ',<p>' +
+              'Your jsCoFE account and all associated data have been deleted<br>' +
+              'per your request:<p>' +
+              'Login name: <b>' + userData.login + '</b><br>' +
+              'Password: <b>*****</b><br>' +
+              'E-mail: <b>' + userData.email + '</b><p>' +
+              'This e-mail is sent only for your information. Your data cannot<br>' +
+              'be restored. If account delete request was not initiated by you,<br>' +
+              'please contact CCP4 team at ' +
+              conf.getEmailerConfig().maintainerEmail + ' .<p>' +
+              'Best Regards,<p>' +
+              'CCP4 on-line.' )
+          );
+
+          removeUserFromHash ( login );
+
+        } else  {
+          response = new cmd.Response ( cmd.fe_retcode.userNotDeleted,
+                                        'Cannot delete user data.','' );
+        }
+
+      } else  {
+        response = new cmd.Response ( cmd.fe_retcode.wrongPassword,
+                                      'Incorrect password.','' );
+      }
+    } else  {
+      log.error ( 12,'User file: ' + userFilePath + ' cannot be read.' );
+      response = new cmd.Response ( cmd.fe_retcode.readError,
+                                      'User file cannot be read.','' );
+    }
   } else  {
     response  = new cmd.Response ( cmd.fe_retcode.wrongLogin,'','' );
   }
@@ -589,4 +655,5 @@ module.exports.getUserData       = getUserData;
 module.exports.getUserDataFName  = getUserDataFName;
 module.exports.saveHelpTopics    = saveHelpTopics;
 module.exports.updateUserData    = updateUserData;
+module.exports.deleteUser        = deleteUser;
 module.exports.sendAnnouncement  = sendAnnouncement;

@@ -72,16 +72,18 @@ class DType(dtype_template.DType):
         return
 
     def setRefmacLabels ( self,hkl_class ):
+        self.FP    = "FP"
+        self.SigFP = "SIGFP"
         if hkl_class:
             if hasattr(hkl_class.dataset,"Fmean"):
                 self.FP    = hkl_class.dataset.Fmean.value
                 self.SigFP = hkl_class.dataset.Fmean.sigma
-        self.PHI     = "PHIC_ALL_LS"
-        self.FOM     = "FOM"
-        self.FWT     = "FWT"
-        self.PHWT    = "PHWT"
-        self.DELFWT  = "DELFWT"
-        self.PHDELWT = "PHDELWT"
+        self.PHI        = "PHIC_ALL_LS"
+        self.FOM        = "FOM"
+        self.FWT        = "FWT"
+        self.PHWT       = "PHWT"
+        self.DELFWT     = "DELFWT"
+        self.PHDELWT    = "PHDELWT"
         self.FreeR_flag = "FreeR_flag"
         return
 

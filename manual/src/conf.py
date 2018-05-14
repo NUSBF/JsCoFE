@@ -56,7 +56,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'jsCoFE'
-copyright = u'2017, E. Krissinel and A. Lebedev'
+copyright = u'2017-2018, E. Krissinel and A. Lebedev'
 author = u'Eugene Krissinel and Andrey Lebedev'
 
 # The version info for the project you're documenting, acts as replacement for

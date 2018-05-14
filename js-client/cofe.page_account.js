@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    14.11.17   <--  Date of Last Modification.
+ *    11.05.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  User account settings page
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2017
+ *  (C) E. Krissinel, A. Lebedev 2016-2018
  *
  *  =================================================================
  *
@@ -141,6 +141,14 @@ function AccountPage ( sceneId )  {
   // disable button until user data arrives from server
   update_btn.setDisabled        ( true   );
 
+  var delete_btn = panel.setButton ( 'Delete my account','./images/remove.svg',
+                                     row++,0,1,3  );
+  delete_btn.setWidth           ( '100%' );
+  // disable button until user data arrives from server
+  delete_btn.setDisabled        ( true   );
+
+
+
   // however add update button listener
   var response;  // will keep user data
   var userData;  // will transfer user data across
@@ -160,7 +168,7 @@ function AccountPage ( sceneId )  {
     if (msg)  {
 
       new MessageBox ( 'My Account Update',
-         'My Account Update cannot be done due to the following:<p>' +
+         'Account Update cannot be done due to the following:<p>' +
           msg + 'Please provide all needful data and try again' );
 
     } else  {
@@ -188,6 +196,67 @@ function AccountPage ( sceneId )  {
 
   });
 
+  delete_btn.addOnClickListener ( function(){
+
+    var inputBox  = new InputBox  ( 'Delete My Account' );
+    var ibx_grid  = new Grid      ( '' );
+    var pswd_inp  = new InputText ( '' );
+    pswd_inp.setStyle    ( 'password','','Your password','' );
+    pswd_inp.setFontSize ( '112%' ).setFontItalic(true).setWidth('50%');
+    ibx_grid .setWidget  ( new Label(
+      '<h2>Delete My Account</h2>' +
+      'Your account will be deleted, are you sure?<p>' +
+      'Once deleted, all your data, including registration details,<br>' +
+      'imported files, projects and results will be removed from<br>' +
+      'the server irrevocably.<p>' +
+      'In order to confirm complete deletion of your account and<br>' +
+      'all associated data, in your password and press <b>Confirm</b><br>' +
+      'button.' ),0,0,1,3 );
+    ibx_grid .setWidget ( (new Label('Password:')).setWidth('5%'),1,0,1,1 );
+    ibx_grid .setWidget ( pswd_inp,1,1,1,1 );
+    ibx_grid .setWidget ( (new Label('&nbsp;')).setWidth('45%'),1,2,1,1 );
+    ibx_grid .setNoWrap ( 0,0 );
+    ibx_grid .setNoWrap ( 1,0 );
+    inputBox .addWidget            ( ibx_grid     );
+    ibx_grid .setVerticalAlignment ( 0,0,'middle' );
+    ibx_grid .setVerticalAlignment ( 1,0,'middle' );
+
+    inputBox.launch ( 'Confirm',function(){
+
+      if (pswd_inp.getValue().length<=0)  {
+        new MessageBox ( 'Delete My Account',
+                         'Please provide password and try again' );
+        return false;  // close dialog
+      } else  {
+
+        userData.name    = user_inp   .getValue();
+        userData.email   = email_inp  .getValue();
+        userData.login   = login_inp  .getValue();
+        userData.pwd     = pswd_inp   .getValue();
+        userData.licence = licence_val.getText();
+
+        serverRequest ( fe_reqtype.deleteUser,userData,'Delete My Account',
+                        function(response){
+          if (response)
+            new MessageBoxW ( 'Delete My Account',response,0.5 );
+          else
+            new MessageBox ( 'Delete My Account',
+              'Dear ' + userData.name +
+              ',<p>Your account and all associated data have been<br>successfully ' +
+              'deleted, and notification sent<br>to your e-mail address:<p><b><i>' +
+              userData.email + '</i></b>.' +
+              '<p>You are logged out now.' );
+              makeLoginPage ( sceneId );
+        },null,'persist' );
+
+        return true;  // close dialog
+
+      }
+    });
+
+  });
+
+
   // fetch user data from server
   serverRequest ( fe_reqtype.getUserData,0,'My Account',function(data){
     userData = data;
@@ -198,6 +267,7 @@ function AccountPage ( sceneId )  {
     // now activate the update button:
     licence_btn.setDisabled ( false );
     update_btn .setDisabled ( false );
+    delete_btn .setDisabled ( false );
     setDefaultButton   ( update_btn,panel   );
   },null,'persist');
 

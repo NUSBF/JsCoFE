@@ -25,6 +25,7 @@
     "ICAT_wdsl"        : "https://icat02.diamond.ac.uk/ICATService/ICAT?wsdl",
     "ICAT_ids"         : "https://ids01.diamond.ac.uk/ids",
     "bootstrapHTML"    : "jscofe.html",
+    "maxRestarts"      : 100,
     "fileCapSize"      : 500000
   },
 
@@ -50,6 +51,7 @@
       "sendDataWaitTime" : 1000,
       "maxSendTrials"    : 10,
       "jobRemoveTimeout" : 10000,
+      "maxRestarts"      : 100,
       "fileCapSize"      : 500000
     },
     {
@@ -73,6 +75,7 @@
       "sendDataWaitTime" : 1000,
       "maxSendTrials"    : 10,
       "jobRemoveTimeout" : 10000,
+      "maxRestarts"      : 100,
       "fileCapSize"      : 500000
     }
   ],

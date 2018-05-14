@@ -94,6 +94,11 @@ function shallowCopy ( object )  {
   return copy;
 }
 
+function replaceAll ( str,find,rep )  {
+  return str;
+//  return str.replace(new RegExp(find.replace(/[-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g,"\\$&"),'g'),rep);
+}
+
 // ===========================================================================
 
 // export such that it could be used in both node and a browser
@@ -106,4 +111,5 @@ if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
   module.exports.padStringRight = padStringRight;
   module.exports.isInteger      = isInteger;
   module.exports.isFloat        = isFloat;
+  module.exports.replaceAll     = replaceAll;
 }

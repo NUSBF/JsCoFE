@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    25.03.18   <--  Date of Last Modification.
+ *    01.05.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -39,10 +39,13 @@ var log = require('./server.log').newLog(0);
 
 // ==========================================================================
 
+var ncrash = 0;
+
 function start ( callback_func )  {
 
-  var feConfig  = conf.getFEConfig ();
+  var feConfig  = conf.getFEConfig();
   var ncConfigs = conf.getNCConfigs();
+
   conf.setServerConfig ( feConfig );
 
   log.standard ( 1,'FE: url=' + feConfig.url() );
@@ -92,50 +95,77 @@ function start ( callback_func )  {
   //  set up request listener
   server.on ( 'request', function(server_request,server_response)  {
 
-    var c = new comm.Communicate ( server_request,server_response );
+    try {
 
-    switch (c.command)  {
+      var c = new comm.Communicate ( server_request,server_response );
 
-      case cmd.fe_command.login :
-          pp.processPOSTData ( server_request,server_response,user.userLogin );
-        break;
+      switch (c.command)  {
 
-      case cmd.fe_command.register :
-          pp.processPOSTData ( server_request,server_response,user.makeNewUser );
-        break;
+        case cmd.fe_command.login :
+            pp.processPOSTData ( server_request,server_response,user.userLogin );
+          break;
 
-      case cmd.fe_command.recoverLogin :
-          pp.processPOSTData ( server_request,server_response,user.recoverUserLogin );
-        break;
+        case cmd.fe_command.register :
+            pp.processPOSTData ( server_request,server_response,user.makeNewUser );
+          break;
 
-      case cmd.fe_command.request :
-          pp.processPOSTData ( server_request,server_response,rh.requestHandler );
-        break;
+        case cmd.fe_command.recoverLogin :
+            pp.processPOSTData ( server_request,server_response,user.recoverUserLogin );
+          break;
 
-      case cmd.fe_command.upload :
-          uh.handleUpload ( server_request,server_response );
-        break;
+        case cmd.fe_command.request :
+            pp.processPOSTData ( server_request,server_response,rh.requestHandler );
+          break;
 
-      case cmd.fe_command.jobFinished :
-          rj.getJobResults ( c.job_token,server_request,server_response );
-        break;
+        case cmd.fe_command.upload :
+            uh.handleUpload ( server_request,server_response );
+          break;
 
-      case cmd.fe_command.stop :
-          if (conf.getFEConfig().stoppable)  {
-            log.standard ( 6,'stopping' );
-            cmd.sendResponse ( server_response,cmd.fe_retcode.ok,'','' );
-            stopServer ( 0 );
-          } else {
-            log.detailed ( 6,'stop command issued -- ignored according configuration' );
-          }
-        break;
+        case cmd.fe_command.jobFinished :
+            rj.getJobResults ( c.job_token,server_request,server_response );
+          break;
 
-      default :
-          c.sendFile ( server_response );
+        case cmd.fe_command.stop :
+            if (conf.getFEConfig().stoppable)  {
+              log.standard ( 6,'stopping' );
+              cmd.sendResponse ( server_response,cmd.fe_retcode.ok,'','' );
+              stopServer ( 0 );
+            } else {
+              log.detailed ( 6,'stop command issued -- ignored according configuration' );
+            }
+          break;
+
+        default :
+            c.sendFile ( server_response );
+
+      }
+
+    } catch (e)  {
+
+      console.error ( e.stack || e );
+
+      server.close();
+
+      var maxRestarts = 100;
+      if ('maxRestarts' in feConfig)
+        maxRestarts = feConfig.maxRestarts;
+
+      ncrash++;
+      if ((maxRestarts<0) || (ncrash<maxRestarts))  {
+        log.error  ( 6,'FE crash #' + ncrash + ', recovering ... ' );
+        setTimeout ( function(){ start(null); },0 );
+      } else
+        log.error  ( 7,'FE crash #' + ncrash + ', exceeds maximum -- stop.' );
 
     }
 
   });
+
+  server.on ( 'error',function(e){
+    log.error ( 8,'server error' );
+    console.error ( e.stack || e );
+  });
+
 
   server.listen({
     host      : feConfig.host,
@@ -154,6 +184,7 @@ function start ( callback_func )  {
 
     if (callback_func)
       callback_func();
+
 
   });
 

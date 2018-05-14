@@ -259,7 +259,7 @@ if (!__template)  {
           if ((chains[j].type=='Protein') || (dropdown.layCustom=='chain-sel')) {
             var id = chains[j].id;
             if (xyz.length>1)
-              id = '/' + (xyz[i].model+1) + '/' + id;
+              id = '/' + xyz[i].model + '/' + id;
             customGrid.chainSel.addItem ( id,'',id,this.chainSel==id );
           }
       }

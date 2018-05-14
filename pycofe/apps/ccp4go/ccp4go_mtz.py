@@ -279,7 +279,7 @@ class PrepareMTZ(ccp4go_base.Base):
         #mm = mmdb2.Manager()
         #mm.ReadCoorFile ( str(fpath_xyz) )
         #spg      = mm.GetSpaceGroup()
-        spg      = gemmi.read_structure(str(fpath_xyz)).sg_hm
+        spg      = gemmi.read_structure(str(fpath_xyz)).spacegroup_hm
         spg_key  = spg.replace(" ","")
         spg_info = { "spg" : spg, "hkl" : "" }
 

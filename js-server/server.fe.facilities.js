@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    10.04.18   <--  Date of Last Modification.
+ *    23.04.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -39,7 +39,7 @@ var log = require('./server.log').newLog(18);
 // ===========================================================================
 
 var facilityListFName = 'facilities.list';
-//var ICATDirName       = 'ICAT_facility';
+var ICATDirName       = 'ICAT_facility';
 
 // ===========================================================================
 
@@ -47,11 +47,11 @@ var facilityListFName = 'facilities.list';
 //  return path.join ( conf.getFEConfig().facilitiesPath,facilityListFName );
 //}
 
-//function getFacilityPath ( name_str )  {
-//  if (name_str=='icat')  // path to directory containing all ICAT facility data
-//    return path.join ( conf.getFEConfig().facilitiesPath,ICATDirName );
-//  return '';
-//}
+function getFacilityPath ( name_str )  {
+  if (name_str=='icat')  // path to directory containing all ICAT facility data
+    return path.join ( conf.getFEConfig().facilitiesPath,ICATDirName );
+  return '';
+}
 
 function getUserFacilityListPath ( login )  {
 // path to JSON file containing list of all projects (with project
@@ -179,7 +179,9 @@ function updateFacility ( login,data )  {
     utils.writeObject ( updateFile,data );
 
     // launch update
-    var fcl_update = child_process.spawn ( 'python', //conf.pythonName(),
+    // we use "python" instead of ccp4-python because of difficulties in getting
+    // suds (and possible requests) module(s) to work across all platforms.
+    var fcl_update = child_process.spawn ( "python", // conf.pythonName(),
                ['-m',processor,jobDir,updateFile,resultFile,
                 conf.getFEConfig().ICAT_wdsl,conf.getFEConfig().ICAT_ids,
                 uh.uploadDir(),conf.getFEConfig().facilitiesPath] )
@@ -248,12 +250,15 @@ function checkFacilityUpdate ( login,data )  {
             default : ;
           }
           utils.writeObject ( userFacilityListPath,userFacilityList );
-        }
-        response_data = result;
-      } else if (result.status==cmd.fe_retcode.askPassword)  {
-        response_data.status = result.status;
+          response_data = result;
+        } else
+          response_data.status = cmd.fe_retcode.fileNotFound;
       } else
-        response_data.status = cmd.fe_retcode.fileNotFound;
+        response_data.status = result.status;
+      //} else if (result.status==cmd.fe_retcode.askPassword)  {
+      //  response_data.status = result.status;
+      //} else
+      //  response_data.status = cmd.fe_retcode.fileNotFound;
     } else
       response_data.status = cmd.fe_retcode.readError;
   }

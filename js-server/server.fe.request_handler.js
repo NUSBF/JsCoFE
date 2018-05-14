@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    11.01.18   <--  Date of Last Modification.
+ *    11.05.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -49,6 +49,10 @@ var response = null;
 
     case cmd.fe_reqtype.updateUserData :
           response = user.updateUserData ( login,data );
+        break;
+
+    case cmd.fe_reqtype.deleteUser :
+          response = user.deleteUser ( login,data );
         break;
 
     case cmd.fe_reqtype.saveHelpTopics :

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    07.04.18   <--  Date of Last Modification.
+ *    11.05.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -47,6 +47,7 @@ var fe_reqtype = {
   getUserData       : '-getUserData',      // request for user data
   saveHelpTopics    : '-saveHelpTopics',   // request to save list of help topics
   updateUserData    : '-updateUserData',   // request to update user data
+  deleteUser        : '-deleteUser',       // request to delete user acount and data
   getProjectList    : '-getProjectList',   // request for project list
   saveProjectList   : '-saveProjectList',  // request to save project list
   getProjectData    : '-getProjectData',   // request for project data
@@ -74,25 +75,27 @@ var fe_reqtype = {
 // Return codes for client - FE Server AJAX exchange
 
 var fe_retcode = {
-  ok            : 'ok',            // everything's good
-  largeData     : 'largeData',     // data sent to server is too large
-  writeError    : 'writeError',    // data cannot be written on server side
-  mkDirError    : 'mkDirError',    // directory cannot be created on server
-  readError     : 'readError',     // data cannot be read on server side
-  jobballError  : 'jobballError',  // jobbal preparation error on server side
-  existingLogin : 'existingLogin', // attempt to re-use login name at registration
-  userNotFound  : 'userNotFound',  // login recovery failed
-  wrongLogin    : 'wrongLogin',    // wrong login data supplied
-  notLoggedIn   : 'notLoggedIn',   // request without loggin in
-  wrongRequest  : 'wrongRequest',  // unrecognised request
-  uploadErrors  : 'uploadErrors',  // upload errors
-  noUploadDir   : 'noUploadDir',   // no upload directory within a job directory
-  noTempDir     : 'noTempDir',     // no temporary directory
-  noJobDir      : 'noJobDir',      // job directory not found
-  noJobRunning  : 'noJobRunning',  // requested job was not found as running
-  fileNotFound  : 'fileNotFound',  // file not found
-  inProgress    : 'inProgress',    // process in progress
-  askPassword   : 'askPassword'    // request password
+  ok             : 'ok',             // everything's good
+  largeData      : 'largeData',      // data sent to server is too large
+  writeError     : 'writeError',     // data cannot be written on server side
+  mkDirError     : 'mkDirError',     // directory cannot be created on server
+  readError      : 'readError',      // data cannot be read on server side
+  jobballError   : 'jobballError',   // jobbal preparation error on server side
+  existingLogin  : 'existingLogin',  // attempt to re-use login name at registration
+  userNotFound   : 'userNotFound',   // login recovery failed
+  userNotDeleted : 'userNotDeleted', // delete user request failed
+  wrongLogin     : 'wrongLogin',     // wrong login data supplied
+  wrongPassword  : 'wrongPassword',  // wrong password given
+  notLoggedIn    : 'notLoggedIn',    // request without loggin in
+  wrongRequest   : 'wrongRequest',   // unrecognised request
+  uploadErrors   : 'uploadErrors',   // upload errors
+  noUploadDir    : 'noUploadDir',    // no upload directory within a job directory
+  noTempDir      : 'noTempDir',      // no temporary directory
+  noJobDir       : 'noJobDir',       // job directory not found
+  noJobRunning   : 'noJobRunning',   // requested job was not found as running
+  fileNotFound   : 'fileNotFound',   // file not found
+  inProgress     : 'inProgress',     // process in progress
+  askPassword    : 'askPassword'     // request password
 }
 
 
@@ -100,12 +103,12 @@ var fe_retcode = {
 
 var nc_command = {
   stop          : 'stop',          // quit the server
-  runJob        : '=runJob',       // upload request
-  stopJob       : '=stopJob',      // request to stop a running job
-  selectDir     : '=selectDir',    // request to select directory (local service)
-  runRVAPIApp   : '=runRVAPIApp',  // run RVAPI helper application (local service)
-  runClientJob  : '=runClientJob', // run client job (local service)
-  getNCInfo     : '=getNCInfo'     // get NC config and other info
+  runJob        : '-runJob',       // upload request
+  stopJob       : '-stopJob',      // request to stop a running job
+  selectDir     : '-selectDir',    // request to select directory (local service)
+  runRVAPIApp   : '-runRVAPIApp',  // run RVAPI helper application (local service)
+  runClientJob  : '-runClientJob', // run client job (local service)
+  getNCInfo     : '-getNCInfo'     // get NC config and other info
 }
 
 
@@ -125,6 +128,7 @@ var nc_retcode = {
   pidNotFound    : 'pidNotFound'     // job's pid not found in registry
 }
 
+var special_url_tag = 'xxJsCoFExx';
 
 function Response ( status,message,data )  {
   this._type   = 'Response';
@@ -157,12 +161,13 @@ function Request ( request,token,data )  {
 
 // export such that it could be used in both node and a browser
 if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
-  module.exports.fe_command   = fe_command;
-  module.exports.fe_reqtype   = fe_reqtype;
-  module.exports.fe_retcode   = fe_retcode;
-  module.exports.nc_command   = nc_command;
-  module.exports.nc_retcode   = nc_retcode;
-  module.exports.Response     = Response;
-  module.exports.sendResponse = sendResponse;
-  module.exports.Request      = Request;
+  module.exports.fe_command      = fe_command;
+  module.exports.fe_reqtype      = fe_reqtype;
+  module.exports.fe_retcode      = fe_retcode;
+  module.exports.nc_command      = nc_command;
+  module.exports.nc_retcode      = nc_retcode;
+  module.exports.special_url_tag = special_url_tag;
+  module.exports.Response        = Response;
+  module.exports.sendResponse    = sendResponse;
+  module.exports.Request         = Request;
 }

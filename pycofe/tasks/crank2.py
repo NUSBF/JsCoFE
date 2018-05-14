@@ -416,7 +416,7 @@ class Crank2(basic.TaskDriver):
                         self.structure.addDataAssociation ( s.dataId )
                 if self.task._type=="TaskShelxSubstr":
                     self.structure.setSubstrSubtype() # substructure
-                    self.structure.setBP3Labels()
+                    #self.structure.setBP3Labels()
                 else:
                     self.structure.addXYZSubtype()
                     self.structure.setRefmacLabels ( hkl_all[0] )

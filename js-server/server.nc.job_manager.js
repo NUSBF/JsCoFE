@@ -281,6 +281,7 @@ var cap   = false;
     fname = path.join ( 'js-lib',url.substr(ix) );
 
   } else  {
+//console.log ( ' NC: url=' + url );
     var plist    = url.split('/');
     var jobEntry = ncJobRegister.getJobEntry( plist[1] );
 

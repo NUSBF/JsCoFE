@@ -1,12 +1,12 @@
 
 /*
- *  =================================================================
+ *  ==========================================================================
  *
- *    14.03.18   <--  Date of Last Modification.
+ *    26.04.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- *  -----------------------------------------------------------------
+ *  --------------------------------------------------------------------------
  *
- *  **** Module  :  js-common/common.dtypes.xrayimages.js
+ *  **** Module  :  js-common/common.dtypes.revision.js
  *       ~~~~~~~~~
  *  **** Project :  jsCoFE - javascript-based Cloud Front End
  *       ~~~~~~~~~
@@ -15,7 +15,7 @@
  *
  *  (C) E. Krissinel, A. Lebedev 2016-2018
  *
- *  =================================================================
+ *  ==========================================================================
  *
  */
 
@@ -79,7 +79,7 @@ DataRevision.prototype.icon_large = function()  { return './images/data_xrayimag
 
 // when data class version is changed here, change it also in python
 // constructors
-DataRevision.prototype.currentVersion = function()  { return 0; }
+DataRevision.prototype.currentVersion = function()  { return 1; }
 
 // export such that it could be used in both node and a browser
 
@@ -204,66 +204,7 @@ if (!__template)  {
                             .setFontItalic(true).setNoWrap();
     }
 
-    /*
-
-    if (this.ASU.seq.length>0)  {
-
-      customGrid.setLabel ( 'Build monomer:',row,0,1,1 ).setFontItalic(true).setNoWrap();
-      customGrid.setVerticalAlignment ( row,0,'middle' );
-
-      customGrid.sequence = new Dropdown();
-      for (var i=0;i<this.ASU.seq.length;i++)
-        customGrid.sequence.addItem ( this.ASU.seq[i].dname,'',i,seqNo==i );
-      customGrid.setWidget ( customGrid.sequence, row++,1,1,2 );
-      customGrid.sequence.make();
-
-      customGrid.setLabel ( 'expecting',row,0,1,1 ).setFontItalic(true).setNoWrap();
-      var seqNo = this.Options.seqNo;
-      customGrid.nfind = customGrid.setInputText ( this.ASU.seq[seqNo].nfind,row,1,1,1 )
-                    .setStyle ( 'text','integer','',
-                      'Specify the number of NCS copies expected ' +
-                      'in asymmetric unit' )
-                    .setWidth_px ( 40 );
-      customGrid.nfind_lbl = customGrid.setLabel ( 'NCS copies (' +
-                    this.ASU.seq[seqNo].ncopies + ' maximum)',row,2,1,1 )
-                                       .setFontItalic(true).setNoWrap();
-      customGrid.setVerticalAlignment   ( row  ,0,'middle' );
-      customGrid.setHorizontalAlignment ( row  ,0,'right' );
-      customGrid.setVerticalAlignment   ( row++,2,'middle' );
-
-      (function(d){
-        customGrid.sequence.addOnChangeListener ( function(text,value){
-          d.ASU.seq[d.Options.seqNo].nfind = customGrid.nfind.getValue();
-          d.Options.seqNo = value;
-          customGrid.nfind_lbl.setText ( 'NCS copies (' +
-                                    d.ASU.seq[value].ncopies + ' maximum) of' );
-        });
-      }(this))
-
-      customGrid.setLabel ( ' ',row,0,1,1 ).setHeight_px ( 8 );
-
-    }
-    */
-
   }
-
-  /*
-  DataRevision.prototype._collectCDI_Crank2 = function ( dropdown )  {
-    var customGrid = dropdown.customGrid;
-    if ('sequence' in customGrid)  {
-      var seqNo          = customGrid.sequence.getValue();
-      this.Options.seqNo = seqNo;
-      this.ASU.seq[seqNo].nfind = customGrid.nfind.getValue();
-      if (this.ASU.seq[seqNo].nfind<1)
-        return 'Number of NCS copies must be greater than 1';
-      if (this.ASU.seq[seqNo].nfind>this.ASU.seq[seqNo].ncopies)
-        return 'Number of NCS copies must be less than ASU maximum (' +
-               this.ASU.seq[seqNo].ncopies + ')';
-    }
-    return '';
-  }
-  */
-
 
   DataRevision.prototype._layCDI_Molrep = function ( dropdown )  {
 
@@ -278,7 +219,6 @@ if (!__template)  {
     }
 
   }
-
 
   DataRevision.prototype._layCDI_PhaserMR = function ( dropdown )  {
 
@@ -303,7 +243,7 @@ if (!__template)  {
   DataRevision.prototype.layCustomDropdownInput = function ( dropdown )  {
 
     switch (dropdown.layCustom)  {
-      case 'reindex' :  case 'phaser-ep' :
+      case 'reindex' :  case 'phaser-ep'    :  case 'refmac' :
             this.HKL.layCustomDropdownInput ( dropdown );   break;
       case 'parrot'  :  case 'buccaneer-ws' :
             this.Structure.layCustomDropdownInput ( dropdown );   break;
@@ -326,7 +266,7 @@ if (!__template)  {
   var msg = '';
     switch (dropdown.layCustom)  {
       case 'reindex'   :  case 'phaser-mr'    :  case 'phaser-mr-fixed' :
-      case 'phaser-ep' :
+      case 'phaser-ep' :  case 'refmac'       :
           msg = this.HKL.collectCustomDropdownInput ( dropdown );  break;
       case 'parrot'    :  case 'buccaneer-ws' :
           msg = this.Structure.collectCustomDropdownInput ( dropdown );  break;

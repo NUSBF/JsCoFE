@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    14.11.17   <--  Date of Last Modification.
+ *    01.05.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  E-mail Support
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2017
+ *  (C) E. Krissinel, A. Lebedev 2016-2018
  *
  *  =================================================================
  *
@@ -67,6 +67,11 @@ var telnet  = child_process.spawn ( 'telnet', [emailer.host,emailer.port] );
       telnet = null;
     });
 
+    telnet.on ( 'error',function(e){
+      log.error ( 2,'Emailer error: cannot send e-mail' );
+      console.error ( e.stack || e );
+    });
+
     var stage = 0;
 
     telnet.stdout.on ( 'data', function(data){
@@ -92,8 +97,9 @@ var telnet  = child_process.spawn ( 'telnet', [emailer.host,emailer.port] );
         try {
           telnet.stdin.write ( msg + '\n' );
         } catch (e)  {
-          log.error ( 2,'Emailer error: cannot send e-mail' );
-          telnet = null;
+          log.error ( 3,'Emailer error: cannot send e-mail' );
+          console.error ( e.stack || e );
+          //telnet = null;
         }
       }
       stage += 1;

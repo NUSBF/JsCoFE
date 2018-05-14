@@ -71,6 +71,14 @@ class DType(jsonut.jObject):
         self.dataId = makeDataId ( self.jobId,serialNo )
         return
 
+    def lessDataId ( self,fname ):
+        # returns fname without dataId prefix if there is any
+        if len(fname)<9:
+            return fname
+        if fname[0:4].isdigit() and fname[5:7].isdigit() and fname[4]=="-" and fname[7]=="_":
+            return fname[8:]
+        return fname
+
     def setFile ( self,fname ): # fname is file name as a string
         self.files = [fname]
         return

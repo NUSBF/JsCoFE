@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    16.04.18   <--  Date of Last Modification.
+ *    10.05.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -187,7 +187,9 @@ if (!dbx)  {
     //if (__login_token)  token = __login_token.getValue();
     if (__login_token)  token = __login_token;
                   else  token = '404';
-    return '@/' + token + '/' + this.project + '/' + jobId + '/' + filePath;
+    var url = special_url_tag + '/' + token + '/' + this.project + '/' +
+              jobId + '/' + filePath;
+    return replaceAll ( url,'/','@' );
   }
 
 
@@ -198,7 +200,9 @@ if (!dbx)  {
     //if (__login_token)  token = __login_token.getValue();
     if (__login_token)  token = __login_token;
                   else  token = '404';
-    return '@/' + token + '/' + this.project + '/' + this.id + '/' + filePath;
+    var url = special_url_tag + '/' + token + '/' + this.project + '/' +
+              this.id + '/' + filePath;
+    return replaceAll ( url,'/','@' );
   }
 
   TaskTemplate.prototype.getLocalReportPath = function()  {
@@ -213,8 +217,9 @@ if (!dbx)  {
                   else  token = '404';
     // 'report/index.html' is hard-wired here and is used by cofe server,
     // which sends cofe-specific jsrview bootrstrap html file back.
-    return '@/' + token + '/' + this.project + '/' + this.id + '/' +
-           this.getLocalReportPath();
+    var url = special_url_tag + '/' + token + '/' + this.project + '/' +
+              this.id + '/' + this.getLocalReportPath();
+    return replaceAll ( url,'/','@' );
   }
 
   TaskTemplate.prototype.addHarvestLink = function ( taskId )  {
@@ -800,6 +805,14 @@ if (!dbx)  {
               k++;
             }
 
+            /*
+            if (layCustom)  {
+              var ntot = Math.max ( dn.length,Math.max(inp_item.min,force) );
+              for (var n=nmax;n<ntot;n++)
+                dropdown[i][n].customGrid.setVisible ( false );
+            }
+            */
+
           }
 
         }
@@ -908,8 +921,12 @@ if (!dbx)  {
           for (var n=0;n<dropdown.length;n++)
             if (dropdown[n].getValue()>=0)
               n0 = -1;
-            else if (n0<0)
-              n0 = n;
+            else {
+              if (dropdown[n].hasOwnProperty('customGrid'))
+                dropdown[n].customGrid.setVisible ( false );
+              if (n0<0)
+                n0 = n;
+            }
           if (n0>=0)  {
             for (var n=0;n<input[i].dropdown.length;n++)
               inpParamRef.grid.setRowVisible ( dropdown[n].row,(n<=n0) );

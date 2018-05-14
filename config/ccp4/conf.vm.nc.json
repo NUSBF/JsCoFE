@@ -21,6 +21,7 @@
     "projectsPath"     : "./vm-cofe-projects",
     "facilitiesPath"   : "./vm-cofe-facilities",
     "bootstrapHTML"    : "jscofe.html",
+    "maxRestarts"      : 100,
     "fileCapSize"      : 500000
   },
   "NumberCrunchers" : [
@@ -45,6 +46,7 @@
       "sendDataWaitTime" : 1000,
       "maxSendTrials"    : 10,
       "jobRemoveTimeout" : 10000,
+      "maxRestarts"      : 100,
       "fileCapSize"      : 500000
     }
   ],

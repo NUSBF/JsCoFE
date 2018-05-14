@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    18.10.17   <--  Date of Last Modification.
+#    09.05.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2018
 #
 # ============================================================================
 #
@@ -92,22 +92,22 @@ class BuccaneerMR(basic.TaskDriver):
         isCoor  = istruct.hasXYZSubtype()
 
         self.open_stdin()
-
+        reffile = os.path.join(os.environ["CCP4"],"lib","data","reference_structures",refname)
         self.addCmdLine ( "title Job",self.job_id.zfill(4) )
-        self.addCmdLine ( "pdbin-ref",os.path.join(os.environ["CCP4"],"lib","data","reference_structures",refname+".pdb") )
-        self.addCmdLine ( "mtzin-ref",os.path.join(os.environ["CCP4"],"lib","data","reference_structures",refname+".mtz") )
-        self.addCmdLine ( "colin-ref-fo","FP.F_sigF.F,FP.F_sigF.sigF" )
-        self.addCmdLine ( "colin-ref-hl","FC.ABCD.A,FC.ABCD.B,FC.ABCD.C,FC.ABCD.D" )
+        self.addCmdLine ( "pdbin-ref",reffile + ".pdb" )
+        self.addCmdLine ( "mtzin-ref",reffile + ".mtz" )
+        self.addCmdLine ( "colin-ref-fo","[/*/*/FP.F_sigF.F,/*/*/FP.F_sigF.sigF]" )
+        self.addCmdLine ( "colin-ref-hl","[/*/*/FC.ABCD.A,/*/*/FC.ABCD.B,/*/*/FC.ABCD.C,/*/*/FC.ABCD.D]" )
         self.addCmdLine ( "seqin"     ,self.buccaneer_seq() )
         self.addCmdLine ( "mtzin"     ,istruct.getMTZFilePath(self.inputDir()) )
-        self.addCmdLine ( "colin-fo"  ,istruct.FP + "," + istruct.SigFP )
-        self.addCmdLine ( "colin-free",istruct.FreeR_flag )
+        self.addCmdLine ( "colin-fo"  ,"[/*/*/" + istruct.FP + ",/*/*/" + istruct.SigFP + "]" )
+        self.addCmdLine ( "colin-free","[/*/*/" + istruct.FreeR_flag + "]" )
 
         if isCoor:
-            self.addCmdLine ( "colin-phifom",istruct.PHI + "," + istruct.FOM )
+            self.addCmdLine ( "colin-phifom","[/*/*/" + istruct.PHI + ",/*/*/" + istruct.FOM + "]" )
         else:
-            self.addCmdLine ( "colin-hl",istruct.HLA + "," + istruct.HLB + "," +\
-                                         istruct.HLC + "," + istruct.HLD )
+            self.addCmdLine ( "colin-hl","[/*/*/" + istruct.HLA + ",/*/*/" + istruct.HLB +\
+                                         ",/*/*/" + istruct.HLC + ",/*/*/" + istruct.HLD + "]" )
 
         # Fixed model to be preserved by Buccaneer
 
@@ -131,16 +131,16 @@ class BuccaneerMR(basic.TaskDriver):
             self.putKWParameter ( sec1.NCYCLES          ) + \
             self.putKWParameter ( sec2.FIX_POSITION_CBX ) + \
             self.putKWParameter ( sec1.ANISO_CBX        ) + \
-            self.putKWParameter ( sec1.SELEN_CBX    ) + \
-            self.putKWParameter ( sec1.FASTEST_CBX  ) + \
-            self.putKWParameter ( sec2.NICYCLES1    ) + \
-            self.putKWParameter ( sec2.SEQASGN1_SEL ) + \
-            self.putKWParameter ( sec2.CORRTF1_CBX  ) + \
-            self.putKWParameter ( sec2.NICYCLES2    ) + \
-            self.putKWParameter ( sec2.SEQASGN2_SEL ) + \
-            self.putKWParameter ( sec2.CORRTF2_CBX  ) + \
-            self.putKWParameter ( sec2.RESMIN       ) + \
-            self.putKWParameter ( sec2.UNKRESN      )
+            self.putKWParameter ( sec1.SELEN_CBX        ) + \
+            self.putKWParameter ( sec1.FASTEST_CBX      ) + \
+            self.putKWParameter ( sec2.NICYCLES1        ) + \
+            self.putKWParameter ( sec2.SEQASGN1_SEL     ) + \
+            self.putKWParameter ( sec2.CORRTF1_CBX      ) + \
+            self.putKWParameter ( sec2.NICYCLES2        ) + \
+            self.putKWParameter ( sec2.SEQASGN2_SEL     ) + \
+            self.putKWParameter ( sec2.CORRTF2_CBX      ) + \
+            self.putKWParameter ( sec2.RESMIN           ) + \
+            self.putKWParameter ( sec2.UNKRESN          )
             #self.putKWParameter ( sec2.FILTERBF     ) + \
             #self.putKWParameter ( sec2.FILTERBFMR   )
         )

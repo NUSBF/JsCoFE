@@ -23,6 +23,10 @@
 // -------------------------------------------------------------------------
 // login page class
 
+function _privacyStatement()  {
+  new HelpBox ( '','./html/jscofe_privacy_statement.html',null );
+}
+
 function LoginPage ( sceneId )  {
 
   __login_token = '';
@@ -100,6 +104,10 @@ function LoginPage ( sceneId )  {
                                   'local setups,<br>see instructions ' +
                                   '<a href="manual/html/index.html">here</a>.' +
                                   '</i></center>',
+                                  row++,0,1,2 );
+  panel.setLabel                ( '&nbsp;<br><center><i>' +
+                                  '<a href="javascript:_privacyStatement()">' +
+                                  'Privacy Statement<a></i></center>',
                                   row++,0,1,2 );
   panel.setCellSize             ( '','24pt',row++,0 );
 

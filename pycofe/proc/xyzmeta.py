@@ -44,33 +44,32 @@ def XYZMeta ( json_str ):
 def getXYZMeta ( fpath,file_stdout,file_stderr,log_parser=None ):
 # returns chain information as the following disctionary:
 
-"""
-{
-  'cryst' : {
-      'spaceGroup': 'P 21 21 21',
-      'a'     : 64.897,
-      'b'     : 78.323,
-      'c'     : 38.792,
-      'alpha' : 90.00,
-      'beta'  : 90.00,
-      'gamma' : 90.00
-    },
-  'xyz' : [
-  { 'model':1,
-    'chains': [
-      { 'id':'A', 'file':'rnase_model_1_A.pdb', 'type':'AA',
-        'seq':'DVSGTVCLSALPPEATDTLNLIASDGPFPYSQDGVVFQNRESVLPTQSYGYYHEYTVITPGARTRGTRRIICGEATQEDYYTGDHYATFSLIDQTC',
-        'size':96, 'ligands':[] },
-      { 'id':'B', 'file':'rnase_model_1_B.pdb', 'type':'AA',
-        'seq':'DVSGTVCLSALPPEATDTLNLIASDGPFPYSQDGVVFQNRESVLPTQSYGYYHEYTVITPGARTRGTRRIICGEATQEDYYTGDHYATFSLIDQTC',
-        'size':96, 'ligands':['35S'] }
-              ]
-  }
-],
-  'ligands': ['35S']
-}
-"""
-
+    """
+    {
+      'cryst' : {
+          'spaceGroup': 'P 21 21 21',
+          'a'     : 64.897,
+          'b'     : 78.323,
+          'c'     : 38.792,
+          'alpha' : 90.00,
+          'beta'  : 90.00,
+          'gamma' : 90.00
+        },
+      'xyz' : [
+      { 'model':1,
+        'chains': [
+          { 'id':'A', 'file':'rnase_model_1_A.pdb', 'type':'AA',
+            'seq':'DVSGTVCLSALPPEATDTLNLIASDGPFPYSQDGVVFQNRESVLPTQSYGYYHEYTVITPGARTRGTRRIICGEATQEDYYTGDHYATFSLIDQTC',
+            'size':96, 'ligands':[] },
+          { 'id':'B', 'file':'rnase_model_1_B.pdb', 'type':'AA',
+            'seq':'DVSGTVCLSALPPEATDTLNLIASDGPFPYSQDGVVFQNRESVLPTQSYGYYHEYTVITPGARTRGTRRIICGEATQEDYYTGDHYATFSLIDQTC',
+            'size':96, 'ligands':['35S'] }
+                  ]
+      }
+    ],
+      'ligands': ['35S']
+    }
+    """
 
     scr_file = open ( "pdbcur.script","w" )
     scr_file.write  ( "PDB_META\nEND\n" )
