@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    09.09.17   <--  Date of Last Modification.
+#    15.05.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2018
 #
 # ============================================================================
 #
@@ -30,6 +30,7 @@ import uuid
 
 #  application imports
 import basic
+from   pycofe.dtypes import dtype_template
 
 
 # ============================================================================
@@ -86,7 +87,8 @@ class Molrep(basic.TaskDriver):
                 "file_s "  + os.path.join(self.inputDir(),seq.files[0]) + "\n"
             )
 
-        if "xyz" in revision.subtype:  # optional data parameter
+        #if "xyz" in revision.subtype:  # optional data parameter
+        if revision.hasSubtype(dtype_template.subtypeXYZ()):  # optional data parameter
             xstruct = revision.Structure
             self.write_stdin (
                 "model_2 "  + os.path.join(self.inputDir(),xstruct.files[0]) + "\n"

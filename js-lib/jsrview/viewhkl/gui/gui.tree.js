@@ -219,7 +219,7 @@ Tree.prototype.insertNode = function ( parent_node,text,icon_uri,treeNodeCustomI
 Tree.prototype.getNodePosition = function ( node )  {
 var parent_node = null;
 var parentId    = null;
-var clen        = null;
+var clen        = 0;
 var pos         = -2;
 
   if (node.parentId)  {
@@ -232,9 +232,10 @@ var pos         = -2;
 
       // find sibling position of given node
       pos = -1;
-      for (var i=0;(i<parent_children.length) && (pos<0);i++)
+      for (var i=0;(i<clen) && (pos<0);i++)
         if (parent_children[i].id==node.id)
           pos = i;
+
     }
   }
 

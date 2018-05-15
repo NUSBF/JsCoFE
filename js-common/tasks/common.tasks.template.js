@@ -156,20 +156,25 @@ if (!dbx)  {
         (this.state!=job_code.running) && (this.state!=job_code.exiting))  {
 
       var p = jobTree.getNodePosition(node);
-      var pos   = p[0];
+      var pos   = p[0];  // sibling position (<=0 means "leading sibling")
       var pnode = p[1];
       var pid   = p[2];
-      var clen  = p[3];
+      var clen  = p[3];  // number of siblings
 
       can_move = true;
-      if (pnode && pid && (pos<=0) && (clen<2))  {
+      //if (pnode && pid && (pos<=0) && (clen<2))  {
+      if (pnode && pid && ((pos<=0) || (clen<2)))  {
+        // the only or seniour sibling -- check input data
         for (var dtype in this.input_data.data)  {
-          var d = this.input_data.data[dtype];
-          for (var j=0;j<d.length;j++)
-            if (d[j].jobId==parent_task.id)  {
-              can_move = false;
-              break;
-            }
+          if (dtype!='revision')  {
+            var d = this.input_data.data[dtype];
+            for (var j=0;(j<d.length) && can_move;j++)
+              if (d[j].jobId==parent_task.id)
+                can_move = false;
+          } else
+            can_move = false;
+          if (!can_move)
+            break;
         }
       }
 
