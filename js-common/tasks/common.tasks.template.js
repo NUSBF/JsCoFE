@@ -166,13 +166,13 @@ if (!dbx)  {
       if (pnode && pid && ((pos<=0) || (clen<2)))  {
         // the only or seniour sibling -- check input data
         for (var dtype in this.input_data.data)  {
-          if (dtype!='revision')  {
+//          if (dtype!='revision')  {
             var d = this.input_data.data[dtype];
             for (var j=0;(j<d.length) && can_move;j++)
               if (d[j].jobId==parent_task.id)
                 can_move = false;
-          } else
-            can_move = false;
+//          } else
+//            can_move = false;
           if (!can_move)
             break;
         }

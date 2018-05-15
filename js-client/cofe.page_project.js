@@ -38,7 +38,7 @@ function ProjectPage ( sceneId )  {
   var title_lbl   = null;
   var jobTree     = null;  // == this.job_tree, for internal references
   var add_btn     = null;
-  var insert_btn  = null;
+  //var insert_btn  = null;
   var moveup_btn  = null;
   var del_btn     = null;
   var open_btn    = null;
@@ -90,32 +90,15 @@ function ProjectPage ( sceneId )  {
       add_btn.setEnabled ( (task.state==job_code.finished) ||
                            (task.state==job_code.failed)   ||
                            (task.state==job_code.stopped) );
-      insert_btn.setEnabled ( add_btn.isEnabled() );
-      /*
-      add_btn   .setEnabled ( true );
-      insert_btn.setEnabled ( true );
-      */
-
-      /*
-      var parent_task = jobTree.getTaskByNodeId(node.parentId);
-      if (parent_task)
-            moveup_btn.setEnabled ( task.canMove(parent_task.id,jobTree) );
-      else  moveup_btn.setEnabled ( false );
-      */
-
+      //insert_btn.setEnabled ( add_btn.isEnabled() );
       moveup_btn.setEnabled ( task.canMove(node,jobTree) );
-
       stop_btn  .setEnabled ( dsel && (task.state==job_code.running) );
     } else  {  // root
       add_btn   .setEnabled ( true  );
-      insert_btn.setEnabled ( true  );
+      //insert_btn.setEnabled ( true  );
       moveup_btn.setEnabled ( false );
       stop_btn  .setEnabled ( false );
     }
-
-    // always allow
-    //add_btn   .setEnabled ( true  );
-    //insert_btn.setEnabled ( true  );
 
   }
 
@@ -133,6 +116,7 @@ function ProjectPage ( sceneId )  {
       };
     }
 
+    /*
     if (!$(insert_btn.element).button('option','disabled'))  {
       items.insertJobItem = { // The "Add job" menu item
         label : "Insert job",
@@ -140,6 +124,7 @@ function ProjectPage ( sceneId )  {
         action: insertJob
       };
     }
+    */
 
     if (!$(moveup_btn.element).button('option','disabled'))  {
       items.moveJobUpItem = { // The "Add job" menu item
@@ -190,7 +175,7 @@ function ProjectPage ( sceneId )  {
 //alert ( 'on tree');
 
     add_btn    .setDisabled ( false );
-    insert_btn .setDisabled ( false );
+    //insert_btn .setDisabled ( false );
     moveup_btn .setDisabled ( false );
     refresh_btn.setDisabled ( false );
 
@@ -198,7 +183,7 @@ function ProjectPage ( sceneId )  {
 
     // add button listeners
     add_btn   .addOnClickListener ( addJob    );
-    insert_btn.addOnClickListener ( insertJob );
+    //insert_btn.addOnClickListener ( insertJob );
     moveup_btn.addOnClickListener ( moveJobUp );
     del_btn   .addOnClickListener ( deleteJob );
     open_btn  .addOnClickListener ( openJob   );
@@ -277,20 +262,20 @@ function ProjectPage ( sceneId )  {
 
   // make the toolbar
   add_btn     = toolbar.setButton ( '','./images/add.svg'     , 1,0,1,1 );
-  insert_btn  = toolbar.setButton ( '','./images/insert.png'  , 2,0,1,1 );
-  moveup_btn  = toolbar.setButton ( '','./images/moveup.svg'  , 3,0,1,1 );
-  clone_btn   = toolbar.setButton ( '','./images/clonejob.svg', 4,0,1,1 );
-  del_btn     = toolbar.setButton ( '','./images/remove.svg'  , 5,0,1,1 );
-  toolbar.setLabel ( '<hr style="border:1px dotted;"/>'      , 6,0,1,1 );
-  open_btn    = toolbar.setButton ( '','./images/openjob.svg' , 7,0,1,1 );
-  stop_btn    = toolbar.setButton ( '','./images/stopjob.svg' , 8,0,1,1 );
-  toolbar.setLabel ( '<hr style="border:1px dotted;"/>'      , 9,0,1,1 );
-  refresh_btn = toolbar.setButton ( '','./images/refresh.svg',10,0,1,1 );
-  help_btn    = toolbar.setButton ( '','./images/help.svg'   ,11,0,1,1 );
+  //insert_btn  = toolbar.setButton ( '','./images/insert.png'   2,0,1,1 );
+  moveup_btn  = toolbar.setButton ( '','./images/moveup.svg'  , 2,0,1,1 );
+  clone_btn   = toolbar.setButton ( '','./images/clonejob.svg', 3,0,1,1 );
+  del_btn     = toolbar.setButton ( '','./images/remove.svg'  , 4,0,1,1 );
+  toolbar.setLabel ( '<hr style="border:1px dotted;"/>'       , 5,0,1,1 );
+  open_btn    = toolbar.setButton ( '','./images/openjob.svg' , 6,0,1,1 );
+  stop_btn    = toolbar.setButton ( '','./images/stopjob.svg' , 7,0,1,1 );
+  toolbar.setLabel ( '<hr style="border:1px dotted;"/>'       , 8,0,1,1 );
+  refresh_btn = toolbar.setButton ( '','./images/refresh.svg' , 9,0,1,1 );
+  help_btn    = toolbar.setButton ( '','./images/help.svg'    ,10,0,1,1 );
 
   add_btn   .setSize('40px','40px').setTooltip('Add job'   ).setDisabled(true);
-  insert_btn.setSize('40px','40px').setTooltip('Insert job after selected')
-                                                            .setDisabled(true);
+  //insert_btn.setSize('40px','40px').setTooltip('Insert job after selected')
+  //                                                          .setDisabled(true);
   moveup_btn .setSize('40px','40px').setTooltip(
                   'Move job one position up the tree branch').setDisabled(true);
   del_btn    .setSize('40px','40px').setTooltip('Delete job').setDisabled(true);
@@ -299,18 +284,19 @@ function ProjectPage ( sceneId )  {
   clone_btn  .setSize('40px','40px').setTooltip('Clone job' ).setDisabled(true);
   refresh_btn.setSize('40px','40px').setTooltip('Refresh');
   help_btn   .setSize('40px','40px').setTooltip('Documentation');
+
   toolbar.setCellSize ( '' ,'42px',1 ,0 );
+  //toolbar.setCellSize ( '' ,'42px',2 ,0 );
   toolbar.setCellSize ( '' ,'42px',2 ,0 );
   toolbar.setCellSize ( '' ,'42px',3 ,0 );
   toolbar.setCellSize ( '' ,'42px',4 ,0 );
-  toolbar.setCellSize ( '' ,'42px',5 ,0 );
+  toolbar.setCellSize ( '' ,'42px',6 ,0 );
   toolbar.setCellSize ( '' ,'42px',7 ,0 );
-  toolbar.setCellSize ( '' ,'42px',8 ,0 );
+  toolbar.setCellSize ( '' ,'42px',9 ,0 );
   toolbar.setCellSize ( '' ,'42px',10,0 );
-  toolbar.setCellSize ( '' ,'42px',11,0 );
 
   add_btn    .setDisabled ( true );
-  insert_btn .setDisabled ( true );
+  //insert_btn .setDisabled ( true );
   moveup_btn .setDisabled ( true );
   refresh_btn.setDisabled ( true );
 
