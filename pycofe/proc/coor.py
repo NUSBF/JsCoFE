@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    09.05.18   <--  Date of Last Modification.
+#    16.05.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -99,34 +99,28 @@ def fetchChains ( inFile,modelNo,chainList,removeWaters,removeLigands,outFile ):
 
     # this will work until gemmi can handle mmdb selections
     selList = {}
-    #mdlList = []
-    #chnList = []
     mNo     = modelNo
     if ("(all)" in chainList) or ("*" in chainList):
         mNo = 0
     for c in chainList:
-        if c.startswith("/"):
+        if c.startswith("/"):  # apply to specified model only
             clist = c.split("/")
             mdl = clist[1]
             chn = clist[2]
         else:
-            mdl = "0"
+            mdl = "0"  # apply to all models
             chn = c
         if mNo<=0 or str(mNo)==mdl:
             if not mdl in selList:
                 selList[mdl] = [chn]
             else:
                 selList[mdl].append ( chn )
-            #mdlList.append ( mdl )
-            #chnList.append ( chn )
         if modelNo<0:
             break
 
     #fd = open ( "debug.deb","w" )
-    #fd.write ( str(mdlList)  + "\n" )
-    #fd.write ( str(chnList)  + "\n" )
     #fd.write ( str(selList)  + "\n" )
-    #fd.close
+    #fd.close()
 
     st = gemmi.read_structure ( inFile )
 
@@ -135,36 +129,18 @@ def fetchChains ( inFile,modelNo,chainList,removeWaters,removeLigands,outFile ):
     elif removeWaters:
         st.remove_waters()
 
-    """
-    n = 0
-    if ("(all)" in chainList) or ("*" in chainList):
-        if modelNo!=0:
-            for model in st:
-                if ((modelNo<0) and (n>0)) or ((modelNo>0) and (str(modelNo)!=model.name)):
-                    for name in [ch.name for ch in model]:
-                        model.remove_chain ( name )
-                n += 1
-    else:
-        for model in st:
-            if ((modelNo<0) and (n==0)) or (modelNo==0) or str(modelNo)==model.name:
-                for name in [ch.name for ch in model if ch.auth_name not in chainList]:
-                    model.remove_chain ( name )
-            elif modelNo!=0:
-                for name in [ch.name for ch in model]:
-                    model.remove_chain ( name )
-            n += 1
-    """
     if not (("(all)" in chainList) or ("*" in chainList)):
-        for name in [m.name for m in st if m.name not in selList]:
-            del st[name]
-        for model in st:
-            if model.name in selList:
-                for name in [ch.name for ch in model if ch.auth_name not in selList[model.name]]:
+        if "0" in selList:
+            for model in st:
+                for name in [ch.name for ch in model if ch.auth_name not in selList["0"]]:
                     model.remove_chain ( name )
-            #else:
-            #    del st[model.name]
-            #    #for name in [ch.name for ch in model]:
-            #    #    model.remove_chain ( name )
+        else:
+            for name in [m.name for m in st if m.name not in selList]:
+                del st[name]
+            for model in st:
+                if model.name in selList:
+                    for name in [ch.name for ch in model if ch.auth_name not in selList[model.name]]:
+                        model.remove_chain ( name )
 
     st.remove_empty_chains()
     st.write_pdb ( outFile )
