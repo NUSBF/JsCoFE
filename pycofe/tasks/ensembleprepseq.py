@@ -54,7 +54,7 @@ class EnsemblePrepSeq(basic.TaskDriver):
     def run(self):
 
         # Check avalability of PDB archive
-        self.checkPDB()
+        #self.checkPDB()
 
         # Prepare mrbump input
         # fetch input data
