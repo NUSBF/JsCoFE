@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    05.07.17   <--  Date of Last Modification.
+#    23.05.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2018
 #
 # ============================================================================
 #
@@ -63,6 +63,10 @@ class EnsemblePrepSeq(basic.TaskDriver):
         # make a file with input script
         self.open_stdin()
 
+        pdbLocal = ""
+        if "PDB_DIR" in os.environ:
+            pdbLocal = "PDBLOCAL " + os.environ["PDB_DIR"] + "\n"
+
         self.write_stdin (
             "JOBID " + self.outdir_name() + "\n" + \
             "MDLS False\n" + \
@@ -84,7 +88,7 @@ class EnsemblePrepSeq(basic.TaskDriver):
             "AMPT False\n" + \
             #"IGNORE 5tha\n" + \
             "DOPHMMER True\n" + \
-            "PDBLOCAL " + os.environ["PDB_DIR"] + "\n" + \
+            pdbLocal +\
             "DOHHPRED False\n" + \
             "END\n"
         )

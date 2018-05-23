@@ -831,6 +831,15 @@ function ncRunRVAPIApp ( post_data_obj,callback_func )  {
                                      '[00114] Download errors: ' + err,{} ) );
             })
             .pipe(fs.createWriteStream(path.join(jobDir,fpath)))
+            .on('error', function(err) {
+              log.error ( 22,'Download errors from ' + url );
+              log.error ( 22,'Error: ' + err );
+              // remove job
+              ncJobRegister.removeJob ( job_token );
+              writeNCJobRegister      ();
+              callback_func ( new cmd.Response ( cmd.nc_retcode.downloadErrors,
+                                     '[00120] Download errors: ' + err,{} ) );
+            })
             .on('close',function(){   // finish,end,
               // successful download, note file path and move to next argument
               args[ix] = fpath;
@@ -919,6 +928,15 @@ function ncRunClientJob ( post_data_obj,callback_func )  {
                              '[00117] Download errors: ' + err,{} ) );
     })
     .pipe(fs.createWriteStream(path.join(jobDir,send_dir.tarballName)))
+    .on('error', function(err) {
+      log.error ( 23,'Download errors from ' + dnlURL );
+      log.error ( 23,'Error: ' + err );
+      // remove job
+      ncJobRegister.removeJob ( job_token );
+      writeNCJobRegister      ();
+      callback_func ( new cmd.Response ( cmd.nc_retcode.downloadErrors,
+                             '[00121] Download errors: ' + err,{} ) );
+    })
     .on('close',function(){   // finish,end,
       // successful download, unpack and start the job
 
