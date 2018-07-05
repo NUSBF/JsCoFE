@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    27.03.18   <--  Date of Last Modification.
+ *    08.06.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -40,13 +40,13 @@
  *      function getSelectedTask ();
  *      function saveProjectData ( tasks_add,tasks_del,onDone_func );
  *      function hasRunningJobs  ( nodeId );
- *      function addJob          ( insert_bool,onAdd_func );
+ *      function addJob          ( insert_bool,parent_page,onAdd_func );
  *      function moveJobUp       ();
  *      function deleteJob       ( onDelete_func );
  *      function closeAllJobDialogs();
  *      function stopJob         ( nodeId );
- *      function openJob         ( dataBox );
- *      function cloneJob        ( onAdd_func );
+ *      function openJob         ( dataBox,parent_page );
+ *      function cloneJob        ( parent_page,onAdd_func );
  *      function harvestTaskData ( includeSelected_bool,harvestedTaskIds );
  *      function inspectData     ( jobId,dataType,dataId );
  *      function getAllAncestors ();
@@ -181,6 +181,10 @@ JobTree.prototype.readProjectData = function ( page_title,
         onLoaded_func();
       },onRightClick_func,onDblClick_func,onSelect_func );
 
+      var rdata = {};
+      rdata.pdesc = tree.projectData.desc;
+      tree.emitSignal ( cofe_signals.rationUpdated,rdata );
+
     },function(){
       tree.startTaskLoop();
     },'persist');
@@ -259,7 +263,7 @@ JobTree.prototype.__checkTaskLoop = function()  {
       serverRequest ( fe_reqtype.checkJobs,request_data,'Check jobs state',
         function(data){
 
-          var completedJobs   = data;
+          var completedJobs   = data.completed_map;
           var wasCompletedJob = false;
           for (var key in completedJobs)  {
 
@@ -293,6 +297,7 @@ JobTree.prototype.__checkTaskLoop = function()  {
           tree.run_map = mapMaskOut ( tree.run_map,completedJobs );
 
           if (wasCompletedJob)  {
+            tree.updateRation ( data );
             tree.emitSignal ( cofe_signals.treeUpdated,{} );
             tree.saveProjectData ( [],[], null );
           }
@@ -346,6 +351,16 @@ JobTree.prototype.getSelectedTask = function()  {
 }
 
 
+JobTree.prototype.updateRation = function ( data )  {
+  if ('pdesc' in data)  {
+    this.projectData.desc.disk_space = data.pdesc.disk_space;
+    this.projectData.desc.cpu_time   = data.pdesc.cpu_time;
+    this.projectData.desc.njobs      = data.pdesc.njobs;
+    this.emitSignal ( cofe_signals.rationUpdated,data );
+  }
+}
+
+
 JobTree.prototype.saveProjectData = function ( tasks_add,tasks_del,
                                                onDone_func )  {
   if (this.projectData)  {
@@ -355,8 +370,14 @@ JobTree.prototype.saveProjectData = function ( tasks_add,tasks_del,
     data.meta      = this.projectData;
     data.tasks_add = tasks_add;  // array
     data.tasks_del = tasks_del;  // array
-    serverRequest ( fe_reqtype.saveProjectData,data,'Project',onDone_func,null,
-                    'persist' );
+    (function(tree){
+      serverRequest ( fe_reqtype.saveProjectData,data,'Project',
+        function(rdata){
+          tree.updateRation ( rdata );
+          if (onDone_func)
+            onDone_func(rdata);
+        },null,'persist' );
+    }(this))
   }
 }
 
@@ -379,7 +400,7 @@ JobTree.prototype.hasRunningJobs = function ( nodeId )  {
 }
 
 
-JobTree.prototype.addJob = function ( insert_bool,onAdd_func )  {
+JobTree.prototype.addJob = function ( insert_bool,parent_page,onAdd_func )  {
 
 //  var sids = this.calcSelectedNodeId();
 //  alert ( ' sids='+JSON.stringify(sids) );
@@ -420,7 +441,7 @@ JobTree.prototype.addJob = function ( insert_bool,onAdd_func )  {
           onAdd_func();
 
         tree.saveProjectData ( [task],[], null );
-        tree.openJob         ( dataBox         );
+        tree.openJob         ( dataBox,parent_page  );
 
       } else
         alert ( ' no selection in the tree! ' );
@@ -527,7 +548,11 @@ JobTree.prototype.deleteJob = function ( onDelete_func ) {
           } else  {
             // node for the task was deleted, delete the task now
             var delId = tree.task_map[key].id;
-            tasks_del.push ( delId ); // store only ids here! -- for server request
+            // store only ids and storage sizes here! -- for server request
+            var dsize = 0;
+            if ('disk_space' in tree.task_map[key])  // backward compatibility on 05.06.2018
+              dsize = tree.task_map[key].disk_space;
+            tasks_del.push ( [delId,dsize] );
             if (delId in tree.dlg_map)  {
               tree.dlg_map[delId].close();
               tree.dlg_map = mapExcludeKey ( tree.dlg_map,delId );
@@ -623,7 +648,7 @@ JobTree.prototype.stopJob = function ( nodeId )  {
 }
 
 
-JobTree.prototype.openJob = function ( dataBox )  {
+JobTree.prototype.openJob = function ( dataBox,parent_page )  {
 
   if (this.selected_node_id)  {
 
@@ -650,7 +675,7 @@ JobTree.prototype.openJob = function ( dataBox )  {
           var params       = {};
           params.dataBox   = dBox;
           params.ancestors = tree.getAllAncestors ( tree.task_map[nodeId] );
-          var dlg = new JobDialog ( params,
+          var dlg = new JobDialog ( params,parent_page,
 
             function(task_id){
               // trigerred when job is launched
@@ -702,7 +727,7 @@ JobTree.prototype.openJob = function ( dataBox )  {
 }
 
 
-JobTree.prototype.cloneJob = function ( onAdd_func )  {
+JobTree.prototype.cloneJob = function ( parent_page,onAdd_func )  {
 
   if (this.selected_node_id)  {
 
@@ -739,7 +764,7 @@ JobTree.prototype.cloneJob = function ( onAdd_func )  {
         if (onAdd_func)
           onAdd_func();
         tree.saveProjectData ( [task],[],null );
-        tree.openJob ( null );
+        tree.openJob ( null,parent_page );
       }
 
     }(this));

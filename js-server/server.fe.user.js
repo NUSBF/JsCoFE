@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    11.05.18   <--  Date of Last Modification.
+ *    01.06.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -28,7 +28,8 @@ var path    = require('path');
 var emailer = require('./server.emailer');
 var conf    = require('./server.configuration');
 var utils   = require('./server.utils');
-var pl      = require('./server.fe.projects');
+var prj     = require('./server.fe.projects');
+var ration  = require('./server.fe.ration');
 var ud      = require('../js-common/common.data_user');
 var cmd     = require('../js-common/common.commands');
 
@@ -52,12 +53,15 @@ function getUserDataFName ( login )  {
 }
 
 function makeNewUser ( userData,callback_func )  {  // gets UserData object
-var response = null;  // must become a cmd.Response object to return
+var response  = null;  // must become a cmd.Response object to return
+var fe_server = conf.getFEConfig();
 
   // Get user data object and generate a temporary password
   var pwd = '';
   if (userData.login=='devel')
     pwd = 'devel';
+  else if (('localuser' in fe_server) && (userData.login=='localuser'))
+    pwd = 'localuser';
   else if (userData.pwd.length>0)
     pwd = userData.pwd;
   else
@@ -88,7 +92,7 @@ var response = null;  // must become a cmd.Response object to return
 
     log.standard ( 2,'new user login: ' + userData.login + ' -- created' );
 
-    response = pl.makeNewUserProjectsDir ( userData.login );
+    response = prj.makeNewUserProjectsDir ( userData.login );
 
     if (response.status==cmd.fe_retcode.ok)  {
 
@@ -165,6 +169,8 @@ var fe_server = conf.getFEConfig();
           // reset password
           if (uData.login=='devel')
                 pwds[n] = 'devel';
+          else if (('localuser' in fe_server) && (uData.login=='localuser'))
+                pwds[n] = 'localuser';
           else  pwds[n] = crypto.randomBytes(3).toString('hex');
           uData.pwd = hashPassword ( pwds[n] );
           // save file
@@ -250,6 +256,8 @@ function writeUserLoginHash()  {
 
 
 function readUserLoginHash()  {
+var fe_server  = conf.getFEConfig();
+var updateHash = false;
 
   var userHashPath = path.join ( conf.getFEConfig().userDataPath,userLoginHashFile );
 
@@ -268,9 +276,26 @@ function readUserLoginHash()  {
     userLoginHash = {
       '340cef239bd34b777f3ece094ffb1ec5' : 'devel'
     };
-    writeUserLoginHash();
+
+    updateHash = true;
 
   }
+
+  if (('localuser' in fe_server) && (!getTokenFromHash('localuser')))  {
+    userData = new ud.UserData();
+    userData.name    = fe_server.localuser;
+    userData.email   = conf.getEmailerConfig().maintainerEmail;
+    userData.login   = 'localuser';
+    userData.pwd     = 'localuser';
+    userData.licence = 'academic';
+    userData.admin   = false;
+    makeNewUser ( userData,function(response){} );
+    addToUserLoginHash ( 'e58e28a556d2b4884cb16ba8a37775f0','localuser' );
+    updateHash = true;
+  }
+
+  if (updateHash)
+    writeUserLoginHash();
 
 }
 
@@ -323,10 +348,22 @@ function getLoginFromHash ( token )  {
 }
 
 
+function getTokenFromHash ( login_name )  {
+  var token = null;
+  for(var key in userLoginHash)
+    if (userLoginHash[key]==login_name)  {
+      token = key;
+      break;
+    }
+  return token;
+}
+
+
 // ===========================================================================
 
 function userLogin ( userData,callback_func )  {  // gets UserData object
-var response = null;  // must become a cmd.Response object to return
+var response  = null;  // must become a cmd.Response object to return
+var fe_server = conf.getFEConfig();
 
   // Get user data object and generate a temporary password
 //  var userData = JSON.parse ( user_data_json );
@@ -349,6 +386,8 @@ var response = null;  // must become a cmd.Response object to return
 
         if (uData.login=='devel')  {
           token = '340cef239bd34b777f3ece094ffb1ec5';
+        } else if (('localuser' in fe_server) && (uData.login=='localuser'))  {
+          token = 'e58e28a556d2b4884cb16ba8a37775f0';
         } else  {
           token = crypto.randomBytes(20).toString('hex');
           addToUserLoginHash ( token,uData.login );
@@ -402,12 +441,20 @@ function readUsersData()  {
     fs.readdirSync(udir_path).forEach(function(file,index){
       if (file.endsWith(userDataExt))  {
         var udata = utils.readObject ( path.join(udir_path,file) );
-        if (!('knownSince' in udata) || (udata.knownSince==''))  {
-          udata.knownSince = new Date("2017-09-01").valueOf();
-          utils.writeObject ( path.join(udir_path,file),udata );
-        }
-        if (udata)
+        if (udata)  {
+          if (!('knownSince' in udata) || (udata.knownSince==''))  {
+            udata.knownSince = new Date("2017-09-01").valueOf();
+            utils.writeObject ( path.join(udir_path,file),udata );
+          }
+          var login = file.slice ( 0,file.length-userDataExt.length );
+          udata.ration = ration.getUserRation ( login );
+          if (udata.ration.jobs_total<udata.nJobs)  {  // backward compatibility 07.06.2018
+            udata.ration.jobs_total = udata.nJobs;
+            ration.saveUserRation ( login,udata.ration );
+          }
+          udata.ration.clearJobs();
           usersData.userList.push ( udata );
+        }
       }
     });
   }
@@ -440,6 +487,11 @@ var response = 0;  // must become a cmd.Response object to return
 
   return response;
 
+}
+
+
+function getUserRation ( login )  {
+  return new cmd.Response ( cmd.fe_retcode.ok,'',ration.getUserRation(login) );
 }
 
 
@@ -484,7 +536,7 @@ function userLogout ( login )  {
 
   log.standard ( 7,'user logout ' + login );
 
-  if (login!='devel')
+  if ((login!='devel') && (login!='localuser'))
     removeUserFromHash ( login );
 
   return new cmd.Response ( cmd.fe_retcode.ok,'','' );
@@ -556,7 +608,7 @@ var response = null;  // must become a cmd.Response object to return
     if (uData)  {
       if (userData.pwd==uData.pwd)  {
 
-        var userProjectsDir = pl.getUserProjectsDirPath ( login );
+        var userProjectsDir = prj.getUserProjectsDirPath ( login );
         if (!utils.removePath(userProjectsDir))
           log.error ( 11,'User directory: ' + userProjectsDir + ' cannot be removed.' );
 
@@ -641,6 +693,41 @@ function sendAnnouncement ( login,message )  {
 }
 
 
+function getInfo ( inData,callback_func )  {
+var response  = null;  // must become a cmd.Response object to return
+var fe_server = conf.getFEConfig();
+
+  if (fe_server)  {
+
+    var rData = {};
+    rData.localuser  = null;
+    rData.logintoken = null;
+    rData.helpTopics = [];
+    if ('localuser' in fe_server)  {
+      rData.localuser  = fe_server.localuser;
+      rData.logintoken = getTokenFromHash ( 'localuser' );
+      var userFilePath = getUserDataFName ( 'localuser' );
+      if (utils.fileExists(userFilePath))  {
+        var uData = utils.readObject ( userFilePath );
+        if (uData)
+          rData.helpTopics = uData.helpTopics;
+      }
+    }
+    rData.localSetup = conf.isLocalSetup();
+
+    response = new cmd.Response ( cmd.fe_retcode.ok,'',rData );
+
+  } else  {
+
+    response = new cmd.Response ( cmd.fe_retcode.unconfigured,'','' );
+
+  }
+
+  callback_func ( response );
+
+}
+
+
 // ==========================================================================
 // export for use in node
 module.exports.userLogin         = userLogin;
@@ -650,6 +737,7 @@ module.exports.recoverUserLogin  = recoverUserLogin;
 module.exports.readUserLoginHash = readUserLoginHash;
 module.exports.getLoginFromHash  = getLoginFromHash;
 module.exports.readUserData      = readUserData;
+module.exports.getUserRation     = getUserRation;
 module.exports.readUsersData     = readUsersData;
 module.exports.getUserData       = getUserData;
 module.exports.getUserDataFName  = getUserDataFName;
@@ -657,3 +745,4 @@ module.exports.saveHelpTopics    = saveHelpTopics;
 module.exports.updateUserData    = updateUserData;
 module.exports.deleteUser        = deleteUser;
 module.exports.sendAnnouncement  = sendAnnouncement;
+module.exports.getInfo           = getInfo;

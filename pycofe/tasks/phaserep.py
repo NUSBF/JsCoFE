@@ -217,7 +217,7 @@ class PhaserEP(basic.TaskDriver):
         self.write_stdin (
             "\nCRYSTAL crystal1 DATASET dataset1 LABIN &" +\
             "\n    "          + hkl_labin                 +\
-            "\nWAVELENGTH "   + str(hkl.getWavelength())  +\
+            "\nWAVELENGTH "   + str(hkl.wavelength)       +\
             "\nRESOLUTION "   + str(hkl.res_low) + " " + str(hkl.res_high)
         )
 

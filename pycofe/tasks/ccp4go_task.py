@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    09.03.18   <--  Date of Last Modification.
+#    28.06.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -35,8 +35,10 @@ import pyrvapi
 import pyrvapi_ext.parsers
 
 #  application imports
+from   pycofe.dtypes import dtype_revision
 from   pycofe.tasks  import asudef, import_task
 from   pycofe.proc   import import_merged
+from   pycofe.varut  import rvapi_utils
 
 # ============================================================================
 # Make CCP4go driver
@@ -65,6 +67,11 @@ class CCP4go(import_task.Import):
     def getXMLFName      (self):  return os.path.join(self.importDir(),"matthews.xml")
     def seq_table_id     (self):  return "seq_table_" + str(self.id_modifier)
     def res_table_id     (self):  return "res_table_" + str(self.id_modifier)
+
+    # ------------------------------------------------------------------------
+
+    revisionSerialNo = 1
+    revision_asu     = None
 
     # ------------------------------------------------------------------------
 
@@ -232,6 +239,52 @@ class CCP4go(import_task.Import):
             # get reference to imported structure
             self.hkl = self.outputDataBox.data["DataHKL"][0]
 
+        elif "asu" in meta:  # output from the asu definition module
+            if meta["nResults"]<0:
+                pyrvapi.rvapi_add_section ( panel_id,"<b>" + str(meta["stage_no"]) +
+                                            ". Composition of ASU -- failed</i></b>",
+                                            self.report_page_id(),row,0,1,1,False )
+                self.setReportWidget ( panel_id )
+                self.putMessage ( "Sequence file was not found. This is a bug." )
+
+            elif meta["nResults"]==0:
+                pyrvapi.rvapi_add_section ( panel_id,"<b>" + str(meta["stage_no"]) +
+                                            ". Composition of ASU -- not computed</i></b>",
+                                            self.report_page_id(),row,0,1,1,False )
+                self.setReportWidget ( panel_id )
+                self.putMessage ( "<h3>Given sequence(s) do not fit the asymmetric unit.</h3>" )
+
+            else:
+                pyrvapi.rvapi_add_section ( panel_id,"<b>" + str(meta["stage_no"]) +
+                                            ". Composition of ASU: " + str(meta["nmol"]) +\
+                                            " molecules, " + str(round(meta["solvent"],2)) +\
+                                            "% solvent</i></b>",
+                                            self.report_page_id(),row,0,1,1,False )
+                self.setReportWidget ( panel_id )
+                self.putMessage ( "<h2>Composition of ASU</h2>" )
+                rvapi_utils.makeTable ( meta["table1"],"seq_table_report",
+                                        self.report_page_id(),self.rvrow,0,1,1 )
+                self.rvrow += 1
+                self.putMessage ( "&nbsp;<p><b>Cell volume:</b>&nbsp;" +\
+                                  meta["cellVolume"] + "&nbsp;&Aring;<sup>3</sup>" )
+                rvapi_utils.makeTable ( meta["table2"],"matthew_table_report",
+                                        self.report_page_id(),self.rvrow,0,1,1 )
+                self.rvrow += 1
+                self.putMessage ( meta["fitMessage"] )
+
+                outFName = self.outputFName
+                self.outputFName += "-asu"
+                self.revision_asu = dtype_revision.DType ( -1 )
+                self.revision_asu.makeDataId ( self.revisionSerialNo )
+                self.revision_asu.setReflectionData ( self.hkl )
+                self.revision_asu.setASUData ( self.seq,meta["nres"],
+                                      meta["weight"],len(self.seq),
+                                      meta["matthews"],meta["solvent"],
+                                      meta["mprob"] )
+                self.registerRevision ( self.revision_asu,self.revisionSerialNo )
+                self.outputFName = outFName
+                self.revisionSerialNo += 1
+
         elif "ligands" in meta:
             # check in generated ligands
             pyrvapi.rvapi_add_section ( panel_id,title,self.report_page_id(),
@@ -262,11 +315,11 @@ class CCP4go(import_task.Import):
                 hkl_sol = self.hkl
 
                 # check if space group changed
-                if "spg" in meta:
+                if "spg" in meta:   # possibly redundant check
                     spgkey = meta["spg"].replace(" ","")
                     if spgkey in self.hkl_alt:
                         hkl_sol = self.hkl_alt[spgkey]
-                    elif "hkl" in meta:
+                    elif meta["hkl"]:
                         self.putMessage ( "<h3>Space group changed to " +
                                           meta["spg"] + "</h3>" )
                         self.import_dir      = "./"
@@ -309,6 +362,7 @@ class CCP4go(import_task.Import):
                               meta["name"] + " structure and electron density",
                               structure )
 
+                    """
                     if resdir.lower().startswith("simbad"):
                         self.import_dir      = resdir
                         self.import_table_id = None
@@ -319,15 +373,38 @@ class CCP4go(import_task.Import):
                         if not self.seq:  # sequence was imported in asudef
                             self.seq = self.outputDataBox.data["DataSequence"]
 
-                    elif resdir == "dimple_mr":
-                        self.import_dir      = resdir
-                        self.import_table_id = None
-                        asudef.revisionFromStructure ( self,hkl_sol,structure,
-                                    "dimple",useSequences=self.seq,
-                                    make_revision=(self.seq==None) )
-                        self.id_modifier += 1
-                        if not self.seq:  # sequence was imported in asudef
-                            self.seq = self.outputDataBox.data["DataSequence"]
+                    else:
+                    """
+                    outFName = self.outputFName
+                    if resdir == "dimple_mr":
+                        self.outputFName += "-dimple-MR"
+                    elif resdir == "dimple_refine":
+                        self.outputFName += "-dimple-refine"
+                    elif resdir == "morda_results":
+                        self.outputFName += "-morda"
+                    elif resdir == "crank2_results":
+                        self.outputFName += "-crank2"
+                    else:
+                        self.outputFName += "-" + resdir
+                    revision = dtype_revision.DType ( -1 )
+                    revision.copy ( self.revision_asu )
+                    revision.setReflectionData ( hkl_sol   )
+                    revision.setStructureData  ( structure )
+                    self.registerRevision ( revision,self.revisionSerialNo )
+                    self.outputFName = outFName
+                    self.revisionSerialNo += 1
+
+
+                    """
+                    self.import_dir      = resdir
+                    self.import_table_id = None
+                    asudef.revisionFromStructure ( self,hkl_sol,structure,
+                                "dimple",useSequences=self.seq,
+                                make_revision=(self.seq==None) )
+                    self.id_modifier += 1
+                    if not self.seq:  # sequence was imported in asudef
+                        self.seq = self.outputDataBox.data["DataSequence"]
+                    """
 
                 else:
                     self.putMessage ( "Structure Data cannot be formed " +
@@ -378,7 +455,7 @@ class CCP4go(import_task.Import):
                 self.write_stdin ( "HKLIN " + self.unm.getFilePath(self.outputDir()) )
             elif self.hkl:
                 self.write_stdin ( "HKLIN " + self.hkl.getFilePath(self.outputDir()) )
-            if self.seq:
+            if self.seq:  # takes just a single sequence for now -- to be changed
                 self.write_stdin ( "\nSEQIN " + self.seq[0].getFilePath(self.outputDir()) )
             if self.xyz:
                 self.write_stdin ( "\nXYZIN " + self.xyz.getFilePath(self.outputDir()) )
@@ -463,9 +540,9 @@ class CCP4go(import_task.Import):
                         self.makeOutputData ( d,results[d] )
                         self.flush()
 
-                self.putMessage ( "<hr/><i><b>Note:</b> In order to further " +
-                            "process the results, define ASU Content using " +
-                            "structures generated by CCP4go." )
+                #self.putMessage ( "<hr/><i><b>Note:</b> In order to further " +
+                #            "process the results, define ASU Content using " +
+                #            "structures generated by CCP4go." )
 
             else:
                 self.putTitle ( "Results not found (structure not solved)" )

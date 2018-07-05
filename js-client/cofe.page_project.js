@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.12.17   <--  Date of Last Modification.
+ *    05.07.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Project page
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2017
+ *  (C) E. Krissinel, A. Lebedev 2016-2018
  *
  *  =================================================================
  *
@@ -46,13 +46,15 @@ function ProjectPage ( sceneId )  {
   var clone_btn   = null;
   var refresh_btn = null;
   var help_btn    = null;
+  var split_btn   = null;
+  var self        = this;  // for referencing class's properties
 
   function addJob ()  {
-    jobTree.addJob ( false, function() { del_btn.setDisabled ( false ); } );
+    jobTree.addJob ( false,self, function() { del_btn.setDisabled ( false ); } );
   }
 
   function insertJob ()  {
-    jobTree.addJob ( true, function() { del_btn.setDisabled ( false ); } );
+    jobTree.addJob ( true,self, function() { del_btn.setDisabled ( false ); } );
   }
 
   function moveJobUp ()  {
@@ -64,7 +66,7 @@ function ProjectPage ( sceneId )  {
   }
 
   function openJob() {
-    jobTree.openJob ( null );
+    jobTree.openJob ( null,self );
   }
 
   function stopJob() {
@@ -72,7 +74,7 @@ function ProjectPage ( sceneId )  {
   }
 
   function cloneJob() {
-    jobTree.cloneJob ( function(){ del_btn.setDisabled ( false ); });
+    jobTree.cloneJob ( self,function(){ del_btn.setDisabled ( false ); });
   }
 
   function setButtonState() {
@@ -181,6 +183,9 @@ function ProjectPage ( sceneId )  {
 
     setButtonState();
 
+    if (split_btn)
+      split_btn.setEnabled ( true );
+
     // add button listeners
     add_btn   .addOnClickListener ( addJob    );
     //insert_btn.addOnClickListener ( insertJob );
@@ -224,31 +229,38 @@ function ProjectPage ( sceneId )  {
 
   // Make Main Menu
   var prjlist_mi = this.headerPanel.menu.addItem('My Projects','./images/list.svg');
-  var account_mi = this.headerPanel.menu.addItem('My Account' ,'./images/settings.svg');
-  var admin_mi   = null;
-  if (__admin)
-    admin_mi   = this.headerPanel.menu.addItem('Admin Page','./images/admin.png');
-  this.headerPanel.menu.addSeparator ();
-  var logout_mi  = this.headerPanel.menu.addItem('Log out'    ,'./images/logout.svg');
 
   // set menu listeners
   prjlist_mi.addOnClickListener ( function(){
     jobTree.saveProjectData ( [],[],null );
     makeProjectListPage   ( sceneId );
   });
-  account_mi.addOnClickListener ( function(){
-    jobTree.saveProjectData ( [],[],null );
-    makeAccountPage       ( sceneId );
-  });
 
-  if (admin_mi)
-    admin_mi.addOnClickListener ( function(){
-      jobTree.saveProjectData ( [],[],function(){ makeAdminPage(sceneId); } );
+  if (!__local_user)  {
+
+    var account_mi = this.headerPanel.menu.addItem('My Account' ,'./images/settings.svg');
+    var admin_mi   = null;
+    if (__admin)
+      admin_mi   = this.headerPanel.menu.addItem('Admin Page','./images/admin.png');
+
+    account_mi.addOnClickListener ( function(){
+      jobTree.saveProjectData ( [],[],null );
+      makeAccountPage       ( sceneId );
     });
+
+    if (admin_mi)
+      admin_mi.addOnClickListener ( function(){
+        jobTree.saveProjectData ( [],[],function(){ makeAdminPage(sceneId); } );
+      });
+  }
+
+  this.headerPanel.menu.addSeparator ();
+  var logout_mi  = this.headerPanel.menu.addItem('Log out'    ,'./images/logout.svg');
 
   logout_mi.addOnClickListener ( function(){
     jobTree.saveProjectData ( [],[],function(){ logout(sceneId); } );
   });
+
 
   // make central panel and the toolbar
   var toolbar = this.grid.setGrid ( '',1,0,1,1 );
@@ -273,6 +285,12 @@ function ProjectPage ( sceneId )  {
   refresh_btn = toolbar.setButton ( '','./images/refresh.svg' , 9,0,1,1 );
   help_btn    = toolbar.setButton ( '','./images/help.svg'    ,10,0,1,1 );
 
+  if (__admin || __login_user)  {
+    toolbar.setLabel ( '<hr style="border:1px dotted;"/>' ,11,0,1,1 );
+    split_btn = toolbar.setButton ( '','./images/help.svg',12,0,1,1 );
+  }
+
+
   add_btn   .setSize('40px','40px').setTooltip('Add job'   ).setDisabled(true);
   //insert_btn.setSize('40px','40px').setTooltip('Insert job after selected')
   //                                                          .setDisabled(true);
@@ -294,6 +312,11 @@ function ProjectPage ( sceneId )  {
   toolbar.setCellSize ( '' ,'42px',7 ,0 );
   toolbar.setCellSize ( '' ,'42px',9 ,0 );
   toolbar.setCellSize ( '' ,'42px',10,0 );
+  if (split_btn)  {
+    toolbar.setCellSize   ( '' ,'42px',12,0 );
+    split_btn.setSize('40px','40px').setTooltip('Show replay project');
+    split_btn.setDisabled ( true );
+  }
 
   add_btn    .setDisabled ( true );
   //insert_btn .setDisabled ( true );
@@ -312,6 +335,12 @@ function ProjectPage ( sceneId )  {
     jobTree.element.style.paddingBottom = '25px';
     jobTree.element.style.paddingRight  = '40px';
     this.job_tree = jobTree;  // for external references
+    //(function(self){
+      jobTree.addSignalHandler ( cofe_signals.rationUpdated,function(data){
+//        console.log ( data );
+        self.updateUserRation ( data );
+      });
+    //}(this));
   }
 
   this.div  = new Widget ( 'div' );

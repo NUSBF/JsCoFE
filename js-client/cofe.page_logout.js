@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    22.09.17   <--  Date of Last Modification.
+ *    31.06.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Logout page
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2017
+ *  (C) E. Krissinel, A. Lebedev 2016-2018
  *
  *  =================================================================
  *
@@ -49,11 +49,9 @@ function LogoutPage ( sceneId )  {
 
   var thank_lbl  = new Label    ( 'Thank you for using CCP4' );
   var logout_lbl = new Label    ( 'You are now logged out.'  );
-  var back_btn   = new Button   ( 'Back to User Login','./images/login.svg' );
 
   thank_lbl .setFont            ( 'times','200%',true,true );
   logout_lbl.setFontSize        ( '125%' );
-  back_btn  .setWidth           ( '100%' );
 
   var row = 0;
   panel.setWidget               ( thank_lbl,row,0,1,1 );
@@ -62,11 +60,14 @@ function LogoutPage ( sceneId )  {
   panel.setWidget               ( logout_lbl,row,0,1,1 );
   panel.setHorizontalAlignment  ( row++ ,0,'center' );
   panel.setCellSize             ( '','20pt',row++,0 );
-  panel.setWidget               ( back_btn ,row++,0,1,1 );
 
-  back_btn.addOnClickListener   ( function(){ makeLoginPage(sceneId) } );
-  setDefaultButton              ( back_btn,this.grid );
-
+  if (!__local_user)  {
+    var back_btn = new Button   ( 'Back to User Login','./images/login.svg' );
+    panel.setWidget             ( back_btn ,row++,0,1,1 );
+    back_btn  .setWidth         ( '100%' );
+    back_btn.addOnClickListener ( function(){ makeLoginPage(sceneId) } );
+    setDefaultButton            ( back_btn,this.grid );
+  }
 
 }
 

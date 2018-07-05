@@ -15,6 +15,7 @@ export JSPISA_CFG=$CCP4/share/pisa/jspisa.cfg
 
 cd $server_dir
 
-killall node
+#killall node
 
 node ./desktop.js ./config/conf.desktop.json
+#node ./desktop.js ./config/conf.desktop.json -localuser 'Eugene Krissinel'

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    05.04.18   <--  Date of Last Modification.
+ *    16.06.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -49,7 +49,9 @@ function padDigits ( number,digits ) {
 }
 
 function round ( number,digits ) {
-  return Number(number.toFixed(digits));
+  if (number!=null)
+    return Number(number.toFixed(digits));
+  return '';
 }
 
 function padStringLeft ( S,char,n ) {
@@ -98,6 +100,14 @@ function replaceAll ( str,find,rep )  {
   return str;
 //  return str.replace(new RegExp(find.replace(/[-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g,"\\$&"),'g'),rep);
 }
+
+function strip_html_tags ( str )  {
+  if ((str===null) || (str===''))
+       return '';
+  return str.toString().replace(/<[^>]*>/g, '');
+}
+
+
 
 // ===========================================================================
 

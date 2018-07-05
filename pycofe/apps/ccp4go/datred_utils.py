@@ -123,6 +123,49 @@ sg_dict = {
   'P -1': ('P 1',),
 }
 
+
+sg_nsym = {
+  'P m -3 m' : 24,
+  'I m -3 m' : 48,
+  'F m -3 m' : 96,
+  'P m -3'   : 12,
+  'I m -3'   : 24,
+  'F m -3'   : 48,
+  'P 4/m m m': 8,
+  'P 4/m'    : 4,
+  'I 4/m m m': 16,
+  'I 4/m'    : 8,
+  'P 6/m m m': 12,
+  'P 6/m'    : 6,
+  'P -3 m 1' : 6,
+  'P -3 1 m' : 6,
+  'P -3'     : 3,
+  'R -3 m'   : 6,
+  'R -3'     : 3,
+  'H -3 m'   : 18,
+  'H -3'     : 9,
+  'P m m m'  : 4,
+  'C m m m'  : 8,
+  'I m m m'  : 8,
+  'F m m m'  : 16,
+  'P 1 2/m 1': 2,
+  'C 1 2/m 1': 4,
+  'I 1 2/m 1': 4,
+  'P -1'     : 1
+}
+
+def getNSym ( spaceGroup ):
+    #  returns symmetry number for spacegroup 'spaceGroup' or 0 if spaceGroup
+    #  is not found
+    nsym = 0
+    for sg in sg_dict:
+        if spaceGroup in sg_dict[sg]:
+            nsym = sg_nsym[sg]
+            break;
+    return nsym
+
+
+
 class input_spcgrp(object):
 
   input_sg_defined = False

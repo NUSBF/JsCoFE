@@ -21,11 +21,11 @@ import os
 
 import edmap
 
-import ccp4go_mtz
+import ccp4go_asu
 
 # ============================================================================
 
-class Dimple(ccp4go_mtz.PrepareMTZ):
+class Dimple(ccp4go_asu.PrepareASU):
 
     # ----------------------------------------------------------------------
 
@@ -118,9 +118,9 @@ class Dimple(ccp4go_mtz.PrepareMTZ):
 
             self.putMessage ( "<h2><i>Solution found (<i>R<sub>free</sub>=" +
                               str(rfree) +"</i>)</h2>" )
-            if spg_info:
-                self.putMessage ( "<h3>Space group changed to " +
-                                  spg_info["spg"] + "</h3>" )
+            if spg_info["hkl"]:
+                self.putMessage ( "<b>Space group changed to " +
+                                  spg_info["spg"] + "</b>" )
             dfpath = os.path.join ( "..",self.outputdir,resultdir,"dimple" )
             self.putStructureWidget ( "Structure and density map",
                                     [ dfpath+".pdb",dfpath+".mtz",dfpath+".map",

@@ -83,6 +83,7 @@ function TaskParrot()  {
              open     : true,  // true for the section to be initially open
              position : [0,0,1,5],
              contains : {
+               /*
                 SOLVCONT : {
                         type      : 'real',
                         keyword   : 'solvent-content',
@@ -94,6 +95,7 @@ function TaskParrot()  {
                         position  : [0,0,1,1],
                         showon    : {'seq':[0]}
                      },
+                */
                 NCYCLES : {
                         type      : 'integer',
                         keyword   : 'cycles',
@@ -214,6 +216,7 @@ TaskParrot.prototype.currentVersion = function()  { return 0; }
 if (!__template)  {
   //  for client side
 
+/*
   TaskParrot.prototype.inputChanged = function ( inpParamRef,emitterId,emitterValue )  {
 
     if (emitterId=='istruct')  {
@@ -234,6 +237,7 @@ if (!__template)  {
     TaskTemplate.prototype.inputChanged.call ( this,inpParamRef,emitterId,emitterValue );
 
   }
+*/
 
 } else  {
   //  for server side

@@ -45,6 +45,8 @@ class PISA(basic.TaskDriver):
 
     def run(self):
 
+        self.checkCCP4AppExists ( "jspisa" )
+
         if "JSPISA_CFG" not in os.environ:
             pyrvapi.rvapi_set_text (
                 "<b>Error: jsCoFE is not configured to work with jsPISA.</b><p>" + \
@@ -53,6 +55,7 @@ class PISA(basic.TaskDriver):
 
             self.fail ( " *** Error: jsCofe is not configured to work with jsPISA.\n" + \
                         "     Please look for support\n","jsPISA is not configured" )
+
 
         # Prepare pisa input
         # fetch input data

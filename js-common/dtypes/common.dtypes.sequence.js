@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    05.10.17   <--  Date of Last Modification.
+ *    28.06.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Sequence Data Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2017
+ *  (C) E. Krissinel, A. Lebedev 2016-2018
  *
  *  =================================================================
  *
@@ -41,6 +41,7 @@ function DataSequence()  {
   this.weight  = 0.0;   // molecular weight
   this.ncopies = 1;     // expected number of copies in ASU
   this.nfind   = 1;     // copies to find
+  this.ncopies_auto = true;  // flag to find ncopies automatically
 
   //this.ensembles = [];    // list of chosen ensemble models for MR
 
@@ -60,7 +61,7 @@ DataSequence.prototype.icon_large = function()  { return './images/data.svg';   
 
 // when data class version is changed here, change it also in python
 // constructors
-DataSequence.prototype.currentVersion = function() { return 1; } // from 01.12.2017
+DataSequence.prototype.currentVersion = function() { return 2; } // from 28.06.2018
 
 // export such that it could be used in both node and a browser
 
@@ -132,8 +133,11 @@ if (!__template)  {
       var grid = customGrid.setGrid ( '-compact',row++,0,1,2 );
       grid.setLabel ( 'Number of copies in a.s.u.:',0,0,1,1 )
           .setFontItalic ( true ).setNoWrap ( true );
-      customGrid.ncopies_inp = grid.setInputText ( this.ncopies,0,1,1,1 )
-                    .setStyle ( 'text','integer','',
+      var nc_value = this.ncopies;
+      if ((dropdown.layCustom=='stoichiometry-wauto') && this.ncopies_auto)
+        nc_value = '';
+      customGrid.ncopies_inp = grid.setInputText ( nc_value,0,1,1,1 )
+                    .setStyle ( 'text','integer','auto',
                       'Specify stoichiometric coefficent for given sequence ' +
                       'in the crystal' )
                     .setWidth_px ( 50 );
@@ -310,8 +314,12 @@ if (!__template)  {
     var customGrid = dropdown.customGrid;
 
     if ((dropdown.layCustom.startsWith('asu-content')) ||
-        (dropdown.layCustom.startsWith('stoichiometry')))
-      this.ncopies = parseInt ( customGrid.ncopies_inp.getValue() );
+        (dropdown.layCustom.startsWith('stoichiometry')))  {
+      var nc_value = customGrid.ncopies_inp.getValue();
+      this.ncopies_auto = (nc_value.length<=0);
+      if (!this.ncopies_auto)
+        this.ncopies = parseInt ( nc_value );
+    }
 
     /*
     this.ensembles = [];  // list of chosen ensemble models for MR

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    18.03.18   <--  Date of Last Modification.
+ *    06.06.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -41,17 +41,18 @@ function ProjectListPage ( sceneId )  {
     return;
   }
 
-  var projectList    = new ProjectList();  // project list data
-  var tablesort_tbl  = null;               // project list table
-  var open_btn       = null;
-  var add_btn        = null;
-  var del_btn        = null;
-  var export_btn     = null;
-  var import_btn     = null;
-  var help_btn       = null;
-  var panel          = null;
-  var welcome_lbl    = null;
-  var table_row      = 0;                  // project list position in panel
+  var projectList   = new ProjectList();  // project list data
+  var tablesort_tbl = null;               // project list table
+  var open_btn      = null;
+  var add_btn       = null;
+  var del_btn       = null;
+  var export_btn    = null;
+  var import_btn    = null;
+  var help_btn      = null;
+  var panel         = null;
+  var welcome_lbl   = null;
+  var table_row     = 0;                  // project list position in panel
+  var self          = this;               // for reference to Base class
 
   // function to save Project List
   function saveProjectList ( onDone_func )  {
@@ -69,7 +70,11 @@ function ProjectListPage ( sceneId )  {
     }
     projectList.sortList = tablesort_tbl.getSortList();
     serverRequest ( fe_reqtype.saveProjectList,projectList,'Project List',
-                    onDone_func,null,'persist' );
+      function(data){
+        if (onDone_func)
+          onDone_func ( data );
+        self.updateUserRation ( data );
+      },null,'persist' );
   }
 
   // function to open selected Project
@@ -85,7 +90,13 @@ function ProjectListPage ( sceneId )  {
       projectList.sortList = tablesort_tbl.getSortList();
 
     tablesort_tbl = new TableSort();
-    tablesort_tbl.setHeaders ( ['Name','Title','Created','Last opened'] );
+    tablesort_tbl.setHeaders ([
+        'Name','Title',
+        '<center>Disk<br>(MBytes)</center>',
+        '<center>CPU<br>(hours)</center>',
+        '<center>Date<br>Created</center>',
+        '<center>Date<br>Last Opened</center>'
+    ]);
     tablesort_tbl.setHeaderNoWrap   ( -1      );
     tablesort_tbl.setHeaderColWidth ( 1,'80%' );
     panel.setWidget ( tablesort_tbl,table_row,0,1,6 );
@@ -109,6 +120,8 @@ function ProjectListPage ( sceneId )  {
       trow.addCell ( '' );
       trow.addCell ( '' );
       trow.addCell ( '' );
+      trow.addCell ( '' );
+      trow.addCell ( '' );
       tablesort_tbl.createTable();
       open_btn  .setDisabled ( true  );
       add_btn   .setDisabled ( false );
@@ -123,8 +136,14 @@ function ProjectListPage ( sceneId )  {
       for (var i=0;i<projectList.projects.length;i++)  {
         var trow = tablesort_tbl.addRow();
         var pDesc = projectList.projects[i];
-        trow.addCell ( pDesc.name  ).setNoWrap();
-        trow.addCell ( pDesc.title );
+        trow.addCell ( pDesc.name        ).setNoWrap();
+        trow.addCell ( pDesc.title       );
+        if (pDesc.hasOwnProperty('disk_space'))
+              trow.addCell ( round(pDesc.disk_space,1) ).setNoWrap();
+        else  trow.addCell ( '-:-' ).setNoWrap();
+        if (pDesc.hasOwnProperty('cpu_time'))
+              trow.addCell ( round(pDesc.cpu_time,4) ).setNoWrap();
+        else  trow.addCell ( '-:-' ).setNoWrap();
         trow.addCell ( pDesc.dateCreated ).setNoWrap().setHorizontalAlignment('center');
         trow.addCell ( pDesc.dateLastUsed).setNoWrap().setHorizontalAlignment('center');
         //tablesort_tbl.addRow ( trow );
@@ -161,24 +180,33 @@ function ProjectListPage ( sceneId )  {
     },null,'persist');
   }
 
+  function loadProjectList1()  {
+    loadProjectList();
+    self.getUserRation();
+  }
+
 
   this.makeHeader ( 3,null );
   // Make Main Menu
-  var account_mi = this.headerPanel.menu.addItem('My Account'   ,'./images/settings.svg'  );
-  var admin_mi   = null;
-  if (__admin)
-    admin_mi = this.headerPanel.menu.addItem('Admin Page','./images/admin.png');
-  this.headerPanel.menu.addSeparator ();
-  var logout_mi  = this.headerPanel.menu.addItem('Log out'   ,'./images/logout.svg');
+  if (!__local_user)  {
 
-  account_mi.addOnClickListener ( function(){
-    saveProjectList ( function(data){ makeAccountPage(sceneId); } );
-  });
+    var account_mi = this.headerPanel.menu.addItem('My Account'   ,'./images/settings.svg'  );
+    var admin_mi   = null;
+    if (__admin)
+      admin_mi = this.headerPanel.menu.addItem('Admin Page','./images/admin.png');
 
-  if (admin_mi)
-    admin_mi.addOnClickListener ( function(){
-      saveProjectList ( function(data){ makeAdminPage(sceneId); } );
+    account_mi.addOnClickListener ( function(){
+      saveProjectList ( function(data){ makeAccountPage(sceneId); } );
     });
+
+    if (admin_mi)
+      admin_mi.addOnClickListener ( function(){
+        saveProjectList ( function(data){ makeAdminPage(sceneId); } );
+      });
+
+    this.headerPanel.menu.addSeparator ();
+  }
+  var logout_mi  = this.headerPanel.menu.addItem('Log out'   ,'./images/logout.svg');
 
   logout_mi.addOnClickListener ( function(){
     saveProjectList ( function(data){ logout(sceneId); } );
@@ -330,7 +358,7 @@ function ProjectListPage ( sceneId )  {
 
   // add a listener to 'import' button
   import_btn.addOnClickListener ( function(){
-    new ImportProjectDialog ( loadProjectList );
+    new ImportProjectDialog ( loadProjectList1 );
   });
 
   help_btn.addOnClickListener ( function(){

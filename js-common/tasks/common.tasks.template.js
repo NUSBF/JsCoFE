@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    10.05.18   <--  Date of Last Modification.
+ *    07.06.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -104,6 +104,9 @@ function TaskTemplate()  {
                                // multiple selections in job tree; used for the
                                // identification of job chains at job deletion
 
+  this.disk_space = 0.0;  // in MBs; calculated after job is done
+  this.cpu_time   = 0.0;  // in hours; calculated after job is done
+
 //  this.doNotPackSuffixes = ['.map'];
 //  this.doPackSuffixes    = [''];      // prevails
 
@@ -121,6 +124,21 @@ TaskTemplate.prototype.doPackSuffixes    = function()  { return ['']; }
 // when data class version is changed here, change it also in python
 // constructors
 TaskTemplate.prototype.currentVersion = function()  { return 0; }
+
+TaskTemplate.prototype.isRunning = function()  {
+  return ((this.state==job_code.running) || (this.state==job_code.exiting));
+}
+
+TaskTemplate.prototype.isComplete = function()  {
+  return ((this.state!=job_code.new) && (this.state!=job_code.running) &&
+          (this.state!=job_code.exiting));
+}
+
+// estimated cpu cost of the job, in hours
+TaskTemplate.prototype.cpu_credit = function()  {
+  return 0.02;
+}
+
 
 // export such that it could be used in both node and a browser
 if (!dbx)  {
@@ -194,7 +212,8 @@ if (!dbx)  {
                   else  token = '404';
     var url = special_url_tag + '/' + token + '/' + this.project + '/' +
               jobId + '/' + filePath;
-    return replaceAll ( url,'/','@' );
+    //return replaceAll ( url,'/','@' );
+    return url;
   }
 
 
@@ -207,7 +226,8 @@ if (!dbx)  {
                   else  token = '404';
     var url = special_url_tag + '/' + token + '/' + this.project + '/' +
               this.id + '/' + filePath;
-    return replaceAll ( url,'/','@' );
+    //return replaceAll ( url,'/','@' );
+    return url;
   }
 
   TaskTemplate.prototype.getLocalReportPath = function()  {
@@ -224,7 +244,8 @@ if (!dbx)  {
     // which sends cofe-specific jsrview bootrstrap html file back.
     var url = special_url_tag + '/' + token + '/' + this.project + '/' +
               this.id + '/' + this.getLocalReportPath();
-    return replaceAll ( url,'/','@' );
+    //return replaceAll ( url,'/','@' );
+    return url;
   }
 
   TaskTemplate.prototype.addHarvestLink = function ( taskId )  {
@@ -1652,8 +1673,8 @@ if (!dbx)  {
            case 'integer'  : var text = param.input.getValue().trim();
                              if (text.length<=0)  {
                                if (item.type=='integer_')  {
-                                 if ('default' in item) item.value = item.default;
-                                                   else item.value = '';
+                                  if ('default' in item) item.value = item.default;
+                                                    else item.value = '';
                                } else
                                  addMessage ( item,key,'no value given' );
                              } else if (isInteger(text))  {
@@ -1667,8 +1688,8 @@ if (!dbx)  {
            case 'real'     : var text = param.input.getValue().trim();
                              if (text.length<=0)  {
                                if (item.type=='real_')  {
-                                 if ('default' in item) item.value = item.default;
-                                                   else item.value = '';
+                                  if ('default' in item) item.value = item.default;
+                                                    else item.value = '';
                                } else
                                  addMessage ( item,key,'no value given' );
                              } else if (isFloat(text))  {
@@ -1682,8 +1703,8 @@ if (!dbx)  {
            case 'string'   : var text = param.input.getValue().trim();
                              if (text.length<=0)  {
                                if (item.type=='string_')  {
-                                 if ('default' in item) item.value = item.default;
-                                                   else item.value = '';
+                                  if ('default' in item) item.value = item.default;
+                                                    else item.value = '';
                                } else
                                  addMessage ( item,key,'no value given' );
                              } else
@@ -1698,8 +1719,8 @@ if (!dbx)  {
            case 'textarea'  : var text = param.input.getValue();
                              if (text.length<=0)  {
                                if (item.type=='textarea_')  {
-                                 if ('default' in item) item.value = item.default;
-                                                   else item.value = '';
+                                  if ('default' in item) item.value = item.default;
+                                                    else item.value = '';
                                } else
                                  addMessage ( item,key,'no value given' );
                              } else

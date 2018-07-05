@@ -33,9 +33,9 @@ function TaskASUDef()  {
              else  TaskTemplate.call ( this );
 
   this._type     = 'TaskASUDef';
-  this.name      = 'asymmetric unit content';
-  this.oname     = 'asu definition';  //'*';   // asterisk here means do not use
-  this.title     = 'Asymmetric Unit Content';
+  this.name      = 'asymmetric unit contents';
+  this.oname     = 'asu contents';  //'*';   // asterisk here means do not use
+  this.title     = 'Asymmetric Unit Contents';
   this.helpURL   = './html/jscofe_task_asudef.html';
   this.fasttrack = true;  // enforces immediate execution
 
@@ -63,7 +63,7 @@ function TaskASUDef()  {
                     '[do not use] and set the estimated molecular size in the ' +
                     'parameters section below in the page.',
       inputId     : 'seq',         // input Id for referencing input fields
-      customInput : 'stoichiometry', // lay custom fields below the dropdown
+      customInput : 'stoichiometry-wauto', // lay custom fields below the dropdown
       version     : 0,             // minimum data version allowed
       force       : 1,             // meaning choose, by default, 1 sequence if
                                    // available; otherwise, 0 (== do not use) will

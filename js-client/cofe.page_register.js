@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    25.10.17   <--  Date of Last Modification.
+ *    24.06.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  User registration page
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2017
+ *  (C) E. Krissinel, A. Lebedev 2016-2018
  *
  *  =================================================================
  *
@@ -54,6 +54,8 @@ function RegisterPage ( sceneId )  {
   var user_inp    = new InputText ( '' );
   var email_inp   = new InputText ( '' );
   var login_inp   = new InputText ( '' );
+  user_lbl   .setNoWrap();
+  login_lbl  .setNoWrap();
   user_inp   .setStyle          ( 'text',"^[A-Za-z\\-\\.\\s]+$",'John Smith',
                                   'User name should only contain latin ' +
                                   'letters,\n dots, dashes and spaces' );

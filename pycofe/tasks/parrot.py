@@ -83,7 +83,8 @@ class Parrot(basic.TaskDriver):
 
         # Prepare parrot input
         # fetch input data
-        istruct = self.makeClass ( self.input_data.data.istruct[0] )
+        revision = self.makeClass ( self.input_data.data.revision[0] )
+        istruct  = self.makeClass ( self.input_data.data.istruct [0] )
 
         seq = None
         if hasattr(self.input_data.data,"seq"):  # optional data parameter
@@ -212,14 +213,15 @@ class Parrot(basic.TaskDriver):
             "\nmtzout " + self.parrot_mtz() + \
             "\ncolout parrot"  +\
             "\nncs-average\n"  +\
+            "\nsolvent-content " + str(revision.ASU.solvent) +\
             self.putKWParameter ( self.task.parameters.sec1.contains.SOLVENT_CBX   ) + \
             self.putKWParameter ( self.task.parameters.sec1.contains.HISTOGRAM_CBX ) + \
             #self.putKWParameter ( self.task.parameters.sec1.contains.NCSAVER_CBX   ) + \
             self.putKWParameter ( self.task.parameters.sec1.contains.ANISO_CBX     ) + \
             self.putKWParameter ( self.task.parameters.sec1.contains.NCYCLES       ) + \
             self.putKWParameter ( self.task.parameters.sec1.contains.RESMIN        ) + \
-            self.putKWParameter ( self.task.parameters.sec1.contains.NCSRAD        ) + \
-            self.putKWParameter ( self.task.parameters.sec1.contains.SOLVCONT      )
+            self.putKWParameter ( self.task.parameters.sec1.contains.NCSRAD        )
+            #self.putKWParameter ( self.task.parameters.sec1.contains.SOLVCONT      )
         )
 
         self.close_stdin()

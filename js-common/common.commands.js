@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    11.05.18   <--  Date of Last Modification.
+ *    01.06.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -28,6 +28,7 @@
 var fe_command = {
   cofe         : 'cofe',           // load jsCoFE login page
   stop         : 'stop',           // quit the server
+  getInfo      : '=getinfo',       // register a new user
   register     : '=register',      // register a new user
   login        : '=login',         // register a new user
   recoverLogin : '=recover_login', // recover login details
@@ -48,6 +49,7 @@ var fe_reqtype = {
   saveHelpTopics    : '-saveHelpTopics',   // request to save list of help topics
   updateUserData    : '-updateUserData',   // request to update user data
   deleteUser        : '-deleteUser',       // request to delete user acount and data
+  getUserRation     : '-getUserRation',    // request to retrieve current user ration
   getProjectList    : '-getProjectList',   // request for project list
   saveProjectList   : '-saveProjectList',  // request to save project list
   getProjectData    : '-getProjectData',   // request for project data
@@ -84,7 +86,9 @@ var fe_retcode = {
   existingLogin  : 'existingLogin',  // attempt to re-use login name at registration
   userNotFound   : 'userNotFound',   // login recovery failed
   userNotDeleted : 'userNotDeleted', // delete user request failed
+  corruptJobMeta : 'corruptJobMeta', // corrupt job metadata
   wrongLogin     : 'wrongLogin',     // wrong login data supplied
+  unconfigured   : 'unconfigured',   // server not configured
   wrongPassword  : 'wrongPassword',  // wrong password given
   notLoggedIn    : 'notLoggedIn',    // request without loggin in
   wrongRequest   : 'wrongRequest',   // unrecognised request

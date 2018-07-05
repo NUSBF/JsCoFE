@@ -1,0 +1,22 @@
+
+.table-rations {
+  font-family     : "Trebuchet MS", Arial, Helvetica, sans-serif;
+  width           : auto;
+  vertical-align  : middle;
+  font-size       : 80%;
+  white-space     : nowrap;
+}
+
+.ration-warning {
+  font-family     : "Trebuchet MS", Arial, Helvetica, sans-serif;
+  font-size       : 90%;
+  font-weight     : bold;
+  color           : darkorange;
+}
+
+.ration-critical {
+  font-family     : "Trebuchet MS", Arial, Helvetica, sans-serif;
+  font-size       : 90%;
+  font-weight     : bold;
+  color           : red;
+}

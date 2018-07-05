@@ -15,7 +15,7 @@ Input Data Field (IDF) has the following structure ((*) marks mandatory items): 
     cast        : 'cast_name',     // will replace data type names in input data comboboxes
     label       : 'label_text',    // (*) label for input dialog
     tooltip     : 'tooltip_text',  // tooltip to show on mouse hovering
-    inputId     : 'id',            // (*) input Id for referencing input fields
+    inputId     : 'id',            // (*) input Id for referencing the field
     customInput : 'inpref',        // used to lay custom input fields below the selection
                                    // combobox
     version     : versionN,        // integer indicating the minimum data version allowed

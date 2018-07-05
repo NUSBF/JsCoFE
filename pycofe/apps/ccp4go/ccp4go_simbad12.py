@@ -69,17 +69,26 @@ class Simbad12(ccp4go_dimple.Dimple):
         self.flush()
 
         # Prepare simbad input -- script file
-        cmd = [ "-nproc"          ,str(int(self.nSubJobs) + 1),
-                "-F"              ,self.hkl.Fmean.value,
-                "-SIGF"           ,self.hkl.Fmean.sigma,
-                "-FREE"           ,self.hkl.FREE,
-                "-pdb_db"         ,os.environ["PDB_DIR"],
-                "--display_gui"   ,
-                "-webserver_uri"  ,"jsrview",
-                "-work_dir"       ,"./",
-                "-rvapi_document" ,self.rvapi_doc_path,
-                self.mtzpath
-              ]
+
+        cmd = []
+        if "TMPDIR" in os.environ:
+            cmd  = [ "-tmp_dir",os.environ["TMPDIR"] ]
+        if "PDB_DIR" in os.environ:
+            cmd += [ "-pdb_db",os.environ["PDB_DIR"] ]
+
+        cmd += [ "-nproc"              ,str(int(self.nSubJobs) + 1),
+                 "-max_lattice_results","5",
+                 "-max_penalty_score"  ,"4",
+                 "-F"                  ,self.hkl.Fmean.value,
+                 "-SIGF"               ,self.hkl.Fmean.sigma,
+                 "-FREE"               ,self.hkl.FREE,
+                 "--display_gui"       ,
+                 "--cleanup"           ,
+                 "-webserver_uri"      ,"jsrview",
+                 "-work_dir"           ,"./",
+                 "-rvapi_document"     ,self.rvapi_doc_path,
+                 self.mtzpath
+               ]
 
         # run simbad
         self.runApp ( "simbad",cmd )

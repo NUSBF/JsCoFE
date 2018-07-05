@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    11.02.18   <--  Date of Last Modification.
+#    28.06.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -36,13 +36,33 @@ import pyrvapi
 #  application imports
 from   pycofe.tasks  import basic
 from   pycofe.dtypes import dtype_revision, dtype_sequence, dtype_structure
-from   pycofe.proc   import import_sequence
+from   pycofe.proc   import import_sequence, asucomp
 from   pycofe.varut  import rvapi_utils
-
 
 
 # ============================================================================
 # Revision-making function
+
+def makeAsuFitMessage ( base,nc0,sol0 ):
+    if nc0==1 and sol0>35.0:
+        base.putMessage ( "<h3 class='header-green'>The suggested " +\
+                          "composition of ASU appears to be the optimal " +\
+                          "one.</h3>" )
+    elif nc0 > 1:
+        base.putMessage ( "<h3 class='header-red'>WARNING: the suggested " +\
+                          "composition of ASU has higher, than usual, " +\
+                          "solvent fraction.<br>" +\
+                          "Try to increase the scattering mass by a " +\
+                          "factor of " + str(nc0) + "</h3>"  )
+    elif nc0 > 0:
+        base.putMessage ( "<h3 class='header-red'>WARNING: the suggested " +\
+                          "composition of ASU has lower, than usual, " +\
+                          "solvent fraction.<br>" +\
+                          "Try to decrease the scattering mass by a " +\
+                          "factor of " + str(math.ceil(350.0/sol0)/10.0) +\
+                          "</h3>" )
+    return
+
 
 def makeRevision ( base,hkl,seq,composition,altEstimateKey,altNRes,
                         altMolWeight,resLimit,
@@ -79,20 +99,33 @@ def makeRevision ( base,hkl,seq,composition,altEstimateKey,altNRes,
 
     if len(seq)>0:  # optional data parameter
 
+
         isProtein = False;
         isRNA     = False;
         isDNA     = False;
+        asu       = []
         for i in range(len(seq)):
-            seq[i] = base.makeClass ( seq[i] )
-            nRes      += seq[i].ncopies*seq[i].size
-            molWeight += seq[i].ncopies*seq[i].weight
-            dataKey   += seq[i].ncopies
+            seq[i]  = base.makeClass ( seq[i] )
+            seqType = 'dna'
             if seq[i].isProtein():
                 isProtein = True
+                seqType = "protein"
             if seq[i].isRNA():
                 isRNA = True
             if seq[i].isDNA():
                 isDNA = True
+            ncopies = seq[i].ncopies
+            if seq[i].ncopies_auto:
+                ncopies = 0
+            asu.append ( ["",seq[i].weight,seqType,ncopies] );
+
+        asucomp.suggestASUComp ( hkl.dataset,asu )
+
+        for i in range(len(seq)):
+            seq[i].ncopies = asu[i][3]
+            nRes      += seq[i].ncopies*seq[i].size
+            molWeight += seq[i].ncopies*seq[i].weight
+            dataKey   += seq[i].ncopies
 
         comp = ""
         c    = 0;
@@ -238,7 +271,7 @@ def makeRevision ( base,hkl,seq,composition,altEstimateKey,altNRes,
             "title": "Molecule fitting statistics",
             "state": 0, "class": "table-blue", "css": "text-align:right;",
             "horzHeaders" :  [
-                { "label": "N<sub>copies</sub>"  , "tooltip":
+                { "label": "N<sub>units</sub>"   , "tooltip":
                    "Number of given content units placed in asymmetric unit" },
                 { "label": "Matthews"            , "tooltip": "Matthews coefficient" },
                 { "label": "% solvent"           , "tooltip": "Solvent percent" },
@@ -288,6 +321,33 @@ def makeRevision ( base,hkl,seq,composition,altEstimateKey,altNRes,
             revision = dtype_revision.DType ( -1 )
         revision.setReflectionData ( hkl )
         revision.setASUData ( seq,nRes,molWeight,dataKey,mc1,sol1,prb1 )
+
+        makeAsuFitMessage ( base,nc0,sol0 )
+
+        """
+        if nc0==1 and sol0>35.0:
+            base.putMessage ( "<h3 class='header-green'>The suggested " +\
+                              "composition of ASU appears to be the optimal " +\
+                              "one.</h3>" )
+        elif nc0 > 1:
+            base.putMessage ( "<h3 class='header-red'>WARNING: the suggested " +\
+                              "composition of ASU has higher, than usual, " +\
+                              "solvent fraction.<br>" +\
+                              "Try to increase the scattering mass by a " +\
+                              "factor of " + str(nc0) + "</h3>"  )
+        elif nc0 > 0:
+            base.putMessage ( "<h3 class='header-red'>WARNING: the suggested " +\
+                              "composition of ASU has lower, than usual, " +\
+                              "solvent fraction.<br>" +\
+                              "Try to decrease the scattering mass by a " +\
+                              "factor of " + str(math.ceil(350.0/sol0)/10.0) +\
+                              "</h3>" )
+        """
+
+        if revision:
+            base.generic_parser_summary["z02"] = {
+                "SolventPercent" : int(10*sol0)/10.0
+            }
 
     return (revision,nc0,sol0)
 
@@ -449,6 +509,7 @@ class ASUDef(basic.TaskDriver):
                                   self.getParameter(sec1.MOLWEIGHT),
                                   self.getParameter(sec1.RESLIMIT) )
 
+        """
         nc0  = revision[1]
         sol0 = revision[2]
         if nc0==1 and sol0>35.0:
@@ -468,14 +529,17 @@ class ASUDef(basic.TaskDriver):
                               "Try to decrease the scattering mass by a " +\
                               "factor of " + str(math.ceil(350.0/sol0)/10.0) +\
                               "</h3>" )
+        """
 
         if revision[0]:
             if istruct:
                 revision[0].setStructureData ( istruct )
             self.registerRevision ( revision[0] )
+            """
             self.generic_parser_summary["z02"] = {
-                'SolventPercent' : int(10*sol0)/10.0
+                'SolventPercent' : int(10*revision[2])/10.0
             }
+            """
 
         # close execution logs and quit
         self.success()

@@ -28,13 +28,6 @@ fsmount:  if not empty, gives path to common file area on FE and NC(s).
 
 
 
-
-          PAC ONE621892
-
-
-
-
-
 {
 
   "_comment"  : [
@@ -45,14 +38,19 @@ fsmount:  if not empty, gives path to common file area on FE and NC(s).
 
   "FrontEnd" : {
     "protocol"         : "http",
-    "host"            : "localhost",
-    "port"            : 8081,
+    "host"             : "localhost",
+    "port"             : 8081,
     "externalURL"      : "http://localhost:8081",
-    "exclusive"       : true,
-    "userDataPath"    : "./cofe-users",
-    "projectsPath"    : "./cofe-projects",
-    "bootstrapHTML"   : "jscofe.html",
-    "fileCapSize"     : 500000
+    "exclusive"        : true,
+    "userDataPath"     : "./cofe-users",
+    "projectsPath"     : "./cofe-projects",
+    "bootstrapHTML"    : "jscofe.html",
+    "fileCapSize"      : 500000,
+    "ration"           : {
+        "storage"   : 3000,
+        "cpu_day"   : 24,
+        "cpu_month" : 240
+    }
   },
   "NumberCrunchers" : [
     {

@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    23.01.18   <--  Date of Last Modification.
+#    20.06.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -95,19 +95,26 @@ class Simbad(asudef.ASUDef):
             app = "simbad-full"
 
         # Prepare simbad input -- script file
-        cmd = [ "-nproc"              ,nSubJobs,
-                "-max_lattice_results",maxnlatt,
-                "-max_penalty_score"  ,maxpenalty,
-                "-F"                  ,hkl.dataset.Fmean.value,
-                "-SIGF"               ,hkl.dataset.Fmean.sigma,
-                "-FREE"               ,hkl.dataset.FREE,
-                "-pdb_db"             ,os.environ["PDB_DIR"],
-                "--display_gui"       ,
-                "-webserver_uri"      ,"jsrview",
-                "-work_dir"           ,"./",
-                "-rvapi_document"     ,self.reportDocumentName(),
-                os.path.join(self.inputDir(),hkl.files[0])
-              ]
+
+        cmd = []
+        if "TMPDIR" in os.environ:
+            cmd  = [ "-tmp_dir",os.environ["TMPDIR"] ]
+        if "PDB_DIR" in os.environ:
+            cmd += [ "-pdb_db",os.environ["PDB_DIR"] ]
+
+        cmd += [ "-nproc"              ,nSubJobs,
+                 "-max_lattice_results",maxnlatt,
+                 "-max_penalty_score"  ,maxpenalty,
+                 "-F"                  ,hkl.dataset.Fmean.value,
+                 "-SIGF"               ,hkl.dataset.Fmean.sigma,
+                 "-FREE"               ,hkl.dataset.FREE,
+                 "--cleanup"           ,
+                 "--display_gui"       ,
+                 "-webserver_uri"      ,"jsrview",
+                 "-work_dir"           ,"./",
+                 "-rvapi_document"     ,self.reportDocumentName(),
+                 os.path.join(self.inputDir(),hkl.files[0])
+               ]
 
         self.flush()
         self.storeReportDocument ( self.log_page_id() )
@@ -136,15 +143,22 @@ class Simbad(asudef.ASUDef):
         }
         """
 
-        rvapi_meta = pyrvapi.rvapi_get_meta()
+        rvapi_meta  = pyrvapi.rvapi_get_meta()
+        simbad_meta = None
         if rvapi_meta:
             try:
                 simbad_meta = json.loads ( rvapi_meta )
             except:
                 self.putMessage ( "<b>Program error:</b> <i>unparseable metadata from Simbad</i>" +
                                   "<p>'" + rvapi_meta + "'" )
-        else:
+                simbad_meta = None
+
+        if not simbad_meta:
             self.putMessage ( "<b>Program error:</b> <i>no metadata from Simbad</i>" )
+            simbad_meta = {}
+            simbad_meta["nResults"] = 0
+        elif not "nResults" in simbad_meta:
+            self.putMessage ( "<b>Program error:</b> <i>corrupt metadata from Simbad</i>" )
             simbad_meta = {}
             simbad_meta["nResults"] = 0
 

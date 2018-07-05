@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    05.12.17   <--  Date of Last Modification.
+ *    25.06.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  MoRDa Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2017
+ *  (C) E. Krissinel, A. Lebedev 2016-2018
  *
  *  =================================================================
  *
@@ -38,7 +38,7 @@ function TaskMorda()  {
   this.helpURL = './html/jscofe_task_morda.html';
 
   this.input_dtypes = [{    // input data types
-      data_type   : {'DataRevision':['!protein','hkl']}, // data type(s) and subtype(s)
+      data_type   : {'DataRevision':['!protein','!asu','~xyz']}, // data type(s) and subtype(s)
       label       : 'Structure revision',     // label for input dialog
       inputId     : 'revision', // input Id for referencing input fields
       version     : 0,          // minimum data version allowed

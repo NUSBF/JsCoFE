@@ -40,6 +40,9 @@ class DType(dtype_template.DType):
             self.version  = 1  # from 01.12.2017
         return
 
+    def getXYZFilePath ( self,dirPath ):
+        return self.getFilePath ( dirPath,0 )
+
     def putXYZMeta ( self,fdir,file_stdout,file_stderr,log_parser=None ):
         setXYZMeta ( self,xyzmeta.getXYZMeta ( os.path.join(fdir,self.files[0]),
                                         file_stdout,file_stderr,log_parser ) )

@@ -87,7 +87,7 @@ function TaskAimless()  {
                     type     : 'combobox',
                     range    :
                     [
-                        'YES|scaling and mergeing',
+                        'YES|scaling and merging',
                         'NO|no scaling only merge'
                     ],
                     tooltip  : 'Switch off scaling for scaled unmerged ' +
@@ -198,7 +198,7 @@ function TaskAimless()  {
                     type     : 'combobox',
                     range    :
                     [
-                        'AUTO|automatic', 
+                        'AUTO|automatic',
                         'EXPLICIT|as for scaling and merging'
                     ],
                     tooltip  : 'Use the same resolution for output and ' +

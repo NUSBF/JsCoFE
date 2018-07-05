@@ -146,6 +146,14 @@ CCP4 Setup and other dependencies
 A fully functional CCP4 Setup must be available for every Number Cruncher and
 Client-side Servers, which must run in CCP4-sourced environment. See
 http://www.ccp4.ac.uk for CCP4 download and installation instructions.
+CCP4 7.0 series needs to be complemented with Gemmi library. In order to install
+it, type the following command in CCP4 sourced environment (use user account
+in which CCP4 was originally installed, and `sudo` if necessary): ::
+
+  $ ccp4-python -m pip install https://github.com ......
+
+This will also require C++-11 compiler on your system, which can be normally
+installed from system's repositories.
 
 Some jsCoFE tasks also require access to PDB archive, obtainable from
 https://www.wwpdb.org/download/downloads. AMPLE package for ab-initio MR

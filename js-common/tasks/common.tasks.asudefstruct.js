@@ -60,7 +60,7 @@ function TaskASUDefStruct()  {
                     '[do not use] and set the estimated molecular size in the ' +
                     'parameters section below in the page.',
       inputId     : 'seq',         // input Id for referencing input fields
-      customInput : 'stoichiometry', // lay custom fields below the dropdown
+      customInput : 'stoichiometry-wauto', // lay custom fields below the dropdown
       version     : 0,             // minimum data version allowed
       force       : 1,             // meaning choose, by default, 1 sequence if
                                    // available; otherwise, 0 (== do not use) will

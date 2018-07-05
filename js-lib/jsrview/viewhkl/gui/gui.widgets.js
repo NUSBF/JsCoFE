@@ -707,6 +707,7 @@ InputText.prototype.setStyle = function ( type,pattern,placeholder,tooltip )  {
     else if ((pattern=='real') || (pattern=='real_'))
       this.element.setAttribute ( 'pattern','^[-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?$' );
     else
+      //this.element.pattern = pattern;
       this.element.setAttribute ( 'pattern',pattern );
   }
   return this;

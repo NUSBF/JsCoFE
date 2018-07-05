@@ -45,6 +45,8 @@ function __object_to_instance ( key,value ) {
     className = getClassName ( value._type,4,'../js-common/tasks/common.tasks.' );
   } else if (value._type.startsWith('Data'))  {
     className = getClassName ( value._type,4,'../js-common/dtypes/common.dtypes.' );
+  } else if (value._type=='UserRation')  {
+    className = getClassName ( value._type,0,'../js-common/common.' );
   }
 
   var obj = null;
@@ -64,7 +66,15 @@ function getClassInstance ( class_json )  {
   return JSON.parse ( class_json,__object_to_instance );
 }
 
+function makeClass ( classObject )  {
+  try {
+    return getClassInstance ( JSON.stringify(classObject) )
+  } catch(e) {
+    return null;
+  }
+}
 
 // ==========================================================================
 // export for use in node
-module.exports.getClassInstance  = getClassInstance;
+module.exports.getClassInstance = getClassInstance;
+module.exports.makeClass        = makeClass;

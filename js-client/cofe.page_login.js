@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    07.03.18   <--  Date of Last Modification.
+ *    24.06.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -52,6 +52,7 @@ function LoginPage ( sceneId )  {
   var pwd_lbl   = new Label     ( 'Password:'   );
   var login_inp = new InputText ( '' );
   var pwd_inp   = new InputText ( '' );
+  login_lbl.setNoWrap();
   ccp4_lbl .setFont             ( 'times','300%',true,true ).setNoWrap();
   login_lbl.setFontSize         ( '125%' );
   pwd_lbl  .setFontSize         ( '125%' );

@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    13.10.17   <--  Date of Last Modification.
+#    23.06.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2018
 #
 # ============================================================================
 #
@@ -28,12 +28,12 @@
 import os
 
 #  application imports
-from   pycofe.tasks  import asudef
+from   pycofe.tasks  import dimple,asudef
 
 # ============================================================================
 # Make Xyz2Revision driver
 
-class Xyz2Revision(asudef.ASUDef):
+class Xyz2Revision(dimple.Dimple,asudef.ASUDef):
 
     # ------------------------------------------------------------------------
 
@@ -41,13 +41,19 @@ class Xyz2Revision(asudef.ASUDef):
 
         # Prepare refmac input
         # fetch input data
-        hkl = self.makeClass ( self.input_data.data.hkl[0] )
-        xyz = self.input_data.data.xyz[0]
+        hkl  = self.makeClass ( self.input_data.data.hkl[0] )
+        xyz  = self.makeClass ( self.input_data.data.xyz[0] )
+        sec1 = self.task.parameters.sec1.contains
 
-        structure = self.finaliseStructure (
-                            os.path.join(self.inputDir(),xyz.files[0]),
-                            os.path.splitext(xyz.files[0])[0],hkl,None,
-                            [],1,False ) # "1" means "after MR"
+        self.outputFName = xyz.lessDataId ( os.path.splitext(xyz.files[0])[0] )
+        if self.getParameter(sec1.USEDIMPLE_CBX)=="False":
+            structure = self.finaliseStructure (
+                                os.path.join(self.inputDir(),xyz.files[0]),
+                                self.outputFName,hkl,None,
+                                [],1,False ) # "1" means "after MR"
+
+        else:
+            structure = self.runDimple ( hkl,xyz )
 
         if not structure:
             self.putMessage ( "<h3>Conversion failed, no output</h3>" )

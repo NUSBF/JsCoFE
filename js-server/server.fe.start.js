@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    01.05.18   <--  Date of Last Modification.
+ *    01.06.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -45,6 +45,11 @@ function start ( callback_func )  {
 
   var feConfig  = conf.getFEConfig();
   var ncConfigs = conf.getNCConfigs();
+
+  if (ncrash==0)  {
+    feConfig.killPrevious();
+    feConfig.savePID();
+  }
 
   conf.setServerConfig ( feConfig );
 
@@ -99,7 +104,13 @@ function start ( callback_func )  {
 
       var c = new comm.Communicate ( server_request,server_response );
 
+      //console.log ( '  command=' + c.command );
+
       switch (c.command)  {
+
+        case cmd.fe_command.getInfo :
+            pp.processPOSTData ( server_request,server_response,user.getInfo );
+          break;
 
         case cmd.fe_command.login :
             pp.processPOSTData ( server_request,server_response,user.userLogin );

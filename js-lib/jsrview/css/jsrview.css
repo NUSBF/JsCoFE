@@ -1,4 +1,24 @@
 
+/*
+ *  =================================================================
+ *
+ *    19.06.18   <--  Date of Last Modification.
+ *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ *  -----------------------------------------------------------------
+ *
+ *  **** Module  :  jsrview/css/jsrview.css
+ *       ~~~~~~~~~
+ *  **** Project :  RVAPI - javascript-based Report Viewer API
+ *       ~~~~~~~~~
+ *  **** Content :  Style Sheets
+ *       ~~~~~~~~~
+ *
+ *  (C) E. Krissinel  2013-2018
+ *
+ *  =================================================================
+ *
+ */
+
 body {
   font-family : "Trebuchet MS", "Helvetica", "Arial",  "Verdana", "sans-serif";
   font-size   : 95.0%;
@@ -259,7 +279,10 @@ body {
   font-size       : 1em;
   vertical-align  : top ;
   margin-top      : 0px ;
-  padding-top     : 0px ;
+  padding-top     : 4px ;
+  padding-bottom  : 0px ;
+  padding-left    : 0px ;
+  padding-right   : 8px ;
   border          : 0px ;
   border-collapse : collapse;
 }
@@ -278,7 +301,7 @@ body {
   font-size       : 1em;
   vertical-align  : top ;
   margin-top      : 0px ;
-  padding-top     : 0px ;
+  padding-top     : 4px ;
   padding-bottom  : 0px ;
   padding-left    : 0px ;
   padding-right   : 8px ;

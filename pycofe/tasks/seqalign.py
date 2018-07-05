@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    03.04.18   <--  Date of Last Modification.
+#    22.06.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -40,7 +40,7 @@ import basic
 
 class SeqAlign(basic.TaskDriver):
 
-    def file_seq_path (self): return "seq.fasta"  # name of input sequence file
+    def file_seq_path (self): return "seq.sss"  # name of input sequence file
     def file_aln_path (self): return "seq.aln"    # name of alignment file
     def file_stat_path(self): return "seq.stat"   # name of alignment stat file
 
@@ -53,9 +53,9 @@ class SeqAlign(basic.TaskDriver):
             while i<len(seqLine) and align[i]==" ":
                 S += seqLine[i]
                 i += 1
-            if i<len(seqLine) and align[i]=="*":
+            if i<len(seqLine) and align[i]!=" ":
                 S += "<span style='color:cyan;'>"
-                while i<len(seqLine) and align[i]=="*":
+                while i<len(seqLine) and align[i]!=" ":
                     S += seqLine[i]
                     i += 1
                 S += "</span>"
@@ -197,6 +197,7 @@ class SeqAlign(basic.TaskDriver):
                                         self.report_page_id(),self.rvrow,100 )
                 self.setTableHorzHeaders ( tableId,["Sequence","Alignment"],
                                                    ["Sequence","Alignment"] )
+
                 for r in range(nseq):
                     sname = "s" + str(r+1).zfill(3)
                     self.putTableLine ( tableId,str(r+1),"",smap[sname]["name"],r )

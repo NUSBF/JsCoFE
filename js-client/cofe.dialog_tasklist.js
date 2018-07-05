@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    27.03.18   <--  Date of Last Modification.
+ *    13.06.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -85,6 +85,9 @@ TaskListDialog.prototype.constructor = TaskListDialog;
 
 TaskListDialog.prototype.setTask = function ( task_obj,grid,row,setall )  {
 
+  if ((!__local_service) && (task_obj.nc_type=='client'))
+    return null;
+
   var dataSummary = this.dataBox.getDataSummary ( task_obj );
 
   if ((!setall) && (!dataSummary.status))
@@ -163,8 +166,6 @@ var r         = 0;  // grid row
     ctotal += counts[i];
   }
 
-
-
   var cthresh = ctotal*__suggested_task_prob;
 // console.log ( 'ctotal='+ctotal + ',  cthresh='+cthresh );
 
@@ -201,25 +202,19 @@ var row      = 0;
         grid1.setLabel ( '<hr/>',0,1,1,1 );
         grid1.setCellSize ( '10%','8px',0,0 );
         grid1.setCellSize ( '90%','8px',0,1 );
-      } else if (this.setTask(task_list[n],section.grid,r++,true)
-                     .dataSummary.status>0)
-        cnt++;
+      } else  {
+        var task = this.setTask ( task_list[n],section.grid,r++,true );
+        if (task)  {
+          if (task.dataSummary.status>0)
+            cnt++;
+        }
+      }
     section.setTitle ( title + ' <b>(' + cnt + ')</b>' );
     if (cnt>0)  {
       navail++;
       section0 = section;
     }
   }
-
-  /*
-  grid.setLabel ( '<ul style="margin-left:-30px;"><li><b><i>For easy cases without complications ' +
-                  '(experimental):</i></b></li></ul>',
-                  row++,0,1,3 );
-  this.setTask ( new TaskCCP4go(),grid,row++,true ); //.dataSummary.status>0)
-  grid.setLabel ( '<ul style="margin-left:-30px;"><li><b><i>or a task from ' +
-                  'full list:</i></b></li></ul>',
-                  row++,0,1,3 );
-  */
 
 
   this.makeSection ( 'Combined Automated Solver <i>"CCP4 Go"</i>',[
@@ -236,6 +231,7 @@ var row      = 0;
   ]);
 
   this.makeSection ( 'Data Processing',[
+    new TaskXia2     (),
     new TaskAimless  (),
     new TaskChangeSpG(),
     new TaskFreeRFlag()
@@ -250,8 +246,8 @@ var row      = 0;
   this.makeSection ( 'Molecular Replacement',[
     'No-sequence methods',
     new TaskSimbad(),
-    'No-model methods',
-    new TaskAmple (),
+    //'No-model methods',
+    //new TaskAmple (),
     'Automated MR',
     new TaskBalbes(),
     new TaskMorda (),
@@ -261,7 +257,7 @@ var row      = 0;
     new TaskEnsemblePrepXYZ(),
     new TaskMolrep  (),
     new TaskPhaserMR(),
-    new TaskShelxEMR(),
+    new TaskShelxEMR()
   ]);
 
   this.makeSection ( 'Experimental Phasing',[
@@ -277,15 +273,13 @@ var row      = 0;
     new TaskParrot()
   ]);
 
-  var task_list = [
+  this.makeSection ( 'Refinement and Model Building',[
     new TaskRefmac   (),
     new TaskLorestr  (),
-    new TaskBuccaneer()
-  ];
-  if (__local_service)
-    task_list.push ( new TaskCoot() );
-
-  this.makeSection ( 'Refinement and Model Building',task_list );
+    new TaskBuccaneer(),
+    new TaskDimple   (),
+    new TaskCoot     ()
+  ]);
 
   this.makeSection ( 'Ligands',[
     new TaskMakeLigand(),
@@ -293,9 +287,10 @@ var row      = 0;
     new TaskFitWaters ()
   ]);
 
-  this.makeSection ( 'Validation and Analysis',[
+  this.makeSection ( 'Validation, Analysis and Deposition',[
     new TaskZanuda    (),
-    new TaskPISA      ()
+    new TaskPISA      (),
+    new TaskDeposition()
   ]);
 
   this.makeSection ( 'Toolbox',[
@@ -305,8 +300,7 @@ var row      = 0;
 
   if (__login_user=='Developer')
     this.makeSection ( 'Tasks in Development',[
-      new TaskHelloWorld(),
-      new TaskDeposition()
+      new TaskHelloWorld()
     ]);
 
   if (navail==1)

@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    13.02.18   <--  Date of Last Modification.
+#    28.06.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -14,8 +14,11 @@
 # ============================================================================
 #
 
+import math
+
 from ccp4mg import mmdb2
 from Bio    import pairwise2
+import  datred_utils
 
 
 # ============================================================================
@@ -93,6 +96,213 @@ resCodes = {
 
 
 # ============================================================================
+
+"""
+
+C     PROTDEN protein density
+C     DNADEN dna density
+C     PDDEN protein/dna complex density
+C     PROTSOL protein solvent content
+C     DNASOL dna solvent content
+C     PDSOL protein/dna complex solvent content
+      REAL PROTDEN, DNADEN, PDDEN, PROTSOL, DNASOL, PDSOL
+      PARAMETER (PROTDEN=1.0/0.74)
+      PARAMETER (DNADEN=1.0/0.50)
+      PARAMETER (PROTSOL=0.47)
+      PARAMETER (DNASOL=0.64)
+      PARAMETER (PDDEN=PROTDEN*0.75+DNADEN*0.25)
+      PARAMETER (PDSOL=0.60)
+
+
+        IF(LDNA) THEN
+c use average weight of C G A T residue (NOT base pair)
+         WEIGHT = 325.96*NRES
+         write(6,*)' Molecular weight of DNA estimated from NRES is ',
+     +         WEIGHT
+        ELSEIF (LCOMP) THEN
+c assume 25%/75% DNA/protein, as in Kantardjieff
+         WEIGHT =  12.0*5 + 14.0*1.35 + 16.0*1.5 +1.0*8 +32.0*0.05
+         WEIGHT = (WEIGHT*0.75+325.96*0.25)*NRES
+         write(6,*) ' Molecular weight of DNA/protein complex',
+     +       ' estimated from NRES is ',WEIGHT
+        ELSE
+         WEIGHT =  12.0*5 + 14.0*1.35 + 16.0*1.5 +1.0*8 +32.0*0.05
+                    60       18.9        24        8      1.6
+         WEIGHT = WEIGHT*NRES
+         write(6,*)' Molecular weight estimated from NRES is ',WEIGHT
+
+
+
+      CELL(4)=CELL(4)*PI/180.0
+      CELL(5)=CELL(5)*PI/180.0
+      CELL(6)=CELL(6)*PI/180.0
+      ULT = 1.0 + 2.0*COS(CELL(4))*COS(CELL(5))*COS(CELL(6)) -
+     +      COS(CELL(4))**2 - COS(CELL(5))**2 - COS(CELL(6))**2
+      IF (ULT .LE. 0.0) CALL CCPERR(1,
+     +' *** The cell volume cannot be calculated; check CELL card ***')
+      VOLUME=CELL(1)*CELL(2)*CELL(3)*SQRT(ULT)
+
+
+      DENSITY = PROTDEN, DNADEN, PDDEN
+      FRACSOL = PROTSOL, DNASOL, PDSOL
+
+        FRAC2 = FRACSOL
+        RO = (1-FRAC2)*DENSITY
+        WEIGHT =RO*(0.602*VOLUME)/(NMOL*NSYM)
+
+
+     +    '(density of solvent = 1.0, density of dna = 2.0)',
+     +'(density of solvent = 1.0, density of protein/dna = 1.35/2.0',
+     +    '(density of solvent = 1.0, density of protein = 1.35)',
+
+
+"""
+
+
+def suggestASUComp1 ( hkl,seqFilePath ):
+# version with all template sequences taken from file
+    asu = []
+    if seqFilePath:
+        with open(seqFilePath,'r') as f:
+            content = f.read()
+        clist = filter ( None,content.split('>') )
+        for i in range(len(clist)):
+            seqdata = clist[i].splitlines()
+            seq = ""
+            for j in range(1,len(seqdata)):
+                seq += seqdata[j].strip()
+            asu.append ( [seq,0.0,'protein',0] )  # only protein seq for now -- to be changed
+    return suggestASUComp ( hkl,asu )
+
+
+def suggestASUComp ( hkl,asu ):
+    #   hkl : reflection dataset metadata
+    #   asu = [[seq1,weight1,type1,nocc1],[seq2,weight2,type2,nocc2],....],  where
+    #        seqN    : Nth sequence -- must be given if weightN<=0.0
+    #        weightN : weight of Nth sequence -- must be given if seqN==""
+    #        typeN   : Nth sequence type: 'protein' or 'dna'
+    #        noccN   : on input: <= 0 choose automatically
+    #                  on output: the number of Nth sequence in ASU (on return)
+
+    nprot  = 0
+    ndna   = 0
+    nseq   = len(asu)
+    for i in range(nseq):
+        if asu[i][2]=='protein':
+            if asu[i][1]<=0.0:
+                asu[i][1] = 112.5*len(asu[i][0])
+            nprot += 1
+        else:
+            if asu[i][1]<=0.0:
+                asu[i][1] = 325.96*len(asu[i][0])
+            ndna += 1
+
+    density = 1.35
+    solvent = 0.47
+    asutype = "P"
+    if nprot==0:
+        density = 2.0
+        solvent = 0.64
+        asutype = "D"
+    elif nprot!=0 and ndna!=0:
+        density = 1.5
+        solvent = 0.6
+        asutype = "C"
+
+    nsym = datred_utils.getNSym ( hkl.HM )
+    if nsym<=0:
+        return {"rc":-1,"msg":"Error in space symmetry group identification"}
+
+    calpha = math.cos ( hkl.DCELL[3]*math.pi/180.0 )
+    cbeta  = math.cos ( hkl.DCELL[4]*math.pi/180.0 )
+    cgamma = math.cos ( hkl.DCELL[5]*math.pi/180.0 )
+    ult = 1.0 + 2.0*calpha*cbeta*cgamma - calpha*calpha - cbeta*cbeta - cgamma*cgamma
+    if ult <= 0.0:
+        return {"rc":-2,"msg":"Impossible cell parameters"}
+    volume = hkl.DCELL[0]*hkl.DCELL[1]*hkl.DCELL[2]*math.sqrt(ult)/nsym
+
+    auto = []   # True if ith composition value may be adjusted
+    comp = []   # will be used as composition variable
+    for i in range(nseq):
+        auto.append ( (asu[i][3]<=0)   )
+        comp.append ( max(1,asu[i][3]) )
+
+    params = {
+      "asu"       : asu,
+      "nseq"      : nseq,
+      "maxWeight" : 0.602*density*volume,  # for zero solvent contents
+      "auto"      : auto,
+      "comp"      : comp,
+      "solvent"   : solvent, # target solvent percent
+      "weight0"   : 0.0,     # weight of chosen composition
+      "nres0"     : 0,       # total number of residues in chosen composition
+      "nmol0"     : 0,       # total number of molecules in chosen composition
+      "sol0"      : -1.0,    # will be final solvent fraction
+      "dsol0"     : 10.0     # will be minimum solvent distance
+    }
+
+    def calcFracSol ( n,p ):
+
+        if p["auto"][n]:
+            p["comp"][n] = 1
+
+        sol = 10.0
+
+        if n<p["nseq"]-1:
+            if p["auto"][n]:
+                while calcFracSol(n+1,p)>0.0:
+                    p["comp"][n] += 1
+                sol = -1.0
+            else:
+                sol = calcFracSol ( n+1,p )
+        else:
+            while sol>0.0:
+                w0 = 0.0
+                for i in range(p["nseq"]):
+                    w0 += p["asu"][i][1]*p["comp"][i]
+                sol = 1.0 - w0/p["maxWeight"]
+                if sol>0.0:
+                    # denominator makes a trend to ward wetter crystals
+                    dsol = math.fabs(sol-p["solvent"])/(sol+p["solvent"])
+                    if dsol<p["dsol0"]:
+                        p["dsol0"]   = dsol
+                        p["sol0"]    = sol
+                        p["weight0"] = w0
+                        nres = 0
+                        nmol = 0
+                        for i in range(p["nseq"]):
+                            p["asu"][i][3] = p["comp"][i]
+                            nres += p["comp"][i]*len(p["asu"][i][0])
+                            nmol += p["comp"][i]
+                        p["nres0"] = nres
+                        p["nmol0"] = nmol
+                if p["auto"][n]:
+                    p["comp"][n] += 1
+                else:
+                    break;
+
+        return sol
+
+    calcFracSol ( 0,params )
+
+    rc = {
+        "rc"        : 0,
+        "asu"       : params["asu"],
+        "solvent"   : params["sol0"],
+        "weight"    : params["weight0"],
+        "nres"      : params["nres0"],
+        "nmol"      : params["nmol0"],
+        "asuType"   : asutype
+    }
+
+
+    if params["sol0"]<=0.0:
+        rc["rc"]  = -3
+        rc["msg"] = "Given sequence(s) cannot be fit in ASU"
+
+    return rc
+
+
 
 def getASUComp ( coorFilePath,sequenceList,clustThresh=0.9 ):
 

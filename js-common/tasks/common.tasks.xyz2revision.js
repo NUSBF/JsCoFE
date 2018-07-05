@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    06.01.18   <--  Date of Last Modification.
+ *    23.06.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -22,22 +22,22 @@
 var __template = null;
 
 if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
-  __template = require ( './common.tasks.template' );
+  __template = require ( './common.tasks.dimple' );
 
 // ===========================================================================
 
 function TaskXyz2Revision()  {
 
-  if (__template)  __template.TaskTemplate.call ( this );
-             else  TaskTemplate.call ( this );
+  if (__template)  __template.TaskDimple.call ( this );
+             else  TaskDimple.call ( this );
 
   this._type   = 'TaskXyz2Revision';
-  this.name    = 'convert xyz to revision';
+  this.name    = 'link xyz and hkl';
   this.oname   = '*'; // asterisk means do not use (XYZ name will be used)
-  this.title   = 'Convert Coordinates to "Structure Revision"';
+  this.title   = 'Link Coordinates and Reflections';
   this.helpURL = './html/jscofe_task_xyz2revision.html';
 
-  this.input_dtypes = [{      // input data types
+  this.input_dtypes = [{  // input data types
       data_type   : {'DataHKL':[]}, // data type(s) and subtype(s)
       label       : 'Reflections',  // label for input dialog
       inputId     : 'hkl',       // input Id for referencing input fields
@@ -54,12 +54,26 @@ function TaskXyz2Revision()  {
     }
   ];
 
+  for (var option in this.parameters.sec1.contains)  {
+    this.parameters.sec1.contains[option].position[0]++;
+    this.parameters.sec1.contains[option].showon = {'USEDIMPLE_CBX':[true]}
+  }
+
+  this.parameters.sec1.contains.USEDIMPLE_CBX = {
+    type     : 'checkbox',
+    label    : 'Run Dimple',
+    tooltip  : 'Check to run Dimple for optional molecular replacement and refinement',
+    iwidth   : 280,
+    value    : false,
+    position : [0,0,1,4]
+  };
+
 }
 
 
 if (__template)
-      TaskXyz2Revision.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskXyz2Revision.prototype = Object.create ( TaskTemplate.prototype );
+      TaskXyz2Revision.prototype = Object.create ( __template.TaskDimple.prototype );
+else  TaskXyz2Revision.prototype = Object.create ( TaskDimple.prototype );
 TaskXyz2Revision.prototype.constructor = TaskXyz2Revision;
 
 
@@ -76,7 +90,7 @@ if (!__template)  {
 
   TaskXyz2Revision.prototype.inputChanged = function ( inpParamRef,emitterId,emitterValue )  {
 
-    TaskTemplate.prototype.inputChanged.call ( this,inpParamRef,emitterId,emitterValue );
+    TaskDimple.prototype.inputChanged.call ( this,inpParamRef,emitterId,emitterValue );
 
     if ((emitterId=='hkl') || (emitterId=='xyz'))  {
       var inpDataRef = inpParamRef.grid.inpDataRef;
@@ -119,6 +133,23 @@ if (!__template)  {
       // that the signal will be emitted in first available thread.
       inpParamRef.grid.inputPanel.postSignal ( cofe_signals.taskReady,message,0 );
 
+    } else if (emitterId=='USEDIMPLE_CBX')  {
+      if (inpParamRef.parameters[emitterId].input.getValue())  {
+        if (!this.title.endsWith(' + Dimple'))  this.title += ' + Dimple';
+        if (!this.name.endsWith(' + dimple'))   this.name  += ' + dimple';
+      } else  {
+        if (this.title.endsWith(' + Dimple'))
+          this.title = this.title.substr(0,this.title.length-9);
+        if (this.name.endsWith(' + dimple'))
+          this.name = this.name.substr(0,this.name.length-9);
+      }
+      var inputPanel = inpParamRef.grid.parent.parent;
+      inputPanel.header.title.setText ( '<b>' + this.title + '</b>' );
+      inputPanel.header.uname_inp.setStyle ( 'text','',
+                            this.name.replace(/<(?:.|\n)*?>/gm, '') );
+      this.updateInputPanel ( inputPanel );
+      inputPanel.emitSignal ( cofe_signals.jobDlgSignal,
+                              job_dialog_reason.rename_node );
     }
 
   }

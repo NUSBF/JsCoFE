@@ -282,7 +282,9 @@ def register ( xyzFilePath,mtzFilePath,mapFilePath,dmapFilePath,libFilePath,
         flist = [xyzFilePath,mtzFilePath,mapFilePath,dmapFilePath,libFilePath]
         for f in flist:
             if f and os.path.isfile(f):
-                fname = structure.dataId + "_" + os.path.basename(f)
+                fname = os.path.basename(f)
+                if (not fname[0:4].isdigit()) or (not fname[5:7].isdigit()) or fname[4]!="-" or fname[7]!="_":
+                    fname = structure.dataId + "_" + fname
                 structure.addFile ( fname )
                 if copy:
                     shutil.copy2 ( f, os.path.join(outputDir,fname) )

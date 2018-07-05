@@ -3,13 +3,13 @@
 #
 # ============================================================================
 #
-#    30.11.17   <--  Date of Last Modification.
+#    23.06.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  MERGED MTZ DATA IMPORT FUNCTIONS
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2018
 #
 # ============================================================================
 #
@@ -174,7 +174,6 @@ def run ( body,   # body is reference to the main Import class
                                     freerflag_script(),body.file_stdout,
                                     body.file_stderr,log_parser=None )
 
-
             if rc.msg:
                 msg = "\n\n Freerflag failed with message:\n\n" + \
                       rc.msg + \
@@ -270,10 +269,11 @@ def run ( body,   # body is reference to the main Import class
                     rc = command.call ( "ctruncate",cmd,"./",None,
                                         body.file_stdout,body.file_stderr,log_parser )
                     """
+
                     body.file_stdin = None  # not clear why this is not None at
                                             # this point and needs to be forced,
                                             # or else runApp looks for input script
-                    body.setGenericLogParser ( mtzSecId+str(k),False )
+                    body.setGenericLogParser ( mtzSecId+str(k),False,False,False )
                     body.runApp ( "ctruncate",cmd )
 
                     body.file_stdout.flush()

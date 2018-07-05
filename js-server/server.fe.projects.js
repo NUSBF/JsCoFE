@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    23.03.18   <--  Date of Last Modification.
+ *    05.07.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -29,6 +29,7 @@ var emailer  = require('./server.emailer');
 var conf     = require('./server.configuration');
 var utils    = require('./server.utils');
 var send_dir = require('./server.send_dir');
+var ration   = require('./server.fe.ration');
 var pd       = require('../js-common/common.data_project');
 var cmd      = require('../js-common/common.commands');
 var task_t   = require('../js-common/tasks/common.tasks.template');
@@ -44,6 +45,7 @@ var projectListFName   = 'projects.list';
 var userKnowledgeFName = 'knowledge.meta';
 var projectDataFName   = 'project.meta';
 var jobDirPrefix       = 'job_';
+var replayDir          = 'replay';
 
 // ===========================================================================
 
@@ -71,16 +73,22 @@ function getUserKnowledgePath ( login )  {
 function getProjectDirPath ( login,projectName )  {
 // path to directory containing project 'projectName' of user with
 // given login name
-  return path.join ( conf.getFEConfig().projectsPath,login + userProjectsExt,
-                                               projectName + projectExt );
+  var n = projectName.lastIndexOf(':'+replayDir);
+  if (n>0)
+    return path.join ( conf.getFEConfig().projectsPath,
+                       login + userProjectsExt,
+                       projectName.slice(0,n) + projectExt,
+                       replayDir );
+  else
+    return path.join ( conf.getFEConfig().projectsPath,
+                       login + userProjectsExt,
+                       projectName + projectExt );
 }
 
 function getProjectDataPath ( login,projectName )  {
 // path to JSON file containing metadata (see class ProjectData) of
 // project 'peojectName' of user with given login name
-  return path.join ( conf.getFEConfig().projectsPath,login + userProjectsExt,
-                                               projectName + projectExt,
-                                               projectDataFName );
+  return path.join ( getProjectDirPath(login,projectName),projectDataFName );
 }
 
 function getJobDirPath ( login,projectName,jobId )  {
@@ -246,7 +254,7 @@ var knowledge = {};
 // ===========================================================================
 
 function makeNewProject ( login,projectDesc )  {
-var response = 0;  // must become a cmd.Response object to return
+var response = null;  // must become a cmd.Response object to return
 
 //  console.log ( JSON.stringify(projectDesc) );
 
@@ -267,6 +275,7 @@ var response = 0;  // must become a cmd.Response object to return
 
     var projectData  = new pd.ProjectData();
     projectData.desc = projectDesc;
+    /*
     if (utils.writeObject(getProjectDataPath(login,projectDesc.name),
                                              projectData)) {
       response = new cmd.Response ( cmd.fe_retcode.ok,'','' );
@@ -274,6 +283,22 @@ var response = 0;  // must become a cmd.Response object to return
       response = new cmd.Response ( cmd.fe_retcode.writeError,
                                 '[00017] Project data cannot be written.','' );
     }
+    */
+    if (utils.writeObject(getProjectDataPath(login,projectDesc.name),
+                                             projectData)) {
+      if (utils.mkDir(path.join(projectDirPath,replayDir))) {
+        var pname = projectData.desc.name;
+        projectData.desc.name = projectData.desc.name + ':' + replayDir;
+        if (utils.writeObject(getProjectDataPath(login,projectDesc.name),
+                                                 projectData)) {
+          response = new cmd.Response ( cmd.fe_retcode.ok,'','' );
+        }
+        projectData.desc.name = pname;
+      }
+    }
+    if (!response)
+     response = new cmd.Response ( cmd.fe_retcode.writeError,
+                                   '[00017] Project data cannot be written.','' );
 
   } else  {
 
@@ -304,6 +329,8 @@ var response = 0;  // must become a cmd.Response object to return
 
   utils.removePath ( projectDirPath );
 
+  ration.maskProject ( login,projectName );
+
   var erc = '';
   if (utils.fileExists(projectDirPath))
     erc = emailer.send ( conf.getEmailerConfig().maintainerEmail,
@@ -332,6 +359,7 @@ var response = null;  // must become a cmd.Response object to return
     if (pList)  {
 
       // delete missed projects
+      var disk_space_change = 0.0;
       for (var i=0;i<pList.projects.length;i++)  {
         var found = false;
         var pName = pList.projects[i].name;
@@ -341,8 +369,15 @@ var response = null;  // must become a cmd.Response object to return
           var rsp = deleteProject ( login,pName );
           if (rsp.status!=cmd.fe_retcode.ok)
             response = rsp;
+          else  {
+            if ('disk_space' in pList.projects[i])  // backward compatibility 05.06.2018
+              disk_space_change -= pList.projects[i].disk_space;
+          }
         }
       }
+
+      if (disk_space_change!=0.0)
+        ration.changeProjectDiskSpace ( login,null,disk_space_change,false );
 
       // create new projects
       for (var i=0;i<newProjectList.projects.length;i++)  {
@@ -358,11 +393,15 @@ var response = null;  // must become a cmd.Response object to return
       }
 
       if (!response)  {
-        if (utils.writeObject ( userProjectsListPath,newProjectList ))
-          response = new cmd.Response ( cmd.fe_retcode.ok,'','' );
-        else
+        if (utils.writeObject ( userProjectsListPath,newProjectList ))  {
+          var rdata = {};
+          if (disk_space_change!=0.0)  {  // save on reading files ration does not change
+            rdata.ration = ration.getUserRation(login).clearJobs();
+          }
+          response = new cmd.Response ( cmd.fe_retcode.ok,'',rdata );
+        } else
           response = new cmd.Response ( cmd.fe_retcode.writeError,
-                                '[00018] Project list cannot be written.','' );
+                                '[00019] Project list cannot be written.','' );
       }
 
     } else  {
@@ -497,13 +536,32 @@ function saveProjectData ( login,data )  {
 
   if (utils.fileExists(projectDataPath))  {
 
+    var disk_space_change = 0.0;
+    if ('disk_space' in data.meta.desc)  {  // backward compatibility on 05.06.2018
+      for (var i=0;i<data.tasks_del.length;i++)
+        disk_space_change -= data.tasks_del[i][1]
+      data.meta.desc.disk_space += disk_space_change;
+      data.meta.desc.disk_space  = Math.max ( 0,data.meta.desc.disk_space );
+    } else  {
+      data.meta.desc.disk_space  = 0.0;   // should be eventually removed
+      data.meta.desc.cpu_time    = 0.0;   // should be eventually removed
+    }
+
+    ration.changeProjectDiskSpace ( login,projectName,disk_space_change,false );
+
     if (utils.writeObject(projectDataPath,data.meta))  {
 
-      response = new cmd.Response ( cmd.fe_retcode.ok,'','' );
+      var rdata = {};
+      if (data.tasks_del.length>0)  {  // save on reading files ration does not change
+        rdata.ration = ration.getUserRation(login).clearJobs();
+        rdata.pdesc  = data.meta.desc;
+      }
+
+      response = new cmd.Response ( cmd.fe_retcode.ok,'',rdata );
 
       // remove job directories from the 'delete' list
       for (var i=0;i<data.tasks_del.length;i++)
-        utils.removePath ( getJobDirPath(login,projectName,data.tasks_del[i]) );
+        utils.removePath ( getJobDirPath(login,projectName,data.tasks_del[i][0]) );
 
       // add job directories from the 'add' list
       for (var i=0;i<data.tasks_add.length;i++)  {
@@ -592,6 +650,9 @@ function importProject ( login,upload_meta,tmpDir )  {
             if (prj_meta._type=='ProjectData')  {
               projectDesc.name         = prj_meta.desc.name;
               projectDesc.title        = prj_meta.desc.title;
+              projectDesc.disk_space   = prj_meta.desc.disk_space;
+              projectDesc.cpu_time     = prj_meta.desc.cpu_time;
+              projectDesc.njobs        = prj_meta.desc.njobs;
               projectDesc.dateCreated  = prj_meta.desc.dateCreated;
               projectDesc.dateLastUsed = prj_meta.desc.dateLastUsed;
             } else
@@ -638,6 +699,8 @@ function importProject ( login,upload_meta,tmpDir )  {
                     utils.writeString ( signal_path,'Success\n' + projectDesc.name );
               else  utils.writeString ( signal_path,'Cannot write project list\n' +
                                                     projectDesc.name );
+
+              ration.changeUserDiskSpace ( login,projectDesc.disk_space );
 
             } else {
 
@@ -749,6 +812,7 @@ function getJobFile ( login,data )  {
 // export for use in node
 module.exports.makeNewUserProjectsDir = makeNewUserProjectsDir;
 module.exports.getProjectList         = getProjectList;
+module.exports.getProjectDataPath     = getProjectDataPath;
 module.exports.getUserKnowledgePath   = getUserKnowledgePath;
 module.exports.getUserKnowledgeData   = getUserKnowledgeData;
 module.exports.saveProjectList        = saveProjectList;
@@ -762,6 +826,7 @@ module.exports.saveProjectData        = saveProjectData;
 module.exports.importProject          = importProject;
 module.exports.getProjectDirPath      = getProjectDirPath;
 module.exports.getUserProjectsDirPath = getUserProjectsDirPath;
+module.exports.getUserProjectListPath = getUserProjectListPath;
 module.exports.getJobDirPath          = getJobDirPath;
 module.exports.getSiblingJobDirPath   = getSiblingJobDirPath;
 module.exports.getJobDataPath         = getJobDataPath;

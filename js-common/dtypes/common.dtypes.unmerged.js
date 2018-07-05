@@ -163,7 +163,7 @@ if (!__template)  {
         var range_list = [];
         for (var i=0;i<this.dataset.runs.length;i++)
           range_list.push(this.dataset.runs[i][1] + '-' + this.dataset.runs[i][2]);
-        tooltip = 'Available batches:<br>' + range_list.join(', ');
+        tooltip = 'Available batches: ' + range_list.join(', ');
         customGrid.runs = customGrid.setInputText ( this.runs,row,1,1,1 )
                                     .setTooltip ( tooltip )
                                     .setWidth ( '440px' );
@@ -232,4 +232,3 @@ else
   //  for server side
   module.exports.DataUnmerged = DataUnmerged;
 }
-

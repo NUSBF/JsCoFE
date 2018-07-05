@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    09.03.18   <--  Date of Last Modification.
+#    23.06.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -93,6 +93,9 @@ class CCP4go(ccp4go_fitligands.FitLigands):
         branch_id = self.prepare_mtz ( "" )
 
         if not self.output_meta["retcode"]:
+            self.prepare_asu ( "" )
+
+        if not self.output_meta["retcode"]:
             self.dimple ( None,"dimple_mr","mr","" )
 
         if self.output_meta["retcode"] != "solved":
@@ -127,12 +130,8 @@ class CCP4go(ccp4go_fitligands.FitLigands):
                     self.dimple  ( d,"dimple_refine","refine","" )
                     d = self.checkResult ( "dimple_refine",d,1.0 )
                     self.fitLigands ( d,"fitligands","" )
-                #d1 = self.checkResult ( "fitligands",d,1.0 )
-                #if d1!=d:
-                #    self.lorestr ( "fitligands","" )
             if not "fitligands" in self.output_meta["results"]:
                 self.dimple ( d,"dimple_refine","refine","" )
-                #self.lorestr ( d,"lorestr","" )
 
         self.putMessage ( "<h3><i>---- Structure solution workflow " +
                           "completed.</i></h3>" )

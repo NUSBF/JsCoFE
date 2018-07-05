@@ -1,4 +1,25 @@
 
+/*
+ *  =================================================================
+ *
+ *    19.06.18   <--  Date of Last Modification.
+ *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ *  -----------------------------------------------------------------
+ *
+ *  **** Module  :  css/gui/gui.widgets.css
+ *       ~~~~~~~~~
+ *  **** Project :  jsCoFE - javascript-based Cloud Front End
+ *       ~~~~~~~~~
+ *  **** Content :  GUI Widgets Style Sheets
+ *       ~~~~~~~~~
+ *
+ *  (C) E. Krissinel, A. Lebedev 2016-2018
+ *
+ *  =================================================================
+ *
+ */
+
+
 body {
   font-family : "Trebuchet MS", "Helvetica", "Arial",  "Verdana", "sans-serif";
   font-size   : 100.0%;
@@ -8,17 +29,21 @@ body {
    spanning all width of the grid holder */
 
 .grid-layout {
-  width       : 100%;
-  height      : auto;
-  table-layout: auto;
-  border      : 0px ;
-  margin-top  : 0px ;
-  padding-top : 0px ;
+  width          : 100%;
+  height         : auto;
+  table-layout   : auto;
+  border         : 0px ;
+  margin-top     : 0px ;
+  padding-top    : 0px ;
+  margin-bottom  : 0px ;
+  padding-bottom : 0px ;
 }
 .grid-layout td {
-  vertical-align: top ;
-  margin-top    : 0px ;
-  padding-top   : 0px ;
+  vertical-align : top ;
+  margin-top     : 0px ;
+  padding-top    : 1px ;
+  margin-bottom  : 0px ;
+  padding-bottom : 0px ;
 }
 
 /* grid-layout-full defines a grid to lay widgets in,
@@ -37,7 +62,7 @@ body {
 .grid-layout-full td {
   vertical-align : top ;
   margin-top     : 0px ;
-  padding-top    : 0px ;
+  padding-top    : 1px ;
   margin-bottom  : 0px ;
   padding-bottom : 0px ;
 }
@@ -60,7 +85,7 @@ body {
   vertical-align : top ;
   margin-top     : 0px ;
   margin-bottom  : 0px ;
-  padding-top    : 0px ;
+  padding-top    : 1px ;
   padding-bottom : 0px ;
   padding-left   : 0px ;
   padding-right  : 8px ;

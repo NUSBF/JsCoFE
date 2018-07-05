@@ -3,13 +3,13 @@
 #
 # ============================================================================
 #
-#    01.12.17   <--  Date of Last Modification.
+#    28.06.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  SEQUENCE DATA TYPE
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2018
 #
 # ============================================================================
 #
@@ -64,6 +64,7 @@ class DType(dtype_template.DType):
             self.weight  = 0.0
             self.ncopies = 1    # expected number of copies in ASU
             self.nfind   = 1    # copies to find
+            self.ncopies_auto = True   # flag to find ncopies automatically
         return
 
     def isProtein(self):
@@ -83,6 +84,10 @@ class DType(dtype_template.DType):
         if self.isDNA():      return dtype_template.subtypeDNA    ()
         if self.isRNA():      return dtype_template.subtypeRNA    ()
         return ""
+
+
+    def getSeqFilePath ( self,dirPath ):
+        return self.getFilePath ( dirPath,0 )
 
 
     def getSequence(self,dirPath):

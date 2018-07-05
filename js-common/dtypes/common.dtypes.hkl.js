@@ -449,10 +449,10 @@ if (!__template)  {
         //customGrid.useHKLSet.addItem  ( 'Auto','','auto',this.useHKLSet=='auto' );
         //if (is_Ipm)
         //  customGrid.useHKLSet.addItem  ( 'Anomalous Intensities','','Ipm',this.useHKLSet=='Ipm' );
-        if (is_Fmean)
-          customGrid.useHKLSet.addItem  ( 'Mean Amplitudes only','','F',this.useHKLSet=='F' );
         if (is_Fpm)
           customGrid.useHKLSet.addItem  ( 'Anomalous Differences','','Fpm',this.useHKLSet=='Fpm' );
+        if (is_Fmean)
+          customGrid.useHKLSet.addItem  ( 'Mean Amplitudes only','','F',this.useHKLSet=='F' );
         if (is_Imean)
           customGrid.useHKLSet.addItem  ( 'Mean Intensities assuming twinning','','TI',this.useHKLSet=='TI' );
         if (is_Fmean)

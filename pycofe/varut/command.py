@@ -38,6 +38,18 @@ class comrc():
            self.umem  = 0
         return
 
+sys_time  = 0
+user_time = 0
+
+def _add_times ( rc ):
+    global sys_time,user_time
+    sys_time  += rc.stime/3600.0
+    user_time += rc.utime/3600.0
+    return
+
+def getTimes():
+    return [sys_time,user_time]
+
 
 def call ( executable,command_line,job_dir,stdin_fname,file_stdout,
            file_stderr,log_parser=None ):
@@ -77,7 +89,7 @@ def call ( executable,command_line,job_dir,stdin_fname,file_stdout,
     file_stdout.write ( "\n" + "="*80 + "\n\n" )
     file_stdout.flush()
 
-    rc = comrc ()
+    rc = comrc()
     try:
         p = subprocess.Popen ( [executable] + command_line,
                           shell=False,
@@ -100,6 +112,8 @@ def call ( executable,command_line,job_dir,stdin_fname,file_stdout,
     file_stdout.write ( "   sys time   : " + str(rc.stime) + " (sec)\n" )
     file_stdout.write ( "   memory used: " + str(rc.umem ) + " (MB)\n" )
     file_stdout.write ( "-"*80 + "\n" )
+
+    _add_times ( rc )
 
     if rc.msg:
         msg = ' *** error running {0}: {1}'.format(executable, rc.msg)

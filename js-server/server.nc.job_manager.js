@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    16.12.17   <--  Date of Last Modification.
+ *    26.05.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Number Cruncher Server -- Job Manager
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2017
+ *  (C) E. Krissinel, A. Lebedev 2016-2018
  *
  *  =================================================================
  *
@@ -72,7 +72,7 @@ var maxSendTrials = conf.getServerConfig().maxSendTrials;
     jobStatus  : task_t.job_code.new,
     sendTrials : maxSendTrials,
     exeType    : '',    // SHELL or SGE
-    pid        : 0      // added separately
+    pid        : 0      // job pid is added separately
   };
   return job_token;
 }
@@ -86,7 +86,7 @@ var maxSendTrials = conf.getServerConfig().maxSendTrials;
     jobStatus  : task_t.job_code.new,
     sendTrials : maxSendTrials,
     exeType    : '',    // SHELL or SGE
-    pid        : 0      // added separately
+    pid        : 0      // job pid is added separately
   };
   return job_token;
 }
@@ -412,6 +412,9 @@ function ncJobFinished ( job_token,code )  {
 
     // deal with cleanup here -- in future
     task.cleanJobDir ( jobEntry.jobDir );
+
+    // note residual disk space (in MBs)
+    task.disk_space = utils.getDirectorySize ( jobEntry.jobDir ) / 1024.0 / 1024.0;
 
     // write job metadata back to job directory
     utils.writeObject ( taskDataPath,task );

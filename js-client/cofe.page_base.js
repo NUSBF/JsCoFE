@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    22.09.17   <--  Date of Last Modification.
+ *    12.06.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Base page class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2017
+ *  (C) E. Krissinel, A. Lebedev 2016-2018
  *
  *  =================================================================
  *
@@ -44,9 +44,14 @@ function BasePage ( sceneId,gridStyle,pageType )  {
   this.element = document.getElementById ( sceneId );
   this._type   = pageType;
 
+  this.ration      = null;
+  this.rationPanel = null;
+
   // make master grid
   this.grid = new Grid ( gridStyle );
   $(this.grid.element).appendTo(this.element);
+
+  this.getUserRation();
 
 }
 
@@ -84,6 +89,26 @@ BasePage.prototype.makeLogoPanel = function ( row,col,colSpan )  {
 }
 
 
+BasePage.prototype.getUserRation = function()  {
+
+  if (__login_user)  {
+    (function(page){
+      serverRequest ( fe_reqtype.getUserRation,{},'User Ration',
+        function(data){
+          page.ration = data;
+          page.makeUserRationIndicator();
+        },null,function(){
+          page.ration = null;
+          page.makeUserRationIndicator();
+        });
+    }(this))
+  } else {
+    this.makeUserRationIndicator();
+  }
+
+}
+
+
 BasePage.prototype.makeHeader = function ( colSpan,on_logout_function )  {
 
   this.headerPanel = new Grid('');
@@ -95,15 +120,21 @@ BasePage.prototype.makeHeader = function ( colSpan,on_logout_function )  {
 
   this.headerPanel.setLabel    ( '',0,1,1,1 ).setWidth ( '40px' );
   this.headerPanel.setCellSize ( '40px','',0,1 );
-  this.headerPanel.setCellSize ( '100%','',0,19 );
 
   if (__login_user)  {
+    this.headerPanel.setCellSize ( '99%','',0,17 );
+    this.rationPanel = new Grid('');
+    this.headerPanel.setWidget   ( this.rationPanel,0,18,1,1 );
+    this.headerPanel.setLabel( '&nbsp;',0,19,1,1 ).setWidth('40px');
     //var user_lbl = new Label ( '<i>' + __login_user.getValue() + '</i>' );
     var user_lbl = new Label ( '<i>' + __login_user + '</i>' );
     this.headerPanel.setWidget      ( user_lbl,0,20,1,1 );
     user_lbl.setHorizontalAlignment ( 'right' );
     user_lbl.setNoWrap();
 //    this.headerPanel.setNoWrap   ( 0,20 );
+  } else {
+    this.rationPanel = null;
+    this.headerPanel.setCellSize ( '99%','',0,19 );
   }
 
   this.logout_btn = new ImageButton ( './images/logout.svg','24px','24px' );
@@ -123,6 +154,109 @@ BasePage.prototype.makeHeader = function ( colSpan,on_logout_function )  {
   }(this));
 
 }
+
+BasePage.prototype.makeUserRationIndicator = function()  {
+  if (this.rationPanel)  {
+    if (this.ration)  {
+      if (this.ration.storage>0.0)  {
+        this.rationPanel.disk_icon  = this.rationPanel.setImageButton (
+                                    './images/disk.svg','20px','20px',0,0,1,1 );
+        this.rationPanel.disk_usage = this.rationPanel.setLabel ( '',0,1,1,1 )
+                                                      .setFontSize('90%');
+        this.rationPanel.sep_label  = this.rationPanel.setLabel (
+                                    '&nbsp;',0,2,1,1 ).setWidth('4px');
+        this.rationPanel.cpu_icon   = this.rationPanel.setImageButton (
+                                    './images/cpu.png','20px','20px',0,3,1,1 );
+        this.rationPanel.cpu_usage  = this.rationPanel.setLabel ( '',0,4,1,1 )
+                                          .setNoWrap().setFontSize('90%');
+        this.displayUserRation ( null );
+      } else
+        this.rationPanel.hideRow(0);
+    } else {
+      this.rationPanel.hideRow(0);
+    }
+  }
+}
+
+
+BasePage.prototype.displayUserRation = function ( pdesc )  {
+
+  function getPercentLine ( used,ration )  {
+    if (ration<=0.0)
+      return '';
+    var pp = round ( (100.0*used)/ration,0 );
+    if (pp<90)       pp += '%';
+    else if (pp<99)  pp  = '<font class="ration-warning">'  + pp + '%</font>';
+               else  pp  = '<font class="ration-critical">' + pp + '%</font>';
+    return pp;
+  }
+
+  if (this.rationPanel && this.ration)  {
+
+    this.ration.pdesc = pdesc;
+
+    if (this.ration.storage>0.0)  {
+
+      var storage_pp   = getPercentLine ( this.ration.storage_used,this.ration.storage );
+      var cpu_day_pp   = getPercentLine ( this.ration.cpu_day_used,this.ration.cpu_day );
+      var cpu_month_pp = getPercentLine ( this.ration.cpu_month_used,this.ration.cpu_month );
+      var stats = '<table class="table-rations">' +
+        '<tr><th>Resource</th><th>Used&nbsp;</th><th>Quota&nbsp;</th><th>%%</th></tr>' +
+        '<tr><td colspan="4"><hr/></td></tr>' +
+        '<tr><td>Storage&nbsp;(MBytes)&nbsp;</td><td>&nbsp;' + round(this.ration.storage_used,1) +
+                '&nbsp;</td><td>&nbsp;'   + round(this.ration.storage,1) +
+                '&nbsp;</td><td>&nbsp;'   + storage_pp + '</td></tr>' +
+        '<tr><td>CPU 24h (hours)</td><td>&nbsp;' + round(this.ration.cpu_day_used,4) +
+                '&nbsp;</td><td>&nbsp;'   + round(this.ration.cpu_day,2) +
+                '&nbsp;</td><td>&nbsp;'   + cpu_day_pp + '</td></tr>' +
+        '<tr><td>CPU 30d (hours)</td><td>&nbsp;' + round(this.ration.cpu_month_used,4) +
+                '&nbsp;</td><td>&nbsp;'   + round(this.ration.cpu_month,2) +
+                '&nbsp;</td><td>&nbsp;'   + cpu_month_pp + '</td></tr>' +
+        '<tr><td colspan="4"><hr/></td></tr>';
+
+      if (pdesc)  {
+        if ('disk_space' in pdesc)
+          stats +=
+            '<tr><td colspan="4"><b><i>Project stats:</i></b></td></tr>' +
+            '<tr><td colspan="2"><i>Storage used (MBytes)</i></td><td><i>&nbsp;' +
+                  round(pdesc.disk_space,1) + '&nbsp;</i></td><td></td></tr>' +
+            '<tr><td colspan="2"><i>Total jobs run</i></td><td><i>&nbsp;' +
+                  pdesc.njobs + '&nbsp;</i></td><td></td></tr>' +
+            '<tr><td colspan="2"><i>CPU total used (hours)</i></td><td><i>&nbsp;' +
+                  round(pdesc.cpu_time,4) + '&nbsp;</i></td><td></td></tr>' +
+                  '<tr><td colspan="4"><hr/></td></tr>';
+      }
+
+      stats +=
+        '<tr><td colspan="4"><b><i>User stats:</i></b></td></tr>' +
+        '<tr><td colspan="2"><i>Total storage used (MBytes)</i></td><td><i>&nbsp;' +
+                round(this.ration.storage_used,1) + '&nbsp;</i></td><td></td></tr>' +
+        '<tr><td colspan="2"><i>Total jobs run</i></td><td><i>&nbsp;' +
+                this.ration.jobs_total + '&nbsp;</i></td><td></td></tr>' +
+        '<tr><td colspan="2"><i>CPU lifetime used (hours)</i></td><td><i>&nbsp;' +
+                round(this.ration.cpu_total_used,4) +
+                '&nbsp;</i></td><td></td></tr>' +
+        '</table>';
+      this.rationPanel.setTooltip ( stats );
+      this.rationPanel.disk_usage.setText ( storage_pp );
+      this.rationPanel.cpu_usage .setText ( cpu_day_pp + ':' + cpu_month_pp );
+
+    }
+
+  }
+
+}
+
+
+BasePage.prototype.updateUserRation = function ( rdata )  {
+  if ('ration' in rdata)
+    this.ration = rdata.ration;
+  if ('pdesc' in rdata)
+    this.displayUserRation ( rdata.pdesc );
+  else if ('ration' in rdata)
+    this.displayUserRation ( null );
+}
+
 
 BasePage.prototype.destructor = function ( function_ready )  {
   function_ready();

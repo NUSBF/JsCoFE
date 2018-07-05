@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    06.02.18   <--  Date of Last Modification.
+#    29.06.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -349,8 +349,8 @@ class TaskDriver(object):
         self.rvrow += 1
         return
 
-    def putMessage1 ( self,pageId,message_str,row,colSpan=1 ):
-        pyrvapi.rvapi_set_text ( message_str,pageId,row,0,1,colSpan )
+    def putMessage1 ( self,pageId,message_str,row,col=0,rowSpan=1,colSpan=1 ):
+        pyrvapi.rvapi_set_text ( message_str,pageId,row,col,rowSpan,colSpan )
         return
 
     def putMessageLF ( self,message_str ):
@@ -398,6 +398,10 @@ class TaskDriver(object):
     def putPanel ( self,panel_id ):
         pyrvapi.rvapi_add_panel ( panel_id,self.report_page_id(),self.rvrow,0,1,1 )
         self.rvrow += 1
+        return
+
+    def putPanel1 ( self,pageId,panel_id,row,colSpan=1 ):
+        pyrvapi.rvapi_add_panel ( panel_id,pageId,row,0,1,colSpan )
         return
 
 
@@ -474,6 +478,11 @@ class TaskDriver(object):
                 "font-weight:normal;font-style:normal;width:auto;",
                 "",1,1 );
         return row+1
+
+    def putGrid ( self,gridId,filling_bool=False ):
+        pyrvapi.rvapi_add_grid ( gridId,filling_bool,self.report_page_id(),self.rvrow,0,1,1 )
+        self.rvrow += 1
+        return
 
 
     # ============================================================================
@@ -590,8 +599,10 @@ class TaskDriver(object):
         #self.file_stdout = open ( self.file_stdout_path(),'a' )
         return
 
-    def setGenericLogParser ( self,panel_id,split_sections_bool,graphTables=False ):
-        self.putPanel ( panel_id )
+    def setGenericLogParser ( self,panel_id,split_sections_bool,
+                              graphTables=False,makePanel=True ):
+        if makePanel:
+            self.putPanel ( panel_id )
         #self.generic_parser_summary = {}
         self.log_parser = pyrvapi_ext.parsers.generic_parser (
                                          panel_id,split_sections_bool,
@@ -640,6 +651,20 @@ class TaskDriver(object):
         return
 
     # ============================================================================
+
+    def checkCCP4AppExists ( self,appName ):
+        fpath = os.path.join ( os.environ["CCP4"],"bin",appName )
+        if os.path.isfile(fpath):
+            return True
+        else:
+            self.putMessage ( "<h3>Application <i>" + appName + "</i> not found</h3>" +\
+                              "The task cannot be run because application <i>" +\
+                              appName + "</i> not found in CCP4 setup. Apologies."
+                            )
+            self.fail ( " *** Error: CCP4 setup does not contain " + appName + ".\n" + \
+                        "     Please look for support\n",appName + " not found" )
+            return False
+
 
     def runApp ( self,appName,cmd,quitOnError=True ):
 
@@ -694,6 +719,8 @@ class TaskDriver(object):
         #          = 1: set MR subtype
         #          = 2: set EP subtype
 
+        self.file_stdout.write ( "name_pattern=" + name_pattern + "\n")
+
         structure = None
 
         if os.path.isfile(xyzPath):
@@ -714,6 +741,7 @@ class TaskDriver(object):
 
             # Register output data. This moves needful files into output directory
             # and puts the corresponding metadata into output databox
+            self.file_stdout.write ( "fnames=" + str(fnames) + "\n")
 
             structure = self.registerStructure (
                             fnames[0],fnames[1],fnames[2],fnames[3],libPath )
@@ -794,7 +822,7 @@ class TaskDriver(object):
                 if associated_data_list[i]:
                     structure.addDataAssociation ( associated_data_list[i].dataId )
             anom_structure.setAnomSubstrSubtype() # anomalous maps
-            self.putMessage1 ( pageId,"&nbsp;",row1,1 )
+            self.putMessage1 ( pageId,"&nbsp;",row1 )
             row1 += 1
             if title!="":
                 self.putTitle1 ( pageId,title,row1,1 )
@@ -847,6 +875,26 @@ class TaskDriver(object):
                     False,gridId, row,col,1,1 )
         return
 
+
+    def putRSViewerButton ( self,rlpFilePath,mapFilePath,title,text_btn,gridId,row,col ):
+        buttonId = "rsviewer_" + str(self.widget_no)
+        self.widget_no += 1
+        pyrvapi.rvapi_add_button ( buttonId,text_btn,"{function}",
+                    "window.parent.rvapi_rsviewer(" + self.job_id +\
+                    ",'" + title + "','" + rlpFilePath + "','" + mapFilePath + "')",
+                    False,gridId, row,col,1,1 )
+        return
+
+
+    def putDownloadButton ( self,dnlFilePath,text_btn,gridId,row,col ):
+        buttonId = "download_" + str(self.widget_no)
+        self.widget_no += 1
+        pyrvapi.rvapi_add_button ( buttonId,text_btn,"{function}",
+                    "window.parent.downloadJobFile(" + self.job_id +\
+                    ",'" + dnlFilePath + "')",False,gridId, row,col,1,1 )
+        return
+
+
     # ============================================================================
 
 
@@ -891,7 +939,7 @@ class TaskDriver(object):
     #    self.putTitle1   ( pageId,title,row,1 )
     #    self.putMessage1 ( pageId,"<b><i>New structure revision name:</i></b> " +\
     #                      "<font size='+1'>\"" + revision.dname + "\"</font>",
-    #                      row+1,1 )
+    #                      row+1 )
     #    return
 
 
@@ -966,8 +1014,7 @@ class TaskDriver(object):
         return
 
     def putHKLWidget1 ( self,pageId,widgetId,title_str,hkl,openState,row,colSpan ):
-        self.putMessage1 ( pageId,"<b>Assigned name:</b>&nbsp;" + hkl.dname,
-                                  row,0,colSpan )
+        self.putMessage1 ( pageId,"<b>Assigned name:</b>&nbsp;" + hkl.dname,row )
         pyrvapi.rvapi_add_data ( widgetId + str(self.widget_no),title_str,
                                  # always relative to job_dir from job_dir/html
                                  os.path.join("..",self.outputDir(),hkl.files[0]),
@@ -987,7 +1034,7 @@ class TaskDriver(object):
     def putStructureWidget1 ( self,pageId,widgetId,title_str,structure,openState,row,colSpan ):
         self.putMessage1 ( pageId,"<b>Assigned name:</b>&nbsp;" +
                                   structure.dname +
-                                  "<font size='+2'><sub>&nbsp;</sub></font>", row,1 )
+                                  "<font size='+2'><sub>&nbsp;</sub></font>",row )
         wId     = widgetId + str(self.widget_no)
         self.widget_no += 1
         type    = ["xyz","hkl:map","hkl:ccp4_map","hkl:ccp4_dmap","LIB"]
@@ -1022,7 +1069,7 @@ class TaskDriver(object):
     def putLigandWidget1 ( self,pageId,widgetId,title_str,ligand,openState,row,colSpan ):
         wId = widgetId + str(self.widget_no)
         self.putMessage1 ( pageId,"<b>Assigned name:</b>&nbsp;" + ligand.dname +
-                                  "<font size='+2'><sub>&nbsp;</sub></font>", row,1 )
+                                  "<font size='+2'><sub>&nbsp;</sub></font>",row )
         pyrvapi.rvapi_add_data ( wId,title_str,
                                  # always relative to job_dir from job_dir/html
                                  os.path.join("..",self.outputDir(),ligand.files[0]),
@@ -1104,7 +1151,7 @@ class TaskDriver(object):
 
     def putEnsembleWidget1 ( self,pageId,widgetId,title_str,ensemble,openState,row,colSpan ):
         self.putMessage1 ( pageId,"<b>Assigned name:</b>&nbsp;" +\
-                                  ensemble.dname + "<br>&nbsp;", row,1 )
+                                  ensemble.dname + "<br>&nbsp;",row )
         pyrvapi.rvapi_add_data ( widgetId,title_str,
                     # always relative to job_dir from job_dir/html
                     os.path.join("..",self.outputDir(),ensemble.files[0]),
@@ -1224,8 +1271,10 @@ class TaskDriver(object):
 
 
     def success(self):
-        if self.task and self.generic_parser_summary:
-            self.task.scores = self.generic_parser_summary
+        if self.task:
+            self.task.cpu_time = command.getTimes()[1]
+            if self.generic_parser_summary:
+                self.task.scores = self.generic_parser_summary
             with open('job.meta','w') as file_:
                 file_.write ( self.task.to_JSON() )
         self.rvrow += 1
@@ -1237,8 +1286,10 @@ class TaskDriver(object):
         raise signal.Success()
 
     def fail ( self,pageMessage,signalMessage ):
-        if self.task and self.generic_parser_summary:
-            self.task.scores = self.generic_parser_summary
+        if self.task:
+            self.task.cpu_time = command.getTimes()[1]
+            if self.generic_parser_summary:
+                self.task.scores = self.generic_parser_summary
             with open('job.meta','w') as file_:
                 file_.write ( self.task.to_JSON() )
         self.putMessage ( "<p>&nbsp;" )  # just to make extra space after report

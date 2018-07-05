@@ -1,10 +1,10 @@
 
 /*
- *  =================================================================
+*  ==========================================================================
  *
- *    06.12.17   <--  Date of Last Modification.
+ *    07.06.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- *  -----------------------------------------------------------------
+ *  -------------------------------------------------------------------------
  *
  *  **** Module  :  js-common/tasks/common.data_project.js
  *       ~~~~~~~~~
@@ -13,9 +13,9 @@
  *  **** Content :  Project Data Classes
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2017
+ *  (C) E. Krissinel, A. Lebedev 2016-2018
  *
- *  =================================================================
+ *  ==========================================================================
  *
  */
 
@@ -26,8 +26,11 @@ function ProjectDesc()  {
   this._type        = 'ProjectDesc';
   this.name         = '';
   this.title        = '';
-  this.dateCreated  = '';  // year/mm/dd
-  this.dateLastUsed = '';  // year/mm/dd
+  this.disk_space   = 0.0;  // in MBs, corresponds to current project state
+  this.cpu_time     = 0.0;  // in hours, accumulated over all project history
+  this.njobs        = 0;    // over all project history
+  this.dateCreated  = '';   // year/mm/dd
+  this.dateLastUsed = '';   // year/mm/dd
 }
 
 function ProjectList()  {

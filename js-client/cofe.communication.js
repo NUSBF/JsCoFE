@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    01.02.18   <--  Date of Last Modification.
+ *    14.06.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -23,11 +23,12 @@
 
 
 var cofe_signals = {
-  taskReady    : 'task_ready',      // fired by Job Dialog's input panels
-  jobStarted   : 'job_started',     // fired by JobTree
-  treeUpdated  : 'tree_updated',    // fired by JobTree
-  jobDlgSignal : 'job_dlg_signal',
-  uploadEvent  : 'uploadEvent'      // fired by Upload module
+  taskReady     : 'task_ready',      // fired by Job Dialog's input panels
+  jobStarted    : 'job_started',     // fired by JobTree
+  treeUpdated   : 'tree_updated',    // fired by JobTree
+  rationUpdated : 'ration_updated',  // fired by JobTree
+  jobDlgSignal  : 'job_dlg_signal',
+  uploadEvent   : 'uploadEvent'      // fired by Upload module
 }
 
 
@@ -96,9 +97,10 @@ function makeCommErrorMessage ( title,response )  {
       break;
 
     default:
+        alert ( JSON.stringify(response));
         MessageUnknownError ( title,response.message );
 
- }
+  }
 
 }
 
@@ -231,7 +233,8 @@ function localCommand ( cmd,data_obj,command_title,function_response )  {
     async   : true,
     type    : 'POST',
     data    : JSON.stringify(data_obj),
-    dataType: 'text'
+    dataType: 'text',
+    timeout : 0  // in ms; '0' means no timeout
   })
   .done ( function(rdata) {
 
@@ -274,7 +277,8 @@ function downloadJobFile ( jobId,filePath )  {
         url += __login_token;
   else  url += '404';
   url += '/' + __current_project + '/' + jobId + '/' + filePath;
-  downloadFile ( replaceAll(url,'/','@') );
+  //downloadFile ( replaceAll(url,'/','@') );
+  downloadFile ( url );
 }
 
 

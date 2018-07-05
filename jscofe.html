@@ -1,6 +1,27 @@
 <!DOCTYPE html>
 <html>
 
+<!--
+ *
+ *  =================================================================
+ *
+ *    21.06.18   <--  Date of Last Modification.
+ *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ *  -----------------------------------------------------------------
+ *
+ *  **** Module  :  jscofe.html
+ *       ~~~~~~~~~
+ *  **** Project :  jsCoFE - javascript-based Cloud Front End
+ *       ~~~~~~~~~
+ *  **** Content :  HTML Bootstrap
+ *       ~~~~~~~~~
+ *
+ *  (C) E. Krissinel, A. Lebedev 2016-2018
+ *
+ *  =================================================================
+ *
+ *-->
+
   <head>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
     <meta charset="utf-8">
@@ -19,6 +40,7 @@
   <link rel="stylesheet" type="text/css" href="css/gui/gui.tables.css"/>
   <link rel="stylesheet" type="text/css" href="css/gui/gui.tree.css"/>
   <link rel="stylesheet" type="text/css" href="css/gui/gui.widgets.css"/>
+  <link rel="stylesheet" type="text/css" href="css/cofe.page_base.css"/>
   <link rel="stylesheet" type="text/css" href="css/cofe.upload.css"/>
 
   <script src="js-lib/jquery/jquery-1.12.4.min.js"></script>
@@ -66,6 +88,7 @@
   <script src="js-client/cofe.page_project_list.js"></script>
   <script src="js-client/cofe.page_project.js"></script>
   <script src="js-client/cofe.page_register.js"></script>
+  <script src="js-client/cofe.rsviewer.js"></script>
   <script src="js-client/cofe.tree_facilities.js"></script>
   <script src="js-client/cofe.tree_job.js"></script>
   <script src="js-client/cofe.upload.js"></script>
@@ -96,6 +119,7 @@
   <script src="js-common/tasks/common.tasks.changespg.js"></script>
   <script src="js-common/tasks/common.tasks.crank2.js"></script>
   <script src="js-common/tasks/common.tasks.deposition.js"></script>
+  <script src="js-common/tasks/common.tasks.dimple.js"></script>
   <script src="js-common/tasks/common.tasks.ensembleprepseq.js"></script>
   <script src="js-common/tasks/common.tasks.ensembleprepxyz.js"></script>
   <script src="js-common/tasks/common.tasks.facilityimport.js"></script>
@@ -119,6 +143,7 @@
   <script src="js-common/tasks/common.tasks.shelxemr.js"></script>
   <script src="js-common/tasks/common.tasks.shelxsubstr.js"></script>
   <script src="js-common/tasks/common.tasks.simbad.js"></script>
+  <script src="js-common/tasks/common.tasks.xia2.js"></script>
   <script src="js-common/tasks/common.tasks.xyz2revision.js"></script>
   <script src="js-common/tasks/common.tasks.zanuda.js"></script>
 
@@ -134,7 +159,6 @@
     $(document).ready(function()  {
 
       setClientCode ( client_code.ccp4 );
-      checkLocalService();
 
       // set jsrview path (primarily for UglyMol)
       _jsrview_uri = 'js-lib/jsrview/';
@@ -143,54 +167,72 @@
         $( document ).tooltip();
       });
 
-var dev_switch = 0; //3;
+      checkLocalService ( function(rc){
 
-if (dev_switch==0)  {
+        if (!rc)  {
 
-      makeLoginPage('scene');
+          if (__local_user)  {
+            //__login_token = 'e58e28a556d2b4884cb16ba8a37775f0';
+            //__login_user  = 'Local user';
+            loadKnowledge ( 'Login' )
+            makeProjectListPage('scene');
+          } else  {
 
-} else if (dev_switch==10)  {
+            var dev_switch = 3; //3;
 
-  __login_token = 'a6ed8a1570e6c2bc8211997f9f1672528711e286';
-  __login_user  = 'Admin';
-  __doNotShowList = ['*'];
-  loadKnowledge ( 'Login' )
-  makeAdminPage('scene');
+            if (dev_switch==0)  {
 
-} else  {
-      if (!__login_token)  {
-         __login_token = '340cef239bd34b777f3ece094ffb1ec5';
-         __login_user  = 'Developer';
-      } else {
-        __login_token = 'devel';
-        __login_user  = 'Developer';
-      }
-      __doNotShowList = ['*'];
+                  makeLoginPage('scene');
 
-      loadKnowledge ( 'Login' )
+            } else if (dev_switch==10)  {
 
-if (dev_switch==1)  {
+              __login_token = 'a6ed8a1570e6c2bc8211997f9f1672528711e286';
+              __login_user  = 'Admin';
+              __doNotShowList = ['*'];
+              loadKnowledge ( 'Login' )
+              makeAdminPage('scene');
 
-      makeProjectListPage('scene');
+            } else  {
 
-} else if (dev_switch==2)  {
+              if (!__login_token)  {
+                 __login_token = '340cef239bd34b777f3ece094ffb1ec5';
+                 __login_user  = 'Developer';
+              } else {
+                __login_token = 'devel';
+                __login_user  = 'Developer';
+              }
+              __doNotShowList = ['*'];
 
-      makeAccountPage('scene');
+              loadKnowledge ( 'Login' )
 
-//} else if (dev_switch==4)  {
-//      makeFacilitiesPage('scene');
+              if (dev_switch==1)  {
 
-} else if (__admin)  {
+                    makeProjectListPage('scene');
 
-      makeAdminPage('scene');
+              } else if (dev_switch==2)  {
 
-} else  {
+                    makeAccountPage('scene');
 
-      makeProjectPage('scene');
+              //} else if (dev_switch==4)  {
+              //      makeFacilitiesPage('scene');
 
-}
+              } else if (__admin)  {
 
-}
+                    makeAdminPage('scene');
+
+              } else  {
+
+                    makeProjectPage('scene');
+
+              }
+
+            }
+
+          }
+
+        }
+
+      });
 
     });
   </script>

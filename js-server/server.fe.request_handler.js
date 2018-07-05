@@ -47,6 +47,10 @@ var response = null;
           response = user.getUserData ( login );
         break;
 
+    case cmd.fe_reqtype.getUserRation :
+          response = user.getUserRation ( login );
+        break;
+
     case cmd.fe_reqtype.updateUserData :
           response = user.updateUserData ( login,data );
         break;

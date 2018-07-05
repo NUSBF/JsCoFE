@@ -13,6 +13,10 @@ export JSPISA_CFG=$CCP4/share/pisa/jspisa.cfg
 
 cd $server_dir
 
-killall node
+#killall node
 
+# this will start desktop without user accounts
+#node ./desktop.js config/ccp4/conf.desktop.json -localuser 'User Name'
+
+# this will start local web-server with user accounts
 node ./desktop.js config/ccp4/conf.desktop.json

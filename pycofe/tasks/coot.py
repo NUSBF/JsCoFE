@@ -3,14 +3,14 @@
 #
 # ============================================================================
 #
-#    12.09.17   <--  Date of Last Modification.
+#    05.07.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  COOT EXECUTABLE MODULE (CLIENT-SIDE TASK)
 #
 #  Command-line:
-#     ccp4-python python.tasks.balbes.py exeType jobDir jobId
+#     ccp4-python python.tasks.coot.py exeType jobDir jobId
 #
 #  where:
 #    exeType  is either SHELL or SGE
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2018
 #
 # ============================================================================
 #
@@ -49,14 +49,60 @@ class Coot(basic.TaskDriver):
         # Prepare coot job
 
         # fetch input data
-        structure = self.makeClass ( self.input_data.data.istruct[0] )
-        mtzfile   = structure.getMTZFilePath ( self.inputDir() )
+        istruct = self.makeClass ( self.input_data.data.istruct[0] )
+        mtzfile = istruct.getMTZFilePath ( self.inputDir() )
+        ligand  = None
+        liblig  = None
+        if hasattr(self.input_data.data,"ligand"):
+            ligand = self.makeClass ( self.input_data.data.ligand[0] )
+            liblig = ligand.getLibFilePath ( self.inputDir() )
+
+        # prepare dictionary file for input structure
+        libnew = liblig
+        libin  = istruct.getLibFilePath ( self.inputDir() ) # local ligand library
+        if libin:
+            # there are other ligands in the structure, needs to be preserved
+            if ligand and (not ligand.code in istruct.ligands):
+                # new ligand is not the list of existing ligands, so append it
+                # to local ligand library with libcheck
+
+                libnew = self.outputFName + ".dict.cif"
+
+                self.open_stdin()
+                self.write_stdin (
+                    "_Y"          +\
+                    "\n_FILE_L  " + libin  +\
+                    "\n_FILE_L2 " + liblig +\
+                    "\n_FILE_O  " + libnew +\
+                    "\n_END\n" )
+                self.close_stdin()
+
+                self.runApp ( "libcheck",[] )
+
+                libnew += ".lib"
+
+            else:
+                # all ligands should be taken from local ligand library
+                libnew = libin
 
         # make command line arguments
-        args = ["--pdb",structure.getXYZFilePath(self.inputDir()),
+        args = ["--pdb",istruct.getXYZFilePath(self.inputDir()),
                 "--auto",mtzfile]
-        if len(structure.files)>4 and structure.files[4]:
-            args += ["--dictionary",structure.getLibFilePath(self.inputDir())]
+        if libnew:
+            args += ["--dictionary",libnew]
+        #if len(structure.files)>4 and structure.files[4]:
+        #    args += ["--dictionary",istruct.getLibFilePath(self.inputDir())]
+
+        """
+        if ligand:
+            args += ["--pdb",ligand.getXYZFilePath(self.inputDir())]
+        #             "--dictionary",ligand .getLibFilePath(self.inputDir())]
+        """
+        if ligand:
+            args += ["-c","(get-monomer \"" + ligand.code + "\")"]
+        #    args += ["-c","(let ((imol (get-monomer \"" + ligand.code + "\"))) (set-mol-displayed imol 0) (set-mol-active imol 0))"]
+
+        args += ["--no-guano"]
 
         # Run coot
         rc = self.runApp ( "coot",args,False )
@@ -75,7 +121,7 @@ class Coot(basic.TaskDriver):
 
         if fname:
 
-            f = structure.files[0]
+            f = istruct.files[0]
             fnprefix = f[:f.find("_")]
 
             if fname.startswith(fnprefix):
@@ -95,12 +141,15 @@ class Coot(basic.TaskDriver):
 
             struct = self.registerStructure ( coot_xyz,coot_mtz,
                                               fnames[0],fnames[1],
-                                              structure.getLibFilePath(self.inputDir()) )
+                                              libnew )
+            #                                  istruct.getLibFilePath(self.inputDir()) )
             if struct:
-                struct.copyAssociations ( structure )
-                struct.copySubtype      ( structure )
-                struct.copyLabels       ( structure )
-                struct.copyLigands      ( structure )
+                struct.copyAssociations ( istruct )
+                struct.copySubtype      ( istruct )
+                struct.copyLabels       ( istruct )
+                struct.copyLigands      ( istruct )
+                if ligand:
+                    struct.addLigands ( ligand.code )
                 # create output data widget in the report page
                 self.putTitle ( "Output Structure" )
                 self.putStructureWidget ( "structure_btn","Output Structure",struct )

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    25.01.18   <--  Date of Last Modification.
+ *    15.06.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -20,10 +20,13 @@
  */
 
 
-//  load application modules
+//  load system modules
 var path  = require('path');
-var utils = require('./server.utils');
 var http  = require('http');
+
+//  load application modules
+var utils = require('./server.utils');
+var cmd   = require('../js-common/common.commands');
 
 //  prepare log
 var log = require('./server.log').newLog(3);
@@ -75,6 +78,26 @@ ServerConfig.prototype.getQueueName = function()  {
   return '';
 }
 
+ServerConfig.prototype.getPIDFilePath = function()  {
+var pidfilepath = null;
+  if ('storage' in this)
+        pidfilepath = path.join ( this.storage,'pid.dat' );
+  else  pidfilepath = path.join ( this.projectsPath,'pid.dat' );
+  return pidfilepath;
+}
+
+ServerConfig.prototype.savePID = function()  {
+  utils.writeString ( this.getPIDFilePath(),process.pid.toString() );
+}
+
+ServerConfig.prototype.killPrevious = function()  {
+var pidfile = this.getPIDFilePath();
+var pid     = utils.readString ( pidfile );
+  if (pid)  {
+    utils.killProcess ( pid     );
+    utils.removeFile  ( pidfile );
+  }
+}
 
 // ===========================================================================
 // Config service functions
@@ -324,13 +347,33 @@ var isClient   = false;
 
 function isLocalSetup()  {
 // Returns true if all servers are running on localhost.
+/*
 var isLocal = (fe_server.host == 'localhost');
 
   for (var i=0;(i<nc_servers.length) && isLocal;i++)
     isLocal = (nc_servers[i].host == 'localhost');
+*/
+var isLocal = true;
+
+  if (fe_server.externalURL.length>0)
+        isLocal = (fe_server.externalURL.indexOf('localhost') >= 0);
+  else  isLocal = (fe_server.host == 'localhost');
+
+  for (var i=0;(i<nc_servers.length) && isLocal;i++)
+    if (nc_servers[i].externalURL.length>0)
+          isLocal = (nc_servers[i].externalURL.indexOf('localhost') >= 0);
+    else  isLocal = (nc_servers[i].host == 'localhost');
 
   return isLocal;
 
+}
+
+
+function isLocalFE()  {
+// returns true if FE is on local machine
+  if (fe_server.externalURL.length>0)
+    return (fe_server.externalURL.indexOf('localhost') >= 0);
+  return (fe_server.host == 'localhost');
 }
 
 
@@ -360,5 +403,6 @@ module.exports.writeConfiguration = writeConfiguration;
 module.exports.pythonName         = pythonName;
 module.exports.isSharedFileSystem = isSharedFileSystem;
 module.exports.isLocalSetup       = isLocalSetup;
+module.exports.isLocalFE          = isLocalFE;
 module.exports.getFETmpDir        = getFETmpDir;
 module.exports.getNCTmpDir        = getNCTmpDir;

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    01.05.18   <--  Date of Last Modification.
+ *    02.05.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -83,6 +83,8 @@ if ((nc_number<0) || (nc_number>=conf.getNumberOfNCs()))
 
 conf.setServerConfig ( conf.getNCConfig(nc_number) );
 var srvConfig = conf.getServerConfig();
+srvConfig.killPrevious();
+srvConfig.savePID();
 
 // --------------------------------------------------------------------------
 

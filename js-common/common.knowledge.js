@@ -1,7 +1,7 @@
 /*
  *  =================================================================
  *
- *    16.04.18   <--  Date of Last Modification.
+ *    05.07.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -39,12 +39,12 @@ var _taskIndex = {
   // suggest Aimless, Simbad and ASUDef after Import or Model Preparation in
   // the specified order; do not suggest them after themselves (user should
   // branch/clone instead)
-  'F' : { type: 'TaskAimless'        , after: ['B','C','D','E'] },
-  'G' : { type: 'TaskSimbad'         , after: ['B','C','D','E','F'] },
-  'H' : { type: 'TaskASUDef'         , after: ['B','C','D','E','F'] },
+  'F' : { type: 'TaskAimless'        , after: ['B','C','D','E','h'] },
+  'G' : { type: 'TaskSimbad'         , after: ['B','C','D','E','F','h'] },
+  'H' : { type: 'TaskASUDef'         , after: ['B','C','D','E','F','h'] },
 
   // suggest Xyz2Revision after Import, Models and Ligands
-  'I' : { type: 'TaskXyz2Revision'   , after: ['B','C','D','E','F'] },
+  'I' : { type: 'TaskXyz2Revision'   , after: ['B','C','D','E','F','h'] },
 
   // suggest Morda, MrBump, and Balbes after ASUDef; do not suggest them after
   // themselves (user should branch/clone instead)
@@ -111,9 +111,19 @@ var _taskIndex = {
   'f' : { type: 'TaskSeqAlign'       , after: ['B'] },
 
   // do not suggest FacilityImport
-  'g' : { type: 'TaskFacilityImport' , after: [] }
+  'g' : { type: 'TaskFacilityImport' , after: [] },
+
+  // suggest Xia2 after root
+  'h' : { type: 'TaskXia2'           , after: ['0'] },
+
+  // suggest Dimple after phasing
+  'i' : { type: 'TaskDimple'         , after: ['M','N','O','P','Q','U'] },
+
+  // suggest Coot after refinememnt
+  'j' : { type: 'TaskCoot'           , after: ['V','W','i'] }
 
 };
+
 
 function getTasksFromTaskIndex ( ckey )  {
 var tasks = [];
@@ -254,8 +264,9 @@ if ((typeof module === 'undefined') || (typeof module.exports === 'undefined')) 
 
   // function to be called once upon user login
   function loadKnowledge ( page_title )  {
-    serverRequest ( fe_reqtype.getUserKnowledge,0,page_title,function(data){
-      _wfKnowledge = data;
+    serverRequest ( fe_reqtype.getUserKnowledge,0,page_title,
+      function(data){
+        _wfKnowledge = data;
       },function(){
       },'persist');
   }

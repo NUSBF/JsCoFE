@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    31.10.17   <--  Date of Last Modification.
+ *    31.06.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Functions for communication with local (on-client)
  *       ~~~~~~~~~  number cruncher
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2017
+ *  (C) E. Krissinel, A. Lebedev 2016-2018
  *
  *  =================================================================
  *
@@ -21,9 +21,10 @@
 
 // local service url (used also as indicator of presentce in RVAPI)
 var __local_service = null;   // full URL when defined
+var __local_user    = false;  // true if running as a desktop
 var __shared_fs     = false;  // shared file system setup when true
 
-function checkLocalService()  {
+function checkLocalService ( callback_func )  {
 //  alert ( ' search=' + window.location.search );
   var n = window.location.search.indexOf ( 'lsp=' );
   if (n>=0)  {
@@ -33,6 +34,26 @@ function checkLocalService()  {
     else  __local_service = 'http://localhost:' + port;
   } else
     __local_service = null;
+  //__local_user = (window.location.search.indexOf('lusr')>=0);
+
+  serverCommand ( fe_command.getInfo,{},'getInfo',function(response){
+    if (response.status==fe_retcode.ok)  {
+      if (response.data.localuser)  {
+        __local_user    = true;
+        __login_user    = response.data.localuser;
+        __login_token   = response.data.logintoken;
+        __doNotShowList = response.data.helpTopics;
+      }
+      callback_func ( 0 );
+    } else  {
+      new MessageBox ( 'Server not Configured',
+          'Server not configured, contact administrator.' );
+      callback_func ( 1 );
+    }
+    return true;
+//    alert ( JSON.stringify(response) );
+  },null,null);
+
 }
 
 function ls_RVAPIAppButtonClicked ( base_url,command,data )  {

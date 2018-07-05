@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    25.01.18   <--  Date of Last Modification.
+ *    01.06.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -17,8 +17,8 @@
  *
  *  =================================================================
  *
- * Invokation:
- *    node ./desktop.js configFile
+ * Invocation:
+ *    node ./desktop.js configFile [-localuser Name]
  *
  *  where "configFile" is path to JSON-formatted configuration file, containing
  *  configurations for Front End and Number Crunchers, one of which may have
@@ -51,11 +51,12 @@ tmp.setGracefulCleanup();
 
 function cmdLineError()  {
   log.error ( 1,'Incorrect command line. Stop.' );
-  log.error ( 1,'Restart as "node ./desktop.js configFile"' );
+  log.error ( 1,'Restart as "node ./desktop.js configFile [-localuser Name]"' );
   process.exit();
 }
 
-if (process.argv.length!=3)
+if (((process.argv.length!=3) && (process.argv.length!=5)) ||
+    ((process.argv.length==5) && (process.argv[3]!='-localuser')))
   cmdLineError();
 
 var msg = conf.readConfiguration ( process.argv[2],'FE' );
@@ -77,8 +78,15 @@ if (msg)  {
 var feConfig  = conf.getFEConfig ();
 var ncConfigs = conf.getNCConfigs();
 
+feConfig.killPrevious();
+for (var i=0;i<ncConfigs.length;i++)
+  ncConfigs[i].killPrevious();
+
+if (process.argv.length==5)
+  feConfig.localuser = process.argv[4];
+
 var forceStart = false;  // debugging option forcing start of servers with fixed
-                        // port numbers
+                         // port numbers
 
 // the following two lines should be commented out in production environment
 //if ((feConfig.host=='localhost') && (feConfig.port<=0))
@@ -150,20 +158,24 @@ function startClientApplication()  {
   if (desktopConfig)  {
 
     var clientConfig = conf.getClientNCConfig();
-    var clientURL    = "";
+    var clientURL    = '';
     if (clientConfig)  {
       if (clientConfig.host=='localhost')
-            clientURL = '?lsp=' + clientConfig.port;
-      else  clientURL = '?lsp=' + clientConfig.url();
+            clientURL = 'lsp=' + clientConfig.port;
+      else  clientURL = 'lsp=' + clientConfig.url();
 //      if (conf.isSharedFileSystem())
 //        clientURL += '%3BSFS';
     }
+
+    //var localUser = '';
+    //if ('localuser' in feConfig)
+    //  localUser = 'lusr=';
 
     var command = [];
     var msg     = desktopConfig.clientApp;
     for (var i=0;i<desktopConfig.args.length;i++)  {
       var arg = desktopConfig.args[i].replace('$feURL',feConfig.url())
-                                     .replace('$clientURL',clientURL);
+                                     .replace('$clientURL','?'+clientURL);
       command.push ( arg );
       if (arg.indexOf(' ')>=0)  msg += " '" + arg + "'";
                           else  msg += ' ' + arg;
@@ -199,6 +211,7 @@ conf.assignPorts ( function(){
       process.exit();
 
     } else  {  // temporary name given
+
 
       log.debug2 ( 7,'tmp file ' + cfgpath );
 

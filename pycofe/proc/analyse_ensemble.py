@@ -67,6 +67,6 @@ def run ( body, panelId, ensemble ):  # body is reference to the main Import cla
     else:
         body.putMessage1 ( panelId,"Single-chain ensemble, " + \
                            str(ensemble.xyzmeta["xyz"][0]["chains"][0]["size"]) +\
-                           " residues",0,1 )
+                           " residues",0 )
 
     return

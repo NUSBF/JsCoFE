@@ -1,10 +1,10 @@
 
 /*
- *  =================================================================
+ *  ==========================================================================
  *
- *    27.03.18   <--  Date of Last Modification.
+ *    19.06.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- *  -----------------------------------------------------------------
+ *  --------------------------------------------------------------------------
  *
  *  **** Module  :  js-server/server.fe.run_job.js
  *       ~~~~~~~~~
@@ -15,7 +15,7 @@
  *
  *  (C) E. Krissinel, A. Lebedev 2016-2018
  *
- *  =================================================================
+ *  ==========================================================================
  *
  */
 
@@ -31,6 +31,8 @@ var user      = require('./server.fe.user');
 var prj       = require('./server.fe.projects');
 var conf      = require('./server.configuration');
 var send_dir  = require('./server.send_dir');
+var ration    = require('./server.fe.ration');
+var class_map = require('./server.class_map');
 var task_t    = require('../js-common/tasks/common.tasks.template');
 var cmd       = require('../js-common/common.commands');
 var com_utils = require('../js-common/common.utils');
@@ -219,7 +221,14 @@ var n0         = -1;
 
 function runJob ( login,data, callback_func )  {
 
-  var task = data.meta;
+  //var task = data.meta;
+  var task = class_map.makeClass ( data.meta );
+  if (!task)  {
+    log.error ( 7,'Cannot make job class' );
+    callback_func ( new cmd.Response(cmd.fe_retcode.corruptJobMeta,
+                    '[00201] Corrupt job metadata',{}) );
+    return;
+  }
 
   // modify user knowledge
   var userKnowledgePath = prj.getUserKnowledgePath ( login );
@@ -275,11 +284,18 @@ function runJob ( login,data, callback_func )  {
 
         if (code==0)  {
 
+          utils.writeJobReportMessage ( jobDir,'<h1>Running on client ...</h1>' +
+                      'Job is running on client machine. Full report will ' +
+                      'become available after job finishes.',true );
+
           var job_token = crypto.randomBytes(20).toString('hex');
           feJobRegister.addJob ( job_token,nc_number,login,
                                  task.project,task.id );
           feJobRegister.getJobEntryByToken(job_token).nc_type = task.nc_type;
           writeFEJobRegister();
+
+          // update the user ration state
+          ration.updateUserRation_bookJob ( login,task );
 
           rdata = {};
           rdata.job_token   = job_token;
@@ -292,6 +308,8 @@ function runJob ( login,data, callback_func )  {
         }
 
       });
+
+      // NOTE: we do not count client jobs against user rations (quotas)
 
     } else  {
 
@@ -307,6 +325,9 @@ function runJob ( login,data, callback_func )  {
           feJobRegister.addJob ( rdata.job_token,nc_number,login,
                                  task.project,task.id );
           writeFEJobRegister();
+
+          // update the user ration state
+          ration.updateUserRation_bookJob ( login,task );
 
         },function(stageNo,code){  // send failed
 
@@ -418,6 +439,7 @@ var _sec  = 1000;
 
 function writeJobStats ( jobEntry )  {
 
+  /*
   var userFilePath = user.getUserDataFName ( jobEntry.login );
   var nJobs        = 0;
   if (utils.fileExists(userFilePath))  {
@@ -433,6 +455,7 @@ function writeJobStats ( jobEntry )  {
       log.error ( 4,'User file: ' + userFilePath + ' cannot be read' );
   } else
     log.error ( 5,'User file: ' + userFilePath + ' is not found' );
+  */
 
   var t  = Date.now();
   var dt = t - jobEntry.start_time;
@@ -442,9 +465,12 @@ function writeJobStats ( jobEntry )  {
   var ds = Math.trunc(dt/_sec);
 
   var jobDataPath = prj  .getJobDataPath ( jobEntry.login,jobEntry.project,jobEntry.jobId );
-  var jobData     = utils.readObject     ( jobDataPath );
+  var jobClass    = utils.readClass      ( jobDataPath );
 
-  if (jobData)  {
+  if (jobClass)  {
+
+    var userRation = ration.updateUserRation_bookJob ( jobEntry.login,jobClass );
+
     var S = '';
     if (Math.trunc(feJobRegister.n_jobs/20)*20==feJobRegister.n_jobs)
       S = '------------------------------------------------------------------' +
@@ -469,10 +495,13 @@ function writeJobStats ( jobEntry )  {
          com_utils.padDigits ( ds,2 ) + ' ' +
 
          com_utils.padDigits ( jobEntry.nc_number.toString(),3 ) + ' ' +
-         com_utils.padStringRight ( jobData.state,' ',8 )        + ' ' +
+         com_utils.padStringRight ( jobClass.state,' ',8 )       + ' ' +
 
-         com_utils.padStringRight ( jobEntry.login+' ('+nJobs+')',' ',20 ) + ' ' +
-         jobData.title + '\n';
+//         com_utils.padStringRight ( jobEntry.login+' ('+nJobs+')',' ',20 ) + ' ' +
+//            jobClass.title + '\n';
+         com_utils.padStringRight ( jobEntry.login +
+                ' (' + userRation.jobs_total + ')',' ',20 ) +
+                    ' ' + jobClass.title + '\n';
 
     var fpath = path.join ( conf.getFEConfig().projectsPath,feJobStatFile );
     utils.appendString ( fpath,S );
@@ -482,6 +511,8 @@ function writeJobStats ( jobEntry )  {
     log.error ( 6,'No job metadata found at path ' + jobDataPath );
 
   }
+
+  return jobClass;
 
 }
 
@@ -507,6 +538,9 @@ function getJobResults ( job_token,server_request,server_response )  {
     send_dir.receiveDir ( jobDir,conf.getFETmpDir(),server_request,
       function(code,errs,meta){
         if (code==0)  {
+          // print usage stats and update the user ration state
+          //ration.updateUserRation_bookJob ( jobEntry.login,writeJobStats(jobEntry) );
+          //var jobClass = writeJobStats    ( jobEntry );
           writeJobStats    ( jobEntry );
           cmd.sendResponse ( server_response, cmd.nc_retcode.ok,'','' );
           feJobRegister.removeJob ( job_token );
@@ -532,30 +566,40 @@ function getJobResults ( job_token,server_request,server_response )  {
 
 }
 
+
 // ===========================================================================
 
 function checkJobs ( login,data )  {
-var response = null;
 
   var projectName = data.project;
   var run_map     = data.run_map;
 
   var completed_map = {};
+  var empty = true;
 
   for (key in run_map)  {
     var jobDataPath = prj.getJobDataPath ( login,projectName,key );
     var jobData     = utils.readObject   ( jobDataPath );
     if (jobData)  {
       if ((jobData.state!=task_t.job_code.running) &&
-          (jobData.state!=task_t.job_code.exiting))
+          (jobData.state!=task_t.job_code.exiting))  {
         completed_map[key] = jobData;
+        empty = false;
+      }
     }
   }
 
-  if (!response)
-    response = new cmd.Response ( cmd.fe_retcode.ok,'',completed_map );
+  var rdata = {};
+  rdata.completed_map = completed_map;
 
-  return response;
+  if (!empty)  {  // save on reading files if nothing changes
+    rdata.ration = ration.getUserRation(login).clearJobs();
+    var p = utils.readObject ( prj.getProjectDataPath(login,projectName) );
+    if (p)
+      rdata.pdesc = p.desc;
+  }
+
+  return  new cmd.Response ( cmd.fe_retcode.ok,'',rdata );
 
 }
 

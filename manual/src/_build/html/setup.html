@@ -184,7 +184,15 @@ $ npm install
 <span id="dependencies"></span><h3>2.2.3. CCP4 Setup and other dependencies<a class="headerlink" href="#ccp4-setup-and-other-dependencies" title="Permalink to this headline">¶</a></h3>
 <p>A fully functional CCP4 Setup must be available for every Number Cruncher and
 Client-side Servers, which must run in CCP4-sourced environment. See
-<a class="reference external" href="http://www.ccp4.ac.uk">http://www.ccp4.ac.uk</a> for CCP4 download and installation instructions.</p>
+<a class="reference external" href="http://www.ccp4.ac.uk">http://www.ccp4.ac.uk</a> for CCP4 download and installation instructions.
+CCP4 7.0 series needs to be complemented with Gemmi library. In order to install
+it, type the following command in CCP4 sourced environment (use user account
+in which CCP4 was originally installed, and <cite>sudo</cite> if necessary):</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>$ ccp4-python -m pip install https://github.com ......
+</pre></div>
+</div>
+<p>This will also require C++-11 compiler on your system, which can be normally
+installed from system&#8217;s repositories.</p>
 <p>Some jsCoFE tasks also require access to PDB archive, obtainable from
 <a class="reference external" href="https://www.wwpdb.org/download/downloads">https://www.wwpdb.org/download/downloads</a>. AMPLE package for ab-initio MR
 modelling also requires access to ROSETTA or QUARK software (see
@@ -782,7 +790,7 @@ configuration file). For example, on Linux:</p>
         <div class="right">
           
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2017, E. Krissinel and A. Lebedev.
+        &#169; Copyright 2017-2018, E. Krissinel and A. Lebedev.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.8.
     </div>
         </div>

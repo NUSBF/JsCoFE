@@ -12,7 +12,12 @@
     "facilitiesPath"   : "./cofe-facilities",
     "bootstrapHTML"    : "jscofe.html",
     "maxRestarts"      : 100,
-    "fileCapSize"      : 500000
+    "fileCapSize"      : 500000,
+    "ration"           : {
+        "storage"   : 3000,
+        "cpu_day"   : 24,
+        "cpu_month" : 240
+    }
   },
   "NumberCrunchers" : [
     {

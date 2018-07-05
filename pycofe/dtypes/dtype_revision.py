@@ -31,25 +31,41 @@ class DType(dtype_template.DType):
     def __init__(self,job_id,json_str=""):
         super(DType,self).__init__(job_id,json_str)
         if not json_str:
-            self._type     = dtype()
-            self.dname     = "revision"
-            self.version   = 1
-            self.HKL       = None
-            self.ASU       = jsonut.jObject()  # asymetric unit data
-            self.Structure = None              # structure metadata
-            self.Ligands   = []                # ligands metadata
-            self.Options   = jsonut.jObject()  # input options used in interfaces
-            self.Options.seqNo = 0   # selected sequence number
+            self._type          = dtype()
+            self.dname          = "revision"
+            self.version        = 1
+            self.HKL            = None
+            self.ASU            = jsonut.jObject()  # asymetric unit data
+            self.ASU.seq        = [];
+            self.ASU.nRes       = 0;
+            self.ASU.molWeight  = 0.0;
+            self.ASU.solvent    = 0.0;
+            self.ASU.matthews   = 0.0;
+            self.ASU.prob_matth = 0.0;
+            self.Structure      = None              # structure metadata
+            self.Ligands        = []                # ligands metadata
+            self.Options        = jsonut.jObject()  # input options used in interfaces
+            self.Options.seqNo  = 0   # selected sequence number
         return
 
     def copy ( self,prevRevision ):
         if prevRevision:
-            self.subtype   = prevRevision.subtype
-            self.HKL       = prevRevision.HKL
-            self.ASU       = prevRevision.ASU
-            self.Structure = prevRevision.Structure
-            self.Ligands   = prevRevision.Ligands
-            self.Options   = prevRevision.Options
+            self.subtype = []
+            for t in prevRevision.subtype:
+                self.subtype.append ( t )
+            if prevRevision.HKL:
+                self.HKL = jsonut.jObject ( prevRevision.HKL.to_JSON() )
+            else:
+                self.HKL = None
+            self.ASU = jsonut.jObject ( prevRevision.ASU.to_JSON() )
+            if prevRevision.Structure:
+                self.Structure = jsonut.jObject ( prevRevision.Structure.toJSON() )
+            else:
+                self.Structure = None
+            self.Ligands = []
+            for l in prevRevision.Ligands:
+                self.Ligands.append ( l )
+            self.Options = jsonut.jObject ( prevRevision.Options.to_JSON() )
         return
 
     def makeDataId ( self,serialNo ):

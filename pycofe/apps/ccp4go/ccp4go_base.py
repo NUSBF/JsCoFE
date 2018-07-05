@@ -101,10 +101,11 @@ class Base(object):
     ha_type        = "Se"       # heavy atom type
     ligands        = []         # list of ligands
 
-    input_hkl      = None       # input dataset, merged or unmerged
-    hkl            = None       # merged reflections dataset
+    input_hkl      = None       # input dataset, merged or unmerged, meta
+    hkl            = None       # merged reflections dataset, meta
     mtzpath        = None       # path to merged mtz file
     mtz_alt        = {}         # reflections reindexed in compatible space groups
+    asu            = None       # composition of asu, meta
     #
     #  mtz_alt = {
     #    'P45222' : mtzpath
@@ -426,6 +427,7 @@ class Base(object):
         self.mk_std_streams ( None )
         if self.layout == 0:
             pyrvapi.rvapi_set_tab_proxy ( self.navTreeId,"" )
+        pyrvapi.rvapi_flush()
         self.output_meta["resorder"] += [dirname]
         self.write_meta()
         return
@@ -441,7 +443,7 @@ class Base(object):
             self.putMessageLF ( "<i>" + message + "</i>" )
             if detail_message:
                 self.putMessage ( "<i>" + detail_message + "</i>" )
-            page_cursor[1] +=1  # leave one row for setting widgets in main thread
+            self.page_cursor[1] +=1  # leave one row for setting widgets in main thread
             if dirname in self.output_meta["results"]:
                 self.output_meta["results"][dirname]["row"] = self.page_cursor[1]
                 self.output_meta["results"][dirname]["stage_no"] = self.stage_no
@@ -671,7 +673,7 @@ class Base(object):
 
             # calculate return code and quit message
             metrics = " (<i>R<sub>free</sub>=" + str(rfree)
-            if spg_info:
+            if spg_info["hkl"]:
                 metrics += ", SpG=" + spg_info["spg"]
             metrics += "</i>)"
             if rfree < 0.4:
@@ -695,11 +697,11 @@ class Base(object):
         # put columns in meta
         meta["columns"] = columns
 
-        # put space grou info in meta
-        if spg_info:
-            meta["spg"] = spg_info["spg"]  # resulting space group
-            if spg_info["hkl"]:
-                meta["hkl"] = spg_info["hkl"]  # reindexed hkl if space group changed
+        # put space group info in meta
+        #if spg_info["changed"]:
+        meta["spg"] = spg_info["spg"]  # resulting space group
+        #if spg_info["hkl"]:
+        meta["hkl"] = spg_info["hkl"]  # reindexed hkl if space group changed
 
         self.output_meta["results"][dirname] = meta
 

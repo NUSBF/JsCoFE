@@ -1,10 +1,10 @@
 
 /*
- *  =================================================================
+ *  ==========================================================================
  *
- *    01.05.18   <--  Date of Last Modification.
+ *    19.06.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- *  -----------------------------------------------------------------
+ *  --------------------------------------------------------------------------
  *
  *  **** Module  :  js-server/server.fe.communicate.js
  *       ~~~~~~~~~
@@ -15,7 +15,7 @@
  *
  *  (C) E. Krissinel, A. Lebedev 2016-2018
  *
- *  =================================================================
+ *  ==========================================================================
  *
  */
 
@@ -27,7 +27,7 @@ var request = require('request');
 var tmp     = require('tmp');
 
 //  load application modules
-var class_map = require('./server.class_map');
+//var class_map = require('./server.class_map');
 var conf      = require('./server.configuration');
 var utils     = require('./server.utils');
 var user      = require('./server.fe.user');
@@ -77,56 +77,63 @@ function Communicate ( server_request )  {
     this.filePath = path.join ( 'js-lib',this.filePath.substr(ix) );
     log.debug2 ( 2,"calculated path " + this.filePath);
 
-  } else if (this.filePath.startsWith(cmd.special_url_tag))  { // special access to files not
-                                                 // supposed to be on http path
+  } else  {
+    //if (this.filePath.startsWith(cmd.special_url_tag))  { // special access to files not
+    //                                             // supposed to be on http path
 
-    var flist = this.filePath.split('/');
-    var login = user.getLoginFromHash ( flist[1] );
+    var sindex = this.filePath.lastIndexOf ( cmd.special_url_tag );
+    if (sindex>=0)  {
 
-    if (login.length>0)  {  // login is valid
+      var flist = this.filePath.slice(sindex).split('/');
+      var login = user.getLoginFromHash ( flist[1] );
 
-      // calculate path within job directory
-      var localPath = '';
-      for (var i=4;i<flist.length;i++)
-        localPath = path.join ( localPath,flist[i] );
+      if (login.length>0)  {  // login is valid
 
-      // make full path for local (FE-based) file
-      if (localPath.length>0)  // file in a job directory
-        this.filePath = path.join ( prj.getJobDirPath(login,flist[2],flist[3]),
-                                    localPath );
-      else // file in a project directory
-        this.filePath = path.join ( prj.getProjectDirPath(login,flist[2]),
-                                    flist[3] );
-      //console.log ( ' fp='+this.filePath );
+        // calculate path within job directory
+        var localPath = '';
+        for (var i=4;i<flist.length;i++)
+          localPath = path.join ( localPath,flist[i] );
 
+        // make full path for local (FE-based) file
+        if (localPath.length>0)  // file in a job directory
+          this.filePath = path.join ( prj.getJobDirPath(login,flist[2],flist[3]),
+                                      localPath );
+        else // file in a project directory
+          this.filePath = path.join ( prj.getProjectDirPath(login,flist[2]),
+                                      flist[3] );
+        //console.log ( ' fp='+this.filePath );
 
-      // now check whether the job is currently running, in which case the
-      // requested file should be fetched from the respective number cruncher
-      var jobEntry = rj.getEFJobEntry ( login,flist[2],flist[3] );
-      if (jobEntry && (jobEntry.nc_type=='ordinary'))  {  // yes the job is running
-        // form a URL request to forward
-        this.ncURL = conf.getNCConfig(jobEntry.nc_number).url() + '/' +
-                                      cmd.special_url_tag + '/' +
-                                      jobEntry.job_token + '/' +
-                                      localPath;
-        if (this.search)
-          this.ncURL += this.search;
+        // now check whether the job is currently running, in which case the
+        // requested file should be fetched from the respective number cruncher
+        var jobEntry = rj.getEFJobEntry ( login,flist[2],flist[3] );
+//      if (jobEntry && ((jobEntry.nc_type=='ordinary') ||
+//                       (conf.isLocalFE() &&
+//                        (!localPath.endsWith('__dir.tar.gz')))))  {  // yes the job is running
+        if (jobEntry && (jobEntry.nc_type=='ordinary'))  {  // yes the job is running
+          // form a URL request to forward
+          this.ncURL = conf.getNCConfig(jobEntry.nc_number).url() + '/' +
+                                        cmd.special_url_tag + '/' +
+                                        jobEntry.job_token + '/' +
+                                        localPath;
+          if (this.search)
+            this.ncURL += this.search;
+        }
+
       }
 
+      log.debug2 ( 3,"File " + this.filePath);
+
+    } else  {
+      ix = this.filePath.indexOf('manual');
+      if (ix>=0)  {  // request for jsrview library file, load it from js-lib
+                     // REGARDLESS the actual path requested
+
+        this.filePath = this.filePath.substr(ix);
+        log.debug2 ( 2,"calculated path " + this.filePath);
+      }
     }
 
-    log.debug2 ( 3,"File " + this.filePath);
-
-  } else  {
-    ix = this.filePath.indexOf('manual');
-    if (ix>=0)  {  // request for jsrview library file, load it from js-lib
-                   // REGARDLESS the actual path requested
-
-      this.filePath = this.filePath.substr(ix);
-      log.debug2 ( 2,"calculated path " + this.filePath);
-    }
   }
-
 
   this.mimeType = utils.getMIMEType ( this.filePath );
 
@@ -142,29 +149,11 @@ Communicate.prototype.sendFile = function ( server_response )  {
 
   log.debug2 ( 5,'send file = ' + this.filePath );
 
-  /*
-  function send_file ( fpath,deleteOnDone,cap )  {
-    // Read the requested file content from file system
-    fs.readFile ( fpath, function(err,data) {
-      if (err)  {
-        log.error ( 6,'Read file errors, file = ' + fpath );
-        log.error ( 6,'Error: ' + err );
-        server_response.writeHead ( 404, {'Content-Type':'text/html;charset=UTF-8'} );
-        server_response.end ( '<p><b>FILE NOT FOUND</b></p>' );
-      } else  {
-        server_response.writeHead ( 200, {'Content-Type': mtype} );
-        if (cap)
-              server_response.end ( utils.capData(data,conf.getFEConfig().fileCapSize) );
-        else  server_response.end ( data );
-        if (deleteOnDone)
-          utils.removeFile ( fpath );
-      }
-    });
-  }
-  */
+//console.log ( 'send file = ' + this.filePath );
 
   function send_file ( fpath,deleteOnDone,cap )  {
     // Read the requested file content from file system
+
     fs.stat ( fpath,function(err,stats){
       if (err)  {
         log.error ( 6,'Read file errors, file = ' + fpath );
@@ -172,34 +161,65 @@ Communicate.prototype.sendFile = function ( server_response )  {
         server_response.writeHead ( 404, {'Content-Type':'text/html;charset=UTF-8'} );
         server_response.end ( '<p><b>[05-0006] FILE NOT FOUND</b></p>' );
       } else if ((!cap) || (stats.size<=conf.getFEConfig().fileCapSize))  {
-        server_response.writeHeader ( 200, {
-           'Content-Type'   : mtype,
-           'Content-Length' : stats.size
-        });
-        var fReadStream = fs.createReadStream ( fpath );
-        fReadStream.on ( 'data',function(chunk){
-          if (!server_response.write(chunk))
-            fReadStream.pause();
-        });
-        fReadStream.on ( 'error',function(e){
-          log.error ( 7,'Read file errors, file = ' + fpath );
-          console.error ( e.stack || e );
-          server_response.writeHead ( 404, {'Content-Type':'text/html;charset=UTF-8'} );
-          server_response.end ( '<p><b>[05-0007] FILE READ ERRORS</b></p>' );
-        });
-        fReadStream.on ( 'end',function(){
-          server_response.end();
-          if (deleteOnDone)
-            utils.removeFile ( fpath );
-        });
-        server_response.on('drain',function(){
-          fReadStream.resume();
-        });
+//        if (stats.size>=100000000)  {
+          server_response.writeHeader ( 200, {
+              'Content-Type'   : mtype,
+              'Content-Length' : stats.size
+          });
+          /*
+          var fReadStream = fs.createReadStream ( fpath, {
+            bufferSize   : 64*1024,
+            highWaterMark: 64*1024
+          });
+          */
+          var fReadStream = fs.createReadStream ( fpath );
+          fReadStream.pipe ( server_response );
+          /*
+//var ntotal = 0;
+          fReadStream.on ( 'data',function(chunk){
+//ntotal += chunk.length;
+//console.log ( 'read ' + fpath + ' ' + chunk.length + '/' + ntotal + '/' + stats.size );
+            if (!server_response.write(chunk))
+              fReadStream.pause();
+          });
+          server_response.on('drain',function(){
+            fReadStream.resume();
+          });
+          */
+          fReadStream.on ( 'error',function(e){
+            log.error ( 7,'Read file errors, file = ' + fpath );
+            console.error ( e.stack || e );
+            server_response.writeHead ( 404, {'Content-Type':'text/html;charset=UTF-8'} );
+            server_response.end ( '<p><b>[05-0007] FILE READ ERRORS</b></p>' );
+          });
+          fReadStream.on ( 'end',function(){
+            server_response.end();
+            if (deleteOnDone)
+              utils.removeFile ( fpath );
+          });
+        /*
+        } else  {
+          fs.readFile ( fpath, function(err,data) {
+            if (err)  {
+              log.error ( 8,'Read file errors, file = ' + fpath );
+              log.error ( 8,'Error: ' + err );
+              server_response.writeHead ( 404, {'Content-Type':'text/html;charset=UTF-8'} );
+              server_response.end ( '<p><b>[05-0008] FILE NOT FOUND OR FILE READ ERRORS</b></p>' );
+            } else  {
+//console.log ( "one-off " + stats.size + ' : ' + data.length );
+              server_response.writeHeader ( 200, {'Content-Type':mtype,'Content-Length':stats.size} );
+              server_response.end ( data );
+              if (deleteOnDone)
+                utils.removeFile ( fpath );
+            }
+          });
+        }
+        */
       } else  {
         fs.readFile ( fpath, function(err,data) {
           if (err)  {
-            log.error ( 8,'Read file errors, file = ' + fpath );
-            log.error ( 8,'Error: ' + err );
+            log.error ( 9,'Read file errors, file = ' + fpath );
+            log.error ( 9,'Error: ' + err );
             server_response.writeHead ( 404, {'Content-Type':'text/html;charset=UTF-8'} );
             server_response.end ( '<p><b>[05-0008] FILE NOT FOUND OR FILE READ ERRORS</b></p>' );
           } else  {
@@ -219,21 +239,21 @@ Communicate.prototype.sendFile = function ( server_response )  {
     (function(ncURL){
       tmp.tmpName(function(err,fpath) {
         if (err) {
-          log.error ( 9,'cannot create temporary storage for file ' +
+          log.error ( 10,'cannot create temporary storage for file ' +
                         'request redirection' );
         } else  {
-          log.debug2 ( 10,'tmp file ' + fpath );
+          log.debug2 ( 11,'tmp file ' + fpath );
           request
             .get ( ncURL )
             .on('error', function(err) {
-              log.error ( 11,'Download errors from ' + ncURL );
-              log.error ( 11,'Error: ' + err );
+              log.error ( 12,'Download errors from ' + ncURL );
+              log.error ( 12,'Error: ' + err );
               utils.removeFile ( fpath );
             })
             .pipe(fs.createWriteStream(fpath))
             .on('error', function(err) {
-              log.error ( 12,'Download errors or stream read errors from ' + ncURL );
-              log.error ( 12,'Error: ' + err );
+              log.error ( 13,'Download errors or stream read errors from ' + ncURL );
+              log.error ( 13,'Error: ' + err );
               utils.removeFile ( fpath );
             })
             .on('close',function(){   // finish,end,

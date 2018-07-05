@@ -146,7 +146,6 @@ class Refmac(basic.TaskDriver):
                                hkl.dataset.Fpm.minus.value, hkl.dataset.Fpm.minus.sigma )
                 hkl_labin  =  "LABIN F+=" + hkl_labels[0] + " SIGF+=" + hkl_labels[1] +\
                               " F-=" + hkl_labels[2] + " SIGF-=" + hkl_labels[3]
-                use_anom = True
             else: # if str(hkl.useHKLSet) == 'TI':
                hkl_labels = ( hkl.dataset.Imean.value, hkl.dataset.Imean.sigma )
                hkl_labin  =  "LABIN IP=" + hkl_labels[0] + " SIGIP=" + hkl_labels[1]

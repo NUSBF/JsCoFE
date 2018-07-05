@@ -81,7 +81,7 @@ function TaskBuccaneer()  {
   this.helpURL = './html/jscofe_task_buccaneer.html';
 
   this.input_dtypes = [{      // input data types
-      data_type   : {'DataRevision':['!protein','!phases']}, // data type(s) and subtype(s)
+      data_type   : {'DataRevision':['!protein','!asu','!phases']}, // data type(s) and subtype(s)
       label       : 'Structure revision',        // label for input dialog
       inputId     : 'revision',      // input Id for referencing input fields
       customInput : 'buccaneer-ws',  // lay custom fields below the dropdown

@@ -114,38 +114,6 @@ MTZ.prototype.Load = function ( source,function_success,function_fail,
         var arrayBuffer = oReq.response; // Note: not oReq.responseText
         if (arrayBuffer) {
           processBuffer ( arrayBuffer );
-          /*
-          var dataView = new DataView(arrayBuffer);
-          var hoffset  = getHeaderOffset ( dataView,arrayBuffer.byteLength );
-          if (hoffset<0)  {
-            t.endian = !t.endian;
-            hoffset = getHeaderOffset ( dataView,arrayBuffer.byteLength );
-          }
-
-          if (hoffset<0)  {
-            if (function_fail)
-              function_fail ( 1 );  // no header
-          } else  {
-
-            t.header = [];  // will be a list of 80-character strings
-            for (var i=hoffset;i<arrayBuffer.byteLength;i+=80)  {
-              var s = "";
-              var imax = Math.min(i+80,arrayBuffer.byteLength);
-              for (var j=i;j<imax;j++)
-                s += String.fromCharCode ( dataView.getUint8(j) );
-              t.header.push ( s );
-            }
-
-            t.reflections = new DataView ( arrayBuffer,80,hoffset-80 );
-            t.processData();
-
-            //I've put makeLayouthere for now as variables won't show if put in initialisation
-            if (function_success)
-              function_success();
-
-          }
-          */
-
         } else {
           if (function_fail)
             function_fail ( 2 );   // no data

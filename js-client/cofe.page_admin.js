@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    31.10.17   <--  Date of Last Modification.
+ *    07.06.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Admin page
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2017
+ *  (C) E. Krissinel, A. Lebedev 2016-2018
  *
  *  =================================================================
  *
@@ -158,8 +158,9 @@ AdminPage.prototype.makeUsersInfoTab = function ( udata )  {
   this.usersTab.grid.setWidget ( this.userListTable,1,0,1,1 );
 
   this.userListTable.setHeaders ( ['##','Name','Login','Online','Role','E-mail',
-                                   'Licence','N<sub>jobs</sub>','Space',
-                                   'Known since','Last seen'] );
+                                   'Licence','N<sub>jobs</sub>',
+                                   'Space<br>(MBytes)','CPU<br>(hours)',
+                                   'Known<br>since','Last<br>seen'] );
   this.userListTable.setHeaderNoWrap   ( -1       );
   this.userListTable.setHeaderColWidth ( 0 ,'3%'   );  // Number
   this.userListTable.setHeaderColWidth ( 1 ,'auto' );  // Name
@@ -170,8 +171,9 @@ AdminPage.prototype.makeUsersInfoTab = function ( udata )  {
   this.userListTable.setHeaderColWidth ( 6 ,'5%'   );  // Licence
   this.userListTable.setHeaderColWidth ( 7 ,'5%'   );  // Jobs run
   this.userListTable.setHeaderColWidth ( 8 ,'5%'   );  // Space used
-  this.userListTable.setHeaderColWidth ( 9 ,'5%'   );  // Known since
-  this.userListTable.setHeaderColWidth ( 10,'5%'   );  // Last seen
+  this.userListTable.setHeaderColWidth ( 9 ,'5%'   );  // CPU used
+  this.userListTable.setHeaderColWidth ( 10,'5%'   );  // Known since
+  this.userListTable.setHeaderColWidth ( 11,'5%'   );  // Last seen
 
   for (var i=0;i<udata.userList.length;i++)  {
     var trow  = this.userListTable.addRow();
@@ -192,8 +194,15 @@ AdminPage.prototype.makeUsersInfoTab = function ( udata )  {
     trow.addCell ( role            ).setNoWrap();
     trow.addCell ( uDesc.email     ).setNoWrap();
     trow.addCell ( uDesc.licence   ).setNoWrap();
+    /*
     trow.addCell ( uDesc.nJobs     ).setNoWrap().setHorizontalAlignment('right');
     trow.addCell ( uDesc.usedSpace ).setNoWrap().setHorizontalAlignment('right');
+    */
+    trow.addCell ( uDesc.ration.jobs_total  ).setNoWrap().setHorizontalAlignment('right');
+    trow.addCell ( round(uDesc.ration.storage_used,1) )
+                                    .setNoWrap().setHorizontalAlignment('right');
+    trow.addCell ( round(uDesc.ration.cpu_total_used,2) )
+                                    .setNoWrap().setHorizontalAlignment('right');
     trow.addCell ( new Date(uDesc.knownSince).toISOString().slice(0,10) )
                                     .setNoWrap().setHorizontalAlignment('right');
     var lastSeen = '';

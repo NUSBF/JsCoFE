@@ -45,6 +45,12 @@ function TaskCoot()  {
       version   : 0,          // minimum data version allowed
       min       : 1,          // minimum acceptable number of data instances
       max       : 1           // maximum acceptable number of data instances
+    },{
+      data_type : {'DataLigand':[]},  // data type(s) and subtype(s)
+      label     : 'Ligand data', // label for input dialog
+      inputId   : 'ligand',      // input Id for referencing input fields
+      min       : 0,             // minimum acceptable number of data instances
+      max       : 1              // maximum acceptable number of data instances
     }
   ];
 
@@ -77,7 +83,6 @@ if (__template)  {
 
     if ('revision' in this.input_data.data)  {
       var revision = this.input_data.data['revision'][0];
-      //this.input_data.data['hkl']     = [revision.HKL];
       this.input_data.data['istruct'] = [revision.Structure];
     }
 

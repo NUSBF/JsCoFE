@@ -99,8 +99,17 @@ $ sudo dnf install npm
 correctly, both commands should report the corresponding version numbers.</p>
 </dd>
 <dt><strong>2. Install CCP4</strong></dt>
-<dd>Download and install CCP4 from <a class="reference external" href="http://www.ccp4.ac.uk/download">http://www.ccp4.ac.uk/download</a>. Make sure that
-you download <code class="docutils literal"><span class="pre">MoRDa</span></code> database and link it to <code class="docutils literal"><span class="pre">morda</span></code> pipeline.</dd>
+<dd><p class="first">Download and install CCP4 from <a class="reference external" href="http://www.ccp4.ac.uk/download">http://www.ccp4.ac.uk/download</a>. Make sure that
+you download <code class="docutils literal"><span class="pre">MoRDa</span></code> database and link it to <code class="docutils literal"><span class="pre">morda</span></code> pipeline.</p>
+<p>CCP4 7.0 series needs to be complemented with Gemmi library. In order to install
+it, type the following command in CCP4 sourced environment (use user account
+in which CCP4 was originally installed, and <code class="docutils literal"><span class="pre">sudo</span></code> if necessary):</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>$ ccp4-python -m pip install https://github.com ......
+</pre></div>
+</div>
+<p class="last">This will also require C++-11 compiler on your system, which can be normally
+installed from system&#8217;s repositories.</p>
+</dd>
 <dt><strong>3. Checkout jsCoFE source code directory</strong></dt>
 <dd><p class="first">The source code is obtainable from CCP4&#8217;s Bazaar repositories:</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span>$ bzr checkout http://fg.oisin.rc-harwell.ac.uk/anonscm/bzr/jscofe/trunk /path/to/jscofe
@@ -308,7 +317,7 @@ jsCoFE client ready for communication. Note that you can copy the
         <div class="right">
           
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2017, E. Krissinel and A. Lebedev.
+        &#169; Copyright 2017-2018, E. Krissinel and A. Lebedev.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.8.
     </div>
         </div>

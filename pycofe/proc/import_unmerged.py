@@ -99,7 +99,10 @@ def pointless_xml   () : return "pointless.xml"
 def pointless_script() : return "pointless.script"
 def symm_det        () : return "symm_det_table"
 
-def run ( body ):  # body is reference to the main Import class
+def run ( body,        # body is reference to the main Import class
+          sectionTitle="Unmerged datasets",
+          sectionOpen=False  # to keep result section closed if several datasets
+        ):
 
     files_mtz = []
     for f_orig in body.files_all:
@@ -115,6 +118,8 @@ def run ( body ):  # body is reference to the main Import class
 
     unmergedSecId = "unmerged_mtz_sec_" + str(body.widget_no)
     body.widget_no += 1
+
+    imported_data = []
 
     k = 0
     for f_orig, f_fmt in files_mtz:
@@ -139,9 +144,9 @@ def run ( body ):  # body is reference to the main Import class
                 body.file_stdout.write ( "%%%%%  UNMERGED DATA IMPORT\n" )
                 body.file_stdout.write ( "%"*80 + "\n" )
 
-                pyrvapi.rvapi_add_section ( unmergedSecId,"Unmerged datasets",
+                pyrvapi.rvapi_add_section ( unmergedSecId,sectionTitle,
                                             body.report_page_id(),body.rvrow,
-                                            0,1,1,False )
+                                            0,1,1,sectionOpen )
                 urow = 0
 
             fileSecId = unmergedSecId
@@ -277,6 +282,8 @@ def run ( body ):  # body is reference to the main Import class
                             body.addSummaryLine ( "UNMERGED",unmerged.dname )
                         k += 1
 
+                        imported_data.append ( unmerged )
+
             pyrvapi.rvapi_flush()
 
             # move imported file into output directory
@@ -298,4 +305,4 @@ def run ( body ):  # body is reference to the main Import class
     body.rvrow += 1
     pyrvapi.rvapi_flush()
 
-    return
+    return imported_data

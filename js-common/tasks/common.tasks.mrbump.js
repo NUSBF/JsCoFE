@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    05.12.17   <--  Date of Last Modification.
+ *    25.06.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  MrBUMP Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2017
+ *  (C) E. Krissinel, A. Lebedev 2016-2018
  *
  *  =================================================================
  *
@@ -39,7 +39,7 @@ function TaskMrBump()  {
   this.helpURL = './html/jscofe_task_mrbump.html';
 
   this.input_dtypes = [{  // input data types
-      data_type : {'DataRevision':['hkl']}, // data type(s) and subtype(s)
+      data_type : {'DataRevision':['!protein','!asu']}, // data type(s) and subtype(s)
       label     : 'Structure revision',     // label for input dialog
       inputId   : 'revision', // input Id for referencing input fields
       version   : 0,          // minimum data version allowed
@@ -48,6 +48,8 @@ function TaskMrBump()  {
                               // be selected
       min       : 1,          // minimum acceptable number of data instances
       max       : 1           // maximum acceptable number of data instances
+    }
+    /*
     },{
       data_type : {'DataSequence':['protein']}, // data type(s) and subtype(s)
       label     : 'Sequence',          // label for input dialog
@@ -55,6 +57,7 @@ function TaskMrBump()  {
       min       : 1,          // minimum acceptable number of data instances
       max       : 1           // maximum acceptable number of data instances
     }
+    */
   ];
 
 }
@@ -124,8 +127,11 @@ if (!__template)  {
     // put hkl data in input databox for copying their files in
     // job's 'input' directory
 
-    if ('revision' in this.input_data.data)
-      this.input_data.data['hkl'] = [this.input_data.data['revision'][0].HKL];
+    if ('revision' in this.input_data.data)  {
+      var revision = this.input_data.data['revision'][0];
+      this.input_data.data['hkl'] = [revision.HKL];
+      this.input_data.data['seq'] = revision.ASU.seq;
+    }
 
     __template.TaskTemplate.prototype.makeInputData.call ( this,jobDir );
 

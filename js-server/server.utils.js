@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    17.12.17   <--  Date of Last Modification.
+ *    26.05.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,18 +13,19 @@
  *  **** Content :  Server-side utility functions
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2017
+ *  (C) E. Krissinel, A. Lebedev 2016-2018
  *
  *  =================================================================
  *
  */
 
-var fs   = require('fs-extra');
-var path = require('path');
+var fs            = require('fs-extra');
+var path          = require('path');
+var child_process = require('child_process');
 
-var class_map = require('./server.class_map');
-var task_t    = require('../js-common/tasks/common.tasks.template');
-var com_utils = require('../js-common/common.utils');
+var class_map     = require('./server.class_map');
+var task_t        = require('../js-common/tasks/common.tasks.template');
+var com_utils     = require('../js-common/common.utils');
 
 //  prepare log
 var log = require('./server.log').newLog(14);
@@ -186,6 +187,27 @@ function removePath ( dir_path ) {
 }
 
 
+function getDirectorySize ( dir_path )  {
+  var size = 0.0;
+  try {
+    if (fileExists(dir_path))  {
+      fs.readdirSync(dir_path).forEach(function(file,index){
+        var curPath = path.join ( dir_path,file );
+        var lstat   = fs.lstatSync(curPath);
+        if (lstat.isDirectory()) { // recurse
+          size += getDirectorySize ( curPath );
+        } else {
+          size += lstat['size'];
+        }
+      });
+    }
+  } catch (e)  {
+    log.error ( 9,'error scanning directory ' + dir_path );
+  }
+  return size;
+}
+
+
 function removeFiles ( dir_path,extList ) {
   var rc = true;
 
@@ -202,7 +224,7 @@ function removeFiles ( dir_path,extList ) {
           try {
             fs.unlinkSync ( curPath );
           } catch (e)  {
-            log.error ( 9,'cannot remove file ' + curPath );
+            log.error ( 10,'cannot remove file ' + curPath );
             rc = false;
           }
         }
@@ -214,6 +236,26 @@ function removeFiles ( dir_path,extList ) {
 
 }
 
+
+// ===========================================================================
+
+// synchronous version, to be used only to kill previous node instances at
+// startup
+function killProcess ( pid )  {
+  if (pid)  {
+    try {
+      if (/^win/.test(process.platform))  {
+        child_process.execSync ( 'taskkill /PID ' + pid + ' /T /F' );
+      } else  {
+        child_process.execSync ( 'kill -9 ' + pid );
+      }
+    } catch (e)  {
+      log.warning ( 1,'cannot kill process pid='+pid );
+    }
+  }
+}
+
+// ===========================================================================
 
 function writeJobReportMessage ( jobDirPath, message, updating_bool )  {
 var fpath = path.join ( jobDirPath,task_t.jobReportDirName,
@@ -289,6 +331,8 @@ var mimeType = '';
     case 'png'   : mimeType = 'image/png';                break;
     case 'svg'   : mimeType = 'image/svg+xml';            break;
     case 'pdb'   :
+    case 'map'   :
+    case 'ccp4'  : //mimeType = 'application/x-binary';     break;
     case 'mtz'   : mimeType = 'application/octet-stream'; break;
     case 'pdf'   : mimeType = 'application/pdf';          break;
     case 'table' :
@@ -339,6 +383,7 @@ module.exports.moveFile              = moveFile;
 module.exports.moveDir               = moveDir;
 module.exports.mkDir                 = mkDir;
 module.exports.removePath            = removePath;
+module.exports.getDirectorySize      = getDirectorySize;
 module.exports.removeFiles           = removeFiles;
 module.exports.writeJobReportMessage = writeJobReportMessage;
 module.exports.jobSignalExists       = jobSignalExists;
@@ -348,3 +393,4 @@ module.exports.getJobSignalCode      = getJobSignalCode;
 module.exports.clearRVAPIreport      = clearRVAPIreport;
 module.exports.getMIMEType           = getMIMEType;
 module.exports.capData               = capData;
+module.exports.killProcess           = killProcess;

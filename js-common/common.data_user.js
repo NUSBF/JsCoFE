@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    23.03.18   <--  Date of Last Modification.
+ *    28.05.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -35,6 +35,7 @@ function UserData()  {
   this.pwd        = '';
   this.nJobs      = 0;
   this.usedSpace  = 0;  // in MB
+  this.usedCPU    = 0;  // in hours
   this.knownSince = ''; // date
   this.lastSeen   = ''; // date
   this.helpTopics = [];

@@ -201,6 +201,10 @@ class DType(dtype_template.DType):
         return
 
 
+    def getHKLFilePath ( self,dirPath ):
+        return  self.getFilePath ( dirPath,0 )
+
+
 def register ( mtzFilePath,dataSerialNo,job_id,outDataBox,outputDir ):
     if os.path.isfile(mtzFilePath):
         hkl = DType(job_id)

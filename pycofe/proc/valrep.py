@@ -24,6 +24,7 @@ def getValidationReport ( modelFilePath,sfFilePath,repFilePath,logfile ):
     val = Validate ( apiUrl=__apiUrl__ )
     rD  = val.newSession()
     rc  = checkStatus ( rD,logfile )
+    msg = ""
     if not rc:
 
         logfile.write (
@@ -62,23 +63,27 @@ def getValidationReport ( modelFilePath,sfFilePath,repFilePath,logfile ):
                             break
                         logfile.write ( "[%4d] Pausing for %4d (seconds)\n" % (it, pause) )
 
-                    lt = time.strftime("%Y%m%d%H%M%S", time.localtime())
-                    fnR = "xray-report-%s.pdf" % lt
-                    rD = val.getReport(fnR)
-                    #rD = val.getReport ( repFilePath )
+                    #lt = time.strftime("%Y%m%d%H%M%S", time.localtime())
+                    #fnR = "xray-report-%s.pdf" % lt
+                    #rD = val.getReport(fnR)
+                    rD = val.getReport ( repFilePath )
                     rc = checkStatus ( rD,logfile )
                     if not rc:
-                        logfile.write ( " --- success\n" )
+                        msg = " --- success"
 
                 else:
-                    logfile.write ( " *** validation run failed\n" )
+                    msg = " *** validation run failed"
             else:
-                logfile.write ( " *** structure factors upload failed\n" )
+                msg = " *** structure factors upload failed"
         else:
-            logfile.write ( " *** model upload failed\n" )
+            msg = " *** model upload failed"
     else:
-        logfile.write ( " *** cannot create validation session\n" )
+        msg = " *** cannot create validation session"
 
+    if not rc:
+        logfile.write ( " --- success\n" )
+    else:
+        logfile.write ( msg + "\n" )
     logfile.flush()
 
     return rc

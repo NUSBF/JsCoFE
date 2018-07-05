@@ -66,7 +66,8 @@ function ImportProjectDialog ( onSuccess_func )  {
             if (data.signal=='Success')  {
               msgLabel.setText ( 'Project "' + data.name + '" is imported, ' +
                                  'you may close this dialog now.' );
-              onSuccess_func();
+              if (onSuccess_func)
+                onSuccess_func();
             } else
               msgLabel.setText ( 'Project "' + data.name + '" failed to import, ' +
                                  'the reason being:<p><b><i>' + data.signal +

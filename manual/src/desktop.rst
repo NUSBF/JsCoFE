@@ -48,6 +48,16 @@ application.
   Download and install CCP4 from http://www.ccp4.ac.uk/download. Make sure that
   you download ``MoRDa`` database and link it to ``morda`` pipeline.
 
+  CCP4 7.0 series needs to be complemented with `Gemmi` library. In order to install
+  it, type the following command in CCP4 sourced environment (use user account
+  in which CCP4 was originally installed, and ``sudo`` if necessary): ::
+
+    $ ccp4-python -m pip install git+https://github.com/project-gemmi/gemmi.git
+
+  This will also require C++-11 compiler on your system, which can be normally
+  installed from system's repositories.
+
+
 **3. Checkout jsCoFE source code directory**
   The source code is obtainable from CCP4's Bazaar repositories: ::
 
