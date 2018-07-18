@@ -185,14 +185,20 @@ $ npm install
 <p>A fully functional CCP4 Setup must be available for every Number Cruncher and
 Client-side Servers, which must run in CCP4-sourced environment. See
 <a class="reference external" href="http://www.ccp4.ac.uk">http://www.ccp4.ac.uk</a> for CCP4 download and installation instructions.
-CCP4 7.0 series needs to be complemented with Gemmi library. In order to install
+CCP4 7.0 series needs to be complemented with <cite>Gemmi</cite> library. In order to install
 it, type the following command in CCP4 sourced environment (use user account
-in which CCP4 was originally installed, and <cite>sudo</cite> if necessary):</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span>$ ccp4-python -m pip install https://github.com ......
+in which CCP4 was originally installed, and <code class="docutils literal"><span class="pre">sudo</span></code> if necessary):</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>$ ccp4-python -m pip install git+https://github.com/project-gemmi/gemmi.git
 </pre></div>
 </div>
 <p>This will also require C++-11 compiler on your system, which can be normally
 installed from system&#8217;s repositories.</p>
+<p>The wwPDB Deposition task also requires <cite>oneDep API</cite> for communication with
+wwPDB validation report server. Install it with the following command, using
+account in which CCP4 was originally installed, and <code class="docutils literal"><span class="pre">sudo</span></code> if necessary:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>$ ccp4-python -m pip install onedep_api
+</pre></div>
+</div>
 <p>Some jsCoFE tasks also require access to PDB archive, obtainable from
 <a class="reference external" href="https://www.wwpdb.org/download/downloads">https://www.wwpdb.org/download/downloads</a>. AMPLE package for ab-initio MR
 modelling also requires access to ROSETTA or QUARK software (see

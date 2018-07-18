@@ -101,14 +101,20 @@ correctly, both commands should report the corresponding version numbers.</p>
 <dt><strong>2. Install CCP4</strong></dt>
 <dd><p class="first">Download and install CCP4 from <a class="reference external" href="http://www.ccp4.ac.uk/download">http://www.ccp4.ac.uk/download</a>. Make sure that
 you download <code class="docutils literal"><span class="pre">MoRDa</span></code> database and link it to <code class="docutils literal"><span class="pre">morda</span></code> pipeline.</p>
-<p>CCP4 7.0 series needs to be complemented with Gemmi library. In order to install
+<p>CCP4 7.0 series needs to be complemented with <cite>Gemmi</cite> library. In order to install
 it, type the following command in CCP4 sourced environment (use user account
 in which CCP4 was originally installed, and <code class="docutils literal"><span class="pre">sudo</span></code> if necessary):</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span>$ ccp4-python -m pip install https://github.com ......
+<div class="highlight-default"><div class="highlight"><pre><span></span>$ ccp4-python -m pip install git+https://github.com/project-gemmi/gemmi.git
 </pre></div>
 </div>
-<p class="last">This will also require C++-11 compiler on your system, which can be normally
+<p>This will also require C++-11 compiler on your system, which can be normally
 installed from system&#8217;s repositories.</p>
+<p>The wwPDB Deposition task also requires <cite>oneDep API</cite> for communication with
+wwPDB validation report server. Install it with the following command, using
+account in which CCP4 was originally installed, and <code class="docutils literal"><span class="pre">sudo</span></code> if necessary:</p>
+<div class="last highlight-default"><div class="highlight"><pre><span></span>$ ccp4-python -m pip install onedep_api
+</pre></div>
+</div>
 </dd>
 <dt><strong>3. Checkout jsCoFE source code directory</strong></dt>
 <dd><p class="first">The source code is obtainable from CCP4&#8217;s Bazaar repositories:</p>
