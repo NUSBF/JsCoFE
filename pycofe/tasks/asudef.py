@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    28.06.18   <--  Date of Last Modification.
+#    17.07.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -36,7 +36,7 @@ import pyrvapi
 #  application imports
 from   pycofe.tasks  import basic
 from   pycofe.dtypes import dtype_revision, dtype_sequence, dtype_structure
-from   pycofe.proc   import import_sequence, asucomp
+from   pycofe.proc   import import_filetype, import_sequence, asucomp
 from   pycofe.varut  import rvapi_utils
 
 
@@ -382,7 +382,7 @@ def revisionFromStructure ( base,hkl,structure,name,useSequences=None,
                     type_nr += 1
 
     annotation = {"rename":{}, "annotation":[] }
-    base.files_all = []
+    base.resetFileImport()
     for i in range(len(seq)):
         if base.outputFName!="*":
             fname = base.outputFName +  "_"
@@ -391,7 +391,7 @@ def revisionFromStructure ( base,hkl,structure,name,useSequences=None,
         fname += name + "_" + id[i] + ".fasta"
         dtype_sequence.writeSeqFile ( os.path.join(base.importDir(),fname),
                                       name + "_" + id[i],seq[i] )
-        base.files_all.append ( fname )
+        base.addFileImport ( "",fname,import_filetype.ftype_Sequence() )
         annot = { "file":fname, "rename":fname, "items":[
           { "rename":fname, "contents": seq[i], "type": stype[i] }
         ]}

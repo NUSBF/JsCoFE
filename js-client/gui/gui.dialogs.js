@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    14.11.17   <--  Date of Last Modification.
+ *    06.07.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Various dialog templates
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2017
+ *  (C) E. Krissinel, A. Lebedev 2016-2018
  *
  *  =================================================================
  *
@@ -69,7 +69,7 @@ function MessageBox ( title,message )  {
     height    : 'auto',
     width     : 'auto',
     modal     : true,
-    buttons: {
+    buttons   : {
       "Ok": function() {
         $( this ).dialog( "close" );
       }
@@ -109,6 +109,41 @@ function MessageBoxW ( title,message,width_ratio )  {
 MessageBoxW.prototype = Object.create ( Widget.prototype );
 MessageBoxW.prototype.constructor = MessageBoxW;
 
+
+
+function MessageBoxF ( title,message,btn_name,onClick_func,uncloseable_bool )  {
+
+  Dialog.call ( this,title );
+  this.element.innerHTML = message;
+
+  this._options = {
+    resizable : false,
+    height    : 'auto',
+    width     : 'auto',
+    modal     : true,
+    buttons   : {
+      [btn_name] : function() {
+        $( this ).dialog( "close" );
+        if (onClick_func)
+          window.setTimeout ( onClick_func,0 );
+      }
+    }
+  }
+
+  if (uncloseable_bool)  {
+    this._options.closeOnEscape = false;
+    this._options.open = function(event, ui) {
+      //hide close button.
+      $(this).parent().children().children('.ui-dialog-titlebar-close').hide();
+    }
+  }
+
+  this.launch();
+
+}
+
+MessageBoxF.prototype = Object.create ( Dialog.prototype );
+MessageBoxF.prototype.constructor = MessageBoxF;
 
 
 // -------------------------------------------------------------------------
@@ -242,7 +277,7 @@ function QuestionBox ( title,message,btn1_name,onButton1_func,
     height    : 'auto',
     width     : 'auto',
     modal     : true,
-    buttons: {
+    buttons   : {
       [btn1_name] : function() {
         if (onButton1_func)
           onButton1_func();

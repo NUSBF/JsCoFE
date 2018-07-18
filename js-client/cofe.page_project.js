@@ -287,7 +287,7 @@ function ProjectPage ( sceneId )  {
 
   if (__admin || __login_user)  {
     toolbar.setLabel ( '<hr style="border:1px dotted;"/>' ,11,0,1,1 );
-    split_btn = toolbar.setButton ( '','./images/help.svg',12,0,1,1 );
+    split_btn = toolbar.setButton ( '','./images/split_page.svg',12,0,1,1 );
   }
 
 

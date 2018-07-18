@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    10.04.18   <--  Date of Last Modification.
+#    17.07.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -34,10 +34,10 @@ import pyrvapi
 #  application imports
 import basic
 from proc import (import_xrayimages, import_unmerged, import_merged,
-                  import_xyz, import_sequence)
+                  import_xyz, import_ligand, import_sequence)
 
 importers = [import_xrayimages, import_unmerged, import_merged,
-             import_xyz, import_sequence]
+             import_xyz, import_ligand, import_sequence]
 
 # import_map can fail if the mrcfile package is not available. Once mrcfile is
 # properly included in CCP4 builds, this can be changed to a normal import.
@@ -77,11 +77,12 @@ class Import(basic.TaskDriver):
 
         #self.files_all = [f for f in os.listdir(self.importDir()) if os.path.isfile(os.path.join(self.importDir(),f))]
 
-        self.files_all = []
+        self.resetFileImport()
         for dirName, subdirList, fileList in os.walk(self.importDir(),topdown=False):
             dName = dirName[len(self.importDir())+1:]
             for fname in fileList:
-                self.files_all.append ( os.path.join(dName,fname) )
+                self.addFileImport ( dName,fname )
+
 
         # ============================================================================
         # do individual data type imports

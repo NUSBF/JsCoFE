@@ -23,6 +23,7 @@ import pyrvapi
 
 #  application imports
 from dtypes import dtype_sequence
+from proc   import import_filetype
 from varut  import jsonut
 
 
@@ -83,9 +84,11 @@ def run ( body,sectionTitle="Macromolecular sequences" ):  # body is reference t
 
     files_seq = []
     for f in body.files_all:
-        fl = f.lower();
-        if fl.endswith(('.seq','.fasta','.pir')):
+        if body.checkFileImport ( f,import_filetype.ftype_Sequence() ):
             files_seq.append ( f )
+        #fl = f.lower();
+        #if fl.endswith(('.seq','.fasta','.pir')):
+        #    files_seq.append ( f )
 
     if len(files_seq) <= 0:
         return

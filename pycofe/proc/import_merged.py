@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    23.06.18   <--  Date of Last Modification.
+#    18.07.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -26,7 +26,7 @@ import pyrvapi_ext.parsers
 #  application imports
 from   pycofe.varut  import command
 from   pycofe.dtypes import dtype_hkl
-from   pycofe.proc   import mtz, srf
+from   pycofe.proc   import import_filetype, mtz, srf
 
 
 # ============================================================================
@@ -125,12 +125,21 @@ def run ( body,   # body is reference to the main Import class
 
     files_mtz = []
     for f_orig in body.files_all:
-        f_base, f_ext = os.path.splitext(f_orig)
-        if f_ext.lower() in ('.hkl', '.mtz'):
-            p_orig = os.path.join(body.importDir(), f_orig)
-            f_fmt = mtz.hkl_format(p_orig, body.file_stdout)
-            if f_fmt in ('xds_merged', 'mtz_merged'):
-                files_mtz.append((f_orig, f_fmt))
+        #f_base, f_ext = os.path.splitext(f_orig)
+        #if f_ext.lower() in ('.hkl', '.mtz'):
+        #body.file_stdout.write ( " mtz=" + f_orig + "\n" )
+        if body.checkFileImport ( f_orig,import_filetype.ftype_MTZMerged() ):
+            files_mtz.append((f_orig,import_filetype.ftype_MTZMerged()))
+        elif body.checkFileImport ( f_orig,import_filetype.ftype_XDSMerged() ):
+            files_mtz.append((f_orig,import_filetype.ftype_XDSMerged()))
+        elif body.checkFileImport ( f_orig,import_filetype.ftype_CIFMerged() ):
+            files_mtz.append((f_orig,import_filetype.ftype_CIFMerged()))
+
+            #p_orig = os.path.join(body.importDir(), f_orig)
+            #body.file_stdout.write ( " pmtz=" + p_orig + "\n" )
+            #f_fmt = mtz.hkl_format(p_orig, body.file_stdout)
+            #if f_fmt in ('xds_merged', 'mtz_merged'):
+            #    files_mtz.append((f_orig, f_fmt))
 
     if not files_mtz:
         return
@@ -139,16 +148,32 @@ def run ( body,   # body is reference to the main Import class
 
     k = 0
     for f_orig, f_fmt in files_mtz:
+
         body.files_all.remove ( f_orig )
-        p_orig = os.path.join(body.importDir(), f_orig)
+
+        p_orig  = os.path.join(body.importDir(), f_orig)
         p_mtzin = p_orig
-        if not f_fmt.startswith('mtz_'):
+
+        if f_fmt==import_filetype.ftype_CIFMerged():
+            p_mtzin = os.path.splitext(f_orig)[0] + '.mtz'
+            body.open_stdin()
+            body.write_stdin ( "END\n" )
+            body.close_stdin()
+            rc = body.runApp ( "cif2mtz",["HKLIN",p_orig,"HKLOUT",p_mtzin],False )
+            if rc.msg or not os.path.isfile(p_mtzin):
+                body.putSummaryLine_red ( f_orig,"CIF","Failed to convert, ignored" )
+                p_mtzin = None
+            body.unsetLogParser()
+
+        #if not f_fmt.startswith('mtz_'):
+        elif f_fmt==import_filetype.ftype_XDSMerged():
             p_mtzin = os.path.splitext(f_orig)[0] + '.mtz'
             sp = subprocess.Popen ( 'pointless', stdin=subprocess.PIPE,
                 stdout=body.file_stdout, stderr=body.file_stderr )
             sp.stdin.write('XDSIN ' + p_orig + '\nHKLOUT ' + p_mtzin + '\nCOPY\n')
             sp.stdin.close()
             if sp.wait():
+                body.putSummaryLine_red ( f_orig,"XDS","Failed to convert, ignored" )
                 p_mtzin = None
 
         if p_mtzin:

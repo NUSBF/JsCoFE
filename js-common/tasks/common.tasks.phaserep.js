@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    26.10.17   <--  Date of Last Modification.
+ *    10.07.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Phaser-EP Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2017
+ *  (C) E. Krissinel, A. Lebedev 2016-2018
  *
  *  =================================================================
  *
@@ -38,8 +38,8 @@ function TaskPhaserEP()  {
   this.helpURL = './html/jscofe_task_phaserep.html';
 
   this.input_dtypes = [{  // input data types
-      data_type   : {'DataRevision':['!anomalous','!phases']}, // data type(s) and subtype(s)
-                                                               // '!' means "mandatory"
+      data_type   : {'DataRevision':['!anomalous','!asu']}, // data type(s) and subtype(s)
+                                                            // '!' means "mandatory"
       label       : 'Structure revision',     // label for input dialog
       inputId     : 'revision',  // input Id for referencing input fields
       customInput : 'phaser-ep', // lay custom fields next to the selection
@@ -47,23 +47,6 @@ function TaskPhaserEP()  {
       version     : 0,           // minimum data version allowed
       min         : 1,           // minimum acceptable number of data instances
       max         : 1            // maximum acceptable number of data instances
-      /*
-    },{
-      data_type   : {'DataHKL':['anomalous']}, // data type(s) and subtype(s)
-      label       : 'Reflections',   // label for input dialog
-      inputId     : 'hkl',        // input Id for referencing input fields
-      customInput : 'phaser-ep',  // lay custom fields below the dropdown
-      version     : 0,            // minimum data version allowed
-      min         : 1,            // minimum acceptable number of data instances
-      max         : 1             // maximum acceptable number of data instances
-    },{
-      data_type   : {'DataSequence':['~unknown']}, // data type(s) and subtype(s)
-      label       : 'Sequence',  // label for input dialog
-      inputId     : 'seq',       // input Id for referencing input fields
-      customInput : 'stoichiometry', // lay custom fields below the dropdown
-      min         : 1,           // minimum acceptable number of data instances
-      max         : 10           // maximum acceptable number of data instances
-    */
     },{
       data_type   : {'DataStructure':['substructure']}, // data type(s) and subtype(s)
       label       : 'Anomalous scatterers', // label for input dialog
@@ -73,6 +56,7 @@ function TaskPhaserEP()  {
       max         : 1            // maximum acceptable number of data instances
     },{
       data_type   : {'DataStructure':['~substructure','~substructure-am']}, // data type(s) and subtype(s)
+//      data_type   : {'DataStructure':[]}, // data type(s) and subtype(s)
       label       : 'Initial phases', // label for input dialog
       inputId     : 'xmodel',    // input Id for referencing input fields
       customInput : 'phaser-ep', // lay custom fields below the dropdown
@@ -318,6 +302,7 @@ if (!__template)  {
 
       //console.log ( JSON.stringify(dt) );
       var main_substructure = (dt.subtype.indexOf('substructure')>=0);
+      var main_xyz          = (dt.subtype.indexOf('xyz')>=0);
 
       if (substr)  {
         substr = substr.dropdown[0];
@@ -325,38 +310,8 @@ if (!__template)  {
       }
       if (xmodel)  {
         xmodel = xmodel.dropdown[0];
-        inpParamRef.grid.setRowVisible ( xmodel.row,main_substructure );
+        inpParamRef.grid.setRowVisible ( xmodel.row,!main_xyz );
       }
-
-      /*
-      if (xmodel)  {
-        substr = substr.dropdown[0];
-        if (substr.getItemByPosition(0).value==-1)  {
-          substr.deleteItemByPosition(0);  // remove '[do not use]' option
-          substr.click();
-        }
-      } else if (!substr)  {
-        xmodel = xmodel.dropdown[0];
-        if (xmodel.getItemByPosition(0).value==-1)  {
-          xmodel.deleteItemByPosition(0);  // remove '[do not use]' option
-          xmodel.click();
-        }
-      } else  {
-        xmodel = xmodel.dropdown[0];
-        substr = substr.dropdown[0];
-        xmodel_value = xmodel.getValue();
-        substr_value = substr.getValue();
-        if ((xmodel_value==substr_value) && (xmodel_value==-1))  {
-          // select some valid option
-          substr.selectItemByPosition ( 1 );
-          substr.click();
-          substr_value = substr.getItemByPosition(1).value;
-        }
-        // disable '[do not use]' options as necessary
-        substr.disableItemByPosition ( 0,(xmodel_value<0) );
-        xmodel.disableItemByPosition ( 0,(substr_value<0) );
-      }
-      */
 
     }
 
@@ -405,7 +360,9 @@ if (!__template)  {
       this.input_data.data['seq'] = revision.ASU.seq;
       if (revision.subtype.indexOf('substructure')>=0)
             this.input_data.data['substructure'] = [revision.Structure];
-      else  this.input_data.data['xmodel'] = [revision.Structure];
+      //else  this.input_data.data['xmodel'] = [revision.Structure];
+      else if (revision.subtype.indexOf('xyz')>=0)
+            this.input_data.data['xmodel'] = [revision.Structure];
     }
 
     __template.TaskTemplate.prototype.makeInputData.call ( this,jobDir );

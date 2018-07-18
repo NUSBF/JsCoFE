@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    10.05.18   <--  Date of Last Modification.
+ *    06.07.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -533,7 +533,8 @@ if (!__template)  {
 
     this.collectReindex = function()  {
       if ('new_spg' in customGrid)
-        this.new_spg = customGrid.new_spg.getValue().replace ( ' (enantiomorph)','' );
+        this.new_spg = customGrid.new_spg.getValue().replace ( ' (enantiomorph)','' )
+                                                    .replace ( ' (indistinguishable)','' );
       else
         this.new_spg = '';
     }

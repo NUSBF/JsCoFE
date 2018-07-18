@@ -419,9 +419,11 @@ class Crank2(basic.TaskDriver):
                     #self.structure.setBP3Labels()
                 else:
                     self.structure.addXYZSubtype()
-                    self.structure.setRefmacLabels ( hkl_all[0] )
-                    self.structure.FP    = "REFM_F"
-                    self.structure.SigFP = "REFM_SIGF"
+                    self.structure.setCrank2Labels()
+                    #self.structure.setRefmacLabels ( hkl_all[0] )
+                    #self.structure.FP         = "REFM_F"
+                    #self.structure.SigFP      = "REFM_SIGF"
+                    #self.structure.FreeR_flag = "FREER"
                 self.structure.addEPSubtype()
 
                 if len(hkl_all)==1:

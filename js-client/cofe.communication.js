@@ -105,6 +105,31 @@ function makeCommErrorMessage ( title,response )  {
 }
 
 
+function checkVersionMatch ( response,localServer_bool )  {
+
+  if (localServer_bool)
+    return true;  // may need a better solution
+
+  if (response.version!=jsCoFE_version)  {
+    new MessageBoxF ( 'jsCoFE update',
+        '<center>jsCoFE has been changed on server side to version<br><center><sup>&nbsp;</sup><b><i>' +
+        response.version + '</i></b><sub>&nbsp;</sub></center>' +
+        'which is incompatible with version<br><center><sup>&nbsp;</sup><b><i>'
+        + jsCoFE_version + '</b></i><sub>&nbsp;</sub></center>you are currently using.' +
+        '<hr/>jsCoFE will now update in your browser, which will end the current login<br>' +
+        'session. Please login again after update; your projects and data should<br>' +
+        'be safe, however, you may find that you cannot clone some old tasks.<hr/></center>',
+        'Update',function(){
+          location.reload();
+        },true );
+    return false;
+  }
+
+  return true;
+
+}
+
+
 function serverCommand ( cmd,data_obj,page_title,function_response,
                          function_always,function_fail )  {
 // used when no user is logged in
@@ -118,10 +143,12 @@ function serverCommand ( cmd,data_obj,page_title,function_response,
   })
   .done ( function(rdata) {
 
-    var response = jQuery.extend ( true, new Response(), jQuery.parseJSON(rdata) );
-
-    if (!function_response(response))
-      makeCommErrorMessage ( page_title,response );
+    var rsp = jQuery.parseJSON ( rdata );
+    if (checkVersionMatch(rsp,false))  {
+      var response = jQuery.extend ( true, new Response(), rsp );
+      if (!function_response(response))
+        makeCommErrorMessage ( page_title,response );
+    }
 
   })
   .always ( function(){
@@ -165,17 +192,19 @@ if ((typeof function_fail === 'string' || function_fail instanceof String) &&
 }
 */
 
-      var response = jQuery.extend ( true, new Response(), jQuery.parseJSON(rdata) );
-      if (response.status==fe_retcode.ok)  {
-        if (function_ok)
-          function_ok ( response.data );
-      } else
-        makeCommErrorMessage ( page_title,response );
-
-      // we put this function here and in fail section because we do not want to
-      // have it exwcuted multiple times due to multiple retries
-      if (function_always)
-        function_always(0);
+      var rsp = jQuery.parseJSON ( rdata );
+      if (checkVersionMatch(rsp,false))  {
+        var response = jQuery.extend ( true, new Response(), rsp );
+        if (response.status==fe_retcode.ok)  {
+          if (function_ok)
+            function_ok ( response.data );
+        } else
+          makeCommErrorMessage ( page_title,response );
+        // we put this function here and in fail section because we do not want to
+        // have it exwcuted multiple times due to multiple retries
+        if (function_always)
+          function_always(0);
+      }
 
     })
 
@@ -240,10 +269,12 @@ function localCommand ( cmd,data_obj,command_title,function_response )  {
 
 //    alert ( ' done rdata=' + rdata );
 
-    var response = jQuery.extend ( true,new Response(),jQuery.parseJSON(rdata) );
-
-    if (function_response && (!function_response(response)))
-      makeCommErrorMessage ( command_title,response );
+    var rsp = jQuery.parseJSON ( rdata );
+    if (checkVersionMatch(rsp,true))  {
+      var response = jQuery.extend ( true,new Response(),rsp );
+      if (function_response && (!function_response(response)))
+        makeCommErrorMessage ( command_title,response );
+    }
 
   })
   .always ( function(){} )

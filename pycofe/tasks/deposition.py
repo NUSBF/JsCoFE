@@ -28,6 +28,8 @@
 import os
 import sys
 import uuid
+import json
+import time
 from   xml.etree import ElementTree as ET
 
 #  ccp4 imports
@@ -39,7 +41,7 @@ from ccp4mg import mmdb2
 
 #  application imports
 import basic
-from   proc import valrep
+from   proc import valrep,asucomp
 
 
 # ============================================================================
@@ -49,6 +51,7 @@ class Deposition(basic.TaskDriver):
 
     def xml_input (self):  return "inp.xml"
     def dep_grid  (self):  return "dep_grid"
+    def report_id (self):  return "report_id"
 
     # redefine name of input script file
     def file_stdin_path(self):  return "deposition.script"
@@ -176,23 +179,58 @@ class Deposition(basic.TaskDriver):
         doc.write_file ( corrFilePath,cif.Style.Pdbx )
         """
 
+        """
+        seqlist = []
+        for i in range(len(seq)):
+            seqlist += [seq[i].getSequence(self.inputDir())]
+        asuComp    = asucomp.getASUComp ( str(self.getXYZOFName()),seqlist )
+        self.file_stdout.write ( json.dumps ( asuComp,indent=2 ))
+        """
+
 
         mm  = mmdb2.Manager()
         mm.ReadCoorFile ( str(self.getXYZOFName()) )
         model   = mm.GetFirstDefinedModel()
         nchains = model.GetNumberOfChains()
-        seqlist = ""
+        seqids  = []
+        #seqlist = []
         for i in range(nchains):
             chain = model.GetChain ( i )
             if chain.isAminoacidChain() or chain.isNucleotideChain():
-                if seqlist:
-                    seqlist += ","
-                seqlist += chain.GetChainID()
+                seqids += [chain.GetChainID()]
+            '''
+            seq   = ""
+            nres  = chain.GetNumberOfResidues()
+            nAA   = 0
+            nNA   = 0
+            for j in range(nres):
+                res = chain.GetResidue(j)
+                if res.isAminoacid() or res.isNucleotide():
+                    if res.isAminoacid():
+                        nAA += 1
+                    else:
+                        nNA += 1
+                    if res.name in resCodes:
+                        seq += resCodes[res.name]
+            if nAA >= nNA:
+                if len(seq) <= 20:  # threshold for protein chains
+                    seq = None
+            elif len(seq) <= 6:  # threshold for DNA/RNA chains
+                seq = None
+            if seq:
+                seqlist.append ( seq )
+            '''
+
 
         corrFilePath  = os.path.splitext(self.getXYZOFName())[0] + "_out.cif"
         modelFilePath = os.path.splitext(self.getXYZOFName())[0] + ".cif"
         fin  = open ( corrFilePath ,"r" )
         fout = open ( modelFilePath,"wt" )
+        """
+        for line in fin:
+            fout.write ( line )
+        """
+
         skipNext = False
         for line in fin:
             if line.startswith("_symmetry.entry_id"):
@@ -209,11 +247,19 @@ class Deposition(basic.TaskDriver):
                              "_exptl_crystal.description           ?\n"    +
                              "#\n"
                            )
+            """
             elif line.startswith("_entity_poly.entity_id"):
-                fout.write ( "_entity_poly.pdbx_strand_id          " + seqlist + "\n" )
+                fout.write ( "loop_\n" +\
+                             "_entity_poly.entity_id\n" +\
+                             "_entity_poly.pdbx_seq_one_letter_code_can\n" +\
+                             "_entity_poly.pdbx_seq_one_letter_code\n" )
+                for i in range(len(seqlist)):
+                    fout.write ( str(i+1) + " " + seqids[i] + " " )
+            """
             if not skipNext:
                 fout.write ( line )
             skipNext = line.startswith ( "_refine.aniso_B[2][3]" )
+
         fin .close()
         fout.close()
 
@@ -274,43 +320,46 @@ class Deposition(basic.TaskDriver):
         #modelFilePath = "/Users/eugene/Projects/jsCoFE/tmp/valrep/1sar.cif"
         #sfCIF = "/Users/eugene/Projects/jsCoFE/tmp/valrep/1sar-sf.cif"
 
-        msg = valrep.getValidationReport ( modelFilePath,sfCIF,repFilePath,self.file_stdout )
+        self.putWaitMessageLF ( "Validation Report is being acquired from wwPDB, please wait ..." )
+
+        msg  = "."
+        ntry = 0
+        while msg and (ntry<25):
+            self.file_stdout.write ( "\n -- attempt " + str(ntry+1) + "\n" )
+            self.file_stdout.flush ()
+            msg = valrep.getValidationReport ( modelFilePath,sfCIF,repFilePath,self.file_stdout )
+            if msg and (ntry<25):
+                self.file_stdout.write ( "\n -- server replied: " + msg + "\n" )
+                ntry += 1
+                time.sleep ( 10 )
+
+        # remove wait message
+        self.putMessage1 ( self.report_page_id(),"",self.rvrow,0,1,1 )
+
         if msg:
-            self.putMessage ( "Failed: <b><i>" + msg + "</i></b>" )
+            self.putMessage ( "Failed: <b><i>" + str(msg) + "</i></b>" )
 
-        """
-        # check solution and register data
-        if os.path.isfile(self.getCIFOFName()):
+        elif os.path.isfile(repFilePath):
 
-            self.putTitle ( "Deposition Output" )
-            self.unsetLogParser()
+            repFilePath1 = os.path.join ( self.reportDir(),repFilePath )
+            os.rename ( repFilePath,repFilePath1 )
 
-            # calculate maps for UglyMol using final mtz from temporary location
-            fnames = self.calcCCP4Maps ( self.getMTZOFName(),self.outputFName )
+            self.putSection ( self.report_id(),"wwPDB Validation Report",False )
+            self.putMessage1 ( self.report_id(),
+                    "<object data=\"" + repFilePath +\
+                    "\" type=\"application/pdf\" " +\
+                    "style=\"border:none;width:100%;height:1000px;\"></object>",
+                    0,0,1,1 )
 
-            # register output data from temporary location (files will be moved
-            # to output directory by the registration procedure)
-
-            structure = self.registerStructure ( self.getXYZOFName(),self.getMTZOFName(),
-                                                 fnames[0],fnames[1],libin )
-            if structure:
-                structure.copyAssociations   ( istruct )
-                structure.addDataAssociation ( hkl.dataId     )
-                structure.addDataAssociation ( istruct.dataId )  # ???
-                structure.setRefmacLabels    ( hkl    )
-                structure.copySubtype        ( istruct )
-                structure.copyLigands        ( istruct )
-                self.putStructureWidget      ( "structure_btn",
-                                               "Structure and electron density",
-                                               structure )
-                # update structure revision
-                revision = self.makeClass ( self.input_data.data.revision[0] )
-                revision.setStructureData ( structure )
-                self.registerRevision     ( revision  )
+            grid_id1 = self.getWidgetId ( self.dep_grid() )
+            self.putMessage ( "&nbsp;<p><hr/>" )
+            self.putGrid ( grid_id1 )
+            self.putMessage1 ( grid_id1,"<i>PDB Validation Report in PDF format</i>&nbsp;",0,0 )
+            self.putDownloadButton ( repFilePath1,"download",grid_id1,0,1 )
+            self.putMessage ( "<hr/>" )
 
         else:
-            self.putTitle ( "No Output Generated" )
-        """
+            self.putMessage ( "&nbsp;<p><b><i> -- failed to download</i></b>" )
 
         # close execution logs and quit
         self.success()

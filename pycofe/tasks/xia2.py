@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    16.06.18   <--  Date of Last Modification.
+#    17.07.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -35,7 +35,7 @@ import pyrvapi
 #  application imports
 import basic
 from pycofe.varut import signal
-from pycofe.proc  import import_merged, import_unmerged
+from pycofe.proc  import import_filetype, import_merged, import_unmerged
 try:
     from pycofe.varut import messagebox
 except:
@@ -107,18 +107,21 @@ class Xia2(basic.TaskDriver):
         if hatom:
             datasetName = "SAD"
 
+        self.resetFileImport()
         if mtzMergedName in file_names:
             self.putTitle   ( "Merged Reflection Dataset" )
             newHKLFPath = os.path.join ( resDir,self.getOFName("_merged.mtz",-1) )
             os.rename ( os.path.join(resDir,mtzMergedName),newHKLFPath )
-            self.files_all = [ newHKLFPath ]
+            self.addFileImport ( "",newHKLFPath,import_filetype.ftype_MTZMerged() )
+            #self.files_all = [ newHKLFPath ]
             import_merged.run ( self,"Merged Reflection Dataset" )
             nsweeps -= 1
         if mtzUnmergedName in file_names:
             self.putTitle   ( "Unmerged Scaled Reflection Dataset" )
             newHKLFPath = os.path.join ( resDir,self.getOFName("_unmerged_scaled.mtz",-1) )
             os.rename ( os.path.join(resDir,mtzUnmergedName),newHKLFPath )
-            self.files_all = [ newHKLFPath ]
+            self.addFileImport ( "",newHKLFPath,import_filetype.ftype_MTZIntegrated() )
+            #self.files_all = [ newHKLFPath ]
             import_unmerged.run ( self,"Unmerged Scaled Reflection Dataset" )
             nsweeps -= 1
 
@@ -218,7 +221,9 @@ class Xia2(basic.TaskDriver):
                     # import unmerged mtz file for the sweep:
                     newHKLFPath = os.path.join ( resDir,self.getOFName("_"+sweepId.lower()+"_unmerged.mtz",-1) )
                     os.rename ( os.path.join(resDir,mtzSweepName),newHKLFPath )
-                    self.files_all = [ newHKLFPath ]
+                    self.resetFileImport()
+                    self.addFileImport ( "",newHKLFPath,import_filetype.ftype_MTZIntegrated() )
+                    #self.files_all = [ newHKLFPath ]
                     imported_data = import_unmerged.run ( self,
                         "Unmerged Reflection Dataset (Sweep " + str(n+1) + ")" )
 

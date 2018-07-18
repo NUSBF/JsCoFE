@@ -57,6 +57,12 @@ application.
   This will also require C++-11 compiler on your system, which can be normally
   installed from system's repositories.
 
+  The wwPDB Deposition task also requires `oneDep API` for communication with
+  wwPDB validation report server. Install it with the following command, using
+  account in which CCP4 was originally installed, and ``sudo`` if necessary: ::
+
+    $ ccp4-python -m pip install onedep_api
+
 
 **3. Checkout jsCoFE source code directory**
   The source code is obtainable from CCP4's Bazaar repositories: ::

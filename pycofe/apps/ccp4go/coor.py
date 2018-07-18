@@ -91,7 +91,7 @@ def mergeLigands ( mmFile,ligFiles,chainId,outFile ):
 
 def fetchChains ( inFile,modelNo,chainList,removeWaters,removeLigands,outFile ):
 #  Takes chains with chain IDs given in chainList from file 'inFile' and writes
-# them out in file 'outFile'.
+#  them out in file 'outFile'.
 #  ModelNo:
 #    -1 :  take chains only from first model available
 #     0 :  take chains from all models

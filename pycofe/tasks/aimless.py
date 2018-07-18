@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    10.11.17   <--  Date of Last Modification.
+#    17.07.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2018
 #
 # ============================================================================
 #
@@ -35,7 +35,7 @@ import pyrvapi
 
 #  application imports
 import basic
-from  pycofe.proc      import datred_utils, import_merged
+from  pycofe.proc      import datred_utils, import_filetype, import_merged
 # does not works after update 7.0.052
 # from  pycofe.i2reports import aimless_pipe as i2report
 
@@ -204,13 +204,12 @@ class Aimless(basic.TaskDriver):
 
         # get list of files to import
         output_ok = True
+        self.resetFileImport()
         if merge_separately:
-            self.files_all = []
             for i in range(len(unmerged)):
                 file_i = "aimless_" + str(i+1) + ".mtz"
                 if os.path.isfile(file_i):
-                    self.files_all += [ file_i ]
-
+                    self.addFileImport ( "",file_i,import_filetype.ftype_MTZMerged() )
                 else:
                     output_ok = False
                     break
@@ -221,9 +220,8 @@ class Aimless(basic.TaskDriver):
         else:
             file_i = self.getMTZOFName()
             if os.path.isfile(file_i):
-                self.files_all = [ file_i ]
+                self.addFileImport ( "",file_i,import_filetype.ftype_MTZMerged() )
                 import_merged.run ( self,"Reflection dataset" )
-
             else:
                 output_ok = False
 

@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    11.02.18   <--  Date of Last Modification.
+#    17.07.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -29,7 +29,7 @@ import os
 
 #  application imports
 import basic
-from   pycofe.proc import datred_utils, import_merged
+from   pycofe.proc import datred_utils, import_filetype, import_merged
 
 
 # ============================================================================
@@ -78,7 +78,9 @@ class ChangeSpG(basic.TaskDriver):
             self.putTitle ( "Output Data" )
 
             # make list of files to import
-            self.files_all = [ outputMTZFName ]
+            self.resetFileImport()
+            self.addFileImport ( "",outputMTZFName,import_filetype.ftype_MTZMerged() )
+            #self.files_all = [ outputMTZFName ]
             import_merged.run ( self,"Reflection dataset" )
 
             # update structure revision

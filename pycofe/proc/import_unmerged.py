@@ -27,7 +27,7 @@ import pyrvapi_ext.parsers
 #  application imports
 from   pycofe.varut  import command
 from   pycofe.dtypes import dtype_unmerged
-from   pycofe.proc   import mtz, datred_utils
+from   pycofe.proc   import import_filetype, mtz, datred_utils
 
 
 # ============================================================================
@@ -106,12 +106,19 @@ def run ( body,        # body is reference to the main Import class
 
     files_mtz = []
     for f_orig in body.files_all:
-        f_base, f_ext = os.path.splitext(f_orig)
-        if f_ext.lower() in ('.hkl', '.mtz'):
-            p_orig = os.path.join(body.importDir(), f_orig)
-            f_fmt = mtz.hkl_format(p_orig, body.file_stdout)
-            if f_fmt in ('xds_integrated', 'xds_scaled', 'mtz_integrated'):
-                files_mtz.append((f_orig, f_fmt))
+        if body.checkFileImport ( f_orig,import_filetype.ftype_MTZIntegrated() ):
+            files_mtz.append((f_orig,import_filetype.ftype_MTZIntegrated()))
+        elif body.checkFileImport ( f_orig,import_filetype.ftype_XDSIntegrated() ):
+            files_mtz.append((f_orig,import_filetype.ftype_XDSIntegrated()))
+        elif body.checkFileImport ( f_orig,import_filetype.ftype_XDSScaled() ):
+            files_mtz.append((f_orig,import_filetype.ftype_XDSScaled()))
+
+        #f_base, f_ext = os.path.splitext(f_orig)
+        #if f_ext.lower() in ('.hkl', '.mtz'):
+        #    p_orig = os.path.join(body.importDir(), f_orig)
+        #    f_fmt = mtz.hkl_format(p_orig, body.file_stdout)
+        #    if f_fmt in ('xds_integrated', 'xds_scaled', 'mtz_integrated'):
+        #        files_mtz.append((f_orig, f_fmt))
 
     if not files_mtz:
         return

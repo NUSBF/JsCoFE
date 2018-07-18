@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    28.06.18   <--  Date of Last Modification.
+#    17.07.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -37,7 +37,7 @@ import pyrvapi_ext.parsers
 #  application imports
 from   pycofe.dtypes import dtype_revision
 from   pycofe.tasks  import asudef, import_task
-from   pycofe.proc   import import_merged
+from   pycofe.proc   import import_filetype, import_merged
 from   pycofe.varut  import rvapi_utils
 
 # ============================================================================
@@ -234,7 +234,9 @@ class CCP4go(import_task.Import):
             # clean upload directory
             #shutil.rmtree(dirpath)
             #os.mkdir(dirpath)
-            self.files_all = [meta["mtz"]]
+            self.resetFileImport()
+            self.addFileImport ( "",meta["mtz"],import_filetype.ftype_MTZMerged() )
+            #self.files_all = [meta["mtz"]]
             import_merged.run ( self,"Import merged HKL" )
             # get reference to imported structure
             self.hkl = self.outputDataBox.data["DataHKL"][0]
@@ -328,7 +330,9 @@ class CCP4go(import_task.Import):
                         id0  = []
                         for i in range(len(hkl0)):
                             id0 += [hkl0[i].dataId]
-                        self.files_all = [meta["hkl"]]
+                        self.resetFileImport()
+                        self.addFileImport ( "",meta["hkl"],import_filetype.ftype_MTZMerged() )
+                        #self.files_all = [meta["hkl"]]
                         import_merged.run ( self,"Import merged HKL reindexed in " +
                                                  meta["spg"] )
                         self.rvrow += 10

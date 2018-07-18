@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    01.11.17   <--  Date of Last Modification.
+#    17.07.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2018
 #
 # ============================================================================
 #
@@ -94,25 +94,6 @@ class PhaserEP(basic.TaskDriver):
                     list = line.replace("="," ").split()
                     anom_form += "anom form "  + list[2] + " " +\
                                  list[4] + " " + list[6] + "\n"
-
-            """
-            if sol_spg and (sol_spg!=hkl.getSpaceGroup()):
-                self.putMessage ( "<h3>Space Group changed to " + sol_spg + "</h3" )
-                rvrow0 = self.rvrow
-                #self.rvrow += 1
-                newHKLFName = self.getOFName ( "_" + sol_spg.replace(" ","") +\
-                                               "_" + hkl.files[0],-1 )
-                os.rename ( mtzfile,newHKLFName )
-                self.files_all = [ newHKLFName ]
-                import_merged.run ( self,"New reflection dataset details" )
-                sol_hkl = self.outputDataBox.data[sol_hkl._type][0]
-                pyrvapi.rvapi_set_text ( "<b>New reflection dataset created:</b> " +\
-                            sol_hkl.dname + "<br>&nbsp;",self.report_page_id(),
-                            rvrow0,0,1,1 )
-                mtzfile = newHKLFName
-                shutil.copy2 ( os.path.join(self.outputDir(),sol_hkl.files[0]),
-                               self.inputDir() )
-            """
 
             spg_change = self.checkSpaceGroupChanged ( sol_spg,hkl,mtzfile )
             if spg_change:

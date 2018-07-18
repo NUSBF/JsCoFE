@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    29.06.18   <--  Date of Last Modification.
+#    17.07.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -50,7 +50,7 @@ import pyrvapi_ext.parsers
 from pycofe.dtypes import dtype_template, dtype_xyz, dtype_structure, databox
 from pycofe.dtypes import dtype_ensemble, dtype_hkl, dtype_ligand
 from pycofe.dtypes import dtype_sequence
-from pycofe.proc   import edmap, import_merged
+from pycofe.proc   import edmap,  import_filetype,   import_merged
 from pycofe.varut  import signal, jsonut, command
 
 
@@ -132,6 +132,9 @@ class TaskDriver(object):
     # data register counter
     dataSerialNo  = 0
 
+    # data import fields
+    files_all     = [] # list of files to import
+    file_type     = {} # optional file type specificator
     summary_row   = 0  # current row in import summary table
     summary_row_0 = 0  # reference row in import summary table
 
@@ -366,6 +369,7 @@ class TaskDriver(object):
                                  "</font>",gridId,0,0,1,1 )
         pyrvapi.rvapi_set_text ( "<div class='activity_bar'/>",gridId,0,1,1,1 )
         self.widget_no += 1
+        pyrvapi.rvapi_flush ()
         return
 
     def putTitle ( self,title_str ):
@@ -390,6 +394,14 @@ class TaskDriver(object):
         pyrvapi.rvapi_set_text (
                         "<h2>[" + self.job_id.zfill(4) + "] " + title_str + "</h2>",
                         pageId,row,0,1,colSpan )
+        return
+
+    def putHR ( self ):
+        self.putMessage ( "<hr/>" )
+        return
+
+    def putHR1 ( self,pageId,row ):
+        self.putMessage1 ( pageId,"<hr/>",row )
         return
 
 
@@ -499,6 +511,28 @@ class TaskDriver(object):
         self.file_stdin.close()
         return
 
+
+    # ============================================================================
+
+    def resetFileImport ( self ):
+        self.files_all = []
+        self.file_type = {}
+        return
+
+    def addFileImport ( self,dirPath,fname,ftype=None ):
+        fpath = os.path.join ( dirPath,fname )
+        self.files_all.append ( fpath )
+        if ftype:
+            self.file_type[fpath] = ftype
+        else:
+            self.file_type[fpath] = import_filetype.getFileType (
+                                       fpath,self.importDir(),self.file_stdout )
+        return
+
+    def checkFileImport ( self,fpath,ftype ):
+        if fpath in self.file_type:
+            return (self.file_type[fpath]==ftype)
+        return False
 
     # ============================================================================
 
@@ -1187,7 +1221,9 @@ class TaskDriver(object):
             self.generic_parser_summary["z01"] = {'SpaceGroup':sol_spg}
             newHKLFPath = self.getOFName ( "_" + solSpg + "_" + hkl.files[0],-1 )
             os.rename ( mtzfilepath,newHKLFPath )
-            self.files_all = [ newHKLFPath ]
+            self.resetFileImport()
+            self.addFileImport ( "",newHKLFPath,import_filetype.ftype_MTZMerged() )
+            #self.files_all = [ newHKLFPath ]
             import_merged.run ( self,"New reflection dataset details" )
 
             if dtype_hkl.dtype() in self.outputDataBox.data:
@@ -1239,7 +1275,7 @@ class TaskDriver(object):
             self.unsetLogParser()
 
             # make list of files to import
-            self.files_all = []
+            self.resetFileImport()
 
             for i in range(len(hkl_list)):
 
@@ -1255,7 +1291,8 @@ class TaskDriver(object):
                 self.runApp ( "reindex",cmd )
 
                 if os.path.isfile(newHKLFPath):
-                    self.files_all.append ( newHKLFPath )
+                    self.addFileImport ( "",newHKLFPath,import_filetype.ftype_MTZMerged() )
+                    #self.files_all.append ( newHKLFPath )
                 else:
                     self.putMessage ( "Error: cannot reindex " + hkl_list[i].dname )
 

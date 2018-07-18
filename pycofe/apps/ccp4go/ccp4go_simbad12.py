@@ -7,7 +7,7 @@
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
-#  CCP4EZ Combined Auto-Solver Simbad stages 1 (L) and 2 (C) class
+#  CCP4go Combined Auto-Solver Simbad stages 1 (L) and 2 (C) class
 #
 #  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2018
 #

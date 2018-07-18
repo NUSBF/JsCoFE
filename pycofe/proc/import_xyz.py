@@ -3,13 +3,13 @@
 #
 # ============================================================================
 #
-#    18.04.18   <--  Date of Last Modification.
+#    17.07.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  XYZ DATA IMPORT FUNCTION
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2018
 #
 # ============================================================================
 #
@@ -24,7 +24,7 @@ import pyrvapi
 #  application imports
 from   pycofe.dtypes import dtype_xyz
 from   pycofe.varut  import command
-from   pycofe.proc   import xyzmeta, coor
+from   pycofe.proc   import import_filetype, xyzmeta, coor
 
 
 # ============================================================================
@@ -51,8 +51,8 @@ def run ( body ):  # body is reference to the main Import class
 
     files_xyz = []
     for f in body.files_all:
-        fl = f.lower();
-        if fl.endswith(('.pdb', '.cif', '.mmcif', '.ent')):
+        #if f.lower().endswith(('.pdb', '.cif', '.mmcif', '.ent')):
+        if body.checkFileImport ( f,import_filetype.ftype_XYZ() ):
             files_xyz.append ( f )
 
     if len(files_xyz) <= 0:
@@ -62,8 +62,9 @@ def run ( body ):  # body is reference to the main Import class
     body.file_stdout.write ( "%%%%%  IMPORT OF XYZ COORDINATES\n" )
     body.file_stdout.write ( "%"*80 + "\n" )
 
-    xyzSecId = "xyz_sec_" + str(body.widget_no)
-    body.widget_no += 1
+    xyzSecId = body.getWidgetId ( "_xyz_sec_" )
+    #xyzSecId = "xyz_sec_" + str(body.widget_no)
+    #body.widget_no += 1
 
     pyrvapi.rvapi_add_section ( xyzSecId,"XYZ Coordinates",body.report_page_id(),
                                 body.rvrow,0,1,1,False )
@@ -72,7 +73,7 @@ def run ( body ):  # body is reference to the main Import class
 
         body.files_all.remove ( f )
 
-        fpath = os.path.join ( body.importDir(),f );
+        fpath = os.path.join ( body.importDir(),f )
         #coor.stripLigWat ( fpath,fpath )  #  strip ligands and waters
 
         # split input file to chains

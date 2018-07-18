@@ -402,6 +402,7 @@ def getASUComp ( coorFilePath,sequenceList,clustThresh=0.9 ):
     return result
 
 
+
 # ============================================================================
 
 def getASUComp1 ( coorFilePath,seqFilePath,clustThresh=0.9 ):

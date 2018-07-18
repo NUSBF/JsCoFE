@@ -3,13 +3,13 @@
 #
 # ============================================================================
 #
-#    18.10.17   <--  Date of Last Modification.
+#    06.07.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  STRUCTURE DATA TYPE
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2018
 #
 # ============================================================================
 #
@@ -127,6 +127,18 @@ class DType(dtype_template.DType):
         self.HLB = "parrot.ABCD.B"
         self.HLC = "parrot.ABCD.C"
         self.HLD = "parrot.ABCD.D"
+        return
+
+    def setCrank2Labels ( self ):
+        self.FP         = "REFM_F"
+        self.SigFP      = "REFM_SIGF"
+        self.PHI        = "REFM_PHCOMB"
+        self.FOM        = "REFM_FOMCOMB"
+        self.FWT        = "REFM_FWT"
+        self.PHWT       = "REFM_PHWT"
+        self.DELFWT     = "REFM_DELFWT"
+        self.PHDELWT    = "REFM_PHDELWT"
+        self.FreeR_flag = "FREER"
         return
 
 

@@ -1,10 +1,10 @@
 
 /*
- *  =================================================================
+ *  ===========================================================================
  *
- *    01.06.18   <--  Date of Last Modification.
+ *    18.07.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- *  -----------------------------------------------------------------
+ *  ---------------------------------------------------------------------------
  *
  *  **** Module  :  js-common/tasks/common.commands.js
  *       ~~~~~~~~~
@@ -15,11 +15,18 @@
  *
  *  (C) E. Krissinel, A. Lebedev 2016-2018
  *
- *  =================================================================
+ *  ===========================================================================
  *
  */
 
 
+// ============================================================================
+// version tag
+
+var jsCoFE_version = '0.1.0 [18.07.2018]';
+
+
+// ============================================================================
 // Commands for client - FE Server AJAX exchange. Commands are passed as paths
 // of AJAX request urls, and data (typically a stringified JS class) passed as
 // request body. 'Commands' relate to actions which do not require a user to
@@ -37,6 +44,8 @@ var fe_command = {
   jobFinished  : '=job_finished'   // request to accept data from finished job
 }
 
+
+// ============================================================================
 // Request types for specific client - FE Server AJAX request, which require
 // user autentication and optional specification of current project and job. All
 // 'requests' are subtypes of the fe_command.request command. For each such
@@ -74,6 +83,7 @@ var fe_reqtype = {
 }
 
 
+// ============================================================================
 // Return codes for client - FE Server AJAX exchange
 
 var fe_retcode = {
@@ -103,6 +113,7 @@ var fe_retcode = {
 }
 
 
+// ============================================================================
 // Commands for NC Server exchange.
 
 var nc_command = {
@@ -116,6 +127,7 @@ var nc_command = {
 }
 
 
+// ============================================================================
 // Return codes for NC Server exchange
 
 var nc_retcode = {
@@ -132,10 +144,15 @@ var nc_retcode = {
   pidNotFound    : 'pidNotFound'     // job's pid not found in registry
 }
 
+
+// ============================================================================
+// General Request/Response structures for communication with the Front End
+
 var special_url_tag = 'xxJsCoFExx';
 
 function Response ( status,message,data )  {
   this._type   = 'Response';
+  this.version = jsCoFE_version;
   this.status  = status;
   this.message = message;
   this.data    = data;
@@ -155,7 +172,8 @@ var resp = new Response ( status,message,data );
 
 function Request ( request,token,data )  {
   this._type   = 'Request';
-  this.request = request;      // request code from fe_request list§
+  this.version = jsCoFE_version;
+  this.request = request;      // request code from fe_request list
   this.token   = token;        // user login data token
   this.data    = data;         // request data
 }

@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    10.11.17   <--  Date of Last Modification.
+#    17.07.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2018
 #
 # ============================================================================
 #
@@ -29,7 +29,7 @@ import os
 
 #  application imports
 import basic
-from   pycofe.proc   import coor, import_merged
+from   pycofe.proc   import coor, import_filetype, import_merged
 from   pycofe.dtypes import dtype_revision
 
 
@@ -136,7 +136,7 @@ class FreeRFlag(basic.TaskDriver):
                         "Fpm.plus.value" , "Fpm.plus.sigma" ,
                         "Fpm.minus.value", "Fpm.minus.sigma" ]
 
-            self.files_all = []
+            self.resetFileImport()
             for i in range(len(hkl)):
                 self.open_stdin()
                 self.write_stdin ( "LABIN FILE 1 E1=" + freeRColumn + "\n" )
@@ -163,7 +163,8 @@ class FreeRFlag(basic.TaskDriver):
                 # Start cad
                 self.runApp ( "cad",cmd )
                 if os.path.isfile(outFName):
-                    self.files_all += [outFName]
+                    self.addFileImport ( "",outFName,import_filetype.ftype_MTZMerged() )
+                    #files_all += [outFName]
                     self.putMessage ( "Free R-flag set to <b>\"" + hkl[i].dname +\
                                       "\"</b> dataset." )
                 else:

@@ -145,7 +145,6 @@ if (!__template)  {
             setLabel ( 'Calculate from coordinates; assumed r.m.s.d. from target',row,0 );
       else  setLabel ( 'Assumed r.m.s.d. from target',row,0 );
 
-
       customGrid.rmsd = customGrid.setInputText ( this.rmsd,row,1,1,1 )
           .setStyle     ( 'text','real','0.3','Estimated difference between ' +
                           'given model and target structure, in &Aring;.' )
