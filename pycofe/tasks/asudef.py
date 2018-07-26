@@ -175,7 +175,8 @@ def makeRevision ( base,hkl,seq,composition,altEstimateKey,altNRes,
                     "<i><b>" + str(molWeight) + "</b></i>&nbsp;"]
         })
 
-        rvapi_utils.makeTable ( tdict1, base.seq_table_id(),base.report_page_id(),
+        rvapi_utils.makeTable ( tdict1, base.getWidgetId("seq_table"),
+                                base.report_page_id(),
                                 base.rvrow,0,1,1 )
         base.rvrow += 1
 
@@ -311,7 +312,8 @@ def makeRevision ( base,hkl,seq,composition,altEstimateKey,altNRes,
         if nc0 > 0:
             tdict2["rows"][i0]["data"][0] = "* " + str(nc0) + "&nbsp;"
 
-        rvapi_utils.makeTable ( tdict2, base.res_table_id(),base.report_page_id(),
+        rvapi_utils.makeTable ( tdict2, base.getWidgetId("res_table"),
+                                base.report_page_id(),
                                 base.rvrow,0,1,1 )
         base.rvrow += 1
 
@@ -474,8 +476,6 @@ class ASUDef(basic.TaskDriver):
     # make task-specific definitions
     def matthews_report(self):  return "refmac_report"
     def getXMLFName    (self):  return "matthews.xml"
-    def seq_table_id   (self):  return "seq_table"
-    def res_table_id   (self):  return "res_table"
 
     # the following will provide for import of generated sequences
     def importDir        (self):  return "./"   # import from working directory
@@ -500,7 +500,7 @@ class ASUDef(basic.TaskDriver):
         sec1 = self.task.parameters.sec1.contains
         seq  = []
         if hasattr(self.input_data.data,"seq"):  # optional data parameter
-            seq  = self.input_data.data.seq
+            seq = self.input_data.data.seq
 
         revision = makeRevision ( self,hkl,seq,
                                   self.getParameter(sec1.COMPOSITION_SEL),

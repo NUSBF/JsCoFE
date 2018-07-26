@@ -96,6 +96,15 @@ if (!__template)  {
             _import_checkFiles ( e.target.files,div.customData.file_mod,
                                  panel.upload.upload_files,onReady_func );
         },
+        function(){
+          new ImportPDBDialog ( function(pdb_list){
+            pdb_spec_list = [];
+            for (var i=0;i<pdb_list.length;i++)
+              pdb_spec_list.push ( 'PDB::' + pdb_list[i] );
+            panel.upload.setUploadedFiles ( pdb_spec_list );
+            //alert ( 'action ' + entry_list );
+          });
+        },
         function(returnCode){
           if (!returnCode)
             task.sendInputStateEvent ( panel );

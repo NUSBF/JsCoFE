@@ -1,10 +1,10 @@
 
 /*
- *  =================================================================
+ *  ==========================================================================
  *
- *    06.12.17   <--  Date of Last Modification.
+ *    25.07.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- *  -----------------------------------------------------------------
+ *  --------------------------------------------------------------------------
  *
  *  **** Module  :  js-client/gui/gui.tree.js
  *       ~~~~~~~~~
@@ -13,26 +13,80 @@
  *  **** Content :  Generic tree class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2017
+ *  (C) E. Krissinel, A. Lebedev 2016-2018
  *
- *  =================================================================
+ *  ==========================================================================
+ *
+ *
+ *    Requires: 	jquery.js
+ *                style(.min).css  // from jstree distro
+ *                jstree(.min).js
+ *                gui.widgets.js
+ *                js-common/dtypes/common.dtypes.box.js
+ *
+ *   URL:  https://www.jstree.com
+ *
+ *  --------------------------------------------------------------------------
+ *
+ *   class TreeNodeCustomIcon  {
+ *      constructor TreeNodeCustomIcon ( uri,width,height,state );
+ *   }
+ *
+ *  --------------------------------------------------------------------------
+ *
+ *   class TreeNode : Widget  {
+ *
+ *      constructor TreeNode ( text,icon_uri,treeNodeCustomIcon );
+ *
+ *      function setSelected();
+ *      function copy ( node );
+ *      function setCustomIconVisible ( visible_bool );
+ *
+ *   }
+ *
+ *  --------------------------------------------------------------------------
+ *
+ *   class Tree {
+ *
+ *      constructor Tree ( rootName );
+ *
+ *      function addRootNode      ( text,icon_uri,treeNodeCustomIcon );
+ *      function addNode          ( parent_node,text,icon_uri,treeNodeCustomIcon );
+ *      function insertNode       ( parent_node,text,icon_uri,treeNodeCustomIcon );
+ *      function getNodePosition  ( node );
+ *      function moveNodeUp       ( node );
+ *      function setNodes         ( nodes );
+ *      function getNumberOfNodes ();
+ *      function selectSingle     ( node );
+ *      function deselectNode     ( node );
+ *      function deselectNodeById ( nodeId );
+ *      function selectSingleById ( nodeId );
+ *      function forceSingleSelection();
+ *      function setText          ( node,text );
+ *      function setStyle         ( treeNode,style_str,propagate_int );
+ *      function confirmCustomIconsVisibility();
+ *      function deleteNode       ( node );
+ *      function createTree       ( onReady_func   ,onContextMenu_func,
+ *                                  onDblClick_func,onSelect_func );
+ *      function refresh              ();
+ *      function calcSelectedNodeId   ();
+ *      function getSelectedNodeId    ();
+ *      function calcSelectedNode     ();
+ *      function getSelectedNode      ();
+ *      function addNodeToSelected    ( text,icon_uri,treeNodeCustomIcon );
+ *      function insertNodeAfterSelected ( text,icon_uri,treeNodeCustomIcon );
+ *      function addSiblingToSelected ( text,icon_uri,treeNodeCustomIcon );
+ *      function deleteSelectedNode   ();
+ *      function moveSelectedNodeUp   ();
+ *      function deleteSelectedNodes  ();
+ *
+ *   }
  *
  */
 
-/*
 
-  Requires: 	jquery.js
-  	          style(.min).css  // from jstree distro
-  	          jstree(.min).js
-              gui.widgets.js
-
-  URL:  https://www.jstree.com
-
-*/
-
-
-// -------------------------------------------------------------------------
-// TreeNode class
+// ===========================================================================
+// TreeNodeCustomIcon class
 
 function TreeNodeCustomIcon ( uri,width,height,state )  {
   this.customIcon = uri;
@@ -41,6 +95,9 @@ function TreeNodeCustomIcon ( uri,width,height,state )  {
   this.ci_state   = new String(state);
 }
 
+
+// ===========================================================================
+// TreeNode class
 
 function TreeNode ( text,icon_uri,treeNodeCustomIcon )  {
   this.id             = 'treenode_' + padDigits(__id_cnt++,5);  // node element id (unstable)
@@ -106,7 +163,7 @@ var ci_element = document.getElementById(this.id + '_pbar');
 }
 */
 
-// -------------------------------------------------------------------------
+// ===========================================================================
 // Tree class
 
 function Tree ( rootName )  {
@@ -166,7 +223,10 @@ var node = new TreeNode ( text,icon_uri,treeNodeCustomIcon );
   this.root_nodes.push ( node );
   this.node_map[node.id] = node;
   if (this.created)  {
+    var snode = $.extend ( {},node );
     $(this.root.element).jstree(true).create_node('#',node,'last',false,false);
+    // jstree modifies node stricture, therefore extend it with custom fields
+    node = $.extend ( node,snode );
     this.selectSingle ( node );  // force selection of new nodes if tree is displayed
     this.confirmCustomIconsVisibility();
   }
@@ -180,9 +240,12 @@ var node = new TreeNode ( text,icon_uri,treeNodeCustomIcon );
   parent_node.children.push ( node );
   this.node_map[node.id] = node;
   if (this.created)  {
+    var snode = $.extend ( {},node );
     $(this.root.element).jstree(true).create_node('#'+parent_node.id,node,'last',false,false);
-    node.data     = treeNodeCustomIcon;  // this gets lost, duplicate, jstree bug
-    node.children = [];                  // this gets lost, duplicate, jstree bug
+    // jstree modifies node stricture, therefore extend it with custom fields
+    node = $.extend ( node,snode );
+    //node.data     = treeNodeCustomIcon;  // this gets lost, duplicate, jstree bug
+    //node.children = [];                  // this gets lost, duplicate, jstree bug
     this.selectSingle ( node );  // force selection of new nodes if tree is displayed
     this.confirmCustomIconsVisibility();
   }
@@ -587,6 +650,21 @@ Tree.prototype.confirmCustomIconsVisibility = function()  {
     if (node)
       node.setCustomIconVisible ( node.data.ci_state=='visible' );
   }
+}
+
+
+Tree.prototype.clear = function()  {
+  // clears all the tree including root nodes; works only on created trees
+
+  for (var i=0;i<this.root_nodes.length;i++)  {
+    this.deleteChildren ( this.root_nodes[i] );
+    $(this.root.element).jstree(true).delete_node('#'+this.root_nodes[i].id);
+  }
+
+  this.root_nodes = [];       //
+  this.node_map   = {};       // node_map[nodeId] == TreeNode
+  this.selected_node_id = '';
+
 }
 
 

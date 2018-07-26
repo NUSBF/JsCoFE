@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    26.05.18   <--  Date of Last Modification.
+ *    24.07.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -146,12 +146,28 @@ function moveDir ( old_path,new_path,overwrite_bool )  {
 }
 
 
-function mkDir ( path )  {
+function mkDir ( dirPath )  {
   try {
-    fs.mkdirSync ( path );
+    fs.mkdirSync ( dirPath );
     return true;
   } catch (e)  {
-    log.error ( 6,'cannot create directory ' + path );
+    log.error ( 6,'cannot create directory ' + dirPath );
+    return false;
+  }
+}
+
+
+function mkDir_anchor ( dirPath )  {
+  // same as mkDir but with 'anchoring', which is writing a useless file with
+  // only purpose to prevent deleting an empty directory when packing with
+  // archivers such as zip, and subsequently loosing it during exchange
+  // between FE and NCs
+  try {
+    fs.mkdirSync     ( dirPath );
+    fs.writeFileSync ( path.join(dirPath,'__anchor__'),'anchor' );
+    return true;
+  } catch (e)  {
+    log.error ( 6,'cannot create directory ' + dirPath );
     return false;
   }
 }
@@ -382,6 +398,7 @@ module.exports.writeObject           = writeObject;
 module.exports.moveFile              = moveFile;
 module.exports.moveDir               = moveDir;
 module.exports.mkDir                 = mkDir;
+module.exports.mkDir_anchor          = mkDir_anchor;
 module.exports.removePath            = removePath;
 module.exports.getDirectorySize      = getDirectorySize;
 module.exports.removeFiles           = removeFiles;

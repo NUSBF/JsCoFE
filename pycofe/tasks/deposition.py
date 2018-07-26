@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    29.03.18   <--  Date of Last Modification.
+#    18.07.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -31,6 +31,7 @@ import uuid
 import json
 import time
 from   xml.etree import ElementTree as ET
+import shutil
 
 #  ccp4 imports
 import gemmi
@@ -89,10 +90,12 @@ class Deposition(basic.TaskDriver):
         self.close_stdin()
 
         # make command-line parameters for bare morda run on a SHELL-type node
+        xyzout = self.getXYZOFName()
+        mtzout = self.getMTZOFName()
         cmd = [ "hklin" ,hkl.getFilePath(self.inputDir()),
                 "xyzin" ,istruct.getXYZFilePath(self.inputDir()),
-                "hklout",self.getMTZOFName(),
-                "xyzout",self.getXYZOFName(),
+                "hklout",mtzout,
+                "xyzout",xyzout,
                 "tmpdir",os.path.join(os.environ["CCP4_SCR"],uuid.uuid4().hex) ]
 
         libin = istruct.getLibFilePath ( self.inputDir() )
@@ -111,6 +114,31 @@ class Deposition(basic.TaskDriver):
         # Start refmac
         self.runApp ( "refmac5",cmd )
 
+        xyzout_cif = self.getOFName ( ".cif" )
+        shutil.copyfile ( xyzout,xyzout_cif  )
+
+        mapout  = self.getMapOFName()
+        dmapout = self.getDMapOFName()
+
+        shutil.copyfile ( istruct.getXYZFilePath (self.inputDir()), xyzout  )
+        #shutil.copyfile ( istruct.getMTZFilePath (self.inputDir()), mtzout  )
+        shutil.copyfile ( istruct.getMapFilePath (self.inputDir()), mapout  )
+        shutil.copyfile ( istruct.getDMapFilePath(self.inputDir()), dmapout )
+
+        libout = None
+        if libin:
+            libout = self.getOFName ( ".lib.cif" )
+            shutil.copyfile ( libin,libout )
+
+        structure = self.registerStructure ( xyzout,mtzout,mapout,dmapout,libout )
+        if structure:
+            structure.copyAssociations ( istruct )
+            structure.copyLabels       ( istruct )
+            structure.copySubtype      ( istruct )
+            self.putMessage ( "&nbsp;" )
+            self.putStructureWidget   ( "structure_btn_",
+                                        "Structure and electron density",
+                                        structure )
 
         # 2. Prepare the combined coordinate-sequence CIF
 
@@ -126,7 +154,7 @@ class Deposition(basic.TaskDriver):
         e1.tail = "\n"
         e2 = ET.SubElement ( e1,"file" )
         #e2.text = 'refmac_xyz.pdb'
-        e2.text = self.getXYZOFName()
+        e2.text = xyzout_cif
         e2.tail = "\n"
         e1 = ET.SubElement ( e0,"sequences" )
         e1.text = "\n"
@@ -153,74 +181,7 @@ class Deposition(basic.TaskDriver):
         #            corrFilePath )
 
 
-
-
         # 3. Correct CIF file after Refmac
-
-        """
-        model       = gemmi.read_structure ( self.getXYZOFName() )[0]
-        chain_names = [chain.name for chain in model]
-
-        doc = cif.read ( self.getXYZOFName() )
-        block = doc[0]
-        block.set_mmcif_category ( "_exptl",{
-            "entry_id"        : ["XXXX"],
-            "method"          : ["X-RAY DIFFRACTION"],
-            "crystals_number" : ["?"]
-        })
-        block.set_mmcif_category ( "_exptl_crystal",{
-            "id"                  : [1],
-            "density_meas"        : ["?"],
-            "density_Matthews"    : [2.33],
-            "density_percent_sol" : [47.15],
-            "description"         : ["?"]
-        })
-        corrFilePath = os.path.splitext(self.getXYZOFName())[0] + "_corr.cif"
-        doc.write_file ( corrFilePath,cif.Style.Pdbx )
-        """
-
-        """
-        seqlist = []
-        for i in range(len(seq)):
-            seqlist += [seq[i].getSequence(self.inputDir())]
-        asuComp    = asucomp.getASUComp ( str(self.getXYZOFName()),seqlist )
-        self.file_stdout.write ( json.dumps ( asuComp,indent=2 ))
-        """
-
-
-        mm  = mmdb2.Manager()
-        mm.ReadCoorFile ( str(self.getXYZOFName()) )
-        model   = mm.GetFirstDefinedModel()
-        nchains = model.GetNumberOfChains()
-        seqids  = []
-        #seqlist = []
-        for i in range(nchains):
-            chain = model.GetChain ( i )
-            if chain.isAminoacidChain() or chain.isNucleotideChain():
-                seqids += [chain.GetChainID()]
-            '''
-            seq   = ""
-            nres  = chain.GetNumberOfResidues()
-            nAA   = 0
-            nNA   = 0
-            for j in range(nres):
-                res = chain.GetResidue(j)
-                if res.isAminoacid() or res.isNucleotide():
-                    if res.isAminoacid():
-                        nAA += 1
-                    else:
-                        nNA += 1
-                    if res.name in resCodes:
-                        seq += resCodes[res.name]
-            if nAA >= nNA:
-                if len(seq) <= 20:  # threshold for protein chains
-                    seq = None
-            elif len(seq) <= 6:  # threshold for DNA/RNA chains
-                seq = None
-            if seq:
-                seqlist.append ( seq )
-            '''
-
 
         corrFilePath  = os.path.splitext(self.getXYZOFName())[0] + "_out.cif"
         modelFilePath = os.path.splitext(self.getXYZOFName())[0] + ".cif"

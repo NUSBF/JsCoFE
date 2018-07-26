@@ -35,6 +35,7 @@ import pyrvapi
 import basic
 from proc import (import_xrayimages, import_unmerged, import_merged,
                   import_xyz, import_ligand, import_sequence)
+from proc import import_pdb
 
 importers = [import_xrayimages, import_unmerged, import_merged,
              import_xyz, import_ligand, import_sequence]
@@ -54,6 +55,9 @@ class Import(basic.TaskDriver):
 
     # ============================================================================
     # import driver
+
+    # definition used in import_pdb
+    def getXMLFName  (self):  return "matthews.xml"
 
     def import_all(self):
 
@@ -92,17 +96,34 @@ class Import(basic.TaskDriver):
 
 
         # ============================================================================
+        # do PDB imports
+
+        # save unrecognised file list
+        unrecognised_files = self.files_all
+
+        pdb_list = []
+        for f in self.task.upload_files:
+            if f.startswith('PDB::'):
+                pdb_list.append ( f[5:] )
+        if len(pdb_list)>0:
+            import_pdb.run ( self,pdb_list )
+        #self.file_stdout.write ( str(pdb_list) + "\n" )
+
+
+        # ============================================================================
         # finish import
 
-        if len(self.files_all)>0:
+        if len(unrecognised_files)>0:
             self.file_stdout.write ( "\n\n" + "="*80 + \
                "\n*** The following files are not recognised and will be ignored:\n" )
-            for f in self.files_all:
+            for f in unrecognised_files:
                 self.file_stdout.write ( "     " + f + "\n" )
             self.file_stdout.write ( "\n" )
 
-            for f in self.files_all:
+            for f in unrecognised_files:
                 self.putSummaryLine_red ( f,"UNKNOWN","Failed to recognise, ignored" )
+
+
 
     def run(self):
 

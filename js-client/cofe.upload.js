@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    01.02.18   <--  Date of Last Modification.
+ *    24.07.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -27,7 +27,7 @@
 // -------------------------------------------------------------------------
 // Upload class
 
-function Upload ( customData,upl_data,onSelect_func,onReady_func )  {
+function Upload ( customData,upl_data,onSelect_func,onSelectPDB_func,onReady_func )  {
 // Custom data is an optional object of the following form:
 //  { 'param1':'value1', 'param2':'value2' ... }
 // When given, parameters and values from customData are appended to FormData
@@ -67,15 +67,23 @@ function Upload ( customData,upl_data,onSelect_func,onReady_func )  {
   this.returnCode = 'in progress';
 
   this.upload_files = [];  // list of uploaded files
+  this.linkDataType = null;
+  this.link_button  = null;
+  this.button       = null;
+  this.pdb_button   = null;
 
   if (!given_files)  {
 
     if (upl_data=='project')  {
-      this.linkDataType = null;
-      this.link_button  = null;
+      this.button = grid.setButton ( 'Select project archive(s)',
+                                     './images/open_file.svg',0,col++,1,1 )
+                        .setNoWrap();
+      /*
       this.button = grid.setButton ( 'Select project tarball(s)',
                                      './images/open_file.svg',0,col++,1,1 )
                         .setNoWrap();
+      */
+
     /*
     } else if (__local_service)  {
       if (getClientCode()==client_code.ccp4)  {
@@ -92,10 +100,13 @@ function Upload ( customData,upl_data,onSelect_func,onReady_func )  {
                         .setNoWrap();
     */
     } else {
-      this.linkDataType = null;
-      this.link_button  = null;
       this.button = grid.setButton ( 'Select file(s)','images/open_file.svg',0,col++,1,1 )
                         .setNoWrap();
+      if (onSelectPDB_func)  {
+        this.pdb_button = grid.setButton ( 'Select from PDB','images/open_file.svg',0,col++,1,1 )
+                              .setNoWrap();
+        this.pdb_button.addOnClickListener ( onSelectPDB_func );
+      }
     }
     grid.setCellSize ( '50%','',0,col );
 
@@ -116,7 +127,8 @@ function Upload ( customData,upl_data,onSelect_func,onReady_func )  {
     }
 
     if (upl_data=='project')
-          this.selFile = new SelectFile ( false,'.gz' );
+          this.selFile = new SelectFile ( false,'.zip' );
+          //this.selFile = new SelectFile ( false,'.gz' );
     else  this.selFile = new SelectFile ( true,'' );
     this.selFile.hide();
     this.addWidget ( this.selFile );
@@ -167,7 +179,8 @@ function Upload ( customData,upl_data,onSelect_func,onReady_func )  {
         if (!ext_files)  {
           for (var i = 0; i < files.length; i++) {
             var file = files[i];
-            if (!file.name.endsWith('.tar.gz'))
+//            if (!file.name.endsWith('.tar.gz'))
+            if (!file.name.endsWith('.zip'))
               targz = false;
             // add the files to formData object for the data payload
             formData.append ( 'uploads[]', file, file.name);
@@ -184,10 +197,17 @@ function Upload ( customData,upl_data,onSelect_func,onReady_func )  {
 
         if ((upl_data=='project') && (!targz))  {
 
+          new MessageBox ( 'Not a project archive',
+              'Selected file is not a project archive. Please<br>' +
+              'select project archive previously exported<br>' +
+              'from jsCoFE.');
+
+          /*
           new MessageBox ( 'Not a project tarball',
               'Selected file is not a project tarball. Please<br>' +
               'select project tarball previously exported<br>' +
               'from jsCoFE.');
+          */
 
           upl.button   .setDisabled ( false );
           upl.indicator.setText     ( ''    );

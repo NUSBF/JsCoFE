@@ -83,6 +83,7 @@ Widget.prototype.setTooltip = function ( text )  {
   return this;
 }
 
+
 Widget.prototype.setWidth = function ( width )  {
   this.element.style.width = width;
   return this;
@@ -844,7 +845,6 @@ Button.prototype.setEnabled = function ( enabled_bool )  {
   return this;
 }
 
-
 Button.prototype.isDisabled = function()  {
   return $(this.element).button ( 'option','disabled' );
 }
@@ -917,6 +917,7 @@ RadioSet.prototype = Object.create ( Widget.prototype );
 RadioSet.prototype.constructor = RadioSet;
 
 RadioSet.prototype.addButton = function ( text,btnId,tooltip,checked_bool )  {
+
   var _id = this.element.id + '_' + btnId;
 
   var label = new Widget ( 'label' );

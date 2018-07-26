@@ -16,7 +16,6 @@
 
 #  python native imports
 import os
-import sys
 
 #  ccp4-python imports
 import pyrvapi
@@ -82,6 +81,8 @@ naWeight = {
 
 def run ( body,sectionTitle="Macromolecular sequences" ):  # body is reference to the main Import class
 
+    seq_imported = []
+
     files_seq = []
     for f in body.files_all:
         if body.checkFileImport ( f,import_filetype.ftype_Sequence() ):
@@ -91,7 +92,7 @@ def run ( body,sectionTitle="Macromolecular sequences" ):  # body is reference t
         #    files_seq.append ( f )
 
     if len(files_seq) <= 0:
-        return
+        return  seq_imported
 
     annotation = None;
     try:
@@ -109,10 +110,9 @@ def run ( body,sectionTitle="Macromolecular sequences" ):  # body is reference t
             "\n ******** Sequence annotation file NOT FOUND OR CORRUPT (error)\n" )
         body.file_stderr.write (
             "\n ******** Sequence annotation file NOT FOUND OR CORRUPT (error)\n" )
-        return
+        return  seq_imported
 
-    seqSecId = "seq_sec_" + str(body.widget_no)
-    body.widget_no += 1
+    seqSecId = body.getWidgetId ( "seq_sec_" )
 
     pyrvapi.rvapi_add_section ( seqSecId,sectionTitle,
                                 body.report_page_id(),body.rvrow,0,1,1,False )
@@ -131,7 +131,7 @@ def run ( body,sectionTitle="Macromolecular sequences" ):  # body is reference t
                 "\n ******** Sequence annotation file DOES NOT MATCH UPLOAD (error)\n" )
             body.file_stderr.write (
                 "\n ******** Sequence annotation file DOES NOT MATCH UPLOAD (error)\n" )
-            return
+            return  seq_imported
 
         subSecId = seqSecId
         if len(files_seq)>1:
@@ -150,8 +150,9 @@ def run ( body,sectionTitle="Macromolecular sequences" ):  # body is reference t
         seq.makeUniqueFNames ( body.outputDir() )
 
         body.outputDataBox.add_data ( seq )
+        seq_imported.append ( seq )
 
-        seqTableId = "seq_" + str(k) + "_table"
+        seqTableId = body.getWidgetId ( "seq_"+str(k)+"_table" )
         body.putTable     ( seqTableId,"",subSecId,0 )
         body.putTableLine ( seqTableId,"File name","Imported file name",f,0 )
         body.putTableLine ( seqTableId,"Assigned name",
@@ -192,4 +193,4 @@ def run ( body,sectionTitle="Macromolecular sequences" ):  # body is reference t
     body.rvrow += 1
     pyrvapi.rvapi_flush()
 
-    return
+    return  seq_imported

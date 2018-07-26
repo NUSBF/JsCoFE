@@ -98,7 +98,6 @@ class Parrot(basic.TaskDriver):
             #dtype_sequence.writeSeqFile ( self.parrot_seq(),"prepared_for_parrot",
             #                              combseq )
 
-        """
         refname = os.path.join ( os.environ["CCP4"],"lib","data",
             "reference_structures",
             "reference-" + self.task.parameters.sec1.contains.REFMDL_SEL.value )
@@ -136,6 +135,56 @@ class Parrot(basic.TaskDriver):
                 "\ncolin-wrk-free /*/*/["   + istruct.FreeR_flag + "]"
             )
 
+        """
+        msg = '\n'
+        msg += 'AAAAAAAAAAAAAAAAAAAAAAAA  '
+        msg += 'istruct.useForNCS '
+        msg += str(istruct.useForNCS)
+        msg += '\n'
+        msg += 'AAAAAAAAAAAAAAAAAAAAAAAA  '
+        msg += 'istruct.hasMRSubtype() '
+        msg += str(istruct.hasMRSubtype())
+        msg += '\n'
+        msg += 'AAAAAAAAAAAAAAAAAAAAAAAA  '
+        msg += 'istruct.hasEPSubtype() '
+        msg += str(istruct.hasEPSubtype())
+        msg += '\n'
+        msg += 'AAAAAAAAAAAAAAAAAAAAAAAA  '
+        msg += 'hasattr(self.input_data.data, "ncs_struct") '
+        msg += str(hasattr(self.input_data.data, "ncs_struct"))
+        msg += '\n'
+        msg += 'AAAAAAAAAAAAAAAAAAAAAAAA  '
+        msg += 'hasattr(self.input_data.data, "ncs_substr") '
+        msg += str(hasattr(self.input_data.data, "ncs_substr"))
+        msg += '\n'
+        self.file_stdout.write(msg)
+        """
+
+        ncs_xyz = None
+        ncs_kwd = None
+        if istruct.useForNCS:
+            ncs_xyz = istruct
+            if istruct.hasMRSubtype():
+                ncs_kwd = "pdbin-wrk-mr"
+
+            elif istruct.hasEPSubtype():
+                ncs_kwd = "pdbin-wrk-ha"
+
+        elif hasattr(self.input_data.data,"ncs_struct"):
+            ncs_xyz = self.input_data.data.ncs_struct[0]
+            ncs_kwd = "pdbin-wrk-mr"
+
+        elif hasattr(self.input_data.data,"ncs_substr"):
+            ncs_xyz = self.input_data.data.ncs_substr[0]
+            ncs_kwd = "pdbin-wrk-ha"
+
+        if ncs_kwd:
+            self.write_stdin(
+                "\n" + ncs_kwd + " " +\
+                os.path.join(self.inputDir(), ncs_xyz.files[0])
+            )
+
+        """
         if istruct.useForNCS:
             if istruct.hasMRSubtype() or istruct.hasEPSubtype():
                 self.write_stdin (
@@ -160,60 +209,15 @@ class Parrot(basic.TaskDriver):
                 )
         """
 
-        self.open_stdin()
-        self.write_stdin (
-            "title Job "   + self.job_id.zfill(4) + \
-            "\nmtzin " + os.path.join(self.inputDir(),istruct.files[1]) + \
-            "\ncolin-fo /*/*/["     + istruct.FP  + "," + istruct.SigFP + "]"
-        )
-
-        if istruct.HLA!="":
-            self.write_stdin (
-                "\ncolin-hl /*/*/[" + istruct.HLA + "," + istruct.HLB + \
-                                "," + istruct.HLC + "," + istruct.HLD + "]"
-            )
-        else:
-            self.write_stdin (
-                "\ncolin-phifom /*/*/[" + istruct.PHI + "," + istruct.FOM  + "]" + \
-                "\ncolin-fc /*/*/["     + istruct.FWT + "," + istruct.PHWT + "]"
-            )
-
-        if istruct.FreeR_flag!="":
-            self.write_stdin (
-                "\ncolin-free /*/*/["   + istruct.FreeR_flag + "]"
-            )
-
-        if seq:
-            self.write_stdin ( "\nseqin " + self.parrot_seq() )
-
-        if istruct.useForNCS:
-            if istruct.hasMRSubtype() or istruct.hasEPSubtype():
-                self.write_stdin (
-                    "\npdbin-mr " + os.path.join(self.inputDir(),istruct.files[0]) )
-            else:
-                self.write_stdin (
-                    "\npdbin-ha " + os.path.join(self.inputDir(),istruct.files[0]) )
-
-        if istruct.hasMRSubtype() or istruct.hasEPSubtype():
-            if hasattr(self.input_data.data,"ncs_substr"):
-                self.write_stdin (
-                    "\npdbin-ha " +\
-                    os.path.join ( self.inputDir(),
-                                   self.input_data.data.ncs_substr[0].files[0])
-                )
-        else:
-            if hasattr(self.input_data.data,"ncs_struct"):
-                self.write_stdin (
-                    "\npdbin-mr " +\
-                    os.path.join ( self.inputDir(),
-                                   self.input_data.data.ncs_struct[0].files[0])
-                )
+        solcont = float( revision.ASU.solvent )
+        if solcont > 1.0:
+            solcont /= 100.0
 
         self.write_stdin (
             "\nmtzout " + self.parrot_mtz() + \
             "\ncolout parrot"  +\
-            "\nncs-average\n"  +\
-            "\nsolvent-content " + str(revision.ASU.solvent) +\
+            "\nncs-average"  +\
+            "\nsolvent-content " + str( solcont ) + "\n"  +\
             self.putKWParameter ( self.task.parameters.sec1.contains.SOLVENT_CBX   ) + \
             self.putKWParameter ( self.task.parameters.sec1.contains.HISTOGRAM_CBX ) + \
             #self.putKWParameter ( self.task.parameters.sec1.contains.NCSAVER_CBX   ) + \

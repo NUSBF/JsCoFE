@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    22.02.18   <--  Date of Last Modification.
+ *    26.07.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -20,47 +20,41 @@
  */
 
 //  load system modules
-var request       = require('request');
+var request       = require('request'   );
 var formidable    = require('formidable');
 var child_process = require('child_process');
-var path          = require('path');
-var fs            = require('fs-extra');
-var crypto        = require('crypto');
+//var archiver      = require('archiver'  );
+//var unzipper      = require('unzipper'  );
+var path          = require('path'      );
+var fs            = require('fs-extra'  );
+var crypto        = require('crypto'    );
 
 //  load application modules
-var conf  = require('./server.configuration');
+var conf  = require('./server.configuration'      );
 var cmd   = require('../js-common/common.commands');
-var utils = require('./server.utils');
+var utils = require('./server.utils'              );
 
 //  prepare log
 var log = require('./server.log').newLog(13);
 
 // ==========================================================================
 
-var tarballName = '__dir.tar.gz';
+//var jobballName = '__dir.tar.gz';
+var jobballName = '__dir.zip';
 
 // ==========================================================================
 
+/*  --- old tar version 23.07.2018
 function packDir ( dirPath, fileSelection, onReady_func )  {
 // Pack files, assume tar
 
-  utils.removeFile ( tarballName );
+  utils.removeFile ( jobballName );
 
   var tar = child_process.spawn ( '/bin/sh',['-c','tar -czf ' +
-                                  tarballName + ' ' + fileSelection],{
+                                  jobballName + ' ' + fileSelection],{
     cwd   : dirPath,
     stdio : ['ignore']
   });
-
-  /*
-  var tname = tarballName.slice(0,-3);
-  var tar = child_process.spawn ( '/bin/sh',['-c','tar -cf ' +
-                          tname + ' ' + fileSelection +
-                          '; gzip ' + tname],{
-    cwd   : dirPath,
-    stdio : ['ignore']
-  });
-  */
 
   tar.stderr.on ( 'data',function(data){
     log.error ( 10,'tar errors: "' + data + '"; encountered in ' + dirPath );
@@ -70,8 +64,111 @@ function packDir ( dirPath, fileSelection, onReady_func )  {
     onReady_func(code);
     if (code!=0)  {
       log.error ( 11,'tar packing code: ' + code + ', encountered in ' + dirPath );
-      utils.removeFile ( path.join(dirPath,tarballName) );
+      utils.removeFile ( path.join(dirPath,jobballName) );
     }
+  });
+
+}
+*/
+
+/*  ---  node-based zip version (inefficient) 25.07.2018
+function packDir ( dirPath, fileSelection, onReady_func )  {
+// Pack files, use zip
+
+  //utils.removeFile ( jobballName );
+
+  var jobballPath = path.join ( dirPath,jobballName );
+  utils.removeFile ( jobballPath );
+
+  var output  = fs.createWriteStream ( jobballPath );
+  var archive = archiver ( 'zip', {
+    zlib: { level: 3 }  // Sets the compression level.
+  });
+
+  // listen for all archive data to be written
+  errors = "";
+
+  // This event is fired when the data source is drained no matter what was the data source.
+  // It is not part of this library but rather from the NodeJS Stream API.
+  // @see: https://nodejs.org/api/stream.html#stream_event_end
+  //output.on ( 'end',function(){
+  //  console.log('Data has been drained');
+  //});
+
+  // good practice to catch warnings (ie stat failures and other non-blocking errors)
+  archive.on ( 'warning',function(err){
+    if (err.code === 'ENOENT') {
+      //console.log ( 'ENOENT error' );
+      errors += 'ENOENT packing error ';
+      // log warning
+    } else {
+      errors += 'packing warnings ';
+      //console.log ( 'errors 1' );
+      // throw error
+      //throw err;
+    }
+    log.error ( 10,'zip warnings encountered in ' + dirPath );
+  });
+
+  // good practice to catch this error explicitly
+  archive.on ( 'error', function(err) {
+    errors += 'packing errors ';
+    log.error ( 10,'zip errors encountered in ' + dirPath );
+    //console.log ( 'errors 2' );
+    //throw err;
+  });
+
+  // pipe archive data to the file
+  archive.pipe ( output );
+
+  // append files from a sub-directory, putting its contents at the root of archive
+  archive.directory ( dirPath,false );
+  //archive.glob ( path.join(dirPath,fileSelection) );
+
+  // 'close' event is fired only when a file descriptor is involved
+  output.on ( 'close',function(){
+    if (errors)  {
+      onReady_func(-1);
+      log.error ( 11,'zip errors: ' + errors + ', encountered in ' + dirPath );
+      utils.removeFile ( jobballPath );
+    } else
+      onReady_func(0);
+  });
+
+  // finalize the archive (ie we are done appending files but streams have to finish yet)
+  // 'close', 'end' or 'finish' may be fired right after calling this method so register to them beforehand
+  archive.finalize();
+
+}
+*/
+
+function getJobballPath ( dirPath )  {
+  return path.join ( dirPath,jobballName );
+}
+
+function packDir ( dirPath, fileSelection, onReady_func )  {
+// Pack files, assume zip
+
+  var tmpFile = path.resolve ( conf.getTmpFile()+'.zip' );
+
+  var zip = child_process.spawn ( conf.pythonName(),['-m','zipfile','-c',
+                                  tmpFile,'./'],{
+    cwd   : dirPath,
+    stdio : ['ignore']
+  });
+
+  zip.stderr.on ( 'data',function(data){
+    log.error ( 10,'zip errors: "' + data + '"; encountered in ' + dirPath );
+  });
+
+  zip.on ( 'close', function(code){
+    if (code!=0)  {
+      log.error ( 11,'zip packing code: ' + code + ', encountered in ' + dirPath );
+      utils.removeFile ( tmpFile );
+    } else {
+      utils.moveFile ( tmpFile,getJobballPath(dirPath) );
+    }
+    onReady_func(code);
   });
 
 }
@@ -88,7 +185,7 @@ function sendDir ( dirPath, fileSelection, serverURL, command, metaData,
 
     if (code==0)  {
 
-      // 2. Send tarball to server
+      // 2. Send jobball to server
 
       var formData = {};
       formData['sender'] = conf.getServerConfig().externalURL;
@@ -97,8 +194,8 @@ function sendDir ( dirPath, fileSelection, serverURL, command, metaData,
         for (key in metaData)
           formData[key] = metaData[key];
 
-      var tarballPath  = path.join(dirPath,tarballName);
-      formData['file'] = fs.createReadStream ( tarballPath );
+      var jobballPath  = path.join(dirPath,jobballName);
+      formData['file'] = fs.createReadStream ( jobballPath );
 
       request.post({
 
@@ -127,7 +224,7 @@ function sendDir ( dirPath, fileSelection, serverURL, command, metaData,
         }
 
         //utils.removeFile ( formData['file'] );
-        utils.removeFile ( tarballPath );
+        utils.removeFile ( jobballPath );
 
       });
 
@@ -146,16 +243,17 @@ function sendDir ( dirPath, fileSelection, serverURL, command, metaData,
 
 // ==========================================================================
 
+/*  --- old tar code  23.07.2018
 function unpackDir ( dirPath,cleanTmpDir, onReady_func )  {
-// unpack all service tarballs (their names start with double underscore)
+// unpack all service jobballs (their names start with double underscore)
 // and clean them out
 
-  var tarballPath = path.join ( dirPath,'__*.tar' );
+  var jobballPath = path.join ( dirPath,'__*.tar' );
 
   // however silly, we separate ungzipping and untaring because using '-xzf'
   // has given troubles on one system
   var unpack_com = 'gzip -d '   + path.join(dirPath,'__*.tar.gz') +
-                   '&& tar -xf ' + tarballPath;
+                   '&& tar -xf ' + jobballPath;
 
   if (cleanTmpDir)  {
     var tmpDir1 = '';
@@ -168,14 +266,12 @@ function unpackDir ( dirPath,cleanTmpDir, onReady_func )  {
                   '&& mv '     + dirPath + ' ' + tmpDir2 +
                   '&& mv '     + tmpDir1 + ' ' + dirPath +
                   '&& rm -rf ' + tmpDir2;
-    /*
-    unpack_com += ' -C '       + tmpDir1  +
-                  '&& rm -rf ' + path.join(dirPath,'*') +
-                  '&& mv '     + path.join(tmpDir1 ,'*') + ' ' + dirPath +
-                  '&& rm -rf ' + tmpDir1;
-    */
+    //unpack_com += ' -C '       + tmpDir1  +
+    //              '&& rm -rf ' + path.join(dirPath,'*') +
+    //              '&& mv '     + path.join(tmpDir1 ,'*') + ' ' + dirPath +
+    //              '&& rm -rf ' + tmpDir1;
   } else {
-    unpack_com += ' -C ' + dirPath + '; rm ' + tarballPath;
+    unpack_com += ' -C ' + dirPath + '; rm ' + jobballPath;
   }
 
   var tar = child_process.spawn ( '/bin/sh',['-c',unpack_com],{
@@ -188,6 +284,100 @@ function unpackDir ( dirPath,cleanTmpDir, onReady_func )  {
 
   tar.on('close', function(code){
     onReady_func(code);
+  });
+
+}
+*/
+
+/*  -- node-based zip version (inefficient)  25.07.2018
+function unpackDir ( dirPath,cleanTmpDir, onReady_func )  {
+// unpack all service jobballs (their names start with double underscore)
+// and clean them out
+
+  var jobballPath = path.join ( dirPath,jobballName );
+  var errors = "";
+
+  if (cleanTmpDir)  {
+    var unpackDir = '';
+    do {
+      unpackDir = path.join ( cleanTmpDir,crypto.randomBytes(20).toString('hex') );
+    } while (utils.fileExists(unpackDir));
+    utils.mkDir ( unpackDir );
+    tmpDir = unpackDir + '_JOBDIRCOPY'
+  } else {
+    unpackDir = dirPath;
+  }
+
+  fs.createReadStream(jobballPath)
+    .pipe(unzipper.Extract({ path: unpackDir })
+      .on('error',function(){
+        log.error ( 15,'zip/unpackDir errors encountered in ' + dirPath );
+        errors = "errors";
+      })
+     .on('close', function(){
+       utils.removeFile ( jobballPath )
+       if (!errors)  {
+          if (cleanTmpDir)  {
+            // replace destination with temporary directory used for unpacking;
+            // as all directories are on the same device (see above), the
+            // replace should be done within this thread and, therefore, safe
+            // for concurrent access from client
+            utils.moveFile ( dirPath  ,tmpDir  );
+            utils.moveFile ( unpackDir,dirPath );
+            setTimeout ( function(){  // postpone for speed
+              utils.removePath ( tmpDir );
+            },0 );
+          }
+          onReady_func(0);
+       } else {
+         onReady_func(-1);
+       }
+     }));
+
+}
+*/
+
+function unpackDir ( dirPath,cleanTmpDir, onReady_func )  {
+// unpack all service jobballs (their names start with double underscore)
+// and clean them out
+
+  var jobballPath = getJobballPath ( dirPath );
+  //var errors = "";
+
+  if (cleanTmpDir)  {
+    var unpackDir = '';
+    do {
+      unpackDir = path.join ( cleanTmpDir,'tmp_'+crypto.randomBytes(20).toString('hex') );
+    } while (utils.fileExists(unpackDir));
+    utils.mkDir ( unpackDir );
+    tmpDir = unpackDir + '_JOBDIRCOPY';
+  } else {
+    unpackDir = dirPath;
+  }
+
+  var zip = child_process.spawn ( conf.pythonName(),['-m','zipfile','-e',
+                                  jobballPath,unpackDir],{
+    stdio : ['ignore']
+  });
+
+  zip.stderr.on ( 'data',function(data){
+    log.error ( 15,'zip/unpackDir errors: "' + data + '"; encountered in ' + dirPath );
+  });
+
+  zip.on('close', function(code){
+    utils.removeFile ( jobballPath )
+    if (cleanTmpDir)  {
+       // replace destination with temporary directory used for unpacking;
+       // as all directories are on the same device (see above), the
+       // replace should be done within this thread and, therefore, safe
+       // for concurrent access from client
+       utils.moveFile ( dirPath  ,tmpDir  );
+       utils.moveFile ( unpackDir,dirPath );
+       setTimeout ( function(){  // postpone for speed
+         utils.removePath ( tmpDir );
+       },0 );
+    }
+    onReady_func ( code );
   });
 
 }
@@ -257,7 +447,7 @@ function receiveDir ( jobDir,tmpDir,server_request,onFinish_func )  {
 
         if (errs=='')  {
 
-          // unpack all service tarballs (their names start with double underscore)
+          // unpack all service jobballs (their names start with double underscore)
           // and clean them out
 
           unpackDir ( jobDir,tmpDir, function(code){
@@ -291,8 +481,9 @@ function receiveDir ( jobDir,tmpDir,server_request,onFinish_func )  {
 
 // ==========================================================================
 // export for use in node
-module.exports.tarballName = tarballName;
-module.exports.packDir     = packDir;
-module.exports.unpackDir   = unpackDir;
-module.exports.sendDir     = sendDir;
-module.exports.receiveDir  = receiveDir;
+module.exports.jobballName    = jobballName;
+module.exports.packDir        = packDir;
+module.exports.unpackDir      = unpackDir;
+module.exports.getJobballPath = getJobballPath;
+module.exports.sendDir        = sendDir;
+module.exports.receiveDir     = receiveDir;

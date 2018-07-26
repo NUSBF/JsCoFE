@@ -16,7 +16,6 @@
 
 #  python native imports
 import os
-import sys
 import subprocess
 
 #  ccp4-python imports
@@ -123,6 +122,8 @@ def run ( body,   # body is reference to the main Import class
           freeRflag=True      # will be run if necessary
         ):
 
+    hkl_imported = []
+
     files_mtz = []
     for f_orig in body.files_all:
         #f_base, f_ext = os.path.splitext(f_orig)
@@ -142,7 +143,7 @@ def run ( body,   # body is reference to the main Import class
             #    files_mtz.append((f_orig, f_fmt))
 
     if not files_mtz:
-        return
+        return hkl_imported
 
     mtzSecId = body.getWidgetId ( "mtz_sec" ) + "_"
 
@@ -320,6 +321,7 @@ def run ( body,   # body is reference to the main Import class
                             "\n was not truncated and will be used as is\n\n" )
                         hkl.makeUniqueFNames ( body.outputDir() )
                         body.outputDataBox.add_data ( hkl )
+                        hkl_imported.append ( hkl )
                         makeHKLTable ( body,mtzTableId,subSecId,hkl,hkl,0,"",0 )
                         datasetName = hkl.dname
 
@@ -352,6 +354,7 @@ def run ( body,   # body is reference to the main Import class
                             hkl_data.dataId = hkl.dataId
                             hkl_data.makeUniqueFNames ( body.outputDir() )
                             body.outputDataBox.add_data ( hkl_data )
+                            hkl_imported.append ( hkl_data )
                             makeHKLTable ( body,mtzTableId,subSecId,hkl,hkl_data,1,"",0 )
                             datasetName = hkl_data.dname
 
@@ -386,4 +389,4 @@ def run ( body,   # body is reference to the main Import class
     body.rvrow += 1
     pyrvapi.rvapi_flush()
 
-    return
+    return hkl_imported

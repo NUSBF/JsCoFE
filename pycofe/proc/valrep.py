@@ -62,6 +62,7 @@ def getValidationReport ( modelFilePath,sfFilePath,repFilePath,logfile ):
                         if rD['status'] in ['completed', 'failed']:
                             break
                         logfile.write ( "[%4d] Pausing for %4d (seconds)\n" % (it, pause) )
+                        logfile.flush()
 
                     #lt = time.strftime("%Y%m%d%H%M%S", time.localtime())
                     #fnR = "xray-report-%s.pdf" % lt

@@ -52,6 +52,36 @@ def writeMultiSeqFile ( filePath,name,sequence,ncopies ):
     return
 
 
+def readSeqFile ( filePath,delete_reduntant_bool=False ):
+    # reads a single- or multi- sequence file;
+    # returns [[name,sequence,nocc]]
+    seq_list = []
+    with open(filePath,'r') as f:
+        line = f.readline()
+        while line:
+            while line and not line.startswith(">"):
+                line = f.readline()
+            if line:
+                name = line.strip()[1:]
+                seq  = ""
+                line = f.readline()
+                while line and not line.startswith(">"):
+                    seq += line.strip()
+                    line = f.readline()
+                seq_list.append ( [name,seq.replace(" ", ""),1] )
+    if delete_reduntant_bool:
+        seq_list_unique = []
+        for i in range(len(seq_list)):
+            if seq_list[i][2]>0:
+                for j in range(i+1,len(seq_list)):
+                    if seq_list[j][2]>0 and seq_list[j][1]==seq_list[i][1]:
+                        seq_list[i][2] += 1
+                        seq_list[j][2]  = 0
+                seq_list_unique.append ( seq_list[i] )
+        seq_list = seq_list_unique
+    return seq_list
+
+
 class DType(dtype_template.DType):
 
     def __init__(self,job_id,json_str=""):
@@ -110,6 +140,7 @@ class DType(dtype_template.DType):
                 sequence += lines[i].strip()
                 i += 1
         return sequence.replace ( " ","" )
+
 
     def convert2Seq(self,inputDir,outputDir):
         # convert to *.seq if necessary

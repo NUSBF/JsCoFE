@@ -177,12 +177,13 @@ def suggestASUComp1 ( hkl,seqFilePath ):
 
 def suggestASUComp ( hkl,asu ):
     #   hkl : reflection dataset metadata
-    #   asu = [[seq1,weight1,type1,nocc1],[seq2,weight2,type2,nocc2],....],  where
+    #   asu = [[seq1,weight1,type1,nocc1,name1],[seq2,weight2,type2,nocc2,name2],....],  where
     #        seqN    : Nth sequence -- must be given if weightN<=0.0
     #        weightN : weight of Nth sequence -- must be given if seqN==""
     #        typeN   : Nth sequence type: 'protein' or 'dna'
     #        noccN   : on input: <= 0 choose automatically
     #                  on output: the number of Nth sequence in ASU (on return)
+    #        nameN   : sequence name for identification
 
     nprot  = 0
     ndna   = 0
@@ -305,6 +306,10 @@ def suggestASUComp ( hkl,asu ):
 
 
 def getASUComp ( coorFilePath,sequenceList,clustThresh=0.9 ):
+    #  sequenceList has the following format:
+    #    [[name1,seq1],[name2,seq2]...[nameN,seqN]]
+    #   nameX : seqeunce name for identification
+    #   seqX  : sequence
 
     #  1. Get all sequences from coordinate file
 
@@ -313,12 +318,14 @@ def getASUComp ( coorFilePath,sequenceList,clustThresh=0.9 ):
     model   = mm.GetFirstDefinedModel()
     nchains = model.GetNumberOfChains()
     seqlist = []
+    seqtype = []
     for i in range(nchains):
         chain = model.GetChain ( i )
         seq   = ""
         nres  = chain.GetNumberOfResidues()
         nAA   = 0
         nNA   = 0
+        stype = "protein"
         for j in range(nres):
             res = chain.GetResidue(j)
             if res.isAminoacid() or res.isNucleotide():
@@ -331,10 +338,13 @@ def getASUComp ( coorFilePath,sequenceList,clustThresh=0.9 ):
         if nAA >= nNA:
             if len(seq) <= 20:  # threshold for protein chains
                 seq = None
-        elif len(seq) <= 6:  # threshold for DNA/RNA chains
-            seq = None
+        else:
+            stype = "dna"
+            if len(seq) <= 6:  # threshold for DNA/RNA chains
+                seq = None
         if seq:
-            seqlist.append ( seq )
+            seqlist.append ( seq   )
+            seqtype.append ( [stype,chain.GetChainID()] )
 
 
     # 2. Cluster chains and match them onto template ones
@@ -342,14 +352,14 @@ def getASUComp ( coorFilePath,sequenceList,clustThresh=0.9 ):
     asuComp = []
     for i in range(len(seqlist)):
         if seqlist[i]:
-            asuentry = { "seq":seqlist[i], "n":1 }
+            asuentry = { "seq":seqlist[i], "n":1, "type":seqtype[i][0], "chain_id":seqtype[i][1], "name":str(i) }
             for j in range(i+1,len(seqlist)):
                 if seqlist[j]:
                     align = pairwise2.align.globalxx ( seqlist[i],seqlist[j] )
                     seqid = 2.0*align[0][2]/(len(seqlist[i])+len(seqlist[j]))
                     if seqid>=clustThresh:
                         asuentry["n"] += 1
-                        seqlist[j] = ""  # exclude from further processing
+                        seqlist[j]     = None  # exclude from further processing
             asuComp.append ( asuentry )
 
 
@@ -363,7 +373,7 @@ def getASUComp ( coorFilePath,sequenceList,clustThresh=0.9 ):
         for i in range(len(asuComp)):
             seq = asuComp[i]["seq"]
             for j in range(len(sequenceList)):
-                align = pairwise2.align.globalxx ( seq,sequenceList[j] )
+                align = pairwise2.align.globalxx ( seq,sequenceList[j][1] )
                 seqid = align[0][2]/len(seq)
                 matchentry = { "seqid":seqid, "coorseq":i, "givenseq":j }
                 matches.append ( matchentry )
@@ -379,6 +389,7 @@ def getASUComp ( coorFilePath,sequenceList,clustThresh=0.9 ):
             if not "match" in asuComp[coorseq] and not givenseq in gmatched:
                 asuComp[coorseq]["match"] = givenseq
                 asuComp[coorseq]["seqid"] = msorted[i]["seqid"]
+                asuComp[coorseq]["name"]  = sequenceList[givenseq][0]
                 nmatches += 1
                 gmatched.append ( givenseq )
                 seqid1 = msorted[i]["seqid"]
@@ -417,7 +428,7 @@ def getASUComp1 ( coorFilePath,seqFilePath,clustThresh=0.9 ):
             seq = ""
             for j in range(1,len(seqdata)):
                 seq += seqdata[j].strip()
-            seqlist.append ( seq )
+            seqlist.append ( [seqdata[0],seq] )
     return getASUComp ( coorFilePath,seqlist,clustThresh )
 
 
@@ -431,30 +442,38 @@ def main():
     print " ================================================================\n"
 
     result = getASUComp ( "1e94.pdb",[
-      "HSEMTPREIVSELDKHIIGQDNAKRSVAIALRNRWRRMQLNEELRHEVTPKNILMIGPTGVGKTEIARR" +
-      "LAKLANAPFIKVEATKFTEVGYVGKEVDSIIRDLTDAAVKMVRVQAIEKNRYRAEELAEERILDVLIPP" +
-      "AKNNWGQTEQQQEPSAARQAFRKKLREGQLDDKEIEKQKARKLKIKDAMKLLIEEEAAKLVNPEELKQD" +
-      "AIDAVEQHGIVFIDEIDKICKRGESSGPDVSREGVQRDLLPLVEGCTVSTKHGMVKTDHILFIASGAFQI" +
-      "AKPSDLIPELQGRLPIRVELQALTTSDFERILTEPNASITVQYKALMATEGVNIEFTDSGIKRIAEAAWQ" +
-      "VNESTENIGARRLHTVLERLMEEISYDASDLSGQNITIDADYVSKHLDALVADEDLSRFIL",
-      "TTIVSVRRNGHVVIAGDGQATLGNTVMKGNVKKVRRLYNDKVIAGFAGGTADAFTLFELFERKLEMHQGH" +
-      "LVKAAVELAKDWRTDRMLRKLEALLAVADETASLIITGNGDVVQPENDLIAIGSGGPYAQAAARALLENT" +
-      "ELSAREIAEKALDIAGDICIYTNHFHTIEELSYK"
+      [ "seq1",
+        "HSEMTPREIVSELDKHIIGQDNAKRSVAIALRNRWRRMQLNEELRHEVTPKNILMIGPTGVGKTEIARR" +
+        "LAKLANAPFIKVEATKFTEVGYVGKEVDSIIRDLTDAAVKMVRVQAIEKNRYRAEELAEERILDVLIPP" +
+        "AKNNWGQTEQQQEPSAARQAFRKKLREGQLDDKEIEKQKARKLKIKDAMKLLIEEEAAKLVNPEELKQD" +
+        "AIDAVEQHGIVFIDEIDKICKRGESSGPDVSREGVQRDLLPLVEGCTVSTKHGMVKTDHILFIASGAFQI" +
+        "AKPSDLIPELQGRLPIRVELQALTTSDFERILTEPNASITVQYKALMATEGVNIEFTDSGIKRIAEAAWQ" +
+        "VNESTENIGARRLHTVLERLMEEISYDASDLSGQNITIDADYVSKHLDALVADEDLSRFIL"
+      ],[
+        "seq2",
+        "TTIVSVRRNGHVVIAGDGQATLGNTVMKGNVKKVRRLYNDKVIAGFAGGTADAFTLFELFERKLEMHQGH" +
+        "LVKAAVELAKDWRTDRMLRKLEALLAVADETASLIITGNGDVVQPENDLIAIGSGGPYAQAAARALLENT" +
+        "ELSAREIAEKALDIAGDICIYTNHFHTIEELSYK"
+      ]
     ])
     print json.dumps(result,indent=2)
 
     print " ================================================================\n"
 
     result = getASUComp ( "1e94.pdb",[
-      "TTIVSVRRNGHVVIAGDGQATLGNTVMKGNVKKVRRLYNDKVIAGFAGGTADAFTLFELFERKLEMHQGH" +
-      "LVKAAVELAKDWRTDRMLRKLEALLAVADETASLIITGNGDVVQPENDLIAIGSGGPYAQAAARALLENT" +
-      "ELSAREIAEKALDIAGDICIYTNHFHTIEELSYK",
-      "HSEMTPREIVSELDKHIIGQDNAKRSVAIALRNRWRRMQLNEELRHEVTPKNILMIGPTGVGKTEIARR" +
-      "LAKLANAPFIKVEATKFTEVGYVGKEVDSIIRDLTDAAVKMVRVQAIEKNRYRAEELAEERILDVLIPP" +
-      "AKNNWGQTEQQQEPSAARQAFRKKLREGQLDDKEIEKQKARKLKIKDAMKLLIEEEAAKLVNPEELKQD" +
-      "AIDAVEQHGIVFIDEIDKICKRGESSGPDVSREGVQRDLLPLVEGCTVSTKHGMVKTDHILFIASGAFQI" +
-      "AKPSDLIPELQGRLPIRVELQALTTSDFERILTEPNASITVQYKALMATEGVNIEFTDSGIKRIAEAAWQ" +
-      "VNESTENIGARRLHTVLERLMEEISYDASDLSGQNITIDADYVSKHLDALVADEDLSRFIL"
+      [ "seq2",
+        "TTIVSVRRNGHVVIAGDGQATLGNTVMKGNVKKVRRLYNDKVIAGFAGGTADAFTLFELFERKLEMHQGH" +
+        "LVKAAVELAKDWRTDRMLRKLEALLAVADETASLIITGNGDVVQPENDLIAIGSGGPYAQAAARALLENT" +
+        "ELSAREIAEKALDIAGDICIYTNHFHTIEELSYK",
+      ],[
+        "seq1",
+        "HSEMTPREIVSELDKHIIGQDNAKRSVAIALRNRWRRMQLNEELRHEVTPKNILMIGPTGVGKTEIARR" +
+        "LAKLANAPFIKVEATKFTEVGYVGKEVDSIIRDLTDAAVKMVRVQAIEKNRYRAEELAEERILDVLIPP" +
+        "AKNNWGQTEQQQEPSAARQAFRKKLREGQLDDKEIEKQKARKLKIKDAMKLLIEEEAAKLVNPEELKQD" +
+        "AIDAVEQHGIVFIDEIDKICKRGESSGPDVSREGVQRDLLPLVEGCTVSTKHGMVKTDHILFIASGAFQI" +
+        "AKPSDLIPELQGRLPIRVELQALTTSDFERILTEPNASITVQYKALMATEGVNIEFTDSGIKRIAEAAWQ" +
+        "VNESTENIGARRLHTVLERLMEEISYDASDLSGQNITIDADYVSKHLDALVADEDLSRFIL"
+      ]
     ])
     print json.dumps(result,indent=2)
 

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    15.06.18   <--  Date of Last Modification.
+ *    26.07.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -21,12 +21,13 @@
 
 
 //  load system modules
-var path  = require('path');
-var http  = require('http');
+var path   = require('path');
+var http   = require('http');
+var crypto = require('crypto');
 
 //  load application modules
-var utils = require('./server.utils');
-var cmd   = require('../js-common/common.commands');
+var utils  = require('./server.utils');
+var cmd    = require('../js-common/common.commands');
 
 //  prepare log
 var log = require('./server.log').newLog(3);
@@ -385,6 +386,19 @@ function getNCTmpDir()  {
   return path.join ( getServerConfig().storage,'tmp' );
 }
 
+function getTmpDir()  {
+  if ('storage' in work_server)  return getNCTmpDir();
+                           else  return getFETmpDir();
+}
+
+function getTmpFile()  {
+  var tmpDir = getTmpDir();
+  var fname  = '';
+  do {
+    fname = path.join ( tmpDir,'tmp_'+crypto.randomBytes(20).toString('hex') );
+  } while (utils.fileExists(fname));
+  return fname;
+}
 
 // ==========================================================================
 // export for use in node
@@ -406,3 +420,5 @@ module.exports.isLocalSetup       = isLocalSetup;
 module.exports.isLocalFE          = isLocalFE;
 module.exports.getFETmpDir        = getFETmpDir;
 module.exports.getNCTmpDir        = getNCTmpDir;
+module.exports.getTmpDir          = getTmpDir;
+module.exports.getTmpFile         = getTmpFile;

@@ -1,10 +1,10 @@
 
 /*
- *  =================================================================
+ *  ==========================================================================
  *
- *    08.06.18   <--  Date of Last Modification.
+ *    25.07.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- *  -----------------------------------------------------------------
+ *  --------------------------------------------------------------------------
  *
  *  **** Module  :  js-client/cofe.jobtree.js
  *       ~~~~~~~~~
@@ -15,7 +15,7 @@
  *
  *  (C) E. Krissinel, A. Lebedev 2016-2018
  *
- *  =================================================================
+ *  ==========================================================================
  *
  *    requires:  js-common/dtypes/common.dtypes.box.js
  *
@@ -50,13 +50,14 @@
  *      function harvestTaskData ( includeSelected_bool,harvestedTaskIds );
  *      function inspectData     ( jobId,dataType,dataId );
  *      function getAllAncestors ();
+ *      function replayTree      ( ref_tree );
  *
  *   }
  *
  */
 
 
-// -------------------------------------------------------------------------
+// ===========================================================================
 // JobTree class
 
 function JobTree()  {
@@ -70,13 +71,15 @@ function JobTree()  {
 
   this.checkTimeout = null;  // timeout timer Id
 
+  this.replay_mode  = false;  // works with the replay project if true
+
 }
 
 JobTree.prototype = Object.create ( Tree.prototype  );
 JobTree.prototype.constructor = JobTree;
 
 
-// -------------------------------------------------------------------------
+// ---------------------------------------------------------------------------
 
 JobTree.prototype.customIcon = function() {
 //  var ci = new TreeNodeCustomIcon ( './images/brass_gears.gif','32px','22px','hidden' );
@@ -133,7 +136,8 @@ JobTree.prototype.readProjectData = function ( page_title,
   this.checkLoop = false;  // true if job check loop is running
 
   (function(tree){
-    serverRequest ( fe_reqtype.getProjectData,0,page_title,function(data){
+    serverRequest ( fe_reqtype.getProjectData,{'replay':tree.replay_mode},
+                    page_title,function(data){
 
       if ('message' in data)
         MessageDataReadError ( page_title,data['message'] );
@@ -155,7 +159,6 @@ JobTree.prototype.readProjectData = function ( page_title,
           t_map[data.tasks_add[i].id] = data.tasks_add[i];
         for (var key in tree.node_map)  {
           var dataId = tree.node_map[key].dataId;  // dataId of tree node's data
-//          if (dataId!='')  {
           if (dataId in t_map)  {
             var json = JSON.stringify ( t_map[dataId] );
             tree.task_map[key] = getObjectInstance ( json );
@@ -921,5 +924,69 @@ JobTree.prototype.getAllAncestors = function ( task )  {
   }
 
   return tasks;
+
+}
+
+
+JobTree.prototype.replayTree = function ( ref_tree )  {
+//  replays jobs found in reference tree; should be called on new tree
+
+  this.task_map = {};  // map[nodeId]==task of all tasks in the tree
+  this.run_map  = {};  // map[taskId]==nodeId of all running tasks
+  this.dlg_map  = {};  // map[taskId]==dialog of open job dialogs
+
+  this.stopTaskLoop();
+
+  this.checkLoop = false;  // true if job check loop is running
+
+  this.clear();  // this removes also all root nodes
+  this.projectData.jobCount = 0;
+
+  this.addChildren = function ( replay_parent,ref_parent )  {
+
+    for (var i=0;i<ref_parent.children.length;i++)  {
+
+      var ref_node = ref_parent.children[i];
+      var ref_task = ref_tree.getTaskByNodeId ( ref_node.id );
+
+      this.projectData.jobCount = Math.max ( this.projectData.jobCount,ref_task.id );
+
+      var replay_task     = $.extend ( eval('new '+ref_task._type+'()'),ref_task );
+      replay_task.project = this.projectData.desc.name;
+      var replay_node     = this.addNode ( replay_parent,ref_node.text,
+                                           ref_node.icon,this.customIcon() );
+
+      this.task_map[replay_node.id] = replay_task;
+      replay_task.treeItemId        = replay_node.id;
+      replay_node.dataId            = replay_task.id;
+
+      /*
+      // make harvest data links
+      for (var i=0;i<task.harvestedTaskIds.length;i++)  {
+        var taski = tree.getTask ( task.harvestedTaskIds[i] );
+        if (taski)
+          taski.addHarvestLink ( task.id )
+      }
+
+      if (onAdd_func)
+        onAdd_func();
+
+      tree.saveProjectData ( [task],[], null );
+      tree.openJob         ( dataBox,parent_page  );
+      */
+
+      this.addChildren ( replay_node,ref_node );
+
+    }
+
+  }
+
+
+  for (var i=0;i<ref_tree.root_nodes.length;i++)  {
+    var ref_node    = ref_tree.root_nodes[i];
+    var replay_node = this.addRootNode ( ref_node.text.replace(']',':replay]'),
+                                         ref_node.icon,this.customIcon() );
+    this.addChildren ( replay_node,ref_node );
+  }
 
 }

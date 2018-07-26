@@ -719,8 +719,11 @@ class TaskDriver(object):
 
     # ============================================================================
 
-    def calcEDMap ( self,xyzPath,hklData,libPath,filePrefix ):
-        edmap.calcEDMap ( xyzPath,os.path.join(self.inputDir(),hklData.files[0]),
+    def calcEDMap ( self,xyzPath,hklData,libPath,filePrefix,inpDir=None ):
+        idir = inpDir
+        if not idir:
+            idir = self.inputDir()
+        edmap.calcEDMap ( xyzPath,os.path.join(idir,hklData.files[0]),
                           libPath,hklData.dataset,filePrefix,self.job_dir,
                           self.file_stdout,self.file_stderr,self.log_parser )
         return [ filePrefix + edmap.file_pdb (),
@@ -748,12 +751,13 @@ class TaskDriver(object):
 
     def finaliseStructure ( self,xyzPath,name_pattern,hkl,libPath,associated_data_list,
                                  subtype,openState_bool=False,
-                                 title="Output Structure" ):
+                                 title="Output Structure",
+                                 inpDir=None ):
         #  subtype = 0: copy subtype from associated data
         #          = 1: set MR subtype
         #          = 2: set EP subtype
 
-        self.file_stdout.write ( "name_pattern=" + name_pattern + "\n")
+        #self.file_stdout.write ( "name_pattern=" + name_pattern + "\n")
 
         structure = None
 
@@ -771,7 +775,7 @@ class TaskDriver(object):
                                          summary=self.generic_parser_summary,
                                          graph_tables=False )
 
-            fnames = self.calcEDMap ( xyzPath,hkl,libPath,name_pattern )
+            fnames = self.calcEDMap ( xyzPath,hkl,libPath,name_pattern,inpDir )
 
             # Register output data. This moves needful files into output directory
             # and puts the corresponding metadata into output databox
@@ -794,9 +798,10 @@ class TaskDriver(object):
                 else:
                     structure.addEPSubtype()
                 structure.addXYZSubtype()
-                if title!="":
+                if title:
                     self.putTitle ( title )
-                self.putMessage ( "&nbsp;" )
+                else:
+                    self.putMessage ( "&nbsp;" )
                 self.putStructureWidget   ( "structure_btn_",
                                             "Structure and electron density",
                                             structure )

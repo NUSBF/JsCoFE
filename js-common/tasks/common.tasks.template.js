@@ -1917,11 +1917,11 @@ if (!dbx)  {
     var inputDir = path.join ( jobDir  ,'input'        );
     var dboxPath = path.join ( inputDir,'databox.meta' );
     var dbox     = utils.readString ( dboxPath );
-    utils.removePath  ( inputDir );
-    utils.mkDir       ( inputDir );
-    utils.writeString ( dboxPath,dbox );
-    utils.removeFiles ( jobDir,['.mtz','.map','.pdb','.seq','.fasta','.pir',
-                                '.cif','.mmcif','.ent','.pdbx'] );
+    utils.removePath   ( inputDir );
+    utils.mkDir_anchor ( inputDir );
+    utils.writeString  ( dboxPath,dbox );
+    utils.removeFiles  ( jobDir,['.mtz','.map','.pdb','.seq','.fasta','.pir',
+                                 '.cif','.mmcif','.ent','.pdbx'] );
   }
 
 

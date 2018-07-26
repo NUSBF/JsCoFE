@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    17.07.18   <--  Date of Last Modification.
+#    20.07.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -16,7 +16,6 @@
 
 #  python native imports
 import os
-import sys
 
 #  ccp4-python imports
 import pyrvapi
@@ -49,6 +48,8 @@ def getCrystData ( xyzMeta ):
 
 def run ( body ):  # body is reference to the main Import class
 
+    xyz_imported = []
+
     files_xyz = []
     for f in body.files_all:
         #if f.lower().endswith(('.pdb', '.cif', '.mmcif', '.ent')):
@@ -56,7 +57,7 @@ def run ( body ):  # body is reference to the main Import class
             files_xyz.append ( f )
 
     if len(files_xyz) <= 0:
-        return
+        return  xyz_imported
 
     body.file_stdout.write ( "\n" + "%"*80 + "\n"  )
     body.file_stdout.write ( "%%%%%  IMPORT OF XYZ COORDINATES\n" )
@@ -110,7 +111,8 @@ def run ( body ):  # body is reference to the main Import class
 
                 subSecId = xyzSecId
                 if len(files_xyz)>1:
-                    subSecId = xyzSecId + str(k)
+                    #subSecId = xyzSecId + str(k)
+                    subSecId = body.getWidgetId ( "xyz_file_" )
                     pyrvapi.rvapi_add_section ( subSecId,"Import "+f,xyzSecId,
                                                 k,0,1,1,False )
 
@@ -124,8 +126,9 @@ def run ( body ):  # body is reference to the main Import class
                 xyz.makeUniqueFNames ( body.outputDir() )
 
                 body.outputDataBox.add_data ( xyz )
+                xyz_imported.append ( xyz )
 
-                xyzTableId = "xyz_" + str(k) + "_table"
+                xyzTableId = body.getWidgetId ( "xyz_table_" )
                 body.putTable ( xyzTableId,"",subSecId,0 )
                 jrow = 0;
                 if len(files_xyz)<=1:
@@ -166,67 +169,6 @@ def run ( body ):  # body is reference to the main Import class
 
                 body.putSummaryLine ( f,"XYZ",xyz.dname )
 
-                """
-                if nChains>1:
-                    irow = 2
-                    for model in xyzMeta["xyz"]:
-                        for chain in model['chains']:
-                            if chain["type"] != "UNK":
-                                fname = fnamesplit[0] + "_" + str(model['model']) + "_" + \
-                                        chain['id'] + fnamesplit[1]
-                                xyz = dtype_xyz.DType ( body.job_id )
-                                xyz.setFile   ( fname )
-                                mdl = {}
-                                mdl['model']  = model['model']
-                                mdl['chains'] = [chain]
-                                xyz_meta = {}
-                                xyz_meta["cryst"]   = xyzMeta["cryst"]
-                                xyz_meta["xyz"]     = [mdl]
-                                xyz_meta["ligands"] = chain["ligands"]
-                                dtype_xyz.setXYZMeta ( xyz,xyz_meta )
-                                body.dataSerialNo += 1
-                                xyz.makeDName ( body.dataSerialNo )
-
-                                os.rename ( os.path.join(body.importDir(),fname),
-                                            os.path.join(body.outputDir(),fname) )
-                                xyz.makeUniqueFNames ( body.outputDir() )
-
-                                body.outputDataBox.add_data ( xyz )
-
-                                xyzTableId = "xyz_" + str(k) + "_" + str(model['model']) + \
-                                             "_" + chain['id'] + "_table"
-                                body.putMessage1  ( subSecId  ,"&nbsp;",irow )
-                                body.putTable     ( xyzTableId,"",subSecId,irow+1 )
-                                body.putTableLine ( xyzTableId,"Assigned name",
-                                                    "Assigned data name",xyz.dname,0 )
-                                crystData = getCrystData ( xyz_meta )
-                                body.putTableLine ( xyzTableId,"Space group",
-                                                    "Space group",crystData[0],1 )
-                                body.putTableLine ( xyzTableId,"Cell parameters",
-                                    "Cell parameters (a,b,c, &alpha;,&beta;,&gamma;)",
-                                                    crystData[1],2 )
-                                contents  = "Model " + str(model['model']) + ", chain " + \
-                                            chain['id'] + ": " + str(chain['size'])
-                                contents += " residues, type: " + chain['type']
-                                if len(xyz.xyzmeta["ligands"])>0:
-                                    contents += "<br>Ligands:"
-                                    for name in xyz.xyzmeta["ligands"]:
-                                        contents += "&nbsp;&nbsp;" + name
-                                body.putTableLine ( xyzTableId,"Contents",
-                                                    "File contents",contents,3 )
-                                pyrvapi.rvapi_add_data ( xyzTableId+"_structure_btn",xyz.dname,
-                                                 # always relative to job_dir from job_dir/html
-                                                 os.path.join("..",body.outputDir(),xyz.files[0]),
-                                                 "xyz",subSecId,irow+2,0,1,1,-1 )
-
-                                #fdebug = open ( "_debug.txt",'a' )
-                                #fdebug.write ( fname + "\n")
-                                #fdebug.close()
-
-                                body.addSummaryLine ( "XYZ",xyz.dname )
-
-                                irow += 3
-                """
 
         body.file_stdout.write ( "... processed: " + f + "\n" )
         k += 1
@@ -234,4 +176,4 @@ def run ( body ):  # body is reference to the main Import class
     body.rvrow += 1
     pyrvapi.rvapi_flush()
 
-    return
+    return  xyz_imported

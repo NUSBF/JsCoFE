@@ -46,7 +46,6 @@ import pyrvapi
 #  application imports
 from   pycofe.tasks  import asudef
 from   pycofe.dtypes import dtype_revision, dtype_sequence
-from   pycofe.proc   import import_sequence
 
 
 # ============================================================================

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    11.05.18   <--  Date of Last Modification.
+ *    24.07.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -80,7 +80,7 @@ var response = null;
        break;
 
     case cmd.fe_reqtype.getProjectData :  // returns _current_ project data
-          response = prj.getProjectData ( login );
+          response = prj.getProjectData ( login,data );
        break;
 
     case cmd.fe_reqtype.saveProjectData :

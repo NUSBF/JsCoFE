@@ -16,7 +16,7 @@
 
 #  python native imports
 import os
-import sys
+import shutil
 
 #  ccp4-python imports
 import pyrvapi
@@ -72,12 +72,13 @@ def run ( body ):  # body is reference to the main Import class
                     del doc_tmp[0]
                 doc_tmp.write_file ( ftmp )
 
-                # Start acedrg
+                # Start acedrg (only to calculate coordinates for ligand visualisation)
                 rc = command.call ( "acedrg",["-c",ftmp,"-r",code,"-o",fout],"./",
                                     None,body.file_stdout,body.file_stderr )
 
                 fileXYZ = fout + ".pdb"
                 fileCIF = fout + ".cif"
+                shutil.copyfile ( ftmp,fileCIF )  # use ORIGINAL restraints
 
                 if not os.path.isfile(fileXYZ) or not os.path.isfile(fileCIF):
 

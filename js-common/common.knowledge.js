@@ -1,7 +1,7 @@
 /*
  *  =================================================================
  *
- *    05.07.18   <--  Date of Last Modification.
+ *    18.07.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -120,7 +120,10 @@ var _taskIndex = {
   'i' : { type: 'TaskDimple'         , after: ['M','N','O','P','Q','U'] },
 
   // suggest Coot after refinememnt
-  'j' : { type: 'TaskCoot'           , after: ['V','W','i'] }
+  'j' : { type: 'TaskCoot'           , after: ['V','W','i'] },
+
+  // do not suggest PDB Deposition
+  'k' : { type: 'TaskDeposition'     , after: [] }
 
 };
 
