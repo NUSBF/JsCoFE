@@ -104,7 +104,7 @@ def call ( executable,command_line,job_dir,stdin_fname,file_stdout,
             log_parser.parse_stream ( p.stdout,file_stdout )
 
         if iswindows:
-            rc = comrc ( os.waitpid(p.pid,0),time.clock()-t1 )
+            rc = comrc ( [0,p.wait()],time.clock()-t1 )
         else:
             rc = comrc ( os.wait4(p.pid,0) )
 
