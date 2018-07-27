@@ -266,8 +266,8 @@ JobTree.prototype.__checkTaskLoop = function()  {
       serverRequest ( fe_reqtype.checkJobs,request_data,'Check jobs state',
         function(data){
 
-          var completedJobs   = data.completed_map;
-          var wasCompletedJob = false;
+          var completedJobs  = data.completed_map;
+          var completed_list = [];
           for (var key in completedJobs)  {
 
             var json   = JSON.stringify ( completedJobs[key] );
@@ -285,7 +285,7 @@ JobTree.prototype.__checkTaskLoop = function()  {
               tree.setNodeName ( nodeId,false );
               tree.setStyle ( tree.node_map[nodeId],__notViewedStyle,0 );
               tree.node_map[nodeId].setCustomIconVisible ( false );
-              wasCompletedJob = true;
+              completed_list.push ( task );
             }
 
             if (key in tree.dlg_map)  {
@@ -299,7 +299,7 @@ JobTree.prototype.__checkTaskLoop = function()  {
 
           tree.run_map = mapMaskOut ( tree.run_map,completedJobs );
 
-          if (wasCompletedJob)  {
+          if (completed_list.length>0)  {
             tree.updateRation ( data );
             tree.emitSignal ( cofe_signals.treeUpdated,{} );
             tree.saveProjectData ( [],[], null );
@@ -928,20 +928,102 @@ JobTree.prototype.getAllAncestors = function ( task )  {
 }
 
 
+JobTree.prototype.addReplayTasks = function ( replay_node_list,ref_node_list )  {
+
+  this.stopTaskLoop();
+
+  var newJobs = false;
+  for (var i=0;i<replay_node_list.length;i++)  {
+
+    // check if replay task was a root or finished with success
+    var retcode  = job_code.finished;
+    if (replay_node_list[i].parentId)  {
+      var task = this.getTaskByNodeId ( replay_node_list[i].id );
+      if (task)  retcode = task.state;
+           else  retcode = job_code.failed;
+    }
+
+    if (retcode==job_code.finished)  {
+      // append and start all children jobs
+
+      var children = ref_node_list[i].children;
+
+      for (var j=0;j<children.length;j++)  {
+        var ref_node = children[j];
+        var ref_task = this.ref_tree.getTaskByNodeId ( ref_node.id );
+
+        this.projectData.jobCount = Math.max ( this.projectData.jobCount,ref_task.id );
+
+        var replay_task     = $.extend ( eval('new '+ref_task._type+'()'),ref_task );
+        replay_task.state   = job_code.new;
+        replay_task.project = this.projectData.desc.name;
+        var replay_node     = this.addNode ( replay_node_list[i],ref_node.text,
+                                             ref_node.icon,this.customIcon() );
+
+        this.task_map[replay_node.id] = replay_task;
+        replay_task.treeItemId        = replay_node.id;
+        replay_node.dataId            = replay_task.id;
+
+        // make harvest data links
+        //for (var i=0;i<task.harvestedTaskIds.length;i++)  {
+        //  var taski = tree.getTask ( task.harvestedTaskIds[i] );
+        //  if (taski)
+        //    taski.addHarvestLink ( task.id )
+        //}
+
+        //if (onAdd_func)
+        //  onAdd_func();
+
+        this.saveProjectData ( [replay_task],[],function(){
+          // launch jobs
+        });
+        //tree.openJob         ( dataBox,parent_page  );
+
+        //newJobs = true;
+
+      }
+
+    }
+
+  }
+
+  if (newJobs)
+    this.startTaskLoop();
+
+}
+
+
+
 JobTree.prototype.replayTree = function ( ref_tree )  {
 //  replays jobs found in reference tree; should be called on new tree
 
-  this.task_map = {};  // map[nodeId]==task of all tasks in the tree
-  this.run_map  = {};  // map[taskId]==nodeId of all running tasks
-  this.dlg_map  = {};  // map[taskId]==dialog of open job dialogs
+  this.ref_tree = ref_tree;
 
   this.stopTaskLoop();
 
   this.checkLoop = false;  // true if job check loop is running
 
+  var task_del_list = [];
+  for (nodeId in this.task_map)
+    task_del_list.push ( [this.task_map[nodeId].id,this.task_map[nodeId].disk_space] );
+  this.task_map = {};  // map[nodeId]==task of all tasks in the tree
+  this.run_map  = {};  // map[taskId]==nodeId of all running tasks
+  this.dlg_map  = {};  // map[taskId]==dialog of open job dialogs
   this.clear();  // this removes also all root nodes
   this.projectData.jobCount = 0;
+  (function(tree){
+    tree.saveProjectData ( [],task_del_list,function(){
+      var replay_node_list = [];
+      for (var i=0;i<ref_tree.root_nodes.length;i++)  {
+        var ref_node    = ref_tree.root_nodes[i];
+        replay_node_list.push ( tree.addRootNode(ref_node.text.replace(']',':replay]'),
+                                                 ref_node.icon,tree.customIcon()) );
+      }
+      tree.addReplayTasks ( replay_node_list,ref_tree.root_nodes );
+    });
+  }(this))
 
+  /*
   this.addChildren = function ( replay_parent,ref_parent )  {
 
     for (var i=0;i<ref_parent.children.length;i++)  {
@@ -960,33 +1042,24 @@ JobTree.prototype.replayTree = function ( ref_tree )  {
       replay_task.treeItemId        = replay_node.id;
       replay_node.dataId            = replay_task.id;
 
-      /*
       // make harvest data links
-      for (var i=0;i<task.harvestedTaskIds.length;i++)  {
-        var taski = tree.getTask ( task.harvestedTaskIds[i] );
-        if (taski)
-          taski.addHarvestLink ( task.id )
-      }
+      //for (var i=0;i<task.harvestedTaskIds.length;i++)  {
+      //  var taski = tree.getTask ( task.harvestedTaskIds[i] );
+      //  if (taski)
+      //    taski.addHarvestLink ( task.id )
+      //}
 
-      if (onAdd_func)
-        onAdd_func();
+      //if (onAdd_func)
+      //  onAdd_func();
 
-      tree.saveProjectData ( [task],[], null );
-      tree.openJob         ( dataBox,parent_page  );
-      */
+      //tree.saveProjectData ( [task],[], null );
+      //tree.openJob         ( dataBox,parent_page  );
 
       this.addChildren ( replay_node,ref_node );
 
     }
 
   }
-
-
-  for (var i=0;i<ref_tree.root_nodes.length;i++)  {
-    var ref_node    = ref_tree.root_nodes[i];
-    var replay_node = this.addRootNode ( ref_node.text.replace(']',':replay]'),
-                                         ref_node.icon,this.customIcon() );
-    this.addChildren ( replay_node,ref_node );
-  }
+  */
 
 }
