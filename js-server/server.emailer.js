@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    01.05.18   <--  Date of Last Modification.
+ *    27.07.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -21,10 +21,11 @@
 
 //  load system modules
 var nodemailer    = require('nodemailer');
-var child_process = require('child_process');
+//var child_process = require('child_process');
 
 //  load application modules
-var conf = require('./server.configuration');
+var conf  = require('./server.configuration');
+var utils = require('./server.utils');
 
 //  prepare log
 var log = require('./server.log').newLog(4);
@@ -57,7 +58,7 @@ var transporter = nodemailer.createTransport ( emailer );
 
 function send_telnet ( to,subject,message )  {
 var emailer = conf.getEmailerConfig();
-var telnet  = child_process.spawn ( 'telnet', [emailer.host,emailer.port] );
+var telnet  = utils.spawn ( 'telnet',[emailer.host,emailer.port],{} );
 
   telnet.stdin.setEncoding ( 'utf-8' );
 

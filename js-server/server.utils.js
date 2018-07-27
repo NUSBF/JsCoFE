@@ -384,6 +384,16 @@ function capData ( data,n )  {
 }
 
 
+function spawn ( exeName,arguments,options )  {
+  if (/^win/.test(process.platform))  {  // MS Windows
+    return  child_process.spawn ( 'cmd',['/s','/c',exeName].concat(arguments),
+                                  options );
+  } else  { // Mac, Linux
+    return  child_process.spawn ( exeName,arguments,options );
+  }
+
+}
+
 // ==========================================================================
 // export for use in node
 module.exports.fileExists            = fileExists;
@@ -411,3 +421,4 @@ module.exports.clearRVAPIreport      = clearRVAPIreport;
 module.exports.getMIMEType           = getMIMEType;
 module.exports.capData               = capData;
 module.exports.killProcess           = killProcess;
+module.exports.spawn                 = spawn;

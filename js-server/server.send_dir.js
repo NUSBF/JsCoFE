@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    26.07.18   <--  Date of Last Modification.
+ *    27.07.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -22,7 +22,7 @@
 //  load system modules
 var request       = require('request'   );
 var formidable    = require('formidable');
-var child_process = require('child_process');
+//var child_process = require('child_process');
 //var archiver      = require('archiver'  );
 //var unzipper      = require('unzipper'  );
 var path          = require('path'      );
@@ -151,8 +151,7 @@ function packDir ( dirPath, fileSelection, onReady_func )  {
 
   var tmpFile = path.resolve ( conf.getTmpFile()+'.zip' );
 
-  var zip = child_process.spawn ( conf.pythonName(),['-m','zipfile','-c',
-                                  tmpFile,'./'],{
+  var zip = utils.spawn ( conf.pythonName(),['-m','zipfile','-c',tmpFile,'./'],{
     cwd   : dirPath,
     stdio : ['ignore']
   });
@@ -355,8 +354,7 @@ function unpackDir ( dirPath,cleanTmpDir, onReady_func )  {
     unpackDir = dirPath;
   }
 
-  var zip = child_process.spawn ( conf.pythonName(),['-m','zipfile','-e',
-                                  jobballPath,unpackDir],{
+  var zip = utils.spawn ( conf.pythonName(),['-m','zipfile','-e',jobballPath,unpackDir],{
     stdio : ['ignore']
   });
 

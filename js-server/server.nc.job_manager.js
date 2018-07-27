@@ -336,7 +336,7 @@ var capacity = ncConfig.capacity;  // total number of jobs the number cruncher
                     onFinish_func ( capacity );
                break;
 
-    case 'SGE'    : var job = child_process.spawn ( 'qstat',['-u',process.env.USER] );
+    case 'SGE'    : var job = utils.spawn ( 'qstat',['-u',process.env.USER],{} );
                     var qstat_output = '';
                     job.stdout.on('data', function(data) {
                       qstat_output += data.toString();
@@ -512,7 +512,7 @@ function ncRunJob ( job_token,feURL )  {
 
       default      :
       case 'CLIENT':
-      case 'SHELL' :  var job = child_process.spawn ( cmd[0],cmd.slice(1) );
+      case 'SHELL' :  var job = utils.spawn ( cmd[0],cmd.slice(1),{} );
                       jobEntry.pid = job.pid;
 
                       log.standard ( 5,'task ' + task.id + ' started, pid=' +
@@ -567,7 +567,7 @@ function ncRunJob ( job_token,feURL )  {
                         '-e',path.join(jobDir,'_job.stde'),  // qsub stderr
                         '-N','cofe_' + ncJobRegister.launch_count
                       ]);
-                      var job = child_process.spawn ( 'qsub',qsub_params.concat(cmd) );
+                      var job = utils.spawn ( 'qsub',qsub_params.concat(cmd),{} );
                       // in this mode, we DO NOT put job listener on the spawn
                       // process, because it is just the scheduler, which
                       // quits nearly immediately; however, we use listeners to
@@ -720,8 +720,8 @@ function ncStopJob ( post_data_obj,callback_func )  {
 
           default      :
           case 'CLIENT':
-          case 'SHELL' : var isWindows = /^win/.test(process.platform);
-                         if(!isWindows) {
+          case 'SHELL' : //var isWindows = /^win/.test(process.platform);
+                         if(!conf.isWindows()) {
                            psTree ( jobEntry.pid, function (err,children){
                              var pids = ['-9',jobEntry.pid].concat (
                                      children.map(function(p){ return p.PID; }));
@@ -740,7 +740,7 @@ function ncStopJob ( post_data_obj,callback_func )  {
                            pids = pids.concat ( subjobs
                                           .replace(/(\r\n|\n|\r)/gm,' ')
                                           .replace(/\s\s+/g,' ').split(' ') );
-                         child_process.spawn ( 'qdel',pids );
+                         utils.spawn ( 'qdel',pids,{} );
 
         }
 

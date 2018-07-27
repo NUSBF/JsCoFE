@@ -400,6 +400,12 @@ function getTmpFile()  {
   return fname;
 }
 
+
+function isWindows()  {
+  return /^win/.test(process.platform);
+}
+
+
 // ==========================================================================
 // export for use in node
 module.exports.getDesktopConfig   = getDesktopConfig;
@@ -422,3 +428,4 @@ module.exports.getFETmpDir        = getFETmpDir;
 module.exports.getNCTmpDir        = getNCTmpDir;
 module.exports.getTmpDir          = getTmpDir;
 module.exports.getTmpFile         = getTmpFile;
+module.exports.isWindows          = isWindows;

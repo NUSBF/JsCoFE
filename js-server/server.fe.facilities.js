@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    23.04.18   <--  Date of Last Modification.
+ *    27.07.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -22,7 +22,7 @@
 //  load system modules
 //var fs            = require('fs-extra');
 var path          = require('path');
-var child_process = require('child_process');
+//var child_process = require('child_process');
 
 //  load application modules
 //var emailer  = require('./server.emailer');
@@ -181,10 +181,10 @@ function updateFacility ( login,data )  {
     // launch update
     // we use "python" instead of ccp4-python because of difficulties in getting
     // suds (and possible requests) module(s) to work across all platforms.
-    var fcl_update = child_process.spawn ( "python", // conf.pythonName(),
-               ['-m',processor,jobDir,updateFile,resultFile,
-                conf.getFEConfig().ICAT_wdsl,conf.getFEConfig().ICAT_ids,
-                uh.uploadDir(),conf.getFEConfig().facilitiesPath] )
+    var fcl_update = utils.spawn ( "python", // conf.pythonName(),
+                     ['-m',processor,jobDir,updateFile,resultFile,
+                      conf.getFEConfig().ICAT_wdsl,conf.getFEConfig().ICAT_ids,
+                      uh.uploadDir(),conf.getFEConfig().facilitiesPath],{} )
     fcl_update.stdin.setEncoding('utf-8');
     //fcl_update.stdout.pipe(process.stdout);
     fcl_update.stdin.write ( pwd + '\n' );
