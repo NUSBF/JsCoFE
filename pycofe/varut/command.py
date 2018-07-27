@@ -22,21 +22,22 @@ import traceback
 import platform
 
 class comrc():
-    def __init__(self,retcode=None):
+    def __init__(self,retcode=None,utime=None):
+        self.msg   = ""
+        self.utime = 0
+        self.stime = 0
+        self.umem  = 0
         if retcode:
             returncode = retcode[1]
-            self.utime = retcode[2].ru_utime
-            self.stime = retcode[2].ru_stime
-            self.umem  = retcode[2].ru_maxrss/104448.0
-            self.msg   = ""
+            if len(retcode)>2:
+                self.utime = retcode[2].ru_utime
+                self.stime = retcode[2].ru_stime
+                self.umem  = retcode[2].ru_maxrss/104448.0
+            elif utime:
+                self.utime = utime
             if returncode:
                 self.msg = "Error in command.call\n"
                 self.msg += "Return code: " + str(returncode) + "\n"
-        else:
-           self.msg   = ""
-           self.utime = 0
-           self.stime = 0
-           self.umem  = 0
         return
 
 sys_time  = 0
@@ -92,6 +93,8 @@ def call ( executable,command_line,job_dir,stdin_fname,file_stdout,
 
     rc = comrc()
     try:
+        iswindows = sys.platform.startswith("win")
+        if iswindows:  t1 = time.clock()
         p = subprocess.Popen ( [executable] + command_line,
                           shell=False,
                           stdin=file_stdin,
@@ -100,7 +103,10 @@ def call ( executable,command_line,job_dir,stdin_fname,file_stdout,
         if log_parser:
             log_parser.parse_stream ( p.stdout,file_stdout )
 
-        rc = comrc ( os.wait4(p.pid,0) )
+        if iswindows:
+            rc = comrc ( os.waitpid(p.pid,0),time.clock()-t1 )
+        else:
+            rc = comrc ( os.wait4(p.pid,0) )
 
     except Exception, e:
         rc.msg = str(e)
