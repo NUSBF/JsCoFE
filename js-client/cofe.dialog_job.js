@@ -428,7 +428,7 @@ JobDialog.prototype.makeLayout = function ( onRun_func )  {
               dlg.task.doRun ( dlg.inputPanel,function(){
 
                 dlg.task.job_dialog_data.panel = 'output';
-                dlg.task.state = 'running';
+                dlg.task.state = job_code.running;
                 dlg.outputPanel.clear();
                 dlg.setDlgState();
 

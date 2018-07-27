@@ -221,7 +221,6 @@ var n0         = -1;
 
 function runJob ( login,data, callback_func )  {
 
-  //var task = data.meta;
   var task = class_map.makeClass ( data.meta );
   if (!task)  {
     log.error ( 7,'Cannot make job class' );
@@ -243,6 +242,148 @@ function runJob ( login,data, callback_func )  {
 
   var jobDataPath = prj.getJobDataPath ( login,task.project,task.id );
   task.state = task_t.job_code.running;
+
+  // write task data because it may have latest changes
+  if (utils.writeObject(jobDataPath,task))  {
+
+    var jobDir = prj.getJobDirPath ( login,task.project,task.id );
+
+    var nc_number = 0;
+    if (task.nc_type=='ordinary')  {
+
+      nc_number = selectNumberCruncher ( task );
+
+      if (nc_number<0)  {
+        utils.writeJobReportMessage ( jobDir,
+          '<h1>Task cannot be proccessed</h1>' +
+          'No computational server has agreed to accept the task. This may ' +
+          'be due to the lack of available servers for given task type, or ' +
+          'because of the high number of tasks queued. Please try submitting ' +
+          'this task later on.',false );
+        task.state = task_t.job_code.failed;
+        utils.writeObject ( jobDataPath,task );
+        return;
+      }
+
+      log.standard ( 1,'sending job ' + task.id + ' to ' +
+                       conf.getNCConfig(nc_number).name );
+
+    } else
+      log.standard ( 1,'sending job ' + task.id + ' to client service' );
+
+    utils.writeJobReportMessage ( jobDir,'<h1>Preparing ...</h1>',true );
+
+    // prepare input data
+    task.makeInputData ( jobDir );
+
+    if (task.nc_type=='client')  {
+      // job for client NC, just pack the job directory and inform client
+
+      send_dir.packDir ( jobDir,'*', function(code){
+
+        if (code==0)  {
+
+          utils.writeJobReportMessage ( jobDir,'<h1>Running on client ...</h1>' +
+                      'Job is running on client machine. Full report will ' +
+                      'become available after job finishes.',true );
+
+          var job_token = crypto.randomBytes(20).toString('hex');
+          feJobRegister.addJob ( job_token,nc_number,login,
+                                 task.project,task.id );
+          feJobRegister.getJobEntryByToken(job_token).nc_type = task.nc_type;
+          writeFEJobRegister();
+
+          // update the user ration state
+          ration.updateUserRation_bookJob ( login,task );
+
+          rdata = {};
+          rdata.job_token   = job_token;
+          rdata.tarballName = send_dir.tarballName;
+          callback_func ( new cmd.Response(cmd.fe_retcode.ok,{},rdata) );
+
+        } else  {
+          callback_func ( new cmd.Response(cmd.fe_retcode.jobballError,
+                          '[00001] Jobball creation errors',{}) );
+        }
+
+      });
+
+      // NOTE: we do not count client jobs against user rations (quotas)
+
+    } else  {
+
+      // job for ordinary NC, pack and send all job directory to number cruncher
+      var nc_url = conf.getNCConfig(nc_number).externalURL;
+      send_dir.sendDir ( jobDir,'*',nc_url,cmd.nc_command.runJob,{},
+
+        function ( rdata ){  // send successful
+
+          // The number cruncher will start dealing with the job automatically.
+          // On FE end, register job as engaged for further communication with
+          // NC and client.
+          feJobRegister.addJob ( rdata.job_token,nc_number,login,
+                                 task.project,task.id );
+          writeFEJobRegister();
+
+          // update the user ration state
+          ration.updateUserRation_bookJob ( login,task );
+
+        },function(stageNo,code){  // send failed
+
+          switch (stageNo)  {
+
+            case 1: utils.writeJobReportMessage ( jobDir,
+                    '<h1>[00002] Failed: data preparation error (' + code + ').</h1>',
+                    false );
+                  break;
+
+            case 2: utils.writeJobReportMessage ( jobDir,
+                    '<h1>[00003] Failed: data transmission errors.</h1>' +
+                    '<p><i>Return: ' + code + '</i>',false );
+                    log.error ( 2,'[00003] Cannot send data to NC at ' + nc_url );
+                  break;
+
+            default: utils.writeJobReportMessage ( jobDir,
+                     '<h1>[00004] Failed: number cruncher errors.</h1>' +
+                     '<p><i>Return: ' + code.message + '</i>',false );
+
+          }
+
+          task.state = task_t.job_code.failed;
+          utils.writeObject ( jobDataPath,task );
+
+        });
+
+      callback_func ( new cmd.Response(cmd.fe_retcode.ok,'',{}) );
+
+    }
+
+  } else  {
+
+    callback_func ( new cmd.Response ( cmd.fe_retcode.writeError,
+                                '[00005] Job metadata cannot be written.',{} ) );
+
+  }
+
+}
+
+
+// ===========================================================================
+
+function replayJob ( login,data, callback_func )  {
+
+  var replay_task = class_map.makeClass ( data.meta );
+  if (!replay_task)  {
+    log.error ( 8,'Cannot make replay job class' );
+    callback_func ( new cmd.Response(cmd.fe_retcode.corruptJobMeta,
+                    '[00202] Corrupt replay job metadata',{}) );
+    return;
+  }
+
+  // run job
+
+  var replayJobDataPath = prj.getJobDataPath ( login,replay_task.project,task.id );
+  replay_task.state = task_t.job_code.running;
 
   // write task data because it may have latest changes
   if (utils.writeObject(jobDataPath,task))  {
@@ -610,6 +751,7 @@ module.exports.readFEJobRegister  = readFEJobRegister;
 module.exports.writeFEJobRegister = writeFEJobRegister;
 module.exports.getEFJobEntry      = getEFJobEntry;
 module.exports.runJob             = runJob;
+module.exports.replayJob          = replayJob;
 module.exports.readJobStats       = readJobStats;
 module.exports.stopJob            = stopJob;
 module.exports.getJobResults      = getJobResults;

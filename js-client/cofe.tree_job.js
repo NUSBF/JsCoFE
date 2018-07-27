@@ -949,6 +949,7 @@ JobTree.prototype.addReplayTasks = function ( replay_node_list,ref_node_list )  
       var children = ref_node_list[i].children;
 
       for (var j=0;j<children.length;j++)  {
+
         var ref_node = children[j];
         var ref_task = this.ref_tree.getTaskByNodeId ( ref_node.id );
 
@@ -975,7 +976,21 @@ JobTree.prototype.addReplayTasks = function ( replay_node_list,ref_node_list )  
         //  onAdd_func();
 
         this.saveProjectData ( [replay_task],[],function(){
-          // launch jobs
+          replay_task.state = job_code.running;
+          var data  = {};
+          data.meta = replay_task;
+          data.ancestors = [];  // used only for knowledge facility, ignored here
+          /*
+          if (!this.task.job_dialog_data.viewed)  {
+              this.onDlgSignal_func ( this.task.id,job_dialog_reason.reset_node );
+              this.task.job_dialog_data.viewed = true;
+            }
+          */
+          serverRequest ( fe_reqtype.replayJob,data,replay_task.title,
+            function(rdata){},  //callback_ok
+            null,null
+          );
+
         });
         //tree.openJob         ( dataBox,parent_page  );
 

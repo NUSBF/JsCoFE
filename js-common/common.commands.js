@@ -2,7 +2,7 @@
 /*
  *  ===========================================================================
  *
- *    26.07.18   <--  Date of Last Modification.
+ *    27.07.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  ---------------------------------------------------------------------------
  *
@@ -71,6 +71,7 @@ var fe_reqtype = {
   importProject     : '-importProject',    // request to save import a project
   saveJobData       : '-saveJobData',      // request to save job data
   runJob            : '-runJob',           // request to run job
+  replayJob         : '-replayJob',        // request to replay job
   stopJob           : '-stopJob',          // request to stop job
   checkJobs         : '-checkJobs',        // request to check on jobs' state
   getJobFile        : '-getJobFile',       // request to download a job's file
@@ -118,7 +119,7 @@ var fe_retcode = {
 
 var nc_command = {
   stop          : 'stop',          // quit the server
-  runJob        : '-runJob',       // upload request
+  runJob        : '-runJob',       // request to upload job data and run the job
   stopJob       : '-stopJob',      // request to stop a running job
   selectDir     : '-selectDir',    // request to select directory (local service)
   runRVAPIApp   : '-runRVAPIApp',  // run RVAPI helper application (local service)

@@ -119,6 +119,10 @@ var response = null;
           rj.runJob ( login,data,callback_func );
        break;
 
+    case cmd.fe_reqtype.replayJob :
+          rj.replayJob ( login,data,callback_func );
+       break;
+
     case cmd.fe_reqtype.checkJobs :
           response = rj.checkJobs ( login,data );
        break;

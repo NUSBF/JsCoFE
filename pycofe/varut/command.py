@@ -19,6 +19,7 @@ import os
 import time
 import subprocess
 import traceback
+import platform
 
 class comrc():
     def __init__(self,retcode=None):
@@ -55,7 +56,7 @@ def call ( executable,command_line,job_dir,stdin_fname,file_stdout,
            file_stderr,log_parser=None ):
 
     file_stdout.write ( "\n" + "="*80 + "\n" )
-    file_stdout.write ( time.strftime("## Run %Y-%m-%d at %H:%M:%S on ") + os.uname()[1] );
+    file_stdout.write ( time.strftime("## Run %Y-%m-%d at %H:%M:%S on ") + platform.uname()[1] );
     file_stdout.write ( "\n" + "="*80 + "\n" )
     file_stdout.write ( "## EXECUTING COMMAND:\n\n" )
 
