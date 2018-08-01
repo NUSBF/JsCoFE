@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    17.07.18   <--  Date of Last Modification.
+#    31.07.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -91,7 +91,10 @@ class Xia2(basic.TaskDriver):
         cmd.append ( imageDirPath )
 
         # Run xia2
-        rc = self.runApp ( "xia2",cmd )
+        if sys.platform.startswith("win"):
+            rc = self.runApp ( "xia2.bat",cmd )
+        else:
+            rc = self.runApp ( "xia2",cmd )
 
         # Check for PDB files left by Xia2 and convert them to type structure
         resDir = "DataFiles"
@@ -235,14 +238,6 @@ class Xia2(basic.TaskDriver):
                                                  imported_data[0].dname +\
                                                  "&nbsp;&nbsp;",
                                                  grid_id,0,0,1,1 )
-                        """
-                        self.putRSViewerButton (
-                                    os.path.join("..",rlpFileName),
-                                    os.path.join("..",mapFilePath),
-                                    imported_data[0].dname,
-                                    "View in reciprocal space",
-                                    grid_id,0,1 )
-                        """
                         self.putRSViewerButton (
                                     rlpFileName,mapFilePath,
                                     imported_data[0].dname,

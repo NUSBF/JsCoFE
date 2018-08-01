@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    06.12.17   <--  Date of Last Modification.
+ *    31.07.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Common Client/Server Modules -- Data Box
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2017
+ *  (C) E. Krissinel, A. Lebedev 2016-2018
  *
  *  =================================================================
  *
@@ -81,7 +81,8 @@ DataBox.prototype.addTaskData = function ( task,include_used_bool )  {
 
     td = task.input_data.data;
     for (var inpId in td)
-      if (!inpId.startsWith('void'))  {
+//      if (!inpId.startsWith('void'))  {
+      if (!startsWith(inpId,'void'))  {
         for (var i=0;i<td[inpId].length;i++)  {
           var dt    = td[inpId][i];
           var dtype = dt._type;
@@ -168,11 +169,13 @@ var nt = task_subtypes.length;
     rc = true;
   } else  { //if (data_subtypes.length>0)  {
     for (var i=0;i<nt;i++)
-      if (task_subtypes[i].startsWith('!'))  {
+//      if (task_subtypes[i].startsWith('!'))  {
+      if (startsWith(task_subtypes[i],'!'))  {
         rc = (data_subtypes.indexOf(task_subtypes[i].substr(1))>=0);
         if (!rc)
           break;
-      } else if (task_subtypes[i].startsWith('~'))  {
+//      } else if (task_subtypes[i].startsWith('~'))  {
+      } else if (startsWith(task_subtypes[i],'~'))  {
         rc = (data_subtypes.indexOf(task_subtypes[i].substr(1))<0);
         if (!rc)
           break;

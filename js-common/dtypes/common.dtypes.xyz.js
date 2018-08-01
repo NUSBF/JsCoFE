@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    08.03.18   <--  Date of Last Modification.
+ *    31.07.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -243,7 +243,8 @@ if (!__template)  {
 
       }
 
-    } else if (dropdown.layCustom.startsWith('chain-sel')) {
+//    } else if (dropdown.layCustom.startsWith('chain-sel')) {
+    } else if (startsWith(dropdown.layCustom,'chain-sel')) {
 
       customGrid.setLabel ( 'Select chain:&nbsp;',0,0,1,1 )
                 .setFontItalic(true).setNoWrap();
@@ -285,7 +286,8 @@ if (!__template)  {
         if (!customGrid.cbxs[i].getValue())
           this.exclLigs.push ( this.xyzmeta.ligands[i] );
 
-    } else if (dropdown.layCustom.startsWith('chain-sel'))  {
+//    } else if (dropdown.layCustom.startsWith('chain-sel'))  {
+    } else if (startsWith(dropdown.layCustom,'chain-sel'))  {
 
       this.chainSel = customGrid.chainSel.getValue();
 

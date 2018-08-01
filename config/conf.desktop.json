@@ -18,6 +18,7 @@
     "externalURL"      : "http://localhost:8081",
     "exclusive"        : true,
     "stoppable"        : false,
+    "exclude_tasks"    : [],
     "fsmount"          : "/",
     "userDataPath"     : "./cofe-users",
     "projectsPath"     : "./cofe-projects",

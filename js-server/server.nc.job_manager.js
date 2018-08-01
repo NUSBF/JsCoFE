@@ -309,7 +309,7 @@ var cap   = false;
       log.error ( 1,'Read file errors, file = ' + fname );
       log.error ( 1,'Error: ' + err );
       server_response.writeHead ( 404, {'Content-Type': 'text/html;charset=UTF-8'} );
-      server_response.end ( '<p><b>FILE NOT FOUND</b></p>' );
+      server_response.end ( '<p><b>FILE NOT FOUND [' + fname + ']</b></p>' );
     } else  {
       server_response.writeHead ( 200, {'Content-Type': utils.getMIMEType(fname)} );
       if (cap)
@@ -930,7 +930,7 @@ function ncRunClientJob ( post_data_obj,callback_func )  {
       callback_func ( new cmd.Response ( cmd.nc_retcode.downloadErrors,
                              '[00117] Download errors: ' + err,{} ) );
     })
-    .pipe(fs.createWriteStream(path.join(jobDir,send_dir.tarballName)))
+    .pipe(fs.createWriteStream(path.join(jobDir,send_dir.jobballName)))
     .on('error', function(err) {
       log.error ( 23,'Download errors from ' + dnlURL );
       log.error ( 23,'Error: ' + err );

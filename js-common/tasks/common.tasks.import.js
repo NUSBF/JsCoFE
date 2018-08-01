@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    13.04.18   <--  Date of Last Modification.
+ *    31.07.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -174,7 +174,8 @@ if (!__template)  {
         new_fname += '.n' + padDigits ( name_counter,3 );
       var m = false;
       for (var i=0;(i<uploaded_files.length) && (!m);i++)
-        m = uploaded_files[i].startsWith ( new_fname );
+//        m = uploaded_files[i].startsWith ( new_fname );
+        m = startsWith ( uploaded_files[i],new_fname );
     } while (m);
 
     if (ext)

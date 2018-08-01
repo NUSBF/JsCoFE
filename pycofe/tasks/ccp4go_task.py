@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    17.07.18   <--  Date of Last Modification.
+#    30.07.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -97,11 +97,11 @@ class CCP4go(import_task.Import):
             pyrvapi.rvapi_set_tab_proxy ( self.navTreeId,self.import_page_id() )
         pyrvapi.rvapi_add_tab ( self.import_log_page_id(),"Log file",False )
         pyrvapi.rvapi_append_content (
-                    os.path.join("..",self.import_stdout_path()+'?capsize'),
+                    "/".join(["..",self.import_stdout_path()+"?capsize"]),
                                                 True,self.import_log_page_id() )
         pyrvapi.rvapi_add_tab ( self.import_err_page_id(),"Errors",False )
         pyrvapi.rvapi_append_content (
-                    os.path.join("..",self.import_stderr_path()+'?capsize'),
+                    "/".join(["..",self.import_stderr_path()+"?capsize"]),
                                                 True,self.import_err_page_id() )
 
         self.putTitle ( "CCP4go Automated Structure Solver: Data Import" )
@@ -518,7 +518,10 @@ class CCP4go(import_task.Import):
                 cmd += ["--no-fitligands"]
 
             pyrvapi.rvapi_keep_polling ( True )
-            self.runApp ( "ccp4-python",cmd )
+            if sys.platform.startswith("win"):
+                self.runApp ( "ccp4-python.bat",cmd )
+            else:
+                self.runApp ( "ccp4-python",cmd )
             pyrvapi.rvapi_keep_polling ( False )
             self.restoreReportDocument()
             self.rvrow += 100

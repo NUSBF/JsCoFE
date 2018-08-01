@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    06.02.18   <--  Date of Last Modification.
+#    28.07.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -121,7 +121,7 @@ class Dimple(ccp4go_asu.PrepareASU):
             if spg_info["hkl"]:
                 self.putMessage ( "<b>Space group changed to " +
                                   spg_info["spg"] + "</b>" )
-            dfpath = os.path.join ( "..",self.outputdir,resultdir,"dimple" )
+            dfpath = "/".join ( ["..",self.outputdir,resultdir,"dimple"] )
             self.putStructureWidget ( "Structure and density map",
                                     [ dfpath+".pdb",dfpath+".mtz",dfpath+".map",
                                       dfpath+"_dmap.map" ],-1 )

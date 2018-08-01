@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    09.06.18   <--  Date of Last Modification.
+ *    31.07.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -133,7 +133,8 @@ JobDialog.prototype.constructor = JobDialog;
 
 
 JobDialog.prototype.displayInputErrors = function ( input_msg )  {
-  if (input_msg.startsWith('#'))  {
+//  if (input_msg.startsWith('#'))  {
+  if (input_msg[0]=='#')  {
     new MessageBox ( 'Input errors',input_msg.substring(1) );
   } else  {
     new MessageBox ( 'Input errors',
@@ -188,7 +189,8 @@ JobDialog.prototype.setDlgState = function()  {
     this.inputPanel .setVisible ( true  );
     this.task.job_dialog_data.panel = 'input';
   } else if ((!isRunning) && __local_service &&
-             (this.outputPanel.getURL().startsWith(__local_service)))
+             startsWith(this.outputPanel.getURL(),__local_service))
+//             (this.outputPanel.getURL().startsWith(__local_service)))
     this.loadReport();
 
 }
@@ -442,7 +444,7 @@ JobDialog.prototype.makeLayout = function ( onRun_func )  {
                     var data_obj       = {};
                     data_obj.job_token = rdata.job_token;
                     data_obj.feURL     = getFEURL();
-                    data_obj.dnlURL    = dlg.task.getURL ( rdata.tarballName );
+                    data_obj.dnlURL    = dlg.task.getURL ( rdata.jobballName );
                     localCommand ( nc_command.runClientJob,data_obj,'Run Client Job',
                       function(response){
                         if (!response)

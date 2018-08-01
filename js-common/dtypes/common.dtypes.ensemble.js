@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    16.11.17   <--  Date of Last Modification.
+ *    31.07.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Common Client/Server Modules -- Ensemble Data Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2017
+ *  (C) E. Krissinel, A. Lebedev 2016-2018
  *
  *  =================================================================
  *
@@ -121,13 +121,15 @@ if (!__template)  {
       customGrid.setCellSize ( '','24px',row++,0 );
     }
 
-    if (dropdown.layCustom.startsWith('model'))  {
+//    if (dropdown.layCustom.startsWith('model'))  {
+    if (startsWith(dropdown.layCustom,'model'))  {
       if (this.sequence)  {
         //row++;
         displaySequence ( this.sequence.dname );
         customGrid.setLabel ( ' ',row,0,1,2 ).setHeight_px ( 8 );
       }
-    } else if (dropdown.layCustom.startsWith('phaser-mr'))  {
+//    } else if (dropdown.layCustom.startsWith('phaser-mr'))  {
+    } else if (startsWith(dropdown.layCustom,'phaser-mr'))  {
       if (this.sequence)  {
         //row++;
 
@@ -165,7 +167,8 @@ if (!__template)  {
     var msg = '';   // Ok by default
     var customGrid = dropdown.customGrid;
 
-    if (dropdown.layCustom.startsWith('phaser-mr'))  {
+//    if (dropdown.layCustom.startsWith('phaser-mr'))  {
+    if (startsWith(dropdown.layCustom,'phaser-mr'))  {
       this.ncopies = parseInt   ( customGrid.ncopies.getValue() );
       this.rmsd    = parseFloat ( customGrid.rmsd   .getValue() );
     }

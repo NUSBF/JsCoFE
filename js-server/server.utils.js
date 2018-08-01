@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    24.07.18   <--  Date of Last Modification.
+ *    29.07.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -391,8 +391,8 @@ function spawn ( exeName,arguments,options )  {
   } else  { // Mac, Linux
     return  child_process.spawn ( exeName,arguments,options );
   }
-
 }
+
 
 // ==========================================================================
 // export for use in node

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    19.09.17   <--  Date of Last Modification.
+ *    31.07.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Common Client/Server Modules -- Unmerged Data Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2017
+ *  (C) E. Krissinel, A. Lebedev 2016-2018
  *
  *  =================================================================
  *
@@ -150,7 +150,8 @@ if (!__template)  {
 
     var customGrid = dropdown.customGrid;
 
-    if (dropdown.layCustom.startsWith('unmerged'))  {
+//    if (dropdown.layCustom.startsWith('unmerged'))  {
+    if (startsWith(dropdown.layCustom,'unmerged'))  {
 
       var row = 0;
       if (dropdown.layCustom=='unmerged-ref')  {
@@ -183,15 +184,12 @@ if (!__template)  {
     var regex_runs = /^\s*(\d+\s*(-\s*\d+\s*)?(,\s*\d+\s*(-\s*\d+\s*)?)*)?$/;
     var regex_runs2 = /^\d+(-\d+)?(,\d+(-\d+)?)*$/;
 
-    if (dropdown.layCustom.startsWith('unmerged'))
-    {
-      if (dropdown.layCustom=='unmerged-ref')
-      {
+//    if (dropdown.layCustom.startsWith('unmerged'))  {
+    if (startsWith(dropdown.layCustom,'unmerged'))  {
+      if (dropdown.layCustom=='unmerged-ref') {
         this.dataset.symm = customGrid.combosel.content;
         this.symm_select  = customGrid.combosel.getValues();
-      }
-      else
-      {
+      } else  {
         this.runs = customGrid.runs.getValue().trim();
         var ok = this.runs.length == 0
         if (!ok)

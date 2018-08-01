@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    13.06.18   <--  Date of Last Modification.
+ *    31.07.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -88,13 +88,18 @@ TaskListDialog.prototype.setTask = function ( task_obj,grid,row,setall )  {
   if ((!__local_service) && (task_obj.nc_type=='client'))
     return null;
 
+  if ((__exclude_tasks.indexOf(task_obj._type)>=0) ||
+      ((__exclude_tasks.indexOf('unix-only')>=0) &&
+       (task_obj.platforms().indexOf('W')<0)))
+    return null;
+
   var dataSummary = this.dataBox.getDataSummary ( task_obj );
 
   if ((!setall) && (!dataSummary.status))
     return null;
 
-  var btn = grid.setButton  ( '',task_obj.icon_large(),row,0,1,1 );
-  btn.setSize_px            ( 54,40 );
+  var btn = grid.setButton  ( '',task_obj.icon_large(),row,0,1,1 )
+                .setSize_px ( 54,40 );
   grid.setLabel             ( ' ', row,1,1,1 );
   var lbl = grid.setLabel   ( task_obj.title, row,2,1,1 );
   grid.setNoWrap            ( row,2 );

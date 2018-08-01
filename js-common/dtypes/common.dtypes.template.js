@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    06.12.17   <--  Date of Last Modification.
+ *    31.07.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Common Client/Server Modules -- Base Data Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2017
+ *  (C) E. Krissinel, A. Lebedev 2016-2018
  *
  *  =================================================================
  *
@@ -70,7 +70,8 @@ if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
   // given data type body and cast the whole type to the new one given
   DataTemplate.prototype.cast = function ( newTypeName ) {
     var ext_class = this.extend();
-    if (newTypeName.startsWith('Data') && (newTypeName!=this._type))  {
+//    if (newTypeName.startsWith('Data') && (newTypeName!=this._type))  {
+    if (startsWith(newTypeName,'Data') && (newTypeName!=this._type))  {
       var new_class   = eval ( 'new '+newTypeName+'()' );      // new default class
       var cst_class   = $.extend ( true,new_class,ext_class ); // extend with this
       cst_class._type = new_class._type;   // cast to new class name

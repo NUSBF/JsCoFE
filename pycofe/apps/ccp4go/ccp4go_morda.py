@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    20.02.18   <--  Date of Last Modification.
+#    30.07.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -79,7 +79,11 @@ class MoRDa(ccp4go_simbad12.Simbad12):
         #    cmd = cmd + [ "-n",str(self.task.parameters.sec1.contains.NMODELS.value) ]
 
         # run morda
-        self.runApp ( "ccp4-python",cmd )
+
+        if sys.platform.startswith("win"):
+            self.runApp ( "ccp4-python.bat",cmd )
+        else:
+            self.runApp ( "ccp4-python",cmd )
 
         self.restoreReportDocument()
 

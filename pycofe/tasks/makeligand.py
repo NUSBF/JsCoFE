@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    06.11.17   <--  Date of Last Modification.
+#    30.07.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,13 +19,14 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2018
 #
 # ============================================================================
 #
 
 #  python native imports
 import os
+import sys
 
 #  application imports
 import basic
@@ -69,7 +70,10 @@ class MakeLigand(basic.TaskDriver):
             self.outputFName = code.upper()
 
         # Start makeligand
-        self.runApp ( "acedrg",cmd )
+        if sys.platform.startswith("win"):
+            self.runApp ( "acedrg.bat",cmd )
+        else:
+            self.runApp ( "acedrg",cmd )
 
         xyzPath = code + ".pdb"
         cifPath = code + ".cif"

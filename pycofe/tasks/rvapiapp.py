@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    10.09.17   <--  Date of Last Modification.
+#    29.07.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -23,7 +23,7 @@
 #  corresponding button in RVAPI report pages. Although this is processed as
 #  a usual NC-side job, no results are sent back to FE server.
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2018
 #
 # ============================================================================
 #
@@ -83,15 +83,28 @@ if task is None:
 
 app  = None;
 args = None;
-if task.rvapi_command == "{coot}":
-    app  = "/bin/bash"
-    args = ["-c"," ".join(["coot"] + task.rvapi_args)]
-elif task.rvapi_command == "{ccp4mg}":
-    app  = "/bin/bash"
-    args = ["-c"," ".join(["ccp4mg"] + task.rvapi_args)]
-elif task.rvapi_command == "{viewhkl}":
-    app = "viewhkl"
-    args = task.rvapi_args
+
+if sys.platform.startswith("win"):
+    if task.rvapi_command == "{coot}":
+        app  = "coot.bat"
+        args = task.rvapi_args
+    elif task.rvapi_command == "{ccp4mg}":
+        app  = "ccp4mg.bat"
+        args = task.rvapi_args
+    elif task.rvapi_command == "{viewhkl}":
+        app = "viewhkl"
+        args = task.rvapi_args
+
+else:
+    if task.rvapi_command == "{coot}":
+        app  = "/bin/bash"
+        args = ["-c"," ".join(["coot"] + task.rvapi_args)]
+    elif task.rvapi_command == "{ccp4mg}":
+        app  = "/bin/bash"
+        args = ["-c"," ".join(["ccp4mg"] + task.rvapi_args)]
+    elif task.rvapi_command == "{viewhkl}":
+        app = "viewhkl"
+        args = task.rvapi_args
 
 if app is None:
     print " wrong command specification 'pycofe.tasks.rvapiapp' (" + task.rvapi_command + ")"
@@ -121,4 +134,3 @@ elif messagebox:
       "<b>Failed to launch " + task.rvapi_command +
       ".</b><p>This may indicate a problem with software setup." )
     signal.JobFailure( rc.msg ).quitApp()
-

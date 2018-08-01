@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    13.01.18   <--  Date of Last Modification.
+#    28.07.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -53,7 +53,10 @@ class MrBump(basic.TaskDriver):
     def run(self):
 
         # Check the existence of PDB archive
-        self.checkPDB()
+        pdbLine = ""
+        #if self.checkPDB(False):
+        #    pdbLine = "PDBLOCAL " + os.environ["PDB_DIR"] + "\n"
+
 
         # Prepare mrbump input
         # fetch input data
@@ -85,12 +88,12 @@ class MrBump(basic.TaskDriver):
                 "MRNUM 10\n" + \
                 "USEE True\n" + \
                 "SCOP False\n" + \
-                "DEBUG False\n" + \
+                "DEBUG True\n" + \
                 "RLEVEL 95\n" + \
                 "GESE False\n" + \
                 "GEST False\n" + \
                 "AMPT False\n" + \
-                "PDBLOCAL " + os.environ["PDB_DIR"] + "\n" + \
+                pdbLine + \
                 "LABIN F=" + hkl.dataset.Fmean.value + \
                   " SIGF=" + hkl.dataset.Fmean.sigma + \
                   " FreeR_flag=" + hkl.dataset.FREE + "\n" + \
@@ -120,7 +123,7 @@ class MrBump(basic.TaskDriver):
                 "AMPT False\n" + \
                 "IGNORE 5tha\n" + \
                 "DOPHMMER True\n" + \
-                "PDBLOCAL " + os.environ["PDB_DIR"] + "\n" + \
+                pdbLine + \
                 "DOHHPRED False\n" + \
                 "END\n"
             )
@@ -135,9 +138,11 @@ class MrBump(basic.TaskDriver):
             # prepare report parser
             self.setGenericLogParser ( self.mrbump_report(),True )
 
-
         # Start mrbump
-        self.runApp ( "mrbump",cmd )
+        if sys.platform.startswith("win"):
+            self.runApp ( "mrbump.bat",cmd )
+        else:
+            self.runApp ( "mrbump",cmd )
         self.unsetLogParser()
 
         # check solution and register data
@@ -199,7 +204,7 @@ class MrBump(basic.TaskDriver):
                                 if secrow == 0:
                                     secId = "domain_sec_"+str(domainNo)
                                     self.putSection ( secId,"Domain "+str(domainNo) )
-                                    pyrvapi.rvapi_add_text ( "<h2>Models found:</h2>",
+                                    pyrvapi.rvapi_set_text ( "<h2>Models found:</h2>",
                                                             secId,secrow,0,1,1 )
                                     secrow += 1
 
@@ -210,7 +215,7 @@ class MrBump(basic.TaskDriver):
                                                     "model_" + str(self.dataSerialNo) + "_btn",
                                                     "Model #" + str(self.dataSerialNo).zfill(2),
                                                     # always relative to job_dir from job_dir/html
-                                                    os.path.join("..",self.outputDir(),xyz.files[0]),
+                                                    "/".join(["..",self.outputDir(),xyz.files[0]]),
                                                     "xyz",secId,secrow,0,1,1,-1 )
                                     secrow += 1
 
@@ -220,7 +225,7 @@ class MrBump(basic.TaskDriver):
                             for filename in os.listdir(ensembles_dir):
                                 if filename.endswith(".pdb"):
                                     if not ensembles_found:
-                                        pyrvapi.rvapi_add_text ( "<h2>Ensembles made:</h2>",
+                                        pyrvapi.rvapi_set_text ( "<h2>Ensembles made:</h2>",
                                                                  secId,secrow,0,1,1 )
                                         ensembles_found = True
                                         secrow += 1

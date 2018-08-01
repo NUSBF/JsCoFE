@@ -298,7 +298,7 @@ function runJob ( login,data, callback_func )  {
 
           rdata = {};
           rdata.job_token   = job_token;
-          rdata.tarballName = send_dir.tarballName;
+          rdata.jobballName = send_dir.jobballName;
           callback_func ( new cmd.Response(cmd.fe_retcode.ok,{},rdata) );
 
         } else  {
@@ -440,7 +440,7 @@ function replayJob ( login,data, callback_func )  {
 
           rdata = {};
           rdata.job_token   = job_token;
-          rdata.tarballName = send_dir.tarballName;
+          rdata.jobballName = send_dir.jobballName;
           callback_func ( new cmd.Response(cmd.fe_retcode.ok,{},rdata) );
 
         } else  {

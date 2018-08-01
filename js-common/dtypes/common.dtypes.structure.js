@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    10.05.18   <--  Date of Last Modification.
+ *    31.07.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -139,7 +139,8 @@ if (!__template)  {
       setLabel ( '&sigma; above the mean',row,col+2 )
     }
 
-    if (dropdown.layCustom.startsWith('phaser-ep'))  {
+//    if (dropdown.layCustom.startsWith('phaser-ep'))  {
+    if (startsWith(dropdown.layCustom,'phaser-ep'))  {
 
       if (this.subtype.indexOf('substructure')<0)
             setLabel ( 'Calculate from coordinates; assumed r.m.s.d. from target',row,0 );
@@ -153,7 +154,8 @@ if (!__template)  {
 
       customGrid.setLabel ( ' ',++row,0,1,2 ).setHeight_px ( 8 );
 
-    } else if (dropdown.layCustom.startsWith('parrot'))  {
+//    } else if (dropdown.layCustom.startsWith('parrot'))  {
+    } else if (startsWith(dropdown.layCustom,'parrot'))  {
 
       customGrid.useForNCS = customGrid.setCheckbox ( 'Use for NCS detection',
                     this.useForNCS, row,0, 1,1 );
@@ -198,7 +200,8 @@ if (!__template)  {
         setBFthresh ( row,0,this.BFthresh );
       }
 
-    } else if (dropdown.layCustom.startsWith('chain-sel'))  {
+//    } else if (dropdown.layCustom.startsWith('chain-sel'))  {
+    } else if (startsWith(dropdown.layCustom,'chain-sel'))  {
       DataXYZ.prototype.layCustomDropdownInput.call ( this,dropdown );
     }
 
@@ -210,10 +213,12 @@ if (!__template)  {
     var msg = '';   // Ok by default
     var customGrid = dropdown.customGrid;
 
-    if (dropdown.layCustom.startsWith('phaser-ep'))  {
+//    if (dropdown.layCustom.startsWith('phaser-ep'))  {
+    if (startsWith(dropdown.layCustom,'phaser-ep'))  {
       //this.useCoordinates = (customGrid.use_ddn.getValue()=='c');
       this.rmsd = customGrid.rmsd.getValue();
-    } else if (dropdown.layCustom.startsWith('parrot'))  {
+//    } else if (dropdown.layCustom.startsWith('parrot'))  {
+    } else if (startsWith(dropdown.layCustom,'parrot'))  {
       this.useForNCS = customGrid.useForNCS.getValue();
     } else if (dropdown.layCustom=='buccaneer-ws')  {
       if (this.subtype.indexOf('xyz')>=0)  {
@@ -224,7 +229,8 @@ if (!__template)  {
       if (this.subtype.indexOf('xyz')>=0)  {
         this.BFthresh = customGrid.BFthresh.getValue();
       }
-    } else if (dropdown.layCustom.startsWith('chain-sel'))  {
+//    } else if (dropdown.layCustom.startsWith('chain-sel'))  {
+    } else if (startsWith(dropdown.layCustom,'chain-sel'))  {
       DataXYZ.prototype.collectCustomDropdownInput.call ( this,dropdown );
     }
 

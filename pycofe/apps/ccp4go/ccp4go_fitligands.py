@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    06.02.18   <--  Date of Last Modification.
+#    28.07.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -182,7 +182,7 @@ class FitLigands(ccp4go_acedrg.AceDrg):
 
             # put structure vew widget; files will be made into place latyer
             # by self.saveResults(...)
-            dfpath = os.path.join ( "..",self.outputdir,resultdir,"fitligands" )
+            dfpath = "/".join ( ["..",self.outputdir,resultdir,"fitligands"] )
             self.putStructureWidget ( "Structure and density map",
                                     [ dfpath+".pdb",dfpath+".mtz",dfpath+".map",
                                       dfpath+"_dmap.map" ],-1 )

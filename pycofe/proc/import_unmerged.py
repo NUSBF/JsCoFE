@@ -3,13 +3,13 @@
 #
 # ============================================================================
 #
-#    30.11.17   <--  Date of Last Modification.
+#    28.07.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  UNMERGED DATA IMPORT CLASS
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2018
 #
 # ============================================================================
 #
@@ -279,7 +279,7 @@ def run ( body,        # body is reference to the main Import class
                         pyrvapi.rvapi_add_data ( "hkl_data_"+str(body.dataSerialNo),
                                      "Unmerged reflections",
                                      # always relative to job_dir from job_dir/html
-                                     os.path.join("..",body.outputDir(),unmerged.files[0]),
+                                     "/".join(["..",body.outputDir(),unmerged.files[0]]),
                                      "hkl:hkl",subSecId,frow+1,0,1,1,-1 )
                         frow += 2
 

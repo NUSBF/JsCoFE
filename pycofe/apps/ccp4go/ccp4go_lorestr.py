@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    06.02.18   <--  Date of Last Modification.
+#    28.07.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -121,7 +121,7 @@ class Lorestr(ccp4go_buccaneer.Buccaneer):
                         rfactor = float(list[len(list)-1])
 
             self.putMessage ( "<h2><i>Refined solution</i></h2>" )
-            dfpath = os.path.join ( "..",self.outputdir,resultdir,"lorestr" )
+            dfpath = "/".join ( ["..",self.outputdir,resultdir,"lorestr"] )
             self.putStructureWidget ( "Structure and density map",
                                     [ dfpath+".pdb",dfpath+".mtz",dfpath+".map",
                                       dfpath+"_dmap.map" ],-1 )

@@ -93,6 +93,9 @@ class Simbad(asudef.ASUDef):
         elif level == 'LCS':
             app = "simbad-full"
 
+        if sys.platform.startswith("win"):
+            app += ".bat"
+
         # Prepare simbad input -- script file
 
         cmd = []

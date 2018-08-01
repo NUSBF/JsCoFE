@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    20.02.18   <--  Date of Last Modification.
+#    28.07.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -399,10 +399,10 @@ class Base(object):
         cursor1 = self.addTab ( logtab_id,"Log file",True )
         self.addTab ( errtab_id,"Errors",True )
         pyrvapi.rvapi_append_content (
-            os.path.join("..",subdir,self.file_stdout_path()+'?capsize'),
+            "/".join(["..",subdir,self.file_stdout_path()+"?capsize"]),
             True,logtab_id )
         pyrvapi.rvapi_append_content (
-            os.path.join("..",subdir,self.file_stderr_path()),
+            "/".join(["..",subdir,self.file_stderr_path()]),
             True,errtab_id )
 
         # back to the beginning of head tab

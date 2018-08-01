@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    05.07.17   <--  Date of Last Modification.
+#    31.07.17   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -17,24 +17,29 @@
 import sys
 import os
 from PyQt4 import QtGui
+
 #from PyQt4 import QtCore
 
 def select ( title ):
 
-    if 'HOME' in os.environ:
-        startDir = os.environ['HOME']
+    if "HOME" in os.environ:
+        startDir = os.environ["HOME"]
     else:
         startDir = None
 
     app  = QtGui.QApplication([])
 
-    dialog = QtGui.QFileDialog(None,title,startDir)
-    #dialog.setWindowTitle(title)
-    dialog.setFileMode(QtGui.QFileDialog.Directory)
-    dialog.setOption ( QtGui.QFileDialog.DontUseNativeDialog,True )
-    #dialog.setDirectory ( startDir )
+    if sys.platform.startswith("win"):
+        dialog = QtGui.QFileDialog()
+        dialog.setWindowTitle ( title )
+        if startDir:
+            dialog.setDirectory ( startDir )
+    else:
+        dialog = QtGui.QFileDialog ( None,title,startDir )
+    dialog.setFileMode    ( QtGui.QFileDialog.Directory)
+    dialog.setOption      ( QtGui.QFileDialog.DontUseNativeDialog,True )
     #dialog.setOption(QtGui.QFileDialog.ShowDirsOnly, True)
-    dialog.show()
+    dialog.show  ()
     dialog.raise_()
 
     if dialog.exec_():

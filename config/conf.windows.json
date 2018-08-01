@@ -2,7 +2,7 @@
 
   "_comment"  : [
     "====================================================================================",
-    "                    jsCoFE Configuration for desktop setup mode                     ",
+    "                jsCoFE Configuration for windows desktop setup mode                 ",
     "===================================================================================="
   ],
 
@@ -18,10 +18,11 @@
     "externalURL"      : "",
     "exclusive"        : true,
     "stoppable"        : false,
+    "exclude_tasks"    : ["unix-only"],
     "fsmount"          : "/",
-    "userDataPath"     : "./cofe-users",
-    "projectsPath"     : "./cofe-projects",
-    "facilitiesPath"   : "./cofe-facilities",
+    "userDataPath"     : "./win-cofe-users",
+    "projectsPath"     : "./win-cofe-projects",
+    "facilitiesPath"   : "./win-cofe-facilities",
     "ICAT_wdsl"        : "https://icat02.diamond.ac.uk/ICATService/ICAT?wsdl",
     "ICAT_ids"         : "https://ids01.diamond.ac.uk/ids",
     "bootstrapHTML"    : "jscofe.html",
@@ -49,7 +50,7 @@
       "capacity"         : 4,
       "exclude_tasks"    : [],
       "fasttrack"        : 1,
-      "storage"          : "./cofe-nc-storage",
+      "storage"          : "./win-cofe-nc-storage",
       "exeType"          : "SHELL",
       "exeData"          : "",
       "jobCheckPeriod"   : 2000,
@@ -73,7 +74,7 @@
       "capacity"         : 4,
       "exclude_tasks"    : [],
       "fasttrack"        : 1,
-      "storage"          : "./cofe-client-storage",
+      "storage"          : "./win-cofe-client-storage",
       "exeType"          : "CLIENT",
       "exeData"          : "",
       "jobCheckPeriod"   : 2000,

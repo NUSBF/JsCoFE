@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    01.06.18   <--  Date of Last Modification.
+ *    31.07.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -700,9 +700,10 @@ var fe_server = conf.getFEConfig();
   if (fe_server)  {
 
     var rData = {};
-    rData.localuser  = null;
-    rData.logintoken = null;
-    rData.helpTopics = [];
+    rData.localuser     = null;
+    rData.logintoken    = null;
+    rData.helpTopics    = [];
+    rData.exclude_tasks = fe_server.exclude_tasks;
     if ('localuser' in fe_server)  {
       rData.localuser  = fe_server.localuser;
       rData.logintoken = getTokenFromHash ( 'localuser' );

@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    23.01.18   <--  Date of Last Modification.
+#    30.07.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -581,7 +581,12 @@ class Crank2(basic.TaskDriver):
         ]
 
         # run crank-2
-        self.runApp ( "ccp4-python",cmd )
+
+        if sys.platform.startswith("win"):
+            self.runApp ( "ccp4-python.bat",cmd )
+        else:
+            self.runApp ( "ccp4-python",cmd )
+
         self.restoreReportDocument()
         #pyrvapi.rvapi_reset_task()
 

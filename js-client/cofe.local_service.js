@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    31.06.18   <--  Date of Last Modification.
+ *    31.07.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -23,13 +23,15 @@
 var __local_service = null;   // full URL when defined
 var __local_user    = false;  // true if running as a desktop
 var __shared_fs     = false;  // shared file system setup when true
+var __exclude_tasks = [];
 
 function checkLocalService ( callback_func )  {
 //  alert ( ' search=' + window.location.search );
   var n = window.location.search.indexOf ( 'lsp=' );
   if (n>=0)  {
     var port = window.location.search.substring ( n+4 );
-    if (port.startsWith('http:'))
+//    if (port.startsWith('http:'))
+    if (startsWith(port,'http:'))
           __local_service = port;
     else  __local_service = 'http://localhost:' + port;
   } else
@@ -43,6 +45,7 @@ function checkLocalService ( callback_func )  {
         __login_user    = response.data.localuser;
         __login_token   = response.data.logintoken;
         __doNotShowList = response.data.helpTopics;
+        __exclude_tasks = response.data.exclude_tasks;
       }
       callback_func ( 0 );
     } else  {

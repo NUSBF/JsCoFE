@@ -104,7 +104,7 @@ class Gesamt(basic.TaskDriver):
 
             pyrvapi.rvapi_add_progress_bar ( self.progress_bar_id(),
                                              self.progress_grid_id(), 0,0,1,1 )
-            pyrvapi.rvapi_add_text  ( "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ETR:&nbsp;",
+            pyrvapi.rvapi_set_text  ( "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ETR:&nbsp;",
                                       self.progress_grid_id(), 0,1,1,1 )
             pyrvapi.rvapi_add_label ( self.etr_label_id(),
                                       self.progress_grid_id(),"--:--:--",0,2,1,1 );
@@ -223,12 +223,12 @@ class Gesamt(basic.TaskDriver):
 
                         self.putSection ( self.hits_graph_sec_id(),"Score Plots",False )
 
-                        pyrvapi.rvapi_add_text ( "<h3>Alignment scores</h3>",self.hits_graph_sec_id(),0,0,1,1 )
+                        pyrvapi.rvapi_set_text ( "<h3>Alignment scores</h3>",self.hits_graph_sec_id(),0,0,1,1 )
                         pyrvapi.rvapi_add_graph ( self.hits_graph_id(),self.hits_graph_sec_id(),1,0,1,1 )
                         pyrvapi.rvapi_set_graph_size ( self.hits_graph_id(),700,400 )
 
-                        pyrvapi.rvapi_add_text ( "&nbsp;<p><hr/>",self.hits_graph_sec_id(),2,0,1,1 )
-                        pyrvapi.rvapi_add_text ( "<h3>Correlation plots</h3>",self.hits_graph_sec_id(),3,0,1,1 )
+                        pyrvapi.rvapi_set_text ( "&nbsp;<p><hr/>",self.hits_graph_sec_id(),2,0,1,1 )
+                        pyrvapi.rvapi_set_text ( "<h3>Correlation plots</h3>",self.hits_graph_sec_id(),3,0,1,1 )
 
                         pyrvapi.rvapi_add_loggraph ( self.corr_graph_id(),self.hits_graph_sec_id(),4,0,1,1 )
 

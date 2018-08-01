@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    16.06.18   <--  Date of Last Modification.
+ *    31.07.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -107,6 +107,9 @@ function strip_html_tags ( str )  {
   return str.toString().replace(/<[^>]*>/g, '');
 }
 
+function startsWith ( str,substr )  {
+  return (str.lastIndexOf(substr,0) === 0);  // for old JS engines (jsrview)
+}
 
 
 // ===========================================================================
@@ -122,4 +125,5 @@ if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
   module.exports.isInteger      = isInteger;
   module.exports.isFloat        = isFloat;
   module.exports.replaceAll     = replaceAll;
+  module.exports.startsWith     = startsWith;
 }

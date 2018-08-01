@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    26.07.18   <--  Date of Last Modification.
+ *    29.07.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -450,18 +450,18 @@ function prepareProjectExport ( login,projectList )  {
   var tarballPath1   = path.join ( projectDirPath,projectList.current+'.tar.gz' );
   utils.removeFile ( tarballPath1 );  // just in case
 
-  var tarballName    = '__' + projectList.current + '.tar.gz';
+  var jobballName    = '__' + projectList.current + '.tar.gz';
 
   // Pack files, assume tar
   var tar = child_process.spawn ( '/bin/sh',
-                                  ['-c','tar -czf ' + tarballName + ' *'],{
+                                  ['-c','tar -czf ' + jobballName + ' *'],{
     cwd   : projectDirPath,
     stdio : ['ignore']
   });
 
   tar.on ( 'close', function(code){
     log.standard ( 10,'packed' );
-    var tarballPath = path.join ( projectDirPath,tarballName );
+    var tarballPath = path.join ( projectDirPath,jobballName );
     if (code!=0)
       utils.removeFile ( path.join(dirPath,tarballPath) );
     utils.moveFile ( tarballPath,tarballPath1 );

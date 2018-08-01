@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    10.02.18   <--  Date of Last Modification.
+#    28.07.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -88,7 +88,7 @@ class AceDrg(ccp4go_lorestr.Lorestr):
                 if nResults==1:
                     self.putMessage ( "<h2><i>Results</i></h2>" )
                 self.putStructureWidget ( code + " structure",
-                                          [ os.path.join("..",xyzPath2) ],-1 )
+                                          [ "/".join(["..",xyzPath2]) ],-1 )
 
         self.output_meta["results"][resultdir] = {}
         self.output_meta["results"][resultdir]["ligands"]  = meta

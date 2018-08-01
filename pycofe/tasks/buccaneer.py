@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    09.05.18   <--  Date of Last Modification.
+#    30.07.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -188,7 +188,10 @@ class BuccaneerMR(basic.TaskDriver):
         self.setGenericLogParser ( "buccaneer_report",True )
 
         # start buccaneer
-        self.runApp ( "ccp4-python",cmd )
+        if sys.platform.startswith("win"):
+            self.runApp ( "ccp4-python.bat",cmd )
+        else:
+            self.runApp ( "ccp4-python",cmd )
 
         # check solution and register data
         if os.path.isfile(self.buccaneer_xyz()):

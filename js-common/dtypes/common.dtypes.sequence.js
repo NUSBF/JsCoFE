@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    28.06.18   <--  Date of Last Modification.
+ *    31.07.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -123,12 +123,14 @@ if (!__template)  {
       g.setVerticalAlignment ( 0,0,'middle' );
     }
 
-    if (dropdown.layCustom.startsWith('asu-content'))  {
+//    if (dropdown.layCustom.startsWith('asu-content'))  {
+    if (startsWith(dropdown.layCustom,'asu-content'))  {
 
       var grid = customGrid.setGrid ( '-compact',row++,0,1,2 );
       this.makeASUContentInput ( grid );
 
-    } else if (dropdown.layCustom.startsWith('stoichiometry'))  {
+//    } else if (dropdown.layCustom.startsWith('stoichiometry'))  {
+    } else if (startsWith(dropdown.layCustom,'stoichiometry'))  {
 
       var grid = customGrid.setGrid ( '-compact',row++,0,1,2 );
       grid.setLabel ( 'Number of copies in a.s.u.:',0,0,1,1 )
@@ -313,8 +315,10 @@ if (!__template)  {
     var msg = '';   // Ok by default
     var customGrid = dropdown.customGrid;
 
-    if ((dropdown.layCustom.startsWith('asu-content')) ||
-        (dropdown.layCustom.startsWith('stoichiometry')))  {
+//    if ((dropdown.layCustom.startsWith('asu-content')) ||
+//        (dropdown.layCustom.startsWith('stoichiometry')))  {
+    if (startsWith(dropdown.layCustom,'asu-content') ||
+        startsWith(dropdown.layCustom,'stoichiometry'))  {
       var nc_value = customGrid.ncopies_inp.getValue();
       this.ncopies_auto = (nc_value.length<=0);
       if (!this.ncopies_auto)

@@ -44,11 +44,12 @@ def stripLigWat ( mmFile,outFile ):
 def mergeLigands ( mmFile, ligFiles, chainId, outFile ):
     st    = gemmi.read_structure ( mmFile )
     nligs = 0
+    chain = st[0].find_last_chain(chainId) or st[0].add_chain(chainId)
     for lf in ligFiles:
         lig = gemmi.read_structure ( lf )
         for lig_chain in lig[0]:
             residues = list ( lig_chain )
-            st[0].find_or_add_chain(chainId).append_residues ( residues )
+            chain.append_residues ( residues, min_sep=1 )
             nligs += len(residues)
     st.write_pdb ( outFile )
     return nligs
@@ -132,14 +133,14 @@ def fetchChains ( inFile,modelNo,chainList,removeWaters,removeLigands,outFile ):
     if not (("(all)" in chainList) or ("*" in chainList)):
         if "0" in selList:
             for model in st:
-                for name in [ch.name for ch in model if ch.auth_name not in selList["0"]]:
+                for name in [ch.name for ch in model if ch.name not in selList["0"]]:
                     model.remove_chain ( name )
         else:
             for name in [m.name for m in st if m.name not in selList]:
                 del st[name]
             for model in st:
                 if model.name in selList:
-                    for name in [ch.name for ch in model if ch.auth_name not in selList[model.name]]:
+                    for name in [ch.name for ch in model if ch.name not in selList[model.name]]:
                         model.remove_chain ( name )
 
     st.remove_empty_chains()

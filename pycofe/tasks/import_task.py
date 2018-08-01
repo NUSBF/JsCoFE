@@ -67,7 +67,7 @@ class Import(basic.TaskDriver):
         pyrvapi.rvapi_add_table ( self.import_summary_id(),"<font size='+1'>Import Summary</font>",
                                   self.report_page_id(),self.rvrow+1,0,1,1, 0 )
         pyrvapi.rvapi_set_table_style ( self.import_summary_id(),"table-blue","text-align:left;" )
-        pyrvapi.rvapi_add_text ( "&nbsp;",self.report_page_id(),self.rvrow+2,0,1,1 )
+        pyrvapi.rvapi_set_text ( "&nbsp;",self.report_page_id(),self.rvrow+2,0,1,1 )
         self.rvrow += 3
 
         pyrvapi.rvapi_put_horz_theader ( self.import_summary_id(),"Imported file",

@@ -255,7 +255,7 @@ class PrepareMTZ(ccp4go_base.Base):
 
         pyrvapi.rvapi_add_data ( "merged_data_widget_id","Merged reflections",
                                  # always relative to job_dir from job_dir/html
-                                 os.path.join("../",self.mtzpath),"hkl:hkl",
+                                 "/".join(["..",self.mtzpath]),"hkl:hkl",
                                  self.page_cursor[0],self.page_cursor[1],
                                  0,1,1,-1 )
 

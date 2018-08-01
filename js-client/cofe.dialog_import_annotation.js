@@ -45,7 +45,7 @@ function ImportAnnotationDialog ( annotation,onReady_func )  {
       resizable : true,
       height    : 'auto',
       maxHeight : h,
-      width     : 685,
+      width     : 750,
       modal     : true,
       open      : function(event, ui) {
         $(this).closest('.ui-dialog').find('.ui-dialog-titlebar-close').hide();
@@ -100,7 +100,7 @@ ImportAnnotationDialog.prototype.makePage = function()  {
       for (var j=0;j<this.annotation[i].items.length;j++)  {
         //var clist   = this.annotation[i].items[j].contents.match(/^.*([\n\r]+|$)/gm);
         var clist   = this.annotation[i].items[j].contents.replace(/\r/g,'').split('\n');
-        var seqline = '<pre>';
+        var seqline = '<pre class="pre-heavy">';
         if (clist.length>0)
           seqline += clist[0] + '\n';
         var n = 0;

@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    12.09.17   <--  Date of Last Modification.
+#    30.07.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,13 +19,14 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2018
 #
 # ============================================================================
 #
 
 #  python native imports
 import os
+import sys
 
 #  application imports
 import basic
@@ -85,7 +86,10 @@ class FitLigand(basic.TaskDriver):
         """
 
         # Start findligand
-        self.runApp ( os.path.join(os.environ["CCP4"],"libexec","findligand-bin"),cmd )
+        if sys.platform.startswith("win"):
+            self.runApp ( "findligand.bat",cmd )
+        else:
+            self.runApp ( os.path.join(os.environ["CCP4"],"libexec","findligand-bin"),cmd )
 
         ligands = [fn for fn in os.listdir("./") if fn.endswith(".pdb")]
         if len(ligands)>0:

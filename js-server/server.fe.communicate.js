@@ -159,7 +159,7 @@ Communicate.prototype.sendFile = function ( server_response )  {
         log.error ( 6,'Read file errors, file = ' + fpath );
         log.error ( 6,'Error: ' + err );
         server_response.writeHead ( 404, {'Content-Type':'text/html;charset=UTF-8'} );
-        server_response.end ( '<p><b>[05-0006] FILE NOT FOUND</b></p>' );
+        server_response.end ( '<p><b>[05-0006] FILE NOT FOUND [' + fpath + ']</b></p>' );
       } else if ((!cap) || (stats.size<=conf.getFEConfig().fileCapSize))  {
 //        if (stats.size>=100000000)  {
           server_response.writeHeader ( 200, {

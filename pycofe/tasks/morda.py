@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    28.11.17   <--  Date of Last Modification.
+#    30.07.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -32,7 +32,7 @@
 #               even if job is run by SGE, so it should be checked upon using
 #               comman line length
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2018
 #
 # ============================================================================
 #
@@ -157,7 +157,11 @@ class Morda(basic.TaskDriver):
         )
 
         # run morda
-        self.runApp ( "ccp4-python",cmd )
+
+        if sys.platform.startswith("win"):
+            self.runApp ( "ccp4-python.bat",cmd )
+        else:
+            self.runApp ( "ccp4-python",cmd )
 
         self.restoreReportDocument()
 

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    07.06.18   <--  Date of Last Modification.
+ *    31.07.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -117,6 +117,13 @@ function TaskTemplate()  {
 
 TaskTemplate.prototype.icon_small = function()  { return './images/process_20x20.png'; }
 TaskTemplate.prototype.icon_large = function()  { return './images/process.png';       }
+
+// task.platforms() identifies suitable platforms:
+//   'W"  : Windows
+//   'L'  : Linux
+//   'M'  : Mac
+//   'U'  : Unix ( = Linux + Mac)
+TaskTemplate.prototype.platforms = function()  { return 'WLMU'; }
 
 TaskTemplate.prototype.doNotPackSuffixes = function()  { return ['.map']; }
 TaskTemplate.prototype.doPackSuffixes    = function()  { return ['']; }
@@ -470,7 +477,8 @@ if (!dbx)  {
       var dt       = [];
       var df       = false;
 
-      if (!inp_item.inputId.startsWith('void'))  {
+//      if (!inp_item.inputId.startsWith('void'))  {
+      if (!startsWith(inp_item.inputId,'void'))  {
 
         var k = 0;
         for (var dtype in inp_item.data_type)

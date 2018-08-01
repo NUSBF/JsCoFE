@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    06.02.18   <--  Date of Last Modification.
+#    30.07.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -15,6 +15,7 @@
 #
 
 import os
+import sys
 
 #  ccp4-python imports
 #import pyrvapi
@@ -116,7 +117,11 @@ class Crank2(ccp4go_morda.MoRDa):
 
         # run crank-2
 
-        self.runApp ( "ccp4-python",cmd )
+        if sys.platform.startswith("win"):
+            self.runApp ( "ccp4-python.bat",cmd )
+        else:
+            self.runApp ( "ccp4-python",cmd )
+
         self.restoreReportDocument()
 
         # check for solution

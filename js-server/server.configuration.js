@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    26.07.18   <--  Date of Last Modification.
+ *    31.07.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -48,11 +48,12 @@ var emailer       = null;   // E-mailer configuration
 // ServerConfig class template
 
 function ServerConfig()  {
-  this.protocol    = 'http';
-  this.host        = 'localhost';
-  this.port        = 'port';
-  this.externalURL = '';
-  this.startDate   = new Date(Date.now()).toUTCString();
+  this.protocol      = 'http';
+  this.host          = 'localhost';
+  this.port          = 'port';
+  this.externalURL   = '';
+  this.exclude_tasks = [];
+  this.startDate     = new Date(Date.now()).toUTCString();
 }
 
 ServerConfig.prototype.url = function()  {
@@ -393,6 +394,12 @@ function getTmpDir()  {
 
 function getTmpFile()  {
   var tmpDir = getTmpDir();
+  if (!utils.fileExists(tmpDir))  {
+    if (!utils.mkDir(tmpDir))  {
+      log.error ( 5,'temporary directory ' + tmpDir + ' cannot be created' );
+      return null;
+    }
+  }
   var fname  = '';
   do {
     fname = path.join ( tmpDir,'tmp_'+crypto.randomBytes(20).toString('hex') );

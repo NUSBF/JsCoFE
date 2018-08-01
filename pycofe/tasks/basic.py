@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    17.07.18   <--  Date of Last Modification.
+#    31.08.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -275,7 +275,7 @@ class TaskDriver(object):
                 pyrvapi.rvapi_set_tab_proxy ( self.navTreeId,self.report_page_id() )
             pyrvapi.rvapi_add_tab ( self.log_page_id(),
                                     getOption("log_page","name","Log file"),focus )
-            pyrvapi.rvapi_append_content ( os.path.join("..",self.file_stdout_path()+'?capsize'),
+            pyrvapi.rvapi_append_content ( "/".join(["..",self.file_stdout_path()+"?capsize"]),
                                            True,self.log_page_id() )
             focus = False
         if getOption("err_page","show",True):
@@ -283,7 +283,7 @@ class TaskDriver(object):
                 pyrvapi.rvapi_set_tab_proxy ( self.navTreeId,self.report_page_id() )
             pyrvapi.rvapi_add_tab ( self.err_page_id(),
                                     getOption("err_page","name","Errors"),focus )
-            pyrvapi.rvapi_append_content ( os.path.join("..",self.file_stderr_path()),
+            pyrvapi.rvapi_append_content ( "/".join(["..",self.file_stderr_path()]),
                                            True,self.err_page_id() )
 
         if self.navTreeId:
@@ -325,16 +325,18 @@ class TaskDriver(object):
 
     # ============================================================================
 
-    def checkPDB(self):
+    def checkPDB ( self,stop=True ):
         if "PDB_DIR" not in os.environ:
-            pyrvapi.rvapi_set_text (
-                "<b>Error: jsCoFE is not configured to work with PDB archive.</b><p>" + \
-                "Please look for support.",
-                self.report_page_id(),self.rvrow,0,1,1 )
+            if stop:
+                pyrvapi.rvapi_set_text (
+                    "<b>Error: jsCoFE is not configured to work with PDB archive.</b><p>" + \
+                    "Please look for support.",
+                    self.report_page_id(),self.rvrow,0,1,1 )
 
-            self.fail ( " *** Error: jsCofe is not configured to work with PDB archive \n" + \
-                        "     Please look for support\n","No PDB configured" )
-        return
+                self.fail ( " *** Error: jsCofe is not configured to work with PDB archive \n" + \
+                            "     Please look for support\n","No PDB configured" )
+            return False
+        return True
 
 
     # ============================================================================
@@ -1056,7 +1058,7 @@ class TaskDriver(object):
         self.putMessage1 ( pageId,"<b>Assigned name:</b>&nbsp;" + hkl.dname,row )
         pyrvapi.rvapi_add_data ( widgetId + str(self.widget_no),title_str,
                                  # always relative to job_dir from job_dir/html
-                                 os.path.join("..",self.outputDir(),hkl.files[0]),
+                                 "/".join(["..",self.outputDir(),hkl.files[0]]),
                                  "hkl:hkl",pageId,row+1,0,1,colSpan,openState )
         self.widget_no += 1
         return row + 2
@@ -1083,13 +1085,13 @@ class TaskDriver(object):
                 if not created:
                     pyrvapi.rvapi_add_data ( wId,title_str,
                                     # always relative to job_dir from job_dir/html
-                                    os.path.join("..",self.outputDir(),structure.files[i]),
+                                    "/".join(["..",self.outputDir(),structure.files[i]]),
                                     type[i],pageId,row+1,0,1,colSpan,openState )
                     created = True
                 else:
                     pyrvapi.rvapi_append_to_data ( wId,
                                     # always relative to job_dir from job_dir/html
-                                    os.path.join("..",self.outputDir(),structure.files[i]),
+                                    "/".join(["..",self.outputDir(),structure.files[i]]),
                                     type[i] )
         return row+2
 
@@ -1111,12 +1113,12 @@ class TaskDriver(object):
                                   "<font size='+2'><sub>&nbsp;</sub></font>",row )
         pyrvapi.rvapi_add_data ( wId,title_str,
                                  # always relative to job_dir from job_dir/html
-                                 os.path.join("..",self.outputDir(),ligand.files[0]),
+                                 "/".join(["..",self.outputDir(),ligand.files[0]]),
                                  "xyz",pageId,row+1,0,1,colSpan,openState )
         if len(ligand.files) > 1:
             pyrvapi.rvapi_append_to_data ( wId,
                                 # always relative to job_dir from job_dir/html
-                                os.path.join("..",self.outputDir(),ligand.files[1]),
+                                "/".join(["..",self.outputDir(),ligand.files[1]]),
                                 "LIB" )
         self.widget_no += 1
         return row+2
@@ -1153,7 +1155,7 @@ class TaskDriver(object):
     def putXYZWidget ( self,widgetId,title_str,xyz,openState=-1 ):
         pyrvapi.rvapi_add_data ( widgetId,title_str,
                     # always relative to job_dir from job_dir/html
-                    os.path.join("..",self.outputDir(),xyz.files[0]),
+                    "/".join(["..",self.outputDir(),xyz.files[0]]),
                     "xyz",secId,secrow,0,1,1,-1 )
         return
 
@@ -1193,7 +1195,7 @@ class TaskDriver(object):
                                   ensemble.dname + "<br>&nbsp;",row )
         pyrvapi.rvapi_add_data ( widgetId,title_str,
                     # always relative to job_dir from job_dir/html
-                    os.path.join("..",self.outputDir(),ensemble.files[0]),
+                    "/".join(["..",self.outputDir(),ensemble.files[0]]),
                     "xyz",pageId,row+1,0,1,colSpan,openState )
         return row+2
 
@@ -1370,6 +1372,9 @@ class TaskDriver(object):
             self.run()
 
         except signal.Success, s:
+            signal_obj = s
+
+        except signal.JobFailure, s:
             signal_obj = s
 
         except signal.CofeSignal, s:

@@ -3,26 +3,27 @@
 #
 # ============================================================================
 #
-#    17.12.17   <--  Date of Last Modification.
+#    30.07.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  SRF (Self-Rotation Function) UTILS
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2018
 #
 # ============================================================================
 #
 
 #  python native imports
 import os
-#import sys
+import sys
 
 #  ccp4-python imports
 import pyrvapi
 
 #  application imports
 from pycofe.varut import command
+
 
 # ============================================================================
 
@@ -37,6 +38,10 @@ def putSRFDiagram ( body,            # reference on Basic class
                     file_stderr,     # standard error stream
                     log_parser=None  # log file parser
                   ):
+
+    if sys.platform.startswith("win"):
+        return [0,"Ok"]
+
 
     fpath = hkl.getFilePath ( dirPath,0 )
     Fmean = hkl.getMeta ( "Fmean.value","" )

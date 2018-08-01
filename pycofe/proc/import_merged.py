@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    18.07.18   <--  Date of Last Modification.
+#    28.07.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -285,7 +285,7 @@ def run ( body,   # body is reference to the main Import class
                     cmd += ["-xmlout", outXmlName]
                     cmd += ["-freein"]
 
-                    pyrvapi.rvapi_add_text ( "&nbsp;<p><h2>Data analysis (CTruncate)</h2>",
+                    pyrvapi.rvapi_set_text ( "&nbsp;<p><h2>Data analysis (CTruncate)</h2>",
                                              subSecId,1,0,1,1 )
                     pyrvapi.rvapi_add_panel ( mtzSecId+str(k),subSecId,2,0,1,1 )
 
@@ -337,7 +337,7 @@ def run ( body,   # body is reference to the main Import class
                         pyrvapi.rvapi_add_data ( "hkl_data_"+str(body.dataSerialNo),
                                  "Merged reflections",
                                  # always relative to job_dir from job_dir/html
-                                 os.path.join("..",body.outputDir(),hkl.files[0]),
+                                 "/".join(["..",body.outputDir(),hkl.files[0]]),
                                  "hkl:hkl",subSecId,5,0,1,1,-1 )
 
                     else:
@@ -370,7 +370,7 @@ def run ( body,   # body is reference to the main Import class
                             pyrvapi.rvapi_add_data ( "hkl_data_"+str(body.dataSerialNo),
                                  "Merged reflections",
                                  # always relative to job_dir from job_dir/html
-                                 os.path.join("..",body.outputDir(),hkl_data.files[0]),
+                                 "/".join(["..",body.outputDir(),hkl_data.files[0]]),
                                  "hkl:hkl",subSecId,5,0,1,1,-1 )
 
                     if body.summary_row_0<0:

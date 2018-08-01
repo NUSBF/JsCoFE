@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    20.10.17   <--  Date of Last Modification.
+#    30.07.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,13 +19,14 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2018
 #
 # ============================================================================
 #
 
 #  python native imports
 import os
+import sys
 
 #  application imports
 import basic
@@ -67,7 +68,10 @@ class FitLigand(basic.TaskDriver):
         #             "--max-dist"    ,self.getParameter(sec1.MAX_DIST) ]
 
         # Start findligand
-        self.runApp ( os.path.join(os.environ["CCP4"],"libexec","findwaters-bin"),cmd )
+        if sys.platform.startswith("win"):
+            self.runApp ( "findwaters.bat",cmd )
+        else:
+            self.runApp ( os.path.join(os.environ["CCP4"],"libexec","findwaters-bin"),cmd )
 
         pdbout  = self.outputFName + ".pdb"
         nwaters = coor.mergeLigands ( pdbin,[watout],"W",pdbout )

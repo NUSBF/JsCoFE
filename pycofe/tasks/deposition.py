@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    18.07.18   <--  Date of Last Modification.
+#    30.07.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -174,7 +174,10 @@ class Deposition(basic.TaskDriver):
           e3.tail = "\n"
         ET.ElementTree(e0).write(self.xml_input())
 
-        self.runApp ( "pdbdeposition",["-x",self.xml_input()] )
+        if sys.platform.startswith("win"):
+            self.runApp ( "pdbdeposition.bat",["-x",self.xml_input()] )
+        else:
+            self.runApp ( "pdbdeposition",["-x",self.xml_input()] )
 
         #corrFilePath = os.path.splitext(self.getXYZOFName())[0] + "_corr.cif"
         #os.rename ( os.path.splitext(self.getXYZOFName())[0] + "_out.cif",

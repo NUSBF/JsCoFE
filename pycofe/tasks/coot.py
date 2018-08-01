@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    05.07.18   <--  Date of Last Modification.
+#    29.07.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -105,7 +105,10 @@ class Coot(basic.TaskDriver):
         args += ["--no-guano"]
 
         # Run coot
-        rc = self.runApp ( "coot",args,False )
+        if sys.platform.startswith("win"):
+            rc = self.runApp ( "coot.bat",args,False )
+        else:
+            rc = self.runApp ( "coot",args,False )
 
         # Check for PDB files left by Coot and convert them to type structure
 

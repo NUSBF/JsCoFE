@@ -56,20 +56,17 @@ def run ( body ):  # body is reference to the main Import class
         ftmp = "__ligand_tmp.cif"
         wrow = 0
         subSecId = None
-        for nblock in range(len(doc)):
+        for block in doc:
 
-            col = doc[nblock].find_values("_chem_comp_atom.comp_id")
+            col = block.find_values("_chem_comp_atom.comp_id")
 
             if col:
                 code = col[0]
                 fout = code
 
                 # fetch the block in a temporary file
-                doc_tmp = cif.read ( fin )
-                for i in range(len(doc_tmp)-1,nblock,-1):
-                    del doc_tmp[i]
-                for i in range(nblock):
-                    del doc_tmp[0]
+                doc_tmp = cif.Document()
+                doc_tmp.add_copied_block(block)
                 doc_tmp.write_file ( ftmp )
 
                 # Start acedrg (only to calculate coordinates for ligand visualisation)

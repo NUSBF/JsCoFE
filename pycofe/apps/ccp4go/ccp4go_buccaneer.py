@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    06.02.18   <--  Date of Last Modification.
+#    30.07.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -15,6 +15,7 @@
 #
 
 import os
+import sys
 
 #  ccp4-python imports
 #import pyrvapi
@@ -88,7 +89,10 @@ class Buccaneer(ccp4go_crank2.Crank2):
 
         # run buccaneer
         self.setGenericLogParser ( True )
-        self.runApp ( "ccp4-python",cmd )
+        if sys.platform.startswith("win"):
+            self.runApp ( "ccp4-python.bat",cmd )
+        else:
+            self.runApp ( "ccp4-python",cmd )
         self.unsetLogParser()
 
         # check for solution
@@ -120,7 +124,7 @@ class Buccaneer(ccp4go_crank2.Crank2):
 
             self.putMessage ( "<h2><i>Structure built with <i>R<sub>free</sub>=" +
                               str(rfree) +"</i></h2>" )
-            dfpath = os.path.join ( "..",self.outputdir,resultdir,"buccaneer" )
+            dfpath = "/".join ( ["..",self.outputdir,resultdir,"buccaneer"] )
             self.putStructureWidget ( "Structure and density map",
                                     [ dfpath+".pdb",dfpath+".mtz",dfpath+".map",
                                       dfpath+"_dmap.map" ],-1 )

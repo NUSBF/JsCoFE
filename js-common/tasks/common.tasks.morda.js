@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    25.06.18   <--  Date of Last Modification.
+ *    31.07.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -92,6 +92,13 @@ TaskMorda.prototype.constructor = TaskMorda;
 
 TaskMorda.prototype.icon_small = function()  { return './images/task_morda_20x20.svg'; }
 TaskMorda.prototype.icon_large = function()  { return './images/task_morda.svg';       }
+
+// task.platforms() identifies suitable platforms:
+//   'W"  : Windows
+//   'L'  : Linux
+//   'M'  : Mac
+//   'U'  : Unix ( = Linux + Mac)
+TaskMorda.prototype.platforms = function()  { return 'LMU'; }  // UNIX only
 
 TaskMorda.prototype.currentVersion = function()  { return 1; }
 

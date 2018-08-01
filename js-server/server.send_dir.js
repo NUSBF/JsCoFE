@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    27.07.18   <--  Date of Last Modification.
+ *    29.07.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -149,7 +149,14 @@ function getJobballPath ( dirPath )  {
 function packDir ( dirPath, fileSelection, onReady_func )  {
 // Pack files, assume zip
 
-  var tmpFile = path.resolve ( conf.getTmpFile()+'.zip' );
+  var tmpFile = conf.getTmpFile();
+  if (!tmpFile)  {
+    log.error ( 11,'temporary directory not found, encountered at zipping ' + dirPath );
+    onReady_func ( -2 );
+    return;
+  }
+
+  tmpFile = path.resolve ( tmpFile + '.zip' );
 
   var zip = utils.spawn ( conf.pythonName(),['-m','zipfile','-c',tmpFile,'./'],{
     cwd   : dirPath,
