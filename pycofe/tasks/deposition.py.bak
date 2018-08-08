@@ -28,23 +28,21 @@
 import os
 import sys
 import uuid
-#import json
+import json
 import time
-#from   xml.etree import ElementTree as ET
+from   xml.etree import ElementTree as ET
 import shutil
 
 #  ccp4 imports
-#import gemmi
-#from   gemmi import cif
-from  adding_stats_to_mmcif import run_process
+import gemmi
+from   gemmi import cif
 
-#from ccp4mg import mmdb2
+from ccp4mg import mmdb2
 
 
 #  application imports
 import basic
-from   pycofe.dtypes import dtype_sequence
-from   pycofe.proc   import valrep
+from   proc import valrep,asucomp
 
 
 # ============================================================================
@@ -92,8 +90,8 @@ class Deposition(basic.TaskDriver):
         self.close_stdin()
 
         # make command-line parameters for bare morda run on a SHELL-type node
-        xyzout = self.getXYZOFName()   # refmac output cif (refmac wants ".pdb" anyway)
-        mtzout = self.getMTZOFName()   # refmac output mtz (used only for map visualisation)
+        xyzout = self.getXYZOFName()
+        mtzout = self.getMTZOFName()
         cmd = [ "hklin" ,hkl.getFilePath(self.inputDir()),
                 "xyzin" ,istruct.getXYZFilePath(self.inputDir()),
                 "hklout",mtzout,
@@ -116,17 +114,12 @@ class Deposition(basic.TaskDriver):
         # Start refmac
         self.runApp ( "refmac5",cmd )
 
-        # make a copy of refmac output file with ".cif" extension
-        xyzout_cif = self.getOFName ( "_tmp.cif" )
+        xyzout_cif = self.getOFName ( ".cif" )
         shutil.copyfile ( xyzout,xyzout_cif  )
 
-        # prepare files for the structure visualisation widget
         mapout  = self.getMapOFName()
         dmapout = self.getDMapOFName()
 
-        #  This replaces Refmac output with the original ".pdb". Because Refmac
-        # was run with zero cycles, all coordinates remain the same, but ".pdb"
-        # is currently needed for the visualisation widget
         shutil.copyfile ( istruct.getXYZFilePath (self.inputDir()), xyzout  )
         #shutil.copyfile ( istruct.getMTZFilePath (self.inputDir()), mtzout  )
         shutil.copyfile ( istruct.getMapFilePath (self.inputDir()), mapout  )
@@ -137,7 +130,6 @@ class Deposition(basic.TaskDriver):
             libout = self.getOFName ( ".lib.cif" )
             shutil.copyfile ( libin,libout )
 
-        # create output structure and visualisation widget
         structure = self.registerStructure ( xyzout,mtzout,mapout,dmapout,libout )
         if structure:
             structure.copyAssociations ( istruct )
@@ -148,7 +140,94 @@ class Deposition(basic.TaskDriver):
                                         "Structure and electron density",
                                         structure )
 
-        # 2. Prepare CIF with structure factors
+        # 2. Prepare the combined coordinate-sequence CIF
+
+        seq_files = []
+        for i in range(len(seq)):
+            seq_files.append ( seq[i].getSeqFilePath(self.inputDir()) )
+        seq_aliases = [os.path.basename(x).rpartition(".")[0] for x in seq_files]
+        e0 = ET.Element("merging")
+        e0.text = "\n"
+        e0.tail = "\n"
+        e1 = ET.SubElement ( e0,"refmac" )
+        e1.text = "\n"
+        e1.tail = "\n"
+        e2 = ET.SubElement ( e1,"file" )
+        #e2.text = 'refmac_xyz.pdb'
+        e2.text = xyzout_cif
+        e2.tail = "\n"
+        e1 = ET.SubElement ( e0,"sequences" )
+        e1.text = "\n"
+        e1.tail = "\n"
+        for alias, file in zip(seq_aliases,seq_files):
+          e2 = ET.SubElement ( e1,"sequence" )
+          e2.text = "\n"
+          e2.tail = "\n"
+          e3 = ET.SubElement ( e2,"seq_alias" )
+          e3.text = alias
+          e3.tail = "\n"
+          e3 = ET.SubElement ( e2,"file" )
+          e3.text = file
+          e3.tail = "\n"
+          e3 = ET.SubElement ( e2,"format" )
+          e3.text = "fasta"
+          e3.tail = "\n"
+        ET.ElementTree(e0).write(self.xml_input())
+
+        if sys.platform.startswith("win"):
+            self.runApp ( "pdbdeposition.bat",["-x",self.xml_input()] )
+        else:
+            self.runApp ( "pdbdeposition",["-x",self.xml_input()] )
+
+        #corrFilePath = os.path.splitext(self.getXYZOFName())[0] + "_corr.cif"
+        #os.rename ( os.path.splitext(self.getXYZOFName())[0] + "_out.cif",
+        #            corrFilePath )
+
+
+        # 3. Correct CIF file after Refmac
+
+        corrFilePath  = os.path.splitext(self.getXYZOFName())[0] + "_out.cif"
+        modelFilePath = os.path.splitext(self.getXYZOFName())[0] + ".cif"
+        fin  = open ( corrFilePath ,"r" )
+        fout = open ( modelFilePath,"wt" )
+        """
+        for line in fin:
+            fout.write ( line )
+        """
+
+        skipNext = False
+        for line in fin:
+            if line.startswith("_symmetry.entry_id"):
+                fout.write ( "_exptl.entry_id          XXXX\n" +
+                             "_exptl.method            'X-RAY DIFFRACTION'\n" +
+                             "_exptl.crystals_number   ?\n" +
+                             "#\n" +
+                             "_exptl_crystal.id                    1\n"    +
+                             "_exptl_crystal.density_meas          ?\n"    +
+                             "_exptl_crystal.density_Matthews      %.3f\n"
+                             % revision.ASU.matthews +
+                             "_exptl_crystal.density_percent_sol   %.2f\n"
+                             % revision.ASU.solvent  +
+                             "_exptl_crystal.description           ?\n"    +
+                             "#\n"
+                           )
+            """
+            elif line.startswith("_entity_poly.entity_id"):
+                fout.write ( "loop_\n" +\
+                             "_entity_poly.entity_id\n" +\
+                             "_entity_poly.pdbx_seq_one_letter_code_can\n" +\
+                             "_entity_poly.pdbx_seq_one_letter_code\n" )
+                for i in range(len(seqlist)):
+                    fout.write ( str(i+1) + " " + seqids[i] + " " )
+            """
+            if not skipNext:
+                fout.write ( line )
+            skipNext = line.startswith ( "_refine.aniso_B[2][3]" )
+
+        fin .close()
+        fout.close()
+
+        # 4. Prepare CIF with structure factors
 
         anomcols  = hkl.getAnomalousColumns()
         anomlabin = ""
@@ -176,38 +255,6 @@ class Deposition(basic.TaskDriver):
         self.runApp ( "mtz2various",cmd )
         self.unsetLogParser()
 
-        # 3. Prepare the combined coordinate-sequence CIF
-
-        aimless_meta = None
-        if hkl.aimless_meta.file:
-            aimless_meta = os.path.join ( self.inputDir(),hkl.aimless_meta.file )
-            self.file_stdout.write ( aimless_meta )
-            if os.path.isfile(aimless_meta):
-                self.file_stdout.write ( " -- found\n" )
-            else:
-                self.file_stdout.write ( " -- NOT found\n" )
-        else:
-            self.file_stdout.write ( "aimples meta NOT found\n" )
-        aimless_meta = None  #  to be removed when EBI deposition module is fixed
-
-        deposition_fasta = self.getOFName ( ".fasta" )
-        dtype_sequence.writeMultiSeqFile1 ( deposition_fasta,seq,self.inputDir() )
-        deposition_cif   = self.getOFName ( ".cif"   )
-        worked = run_process ( input_mmcif  = xyzout_cif,
-                               output_mmcif = deposition_cif,
-                               fasta_file   = deposition_fasta,
-                               sf_file      = sfCIF,
-                               xml_file     = aimless_meta )
-
-        if not worked:
-            self.putTitle ( "Errors" )
-            self.fail ( "<b><i>Failed to create coordinate model file for deposition</i></b>",
-                        "Failed to create coordinate model file for deposition" )
-            return
-
-
-        # 4. Put download widgets
-
         self.putMessage ( "&nbsp;<h3><i>Deposition files</i></h3>" +\
             "<b>Use download buttons below to download files for further upload to " +\
             "<a href='https://deposit-1.wwpdb.org' target='_blank'>" +\
@@ -219,19 +266,18 @@ class Deposition(basic.TaskDriver):
         self.putGrid ( grid_id )
         self.putMessage1 ( grid_id,"<i>Final coordinate file in mmCIF format</i>&nbsp;",0,0 )
         self.putMessage1 ( grid_id,"<i>Structure factors file in CIF format</i>" ,1,0 )
-        self.putDownloadButton ( deposition_cif,"download",grid_id,0,1 )
-        self.putDownloadButton ( sfCIF         ,"download",grid_id,1,1 )
+        self.putDownloadButton ( modelFilePath,"download",grid_id,0,1 )
+        self.putDownloadButton ( sfCIF        ,"download",grid_id,1,1 )
         self.putMessage ( "<hr/>" )
 
-
-        # 5. Obtain validation report from the PDB
+        # 4. Obtain validation report from the PDB
 
         self.putMessage ( "&nbsp;<p><h3><i>2. Validation Report</i></h3>" )
         self.flush()
 
         repFilePath = os.path.splitext(self.getXYZOFName())[0] + ".pdf"
 
-        self.file_stdout.write ( "modelFilePath=" + deposition_cif + "\n" )
+        self.file_stdout.write ( "modelFilePath=" + modelFilePath + "\n" )
         self.file_stdout.write ( "sfCIF=" + sfCIF + "\n" )
         self.file_stdout.write ( "repFilePath=" + repFilePath + "\n" )
 
@@ -245,7 +291,7 @@ class Deposition(basic.TaskDriver):
         while msg and (ntry<25):
             self.file_stdout.write ( "\n -- attempt " + str(ntry+1) + "\n" )
             self.file_stdout.flush ()
-            msg = valrep.getValidationReport ( deposition_cif,sfCIF,repFilePath,self.file_stdout )
+            msg = valrep.getValidationReport ( modelFilePath,sfCIF,repFilePath,self.file_stdout )
             if msg and (ntry<25):
                 self.file_stdout.write ( "\n -- server replied: " + msg + "\n" )
                 ntry += 1

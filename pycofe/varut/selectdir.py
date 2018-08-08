@@ -3,29 +3,30 @@
 #
 # ============================================================================
 #
-#    31.07.17   <--  Date of Last Modification.
+#    03.08.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  QT SELECT DIRCTORY DIALOG FOR CLIENT-SIDE WRAPPERS
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2018
 #
 # ============================================================================
 #
 
 import sys
 import os
-from PyQt4 import QtGui
+from PyQt4 import QtGui, QtCore
 
 #from PyQt4 import QtCore
 
 def select ( title ):
 
-    if "HOME" in os.environ:
+    settings = QtCore.QSettings ( "CCP4","SelectDir" );
+    startDir = settings.value ( "last_path" ).toString()
+
+    if not startDir and "HOME" in os.environ:
         startDir = os.environ["HOME"]
-    else:
-        startDir = None
 
     app  = QtGui.QApplication([])
 
@@ -44,6 +45,8 @@ def select ( title ):
 
     if dialog.exec_():
         if len(dialog.selectedFiles()) > 0:
+            if dialog.selectedFiles()[0]:
+                settings.setValue ( "last_path",dialog.selectedFiles()[0] )
             return dialog.selectedFiles()[0]
 
     return ""

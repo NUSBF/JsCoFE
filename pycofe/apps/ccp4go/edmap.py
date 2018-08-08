@@ -21,6 +21,12 @@ import sys
 #  application imports
 import command
 
+#sys.path.append ( os.path.join(os.path.dirname(os.path.abspath(__file__)),os.pardir) )
+#try:
+#    from varut import command
+#except:
+#    print " import failed in 'proc/edmap'"
+#    sys.exit ( 200 )
 
 # ============================================================================
 

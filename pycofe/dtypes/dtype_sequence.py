@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    28.06.18   <--  Date of Last Modification.
+#    01.08.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -49,6 +49,21 @@ def writeMultiSeqFile ( filePath,name,sequence,ncopies ):
                 f.write ( slist[k] + "\n" )
             f.write ( "\n" )
     f.close()
+    return
+
+
+def writeMultiSeqFile1 ( filePath,seq_list,dirPath ):
+    # same as writeMultiSeqFile(..), but takes list of sequence classes instead
+    # of sequence strings. dirPath must point on directory containing the
+    # sequences
+    names      = []
+    sequences  = []
+    ncopies    = []
+    for s in seq_list:
+        names    .append ( s.dname )
+        sequences.append ( s.getSequence(dirPath) )
+        ncopies  .append ( 1 )
+    writeMultiSeqFile ( filePath,names,sequences,ncopies )
     return
 
 

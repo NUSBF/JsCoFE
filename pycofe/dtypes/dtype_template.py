@@ -43,6 +43,7 @@ def subtypeProtein     (): return "protein"
 def subtypeDNA         (): return "dna"
 def subtypeRNA         (): return "rna"
 
+
 # ============================================================================
 
 

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    06.03.18   <--  Date of Last Modification.
+ *    01.08.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -41,7 +41,7 @@ function TaskDeposition()  {
       data_type : {'DataRevision':['xyz']}, // data type(s) and subtype(s)
       label     : 'Structure revision',     // label for input dialog
       inputId   : 'revision', // input Id for referencing input fields
-      version   : 0,          // minimum data version allowed
+      version   : 1,          // minimum data version allowed
       min       : 1,          // minimum acceptable number of data instances
       max       : 1           // maximum acceptable number of data instances
     }
@@ -156,6 +156,10 @@ if (__template)  {
 
     if ('revision' in this.input_data.data)  {
       var revision = this.input_data.data['revision'][0];
+      if (revision.HKL.aimless_meta["file"])
+        this.addInputFile ( revision.HKL.aimless_meta["jobId"],
+                            revision.HKL.aimless_meta["file"],
+                            jobDir );
       this.input_data.data['hkl']     = [revision.HKL];
       this.input_data.data['istruct'] = [revision.Structure];
       this.input_data.data['seq']     = revision.ASU.seq;

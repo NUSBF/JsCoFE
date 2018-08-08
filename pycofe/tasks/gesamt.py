@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    01.12.17   <--  Date of Last Modification.
+#    01.08.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2018
 #
 # ============================================================================
 #
@@ -86,7 +86,7 @@ class Gesamt(basic.TaskDriver):
 
         if nXYZ<2:
             if not "GESAMT_ARCHIVE" in os.environ:
-                self.fail ( "<b> *** Error: jsCofe is not configured to work " + \
+                self.fail ( "<p>&nbsp;<b> *** Error: jsCofe is not configured to work " + \
                             "with GESAMT Archive</b><br>" + \
                             "<i>     Please look for support</i><br>",
                             "No GESAMT Archive configured" )

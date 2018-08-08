@@ -168,7 +168,6 @@ class DType(dtype_template.DType):
 
     def addEPSubtype ( self ):
         self.addSubtype ( dtype_template.subtypeEP()     )
-        self.addSubtype ( dtype_template.subtypePhases() )
         return
 
     def hasEPSubtype ( self ):
@@ -298,10 +297,14 @@ def register ( xyzFilePath,mtzFilePath,mapFilePath,dmapFilePath,libFilePath,
                 if (not fname[0:4].isdigit()) or (not fname[5:7].isdigit()) or fname[4]!="-" or fname[7]!="_":
                     fname = structure.dataId + "_" + fname
                 structure.addFile ( fname )
-                if copy:
-                    shutil.copy2 ( f, os.path.join(outputDir,fname) )
-                else:
-                    os.rename ( f, os.path.join(outputDir,fname) )
+                fpath = os.path.join ( outputDir,fname )
+                if f!=fpath:
+                    if os.path.isfile(fpath):
+                        os.remove ( fpath )  # required on Windows
+                    if copy:
+                        shutil.copy2 ( f,fpath )
+                    else:
+                        os.rename ( f,fpath )
             else:
                 structure.addFile ( None )
         outDataBox.add_data ( structure )

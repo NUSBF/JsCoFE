@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    31.07.18   <--  Date of Last Modification.
+ *    01.08.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -1853,6 +1853,22 @@ if (!dbx)  {
     // just the template, no real execution body is assumed
     return [conf.pythonName(), '-m', 'pycofe.tasks.template', exeType, jobDir];
   }
+
+
+  TaskTemplate.prototype.addInputFile = function ( jobId,fileName,jobDir )  {
+  // Adds (custom) file 'fileName' from 'outputDir()' of job with id 'jobId',
+  // into 'inputDir()' directory of job directory 'jobDir'
+    var srcJobDir = prj.getSiblingJobDirPath ( jobDir,jobId );
+    var src_file  = prj.getOutputFilePath ( srcJobDir,fileName );
+    var dest_file = prj.getInputFilePath  ( jobDir   ,fileName );
+    try {
+      fs.copySync ( src_file,dest_file );
+    } catch (err) {
+      console.log ( ' *** cannot copy file ' + src_file + ' to ' + dest_file );
+      console.log ( '     error: ' + err) ;
+    }
+  }
+
 
   TaskTemplate.prototype.makeInputData = function ( jobDir )  {
   // Collects all input files, listed in this.input_data, from other job

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    06.07.18   <--  Date of Last Modification.
+ *    01.08.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -55,6 +55,7 @@ function DataHKL()  {
   this.freeRds       = null;   // reference to freeR dataset meta
   //this.useHKLSet     = 'F';    // if given, forces use of F,I,Fpm,Ipm (Refmac)
   this.useHKLSet     = 'F';    // if given, forces use of F,Fpm,TI,TF (Refmac)
+  this.aimless_meta  = {'jobId':0,'file':null};  // reference to aimless xml file
 
 }
 
@@ -72,7 +73,7 @@ DataHKL.prototype.icon_small = function()  { return './images/data_20x20.svg'; }
 DataHKL.prototype.icon_large = function()  { return './images/data.svg';       }
 
 // change this synchronously with the version in dtype.hkl.py
-DataHKL.prototype.currentVersion = function()  { return 2; }
+DataHKL.prototype.currentVersion = function()  { return 3; }
 
 // export such that it could be used in both node and a browser
 if (!__template)  {

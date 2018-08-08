@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    23.06.18   <--  Date of Last Modification.
+#    03.08.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -26,6 +26,7 @@
 
 #  python native imports
 import os
+import sys
 import uuid
 
 #  application imports
@@ -93,7 +94,10 @@ class Dimple(basic.TaskDriver):
 
 
         # run dimple
-        self.runApp ( "dimple",cmd )
+        if sys.platform.startswith("win"):
+            self.runApp ( "dimple.bat",cmd )
+        else:
+            self.runApp ( "dimple",cmd )
 
         # ================================================================
         # make output structure and register it

@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    28.07.18   <--  Date of Last Modification.
+#    04.08.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -16,6 +16,7 @@
 
 import os
 import shutil
+import sys
 
 #  ccp4-python imports
 #import pyrvapi
@@ -67,7 +68,10 @@ class AceDrg(ccp4go_lorestr.Lorestr):
                         "-r",code,"-o",code ]
 
             # start acedrg
-            self.runApp ( "acedrg",cmd )
+            if sys.platform.startswith("win"):
+                self.runApp ( "acedrg.bat",cmd )
+            else:
+                self.runApp ( "acedrg",cmd )
 
             xyzPath = code + ".pdb"
             cifPath = code + ".cif"

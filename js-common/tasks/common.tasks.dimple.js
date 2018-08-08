@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    21.06.18   <--  Date of Last Modification.
+ *    03.08.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -39,7 +39,7 @@ function TaskDimple()  {
   this.helpURL = './html/jscofe_task_dimple.html';
 
   this.input_dtypes = [{  // input data types
-      data_type   : {'DataRevision':['hkl','xyz']}, // data type(s) and subtype(s)
+      data_type   : {'DataRevision':['!hkl','!xyz']}, // data type(s) and subtype(s)
       label       : 'Structure revision',     // label for input dialog
       inputId     : 'revision', // input Id for referencing input fields
       version     : 0,          // minimum data version allowed

@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    17.07.18   <--  Date of Last Modification.
+#    01.08.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -25,20 +25,22 @@
 #
 
 #  python native imports
-import os, sys
-import uuid
-import glob
-import traceback
+import os
+import sys
+#import uuid
+#import glob
+#import traceback
+import shutil
 
 #  ccp4-python imports
 import pyrvapi
 
 #  application imports
 import basic
-from  pycofe.proc      import datred_utils, import_filetype, import_merged
+from  pycofe.dtypes    import  dtype_template
+from  pycofe.proc      import  datred_utils, import_filetype, import_merged
 # does not works after update 7.0.052
 # from  pycofe.i2reports import aimless_pipe as i2report
-
 
 # ============================================================================
 # Make Aimless driver
@@ -62,7 +64,7 @@ class Aimless(basic.TaskDriver):
     def importDir        (self):  return "./"   # import from working directory
     def import_summary_id(self):  return None   # don't make summary table
 
-    def ccp4i2_report_id (self):  return "ccp4i2_report"
+    #def ccp4i2_report_id (self):  return "ccp4i2_report"
 
     # ------------------------------------------------------------------------
 
@@ -71,6 +73,7 @@ class Aimless(basic.TaskDriver):
 #       self.file_stdout.write('\n')
 
     def run(self):
+
         unmerged = self.makeClass ( self.input_data.data.unmerged )
         merge_separately = len(unmerged) > 1
         reso_list = [str(ds.dataset.reso) for ds in unmerged]
@@ -133,7 +136,7 @@ class Aimless(basic.TaskDriver):
                       "<h3>2. Generating symmetry tables</h3>" ]
         else:
             self.fail (
-                "wrong number of pointless scripts: possible error in datred_utils.py",
+                "<p>&nbsp;wrong number of pointless scripts: possible error in datred_utils.py",
                 "wrong number of pointless scripts" )
             return
 
@@ -205,6 +208,7 @@ class Aimless(basic.TaskDriver):
         # get list of files to import
         output_ok = True
         self.resetFileImport()
+        hkl = []
         if merge_separately:
             for i in range(len(unmerged)):
                 file_i = "aimless_" + str(i+1) + ".mtz"
@@ -215,15 +219,26 @@ class Aimless(basic.TaskDriver):
                     break
 
             if output_ok:
-                import_merged.run ( self )
+                hkl = import_merged.run ( self )
 
         else:
             file_i = self.getMTZOFName()
             if os.path.isfile(file_i):
                 self.addFileImport ( "",file_i,import_filetype.ftype_MTZMerged() )
-                import_merged.run ( self,"Reflection dataset" )
+                hkl = import_merged.run ( self,"Reflection dataset" )
             else:
                 output_ok = False
+
+        if (len(hkl)>0) and os.path.isfile(self.aimless_xml()):
+            aimless_meta = {
+                "jobId" : self.job_id,
+                "file"  : dtype_template.makeFileName ( self.job_id,
+                                    self.dataSerialNo+1,self.aimless_xml() )
+            }
+            shutil.copyfile ( self.aimless_xml(),
+                              os.path.join(self.outputDir(),aimless_meta["file"]) )
+            for i in range(len(hkl)):
+                hkl[i].aimless_meta = aimless_meta
 
         """
         #
@@ -266,9 +281,9 @@ class Aimless(basic.TaskDriver):
         if output_ok:
             self.success()
         else:
-            self.file_stdout.write('Aimles has faild, see above.')
-            self.fail ( 'Aimless faild, see Log and Error tabs for details',
-                'Aimless_Failed' )
+            self.file_stdout.write ( "Aimles failed, see above." )
+            self.fail ( "<p>&nbsp;Aimless failed, see Log and Error tabs for details",
+                        "Aimless_Failed" )
 
 # ============================================================================
 

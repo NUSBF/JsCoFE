@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    28.07.18   <--  Date of Last Modification.
+#    04.08.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -16,6 +16,7 @@
 
 import os
 import shutil
+import sys
 
 #  ccp4-python imports
 #import pyrvapi
@@ -50,6 +51,8 @@ class FitLigands(ccp4go_acedrg.AceDrg):
                         "CCP4go Automated Structure Solver: Fit " +
                         "Ligands with Coot", resultdir,parent_branch_id )
         self.flush()
+        fstdout = self.stdout_path   # output stream file names
+        fstderr = self.stdout_path
 
         # make dimple work directory
         dimpledir = os.path.join ( resultdir,"dimple_tmp" )
@@ -57,8 +60,8 @@ class FitLigands(ccp4go_acedrg.AceDrg):
             os.mkdir ( dimpledir )
 
         # define dimple log files
-        dstdout  = os.path.join ( dimpledir,"dimple_stdout.log" )
-        dstderr  = os.path.join ( dimpledir,"dimple_stderr.log" )
+        #dstdout  = os.path.join ( dimpledir,"dimple_stdout.log" )
+        #dstderr  = os.path.join ( dimpledir,"dimple_stderr.log" )
 
         strmeta  = self.output_meta["results"][datadir]
         columns  = strmeta["columns"]
@@ -153,11 +156,36 @@ class FitLigands(ccp4go_acedrg.AceDrg):
                 cmd = [ mtzPath,xyzPath,dimpledir, "--slow","--slow",
                         "--libin",libPath,"--free-r-flags","-" ]
                 # run dimple
-                self.runApp ( "dimple",cmd,dstdout,dstderr )
+                self.mk_std_streams ( dimpledir )  # reset log files
+                if sys.platform.startswith("win"):
+                    self.runApp ( "dimple.bat",cmd )
+                else:
+                    self.runApp ( "dimple",cmd )
                 # copy dimple result into work files
                 shutil.copy2 ( os.path.join(dimpledir,"final.pdb"),xyzPath )
                 shutil.copy2 ( os.path.join(dimpledir,"final.mtz"),mtzPath )
 
+                """
+                with open('newfile.txt','wb') as newf:
+                    for filename in list_of_files:
+                        with open(filename,'rb') as hf:
+                            newf.write(hf.read())
+                            # newf.write('\n\n\n')   if you want to introduce
+                """
+
+                dstdout = self.stdout_path
+                dstderr = self.stdout_path
+                self.mk_std_streams ( None )  # reset log files
+                with open(fstdout,"a+") as fout:
+                    with open(dstdout,"r") as fin:
+                        fout.write ( fin.read() )
+                        fout.write ( "\n\n" )
+                with open(fstderr,"a+") as fout:
+                    with open(dstderr,"r") as fin:
+                        fout.write ( fin.read() )
+                        fout.write ( "\n\n" )
+
+                """
                 refmac_pattern = "refmac5 restr"
                 with open(dstdout,'r') as logf:
                     for line in logf:
@@ -165,9 +193,20 @@ class FitLigands(ccp4go_acedrg.AceDrg):
                             list    = filter ( None,line.replace("/"," ").split() )
                             rfree   = float(list[len(list)-1])
                             rfactor = float(list[len(list)-2])
-
+                """
 
         if nResults>0:
+
+            #dstdout = self.stdout_path
+            #self.mk_std_streams ( None )  # close output streams
+            refmac_pattern = "refmac5 restr"
+            with open(dstdout,'r') as logf:
+                for line in logf:
+                    if line.find(refmac_pattern)>=0:
+                        list    = filter ( None,line.replace("/"," ").split(" ") )
+                        rfree   = float(list[len(list)-1])
+                        rfactor = float(list[len(list)-2])
+            self.mk_std_streams ( resultdir,"a+" )  # reopen output streams
 
             # calculate final electron density maps
             edmap.calcCCP4Maps ( mtzPath,

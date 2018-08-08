@@ -54,8 +54,8 @@ class MrBump(basic.TaskDriver):
 
         # Check the existence of PDB archive
         pdbLine = ""
-        #if self.checkPDB(False):
-        #    pdbLine = "PDBLOCAL " + os.environ["PDB_DIR"] + "\n"
+        if self.checkPDB(False):
+            pdbLine = "PDBLOCAL " + os.environ["PDB_DIR"] + "\n"
 
 
         # Prepare mrbump input

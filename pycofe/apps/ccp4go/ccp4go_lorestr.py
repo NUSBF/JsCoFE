@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    28.07.18   <--  Date of Last Modification.
+#    04.08.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -15,6 +15,7 @@
 #
 
 import os
+import sys
 
 #  ccp4-python imports
 #import pyrvapi
@@ -94,7 +95,10 @@ class Lorestr(ccp4go_buccaneer.Buccaneer):
 
         # Start lorestr
         self.setGenericLogParser ( True )
-        self.runApp ( "lorestr",cmd )
+        if sys.platform.startswith("win"):
+            self.runApp ( "lorestr.bat",cmd )
+        else:
+            self.runApp ( "lorestr",cmd )
         self.unsetLogParser()
 
         # check solution and register data

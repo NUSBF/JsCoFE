@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    09.09.17   <--  Date of Last Modification.
+#    03.08.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2018
 #
 # ============================================================================
 #
@@ -94,7 +94,10 @@ class Lorestr(basic.TaskDriver):
         cmd += ["-xml","lorestr.xml"]
 
         # Start lorestr
-        self.runApp ( "lorestr",cmd )
+        if sys.platform.startswith("win"):
+            self.runApp ( "lorestr.bat",cmd )
+        else:
+            self.runApp ( "lorestr",cmd )
 
         # check solution and register data
         if os.path.isfile(self.getXYZOFName()):

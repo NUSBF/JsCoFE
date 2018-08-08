@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    31.08.18   <--  Date of Last Modification.
+#    01.08.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -333,7 +333,7 @@ class TaskDriver(object):
                     "Please look for support.",
                     self.report_page_id(),self.rvrow,0,1,1 )
 
-                self.fail ( " *** Error: jsCofe is not configured to work with PDB archive \n" + \
+                self.fail ( "<p>&nbsp; *** Error: jsCofe is not configured to work with PDB archive \n" + \
                             "     Please look for support\n","No PDB configured" )
             return False
         return True
@@ -697,7 +697,7 @@ class TaskDriver(object):
                               "The task cannot be run because application <i>" +\
                               appName + "</i> not found in CCP4 setup. Apologies."
                             )
-            self.fail ( " *** Error: CCP4 setup does not contain " + appName + ".\n" + \
+            self.fail ( "<p>&nbsp; *** Error: CCP4 setup does not contain " + appName + ".\n" + \
                         "     Please look for support\n",appName + " not found" )
             return False
 
@@ -1065,10 +1065,10 @@ class TaskDriver(object):
 
     def putStructureWidget ( self,widgetId,title_str,structure,openState=-1 ):
         self.putStructureWidget1 ( self.report_page_id(),
-                                   widgetId + str(self.widget_no),title_str,
+                                   self.getWidgetId(widgetId),title_str,
                                    structure,openState,self.rvrow,1 )
         self.rvrow     += 2
-        self.widget_no += 1
+        #self.widget_no += 1
         return
 
 
@@ -1076,8 +1076,8 @@ class TaskDriver(object):
         self.putMessage1 ( pageId,"<b>Assigned name:</b>&nbsp;" +
                                   structure.dname +
                                   "<font size='+2'><sub>&nbsp;</sub></font>",row )
-        wId     = widgetId + str(self.widget_no)
-        self.widget_no += 1
+        wId     = self.getWidgetId ( widgetId )
+        #self.widget_no += 1
         type    = ["xyz","hkl:map","hkl:ccp4_map","hkl:ccp4_dmap","LIB"]
         created = False
         for i in range(len(structure.files)):
@@ -1235,6 +1235,7 @@ class TaskDriver(object):
 
             if dtype_hkl.dtype() in self.outputDataBox.data:
                 sol_hkl = self.outputDataBox.data[dtype_hkl.dtype()][0]
+                sol_hkl.aimless_meta = hkl.aimless_meta
                 pyrvapi.rvapi_set_text ( "<b>New reflection dataset created:</b> " +\
                         sol_hkl.dname,self.report_page_id(),rvrow0,0,1,1 )
 
@@ -1284,6 +1285,7 @@ class TaskDriver(object):
             # make list of files to import
             self.resetFileImport()
 
+            index = []
             for i in range(len(hkl_list)):
 
                 # make new hkl file name
@@ -1300,10 +1302,13 @@ class TaskDriver(object):
                 if os.path.isfile(newHKLFPath):
                     self.addFileImport ( "",newHKLFPath,import_filetype.ftype_MTZMerged() )
                     #self.files_all.append ( newHKLFPath )
+                    index.append ( i )
                 else:
                     self.putMessage ( "Error: cannot reindex " + hkl_list[i].dname )
 
-            import_merged.run ( self,"New reflection datasets" )
+            hkls = import_merged.run ( self,"New reflection datasets" )
+            for i in range(len(index)):
+                hkls[i].aimless_meta = hkl_list[index[i]].aimless_meta
 
             return self.outputDataBox.data[hkl_list[0]._type]
 
@@ -1336,7 +1341,8 @@ class TaskDriver(object):
                 self.task.scores = self.generic_parser_summary
             with open('job.meta','w') as file_:
                 file_.write ( self.task.to_JSON() )
-        self.putMessage ( "<p>&nbsp;" )  # just to make extra space after report
+        #if extraLine:
+        #    self.putMessage ( "<p>&nbsp;" )  # just to make extra space after report
         pyrvapi.rvapi_set_text ( pageMessage,self.report_page_id(),self.rvrow,0,1,1 )
         pyrvapi.rvapi_flush    ()
         msg = pageMessage.replace("<b>","").replace("</b>","").replace("<i>","") \

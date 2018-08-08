@@ -15,6 +15,7 @@
 #
 
 import os
+import sys
 
 #  ccp4-python imports
 #import pyrvapi

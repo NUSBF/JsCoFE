@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    24.07.18   <--  Date of Last Modification.
+ *    03.08.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -383,7 +383,7 @@ function UploadDialog ( title,files,customData,autoClose_bool,onReady_func )  {
         modal     : true,
         open      : function(event, ui) {
           $(this).closest('.ui-dialog').find('.ui-dialog-titlebar-close').hide();
-          self.upload = new Upload ( customData,files,null,function(returnCode){
+          self.upload = new Upload ( customData,files,null,null,function(returnCode){
             $('#cancel_btn').button('option', 'label', 'Close');
             onReady_func(returnCode);
             if ((!returnCode) && autoClose_bool)

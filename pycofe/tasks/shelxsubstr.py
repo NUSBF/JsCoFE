@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    23.01.18   <--  Date of Last Modification.
+#    08.08.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -34,7 +34,7 @@ import pyrvapi
 import pyrvapi_ext.parsers
 
 #  application imports
-from pycofe.dtypes import dtype_revision
+from pycofe.dtypes import dtype_template
 from pycofe.tasks  import crank2
 
 
@@ -96,27 +96,6 @@ class ShelxSubstr(crank2.Crank2):
 
     def finalise(self):
 
-        """
-        # add FreeR_flag to the resulting mtz
-        cad_mtz = "cad.mtz"
-
-        self.open_stdin  ()
-        self.write_stdin ( "LABIN FILE 1 E1=FreeR_flag\n" )
-        self.write_stdin ( "LABIN FILE 2 allin\n" )
-        self.close_stdin ()
-
-        cmd = [ "HKLIN1",os.path.join(self.inputDir(),self.hkl[0].files[0]),
-                "HKLIN2",self.hklout_fpath,
-                "HKLOUT",cad_mtz ]
-        self.runApp ( "cad",cmd )
-        os.rename ( cad_mtz,self.hklout_fpath )
-
-        mappath = os.path.join ( self.reportDir(),"3-phas","convert","fft.map" )
-        if os.path.isfile(mappath):
-            shutil.copy2 ( mappath,self.hklout_fpath+".map" )
-        """
-
-
         hkls = None
         for hkli in self.hkl:
             if not hkls:
@@ -145,85 +124,18 @@ class ShelxSubstr(crank2.Crank2):
                 self.putMessage ( "Anomalous substructure calculations failed." )
 
             # finalise output revision(s)
+            # remove Refmac results from structure:
+            shutil.copy2 ( hkls.getHKLFilePath(self.inputDir()),self.outputDir() )
+            del structure.files[2:]
+            structure.files[1] = hkls.files[0]
+            structure.removeSubtype ( dtype_template.subtypePhases() )
             super ( ShelxSubstr,self ).finalise ( structure )
-
-            """
-            if self.structure:
-
-                self.putTitle ( "Substructure Found" )
-
-                self.putStructureWidget ( "structure_btn",
-                            "Structure and electron density",self.structure,-1 )
-                self.putMessage ( "&nbsp;" )
-
-                hkls = None
-                for hkli in self.hkl:
-                    if not hkls:
-                        hkls = hkli
-                    elif hkli.wtype=="peak":
-                        hkls = hkli
-                        break
-                    elif hkli.wtype=="inflection":
-                        hkls = hkli
-
-                structure = self.finaliseAnomSubstructure (
-                            os.path.join(self.outputDir(),self.structure.files[0]),
-                            "anom_substructure",hkls,[],"",False )
-                if structure:
-                    structure.setAnomSubstrSubtype() # substructure
-                    structure.setHLLabels()
-
-            else:
-                self.putTitle ( "No Substructure Found" )
-            """
-
 
         else:
             self.rvrow = rvrow0
             self.putTitle ( "No Substructure Found" )
             for i in range(10):
                 self.putTitle ( "&nbsp;" )
-
-        """
-        structure = self.finaliseAnomSubstructure (
-                    self.xyzout_fpath,
-                    "anom_substructure",hkls,[],"",False )
-        if structure:
-            structure.setAnomSubstrSubtype() # substructure
-            structure.setHLLabels()
-
-
-        # finalise output structure
-        super ( ShelxSubstr,self ).finalise()
-
-        if self.structure:
-
-            self.putTitle ( "Substructure Found" )
-
-            self.putStructureWidget ( "structure_btn",
-                        "Structure and electron density",self.structure,-1 )
-            self.putMessage ( "&nbsp;" )
-
-            hkls = None
-            for hkli in self.hkl:
-                if not hkls:
-                    hkls = hkli
-                elif hkli.wtype=="peak":
-                    hkls = hkli
-                    break
-                elif hkli.wtype=="inflection":
-                    hkls = hkli
-
-            structure = self.finaliseAnomSubstructure (
-                        os.path.join(self.outputDir(),self.structure.files[0]),
-                        "anom_substructure",hkls,[],"",False )
-            if structure:
-                structure.setAnomSubstrSubtype() # substructure
-                structure.setHLLabels()
-
-        else:
-            self.putTitle ( "No Substructure Found" )
-        """
 
         self.flush()
 

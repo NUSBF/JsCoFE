@@ -80,7 +80,7 @@
       "jobCheckPeriod"   : 2000,
       "sendDataWaitTime" : 1000,
       "maxSendTrials"    : 10,
-      "jobRemoveTimeout" : 10000,
+      "jobRemoveTimeout" : 3600000,
       "maxRestarts"      : 100,
       "fileCapSize"      : 500000
     }

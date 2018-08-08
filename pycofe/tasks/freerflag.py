@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    17.07.18   <--  Date of Last Modification.
+#    01.08.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -190,17 +190,17 @@ class FreeRFlag(basic.TaskDriver):
                         outhkl[i].freeRds = freer
 
             else:
-                self.fail ( "Setting free R-flag columns failed",
+                self.fail ( "<p>&nbsp;Setting free R-flag columns failed",
                             "Error in setting free R-flag" )
                 return
 
         elif n0 >= 0:
-            self.fail ( "Free R-flag calculations failed",
+            self.fail ( "<p>&nbsp;Free R-flag calculations failed",
                         "Free R-flag calculations failed" )
             return
 
         else:
-            self.fail ( "Precalculated free R-flag not found",
+            self.fail ( "<p>&nbsp;Precalculated free R-flag not found",
                         "Precalculated free R-flag not found" )
             return
 

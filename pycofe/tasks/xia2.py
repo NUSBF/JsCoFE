@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    31.07.18   <--  Date of Last Modification.
+#    03.08.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -165,9 +165,15 @@ class Xia2(basic.TaskDriver):
                     self.write_stdin ( rlp_json   + "\n" )
                     self.write_stdin ( rlp_pickle + "\n" )
                     self.close_stdin ()
-                    self.runApp ( "dials.export",[
-                        "format=json"
-                    ])
+                    #if self.file_stdin:
+                    #    self.file_stdout.write ( " --- stdin ref FOUND" )
+                    #else:
+                    #    self.file_stdout.write ( " --- stdin ref NOT FOUND" )
+                    #self.file_stdin = None
+                    if sys.platform.startswith("win"):
+                        self.runApp ( "dials.export.bat",["format=json"])
+                    else:
+                        self.runApp ( "dials.export",["format=json"])
 
                     outFileName = "rlp.json"
                     rlpFileName = os.path.join ( self.outputDir(),sweepId +"_"+ outFileName )
@@ -184,7 +190,7 @@ class Xia2(basic.TaskDriver):
                     for fname in ind_names:
                         if not ind_json or fname > ind_json:
                             ind_json = fname
-                    ind_json   = os.path.join ( indexDir,ind_json )
+                    ind_json = os.path.join ( indexDir,ind_json )
 
                     self.open_stdin  ()
                     self.write_stdin ( ind_json + "\n" )
@@ -192,8 +198,12 @@ class Xia2(basic.TaskDriver):
 
                     #  grid size and resolution are chosen such as to keep file
                     #  size under 10MB, or else it does not download with XHR
-                    rc1 = self.runApp ( "dials.rs_mapper",["grid_size=128","max_resolution=8"],
-                         quitOnError=False )
+                    if sys.platform.startswith("win"):
+                        rc1 = self.runApp ( "dials.rs_mapper.bat",["grid_size=128","max_resolution=8"],
+                                            quitOnError=False )
+                    else:
+                        rc1 = self.runApp ( "dials.rs_mapper",["grid_size=128","max_resolution=8"],
+                                            quitOnError=False )
 
                     # ===== For old version of rs_mapper =======
                     if rc1.msg:
@@ -212,7 +222,10 @@ class Xia2(basic.TaskDriver):
 
                         #  grid size and resolution are chosen such as to keep file
                         #  size under 10MB, or else it does not download with XHR
-                        self.runApp ( "dials.rs_mapper",["grid_size=128","max_resolution=8"] )
+                        if sys.platform.startswith("win"):
+                            self.runApp ( "dials.rs_mapper.bat",["grid_size=128","max_resolution=8"] )
+                        else:
+                            self.runApp ( "dials.rs_mapper",["grid_size=128","max_resolution=8"] )
 
                     outFileName = "rs_mapper_output.ccp4"
                     mapFilePath = os.path.join ( self.outputDir(),sweepId +"_"+ outFileName + ".map" )
@@ -239,7 +252,8 @@ class Xia2(basic.TaskDriver):
                                                  "&nbsp;&nbsp;",
                                                  grid_id,0,0,1,1 )
                         self.putRSViewerButton (
-                                    rlpFileName,mapFilePath,
+                                    "/".join([self.outputDir(),sweepId +"_"+ outFileName]),
+                                    "/".join([self.outputDir(),sweepId +"_"+ outFileName + ".map"]),
                                     imported_data[0].dname,
                                     "View in reciprocal space",
                                     grid_id,0,1 )

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    25.06.18   <--  Date of Last Modification.
+ *    03.08.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -78,6 +78,13 @@ TaskBalbes.prototype.constructor = TaskBalbes;
 
 TaskBalbes.prototype.icon_small = function()  { return './images/task_balbes_20x20.svg'; }
 TaskBalbes.prototype.icon_large = function()  { return './images/task_balbes.svg';       }
+
+// task.platforms() identifies suitable platforms:
+//   'W"  : Windows
+//   'L'  : Linux
+//   'M'  : Mac
+//   'U'  : Unix ( = Linux + Mac)
+TaskBalbes.prototype.platforms = function()  { return 'LMU'; }  // UNIX only
 
 TaskBalbes.prototype.currentVersion = function()  { return 1; }
 

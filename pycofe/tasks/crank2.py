@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    30.07.18   <--  Date of Last Modification.
+#    08.08.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -386,6 +386,8 @@ class Crank2(basic.TaskDriver):
         #if not structure:
         self.rvrow += 20
 
+        revisions = []
+
         if os.path.isfile(self.xyzout_fpath):
 
             # get xyz metadata for checking on changed space group below
@@ -415,10 +417,11 @@ class Crank2(basic.TaskDriver):
                     for s in self.seq:
                         self.structure.addDataAssociation ( s.dataId )
                 if self.task._type=="TaskShelxSubstr":
-                    self.structure.setSubstrSubtype() # substructure
+                    self.structure.setSubstrSubtype() # substructure, NO PHASES
                     #self.structure.setBP3Labels()
                 else:
                     self.structure.addXYZSubtype()
+                    self.structure.addSubtype ( dtype_template.subtypePhases() )
                     self.structure.setCrank2Labels()
                     #self.structure.setRefmacLabels ( hkl_all[0] )
                     #self.structure.FP         = "REFM_F"
@@ -489,6 +492,7 @@ class Crank2(basic.TaskDriver):
                             hkl_all[i].wtype + " dataset:</i></b>",revision )
 
                     revision.register ( self.outputDataBox )
+                    revisions.append ( revision )
 
             else:
                 self.putTitle ( "Failed to created output data object" )
@@ -499,7 +503,7 @@ class Crank2(basic.TaskDriver):
         self.putMessage ( "&nbsp;" )
         self.flush()
 
-        return
+        return revisions
 
 
     # ------------------------------------------------------------------------

@@ -79,7 +79,7 @@ DataRevision.prototype.icon_large = function()  { return './images/data_xrayimag
 
 // when data class version is changed here, change it also in python
 // constructors
-DataRevision.prototype.currentVersion = function()  { return 1; }
+DataRevision.prototype.currentVersion = function()  { return 2; }
 
 // export such that it could be used in both node and a browser
 

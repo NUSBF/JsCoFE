@@ -15,8 +15,8 @@
 #
 
 import os
+import sys
 import json
-#import shutil
 
 #  ccp4-python imports
 #import pyrvapi
@@ -91,7 +91,10 @@ class Simbad12(ccp4go_dimple.Dimple):
                ]
 
         # run simbad
-        self.runApp ( "simbad",cmd )
+        if sys.platform.startswith("win"):
+            self.runApp ( "simbad.bat",cmd )
+        else:
+            self.runApp ( "simbad",cmd )
         self.setOutputPage ( branch_data["cursor1"] )
         rvapi_meta = self.restoreReportDocument()
 

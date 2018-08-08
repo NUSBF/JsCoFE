@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    13.11.17   <--  Date of Last Modification.
+#    01.08.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2018
 #
 # ============================================================================
 #
@@ -46,7 +46,7 @@ class Balbes(basic.TaskDriver):
 
         # check that balbes is installed (since it is not part of CCP4 distribution)
         if "BALBES_ROOT" not in os.environ:
-            self.fail ( " *** BALBES is not installed, or is not configured",
+            self.fail ( "<p>&nbsp; *** BALBES is not installed, or is not configured",
                        "balbes is not found")
 
         # Prepare balbes job

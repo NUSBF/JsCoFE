@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    17.07.18   <--  Date of Last Modification.
+#    01.08.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -86,7 +86,8 @@ class ChangeSpG(basic.TaskDriver):
             # update structure revision
             revision = self.makeClass  ( self.input_data.data.revision[0] )
             new_hkl  = self.outputDataBox.data[hkl._type][0]
-            new_hkl.new_spg = hkl.new_spg.replace(" ","")
+            new_hkl.new_spg      = hkl.new_spg.replace(" ","")
+            new_hkl.aimless_meta = hkl.aimless_meta
             revision.setReflectionData ( new_hkl  )
             self.registerRevision      ( revision )
             self.generic_parser_summary["z01"] = {'SpaceGroup':hkl.new_spg}

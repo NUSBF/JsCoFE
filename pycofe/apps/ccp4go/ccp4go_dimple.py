@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    28.07.18   <--  Date of Last Modification.
+#    04.08.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -15,6 +15,7 @@
 #
 
 import os
+import sys
 
 #  ccp4-python imports
 #import pyrvapi
@@ -86,7 +87,10 @@ class Dimple(ccp4go_asu.PrepareASU):
         #cmd += [ "--free-r-flags","-" ]
 
         # run dimple
-        self.runApp ( "dimple",cmd )
+        if sys.platform.startswith("win"):
+            self.runApp ( "dimple.bat",cmd )
+        else:
+            self.runApp ( "dimple",cmd )
 
         self.restoreReportDocument()
 

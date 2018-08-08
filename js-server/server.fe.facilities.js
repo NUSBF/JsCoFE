@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    27.07.18   <--  Date of Last Modification.
+ *    03.08.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -181,7 +181,10 @@ function updateFacility ( login,data )  {
     // launch update
     // we use "python" instead of ccp4-python because of difficulties in getting
     // suds (and possible requests) module(s) to work across all platforms.
-    var fcl_update = utils.spawn ( "python", // conf.pythonName(),
+    var pythonName = 'python';
+    if (conf.isWindows())
+      pythonName = conf.pythonName();
+    var fcl_update = utils.spawn ( pythonName, // conf.pythonName(),
                      ['-m',processor,jobDir,updateFile,resultFile,
                       conf.getFEConfig().ICAT_wdsl,conf.getFEConfig().ICAT_ids,
                       uh.uploadDir(),conf.getFEConfig().facilitiesPath],{} )

@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    05.07.17   <--  Date of Last Modification.
+#    01.08.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2018
 #
 # ============================================================================
 #
@@ -53,7 +53,7 @@ class PISA(basic.TaskDriver):
                 "Please look for support.",
                 self.report_page_id(),self.rvrow,0,1,1 )
 
-            self.fail ( " *** Error: jsCofe is not configured to work with jsPISA.\n" + \
+            self.fail ( "<p>&nbsp; *** Error: jsCofe is not configured to work with jsPISA.\n" + \
                         "     Please look for support\n","jsPISA is not configured" )
 
 

@@ -122,6 +122,8 @@ class Base(object):
     #  }
     #
 
+    stdout_path     = None
+    stderr_path     = None
     file_stdout     = sys.stdout
     file_stderr     = sys.stderr
 
@@ -143,7 +145,7 @@ class Base(object):
 
     # ----------------------------------------------------------------------
 
-    def mk_std_streams ( self,subdir_name ):
+    def mk_std_streams ( self,subdir_name,mode="w" ):
 
         if not self.file_stdout is sys.stdout:
             self.file_stdout.close()
@@ -151,11 +153,15 @@ class Base(object):
             self.file_stderr.close()
 
         if subdir_name:
-            self.file_stdout = open ( os.path.join(subdir_name,self.file_stdout_path()),'w' )
-            self.file_stderr = open ( os.path.join(subdir_name,self.file_stderr_path()),'w' )
+            self.stdout_path = os.path.join ( subdir_name,self.file_stdout_path() )
+            self.stderr_path = os.path.join ( subdir_name,self.file_stderr_path() )
+            self.file_stdout = open ( self.stdout_path,mode )
+            self.file_stderr = open ( self.stderr_path,mode )
         else:
             self.file_stdout = sys.stdout
             self.file_stderr = sys.stderr
+            self.stdout_path = None
+            self.stderr_path = None
         return
 
 
