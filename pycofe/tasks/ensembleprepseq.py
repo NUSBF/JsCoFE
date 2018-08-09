@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    03.08.18   <--  Date of Last Modification.
+#    08.08.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -33,7 +33,8 @@ import pyrvapi
 
 #  application imports
 import basic
-from   pycofe.proc import analyse_ensemble
+from   pycofe.dtype  import dtype_template
+from   pycofe.proc   import analyse_ensemble
 
 
 # ============================================================================
@@ -99,7 +100,7 @@ class EnsemblePrepSeq(basic.TaskDriver):
         self.close_stdin()
 
         # make command-line parameters for mrbump run on a SHELL-type node
-        cmd = [ "seqin",seq.getFilePath(self.inputDir()) ]
+        cmd = [ "seqin",seq.getFilePath(self.inputDir(),dtype_template.file_key["seq"]) ]
 
         # Prepare report parser
         self.setGenericLogParser ( self.mrbump_report(),True )

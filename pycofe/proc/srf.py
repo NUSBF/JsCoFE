@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    30.07.18   <--  Date of Last Modification.
+#    08.08.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -43,7 +43,7 @@ def putSRFDiagram ( body,            # reference on Basic class
         return [0,"Ok"]
 
 
-    fpath = hkl.getFilePath ( dirPath,0 )
+    fpath = hkl.getFilePath ( dirPath,dtype_template.file_key["mtz"] )
     Fmean = hkl.getMeta ( "Fmean.value","" )
     sigF  = hkl.getMeta ( "Fmean.sigma","" )
 

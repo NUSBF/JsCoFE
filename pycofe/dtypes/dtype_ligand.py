@@ -3,13 +3,13 @@
 #
 # ============================================================================
 #
-#    26.07.17   <--  Date of Last Modification.
+#    08.08.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  LIGAND DATA TYPE
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2018
 #
 # ============================================================================
 #
@@ -39,16 +39,16 @@ class DType(dtype_template.DType):
         return
 
     def getXYZFileName(self):
-        return self.getFileName ( 0 )
+        return self.getFileName ( dtype_template.file_key["xyz"] )
 
     def getLibFileName(self):
-        return self.getFileName ( 1 )
+        return self.getFileName ( dtype_template.file_key["lib"] )
 
     def getXYZFilePath ( self,dirPath ):
-        return self.getFilePath ( dirPath,0 )
+        return self.getFilePath ( dirPath,dtype_template.file_key["xyz"] )
 
     def getLibFilePath ( self,dirPath ):
-        return self.getFilePath ( dirPath,1 )
+        return self.getFilePath ( dirPath,dtype_template.file_key["lib"] )
 
 
 def register ( xyzFilePath,cifFilePath,dataSerialNo,job_id,outDataBox,
@@ -56,7 +56,7 @@ def register ( xyzFilePath,cifFilePath,dataSerialNo,job_id,outDataBox,
 
     if os.path.isfile(xyzFilePath):
         ligand = DType   ( job_id )
-        ligand.setFile   ( os.path.basename(xyzFilePath)  )
+        ligand.setFile   ( os.path.basename(xyzFilePath),dtype_template.file_key["xyz"] )
         ligand.makeDName ( dataSerialNo )
         ligand.removeFiles()
         # this order of files IS FIXED and is relied upon in other parts
@@ -64,7 +64,10 @@ def register ( xyzFilePath,cifFilePath,dataSerialNo,job_id,outDataBox,
         for f in [xyzFilePath,cifFilePath]:
             if f and os.path.isfile(f):
                 fname = ligand.dataId + "_" + os.path.basename(f);
-                ligand.addFile ( fname )
+                if f==xyzFilePath:
+                    ligand.setFile ( fname,dtype_template.file_key["xyz"] )
+                else:
+                    ligand.setFile ( fname,dtype_template.file_key["lib"] )
                 if copy:
                     shutil.copy2 ( f, os.path.join(outputDir,fname) )
                 else:

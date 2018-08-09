@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    01.08.18   <--  Date of Last Modification.
+#    08.08.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -56,7 +56,7 @@ class DType(dtype_template.DType):
     def importMTZDataset ( self,mtzDataset ):
 
         mtzDataset.MTZ = os.path.basename(mtzDataset.MTZ)
-        self.setFile ( mtzDataset.MTZ )
+        self.setFile ( mtzDataset.MTZ,dtype_template.file_key["mtz"] )
         self.dataset = mtzDataset
 
         if self.dataset.Ipm is None and self.dataset.Fpm is None:
@@ -183,12 +183,12 @@ class DType(dtype_template.DType):
         if serialNo > 0:
             self.makeDataId ( serialNo )
 
-        if len(self.files) > 0:
-            fname = os.path.splitext(self.files[0])[0]
+        if dtype_template.file_key["mtz"] in self.files:
+            fname = os.path.splitext(self.files[dtype_template.file_key["mtz"]])[0]
             if serialNo > 0:
                 self.dname = "[" + self.dataId + "] " + fname
             else:
-                self.dname = self.files[0]
+                self.dname = self.files[dtype_template.file_key["mtz"]]
             self.dname += " [" + self.getDataSetName() + "] /hkl/"
 
         if subtypeAnomalous() in self.subtype:
@@ -203,17 +203,17 @@ class DType(dtype_template.DType):
 
 
     def getHKLFilePath ( self,dirPath ):
-        return  self.getFilePath ( dirPath,0 )
+        return  self.getFilePath ( dirPath,dtype_template.file_key["mtz"] )
 
 
 def register ( mtzFilePath,dataSerialNo,job_id,outDataBox,outputDir ):
     if os.path.isfile(mtzFilePath):
         hkl = DType(job_id)
         fname = os.path.basename(mtzFilePath)
-        hkl.setFile(fname)
+        hkl.setFile ( fname,dtype_template.file_key["mtz"] )
         hkl.makeDName ( dataSerialNo )
         newFileName = hkl.dataId + "_" + fname
-        hkl.setFile   ( newFileName )
+        hkl.setFile   ( newFileName,dtype_template.file_key["mtz"] )
         outDataBox.add_data ( hkl )
         os.rename ( mtzFilePath, os.path.join(outputDir,newFileName) )
         return hkl

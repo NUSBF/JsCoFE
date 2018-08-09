@@ -3,13 +3,13 @@
 #
 # ============================================================================
 #
-#    01.12.17   <--  Date of Last Modification.
+#    08.08.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  ENSEMBLE DATA TYPE
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2018
 #
 # ============================================================================
 #
@@ -34,8 +34,8 @@ class DType(dtype_template.DType):
             self.dname    = "ensemble"
             self.version  = 1
             self.sequence = None  # associated sequence class;
-                                  #   self.files[0]  - ensemble file
-                                  #   self.files[1]  - sequence file
+                                  #   self.files[file_key["xyz"]]  - ensemble file
+                                  #   self.files[file_key["seq"]]  - sequence file
             self.ncopies  = 1     # number of copies in ASU to look for in MR
             self.nModels  = 1     # number of MR models in ensemble
             self.rmsd     = 1.0   # estimate of ensemble dispersion
@@ -45,13 +45,13 @@ class DType(dtype_template.DType):
 
     def putXYZMeta ( self,fdir,file_stdout,file_stderr,log_parser=None ):
         dtype_xyz.setXYZMeta ( self,xyzmeta.getXYZMeta (
-                                        os.path.join(fdir,self.files[0]),
-                                            file_stdout,file_stderr,log_parser ) )
+                    os.path.join(fdir,self.files[dtype_template.file_key["xyz"]]),
+                    file_stdout,file_stderr,log_parser ) )
         return
 
     def putSequence ( self,sequence ):
         self.sequence = sequence
-        self.files   += [sequence.files[0]]
+        self.files[dtype_template.file_key["seq"]] = sequence.files[dtype_template.file_key["seq"]]
         self.addSubtypes ( sequence.subtype )
         return
 
@@ -60,7 +60,7 @@ def register ( sequence,ensembleFilePath,dataSerialNo,job_id,outDataBox,outputDi
     if os.path.isfile(ensembleFilePath):
         ensemble = DType ( job_id )
         fname    = ensemble.lessDataId ( os.path.basename(ensembleFilePath) )
-        ensemble.setFile ( fname  )
+        ensemble.setFile ( fname,dtype_template.file_key["xyz"] )
         if type(sequence) == list:
             ensemble.addSubtypes ( sequence )
         elif type(sequence) == str:
@@ -68,15 +68,8 @@ def register ( sequence,ensembleFilePath,dataSerialNo,job_id,outDataBox,outputDi
         else:
             ensemble.putSequence ( sequence )
         ensemble.makeDName ( dataSerialNo )
-        """
-        if not fname.startswith(ensemble.dataId):
-            newFileName = ensemble.dataId + "_" + fname
-            ensemble.setFile   ( newFileName  )
-        else:
-            newFileName = fname
-        """
         newFileName = ensemble.dataId + "_" + fname
-        ensemble.setFile ( newFileName  )
+        ensemble.setFile ( newFileName.dtype_template.file_key["xyz"] )
         if outDataBox:
             outDataBox.add_data ( ensemble )
         os.rename ( ensembleFilePath, os.path.join(outputDir,newFileName) )

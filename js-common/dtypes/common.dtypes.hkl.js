@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    01.08.18   <--  Date of Last Modification.
+ *    08.08.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -150,7 +150,7 @@ if (!__template)  {
   DataHKL.prototype.makeDataSummaryPage = function ( task )  {
   var dsp = new DataSummaryPage ( this );
 
-    dsp.makeRow ( 'File name'            ,this.files[0],'Imported file name'     );
+    dsp.makeRow ( 'File name'            ,this.files[file_key.mtz],'Imported file name'     );
     dsp.makeRow ( 'Original dataset name',this.dataset.PROJECT + '/' +
                                           this.dataset.CRYSTAL + '/' +
                                           this.dataset.DATASET,

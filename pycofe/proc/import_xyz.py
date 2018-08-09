@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    20.07.18   <--  Date of Last Modification.
+#    08.08.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -21,7 +21,7 @@ import os
 import pyrvapi
 
 #  application imports
-from   pycofe.dtypes import dtype_xyz
+from   pycofe.dtypes import dtype_template, dtype_xyz
 from   pycofe.varut  import command
 from   pycofe.proc   import import_filetype, xyzmeta, coor
 
@@ -117,7 +117,7 @@ def run ( body ):  # body is reference to the main Import class
                                                 k,0,1,1,False )
 
                 xyz = dtype_xyz.DType ( body.job_id )
-                xyz.setFile    ( f )
+                xyz.setFile    ( f,dtype_template.file_key["xyz"] )
                 dtype_xyz.setXYZMeta ( xyz,xyzMeta )
                 body.dataSerialNo += 1
                 xyz.makeDName  ( body.dataSerialNo )

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    31.07.18   <--  Date of Last Modification.
+ *    08.08.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -98,18 +98,16 @@ if (!__template)  {
 
     var dsp = DataXYZ.prototype.makeDataSummaryPage.call ( this,task );
 
-    //dsp.makeRow ( 'XYZ file name',this.files[0],'Name of file with XYZ coordinates' );
-    if ((this.files.length>1) && (this.files[1]))  {
-      dsp.makeRow ( 'MTZ file',this.files[1],'Associated MTZ file name' );
-      if ((this.files.length>2) && (this.files[2]))  {
-        dsp.makeRow ( 'Map file',this.files[2],'Name of file with electron density map' );
-        if ((this.files.length>3) && (this.files[3]))  {
-          dsp.makeRow ( 'Difference map file',this.files[3],'Name of file with difference map' );
-          if ((this.files.length>4) && (this.files[4]))
-            dsp.makeRow ( 'Restraints file',this.files[4],'Name of file with crystallogtaphic restraints' );
-        }
-      }
-    }
+    if (this.files.hasOwnProperty(file_key.sub))
+      dsp.makeRow ( 'HA-XYZ file',this.files[file_key.sub],'Heavy atom (substructure) file name' );
+    if (this.files.hasOwnProperty(file_key.mtz))
+      dsp.makeRow ( 'MTZ file',this.files[file_key.mtz],'Associated MTZ file name' );
+    if (this.files.hasOwnProperty(file_key.map))
+      dsp.makeRow ( 'Map file',this.files[file_key.map],'Name of file with electron density map' );
+    if (this.files.hasOwnProperty(file_key.dmap))
+      dsp.makeRow ( 'Difference map file',this.files[file_key.dmap],'Name of file with difference map' );
+    if (this.files.hasOwnProperty(file_key.lib))
+      dsp.makeRow ( 'Restraints file',this.files[file_key.lib],'Name of file with crystallogtaphic restraints' );
     if (this.ligands.length>0)
       dsp.makeRow ( 'Ligands fitted',this.ligands.join(', '),'Codes for fitted ligands' );
 

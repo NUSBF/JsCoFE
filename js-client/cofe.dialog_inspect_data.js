@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    22.09.17   <--  Date of Last Modification.
+ *    08.08.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Task Data Dialog (shows data availability for given task)
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2017
+ *  (C) E. Krissinel, A. Lebedev 2016-2018
  *
  *  =================================================================
  *
@@ -73,9 +73,9 @@ DataSummaryPage.prototype.makeRow = function ( header,text,tooltip )  {
 }
 
 
-DataSummaryPage.prototype._getPath = function ( task,data,n )  {
-  if (data.files[n])
-    return task.getProjectURL(data.jobId,'output/'+data.files[n]);
+DataSummaryPage.prototype._getPath = function ( task,data,fileKey )  {
+  if (data.files.hasOwnProperty(fileKey))
+    return task.getProjectURL(data.jobId,'output/'+data.files[fileKey]);
   return '';
 }
 
@@ -91,8 +91,12 @@ DataSummaryPage.prototype.addUglyMolButton = function ( task )  {
 
   (function(t){
     uglymol_btn.addOnClickListener ( function(){
-      startUglyMol ( t.data.dname,t._getPath(task,t.data,0),t._getPath(task,t.data,2),
-                                  t._getPath(task,t.data,3) );
+      var coors = t._getPath(task,t.data,file_key.xyz);
+      if (!coors)
+        coors = t._getPath(task,t.data,file_key.sub);
+      startUglyMol ( t.data.dname,coors,
+                     t._getPath(task,t.data,file_key.map),
+                     t._getPath(task,t.data,file_key.dmap) );
     });
   }(this))
 
@@ -101,11 +105,13 @@ DataSummaryPage.prototype.addUglyMolButton = function ( task )  {
 
 DataSummaryPage.prototype.addViewHKLButton = function ( task )  {
 
+  /*
   var fileNo;
   if (this.data.files.length==1)  fileNo = 0;
                             else  fileNo = 1;
+  */
 
-  if (this.data.files[fileNo])  {
+  if (this.data.files[file_key.mtz])  {
 
     if (!this.view_btn_grid)  {
       this.grid.setLabel ( '&nbsp;', 2,0,1,1 );
@@ -116,7 +122,7 @@ DataSummaryPage.prototype.addViewHKLButton = function ( task )  {
 
     (function(t){
       viewhkl_btn.addOnClickListener ( function(){
-        startViewHKL ( t.data.dname,t._getPath(task,t.data,fileNo) );
+        startViewHKL ( t.data.dname,t._getPath(task,t.data,file_key.mtz) );
       });
     }(this))
 

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    25.06.18   <--  Date of Last Modification.
+ *    08.08.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -322,45 +322,6 @@ if (!__template)  {
     return  msg;
 
   }
-
-  /*
-  //  This function is called when task is finally sent to FE to run. Should
-  // execute function given as argument, or issue an error message if run
-  // should not be done.
-  TaskXia2.prototype.doRun = function ( inputPanel,run_func )  {
-  var files  = [inputPanel.mtz_select  ['fsel'].getFiles()];
-  var sfiles = inputPanel.seq_select[0]['fsel'].getFiles();
-  var cfiles = inputPanel.coor_select  ['fsel'].getFiles();
-
-    this.files = ['','',''];
-    if (files.length>0)
-      this.files[0] = files[0][0].name;
-    if (sfiles.length>0)  {
-      files.push ( sfiles );
-      this.files[1] = sfiles[0].name;
-    }
-    if (cfiles.length>0)  {
-      files.push ( cfiles );
-      this.files[2] = cfiles[0].name;
-    }
-
-    if (files[0].length<0)  {
-      new MessageBox ( 'Stop run','Task cannot be run as no reflection<br>' +
-                                  'data are given' );
-    } else  {
-      new UploadDialog ( 'Upload data',files,inputPanel.customData,true,
-                          function(returnCode){
-        if (!returnCode)
-          run_func();
-        else
-          new MessageBox ( 'Stop run','Task cannot be run due to upload ' +
-                                'errors:<p><b><i>' + returnCode + '</i></b>' );
-      });
-    }
-
-  }
-  */
-
 
   // This function is called at cloning jobs and should do copying of all
   // custom class fields not found in the Template class

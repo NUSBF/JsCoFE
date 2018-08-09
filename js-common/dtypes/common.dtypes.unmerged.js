@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    31.07.18   <--  Date of Last Modification.
+ *    08.08.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -62,11 +62,10 @@ DataUnmerged.prototype.currentVersion = function()  { return 0; }
 if (!__template)  {
   //  for client side
 
-
   DataUnmerged.prototype.makeDataSummaryPage = function ( task )  {
     var dsp = new DataSummaryPage ( this );
 
-    dsp.makeRow ( 'File name'            ,this.files[0]    ,'Imported file name'    );
+    dsp.makeRow ( 'File name'            ,this.files[file_key.mtz],'Imported file name' );
     dsp.makeRow ( 'Original dataset name',this.dataset.name,'Original dataset name' );
     dsp.makeRow ( 'Resolution (&Aring;)' ,this.dataset.reso,'Dataset resolution'    );
     dsp.makeRow ( 'Wavelength'           ,this.dataset.wlen,'Wavelength'            );
@@ -93,58 +92,6 @@ if (!__template)  {
     return dsp;
 
   }
-
-  /*
-  DataUnmerged.prototype.inspectData = function ( task ) {
-    var dlg = new Dialog ( this.dname );
-
-    dlg._options.width = 800;
-
-    dlg.grid = new Grid('');
-    dlg.addWidget ( dlg.grid );
-    dlg.grid.setLabel ( '<h3>' + this.title() + '</h3>',0,0,1,1 );
-    var table = dlg.grid.setTable ( 1,0, 1,1 );
-
-    var trow = 0;
-    function makeRow ( header,text,tooltip )  {
-      table.setHeaderText ( header, trow,0, 1,1 ).setTooltip ( tooltip ).setNoWrap();
-      table.setLabel      ( text  , trow,1, 1,1 );
-      table.setHorizontalAlignment ( trow,0,'left' );
-      table.setHorizontalAlignment ( trow,1,'left' );
-      trow++;
-    }
-
-    makeRow ( 'Producing job number' ,this.jobId   ,'Id of job produced this dataset' );
-    makeRow ( 'File name'            ,this.files[0]    ,'Imported file name'    );
-    makeRow ( 'Original dataset name',this.dataset.name,'Original dataset name' );
-    makeRow ( 'Assigned name'        ,this.dname       ,'Assigned dataset name' );
-    makeRow ( 'Resolution (&Aring;)' ,this.dataset.reso,'Dataset resolution'    );
-    makeRow ( 'Wavelength'           ,this.dataset.wlen,'Wavelength'            );
-    if ('HM' in this)
-          makeRow ( 'Space group',this.HM      ,'Space symmetry group' );
-    else  makeRow ( 'Space group','Unspecified','Space symmetry group' );
-
-    var cell_spec = 'Not specified';
-    if ('cell' in this.dataset)
-      cell_spec = this.dataset.cell[0] + "&nbsp;" +
-                  this.dataset.cell[1] + "&nbsp;" +
-                  this.dataset.cell[2] + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" +
-                  this.dataset.cell[3] + "&nbsp;" +
-                  this.dataset.cell[4] + "&nbsp;" +
-                  this.dataset.cell[5];
-
-    makeRow ( 'Cell',cell_spec,'Unit cell parameters' );
-
-    var ranges = '';
-    for (var i=0;i<this.dataset.runs.length;i++)
-      ranges += '[' + this.dataset.runs[i][1] + ',' + this.dataset.runs[i][2] + ']&nbsp;';
-    makeRow ( 'Ranges',ranges,'Image ranges' );
-
-    dlg.launch();
-
-//    new MessageBox ( "Not implemented","Unmerged Data Viewer not Implemented." );
-  }
-  */
 
   DataUnmerged.prototype.layCustomDropdownInput = function ( dropdown ) {
 

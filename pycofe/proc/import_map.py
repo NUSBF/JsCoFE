@@ -69,7 +69,7 @@ def run(body):  # body is reference to the main Import class
 
         map_ = dtype_map.DType ( body.job_id )
         map_.subtype = ['final_map']
-        map_.setFile   ( f )
+        map_.setFile   ( f,"map" )
         body.dataSerialNo += 1
         map_.makeDName ( body.dataSerialNo )
         body.outputDataBox.add_data ( map_ )

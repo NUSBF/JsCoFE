@@ -3,13 +3,13 @@
 #
 # ============================================================================
 #
-#    30.11.17   <--  Date of Last Modification.
+#    08.08.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  SEQUENCE DATA IMPORT FUNCTION
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2018
 #
 # ============================================================================
 #
@@ -21,7 +21,7 @@ import os
 import pyrvapi
 
 #  application imports
-from dtypes import dtype_sequence
+from dtypes import dtype_template, dtype_sequence
 from proc   import import_filetype
 from varut  import jsonut
 
@@ -141,7 +141,7 @@ def run ( body,sectionTitle="Macromolecular sequences" ):  # body is reference t
 
         seq = dtype_sequence.DType ( body.job_id )
         seq.addSubtype  ( annot.type )
-        seq.setFile     ( f )
+        seq.setFile     ( f,dtype_template.file_key["seq"] )
         seq.convert2Seq ( body.importDir(),body.outputDir() )
         body.dataSerialNo += 1
         seq.makeDName   ( body.dataSerialNo )

@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    30.07.18   <--  Date of Last Modification.
+#    08.08.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -35,7 +35,7 @@ import pyrvapi
 import pyrvapi_ext.parsers
 
 #  application imports
-from   pycofe.dtypes import dtype_revision
+from   pycofe.dtypes import dtype_revision, dtype_template
 from   pycofe.tasks  import asudef, import_task
 from   pycofe.proc   import import_filetype, import_merged
 from   pycofe.varut  import rvapi_utils
@@ -456,13 +456,13 @@ class CCP4go(import_task.Import):
             # write input file
             self.open_stdin()
             if self.unm:
-                self.write_stdin ( "HKLIN " + self.unm.getFilePath(self.outputDir()) )
+                self.write_stdin ( "HKLIN " + self.unm.getFilePath(self.outputDir(),dtype_template.file_key["mtz"]) )
             elif self.hkl:
-                self.write_stdin ( "HKLIN " + self.hkl.getFilePath(self.outputDir()) )
+                self.write_stdin ( "HKLIN " + self.hkl.getFilePath(self.outputDir(),dtype_template.file_key["mtz"]) )
             if self.seq:  # takes just a single sequence for now -- to be changed
-                self.write_stdin ( "\nSEQIN " + self.seq[0].getFilePath(self.outputDir()) )
+                self.write_stdin ( "\nSEQIN " + self.seq[0].getFilePath(self.outputDir(),dtype_template.file_key["seq"]) )
             if self.xyz:
-                self.write_stdin ( "\nXYZIN " + self.xyz.getFilePath(self.outputDir()) )
+                self.write_stdin ( "\nXYZIN " + self.xyz.getFilePath(self.outputDir(),dtype_template.file_key["xyz"]) )
             if self.task.ha_type:
                 self.write_stdin ( "\nHATOMS " + self.task.ha_type )
             for i in range(len(self.task.ligands)):

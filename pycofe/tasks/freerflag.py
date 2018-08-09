@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    01.08.18   <--  Date of Last Modification.
+#    08.08.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -30,7 +30,7 @@ import os
 #  application imports
 import basic
 from   pycofe.proc   import coor, import_filetype, import_merged
-from   pycofe.dtypes import dtype_revision
+from   pycofe.dtypes import dtype_revision, dtype_template
 
 
 # ============================================================================
@@ -77,14 +77,14 @@ class FreeRFlag(basic.TaskDriver):
         freerPath   = None
         if freer:
             freeRColumn = freer.getMeta("FREE","")
-            hklinPath   = freer.getFilePath ( self.inputDir() )
+            hklinPath   = freer.getFilePath ( self.inputDir(),dtype_template.file_key["mtz"] )
             reso = freer.getHighResolution ( True )
             if reso<res0:
                 res0 = res0
                 n0   = -1
         else:
             freeRColumn = hkl[0].getMeta("FREE","")
-            hklinPath   = hkl[0].getFilePath ( self.inputDir() )
+            hklinPath   = hkl[0].getFilePath ( self.inputDir(),dtype_template.file_key["mtz"] )
 
         if n0 >= 0:  # need to regenerate or extend freeR-flag
 
@@ -157,7 +157,7 @@ class FreeRFlag(basic.TaskDriver):
                 outFName += ".mtz"
 
                 cmd = [ "hklin1",freerPath,
-                        "hklin2",hkl[i].getFilePath ( self.inputDir() ),
+                        "hklin2",hkl[i].getFilePath ( self.inputDir(),dtype_template.file_key["mtz"] ),
                         "hklout",outFName ]
 
                 # Start cad

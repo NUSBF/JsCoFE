@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    01.08.18   <--  Date of Last Modification.
+#    08.08.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -29,7 +29,8 @@ import os
 
 #  application imports
 import basic
-from   pycofe.proc import datred_utils, import_filetype, import_merged
+from   pycofe.dtypes import dtype_template
+from   pycofe.proc   import datred_utils, import_filetype, import_merged
 
 
 # ============================================================================
@@ -49,7 +50,8 @@ class ChangeSpG(basic.TaskDriver):
         hkl = self.makeClass ( self.input_data.data.hkl[0] )
 
         # make new file name
-        outputMTZFName = self.getOFName ( "_" + hkl.new_spg.replace(" ","") + "_" + hkl.getFileName(),-1 )
+        outputMTZFName = self.getOFName ( "_" + hkl.new_spg.replace(" ","") +\
+                      "_" + hkl.getFileName(dtype_template.file_key["mtz"]),-1 )
 
         # Just in case (of repeated run) remove the output xyz file. When zanuda
         # succeeds, this file is created.
@@ -57,7 +59,7 @@ class ChangeSpG(basic.TaskDriver):
             os.remove(outputMTZFName)
 
         # make command-line parameters
-        cmd = [ "hklin" ,hkl.getFilePath(self.inputDir()),
+        cmd = [ "hklin" ,hkl.getFilePath(self.inputDir()dtype_template.file_key["mtz"]),
                 "hklout",outputMTZFName ]
 
         # prepare stdin

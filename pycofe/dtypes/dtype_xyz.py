@@ -3,13 +3,13 @@
 #
 # ============================================================================
 #
-#    01.12.17   <--  Date of Last Modification.
+#    08.08.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  XYZ (COORDINATES) DATA TYPE
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2018
 #
 # ============================================================================
 #
@@ -41,7 +41,7 @@ class DType(dtype_template.DType):
         return
 
     def getXYZFilePath ( self,dirPath ):
-        return self.getFilePath ( dirPath,0 )
+        return self.getFilePath ( dirPath,dtype_template.file_key["xyz"] )
 
     def putXYZMeta ( self,fdir,file_stdout,file_stderr,log_parser=None ):
         setXYZMeta ( self,xyzmeta.getXYZMeta ( os.path.join(fdir,self.files[0]),
@@ -83,10 +83,10 @@ def register ( xyzFilePath,dataSerialNo,job_id,outDataBox,outputDir ):
     if os.path.isfile(xyzFilePath):
         xyz   = DType   ( job_id )
         fname = os.path.basename(xyzFilePath)
-        xyz.setFile   ( fname  )
+        xyz.setFile   ( fname,dtype_template.file_key["xyz"] )
         xyz.makeDName ( dataSerialNo )
         newFileName = xyz.dataId + "_" + fname
-        xyz.setFile   ( newFileName )
+        xyz.setFile   ( newFileName,dtype_template.file_key["xyz"] )
         if outDataBox:
             outDataBox.add_data ( xyz )
         os.rename ( xyzFilePath, os.path.join(outputDir,newFileName) )

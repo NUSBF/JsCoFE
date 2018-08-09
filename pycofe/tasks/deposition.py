@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    01.08.18   <--  Date of Last Modification.
+#    08.08.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -43,7 +43,7 @@ from  adding_stats_to_mmcif import run_process
 
 #  application imports
 import basic
-from   pycofe.dtypes import dtype_sequence
+from   pycofe.dtypes import dtype_template, dtype_sequence
 from   pycofe.proc   import valrep
 
 
@@ -94,7 +94,7 @@ class Deposition(basic.TaskDriver):
         # make command-line parameters for bare morda run on a SHELL-type node
         xyzout = self.getXYZOFName()   # refmac output cif (refmac wants ".pdb" anyway)
         mtzout = self.getMTZOFName()   # refmac output mtz (used only for map visualisation)
-        cmd = [ "hklin" ,hkl.getFilePath(self.inputDir()),
+        cmd = [ "hklin" ,hkl.getFilePath(self.inputDir(),dtype_template.file_key["mtz"]),
                 "xyzin" ,istruct.getXYZFilePath(self.inputDir()),
                 "hklout",mtzout,
                 "xyzout",xyzout,
@@ -170,7 +170,7 @@ class Deposition(basic.TaskDriver):
         self.close_stdin()
 
         sfCIF = self.getOFName ( "_sf.cif" )
-        cmd   = ["HKLIN",hkl.getFilePath(self.inputDir()), "HKLOUT",sfCIF]
+        cmd   = ["HKLIN",hkl.getFilePath(self.inputDir(),dtype_template.file_key["mtz"]), "HKLOUT",sfCIF]
 
         # Start mtz2various
         self.runApp ( "mtz2various",cmd )

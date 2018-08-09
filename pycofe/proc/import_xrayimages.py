@@ -70,7 +70,7 @@ def run ( body ):  # body is reference to the main Import class
                                             xraySecId,k,0,1,1,False )
 
             xray = dtype_xrayimages.DType ( body.job_id )
-            xray.setFile   ( f )  # store link
+            xray.setFile   ( f,"img" )  # store link
             body.dataSerialNo += 1
             xray.makeDName ( body.dataSerialNo )
             body.outputDataBox.add_data ( xray )

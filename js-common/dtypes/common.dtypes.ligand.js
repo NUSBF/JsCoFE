@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    26.07.17   <--  Date of Last Modification.
+ *    08.08.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Ligand Data Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2017
+ *  (C) E. Krissinel, A. Lebedev 2016-2018
  *
  *  =================================================================
  *
@@ -66,24 +66,11 @@ if (!__template)  {
   DataLigand.prototype.makeDataSummaryPage = function ( task )  {
     var dsp = new DataSummaryPage ( this );
 
-    dsp.makeRow ( 'File name',this.files[0],'Imported or generated file name' );
+    dsp.makeRow ( 'File name',this.files[file_key.xyz],'Imported or generated file name' );
 
     return dsp;
 
   }
-
-  /*
-  DataLigand.prototype.inspectData = function ( task ) {
-  var dlg = new DataInspectDialog ( this,task.title,800,500 );
-
-    dlg.makeRow ( 'File name',this.files[0],'Imported or generated file name' );
-
-    //dlg.addUglyMolButton  ( task );
-
-    dlg.launch();
-
-  }
-  */
 
 } else  {
   //  for server side

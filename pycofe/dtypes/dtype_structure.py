@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    06.07.18   <--  Date of Last Modification.
+#    08.08.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -216,10 +216,10 @@ class DType(dtype_template.DType):
         return
 
     def putXYZMeta ( self,fdir,file_stdout,file_stderr,log_parser=None ):
-        if self.files[0]:
+        if dtype_template.file_key["xyz"] in self.files:
             dtype_xyz.setXYZMeta ( self,xyzmeta.getXYZMeta (
-                                            os.path.join(fdir,self.files[0]),
-                                                file_stdout,file_stderr,log_parser ) )
+                        os.path.join(fdir,self.files[dtype_template.file_key["xyz"]]),
+                        file_stdout,file_stderr,log_parser ) )
         return
 
     def getSpaceGroup ( self ):
@@ -231,34 +231,34 @@ class DType(dtype_template.DType):
         return None
 
     def getXYZFileName(self):
-        return self.getFileName ( 0 )
+        return self.getFileName ( dtype_template.file_key["xyz"] )
 
     def getMTZFileName(self):
-        return self.getFileName ( 1 )
+        return self.getFileName ( dtype_template.file_key["mtz"] )
 
     def getMapFileName(self):
-        return self.getFileName ( 2 )
+        return self.getFileName ( dtype_template.file_key["map"] )
 
     def getDMapFileName(self):
-        return self.getFileName ( 3 )
+        return self.getFileName ( dtype_template.file_key["dmap"] )
 
     def getLibFileName(self):
-        return self.getFileName ( 4 )
+        return self.getFileName ( dtype_template.file_key["lib"] )
 
     def getXYZFilePath ( self,dirPath ):
-        return self.getFilePath ( dirPath,0 )
+        return self.getFilePath ( dirPath,dtype_template.file_key["xyz"] )
 
     def getMTZFilePath ( self,dirPath ):
-        return self.getFilePath ( dirPath,1 )
+        return self.getFilePath ( dirPath,dtype_template.file_key["mtz"] )
 
     def getMapFilePath ( self,dirPath ):
-        return self.getFilePath ( dirPath,2 )
+        return self.getFilePath ( dirPath,dtype_template.file_key["map"] )
 
     def getDMapFilePath ( self,dirPath ):
-        return self.getFilePath ( dirPath,3 )
+        return self.getFilePath ( dirPath,dtype_template.file_key["dmap"] )
 
     def getLibFilePath ( self,dirPath ):
-        return self.getFilePath ( dirPath,4 )
+        return self.getFilePath ( dirPath,dtype_template.file_key["lib"] )
 
     def copyLigands ( self,struct_class ):
         if hasattr(struct_class,'ligands'):
@@ -273,11 +273,30 @@ class DType(dtype_template.DType):
         self.addLigandSubtype()
         return
 
+    def add_file ( self,fn,outputDir,fileKey ):
+        if fn and os.path.isfile(fn):
+            fname = os.path.basename(fn)
+            if (not fname[0:4].isdigit()) or (not fname[5:7].isdigit()) or fname[4]!="-" or fname[7]!="_":
+                fname = structure.dataId + "_" + fname
+            self.setFile ( fname,fileKey )
+            fpath = os.path.join ( outputDir,fname )
+            if f!=fpath:
+                if os.path.isfile(fpath):
+                    os.remove ( fpath )  # required on Windows
+                if copy:
+                    shutil.copy2 ( f,fpath )
+                else:
+                    os.rename ( f,fpath )
+        return
+
+
 
 def getValidFileName ( xyzFilePath,mtzFilePath,mapFilePath ):
     if (xyzFilePath):  return xyzFilePath
     if (mtzFilePath):  return mtzFilePath
     return mapFilePath
+
+
 
 def register ( xyzFilePath,mtzFilePath,mapFilePath,dmapFilePath,libFilePath,
                dataSerialNo,job_id,outDataBox,outputDir,copy=False ):
@@ -285,9 +304,16 @@ def register ( xyzFilePath,mtzFilePath,mapFilePath,dmapFilePath,libFilePath,
     fname0 = getValidFileName ( xyzFilePath,mtzFilePath,mapFilePath )
     if fname0 and os.path.isfile(fname0):
         structure = DType   ( job_id )
-        structure.setFile ( os.path.basename(fname0) )
+        # note that, in the following line, file key may be any
+        structure.setFile ( os.path.basename(fname0),dtype_template.file_key["xyz"] )
         structure.makeDName ( dataSerialNo )
         structure.removeFiles()
+        structure.add_file ( xyzFilePath ,outputDir,dtype_template.file_key["xyz" ] )
+        structure.add_file ( mtzFilePath ,outputDir,dtype_template.file_key["mtz" ] )
+        structure.add_file ( mapFilePath ,outputDir,dtype_template.file_key["map" ] )
+        structure.add_file ( dmapFilePath,outputDir,dtype_template.file_key["dmap"] )
+        structure.add_file ( libFilePath ,outputDir,dtype_template.file_key["lib" ] )
+        """
         # this order of files IS FIXED and is relied upon in other parts
         # of jsCoFE
         flist = [xyzFilePath,mtzFilePath,mapFilePath,dmapFilePath,libFilePath]
@@ -307,6 +333,7 @@ def register ( xyzFilePath,mtzFilePath,mapFilePath,dmapFilePath,libFilePath,
                         os.rename ( f,fpath )
             else:
                 structure.addFile ( None )
+        """
         outDataBox.add_data ( structure )
         return structure
 
@@ -322,9 +349,15 @@ def register1 ( xyzFilePath,mtzFilePath,mapFilePath,dmapFilePath,libFilePath,
     fname0 = getValidFileName ( xyzFilePath,mtzFilePath,mapFilePath )
     if fname0 and os.path.isfile(fname0):
         structure = DType   ( job_id       )
-        structure.setFile   ( regName      )
+        structure.setFile   ( regName,dtype_template.file_key["xyz"] )
         structure.makeDName ( dataSerialNo )
         structure.removeFiles()
+        structure.setFile ( xyzFilePath ,dtype_template.file_key["xyz" ] )
+        structure.setFile ( mtzFilePath ,dtype_template.file_key["mtz" ] )
+        structure.setFile ( mapFilePath ,dtype_template.file_key["map" ] )
+        structure.setFile ( dmapFilePath,dtype_template.file_key["dmap"] )
+        structure.setFile ( libFilePath ,dtype_template.file_key["lib" ] )
+        """
         # this order of files IS FIXED and is relied upon in other parts
         # of jsCoFE
         flist = [xyzFilePath,mtzFilePath,mapFilePath,dmapFilePath,libFilePath]
@@ -333,21 +366,6 @@ def register1 ( xyzFilePath,mtzFilePath,mapFilePath,dmapFilePath,libFilePath,
                 structure.addFile ( os.path.basename(f) )
             else:
                 structure.addFile ( None )
-        """
-        structure.addFile ( os.path.basename(xyzFilePath) )
-        structure.addFile ( os.path.basename(mtzFilePath) )
-        if os.path.isfile(mapFilePath):
-            structure.addFile ( os.path.basename(mapFilePath) )
-        else:
-            structure.addFile ( None )
-        if os.path.isfile(dmapFilePath):
-            structure.addFile ( os.path.basename(dmapFilePath) )
-        else:
-            structure.addFile ( None )
-        if os.path.isfile(libFilePath):
-            structure.addFile ( os.path.basename(libFilePath) )
-        else:
-            structure.addFile ( None )
         """
         outDataBox.add_data ( structure )
         return structure

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    31.07.18   <--  Date of Last Modification.
+ *    08.08.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -20,6 +20,18 @@
  */
 
 
+ // ===========================================================================
+
+  var file_key = {
+    'xyz'  : 'xyz',          // atomic coordinates
+    'sub'  : 'sub',          // heavy atom (substructure) coordinates
+    'seq'  : 'seq',          // sequence file
+    'mtz'  : 'mtz',          // .mtz file with hkl and/or phases
+    'map'  : 'map',          // map file
+    'dmap' : 'dmap',         // difference map file
+    'lib'  : 'lib'           // ligand dictionary
+ }
+
 // ===========================================================================
 
 // Data classes MUST BE named as 'DataSomething' AND put in file named
@@ -33,7 +45,7 @@ function DataTemplate()  {
   this.jobId      = '';                    // Id of producing job
   this.dataId     = '';                    // (unique) data Id
   this.dname      = 'template';            // data name for displaying
-  this.files      = [];                    // list of files
+  this.files      = {};                    // list of files, uses file_key (above)
   this.associated = [];                    // list of associated data Ids
   this.backtrace  = true;                  // collect all data up the tree branch
 }

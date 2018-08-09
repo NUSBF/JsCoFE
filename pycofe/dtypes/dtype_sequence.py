@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    01.08.18   <--  Date of Last Modification.
+#    08.08.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -138,8 +138,9 @@ class DType(dtype_template.DType):
     def getSequence(self,dirPath):
         # returns bare sequence from the associated file
         sequence = ""
-        if len(self.files)>0:
-            f     = open(os.path.join(dirPath,self.files[0]),'r')
+        if dtype_template.file_key["seq"] in self.files:
+            fname = self.files[dtype_template.file_key["seq"]]
+            f     = open(os.path.join(dirPath,fname),'r')
             lines = f.readlines()
             f.close()
             i = 0
@@ -148,7 +149,7 @@ class DType(dtype_template.DType):
                     break
                 else:
                     i += 1
-            if (i<len(lines)-1) and self.files[0].lower().endswith('.pir'):
+            if (i<len(lines)-1) and fname.lower().endswith('.pir'):
                 i += 1
             i += 1
             while (i<len(lines)):
@@ -159,14 +160,16 @@ class DType(dtype_template.DType):
 
     def convert2Seq(self,inputDir,outputDir):
         # convert to *.seq if necessary
-        if len(self.files)>0:
-            if self.files[0].lower().endswith('.pir'):
-                self.files   += [self.files[0]]
-                self.files[0] = os.path.splitext(self.files[0])[0] + "_pir.seq"
-                f     = open(os.path.join(inputDir,self.files[1]),'r')
+        if dtype_template.file_key["seq"] in self.files:
+            fname = self.files[dtype_template.file_key["seq"]]
+            if fname.lower().endswith('.pir'):
+                self.files["pir"] = fname
+                fname_seq = os.path.splitext(fname)[0] + "_pir.seq"
+                self.files[dtype_template.file_key["seq"]] = fname_seq
+                f     = open(os.path.join(inputDir,fname),'r')
                 lines = f.readlines()
                 f.close()
-                f     = open(os.path.join(outputDir,self.files[0]),'w')
+                f     = open(os.path.join(outputDir,fname_seq),'w')
                 i     = 0
                 while (i<len(lines)):
                     if lines[i].strip().startswith(">"):

@@ -135,12 +135,6 @@ class Crank2(basic.TaskDriver):
 
     def add_sequence ( self ):
         if len(self.seq)>0:
-            #seqNo = self.revision.Options.seqNo
-            #s     = self.makeClass ( self.seq[seqNo] )
-            #self.config.append ( "sequence" +\
-            #    " monomers_asym=" + str(s.nfind) +\
-            #    " solvent_content=" + str(self.revision.ASU.solvent/100.0) +\
-            #    " file=" + s.getFilePath(self.inputDir()) )
             name     = []
             sequence = []
             ncopies  = []
@@ -522,15 +516,7 @@ class Crank2(basic.TaskDriver):
             self.hkl[i] = self.makeClass ( self.hkl[i] )
 
         if hasattr(self.input_data.data,"seq"):  # optional data parameter?
-            #self.seq = self.input_data.data.seq
-            #self.makeFullASUSequenceFile ( self.seq,"prepared_for_crank2",self.crank2_sequence() )
             self.seq = self.input_data.data.seq
-            #with open(self.crank2_sequence(),'wb') as newf:
-            #    for s in self.seq:
-            #        s1 = self.makeClass ( s )
-            #        with open(s1.getFilePath(self.inputDir()),'rb') as hf:
-            #            newf.write(hf.read())
-            #        newf.write ( '\n' );
 
         if hasattr(self.input_data.data,"native"):  # optional data parameter
             self.native = self.makeClass ( self.input_data.data.native[0] )

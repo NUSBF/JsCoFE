@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    31.07.18   <--  Date of Last Modification.
+ *    08.08.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -83,7 +83,7 @@ if (!__template)  {
   DataSequence.prototype.makeDataSummaryPage = function ( task ) {
     var dsp = new DataSummaryPage ( this );
 
-    if (this.files[0]=='(unknown)')
+    if (this.files[file_key.seq]=='(unknown)')
 
       dsp.makeRow ( 'Contents','** UNKNOWN SEQUENCE **','Macromolecular sequence' );
 
@@ -95,7 +95,7 @@ if (!__template)  {
       req_data.meta = {};
       req_data.meta.project = task.project;
       req_data.meta.id      = this.jobId;
-      req_data.meta.file    = 'output/' + this.files[0];
+      req_data.meta.file    = 'output/' + this.files[file_key.seq];
 
       serverRequest ( fe_reqtype.getJobFile,req_data,'Inspect sequence data',
                       function(data){

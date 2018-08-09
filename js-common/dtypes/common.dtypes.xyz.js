@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    31.07.18   <--  Date of Last Modification.
+ *    08.08.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -159,8 +159,11 @@ if (!__template)  {
   DataTemplate.prototype.makeDataSummaryPage = function ( task )  {
   var dsp = new DataSummaryPage ( this );
     if (this._type=='DataStructure')
-          dsp.makeRow ( 'XYZ file name',this.files[0],'Name of file with XYZ coordinates' );
-    else  dsp.makeRow ( 'File name',this.files[0],'Imported file name' );
+      dsp.makeRow ( 'XYZ file name',this.files[file_key.xyz],'Name of file with XYZ coordinates' );
+    else
+      for (var key in this.files) {
+        if (this.files.hasOwnProperty(key))
+          dsp.makeRow ( 'File name',this.files[key],'Imported file name' );
     this.inspectXYZData   ( dsp  );
     this.addToInspectData ( dsp  );
     dsp .addUglyMolButton ( task );

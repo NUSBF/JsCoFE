@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    31.07.18   <--  Date of Last Modification.
+ *    08.08.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -43,8 +43,8 @@ function DataEnsemble()  {
   this._type    = 'DataEnsemble';
 
   this.sequence = null;  // associated sequence class;
-                         //   this.files[0]  - ensemble file
-                         //   this.files[1]  - sequence file
+                         //   this.files.xyz  - ensemble file
+                         //   this.files.seq  - sequence file
   this.ncopies  = 1;     // number of copies in ASU to look for in MR
   this.nModels  = 1;     // number of MR models in ensemble
   this.rmsd     = 1.0;   // estimate of ensemble dispersion

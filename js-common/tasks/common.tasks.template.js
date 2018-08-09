@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    01.08.18   <--  Date of Last Modification.
+ *    08.08.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -1882,24 +1882,26 @@ if (!dbx)  {
       var td = this.input_data.data[dtype];
       for (var i=0;i<td.length;i++)  {
         var srcJobDir = prj.getSiblingJobDirPath ( jobDir,td[i].jobId );
-        for (var j=0;j<td[i].files.length;j++)  {
-          var fname = td[i].files[j];
-          if (fname)  {
-            var pack = true;
-            var doNotPackSuffixes = this.doNotPackSuffixes();
-            for (var k=0;(k<doNotPackSuffixes.length) && pack;k++)
-              pack = (!fname.endsWith(doNotPackSuffixes[k]));
-            var doPackSuffixes = this.doPackSuffixes();
-            for (var k=0;(k<doPackSuffixes.length) && (!pack);k++)
-              pack = fname.endsWith(doPackSuffixes[k]);
-            if (pack)  {
-              var src_file  = prj.getOutputFilePath ( srcJobDir,fname );
-              var dest_file = prj.getInputFilePath  ( jobDir   ,fname );
-              try {
-                fs.copySync ( src_file,dest_file );
-              } catch (err) {
-                console.log ( ' *** cannot copy file ' + src_file + ' to ' + dest_file );
-                console.log ( '     error: ' + err) ;
+        for (var fileKey in td[i].files) {
+          if (td[i].files.hasOwnProperty(fileKey)) {
+            var fname = td[i].files[fileKey];
+            if (fname)  {
+              var pack = true;
+              var doNotPackSuffixes = this.doNotPackSuffixes();
+              for (var k=0;(k<doNotPackSuffixes.length) && pack;k++)
+                pack = (!fname.endsWith(doNotPackSuffixes[k]));
+              var doPackSuffixes = this.doPackSuffixes();
+              for (var k=0;(k<doPackSuffixes.length) && (!pack);k++)
+                pack = fname.endsWith(doPackSuffixes[k]);
+              if (pack)  {
+                var src_file  = prj.getOutputFilePath ( srcJobDir,fname );
+                var dest_file = prj.getInputFilePath  ( jobDir   ,fname );
+                try {
+                  fs.copySync ( src_file,dest_file );
+                } catch (err) {
+                  console.log ( ' *** cannot copy file ' + src_file + ' to ' + dest_file );
+                  console.log ( '     error: ' + err) ;
+                }
               }
             }
           }

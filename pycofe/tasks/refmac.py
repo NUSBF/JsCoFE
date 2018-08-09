@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    09.05.18   <--  Date of Last Modification.
+#    08.08.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -258,7 +258,7 @@ class Refmac(basic.TaskDriver):
         self.file_stdin = 1 # a trick necessary because of using 'print' above
 
         # make command-line parameters for bare morda run on a SHELL-type node
-        cmd = [ "hklin" ,hkl.getFilePath(self.inputDir()),
+        cmd = [ "hklin" ,hkl.getFilePath(self.inputDir(),dtype_template.file_key["mtz"]),
                 "xyzin" ,istruct.getXYZFilePath(self.inputDir()),
                 "hklout",self.getMTZOFName(),
                 "xyzout",self.getXYZOFName(),

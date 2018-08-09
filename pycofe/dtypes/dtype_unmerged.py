@@ -3,13 +3,13 @@
 #
 # ============================================================================
 #
-#    05.07.17   <--  Date of Last Modification.
+#    08.08.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  UNMERGED REFLECTIONS DATA TYPE
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2018
 #
 # ============================================================================
 #
@@ -42,7 +42,7 @@ class DType(dtype_template.DType):
     def importUnmergedData ( self,mtzf,dataset ):
 
         mtzf.MTZ = os.path.basename(mtzf.MTZ)
-        self.setFile ( mtzf.MTZ )
+        self.setFile ( mtzf.MTZ,dtype_template.file_key["mtz"] )
 
         self.HM      = mtzf.HM
         self.CELL    = mtzf.CELL

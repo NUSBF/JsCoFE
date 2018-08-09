@@ -3,13 +3,13 @@
 #
 # ============================================================================
 #
-#    18.10.17   <--  Date of Last Modification.
+#    08.08.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  BASE (TEMPLATE) DATA TYPE
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2018
 #
 # ============================================================================
 #
@@ -43,6 +43,18 @@ def subtypeProtein     (): return "protein"
 def subtypeDNA         (): return "dna"
 def subtypeRNA         (): return "rna"
 
+# ============================================================================
+
+file_key = {
+    'xyz'  : 'xyz',   # atomic coordinates
+    'sub'  : 'sub',   # heavy atom (substructure) coordinates
+    'seq'  : 'seq',   # sequence file
+    'mtz'  : 'mtz',   # .mtz file with hkl and/or phases
+    'map'  : 'map',   # map file
+    'dmap' : 'dmap',  # difference map file
+    'lib'  : 'lib'    # ligand dictionary
+}
+
 
 # ============================================================================
 
@@ -64,7 +76,7 @@ class DType(jsonut.jObject):
             self.dname      = "template"  # data name to display
             self.jobId      = job_id;
             self.dataId     = "0-0"
-            self.files      = []  # may be a multiple-file data type
+            self.files      = {}  # may be a multiple-file data type
             self.associated = []  # optional list of associated data Ids
         return
 
@@ -80,27 +92,27 @@ class DType(jsonut.jObject):
             return fname[8:]
         return fname
 
-    def setFile ( self,fname ): # fname is file name as a string
-        self.files = [fname]
+    def setFile ( self,fname,fileKey ): # fname is file name as a string
+        self.files[fileKey] = fname
         return
 
     def removeFiles ( self ):
-        self.files = []
+        self.files = {}
         return
 
-    def addFile ( self,fname ): # fname is file name as a string
-        self.files.append ( fname )
-        return
+    #def addFile ( self,fname ): # fname is file name as a string
+    #    self.files.append ( fname )
+    #    return
 
-    def setFiles ( self,fnames ): # fnames must be an array of file names
-        self.files = fnames
-        return
+    #def setFiles ( self,files ):
+    #    self.files = files
+    #    return
 
     def makeDName ( self,serialNo ):
         if serialNo > 0:
             self.makeDataId ( serialNo )
-        if len(self.files) > 0:
-            fname,fext = os.path.splitext(self.files[0])
+        for fileKey in self.files:
+            fname,fext = os.path.splitext(self.files[fileKey])
             if fext == ".link":
                 fname = os.path.splitext(fname)[0]
             fname += " /" + self._type[4:].lower() + "/"
@@ -110,16 +122,17 @@ class DType(jsonut.jObject):
                 self.dname = "[" + self.dataId + "] " + fname
             else:
                 self.dname = fname
+            break
         return
 
     def makeUniqueFNames ( self,dirPath ):
-        for i in range(len(self.files)):
-            if self.files[i]:
-                if not self.files[i].startswith(self.dataId):
-                    newFName = self.dataId + "_" + self.files[i]
-                    os.rename ( os.path.join(dirPath,self.files[i]),
-                                os.path.join(dirPath,newFName) )
-                    self.files[i] = newFName
+        for fileKey in self.files:
+            fname = self.files[fileKey]
+            if not fname.startswith(self.dataId):
+                newFName = self.dataId + "_" + fname
+                os.rename ( os.path.join(dirPath,fname),
+                            os.path.join(dirPath,newFName) )
+                self.files[fileKey] = newFName
         return
 
 
@@ -177,13 +190,12 @@ class DType(jsonut.jObject):
         self.subtype = data.subtype
         return
 
-    def getFileName ( self,fileNo=0 ):
-        if len(self.files)>fileNo:
-            return self.files[fileNo]
+    def getFileName ( self,fileKey ):
+        if fileKey in self.files:
+            return self.files[fileKey]
         return None
 
-    def getFilePath ( self,dirPath,fileNo=0 ):
-        if len(self.files)>fileNo:
-            if self.files[fileNo]:
-                return os.path.join ( dirPath,self.files[fileNo] )
+    def getFilePath ( self,dirPath,fileKey ):
+        if fileKey in self.files:
+            return os.path.join ( dirPath,self.files[fileKey] )
         return None

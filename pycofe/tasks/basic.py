@@ -1292,7 +1292,7 @@ class TaskDriver(object):
                 newHKLFPath = self.getOFName ( "_" + solSpg + "_" + hkl_list[i].files[0],-1 )
 
                 # make command-line parameters for reindexing
-                cmd = [ "hklin" ,hkl_list[i].getFilePath(self.inputDir()),
+                cmd = [ "hklin" ,hkl_list[i].getFilePath(self.inputDir(),dtype_template.file_key["mtz"]),
                         "hklout",newHKLFPath ]
 
                 # run reindex

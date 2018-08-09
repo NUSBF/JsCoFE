@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    16.11.17   <--  Date of Last Modification.
+#    08.08.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2018
 #
 # ============================================================================
 #
@@ -88,9 +88,9 @@ class EnsemblePrepXYZ(basic.TaskDriver):
 
             for i in range(len(xyz)):
                 xyz[i] = self.makeClass ( xyz[i] )
-                fpath  = xyz[i].getFilePath ( self.inputDir() )
+                fpath  = xyz[i].getFilePath ( self.inputDir(),dtype_template.file_key["xyz"] )
                 if xyz[i].chainSel != "(all)":
-                    base, ext = os.path.splitext ( xyz[i].getFileName(0) )
+                    base, ext = os.path.splitext ( xyz[i].getFileName(dtype_template.file_key["xyz"]) )
                     fpath_sel = base + "_" + xyz[i].chainSel + ext
                     coor.fetchChains ( fpath,-1,[xyz[i].chainSel],True,True,fpath_sel )
                     self.write_stdin ( "\nmodel = " + fpath_sel )
@@ -99,11 +99,6 @@ class EnsemblePrepXYZ(basic.TaskDriver):
                 #xyz[i].chainSel
 
             output_style = "merged"
-            #if len(xyz)==1:
-            #    fcopy = os.path.join(self.inputDir(),"X_X_" + xyz[0].getFileName())
-            #    shutil.copy2 ( xyz[0].getFilePath(self.inputDir()),fcopy )
-            #    self.write_stdin ( "\nmodel = " + fcopy )
-            #    output_style = "separate"
 
             self.write_stdin (
                 "\n}"              +\
@@ -158,7 +153,7 @@ class EnsemblePrepXYZ(basic.TaskDriver):
         else:
             # single xyz dataset on input
             xyz0  = self.makeClass ( xyz[0] )
-            fpath = xyz0.getFilePath ( self.inputDir() )
+            fpath = xyz0.getFilePath ( self.inputDir(),dtype_template.file_key["xyz"] )
             coor.fetchChains ( fpath,-1,[xyz0.chainSel],True,True,outputFile )
             #if xyz0.chainSel != "(all)":
             #    coor.fetchChains ( fpath,-1,[xyz0.chainSel],True,True,outputFile )
@@ -190,7 +185,7 @@ class EnsemblePrepXYZ(basic.TaskDriver):
                 if not seq:
                     self.dataSerialNo += 1
                     seq = dtype_sequence.DType ( self.job_id )
-                    seq.setFile   ( "(unknown)"       )
+                    seq.setFile   ( "(unknown)",dtype_template.file_key["seq"] )
                     seq.makeDName ( self.dataSerialNo )
                     seq.files = []  # no files associated with unknown sequence
                     seq.setSubtype  ( "unknown" )

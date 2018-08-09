@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    01.08.18   <--  Date of Last Modification.
+#    08.08.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -30,6 +30,7 @@ import shutil
 
 #  application imports
 import basic
+from pycofe.dtypes  import dtype_template
 
 
 # ============================================================================
@@ -59,7 +60,7 @@ class Balbes(basic.TaskDriver):
             if len(seq)>0:
                 for s in seq:
                     s1 = self.makeClass ( s )
-                    with open(s1.getFilePath(self.inputDir()),'rb') as hf:
+                    with open(s1.getFilePath(self.inputDir(),dtype_template.file_key["seq"]),'rb') as hf:
                         newf.write(hf.read())
                     newf.write ( '\n' );
 

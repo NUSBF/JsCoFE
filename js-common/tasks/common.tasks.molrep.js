@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    05.12.17   <--  Date of Last Modification.
+ *    08.08.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Molrep Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2017
+ *  (C) E. Krissinel, A. Lebedev 2016-2018
  *
  *  =================================================================
  *
@@ -438,61 +438,7 @@ TaskMolrep.prototype.icon_large = function()  { return './images/task_molrep.svg
 TaskMolrep.prototype.currentVersion = function()  { return 0; }
 
 
-if (!__template)  {
-
-  TaskMolrep.prototype.inputChanged = function ( inpParamRef,emitterId,emitterValue )  {
-
-/*
-    if ((emitterId=='model') || (emitterId=='seq'))  {
-
-      var inpDataRef = inpParamRef.grid.inpDataRef;
-      var modelInpNo = this.getInputItemNo ( inpDataRef,'model' );
-      if (modelInpNo>=0)  {
-        var input    = inpDataRef.input;
-        var modelDdn = input[modelInpNo].dropdown[0];  // only single model is used
-        var dt       = input[modelInpNo].dt[modelDdn.getValue()];
-        var seq      = this.getInputItem ( inpDataRef,'seq' );
-
-        var showSeqCBX = false;
-        var showSeqDdn = (dt._type=='DataXYZ');
-        if (!showSeqDdn)  {  // deal with ensemble data
-          if (dt.sequence.files.length>0) showSeqCBX = (dt.nModels<=1);
-          else if (dt.nModels<=1)         showSeqDdn = true;
-        }
-        inpParamRef.parameters['SEQ_CBX'].input.setVisible ( showSeqCBX );
-        inpDataRef.grid.setRowVisible ( seq.dropdown[0].row,showSeqDdn );
-
-      }
-*/
-
-      /*
-      var isPModel = false;
-      if (pmodel)  {
-        inpParamRef.grid.setRowVisible ( pmodel.dropdown[0].row,
-                                         (nHKL==1) && (!IR) );
-        isPModel = (nHKL==1) && (!IR) && (pmodel.dropdown[0].getValue()>=0);
-      }
-      */
-
-      /*
-      for (var i=0;i<input.length;i++)
-        if (input[i].inputId==emitterId)  {
-          var dropdown = input[i].dropdown[0];  // only single model is used
-          if (dropdown.isVisible() && (dropdown.getValue()>=0))
-            inpParamRef.parameters['SEQ_CBX'].input.setVisible (
-                              (input[i].dt[dropdown.getValue()].nModels<=1) );
-            //alert ( ' nfiles=' + input[i].dt[dropdown.getValue()].nModels );
-          break;
-        }
-      */
-
-//    }
-
-    TaskTemplate.prototype.inputChanged.call ( this,inpParamRef,emitterId,emitterValue );
-
-  }
-
-} else  {
+if (__template)  {
   //  for server side
 
   var conf = require('../../js-server/server.configuration');
