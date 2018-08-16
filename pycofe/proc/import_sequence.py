@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    08.08.18   <--  Date of Last Modification.
+#    09.08.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -21,7 +21,7 @@ import os
 import pyrvapi
 
 #  application imports
-from dtypes import dtype_template, dtype_sequence
+from dtypes import dtype_sequence
 from proc   import import_filetype
 from varut  import jsonut
 
@@ -141,7 +141,7 @@ def run ( body,sectionTitle="Macromolecular sequences" ):  # body is reference t
 
         seq = dtype_sequence.DType ( body.job_id )
         seq.addSubtype  ( annot.type )
-        seq.setFile     ( f,dtype_template.file_key["seq"] )
+        seq.setSeqFile  ( f )
         seq.convert2Seq ( body.importDir(),body.outputDir() )
         body.dataSerialNo += 1
         seq.makeDName   ( body.dataSerialNo )
@@ -160,7 +160,7 @@ def run ( body,sectionTitle="Macromolecular sequences" ):  # body is reference t
         body.putTableLine ( seqTableId,"Type","Polymer type",seq.subtype[0],2 )
 
         lines = filter ( None,
-            (line.rstrip() for line in open(os.path.join(body.outputDir(),seq.files[0]),"r")))
+            (line.rstrip() for line in open(seq.getSeqFilePath(body.outputDir()),"r")))
 
         htmlLine = ""
         body.file_stdout.write ( "\n" )

@@ -55,9 +55,8 @@ function TaskPhaserEP()  {
       min         : 0,           // minimum acceptable number of data instances
       max         : 1            // maximum acceptable number of data instances
     },{
-      data_type   : {'DataStructure':['~substructure','~substructure-am']}, // data type(s) and subtype(s)
-//      data_type   : {'DataStructure':[]}, // data type(s) and subtype(s)
-      label       : 'Initial phases', // label for input dialog
+      data_type   : {'DataStructure':['!xyz']}, // data type(s) and subtype(s)
+      label       : 'Initial phases from', // label for input dialog
       inputId     : 'xmodel',    // input Id for referencing input fields
       customInput : 'phaser-ep', // lay custom fields below the dropdown
       version     : 0,           // minimum data version allowed
@@ -286,11 +285,12 @@ TaskPhaserEP.prototype.constructor = TaskPhaserEP;
 TaskPhaserEP.prototype.icon_small = function()  { return './images/task_phaserep_20x20.svg'; }
 TaskPhaserEP.prototype.icon_large = function()  { return './images/task_phaserep.svg';       }
 
-TaskPhaserEP.prototype.currentVersion = function()  { return 0; }
+TaskPhaserEP.prototype.currentVersion = function()  { return 1; }
 
 if (!__template)  {
   //  for client side
 
+  /*
   TaskPhaserEP.prototype.inputChanged = function ( inpParamRef,emitterId,emitterValue )  {
 
     if ((emitterId=='revision') || (emitterId=='substructure') || (emitterId=='xmodel')) {
@@ -318,7 +318,7 @@ if (!__template)  {
     TaskTemplate.prototype.inputChanged.call ( this,inpParamRef,emitterId,emitterValue );
 
   }
-
+  */
 
   TaskPhaserEP.prototype.collectInput = function ( inputPanel )  {
 
@@ -358,16 +358,19 @@ if (!__template)  {
       var revision = this.input_data.data['revision'][0];
       this.input_data.data['hkl'] = [revision.HKL];
       this.input_data.data['seq'] = revision.ASU.seq;
+      /*
       if (revision.subtype.indexOf('substructure')>=0)
             this.input_data.data['substructure'] = [revision.Structure];
-      //else  this.input_data.data['xmodel'] = [revision.Structure];
       else if (revision.subtype.indexOf('xyz')>=0)
             this.input_data.data['xmodel'] = [revision.Structure];
+      */
     }
 
     __template.TaskTemplate.prototype.makeInputData.call ( this,jobDir );
 
   }
+
+  TaskPhaserEP.prototype.cleanJobDir = function ( jobDir )  {}
 
 
   TaskPhaserEP.prototype.getCommandLine = function ( exeType,jobDir )  {

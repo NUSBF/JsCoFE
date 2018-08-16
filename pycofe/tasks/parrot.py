@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    10.09.17   <--  Date of Last Modification.
+#    16.08.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2018
 #
 # ============================================================================
 #
@@ -43,7 +43,7 @@ class Parrot(basic.TaskDriver):
 
     # make task-specific definitions
     def parrot_seq      (self):  return "parrot.seq"
-    def parrot_xyz      (self):  return "parrot.pdb"
+    #def parrot_xyz      (self):  return "parrot.pdb"
     def parrot_mtz      (self):  return "parrot.mtz"
     def parrot_prefix   (self):  return "parrot"
 
@@ -78,8 +78,8 @@ class Parrot(basic.TaskDriver):
 
         # Just in case (of repeated run) remove the output xyz file. When parrot
         # succeeds, this file is created.
-        if os.path.isfile(self.parrot_xyz()):
-            os.remove(self.parrot_xyz())
+        #if os.path.isfile(self.parrot_xyz()):
+        #    os.remove(self.parrot_xyz())
 
         # Prepare parrot input
         # fetch input data
@@ -98,6 +98,11 @@ class Parrot(basic.TaskDriver):
             #dtype_sequence.writeSeqFile ( self.parrot_seq(),"prepared_for_parrot",
             #                              combseq )
 
+        ncs_struct = None
+        if hasattr(self.input_data.data,"ncs_struct"):  # optional data parameter
+            ncs_struct = self.makeClass ( self.input_data.data.ncs_struct[0] )
+
+
         refname = os.path.join ( os.environ["CCP4"],"lib","data",
             "reference_structures",
             "reference-" + self.task.parameters.sec1.contains.REFMDL_SEL.value )
@@ -115,7 +120,7 @@ class Parrot(basic.TaskDriver):
             self.write_stdin ( "\nseqin-wrk " + self.parrot_seq() )
 
         self.write_stdin (
-            "\nmtzin-wrk " + os.path.join(self.inputDir(),istruct.files[1]) + \
+            "\nmtzin-wrk " + istruct.getMTZFilePath(self.inputDir()) + \
             "\ncolin-wrk-fo /*/*/["     + istruct.FP  + "," + istruct.SigFP + "]"
         )
 
@@ -135,79 +140,17 @@ class Parrot(basic.TaskDriver):
                 "\ncolin-wrk-free /*/*/["   + istruct.FreeR_flag + "]"
             )
 
-        """
-        msg = '\n'
-        msg += 'AAAAAAAAAAAAAAAAAAAAAAAA  '
-        msg += 'istruct.useForNCS '
-        msg += str(istruct.useForNCS)
-        msg += '\n'
-        msg += 'AAAAAAAAAAAAAAAAAAAAAAAA  '
-        msg += 'istruct.hasMRSubtype() '
-        msg += str(istruct.hasMRSubtype())
-        msg += '\n'
-        msg += 'AAAAAAAAAAAAAAAAAAAAAAAA  '
-        msg += 'istruct.hasEPSubtype() '
-        msg += str(istruct.hasEPSubtype())
-        msg += '\n'
-        msg += 'AAAAAAAAAAAAAAAAAAAAAAAA  '
-        msg += 'hasattr(self.input_data.data, "ncs_struct") '
-        msg += str(hasattr(self.input_data.data, "ncs_struct"))
-        msg += '\n'
-        msg += 'AAAAAAAAAAAAAAAAAAAAAAAA  '
-        msg += 'hasattr(self.input_data.data, "ncs_substr") '
-        msg += str(hasattr(self.input_data.data, "ncs_substr"))
-        msg += '\n'
-        self.file_stdout.write(msg)
-        """
-
         ncs_xyz = None
         ncs_kwd = None
-        if istruct.useForNCS:
-            ncs_xyz = istruct
-            if istruct.hasMRSubtype():
-                ncs_kwd = "pdbin-wrk-mr"
-
-            elif istruct.hasEPSubtype():
+        if ncs_struct:
+            if ncs_struct.hasSubSubtype():
+                ncs_xyz = ncs_struct.getSubFilePath ( self.inputDir() )
                 ncs_kwd = "pdbin-wrk-ha"
-
-        elif hasattr(self.input_data.data,"ncs_struct"):
-            ncs_xyz = self.input_data.data.ncs_struct[0]
-            ncs_kwd = "pdbin-wrk-mr"
-
-        elif hasattr(self.input_data.data,"ncs_substr"):
-            ncs_xyz = self.input_data.data.ncs_substr[0]
-            ncs_kwd = "pdbin-wrk-ha"
-
+            elif ncs_struct.hasXYZSubtype():
+                ncs_xyz = ncs_struct.getXYZFilePath ( self.inputDir() )
+                ncs_kwd = "pdbin-wrk-mr"
         if ncs_kwd:
-            self.write_stdin(
-                "\n" + ncs_kwd + " " +\
-                os.path.join(self.inputDir(), ncs_xyz.files[0])
-            )
-
-        """
-        if istruct.useForNCS:
-            if istruct.hasMRSubtype() or istruct.hasEPSubtype():
-                self.write_stdin (
-                    "\npdbin-wrk-mr " + os.path.join(self.inputDir(),istruct.files[0]) )
-            else:
-                self.write_stdin (
-                    "\npdbin-wrk-ha " + os.path.join(self.inputDir(),istruct.files[0]) )
-
-        if istruct.hasMRSubtype() or istruct.hasEPSubtype():
-            if hasattr(self.input_data.data,"ncs_substr"):
-                self.write_stdin (
-                    "\npdbin-wrk-ha " +\
-                    os.path.join ( self.inputDir(),
-                                   self.input_data.data.ncs_substr[0].files[0])
-                )
-        else:
-            if hasattr(self.input_data.data,"ncs_struct"):
-                self.write_stdin (
-                    "\npdbin-wrk-mr " +\
-                    os.path.join ( self.inputDir(),
-                                   self.input_data.data.ncs_struct[0].files[0])
-                )
-        """
+            self.write_stdin( "\n" + ncs_kwd + " " + ncs_xyz )
 
         solcont = float( revision.ASU.solvent )
         if solcont > 1.0:
@@ -254,14 +197,20 @@ class Parrot(basic.TaskDriver):
             # register output data from temporary location (files will be moved
             # to output directory by the registration procedure)
 
-            shutil.copyfile ( os.path.join(self.inputDir(),istruct.files[0]),
-                              self.parrot_xyz() )
-            if len(istruct.files)>3 and istruct.files[3]:
-                shutil.copyfile ( os.path.join(self.inputDir(),istruct.files[3]),
+            parrot_xyz = None
+            parrot_sub = None
+            if istruct.getXYZFileName():
+                parrot_xyz = "parrot.pdb"
+                shutil.copyfile ( istruct.getXYZFilePath(self.inputDir()),parrot_xyz )
+            if istruct.getSubFileName():
+                parrot_sub = "parrot.ha.pdb"
+                shutil.copyfile ( istruct.getSubFilePath(self.inputDir()),parrot_sub )
+            if istruct.getDMapFileName():
+                shutil.copyfile ( istruct.getDMapFilePath(self.inputDir()),
                                   fnames[1] )
 
             structure = self.registerStructure (
-                    self.parrot_xyz(),self.parrot_mtz(),fnames[0],fnames[1],None )
+                    parrot_xyz,parrot_sub,self.parrot_mtz(),fnames[0],fnames[1],None )
 
             if structure:
                 structure.copyAssociations ( istruct )

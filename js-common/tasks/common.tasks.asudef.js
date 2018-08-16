@@ -180,7 +180,7 @@ TaskASUDef.prototype.constructor = TaskASUDef;
 TaskASUDef.prototype.icon_small = function()  { return './images/task_asudef_20x20.svg'; }
 TaskASUDef.prototype.icon_large = function()  { return './images/task_asudef.svg';       }
 
-TaskASUDef.prototype.currentVersion = function()  { return 0; }
+TaskASUDef.prototype.currentVersion = function()  { return 1; }
 
 if (__template)  {
   //  for server side

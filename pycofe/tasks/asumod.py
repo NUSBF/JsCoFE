@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    06.02.18   <--  Date of Last Modification.
+#    09.08.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -87,9 +87,9 @@ class ASUMod(asudef.ASUDef):
 
                 istruct = self.makeClass ( self.input_data.data.istruct[0] )
                 structure = self.finaliseStructure (
-                            os.path.join(self.inputDir(),istruct.files[0]),
-                            os.path.splitext(istruct.files[0])[0],hkl,None,
-                            [],1,False ) # "1" means "after MR"
+                            istruct.getXYZFilePath(self.inputDir()),
+                            os.path.splitext(istruct.getXYZFileName())[0],hkl,
+                            None,[],1,False ) # "1" means "after MR"
 
                 if not structure:
                     self.putMessage ( "<h3>Conversion failed, no output</h3>" )

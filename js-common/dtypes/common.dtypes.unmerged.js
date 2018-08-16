@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    08.08.18   <--  Date of Last Modification.
+ *    09.08.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -56,7 +56,7 @@ DataUnmerged.prototype.icon_large = function()  { return './images/data.svg';   
 
 // when data class version is changed here, change it also in python
 // constructors
-DataUnmerged.prototype.currentVersion = function()  { return 0; }
+DataUnmerged.prototype.currentVersion = function()  { return 1; } // from 09.08.2018
 
 // export such that it could be used in both node and a browser
 if (!__template)  {

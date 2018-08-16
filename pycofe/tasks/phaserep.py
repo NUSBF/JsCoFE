@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    17.07.18   <--  Date of Last Modification.
+#    16.08.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -31,14 +31,14 @@
 #  python native imports
 import os
 import sys
-import shutil
+#import shutil
 
 #  ccp4-python imports
 import pyrvapi
 
 #  application imports
 import basic
-from   pycofe.proc import import_merged
+from   pycofe.dtypes  import dtype_template
 
 
 # ============================================================================
@@ -65,7 +65,14 @@ class PhaserEP(basic.TaskDriver):
         pdbfile       = namepattern + ".pdb"
         solfile       = namepattern + ".sol"
         mtzfile       = namepattern + ".mtz"
-        anompdbfile   = namepattern + ".anom.pdb"
+        llgmapsfile   = namepattern + ".llgmaps.mtz"
+        #anompdbfile   = namepattern + ".ha.pdb"
+
+        #xyzfile       = None
+        #xmodelfile    = None
+        #if self.xmodel:
+        #    xyzfile    = namepattern + ".xyz.pdb"
+        #    xmodelfile = self.xmodel.getXYZFilePath ( self.inputDir() )
 
         structure     = None
         anomstructure = None
@@ -84,6 +91,7 @@ class PhaserEP(basic.TaskDriver):
             sol_spg   = None
             sol_hkl   = hkl
             anom_form = ""
+            scattering_type = []
 
             for line in soll:
                 if line.startswith("SOLU SPAC "):
@@ -94,6 +102,7 @@ class PhaserEP(basic.TaskDriver):
                     list = line.replace("="," ").split()
                     anom_form += "anom form "  + list[2] + " " +\
                                  list[4] + " " + list[6] + "\n"
+                    scattering_type.append ( list[2] )
 
             spg_change = self.checkSpaceGroupChanged ( sol_spg,hkl,mtzfile )
             if spg_change:
@@ -101,38 +110,48 @@ class PhaserEP(basic.TaskDriver):
                 sol_hkl = spg_change[1]
 
             # make a copy of pdb file, because it will be moved by registration
-            shutil.copy2 ( pdbfile,anompdbfile )
+            #shutil.copy2 ( pdbfile,anompdbfile )
+            #if xmodelfile:
+            #    shutil.copy2 ( xmodelfile,xyzfile  )
 
-            fnames    = self.calcCCP4Maps ( mtzfile,namepattern,"refmac" )
+            fnames       = self.calcCCP4Maps ( mtzfile,namepattern,"phaser-ep" )
+            protein_map  = fnames[0]
+
             structure = self.registerStructure1 (
-                            pdbfile,mtzfile,fnames[0],fnames[1],None,
-                            self.outputFName )
+                            None,pdbfile,mtzfile,protein_map,None,None,
+                            self.outputFName,True )
             if structure:
-                #structure.addDataAssociation ( sol_hkl.dataId )
                 if seq:
                     for i in range(len(seq)):
                         if seq[i]:
                             structure.addDataAssociation ( seq[i].dataId )
-                structure.setRefmacLabels ( sol_hkl )
-                structure.setHLLabels     ()
-                structure.setSubstrSubtype() # substructure
+                structure.setPhaserEPLabels()
                 structure.addEPSubtype    ()
-                self.putStructureWidget   ( "structure_btn",
-                                            "Structure and electron density",
-                                            structure )
-                self.putMessage ( "&nbsp;" )
+                structure.addPhasesSubtype()
 
-                # update structure revision
+                outputDataBox = self.outputDataBox
+                self.outputDataBox = None
+
+                for stype in scattering_type:
+                    self.putMessage ( "<b style='font-size:120%'>" + stype + " scatterers</b>" )
+                    fnames = self.calcCCP4Maps ( llgmapsfile,namepattern+".llgmap_"+stype,"phaser-ep:"+stype )
+                    anom_struct = self.registerStructure1 (
+                                    None,pdbfile,llgmapsfile,protein_map,fnames[0],None,
+                                    self.outputFName,True )
+                    if anom_struct:
+                        self.putStructureWidget ( "structure_btn_"+stype,
+                                                  "Substructure and electron density",
+                                                  anom_struct )
+                    self.putMessage ( "&nbsp;" )
+
+                self.outputDataBox = outputDataBox
+
+                self.putMessage ( "&nbsp;<br><hr><h3>Structure Revision</h3>" )
                 revision = self.makeClass ( self.input_data.data.revision[0] )
                 revision.setStructureData ( structure )
+                revision.removeSubtype    ( dtype_template.subtypeXYZ() )
                 self.registerRevision     ( revision,revisionNo,"" )
                 self.putMessage ( "&nbsp;" )
-
-                anomstructure = self.finaliseAnomSubstructure (
-                        anompdbfile,"anom_substructure"+suffix,sol_hkl,[],
-                        anom_form,False,"" )
-                if anomstructure:
-                    anomstructure.setHLLabels()
 
             else:
                 self.putMessage (
@@ -158,7 +177,7 @@ class PhaserEP(basic.TaskDriver):
         seq    = self.input_data.data.seq
         substr = None
         if hasattr(self.input_data.data,'substructure'):
-            substr = self.input_data.data.substructure[0]
+            substr = self.makeClass ( self.input_data.data.substructure[0] )
 
         sec1   = self.task.parameters.sec1.contains
         sec2   = self.task.parameters.sec2.contains
@@ -177,7 +196,7 @@ class PhaserEP(basic.TaskDriver):
             hkl_labin  =  "    F+=" + hkl_labels[0] + " SIGF+=" + hkl_labels[1] +\
                              " F-=" + hkl_labels[2] + " SIGF-=" + hkl_labels[3]
 
-        hklfile = os.path.join ( self.inputDir(),hkl.files[0] )
+        hklfile = hkl.getHKLFilePath ( self.inputDir() )
 
         # make a file with input script for Phaser
         self.open_stdin()
@@ -192,7 +211,7 @@ class PhaserEP(basic.TaskDriver):
         if substr:
             self.write_stdin (
                 "\nATOM CRYSTAL crystal1 PDB \""              +\
-                        os.path.join(self.inputDir(),substr.files[0]) + "\""
+                        substr.getSubFilePath(self.inputDir()) + "\""
             )
 
         self.write_stdin (
@@ -204,9 +223,10 @@ class PhaserEP(basic.TaskDriver):
 
         self.write_stdin ( "\nCOMPOSITION BY ASU" )
         for i in range(len(seq)):
+            seq[i] = self.makeClass ( seq[i] )
             self.write_stdin (
                 "\nCOMPOSITION PROTEIN SEQ \"" +\
-                os.path.join(self.inputDir(),seq[i].files[0]) +\
+                seq[i].getSeqFilePath ( self.inputDir() ) +\
                 "\" NUMBER " + str(seq[i].ncopies)
             )
 
@@ -219,17 +239,17 @@ class PhaserEP(basic.TaskDriver):
 
         self.xmodel = None
         if hasattr(self.input_data.data,"xmodel"):  # optional data parameter
-            self.xmodel = self.input_data.data.xmodel[0]
+            self.xmodel = self.makeClass ( self.input_data.data.xmodel[0] )
             if "substructure" in self.xmodel.subtype:
                 self.write_stdin (
                     "\nPARTIAL HKLIN \"" +\
-                        os.path.join(self.inputDir(),self.xmodel.files[1]) +\
+                        self.xmodel.getMTZFilePath(self.inputDir()) +\
                         "\" RMS " + str(self.xmodel.rmsd)
                 )
             else:
                 self.write_stdin (
                     "\nPARTIAL PDB \"" +\
-                        os.path.join(self.inputDir(),self.xmodel.files[0]) +\
+                        self.xmodel.getXYZFilePath(self.inputDir()) +\
                         "\" RMS " + str(self.xmodel.rmsd)
                 )
 
@@ -267,7 +287,7 @@ class PhaserEP(basic.TaskDriver):
 
         self.write_stdin ( "\nATOM CHANGE BFACTOR WILSON " + str(self.getParameter(sec3.WILSON_BFACTOR_SEL)) )
 
-        self.write_stdin ( "\n" )
+        self.write_stdin ( "\nLLGMAPS ON\n" )
         self.close_stdin()
 
         # make command-line parameters for phaser

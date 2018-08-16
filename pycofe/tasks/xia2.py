@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    03.08.18   <--  Date of Last Modification.
+#    14.08.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -175,12 +175,12 @@ class Xia2(basic.TaskDriver):
                     else:
                         self.runApp ( "dials.export",["format=json"])
 
-                    outFileName = "rlp.json"
-                    rlpFileName = os.path.join ( self.outputDir(),sweepId +"_"+ outFileName )
-                    if os.path.isfile(outFileName):
-                        os.rename ( outFileName,rlpFileName )
+                    rlpFileName = "rlp.json"
+                    rlpFilePath = os.path.join ( self.outputDir(),sweepId +"_"+ rlpFileName )
+                    if os.path.isfile(rlpFileName):
+                        os.rename ( rlpFileName,rlpFilePath )
                     else:
-                        rlpFileName = None
+                        rlpFilePath = None
 
                     # ===== For new version of rs_mapper =======
                     indexDir  = os.path.join ( crystalName,datasetName,sweepId,"refine" )
@@ -227,10 +227,10 @@ class Xia2(basic.TaskDriver):
                         else:
                             self.runApp ( "dials.rs_mapper",["grid_size=128","max_resolution=8"] )
 
-                    outFileName = "rs_mapper_output.ccp4"
-                    mapFilePath = os.path.join ( self.outputDir(),sweepId +"_"+ outFileName + ".map" )
-                    if os.path.isfile(outFileName):
-                        os.rename ( outFileName,mapFilePath )
+                    mapFileName = "rs_mapper_output.ccp4"
+                    mapFilePath = os.path.join ( self.outputDir(),sweepId +"_"+ mapFileName + ".map" )
+                    if os.path.isfile(mapFileName):
+                        os.rename ( mapFileName,mapFilePath )
                     else:
                         mapFilePath = None
 
@@ -243,7 +243,7 @@ class Xia2(basic.TaskDriver):
                     imported_data = import_unmerged.run ( self,
                         "Unmerged Reflection Dataset (Sweep " + str(n+1) + ")" )
 
-                    if len(imported_data)>0 and rlpFileName and mapFilePath:
+                    if len(imported_data)>0 and rlpFilePath and mapFilePath:
                         grid_id = "grid_" + str(self.rvrow)
                         pyrvapi.rvapi_add_grid ( grid_id,False,self.report_page_id(),
                                                  self.rvrow,0,1,1 )
@@ -252,8 +252,8 @@ class Xia2(basic.TaskDriver):
                                                  "&nbsp;&nbsp;",
                                                  grid_id,0,0,1,1 )
                         self.putRSViewerButton (
-                                    "/".join([self.outputDir(),sweepId +"_"+ outFileName]),
-                                    "/".join([self.outputDir(),sweepId +"_"+ outFileName + ".map"]),
+                                    "/".join([self.outputDir(),sweepId +"_"+ rlpFileName]),
+                                    "/".join([self.outputDir(),sweepId +"_"+ mapFileName + ".map"]),
                                     imported_data[0].dname,
                                     "View in reciprocal space",
                                     grid_id,0,1 )

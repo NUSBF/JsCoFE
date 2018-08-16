@@ -35,7 +35,7 @@ class DType(dtype_template.DType):
             self._type   = dtype()
             self.dname   = "ligand"
             self.code    = "DRG"
-            self.version = 0
+            self.version = 1
         return
 
     def getXYZFileName(self):

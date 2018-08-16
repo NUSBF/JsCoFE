@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    05.07.17   <--  Date of Last Modification.
+#    09.08.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -12,7 +12,7 @@
 #  Makes structural alignment of an ensemble with Gesamt, reports all
 #  Gesamt's scores etc. and puts export data widget
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2018
 #
 # ============================================================================
 #
@@ -25,8 +25,7 @@ import sys
 import pyrvapi
 
 #  application imports
-#from dtypes import dtype_xyz
-from varut  import command
+from  pycofe.varut   import command
 
 
 # ============================================================================
@@ -41,7 +40,7 @@ def run ( body, panelId, ensemble ):  # body is reference to the main Import cla
     if ensemble.nModels > 1:
         # make command-line parameters for Gesamt
 
-        ensFileName = os.path.join ( body.outputDir(),ensemble.files[0] )
+        ensFileName = ensemble.getXYZFilePath ( body.outputDir() )
         cmd = []
         for model in ensemble.xyzmeta["xyz"]:
             cmd += [ ensFileName, "-s", "/" + str(model["model"]) ]

@@ -56,7 +56,7 @@ TaskFacilityImport.prototype.constructor = TaskFacilityImport;
 TaskFacilityImport.prototype.icon_small = function()  { return './images/task_fimport_20x20.svg'; }
 TaskFacilityImport.prototype.icon_large = function()  { return './images/task_fimport.svg';       }
 
-TaskFacilityImport.prototype.currentVersion = function()  { return 0; }
+TaskFacilityImport.prototype.currentVersion = function()  { return 1; }
 
 // export such that it could be used in both node and a browser
 if (!__template)  {

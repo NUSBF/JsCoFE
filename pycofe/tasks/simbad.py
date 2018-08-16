@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    20.06.18   <--  Date of Last Modification.
+#    09.08.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -115,7 +115,7 @@ class Simbad(asudef.ASUDef):
                  "-webserver_uri"      ,"jsrview",
                  "-work_dir"           ,"./",
                  "-rvapi_document"     ,self.reportDocumentName(),
-                 os.path.join(self.inputDir(),hkl.files[0])
+                 hkl.getHKLFilePath ( self.inputDir() )
                ]
 
         self.flush()
@@ -173,6 +173,7 @@ class Simbad(asudef.ASUDef):
             # register structure data
             structure = self.registerStructure (
                             os.path.join(self.reportDir(),result0["pdb"]),
+                            None,
                             os.path.join(self.reportDir(),result0["mtz"]),
                             os.path.join(self.reportDir(),result0["map"]),
                             os.path.join(self.reportDir(),result0["dmap"]),
@@ -183,7 +184,7 @@ class Simbad(asudef.ASUDef):
                 structure.addDataAssociation ( hkl.dataId )
                 structure.setRefmacLabels ( hkl )
                 structure.addMRSubtype ()
-                structure.addXYZSubtype()
+                structure.setXYZSubtype()
 
                 self.putStructureWidget ( "structure_btn_",
                           result0["name"] + " structure and electron density",

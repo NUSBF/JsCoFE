@@ -214,7 +214,7 @@ TaskXia2.prototype.constructor = TaskXia2;
 TaskXia2.prototype.icon_small = function()  { return './images/task_xia2_20x20.svg'; }
 TaskXia2.prototype.icon_large = function()  { return './images/task_xia2.svg';       }
 
-TaskXia2.prototype.currentVersion = function()  { return 0; }
+TaskXia2.prototype.currentVersion = function()  { return 1; }
 
 // export such that it could be used in both node and a browser
 if (!__template)  {

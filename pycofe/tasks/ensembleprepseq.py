@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    08.08.18   <--  Date of Last Modification.
+#    09.08.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -33,7 +33,6 @@ import pyrvapi
 
 #  application imports
 import basic
-from   pycofe.dtype  import dtype_template
 from   pycofe.proc   import analyse_ensemble
 
 
@@ -100,7 +99,7 @@ class EnsemblePrepSeq(basic.TaskDriver):
         self.close_stdin()
 
         # make command-line parameters for mrbump run on a SHELL-type node
-        cmd = [ "seqin",seq.getFilePath(self.inputDir(),dtype_template.file_key["seq"]) ]
+        cmd = [ "seqin",seq.getSeqFilePath(self.inputDir()) ]
 
         # Prepare report parser
         self.setGenericLogParser ( self.mrbump_report(),True )
@@ -123,7 +122,7 @@ class EnsemblePrepSeq(basic.TaskDriver):
             ensembleSerNo   = 0
             domainNo        = 1
             models_dir      = os.path.join ( search_dir,"models" );
-            seqName,fext    = os.path.splitext ( seq.files[0] )
+            seqName,fext    = os.path.splitext ( seq.getSeqFileName() )
 
             if os.path.isdir(models_dir):
 
@@ -181,8 +180,8 @@ class EnsemblePrepSeq(basic.TaskDriver):
                     domainNo += 1
                     dirName   = "domain_" + str(domainNo)
 
-            os.rename ( os.path.join(self.inputDir(),seq.files[0]),
-                        os.path.join(self.outputDir(),seq.files[0]) )
+            os.rename ( seq.getSeqFilePath(self.inputDir()),
+                        seq.getSeqFilePath(self.outputDir()) )
 
             # ----------------------------------------------------------------
             if not ensembles_found:

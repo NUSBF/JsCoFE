@@ -83,7 +83,7 @@ TaskXyz2Revision.prototype.constructor = TaskXyz2Revision;
 TaskXyz2Revision.prototype.icon_small = function()  { return './images/task_formstructure_20x20.svg'; }
 TaskXyz2Revision.prototype.icon_large = function()  { return './images/task_formstructure.svg';       }
 
-TaskXyz2Revision.prototype.currentVersion = function()  { return 0; }
+TaskXyz2Revision.prototype.currentVersion = function()  { return 1; }
 
 if (!__template)  {
   // for client side

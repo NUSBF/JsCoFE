@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    26.04.18   <--  Date of Last Modification.
+ *    09.08.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -79,7 +79,7 @@ DataRevision.prototype.icon_large = function()  { return './images/data_xrayimag
 
 // when data class version is changed here, change it also in python
 // constructors
-DataRevision.prototype.currentVersion = function()  { return 2; }
+DataRevision.prototype.currentVersion = function()  { return 3; } // from 09.08.2018
 
 // export such that it could be used in both node and a browser
 

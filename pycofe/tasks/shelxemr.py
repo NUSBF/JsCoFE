@@ -167,7 +167,7 @@ class ShelxEMR(basic.TaskDriver):
             fnames    = self.calcCCP4Maps ( self.shelxe_mtz(),self.outputFName,
                                             "shelxe" )
             structure = self.registerStructure1 (
-                        self.shelxe_pdb(),self.shelxe_mtz(),fnames[0],None,None,
+                        self.shelxe_pdb(),None,self.shelxe_mtz(),fnames[0],None,None,
                         self.outputFName )
             if structure:
                 structure.copyAssociations ( istruct )

@@ -62,7 +62,7 @@ TaskAmple.prototype.constructor = TaskAmple;
 TaskAmple.prototype.icon_small = function()  { return './images/task_ample_20x20.svg'; }
 TaskAmple.prototype.icon_large = function()  { return './images/task_ample.svg';       }
 
-TaskAmple.prototype.currentVersion = function()  { return 0; }
+TaskAmple.prototype.currentVersion = function()  { return 1; }
 
 if (__template)  {
   //  for server side

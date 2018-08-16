@@ -52,7 +52,7 @@ TaskRVAPIApp.prototype.constructor = TaskRVAPIApp;
 // ===========================================================================
 // export such that it could be used in both node and a browser
 
-TaskRVAPIApp.prototype.currentVersion = function()  { return 0; }
+TaskRVAPIApp.prototype.currentVersion = function()  { return 1; }
 
 if (__template)  {
   //  for server side

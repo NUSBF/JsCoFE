@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    27.03.18   <--  Date of Last Modification.
+ *    10.08.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -46,6 +46,12 @@ function TaskCoot()  {
       min       : 1,          // minimum acceptable number of data instances
       max       : 1           // maximum acceptable number of data instances
     },{
+      data_type   : {'DataStructure':[],'DataEnsemble':[],'DataXYZ':[]},  // data type(s) and subtype(s)
+      label       : 'Additional structures', // label for input dialog
+      inputId     : 'aux_struct', // input Id for referencing input fields
+      min         : 0,            // minimum acceptable number of data instances
+      max         : 20            // maximum acceptable number of data instances
+    },{
       data_type : {'DataLigand':[]},  // data type(s) and subtype(s)
       label     : 'Ligand data', // label for input dialog
       inputId   : 'ligand',      // input Id for referencing input fields
@@ -69,7 +75,7 @@ TaskCoot.prototype.constructor = TaskCoot;
 TaskCoot.prototype.icon_small = function()  { return './images/task_coot_20x20.svg'; }
 TaskCoot.prototype.icon_large = function()  { return './images/task_coot.svg';       }
 
-TaskCoot.prototype.currentVersion = function()  { return 0; }
+TaskCoot.prototype.currentVersion = function()  { return 1; }
 
 if (__template)  {
   //  for server side

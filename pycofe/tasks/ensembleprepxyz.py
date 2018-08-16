@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    08.08.18   <--  Date of Last Modification.
+#    09.08.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -61,15 +61,17 @@ class EnsemblePrepXYZ(basic.TaskDriver):
             seq = self.makeClass ( self.input_data.data.seq[0] )
 
         xyz = self.input_data.data.xyz
+        for i in range(len(xyz)):
+            xyz[i] = self.makeClass ( xyz[i] )
 
         # Just in case (of repeated run) remove ensemble output xyz file. When
         # ensembler succeeds, this file is created.
 
         if not self.outputFName:
             if seq:
-                self.outputFName = os.path.splitext(seq.files[0])[0]
+                self.outputFName = os.path.splitext(seq.getSeqFileName())[0]
             else:
-                self.outputFName = os.path.splitext(xyz[0].files[0])[0]
+                self.outputFName = os.path.splitext(xyz[0].getXYZFileName())[0]
 
         outputFile = self.getXYZOFName()
 
@@ -87,10 +89,9 @@ class EnsemblePrepXYZ(basic.TaskDriver):
             )
 
             for i in range(len(xyz)):
-                xyz[i] = self.makeClass ( xyz[i] )
-                fpath  = xyz[i].getFilePath ( self.inputDir(),dtype_template.file_key["xyz"] )
+                fpath  = xyz[i].getXYZFilePath ( self.inputDir() )
                 if xyz[i].chainSel != "(all)":
-                    base, ext = os.path.splitext ( xyz[i].getFileName(dtype_template.file_key["xyz"]) )
+                    base, ext = os.path.splitext ( xyz[i].getXYZFileName() )
                     fpath_sel = base + "_" + xyz[i].chainSel + ext
                     coor.fetchChains ( fpath,-1,[xyz[i].chainSel],True,True,fpath_sel )
                     self.write_stdin ( "\nmodel = " + fpath_sel )
@@ -153,7 +154,7 @@ class EnsemblePrepXYZ(basic.TaskDriver):
         else:
             # single xyz dataset on input
             xyz0  = self.makeClass ( xyz[0] )
-            fpath = xyz0.getFilePath ( self.inputDir(),dtype_template.file_key["xyz"] )
+            fpath = xyz0.getXYZFilePath ( self.inputDir() )
             coor.fetchChains ( fpath,-1,[xyz0.chainSel],True,True,outputFile )
             #if xyz0.chainSel != "(all)":
             #    coor.fetchChains ( fpath,-1,[xyz0.chainSel],True,True,outputFile )
@@ -185,9 +186,9 @@ class EnsemblePrepXYZ(basic.TaskDriver):
                 if not seq:
                     self.dataSerialNo += 1
                     seq = dtype_sequence.DType ( self.job_id )
-                    seq.setFile   ( "(unknown)",dtype_template.file_key["seq"] )
+                    seq.setSeqFile   ( "(unknown)" )
                     seq.makeDName ( self.dataSerialNo )
-                    seq.files = []  # no files associated with unknown sequence
+                    seq.removeFiles()  # no files associated with unknown sequence
                     seq.setSubtype  ( "unknown" )
                     self.outputDataBox.add_data ( seq )
                     self.putMessage ( "<b>Associated with auto-generated " +\
@@ -200,10 +201,11 @@ class EnsemblePrepXYZ(basic.TaskDriver):
                 self.putEnsembleWidget ( "ensemble_btn","Coordinates",ensemble )
                 ensemble.addDataAssociation ( seq.dataId )
                 ensemble.sequence = seq
-                if len(seq.files)>0:
-                    ensemble.files += [seq.files[0]]
-                    os.rename ( os.path.join(self.inputDir() ,seq.files[0]),
-                                os.path.join(self.outputDir(),seq.files[0]) )
+                seq_file_name = seq.getSeqFileName()
+                if seq_file_name:
+                    ensemble.setSeqFile ( seq_file_name )
+                    os.rename ( seq.getSeqFilePath(self.inputDir()),
+                                seq.getSeqFilePath(self.outputDir()) )
                 else:
                     ensemble.setSubtype ( "sequnk" )
 

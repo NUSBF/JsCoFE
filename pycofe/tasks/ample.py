@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    14.03.18   <--  Date of Last Modification.
+#    09.08.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -37,7 +37,7 @@ import pyrvapi
 
 #  application imports
 import basic
-from   pycofe.proc   import xyzmeta
+from   pycofe.proc  import xyzmeta
 
 
 # ============================================================================
@@ -56,11 +56,11 @@ class Ample(basic.TaskDriver):
 
         # fetch input data
         hkl = self.makeClass ( self.input_data.data.hkl[0] )
-        seq = self.input_data.data.seq[0]
+        seq = self.makeClass ( self.input_data.data.seq[0] )
 
         # make command line parameters
-        cmd = [ os.path.join(self.inputDir(),hkl.files[0]),
-                os.path.join(self.inputDir(),seq.files[0]),
+        cmd = [ hkl.getHKLFilePath(self.inputDir()),
+                seq.getSeqFilePath(self.inputDir()),
                 "-rvapi_document",self.reportDocumentName() ]
 
         # pass rvapi document with metadata

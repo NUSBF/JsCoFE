@@ -152,7 +152,7 @@ TaskFitWaters.prototype.constructor = TaskFitWaters;
 TaskFitWaters.prototype.icon_small = function()  { return './images/task_fitwaters_20x20.svg'; }
 TaskFitWaters.prototype.icon_large = function()  { return './images/task_fitwaters.svg';       }
 
-TaskFitWaters.prototype.currentVersion = function()  { return 0; }
+TaskFitWaters.prototype.currentVersion = function()  { return 1; }
 
 if (__template)  {
   //  for server side

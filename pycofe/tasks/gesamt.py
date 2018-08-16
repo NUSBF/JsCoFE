@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    01.08.18   <--  Date of Last Modification.
+#    09.08.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -81,7 +81,8 @@ class Gesamt(basic.TaskDriver):
         # make command-line parameters
         cmd = []
         for i in range(nXYZ):
-            cmd += [os.path.join(self.inputDir(),xyz[i].files[0]),
+            xyz[i] = self.makeClass ( xyz[i] )
+            cmd += [ xyz[i].getXYZFilePath(self.inputDir()),
                     "-s",xyz[i].chainSel]
 
         if nXYZ<2:

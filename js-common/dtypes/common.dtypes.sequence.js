@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    08.08.18   <--  Date of Last Modification.
+ *    09.08.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -61,7 +61,7 @@ DataSequence.prototype.icon_large = function()  { return './images/data.svg';   
 
 // when data class version is changed here, change it also in python
 // constructors
-DataSequence.prototype.currentVersion = function() { return 2; } // from 28.06.2018
+DataSequence.prototype.currentVersion = function()  { return 3; } // from 09.08.2018
 
 // export such that it could be used in both node and a browser
 

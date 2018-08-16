@@ -98,7 +98,7 @@ TaskMakeLigand.prototype.constructor = TaskMakeLigand;
 TaskMakeLigand.prototype.icon_small = function()  { return './images/task_makeligand_20x20.svg'; }
 TaskMakeLigand.prototype.icon_large = function()  { return './images/task_makeligand.svg';       }
 
-TaskMakeLigand.prototype.currentVersion = function()  { return 0; }
+TaskMakeLigand.prototype.currentVersion = function()  { return 1; }
 
 if (__template)  {
   //  for server side

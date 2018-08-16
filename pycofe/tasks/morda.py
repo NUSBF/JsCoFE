@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    08.08.18   <--  Date of Last Modification.
+#    09.08.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -44,7 +44,6 @@ import shutil
 
 #  application imports
 import basic
-from   pycofe.dtypes  import dtype_template
 from   pycofe.proc    import xyzmeta
 
 
@@ -106,7 +105,7 @@ class Morda(basic.TaskDriver):
             if len(seq)>0:
                 for s in seq:
                     s1 = self.makeClass ( s )
-                    with open(s1.getFilePath(self.inputDir(),dtype_template.file_key["seq"]),'rb') as hf:
+                    with open(s1.getSeqFilePath(self.inputDir()),'rb') as hf:
                         newf.write(hf.read())
                     newf.write ( '\n' );
 
@@ -119,7 +118,7 @@ class Morda(basic.TaskDriver):
         self.open_stdin  ()
         self.write_stdin ( "LABIN FILE 1 E1=%s E2=%s E3=%s\nEND\n" %labels )
         self.close_stdin ()
-        cmd = [ "HKLIN1",os.path.join(self.inputDir(),hkl.files[0]),
+        cmd = [ "HKLIN1",hkl.getHKLFilePath(self.inputDir()),
                 "HKLOUT",cad_mtz ]
         self.runApp ( "cad",cmd )
 

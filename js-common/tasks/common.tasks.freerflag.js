@@ -101,7 +101,7 @@ TaskFreeRFlag.prototype.constructor = TaskFreeRFlag;
 TaskFreeRFlag.prototype.icon_small = function()  { return './images/task_freerflag_20x20.svg'; }
 TaskFreeRFlag.prototype.icon_large = function()  { return './images/task_freerflag.svg';       }
 
-TaskFreeRFlag.prototype.currentVersion = function()  { return 0; }
+TaskFreeRFlag.prototype.currentVersion = function()  { return 1; }
 
 if (!__template)  {
   //  for client side

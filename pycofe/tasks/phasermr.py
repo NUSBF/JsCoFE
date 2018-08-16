@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    19.12.17   <--  Date of Last Modification.
+#    09.08.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2018
 #
 # ============================================================================
 #
@@ -62,9 +62,13 @@ class PhaserMR(basic.TaskDriver):
         revision = self.makeClass ( self.input_data.data.revision[0] )
         hkl      = self.makeClass ( self.input_data.data.hkl[0] )
         seq      = self.input_data.data.seq
+        ens      = self.input_data.data.model
+
         for i in range(len(seq)):
             seq[i] = self.makeClass ( seq[i] )
-        ens      = self.input_data.data.model
+
+        for i in range(len(ens)):
+            ens[i] = self.makeClass ( ens[i] )
 
         try:
             hkl_labels = ( hkl.dataset.Imean.value, hkl.dataset.Imean.sigma )
@@ -73,7 +77,7 @@ class PhaserMR(basic.TaskDriver):
             hkl_labels = ( hkl.dataset.Fmean.value, hkl.dataset.Fmean.sigma )
             hkl_labin  =  "\nLABIN  F=" + hkl_labels[0] + " SIGF=" + hkl_labels[1]
 
-        hklfile = os.path.join(self.inputDir(),hkl.files[0])
+        hklfile = hkl.getHKLFilePath ( self.inputDir() )
         xstruct = None
         if "xyz" in revision.subtype:  # optional data parameter
             xstruct = revision.Structure
@@ -85,7 +89,7 @@ class PhaserMR(basic.TaskDriver):
             self.write_stdin ( "END\n" )
             self.close_stdin()
             cmd = [ "HKLIN1", hklfile,
-                    "HKLIN2", os.path.join(self.inputDir(),xstruct.files[1]),
+                    "HKLIN2", xstruct.getMTZFilePath(self.inputDir()),
                     "HKLOUT", cad_mtz ]
             self.runApp ( "cad", cmd )
             hklfile    = cad_mtz
@@ -120,7 +124,7 @@ class PhaserMR(basic.TaskDriver):
             ename = "ensemble" + str(i+1)
             self.write_stdin (
                 "\nENSEMBLE " + ename + " &" +\
-                "\n    PDB \"" + os.path.join(self.inputDir(),ens[i].files[0]) +\
+                "\n    PDB \"" + ens[i].getXYZFilePath(self.inputDir()) +\
                 "\" RMS " + str(ens[i].rmsd) +\
                 "\nENSEMBLE " + ename + " HETATM ON"
             )
@@ -132,7 +136,7 @@ class PhaserMR(basic.TaskDriver):
             else:
                 self.write_stdin ( "\nCOMPOSITION PROTEIN SEQ" )
             self.write_stdin ( " \"" +\
-                os.path.join(self.inputDir(),seq[i].files[0]) +\
+                seq[i].getSeqFilePath(self.inputDir()) +\
                 "\" NUMBER " + str(seq[i].ncopies)
             )
 
@@ -145,7 +149,7 @@ class PhaserMR(basic.TaskDriver):
         if xstruct:  # optional data parameter
             self.write_stdin (
                 "\nENSEMBLE ensemble0" + " &" +\
-                "\n    PDB \"" + os.path.join(self.inputDir(),xstruct.files[0]) +\
+                "\n    PDB \"" + xstruct.getXYZFilePath(self.inputDir()) +\
                 "\" IDENT 0.9" +\
                 "\nTARGET TRA PHASED" +\
                 "\nSOLUTION ORIGIN ENSEMBLE ensemble0\n"

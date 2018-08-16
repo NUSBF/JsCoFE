@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    26.04.18   <--  Date of Last Modification.
+#    16.08.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -33,7 +33,7 @@ class DType(dtype_template.DType):
         if not json_str:
             self._type          = dtype()
             self.dname          = "revision"
-            self.version        = 1
+            self.version        = 2
             self.HKL            = None
             self.ASU            = jsonut.jObject()  # asymetric unit data
             self.ASU.seq        = [];
@@ -59,7 +59,7 @@ class DType(dtype_template.DType):
                 self.HKL = None
             self.ASU = jsonut.jObject ( prevRevision.ASU.to_JSON() )
             if prevRevision.Structure:
-                self.Structure = jsonut.jObject ( prevRevision.Structure.toJSON() )
+                self.Structure = jsonut.jObject ( prevRevision.Structure.to_JSON() )
             else:
                 self.Structure = None
             self.Ligands = []
@@ -130,6 +130,13 @@ class DType(dtype_template.DType):
 
     def setStructureData ( self,structure ):
         self.Structure = structure
+        self.removeSubtypes ([
+            dtype_template.subtypeEP (),
+            dtype_template.subtypeMR (),
+            dtype_template.subtypeXYZ(),
+            dtype_template.subtypeSubstructure(),
+            dtype_template.subtypePhases()
+        ])
         self.addSubtypes ( structure.subtype )
         return
 

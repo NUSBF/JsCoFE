@@ -1195,7 +1195,7 @@ TaskAimless.prototype.constructor = TaskAimless;
 TaskAimless.prototype.icon_small = function()  { return './images/task_aimless_20x20.svg'; }
 TaskAimless.prototype.icon_large = function()  { return './images/task_aimless.svg';       }
 
-TaskAimless.prototype.currentVersion = function()  { return 0; }
+TaskAimless.prototype.currentVersion = function()  { return 1; }
 
 if (!__template)  {
   //  for client side

@@ -31,5 +31,5 @@ class DType(dtype_template.DType):
         if not json_str:
             self._type   = dtype()
             self.dname   = "xrayimages"
-            self.version = 0
+            self.version = 1
         return

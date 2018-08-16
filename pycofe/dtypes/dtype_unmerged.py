@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    08.08.18   <--  Date of Last Modification.
+#    09.08.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -35,7 +35,7 @@ class DType(dtype_template.DType):
         if not json_str:
             self._type   = dtype()
             self.dname   = "unmerged"
-            self.version = 0
+            self.version = 1
         return
 
 
@@ -55,26 +55,22 @@ class DType(dtype_template.DType):
     def makeDName ( self,serialNo ):
         if serialNo > 0:
             self.makeDataId ( serialNo )
-        if len(self.files) > 0:
-            fname,fext = os.path.splitext(self.files[0])
+        for fileKey in self.files:
+            fname,fext = os.path.splitext(self.files[fileKey])
             fname += " /" + self.dataset.name + " /" + self._type[4:].lower() + "/"
             if serialNo > 0:
                 self.dname = "[" + self.dataId + "] " + fname
             else:
                 self.dname = fname
+            break
         return
 
-
-    """
-    def makeDName ( self,serialNo ):
-        if serialNo > 0:
-            self.makeDataId ( serialNo )
-        if len(self.files) > 0:
-            fname,fext = os.path.splitext(self.files[0])
-            fname = self.dataset.name + " /" + fname + " /" + self._type[4:].lower() + "/"
-            if serialNo > 0:
-                self.dname = "[" + self.dataId + "] " + fname
-            else:
-                self.dname = fname
+    def setUnmergedFileName ( self,fname ):
+        self.files[dtype_template.file_key["mtz"]] = fname
         return
-    """
+
+    def getUnmergedFileName(self):
+        return self.getFileName ( dtype_template.file_key["mtz"] )
+
+    def getUnmergedFilePath ( self,dirPath ):
+        return self.getFilePath ( dirPath,dtype_template.file_key["mtz"] )

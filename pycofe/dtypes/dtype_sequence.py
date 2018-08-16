@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    08.08.18   <--  Date of Last Modification.
+#    09.08.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -104,7 +104,7 @@ class DType(dtype_template.DType):
         if not json_str:
             self._type   = dtype()
             self.dname   = "sequence"
-            self.version = 1    # from 01.12.2017
+            self.version = 2    # from 09.08.2018
             self.size    = 0
             self.weight  = 0.0
             self.ncopies = 1    # expected number of copies in ASU
@@ -130,17 +130,23 @@ class DType(dtype_template.DType):
         if self.isRNA():      return dtype_template.subtypeRNA    ()
         return ""
 
+    def setSeqFile ( self,fname ):
+        self.setFile ( fname,dtype_template.file_key["seq"] )
+        return
+
+    def getSeqFileName ( self ):
+        return self.getFileName ( dtype_template.file_key["seq"] )
 
     def getSeqFilePath ( self,dirPath ):
-        return self.getFilePath ( dirPath,0 )
+        return self.getFilePath ( dirPath,dtype_template.file_key["seq"] )
 
 
     def getSequence(self,dirPath):
         # returns bare sequence from the associated file
         sequence = ""
-        if dtype_template.file_key["seq"] in self.files:
-            fname = self.files[dtype_template.file_key["seq"]]
-            f     = open(os.path.join(dirPath,fname),'r')
+        fpath    = self.getSeqFilePath ( dirPath )
+        if fpath:
+            f     = open(fpath,'r')
             lines = f.readlines()
             f.close()
             i = 0
@@ -149,7 +155,7 @@ class DType(dtype_template.DType):
                     break
                 else:
                     i += 1
-            if (i<len(lines)-1) and fname.lower().endswith('.pir'):
+            if (i<len(lines)-1) and fpath.lower().endswith('.pir'):
                 i += 1
             i += 1
             while (i<len(lines)):

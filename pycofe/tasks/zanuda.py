@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    02.11.17   <--  Date of Last Modification.
+#    09.08.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2018
 #
 # ============================================================================
 #
@@ -56,7 +56,7 @@ class Zanuda(basic.TaskDriver):
         # Prepare zanuda input
         # fetch input data
         hkl = self.makeClass ( self.input_data.data.hkl[0] )
-        xyz = self.input_data.data.struct[0]
+        xyz = self.makeClass ( self.input_data.data.struct[0] )
 
         # prepare mtz with needed columns -- this is necessary because BALBES
         # does not have specification of mtz columns on input (labin)
@@ -67,13 +67,13 @@ class Zanuda(basic.TaskDriver):
         self.open_stdin  ()
         self.write_stdin ( "LABIN FILE 1 E1=%s E2=%s\nEND\n" %labels )
         self.close_stdin ()
-        cmd = [ "HKLIN1",os.path.join(self.inputDir(),hkl.files[0]),
+        cmd = [ "HKLIN1",hkl.getHKLFilePath(self.inputDir()),
                 "HKLOUT",cad_mtz ]
         self.runApp ( "cad",cmd )
 
         # make command-line parameters for bare morda run on a SHELL-type node
         cmd = [ "hklin" ,cad_mtz,
-                "xyzin" ,os.path.join(self.inputDir(),xyz.files[0]),
+                "xyzin" ,xyz.getXYZFilePath(self.inputDir()),
                 "hklout",self.getMTZOFName(),
                 "xyzout",self.getXYZOFName(),
                 "tmpdir",os.path.join(os.environ["CCP4_SCR"],uuid.uuid4().hex) ]
@@ -113,7 +113,7 @@ class Zanuda(basic.TaskDriver):
             # register output data from temporary location (files will be moved
             # to output directory by the registration procedure)
 
-            structure = self.registerStructure ( self.getXYZOFName(),mtzfile,
+            structure = self.registerStructure ( self.getXYZOFName(),None,mtzfile,
                                                  fnames[0],fnames[1],None )
             if structure:
 

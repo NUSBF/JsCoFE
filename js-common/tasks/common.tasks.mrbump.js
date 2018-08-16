@@ -73,7 +73,7 @@ TaskMrBump.prototype.constructor = TaskMrBump;
 TaskMrBump.prototype.icon_small = function()  { return './images/task_mrbump_20x20.svg'; }
 TaskMrBump.prototype.icon_large = function()  { return './images/task_mrbump.svg';       }
 
-TaskMrBump.prototype.currentVersion = function()  { return 0; }
+TaskMrBump.prototype.currentVersion = function()  { return 1; }
 
 // export such that it could be used in both node and a browser
 

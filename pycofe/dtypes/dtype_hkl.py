@@ -33,7 +33,7 @@ class DType(dtype_template.DType):
         if not json_str:
             self._type         = dtype()
             self.dname         = "hkl"
-            self.version       = 2
+            self.version       = 3
             self.wtype         = "peak" # 'low-remote', 'peak', 'native', 'high-remote'
             self.f_use_mode    = "NO"   # 'NO','EDGE','ON','OFF' (Phaser-EP)
             self.f1            = ""     # amplitude shift  (Crank-2, Phaser-EP)
@@ -201,6 +201,9 @@ class DType(dtype_template.DType):
 
         return
 
+
+    def getHKLFileName ( self ):
+        return self.getFileName ( dtype_template.file_key["mtz"] )
 
     def getHKLFilePath ( self,dirPath ):
         return  self.getFilePath ( dirPath,dtype_template.file_key["mtz"] )

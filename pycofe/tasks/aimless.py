@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    01.08.18   <--  Date of Last Modification.
+#    13.08.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -74,7 +74,9 @@ class Aimless(basic.TaskDriver):
 
     def run(self):
 
-        unmerged = self.makeClass ( self.input_data.data.unmerged )
+        unmerged = self.input_data.data.unmerged
+        for i in range(len(unmerged)):
+            unmerged[i] = self.makeClass ( unmerged[i] )
         merge_separately = len(unmerged) > 1
         reso_list = [str(ds.dataset.reso) for ds in unmerged]
         reso_high = min(reso_list, key=lambda x: float(x))
@@ -113,11 +115,12 @@ class Aimless(basic.TaskDriver):
 #           return
 #   def tmp(self):
 
-        ds0         = self.input_data.data.ds0[0]
-        mtzRef      = os.path.join(self.inputDir(),ds0.files[0])
+        ds0         = self.makeClass ( self.input_data.data.ds0[0] )
+        mtzRef      = ds0.getUnmergedFilePath ( self.inputDir() )
         symm_select = ds0.symm_select if ds0._type=="DataUnmerged" else None
 
-        plist = [[ds.dataset,os.path.join(self.inputDir(),ds.files[0]),ds.runs] for ds in unmerged]
+        #plist = [[ds.dataset,os.path.join(self.inputDir(),ds.files[dtype_template.file_key["mtz"]]),ds.runs] for ds in unmerged]
+        plist = [[ds.dataset,ds.getUnmergedFilePath(self.inputDir()),ds.runs] for ds in unmerged]
         format_list = [getattr(ds.dataset,'original_format','unknown') for ds in unmerged]
         # see (A) below
         # onlymerge = not sum([f != 'xds_scaled' for f in format_list])

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    06.01.18   <--  Date of Last Modification.
+ *    16.08.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -42,10 +42,18 @@ function TaskParrot()  {
       data_type   : {'DataRevision':['phases']}, // data type(s) and subtype(s)
       label       : 'Structure revision',        // label for input dialog
       inputId     : 'revision', // input Id for referencing input fields
-      customInput : 'parrot',   // lay custom fields below the dropdown
+      //customInput : 'parrot',   // lay custom fields below the dropdown
       version     : 0,          // minimum data version allowed
       min         : 1,          // minimum acceptable number of data instances
       max         : 1           // maximum acceptable number of data instances
+    },{
+      data_type   : {'DataStructure':['xyz','substructure']},  // data type(s) and subtype(s)
+      label       : 'Model for NCS<br>detection', // label for input dialog
+      inputId     : 'ncs_struct', // input Id for referencing input fields
+      force       : 1,            // will display tree-closest item by default
+      min         : 0,            // minimum acceptable number of data instances
+      max         : 1             // maximum acceptable number of data instances
+    }
       /*
     {
       data_type   : {'DataStructure':['~substructure-am']},  // data type(s) and subtype(s)
@@ -62,6 +70,7 @@ function TaskParrot()  {
       min         : 0,             // minimum acceptable number of data instances
       max         : 100000         // maximum acceptable number of data instances
       */
+      /*
     },{
       data_type   : {'DataStructure':['~substructure','~substructure-am']},  // data type(s) and subtype(s)
       label       : 'Model for NCS<br>detection', // label for input dialog
@@ -75,6 +84,7 @@ function TaskParrot()  {
       min         : 0,            // minimum acceptable number of data instances
       max         : 1             // maximum acceptable number of data instances
     }
+    */
   ];
 
   this.parameters = { // input parameters
@@ -211,7 +221,7 @@ TaskParrot.prototype.doPackSuffixes = function()  {
          ];
 }
 
-TaskParrot.prototype.currentVersion = function()  { return 0; }
+TaskParrot.prototype.currentVersion = function()  { return 1; }
 
 if (!__template)  {
   //  for client side

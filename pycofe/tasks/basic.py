@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    01.08.18   <--  Date of Last Modification.
+#    16.08.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -725,7 +725,7 @@ class TaskDriver(object):
         idir = inpDir
         if not idir:
             idir = self.inputDir()
-        edmap.calcEDMap ( xyzPath,os.path.join(idir,hklData.files[0]),
+        edmap.calcEDMap ( xyzPath,hklData.getHKLFilePath(idir),
                           libPath,hklData.dataset,filePrefix,self.job_dir,
                           self.file_stdout,self.file_stderr,self.log_parser )
         return [ filePrefix + edmap.file_pdb (),
@@ -734,7 +734,7 @@ class TaskDriver(object):
                  filePrefix + edmap.file_dmap() ]
 
     def calcAnomEDMap ( self,xyzPath,hklData,anom_form,filePrefix ):
-        edmap.calcAnomEDMap ( xyzPath,os.path.join(self.inputDir(),hklData.files[0]),
+        edmap.calcAnomEDMap ( xyzPath,hklData.getHKLFilePath(self.inputDir()),
                               hklData.dataset,anom_form,filePrefix,self.job_dir,
                               self.file_stdout,self.file_stderr,self.log_parser )
         return [ filePrefix + edmap.file_pdb(),
@@ -758,6 +758,7 @@ class TaskDriver(object):
         #  subtype = 0: copy subtype from associated data
         #          = 1: set MR subtype
         #          = 2: set EP subtype
+        #          = 3: set EP+Substructure subtype
 
         #self.file_stdout.write ( "name_pattern=" + name_pattern + "\n")
 
@@ -765,11 +766,11 @@ class TaskDriver(object):
 
         if os.path.isfile(xyzPath):
 
-            sec_id = self.refmac_section() + "_" + str(self.widget_no)
+            sec_id = self.getWidgetId ( self.refmac_section() )
             self.putSection ( sec_id,"Electron Density Calculations with Refmac",
                               openState_bool )
 
-            panel_id = self.refmac_report() + "_" + str(self.widget_no)
+            panel_id = self.getWidgetId ( self.refmac_report() )
             pyrvapi.rvapi_add_panel ( panel_id,sec_id,0,0,1,1 )
             #self.log_parser = pyrvapi_ext.parsers.generic_parser ( panel_id,False )
             self.log_parser = pyrvapi_ext.parsers.generic_parser (
@@ -783,8 +784,12 @@ class TaskDriver(object):
             # and puts the corresponding metadata into output databox
             self.file_stdout.write ( "fnames=" + str(fnames) + "\n")
 
-            structure = self.registerStructure (
-                            fnames[0],fnames[1],fnames[2],fnames[3],libPath )
+            if subtype==3:
+                structure = self.registerStructure (
+                                None,fnames[0],fnames[1],fnames[2],fnames[3],libPath )
+            else:
+                structure = self.registerStructure (
+                                fnames[0],None,fnames[1],fnames[2],fnames[3],libPath )
             if structure:
                 structure.addDataAssociation ( hkl.dataId )
                 structure.setRefmacLabels ( hkl )
@@ -799,18 +804,17 @@ class TaskDriver(object):
                     structure.addMRSubtype()
                 else:
                     structure.addEPSubtype()
-                structure.addXYZSubtype()
+                #structure.setXYZSubtype()
                 if title:
                     self.putTitle ( title )
                 else:
                     self.putMessage ( "&nbsp;" )
-                self.putStructureWidget   ( "structure_btn_",
-                                            "Structure and electron density",
-                                            structure )
+                self.putStructureWidget ( self.getWidgetId("structure_btn_"),
+                                          "Structure and electron density",
+                                          structure )
         else:
             self.putTitle ( "No Solution Found" )
 
-        self.widget_no += 1
         return structure
 
 
@@ -855,7 +859,7 @@ class TaskDriver(object):
         fnames = self.calcAnomEDMap ( xyzPath,hkl,anom_form,name_pattern )
 
         anom_structure = self.registerStructure (
-                            fnames[0],fnames[1],fnames[2],fnames[3],None )
+                            fnames[0],None,fnames[1],fnames[2],fnames[3],None )
         if anom_structure:
             anom_structure.addDataAssociation ( hkl.dataId )
             anom_structure.setRefmacLabels    ( hkl )
@@ -984,11 +988,11 @@ class TaskDriver(object):
     #    return
 
 
-    def registerStructure ( self,xyzPath,mtzPath,mapPath,dmapPath,
+    def registerStructure ( self,xyzPath,subPath,mtzPath,mapPath,dmapPath,
                             libPath=None,copy=False ):
         self.dataSerialNo += 1
         structure = dtype_structure.register (
-                                    xyzPath,mtzPath,mapPath,dmapPath,libPath,
+                                    xyzPath,subPath,mtzPath,mapPath,dmapPath,libPath,
                                     self.dataSerialNo ,self.job_id,
                                     self.outputDataBox,self.outputDir(),
                                     copy=copy )
@@ -1001,33 +1005,35 @@ class TaskDriver(object):
         return structure
 
 
-    def _move_file_to_output_dir ( self,fpath,fname_dest ):
-        if os.path.isfile(fpath):
+    def _move_file_to_output_dir ( self,fpath,fname_dest,copy_bool ):
+        if fpath and fname_dest and os.path.isfile(fpath):
             fpath_dest = os.path.join ( self.outputDir(),fname_dest )
             if not os.path.isfile(fpath_dest):
-                os.rename ( fpath,fpath_dest )
+                if copy_bool:
+                    shutil.copy2 ( fpath,fpath_dest )
+                else:
+                    os.rename ( fpath,fpath_dest )
                 return True
         return False
 
 
-    def registerStructure1 ( self,xyzPath,mtzPath,mapPath,dmapPath,libPath,regName ):
+    def registerStructure1 ( self,xyzPath,subPath,mtzPath,mapPath,dmapPath,
+                                  libPath,regName,copy_bool=False ):
         self.dataSerialNo += 1
         structure = dtype_structure.register1 (
-                                xyzPath,mtzPath,mapPath,dmapPath,libPath,
+                                xyzPath,subPath,mtzPath,mapPath,dmapPath,libPath,
                                 regName,self.dataSerialNo,self.job_id,
                                 self.outputDataBox )
         if not structure:
             self.file_stderr.write ( "  NONE STRUCTURE\n" )
             self.file_stderr.flush()
         else:
-            self._move_file_to_output_dir ( xyzPath ,structure.files[0] )
-            self._move_file_to_output_dir ( mtzPath ,structure.files[1] )
-            if (len(structure.files)>2) and structure.files[2]:
-                self._move_file_to_output_dir ( mapPath ,structure.files[2] )
-            if len(structure.files)>3 and structure.files[3]:
-                self._move_file_to_output_dir ( dmapPath,structure.files[3] )
-            if len(structure.files)>4 and structure.files[4]:
-                self._move_file_to_output_dir ( libPath,structure.files[4] )
+            self._move_file_to_output_dir ( xyzPath ,structure.getXYZFileName (),copy_bool )
+            self._move_file_to_output_dir ( subPath ,structure.getSubFileName (),copy_bool )
+            self._move_file_to_output_dir ( mtzPath ,structure.getMTZFileName (),copy_bool )
+            self._move_file_to_output_dir ( mapPath ,structure.getMapFileName (),copy_bool )
+            self._move_file_to_output_dir ( dmapPath,structure.getDMapFileName(),copy_bool )
+            self._move_file_to_output_dir ( libPath ,structure.getLibFileName (),copy_bool )
             structure.putXYZMeta ( self.outputDir(),self.file_stdout,
                                    self.file_stderr,None )
         return structure
@@ -1058,7 +1064,7 @@ class TaskDriver(object):
         self.putMessage1 ( pageId,"<b>Assigned name:</b>&nbsp;" + hkl.dname,row )
         pyrvapi.rvapi_add_data ( widgetId + str(self.widget_no),title_str,
                                  # always relative to job_dir from job_dir/html
-                                 "/".join(["..",self.outputDir(),hkl.files[0]]),
+                                 "/".join(["..",self.outputDir(),hkl.getHKLFileName()]),
                                  "hkl:hkl",pageId,row+1,0,1,colSpan,openState )
         self.widget_no += 1
         return row + 2
@@ -1067,8 +1073,7 @@ class TaskDriver(object):
         self.putStructureWidget1 ( self.report_page_id(),
                                    self.getWidgetId(widgetId),title_str,
                                    structure,openState,self.rvrow,1 )
-        self.rvrow     += 2
-        #self.widget_no += 1
+        self.rvrow += 2
         return
 
 
@@ -1077,22 +1082,27 @@ class TaskDriver(object):
                                   structure.dname +
                                   "<font size='+2'><sub>&nbsp;</sub></font>",row )
         wId     = self.getWidgetId ( widgetId )
-        #self.widget_no += 1
-        type    = ["xyz","hkl:map","hkl:ccp4_map","hkl:ccp4_dmap","LIB"]
+        type    = [[dtype_template.file_key["xyz" ],"xyz"],
+                   [dtype_template.file_key["sub" ],"xyz"],
+                   [dtype_template.file_key["mtz" ],"hkl:map"],
+                   [dtype_template.file_key["map" ],"hkl:ccp4_map"],
+                   [dtype_template.file_key["dmap"],"hkl:ccp4_dmap"],
+                   [dtype_template.file_key["lib" ],"LIB"]]
         created = False
-        for i in range(len(structure.files)):
-            if structure.files[i]:
+        for i in range(len(type)):
+            fname = structure.getFileName ( type[i][0] )
+            if fname:
                 if not created:
                     pyrvapi.rvapi_add_data ( wId,title_str,
-                                    # always relative to job_dir from job_dir/html
-                                    "/".join(["..",self.outputDir(),structure.files[i]]),
-                                    type[i],pageId,row+1,0,1,colSpan,openState )
+                            # always relative to job_dir from job_dir/html
+                            "/".join(["..",self.outputDir(),fname]),
+                            type[i][1],pageId,row+1,0,1,colSpan,openState )
                     created = True
                 else:
                     pyrvapi.rvapi_append_to_data ( wId,
-                                    # always relative to job_dir from job_dir/html
-                                    "/".join(["..",self.outputDir(),structure.files[i]]),
-                                    type[i] )
+                            # always relative to job_dir from job_dir/html
+                            "/".join(["..",self.outputDir(),fname]),
+                            type[i][1] )
         return row+2
 
 
@@ -1107,20 +1117,22 @@ class TaskDriver(object):
         self.widget_no += 1
         return
 
+
     def putLigandWidget1 ( self,pageId,widgetId,title_str,ligand,openState,row,colSpan ):
-        wId = widgetId + str(self.widget_no)
+        wId = self.getWidgetId ( widgetId )
         self.putMessage1 ( pageId,"<b>Assigned name:</b>&nbsp;" + ligand.dname +
                                   "<font size='+2'><sub>&nbsp;</sub></font>",row )
         pyrvapi.rvapi_add_data ( wId,title_str,
                                  # always relative to job_dir from job_dir/html
-                                 "/".join(["..",self.outputDir(),ligand.files[0]]),
+                                 "/".join([ "..",self.outputDir(),
+                                            ligand.getXYZFileName()]),
                                  "xyz",pageId,row+1,0,1,colSpan,openState )
-        if len(ligand.files) > 1:
+        if ligand.getLibFileName():
             pyrvapi.rvapi_append_to_data ( wId,
-                                # always relative to job_dir from job_dir/html
-                                "/".join(["..",self.outputDir(),ligand.files[1]]),
-                                "LIB" )
-        self.widget_no += 1
+                                 # always relative to job_dir from job_dir/html
+                                 "/".join([ "..",self.outputDir(),
+                                            ligand.getLibFileName()]),
+                                 "LIB" )
         return row+2
 
 
@@ -1155,7 +1167,7 @@ class TaskDriver(object):
     def putXYZWidget ( self,widgetId,title_str,xyz,openState=-1 ):
         pyrvapi.rvapi_add_data ( widgetId,title_str,
                     # always relative to job_dir from job_dir/html
-                    "/".join(["..",self.outputDir(),xyz.files[0]]),
+                    "/".join(["..",self.outputDir(),xyz.getXYZFileName()]),
                     "xyz",secId,secrow,0,1,1,-1 )
         return
 
@@ -1195,7 +1207,7 @@ class TaskDriver(object):
                                   ensemble.dname + "<br>&nbsp;",row )
         pyrvapi.rvapi_add_data ( widgetId,title_str,
                     # always relative to job_dir from job_dir/html
-                    "/".join(["..",self.outputDir(),ensemble.files[0]]),
+                    "/".join(["..",self.outputDir(),ensemble.getXYZFileName()]),
                     "xyz",pageId,row+1,0,1,colSpan,openState )
         return row+2
 
@@ -1226,11 +1238,10 @@ class TaskDriver(object):
             #if not self.generic_parser_summary:
             #    self.generic_parser_summary = {}
             self.generic_parser_summary["z01"] = {'SpaceGroup':sol_spg}
-            newHKLFPath = self.getOFName ( "_" + solSpg + "_" + hkl.files[0],-1 )
+            newHKLFPath = self.getOFName ( "_" + solSpg + "_" + hkl.getHKLFileName(),-1 )
             os.rename ( mtzfilepath,newHKLFPath )
             self.resetFileImport()
             self.addFileImport ( "",newHKLFPath,import_filetype.ftype_MTZMerged() )
-            #self.files_all = [ newHKLFPath ]
             import_merged.run ( self,"New reflection dataset details" )
 
             if dtype_hkl.dtype() in self.outputDataBox.data:
@@ -1247,7 +1258,7 @@ class TaskDriver(object):
                 # Refmac job(s) (e.g. as part of self.finaliseStructure()). The
                 # job needs reflection data for calculating Rfree, other stats
                 # and density maps.
-                shutil.copy2 ( os.path.join(self.outputDir(),sol_hkl.files[0]),
+                shutil.copy2 ( sol_hkl.getHKLFilePath(self.outputDir()),
                                self.inputDir() )
 
                 return (newHKLFPath,sol_hkl)
@@ -1289,7 +1300,7 @@ class TaskDriver(object):
             for i in range(len(hkl_list)):
 
                 # make new hkl file name
-                newHKLFPath = self.getOFName ( "_" + solSpg + "_" + hkl_list[i].files[0],-1 )
+                newHKLFPath = self.getOFName ( "_" + solSpg + "_" + hkl_list[i].getHKLFileName(),-1 )
 
                 # make command-line parameters for reindexing
                 cmd = [ "hklin" ,hkl_list[i].getFilePath(self.inputDir(),dtype_template.file_key["mtz"]),
@@ -1301,7 +1312,6 @@ class TaskDriver(object):
 
                 if os.path.isfile(newHKLFPath):
                     self.addFileImport ( "",newHKLFPath,import_filetype.ftype_MTZMerged() )
-                    #self.files_all.append ( newHKLFPath )
                     index.append ( i )
                 else:
                     self.putMessage ( "Error: cannot reindex " + hkl_list[i].dname )

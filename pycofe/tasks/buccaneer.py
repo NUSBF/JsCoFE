@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    08.08.18   <--  Date of Last Modification.
+#    09.08.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -81,7 +81,7 @@ class BuccaneerMR(basic.TaskDriver):
             if len(seq)>0:
                 for s in seq:
                     s1 = self.makeClass ( s )
-                    with open(s1.getFilePath(self.inputDir(),dtype_template.file_key["seq"]),'rb') as hf:
+                    with open(s1.getSeqFilePath(self.inputDir()),'rb') as hf:
                         newf.write(hf.read())
                     newf.write ( '\n' );
             else:
@@ -112,18 +112,15 @@ class BuccaneerMR(basic.TaskDriver):
         # Fixed model to be preserved by Buccaneer
 
         xmodel = None
-
-        #if istruct.hasSubtype("xyz"):
-        #    xmodel = istruct
-        #    self.addCmdLine ( "pdbin",os.path.join(self.inputDir(),xmodel.files[0]) )
-
+        smodel = None
         if hasattr(idata,"xmodel"):
-            xmodel = idata.xmodel[0]
-            self.addCmdLine ( "pdbin",os.path.join(self.inputDir(),xmodel.files[0]) )
+            xmodel = self.makeClass(idata.xmodel[0])
+            self.addCmdLine ( "pdbin",xmodel.getXYZFilePath(self.inputDir()) )
 
         if hasattr(idata,"smodel"):
+            smodel = self.makeClass(idata.smodel[0])
             self.addCmdLine ( "pdbin-sequence-prior",
-                              os.path.join(self.inputDir(),idata.smodel[0].files[0]) )
+                              smodel.getXYZFilePath(self.inputDir()) )
 
         self.addCmdLine ( "pdbout",self.buccaneer_xyz()  )
 
@@ -209,13 +206,13 @@ class BuccaneerMR(basic.TaskDriver):
             # to output directory by the registration procedure)
 
             structure = self.registerStructure (
-                                    self.buccaneer_xyz(),self.buccaneer_mtz(),
+                                    self.buccaneer_xyz(),None,self.buccaneer_mtz(),
                                     fnames[0],fnames[1],None )
             if structure:
                 structure.copyAssociations ( istruct )
                 structure.copySubtype      ( istruct )
                 structure.removeSubtype    ( dtype_template.subtypeSubstructure() )
-                structure.addXYZSubtype    ()
+                structure.setXYZSubtype    ()
                 structure.copyLabels       ( istruct )
                 structure.copyLigands      ( istruct )
                 self.putStructureWidget    ( "structure_btn",

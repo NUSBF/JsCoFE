@@ -88,7 +88,7 @@ TaskZanuda.prototype.constructor = TaskZanuda;
 TaskZanuda.prototype.icon_small = function()  { return './images/task_zanuda_20x20.svg'; }
 TaskZanuda.prototype.icon_large = function()  { return './images/task_zanuda.svg';       }
 
-TaskZanuda.prototype.currentVersion = function()  { return 0; }
+TaskZanuda.prototype.currentVersion = function()  { return 1; }
 
 if (__template)  {
   //  for server side

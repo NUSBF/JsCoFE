@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    15.05.18   <--  Date of Last Modification.
+#    09.08.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -58,10 +58,10 @@ class Molrep(basic.TaskDriver):
         # Prepare molrep input -- script file
 
         revision = self.makeClass ( self.input_data.data.revision[0] )
-        model    = self.input_data.data.model[0]
+        model    = self.makeClass ( self.input_data.data.model[0] )  # ensemble
 
-        hkl      = revision.HKL   # note that 'hkl' was added to input
-                                  # databox by TaskMolrep.makeInputData(),
+        hkl      = self.makeClass ( revision.HKL )   # note that 'hkl' was added
+                                  # to input databox by TaskMolrep.makeInputData(),
                                   # therefore, hkl=self.input_data.data.hkl[0]
                                   # would also work
         seq      = None
@@ -69,8 +69,8 @@ class Molrep(basic.TaskDriver):
         #    seq = self.input_data.data.seq[0]    # given explicitly, will be used
         #elif model.sequence:
         if model.sequence:
-            seq = model.sequence   # may work for DataEnsemble
-            if (len(seq.files)<=0) or (model.nModels>1) or \
+            seq = self.makeClass ( model.sequence )  # may work for DataEnsemble
+            if (not seq.getSeqFileName()) or (model.nModels>1) or \
                (self.getParameter(self.task.parameters.sec3.contains.SEQ_CBX)!="True"):
                 seq = None
 
@@ -78,20 +78,20 @@ class Molrep(basic.TaskDriver):
         self.write_stdin (
             "labin F=" + hkl.dataset.Fmean.value + \
             " SIGF="   + hkl.dataset.Fmean.sigma + "\n" + \
-            "file_f "  + os.path.join(self.inputDir(),hkl  .files[0]) + "\n" + \
-            "file_m "  + os.path.join(self.inputDir(),model.files[0]) + "\n"
+            "file_f "  + hkl.getHKLFilePath(self.inputDir())   + "\n" + \
+            "file_m "  + model.getXYZFilePath(self.inputDir()) + "\n"
         )
 
         if seq:
             self.write_stdin (
-                "file_s "  + os.path.join(self.inputDir(),seq.files[0]) + "\n"
+                "file_s "  + seq.getSeqFilePath(self.inputDir()) + "\n"
             )
 
         #if "xyz" in revision.subtype:  # optional data parameter
         if revision.hasSubtype(dtype_template.subtypeXYZ()):  # optional data parameter
-            xstruct = revision.Structure
+            xstruct = self.makeClass ( revision.Structure )
             self.write_stdin (
-                "model_2 "  + os.path.join(self.inputDir(),xstruct.files[0]) + "\n"
+                "model_2 "  + xstruct.getXYZFilePath(self.inputDir()) + "\n"
             )
             prf = self.getParameter ( self.task.parameters.sec1.contains.PRF )
             if prf=="P":

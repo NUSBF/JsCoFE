@@ -869,7 +869,7 @@ TaskCrank2.prototype.constructor = TaskCrank2;
 TaskCrank2.prototype.icon_small = function()  { return './images/task_crank2_20x20.svg'; }
 TaskCrank2.prototype.icon_large = function()  { return './images/task_crank2.svg';       }
 
-TaskCrank2.prototype.currentVersion = function()  { return 0; }
+TaskCrank2.prototype.currentVersion = function()  { return 1; }
 
 if (!__template)  {
 

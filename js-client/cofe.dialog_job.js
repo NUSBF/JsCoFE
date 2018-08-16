@@ -152,7 +152,8 @@ JobDialog.prototype.setDlgState = function()  {
 
   this.inputPanel.setDisabledAll ( !isNew );
   this.task.disableInputWidgets  ( this.inputPanel,!isNew );
-  this.radioSet.setDisabled ( isNew  );
+  if (this.radioSet)
+    this.radioSet.setDisabled ( isNew  );
   if (this.run_btn)
     this.run_btn.setVisible ( isNew  );
 
@@ -290,35 +291,36 @@ JobDialog.prototype.makeLayout = function ( onRun_func )  {
   this.addWidget ( this.inputPanel  );
   this.addWidget ( this.outputPanel );
 
-  this.radioSet = toolBar.setRadioSet(0,0,1,1)
-          .addButton('Input' ,'input' ,'',this.task.job_dialog_data.panel=='input' )
-          .addButton('Output','output','',this.task.job_dialog_data.panel=='output');
-  (function(dlg){
-    $(dlg.outputPanel.element).load(function() {
-      dlg.onDlgResize();
-    });
-    dlg.radioSet.make ( function(btnId){
-                dlg.inputPanel .setVisible ( (btnId=='input' ) );
-                dlg.outputPanel.setVisible ( (btnId=='output') );
-                dlg.task.job_dialog_data.panel = btnId;
-                dlg.onDlgResize();  // this is needed for getting all elements in
-                                    // inputPanel available by scrolling, in case
-                                    // when dialog first opens for 'output'
-                // if dialog was created in input mode, check whether report
-                // page should be loaded at first switch to output mode
-                if (dlg.outputPanel.element.src.length<=0)
-                  dlg.loadReport();
-             });
-  }(this));
-  this.radioSet.setSize ( '220px','' );
+  if (this.task.runButtonName())  {
+    this.radioSet = toolBar.setRadioSet(0,0,1,1)
+            .addButton('Input' ,'input' ,'',this.task.job_dialog_data.panel=='input' )
+            .addButton('Output','output','',this.task.job_dialog_data.panel=='output');
+    (function(dlg){
+      $(dlg.outputPanel.element).load(function() {
+        dlg.onDlgResize();
+      });
+      dlg.radioSet.make ( function(btnId){
+                  dlg.inputPanel .setVisible ( (btnId=='input' ) );
+                  dlg.outputPanel.setVisible ( (btnId=='output') );
+                  dlg.task.job_dialog_data.panel = btnId;
+                  dlg.onDlgResize();  // this is needed for getting all elements in
+                                      // inputPanel available by scrolling, in case
+                                      // when dialog first opens for 'output'
+                  // if dialog was created in input mode, check whether report
+                  // page should be loaded at first switch to output mode
+                  if (dlg.outputPanel.element.src.length<=0)
+                    dlg.loadReport();
+               });
+    }(this));
+    this.radioSet.setSize ( '220px','' );
 
-  toolBar.setCellSize ( '30%','',0,1 );
-  if (!this.inputPanel.fullVersionMismatch)
-    this.run_btn  = toolBar.setButton ( this.task.runButtonName(),
-                                       './images/runjob.svg', 0,2, 1,1 )
-                                       .setTooltip('Start job' );
-//  this.run_image  = toolBar.setImage  ( './images/brass_gears.gif','56px','36px',
-//                                        0,3, 1,1 );
+    if (!this.inputPanel.fullVersionMismatch)
+      this.run_btn  = toolBar.setButton ( this.task.runButtonName(),
+                                         './images/runjob.svg', 0,2, 1,1 )
+                                         .setTooltip('Start job' );
+  }
+  toolBar.setCellSize ( '40%','',0,1 );
+
   this.run_image  = toolBar.setImage  ( './images/activity.gif','36px','36px',
                                         0,3, 1,1 );
   this.stop_btn   = toolBar.setButton ( 'Stop','./images/stopjob.svg', 0,4, 1,1 )

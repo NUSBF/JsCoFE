@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    01.08.18   <--  Date of Last Modification.
+#    09.08.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -59,9 +59,9 @@ class PISA(basic.TaskDriver):
 
         # Prepare pisa input
         # fetch input data
-        xyz = self.input_data.data.xyz[0]
+        xyz = self.makeClass ( self.input_data.data.xyz[0] )
 
-        xyzPath   = os.path.join ( self.inputDir(),str(xyz.files[0]) )
+        xyzPath   = xyz.getXYZFilePath ( self.inputDir() )
         reportDir = os.path.join ( os.getcwd(),self.reportDir() )
         shutil.copy ( xyzPath,reportDir )
 

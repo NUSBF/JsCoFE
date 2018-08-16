@@ -93,7 +93,7 @@ TaskEnsemblePrepSeq.prototype.constructor = TaskEnsemblePrepSeq;
 TaskEnsemblePrepSeq.prototype.icon_small = function()  { return './images/task_ensembleprepseq_20x20.svg'; }
 TaskEnsemblePrepSeq.prototype.icon_large = function()  { return './images/task_ensembleprepseq.svg';       }
 
-TaskEnsemblePrepSeq.prototype.currentVersion = function()  { return 0; }
+TaskEnsemblePrepSeq.prototype.currentVersion = function()  { return 1; }
 
 // export such that it could be used in both node and a browser
 

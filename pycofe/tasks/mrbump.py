@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    28.07.18   <--  Date of Last Modification.
+#    09.08.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -60,10 +60,10 @@ class MrBump(basic.TaskDriver):
 
         # Prepare mrbump input
         # fetch input data
-        seq = self.input_data.data.seq[0]
+        seq = self.makeClass ( self.input_data.data.seq[0] )
         hkl = None
         if hasattr(self.input_data.data,'hkl'):  # optional data parameter
-            hkl = self.input_data.data.hkl[0]
+            hkl = self.makeClass ( self.input_data.data.hkl[0] )
 
         # make a file with input script
         self.open_stdin()
@@ -131,10 +131,10 @@ class MrBump(basic.TaskDriver):
         self.close_stdin()
 
         # make command-line parameters for mrbump run on a SHELL-type node
-        cmd = [ "seqin",os.path.join(self.inputDir(),seq.files[0]) ]
+        cmd = [ "seqin",seq.getSeqFilePath(self.inputDir()) ]
 
         if hkl:
-            cmd += [ "hklin",os.path.join(self.inputDir(),hkl.files[0]) ]
+            cmd += [ "hklin",hkl.getHKLFilePath(self.inputDir()) ]
             # prepare report parser
             self.setGenericLogParser ( self.mrbump_report(),True )
 
@@ -215,7 +215,8 @@ class MrBump(basic.TaskDriver):
                                                     "model_" + str(self.dataSerialNo) + "_btn",
                                                     "Model #" + str(self.dataSerialNo).zfill(2),
                                                     # always relative to job_dir from job_dir/html
-                                                    "/".join(["..",self.outputDir(),xyz.files[0]]),
+                                                    "/".join([ "..",self.outputDir(),
+                                                               xyz.getXYZFileName()]),
                                                     "xyz",secId,secrow,0,1,1,-1 )
                                     secrow += 1
 

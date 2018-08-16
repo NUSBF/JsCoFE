@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    08.08.18   <--  Date of Last Modification.
+#    16.08.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -71,7 +71,7 @@ class DType(jsonut.jObject):
         super(DType,self).__init__(json_str)
         if not json_str:
             self._type      = dtype()      # base data type
-            self.version    = 0
+            self.version    = 1
             self.subtype    = []          # default 'basic' subtype
             self.dname      = "template"  # data name to display
             self.jobId      = job_id;
@@ -93,7 +93,8 @@ class DType(jsonut.jObject):
         return fname
 
     def setFile ( self,fname,fileKey ): # fname is file name as a string
-        self.files[fileKey] = fname
+        if fname:
+            self.files[fileKey] = fname
         return
 
     def removeFiles ( self ):
@@ -186,16 +187,31 @@ class DType(jsonut.jObject):
             self.subtype = st
         return
 
+    def removeSubtypes ( self,type_list ):
+        st = []
+        for type in self.subtype:
+            if not type in type_list:
+                st += [type]
+        self.subtype = st
+        return
+
+
     def copySubtype ( self,data ):
         self.subtype = data.subtype
         return
 
     def getFileName ( self,fileKey ):
-        if fileKey in self.files:
-            return self.files[fileKey]
+        if isinstance(self.files,dict):
+            if fileKey in self.files:
+                return self.files[fileKey]
+        elif hasattr(self.files,fileKey):
+            return getattr ( self.files,fileKey )
         return None
 
     def getFilePath ( self,dirPath,fileKey ):
-        if fileKey in self.files:
-            return os.path.join ( dirPath,self.files[fileKey] )
+        if isinstance(self.files,dict):
+            if fileKey in self.files:
+                return os.path.join ( dirPath,self.files[fileKey] )
+        elif hasattr(self.files,fileKey):
+            return os.path.join ( dirPath,getattr(self.files,fileKey) )
         return None

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    31.07.18   <--  Date of Last Modification.
+ *    11.08.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -29,7 +29,8 @@
 //      data_type_1 : [data11,data12,data13,...],
 //      data_type_2 : [data21,data22,data23,...],
 //      .............................
-//    }
+//    },
+//    jobs : [jobN,jobNm1,jobNm2]
 //  }
 //
 //  where dataIJ is one of DataType classes.
@@ -38,6 +39,7 @@ function DataBox()  {
 
   this._type = 'DataBox';
   this.data  = {};
+  this.jobs  = [];
 
 }
 
@@ -62,6 +64,7 @@ DataBox.prototype.extendData = function()  {
 DataBox.prototype.addTaskData = function ( task,include_used_bool )  {
 
   var td = task.output_data.data;
+  this.jobs.push ( task.id );
 
   for (var dtype in td)
     if (!(dtype in this.data))

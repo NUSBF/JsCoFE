@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    08.08.18   <--  Date of Last Modification.
+#    09.08.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -21,7 +21,7 @@ import os
 import pyrvapi
 
 #  application imports
-from   pycofe.dtypes import dtype_template, dtype_xyz
+from   pycofe.dtypes import dtype_xyz
 from   pycofe.varut  import command
 from   pycofe.proc   import import_filetype, xyzmeta, coor
 
@@ -117,7 +117,7 @@ def run ( body ):  # body is reference to the main Import class
                                                 k,0,1,1,False )
 
                 xyz = dtype_xyz.DType ( body.job_id )
-                xyz.setFile    ( f,dtype_template.file_key["xyz"] )
+                xyz.setXYZFile       ( f )
                 dtype_xyz.setXYZMeta ( xyz,xyzMeta )
                 body.dataSerialNo += 1
                 xyz.makeDName  ( body.dataSerialNo )
@@ -164,7 +164,7 @@ def run ( body ):  # body is reference to the main Import class
                 pyrvapi.rvapi_add_data ( xyzTableId + "_structure_btn",
                                          xyz.dname  + "&nbsp;&nbsp;&nbsp;&nbsp;",
                                          # always relative to job_dir from job_dir/html
-                                         "/".join(["..",body.outputDir(),xyz.files[0]]),
+                                         "/".join(["..",body.outputDir(),xyz.getXYZFileName()]),
                                          "xyz",subSecId,1,0,1,1,-1 )
 
                 body.putSummaryLine ( f,"XYZ",xyz.dname )

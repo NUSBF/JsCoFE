@@ -86,7 +86,7 @@ TaskBalbes.prototype.icon_large = function()  { return './images/task_balbes.svg
 //   'U'  : Unix ( = Linux + Mac)
 TaskBalbes.prototype.platforms = function()  { return 'LMU'; }  // UNIX only
 
-TaskBalbes.prototype.currentVersion = function()  { return 1; }
+TaskBalbes.prototype.currentVersion = function()  { return 2; }
 
 if (__template)  {
   //  for server side

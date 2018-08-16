@@ -8,7 +8,6 @@ import pyrvapi
 
 #  jsCoFE imports
 from pycofe.tasks   import basic
-from pycofe.dtypes  import dtype_template
 
 # ============================================================================
 # HelloWorld driver
@@ -37,10 +36,10 @@ class HelloWorld(basic.TaskDriver):
                     "\n=========  Data Object (metadata) #" + str(i) + "\n" +\
                     xyz[i].to_JSON() + "\n" )
                 xyzi     = self.makeClass ( xyz[i] )
-                filepath = xyzi.getFilePath ( self.inputDir(),dtype_template.file_key["xyz"] )
+                filepath = xyzi.getXYZFilePath ( self.inputDir() )
                 filei    = open ( filepath,'r' )
                 self.file_stdout.write (
-                    "\n=========  Data Content (file " + xyzi.files[0] +\
+                    "\n=========  Data Content (file " + xyzi.getXYZFileName() +\
                     ") #" + str(i) + "\n\n" + filei.read() + "\n" )
                 filei.close()
 

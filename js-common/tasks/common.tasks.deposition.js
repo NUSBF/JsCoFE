@@ -142,7 +142,7 @@ TaskDeposition.prototype.icon_large = function()  { return './images/task_deposi
 
 TaskDeposition.prototype.cleanJobDir = function ( jobDir )  {}
 
-TaskDeposition.prototype.currentVersion = function()  { return 1; } // from 16.12.2007
+TaskDeposition.prototype.currentVersion = function()  { return 2; } // from 09.08.2018
 
 if (__template)  {
   //  for server side

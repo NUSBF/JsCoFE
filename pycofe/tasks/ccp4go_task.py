@@ -356,7 +356,7 @@ class CCP4go(import_task.Import):
                     structure.addDataAssociation ( hkl_sol.dataId )
                     structure.setRefmacLabels ( hkl_sol )
                     structure.addMRSubtype ()
-                    structure.addXYZSubtype()
+                    structure.setXYZSubtype()
 
                     if "libindex" in meta:
                         structure.addLigands ( meta["libindex"] )

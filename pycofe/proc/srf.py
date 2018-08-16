@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    08.08.18   <--  Date of Last Modification.
+#    09.08.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -22,7 +22,7 @@ import sys
 import pyrvapi
 
 #  application imports
-from pycofe.varut import command
+from pycofe.varut   import command
 
 
 # ============================================================================
@@ -43,13 +43,13 @@ def putSRFDiagram ( body,            # reference on Basic class
         return [0,"Ok"]
 
 
-    fpath = hkl.getFilePath ( dirPath,dtype_template.file_key["mtz"] )
+    fpath = hkl.getHKLFilePath ( dirPath )
     Fmean = hkl.getMeta ( "Fmean.value","" )
     sigF  = hkl.getMeta ( "Fmean.sigma","" )
 
     if Fmean == ""  or  sigF == "":
         file_stderr.write ( "Fmean and sigFmean columns not found in " +\
-                            hkl.files[0] + " -- SRF not calculated\n" )
+                            hkl.getHKLFileName() + " -- SRF not calculated\n" )
         return [-1,"Fmean and sigFmean columns not found"]
 
     scr_file = open ( "molrep_srf.script","w" )
@@ -57,26 +57,13 @@ def putSRFDiagram ( body,            # reference on Basic class
                      "\nlabin F=" + Fmean + " SIGF=" + sigF + "\n" )
     scr_file.close ()
 
-    """
-    cols  = hkl.getMeanColumns()
-    if cols[2]!="F":
-        file_stderr.write ( "Fmean and sigFmean columns not found in " +\
-                            hkl.files[0] + " -- SRF not calculated\n" )
-        return [-1,"Fmean and sigFmean columns not found"]
-
-    scr_file = open ( "molrep_srf.script","w" )
-    scr_file.write ( "file_f " + fpath +\
-                     "\nlabin F=" + cols[0] + " SIGF=" + cols[1] + "\n" )
-    scr_file.close ()
-    """
-
     # Start molrep
     rc = command.call ( "molrep",["-i"],"./",
                         "molrep_srf.script",file_stdout,file_stderr,log_parser )
 
     if not os.path.isfile("molrep_rf.ps"):
         file_stderr.write ( "\nSRF postscript was not generated for " +\
-                            hkl.files[0] + "\n" )
+                            hkl.getHKLFileName() + "\n" )
         return [-2,rc.msg]
 
     rc = command.call ( "ps2pdf",["molrep_rf.ps"],"./",
@@ -84,10 +71,10 @@ def putSRFDiagram ( body,            # reference on Basic class
 
     if not os.path.isfile("molrep_rf.pdf"):
         file_stderr.write ( "\nSRF pdf was not generated for " +\
-                            hkl.files[0] + "\n" )
+                            hkl.getHKLFileName() + "\n" )
         return [-3,rc.msg]
 
-    pdfpath = os.path.splitext(hkl.files[0])[0] + ".pdf"
+    pdfpath = os.path.splitext(hkl.getHKLFileName())[0] + ".pdf"
     os.rename ( "molrep_rf.pdf",os.path.join(reportDir,pdfpath) )
 
     subsecId = body.getWidgetId ( holderId ) + "_srf"

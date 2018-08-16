@@ -211,7 +211,7 @@ TaskShelxEMR.prototype.constructor = TaskShelxEMR;
 TaskShelxEMR.prototype.icon_small = function()  { return './images/task_shelxemr_20x20.svg'; }
 TaskShelxEMR.prototype.icon_large = function()  { return './images/task_shelxemr.svg';       }
 
-TaskShelxEMR.prototype.currentVersion = function()  { return 0; }
+TaskShelxEMR.prototype.currentVersion = function()  { return 1; }
 
 if (!__template)  {
   //  for client side

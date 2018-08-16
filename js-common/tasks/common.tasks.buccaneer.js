@@ -363,7 +363,7 @@ TaskBuccaneer.prototype.constructor = TaskBuccaneer;
 TaskBuccaneer.prototype.icon_small = function()  { return './images/task_buccaneer_20x20.svg'; }
 TaskBuccaneer.prototype.icon_large = function()  { return './images/task_buccaneer.svg';       }
 
-TaskBuccaneer.prototype.currentVersion = function()  { return 0; }
+TaskBuccaneer.prototype.currentVersion = function()  { return 1; }
 
 if (__template)  {
   //  for server side

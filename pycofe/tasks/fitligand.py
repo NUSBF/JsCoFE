@@ -118,7 +118,7 @@ class FitLigand(basic.TaskDriver):
 
             pdbout = self.outputFName + ".pdb"
             nligs  = coor.mergeLigands ( pdbin,ligands,"X",pdbout )
-            structure = self.registerStructure ( pdbout,mtzin,
+            structure = self.registerStructure ( pdbout,None,mtzin,
                                 istruct.getMapFilePath (self.inputDir()),
                                 istruct.getDMapFilePath(self.inputDir()),
                                 libadd )

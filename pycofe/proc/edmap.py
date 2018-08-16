@@ -40,6 +40,7 @@ def fft_dmap_script():  return "_fft_dmap.script"
 _columns = {
   "refmac"      : ("FWT","PHWT","DELFWT","PHDELWT" ),
   "shelxe"      : ("FWT","PHWT" ),
+  "phaser-ep"   : ("FWT","PHWT" ),
   "parrot"      : ("parrot.F_phi.F","parrot.F_phi.phi","parrot.F_phi.F","parrot.F_phi.phi"),
   "refmac_anom" : ("FAN","PHAN","DELFAN","PHDELAN" )
 }
@@ -55,10 +56,19 @@ def calcCCP4Maps ( mtzin,output_file_prefix,job_dir,file_stdout,file_stderr,
     #
     #  Sigmaa style 2mfo-dfc map with restored data
 
+    LAB_F1  = None
+    LAB_PHI = None
+    if source_key.startswith("phaser-ep:"):
+        LAB_F1  = "FLLG_"  + source_key[10:]
+        LAB_PHI = "PHLLG_" + source_key[10:]
+    else:
+        LAB_F1  = _columns[source_key][0]
+        LAB_PHI = _columns[source_key][1]
+
     scr_file = open ( fft_map_script(),"w" )
     scr_file.write (
        "TITLE Sigmaa style 2mfo-dfc map calculated with refmac coefficients\n" +
-       "LABI F1=" + _columns[source_key][0] + " PHI=" + _columns[source_key][1] +
+       "LABI F1=" + LAB_F1 + " PHI=" + LAB_PHI +
        "\nEND\n"
     )
     scr_file.close()

@@ -3,13 +3,13 @@
 #
 # ============================================================================
 #
-#    05.07.17   <--  Date of Last Modification.
+#    09.08.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  THE DATABOX
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2018
 #
 # ============================================================================
 #
@@ -80,7 +80,8 @@ def make_class ( obj ):
     else:
         return obj
 
-import json
+
+#import json
 
 def readDataBox ( dir_path ):
     file     = open ( os.path.join(dir_path,"databox.meta"),"r" )

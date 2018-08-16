@@ -119,7 +119,7 @@ TaskSimbad.prototype.constructor = TaskSimbad;
 TaskSimbad.prototype.icon_small = function()  { return './images/task_simbad_20x20.svg'; }
 TaskSimbad.prototype.icon_large = function()  { return './images/task_simbad.svg';       }
 
-TaskSimbad.prototype.currentVersion = function()  { return 0; }
+TaskSimbad.prototype.currentVersion = function()  { return 1; }
 
 if (!__template)  {
 //  for client side

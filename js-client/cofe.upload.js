@@ -288,9 +288,9 @@ function Upload ( customData,upl_data,onSelect_func,onSelectPDB_func,onReady_fun
     } else  {
 
       upl.button.addOnClickListener ( function(){
-        $(upl.selFile.element).click();
         upl.indicator.setText    ( '' );
         upl.progressBar.setValue ( 0  );
+        $(upl.selFile.element).click();
       });
 
       $(upl.selFile.element).on ( 'change', function(e){

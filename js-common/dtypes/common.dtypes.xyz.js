@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    08.08.18   <--  Date of Last Modification.
+ *    09.08.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -56,7 +56,7 @@ DataXYZ.prototype.icon_large = function()  { return './images/data.svg';       }
 
 // when data class version is changed here, change it also in python
 // constructors
-DataXYZ.prototype.currentVersion = function() { return 1; } // from 01.12.2017
+DataXYZ.prototype.currentVersion = function()  { return 2; } // from 09.08.2018
 
 // export such that it could be used in both node and a browser
 if (!__template)  {
@@ -161,7 +161,7 @@ if (!__template)  {
     if (this._type=='DataStructure')
       dsp.makeRow ( 'XYZ file name',this.files[file_key.xyz],'Name of file with XYZ coordinates' );
     else
-      for (var key in this.files) {
+      for (var key in this.files)
         if (this.files.hasOwnProperty(key))
           dsp.makeRow ( 'File name',this.files[key],'Imported file name' );
     this.inspectXYZData   ( dsp  );

@@ -127,7 +127,7 @@
   //    parameters or data), the version number must be advanced. jsCoFE framework
   //    forbids cloning jobs with version numbers lower than specified here.
 
-  TaskHelloWorld.prototype.currentVersion = function()  { return 1; }
+  TaskHelloWorld.prototype.currentVersion = function()  { return 2; }
 
   // ===========================================================================
 

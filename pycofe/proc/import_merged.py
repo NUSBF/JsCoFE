@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    28.07.18   <--  Date of Last Modification.
+#    09.08.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -23,9 +23,9 @@ import pyrvapi
 import pyrvapi_ext.parsers
 
 #  application imports
-from   pycofe.varut  import command
-from   pycofe.dtypes import dtype_hkl
-from   pycofe.proc   import import_filetype, mtz, srf
+from   pycofe.varut   import command
+from   pycofe.dtypes  import dtype_hkl
+from   pycofe.proc    import import_filetype, mtz, srf
 
 
 # ============================================================================
@@ -40,7 +40,7 @@ def makeHKLTable ( body,tableId,holderId,original_data,new_data,
     pyrvapi.rvapi_set_table_style ( tableId,
                                "table-blue","text-align:left;" )
     r = body.putTableLine ( tableId,"File name",
-                       "Imported file name",new_data.files[0],0 )
+                       "Imported file name",new_data.getHKLFileName(),0 )
     r = body.putTableLine ( tableId,"Dataset name",
                        "Original dataset name",
                        new_data.getDataSetName(),r )
@@ -337,7 +337,7 @@ def run ( body,   # body is reference to the main Import class
                         pyrvapi.rvapi_add_data ( "hkl_data_"+str(body.dataSerialNo),
                                  "Merged reflections",
                                  # always relative to job_dir from job_dir/html
-                                 "/".join(["..",body.outputDir(),hkl.files[0]]),
+                                 "/".join([ "..",body.outputDir(),hkl.getHKLFileName()]),
                                  "hkl:hkl",subSecId,5,0,1,1,-1 )
 
                     else:
@@ -370,7 +370,7 @@ def run ( body,   # body is reference to the main Import class
                             pyrvapi.rvapi_add_data ( "hkl_data_"+str(body.dataSerialNo),
                                  "Merged reflections",
                                  # always relative to job_dir from job_dir/html
-                                 "/".join(["..",body.outputDir(),hkl_data.files[0]]),
+                                 "/".join([ "..",body.outputDir(),hkl_data.getHKLFileName()]),
                                  "hkl:hkl",subSecId,5,0,1,1,-1 )
 
                     if body.summary_row_0<0:

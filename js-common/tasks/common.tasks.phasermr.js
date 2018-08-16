@@ -849,7 +849,7 @@ TaskPhaserMR.prototype.constructor = TaskPhaserMR;
 TaskPhaserMR.prototype.icon_small = function()  { return './images/task_phasermr_20x20.svg'; }
 TaskPhaserMR.prototype.icon_large = function()  { return './images/task_phasermr.svg';       }
 
-TaskPhaserMR.prototype.currentVersion = function()  { return 1; }  // from 15.12.2017
+TaskPhaserMR.prototype.currentVersion = function()  { return 2; }  // from 09.08.2018
 
 if (__template)  {
   //  for server side

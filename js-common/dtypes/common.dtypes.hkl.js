@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    08.08.18   <--  Date of Last Modification.
+ *    09.08.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -73,7 +73,7 @@ DataHKL.prototype.icon_small = function()  { return './images/data_20x20.svg'; }
 DataHKL.prototype.icon_large = function()  { return './images/data.svg';       }
 
 // change this synchronously with the version in dtype.hkl.py
-DataHKL.prototype.currentVersion = function()  { return 3; }
+DataHKL.prototype.currentVersion = function()  { return 3; } // from 09.08.2018
 
 // export such that it could be used in both node and a browser
 if (!__template)  {

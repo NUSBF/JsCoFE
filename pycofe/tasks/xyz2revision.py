@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    23.06.18   <--  Date of Last Modification.
+#    09.08.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -45,10 +45,10 @@ class Xyz2Revision(dimple.Dimple,asudef.ASUDef):
         xyz  = self.makeClass ( self.input_data.data.xyz[0] )
         sec1 = self.task.parameters.sec1.contains
 
-        self.outputFName = xyz.lessDataId ( os.path.splitext(xyz.files[0])[0] )
+        self.outputFName = xyz.lessDataId ( os.path.splitext(xyz.getXYZFileName())[0] )
         if self.getParameter(sec1.USEDIMPLE_CBX)=="False":
             structure = self.finaliseStructure (
-                                os.path.join(self.inputDir(),xyz.files[0]),
+                                xyz.getXYZFilePath(self.inputDir()),
                                 self.outputFName,hkl,None,
                                 [],1,False ) # "1" means "after MR"
 
@@ -59,7 +59,7 @@ class Xyz2Revision(dimple.Dimple,asudef.ASUDef):
             self.putMessage ( "<h3>Conversion failed, no output</h3>" )
         else:
             asudef.revisionFromStructure ( self,hkl,structure,
-                                           os.path.splitext(xyz.files[0])[0] )
+                                           os.path.splitext(xyz.getXYZFileName())[0] )
 
         # close execution logs and quit
         self.success()

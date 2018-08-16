@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    08.08.18   <--  Date of Last Modification.
+#    09.08.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,8 +19,8 @@ import os
 import sys
 
 #  application imports
-import dtype_template
-from   pycofe.proc import xyzmeta
+from  pycofe.dtypes  import dtype_template
+from  pycofe.proc    import xyzmeta
 
 
 # ============================================================================
@@ -37,15 +37,23 @@ class DType(dtype_template.DType):
             self.xyzmeta  = {}
             self.exclLigs = ['(agents)']  # list of excluded ligands for PISA
             self.selChain = '(all)'       # selected chains for comparison
-            self.version  = 1  # from 01.12.2017
+            self.version  = 2  # from 09.08.2018
         return
+
+    def setXYZFile ( self,fname ):
+        self.setFile ( fname,dtype_template.file_key["xyz"] )
+        return
+
+    def getXYZFileName ( self ):
+        return self.getFileName ( dtype_template.file_key["xyz"] )
 
     def getXYZFilePath ( self,dirPath ):
         return self.getFilePath ( dirPath,dtype_template.file_key["xyz"] )
 
     def putXYZMeta ( self,fdir,file_stdout,file_stderr,log_parser=None ):
-        setXYZMeta ( self,xyzmeta.getXYZMeta ( os.path.join(fdir,self.files[0]),
-                                        file_stdout,file_stderr,log_parser ) )
+        setXYZMeta ( self,xyzmeta.getXYZMeta (
+                            os.path.join(fdir,self.files[dtype_template.file_key["xyz"]]),
+                            file_stdout,file_stderr,log_parser ) )
         return
 
 

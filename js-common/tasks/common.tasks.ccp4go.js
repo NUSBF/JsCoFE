@@ -153,7 +153,7 @@ TaskCCP4go.prototype.constructor = TaskCCP4go;
 TaskCCP4go.prototype.icon_small = function()  { return './images/task_ccp4go_20x20.svg'; }
 TaskCCP4go.prototype.icon_large = function()  { return './images/task_ccp4go.svg';       }
 
-TaskCCP4go.prototype.currentVersion = function()  { return 0; }
+TaskCCP4go.prototype.currentVersion = function()  { return 1; }
 
 // export such that it could be used in both node and a browser
 if (!__template)  {

@@ -67,7 +67,7 @@ TaskChangeSpG.prototype.constructor = TaskChangeSpG;
 TaskChangeSpG.prototype.icon_small = function()  { return './images/task_changespg_20x20.svg'; }
 TaskChangeSpG.prototype.icon_large = function()  { return './images/task_changespg.svg';       }
 
-TaskChangeSpG.prototype.currentVersion = function()  { return 0; }
+TaskChangeSpG.prototype.currentVersion = function()  { return 1; }
 
 if (__template)  {
   //  for server side

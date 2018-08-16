@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    08.08.18   <--  Date of Last Modification.
+#    09.08.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -75,27 +75,27 @@ class Refmac(basic.TaskDriver):
            for i in range(len(hmodel)):
               if hmodel[i].hasSubtype ( dtype_template.subtypeProtein() ):
                  use_protein = True
-                 homolog_protein_fpaths.append(os.path.join(self.inputDir(),hmodel[i].files[0]))
+                 homolog_protein_fpaths.append ( hmodel[i].getXYZFilePath(self.inputDir()) )
               if hmodel[i].hasSubtype ( dtype_template.subtypeDNA() ) or hmodel[i].hasSubtype ( dtype_template.subtypeRNA() ):
                  use_dnarna = True
-                 homolog_dnarna_fpaths.append(os.path.join(self.inputDir(),hmodel[i].files[0]))
+                 homolog_dnarna_fpaths.append ( hmodel[i].getXYZFilePath(self.inputDir()) )
 
            if use_protein:
               prosmart_cmd = [ "-quick", "-o", "ProSMART_Output_protein", "-p1", istruct.getXYZFilePath(self.inputDir()), "-p2" ] + homolog_protein_fpaths
               self.putMessage('Running ProSMART to generate external restraints for protein macromolecules')
               self.runApp ( "prosmart",prosmart_cmd )
-              external_restraint_files.append(os.path.join('ProSMART_Output_protein',os.path.splitext(istruct.files[0])[0]+'.txt'))
+              external_restraint_files.append(os.path.join('ProSMART_Output_protein',os.path.splitext(istruct.getXYZFileName())[0]+'.txt'))
 
            if use_dnarna:
               prosmart_cmd = [ "-quick", "-dna_rna", "-o", "ProSMART_Output_dnarna", "-p1" ,istruct.getXYZFilePath(self.inputDir()), "-p2" ] + homolog_dnarna_fpaths
               self.putMessage('Running ProSMART to generate external restraints for nucleic acid macromolecules')
               self.runApp ( "prosmart",prosmart_cmd )
-              external_restraint_files.append(os.path.join('ProSMART_Output_dnarna',os.path.splitext(istruct.files[0])[0]+'.txt'))
+              external_restraint_files.append(os.path.join('ProSMART_Output_dnarna',os.path.splitext(istruct.getXYZFileName())[0]+'.txt'))
 
         if str(self.task.parameters.sec3.contains.HBOND_RESTR.value) == 'yes':
            prosmart_cmd = [ "-quick", "-o", "ProSMART_Output_hbond", "-p1", istruct.getXYZFilePath(self.inputDir())]
            self.runApp ( "prosmart",prosmart_cmd )
-           external_restraint_files.append(os.path.join('ProSMART_Output_hbond',os.path.splitext(istruct.files[0])[0]+'.txt'))
+           external_restraint_files.append(os.path.join('ProSMART_Output_hbond',os.path.splitext(istruct.getXYZFileName())[0]+'.txt'))
 
 
         with open(self.file_stdin_path(),'w') as scr_file:
@@ -292,7 +292,8 @@ class Refmac(basic.TaskDriver):
             # register output data from temporary location (files will be moved
             # to output directory by the registration procedure)
 
-            structure = self.registerStructure ( self.getXYZOFName(),self.getMTZOFName(),
+            structure = self.registerStructure ( self.getXYZOFName(),None,
+                                                 self.getMTZOFName(),
                                                  fnames[0],fnames[1],libin )
             if structure:
                 structure.copyAssociations   ( istruct )

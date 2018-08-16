@@ -100,7 +100,7 @@ TaskMorda.prototype.icon_large = function()  { return './images/task_morda.svg';
 //   'U'  : Unix ( = Linux + Mac)
 TaskMorda.prototype.platforms = function()  { return 'LMU'; }  // UNIX only
 
-TaskMorda.prototype.currentVersion = function()  { return 1; }
+TaskMorda.prototype.currentVersion = function()  { return 2; }
 
 if (__template)  {
   //  for server side

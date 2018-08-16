@@ -210,7 +210,7 @@ TaskDimple.prototype.constructor = TaskDimple;
 TaskDimple.prototype.icon_small = function()  { return './images/task_dimple_20x20.svg'; }
 TaskDimple.prototype.icon_large = function()  { return './images/task_dimple.svg';       }
 
-TaskDimple.prototype.currentVersion = function()  { return 0; }
+TaskDimple.prototype.currentVersion = function()  { return 1; }
 
 
 if (__template)  {

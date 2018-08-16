@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    08.08.18   <--  Date of Last Modification.
+#    16.08.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -86,7 +86,7 @@ class Crank2(basic.TaskDriver):
                 df = " i="
                 ds = " sigi="
             self.config.append ( "fsigf plus dname=" + dataset.wtype + \
-                " file=" + os.path.join(self.inputDir(),dataset.files[0]) + \
+                " file=" + dataset.getHKLFilePath(self.inputDir()) + \
                 df + cols[0] + ds + cols[1] )
             self.config.append ( "fsigf minus dname=" + dataset.wtype + df + \
                 cols[2] + ds + cols[3] )
@@ -98,7 +98,7 @@ class Crank2(basic.TaskDriver):
             cols = self.native.getMeanColumns()
             if cols[2]!="X":
                 S = "fsigf average dname=native xname=native file=" + \
-                    os.path.join(self.inputDir(),self.native.files[0])
+                    self.native.getHKLFilePath(self.inputDir())
                 if cols[2]=="I":
                     S += " i=" + cols[0] + " sigi=" + cols[1]
                 else:
@@ -113,8 +113,7 @@ class Crank2(basic.TaskDriver):
             S  = "model "
             if self.getParameter(self.sec6.COMB_PHDMMB_NCS_DET_MR)=="True":
                 S += "custom=ncs "
-            S += "unknown \"file=" +\
-                os.path.join(self.inputDir(),self.pmodel.files[0]) + "\""
+            S += "unknown \"file=" + self.pmodel.getXYZFilePath(self.inputDir()) + "\""
         else:
             S = "model substr"
 
@@ -382,6 +381,13 @@ class Crank2(basic.TaskDriver):
 
         revisions = []
 
+        xyzout = None
+        subout = None
+        if self.task._type=="TaskShelxSubstr":
+            subout = self.xyzout_fpath
+        else:
+            xyzout = self.xyzout_fpath
+
         if os.path.isfile(self.xyzout_fpath):
 
             # get xyz metadata for checking on changed space group below
@@ -391,7 +397,7 @@ class Crank2(basic.TaskDriver):
             # register output data
             if not structure:
                 self.structure = self.registerStructure1 (
-                                self.xyzout_fpath,self.hklout_fpath,
+                                xyzout,subout,self.hklout_fpath,
                                 self.hklout_fpath + ".map",
                                 self.hklout_fpath + "_diff.map",
                                 None,
@@ -410,17 +416,18 @@ class Crank2(basic.TaskDriver):
                 if self.seq:
                     for s in self.seq:
                         self.structure.addDataAssociation ( s.dataId )
+                """
                 if self.task._type=="TaskShelxSubstr":
                     self.structure.setSubstrSubtype() # substructure, NO PHASES
                     #self.structure.setBP3Labels()
                 else:
-                    self.structure.addXYZSubtype()
+                    self.structure.setXYZSubtype()
                     self.structure.addSubtype ( dtype_template.subtypePhases() )
                     self.structure.setCrank2Labels()
-                    #self.structure.setRefmacLabels ( hkl_all[0] )
-                    #self.structure.FP         = "REFM_F"
-                    #self.structure.SigFP      = "REFM_SIGF"
-                    #self.structure.FreeR_flag = "FREER"
+                """
+                if self.task._type!="TaskShelxSubstr":
+                    self.structure.addPhasesSubtype()
+                    self.structure.setCrank2Labels ()
                 self.structure.addEPSubtype()
 
                 if len(hkl_all)==1:
@@ -509,6 +516,7 @@ class Crank2(basic.TaskDriver):
         # fetch input data
         self.revision = self.makeClass ( self.input_data.data.revision[0] )
         self.hkl      = self.input_data.data.hkl
+
 
         # convert dictionaries into real classes; this is necessary because we want
         # to use class's functions and not just access class's data fields

@@ -130,7 +130,7 @@ TaskTemplate.prototype.doPackSuffixes    = function()  { return ['']; }
 
 // when data class version is changed here, change it also in python
 // constructors
-TaskTemplate.prototype.currentVersion = function()  { return 0; }
+TaskTemplate.prototype.currentVersion = function()  { return 1; }
 
 TaskTemplate.prototype.isRunning = function()  {
   return ((this.state==job_code.running) || (this.state==job_code.exiting));

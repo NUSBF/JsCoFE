@@ -138,7 +138,7 @@ class Deposition(basic.TaskDriver):
             shutil.copyfile ( libin,libout )
 
         # create output structure and visualisation widget
-        structure = self.registerStructure ( xyzout,mtzout,mapout,dmapout,libout )
+        structure = self.registerStructure ( xyzout,None,mtzout,mapout,dmapout,libout )
         if structure:
             structure.copyAssociations ( istruct )
             structure.copyLabels       ( istruct )
@@ -184,11 +184,13 @@ class Deposition(basic.TaskDriver):
             self.file_stdout.write ( aimless_meta )
             if os.path.isfile(aimless_meta):
                 self.file_stdout.write ( " -- found\n" )
+                with open(aimless_meta, 'r') as fin:
+                    self.file_stdout.write ( fin.read() )
             else:
                 self.file_stdout.write ( " -- NOT found\n" )
         else:
             self.file_stdout.write ( "aimples meta NOT found\n" )
-        aimless_meta = None  #  to be removed when EBI deposition module is fixed
+        #aimless_meta = None  #  to be removed when EBI deposition module is fixed
 
         deposition_fasta = self.getOFName ( ".fasta" )
         dtype_sequence.writeMultiSeqFile1 ( deposition_fasta,seq,self.inputDir() )

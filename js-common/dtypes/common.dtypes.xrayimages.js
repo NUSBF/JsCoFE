@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    25.06.17   <--  Date of Last Modification.
+ *    09.08.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Common Client/Server Modules -- X-ray Images Data Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2017
+ *  (C) E. Krissinel, A. Lebedev 2016-2018
  *
  *  =================================================================
  *
@@ -53,7 +53,7 @@ DataXRayImages.prototype.icon_large = function()  { return './images/data_xrayim
 
 // when data class version is changed here, change it also in python
 // constructors
-DataXRayImages.prototype.currentVersion = function()  { return 0; }
+DataXRayImages.prototype.currentVersion = function()  { return 1; } // from 09.08.2018
 
 // export such that it could be used in both node and a browser
 

@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    29.07.18   <--  Date of Last Modification.
+#    16.08.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -49,8 +49,14 @@ class Coot(basic.TaskDriver):
         # Prepare coot job
 
         # fetch input data
-        istruct = self.makeClass ( self.input_data.data.istruct[0] )
+        data_list = [self.input_data.data.istruct[0]]
+        if hasattr(self.input_data.data,"aux_struct"):
+            data_list += self.input_data.data.aux_struct
+        for i in range(len(data_list)):
+            data_list[i] = self.makeClass ( data_list[i] )
+        istruct = data_list[0]
         mtzfile = istruct.getMTZFilePath ( self.inputDir() )
+
         ligand  = None
         liblig  = None
         if hasattr(self.input_data.data,"ligand"):
@@ -86,21 +92,20 @@ class Coot(basic.TaskDriver):
                 libnew = libin
 
         # make command line arguments
-        args = ["--pdb",istruct.getXYZFilePath(self.inputDir()),
-                "--auto",mtzfile]
+        args = []
+        for s in data_list:
+            if s.getXYZFileName():
+                args += ["--pdb",s.getXYZFilePath(self.inputDir())]
+            if s._type=="DataStructure":
+                if s.getSubFileName():
+                    args += ["--pdb",s.getSubFilePath(self.inputDir())]
+                args += ["--auto",s.getMTZFilePath(self.inputDir())]
+
         if libnew:
             args += ["--dictionary",libnew]
-        #if len(structure.files)>4 and structure.files[4]:
-        #    args += ["--dictionary",istruct.getLibFilePath(self.inputDir())]
 
-        """
-        if ligand:
-            args += ["--pdb",ligand.getXYZFilePath(self.inputDir())]
-        #             "--dictionary",ligand .getLibFilePath(self.inputDir())]
-        """
         if ligand:
             args += ["-c","(get-monomer \"" + ligand.code + "\")"]
-        #    args += ["-c","(let ((imol (get-monomer \"" + ligand.code + "\"))) (set-mol-displayed imol 0) (set-mol-active imol 0))"]
 
         args += ["--no-guano"]
 
@@ -124,7 +129,7 @@ class Coot(basic.TaskDriver):
 
         if fname:
 
-            f = istruct.files[0]
+            f = istruct.getXYZFileName()
             fnprefix = f[:f.find("_")]
 
             if fname.startswith(fnprefix):
@@ -142,7 +147,7 @@ class Coot(basic.TaskDriver):
             # register output data from temporary location (files will be moved
             # to output directory by the registration procedure)
 
-            struct = self.registerStructure ( coot_xyz,coot_mtz,
+            struct = self.registerStructure ( coot_xyz,None,coot_mtz,
                                               fnames[0],fnames[1],
                                               libnew )
             #                                  istruct.getLibFilePath(self.inputDir()) )

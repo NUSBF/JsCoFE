@@ -157,7 +157,7 @@ TaskFitLigand.prototype.constructor = TaskFitLigand;
 TaskFitLigand.prototype.icon_small = function()  { return './images/task_fitligand_20x20.svg'; }
 TaskFitLigand.prototype.icon_large = function()  { return './images/task_fitligand.svg';       }
 
-TaskFitLigand.prototype.currentVersion = function()  { return 0; }
+TaskFitLigand.prototype.currentVersion = function()  { return 1; }
 
 if (__template)  {
   //  for server side

@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    03.08.18   <--  Date of Last Modification.
+#    09.08.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -52,8 +52,8 @@ class Lorestr(basic.TaskDriver):
 
         # Prepare lorestr input
         # fetch input data
-        hkl     = self.input_data.data.hkl    [0]
-        istruct = self.input_data.data.istruct[0]
+        hkl     = self.makeClass ( self.input_data.data.hkl[0] )
+        istruct = self.makeClass ( self.input_data.data.istruct[0] )
         if hasattr(self.input_data.data,"rstruct"):  # optional data parameter
             rstruct = self.input_data.data.rstruct
         else:
@@ -62,13 +62,14 @@ class Lorestr(basic.TaskDriver):
         # Prepare report parser
         #self.setGenericLogParser ( self.lorestr_report(),False )
 
-        cmd = [ "-p1",os.path.join(self.inputDir(),str(istruct.files[0])),
-                "-f" ,os.path.join(self.inputDir(),str(hkl.files[0])) ]
+        cmd = [ "-p1",istruct.getXYZFilePath(self.inputDir()),
+                "-f" ,hkl.getHKLFilePath(self.inputDir()) ]
 
         if len(rstruct)>0:
             cmd += ["-p2"]
             for s in rstruct:
-                cmd += [os.path.join(self.inputDir(),str(s.files[0]))]
+                cs = self.makeClass ( s )
+                cmd += [cs.getXYZFilePath(self.inputDir())]
 
         cmd += [ "-save_space",
                  "-xyzout",self.getXYZOFName(),
@@ -111,7 +112,7 @@ class Lorestr(basic.TaskDriver):
             # register output data from temporary location (files will be moved
             # to output directory by the registration procedure)
 
-            structure = self.registerStructure ( self.getXYZOFName(),self.getMTZOFName(),
+            structure = self.registerStructure ( self.getXYZOFName(),None,self.getMTZOFName(),
                                                  fnames[0],fnames[1],None )
             if structure:
                 structure.copyAssociations   ( istruct )

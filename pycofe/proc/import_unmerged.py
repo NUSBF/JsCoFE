@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    28.07.18   <--  Date of Last Modification.
+#    09.08.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -39,7 +39,7 @@ def makeUnmergedTable ( body,tableId,holderId,data,row ):
                                       holderId,row,0,1,1, 0 )
     pyrvapi.rvapi_set_table_style ( tableId,"table-blue","text-align:left;" )
     r = body.putTableLine ( tableId,"File name",
-                       "Imported file name",data.files[0],0 )
+                       "Imported file name",data.getUnmergedFileName(),0 )
     r = body.putTableLine ( tableId,"Assigned name",
                        "Assigned data name",data.dname,r )
     r = body.putTableLine ( tableId,"Dataset name",
@@ -255,7 +255,7 @@ def run ( body,        # body is reference to the main Import class
                                         "Failed to process/import, ignored" )
 
                     else:
-                        unmerged.files[0] = outFileName
+                        unmerged.setUnmergedFileName ( outFileName )
 
                         subSecId = fileSecId
                         if len(dset_list)>1:
@@ -279,7 +279,8 @@ def run ( body,        # body is reference to the main Import class
                         pyrvapi.rvapi_add_data ( "hkl_data_"+str(body.dataSerialNo),
                                      "Unmerged reflections",
                                      # always relative to job_dir from job_dir/html
-                                     "/".join(["..",body.outputDir(),unmerged.files[0]]),
+                                     "/".join([ "..",body.outputDir(),
+                                                unmerged.getUnmergedFileName()]),
                                      "hkl:hkl",subSecId,frow+1,0,1,1,-1 )
                         frow += 2
 

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    08.08.18   <--  Date of Last Modification.
+ *    09.08.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -65,7 +65,7 @@ function DataStructure()  {
   this.useCoordinates = true;  // flag for using in Phaser-EP
   this.rmsd           = 0.3;   // used in Phaser-EP
 
-  this.useForNCS      = true;  // for use in Parrot
+  //this.useForNCS      = true;  // for use in Parrot
 
   this.useModelSel    = 'N';   // for use in Buccaneer
   this.BFthresh       = 3.0;
@@ -88,7 +88,7 @@ DataStructure.prototype.icon_large = function()  { return './images/data.svg';  
 
 // when data class version is changed here, change it also in python
 // constructors
-DataStructure.prototype.currentVersion = function()  { return 0; }
+DataStructure.prototype.currentVersion = function()  { return 1; } // from 09.08.2018
 
 // export such that it could be used in both node and a browser
 if (!__template)  {
@@ -152,12 +152,10 @@ if (!__template)  {
 
       customGrid.setLabel ( ' ',++row,0,1,2 ).setHeight_px ( 8 );
 
-//    } else if (dropdown.layCustom.startsWith('parrot'))  {
-    } else if (startsWith(dropdown.layCustom,'parrot'))  {
-
-      customGrid.useForNCS = customGrid.setCheckbox ( 'Use for NCS detection',
-                    this.useForNCS, row,0, 1,1 );
-      customGrid.setLabel ( ' ',++row,0,1,2 ).setHeight_px ( 8 );
+//    } else if (startsWith(dropdown.layCustom,'parrot'))  {
+//      customGrid.useForNCS = customGrid.setCheckbox ( 'Use for NCS detection',
+//                    this.useForNCS, row,0, 1,1 );
+//      customGrid.setLabel ( ' ',++row,0,1,2 ).setHeight_px ( 8 );
 
     } else if (dropdown.layCustom=='buccaneer-ws')  {
 
@@ -211,13 +209,10 @@ if (!__template)  {
     var msg = '';   // Ok by default
     var customGrid = dropdown.customGrid;
 
-//    if (dropdown.layCustom.startsWith('phaser-ep'))  {
     if (startsWith(dropdown.layCustom,'phaser-ep'))  {
-      //this.useCoordinates = (customGrid.use_ddn.getValue()=='c');
       this.rmsd = customGrid.rmsd.getValue();
-//    } else if (dropdown.layCustom.startsWith('parrot'))  {
-    } else if (startsWith(dropdown.layCustom,'parrot'))  {
-      this.useForNCS = customGrid.useForNCS.getValue();
+    //} else if (startsWith(dropdown.layCustom,'parrot'))  {
+    //  this.useForNCS = customGrid.useForNCS.getValue();
     } else if (dropdown.layCustom=='buccaneer-ws')  {
       if (this.subtype.indexOf('xyz')>=0)  {
         this.useModelSel = customGrid.useModelSel.getValue();
@@ -227,7 +222,6 @@ if (!__template)  {
       if (this.subtype.indexOf('xyz')>=0)  {
         this.BFthresh = customGrid.BFthresh.getValue();
       }
-//    } else if (dropdown.layCustom.startsWith('chain-sel'))  {
     } else if (startsWith(dropdown.layCustom,'chain-sel'))  {
       DataXYZ.prototype.collectCustomDropdownInput.call ( this,dropdown );
     }

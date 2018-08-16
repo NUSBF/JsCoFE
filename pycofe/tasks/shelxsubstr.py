@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    08.08.18   <--  Date of Last Modification.
+#    14.08.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -110,7 +110,7 @@ class ShelxSubstr(crank2.Crank2):
         rvrow0 = self.rvrow
         self.putTitle ( "Substructure Found" )
         structure = self.finaliseStructure ( self.xyzout_fpath,self.outputFName,
-                                             hkls,None,[],0,False,"" )
+                                             hkls,None,[],3,False,"" )
         if structure:
 
             self.putMessage ( "&nbsp;" )
@@ -126,8 +126,10 @@ class ShelxSubstr(crank2.Crank2):
             # finalise output revision(s)
             # remove Refmac results from structure:
             shutil.copy2 ( hkls.getHKLFilePath(self.inputDir()),self.outputDir() )
-            del structure.files[2:]
-            structure.files[1] = hkls.files[0]
+            xyz_file = structure.getSubFileName()
+            structure.removeFiles()
+            structure.setSubFile ( xyz_file )
+            structure.setMTZFile ( hkls.getHKLFileName() )
             structure.removeSubtype ( dtype_template.subtypePhases() )
             super ( ShelxSubstr,self ).finalise ( structure )
 
