@@ -73,6 +73,26 @@ if (!__template)  {
                         0,0,1,5 )
             .setFontBold(true);
 
+    var tree_div = new Widget ( 'div' );
+    tree_div.element.setAttribute ( 'class','tree-content' );
+    var jobTree = new JobTree ();
+    jobTree.element.style.paddingTop    = '0px';
+    jobTree.element.style.paddingBottom = '25px';
+    jobTree.element.style.paddingRight  = '40px';
+    tree_div.addWidget ( jobTree );
+    div.grid.setWidget ( tree_div, 1,0,1,1 );
+
+    //  Read project data from server
+    jobTree.readProjectData ( 'Project',
+          function(){  // on tree loaded
+          },
+          function(node){},  // onTreeContextMenu
+          function(){
+            jobTree.openJob ( null,tree_div );
+          },      // openJob,
+          function(){}       // onTreeItemSelect
+    );
+
 /*
     if ((this.state==job_code.new) || (this.state==job_code.running)) {
       div.header.setLabel ( ' ',2,0,1,1 );

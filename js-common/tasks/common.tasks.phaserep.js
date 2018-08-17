@@ -51,7 +51,7 @@ function TaskPhaserEP()  {
       data_type   : {'DataStructure':['substructure']}, // data type(s) and subtype(s)
       label       : 'Anomalous scatterers', // label for input dialog
       inputId     : 'substructure',   // input Id for referencing input fields
-      force       : 0,           // will display [do not use] by default
+      force       : 1,           // will display [do not use] by default
       min         : 0,           // minimum acceptable number of data instances
       max         : 1            // maximum acceptable number of data instances
     },{
@@ -60,7 +60,7 @@ function TaskPhaserEP()  {
       inputId     : 'xmodel',    // input Id for referencing input fields
       customInput : 'phaser-ep', // lay custom fields below the dropdown
       version     : 0,           // minimum data version allowed
-      force       : 0,           // meaning choose, by default, 1 structure if
+      force       : 1,           // meaning choose, by default, 1 structure if
                                  // available; otherwise, 0 (do not use) will
                                  // be selected
       min         : 0,           // minimum acceptable number of data instances
@@ -370,7 +370,7 @@ if (!__template)  {
 
   }
 
-  TaskPhaserEP.prototype.cleanJobDir = function ( jobDir )  {}
+//  TaskPhaserEP.prototype.cleanJobDir = function ( jobDir )  {}
 
 
   TaskPhaserEP.prototype.getCommandLine = function ( exeType,jobDir )  {

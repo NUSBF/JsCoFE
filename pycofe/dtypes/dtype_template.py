@@ -209,6 +209,8 @@ class DType(jsonut.jObject):
         return None
 
     def getFilePath ( self,dirPath,fileKey ):
+        if not dirPath:
+            return self.getFileName ( fileKey )
         if isinstance(self.files,dict):
             if fileKey in self.files:
                 return os.path.join ( dirPath,self.files[fileKey] )

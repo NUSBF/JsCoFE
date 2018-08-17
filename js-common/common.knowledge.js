@@ -120,7 +120,7 @@ var _taskIndex = {
   'i' : { type: 'TaskDimple'         , after: ['M','N','O','P','Q','U'] },
 
   // suggest Coot after refinememnt
-  'j' : { type: 'TaskCoot'           , after: ['V','W','i'] },
+  'j' : { type: 'TaskCootMB'         , after: ['V','W','i'] },
 
   // do not suggest PDB Deposition
   'k' : { type: 'TaskDeposition'     , after: [] }

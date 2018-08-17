@@ -283,7 +283,7 @@ var row      = 0;
     new TaskLorestr  (),
     new TaskBuccaneer(),
     new TaskDimple   (),
-    new TaskCoot     ()
+    new TaskCootMB   ()
   ]);
 
   this.makeSection ( 'Ligands',[

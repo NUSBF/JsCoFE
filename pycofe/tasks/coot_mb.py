@@ -7,10 +7,10 @@
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
-#  COOT EXECUTABLE MODULE (CLIENT-SIDE TASK)
+#  COOT MODEL BUILDING EXECUTABLE MODULE (CLIENT-SIDE TASK)
 #
 #  Command-line:
-#     ccp4-python python.tasks.coot.py exeType jobDir jobId
+#     ccp4-python python.tasks.coot_mb.py exeType jobDir jobId
 #
 #  where:
 #    exeType  is either SHELL or SGE
@@ -31,7 +31,7 @@ import shutil
 
 #  application imports
 import basic
-from pycofe.varut import signal
+from   pycofe.varut   import  signal
 try:
     from pycofe.varut import messagebox
 except:
@@ -130,6 +130,8 @@ class Coot(basic.TaskDriver):
         if fname:
 
             f = istruct.getXYZFileName()
+            if not f:
+                f = istruct.getSubFileName()
             fnprefix = f[:f.find("_")]
 
             if fname.startswith(fnprefix):
@@ -154,6 +156,7 @@ class Coot(basic.TaskDriver):
             if struct:
                 struct.copyAssociations ( istruct )
                 struct.copySubtype      ( istruct )
+                struct.makeXYZSubtype   ()
                 struct.copyLabels       ( istruct )
                 struct.copyLigands      ( istruct )
                 if ligand:

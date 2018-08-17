@@ -194,6 +194,11 @@ class DType(dtype_template.DType):
         self.addSubtype ( dtype_template.subtypeXYZ() )
         return
 
+    def makeXYZSubtype ( self ):
+        self.removeSubtype ( dtype_template.subtypeSubstructure() )
+        self.addSubtype    ( dtype_template.subtypeXYZ() )
+        return
+
     def addPhasesSubtype ( self ):
         self.addSubtype    ( dtype_template.subtypePhases() )
         return
