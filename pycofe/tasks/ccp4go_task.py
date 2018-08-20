@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    08.08.18   <--  Date of Last Modification.
+#    20.08.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -348,7 +348,7 @@ class CCP4go(import_task.Import):
                 libPath = None
                 if "lib" in meta:
                     libPath = meta["lib"]
-                structure = self.registerStructure ( meta["pdb"],meta["mtz"],
+                structure = self.registerStructure ( meta["pdb"],None,meta["mtz"],
                                                      meta["map"],meta["dmap"],
                                                      libPath,True )
                 if structure:
