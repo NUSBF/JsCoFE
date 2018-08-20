@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    25.07.18   <--  Date of Last Modification.
+ *    20.08.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -205,6 +205,19 @@ JobTree.prototype.makeNodeId = function ( task_id )  {
 JobTree.prototype.makeNodeName = function ( task )  {
 
   var node_name = this.makeNodeId(task.id) + ' ';
+
+  if (task.harvestedTaskIds.length>0)  {
+    var ancestors = this.getAllAncestors ( task );
+    var anc_ids = [];
+    for (var i=0;i<ancestors.length;i++)
+      anc_ids.push ( ancestors[i].id );
+    var id_list = [];
+    for (var i=0;i<task.harvestedTaskIds.length;i++)
+      if (anc_ids.indexOf(task.harvestedTaskIds[i])<0)
+        id_list.push ( padDigits(task.harvestedTaskIds[i],4) );
+    if (id_list.length>0)
+      node_name += ' <font style="font-size:80%"><b><i>+(' + id_list.join(',') + ')</i></b></font> ';
+  }
 
   if (task.uname.length>0)
         node_name += task.uname;
@@ -423,22 +436,37 @@ JobTree.prototype.addJob = function ( insert_bool,parent_page,onAdd_func )  {
         task.harvestedTaskIds  = dataBox.harvestedTaskIds;
 
         var node;
+        /*
         if (insert_bool)
               node = tree.insertNodeAfterSelected ( tree.makeNodeName ( task ),
                                            task.icon_small(),tree.customIcon() );
         else  node = tree.addNodeToSelected ( tree.makeNodeName ( task ),
                                            task.icon_small(),tree.customIcon() );
+        */
+
+        // do not give node name at this stage, because, in case of data merging
+        // across branches, calculation of node name includes tree searches,
+        // which are not possible before node is placed in the tree
+        if (insert_bool)
+              node = tree.insertNodeAfterSelected ( '',
+                                           task.icon_small(),tree.customIcon() );
+        else  node = tree.addNodeToSelected ( '',
+                                           task.icon_small(),tree.customIcon() );
 
         tree.task_map[node.id] = task;
         task.treeItemId        = node.id;
         node.dataId            = task.id;
+        // now set the new node name
+        tree.setText ( node,tree.makeNodeName(task) );
 
+        /*
         // make harvest data links
         for (var i=0;i<task.harvestedTaskIds.length;i++)  {
           var taski = tree.getTask ( task.harvestedTaskIds[i] );
           if (taski)
             taski.addHarvestLink ( task.id )
         }
+        */
 
         if (onAdd_func)
           onAdd_func();
@@ -477,7 +505,28 @@ JobTree.prototype.deleteJob = function ( onDelete_func ) {
       var delNodeId = tree.calcSelectedNodeId();
       if (delNodeId.length<=0)
         delNodeId.push ( tree.getSelectedNodeId() );
+      delTaskId = [];
+      for (var i=0;i<delNodeId.length;i++)
+        delTaskId.push ( tree.task_map[delNodeId[i]].id )
 
+      // add all harvested links
+      do {
+        var len0 = delNodeId.length;
+        for (var nodeId in tree.task_map)  {
+          var task = tree.task_map[nodeId];
+          if (delTaskId.indexOf(task.id)<0)  {
+            var add_node = false;
+            for (var i=0;(!add_node) && (i<task.harvestedTaskIds.length);i++)
+              add_node = (delTaskId.indexOf(task.harvestedTaskIds[i])>=0);
+            if (add_node)  {
+              delNodeId.push ( nodeId  );
+              delTaskId.push ( task.id );
+            }
+          }
+        }
+      } while (len0<delNodeId.length);
+
+      /*
       // add all harvested links
       for (var i=0;i<delNodeId.length;i++)  {
         var task = tree.task_map[delNodeId[i]];
@@ -488,6 +537,7 @@ JobTree.prototype.deleteJob = function ( onDelete_func ) {
               delNodeId.push ( nodeId );
           }
       }
+      */
 
       // sort node ids in descending order in order to avoid clashes in case
       // of nodes selected in same branch
@@ -759,11 +809,13 @@ JobTree.prototype.cloneJob = function ( parent_page,onAdd_func )  {
         tree.projectData.jobCount++;
         task.project = tree.projectData.desc.name;
         task.id      = tree.projectData.jobCount;
-        var node = tree.addSiblingToSelected ( tree.makeNodeName ( task ),
-                                               task.icon_small(),tree.customIcon() );
+        var node = tree.addSiblingToSelected ( '',task.icon_small(),
+                                                  tree.customIcon() );
         tree.task_map[node.id] = task;
         task.treeItemId        = node.id;
         node.dataId            = task.id;
+        // now set the new node name
+        tree.setText ( node,tree.makeNodeName(task) );
         if (onAdd_func)
           onAdd_func();
         tree.saveProjectData ( [task],[],null );

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    08.08.18   <--  Date of Last Modification.
+ *    20.08.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -100,9 +100,9 @@ function TaskTemplate()  {
   this.harvestedTaskIds = [];  // ids of tasks chosen by direct multiple selection
                                // as data suppliers for this one; used in job
                                // dialogs
-  this.harvestLinks     = [];  // ids of tasks linked to this one through direct
-                               // multiple selections in job tree; used for the
-                               // identification of job chains at job deletion
+  //this.harvestLinks     = [];  // ids of tasks linked to this one through direct
+                                 // multiple selections in job tree; used for the
+                                 // identification of job chains at job deletion
 
   this.disk_space = 0.0;  // in MBs; calculated after job is done
   this.cpu_time   = 0.0;  // in hours; calculated after job is done
@@ -255,10 +255,12 @@ if (!dbx)  {
     return url;
   }
 
+/*
   TaskTemplate.prototype.addHarvestLink = function ( taskId )  {
     if (this.harvestLinks.indexOf(taskId)<0)
       this.harvestLinks.push ( taskId );
   }
+*/
 
   TaskTemplate.prototype.makeInputPanelHeader = function()  {
   // header for inputPanel, displayed in JobDialog

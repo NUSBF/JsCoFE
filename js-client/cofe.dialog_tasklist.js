@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    11.08.18   <--  Date of Last Modification.
+ *    20.08.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -299,6 +299,7 @@ var row      = 0;
   ]);
 
   this.makeSection ( 'Toolbox',[
+//    new TaskCootCE  (),
     new TaskGesamt  (),
     new TaskSeqAlign()
   ]);

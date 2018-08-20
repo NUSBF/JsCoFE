@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    09.08.18   <--  Date of Last Modification.
+#    16.08.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -103,11 +103,18 @@ class BuccaneerMR(basic.TaskDriver):
         self.addCmdLine ( "colin-fo"  ,"[/*/*/" + istruct.FP + ",/*/*/" + istruct.SigFP + "]" )
         self.addCmdLine ( "colin-free","[/*/*/" + istruct.FreeR_flag + "]" )
 
+        if istruct.hasMRSubtype() or istruct.HLA=="":
+            self.addCmdLine ( "colin-phifom","[/*/*/" + istruct.PHI + ",/*/*/" + istruct.FOM + "]" )
+        else:
+            self.addCmdLine ( "colin-hl","[/*/*/" + istruct.HLA + ",/*/*/" + istruct.HLB +\
+                                         ",/*/*/" + istruct.HLC + ",/*/*/" + istruct.HLD + "]" )
+        """
         if isCoor:
             self.addCmdLine ( "colin-phifom","[/*/*/" + istruct.PHI + ",/*/*/" + istruct.FOM + "]" )
         else:
             self.addCmdLine ( "colin-hl","[/*/*/" + istruct.HLA + ",/*/*/" + istruct.HLB +\
                                          ",/*/*/" + istruct.HLC + ",/*/*/" + istruct.HLD + "]" )
+        """
 
         # Fixed model to be preserved by Buccaneer
 

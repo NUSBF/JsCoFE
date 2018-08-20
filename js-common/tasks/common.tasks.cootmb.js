@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    16.08.18   <--  Date of Last Modification.
+ *    20.08.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -32,7 +32,7 @@ function TaskCootMB()  {
              else  TaskTemplate.call ( this );
 
   this._type   = 'TaskCootMB';
-  this.name    = 'coot MB';
+  this.name    = 'coot (model building)';
   this.oname   = 'coot-mb';  // default output file name template
   this.title   = 'Model Building with Coot';
   this.helpURL = './html/jscofe_task_coot.html';

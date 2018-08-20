@@ -1,7 +1,7 @@
 /*
  *  =================================================================
  *
- *    18.07.18   <--  Date of Last Modification.
+ *    20.08.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -123,7 +123,10 @@ var _taskIndex = {
   'j' : { type: 'TaskCootMB'         , after: ['V','W','i'] },
 
   // do not suggest PDB Deposition
-  'k' : { type: 'TaskDeposition'     , after: [] }
+  'k' : { type: 'TaskDeposition'     , after: [] },
+
+  // suggest Coot after refinememnt
+  'l' : { type: 'TaskCootCE'         , after: ['B','C','D'] }
 
 };
 
