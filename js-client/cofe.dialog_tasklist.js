@@ -299,7 +299,7 @@ var row      = 0;
   ]);
 
   this.makeSection ( 'Toolbox',[
-//    new TaskCootCE  (),
+    new TaskCootCE  (),
     new TaskGesamt  (),
     new TaskSeqAlign()
   ]);

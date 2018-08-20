@@ -91,10 +91,10 @@ def register ( xyzFilePath,dataSerialNo,job_id,outDataBox,outputDir ):
     if os.path.isfile(xyzFilePath):
         xyz   = DType   ( job_id )
         fname = os.path.basename(xyzFilePath)
-        xyz.setFile   ( fname,dtype_template.file_key["xyz"] )
-        xyz.makeDName ( dataSerialNo )
+        xyz.setXYZFile ( fname )
+        xyz.makeDName  ( dataSerialNo )
         newFileName = xyz.dataId + "_" + fname
-        xyz.setFile   ( newFileName,dtype_template.file_key["xyz"] )
+        xyz.setXYZFile ( newFileName )
         if outDataBox:
             outDataBox.add_data ( xyz )
         os.rename ( xyzFilePath, os.path.join(outputDir,newFileName) )

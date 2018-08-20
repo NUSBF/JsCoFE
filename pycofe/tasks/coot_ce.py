@@ -31,6 +31,7 @@ import shutil
 
 #  application imports
 import basic
+from   pycofe.dtypes  import  dtype_xyz, dtype_ensemble
 from   pycofe.varut   import  signal
 try:
     from pycofe.varut import messagebox
@@ -92,35 +93,17 @@ class Coot(basic.TaskDriver):
                 fn,fext = os.path.splitext ( fname[fname.find("_")+1:] )
             else:
                 fn,fext = os.path.splitext ( f )
+
             coot_xyz = fn + "_xyz" + fext;
-            shutil.copy2 ( fname  ,coot_xyz )
+            shutil.copy2 ( fname,coot_xyz )
 
             # register output data from temporary location (files will be moved
             # to output directory by the registration procedure)
 
-            struct = self.registerStructure ( coot_xyz,None,coot_mtz,
-                                              fnames[0],fnames[1],
-                                              libnew )
-            #                                  istruct.getLibFilePath(self.inputDir()) )
-            if struct:
-                struct.copyAssociations ( istruct )
-                struct.copySubtype      ( istruct )
-                struct.makeXYZSubtype   ()
-                struct.copyLabels       ( istruct )
-                struct.copyLigands      ( istruct )
-                if ligand:
-                    struct.addLigands ( ligand.code )
-                # create output data widget in the report page
-                self.putTitle ( "Output Structure" )
-                self.putStructureWidget ( "structure_btn","Output Structure",struct )
-                # update structure revision
-                revision = self.makeClass ( self.input_data.data.revision[0] )
-                revision.setStructureData ( struct   )
-                self.registerRevision     ( revision )
-
-        else:
-            self.putTitle ( "No Output Structure Generated" )
-
+            xyz = self.registerXYZ ( coot_xyz )
+            if xyz:
+                xyz.putXYZMeta ( self.outputDir(),self.file_stdout,self.file_stderr,None )
+                self.putXYZWidget ( "xyz_btn","Edited coordinates",xyz,-1 )
 
         # ============================================================================
         # close execution logs and quit

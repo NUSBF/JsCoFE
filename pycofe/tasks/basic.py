@@ -1165,10 +1165,11 @@ class TaskDriver(object):
     # ----------------------------------------------------------------------------
 
     def putXYZWidget ( self,widgetId,title_str,xyz,openState=-1 ):
-        pyrvapi.rvapi_add_data ( widgetId,title_str,
+        pyrvapi.rvapi_add_data ( self.getWidgetId(widgetId),title_str,
                     # always relative to job_dir from job_dir/html
                     "/".join(["..",self.outputDir(),xyz.getXYZFileName()]),
-                    "xyz",secId,secrow,0,1,1,-1 )
+                    "xyz",self.report_page_id(),self.rvrow,0,1,1,-1 )
+        self.rvrow += 1
         return
 
 

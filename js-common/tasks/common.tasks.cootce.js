@@ -46,7 +46,7 @@ function TaskCootCE()  {
       min       : 1,          // minimum acceptable number of data instances
       max       : 1           // maximum acceptable number of data instances
     },{
-      data_type : {'DataXYZ':[],'DataEnsemble':[]},  // data type(s) and subtype(s)
+      data_type : {'DataXYZ':[],'DataEnsemble':[],'DataStructure':['xyz']},  // data type(s) and subtype(s)
       label     : 'Additional data', // label for input dialog
       inputId   : 'aux_xyz',  // input Id for referencing input fields
       min       : 0,          // minimum acceptable number of data instances
