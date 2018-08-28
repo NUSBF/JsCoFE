@@ -91,11 +91,11 @@ class Aimless(basic.TaskDriver):
                     setattr(par, k2, p2)
 
         aimless_lines = list()
-        scalingProtocol(par, aimless_lines)
-        scalingDetails(par, aimless_lines)
-        rejectOutliers(par, aimless_lines)
-        SDcorrection(par, aimless_lines)
-        intensitiesAndPartials(par, aimless_lines)
+        scalingProtocol        ( par, aimless_lines )
+        scalingDetails         ( par, aimless_lines )
+        rejectOutliers         ( par, aimless_lines )
+        SDcorrection           ( par, aimless_lines )
+        intensitiesAndPartials ( par, aimless_lines )
 #       self.log('# Aimless parameters')
 #       for line in aimless_lines:
 #           self.log(' '.join(line.split()))

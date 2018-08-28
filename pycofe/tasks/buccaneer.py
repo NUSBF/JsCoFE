@@ -197,6 +197,8 @@ class BuccaneerMR(basic.TaskDriver):
         else:
             self.runApp ( "ccp4-python",cmd )
 
+        self.addCitations ( ['buccaneer','refmac5'] )
+
         # check solution and register data
         if os.path.isfile(self.buccaneer_xyz()):
 

@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    09.08.18   <--  Date of Last Modification.
+#    23.08.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -54,7 +54,17 @@ class EnsemblePrepSeq(basic.TaskDriver):
     def run(self):
 
         # Check avalability of PDB archive
-        #self.checkPDB()
+        pdbLocal = ""
+        if "PDB_DIR" in os.environ:
+            pdbLocal = "PDBLOCAL " + os.environ["PDB_DIR"] + "\n"
+        elif not self.have_internet():
+            self.fail ( "<h3>No internet connection.</h3>" +\
+                    "This task requires access to PDB archive, which is not " +\
+                    "installed locally, and remote access to wwPDB is not " +\
+                    "possible due to missing internet connection.",
+                    "No internet connection" )
+            return
+
 
         # Prepare mrbump input
         # fetch input data
@@ -62,11 +72,6 @@ class EnsemblePrepSeq(basic.TaskDriver):
 
         # make a file with input script
         self.open_stdin()
-
-        pdbLocal = ""
-        if "PDB_DIR" in os.environ:
-            pdbLocal = "PDBLOCAL " + os.environ["PDB_DIR"] + "\n"
-
         self.write_stdin (
             "JOBID " + self.outdir_name() + "\n" + \
             "MDLS False\n" + \

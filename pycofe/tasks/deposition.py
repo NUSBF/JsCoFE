@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    08.08.18   <--  Date of Last Modification.
+#    26.08.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -45,6 +45,7 @@ from  adding_stats_to_mmcif import run_process
 import basic
 from   pycofe.dtypes import dtype_template, dtype_sequence
 from   pycofe.proc   import valrep
+from   pycofe.etc    import citations
 
 
 # ============================================================================
@@ -181,13 +182,15 @@ class Deposition(basic.TaskDriver):
         aimless_meta = None
         if hkl.aimless_meta.file:
             aimless_meta = os.path.join ( self.inputDir(),hkl.aimless_meta.file )
-            self.file_stdout.write ( aimless_meta )
+            #self.file_stdout.write ( aimless_meta )
+            """
             if os.path.isfile(aimless_meta):
                 self.file_stdout.write ( " -- found\n" )
                 with open(aimless_meta, 'r') as fin:
                     self.file_stdout.write ( fin.read() )
             else:
                 self.file_stdout.write ( " -- NOT found\n" )
+            """
         else:
             self.file_stdout.write ( "aimples meta NOT found\n" )
         #aimless_meta = None  #  to be removed when EBI deposition module is fixed
@@ -231,56 +234,66 @@ class Deposition(basic.TaskDriver):
         self.putMessage ( "&nbsp;<p><h3><i>2. Validation Report</i></h3>" )
         self.flush()
 
-        repFilePath = os.path.splitext(self.getXYZOFName())[0] + ".pdf"
-
-        self.file_stdout.write ( "modelFilePath=" + deposition_cif + "\n" )
-        self.file_stdout.write ( "sfCIF=" + sfCIF + "\n" )
-        self.file_stdout.write ( "repFilePath=" + repFilePath + "\n" )
-
-        #modelFilePath = "/Users/eugene/Projects/jsCoFE/tmp/valrep/1sar.cif"
-        #sfCIF = "/Users/eugene/Projects/jsCoFE/tmp/valrep/1sar-sf.cif"
-
-        self.putWaitMessageLF ( "Validation Report is being acquired from wwPDB, please wait ..." )
-
-        msg  = "."
-        ntry = 0
-        while msg and (ntry<25):
-            self.file_stdout.write ( "\n -- attempt " + str(ntry+1) + "\n" )
-            self.file_stdout.flush ()
-            msg = valrep.getValidationReport ( deposition_cif,sfCIF,repFilePath,self.file_stdout )
-            if msg and (ntry<25):
-                self.file_stdout.write ( "\n -- server replied: " + msg + "\n" )
-                ntry += 1
-                time.sleep ( 10 )
-
-        # remove wait message
-        self.putMessage1 ( self.report_page_id(),"",self.rvrow,0,1,1 )
-
-        if msg:
-            self.putMessage ( "Failed: <b><i>" + str(msg) + "</i></b>" )
-
-        elif os.path.isfile(repFilePath):
-
-            repFilePath1 = os.path.join ( self.reportDir(),repFilePath )
-            os.rename ( repFilePath,repFilePath1 )
-
-            self.putSection ( self.report_id(),"wwPDB Validation Report",False )
-            self.putMessage1 ( self.report_id(),
-                    "<object data=\"" + repFilePath +\
-                    "\" type=\"application/pdf\" " +\
-                    "style=\"border:none;width:100%;height:1000px;\"></object>",
-                    0,0,1,1 )
-
-            grid_id1 = self.getWidgetId ( self.dep_grid() )
-            self.putMessage ( "&nbsp;<p><hr/>" )
-            self.putGrid ( grid_id1 )
-            self.putMessage1 ( grid_id1,"<i>PDB Validation Report in PDF format</i>&nbsp;",0,0 )
-            self.putDownloadButton ( repFilePath1,"download",grid_id1,0,1 )
-            self.putMessage ( "<hr/>" )
+        if not self.have_internet():
+            self.putMessage ( "<b><i>No internet connection.</i></b>" )
 
         else:
-            self.putMessage ( "&nbsp;<p><b><i> -- failed to download</i></b>" )
 
+            repFilePath = os.path.splitext(self.getXYZOFName())[0] + ".pdf"
+
+            self.file_stdout.write ( "modelFilePath=" + deposition_cif + "\n" )
+            self.file_stdout.write ( "sfCIF=" + sfCIF + "\n" )
+            self.file_stdout.write ( "repFilePath=" + repFilePath + "\n" )
+
+            #modelFilePath = "/Users/eugene/Projects/jsCoFE/tmp/valrep/1sar.cif"
+            #sfCIF = "/Users/eugene/Projects/jsCoFE/tmp/valrep/1sar-sf.cif"
+
+            self.putWaitMessageLF ( "Validation Report is being acquired from wwPDB, please wait ..." )
+
+            msg  = "."
+            ntry = 0
+            while msg and (ntry<25):
+                self.file_stdout.write ( "\n -- attempt " + str(ntry+1) + "\n" )
+                self.file_stdout.flush ()
+                msg = valrep.getValidationReport ( deposition_cif,sfCIF,repFilePath,self.file_stdout )
+                if msg and (ntry<25):
+                    self.file_stdout.write ( "\n -- server replied: " + msg + "\n" )
+                    ntry += 1
+                    time.sleep ( 10 )
+
+            # remove wait message
+            self.putMessage1 ( self.report_page_id(),"",self.rvrow,0,1,1 )
+
+            if msg:
+                self.putMessage ( "Failed: <b><i>" + str(msg) + "</i></b>" )
+
+            elif os.path.isfile(repFilePath):
+
+                repFilePath1 = os.path.join ( self.reportDir(),repFilePath )
+                os.rename ( repFilePath,repFilePath1 )
+
+                self.putSection ( self.report_id(),"wwPDB Validation Report",False )
+                self.putMessage1 ( self.report_id(),
+                        "<object data=\"" + repFilePath +\
+                        "\" type=\"application/pdf\" " +\
+                        "style=\"border:none;width:100%;height:1000px;\"></object>",
+                        0,0,1,1 )
+
+                grid_id1 = self.getWidgetId ( self.dep_grid() )
+                self.putMessage ( "&nbsp;<p><hr/>" )
+                self.putGrid ( grid_id1 )
+                self.putMessage1 ( grid_id1,"<i>PDB Validation Report in PDF format</i>&nbsp;",0,0 )
+                self.putDownloadButton ( repFilePath1,"download",grid_id1,0,1 )
+                self.putMessage ( "<hr/>" )
+
+            else:
+                self.putMessage ( "&nbsp;<p><b><i> -- failed to download</i></b>" )
+
+        self._add_citations ( citations.citation_list )
+        if self.citation_list:
+            self.putTitle ( "References" )
+            self.putMessage ( citations.makeSummaryCitationsHTML(self.citation_list) )
+        citations.citation_list = []
         # close execution logs and quit
         self.success()
         return

@@ -185,7 +185,6 @@ def run ( body,        # body is reference to the main Import class
 
             rc = command.call ( "pointless",[],"./",pointless_script(),
                                 body.file_stdout,body.file_stderr,log_parser )
-
             body.unsetLogParser()
 
             symmTablesId = fileSecId + "_" + symm_det()

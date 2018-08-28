@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    16.08.18   <--  Date of Last Modification.
+#    25.08.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -70,14 +70,15 @@ class DType(jsonut.jObject):
     def __init__(self,job_id,json_str=""):
         super(DType,self).__init__(json_str)
         if not json_str:
-            self._type      = dtype()      # base data type
-            self.version    = 1
+            self._type      = dtype()     # base data type
+            self.version    = 2
             self.subtype    = []          # default 'basic' subtype
             self.dname      = "template"  # data name to display
             self.jobId      = job_id;
             self.dataId     = "0-0"
             self.files      = {}  # may be a multiple-file data type
             self.associated = []  # optional list of associated data Ids
+            self.citations  = []  # list of program citations
         return
 
     def makeDataId ( self,serialNo ):
@@ -91,6 +92,22 @@ class DType(jsonut.jObject):
         if fname[0:4].isdigit() and fname[5:7].isdigit() and fname[4]=="-" and fname[7]=="_":
             return fname[8:]
         return fname
+
+    def addCitation ( self,reference ):
+        if hasattr(self,"citations"):
+            if reference not in self.citations:
+                self.citations.append ( reference )
+        else:
+            self.citations = [reference]
+        return
+
+    def addCitations ( self,reflist ):
+        if not hasattr(self,"citations"):
+            self.citations = []
+        for reference in reflist:
+            if reference not in self.citations:
+                self.citations.append ( reference )
+        return
 
     def setFile ( self,fname,fileKey ): # fname is file name as a string
         if fname:

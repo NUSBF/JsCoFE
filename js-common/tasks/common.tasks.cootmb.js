@@ -2,11 +2,11 @@
 /*
  *  =================================================================
  *
- *    20.08.18   <--  Date of Last Modification.
+ *    26.08.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
- *  **** Module  :  js-common/tasks/common.tasks.coot.js
+ *  **** Module  :  js-common/tasks/common.tasks.cootmb.js
  *       ~~~~~~~~~
  *  **** Project :  jsCoFE - javascript-based Cloud Front End
  *       ~~~~~~~~~
@@ -67,14 +67,6 @@ if (__template)
       TaskCootMB.prototype = Object.create ( __template.TaskTemplate.prototype );
 else  TaskCootMB.prototype = Object.create ( TaskTemplate.prototype );
 TaskCootMB.prototype.constructor = TaskCootMB;
-
-
-// legacy class
-function TaskCoot()  {
-  TaskCootMB.call ( this );
-}
-TaskCoot.prototype = Object.create ( TaskCootMB.prototype );
-TaskCoot.prototype.constructor = TaskCoot;
 
 
 // ===========================================================================

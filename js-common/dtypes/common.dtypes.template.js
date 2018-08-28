@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    09.08.18   <--  Date of Last Modification.
+ *    25.08.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -48,6 +48,7 @@ function DataTemplate()  {
   this.files      = {};                    // list of files, uses file_key (above)
   this.associated = [];                    // list of associated data Ids
   this.backtrace  = true;                  // collect all data up the tree branch
+  this.citations  = [];                    // list of program citations
 }
 
 
@@ -57,7 +58,7 @@ DataTemplate.prototype.title      = function()  { return 'Template Data';       
 DataTemplate.prototype.icon_small = function()  { return './images/data_20x20.svg'; }
 DataTemplate.prototype.icon_large = function()  { return './images/data.svg';       }
 
-DataTemplate.prototype.currentVersion = function()  { return 1; } // from 09.08.2018
+DataTemplate.prototype.currentVersion = function()  { return 2; } // from 25.08.2018
 
 // export such that it could be used in both node and a browser
 if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {

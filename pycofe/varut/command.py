@@ -21,6 +21,8 @@ import subprocess
 import traceback
 import platform
 
+from pycofe.etc import citations
+
 class comrc():
     def __init__(self,retcode=None,utime=None):
         self.msg   = ""
@@ -121,6 +123,9 @@ def call ( executable,command_line,job_dir,stdin_fname,file_stdout,
     file_stdout.write ( "-"*80 + "\n" )
 
     _add_times ( rc )
+
+    # fetch citations
+    citations.addCitation ( executable )
 
     if rc.msg:
         msg = ' *** error running {0}: {1}'.format(executable, rc.msg)

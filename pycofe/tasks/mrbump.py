@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    09.08.18   <--  Date of Last Modification.
+#    23.08.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -56,6 +56,13 @@ class MrBump(basic.TaskDriver):
         pdbLine = ""
         if self.checkPDB(False):
             pdbLine = "PDBLOCAL " + os.environ["PDB_DIR"] + "\n"
+        elif not self.have_internet():
+            self.fail ( "<h3>No internet connection.</h3>" +\
+                    "This task requires access to PDB archive, which is not " +\
+                    "installed locally, and remote access to wwPDB is not " +\
+                    "possible due to missing internet connection.",
+                    "No internet connection" )
+            return
 
 
         # Prepare mrbump input

@@ -96,6 +96,13 @@ class Xia2(basic.TaskDriver):
         else:
             rc = self.runApp ( "xia2",cmd )
 
+        if pipeline=="2d":
+            self.addCitations ( ['dials','mosflm','aimless'] )
+        elif pipeline.startswith("3d"):
+            self.addCitations ( ['dials','xds'] )
+        else:
+            self.addCitations ( ['dials','aimless'] )
+
         # Check for PDB files left by Xia2 and convert them to type structure
         resDir = "DataFiles"
         file_names = [fn for fn in os.listdir(resDir)

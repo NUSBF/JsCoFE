@@ -163,6 +163,8 @@ class Morda(basic.TaskDriver):
         else:
             self.runApp ( "ccp4-python",cmd )
 
+        self.addCitations ( ['morda'] )
+
         self.restoreReportDocument()
 
         final_pdb = os.path.join ( self.outputDir(),morda_out_pdb )

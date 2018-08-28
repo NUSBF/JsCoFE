@@ -84,7 +84,7 @@ function TaskSimbad()  {
                                  'search.',
                       range    : [1,100],
                       value    : '',
-                      default  : '50',
+                      default  : '5',
                       position : [1,0,1,1]
                     },
                 MAXPENALTY : {
@@ -96,7 +96,7 @@ function TaskSimbad()  {
                                  'search.',
                       range    : [0,12],
                       value    : '',
-                      default  : '12',
+                      default  : '4',
                       showon   : {'SEARCH_SEL':['L','LC','LCS']},
                       position : [2,0,1,1]
                     }

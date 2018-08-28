@@ -61,6 +61,8 @@ class Xyz2Revision(dimple.Dimple,asudef.ASUDef):
             asudef.revisionFromStructure ( self,hkl,structure,
                                            os.path.splitext(xyz.getXYZFileName())[0] )
 
+        self.putCitations()
+
         # close execution logs and quit
         self.success()
         return

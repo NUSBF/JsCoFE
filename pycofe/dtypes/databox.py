@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    09.08.18   <--  Date of Last Modification.
+#    26.08.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -35,6 +35,13 @@ class DataBox(jsonut.jObject):
         # The class keep output data, represented by dtype_XXX classes, as
         # data[dtype] = [data11,data12,... ]
 
+        return
+
+    def putCitations ( self,citation_list ):
+        for dtype in self.data:
+            dlist = self.data[dtype]
+            for i in range(len(dlist)):
+                dlist[i].citations = citation_list
         return
 
 

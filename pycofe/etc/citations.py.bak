@@ -1,0 +1,475 @@
+##!/usr/bin/python
+
+#
+# ============================================================================
+#
+#    26.08.18   <--  Date of Last Modification.
+#                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# ----------------------------------------------------------------------------
+#
+#  Citation Framework Functions
+#
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2018
+#
+# ============================================================================
+#
+
+#import pyrvapi
+
+# ============================================================================
+
+citations = {
+
+    'default' : { 'authors' : 'Collaborative Computational Project, Number 4',
+                  'title'   : 'Overview of the CCP4 suite and current developments',
+                  'journal' : 'Acta Cryst.',
+                  'volume'  : 'D67',
+                  'year'    : '2011',
+                  'pages'   : '235-242'
+                },
+
+    'jscofe'  : { 'authors' : 'Krissinel, E., Uski, V., Lebedev, A., Winn, M., Ballard, C.',
+                  'title'   : 'Distributed computing for macromolecular crystallography',
+                  'journal' : 'Acta Cryst.',
+                  'volume'  : 'D74',
+                  'year'    : '2018',
+                  'pages'   : '143-151'
+                },
+
+    'ccp4'          : { 'name' : 'CCP4 Project' , 'refs' : [] },  # empty refs means default
+    'pdbcur'        : { 'name' : 'PDBCur'       , 'refs' : [] },
+    'freerflag'     : { 'name' : 'FreeRFlag'    , 'refs' : [] },
+    'ctruncate'     : { 'name' : 'CTruncate'    , 'refs' : [] },
+    'mtz2various'   : { 'name' : 'mtz2various'  , 'refs' : [] },
+    'matthews_coef' : { 'name' : 'Matthews_Coef', 'refs' : [] },
+
+    'ps2pdf'        : { 'name' : '', 'refs' : [] },  # empty name means "Ignore"
+    'ccp4-python'   : { 'name' : '', 'refs' : [] },
+
+    'pointless' : { 'name' : 'Pointless',
+                    'refs' : [{
+                            'authors' : 'Evans, P.R.',
+                            'title'   : 'Scaling and assessment  of data quality',
+                            'journal' : 'Acta Cryst.',
+                            'volume'  : 'D62',
+                            'year'    : '2006',
+                            'pages'   : '72-82'
+                        },{
+                            'authors' : 'Evans, P.R.',
+                            'title'   : 'An introduction to data reduction: space-group determination, scaling and intensity statistics',
+                            'journal' : 'Acta Cryst.',
+                            'volume'  : 'D67',
+                            'year'    : '2011',
+                            'pages'   : '282-292'
+                        }]
+                  },
+
+    'aimless'   : { 'name' : 'Aimless',
+                    'refs' : [{
+                            'authors' : 'Evans, P.R., and Murshudov, G.N.',
+                            'title'   : 'How good are my data and what is the resolution?',
+                            'journal' : 'Acta Cryst.',
+                            'volume'  : 'D69',
+                            'year'    : '2013',
+                            'pages'   : '1204-1214'
+                        }]
+                  },
+
+    'molrep'    : { 'name' : 'Molrep',
+                    'refs' : [{
+                            'authors' : 'Vagin, A., and Teplyakov, A.',
+                            'title'   : 'MOLREP: an automated program for molecular replacement',
+                            'journal' : 'J. Appl. Cryst.',
+                            'volume'  : '30',
+                            'year'    : '1997',
+                            'pages'   : '1022-1025'
+                        }]
+                  },
+
+    'refmac5' :   { 'name' : 'Refmac',
+                    'refs' : [{
+                            'authors' : 'Murshudov, G.N., Skubak, P., Lebedev, A.A., Pannu, N.S., Steiner, R.A., Nicholls, R.A., Winn, M.D., Long, F., and Vagin, A.A.',
+                            'title'   : 'REFMAC5 for the refinement of macromolecular crystal structures',
+                            'journal' : 'Acta Cryst.',
+                            'volume'  : 'D67',
+                            'year'    : '2011',
+                            'pages'   : '355-367'
+                        }]
+                  },
+
+    'mrbump' :    { 'name' : 'MrBUMP',
+                    'refs' : [{
+                            'authors' : 'Keegan, R.M., Winn, M.D.',
+                            'title'   : 'MrBUMP: an automated pipeline for molecular replacement',
+                            'journal' : 'Acta Cryst.',
+                            'volume'  : 'D64',
+                            'year'    : '2008',
+                            'pages'   : '119-124'
+                        }]
+                  },
+
+    'morda'  :    { 'name' : 'MoRDa',
+                    'refs' : [{
+                            'authors' : 'Vagin, A., Lebedev, A.',
+                            'title'   : 'MoRDa , an automatic molecular replacement pipeline',
+                            'journal' : 'Acta Cryst.',
+                            'volume'  : 'A71',
+                            'year'    : '2015',
+                            'pages'   : 's19',
+                            'doi'     : '10.1107/S2053273315099672'
+                        }]
+                  },
+
+    'balbes'  :   { 'name' : 'BALBES',
+                    'refs' : [{
+                            'authors' : 'Long, F., Vagin, A.A., Young, P., Murshudov, G.N.',
+                            'title'   : 'BALBES: a molecular-replacement pipeline',
+                            'journal' : 'Acta Cryst.',
+                            'volume'  : 'D64',
+                            'year'    : '2008',
+                            'pages'   : '125-132',
+                            'doi'     : '10.1107/S0907444907050172'
+                        }]
+                  },
+
+    'zanuda'  :   { 'name' : 'Zanuda',
+                    'refs' : [{
+                            'authors' : 'Lebedev, A.A., Isupov, M.N.',
+                            'title'   : 'Space-group and origin ambiguity in macromolecular structures with pseudo-symmetry and its treatment with the program Zanuda',
+                            'journal' : 'Acta Cryst.',
+                            'volume'  : 'D70',
+                            'year'    : '2014',
+                            'pages'   : '2430-2443',
+                            'doi'     : '10.1107/S1399004714014795'
+                        }]
+                  },
+
+    'dimple'  :   { 'name' : 'DIMPLE',
+                    'refs' : [{
+                            'authors' : 'Wojdyr, M., Keegan, R., Winter, G., Ashton, A.',
+                            'title'   : 'DIMPLE - a pipeline for the rapid generation of difference maps from protein crystals with putatively bound ligands',
+                            'journal' : 'Acta Cryst.',
+                            'volume'  : 'A69',
+                            'year'    : '2013',
+                            'pages'   : 's299',
+                            'doi'     : '10.1107/S0108767313097419'
+                        }]
+                  },
+
+    'simbad' :    { 'name' : 'SIMBAD',
+                    'refs' : [{
+                            'authors' : 'Simpkin, A.J., Simkovic, F., Thomas, J.M.H., Savko, M., Lebedev, A., ' +\
+                                        'Uski, V., Ballard, C., Wojdyr, M., Wu, R., Sanishvili, R., Xu, Y., ' +\
+                                        'Lisa, M.N., Buschiazzo, A., Shepard, W., Rigden, D.J., Keegan, R.M.',
+                            'title'   : 'SIMBAD: a sequence-independent molecular-replacement pipeline.',
+                            'journal' : 'Acta Cryst.',
+                            'volume'  : 'D74',
+                            'year'    : '2018',
+                            'pages'   : '595-605',
+                            'doi'     : '10.1107/S2059798318005752'
+                        }]
+                  },
+
+    'ample' :     { 'name' : 'AMPLE',
+                    'refs' : [{
+                            'authors' : 'Bibby, J., Keegan, R.M., Mayans, O., Winn, M.D. and Rigden, D.J.',
+                            'title'   : 'AMPLE: a cluster-and-truncate approach to solve the crystal structures ' +\
+                                        'of small proteins using rapidly computed ab initio models',
+                            'journal' : 'Acta Cryst.',
+                            'volume'  : 'D68',
+                            'year'    : '2012',
+                            'pages'   : '1622-1631',
+                            'doi'     : '10.1107/S0907444912039194'
+                        }]
+                  },
+
+    'lorestr' :   { 'name' : 'LoRESTR',
+                    'refs' : [{
+                            'authors' : 'Kovalevskiy, O., Nicholls, R.A., Murshudov, G.N.',
+                            'title'   : 'Automated refinement of macromolecular structures ' +\
+                                         'at low resolution using prior information',
+                            'journal' : 'Acta Cryst.',
+                            'volume'  : 'D72',
+                            'year'    : '2016',
+                            'pages'   : '1149–1161',
+                            'doi'     : '10.1107/S2059798316014534'
+                        }]
+                  },
+
+    'prosmart' :  { 'name' : 'PROSMART',
+                    'refs' : [{
+                            'authors' : 'Nicholls, R.A., Fischer, M., McNicholas, S., Murshudov, G.N.',
+                            'title'   : 'Conformation-Independent Structural Comparison of Macromolecules with ProSMART',
+                            'journal' : 'Acta Cryst.',
+                            'volume'  : 'D70',
+                            'year'    : '2014',
+                            'pages'   : '2487-2499'
+                        }]
+                  },
+
+    'xia2'   :    { 'name' : 'Xia2',
+                    'refs' : [{
+                            'authors' : 'Winter, G.',
+                            'title'   : 'Xia2: an expert system for macromolecular crystallography data reduction',
+                            'journal' : 'J. Appl. Cryst.',
+                            'volume'  : '43',
+                            'year'    : '2010',
+                            'pages'   : '186-190',
+                            'doi'     : '10.1107/S0021889809045701'
+                        }]
+                  },
+
+
+    'dials.export'    : { 'name' : 'DIALS.export',
+                          'copy' : [['dials',-1]]  # -1 means copy all
+                        },
+    'dials.rs_mapper' : { 'name' : 'DIALS.rs_mapper',
+                          'copy' : [['dials',-1]]
+                        },
+
+    'dials'  :    { 'name' : 'DIALS',
+                    'refs' : [{
+                            'authors' : 'Winter, G., Waterman, D.G., Parkhurst, J.M., Brewster, A.S., ' +\
+                                        'Gildea, R.J., Gerstel, M., Fuentes-Montero, L., Vollmar, M., ' +\
+                                        'Michels-Clark, T., Young, I.D., Sauter, N.K., Evans, G.',
+                            'title'   : 'DIALS: implementation and evaluation of a new integration package',
+                            'journal' : 'Acta Cryst.',
+                            'volume'  : 'D74',
+                            'year'    : '2018',
+                            'pages'   : '85-97'
+                        }, {
+                            'authors' : 'Parkhurst, J.M., Winter, G., Waterman, D.G., Fuentes-Montero, L., ' +\
+                                        'Gildea, R.J., Murshudov, G.N., Evans, G.',
+                            'title'   : 'DIALS',
+                            'journal' : 'J. Appl. Cryst.',
+                            'volume'  : '49',
+                            'year'    : '2016',
+                            'pages'   : '1912-1921'
+                        }]
+                  },
+
+    'coot'   :    { 'name' : 'COOT',
+                    'refs' : [{
+                            'authors' : 'Emsley, P., Lohkamp, B., Scott, W.G., Cowtan, K.',
+                            'title'   : 'Features and development of Coot',
+                            'journal' : 'Acta Cryst.',
+                            'volume'  : 'D66',
+                            'year'    : '2010',
+                            'pages'   : '486-501'
+                        }]
+                  },
+
+    'cparrot' :   { 'name' : 'PARROT',
+                    'refs' : [{
+                            'authors' : 'Cowtan, K.',
+                            'title'   : 'Recent developments in classical density modification',
+                            'journal' : 'Acta Cryst.',
+                            'volume'  : 'D66',
+                            'year'    : '2010',
+                            'pages'   : '470-478'
+                        }]
+                  },
+
+    'buccaneer' : { 'name' : 'Buccaneer',
+                    'refs' : [{
+                            'authors' : 'Cowtan, K.',
+                            'title'   : 'Completion of autobuilt protein models using a database of protein fragments',
+                            'journal' : 'Acta Cryst.',
+                            'volume'  : 'D68',
+                            'year'    : '2012',
+                            'pages'   : '328-335'
+                        },{
+                            'authors' : 'Cowtan, K.',
+                            'title'   : 'The Buccaneer software for automated model building',
+                            'journal' : 'Acta Cryst.',
+                            'volume'  : 'D62',
+                            'year'    : '2006',
+                            'pages'   : '1002-1011'
+                        }]
+                  },
+
+    'phaser' :    { 'name' : 'Phaser',
+                    'refs' : [{
+                            'authors' : 'McCoy, A.J., Grosse-Kunstleve, R.W., Adams, P.D., Winn, M.D., Storoni, L.C., Read R.J.',
+                            'title'   : 'Phaser Crystallographic Software',
+                            'journal' : 'J. Appl. Cryst.',
+                            'volume'  : '40',
+                            'year'    : '2007',
+                            'pages'   : '658-674'
+                        }]
+                  },
+
+    'fft' :       { 'name' : 'FFT',
+                    'refs' : [{
+                            'authors' : 'Eyck, L.F.',
+                            'title'   : '',
+                            'journal' : 'Acta Cryst.',
+                            'volume'  : 'A29',
+                            'year'    : '1973',
+                            'pages'   : '183'
+                        }]
+                  },
+
+    'acedrg' :    { 'name' : 'AceDRG',
+                    'refs' : [{
+                            'authors' : 'Long, F., Nicholls, R.A., Emsley, P., Grazulis, S., Merkys, A., Vaitkusb, A., Murshudov, G.N.',
+                            'title'   : 'AceDRG: a stereochemical description generator for ligands',
+                            'journal' : 'Acta Cryst.',
+                            'volume'  : 'D73',
+                            'year'    : '2017',
+                            'pages'   : '112-122'
+                        }]
+                  },
+
+    'gesamt' :    { 'name' : 'GESAMT',
+                    'refs' : [{
+                            'authors' : 'Krissinel, E.',
+                            'title'   : 'Enhanced fold recognition using efficient short fragment clustering',
+                            'journal' : 'J. Mol. Biochem.',
+                            'volume'  : '1(2)',
+                            'year'    : '2012',
+                            'pages'   : '76-85'
+                        }]
+                  },
+
+    'jspisa'    : { 'name' : 'PISA',
+                    'refs' : [{
+                            'authors' : 'Krissinel, E., Henrick, K.',
+                            'title'   : 'Inference of macromolecular assemblies from crystalline state',
+                            'journal' : 'J. Mol. Biol.',
+                            'volume'  : '372',
+                            'year'    : '2007',
+                            'pages'   : '774-797'
+                        },{
+                            'authors' : 'Krissinel, E.',
+                            'title'   : 'Stock-based detection of protein oligomeric states in jsPISA',
+                            'journal' : 'Nucl. Acids Res.',
+                            'volume'  : '',
+                            'year'    : '2015',
+                            'pages'   : 'DOI:10.1093/nar/gkv314'
+                        }]
+                  },
+
+}
+
+
+# citation array for current process
+citation_list = []
+
+
+def addCitation ( appName ):
+    appRef = appName
+    if appName.endswith(".bat"):
+        appRef = appName[:len(appName)-4]
+    if appRef not in citation_list:
+        citation_list.append ( appRef )
+    return
+
+
+def makeCitation ( reference ):
+    return reference["authors"] + " (" + reference["year"] + ") <i>" +\
+           reference["title"] + ".</i> " + reference["journal"] + " <b>" +\
+           reference["volume"] + "</b>: " + reference["pages"]
+
+
+def _get_references ( citation ):
+    refs     = []
+    if 'copy' in citation:
+        copy = citation['copy']
+        for c in copy:
+            aname = c[0]
+            if aname in citations:
+                cit = citations[aname]
+                if 'refs' in cit:
+                    index = c[1]
+                    if index<0:
+                        refs += cit['refs']  # copy all references
+                    elif index<len(cit['refs']):
+                        refs.append ( cit['refs'][index] )
+                    else:
+                        nocopy.append ( "index:" + appName + "/" + aname )
+                else:
+                    nocopy.append ( "refs:" + appName + "/" + aname )
+            else:
+                nocopy.append ( "citation:" + appName + "/" + aname )
+    if 'refs' in citation:
+        refs += citation['refs']
+    return refs
+
+
+def makeCitationsHTML():
+
+    if not citation_list:
+        return None
+
+    else:
+        html    = "<b>The following programs were used in the task:</b><ul>"
+        noref   = []
+        nocopy  = []
+        ccp4ref = []
+        for appName in citation_list:
+            if appName in citations:
+                citation = citations[appName]
+                refs     = _get_references ( citation )
+                if len(refs)>0:
+                    html += "<li><b><font style='font-size:110%'><i>" + citation['name'] +\
+                            "</i></font>:</b><ul>"
+                    for reference in refs:
+                        html += "<li>" + makeCitation(reference) + "</li>"
+                    html += "</ul>&nbsp;<br></li>"
+                elif citation['name']:
+                    ccp4ref.append ( appName )
+            else:
+                noref.append ( appName )
+
+        ccp4ref.append ( 'ccp4' )
+        html += "<li><b><font style='font-size:110%'><i>" + citations[ccp4ref[0]]['name']
+        for i in range(1,len(ccp4ref)):
+            html += ", " + citations[ccp4ref[i]]['name']
+        html += "</i></font>:</b><ul><li>" + makeCitation(citations['default']) + "</ul></li>"
+
+        html += "</ul><b>Results were delivered to you by jsCoFE:</b><ul><li>" +\
+                makeCitation(citations['jscofe']) + "</li></ul>" +\
+                "&nbsp;<p><hr/><i>Please note: full set of references related to your final results " +\
+                "will be generated by PDB Deposition task</i>"
+
+        if len(noref)>0:
+            html += "<p><font style='font-size:85%'><i>Developer: no references for " +\
+                    str(noref) + ", please provide</i></font>"
+        if len(nocopy)>0:
+            html += "<p><font style='font-size:85%'><i>Developer: citation index errors: " +\
+                    str(nocopy) + ", please correct</i></font>"
+
+    return html
+
+
+def makeSummaryCitationsHTML ( clist ):
+
+    if not clist:
+        return None
+
+    else:
+        noref = []
+        hlist = []
+        for appName in clist+["ccp4","jscofe"]:
+            if appName in citations:
+                citation = citations[appName]
+                refs     = _get_references ( citation )
+                for reference in refs:
+                    rstr  = "<li>" + makeCitation ( reference ) + "</li>"
+                    if rstr not in hlist:
+                        hlist.append ( rstr )
+            else:
+                noref.append ( appName )
+
+        html  = "<b>Your results were obtained using developments from publications " +\
+                "listed below. Please cite them when publishing:</b><ul>"
+        for li in hlist:
+            html += li
+        html += "</ul>"
+
+        if len(noref)>0:
+            html += "<p><font style='font-size:85%'><i>Developer: no references for " +\
+                    str(noref) + ", please provide</i></font>"
+
+    return html

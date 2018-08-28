@@ -38,6 +38,8 @@ function checkLocalService ( callback_func )  {
     __local_service = null;
   //__local_user = (window.location.search.indexOf('lusr')>=0);
 
+  // alert ( window.navigator.onLine );  -- seems to work
+
   serverCommand ( fe_command.getInfo,{},'getInfo',function(response){
     if (response.status==fe_retcode.ok)  {
       if (response.data.localuser)  {

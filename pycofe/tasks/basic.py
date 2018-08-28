@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    16.08.18   <--  Date of Last Modification.
+#    25.08.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -41,6 +41,10 @@ import os
 import sys
 import shutil
 import traceback
+try:
+    import httplib
+except:
+    import http.client as httplib
 
 #  ccp4-python imports
 import pyrvapi
@@ -52,6 +56,7 @@ from pycofe.dtypes import dtype_ensemble, dtype_hkl, dtype_ligand
 from pycofe.dtypes import dtype_sequence
 from pycofe.proc   import edmap,  import_filetype,   import_merged
 from pycofe.varut  import signal, jsonut, command
+from pycofe.etc    import citations
 
 
 # ============================================================================
@@ -132,6 +137,9 @@ class TaskDriver(object):
     # data register counter
     dataSerialNo  = 0
 
+    # cumulative list of citations
+    citation_list = []
+
     # data import fields
     files_all     = [] # list of files to import
     file_type     = {} # optional file type specificator
@@ -144,8 +152,8 @@ class TaskDriver(object):
     # ========================================================================
     # cofe config
 
-#   This needs to be obtained from the jscofe config-file.
-#   maintainerEmail = None
+    #   This needs to be obtained from the jscofe config-file.
+    #maintainerEmail = None
     maintainerEmail = "my.name@gmail.com"
 
     # ========================================================================
@@ -338,6 +346,16 @@ class TaskDriver(object):
             return False
         return True
 
+    def have_internet ( self,url="www.google.com",time_out=5 ):
+        conn = httplib.HTTPConnection(url,timeout=time_out)
+        try:
+            conn.request("HEAD", "/")
+            conn.close()
+            return True
+        except:
+            conn.close()
+            return False
+
 
     # ============================================================================
 
@@ -390,6 +408,8 @@ class TaskDriver(object):
 
     def flush(self):
         pyrvapi.rvapi_flush()
+        self.file_stdout.flush()
+        self.file_stderr.flush()
         return
 
     def putTitle1 ( self,pageId,title_str,row,colSpan=1 ):
@@ -622,8 +642,25 @@ class TaskDriver(object):
 
     # ============================================================================
 
-    def makeClass ( self,dict ):
-        return databox.make_class ( dict )
+    def addCitations ( self,clist ):
+        for c in clist:
+            citations.addCitation ( c )
+        return
+
+
+    def _add_citations ( self,clist ):
+        for c in clist:
+            if c not in self.citation_list:
+                self.citation_list.append ( c )
+        return
+
+    def makeClass ( self,data_obj ):
+        if type(data_obj) == dict:
+            clist = data_obj["citations"]
+        else:
+            clist = data_obj.citations
+        self._add_citations ( clist )
+        return databox.make_class ( data_obj )
 
 
     # ============================================================================
@@ -719,6 +756,16 @@ class TaskDriver(object):
         return rc
 
 
+    def putCitations(self):
+        #self.file_stdout.write ( str(citations.citation_list) )
+        if citations.citation_list:
+            self.putTitle ( "References" )
+            self.putMessage ( citations.makeCitationsHTML() )
+        self._add_citations ( citations.citation_list )
+        self.outputDataBox.putCitations ( self.citation_list )
+        return
+
+
     # ============================================================================
 
     def calcEDMap ( self,xyzPath,hklData,libPath,filePrefix,inpDir=None ):
@@ -782,7 +829,7 @@ class TaskDriver(object):
 
             # Register output data. This moves needful files into output directory
             # and puts the corresponding metadata into output databox
-            self.file_stdout.write ( "fnames=" + str(fnames) + "\n")
+            #self.file_stdout.write ( "fnames=" + str(fnames) + "\n")
 
             if subtype==3:
                 structure = self.registerStructure (
@@ -1331,6 +1378,7 @@ class TaskDriver(object):
 
 
     def success(self):
+        self.putCitations()
         if self.task:
             self.task.cpu_time = command.getTimes()[1]
             if self.generic_parser_summary:
@@ -1346,6 +1394,7 @@ class TaskDriver(object):
         raise signal.Success()
 
     def fail ( self,pageMessage,signalMessage ):
+        self.putCitations()
         if self.task:
             self.task.cpu_time = command.getTimes()[1]
             if self.generic_parser_summary:

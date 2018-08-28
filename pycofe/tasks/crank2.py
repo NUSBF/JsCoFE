@@ -585,6 +585,8 @@ class Crank2(basic.TaskDriver):
         else:
             self.runApp ( "ccp4-python",cmd )
 
+        self.addCitations ( ['crank2'] )
+
         self.restoreReportDocument()
         #pyrvapi.rvapi_reset_task()
 

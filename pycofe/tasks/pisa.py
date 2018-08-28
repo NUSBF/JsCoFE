@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    09.08.18   <--  Date of Last Modification.
+#    26.08.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -92,5 +92,5 @@ class PISA(basic.TaskDriver):
 if __name__ == "__main__":
 
     drv = PISA ( "",os.path.basename(__file__),
-                 { "report_page" : { "show" : False } } )
+                 { "report_page" : { "show" : True, "name" : "Report" } } )
     drv.start()
