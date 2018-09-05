@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    16.08.18   <--  Date of Last Modification.
+#    04.09.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -276,8 +276,15 @@ class DType(dtype_template.DType):
         self.setFile ( fname,dtype_template.file_key["mtz"] )
         return
 
+    def setSolFile ( self,fname ):
+        self.setFile ( fname,dtype_template.file_key["sol"] )
+        return
+
     def getXYZFileName(self):
         return self.getFileName ( dtype_template.file_key["xyz"] )
+
+    def getSolFileName(self):
+        return self.getFileName ( dtype_template.file_key["sol"] )
 
     def getSubFileName(self):
         return self.getFileName ( dtype_template.file_key["sub"] )
@@ -296,6 +303,9 @@ class DType(dtype_template.DType):
 
     def getLibFileName(self):
         return self.getFileName ( dtype_template.file_key["lib"] )
+
+    def getSolFilePath ( self,dirPath ):
+        return self.getFilePath ( dirPath,dtype_template.file_key["sol"] )
 
     def getXYZFilePath ( self,dirPath ):
         return self.getFilePath ( dirPath,dtype_template.file_key["xyz"] )
@@ -328,12 +338,12 @@ class DType(dtype_template.DType):
         self.addLigandSubtype()
         return
 
-    def add_file ( self,fn,outputDir,fileKey,copy_bool=False ):
+    def add_file ( self,fn,outputDir,fileKeyName,copy_bool=False ):
         if fn and os.path.isfile(fn):
             fname = os.path.basename(fn)
             if (not fname[0:4].isdigit()) or (not fname[5:7].isdigit()) or fname[4]!="-" or fname[7]!="_":
                 fname = self.dataId + "_" + fname
-            self.setFile ( fname,fileKey )
+            self.setFile ( fname,dtype_template.file_key[fileKeyName] )
             fpath = os.path.join ( outputDir,fname )
             if fn!=fpath:
                 if os.path.isfile(fpath):
@@ -364,12 +374,12 @@ def register ( xyzFilePath,subFilePath,mtzFilePath,mapFilePath,dmapFilePath,libF
         structure.setFile ( os.path.basename(fname0),dtype_template.file_key["xyz"] )
         structure.makeDName ( dataSerialNo )
         structure.removeFiles()
-        structure.add_file ( xyzFilePath ,outputDir,dtype_template.file_key["xyz" ] )
-        structure.add_file ( subFilePath ,outputDir,dtype_template.file_key["sub" ] )
-        structure.add_file ( mtzFilePath ,outputDir,dtype_template.file_key["mtz" ] )
-        structure.add_file ( mapFilePath ,outputDir,dtype_template.file_key["map" ] )
-        structure.add_file ( dmapFilePath,outputDir,dtype_template.file_key["dmap"] )
-        structure.add_file ( libFilePath ,outputDir,dtype_template.file_key["lib" ] )
+        structure.add_file ( xyzFilePath ,outputDir,"xyz" )
+        structure.add_file ( subFilePath ,outputDir,"sub" )
+        structure.add_file ( mtzFilePath ,outputDir,"mtz" )
+        structure.add_file ( mapFilePath ,outputDir,"map" )
+        structure.add_file ( dmapFilePath,outputDir,"dmap")
+        structure.add_file ( libFilePath ,outputDir,"lib" )
         if xyzFilePath:
             structure.addSubtype ( dtype_template.subtypeXYZ() )
         if subFilePath:

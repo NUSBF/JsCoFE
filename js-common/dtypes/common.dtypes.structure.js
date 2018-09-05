@@ -100,6 +100,8 @@ if (!__template)  {
 
     if (this.files.hasOwnProperty(file_key.sub))
       dsp.makeRow ( 'HA-XYZ file',this.files[file_key.sub],'Heavy atom (substructure) file name' );
+    if (this.files.hasOwnProperty(file_key.sol))
+      dsp.makeRow ( 'Phaser\'s SOL file',this.files[file_key.sol],'SOL file with phaser\' output metadata' );
     if (this.files.hasOwnProperty(file_key.mtz))
       dsp.makeRow ( 'MTZ file',this.files[file_key.mtz],'Associated MTZ file name' );
     if (this.files.hasOwnProperty(file_key.map))

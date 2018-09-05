@@ -1,6 +1,6 @@
 
 ===================================
-jsCoFE Task Development: Input Data
+|jsCoFE| Task Development: Input Data
 ===================================
 
 Most of *tasks* must have input facilities in order to receive data from other
@@ -9,22 +9,22 @@ tasks and various parameters set by user. We will now do modifications to the
 will be able to accept both data objects and parameters.
 
 -----------------------
-Data exchange in jsCoFE
+Data exchange in |jsCoFE|
 -----------------------
 
-jsCoFE *tasks* exchange data in terms of *data objects*, rather than raw files.
+|jsCoFE| *tasks* exchange data in terms of *data objects*, rather than raw files.
 *Data object* may be equivalent to file, but it may be also part of a file or
 a combination of data from several files or their parts. Whenever a data exchange
 is required, it is done on the level of metadata objects, represented by short
 JSON-formatted files, which contain reference(s) to files with actual data.
-Therefore, before running on a number cruncher, jsCoFE's task must receive a
+Therefore, before running on a number cruncher, |jsCoFE|'s task must receive a
 metadata object, describing a particular data type, and actual files it refers
 to. By design, the metadata comes in the ``input_data`` field of task class, and
-actual files are put automatically by jsCoFE framework in the job's ``input``
+actual files are put automatically by |jsCoFE| framework in the job's ``input``
 subdirectory on the Front-End server before sending all job directory to
 number cruncher.
 
-Most of technical details of data exchange in jsCoFE are hidden from task
+Most of technical details of data exchange in |jsCoFE| are hidden from task
 developer, and knowing them should not be required for task development. We
 will demonstrate handling task input data on he example of the *Hello World!*
 task, introduced in :ref:`hello-world`.
@@ -56,8 +56,8 @@ given in :doc:`ref_input_data`.
 
 You may now insert the above fragment in function ``TaskHelloWorld()`` in file
 ``js-common/tasks/common.helloworld.js`` and advance task version in function
-``currentVersion()`` in the same file. Then restart all jsCoFE servers and
-reload jsCoFE in your browser and go to your project with *Hello World!* tasks.
+``currentVersion()`` in the same file. Then restart all |jsCoFE| servers and
+reload |jsCoFE| in your browser and go to your project with *Hello World!* tasks.
 
 First, try to clone the previous job -- the framework should prevent you of doing
 so because we have changed the interface version number. This is done in order
@@ -96,7 +96,7 @@ Getting input data in Task Driver
 
 Data objects, chosen by user, should be received in *Task Driver* (*cf.*
 :ref:`task-driver`), and corresponding data passed to relevant application for
-processing. jsCoFE framework works in such way that data objects arrive in
+processing. |jsCoFE| framework works in such way that data objects arrive in
 structure ``self.input_data.data``, where they appear under identifiers
 corresponding to chosen ``inputId`` in their *Task Class* descriptions. For our
 *Hello World!* example, the coordinate data objects are accessible in
@@ -127,7 +127,7 @@ and raw data for all chosen data objects in standard output. The corresponding
   :linenos:
 
 :download:`Download <examples/v1/helloworld.py>` this file and copy it in
-``pycofe/tasks`` directories of all jsCoFE number crunchers, then create new
+``pycofe/tasks`` directories of all |jsCoFE| number crunchers, then create new
 *Hello World!* task in a project with imported coordinate data. Run the task and
 investigate which parts of *Task Driver* are responsible for which output
 details. Note that this example is useful for learning actual metadata

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    20.08.18   <--  Date of Last Modification.
+ *    03.09.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -907,7 +907,7 @@ if (!dbx)  {
           new MessageBox ( 'Out-versioned data',
             '<h3>Out-versioned data encountered</h3>' +
             'Some data items, collected for this task, were created with a lower ' +
-            'version of jsCoFE,<br>where forward compatibility could not be ' +
+            'version of ' + appName() + ',<br>where forward compatibility could not be ' +
             'provided for technical reasons. Such items<br>are disabled in comboboxes ' +
             'and cannot be selected. <b>For at least one data type,<br>all available ' +
             'data items are incompatible with the current version of the task. As a<br>' +
@@ -918,7 +918,7 @@ if (!dbx)  {
             'that some old tasks cannot be cloned,<br>too, in which case they ' +
             'should be created anew.' +
             '<p>Apologies for the inconvenience caused, which is due to the ' +
-            'routine development and<br>update of jsCoFE.'
+            'routine development and<br>update of ' + appName() + '.'
           );
         },0 );
       } else  {
@@ -926,7 +926,7 @@ if (!dbx)  {
           new MessageBox ( 'Out-versioned data',
             '<h3>Out-versioned data encountered</h3>' +
             'Some data items, collected for this task, were created with a lower ' +
-            'version of jsCoFE,<br>where forward compatibility could not be ' +
+            'version of ' + appName() + ',<br>where forward compatibility could not be ' +
             'provided for technical reasons. <b>Such items<br>are disabled in comboboxes ' +
             'and cannot be selected.</b>' +
             '<p>If outdated data items are required, they must be re-generated or ' +
@@ -934,7 +934,7 @@ if (!dbx)  {
             'that some old tasks cannot be cloned,<br>too, in which case they ' +
             'should be formed anew.' +
             '<p>Apologies for the inconvenience caused, which is due to the ' +
-            'routine development and<br>update of jsCoFE.'
+            'routine development and<br>update of ' + appName() + '.'
           );
         },0 );
       }

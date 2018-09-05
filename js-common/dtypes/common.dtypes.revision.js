@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    09.08.18   <--  Date of Last Modification.
+ *    04.09.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -226,12 +226,21 @@ if (!__template)  {
       var customGrid = dropdown.customGrid;
       customGrid.setLabel ( '<b>Fixed model</b>:',0,0,1,1 )
                             .setFontItalic(true).setNoWrap();
-      customGrid.setLabel ( '<b>' + this.Structure.dname + '</b>',0,1,1,1 )
+      customGrid.setLabel ( '<b>' + this.Structure.dname + '</b>',0,1,1,4 )
                             .setNoWrap();
-      customGrid.setCellSize ( '','24pt',0,0 );
-      customGrid.setCellSize ( '','24pt',0,1 );
-      customGrid.setVerticalAlignment ( 0,0,'middle' );
-      customGrid.setVerticalAlignment ( 0,1,'middle' );
+      customGrid.setLabel ( '<b>Fixed model metadata</b>:',1,0,1,1 )
+                            .setFontItalic(true).setNoWrap();
+      if (this.Structure.files.hasOwnProperty(file_key.sol))
+        customGrid.setLabel ( '<b>' + this.Structure.files[file_key.sol] + '</b>',1,1,1,4 )
+                              .setNoWrap();
+      else
+        customGrid.setLabel ( '<b><i>absent</i></b>',1,1,1,4 ).setNoWrap();
+      for (var i=0;i<=1;i++)  {
+        customGrid.setCellSize ( '','12pt',0,i );
+        customGrid.setVerticalAlignment ( 0,i,'middle' );
+        customGrid.setCellSize ( '','24pt',1,i );
+        customGrid.setVerticalAlignment ( 1,i,'middle' );
+      }
       dropdown.layCustom = 'phaser-mr-fixed';
     }
 

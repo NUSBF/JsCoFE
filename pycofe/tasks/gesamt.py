@@ -87,7 +87,8 @@ class Gesamt(basic.TaskDriver):
 
         if nXYZ<2:
             if not "GESAMT_ARCHIVE" in os.environ:
-                self.fail ( "<p>&nbsp;<b> *** Error: jsCofe is not configured to work " + \
+                self.fail ( "<p>&nbsp;<b> *** Error: " + self.appName() +\
+                            " is not configured to work " + \
                             "with GESAMT Archive</b><br>" + \
                             "<i>     Please look for support</i><br>",
                             "No GESAMT Archive configured" )

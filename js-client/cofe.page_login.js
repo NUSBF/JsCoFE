@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    24.06.18   <--  Date of Last Modification.
+ *    03.09.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -47,7 +47,7 @@ function LoginPage ( sceneId )  {
   panel.setWidth      ( '300pt' );
   this.grid.setWidget ( panel,0,1,1,1 );
 
-  var ccp4_lbl  = new Label     ( 'CCP4 Login'  );
+  var ccp4_lbl  = new Label     ( appName() + ' Login' );
   var login_lbl = new Label     ( 'Login name:' );
   var pwd_lbl   = new Label     ( 'Password:'   );
   var login_inp = new InputText ( '' );
@@ -101,7 +101,8 @@ function LoginPage ( sceneId )  {
   panel.setWidget               ( login_btn,row++,0,1,2 );
   panel.setWidget               ( pwd_btn  ,row++,0,1,2 );
   panel.setWidget               ( reg_btn  ,row++,0,1,2 );
-  panel.setLabel                ( '&nbsp;<br><center><i>jsCoFE is available for ' +
+  panel.setLabel                ( '&nbsp;<br><center><i>' + appName() +
+                                  ' is available for ' +
                                   'local setups,<br>see instructions ' +
                                   '<a href="manual/html/index.html">here</a>.' +
                                   '</i></center>',

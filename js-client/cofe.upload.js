@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    03.08.18   <--  Date of Last Modification.
+ *    03.09.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -200,14 +200,7 @@ function Upload ( customData,upl_data,onSelect_func,onSelectPDB_func,onReady_fun
           new MessageBox ( 'Not a project archive',
               'Selected file is not a project archive. Please<br>' +
               'select project archive previously exported<br>' +
-              'from jsCoFE.');
-
-          /*
-          new MessageBox ( 'Not a project tarball',
-              'Selected file is not a project tarball. Please<br>' +
-              'select project tarball previously exported<br>' +
-              'from jsCoFE.');
-          */
+              'from ' + appName() + '.');
 
           upl.button   .setDisabled ( false );
           upl.indicator.setText     ( ''    );

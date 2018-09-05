@@ -119,6 +119,15 @@ class Dimple(ccp4go_asu.PrepareASU):
                         list    = filter ( None,line.replace("/"," ").split(" ") )
                         rfree   = float(list[len(list)-1])
                         rfactor = float(list[len(list)-2])
+                        self.addCitation ( "refmac5" )
+                    if line.find("rwcontents")>=0:
+                        self.addCitation ( "rwcontents" )
+                    if line.find("pointless")>=0:
+                        self.addCitation ( "pointless" )
+                    if line.find("phaser")>=0:
+                        self.addCitation ( "phaser" )
+                    if line.find("find-blobs")>=0:
+                        self.addCitation ( "find-blobs" )
 
             self.putMessage ( "<h2><i>Solution found (<i>R<sub>free</sub>=" +
                               str(rfree) +"</i>)</h2>" )

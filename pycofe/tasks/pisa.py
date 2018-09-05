@@ -49,12 +49,14 @@ class PISA(basic.TaskDriver):
 
         if "JSPISA_CFG" not in os.environ:
             pyrvapi.rvapi_set_text (
-                "<b>Error: jsCoFE is not configured to work with jsPISA.</b><p>" + \
-                "Please look for support.",
+                "<b>Error: " + self.appName() + " is not configured to work " +\
+                "with jsPISA.</b><p>Please look for support.",
                 self.report_page_id(),self.rvrow,0,1,1 )
 
-            self.fail ( "<p>&nbsp; *** Error: jsCofe is not configured to work with jsPISA.\n" + \
-                        "     Please look for support\n","jsPISA is not configured" )
+            self.fail ( "<p>&nbsp; *** Error: " + self.appName() + " is not " +\
+                        "configured to work with jsPISA.\n" + \
+                        "     Please look for support\n",
+                        "jsPISA is not configured" )
 
 
         # Prepare pisa input

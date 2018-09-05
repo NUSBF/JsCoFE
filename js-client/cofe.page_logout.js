@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    31.06.18   <--  Date of Last Modification.
+ *    03.09.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -47,10 +47,11 @@ function LogoutPage ( sceneId )  {
   panel.setWidth      ( '300pt' );
   this.grid.setWidget ( panel,0,1,1,1 );
 
-  var thank_lbl  = new Label    ( 'Thank you for using CCP4' );
+  var thank_lbl  = new Label    ( 'Thank you for using ' + appName() );
   var logout_lbl = new Label    ( 'You are now logged out.'  );
 
   thank_lbl .setFont            ( 'times','200%',true,true );
+  thank_lbl .setNoWrap          ();
   logout_lbl.setFontSize        ( '125%' );
 
   var row = 0;

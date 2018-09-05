@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    09.08.18   <--  Date of Last Modification.
+#    04.09.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -80,7 +80,7 @@ class PhaserMR(basic.TaskDriver):
         hklfile = hkl.getHKLFilePath ( self.inputDir() )
         xstruct = None
         if "xyz" in revision.subtype:  # optional data parameter
-            xstruct = revision.Structure
+            xstruct = self.makeClass ( revision.Structure )
             cad_mtz = 'cad.mtz'
             xstruct_labels = ( xstruct.FWT, xstruct.PHWT )
             self.open_stdin()
@@ -152,8 +152,12 @@ class PhaserMR(basic.TaskDriver):
                 "\n    PDB \"" + xstruct.getXYZFilePath(self.inputDir()) +\
                 "\" IDENT 0.9" +\
                 "\nTARGET TRA PHASED" +\
-                "\nSOLUTION ORIGIN ENSEMBLE ensemble0\n"
+                "\nSOLUTION ORIGIN ENSEMBLE ensemble0"
             )
+            inp_sol_file = xstruct.getSolFilePath ( self.inputDir() )
+            if inp_sol_file:
+                self.write_stdin ( "\n@"+inp_sol_file )
+
 
         # add options
 
@@ -256,10 +260,11 @@ class PhaserMR(basic.TaskDriver):
         self.unsetLogParser()
 
         # check solution and register data
-        sol_hkl = hkl
-        if os.path.isfile(self.outputFName + ".sol"):
+        sol_hkl  = hkl
+        sol_file = self.outputFName + ".sol"
+        if os.path.isfile(sol_file):
 
-            solf = open ( self.outputFName + ".sol","r" )
+            solf = open ( sol_file,"r" )
             soll = solf.readlines()
             solf.close()
             sol_spg = None
@@ -281,6 +286,8 @@ class PhaserMR(basic.TaskDriver):
                                     self.outputFName,sol_hkl,None,seq,1,False )
 
         if structure:
+            # set sol file
+            structure.add_file ( sol_file,self.outputDir(),"sol" )
             # update structure revision
             revision.setStructureData ( structure )
             self.registerRevision     ( revision  )

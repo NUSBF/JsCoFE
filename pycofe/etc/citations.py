@@ -20,20 +20,15 @@
 
 citations = {
 
-    'default' : { 'authors' : 'Collaborative Computational Project, Number 4',
-                  'title'   : 'Overview of the CCP4 suite and current developments',
-                  'journal' : 'Acta Cryst.',
-                  'volume'  : 'D67',
-                  'year'    : '2011',
-                  'pages'   : '235-242'
-                },
-
-    'jscofe'  : { 'authors' : 'Krissinel, E., Uski, V., Lebedev, A., Winn, M., Ballard, C.',
-                  'title'   : 'Distributed computing for macromolecular crystallography',
-                  'journal' : 'Acta Cryst.',
-                  'volume'  : 'D74',
-                  'year'    : '2018',
-                  'pages'   : '143-151'
+    'default' : { 'name' : 'CCP4 Project',
+                  'refs' : [{
+                            'authors' : 'Collaborative Computational Project, Number 4',
+                            'title'   : 'Overview of the CCP4 suite and current developments',
+                            'journal' : 'Acta Cryst.',
+                            'volume'  : 'D67',
+                            'year'    : '2011',
+                            'pages'   : '235-242'
+                  }]
                 },
 
     'ccp4'            : { 'name' : 'CCP4 Project' , 'refs' : [] },  # empty refs means default
@@ -368,6 +363,107 @@ citations = {
                         }]
                   },
 
+    'crank2'    : { 'name' : 'Crank-2',
+                    'refs' : [{
+                            'authors' : 'Skubak, P., Arac, D., Bowler, M.W., Correia, A.R., ' +\
+                                        'Hoelz, A., Larsen, S., Leonard, G.A., McCarthy, A.A., ' +\
+                                        'McSweeney, S., Mueller-Dieckmann, C., Otten, H., ' +\
+                                        'Salzman, G., Pannu, N.S.',
+                            'title'   : 'A new MR-SAD algorithm for the automatic building ' +\
+                                        'of protein models from low-resolution X-ray data ' +\
+                                        'and a poor starting model',
+                            'journal' : 'IUCrJ',
+                            'volume'  : '5',
+                            'year'    : '2018',
+                            'pages'   : ''
+                        },{
+                            'authors' : 'Skubak, P., Pannu, N.S.',
+                            'title'   : 'Automatic protein structure solution from weak X-ray data',
+                            'journal' : 'Nature Comm.',
+                            'volume'  : '4',
+                            'year'    : '2013',
+                            'pages'   : '2777'
+                        }]
+                  },
+
+    'shelx' :     { 'name' : 'SHELX',
+                    'refs' : [{
+                            'authors' : 'Sheldrick, G.M.',
+                            'title'   : 'A short history of SHELX',
+                            'journal' : 'Acta Cryst.',
+                            'volume'  : 'A64',
+                            'year'    : '2008',
+                            'pages'   : '112-122'
+                        }]
+                  },
+
+    'shelxc'    : { 'name' : 'SHELXC',
+                    'copy' : [['shelx',-1]]  # -1 means copy all
+                  },
+
+    'shelxe'    : { 'name' : 'SHELXE',
+                    'copy' : [['shelx',-1]]  # -1 means copy all
+                  },
+
+    'shelxd' :    { 'name' : 'SHELXD',
+                    'refs' : [{
+                            'authors' : 'Schneider, T.R., Sheldrick, G.M.',
+                            'title'   : 'Substructure solution with SHELXD',
+                            'journal' : 'Acta Cryst.',
+                            'volume'  : 'D58',
+                            'year'    : '2002',
+                            'pages'   : '1772-1779'
+                        }]
+                  },
+
+    'uglymol' :   { 'name'     : 'UglyMol',
+                    'category' : 'viewer',
+                    'refs'     : [{
+                            'authors' : 'Wojdyr, M.',
+                            'title'   : ' UglyMol: a WebGL macromolecular viewer focused on the electron density',
+                            'journal' : 'J. Open Source Softw.',
+                            'volume'  : '2(18)',
+                            'year'    : '2017',
+                            'pages'   : '350',
+                            'doi'     : '10.21105/joss.00350'
+                        }]
+                  },
+
+    'ccp4mg'  :   { 'name'     : 'CCP4 MG',
+                    'category' : 'viewer',
+                    'refs'     : [{
+                            'authors' : 'McNicholas, S., Potterton, E., Wilson, K.S., Noble, M.E.M.',
+                            'title'   : 'Presenting your structures: the CCP4mg molecular-graphics software',
+                            'journal' : 'Acta Cryst.',
+                            'volume'  : 'D67',
+                            'year'    : '2011',
+                            'pages'   : '386-394'
+                        }]
+                  },
+
+    'viewhkl' :   { 'name'     : 'ViewHKL',
+                    'category' : 'viewer',
+                    'refs'     : [{
+                            'authors' : 'Evans, P., Krissinel, E.',
+                            'title'   : 'ViewHKL: Reflection data viewer',
+                            'journal' : 'Unpublished',
+                            'volume'  : '',
+                            'year'    : '2011',
+                            'pages'   : ''
+                        }]
+                  },
+
+    'jscofe'  : { 'name' : 'CCP4 Cloud',
+                  'refs' : [{
+                            'authors' : 'Krissinel, E., Uski, V., Lebedev, A., Winn, M., Ballard, C.',
+                            'title'   : 'Distributed computing for macromolecular crystallography',
+                            'journal' : 'Acta Cryst.',
+                            'volume'  : 'D74',
+                            'year'    : '2018',
+                            'pages'   : '143-151'
+                  }]
+                },
+
 }
 
 #
@@ -393,11 +489,19 @@ def addCitation ( appName ):
         citation_list.append ( appRef )
     return
 
+def addCitations ( appName_list ):
+    for appName in appName_list:
+        addCitation ( appName )
+    return
+
 
 def makeCitation ( reference ):
-    return reference["authors"] + " (" + reference["year"] + ") <i>" +\
-           reference["title"] + ".</i> " + reference["journal"] + " <b>" +\
-           reference["volume"] + "</b>: " + reference["pages"]
+    refhtml = reference["authors"] + " (" + reference["year"] + ") <i>" +\
+              reference["title"] + ".</i> " + reference["journal"] + " <b>" +\
+              reference["volume"] + "</b>"
+    if reference['pages']:
+        refhtml += ": " + reference["pages"]
+    return refhtml
 
 
 def _get_references ( citation ):
@@ -425,7 +529,7 @@ def _get_references ( citation ):
     return refs
 
 
-def makeCitationsHTML():
+def makeCitationsHTML ( body ):
 
     if not citation_list:
         return None
@@ -435,11 +539,14 @@ def makeCitationsHTML():
         noref   = []
         nocopy  = []
         ccp4ref = []
+        viewers = []
         for appName in citation_list:
             if appName in citations:
                 citation = citations[appName]
                 refs     = _get_references ( citation )
-                if len(refs)>0:
+                if 'category' in citation and citation['category']=='viewer':
+                    viewers += refs
+                elif len(refs)>0:
                     html += "<li><b><font style='font-size:110%'><i>" + citation['name'] +\
                             "</i></font>:</b><ul>"
                     for reference in refs:
@@ -454,12 +561,18 @@ def makeCitationsHTML():
         html += "<li><b><font style='font-size:110%'><i>" + citations[ccp4ref[0]]['name']
         for i in range(1,len(ccp4ref)):
             html += ", " + citations[ccp4ref[i]]['name']
-        html += "</i></font>:</b><ul><li>" + makeCitation(citations['default']) + "</ul></li>"
+        html += "</i></font>:</b><ul><li>" + makeCitation(citations['default']['refs'][0]) + "</ul></li>"
 
-        html += "</ul><b>Results were delivered to you by jsCoFE:</b><ul><li>" +\
-                makeCitation(citations['jscofe']) + "</li></ul>" +\
-                "&nbsp;<p><hr/><i>Please note: full set of references related to your final results " +\
-                "will be generated by the PDB Deposition task</i>"
+        html += "</ul><b>Results were delivered to you by " + body.appName() + ":</b><ul><li>" +\
+                makeCitation(citations['jscofe']['refs'][0]) + "</li></ul>"
+        if len(viewers)>0:
+            html += "<b>You may have used the following graphical viewers:</b><ul>"
+            for reference in viewers:
+                html += "<li>" + makeCitation(reference) + "</li>"
+            html += "</ul>"
+
+        html += "&nbsp;<p><hr/><i>Please note: full set of references related to your " +\
+                "final results will be generated by the PDB Deposition task</i>"
 
         if len(noref)>0:
             html += "<p><font style='font-size:85%'><i>Developer: no references for " +\
@@ -490,11 +603,11 @@ def makeSummaryCitationsHTML ( clist ):
             else:
                 noref.append ( appName )
 
-        rstr  = "<li>" + makeCitation(citations['default']) + "</li>"
+        rstr  = "<li>" + makeCitation(citations['default']['refs'][0]) + "</li>"
         if rstr not in hlist:
             hlist.append ( rstr )
 
-        rstr  = "<li>" + makeCitation(citations['jscofe']) + "</li>"
+        rstr  = "<li>" + makeCitation(citations['jscofe']['refs'][0]) + "</li>"
         if rstr not in hlist:
             hlist.append ( rstr )
 

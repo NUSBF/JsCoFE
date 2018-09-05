@@ -60,3 +60,20 @@ function makeTaskTitle ( icon_uri,title,purpose,schematic )  {
     '<h3><i><u>Description</u></i></h3>'
   );
 }
+
+
+function replaceDocumentText(selector, text, newText, flags) {
+  var matcher = new RegExp(text, flags);
+  var elems = document.querySelectorAll(selector);
+
+  for (var i = 0; i < elems.length; i++)
+    //if (!elems[i].childNodes.length)
+    elems[i].innerHTML = elems[i].innerHTML.replace(matcher, newText);
+}
+
+function setAppName()  {
+//  replaceDocumentText ( 'body,div,h1,h2,h3,p,a,i,b,font','{jsCoFE}','CCP4 Cloud','g' );
+  replaceDocumentText ( '*','{jsCoFE}','CCP4 Cloud','g' );
+}
+
+window.onload = setAppName;

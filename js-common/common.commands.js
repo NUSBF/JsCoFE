@@ -2,7 +2,7 @@
 /*
  *  ===========================================================================
  *
- *    20.08.18   <--  Date of Last Modification.
+ *    04.09.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  ---------------------------------------------------------------------------
  *
@@ -21,9 +21,10 @@
 
 
 // ============================================================================
-// version tag
+// name and version tag
 
-var jsCoFE_version = '0.2.0 [26.08.2018]';
+function appName()  { return 'CCP4 Cloud' }
+var jsCoFE_version = '0.2.0 [04.09.2018]';
 
 
 // ============================================================================
@@ -184,6 +185,7 @@ function Request ( request,token,data )  {
 
 // export such that it could be used in both node and a browser
 if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
+  module.exports.appName         = appName;
   module.exports.fe_command      = fe_command;
   module.exports.fe_reqtype      = fe_reqtype;
   module.exports.fe_retcode      = fe_retcode;

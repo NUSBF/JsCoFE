@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    25.08.18   <--  Date of Last Modification.
+#    04.09.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -47,6 +47,7 @@ def subtypeRNA         (): return "rna"
 
 file_key = {
     'xyz'  : 'xyz',   # atomic coordinates
+    'sol'  : 'sol',   # phaser's sol file
     'sub'  : 'sub',   # heavy atom (substructure) coordinates
     'seq'  : 'seq',   # sequence file
     'mtz'  : 'mtz',   # .mtz file with hkl and/or phases

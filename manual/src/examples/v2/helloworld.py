@@ -6,7 +6,7 @@ import os
 #  ccp4-python imports
 import pyrvapi
 
-#  jsCoFE imports
+#  |jsCoFE| imports
 from pycofe.tasks  import basic
 
 # ============================================================================

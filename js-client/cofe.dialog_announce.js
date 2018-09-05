@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    18.12.17   <--  Date of Last Modification.
+ *    03.09.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Licence Dialog
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2017
+ *  (C) E. Krissinel, A. Lebedev 2016-2018
  *
  *  =================================================================
  *
@@ -40,7 +40,7 @@ function AnnounceDialog()  {
 
   var header = grid.setLabel ( 'Dear &lt;User Name&gt;,<p>' +
                   'You receive this e-mail bacause you are registered as a ' +
-                  'CCP4 jsCoFE user.',1,0,1,3 );
+                  appName() + ' user.',1,0,1,3 );
 
   var textarea = grid.setTextArea ( '','Place text of the announcement here',
                    5,80, 2,0,1,3 );
@@ -49,10 +49,12 @@ function AnnounceDialog()  {
 
   var footer = grid.setLabel ( 'This e-mail was sent from unmanned ' +
                   'mailbox, please do not reply as replies cannot be<br>' +
-                  'received. For any questions, please contact jsCoFE maintainer at ' +
+                  'received. For any questions, please contact ' + appName() +
+                  ' maintainer at ' +
                   '<a href="mailto:' + maintainerEmail +
                     '?Subject=jsCoFE%20Question">' + maintainerEmail +
-                  '</a>.<p>Kind regards<p>CCP4 jsCoFE maintenance.',4,0,1,3 );
+                  '</a>.<p>Kind regards<p>' + appName() + ' maintenance.',
+                  4,0,1,3 );
 
 
   //w = 3*$(window).width()/5 + 'px';

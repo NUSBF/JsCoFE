@@ -94,6 +94,7 @@ class Buccaneer(ccp4go_crank2.Crank2):
         else:
             self.runApp ( "ccp4-python",cmd )
         self.unsetLogParser()
+        self.addCitations ( ['buccaneer','refmac5'] )
 
         # check for solution
         nResults       = 0

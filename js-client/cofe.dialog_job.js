@@ -68,15 +68,20 @@ function JobDialog ( params,          // data and task projections up the tree b
   var w = 2*w0;
   if (this.task.job_dialog_data.width>0)
     w = this.task.job_dialog_data.width;
-  if (w>=w0)
-    w = 3*w0/4;
-  w += 'px';
 
   this.initialHeight = 2*h0;
   if (this.task.job_dialog_data.height>0)
     this.initialHeight = this.task.job_dialog_data.height;
-  if (this.initialHeight>=h0)
+
+  if ((w>=w0) || (this.initialHeight>=h0))  {
+    w = 3*w0/4;
     this.initialHeight = 3*h0/4;
+    this.task.job_dialog_data.position = { my : 'center top',   // job dialog position reference
+                                           at : 'center top+5%' }; // job dialog offset in the screen
+    this.task.job_dialog_data.width  = 0;
+    this.task.job_dialog_data.height = 0;
+  }
+  w += 'px';
 
   var taskId = this.task.id;
   this.dialog_options = {

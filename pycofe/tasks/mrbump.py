@@ -225,6 +225,7 @@ class MrBump(basic.TaskDriver):
                                                     "/".join([ "..",self.outputDir(),
                                                                xyz.getXYZFileName()]),
                                                     "xyz",secId,secrow,0,1,1,-1 )
+                                    self.addCitations ( ['uglymol','ccp4mg'] )
                                     secrow += 1
 
                         ensembles_dir = os.path.join ( domains_dir,"ensembles" );

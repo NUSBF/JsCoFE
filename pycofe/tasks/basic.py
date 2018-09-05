@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    25.08.18   <--  Date of Last Modification.
+#    03.09.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -72,7 +72,9 @@ class TaskDriver(object):
     _report_widget_id = "report_page"
     _scriptNo         = 0  # input script counter
 
-    def report_page_id  (self): return self._report_widget_id
+    def appName(self):  return "CCP4 Cloud"
+
+    def report_page_id(self): return self._report_widget_id
 
     def setReportWidget ( self,widgetId,row=0 ):
         self._rvrow_bak        = self.rvrow
@@ -337,11 +339,11 @@ class TaskDriver(object):
         if "PDB_DIR" not in os.environ:
             if stop:
                 pyrvapi.rvapi_set_text (
-                    "<b>Error: jsCoFE is not configured to work with PDB archive.</b><p>" + \
+                    "<b>Error: " + self.appName() + " is not configured to work with PDB archive.</b><p>" + \
                     "Please look for support.",
                     self.report_page_id(),self.rvrow,0,1,1 )
 
-                self.fail ( "<p>&nbsp; *** Error: jsCofe is not configured to work with PDB archive \n" + \
+                self.fail ( "<p>&nbsp; *** Error: " + self.appName() + " is not configured to work with PDB archive \n" + \
                             "     Please look for support\n","No PDB configured" )
             return False
         return True
@@ -642,11 +644,13 @@ class TaskDriver(object):
 
     # ============================================================================
 
-    def addCitations ( self,clist ):
-        for c in clist:
-            citations.addCitation ( c )
+    def addCitation ( self,appName ):
+        citations.addCitation ( appName )
         return
 
+    def addCitations ( self,appName_list ):
+        citations.addCitations ( appName_list )
+        return
 
     def _add_citations ( self,clist ):
         for c in clist:
@@ -760,7 +764,7 @@ class TaskDriver(object):
         #self.file_stdout.write ( str(citations.citation_list) )
         if citations.citation_list:
             self.putTitle ( "References" )
-            self.putMessage ( citations.makeCitationsHTML() )
+            self.putMessage ( citations.makeCitationsHTML(self) )
         self._add_citations ( citations.citation_list )
         self.outputDataBox.putCitations ( self.citation_list )
         return
@@ -975,6 +979,7 @@ class TaskDriver(object):
                     "window.parent.rvapi_rsviewer(" + self.job_id +\
                     ",'" + title + "','" + rlpFilePath + "','" + mapFilePath + "')",
                     False,gridId, row,col,1,1 )
+        self.addCitations ['dials.rs_mapper','dials_export']
         return
 
 
@@ -1114,6 +1119,7 @@ class TaskDriver(object):
                                  "/".join(["..",self.outputDir(),hkl.getHKLFileName()]),
                                  "hkl:hkl",pageId,row+1,0,1,colSpan,openState )
         self.widget_no += 1
+        self.addCitation ( "viewhkl" )
         return row + 2
 
     def putStructureWidget ( self,widgetId,title_str,structure,openState=-1 ):
@@ -1150,6 +1156,7 @@ class TaskDriver(object):
                             # always relative to job_dir from job_dir/html
                             "/".join(["..",self.outputDir(),fname]),
                             type[i][1] )
+        self.addCitations ( ["uglymol","ccp4mg","viewhkl"] )
         return row+2
 
 
@@ -1180,6 +1187,7 @@ class TaskDriver(object):
                                  "/".join([ "..",self.outputDir(),
                                             ligand.getLibFileName()]),
                                  "LIB" )
+        self.addCitations ( ["uglymol","ccp4mg"] )
         return row+2
 
 
@@ -1216,6 +1224,7 @@ class TaskDriver(object):
                     # always relative to job_dir from job_dir/html
                     "/".join(["..",self.outputDir(),xyz.getXYZFileName()]),
                     "xyz",self.report_page_id(),self.rvrow,0,1,1,-1 )
+        self.addCitations ( ["uglymol","ccp4mg"] )
         self.rvrow += 1
         return
 
@@ -1257,6 +1266,7 @@ class TaskDriver(object):
                     # always relative to job_dir from job_dir/html
                     "/".join(["..",self.outputDir(),ensemble.getXYZFileName()]),
                     "xyz",pageId,row+1,0,1,colSpan,openState )
+        self.addCitations ( ["uglymol","ccp4mg"] )
         return row+2
 
 
@@ -1423,10 +1433,9 @@ class TaskDriver(object):
         to a bug or not anticipated properties of input data.
         """
         if self.maintainerEmail:
-            msg += """
-            <p>You may contribute to the improvement of jsCoFE by sending this
-            message <b>together with</b> input data <b>and task description</b> to
-            """
+            msg += "<p>You may contribute to the improvement of " + self.appName() +\
+                   " by sending this message <b>together with</b> input data <b>" +\
+                   "and task description</b> to "
             msg += self.maintainerEmail
 
         page_id = self.traceback_page_id()

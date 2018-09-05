@@ -22,6 +22,7 @@ import sys
 
 import ccp4go_simbad12
 
+
 # ============================================================================
 
 class MoRDa(ccp4go_simbad12.Simbad12):
@@ -87,6 +88,7 @@ class MoRDa(ccp4go_simbad12.Simbad12):
             self.runApp ( "ccp4-python",cmd )
 
         self.restoreReportDocument()
+        self.addCitations ( ['morda','molrep','refmac5'] )
 
         #  MoRDa puts final files in "output" directory, so update our paths
         morda_xyz  = os.path.join ( self.outputdir,morda_xyz )

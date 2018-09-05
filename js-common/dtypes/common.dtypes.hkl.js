@@ -353,6 +353,7 @@ if (!__template)  {
     }
 
     this.phaserMRLayout = function()  {
+      r++;
       this.makeResolutionLimits();
       var res_high = round ( this.getHighResolution(),2 );
       setLabel ( 'High res-n for final refinement (&Aring;):&nbsp;',++r,0 );

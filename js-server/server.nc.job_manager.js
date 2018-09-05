@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    26.05.18   <--  Date of Last Modification.
+ *    03.09.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -167,7 +167,7 @@ var msg = '<h2><i>Job Driver Failure</i></h2>' + 'Failure code: ' + code;
   msg += '<p>This is an internal error, which may be caused by different ' +
          'sort of hardware and network malfunction, but most probably due ' +
          'to a bug or not anticipated properties of input data.' +
-         '<p>You may contribute to the improvement of jsCoFE by sending this ' +
+         '<p>You may contribute to the improvement of ' + cmd.appName() + ' by sending this ' +
          'message <b>together with</b> input data <b>and task description</b> ' +
          'to ' + conf.getEmailerConfig().maintainerEmail;
 

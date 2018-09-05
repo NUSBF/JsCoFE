@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    14.06.18   <--  Date of Last Modification.
+ *    03.09.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -111,12 +111,14 @@ function checkVersionMatch ( response,localServer_bool )  {
     return true;  // may need a better solution
 
   if (response.version!=jsCoFE_version)  {
-    new MessageBoxF ( 'jsCoFE update',
-        '<center>jsCoFE has been changed on server side to version<br><center><sup>&nbsp;</sup><b><i>' +
+    new MessageBoxF ( appName() + ' update',
+        '<center>' + appName() + ' has been changed on server side to version' +
+        '<br><center><sup>&nbsp;</sup><b><i>' +
         response.version + '</i></b><sub>&nbsp;</sub></center>' +
         'which is incompatible with version<br><center><sup>&nbsp;</sup><b><i>'
         + jsCoFE_version + '</b></i><sub>&nbsp;</sub></center>you are currently using.' +
-        '<hr/>jsCoFE will now update in your browser, which will end the current login<br>' +
+        '<hr/>' + appName() + ' will now update in your browser, which will ' +
+        'end the current login<br>' +
         'session. Please login again after update; your projects and data should<br>' +
         'be safe, however, you may find that you cannot clone some old tasks.<hr/></center>',
         'Update',function(){

@@ -139,10 +139,14 @@ class CCP4go(ccp4go_fitligands.FitLigands):
         self.write_meta()
         return
 
+def run():
+    ccp4go = CCP4go()
+    ccp4go.run()
+    return
 
 # ============================================================================
 
-if __name__ == '__main__':
+#run()
 
-    ccp4go = CCP4go()
-    ccp4go.run()
+if __name__ == '__main__':
+    run()

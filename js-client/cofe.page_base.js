@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.06.18   <--  Date of Last Modification.
+ *    03.09.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -78,7 +78,7 @@ BasePage.prototype.makeLogoPanel = function ( row,col,colSpan )  {
     logoPanel.setLabel ( '',0,c++,1,1 ).setWidth ( '30px' );
     logoPanel.setImage ( './images/logo-mrc.png','','28px'  ,0,c++,1,1 );
   }
-  logoPanel.setLabel ( 'jsCoFE v.' + jsCoFE_version,0,c,1,1 )
+  logoPanel.setLabel ( appName() + ' v.' + jsCoFE_version,0,c,1,1 )
                      .setFontSize ( '75%' ).setNoWrap()
                      .setVerticalAlignment('bottom');
   logoPanel.setCellSize            ( '50%','', 0,c );

@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    20.08.18   <--  Date of Last Modification.
+ *    03.09.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -793,7 +793,7 @@ JobTree.prototype.cloneJob = function ( parent_page,onAdd_func )  {
       if (task0.version<task.currentVersion())  {
         new MessageBox ( 'Cannot clone',
           '<b>This job cannot be cloned.</b><p>' +
-          'The job was created with a lower version of jsCoFE and cannot ' +
+          'The job was created with a lower version of ' + appName() + ' and cannot ' +
           'be cloned.<br>Please create the job as a new one, using ' +
           '"<i>Add Job</i>" button from the<br>control bar.' );
       } else  {
@@ -925,7 +925,7 @@ var task = this.getTask ( jobId );
   if (!task)  {
     new MessageBox ( 'Job ' + jobId + ' not found',
               'Job ' + jobId + ' not found. This may be a bug, please ' +
-              'contact jsCoFE developer.' );
+              'contact ' + appName() + ' developer.' );
   } else  {
 
     var td  = task.output_data.data;

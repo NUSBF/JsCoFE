@@ -123,6 +123,7 @@ class Crank2(ccp4go_morda.MoRDa):
             self.runApp ( "ccp4-python",cmd )
 
         self.restoreReportDocument()
+        self.addCitation ( 'crank2' )
 
         # check for solution
         nResults = 0

@@ -66,6 +66,10 @@ import pyrvapi
 import pyrvapi_ext.parsers
 
 import command
+try:
+    from pycofe.etc import citations
+except:
+    import citations
 
 
 # ============================================================================
@@ -463,8 +467,17 @@ class Base(object):
 
     # ----------------------------------------------------------------------
 
+    def addCitation ( self,appName ):
+        citations.addCitation ( appName )
+        return
+
+    def addCitations ( self,appName_list ):
+        citations.addCitations ( appName_list )
+        return
+
     def write_meta ( self ):
         self.output_meta["report_row"] = self.page_cursor[1]
+        self.output_meta["programs_used"] = citations.citation_list
         meta = json.dumps ( self.output_meta,indent=2 )
         with open(os.path.join(self.workdir,"ccp4go.meta.json"),"w") as f:
             f.write ( meta )
@@ -546,6 +559,7 @@ class Base(object):
             pyrvapi.rvapi_append_to_data ( wId,fpath_list[3],"hkl:ccp4_dmap" )
 
         self.page_cursor[1] +=1
+        self.addCitations ( ['uglymol','ccp4mg','viewhkl'] )
         return
 
 

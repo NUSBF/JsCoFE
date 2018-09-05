@@ -166,6 +166,7 @@ def run ( body ):  # body is reference to the main Import class
                                          # always relative to job_dir from job_dir/html
                                          "/".join(["..",body.outputDir(),xyz.getXYZFileName()]),
                                          "xyz",subSecId,1,0,1,1,-1 )
+                body.addCitations ( ['uglymol','ccp4mg'] )
 
                 body.putSummaryLine ( f,"XYZ",xyz.dname )
 

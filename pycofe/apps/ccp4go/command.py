@@ -21,6 +21,11 @@ import subprocess
 import traceback
 import platform
 
+try:
+    from pycofe.etc import citations
+except:
+    import citations
+
 class comrc():
     def __init__(self,retcode=None,utime=None):
         self.msg   = ""
@@ -74,7 +79,7 @@ def call ( executable,command_line,job_dir,stdin_fname,file_stdout,
     indent = "      "
     msg    = indent
     for c in command_line:
-        if (len(msg)+len(c) > 78):
+        if len(msg)+len(c) > 78:
             file_stdout.write ( msg + " "*max(0,78-len(msg)) + " \\\n" )
             msg = indent
         msg = msg + "'" + c + "' "
@@ -121,6 +126,9 @@ def call ( executable,command_line,job_dir,stdin_fname,file_stdout,
     file_stdout.write ( "-"*80 + "\n" )
 
     _add_times ( rc )
+
+    # fetch citations
+    citations.addCitation ( executable )
 
     if rc.msg:
         msg = ' *** error running {0}: {1}'.format(executable, rc.msg)

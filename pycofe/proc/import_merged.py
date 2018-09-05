@@ -339,6 +339,7 @@ def run ( body,   # body is reference to the main Import class
                                  # always relative to job_dir from job_dir/html
                                  "/".join([ "..",body.outputDir(),hkl.getHKLFileName()]),
                                  "hkl:hkl",subSecId,5,0,1,1,-1 )
+                        body.addCitation ( 'viewhkl' )
 
                     else:
                         body.file_stdout.write ( "\n\n ... Dataset " + hkl.dname + \
@@ -372,6 +373,7 @@ def run ( body,   # body is reference to the main Import class
                                  # always relative to job_dir from job_dir/html
                                  "/".join([ "..",body.outputDir(),hkl_data.getHKLFileName()]),
                                  "hkl:hkl",subSecId,5,0,1,1,-1 )
+                            body.addCitation ( 'viewhkl' )
 
                     if body.summary_row_0<0:
                         body.putSummaryLine ( f_orig,"HKL",datasetName )

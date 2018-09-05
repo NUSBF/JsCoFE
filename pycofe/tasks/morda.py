@@ -163,7 +163,7 @@ class Morda(basic.TaskDriver):
         else:
             self.runApp ( "ccp4-python",cmd )
 
-        self.addCitations ( ['morda'] )
+        self.addCitations ( ['morda','molrep','refmac5'] )
 
         self.restoreReportDocument()
 

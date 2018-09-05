@@ -3,7 +3,7 @@
 /*
  *  ==========================================================================
  *
- *    16.06.18   <--  Date of Last Modification.
+ *    03.09.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -27,10 +27,10 @@ function rvapi_rsviewer ( jobId,title,rlpFilePath,mapFilePath )  {
 
   if (!__current_page)  {
     new MessageBox ( 'Page not found','Project Page not found. This is a bug, ' +
-                     'please contact jsCoFE developer.' );
+                     'please contact ' + appName() + ' developer.' );
   } else if (__current_page._type!='ProjectPage')  {
     new MessageBox ( 'Wrong page type','Wrong Project Page type encountered. ' +
-                     'This is a bug, please contact jsCoFE developer.' );
+                     'This is a bug, please contact ' + appName() + ' developer.' );
   } else  {
     var task = __current_page.getJobTree().getTask ( jobId );
     if (task)  {
@@ -39,7 +39,7 @@ function rvapi_rsviewer ( jobId,title,rlpFilePath,mapFilePath )  {
       //startRSViewer ( title,rlpFilePath,mapFilePath );
     } else  {
       new MessageBox ( 'Task not found','Project Task not found. This is a bug, ' +
-                       'please contact jsCoFE developer.' );
+                       'please contact ' + appName() + ' developer.' );
     }
   }
 

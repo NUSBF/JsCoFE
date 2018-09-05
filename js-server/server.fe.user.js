@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    31.07.18   <--  Date of Last Modification.
+ *    03.09.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -615,9 +615,9 @@ var response = null;  // must become a cmd.Response object to return
         if (utils.removeFile(userFilePath))  {
 
           response = new cmd.Response ( cmd.fe_retcode.ok,'',
-            emailer.send ( userData.email,'jsCoFE Account Deleted',
+            emailer.send ( userData.email,cmd.appName() + ' Account Deleted',
               'Dear ' + userData.name + ',<p>' +
-              'Your jsCoFE account and all associated data have been deleted<br>' +
+              'Your ' + cmd.appName() + ' account and all associated data have been deleted<br>' +
               'per your request:<p>' +
               'Login name: <b>' + userData.login + '</b><br>' +
               'Password: <b>*****</b><br>' +
@@ -671,7 +671,7 @@ function sendAnnouncement ( login,message )  {
         usersData = readUsersData();
         users     = usersData.userList;
         for (var i=0;i<users.length;i++)  {
-          emailer.send ( users[i].email,'CCP4 jsCoFE Announcement',
+          emailer.send ( users[i].email,cmd.appName() + ' Announcement',
                          message.replace( '&lt;User Name&gt;',users[i].name ) );
           log.standard ( 9,'Announcement sent to ' + users[i].name + ' at ' +
                            users[i].email );

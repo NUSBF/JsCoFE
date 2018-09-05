@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    07.06.18   <--  Date of Last Modification.
+ *    03.09.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -42,7 +42,7 @@ function AdminPage ( sceneId )  {
   }
 
   this.makeHeader ( 3,null );
-  var title_lbl = this.headerPanel.setLabel ( 'jsCoFE Administration Facility',0,2,1,1 );
+  var title_lbl = this.headerPanel.setLabel ( appName() + ' Administration Facility',0,2,1,1 );
   title_lbl.setFont  ( 'times','150%',true,true )
            .setNoWrap()
            .setHorizontalAlignment ( 'left' );
@@ -258,7 +258,7 @@ AdminPage.prototype.makeNodesInfoTab = function ( ndata )  {
   var row = 1;
 
   this.nodeListTable.setRow ( 'Front End','Front End Server',
-    ['jsCoFE',ndata.FEconfig.externalURL,'FE',ndata.FEconfig.startDate,
+    [appName(),ndata.FEconfig.externalURL,'FE',ndata.FEconfig.startDate,
      'N/A','running','N/A','N/A','N/A'],
     row,(row & 1)==1 );
   row++;

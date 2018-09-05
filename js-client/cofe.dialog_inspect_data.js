@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    08.08.18   <--  Date of Last Modification.
+ *    03.09.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -155,32 +155,12 @@ function rvapi_inspectData ( jobId,dataType,dataId )  {
 
   if (!__current_page)  {
     new MessageBox ( 'Page not found','Project Page not found. This is a bug, ' +
-                     'please contact jsCoFE developer.' );
+                     'please contact ' + appName() + ' developer.' );
   } else if (__current_page._type!='ProjectPage')  {
     new MessageBox ( 'Wrong page type','Wrong Project Page type encountered. ' +
-                     'This is a bug, please contact jsCoFE developer.' );
+                     'This is a bug, please contact ' + appName() + ' developer.' );
   } else  {
     __current_page.getJobTree().inspectData ( jobId,dataType,dataId );
   }
 
 }
-
-/*
-function rvapi_inspectRevision ( jobId,dataId )  {
-  rvapi_inspectData ( jobId,'DataRevision',dataId );
-}
-
-function rvapi_inspectHKL ( jobId,dataId )  {
-
-  if (!__current_page)  {
-    new MessageBox ( 'Page not found','Project Page not found. This is a bug, ' +
-                     'please contact jsCoFE developer.' );
-  } else if (__current_page._type!='ProjectPage')  {
-    new MessageBox ( 'Wrong page type','Wrong Project Page type encountered. ' +
-                     'This is a bug, please contact jsCoFE developer.' );
-  } else  {
-    __current_page.getJobTree().inspectData ( jobId,'DataHLKL',dataId );
-  }
-
-}
-*/

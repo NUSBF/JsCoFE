@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    06.06.18   <--  Date of Last Modification.
+ *    03.09.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -106,7 +106,7 @@ function ProjectListPage ( sceneId )  {
                   'and then "Open" to open it.<p>' +
                   'You may also import an old project (using<br>' +
                   'the "Import" button) if one was previously<br>' +
-                  'exported from jsCoFE.</h2>';
+                  'exported from ' + appName() + '.</h2>';
     welcome_lbl = panel.setLabel ( message.fontcolor('darkgrey'),
                                    table_row+1,0,1,6 )
                        .setFontItalic ( true )

@@ -281,6 +281,7 @@ def run ( body,        # body is reference to the main Import class
                                      "/".join([ "..",body.outputDir(),
                                                 unmerged.getUnmergedFileName()]),
                                      "hkl:hkl",subSecId,frow+1,0,1,1,-1 )
+                        body.addCitation ( 'viewhkl' )
                         frow += 2
 
                         if body.summary_row_0<0:

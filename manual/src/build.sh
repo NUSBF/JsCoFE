@@ -1,6 +1,6 @@
 #!/bin/bash
 
-jscofe_dir=/Users/eugene/Projects/jsCoFE
+jscofe_dir=/Users/eugene/Projects/|jsCoFE|
 
 cd $jscofe_dir/manual/src
 

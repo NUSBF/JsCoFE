@@ -258,6 +258,7 @@ class PrepareMTZ(ccp4go_base.Base):
                                  "/".join(["..",self.mtzpath]),"hkl:hkl",
                                  self.page_cursor[0],self.page_cursor[1],
                                  0,1,1,-1 )
+        self.addCitation ( 'viewhkl' )
 
         meta = {}
         meta["nResults"] = 1
