@@ -505,9 +505,12 @@ JobTree.prototype.deleteJob = function ( onDelete_func ) {
       var delNodeId = tree.calcSelectedNodeId();
       if (delNodeId.length<=0)
         delNodeId.push ( tree.getSelectedNodeId() );
-      delTaskId = [];
-      for (var i=0;i<delNodeId.length;i++)
-        delTaskId.push ( tree.task_map[delNodeId[i]].id )
+      var delTaskId = [];
+      for (var i=0;i<delNodeId.length;i++)  {
+        var delTask = tree.task_map[delNodeId[i]];
+        if (delTask)
+          delTaskId.push ( delTask.id )
+      }
 
       // add all harvested links
       do {

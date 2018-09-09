@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    04.09.18   <--  Date of Last Modification.
+#    08.09.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -354,7 +354,14 @@ class DType(dtype_template.DType):
                     os.rename ( fn,fpath )
         return
 
+    def adjust_dname ( self ):
+        if not self.getXYZFileName() and self.getSubFileName():
+            self.dname = self.dname.replace ( "/structure/","/substructure/" )
+        return
 
+
+
+# ============================================================================
 
 def getValidFileName ( xyzFilePath,subFilePath,mtzFilePath,mapFilePath ):
     if (xyzFilePath):  return xyzFilePath
@@ -362,11 +369,10 @@ def getValidFileName ( xyzFilePath,subFilePath,mtzFilePath,mapFilePath ):
     if (mtzFilePath):  return mtzFilePath
     return mapFilePath
 
-
+# ----------------------------------------------------------------------------
 
 def register ( xyzFilePath,subFilePath,mtzFilePath,mapFilePath,dmapFilePath,libFilePath,
-               dataSerialNo,job_id,outDataBox,outputDir,copy=False ):
-
+               dataSerialNo,job_id,outDataBox,outputDir,copy_files=False ):
     fname0 = getValidFileName ( xyzFilePath,subFilePath,mtzFilePath,mapFilePath )
     if fname0 and os.path.isfile(fname0):
         structure = DType   ( job_id )
@@ -374,23 +380,32 @@ def register ( xyzFilePath,subFilePath,mtzFilePath,mapFilePath,dmapFilePath,libF
         structure.setFile ( os.path.basename(fname0),dtype_template.file_key["xyz"] )
         structure.makeDName ( dataSerialNo )
         structure.removeFiles()
-        structure.add_file ( xyzFilePath ,outputDir,"xyz" )
-        structure.add_file ( subFilePath ,outputDir,"sub" )
-        structure.add_file ( mtzFilePath ,outputDir,"mtz" )
-        structure.add_file ( mapFilePath ,outputDir,"map" )
-        structure.add_file ( dmapFilePath,outputDir,"dmap")
-        structure.add_file ( libFilePath ,outputDir,"lib" )
+        structure.add_file ( xyzFilePath ,outputDir,"xyz" ,copy_files )
+        structure.add_file ( subFilePath ,outputDir,"sub" ,copy_files )
+        structure.add_file ( mtzFilePath ,outputDir,"mtz" ,copy_files )
+        structure.add_file ( mapFilePath ,outputDir,"map" ,copy_files )
+        structure.add_file ( dmapFilePath,outputDir,"dmap",copy_files )
+        structure.add_file ( libFilePath ,outputDir,"lib" ,copy_files )
         if xyzFilePath:
             structure.addSubtype ( dtype_template.subtypeXYZ() )
         if subFilePath:
             structure.addSubtype ( dtype_template.subtypeSubstructure() )
         if outDataBox:
             outDataBox.add_data ( structure )
+        structure.adjust_dname()
         return structure
 
     else:
         return None;
 
+# ----------------------------------------------------------------------------
+
+def basename ( fpath ):
+    if fpath:
+        return os.path.basename ( fpath )
+    return None
+
+# ----------------------------------------------------------------------------
 
 #  register1() assumes that all files are in output directory and named
 #  properly -- so just checks them in
@@ -403,18 +418,19 @@ def register1 ( xyzFilePath,subFilePath,mtzFilePath,mapFilePath,dmapFilePath,lib
         structure.setFile   ( regName,dtype_template.file_key["xyz"] )
         structure.makeDName ( dataSerialNo )
         structure.removeFiles()
-        structure.setFile ( xyzFilePath ,dtype_template.file_key["xyz" ] )
-        structure.setFile ( subFilePath ,dtype_template.file_key["sub" ] )
-        structure.setFile ( mtzFilePath ,dtype_template.file_key["mtz" ] )
-        structure.setFile ( mapFilePath ,dtype_template.file_key["map" ] )
-        structure.setFile ( dmapFilePath,dtype_template.file_key["dmap"] )
-        structure.setFile ( libFilePath ,dtype_template.file_key["lib" ] )
+        structure.setFile ( basename(xyzFilePath ),dtype_template.file_key["xyz" ] )
+        structure.setFile ( basename(subFilePath ),dtype_template.file_key["sub" ] )
+        structure.setFile ( basename(mtzFilePath ),dtype_template.file_key["mtz" ] )
+        structure.setFile ( basename(mapFilePath ),dtype_template.file_key["map" ] )
+        structure.setFile ( basename(dmapFilePath),dtype_template.file_key["dmap"] )
+        structure.setFile ( basename(libFilePath ),dtype_template.file_key["lib" ] )
         if xyzFilePath:
             structure.addSubtype ( dtype_template.subtypeXYZ() )
         if subFilePath:
             structure.addSubtype ( dtype_template.subtypeSubstructure() )
         if outDataBox:
             outDataBox.add_data ( structure )
+        structure.adjust_dname()
         return structure
 
     else:

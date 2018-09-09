@@ -910,7 +910,7 @@ class TaskDriver(object):
         fnames = self.calcAnomEDMap ( xyzPath,hkl,anom_form,name_pattern )
 
         anom_structure = self.registerStructure (
-                            fnames[0],None,fnames[1],fnames[2],fnames[3],None )
+                            None,fnames[0],fnames[1],fnames[2],fnames[3],None )
         if anom_structure:
             anom_structure.addDataAssociation ( hkl.dataId )
             anom_structure.setRefmacLabels    ( hkl )
@@ -1041,13 +1041,13 @@ class TaskDriver(object):
 
 
     def registerStructure ( self,xyzPath,subPath,mtzPath,mapPath,dmapPath,
-                            libPath=None,copy=False ):
+                            libPath=None,copy_files=False ):
         self.dataSerialNo += 1
         structure = dtype_structure.register (
                                     xyzPath,subPath,mtzPath,mapPath,dmapPath,libPath,
                                     self.dataSerialNo ,self.job_id,
                                     self.outputDataBox,self.outputDir(),
-                                    copy=copy )
+                                    copy_files=copy_files )
         if not structure:
             self.file_stderr.write ( "  NONE STRUCTURE" )
             self.file_stderr.flush()
@@ -1057,11 +1057,11 @@ class TaskDriver(object):
         return structure
 
 
-    def _move_file_to_output_dir ( self,fpath,fname_dest,copy_bool ):
+    def _move_file_to_output_dir ( self,fpath,fname_dest,copy_file ):
         if fpath and fname_dest and os.path.isfile(fpath):
             fpath_dest = os.path.join ( self.outputDir(),fname_dest )
             if not os.path.isfile(fpath_dest):
-                if copy_bool:
+                if copy_file:
                     shutil.copy2 ( fpath,fpath_dest )
                 else:
                     os.rename ( fpath,fpath_dest )
@@ -1070,7 +1070,7 @@ class TaskDriver(object):
 
 
     def registerStructure1 ( self,xyzPath,subPath,mtzPath,mapPath,dmapPath,
-                                  libPath,regName,copy_bool=False ):
+                                  libPath,regName,copy_files=False ):
         self.dataSerialNo += 1
         structure = dtype_structure.register1 (
                                 xyzPath,subPath,mtzPath,mapPath,dmapPath,libPath,
@@ -1080,23 +1080,23 @@ class TaskDriver(object):
             self.file_stderr.write ( "  NONE STRUCTURE\n" )
             self.file_stderr.flush()
         else:
-            self._move_file_to_output_dir ( xyzPath ,structure.getXYZFileName (),copy_bool )
-            self._move_file_to_output_dir ( subPath ,structure.getSubFileName (),copy_bool )
-            self._move_file_to_output_dir ( mtzPath ,structure.getMTZFileName (),copy_bool )
-            self._move_file_to_output_dir ( mapPath ,structure.getMapFileName (),copy_bool )
-            self._move_file_to_output_dir ( dmapPath,structure.getDMapFileName(),copy_bool )
-            self._move_file_to_output_dir ( libPath ,structure.getLibFileName (),copy_bool )
+            self._move_file_to_output_dir ( xyzPath ,structure.getXYZFileName (),copy_files )
+            self._move_file_to_output_dir ( subPath ,structure.getSubFileName (),copy_files )
+            self._move_file_to_output_dir ( mtzPath ,structure.getMTZFileName (),copy_files )
+            self._move_file_to_output_dir ( mapPath ,structure.getMapFileName (),copy_files )
+            self._move_file_to_output_dir ( dmapPath,structure.getDMapFileName(),copy_files )
+            self._move_file_to_output_dir ( libPath ,structure.getLibFileName (),copy_files )
             structure.putXYZMeta ( self.outputDir(),self.file_stdout,
                                    self.file_stderr,None )
         return structure
 
 
-    def registerLigand ( self,xyzPath,cifPath,copy=False ):
+    def registerLigand ( self,xyzPath,cifPath,copy_files=False ):
         self.dataSerialNo += 1
         ligand = dtype_ligand.register ( xyzPath,cifPath,
                                          self.dataSerialNo ,self.job_id,
                                          self.outputDataBox,self.outputDir(),
-                                         copy=copy )
+                                         copy=copy_files )
         if not ligand:
             self.file_stderr.write ( "  NONE LIGAND" )
             self.file_stderr.flush()

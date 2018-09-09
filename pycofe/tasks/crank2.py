@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    16.08.18   <--  Date of Last Modification.
+#    08.09.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -25,9 +25,12 @@
 # ============================================================================
 #
 
+#  report/2-substrdet/fixsubstrpdb/heavy.pdb
+
 #  python native imports
 import os
 import sys
+import shutil
 
 #  ccp4-python imports
 import pyrvapi
@@ -35,7 +38,7 @@ import pyrvapi
 #  application imports
 import basic
 from   pycofe.proc   import edmap, xyzmeta
-from   pycofe.dtypes import dtype_revision, dtype_sequence
+from   pycofe.dtypes import dtype_template, dtype_revision, dtype_sequence
 
 
 # ============================================================================
@@ -371,6 +374,20 @@ class Crank2(basic.TaskDriver):
 
     # ------------------------------------------------------------------------
 
+    def pickHKL ( self ):
+        hkls = None
+        for hkli in self.hkl:
+            if not hkls:
+                hkls = hkli
+            elif hkli.wtype=="peak":
+                hkls = hkli
+                break
+            elif hkli.wtype=="inflection":
+                hkls = hkli
+        return hkls
+
+    # ------------------------------------------------------------------------
+
     def finalise ( self,structure=None ):
         # ========================================================================
         # check solution and register data
@@ -397,11 +414,11 @@ class Crank2(basic.TaskDriver):
             # register output data
             if not structure:
                 self.structure = self.registerStructure1 (
-                                xyzout,subout,self.hklout_fpath,
-                                self.hklout_fpath + ".map",
-                                self.hklout_fpath + "_diff.map",
-                                None,
-                                self.outputFName )
+                                            xyzout,subout,self.hklout_fpath,
+                                            self.hklout_fpath + ".map",
+                                            self.hklout_fpath + "_diff.map",
+                                            None,
+                                            self.outputFName )
 
             if self.structure:
 
@@ -416,18 +433,33 @@ class Crank2(basic.TaskDriver):
                 if self.seq:
                     for s in self.seq:
                         self.structure.addDataAssociation ( s.dataId )
-                """
-                if self.task._type=="TaskShelxSubstr":
-                    self.structure.setSubstrSubtype() # substructure, NO PHASES
-                    #self.structure.setBP3Labels()
-                else:
-                    self.structure.setXYZSubtype()
-                    self.structure.addSubtype ( dtype_template.subtypePhases() )
-                    self.structure.setCrank2Labels()
-                """
+
                 if self.task._type!="TaskShelxSubstr":
                     self.structure.addPhasesSubtype()
                     self.structure.setCrank2Labels ()
+                    sub_path = os.path.join ( self.reportDir(),"2-substrdet","fixsubstrpdb","heavy.pdb" )
+                    #subxyz_path = os.path.join ( self.reportDir(),"3-refatompick","phas","REFMAC5_cyc0.pdb" )
+                    #submtz_path = os.path.join ( self.reportDir(),"3-refatompick","phas","REFMAC5.mtz" )
+                    if os.path.isfile(sub_path):
+                        #self.rvrow += 20
+                        self.putTitle ( "Heavy Atom Substructure Found" )
+                        hkls = self.pickHKL()
+                        substructure = self.finaliseStructure ( sub_path,
+                                    self.outputFName,hkls,None,[],3,False,"" )
+                        if not substructure:
+                            self.putMessage ( "<b><i>Failed to form heavy atom substructure object</i></b>" )
+                        else:
+                            # finalise output revision(s)
+                            # remove Refmac results from substructure:
+                            shutil.copy2 ( hkls.getHKLFilePath(self.inputDir()),self.outputDir() )
+                            xyz_file = substructure.getSubFileName()
+                            substructure.removeFiles()
+                            substructure.setSubFile ( xyz_file )
+                            substructure.setMTZFile ( hkls.getHKLFileName() )
+                            substructure.removeSubtype ( dtype_template.subtypePhases() )
+                    else:
+                        self.putTitle ( "No heavy atom substructure found" )
+
                 self.structure.addEPSubtype()
 
                 if len(hkl_all)==1:
@@ -479,7 +511,7 @@ class Crank2(basic.TaskDriver):
                     # make structure revision
                     revision = dtype_revision.DType ( -1 )
                     revision.copy ( self.revision )
-                    revision.setReflectionData ( hkl_sol[i]    )
+                    revision.setReflectionData ( hkl_sol[i]     )
                     revision.setStructureData  ( self.structure )
 
                     if len(hkl_all)==1:
@@ -496,7 +528,7 @@ class Crank2(basic.TaskDriver):
                     revisions.append ( revision )
 
             else:
-                self.putTitle ( "Failed to created output data object" )
+                self.putTitle ( "Failed to create output data object" )
 
         else:
             self.putTitle ( "Output file(s) not created" )

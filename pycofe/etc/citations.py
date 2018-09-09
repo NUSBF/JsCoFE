@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    26.08.18   <--  Date of Last Modification.
+#    09.09.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -464,7 +464,24 @@ citations = {
                   }]
                 },
 
+
+    'clustalw2' : { 'name' : 'ClustalW2',
+                  'refs' : [{
+                            'authors' : 'Larkin, M.A., Blackshields, G., Brown, N.P., ' +\
+                                        'Chenna, R., McGettigan, P.A., McWilliam, H., ' +\
+                                        'Valentin, F., Wallace, I.M., Wilm, A., Lopez, R., ' +\
+                                        'Thompson, J.D., Gibson, T.J., Higgins, D.G.',
+                            'title'   : 'Clustal W and Clustal X version 2.0',
+                            'journal' : 'Bioinformatics',
+                            'volume'  : '23',
+                            'year'    : '2007',
+                            'pages'   : '2947-2948'
+                  }]
+                },
+
+
 }
+
 
 #
 #  possible description with reference:

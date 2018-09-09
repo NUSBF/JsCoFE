@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    14.08.18   <--  Date of Last Modification.
+#    08.09.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -96,17 +96,15 @@ class ShelxSubstr(crank2.Crank2):
 
     def finalise(self):
 
-        hkls = None
-        for hkli in self.hkl:
-            if not hkls:
-                hkls = hkli
-            elif hkli.wtype=="peak":
-                hkls = hkli
-                break
-            elif hkli.wtype=="inflection":
-                hkls = hkli
-
         self.rvrow += 20
+
+        hkls = self.pickHKL()
+        if not hkls:
+            self.putMessage ( "<b><i>Error: cannot select dataset</i></b><p>" +\
+                              "<i>Please contact developer</i>" )
+            self.flush()
+            return
+
         rvrow0 = self.rvrow
         self.putTitle ( "Substructure Found" )
         structure = self.finaliseStructure ( self.xyzout_fpath,self.outputFName,

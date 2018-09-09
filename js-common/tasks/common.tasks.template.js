@@ -1901,7 +1901,9 @@ if (!dbx)  {
                 try {
                   fs.copySync ( src_file,dest_file );
                 } catch (err) {
-                  console.log ( ' *** cannot copy file ' + src_file + ' to ' + dest_file );
+                  console.log ( ' *** cannot copy file ' + src_file +
+                              '\n                   to ' + dest_file +
+                              '\n           for object ' + td[i]._type + ' : ' + td[i].dname );
                   console.log ( '     error: ' + err) ;
                 }
               }
