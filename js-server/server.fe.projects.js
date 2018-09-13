@@ -642,7 +642,7 @@ function getProjectData ( login,data )  {
 
   // Get users' projects list file name
   var projectName = response.data.current;
-  if (data.replay)
+  if (data.mode=='replay')
     projectName += ':' + replayDir;
   var projectDataPath = getProjectDataPath ( login,projectName );
 
@@ -972,6 +972,7 @@ function getJobFile ( login,data )  {
 
 // ==========================================================================
 // export for use in node
+module.exports.jobDirPrefix           = jobDirPrefix;
 module.exports.makeNewUserProjectsDir = makeNewUserProjectsDir;
 module.exports.getProjectList         = getProjectList;
 module.exports.getProjectDataPath     = getProjectDataPath;

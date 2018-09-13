@@ -449,7 +449,7 @@ ProjectPage.prototype.makeJobTree = function()  {
 ProjectPage.prototype.makeReplayJobTree = function()  {
 // set the job tree
   var jobTree = new JobTree();
-  jobTree.replay_mode = true;
+  jobTree.setReplayMode();
   jobTree.element.style.paddingTop    = '0px';
   jobTree.element.style.paddingBottom = '25px';
   jobTree.element.style.paddingRight  = '40px';

@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    09.09.18   <--  Date of Last Modification.
+#    13.09.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -20,8 +20,9 @@
 
 citations = {
 
-    'default' : { 'name' : 'CCP4 Project',
-                  'refs' : [{
+    'default' : { 'name'     : 'CCP4 Project',
+                  'category' : 'primary',
+                  'refs'     : [{
                             'authors' : 'Collaborative Computational Project, Number 4',
                             'title'   : 'Overview of the CCP4 suite and current developments',
                             'journal' : 'Acta Cryst.',
@@ -31,21 +32,22 @@ citations = {
                   }]
                 },
 
-    'ccp4'            : { 'name' : 'CCP4 Project' , 'refs' : [] },  # empty refs means default
-    'pdbcur'          : { 'name' : 'PDBCur'       , 'refs' : [] },
-    'freerflag'       : { 'name' : 'FreeRFlag'    , 'refs' : [] },
-    'ctruncate'       : { 'name' : 'CTruncate'    , 'refs' : [] },
-    'mtz2various'     : { 'name' : 'mtz2various'  , 'refs' : [] },
-    'matthews_coef'   : { 'name' : 'Matthews_Coef', 'refs' : [] },
-    'cad'             : { 'name' : 'CAD'          , 'refs' : [] },
+    'ccp4'            : { 'name' : 'CCP4 Project' , 'category' : 'primary', 'refs' : [] },  # empty refs means default
+    'pdbcur'          : { 'name' : 'PDBCur'       , 'category' : 'service', 'refs' : [] },
+    'freerflag'       : { 'name' : 'FreeRFlag'    , 'category' : 'primary', 'refs' : [] },
+    'ctruncate'       : { 'name' : 'CTruncate'    , 'category' : 'primary', 'refs' : [] },
+    'mtz2various'     : { 'name' : 'mtz2various'  , 'category' : 'service', 'refs' : [] },
+    'matthews_coef'   : { 'name' : 'Matthews_Coef', 'category' : 'primary', 'refs' : [] },
+    'cad'             : { 'name' : 'CAD'          , 'category' : 'service', 'refs' : [] },
 
-    'ps2pdf'          : { 'name' : '', 'refs' : [] },  # empty name means "Ignore"
-    'ccp4-python'     : { 'name' : '', 'refs' : [] },
-    'dials.export'    : { 'name' : '', 'refs' : [] },
-    'dials.rs_mapper' : { 'name' : '', 'refs' : [] },
+    'ps2pdf'          : { 'name' : '', 'category' : 'system' , 'refs' : [] },  # empty name means "Ignore"
+    'ccp4-python'     : { 'name' : '', 'category' : 'system' , 'refs' : [] },
+    'dials.export'    : { 'name' : '', 'category' : 'service', 'refs' : [] },
+    'dials.rs_mapper' : { 'name' : '', 'category' : 'service', 'refs' : [] },
 
-    'pointless' : { 'name' : 'Pointless',
-                    'refs' : [{
+    'pointless' : { 'name'     : 'Pointless',
+                    'category' : 'primary',
+                    'refs'     : [{
                             'authors' : 'Evans, P.R.',
                             'title'   : 'Scaling and assessment  of data quality',
                             'journal' : 'Acta Cryst.',
@@ -62,8 +64,9 @@ citations = {
                         }]
                   },
 
-    'mosflm' :    { 'name' : 'MOSFLM',
-                    'refs' : [{
+    'mosflm' :    { 'name'     : 'MOSFLM',
+                    'category' : 'primary',
+                    'refs'     : [{
                             'authors' : 'Battye, T.G.G., Kontogiannis, L., Johnson, O., Powell, H.R., Leslie, A.G.W.',
                             'title'   : 'IMosflm: a new graphical interface for diffraction-image processing with MOSFLM',
                             'journal' : 'Acta Cryst.',
@@ -73,8 +76,9 @@ citations = {
                         }]
                   },
 
-    'xds' :       { 'name' : 'XDS, XSCALE',
-                    'refs' : [{
+    'xds' :       { 'name'     : 'XDS, XSCALE',
+                    'category' : 'primary',
+                    'refs'     : [{
                             'authors' : 'Kabsch, W.',
                             'title'   : 'XDS',
                             'journal' : 'Acta Cryst.',
@@ -84,8 +88,9 @@ citations = {
                         }]
                   },
 
-    'aimless'   : { 'name' : 'Aimless',
-                    'refs' : [{
+    'aimless'   : { 'name'     : 'Aimless',
+                    'category' : 'primary',
+                    'refs'     : [{
                             'authors' : 'Evans, P.R., and Murshudov, G.N.',
                             'title'   : 'How good are my data and what is the resolution?',
                             'journal' : 'Acta Cryst.',
@@ -95,8 +100,9 @@ citations = {
                         }]
                   },
 
-    'molrep'    : { 'name' : 'Molrep',
-                    'refs' : [{
+    'molrep'    : { 'name'     : 'Molrep',
+                    'category' : 'primary',
+                    'refs'     : [{
                             'authors' : 'Vagin, A., and Teplyakov, A.',
                             'title'   : 'MOLREP: an automated program for molecular replacement',
                             'journal' : 'J. Appl. Cryst.',
@@ -106,8 +112,9 @@ citations = {
                         }]
                   },
 
-    'refmac5' :   { 'name' : 'Refmac',
-                    'refs' : [{
+    'refmac5' :   { 'name'     : 'Refmac',
+                    'category' : 'primary',
+                    'refs'     : [{
                             'authors' : 'Murshudov, G.N., Skubak, P., Lebedev, A.A., Pannu, N.S., Steiner, R.A., Nicholls, R.A., Winn, M.D., Long, F., and Vagin, A.A.',
                             'title'   : 'REFMAC5 for the refinement of macromolecular crystal structures',
                             'journal' : 'Acta Cryst.',
@@ -117,8 +124,9 @@ citations = {
                         }]
                   },
 
-    'mrbump' :    { 'name' : 'MrBUMP',
-                    'refs' : [{
+    'mrbump' :    { 'name'     : 'MrBUMP',
+                    'category' : 'primary',
+                    'refs'     : [{
                             'authors' : 'Keegan, R.M., Winn, M.D.',
                             'title'   : 'MrBUMP: an automated pipeline for molecular replacement',
                             'journal' : 'Acta Cryst.',
@@ -128,8 +136,9 @@ citations = {
                         }]
                   },
 
-    'morda'  :    { 'name' : 'MoRDa',
-                    'refs' : [{
+    'morda'  :    { 'name'     : 'MoRDa',
+                    'category' : 'primary',
+                    'refs'     : [{
                             'authors' : 'Vagin, A., Lebedev, A.',
                             'title'   : 'MoRDa , an automatic molecular replacement pipeline',
                             'journal' : 'Acta Cryst.',
@@ -140,8 +149,9 @@ citations = {
                         }]
                   },
 
-    'balbes'  :   { 'name' : 'BALBES',
-                    'refs' : [{
+    'balbes'  :   { 'name'     : 'BALBES',
+                    'category' : 'primary',
+                    'refs'     : [{
                             'authors' : 'Long, F., Vagin, A.A., Young, P., Murshudov, G.N.',
                             'title'   : 'BALBES: a molecular-replacement pipeline',
                             'journal' : 'Acta Cryst.',
@@ -152,8 +162,9 @@ citations = {
                         }]
                   },
 
-    'zanuda'  :   { 'name' : 'Zanuda',
-                    'refs' : [{
+    'zanuda'  :   { 'name'     : 'Zanuda',
+                    'category' : 'primary',
+                    'refs'     : [{
                             'authors' : 'Lebedev, A.A., Isupov, M.N.',
                             'title'   : 'Space-group and origin ambiguity in macromolecular structures with pseudo-symmetry and its treatment with the program Zanuda',
                             'journal' : 'Acta Cryst.',
@@ -164,8 +175,9 @@ citations = {
                         }]
                   },
 
-    'dimple'  :   { 'name' : 'DIMPLE',
-                    'refs' : [{
+    'dimple'  :   { 'name'     : 'DIMPLE',
+                    'category' : 'primary',
+                    'refs'     : [{
                             'authors' : 'Wojdyr, M., Keegan, R., Winter, G., Ashton, A.',
                             'title'   : 'DIMPLE - a pipeline for the rapid generation of difference maps from protein crystals with putatively bound ligands',
                             'journal' : 'Acta Cryst.',
@@ -176,8 +188,9 @@ citations = {
                         }]
                   },
 
-    'simbad' :    { 'name' : 'SIMBAD',
-                    'refs' : [{
+    'simbad' :    { 'name'     : 'SIMBAD',
+                    'category' : 'primary',
+                    'refs'     : [{
                             'authors' : 'Simpkin, A.J., Simkovic, F., Thomas, J.M.H., Savko, M., Lebedev, A., ' +\
                                         'Uski, V., Ballard, C., Wojdyr, M., Wu, R., Sanishvili, R., Xu, Y., ' +\
                                         'Lisa, M.N., Buschiazzo, A., Shepard, W., Rigden, D.J., Keegan, R.M.',
@@ -190,8 +203,9 @@ citations = {
                         }]
                   },
 
-    'ample' :     { 'name' : 'AMPLE',
-                    'refs' : [{
+    'ample' :     { 'name'     : 'AMPLE',
+                    'category' : 'primary',
+                    'refs'     : [{
                             'authors' : 'Bibby, J., Keegan, R.M., Mayans, O., Winn, M.D. and Rigden, D.J.',
                             'title'   : 'AMPLE: a cluster-and-truncate approach to solve the crystal structures ' +\
                                         'of small proteins using rapidly computed ab initio models',
@@ -203,8 +217,9 @@ citations = {
                         }]
                   },
 
-    'lorestr' :   { 'name' : 'LoRESTR',
-                    'refs' : [{
+    'lorestr' :   { 'name'     : 'LoRESTR',
+                    'category' : 'primary',
+                    'refs'     : [{
                             'authors' : 'Kovalevskiy, 0., Nicholls, R.A., Murshudov, G.N.',
                             'title'   : 'Automated refinement of macromolecular structures' +\
                                         'at low resolution using prior information',
@@ -217,8 +232,9 @@ citations = {
                   },
 
 
-    'prosmart' :  { 'name' : 'PROSMART',
-                    'refs' : [{
+    'prosmart' :  { 'name'     : 'PROSMART',
+                    'category' : 'primary',
+                    'refs'     : [{
                             'authors' : 'Nicholls, R.A., Fischer, M., McNicholas, S., Murshudov, G.N.',
                             'title'   : 'Conformation-Independent Structural Comparison of Macromolecules with ProSMART',
                             'journal' : 'Acta Cryst.',
@@ -228,8 +244,9 @@ citations = {
                         }]
                   },
 
-    'xia2'   :    { 'name' : 'Xia2',
-                    'refs' : [{
+    'xia2'   :    { 'name'     : 'Xia2',
+                    'category' : 'primary',
+                    'refs'     : [{
                             'authors' : 'Winter, G.',
                             'title'   : 'Xia2: an expert system for macromolecular crystallography data reduction',
                             'journal' : 'J. Appl. Cryst.',
@@ -240,8 +257,9 @@ citations = {
                         }]
                   },
 
-    'dials'  :    { 'name' : 'DIALS',
-                    'refs' : [{
+    'dials'  :    { 'name'     : 'DIALS',
+                    'category' : 'primary',
+                    'refs'     : [{
                             'authors' : 'Winter, G., Waterman, D.G., Parkhurst, J.M., Brewster, A.S., ' +\
                                         'Gildea, R.J., Gerstel, M., Fuentes-Montero, L., Vollmar, M., ' +\
                                         'Michels-Clark, T., Young, I.D., Sauter, N.K., Evans, G.',
@@ -261,8 +279,9 @@ citations = {
                         }]
                   },
 
-    'coot'   :    { 'name' : 'COOT',
-                    'refs' : [{
+    'coot'   :    { 'name'     : 'COOT',
+                    'category' : 'primary',
+                    'refs'     : [{
                             'authors' : 'Emsley, P., Lohkamp, B., Scott, W.G., Cowtan, K.',
                             'title'   : 'Features and development of Coot',
                             'journal' : 'Acta Cryst.',
@@ -272,8 +291,9 @@ citations = {
                         }]
                   },
 
-    'cparrot' :   { 'name' : 'PARROT',
-                    'refs' : [{
+    'cparrot' :   { 'name'     : 'PARROT',
+                    'category' : 'primary',
+                    'refs'     : [{
                             'authors' : 'Cowtan, K.',
                             'title'   : 'Recent developments in classical density modification',
                             'journal' : 'Acta Cryst.',
@@ -283,8 +303,9 @@ citations = {
                         }]
                   },
 
-    'buccaneer' : { 'name' : 'Buccaneer',
-                    'refs' : [{
+    'buccaneer' : { 'name'     : 'Buccaneer',
+                    'category' : 'primary',
+                    'refs'     : [{
                             'authors' : 'Cowtan, K.',
                             'title'   : 'Completion of autobuilt protein models using a database of protein fragments',
                             'journal' : 'Acta Cryst.',
@@ -301,8 +322,9 @@ citations = {
                         }]
                   },
 
-    'phaser' :    { 'name' : 'Phaser',
-                    'refs' : [{
+    'phaser' :    { 'name'     : 'Phaser',
+                    'category' : 'primary',
+                    'refs'     : [{
                             'authors' : 'McCoy, A.J., Grosse-Kunstleve, R.W., Adams, P.D., Winn, M.D., Storoni, L.C., Read R.J.',
                             'title'   : 'Phaser Crystallographic Software',
                             'journal' : 'J. Appl. Cryst.',
@@ -312,8 +334,9 @@ citations = {
                         }]
                   },
 
-    'fft' :       { 'name' : 'FFT',
-                    'refs' : [{
+    'fft' :       { 'name'     : 'FFT',
+                    'category' : 'primary',
+                    'refs'     : [{
                             'authors' : 'Eyck, L.F.',
                             'title'   : '',
                             'journal' : 'Acta Cryst.',
@@ -323,8 +346,9 @@ citations = {
                         }]
                   },
 
-    'acedrg' :    { 'name' : 'AceDRG',
-                    'refs' : [{
+    'acedrg' :    { 'name'     : 'AceDRG',
+                    'category' : 'primary',
+                    'refs'     : [{
                             'authors' : 'Long, F., Nicholls, R.A., Emsley, P., Grazulis, S., Merkys, A., Vaitkusb, A., Murshudov, G.N.',
                             'title'   : 'AceDRG: a stereochemical description generator for ligands',
                             'journal' : 'Acta Cryst.',
@@ -334,8 +358,9 @@ citations = {
                         }]
                   },
 
-    'gesamt' :    { 'name' : 'GESAMT',
-                    'refs' : [{
+    'gesamt' :    { 'name'     : 'GESAMT',
+                    'category' : 'primary',
+                    'refs'     : [{
                             'authors' : 'Krissinel, E.',
                             'title'   : 'Enhanced fold recognition using efficient short fragment clustering',
                             'journal' : 'J. Mol. Biochem.',
@@ -345,8 +370,9 @@ citations = {
                         }]
                   },
 
-    'jspisa'    : { 'name' : 'PISA',
-                    'refs' : [{
+    'jspisa'    : { 'name'     : 'PISA',
+                    'category' : 'primary',
+                    'refs'     : [{
                             'authors' : 'Krissinel, E., Henrick, K.',
                             'title'   : 'Inference of macromolecular assemblies from crystalline state',
                             'journal' : 'J. Mol. Biol.',
@@ -363,8 +389,9 @@ citations = {
                         }]
                   },
 
-    'crank2'    : { 'name' : 'Crank-2',
-                    'refs' : [{
+    'crank2'    : { 'name'     : 'Crank-2',
+                    'category' : 'primary',
+                    'refs'     : [{
                             'authors' : 'Skubak, P., Arac, D., Bowler, M.W., Correia, A.R., ' +\
                                         'Hoelz, A., Larsen, S., Leonard, G.A., McCarthy, A.A., ' +\
                                         'McSweeney, S., Mueller-Dieckmann, C., Otten, H., ' +\
@@ -386,8 +413,9 @@ citations = {
                         }]
                   },
 
-    'shelx' :     { 'name' : 'SHELX',
-                    'refs' : [{
+    'shelx' :     { 'name'     : 'SHELX',
+                    'category' : 'primary',
+                    'refs'     : [{
                             'authors' : 'Sheldrick, G.M.',
                             'title'   : 'A short history of SHELX',
                             'journal' : 'Acta Cryst.',
@@ -397,16 +425,19 @@ citations = {
                         }]
                   },
 
-    'shelxc'    : { 'name' : 'SHELXC',
-                    'copy' : [['shelx',-1]]  # -1 means copy all
+    'shelxc'    : { 'name'     : 'SHELXC',
+                    'category' : 'primary',
+                    'copy'     : [['shelx',-1]]  # -1 means copy all
                   },
 
-    'shelxe'    : { 'name' : 'SHELXE',
-                    'copy' : [['shelx',-1]]  # -1 means copy all
+    'shelxe'    : { 'name'     : 'SHELXE',
+                    'category' : 'primary',
+                    'copy'     : [['shelx',-1]]  # -1 means copy all
                   },
 
-    'shelxd' :    { 'name' : 'SHELXD',
-                    'refs' : [{
+    'shelxd' :    { 'name'     : 'SHELXD',
+                    'category' : 'primary',
+                    'refs'     : [{
                             'authors' : 'Schneider, T.R., Sheldrick, G.M.',
                             'title'   : 'Substructure solution with SHELXD',
                             'journal' : 'Acta Cryst.',
@@ -453,8 +484,9 @@ citations = {
                         }]
                   },
 
-    'jscofe'  : { 'name' : 'CCP4 Cloud',
-                  'refs' : [{
+    'jscofe'  : { 'name'     : 'CCP4 Cloud',
+                  'category' : 'primary',
+                  'refs'     : [{
                             'authors' : 'Krissinel, E., Uski, V., Lebedev, A., Winn, M., Ballard, C.',
                             'title'   : 'Distributed computing for macromolecular crystallography',
                             'journal' : 'Acta Cryst.',
@@ -465,8 +497,9 @@ citations = {
                 },
 
 
-    'clustalw2' : { 'name' : 'ClustalW2',
-                  'refs' : [{
+    'clustalw2' : { 'name'   : 'ClustalW2',
+                  'category' : 'primary',
+                  'refs'     : [{
                             'authors' : 'Larkin, M.A., Blackshields, G., Brown, N.P., ' +\
                                         'Chenna, R., McGettigan, P.A., McWilliam, H., ' +\
                                         'Valentin, F., Wallace, I.M., Wilm, A., Lopez, R., ' +\
@@ -492,6 +525,33 @@ citations = {
 #    'dials.rs_mapper' : { 'name' : 'DIALS.rs_mapper',
 #                          'copy' : [['dials',-1]]
 #                        },
+
+
+#  Analysis tasks may be used in the project, but their citations may not
+# propagate down to the PDB Deposition task, where all citations are summed up
+# because not all of them produce a revision (like PISA) or may be left in an
+# unsuccessful bransh but nevertheless essential for decision making (like
+# Zanuda). In such cases, all project is hovered and if use of such tasks
+# is detected, they are offered to user for discreational citation.
+
+analysis_tasks = {
+   'TaskZanuda'   : { 'name' : 'Zanuda',
+                      'desc' : 'Space group validation',
+                      'copy' : [['zanuda',-1]]
+                    },
+   'TaskPISA'     : { 'name' : 'PISA',
+                      'desc' : 'Assembly and interface analysis',
+                      'copy' : [['jspisa',-1]]
+                    },
+   'TaskGesamt'   : { 'name' : 'GESAMT',
+                      'desc' : 'Structural alignment in 3D',
+                      'copy' : [['gesamt',-1]]
+                    },
+   'TaskSeqAlign' : { 'name' : 'ClustalW2',
+                      'desc' : 'Sequence alignment',
+                      'copy' : [['clustalw2',-1]]
+                    },
+}
 
 
 # citation array for current process
@@ -601,41 +661,95 @@ def makeCitationsHTML ( body ):
     return html
 
 
-def makeSummaryCitationsHTML ( clist ):
+def makeSummaryCitationsHTML ( clist,eol_tasks ):
 
     if not clist:
         return None
 
     else:
-        noref = []
-        hlist = []
-        for appName in clist:
-            if appName in citations:
-                citation = citations[appName]
-                refs     = _get_references ( citation )
-                for reference in refs:
-                    rstr  = "<li>" + makeCitation ( reference ) + "</li>"
-                    if rstr not in hlist:
-                        hlist.append ( rstr )
+        lists = { 'noref' : [],
+                  'flist' : []  # all citations
+                }
+
+        def get_citation_html_list ( citation,desc_bool ):
+            rlst = []
+            refs = _get_references ( citation )
+            lst  = []
+            for reference in refs:
+                cit  = makeCitation ( reference )
+                if cit not in lists['flist']:
+                    lists['flist'].append ( cit )
+                    lst.append ( "<li>" + cit + "</li>" )
+            if desc_bool:
+                html_str = "<li><b><font style='font-size:110%'><i>" +\
+                               citation['name'] + "</i></font>:</b>"
+                if 'desc' in citation:
+                    html_str += " <i>(" + citation['desc'] + ")</i>"
+                rlst.append ( html_str + "<ul>" + "".join(lst) + "</ul></li>" )
             else:
-                noref.append ( appName )
+                rlst += lst
+            return rlst
+
+        def make_html_list ( category,desc_bool ):
+            rlist = []
+            for appName in clist:
+                if appName in citations:
+                    citation = citations[appName]
+                    if citation['category']==category:
+                        rlist += get_citation_html_list ( citation,desc_bool )
+                        """
+                        refs = _get_references ( citation )
+                        lst  = []
+                        for reference in refs:
+                            cit  = makeCitation ( reference )
+                            if cit not in lists['flist']:
+                                lists['flist'].append ( cit )
+                                lst.append ( "<li>" + cit + "</li>" )
+                        if desc_bool:
+                            rlist.append ( "<li><b><font style='font-size:110%'><i>" +\
+                                           citation['name'] + "</i></font>:</b><ul>" +\
+                                           "".join(lst) + "</ul></li>" )
+                        else:
+                            rlist += lst
+                        """
+                else:
+                    lists['noref'].append ( appName )
+            return rlist
+
+        plist = make_html_list ( 'primary',False )  # primary tasks citations
+        vlist = make_html_list ( 'viewer' ,True  )  # viewer category citations
+
+        alist = []
+        if eol_tasks:
+            for i in range(len(eol_tasks)):
+                if eol_tasks[i] in analysis_tasks:
+                    alist += get_citation_html_list ( analysis_tasks[eol_tasks[i]],True )
 
         rstr  = "<li>" + makeCitation(citations['default']['refs'][0]) + "</li>"
-        if rstr not in hlist:
-            hlist.append ( rstr )
+        if rstr not in plist:
+            plist.append ( rstr )
 
         rstr  = "<li>" + makeCitation(citations['jscofe']['refs'][0]) + "</li>"
-        if rstr not in hlist:
-            hlist.append ( rstr )
+        if rstr not in plist:
+            plist.append ( rstr )
 
         html  = "<b>Your results were obtained using developments from publications " +\
-                "listed below. Please cite them when publishing:</b><ul>"
-        for li in hlist:
-            html += li
-        html += "</ul>"
+                "listed below. Please cite them when publishing:</b><ul>" +\
+                "".join(plist) + "</ul>"
 
-        if len(noref)>0:
+        if len(alist)>0:
+            html += "<b>The following programs were used in the Project, however, " +\
+                    "they may not have direct relation to structure solution. " +\
+                    "Please cite them as you find appropriate:</b><ul>" +\
+                    "".join(alist) + "</ul>"
+
+        if len(vlist)>0:
+            html += "<b>Throughout the Project, you may have used the following " +\
+                    "graphical viewers, please cite them at your discretion:</b><ul>" +\
+                    "".join(vlist) + "</ul>"
+
+        if len(lists['noref'])>0:
             html += "<p><font style='font-size:85%'><i>Developer: no references for " +\
-                    str(noref) + ", please provide</i></font>"
+                    str(lists['noref']) + ", please provide</i></font>"
 
     return html

@@ -23,6 +23,11 @@
  *
  *      constructor JobTree();
  *
+ *      function setReplayMode   ();
+ *      function setSelectMode   ();
+ *      function isProjectMode   ();
+ *      function isReplayMode    ();
+ *      function isSelectMode    ();
  *      function customIcon      ();
  *      function getTaskByNodeId ( nodeId );
  *      function getTask         ( taskId );
@@ -71,7 +76,8 @@ function JobTree()  {
 
   this.checkTimeout = null;  // timeout timer Id
 
-  this.replay_mode  = false;  // works with the replay project if true
+  this.mode         = 'project';  //  'replay', 'select'
+//  this.replay_mode  = false;  // works with the replay project if true
 
 }
 
@@ -80,6 +86,26 @@ JobTree.prototype.constructor = JobTree;
 
 
 // ---------------------------------------------------------------------------
+
+JobTree.prototype.setReplayMode = function()  {
+  this.mode = 'replay';
+}
+
+JobTree.prototype.setSelectMode = function()  {
+  this.mode = 'select';
+}
+
+JobTree.prototype.isProjectMode = function()  {
+  return (this.mode=='project');
+}
+
+JobTree.prototype.isReplayMode = function()  {
+  return (this.mode=='replay');
+}
+
+JobTree.prototype.isSelectMode = function()  {
+  return (this.mode=='select');
+}
 
 JobTree.prototype.customIcon = function() {
 //  var ci = new TreeNodeCustomIcon ( './images/brass_gears.gif','32px','22px','hidden' );
@@ -136,7 +162,7 @@ JobTree.prototype.readProjectData = function ( page_title,
   this.checkLoop = false;  // true if job check loop is running
 
   (function(tree){
-    serverRequest ( fe_reqtype.getProjectData,{'replay':tree.replay_mode},
+    serverRequest ( fe_reqtype.getProjectData,{'mode':tree.mode},
                     page_title,function(data){
 
       if ('message' in data)

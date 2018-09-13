@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    26.08.18   <--  Date of Last Modification.
+#    13.09.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -32,6 +32,7 @@ import uuid
 import time
 #from   xml.etree import ElementTree as ET
 import shutil
+import json
 
 #  ccp4 imports
 #import gemmi
@@ -77,6 +78,17 @@ class Deposition(basic.TaskDriver):
         seq      = self.input_data.data.seq
         for i in range(len(seq)):
             seq[i] = self.makeClass ( seq[i] )
+
+        eol_dict  = None
+        eol_tasks = []
+        try:
+            with open(os.path.join(self.inputDir(),"all_tasks.json")) as f:
+                eol_dict = json.load(f)
+        except:
+            pass
+        if eol_dict:
+            eol_tasks = eol_dict["list"]
+
 
         # 1. Use zero cycles of Refmac just to produce the final CIF file
 
@@ -213,20 +225,30 @@ class Deposition(basic.TaskDriver):
 
         # 4. Put download widgets
 
-        self.putMessage ( "&nbsp;<h3><i>Deposition files</i></h3>" +\
-            "<b>Use download buttons below to download files for further upload to " +\
-            "<a href='https://deposit-1.wwpdb.org' target='_blank'>" +\
-            "wwPDB Deposition Site</a></b> <i>(link opens in new tab/window)</i>" +\
-            "<br><hr/>"
-        )
+        #self.putMessage ( "&nbsp;<h3><i>Deposition files</i></h3>" +\
+        #    "<b>Use download buttons below to download files for further upload to " +\
+        #    "<a href='https://deposit-1.wwpdb.org' target='_blank'>" +\
+        #    "wwPDB Deposition Site</a></b> <i>(link opens in new tab/window)</i>" +\
+        #    "<br><hr/>"
+        #)
+
+        self.putMessage ( "&nbsp;<h3><i>PDB Deposition</i></h3>" +\
+            "<b>a) Download the following files:<br><hr/>" )
 
         grid_id = self.getWidgetId ( self.dep_grid() )
         self.putGrid ( grid_id )
         self.putMessage1 ( grid_id,"<i>Final coordinate file in mmCIF format</i>&nbsp;",0,0 )
-        self.putMessage1 ( grid_id,"<i>Structure factors file in CIF format</i>" ,1,0 )
+        self.putMessage1 ( grid_id,"<i>Structure factors file in mmCIF format</i>" ,1,0 )
         self.putDownloadButton ( deposition_cif,"download",grid_id,0,1 )
         self.putDownloadButton ( sfCIF         ,"download",grid_id,1,1 )
-        self.putMessage ( "<hr/>" )
+
+        self.putMessage ( "<hr/><br><b>" +\
+            "b) Start new deposition session at " +\
+            "<a href='https://deposit-1.wwpdb.org' target='_blank'>wwPDB " +\
+            "Deposition Site</a></b> <i>(link opens in new tab/window)</i><p><b>" +\
+            "c) Follow instructions in the wwPDB deposition site and upload " +\
+            "the files downloaded when prompted.</b>"
+        )
 
 
         # 5. Obtain validation report from the PDB
@@ -292,7 +314,7 @@ class Deposition(basic.TaskDriver):
         self._add_citations ( citations.citation_list )
         if self.citation_list:
             self.putTitle ( "References" )
-            self.putMessage ( citations.makeSummaryCitationsHTML(self.citation_list) )
+            self.putMessage ( citations.makeSummaryCitationsHTML(self.citation_list,eol_tasks) )
         citations.citation_list = []
         # close execution logs and quit
         self.success()

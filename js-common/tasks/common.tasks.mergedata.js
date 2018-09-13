@@ -67,8 +67,8 @@ if (!__template)  {
 
     var div = this.makeInputLayout();
     div.header.uname_lbl.setText ( 'description:&nbsp;' );
-    div.grid.setLabel ( 'All following jobs will see data available for ' +
-                        'all previous jobs in the current branch of the job ' +
+    div.grid.setLabel ( 'All downstream jobs will see data available for ' +
+                        'all upstream jobs in the current branch of the job ' +
                         'tree, and, in addition, from the following jobs:',
                         0,0,1,5 )
             .setFontBold(true);

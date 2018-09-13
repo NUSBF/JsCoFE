@@ -47,84 +47,6 @@ function TaskDeposition()  {
     }
   ];
 
-  /*
-  this.parameters = {
-    sec1 : { type     : 'section',
-             title    : 'Basic options',
-             open     : true,
-             position : [0,0,1,5],
-             contains : {
-                MKHYDR : { type : 'combobox',
-                       keyword  : 'none',
-                       label    : 'Generate H-atoms for refinement',
-                       tooltip  : 'Select how to represent hydrogen atoms in refinement',
-                       range    : ['no|No','yes|Yes if in input file','all|Yes'],
-                       value    : 'no',
-                       position : [0,0,1,1]
-                     },
-                NCYC  : { type  : 'integer',
-                       keyword  : 'none',
-                       label    : 'Number of refinement cycles',
-                       tooltip  : 'Number of refinement cycles',
-                       range    : [0,'*'],
-                       value    : '10',
-                       position : [1,0,1,1]
-                     },
-                NCSR : { type   : 'combobox',
-                       keyword  : 'none',
-                       label    : 'Use automatically generated NCS restraints',
-                       tooltip  : 'Use automatically generated NCS restraints',
-                       range    : ['no|No','local|Local','global|Global'],
-                       value    : 'local',
-                       position : [2,0,1,1]
-                     },
-                RIDGE_YES : { type : 'combobox',
-                       keyword  : 'none',
-                       label    : 'Use jelly-body refinement',
-                       tooltip  : 'Use jelly-body refinement',
-                       range    : ['no|No','yes|Yes'],
-                       value    : 'no',
-                       position : [3,0,1,1]
-                     },
-                RIDGE_VAL : { type : 'real',
-                       keyword  : 'none',
-                       label    : '&nbsp;&nbsp;&nbsp;&nbsp;Ridge distance sigma',
-                       tooltip  : 'Ridge distance sigma',
-                       range    : [0,'*'],
-                       value    : '0.02',
-                       showon   : {'RIDGE_YES':['yes']},
-                       position : [4,0,1,1]
-                     },
-                WAUTO_YES : { type : 'combobox',
-                       keyword  : 'none',
-                       label    : 'Use automatic weighting',
-                       tooltip  : 'Use automatic weighting',
-                       range    : ['no|No','yes|Yes'],
-                       value    : 'yes',
-                       position : [5,0,1,1]
-                     },
-                WAUTO_VAL : { type : 'real',
-                       keyword  : 'none',
-                       label    : '&nbsp;&nbsp;&nbsp;&nbsp;Weight for X-ray term',
-                       tooltip  : 'Weight for X-ray term',
-                       range    : [0,'*'],
-                       value    : '0.01',
-                       showon   : {'WAUTO_YES':['no']},
-                       position : [6,0,1,1]
-                     },
-                TWIN : { type : 'combobox',
-                       keyword  : 'none',
-                       label    : 'Twin refinement',
-                       tooltip  : 'Switch twin refinement on/off',
-                       range    : ['no|No','yes|Yes'],
-                       value    : 'no',
-                       position : [7,0,1,1]
-                     }
-             }
-           }
-  };
-  */
-
 }
 
 
@@ -147,7 +69,12 @@ TaskDeposition.prototype.currentVersion = function()  { return 2; } // from 09.0
 if (__template)  {
   //  for server side
 
-  var conf = require('../../js-server/server.configuration');
+  var fs     = require('fs-extra');
+  var path   = require('path');
+  var conf   = require('../../js-server/server.configuration');
+  var prj    = require('../../js-server/server.fe.projects');
+  var utils  = require('../../js-server/server.utils');
+  var task_t = require('./common.tasks.template');
 
   TaskDeposition.prototype.makeInputData = function ( jobDir )  {
 
@@ -166,6 +93,32 @@ if (__template)  {
     }
 
     __template.TaskTemplate.prototype.makeInputData.call ( this,jobDir );
+
+    // here, we also use this function to compose the list of all project's
+    // tasks, which is used for identification of service tasks (cf.
+    // pycofe/etc/citations.py)
+
+    /*
+    var job_dirs = fs.readdirSync(path.join('..',jobDir)).filter(function(file) {
+      return file.startsWith ( prj.jobDirPrefix );
+      //return fs.statSync(path+'/'+file).isDirectory();
+    });
+    */
+    var allTasks = [];
+    var entries  = fs.readdirSync ( path.join(jobDir,'..') );
+    for (var i=0;i<entries.length;i++)
+      if (entries[i].startsWith(prj.jobDirPrefix))  {
+        var job_meta = utils.readObject ( path.join(jobDir,'..',entries[i],task_t.jobDataFName) );
+        if (job_meta)  {
+          if (job_meta.hasOwnProperty('_type')) {
+            if (allTasks.indexOf(job_meta['_type'])<0)
+              allTasks.push ( job_meta['_type'] );
+          }
+        }
+      }
+
+    var meta = { 'list' : allTasks };
+    utils.writeObject ( path.join(jobDir,'input','all_tasks.json'),meta );
 
   }
 
