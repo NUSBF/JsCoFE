@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    08.09.18   <--  Date of Last Modification.
+#    13.09.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -422,13 +422,24 @@ class Crank2(basic.TaskDriver):
 
             if self.structure:
 
+                #  make a list of all used datasets, each one will be used
+                #  for making an individual revision; sort the list such that
+                #  the most probable revision for taking downstream is on
+                #  top of the list
+                hkl_all_0  = []
+                hkl_all_0 += self.hkl
+                sort_order = ["peak","inflection","native","low-remote","high-remote"]
                 if self.native:
-                    hkl_all = []
-                    hkl_all += self.hkl
                     self.native.wtype = "native"
-                    hkl_all.append ( self.native )
-                else:
-                    hkl_all = self.hkl
+                    hkl_all_0.append ( self.native )
+                    if self.native.useForPhasing:
+                        sort_order = ["native","peak","inflection","low-remote","high-remote"]
+                hkl_all = []
+                for wtype in sort_order:
+                    for i in range(len(hkl_all_0)):
+                        if hkl_all_0[i].wtype==wtype:
+                            hkl_all.append ( hkl_all_0[i] )
+                            break
 
                 if self.seq:
                     for s in self.seq:

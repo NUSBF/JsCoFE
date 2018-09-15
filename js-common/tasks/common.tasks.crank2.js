@@ -39,7 +39,7 @@ function TaskCrank2()  {
   this.helpURL = './html/jscofe_task_crank2.html';
 
   this.input_dtypes = [{    // input data types
-      data_type   : {'DataRevision':['!protein','asu']}, // data type(s) and subtype(s)
+      data_type   : {'DataRevision':['!protein','!asu','~xyz','~phases','~substructure']}, // data type(s) and subtype(s)
       label       : 'Structure revision',     // label for input dialog
       inputId     : 'revision', // input Id for referencing input fields
       customInput : 'crank2',   // lay custom fields next to the selection
