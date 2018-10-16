@@ -59,7 +59,7 @@ class ChangeSpG(basic.TaskDriver):
             os.remove(outputMTZFName)
 
         # make command-line parameters
-        cmd = [ "hklin" ,hkl.getFilePath(self.inputDir()dtype_template.file_key["mtz"]),
+        cmd = [ "hklin" ,hkl.getFilePath(self.inputDir(),dtype_template.file_key["mtz"]),
                 "hklout",outputMTZFName ]
 
         # prepare stdin

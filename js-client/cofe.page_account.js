@@ -40,14 +40,16 @@ function AccountPage ( sceneId )  {
   var prjlist_mi = this.headerPanel.menu.addItem('My Projects'    ,'./images/list.svg');
   if (__admin)
     admin_mi = this.headerPanel.menu.addItem('Admin Page','./images/admin.png');
-  this.headerPanel.menu.addSeparator ();
-  var logout_mi  = this.headerPanel.menu.addItem('Log out'        ,'./images/logout.svg');
+  this.addLogoutToMenu ( function(){ logout(sceneId); } );
+
+  //this.headerPanel.menu.addSeparator ();
+  //var logout_mi  = this.headerPanel.menu.addItem('Log out'        ,'./images/logout.svg');
 
   project_mi.addOnClickListener ( function(){ makeProjectPage    (sceneId); });
   prjlist_mi.addOnClickListener ( function(){ makeProjectListPage(sceneId); });
   if (__admin)
     admin_mi.addOnClickListener ( function(){ makeAdminPage      (sceneId); });
-  logout_mi .addOnClickListener ( function(){ logout             (sceneId); });
+  //logout_mi .addOnClickListener ( function(){ logout             (sceneId); });
 
   // adjust scene grid attributes such that login panel is centered
   this.grid.setCellSize          ( '45%','',1,0,1,1 );

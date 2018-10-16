@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    08.08.18   <--  Date of Last Modification.
+ *    05.10.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -47,6 +47,14 @@ function TaskMolrep()  {
       min         : 1,          // minimum acceptable number of data instances
       max         : 1           // maximum acceptable number of data instances
     },{
+      data_type   : {'DataStructure':['phases']}, // data type(s) and subtype(s)
+      label       : 'Phases',  // label for input dialog
+      inputId     : 'phases',       // input Id for referencing input fields
+      tooltip     : 'Fit model into the ED map obtained from these phases.',
+      version     : 0,          // minimum data version allowed
+      min         : 0,          // minimum acceptable number of data instances
+      max         : 1           // maximum acceptable number of data instances
+    },{
 //**      data_type : {'DataEnsemble':[],'DataXYZ':[]}, // data type(s) and subtype(s)
       data_type   : {'DataEnsemble':[]},  // data type(s) and subtype(s)
       label       : 'Model ensemble',     // label for input dialog
@@ -65,37 +73,17 @@ function TaskMolrep()  {
              open     : true,  // true for the section to be initially open
              position : [0,0,1,5],
              contains : {
-               TITLE1 : { type  : 'label',  // just a separator
-                       label    : '<h3>Parameters for search with fixed model</h3>',
-                       position : [0,0,1,4],
-                       hideon   : {'revision.xyz':[0,-1]} // from input data section
-                     },
                PRF : { type     : 'combobox',
                        keyword  : 'PRF',
                        label    : 'Search protocol',
                        tooltip  : 'Using pseudo-translation',
-                       range    : ['P|Patterson Search (RF + TF)',
-                                   'N|Density Search (RF + Phased TF)',
+                       range    : ['N|Density Search (RF + Phased TF)',
                                    'Y|Density Search (SAPTF + Local Phased RF + Phased TF)',
                                    'S|Density Search (SAPTF + Local RF + Phased TF)'
                                   ],
                        value    : 'N',
                        position : [1,0,1,7],
-                       hideon   : {'revision.xyz':[0,-1]} // from input data section
-                     },
-              DIFF_CBX : { type : 'checkbox',
-                       label    : 'Do not use density from fixed model',
-                       tooltip  : 'Check to remove the fixed model density',
-                       iwidth   : 280,
-                       value    : true,
-                       position : [2,0,1,4],
-                       hideon   : {_:'||','revision.xyz':[0,-1],'PRF':['P']} // from this and input data section
-                     },
-              TITLE12 : {
-                       type     : 'label',  // just a separator
-                       label    : '<br><h3>Common search parameters</h3>',
-                       position : [3,0,1,4],
-                       hideon   : {'revision.xyz':[0,-1]} // from input data section
+                       hideon   : {'phases.phases':[0,-1]} // from input data section
                      },
               NMON : { type    : 'integer_', // '_' means blank value is allowed
                        keyword  : 'NMON',       // the real keyword for job input stream
@@ -374,22 +362,32 @@ function TaskMolrep()  {
              open     : false,
              position : [3,0,1,5],
              contains : {
+               /*
+               DISCARD_CBX : {
+                       type     : 'checkbox',
+                       label    : 'Discard fixed model',
+                       tooltip  : 'Can be used to fit a different model into the current ED maps',
+                       value    : false,
+                       position : [0,0,1,1],
+                       hideon   : {_:'||','revision.xyz':[0,-1],'phases.phases':[0,-1]} // from input data section
+                     },
+               */
                TITLE4 : {
                        type     : 'label',  // just a separator
                        label    : '<h3>Change default behaviour for</h3>',
-                       position : [0,0,1,4]
+                       position : [1,0,1,4]
                      },
                PACK_CBX : {
                        type     : 'checkbox',
                        label    : 'Packing function',
                        tooltip  : 'Using packing function',
                        value    : false,
-                       position : [1,0,1,1]
+                       position : [2,0,1,1]
                      },
                SEP3 : { type    : 'label',  // just a separator
                        label    : '&nbsp;',
                        lwidth   : 30,       // 'lwidth' is label width in px
-                       position : [1,1,1,1]
+                       position : [2,1,1,1]
                      },
                PACK : { type    : 'checkbox',
                        label    : 'do use PF',
@@ -397,14 +395,14 @@ function TaskMolrep()  {
                        tooltip  : 'check for using packing function',
                        value    : true,
                        translate: ['N','Y'], // [false,true]
-                       position : [1,2,1,1],
+                       position : [2,2,1,1],
                        showon   : {'PACK_CBX':[true]}
                      },
                SCORE_CBX  : { type : 'checkbox',
                        label    : 'Scoring function',
                        tooltip  : 'Using scoring function',
                        value    : false,
-                       position : [2,0,1,1]
+                       position : [3,0,1,1]
                      },
                SCORE : { type   : 'checkbox',
                        label    : 'stop adding monomers if score does not improve',
@@ -413,7 +411,7 @@ function TaskMolrep()  {
                                   'overall score does not improves',
                        value    : true,
                        translate: ['O','Y'], // [false,true]
-                       position : [2,2,1,1],
+                       position : [3,2,1,1],
                        showon   : {'SCORE_CBX':[true]}
                      }
              }
@@ -443,7 +441,7 @@ if (__template)  {
 
   var conf = require('../../js-server/server.configuration');
 
-  TaskMolrep.prototype.makeInputData = function ( jobDir )  {
+  TaskMolrep.prototype.makeInputData = function ( login,jobDir )  {
 
     // put hkl and structure data in input databox for copying their files in
     // job's 'input' directory
@@ -455,7 +453,7 @@ if (__template)  {
         this.input_data.data['xmodel'] = [revision.Structure];
     }
 
-    __template.TaskTemplate.prototype.makeInputData.call ( this,jobDir );
+    __template.TaskTemplate.prototype.makeInputData.call ( this,login,jobDir );
 
   }
 

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    08.08.18   <--  Date of Last Modification.
+ *    11.10.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -38,9 +38,15 @@ function TaskXia2()  {
   this.oname   = 'xia2';  // default output file name template
   this.title   = 'Automatic Image Processing with Xia-2';
   this.helpURL = './html/jscofe_task_xia2.html';
-  this.nc_type = 'client';  // job may be run only on client NC
+  this.nc_type = 'client-cloud';  // job may be run only on either client NC or
+                                  // odinary NC if cloud storage is there
 
-  this.imageDirPath = '';
+  this.imageDirPath   = '';       // path displayed in task dialog
+  this.image_dir_path = '';       // translated path
+  this.file_system    = 'local';  //  local/cloud
+
+  // fields needed for CloudBrowser
+  this.currentCloudPath = '';
 
   this.input_dtypes = [];  // no input data types for this task
 
@@ -227,12 +233,15 @@ if (!__template)  {
 
     var div = this.makeInputLayout();
     div.grid.setWidth ( '100%' );
+    div.task = this;
 
     this.setInputDataFields ( div.grid,0,dataBox,this );
 
-    if (!__local_service)  {
-      div.grid.setLabel ( '<h2>Local service not running</h2>' +
-          'This task can be used only via local service.' ,0,0,1,4 );
+    if ((!__local_service) && (!__cloud_storage))  {
+      div.grid.setLabel (
+          '<h2>Neither local service nor cloud storage are available</h2>' +
+          'This task requires either local service running or cloud storage ' +
+          'available to user, but neither are detected.' ,0,0,1,4 );
       return div;
     }
 
@@ -248,41 +257,77 @@ if (!__template)  {
     div.grid.setLabel ( 'Image directory:&nbsp;&nbsp;',row,0,1,1 )
             .setTooltip('Path to directory containing diffraction images')
             .setFontItalic(true).setFontBold(true).setNoWrap();
-    div.grid.setVerticalAlignment ( row,0,'middle' );
 
-    div.image_select_btn = div.grid.addButton ( 'Browse','./images/open_file.svg',row,1,1,1 );
+    div.image_select_btn  = div.grid.addButton ( 'Browse','./images/open_file.svg',row,1,1,1 );
+
+    div.file_system = this.file_system;
+    if (__local_service && __cloud_storage)  {
+      div.source_select_ddn = new Dropdown();
+      div.grid.addWidget ( div.source_select_ddn,row,2,1,1 );
+      div.source_select_ddn.addItem ( 'local','','local',div.file_system=='local' );
+      div.source_select_ddn.addItem ( 'cloud','','cloud',div.file_system=='cloud' );
+      div.source_select_ddn.make();
+      div.source_select_ddn.addOnChangeListener ( function(text,value){
+        div.dirpath_txt.setValue ( '' );
+        div.file_system = value;
+      });
+    } else  {
+      div.source_select_ddn = null;
+      if (__local_service)  div.file_system = 'local';
+                      else  div.file_system = 'cloud';
+      this.file_system = div.file_system;
+      if (this.file_system=='local')  this.nc_type = 'client';
+                                else  this.nc_type = 'ordinary';
+    }
+
     var dirpath = this.imageDirPath;
     if (this.state==job_code.new)
       dirpath = '';
-    div.dirpath_txt = div.grid.setInputText ( dirpath,row,2,1,6 )
+    div.dirpath_txt = div.grid.setInputText ( dirpath,row,3,1,6 )
                         .setWidth('99%').setReadOnly(true).setNoWrap(true);
+
+    div.grid.setVerticalAlignment ( row,0,'middle' );
     div.grid.setVerticalAlignment ( row,1,'middle' );
     div.grid.setVerticalAlignment ( row,2,'middle' );
+    div.grid.setVerticalAlignment ( row,3,'middle' );
     div.grid.setCellSize ( 'auto','', 0,0 );
     div.grid.setCellSize ( 'auto','', 0,1 );
-    div.grid.setCellSize ( '95%' ,'', 0,2 );
+    div.grid.setCellSize ( 'auto','', 0,2 );
+    div.grid.setCellSize ( '95%' ,'', 0,3 );
 
     div.image_select_btn.addOnClickListener ( function(){
       div.image_select_btn.setDisabled ( true );
-      localCommand ( nc_command.selectDir,{
-          'dataType' : 'X-ray',
-          'title'    : 'Select Directory with X-ray Diffraction Images'
-        },'Select Directory',function(response){
-          if (!response)
-            return false;  // issue standard AJAX failure message
-          if (response.status==nc_retcode.ok)  {
-            if (response.data.directory!='')  {
-              div.dirpath_txt.setValue ( response.data.directory );
+      if (div.source_select_ddn)
+        div.source_select_ddn.setDisabled ( true );
+      if (div.file_system=='local')  {
+        localCommand ( nc_command.selectImageDir,{
+            'dataType' : 'X-ray',
+            'title'    : 'Select Directory with X-ray Diffraction Images'
+          },'Select Directory',function(response){
+            if (!response)
+              return false;  // issue standard AJAX failure message
+            if (response.status==nc_retcode.ok)  {
+              if (response.data.directory!='')  {
+                div.dirpath_txt.setValue ( response.data.directory );
+              }
+            } else  {
+              new MessageBox ( 'Select Directory Error',
+                'Directory selection failed:<p>' +
+                '<b>stdout</b>:&nbsp;&nbsp;' + response.data.stdout + '<br>' +
+                '<b>stderr</b>:&nbsp;&nbsp;' + response.data.stderr );
             }
-          } else  {
-            new MessageBox ( 'Select Directory Error',
-              'Directory selection failed:<p>' +
-              '<b>stdout</b>:&nbsp;&nbsp;' + response.data.stdout + '<br>' +
-              '<b>stderr</b>:&nbsp;&nbsp;' + response.data.stderr );
-          }
+            div.image_select_btn.setEnabled ( true );
+            if (div.source_select_ddn)
+              div.source_select_ddn.setEnabled ( true );
+            return true;
+          });
+      } else  {
+        new CloudFileBrowser ( div,div.task,2, function(){
           div.image_select_btn.setEnabled ( true );
-          return true;
+          if (div.source_select_ddn)
+            div.source_select_ddn.setEnabled ( true );
         });
+      }
     });
 
     div.grid.setLabel ( '&nbsp;',row+1,0,1,1 );
@@ -306,13 +351,30 @@ if (!__template)  {
   }
   */
 
+
+  TaskXia2.prototype.setSelectedCloudFiles = function ( inputPanel,file_items )  {
+    if (file_items.length>0)  {
+      var selPath = 'cloudstorage::/' + this.currentCloudPath;
+      if ((file_items[0].name!='..') && (file_items[0]._type!='FacilityFile'))
+        selPath += '/' + file_items[0].name;
+      inputPanel.dirpath_txt.setValue ( selPath );
+    }
+  }
+
+
   // reserved function name
   TaskXia2.prototype.collectInput = function ( inputPanel )  {
     // collects data from input widgets, created in makeInputPanel() and
     // stores it in internal fields
     var msg   = '';  // Ok if stays empty
-    if (__local_service)  {
-      this.imageDirPath = inputPanel.dirpath_txt.getValue();
+
+    if (__local_service || __cloud_storage)  {
+      this.file_system = inputPanel.file_system;
+      if (this.file_system=='local')  this.nc_type = 'client';
+                                else  this.nc_type = 'ordinary';
+      this.imageDirPath   = inputPanel.dirpath_txt.getValue();
+      //if (this.imageDirPath.endsWith)
+      //this.image_dir_path = this.imageDirPath;
       if (this.imageDirPath.length<=0)
         msg = '<b><i>Path to directory with X-ray images is not specified</i></b>';
     }
@@ -335,7 +397,46 @@ if (!__template)  {
 } else  {
   // for server side
 
-  var conf = require('../../js-server/server.configuration');
+  var path  = require('path');
+
+  var conf  = require('../../js-server/server.configuration');
+  var fcl   = require('../../js-server/server.fe.facilities');
+  var prj   = require('../../js-server/server.fe.projects');
+  var utils = require('../../js-server/server.utils');
+
+  TaskXia2.prototype.makeInputData = function ( login,jobDir )  {
+
+    if (this.file_system=='local')  {
+
+      this.image_dir_path = this.imageDirPath;
+      this.nc_type = 'client';  // job may be run only on client NC
+
+    } else  {
+
+      this.image_dir_path = '';
+      var lst = this.imageDirPath.split('/');
+      if (lst.length>2)  {
+        if (lst[0]=='cloudstorage::')  {
+          var cloudMounts = fcl.getUserCloudMounts ( login );
+          var cm = null;
+          for (var i=0;(i<cloudMounts.length) && (!cm);i++)
+            if (cloudMounts[i][0]==lst[1])
+              cm = cloudMounts[i][0];
+          if (cm)
+            this.image_dir_path = path.join ( cloudMounts[i][1],lst.slice(2).join('/') );
+        }
+      }
+      this.nc_type = 'ordinary';  // job may be run on any NC
+
+    }
+
+    var jobDataPath = prj.getJobDataPath ( login,this.project,this.id );
+    utils.writeObject ( jobDataPath,this );
+
+    __template.TaskTemplate.prototype.makeInputData.call ( this,login,jobDir );
+
+  }
+
 
   TaskXia2.prototype.getCommandLine = function ( exeType,jobDir )  {
     return [conf.pythonName(), '-m', 'pycofe.tasks.xia2', exeType, jobDir, this.id];

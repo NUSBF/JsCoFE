@@ -167,17 +167,29 @@ function HelpBox ( title,helpURL,onDoNotShowAgain_func )  {
 
   document.body.appendChild ( this.element );
 
+  var w0,h0;
+  if (__touch_device)  {
+    w0 = $(window).width () - 8;
+    h0 = $(window).height();
+  } else  {
+    w0 = 800;
+    h0 = 600;
+  }
+
   this.resizeDisplay = function ( w,h )  {
+    w0 = w;
+    h0 = h;
     this.display.setSize_px ( w-16,h-4 );
   }
 
   this.options = {
-    resizable : true,
-    width     : 800,
-    height    : 600,
+    width     : w0,
+    height    : h0,
     modal     : false,
     buttons   : []
   };
+
+  this.options.resizable = !__touch_device;
 
   if (onDoNotShowAgain_func)  {
     this.options.buttons = [
@@ -211,8 +223,12 @@ function HelpBox ( title,helpURL,onDoNotShowAgain_func )  {
     });
 
     $(dlg.display.element).on('load',function(){
-      $(dlg.element).dialog(dlg.options);
-      dlg.resizeDisplay ( 800,600 );
+      if (!__touch_device)  {
+        dlg.options.width  = w0;
+        dlg.options.height = h0 + 116;
+      }
+      $(dlg.element).dialog ( dlg.options );
+      dlg.resizeDisplay ( w0,h0 );
     });
 
   }(this))

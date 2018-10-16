@@ -1,7 +1,7 @@
 /*
  *  =================================================================
  *
- *    20.08.18   <--  Date of Last Modification.
+ *    11.10.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -29,22 +29,22 @@ var _taskIndex = {
   // suggest CCP4go only after Root
   'A' : { type: 'TaskCCP4go'         , after: ['0'] },
 
-  'B' : { type: 'TaskImport'         , after: ['0','B','C','D','E'] },
-  'C' : { type: 'TaskEnsemblePrepSeq', after: ['B','D'] },
-  'D' : { type: 'TaskEnsemblePrepXYZ', after: ['B','C','D'] },
+  'B' : { type: 'TaskImport'         , after: ['0','B','C','D','E','m'] },
+  'C' : { type: 'TaskEnsemblePrepSeq', after: ['B','D','m'] },
+  'D' : { type: 'TaskEnsemblePrepXYZ', after: ['B','C','D','m'] },
 
   // suggest Make Ligand after Import and Model Preparation
-  'E' : { type: 'TaskMakeLigand'     , after: ['B','C','D','E'] },
+  'E' : { type: 'TaskMakeLigand'     , after: ['B','C','D','E','m'] },
 
   // suggest Aimless, Simbad and ASUDef after Import or Model Preparation in
   // the specified order; do not suggest them after themselves (user should
   // branch/clone instead)
-  'F' : { type: 'TaskAimless'        , after: ['B','C','D','E','h'] },
-  'G' : { type: 'TaskSimbad'         , after: ['B','C','D','E','F','h'] },
-  'H' : { type: 'TaskASUDef'         , after: ['B','C','D','E','F','h'] },
+  'F' : { type: 'TaskAimless'        , after: ['B','C','D','E','h','m'] },
+  'G' : { type: 'TaskSimbad'         , after: ['B','C','D','E','F','h','m'] },
+  'H' : { type: 'TaskASUDef'         , after: ['B','C','D','E','F','h','m'] },
 
   // suggest Xyz2Revision after Import, Models and Ligands
-  'I' : { type: 'TaskXyz2Revision'   , after: ['B','C','D','E','F','h'] },
+  'I' : { type: 'TaskXyz2Revision'   , after: ['B','C','D','E','F','h','m'] },
 
   // suggest Morda, MrBump, and Balbes after ASUDef; do not suggest them after
   // themselves (user should branch/clone instead)
@@ -108,7 +108,7 @@ var _taskIndex = {
   'e' : { type: 'TaskASUDefStruct'   , after: ['A'] },
 
   // suggest SeqAlign after Import
-  'f' : { type: 'TaskSeqAlign'       , after: ['B'] },
+  'f' : { type: 'TaskSeqAlign'       , after: ['B','m'] },
 
   // do not suggest FacilityImport
   'g' : { type: 'TaskFacilityImport' , after: [] },
@@ -126,7 +126,10 @@ var _taskIndex = {
   'k' : { type: 'TaskDeposition'     , after: [] },
 
   // suggest Coot after refinememnt
-  'l' : { type: 'TaskCootCE'         , after: ['B','C','D'] }
+  'l' : { type: 'TaskCootCE'         , after: ['B','C','D','m'] },
+
+  // do suggest CloudImport alike plain Import
+  'm' : { type: 'TaskCloudImport'    , after: ['0','B','C','D','E','m'] }
 
 };
 

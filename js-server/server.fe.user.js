@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    03.09.18   <--  Date of Last Modification.
+ *    11.10.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -30,6 +30,7 @@ var conf    = require('./server.configuration');
 var utils   = require('./server.utils');
 var prj     = require('./server.fe.projects');
 var ration  = require('./server.fe.ration');
+var fcl     = require('./server.fe.facilities');
 var ud      = require('../js-common/common.data_user');
 var cmd     = require('../js-common/common.commands');
 
@@ -397,8 +398,9 @@ var fe_server = conf.getFEConfig();
         uData.pwd   = '';
         uData.email = '';
         var rData = {};
-        rData.userData   = uData;
-        rData.localSetup = conf.isLocalSetup();
+        rData.userData      = uData;
+        rData.localSetup    = conf.isLocalSetup();
+        rData.cloud_storage = (fcl.getUserCloudMounts(uData.login).length>0);
 
         response = new cmd.Response ( cmd.fe_retcode.ok,token,rData );
 
@@ -704,6 +706,7 @@ var fe_server = conf.getFEConfig();
     rData.logintoken    = null;
     rData.helpTopics    = [];
     rData.exclude_tasks = fe_server.exclude_tasks;
+    rData.cloud_storage = false;
     if ('localuser' in fe_server)  {
       rData.localuser  = fe_server.localuser;
       rData.logintoken = getTokenFromHash ( 'localuser' );
@@ -713,6 +716,7 @@ var fe_server = conf.getFEConfig();
         if (uData)
           rData.helpTopics = uData.helpTopics;
       }
+      rData.cloud_storage = (fcl.getUserCloudMounts('localuser').length>0);
     }
     rData.localSetup = conf.isLocalSetup();
 

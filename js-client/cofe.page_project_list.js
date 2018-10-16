@@ -204,13 +204,19 @@ function ProjectListPage ( sceneId )  {
         saveProjectList ( function(data){ makeAdminPage(sceneId); } );
       });
 
-    this.headerPanel.menu.addSeparator ();
-  }
-  var logout_mi  = this.headerPanel.menu.addItem('Log out'   ,'./images/logout.svg');
+    //this.headerPanel.menu.addSeparator ();
 
-  logout_mi.addOnClickListener ( function(){
+  }
+
+  //this.addFullscreenToMenu();
+  this.addLogoutToMenu ( function(){
     saveProjectList ( function(data){ logout(sceneId); } );
   });
+
+  //var logout_mi = this.headerPanel.menu.addItem('Log out','./images/logout.svg');
+  //logout_mi.addOnClickListener ( function(){
+  //  saveProjectList ( function(data){ logout(sceneId); } );
+  //});
 
   // make panel
   panel = new Grid('');

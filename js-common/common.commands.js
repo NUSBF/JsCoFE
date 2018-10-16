@@ -2,7 +2,7 @@
 /*
  *  ===========================================================================
  *
- *    13.09.18   <--  Date of Last Modification.
+ *    15.10.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  ---------------------------------------------------------------------------
  *
@@ -24,7 +24,7 @@
 // name and version tag
 
 function appName()  { return 'CCP4 Cloud' }
-var jsCoFE_version = '0.2.0 [13.09.2018]';
+var jsCoFE_version = '0.2.0 [15.10.2018]';
 
 
 // ============================================================================
@@ -119,13 +119,14 @@ var fe_retcode = {
 // Commands for NC Server exchange.
 
 var nc_command = {
-  stop          : 'stop',          // quit the server
-  runJob        : '-runJob',       // request to upload job data and run the job
-  stopJob       : '-stopJob',      // request to stop a running job
-  selectDir     : '-selectDir',    // request to select directory (local service)
-  runRVAPIApp   : '-runRVAPIApp',  // run RVAPI helper application (local service)
-  runClientJob  : '-runClientJob', // run client job (local service)
-  getNCInfo     : '-getNCInfo'     // get NC config and other info
+  stop           : 'stop',            // quit the server
+  runJob         : '-runJob',         // request to upload job data and run the job
+  stopJob        : '-stopJob',        // request to stop a running job
+  selectDir      : '-selectDir',      // request to select directory (local service)
+  selectImageDir : '-selectImageDir', // request to select image directory (local service)
+  runRVAPIApp    : '-runRVAPIApp',    // run RVAPI helper application (local service)
+  runClientJob   : '-runClientJob',   // run client job (local service)
+  getNCInfo      : '-getNCInfo'       // get NC config and other info
 }
 
 

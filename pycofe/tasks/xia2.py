@@ -3,11 +3,11 @@
 #
 # ============================================================================
 #
-#    14.08.18   <--  Date of Last Modification.
+#    10.10.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
-#  XIA2 EXECUTABLE MODULE (CLIENT-SIDE TASK)
+#  XIA2 EXECUTABLE MODULE (OPTIONAL CLIENT-SIDE TASK)
 #
 #  Command-line:
 #     ccp4-python python.tasks.xia2.py exeType jobDir jobId
@@ -34,8 +34,9 @@ import pyrvapi
 
 #  application imports
 import basic
-from pycofe.varut import signal
-from pycofe.proc  import import_filetype, import_merged, import_unmerged
+from pycofe.varut  import signal
+from pycofe.dtypes import dtype_template
+from pycofe.proc   import import_filetype, import_merged, import_unmerged
 try:
     from pycofe.varut import messagebox
 except:
@@ -57,7 +58,7 @@ class Xia2(basic.TaskDriver):
         # Prepare coot job
 
         # fetch input data
-        imageDirPath = self.task.imageDirPath
+        imageDirPath = self.task.image_dir_path
         sec1         = self.task.parameters.sec1.contains
         sec2         = self.task.parameters.sec2.contains
 
@@ -118,14 +119,33 @@ class Xia2(basic.TaskDriver):
             datasetName = "SAD"
 
         self.resetFileImport()
+
         if mtzMergedName in file_names:
             self.putTitle   ( "Merged Reflection Dataset" )
             newHKLFPath = os.path.join ( resDir,self.getOFName("_merged.mtz",-1) )
             os.rename ( os.path.join(resDir,mtzMergedName),newHKLFPath )
             self.addFileImport ( "",newHKLFPath,import_filetype.ftype_MTZMerged() )
             #self.files_all = [ newHKLFPath ]
-            import_merged.run ( self,"Merged Reflection Dataset" )
+            hkl_imported = import_merged.run ( self,"Merged Reflection Dataset" )
+
+            scaleDir = os.path.join(crystalName,"scale")
+            aimless_xml_names = [fn for fn in os.listdir(scaleDir)
+                                if any(fn.endswith(ext) for ext in ["_aimless.xml"])]
+            self.file_stdout.write ( str(aimless_xml_names) + "\n" )
+            if len(hkl_imported)>0 and len(aimless_xml_names)>0:
+                aimless_xml  = max(aimless_xml_names)
+                aimless_meta = {
+                    "jobId" : self.job_id,
+                    "file"  : dtype_template.makeFileName ( self.job_id,
+                                                self.dataSerialNo,aimless_xml )
+                }
+                shutil.copyfile ( os.path.join(scaleDir,aimless_xml),
+                                  os.path.join(self.outputDir(),aimless_meta["file"]) )
+                for i in range(len(hkl_imported)):
+                    hkl_imported[i].aimless_meta = aimless_meta
+
             nsweeps -= 1
+
         if mtzUnmergedName in file_names:
             self.putTitle   ( "Unmerged Scaled Reflection Dataset" )
             newHKLFPath = os.path.join ( resDir,self.getOFName("_unmerged_scaled.mtz",-1) )

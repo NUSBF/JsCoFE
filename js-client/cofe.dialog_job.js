@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    31.07.18   <--  Date of Last Modification.
+ *    15.10.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -27,10 +27,11 @@
 // JobDialog class
 
 var job_dialog_reason = {
-  rename_node : 'rename_node', // rename job node
-  reset_node  : 'reset_node',  // reset  job node label
-  select_node : 'select_node', // select job node
-  stop_job    : 'stop_job'     // stop job
+  rename_node   : 'rename_node',    // rename job node
+  set_node_icon : 'set_node_icon',  // set    job node icon
+  reset_node    : 'reset_node',     // reset  job node label
+  select_node   : 'select_node',    // select job node
+  stop_job      : 'stop_job'        // stop job
 }
 
 function JobDialog ( params,          // data and task projections up the tree branch
@@ -62,6 +63,7 @@ function JobDialog ( params,          // data and task projections up the tree b
   this.run_image   = null;
   this.ind_timer   = null;
 
+  /*
   var w0 = $(window).width ();
   var h0 = $(window).height();
 
@@ -82,12 +84,19 @@ function JobDialog ( params,          // data and task projections up the tree b
     this.task.job_dialog_data.height = 0;
   }
   w += 'px';
+  */
+
+  var size = calcDialogSize ( 0.75,0.75, 1,1, this.task.job_dialog_data );
+  this.initialWidth  = size[0];
+  this.initialHeight = size[1];
 
   var taskId = this.task.id;
   this.dialog_options = {
       resizable : true,
-      height    : 'auto',
-      width     : w,
+      //height    : 'auto',
+      //width     : w,
+      width     : size[0],
+      height    : size[1],
       buttons   : {},
       focus     : function() {
                     if (onDlgSignal_func)
@@ -95,7 +104,11 @@ function JobDialog ( params,          // data and task projections up the tree b
                   }
   };
 
-  this.dialog_options.position = this.task.job_dialog_data.position;
+  if (!__touch_device)
+    this.dialog_options.position = this.task.job_dialog_data.position;
+  else
+    this.dialog_options.position =  { my : 'left top',   // job dialog position reference
+                                      at : 'left top' }; // job dialog offset in the screen
 
   this.makeLayout ( onRun_func );
 
@@ -152,7 +165,7 @@ JobDialog.prototype.displayInputErrors = function ( input_msg )  {
 
 JobDialog.prototype.setDlgState = function()  {
 
-  var isNew     = (this.task.state==job_code.new);
+  var isNew     = (this.task.state==job_code.new) || (this.task.state==job_code.remark);
   var isRunning = (this.task.state==job_code.running);
 
   this.inputPanel.setDisabledAll ( !isNew );
@@ -202,18 +215,26 @@ JobDialog.prototype.setDlgState = function()  {
 }
 
 JobDialog.prototype.getDlgSize = function ()  {
-  this.task.job_dialog_data.width  = this.width_px ();
-  this.task.job_dialog_data.height = this.height_px();
-  var p = $(this.element).dialog ( "option", "position" );
-  this.task.job_dialog_data.position.my = p.my;
-  this.task.job_dialog_data.position.at = p.at;
+  if (!__touch_device)  {
+    this.task.job_dialog_data.width  = this.width_px ();
+    this.task.job_dialog_data.height = this.height_px();
+    var p = $(this.element).dialog ( "option", "position" );
+    this.task.job_dialog_data.position.my = p.my;
+    this.task.job_dialog_data.position.at = p.at;
+  }
 }
 
 
 JobDialog.prototype.onDlgResize = function ()  {
 
-  var panelHeight = this.task.job_dialog_data.height - 36 -
-                    this.child[0].height_px() - this.child[1].height_px();
+  var panelHeight;
+  if (__touch_device)  {
+    panelHeight = this.initialHeight - 36 -
+                  this.child[0].height_px() - this.child[1].height_px();
+  } else  {
+    panelHeight = this.task.job_dialog_data.height - 36 -
+                  this.child[0].height_px() - this.child[1].height_px();
+  }
   var panelWidth  = this.child[1].width_px();
 
   this.inputPanel .setSize_px ( panelWidth,panelHeight );
@@ -227,13 +248,17 @@ JobDialog.prototype.onDlgResize = function ()  {
 
 }
 
-JobDialog.prototype.setDlgSize = function ()  {
-  if (this.task.job_dialog_data.height<=0)  {
-    this.task.job_dialog_data.width  = this.width_px();
-    this.task.job_dialog_data.height = this.initialHeight;
-//    this.task.job_dialog_data.height = (2*this.task.job_dialog_data.width)/3;
+
+JobDialog.prototype.setDlgSize = function()  {
+  if (__touch_device)  {
+    this.setSize_px ( this.initialWidth,this.initialHeight );
+  } else  {
+    if (this.task.job_dialog_data.height<=0)  {
+      this.task.job_dialog_data.width  = this.width_px();
+      this.task.job_dialog_data.height = this.initialHeight;
+    }
+    this.setSize_px ( this.task.job_dialog_data.width,this.task.job_dialog_data.height );
   }
-  this.setSize_px ( this.task.job_dialog_data.width,this.task.job_dialog_data.height );
   this.onDlgResize();
 }
 
@@ -259,7 +284,7 @@ JobDialog.prototype.loadReport = function()  {
 JobDialog.prototype.collectTaskData = function ( ignore_bool )  {
   this.getDlgSize ();
   var input_msg = '';
-  if (this.task.state==job_code.new)  {
+  if ((this.task.state==job_code.new) || (this.task.state==job_code.remark))  {
     input_msg = this.task.collectInput ( this.inputPanel );
     if (ignore_bool)
       input_msg = '';
@@ -374,8 +399,10 @@ JobDialog.prototype.makeLayout = function ( onRun_func )  {
 
     $(dlg.element).on ( 'dialogresize', function(event,ui){
       dlg.task.job_dialog_data.width  = dlg.width_px();
-      dlg.task.job_dialog_data.height = dlg.height_px();
-      dlg.onDlgResize();
+      if (!__touch_device)  {
+        dlg.task.job_dialog_data.height = dlg.height_px();
+        dlg.onDlgResize();
+      }
     });
 
     if (dlg.run_btn)  {

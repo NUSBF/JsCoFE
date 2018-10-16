@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    04.09.18   <--  Date of Last Modification.
+#    25.09.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -35,7 +35,7 @@ import pyrvapi
 #  application imports
 import basic
 #from   pycofe.proc import import_merged
-
+from   pycofe.dtypes import dtype_template
 
 # ============================================================================
 # Make PhaserMR driver
@@ -52,6 +52,8 @@ class PhaserMR(basic.TaskDriver):
     def importDir        (self):  return "./"   # import from working directory
     def import_summary_id(self):  return None   # don't make import summary table
 
+    def cad_mtz(self): return "cad.mtz"
+
     # ------------------------------------------------------------------------
 
     def run(self):
@@ -64,11 +66,39 @@ class PhaserMR(basic.TaskDriver):
         seq      = self.input_data.data.seq
         ens      = self.input_data.data.model
 
+        phaser_meta = None
+        ens0        = []
+        solFile     = None
+        if hasattr(revision,"phaser_meta"):
+            phaser_meta     = revision.phaser_meta
+            phaser_meta.sol = self.makeClass  ( phaser_meta.sol )
+            solFile         = phaser_meta.sol.getFilePath (
+                                   self.inputDir(),dtype_template.file_key["sol"] )
+            ens_dict = vars(phaser_meta.ensembles)
+            for ensname in ens_dict:
+                if ensname.startswith("ensemble"):
+                    ens_dict[ensname].data = self.makeClass ( ens_dict[ensname].data )
+                    ens0.append ( ens_dict[ensname].data )
+
+
+        for x in os.listdir(self.inputDir()):
+            self.file_stdout.write(x + '\n')
+
+        phases = None
+        if hasattr(self.input_data.data,"phases"):
+            phases = self.makeClass ( self.input_data.data.phases[0] )
+
+        xstruct = None
+        if revision.hasSubtype(dtype_template.subtypeXYZ()):
+            xstruct = self.makeClass ( revision.Structure )
+
         for i in range(len(seq)):
             seq[i] = self.makeClass ( seq[i] )
 
         for i in range(len(ens)):
             ens[i] = self.makeClass ( ens[i] )
+            if not phaser_meta or ens[i].ensembleName() not in ens_dict:
+                ens0.append ( ens[i] )
 
         try:
             hkl_labels = ( hkl.dataset.Imean.value, hkl.dataset.Imean.sigma )
@@ -78,22 +108,21 @@ class PhaserMR(basic.TaskDriver):
             hkl_labin  =  "\nLABIN  F=" + hkl_labels[0] + " SIGF=" + hkl_labels[1]
 
         hklfile = hkl.getHKLFilePath ( self.inputDir() )
-        xstruct = None
-        if "xyz" in revision.subtype:  # optional data parameter
-            xstruct = self.makeClass ( revision.Structure )
-            cad_mtz = 'cad.mtz'
-            xstruct_labels = ( xstruct.FWT, xstruct.PHWT )
+
+        if phases:
+            phases_mtz = phases.getMTZFilePath(self.inputDir())
+            phases_labels = ( phases.FWT, phases.PHWT )
             self.open_stdin()
             self.write_stdin ( "LABIN FILE 1 E1=%s E2=%s\n" %hkl_labels     )
-            self.write_stdin ( "LABIN FILE 2 E1=%s E2=%s\n" %xstruct_labels )
+            self.write_stdin ( "LABIN FILE 2 E1=%s E2=%s\n" %phases_labels )
             self.write_stdin ( "END\n" )
             self.close_stdin()
             cmd = [ "HKLIN1", hklfile,
-                    "HKLIN2", xstruct.getMTZFilePath(self.inputDir()),
-                    "HKLOUT", cad_mtz ]
+                    "HKLIN2", phases.getMTZFilePath(self.inputDir()),
+                    "HKLOUT", self.cad_mtz() ]
             self.runApp ( "cad", cmd )
-            hklfile    = cad_mtz
-            hkl_labin += "\nLABIN FWT=" + xstruct_labels[0] + " PHWT=" + xstruct_labels[1]
+            hklfile    = self.cad_mtz()
+            hkl_labin += "\nLABIN FWT=" + phases_labels[0] + " PHWT=" + phases_labels[1]
 
 
         # make a file with input script
@@ -107,7 +136,9 @@ class PhaserMR(basic.TaskDriver):
             hkl_labin
         )
 
-        if hkl.spg_alt=='ALL':
+        if phases:
+            self.write_stdin ( "\nSGALTERNATIVE SELECT NONE" )
+        elif hkl.spg_alt=='ALL':
             self.write_stdin ( "\nSGALTERNATIVE SELECT ALL" )
         else:
             splist = hkl.spg_alt.split ( ";" )
@@ -120,14 +151,14 @@ class PhaserMR(basic.TaskDriver):
             else:
                 self.write_stdin ( "\nSGALTERNATIVE SELECT HAND" )
 
-        for i in range(len(ens)):
-            ename = "ensemble" + str(i+1)
+        for i in range(len(ens0)):
+            ename = ens0[i].ensembleName()
             self.write_stdin (
-                "\nENSEMBLE " + ename + " &" +\
-                "\n    PDB \"" + ens[i].getXYZFilePath(self.inputDir()) +\
-                "\" RMS " + str(ens[i].rmsd) +\
-                "\nENSEMBLE " + ename + " HETATM ON"
-            )
+                    "\nENSEMBLE " + ename + " &" +\
+                    "\n    PDB \"" + ens0[i].getXYZFilePath(self.inputDir()) +\
+                    "\" RMS " + str(ens0[i].rmsd) +\
+                    "\nENSEMBLE " + ename + " HETATM ON"
+                )
 
         self.write_stdin ( "\nCOMPOSITION BY ASU" )
         for i in range(len(seq)):
@@ -142,21 +173,24 @@ class PhaserMR(basic.TaskDriver):
 
         for i in range(len(ens)):
             self.write_stdin (
-                "\nSEARCH ENSEMBLE ensemble" + str(i+1) +\
+                "\nSEARCH ENSEMBLE " + ens[i].ensembleName() +\
                 " NUMBER " + str(ens[i].ncopies)
             )
 
-        if xstruct:  # optional data parameter
+        if solFile:
+            self.write_stdin ( "\n@" + solFile )
+
+        elif xstruct:  # optional data parameter
             self.write_stdin (
-                "\nENSEMBLE ensemble0" + " &" +\
+                "\nENSEMBLE " + xstruct.ensembleName() + " &" +\
                 "\n    PDB \"" + xstruct.getXYZFilePath(self.inputDir()) +\
                 "\" IDENT 0.9" +\
-                "\nTARGET TRA PHASED" +\
-                "\nSOLUTION ORIGIN ENSEMBLE ensemble0"
+                "\nSOLUTION ORIGIN ENSEMBLE " + xstruct.ensembleName()
             )
-            inp_sol_file = xstruct.getSolFilePath ( self.inputDir() )
-            if inp_sol_file:
-                self.write_stdin ( "\n@"+inp_sol_file )
+            ens0.append ( xstruct )
+            #inp_sol_file = xstruct.getSolFilePath ( self.inputDir() )
+            #if inp_sol_file:
+            #    self.write_stdin ( "\n@"+inp_sol_file )
 
 
         # add options
@@ -186,8 +220,14 @@ class PhaserMR(basic.TaskDriver):
                                    self.getKWParameter("RANGE",sec0.RF_RANGE) )
             self.write_stdin ( "\n" )
 
-        if sec0.TF_TARGET_SEL.value != "FAST":
+
+        if phases:
+            self.write_stdin ( "HKLOUT OFF\n" )                          # bypassing a bug in phaser 2.8.2(ccp4)
+            self.write_stdin ( "TARGET TRA PHASED\n" )
+
+        elif sec0.TF_TARGET_SEL.value != "FAST":
             self.writeKWParameter ( sec0.TF_TARGET_SEL )
+
         if sec0.TF_POINT_SEL.visible:
             self.write_stdin ( "TRANSLATE VOLUME " + sec0.TF_POINT_SEL.value )
             if sec0.TF_X.visible:
@@ -260,16 +300,26 @@ class PhaserMR(basic.TaskDriver):
         self.unsetLogParser()
 
         # check solution and register data
-        sol_hkl  = hkl
-        sol_file = self.outputFName + ".sol"
+        phaser_meta = None
+        sol_hkl     = hkl
+        sol_file    = self.outputFName + ".sol"
         if os.path.isfile(sol_file):
+
+            phaser_meta = { "ensembles" : {} }
+            ens_meta    = phaser_meta["ensembles"]
 
             solf = open ( sol_file,"r" )
             soll = solf.readlines()
             solf.close()
             sol_spg = None
             for line in soll:
-                if line.startswith("SOLU SPAC "):
+                if line.startswith("SOLU 6DIM ENSE"):
+                    ensname = line.split()[3]
+                    if ensname in ens_meta:
+                        ens_meta[ensname]["ncopies"] += 1
+                    else:
+                        ens_meta[ensname] = { "ncopies" : 1 }
+                elif line.startswith("SOLU SPAC "):
                     sol_spg = line.replace("SOLU SPAC ","").strip()
 
             mtzfile = self.outputFName + ".1.mtz"
@@ -286,11 +336,22 @@ class PhaserMR(basic.TaskDriver):
                                     self.outputFName,sol_hkl,None,seq,1,False )
 
         if structure:
-            # set sol file
-            structure.add_file ( sol_file,self.outputDir(),"sol" )
+            #revision.add_file ( sol_file,self.outputDir(),"sol" )
             # update structure revision
             revision.setStructureData ( structure )
             self.registerRevision     ( revision  )
+            if phaser_meta:
+                # set sol file
+                solData = dtype_template.DType ( self.job_id )
+                self.dataSerialNo += 1
+                solData.makeDName ( self.dataSerialNo )
+                solData.add_file ( sol_file,self.outputDir(),"sol" )
+                phaser_meta["sol"] = solData
+                for i in range(len(ens0)):
+                    ensname = ens0[i].ensembleName()
+                    if ensname in ens_meta:
+                        ens_meta[ensname]["data"] = ens0[i]
+                revision.phaser_meta = phaser_meta
 
         # close execution logs and quit
         self.success()

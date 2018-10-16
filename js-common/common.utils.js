@@ -111,6 +111,14 @@ function startsWith ( str,substr )  {
   return (str.lastIndexOf(substr,0) === 0);  // for old JS engines (jsrview)
 }
 
+function endsWith ( str,suffix )  {
+  return (str.indexOf(suffix, str.length-suffix.length) !== -1);  // for old JS engines (jsrview)
+};
+
+
+function getBasename ( path )  {
+  return path.split(/[\\/]/).pop();
+}
 
 // ===========================================================================
 

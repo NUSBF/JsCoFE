@@ -132,7 +132,7 @@ var response = null;
        break;
 
     case cmd.fe_reqtype.getFacilityData :
-          response = fcl.getUserFacilityList ( login );
+          response = fcl.getUserFacilityList ( login,data,callback_func );
        break;
 
     case cmd.fe_reqtype.updateFacility :

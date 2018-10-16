@@ -2,7 +2,7 @@
 /*
  *  ===========================================================================
  *
- *    12.04.18   <--  Date of Last Modification.
+ *    10.10.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  ---------------------------------------------------------------------------
  *
@@ -10,8 +10,10 @@
  *       ~~~~~~~~~
  *  **** Project :  jsCoFE - javascript-based Cloud Front End
  *       ~~~~~~~~~
- *  **** Content :  Facility User Dialog
- *       ~~~~~~~~~
+ *  **** Content :  FacilityUserDialog
+ *       ~~~~~~~~~  FacilityCheckDialog
+ *                  FacilityBrowser
+ *                  CloudFileBrowser
  *
  *  (C) E. Krissinel, A. Lebedev 2016-2018
  *
@@ -338,7 +340,7 @@ FacilityBrowser.prototype.loadFacilityTree = function()  {
   // jobTree.stopTaskLoop();
   (function(browser){
 
-    var facilityTree = new FacilityTree();
+    var facilityTree = new FacilityTree ( 'icat','' );
     facilityTree.element.style.paddingTop    = '0px';
     facilityTree.element.style.paddingBottom = '25px';
     facilityTree.element.style.paddingLeft   = '10px';
@@ -447,4 +449,218 @@ FacilityBrowser.prototype.updateItem = function ( askpwd )  {
 
   }(this))
 
+}
+
+
+
+// ===========================================================================
+// Cloud File Browser
+
+function CloudFileBrowser ( inputPanel,task,imageKey,onClose_func )  {
+
+  this.inputPanel = inputPanel;  // input panel from facility import dialog
+  this.task       = task;        // facility import task
+  this.image_key  = imageKey;    // 0: do not show images
+                                 // 1: show images
+                                 // 2: show only images
+
+  this.uid = '';
+  this.pwd = '';
+
+  Widget.call ( this,'div' );
+  this.element.setAttribute ( 'title','Cloud File Browser' );
+  document.body.appendChild ( this.element );
+
+  this.grid = new Grid('-compact');
+  this.addWidget ( this.grid );
+
+  this.tree_panel = this.grid.setPanel ( 0,0,1,1 );
+  this.tree_panel.element.setAttribute ( 'class','tree-content' );
+  this.storageTree = null;
+
+  this.loadStorageTree();
+
+  var dlg_options = {
+    resizable : true,
+    modal     : true
+  }
+
+  //dlg_options.width  = Math.round ( 2*$(window).width()/3 );
+  dlg_options.width  = 500;
+  dlg_options.height = Math.round ( 5*$(window).height()/6 );
+  this.btn_ids = [this.id+'_open_btn',this.id+'_cancel_btn'];
+  dlg_options.buttons = [{
+    text  : 'Cancel',
+    id    : this.btn_ids[1],
+    click : function() {
+      $(this).dialog( "close" );
+    }
+  }];
+
+  $(this.element).dialog ( dlg_options );
+
+  if (onClose_func)
+    $(this.element).on( "dialogclose",function(event,ui){
+      onClose_func();
+    });
+
+}
+
+CloudFileBrowser.prototype = Object.create ( Widget.prototype );
+CloudFileBrowser.prototype.constructor = CloudFileBrowser;
+
+// -------------------------------------------------------------------------
+
+CloudFileBrowser.prototype.disableButton = function ( btn_no,disable_bool )  {
+  $('#' + this.btn_ids[btn_no]).button ( 'option','disabled',disable_bool );
+}
+
+CloudFileBrowser.prototype.setButtonLabel = function ( btn_no,label_text )  {
+  $('#' + this.btn_ids[btn_no]).button ( 'option','label',label_text );
+}
+
+CloudFileBrowser.prototype.loadStorageTree = function()  {
+
+  (function(browser){
+
+    var storageTree = new StorageTree ( 'files',browser.task.currentCloudPath,
+                                                browser.image_key );
+
+    storageTree.element.style.paddingTop    = '0px';
+    storageTree.element.style.paddingBottom = '25px';
+    storageTree.element.style.paddingLeft   = '10px';
+    storageTree.element.style.paddingRight  = '40px';
+    storageTree.readStorageData ( 'Cloud File Storage',
+      function(){
+        if (storageTree.storageList)  {
+          if (browser.image_key!=2)  {
+            $(browser.element).dialog ( 'option','buttons',[
+              { text  : 'Open',
+                id    : browser.btn_ids[0],
+                click : function(){
+                  browser.openItem();
+                }
+              },{
+                text  : 'Close',
+                id    : browser.btn_ids[1],
+                click : function() {
+                  $(this).dialog( "close" );
+                }
+              }
+            ]);
+          } else  {
+            $(browser.element).dialog ( 'option','buttons',[
+              { text  : 'Select',
+                id    : browser.btn_ids[0],
+                click : function(){
+                  browser.selectItem();
+                }
+              },{
+                text  : 'Close',
+                id    : browser.btn_ids[1],
+                click : function() {
+                  $(this).dialog( "close" );
+                }
+              }
+            ]);
+          }
+          if (browser.storageTree)
+            browser.storageTree.delete();
+          browser.tree_panel.addWidget ( storageTree );
+          browser.storageTree = storageTree;
+          browser.onTreeItemSelect();
+          //browser.onTreeLoaded();
+        } else  {
+          $(browser.element).dialog ( 'option','width' ,600 );
+          $(browser.element).dialog ( 'option','height',330 );
+          $(browser.element).dialog ( 'option','buttons',[
+            { text  : 'Ok',
+              id    : browser.btn_ids[1],
+              click : function() {
+                $(this).dialog( "close" );
+              }
+            }
+          ]);
+          if (browser.storageTree)
+            browser.storageTree.delete();
+          browser.storageTree = null;
+          browser.tree_panel.addWidget ( new Label (
+              '<h2>Cloud File Storage Not Allocated</h2>' +
+              'Cloud file storage is not allocated for user <i>"' + __login_user +
+              '"</i>. Cloud storage is used for keeping raw experimental data, ' +
+              'as well as partly processed data, brought from data producing ' +
+              'facilities such as synchrotrons.' +
+              '<p>Please contact your ' + appName() + ' maintainer if you believe ' +
+              'that you should have access to Cloud storage.' ) );
+        }
+        //Test data : /Users/eugene/Projects/jsCoFE/data
+      },
+      function(node){ return null; }, // browser.onTreeContextMenu(node); },
+      function()    { browser.openItem         (); },
+      function()    { browser.onTreeItemSelect (); }
+    );
+
+  }(this))
+
+}
+
+
+CloudFileBrowser.prototype.openItem = function()  {
+  var items = this.storageTree.getSelectedItems();
+  if (items.length>0)  {
+    if (items[0]._type=='FacilityDir')  {
+      if (this.task.currentCloudPath)  {
+        if (items[0].name=='..')  {
+          var lst = this.task.currentCloudPath.split('/');
+          this.task.currentCloudPath = lst.slice(0,lst.length-1).join('/');
+        } else
+          this.task.currentCloudPath += '/' + items[0].name;
+      } else
+        this.task.currentCloudPath = items[0].name;
+      (function(browser){
+        window.setTimeout ( function(){
+          browser.loadStorageTree();
+        },0);
+      }(this))
+    } else  {
+      this.task.setSelectedCloudFiles ( this.inputPanel,items );
+      if (this.image_key==2)
+        $(this.element).dialog( "close" );
+    }
+  }
+}
+
+
+CloudFileBrowser.prototype.selectItem = function()  {
+  var items = this.storageTree.getSelectedItems();
+  if (items.length>0)  {
+    if (items[0]._type=='FacilityDir')  {
+      this.task.setSelectedCloudFiles ( this.inputPanel,items );
+      if (this.image_key==2)
+        $(this.element).dialog( "close" );
+    }
+  }
+}
+
+
+CloudFileBrowser.prototype.onTreeItemSelect = function()  {
+  if (this.storageTree)  {
+    var items   = this.storageTree.getSelectedItems();
+    var n_dirs  = 0;
+    var n_files = 0;
+    for (var i=0;i<items.length;i++)
+      if (items[i]._type=='FacilityDir')  n_dirs++;
+                                    else  n_files++;
+    if (this.image_key==2)  {
+      this.disableButton  ( 0,(n_dirs!=1) || (n_files>0) );
+    } else if ((n_dirs==1) && (n_files==0))  {
+      this.disableButton  ( 0,false  );
+      this.setButtonLabel ( 0,'Open' );
+    } else if ((n_dirs==0) && (n_files>0)) {
+      this.disableButton  ( 0,false    );
+      this.setButtonLabel ( 0,'Select' );
+    } else  {
+      this.disableButton ( 0,true );
+    }
+  }
 }

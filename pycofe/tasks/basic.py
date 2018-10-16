@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    03.09.18   <--  Date of Last Modification.
+#    21.09.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -681,10 +681,13 @@ class TaskDriver(object):
         if makePanel:
             self.putPanel ( panel_id )
         #self.generic_parser_summary = {}
+        #self.file_stdout.write ( "\n\n *********************** WE ARE HERE\n\n")
+        #self.file_stdout.write ( str(sys.path) + "\n\n")
         self.log_parser = pyrvapi_ext.parsers.generic_parser (
                                          panel_id,split_sections_bool,
                                          summary=self.generic_parser_summary,
-                                         graph_tables=graphTables )
+                                         graph_tables=graphTables,
+                                         hide_refs=True )
         pyrvapi.rvapi_flush()
         return
 
@@ -827,7 +830,8 @@ class TaskDriver(object):
             self.log_parser = pyrvapi_ext.parsers.generic_parser (
                                          panel_id,False,
                                          summary=self.generic_parser_summary,
-                                         graph_tables=False )
+                                         graph_tables=False,
+                                         hide_refs=True )
 
             fnames = self.calcEDMap ( xyzPath,hkl,libPath,name_pattern,inpDir )
 
@@ -905,7 +909,8 @@ class TaskDriver(object):
         self.log_parser = pyrvapi_ext.parsers.generic_parser (
                                          panel_id,False,
                                          summary=self.generic_parser_summary,
-                                         graph_tables=False )
+                                         graph_tables=False,
+                                         hide_refs=True )
 
         fnames = self.calcAnomEDMap ( xyzPath,hkl,anom_form,name_pattern )
 
@@ -979,7 +984,7 @@ class TaskDriver(object):
                     "window.parent.rvapi_rsviewer(" + self.job_id +\
                     ",'" + title + "','" + rlpFilePath + "','" + mapFilePath + "')",
                     False,gridId, row,col,1,1 )
-        self.addCitations ['dials.rs_mapper','dials_export']
+        self.addCitations ( ['dials.rs_mapper','dials.export'] )
         return
 
 
@@ -1002,9 +1007,10 @@ class TaskDriver(object):
                             "window.parent.rvapi_inspectData(" + self.job_id +\
                             ",'DataRevision','" + revision.dataId + "')",
                             False,gridId, row,0,1,1 )
-        pyrvapi.rvapi_set_text ( message,gridId, row,1,1,1 )
-        pyrvapi.rvapi_set_text ( "<font style='font-size:120%;'>\"" + revision.dname +
-                                 "\"</font>", gridId, row,2,1,1 )
+        pyrvapi.rvapi_set_text ( "<span style='vertical-align:sub;nowrap;'>" +\
+                                 message + "</span>",gridId, row,1,1,1 )
+        pyrvapi.rvapi_set_text ( "<span style='vertical-align:sub;font-size:110%;nowrap;'>\"" +\
+                                 revision.dname + "\"</span>", gridId, row,2,1,1 )
         return
 
 

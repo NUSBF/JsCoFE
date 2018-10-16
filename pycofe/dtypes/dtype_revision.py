@@ -138,6 +138,8 @@ class DType(dtype_template.DType):
             dtype_template.subtypePhases()
         ])
         self.addSubtypes ( structure.subtype )
+        if hasattr(self,"phaser_meta"):
+            delattr ( self,"phaser_meta" )
         return
 
     def addLigandData ( self,ligand ):

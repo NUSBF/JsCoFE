@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    03.04.18   <--  Date of Last Modification.
+ *    01.10.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -355,14 +355,31 @@ FacilityList.prototype.from_JSON = function ( json_str )  {
 }
 
 
+
+// ===========================================================================
+
+function StorageList()  {
+  this._type = 'StorageList';
+  this.path  = '';
+  this.name  = '';
+  this.size  = '';
+  this.dirs  = [];  // sub-directories (FacilityDir)
+  this.files = [];  // dataset files (FacilityFile)
+}
+
+
+
 // ===========================================================================
 
 // export such that it could be used in both node and a browser
 if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
   module.exports.facility_names  = facility_names;
+  module.exports.FacilityFile    = FacilityFile;
+  module.exports.FacilityDir     = FacilityDir;
   module.exports.FacilityDataset = FacilityDataset;
   module.exports.FacilityVisit   = FacilityVisit;
   module.exports.FacilityUser    = FacilityUser;
   module.exports.Facility        = Facility;
   module.exports.FacilityList    = FacilityList;
+  module.exports.StorageList     = StorageList;
 }

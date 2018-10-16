@@ -274,7 +274,7 @@ function runJob ( login,data, callback_func )  {
     utils.writeJobReportMessage ( jobDir,'<h1>Preparing ...</h1>',true );
 
     // prepare input data
-    task.makeInputData ( jobDir );
+    task.makeInputData ( login,jobDir );
 
     if (task.nc_type=='client')  {
       // job for client NC, just pack the job directory and inform client
@@ -416,7 +416,7 @@ function replayJob ( login,data, callback_func )  {
     utils.writeJobReportMessage ( jobDir,'<h1>Preparing ...</h1>',true );
 
     // prepare input data
-    task.makeInputData ( jobDir );
+    task.makeInputData ( login,jobDir );
 
     if (task.nc_type=='client')  {
       // job for client NC, just pack the job directory and inform client

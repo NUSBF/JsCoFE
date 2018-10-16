@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.05.18   <--  Date of Last Modification.
+ *    15.10.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -177,6 +177,10 @@ function start()  {
 
           case cmd.nc_command.selectDir :
               pp.processPOSTData ( server_request,server_response,rm.ncSelectDir );
+            break;
+
+          case cmd.nc_command.selectImageDir :
+              pp.processPOSTData ( server_request,server_response,rm.ncSelectImageDir );
             break;
 
           case cmd.nc_command.runRVAPIApp :

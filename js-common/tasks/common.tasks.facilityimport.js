@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    07.04.18   <--  Date of Last Modification.
+ *    08.10.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -62,6 +62,11 @@ TaskFacilityImport.prototype.currentVersion = function()  { return 1; }
 if (!__template)  {
   // for client side
 
+  TaskFacilityImport.prototype.customDataClone = function ( task )  {
+    this.uname = '';
+    return;
+  }
+
   // reserved function name
   TaskFacilityImport.prototype.makeInputPanel = function ( dataBox )  {
   // makes input panel for ICAT task; dataBox is not used as icat task
@@ -81,15 +86,6 @@ if (!__template)  {
 
     } else
       div.header.uname_inp.setValue ( this.uname.replace(/<(?:.|\n)*?>/gm, '') );
-
-    /*
-    div.grid.setLabel ( 'Use the file selection button below to select and ' +
-                        'transfer facility data to the Project (use multiple ' +
-                        'file selections and repeat uploads if necessary). ' +
-                        'When done, hit <b><i>Import</i></b> button to process ' +
-                        'files transferred.<hr/>',
-                        0,0, 1,1 ).setFontSize('80%');
-    */
 
     div.grid.setWidth ( '100%' );
     div.select_btn = div.grid.setButton ( 'Select file(s)',

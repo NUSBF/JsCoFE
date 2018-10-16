@@ -204,12 +204,23 @@ class Deposition(basic.TaskDriver):
                 self.file_stdout.write ( " -- NOT found\n" )
             """
         else:
-            self.file_stdout.write ( "aimples meta NOT found\n" )
+            self.file_stdout.write ( "aimles meta NOT found\n" )
         #aimless_meta = None  #  to be removed when EBI deposition module is fixed
 
         deposition_fasta = self.getOFName ( ".fasta" )
         dtype_sequence.writeMultiSeqFile1 ( deposition_fasta,seq,self.inputDir() )
         deposition_cif   = self.getOFName ( ".cif"   )
+
+        self.file_stdout.write ( "\n" +\
+            " =============================================================\n" +\
+            " RUNNING DATA PREPARATION SCRIPT FROM EBI\n" +\
+            "    input_mmcif  = " + xyzout_cif + "\n" +\
+            "    output_mmcif = " + deposition_cif + "\n" +\
+            "    fasta_file   = " + deposition_fasta + "\n" +\
+            "    sf_file      = " + sfCIF + "\n" +\
+            "    xml_file     = " + str(aimless_meta) + "\n"
+        )
+
         worked = run_process ( input_mmcif  = xyzout_cif,
                                output_mmcif = deposition_cif,
                                fasta_file   = deposition_fasta,
@@ -221,6 +232,9 @@ class Deposition(basic.TaskDriver):
             self.fail ( "<b><i>Failed to create coordinate model file for deposition</i></b>",
                         "Failed to create coordinate model file for deposition" )
             return
+
+        self.file_stdout.write (
+            " =============================================================\n\n" )
 
 
         # 4. Put download widgets

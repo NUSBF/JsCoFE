@@ -48,6 +48,7 @@ function checkLocalService ( callback_func )  {
         __login_token   = response.data.logintoken;
         __doNotShowList = response.data.helpTopics;
         __exclude_tasks = response.data.exclude_tasks;
+        __cloud_storage = response.data.cloud_storage;
       }
       callback_func ( 0 );
     } else  {

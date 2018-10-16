@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    10.02.18   <--  Date of Last Modification.
+ *    05.10.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -186,7 +186,7 @@ if (__template)  {
 
   var conf = require('../../js-server/server.configuration');
 
-  TaskASUDefStruct.prototype.makeInputData = function ( jobDir )  {
+  TaskASUDefStruct.prototype.makeInputData = function ( login,jobDir )  {
 
     // put hkl in input databox for copying their files in
     // job's 'input' directory
@@ -199,7 +199,7 @@ if (__template)  {
         hkl_sel.push ( hkl[i] );
     this.input_data.data['hkl'] = hkl_sel;
 
-    __template.TaskASUDef.prototype.makeInputData.call ( this,jobDir );
+    __template.TaskASUDef.prototype.makeInputData.call ( this,login,jobDir );
 
   }
 

@@ -5,7 +5,7 @@
  *
  *  =================================================================
  *
- *    26.08.18   <..  Date of Last Modification.
+ *    04.10.18   <..  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  =================================================================
  *
@@ -29,6 +29,11 @@
   <meta charset="utf-8">
   <meta http-equiv="pragma"  content="no-cache">
   <meta http-equiv="expires" content="0">
+
+  <meta name=viewport content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name=apple-mobile-web-app-capable content=yes>
+  <meta name=apple-mobile-web-app-status-bar-style content=black>
+
   <title>jsCoFE</title>
 
   <link rel="stylesheet" type="text/css" href="js-lib/jquery-ui/jquery-ui.min.css"/>
@@ -117,6 +122,7 @@
   <script src="js-common/tasks/common.tasks.buccaneer.js"></script>
   <script src="js-common/tasks/common.tasks.ccp4go.js"></script>
   <script src="js-common/tasks/common.tasks.ccp4ez.js"></script>
+  <script src="js-common/tasks/common.tasks.cloudimport.js"></script>
   <script src="js-common/tasks/common.tasks.cootce.js"></script>
   <script src="js-common/tasks/common.tasks.cootmb.js"></script>
   <script src="js-common/tasks/common.tasks.coot.js"></script>
@@ -143,6 +149,7 @@
   <script src="js-common/tasks/common.tasks.phaserep.js"></script>
   <script src="js-common/tasks/common.tasks.phasermr.js"></script>
   <script src="js-common/tasks/common.tasks.refmac.js"></script>
+  <script src="js-common/tasks/common.tasks.remark.js"></script>
   <script src="js-common/tasks/common.tasks.seqalign.js"></script>
   <script src="js-common/tasks/common.tasks.shelxauto.js"></script>
   <script src="js-common/tasks/common.tasks.shelxemr.js"></script>
@@ -189,7 +196,7 @@
 
             if (dev_switch==0)  {
 
-                  makeLoginPage('scene');
+              makeLoginPage('scene');
 
             } else if (dev_switch==10)  {
 
@@ -202,34 +209,34 @@
             } else  {
 
               if (!__login_token)  {
-                 __login_token = '340cef239bd34b777f3ece094ffb1ec5';
-                 __login_user  = 'Developer';
+                __login_token = '340cef239bd34b777f3ece094ffb1ec5';
+                __login_user  = 'Developer';
               } else {
                 __login_token = 'devel';
                 __login_user  = 'Developer';
               }
               __doNotShowList = ['*'];
-
+              __cloud_storage = true;  // fixed for developer
               loadKnowledge ( 'Login' )
 
               if (dev_switch==1)  {
 
-                    makeProjectListPage('scene');
+                makeProjectListPage('scene');
 
               } else if (dev_switch==2)  {
 
-                    makeAccountPage('scene');
+                makeAccountPage('scene');
 
               //} else if (dev_switch==4)  {
               //      makeFacilitiesPage('scene');
 
               } else if (__admin)  {
 
-                    makeAdminPage('scene');
+                makeAdminPage('scene');
 
               } else  {
 
-                    makeProjectPage('scene');
+                makeProjectPage('scene');
 
               }
 

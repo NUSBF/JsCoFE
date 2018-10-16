@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    10.04.18   <--  Date of Last Modification.
+ *    07.10.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -10,8 +10,8 @@
  *       ~~~~~~~~~
  *  **** Project :  jsCoFE - javascript-based Cloud Front End
  *       ~~~~~~~~~
- *  **** Content :  Job Tree
- *       ~~~~~~~~~
+ *  **** Content :  FacilityTree
+ *       ~~~~~~~~~  StorageTree
  *
  *  (C) E. Krissinel, A. Lebedev 2016-2018
  *
@@ -28,12 +28,15 @@
  */
 
 
-// -------------------------------------------------------------------------
+// =========================================================================
 // FacilityTree class
 
-function FacilityTree()  {
+function FacilityTree ( treeType,rootPath )  {
 
   Tree.call ( this,'_____' );
+
+  this.tree_type = treeType;
+  this.tree_root = rootPath;
 
   this.item_map  = {};
 
@@ -59,8 +62,13 @@ FacilityTree.prototype.readFacilitiesData = function ( page_title,
 
   this.item_map = {};  // map[nodeId]==item of all items in the tree
 
+  var meta = {
+    'type' : this.tree_type,
+    'path' : this.tree_root
+  };
+
   (function(tree){
-    serverRequest ( fe_reqtype.getFacilityData,0,page_title,function(data){
+    serverRequest ( fe_reqtype.getFacilityData,meta,page_title,function(data){
 
       if ('message' in data)
         MessageDataReadError ( page_title,data['message'] );
@@ -246,4 +254,144 @@ FacilityTree.prototype.getDatasetID = function()  {
 var item = this.getItem ( 'FacilityDataset',this.selected_node_id );
   if (item)  return item.id;
   return '';
+}
+
+
+
+// =========================================================================
+// StorageTree class
+
+function StorageTree ( treeType,rootPath,imageKey )  {
+
+  Tree.call ( this,'_____' );
+
+  this.tree_type   = treeType;
+  this.tree_root   = rootPath;
+  this.image_key   = imageKey; // 0: do not show images
+                               // 1: show images
+                               // 2: show only images
+
+  this.storageList = null;
+  this.item_map    = {};
+
+}
+
+StorageTree.prototype = Object.create ( Tree.prototype  );
+StorageTree.prototype.constructor = StorageTree;
+
+
+// -------------------------------------------------------------------------
+
+StorageTree.prototype.customIcon = function() {
+//  var ci = new TreeNodeCustomIcon ( './images/brass_gears.gif','32px','22px','hidden' );
+  var ci = new TreeNodeCustomIcon ( './images/activity.gif','22px','22px','hidden' );
+  return ci;
+}
+
+StorageTree.prototype.readStorageData = function ( page_title,
+                                                   onLoaded_func,
+                                                   onRightClick_func,
+                                                   onDblClick_func,
+                                                   onSelect_func )  {
+
+  this.item_map = {};  // map[nodeId]==item of all items in the tree
+
+  var meta = {
+    'type' : this.tree_type,
+    'path' : this.tree_root
+  };
+
+  (function(tree){
+    serverRequest ( fe_reqtype.getFacilityData,meta,page_title,function(data){
+
+      if ('message' in data)
+        MessageDataReadError ( page_title,data['message'] );
+
+      tree.storageList = jQuery.extend ( true, new StorageList(),data );
+
+      if ((tree.storageList.path.length<=0) &&
+          (tree.storageList.dirs.length<=0) &&
+          (tree.storageList.files.length<=0))  {
+
+        tree.storageList = null;
+        onLoaded_func();
+
+      } else  {
+
+        var rootLabel = 'Cloud File Storage';
+        if (tree.tree_root)
+          rootLabel = tree.tree_root;
+        tree.root_label.setText ( '<u><i><b>' + rootLabel + '</b></i></u>' );
+        tree.root.element.style.paddingTop  = '4px';
+        tree.root.element.style.paddingLeft = '40px';
+
+        for (var i=0;i<tree.storageList.dirs.length;i++)  {
+          var sdir = tree.storageList.dirs[i];
+          var name = sdir.name;
+          if (name=='..')
+            name += ' (&#8593; <i>upper directory</i>)';
+          var dnode = tree.addRootNode ( name,'./images/folder_20x20.svg',
+                                      tree.customIcon() );
+          tree.item_map[dnode.id] = sdir;
+        }
+
+        for (var i=0;i<tree.storageList.files.length;i++)  {
+          var sfile = tree.storageList.files[i];
+          var name  = sfile.name;
+          var base  = sfile.name.split('.');
+          var ext   = base.pop().toLowerCase();
+          base = base.join('.').toLowerCase();
+          var icon  = './images/file_dummy_20x20.png';
+          var show  = (tree.image_key<2);
+          if (ext=='mtz')       icon = './images/file_mtz_20x20.svg';
+          else if (['pdb','ent','mmcif'].indexOf(ext)>=0)
+                                icon = './images/file_pdb_20x20.svg';
+          else if (ext=='cif')  {  // use wild heuristics
+            if (endsWith(base,'-sf'))
+                  icon = './images/file_mtz_20x20.svg';
+            else  icon = './images/file_pdb_20x20.svg';
+          } else if (['seq','fasta','pir'].indexOf(ext)>=0)
+                                icon = './images/file_seq_20x20.svg';
+          else if ('image' in sfile)  {
+            if (sfile.image>0)  icon = './images/file_xray_20x20.svg'
+                          else  name = '(' + Array(name.length).join('....') + ')';
+            if (sfile.image==2) name = '<i>' + name + '</i>';
+            show = (tree.image_key>0);
+          }
+          if (show)  {
+            var fnode = tree.addRootNode ( name,icon,tree.customIcon() );
+            tree.item_map[fnode.id] = sfile;
+          }
+        }
+
+        tree.createTree ( onLoaded_func,onRightClick_func,onDblClick_func,onSelect_func );
+
+      }
+
+    },function(){
+      //tree.startTaskLoop();
+    },'persist');
+
+  }(this));
+
+}
+
+
+StorageTree.prototype.getSelectedItems = function()  {
+  var selNodeId = this.calcSelectedNodeId();
+  var items = [];
+  for (var i=0;i<selNodeId.length;i++)
+    if (selNodeId[i] in this.item_map)  {
+      items.push ( this.item_map[selNodeId[i]] );
+  }
+  return items;
+
+  /*
+  if (this.selected_node_id in this.item_map)  {
+    return this.item_map[this.selected_node_id];
+  } else  {
+    return null;
+  }
+  */
+
 }

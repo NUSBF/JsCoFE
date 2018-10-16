@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    05.12.17   <--  Date of Last Modification.
+ *    05.10.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  SHELX-Auto Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2017
+ *  (C) E. Krissinel, A. Lebedev 2016-2018
  *
  *  =================================================================
  *
@@ -66,7 +66,7 @@ if (__template)  {
   var conf         = require('../../js-server/server.configuration');
   var tsk_template = require ( './common.tasks.template' );
 
-  TaskShelxSubstr.prototype.makeInputData = function ( jobDir )  {
+  TaskShelxSubstr.prototype.makeInputData = function ( login,jobDir )  {
 
     // Puts hkl data in input databox for copying their files in
     // job's 'input' directory.
@@ -82,7 +82,7 @@ if (__template)  {
     }
     */
 
-    tsk_template.TaskTemplate.prototype.makeInputData.call ( this,jobDir );
+    tsk_template.TaskTemplate.prototype.makeInputData.call ( this,login,jobDir );
 
   }
 

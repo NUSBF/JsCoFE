@@ -118,7 +118,7 @@ var upload_meta = {};
                 file_rename = file_mod.rename;
                 if (!utils.writeObject(path.join(jobDir,'annotation.json'),
                                        file_mod))
-                  errs = 'error';
+                  errs = 'error writing annotation.json';
                 for (var i=0;i<file_mod.annotation.length;i++)  {
                   redundant_files.push ( file_mod.annotation[i].file );
                   for (var j=0;j<file_mod.annotation[i].items.length;j++)  {

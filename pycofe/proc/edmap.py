@@ -178,7 +178,8 @@ def calcEDMap ( xyzin,hklin,libin,hkl_dataset,output_file_prefix,job_dir,
 
     # Start refmac
     rc = command.call ( "refmac5",cmd,
-                job_dir,refmac_script(),file_stdout,file_stderr,log_parser )
+                job_dir,refmac_script(),file_stdout,file_stderr,
+                log_parser=log_parser,citation_ref="refmac5-srv" )
 
     if rc.msg:
         file_stdout.write ( "Error calling refmac5: " + rc.msg )

@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    09.08.18   <--  Date of Last Modification.
+#    21.09.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -174,7 +174,11 @@ def run ( body,        # body is reference to the main Import class
 
             frow += 2
 
-            log_parser = pyrvapi_ext.parsers.generic_parser ( reportPanelId,False )
+            #log_parser = pyrvapi_ext.parsers.generic_parser ( reportPanelId,False )
+            log_parser = body.setGenericLogParser ( reportPanelId,False,
+                                            graphTables=False,makePanel=True )
+
+
 
             body.file_stdin = open ( pointless_script(),'w' )
             body.file_stdin.write (

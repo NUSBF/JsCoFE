@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    03.09.18   <--  Date of Last Modification.
+ *    07.10.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -78,32 +78,11 @@ function Upload ( customData,upl_data,onSelect_func,onSelectPDB_func,onReady_fun
       this.button = grid.setButton ( 'Select project archive(s)',
                                      './images/open_file.svg',0,col++,1,1 )
                         .setNoWrap();
-      /*
-      this.button = grid.setButton ( 'Select project tarball(s)',
-                                     './images/open_file.svg',0,col++,1,1 )
-                        .setNoWrap();
-      */
-
-    /*
-    } else if (__local_service)  {
-      if (getClientCode()==client_code.ccp4)  {
-        this.linkDataType = 'X-ray';
-        this.link_button  = grid.setButton ( 'X-ray images','./images/xray_image.png',
-                                             0,col++,1,1 ).setNoWrap();
-      } else  {
-        this.linkDataType = 'EM';
-        this.link_button  = grid.setButton ( 'EM micrographs','./images/em_image.svg',
-                                             0,col++,1,1 ).setNoWrap();
-      }
-      grid.setCellSize ( '12px','',0,col++ );
-      this.button = grid.setButton ( 'Other data','images/open_file.svg',0,col++,1,1 )
-                        .setNoWrap();
-    */
     } else {
-      this.button = grid.setButton ( 'Select file(s)','images/open_file.svg',0,col++,1,1 )
+      this.button = grid.setButton ( 'Upload local file(s)','images/open_file.svg',0,col++,1,1 )
                         .setNoWrap();
       if (onSelectPDB_func)  {
-        this.pdb_button = grid.setButton ( 'Select from PDB','images/open_file.svg',0,col++,1,1 )
+        this.pdb_button = grid.setButton ( 'Select PDB entry(s)','images/open_file.svg',0,col++,1,1 )
                               .setNoWrap();
         this.pdb_button.addOnClickListener ( onSelectPDB_func );
       }
@@ -128,15 +107,11 @@ function Upload ( customData,upl_data,onSelect_func,onSelectPDB_func,onReady_fun
 
     if (upl_data=='project')
           this.selFile = new SelectFile ( false,'.zip' );
-          //this.selFile = new SelectFile ( false,'.gz' );
     else  this.selFile = new SelectFile ( true,'' );
     this.selFile.hide();
     this.addWidget ( this.selFile );
 
   }
-
-  //if (onSelect_func)
-  //  this.selFile.element.addEventListener ( 'change',onSelect_func,false );
 
   this.link_directory = null;
 
@@ -179,7 +154,6 @@ function Upload ( customData,upl_data,onSelect_func,onSelectPDB_func,onReady_fun
         if (!ext_files)  {
           for (var i = 0; i < files.length; i++) {
             var file = files[i];
-//            if (!file.name.endsWith('.tar.gz'))
             if (!file.name.endsWith('.zip'))
               targz = false;
             // add the files to formData object for the data payload

@@ -57,12 +57,13 @@ function AdminPage ( sceneId )  {
   // Make Main Menu
   var account_mi = this.headerPanel.menu.addItem('My Account' ,'./images/settings.svg');
   var prjlist_mi = this.headerPanel.menu.addItem('My Projects','./images/list.svg');
-  this.headerPanel.menu.addSeparator ();
-  var logout_mi  = this.headerPanel.menu.addItem('Log out'    ,'./images/logout.svg');
+  //this.headerPanel.menu.addSeparator ();
+  //var logout_mi  = this.headerPanel.menu.addItem('Log out'    ,'./images/logout.svg');
+  this.addLogoutToMenu ( function(){ logout(sceneId); } );
 
   account_mi.addOnClickListener ( function(){ makeAccountPage    (sceneId); });
   prjlist_mi.addOnClickListener ( function(){ makeProjectListPage(sceneId); });
-  logout_mi .addOnClickListener ( function(){ logout             (sceneId); });
+  //logout_mi .addOnClickListener ( function(){ logout             (sceneId); });
 
   // make tabs
   this.tabs = new Tabs();

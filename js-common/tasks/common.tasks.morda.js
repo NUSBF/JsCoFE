@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    31.07.18   <--  Date of Last Modification.
+ *    05.10.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -107,7 +107,7 @@ if (__template)  {
 
   var conf = require('../../js-server/server.configuration');
 
-  TaskMorda.prototype.makeInputData = function ( jobDir )  {
+  TaskMorda.prototype.makeInputData = function ( login,jobDir )  {
 
     // put hkl and seq data in input databox for copying their files in
     // job's 'input' directory
@@ -118,7 +118,7 @@ if (__template)  {
       this.input_data.data['seq'] = revision.ASU.seq;
     }
 
-    __template.TaskTemplate.prototype.makeInputData.call ( this,jobDir );
+    __template.TaskTemplate.prototype.makeInputData.call ( this,login,jobDir );
 
   }
 

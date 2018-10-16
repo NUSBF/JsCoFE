@@ -188,7 +188,7 @@ def run ( body,   # body is reference to the main Import class
 
                 if k==0:
                     scr_file = open ( freerflag_script(),"w" )
-                    scr_file.write ( "UNIQUE\n" )
+                    #scr_file.write ( "UNIQUE\n" )
                     scr_file.close ()
 
                 # run freerflag: generate FreeRFlag if it is absent, and expand
@@ -198,7 +198,8 @@ def run ( body,   # body is reference to the main Import class
                                     ["HKLIN",p_mtzin,
                                      "HKLOUT",p_mtzout],"./",
                                     freerflag_script(),body.file_stdout,
-                                    body.file_stderr,log_parser=None )
+                                    body.file_stderr,log_parser=None,
+                                    citation_ref="freerflag-srv" )
 
             if rc.msg:
                 msg = "\n\n Freerflag failed with message:\n\n" + \

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    29.07.18   <--  Date of Last Modification.
+ *    09.10.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -36,6 +36,18 @@ var log = require('./server.log').newLog(14);
 function fileExists ( path ) {
   try {
     return fs.statSync(path);
+  } catch (e)  {
+    return null;
+  }
+}
+
+
+function dirExists ( path ) {
+  try {
+    var stat = fs.statSync(path);
+    if (stat)
+      return stat.isDirectory();
+    return null;
   } catch (e)  {
     return null;
   }
@@ -394,9 +406,15 @@ function spawn ( exeName,arguments,options )  {
 }
 
 
+function padDigits ( number,digits ) {
+  return Array(Math.max(digits - String(number).length + 1, 0)).join(0) + number;
+}
+
+
 // ==========================================================================
 // export for use in node
 module.exports.fileExists            = fileExists;
+module.exports.dirExists             = dirExists;
 module.exports.fileSize              = fileSize;
 module.exports.removeFile            = removeFile;
 module.exports.readString            = readString;
@@ -422,3 +440,4 @@ module.exports.getMIMEType           = getMIMEType;
 module.exports.capData               = capData;
 module.exports.killProcess           = killProcess;
 module.exports.spawn                 = spawn;
+module.exports.padDigits             = padDigits;

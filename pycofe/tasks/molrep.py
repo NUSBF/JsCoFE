@@ -76,9 +76,6 @@ class Molrep(basic.TaskDriver):
 
         self.open_stdin()
         self.write_stdin (
-            "labin F=" + hkl.dataset.Fmean.value + \
-            " SIGF="   + hkl.dataset.Fmean.sigma + "\n" + \
-            "file_f "  + hkl.getHKLFilePath(self.inputDir())   + "\n" + \
             "file_m "  + model.getXYZFilePath(self.inputDir()) + "\n"
         )
 
@@ -87,22 +84,47 @@ class Molrep(basic.TaskDriver):
                 "file_s "  + seq.getSeqFilePath(self.inputDir()) + "\n"
             )
 
-        #if "xyz" in revision.subtype:  # optional data parameter
+        model_2 = None
         if revision.hasSubtype(dtype_template.subtypeXYZ()):  # optional data parameter
             xstruct = self.makeClass ( revision.Structure )
-            self.write_stdin (
-                "model_2 "  + xstruct.getXYZFilePath(self.inputDir()) + "\n"
-            )
+            model_2 = xstruct.getXYZFilePath(self.inputDir())
+
+        if hasattr(self.input_data.data, "phases"):
+            phases = self.makeClass ( self.input_data.data.phases[0] )
             prf = self.getParameter ( self.task.parameters.sec1.contains.PRF )
-            if prf=="P":
-                self.write_stdin ( "prf N\n" )
-            else:
-                if self.getParameter(self.task.parameters.sec1.contains.DIFF_CBX):
-                    self.write_stdin ( "diff M\n" )
+            self.write_stdin (
+                "file_f " + phases.getMTZFilePath(self.inputDir()) + "\n" + \
+                "labin F=" + revision.Structure.FWT + " PH=" + revision.Structure.PHWT + \
+                "\n" + \
+                "prf " + prf + "\n" + \
+                "sim -1\n"
+            )
+            self.write_stdin (
+                "nref 0\n"
+            )
+
+            #if str(self.getParameter(self.task.parameters.sec4.contains.DISCARD_CBX)) == "True":
+            #    model_2 = None
+
+            if model_2:
                 self.write_stdin (
-                    "sim -1\n" +\
-                    "prf " + prf + "\n"
+                    "diff M\n"
                 )
+
+        else:
+            self.write_stdin (
+                "file_f " + hkl.getHKLFilePath(self.inputDir()) + "\n" + \
+                "labin F=" + hkl.dataset.Fmean.value + " SIGF=" + hkl.dataset.Fmean.sigma + "\n"
+            )
+
+        if model_2:
+            self.write_stdin (
+                "model_2 " + model_2 + "\n"
+            )
+
+#?      Separate interface for search in the density.
+#?      Add "FD" and "SIGFD" to labin (run of cad will be needed).
+#!      Remove "nref 0" when "nref auto" will become available.
 
         self.writeKWParameter ( self.task.parameters.sec1.contains.NMON   )
         self.writeKWParameter ( self.task.parameters.sec1.contains.NP     )

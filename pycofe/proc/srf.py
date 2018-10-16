@@ -59,7 +59,8 @@ def putSRFDiagram ( body,            # reference on Basic class
 
     # Start molrep
     rc = command.call ( "molrep",["-i"],"./",
-                        "molrep_srf.script",file_stdout,file_stderr,log_parser )
+                        "molrep_srf.script",file_stdout,file_stderr,
+                        log_parser=log_parser,citation_ref="molrep-srf" )
 
     if not os.path.isfile("molrep_rf.ps"):
         file_stderr.write ( "\nSRF postscript was not generated for " +\

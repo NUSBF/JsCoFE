@@ -1,7 +1,7 @@
 //
 //  ==========================================================================
 //
-//    17.06.18   <--  Date of Last Modification.
+//    11.10.18   <--  Date of Last Modification.
 //                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  --------------------------------------------------------------------------
 //
@@ -19,13 +19,10 @@
 
 var _jsrview_uri       = "";
 
-//var _viewer_def_width  = 800;
-//var _viewer_def_height = 600;
-
-
 // ===========================================================================
 //  Structure Viewer:  XYZ and Map
 // ===========================================================================
+
 
 function makeUglyMolHtml ( xyz_uri,map_uri,diffmap_uri )  {
 var html   =
@@ -36,8 +33,7 @@ var html   =
     '  <meta name="viewport" content="width=device-width, user-scalable=no">\n' +
     '  <meta name="theme-color" content="#333333">\n' +
     '  <link rel="stylesheet" type="text/css" href="' + _jsrview_uri + 'uglymol/uglymol.css"/>\n' +
-    '  <script src="' + _jsrview_uri + 'uglymol/three.min.js"><\/script>\n' +
-    '  <script src="' + _jsrview_uri + 'uglymol/uglymol.min.js"><\/script>\n' +
+    '  <script src="' + _jsrview_uri + 'uglymol/uglymol.js"><\/script>\n' +
     '</head>\n' +
     '<body style="overflow:hidden;">\n' +
     '  <div id="viewer" style="position:absolute; left:0px; top:0px; ' +
@@ -79,14 +75,27 @@ var html   =
 }
 
 
+function calcViewerSize ( widthF,heightF )  {
+  //var jq = window.parent.$;
+  //var w  = jq(window.parent).width () - 40;
+  //var h  = jq(window.parent).height() - 64;
+  var w  = window.parent.innerWidth  - 40;
+  var h  = window.parent.innerHeight - 64;
+
+  if ((typeof window.parent.__touch_device === 'undefined') || (!window.parent.__touch_device))  {
+    w = widthF*w;
+    h = heightF*h;
+  }
+
+  return [w,h];
+
+}
+
+
 function startUglyMol ( title,xyz_uri,map_uri,diffmap_uri )  {
 
   var doc = window.parent.document;
   var jq  = window.parent.$;
-
-  //var jq  = window.$;
-  //var doc = window.document;
-  //var jq = $;
 
   var dialog = doc.createElement ( 'div' );
   jq(dialog).css({'box-shadow' : '8px 8px 16px 16px rgba(0,0,0,0.2)',
@@ -99,25 +108,11 @@ function startUglyMol ( title,xyz_uri,map_uri,diffmap_uri )  {
                     'overflow' : 'hidden'
   });
 
-  /*
-  var w = window.parent.innerWidth
-          || doc.documentElement.clientWidth
-          || doc.body.clientWidth;
+  //alert ( typeof window.parent.__touch_device + ' : ' + ((typeof window.parent.__touch_device) === 'undefined') );
 
-  var h = window.parent.innerHeight
-          || doc.documentElement.clientHeight
-          || doc.body.clientHeight;
-  */
-
-  var w = jq(window.parent).width () - 50;
-  var h = jq(window.parent).height() - 70;
-
-  jq(iframe).width  ( 3*w/4 );
-  jq(iframe).height ( 7*h/8 );
-
-//  jq(iframe).width  ( _viewer_def_width  );
-//  jq(iframe).height ( _viewer_def_height );
-
+  var size = calcViewerSize ( 0.75,0.875 );
+  jq(iframe).width  ( size[0] );
+  jq(iframe).height ( size[1] );
   dialog.appendChild ( iframe );
 
   jq(dialog).dialog({
@@ -274,16 +269,9 @@ function startViewHKL ( title,mtz_uri )  {
                     'overflow' : 'hidden'
   });
 
-
-  var w = jq(window.parent).width () - 50;
-  var h = jq(window.parent).height() - 70;
-
-  jq(iframe).width  ( 3*w/4 );
-  jq(iframe).height ( 7*h/8 );
-
-  //jq(iframe).width  ( _viewer_def_width  );
-  //jq(iframe).height ( _viewer_def_height );
-
+  var size = calcViewerSize (  0.75,0.875 );
+  jq(iframe).width  ( size[0] );
+  jq(iframe).height ( size[1] );
   dialog.appendChild ( iframe );
 
   jq(dialog).dialog({
@@ -332,6 +320,7 @@ function startViewHKL ( title,mtz_uri )  {
 //  Reciprocal Space Viewer
 // ===========================================================================
 
+
 function makeRSViewerHtml ( json_uri,map_uri )  {
 var html   =
     '<!doctype html>\n' +
@@ -341,8 +330,7 @@ var html   =
     '  <meta name="viewport" content="width=device-width, user-scalable=no">\n' +
     '  <meta name="theme-color" content="#333333">\n' +
     '  <link rel="stylesheet" type="text/css" href="' + _jsrview_uri + 'uglymol/uglymol.css"/>\n' +
-    '  <script src="' + _jsrview_uri + 'uglymol/three.min.js"><\/script>\n' +
-    '  <script src="' + _jsrview_uri + 'uglymol/uglymol.min.js"><\/script>\n' +
+    '  <script src="' + _jsrview_uri + 'uglymol/uglymol.js"><\/script>\n' +
     '</head>\n' +
     '<body style="background-color: black">\n' +
     '  <div id="viewer"></div>\n' +
@@ -427,12 +415,9 @@ function startRSViewer ( title,json_uri,map_uri )  {
                     'overflow' : 'hidden'
   });
 
-  var w = jq(window.parent).width () - 50;
-  var h = jq(window.parent).height() - 70;
-
-  jq(iframe).width  ( 3*w/4 );
-  jq(iframe).height ( 7*h/8 );
-
+  var size = calcViewerSize (  0.75,0.875 );
+  jq(iframe).width  ( size[0] );
+  jq(iframe).height ( size[1] );
   dialog.appendChild ( iframe );
 
   jq(dialog).dialog({

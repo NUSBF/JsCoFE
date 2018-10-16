@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    03.08.18   <--  Date of Last Modification.
+ *    05.10.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -20,7 +20,7 @@
  */
 
 //  load system modules
-//var fs            = require('fs-extra');
+var fs            = require('fs-extra');
 var path          = require('path');
 //var child_process = require('child_process');
 
@@ -38,14 +38,12 @@ var log = require('./server.log').newLog(18);
 
 // ===========================================================================
 
-var facilityListFName = 'facilities.list';
-var ICATDirName       = 'ICAT_facility';
+var facilityListFName  = 'facilities.list';
+var cloudFileListFName = 'cloudfiles.list';
+var ICATDirName        = 'ICAT_facility';
 
 // ===========================================================================
 
-//function getFacilityListPath()  {
-//  return path.join ( conf.getFEConfig().facilitiesPath,facilityListFName );
-//}
 
 function getFacilityPath ( name_str )  {
   if (name_str=='icat')  // path to directory containing all ICAT facility data
@@ -58,6 +56,171 @@ function getUserFacilityListPath ( login )  {
 // descriptions, represented as class ProjectList) of user with
 // given login name
   return path.join ( prj.getUserProjectsDirPath(login),facilityListFName );
+}
+
+
+function getUserCloudMounts ( login )  {
+//
+//  Reads cloud storage configuration file, which is placed by admin in
+//  users' project directory. The file has the following format:
+//  --------------------------------------------------------------------------
+//  name1  :  path1
+//  name2  :  path2
+//  ...............
+//  nameN  :  pathN
+//  --------------------------------------------------------------------------
+//  where "nameX" is symbolic name that identifies path "pathX" for user.
+//
+//  Returns null if file is not found or is empty, and array
+//  [[name1,path1],[name2,path2],...[nameN,pathN]] otherwise.
+//
+
+var fileListPath = path.join ( prj.getUserProjectsDirPath(login),cloudFileListFName );
+var paths = [];
+var text  = utils.readString ( fileListPath );
+
+  if (text)  text = text.trim();
+
+  if (text)  {
+    var lines = text.split('\n');
+    for (var i=0;i<lines.length;i++)  {
+      var p = lines[i].split(':');
+      if (p.length==2)
+        paths.push ( [p[0].trim(),p[1].trim()] );
+    }
+  }
+
+  return paths;
+
+}
+
+
+function getCloudDirListing ( cloudMounts,spath )  {
+var slist = new fcl.StorageList()
+
+  slist.path = spath;
+
+  if (!cloudMounts)
+    return slist;
+
+  if (spath.length==0)  {
+    // empty storage path: return the list of storage mounts
+
+    slist.name  = 'Cloud File Storage';
+
+    for (var i=0;i<cloudMounts.length;i++)  {
+      var sdir  = new fcl.FacilityDir();
+      sdir.name = cloudMounts[i][0];
+      slist.dirs.push ( sdir );
+    }
+
+  } else  {
+    // storage path is given; return actual directory listing for spath
+
+    slist.name  = spath;
+
+    function add_file ( filename,size )  {
+      var sfile  = new fcl.FacilityFile();
+      sfile.name = filename;
+      sfile.size = stat.size;
+      slist.files.push ( sfile );
+      return sfile;
+    }
+
+    var lst     = spath.split('/');
+    var dirpath = null;
+    //console.log ( spath );
+    //console.log ( lst );
+    //console.log ( cloudMounts );
+    for (var i=0;(i<cloudMounts.length) && (!dirpath);i++)
+      if (cloudMounts[i][0]==lst[0])  {
+        if (lst.length<2)
+              dirpath = cloudMounts[i][1];
+        else  dirpath = path.join ( cloudMounts[i][1],lst.slice(1).join('/') );
+      }
+
+    if (dirpath)  {
+      if (utils.dirExists(dirpath))  {
+        var sdir  = new fcl.FacilityDir();
+        sdir.name = '..';
+        slist.dirs.push ( sdir );
+        var dirlist = fs.readdirSync(dirpath).sort();  // sort() maybe unnecessary
+        var i = 0;
+        while (i<dirlist.length)  {
+          var fpath = path.join ( dirpath,dirlist[i] );
+          var stat  = utils.fileExists ( fpath );
+          if (stat)  {
+            if (stat.isDirectory())  {
+              sdir  = new fcl.FacilityDir();
+              sdir.name = dirlist[i];
+              slist.dirs.push ( sdir );
+            } else  {
+              var lname = dirlist[i].split('.');
+              var ext   = lname.pop().toLowerCase();
+              isSeqFile = (['seq','fasta','pir'].indexOf(ext)>=0);
+              if (isSeqFile || (['pdb','mtz','cif'].indexOf(ext)>=0))  {
+                var sfile = add_file ( dirlist[i],stat.size );
+                if (isSeqFile)
+                  sfile.contents = utils.readString ( fpath );
+              } else  {
+                // check for likely image files, looking for pattern
+                // [((a).)](a)(d).[((a).)].ext (a: letter, d: digit,
+                // []: optional, (): repeats)
+                var k = -1;
+                for (var j=lname.length-1;(j>=0) && (k<0);j--)  {
+                  var c = lname[j][lname[j].length-1];
+                  if (('0'<=c) && (c<='9'))
+                    k = j;
+                }
+                if (k>=0)  {
+                  var n0      = 0;
+                  for (var j=lname[k].length-1;j>=0;j--)  {
+                    var c = lname[k][j];
+                    if (('0'<=c) && (c<='9'))  n0 = j;
+                                         else  break;
+                  }
+                  var ndigits = lname[k].length - n0;
+                  var prefix = '';
+                  if (k>0)
+                      prefix = lname.slice(0,k).join('.') + '.';
+                  prefix    += lname[k].substring(0,n0);
+                  var nimage = parseInt ( lname[k].substr(n0) );
+                  var suffix = '';
+                  if (k<lname.length-1)
+                      suffix = '.' + lname.slice(k+1).join('.');
+                  suffix += '.' + ext;
+                  var j = i;
+                  do {
+                    nimage++;
+                    j++;
+                  } while (prefix+utils.padDigits ( nimage,ndigits )+suffix == dirlist[j]);
+                  j--;
+                  if (j>i)  {
+                    add_file ( dirlist[i],0 ).image = 1;
+                    if (j>i+1)
+                      add_file ( '......',0 ).image = 0;
+                    add_file ( dirlist[j],0 ).image = 2;
+                    i = j;
+                  }
+                }
+              }
+            }
+          }
+          i++;
+        }
+      } else
+        slist.message = 'directory ' + spath + ' does not exist';
+
+    } else {
+      slist.message = 'mount ' + lst[0] + ' not found';
+    }
+
+  }
+
+//  console.log ( JSON.stringify(slist) );
+
+  return slist;
+
 }
 
 
@@ -96,18 +259,22 @@ function initFacilities ( facilityListPath )  {
 
 }
 
-/*
-function checkFacilities ( facilityListPath )  {
-  var fclListPath = facilityListPath;
-  if (!fclListPath)
-    fclListPath = getFacilityListPath();
-  return utils.fileExists(fclListPath);
-}
-*/
 
 // ===========================================================================
 
-function getUserFacilityList ( login )  {
+function getUserFacilityList ( login,data,callback_func )  {
+  if (data['type']=='files')  {
+    callback_func ( new cmd.Response ( cmd.fe_retcode.ok,'',
+                        getCloudDirListing (
+                               getUserCloudMounts(login),data['path']
+                                             ) ) );
+  } else  {
+    get_user_facility_list ( login,callback_func );
+  }
+}
+
+
+function get_user_facility_list ( login,callback_func )  {
 var response = null;  // must become a cmd.Response object to return
 
   log.detailed ( 4,'get facilities list, login ' + login );
@@ -136,7 +303,7 @@ var response = null;  // must become a cmd.Response object to return
     }
   }
 
-  return response;
+  callback_func ( response );
 
 }
 
@@ -278,3 +445,4 @@ module.exports.initFacilities      = initFacilities;
 module.exports.getUserFacilityList = getUserFacilityList;
 module.exports.updateFacility      = updateFacility;
 module.exports.checkFacilityUpdate = checkFacilityUpdate;
+module.exports.getUserCloudMounts  = getUserCloudMounts;

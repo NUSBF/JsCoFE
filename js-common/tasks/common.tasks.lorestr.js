@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    22.10.17   <--  Date of Last Modification.
+ *    05.10.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  RefMac Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2017
+ *  (C) E. Krissinel, A. Lebedev 2016-2018
  *
  *  =================================================================
  *
@@ -116,7 +116,7 @@ if (__template)  {
 
   var conf = require('../../js-server/server.configuration');
 
-  TaskLorestr.prototype.makeInputData = function ( jobDir )  {
+  TaskLorestr.prototype.makeInputData = function ( login,jobDir )  {
 
     // put hkl and structure data in input databox for copying their files in
     // job's 'input' directory
@@ -127,7 +127,7 @@ if (__template)  {
       this.input_data.data['istruct'] = [revision.Structure];
     }
 
-    __template.TaskTemplate.prototype.makeInputData.call ( this,jobDir );
+    __template.TaskTemplate.prototype.makeInputData.call ( this,login,jobDir );
 
   }
 

@@ -116,7 +116,10 @@ class Aimless(basic.TaskDriver):
 #   def tmp(self):
 
         ds0         = self.makeClass ( self.input_data.data.ds0[0] )
-        mtzRef      = ds0.getUnmergedFilePath ( self.inputDir() )
+        if ds0._type=="DataUnmerged":
+            mtzRef = ds0.getUnmergedFilePath ( self.inputDir() )
+        else:
+            mtzRef = ds0.getHKLFilePath ( self.inputDir() )
         symm_select = ds0.symm_select if ds0._type=="DataUnmerged" else None
 
         #plist = [[ds.dataset,os.path.join(self.inputDir(),ds.files[dtype_template.file_key["mtz"]]),ds.runs] for ds in unmerged]

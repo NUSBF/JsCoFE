@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    08.09.18   <--  Date of Last Modification.
+#    25.09.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -70,6 +70,9 @@ class DType(dtype_template.DType):
             self.ligands        = []    # list of ligands fitted
 
         return
+
+    def ensembleName ( self ):  # for using in phaser interface
+        return "ensemble_" + self.dataId
 
     def setRefmacLabels ( self,hkl_class ):
         self.FP    = "FP"
@@ -140,6 +143,8 @@ class DType(dtype_template.DType):
         return
 
     def setParrotLabels ( self ):
+        self.FWT  = "parrot.F_phi.F"
+        self.PHWT = "parrot.F_phi.phi"
         self.HLA = "parrot.ABCD.A"
         self.HLB = "parrot.ABCD.B"
         self.HLC = "parrot.ABCD.C"
@@ -336,22 +341,6 @@ class DType(dtype_template.DType):
         if not ligCode in self.ligands:
             self.ligands += [ligCode]
         self.addLigandSubtype()
-        return
-
-    def add_file ( self,fn,outputDir,fileKeyName,copy_bool=False ):
-        if fn and os.path.isfile(fn):
-            fname = os.path.basename(fn)
-            if (not fname[0:4].isdigit()) or (not fname[5:7].isdigit()) or fname[4]!="-" or fname[7]!="_":
-                fname = self.dataId + "_" + fname
-            self.setFile ( fname,dtype_template.file_key[fileKeyName] )
-            fpath = os.path.join ( outputDir,fname )
-            if fn!=fpath:
-                if os.path.isfile(fpath):
-                    os.remove ( fpath )  # required on Windows
-                if copy_bool:
-                    shutil.copy2 ( fn,fpath )
-                else:
-                    os.rename ( fn,fpath )
         return
 
     def adjust_dname ( self ):

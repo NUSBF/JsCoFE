@@ -37,8 +37,8 @@ def select ( title ):
             dialog.setDirectory ( startDir )
     else:
         dialog = QtGui.QFileDialog ( None,title,startDir )
-    dialog.setFileMode    ( QtGui.QFileDialog.Directory)
-    dialog.setOption      ( QtGui.QFileDialog.DontUseNativeDialog,True )
+    dialog.setFileMode ( QtGui.QFileDialog.Directory)
+    dialog.setOption   ( QtGui.QFileDialog.DontUseNativeDialog,True )
     #dialog.setOption(QtGui.QFileDialog.ShowDirsOnly, True)
     dialog.show  ()
     dialog.raise_()

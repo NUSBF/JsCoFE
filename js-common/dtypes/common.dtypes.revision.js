@@ -221,27 +221,48 @@ if (!__template)  {
   }
 
   DataRevision.prototype._layCDI_PhaserMR = function ( dropdown )  {
+  var customGrid = dropdown.customGrid;
+  var row = 0;
 
-    if (this.subtype.indexOf(structure_subtype.XYZ)>=0)  {
-      var customGrid = dropdown.customGrid;
-      customGrid.setLabel ( '<b>Fixed model</b>:',0,0,1,1 )
-                            .setFontItalic(true).setNoWrap();
-      customGrid.setLabel ( '<b>' + this.Structure.dname + '</b>',0,1,1,4 )
-                            .setNoWrap();
-      customGrid.setLabel ( '<b>Fixed model metadata</b>:',1,0,1,1 )
-                            .setFontItalic(true).setNoWrap();
-      if (this.Structure.files.hasOwnProperty(file_key.sol))
-        customGrid.setLabel ( '<b>' + this.Structure.files[file_key.sol] + '</b>',1,1,1,4 )
-                              .setNoWrap();
-      else
-        customGrid.setLabel ( '<b><i>absent</i></b>',1,1,1,4 ).setNoWrap();
-      for (var i=0;i<=1;i++)  {
-        customGrid.setCellSize ( '','12pt',0,i );
-        customGrid.setVerticalAlignment ( 0,i,'middle' );
-        customGrid.setCellSize ( '','24pt',1,i );
-        customGrid.setVerticalAlignment ( 1,i,'middle' );
+    if (this.hasOwnProperty('phaser_meta'))  {
+
+      customGrid.setLabel ( '<b>Prefitted models</b>:',row++,0,1,1 )
+                .setFontItalic(true).setNoWrap();
+      for (var ensname in this.phaser_meta['ensembles'])  {
+        customGrid.setLabel ( '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' +
+                   this.phaser_meta['ensembles'][ensname]['ncopies'] +
+                   'x ' + ensname + ' :',row,0,1,1 )
+                  .setFontItalic(true).setNoWrap();
+        customGrid.setLabel ( this.phaser_meta['ensembles'][ensname]['data'].files[file_key.xyz],
+                              row++,1,1,4 ).setNoWrap();
       }
+
+      customGrid.setLabel ( '<b>Phaser solution metadata:</b>',row,0,1,1 )
+                .setFontItalic(true).setNoWrap();
+      if (this.phaser_meta['sol'].files.hasOwnProperty(file_key.sol))
+        customGrid.setLabel ( this.phaser_meta['sol'].files[file_key.sol],row++,1,1,4 )
+                  .setNoWrap();
+      else
+        customGrid.setLabel ( '<b>absent (can be in error)</b>',row++,1,1,4 )
+                  .setFontItalic(true).setNoWrap();
+
       dropdown.layCustom = 'phaser-mr-fixed';
+    } else if (this.subtype.indexOf(structure_subtype.XYZ)>=0)  {
+      customGrid.setLabel ( '<b>Fixed structure</b>:',row,0,1,1 )
+                .setFontItalic(true).setNoWrap();
+      customGrid.setLabel ( '<b>' + this.Structure.dname + '</b>',row++,1,1,4 )
+                .setNoWrap();
+      customGrid.setLabel ( '<b>Phaser solution metadata:</b>',row,0,1,1 )
+                .setFontItalic(true).setNoWrap();
+      customGrid.setLabel ( '<b><i>annulled</i></b>',row++,1,1,4 ).setNoWrap();
+      dropdown.layCustom = 'phaser-mr-fixed';
+    }
+
+    for (var i=0;i<row;i++)  {
+      customGrid.setCellSize ( '','12pt',i,0 );
+      customGrid.setVerticalAlignment ( i,0,'middle' );
+      customGrid.setCellSize ( '','12pt',i,1 );
+      customGrid.setVerticalAlignment ( i,1,'middle' );
     }
 
     this.HKL.layCustomDropdownInput ( dropdown );

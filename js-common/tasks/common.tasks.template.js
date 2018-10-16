@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    03.09.18   <--  Date of Last Modification.
+ *    15.10.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -31,7 +31,8 @@ var job_code = {
   exiting  : 'exiting',  // job is in post-run processing
   finished : 'finished', // job finished normally (nothing to do with the results)
   failed   : 'failed',   // job failed
-  stopped  : 'stopped'   // job stopped (terminated by user)
+  stopped  : 'stopped',  // job stopped (terminated by user)
+  remark   : 'remark'    // remark node
 }
 
 // ---------------------------------------------------------------------------
@@ -289,7 +290,7 @@ if (!dbx)  {
     }
 
     var header = new Grid ( '' );
-    header.setImage ( this.icon_large(),'','80px', 0,0, 3,1 );
+    header.task_icon = header.setImage ( this.icon_large(),'','80px', 0,0, 3,1 );
     header.setLabel ( ' ', 0,1, 3,1 ).setWidth_px(20).setHeight ( '0.5em' );
     var row = 0;
     var t   = this.title;
@@ -1872,7 +1873,7 @@ if (!dbx)  {
   }
 
 
-  TaskTemplate.prototype.makeInputData = function ( jobDir )  {
+  TaskTemplate.prototype.makeInputData = function ( login,jobDir )  {
   // Collects all input files, listed in this.input_data, from other job
   // directories and places them in jobDir/input. Simultaneously, creates
   // the correspondong dataBox structure with input metadata, and writes
@@ -1883,6 +1884,7 @@ if (!dbx)  {
     for (var dtype in this.input_data.data)  {
       var td = this.input_data.data[dtype];
       for (var i=0;i<td.length;i++)  {
+//console.log ( ' ==== try ' + td[i]._type );
         var srcJobDir = prj.getSiblingJobDirPath ( jobDir,td[i].jobId );
         for (var fileKey in td[i].files) {
           if (td[i].files.hasOwnProperty(fileKey)) {
@@ -1898,6 +1900,7 @@ if (!dbx)  {
               if (pack)  {
                 var src_file  = prj.getOutputFilePath ( srcJobDir,fname );
                 var dest_file = prj.getInputFilePath  ( jobDir   ,fname );
+//console.log ( ' --- copy ' + src_file + ' -> ' + dest_file );
                 try {
                   fs.copySync ( src_file,dest_file );
                 } catch (err) {

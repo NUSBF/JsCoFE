@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    28.07.18   <--  Date of Last Modification.
+#    21.09.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -595,7 +595,8 @@ class Base(object):
         self.log_parser = pyrvapi_ext.parsers.generic_parser (
                                          panel_id,split_sections_bool,
                                          summary=self.generic_parser_summary,
-                                         graph_tables=graphTables )
+                                         graph_tables=graphTables,
+                                         hide_refs=True )
         pyrvapi.rvapi_flush()
         return panel_id
 

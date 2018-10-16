@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    24.07.18   <--  Date of Last Modification.
+ *    07.10.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -36,17 +36,10 @@ function ImportProjectDialog ( onSuccess_func )  {
   this.addWidget ( grid );
   grid.setLabel ( '<h3>Import Project</h3>',0,0,1,3 );
 
-  /*
-  var msgLabel = new Label ( 'Use "<i>Upload</i>" button to select tarball ' +
-                             '(project_name.tar.gz) with<br>exported project. ' +
-                             'The import will commence automatically once<br>'  +
-                             'the upload is completed -- <b><i>do not close ' +
-                             'this dialog until then</i></b>.<br>&nbsp;' );
-  */
-  var msgLabel = new Label ( 'Use "<i>Upload</i>" button to select archive file ' +
-                             '(project_name.zip)<br>with exported project. ' +
-                             'The import will commence automatically once<br>'  +
-                             'the upload is completed -- <b><i>do not close ' +
+  var msgLabel = new Label ( 'Use "<i>Select ...</i>" button to select archive file ' +
+                             '(project_name.zip)<br>with previously exported project. ' +
+                             'The import will commence<br>automatically once '  +
+                             'the upload is completed -- <b><i>do not close<br>' +
                              'this dialog until then</i></b>.<br>&nbsp;' );
   grid.setWidget ( msgLabel, 1,0,1,3 );
 

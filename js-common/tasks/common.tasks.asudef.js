@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.02.18   <--  Date of Last Modification.
+ *    05.10.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -186,29 +186,6 @@ if (__template)  {
   //  for server side
 
   var conf = require('../../js-server/server.configuration');
-
-/*
-  TaskASUDef.prototype.makeInputData = function ( jobDir )  {
-
-    // put hkl in input databox for copying their files in
-    // job's 'input' directory
-
-    if (this.input_data.data['hkls'][0]._type=='DataStructure')  {
-      if ('void1' in this.input_data.data)  {
-        var assoc = this.input_data.data['hkls'][0].associated;
-        var hkl = this.input_data.data['void1'];
-        var hkl_sel = [];
-        for (var i=0;i<hkl.length;i++)
-          if (assoc.indexOf(hkl[i].dataId)>=0)
-            hkl_sel.push ( hkl[i] );
-        this.input_data.data['hkl'] = hkl_sel;
-      }
-    }
-
-    __template.TaskTemplate.prototype.makeInputData.call ( this,jobDir );
-
-  }
-*/
 
   TaskASUDef.prototype.getCommandLine = function ( exeType,jobDir )  {
     return [conf.pythonName(), '-m', 'pycofe.tasks.asudef', exeType, jobDir, this.id];

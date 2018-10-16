@@ -684,6 +684,10 @@ IconLabel.prototype.setIconLabel = function ( text,icon_uri )  {
   }
 }
 
+IconLabel.prototype.setBackground = function ( icon_uri )  {
+  if (icon_uri.length>0)
+    $(this.element).css({'background-image':'url("'+icon_uri+'")'});
+}
 
 
 // -------------------------------------------------------------------------

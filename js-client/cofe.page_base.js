@@ -155,6 +155,22 @@ BasePage.prototype.makeHeader = function ( colSpan,on_logout_function )  {
 
 }
 
+
+BasePage.prototype.addFullscreenToMenu = function()  {
+  if (this.headerPanel.menu.n_items>0)
+    this.headerPanel.menu.addSeparator();
+  this.headerPanel.menu.addItem('Toggle fullscreen','./images/fullscreen.svg')
+                       .addOnClickListener ( toggleFullScreen );
+}
+
+BasePage.prototype.addLogoutToMenu = function ( logout_func )  {
+  this.addFullscreenToMenu();
+  //this.headerPanel.menu.addSeparator();
+  this.headerPanel.menu.addItem('Log out','./images/logout.svg')
+                       .addOnClickListener ( logout_func );
+}
+
+
 BasePage.prototype.makeUserRationIndicator = function()  {
   if (this.rationPanel)  {
     if (this.ration)  {

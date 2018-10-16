@@ -1,7 +1,8 @@
 #!/bin/bash
 
 server_dir=/Users/eugene/Projects/jsCoFE
-ccp4_dir=/Applications/ccp4-7.0
+ccp4_dir=$server_dir/jscofe_alpha
+#ccp4_dir=/Applications/ccp4-7.0
 #ccp4_dir=/Users/eugene/Projects/ccp4jh/ccp4-dev
 #morda_dir=/Users/eugene/Projects/MoRDa_DB
 pdb_dir=/Users/eugene/pdb/pdb
@@ -14,6 +15,11 @@ export GESAMT_ARCHIVE=$gesamt_dir
 export JSPISA_CFG=$CCP4/share/pisa/jspisa.cfg
 
 cd $server_dir
+
+echo $PATH
+echo $PYTHONPATH
+which ccp4-python
+
 
 #killall node
 

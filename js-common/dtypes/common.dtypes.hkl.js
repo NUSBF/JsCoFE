@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    09.08.18   <--  Date of Last Modification.
+ *    25.09.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -200,7 +200,7 @@ if (!__template)  {
   DataHKL.prototype.layCustomDropdownInput = function ( dropdown ) {
 
     var customGrid = dropdown.customGrid;
-    var r          = 0;
+    var r          = customGrid.getNRows();
 
     function setLabel ( title,row,col )  {
       var label = customGrid.setLabel ( title,row,col,1,1 )
@@ -353,7 +353,7 @@ if (!__template)  {
     }
 
     this.phaserMRLayout = function()  {
-      r++;
+      //r++;
       this.makeResolutionLimits();
       var res_high = round ( this.getHighResolution(),2 );
       setLabel ( 'High res-n for final refinement (&Aring;):&nbsp;',++r,0 );

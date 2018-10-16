@@ -56,7 +56,7 @@ def getTimes():
 
 
 def call ( executable,command_line,job_dir,stdin_fname,file_stdout,
-           file_stderr,log_parser=None ):
+           file_stderr,log_parser=None,citation_ref=None ):
 
     file_stdout.write ( "\n" + "="*80 + "\n" )
     file_stdout.write ( time.strftime("## Run %Y-%m-%d at %H:%M:%S on ") + platform.uname()[1] );
@@ -125,7 +125,10 @@ def call ( executable,command_line,job_dir,stdin_fname,file_stdout,
     _add_times ( rc )
 
     # fetch citations
-    citations.addCitation ( executable )
+    if citation_ref:
+        citations.addCitation ( citation_ref )
+    else:
+        citations.addCitation ( executable )
 
     if rc.msg:
         msg = ' *** error running {0}: {1}'.format(executable, rc.msg)

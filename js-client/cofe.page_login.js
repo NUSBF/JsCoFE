@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    03.09.18   <--  Date of Last Modification.
+ *    11.10.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -116,7 +116,17 @@ function LoginPage ( sceneId )  {
   reg_btn.addOnClickListener ( function(){ makeRegisterPage      (sceneId) } );
   pwd_btn.addOnClickListener ( function(){ makeForgottenLoginPage(sceneId) } );
 
+/*
+  var viewFullScreen = document.getElementById("scene");
+  if (viewFullScreen)
+      viewFullScreen.addEventListener("click",setFullScreen );
+*/
+
+  if (__touch_device)
+    login_btn.addOnClickListener ( setFullScreen );
+
   login_btn.addOnClickListener ( function(){
+
 
     // Validate the input
     var msg = '';
@@ -147,23 +157,11 @@ function LoginPage ( sceneId )  {
         switch (response.status)  {
 
           case fe_retcode.ok:
-                  var userData  = response.data.userData;
-                  __login_token = response.message;
-                  __login_user  = userData.name;
-                  __admin       = userData.admin;
-                  /*
-                  if (!__login_token)  {
-                     __login_token = new InputText ( response.message );
-                     __login_token.setStyle ( 'hidden','','','' );
-                     document.body.appendChild ( __login_token.element );
-                     __login_user = new InputText ( userData.name );
-                     __login_user.setStyle ( 'hidden','','','' );
-                     document.body.appendChild ( __login_user.element );
-                  } else {
-                    __login_token.setValue ( response.message );
-                    __login_user .setValue ( userData.name    );
-                  }
-                  */
+                  var userData    = response.data.userData;
+                  __login_token   = response.message;
+                  __login_user    = userData.name;
+                  __admin         = userData.admin;
+                  __cloud_storage = response.data.cloud_storage;
                   if ('helpTopics' in userData)
                         __doNotShowList = userData.helpTopics;
                   else  __doNotShowList = [];

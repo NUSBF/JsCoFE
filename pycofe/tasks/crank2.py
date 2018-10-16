@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    13.09.18   <--  Date of Last Modification.
+#    03.10.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -616,6 +616,7 @@ class Crank2(basic.TaskDriver):
             "--hklout"          ,self.hklout_fpath,
             "--dirout"          ,"report",
             "--rvapi-viewer"    ,"0",
+            "--graceful-preliminary-stop",
             "--rvapi-uri-prefix","./",
             "--rvapi-document"  ,os.path.join ( os.getcwd(),self.reportDocumentName() ),
             "--rvapi-no-tree"

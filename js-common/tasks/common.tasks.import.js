@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    31.07.18   <--  Date of Last Modification.
+ *    08.10.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -59,6 +59,11 @@ TaskImport.prototype.currentVersion = function()  { return 1; }
 if (!__template)  {
   // for client side
 
+  TaskImport.prototype.customDataClone = function ( task )  {
+    this.uname = '';
+    return;
+  }
+
   // reserved function name
   TaskImport.prototype.makeInputPanel = function ( dataBox )  {
   // makes input panel for Import task; dataBox is not used as import task
@@ -102,7 +107,6 @@ if (!__template)  {
             for (var i=0;i<pdb_list.length;i++)
               pdb_spec_list.push ( 'PDB::' + pdb_list[i] );
             panel.upload.setUploadedFiles ( pdb_spec_list );
-            //alert ( 'action ' + entry_list );
           });
         },
         function(returnCode){
@@ -174,7 +178,6 @@ if (!__template)  {
         new_fname += '.n' + padDigits ( name_counter,3 );
       var m = false;
       for (var i=0;(i<uploaded_files.length) && (!m);i++)
-//        m = uploaded_files[i].startsWith ( new_fname );
         m = startsWith ( uploaded_files[i],new_fname );
     } while (m);
 
@@ -184,6 +187,37 @@ if (!__template)  {
     return new_fname;
 
   }
+
+
+  function _check_sequence ( files,uploaded_files,contents,file_mod,p,onDone_func )  {
+    var fname         = files[p].name;
+    var new_name      = _import_renameFile1 ( fname,uploaded_files );
+    var contents_list = contents.split('>');
+    var seq_counter   = 1;
+    var annotation    = {
+      'file'   : fname,
+      'rename' : new_name,
+      'items'  : []
+    }
+    for (var i=0;i<contents_list.length;i++)
+      if (contents_list[i].replace(/\s/g,''))  {
+        var fname1 = new_name;
+        if (contents_list.length>2)  {
+          var lst = fname1.split('.');
+          lst.push ( lst[lst.length-1] );
+          lst[lst.length-2] = 's' + padDigits ( seq_counter++,3 );
+          fname1 = lst.join('.');
+        }
+        annotation.items.push ({
+          'rename'   : fname1,
+          'contents' : '>' + contents_list[i].trim(),
+          'type'     : 'none'
+        });
+      }
+    file_mod.annotation.push ( annotation );
+    _import_scanFiles ( files,p+1,file_mod,uploaded_files,onDone_func );
+  }
+
 
   function _import_scanFiles ( files,pos,file_mod,uploaded_files,onDone_func ) {
 
@@ -211,36 +245,17 @@ if (!__template)  {
 
       if (isSeqFile)  {
 
-        var reader = new FileReader();
-        reader.onload = function(e) {
-          var fname         = files[p].name;
-          var new_name      = _import_renameFile1 ( fname,uploaded_files );
-          var contents_list = e.target.result.split('>');
-          var seq_counter   = 1;
-          var annotation    = {
-            'file'   : fname,
-            'rename' : new_name,
-            'items'  : []
-          }
-          for (var i=0;i<contents_list.length;i++)
-            if (contents_list[i].replace(/\s/g,''))  {
-              var fname1 = new_name;
-              if (contents_list.length>2)  {
-                var lst = fname1.split('.');
-                lst.push ( lst[lst.length-1] );
-                lst[lst.length-2] = 's' + padDigits ( seq_counter++,3 );
-                fname1 = lst.join('.');
-              }
-              annotation.items.push ({
-                'rename'   : fname1,
-                'contents' : '>' + contents_list[i].trim(),
-                'type'     : 'none'
-              });
-            }
-          file_mod.annotation.push ( annotation );
-          _import_scanFiles ( files,p+1,file_mod,uploaded_files,onDone_func );
-        };
-        reader.readAsText ( files[p] );
+        if ('_type' in files[p])  {
+          _check_sequence ( files,uploaded_files,files[p].contents,
+                            file_mod,p,onDone_func );
+        } else  {
+          var reader = new FileReader();
+          reader.onload = function(e) {
+            _check_sequence ( files,uploaded_files,e.target.result,
+                              file_mod,p,onDone_func );
+          };
+          reader.readAsText ( files[p] );
+        }
 
       } else  {
         onDone_func ( file_mod );
@@ -253,7 +268,10 @@ if (!__template)  {
 
   function _import_checkFiles ( files,file_mod,uploaded_files,onReady_func )  {
     file_mod.rename = {};  // clean up every upload
-    _import_scanFiles ( files,0,file_mod,uploaded_files,function(file_mod){
+    var upl_files = [];
+    for (var i=0;i<uploaded_files.length;i++)
+      upl_files.push ( getBasename(uploaded_files[i]) );
+    _import_scanFiles ( files,0,file_mod,upl_files,function(file_mod){
       //alert ( ' annot=' + JSON.stringify(file_mod) );
       var nannot = file_mod.annotation.length;
       if ((nannot>0) && (file_mod.annotation[nannot-1].items[0].type=='none'))
@@ -272,8 +290,9 @@ if (!__template)  {
     if (this.upload_files.length>0)
       return '';   // input is Ok
     else
-      return 'No file(s) have been uploaded';  // input is not ok
+      return 'No file(s) have been selected';  // input is not ok
   }
+
 
   // reserved function name
   TaskImport.prototype.runButtonName = function()  { return 'Import'; }

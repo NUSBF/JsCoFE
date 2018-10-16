@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    06.04.17   <--  Date of Last Modification.
+ *    29.09.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,11 +13,65 @@
  *  **** Content :  Various message dialogs
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2017
+ *  (C) E. Krissinel, A. Lebedev 2016-2018
  *
  *  =================================================================
  *
  */
+
+
+
+function calcDialogSize ( defW,defH, defWT,defHT, job_dialog_data )  {
+//
+//  defW  : default width as a fraction of window width; '0' means 'auto'
+//  defH  : default width as a fraction of window width; '0' means 'auto'
+//  defWT : default width as a fraction of window width for touch devices; '0' means 'auto'
+//  defHT : default width as a fraction of window width for touch devices; '0' means 'auto'
+//  job_dialog_data : optional dialog data structure
+//
+
+  //var w0 = $(window).width ();
+  //var h0 = $(window).height();
+  var w0 = window.innerWidth;
+  var h0 = window.innerHeight;
+  var w,h;
+
+  if (__touch_device)  {
+
+    w = defWT*$(window).width () - 8;
+    h = defHT*$(window).height() - 46;
+
+  } else  {
+
+    w = 2*w0;
+    h = 2*h0;
+
+    if (job_dialog_data)  {
+      if (job_dialog_data.width>0)   w = job_dialog_data.width;
+      if (job_dialog_data.height>0)  h = job_dialog_data.height;
+    }
+
+    if ((w>=w0) || (h>=h0))  {
+      w = defW*w0;
+      h = defH*h0;
+      if (job_dialog_data)  {
+        job_dialog_data.position = { my : 'center top',   // job dialog position reference
+                                     at : 'center top+5%' }; // job dialog offset in the screen
+        job_dialog_data.width  = 0;
+        job_dialog_data.height = 0;
+      }
+    }
+
+  }
+
+  if (w<=0)  w  = 'auto';
+//       else  w += 'px';
+  if (h<=0)  h  = 'auto';
+//       else  h += 'px';
+
+  return [w,h];
+
+}
 
 
 function MessageAJAXFailure ( title,jqXHR,exception )  {

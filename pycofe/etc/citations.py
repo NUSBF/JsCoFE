@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    13.09.18   <--  Date of Last Modification.
+#    09.10.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -13,6 +13,8 @@
 #
 # ============================================================================
 #
+
+import os
 
 #import pyrvapi
 
@@ -28,14 +30,16 @@ citations = {
                             'journal' : 'Acta Cryst.',
                             'volume'  : 'D67',
                             'year'    : '2011',
-                            'pages'   : '235-242'
+                            'pages'   : '235-242',
+                            'doi'     : '10.1107/S0907444910045749'
                   }]
                 },
 
     'ccp4'            : { 'name' : 'CCP4 Project' , 'category' : 'primary', 'refs' : [] },  # empty refs means default
     'pdbcur'          : { 'name' : 'PDBCur'       , 'category' : 'service', 'refs' : [] },
     'freerflag'       : { 'name' : 'FreeRFlag'    , 'category' : 'primary', 'refs' : [] },
-    'ctruncate'       : { 'name' : 'CTruncate'    , 'category' : 'primary', 'refs' : [] },
+    'freerflag-srv'   : { 'name' : 'FreeRFlag'    , 'category' : 'service', 'refs' : [] },
+    'ctruncate'       : { 'name' : 'CTruncate'    , 'category' : 'service', 'refs' : [] },
     'mtz2various'     : { 'name' : 'mtz2various'  , 'category' : 'service', 'refs' : [] },
     'matthews_coef'   : { 'name' : 'Matthews_Coef', 'category' : 'primary', 'refs' : [] },
     'cad'             : { 'name' : 'CAD'          , 'category' : 'service', 'refs' : [] },
@@ -53,14 +57,16 @@ citations = {
                             'journal' : 'Acta Cryst.',
                             'volume'  : 'D62',
                             'year'    : '2006',
-                            'pages'   : '72-82'
+                            'pages'   : '72-82',
+                            'doi'     : '10.1107/S0907444905036693'
                         },{
                             'authors' : 'Evans, P.R.',
                             'title'   : 'An introduction to data reduction: space-group determination, scaling and intensity statistics',
                             'journal' : 'Acta Cryst.',
                             'volume'  : 'D67',
                             'year'    : '2011',
-                            'pages'   : '282-292'
+                            'pages'   : '282-292',
+                            'doi'     : '10.1107/S090744491003982X'
                         }]
                   },
 
@@ -72,7 +78,8 @@ citations = {
                             'journal' : 'Acta Cryst.',
                             'volume'  : 'D67',
                             'year'    : '2011',
-                            'pages'   : '271-281'
+                            'pages'   : '271-281',
+                            'doi'     : '10.1107/S0907444910048675'
                         }]
                   },
 
@@ -84,7 +91,8 @@ citations = {
                             'journal' : 'Acta Cryst.',
                             'volume'  : 'D66',
                             'year'    : '2010',
-                            'pages'   : '125-132'
+                            'pages'   : '125-132',
+                            'doi'     : '10.1107/S0907444909047337'
                         }]
                   },
 
@@ -96,7 +104,8 @@ citations = {
                             'journal' : 'Acta Cryst.',
                             'volume'  : 'D69',
                             'year'    : '2013',
-                            'pages'   : '1204-1214'
+                            'pages'   : '1204-1214',
+                            'doi'     : '10.1107/S0907444913000061'
                         }]
                   },
 
@@ -108,8 +117,14 @@ citations = {
                             'journal' : 'J. Appl. Cryst.',
                             'volume'  : '30',
                             'year'    : '1997',
-                            'pages'   : '1022-1025'
+                            'pages'   : '1022-1025',
+                            'doi'     : '10.1107/S0021889897006766'
                         }]
+                  },
+
+    'molrep-srf' : { 'name'    : 'Molrep-SRF',
+                    'category' : 'service',
+                    'copy'     : [['molrep',-1]]
                   },
 
     'refmac5' :   { 'name'     : 'Refmac',
@@ -120,9 +135,17 @@ citations = {
                             'journal' : 'Acta Cryst.',
                             'volume'  : 'D67',
                             'year'    : '2011',
-                            'pages'   : '355-367'
+                            'pages'   : '355-367',
+                            'doi'     : '10.1107/S0907444911001314'
                         }]
                   },
+
+    'refmac5-srv' : { 'name'   : 'Refmac',
+                    'category' : 'service',
+                    'copy'     : [['refmac5',-1]]
+                  },
+
+
 
     'mrbump' :    { 'name'     : 'MrBUMP',
                     'category' : 'primary',
@@ -132,7 +155,8 @@ citations = {
                             'journal' : 'Acta Cryst.',
                             'volume'  : 'D64',
                             'year'    : '2008',
-                            'pages'   : '119-124'
+                            'pages'   : '119-124',
+                            'doi'     : '10.1107/S0907444907037195'
                         }]
                   },
 
@@ -240,7 +264,8 @@ citations = {
                             'journal' : 'Acta Cryst.',
                             'volume'  : 'D70',
                             'year'    : '2014',
-                            'pages'   : '2487-2499'
+                            'pages'   : '2487-2499',
+                            'doi'     : '10.1107/S1399004714016241'
                         }]
                   },
 
@@ -267,15 +292,17 @@ citations = {
                             'journal' : 'Acta Cryst.',
                             'volume'  : 'D74',
                             'year'    : '2018',
-                            'pages'   : '85-97'
+                            'pages'   : '85-97',
+                            'doi'     : '10.1107/S2059798317017235'
                         }, {
                             'authors' : 'Parkhurst, J.M., Winter, G., Waterman, D.G., Fuentes-Montero, L., ' +\
                                         'Gildea, R.J., Murshudov, G.N., Evans, G.',
-                            'title'   : 'DIALS',
+                            'title'   : 'Robust background modelling in DIALS',
                             'journal' : 'J. Appl. Cryst.',
                             'volume'  : '49',
                             'year'    : '2016',
-                            'pages'   : '1912-1921'
+                            'pages'   : '1912-1921',
+                            'doi'     : '10.1107/S1600576716013595'
                         }]
                   },
 
@@ -287,9 +314,21 @@ citations = {
                             'journal' : 'Acta Cryst.',
                             'volume'  : 'D66',
                             'year'    : '2010',
-                            'pages'   : '486-501'
+                            'pages'   : '486-501',
+                            'doi'     : '10.1107/S0907444910007493'
                         }]
                   },
+
+    'findligand-bin' : { 'name'     : 'COOT-findligand',
+                         'category' : 'primary',
+                         'copy'     : [['coot',-1]]  # -1 means copy all
+                       },
+
+    'findwaters-bin' : { 'name'     : 'COOT-findwaters',
+                         'category' : 'primary',
+                         'copy'     : [['coot',-1]]  # -1 means copy all
+                       },
+
 
     'cparrot' :   { 'name'     : 'PARROT',
                     'category' : 'primary',
@@ -299,7 +338,8 @@ citations = {
                             'journal' : 'Acta Cryst.',
                             'volume'  : 'D66',
                             'year'    : '2010',
-                            'pages'   : '470-478'
+                            'pages'   : '470-478',
+                            'doi'     : '10.1107/S090744490903947X'
                         }]
                   },
 
@@ -311,14 +351,16 @@ citations = {
                             'journal' : 'Acta Cryst.',
                             'volume'  : 'D68',
                             'year'    : '2012',
-                            'pages'   : '328-335'
+                            'pages'   : '328-335',
+                            'doi'     : '10.1107/S0907444911039655'
                         },{
                             'authors' : 'Cowtan, K.',
                             'title'   : 'The Buccaneer software for automated model building',
                             'journal' : 'Acta Cryst.',
                             'volume'  : 'D62',
                             'year'    : '2006',
-                            'pages'   : '1002-1011'
+                            'pages'   : '1002-1011',
+                            'doi'     : '10.1107/S0907444906022116'
                         }]
                   },
 
@@ -330,19 +372,21 @@ citations = {
                             'journal' : 'J. Appl. Cryst.',
                             'volume'  : '40',
                             'year'    : '2007',
-                            'pages'   : '658-674'
+                            'pages'   : '658-674',
+                            'doi'     : '10.1107/S0021889807021206'
                         }]
                   },
 
     'fft' :       { 'name'     : 'FFT',
-                    'category' : 'primary',
+                    'category' : 'service',
                     'refs'     : [{
                             'authors' : 'Eyck, L.F.',
-                            'title'   : '',
+                            'title'   : 'Crystallographic fast Fourier transforms',
                             'journal' : 'Acta Cryst.',
                             'volume'  : 'A29',
                             'year'    : '1973',
-                            'pages'   : '183'
+                            'pages'   : '183',
+                            'doi'     : '10.1107/S0567739473000458'
                         }]
                   },
 
@@ -354,7 +398,8 @@ citations = {
                             'journal' : 'Acta Cryst.',
                             'volume'  : 'D73',
                             'year'    : '2017',
-                            'pages'   : '112-122'
+                            'pages'   : '112-122',
+                            'doi'     : '10.1107/S2059798317000067'
                         }]
                   },
 
@@ -366,7 +411,8 @@ citations = {
                             'journal' : 'J. Mol. Biochem.',
                             'volume'  : '1(2)',
                             'year'    : '2012',
-                            'pages'   : '76-85'
+                            'pages'   : '76-85; <i>PMCID: <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5117261/" target="_blank">PMC5117261</a></i>',
+                            'doi'     : ''
                         }]
                   },
 
@@ -378,14 +424,16 @@ citations = {
                             'journal' : 'J. Mol. Biol.',
                             'volume'  : '372',
                             'year'    : '2007',
-                            'pages'   : '774-797'
+                            'pages'   : '774-797',
+                            'doi'     : '10.1016/j.jmb.2007.05.022'
                         },{
                             'authors' : 'Krissinel, E.',
                             'title'   : 'Stock-based detection of protein oligomeric states in jsPISA',
                             'journal' : 'Nucl. Acids Res.',
-                            'volume'  : '',
+                            'volume'  : '43(W1)',
                             'year'    : '2015',
-                            'pages'   : 'DOI:10.1093/nar/gkv314'
+                            'pages'   : 'W314-9',
+                            'doi'     : '10.1093/nar/gkv314'
                         }]
                   },
 
@@ -402,14 +450,16 @@ citations = {
                             'journal' : 'IUCrJ',
                             'volume'  : '5',
                             'year'    : '2018',
-                            'pages'   : ''
+                            'pages'   : '166-171',
+                            'doi'     : '10.1107/S2052252517017961'
                         },{
                             'authors' : 'Skubak, P., Pannu, N.S.',
                             'title'   : 'Automatic protein structure solution from weak X-ray data',
                             'journal' : 'Nature Comm.',
                             'volume'  : '4',
                             'year'    : '2013',
-                            'pages'   : '2777'
+                            'pages'   : '2777',
+                            'doi'     : '10.1038/ncomms3777'
                         }]
                   },
 
@@ -421,7 +471,8 @@ citations = {
                             'journal' : 'Acta Cryst.',
                             'volume'  : 'A64',
                             'year'    : '2008',
-                            'pages'   : '112-122'
+                            'pages'   : '112-122',
+                            'doi'     : '10.1107/S0108767307043930'
                         }]
                   },
 
@@ -443,15 +494,17 @@ citations = {
                             'journal' : 'Acta Cryst.',
                             'volume'  : 'D58',
                             'year'    : '2002',
-                            'pages'   : '1772-1779'
+                            'pages'   : '1772-1779',
+                            'doi'     : '10.1107/S0907444902011678'
                         }]
                   },
 
     'uglymol' :   { 'name'     : 'UglyMol',
+                    'desc'     : 'javascript molecular graphics',
                     'category' : 'viewer',
                     'refs'     : [{
                             'authors' : 'Wojdyr, M.',
-                            'title'   : ' UglyMol: a WebGL macromolecular viewer focused on the electron density',
+                            'title'   : 'UglyMol: a WebGL macromolecular viewer focused on the electron density',
                             'journal' : 'J. Open Source Softw.',
                             'volume'  : '2(18)',
                             'year'    : '2017',
@@ -461,6 +514,7 @@ citations = {
                   },
 
     'ccp4mg'  :   { 'name'     : 'CCP4 MG',
+                    'desc'     : 'CCP4 molecular graphics',
                     'category' : 'viewer',
                     'refs'     : [{
                             'authors' : 'McNicholas, S., Potterton, E., Wilson, K.S., Noble, M.E.M.',
@@ -468,11 +522,13 @@ citations = {
                             'journal' : 'Acta Cryst.',
                             'volume'  : 'D67',
                             'year'    : '2011',
-                            'pages'   : '386-394'
+                            'pages'   : '386-394',
+                            'doi'     : '10.1107/S0907444911007281'
                         }]
                   },
 
     'viewhkl' :   { 'name'     : 'ViewHKL',
+                    'desc'     : 'reflection data viewer',
                     'category' : 'viewer',
                     'refs'     : [{
                             'authors' : 'Evans, P., Krissinel, E.',
@@ -480,7 +536,8 @@ citations = {
                             'journal' : 'Unpublished',
                             'volume'  : '',
                             'year'    : '2011',
-                            'pages'   : ''
+                            'pages'   : '',
+                            'doi'     : ''
                         }]
                   },
 
@@ -492,7 +549,8 @@ citations = {
                             'journal' : 'Acta Cryst.',
                             'volume'  : 'D74',
                             'year'    : '2018',
-                            'pages'   : '143-151'
+                            'pages'   : '143-151',
+                            'doi'     : '10.1107/S2059798317014565'
                   }]
                 },
 
@@ -508,7 +566,8 @@ citations = {
                             'journal' : 'Bioinformatics',
                             'volume'  : '23',
                             'year'    : '2007',
-                            'pages'   : '2947-2948'
+                            'pages'   : '2947-2948',
+                            'doi'     : '10.1093/bioinformatics/btm404'
                   }]
                 },
 
@@ -559,9 +618,9 @@ citation_list = []
 
 
 def addCitation ( appName ):
-    appRef = appName
-    if appName.endswith(".bat"):
-        appRef = appName[:len(appName)-4]
+    appRef = os.path.splitext ( os.path.basename(appName) )[0]
+    #if appName.endswith(".bat"):
+    #    appRef = appName[:len(appName)-4]
     if appRef not in citation_list:
         citation_list.append ( appRef )
     return
@@ -578,10 +637,13 @@ def makeCitation ( reference ):
               reference["volume"] + "</b>"
     if reference['pages']:
         refhtml += ": " + reference["pages"]
+    if reference['doi']:
+        refhtml += "; <a href='https://doi.org/" + reference["doi"] +\
+                   "' target='_blank'><i>doi:" + reference["doi"] + "</i></a>"
     return refhtml
 
 
-def _get_references ( citation ):
+def _get_references ( citation,lists ):
     refs     = []
     if 'copy' in citation:
         copy = citation['copy']
@@ -596,14 +658,59 @@ def _get_references ( citation ):
                     elif index<len(cit['refs']):
                         refs.append ( cit['refs'][index] )
                     else:
-                        nocopy.append ( "index:" + appName + "/" + aname )
+                        lists['nocopy'].append ( "index:" + appName + "/" + aname )
                 else:
-                    nocopy.append ( "refs:" + appName + "/" + aname )
+                    lists['nocopy'].append ( "refs:" + appName + "/" + aname )
             else:
-                nocopy.append ( "citation:" + appName + "/" + aname )
+                lists['nocopy'].append ( "citation:" + appName + "/" + aname )
     if 'refs' in citation:
         refs += citation['refs']
     return refs
+
+
+def get_citation_html_list ( citation,appName,desc_bool,lists ):
+    rlst = []
+    refs = _get_references ( citation,lists )
+    lst  = []
+
+    if len(refs)<=0:
+        if appName not in lists['deflist']:
+            cit = makeCitation ( citations['default']['refs'][0] )
+            if cit not in lists['flist']:
+                lists['flist'].append ( cit )
+                if citation['category']=='primary':
+                    lists['deflist'].append ( appName )
+                else:
+                    lst.append ( "<li>" + cit + "</li>" )
+    else:
+        for reference in refs:
+            cit  = makeCitation ( reference )
+            if cit not in lists['flist']:
+                lists['flist'].append ( cit )
+                lst.append ( "<li>" + cit + "</li>" )
+
+    if desc_bool and len(lst)>0:
+        html_str = "<li><b><font style='font-size:110%'><i>" +\
+                       citation['name'] + "</i></font>:</b>"
+        if 'desc' in citation:
+            html_str += " <i>(" + citation['desc'] + ")</i>"
+        rlst.append ( html_str + "<ul>" + "".join(lst) + "</ul></li>" )
+    else:
+        rlst += lst
+
+    return rlst
+
+
+def make_html_list ( clist,category,desc_bool,lists ):
+    rlist = []
+    for appName in clist:
+        if appName in citations:
+            citation = citations[appName]
+            if citation['category']==category:
+                rlist += get_citation_html_list ( citation,appName,desc_bool,lists )
+        else:
+            lists['noref'].append ( appName )
+    return rlist
 
 
 def makeCitationsHTML ( body ):
@@ -612,16 +719,67 @@ def makeCitationsHTML ( body ):
         return None
 
     else:
+
+        lists = { 'noref'   : [], # not referenced
+                  'deflist' : [], # default reference
+                  'nocopy'  : [], # citation index errors
+                  'flist'   : []  # all citations
+                }
+
+        html  = ""
+
+        plist = make_html_list ( citation_list,'primary',True,lists )  # primary tasks citations
+        #lists['deflist'].append ( 'ccp4' )
+        ccp4ref = lists['deflist']
+
+        if len(plist)+len(ccp4ref)>0:
+            html = "<b>The following programs were used:</b><ul>" + "".join(plist)
+            if len(ccp4ref)>0:
+                html += "<li><b><font style='font-size:110%'><i>" + citations[ccp4ref[0]]['name']
+                for i in range(1,len(ccp4ref)):
+                    html += ", " + citations[ccp4ref[i]]['name']
+                html += "</i></font>:</b><ul><li>" + makeCitation(citations['default']['refs'][0]) + "</ul></li>"
+            html += "</ul>"
+
+        slist = make_html_list ( citation_list,'service',True,lists )  # viewer category citations
+        vlist = make_html_list ( citation_list,'viewer' ,True,lists )  # viewer category citations
+
+        if len(slist)>0:
+            html += "<b>The following programs were used in various service operations and/or " +\
+                    "visual data preparation:</b><ul>" +\
+                    "".join(slist) + "</ul>"
+
+        if len(vlist)>0:
+            html += "<b>You may have used the following graphical viewers:</b><ul>" +\
+                    "".join(vlist) + "</ul>"
+
+        html += "<b>Results were delivered to you by " + body.appName() + ":</b><ul><li>" +\
+                makeCitation(citations['jscofe']['refs'][0]) + "</li></ul>"
+
+        html += "&nbsp;<p><hr/><i>Please note: full set of references related to your " +\
+                "final results will be generated by the PDB Deposition task</i>"
+
+        if len(lists['noref'])>0:
+            html += "<p><font style='font-size:85%'><i>Developer: no references for " +\
+                    str(lists['noref']) + ", please provide</i></font>"
+        if len(lists['nocopy'])>0:
+            html += "<p><font style='font-size:85%'><i>Developer: citation index errors: " +\
+                    str(lists['nocopy']) + ", please correct</i></font>"
+
+
+
+        """
         html    = "<b>The following programs were used:</b><ul>"
         noref   = []
         nocopy  = []
         ccp4ref = []
         viewers = []
+        service = []
         for appName in citation_list:
             if appName in citations:
                 citation = citations[appName]
                 refs     = _get_references ( citation )
-                if 'category' in citation and citation['category']=='viewer':
+                if citation['category']=='viewer':
                     viewers += refs
                 elif len(refs)>0:
                     html += "<li><b><font style='font-size:110%'><i>" + citation['name'] +\
@@ -633,6 +791,9 @@ def makeCitationsHTML ( body ):
                     ccp4ref.append ( appName )
             else:
                 noref.append ( appName )
+
+        html = "<b>The following programs were used:</b><ul>"
+
 
         ccp4ref.append ( 'ccp4' )
         html += "<li><b><font style='font-size:110%'><i>" + citations[ccp4ref[0]]['name']
@@ -657,6 +818,7 @@ def makeCitationsHTML ( body ):
         if len(nocopy)>0:
             html += "<p><font style='font-size:85%'><i>Developer: citation index errors: " +\
                     str(nocopy) + ", please correct</i></font>"
+        """
 
     return html
 
@@ -667,63 +829,21 @@ def makeSummaryCitationsHTML ( clist,eol_tasks ):
         return None
 
     else:
-        lists = { 'noref' : [],
-                  'flist' : []  # all citations
+
+        lists = { 'noref'   : [], # not referenced
+                  'deflist' : [], # default reference
+                  'nocopy'  : [], # citation index errors
+                  'flist'   : []  # all citations
                 }
 
-        def get_citation_html_list ( citation,desc_bool ):
-            rlst = []
-            refs = _get_references ( citation )
-            lst  = []
-            for reference in refs:
-                cit  = makeCitation ( reference )
-                if cit not in lists['flist']:
-                    lists['flist'].append ( cit )
-                    lst.append ( "<li>" + cit + "</li>" )
-            if desc_bool:
-                html_str = "<li><b><font style='font-size:110%'><i>" +\
-                               citation['name'] + "</i></font>:</b>"
-                if 'desc' in citation:
-                    html_str += " <i>(" + citation['desc'] + ")</i>"
-                rlst.append ( html_str + "<ul>" + "".join(lst) + "</ul></li>" )
-            else:
-                rlst += lst
-            return rlst
-
-        def make_html_list ( category,desc_bool ):
-            rlist = []
-            for appName in clist:
-                if appName in citations:
-                    citation = citations[appName]
-                    if citation['category']==category:
-                        rlist += get_citation_html_list ( citation,desc_bool )
-                        """
-                        refs = _get_references ( citation )
-                        lst  = []
-                        for reference in refs:
-                            cit  = makeCitation ( reference )
-                            if cit not in lists['flist']:
-                                lists['flist'].append ( cit )
-                                lst.append ( "<li>" + cit + "</li>" )
-                        if desc_bool:
-                            rlist.append ( "<li><b><font style='font-size:110%'><i>" +\
-                                           citation['name'] + "</i></font>:</b><ul>" +\
-                                           "".join(lst) + "</ul></li>" )
-                        else:
-                            rlist += lst
-                        """
-                else:
-                    lists['noref'].append ( appName )
-            return rlist
-
-        plist = make_html_list ( 'primary',False )  # primary tasks citations
-        vlist = make_html_list ( 'viewer' ,True  )  # viewer category citations
+        plist = make_html_list ( clist,'primary',False,lists )  # primary tasks citations
+        vlist = make_html_list ( clist,'viewer' ,True ,lists )  # viewer category citations
 
         alist = []
         if eol_tasks:
             for i in range(len(eol_tasks)):
                 if eol_tasks[i] in analysis_tasks:
-                    alist += get_citation_html_list ( analysis_tasks[eol_tasks[i]],True )
+                    alist += get_citation_html_list ( analysis_tasks[eol_tasks[i]],"",True,lists )
 
         rstr  = "<li>" + makeCitation(citations['default']['refs'][0]) + "</li>"
         if rstr not in plist:
@@ -751,5 +871,8 @@ def makeSummaryCitationsHTML ( clist,eol_tasks ):
         if len(lists['noref'])>0:
             html += "<p><font style='font-size:85%'><i>Developer: no references for " +\
                     str(lists['noref']) + ", please provide</i></font>"
+        if len(lists['nocopy'])>0:
+            html += "<p><font style='font-size:85%'><i>Developer: citation index errors: " +\
+                    str(lists['nocopy']) + ", please correct</i></font>"
 
     return html

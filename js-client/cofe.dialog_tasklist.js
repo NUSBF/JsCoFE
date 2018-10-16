@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    20.08.18   <--  Date of Last Modification.
+ *    11.10.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -32,16 +32,21 @@ function TaskListDialog ( dataBox,branch_task_list,onSelect_func )  {
   this.element.setAttribute ( 'title','Task List' );
   document.body.appendChild ( this.element );
 
+  this.branch_tasks  = [];
+  for (var i=0;i<branch_task_list.length;i++)
+    if (branch_task_list[i].state!=job_code.remark)
+      this.branch_tasks.push ( branch_task_list[i] );
+
   this.dataBox       = dataBox;
-  this.task          = branch_task_list[0];
-  this.branch_tasks  = branch_task_list;
+  this.task          = this.branch_tasks[0];
   this.onSelect_func = onSelect_func;
   this.selected_task = null;  // will receive new task template or null if canceled
 
   this.makeLayout();
 
-  var w = 4*$(window).width ()/9;
-  var h = 6*$(window).height()/8;
+  var w = window.innerWidth;
+  var w = Math.min ( Math.max(700,4*w/9),6*w/8 );
+  var h = 6*window.innerHeight/8;
 
   $(this.element).dialog({
     resizable : true,
@@ -85,8 +90,16 @@ TaskListDialog.prototype.constructor = TaskListDialog;
 
 TaskListDialog.prototype.setTask = function ( task_obj,grid,row,setall )  {
 
-  if ((!__local_service) && (task_obj.nc_type=='client'))
-    return null;
+  //if ((!__local_service) && (task_obj.nc_type=='client'))
+  //  return null;
+
+  if (task_obj.nc_type=='client')  {
+    if (!__local_service)
+      return null;
+  } else if (task_obj.nc_type=='client-cloud')  {
+    if ((!__local_service) && (!__cloud_storage))
+      return null;
+  }
 
   if ((__exclude_tasks.indexOf(task_obj._type)>=0) ||
       ((__exclude_tasks.indexOf('unix-only')>=0) &&
@@ -228,12 +241,18 @@ var row      = 0;
   ]);
   var section1 = section0;
 
-  this.makeSection ( 'Data Import',[
+
+  var data_import_tasks = [
     new TaskImport        (),
-    new TaskFacilityImport(),
+    new TaskFacilityImport()
+  ];
+  if (__cloud_storage)
+    data_import_tasks.push ( new TaskCloudImport() );
+
+  this.makeSection ( 'Data Import',data_import_tasks.concat([
     'Utilities',
-    new TaskXyz2Revision  ()
-  ]);
+    new TaskXyz2Revision()
+  ]));
 
   this.makeSection ( 'Data Processing',[
     new TaskXia2     (),
@@ -306,8 +325,9 @@ var row      = 0;
 
   if (__login_user=='Developer')
     this.makeSection ( 'Tasks in Development',[
-      new TaskMergeData (),
-      new TaskHelloWorld()
+      new TaskCloudImport(),
+      new TaskMergeData  (),
+      new TaskHelloWorld ()
     ]);
 
   if (navail==1)

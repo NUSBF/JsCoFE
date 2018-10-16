@@ -93,64 +93,6 @@ if (!__template)  {
           function(){}       // onTreeItemSelect
     );
 
-/*
-    if ((this.state==job_code.new) || (this.state==job_code.running)) {
-      div.header.setLabel ( ' ',2,0,1,1 );
-      div.header.setLabel ( ' ',2,1,1,1 );
-    } else
-      div.header.uname_inp.setValue ( this.uname.replace(/<(?:.|\n)*?>/gm, '') );
-
-    var msg = '';
-    if (__local_service)
-          msg = 'Use file selection buttons ';
-    else  msg = 'Use the file selection button ';
-    div.grid.setLabel ( msg + 'below to select and upload data files ' +
-                        'to the Project (use multiple file selections and ' +
-                        'repeat uploads if necessary). When done, hit ' +
-                        '<b><i>Import</i></b> button to process ' +
-                        'files uploaded.<br>&nbsp;',
-                        0,0, 1,1 ).setFontSize('80%');
-    div.grid.setWidth ( '100%' );
-
-    div.customData = {};
-    div.customData.login_token = __login_token;
-    div.customData.project     = this.project;
-    div.customData.job_id      = this.id;
-    div.customData.file_mod    = {'rename':{},'annotation':[]}; // file modification and annotation
-    (function(panel,task){
-      panel.upload = new Upload ( panel.customData,'project_data',
-        function(e,onReady_func) {
-          if (e.target.files.length>0)
-            _import_checkFiles ( e.target.files,div.customData.file_mod,
-                                 panel.upload.upload_files,onReady_func );
-        },
-        function(){
-          new ImportPDBDialog ( function(pdb_list){
-            pdb_spec_list = [];
-            for (var i=0;i<pdb_list.length;i++)
-              pdb_spec_list.push ( 'PDB::' + pdb_list[i] );
-            panel.upload.setUploadedFiles ( pdb_spec_list );
-            //alert ( 'action ' + entry_list );
-          });
-        },
-        function(returnCode){
-          if (!returnCode)
-            task.sendInputStateEvent ( panel );
-        });
-
-      panel.upload.addSignalHandler ( cofe_signals.uploadEvent, function(detail){
-        task.sendTaskStateSignal ( panel,detail );
-      });
-
-    }(div,this));
-    div.upload.setUploadedFiles ( this.upload_files );
-    if (this.upload_files.length<=0)
-      this.sendTaskStateSignal ( div,'hide_run_button' );
-
-    div.grid.setWidget ( div.upload,1,0,1,1 );
-    div.panel.setScrollable ( 'hidden','hidden' );
-*/
-
     return div;
 
   }

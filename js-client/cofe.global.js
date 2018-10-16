@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    06.07.18   <--  Date of Last Modification.
+ *    06.10.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -36,6 +36,7 @@ var __admin        = false;
 var __current_page    = null;
 var __current_project = null;
 var __local_setup     = false;
+var __cloud_storage   = false;  // true if user has cloud storage allocated
 
 var __touch_device = ('ontouchstart' in document.documentElement);
 // the following will also include desktops with touch screens:
@@ -45,6 +46,79 @@ $(window).resize ( function(){
   if (__current_page)
     __current_page.onResize ( window.innerWidth,window.innerHeight );
 });
+
+
+function setFullScreen() {
+  var docElm = document.documentElement;
+  if (docElm.requestFullscreen) {
+      docElm.requestFullscreen();
+  }
+  else if (docElm.msRequestFullscreen) {
+      docElm.msRequestFullscreen();
+  }
+  else if (docElm.mozRequestFullScreen) {
+      docElm.mozRequestFullScreen();
+  }
+  else if (docElm.webkitRequestFullScreen) {
+      docElm.webkitRequestFullScreen();
+  }
+};
+
+function quitFullScreen() {
+  if (document.exitFullscreen) {
+      document.exitFullscreen();
+  }
+  else if (document.mozCancelFullScreen) {
+      document.mozCancelFullScreen();
+  }
+  else if (document.webkitCancelFullScreen) {
+      document.webkitCancelFullScreen();
+  }
+  else if (document.msExitFullscreen) {
+      document.msExitFullscreen();
+  }
+}
+
+
+function isFullScreen() {
+  if (typeof document.fullscreen!=='undefined')
+    return document.fullscreen;
+  if (typeof document.mozFullScreen!=='undefined')
+    return document.mozFullScreen;
+  if (typeof document.webkitIsFullScreen!=='undefined')
+    return document.webkitIsFullScreen;
+  if (typeof document.msFullscreenElement!=='undefined')
+    return document.msFullscreenElement;
+  return -1;
+}
+
+function toggleFullScreen() {
+var ifs = isFullScreen();
+  if (ifs==-1)  {
+    alert ( 'Full Screen Mode is not supported' );
+    return;
+  } else if (ifs)  quitFullScreen();
+             else  setFullScreen ();
+}
+
+/*
+document.addEventListener("fullscreenchange", function () {
+    fullscreenState.innerHTML = (document.fullscreen)? "" : "not ";
+}, false);
+
+document.addEventListener("mozfullscreenchange", function () {
+    fullscreenState.innerHTML = (document.mozFullScreen)? "" : "not ";
+}, false);
+
+document.addEventListener("webkitfullscreenchange", function () {
+    fullscreenState.innerHTML = (document.webkitIsFullScreen)? "" : "not ";
+}, false);
+
+document.addEventListener("msfullscreenchange", function () {
+    fullscreenState.innerHTML = (document.msFullscreenElement)? "" : "not ";
+}, false);
+*/
+
 
 // ===========================================================================
 // various constants

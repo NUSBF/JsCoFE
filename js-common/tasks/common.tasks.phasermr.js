@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    15.12.17   <--  Date of Last Modification.
+ *    05.10.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Phaser-MR Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2017
+ *  (C) E. Krissinel, A. Lebedev 2016-2018
  *
  *  =================================================================
  *
@@ -37,6 +37,7 @@ function TaskPhaserMR()  {
   this.title   = 'Molecular Replacement with Phaser';
   this.helpURL = './html/jscofe_task_phasermr.html';
 
+//    data_type   : {'DataRevision':['hkl']}, // data type(s) and subtype(s)
   this.input_dtypes = [{  // input data types
       data_type   : {'DataRevision':['hkl']}, // data type(s) and subtype(s)
       label       : 'Structure revision',     // label for input dialog
@@ -45,6 +46,14 @@ function TaskPhaserMR()  {
       version     : 0,           // minimum data version allowed
       min         : 1,           // minimum acceptable number of data instances
       max         : 1            // maximum acceptable number of data instances
+    },{
+      data_type   : {'DataStructure':['phases']}, // data type(s) and subtype(s)
+      label       : 'Phases',  // label for input dialog
+      inputId     : 'phases',       // input Id for referencing input fields
+      tooltip     : 'The phases to be used in Translation Function.',
+      version     : 0,          // minimum data version allowed
+      min         : 0,          // minimum acceptable number of data instances
+      max         : 1           // maximum acceptable number of data instances
     },{
 //**      data_type   : {'DataEnsemble':['~sequnk'],'DataXYZ':[]}, // data type(s) and subtype(s)
       data_type   : {'DataEnsemble':[]}, // data type(s) and subtype(s)
@@ -851,12 +860,46 @@ TaskPhaserMR.prototype.icon_large = function()  { return './images/task_phasermr
 
 TaskPhaserMR.prototype.currentVersion = function()  { return 2; }  // from 09.08.2018
 
-if (__template)  {
+if (!__template)  {
+
+  TaskPhaserMR.prototype.inputChanged = function ( inpParamRef,emitterId,emitterValue )  {
+
+    if (emitterId == 'phases') {
+      var inpDataRef = inpParamRef.grid.inpDataRef;
+      var item = this.getInputItem ( inpDataRef,'revision' );
+      var dropdown = item.dropdown[0];
+      var dt = item.dt[dropdown.getValue()];
+      if ( dt.subtype.indexOf(structure_subtype.XYZ)<0 ) {
+        var dataState = this.getDataState ( inpDataRef );
+        var customGrid = dropdown.customGrid;
+        customGrid.clear();
+        if ( dataState['phases']>0 ) {
+          dropdown.layCustom = 'phaser-mr-ptf';
+          customGrid.setLabel ( 'Try Space Group(s):',0,0,1,1 )
+                                .setFontItalic(true).setNoWrap();
+          customGrid.setLabel ( 'from phases',0,1,1,4 )
+                                .setNoWrap();
+          customGrid.setCellSize ( '','25pt',0,0 );
+          customGrid.setCellSize ( '','25pt',0,1 );
+          customGrid.setVerticalAlignment( 0,0,'middle' );
+          customGrid.setVerticalAlignment( 0,1,'middle' );
+          dropdown.layCustom = 'phaser-mr-fixed';
+        } else {
+          dropdown.layCustom = 'phaser-mr';
+        }
+        dt.layCustomDropdownInput ( dropdown );
+      }
+    }
+
+    TaskTemplate.prototype.inputChanged.call ( this,inpParamRef,emitterId,emitterValue );
+  }
+
+} else  {
   //  for server side
 
   var conf = require('../../js-server/server.configuration');
 
-  TaskPhaserMR.prototype.makeInputData = function ( jobDir )  {
+  TaskPhaserMR.prototype.makeInputData = function ( login,jobDir )  {
 
     // put hkl and structure data in input databox for copying their files in
     // job's 'input' directory
@@ -865,11 +908,17 @@ if (__template)  {
       var revision = this.input_data.data['revision'][0];
       this.input_data.data['hkl'] = [revision.HKL];
       this.input_data.data['seq'] = revision.ASU.seq;
-      if (revision.subtype.indexOf('xyz')>=0)
+      if ('phaser_meta' in revision)  {
+        // prepare all ensemble data
+        var ensembles = revision.phaser_meta.ensembles;
+        for (var ensname in ensembles)
+          this.input_data.data[ensname] = [ensembles[ensname]['data']];
+        this.input_data.data['sol'] = [revision.phaser_meta.sol];
+      } else if (revision.subtype.indexOf('xyz')>=0)
         this.input_data.data['xmodel'] = [revision.Structure];
     }
 
-    __template.TaskTemplate.prototype.makeInputData.call ( this,jobDir );
+    __template.TaskTemplate.prototype.makeInputData.call ( this,login,jobDir );
 
   }
 

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    27.07.18   <--  Date of Last Modification.
+ *    15.10.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -66,6 +66,42 @@ function ncSelectDir ( post_data_obj,callback_func )  {
 }
 
 
+// ===========================================================================
+
+function ncSelectImageDir ( post_data_obj,callback_func )  {
+
+//  console.log ( ' request='+JSON.stringify(post_data_obj));
+
+  var job = utils.spawn ( conf.pythonName(),
+                          ['-m', 'pycofe.varut.select_image_dir', post_data_obj.title],
+                          {} );
+
+  // make stdout and stderr catchers for debugging purposes
+  var stdout = '';
+  var stderr = '';
+  job.stdout.on('data', function(buf) {
+    stdout += buf;
+  });
+  job.stderr.on('data', function(buf) {
+    stderr += buf;
+  });
+
+  job.on('close',function(code){
+
+    if (code==0)  {
+      var meta    = JSON.parse ( stdout );
+      var dirPath = meta['path'];
+      callback_func ( new cmd.Response ( cmd.nc_retcode.ok,'',
+                                     {'directory':dirPath.replace('\n','')} ) );
+    } else
+      callback_func ( new cmd.Response ( cmd.nc_retcode.selDirError,'',
+                                         {'stdout':stdout,'stderr':stderr }) );
+
+  });
+
+}
+
+
 // ==========================================================================
 
 function ncGetInfo ( server_request,server_response )  {
@@ -84,5 +120,6 @@ function ncGetInfo ( server_request,server_response )  {
 
 // ==========================================================================
 // export for use in node
-module.exports.ncSelectDir = ncSelectDir;
-module.exports.ncGetInfo   = ncGetInfo;
+module.exports.ncSelectDir      = ncSelectDir;
+module.exports.ncSelectImageDir = ncSelectImageDir;
+module.exports.ncGetInfo        = ncGetInfo;

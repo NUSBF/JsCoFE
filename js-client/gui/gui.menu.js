@@ -89,6 +89,7 @@ function Menu ( text,icon_uri )  {
         menu.dropdown.element.classList.toggle ( 'menu-show' );
     });
   }(this));
+  this.n_items = 0;
 }
 
 Menu.prototype = Object.create ( Widget.prototype );
@@ -97,12 +98,14 @@ Menu.prototype.constructor = Menu;
 Menu.prototype.addItem = function ( text,icon_uri )  {
 var mi = new MenuItem ( text,icon_uri );
   this.dropdown.addWidget ( mi );
+  this.n_items++;
   return mi;
 }
 
 Menu.prototype.addSeparator = function ()  {
   menuItem = new MenuItem ( '<hr/>','' );
   this.dropdown.addWidget ( menuItem   );
+  this.n_items++;
 }
 
 Menu.prototype.setDisabled = function ( disabled_bool )  {
