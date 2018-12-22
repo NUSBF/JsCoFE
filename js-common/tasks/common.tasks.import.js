@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    08.10.18   <--  Date of Last Modification.
+ *    21.12.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -40,6 +40,18 @@ function TaskImport()  {
   this.helpURL   = './html/jscofe_task_import.html';
   this.fasttrack = true;  // enforces immediate execution
 
+  // declare void input data for passing pre-existing revisions through the task
+  this.input_dtypes = [{       // input data types
+      data_type   : {'DataRevision':[]}, // any revision will be passed
+      label       : '',        // no label for void data entry
+      inputId     : 'void1',   // prefix 'void' will hide entry in import dialog
+      version     : 0,         // minimum data version allowed
+      force       : 100000000, // "show" all revisions available
+      min         : 0,         // minimum acceptable number of data instances
+      max         : 100000000  // maximum acceptable number of data instances
+    }
+  ];
+
 }
 
 if (__template)
@@ -50,10 +62,16 @@ TaskImport.prototype.constructor = TaskImport;
 
 // ===========================================================================
 
-TaskImport.prototype.icon_small = function()  { return './images/task_import_20x20.svg'; }
-TaskImport.prototype.icon_large = function()  { return './images/task_import.svg';       }
+TaskImport.prototype.icon_small = function()  { return 'task_import_20x20'; }
+TaskImport.prototype.icon_large = function()  { return 'task_import';       }
 
-TaskImport.prototype.currentVersion = function()  { return 1; }
+TaskImport.prototype.currentVersion = function()  {
+  var version = 0;
+  if (__template)
+        return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );
+  else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
+}
+
 
 // export such that it could be used in both node and a browser
 if (!__template)  {
@@ -70,6 +88,7 @@ if (!__template)  {
   // does not have any input data from the project
 
     var div = this.makeInputLayout();
+    this.setInputDataFields ( div.grid,0,dataBox,this );
 
     if ((this.state==job_code.new) || (this.state==job_code.running)) {
       div.header.setLabel ( ' ',2,0,1,1 );
@@ -81,12 +100,14 @@ if (!__template)  {
     if (__local_service)
           msg = 'Use file selection buttons ';
     else  msg = 'Use the file selection button ';
+
+    var grid_row = div.grid.getNRows();
     div.grid.setLabel ( msg + 'below to select and upload data files ' +
                         'to the Project (use multiple file selections and ' +
                         'repeat uploads if necessary). When done, hit ' +
                         '<b><i>Import</i></b> button to process ' +
                         'files uploaded.<br>&nbsp;',
-                        0,0, 1,1 ).setFontSize('80%');
+                        grid_row,0, 1,1 ).setFontSize('80%');
     div.grid.setWidth ( '100%' );
 
     div.customData = {};
@@ -123,7 +144,7 @@ if (!__template)  {
     if (this.upload_files.length<=0)
       this.sendTaskStateSignal ( div,'hide_run_button' );
 
-    div.grid.setWidget ( div.upload,1,0,1,1 );
+    div.grid.setWidget ( div.upload,grid_row+1,0,1,1 );
     div.panel.setScrollable ( 'hidden','hidden' );
 
     return div;
@@ -286,6 +307,7 @@ if (!__template)  {
   TaskImport.prototype.collectInput = function ( inputPanel )  {
     // collects data from input widgets, created in makeInputPanel() and
     // stores it in internal fields
+    TaskTemplate.prototype.currentVersion.call ( this );
     this.upload_files = inputPanel.upload.upload_files;
     if (this.upload_files.length>0)
       return '';   // input is Ok

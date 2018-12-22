@@ -1,6 +1,6 @@
 
 ====================
-General |jsCoFE| Setup
+General (Server-based) |jsCoFE| Setup
 ====================
 
 ---------------------------------

@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    08.08.18   <--  Date of Last Modification.
+#    16.11.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -33,7 +33,7 @@ class DType(dtype_template.DType):
         if not json_str:
             self._type         = dtype()
             self.dname         = "hkl"
-            self.version       = 3
+            self.version      += 1      # versioning increments from parent to children
             self.wtype         = "peak" # 'low-remote', 'peak', 'native', 'high-remote'
             self.f_use_mode    = "NO"   # 'NO','EDGE','ON','OFF' (Phaser-EP)
             self.f1            = ""     # amplitude shift  (Crank-2, Phaser-EP)
@@ -91,6 +91,14 @@ class DType(dtype_template.DType):
             return self.dataset.DCELL
         return [0.0,0.0,0.0,0.0,0.0,0.0]
 
+    def getCellParameters_str ( self ):
+        if hasattr(self.dataset,"DCELL"):
+            S = str(self.dataset.DCELL[0])
+            for i in range(1,len(self.dataset.DCELL)):
+                S += " " + str(self.dataset.DCELL[i])
+            return S
+        return ""
+
 
     def getDataSetName ( self ):
         return self.getMeta ( "PROJECT","unk" ) + "/" + \
@@ -122,6 +130,10 @@ class DType(dtype_template.DType):
             return "not given"
 
 
+    def getFreeRColumn ( self ):
+        return self.getMeta ( "FREE","" )
+
+
     def getColumnNames ( self ):
         return self.getMeta ( "Imean.value"    ,"" ) + " " + \
                self.getMeta ( "Imean.sigma"    ,"" ) + " " + \
@@ -146,6 +158,13 @@ class DType(dtype_template.DType):
         if hasattr(self.dataset,"Imean"):
             if self.dataset.Imean is not None:
                 return [self.dataset.Imean.value,self.dataset.Imean.sigma,"I"]
+        if hasattr(self.dataset,"Fmean"):
+            if self.dataset.Fmean is not None:
+                return [self.dataset.Fmean.value,self.dataset.Fmean.sigma,"F"]
+        return [None,None,"X"]
+
+
+    def getMeanF ( self ):
         if hasattr(self.dataset,"Fmean"):
             if self.dataset.Fmean is not None:
                 return [self.dataset.Fmean.value,self.dataset.Fmean.sigma,"F"]

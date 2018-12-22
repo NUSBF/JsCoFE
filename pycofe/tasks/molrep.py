@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    09.08.18   <--  Date of Last Modification.
+#    17.11.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -94,7 +94,7 @@ class Molrep(basic.TaskDriver):
             prf = self.getParameter ( self.task.parameters.sec1.contains.PRF )
             self.write_stdin (
                 "file_f " + phases.getMTZFilePath(self.inputDir()) + "\n" + \
-                "labin F=" + revision.Structure.FWT + " PH=" + revision.Structure.PHWT + \
+                "labin F=" + phases.FWT + " PH=" + phases.PHWT + \
                 "\n" + \
                 "prf " + prf + "\n" + \
                 "sim -1\n"
@@ -147,7 +147,7 @@ class Molrep(basic.TaskDriver):
         self.close_stdin()
 
         # Prepare report parser
-        self.setMolrepLogParser ( self.molrep_report() )
+        self.setMolrepLogParser ( self.getWidgetId(self.molrep_report()) )
 
         # Run molrep
         self.runApp (

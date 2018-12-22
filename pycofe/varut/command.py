@@ -72,6 +72,8 @@ def call ( executable,command_line,job_dir,stdin_fname,file_stdout,
     #    msg = msg + "'" + c + "' "
     #file_stdout.write ( msg + "\n" )
 
+    #file_stdout.write ( " " + str(command_line) + " \\\n" )
+
     file_stdout.write ( " " + executable + " \\\n" )
     indent = "      "
     msg    = indent

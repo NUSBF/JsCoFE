@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    08.10.18   <--  Date of Last Modification.
+ *    12.12.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -53,10 +53,16 @@ TaskFacilityImport.prototype.constructor = TaskFacilityImport;
 
 // ===========================================================================
 
-TaskFacilityImport.prototype.icon_small = function()  { return './images/task_fimport_20x20.svg'; }
-TaskFacilityImport.prototype.icon_large = function()  { return './images/task_fimport.svg';       }
+TaskFacilityImport.prototype.icon_small = function()  { return 'task_fimport_20x20'; }
+TaskFacilityImport.prototype.icon_large = function()  { return 'task_fimport';       }
 
-TaskFacilityImport.prototype.currentVersion = function()  { return 1; }
+TaskFacilityImport.prototype.currentVersion = function()  {
+  var version = 0;
+  if (__template)
+        return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );
+  else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
+}
+
 
 // export such that it could be used in both node and a browser
 if (!__template)  {
@@ -89,7 +95,7 @@ if (!__template)  {
 
     div.grid.setWidth ( '100%' );
     div.select_btn = div.grid.setButton ( 'Select file(s)',
-                                          './images/open_file.svg',0,0,1,1 )
+                                          image_path('open_file'),0,0,1,1 )
                                           .setNoWrap();
     div.grid.setHorizontalAlignment ( 0,0,'center' );
 

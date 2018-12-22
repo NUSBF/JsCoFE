@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    09.08.18   <--  Date of Last Modification.
+#    16.12.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -167,6 +167,20 @@ class EnsemblePrepXYZ(basic.TaskDriver):
             temp = dtype_template.DType ( self.job_id )
             for c in xyz:
                 temp.addSubtypes ( c.subtype )
+            temp.removeSubtypes ([
+                dtype_template.subtypeHKL         (),
+                dtype_template.subtypeAnomalous   (),
+                dtype_template.subtypeASU         (),
+                dtype_template.subtypeSequence    (),
+                dtype_template.subtypeXYZ         (),
+                dtype_template.subtypeSubstructure(),
+                dtype_template.subtypeAnomSubstr  (),
+                dtype_template.subtypePhases      (),
+                dtype_template.subtypeLigands     (),
+                dtype_template.subtypeWaters      (),
+                dtype_template.subtypeMR          (),
+                dtype_template.subtypeEP          ()
+            ])
             ensemble = self.registerEnsemble ( temp.subtype,outputFile,checkout=True )
             if ensemble:
                 if seq:

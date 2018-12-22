@@ -115,7 +115,7 @@ class Aimless(basic.TaskDriver):
 #           return
 #   def tmp(self):
 
-        ds0         = self.makeClass ( self.input_data.data.ds0[0] )
+        ds0 = self.makeClass ( self.input_data.data.ds0[0] )
         if ds0._type=="DataUnmerged":
             mtzRef = ds0.getUnmergedFilePath ( self.inputDir() )
         else:

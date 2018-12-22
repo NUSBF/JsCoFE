@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    05.10.18   <--  Date of Last Modification.
+ *    12.12.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -39,7 +39,7 @@ function TaskCrank2()  {
   this.helpURL = './html/jscofe_task_crank2.html';
 
   this.input_dtypes = [{    // input data types
-      data_type   : {'DataRevision':['!protein','!asu','~xyz','~phases','~substructure']}, // data type(s) and subtype(s)
+      data_type   : {'DataRevision':['!protein','!asu','~substructure']}, // data type(s) and subtype(s)
       label       : 'Structure revision',     // label for input dialog
       inputId     : 'revision', // input Id for referencing input fields
       customInput : 'crank2',   // lay custom fields next to the selection
@@ -81,25 +81,6 @@ function TaskCrank2()  {
             position : [0,0,1,5],
             value    : 'crank2', // used to hide elements in SHELX pipeline
             contains : {
-              /*
-              NRES : {
-                    type      : 'integer',  // blank value is not allowed
-                    keyword   : 'residues_mon=', // the real keyword for job input stream
-                    label     : 'Number of residues in a monomer',
-                    tooltip   : 'This value must be given if target sequence is ' +
-                                'not specified',
-                    iwidth    : 80,
-                    range     : [1,'*'],    // may be absent (no limits) or must
-                                            // be one of the following:
-                                            //   ['*',max]  : limited from top
-                                            //   [min,'*']  : limited from bottom
-                                            //   [min,max]  : limited from top and bottom
-                    value     : '100',      // value to be paired with the keyword
-                    position  : [0,0,1,1],  // [row,col,rowSpan,colSpan]
-                    showon    : {seq:[0]},  // from input data section
-                    hideon    : {sec1:['shelx-substr']}
-                  },
-                */
               HATOM : {
                     type      : 'string',   // empty string not allowed
                     keyword   : 'atomtype=',
@@ -159,42 +140,25 @@ function TaskCrank2()  {
                     position  : [2,0,1,5],
                     hideon    : {_:'||','revision.xyz':[0,-1],sec1:['shelx-substr']}    // from this and input data section
                   },
-              /*
-              MONOMERS_ASYM : {
-                    type      : 'integer_', // blank value is allowed
-                    keyword   : 'monomers_asym=', // the real keyword for job input stream
-                    label     : 'Number of NCS copies',
-                    tooltip   : 'Number of monomers in the asymmetric unit.',
-                    iwidth    : 80,
-                    range     : [1,'*'],    // may be absent (no limits) or must
-                                            // be one of the following:
-                                            //   ['*',max]  : limited from top
-                                            //   [min,'*']  : limited from bottom
-                                            //   [min,max]  : limited from top and bottom
-                    value     : '',         // value to be paired with the keyword
-                    position  : [4,0,1,1],  // [row,col,rowSpan,colSpan]
-                    hideon    : {sec1:['shelx-substr']} // from this and input data section
-                  }
-              */
-              /*
-                  },
               SOLVENT_CONTENT : {
                     type      : 'real_', // blank value is allowed
                     keyword   : 'solvent_content=', // the real keyword for job input stream
-                    label     : 'Solvent content',
-                    tooltip   : 'Fraction of the solvent in the crystal (must ' +
-                                'be between 0.1 and 0.9).',
+                    label     : 'Efective solvent content',
+                    tooltip   : 'Solvent content to be used in calculations (must ' +
+                                'be between 0.01 and 0.99). If left blank, ' +
+                                'solvent fraction from asymmetric unit definition ' +
+                                'will be used.',
                     iwidth    : 80,
-                    range     : [0.1,0.9],  // may be absent (no limits) or must
-                                            // be one of the following:
-                                            //   ['*',max]  : limited from top
-                                            //   [min,'*']  : limited from bottom
-                                            //   [min,max]  : limited from top and bottom
-                    value     : '',         // value to be paired with the keyword
-                    position  : [5,0,1,1],  // [row,col,rowSpan,colSpan]
+                    range     : [0.01,0.99], // may be absent (no limits) or must
+                                             // be one of the following:
+                                             //   ['*',max]  : limited from top
+                                             //   [min,'*']  : limited from bottom
+                                             //   [min,max]  : limited from top and bottom
+                    value     : '',          // value to be paired with the keyword
+                    default   : 'auto',
+                    position  : [3,0,1,1],   // [row,col,rowSpan,colSpan]
                     hideon    : {sec1:['shelx-substr']} // from this and input data section
                   }
-              */
             }
     },
     sec2: { type     : 'section',
@@ -203,37 +167,6 @@ function TaskCrank2()  {
             showon   : {_:'||','revision.xyz':[0,-1],sec1:['shelx-substr']}, // from this and input data section
             position : [1,0,1,5],
             contains : {
-              SUBSTRDET_PROGRAM : {
-                    type     : 'combobox',
-                    keyword  : 'SUBSTRDET_PROGRAM',
-                    label    : 'Substructure determination program',
-                    tooltip  : 'The program that will be used for ' +
-                               'substructure determination',
-                    range    : ['_blank_|Auto',
-                                'shelxd|ShelXD',
-                                'prasa|Prasa'
-                               ],
-                    value    : '_blank_',
-                    position : [0,0,1,1],
-                    showon   : {sec1:['crank2']}
-                  },
-              FAEST_PROGRAM : {
-                    type     : 'combobox',
-                    keyword  : 'FAEST_PROGRAM',
-                    label    : 'FA values estimation program',
-                    tooltip  : 'The program that will be used for estimation ' +
-                               'of FA respective E values, inputted to ' +
-                               'substructure determination program',
-                    range    : ['_blank_|Auto',
-                                'shelxc|ShelXC',
-                                'ecalc|ECalc',
-                                'afro|Afro'
-                               ],
-                    value    : '_blank_',
-                    position : [1,0,1,1],
-                    showon   : {sec1:['crank2']},
-                    hideon   : {SUBSTRDET_PROGRAM:['shelxd']}
-                  },
               SUBSTRDET_NUM_TRIALS : {
                     type      : 'integer_',     // blank value is allowed
                     keyword   : 'num_trials::', // the real keyword for job input stream
@@ -247,41 +180,7 @@ function TaskCrank2()  {
                                            //   [min,'*']  : limited from bottom
                                            //   [min,max]  : limited from top and bottom
                     value     : '',        // value to be paired with the keyword
-                    position  : [2,0,1,1]  // [row,col,rowSpan,colSpan]
-                  },
-              SUBSTRDET_THRESHOLD_STOP_SHELXD : {
-                    type      : 'real_',     // blank value is allowed
-                    keyword   : 'threshold_stop::', // the real keyword for job input stream
-                    label     : 'CFOM threshold for early stop',
-                    tooltip   : 'If the threshold is reached, the substructure ' +
-                                'detection will stop, assuming a solution was ' +
-                                'obtained that will be used for phasing. Saves ' +
-                                'time for the "easy" datasets.',
-                    range     : [0.0,'*'],   // may be absent (no limits) or must
-                                           // be one of the following:
-                                           //   ['*',max]  : limited from top
-                                           //   [min,'*']  : limited from bottom
-                                           //   [min,max]  : limited from top and bottom
-                    value     : '',        // value to be paired with the keyword
-                    position  : [3,0,1,1], // [row,col,rowSpan,colSpan]
-                    showon    : {_:'||',sec1:['shelx-substr'],SUBSTRDET_PROGRAM:['shelxd']}
-                  },
-              SUBSTRDET_THRESHOLD_STOP : {
-                    type      : 'real_',     // blank value is allowed
-                    keyword   : 'threshold_stop::', // the real keyword for job input stream
-                    label     : 'CC threshold for early stop',
-                    tooltip   : 'If the threshold is reached, the substructure ' +
-                                'detection will stop, assuming a solution was ' +
-                                'obtained that will be used for phasing. Saves ' +
-                                'time for the "easy" datasets.',
-                    range     : [0.0,'*'],   // may be absent (no limits) or must
-                                           // be one of the following:
-                                           //   ['*',max]  : limited from top
-                                           //   [min,'*']  : limited from bottom
-                                           //   [min,max]  : limited from top and bottom
-                    value     : '',        // value to be paired with the keyword
-                    position  : [3,0,1,1], // [row,col,rowSpan,colSpan]
-                    hideon    : {_:'||',sec1:['shelx-substr'],SUBSTRDET_PROGRAM:['shelxd']}
+                    position  : [0,0,1,1]  // [row,col,rowSpan,colSpan]
                   },
               SUBSTRDET_HIGH_RES_CUTOFF_SHELXD : {
                     type      : 'real_',     // blank value is allowed
@@ -295,7 +194,7 @@ function TaskCrank2()  {
                                             //   [min,'*']  : limited from bottom
                                             //   [min,max]  : limited from top and bottom
                     value     : '',         // value to be paired with the keyword
-                    position  : [4,0,1,1],  // [row,col,rowSpan,colSpan]
+                    position  : [1,0,1,1],  // [row,col,rowSpan,colSpan]
                     showon    : {_:'||',sec1:['shelx-substr'],SUBSTRDET_PROGRAM:['shelxd']}
                   },
               SUBSTRDET_HIGH_RES_CUTOFF : {
@@ -310,70 +209,8 @@ function TaskCrank2()  {
                                             //   [min,'*']  : limited from bottom
                                             //   [min,max]  : limited from top and bottom
                     value     : '',         // value to be paired with the keyword
-                    position  : [4,0,1,1],  // [row,col,rowSpan,colSpan]
+                    position  : [1,0,1,1],  // [row,col,rowSpan,colSpan]
                     hideon    : {_:'||',sec1:['shelx-substr'],SUBSTRDET_PROGRAM:['shelxd']}
-                  },
-              SUBSTRDET_HIGH_RES_CUTOFF_RADIUS : {
-                    type      : 'real_',     // blank value is allowed
-                    keyword   : 'high_res_cutoff_radius::', // the real keyword for job input stream
-                    label     : 'Radius of tested cutoffs [&Aring]',
-                    tooltip   : 'High resolution cutoffs will be tested in ' +
-                                'this radius around the specified initial ' +
-                                'cutoff. A radius of +-0.5Å - thus scanning ' +
-                                'over 1Å range - is typically sufficient.',
-                    range     : [0.01,'*'], // may be absent (no limits) or must
-                                            // be one of the following:
-                                            //   ['*',max]  : limited from top
-                                            //   [min,'*']  : limited from bottom
-                                            //   [min,max]  : limited from top and bottom
-                    value     : '',         // value to be paired with the keyword
-                    position  : [5,0,1,1],  // [row,col,rowSpan,colSpan]
-                    showon    : {_:'&&',SUBSTRDET_PROGRAM:['prasa'],sec1:['crank2']}
-                  },
-              SUBSTRDET_HIGH_RES_CUTOFF_STEP : {
-                    type      : 'real_',     // blank value is allowed
-                    keyword   : 'high_res_cutoff_step::', // the real keyword for job input stream
-                    label     : 'Incremental step for cutoff testing [&Aring]',
-                    tooltip   : 'The slicing of the cutoff testing: the lower ' +
-                                'the value, the more cutoffs will be tested in ' +
-                                'the chosen resolution cutoff range.',
-                    range     : [0.001,'*'], // may be absent (no limits) or must
-                                             // be one of the following:
-                                             //   ['*',max]  : limited from top
-                                             //   [min,'*']  : limited from bottom
-                                             //   [min,max]  : limited from top and bottom
-                    value     : '',          // value to be paired with the keyword
-                    position  : [6,0,1,1],   // [row,col,rowSpan,colSpan]
-                    showon    : {_:'&&',SUBSTRDET_PROGRAM:['prasa'],sec1:['crank2']}
-                  },
-              SUBSTRDET_MIN_DIST_SYMM_ATOMS : {
-                    type     : 'combobox',
-                    keyword  : 'min_dist_symm_atoms::',
-                    label     : 'Atoms in special positions allowed',
-                    tooltip   : 'Select this option if (part of) the anomalous ' +
-                                'substructure atoms can be in special positions: ' +
-                                'positions related by more than one space group ' +
-                                'symmetry operator.',
-                    range    : ['_blank_|Auto',
-                                '-0.1|Yes',
-                                '3|No',
-                               ],
-                    value    : '_blank_',
-                    position : [7,0,1,2]
-                  },
-              SUBSTRDET_MIN_DIST_ATOMS : {
-                    type      : 'real_',     // blank value is allowed
-                    keyword   : 'min_dist_atoms::', // the real keyword for job input stream
-                    label     : 'Minimal distance between atoms [&Aring]',
-                    tooltip   : 'The (expected) minimal distance between ' +
-                                'anomalous substructure atoms.',
-                    range     : [0.001,'*'], // may be absent (no limits) or must
-                                             // be one of the following:
-                                             //   ['*',max]  : limited from top
-                                             //   [min,'*']  : limited from bottom
-                                             //   [min,max]  : limited from top and bottom
-                    value     : '',          // value to be paired with the keyword
-                    position  : [8,0,1,1]    // [row,col,rowSpan,colSpan]
                   },
               SUBSTRDET_NUM_ATOMS : {
                     type      : 'integer_',    // blank value is allowed
@@ -391,14 +228,160 @@ function TaskCrank2()  {
                                              //   [min,'*']  : limited from bottom
                                              //   [min,max]  : limited from top and bottom
                     value     : '',          // value to be paired with the keyword
-                    position  : [9,0,1,1]    // [row,col,rowSpan,colSpan]
+                    position  : [2,0,1,1]    // [row,col,rowSpan,colSpan]
+                  },
+              SUBSTRDET_PROGRAM : {
+                    type     : 'combobox',
+                    keyword  : 'SUBSTRDET_PROGRAM',
+                    label    : 'Substructure determination program',
+                    tooltip  : 'The program that will be used for ' +
+                               'substructure determination',
+                    range    : ['_blank_|Auto',
+                                'shelxd|ShelXD',
+                                'prasa|Prasa'
+                               ],
+                    value    : '_blank_',
+                    position : [3,0,1,1],
+                    showon   : {sec1:['crank2']}
+                  },
+              FAEST_PROGRAM : {
+                    type     : 'combobox',
+                    keyword  : 'FAEST_PROGRAM',
+                    label    : 'FA values estimation program',
+                    tooltip  : 'The program that will be used for estimation ' +
+                               'of FA respective E values, inputted to ' +
+                               'substructure determination program',
+                    range    : ['_blank_|Auto',
+                                'shelxc|ShelXC',
+                                'ecalc|ECalc',
+                                'afro|Afro'
+                               ],
+                    value    : '_blank_',
+                    position : [4,0,1,1],
+                    showon   : {sec1:['crank2']},
+                    hideon   : {SUBSTRDET_PROGRAM:['shelxd']}
+                  },
+              SUBSTRDET_THRESHOLD_STOP_SHELXD : {
+                    type      : 'real_',     // blank value is allowed
+                    keyword   : 'threshold_stop::', // the real keyword for job input stream
+                    label     : 'CFOM threshold for early stop',
+                    tooltip   : 'If the threshold is reached, the substructure ' +
+                                'detection will stop, assuming a solution was ' +
+                                'obtained that will be used for phasing. Saves ' +
+                                'time for the "easy" datasets.',
+                    range     : [0.0,'*'],   // may be absent (no limits) or must
+                                           // be one of the following:
+                                           //   ['*',max]  : limited from top
+                                           //   [min,'*']  : limited from bottom
+                                           //   [min,max]  : limited from top and bottom
+                    value     : '',        // value to be paired with the keyword
+                    position  : [5,0,1,1], // [row,col,rowSpan,colSpan]
+                    showon    : {_:'||',sec1:['shelx-substr'],SUBSTRDET_PROGRAM:['shelxd']}
+                  },
+              SUBSTRDET_THRESHOLD_STOP : {
+                    type      : 'real_',     // blank value is allowed
+                    keyword   : 'threshold_stop::', // the real keyword for job input stream
+                    label     : 'CC threshold for early stop',
+                    tooltip   : 'If the threshold is reached, the substructure ' +
+                                'detection will stop, assuming a solution was ' +
+                                'obtained that will be used for phasing. Saves ' +
+                                'time for the "easy" datasets.',
+                    range     : [0.0,'*'],   // may be absent (no limits) or must
+                                           // be one of the following:
+                                           //   ['*',max]  : limited from top
+                                           //   [min,'*']  : limited from bottom
+                                           //   [min,max]  : limited from top and bottom
+                    value     : '',        // value to be paired with the keyword
+                    position  : [5,0,1,1], // [row,col,rowSpan,colSpan]
+                    hideon    : {_:'||',sec1:['shelx-substr'],SUBSTRDET_PROGRAM:['shelxd']}
+                  },
+              SUBSTRDET_THRESHOLD_WEAK : {
+                    type      : 'real_',  // blank value is allowed
+                    keyword   : 'threshold_weak::', // the real keyword for job input stream
+                    label     : 'CFOM threshold',
+                    tooltip   : 'Use thorough building if CFOM from substructure ' +
+                                'detection is smaller than specified. The thorough ' +
+                                'building consists of more tracing ' +
+                                'cycles, search for helices and a larger search ' +
+                                'time factor. Setting the value to 1000 forces ' +
+                                'the thorough building.',
+                    range     : [0.001,'*'],   // may be absent (no limits) or must
+                                           // be one of the following:
+                                           //   ['*',max]  : limited from top
+                                           //   [min,'*']  : limited from bottom
+                                           //   [min,max]  : limited from top and bottom
+                    value     : '',        // value to be paired with the keyword
+                    position  : [6,0,1,1], // [row,col,rowSpan,colSpan]
+                    showon    : {sec1:['shelx-auto']}
+                  },
+              SUBSTRDET_HIGH_RES_CUTOFF_RADIUS : {
+                    type      : 'real_',     // blank value is allowed
+                    keyword   : 'high_res_cutoff_radius::', // the real keyword for job input stream
+                    label     : 'Radius of tested cutoffs [&Aring]',
+                    tooltip   : 'High resolution cutoffs will be tested in ' +
+                                'this radius around the specified initial ' +
+                                'cutoff. A radius of +-0.5Å - thus scanning ' +
+                                'over 1Å range - is typically sufficient.',
+                    range     : [0.01,'*'], // may be absent (no limits) or must
+                                            // be one of the following:
+                                            //   ['*',max]  : limited from top
+                                            //   [min,'*']  : limited from bottom
+                                            //   [min,max]  : limited from top and bottom
+                    value     : '',         // value to be paired with the keyword
+                    position  : [7,0,1,1],  // [row,col,rowSpan,colSpan]
+                    showon    : {_:'&&',SUBSTRDET_PROGRAM:['prasa'],sec1:['crank2']}
+                  },
+              SUBSTRDET_HIGH_RES_CUTOFF_STEP : {
+                    type      : 'real_',     // blank value is allowed
+                    keyword   : 'high_res_cutoff_step::', // the real keyword for job input stream
+                    label     : 'Incremental step for cutoff testing [&Aring]',
+                    tooltip   : 'The slicing of the cutoff testing: the lower ' +
+                                'the value, the more cutoffs will be tested in ' +
+                                'the chosen resolution cutoff range.',
+                    range     : [0.001,'*'], // may be absent (no limits) or must
+                                             // be one of the following:
+                                             //   ['*',max]  : limited from top
+                                             //   [min,'*']  : limited from bottom
+                                             //   [min,max]  : limited from top and bottom
+                    value     : '',          // value to be paired with the keyword
+                    position  : [8,0,1,1],   // [row,col,rowSpan,colSpan]
+                    showon    : {_:'&&',SUBSTRDET_PROGRAM:['prasa'],sec1:['crank2']}
+                  },
+              SUBSTRDET_MIN_DIST_SYMM_ATOMS : {
+                    type     : 'combobox',
+                    keyword  : 'min_dist_symm_atoms::',
+                    label     : 'Atoms in special positions allowed',
+                    tooltip   : 'Select this option if (part of) the anomalous ' +
+                                'substructure atoms can be in special positions: ' +
+                                'positions related by more than one space group ' +
+                                'symmetry operator.',
+                    range    : ['_blank_|Auto',
+                                '-0.1|Yes',
+                                '3|No',
+                               ],
+                    value    : '_blank_',
+                    position : [9,0,1,2]
+                  },
+              SUBSTRDET_MIN_DIST_ATOMS : {
+                    type      : 'real_',     // blank value is allowed
+                    keyword   : 'min_dist_atoms::', // the real keyword for job input stream
+                    label     : 'Minimal distance between atoms [&Aring]',
+                    tooltip   : 'The (expected) minimal distance between ' +
+                                'anomalous substructure atoms.',
+                    range     : [0.001,'*'], // may be absent (no limits) or must
+                                             // be one of the following:
+                                             //   ['*',max]  : limited from top
+                                             //   [min,'*']  : limited from bottom
+                                             //   [min,max]  : limited from top and bottom
+                    value     : '',          // value to be paired with the keyword
+                    position  : [10,0,1,1]    // [row,col,rowSpan,colSpan]
                   }
             }
     },
     sec3: { type     : 'section',
             title    : 'Advanced options for substructure improvement',
             open     : false,  // true for the section to be initially open
-            showon   : {_:'||',sec1:['crank2'],sec1:['shelx-substr']}, // from this and input data section
+            showon   : {_:'||',sec1:['crank2','shelx-substr']}, // from this and input data section
 //            showon   : {sec1:['crank2']},
             position : [2,0,1,5],
             contains : {
@@ -533,7 +516,7 @@ function TaskCrank2()  {
                                              //   [min,max]  : limited from top and bottom
                     value     : '',          // value to be paired with the keyword
                     position  : [3,0,1,1],   // [row,col,rowSpan,colSpan]
-                    showon   : {sec1:['crank2']}
+                    showon    : {sec1:['crank2']}
                   }
             }
     },
@@ -845,17 +828,91 @@ function TaskCrank2()  {
             }
     },
     sec7: { type     : 'section',
-            title    : 'Advanced options for poly-alanine tracing',
+            title    : 'Advanced options for density modification and model building',
             open     : false,  // true for the section to be initially open
-            position : [7,0,1,5],
-            showon   : {sec1:['shelx']},
+            position : [6,0,1,5],
+            showon   : {sec1:['shelx-auto']},
+            hideon   : {_:'&&','revision.xyz':[1],PARTIAL_AS_SUBSTR:[false]},
             contains : {
-          }
+              PHDMMB_BIGCYC : {
+                    type      : 'integer_', // blank value is allowed
+                    keyword   : 'bigcyc::',  // the real keyword for job input stream
+                    label     : 'Number of poly-Ala tracing cycles',
+                    tooltip   : 'Number of model tracing cycles.',
+                    range     : [0,'*'],    // may be absent (no limits) or must
+                                            // be one of the following:
+                                            //   ['*',max]  : limited from top
+                                            //   [min,'*']  : limited from bottom
+                                            //   [min,max]  : limited from top and bottom
+                    value     : '',         // value to be paired with the keyword
+                    position  : [0,0,1,1],  // [row,col,rowSpan,colSpan]
+                    showon   : {sec1:['shelx-auto']}
+                  },
+              PHDMMB_DMCYC : {
+                    type      : 'integer_', // blank value is allowed
+                    keyword   : 'dmcyc::',  // the real keyword for job input stream
+                    label     : 'Number of density modification cycles',
+                    tooltip   : 'Number of density modification iterations per each model building cycle.',
+                    range     : [0,'*'],    // may be absent (no limits) or must
+                                            // be one of the following:
+                                            //   ['*',max]  : limited from top
+                                            //   [min,'*']  : limited from bottom
+                                            //   [min,max]  : limited from top and bottom
+                    value     : '',         // value to be paired with the keyword
+                    position  : [1,0,1,1],  // [row,col,rowSpan,colSpan]
+                    showon   : {sec1:['shelx-auto']}
+                  },
+              PHDMMB_THRESHOLD_STOP : {
+                    type      : 'real_',  // blank value is allowed
+                    keyword   : 'threshold_stop::', // the real keyword for job input stream
+                    label     : 'CC threshold for early stop',
+                    tooltip   : 'If this threshold is reached, model tracing ' +
+                                'will stop, assuming a good quality model has ' +
+                                'been built. Saves time for the "easy" to build ' +
+                                'cases. At least 3 tracing cycles are always ' +
+                                'performed before the early stop is applied.',
+                    range     : [0.001,'*'],   // may be absent (no limits) or must
+                                           // be one of the following:
+                                           //   ['*',max]  : limited from top
+                                           //   [min,'*']  : limited from bottom
+                                           //   [min,max]  : limited from top and bottom
+                    value     : '',        // value to be paired with the keyword
+                    position  : [2,0,1,1], // [row,col,rowSpan,colSpan]
+                    showon   : {sec1:['shelx-auto']}
+                  },
+              PHDMMB_THRESHOLD_HAND_STOP : {
+                    type      : 'real_',  // blank value is allowed
+                    keyword   : 'threshold_hand_stop::', // the real keyword for job input stream
+                    label     : 'CC threshold for the "other" hand early stop',
+                    tooltip   : 'If this correlation coefficient is reached, ' +
+                                'the hand is considered correct and tracing ' +
+                                'with the other hand is stopped.',
+                    range     : [0.001,'*'],   // may be absent (no limits) or must
+                                           // be one of the following:
+                                           //   ['*',max]  : limited from top
+                                           //   [min,'*']  : limited from bottom
+                                           //   [min,max]  : limited from top and bottom
+                    value     : '',        // value to be paired with the keyword
+                    position  : [3,0,1,1], // [row,col,rowSpan,colSpan]
+                    showon   : {sec1:['shelx-auto']}
+                  },
+              PHDMMB_PROGRAM_KEYWORDS : {
+                    type      : 'string_',   // empty string allowed
+                    keyword   : 'shelxe ',
+                    label     : 'SHELXE program arguments',
+                    tooltip   : 'Custom arguments that will be passed directly to SHELXE',
+                    iwidth    : '500',
+                    value     : '',
+                    position  : [5,0,1,1],
+                    showon    : {sec1:['shelx-auto']}
+                  }
+            }
     }
 
   }
 
 }
+
 
 if (__template)
       TaskCrank2.prototype = Object.create ( __template.TaskTemplate.prototype );
@@ -866,10 +923,16 @@ TaskCrank2.prototype.constructor = TaskCrank2;
 // ===========================================================================
 // export such that it could be used in both node and a browser
 
-TaskCrank2.prototype.icon_small = function()  { return './images/task_crank2_20x20.svg'; }
-TaskCrank2.prototype.icon_large = function()  { return './images/task_crank2.svg';       }
+TaskCrank2.prototype.icon_small = function()  { return 'task_crank2_20x20'; }
+TaskCrank2.prototype.icon_large = function()  { return 'task_crank2';       }
 
-TaskCrank2.prototype.currentVersion = function()  { return 1; }
+TaskCrank2.prototype.currentVersion = function()  {
+  var version = 0;
+  if (__template)
+        return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );
+  else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
+}
+
 
 if (!__template)  {
 
@@ -880,18 +943,6 @@ if (!__template)  {
     var item = this.getInputItem ( inpDataRef,'revision' );
     if (item)  {
       var dropdown = item.dropdown[0];
-      /*
-      if (dropdown.customGrid.hasOwnProperty('native'))  {
-        var cddn     = dropdown.customGrid.native;
-        cddn.disableItem ( 'natphasing',(nHKL>1) );
-        switch (cddn.getValue())  {
-          case 'unused'     : dataState['native'] =  0;  break;
-          case 'native'     : dataState['native'] =  1;  break;
-          case 'natphasing' : dataState['native'] =  2;  break;
-          default           : dataState['native'] = -1;  break;
-        }
-      }
-      */
       var dt = item.dt[dropdown.getValue()];
       if (dt.Structure)  dataState['pmodel'] =  1;
                    else  dataState['pmodel'] = -1;
@@ -915,13 +966,8 @@ if (!__template)  {
       var nHKL       = dataState['hkl'];
       var nNative    = dataState['native'];
       var nPModel    = dataState['pmodel'];
+      var IR         = false;
 
-      //var nHKL    = this.countInputData ( inpDataRef,'hkl'   ,'' );
-      //var nNative = this.countInputData ( inpDataRef,'native','' );
-
-      //var IR       = (nNative==2);
-      //var isPModel = (nHKL==1) && (!IR) && (nPModel>0);
-      var IR = false;
       if (nNative>0)  {
         var native = this.getInputItem ( inpDataRef,'native' );
         if (native)  {

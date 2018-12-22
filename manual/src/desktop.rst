@@ -1,6 +1,6 @@
 
 ===========================
-Quick start: |jsCoFE| Desktop
+Manual Setup of |jsCoFE| Desktop
 ===========================
 
 |jsCoFE| provides a nearly out-of-box solution for installation as a desktop
@@ -64,7 +64,7 @@ application.
     $ ccp4-python -m pip install onedep_api
 
 
-**3. Checkout |jsCoFE| source code directory**
+**3. Checkout CCP4 Cloud source code directory**
   The source code is obtainable from CCP4's Bazaar repositories: ::
 
     $ bzr checkout http://fg.oisin.rc-harwell.ac.uk/anonscm/bzr/jscofe/trunk /path/to/jscofe

@@ -38,6 +38,34 @@ from pycofe.dtypes import dtype_template
 from pycofe.tasks  import crank2
 
 
+"""
+
+mtz2various HKLIN ../../../input/0001-03.mtz HKLOUT 0001-03_MTZ2V.hkl << END
+OUTP shelx
+LABI F(+)=F(+) SIGF(+)=SIGF(+) F(-)=F(-) SIGF(-)=SIGF(-)
+END
+
+shelxc SHELX << END
+NTRY 2000
+FIND 12
+SHEL 999.0 3.23
+MIND -3.0 3
+CELL 107.589 61.399 71.203 90.0 97.761 90.0
+SPAG C 1 2 1
+SFAC SE
+SAD -f convert/0001-03_MTZ2V.hkl
+END
+
+shelxd ../0-faest/SHELX_fa << END
+NTRY 2000
+FIND 12
+SHEL 999.0 3.23
+MIND -3.0 3
+END
+
+
+"""
+
 # ============================================================================
 # Make ShelxSubstr driver
 

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    03.09.18   <--  Date of Last Modification.
+ *    12.12.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -87,7 +87,7 @@ DataSummaryPage.prototype.addUglyMolButton = function ( task )  {
     this.view_btn_grid = this.grid.setGrid ( '-compact', 3,0,1,1 );
   }
   var uglymol_btn = this.view_btn_grid.setButton ( 'UglyMol',
-                          './images/display.svg', 3,this.view_btn_pos++,1,1 );
+                          image_path('display'), 3,this.view_btn_pos++,1,1 );
 
   (function(t){
     uglymol_btn.addOnClickListener ( function(){
@@ -118,7 +118,7 @@ DataSummaryPage.prototype.addViewHKLButton = function ( task )  {
       this.view_btn_grid = this.grid.setGrid ( '-compact', 3,0,1,1 );
     }
     var viewhkl_btn = this.view_btn_grid.setButton ( 'ViewHKL',
-                          './images/display.svg', 3,this.view_btn_pos++,1,1 );
+                          image_path('display'), 3,this.view_btn_pos++,1,1 );
 
     (function(t){
       viewhkl_btn.addOnClickListener ( function(){

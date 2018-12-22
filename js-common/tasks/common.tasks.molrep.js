@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    05.10.18   <--  Date of Last Modification.
+ *    12.12.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -430,10 +430,15 @@ TaskMolrep.prototype.constructor = TaskMolrep;
 // ===========================================================================
 // export such that it could be used in both node and a browser
 
-TaskMolrep.prototype.icon_small = function()  { return './images/task_molrep_20x20.svg'; }
-TaskMolrep.prototype.icon_large = function()  { return './images/task_molrep.svg';       }
+TaskMolrep.prototype.icon_small = function()  { return 'task_molrep_20x20'; }
+TaskMolrep.prototype.icon_large = function()  { return 'task_molrep';       }
 
-TaskMolrep.prototype.currentVersion = function()  { return 1; }
+TaskMolrep.prototype.currentVersion = function()  {
+  var version = 0;
+  if (__template)
+        return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );
+  else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
+}
 
 
 if (__template)  {

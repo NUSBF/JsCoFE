@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    19.06.18   <--  Date of Last Modification.
+ *    02.12.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -151,8 +151,14 @@ Communicate.prototype.sendFile = function ( server_response )  {
 
 //console.log ( 'send file = ' + this.filePath );
 
-  function send_file ( fpath,deleteOnDone,cap )  {
+  function send_file ( filepath,deleteOnDone,cap )  {
     // Read the requested file content from file system
+    var fpath = filepath;
+
+    if (fpath=='favicon.ico')  {
+      if (conf.isLocalSetup())  fpath = './images_com/favicon-desktop.ico';
+                          else  fpath = './images_com/favicon-remote.ico';
+    }
 
     fs.stat ( fpath,function(err,stats){
       if (err)  {

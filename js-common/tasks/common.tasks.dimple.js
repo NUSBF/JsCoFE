@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    05.10.18   <--  Date of Last Modification.
+ *    12.12.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -207,10 +207,15 @@ TaskDimple.prototype.constructor = TaskDimple;
 // ===========================================================================
 // export such that it could be used in both node and a browser
 
-TaskDimple.prototype.icon_small = function()  { return './images/task_dimple_20x20.svg'; }
-TaskDimple.prototype.icon_large = function()  { return './images/task_dimple.svg';       }
+TaskDimple.prototype.icon_small = function()  { return 'task_dimple_20x20'; }
+TaskDimple.prototype.icon_large = function()  { return 'task_dimple';       }
 
-TaskDimple.prototype.currentVersion = function()  { return 1; }
+TaskDimple.prototype.currentVersion = function()  {
+  var version = 0;
+  if (__template)
+        return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );
+  else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
+}
 
 
 if (__template)  {

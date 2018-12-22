@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    15.10.18   <--  Date of Last Modification.
+ *    12.12.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -158,25 +158,15 @@ function ProjectPage ( sceneId )  {
     if (!$(add_btn.element).button('option','disabled'))  {
       items.addJobItem = { // The "Add job" menu item
         label : "Add job",
-        icon  : './images/add_20x20.svg',
+        icon  : image_path('add_20x20'),
         action: addJob
       };
     }
 
-    /*
-    if (!$(insert_btn.element).button('option','disabled'))  {
-      items.insertJobItem = { // The "Add job" menu item
-        label : "Insert job",
-        icon  : './images/insert_20x20.png',
-        action: insertJob
-      };
-    }
-    */
-
     if (!$(moveup_btn.element).button('option','disabled'))  {
       items.moveJobUpItem = { // The "Add job" menu item
         label : "Move up",
-        icon  : './images/moveup_20x20.svg',
+        icon  : image_path('moveup_20x20'),
         action: moveJobUp
       };
     }
@@ -184,7 +174,7 @@ function ProjectPage ( sceneId )  {
     if (!$(clone_btn.element).button('option','disabled'))  {
       items.cloneJobItem = { // The "Clone job" menu item
         label : "Clone job",
-        icon  : './images/clonejob_20x20.svg',
+        icon  : image_path('clonejob_20x20'),
         action: cloneJob
       };
     }
@@ -192,7 +182,7 @@ function ProjectPage ( sceneId )  {
     if (!$(del_btn.element).button('option','disabled'))  {
       items.delJobItem = { // The "Delete job" menu item
         label : 'Delete job',
-        icon  : './images/remove_20x20.svg',
+        icon  : image_path('remove_20x20'),
         action: deleteJob
       };
       var crTask = jobTree.task_map[node.id];
@@ -203,7 +193,7 @@ function ProjectPage ( sceneId )  {
     if (!$(open_btn.element).button('option','disabled'))  {
       items.runJobItem = { // The "Open job" menu item
         label : "Open job",
-        icon  : './images/openjob_20x20.svg',
+        icon  : image_path('openjob_20x20'),
         action: openJob
       };
     }
@@ -211,7 +201,7 @@ function ProjectPage ( sceneId )  {
     if (!$(stop_btn.element).button('option','disabled'))  {
       items.stopJobItem = { // The "Stop job" menu item
         label : "Stop job",
-        icon  : './images/stopjob_20x20.svg',
+        icon  : image_path('stopjob_20x20'),
         action: stopJob
       };
     }
@@ -219,7 +209,7 @@ function ProjectPage ( sceneId )  {
     if (!$(add_rem_btn.element).button('option','disabled'))  {
       items.addRemarkItem = { // The "Add remark" menu item
         label : "Add remark",
-        icon  : './images/task_remark_20x20.svg',
+        icon  : image_path('task_remark_20x20'),
         action: addRemark
       };
     }
@@ -285,7 +275,7 @@ function ProjectPage ( sceneId )  {
   this.headerPanel.setVerticalAlignment ( 0,2,'middle' );
 
   // Make Main Menu
-  var prjlist_mi = this.headerPanel.menu.addItem('My Projects','./images/list.svg');
+  var prjlist_mi = this.headerPanel.menu.addItem('My Projects',image_path('list'));
 
   // set menu listeners
   prjlist_mi.addOnClickListener ( function(){
@@ -295,10 +285,10 @@ function ProjectPage ( sceneId )  {
 
   if (!__local_user)  {
 
-    var account_mi = this.headerPanel.menu.addItem('My Account' ,'./images/settings.svg');
+    var account_mi = this.headerPanel.menu.addItem('My Account',image_path('settings'));
     var admin_mi   = null;
     if (__admin)
-      admin_mi = this.headerPanel.menu.addItem('Admin Page','./images/admin.png');
+      admin_mi = this.headerPanel.menu.addItem('Admin Page',image_path('admin'));
 
     account_mi.addOnClickListener ( function(){
       jobTree.saveProjectData ( [],[],null );
@@ -333,22 +323,21 @@ function ProjectPage ( sceneId )  {
   this.grid.setCellSize ( '40px',''    ,1,2,1,1 );
 
   // make the toolbar
-  add_btn     = toolbar.setButton ( '','./images/add.svg'     , 1,0,1,1 );
-  //insert_btn  = toolbar.setButton ( '','./images/insert.png'   2,0,1,1 );
-  moveup_btn  = toolbar.setButton ( '','./images/moveup.svg'  , 2,0,1,1 );
-  clone_btn   = toolbar.setButton ( '','./images/clonejob.svg', 3,0,1,1 );
-  del_btn     = toolbar.setButton ( '','./images/remove.svg'  , 4,0,1,1 );
-  add_rem_btn = toolbar.setButton ( '','./images/task_remark.svg', 5,0,1,1 );
+  add_btn     = toolbar.setButton ( '',image_path('add')     , 1,0,1,1 );
+  moveup_btn  = toolbar.setButton ( '',image_path('moveup')  , 2,0,1,1 );
+  clone_btn   = toolbar.setButton ( '',image_path('clonejob'), 3,0,1,1 );
+  del_btn     = toolbar.setButton ( '',image_path('remove')  , 4,0,1,1 );
+  add_rem_btn = toolbar.setButton ( '',image_path('task_remark'), 5,0,1,1 );
   toolbar.setLabel ( '<hr style="border:1px dotted;"/>'       , 6,0,1,1 );
-  open_btn    = toolbar.setButton ( '','./images/openjob.svg' , 7,0,1,1 );
-  stop_btn    = toolbar.setButton ( '','./images/stopjob.svg' , 8,0,1,1 );
+  open_btn    = toolbar.setButton ( '',image_path('openjob')  , 7,0,1,1 );
+  stop_btn    = toolbar.setButton ( '',image_path('stopjob')  , 8,0,1,1 );
   toolbar.setLabel ( '<hr style="border:1px dotted;"/>'       , 9,0,1,1 );
-  refresh_btn = toolbar.setButton ( '','./images/refresh.svg' ,10,0,1,1 );
-  help_btn    = toolbar.setButton ( '','./images/help.svg'    ,11,0,1,1 );
+  refresh_btn = toolbar.setButton ( '',image_path('refresh')  ,10,0,1,1 );
+  help_btn    = toolbar.setButton ( '',image_path('help')     ,11,0,1,1 );
 
   if (__admin || (__login_user=='Developer'))  {
     toolbar.setLabel ( '<hr style="border:1px dotted;"/>' ,12,0,1,1 );
-    split_btn = toolbar.setButton ( '','./images/split_page.svg',13,0,1,1 );
+    split_btn = toolbar.setButton ( '',image_path('split_page'),13,0,1,1 );
   }
 
   add_btn    .setSize('40px','40px').setTooltip('Add job'   ).setDisabled(true);
@@ -401,7 +390,7 @@ function ProjectPage ( sceneId )  {
   this.replay_div = null;
   if (split_btn)  {
 
-    replay_btn = panel.setButton ( '','./images/run_project.svg',0,1,1,1 );
+    replay_btn = panel.setButton ( '',image_path('run_project'),0,1,1,1 );
     replay_btn.setSize('40px','40px').setTooltip('Replay');
     panel.setCellSize ( '' ,'42px',0,1 );
 
@@ -421,10 +410,10 @@ function ProjectPage ( sceneId )  {
       }
       setButtonState();
       self.onResize ( window.innerWidth,window.innerHeight );
-      var icon = './images/split_page.svg';
+      var icon = image_path('split_page');
       var ttip = 'Show replay project';
       if (replay_mode)  {
-        icon = './images/single_page.svg';
+        icon = image_path('single_page');
         ttip = 'Hide replay project';
         replayJobTree = self.makeReplayJobTree();
         replayJobTree.readProjectData ( 'Replay Project',

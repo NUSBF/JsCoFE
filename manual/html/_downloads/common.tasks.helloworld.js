@@ -22,7 +22,7 @@
     if (__template)  __template.TaskTemplate.call ( this );
                else  TaskTemplate.call ( this );
 
-    // define fields important for jsCoFE framework
+    // define fields important for |jsCoFE| framework
 
     this._type   = 'TaskHelloWorld';  // must give name of the class
     this.name    = 'Hello World!';    // default name to be shown in Job Tree
@@ -56,7 +56,7 @@
   }
 
   // 3. Define task version. Whenever task changes (e.g. receives new input
-  //    parameters or data), the version number must be advanced. jsCoFE framework
+  //    parameters or data), the version number must be advanced. |jsCoFE| framework
   //    forbids cloning jobs with version numbers lower than specified here.
 
   TaskHelloWorld.prototype.currentVersion = function()  { return 0; }

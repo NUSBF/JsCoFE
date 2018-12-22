@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    09.08.18   <--  Date of Last Modification.
+ *    12.12.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -31,9 +31,11 @@ if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
 // for class reconstruction from json strings
 
 var structure_subtype = {
-  MR  : 'MR',
-  EP  : 'EP',
-  XYZ : 'xyz'
+  MR            : 'MR',
+  EP            : 'EP',
+  XYZ           : 'xyz',
+  SUBSTRUCTURUE : 'substructure',
+  PHASES        : 'phases'
 }
 
 function DataStructure()  {
@@ -65,10 +67,10 @@ function DataStructure()  {
   this.useCoordinates = true;  // flag for using in Phaser-EP
   this.rmsd           = 0.3;   // used in Phaser-EP
 
-  //this.useForNCS      = true;  // for use in Parrot
-
   this.useModelSel    = 'N';   // for use in Buccaneer
+  this.initPhaseSel   = structure_subtype.XYZ;  // for use in Acorn and ArpWarp
   this.BFthresh       = 3.0;
+  this.phaseBlur      = 1.0;   // used in arpwarp
 
   this.ligands        = [];    // list of ligands fitted
 
@@ -82,13 +84,19 @@ DataStructure.prototype.constructor = DataStructure;
 
 // ===========================================================================
 
-DataStructure.prototype.title      = function()  { return 'Structure Data';          }
-DataStructure.prototype.icon_small = function()  { return './images/data_20x20.svg'; }
-DataStructure.prototype.icon_large = function()  { return './images/data.svg';       }
+DataStructure.prototype.title      = function()  { return 'Structure Data'; }
+DataStructure.prototype.icon_small = function()  { return 'data_20x20'; }
+DataStructure.prototype.icon_large = function()  { return 'data';       }
 
 // when data class version is changed here, change it also in python
 // constructors
-DataStructure.prototype.currentVersion = function()  { return 1; } // from 09.08.2018
+DataStructure.prototype.currentVersion = function()  {
+  var version = 0;
+  if (__template)
+        return  version + __template.DataXYZ.prototype.currentVersion.call ( this );
+  else  return  version + DataXYZ.prototype.currentVersion.call ( this );
+}
+
 
 // export such that it could be used in both node and a browser
 if (!__template)  {
@@ -139,7 +147,6 @@ if (!__template)  {
       setLabel ( '&sigma; above the mean',row,col+2 )
     }
 
-//    if (dropdown.layCustom.startsWith('phaser-ep'))  {
     if (startsWith(dropdown.layCustom,'phaser-ep'))  {
 
       if (this.subtype.indexOf('substructure')<0)
@@ -154,14 +161,9 @@ if (!__template)  {
 
       customGrid.setLabel ( ' ',++row,0,1,2 ).setHeight_px ( 8 );
 
-//    } else if (startsWith(dropdown.layCustom,'parrot'))  {
-//      customGrid.useForNCS = customGrid.setCheckbox ( 'Use for NCS detection',
-//                    this.useForNCS, row,0, 1,1 );
-//      customGrid.setLabel ( ' ',++row,0,1,2 ).setHeight_px ( 8 );
-
     } else if (dropdown.layCustom=='buccaneer-ws')  {
 
-      if (this.subtype.indexOf('xyz')>=0)  {
+      if (this.subtype.indexOf(structure_subtype.XYZ)>=0)  {
         // macromolecular coordinates are present in the input structures
 
         setLabel ( 'Use model to place and name chains, and&nbsp;',row,0 );
@@ -172,35 +174,51 @@ if (!__template)  {
                                           this.useModelSel=='mr-model-seed' );
         customGrid.useModelSel.addItem ( 'provide initial model','','mr-model-filter',
                                           this.useModelSel=='mr-model-filter' );
-        customGrid.setWidget   ( customGrid.useModelSel, 0,1,1,2 );
-        //customGrid.setCellSize ( '160px','',0,1 );
+        customGrid.setWidget   ( customGrid.useModelSel, row,1,1,2 );
         customGrid.useModelSel.make();
-
-//        customGrid.filterByBF = customGrid.setCheckbox ( 'Filter by B-factor',
-//                                                this.filterByBF, ++row,0, 1,1 );
 
         setBFthresh ( ++row,0,this.BFthresh );
 
         customGrid.setLabel ( ' ',++row,0,1,2 ).setHeight_px ( 8 );
 
-        /*
-        customGrid.useForSeeding = customGrid.setCheckbox ( 'Use for seed chain growing',
-                      this.useForSeeding, row,0, 1,1 );
-        customGrid.setLabel ( ' ',++row,0,1,2 ).setHeight_px ( 8 );
-        */
-
       }
 
     } else if (dropdown.layCustom=='buccaneer-xm')  {
 
-      if (this.subtype.indexOf('xyz')>=0)  {
+      if (this.subtype.indexOf(structure_subtype.XYZ)>=0)  {
         // macromolecular coordinates are present in the input structures
         setBFthresh ( row,0,this.BFthresh );
       }
 
-//    } else if (dropdown.layCustom.startsWith('chain-sel'))  {
+    } else if (['acorn','arpwarp'].indexOf(dropdown.layCustom)>=0)  {
+      var ddn_list = [];
+
+      if (this.subtype.indexOf(structure_subtype.XYZ)>=0)
+        ddn_list.push ( ['structure coordinates',structure_subtype.XYZ] );
+      if (this.subtype.indexOf(structure_subtype.SUBSTRUCTURE)>=0)
+        ddn_list.push ( ['heavy atom coordinates',structure_subtype.SUBSTRUCTURE] );
+      if (this.subtype.indexOf(structure_subtype.PHASES)>=0)
+        ddn_list.push ( ['phases',structure_subtype.PHASES] );
+
+      if (ddn_list.length>1)  {
+        setLabel ( 'Obtain density from',row,0 );
+        customGrid.initPhaseSel = new Dropdown();
+        //customGrid.initPhaseSel.setWidth ( '120%' );
+        for (var i=0;i<ddn_list.length;i++)
+          customGrid.initPhaseSel.addItem ( ddn_list[i][0],'',ddn_list[i][1],
+                                           this.initPhaseSel==ddn_list[i][1] );
+        customGrid.setWidget ( customGrid.initPhaseSel, row,1,1,2 );
+        customGrid.initPhaseSel.make();
+      } else
+        customGrid.initPhaseSel = null;
+
+      if (dropdown.layCustom!='arpwarp')
+        customGrid.setLabel ( ' ',++row,0,1,2 ).setHeight_px ( 8 );
+
     } else if (startsWith(dropdown.layCustom,'chain-sel'))  {
+
       DataXYZ.prototype.layCustomDropdownInput.call ( this,dropdown );
+
     }
 
   }
@@ -216,14 +234,25 @@ if (!__template)  {
     //} else if (startsWith(dropdown.layCustom,'parrot'))  {
     //  this.useForNCS = customGrid.useForNCS.getValue();
     } else if (dropdown.layCustom=='buccaneer-ws')  {
-      if (this.subtype.indexOf('xyz')>=0)  {
+      if (this.subtype.indexOf(structure_subtype.XYZ)>=0)  {
         this.useModelSel = customGrid.useModelSel.getValue();
         this.BFthresh    = customGrid.BFthresh   .getValue();
       }
     } else if (dropdown.layCustom=='buccaneer-xm')  {
-      if (this.subtype.indexOf('xyz')>=0)  {
+      if (this.subtype.indexOf(structure_subtype.XYZ)>=0)  {
         this.BFthresh = customGrid.BFthresh.getValue();
       }
+    } else if (['acorn','arpwarp'].indexOf(dropdown.layCustom)>=0)  {
+      if (customGrid.initPhaseSel)
+        this.initPhaseSel = customGrid.initPhaseSel.getValue();
+      else if (this.subtype.indexOf(structure_subtype.XYZ)>=0)
+        this.initPhaseSel = structure_subtype.XYZ;
+      else if (this.subtype.indexOf(structure_subtype.SUBSTRUCTURE)>=0)
+        this.initPhaseSel = structure_subtype.SUBSTRUCTURE;
+      else if (this.subtype.indexOf(structure_subtype.PHASES)>=0)
+        this.initPhaseSel = structure_subtype.PHASES;
+      else
+        this.initPhaseSel = '';
     } else if (startsWith(dropdown.layCustom,'chain-sel'))  {
       DataXYZ.prototype.collectCustomDropdownInput.call ( this,dropdown );
     }

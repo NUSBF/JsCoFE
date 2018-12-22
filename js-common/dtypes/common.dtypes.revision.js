@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    04.09.18   <--  Date of Last Modification.
+ *    12.12.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -73,13 +73,19 @@ DataRevision.prototype.constructor = DataRevision;
 
 // ===========================================================================
 
-DataRevision.prototype.title      = function()  { return 'Revision';                           }
-DataRevision.prototype.icon_small = function()  { return './images/data_xrayimages_20x20.svg'; }
-DataRevision.prototype.icon_large = function()  { return './images/data_xrayimages.svg';       }
+DataRevision.prototype.title      = function()  { return 'Revision';              }
+DataRevision.prototype.icon_small = function()  { return 'data_xrayimages_20x20'; }
+DataRevision.prototype.icon_large = function()  { return 'data_xrayimages';       }
 
 // when data class version is changed here, change it also in python
 // constructors
-DataRevision.prototype.currentVersion = function()  { return 3; } // from 09.08.2018
+DataRevision.prototype.currentVersion = function()  {
+  var version = 1;
+  if (__template)
+        return  version + __template.DataTemplate.prototype.currentVersion.call ( this );
+  else  return  version + DataTemplate.prototype.currentVersion.call ( this );
+}
+
 
 // export such that it could be used in both node and a browser
 
@@ -275,8 +281,13 @@ if (!__template)  {
     switch (dropdown.layCustom)  {
       case 'reindex' :  case 'phaser-ep'    :  case 'refmac' :
             this.HKL.layCustomDropdownInput ( dropdown );   break;
-      case 'parrot'  :  case 'buccaneer-ws' :
+      case 'parrot'  :  case 'buccaneer-ws' :  case 'acorn'  :
             this.Structure.layCustomDropdownInput ( dropdown );   break;
+      case 'arpwarp' :
+            this.Structure.layCustomDropdownInput ( dropdown );
+            dropdown.Structure = this.Structure;  // this will add phase options for refmac
+            this.HKL.layCustomDropdownInput ( dropdown );
+          break;
       case 'crank2'  :
             this._layCDI_Crank2   ( dropdown,'crank2' );  break;
       case 'molrep'  :
@@ -298,40 +309,19 @@ if (!__template)  {
       case 'reindex'   :  case 'phaser-mr'    :  case 'phaser-mr-fixed' :
       case 'phaser-ep' :  case 'refmac'       :
           msg = this.HKL.collectCustomDropdownInput ( dropdown );  break;
-      case 'parrot'    :  case 'buccaneer-ws' :
-          msg = this.Structure.collectCustomDropdownInput ( dropdown );  break;
+      case 'parrot'    :  case 'buccaneer-ws' :  case 'acorn' :
+          msg = this.Structure.collectCustomDropdownInput ( dropdown ); break;
+      case 'arpwarp'   :
+          dropdown.Structure = this.Structure;  // because it gets lost at copying objects
+          msg = this.Structure.collectCustomDropdownInput ( dropdown ) +
+                this.HKL.collectCustomDropdownInput       ( dropdown );
+        break;
       //case 'crank2'  :
       //    msg = this._collectCDI_Crank2 ( dropdown );  break;
       default : ;
     }
     return msg;
   }
-
-/*
-  DataRevision.prototype.addCustomDataState = function ( task,inpDataRef,dataState )  {
-    var item = task.getInputItem ( inpDataRef,'hkl' );
-    var nHKL = 0;
-    if (item)
-
-    var item = task.getInputItem ( inpDataRef,'revision' );
-    if (item)  {
-
-      Dropdown.prototype.disableItemByPosition = function ( itemNo,disable_bool )  {
-
-      var dropdown = item.dropdown[0].customGrid.native;
-      switch (dropdown.getValue())  {
-        case 'unused'     : dataState['native'] =  0;  break;
-        case 'native'     : dataState['native'] =  1;  break;
-        case 'natphasing' : dataState['native'] =  2;  break;
-        default           : dataState['native'] = -1;  break;
-      }
-    }
-    if (this.Structure)  dataState['pmodel'] =  1;
-                   else  dataState['pmodel'] = -1;
-    return;
-  }
-*/
-
 
   // dataDialogHint() may return a hint for TaskDataDialog, which is shown
   // when there is no sufficient data in project to run the task.

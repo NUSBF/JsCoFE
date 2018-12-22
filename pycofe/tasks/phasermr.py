@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    25.09.18   <--  Date of Last Modification.
+#    03.12.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -312,8 +312,12 @@ class PhaserMR(basic.TaskDriver):
             soll = solf.readlines()
             solf.close()
             sol_spg = None
+            nsol    = 0
+            llg     = None
+            tfz     = None
             for line in soll:
                 if line.startswith("SOLU 6DIM ENSE"):
+                    nsol += 1
                     ensname = line.split()[3]
                     if ensname in ens_meta:
                         ens_meta[ensname]["ncopies"] += 1
@@ -321,8 +325,28 @@ class PhaserMR(basic.TaskDriver):
                         ens_meta[ensname] = { "ncopies" : 1 }
                 elif line.startswith("SOLU SPAC "):
                     sol_spg = line.replace("SOLU SPAC ","").strip()
+                elif line.startswith("SOLU SET "):
+                    pos = line.rfind("LLG=")
+                    if pos>=0:
+                        llg = line[pos:].split()[0][4:]
+                    pos = line.rfind("TFZ==")
+                    if pos>=0:
+                        tfz = line[pos:].split()[0][5:]
 
             mtzfile = self.outputFName + ".1.mtz"
+
+            self.generic_parser_summary["phaser"]["count"] = nsol
+            self.generic_parser_summary["phaser"]["llg"]   = llg
+            self.generic_parser_summary["phaser"]["tfz"]   = tfz
+
+# SOLU SET RF*0 TF*0 LLG=1664 TFZ==39.9 PAK=0 LLG=1664 TFZ==39.9
+
+#           self.generic_parser_summary["count"] =
+#           self.generic_parser_summary["llg"] =
+#           self.generic_parser_summary["tfz"] =
+#          case 'phaser' : S += 'N<sub>sol</sub>=' + d.count +
+#                               ' LLG=' + d.llg + ' TFZ=' + d.tfz + ' ';
+
 
             self.putMessage ( "&nbsp;" );
             spg_change = self.checkSpaceGroupChanged ( sol_spg,hkl,mtzfile )

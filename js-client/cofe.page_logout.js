@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    03.09.18   <--  Date of Last Modification.
+ *    12.12.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -63,7 +63,7 @@ function LogoutPage ( sceneId )  {
   panel.setCellSize             ( '','20pt',row++,0 );
 
   if (!__local_user)  {
-    var back_btn = new Button   ( 'Back to User Login','./images/login.svg' );
+    var back_btn = new Button   ( 'Back to User Login',image_path('login') );
     panel.setWidget             ( back_btn ,row++,0,1,1 );
     back_btn  .setWidth         ( '100%' );
     back_btn.addOnClickListener ( function(){ makeLoginPage(sceneId) } );

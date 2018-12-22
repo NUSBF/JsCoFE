@@ -1,25 +1,25 @@
 
 ====================
-General jsCoFE Setup
+General (Server-based) |jsCoFE| Setup
 ====================
 
 ---------------------------------
-Understanding jsCoFE architecture
+Understanding |jsCoFE| architecture
 ---------------------------------
 
-jsCoFE includes 3 types of web (http or https) servers:
+|jsCoFE| includes 3 types of web (http or https) servers:
 
 #. *Front-End Server*
 #. *Number Cruncher*
 #. *Client-Side Server*
 
 **Front-End Server (FE)**
-  This server represent jsCoFE's head node, exposed to end user as a specific
+  This server represent |jsCoFE|'s head node, exposed to end user as a specific
   URL. FE keeps user accounts, projects and data, and is responsible
   for most of data logistics in the system -- but not for actual calculations.
 
 **Number Cruncher (NC)**
-  This server represent jsCoFE's compute node, not exposed to end users. NCs
+  This server represent |jsCoFE|'s compute node, not exposed to end users. NCs
   accept job descriptions and data from FE, conduct the needful calculations and
   push results back to FE.
 
@@ -31,7 +31,7 @@ jsCoFE includes 3 types of web (http or https) servers:
 
 Each server may be seen as a logical machine, which may share physical
 machine with another server, or, in case of NC, correspond to a set of physical
-machines such as a computational cluster. Therefore, jsCoFE setups may vary
+machines such as a computational cluster. Therefore, |jsCoFE| setups may vary
 subject to purpose and hardware available. The most obvious configurations
 include:
 
@@ -48,15 +48,15 @@ include:
 **Multi-Node Setup**
   In this setup, FE(s) and NC(s) are installed on different machines. Every FE
   may be linked to any number of NCs, and every NC may accept jobs from
-  any number of FEs. However, every FE will serve as own jsCoFE instance for
+  any number of FEs. However, every FE will serve as own |jsCoFE| instance for
   the end user, so that user accounts and projects from one FE will not be
   visible on another.
 
-In all cases where a jsCoFE setup should be accessible from outer world (i.e.
-not only from the machine where jsCoFE is installed), it is advisable that all
+In all cases where a |jsCoFE| setup should be accessible from outer world (i.e.
+not only from the machine where |jsCoFE| is installed), it is advisable that all
 external communications are done via a "proper" server such as
 `Apache <https://httpd.apache.org/download.cgi>`_. This is achieved by
-setting jsCoFE servers to listen to a particular localhost port number, and
+setting |jsCoFE| servers to listen to a particular localhost port number, and
 configuring Apache to redirect all requests from chosen URL to that port (see
 details below).
 
@@ -67,8 +67,8 @@ Common setup prerequisites
 Node JS
 ~~~~~~~
 
-All jsCoFE servers are built on Node JS platform, therefore, make sure that
-Node JS is running on all machines, where any of jsCoFE servers will be
+All |jsCoFE| servers are built on Node JS platform, therefore, make sure that
+Node JS is running on all machines, where any of |jsCoFE| servers will be
 installed. Run ``node -v`` from the Terminal, and acceptable output will be
 something like the following: ::
 
@@ -97,46 +97,46 @@ On Fedora: ::
 After installation, verify it by running ``node -v`` and ``npm -v``. If installed
 correctly, both commands should report the corresponding version numbers.
 
-jsCoFE source code
+|jsCoFE| source code
 ~~~~~~~~~~~~~~~~~~
 
-Every jsCoFE server must have access to the directory with jsCoFE source codes.
+Every |jsCoFE| server must have access to the directory with |jsCoFE| source codes.
 The code is obtainable from CCP4's Bazaar repositories: ::
 
   $ bzr checkout http://fg.oisin.rc-harwell.ac.uk/anonscm/bzr/jscofe/trunk /path/to/jscofe
 
 If ``bzr`` is not installed on your system, download and install it from
-http://bazaar.canonical.com, or get jsCoFE source code from GitLab: ::
+http://bazaar.canonical.com, or get |jsCoFE| source code from GitLab: ::
 
-  $ git clone https://gitlab.com/CCP4/jsCoFE.git
+  $ git clone https://gitlab.com/CCP4/|jsCoFE|.git
 
 
-All jsCoFE servers: FE, NC and CS, use the same source code, and the source code
+All |jsCoFE| servers: FE, NC and CS, use the same source code, and the source code
 directory may be shared by any number and types of servers, if permitted by
 the hardware setup. In the absence of shared file system, the source code
-directory must be copied to every machine running a jsCoFE server. Make sure
+directory must be copied to every machine running a |jsCoFE| server. Make sure
 that ``.bzr`` (or ``.git``) sub-directory is copied, too, for future updates.
 
-After obtaining jsCoFE source code from CCP4 repositories, Node Package Manager
+After obtaining |jsCoFE| source code from CCP4 repositories, Node Package Manager
 must be run in every source code directory: ::
 
   $ cd /path/to/jscofe
   $ npm install
 
-In future, jsCoFE may be updated simply by updating the content of all source
+In future, |jsCoFE| may be updated simply by updating the content of all source
 directories: ::
 
   $ cd /path/to/jscofe
   $ bzr update
   $ npm install
 
-or, if jsCoFE was originally checked out from GutLab: ::
+or, if |jsCoFE| was originally checked out from GutLab: ::
 
   $ cd /path/to/jscofe
   $ git pull origin master
   $ npm install
 
-and restarting jsCoFE servers.
+and restarting |jsCoFE| servers.
 
 .. _dependencies:
 
@@ -161,7 +161,7 @@ account in which CCP4 was originally installed, and ``sudo`` if necessary: ::
 
   $ ccp4-python -m pip install onedep_api
 
-Some jsCoFE tasks also require access to PDB archive, obtainable from
+Some |jsCoFE| tasks also require access to PDB archive, obtainable from
 https://www.wwpdb.org/download/downloads. AMPLE package for ab-initio MR
 modelling also requires access to ROSETTA or QUARK software (see
 http://www.ccp4.ac.uk/ample/). BALBES software needs a special database
@@ -179,14 +179,14 @@ parameters for detail instructions and further options.
 Web-server(s) for external communications
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-A convenient way to make jsCoFE servers to see each other and the Front End to
+A convenient way to make |jsCoFE| servers to see each other and the Front End to
 be visible from client machines, is to arrange for redirection of relevant http(s)
 requests to localhost ports that jsCofe servers are configured to listen.
 There may be several technical solutions for this part, which should be discussed
-with Institute's IT support. Below we give a guidance for setting jsCoFE with
+with Institute's IT support. Below we give a guidance for setting |jsCoFE| with
 Apache server(s):
 
-#. Install Apache on each machine where jsCoFE server(s) will be running. For
+#. Install Apache on each machine where |jsCoFE| server(s) will be running. For
    doing this, consult either your Operating System documentation (Apache is
    commonly acceptable on UNIX platforms from systems repositories), or
    `Apache web-site <https://httpd.apache.org/download.cgi>`_.
@@ -205,14 +205,14 @@ Apache server(s):
      LogLevel Info
      ProxyPassReverse /jscofe http://localhost:8081
 
-   Here, ``8081`` stands for the port number specified in jsCoFE configuration
+   Here, ``8081`` stands for the port number specified in |jsCoFE| configuration
    file (see below), and should be chosen from a set of free port numbers in the
    system.
 
 #. Restart Apache. All requests from ``http(s)://www.my.server.com/jscofe/``
-   should now be redirected to jsCoFE server listening port number ``8081``.
+   should now be redirected to |jsCoFE| server listening port number ``8081``.
 
-#.  Note that if a machine hosts several jsCoFE servers, each of them
+#.  Note that if a machine hosts several |jsCoFE| servers, each of them
     must listen to its own dedicated port on localhost, and the corresponding
     configuration files, each one with a unique URL path (*e.g.* ``/jscofe1``,
     ``/jscofe2`` *etc.*) must be all placed in ``/etc/apache2/sites-enabled``
@@ -220,12 +220,12 @@ Apache server(s):
 
 
 --------------------
-jsCoFE Configuration
+|jsCoFE| Configuration
 --------------------
 
-Before jsCoFE servers may be started, they must be configured using a special
+Before |jsCoFE| servers may be started, they must be configured using a special
 Configuration File (CF) in `JSON format <http://www.json.org>`_. All servers in
-given jsCoFE setup may use the same CF, however, for security reasons, you may
+given |jsCoFE| setup may use the same CF, however, for security reasons, you may
 wish to use CF copies for individual servers, where unused configuration details
 are altered or removed. For example, FE must have URLs of all NCs, but does not
 need details of their file systems; similarly, and NC does not need to know
@@ -256,7 +256,7 @@ The Configuration File has the following structure: ::
   }
 
 The Desktop Configuration Module is needed only for Desktop setups (*cf.*
-:doc:`desktop`), when all jsCoFE servers run on the same machine, and may be
+:doc:`desktop`), when all |jsCoFE| servers run on the same machine, and may be
 omitted in all other cases.
 
 Configuration file for FE must include ``FrontEnd`` module, configuration modules
@@ -324,37 +324,37 @@ The FE Configuration Module represents the following JSON object: ::
     $ cd /path/to/jscofe
     $ node ./assign_ports.js conf.desktop.json config_ports.json
 
-  where ``conf.desktop.json`` is jsCoFE Desktop configuration file (*cf.*
+  where ``conf.desktop.json`` is |jsCoFE| Desktop configuration file (*cf.*
   :doc:`desktop`). This will print ports available and substitute them in
   ``conf.desktop.json``, writing the result in ``config_ports.json``. Note that
   the port chosen should be duly adjusted in Apache configuration (*cf* above).
 
   If port number is set to 0, it will be changed automatically for the number of
   one of free ports. While this is convenient for Desktop setups, this option
-  should not be used if access to jsCoFE front-end server through a stable URL
+  should not be used if access to |jsCoFE| front-end server through a stable URL
   is required.
 
 **externalURL**
   External URL under which the front-end Node JS is visible to the outer world
-  and/or other jsCoFE servers. For the example of Apache setup given above,
+  and/or other |jsCoFE| servers. For the example of Apache setup given above,
   ``externalURL`` should be set as indicated.
 
   If external URL is set to empty string ``""``, it will be changed automatically
   for one made of given protocol, host and port number. While this is
   convenient for Desktop setups, this option should not be used if access to
-  jsCoFE front-end server through a stable URL is required.
+  |jsCoFE| front-end server through a stable URL is required.
 
 **exclusive**
-  Specifies whether the port is in exclusive use of jsCoFE front-end server.
+  Specifies whether the port is in exclusive use of |jsCoFE| front-end server.
   There should be little need to set it to anything but ``true``.
 
 **stoppable**
-  Specifies whether jsCoFE front-end server should quit if a user logs off.
+  Specifies whether |jsCoFE| front-end server should quit if a user logs off.
   This is a special option that may be used in individual Desktop setups, but
   in general it should be set to ``false``.
 
 **fsmount**
-  Specifies file system mount common for all jsCoFE servers, if such mount
+  Specifies file system mount common for all |jsCoFE| servers, if such mount
   exists. This is an experimental option, allowing to avoid passing excessively
   large data volumes between the servers, currently not in use and should be
   always set to ``""``.
@@ -369,13 +369,13 @@ The FE Configuration Module represents the following JSON object: ::
   Path to directory to keep user projects. The directory must exist before starting
   the front-end server. Both the relative (starting with ``./``) and absolute
   (starting with slash ``/``) paths may be given. Relative paths are calculated
-  in respect to jsCoFE source code directory on the front-end server.
+  in respect to |jsCoFE| source code directory on the front-end server.
 
 **facilitiesPath**
   Path to directory for caching data obtained from data producing facilities such
   as synchrotrons. The directory must exist before starting the front-end server.
   Both the relative (starting with ``./``) and absolute (starting with slash ``/``)
-  paths may be given. Relative paths are calculated in respect to jsCoFE source
+  paths may be given. Relative paths are calculated in respect to |jsCoFE| source
   code directory on the front-end server.
 
 **ICAT_wdsl**
@@ -385,8 +385,8 @@ The FE Configuration Module represents the following JSON object: ::
   URL to ICAT's IDS data storage (used to obtain data from ICAT).
 
 **bootstrapHTML**
-  Relative path to jsCoFE bootstrap file, which is ``jscofe.html`` in the root
-  of the jsCoFE source code directory. There is little need to move or rename
+  Relative path to |jsCoFE| bootstrap file, which is ``jscofe.html`` in the root
+  of the |jsCoFE| source code directory. There is little need to move or rename
   this file.
 
 **maxRestarts**
@@ -398,7 +398,7 @@ The FE Configuration Module represents the following JSON object: ::
   while job is running. If a file exceeds the cap size, it will be truncated
   in the middle with the corresponding message issued in client's browser.
   This configuration should be used in order to decrease the bandwidth
-  requirements of jsCoFE setups. Note that the cap is not applied if job has
+  requirements of |jsCoFE| setups. Note that the cap is not applied if job has
   finished.
 
 .. _nc-config:
@@ -438,7 +438,7 @@ The NC Configuration Module represents the following JSON object: ::
   sequential serial numbers starting from 0.
 
 **name**
-  NC's name to be displayed in relevant jsCoFE's messages to user and log files.
+  NC's name to be displayed in relevant |jsCoFE|'s messages to user and log files.
   Any character string may be used as NC's name.
 
 **in_use**
@@ -463,43 +463,43 @@ The NC Configuration Module represents the following JSON object: ::
     $ cd /path/to/jscofe
     $ node ./assign_ports.js conf.desktop.json config_ports.json
 
-  where ``conf.desktop.json`` is jsCoFE Desktop configuration file (*cf.*
+  where ``conf.desktop.json`` is |jsCoFE| Desktop configuration file (*cf.*
   :doc:`desktop`). This will print ports available and substitute them in
   ``conf.desktop.json``, writing the result in ``config_ports.json``. Note that
   the port chosen should be duly adjusted in Apache configuration (*cf* above).
 
   If port number is set to 0, it will be changed automatically for the number of
   one of free ports. While this is convenient for Desktop setups, this option
-  should not be used if access to jsCoFE's NC server through a stable
+  should not be used if access to |jsCoFE|'s NC server through a stable
   URL is required.
 
 **externalURL**
   External URL under which the NC's Node JS is visible to the outer
-  world and/or other jsCoFE servers. For the example of Apache setup given above,
+  world and/or other |jsCoFE| servers. For the example of Apache setup given above,
   ``externalURL`` should be set as indicated (save for difference in the URL).
 
   If external URL is set to empty string ``""``, it will be changed automatically
   for one made of given protocol, host and port number. While this is
   convenient for Desktop setups, this option should not be used if access to
-  jsCoFE's NC server through a stable URL is required.
+  |jsCoFE|'s NC server through a stable URL is required.
 
 **exclusive**
-  Specifies whether the port is in exclusive use of jsCoFE NC server.
+  Specifies whether the port is in exclusive use of |jsCoFE| NC server.
   There should be little need to set it to anything but ``true``.
 
 **stoppable**
-  Specifies whether jsCoFE's NC server should quit if a user logs off.
+  Specifies whether |jsCoFE|'s NC server should quit if a user logs off.
   This is a special option that may be used in individual Desktop setups, but
   in general it should be set to ``false``.
 
 **fsmount**
-  Specifies file system mount common for all jsCoFE servers, if such mount
+  Specifies file system mount common for all |jsCoFE| servers, if such mount
   exists. This is an experimental option, allowing to avoid passing excessively
   large data volumes between the servers, currently not in use and should be
   always set to ``""``.
 
 **capacity**
-  NC's computational capacity. jsCoFE monitors NC workload and
+  NC's computational capacity. |jsCoFE| monitors NC workload and
   tries to dispatch jobs such that all NCs are loaded uniformly. Capacity scores
   may require an adjustment, use number of CPUs in 1st approximation.
 
@@ -512,18 +512,18 @@ The NC Configuration Module represents the following JSON object: ::
 
 **fasttrack**
   Key indicating whether *fast track* tasks may be sent to the server. Some
-  tasks in jsCoFE, such as data import, may be flagged *fasttrack*, in which
-  case they are executed immediately, without queuing either in jsCoFE or in
+  tasks in |jsCoFE|, such as data import, may be flagged *fasttrack*, in which
+  case they are executed immediately, without queuing either in |jsCoFE| or in
   local job dispatchers like SGE. Set ``1`` to indicate that the server will
   accept *fast track* jobs, and ``0`` otherwise. Note that if there are no
-  NCs in the setup that are flagged for *fast track*, jsCoFE will choose
+  NCs in the setup that are flagged for *fast track*, |jsCoFE| will choose
   NC for *fast track* jobs randomly and force *fasttrack* mode of execution.
 
 **storage**
   Path to directory to host temporary working directories for running jobs.
   The directory must exist before starting the NC server. Both
   the relative (starting with ``./``) and absolute (starting with slash ``/``)
-  paths may be used. Relative paths are calculated in respect to jsCoFE source
+  paths may be used. Relative paths are calculated in respect to |jsCoFE| source
   code directory on the NC.
 
 **exeType**
@@ -578,20 +578,20 @@ The NC Configuration Module represents the following JSON object: ::
   while job is running. If a file exceeds the cap size, it will be truncated
   in the middle with the corresponding message issued in client's browser.
   This configuration should be used in order to decrease the bandwidth
-  requirements of jsCoFE setups. Note that the cap is not applied if job has
+  requirements of |jsCoFE| setups. Note that the cap is not applied if job has
   finished.
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Configuration Module for jsCoFE's E-mailer
+Configuration Module for |jsCoFE|'s E-mailer
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-jsCoFE send e-mails to users upon registration or changing details of their
+|jsCoFE| send e-mails to users upon registration or changing details of their
 accounts (such as passwords), or resetting their accounts in case of lost
-password. jsCoFE also sends e-mails to the setup maintainer in case of
+password. |jsCoFE| also sends e-mails to the setup maintainer in case of
 functional errors such as failure to write or read a file.
 
-jsCoFE may send e-mails using either Node JS own facilities (*nodemailer*) or
+|jsCoFE| may send e-mails using either Node JS own facilities (*nodemailer*) or
 *telnet* to the dedicated mail server, which should be installed separately.
 
 Configuration module for *nodemailer* has the following description: ::
@@ -623,24 +623,24 @@ be used, in which case the configuration module takes the following form: ::
     "maintainerEmail" : "my.name@my.address.com",
     "host"            : "mail.server.com",
     "port"            : 25,
-    "headerFrom"      : "jsCoFE <jscofe@mail.server.com>"
+    "headerFrom"      : "|jsCoFE| <jscofe@mail.server.com>"
   }
 
 Please contact your IT support for mail server URL and port number(s).
 
-Finally, if jsCoFE is installed on a Desktop PC exclusively for local use, then
+Finally, if |jsCoFE| is installed on a Desktop PC exclusively for local use, then
 e-mail facility may be conveniently replaced with issuing the corresponding
-messages directly to user via the web-browser. In this case, jsCoFE's e-mailer
+messages directly to user via the web-browser. In this case, |jsCoFE|'s e-mailer
 should be configured as follows: ::
 
   { "type" : "desktop" }
 
 
 --------------------
-jsCoFE start scripts
+|jsCoFE| start scripts
 --------------------
 
-jsCoFE setup is concluded by writing start scripts for all servers. Below we
+|jsCoFE| setup is concluded by writing start scripts for all servers. Below we
 give sample scripts that should be suitable in most, if not all, cases.
 
 Start script for the Front End Server
@@ -655,9 +655,9 @@ Start script for the Front End Server
 
   node ./fe_server.js /path/to/jscofe_config.json > /logdir/node_fe.log 2> /logdir/node_fe.err &
 
-Here, ``/path/to/jscofe`` is jsCoFE source code directory,
-``/path/to/jscofe_config.json`` is path to jsCoFE Configuration File,
-and ``logdir`` is directory to host jsCoFE's log files.
+Here, ``/path/to/jscofe`` is |jsCoFE| source code directory,
+``/path/to/jscofe_config.json`` is path to |jsCoFE| Configuration File,
+and ``logdir`` is directory to host |jsCoFE|'s log files.
 
 
 Start script for a Number Cruncher Server
@@ -683,14 +683,14 @@ Start script for a Number Cruncher Server
   node ./nc_server.js /path/to/jscofe_config.json $serNo > \
                     /logdir/node_nc_$serNo.log 2> /logdir/node_nc_$serNo.err &
 
-Here, ``serNo`` stands for the NC serial number as in jsCoFE Configuration File
+Here, ``serNo`` stands for the NC serial number as in |jsCoFE| Configuration File
 (*cf.* :ref:`nc-config`), ``/path/to`` variables point to CCP4 setup, BALBES
 database, directory with PDB files and Gesamt archive (*cf.* :ref:`dependencies`);
-``/path/to/jscofe_config.json`` is path to jsCoFE Configuration File,
-and ``logdir`` is directory chosen to host jsCoFE's log files.
+``/path/to/jscofe_config.json`` is path to |jsCoFE| Configuration File,
+and ``logdir`` is directory chosen to host |jsCoFE|'s log files.
 
 The ``killall node`` statement is for stopping node instances that may remain
-residual from previous starts of jsCoFE. This line should be removed in case
+residual from previous starts of |jsCoFE|. This line should be removed in case
 when NC is configured to run on the same machine as FE, otherwise node instance
 that runs FE server, will be also killed.
 
@@ -718,13 +718,13 @@ script may be simplified as follows: ::
 
 
 ---------------
-Starting jsCoFE
+Starting |jsCoFE|
 ---------------
 
-jsCoFE is started by invoking start scripts on the front-end machine and all
+|jsCoFE| is started by invoking start scripts on the front-end machine and all
 number crunchers.
 
-If a user has local jsCoFE setup, they may start the client number cruncher first
+If a user has local |jsCoFE| setup, they may start the client number cruncher first
 and then connect to FE via FE's external url with command ``/?lsp=XXXX``, where
 ``XXXX`` stands for the client server port number (as specified in client server
 configuration file). For example, on Linux: ::

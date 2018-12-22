@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    03.09.18   <--  Date of Last Modification.
+ *    12.12.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -31,12 +31,12 @@ function BasePage ( sceneId,gridStyle,pageType )  {
 
   // set background image
   if (getClientCode()==client_code.ccp4)
-    $('#'+sceneId).css({"background-image"    : "url('images/ccp4_diamond_test.png')",
+    $('#'+sceneId).css({"background-image"    : "url('" + image_path('ccp4_diamond_test') + "')",
                         "background-repeat"   : "no-repeat",
                         "background-size"     : "cover",
                         "background-position" : "center center"} );
   else
-    $('#'+sceneId).css({"background-image"    : "url('images/ccpem_background.png')",
+    $('#'+sceneId).css({"background-image"    : "url('" + image_path('ccpem_background') + "')",
                         "background-repeat"   : "no-repeat",
                         "background-size"     : "cover",
                         "background-position" : "center center"} );
@@ -64,19 +64,19 @@ BasePage.prototype.makeLogoPanel = function ( row,col,colSpan )  {
   var c = 0;
   logoPanel.setCellSize ( '50%','', 0,c++ );
   if (getClientCode()==client_code.ccp4)  {
-    logoPanel.setImage ( './images/logo-ccp4_online.svg','','28px',0,c++,1,1 );
+    logoPanel.setImage ( image_path('logo-ccp4_online'),'','28px',0,c++,1,1 );
     logoPanel.setLabel ( '',0,c++,1,1 ).setWidth ( '40px' );
-    logoPanel.setImage ( './images/logo-stfc.svg','','28px'  ,0,c++,1,1 );
+    logoPanel.setImage ( image_path('logo-stfc'),'','28px'  ,0,c++,1,1 );
     logoPanel.setLabel ( '',0,c++,1,1 ).setWidth ( '30px' );
-    logoPanel.setImage ( './images/logo-bbsrc.svg','','28px' ,0,c++,1,1 );
+    logoPanel.setImage ( image_path('logo-bbsrc'),'','28px' ,0,c++,1,1 );
   } else {
-    logoPanel.setImage ( './images/logo-ccpem.png','','28px',0,c++,1,1 );
+    logoPanel.setImage ( image_path('logo-ccpem'),'','28px',0,c++,1,1 );
     logoPanel.setLabel ( '',0,c++,1,1 ).setWidth ( '40px' );
-    logoPanel.setImage ( './images/logo-ccp4_online.svg','','28px',0,c++,1,1 );
+    logoPanel.setImage ( image_path('logo-ccp4_online'),'','28px',0,c++,1,1 );
     logoPanel.setLabel ( '',0,c++,1,1 ).setWidth ( '40px' );
-    logoPanel.setImage ( './images/logo-stfc.svg','','28px'  ,0,c++,1,1 );
+    logoPanel.setImage ( image_path('logo-stfc'),'','28px'  ,0,c++,1,1 );
     logoPanel.setLabel ( '',0,c++,1,1 ).setWidth ( '30px' );
-    logoPanel.setImage ( './images/logo-mrc.png','','28px'  ,0,c++,1,1 );
+    logoPanel.setImage ( image_path('logo-mrc'),'','28px'  ,0,c++,1,1 );
   }
   logoPanel.setLabel ( appName() + ' v.' + jsCoFE_version,0,c,1,1 )
                      .setFontSize ( '75%' ).setNoWrap()
@@ -115,7 +115,7 @@ BasePage.prototype.makeHeader = function ( colSpan,on_logout_function )  {
   this.grid.setWidget   ( this.headerPanel,0,0,1,colSpan );
   this.grid.setCellSize ( '','32px',0,0 );
 
-  this.headerPanel.menu = new Menu('','./images/menu.svg');
+  this.headerPanel.menu = new Menu('',image_path('menu'));
   this.headerPanel.setWidget ( this.headerPanel.menu,0,0,1,1 );
 
   this.headerPanel.setLabel    ( '',0,1,1,1 ).setWidth ( '40px' );
@@ -137,7 +137,7 @@ BasePage.prototype.makeHeader = function ( colSpan,on_logout_function )  {
     this.headerPanel.setCellSize ( '99%','',0,19 );
   }
 
-  this.logout_btn = new ImageButton ( './images/logout.svg','24px','24px' );
+  this.logout_btn = new ImageButton ( image_path('logout'),'24px','24px' );
   this.headerPanel.setWidget ( this.logout_btn,0,21,1,1 );
   this.headerPanel.setHorizontalAlignment ( 0,21,'right' );
   this.headerPanel.setVerticalAlignment   ( 0,21,'top'   );
@@ -159,14 +159,14 @@ BasePage.prototype.makeHeader = function ( colSpan,on_logout_function )  {
 BasePage.prototype.addFullscreenToMenu = function()  {
   if (this.headerPanel.menu.n_items>0)
     this.headerPanel.menu.addSeparator();
-  this.headerPanel.menu.addItem('Toggle fullscreen','./images/fullscreen.svg')
+  this.headerPanel.menu.addItem('Toggle fullscreen',image_path('fullscreen'))
                        .addOnClickListener ( toggleFullScreen );
 }
 
 BasePage.prototype.addLogoutToMenu = function ( logout_func )  {
   this.addFullscreenToMenu();
   //this.headerPanel.menu.addSeparator();
-  this.headerPanel.menu.addItem('Log out','./images/logout.svg')
+  this.headerPanel.menu.addItem('Log out',image_path('logout'))
                        .addOnClickListener ( logout_func );
 }
 
@@ -176,13 +176,13 @@ BasePage.prototype.makeUserRationIndicator = function()  {
     if (this.ration)  {
       if (this.ration.storage>0.0)  {
         this.rationPanel.disk_icon  = this.rationPanel.setImageButton (
-                                    './images/disk.svg','20px','20px',0,0,1,1 );
+                                    image_path('disk'),'20px','20px',0,0,1,1 );
         this.rationPanel.disk_usage = this.rationPanel.setLabel ( '',0,1,1,1 )
                                                       .setFontSize('90%');
         this.rationPanel.sep_label  = this.rationPanel.setLabel (
                                     '&nbsp;',0,2,1,1 ).setWidth('4px');
         this.rationPanel.cpu_icon   = this.rationPanel.setImageButton (
-                                    './images/cpu.png','20px','20px',0,3,1,1 );
+                                    image_path('cpu'),'20px','20px',0,3,1,1 );
         this.rationPanel.cpu_usage  = this.rationPanel.setLabel ( '',0,4,1,1 )
                                           .setNoWrap().setFontSize('90%');
         this.displayUserRation ( null );

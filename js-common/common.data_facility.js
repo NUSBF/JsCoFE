@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    01.10.18   <--  Date of Last Modification.
+ *    12.12.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -18,6 +18,7 @@
  *  ==========================================================================
  *
  */
+
 
 // ===========================================================================
 
@@ -301,17 +302,38 @@ FacilityList.prototype.getFacility = function ( fcl_name )  {
   return facility;
 }
 
-FacilityList.prototype.addFacility = function ( fcl_name,title_str )  {
-  if (!this.getFacility(fcl_name))  {
-    var facility = new Facility();
-    facility.name  = fcl_name;
-    facility.title = title_str;
-    if (fcl_name==facility_names.icat)
-      facility.icon = './images/facility_icat_20x20.svg';
-    this.facilities.push ( facility );
-    return true;
-  } else
-    return false;
+if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
+
+  var cmd = require('./common.commands');
+
+  FacilityList.prototype.addFacility = function ( fcl_name,title_str )  {
+    if (!this.getFacility(fcl_name))  {
+      var facility = new Facility();
+      facility.name  = fcl_name;
+      facility.title = title_str;
+      if (fcl_name==facility_names.icat)
+        facility.icon = cmd.image_path('facility_icat_20x20');
+      this.facilities.push ( facility );
+      return true;
+    } else
+      return false;
+  }
+
+} else  {
+
+  FacilityList.prototype.addFacility = function ( fcl_name,title_str )  {
+    if (!this.getFacility(fcl_name))  {
+      var facility = new Facility();
+      facility.name  = fcl_name;
+      facility.title = title_str;
+      if (fcl_name==facility_names.icat)
+        facility.icon = image_path('facility_icat_20x20');
+      this.facilities.push ( facility );
+      return true;
+    } else
+      return false;
+  }
+
 }
 
 FacilityList.prototype.addVisits = function ( fcl_name,uid,vnames,vids,vdates ) {
@@ -359,12 +381,20 @@ FacilityList.prototype.from_JSON = function ( json_str )  {
 // ===========================================================================
 
 function StorageList()  {
-  this._type = 'StorageList';
-  this.path  = '';
-  this.name  = '';
-  this.size  = '';
-  this.dirs  = [];  // sub-directories (FacilityDir)
-  this.files = [];  // dataset files (FacilityFile)
+  this._type   = 'StorageList';
+  this.path    = '';
+  this.name    = '';
+  this.size    = '';
+  this.dirs    = [];  // sub-directories (FacilityDir)
+  this.files   = [];  // dataset files (FacilityFile)
+  this.sectors = [];  // file templates and ranges, for example:
+                      // "sectors" : [{"template":"hg-###.mar1600",
+                      //               "ranges":[[1,29]]
+                      //              },
+                      //              {"template":"hg_###.mar1600",
+                      //               "ranges":[[1,29],[31,84]]
+                      //              }]
+
 }
 
 

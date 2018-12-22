@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    05.10.18   <--  Date of Last Modification.
+ *    19.12.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -38,8 +38,10 @@ function TaskPhaserEP()  {
   this.helpURL = './html/jscofe_task_phaserep.html';
 
   this.input_dtypes = [{  // input data types
-      data_type   : {'DataRevision':['!anomalous','!asu']}, // data type(s) and subtype(s)
-                                                            // '!' means "mandatory"
+      data_type   : {'DataRevision':['!anomalous','!asu',['xyz','substructure']]},
+                                              // data type(s) and subtype(s)
+                                              // '!' means "mandatory"
+                                              // [] means one or both mandatory
       label       : 'Structure revision',     // label for input dialog
       inputId     : 'revision',  // input Id for referencing input fields
       customInput : 'phaser-ep', // lay custom fields next to the selection
@@ -48,7 +50,7 @@ function TaskPhaserEP()  {
       min         : 1,           // minimum acceptable number of data instances
       max         : 1            // maximum acceptable number of data instances
     },{
-      data_type   : {'DataStructure':['substructure']}, // data type(s) and subtype(s)
+      data_type   : {'DataStructure':['!substructure']}, // data type(s) and subtype(s)
       label       : 'Anomalous scatterers', // label for input dialog
       inputId     : 'substructure',   // input Id for referencing input fields
       force       : 1,           // will display [do not use] by default
@@ -65,7 +67,7 @@ function TaskPhaserEP()  {
                                  // be selected
       min         : 0,           // minimum acceptable number of data instances
       max         : 1            // maximum acceptable number of data instances
-    /*
+      /*
     },{
       // enforce having at least 1 Structure in the branch
       data_type   : {'DataStructure':[]}, // data type(s) and subtype(s)
@@ -73,7 +75,7 @@ function TaskPhaserEP()  {
       inputId     : 'void1',    // void input Id for not showing the item
       min         : 1,          // minimum acceptable number of data instances
       max         : 100000      // maximum acceptable number of data instances
-    */
+      */
     }
   ];
 
@@ -120,7 +122,7 @@ function TaskPhaserEP()  {
                     showon    : {LLG_SEL:['SEL']}  // from this and input data section
                   },
               LLG_ATYPE : {
-                    type      : 'string_',   // empty string allowed
+                    type      : 'string',   // empty string allowed
                     keyword   : 'atomtype=',
                     label     : 'complete with atom type(s)',
                     tooltip   : 'Give a comma-separated list of atom types to ' +
@@ -282,15 +284,20 @@ TaskPhaserEP.prototype.constructor = TaskPhaserEP;
 // ===========================================================================
 // export such that it could be used in both node and a browser
 
-TaskPhaserEP.prototype.icon_small = function()  { return './images/task_phaserep_20x20.svg'; }
-TaskPhaserEP.prototype.icon_large = function()  { return './images/task_phaserep.svg';       }
+TaskPhaserEP.prototype.icon_small = function()  { return 'task_phaserep_20x20'; }
+TaskPhaserEP.prototype.icon_large = function()  { return 'task_phaserep';       }
 
-TaskPhaserEP.prototype.currentVersion = function()  { return 1; }
+TaskPhaserEP.prototype.currentVersion = function()  {
+  var version = 0;
+  if (__template)
+        return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );
+  else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
+}
+
 
 if (!__template)  {
   //  for client side
 
-  /*
   TaskPhaserEP.prototype.inputChanged = function ( inpParamRef,emitterId,emitterValue )  {
 
     if ((emitterId=='revision') || (emitterId=='substructure') || (emitterId=='xmodel')) {
@@ -310,7 +317,8 @@ if (!__template)  {
       }
       if (xmodel)  {
         xmodel = xmodel.dropdown[0];
-        inpParamRef.grid.setRowVisible ( xmodel.row,!main_xyz );
+        inpParamRef.grid.setRowVisible ( xmodel.row  ,!main_xyz );
+        //inpParamRef.grid.setRowVisible ( xmodel.row+1,!main_xyz );
       }
 
     }
@@ -318,7 +326,6 @@ if (!__template)  {
     TaskTemplate.prototype.inputChanged.call ( this,inpParamRef,emitterId,emitterValue );
 
   }
-  */
 
   TaskPhaserEP.prototype.collectInput = function ( inputPanel )  {
 

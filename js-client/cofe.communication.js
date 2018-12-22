@@ -97,7 +97,7 @@ function makeCommErrorMessage ( title,response )  {
       break;
 
     default:
-        alert ( JSON.stringify(response));
+        alert ( 'unknown error, response='+JSON.stringify(response) );
         MessageUnknownError ( title,response.message );
 
   }
@@ -314,7 +314,26 @@ function downloadJobFile ( jobId,filePath )  {
   downloadFile ( url );
 }
 
-
 window.onbeforeunload = function(e)  {
   serverCommand ( fe_command.stop,{},'stopping',null,null,function(){} );
 }
+
+
+/*
+function setQuitDestructor()  {
+
+  window.addEventListener('beforeunload', function (e) {
+    // Cancel the event as stated by the standard.
+    e.preventDefault();
+    // Chrome requires returnValue to be set.
+    e.returnValue = '';
+    alert ( 'unload' );
+    //localCommand  ( nc_command.stop,{},'stopping',function(){} );
+    serverCommand ( fe_command.stop,{},'stopping',function(response){
+      alert ('response');
+    },null,function(){} );
+    return true;
+  });
+
+}
+*/

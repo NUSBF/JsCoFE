@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    03.10.18   <--  Date of Last Modification.
+#    28.10.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -31,6 +31,7 @@
 import os
 import sys
 import shutil
+import json
 
 #  ccp4-python imports
 import pyrvapi
@@ -136,6 +137,9 @@ class Crank2(basic.TaskDriver):
 
 
     def add_sequence ( self ):
+        solvent_content = self.getParameter ( self.sec1.SOLVENT_CONTENT )
+        if not solvent_content:
+            solvent_content = self.revision.ASU.solvent/100.0
         if len(self.seq)>0:
             name     = []
             sequence = []
@@ -149,29 +153,20 @@ class Crank2(basic.TaskDriver):
                                                name,sequence,ncopies )
             self.config.append ( "sequence" +\
                 " monomers_asym=1" +\
-                " solvent_content=" + str(self.revision.ASU.solvent/100.0) +\
+                " solvent_content=" + str(solvent_content) +\
                 " file=" + self.file_seq_path() )
 
         else:
             self.config.append ( "sequence" +\
                 " monomers_asym=1" +\
-                " solvent_content=" + str(self.revision.ASU.solvent/100.0) +\
+                " solvent_content=" + str(solvent_content) +\
                 " residues_mon=" + self.revision.ASU.nRes )
 
-        #if self.seq:
-        #    self.config.append ( "sequence" +\
-        #        self.getKWItem ( self.sec1.MONOMERS_ASYM   ) +\
-        #        " solvent_content=" + str(self.revision.ASU.solvent/100.0) +\
-        #        " file=" + self.crank2_sequence() )
-        #else:
-        #    self.config.append ( "sequence" +\
-        #        self.getKWItem ( self.sec1.MONOMERS_ASYM   ) +\
-        #        " solvent_content=" + str(self.revision.ASU.solvent/100.0) +\
-        #        self.getKWItem ( self.sec1.NRES ) )
         return
 
 
     def add_createfree ( self ):
+        return
         S = "createfree"
         if not self.pmodel:
             S += " no_output_to_next_step::True"
@@ -255,10 +250,15 @@ class Crank2(basic.TaskDriver):
         return
 
 
+    def get_exclude ( self ):
+        return "exclude free=" + self.hkl[0].getFreeRColumn() +\
+                    " \"file=" + self.hkl[0].getHKLFilePath(self.inputDir()) + "\""
+
     def add_mbref ( self ):
         if self.getParameter(self.sec6.MBREF_EXCLUDE_FREE)=="True" or \
            self.getParameter(self.sec6.MBREF_EXCLUDE_FREE)=="_blank":
-            reflections = "exclude obj_from=0,typ=freeR"
+            #reflections = "exclude obj_from=0,typ=freeR"
+            reflections = self.get_exclude()
         else:
             reflections = ""
         pgm = self.getParameter ( self.sec6.MBREF_MB_PROGRAM )
@@ -272,6 +272,8 @@ class Crank2(basic.TaskDriver):
         return
 
 
+    # PHDMMB_BIGCYC,PHDMMB_DMCYC
+
     def add_comb_phdmmb ( self ):
         if self.getParameter(self.sec6.COMB_PHDMMB_DO)!="True":
             self.add_mbref()
@@ -280,7 +282,8 @@ class Crank2(basic.TaskDriver):
             if always_exclude.endswith("never"):
                 always_exclude = ""
             else:
-                always_exclude += " exclude obj_from=0,typ=freeR"
+                #always_exclude += " exclude obj_from=0,typ=freeR"
+                always_exclude += " " + self.get_exclude()
             self.config.append ( "comb_phdmmb" + always_exclude +\
                 self.getKWItem ( self.sec6.COMB_PHDMMB_START_SHELXE       ) +\
                 self.getKWItem ( self.sec6.COMB_PHDMMB_SKIP_INITIAL_BUILD ) +\
@@ -296,7 +299,8 @@ class Crank2(basic.TaskDriver):
 
 
     def add_ref ( self ):
-        self.config.append ( "ref target::MLHL exclude obj_from=0,typ=freeR" )
+        #self.config.append ( "ref target::MLHL exclude obj_from=0,typ=freeR" )
+        self.config.append ( "ref target::MLHL " + self.get_exclude() )
         return
 
 
@@ -448,28 +452,29 @@ class Crank2(basic.TaskDriver):
                 if self.task._type!="TaskShelxSubstr":
                     self.structure.addPhasesSubtype()
                     self.structure.setCrank2Labels ()
-                    sub_path = os.path.join ( self.reportDir(),"2-substrdet","fixsubstrpdb","heavy.pdb" )
-                    #subxyz_path = os.path.join ( self.reportDir(),"3-refatompick","phas","REFMAC5_cyc0.pdb" )
-                    #submtz_path = os.path.join ( self.reportDir(),"3-refatompick","phas","REFMAC5.mtz" )
-                    if os.path.isfile(sub_path):
-                        #self.rvrow += 20
-                        self.putTitle ( "Heavy Atom Substructure Found" )
-                        hkls = self.pickHKL()
-                        substructure = self.finaliseStructure ( sub_path,
-                                    self.outputFName,hkls,None,[],3,False,"" )
-                        if not substructure:
-                            self.putMessage ( "<b><i>Failed to form heavy atom substructure object</i></b>" )
+                    #sub_path = os.path.join ( self.reportDir(),"2-substrdet","fixsubstrpdb","heavy.pdb" )
+                    substrdir = [f for f in os.listdir(self.reportDir()) if f.endswith("-substrdet")]
+                    if len(substrdir)>0:
+                        sub_path = os.path.join ( self.reportDir(),substrdir[0],"fixsubstrpdb","heavy.pdb" )
+                        if os.path.isfile(sub_path):
+                            #self.rvrow += 20
+                            self.putTitle ( "Heavy Atom Substructure Found" )
+                            hkls = self.pickHKL()
+                            substructure = self.finaliseStructure ( sub_path,
+                                        self.outputFName,hkls,None,[],3,False,"" )
+                            if not substructure:
+                                self.putMessage ( "<b><i>Failed to form heavy atom substructure object</i></b>" )
+                            else:
+                                # finalise output revision(s)
+                                # remove Refmac results from substructure:
+                                shutil.copy2 ( hkls.getHKLFilePath(self.inputDir()),self.outputDir() )
+                                xyz_file = substructure.getSubFileName()
+                                substructure.removeFiles()
+                                substructure.setSubFile ( xyz_file )
+                                substructure.setMTZFile ( hkls.getHKLFileName() )
+                                substructure.removeSubtype ( dtype_template.subtypePhases() )
                         else:
-                            # finalise output revision(s)
-                            # remove Refmac results from substructure:
-                            shutil.copy2 ( hkls.getHKLFilePath(self.inputDir()),self.outputDir() )
-                            xyz_file = substructure.getSubFileName()
-                            substructure.removeFiles()
-                            substructure.setSubFile ( xyz_file )
-                            substructure.setMTZFile ( hkls.getHKLFileName() )
-                            substructure.removeSubtype ( dtype_template.subtypePhases() )
-                    else:
-                        self.putTitle ( "No heavy atom substructure found" )
+                            self.putTitle ( "No heavy atom substructure found" )
 
                 self.structure.addEPSubtype()
 
@@ -479,23 +484,25 @@ class Crank2(basic.TaskDriver):
                     self.putTitle ( "Structure Revisions" )
 
                 # fetch r-factors for display in job tree
-                fileref = os.path.join ( self.reportDir(),"7-ref","ref.log" )
-                rfree_pattern   = "R-free factor after refinement is "
-                rfactor_pattern = "R factor after refinement is "
-                rfree   = 0.0
-                rfactor = 0.0
-                if os.path.isfile(fileref):
-                    with open(fileref,'r') as f:
-                        for line in f:
-                            if line.startswith(rfree_pattern):
-                                rfree   = float(line.replace(rfree_pattern,""))
-                            if line.startswith(rfactor_pattern):
-                                rfactor = float(line.replace(rfactor_pattern,""))
-                if rfree>0.0 and rfactor>0.0:
-                    self.generic_parser_summary["refmac"] = {
-                        'R_factor' : rfactor,
-                        'R_free'   : rfree
-                    }
+                refdir = [f for f in os.listdir(self.reportDir()) if f.endswith("-ref")]
+                if len(refdir)>0:
+                    rfree_pattern   = "R-free factor after refinement is "
+                    rfactor_pattern = "R factor after refinement is "
+                    rfree   = 0.0
+                    rfactor = 0.0
+                    fileref = os.path.join ( self.reportDir(),refdir[0],"ref.log" )
+                    if os.path.isfile(fileref):
+                        with open(fileref,'r') as f:
+                            for line in f:
+                                if line.startswith(rfree_pattern):
+                                    rfree   = float(line.replace(rfree_pattern,""))
+                                if line.startswith(rfactor_pattern):
+                                    rfactor = float(line.replace(rfactor_pattern,""))
+                    if rfree>0.0 and rfactor>0.0:
+                        self.generic_parser_summary["refmac"] = {
+                            'R_factor' : rfactor,
+                            'R_free'   : rfree
+                        }
 
                 # check if space group has changed
                 hkl_sol = None
@@ -511,8 +518,7 @@ class Crank2(basic.TaskDriver):
                     self.putMessage (
                         "<b><i>New structure revision name for:<br>&nbsp;</i></b>" )
 
-                gridId = "revision_" + str(self.widget_no)
-                self.widget_no += 1
+                gridId = self.getWidgetId ( "revision" )
                 pyrvapi.rvapi_add_grid ( gridId,False,self.report_page_id(),
                                          self.rvrow,0,1,1 )
                 self.rvrow += 1
@@ -629,9 +635,27 @@ class Crank2(basic.TaskDriver):
         else:
             self.runApp ( "ccp4-python",cmd )
 
-        self.addCitations ( ['crank2'] )
+        if self.task._type=="TaskCrank2":
+            self.addCitations ( ['crank2'] )
 
-        self.restoreReportDocument()
+        meta_str = self.restoreReportDocument()
+        if not meta_str:
+            self.file_stderr.write ( "\n\n ***** crank-2 returned no meta\n\n" )
+        else:
+            try:
+                meta = json.loads ( meta_str )
+                #self.file_stdout.write ( "\n\n ***** crank-2 meta: " + meta_str + "\n\n" )
+                if "programs_used" in meta:
+                    self.addCitations ( meta["programs_used"] )
+                else:
+                    self.putMessage ( "<b>Program error:</b> <i>no program list in meta</i>" +
+                                  "<p>'" + meta_str + "'" )
+            except:
+                self.putMessage ( "<b>Program error:</b> <i>unparseable metadata from Crank-2</i>" +
+                                  "<p>'" + meta_str + "'" )
+        if self.task._type!="TaskCrank2":
+            self.addCitations ( ['crank2'] )
+
         #pyrvapi.rvapi_reset_task()
 
         self.finalise()

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    03.09.18   <--  Date of Last Modification.
+ *    12.12.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -190,10 +190,10 @@ function ProjectListPage ( sceneId )  {
   // Make Main Menu
   if (!__local_user)  {
 
-    var account_mi = this.headerPanel.menu.addItem('My Account'   ,'./images/settings.svg'  );
+    var account_mi = this.headerPanel.menu.addItem('My Account',image_path('settings') );
     var admin_mi   = null;
     if (__admin)
-      admin_mi = this.headerPanel.menu.addItem('Admin Page','./images/admin.png');
+      admin_mi = this.headerPanel.menu.addItem('Admin Page',image_path('admin') );
 
     account_mi.addOnClickListener ( function(){
       saveProjectList ( function(data){ makeAccountPage(sceneId); } );
@@ -213,11 +213,6 @@ function ProjectListPage ( sceneId )  {
     saveProjectList ( function(data){ logout(sceneId); } );
   });
 
-  //var logout_mi = this.headerPanel.menu.addItem('Log out','./images/logout.svg');
-  //logout_mi.addOnClickListener ( function(){
-  //  saveProjectList ( function(data){ logout(sceneId); } );
-  //});
-
   // make panel
   panel = new Grid('');
   // center panel horizontally and make left- and right-most columns page margins
@@ -233,12 +228,12 @@ function ProjectListPage ( sceneId )  {
   var title_lbl = new Label ( 'My Projects'  );
   title_lbl.setFont         ( 'times','200%',true,true );
 
-  open_btn   = new Button ( 'Open'  ,'./images/go_20x20.svg' );
-  add_btn    = new Button ( 'Add'   ,'./images/add_20x20.svg' );
-  del_btn    = new Button ( 'Delete','./images/remove_20x20.svg' );
-  export_btn = new Button ( 'Export','./images/export_20x20.svg' );
-  import_btn = new Button ( 'Import','./images/import_20x20.svg' );
-  help_btn   = new Button ( 'Help'  ,'./images/help.svg' ).setTooltip('Documentation' );
+  open_btn   = new Button ( 'Open'  ,image_path('go_20x20') );
+  add_btn    = new Button ( 'Add'   ,image_path('add_20x20') );
+  del_btn    = new Button ( 'Delete',image_path('remove_20x20') );
+  export_btn = new Button ( 'Export',image_path('export_20x20') );
+  import_btn = new Button ( 'Import',image_path('import_20x20') );
+  help_btn   = new Button ( 'Help'  ,image_path('help') ).setTooltip('Documentation' );
   open_btn  .setWidth     ( '80pt' );
   add_btn   .setWidth     ( '80pt' );
   del_btn   .setWidth     ( '80pt' );

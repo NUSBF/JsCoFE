@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    16.04.18   <--  Date of Last Modification.
+ *    22.12.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -408,6 +408,17 @@ Grid.prototype.getCell = function ( row,col )  {
 }
 
 Grid.prototype.getNRows = function()  {
+  return this.element.rows.length;
+}
+
+Grid.prototype.truncateRows = function ( row )  {
+  while (this.element.rows.length>row+1)
+    this.element.deleteRow ( -1 );  // deletes last row
+  return this.element.rows.length;
+}
+
+Grid.prototype.deleteRow = function ( row )  {
+  this.element.deleteRow ( row );
   return this.element.rows.length;
 }
 
@@ -1346,6 +1357,11 @@ Checkbox.prototype.addOnClickListener = function ( listener_func )  {
 
 Checkbox.prototype.getValue = function() {
   return this.checkbox.checked;
+}
+
+Checkbox.prototype.setValue = function ( checked_bool ) {
+  this.checkbox.checked = checked_bool;
+  $(this.checkbox).checkboxradio( "refresh" );
 }
 
 Checkbox.prototype.setDisabled = function ( disabled_bool )  {

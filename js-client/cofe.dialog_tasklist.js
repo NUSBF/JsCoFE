@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    11.10.18   <--  Date of Last Modification.
+ *    19.12.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -111,7 +111,7 @@ TaskListDialog.prototype.setTask = function ( task_obj,grid,row,setall )  {
   if ((!setall) && (!dataSummary.status))
     return null;
 
-  var btn = grid.setButton  ( '',task_obj.icon_large(),row,0,1,1 )
+  var btn = grid.setButton  ( '',image_path(task_obj.icon_large()),row,0,1,1 )
                 .setSize_px ( 54,40 );
   grid.setLabel             ( ' ', row,1,1,1 );
   var lbl = grid.setLabel   ( task_obj.title, row,2,1,1 );
@@ -280,8 +280,7 @@ var row      = 0;
     new TaskEnsemblePrepSeq(),
     new TaskEnsemblePrepXYZ(),
     new TaskMolrep  (),
-    new TaskPhaserMR(),
-    new TaskShelxEMR()
+    new TaskPhaserMR()
   ]);
 
   this.makeSection ( 'Experimental Phasing',[
@@ -290,17 +289,21 @@ var row      = 0;
     new TaskShelxAuto(),
     'Elementary EP',
     new TaskShelxSubstr(),
+    new TaskShelxCD    (),
     new TaskPhaserEP   ()
   ]);
 
   this.makeSection ( 'Density Modification',[
-    new TaskParrot()
+    new TaskParrot  (),
+    new TaskAcorn   (),
+    new TaskShelxEMR()
   ]);
 
   this.makeSection ( 'Refinement and Model Building',[
     new TaskRefmac   (),
     new TaskLorestr  (),
     new TaskBuccaneer(),
+    new TaskArpWarp  (),
     new TaskDimple   (),
     new TaskCootMB   ()
   ]);
@@ -325,7 +328,6 @@ var row      = 0;
 
   if (__login_user=='Developer')
     this.makeSection ( 'Tasks in Development',[
-      new TaskCloudImport(),
       new TaskMergeData  (),
       new TaskHelloWorld ()
     ]);

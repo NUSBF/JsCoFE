@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    09.08.18   <--  Date of Last Modification.
+ *    12.12.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -38,8 +38,6 @@ function DataLigand()  {
   this._type      = 'DataLigand';
   //this.title      = 'Ligand Structure';
   this.code       = 'DRG';
-  //this.icon_small = './images/data_20x20.svg';
-  //this.icon_large = './images/data.svg';
 
 }
 
@@ -51,13 +49,19 @@ DataLigand.prototype.constructor = DataLigand;
 
 // ===========================================================================
 
-DataLigand.prototype.title      = function()  { return 'Ligand Structure';        }
-DataLigand.prototype.icon_small = function()  { return './images/data_20x20.svg'; }
-DataLigand.prototype.icon_large = function()  { return './images/data.svg';       }
+DataLigand.prototype.title      = function()  { return 'Ligand Structure'; }
+DataLigand.prototype.icon_small = function()  { return 'data_20x20';       }
+DataLigand.prototype.icon_large = function()  { return 'data';             }
 
 // when data class version is changed here, change it also in python
 // constructors
-DataLigand.prototype.currentVersion = function()  { return 1; } // from 09.08.2018
+DataLigand.prototype.currentVersion = function()  {
+  var version = 0;
+  if (__template)
+        return  version + __template.DataTemplate.prototype.currentVersion.call ( this );
+  else  return  version + DataTemplate.prototype.currentVersion.call ( this );
+}
+
 
 // export such that it could be used in both node and a browser
 if (!__template)  {

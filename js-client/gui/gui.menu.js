@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    08.11.17   <--  Date of Last Modification.
+ *    22.10.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Menu and dropdwon comboboxes
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2017
+ *  (C) E. Krissinel, A. Lebedev 2016-2018
  *
  *  =================================================================
  *
@@ -110,10 +110,16 @@ Menu.prototype.addSeparator = function ()  {
 
 Menu.prototype.setDisabled = function ( disabled_bool )  {
   this.disabled = disabled_bool;
+//  this.button  .setDisabled ( disabled_bool );
+//  this.dropdown.setDisabled ( disabled_bool );
+//  Widget.prototype.setDisabled.call ( this,disabled_bool );
 }
 
 Menu.prototype.setEnabled = function ( enabled_bool )  {
   this.disabled = !enabled_bool;
+//  this.button  .setEnabled ( enabled_bool );
+//  this.dropdown.setEnabled ( enabled_bool );
+//  Widget.prototype.setEnabled.call ( this,enabled_bool );
 }
 
 Menu.prototype.setZIndex = function ( zindex )  {
@@ -448,6 +454,25 @@ Dropdown.prototype.disableItemByPosition = function ( itemNo,disable_bool )  {
 
   return this;  // for chaining
 
+}
+
+
+Dropdown.prototype.setDisabled = function ( disable_bool )  {
+
+  if (disable_bool)
+        this.select.setAttribute    ( 'disabled','disabled' );
+  else  this.select.removeAttribute ( 'disabled' );
+
+  if (this.activated)
+    $(this.select.element).selectmenu('refresh');
+
+  return this;  // for chaining
+
+}
+
+
+Dropdown.prototype.setEnabled = function ( enable_bool )  {
+  this.setDisabled ( !enable_bool );
 }
 
 

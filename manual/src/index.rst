@@ -10,6 +10,7 @@
    :numbered:
    :maxdepth: 3
 
+   autosetup
    desktop
    setup
 

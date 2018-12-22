@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    16.08.18   <--  Date of Last Modification.
+#    15.11.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -31,7 +31,7 @@ import shutil
 
 #  application imports
 import basic
-from   pycofe.dtypes  import dtype_template, dtype_revision
+from   pycofe.dtypes  import dtype_template
 
 
 # ============================================================================
@@ -103,11 +103,20 @@ class BuccaneerMR(basic.TaskDriver):
         self.addCmdLine ( "colin-fo"  ,"[/*/*/" + istruct.FP + ",/*/*/" + istruct.SigFP + "]" )
         self.addCmdLine ( "colin-free","[/*/*/" + istruct.FreeR_flag + "]" )
 
+        """
         if istruct.hasMRSubtype() or istruct.HLA=="":
             self.addCmdLine ( "colin-phifom","[/*/*/" + istruct.PHI + ",/*/*/" + istruct.FOM + "]" )
         else:
             self.addCmdLine ( "colin-hl","[/*/*/" + istruct.HLA + ",/*/*/" + istruct.HLB +\
                                          ",/*/*/" + istruct.HLC + ",/*/*/" + istruct.HLD + "]" )
+        """
+
+        if istruct.HLA:
+            self.addCmdLine ( "colin-hl","[/*/*/" + istruct.HLA + ",/*/*/" + istruct.HLB +\
+                                         ",/*/*/" + istruct.HLC + ",/*/*/" + istruct.HLD + "]" )
+        else:
+            self.addCmdLine ( "colin-phifom","[/*/*/" + istruct.PHI + ",/*/*/" + istruct.FOM + "]" )
+
         """
         if isCoor:
             self.addCmdLine ( "colin-phifom","[/*/*/" + istruct.PHI + ",/*/*/" + istruct.FOM + "]" )
@@ -209,7 +218,7 @@ class BuccaneerMR(basic.TaskDriver):
             self.unsetLogParser()
 
             # calculate maps for UglyMol using final mtz from temporary location
-            fnames = self.calcCCP4Maps ( self.buccaneer_mtz(),"buccaneer" )
+            fnames = self.calcCCP4Maps ( self.buccaneer_mtz(),self.outputFName )
 
             # register output data from temporary location (files will be moved
             # to output directory by the registration procedure)

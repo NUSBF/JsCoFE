@@ -2,11 +2,11 @@
 /*
  *  ===========================================================================
  *
- *    10.10.18   <--  Date of Last Modification.
+ *    12.12.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  ---------------------------------------------------------------------------
  *
- *  **** Module  :  js-client/cofe.dialog_licence.js
+ *  **** Module  :  js-client/cofe.dialog_facility.js
  *       ~~~~~~~~~
  *  **** Project :  jsCoFE - javascript-based Cloud Front End
  *       ~~~~~~~~~
@@ -280,7 +280,7 @@ FacilityBrowser.prototype.onTreeContextMenu = function ( node )  {
     (function(browser){
       items.updateItem = { // The "Add job" menu item
         label  : "Update",
-        icon   : './images/refresh_20x20.svg',
+        icon   : image_path('refresh_20x20'),
         action : function(){ browser.openItem(); }
       };
     }(this))
@@ -288,7 +288,7 @@ FacilityBrowser.prototype.onTreeContextMenu = function ( node )  {
     (function(browser){
       items.updateItem = { // The "Add job" menu item
         label  : "Choose",
-        icon   : './images/upload_20x20.svg',
+        icon   : image_path('upload_20x20'),
         action : function(){ browser.openItem(); }
       };
     }(this))
@@ -456,13 +456,14 @@ FacilityBrowser.prototype.updateItem = function ( askpwd )  {
 // ===========================================================================
 // Cloud File Browser
 
-function CloudFileBrowser ( inputPanel,task,imageKey,onClose_func )  {
+function CloudFileBrowser ( inputPanel,task,imageKey,onSelect_func,onClose_func )  {
 
   this.inputPanel = inputPanel;  // input panel from facility import dialog
   this.task       = task;        // facility import task
   this.image_key  = imageKey;    // 0: do not show images
                                  // 1: show images
                                  // 2: show only images
+  this.onSelect_func = onSelect_func;
 
   this.uid = '';
   this.pwd = '';
@@ -508,6 +509,7 @@ function CloudFileBrowser ( inputPanel,task,imageKey,onClose_func )  {
 
 CloudFileBrowser.prototype = Object.create ( Widget.prototype );
 CloudFileBrowser.prototype.constructor = CloudFileBrowser;
+
 
 // -------------------------------------------------------------------------
 
@@ -622,12 +624,43 @@ CloudFileBrowser.prototype.openItem = function()  {
           browser.loadStorageTree();
         },0);
       }(this))
-    } else  {
-      this.task.setSelectedCloudFiles ( this.inputPanel,items );
-      if (this.image_key==2)
-        $(this.element).dialog( "close" );
+    } else if (this.image_key==2)  {
+      // this if is actually never invoked as "Select" button is grayed if
+      // item is not a directory
+      if (this.onSelect_func)
+        this.onSelect_func ( this.storageTree.storageList );
+      $(this.element).dialog( "close" );
+    } else if (this.onSelect_func)  {
+      this.onSelect_func ( items );
     }
   }
+}
+
+
+CloudFileBrowser.prototype.getStorageList = function ( path,callback_func )  {
+
+  if (!path)  {
+
+    callback_func ( this.storageTree.storageList );
+
+  } else  {
+
+    var storageTree = new StorageTree ( 'files',path,this.image_key );
+    storageTree.readStorageData ( 'Cloud File Storage',
+      function(){
+        if (storageTree.storageList)  {
+          callback_func ( storageTree.storageList );
+        } else  {
+          callback_func ( {} );
+        }
+      },
+      function(node){ return null; }, // browser.onTreeContextMenu(node); },
+      function()    {},
+      function()    {}
+    );
+
+  }
+
 }
 
 
@@ -635,9 +668,23 @@ CloudFileBrowser.prototype.selectItem = function()  {
   var items = this.storageTree.getSelectedItems();
   if (items.length>0)  {
     if (items[0]._type=='FacilityDir')  {
-      this.task.setSelectedCloudFiles ( this.inputPanel,items );
-      if (this.image_key==2)
-        $(this.element).dialog( "close" );
+      if (this.image_key==2)  {
+        if (this.onSelect_func) {
+          if (items[0].name=='..')  {
+            this.onSelect_func ( this.storageTree.storageList );
+            $(this.element).dialog( "close" );
+          } else  {
+            (function(browser){
+              browser.getStorageList ( browser.task.currentCloudPath+'/'+items[0].name,
+                                       function(storageList){
+                browser.onSelect_func ( storageList );
+                $(browser.element).dialog( "close" );
+              });
+            }(this))
+          }
+        }
+      } else if (this.onSelect_func)
+        this.onSelect_func ( items );
     }
   }
 }

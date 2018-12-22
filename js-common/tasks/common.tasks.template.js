@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    15.10.18   <--  Date of Last Modification.
+ *    12.12.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -76,11 +76,11 @@ function TaskTemplate()  {
                             // [1]: no data is required but the task is allowed only
                             // on the topmost level of job tree
   if (dbx)  {
-    this.input_data   = new dbx.DataBox(); // actual input data, represented by DataBox
-    this.output_data  = new dbx.DataBox(); // actual output data, represented by DataBox
+    this.input_data  = new dbx.DataBox(); // actual input data, represented by DataBox
+    this.output_data = new dbx.DataBox(); // actual output data, represented by DataBox
   } else  {
-    this.input_data   = new DataBox(); // actual input data, represented by DataBox
-    this.output_data  = new DataBox(); // actual output data, represented by DataBox
+    this.input_data  = new DataBox(); // actual input data, represented by DataBox
+    this.output_data = new DataBox(); // actual output data, represented by DataBox
   }
 
   this.parameters      = {};  // input parameters
@@ -116,8 +116,8 @@ function TaskTemplate()  {
 
 // ===========================================================================
 
-TaskTemplate.prototype.icon_small = function()  { return './images/process_20x20.png'; }
-TaskTemplate.prototype.icon_large = function()  { return './images/process.png';       }
+TaskTemplate.prototype.icon_small = function()  { return 'process_20x20'; }
+TaskTemplate.prototype.icon_large = function()  { return 'process';       }
 
 // task.platforms() identifies suitable platforms:
 //   'W"  : Windows
@@ -188,17 +188,15 @@ if (!dbx)  {
       var clen  = p[3];  // number of siblings
 
       can_move = true;
-      //if (pnode && pid && (pos<=0) && (clen<2))  {
-      if (pnode && pid && ((pos<=0) || (clen<2)))  {
-        // the only or seniour sibling -- check input data
+      if (pnode && pid && (pos<=0) && (clen<2))  {
+        // no siblings -- check input data
+      //if (pnode && pid && ((pos<=0) || (clen<2)))  {
+        // no siblings or seniour sibling -- check input data
         for (var dtype in this.input_data.data)  {
-//          if (dtype!='revision')  {
             var d = this.input_data.data[dtype];
             for (var j=0;(j<d.length) && can_move;j++)
               if (d[j].jobId==parent_task.id)
                 can_move = false;
-//          } else
-//            can_move = false;
           if (!can_move)
             break;
         }
@@ -290,7 +288,7 @@ if (!dbx)  {
     }
 
     var header = new Grid ( '' );
-    header.task_icon = header.setImage ( this.icon_large(),'','80px', 0,0, 3,1 );
+    header.task_icon = header.setImage ( image_path(this.icon_large()),'','80px', 0,0, 3,1 );
     header.setLabel ( ' ', 0,1, 3,1 ).setWidth_px(20).setHeight ( '0.5em' );
     var row = 0;
     var t   = this.title;
@@ -606,7 +604,7 @@ if (!dbx)  {
 
           grid.setLabel    ( '&nbsp;', r,1, 1,1 );
           grid.setCellSize ( '1%','' , r,1 );
-          ddn.inspect_btn = grid.setButton  ( '','./images/inspect.svg',r,2,1,1 )
+          ddn.inspect_btn = grid.setButton  ( '',image_path('inspect'),r,2,1,1 )
                                 .setTooltip ( 'Inspect details' )
                                 .setSize    ( '32px','32px' )
                                 .setVisible ( false );
@@ -1016,11 +1014,13 @@ if (!dbx)  {
 
       }
 
+
+
       if ('void_data' in widget)
         for (var inputId in widget.void_data)
           for (var j=0;j<widget.void_data[inputId].length;j++)
             inp_data.addCustomData ( inputId,widget.void_data[inputId][j] );
-
+      
       for (var i=0;i<widget.child.length;i++)
         collectData ( widget.child[i] );
 
@@ -1058,6 +1058,8 @@ if (!dbx)  {
   //  ASSUMPTIONS:
   //   (o) if operation specificator '_' is absent, logical 'and' is assumed.
   //   (o) missing 'DATAX'is equivalent to 'false'
+  //   (o) special values '__is_visible__' and '__not_visible__' refer to
+  //       the visibility of data widget
   //
 
     var op = '&&';  // logical 'and'
@@ -1073,7 +1075,7 @@ if (!dbx)  {
     for (var c in condition)
       if (c!='_')  {
         var value = false;
-        if (condition[c].constructor==Array)  {
+        if (condition[c].constructor===Array)  {
           if (c in parameters)  {
             var v = null;
             if (parameters[c].hasOwnProperty('input'))
@@ -1081,6 +1083,12 @@ if (!dbx)  {
             else if (parameters[c].ref.hasOwnProperty('value'))
               v = parameters[c].ref.value;
             value = (condition[c].indexOf(v)>=0);
+            if (!value)  {
+              if (condition[c].indexOf('__is_visible__')>=0)
+                value = parameters[c].ref.visible;
+              else if (condition[c].indexOf('__not_visible__')>=0)
+                value = !parameters[c].ref.visible;
+            }
           } else if (c in dataState)  {
             value = (condition[c].indexOf(dataState[c])>=0);
           } else {
@@ -1309,8 +1317,9 @@ if (!dbx)  {
           var rs = item.position[2];
           var cs = item.position[3];
           item.visible = true;
-          if ('default' in item)  defval  = item.default;
-                            else  defval  = '';
+          if ('default' in item)           defval  = item.default;
+          else if ('placeholder' in item)  defval  = item.placeholder;
+                                     else  defval  = '';
           if ('tooltip' in item)  tooltip = item.tooltip;
                             else  tooltip = '';
 
@@ -1631,123 +1640,127 @@ if (!dbx)  {
     var msg = '';  // The output. If everything's Ok, 'msg' remains empty,
                    // otherwise, it ocntains a concatenation of errors found.
 
-   function addMessage ( item,key,message )  {
-     if (item.visible)  {
-       if (msg.length>0)
-         msg += '<br>';
-       var id = key;
-       if ('reportas' in item)     id = item.reportas;
-       else if ('label' in item)   id = item.label;
-       else if ('keyword' in item) id = item.keyword;
-       msg += '<b>' + id + ':</b> ' + message;
-     }
-   }
+    function addMessage ( item,key,message )  {
+      if (item.visible)  {
+        if (msg.length>0)
+          msg += '<br>';
+        var id = key;
+        if ('reportas' in item)     id = item.reportas;
+        else if ('label' in item)   id = item.label;
+        else if ('keyword' in item) id = item.keyword;
+        msg += '<b>' + id + ':</b> ' + message;
+      }
+    }
 
-   function checkRange ( value,item,key )  {
-     if ('range' in item)  {
-       if (item.range[0]=='*')  {
-         if (value>item.range[1])
-           addMessage ( item,key,
-               'value should be less or equal to ' + item.range[1] );
-         else
-           item.value = value;
-       } else if (item.range[1]=='*')  {
-         if (value<item.range[0])
-           addMessage ( item,key,
-               'value should be greater or equal to ' + item.range[0] );
-         else
-           item.value = value;
-       } else if ((value<item.range[0]) || (value>item.range[1]))
-         addMessage ( item,key,
-             'value should be between ' + item.range[0] +
-             ' and ' + item.range[1] );
-       else
-         item.value = value;
-     } else
-       item.value = value;
-   }
+    function checkRange ( value,item,key )  {
+      if ('range' in item)  {
+        if (item.range[0]=='*')  {
+          if (value>item.range[1])
+            addMessage ( item,key,
+                'value should be less or equal to ' + item.range[1] );
+          else
+            item.value = value;
+        } else if (item.range[1]=='*')  {
+          if (value<item.range[0])
+            addMessage ( item,key,
+                'value should be greater or equal to ' + item.range[0] );
+          else
+            item.value = value;
+        } else if ((value<item.range[0]) || (value>item.range[1]))
+          addMessage ( item,key,
+              'value should be between ' + item.range[0] +
+              ' and ' + item.range[1] );
+        else
+          item.value = value;
+      } else
+        item.value = value;
+    }
 
-   function collectValues ( widget ) {
-   // this function is made recursive, because no anticipations on widget
-   // enclosures in job's input panel is made.
+    function collectValues ( widget ) {
+    // this function is made recursive, because no anticipations on widget
+    // enclosures in job's input panel is made.
 
-     if ('inpParamRef' in widget)  {
+      if ('inpParamRef' in widget)  {
 
-       for (var key in widget.inpParamRef.parameters)  {
+        for (var key in widget.inpParamRef.parameters)  {
 
-         param = widget.inpParamRef.parameters[key];
-         item  = param.ref;
+          param = widget.inpParamRef.parameters[key];
+          item  = param.ref;
 
-         switch (item.type)  {
+          switch (item.type)  {
 
-           case 'integer_' :
-           case 'integer'  : var text = param.input.getValue().trim();
-                             if (text.length<=0)  {
-                               if (item.type=='integer_')  {
-                                  if ('default' in item) item.value = item.default;
-                                                    else item.value = '';
-                               } else
-                                 addMessage ( item,key,'no value given' );
-                             } else if (isInteger(text))  {
-                               var value = parseInt ( text );
-                               checkRange ( value,item,key );
-                             } else
-                               addMessage ( item,key,'wrong integer format' );
-                         break;
+            case 'integer_' :
+            case 'integer'  : var text = param.input.getValue().trim();
+                              if (text.length<=0)  {
+                                if (item.type=='integer_')  {
+                                  if (isNaN(item.default))
+                                        item.value = '';
+                                  else  item.value = item.default;
+                                } else
+                                  addMessage ( item,key,'no value given' );
+                              } else if (isInteger(text))  {
+                                var value = parseInt ( text );
+                                checkRange ( value,item,key );
+                              } else
+                                addMessage ( item,key,'wrong integer format' );
+                          break;
 
-           case 'real_'    :
-           case 'real'     : var text = param.input.getValue().trim();
-                             if (text.length<=0)  {
-                               if (item.type=='real_')  {
-                                  if ('default' in item) item.value = item.default;
-                                                    else item.value = '';
-                               } else
-                                 addMessage ( item,key,'no value given' );
-                             } else if (isFloat(text))  {
-                               var value = parseFloat ( text );
-                               checkRange ( value,item,key );
-                             } else
-                               addMessage ( item,key,'wrong real format' );
-                         break;
+            case 'real_'    :
+            case 'real'     : var text = param.input.getValue().trim();
+                              if (text.length<=0)  {
+                                if (item.type=='real_')  {
+                                  if (isNaN(item.default))
+                                        item.value = '';
+                                  else  item.value = item.default;
+                                } else
+                                  addMessage ( item,key,'no value given' );
+                              } else if (isFloat(text))  {
+                                var value = parseFloat ( text );
+                                checkRange ( value,item,key );
+                              } else
+                                addMessage ( item,key,'wrong real format' );
+                          break;
 
-           case 'string_'  :
-           case 'string'   : var text = param.input.getValue().trim();
-                             if (text.length<=0)  {
-                               if (item.type=='string_')  {
-                                  if ('default' in item) item.value = item.default;
-                                                    else item.value = '';
-                               } else
-                                 addMessage ( item,key,'no value given' );
-                             } else
-                               item.value = text;
-                         break;
+            case 'string_'  :
+            case 'string'   : var text = param.input.getValue().trim();
+                              if (text.length<=0)  {
+                                if (item.type=='string_')  {
+                                  if ('default' in item)
+                                        item.value = item.default;
+                                  else  item.value = '';
+                                } else
+                                  addMessage ( item,key,'no value given' );
+                              } else
+                                item.value = text;
+                          break;
 
-           case 'checkbox' :
-           case 'combobox' : item.value = param.input.getValue();
-                         break;
+            case 'checkbox' :
+            case 'combobox' : item.value = param.input.getValue();
+                          break;
 
-           case 'textarea_' :
-           case 'textarea'  : var text = param.input.getValue();
-                             if (text.length<=0)  {
-                               if (item.type=='textarea_')  {
-                                  if ('default' in item) item.value = item.default;
-                                                    else item.value = '';
-                               } else
-                                 addMessage ( item,key,'no value given' );
-                             } else
-                               item.value = text;
-                         break;
+            case 'textarea_':
+            case 'textarea' : var text = param.input.getValue();
+                              if (text.length<=0)  {
+                                if (item.type=='textarea_')  {
+                                  if ('default' in item)
+                                        item.value = item.default;
+                                  else  item.value = '';
+                                } else
+                                  addMessage ( item,key,'no value given' );
+                              } else
+                                item.value = text;
+                          break;
 
-           default : ;
+            default : ;
 
-         }
+          }
 
-       }
+        }
 
-     }
+      }
 
-     for (var i=0;i<widget.child.length;i++)
-       collectValues ( widget.child[i] );
+      for (var i=0;i<widget.child.length;i++)
+        collectValues ( widget.child[i] );
 
     }
 
@@ -1883,37 +1896,40 @@ if (!dbx)  {
   // for the actual job.
     for (var dtype in this.input_data.data)  {
       var td = this.input_data.data[dtype];
-      for (var i=0;i<td.length;i++)  {
-//console.log ( ' ==== try ' + td[i]._type );
-        var srcJobDir = prj.getSiblingJobDirPath ( jobDir,td[i].jobId );
-        for (var fileKey in td[i].files) {
-          if (td[i].files.hasOwnProperty(fileKey)) {
-            var fname = td[i].files[fileKey];
-            if (fname)  {
-              var pack = true;
-              var doNotPackSuffixes = this.doNotPackSuffixes();
-              for (var k=0;(k<doNotPackSuffixes.length) && pack;k++)
-                pack = (!fname.endsWith(doNotPackSuffixes[k]));
-              var doPackSuffixes = this.doPackSuffixes();
-              for (var k=0;(k<doPackSuffixes.length) && (!pack);k++)
-                pack = fname.endsWith(doPackSuffixes[k]);
-              if (pack)  {
-                var src_file  = prj.getOutputFilePath ( srcJobDir,fname );
-                var dest_file = prj.getInputFilePath  ( jobDir   ,fname );
-//console.log ( ' --- copy ' + src_file + ' -> ' + dest_file );
-                try {
-                  fs.copySync ( src_file,dest_file );
-                } catch (err) {
-                  console.log ( ' *** cannot copy file ' + src_file +
-                              '\n                   to ' + dest_file +
-                              '\n           for object ' + td[i]._type + ' : ' + td[i].dname );
-                  console.log ( '     error: ' + err) ;
+      for (var i=0;i<td.length;i++)
+        if (td[i])  {
+  //console.log ( ' ==== try ' + td[i]._type );
+          var srcJobDir = prj.getSiblingJobDirPath ( jobDir,td[i].jobId );
+          for (var fileKey in td[i].files) {
+            if (td[i].files.hasOwnProperty(fileKey)) {
+              var fname = td[i].files[fileKey];
+              if (fname)  {
+                var pack = true;
+                var doNotPackSuffixes = this.doNotPackSuffixes();
+                for (var k=0;(k<doNotPackSuffixes.length) && pack;k++)
+                  pack = (!fname.endsWith(doNotPackSuffixes[k]));
+                var doPackSuffixes = this.doPackSuffixes();
+                for (var k=0;(k<doPackSuffixes.length) && (!pack);k++)
+                  pack = fname.endsWith(doPackSuffixes[k]);
+                if (pack)  {
+                  var src_file  = prj.getOutputFilePath ( srcJobDir,fname );
+                  var dest_file = prj.getInputFilePath  ( jobDir   ,fname );
+  //console.log ( ' --- copy ' + src_file + ' -> ' + dest_file );
+                  try {
+                    fs.copySync ( src_file,dest_file );
+                  } catch (err) {
+                    console.log ( ' *** cannot copy file ' + src_file +
+                                '\n                   to ' + dest_file +
+                                '\n           for object ' + td[i]._type + ' : ' + td[i].dname );
+                    console.log ( '     error: ' + err) ;
+                  }
                 }
               }
             }
           }
+        } else {
+          console.log ( ' *** empty data object in TaskTemplate.makeInputData ,dtype=' + dtype );
         }
-      }
     }
     var dboxPath = path.join ( jobDir,'input','databox.meta' );
     utils.writeObject ( dboxPath,this.input_data );

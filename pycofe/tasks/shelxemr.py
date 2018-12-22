@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    12.09.17   <--  Date of Last Modification.
+#    17.12.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2018
 #
 # ============================================================================
 #
@@ -76,8 +76,12 @@ class ShelxEMR(basic.TaskDriver):
         # copy files according to Shelx notations
         shutil.copyfile ( istruct.getMTZFilePath(self.inputDir()),
                           self.shelxe_wrk_mtz() )
-        shutil.copyfile ( istruct.getXYZFilePath(self.inputDir()),
-                          self.shelxe_wrk_pda() )
+        if istruct.getXYZFileName():
+            shutil.copyfile ( istruct.getXYZFilePath(self.inputDir()),
+                              self.shelxe_wrk_pda() )
+        else:
+            shutil.copyfile ( istruct.getSubFilePath(self.inputDir()),
+                              self.shelxe_wrk_pda() )
 
         # use mtz2various to prepare the reflection file
         cmd = [ "HKLIN" ,self.shelxe_wrk_mtz(),
@@ -88,7 +92,7 @@ class ShelxEMR(basic.TaskDriver):
             "LABIN   FP="    + istruct.FP + " SIGFP=" + istruct.SigFP      +\
                                             " FREE="  + istruct.FreeR_flag +\
             "\nOUTPUT SHELX" +\
-            "\nFSQUARED"     +\
+            #"\nFSQUARED"     +\
             "\nEND\n"
         )
         self.close_stdin()
@@ -115,6 +119,8 @@ class ShelxEMR(basic.TaskDriver):
             cmd += ["-o"]
         if self.getParameter(sec1.NCS_CBX)=="True":
             cmd += ["-n"]
+
+        cmd += ["-f"]  # read amplitudes not intensities
 
         self.runApp ( "shelxe",cmd )
 

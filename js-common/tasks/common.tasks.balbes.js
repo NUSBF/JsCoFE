@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    05.10.18   <--  Date of Last Modification.
+ *    12.12.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -76,8 +76,8 @@ TaskBalbes.prototype.constructor = TaskBalbes;
 // ===========================================================================
 // export such that it could be used in both node and a browser
 
-TaskBalbes.prototype.icon_small = function()  { return './images/task_balbes_20x20.svg'; }
-TaskBalbes.prototype.icon_large = function()  { return './images/task_balbes.svg';       }
+TaskBalbes.prototype.icon_small = function()  { return 'task_balbes_20x20'; }
+TaskBalbes.prototype.icon_large = function()  { return 'task_balbes';       }
 
 // task.platforms() identifies suitable platforms:
 //   'W"  : Windows
@@ -86,7 +86,13 @@ TaskBalbes.prototype.icon_large = function()  { return './images/task_balbes.svg
 //   'U'  : Unix ( = Linux + Mac)
 TaskBalbes.prototype.platforms = function()  { return 'LMU'; }  // UNIX only
 
-TaskBalbes.prototype.currentVersion = function()  { return 2; }
+TaskBalbes.prototype.currentVersion = function()  {
+  var version = 1;
+  if (__template)
+        return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );
+  else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
+}
+
 
 if (__template)  {
   //  for server side

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    23.06.18   <--  Date of Last Modification.
+ *    22.12.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -59,6 +59,8 @@ function TaskXyz2Revision()  {
     this.parameters.sec1.contains[option].showon = {'USEDIMPLE_CBX':[true]}
   }
 
+  this.parameters.sec1.open = true;
+
   this.parameters.sec1.contains.USEDIMPLE_CBX = {
     type     : 'checkbox',
     label    : 'Run Dimple',
@@ -67,6 +69,8 @@ function TaskXyz2Revision()  {
     value    : false,
     position : [0,0,1,4]
   };
+
+  this.forceDimple = false;
 
 }
 
@@ -80,10 +84,16 @@ TaskXyz2Revision.prototype.constructor = TaskXyz2Revision;
 // ===========================================================================
 // export such that it could be used in both node and a browser
 
-TaskXyz2Revision.prototype.icon_small = function()  { return './images/task_formstructure_20x20.svg'; }
-TaskXyz2Revision.prototype.icon_large = function()  { return './images/task_formstructure.svg';       }
+TaskXyz2Revision.prototype.icon_small = function()  { return 'task_formstructure_20x20'; }
+TaskXyz2Revision.prototype.icon_large = function()  { return 'task_formstructure';       }
 
-TaskXyz2Revision.prototype.currentVersion = function()  { return 1; }
+TaskXyz2Revision.prototype.currentVersion = function()  {
+  var version = 0;
+  if (__template)
+        return  version + __template.TaskDimple.prototype.currentVersion.call ( this );
+  else  return  version + TaskDimple.prototype.currentVersion.call ( this );
+}
+
 
 if (!__template)  {
   // for client side
@@ -92,49 +102,63 @@ if (!__template)  {
 
     TaskDimple.prototype.inputChanged.call ( this,inpParamRef,emitterId,emitterValue );
 
+    var dimple_cbx = inpParamRef.parameters['USEDIMPLE_CBX'].input;
+
     if ((emitterId=='hkl') || (emitterId=='xyz'))  {
       var inpDataRef = inpParamRef.grid.inpDataRef;
 
-      hkl_ddn = inpDataRef.input[0].dropdown[0];
-      hkl     = inpDataRef.input[0].dt[hkl_ddn.getValue()];
-      xyz_ddn = inpDataRef.input[1].dropdown[0];
-      xyz     = inpDataRef.input[1].dt[xyz_ddn.getValue()];
+      var hkl_ddn = inpDataRef.input[0].dropdown[0];
+      var hkl     = inpDataRef.input[0].dt[hkl_ddn.getValue()];
+      var xyz_ddn = inpDataRef.input[1].dropdown[0];
+      var xyz     = inpDataRef.input[1].dt[xyz_ddn.getValue()];
 
       var message = '';
       if (xyz.getSpaceGroup()=='Unspecified') {
-        message = 'No space group -- cannot convert';
+        message = 'No space group -- Dimple will be forced';
       } else if (xyz.getSpaceGroup()!=hkl.getSpaceGroup())  {
-        message = 'Unmatched space group -- cannot convert';
+        message = 'Unmatched space group -- Dimple will be forced';
       } else  {
         hklp = hkl.getCellParameters();
         xyzp = xyz.getCellParameters();
         if (xyzp[0]<2.0)  {
-          message = 'No cell parameters -- cannot convert';
+          message = 'No cell parameters -- Dimple will be forced';
         } else if ((Math.abs(hklp[3]-xyzp[3])>2.0) ||
                    (Math.abs(hklp[4]-xyzp[4])>2.0) ||
                    (Math.abs(hklp[5]-xyzp[5])>2.0))  {
-          message = 'Too distant cell parameters -- cannot convert';
+          message = 'Too distant cell parameters -- Dimple will be forced';
         } else  {
           var ok = true;
           for (var i=0;i<3;i++)
             if (Math.abs(hklp[i]-xyzp[i])/hklp[i]>0.01)
               ok = false;
           if (!ok)
-            message = 'Too distant cell parameters -- cannot convert';
+            message = 'Too distant cell parameters -- Dimple will be forced';
         }
       }
 
-      xyz_ddn.customGrid.setLabel ( message.fontcolor('red'),0,2,1,1 )
-                        .setFontItalic(true).setNoWrap();
+      if (message)  {
+        this.forceDimple = true;
+        xyz_ddn.customGrid.setLabel ( message.fontcolor('red'),0,2,1,1 )
+                          .setFontItalic(true).setNoWrap();
+        if (!dimple_cbx.getValue())
+          dimple_cbx.click();
+      } else  {
+        this.forceDimple = false;
+        if (dimple_cbx.getValue())
+          dimple_cbx.click();
+      }
+      dimple_cbx.setDisabled ( this.forceDimple );
 
+      // commented on 22.12.2018 <-- remove when verified
       // Use postponed emit here, which will work at Job Dialog creation,
       // when inputPanel with possibly unsuitable input is created
       // first, and signal slot is activated later. Zero delay means simply
       // that the signal will be emitted in first available thread.
-      inpParamRef.grid.inputPanel.postSignal ( cofe_signals.taskReady,message,0 );
+      //inpParamRef.grid.inputPanel.postSignal ( cofe_signals.taskReady,message,0 );
 
     } else if (emitterId=='USEDIMPLE_CBX')  {
-      if (inpParamRef.parameters[emitterId].input.getValue())  {
+
+      if (dimple_cbx.getValue())  {
         if (!this.title.endsWith(' + Dimple'))  this.title += ' + Dimple';
         if (!this.name.endsWith(' + dimple'))   this.name  += ' + dimple';
       } else  {
@@ -150,6 +174,7 @@ if (!__template)  {
       this.updateInputPanel ( inputPanel );
       inputPanel.emitSignal ( cofe_signals.jobDlgSignal,
                               job_dialog_reason.rename_node );
+
     }
 
   }

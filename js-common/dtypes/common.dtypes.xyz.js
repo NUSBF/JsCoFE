@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    09.08.18   <--  Date of Last Modification.
+ *    16.12.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -50,13 +50,19 @@ DataXYZ.prototype.constructor = DataXYZ;
 
 // ===========================================================================
 
-DataXYZ.prototype.title      = function()  { return 'Coordinates';             }
-DataXYZ.prototype.icon_small = function()  { return './images/data_20x20.svg'; }
-DataXYZ.prototype.icon_large = function()  { return './images/data.svg';       }
+DataXYZ.prototype.title      = function()  { return 'Coordinates'; }
+DataXYZ.prototype.icon_small = function()  { return 'data_20x20'; }
+DataXYZ.prototype.icon_large = function()  { return 'data';       }
 
 // when data class version is changed here, change it also in python
 // constructors
-DataXYZ.prototype.currentVersion = function()  { return 2; } // from 09.08.2018
+DataXYZ.prototype.currentVersion = function()  {
+  var version = 0;
+  if (__template)
+        return  version + __template.DataTemplate.prototype.currentVersion.call ( this );
+  else  return  version + DataTemplate.prototype.currentVersion.call ( this );
+}
+
 
 // export such that it could be used in both node and a browser
 if (!__template)  {
@@ -207,7 +213,8 @@ if (!__template)  {
       customGrid.setLabel ( 'Space group:&nbsp;',0,0,1,1 )
                 .setFontItalic(true).setNoWrap();
       customGrid.setLabel ( this.getSpaceGroup(),0,1,1,1 ).setNoWrap();
-      customGrid.setLabel ( 'Cell:&nbsp;',1,0,1,1 ).setFontItalic(true);
+      customGrid.setLabel ( 'Cell&nbsp;(a,b,c,&alpha;,&beta;,&gamma;):&nbsp;',1,0,1,1 )
+                .setFontItalic(true);
       customGrid.setLabel ( this.getCellParametersHTML(),1,1,1,2 );
       customGrid.setLabel ( ' ',2,0,1,1 ).setHeight_px ( 8 );
 
@@ -264,7 +271,8 @@ if (!__template)  {
             var id = chains[j].id;
             if (xyz.length>1)
               id = '/' + xyz[i].model + '/' + id;
-            customGrid.chainSel.addItem ( id,'',id,this.chainSel==id );
+            customGrid.chainSel.addItem ( id + ' (' + chains[j].type.toLowerCase() + ')',
+                                          '',id,this.chainSel==id );
           }
       }
       customGrid.setWidget ( customGrid.chainSel, 0,1,1,2 );

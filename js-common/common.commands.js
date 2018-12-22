@@ -2,7 +2,7 @@
 /*
  *  ===========================================================================
  *
- *    15.10.18   <--  Date of Last Modification.
+ *    22.12.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  ---------------------------------------------------------------------------
  *
@@ -24,7 +24,7 @@
 // name and version tag
 
 function appName()  { return 'CCP4 Cloud' }
-var jsCoFE_version = '0.2.0 [15.10.2018]';
+var jsCoFE_version = '0.2.0 [22.12.2018]';
 
 
 // ============================================================================
@@ -147,6 +147,12 @@ var nc_retcode = {
   pidNotFound    : 'pidNotFound'     // job's pid not found in registry
 }
 
+// ============================================================================
+// Image loader
+
+function image_path ( image_basename )  {
+  return './images_png/' + image_basename + '.png';
+}
 
 // ============================================================================
 // General Request/Response structures for communication with the Front End
@@ -187,6 +193,7 @@ function Request ( request,token,data )  {
 // export such that it could be used in both node and a browser
 if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
   module.exports.appName         = appName;
+  module.exports.image_path      = image_path;
   module.exports.fe_command      = fe_command;
   module.exports.fe_reqtype      = fe_reqtype;
   module.exports.fe_retcode      = fe_retcode;

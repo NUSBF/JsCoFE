@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    10.10.18   <--  Date of Last Modification.
+#    25.10.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -28,6 +28,7 @@
 import os
 import sys
 import shutil
+import json
 
 #  ccp4 imports
 import pyrvapi
@@ -58,7 +59,18 @@ class Xia2(basic.TaskDriver):
         # Prepare coot job
 
         # fetch input data
-        imageDirPath = self.task.image_dir_path
+
+        imageMetadata = None
+        with open(os.path.join(self.inputDir(),"__imageDirMeta.json")) as f:
+            imageMetadata = json.load(f)
+
+        if not imageMetadata:
+            self.fail ( "<h3>Image Metadata Errors.</h3>" +\
+                    "Image metadata could not be passed to the task.",
+                    "Image metadata errors." )
+            return
+
+        imageDirMeta = imageMetadata["imageDirMeta"]
         sec1         = self.task.parameters.sec1.contains
         sec2         = self.task.parameters.sec2.contains
 
@@ -81,6 +93,7 @@ class Xia2(basic.TaskDriver):
                 "crystal="  + crystalName,
                 "pipeline=" + pipeline,
                 "small_molecule=" + small_mol ]
+
         if hatom      :  cmd.append ( "atom="          + hatom   )
         if space_group:  cmd.append ( "space_group=\"" + space_group + "\"" )
         if unit_cell  :  cmd.append ( "unit_cell=\""   + unit_cell   + "\"" )
@@ -89,7 +102,20 @@ class Xia2(basic.TaskDriver):
         if misigma    :  cmd.append ( "misigma="       + misigma )
         if isigma     :  cmd.append ( "isigma="        + isigma  )
 
-        cmd.append ( imageDirPath )
+        for i in range(len(imageDirMeta)):
+            if imageDirMeta[i]["path"]:
+                sectors = imageDirMeta[i]["sectors"]
+                for j in range(len(sectors)):
+                    ranges_sel = sectors[j]["ranges_sel"]
+                    dirpath    = os.path.join ( imageDirMeta[i]["path"],sectors[j]["name"] )
+                    for k in range(len(ranges_sel)):
+                        cmd.append ( "image=" + dirpath + ":" + str(ranges_sel[k][0]) +\
+                                                          ":" + str(ranges_sel[k][1]) )
+
+        #xia2 \
+        #pipeline=dials \
+        #image="/Users/andrey/Xtal/Cofe/F_xia2/cd44_3_2/cd44_3_2_001.img:1:140"
+        #\ image="/Users/andrey/Xtal/Cofe/F_xia2/cd44_3_3/cd44_3_3_001.img:1:20"
 
         # Run xia2
         if sys.platform.startswith("win"):
@@ -121,7 +147,7 @@ class Xia2(basic.TaskDriver):
         self.resetFileImport()
 
         if mtzMergedName in file_names:
-            self.putTitle   ( "Merged Reflection Dataset" )
+            self.putTitle ( "Merged Reflection Dataset" )
             newHKLFPath = os.path.join ( resDir,self.getOFName("_merged.mtz",-1) )
             os.rename ( os.path.join(resDir,mtzMergedName),newHKLFPath )
             self.addFileImport ( "",newHKLFPath,import_filetype.ftype_MTZMerged() )
@@ -131,7 +157,7 @@ class Xia2(basic.TaskDriver):
             scaleDir = os.path.join(crystalName,"scale")
             aimless_xml_names = [fn for fn in os.listdir(scaleDir)
                                 if any(fn.endswith(ext) for ext in ["_aimless.xml"])]
-            self.file_stdout.write ( str(aimless_xml_names) + "\n" )
+            #self.file_stdout.write ( str(aimless_xml_names) + "\n" )
             if len(hkl_imported)>0 and len(aimless_xml_names)>0:
                 aimless_xml  = max(aimless_xml_names)
                 aimless_meta = {
@@ -143,6 +169,7 @@ class Xia2(basic.TaskDriver):
                                   os.path.join(self.outputDir(),aimless_meta["file"]) )
                 for i in range(len(hkl_imported)):
                     hkl_imported[i].aimless_meta = aimless_meta
+                    self.putMessage ( "<b>Assigned name:</b>&nbsp;" + hkl_imported[i].dname  )
 
             nsweeps -= 1
 
@@ -152,7 +179,9 @@ class Xia2(basic.TaskDriver):
             os.rename ( os.path.join(resDir,mtzUnmergedName),newHKLFPath )
             self.addFileImport ( "",newHKLFPath,import_filetype.ftype_MTZIntegrated() )
             #self.files_all = [ newHKLFPath ]
-            import_unmerged.run ( self,"Unmerged Scaled Reflection Dataset" )
+            unmerged_imported = import_unmerged.run ( self,"Unmerged Scaled Reflection Dataset" )
+            for i in range(len(unmerged_imported)):
+                self.putMessage ( "<b>Assigned name:</b>&nbsp;" + unmerged_imported[i].dname  )
             nsweeps -= 1
 
         if nsweeps>0:
@@ -188,19 +217,19 @@ class Xia2(basic.TaskDriver):
 
                     rlp_pickle = os.path.join ( refDir,rlp_pickle )
                     rlp_json   = os.path.join ( refDir,rlp_json   )
-                    self.open_stdin  ()
-                    self.write_stdin ( rlp_json   + "\n" )
-                    self.write_stdin ( rlp_pickle + "\n" )
-                    self.close_stdin ()
+                    #self.open_stdin  ()
+                    #self.write_stdin ( rlp_json   + "\n" )
+                    #self.write_stdin ( rlp_pickle + "\n" )
+                    #self.close_stdin ()
                     #if self.file_stdin:
                     #    self.file_stdout.write ( " --- stdin ref FOUND" )
                     #else:
                     #    self.file_stdout.write ( " --- stdin ref NOT FOUND" )
-                    #self.file_stdin = None
+                    self.file_stdin = None
                     if sys.platform.startswith("win"):
-                        self.runApp ( "dials.export.bat",["format=json"])
+                        self.runApp ( "dials.export.bat",["format=json",rlp_json,rlp_pickle])
                     else:
-                        self.runApp ( "dials.export",["format=json"])
+                        self.runApp ( "dials.export",["format=json",rlp_json,rlp_pickle])
 
                     rlpFileName = "rlp.json"
                     rlpFilePath = os.path.join ( self.outputDir(),sweepId +"_"+ rlpFileName )
@@ -219,17 +248,19 @@ class Xia2(basic.TaskDriver):
                             ind_json = fname
                     ind_json = os.path.join ( indexDir,ind_json )
 
-                    self.open_stdin  ()
-                    self.write_stdin ( ind_json + "\n" )
-                    self.close_stdin ()
+                    #self.open_stdin  ()
+                    #self.write_stdin ( ind_json + "\n" )
+                    #self.close_stdin ()
 
                     #  grid size and resolution are chosen such as to keep file
                     #  size under 10MB, or else it does not download with XHR
                     if sys.platform.startswith("win"):
-                        rc1 = self.runApp ( "dials.rs_mapper.bat",["grid_size=128","max_resolution=8"],
+                        rc1 = self.runApp ( "dials.rs_mapper.bat",
+                                            ["grid_size=128","max_resolution=8",ind_json],
                                             quitOnError=False )
                     else:
-                        rc1 = self.runApp ( "dials.rs_mapper",["grid_size=128","max_resolution=8"],
+                        rc1 = self.runApp ( "dials.rs_mapper",
+                                            ["grid_size=128","max_resolution=8",ind_json],
                                             quitOnError=False )
 
                     # ===== For old version of rs_mapper =======
@@ -271,7 +302,7 @@ class Xia2(basic.TaskDriver):
                         "Unmerged Reflection Dataset (Sweep " + str(n+1) + ")" )
 
                     if len(imported_data)>0 and rlpFilePath and mapFilePath:
-                        grid_id = "grid_" + str(self.rvrow)
+                        grid_id = self.getWidgetId ( "grid" )  #"grid_" + str(self.rvrow)
                         pyrvapi.rvapi_add_grid ( grid_id,False,self.report_page_id(),
                                                  self.rvrow,0,1,1 )
                         pyrvapi.rvapi_set_text ( "<b>Assigned name:</b>&nbsp;" +\

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    06.11.17   <--  Date of Last Modification.
+ *    12.12.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  MoRDa Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2017
+ *  (C) E. Krissinel, A. Lebedev 2016-2018
  *
  *  =================================================================
  *
@@ -95,10 +95,16 @@ TaskMakeLigand.prototype.constructor = TaskMakeLigand;
 // ===========================================================================
 // export such that it could be used in both node and a browser
 
-TaskMakeLigand.prototype.icon_small = function()  { return './images/task_makeligand_20x20.svg'; }
-TaskMakeLigand.prototype.icon_large = function()  { return './images/task_makeligand.svg';       }
+TaskMakeLigand.prototype.icon_small = function()  { return 'task_makeligand_20x20'; }
+TaskMakeLigand.prototype.icon_large = function()  { return 'task_makeligand';       }
 
-TaskMakeLigand.prototype.currentVersion = function()  { return 1; }
+TaskMakeLigand.prototype.currentVersion = function()  {
+  var version = 0;
+  if (__template)
+        return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );
+  else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
+}
+
 
 if (__template)  {
   //  for server side

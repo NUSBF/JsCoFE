@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    05.10.18   <--  Date of Last Modification.
+ *    12.12.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -72,10 +72,15 @@ TaskCootMB.prototype.constructor = TaskCootMB;
 // ===========================================================================
 // export such that it could be used in both node and a browser
 
-TaskCootMB.prototype.icon_small = function()  { return './images/task_coot_20x20.svg'; }
-TaskCootMB.prototype.icon_large = function()  { return './images/task_coot.svg';       }
+TaskCootMB.prototype.icon_small = function()  { return 'task_coot_20x20'; }
+TaskCootMB.prototype.icon_large = function()  { return 'task_coot';       }
 
-TaskCootMB.prototype.currentVersion = function()  { return 1; }
+TaskCootMB.prototype.currentVersion = function()  {
+  var version = 0;
+  if (__template)
+        return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );
+  else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
+}
 
 if (__template)  {
   //  for server side

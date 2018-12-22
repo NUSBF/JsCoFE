@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    21.09.18   <--  Date of Last Modification.
+#    25.10.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -123,9 +123,7 @@ def run ( body,        # body is reference to the main Import class
     if not files_mtz:
         return
 
-    unmergedSecId = "unmerged_mtz_sec_" + str(body.widget_no)
-    body.widget_no += 1
-
+    unmergedSecId = body.getWidgetId ( "unmerged_mtz_sec" )
     imported_data = []
 
     k = 0
@@ -159,7 +157,7 @@ def run ( body,        # body is reference to the main Import class
             fileSecId = unmergedSecId
             frow      = 0
             if len(files_mtz)>1:
-                fileSecId = unmergedSecId + "_" + str(k)
+                fileSecId = body.getWidgetId ( "file_seq" )
                 pyrvapi.rvapi_add_section ( fileSecId,"File " + f_orig,
                                             unmergedSecId,urow,0,1,1,False )
                 urow += 1
@@ -169,7 +167,7 @@ def run ( body,        # body is reference to the main Import class
                 pyrvapi.rvapi_set_text ( "<h2>Data analysis (Pointless)</h2>" + \
                                          "<h3>File: " + f_orig + "</h3>",
                                          fileSecId,frow,0,1,1 )
-            reportPanelId = fileSecId + "_report"
+            reportPanelId = body.getWidgetId ( "file_seq_report" )
             pyrvapi.rvapi_add_panel ( reportPanelId,fileSecId,frow+1,0,1,1 )
 
             frow += 2
@@ -177,8 +175,6 @@ def run ( body,        # body is reference to the main Import class
             #log_parser = pyrvapi_ext.parsers.generic_parser ( reportPanelId,False )
             log_parser = body.setGenericLogParser ( reportPanelId,False,
                                             graphTables=False,makePanel=True )
-
-
 
             body.file_stdin = open ( pointless_script(),'w' )
             body.file_stdin.write (
@@ -191,7 +187,7 @@ def run ( body,        # body is reference to the main Import class
                                 body.file_stdout,body.file_stderr,log_parser )
             body.unsetLogParser()
 
-            symmTablesId = fileSecId + "_" + symm_det()
+            symmTablesId = body.getWidgetId ( "file_seq_" + symm_det() )
             pyrvapi.rvapi_add_section ( symmTablesId,"Symmetry determination tables",
                     fileSecId,frow,0,1,1,True )
             pyrvapi.rvapi_set_text ( "&nbsp;",fileSecId,frow+1,0,1,1 )
@@ -241,7 +237,6 @@ def run ( body,        # body is reference to the main Import class
                     for offset,first,last in unmerged.dataset.runs:
                         body.file_stdin.write ( "RUN 1 FILE 1 BATCH " + str(first) + " to " + str(last) + "\n" )
                     body.file_stdin.write ( "END\n" )
-
                     body.file_stdin.close()
 
                     rc = command.call ( "pointless",[],"./",pointless_script(),
@@ -262,13 +257,13 @@ def run ( body,        # body is reference to the main Import class
 
                         subSecId = fileSecId
                         if len(dset_list)>1:
-                            subSecId = fileSecId + str(k)
+                            subSecId = body.getWidgetId ( "file_seq_" + str(k) )
                             pyrvapi.rvapi_add_section ( subSecId,
                                             "Import " + unmerged.dataset.name,
                                             fileSecId,frow,0,1,1,False )
                             frow += 1
 
-                        mtzTableId = "unmerged_mtz_" + str(k) + "_table"
+                        mtzTableId = body.getWidgetId ( "unmerged_mtz_table_"+str(k) )
 
                         unmerged.makeUniqueFNames ( body.outputDir() )
 
@@ -279,7 +274,7 @@ def run ( body,        # body is reference to the main Import class
                             "&nbsp;<br><hr/><h3>Created Reflection Data Set (unmerged)</h3>" + \
                             "<b>Assigned name:</b>&nbsp;&nbsp;" + unmerged.dname + \
                             "<br>&nbsp;",subSecId,frow,0,1,1 )
-                        pyrvapi.rvapi_add_data ( "hkl_data_"+str(body.dataSerialNo),
+                        pyrvapi.rvapi_add_data ( body.getWidgetId("hkl_data_"+str(body.dataSerialNo)),
                                      "Unmerged reflections",
                                      # always relative to job_dir from job_dir/html
                                      "/".join([ "..",body.outputDir(),

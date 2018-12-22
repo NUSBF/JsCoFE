@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    15.10.18   <--  Date of Last Modification.
+ *    12.12.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -346,22 +346,22 @@ JobDialog.prototype.makeLayout = function ( onRun_func )  {
 
     if (!this.inputPanel.fullVersionMismatch)
       this.run_btn  = toolBar.setButton ( this.task.runButtonName(),
-                                         './images/runjob.svg', 0,2, 1,1 )
+                                         image_path('runjob'), 0,2, 1,1 )
                                          .setTooltip('Start job' );
   }
   toolBar.setCellSize ( '40%','',0,1 );
 
-  this.run_image  = toolBar.setImage  ( './images/activity.gif','36px','36px',
+  this.run_image  = toolBar.setImage  ( './images_com/activity.gif','36px','36px',
                                         0,3, 1,1 );
-  this.stop_btn   = toolBar.setButton ( 'Stop','./images/stopjob.svg', 0,4, 1,1 )
+  this.stop_btn   = toolBar.setButton ( 'Stop',image_path('stopjob'), 0,4, 1,1 )
                                         .setTooltip('Stop job' );
   this.status_lbl = toolBar.setLabel  ( '', 0,5, 1,1 ).setNoWrap();
   if (this.task.helpURL)
-    this.ref_btn  = toolBar.setButton ( 'Ref.','./images/reference.svg', 0,7, 1,1 )
+    this.ref_btn  = toolBar.setButton ( 'Ref.',image_path('reference'), 0,7, 1,1 )
                                         .setTooltip('Task Documentation' );
-  this.help_btn   = toolBar.setButton ( 'Help','./images/help.svg', 0,8, 1,1 )
+  this.help_btn   = toolBar.setButton ( 'Help',image_path('help'), 0,8, 1,1 )
                                         .setTooltip('Dialog Help' );
-  this.close_btn  = toolBar.setButton ( 'Close','./images/close.svg', 0,9, 1,1 )
+  this.close_btn  = toolBar.setButton ( 'Close',image_path('close'), 0,9, 1,1 )
                                         .setTooltip('Close Job Dialog' );
   toolBar.setVerticalAlignment ( 0,5,'middle' );
   toolBar.setCellSize ( '40%','',0,6 );
@@ -424,7 +424,7 @@ JobDialog.prototype.makeLayout = function ( onRun_func )  {
                     '</b> MBytes at <b>' + round(ration.storage,1) +
                     '</b> MBytes<br>allocated.<p>' +
                     '<i><b>Hint 1:</b></i> deleting jobs and projects will free up disk space.<p>' +
-                    '<i><b>Hint 2:</b></i> resource usage can be monitired using disk and<br>' +
+                    '<i><b>Hint 2:</b></i> resource usage can be monitored using disk and<br>' +
                     'CPU widgets in the top-right corner of the screen.<p>' +
                     '<i><b>Recommended action:</b></i> export an old project and then<br>' +
                     'delete it from the list. You will be able to re-import that<br>' +
@@ -437,7 +437,7 @@ JobDialog.prototype.makeLayout = function ( onRun_func )  {
                     'is up. In last 24 hours, you have used <b>' + round(ration.cpu_day_used,3) +
                     '</b> CPU hours<br>at <b>' + round(ration.cpu_day,3) +
                     '</b> CPU hours allocated.<p>' +
-                    '<i><b>Hint:</b></i> resource usage can be monitired using disk and<br>' +
+                    '<i><b>Hint:</b></i> resource usage can be monitored using disk and<br>' +
                     'CPU widgets in the top-right corner of the screen. You<br>' +
                     'may need to push "Reload" button in the toolbar after<br>' +
                     'periods of inactivity to get updated readings.<p>' +
@@ -450,7 +450,7 @@ JobDialog.prototype.makeLayout = function ( onRun_func )  {
                     'is up. In last 30 days, you have used <b>' + round(ration.cpu_month_used,3) +
                     '</b> CPU hours<br>at <b>' + round(ration.cpu_month,3) +
                     '</b> CPU hours allocated.<p>' +
-                    '<i><b>Hint:</b></i> resource usage can be monitired using disk and<br>' +
+                    '<i><b>Hint:</b></i> resource usage can be monitored using disk and<br>' +
                     'CPU widgets in the top-right corner of the screen. You<br>' +
                     'may need to push "Reload" button in the toolbar after<br>' +
                     'periods of inactivity to get updated readings.<p>' +

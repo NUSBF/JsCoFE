@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    05.10.18   <--  Date of Last Modification.
+ *    12.12.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -98,10 +98,16 @@ TaskFreeRFlag.prototype.constructor = TaskFreeRFlag;
 // ===========================================================================
 // export such that it could be used in both node and a browser
 
-TaskFreeRFlag.prototype.icon_small = function()  { return './images/task_freerflag_20x20.svg'; }
-TaskFreeRFlag.prototype.icon_large = function()  { return './images/task_freerflag.svg';       }
+TaskFreeRFlag.prototype.icon_small = function()  { return 'task_freerflag_20x20'; }
+TaskFreeRFlag.prototype.icon_large = function()  { return 'task_freerflag';       }
 
-TaskFreeRFlag.prototype.currentVersion = function()  { return 1; }
+TaskFreeRFlag.prototype.currentVersion = function()  {
+  var version = 0;
+  if (__template)
+        return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );
+  else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
+}
+
 
 if (!__template)  {
   //  for client side

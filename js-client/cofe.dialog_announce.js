@@ -6,11 +6,11 @@
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
- *  **** Module  :  js-client/cofe.dialog_licence.js
+ *  **** Module  :  js-client/cofe.dialog_announce.js
  *       ~~~~~~~~~
  *  **** Project :  jsCoFE - javascript-based Cloud Front End
  *       ~~~~~~~~~
- *  **** Content :  Licence Dialog
+ *  **** Content :  Announcement Dialog
  *       ~~~~~~~~~
  *
  *  (C) E. Krissinel, A. Lebedev 2016-2018

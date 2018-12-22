@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    13.09.18   <--  Date of Last Modification.
+#    15.11.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -182,7 +182,7 @@ class Deposition(basic.TaskDriver):
                            "end\n" )
         self.close_stdin()
 
-        sfCIF = self.getOFName ( "_sf.cif" )
+        sfCIF = os.path.join ( self.outputDir(),self.getOFName("_sf.cif") )
         cmd   = ["HKLIN",hkl.getFilePath(self.inputDir(),dtype_template.file_key["mtz"]), "HKLOUT",sfCIF]
 
         # Start mtz2various
@@ -209,7 +209,7 @@ class Deposition(basic.TaskDriver):
 
         deposition_fasta = self.getOFName ( ".fasta" )
         dtype_sequence.writeMultiSeqFile1 ( deposition_fasta,seq,self.inputDir() )
-        deposition_cif   = self.getOFName ( ".cif"   )
+        deposition_cif   = os.path.join ( self.outputDir(),self.getOFName(".cif") )
 
         self.file_stdout.write ( "\n" +\
             " =============================================================\n" +\

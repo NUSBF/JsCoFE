@@ -89,10 +89,13 @@ function ncSelectImageDir ( post_data_obj,callback_func )  {
   job.on('close',function(code){
 
     if (code==0)  {
+      callback_func ( new cmd.Response ( cmd.nc_retcode.ok,'',JSON.parse(stdout) ) );
+      /*
       var meta    = JSON.parse ( stdout );
       var dirPath = meta['path'];
       callback_func ( new cmd.Response ( cmd.nc_retcode.ok,'',
                                      {'directory':dirPath.replace('\n','')} ) );
+      */
     } else
       callback_func ( new cmd.Response ( cmd.nc_retcode.selDirError,'',
                                          {'stdout':stdout,'stderr':stderr }) );

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    05.10.18   <--  Date of Last Modification.
+ *    12.12.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -212,8 +212,8 @@ TaskParrot.prototype.constructor = TaskParrot;
 // ===========================================================================
 // export such that it could be used in both node and a browser
 
-TaskParrot.prototype.icon_small = function()  { return './images/task_parrot_20x20.svg'; }
-TaskParrot.prototype.icon_large = function()  { return './images/task_parrot.svg';       }
+TaskParrot.prototype.icon_small = function()  { return 'task_parrot_20x20'; }
+TaskParrot.prototype.icon_large = function()  { return 'task_parrot';       }
 
 TaskParrot.prototype.doPackSuffixes = function()  {
   return [ '.mtz_diff.map', // when comes from shelx-substructure
@@ -221,7 +221,13 @@ TaskParrot.prototype.doPackSuffixes = function()  {
          ];
 }
 
-TaskParrot.prototype.currentVersion = function()  { return 1; }
+TaskParrot.prototype.currentVersion = function()  {
+  var version = 0;
+  if (__template)
+        return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );
+  else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
+}
+
 
 if (!__template)  {
   //  for client side

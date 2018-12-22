@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    16.08.18   <--  Date of Last Modification.
+#    19.12.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -26,7 +26,7 @@
 
 
 #   replace " SUB "  in phaser's output for " UNK " or " atom_type " for
-#   anomalous map calculations!!!
+#   anomalous map calculations!!!  -- replaced with atom type
 
 #  python native imports
 import os
@@ -35,6 +35,7 @@ import sys
 
 #  ccp4-python imports
 import pyrvapi
+import gemmi
 
 #  application imports
 import basic
@@ -74,95 +75,124 @@ class PhaserEP(basic.TaskDriver):
         #    xyzfile    = namepattern + ".xyz.pdb"
         #    xmodelfile = self.xmodel.getXYZFilePath ( self.inputDir() )
 
+
+        # get rid of 'SUB' residue
+        scattering_type = []
+        if os.path.isfile(pdbfile):
+            st = gemmi.read_structure(pdbfile)
+            for model in st:
+                for chain in model:
+                    for residue in chain:
+                        if residue.name == 'SUB' and len(residue) == 1:
+                            residue.name = residue[0].name
+                            if not residue.name in scattering_type:
+                                scattering_type.append ( residue.name )
+            st.write_pdb(pdbfile)
+
         structure     = None
         anomstructure = None
 
-        if not self.xmodel:
-            fsetId = "fset_" + str(self.rvrow)
-            self.putFieldset     ( fsetId,title )
-            self.setReportWidget ( fsetId )
+        if len(scattering_type)>0:
 
-        if os.path.isfile(solfile):
+            if not self.xmodel or True:
+                fsetId = "fset_" + str(self.rvrow)
+                self.putFieldset     ( fsetId,title )
+                self.setReportWidget ( fsetId )
 
-            solf = open ( solfile,"r" )
-            soll = solf.readlines()
-            solf.close()
+            if os.path.isfile(solfile):
 
-            sol_spg   = None
-            sol_hkl   = hkl
-            anom_form = ""
-            scattering_type = []
+                solf = open ( solfile,"r" )
+                soll = solf.readlines()
+                solf.close()
 
-            for line in soll:
-                if line.startswith("SOLU SPAC "):
-                    sol_spg = line.replace("SOLU SPAC ","").strip()
-                if line.startswith("SPACEGROUP "):
-                    sol_spg = line.replace("SPACEGROUP ","").strip()
-                if line.startswith("SCATTERING TYPE"):
-                    list = line.replace("="," ").split()
-                    anom_form += "anom form "  + list[2] + " " +\
-                                 list[4] + " " + list[6] + "\n"
-                    scattering_type.append ( list[2] )
+                sol_spg   = None
+                sol_hkl   = hkl
+                anom_form = ""
+                #scattering_type = []   # phaser puts extra scattering types in sol file,
+                                        # therefore we do not use it for this purpose,
+                                        # delete later  05.12.2018
 
-            spg_change = self.checkSpaceGroupChanged ( sol_spg,hkl,mtzfile )
-            if spg_change:
-                mtzfile = spg_change[0]
-                sol_hkl = spg_change[1]
+                for line in soll:
+                    if line.startswith("SOLU SPAC "):
+                        sol_spg = line.replace("SOLU SPAC ","").strip()
+                    if line.startswith("SPACEGROUP "):
+                        sol_spg = line.replace("SPACEGROUP ","").strip()
+                    #  delete later 05.12.2018
+                    #if line.startswith("SCATTERING TYPE"):
+                    #    list = line.replace("="," ").split()
+                    #    anom_form += "anom form "  + list[2] + " " +\
+                    #                 list[4] + " " + list[6] + "\n"
+                    #    scattering_type.append ( list[2] )
 
-            # make a copy of pdb file, because it will be moved by registration
-            #shutil.copy2 ( pdbfile,anompdbfile )
-            #if xmodelfile:
-            #    shutil.copy2 ( xmodelfile,xyzfile  )
+                spg_change = self.checkSpaceGroupChanged ( sol_spg,hkl,mtzfile )
+                if spg_change:
+                    mtzfile = spg_change[0]
+                    sol_hkl = spg_change[1]
 
-            fnames       = self.calcCCP4Maps ( mtzfile,namepattern,"phaser-ep" )
-            protein_map  = fnames[0]
+                # make a copy of pdb file, because it will be moved by registration
+                #shutil.copy2 ( pdbfile,anompdbfile )
+                #if xmodelfile:
+                #    shutil.copy2 ( xmodelfile,xyzfile  )
 
-            structure = self.registerStructure1 (
-                            None,pdbfile,mtzfile,protein_map,None,None,
-                            self.outputFName,True )
-            if structure:
-                if seq:
-                    for i in range(len(seq)):
-                        if seq[i]:
-                            structure.addDataAssociation ( seq[i].dataId )
-                structure.setPhaserEPLabels()
-                structure.addEPSubtype    ()
-                structure.addPhasesSubtype()
+                fnames       = self.calcCCP4Maps ( mtzfile,namepattern,"phaser-ep" )
+                protein_map  = fnames[0]
 
-                outputDataBox = self.outputDataBox
-                self.outputDataBox = None
+                structure = self.registerStructure1 (
+                                None,pdbfile,mtzfile,protein_map,None,None,
+                                self.outputFName,True )
+                if structure:
+                    if seq:
+                        for i in range(len(seq)):
+                            if seq[i]:
+                                structure.addDataAssociation ( seq[i].dataId )
+                    structure.setPhaserEPLabels ( sol_hkl )
+                    structure.addEPSubtype    ()
+                    structure.addPhasesSubtype()
 
-                for stype in scattering_type:
-                    self.putMessage ( "<b style='font-size:120%'>" + stype + " scatterers</b>" )
-                    fnames = self.calcCCP4Maps ( llgmapsfile,namepattern+".llgmap_"+stype,"phaser-ep:"+stype )
-                    anom_struct = self.registerStructure1 (
-                                    None,pdbfile,llgmapsfile,protein_map,fnames[0],None,
-                                    self.outputFName,True )
-                    if anom_struct:
-                        self.putStructureWidget ( "structure_btn_"+stype,
-                                                  "Substructure and electron density",
-                                                  anom_struct )
+                    #if self.xmodel:
+                    #    shutil.copy2 ( self.xmodel.getXYZFilePath(self.inputDir()),
+                    #                   self.xmodel.getXYZFilePath(self.outputDir()) )
+                    #    structure.setXYZFile ( self.xmodel.getXYZFileName() )
+
+                    outputDataBox = self.outputDataBox
+                    self.outputDataBox = None
+
+                    for stype in scattering_type:
+                        self.putMessage ( "<b style='font-size:120%'>" + stype + " scatterers</b>" )
+                        fnames = self.calcCCP4Maps ( llgmapsfile,namepattern+".llgmap_"+stype,"phaser-ep:"+stype )
+                        anom_struct = self.registerStructure1 (
+                                        None,pdbfile,llgmapsfile,protein_map,fnames[0],None,
+                                        self.outputFName,True )
+                        if anom_struct:
+                            #anom_struct.setXYZFile ( self.xmodel.getXYZFileName() )
+                            self.putStructureWidget ( "structure_btn_"+stype,
+                                                      "Substructure and electron density",
+                                                      anom_struct )
+                        self.putMessage ( "&nbsp;" )
+
+                    self.outputDataBox = outputDataBox
+
+                    self.putMessage ( "&nbsp;<br><hr><h3>Structure Revision</h3>" )
+                    revision = self.makeClass ( self.input_data.data.revision[0] )
+                    revision.setStructureData ( structure )
+                    revision.removeSubtype    ( dtype_template.subtypeXYZ() )
+                    self.registerRevision     ( revision,revisionNo,"" )
                     self.putMessage ( "&nbsp;" )
 
-                self.outputDataBox = outputDataBox
-
-                self.putMessage ( "&nbsp;<br><hr><h3>Structure Revision</h3>" )
-                revision = self.makeClass ( self.input_data.data.revision[0] )
-                revision.setStructureData ( structure )
-                revision.removeSubtype    ( dtype_template.subtypeXYZ() )
-                self.registerRevision     ( revision,revisionNo,"" )
-                self.putMessage ( "&nbsp;" )
+                else:
+                    self.putMessage (
+                            "<h3><i>Failed to created output data object</i></h3>" )
 
             else:
                 self.putMessage (
-                        "<h3><i>Failed to created output data object</i></h3>" )
+                    "<h3><i>No solution has been achieved.</i></h3>" )
+
+            if not self.xmodel or True:
+                self.resetReportPage()
 
         else:
             self.putMessage (
-                "<h3><i>No solution has been achieved.</i></h3>" )
-
-        if not self.xmodel:
-            self.resetReportPage()
+                "<h3><i>Heavy Atom Substructure Not Found.</i></h3>" )
 
         return  (structure,anomstructure)
 
@@ -302,9 +332,9 @@ class PhaserEP(basic.TaskDriver):
 
         # check solution and register data
 
-        self.putTitle         ( "Results"   )
+        self.putTitle         ( "Results" )
         self.process_solution ( ".1","<h3><i>Original Hand</i></h3>",hkl,seq,1 )
-        self.putMessage       ( "&nbsp;"    )
+        self.putMessage       ( "&nbsp;"  )
         if not self.xmodel:
             self.process_solution ( ".1.hand","<h3><i>Inverted Hand</i></h3>",hkl,seq,2 )
             self.putMessage       ( "&nbsp;<p>" )

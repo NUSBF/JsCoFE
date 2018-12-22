@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    31.07.18   <--  Date of Last Modification.
+ *    19.11.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -413,6 +413,30 @@ function isWindows()  {
 }
 
 
+function getExcludedTasks()  {
+// returns list of tasks excluded on all number crunchers
+var excluded = [];
+
+  for (var i=0;i<nc_servers.length;i++)
+    if (nc_servers[i].in_use)  {
+      var excl = nc_servers[i].exclude_tasks;
+      for (var j=0;j<excl.length;j++)
+        if (excluded.indexOf(excl[j])<0)
+          excluded.push ( excl[j] );
+    }
+
+  for (var i=0;i<nc_servers.length;i++)
+    if (nc_servers[i].in_use)  {
+      var excl = nc_servers[i].exclude_tasks;
+      for (var j=excluded.length-1;j>=0;j--)
+        if (excl.indexOf(excluded[j])<0)
+          excluded.splice ( j,1 );
+    }
+
+  return excluded.concat ( fe_server.exclude_tasks );
+
+}
+
 // ==========================================================================
 // export for use in node
 module.exports.getDesktopConfig   = getDesktopConfig;
@@ -436,3 +460,4 @@ module.exports.getNCTmpDir        = getNCTmpDir;
 module.exports.getTmpDir          = getTmpDir;
 module.exports.getTmpFile         = getTmpFile;
 module.exports.isWindows          = isWindows;
+module.exports.getExcludedTasks   = getExcludedTasks;

@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    04.08.18   <--  Date of Last Modification.
+#    22.12.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -126,6 +126,8 @@ class Dimple(ccp4go_asu.PrepareASU):
                         self.addCitation ( "pointless" )
                     if line.find("phaser")>=0:
                         self.addCitation ( "phaser" )
+                    if line.find("molrep")>=0:
+                        self.addCitation ( "molrep" )
                     if line.find("find-blobs")>=0:
                         self.addCitation ( "find-blobs" )
 
@@ -146,6 +148,7 @@ class Dimple(ccp4go_asu.PrepareASU):
         quit_message = self.saveResults ( "Dimple",resultdir,nResults,
                 rfree,rfactor,"dimple", dimple_xyz,dimple_mtz,dimple_map,dimple_dmap,
                 None,None,columns,spg_info )
+        self.output_meta["results"][resultdir]["phasing"] = mode.upper()
 
         if mode!="mr":
             quit_message = "refined to <i>R<sub>free</sub>=" + str(rfree) + "</i>"

@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    06.10.18   <--  Date of Last Modification.
+ *    09.11.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -139,7 +139,7 @@ var __rvapi_config_coot_btn = false;  // switch Coot button off in RVAPI
 
 function getDateString()  {
   var d = new Date();
-  var date_str = d.getDate();
+  var date_str = d.getDate().toString();
   if (date_str.length<2)  date_str = '0' + date_str;
   date_str = (d.getMonth()+1) + '-' + date_str;
   if (date_str.length<5)  date_str = '0' + date_str;

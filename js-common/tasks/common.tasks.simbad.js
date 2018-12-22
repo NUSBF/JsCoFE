@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    10.03.18   <--  Date of Last Modification.
+ *    12.12.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -85,7 +85,8 @@ function TaskSimbad()  {
                       range    : [1,100],
                       value    : '',
                       default  : '5',
-                      position : [1,0,1,1]
+                      position : [1,0,1,1],
+                      showon   : {SEARCH_SEL:['L','C','LC']}
                     },
                 MAXPENALTY : {
                       type     : 'integer_',
@@ -98,7 +99,8 @@ function TaskSimbad()  {
                       value    : '',
                       default  : '4',
                       showon   : {'SEARCH_SEL':['L','LC','LCS']},
-                      position : [2,0,1,1]
+                      position : [2,0,1,1],
+                      showon   : {SEARCH_SEL:['L','C','LC']}
                     }
               }
     }
@@ -116,10 +118,16 @@ TaskSimbad.prototype.constructor = TaskSimbad;
 // ===========================================================================
 // export such that it could be used in both node and a browser
 
-TaskSimbad.prototype.icon_small = function()  { return './images/task_simbad_20x20.svg'; }
-TaskSimbad.prototype.icon_large = function()  { return './images/task_simbad.svg';       }
+TaskSimbad.prototype.icon_small = function()  { return 'task_simbad_20x20'; }
+TaskSimbad.prototype.icon_large = function()  { return 'task_simbad';       }
 
-TaskSimbad.prototype.currentVersion = function()  { return 1; }
+TaskSimbad.prototype.currentVersion = function()  {
+  var version = 0;
+  if (__template)
+        return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );
+  else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
+}
+
 
 if (!__template)  {
 //  for client side

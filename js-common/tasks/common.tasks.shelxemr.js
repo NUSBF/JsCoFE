@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    05.10.18   <--  Date of Last Modification.
+ *    20.12.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -38,7 +38,7 @@ function TaskShelxEMR()  {
   this.helpURL = './html/jscofe_task_shelxemr.html';
 
   this.input_dtypes = [{  // input data types
-      data_type   : {'DataRevision':['!protein','!phases']}, // data type(s) and subtype(s)
+      data_type   : {'DataRevision':['!protein','!asu',['xyz','substructure']]}, // data type(s) and subtype(s)
       label       : 'Structure revision',        // label for input dialog
       inputId     : 'revision', // input Id for referencing input fields
       version     : 0,          // minimum data version allowed
@@ -208,10 +208,16 @@ TaskShelxEMR.prototype.constructor = TaskShelxEMR;
 // ===========================================================================
 // export such that it could be used in both node and a browser
 
-TaskShelxEMR.prototype.icon_small = function()  { return './images/task_shelxemr_20x20.svg'; }
-TaskShelxEMR.prototype.icon_large = function()  { return './images/task_shelxemr.svg';       }
+TaskShelxEMR.prototype.icon_small = function()  { return 'task_shelxemr_20x20'; }
+TaskShelxEMR.prototype.icon_large = function()  { return 'task_shelxemr';       }
 
-TaskShelxEMR.prototype.currentVersion = function()  { return 1; }
+TaskShelxEMR.prototype.currentVersion = function()  {
+  var version = 0;
+  if (__template)
+        return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );
+  else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
+}
+
 
 if (!__template)  {
   //  for client side
@@ -290,7 +296,8 @@ if (!__template)  {
     if ('revision' in this.input_data.data)  {
       var revision = this.input_data.data['revision'][0];
       //this.input_data.data['hkl']     = [revision.HKL];
-      this.input_data.data['istruct'] = [revision.Structure];
+      if (revision.Structure)
+        this.input_data.data['istruct'] = [revision.Structure];
     }
 
     __template.TaskTemplate.prototype.makeInputData.call ( this,login,jobDir );

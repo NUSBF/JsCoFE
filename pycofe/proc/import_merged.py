@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    09.08.18   <--  Date of Last Modification.
+#    15.11.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -32,6 +32,7 @@ from   pycofe.proc    import import_filetype, mtz, srf
 # Merged MTZ import functions
 
 def freerflag_script(): return "freerflag.script"
+def cad_script():       return "cad.script"
 
 def makeHKLTable ( body,tableId,holderId,original_data,new_data,
                         truncation,trunc_msg,row ):
@@ -145,7 +146,7 @@ def run ( body,   # body is reference to the main Import class
     if not files_mtz:
         return hkl_imported
 
-    mtzSecId = body.getWidgetId ( "mtz_sec" ) + "_"
+    mtzSecId = body.getWidgetId ( "mtz_sec" )
 
     k = 0
     for f_orig, f_fmt in files_mtz:
@@ -179,27 +180,44 @@ def run ( body,   # body is reference to the main Import class
 
         if p_mtzin:
 
-            p_mtzout = p_mtzin
+            p_mtzin1 = p_mtzin
             rc = command.comrc()
+
+            p_mtzout = os.path.splitext ( os.path.join(body.outputDir(),
+                                          os.path.basename(f_orig)) )[0] + ".mtz"
 
             if freeRflag:
 
-                p_mtzout = os.path.join(body.outputDir(), os.path.basename(f_orig))
-
                 if k==0:
                     scr_file = open ( freerflag_script(),"w" )
-                    #scr_file.write ( "UNIQUE\n" )
+                    mf = mtz.mtz_file ( p_mtzin )
+                    if mf.FREE:
+                        scr_file.write ( "COMPLETE FREE=" + mf.FREE + "\n" )
                     scr_file.close ()
 
                 # run freerflag: generate FreeRFlag if it is absent, and expand
                 # all reflections
 
+                p_mtzin1 = "temp.mtz"
                 rc = command.call ( "freerflag",
                                     ["HKLIN",p_mtzin,
-                                     "HKLOUT",p_mtzout],"./",
+                                     "HKLOUT",p_mtzin1],"./",
                                     freerflag_script(),body.file_stdout,
                                     body.file_stderr,log_parser=None,
                                     citation_ref="freerflag-srv" )
+
+            #  get rid of redundant reflections with cad
+
+            scr_file = open ( cad_script(),"w" )
+            scr_file.write ( "LABIN FILE 1 ALLIN\nEND\n" )
+            scr_file.close ()
+
+            rc = command.call ( "cad",
+                                ["HKLIN1",p_mtzin1,
+                                 "HKLOUT",p_mtzout],"./",
+                                cad_script(),body.file_stdout,
+                                body.file_stderr,log_parser=None,
+                                citation_ref="freerflag-srv" )
 
             if rc.msg:
                 msg = "\n\n Freerflag failed with message:\n\n" + \
@@ -242,7 +260,7 @@ def run ( body,   # body is reference to the main Import class
 
                     subSecId = mtzSecId
                     if len(files_mtz)>1 or len(mf)>1:
-                        subSecId = mtzSecId + str(k)
+                        subSecId = body.getWidgetId ( "mtz_subsec" )
                         pyrvapi.rvapi_add_section ( subSecId,hkl.dname,
                                                     mtzSecId,k,0,1,1,False )
                         #pyrvapi.rvapi_add_section ( subSecId,
@@ -251,7 +269,7 @@ def run ( body,   # body is reference to the main Import class
 
                     # run crtruncate
                     outFileName = os.path.join(body.outputDir(),hkl.dataId+".mtz")
-                    outXmlName = os.path.join("ctruncate"+hkl.dataId+".xml")
+                    outXmlName  = os.path.join("ctruncate"+hkl.dataId+".xml")
                     cmd = ["-hklin",p_mtzout,"-hklout",outFileName]
                     amplitudes = ""
 
@@ -284,28 +302,22 @@ def run ( body,   # body is reference to the main Import class
                         cmd += [amplitudes]
 
                     cmd += ["-xmlout", outXmlName]
-                    cmd += ["-freein"]
+                    cmd += ["-freein", "/*/*/[" + mf.FREE + "]" ]
 
                     pyrvapi.rvapi_set_text ( "&nbsp;<p><h2>Data analysis (CTruncate)</h2>",
                                              subSecId,1,0,1,1 )
-                    pyrvapi.rvapi_add_panel ( mtzSecId+str(k),subSecId,2,0,1,1 )
-
-                    """
-                    log_parser = pyrvapi_ext.parsers.generic_parser ( mtzSecId+str(k),
-                            False,body.generic_parser_summary,False )
-                    rc = command.call ( "ctruncate",cmd,"./",None,
-                                        body.file_stdout,body.file_stderr,log_parser )
-                    """
+                    reportPanelId = body.getWidgetId ( "log_panel" )
+                    pyrvapi.rvapi_add_panel ( reportPanelId,subSecId,2,0,1,1 )
 
                     body.file_stdin = None  # not clear why this is not None at
                                             # this point and needs to be forced,
                                             # or else runApp looks for input script
-                    body.setGenericLogParser ( mtzSecId+str(k),False,False,False )
+                    body.setGenericLogParser ( reportPanelId,False,False,False )
                     body.runApp ( "ctruncate",cmd )
 
                     body.file_stdout.flush()
 
-                    mtzTableId = body.getWidgetId("mtz") + "_" + str(k) + "_table"
+                    mtzTableId = body.getWidgetId ( "mtz_table" )
 
                     if rc.msg:
                         msg = "\n\n CTruncate failed with message:\n\n" + \
@@ -335,7 +347,7 @@ def run ( body,   # body is reference to the main Import class
                                 "&nbsp;<br><hr/><h3>Created Reflection Data Set (merged)</h3>" + \
                                 "<b>Assigned name:</b>&nbsp;&nbsp;" + datasetName + "<br>&nbsp;",
                                 subSecId,4,0,1,1 )
-                        pyrvapi.rvapi_add_data ( "hkl_data_"+str(body.dataSerialNo),
+                        pyrvapi.rvapi_add_data ( body.getWidgetId("hkl_data_"+str(body.dataSerialNo)),
                                  "Merged reflections",
                                  # always relative to job_dir from job_dir/html
                                  "/".join([ "..",body.outputDir(),hkl.getHKLFileName()]),
@@ -369,7 +381,7 @@ def run ( body,   # body is reference to the main Import class
                                 "&nbsp;<br><hr/><h3>Created Reflection Data Set (merged)</h3>" + \
                                 "<b>Assigned name:</b>&nbsp;&nbsp;" + datasetName + "<br>&nbsp;",
                                 subSecId,4,0,1,1 )
-                            pyrvapi.rvapi_add_data ( "hkl_data_"+str(body.dataSerialNo),
+                            pyrvapi.rvapi_add_data ( body.getWidgetId("hkl_data_"+str(body.dataSerialNo)),
                                  "Merged reflections",
                                  # always relative to job_dir from job_dir/html
                                  "/".join([ "..",body.outputDir(),hkl_data.getHKLFileName()]),

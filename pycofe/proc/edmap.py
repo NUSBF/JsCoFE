@@ -3,13 +3,13 @@
 #
 # ============================================================================
 #
-#    26.10.17   <--  Date of Last Modification.
+#    17.12.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  CALCULATION OF ED MAPS
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2018
 #
 # ============================================================================
 #
@@ -42,6 +42,7 @@ _columns = {
   "shelxe"      : ("FWT","PHWT" ),
   "phaser-ep"   : ("FWT","PHWT" ),
   "parrot"      : ("parrot.F_phi.F","parrot.F_phi.phi","parrot.F_phi.F","parrot.F_phi.phi"),
+  "acorn-map"   : ("acorn.EO.FWT","acorn.PHI","acorn.EC.FWT","acorn.PHI" ),
   "refmac_anom" : ("FAN","PHAN","DELFAN","PHDELAN" )
 }
 
@@ -61,10 +62,15 @@ def calcCCP4Maps ( mtzin,output_file_prefix,job_dir,file_stdout,file_stderr,
     if source_key.startswith("phaser-ep:"):
         LAB_F1  = "FLLG_"  + source_key[10:]
         LAB_PHI = "PHLLG_" + source_key[10:]
+    elif source_key.startswith("acorn:"):
+        LAB_F1  = source_key[6:]
+        LAB_PHI = _columns["acorn-map"][1]
     else:
         LAB_F1  = _columns[source_key][0]
         LAB_PHI = _columns[source_key][1]
 
+
+    """
     scr_file = open ( fft_map_script(),"w" )
     scr_file.write (
        "TITLE Sigmaa style 2mfo-dfc map calculated with refmac coefficients\n" +
@@ -79,14 +85,24 @@ def calcCCP4Maps ( mtzin,output_file_prefix,job_dir,file_stdout,file_stderr,
                "MAPOUT",output_file_prefix + file_map()
               ],
               job_dir,fft_map_script(),file_stdout,file_stderr,log_parser )
+    """
+
+    # Start cfft
+    rc = command.call ( "cfft",
+              ["-mtzin" ,mtzin,
+               "-mapout",output_file_prefix + file_map(),
+               "-colin-fc","/*/*/[" + LAB_F1 + "," + LAB_PHI + "]"
+              ],
+              job_dir,None,file_stdout,file_stderr,log_parser )
 
     if rc.msg:
         file_stdout.write ( "Error calling FFT(1): " + rc.msg + "\n" )
         file_stderr.write ( "Error calling FFT(1): " + rc.msg + "\n" )
 
     #   Sigmaa style mfo-dfc map
-    if source_key.startswith("refmac"):
+    if source_key in ["refmac","acorn-map"]:
 
+        """
         scr_file = open ( fft_dmap_script(),"w" )
         scr_file.write (
            "TITLE Sigmaa style mfo-dfc map calculated with refmac coefficients\n" +
@@ -101,6 +117,15 @@ def calcCCP4Maps ( mtzin,output_file_prefix,job_dir,file_stdout,file_stderr,
                    "MAPOUT",output_file_prefix + file_dmap()
                   ],
                   job_dir,fft_dmap_script(),file_stdout,file_stderr,log_parser )
+        """
+
+        # Start cfft
+        rc = command.call ( "cfft",
+                  ["-mtzin" ,mtzin,
+                   "-mapout",output_file_prefix + file_dmap(),
+                   "-colin-fc","/*/*/[" + _columns[source_key][2] + "," + _columns[source_key][3] + "]"
+                  ],
+                  job_dir,None,file_stdout,file_stderr,log_parser )
 
         if rc.msg:
             file_stdout.write ( "Error calling FFT(2): " + rc.msg + "\n" )

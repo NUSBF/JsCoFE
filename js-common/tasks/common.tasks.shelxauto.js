@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    22.10.17   <--  Date of Last Modification.
+ *    19.12.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  SHELX-Auto Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2017
+ *  (C) E. Krissinel, A. Lebedev 2016-2018
  *
  *  =================================================================
  *
@@ -35,7 +35,7 @@ function TaskShelxAuto()  {
   this._type   = 'TaskShelxAuto';
   this.name    = 'SHELX Auto-EP';
   this.oname   = 'shelx';  // default output file name template
-  this.title   = 'SHELX Automated Experimental Phasing';
+  this.title   = 'SHELX Automated Experimental Phasing via Crank-2';
   this.helpURL = './html/jscofe_task_shelxauto.html';
 
   this.input_dtypes[0].customInput = 'shelx-auto';     // lay custom fields next to the selection
@@ -54,10 +54,16 @@ TaskShelxAuto.prototype.constructor = TaskShelxAuto;
 // ===========================================================================
 // export such that it could be used in both node and a browser
 
-TaskShelxAuto.prototype.icon_small = function()  { return './images/task_shelx_20x20.svg'; }
-TaskShelxAuto.prototype.icon_large = function()  { return './images/task_shelx.svg';       }
+TaskShelxAuto.prototype.icon_small = function()  { return 'task_shelx_20x20'; }
+TaskShelxAuto.prototype.icon_large = function()  { return 'task_shelx';       }
 
-TaskShelxAuto.prototype.currentVersion = function()  { return 1; }
+TaskShelxAuto.prototype.currentVersion = function()  {
+  var version = 0;
+  if (__template)
+        return  version + __template.TaskCrank2.prototype.currentVersion.call ( this );
+  else  return  version + TaskCrank2.prototype.currentVersion.call ( this );
+}
+
 
 if (__template)  {
   //  for server side

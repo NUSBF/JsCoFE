@@ -120,14 +120,19 @@
   //    but please follow file name convention as below. Small 20x20px icon is
   //    used in Job Tree, and the large icon is used in Job Dialog and documentation.
 
-  TaskHelloWorld.prototype.icon_small = function()  { return './images/task_helloworld_20x20.png'; }
-  TaskHelloWorld.prototype.icon_large = function()  { return './images/task_helloworld.png';       }
+  TaskHelloWorld.prototype.icon_small = function()  { return 'task_helloworld_20x20'; }
+  TaskHelloWorld.prototype.icon_large = function()  { return 'task_helloworld';       }
 
   // 3. Define task version. Whenever task changes (e.g. receives new input
   //    parameters or data), the version number must be advanced. jsCoFE framework
   //    forbids cloning jobs with version numbers lower than specified here.
 
-  TaskHelloWorld.prototype.currentVersion = function()  { return 2; }
+  TaskHelloWorld.prototype.currentVersion = function()  {
+    var version = 1;
+    if (__template)
+          return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );
+    else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
+  }
 
   // ===========================================================================
 

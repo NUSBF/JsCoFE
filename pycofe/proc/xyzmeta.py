@@ -3,30 +3,32 @@
 #
 # ============================================================================
 #
-#    05.07.17   <--  Date of Last Modification.
+#    04.12.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  XYZ HANDLING UTILS
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2018
 #
 # ============================================================================
 #
 
 #  python native imports
-import os
+#import os
 import sys
 
 #  ccp4-python imports
+import gemmi
 #import pyrvapi
 
 #  application imports
-from pycofe.varut import command
+#from pycofe.varut import command
 
 
 # ============================================================================
 
+"""
 def XYZMeta ( json_str ):
     xyz_meta = eval ( json_str )
     if "xyz" in xyz_meta:
@@ -39,7 +41,7 @@ def XYZMeta ( json_str ):
                     if chains[c]["type"]=="AA":
                         chains[c]["type"] = "Protein"
     return xyz_meta
-
+"""
 
 def getXYZMeta ( fpath,file_stdout,file_stderr,log_parser=None ):
 # returns chain information as the following disctionary:
@@ -71,6 +73,7 @@ def getXYZMeta ( fpath,file_stdout,file_stderr,log_parser=None ):
     }
     """
 
+    """
     scr_file = open ( "pdbcur.script","w" )
     scr_file.write  ( "PDB_META\nEND\n" )
     scr_file.close  ()
@@ -91,3 +94,36 @@ def getXYZMeta ( fpath,file_stdout,file_stderr,log_parser=None ):
     json_file.close()
 
     return XYZMeta ( json_str )
+    """
+
+    st = gemmi.read_structure ( fpath )
+    st.assign_subchains()  # internally marks polymer, ligand and waters
+
+    cryst = dict(spaceGroup=str(st.spacegroup_hm),
+                 a=round(st.cell.a,6),
+                 b=round(st.cell.b,6),
+                 c=round(st.cell.c,6),
+                 alpha=round(st.cell.alpha,6),
+                 beta=round(st.cell.alpha,6),
+                 gamma=round(st.cell.gamma,6))
+
+    xyz = []
+    for model in st:
+        chains = []
+        for chain in model:
+            polymer = chain.get_polymer()
+            t = polymer.check_polymer_type()
+            if t in (gemmi.PolymerType.PeptideL, gemmi.PolymerType.PeptideD):
+                abbr = 'Protein'
+            elif t in (gemmi.PolymerType.Dna, gemmi.PolymerType.Rna,
+                       gemmi.PolymerType.DnaRnaHybrid):
+                abbr = 'NA'
+            else:
+                abbr = 'LIG'
+            chains.append(dict(id=str(chain.name),
+                               type=abbr,
+                               seq=str(polymer.make_one_letter_sequence()),
+                               size=len(polymer)))
+        xyz.append(dict(model=int(model.name), chains=chains))
+
+    return dict(cryst=cryst, xyz=xyz, ligands=[])

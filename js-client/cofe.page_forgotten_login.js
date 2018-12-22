@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    14.11.17   <--  Date of Last Modification.
+ *    12.12.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Restore user access page
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2017
+ *  (C) E. Krissinel, A. Lebedev 2016-2018
  *
  *  =================================================================
  *
@@ -76,8 +76,8 @@ function ForgottenLoginPage ( sceneId )  {
   panel.setWidget               ( new HLine('3pt'), row++,0,1,2 );
   panel.setCellSize             ( '','1pt',row++,0 );
 
-  var send_btn = new Button     ( 'E-mail my login details to me','./images/email.svg' );
-  var back_btn = new Button     ( 'Back to User Login','./images/login.svg' );
+  var send_btn = new Button     ( 'E-mail my login details to me',image_path('email') );
+  var back_btn = new Button     ( 'Back to User Login',image_path('login') );
 
   send_btn.setWidth             ( '100%' );
   back_btn.setWidth             ( '100%' );

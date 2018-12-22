@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    21.09.18   <--  Date of Last Modification.
+#    22.12.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -30,7 +30,8 @@ citations = {
                             'journal' : 'Acta Cryst.',
                             'volume'  : 'D67',
                             'year'    : '2011',
-                            'pages'   : '235-242'
+                            'pages'   : '235-242',
+                            'doi'     : '10.1107/S0907444910045749'
                   }]
                 },
 
@@ -42,11 +43,19 @@ citations = {
     'mtz2various'     : { 'name' : 'mtz2various'  , 'category' : 'service', 'refs' : [] },
     'matthews_coef'   : { 'name' : 'Matthews_Coef', 'category' : 'primary', 'refs' : [] },
     'cad'             : { 'name' : 'CAD'          , 'category' : 'service', 'refs' : [] },
+    'cfft'            : { 'name' : 'CFFT'         , 'category' : 'service', 'refs' : [] },
+    'unique'          : { 'name' : 'Unique'       , 'category' : 'service', 'refs' : [] },
+    'ecalc'           : { 'name' : 'ECalc'        , 'category' : 'service', 'refs' : [] },
+    'sftools'         : { 'name' : 'SFTools'      , 'category' : 'service', 'refs' : [] },
+    'cif2mtz'         : { 'name' : 'cif2mtz'      , 'category' : 'service', 'refs' : [] },
+    'rwcontents'      : { 'name' : 'RWContents'   , 'category' : 'service', 'refs' : [] },
 
     'ps2pdf'          : { 'name' : '', 'category' : 'system' , 'refs' : [] },  # empty name means "Ignore"
     'ccp4-python'     : { 'name' : '', 'category' : 'system' , 'refs' : [] },
     'dials.export'    : { 'name' : '', 'category' : 'service', 'refs' : [] },
     'dials.rs_mapper' : { 'name' : '', 'category' : 'service', 'refs' : [] },
+    'mapro'           : { 'name' : '', 'category' : 'primary', 'refs' : [] },
+    'find-blobs'      : { 'name' : '', 'category' : 'service', 'refs' : [] },
 
     'pointless' : { 'name'     : 'Pointless',
                     'category' : 'primary',
@@ -56,14 +65,16 @@ citations = {
                             'journal' : 'Acta Cryst.',
                             'volume'  : 'D62',
                             'year'    : '2006',
-                            'pages'   : '72-82'
+                            'pages'   : '72-82',
+                            'doi'     : '10.1107/S0907444905036693'
                         },{
                             'authors' : 'Evans, P.R.',
                             'title'   : 'An introduction to data reduction: space-group determination, scaling and intensity statistics',
                             'journal' : 'Acta Cryst.',
                             'volume'  : 'D67',
                             'year'    : '2011',
-                            'pages'   : '282-292'
+                            'pages'   : '282-292',
+                            'doi'     : '10.1107/S090744491003982X'
                         }]
                   },
 
@@ -75,7 +86,8 @@ citations = {
                             'journal' : 'Acta Cryst.',
                             'volume'  : 'D67',
                             'year'    : '2011',
-                            'pages'   : '271-281'
+                            'pages'   : '271-281',
+                            'doi'     : '10.1107/S0907444910048675'
                         }]
                   },
 
@@ -87,7 +99,8 @@ citations = {
                             'journal' : 'Acta Cryst.',
                             'volume'  : 'D66',
                             'year'    : '2010',
-                            'pages'   : '125-132'
+                            'pages'   : '125-132',
+                            'doi'     : '10.1107/S0907444909047337'
                         }]
                   },
 
@@ -99,7 +112,8 @@ citations = {
                             'journal' : 'Acta Cryst.',
                             'volume'  : 'D69',
                             'year'    : '2013',
-                            'pages'   : '1204-1214'
+                            'pages'   : '1204-1214',
+                            'doi'     : '10.1107/S0907444913000061'
                         }]
                   },
 
@@ -111,7 +125,8 @@ citations = {
                             'journal' : 'J. Appl. Cryst.',
                             'volume'  : '30',
                             'year'    : '1997',
-                            'pages'   : '1022-1025'
+                            'pages'   : '1022-1025',
+                            'doi'     : '10.1107/S0021889897006766'
                         }]
                   },
 
@@ -128,7 +143,8 @@ citations = {
                             'journal' : 'Acta Cryst.',
                             'volume'  : 'D67',
                             'year'    : '2011',
-                            'pages'   : '355-367'
+                            'pages'   : '355-367',
+                            'doi'     : '10.1107/S0907444911001314'
                         }]
                   },
 
@@ -147,7 +163,8 @@ citations = {
                             'journal' : 'Acta Cryst.',
                             'volume'  : 'D64',
                             'year'    : '2008',
-                            'pages'   : '119-124'
+                            'pages'   : '119-124',
+                            'doi'     : '10.1107/S0907444907037195'
                         }]
                   },
 
@@ -255,7 +272,8 @@ citations = {
                             'journal' : 'Acta Cryst.',
                             'volume'  : 'D70',
                             'year'    : '2014',
-                            'pages'   : '2487-2499'
+                            'pages'   : '2487-2499',
+                            'doi'     : '10.1107/S1399004714016241'
                         }]
                   },
 
@@ -282,15 +300,17 @@ citations = {
                             'journal' : 'Acta Cryst.',
                             'volume'  : 'D74',
                             'year'    : '2018',
-                            'pages'   : '85-97'
+                            'pages'   : '85-97',
+                            'doi'     : '10.1107/S2059798317017235'
                         }, {
                             'authors' : 'Parkhurst, J.M., Winter, G., Waterman, D.G., Fuentes-Montero, L., ' +\
                                         'Gildea, R.J., Murshudov, G.N., Evans, G.',
-                            'title'   : 'DIALS',
+                            'title'   : 'Robust background modelling in DIALS',
                             'journal' : 'J. Appl. Cryst.',
                             'volume'  : '49',
                             'year'    : '2016',
-                            'pages'   : '1912-1921'
+                            'pages'   : '1912-1921',
+                            'doi'     : '10.1107/S1600576716013595'
                         }]
                   },
 
@@ -302,7 +322,8 @@ citations = {
                             'journal' : 'Acta Cryst.',
                             'volume'  : 'D66',
                             'year'    : '2010',
-                            'pages'   : '486-501'
+                            'pages'   : '486-501',
+                            'doi'     : '10.1107/S0907444910007493'
                         }]
                   },
 
@@ -325,7 +346,8 @@ citations = {
                             'journal' : 'Acta Cryst.',
                             'volume'  : 'D66',
                             'year'    : '2010',
-                            'pages'   : '470-478'
+                            'pages'   : '470-478',
+                            'doi'     : '10.1107/S090744490903947X'
                         }]
                   },
 
@@ -337,16 +359,131 @@ citations = {
                             'journal' : 'Acta Cryst.',
                             'volume'  : 'D68',
                             'year'    : '2012',
-                            'pages'   : '328-335'
+                            'pages'   : '328-335',
+                            'doi'     : '10.1107/S0907444911039655'
                         },{
                             'authors' : 'Cowtan, K.',
                             'title'   : 'The Buccaneer software for automated model building',
                             'journal' : 'Acta Cryst.',
                             'volume'  : 'D62',
                             'year'    : '2006',
-                            'pages'   : '1002-1011'
+                            'pages'   : '1002-1011',
+                            'doi'     : '10.1107/S0907444906022116'
                         }]
                   },
+
+    'cbuccaneer': { 'name'     : 'Buccaneer',
+                    'category' : 'primary',
+                    'copy'     : [['buccaneer',-1]]  # -1 means copy all
+                  },
+
+    #'solomon' :   { 'name'     : 'SOLOMON',
+    #                'category' : 'primary',
+    #                'refs'     : [{
+    #                        'authors' : 'Abrahams, J.P., Leslie, A.G.W.',
+    #                        'title'   : 'Methods used in the structure determination of bovine mitochondrial F1 ATPase',
+    #                        'journal' : 'Acta Cryst.',
+    #                        'volume'  : 'D52',
+    #                        'year'    : '1996',
+    #                        'pages'   : '30-42',
+    #                        'doi'     : '10.1107/S0907444995008754'
+    #                    }]
+    #              },
+
+    'solomon' :   { 'name'     : 'SOLOMON',
+                    'category' : 'primary',
+                    'refs'     : [{
+                            'authors' : 'Abrahams, J.P.',
+                            'title'   : 'Bias reduction in phase refinement by modified interference functions: introducing the gamma correction',
+                            'journal' : 'Acta Cryst.',
+                            'volume'  : 'D53',
+                            'year'    : '1997',
+                            'pages'   : '371-376',
+                            'doi'     : '10.1107/S0907444996015272'
+                        }]
+                  },
+
+    'peakmax' :   { 'name'     : 'PeakMax',
+                    'category' : 'primary',
+                    'copy'     : [['default',-1]]  # -1 means copy all
+                  },
+
+
+    'multicomb' : { 'name'     : 'Multicomb',
+                    'category' : 'primary',
+                    'refs'     : [{
+                            'authors' : 'Skubak, P., Waterreus, W.J., Pannu, N.S.',
+                            'title'   : 'Multivariate phase combination improves automated crystallographic model building',
+                            'journal' : 'Acta Cryst.',
+                            'volume'  : 'D66',
+                            'year'    : '2010',
+                            'pages'   : '783-788',
+                            'doi'     : '10.1107/S0907444910014642'
+                        }]
+                  },
+
+    'afro' :      { 'name'     : 'Afro',
+                    'category' : 'primary',
+                    'refs'     : [{
+                            'authors' : 'Pannu, N.S., Waterreus, W.J., Skubak, P., Sikharulidze, I., Abrahams, J.P., de Graaff, R.A.G.',
+                            'title'   : 'Recent advances in the CRANK software suite for experimental phasing.',
+                            'journal' : 'Acta Cryst.',
+                            'volume'  : 'D67',
+                            'year'    : '2011',
+                            'pages'   : '331-337',
+                            'doi'     : '10.1107/S0907444910052224'
+                        }]
+                  },
+
+    'arpwarp' :   { 'name'     : 'Arp/wArp',
+                    'category' : 'primary',
+                    'refs'     : [{
+                            'authors' : 'Perrakis, A., Morris, R., Lamzin, V.S.',
+                            'title'   : 'Automated protein model building combined with iterative structure refinement.',
+                            'journal' : 'Nature Struct. Biol.',
+                            'volume'  : '6',
+                            'year'    : '1999',
+                            'pages'   : '458-463',
+                            'doi'     : '10.1038/8263'
+                        },{
+                            'authors' : 'Perrakis, A., Harkiolaki, M., Wilson, K.S., Lamzin, V.S.',
+                            'title'   : 'ARP/wARP and molecular replacement.',
+                            'journal' : 'Acta Cryst.',
+                            'volume'  : '57',
+                            'year'    : '2001',
+                            'pages'   : '1445-1450',
+                            'doi'     : '10.1107/S0907444901014007'
+                        },{
+                            'authors' : 'Langer G., Cohen S.X., Lamzin V.S., Perrakis A.',
+                            'title'   : 'Automated macromolecular model building for x-ray crystallography using ARP/wARP version 7.',
+                            'journal' : 'Nat. Protoc.',
+                            'volume'  : '3',
+                            'year'    : '2008',
+                            'pages'   : '1171-1179',
+                            'doi'     : '10.1038/nprot.2008.91'
+                        }]
+                  },
+
+    'bp3' :       { 'name'     : 'BP3',
+                    'category' : 'primary',
+                    'copy'     : [['afro',-1]]  # -1 means copy all
+                  },
+
+
+    'prasa' :     { 'name'     : 'PRASA',
+                    'category' : 'primary',
+                    'refs'     : [{
+                            'authors' : 'Skubak, P.',
+                            'title'   : 'Substructure determination using phase-retrieval techniques',
+                            'journal' : 'Acta Cryst.',
+                            'volume'  : 'D74',
+                            'year'    : '2018',
+                            'pages'   : '117-124',
+                            'doi'     : '10.1107/S2059798317014462'
+                        }]
+                  },
+
+
 
     'phaser' :    { 'name'     : 'Phaser',
                     'category' : 'primary',
@@ -356,7 +493,8 @@ citations = {
                             'journal' : 'J. Appl. Cryst.',
                             'volume'  : '40',
                             'year'    : '2007',
-                            'pages'   : '658-674'
+                            'pages'   : '658-674',
+                            'doi'     : '10.1107/S0021889807021206'
                         }]
                   },
 
@@ -364,11 +502,12 @@ citations = {
                     'category' : 'service',
                     'refs'     : [{
                             'authors' : 'Eyck, L.F.',
-                            'title'   : '',
+                            'title'   : 'Crystallographic fast Fourier transforms',
                             'journal' : 'Acta Cryst.',
                             'volume'  : 'A29',
                             'year'    : '1973',
-                            'pages'   : '183'
+                            'pages'   : '183',
+                            'doi'     : '10.1107/S0567739473000458'
                         }]
                   },
 
@@ -380,7 +519,8 @@ citations = {
                             'journal' : 'Acta Cryst.',
                             'volume'  : 'D73',
                             'year'    : '2017',
-                            'pages'   : '112-122'
+                            'pages'   : '112-122',
+                            'doi'     : '10.1107/S2059798317000067'
                         }]
                   },
 
@@ -392,7 +532,8 @@ citations = {
                             'journal' : 'J. Mol. Biochem.',
                             'volume'  : '1(2)',
                             'year'    : '2012',
-                            'pages'   : '76-85'
+                            'pages'   : '76-85; <i>PMCID: <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5117261/" target="_blank">PMC5117261</a></i>',
+                            'doi'     : ''
                         }]
                   },
 
@@ -404,14 +545,16 @@ citations = {
                             'journal' : 'J. Mol. Biol.',
                             'volume'  : '372',
                             'year'    : '2007',
-                            'pages'   : '774-797'
+                            'pages'   : '774-797',
+                            'doi'     : '10.1016/j.jmb.2007.05.022'
                         },{
                             'authors' : 'Krissinel, E.',
                             'title'   : 'Stock-based detection of protein oligomeric states in jsPISA',
                             'journal' : 'Nucl. Acids Res.',
-                            'volume'  : '',
+                            'volume'  : '43(W1)',
                             'year'    : '2015',
-                            'pages'   : 'DOI:10.1093/nar/gkv314'
+                            'pages'   : 'W314-9',
+                            'doi'     : '10.1093/nar/gkv314'
                         }]
                   },
 
@@ -428,14 +571,16 @@ citations = {
                             'journal' : 'IUCrJ',
                             'volume'  : '5',
                             'year'    : '2018',
-                            'pages'   : ''
+                            'pages'   : '166-171',
+                            'doi'     : '10.1107/S2052252517017961'
                         },{
                             'authors' : 'Skubak, P., Pannu, N.S.',
                             'title'   : 'Automatic protein structure solution from weak X-ray data',
                             'journal' : 'Nature Comm.',
                             'volume'  : '4',
                             'year'    : '2013',
-                            'pages'   : '2777'
+                            'pages'   : '2777',
+                            'doi'     : '10.1038/ncomms3777'
                         }]
                   },
 
@@ -447,7 +592,8 @@ citations = {
                             'journal' : 'Acta Cryst.',
                             'volume'  : 'A64',
                             'year'    : '2008',
-                            'pages'   : '112-122'
+                            'pages'   : '112-122',
+                            'doi'     : '10.1107/S0108767307043930'
                         }]
                   },
 
@@ -469,7 +615,8 @@ citations = {
                             'journal' : 'Acta Cryst.',
                             'volume'  : 'D58',
                             'year'    : '2002',
-                            'pages'   : '1772-1779'
+                            'pages'   : '1772-1779',
+                            'doi'     : '10.1107/S0907444902011678'
                         }]
                   },
 
@@ -478,7 +625,7 @@ citations = {
                     'category' : 'viewer',
                     'refs'     : [{
                             'authors' : 'Wojdyr, M.',
-                            'title'   : ' UglyMol: a WebGL macromolecular viewer focused on the electron density',
+                            'title'   : 'UglyMol: a WebGL macromolecular viewer focused on the electron density',
                             'journal' : 'J. Open Source Softw.',
                             'volume'  : '2(18)',
                             'year'    : '2017',
@@ -496,7 +643,8 @@ citations = {
                             'journal' : 'Acta Cryst.',
                             'volume'  : 'D67',
                             'year'    : '2011',
-                            'pages'   : '386-394'
+                            'pages'   : '386-394',
+                            'doi'     : '10.1107/S0907444911007281'
                         }]
                   },
 
@@ -509,7 +657,8 @@ citations = {
                             'journal' : 'Unpublished',
                             'volume'  : '',
                             'year'    : '2011',
-                            'pages'   : ''
+                            'pages'   : '',
+                            'doi'     : ''
                         }]
                   },
 
@@ -521,7 +670,8 @@ citations = {
                             'journal' : 'Acta Cryst.',
                             'volume'  : 'D74',
                             'year'    : '2018',
-                            'pages'   : '143-151'
+                            'pages'   : '143-151',
+                            'doi'     : '10.1107/S2059798317014565'
                   }]
                 },
 
@@ -537,7 +687,22 @@ citations = {
                             'journal' : 'Bioinformatics',
                             'volume'  : '23',
                             'year'    : '2007',
-                            'pages'   : '2947-2948'
+                            'pages'   : '2947-2948',
+                            'doi'     : '10.1093/bioinformatics/btm404'
+                  }]
+                },
+
+
+    'acorn' :   { 'name'   : 'ACORN',
+                  'category' : 'primary',
+                  'refs'     : [{
+                            'authors' : 'Yao, J.X., Dodson, E.J., Wilson, K.S., Woolfson, M.M.',
+                            'title'   : 'ACORN: a review',
+                            'journal' : 'Acta Cryst.',
+                            'volume'  : 'D62',
+                            'year'    : '2006',
+                            'pages'   : '901-908',
+                            'doi'     : '10.1107/S0907444906008122'
                   }]
                 },
 
@@ -607,6 +772,9 @@ def makeCitation ( reference ):
               reference["volume"] + "</b>"
     if reference['pages']:
         refhtml += ": " + reference["pages"]
+    if reference['doi']:
+        refhtml += "; <a href='https://doi.org/" + reference["doi"] +\
+                   "' target='_blank'><i>doi:" + reference["doi"] + "</i></a>"
     return refhtml
 
 
@@ -636,34 +804,40 @@ def _get_references ( citation,lists ):
 
 
 def get_citation_html_list ( citation,appName,desc_bool,lists ):
-    rlst = []
-    refs = _get_references ( citation,lists )
-    lst  = []
 
-    if len(refs)<=0:
-        if appName not in lists['deflist']:
-            cit = makeCitation ( citations['default']['refs'][0] )
-            if cit not in lists['flist']:
-                lists['flist'].append ( cit )
+    rlst = []
+
+    if citation['name']:
+
+        refs = _get_references ( citation,lists )
+        lst  = []
+
+        if len(refs)<=0:
+            if appName not in lists['deflist']:
+                cit = makeCitation ( citations['default']['refs'][0] )
+                if cit not in lists['flist']:
+                    lists['flist'].append ( cit )
                 if citation['category']=='primary':
                     lists['deflist'].append ( appName )
                 else:
                     lst.append ( "<li>" + cit + "</li>" )
-    else:
-        for reference in refs:
-            cit  = makeCitation ( reference )
-            if cit not in lists['flist']:
-                lists['flist'].append ( cit )
-                lst.append ( "<li>" + cit + "</li>" )
+        else:
+            for reference in refs:
+                cit  = makeCitation ( reference )
+                if cit not in lists['flist']:
+                    lists['flist'].append ( cit )
+                    lst.append ( "<li>" + cit + "</li>" )
+                elif desc_bool:
+                    lst.append ( "<li>" + cit + "</li>" )
 
-    if desc_bool and len(lst)>0:
-        html_str = "<li><b><font style='font-size:110%'><i>" +\
-                       citation['name'] + "</i></font>:</b>"
-        if 'desc' in citation:
-            html_str += " <i>(" + citation['desc'] + ")</i>"
-        rlst.append ( html_str + "<ul>" + "".join(lst) + "</ul></li>" )
-    else:
-        rlst += lst
+        if desc_bool and len(lst)>0:
+            html_str = "<li><b><font style='font-size:110%'><i>" +\
+                           citation['name'] + "</i></font>:</b>"
+            if 'desc' in citation:
+                html_str += " <i>(" + citation['desc'] + ")</i>"
+            rlst.append ( html_str + "<ul>" + "".join(lst) + "</ul></li>" )
+        else:
+            rlst += lst
 
     return rlst
 
@@ -675,12 +849,13 @@ def make_html_list ( clist,category,desc_bool,lists ):
             citation = citations[appName]
             if citation['category']==category:
                 rlist += get_citation_html_list ( citation,appName,desc_bool,lists )
-        else:
+        elif appName not in lists['noref']:
             lists['noref'].append ( appName )
     return rlist
 
 
 def makeCitationsHTML ( body ):
+    # makes list of references after a job
 
     if not citation_list:
         return None
@@ -719,6 +894,9 @@ def makeCitationsHTML ( body ):
         if len(vlist)>0:
             html += "<b>You may have used the following graphical viewers:</b><ul>" +\
                     "".join(vlist) + "</ul>"
+
+        html += "<b>Results were delivered to you by " + body.appName() + ":</b><ul><li>" +\
+                makeCitation(citations['jscofe']['refs'][0]) + "</li></ul>"
 
         html += "&nbsp;<p><hr/><i>Please note: full set of references related to your " +\
                 "final results will be generated by the PDB Deposition task</i>"
@@ -788,6 +966,7 @@ def makeCitationsHTML ( body ):
 
 
 def makeSummaryCitationsHTML ( clist,eol_tasks ):
+    # makes final list of references
 
     if not clist:
         return None

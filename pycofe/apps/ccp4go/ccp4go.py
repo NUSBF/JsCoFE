@@ -90,13 +90,14 @@ class CCP4go(ccp4go_fitligands.FitLigands):
 
     def run(self):
 
-        branch_id = self.prepare_mtz ( "" )
+        branch_id    = self.prepare_mtz ( "" )
+        phasing_mode = "mr"
 
         if not self.output_meta["retcode"]:
             self.prepare_asu ( "" )
 
         if not self.output_meta["retcode"]:
-            self.dimple ( None,"dimple_mr","mr","" )
+            self.dimple ( None,"dimple_mr",phasing_mode,"" )
 
         if self.output_meta["retcode"] != "solved":
             self.simbad12 ( "" )
@@ -120,6 +121,8 @@ class CCP4go(ccp4go_fitligands.FitLigands):
         res   = self.getBestResults()
         d     = res[0]  # directory with lowest-rfree solution
         rfree = res[1]  # lowest rfree achieved
+        if d==self.crank2_dir():
+            phasing_mode = "ep"
 
         if d and rfree <= 0.45:
             self.buccaneer  ( d,"buccaneer","" )
@@ -127,11 +130,11 @@ class CCP4go(ccp4go_fitligands.FitLigands):
             self.acedrg     ( "acedrg","" )
             if "acedrg" in self.output_meta["results"]:
                 if self.output_meta["results"]["acedrg"]["nResults"] > 0:
-                    self.dimple  ( d,"dimple_refine","refine","" )
+                    self.dimple  ( d,"dimple_refine",phasing_mode,"" )
                     d = self.checkResult ( "dimple_refine",d,1.0 )
                     self.fitLigands ( d,"fitligands","" )
             if not "fitligands" in self.output_meta["results"]:
-                self.dimple ( d,"dimple_refine","refine","" )
+                self.dimple ( d,"dimple_refine",phasing_mode,"" )
 
         self.putMessage ( "<h3><i>---- Structure solution workflow " +
                           "completed.</i></h3>" )

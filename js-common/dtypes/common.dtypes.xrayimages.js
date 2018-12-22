@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    09.08.18   <--  Date of Last Modification.
+ *    12.12.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -47,13 +47,19 @@ DataXRayImages.prototype.constructor = DataXRayImages;
 
 // ===========================================================================
 
-DataXRayImages.prototype.title      = function()  { return 'X-Ray Diffraction Images';           }
-DataXRayImages.prototype.icon_small = function()  { return './images/data_xrayimages_20x20.svg'; }
-DataXRayImages.prototype.icon_large = function()  { return './images/data_xrayimages.svg';       }
+DataXRayImages.prototype.title      = function()  { return 'X-Ray Diffraction Images'; }
+DataXRayImages.prototype.icon_small = function()  { return 'data_xrayimages_20x20'; }
+DataXRayImages.prototype.icon_large = function()  { return 'data_xrayimages';       }
 
 // when data class version is changed here, change it also in python
 // constructors
-DataXRayImages.prototype.currentVersion = function()  { return 1; } // from 09.08.2018
+DataXRayImages.prototype.currentVersion = function()  {
+  var version = 0;
+  if (__template)
+        return  version + __template.DataTemplate.prototype.currentVersion.call ( this );
+  else  return  version + DataTemplate.prototype.currentVersion.call ( this );
+}
+
 
 // export such that it could be used in both node and a browser
 

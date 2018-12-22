@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    05.10.18   <--  Date of Last Modification.
+ *    12.12.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -70,10 +70,16 @@ TaskMrBump.prototype.constructor = TaskMrBump;
 
 // ===========================================================================
 
-TaskMrBump.prototype.icon_small = function()  { return './images/task_mrbump_20x20.svg'; }
-TaskMrBump.prototype.icon_large = function()  { return './images/task_mrbump.svg';       }
+TaskMrBump.prototype.icon_small = function()  { return 'task_mrbump_20x20'; }
+TaskMrBump.prototype.icon_large = function()  { return 'task_mrbump';       }
 
-TaskMrBump.prototype.currentVersion = function()  { return 1; }
+TaskMrBump.prototype.currentVersion = function()  {
+  var version = 0;
+  if (__template)
+        return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );
+  else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
+}
+
 
 // export such that it could be used in both node and a browser
 

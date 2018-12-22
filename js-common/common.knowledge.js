@@ -1,7 +1,7 @@
 /*
  *  =================================================================
  *
- *    11.10.18   <--  Date of Last Modification.
+ *    19.11.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -76,11 +76,11 @@ var _taskIndex = {
   // suggest Parrot after both MR and Phaser-EP; do not suggest it after itself
   'T' : { type: 'TaskParrot'         , after: ['J','K','L','M','N','O','R','S'] },
 
-  // suggest Buccaneer after Simbad, Parrot, MR and EP; do  not suggest it after itself
+  // suggest Buccaneer after Simbad, Parrot, MR and EP; do not suggest it after itself
   'U' : { type: 'TaskBuccaneer'      , after: ['J','K','L','M','N','O','S','T'] },
 
   // suggest Refmac after both elementary MR, auto-EP, Buccaneer and itself
-  'V' : { type: 'TaskRefmac'         , after: ['M','N','O','P','Q','U'] },
+  'V' : { type: 'TaskRefmac'         , after: ['M','N','O','P','Q','U','j'] },
 
   // suggest Lorester after Buccaneer and Refmac; not after itself
   'W' : { type: 'TaskLorestr'        , after: ['U','V'] },
@@ -129,9 +129,19 @@ var _taskIndex = {
   'l' : { type: 'TaskCootCE'         , after: ['B','C','D','m'] },
 
   // do suggest CloudImport alike plain Import
-  'm' : { type: 'TaskCloudImport'    , after: ['0','B','C','D','E','m'] }
+  'm' : { type: 'TaskCloudImport'    , after: ['0','B','C','D','E','m'] },
+
+  // suggest Acorn after both MR and Phaser-EP; do not suggest it after itself
+  'n' : { type: 'TaskAcorn'          , after: ['J','K','L','M','N','O','R','S'] },
+
+  // suggest Arp/wArp after Simbad, Parrot, MR and EP; do not suggest it after itself
+  'o' : { type: 'TaskArpWarp'        , after: ['J','K','L','M','N','O','S','T'] },
+
+  // suggest ShelxCD after ASUDef and MR; do not suggest it after auto-EP or itself
+  'p' : { type: 'TaskShelxCD'        , after: ['H','J','K','L','M','N'] },
 
 };
+
 
 
 function getTasksFromTaskIndex ( ckey )  {

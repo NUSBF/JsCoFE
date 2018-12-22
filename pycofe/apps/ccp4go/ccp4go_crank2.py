@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    30.07.18   <--  Date of Last Modification.
+#    25.10.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -16,6 +16,7 @@
 
 import os
 import sys
+import json
 
 #  ccp4-python imports
 #import pyrvapi
@@ -77,19 +78,23 @@ class Crank2(ccp4go_morda.MoRDa):
         #if self.ha_number>0:
         #    exp_num_atoms = " exp_num_atoms=" + str(self.ha_number)
 
+        exclude = "exclude free=" + self.hkl.FREE + " \"file=" + self.mtzpath + "\""
+
         self.write_script (
             "target::SAD\n"
             "model substr atomtype=" + self.ha_type + exp_num_atoms + " d_name=peak\n"
             "sequence solvent_content=0.5 file=" + self.seqpath + "\n"
-            "createfree no_output_to_next_step::True\n"
             "faest\n"
             "substrdet\n"
             "refatompick\n"
             "handdet\n"
             "dmfull\n"
-            "comb_phdmmb exclude obj_from=0,typ=freeR mb buccaneer\n"
-            "ref target::MLHL exclude obj_from=0,typ=freeR\n"
+            "comb_phdmmb " + exclude + " mb buccaneer\n"
+            "ref target::MLHL " + exclude + "\n"
         )
+        #    "createfree no_output_to_next_step::True\n"
+        #    "comb_phdmmb exclude obj_from=0,typ=freeR mb buccaneer\n"
+        #    "ref target::MLHL exclude obj_from=0,typ=freeR\n"
 
         self.close_script()
 
@@ -122,8 +127,21 @@ class Crank2(ccp4go_morda.MoRDa):
         else:
             self.runApp ( "ccp4-python",cmd )
 
-        self.restoreReportDocument()
-        self.addCitation ( 'crank2' )
+        self.addCitations ( ['crank2'] )
+        meta_str = self.restoreReportDocument()
+        if not meta_str:
+            self.file_stderr.write ( "\n\n ***** crank-2 returned no meta\n\n" )
+        else:
+            try:
+                meta = json.loads ( meta_str )
+                if "programs_used" in meta:
+                    self.addCitations ( meta["programs_used"] )
+                else:
+                    self.putMessage ( "<b>Program error:</b> <i>no program list in meta</i>" +
+                                  "<p>'" + meta_str + "'" )
+            except:
+                self.putMessage ( "<b>Program error:</b> <i>unparseable metadata from Crank-2</i>" +
+                                  "<p>'" + meta_str + "'" )
 
         # check for solution
         nResults = 0
@@ -149,7 +167,7 @@ class Crank2(ccp4go_morda.MoRDa):
         columns = {
           "F"    : "REFM_" + self.hkl.Fmean.value,
           "SIGF" : "REFM_" + self.hkl.Fmean.sigma,
-          "FREE" : "FREER",
+          "FREE" : self.hkl.FREE,
           "PHI"  : "REFM_PHCOMB",
           "FOM"  : "REFM_FOMCOMB"
         }
@@ -157,6 +175,7 @@ class Crank2(ccp4go_morda.MoRDa):
         quit_message = self.saveResults ( "Crank-2",self.crank2_dir(),nResults,
                 rfree,rfactor,"crank2", crank2_xyz,crank2_mtz,crank2_map,crank2_dmap,
                 None,None,columns,spg_info )
+        self.output_meta["results"][self.crank2_dir()]["phasing"] = "EP"
 
         self.quit_branch ( branch_data,self.crank2_dir(),
                            "Automated Experimental Phasing (Crank-2): " +

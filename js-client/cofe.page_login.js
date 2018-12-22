@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    11.10.18   <--  Date of Last Modification.
+ *    12.12.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -86,9 +86,9 @@ function LoginPage ( sceneId )  {
   panel.setWidget               ( new HLine('3pt'), row++,0,1,2 );
   panel.setCellSize             ( '','1pt',row++,0 );
 
-  var login_btn = new Button    ( 'Login','./images/login.svg' );
-  var pwd_btn   = new Button    ( 'Forgotten password','./images/reminder.svg' );
-  var reg_btn   = new Button    ( 'Registration','./images/new_file.svg' );
+  var login_btn = new Button    ( 'Login',image_path('login') );
+  var pwd_btn   = new Button    ( 'Forgotten password',image_path('reminder') );
+  var reg_btn   = new Button    ( 'Registration',image_path('new_file') );
 
 //  login_btn.setFontSize         ( '100%' );
 //  pwd_btn  .setFontSize         ( '100%' );

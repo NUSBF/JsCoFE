@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    03.08.18   <--  Date of Last Modification.
+#    22.12.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -72,12 +72,14 @@ class Dimple(basic.TaskDriver):
             if libin:
                 cmd += [ "--libin",libin ]
 
+        mr_prog = self.getParameter ( sec1.MRPROG )
+
         cmd += [
             "--jelly"       ,self.getParameter ( sec1.NJELLY      ),
             "--restr-cycles",self.getParameter ( sec1.NRESTR      ),
             "--mr-when-r"   ,self.getParameter ( sec1.MRTHRESHOLD ),
             "--mr-reso"     ,self.getParameter ( sec1.MRRESO      ),
-            "--mr-prog"     ,self.getParameter ( sec1.MRPROG      )
+            "--mr-prog"     ,mr_prog
         ]
 
         reslimit = self.getParameter ( sec1.RESLIMIT )
@@ -98,6 +100,20 @@ class Dimple(basic.TaskDriver):
             self.runApp ( "dimple.bat",cmd )
         else:
             self.runApp ( "dimple",cmd )
+
+        self.file_stdout.close()
+        self.file_stdout = open ( self.file_stdout_path(),'r' )
+        dimple_log = self.file_stdout.read()
+        self.file_stdout.close()
+        self.file_stdout = open ( self.file_stdout_path(),'a' )
+
+        if "pointless" in dimple_log:
+            self.addCitations ( ["pointless"] )
+        if mr_prog in dimple_log:
+            self.addCitations ( [mr_prog] )
+        self.addCitations ( ["rwcontents","refmac5"] )
+        if "find-blobs" in dimple_log:
+            self.addCitations ( ["find-blobs"] )
 
         # ================================================================
         # make output structure and register it

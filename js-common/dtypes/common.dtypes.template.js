@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    04.09.18   <--  Date of Last Modification.
+ *    12.12.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -55,9 +55,9 @@ function DataTemplate()  {
 
 // ===========================================================================
 
-DataTemplate.prototype.title      = function()  { return 'Template Data';           }
-DataTemplate.prototype.icon_small = function()  { return './images/data_20x20.svg'; }
-DataTemplate.prototype.icon_large = function()  { return './images/data.svg';       }
+DataTemplate.prototype.title      = function()  { return 'Template Data';  }
+DataTemplate.prototype.icon_small = function()  { return 'data_20x20'; }
+DataTemplate.prototype.icon_large = function()  { return 'data';       }
 
 DataTemplate.prototype.currentVersion = function()  { return 2; } // from 25.08.2018
 

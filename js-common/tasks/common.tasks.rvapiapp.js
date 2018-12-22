@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    28.05.17   <--  Date of Last Modification.
+ *    31.10.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Task Class for starting applications from RVAPI pages
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2017
+ *  (C) E. Krissinel, A. Lebedev 2016-2018
  *
  *  =================================================================
  *
@@ -52,7 +52,13 @@ TaskRVAPIApp.prototype.constructor = TaskRVAPIApp;
 // ===========================================================================
 // export such that it could be used in both node and a browser
 
-TaskRVAPIApp.prototype.currentVersion = function()  { return 1; }
+TaskRVAPIApp.prototype.currentVersion = function()  {
+  var version = 0;
+  if (__template)
+        return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );
+  else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
+}
+
 
 if (__template)  {
   //  for server side

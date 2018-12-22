@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    28.05.17   <--  Date of Last Modification.
+ *    12.12.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -90,10 +90,15 @@ TaskEnsemblePrepSeq.prototype.constructor = TaskEnsemblePrepSeq;
 
 // ===========================================================================
 
-TaskEnsemblePrepSeq.prototype.icon_small = function()  { return './images/task_ensembleprepseq_20x20.svg'; }
-TaskEnsemblePrepSeq.prototype.icon_large = function()  { return './images/task_ensembleprepseq.svg';       }
+TaskEnsemblePrepSeq.prototype.icon_small = function()  { return 'task_ensembleprepseq_20x20'; }
+TaskEnsemblePrepSeq.prototype.icon_large = function()  { return 'task_ensembleprepseq';       }
 
-TaskEnsemblePrepSeq.prototype.currentVersion = function()  { return 1; }
+TaskEnsemblePrepSeq.prototype.currentVersion = function()  {
+  var version = 0;
+  if (__template)
+        return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );
+  else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
+}
 
 // export such that it could be used in both node and a browser
 

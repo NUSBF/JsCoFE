@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    09.08.18   <--  Date of Last Modification.
+#    20.11.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -98,25 +98,36 @@ class Simbad(asudef.ASUDef):
 
         # Prepare simbad input -- script file
 
-        cmd = []
+        cmd = [ "-nproc"              ,nSubJobs,
+                "-F"                  ,hkl.dataset.Fmean.value,
+                "-SIGF"               ,hkl.dataset.Fmean.sigma,
+                "-FREE"               ,hkl.dataset.FREE,
+                "--cleanup"           ,
+                "--display_gui"       ,
+                "-webserver_uri"      ,"jsrview",
+                "-work_dir"           ,"./",
+                "-rvapi_document"     ,self.reportDocumentName()
+              ]
+
+        if level in ['L','C','LC']:
+            cmd += [ "-max_lattice_results",maxnlatt,
+                     "-max_penalty_score"  ,maxpenalty ]
+        else:
+            # check that simbad database is installed
+            if "SIMBAD_DB" not in os.environ:
+                self.fail (
+                    "<p>&nbsp; *** SIMBAD database is not installed, or is not configured",
+                    "simbad database is not found" )
+                return
+            else:
+                cmd += [ "-morda_db",os.environ["SIMBAD_DB"] ]
+
         if "TMPDIR" in os.environ:
-            cmd  = [ "-tmp_dir",os.environ["TMPDIR"] ]
+            cmd += [ "-tmp_dir",os.environ["TMPDIR"] ]
         if "PDB_DIR" in os.environ:
             cmd += [ "-pdb_db",os.environ["PDB_DIR"] ]
 
-        cmd += [ "-nproc"              ,nSubJobs,
-                 "-max_lattice_results",maxnlatt,
-                 "-max_penalty_score"  ,maxpenalty,
-                 "-F"                  ,hkl.dataset.Fmean.value,
-                 "-SIGF"               ,hkl.dataset.Fmean.sigma,
-                 "-FREE"               ,hkl.dataset.FREE,
-                 "--cleanup"           ,
-                 "--display_gui"       ,
-                 "-webserver_uri"      ,"jsrview",
-                 "-work_dir"           ,"./",
-                 "-rvapi_document"     ,self.reportDocumentName(),
-                 hkl.getHKLFilePath ( self.inputDir() )
-               ]
+        cmd += [ hkl.getHKLFilePath(self.inputDir()) ]
 
         self.flush()
         self.storeReportDocument ( self.log_page_id() )

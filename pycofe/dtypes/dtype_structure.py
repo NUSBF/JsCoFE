@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    25.09.18   <--  Date of Last Modification.
+#    17.12.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -37,25 +37,25 @@ class DType(dtype_template.DType):
         super(DType,self).__init__(job_id,json_str)
         if not json_str:
 
-            self._type   = dtype()
-            self.dname   = "structure"
-            self.version = 1
+            self._type    = dtype()
+            self.dname    = "structure"
+            self.version += 0   # versioning increments from parent to children
 
             #  Refmac labels
-            self.FP      = ""  # used in Buccaneer-MR and Parrot-MR
-            self.SigFP   = ""  # used in Buccaneer-MR and Parrot-MR
-            self.PHI     = ""
-            self.FOM     = ""
-            self.FWT     = ""
-            self.PHWT    = ""
-            self.DELFWT  = ""
-            self.PHDELWT = ""
+            self.FP       = ""  # used in Buccaneer-MR and Parrot-MR
+            self.SigFP    = ""  # used in Buccaneer-MR and Parrot-MR
+            self.PHI      = ""
+            self.FOM      = ""
+            self.FWT      = ""
+            self.PHWT     = ""
+            self.DELFWT   = ""
+            self.PHDELWT  = ""
 
             #  Hendrickson-Lattman Coefficients
-            self.HLA     = ""
-            self.HLB     = ""
-            self.HLC     = ""
-            self.HLD     = ""
+            self.HLA      = ""
+            self.HLB      = ""
+            self.HLC      = ""
+            self.HLD      = ""
 
             #  Free R-flag
             self.FreeR_flag = ""
@@ -65,6 +65,7 @@ class DType(dtype_template.DType):
             #self.useForNCS      = True  # for use in Parrot
             self.useModelSel    = "N"   # for use in Buccaneer
             self.BFthresh       = 3.0
+            self.phaseBlur      = 1.0   # used in arpwarp
             self.chains         = []
 
             self.ligands        = []    # list of ligands fitted
@@ -74,20 +75,27 @@ class DType(dtype_template.DType):
     def ensembleName ( self ):  # for using in phaser interface
         return "ensemble_" + self.dataId
 
+    def getMeanF ( self ):
+        if self.FP is not None and self.SigFP is not None:
+            return [self.FP,self.SigFP,"F"]
+        return [None,None,"X"]
+
     def setRefmacLabels ( self,hkl_class ):
-        self.FP    = "FP"
-        self.SigFP = "SIGFP"
+        self.FP         = "FP"
+        self.SigFP      = "SIGFP"
+        self.FreeR_flag = "FreeR_flag"
         if hkl_class:
             if hasattr(hkl_class.dataset,"Fmean"):
                 self.FP    = hkl_class.dataset.Fmean.value
                 self.SigFP = hkl_class.dataset.Fmean.sigma
+            if hasattr(hkl_class.dataset,"FREE"):
+                self.FreeR_flag = hkl_class.dataset.FREE
         self.PHI        = "PHIC_ALL_LS"
         self.FOM        = "FOM"
         self.FWT        = "FWT"
         self.PHWT       = "PHWT"
         self.DELFWT     = "DELFWT"
         self.PHDELWT    = "PHDELWT"
-        self.FreeR_flag = "FreeR_flag"
         return
 
     def setShelxELabels ( self ):
@@ -102,9 +110,13 @@ class DType(dtype_template.DType):
         self.FreeR_flag = "FreeR_flag"
         return
 
-    def setPhaserEPLabels ( self ):
+    def setPhaserEPLabels ( self,hkl_class ):
         self.FP      = "F"
         self.SigFP   = "SIGF"
+        if hkl_class:
+            if hasattr(hkl_class.dataset,"Fmean"):
+                self.FP    = hkl_class.dataset.Fmean.value
+                self.SigFP = hkl_class.dataset.Fmean.sigma
         self.PHI     = "PHIB"
         self.FOM     = "FOM"
         self.FWT     = "FWT"
@@ -143,12 +155,30 @@ class DType(dtype_template.DType):
         return
 
     def setParrotLabels ( self ):
-        self.FWT  = "parrot.F_phi.F"
-        self.PHWT = "parrot.F_phi.phi"
-        self.HLA = "parrot.ABCD.A"
-        self.HLB = "parrot.ABCD.B"
-        self.HLC = "parrot.ABCD.C"
-        self.HLD = "parrot.ABCD.D"
+        self.FWT     = "parrot.F_phi.F"
+        self.PHWT    = "parrot.F_phi.phi"
+        self.PHI     = "parrot.Phi_fom.phi"
+        self.FOM     = "parrot.Phi_fom.fom"
+        self.DELFWT  = ""
+        self.PHDELWT = ""
+        self.HLA     = "parrot.ABCD.A"
+        self.HLB     = "parrot.ABCD.B"
+        self.HLC     = "parrot.ABCD.C"
+        self.HLD     = "parrot.ABCD.D"
+        return
+
+
+    def setAcornLabels ( self ):
+        self.FWT     = "acorn.FWT"
+        self.PHWT    = "acorn.PHI"
+        self.PHI     = "acorn.PHI"
+        self.FOM     = "acorn.FOM"
+        self.DELFWT  = ""
+        self.PHDELWT = ""
+        self.HLA     = ""
+        self.HLB     = ""
+        self.HLC     = ""
+        self.HLD     = ""
         return
 
     def setCrank2Labels ( self ):

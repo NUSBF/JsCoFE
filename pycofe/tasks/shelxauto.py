@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    15.09.17   <--  Date of Last Modification.
+#    28.10.17   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -51,29 +51,16 @@ class ShelxAuto(crank2.Crank2):
 
     # ------------------------------------------------------------------------
 
-    """
-    def configure ( self,expType,config ):
-
-        if expType == "MAD":
-            return config + "phdmmb\n"                               +\
-                            "mbref exclude obj_from=0,typ=freeR\n"   +\
-                            "ref target::MLHL exclude obj_from=0,typ=freeR\n"
-
-        elif expType == "SIRAS":
-            return config + "phdmmb\n"                               +\
-                            "mbref exclude obj_from=0,typ=freeR\n"   +\
-                            "ref target::MLHL exclude obj_from=0,typ=freeR\n"
-
-        else:
-            return config + "phdmmb\n"                               +\
-                            "mbref exclude obj_from=0,typ=freeR\n"   +\
-                            "ref target::MLHL exclude obj_from=0,typ=freeR\n"
-
-    """
-
     def add_phdmmb ( self ):
-        self.config.append ( "phdmmb" )
+        self.config.append ( "phdmmb " + self.get_exclude() +\
+            self.getKWItem ( self.sec7.PHDMMB_BIGCYC              ) +\
+            self.getKWItem ( self.sec7.PHDMMB_DMCYC               ) +\
+            self.getKWItem ( self.sec7.PHDMMB_THRESHOLD_STOP      ) +\
+            self.getKWItem ( self.sec7.PHDMMB_THRESHOLD_HAND_STOP ) +\
+            self.getKWItem ( self.sec7.PHDMMB_PROGRAM_KEYWORDS    )
+        )
         return
+
 
     # ------------------------------------------------------------------------
 

@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    19.06.18   <--  Date of Last Modification.
+ *    10.12.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -241,7 +241,10 @@ function runJob ( login,data, callback_func )  {
   // run job
 
   var jobDataPath = prj.getJobDataPath ( login,task.project,task.id );
-  task.state = task_t.job_code.running;
+  task.state      = task_t.job_code.running;
+  var job_token   = crypto.randomBytes(20).toString('hex');
+  if (task.nc_type=='client')
+    task.job_dialog_data.job_token = job_token;
 
   // write task data because it may have latest changes
   if (utils.writeObject(jobDataPath,task))  {
@@ -287,7 +290,6 @@ function runJob ( login,data, callback_func )  {
                       'Job is running on client machine. Full report will ' +
                       'become available after job finishes.',true );
 
-          var job_token = crypto.randomBytes(20).toString('hex');
           feJobRegister.addJob ( job_token,nc_number,login,
                                  task.project,task.id );
           feJobRegister.getJobEntryByToken(job_token).nc_type = task.nc_type;

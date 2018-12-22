@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    11.08.18   <--  Date of Last Modification.
+ *    19.12.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -61,17 +61,20 @@ DataBox.prototype.extendData = function()  {
       this.data[dtype][i] = this.data[dtype][i].extend();
 }
 
+
 DataBox.prototype.addTaskData = function ( task,include_used_bool )  {
 
-  var td = task.output_data.data;
+  var output_data_data = task.output_data.data;
+  var input_data_data  = task.input_data.data;
   this.jobs.push ( task.id );
 
-  for (var dtype in td)
+/*  <-- nasty bug fixed 04.12.2018, remove commented when verified
+  for (var dtype in output_data_data)
     if (!(dtype in this.data))
-      this.data[dtype] = td[dtype];
-    else if (td[dtype][0].backtrace)  {
-      for (var i=0;i<td[dtype].length;i++)  {
-        var dt    = td[dtype][i];
+      this.data[dtype] = output_data_data[dtype];
+    else if (output_data_data[dtype][0].backtrace)  {
+      for (var i=0;i<output_data_data[dtype].length;i++)  {
+        var dt    = output_data_data[dtype][i];
         var found = false;
         for (var j=0;(j<this.data[dtype].length) && (!found);j++)
           found = (this.data[dtype][j].dataId==dt.dataId);
@@ -79,15 +82,30 @@ DataBox.prototype.addTaskData = function ( task,include_used_bool )  {
           this.data[dtype].push ( dt );
       }
     }
+*/
+
+  for (var dtype in output_data_data)  {
+    if (!(dtype in this.data))
+      this.data[dtype] = [];
+    if ((this.data[dtype].length<=0) || output_data_data[dtype][0].backtrace)  {
+      for (var i=0;i<output_data_data[dtype].length;i++)  {
+        var dt    = output_data_data[dtype][i];
+        var found = false;
+        for (var j=0;(j<this.data[dtype].length) && (!found);j++)
+          found = (this.data[dtype][j].dataId==dt.dataId);
+        if (!found)
+          this.data[dtype].push ( dt );
+      }
+    }
+  }
 
   if (include_used_bool)  {
 
-    td = task.input_data.data;
-    for (var inpId in td)
+    for (var inpId in input_data_data)
 //      if (!inpId.startsWith('void'))  {
       if (!startsWith(inpId,'void'))  {
-        for (var i=0;i<td[inpId].length;i++)  {
-          var dt    = td[inpId][i];
+        for (var i=0;i<input_data_data[inpId].length;i++)  {
+          var dt    = input_data_data[inpId][i];
           var dtype = dt._type;
           if (!(dtype in this.data))
             this.data[dtype] = [dt];
@@ -104,15 +122,15 @@ DataBox.prototype.addTaskData = function ( task,include_used_bool )  {
   }
 
   if ('inp_assoc' in this)  {
-    var td = task.input_data.data;
-    for (var dtype in td)  {
+    for (var dtype in input_data_data)  {
       if (!(dtype in this.inp_assoc))
         this.inp_assoc[dtype] = [];
-      for (var i=0;i<td[dtype].length;i++)
-        if (this.inp_assoc[dtype].indexOf(td[dtype][i].dataId)<0)
-          this.inp_assoc[dtype].push ( td[dtype][i].dataId );
+      for (var i=0;i<input_data_data[dtype].length;i++)
+        if (this.inp_assoc[dtype].indexOf(input_data_data[dtype][i].dataId)<0)
+          this.inp_assoc[dtype].push ( input_data_data[dtype][i].dataId );
     }
   }
+
 
 }
 
@@ -138,9 +156,16 @@ DataBox.prototype.addCustomData = function ( dataId,data )  {
 
 DataBox.prototype.getDataIds = function ( data_type )  {
   var ids = [];
-  if (data_type in this.data)  {
-    for (var i=0;i<this.data[data_type].length;i++)
-      ids.push ( this.data[data_type][i].dataId );
+  if (data_type)  {
+    if (data_type in this.data)  {
+      for (var i=0;i<this.data[data_type].length;i++)
+        ids.push ( this.data[data_type][i].dataId );
+    }
+  } else  {
+    for (dtype in this.data)  {
+      for (var i=0;i<this.data[dtype].length;i++)
+        ids.push ( this.data[dtype][i].dataId );
+    }
   }
   return ids;
 }
@@ -162,7 +187,10 @@ DataBox.prototype.compareSubtypes = function ( task_subtypes,data_subtypes )  {
 //     is marked with negative sign (~) in list of task subtypes.
 // Enforced items in task_subtypes are marked with exclamation mark, e.g.,
 // ['!MR','!Protein'] enforces both subtypes 'MR' and 'Protein', so that
-// both of them need to be matched. If subtypes are not enforced, e.g.,
+// both of them need to be matched. A special case of enforcement is to group
+// alternative subtypes. E.g., ['!MR','Protein',['xyz','substructure']] will
+// force selection of data where either 'xyz' or 'substructure', in addition to
+// 'MR' and 'Protein', are found in subtypes. If subtypes are not enforced, e.g.,
 // ['MR','Protein'] then comparison will return true if any of them are found
 // in data_subtypes.
 var rc = false;
@@ -173,7 +201,13 @@ var nt = task_subtypes.length;
   } else  { //if (data_subtypes.length>0)  {
     for (var i=0;i<nt;i++)
 //      if (task_subtypes[i].startsWith('!'))  {
-      if (startsWith(task_subtypes[i],'!'))  {
+      if (task_subtypes[i].constructor===Array)  {
+        rc = false;
+        for (var j=0;(j<task_subtypes[i].length) && (!rc);j++)
+          rc = (data_subtypes.indexOf(task_subtypes[i][j])>=0);
+        if (!rc)
+          break;
+      } else if (startsWith(task_subtypes[i],'!'))  {
         rc = (data_subtypes.indexOf(task_subtypes[i].substr(1))>=0);
         if (!rc)
           break;
@@ -232,8 +266,17 @@ DataBox.prototype.getDataSummary = function ( task )  {
       if (dobj)  title += dobj.title();
            else  title += dtype;
 
-      if (inp_data[dtype].length>0)
-        title += ' (' + inp_data[dtype].join() +')';
+      if (inp_data[dtype].length>0)  {
+        title += ' (';
+        for (var j=0;j<inp_data[dtype].length;j++)  {
+          if (j>0)
+            title += ',';
+          if (inp_data[dtype][j].constructor==Array)
+                title += inp_data[dtype][j].join('|');
+          else  title += inp_data[dtype][j];
+        }
+        title += ')';
+      }
 
       hints = hints.concat ( dobj.dataDialogHints(inp_data[dtype]) );
 

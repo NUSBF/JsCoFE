@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    16.08.18   <--  Date of Last Modification.
+#    17.11.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -43,9 +43,6 @@ class Parrot(basic.TaskDriver):
 
     # make task-specific definitions
     def parrot_seq      (self):  return "parrot.seq"
-    #def parrot_xyz      (self):  return "parrot.pdb"
-    def parrot_mtz      (self):  return "parrot.mtz"
-    def parrot_prefix   (self):  return "parrot"
 
     # ------------------------------------------------------------------------
 
@@ -156,8 +153,9 @@ class Parrot(basic.TaskDriver):
         if solcont > 1.0:
             solcont /= 100.0
 
+        output_file = self.getMTZOFName()
         self.write_stdin (
-            "\nmtzout " + self.parrot_mtz() + \
+            "\nmtzout " + output_file + \
             "\ncolout parrot"  +\
             "\nncs-average"  +\
             "\nsolvent-content " + str( solcont ) + "\n"  +\
@@ -186,13 +184,21 @@ class Parrot(basic.TaskDriver):
         self.unsetLogParser()
 
         # check solution and register data
-        if os.path.isfile(self.parrot_mtz()):
+        if os.path.isfile(output_file):
+
+            self.runApp ( "chltofom",[
+                "-mtzin" ,output_file,
+                "-mtzout","__tmp.mtz",
+                "-colin-hl","/*/*/[parrot.ABCD.A,parrot.ABCD.B,parrot.ABCD.C,parrot.ABCD.D]",
+                "-colout"  ,"parrot"
+            ])
+
+            os.rename ( "__tmp.mtz",output_file )
 
             self.putTitle ( "Results" )
 
             # calculate maps for UglyMol using final mtz from temporary location
-            fnames = self.calcCCP4Maps ( self.parrot_mtz(),self.parrot_prefix(),
-                                         "parrot" )
+            fnames = self.calcCCP4Maps ( output_file,self.outputFName,"parrot" )
 
             # register output data from temporary location (files will be moved
             # to output directory by the registration procedure)
@@ -200,17 +206,18 @@ class Parrot(basic.TaskDriver):
             parrot_xyz = None
             parrot_sub = None
             if istruct.getXYZFileName():
-                parrot_xyz = "parrot.pdb"
+                parrot_xyz = self.getXYZOFName()
                 shutil.copyfile ( istruct.getXYZFilePath(self.inputDir()),parrot_xyz )
             if istruct.getSubFileName():
-                parrot_sub = "parrot.ha.pdb"
+                parrot_sub = self.getOFName ( ".ha.pdb" )
                 shutil.copyfile ( istruct.getSubFilePath(self.inputDir()),parrot_sub )
-            if istruct.getDMapFileName():
-                shutil.copyfile ( istruct.getDMapFilePath(self.inputDir()),
-                                  fnames[1] )
+            #if istruct.getDMapFileName():
+            #    shutil.copyfile ( istruct.getDMapFilePath(self.inputDir()),
+            #                      fnames[1] )
 
             structure = self.registerStructure (
-                    parrot_xyz,parrot_sub,self.parrot_mtz(),fnames[0],fnames[1],None )
+                    parrot_xyz,parrot_sub,output_file,fnames[0],None,None )
+#                    parrot_xyz,parrot_sub,output_file,fnames[0],fnames[1],None )
 
             if structure:
                 structure.copyAssociations ( istruct )

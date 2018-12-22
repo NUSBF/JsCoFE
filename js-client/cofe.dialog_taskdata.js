@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    06.09.17   <--  Date of Last Modification.
+ *    12.12.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Task Data Dialog (shows data availability for given task)
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2017
+ *  (C) E. Krissinel, A. Lebedev 2016-2018
  *
  *  =================================================================
  *
@@ -58,12 +58,6 @@ function TaskDataDialog ( dataSummary,task )  {
     for (var c=0;c<4;c++)
       table.setNoWrap ( 0,c );
 
-  /*
-    table.setCellSize ( '5px','', 0,0 );
-    table.setCellSize ( '5px','', 0,1 );
-    table.setCellSize ( '50px','', 0,2 );
-  */
-
     var row   = 1;
     var hints = [];
     for (var key in dataSummary)
@@ -72,11 +66,11 @@ function TaskDataDialog ( dataSummary,task )  {
         var icon_uri;
         switch (dataSummary[key].status)  {
           default :
-          case 0  : icon_uri = './images/data_absent.png';
+          case 0  : icon_uri = image_path('data_absent');
                     hints    = hints.concat ( dataSummary[key].hints );
                 break;
-          case 1  : icon_uri = './images/ok_amber.svg';  break;
-          case 2  : icon_uri = './images/ok.svg';        break;
+          case 1  : icon_uri = image_path('ok_amber');  break;
+          case 2  : icon_uri = image_path('ok');        break;
         }
         table.setImage ( icon_uri,'','20px',row,1, 1,1 );
   //      table.setLabel ( dataSummary[key].note,row,2, 1,1 );

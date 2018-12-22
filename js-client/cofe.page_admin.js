@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    03.09.18   <--  Date of Last Modification.
+ *    12.12.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -49,21 +49,18 @@ function AdminPage ( sceneId )  {
   this.headerPanel.setVerticalAlignment ( 0,2,'middle' );
   this.headerPanel.setCellSize ( '99%','',0,3 );
 
-  var announce_btn = this.headerPanel.setButton ( '','./images/announce.png',0,5,1,1 );
+  var announce_btn = this.headerPanel.setButton ( '',image_path('announce'),0,5,1,1 );
   announce_btn.setSize('30px','30px').setTooltip('Send announcement to all users');
-  var refresh_btn = this.headerPanel.setButton ( '','./images/refresh.svg',0,6,1,1 );
+  var refresh_btn = this.headerPanel.setButton ( '',image_path('refresh'),0,6,1,1 );
   refresh_btn.setSize('30px','30px').setTooltip('Refresh');
 
   // Make Main Menu
-  var account_mi = this.headerPanel.menu.addItem('My Account' ,'./images/settings.svg');
-  var prjlist_mi = this.headerPanel.menu.addItem('My Projects','./images/list.svg');
-  //this.headerPanel.menu.addSeparator ();
-  //var logout_mi  = this.headerPanel.menu.addItem('Log out'    ,'./images/logout.svg');
+  var account_mi = this.headerPanel.menu.addItem('My Account' ,image_path('settings'));
+  var prjlist_mi = this.headerPanel.menu.addItem('My Projects',image_path('list'));
   this.addLogoutToMenu ( function(){ logout(sceneId); } );
 
   account_mi.addOnClickListener ( function(){ makeAccountPage    (sceneId); });
   prjlist_mi.addOnClickListener ( function(){ makeProjectListPage(sceneId); });
-  //logout_mi .addOnClickListener ( function(){ logout             (sceneId); });
 
   // make tabs
   this.tabs = new Tabs();

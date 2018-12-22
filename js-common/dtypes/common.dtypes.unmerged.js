@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    09.08.18   <--  Date of Last Modification.
+ *    12.12.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -50,13 +50,19 @@ DataUnmerged.prototype.constructor = DataUnmerged;
 
 // ===========================================================================
 
-DataUnmerged.prototype.title      = function()  { return 'Unmerged Data';           }
-DataUnmerged.prototype.icon_small = function()  { return './images/data_20x20.svg'; }
-DataUnmerged.prototype.icon_large = function()  { return './images/data.svg';       }
+DataUnmerged.prototype.title      = function()  { return 'Unmerged Data'; }
+DataUnmerged.prototype.icon_small = function()  { return 'data_20x20'; }
+DataUnmerged.prototype.icon_large = function()  { return 'data';       }
 
 // when data class version is changed here, change it also in python
 // constructors
-DataUnmerged.prototype.currentVersion = function()  { return 1; } // from 09.08.2018
+DataUnmerged.prototype.currentVersion = function()  {
+  var version = 0;
+  if (__template)
+        return  version + __template.DataTemplate.prototype.currentVersion.call ( this );
+  else  return  version + DataTemplate.prototype.currentVersion.call ( this );
+}
+
 
 // export such that it could be used in both node and a browser
 if (!__template)  {

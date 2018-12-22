@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    09.08.18   <--  Date of Last Modification.
+ *    12.12.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -62,17 +62,24 @@ DataEnsemble.prototype.constructor = DataEnsemble;
 
 // ===========================================================================
 
-DataEnsemble.prototype.title      = function()  { return 'Structure ensemble';      }
-DataEnsemble.prototype.icon_small = function()  { return './images/data_20x20.svg'; }
-DataEnsemble.prototype.icon_large = function()  { return './images/data.svg';       }
+DataEnsemble.prototype.title = function()  { return 'Structure ensemble'; }
 
 // when data class version is changed here, change it also in python
 // constructors
-DataEnsemble.prototype.currentVersion = function() { return 2; } // from 09.08.2018
+DataEnsemble.prototype.currentVersion = function()  {
+  var version = 0;
+  if (__template)
+        return  version + __template.DataXYZ.prototype.currentVersion.call ( this );
+  else  return  version + DataXYZ.prototype.currentVersion.call ( this );
+}
+
 
 // export such that it could be used in both node and a browser
 if (!__template)  {
   // for client side
+
+  DataEnsemble.prototype.icon_small = function()  { return 'data_20x20'; }
+  DataEnsemble.prototype.icon_large = function()  { return 'data';       }
 
   DataEnsemble.prototype.extend = function() {
     var ensext = $.extend ( true,{},this );

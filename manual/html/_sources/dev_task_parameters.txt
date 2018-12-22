@@ -1,9 +1,9 @@
 
 =========================================
-jsCoFE Task Development: Input Parameters
+|jsCoFE| Task Development: Input Parameters
 =========================================
 
-jsCoFE can pass several types of parameters from *Job Dialog* to *Task Driver*:
+|jsCoFE| can pass several types of parameters from *Job Dialog* to *Task Driver*:
 
 * Strings
 * Integer numbers
@@ -167,7 +167,7 @@ expressions is given in :doc:`ref_parameters`.
 Download the full source code of the modified *Hello World!* Task Class, which
 includes the above description of input parameters from
 :download:`here <examples/v2/common.tasks.helloworld.js>`, substitute it in
-jsCoFE source code, restart servers and browser and check functionality of
+|jsCoFE| source code, restart servers and browser and check functionality of
 input widgets and interdependencies.
 
 
@@ -198,7 +198,7 @@ properties. The corresponding *Task Driver's* code may look like the following:
   :linenos:
 
 :download:`Download <examples/v2/helloworld.py>` this file and copy it in
-``pycofe/tasks`` directories of all jsCoFE number crunchers, then create new
+``pycofe/tasks`` directories of all |jsCoFE| number crunchers, then create new
 *Hello World!* task in a project with imported coordinate data. Run the task and
 investigate connection between parameters displayed in the *Input* tab of the
 *Job Dialog*, and their properties, presented in the *Output* tab.

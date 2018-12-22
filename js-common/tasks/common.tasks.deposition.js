@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    05.10.18   <--  Date of Last Modification.
+ *    12.12.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -59,12 +59,18 @@ TaskDeposition.prototype.constructor = TaskDeposition;
 // ===========================================================================
 // export such that it could be used in both node and a browser
 
-TaskDeposition.prototype.icon_small = function()  { return './images/task_deposition_20x20.svg'; }
-TaskDeposition.prototype.icon_large = function()  { return './images/task_deposition.svg';       }
+TaskDeposition.prototype.icon_small = function()  { return 'task_deposition_20x20'; }
+TaskDeposition.prototype.icon_large = function()  { return 'task_deposition';       }
 
-TaskDeposition.prototype.cleanJobDir = function ( jobDir )  {}
+//TaskDeposition.prototype.cleanJobDir = function ( jobDir )  {}
 
-TaskDeposition.prototype.currentVersion = function()  { return 2; } // from 09.08.2018
+TaskDeposition.prototype.currentVersion = function()  {
+  var version = 1;
+  if (__template)
+        return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );
+  else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
+}
+
 
 if (__template)  {
   //  for server side

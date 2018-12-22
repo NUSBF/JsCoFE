@@ -335,7 +335,7 @@ Tree.prototype.moveNodeUp = function ( node )  {
           pos = i;
 
       if (pos>0)  {
-        // given node is not leading sibling; push it up with all its children
+        // given node is not the leading sibling; push it up with all its children
 
         if (this.created)
           $(this.root.element).jstree(true).move_node(node,parent_node,pos-1,false,false);
@@ -348,7 +348,7 @@ Tree.prototype.moveNodeUp = function ( node )  {
       } else if (parent_children.length>1) {
         // given node is the leading sibling; convert other siblings to its children
 
-        var siblings = [];
+        var siblings = [];  // will be all siblings of given node
         for (var i=0;i<parent_children.length;i++)
           if (parent_children[i].id!=node.id)
             siblings.push ( parent_children[i] );
@@ -368,6 +368,13 @@ Tree.prototype.moveNodeUp = function ( node )  {
         var grandpa_node      = this.node_map[parent_node.parentId];
         var node_children     = node.children;
         var grandpa_children  = grandpa_node.children;
+
+        // find sibling position of parent node
+        var parent_pos = -1;
+        for (var i=0;(i<grandpa_children.length) && (parent_pos<0);i++)
+          if (grandpa_children[i].id==parent_node.id)
+            parent_pos = i;
+
         node.children         = [];
         parent_node.children  = [];
         grandpa_node.children = [];
@@ -376,7 +383,7 @@ Tree.prototype.moveNodeUp = function ( node )  {
         // parent_node becomes child of node and receives all its children
         if (this.created)  {
           $(this.root.element).jstree(true).move_node(parent_node,node,'last',false,false);
-          $(this.root.element).jstree(true).move_node(node,grandpa_node,'last',false,false);
+          $(this.root.element).jstree(true).move_node(node,grandpa_node,parent_pos,false,false);
           $(this.root.element).jstree(true).move_node(node_children,parent_node,'last',false,false);
         }
 
@@ -393,8 +400,8 @@ Tree.prototype.moveNodeUp = function ( node )  {
         // grand parent node loses parent_node as a child but gets node instead
         for (var i=0;i<grandpa_children.length;i++)
           if (grandpa_children[i].id!=parent_node.id)
-            grandpa_node.children.push ( grandpa_children[i] );
-        grandpa_node.children.push ( node );
+                grandpa_node.children.push ( grandpa_children[i] );
+          else  grandpa_node.children.push ( node );
         node.parentId = grandpa_node.id;
 
       }

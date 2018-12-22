@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    25.09.18   <--  Date of Last Modification.
+ *    15.12.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -68,12 +68,18 @@ DataHKL.prototype.constructor = DataHKL;
 
 // ===========================================================================
 
-DataHKL.prototype.title      = function()  { return 'Reflection Data';         }
-DataHKL.prototype.icon_small = function()  { return './images/data_20x20.svg'; }
-DataHKL.prototype.icon_large = function()  { return './images/data.svg';       }
+DataHKL.prototype.title      = function()  { return 'Reflection Data'; }
+DataHKL.prototype.icon_small = function()  { return 'data_20x20';      }
+DataHKL.prototype.icon_large = function()  { return 'data';            }
 
 // change this synchronously with the version in dtype.hkl.py
-DataHKL.prototype.currentVersion = function()  { return 3; } // from 09.08.2018
+DataHKL.prototype.currentVersion = function()  {
+  var version = 1;
+  if (__template)
+        return  version + __template.DataTemplate.prototype.currentVersion.call ( this );
+  else  return  version + DataTemplate.prototype.currentVersion.call ( this );
+}
+
 
 // export such that it could be used in both node and a browser
 if (!__template)  {
@@ -319,7 +325,7 @@ if (!__template)  {
       }
       var sglist = getAllPointSpG ( sg0 );
       if (sglist.length>1) {
-        customGrid.spaceGroup.addItem ( 'all compatible point groups','',
+        customGrid.spaceGroup.addItem ( 'all compatible space groups','',
                                         'ALL',(this.spg_alt=='ALL') );
         customGrid.spaceGroup.setTooltip ( 'Compatible space groups:<p>' + sglist.join('<br>') );
       }
@@ -364,33 +370,9 @@ if (!__template)  {
     }
 
     this.phaserEPLayout = function()  {
+
       this.makeResolutionLimits();
-      /*
-      setLabel ( 'Resolution range (&Aring;):&nbsp;',r,0 );
-      var res_low    = round ( this.getLowResolution (),2 );
-      var res_high   = round ( this.getHighResolution(),2 );
-      customGrid.res_low = makeRealInput ( this.res_low,res_low,
-          'Low resolution limit. Set a value between ' + res_high + ' and ' +
-          res_low + ', or leave blank for automatic choice.',r,1 );
-      setLabel ( '&nbsp;to&nbsp;',r,2 );
-      customGrid.setCellSize ( '40px','',r,2 );
-      customGrid.res_high = makeRealInput ( this.res_high,res_high,
-          'High resolution limit. Set a value between ' + res_high + ' and ' +
-          res_low + ', or leave blank for automatic choice.',r,3 );
-      customGrid.setLabel    ( ' ',r,4,1,1 );
-      customGrid.setCellSize ( '90%','',r,4 );
-      */
-
-      this.makeWavelengthInput();
-      /*
-      var wavelength = this.getWavelength();
-      if (wavelength==null)
-        wavelength = '';
-
-      setLabel ( 'Wavelength (&Aring;):&nbsp;',++r,0 );
-      customGrid.wavelength = makeRealInput ( this.wavelength,wavelength,
-          'Set wavelength value, or leave blank for automatic choice.',r,1 );
-      */
+      this.makeWavelengthInput ();
 
       setLabel ( 'Fluorescent Scan Data:&nbsp;',++r,0 );
       customGrid.f_use_mode = new Dropdown();
@@ -434,7 +416,8 @@ if (!__template)  {
     }
 
     this.refmacLayout = function()  {
-      this.makeResolutionLimits();
+      if (dropdown.layCustom=='refmac')
+        this.makeResolutionLimits();
       var is_Imean = this.isImean();
       var is_Fmean = this.isFmean();
       var is_Ipm   = this.isIpm  ();
@@ -451,11 +434,20 @@ if (!__template)  {
         //customGrid.useHKLSet.addItem  ( 'Auto','','auto',this.useHKLSet=='auto' );
         //if (is_Ipm)
         //  customGrid.useHKLSet.addItem  ( 'Anomalous Intensities','','Ipm',this.useHKLSet=='Ipm' );
-        if (is_Fpm)
-          customGrid.useHKLSet.addItem  ( 'Anomalous Differences','','Fpm',this.useHKLSet=='Fpm' );
         if (is_Fmean)
           customGrid.useHKLSet.addItem  ( 'Mean Amplitudes only','','F',this.useHKLSet=='F' );
-        if (is_Imean)
+
+        if (dropdown.hasOwnProperty('Structure'))  {
+          if (dropdown.Structure.PHI)
+            customGrid.useHKLSet.addItem  ( 'Phases as PHI/FOM','','PF',this.useHKLSet=='PF' );
+          if (dropdown.Structure.HLA)
+            customGrid.useHKLSet.addItem  ( 'Phases as HL coefficients','','HL',this.useHKLSet=='HL' );
+        }
+
+        if (is_Fpm)
+          customGrid.useHKLSet.addItem  ( 'Anomalous Differences','','Fpm',this.useHKLSet=='Fpm' );
+
+        if (is_Imean && (dropdown.layCustom=='refmac'))
           customGrid.useHKLSet.addItem  ( 'Mean Intensities assuming twinning','','TI',this.useHKLSet=='TI' );
         if (is_Fmean)
           customGrid.useHKLSet.addItem  ( 'Mean Amplitudes assuming twinning','','TF',this.useHKLSet=='TF' );
@@ -463,18 +455,42 @@ if (!__template)  {
         customGrid.setWidget   ( customGrid.useHKLSet, r,1,1,4 );
         //customGrid.setCellSize ( '60px','',r,1 );
         customGrid.useHKLSet.make();
+
       }
+
+      var phaseBlurRow = -1;
+      if ((dropdown.layCustom=='arpwarp') && dropdown.hasOwnProperty('Structure'))  {
+        setLabel ( 'Phase blurring factor:&nbsp;',++r,0 );
+        customGrid.phaseBlur = makeRealInput ( dropdown.Structure.phaseBlur,'1.0',
+            'Set blurring factor for phase restraints',r,1 );
+        phaseBlurRow = r;
+      }
+
+      var wlRow = -1;
       if (is_Fpm)  {
         this.makeWavelengthInput();
-        (function(grid,row,useHKLSet){
-          grid.useHKLSet.addSignalHandler ( 'state_changed',function(){
-            grid.setRowVisible ( row,(grid.useHKLSet.getValue()=='Fpm') );
-          });
-          customGrid.setRowVisible ( r,(useHKLSet=='Fpm') );
-        }(customGrid,r,this.useHKLSet))
+        wlRow = r;
       }
+
+      if ((wlRow>0) || (phaseBlurRow>0))  {
+        (function(grid,pbrow,wlrow,useHKLSet){
+          grid.useHKLSet.addSignalHandler ( 'state_changed',function(){
+            if (pbrow>0)
+              grid.setRowVisible ( pbrow,(['PF','HL'].indexOf(grid.useHKLSet.getValue())>=0) );
+            if (wlrow>0)
+              grid.setRowVisible ( wlrow,(grid.useHKLSet.getValue()=='Fpm') );
+          });
+          if (pbrow>0)
+            grid.setRowVisible ( pbrow,(['PF','HL'].indexOf(useHKLSet)>=0) );
+          if (wlrow>0)
+            grid.setRowVisible ( wlrow,(useHKLSet=='Fpm') );
+        }(customGrid,phaseBlurRow,wlRow,this.useHKLSet))
+      }
+
       customGrid.setLabel ( ' ',++r,0,1,1 ).setHeight_px ( 8 );
+
     }
+
 
     switch (dropdown.layCustom)  {
       case 'anomData'        :  this.anomDataLayout   ();  break;
@@ -486,6 +502,7 @@ if (!__template)  {
       case 'phaser-mr'       :  this.spgLayout        (); // should be no break here!
       case 'phaser-mr-fixed' :  this.phaserMRLayout   ();  break;
       case 'phaser-ep'       :  this.phaserEPLayout   ();  break;
+      case 'arpwarp'         :
       case 'refmac'          :  this.refmacLayout     ();  break;
       default : ;
     }
@@ -576,8 +593,10 @@ if (!__template)  {
     }
 
     this.collectRefmac = function()  {
-      this.res_low  = customGrid.res_low .getValue();
-      this.res_high = customGrid.res_high.getValue();
+      if (dropdown.layCustom=='refmac')  {
+        this.res_low  = customGrid.res_low .getValue();
+        this.res_high = customGrid.res_high.getValue();
+      }
       if ('wavelength' in customGrid)
         this.wavelength = customGrid.wavelength.getValue();
       if (this.res_low   =='') this.res_low  = round ( this.getLowResolution (),2 );
@@ -586,6 +605,8 @@ if (!__template)  {
       if ('useHKLSet' in customGrid)
             this.useHKLSet = customGrid.useHKLSet.getValue();
       else  this.useHKLSet = 'auto';
+      if ('phaseBlur' in customGrid)
+        dropdown.Structure.phaseBlur = customGrid.phaseBlur.getValue();
     }
 
     switch (dropdown.layCustom)  {
@@ -596,6 +617,7 @@ if (!__template)  {
       case 'phaser-mr'       : this.collectSpG      (); // should be no break here!
       case 'phaser-mr-fixed' : this.collectPhaserMR ();  break;
       case 'phaser-ep'       : this.collectPhaserEP ();  break;
+      case 'arpwarp'         :
       case 'refmac'          : this.collectRefmac   ();  break;
       default : ;
     }

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *   23.10.17   <--  Date of Last Modification.
+ *   12.12.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  PISA Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2017
+ *  (C) E. Krissinel, A. Lebedev 2016-2018
  *
  *  =================================================================
  *
@@ -83,10 +83,16 @@ TaskPISA.prototype.constructor = TaskPISA;
 // ===========================================================================
 // export such that it could be used in both node and a browser
 
-TaskPISA.prototype.icon_small = function()  { return './images/task_pisa_20x20.svg'; }
-TaskPISA.prototype.icon_large = function()  { return './images/task_pisa.svg';       }
+TaskPISA.prototype.icon_small = function()  { return 'task_pisa_20x20'; }
+TaskPISA.prototype.icon_large = function()  { return 'task_pisa';       }
 
-TaskPISA.prototype.currentVersion = function()  { return 1; }
+TaskPISA.prototype.currentVersion = function()  {
+  var version = 0;
+  if (__template)
+        return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );
+  else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
+}
+
 
 if (__template)  {
   //  for server side

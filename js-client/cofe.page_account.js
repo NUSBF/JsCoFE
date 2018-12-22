@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    11.05.18   <--  Date of Last Modification.
+ *    12.12.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -36,20 +36,16 @@ function AccountPage ( sceneId )  {
   this.makeHeader ( 3,null );
 
   // Make Main Menu
-  var project_mi = this.headerPanel.menu.addItem('Current project','./images/project.svg');
-  var prjlist_mi = this.headerPanel.menu.addItem('My Projects'    ,'./images/list.svg');
+  var project_mi = this.headerPanel.menu.addItem('Current project',image_path('project'));
+  var prjlist_mi = this.headerPanel.menu.addItem('My Projects'    ,image_path('list'));
   if (__admin)
-    admin_mi = this.headerPanel.menu.addItem('Admin Page','./images/admin.png');
+    admin_mi = this.headerPanel.menu.addItem('Admin Page',image_path('admin'));
   this.addLogoutToMenu ( function(){ logout(sceneId); } );
-
-  //this.headerPanel.menu.addSeparator ();
-  //var logout_mi  = this.headerPanel.menu.addItem('Log out'        ,'./images/logout.svg');
 
   project_mi.addOnClickListener ( function(){ makeProjectPage    (sceneId); });
   prjlist_mi.addOnClickListener ( function(){ makeProjectListPage(sceneId); });
   if (__admin)
     admin_mi.addOnClickListener ( function(){ makeAdminPage      (sceneId); });
-  //logout_mi .addOnClickListener ( function(){ logout             (sceneId); });
 
   // adjust scene grid attributes such that login panel is centered
   this.grid.setCellSize          ( '45%','',1,0,1,1 );
@@ -120,7 +116,7 @@ function AccountPage ( sceneId )  {
   panel.setWidget               ( licence_val,row  ,1,1,1 );
   panel.setVerticalAlignment    ( row,1,'middle' );
 
-  var licence_btn = new Button  ( 'Choose','./images/licence.svg' );
+  var licence_btn = new Button  ( 'Choose',image_path('licence') );
   licence_btn.setWidth          ( '100%' );
   panel.setWidget               ( licence_btn,row,2,1,1 );
   panel.setVerticalAlignment    ( row,2,'middle'  );
@@ -137,13 +133,13 @@ function AccountPage ( sceneId )  {
   panel.setWidget               ( new HLine('3pt'), row++,0,1,3 );
   panel.setCellSize             ( '','1pt',row++,0 );
 
-  var update_btn = panel.setButton ( 'Update my account','./images/email.svg',
+  var update_btn = panel.setButton ( 'Update my account',image_path('email'),
                                     row++,0,1,3  );
   update_btn.setWidth           ( '100%' );
   // disable button until user data arrives from server
   update_btn.setDisabled        ( true   );
 
-  var delete_btn = panel.setButton ( 'Delete my account','./images/remove.svg',
+  var delete_btn = panel.setButton ( 'Delete my account',image_path('remove'),
                                      row++,0,1,3  );
   delete_btn.setWidth           ( '100%' );
   // disable button until user data arrives from server

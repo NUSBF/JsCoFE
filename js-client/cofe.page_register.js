@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    24.06.18   <--  Date of Last Modification.
+ *    12.12.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -102,7 +102,7 @@ function RegisterPage ( sceneId )  {
   panel.setWidget              ( licence_val,row  ,1,1,1 );
   panel.setVerticalAlignment   ( row,1,'middle' );
 
-  var licence_btn = new Button ( 'Choose','./images/licence.svg' );
+  var licence_btn = new Button ( 'Choose',image_path('licence') );
   licence_btn.setWidth         ( '100%' );
   panel.setWidget              ( licence_btn,row,2,1,1 );
   panel.setVerticalAlignment   ( row,2,'middle'  );
@@ -112,8 +112,8 @@ function RegisterPage ( sceneId )  {
   panel.setWidget              ( new HLine('3pt'), row++,0,1,3 );
   panel.setCellSize            ( '','1pt',row++,0 );
 
-  var reg_btn  = new Button    ( 'Register and send password by e-mail','./images/email.svg' );
-  var back_btn = new Button    ( 'Back to User Login','./images/login.svg' );
+  var reg_btn  = new Button    ( 'Register and send password by e-mail',image_path('email') );
+  var back_btn = new Button    ( 'Back to User Login',image_path('login') );
 
   reg_btn .setWidth            ( '100%' );
   back_btn.setWidth            ( '100%' );

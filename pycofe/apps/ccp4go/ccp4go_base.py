@@ -657,6 +657,7 @@ class Base(object):
         meta["rfree"]    = rfree
         meta["rfactor"]  = rfactor
         meta["nResults"] = nResults
+        meta["phasing"]  = "MR"
         quit_message     = ""
 
         if nResults>0:

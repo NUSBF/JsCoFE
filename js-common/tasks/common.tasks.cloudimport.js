@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    05.10.18   <--  Date of Last Modification.
+ *    21.12.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -44,6 +44,18 @@ function TaskCloudImport()  {
 
   this.upload_files = [];  // list of uploaded files
 
+  // declare void input data for passing pre-existing revisions through the task
+  this.input_dtypes = [{       // input data types
+      data_type   : {'DataRevision':[]}, // any revision will be passed
+      label       : '',        // no label for void data entry
+      inputId     : 'void1',   // prefix 'void' will hide entry in import dialog
+      version     : 0,         // minimum data version allowed
+      force       : 100000000, // "show" all revisions available
+      min         : 0,         // minimum acceptable number of data instances
+      max         : 100000000  // maximum acceptable number of data instances
+    }
+  ];
+
 }
 
 if (__template)
@@ -54,10 +66,15 @@ TaskCloudImport.prototype.constructor = TaskCloudImport;
 
 // ===========================================================================
 
-TaskCloudImport.prototype.icon_small = function()  { return './images/task_cimport_20x20.svg'; }
-TaskCloudImport.prototype.icon_large = function()  { return './images/task_cimport.svg';       }
+TaskCloudImport.prototype.icon_small = function()  { return 'task_cimport_20x20'; }
+TaskCloudImport.prototype.icon_large = function()  { return 'task_cimport';       }
 
-TaskCloudImport.prototype.currentVersion = function()  { return 0; }
+TaskCloudImport.prototype.currentVersion = function()  {
+  var version = 0;
+  if (__template)
+        return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );
+  else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
+}
 
 // export such that it could be used in both node and a browser
 if (!__template)  {
@@ -77,6 +94,7 @@ if (!__template)  {
   // does not have any input data from the project
 
     var div = this.makeInputLayout();
+    this.setInputDataFields ( div.grid,0,dataBox,this );
 
     if ((this.state==job_code.new) || (this.state==job_code.running)) {
       div.header.setLabel ( ' ',2,0,1,1 );
@@ -91,28 +109,23 @@ if (!__template)  {
     } else
       div.header.uname_inp.setValue ( this.uname.replace(/<(?:.|\n)*?>/gm, '') );
 
+    var grid_row = div.grid.getNRows();
     div.grid.setWidth ( '100%' );
     div.select_btn = div.grid.setButton ( 'Select file(s)',
-                                          './images/open_file.svg',0,0,1,1 )
+                                          image_path('open_file'),grid_row,0,1,1 )
                                           .setNoWrap();
-    div.grid.setHorizontalAlignment ( 0,0,'center' );
+    div.grid.setHorizontalAlignment ( grid_row,0,'center' );
 
-    div.fileListTitle = div.grid.setLabel ( '<b><i>Selected data</i></b>',1,0,1,1 );
-    div.fileListPanel = div.grid.setLabel ( '',2,0,1,1 );
-
-    /*
-    div.customData = {};
-    div.customData.login_token = __login_token;
-    div.customData.project     = this.project;
-    div.customData.job_id      = this.id;
-    div.customData.file_mod    = this.file_mod;
-    */
+    div.fileListTitle = div.grid.setLabel ( '<b><i>Selected data</i></b>',grid_row+1,0,1,1 );
+    div.fileListPanel = div.grid.setLabel ( '',grid_row+2,0,1,1 );
 
     this.setSelectedCloudFiles ( div,[] );
 
     (function(task){
       div.select_btn.addOnClickListener ( function(){
-        new CloudFileBrowser ( div,task,0,null );
+        new CloudFileBrowser ( div,task,0,function(items){
+          task.setSelectedCloudFiles ( div,items );
+        },null );
       });
     }(this))
 
@@ -156,11 +169,13 @@ if (!__template)  {
     // stores it in internal fields
     //this.upload_files = inputPanel.upload.upload_files;
     //this.file_mod     = inputPanel.customData.file_mod;
+    TaskTemplate.prototype.collectInput.call ( this,inputPanel );
     if (this.upload_files.length>0)
       return '';   // input is Ok
     else
       return 'No file(s) have been uploaded';  // input is not ok
   }
+
 
   // reserved function name
   TaskCloudImport.prototype.runButtonName = function()  { return 'Import'; }

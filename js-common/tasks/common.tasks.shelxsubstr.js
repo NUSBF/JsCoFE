@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    05.10.18   <--  Date of Last Modification.
+ *    12.12.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -33,9 +33,9 @@ function TaskShelxSubstr()  {
              else  TaskCrank2.call ( this );
 
   this._type   = 'TaskShelxSubstr';
-  this.name    = 'shelx substructure search';
+  this.name    = 'shelx substructure search (crank-2)';
   this.oname   = 'shelx_substr';  // default output file name template
-  this.title   = 'Substructure Search with SHELX';
+  this.title   = 'Substructure Search with SHELX via Crank-2';
   this.helpURL = './html/jscofe_task_shelxsubstr.html';
 
   this.input_dtypes[0].data_type   = {'DataRevision':['hkl']}, // data type(s) and subtype(s)
@@ -55,10 +55,16 @@ TaskShelxSubstr.prototype.constructor = TaskShelxSubstr;
 // ===========================================================================
 // export such that it could be used in both node and a browser
 
-TaskShelxSubstr.prototype.icon_small = function()  { return './images/task_shelx_substr_20x20.svg'; }
-TaskShelxSubstr.prototype.icon_large = function()  { return './images/task_shelx_substr.svg';       }
+TaskShelxSubstr.prototype.icon_small = function()  { return 'task_shelx_substr_20x20'; }
+TaskShelxSubstr.prototype.icon_large = function()  { return 'task_shelx_substr';       }
 
-TaskShelxSubstr.prototype.currentVersion = function()  { return 1; }
+TaskShelxSubstr.prototype.currentVersion = function()  {
+  var version = 0;
+  if (__template)
+        return  version + __template.TaskCrank2.prototype.currentVersion.call ( this );
+  else  return  version + TaskCrank2.prototype.currentVersion.call ( this );
+}
+
 
 if (__template)  {
   //  for server side

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    07.10.18   <--  Date of Last Modification.
+ *    12.12.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -76,13 +76,13 @@ function Upload ( customData,upl_data,onSelect_func,onSelectPDB_func,onReady_fun
 
     if (upl_data=='project')  {
       this.button = grid.setButton ( 'Select project archive(s)',
-                                     './images/open_file.svg',0,col++,1,1 )
+                                     image_path('open_file'),0,col++,1,1 )
                         .setNoWrap();
     } else {
-      this.button = grid.setButton ( 'Upload local file(s)','images/open_file.svg',0,col++,1,1 )
+      this.button = grid.setButton ( 'Upload local file(s)',image_path('open_file'),0,col++,1,1 )
                         .setNoWrap();
       if (onSelectPDB_func)  {
-        this.pdb_button = grid.setButton ( 'Select PDB entry(s)','images/open_file.svg',0,col++,1,1 )
+        this.pdb_button = grid.setButton ( 'Select PDB entry(s)',image_path('open_file'),0,col++,1,1 )
                               .setNoWrap();
         this.pdb_button.addOnClickListener ( onSelectPDB_func );
       }

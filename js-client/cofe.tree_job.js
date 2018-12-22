@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    15.10.18   <--  Date of Last Modification.
+ *    12.12.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -110,8 +110,7 @@ JobTree.prototype.isSelectMode = function()  {
 }
 
 JobTree.prototype.customIcon = function() {
-//  var ci = new TreeNodeCustomIcon ( './images/brass_gears.gif','32px','22px','hidden' );
-  var ci = new TreeNodeCustomIcon ( './images/activity.gif','22px','22px','hidden' );
+  var ci = new TreeNodeCustomIcon ( './images_com/activity.gif','22px','22px','hidden' );
   return ci;
 }
 
@@ -178,7 +177,7 @@ JobTree.prototype.readProjectData = function ( page_title,
 
         tree.addRootNode ( '<b>[' + tree.projectData.desc.name  + ']</b> ' +
                            '<i>'  + tree.projectData.desc.title + '</i>',
-                           './images/project_20x20.svg',tree.customIcon() );
+                           image_path('project_20x20'),tree.customIcon() );
 
       } else  {
 
@@ -299,7 +298,7 @@ JobTree.prototype.setNodeName = function ( nodeId,save_bool )  {
 JobTree.prototype.setNodeIcon = function ( nodeId,save_bool )  {
   var task = this.task_map[nodeId];
   var node = this.node_map[nodeId];
-  this.setIcon ( node,task.icon_small() );
+  this.setIcon ( node,image_path(task.icon_small()) );
   if (save_bool)
     this.saveProjectData ( [],[], null );
 }
@@ -485,9 +484,9 @@ JobTree.prototype._add_job = function ( insert_bool,task,dataBox,
     // which are not possible before node is placed in the tree
     if (insert_bool)
           node = this.insertNodeAfterSelected ( '',
-                                       task.icon_small(),this.customIcon() );
+                              image_path(task.icon_small()),this.customIcon() );
     else  node = this.addNodeToSelected ( '',
-                                       task.icon_small(),this.customIcon() );
+                              image_path(task.icon_small()),this.customIcon() );
 
     this.task_map[node.id] = task;
     task.treeItemId        = node.id;
@@ -705,7 +704,9 @@ JobTree.prototype.deleteJob = function ( onDelete_func ) {
       },'No',function(){
 
         for (var i=0;i<delNodeId.length;i++)
-          tree.setStyle ( tree.node_map[delNodeId[i]],'',1 );
+          if (tree.task_map[delNodeId[i]].state==job_code.remark)
+                tree.setStyle ( tree.node_map[delNodeId[i]],__remarkStyle,0 );
+          else  tree.setStyle ( tree.node_map[delNodeId[i]],'',1 );
 
       });
 
@@ -867,11 +868,15 @@ JobTree.prototype.cloneJob = function ( parent_page,onAdd_func )  {
     this.forceSingleSelection();
 
     (function(tree){
+
+      // identify task to be cloned
       var nodeId = tree.selected_node_id;
       var task0  = tree.task_map[nodeId];
       var task1  = task0;
-      if (task0.state==job_code.remark)
+      if (task0.state==job_code.remark)  // then take remark's parent
         task1 = tree.task_map[tree.node_map[nodeId].parentId];
+
+      // create an instance of selected task with default parameters
       var task   = eval ( 'new ' + task1._type + '()' );
       if (task1.version<task.currentVersion())  {
         new MessageBox ( 'Cannot clone',
@@ -892,8 +897,10 @@ JobTree.prototype.cloneJob = function ( parent_page,onAdd_func )  {
         tree.projectData.jobCount++;
         task.project = tree.projectData.desc.name;
         task.id      = tree.projectData.jobCount;
-        var node = tree.addSiblingToSelected ( '',task.icon_small(),
+
+        var node = tree.addSiblingToSelected ( '',image_path(task.icon_small()),
                                                   tree.customIcon() );
+
         tree.task_map[node.id] = task;
         task.treeItemId        = node.id;
         node.dataId            = task.id;
@@ -901,8 +908,10 @@ JobTree.prototype.cloneJob = function ( parent_page,onAdd_func )  {
         tree.setText ( node,tree.makeNodeName(task) );
         if (onAdd_func)
           onAdd_func();
+
         tree.saveProjectData ( [task],[],null );
         tree.openJob ( null,parent_page );
+
       }
 
     }(this));

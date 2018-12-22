@@ -555,12 +555,12 @@ var umin0,umax0,vmin0,vmax0;
   plotOptions.axes.xaxis.max = xmax;
   plotOptions.axes.yaxis.min = ymin;
   plotOptions.axes.yaxis.max = ymax;
-  //  if (plot.axes.xaxis._min == undefined)  {
+  //if (plot.axes.xaxis._min == undefined)  {
     plot.axes.xaxis._min = plotOptions.axes.xaxis.min;
     plot.axes.xaxis._max = plotOptions.axes.xaxis.max;
     plot.axes.yaxis._min = plotOptions.axes.yaxis.min;
     plot.axes.yaxis._max = plotOptions.axes.yaxis.max;
-  //  }
+  //}
   plot.axes.xaxis.smin = plotOptions.axes.xaxis.smin;
   plot.axes.xaxis.smax = plotOptions.axes.xaxis.smax;
   plot.axes.yaxis.smin = plotOptions.axes.yaxis.smin;
@@ -571,6 +571,18 @@ var umin0,umax0,vmin0,vmax0;
   if (ticksx)  plot.axes.xaxis.ticks = cloneArray2(ticksx);
          else  zoomAxis ( plot.axes.xaxis );
   if (ticksy)  plot.axes.yaxis.ticks = cloneArray2(ticksy);
+
+/*
+console.log ( "plot.axes.xaxis._min  " + plot.axes.xaxis._min );
+console.log ( "plot.axes.xaxis._max  " + plot.axes.xaxis._max );
+console.log ( "plot.axes.yaxis._min  " + plot.axes.yaxis._min );
+console.log ( "plot.axes.yaxis._max  " + plot.axes.yaxis._max );
+
+console.log ( "plot.axes.xaxis.smin  " + plot.axes.xaxis.smin );
+console.log ( "plot.axes.xaxis.smax  " + plot.axes.xaxis.smax );
+console.log ( "plot.axes.yaxis.smin  " + plot.axes.yaxis.smin );
+console.log ( "plot.axes.yaxis.smax  " + plot.axes.yaxis.smax );
+*/
   plot.replot();
 
   var returnValue = new Object();

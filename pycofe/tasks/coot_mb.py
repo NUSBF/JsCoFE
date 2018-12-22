@@ -138,8 +138,10 @@ class Coot(basic.TaskDriver):
                 fn,fext = os.path.splitext ( fname[fname.find("_")+1:] )
             else:
                 fn,fext = os.path.splitext ( f )
-            coot_xyz = fn + "_xyz" + fext;
-            coot_mtz = fn + "_map.mtz"
+            #coot_xyz = fn + "_xyz" + fext;
+            #coot_mtz = fn + "_map.mtz"
+            coot_xyz = self.getOFName ( fext )
+            coot_mtz = istruct.getMTZFileName()
             shutil.copy2 ( fname  ,coot_xyz )
             shutil.copy2 ( mtzfile,coot_mtz )
 

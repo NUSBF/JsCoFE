@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    05.10.18   <--  Date of Last Modification.
+ *    15.12.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -79,21 +79,107 @@ var fileListPath = path.join ( prj.getUserProjectsDirPath(login),cloudFileListFN
 var paths = [];
 var text  = utils.readString ( fileListPath );
 
-  if (text)  text = text.trim();
-
   if (text)  {
-    var lines = text.split('\n');
-    for (var i=0;i<lines.length;i++)  {
-      var p = lines[i].split(':');
-      if (p.length==2)
-        paths.push ( [p[0].trim(),p[1].trim()] );
+    text = text.trim();
+    if (text)  {
+      var lines = text.split('\n');
+      for (var i=0;i<lines.length;i++)  {
+        var p = lines[i].split(':');
+        if ((p.length==2) && (!p[0].startsWith('#')))
+          paths.push ( [p[0].trim(),p[1].trim()] );
+      }
     }
-  }
+  } else
+    utils.writeString ( fileListPath,
+      '# Cloud storage configuration file. Duplicate, edit and uncomment\n' +
+      '# template configuration line ("mount : path") below:\n' +
+      '# -----------------------------------------------------------------\n' +
+      '#  mount_name  :  /path/to/directory/shared/by/all/servers\n'
+    );
 
   return paths;
 
 }
 
+function dpath2sectors(dirlist, sectors, file_list) {
+    var rec_img = new RegExp('(.*[^0-9])([0-9]{2,})(.*)$');
+    var sector_dict = {};
+    var sector_lst1 = [];
+    for (ind in dirlist) {
+        var fname = dirlist[ind];
+        var match_obj = fname.match(rec_img);
+        if (match_obj) {
+            var prefix = match_obj[1];
+            var cou_str = match_obj[2];
+            var suffix = match_obj[3];
+            var cou = parseInt(cou_str);
+            var ndigits = cou_str.length;
+            var template = prefix + '#'.repeat(ndigits) + suffix;
+            var range_lst1 = sector_dict[template];
+            if (range_lst1) {
+                var range = range_lst1[range_lst1.length - 1];
+                if (range[1][0] + 1 == cou) {
+                    range[1][0] = cou;
+                    range[1][1] = fname;
+                } else {
+                    range = [[cou, fname], [cou, fname]];
+                    range_lst1.push(range);
+                }
+            } else {
+                range_lst1 = [[[cou, fname], [cou, fname]]];
+                sector_dict[template] = range_lst1;
+                sector_lst1.push([template, range_lst1]);
+            }
+        } else {
+            sector_lst1.push([fname, null])
+        }
+    }
+    var sector_lst2 = [];
+    for (sector_ind in sector_lst1) {
+        var sector_meta = sector_lst1[sector_ind];
+        var range_lst1 = sector_meta[1];
+        var range_lst2 = [];
+        if (range_lst1) {
+            for (ind in range_lst1) {
+                range = range_lst1[ind];
+                if (range[1][0] > range[0][0]) {
+                    range_lst2.push(range);
+                }
+            }
+            if (range_lst2.length > 0) {
+                sector_lst2.push([sector_meta[0], range_lst2]);
+            }
+        }
+    }
+    var sector_lst3 = sectors;
+    for (sector_ind in sector_lst2) {
+        sector_meta = sector_lst2[sector_ind];
+        var range_lst2 = sector_meta[1];
+        var range_lst3 = [];
+        for (ind in range_lst2) {
+            range = range_lst2[ind];
+            range_lst3.push([range[0][0], range[1][0]]);
+        }
+        sector_lst3.push({
+            'template': sector_meta[0],
+            'name': range_lst2[0][0][1],
+            'ranges': range_lst3
+        });
+    }
+    for (sector_ind in sector_lst1) {
+        sector_meta = sector_lst1[sector_ind];
+        var range_lst1 = sector_meta[1];
+        if (range_lst1) {
+            for (range_ind in range_lst1) {
+                range = range_lst1[range_ind];
+                cou = range[1][0] - range[0][0] + 1
+                file_list.push([range[0][1], range[1][1], cou]);
+            }
+        } else {
+            file_list.push([sector_meta[0], sector_meta[0], 1]);
+        }
+    }
+}
 
 function getCloudDirListing ( cloudMounts,spath )  {
 var slist = new fcl.StorageList()
@@ -122,7 +208,7 @@ var slist = new fcl.StorageList()
     function add_file ( filename,size )  {
       var sfile  = new fcl.FacilityFile();
       sfile.name = filename;
-      sfile.size = stat.size;
+      sfile.size = size;
       slist.files.push ( sfile );
       return sfile;
     }
@@ -139,82 +225,59 @@ var slist = new fcl.StorageList()
         else  dirpath = path.join ( cloudMounts[i][1],lst.slice(1).join('/') );
       }
 
+  /*
+  { "path"    : "/Users/eugene/Projects/jsCoFE/data/hg/images1",
+    "sectors" : [{"ranges":[[1,29]],"template":"hg-###.mar1600"},
+                 {"ranges":[[1,29],[31,84]],"template":"hg_###.mar1600"}]
+  }
+  */
+
     if (dirpath)  {
       if (utils.dirExists(dirpath))  {
         var sdir  = new fcl.FacilityDir();
         sdir.name = '..';
         slist.dirs.push ( sdir );
-        var dirlist = fs.readdirSync(dirpath).sort();  // sort() maybe unnecessary
-        var i = 0;
-        while (i<dirlist.length)  {
-          var fpath = path.join ( dirpath,dirlist[i] );
-          var stat  = utils.fileExists ( fpath );
-          if (stat)  {
-            if (stat.isDirectory())  {
-              sdir  = new fcl.FacilityDir();
-              sdir.name = dirlist[i];
-              slist.dirs.push ( sdir );
-            } else  {
-              var lname = dirlist[i].split('.');
-              var ext   = lname.pop().toLowerCase();
-              isSeqFile = (['seq','fasta','pir'].indexOf(ext)>=0);
-              if (isSeqFile || (['pdb','mtz','cif'].indexOf(ext)>=0))  {
-                var sfile = add_file ( dirlist[i],stat.size );
-                if (isSeqFile)
-                  sfile.contents = utils.readString ( fpath );
+        slist.sectors = [];
+        var file_list = [];
+        var dirlist = fs.readdirSync(dirpath).sort();
+        dpath2sectors(dirlist, slist.sectors, file_list);
+        for (file_ind in file_list) {
+          file_meta = file_list[file_ind];
+          var cou = file_meta[2];
+          if (cou > 1) {
+            add_file(file_meta[0], 0).image = 1;
+            if (cou > 2) {
+              add_file('......', 0).image = 0;
+            }
+            add_file(file_meta[1], 0).image = 2;
+          } else {
+            var fname = file_meta[0];
+            var fpath = path.join ( dirpath,fname );
+            var stat  = utils.fileExists ( fpath );
+            if (stat)  {
+              if (stat.isDirectory())  {
+                sdir  = new fcl.FacilityDir();
+                sdir.name = fname;
+                slist.dirs.push ( sdir );
               } else  {
-                // check for likely image files, looking for pattern
-                // [((a).)](a)(d).[((a).)].ext (a: letter, d: digit,
-                // []: optional, (): repeats)
-                var k = -1;
-                for (var j=lname.length-1;(j>=0) && (k<0);j--)  {
-                  var c = lname[j][lname[j].length-1];
-                  if (('0'<=c) && (c<='9'))
-                    k = j;
-                }
-                if (k>=0)  {
-                  var n0      = 0;
-                  for (var j=lname[k].length-1;j>=0;j--)  {
-                    var c = lname[k][j];
-                    if (('0'<=c) && (c<='9'))  n0 = j;
-                                         else  break;
-                  }
-                  var ndigits = lname[k].length - n0;
-                  var prefix = '';
-                  if (k>0)
-                      prefix = lname.slice(0,k).join('.') + '.';
-                  prefix    += lname[k].substring(0,n0);
-                  var nimage = parseInt ( lname[k].substr(n0) );
-                  var suffix = '';
-                  if (k<lname.length-1)
-                      suffix = '.' + lname.slice(k+1).join('.');
-                  suffix += '.' + ext;
-                  var j = i;
-                  do {
-                    nimage++;
-                    j++;
-                  } while (prefix+utils.padDigits ( nimage,ndigits )+suffix == dirlist[j]);
-                  j--;
-                  if (j>i)  {
-                    add_file ( dirlist[i],0 ).image = 1;
-                    if (j>i+1)
-                      add_file ( '......',0 ).image = 0;
-                    add_file ( dirlist[j],0 ).image = 2;
-                    i = j;
-                  }
+                var lname = fname.split('.');
+                var ext   = lname.pop().toLowerCase();
+                isSeqFile = (['seq','fasta','pir'].indexOf(ext)>=0);
+                if (isSeqFile || (['pdb','mtz','cif'].indexOf(ext)>=0))  {
+                  var sfile = add_file ( fname,stat.size );
+                  if (isSeqFile)
+                    sfile.contents = utils.readString ( fpath );
                 }
               }
             }
           }
-          i++;
         }
-      } else
+      } else {
         slist.message = 'directory ' + spath + ' does not exist';
-
+      }
     } else {
       slist.message = 'mount ' + lst[0] + ' not found';
     }
-
   }
 
 //  console.log ( JSON.stringify(slist) );

@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    09.10.18   <--  Date of Last Modification.
+#    22.12.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -43,11 +43,19 @@ citations = {
     'mtz2various'     : { 'name' : 'mtz2various'  , 'category' : 'service', 'refs' : [] },
     'matthews_coef'   : { 'name' : 'Matthews_Coef', 'category' : 'primary', 'refs' : [] },
     'cad'             : { 'name' : 'CAD'          , 'category' : 'service', 'refs' : [] },
+    'cfft'            : { 'name' : 'CFFT'         , 'category' : 'service', 'refs' : [] },
+    'unique'          : { 'name' : 'Unique'       , 'category' : 'service', 'refs' : [] },
+    'ecalc'           : { 'name' : 'ECalc'        , 'category' : 'service', 'refs' : [] },
+    'sftools'         : { 'name' : 'SFTools'      , 'category' : 'service', 'refs' : [] },
+    'cif2mtz'         : { 'name' : 'cif2mtz'      , 'category' : 'service', 'refs' : [] },
+    'rwcontents'      : { 'name' : 'RWContents'   , 'category' : 'service', 'refs' : [] },
 
     'ps2pdf'          : { 'name' : '', 'category' : 'system' , 'refs' : [] },  # empty name means "Ignore"
     'ccp4-python'     : { 'name' : '', 'category' : 'system' , 'refs' : [] },
     'dials.export'    : { 'name' : '', 'category' : 'service', 'refs' : [] },
     'dials.rs_mapper' : { 'name' : '', 'category' : 'service', 'refs' : [] },
+    'mapro'           : { 'name' : '', 'category' : 'primary', 'refs' : [] },
+    'find-blobs'      : { 'name' : '', 'category' : 'service', 'refs' : [] },
 
     'pointless' : { 'name'     : 'Pointless',
                     'category' : 'primary',
@@ -364,6 +372,119 @@ citations = {
                         }]
                   },
 
+    'cbuccaneer': { 'name'     : 'Buccaneer',
+                    'category' : 'primary',
+                    'copy'     : [['buccaneer',-1]]  # -1 means copy all
+                  },
+
+    #'solomon' :   { 'name'     : 'SOLOMON',
+    #                'category' : 'primary',
+    #                'refs'     : [{
+    #                        'authors' : 'Abrahams, J.P., Leslie, A.G.W.',
+    #                        'title'   : 'Methods used in the structure determination of bovine mitochondrial F1 ATPase',
+    #                        'journal' : 'Acta Cryst.',
+    #                        'volume'  : 'D52',
+    #                        'year'    : '1996',
+    #                        'pages'   : '30-42',
+    #                        'doi'     : '10.1107/S0907444995008754'
+    #                    }]
+    #              },
+
+    'solomon' :   { 'name'     : 'SOLOMON',
+                    'category' : 'primary',
+                    'refs'     : [{
+                            'authors' : 'Abrahams, J.P.',
+                            'title'   : 'Bias reduction in phase refinement by modified interference functions: introducing the gamma correction',
+                            'journal' : 'Acta Cryst.',
+                            'volume'  : 'D53',
+                            'year'    : '1997',
+                            'pages'   : '371-376',
+                            'doi'     : '10.1107/S0907444996015272'
+                        }]
+                  },
+
+    'peakmax' :   { 'name'     : 'PeakMax',
+                    'category' : 'primary',
+                    'copy'     : [['default',-1]]  # -1 means copy all
+                  },
+
+
+    'multicomb' : { 'name'     : 'Multicomb',
+                    'category' : 'primary',
+                    'refs'     : [{
+                            'authors' : 'Skubak, P., Waterreus, W.J., Pannu, N.S.',
+                            'title'   : 'Multivariate phase combination improves automated crystallographic model building',
+                            'journal' : 'Acta Cryst.',
+                            'volume'  : 'D66',
+                            'year'    : '2010',
+                            'pages'   : '783-788',
+                            'doi'     : '10.1107/S0907444910014642'
+                        }]
+                  },
+
+    'afro' :      { 'name'     : 'Afro',
+                    'category' : 'primary',
+                    'refs'     : [{
+                            'authors' : 'Pannu, N.S., Waterreus, W.J., Skubak, P., Sikharulidze, I., Abrahams, J.P., de Graaff, R.A.G.',
+                            'title'   : 'Recent advances in the CRANK software suite for experimental phasing.',
+                            'journal' : 'Acta Cryst.',
+                            'volume'  : 'D67',
+                            'year'    : '2011',
+                            'pages'   : '331-337',
+                            'doi'     : '10.1107/S0907444910052224'
+                        }]
+                  },
+
+    'arpwarp' :   { 'name'     : 'Arp/wArp',
+                    'category' : 'primary',
+                    'refs'     : [{
+                            'authors' : 'Perrakis, A., Morris, R., Lamzin, V.S.',
+                            'title'   : 'Automated protein model building combined with iterative structure refinement.',
+                            'journal' : 'Nature Struct. Biol.',
+                            'volume'  : '6',
+                            'year'    : '1999',
+                            'pages'   : '458-463',
+                            'doi'     : '10.1038/8263'
+                        },{
+                            'authors' : 'Perrakis, A., Harkiolaki, M., Wilson, K.S., Lamzin, V.S.',
+                            'title'   : 'ARP/wARP and molecular replacement.',
+                            'journal' : 'Acta Cryst.',
+                            'volume'  : '57',
+                            'year'    : '2001',
+                            'pages'   : '1445-1450',
+                            'doi'     : '10.1107/S0907444901014007'
+                        },{
+                            'authors' : 'Langer G., Cohen S.X., Lamzin V.S., Perrakis A.',
+                            'title'   : 'Automated macromolecular model building for x-ray crystallography using ARP/wARP version 7.',
+                            'journal' : 'Nat. Protoc.',
+                            'volume'  : '3',
+                            'year'    : '2008',
+                            'pages'   : '1171-1179',
+                            'doi'     : '10.1038/nprot.2008.91'
+                        }]
+                  },
+
+    'bp3' :       { 'name'     : 'BP3',
+                    'category' : 'primary',
+                    'copy'     : [['afro',-1]]  # -1 means copy all
+                  },
+
+
+    'prasa' :     { 'name'     : 'PRASA',
+                    'category' : 'primary',
+                    'refs'     : [{
+                            'authors' : 'Skubak, P.',
+                            'title'   : 'Substructure determination using phase-retrieval techniques',
+                            'journal' : 'Acta Cryst.',
+                            'volume'  : 'D74',
+                            'year'    : '2018',
+                            'pages'   : '117-124',
+                            'doi'     : '10.1107/S2059798317014462'
+                        }]
+                  },
+
+
+
     'phaser' :    { 'name'     : 'Phaser',
                     'category' : 'primary',
                     'refs'     : [{
@@ -572,6 +693,20 @@ citations = {
                 },
 
 
+    'acorn' :   { 'name'   : 'ACORN',
+                  'category' : 'primary',
+                  'refs'     : [{
+                            'authors' : 'Yao, J.X., Dodson, E.J., Wilson, K.S., Woolfson, M.M.',
+                            'title'   : 'ACORN: a review',
+                            'journal' : 'Acta Cryst.',
+                            'volume'  : 'D62',
+                            'year'    : '2006',
+                            'pages'   : '901-908',
+                            'doi'     : '10.1107/S0907444906008122'
+                  }]
+                },
+
+
 }
 
 
@@ -669,34 +804,40 @@ def _get_references ( citation,lists ):
 
 
 def get_citation_html_list ( citation,appName,desc_bool,lists ):
-    rlst = []
-    refs = _get_references ( citation,lists )
-    lst  = []
 
-    if len(refs)<=0:
-        if appName not in lists['deflist']:
-            cit = makeCitation ( citations['default']['refs'][0] )
-            if cit not in lists['flist']:
-                lists['flist'].append ( cit )
+    rlst = []
+
+    if citation['name']:
+
+        refs = _get_references ( citation,lists )
+        lst  = []
+
+        if len(refs)<=0:
+            if appName not in lists['deflist']:
+                cit = makeCitation ( citations['default']['refs'][0] )
+                if cit not in lists['flist']:
+                    lists['flist'].append ( cit )
                 if citation['category']=='primary':
                     lists['deflist'].append ( appName )
                 else:
                     lst.append ( "<li>" + cit + "</li>" )
-    else:
-        for reference in refs:
-            cit  = makeCitation ( reference )
-            if cit not in lists['flist']:
-                lists['flist'].append ( cit )
-                lst.append ( "<li>" + cit + "</li>" )
+        else:
+            for reference in refs:
+                cit  = makeCitation ( reference )
+                if cit not in lists['flist']:
+                    lists['flist'].append ( cit )
+                    lst.append ( "<li>" + cit + "</li>" )
+                elif desc_bool:
+                    lst.append ( "<li>" + cit + "</li>" )
 
-    if desc_bool and len(lst)>0:
-        html_str = "<li><b><font style='font-size:110%'><i>" +\
-                       citation['name'] + "</i></font>:</b>"
-        if 'desc' in citation:
-            html_str += " <i>(" + citation['desc'] + ")</i>"
-        rlst.append ( html_str + "<ul>" + "".join(lst) + "</ul></li>" )
-    else:
-        rlst += lst
+        if desc_bool and len(lst)>0:
+            html_str = "<li><b><font style='font-size:110%'><i>" +\
+                           citation['name'] + "</i></font>:</b>"
+            if 'desc' in citation:
+                html_str += " <i>(" + citation['desc'] + ")</i>"
+            rlst.append ( html_str + "<ul>" + "".join(lst) + "</ul></li>" )
+        else:
+            rlst += lst
 
     return rlst
 
@@ -708,12 +849,13 @@ def make_html_list ( clist,category,desc_bool,lists ):
             citation = citations[appName]
             if citation['category']==category:
                 rlist += get_citation_html_list ( citation,appName,desc_bool,lists )
-        else:
+        elif appName not in lists['noref']:
             lists['noref'].append ( appName )
     return rlist
 
 
 def makeCitationsHTML ( body ):
+    # makes list of references after a job
 
     if not citation_list:
         return None
@@ -824,6 +966,7 @@ def makeCitationsHTML ( body ):
 
 
 def makeSummaryCitationsHTML ( clist,eol_tasks ):
+    # makes final list of references
 
     if not clist:
         return None

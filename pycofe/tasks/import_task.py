@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    17.07.18   <--  Date of Last Modification.
+#    21.12.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -123,9 +123,18 @@ class Import(basic.TaskDriver):
             for f in unrecognised_files:
                 self.putSummaryLine_red ( f,"UNKNOWN","Failed to recognise, ignored" )
 
+        return
+
 
 
     def run(self):
+
+        # copy pre-existing revisions into output first
+        if hasattr(self.input_data.data,"void1"):
+            revision = self.input_data.data.void1
+            for i in range(len(revision)):
+                revision[i] = self.makeClass ( revision[i] )
+                revision[i].register ( self.outputDataBox )
 
         self.import_all()
 

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    05.10.18   <--  Date of Last Modification.
+ *    12.12.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -360,10 +360,15 @@ TaskBuccaneer.prototype.constructor = TaskBuccaneer;
 // ===========================================================================
 // export such that it could be used in both node and a browser
 
-TaskBuccaneer.prototype.icon_small = function()  { return './images/task_buccaneer_20x20.svg'; }
-TaskBuccaneer.prototype.icon_large = function()  { return './images/task_buccaneer.svg';       }
+TaskBuccaneer.prototype.icon_small = function()  { return 'task_buccaneer_20x20'; }
+TaskBuccaneer.prototype.icon_large = function()  { return 'task_buccaneer';       }
 
-TaskBuccaneer.prototype.currentVersion = function()  { return 1; }
+TaskBuccaneer.prototype.currentVersion = function()  {
+  var version = 0;
+  if (__template)
+        return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );
+  else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
+}
 
 if (__template)  {
   //  for server side

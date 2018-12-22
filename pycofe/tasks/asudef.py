@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    17.07.18   <--  Date of Last Modification.
+#    16.12.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -334,32 +334,13 @@ def makeRevision ( base,hkl,seq,composition,altEstimateKey,altNRes,
 
         makeAsuFitMessage ( base,nc0,sol0 )
 
-        """
-        if nc0==1 and sol0>35.0:
-            base.putMessage ( "<h3 class='header-green'>The suggested " +\
-                              "composition of ASU appears to be the optimal " +\
-                              "one.</h3>" )
-        elif nc0 > 1:
-            base.putMessage ( "<h3 class='header-red'>WARNING: the suggested " +\
-                              "composition of ASU has higher, than usual, " +\
-                              "solvent fraction.<br>" +\
-                              "Try to increase the scattering mass by a " +\
-                              "factor of " + str(nc0) + "</h3>"  )
-        elif nc0 > 0:
-            base.putMessage ( "<h3 class='header-red'>WARNING: the suggested " +\
-                              "composition of ASU has lower, than usual, " +\
-                              "solvent fraction.<br>" +\
-                              "Try to decrease the scattering mass by a " +\
-                              "factor of " + str(math.ceil(350.0/sol0)/10.0) +\
-                              "</h3>" )
-        """
-
         if revision:
             base.generic_parser_summary["z02"] = {
-                "SolventPercent" : int(10*sol0)/10.0
+                "SolventPercent" : int(10*sol1)/10.0
             }
 
     return (revision,nc0,sol0)
+
 
 # ------------------------------------------------------------------------
 
@@ -517,37 +498,10 @@ class ASUDef(basic.TaskDriver):
                                   self.getParameter(sec1.MOLWEIGHT),
                                   self.getParameter(sec1.RESLIMIT) )
 
-        """
-        nc0  = revision[1]
-        sol0 = revision[2]
-        if nc0==1 and sol0>35.0:
-            self.putMessage ( "<h3 class='header-green'>The suggested " +\
-                              "composition of ASU appears to be the optimal " +\
-                              "one.</h3>" )
-        elif nc0 > 1:
-            self.putMessage ( "<h3 class='header-red'>WARNING: the suggested " +\
-                              "composition of ASU has higher, than usual, " +\
-                              "solvent fraction.<br>" +\
-                              "Try to increase the scattering mass by a " +\
-                              "factor of " + str(nc0) + "</h3>"  )
-        elif nc0 > 0:
-            self.putMessage ( "<h3 class='header-red'>WARNING: the suggested " +\
-                              "composition of ASU has lower, than usual, " +\
-                              "solvent fraction.<br>" +\
-                              "Try to decrease the scattering mass by a " +\
-                              "factor of " + str(math.ceil(350.0/sol0)/10.0) +\
-                              "</h3>" )
-        """
-
         if revision[0]:
             if istruct:
                 revision[0].setStructureData ( istruct )
             self.registerRevision ( revision[0] )
-            """
-            self.generic_parser_summary["z02"] = {
-                'SolventPercent' : int(10*revision[2])/10.0
-            }
-            """
 
         # close execution logs and quit
         self.success()

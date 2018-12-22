@@ -41,12 +41,9 @@ from   pycofe.proc  import xyzmeta
 
 
 # ============================================================================
-# Make Morda driver
+# Make Ample driver
 
 class Ample(basic.TaskDriver):
-
-    # make task-specific definitions
-    # tab ids for running MORDA on a SHELL-type node
 
     # ------------------------------------------------------------------------
 

@@ -356,7 +356,10 @@ class CCP4go(import_task.Import):
 
                     structure.addDataAssociation ( hkl_sol.dataId )
                     structure.setRefmacLabels ( hkl_sol )
-                    structure.addMRSubtype ()
+                    if meta["phasing"]=="MR":
+                        structure.addMRSubtype()
+                    else:
+                        structure.addEPSubtype()
                     structure.setXYZSubtype()
 
                     if "libindex" in meta:

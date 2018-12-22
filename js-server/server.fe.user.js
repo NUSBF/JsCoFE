@@ -705,7 +705,7 @@ var fe_server = conf.getFEConfig();
     rData.localuser     = null;
     rData.logintoken    = null;
     rData.helpTopics    = [];
-    rData.exclude_tasks = fe_server.exclude_tasks;
+    rData.exclude_tasks = conf.getExcludedTasks();
     rData.cloud_storage = false;
     if ('localuser' in fe_server)  {
       rData.localuser  = fe_server.localuser;

@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    09.08.18   <--  Date of Last Modification.
+#    20.11.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -319,16 +319,16 @@ class Gesamt(basic.TaskDriver):
                 ensemble = self.registerEnsemble ( dtype_template.subtypeProtein(),
                                                    outFiles[0] )
                 if ensemble:
-                    self.putEnsembleWidget ( "ensemble_btn",
+                    self.putEnsembleWidget ( self.getWidgetId("ensemble_btn"),
                                              "Superposed ensemble&nbsp;&nbsp;",
                                              ensemble,-1 )
 
                 for i in range(1,len(outFiles)-1):
-                    self.rvrow += 1
                     ensemble = self.registerEnsemble ( dtype_template.subtypeProtein(),
                                                        outFiles[i] )
                     if ensemble:
-                        self.putEnsembleWidget ( "ensemble_"+str(i)+"_btn",
+                        self.putMessage ( "&nbsp;" )
+                        self.putEnsembleWidget ( self.getWidgetId("ensemble_"+str(i)+"_btn"),
                                                  "Superposed domain #" + str(i),
                                                  ensemble,-1 )
 

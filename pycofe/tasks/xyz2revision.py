@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    09.08.18   <--  Date of Last Modification.
+#    22.12.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -60,8 +60,6 @@ class Xyz2Revision(dimple.Dimple,asudef.ASUDef):
         else:
             asudef.revisionFromStructure ( self,hkl,structure,
                                            os.path.splitext(xyz.getXYZFileName())[0] )
-
-        self.putCitations()
 
         # close execution logs and quit
         self.success()

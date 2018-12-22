@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    22.06.18   <--  Date of Last Modification.
+#    01.12.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -175,7 +175,7 @@ class SeqAlign(basic.TaskDriver):
                     id_cmb = id_cmb/float(len_avg)
                 id_cmb = "%.2f" % id_cmb
 
-                tableId = "stat_table"
+                tableId = self.getWidgetId ( "stat_table" )
                 self.putTable ( tableId,"<span style='font-size:1.25em'>" +
                                         "Alignment statistics</span>",
                                         self.report_page_id(),self.rvrow,0 )
@@ -191,7 +191,7 @@ class SeqAlign(basic.TaskDriver):
 
                 self.rvrow += 2
                 self.putMessage ( "&nbsp;" )
-                tableId = "align_table"
+                tableId = self.getWidgetId ( "align_table" )
                 self.putTable ( tableId,"<span style='font-size:1.25em'>" +
                                         "Aligned sequences</span>",
                                         self.report_page_id(),self.rvrow,100 )
@@ -204,7 +204,9 @@ class SeqAlign(basic.TaskDriver):
                     pyrvapi.rvapi_put_table_string ( tableId,
                         self.seqHTML(smap[sname]["align"],smap["align"]),r,1 )
                     pyrvapi.rvapi_shape_table_cell ( tableId,r,1,"",
-                        "background:black;color:yellow","",1,1 );
+                        "background:black;color:yellow;white-space:nowrap;","",1,1 );
+
+                self.rvrow += 2
 
             else:
                 self.putTitle ( "Alignment was not generated" )

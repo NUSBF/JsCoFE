@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    19.02.18   <--  Date of Last Modification.
+ *    12.12.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -36,7 +36,7 @@ function TaskCCP4go()  {
   this._type   = 'TaskCCP4go';
   this.name    = 'ccp4go';
   this.oname   = 'ccp4go';  // default output file name template
-  this.title   = 'CCP4go "Don\'t make me think!" (experimental)';
+  this.title   = 'CCP4go auto-solver (experimental)';
   this.helpURL = './html/jscofe_task_ccp4go.html';
 
   this.files   = ['','',''];
@@ -150,10 +150,15 @@ TaskCCP4go.prototype.constructor = TaskCCP4go;
 
 // ===========================================================================
 
-TaskCCP4go.prototype.icon_small = function()  { return './images/task_ccp4go_20x20.svg'; }
-TaskCCP4go.prototype.icon_large = function()  { return './images/task_ccp4go.svg';       }
+TaskCCP4go.prototype.icon_small = function()  { return 'task_ccp4go_20x20'; }
+TaskCCP4go.prototype.icon_large = function()  { return 'task_ccp4go';       }
 
-TaskCCP4go.prototype.currentVersion = function()  { return 1; }
+TaskCCP4go.prototype.currentVersion = function()  {
+  var version = 0;
+  if (__template)
+        return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );
+  else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
+}
 
 // export such that it could be used in both node and a browser
 if (!__template)  {
@@ -197,7 +202,7 @@ if (!__template)  {
       var lbl   = setLabel ( rowNo,label,tooltip );
       var fsel  = div.grid.setSelectFile ( false,accept_str,rowNo,2,1,1 );
       fsel.hide();
-      var btn   = div.grid.addButton ( 'Browse','./images/open_file.svg',rowNo,2,1,1 );
+      var btn   = div.grid.addButton ( 'Browse',image_path('open_file'),rowNo,2,1,1 );
 //                          .setWidth_px ( 86 );
       var filename = fname;
       if (this.state==job_code.new)
@@ -271,9 +276,9 @@ if (!__template)  {
                   '.pir, .seq, .fasta',fname );
       }
 
-      wset['add'] = div.grid.addButton ( '','./images/add.svg',rowNo,5,1,1 )
+      wset['add'] = div.grid.addButton ( '',image_path('add'),rowNo,5,1,1 )
                             .setHeight_px(14).setWidth_px(4).setTooltip('add');
-      wset['remove'] = div.grid.addButton ( '','./images/remove.svg',rowNo,6,1,1 )
+      wset['remove'] = div.grid.addButton ( '',image_path('remove'),rowNo,6,1,1 )
                          .setHeight_px(14).setWidth_px(4).setTooltip('remove');
       div.grid.setVerticalAlignment ( rowNo,5,'middle' );
       div.grid.setVerticalAlignment ( rowNo,6,'middle' );
@@ -353,40 +358,12 @@ if (!__template)  {
         if (files.length>0)
           wset['itext'].setValue ( files[0].name );
       });
-      /*
-      wset['fsel'].addOnChangeListener ( function(){
-        var files = wset['fsel'].getFiles();
-        if (files.length>0)  {
-          new UploadDialog ( 'Upload ' + files[0].name,files,div.customData,false,
-                              function(returnCode){
-            if (!returnCode)
-              wset['itext'].setValue ( files[0].name );
-          });
-        }
-      });
-      */
       return wset;
     }
 
     div.coor_select = setCoorFileSelect ( row++,this.files[2] );
     var row0 = row;
     div.grid.setLabel ( '',row++,0,1,1 ).setHeight_px(8);
-
-
-    /*
-    div.grid.setLabel ( '&nbsp;&nbsp;&nbsp;&nbsp;',row,3,1,1 ).setNoWrap();
-    div.mtz_view = div.grid.setButton ( 'ViewHKL','./images/display.svg',row,4,1,1 );
-    div.mtz_view.hide();
-    div.mtz_select.addOnChangeListener ( function(){
-      div.mtz_view.setVisible ( div.mtz_select.getFiles().length>0 );
-    });
-    div.mtz_view.addOnClickListener ( function(){
-      var files = div.mtz_select.getFiles();
-      alert ( 'n=' + files.length + ',   ' + JSON.stringify(files[0].name));
-      if (files.length>0)
-        startViewHKL ( files[0].name,files[0] );
-    });
-    */
 
     setLabel ( row,'Heavy atom type','[Optional] Provide chemical element of ' +
                    'anomalous scatterers if anomalous signal is observed, ' +

@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    16.08.18   <--  Date of Last Modification.
+#    31.10.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -33,7 +33,7 @@ class DType(dtype_template.DType):
         if not json_str:
             self._type          = dtype()
             self.dname          = "revision"
-            self.version        = 2
+            self.version       += 0      # versioning increments from parent to children
             self.HKL            = None
             self.ASU            = jsonut.jObject()  # asymetric unit data
             self.ASU.seq        = [];

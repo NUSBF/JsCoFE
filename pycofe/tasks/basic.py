@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    21.09.18   <--  Date of Last Modification.
+#    20.11.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -528,7 +528,12 @@ class TaskDriver(object):
         return
 
     def write_stdin ( self,S ):
-        self.file_stdin.write ( S )
+        if type(S) is list:
+            for line in S:
+                if line:
+                    self.file_stdin.write ( line + "\n" )
+        else:
+            self.file_stdin.write ( S )
         return
 
     def close_stdin ( self ):
@@ -642,6 +647,18 @@ class TaskDriver(object):
         """
 
 
+    def getCheckbox ( self,item,checkVisible=True ):
+        if  item.type=="checkbox" and (item.visible or not checkVisible):
+            if hasattr(item,'translate'):
+                if item.value:
+                    return str(item.translate[1])
+                else:
+                    return str(item.translate[0])
+            else:
+                return item.value
+        return ""
+
+
     # ============================================================================
 
     def addCitation ( self,appName ):
@@ -694,6 +711,14 @@ class TaskDriver(object):
     def setMolrepLogParser ( self,panel_id ):
         self.putPanel ( panel_id )
         self.log_parser = pyrvapi_ext.parsers.molrep_parser ( panel_id )
+        pyrvapi.rvapi_flush()
+        return
+
+
+    def setArpWarpLogParser ( self,panel_id,job_params,wares_file ):
+        self.putPanel ( panel_id )
+        self.log_parser = pyrvapi_ext.parsers.arpwarp_parser ( panel_id,
+                job_params=job_params,resfile=wares_file )
         pyrvapi.rvapi_flush()
         return
 
