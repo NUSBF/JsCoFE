@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.12.18   <--  Date of Last Modification.
+ *    27.12.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -118,8 +118,10 @@ TaskSimbad.prototype.constructor = TaskSimbad;
 // ===========================================================================
 // export such that it could be used in both node and a browser
 
-TaskSimbad.prototype.icon_small = function()  { return 'task_simbad_20x20'; }
-TaskSimbad.prototype.icon_large = function()  { return 'task_simbad';       }
+TaskSimbad.prototype.icon = function()  { return 'task_simbad'; }
+
+//TaskSimbad.prototype.icon_small = function()  { return 'task_simbad_20x20'; }
+//TaskSimbad.prototype.icon_large = function()  { return 'task_simbad';       }
 
 TaskSimbad.prototype.currentVersion = function()  {
   var version = 0;

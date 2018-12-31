@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    09.08.18   <--  Date of Last Modification.
+#    24.12.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -75,7 +75,7 @@ class Ample(basic.TaskDriver):
 
         # run ample
         #self.runApp ( "ccp4-python",[test_ample_path] + cmd )
-        self.runApp ( "ample",cmd )
+        self.runApp ( "ample",cmd,logType="Main" )
 
         self.restoreReportDocument()
 
@@ -146,7 +146,9 @@ class Ample(basic.TaskDriver):
                 # make output structure and register it
 
                 structure = self.finaliseStructure ( final_pdb,self.outputFName,
-                                                     sol_hkl,None,[seq],1,False,"" )
+                                                     sol_hkl,None,[seq],0,
+                                                     leadKey=1,openState_bool=False,
+                                                     title="" )
 
                 if structure:
                     # update structure revision

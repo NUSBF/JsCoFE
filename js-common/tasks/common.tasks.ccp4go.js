@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.12.18   <--  Date of Last Modification.
+ *    29.12.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -150,8 +150,17 @@ TaskCCP4go.prototype.constructor = TaskCCP4go;
 
 // ===========================================================================
 
-TaskCCP4go.prototype.icon_small = function()  { return 'task_ccp4go_20x20'; }
-TaskCCP4go.prototype.icon_large = function()  { return 'task_ccp4go';       }
+TaskCCP4go.prototype.icon = function()  { return 'task_ccp4go'; }
+
+//TaskCCP4go.prototype.icon_small = function()  { return 'task_ccp4go_20x20'; }
+//TaskCCP4go.prototype.icon_large = function()  { return 'task_ccp4go';       }
+
+// task.platforms() identifies suitable platforms:
+//   'W"  : Windows
+//   'L'  : Linux
+//   'M'  : Mac
+//   'U'  : Unix ( = Linux + Mac)
+//TaskCCP4go.prototype.platforms = function()  { return 'LMU'; }  // UNIX only
 
 TaskCCP4go.prototype.currentVersion = function()  {
   var version = 0;

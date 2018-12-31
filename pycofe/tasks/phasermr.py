@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    03.12.18   <--  Date of Last Modification.
+#    24.12.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -120,7 +120,7 @@ class PhaserMR(basic.TaskDriver):
             cmd = [ "HKLIN1", hklfile,
                     "HKLIN2", phases.getMTZFilePath(self.inputDir()),
                     "HKLOUT", self.cad_mtz() ]
-            self.runApp ( "cad", cmd )
+            self.runApp ( "cad",cmd,logType="Service" )
             hklfile    = self.cad_mtz()
             hkl_labin += "\nLABIN FWT=" + phases_labels[0] + " PHWT=" + phases_labels[1]
 
@@ -296,7 +296,7 @@ class PhaserMR(basic.TaskDriver):
         self.setGenericLogParser ( self.phaser_report(),True )
 
         # Start mrbump
-        self.runApp ( "phaser",cmd )
+        self.runApp ( "phaser",cmd,logType="Main" )
         self.unsetLogParser()
 
         # check solution and register data
@@ -357,7 +357,8 @@ class PhaserMR(basic.TaskDriver):
 
         #self.putMessage ( "&nbsp;" );
         structure = self.finaliseStructure ( self.outputFName+".1.pdb",
-                                    self.outputFName,sol_hkl,None,seq,1,False )
+                                    self.outputFName,sol_hkl,None,seq,0,
+                                    leadKey=1,openState_bool=False )
 
         if structure:
             #revision.add_file ( sol_file,self.outputDir(),"sol" )

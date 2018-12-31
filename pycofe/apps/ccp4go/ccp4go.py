@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    23.06.18   <--  Date of Last Modification.
+#    29.12.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -52,6 +52,8 @@
 #                                     // output files
 #  }
 #
+
+import sys
 
 import ccp4go_fitligands
 
@@ -113,7 +115,10 @@ class CCP4go(ccp4go_fitligands.FitLigands):
                 return
 
         if self.output_meta["retcode"] != "solved":
-            self.morda ( "" )
+            if sys.platform.startswith("win"):
+                self.mrbump ( "" )
+            else:
+                self.morda ( "" )
 
         if self.output_meta["retcode"] != "solved":
             self.crank2 ( "" )

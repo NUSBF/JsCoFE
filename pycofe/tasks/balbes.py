@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    09.08.18   <--  Date of Last Modification.
+#    24.12.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -74,7 +74,7 @@ class Balbes(basic.TaskDriver):
         self.close_stdin ()
         cmd = [ "HKLIN1",hkl.getHKLFilePath(self.inputDir()),
                 "HKLOUT",cad_mtz ]
-        self.runApp ( "cad",cmd )
+        self.runApp ( "cad",cmd,logType="Service" )
 
         # make command-line parameters for bare balbes run on a SHELL-type node
 
@@ -86,12 +86,12 @@ class Balbes(basic.TaskDriver):
         #    cmd.append ( "-alt" )
 
         # run balbes
-        self.runApp ( "balbes",cmd )
+        self.runApp ( "balbes",cmd,logType="Main" )
 
         pdb_path = os.path.join ( workDir,"results","refmac_final_result.pdb" )
 
         structure = self.finaliseStructure ( pdb_path,self.outputFName,hkl,None,
-                                             seq,1,False )
+                                             seq,0,leadKey=1,openState_bool=False )
         if structure:
             # update structure revision
             revision = self.makeClass ( self.input_data.data.revision[0] )

@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    17.12.18   <--  Date of Last Modification.
+#    22.12.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -98,7 +98,7 @@ class ShelxEMR(basic.TaskDriver):
         self.close_stdin()
 
         # run mtz-to-hkl converter
-        self.runApp ( "mtz2various",cmd )
+        self.runApp ( "mtz2various",cmd,logType="Service" )
 
 
         # Prepare command line for shelxe
@@ -122,7 +122,7 @@ class ShelxEMR(basic.TaskDriver):
 
         cmd += ["-f"]  # read amplitudes not intensities
 
-        self.runApp ( "shelxe",cmd )
+        self.runApp ( "shelxe",cmd,logType="Main" )
 
         if os.path.isfile(self.shelxe_wrk_phs()):
 
@@ -149,7 +149,7 @@ class ShelxEMR(basic.TaskDriver):
             cmd = [ "hklin" ,self.shelxe_wrk_phs(),
                     "hklout",self.shelxe_tmp_mtz()
                   ]
-            self.runApp ( "f2mtz",cmd )
+            self.runApp ( "f2mtz",cmd,logType="Service" )
 
             # Calculate map coefficients
             self.open_stdin  ()
@@ -165,7 +165,7 @@ class ShelxEMR(basic.TaskDriver):
             )
             self.close_stdin()
 
-            self.runApp ( "sftools",[] )
+            self.runApp ( "sftools",[],logType="Service" )
 
             # copy pdb
             shutil.copyfile ( self.shelxe_wrk_pdb(),self.shelxe_pdb() )
@@ -174,7 +174,7 @@ class ShelxEMR(basic.TaskDriver):
                                             "shelxe" )
             structure = self.registerStructure1 (
                         self.shelxe_pdb(),None,self.shelxe_mtz(),fnames[0],None,None,
-                        self.outputFName )
+                        self.outputFName,leadKey=2 )
             if structure:
                 structure.copyAssociations ( istruct )
                 structure.setShelxELabels  ()

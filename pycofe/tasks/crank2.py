@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    28.10.18   <--  Date of Last Modification.
+#    24.12.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -422,7 +422,7 @@ class Crank2(basic.TaskDriver):
                                             self.hklout_fpath + ".map",
                                             self.hklout_fpath + "_diff.map",
                                             None,
-                                            self.outputFName )
+                                            self.outputFName,leadKey=1 )
 
             if self.structure:
 
@@ -461,7 +461,8 @@ class Crank2(basic.TaskDriver):
                             self.putTitle ( "Heavy Atom Substructure Found" )
                             hkls = self.pickHKL()
                             substructure = self.finaliseStructure ( sub_path,
-                                        self.outputFName,hkls,None,[],3,False,"" )
+                                        self.outputFName,hkls,None,[],1,
+                                        leadKey=1,openState_bool=False,title="" )
                             if not substructure:
                                 self.putMessage ( "<b><i>Failed to form heavy atom substructure object</i></b>" )
                             else:
@@ -475,8 +476,6 @@ class Crank2(basic.TaskDriver):
                                 substructure.removeSubtype ( dtype_template.subtypePhases() )
                         else:
                             self.putTitle ( "No heavy atom substructure found" )
-
-                self.structure.addEPSubtype()
 
                 if len(hkl_all)==1:
                     self.putTitle ( "Structure Revision" )
@@ -566,7 +565,6 @@ class Crank2(basic.TaskDriver):
         self.revision = self.makeClass ( self.input_data.data.revision[0] )
         self.hkl      = self.input_data.data.hkl
 
-
         # convert dictionaries into real classes; this is necessary because we want
         # to use class's functions and not just access class's data fields
         for i in range(len(self.hkl)):
@@ -579,9 +577,10 @@ class Crank2(basic.TaskDriver):
             self.native = self.makeClass ( self.input_data.data.native[0] )
 
         if hasattr(self.input_data.data,"pmodel"):  # optional data parameter
-            if hasattr(self.input_data.data.pmodel[0],"visible"):
-                if self.input_data.data.pmodel[0].visible:
-                    self.pmodel = self.makeClass ( self.input_data.data.pmodel[0] )
+            self.pmodel = self.makeClass ( self.input_data.data.pmodel[0] )
+            #if hasattr(self.input_data.data.pmodel[0],"visible"):
+            #    if self.input_data.data.pmodel[0].visible:
+            #        self.pmodel = self.makeClass ( self.input_data.data.pmodel[0] )
 
         # --------------------------------------------------------------------
         # make shortcuts to folders with input parameters
@@ -631,9 +630,9 @@ class Crank2(basic.TaskDriver):
         # run crank-2
 
         if sys.platform.startswith("win"):
-            self.runApp ( "ccp4-python.bat",cmd )
+            self.runApp ( "ccp4-python.bat",cmd,logType="Main" )
         else:
-            self.runApp ( "ccp4-python",cmd )
+            self.runApp ( "ccp4-python",cmd,logType="Main" )
 
         if self.task._type=="TaskCrank2":
             self.addCitations ( ['crank2'] )

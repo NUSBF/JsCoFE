@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    16.08.18   <--  Date of Last Modification.
+#    24.12.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -54,8 +54,9 @@ class Coot(basic.TaskDriver):
             data_list += self.input_data.data.aux_struct
         for i in range(len(data_list)):
             data_list[i] = self.makeClass ( data_list[i] )
-        istruct = data_list[0]
-        mtzfile = istruct.getMTZFilePath ( self.inputDir() )
+        istruct  = data_list[0]
+        mtzfile  = istruct.getMTZFilePath ( self.inputDir() )
+        lead_key = istruct.leadKey
 
         ligand  = None
         liblig  = None
@@ -83,7 +84,7 @@ class Coot(basic.TaskDriver):
                     "\n_END\n" )
                 self.close_stdin()
 
-                self.runApp ( "libcheck",[] )
+                self.runApp ( "libcheck",[],logType="Service" )
 
                 libnew += ".lib"
 
@@ -105,15 +106,15 @@ class Coot(basic.TaskDriver):
             args += ["--dictionary",libnew]
 
         if ligand:
-            args += ["-c","(get-monomer \"" + ligand.code + "\")"]
+            args += ["--python","-c","get_monomer('" + ligand.code + "')"]
 
         args += ["--no-guano"]
 
         # Run coot
         if sys.platform.startswith("win"):
-            rc = self.runApp ( "coot.bat",args,False )
+            rc = self.runApp ( "coot.bat",args,logType="Main",quitOnError=False )
         else:
-            rc = self.runApp ( "coot",args,False )
+            rc = self.runApp ( "coot",args,logType="Main",quitOnError=False )
 
         # Check for PDB files left by Coot and convert them to type structure
 
@@ -153,7 +154,8 @@ class Coot(basic.TaskDriver):
 
             struct = self.registerStructure ( coot_xyz,None,coot_mtz,
                                               fnames[0],fnames[1],
-                                              libnew )
+                                              libnew,leadKey=lead_key )
+
             #                                  istruct.getLibFilePath(self.inputDir()) )
             if struct:
                 struct.copyAssociations ( istruct )

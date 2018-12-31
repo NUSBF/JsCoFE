@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.12.18   <--  Date of Last Modification.
+ *    27.12.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -42,13 +42,14 @@ function TaskCootMB()  {
       data_type : {'DataRevision':['xyz','substructure','phases']}, // data type(s) and subtype(s)
       label     : 'Structure revision',     // label for input dialog
       inputId   : 'revision', // input Id for referencing input fields
-      version   : 0,          // minimum data version allowed
+      version   : 4,          // minimum data version allowed
       min       : 1,          // minimum acceptable number of data instances
       max       : 1           // maximum acceptable number of data instances
     },{
       data_type : {'DataStructure':[],'DataEnsemble':[],'DataXYZ':[]},  // data type(s) and subtype(s)
       label     : 'Additional structures', // label for input dialog
       inputId   : 'aux_struct', // input Id for referencing input fields
+      version   : 0,            // minimum data version allowed
       min       : 0,            // minimum acceptable number of data instances
       max       : 20            // maximum acceptable number of data instances
     },{
@@ -72,8 +73,10 @@ TaskCootMB.prototype.constructor = TaskCootMB;
 // ===========================================================================
 // export such that it could be used in both node and a browser
 
-TaskCootMB.prototype.icon_small = function()  { return 'task_coot_20x20'; }
-TaskCootMB.prototype.icon_large = function()  { return 'task_coot';       }
+TaskCootMB.prototype.icon = function()  { return 'task_coot'; }
+
+//TaskCootMB.prototype.icon_small = function()  { return 'task_coot_20x20'; }
+//TaskCootMB.prototype.icon_large = function()  { return 'task_coot';       }
 
 TaskCootMB.prototype.currentVersion = function()  {
   var version = 0;

@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    20.08.18   <--  Date of Last Modification.
+#    23.12.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -356,10 +356,6 @@ class CCP4go(import_task.Import):
 
                     structure.addDataAssociation ( hkl_sol.dataId )
                     structure.setRefmacLabels ( hkl_sol )
-                    if meta["phasing"]=="MR":
-                        structure.addMRSubtype()
-                    else:
-                        structure.addEPSubtype()
                     structure.setXYZSubtype()
 
                     if "libindex" in meta:
@@ -523,9 +519,9 @@ class CCP4go(import_task.Import):
 
             pyrvapi.rvapi_keep_polling ( True )
             if sys.platform.startswith("win"):
-                self.runApp ( "ccp4-python.bat",cmd )
+                self.runApp ( "ccp4-python.bat",cmd,logType="Main" )
             else:
-                self.runApp ( "ccp4-python",cmd )
+                self.runApp ( "ccp4-python",cmd,logType="Main" )
             pyrvapi.rvapi_keep_polling ( False )
             self.restoreReportDocument()
             self.addCitations ( ['ccp4go'] )

@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    20.11.18   <--  Date of Last Modification.
+#    29.12.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -92,10 +92,12 @@ class TaskDriver(object):
         return rvrow
 
     def log_page_id       (self): return "log_page"
+    def log_page_1_id     (self): return "log_page_1"
     def err_page_id       (self): return "err_page"
     def traceback_page_id (self): return "python_exception"
 
-    def file_stdout_path  (self): return "_stdout.log" # reserved name, used in NC
+    def file_stdout_path  (self): return "_stdout.log"  # reserved name, used in NC
+    def file_stdout1_path (self): return "_stdout1.log" # reserved name, not used in NC
     def file_stderr_path  (self): return "_stderr.log"
     def file_stdin_path   (self): return "_stdin." + str(self._scriptNo) + ".script"
 
@@ -123,7 +125,8 @@ class TaskDriver(object):
     outputDataBox = databox.DataBox()
 
     # standard output file handlers
-    file_stdout   = None
+    file_stdout   = None   #  Main Log
+    file_stdout1  = None   #  Service Log
     file_stderr   = None
     file_stdin    = None
 
@@ -206,14 +209,16 @@ class TaskDriver(object):
         os.chdir ( self.job_dir )
 
         # initialise execution logs
-        self.file_stdout = open ( self.file_stdout_path(),'w' )
-        self.file_stderr = open ( self.file_stderr_path(),'w' )
+        self.file_stdout  = open ( self.file_stdout_path (),'w' )
+        self.file_stdout1 = open ( self.file_stdout1_path(),'w' )
+        self.file_stderr  = open ( self.file_stderr_path (),'w' )
 
         # fetch task data
         self.task = jsonut.readjObject  ( "job.meta" )
         if self.task is None:
-            self.file_stdout.write ( "\n\n *** task read failed in '" + module_name + "'\n\n" )
-            self.file_stderr.write ( "\n\n *** task read failed in '" + module_name + "'\n\n" )
+            self.file_stdout .write ( "\n\n *** task read failed in '" + module_name + "'\n\n" )
+            self.file_stdout1.write ( "\n\n *** task read failed in '" + module_name + "'\n\n" )
+            self.file_stderr .write ( "\n\n *** task read failed in '" + module_name + "'\n\n" )
             print " task read failed in '" + module_name + "'"
             raise signal.TaskReadFailure()
 
@@ -229,8 +234,11 @@ class TaskDriver(object):
             tstr = title_str
         else:
             tstr = self.task.title
-        self.file_stdout.write ( "[" + self.job_id.zfill(4) + "] " + tstr.upper() + "\n\n" )
-        self.file_stderr.write ( " " )
+        self.file_stdout .write ( "[" + self.job_id.zfill(4) + "] " + tstr.upper() + "\n\n" +\
+                                  "            MAIN LOG\n\n" )
+        self.file_stdout1.write ( "[" + self.job_id.zfill(4) + "] " + tstr.upper() + "\n\n" +\
+                                  "            SERVICE PROGRAMS LOG\n\n" )
+        self.file_stderr .write ( " " )
 
         # initialise HTML report document; note that we use absolute path for
         # the report directory, which is necessary for passing RVAPI document
@@ -284,9 +292,17 @@ class TaskDriver(object):
             if self.navTreeId:
                 pyrvapi.rvapi_set_tab_proxy ( self.navTreeId,self.report_page_id() )
             pyrvapi.rvapi_add_tab ( self.log_page_id(),
-                                    getOption("log_page","name","Log file"),focus )
+                                    getOption("log_page","name","Main Log"),focus )
             pyrvapi.rvapi_append_content ( "/".join(["..",self.file_stdout_path()+"?capsize"]),
                                            True,self.log_page_id() )
+            focus = False
+        if getOption("log_page_1","show",True):
+            if self.navTreeId:
+                pyrvapi.rvapi_set_tab_proxy ( self.navTreeId,self.report_page_id() )
+            pyrvapi.rvapi_add_tab ( self.log_page_1_id(),
+                                    getOption("log_page","name","Service Log"),focus )
+            pyrvapi.rvapi_append_content ( "/".join(["..",self.file_stdout1_path()+"?capsize"]),
+                                           True,self.log_page_1_id() )
             focus = False
         if getOption("err_page","show",True):
             if self.navTreeId:
@@ -410,8 +426,9 @@ class TaskDriver(object):
 
     def flush(self):
         pyrvapi.rvapi_flush()
-        self.file_stdout.flush()
-        self.file_stderr.flush()
+        self.file_stdout .flush()
+        self.file_stdout1.flush()
+        self.file_stderr .flush()
         return
 
     def putTitle1 ( self,pageId,title_str,row,colSpan=1 ):
@@ -508,7 +525,7 @@ class TaskDriver(object):
         pyrvapi.rvapi_put_vert_theader ( tableId,header,tooltip,row )
         if line:
             pyrvapi.rvapi_put_table_string ( tableId,line,row,0 )
-            pyrvapi.rvapi_shape_table_cell ( tableId,row,0,"",
+            pyrvapi.rvapi_shape_table_cell ( tableId,row,0,tooltip,
                 "text-align:left;width:100%;white-space:nowrap;" + \
                 "font-family:\"Courier\";text-decoration:none;" + \
                 "font-weight:normal;font-style:normal;width:auto;",
@@ -690,16 +707,12 @@ class TaskDriver(object):
         self.file_stdout.flush()
         self.log_parser = None
         pyrvapi.rvapi_flush()
-        #self.file_stdout = open ( self.file_stdout_path(),'a' )
         return
 
     def setGenericLogParser ( self,panel_id,split_sections_bool,
                               graphTables=False,makePanel=True ):
         if makePanel:
             self.putPanel ( panel_id )
-        #self.generic_parser_summary = {}
-        #self.file_stdout.write ( "\n\n *********************** WE ARE HERE\n\n")
-        #self.file_stdout.write ( str(sys.path) + "\n\n")
         self.log_parser = pyrvapi_ext.parsers.generic_parser (
                                          panel_id,split_sections_bool,
                                          summary=self.generic_parser_summary,
@@ -771,15 +784,22 @@ class TaskDriver(object):
             return False
 
 
-    def runApp ( self,appName,cmd,quitOnError=True ):
+    def runApp ( self,appName,cmd,logType="Main",quitOnError=True ):
 
         input_script = None
         if self.file_stdin:
             input_script    = self.file_stdin_path()
             self._scriptNo += 1
 
+        logfile     = self.file_stdout
+        logfile_alt = None
+        if logType=="Service":
+            logfile     = self.file_stdout1
+            logfile_alt = self.file_stdout
+
         rc = command.call ( appName,cmd,"./",input_script,
-                            self.file_stdout,self.file_stderr,self.log_parser )
+                            logfile,self.file_stderr,self.log_parser,
+                            file_stdout_alt=logfile_alt )
         self.file_stdin = None
 
         if rc.msg and quitOnError:
@@ -789,7 +809,6 @@ class TaskDriver(object):
 
 
     def putCitations(self):
-        #self.file_stdout.write ( str(citations.citation_list) )
         if citations.citation_list:
             self.putTitle ( "References" )
             self.putMessage ( citations.makeCitationsHTML(self) )
@@ -806,7 +825,7 @@ class TaskDriver(object):
             idir = self.inputDir()
         edmap.calcEDMap ( xyzPath,hklData.getHKLFilePath(idir),
                           libPath,hklData.dataset,filePrefix,self.job_dir,
-                          self.file_stdout,self.file_stderr,self.log_parser )
+                          self.file_stdout1,self.file_stderr,self.log_parser )
         return [ filePrefix + edmap.file_pdb (),
                  filePrefix + edmap.file_mtz (),
                  filePrefix + edmap.file_map (),
@@ -815,7 +834,7 @@ class TaskDriver(object):
     def calcAnomEDMap ( self,xyzPath,hklData,anom_form,filePrefix ):
         edmap.calcAnomEDMap ( xyzPath,hklData.getHKLFilePath(self.inputDir()),
                               hklData.dataset,anom_form,filePrefix,self.job_dir,
-                              self.file_stdout,self.file_stderr,self.log_parser )
+                              self.file_stdout1,self.file_stderr,self.log_parser )
         return [ filePrefix + edmap.file_pdb(),
                  filePrefix + edmap.file_mtz(),
                  filePrefix + edmap.file_map(),
@@ -824,22 +843,18 @@ class TaskDriver(object):
 
     def calcCCP4Maps ( self,mtzPath,filePrefix,source_key="refmac" ):
         edmap.calcCCP4Maps ( mtzPath,filePrefix,self.job_dir,
-                             self.file_stdout,self.file_stderr,
+                             self.file_stdout1,self.file_stderr,
                              source_key,self.log_parser )
         return [ filePrefix + edmap.file_map(),
                  filePrefix + edmap.file_dmap() ]
 
 
     def finaliseStructure ( self,xyzPath,name_pattern,hkl,libPath,associated_data_list,
-                                 subtype,openState_bool=False,
+                                 structureType,leadKey=1,openState_bool=False,
                                  title="Output Structure",
                                  inpDir=None ):
-        #  subtype = 0: copy subtype from associated data
-        #          = 1: set MR subtype
-        #          = 2: set EP subtype
-        #          = 3: set EP+Substructure subtype
-
-        #self.file_stdout.write ( "name_pattern=" + name_pattern + "\n")
+        #  structureType = 0: macromolecular coordinates at xyzPath
+        #                = 1: heavy atom substructure at xyzPath
 
         structure = None
 
@@ -851,7 +866,6 @@ class TaskDriver(object):
 
             panel_id = self.getWidgetId ( self.refmac_report() )
             pyrvapi.rvapi_add_panel ( panel_id,sec_id,0,0,1,1 )
-            #self.log_parser = pyrvapi_ext.parsers.generic_parser ( panel_id,False )
             self.log_parser = pyrvapi_ext.parsers.generic_parser (
                                          panel_id,False,
                                          summary=self.generic_parser_summary,
@@ -862,29 +876,22 @@ class TaskDriver(object):
 
             # Register output data. This moves needful files into output directory
             # and puts the corresponding metadata into output databox
-            #self.file_stdout.write ( "fnames=" + str(fnames) + "\n")
 
-            if subtype==3:
+            if structureType==1:
                 structure = self.registerStructure (
-                                None,fnames[0],fnames[1],fnames[2],fnames[3],libPath )
+                                None,fnames[0],fnames[1],fnames[2],fnames[3],libPath,
+                                leadKey=leadKey )
             else:
                 structure = self.registerStructure (
-                                fnames[0],None,fnames[1],fnames[2],fnames[3],libPath )
+                                fnames[0],None,fnames[1],fnames[2],fnames[3],libPath,
+                                leadKey=leadKey )
             if structure:
                 structure.addDataAssociation ( hkl.dataId )
                 structure.setRefmacLabels ( hkl )
                 for i in range(len(associated_data_list)):
                     if associated_data_list[i]:
                         structure.addDataAssociation ( associated_data_list[i].dataId )
-                if subtype==0:
-                    for i in range(len(associated_data_list)):
-                        if associated_data_list[i]:
-                            structure.copySubtype ( associated_data_list[i] )
-                elif subtype==1:
-                    structure.addMRSubtype()
-                else:
-                    structure.addEPSubtype()
-                #structure.setXYZSubtype()
+                structure.addPhasesSubtype()
                 if title:
                     self.putTitle ( title )
                 else:
@@ -1072,18 +1079,18 @@ class TaskDriver(object):
 
 
     def registerStructure ( self,xyzPath,subPath,mtzPath,mapPath,dmapPath,
-                            libPath=None,copy_files=False ):
+                            libPath=None,leadKey=1,copy_files=False ):
         self.dataSerialNo += 1
         structure = dtype_structure.register (
                                     xyzPath,subPath,mtzPath,mapPath,dmapPath,libPath,
-                                    self.dataSerialNo ,self.job_id,
+                                    self.dataSerialNo ,self.job_id,leadKey,
                                     self.outputDataBox,self.outputDir(),
                                     copy_files=copy_files )
         if not structure:
             self.file_stderr.write ( "  NONE STRUCTURE" )
             self.file_stderr.flush()
         else:
-            structure.putXYZMeta ( self.outputDir(),self.file_stdout,
+            structure.putXYZMeta ( self.outputDir(),self.file_stdout1,
                                    self.file_stderr,None )
         return structure
 
@@ -1101,11 +1108,11 @@ class TaskDriver(object):
 
 
     def registerStructure1 ( self,xyzPath,subPath,mtzPath,mapPath,dmapPath,
-                                  libPath,regName,copy_files=False ):
+                                  libPath,regName,leadKey=1,copy_files=False ):
         self.dataSerialNo += 1
         structure = dtype_structure.register1 (
                                 xyzPath,subPath,mtzPath,mapPath,dmapPath,libPath,
-                                regName,self.dataSerialNo,self.job_id,
+                                regName,self.dataSerialNo,self.job_id,leadKey,
                                 self.outputDataBox )
         if not structure:
             self.file_stderr.write ( "  NONE STRUCTURE\n" )
@@ -1117,7 +1124,7 @@ class TaskDriver(object):
             self._move_file_to_output_dir ( mapPath ,structure.getMapFileName (),copy_files )
             self._move_file_to_output_dir ( dmapPath,structure.getDMapFileName(),copy_files )
             self._move_file_to_output_dir ( libPath ,structure.getLibFileName (),copy_files )
-            structure.putXYZMeta ( self.outputDir(),self.file_stdout,
+            structure.putXYZMeta ( self.outputDir(),self.file_stdout1,
                                    self.file_stderr,None )
         return structure
 
@@ -1277,7 +1284,7 @@ class TaskDriver(object):
             self.file_stderr.write ( "  NONE ENSEMBLE DATA\n" )
             self.file_stderr.flush()
         else:
-            ensemble.putXYZMeta ( self.outputDir(),self.file_stdout,
+            ensemble.putXYZMeta ( self.outputDir(),self.file_stdout1,
                                   self.file_stderr,None )
 
         return ensemble
@@ -1397,7 +1404,7 @@ class TaskDriver(object):
 
                 # run reindex
                 self.file_stdin = f_stdin  # for repeat use of input script file
-                self.runApp ( "reindex",cmd )
+                self.runApp ( "reindex",cmd,logType="Service" )
 
                 if os.path.isfile(newHKLFPath):
                     self.addFileImport ( "",newHKLFPath,import_filetype.ftype_MTZMerged() )
@@ -1430,8 +1437,9 @@ class TaskDriver(object):
         self.putMessage ( "<p>&nbsp;" )  # just to make extra space after report
         self.outputDataBox.save ( self.outputDir() )
         pyrvapi.rvapi_flush   ()
-        self.file_stdout.close()
-        self.file_stderr.close()
+        self.file_stdout .close()
+        self.file_stdout1.close()
+        self.file_stderr .close()
         raise signal.Success()
 
     def fail ( self,pageMessage,signalMessage ):
@@ -1448,10 +1456,12 @@ class TaskDriver(object):
         pyrvapi.rvapi_flush    ()
         msg = pageMessage.replace("<b>","").replace("</b>","").replace("<i>","") \
                          .replace("</i>","").replace("<br>","\n").replace("<p>","\n")
-        self.file_stdout.write ( msg + "\n" )
-        self.file_stderr.write ( msg + "\n" )
-        self.file_stdout.close ()
-        self.file_stderr.close ()
+        self.file_stdout .write ( msg + "\n" )
+        self.file_stdout1.write ( msg + "\n" )
+        self.file_stderr .write ( msg + "\n" )
+        self.file_stdout .close ()
+        self.file_stdout1.close ()
+        self.file_stderr .close ()
         raise signal.JobFailure ( signalMessage )
 
     def python_fail_tab ( self ):

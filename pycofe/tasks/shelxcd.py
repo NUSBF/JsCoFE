@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    15.12.18   <--  Date of Last Modification.
+#    24.12.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -104,7 +104,7 @@ class ShelxCD(basic.TaskDriver):
                 self.runApp ( "mtz2various",[
                     "HKLIN" ,hkl[i].getHKLFilePath(self.inputDir()),
                     "HKLOUT",hkl[i].basename + ".hkl"
-                ])
+                ],logType="Service")
 
 
         if hasattr(self.input_data.data,"seq"):  # optional data parameter?
@@ -131,7 +131,7 @@ class ShelxCD(basic.TaskDriver):
                 self.runApp ( "mtz2various",[
                     "HKLIN" ,native.getHKLFilePath(self.inputDir()),
                     "HKLOUT",native.basename + ".hkl"
-                ])
+                ],logType="Service" )
 
         if not hkl0:
             hkl0 = hkl[0]
@@ -204,8 +204,8 @@ class ShelxCD(basic.TaskDriver):
         stemname = "shelx"
         pdbfile  = stemname + "_fa.pdb"
 
-        self.runApp ( "shelxc",[stemname] )
-        self.runApp ( "shelxd",[stemname+"_fa"] )
+        self.runApp ( "shelxc",[stemname],logType="Main" )
+        self.runApp ( "shelxd",[stemname+"_fa"],logType="Main" )
 
         # check results
         if os.path.isfile(pdbfile):
@@ -222,7 +222,10 @@ class ShelxCD(basic.TaskDriver):
             rvrow0 = self.rvrow
             self.putTitle ( "Substructure Found" )
             structure = self.finaliseStructure ( pdbfile,self.outputFName,
-                                                 hkl0,None,[],3,False,"" )
+                                                 hkl0,None,[],1,
+                                                 leadKey=1,
+                                                 openState_bool=False,
+                                                 title="" )
             if structure:
 
                 self.putMessage ( "&nbsp;" )
@@ -267,8 +270,6 @@ class ShelxCD(basic.TaskDriver):
                         if hkl_all_0[i].wtype==wtype:
                             hkl_all.append ( hkl_all_0[i] )
                             break
-
-                structure.addEPSubtype()
 
                 if len(hkl_all)==1:
                     self.putTitle ( "Structure Revision" )

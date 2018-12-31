@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    09.08.18   <--  Date of Last Modification.
+#    24.12.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -83,18 +83,18 @@ class Refmac(basic.TaskDriver):
            if use_protein:
               prosmart_cmd = [ "-quick", "-o", "ProSMART_Output_protein", "-p1", istruct.getXYZFilePath(self.inputDir()), "-p2" ] + homolog_protein_fpaths
               self.putMessage('Running ProSMART to generate external restraints for protein macromolecules')
-              self.runApp ( "prosmart",prosmart_cmd )
+              self.runApp ( "prosmart",prosmart_cmd,logType="Main" )
               external_restraint_files.append(os.path.join('ProSMART_Output_protein',os.path.splitext(istruct.getXYZFileName())[0]+'.txt'))
 
            if use_dnarna:
               prosmart_cmd = [ "-quick", "-dna_rna", "-o", "ProSMART_Output_dnarna", "-p1" ,istruct.getXYZFilePath(self.inputDir()), "-p2" ] + homolog_dnarna_fpaths
               self.putMessage('Running ProSMART to generate external restraints for nucleic acid macromolecules')
-              self.runApp ( "prosmart",prosmart_cmd )
+              self.runApp ( "prosmart",prosmart_cmd,logType="Main" )
               external_restraint_files.append(os.path.join('ProSMART_Output_dnarna',os.path.splitext(istruct.getXYZFileName())[0]+'.txt'))
 
         if str(self.task.parameters.sec3.contains.HBOND_RESTR.value) == 'yes':
            prosmart_cmd = [ "-quick", "-o", "ProSMART_Output_hbond", "-p1", istruct.getXYZFilePath(self.inputDir())]
-           self.runApp ( "prosmart",prosmart_cmd )
+           self.runApp ( "prosmart",prosmart_cmd,logTytpe="Main" )
            external_restraint_files.append(os.path.join('ProSMART_Output_hbond',os.path.splitext(istruct.getXYZFileName())[0]+'.txt'))
 
 
@@ -278,7 +278,7 @@ class Refmac(basic.TaskDriver):
         self.setGenericLogParser ( self.refmac_report(),False )
 
         # Start refmac
-        self.runApp ( "refmac5",cmd )
+        self.runApp ( "refmac5",cmd,logType="Main" )
 
         # check solution and register data
         if os.path.isfile(self.getXYZOFName()):
@@ -294,7 +294,8 @@ class Refmac(basic.TaskDriver):
 
             structure = self.registerStructure ( self.getXYZOFName(),None,
                                                  self.getMTZOFName(),
-                                                 fnames[0],fnames[1],libin )
+                                                 fnames[0],fnames[1],libin,
+                                                 leadKey=1 )
             if structure:
                 structure.copyAssociations   ( istruct )
                 structure.addDataAssociation ( hkl.dataId     )

@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    31.10.18   <--  Date of Last Modification.
+#    24.12.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -26,14 +26,29 @@ from   pycofe.varut  import jsonut
 
 def dtype(): return "DataRevision"  # must coincide with data definitions in JS
 
+spec1_list = [
+    [dtype_template.subtypeAnomalous(),"anomalous"],
+    [dtype_template.subtypeProtein  (),"protein"  ],
+    [dtype_template.subtypeDNA      (),"dna"      ],
+    [dtype_template.subtypeRNA      (),"rna"      ]
+]
+
+spec2_list = [
+    [dtype_template.subtypeSubstructure(),"substructure"],
+    [dtype_template.subtypeXYZ         (),"xyz"         ],
+    [dtype_template.subtypePhases      (),"phases"      ]
+]
+
+
 class DType(dtype_template.DType):
 
     def __init__(self,job_id,json_str=""):
         super(DType,self).__init__(job_id,json_str)
         if not json_str:
             self._type          = dtype()
+            self.leadKey        = 0;  # data lead key: 0: undefined, 1: coordinates, 2: phases
             self.dname          = "revision"
-            self.version       += 0      # versioning increments from parent to children
+            self.version       += 2   # versioning increments from parent to children
             self.HKL            = None
             self.ASU            = jsonut.jObject()  # asymetric unit data
             self.ASU.seq        = [];
@@ -46,6 +61,14 @@ class DType(dtype_template.DType):
             self.Ligands        = []                # ligands metadata
             self.Options        = jsonut.jObject()  # input options used in interfaces
             self.Options.seqNo  = 0   # selected sequence number
+        return
+
+    def setLeadXYZ ( self ):
+        self.leadKey = 1
+        return
+
+    def setLeadPhases ( self ):
+        self.leadKey = 2
         return
 
     def copy ( self,prevRevision ):
@@ -72,6 +95,7 @@ class DType(dtype_template.DType):
         self.dataId = str(self.jobId).zfill(4) + "." + str(serialNo).zfill(2)
         return
 
+    """
     def makeRevDName(self,jobId,serialNo,title):
         self.jobId = jobId
         self.makeDataId ( serialNo )
@@ -101,6 +125,41 @@ class DType(dtype_template.DType):
                     self.dname += "(" + asutype + ")"
                 f = True
         return
+    """
+
+    def makeRevDName(self,jobId,serialNo,title):
+
+        self.jobId = jobId
+        self.makeDataId ( serialNo )
+        self.dname = "R" + self.dataId + ": <i>" + title + "</i> "
+        if self.HKL and self.HKL.new_spg:
+            self.dname += self.HKL.new_spg + " "
+
+        spec1 = ""
+        for item in spec1_list:
+            if item[0] in self.subtype:
+                spec1 += item[1] + ","
+
+        spec2  = ""
+        slist2 = spec2_list;
+        if self.leadKey==2:
+            slist2.insert ( 0,slist2.pop() )
+        first = True
+        for item in slist2:
+            if item[0] in self.subtype:
+                if first:
+                    spec2 += "<b>" + item[1] + "</b>,"
+                    first  = False
+                else:
+                    spec2 += item[1] + ","
+
+        if spec1:
+            self.dname += "(" + spec1[:-1] + ")"
+        if spec2:
+            self.dname += "/" + spec2[:-1]
+
+        return
+
 
     #  ------------------------------------------------------------------------
 
@@ -131,8 +190,6 @@ class DType(dtype_template.DType):
     def setStructureData ( self,structure ):
         self.Structure = structure
         self.removeSubtypes ([
-            dtype_template.subtypeEP (),
-            dtype_template.subtypeMR (),
             dtype_template.subtypeXYZ(),
             dtype_template.subtypeSubstructure(),
             dtype_template.subtypePhases()
@@ -140,6 +197,7 @@ class DType(dtype_template.DType):
         self.addSubtypes ( structure.subtype )
         if hasattr(self,"phaser_meta"):
             delattr ( self,"phaser_meta" )
+        self.leadKey = structure.leadKey
         return
 
     def addLigandData ( self,ligand ):

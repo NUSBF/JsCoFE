@@ -158,7 +158,7 @@ function packDir ( dirPath, fileSelection, onReady_func )  {
 
   tmpFile = path.resolve ( tmpFile + '.zip' );
 
-  var zip = utils.spawn ( conf.pythonName(),['-m','zipfile','-c',tmpFile,'./'],{
+  var zip = utils.spawn ( conf.pythonName(),['-m','zip_file','-c',tmpFile,'.'],{
     cwd   : dirPath,
     stdio : ['ignore']
   });
@@ -351,17 +351,17 @@ function unpackDir ( dirPath,cleanTmpDir, onReady_func )  {
   //var errors = "";
 
   if (cleanTmpDir)  {
-    var unpackDir = '';
+    var unpack_dir = '';
     do {
-      unpackDir = path.join ( cleanTmpDir,'tmp_'+crypto.randomBytes(20).toString('hex') );
-    } while (utils.fileExists(unpackDir));
-    utils.mkDir ( unpackDir );
-    tmpDir = unpackDir + '_JOBDIRCOPY';
+      unpack_dir = path.join ( cleanTmpDir,'tmp_'+crypto.randomBytes(20).toString('hex') );
+    } while (utils.fileExists(unpack_dir));
+    utils.mkDir ( unpack_dir );
+    tmpDir = unpack_dir + '_JOBDIRCOPY';
   } else {
-    unpackDir = dirPath;
+    unpack_dir = dirPath;
   }
 
-  var zip = utils.spawn ( conf.pythonName(),['-m','zipfile','-e',jobballPath,unpackDir],{
+  var zip = utils.spawn ( conf.pythonName(),['-m','zip_file','-e',jobballPath,unpack_dir],{
     stdio : ['ignore']
   });
 
@@ -376,8 +376,8 @@ function unpackDir ( dirPath,cleanTmpDir, onReady_func )  {
        // as all directories are on the same device (see above), the
        // replace should be done within this thread and, therefore, safe
        // for concurrent access from client
-       utils.moveFile ( dirPath  ,tmpDir  );
-       utils.moveFile ( unpackDir,dirPath );
+       utils.moveFile ( dirPath   ,tmpDir  );
+       utils.moveFile ( unpack_dir,dirPath );
        setTimeout ( function(){  // postpone for speed
          utils.removePath ( tmpDir );
        },0 );

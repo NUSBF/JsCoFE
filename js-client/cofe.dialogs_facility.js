@@ -2,7 +2,7 @@
 /*
  *  ===========================================================================
  *
- *    12.12.18   <--  Date of Last Modification.
+ *    27.12.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  ---------------------------------------------------------------------------
  *
@@ -280,7 +280,7 @@ FacilityBrowser.prototype.onTreeContextMenu = function ( node )  {
     (function(browser){
       items.updateItem = { // The "Add job" menu item
         label  : "Update",
-        icon   : image_path('refresh_20x20'),
+        icon   : image_path('refresh'),
         action : function(){ browser.openItem(); }
       };
     }(this))
@@ -288,7 +288,7 @@ FacilityBrowser.prototype.onTreeContextMenu = function ( node )  {
     (function(browser){
       items.updateItem = { // The "Add job" menu item
         label  : "Choose",
-        icon   : image_path('upload_20x20'),
+        icon   : image_path('upload'),
         action : function(){ browser.openItem(); }
       };
     }(this))

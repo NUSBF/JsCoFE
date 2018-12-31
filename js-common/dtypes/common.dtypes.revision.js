@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    12.12.18   <--  Date of Last Modification.
+ *    31.12.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -48,6 +48,7 @@ function DataRevision()  {
              else  DataTemplate.call ( this );
 
   this._type          = 'DataRevision';
+  this.leadKey        = 0;      // data lead key: 0: undefined, 1: coordinates, 2: phases
   this.HKL            = null;
   this.ASU            = {};     // Asymmetric Unit Data
   this.ASU.seq        = [];
@@ -73,14 +74,16 @@ DataRevision.prototype.constructor = DataRevision;
 
 // ===========================================================================
 
-DataRevision.prototype.title      = function()  { return 'Revision';              }
-DataRevision.prototype.icon_small = function()  { return 'data_xrayimages_20x20'; }
-DataRevision.prototype.icon_large = function()  { return 'data_xrayimages';       }
+DataRevision.prototype.title = function()  { return 'Revision';        }
+DataRevision.prototype.icon  = function()  { return 'data_xrayimages'; }
+
+//DataRevision.prototype.icon_small = function()  { return 'data_xrayimages_20x20'; }
+//DataRevision.prototype.icon_large = function()  { return 'data_xrayimages';       }
 
 // when data class version is changed here, change it also in python
 // constructors
 DataRevision.prototype.currentVersion = function()  {
-  var version = 1;
+  var version = 2;  // advanced on leadKey
   if (__template)
         return  version + __template.DataTemplate.prototype.currentVersion.call ( this );
   else  return  version + DataTemplate.prototype.currentVersion.call ( this );
@@ -199,15 +202,22 @@ if (!__template)  {
 
   DataRevision.prototype._layCDI_Crank2 = function ( dropdown,mode )  {
     var customGrid = dropdown.customGrid;
-    var row        = 0;
+    var row        = customGrid.getNRows();
 
-    if ((mode=='shelx-auto') && this.Structure)  {
-      customGrid.setLabel ( 'Current structure:',row,0,1,2 )
-                            .setFontItalic(true).setNoWrap();
-      customGrid.setLabel ( this.Structure.dname,row++,1,1,1 ).setNoWrap();
-      customGrid.setLabel ( 'will not be used as fixed model (as a feature ' +
-                            'of Shelx-Auto pipeline)',row++,0,1,1 )
-                            .setFontItalic(true).setNoWrap();
+    if (this.Structure)  {
+      if ((mode=='crank2') && (this.Structure.subtype.indexOf('xyz')>=0))  {
+        customGrid.setLabel ( 'Current structure will be used for calculating ' +
+                              'initial phases (MR-SAD)',row++,0,1,6 )
+                              .setFontBold(true).setFontItalic(true).setNoWrap();
+        customGrid.setLabel ( ' ',++row,0,1,2 ).setHeight_px ( 8 );
+      } else if (mode=='shelx-auto')  {
+        customGrid.setLabel ( 'Current structure:',row,0,1,2 )
+                              .setFontItalic(true).setNoWrap();
+        customGrid.setLabel ( this.Structure.dname,row++,1,1,1 ).setNoWrap();
+        customGrid.setLabel ( 'will not be used as fixed model (as a feature ' +
+                              'of Shelx-Auto pipeline)',row++,0,1,1 )
+                              .setFontItalic(true).setNoWrap();
+      }
     }
 
   }
@@ -279,18 +289,26 @@ if (!__template)  {
   DataRevision.prototype.layCustomDropdownInput = function ( dropdown )  {
 
     switch (dropdown.layCustom)  {
-      case 'reindex' :  case 'phaser-ep'    :  case 'refmac' :
+      case 'phaser-ep'  :
+            if (this.Structure)  {
+              dropdown.in_revision = true;
+              this.Structure.layCustomDropdownInput ( dropdown );
+            }
+            this.HKL.layCustomDropdownInput ( dropdown );
+          break;
+      case 'reindex'    :  case 'refmac' :
             this.HKL.layCustomDropdownInput ( dropdown );   break;
-      case 'parrot'  :  case 'buccaneer-ws' :  case 'acorn'  :
+      case 'parrot'     :  case 'buccaneer-ws' :  case 'acorn'  :
             this.Structure.layCustomDropdownInput ( dropdown );   break;
-      case 'arpwarp' :
+      case 'arpwarp'    :
             this.Structure.layCustomDropdownInput ( dropdown );
             dropdown.Structure = this.Structure;  // this will add phase options for refmac
             this.HKL.layCustomDropdownInput ( dropdown );
           break;
-      case 'crank2'  :
-            this._layCDI_Crank2   ( dropdown,'crank2' );  break;
-      case 'molrep'  :
+      case 'crank2'     :
+            this._layCDI_Crank2   ( dropdown,'crank2' );
+          break;
+      case 'molrep'     :
             this._layCDI_Molrep   ( dropdown );  break;
       case 'phaser-mr'  :   case 'phaser-mr-fixed' :
             this._layCDI_PhaserMR ( dropdown );  break;
@@ -307,7 +325,13 @@ if (!__template)  {
   var msg = '';
     switch (dropdown.layCustom)  {
       case 'reindex'   :  case 'phaser-mr'    :  case 'phaser-mr-fixed' :
-      case 'phaser-ep' :  case 'refmac'       :
+          msg = this.HKL.collectCustomDropdownInput ( dropdown );  break;
+      case 'phaser-ep' :
+          msg = this.HKL.collectCustomDropdownInput ( dropdown );
+          if (this.Structure)
+            msg += this.Structure.collectCustomDropdownInput ( dropdown );
+        break;
+      case 'refmac'    :
           msg = this.HKL.collectCustomDropdownInput ( dropdown );  break;
       case 'parrot'    :  case 'buccaneer-ws' :  case 'acorn' :
           msg = this.Structure.collectCustomDropdownInput ( dropdown ); break;

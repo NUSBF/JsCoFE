@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.12.18   <--  Date of Last Modification.
+ *    27.12.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -79,6 +79,7 @@ TaskRemark.prototype.constructor = TaskRemark;
 if (!__template)  {
   // only on client
 
+  /*
   var __remark_icon = [
     ['task_remark_black'   ,'task_remark_black_20x20'   ,'Black'    ],
     ['task_remark_darkblue','task_remark_darkblue_20x20','Midnight' ],
@@ -92,13 +93,29 @@ if (!__template)  {
     ['task_remark_red'     ,'task_remark_red_20x20'     ,'Red'      ]
   ];
 
-
   TaskRemark.prototype.icon_small = function()  { return __remark_icon[this.theme_no][1]; }
   TaskRemark.prototype.icon_large = function()  { return __remark_icon[this.theme_no][0]; }
+  */
+
+  var __remark_icon = [
+    ['task_remark_black'   ,'Black'    ],
+    ['task_remark_darkblue','Midnight' ],
+    ['task_remark_navy'    ,'Navy'     ],
+    ['task_remark_blue'    ,'Blue'     ],
+    ['task_remark_green'   ,'Green'    ],
+    ['task_remark_cyan'    ,'Cyan'     ],
+    ['task_remark'         ,'Lemon'    ],
+    ['task_remark_yellow'  ,'Gold'     ],
+    ['task_remark_pink'    ,'Pink'     ],
+    ['task_remark_red'     ,'Red'      ]
+  ];
+
+  TaskRemark.prototype.icon = function()  { return __remark_icon[this.theme_no][0]; }
+
 
   TaskRemark.prototype.setTheme = function ( themeNo,inputPanel )  {
     this.theme_no = themeNo;
-    inputPanel.header.icon_menu.button.setBackground (  this.icon_large() );
+    inputPanel.header.icon_menu.button.setBackground (  image_path(this.icon()) );
     inputPanel.emitSignal ( cofe_signals.jobDlgSignal,
                             job_dialog_reason.set_node_icon );
   }
@@ -112,7 +129,7 @@ if (!__template)  {
     //div.header.setLabel ( 'XXXX',2,0,1,1 ).setTooltip ( 'Click on icon to change theme' );
     //                .setFontItalic(true).setNoWrap().setHeight('1em');
 
-    div.header.icon_menu = new Menu ( '', this.icon_large() );
+    div.header.icon_menu = new Menu ( '', image_path(this.icon()) );
     div.header.setWidget ( div.header.icon_menu,0,0,3,1 );
     div.header.icon_menu.button.setWidth  ( '80px' );
     div.header.icon_menu.button.setHeight ( '80px' );
@@ -124,7 +141,7 @@ if (!__template)  {
 
     for (var i=0;i<__remark_icon.length;i++)
       (function(themeNo,task){
-        div.header.icon_menu.addItem ( image_path(__remark_icon[themeNo][2]),
+        div.header.icon_menu.addItem ( image_path(__remark_icon[themeNo][1]),
                                        image_path(__remark_icon[themeNo][0]) )
                             .addOnClickListener ( function(){
           task.setTheme ( themeNo,div );

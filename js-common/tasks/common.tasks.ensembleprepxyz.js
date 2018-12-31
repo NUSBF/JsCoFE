@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.12.18   <--  Date of Last Modification.
+ *    27.12.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -59,8 +59,7 @@ function TaskEnsemblePrepXYZ()  {
       min         : 0,          // minimum acceptable number of data instances
       max         : 1           // maximum acceptable number of data instances
     },{
-//      data_type : {'DataStructure':['~substructure','~substructure-am'],
-      data_type   : {'DataStructure':['protein','dna','rna'],
+      data_type   : {'DataStructure':['~substructure','~substructure-am'],
                      'DataXYZ':[]},  // data type(s) and subtype(s)
       label       : 'Coordinates',   // label for input dialog
       tooltip     : 'Specify coordinate sets to be merged in an ensamble for ' +
@@ -226,8 +225,10 @@ TaskEnsemblePrepXYZ.prototype.constructor = TaskEnsemblePrepXYZ;
 
 // ===========================================================================
 
-TaskEnsemblePrepXYZ.prototype.icon_small = function()  { return 'task_ensembleprepxyz_20x20'; }
-TaskEnsemblePrepXYZ.prototype.icon_large = function()  { return 'task_ensembleprepxyz';       }
+TaskEnsemblePrepXYZ.prototype.icon = function()  { return 'task_ensembleprepxyz'; }
+
+//TaskEnsemblePrepXYZ.prototype.icon_small = function()  { return 'task_ensembleprepxyz_20x20'; }
+//TaskEnsemblePrepXYZ.prototype.icon_large = function()  { return 'task_ensembleprepxyz';       }
 
 TaskEnsemblePrepXYZ.prototype.currentVersion = function()  {
   var version = 0;

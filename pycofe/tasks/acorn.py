@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    14.11.18   <--  Date of Last Modification.
+#    24.12.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -85,7 +85,7 @@ class Acorn(basic.TaskDriver):
             "labout F=F_unique SIGF=SIGF_unique"
         ])
         self.close_stdin()
-        self.runApp ( "unique",["HKLOUT","__tmp1.mtz"] )
+        self.runApp ( "unique",["HKLOUT","__tmp1.mtz"],logType="Service" )
 
         self.open_stdin()
         self.write_stdin ([
@@ -102,7 +102,7 @@ class Acorn(basic.TaskDriver):
             ])
             cmd += ["HKLIN3",istruct.getMTZFilePath(self.inputDir())]
         self.close_stdin()
-        self.runApp ( "cad",cmd )
+        self.runApp ( "cad",cmd,logType="Service" )
 
         self.open_stdin()
         labin = "LABIN  FILE 1 E1=" + cols[0] + " E2=" + cols[1] + " E3=" + hkl.getFreeRColumn()
@@ -110,7 +110,7 @@ class Acorn(basic.TaskDriver):
             labin += " E3=PHIN E4=FOMIN"
         self.write_stdin ([labin])
         self.close_stdin()
-        self.runApp ( "cad",["HKLIN1","__tmp2.mtz","HKLOUT","__tmp3.mtz"] )
+        self.runApp ( "cad",["HKLIN1","__tmp2.mtz","HKLOUT","__tmp3.mtz"],logType="Service" )
 
         labf = [cols[0],cols[1]]
         labe = ["E","SIGE"]
@@ -124,7 +124,7 @@ class Acorn(basic.TaskDriver):
                 "ROOT  __tmp4"
             ])
             self.close_stdin()
-            self.runApp ( "phaser",[] )
+            self.runApp ( "phaser",[],logType="Service" )
             labf = [cols[0]+"_ISO",cols[1]+"_ISO"]
             labe = ["E_ISO","SIGE_ISO"]
             ecalc_hkl = "__tmp4.mtz"
@@ -140,7 +140,7 @@ class Acorn(basic.TaskDriver):
         ])
         self.close_stdin()
         self.runApp ( "ecalc",["HKLIN" ,ecalc_hkl,
-                               "HKLOUT","__tmp5.mtz"] )
+                               "HKLOUT","__tmp5.mtz"],logType="Service" )
 
         #  prepare Acorn run
 
@@ -233,7 +233,7 @@ class Acorn(basic.TaskDriver):
         self.close_stdin()
 
         # run acorn
-        self.runApp ( "acorn",cmd )
+        self.runApp ( "acorn",cmd,logType="Main" )
         # close report parser
         self.unsetLogParser()
 
@@ -259,7 +259,7 @@ class Acorn(basic.TaskDriver):
                     "YES\n"
                 )
                 self.close_stdin()
-                self.runApp ( "sftools",[] )
+                self.runApp ( "sftools",[],logType="Service" )
 
                 fnames = self.calcCCP4Maps ( acorn_map,self.outputFName+".map","acorn-map" )
 
@@ -277,7 +277,7 @@ class Acorn(basic.TaskDriver):
 
                 structure = self.registerStructure (
                         acorn_xyz,acorn_sub,acorn_map,fnames[0],fnames[1],None,
-                        copy_files=True )
+                        leadKey=2,copy_files=True )
 
                 self.putStructureWidget ( "sharpened_map","Sharpened Map",structure )
 
@@ -297,13 +297,14 @@ class Acorn(basic.TaskDriver):
                 "YES\n"
             )
             self.close_stdin()
-            self.runApp ( "sftools",[] )
+            self.runApp ( "sftools",[],logType="Service" )
 
             fnames = self.calcCCP4Maps ( output_file,self.outputFName,
                                          "acorn:" + cols[0] )
 
             structure = self.registerStructure (
-                    acorn_xyz,acorn_sub,output_file,fnames[0],None,None )
+                    acorn_xyz,acorn_sub,output_file,fnames[0],None,None,
+                    leadKey=2 )
 
 
             if structure:

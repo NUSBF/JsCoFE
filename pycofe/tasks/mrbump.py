@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    23.08.18   <--  Date of Last Modification.
+#    24.12.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -147,14 +147,14 @@ class MrBump(basic.TaskDriver):
 
         # Start mrbump
         if sys.platform.startswith("win"):
-            self.runApp ( "mrbump.bat",cmd )
+            self.runApp ( "mrbump.bat",cmd,logType="Main" )
         else:
-            self.runApp ( "mrbump",cmd )
+            self.runApp ( "mrbump",cmd,logType="Main" )
         self.unsetLogParser()
 
         # check solution and register data
 
-        search_dir = "search_" + self.outdir_name();
+        search_dir = "search_" + self.outdir_name()
 
         if os.path.isdir(search_dir):
 
@@ -174,7 +174,9 @@ class MrBump(basic.TaskDriver):
                                 #mtzfile = os.path.join(molrep_dir,filename)
 
                     structure = self.finaliseStructure ( xyzfile,"mrbump",hkl,
-                                                            None,[seq],1,False )
+                                                         None,[seq],0,
+                                                         leadKey=1,
+                                                         openState_bool=False )
                     if structure:
                         # update structure revision
                         revision = self.makeClass ( self.input_data.data.revision[0] )
@@ -217,6 +219,8 @@ class MrBump(basic.TaskDriver):
 
                                 xyz = self.registerXYZ ( os.path.join(domains_dir,filename) )
                                 if xyz:
+                                    xyz.putXYZMeta ( self.outputDir(),self.file_stdout1,
+                                                     self.file_stderr,None )
                                     xyz.addDataAssociation  ( seq.dataId )
                                     pyrvapi.rvapi_add_data (
                                                     "model_" + str(self.dataSerialNo) + "_btn",

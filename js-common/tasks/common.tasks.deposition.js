@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.12.18   <--  Date of Last Modification.
+ *    27.12.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -41,7 +41,7 @@ function TaskDeposition()  {
       data_type : {'DataRevision':['xyz']}, // data type(s) and subtype(s)
       label     : 'Structure revision',     // label for input dialog
       inputId   : 'revision', // input Id for referencing input fields
-      version   : 1,          // minimum data version allowed
+      version   : 4,          // minimum data version allowed
       min       : 1,          // minimum acceptable number of data instances
       max       : 1           // maximum acceptable number of data instances
     }
@@ -59,8 +59,10 @@ TaskDeposition.prototype.constructor = TaskDeposition;
 // ===========================================================================
 // export such that it could be used in both node and a browser
 
-TaskDeposition.prototype.icon_small = function()  { return 'task_deposition_20x20'; }
-TaskDeposition.prototype.icon_large = function()  { return 'task_deposition';       }
+TaskDeposition.prototype.icon = function()  { return 'task_deposition'; }
+
+//TaskDeposition.prototype.icon_small = function()  { return 'task_deposition_20x20'; }
+//TaskDeposition.prototype.icon_large = function()  { return 'task_deposition';       }
 
 //TaskDeposition.prototype.cleanJobDir = function ( jobDir )  {}
 

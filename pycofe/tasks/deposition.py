@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    15.11.18   <--  Date of Last Modification.
+#    24.12.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -75,6 +75,7 @@ class Deposition(basic.TaskDriver):
         revision = self.makeClass ( self.input_data.data.revision[0] )
         hkl      = self.makeClass ( self.input_data.data.hkl     [0] )
         istruct  = self.makeClass ( self.input_data.data.istruct [0] )
+        lead_key = istruct.leadKey
         seq      = self.input_data.data.seq
         for i in range(len(seq)):
             seq[i] = self.makeClass ( seq[i] )
@@ -127,7 +128,7 @@ class Deposition(basic.TaskDriver):
         self.setGenericLogParser ( panel_id,False,False,False )
 
         # Start refmac
-        self.runApp ( "refmac5",cmd )
+        self.runApp ( "refmac5",cmd,logType="Main" )
 
         # make a copy of refmac output file with ".cif" extension
         xyzout_cif = self.getOFName ( "_tmp.cif" )
@@ -151,7 +152,8 @@ class Deposition(basic.TaskDriver):
             shutil.copyfile ( libin,libout )
 
         # create output structure and visualisation widget
-        structure = self.registerStructure ( xyzout,None,mtzout,mapout,dmapout,libout )
+        structure = self.registerStructure ( xyzout,None,mtzout,mapout,dmapout,libout,
+                                             leadKey=lead_key )
         if structure:
             structure.copyAssociations ( istruct )
             structure.copyLabels       ( istruct )
@@ -186,7 +188,7 @@ class Deposition(basic.TaskDriver):
         cmd   = ["HKLIN",hkl.getFilePath(self.inputDir(),dtype_template.file_key["mtz"]), "HKLOUT",sfCIF]
 
         # Start mtz2various
-        self.runApp ( "mtz2various",cmd )
+        self.runApp ( "mtz2various",cmd,logType="Main" )
         self.unsetLogParser()
 
         # 3. Prepare the combined coordinate-sequence CIF
@@ -328,8 +330,15 @@ class Deposition(basic.TaskDriver):
         self._add_citations ( citations.citation_list )
         if self.citation_list:
             self.putTitle ( "References" )
-            self.putMessage ( citations.makeSummaryCitationsHTML(self.citation_list,eol_tasks) )
+            #self.file_stdout.write ( "clist =" + str(self.citation_list) + "\n" )
+            #self.file_stdout.write ( "etasks=" + str(eol_tasks) + "\n" )
+            #self.file_stdout.flush()
+            html = citations.makeSummaryCitationsHTML ( self.citation_list,eol_tasks )
+            #self.file_stdout.write ( "html=" + str(html) + "\n" )
+            #self.file_stdout.flush()
+            self.putMessage ( html )
         citations.citation_list = []
+
         # close execution logs and quit
         self.success()
         return

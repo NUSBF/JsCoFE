@@ -148,7 +148,6 @@ class Dimple(ccp4go_asu.PrepareASU):
         quit_message = self.saveResults ( "Dimple",resultdir,nResults,
                 rfree,rfactor,"dimple", dimple_xyz,dimple_mtz,dimple_map,dimple_dmap,
                 None,None,columns,spg_info )
-        self.output_meta["results"][resultdir]["phasing"] = mode.upper()
 
         if mode!="mr":
             quit_message = "refined to <i>R<sub>free</sub>=" + str(rfree) + "</i>"

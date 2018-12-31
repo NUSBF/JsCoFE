@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.12.18   <--  Date of Last Modification.
+ *    27.12.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -90,8 +90,10 @@ TaskMorda.prototype.constructor = TaskMorda;
 // ===========================================================================
 // export such that it could be used in both node and a browser
 
-TaskMorda.prototype.icon_small = function()  { return 'task_morda_20x20'; }
-TaskMorda.prototype.icon_large = function()  { return 'task_morda';       }
+TaskMorda.prototype.icon = function()  { return 'task_morda'; }
+
+//TaskMorda.prototype.icon_small = function()  { return 'task_morda_20x20'; }
+//TaskMorda.prototype.icon_large = function()  { return 'task_morda';       }
 
 // task.platforms() identifies suitable platforms:
 //   'W"  : Windows

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.12.18   <--  Date of Last Modification.
+ *    27.12.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -76,8 +76,10 @@ TaskBalbes.prototype.constructor = TaskBalbes;
 // ===========================================================================
 // export such that it could be used in both node and a browser
 
-TaskBalbes.prototype.icon_small = function()  { return 'task_balbes_20x20'; }
-TaskBalbes.prototype.icon_large = function()  { return 'task_balbes';       }
+TaskBalbes.prototype.icon = function()  { return 'task_balbes'; }
+
+//TaskBalbes.prototype.icon_small = function()  { return 'task_balbes_20x20'; }
+//TaskBalbes.prototype.icon_large = function()  { return 'task_balbes';       }
 
 // task.platforms() identifies suitable platforms:
 //   'W"  : Windows

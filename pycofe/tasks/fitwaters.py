@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    30.07.18   <--  Date of Last Modification.
+#    24.12.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -37,7 +37,7 @@ from   pycofe.dtypes import dtype_revision
 # ============================================================================
 # Make Refmac driver
 
-class FitLigand(basic.TaskDriver):
+class FitWaters(basic.TaskDriver):
 
     # ------------------------------------------------------------------------
 
@@ -69,9 +69,10 @@ class FitLigand(basic.TaskDriver):
 
         # Start findligand
         if sys.platform.startswith("win"):
-            self.runApp ( "findwaters.bat",cmd )
+            self.runApp ( "findwaters.bat",cmd,logType="Main" )
         else:
-            self.runApp ( os.path.join(os.environ["CCP4"],"libexec","findwaters-bin"),cmd )
+            self.runApp ( os.path.join(os.environ["CCP4"],"libexec","findwaters-bin"),
+                          cmd,logType="Main" )
 
         pdbout  = self.outputFName + ".pdb"
         nwaters = coor.mergeLigands ( pdbin,[watout],"W",pdbout )
@@ -79,7 +80,8 @@ class FitLigand(basic.TaskDriver):
             structure = self.registerStructure ( pdbout,None,mtzin,
                             istruct.getMapFilePath (self.inputDir()),
                             istruct.getDMapFilePath(self.inputDir()),
-                            istruct.getLibFilePath (self.inputDir()) )
+                            istruct.getLibFilePath (self.inputDir()),
+                            leadKey=istruct.leadKey )
             if structure:
                 structure.copyAssociations ( istruct )
                 structure.copySubtype      ( istruct )
@@ -109,5 +111,5 @@ class FitLigand(basic.TaskDriver):
 
 if __name__ == "__main__":
 
-    drv = FitLigand ( "",os.path.basename(__file__) )
+    drv = FitWaters ( "",os.path.basename(__file__) )
     drv.start()

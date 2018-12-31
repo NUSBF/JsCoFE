@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.12.18   <--  Date of Last Modification.
+ *    27.12.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -55,9 +55,11 @@ DataSequence.prototype.constructor = DataSequence;
 
 // ===========================================================================
 
-DataSequence.prototype.title      = function()  { return 'Macromolecular sequence'; }
-DataSequence.prototype.icon_small = function()  { return 'data_20x20'; }
-DataSequence.prototype.icon_large = function()  { return 'data';       }
+DataSequence.prototype.title = function()  { return 'Macromolecular sequence'; }
+DataSequence.prototype.icon  = function()  { return 'data';                    }
+
+//DataSequence.prototype.icon_small = function()  { return 'data_20x20'; }
+//DataSequence.prototype.icon_large = function()  { return 'data';       }
 
 // when data class version is changed here, change it also in python
 // constructors

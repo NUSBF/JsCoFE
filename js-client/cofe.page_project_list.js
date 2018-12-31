@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.12.18   <--  Date of Last Modification.
+ *    27.12.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -228,11 +228,11 @@ function ProjectListPage ( sceneId )  {
   var title_lbl = new Label ( 'My Projects'  );
   title_lbl.setFont         ( 'times','200%',true,true );
 
-  open_btn   = new Button ( 'Open'  ,image_path('go_20x20') );
-  add_btn    = new Button ( 'Add'   ,image_path('add_20x20') );
-  del_btn    = new Button ( 'Delete',image_path('remove_20x20') );
-  export_btn = new Button ( 'Export',image_path('export_20x20') );
-  import_btn = new Button ( 'Import',image_path('import_20x20') );
+  open_btn   = new Button ( 'Open'  ,image_path('go') );
+  add_btn    = new Button ( 'Add'   ,image_path('add') );
+  del_btn    = new Button ( 'Delete',image_path('remove') );
+  export_btn = new Button ( 'Export',image_path('export') );
+  import_btn = new Button ( 'Import',image_path('import') );
   help_btn   = new Button ( 'Help'  ,image_path('help') ).setTooltip('Documentation' );
   open_btn  .setWidth     ( '80pt' );
   add_btn   .setWidth     ( '80pt' );

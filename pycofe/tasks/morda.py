@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    09.08.18   <--  Date of Last Modification.
+#    24.12.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -120,7 +120,7 @@ class Morda(basic.TaskDriver):
         self.close_stdin ()
         cmd = [ "HKLIN1",hkl.getHKLFilePath(self.inputDir()),
                 "HKLOUT",cad_mtz ]
-        self.runApp ( "cad",cmd )
+        self.runApp ( "cad",cmd,logType="Service" )
 
         # MORDA is running on a cluster, all output is done by morda_sge.py module;
         # pass RVAPI document for morda_sge.py script
@@ -159,9 +159,9 @@ class Morda(basic.TaskDriver):
         # run morda
 
         if sys.platform.startswith("win"):
-            self.runApp ( "ccp4-python.bat",cmd )
+            self.runApp ( "ccp4-python.bat",cmd,logType="Main" )
         else:
-            self.runApp ( "ccp4-python",cmd )
+            self.runApp ( "ccp4-python",cmd,logType="Main" )
 
         self.addCitations ( ['morda','molrep','refmac5'] )
 
@@ -189,7 +189,8 @@ class Morda(basic.TaskDriver):
             # make output structure and register it
 
             structure = self.finaliseStructure ( final_pdb,self.outputFName,
-                                                 sol_hkl,None,seq,1,False )
+                                                 sol_hkl,None,seq,0,
+                                                 leadKey=1,openState_bool=False )
             if structure:
                 # update structure revision
                 revision = self.makeClass  ( self.input_data.data.revision[0] )

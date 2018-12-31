@@ -83,6 +83,8 @@ def dirlist2sectors(dirlist, sectors, file_list):
         else:
             file_list.append([sector_meta[0], sector_meta[0], 1])
 
+
+
 def dump_meta(meta):
     dump_keyargs = dict(sort_keys=True, indent=4, separators=(',', ': '))
     with open('/tmp/jjjjjj', 'a') as jjj:

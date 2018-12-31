@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    20.11.18   <--  Date of Last Modification.
+#    22.12.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -132,7 +132,7 @@ class Gesamt(basic.TaskDriver):
         cmd += [ "--rvapi-rdoc",self.reportDocumentName() ]
 
         # run gesamt
-        self.runApp ( "gesamt",cmd )
+        self.runApp ( "gesamt",cmd,logType="Main" )
 
         if nXYZ<2:  # PDB scan
 

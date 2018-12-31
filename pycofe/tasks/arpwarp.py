@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    19.11.18   <--  Date of Last Modification.
+#    24.12.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -105,7 +105,7 @@ class ArpWarp(basic.TaskDriver):
             cmd += [ "HKLIN2",istruct.getMTZFilePath(self.inputDir()) ]
 
         self.close_stdin()
-        self.runApp ( "cad",cmd )
+        self.runApp ( "cad",cmd,logType="Service" )
 
 
         # prepare keyword file for arpwarp
@@ -261,7 +261,7 @@ class ArpWarp(basic.TaskDriver):
         #else:
         #    self.runApp ( "ccp4-python",cmd )
 
-        self.runApp ( "auto_tracing.sh",cmdopt )
+        self.runApp ( "auto_tracing.sh",cmdopt,logType="Main" )
 
         self.unsetLogParser()
 
@@ -302,7 +302,8 @@ class ArpWarp(basic.TaskDriver):
 
             structure = self.registerStructure (
                                     pdbout,None,mtzout,
-                                    fnames[0],fnames[1],None )
+                                    fnames[0],fnames[1],None,
+                                    leadKey=1 )
             if structure:
                 structure.copyAssociations ( istruct )
                 structure.copySubtype      ( istruct )

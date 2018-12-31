@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.12.18   <--  Date of Last Modification.
+ *    27.12.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -892,8 +892,10 @@ TaskAcorn.prototype.constructor = TaskAcorn;
 // ===========================================================================
 // export such that it could be used in both node and a browser
 
-TaskAcorn.prototype.icon_small = function()  { return 'task_acorn_20x20'; }
-TaskAcorn.prototype.icon_large = function()  { return 'task_acorn';       }
+TaskAcorn.prototype.icon = function()  { return 'task_acorn'; }
+
+//TaskAcorn.prototype.icon_small = function()  { return 'task_acorn_20x20'; }
+//TaskAcorn.prototype.icon_large = function()  { return 'task_acorn';       }
 
 TaskAcorn.prototype.currentVersion = function()  {
   var version = 1;

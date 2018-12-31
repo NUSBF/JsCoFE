@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.12.18   <--  Date of Last Modification.
+ *    27.12.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -1192,8 +1192,10 @@ TaskAimless.prototype.constructor = TaskAimless;
 // ===========================================================================
 // export such that it could be used in both node and a browser
 
-TaskAimless.prototype.icon_small = function()  { return 'task_aimless_20x20'; }
-TaskAimless.prototype.icon_large = function()  { return 'task_aimless';       }
+TaskAimless.prototype.icon = function()  { return 'task_aimless'; }
+
+//TaskAimless.prototype.icon_small = function()  { return 'task_aimless_20x20'; }
+//TaskAimless.prototype.icon_large = function()  { return 'task_aimless';       }
 
 TaskAimless.prototype.currentVersion = function()  {
   var version = 0;

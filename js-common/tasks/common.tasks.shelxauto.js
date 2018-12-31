@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    19.12.18   <--  Date of Last Modification.
+ *    27.12.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -54,8 +54,10 @@ TaskShelxAuto.prototype.constructor = TaskShelxAuto;
 // ===========================================================================
 // export such that it could be used in both node and a browser
 
-TaskShelxAuto.prototype.icon_small = function()  { return 'task_shelx_20x20'; }
-TaskShelxAuto.prototype.icon_large = function()  { return 'task_shelx';       }
+TaskShelxAuto.prototype.icon = function()  { return 'task_shelx'; }
+
+//TaskShelxAuto.prototype.icon_small = function()  { return 'task_shelx_20x20'; }
+//TaskShelxAuto.prototype.icon_large = function()  { return 'task_shelx';       }
 
 TaskShelxAuto.prototype.currentVersion = function()  {
   var version = 0;

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.12.18   <--  Date of Last Modification.
+ *    27.12.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -75,14 +75,14 @@ FacilityTree.prototype.readFacilitiesData = function ( page_title,
       tree.facilityList = jQuery.extend ( true, new FacilityList(),data );
 
       function addDir ( tree,dnode,dir )  {
-        var dnode1 = tree.addNode ( dnode,dir.name,image_path('folder_20x20'),
+        var dnode1 = tree.addNode ( dnode,dir.name,image_path('folder'),
                                     tree.customIcon() );
         tree.item_map[dnode1.id] = dir;
         for (var i=0;i<dir.dirs.length;i++)
           addDir ( tree,dnode1,dir.dirs[i] );
         for (var i=0;i<dir.files.length;i++)  {
           var fitem = dir.files[i];
-          var fnode = tree.addNode ( dnode1,fitem.name,image_path('box_20x20'),
+          var fnode = tree.addNode ( dnode1,fitem.name,image_path('box'),
                                      tree.customIcon() );
           tree.item_map[fnode.id] = fitem;
         }
@@ -95,25 +95,25 @@ FacilityTree.prototype.readFacilitiesData = function ( page_title,
         tree.item_map[fclnode.id] = fclitem;
         for (var j=0;j<fclitem.users.length;j++)  {
           var uitem = fclitem.users[j];
-          var unode = tree.addNode ( fclnode,uitem.id,image_path('user_20x20'),
+          var unode = tree.addNode ( fclnode,uitem.id,image_path('user'),
                                      tree.customIcon() );
           tree.item_map[unode.id] = uitem;
           for (var k=0;k<uitem.visits.length;k++)  {
             var vitem = uitem.visits[k];
             var vnode = tree.addNode ( unode,vitem.id + '  <i>[' +
                                 vitem.date.substring(0,10) + ']</i>',
-                                image_path('visit_20x20'),tree.customIcon() );
+                                image_path('visit'),tree.customIcon() );
             tree.item_map[vnode.id] = vitem;
             for (var m=0;m<vitem.datasets.length;m++)  {
               var ditem = vitem.datasets[m];
-              var dnode = tree.addNode ( vnode,ditem.path,image_path('folder_20x20'),
+              var dnode = tree.addNode ( vnode,ditem.path,image_path('folder'),
                                          tree.customIcon() );
               tree.item_map[dnode.id] = ditem;
               for (var n=0;n<ditem.dirs.length;n++)
                 addDir ( tree,dnode,ditem.dirs[n] );
               for (var n=0;n<ditem.files.length;n++)  {
                 var fitem = ditem.files[n];
-                var fnode = tree.addNode ( dnode,fitem.name,image_path('box_20x20'),
+                var fnode = tree.addNode ( dnode,fitem.name,image_path('box'),
                                            tree.customIcon() );
                 tree.item_map[fnode.id] = fitem;
               }
@@ -328,7 +328,7 @@ StorageTree.prototype.readStorageData = function ( page_title,
           var name = sdir.name;
           if (name=='..')
             name += ' (&#8593; <i>upper directory</i>)';
-          var dnode = tree.addRootNode ( name,image_path('folder_20x20'),
+          var dnode = tree.addRootNode ( name,image_path('folder'),
                                       tree.customIcon() );
           tree.item_map[dnode.id] = sdir;
         }
@@ -339,19 +339,19 @@ StorageTree.prototype.readStorageData = function ( page_title,
           var base  = sfile.name.split('.');
           var ext   = base.pop().toLowerCase();
           base = base.join('.').toLowerCase();
-          var icon  = image_path('file_dummy_20x20');
+          var icon  = image_path('file_dummy');
           var show  = (tree.image_key<2);
-          if (ext=='mtz')       icon = image_path('file_mtz_20x20');
+          if (ext=='mtz')       icon = image_path('file_mtz');
           else if (['pdb','ent','mmcif'].indexOf(ext)>=0)
-                                icon = image_path('file_pdb_20x20');
+                                icon = image_path('file_pdb');
           else if (ext=='cif')  {  // use wild heuristics
             if (endsWith(base,'-sf'))
-                  icon = image_path('file_mtz_20x20');
-            else  icon = image_path('file_pdb_20x20');
+                  icon = image_path('file_mtz');
+            else  icon = image_path('file_pdb');
           } else if (['seq','fasta','pir'].indexOf(ext)>=0)
-                                icon = image_path('file_seq_20x20');
+                                icon = image_path('file_seq' );
           else if ('image' in sfile)  {
-            if (sfile.image>0)  icon = image_path('file_xray_20x20');
+            if (sfile.image>0)  icon = image_path('file_xray');
                           else  name = '(' + Array(name.length).join('....') + ')';
             if (sfile.image==2) name = '<i>' + name + '</i>';
             show = (tree.image_key>0);

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.12.18   <--  Date of Last Modification.
+ *    27.12.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -41,7 +41,7 @@ function TaskFitWaters()  {
       data_type : {'DataRevision':['phases']}, // data type(s) and subtype(s)
       label     : 'Structure revision',     // label for input dialog
       inputId   : 'revision', // input Id for referencing input fields
-      version   : 0,          // minimum data version allowed
+      version   : 4,          // minimum data version allowed
       min       : 1,          // minimum acceptable number of data instances
       max       : 1           // maximum acceptable number of data instances
     }
@@ -149,8 +149,10 @@ TaskFitWaters.prototype.constructor = TaskFitWaters;
 // ===========================================================================
 // export such that it could be used in both node and a browser
 
-TaskFitWaters.prototype.icon_small = function()  { return 'task_fitwaters_20x20'; }
-TaskFitWaters.prototype.icon_large = function()  { return 'task_fitwaters';       }
+TaskFitWaters.prototype.icon = function()  { return 'task_fitwaters'; }
+
+//TaskFitWaters.prototype.icon_small = function()  { return 'task_fitwaters_20x20'; }
+//TaskFitWaters.prototype.icon_large = function()  { return 'task_fitwaters';       }
 
 TaskFitWaters.prototype.currentVersion = function()  {
   var version = 0;

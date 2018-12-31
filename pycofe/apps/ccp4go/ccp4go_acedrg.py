@@ -91,8 +91,10 @@ class AceDrg(ccp4go_lorestr.Lorestr):
                 quit_message += code + " "
                 if nResults==1:
                     self.putMessage ( "<h2><i>Results</i></h2>" )
+                #self.putStructureWidget ( code + " structure",
+                #                          [ "/".join(["..",xyzPath2]) ],-1 )
                 self.putStructureWidget ( code + " structure",
-                                          [ "/".join(["..",xyzPath2]) ],-1 )
+                                          [ os.path.join("..",xyzPath2) ],-1 )
 
         self.output_meta["results"][resultdir] = {}
         self.output_meta["results"][resultdir]["ligands"]  = meta

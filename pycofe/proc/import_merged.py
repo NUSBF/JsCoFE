@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    15.11.18   <--  Date of Last Modification.
+#    22.12.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -161,7 +161,8 @@ def run ( body,   # body is reference to the main Import class
             body.open_stdin()
             body.write_stdin ( "END\n" )
             body.close_stdin()
-            rc = body.runApp ( "cif2mtz",["HKLIN",p_orig,"HKLOUT",p_mtzin],False )
+            rc = body.runApp ( "cif2mtz",["HKLIN",p_orig,"HKLOUT",p_mtzin],
+                               quitOnError=False )
             if rc.msg or not os.path.isfile(p_mtzin):
                 body.putSummaryLine_red ( f_orig,"CIF","Failed to convert, ignored" )
                 p_mtzin = None
@@ -202,9 +203,10 @@ def run ( body,   # body is reference to the main Import class
                 rc = command.call ( "freerflag",
                                     ["HKLIN",p_mtzin,
                                      "HKLOUT",p_mtzin1],"./",
-                                    freerflag_script(),body.file_stdout,
+                                    freerflag_script(),body.file_stdout1,
                                     body.file_stderr,log_parser=None,
-                                    citation_ref="freerflag-srv" )
+                                    citation_ref="freerflag-srv",
+                                    file_stdout_alt=body.file_stdout )
 
             #  get rid of redundant reflections with cad
 
@@ -215,9 +217,10 @@ def run ( body,   # body is reference to the main Import class
             rc = command.call ( "cad",
                                 ["HKLIN1",p_mtzin1,
                                  "HKLOUT",p_mtzout],"./",
-                                cad_script(),body.file_stdout,
+                                cad_script(),body.file_stdout1,
                                 body.file_stderr,log_parser=None,
-                                citation_ref="freerflag-srv" )
+                                citation_ref="freerflag-srv",
+                                file_stdout_alt=body.file_stdout )
 
             if rc.msg:
                 msg = "\n\n Freerflag failed with message:\n\n" + \

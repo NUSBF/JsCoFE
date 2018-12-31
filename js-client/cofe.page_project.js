@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    12.12.18   <--  Date of Last Modification.
+ *    27.12.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -158,7 +158,7 @@ function ProjectPage ( sceneId )  {
     if (!$(add_btn.element).button('option','disabled'))  {
       items.addJobItem = { // The "Add job" menu item
         label : "Add job",
-        icon  : image_path('add_20x20'),
+        icon  : image_path('add'),
         action: addJob
       };
     }
@@ -166,7 +166,7 @@ function ProjectPage ( sceneId )  {
     if (!$(moveup_btn.element).button('option','disabled'))  {
       items.moveJobUpItem = { // The "Add job" menu item
         label : "Move up",
-        icon  : image_path('moveup_20x20'),
+        icon  : image_path('moveup'),
         action: moveJobUp
       };
     }
@@ -174,7 +174,7 @@ function ProjectPage ( sceneId )  {
     if (!$(clone_btn.element).button('option','disabled'))  {
       items.cloneJobItem = { // The "Clone job" menu item
         label : "Clone job",
-        icon  : image_path('clonejob_20x20'),
+        icon  : image_path('clonejob'),
         action: cloneJob
       };
     }
@@ -182,18 +182,18 @@ function ProjectPage ( sceneId )  {
     if (!$(del_btn.element).button('option','disabled'))  {
       items.delJobItem = { // The "Delete job" menu item
         label : 'Delete job',
-        icon  : image_path('remove_20x20'),
+        icon  : image_path('remove'),
         action: deleteJob
       };
       var crTask = jobTree.task_map[node.id];
-      if (crTask.state==job_code.remark)
+      if (crTask && (crTask.state==job_code.remark))
         items.delJobItem.label = 'Delete remark';
     }
 
     if (!$(open_btn.element).button('option','disabled'))  {
       items.runJobItem = { // The "Open job" menu item
         label : "Open job",
-        icon  : image_path('openjob_20x20'),
+        icon  : image_path('openjob'),
         action: openJob
       };
     }
@@ -201,7 +201,7 @@ function ProjectPage ( sceneId )  {
     if (!$(stop_btn.element).button('option','disabled'))  {
       items.stopJobItem = { // The "Stop job" menu item
         label : "Stop job",
-        icon  : image_path('stopjob_20x20'),
+        icon  : image_path('stopjob'),
         action: stopJob
       };
     }
@@ -209,7 +209,7 @@ function ProjectPage ( sceneId )  {
     if (!$(add_rem_btn.element).button('option','disabled'))  {
       items.addRemarkItem = { // The "Add remark" menu item
         label : "Add remark",
-        icon  : image_path('task_remark_20x20'),
+        icon  : image_path('task_remark'),
         action: addRemark
       };
     }

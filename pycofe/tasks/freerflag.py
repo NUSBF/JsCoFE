@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    09.08.18   <--  Date of Last Modification.
+#    22.12.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -106,7 +106,7 @@ class FreeRFlag(basic.TaskDriver):
             cmd = [ "hklin" ,hklinPath, "hklout",freerPath ]
 
             # Start freerflag
-            self.runApp ( "freerflag",cmd )
+            self.runApp ( "freerflag",cmd,logType="Main" )
 
         else:  # just us freeR-flag from the reference dataset
             freerPath = hklinPath
@@ -161,7 +161,7 @@ class FreeRFlag(basic.TaskDriver):
                         "hklout",outFName ]
 
                 # Start cad
-                self.runApp ( "cad",cmd )
+                self.runApp ( "cad",cmd,logType="Service" )
                 if os.path.isfile(outFName):
                     self.addFileImport ( "",outFName,import_filetype.ftype_MTZMerged() )
                     #files_all += [outFName]

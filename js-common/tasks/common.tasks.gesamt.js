@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.12.18   <--  Date of Last Modification.
+ *    27.12.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -178,8 +178,10 @@ TaskGesamt.prototype.constructor = TaskGesamt;
 // ===========================================================================
 // export such that it could be used in both node and a browser
 
-TaskGesamt.prototype.icon_small = function()  { return 'task_gesamt_20x20'; }
-TaskGesamt.prototype.icon_large = function()  { return 'task_gesamt';       }
+TaskGesamt.prototype.icon = function()  { return 'task_gesamt'; }
+
+//TaskGesamt.prototype.icon_small = function()  { return 'task_gesamt_20x20'; }
+//TaskGesamt.prototype.icon_large = function()  { return 'task_gesamt';       }
 
 TaskGesamt.prototype.currentVersion = function()  {
   var version = 0;

@@ -85,6 +85,7 @@ def getValidationReport ( modelFilePath,sfFilePath,repFilePath,logfile ):
         logfile.write ( " --- success\n" )
     else:
         logfile.write ( msg + "\n" )
+
     logfile.flush()
 
     return rc

@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    12.12.18   <--  Date of Last Modification.
+ *    27.12.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -51,8 +51,10 @@ TaskMergeData.prototype.constructor = TaskMergeData;
 // ===========================================================================
 // export such that it could be used in both node and a browser
 
-TaskMergeData.prototype.icon_small = function()  { return 'task_merge_20x20'; }
-TaskMergeData.prototype.icon_large = function()  { return 'task_merge';       }
+TaskMergeData.prototype.icon = function()  { return 'task_merge'; }
+
+//TaskMergeData.prototype.icon_small = function()  { return 'task_merge_20x20'; }
+//TaskMergeData.prototype.icon_large = function()  { return 'task_merge';       }
 
 TaskMergeData.prototype.currentVersion = function()  {
   var version = 0;

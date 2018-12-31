@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    23.07.18   <--  Date of Last Modification.
+#    24.12.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -157,8 +157,9 @@ def run ( body,pdb_list ):  # body is reference to the main Import class
                     body.putMessage ( "<h3>" + ucode + " Structure</h3>" )
                     structure = body.finaliseStructure (
                                     xyz[0].getXYZFilePath(body.outputDir()),
-                                    lcode,hkl[0],None,[],1,False, # "1" means "after MR"
-                                    None,body.outputDir() )
+                                    lcode,hkl[0],None,[],0, # "0" means "XYZ"
+                                    leadKey=1,openState_bool=False,
+                                    title=None,inpDir=body.outputDir() )
 
                 if revision[0]:
                     body.putMessage ( "<h3>" + ucode + " Revision</h3>" )

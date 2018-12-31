@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.12.18   <--  Date of Last Modification.
+ *    27.12.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -85,8 +85,10 @@ TaskZanuda.prototype.constructor = TaskZanuda;
 // ===========================================================================
 // export such that it could be used in both node and a browser
 
-TaskZanuda.prototype.icon_small = function()  { return 'task_zanuda_20x20'; }
-TaskZanuda.prototype.icon_large = function()  { return 'task_zanuda';       }
+TaskZanuda.prototype.icon = function()  { return 'task_zanuda'; }
+
+//TaskZanuda.prototype.icon_small = function()  { return 'task_zanuda_20x20'; }
+//TaskZanuda.prototype.icon_large = function()  { return 'task_zanuda';       }
 
 TaskZanuda.prototype.currentVersion = function()  {
   var version = 0;

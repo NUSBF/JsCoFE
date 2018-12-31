@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    13.08.18   <--  Date of Last Modification.
+#    22.12.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -173,7 +173,7 @@ class Aimless(basic.TaskDriver):
             panel_id = self.pointless_report() + "_" + str(n)
             self.setGenericLogParser ( panel_id,True )
 
-            self.runApp ( "pointless",[] )
+            self.runApp ( "pointless",[],logType="Main" )
             n += 1
 
         #self.putSection ( self.symm_det(),"Symmetry determination tables",True )
@@ -204,7 +204,7 @@ class Aimless(basic.TaskDriver):
         self.setGenericLogParser ( self.aimless_report(),True )
 
         self.runApp ( "aimless",[ "HKLIN",self.pointless_mtz(),"HKLOUT",
-                                          self.getMTZOFName() ] )
+                                          self.getMTZOFName() ],logType="Main" )
 
         # ====================================================================
         # do individual data type imports

@@ -2,7 +2,7 @@
 /*
  *  ===========================================================================
  *
- *    22.12.18   <--  Date of Last Modification.
+ *    31.12.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  ---------------------------------------------------------------------------
  *
@@ -24,7 +24,7 @@
 // name and version tag
 
 function appName()  { return 'CCP4 Cloud' }
-var jsCoFE_version = '0.2.0 [22.12.2018]';
+var jsCoFE_version = '0.2.0 [31.12.2018]';
 
 
 // ============================================================================
@@ -152,6 +152,11 @@ var nc_retcode = {
 
 function image_path ( image_basename )  {
   return './images_png/' + image_basename + '.png';
+  /*
+  if (typeof __local_setup !== 'undefined' && __local_setup)
+        return './images_svg/' + image_basename + '.svg';
+  else  return './images_png/' + image_basename + '.png';
+  */
 }
 
 // ============================================================================

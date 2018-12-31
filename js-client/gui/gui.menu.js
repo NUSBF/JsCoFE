@@ -33,7 +33,7 @@ function MenuItem ( text,icon_uri )  {
     $(this.element).css(
       {'background-image'   :'url("'+icon_uri+'")',
        'background-repeat'  :'no-repeat',
-       'background-size'    :'1.25em',
+       'background-size'    :'1.5em',
        'background-position':'0.25em center'});
   }
   if (text.length>0)  {

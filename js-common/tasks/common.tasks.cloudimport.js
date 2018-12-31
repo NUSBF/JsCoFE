@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    21.12.18   <--  Date of Last Modification.
+ *    27.12.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -66,8 +66,10 @@ TaskCloudImport.prototype.constructor = TaskCloudImport;
 
 // ===========================================================================
 
-TaskCloudImport.prototype.icon_small = function()  { return 'task_cimport_20x20'; }
-TaskCloudImport.prototype.icon_large = function()  { return 'task_cimport';       }
+TaskCloudImport.prototype.icon = function()  { return 'task_cimport'; }
+
+//TaskCloudImport.prototype.icon_small = function()  { return 'task_cimport_20x20'; }
+//TaskCloudImport.prototype.icon_large = function()  { return 'task_cimport';       }
 
 TaskCloudImport.prototype.currentVersion = function()  {
   var version = 0;

@@ -1,0 +1,162 @@
+
+/*
+ *  =================================================================
+ *
+ *    29.12.18   <--  Date of Last Modification.
+ *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ *  -----------------------------------------------------------------
+ *
+ *  **** Module  :  js-common/tasks/common.tasks.morda.js
+ *       ~~~~~~~~~
+ *  **** Project :  jsCoFE - javascript-based Cloud Front End
+ *       ~~~~~~~~~
+ *  **** Content :  SymMatch Task Class
+ *       ~~~~~~~~~
+ *
+ *  (C) E. Krissinel, A. Lebedev 2016-2018
+ *
+ *  =================================================================
+ *
+ */
+
+var __template = null;
+
+if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
+  __template = require ( './common.tasks.template' );
+
+// ===========================================================================
+
+function TaskSymMatch()  {
+
+  if (__template)  __template.TaskTemplate.call ( this );
+             else  TaskTemplate.call ( this );
+
+  this._type   = 'TaskSymMatch';
+  this.name    = 'symmatch';
+  this.oname   = 'symmatch';  // default output file name template
+  this.title   = 'Symmetry Match to Reference Structure with CSymMatch';
+  this.helpURL = './html/jscofe_task_symmatch.html';
+
+  this.input_dtypes = [{    // input data types
+      data_type   : {'DataRevision' :['xyz','~substructure'],
+                     'DataStructure':['xyz','~substructure'],
+                     'DataXYZ'      :[]
+                    }, // data type(s) and subtype(s)
+      label       : 'Reference structure', // label for input dialog
+      tooltip     : 'Structure that will be used as a reference to match work structure(s) to.',
+      inputId     : 'refstruct', // input Id for referencing input fields
+      version     : 0,          // minimum data version allowed
+      min         : 1,          // minimum acceptable number of data instances
+      max         : 1           // maximum acceptable number of data instances
+    },{
+      data_type   : {'DataRevision' :['xyz','~substructure'],
+                     'DataStructure':['xyz','~substructure'],
+                     'DataXYZ'      :[]
+                    }, // data type(s) and subtype(s)
+      label       : 'Work structure', // label for input dialog
+      inputId     : 'workstruct',     // input Id for referencing input fields
+      tooltip     : 'Structure that will be matched to reference structure.',
+      version     : 0,                // minimum data version allowed
+      min         : 1,                // minimum acceptable number of data instances
+      max         : 10                // maximum acceptable number of data instances
+    }
+  ];
+
+  this.parameters = { // input parameters
+    sec1 : { type     : 'section',
+             title    : 'Additional parameters',
+             open     : true,  // true for the section to be initially open
+             position : [0,0,1,5],
+             contains : {
+                ORIGINS_CBX : {
+                        type     : 'checkbox',
+                        label    : 'Try all possible origins and hands',
+                        tooltip  : 'Check to explore all possible origins and hands ' +
+                                   'when matching structures.',
+                        value    : true,
+                        position : [0,0,1,3]
+                      },
+                RADIUS : {
+                        type     : 'real_',   // '_' means blank value is allowed
+                        keyword  : '-connectivity-radius',  // the real keyword for job input stream
+                        label    : 'Stiching radius',
+                        tooltip  : 'Radius to use in stiching floating fragments ' +
+                                   'to chains.',
+                        range    : [0.0,20.0], // may be absent (no limits) or must
+                                               // be one of the following:
+                                               //   ['*',max]  : limited from top
+                                               //   [min,'*']  : limited from bottom
+                                               //   [min,max]  : limited from top and bottom
+                        value    : '',         // value to be paired with the keyword
+                        placeholder : '2.0',
+                        position : [1,0,1,1]   // [row,col,rowSpan,colSpan]
+                      }
+             }
+           }
+  };
+
+}
+
+
+if (__template)
+      TaskSymMatch.prototype = Object.create ( __template.TaskTemplate.prototype );
+else  TaskSymMatch.prototype = Object.create ( TaskTemplate.prototype );
+TaskSymMatch.prototype.constructor = TaskSymMatch;
+
+
+// ===========================================================================
+// export such that it could be used in both node and a browser
+
+TaskSymMatch.prototype.icon = function()  { return 'task_symmatch'; }
+
+TaskSymMatch.prototype.currentVersion = function()  {
+  var version = 0;
+  if (__template)
+        return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );
+  else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
+}
+
+
+if (__template)  {
+  //  for server side
+
+  var conf = require('../../js-server/server.configuration');
+
+  TaskSymMatch.prototype.makeInputData = function ( login,jobDir )  {
+
+    // put hkl and seq data in input databox for copying their files in
+    // job's 'input' directory
+
+    var idata = this.input_data.data['refstruct'][0];
+    if (idata._type=='DataRevision')  {
+      //this.input_data.data['refstruct_hkl']    = [idata.HKL];
+      this.input_data.data['refstruct_struct'] = [idata.Structure];
+    }
+
+    var whkl    = [];
+    var wstruct = [];
+    for (var i=0;i<this.input_data.data['workstruct'].length;i++)  {
+      idata = this.input_data.data['workstruct'][i];
+      if (idata._type=='DataRevision')  {
+        whkl   .push ( idata.HKL       );
+        wstruct.push ( idata.Structure );
+      }
+    }
+    if (whkl.length>0)  {
+      this.input_data.data['workstruct_hkl']    = whkl;
+      this.input_data.data['workstruct_struct'] = wstruct;
+    }
+
+    __template.TaskTemplate.prototype.makeInputData.call ( this,login,jobDir );
+
+  }
+
+  TaskSymMatch.prototype.getCommandLine = function ( exeType,jobDir )  {
+    return [conf.pythonName(), '-m', 'pycofe.tasks.symmatch', exeType, jobDir, this.id];
+  }
+
+  // -------------------------------------------------------------------------
+
+  module.exports.TaskSymMatch = TaskSymMatch;
+
+}

@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    09.08.18   <--  Date of Last Modification.
+#    25.12.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -26,6 +26,7 @@
 
 #  python native imports
 import os
+import sys
 import uuid
 
 #  application imports
@@ -69,10 +70,11 @@ class Zanuda(basic.TaskDriver):
         self.close_stdin ()
         cmd = [ "HKLIN1",hkl.getHKLFilePath(self.inputDir()),
                 "HKLOUT",cad_mtz ]
-        self.runApp ( "cad",cmd )
+        self.runApp ( "cad",cmd,logType="Service" )
 
         # make command-line parameters for bare morda run on a SHELL-type node
-        cmd = [ "hklin" ,cad_mtz,
+        cmd = [ os.path.join(os.environ["CCP4"],"bin","zanuda"),
+                "hklin" ,cad_mtz,
                 "xyzin" ,xyz.getXYZFilePath(self.inputDir()),
                 "hklout",self.getMTZOFName(),
                 "xyzout",self.getXYZOFName(),
@@ -85,7 +87,11 @@ class Zanuda(basic.TaskDriver):
             cmd.append ( "notwin" )
 
         # run zanuda
-        self.runApp ( "zanuda",cmd )
+        #self.runApp ( "zanuda",cmd,logType="Main" )
+        if sys.platform.startswith("win"):
+            self.runApp ( "ccp4-python.bat",cmd,logType="Main" )
+        else:
+            self.runApp ( "ccp4-python",cmd,logType="Main" )
 
         # check solution and register data
         if os.path.isfile(self.getXYZOFName()):
@@ -114,7 +120,8 @@ class Zanuda(basic.TaskDriver):
             # to output directory by the registration procedure)
 
             structure = self.registerStructure ( self.getXYZOFName(),None,mtzfile,
-                                                 fnames[0],fnames[1],None )
+                                                 fnames[0],fnames[1],None,
+                                                 leadKey=1 )
             if structure:
 
                 self.putTitle ( "Output Structure" )

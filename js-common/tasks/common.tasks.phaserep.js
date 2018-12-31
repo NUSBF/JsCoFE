@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    19.12.18   <--  Date of Last Modification.
+ *    27.12.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -284,8 +284,10 @@ TaskPhaserEP.prototype.constructor = TaskPhaserEP;
 // ===========================================================================
 // export such that it could be used in both node and a browser
 
-TaskPhaserEP.prototype.icon_small = function()  { return 'task_phaserep_20x20'; }
-TaskPhaserEP.prototype.icon_large = function()  { return 'task_phaserep';       }
+TaskPhaserEP.prototype.icon = function()  { return 'task_phaserep'; }
+
+//TaskPhaserEP.prototype.icon_small = function()  { return 'task_phaserep_20x20'; }
+//TaskPhaserEP.prototype.icon_large = function()  { return 'task_phaserep';       }
 
 TaskPhaserEP.prototype.currentVersion = function()  {
   var version = 0;
@@ -300,6 +302,10 @@ if (!__template)  {
 
   TaskPhaserEP.prototype.inputChanged = function ( inpParamRef,emitterId,emitterValue )  {
 
+    function makeSuffix ( title,suffix )  {
+      return title.split(' (')[0] + ' (' + suffix + ')';
+    }
+
     if ((emitterId=='revision') || (emitterId=='substructure') || (emitterId=='xmodel')) {
       var inpDataRef = inpParamRef.grid.inpDataRef;
       var revision   = this.getInputItem ( inpDataRef,'revision'     ).dropdown[0];
@@ -311,6 +317,8 @@ if (!__template)  {
       var main_substructure = (dt.subtype.indexOf('substructure')>=0);
       var main_xyz          = (dt.subtype.indexOf('xyz')>=0);
 
+      var name = this.name;
+
       if (substr)  {
         substr = substr.dropdown[0];
         inpParamRef.grid.setRowVisible ( substr.row,!main_substructure );
@@ -318,7 +326,22 @@ if (!__template)  {
       if (xmodel)  {
         xmodel = xmodel.dropdown[0];
         inpParamRef.grid.setRowVisible ( xmodel.row  ,!main_xyz );
-        //inpParamRef.grid.setRowVisible ( xmodel.row+1,!main_xyz );
+        inpParamRef.grid.setRowVisible ( xmodel.row+1,!main_xyz );
+        this.title = makeSuffix ( this.title,'MR-SAD' );
+        this.name  = makeSuffix ( this.name ,'MR-SAD' );
+      } else  {
+        this.title = makeSuffix ( this.title,'SAD' );
+        this.name  = makeSuffix ( this.name ,'SAD' );
+      }
+
+      if (this.name!=name)  {
+        var inputPanel = inpParamRef.grid.parent.parent;
+        inputPanel.header.title.setText ( '<b>' + this.title + '</b>' );
+        inputPanel.header.uname_inp.setStyle ( 'text','',
+                              this.name.replace(/<(?:.|\n)*?>/gm, '') );
+        this.updateInputPanel ( inputPanel );
+        inputPanel.emitSignal ( cofe_signals.jobDlgSignal,
+                                job_dialog_reason.rename_node );
       }
 
     }
@@ -365,12 +388,10 @@ if (!__template)  {
       var revision = this.input_data.data['revision'][0];
       this.input_data.data['hkl'] = [revision.HKL];
       this.input_data.data['seq'] = revision.ASU.seq;
-      /*
       if (revision.subtype.indexOf('substructure')>=0)
-            this.input_data.data['substructure'] = [revision.Structure];
+        this.input_data.data['substructure'] = [revision.Structure];
       else if (revision.subtype.indexOf('xyz')>=0)
-            this.input_data.data['xmodel'] = [revision.Structure];
-      */
+        this.input_data.data['xmodel'] = [revision.Structure];
     }
 
     __template.TaskTemplate.prototype.makeInputData.call ( this,login,jobDir );

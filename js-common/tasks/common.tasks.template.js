@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.12.18   <--  Date of Last Modification.
+ *    27.12.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -116,8 +116,10 @@ function TaskTemplate()  {
 
 // ===========================================================================
 
-TaskTemplate.prototype.icon_small = function()  { return 'process_20x20'; }
-TaskTemplate.prototype.icon_large = function()  { return 'process';       }
+TaskTemplate.prototype.icon = function()  { return 'process'; }
+
+//TaskTemplate.prototype.icon_small = function()  { return 'process_20x20'; }
+//TaskTemplate.prototype.icon_large = function()  { return 'process';       }
 
 // task.platforms() identifies suitable platforms:
 //   'W"  : Windows
@@ -178,7 +180,8 @@ if (!dbx)  {
   var parent_task = jobTree.getTaskByNodeId(node.parentId);
   var can_move    = false;
 
-    if (parent_task && (this.state!=job_code.new) &&
+    //if (parent_task && (this.state!=job_code.new) &&
+    if ((this.state!=job_code.new) &&
         (this.state!=job_code.running) && (this.state!=job_code.exiting))  {
 
       var p = jobTree.getNodePosition(node);
@@ -188,18 +191,22 @@ if (!dbx)  {
       var clen  = p[3];  // number of siblings
 
       can_move = true;
-      if (pnode && pid && (pos<=0) && (clen<2))  {
+      //if (pnode && pid && (pos<=0) && (clen<2))  {
+      if ((pos<=0) && (clen<2))  {
         // no siblings -- check input data
       //if (pnode && pid && ((pos<=0) || (clen<2)))  {
         // no siblings or seniour sibling -- check input data
-        for (var dtype in this.input_data.data)  {
+        if (parent_task)  {
+          for (var dtype in this.input_data.data)  {
             var d = this.input_data.data[dtype];
             for (var j=0;(j<d.length) && can_move;j++)
               if (d[j].jobId==parent_task.id)
                 can_move = false;
-          if (!can_move)
-            break;
-        }
+            if (!can_move)
+              break;
+          }
+        } else
+          can_move = false;
       }
 
     }
@@ -288,7 +295,7 @@ if (!dbx)  {
     }
 
     var header = new Grid ( '' );
-    header.task_icon = header.setImage ( image_path(this.icon_large()),'','80px', 0,0, 3,1 );
+    header.task_icon = header.setImage ( image_path(this.icon()),'','80px', 0,0, 3,1 );
     header.setLabel ( ' ', 0,1, 3,1 ).setWidth_px(20).setHeight ( '0.5em' );
     var row = 0;
     var t   = this.title;
@@ -1014,13 +1021,11 @@ if (!dbx)  {
 
       }
 
-
-
       if ('void_data' in widget)
         for (var inputId in widget.void_data)
           for (var j=0;j<widget.void_data[inputId].length;j++)
             inp_data.addCustomData ( inputId,widget.void_data[inputId][j] );
-      
+
       for (var i=0;i<widget.child.length;i++)
         collectData ( widget.child[i] );
 

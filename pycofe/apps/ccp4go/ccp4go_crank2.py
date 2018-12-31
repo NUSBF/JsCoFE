@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    25.10.18   <--  Date of Last Modification.
+#    29.12.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -21,11 +21,11 @@ import json
 #  ccp4-python imports
 #import pyrvapi
 
-import ccp4go_morda
+import ccp4go_mrbump
 
 # ============================================================================
 
-class Crank2(ccp4go_morda.MoRDa):
+class Crank2(ccp4go_mrbump.MrBUMP):
 
     def crank2_dir(self):  return "crank2_results"
 
@@ -175,7 +175,6 @@ class Crank2(ccp4go_morda.MoRDa):
         quit_message = self.saveResults ( "Crank-2",self.crank2_dir(),nResults,
                 rfree,rfactor,"crank2", crank2_xyz,crank2_mtz,crank2_map,crank2_dmap,
                 None,None,columns,spg_info )
-        self.output_meta["results"][self.crank2_dir()]["phasing"] = "EP"
 
         self.quit_branch ( branch_data,self.crank2_dir(),
                            "Automated Experimental Phasing (Crank-2): " +

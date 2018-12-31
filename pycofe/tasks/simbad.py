@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    20.11.18   <--  Date of Last Modification.
+#    30.12.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -133,7 +133,7 @@ class Simbad(asudef.ASUDef):
         self.storeReportDocument ( self.log_page_id() )
 
         # run simbad
-        self.runApp ( app,cmd )
+        self.runApp ( app,cmd,logType="Main" )
         self.restoreReportDocument()
 
         #f = open ( 'xxx.json','w' )
@@ -188,13 +188,12 @@ class Simbad(asudef.ASUDef):
                             os.path.join(self.reportDir(),result0["mtz"]),
                             os.path.join(self.reportDir(),result0["map"]),
                             os.path.join(self.reportDir(),result0["dmap"]),
-                            None,True )
+                            None,leadKey=1,copy_files=True )
 
             if structure:
 
                 structure.addDataAssociation ( hkl.dataId )
                 structure.setRefmacLabels ( hkl )
-                structure.addMRSubtype ()
                 structure.setXYZSubtype()
 
                 self.putStructureWidget ( "structure_btn_",

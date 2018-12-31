@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    17.12.18   <--  Date of Last Modification.
+#    24.12.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -39,7 +39,7 @@ class DType(dtype_template.DType):
 
             self._type    = dtype()
             self.dname    = "structure"
-            self.version += 0   # versioning increments from parent to children
+            self.version += 1   # versioning increments from parent to children
 
             #  Refmac labels
             self.FP       = ""  # used in Buccaneer-MR and Parrot-MR
@@ -60,6 +60,8 @@ class DType(dtype_template.DType):
             #  Free R-flag
             self.FreeR_flag = ""
 
+            self.leadKey    = 0;   # data lead key: 0: undefined, 1: coordinates, 2: phases
+
             self.useCoordinates = True  # flag for using in Phaser-EP
             self.rmsd           = 0.3   # used in Phaser-EP
             #self.useForNCS      = True  # for use in Parrot
@@ -70,6 +72,14 @@ class DType(dtype_template.DType):
 
             self.ligands        = []    # list of ligands fitted
 
+        return
+
+    def setLeadXYZ ( self ):
+        self.leadKey = 1
+        return
+
+    def setLeadPhases ( self ):
+        self.leadKey = 2
         return
 
     def ensembleName ( self ):  # for using in phaser interface
@@ -193,7 +203,6 @@ class DType(dtype_template.DType):
         self.FreeR_flag = "FREER"
         return
 
-
     def copyLabels ( self,struct_class ):
         self.FP      = struct_class.FP
         self.SigFP   = struct_class.SigFP
@@ -209,21 +218,6 @@ class DType(dtype_template.DType):
         self.HLD     = struct_class.HLD
         self.FreeR_flag = struct_class.FreeR_flag
         return
-
-    def addMRSubtype ( self ):
-        self.addSubtype ( dtype_template.subtypeMR()     )
-        self.addSubtype ( dtype_template.subtypePhases() )
-        return
-
-    def hasMRSubtype ( self ):
-        return dtype_template.subtypeMR() in self.subtype
-
-    def addEPSubtype ( self ):
-        self.addSubtype ( dtype_template.subtypeEP()     )
-        return
-
-    def hasEPSubtype ( self ):
-        return dtype_template.subtypeEP() in self.subtype
 
     def setXYZSubtype ( self ):
         self.addSubtype ( dtype_template.subtypeXYZ() )
@@ -388,13 +382,15 @@ def getValidFileName ( xyzFilePath,subFilePath,mtzFilePath,mapFilePath ):
     if (mtzFilePath):  return mtzFilePath
     return mapFilePath
 
+
 # ----------------------------------------------------------------------------
 
 def register ( xyzFilePath,subFilePath,mtzFilePath,mapFilePath,dmapFilePath,libFilePath,
-               dataSerialNo,job_id,outDataBox,outputDir,copy_files=False ):
+               dataSerialNo,job_id,leadKey,outDataBox,outputDir,copy_files=False ):
     fname0 = getValidFileName ( xyzFilePath,subFilePath,mtzFilePath,mapFilePath )
     if fname0 and os.path.isfile(fname0):
         structure = DType   ( job_id )
+        structure.leadKey = leadKey
         # note that, in the following line, file key may be any
         structure.setFile ( os.path.basename(fname0),dtype_template.file_key["xyz"] )
         structure.makeDName ( dataSerialNo )
@@ -429,11 +425,12 @@ def basename ( fpath ):
 #  register1() assumes that all files are in output directory and named
 #  properly -- so just checks them in
 def register1 ( xyzFilePath,subFilePath,mtzFilePath,mapFilePath,dmapFilePath,libFilePath,
-                regName,dataSerialNo,job_id,outDataBox ):
+                regName,dataSerialNo,job_id,leadKey,outDataBox ):
 
     fname0 = getValidFileName ( xyzFilePath,subFilePath,mtzFilePath,mapFilePath )
     if fname0 and os.path.isfile(fname0):
         structure = DType   ( job_id       )
+        structure.leadKey = leadKey
         structure.setFile   ( regName,dtype_template.file_key["xyz"] )
         structure.makeDName ( dataSerialNo )
         structure.removeFiles()

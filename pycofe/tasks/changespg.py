@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    08.08.18   <--  Date of Last Modification.
+#    22.12.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -71,7 +71,7 @@ class ChangeSpG(basic.TaskDriver):
         self.setGenericLogParser ( self.refmac_report(),False )
 
         # run reindex
-        self.runApp ( "reindex",cmd )
+        self.runApp ( "reindex",cmd,logType="Main" )
         self.unsetLogParser()
 
         # check solution and register data

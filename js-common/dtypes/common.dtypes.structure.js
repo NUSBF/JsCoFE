@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.12.18   <--  Date of Last Modification.
+ *    31.12.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -31,8 +31,6 @@ if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
 // for class reconstruction from json strings
 
 var structure_subtype = {
-  MR            : 'MR',
-  EP            : 'EP',
   XYZ           : 'xyz',
   SUBSTRUCTURUE : 'substructure',
   PHASES        : 'phases'
@@ -64,6 +62,10 @@ function DataStructure()  {
   // Free R-flag
   this.FreeR_flag = '';
 
+  this.leadKey    = 0;   // data lead key: 0: undefined, 1: coordinates, 2: phases
+
+  // Fields used in interfaces
+
   this.useCoordinates = true;  // flag for using in Phaser-EP
   this.rmsd           = 0.3;   // used in Phaser-EP
 
@@ -84,14 +86,16 @@ DataStructure.prototype.constructor = DataStructure;
 
 // ===========================================================================
 
-DataStructure.prototype.title      = function()  { return 'Structure Data'; }
-DataStructure.prototype.icon_small = function()  { return 'data_20x20'; }
-DataStructure.prototype.icon_large = function()  { return 'data';       }
+DataStructure.prototype.title = function()  { return 'Structure Data'; }
+DataStructure.prototype.icon  = function()  { return 'data';           }
+
+//DataStructure.prototype.icon_small = function()  { return 'data_20x20'; }
+//DataStructure.prototype.icon_large = function()  { return 'data';       }
 
 // when data class version is changed here, change it also in python
 // constructors
 DataStructure.prototype.currentVersion = function()  {
-  var version = 0;
+  var version = 1;  // advanced on leadKey
   if (__template)
         return  version + __template.DataXYZ.prototype.currentVersion.call ( this );
   else  return  version + DataXYZ.prototype.currentVersion.call ( this );
@@ -131,7 +135,7 @@ if (!__template)  {
   DataStructure.prototype.layCustomDropdownInput = function ( dropdown ) {
 
     var customGrid = dropdown.customGrid;
-    var row = 0;
+    var row = customGrid.getNRows();
 
     function setLabel ( title,row,col )  {
       customGrid.setLabel ( title,row,col,1,1 ).setFontItalic(true).setNoWrap();
@@ -149,17 +153,33 @@ if (!__template)  {
 
     if (startsWith(dropdown.layCustom,'phaser-ep'))  {
 
+      /*
       if (this.subtype.indexOf('substructure')<0)
             setLabel ( 'Calculate from coordinates; assumed r.m.s.d. from target',row,0 );
       else  setLabel ( 'Assumed r.m.s.d. from target',row,0 );
+      */
 
-      customGrid.rmsd = customGrid.setInputText ( this.rmsd,row,1,1,1 )
-          .setStyle     ( 'text','real','0.3','Estimated difference between ' +
-                          'given model and target structure, in &Aring;.' )
-          .setWidth_px  ( 60 );
-      customGrid.setVerticalAlignment ( row,1,'middle' );
+      if (this.subtype.indexOf('xyz')>=0)  {
 
-      customGrid.setLabel ( ' ',++row,0,1,2 ).setHeight_px ( 8 );
+        if (dropdown.in_revision)  {
+          customGrid.setLabel ( '<b>Current structure model will be used for the ' +
+                                'calculation of initial phases (MR-SAD)</b>',
+                                row++,0,1,6 ).setFontBold(true).setFontItalic(true)
+                                             .setNoWrap();
+          setLabel ( 'Assumed r.m.s.d. from target:',row,0 );
+        } else
+          setLabel ( 'Calculate from coordinates; assumed r.m.s.d. from target',row,0 );
+
+        customGrid.rmsd = customGrid.setInputText ( this.rmsd,row,1,1,1 )
+            .setStyle     ( 'text','real','0.3','Estimated difference between ' +
+                            'given model and target structure, in &Aring;.' )
+            .setWidth_px  ( 60 );
+        customGrid.setVerticalAlignment ( row,1,'middle' );
+
+        if (!dropdown.in_revision)
+          customGrid.setLabel ( ' ',++row,0,1,2 ).setHeight_px ( 8 );
+
+      }
 
     } else if (dropdown.layCustom=='buccaneer-ws')  {
 
@@ -230,9 +250,8 @@ if (!__template)  {
     var customGrid = dropdown.customGrid;
 
     if (startsWith(dropdown.layCustom,'phaser-ep'))  {
-      this.rmsd = customGrid.rmsd.getValue();
-    //} else if (startsWith(dropdown.layCustom,'parrot'))  {
-    //  this.useForNCS = customGrid.useForNCS.getValue();
+      if (this.subtype.indexOf('xyz')>=0)
+        this.rmsd = customGrid.rmsd.getValue();
     } else if (dropdown.layCustom=='buccaneer-ws')  {
       if (this.subtype.indexOf(structure_subtype.XYZ)>=0)  {
         this.useModelSel = customGrid.useModelSel.getValue();
@@ -261,7 +280,6 @@ if (!__template)  {
 
   }
 
-
   // dataDialogHint() may return a hint for TaskDataDialog, which is shown
   // when there is no sufficient data in project to run the task.
   DataStructure.prototype.dataDialogHints = function ( subtype_list ) {
@@ -278,9 +296,8 @@ if (!__template)  {
       hints.push ( 'If you are certain that you have <i>"Structure"</i> data produced ' +
                    'in one of jobs up the current branch of the job tree, make ' +
                    'sure that it has a suitable subtype as shown in brackets : (' +
-                   subtype_list.join(',') + '). For example, subtype "MR" or ' +
-                   '"EP" mean that the structure must have been obtained via ' +
-                   'Molecular Replacement or Experimental Phasing, respectively.'
+                   subtype_list.join(',') + '). For example, subtype "protein" ' +
+                   'means that the structure must contain aminoacid chain(s).'
                  );
     return hints;  // No help hints by default
   }

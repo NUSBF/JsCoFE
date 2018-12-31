@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.12.18   <--  Date of Last Modification.
+ *    27.12.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -47,9 +47,11 @@ DataXRayImages.prototype.constructor = DataXRayImages;
 
 // ===========================================================================
 
-DataXRayImages.prototype.title      = function()  { return 'X-Ray Diffraction Images'; }
-DataXRayImages.prototype.icon_small = function()  { return 'data_xrayimages_20x20'; }
-DataXRayImages.prototype.icon_large = function()  { return 'data_xrayimages';       }
+DataXRayImages.prototype.title = function()  { return 'X-Ray Diffraction Images'; }
+DataXRayImages.prototype.icon  = function()  { return 'data_xrayimages';          }
+
+//DataXRayImages.prototype.icon_small = function()  { return 'data_xrayimages_20x20'; }
+//DataXRayImages.prototype.icon_large = function()  { return 'data_xrayimages';       }
 
 // when data class version is changed here, change it also in python
 // constructors

@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    26.08.18   <--  Date of Last Modification.
+#    22.12.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -80,7 +80,7 @@ class PISA(basic.TaskDriver):
         self.storeReportDocument ( self.outputDir() )
 
         # Start pisa
-        self.runApp ( "jspisa",cmd )
+        self.runApp ( "jspisa",cmd,logType="Main" )
 
         self.restoreReportDocument()
 

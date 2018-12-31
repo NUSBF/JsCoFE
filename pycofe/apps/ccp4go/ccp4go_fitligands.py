@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    04.08.18   <--  Date of Last Modification.
+#    30.12.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -111,7 +111,13 @@ class FitLigands(ccp4go_acedrg.AceDrg):
                   ]
 
             # Start findligand
-            self.runApp ( os.path.join(os.environ["CCP4"],"libexec","findligand-bin"),cmd )
+            #self.runApp ( os.path.join(os.environ["CCP4"],"libexec","findligand-bin"),cmd )
+
+            if sys.platform.startswith("win"):
+                self.runApp ( "findligand.bat",cmd )
+            else:
+                self.runApp ( os.path.join(os.environ["CCP4"],"libexec","findligand-bin"),cmd )
+
 
             # check results
             ligands = [fn for fn in os.listdir("./") if fn.startswith("fitted-ligand-") and fn.endswith(".pdb") ]

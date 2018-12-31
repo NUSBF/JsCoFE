@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    08.09.18   <--  Date of Last Modification.
+#    24.12.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -136,7 +136,9 @@ class ShelxSubstr(crank2.Crank2):
         rvrow0 = self.rvrow
         self.putTitle ( "Substructure Found" )
         structure = self.finaliseStructure ( self.xyzout_fpath,self.outputFName,
-                                             hkls,None,[],3,False,"" )
+                                             hkls,None,[],1,
+                                             leadKey=1,openState_bool=False,
+                                             title="" )
         if structure:
 
             self.putMessage ( "&nbsp;" )

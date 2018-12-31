@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    16.12.18   <--  Date of Last Modification.
+#    23.12.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -142,7 +142,7 @@ class EnsemblePrepXYZ(basic.TaskDriver):
             self.close_stdin()
 
             # Start ensembler
-            self.runApp ( "phaser.ensembler",["--stdin"] )
+            self.runApp ( "phaser.ensembler",["--stdin"],logType="Main" )
 
             #if len(xyz)==1:
             #    for file in os.listdir("."):
@@ -177,9 +177,7 @@ class EnsemblePrepXYZ(basic.TaskDriver):
                 dtype_template.subtypeAnomSubstr  (),
                 dtype_template.subtypePhases      (),
                 dtype_template.subtypeLigands     (),
-                dtype_template.subtypeWaters      (),
-                dtype_template.subtypeMR          (),
-                dtype_template.subtypeEP          ()
+                dtype_template.subtypeWaters      ()
             ])
             ensemble = self.registerEnsemble ( temp.subtype,outputFile,checkout=True )
             if ensemble:

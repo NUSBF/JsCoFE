@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    30.07.18   <--  Date of Last Modification.
+#    22.12.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -71,9 +71,9 @@ class MakeLigand(basic.TaskDriver):
 
         # Start makeligand
         if sys.platform.startswith("win"):
-            self.runApp ( "acedrg.bat",cmd )
+            self.runApp ( "acedrg.bat",cmd,logType="Main" )
         else:
-            self.runApp ( "acedrg",cmd )
+            self.runApp ( "acedrg",cmd,logType="Main" )
 
         xyzPath = code + ".pdb"
         cifPath = code + ".cif"

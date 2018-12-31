@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    19.06.18   <--  Date of Last Modification.
+ *    27.12.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -266,6 +266,7 @@ body {
 
 
 .grid-layout {
+  font-family     : "Trebuchet MS", Arial, Helvetica, sans-serif;
   font-size       : 1em;
   width           : 100%;
   height          : auto;
@@ -276,6 +277,7 @@ body {
   border-collapse : collapse;
 }
 .grid-layout td {
+  font-family     : "Trebuchet MS", Arial, Helvetica, sans-serif;
   font-size       : 1em;
   vertical-align  : top ;
   margin-top      : 0px ;
@@ -284,10 +286,12 @@ body {
   padding-left    : 0px ;
   padding-right   : 8px ;
   border          : 0px ;
+  text-align      : left;
   border-collapse : collapse;
 }
 
 .grid-layout-compact {
+  font-family     : "Trebuchet MS", Arial, Helvetica, sans-serif;
   font-size       : 1em;
   width           : auto;
   height          : auto;
@@ -298,6 +302,7 @@ body {
   border-collapse : collapse;
 }
 .grid-layout-compact td {
+  font-family     : "Trebuchet MS", Arial, Helvetica, sans-serif;
   font-size       : 1em;
   vertical-align  : top ;
   margin-top      : 0px ;
@@ -306,6 +311,7 @@ body {
   padding-left    : 0px ;
   padding-right   : 8px ;
   border          : 0px ;
+  text-align      : left;
   border-collapse : collapse;
 }
 
@@ -376,7 +382,14 @@ body {
   white-space     : nowrap;
   width           : auto;
 }
-.table-blue-td, .table-blue td {
+
+/*.table-blue-td, .table-blue td {*/
+
+.table-blue-td,
+.table-blue > thead > tr > td,
+.table-blue > tbody > tr > td,
+.table-blue > tfoot > tr > td,
+.table-blue > tr > td {
   font-size       : 1em;
   font-family     : "Courier";
   text-decoration : none;

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.12.18   <--  Date of Last Modification.
+ *    27.12.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -45,7 +45,7 @@ function TaskASUMod()  {
     tooltip     : 'Structure revision, in which the ASU contents needs to be '+
                   'modified',
     inputId     : 'revision', // input Id for referencing input fields
-    version     : 0,          // minimum data version allowed
+    version     : 4,          // minimum data version allowed
     min         : 1,          // minimum acceptable number of data instances
     max         : 1           // maximum acceptable number of data instances
   });
@@ -84,8 +84,10 @@ TaskASUMod.prototype.constructor = TaskASUMod;
 // ===========================================================================
 // export such that it could be used in both node and a browser
 
-TaskASUMod.prototype.icon_small = function()  { return 'task_asumod_20x20'; }
-TaskASUMod.prototype.icon_large = function()  { return 'task_asumod';       }
+TaskASUMod.prototype.icon = function()  { return 'task_asumod'; }
+
+//TaskASUMod.prototype.icon_small = function()  { return 'task_asumod_20x20'; }
+//TaskASUMod.prototype.icon_large = function()  { return 'task_asumod';       }
 
 TaskASUMod.prototype.currentVersion = function()  {
   var version = 0;

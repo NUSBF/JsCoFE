@@ -1,7 +1,7 @@
 /*
  *  =================================================================
  *
- *    19.11.18   <--  Date of Last Modification.
+ *    29.12.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -139,6 +139,9 @@ var _taskIndex = {
 
   // suggest ShelxCD after ASUDef and MR; do not suggest it after auto-EP or itself
   'p' : { type: 'TaskShelxCD'        , after: ['H','J','K','L','M','N'] },
+
+  // do not suggest SymMatch
+  'q' : { type: 'TaskSymMatch'       , after: [] }
 
 };
 

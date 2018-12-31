@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    20.12.18   <--  Date of Last Modification.
+ *    27.12.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -208,8 +208,10 @@ TaskShelxEMR.prototype.constructor = TaskShelxEMR;
 // ===========================================================================
 // export such that it could be used in both node and a browser
 
-TaskShelxEMR.prototype.icon_small = function()  { return 'task_shelxemr_20x20'; }
-TaskShelxEMR.prototype.icon_large = function()  { return 'task_shelxemr';       }
+TaskShelxEMR.prototype.icon = function()  { return 'task_shelxemr'; }
+
+//TaskShelxEMR.prototype.icon_small = function()  { return 'task_shelxemr_20x20'; }
+//TaskShelxEMR.prototype.icon_large = function()  { return 'task_shelxemr';       }
 
 TaskShelxEMR.prototype.currentVersion = function()  {
   var version = 0;

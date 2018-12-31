@@ -21,7 +21,6 @@ import sys
 #import pyrvapi
 
 import edmap
-
 import ccp4go_buccaneer
 
 # ============================================================================

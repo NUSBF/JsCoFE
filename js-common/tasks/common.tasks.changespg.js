@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.12.18   <--  Date of Last Modification.
+ *    27.12.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -64,8 +64,10 @@ TaskChangeSpG.prototype.constructor = TaskChangeSpG;
 // ===========================================================================
 // export such that it could be used in both node and a browser
 
-TaskChangeSpG.prototype.icon_small = function()  { return 'task_changespg_20x20'; }
-TaskChangeSpG.prototype.icon_large = function()  { return 'task_changespg';       }
+TaskChangeSpG.prototype.icon = function()  { return 'task_changespg'; }
+
+//TaskChangeSpG.prototype.icon_small = function()  { return 'task_changespg_20x20'; }
+//TaskChangeSpG.prototype.icon_large = function()  { return 'task_changespg';       }
 
 TaskChangeSpG.prototype.currentVersion = function()  {
   var version = 0;

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.12.18   <--  Date of Last Modification.
+ *    31.12.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -392,8 +392,10 @@ TaskArpWarp.prototype.constructor = TaskArpWarp;
 // ===========================================================================
 // export such that it could be used in both node and a browser
 
-TaskArpWarp.prototype.icon_small = function()  { return 'task_arpwarp_20x20'; }
-TaskArpWarp.prototype.icon_large = function()  { return 'task_arpwarp';       }
+TaskArpWarp.prototype.icon = function()  { return 'task_arpwarp'; }
+
+//TaskArpWarp.prototype.icon_small = function()  { return 'task_arpwarp_20x20'; }
+//TaskArpWarp.prototype.icon_large = function()  { return 'task_arpwarp';       }
 
 TaskArpWarp.prototype.currentVersion = function()  {
   var version = 0;

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.12.18   <--  Date of Last Modification.
+ *    27.12.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -61,8 +61,10 @@ TaskSeqAlign.prototype.constructor = TaskSeqAlign;
 // ===========================================================================
 // export such that it could be used in both node and a browser
 
-TaskSeqAlign.prototype.icon_small = function()  { return 'task_seqalign_20x20'; }
-TaskSeqAlign.prototype.icon_large = function()  { return 'task_seqalign';       }
+TaskSeqAlign.prototype.icon = function()  { return 'task_seqalign'; }
+
+//TaskSeqAlign.prototype.icon_small = function()  { return 'task_seqalign_20x20'; }
+//TaskSeqAlign.prototype.icon_large = function()  { return 'task_seqalign';       }
 
 TaskSeqAlign.prototype.currentVersion = function()  {
   var version = 1;

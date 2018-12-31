@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    09.08.18   <--  Date of Last Modification.
+#    24.12.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -96,9 +96,9 @@ class Lorestr(basic.TaskDriver):
 
         # Start lorestr
         if sys.platform.startswith("win"):
-            self.runApp ( "lorestr.bat",cmd )
+            self.runApp ( "lorestr.bat",cmd,logType="Main" )
         else:
-            self.runApp ( "lorestr",cmd )
+            self.runApp ( "lorestr",cmd,logType="Main" )
 
         # check solution and register data
         if os.path.isfile(self.getXYZOFName()):
@@ -112,8 +112,10 @@ class Lorestr(basic.TaskDriver):
             # register output data from temporary location (files will be moved
             # to output directory by the registration procedure)
 
-            structure = self.registerStructure ( self.getXYZOFName(),None,self.getMTZOFName(),
-                                                 fnames[0],fnames[1],None )
+            structure = self.registerStructure ( self.getXYZOFName(),None,
+                                                 self.getMTZOFName(),
+                                                 fnames[0],fnames[1],None,
+                                                 leadKey=1 )
             if structure:
                 structure.copyAssociations   ( istruct )
                 structure.addDataAssociation ( hkl.dataId     )

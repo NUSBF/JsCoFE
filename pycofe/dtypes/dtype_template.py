@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    27.09.18   <--  Date of Last Modification.
+#    23.12.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -36,9 +36,6 @@ def subtypeAnomSubstr  (): return "substructure-am"
 def subtypePhases      (): return "phases"
 def subtypeLigands     (): return "ligands"
 def subtypeWaters      (): return "waters"
-
-def subtypeMR          (): return "MR"
-def subtypeEP          (): return "EP"
 
 def subtypeProtein     (): return "protein"
 def subtypeDNA         (): return "dna"

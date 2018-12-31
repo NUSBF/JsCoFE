@@ -56,44 +56,50 @@ def getTimes():
 
 
 def call ( executable,command_line,job_dir,stdin_fname,file_stdout,
-           file_stderr,log_parser=None,citation_ref=None ):
+           file_stderr,log_parser=None,citation_ref=None,file_stdout_alt=None ):
 
-    file_stdout.write ( "\n" + "="*80 + "\n" )
-    file_stdout.write ( time.strftime("## Run %Y-%m-%d at %H:%M:%S on ") + platform.uname()[1] );
-    file_stdout.write ( "\n" + "="*80 + "\n" )
-    file_stdout.write ( "## EXECUTING COMMAND:\n\n" )
+    msg = "\n" + "="*80 + "\n" +\
+          time.strftime("## Run %Y-%m-%d at %H:%M:%S on ") + platform.uname()[1] +\
+          "\n" + "="*80 + "\n" +\
+          "## EXECUTING COMMAND:\n\n" +\
+          " " + executable + " \\\n"
+    file_stdout.write ( msg )
+    if file_stdout_alt:
+        file_stdout_alt.write ( msg )
 
-    #msg    = " " + executable + " "
-    #indent = " " * len(msg)
-    #for c in command_line:
-    #    if (len(msg)+len(c) > 76) and (msg != indent):
-    #        file_stdout.write ( msg + " "*max(0,78-len(msg)) + " \\\n" )
-    #        msg = indent
-    #    msg = msg + "'" + c + "' "
-    #file_stdout.write ( msg + "\n" )
-
-    #file_stdout.write ( " " + str(command_line) + " \\\n" )
-
-    file_stdout.write ( " " + executable + " \\\n" )
     indent = "      "
     msg    = indent
     for c in command_line:
         if len(msg)+len(c) > 78:
-            file_stdout.write ( msg + " "*max(0,78-len(msg)) + " \\\n" )
+            msg += " "*max(0,78-len(msg)) + " \\\n"
+            file_stdout.write ( msg )
+            if file_stdout_alt:
+                file_stdout_alt.write ( msg )
             msg = indent
-        msg = msg + "'" + c + "' "
+        msg += "'" + c + "' "
     file_stdout.write ( msg + "\n" )
+    if file_stdout_alt:
+        file_stdout_alt.write ( msg + "\n" )
 
     file_stdin = None
     if stdin_fname:
-        file_stdout.write ( "\n" + "-"*80 + "\n## KEYWORD INPUT:\n\n" )
+        msg = "\n" + "-"*80 + "\n## KEYWORD INPUT:\n\n"
+        file_stdout.write ( msg )
+        if file_stdout_alt:
+            file_stdout_alt.write ( msg )
         file_stdin = open ( stdin_fname,"r" )
-        file_stdout.write ( file_stdin.read() )
+        msg = file_stdin.read()
+        file_stdout.write ( msg )
+        if file_stdout_alt:
+            file_stdout_alt.write ( msg )
         file_stdin.close  ()
         file_stdin = open ( stdin_fname,"r" )
 
     file_stdout.write ( "\n" + "="*80 + "\n\n" )
     file_stdout.flush()
+    if file_stdout_alt:
+        file_stdout_alt.write ( "\n" + "="*80 + "\n\n" )
+        file_stdout_alt.flush()
 
     rc = comrc()
     try:

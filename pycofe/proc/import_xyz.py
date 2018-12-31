@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    09.08.18   <--  Date of Last Modification.
+#    22.12.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -156,7 +156,7 @@ def run ( body ):  # body is reference to the main Import class
 
         # Start pdbcur
         rc = command.call ( "pdbcur",['XYZIN',fpath],"./",
-                            "pdbcur.script",body.file_stdout,body.file_stderr )
+                            "pdbcur.script",body.file_stdout1,body.file_stderr )
 
         # read pdbcur's json
         fnamesplit = os.path.splitext ( f )

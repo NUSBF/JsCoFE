@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    20.08.18   <--  Date of Last Modification.
+#    22.12.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -66,9 +66,9 @@ class Coot(basic.TaskDriver):
 
         # Run coot
         if sys.platform.startswith("win"):
-            rc = self.runApp ( "coot.bat",args,False )
+            rc = self.runApp ( "coot.bat",args,logType="Main",quitOnError=False )
         else:
-            rc = self.runApp ( "coot",args,False )
+            rc = self.runApp ( "coot",args,logType="Main",quitOnError=False )
 
         # Check for PDB files left by Coot and convert them to type structure
 

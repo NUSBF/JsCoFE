@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    12.12.18   <--  Date of Last Modification.
+ *    27.12.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -54,6 +54,7 @@
  *      function stopJob         ( nodeId );
  *      function openJob         ( dataBox,parent_page );
  *      function cloneJob        ( parent_page,onAdd_func );
+ *      function getTaskDataBox  ( task );
  *      function harvestTaskData ( includeSelected_bool,harvestedTaskIds );
  *      function inspectData     ( jobId,dataType,dataId );
  *      function getAllAncestors ();
@@ -177,7 +178,7 @@ JobTree.prototype.readProjectData = function ( page_title,
 
         tree.addRootNode ( '<b>[' + tree.projectData.desc.name  + ']</b> ' +
                            '<i>'  + tree.projectData.desc.title + '</i>',
-                           image_path('project_20x20'),tree.customIcon() );
+                           image_path('project'),tree.customIcon() );
 
       } else  {
 
@@ -298,7 +299,7 @@ JobTree.prototype.setNodeName = function ( nodeId,save_bool )  {
 JobTree.prototype.setNodeIcon = function ( nodeId,save_bool )  {
   var task = this.task_map[nodeId];
   var node = this.node_map[nodeId];
-  this.setIcon ( node,image_path(task.icon_small()) );
+  this.setIcon ( node,image_path(task.icon()) );
   if (save_bool)
     this.saveProjectData ( [],[], null );
 }
@@ -484,9 +485,9 @@ JobTree.prototype._add_job = function ( insert_bool,task,dataBox,
     // which are not possible before node is placed in the tree
     if (insert_bool)
           node = this.insertNodeAfterSelected ( '',
-                              image_path(task.icon_small()),this.customIcon() );
+                              image_path(task.icon()),this.customIcon() );
     else  node = this.addNodeToSelected ( '',
-                              image_path(task.icon_small()),this.customIcon() );
+                              image_path(task.icon()),this.customIcon() );
 
     this.task_map[node.id] = task;
     task.treeItemId        = node.id;
@@ -800,13 +801,26 @@ JobTree.prototype.openJob = function ( dataBox,parent_page )  {
 
           var dBox = dataBox;
 
+          /*
           if (!dBox)
             dBox = tree.harvestTaskData ( false,
                                           tree.task_map[nodeId].harvestedTaskIds );
+          */
+          if (!dBox)  {
+            var task = tree.task_map[nodeId];
+            if (task && task.isComplete())  {
+              // for completed task, compose dataBox from task's own fields,
+              // because tasks may be moved up the tree, in which case
+              // the composition of dataBox may also change
+              dBox = tree.getTaskDataBox ( task );
+            } else
+              dBox = tree.harvestTaskData ( false,task.harvestedTaskIds );
+          }
 
           var params       = {};
           params.dataBox   = dBox;
           params.ancestors = tree.getAllAncestors ( tree.task_map[nodeId] );
+
           var dlg = new JobDialog ( params,parent_page,
 
             function(task_id){
@@ -898,7 +912,7 @@ JobTree.prototype.cloneJob = function ( parent_page,onAdd_func )  {
         task.project = tree.projectData.desc.name;
         task.id      = tree.projectData.jobCount;
 
-        var node = tree.addSiblingToSelected ( '',image_path(task.icon_small()),
+        var node = tree.addSiblingToSelected ( '',image_path(task.icon()),
                                                   tree.customIcon() );
 
         tree.task_map[node.id] = task;
@@ -1003,6 +1017,43 @@ JobTree.prototype.harvestTaskData = function ( includeSelected_bool,
         dataBox.data_n0[dt] = dataBox.data[dt].length;
 
     }
+
+  }
+
+  return dataBox;
+
+}
+
+
+JobTree.prototype.getTaskDataBox = function ( task )  {
+
+  var taskIds = [];
+  for (var dt in task.input_data.data)  {
+    var d = task.input_data.data[dt];
+    for (var i=0;i<d.length;i++)
+      if (taskIds.indexOf(d[i].jobId)<0)
+        taskIds.push ( d[i].jobId );
+  }
+
+  var dataBox = new DataBox();
+  dataBox.inp_assoc = {};  // created for future use in
+                           //         TaskTemplate.setInputDataFields()
+  dataBox.harvestedTaskIds = task.harvestedTaskIds;  // will keep ids of multiply selected tasks,
+                           // which are used when Job Dialog is repeatedly created
+  if (taskIds.length>0)  {
+    for (var i=0;i<taskIds.length;i++)
+      for (var nodeId in this.task_map)  {
+        var task = this.task_map[nodeId];
+        if (task.id==taskIds[i])  {
+          dataBox.addTaskData ( task,false );
+          //dataBox.taskIds.push ( task.id );
+          break;
+        }
+      }
+
+    dataBox.data_n0 = {};
+    for (var dt in dataBox.data)
+      dataBox.data_n0[dt] = dataBox.data[dt].length;
 
   }
 

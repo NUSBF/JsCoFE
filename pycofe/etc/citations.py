@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    22.12.18   <--  Date of Last Modification.
+#    29.12.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -42,6 +42,7 @@ citations = {
     'ctruncate'       : { 'name' : 'CTruncate'    , 'category' : 'service', 'refs' : [] },
     'mtz2various'     : { 'name' : 'mtz2various'  , 'category' : 'service', 'refs' : [] },
     'matthews_coef'   : { 'name' : 'Matthews_Coef', 'category' : 'primary', 'refs' : [] },
+    'reindex'         : { 'name' : 'Reindex'      , 'category' : 'primary', 'refs' : [] },
     'cad'             : { 'name' : 'CAD'          , 'category' : 'service', 'refs' : [] },
     'cfft'            : { 'name' : 'CFFT'         , 'category' : 'service', 'refs' : [] },
     'unique'          : { 'name' : 'Unique'       , 'category' : 'service', 'refs' : [] },
@@ -49,6 +50,7 @@ citations = {
     'sftools'         : { 'name' : 'SFTools'      , 'category' : 'service', 'refs' : [] },
     'cif2mtz'         : { 'name' : 'cif2mtz'      , 'category' : 'service', 'refs' : [] },
     'rwcontents'      : { 'name' : 'RWContents'   , 'category' : 'service', 'refs' : [] },
+    'csymmatch'       : { 'name' : 'CSymMatch'    , 'category' : 'primary', 'refs' : [] },
 
     'ps2pdf'          : { 'name' : '', 'category' : 'system' , 'refs' : [] },  # empty name means "Ignore"
     'ccp4-python'     : { 'name' : '', 'category' : 'system' , 'refs' : [] },
@@ -331,12 +333,19 @@ citations = {
                          'category' : 'primary',
                          'copy'     : [['coot',-1]]  # -1 means copy all
                        },
+    'findligand'     : { 'name'     : 'COOT-findligand',
+                         'category' : 'primary',
+                         'copy'     : [['coot',-1]]  # -1 means copy all
+                       },
 
     'findwaters-bin' : { 'name'     : 'COOT-findwaters',
                          'category' : 'primary',
                          'copy'     : [['coot',-1]]  # -1 means copy all
                        },
-
+    'findwaters'     : { 'name'     : 'COOT-findwaters',
+                         'category' : 'primary',
+                         'copy'     : [['coot',-1]]  # -1 means copy all
+                       },
 
     'cparrot' :   { 'name'     : 'PARROT',
                     'category' : 'primary',
@@ -969,7 +978,7 @@ def makeSummaryCitationsHTML ( clist,eol_tasks ):
     # makes final list of references
 
     if not clist:
-        return None
+        return ""
 
     else:
 

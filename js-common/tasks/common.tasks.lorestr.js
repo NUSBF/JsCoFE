@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.12.18   <--  Date of Last Modification.
+ *    27.12.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -106,8 +106,10 @@ TaskLorestr.prototype.constructor = TaskLorestr;
 // ===========================================================================
 // export such that it could be used in both node and a browser
 
-TaskLorestr.prototype.icon_small = function()  { return 'task_lorestr_20x20'; }
-TaskLorestr.prototype.icon_large = function()  { return 'task_lorestr';       }
+TaskLorestr.prototype.icon = function()  { return 'task_lorestr'; }
+
+//TaskLorestr.prototype.icon_small = function()  { return 'task_lorestr_20x20'; }
+//TaskLorestr.prototype.icon_large = function()  { return 'task_lorestr';       }
 
 TaskLorestr.prototype.currentVersion = function()  {
   var version = 0;

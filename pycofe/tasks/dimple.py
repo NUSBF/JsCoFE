@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    22.12.18   <--  Date of Last Modification.
+#    24.12.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -97,9 +97,9 @@ class Dimple(basic.TaskDriver):
 
         # run dimple
         if sys.platform.startswith("win"):
-            self.runApp ( "dimple.bat",cmd )
+            self.runApp ( "dimple.bat",cmd,logType="Main" )
         else:
-            self.runApp ( "dimple",cmd )
+            self.runApp ( "dimple",cmd,logType="Main" )
 
         self.file_stdout.close()
         self.file_stdout = open ( self.file_stdout_path(),'r' )
@@ -119,7 +119,8 @@ class Dimple(basic.TaskDriver):
         # make output structure and register it
 
         return self.finaliseStructure ( self.getXYZOFName(),self.outputFName,
-                                             hkl,None,[],1,False )
+                                             hkl,None,[],0,leadKey=1,
+                                             openState_bool=False )
 
 
     def run(self):

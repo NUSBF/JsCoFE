@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.12.18   <--  Date of Last Modification.
+ *    27.12.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -923,8 +923,10 @@ TaskCrank2.prototype.constructor = TaskCrank2;
 // ===========================================================================
 // export such that it could be used in both node and a browser
 
-TaskCrank2.prototype.icon_small = function()  { return 'task_crank2_20x20'; }
-TaskCrank2.prototype.icon_large = function()  { return 'task_crank2';       }
+TaskCrank2.prototype.icon = function()  { return 'task_crank2'; }
+
+//TaskCrank2.prototype.icon_small = function()  { return 'task_crank2_20x20'; }
+//TaskCrank2.prototype.icon_large = function()  { return 'task_crank2';       }
 
 TaskCrank2.prototype.currentVersion = function()  {
   var version = 0;
@@ -954,6 +956,7 @@ if (!__template)  {
 
   }
 
+/*
   TaskCrank2.prototype.inputChanged = function ( inpParamRef,emitterId,emitterValue )  {
 
     function makeSuffix ( title,suffix )  {
@@ -988,6 +991,88 @@ if (!__template)  {
         inpParamRef.grid.setRowVisible ( pmodel.dropdown[0].row,
                                          (nHKL==1) && (!IR) );
         isPModel = (nHKL==1) && (!IR) && (pmodel.dropdown[0].getValue()>=0);
+      }
+
+      if (this.state==job_code.new)  {
+
+        var name = this.name;
+        if (nHKL<=1)  {
+          if (nNative<=0)  {
+            if (isPModel)  {
+              this.title = makeSuffix ( this.title,'MR-SAD' );
+              this.name  = makeSuffix ( this.name ,'MR-SAD' );
+            } else  {
+              this.title = makeSuffix ( this.title,'SAD' );
+              this.name  = makeSuffix ( this.name ,'SAD' );
+            }
+          } else if (IR)  {
+            this.title = makeSuffix ( this.title,'SIRAS' );
+            this.name  = makeSuffix ( this.name ,'SIRAS' );
+          } else  {
+            if (isPModel)  {
+              this.title = makeSuffix ( this.title,'MR-SAD + Native' );
+              this.name  = makeSuffix ( this.name ,'MR-SAD + Native' );
+            } else  {
+              this.title = makeSuffix ( this.title,'SAD + Native' );
+              this.name  = makeSuffix ( this.name ,'SAD + Native' );
+            }
+          }
+        } else  {
+          if (nNative<=0)  {
+            this.title = makeSuffix ( this.title,'MAD' );
+            this.name  = makeSuffix ( this.name ,'MAD' );
+          } else  {
+            this.title = makeSuffix ( this.title,'MAD + Native' );
+            this.name  = makeSuffix ( this.name ,'MAD + Native' );
+          }
+        }
+
+        if (this.name!=name)  {
+          var inputPanel = inpParamRef.grid.parent.parent;
+          inputPanel.header.title.setText ( '<b>' + this.title + '</b>' );
+          inputPanel.header.uname_inp.setStyle ( 'text','',
+                                this.name.replace(/<(?:.|\n)*?>/gm, '') );
+          this.updateInputPanel ( inputPanel );
+          inputPanel.emitSignal ( cofe_signals.jobDlgSignal,
+                                  job_dialog_reason.rename_node );
+        }
+
+      }
+
+    }
+
+    TaskTemplate.prototype.inputChanged.call ( this,inpParamRef,emitterId,emitterValue );
+
+  }
+*/
+
+
+  TaskCrank2.prototype.inputChanged = function ( inpParamRef,emitterId,emitterValue )  {
+
+    function makeSuffix ( title,suffix )  {
+      return title.split(' (')[0] + ' (' + suffix + ')';
+    }
+
+    if ((emitterId=='hkl') || (emitterId=='native') || (emitterId=='pmodel')) {
+      var inpDataRef = inpParamRef.grid.inpDataRef;
+      var dataState  = this.getDataState ( inpDataRef );
+      var nHKL       = dataState['hkl'];
+      var nNative    = dataState['native'];
+      var isPModel   = (dataState['pmodel']>0);
+      var IR         = false;
+
+      if (nNative>0)  {
+        var native = this.getInputItem ( inpDataRef,'native' );
+        if (native)  {
+          if (native.dropdown[0].hasOwnProperty('customGrid'))  {
+            var customGrid    = native.dropdown[0].customGrid;
+            var showUFP_cbx   = (nNative>0) && (nHKL<=1);
+            useForPhasing_cbx = customGrid.useForPhasing;
+            IR                = useForPhasing_cbx.getValue();
+            useForPhasing_cbx.setVisible ( showUFP_cbx );
+            customGrid       .setVisible ( showUFP_cbx );
+          }
+        }
       }
 
       if (this.state==job_code.new)  {

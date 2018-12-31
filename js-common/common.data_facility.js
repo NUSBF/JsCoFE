@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    12.12.18   <--  Date of Last Modification.
+ *    27.12.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -312,7 +312,7 @@ if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
       facility.name  = fcl_name;
       facility.title = title_str;
       if (fcl_name==facility_names.icat)
-        facility.icon = cmd.image_path('facility_icat_20x20');
+        facility.icon = cmd.image_path('facility_icat');
       this.facilities.push ( facility );
       return true;
     } else
@@ -327,7 +327,7 @@ if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
       facility.name  = fcl_name;
       facility.title = title_str;
       if (fcl_name==facility_names.icat)
-        facility.icon = image_path('facility_icat_20x20');
+        facility.icon = image_path('facility_icat');
       this.facilities.push ( facility );
       return true;
     } else

@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    22.12.18   <--  Date of Last Modification.
+#    24.12.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -50,7 +50,7 @@ class Xyz2Revision(dimple.Dimple,asudef.ASUDef):
             structure = self.finaliseStructure (
                                 xyz.getXYZFilePath(self.inputDir()),
                                 self.outputFName,hkl,None,
-                                [],1,False ) # "1" means "after MR"
+                                [],0,leadKey=1,openState_bool=False ) # "0" means "XYZ"
 
         else:
             structure = self.runDimple ( hkl,xyz )

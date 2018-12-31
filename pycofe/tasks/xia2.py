@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    25.10.18   <--  Date of Last Modification.
+#    22.12.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -119,9 +119,9 @@ class Xia2(basic.TaskDriver):
 
         # Run xia2
         if sys.platform.startswith("win"):
-            rc = self.runApp ( "xia2.bat",cmd )
+            rc = self.runApp ( "xia2.bat",cmd,logType="Main" )
         else:
-            rc = self.runApp ( "xia2",cmd )
+            rc = self.runApp ( "xia2",cmd,logType="Main" )
 
         if pipeline=="2d":
             self.addCitations ( ['dials','mosflm','aimless'] )
@@ -227,9 +227,11 @@ class Xia2(basic.TaskDriver):
                     #    self.file_stdout.write ( " --- stdin ref NOT FOUND" )
                     self.file_stdin = None
                     if sys.platform.startswith("win"):
-                        self.runApp ( "dials.export.bat",["format=json",rlp_json,rlp_pickle])
+                        self.runApp ( "dials.export.bat",["format=json",rlp_json,rlp_pickle],
+                                      logType="Service" )
                     else:
-                        self.runApp ( "dials.export",["format=json",rlp_json,rlp_pickle])
+                        self.runApp ( "dials.export",["format=json",rlp_json,rlp_pickle],
+                                      logType="Service" )
 
                     rlpFileName = "rlp.json"
                     rlpFilePath = os.path.join ( self.outputDir(),sweepId +"_"+ rlpFileName )
@@ -281,9 +283,11 @@ class Xia2(basic.TaskDriver):
                         #  grid size and resolution are chosen such as to keep file
                         #  size under 10MB, or else it does not download with XHR
                         if sys.platform.startswith("win"):
-                            self.runApp ( "dials.rs_mapper.bat",["grid_size=128","max_resolution=8"] )
+                            self.runApp ( "dials.rs_mapper.bat",["grid_size=128","max_resolution=8"],
+                                          logType="Service" )
                         else:
-                            self.runApp ( "dials.rs_mapper",["grid_size=128","max_resolution=8"] )
+                            self.runApp ( "dials.rs_mapper",["grid_size=128","max_resolution=8"],
+                                          logType="Service" )
 
                     mapFileName = "rs_mapper_output.ccp4"
                     mapFilePath = os.path.join ( self.outputDir(),sweepId +"_"+ mapFileName + ".map" )

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *   12.12.18   <--  Date of Last Modification.
+ *    27.12.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -83,8 +83,10 @@ TaskPISA.prototype.constructor = TaskPISA;
 // ===========================================================================
 // export such that it could be used in both node and a browser
 
-TaskPISA.prototype.icon_small = function()  { return 'task_pisa_20x20'; }
-TaskPISA.prototype.icon_large = function()  { return 'task_pisa';       }
+TaskPISA.prototype.icon = function()  { return 'task_pisa'; }
+
+//TaskPISA.prototype.icon_small = function()  { return 'task_pisa_20x20'; }
+//TaskPISA.prototype.icon_large = function()  { return 'task_pisa';       }
 
 TaskPISA.prototype.currentVersion = function()  {
   var version = 0;

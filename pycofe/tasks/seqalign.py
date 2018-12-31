@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    01.12.18   <--  Date of Last Modification.
+#    22.12.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -123,7 +123,8 @@ class SeqAlign(basic.TaskDriver):
                 seqtype = "dna"
             cmd = [self.file_seq_path(),"-type="+seqtype,"-stats="+self.file_stat_path()]
             # Start clustalw2
-            self.runApp ( os.path.join(os.environ["CCP4"],"libexec","clustalw2"),cmd )
+            self.runApp ( os.path.join(os.environ["CCP4"],"libexec","clustalw2"),
+                          cmd,logType="Main" )
 
             # check solution file and display results
             if os.path.isfile(self.file_aln_path()) and os.path.isfile(self.file_stat_path()):

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    15.12.18   <--  Date of Last Modification.
+ *    27.12.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -68,9 +68,11 @@ DataHKL.prototype.constructor = DataHKL;
 
 // ===========================================================================
 
-DataHKL.prototype.title      = function()  { return 'Reflection Data'; }
-DataHKL.prototype.icon_small = function()  { return 'data_20x20';      }
-DataHKL.prototype.icon_large = function()  { return 'data';            }
+DataHKL.prototype.title = function()  { return 'Reflection Data'; }
+DataHKL.prototype.icon  = function()  { return 'data';            }
+
+//DataHKL.prototype.icon_small = function()  { return 'data_20x20';      }
+//DataHKL.prototype.icon_large = function()  { return 'data';            }
 
 // change this synchronously with the version in dtype.hkl.py
 DataHKL.prototype.currentVersion = function()  {

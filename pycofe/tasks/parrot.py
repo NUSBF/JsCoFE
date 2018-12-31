@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    17.11.18   <--  Date of Last Modification.
+#    24.12.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -178,7 +178,7 @@ class Parrot(basic.TaskDriver):
         self.setGenericLogParser ( "parrot_report",True )
 
         # start parrot
-        self.runApp ( "cparrot",cmd )
+        self.runApp ( "cparrot",cmd,logType="Main" )
 
         # close report parser
         self.unsetLogParser()
@@ -191,7 +191,7 @@ class Parrot(basic.TaskDriver):
                 "-mtzout","__tmp.mtz",
                 "-colin-hl","/*/*/[parrot.ABCD.A,parrot.ABCD.B,parrot.ABCD.C,parrot.ABCD.D]",
                 "-colout"  ,"parrot"
-            ])
+            ],logType="Service" )
 
             os.rename ( "__tmp.mtz",output_file )
 
@@ -216,8 +216,8 @@ class Parrot(basic.TaskDriver):
             #                      fnames[1] )
 
             structure = self.registerStructure (
-                    parrot_xyz,parrot_sub,output_file,fnames[0],None,None )
-#                    parrot_xyz,parrot_sub,output_file,fnames[0],fnames[1],None )
+                    parrot_xyz,parrot_sub,output_file,fnames[0],None,None,
+                    leadKey=2 )
 
             if structure:
                 structure.copyAssociations ( istruct )

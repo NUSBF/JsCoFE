@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    23.08.18   <--  Date of Last Modification.
+#    22.12.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -111,9 +111,9 @@ class EnsemblePrepSeq(basic.TaskDriver):
 
         # Start mrbump
         if sys.platform.startswith("win"):
-            self.runApp ( "mrbump.bat",cmd )
+            self.runApp ( "mrbump.bat",cmd,logType="Main" )
         else:
-            self.runApp ( "mrbump",cmd )
+            self.runApp ( "mrbump",cmd,logType="Main" )
 
         # check solution and register data
         self.unsetLogParser()

@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    19.12.18   <--  Date of Last Modification.
+#    31.12.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -139,14 +139,13 @@ class PhaserEP(basic.TaskDriver):
 
                 structure = self.registerStructure1 (
                                 None,pdbfile,mtzfile,protein_map,None,None,
-                                self.outputFName,True )
+                                self.outputFName,leadKey=2,copy_files=True )
                 if structure:
                     if seq:
                         for i in range(len(seq)):
                             if seq[i]:
                                 structure.addDataAssociation ( seq[i].dataId )
                     structure.setPhaserEPLabels ( sol_hkl )
-                    structure.addEPSubtype    ()
                     structure.addPhasesSubtype()
 
                     #if self.xmodel:
@@ -162,7 +161,7 @@ class PhaserEP(basic.TaskDriver):
                         fnames = self.calcCCP4Maps ( llgmapsfile,namepattern+".llgmap_"+stype,"phaser-ep:"+stype )
                         anom_struct = self.registerStructure1 (
                                         None,pdbfile,llgmapsfile,protein_map,fnames[0],None,
-                                        self.outputFName,True )
+                                        self.outputFName,leadKey=2,copy_files=True )
                         if anom_struct:
                             #anom_struct.setXYZFile ( self.xmodel.getXYZFileName() )
                             self.putStructureWidget ( "structure_btn_"+stype,
@@ -212,7 +211,6 @@ class PhaserEP(basic.TaskDriver):
         sec1   = self.task.parameters.sec1.contains
         sec2   = self.task.parameters.sec2.contains
         sec3   = self.task.parameters.sec3.contains
-
 
         #  use CAD for making input HKL file for Phaser
         try:
@@ -327,7 +325,7 @@ class PhaserEP(basic.TaskDriver):
         self.setGenericLogParser ( self.phaser_report(),True )
 
         # Start mrbump
-        self.runApp ( "phaser",cmd )
+        self.runApp ( "phaser",cmd,logType="Main" )
         self.unsetLogParser()
 
         # check solution and register data

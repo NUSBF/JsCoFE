@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.12.18   <--  Date of Last Modification.
+ *    27.12.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -425,8 +425,10 @@ TaskRefmac.prototype.constructor = TaskRefmac;
 // ===========================================================================
 // export such that it could be used in both node and a browser
 
-TaskRefmac.prototype.icon_small = function()  { return 'task_refmac_20x20'; }
-TaskRefmac.prototype.icon_large = function()  { return 'task_refmac';       }
+TaskRefmac.prototype.icon = function()  { return 'task_refmac'; }
+
+//TaskRefmac.prototype.icon_small = function()  { return 'task_refmac_20x20'; }
+//TaskRefmac.prototype.icon_large = function()  { return 'task_refmac';       }
 
 TaskRefmac.prototype.currentVersion = function()  {
   var version = 1;

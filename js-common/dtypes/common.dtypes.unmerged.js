@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.12.18   <--  Date of Last Modification.
+ *    27.12.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -50,9 +50,11 @@ DataUnmerged.prototype.constructor = DataUnmerged;
 
 // ===========================================================================
 
-DataUnmerged.prototype.title      = function()  { return 'Unmerged Data'; }
-DataUnmerged.prototype.icon_small = function()  { return 'data_20x20'; }
-DataUnmerged.prototype.icon_large = function()  { return 'data';       }
+DataUnmerged.prototype.title = function()  { return 'Unmerged Data'; }
+DataUnmerged.prototype.icon  = function()  { return 'data';          }
+
+//DataUnmerged.prototype.icon_small = function()  { return 'data_20x20'; }
+//DataUnmerged.prototype.icon_large = function()  { return 'data';       }
 
 // when data class version is changed here, change it also in python
 // constructors

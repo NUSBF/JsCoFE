@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    17.11.18   <--  Date of Last Modification.
+#    24.12.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -152,12 +152,14 @@ class Molrep(basic.TaskDriver):
         # Run molrep
         self.runApp (
             "molrep",
-            ["-i","-ps",os.path.join(os.environ["CCP4_SCR"],uuid.uuid4().hex)]
+            ["-i","-ps",os.path.join(os.environ["CCP4_SCR"],uuid.uuid4().hex)],
+            logType="Main"
         )
 
         self.putMessage ( '&nbsp;' );
         structure = self.finaliseStructure ( self.molrep_pdb(),self.outputFName,
-                                hkl,None,[seq],1,False,"Positioned Structure" )
+                                hkl,None,[seq],0,leadKey=1,openState_bool=False,
+                                title="Positioned Structure" )
 
         if structure:
             # update structure revision

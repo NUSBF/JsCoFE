@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    15.11.18   <--  Date of Last Modification.
+#    24.12.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -88,7 +88,6 @@ class BuccaneerMR(basic.TaskDriver):
                 newf.write ( ">polyUNK\nU\n" );
 
         refname = "reference-" + sec2.REFMDL_SEL.value
-        #isCoor  = ("MR" in istruct.subtype) or ("EP" in istruct.subtype)
         isCoor  = istruct.hasXYZSubtype()
 
         self.open_stdin()
@@ -102,14 +101,6 @@ class BuccaneerMR(basic.TaskDriver):
         self.addCmdLine ( "mtzin"     ,istruct.getMTZFilePath(self.inputDir()) )
         self.addCmdLine ( "colin-fo"  ,"[/*/*/" + istruct.FP + ",/*/*/" + istruct.SigFP + "]" )
         self.addCmdLine ( "colin-free","[/*/*/" + istruct.FreeR_flag + "]" )
-
-        """
-        if istruct.hasMRSubtype() or istruct.HLA=="":
-            self.addCmdLine ( "colin-phifom","[/*/*/" + istruct.PHI + ",/*/*/" + istruct.FOM + "]" )
-        else:
-            self.addCmdLine ( "colin-hl","[/*/*/" + istruct.HLA + ",/*/*/" + istruct.HLB +\
-                                         ",/*/*/" + istruct.HLC + ",/*/*/" + istruct.HLD + "]" )
-        """
 
         if istruct.HLA:
             self.addCmdLine ( "colin-hl","[/*/*/" + istruct.HLA + ",/*/*/" + istruct.HLB +\
@@ -202,9 +193,9 @@ class BuccaneerMR(basic.TaskDriver):
 
         # start buccaneer
         if sys.platform.startswith("win"):
-            self.runApp ( "ccp4-python.bat",cmd )
+            self.runApp ( "ccp4-python.bat",cmd,logType="Main" )
         else:
-            self.runApp ( "ccp4-python",cmd )
+            self.runApp ( "ccp4-python",cmd,logType="Main" )
 
         self.addCitations ( ['buccaneer','refmac5'] )
 
@@ -225,7 +216,7 @@ class BuccaneerMR(basic.TaskDriver):
 
             structure = self.registerStructure (
                                     self.buccaneer_xyz(),None,self.buccaneer_mtz(),
-                                    fnames[0],fnames[1],None )
+                                    fnames[0],fnames[1],None,leadKey=1 )
             if structure:
                 structure.copyAssociations ( istruct )
                 structure.copySubtype      ( istruct )

@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    21.09.18   <--  Date of Last Modification.
+#    29.12.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -60,6 +60,10 @@ import os
 import sys
 import json
 import shutil
+try:
+    import httplib
+except:
+    import http.client as httplib
 
 #  ccp4-python imports
 import pyrvapi
@@ -91,6 +95,7 @@ class Base(object):
     nSubJobs       = 1          # permissible number of sub-jobs to launch
     trySimbad12    = True
     tryMoRDa       = True
+    tryMrBUMP      = True
     tryCrank2      = True
     tryFitLigands  = True
 
@@ -239,6 +244,9 @@ class Base(object):
                     self.output_meta["retcode"] = "[01-001] unknown command line parameter"
                     self.stderr ( " *** unrecognised command line parameter " + key )
                 narg += 1
+
+        self.tryMrBUMP = self.tryMoRDa   #  temporary
+
 
         # read data from standard input
 
@@ -489,6 +497,18 @@ class Base(object):
 
     # ----------------------------------------------------------------------
 
+    def have_internet ( self,url="www.google.com",time_out=5 ):
+        conn = httplib.HTTPConnection(url,timeout=time_out)
+        try:
+            conn.request("HEAD", "/")
+            conn.close()
+            return True
+        except:
+            conn.close()
+            return False
+
+    # ----------------------------------------------------------------------
+
     def setOutputPage ( self,cursor ):
         cursor1 = [self.page_cursor[0],self.page_cursor[1]]
         if cursor:
@@ -657,7 +677,6 @@ class Base(object):
         meta["rfree"]    = rfree
         meta["rfactor"]  = rfactor
         meta["nResults"] = nResults
-        meta["phasing"]  = "MR"
         quit_message     = ""
 
         if nResults>0:

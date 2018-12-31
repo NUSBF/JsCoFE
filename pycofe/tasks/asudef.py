@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    16.12.18   <--  Date of Last Modification.
+#    27.12.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -35,7 +35,7 @@ import pyrvapi
 
 #  application imports
 from   pycofe.tasks  import basic
-from   pycofe.dtypes import dtype_revision, dtype_sequence, dtype_structure
+from   pycofe.dtypes import dtype_template, dtype_revision, dtype_sequence, dtype_structure
 from   pycofe.proc   import import_filetype, import_sequence, asucomp
 from   pycofe.varut  import rvapi_utils
 
@@ -98,7 +98,6 @@ def makeRevision ( base,hkl,seq,composition,altEstimateKey,altNRes,
     sol0  = -1
 
     if len(seq)>0:  # optional data parameter
-
 
         isProtein = False;
         isRNA     = False;
@@ -219,7 +218,7 @@ def makeRevision ( base,hkl,seq,composition,altEstimateKey,altNRes,
     base.close_stdin()
 
     # Run matthews
-    base.runApp ( "matthews_coef",["XMLFILE",base.getXMLFName()] )
+    base.runApp ( "matthews_coef",["XMLFILE",base.getXMLFName()],logType="Main" )
 
     if not os.path.isfile(base.getXMLFName()):
         base.putTitle ( "Failure" )
@@ -356,7 +355,7 @@ def revisionFromStructure ( base,hkl,structure,name,useSequences=None,
     type_nr = 0
     for i in range(len(chains)):
         s = chains[i]["seq"]
-        if chains[i]["type"]!="UNK":
+        if chains[i]["type"] not in ["UNK","LIG"]:
             n = 1
             for j in range(len(seq)):
                 if s==seq[j]:
@@ -428,7 +427,6 @@ def revisionFromStructure ( base,hkl,structure,name,useSequences=None,
         seqs[i].ncopies = nocc[i]
 
     #  finally, create structure revision
-
 
     if make_revision:
 

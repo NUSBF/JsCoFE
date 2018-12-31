@@ -1,4 +1,7 @@
 
+// temporary solution to keep existing projects alive
+// TO BE DELETED
+
 /*
  *  =================================================================
  *

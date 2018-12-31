@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    16.12.18   <--  Date of Last Modification.
+ *    27.12.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -50,9 +50,11 @@ DataXYZ.prototype.constructor = DataXYZ;
 
 // ===========================================================================
 
-DataXYZ.prototype.title      = function()  { return 'Coordinates'; }
-DataXYZ.prototype.icon_small = function()  { return 'data_20x20'; }
-DataXYZ.prototype.icon_large = function()  { return 'data';       }
+DataXYZ.prototype.title = function()  { return 'Coordinates'; }
+DataXYZ.prototype.icon  = function()  { return 'data';        }
+
+//DataXYZ.prototype.icon_small = function()  { return 'data_20x20'; }
+//DataXYZ.prototype.icon_large = function()  { return 'data';       }
 
 // when data class version is changed here, change it also in python
 // constructors

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    21.12.18   <--  Date of Last Modification.
+ *    27.12.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -62,8 +62,10 @@ TaskImport.prototype.constructor = TaskImport;
 
 // ===========================================================================
 
-TaskImport.prototype.icon_small = function()  { return 'task_import_20x20'; }
-TaskImport.prototype.icon_large = function()  { return 'task_import';       }
+TaskImport.prototype.icon = function()  { return 'task_import'; }
+
+//TaskImport.prototype.icon_small = function()  { return 'task_import_20x20'; }
+//TaskImport.prototype.icon_large = function()  { return 'task_import';       }
 
 TaskImport.prototype.currentVersion = function()  {
   var version = 0;

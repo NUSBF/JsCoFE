@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.12.18   <--  Date of Last Modification.
+ *    27.12.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -78,8 +78,10 @@ DataEnsemble.prototype.currentVersion = function()  {
 if (!__template)  {
   // for client side
 
-  DataEnsemble.prototype.icon_small = function()  { return 'data_20x20'; }
-  DataEnsemble.prototype.icon_large = function()  { return 'data';       }
+  DataEnsemble.prototype.icon = function()  { return 'data'; }
+
+  //DataEnsemble.prototype.icon_small = function()  { return 'data_20x20'; }
+  //DataEnsemble.prototype.icon_large = function()  { return 'data';       }
 
   DataEnsemble.prototype.extend = function() {
     var ensext = $.extend ( true,{},this );

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    19.12.18   <--  Date of Last Modification.
+ *    29.12.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -88,11 +88,31 @@ TaskListDialog.prototype = Object.create ( Widget.prototype );
 TaskListDialog.prototype.constructor = TaskListDialog;
 
 
+TaskListDialog.prototype.isTaskAvailable = function ( task_obj )  {
+
+  if (task_obj.nc_type=='client')  {
+    if (!__local_service)
+      return false;
+  } else if (task_obj.nc_type=='client-cloud')  {
+    if ((!__local_service) && (!__cloud_storage))
+      return false;
+  }
+
+  if ((__exclude_tasks.indexOf(task_obj._type)>=0) ||
+      ((__exclude_tasks.indexOf('unix-only')>=0) &&
+       (task_obj.platforms().indexOf('W')<0)))
+    return false;
+
+  return true;
+
+}
+
 TaskListDialog.prototype.setTask = function ( task_obj,grid,row,setall )  {
 
   //if ((!__local_service) && (task_obj.nc_type=='client'))
   //  return null;
 
+  /*
   if (task_obj.nc_type=='client')  {
     if (!__local_service)
       return null;
@@ -105,13 +125,17 @@ TaskListDialog.prototype.setTask = function ( task_obj,grid,row,setall )  {
       ((__exclude_tasks.indexOf('unix-only')>=0) &&
        (task_obj.platforms().indexOf('W')<0)))
     return null;
+  */
+
+  if (!this.isTaskAvailable(task_obj))
+    return null;
 
   var dataSummary = this.dataBox.getDataSummary ( task_obj );
 
   if ((!setall) && (!dataSummary.status))
     return null;
 
-  var btn = grid.setButton  ( '',image_path(task_obj.icon_large()),row,0,1,1 )
+  var btn = grid.setButton  ( '',image_path(task_obj.icon()),row,0,1,1 )
                 .setSize_px ( 54,40 );
   grid.setLabel             ( ' ', row,1,1,1 );
   var lbl = grid.setLabel   ( task_obj.title, row,2,1,1 );
@@ -235,10 +259,12 @@ var row      = 0;
   }
 
 
-  this.makeSection ( 'Combined Automated Solver <i>"CCP4 Go"</i>',[
-    'Recommended as first attempt or in easy cases',
-    new TaskCCP4go()
-  ]);
+  var ccp4go_task = new TaskCCP4go();
+  if (this.isTaskAvailable(ccp4go_task))
+    this.makeSection ( 'Combined Automated Solver <i>"CCP4 Go"</i>',[
+      'Recommended as first attempt or in easy cases',
+      ccp4go_task
+    ]);
   var section1 = section0;
 
 
@@ -323,7 +349,8 @@ var row      = 0;
   this.makeSection ( 'Toolbox',[
     new TaskCootCE  (),
     new TaskGesamt  (),
-    new TaskSeqAlign()
+    new TaskSeqAlign(),
+    new TaskSymMatch()
   ]);
 
   if (__login_user=='Developer')

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.12.18   <--  Date of Last Modification.
+ *    27.12.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -360,8 +360,10 @@ TaskBuccaneer.prototype.constructor = TaskBuccaneer;
 // ===========================================================================
 // export such that it could be used in both node and a browser
 
-TaskBuccaneer.prototype.icon_small = function()  { return 'task_buccaneer_20x20'; }
-TaskBuccaneer.prototype.icon_large = function()  { return 'task_buccaneer';       }
+TaskBuccaneer.prototype.icon = function()  { return 'task_buccaneer'; }
+
+//TaskBuccaneer.prototype.icon_small = function()  { return 'task_buccaneer_20x20'; }
+//TaskBuccaneer.prototype.icon_large = function()  { return 'task_buccaneer';       }
 
 TaskBuccaneer.prototype.currentVersion = function()  {
   var version = 0;

@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    30.07.18   <--  Date of Last Modification.
+#    24.12.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -87,9 +87,10 @@ class FitLigand(basic.TaskDriver):
 
         # Start findligand
         if sys.platform.startswith("win"):
-            self.runApp ( "findligand.bat",cmd )
+            self.runApp ( "findligand.bat",cmd,logType="Main" )
         else:
-            self.runApp ( os.path.join(os.environ["CCP4"],"libexec","findligand-bin"),cmd )
+            self.runApp ( os.path.join(os.environ["CCP4"],"libexec","findligand-bin"),
+                          cmd,logType="Main" )
 
         ligands = [fn for fn in os.listdir("./") if fn.endswith(".pdb")]
         if len(ligands)>0:
@@ -112,7 +113,7 @@ class FitLigand(basic.TaskDriver):
                     "\n_END\n" )
                 self.close_stdin()
 
-                self.runApp ( "libcheck",[] )
+                self.runApp ( "libcheck",[],logType="Service" )
 
                 libadd += ".lib"
 
@@ -121,7 +122,7 @@ class FitLigand(basic.TaskDriver):
             structure = self.registerStructure ( pdbout,None,mtzin,
                                 istruct.getMapFilePath (self.inputDir()),
                                 istruct.getDMapFilePath(self.inputDir()),
-                                libadd )
+                                libadd,leadKey=istruct.leadKey )
             if structure:
                 structure.copyAssociations ( istruct )
                 structure.copySubtype      ( istruct )
