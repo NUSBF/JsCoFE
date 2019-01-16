@@ -3,13 +3,13 @@
 #
 # ============================================================================
 #
-#    31.10.18   <--  Date of Last Modification.
+#    12.01.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  XYZ (COORDINATES) DATA TYPE
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2018
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2019
 #
 # ============================================================================
 #
@@ -39,6 +39,34 @@ class DType(dtype_template.DType):
             self.selChain  = '(all)'       # selected chains for comparison
             self.version  += 0             # versioning increments from parent to children
         return
+
+    def getSpaceGroup ( self ):
+        if type(self.xyzmeta) == dict:
+            if "cryst" in self.xyzmeta:
+                return self.xyzmeta["cryst"]["spaceGroup"]
+        elif hasattr(self.xyzmeta,"cryst"):
+            return self.xyzmeta.cryst.spaceGroup
+        return None
+
+    def getCellParameters ( self ):
+        if type(self.xyzmeta) == dict:
+            if "cryst" in self.xyzmeta:
+                return [ self.xyzmeta["cryst"]["a"],
+                         self.xyzmeta["cryst"]["b"],
+                         self.xyzmeta["cryst"]["c"],
+                         self.xyzmeta["cryst"]["alpha"],
+                         self.xyzmeta["cryst"]["beta"],
+                         self.xyzmeta["cryst"]["gamma"]
+                       ]
+        elif hasattr(self.xyzmeta,"cryst"):
+            return [ self.xyzmeta.cryst.a,
+                     self.xyzmeta.cryst.b,
+                     self.xyzmeta.cryst.c,
+                     self.xyzmeta.cryst.alpha,
+                     self.xyzmeta.cryst.beta,
+                     self.xyzmeta.cryst.gamma
+                    ]
+        return [0.0,0.0,0.0,0.0,0.0,0.0]
 
     def setXYZFile ( self,fname ):
         self.setFile ( fname,dtype_template.file_key["xyz"] )

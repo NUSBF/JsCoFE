@@ -32,7 +32,8 @@ function makeHeader ( links )  {
 function makeTitle ( icon_uri,title,purpose )  {
   document.write (
     '<table><tr>' +
-      '<td><img src="../images/' + icon_uri + '" width="80px" height="80px"/></td>' +
+      '<td><img src="../images_' + icon_uri.slice(-3).toLowerCase() +
+                      '/' + icon_uri + '" width="80px" height="80px"/></td>' +
       '<td>&nbsp;&nbsp;</td>' +
       '<td><h2><i>' + title + '</i></h2></td>' +
     '</tr><tr>' +
@@ -47,7 +48,8 @@ function makeTitle ( icon_uri,title,purpose )  {
 function makeTaskTitle ( icon_uri,title,purpose,schematic )  {
   document.write (
     '<table><tr>' +
-      '<td><img src="../images/' + icon_uri + '" width="80px" height="80px"/></td>' +
+      '<td><img src="../images_' + icon_uri.slice(-3).toLowerCase() +
+                      '/' + icon_uri + '" width="80px" height="80px"/></td>' +
       '<td>&nbsp;&nbsp;</td>' +
       '<td><h1><i>' + title + '</i></h1></td>' +
     '</tr><tr>' +

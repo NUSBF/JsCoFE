@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    27.12.18   <--  Date of Last Modification.
+ *    05.01.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  SHELX-CD Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2018
+ *  (C) E. Krissinel, A. Lebedev 2016-2019
  *
  *  =================================================================
  *
@@ -39,10 +39,10 @@ function TaskShelxCD()  {
   this.helpURL = './html/jscofe_task_shelxcd.html';
 
   this.input_dtypes = [{    // input data types
-      data_type   : {'DataRevision':['!protein','!asu','~xyz','~phases','~substructure']}, // data type(s) and subtype(s)
+      data_type   : {'DataRevision':['!anomalous','!asu','~xyz','~phases','~substructure']}, // data type(s) and subtype(s)
       label       : 'Structure revision',     // label for input dialog
-      inputId     : 'revision', // input Id for referencing input fields
-      customInput : 'crank2',   // lay custom fields next to the selection
+      inputId     : 'revision',      // input Id for referencing input fields
+      customInput : 'shelx-substr',  // lay custom fields next to the selection
                                 // dropdown for 'native' dataset
       version     : 0,          // minimum data version allowed
       min         : 1,          // minimum acceptable number of data instances
@@ -51,14 +51,14 @@ function TaskShelxCD()  {
       data_type   : {'DataHKL':['anomalous']}, // data type(s) and subtype(s)
       label       : 'Anomalous reflection<br>data',             // label for input dialog
       inputId     : 'hkl',       // input Id for referencing input fields
-      customInput : 'anomData',  // lay custom fields next to the selection
+      customInput : 'shelx-substr',  // lay custom fields next to the selection
                                  // dropdown for anomalous data
       tooltip     : 'Only anomalous reflection datasets from all imported ' +
                     'may be chosen here. Note that neither of reflection '  +
                     'datasets may coincide with the native dataset, if one is ' +
                     'specified above.',
-      min         : 1,           // minimum acceptable number of data instances
-      max         : 4            // maximum acceptable number of data instances
+      min         : 0,           // minimum acceptable number of data instances
+      max         : 3            // maximum acceptable number of data instances
     },{
       data_type   : {'DataHKL':[]},   // data type(s) and subtype(s)
       label       : 'Native dataset', // label for input dialog
@@ -284,9 +284,6 @@ TaskShelxCD.prototype.constructor = TaskShelxCD;
 
 TaskShelxCD.prototype.icon = function()  { return 'task_shelx_substr'; }
 
-//TaskShelxCD.prototype.icon_small = function()  { return 'task_shelx_substr_20x20'; }
-//TaskShelxCD.prototype.icon_large = function()  { return 'task_shelx_substr';       }
-
 TaskShelxCD.prototype.currentVersion = function()  {
   var version = 0;
   if (__template)
@@ -316,7 +313,7 @@ if (!__template)  {
         if (native)  {
           if (native.dropdown[0].hasOwnProperty('customGrid'))  {
             var customGrid    = native.dropdown[0].customGrid;
-            var showUFP_cbx   = (nNative>0) && (nHKL<=1);
+            var showUFP_cbx   = (nNative>0) && (nHKL<=0);
             useForPhasing_cbx = customGrid.useForPhasing;
             IR                = useForPhasing_cbx.getValue();
             useForPhasing_cbx.setVisible ( showUFP_cbx );
@@ -328,7 +325,7 @@ if (!__template)  {
       if (this.state==job_code.new)  {
 
         var name = this.name;
-        if (nHKL<=1)  {
+        if (nHKL<=0)  {
           if (nNative<=0)  {
             this.title = makeSuffix ( this.title,'SAD' );
             this.name  = makeSuffix ( this.name ,'SAD' );
@@ -421,11 +418,12 @@ if (!__template)  {
 
     if ('revision' in this.input_data.data)  {
       var revision = this.input_data.data['revision'][0];
+      this.input_data.data['hklrev'] = [revision.HKL];
       //if (revision.HKL.nativeKey!='unused')
       //  this.input_data.data['native'] = [revision.HKL];
       //if (revision.Structure)
       //  this.input_data.data['pmodel'] = [revision.Structure];
-      this.input_data.data['seq'] = revision.ASU.seq;
+      //this.input_data.data['seq'] = revision.ASU.seq;
     }
 
     __template.TaskTemplate.prototype.makeInputData.call ( this,login,jobDir );

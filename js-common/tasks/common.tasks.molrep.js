@@ -369,7 +369,7 @@ function TaskMolrep()  {
                        tooltip  : 'Can be used to fit a different model into the current ED maps',
                        value    : false,
                        position : [0,0,1,1],
-                       hideon   : {_:'||','revision.xyz':[0,-1],'phases.phases':[0,-1]} // from input data section
+                       hideon   : {_:'||','revision.subtype:xyz':[0,-1],'phases.phases':[0,-1]} // from input data section
                      },
                */
                TITLE4 : {

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    27.12.18   <--  Date of Last Modification.
+ *    05.01.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  SHELX-Auto Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2018
+ *  (C) E. Krissinel, A. Lebedev 2016-2019
  *
  *  =================================================================
  *
@@ -38,6 +38,7 @@ function TaskShelxAuto()  {
   this.title   = 'SHELX Automated Experimental Phasing via Crank-2';
   this.helpURL = './html/jscofe_task_shelxauto.html';
 
+  this.input_dtypes[0].data_type   = {'DataRevision':['!anomalous','~xyz','~substructure']}, // data type(s) and subtype(s)
   this.input_dtypes[0].customInput = 'shelx-auto';     // lay custom fields next to the selection
   this.input_dtypes[1].customInput = 'anomData-Shelx'; // lay custom fields next to the selection
 
@@ -55,9 +56,6 @@ TaskShelxAuto.prototype.constructor = TaskShelxAuto;
 // export such that it could be used in both node and a browser
 
 TaskShelxAuto.prototype.icon = function()  { return 'task_shelx'; }
-
-//TaskShelxAuto.prototype.icon_small = function()  { return 'task_shelx_20x20'; }
-//TaskShelxAuto.prototype.icon_large = function()  { return 'task_shelx';       }
 
 TaskShelxAuto.prototype.currentVersion = function()  {
   var version = 0;

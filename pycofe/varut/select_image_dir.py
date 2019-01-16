@@ -21,7 +21,7 @@ import json
 from PyQt4 import QtGui, QtCore
 
 def dirlist2sectors(dirlist, sectors, file_list):
-    rec_img = re.compile('(.*[^0-9])([0-9]{2,})(.*)$')
+    rec_img = re.compile('([^.]*[^.0-9])([0-9]{2,})(.*)$')
     sector_dict = {}
     sector_lst1 = []
     for fname in dirlist:

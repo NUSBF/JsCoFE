@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    29.07.18   <--  Date of Last Modification.
+ *    14.01.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Send Directory Module
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2018
+ *  (C) E. Krissinel, A. Lebedev 2016-2019
  *
  *  =================================================================
  *
@@ -158,8 +158,15 @@ function packDir ( dirPath, fileSelection, onReady_func )  {
 
   tmpFile = path.resolve ( tmpFile + '.zip' );
 
+  /*
   var zip = utils.spawn ( conf.pythonName(),['-m','zip_file','-c',tmpFile,'.'],{
     cwd   : dirPath,
+    stdio : ['ignore']
+  });
+  */
+
+  var zip = utils.spawn ( conf.pythonName(),['-m','pycofe.varut.zipfile','-c',tmpFile,
+                                             path.join(dirPath,path.sep)],{
     stdio : ['ignore']
   });
 
@@ -361,7 +368,12 @@ function unpackDir ( dirPath,cleanTmpDir, onReady_func )  {
     unpack_dir = dirPath;
   }
 
+  /*
   var zip = utils.spawn ( conf.pythonName(),['-m','zip_file','-e',jobballPath,unpack_dir],{
+    stdio : ['ignore']
+  });
+  */
+  var zip = utils.spawn ( conf.pythonName(),['-m','pycofe.varut.zipfile','-e',jobballPath,unpack_dir],{
     stdio : ['ignore']
   });
 

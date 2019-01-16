@@ -3,13 +3,13 @@
 #
 # ============================================================================
 #
-#    24.12.18   <--  Date of Last Modification.
+#    12.01.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  STRUCTURE DATA TYPE
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2018
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2019
 #
 # ============================================================================
 #
@@ -39,7 +39,7 @@ class DType(dtype_template.DType):
 
             self._type    = dtype()
             self.dname    = "structure"
-            self.version += 1   # versioning increments from parent to children
+            self.version += 2   # versioning increments from parent to children
 
             #  Refmac labels
             self.FP       = ""  # used in Buccaneer-MR and Parrot-MR
@@ -62,15 +62,18 @@ class DType(dtype_template.DType):
 
             self.leadKey    = 0;   # data lead key: 0: undefined, 1: coordinates, 2: phases
 
-            self.useCoordinates = True  # flag for using in Phaser-EP
-            self.rmsd           = 0.3   # used in Phaser-EP
+            self.useCoordinates = True   # flag for using in Phaser-EP
+            self.rmsd           = 0.3    # used in Phaser-EP
+
+            self.removeNonAnom  = False; # for use in Crank-2
+
             #self.useForNCS      = True  # for use in Parrot
-            self.useModelSel    = "N"   # for use in Buccaneer
+            self.useModelSel    = "N"    # for use in Buccaneer
             self.BFthresh       = 3.0
-            self.phaseBlur      = 1.0   # used in arpwarp
+            self.phaseBlur      = 1.0    # used in arpwarp
             self.chains         = []
 
-            self.ligands        = []    # list of ligands fitted
+            self.ligands        = []     # list of ligands fitted
 
         return
 
@@ -289,6 +292,28 @@ class DType(dtype_template.DType):
             return self.xyzmeta.cryst.spaceGroup
         return None
 
+
+    def getCellParameters ( self ):
+        if type(self.xyzmeta) == dict:
+            if "cryst" in self.xyzmeta:
+                return [ self.xyzmeta["cryst"]["a"],
+                         self.xyzmeta["cryst"]["b"],
+                         self.xyzmeta["cryst"]["c"],
+                         self.xyzmeta["cryst"]["alpha"],
+                         self.xyzmeta["cryst"]["beta"],
+                         self.xyzmeta["cryst"]["gamma"]
+                       ]
+        elif hasattr(self.xyzmeta,"cryst"):
+            return [ self.xyzmeta.cryst.a,
+                     self.xyzmeta.cryst.b,
+                     self.xyzmeta.cryst.c,
+                     self.xyzmeta.cryst.alpha,
+                     self.xyzmeta.cryst.beta,
+                     self.xyzmeta.cryst.gamma
+                    ]
+        return [0.0,0.0,0.0,0.0,0.0,0.0]
+
+
     def setXYZFile ( self,fname ):
         if fname:
             self.addSubtype ( dtype_template.subtypeXYZ() )
@@ -324,6 +349,9 @@ class DType(dtype_template.DType):
     def getMTZFileName(self):
         return self.getFileName ( dtype_template.file_key["mtz"] )
 
+    def getHKLFileName(self):
+        return self.getMTZFileName()
+
     def getMapFileName(self):
         return self.getFileName ( dtype_template.file_key["map"] )
 
@@ -344,6 +372,9 @@ class DType(dtype_template.DType):
 
     def getMTZFilePath ( self,dirPath ):
         return self.getFilePath ( dirPath,dtype_template.file_key["mtz"] )
+
+    def getHKLFilePath ( self,dirPath ):
+        return self.getMTZFilePath ( dirPath )
 
     def getMapFilePath ( self,dirPath ):
         return self.getFilePath ( dirPath,dtype_template.file_key["map"] )

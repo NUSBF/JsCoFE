@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    03.09.18   <--  Date of Last Modification.
+ *    16.01.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Number Cruncher Server -- Job Manager
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2018
+ *  (C) E. Krissinel, A. Lebedev 2016-2019
  *
  *  =================================================================
  *
@@ -71,7 +71,7 @@ var maxSendTrials = conf.getServerConfig().maxSendTrials;
     jobDir     : jobDir,
     jobStatus  : task_t.job_code.new,
     sendTrials : maxSendTrials,
-    exeType    : '',    // SHELL or SGE
+    exeType    : '',    // SHELL, SGE or SCRIPT
     pid        : 0      // job pid is added separately
   };
   return job_token;
@@ -349,6 +349,26 @@ var capacity = ncConfig.capacity;  // total number of jobs the number cruncher
                       onFinish_func ( capacity );
                     });
                 break;
+
+    case 'SCRIPT' : var job = utils.spawn ( ncConfig.exeData,['check_waiting',process.env.USER],{} );
+                    var job_output = '';
+                    job.stdout.on ( 'data', function(data) {
+                      job_output += data.toString();
+                    });
+                    job.on ( 'close', function(code) {
+                      // should return just the number but escape just in case
+                      var n = 0;
+                      try {
+                        n = parseInt(job_output);
+                      } catch(err)  {
+                        log.error ( 31,'error parsing NC capacity: "' + job_output + '"' );
+                      }
+                      if (n>0)  capacity = -n;
+                          else  capacity -= Object.keys(ncJobRegister.job_map).length;
+                      onFinish_func ( capacity );
+                    });
+                break;
+
   }
 
 }
@@ -569,7 +589,7 @@ function ncRunJob ( job_token,feURL )  {
                       ]);
                       var job = utils.spawn ( 'qsub',qsub_params.concat(cmd),{} );
                       // in this mode, we DO NOT put job listener on the spawn
-                      // process, because it is just the scheduler, which
+                      // process, because it is just SGE job scheduler, which
                       // quits nearly immediately; however, we use listeners to
                       // get the standard output and infer job id from there
                       var qsub_output = '';
@@ -583,8 +603,46 @@ function ncRunJob ( job_token,feURL )  {
                           if ((w[0]=='Your') && (w[1]=='job'))
                             jobEntry.pid = parseInt(w[2]);
                         }
-                        log.standard ( 6,'task ' + task.id + ' qsubbed, pid=' +
+                        log.standard ( 6,'task ' + task.id + ' qsubbed, jobId=' +
                                          jobEntry.pid );
+                      });
+
+                      // indicate queuing to please the user
+                      utils.writeJobReportMessage ( jobDir,
+                                '<h1>Queuing up on &lt;' + ncConfig.name +
+                                '&gt;, please wait ...</h1>', true );
+
+                  break;
+
+      case 'SCRIPT' : cmd.push ( Math.max(1,Math.floor(ncConfig.capacity/4)).toString() );
+                      var qsub_params = [
+                        'start',
+                        path.join(jobDir,'_job.stdo'),  // qsub stdout
+                        path.join(jobDir,'_job.stde'),  // qsub stderr
+                        'cofe_' + ncJobRegister.launch_count
+                      ];
+                      var job = utils.spawn ( ncConfig.exeData,qsub_params.concat(cmd),{} );
+                      // in this mode, we DO NOT put job listener on the spawn
+                      // process, because it is just the launcher script, which
+                      // quits nearly immediately; however, we use listeners to
+                      // get the standard output and infer job id from there
+                      var job_output = '';
+                      job.stdout.on('data', function(data) {
+                        job_output += data.toString();
+                      });
+                      job.on('close', function(code) {
+                        // the script is supposed to retun only jobID, but
+                        // escape just in case
+                        try {
+                          jobEntry.pid = parseInt(job_output);
+                          log.standard ( 7,'task ' + task.id + ' submitted, pid=' +
+                                           jobEntry.pid );
+                        }
+                        catch(err) {
+                          jobEntry.pid = 0;
+                          log.error ( 30,'task ' + task.id + 'jobID parse log: "' +
+                                         job_output + '"' );
+                        }
                       });
 
                       // indicate queuing to please the user
@@ -718,29 +776,39 @@ function ncStopJob ( post_data_obj,callback_func )  {
         // and Windows platforms, as well as for SHELL and SGE execution types
         switch (jobEntry.exeType)  {
 
-          default      :
-          case 'CLIENT':
-          case 'SHELL' : //var isWindows = /^win/.test(process.platform);
-                         if(!conf.isWindows()) {
-                           psTree ( jobEntry.pid, function (err,children){
-                             var pids = ['-9',jobEntry.pid].concat (
-                                     children.map(function(p){ return p.PID; }));
-                             child_process.spawn ( 'kill',pids );
-                           });
-                         } else {
-                           child_process.exec ( 'taskkill /PID ' + jobEntry.pid +
-                                       ' /T /F',function(error,stdout,stderr){});
-                         }
+          default       :
+          case 'CLIENT' :
+          case 'SHELL'  : //var isWindows = /^win/.test(process.platform);
+                          if(!conf.isWindows()) {
+                            psTree ( jobEntry.pid, function (err,children){
+                              var pids = ['-9',jobEntry.pid].concat (
+                                      children.map(function(p){ return p.PID; }));
+                              child_process.spawn ( 'kill',pids );
+                            });
+                          } else {
+                            child_process.exec ( 'taskkill /PID ' + jobEntry.pid +
+                                        ' /T /F',function(error,stdout,stderr){});
+                          }
                     break;
 
-          case 'SGE'   : var pids = [jobEntry.pid];
-                         var subjobs = utils.readString (
-                                         path.join(jobEntry.jobDir,'subjobs'));
-                         if (subjobs)
-                           pids = pids.concat ( subjobs
-                                          .replace(/(\r\n|\n|\r)/gm,' ')
-                                          .replace(/\s\s+/g,' ').split(' ') );
-                         utils.spawn ( 'qdel',pids,{} );
+          case 'SGE'    : var pids = [jobEntry.pid];
+                          var subjobs = utils.readString (
+                                          path.join(jobEntry.jobDir,'subjobs'));
+                          if (subjobs)
+                            pids = pids.concat ( subjobs
+                                           .replace(/(\r\n|\n|\r)/gm,' ')
+                                           .replace(/\s\s+/g,' ').split(' ') );
+                          utils.spawn ( 'qdel',pids,{} );
+                    break;
+
+          case 'SCRIPT' : var pids = ['kill',jobEntry.pid];
+                          var subjobs = utils.readString (
+                                          path.join(jobEntry.jobDir,'subjobs'));
+                          if (subjobs)
+                            pids = pids.concat ( subjobs
+                                           .replace(/(\r\n|\n|\r)/gm,' ')
+                                           .replace(/\s\s+/g,' ').split(' ') );
+                          utils.spawn ( conf.getServerConfig().exeData,pids,{} );
 
         }
 

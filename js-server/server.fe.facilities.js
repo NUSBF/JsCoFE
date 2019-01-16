@@ -102,7 +102,7 @@ var text  = utils.readString ( fileListPath );
 }
 
 function dpath2sectors(dirlist, sectors, file_list) {
-    var rec_img = new RegExp('(.*[^0-9])([0-9]{2,})(.*)$');
+    var rec_img = new RegExp('([^.]*[^.0-9])([0-9]{2,})(.*)$');
     var sector_dict = {};
     var sector_lst1 = [];
     for (ind in dirlist) {

@@ -13,7 +13,7 @@
 #     ccp4-python -m pycofe.tasks.ccp4go exeType jobDir jobId
 #
 #  where:
-#    exeType  is either SHELL or SGE
+#    exeType  is either SHELL, SGE or SCRIPT
 #    jobDir   is path to job directory, having:
 #      jobDir/output  : directory receiving output files with metadata of
 #                       all successful imports

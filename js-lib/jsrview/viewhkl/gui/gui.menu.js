@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    22.10.18   <--  Date of Last Modification.
+ *    09.01.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Menu and dropdwon comboboxes
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2018
+ *  (C) E. Krissinel, A. Lebedev 2016-2019
  *
  *  =================================================================
  *
@@ -623,9 +623,9 @@ function ComboDropdown ( content,width_list,direction )  {
     while (data)  {
 
       var dropdown = new Dropdown();
-      dropdown.setTooltip ( data.tooltip );
-      this.dropdowns.push ( dropdown     );
-      this.headers.push   ( data.title   );
+      dropdown.setTooltip1 ( data.tooltip,'slideDown',true,7000 );
+      this.dropdowns.push  ( dropdown     );
+      this.headers.push    ( data.title   );
 
       this.dropdowns[i].content = data;
       this.dropdowns[i].setWidth ( width_list[i] );

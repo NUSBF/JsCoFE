@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    19.12.18   <--  Date of Last Modification.
+ *    15.01.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Common Client/Server Modules -- Data Box
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2018
+ *  (C) E. Krissinel, A. Lebedev 2016-2019
  *
  *  =================================================================
  *
@@ -43,6 +43,11 @@ function DataBox()  {
 
 }
 
+DataBox.prototype.markNotEmpty = function()  {
+  if (this.isEmpty())
+    this.data['___'] = [1];
+}
+
 DataBox.prototype.isEmpty = function()  {
 var empty = true;
 
@@ -51,14 +56,17 @@ var empty = true;
       empty = false;
       break;
     }
+
   return empty;
+
 }
 
 DataBox.prototype.extendData = function()  {
 // Extends all data objects in the box (i.e. deep copies them in-place).
   for (var dtype in this.data)
     for (var i=0;i<this.data[dtype].length;i++)
-      this.data[dtype][i] = this.data[dtype][i].extend();
+      if (typeof this.data[dtype][i] === 'object' && this.data[dtype][i] !== null)
+        this.data[dtype][i] = this.data[dtype][i].extend();
 }
 
 
@@ -130,7 +138,6 @@ DataBox.prototype.addTaskData = function ( task,include_used_bool )  {
           this.inp_assoc[dtype].push ( input_data_data[dtype][i].dataId );
     }
   }
-
 
 }
 

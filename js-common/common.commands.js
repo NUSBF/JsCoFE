@@ -2,7 +2,7 @@
 /*
  *  ===========================================================================
  *
- *    31.12.18   <--  Date of Last Modification.
+ *    16.01.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  ---------------------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Server Command Definitions
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2018
+ *  (C) E. Krissinel, A. Lebedev 2016-2019
  *
  *  ===========================================================================
  *
@@ -24,7 +24,7 @@
 // name and version tag
 
 function appName()  { return 'CCP4 Cloud' }
-var jsCoFE_version = '0.2.0 [31.12.2018]';
+var jsCoFE_version = '0.2.0 [16.01.2019]';
 
 
 // ============================================================================
@@ -54,34 +54,36 @@ var fe_command = {
 // type as a field.
 
 var fe_reqtype = {
-  logout            : '-logout',           // request to log out
-  getUserData       : '-getUserData',      // request for user data
-  saveHelpTopics    : '-saveHelpTopics',   // request to save list of help topics
-  updateUserData    : '-updateUserData',   // request to update user data
-  deleteUser        : '-deleteUser',       // request to delete user acount and data
-  getUserRation     : '-getUserRation',    // request to retrieve current user ration
-  getProjectList    : '-getProjectList',   // request for project list
-  saveProjectList   : '-saveProjectList',  // request to save project list
-  getProjectData    : '-getProjectData',   // request for project data
-  saveProjectData   : '-saveProjectData',  // request to save project data
-  preparePrjExport  : '-preparePrjExport', // request to prepare project for export
-  checkPrjExport    : '-checkPrjExport',   // request to check project export state
-  finishPrjExport   : '-finishPrjExport',  // request to finish project export
-  checkPrjImport    : '-checkPrjImport',   // request to check project import state
-  finishPrjImport   : '-finishPrjImport',  // request to finish project import
-  importProject     : '-importProject',    // request to save import a project
-  saveJobData       : '-saveJobData',      // request to save job data
-  runJob            : '-runJob',           // request to run job
-  replayJob         : '-replayJob',        // request to replay job
-  stopJob           : '-stopJob',          // request to stop job
-  checkJobs         : '-checkJobs',        // request to check on jobs' state
-  getJobFile        : '-getJobFile',       // request to download a job's file
-  getAdminData      : '-getAdminData',     // request to serve data for admin page
-  sendAnnouncement  : '-sendAnnouncement', // request to send announcement to users
-  getUserKnowledge  : '-getUserKnowledge', // request to send user knowledge data
-  getFacilityData   : '-getFacilityData',  // request for facility metadata
-  updateFacility    : '-updateFacility',   // request to update facility metadata
-  checkFclUpdate    : '-checkFclUpdate'    // request to check facility update
+  logout            : '-logout',            // request to log out
+  getUserData       : '-getUserData',       // request for user data
+  saveHelpTopics    : '-saveHelpTopics',    // request to save list of help topics
+  updateUserData    : '-updateUserData',    // request to update user data
+  updateUData_admin : '-updateUData_admin', // request to update user data by admin
+  deleteUser        : '-deleteUser',        // request to delete user account and data
+  deleteUser_admin  : '-deleteUser_admin',  // request to delete user account and data by admin
+  getUserRation     : '-getUserRation',     // request to retrieve current user ration
+  getProjectList    : '-getProjectList',    // request for project list
+  saveProjectList   : '-saveProjectList',   // request to save project list
+  getProjectData    : '-getProjectData',    // request for project data
+  saveProjectData   : '-saveProjectData',   // request to save project data
+  preparePrjExport  : '-preparePrjExport',  // request to prepare project for export
+  checkPrjExport    : '-checkPrjExport',    // request to check project export state
+  finishPrjExport   : '-finishPrjExport',   // request to finish project export
+  checkPrjImport    : '-checkPrjImport',    // request to check project import state
+  finishPrjImport   : '-finishPrjImport',   // request to finish project import
+  importProject     : '-importProject',     // request to save import a project
+  saveJobData       : '-saveJobData',       // request to save job data
+  runJob            : '-runJob',            // request to run job
+  replayJob         : '-replayJob',         // request to replay job
+  stopJob           : '-stopJob',           // request to stop job
+  checkJobs         : '-checkJobs',         // request to check on jobs' state
+  getJobFile        : '-getJobFile',        // request to download a job's file
+  getAdminData      : '-getAdminData',      // request to serve data for admin page
+  sendAnnouncement  : '-sendAnnouncement',  // request to send announcement to users
+  getUserKnowledge  : '-getUserKnowledge',  // request to send user knowledge data
+  getFacilityData   : '-getFacilityData',   // request for facility metadata
+  updateFacility    : '-updateFacility',    // request to update facility metadata
+  checkFclUpdate    : '-checkFclUpdate'     // request to check facility update
 }
 
 

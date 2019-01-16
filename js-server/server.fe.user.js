@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    11.10.18   <--  Date of Last Modification.
+ *    12.01.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -549,14 +549,13 @@ function userLogout ( login )  {
 // ===========================================================================
 
 function updateUserData ( login,userData )  {
-var response = 0;  // must become a cmd.Response object to return
+var response = null;  // must become a cmd.Response object to return
 
   log.standard ( 8,'update user data, login ' + login );
 
   var pwd = userData.pwd;
   userData.pwd = hashPassword ( pwd );
 
-  // Check that we're having a new login name
   var userFilePath = getUserDataFName ( login );
 
   if (utils.fileExists(userFilePath))  {
@@ -592,12 +591,98 @@ var response = 0;  // must become a cmd.Response object to return
 }
 
 
+function updateUserData_admin ( login,userData )  {
+var response     = null;  // must become a cmd.Response object to return
+var userFilePath = getUserDataFName ( login );
+
+  log.standard ( 11,'update user\'s ' + userData.login +
+                    ' data by admin, login: ' + login );
+
+  if (utils.fileExists(userFilePath))  {
+
+    var uData = utils.readObject ( userFilePath );
+
+    if (uData)  {
+
+      if (uData.admin)  {
+
+        userFilePath = getUserDataFName ( userData.login );
+        var uData    = utils .readObject  ( userFilePath );
+        var uRation  = ration.getUserRation ( userData.login );
+
+        if (uData && uRation)  {
+
+          uRation.storage   = Number(userData.ration.storage);
+          uRation.cpu_day   = Number(userData.ration.cpu_day);
+          uRation.cpu_month = Number(userData.ration.cpu_month);
+          ration.saveUserRation ( userData.login,uRation );
+
+          uData.admin   = userData.admin;
+          uData.licence = userData.licence;
+
+          if (utils.writeObject(userFilePath,uData))  {
+
+            var role = 'user';
+            if (uData.admin)
+              role = 'admin';
+            response = new cmd.Response ( cmd.fe_retcode.ok,'',
+              emailer.send ( uData.email,'CCP4 Login Update',
+                'Dear ' + uData.name + ',<p>' +
+                'Your CCP4 on-line account has been updated <b>BY ADMIN</b> as follows:<p>' +
+                'Login name: <b>'                + uData.login   + '</b><br>' +
+                'E-mail: <b>'                    + uData.email   + '</b><br>' +
+                'Licence: <b>'                   + uData.licence + '</b><br>' +
+                'Status: <b>'                    + role          + '</b><br>' +
+                'Disk quota (MBytes): <b>'       + uRation.storage     + '</b><br>' +
+                'CPU daily quota (hours): <b>'   + uRation.cpu_day     + '</b><br>' +
+                'CPU monthly quota (hours): <b>' + uRation.cpu_month   + '</b><p>'  +
+                'This e-mail is sent only for your information. Please feel free<br>' +
+                'to contact CCP4 on-line Admin at ' +
+                conf.getEmailerConfig().maintainerEmail + ' .<br>' +
+                'should you require any relevant information.<p>' +
+                'Best Regards,<p>' +
+                'CCP4 on-line.' )
+            );
+
+          } else  {
+            log.error ( 14,'User file: ' + userFilePath + ' cannot be written.' );
+            response = new cmd.Response ( cmd.fe_retcode.writeError,
+                                          'User file cannot be written.','' );
+          }
+
+        } else  {
+          log.error ( 15,'User file: ' + userFilePath + ' cannot be read.' );
+          response = new cmd.Response ( cmd.fe_retcode.readError,
+                                        'User file cannot be read.','' );
+        }
+      } else  {
+        log.error ( 16,'Attempt to update user data without privileges from login ' +
+                       login );
+        response  = new cmd.Response ( cmd.fe_retcode.wrongLogin,
+                                       'No admin privileges','' );
+      }
+    } else  {
+      log.error ( 17,'Admin user file: ' + userFilePath + ' cannot be read.' );
+      response = new cmd.Response ( cmd.fe_retcode.readError,
+                                    'Admin user file cannot be read.','' );
+    }
+  } else  {
+    log.error ( 18,'Admin user file: ' + userFilePath + ' does not exist.' );
+    response  = new cmd.Response ( cmd.fe_retcode.wrongLogin,
+                                   'Wrong admin login','' );
+  }
+
+  return response;
+
+}
+
+
 // ===========================================================================
 
 function deleteUser ( login,userData )  {
 var response = null;  // must become a cmd.Response object to return
 
-  log.standard ( 8,'delete user, login ' + login );
+  log.standard ( 10,'delete user, login ' + login );
 
   var pwd = userData.pwd;
   userData.pwd = hashPassword ( pwd );
@@ -610,9 +695,13 @@ var response = null;  // must become a cmd.Response object to return
     if (uData)  {
       if (userData.pwd==uData.pwd)  {
 
+        var rationFilePath = ration.getUserRationFPath ( login );
+        if (!utils.removeFile(rationFilePath))
+          log.error ( 11,'User ration file: ' + rationFilePath + ' cannot be removed.' );
+
         var userProjectsDir = prj.getUserProjectsDirPath ( login );
         if (!utils.removePath(userProjectsDir))
-          log.error ( 11,'User directory: ' + userProjectsDir + ' cannot be removed.' );
+          log.error ( 12,'User directory: ' + userProjectsDir + ' cannot be removed.' );
 
         if (utils.removeFile(userFilePath))  {
 
@@ -644,12 +733,89 @@ var response = null;  // must become a cmd.Response object to return
                                       'Incorrect password.','' );
       }
     } else  {
-      log.error ( 12,'User file: ' + userFilePath + ' cannot be read.' );
+      log.error ( 13,'User file: ' + userFilePath + ' cannot be read.' );
       response = new cmd.Response ( cmd.fe_retcode.readError,
                                       'User file cannot be read.','' );
     }
   } else  {
     response  = new cmd.Response ( cmd.fe_retcode.wrongLogin,'','' );
+  }
+
+  return response;
+
+}
+
+
+function deleteUser_admin ( login,userData )  {
+var response     = null;  // must become a cmd.Response object to return
+var userFilePath = getUserDataFName ( login );
+
+  log.standard ( 12,'delete user ' + userData.login + ' by admin, login ' + login );
+
+  if (utils.fileExists(userFilePath))  {
+
+    var uData = utils.readObject ( userFilePath );
+
+    if (uData)  {
+
+      if (uData.admin)  {
+
+        userFilePath = getUserDataFName ( userData.login );
+
+        if (utils.fileExists(userFilePath))  {
+
+          var rationFilePath = ration.getUserRationFPath ( userData.login );
+          if (!utils.removeFile(rationFilePath))
+            log.error ( 21,'User ration file: ' + rationFilePath + ' cannot be removed.' );
+
+          var userProjectsDir = prj.getUserProjectsDirPath ( userData.login );
+          if (!utils.removePath(userProjectsDir))
+            log.error ( 22,'User directory: ' + userProjectsDir + ' cannot be removed.' );
+
+          if (utils.removeFile(userFilePath))  {
+
+            response = new cmd.Response ( cmd.fe_retcode.ok,'',
+              emailer.send ( userData.email,cmd.appName() + ' Account Deleted',
+                'Dear ' + userData.name + ',<p>' +
+                'Your ' + cmd.appName() + ' account and all associated data have been deleted<br>' +
+                'by admin:<p>' +
+                'Login name: <b>' + userData.login + '</b><br>' +
+                'Password: <b>*****</b><br>' +
+                'E-mail: <b>' + userData.email + '</b><p>' +
+                'This e-mail is sent only for your information. Please feel free<br>' +
+                'to contact CCP4 on-line Admin at ' +
+                conf.getEmailerConfig().maintainerEmail + ' .<br>' +
+                'should you require any relevant information.<p>' +
+                'Best Regards,<p>' +
+                'CCP4 on-line.' )
+            );
+
+            removeUserFromHash ( userData.login );
+
+          } else  {
+            response = new cmd.Response ( cmd.fe_retcode.userNotDeleted,
+                                          'Cannot delete user data.','' );
+          }
+
+        } else  {
+          response  = new cmd.Response ( cmd.fe_retcode.wrongLogin,'','' );
+        }
+
+      } else  {
+        log.error ( 23,'Attempt to delete user data without privileges from login ' +
+                       login );
+        response  = new cmd.Response ( cmd.fe_retcode.wrongLogin,
+                                       'No admin privileges','' );
+      }
+    } else  {
+      log.error ( 24,'Admin user file: ' + userFilePath + ' cannot be read.' );
+      response = new cmd.Response ( cmd.fe_retcode.readError,
+                                    'Admin user file cannot be read.','' );
+    }
+  } else  {
+    log.error ( 25,'Admin user file: ' + userFilePath + ' does not exist.' );
+    response  = new cmd.Response ( cmd.fe_retcode.wrongLogin,
+                                   'Wrong admin login','' );
   }
 
   return response;
@@ -735,19 +901,21 @@ var fe_server = conf.getFEConfig();
 
 // ==========================================================================
 // export for use in node
-module.exports.userLogin         = userLogin;
-module.exports.userLogout        = userLogout;
-module.exports.makeNewUser       = makeNewUser;
-module.exports.recoverUserLogin  = recoverUserLogin;
-module.exports.readUserLoginHash = readUserLoginHash;
-module.exports.getLoginFromHash  = getLoginFromHash;
-module.exports.readUserData      = readUserData;
-module.exports.getUserRation     = getUserRation;
-module.exports.readUsersData     = readUsersData;
-module.exports.getUserData       = getUserData;
-module.exports.getUserDataFName  = getUserDataFName;
-module.exports.saveHelpTopics    = saveHelpTopics;
-module.exports.updateUserData    = updateUserData;
-module.exports.deleteUser        = deleteUser;
-module.exports.sendAnnouncement  = sendAnnouncement;
-module.exports.getInfo           = getInfo;
+module.exports.userLogin            = userLogin;
+module.exports.userLogout           = userLogout;
+module.exports.makeNewUser          = makeNewUser;
+module.exports.recoverUserLogin     = recoverUserLogin;
+module.exports.readUserLoginHash    = readUserLoginHash;
+module.exports.getLoginFromHash     = getLoginFromHash;
+module.exports.readUserData         = readUserData;
+module.exports.getUserRation        = getUserRation;
+module.exports.readUsersData        = readUsersData;
+module.exports.getUserData          = getUserData;
+module.exports.getUserDataFName     = getUserDataFName;
+module.exports.saveHelpTopics       = saveHelpTopics;
+module.exports.updateUserData       = updateUserData;
+module.exports.updateUserData_admin = updateUserData_admin;
+module.exports.deleteUser           = deleteUser;
+module.exports.deleteUser_admin     = deleteUser_admin;
+module.exports.sendAnnouncement     = sendAnnouncement;
+module.exports.getInfo              = getInfo;

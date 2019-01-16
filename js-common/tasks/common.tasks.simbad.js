@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    27.12.18   <--  Date of Last Modification.
+ *    12.01.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  SIMBAD Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2018
+ *  (C) E. Krissinel, A. Lebedev 2016-2019
  *
  *  =================================================================
  *
@@ -38,24 +38,118 @@ function TaskSimbad()  {
   this.helpURL = './html/jscofe_task_simbad.html';
 
   this.input_dtypes = [{    // input data types
-     data_type : {'DataHKL':[]},  // data type(s) and subtype(s)
-     label     : 'Reflections',   // label for input dialog
-     inputId   : 'hkl',      // input Id for referencing input fields
-     min       : 1,          // minimum acceptable number of data instances
-     max       : 1           // maximum acceptable number of data instances
+     data_type   : {'DataHKL':[],'DataStructure':[],'DataXYZ':[]},  // data type(s) and subtype(s)
+     label       : 'Reflection data or<br>symmetry reference',      // label for input dialog
+     inputId     : 'hkl',     // input Id for referencing input fields
+     customInput : 'cell-info',
+     force       : 1,         // force selection in combobox
+     min         : 0,         // minimum acceptable number of data instances
+     max         : 1          // maximum acceptable number of data instances
    }
   ];
 
   this.parameters = { // input parameters
+
+    /*
     SEP0_LABEL : {
               type     : 'label',  // just a separator
               label    : '&nbsp;',
               position : [0,0,1,5]
            },
+    */
+
+    sec0 : {  type     : 'section',
+              title    : '',
+              open     : true,  // true for the section to be initially open
+              position : [1,0,1,5],
+              showon   : { 'hkl' : [0,-1] },
+              contains : {
+                SPGROUP : {
+                          type      : 'string',   // empty string not allowed
+                          keyword   : 'none',
+                          label     : '<b><i>Space group</i></b>',
+                          reportas  : 'Space group',
+                          tooltip   : 'Space group',
+                          iwidth    : 200,
+                          value     : '',
+                          placeholder : 'e.g. P 21 21 21',
+                          maxlength : 20,
+                          position  : [0,0,1,7]
+                       },
+
+                CELL_A  : { type     : 'real',
+                            keyword  : 'none',
+                            label    : '<b><i>Cell (a,b,c&nbsp;-&nbsp;&alpha;,&beta;,&gamma;):</i></b>',
+                            reportas : 'Cell parameter "a"',
+                            tooltip  : 'Cell parameters to search for.',
+                            range    : [0.001,10000.0],
+                            value    : '',
+                            iwidth   : 60,
+                            //default  : '70',
+                            position : [1,0,1,1],
+                       },
+                CELL_B  : { type     : 'real',
+                            keyword  : 'none',
+                            label    : '',
+                            tooltip  : 'Cell parameters to search for.',
+                            reportas : 'Cell parameter "b"',
+                            range    : [0.001,10000.0],
+                            value    : '',
+                            iwidth   : 60,
+                            //default  : '70',
+                            position : [1,2,1,1]
+                       },
+                CELL_C  : { type     : 'real',
+                            keyword  : 'none',
+                            label    : '',
+                            reportas : 'Cell parameter "c"',
+                            tooltip  : 'Cell parameters to search for.',
+                            range    : [0.001,10000.0],
+                            value    : '',
+                            iwidth   : 60,
+                            //default  : '70',
+                            position : [1,4,1,1]
+                       },
+                CELL_ALPHA : { type     : 'real',
+                            keyword  : 'none',
+                            label    : '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>&mdash;</b>&nbsp;',
+                            reportas : 'Cell parameter "&alpha;"',
+                            tooltip  : 'Cell parameters to search for.',
+                            range    : [0.001,10000.0],
+                            value    : '',
+                            iwidth   : 60,
+                            //default  : '70',
+                            position : [1,7,1,1]
+                       },
+                CELL_BETA : { type     : 'real',
+                            keyword  : 'none',
+                            label    : '',
+                            reportas : 'Cell parameter "&beta;"',
+                            tooltip  : 'Cell parameters to search for.',
+                            range    : [0.001,10000.0],
+                            value    : '',
+                            iwidth   : 60,
+                            //default  : '70',
+                            position : [1,9,1,1]
+                        },
+                CELL_GAMMA : { type     : 'real',
+                            keyword  : 'none',
+                            label    : '',
+                            reportas : 'Cell parameter "&gamma;"',
+                            tooltip  : 'Cell parameters to search for.',
+                            range    : [0.001,10000.0],
+                            value    : '',
+                            iwidth   : 60,
+                            //default  : '70',
+                            position : [1,11,1,1]
+                        },
+              }
+            },
+
     sec1 : {  type     : 'section',
               title    : 'Search level',
               open     : true,  // true for the section to be initially open
-              position : [1,0,1,5],
+              position : [2,0,1,5],
               contains : {
                 SEARCH_SEL : {
                       type      : 'combobox',  // the real keyword for job input stream
@@ -73,7 +167,8 @@ function TaskSimbad()  {
                                    'LCS|Lattice, contaminants and structural database'
                                   ],
                       value     : 'LC',
-                      position  : [0,0,1,1]
+                      position  : [0,0,1,1],
+                      showon    : {'hkl.type:DataHKL':[1]}   // from input data section
                     },
                 MAXNLATTICES  : {
                       type     : 'integer_',
@@ -85,8 +180,8 @@ function TaskSimbad()  {
                       range    : [1,100],
                       value    : '',
                       default  : '5',
-                      position : [1,0,1,1],
-                      showon   : {SEARCH_SEL:['L','C','LC']}
+                      position : [2,0,1,1],
+                      showon   : {_:'||','SEARCH_SEL':['L','C','LC','LCS'],'hkl':[0,-1],'hkl.type:DataXYZ':[1]}
                     },
                 MAXPENALTY : {
                       type     : 'integer_',
@@ -98,9 +193,8 @@ function TaskSimbad()  {
                       range    : [0,12],
                       value    : '',
                       default  : '4',
-                      showon   : {'SEARCH_SEL':['L','LC','LCS']},
-                      position : [2,0,1,1],
-                      showon   : {SEARCH_SEL:['L','C','LC']}
+                      position : [3,0,1,1],
+                      showon   : {_:'||','SEARCH_SEL':['L','LC','LCS'],'hkl':[0,-1],'hkl.type:DataXYZ':[1]}
                     }
               }
     }
@@ -227,7 +321,59 @@ if (!__template)  {
   }
 
 
-  TaskCrank2.prototype.updateInputPanel = function ( inputPanel )  {
+
+*/
+
+
+  TaskSimbad.prototype.inputChanged = function ( inpParamRef,emitterId,emitterValue )  {
+
+    if (emitterId=='hkl')  {
+
+      var inpDataRef = inpParamRef.grid.inpDataRef;
+      var hkl        = this.getInputData ( inpDataRef,'hkl' );
+      var title      = this.title;
+
+      if (hkl && (hkl.length>0))  {
+
+        if (hkl[0]._type=='DataHKL')
+          this.title = 'Lattice, Contaminant and Database Searches with Simbad';
+        else
+          this.title = 'Lattice Search with Simbad';
+      } else
+        this.title = 'Lattice Search with Simbad';
+
+      if (this.title!=title)  {
+        var inputPanel = inpParamRef.grid.parent.parent;
+        inputPanel.header.title.setText ( '<b>' + this.title + '</b>' );
+        this.updateInputPanel ( inputPanel );
+      }
+
+    }
+
+    TaskTemplate.prototype.inputChanged.call ( this,inpParamRef,emitterId,emitterValue );
+
+  }
+
+
+  TaskSimbad.prototype.collectInput = function ( inputPanel )  {
+
+    var msg = TaskTemplate.prototype.collectInput.call ( this,inputPanel );
+    var hkl = this.input_data.getData ( 'hkl' );
+    if (hkl.length>0)  {
+      msg = '';  // manual input of cell parameters is not used
+      if (hkl[0]._type!='DataHKL')  {
+        if (hkl[0].getSpaceGroup()=='Unspecified')
+          msg += '<b>Space group undefined</b>';
+        if (hkl[0].getCellParametersHTML()=='Unspecified')
+          msg += '<b>Cell parameters undefined</b>';
+      }
+    }
+
+    return msg;
+
+  }
+
+  TaskSimbad.prototype.updateInputPanel = function ( inputPanel )  {
     if (this.state==job_code.new)  {
       var event = new CustomEvent ( cofe_signals.jobDlgSignal,{
          'detail' : job_dialog_reason.rename_node
@@ -236,7 +382,6 @@ if (!__template)  {
     }
   }
 
-*/
 
 } else  {
   //  for server side

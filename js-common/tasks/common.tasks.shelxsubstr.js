@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    27.12.18   <--  Date of Last Modification.
+ *    05.01.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  SHELX-Auto Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2018
+ *  (C) E. Krissinel, A. Lebedev 2016-2019
  *
  *  =================================================================
  *
@@ -38,7 +38,7 @@ function TaskShelxSubstr()  {
   this.title   = 'Substructure Search with SHELX via Crank-2';
   this.helpURL = './html/jscofe_task_shelxsubstr.html';
 
-  this.input_dtypes[0].data_type   = {'DataRevision':['hkl']}, // data type(s) and subtype(s)
+  this.input_dtypes[0].data_type   = {'DataRevision':['!anomalous','~xyz','~substructure']}, // data type(s) and subtype(s)
   this.input_dtypes[0].customInput = 'shelx-substr';   // lay custom fields next to the selection
   this.input_dtypes[1].customInput = 'anomData-Shelx'; // lay custom fields next to the selection
 
@@ -57,11 +57,8 @@ TaskShelxSubstr.prototype.constructor = TaskShelxSubstr;
 
 TaskShelxSubstr.prototype.icon = function()  { return 'task_shelx_substr'; }
 
-//TaskShelxSubstr.prototype.icon_small = function()  { return 'task_shelx_substr_20x20'; }
-//TaskShelxSubstr.prototype.icon_large = function()  { return 'task_shelx_substr';       }
-
 TaskShelxSubstr.prototype.currentVersion = function()  {
-  var version = 0;
+  var version = 1;
   if (__template)
         return  version + __template.TaskCrank2.prototype.currentVersion.call ( this );
   else  return  version + TaskCrank2.prototype.currentVersion.call ( this );
@@ -72,27 +69,7 @@ if (__template)  {
   //  for server side
 
   var conf         = require('../../js-server/server.configuration');
-  var tsk_template = require ( './common.tasks.template' );
-
-  TaskShelxSubstr.prototype.makeInputData = function ( login,jobDir )  {
-
-    // Puts hkl data in input databox for copying their files in
-    // job's 'input' directory.
-
-    /*
-    if ('revision' in this.input_data.data)  {
-      var revision = this.input_data.data['revision'][0];
-      if (revision.HKL.nativeKey!='unused')
-        this.input_data.data['native'] = [revision.HKL];
-      //if (revision.Structure)
-      //  this.input_data.data['pmodel'] = [revision.Structure];
-      //this.input_data.data['seq'] = revision.ASU.seq;
-    }
-    */
-
-    tsk_template.TaskTemplate.prototype.makeInputData.call ( this,login,jobDir );
-
-  }
+  //var tsk_template = require ( './common.tasks.template' );
 
   TaskShelxSubstr.prototype.getCommandLine = function ( exeType,jobDir )  {
     return [conf.pythonName(), '-m', 'pycofe.tasks.shelxsubstr', exeType, jobDir, this.id];

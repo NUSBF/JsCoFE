@@ -124,7 +124,7 @@ function appendString ( path,data_string )  {
 
 function writeObject ( path,dataObject )  {
   try {
-    fs.writeFileSync ( path,JSON.stringify(dataObject) );
+    fs.writeFileSync ( path,JSON.stringify(dataObject,null,2) );
     return true;
   } catch (e)  {
     log.error ( 3,'cannot write file ' + path );

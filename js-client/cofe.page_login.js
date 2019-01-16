@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.12.18   <--  Date of Last Modification.
+ *    02.01.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Login page
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2018
+ *  (C) E. Krissinel, A. Lebedev 2016-2019
  *
  *  =================================================================
  *
@@ -167,7 +167,7 @@ function LoginPage ( sceneId )  {
                   else  __doNotShowList = [];
                   __local_setup = response.data.localSetup;
                   loadKnowledge ( 'Login' )
-                  if (__admin)
+                  if (__admin && (userData.login=='admin'))
                         makeAdminPage       ( sceneId );
                   else  makeProjectListPage ( sceneId );
               return true;

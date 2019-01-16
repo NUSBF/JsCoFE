@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    24.12.18   <--  Date of Last Modification.
+#    05.01.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2018
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2019
 #
 # ============================================================================
 #
@@ -65,12 +65,13 @@ class ShelxCD(basic.TaskDriver):
         # Prepare crank2 input
         # fetch input data
         revision = self.makeClass ( self.input_data.data.revision[0] )
-        hkl      = self.input_data.data.hkl
+        hkl      = self.input_data.data.hklrev
         native   = None
-        seq      = None
+
+        if hasattr(self.input_data.data,"hkl"):  # optional data parameter?
+            hkl += self.input_data.data.hkl
 
         sec1 = self.task.parameters.sec1.contains
-
 
         # convert dictionaries into real classes; this is necessary because we want
         # to use class's functions and not just access class's data fields;
@@ -105,10 +106,6 @@ class ShelxCD(basic.TaskDriver):
                     "HKLIN" ,hkl[i].getHKLFilePath(self.inputDir()),
                     "HKLOUT",hkl[i].basename + ".hkl"
                 ],logType="Service")
-
-
-        if hasattr(self.input_data.data,"seq"):  # optional data parameter?
-            seq = self.input_data.data.seq
 
         if hasattr(self.input_data.data,"native"):  # optional data parameter
             native = self.makeClass ( self.input_data.data.native[0] )

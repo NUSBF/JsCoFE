@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    31.12.18   <--  Date of Last Modification.
+ *    04.01.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Common Client/Server Modules -- Structure Data Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2018
+ *  (C) E. Krissinel, A. Lebedev 2016-2019
  *
  *  =================================================================
  *
@@ -69,6 +69,8 @@ function DataStructure()  {
   this.useCoordinates = true;  // flag for using in Phaser-EP
   this.rmsd           = 0.3;   // used in Phaser-EP
 
+  this.removeNonAnom  = false; // for use in Crank-2
+
   this.useModelSel    = 'N';   // for use in Buccaneer
   this.initPhaseSel   = structure_subtype.XYZ;  // for use in Acorn and ArpWarp
   this.BFthresh       = 3.0;
@@ -95,7 +97,7 @@ DataStructure.prototype.icon  = function()  { return 'data';           }
 // when data class version is changed here, change it also in python
 // constructors
 DataStructure.prototype.currentVersion = function()  {
-  var version = 1;  // advanced on leadKey
+  var version = 2;  // advanced on Crank-2
   if (__template)
         return  version + __template.DataXYZ.prototype.currentVersion.call ( this );
   else  return  version + DataXYZ.prototype.currentVersion.call ( this );

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    27.12.18   <--  Date of Last Modification.
+ *    13.01.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Ensemble Preparation from Coordinates Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2018
+ *  (C) E. Krissinel, A. Lebedev 2016-2019
  *
  *  =================================================================
  *
@@ -67,151 +67,244 @@ function TaskEnsemblePrepXYZ()  {
                     'choose homologous single chains of approximately equal ' +
                     'length. The resulting ensemble will be named after the ' +
                     'leading coordinat set.',
-      inputId     : 'xyz',      // input Id for referencing input fields
+      inputId     : 'xyz',       // input Id for referencing input fields
       customInput : 'chain-sel', // lay custom fields next to the selection
-      min         : 1,          // minimum acceptable number of data instances
-      max         : 100000      // maximum acceptable number of data instances
+      min         : 1,           // minimum acceptable number of data instances
+      max         : 1000         // maximum acceptable number of data instances
     }
   ];
 
   this.parameters = { // input parameters
-    sec1 : { type     : 'section',
-             title    : 'General parameters',
-             open     : false,  // true for the section to be initially open
-             position : [0,0,1,5],
-             hideon   : {'xyz':[-1,0,1]},
-             contains : {
-               SUPERPOSITION_SEL : {
-                       type     : 'combobox',
-                       keyword  : 'SUPERPOSITION',
-                       label    : 'Superposition method',
-                       tooltip  : 'Choose superposition method',
-                       range    : ['gapless|gapless','gapped|gapped'],
-                       value    : 'gapless',
-                       position : [0,0,1,1]
-                     },
-               MAPPING_SEL : {
-                       type     : 'combobox',
-                       keyword  : 'MAPPING',
-                       label    : 'Mapping method',
-                       tooltip  : 'Choose mapping method',
-                       range    : ['ssm|SSM',
-                                   //'alignments|alignments',
-                                   'resid|residue Id'
-                                   //'multiple_alignment|multiple alignment'
-                                 ],
-                       value    : 'ssm',
+
+    sec1 :  {  type     : 'section',
+              title    : 'Model modification',
+              open     : true,  // true for the section to be initially open
+              position : [0,0,1,5],
+              contains : {
+                MODIFICATION_SEQ_SEL : {
+                        type     : 'combobox',
+                        keyword  : 'none',
+                        label    : 'Modification protocol:',
+                        tooltip  : 'Choose trim option',
+                        range    : [ 'U|Unmodified',
+                                     'D|PDB Clip',
+                                     'M|Molrep',
+                                     'C|Chainsaw',
+                                     'S|Sculptor',
+                                     'P|Polyalanine'
+                                   ],
+                        value    : 'M',
+                        showon   : { 'seq':[1] },
+                        position : [0,0,1,1]
+                      },
+                LEGEND_SEQ_U : {
+                        type      : 'label',  // just a separator
+                        label     : '<i>(models are not changed)</i>',
+                        position  : [0,3,1,1],
+                        showon    : { _:'&&','seq':[1],'MODIFICATION_SEQ_SEL':['U'] }
+                      },
+                LEGEND_SEQ_D : {
+                        type      : 'label',  // just a separator
+                        label     : '<i>(remove solvent, hydrogens, and select most probable conformations)</i>',
+                        position  : [0,3,1,1],
+                        showon    : { _:'&&','seq':[1],'MODIFICATION_SEQ_SEL':['D'] }
+                      },
+                LEGEND_SEQ_M : {
+                        type      : 'label',  // just a separator
+                        label     : '<i>(side chain truncation based on Molrep)</i>',
+                        position  : [0,3,1,1],
+                        showon    : { _:'&&','seq':[1],'MODIFICATION_SEQ_SEL':['M'] }
+                      },
+                LEGEND_SEQ_C : {
+                        type      : 'label',  // just a separator
+                        label     : '<i>(side chain truncation based on Chainsaw)</i>',
+                        position  : [0,3,1,1],
+                        showon    : { _:'&&','seq':[1],'MODIFICATION_SEQ_SEL':['C'] }
+                      },
+                LEGEND_SEQ_S : {
+                        type      : 'label',  // just a separator
+                        label     : '<i>(side chain truncation based on Sculptor)</i>',
+                        position  : [0,3,1,1],
+                        showon    : { _:'&&','seq':[1],'MODIFICATION_SEQ_SEL':['S'] }
+                      },
+                LEGEND_SEQ_P : {
+                        type      : 'label',  // just a separator
+                        label     : '<i>(removal of all side chains)</i>',
+                        position  : [0,3,1,1],
+                        showon    : { _:'&&','seq':[1],'MODIFICATION_SEQ_SEL':['P'] }
+                      },
+
+                MODIFICATION_NOSEQ_SEL : {
+                        type     : 'combobox',
+                        keyword  : 'none',
+                        label    : 'Modification protocol:',
+                        tooltip  : 'Choose trim option',
+                        range    : [ 'U|Unmodified',
+                                     'D|PDB Clip',
+                                     'P|Polyalanine'
+                                   ],
+                        value    : 'D',
+                        hideon   : { 'seq':[1] },
+                        position : [0,0,1,1]
+                      },
+                LEGEND_NOSEQ_U : {
+                        type      : 'label',  // just a separator
+                        label     : '<i>(models are not changed)</i>',
+                        position  : [0,3,1,1],
+                        showon    : { _:'&&','seq':[0,-1],'MODIFICATION_NOSEQ_SEL':['U'] }
+                      },
+                LEGEND_NOSEQ_D : {
+                        type      : 'label',  // just a separator
+                        label     : '<i>(remove solvent, hydrogens, and select most probable conformations)</i>',
+                        position  : [0,3,1,1],
+                        showon    : { _:'&&','seq':[0,-1],'MODIFICATION_NOSEQ_SEL':['D'] }
+                      },
+                LEGEND_NOSEQ_P : {
+                        type      : 'label',  // just a separator
+                        label     : '<i>(removal of all side chains)</i>',
+                        position  : [0,3,1,1],
+                        showon    : { _:'&&','seq':[0,-1],'MODIFICATION_NOSEQ_SEL':['P'] }
+                      }
+              }
+            },
+
+    sec2 :  { type     : 'section',
+              title    : 'Ensembler parameters',
+              open     : false,  // true for the section to be initially open
+              position : [1,0,1,5],
+              hideon   : {'xyz':[-1,0,1]},
+              contains : {
+                SUPERPOSITION_SEL : {
+                        type     : 'combobox',
+                        keyword  : 'SUPERPOSITION',
+                        label    : 'Superposition method',
+                        tooltip  : 'Choose superposition method',
+                        range    : ['gapless|gapless','gapped|gapped'],
+                        value    : 'gapless',
+                        position : [0,0,1,1]
+                      },
+                MAPPING_SEL : {
+                        type     : 'combobox',
+                        keyword  : 'MAPPING',
+                        label    : 'Mapping method',
+                        tooltip  : 'Choose mapping method',
+                        range    : ['ssm|SSM',
+                                    //'alignments|alignments',
+                                    'resid|residue Id'
+                                    //'multiple_alignment|multiple alignment'
+                                  ],
+                        value    : 'ssm',
+                        position : [1,0,1,1]
+                      },
+                WEIGHTING_SEL : {
+                        type     : 'combobox',
+                        keyword  : 'WEIGHTING',
+                        label    : 'Weighting scheme',
+                        tooltip  : 'Choose weighting scheme',
+                        range    : ['unit|unit','robust_resistant|robust resistant'],
+                        value    : 'robust_resistant',
+                        position : [2,0,1,1]
+                      },
+                RRCRITICAL : {
+                        type     : 'real',
+                        keyword  : 'RRCRITICAL',
+                        label    : 'critical value',
+                        reportas : 'robust-resistant critical value', // to use in error reports
+                                                                      // instead of 'label'
+                        tooltip  : 'Choose a value between 0 and 50',
+                        range    : [0,50],
+                        value    : 9,
+                        position : [2,3,1,1],
+                        align    : 'right',
+                        showon   : {'WEIGHTING_SEL':['robust_resistant']}
+                      },
+                TRIM_SEL : {
+                        type     : 'combobox',
+                        keyword  : 'TRIM',
+                        label    : 'Trim ensemble',
+                        tooltip  : 'Choose trim option',
+                        range    : ['1|yes','0|no'],
+                        value    : '1',
+                        position : [3,0,1,1]
+                      },
+                TTHRESH : {
+                        type     : 'real',
+                        keyword  : 'TTHRESH',
+                        label    : 'threshold',
+                        tooltip  : 'Choose a value between 0 and 10',
+                        range    : [0,10],
+                        value    : 3,
+                        position : [3,3,1,1],
+                        align    : 'right',
+                        showon   : {'TRIM_SEL':['1']}
+                      }
+              }
+            },
+
+    sec3 :  { type     : 'section',
+              title    : 'Ensembler Configuration',
+              open     : false,  // true for the section to be initially open
+              position : [2,0,1,5],
+              hideon   : {'xyz':[-1,0,1]},
+              contains : {
+                SUPCONV : {
+                       type     : 'real',
+                       keyword  : 'SUPCONV',
+                       label    : 'Superposition convergence',
+                       tooltip  : 'Choose a value between 1.0e-6 and 0.1',
+                       range    : [0.000001,0.1],
+                       value    : 0.0001,
                        position : [1,0,1,1]
                      },
-               WEIGHTING_SEL : {
-                       type     : 'combobox',
-                       keyword  : 'WEIGHTING',
-                       label    : 'Weighting scheme',
-                       tooltip  : 'Choose weighting scheme',
-                       range    : ['unit|unit','robust_resistant|robust resistant'],
-                       value    : 'robust_resistant',
+                WEIGHTCONV : {
+                       type     : 'real',
+                       keyword  : 'WEIGHTCONV',
+                       label    : 'Superposition convergence',
+                       tooltip  : 'Choose a value between 1.0e-5 and 0.1',
+                       range    : [0.00001,0.1],
+                       value    : 0.001,
                        position : [2,0,1,1]
                      },
-               RRCRITICAL : {
+                WEIGHTDFACTOR : {
                        type     : 'real',
-                       keyword  : 'RRCRITICAL',
-                       label    : 'critical value',
-                       reportas : 'robust-resistant critical value', // to use in error reports
-                                                                     // instead of 'label'
-                       tooltip  : 'Choose a value between 0 and 50',
-                       range    : [0,50],
-                       value    : 9,
-                       position : [2,3,1,1],
-                       align    : 'right',
-                       showon   : {'WEIGHTING_SEL':['robust_resistant']}
-                     },
-               TRIM_SEL : {
-                       type     : 'combobox',
-                       keyword  : 'TRIM',
-                       label    : 'Trim ensemble',
-                       tooltip  : 'Choose trim option',
-                       range    : ['1|yes','0|no'],
-                       value    : '1',
+                       keyword  : 'WEIGHTDFACTOR',
+                       label    : 'Weighting incremental damping factor',
+                       tooltip  : 'Choose a value between 1 and 10',
+                       range    : [1,10],
+                       value    : 1.5,
                        position : [3,0,1,1]
                      },
-               TTHRESH : {
+                WEIGHTMAXDFACTOR : {
                        type     : 'real',
-                       keyword  : 'TTHRESH',
-                       label    : 'threshold',
-                       tooltip  : 'Choose a value between 0 and 10',
-                       range    : [0,10],
-                       value    : 3,
-                       position : [3,3,1,1],
-                       align    : 'right',
-                       showon   : {'TRIM_SEL':['1']}
+                       keyword  : 'WEIGHTMAXDFACTOR',
+                       label    : 'Weighting maximal damping factor',
+                       tooltip  : 'Choose a value between 1 and 10',
+                       range    : [1,10],
+                       value    : 3.34,
+                       position : [4,0,1,1]
+                     },
+                CLUSTDIST : {
+                       type     : 'real',
+                       keyword  : 'CLUSTDIST',
+                       label    : 'Clustering distance',
+                       tooltip  : 'Choose a value between 0 and 5',
+                       range    : [0,5],
+                       value    : 0.5,
+                       position : [5,0,1,1]
+                     },
+                ATOMNAMES : {
+                       type      : 'string',   // empty string not allowed
+                       keyword   : 'ATOMNAMES',
+                       label     : 'Atom name(s)',
+                       tooltip   : 'Comma-separated list of atom names',
+                       value     : 'CA',
+                       iwidth    : 150,
+                       maxlength : 200,       // maximum input length
+                       position  : [6,0,1,1]
                      }
-             }
-           },
 
-    sec2 : { type     : 'section',
-             title    : 'Configuration',
-             open     : false,  // true for the section to be initially open
-             position : [1,0,1,5],
-             hideon   : {'xyz':[-1,0,1]},
-             contains : {
-               SUPCONV : {
-                      type     : 'real',
-                      keyword  : 'SUPCONV',
-                      label    : 'Superposition convergence',
-                      tooltip  : 'Choose a value between 1.0e-6 and 0.1',
-                      range    : [0.000001,0.1],
-                      value    : 0.0001,
-                      position : [1,0,1,1]
-                    },
-               WEIGHTCONV : {
-                      type     : 'real',
-                      keyword  : 'WEIGHTCONV',
-                      label    : 'Superposition convergence',
-                      tooltip  : 'Choose a value between 1.0e-5 and 0.1',
-                      range    : [0.00001,0.1],
-                      value    : 0.001,
-                      position : [2,0,1,1]
-                    },
-               WEIGHTDFACTOR : {
-                      type     : 'real',
-                      keyword  : 'WEIGHTDFACTOR',
-                      label    : 'Weighting incremental damping factor',
-                      tooltip  : 'Choose a value between 1 and 10',
-                      range    : [1,10],
-                      value    : 1.5,
-                      position : [3,0,1,1]
-                    },
-               WEIGHTMAXDFACTOR : {
-                      type     : 'real',
-                      keyword  : 'WEIGHTMAXDFACTOR',
-                      label    : 'Weighting maximal damping factor',
-                      tooltip  : 'Choose a value between 1 and 10',
-                      range    : [1,10],
-                      value    : 3.34,
-                      position : [4,0,1,1]
-                    },
-               CLUSTDIST : {
-                      type     : 'real',
-                      keyword  : 'CLUSTDIST',
-                      label    : 'Clustering distance',
-                      tooltip  : 'Choose a value between 0 and 5',
-                      range    : [0,5],
-                      value    : 0.5,
-                      position : [5,0,1,1]
-                    },
-               ATOMNAMES : {
-                      type      : 'string',   // empty string not allowed
-                      keyword   : 'ATOMNAMES',
-                      label     : 'Atom name(s)',
-                      tooltip   : 'Comma-separated list of atom names',
-                      value     : 'CA',
-                      iwidth    : 150,
-                      maxlength : 200,       // maximum input length
-                      position  : [6,0,1,1]
-                    }
-
-           }
-         }
+              }
+            }
 
   }
 

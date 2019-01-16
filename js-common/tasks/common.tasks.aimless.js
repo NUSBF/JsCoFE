@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    27.12.18   <--  Date of Last Modification.
+ *    07.01.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Aimless Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2018
+ *  (C) E. Krissinel, A. Lebedev 2016-2019
  *
  *  =================================================================
  *
@@ -38,23 +38,24 @@ function TaskAimless()  {
   this.helpURL = './html/jscofe_task_aimless.html';
 
   this.input_dtypes = [{      // input data types
-     data_type   : {'DataHKL':[],'DataUnmerged':[]}, // data type(s) and subtype(s)
-     cast        : 'symmetry',     // will replace data type names in comboboxes
-     label       : 'Crystal<br>Symmetry', // label for input dialog
-     inputId     : 'ds0',          // input Id for referencing input fields
-     customInput : 'unmerged-ref', // lay custom fields next to the selection
-                                   // dropdown for unmerged reference data
-     min         : 1,              // minimum acceptable number of data instances
-     max         : 1               // maximum acceptable number of data instances
+    data_type   : {'DataUnmerged':[]}, // data type(s) and subtype(s)
+    label       : 'Unmerged<br>reflections',       // label for input dialog
+    inputId     : 'unmerged',   // input Id for referencing input fields
+    customInput : 'unmerged',   // lay custom fields next to the selection
+                                // dropdown for unmerged data
+    min         : 1,            // minimum acceptable number of data instances
+    max         : 50            // maximum acceptable number of data instances
    },{
-     data_type   : {'DataUnmerged':[]}, // data type(s) and subtype(s)
-     label       : 'Unmerged<br>reflections',       // label for input dialog
-     inputId     : 'unmerged',   // input Id for referencing input fields
-     customInput : 'unmerged',   // lay custom fields next to the selection
-                                 // dropdown for unmerged data
-     min         : 1,            // minimum acceptable number of data instances
-     max         : 50            // maximum acceptable number of data instances
-   }/*
+    data_type   : {'DataHKL':[],'DataUnmerged':[]}, // data type(s) and subtype(s)
+    cast        : 'symmetry',     // will replace data type names in comboboxes
+    label       : 'Crystal<br>Symmetry', // label for input dialog
+    inputId     : 'ds0',          // input Id for referencing input fields
+    customInput : 'unmerged-ref', // lay custom fields next to the selection
+                                  // dropdown for unmerged reference data
+    min         : 1,              // minimum acceptable number of data instances
+    max         : 1               // maximum acceptable number of data instances
+   }
+   /*
    ,{ // DO NOT DELETE THIS MAY BE USED AS DOCUMENTATION
      // This entry is void and provided only to ensure that at least one unmerged
      // dataset is provided. Note that this condition does not follow from the
@@ -1193,9 +1194,6 @@ TaskAimless.prototype.constructor = TaskAimless;
 // export such that it could be used in both node and a browser
 
 TaskAimless.prototype.icon = function()  { return 'task_aimless'; }
-
-//TaskAimless.prototype.icon_small = function()  { return 'task_aimless_20x20'; }
-//TaskAimless.prototype.icon_large = function()  { return 'task_aimless';       }
 
 TaskAimless.prototype.currentVersion = function()  {
   var version = 0;

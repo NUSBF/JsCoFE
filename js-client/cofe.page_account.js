@@ -146,7 +146,6 @@ function AccountPage ( sceneId )  {
   delete_btn.setDisabled        ( true   );
 
 
-
   // however add update button listener
   var response;  // will keep user data
   var userData;  // will transfer user data across
@@ -180,7 +179,7 @@ function AccountPage ( sceneId )  {
       serverRequest ( fe_reqtype.updateUserData,userData,'My Account',
                       function(response){
         if (response)
-          new MessageBoxW ( 'Registration',response,0.5 );
+          new MessageBoxW ( 'My Account',response,0.5 );
         else
           new MessageBox ( 'My Account',
             'Dear ' + userData.name +

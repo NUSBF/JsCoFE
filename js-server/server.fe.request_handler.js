@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    24.07.18   <--  Date of Last Modification.
+ *    02.01.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Front End Server -- Request Handler
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2018
+ *  (C) E. Krissinel, A. Lebedev 2016-2019
  *
  *  =================================================================
  *
@@ -55,8 +55,16 @@ var response = null;
           response = user.updateUserData ( login,data );
         break;
 
+    case cmd.fe_reqtype.updateUData_admin :
+          response = user.updateUserData_admin ( login,data );
+        break;
+
     case cmd.fe_reqtype.deleteUser :
           response = user.deleteUser ( login,data );
+        break;
+
+    case cmd.fe_reqtype.deleteUser_admin :
+          response = user.deleteUser_admin ( login,data );
         break;
 
     case cmd.fe_reqtype.saveHelpTopics :

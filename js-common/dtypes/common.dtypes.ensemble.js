@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    27.12.18   <--  Date of Last Modification.
+ *    07.01.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Common Client/Server Modules -- Ensemble Data Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2018
+ *  (C) E. Krissinel, A. Lebedev 2016-2019
  *
  *  =================================================================
  *
@@ -139,34 +139,30 @@ if (!__template)  {
       }
 //    } else if (dropdown.layCustom.startsWith('phaser-mr'))  {
     } else if (startsWith(dropdown.layCustom,'phaser-mr'))  {
-      if (this.sequence)  {
-        //row++;
-
+      if (this.sequence)
         displaySequence ( this.sequence.dname );
+      customGrid.setLabel ( 'Look for',row,0,1,1 ).setFontItalic ( true );
+      customGrid.ncopies = customGrid.setInputText ( this.ncopies,row,1,1,1 )
+                    .setStyle ( 'text','integer','',
+                      'Specify the number of model copies to look for ' +
+                      'in asymmetric unit' )
+                    .setWidth_px ( 50 );
+      customGrid.setLabel ( 'copies in ASU',row,2,1,1 ).setFontItalic ( true );
+      customGrid.setVerticalAlignment ( row  ,0,'middle' );
+      customGrid.setVerticalAlignment ( row++,2,'middle' );
 
-        customGrid.setLabel ( 'Look for',row,0,1,1 ).setFontItalic ( true );
-        customGrid.ncopies = customGrid.setInputText ( this.ncopies,row,1,1,1 )
-                      .setStyle ( 'text','integer','',
-                        'Specify the number of model copies to look for ' +
-                        'in asymmetric unit' )
-                      .setWidth_px ( 50 );
-        customGrid.setLabel ( 'copies in ASU',row,2,1,1 ).setFontItalic ( true );
-        customGrid.setVerticalAlignment ( row  ,0,'middle' );
-        customGrid.setVerticalAlignment ( row++,2,'middle' );
+      customGrid.setLabel ( 'Similarity',row,0,1,1 ).setFontItalic ( true );
+      customGrid.rmsd = customGrid.setInputText ( this.rmsd,row,1,1,1 )
+                    .setStyle ( 'text','real','',
+            'Specify the measure of dispersion (in angstroms) for model' )
+                    .setWidth_px ( 50 );
+      customGrid.setLabel ( '(estimated r.m.s.d. to target, &Aring;)',row,2,1,1 )
+                .setFontItalic ( true );
+      customGrid.setVerticalAlignment ( row  ,0,'middle' );
+      customGrid.setVerticalAlignment ( row++,2,'middle' );
 
-        customGrid.setLabel ( 'Similarity',row,0,1,1 ).setFontItalic ( true );
-        customGrid.rmsd = customGrid.setInputText ( this.rmsd,row,1,1,1 )
-                      .setStyle ( 'text','real','',
-              'Specify the measure of dispersion (in angstroms) for model' )
-                      .setWidth_px ( 50 );
-        customGrid.setLabel ( '(estimated r.m.s.d. to target, &Aring;)',row,2,1,1 )
-                  .setFontItalic ( true );
-        customGrid.setVerticalAlignment ( row  ,0,'middle' );
-        customGrid.setVerticalAlignment ( row++,2,'middle' );
-
-        row++;
-        customGrid.setLabel ( ' ',row,0,1,2 ).setHeight_px ( 8 );
-      }
+      row++;
+      customGrid.setLabel ( ' ',row,0,1,2 ).setHeight_px ( 8 );
     }
 
   }

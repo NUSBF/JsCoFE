@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    24.12.18   <--  Date of Last Modification.
+#    05.01.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -20,7 +20,7 @@
 #      jobDir/report  : directory receiving HTML report
 #
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2018
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2019
 #
 # ============================================================================
 #
@@ -113,16 +113,8 @@ class Crank2(basic.TaskDriver):
 
     def add_model ( self ):
 
-        if self.pmodel:
-            S  = "model "
-            if self.getParameter(self.sec6.COMB_PHDMMB_NCS_DET_MR)=="True":
-                S += "custom=ncs "
-            S += "unknown \"file=" + self.pmodel.getXYZFilePath(self.inputDir()) + "\""
-        else:
-            S = "model substr"
-
-        S += self.getKWItem ( self.sec1.HATOM  ) +\
-             self.getKWItem ( self.sec1.NATOMS )
+        S = "model substr " + self.getKWItem ( self.sec1.HATOM  ) +\
+                              self.getKWItem ( self.sec1.NATOMS )
 
         for hkli in self.hkl:
             S += " d_name=" + hkli.wtype
@@ -132,6 +124,14 @@ class Crank2(basic.TaskDriver):
                 S += " fpp=" + hkli.f11
 
         self.config.append ( S )
+
+        if self.pmodel:
+            S  = "model "
+            if self.getParameter(self.sec6.COMB_PHDMMB_NCS_DET_MR)=="True":
+                S += "custom=ncs "
+            S += "unknown \"file=" + self.pmodel.getXYZFilePath(self.inputDir()) + "\"" +\
+                 self.getKWItem ( self.sec1.HATOM  )
+            self.config.append ( S )
 
         return
 
@@ -338,11 +338,12 @@ class Crank2(basic.TaskDriver):
 
             self.add_createfree ()
             self.add_refatompick()
-            if self.getParameter(self.sec1.PARTIAL_AS_SUBSTR):
+            if self.revision.Structure.removeNonAnom:
                 self.add_sepsubstrprot()
                 self.add_phas         ()
                 self.add_dmfull       ()
             self.add_comb_phdmmb()
+            self.add_ref        ()
 
         else:
 
@@ -563,7 +564,10 @@ class Crank2(basic.TaskDriver):
         # Prepare crank2 input
         # fetch input data
         self.revision = self.makeClass ( self.input_data.data.revision[0] )
-        self.hkl      = self.input_data.data.hkl
+        self.hkl      = self.input_data.data.hklrev
+
+        if hasattr(self.input_data.data,"hkl"):  # optional data parameter?
+            self.hkl += self.input_data.data.hkl
 
         # convert dictionaries into real classes; this is necessary because we want
         # to use class's functions and not just access class's data fields

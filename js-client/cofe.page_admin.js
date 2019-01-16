@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.12.18   <--  Date of Last Modification.
+ *    01.01.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Admin page
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2018
+ *  (C) E. Krissinel, A. Lebedev 2016-2019
  *
  *  =================================================================
  *
@@ -64,9 +64,9 @@ function AdminPage ( sceneId )  {
 
   // make tabs
   this.tabs = new Tabs();
-  this.jobsTab  = this.tabs.addTab ( 'Jobs' ,true  );
-  this.usersTab = this.tabs.addTab ( 'Users',false );
+  this.usersTab = this.tabs.addTab ( 'Users',true  );
   this.nodesTab = this.tabs.addTab ( 'Nodes',false );
+  this.jobsTab  = this.tabs.addTab ( 'Jobs' ,false );
 
   // center panel horizontally and make left- and right-most columns page margins
   this.grid.setCellSize ( '5pt','auto',1,0,1,1 );
@@ -92,37 +92,7 @@ function AdminPage ( sceneId )  {
       new AnnounceDialog();
     });
 
-    refresh_btn.addOnClickListener ( function(){
-      serverRequest ( fe_reqtype.getAdminData,0,'Admin Page',function(data){
-        if (!data.served)  {
-          self.jobsTitle .setText ( data.jobsStat );
-          self.usersTitle.setText ( data.jobsStat );
-          self.nodesTitle.setText ( data.jobsStat );
-        } else  {
-          self.jobsTitle.setText ( '<h2>Jobs Log</h2>' );
-          self.jobStats .setText ( '<pre>' + data.jobsStat + '</pre>' );
-          self.makeUsersInfoTab ( data.usersInfo );
-          if (!__local_service)
-            self.makeNodesInfoTab ( data.nodesInfo );
-          else  {
-            localCommand ( nc_command.getNCInfo,{},'NC Info Request',
-              function(response){
-                if (response)  {
-                  if (response.status==nc_retcode.ok)
-                    data.nodesInfo.ncInfo.push ( response.data );
-                  else
-                    new MessageBox ( 'Get NC Info Error',
-                      'Unknown error: <b>' + response.status + '</b><p>' +
-                      'when trying to fetch Client NC data.' );
-                }
-                self.makeNodesInfoTab ( data.nodesInfo );
-                return (response!=null);
-              });
-          }
-        }
-        self.tabs.refresh();
-      },null,'persist');
-    });
+    refresh_btn.addOnClickListener ( function(){ self.refresh(); } );
 
   }(this))
 
@@ -139,6 +109,40 @@ AdminPage.prototype.destructor = function ( function_ready )  {
   BasePage.prototype.destructor.call ( this,function0ready );
 }
 */
+
+AdminPage.prototype.refresh = function()  {
+  (function(self){
+    serverRequest ( fe_reqtype.getAdminData,0,'Admin Page',function(data){
+      if (!data.served)  {
+        self.jobsTitle .setText ( data.jobsStat );
+        self.usersTitle.setText ( data.jobsStat );
+        self.nodesTitle.setText ( data.jobsStat );
+      } else  {
+        self.jobsTitle.setText ( '<h2>Jobs Log</h2>' );
+        self.jobStats .setText ( '<pre>' + data.jobsStat + '</pre>' );
+        self.makeUsersInfoTab ( data.usersInfo );
+        if (!__local_service)
+          self.makeNodesInfoTab ( data.nodesInfo );
+        else  {
+          localCommand ( nc_command.getNCInfo,{},'NC Info Request',
+            function(response){
+              if (response)  {
+                if (response.status==nc_retcode.ok)
+                  data.nodesInfo.ncInfo.push ( response.data );
+                else
+                  new MessageBox ( 'Get NC Info Error',
+                    'Unknown error: <b>' + response.status + '</b><p>' +
+                    'when trying to fetch Client NC data.' );
+              }
+              self.makeNodesInfoTab ( data.nodesInfo );
+              return (response!=null);
+            });
+        }
+      }
+      self.tabs.refresh();
+    },null,'persist');
+  }(this))
+}
 
 AdminPage.prototype.onResize = function ( width,height )  {
   this.tabs.setWidth_px  ( width -50  );
@@ -209,11 +213,19 @@ AdminPage.prototype.makeUsersInfoTab = function ( udata )  {
         lastSeen = new Date(uDesc.lastSeen).toISOString().slice(0,10);
     }
     trow.addCell ( lastSeen ).setNoWrap().setHorizontalAlignment('right');
+    trow.uDesc = uDesc;
     //this.userListTable.addRow ( trow );
   }
 
-  this.userListTable.createTable();
+  (function(self){
+    self.userListTable.addSignalHandler ( 'row_dblclick',function(trow){
+      //alert ( 'trow='+JSON.stringify(trow.uDesc) );
+      new ManageUserDialog ( trow.uDesc,function(){ self.refresh(); } );
+    });
+  }(this))
+
   this.userListTable.setHeaderFontSize ( '100%' );
+  this.userListTable.createTable();
 
 }
 

@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    30.12.18   <--  Date of Last Modification.
+#    12.01.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -30,7 +30,7 @@
 #               even if job is run by SGE, so it should be checked upon using
 #               comman line length
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2018
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2019
 #
 # ============================================================================
 #
@@ -70,44 +70,80 @@ class Simbad(asudef.ASUDef):
         else:
             nSubJobs = "4";
 
-
         # fetch input data
-        hkl = self.makeClass ( self.input_data.data.hkl[0] )
+        hkl = None
+        if hasattr(self.input_data.data,"hkl"):  # optional data parameter?
+            hkl = self.makeClass ( self.input_data.data.hkl[0] )
+            if hkl._type!="DataHKL":
+                SpGroup = hkl.getSpaceGroup().replace(" ","")
+                cell_p  = hkl.getCellParameters()
+                cell_geometry = str(cell_p[0]) + "," + str(cell_p[1]) + "," +\
+                                str(cell_p[2]) + "," + str(cell_p[3]) + "," +\
+                                str(cell_p[4]) + "," + str(cell_p[5])
+                hkl     = None
+        else:
+            sec0    = self.task.parameters.sec0.contains
+            SpGroup = self.getParameter(sec0.SPGROUP).replace(" ","")
+            cell_geometry = self.getParameter(sec0.CELL_A)     + "," +\
+                            self.getParameter(sec0.CELL_B)     + "," +\
+                            self.getParameter(sec0.CELL_C)     + "," +\
+                            self.getParameter(sec0.CELL_ALPHA) + "," +\
+                            self.getParameter(sec0.CELL_BETA)  + "," +\
+                            self.getParameter(sec0.CELL_GAMMA)
+
 
         sec1       = self.task.parameters.sec1.contains
-        level      = self.getParameter(sec1.SEARCH_SEL)
         maxnlatt   = self.getParameter(sec1.MAXNLATTICES)
         maxpenalty = self.getParameter(sec1.MAXPENALTY)
         if not maxpenalty:
             maxpenalty = "12"
 
-        app = ""
-        if level == 'L':
-            app = "simbad-lattice"
-        elif level == 'C':
-            app = "simbad-contaminant"
-        elif level == 'S':
-            app = "simbad-morda"
-        elif level == 'LC':
-            app = "simbad"
-        elif level == 'LCS':
-            app = "simbad-full"
+        if hkl:
+            level = self.getParameter(sec1.SEARCH_SEL)
+
+            app = ""
+            if level == 'L':
+                app = "simbad-lattice"
+            elif level == 'C':
+                app = "simbad-contaminant"
+            elif level == 'S':
+                app = "simbad-morda"
+            elif level == 'LC':
+                app = "simbad"
+            elif level == 'LCS':
+                app = "simbad-full"
+
+            # Prepare simbad input -- script file
+
+            cmd = [ "-nproc"              ,nSubJobs,
+                    "-F"                  ,hkl.dataset.Fmean.value,
+                    "-SIGF"               ,hkl.dataset.Fmean.sigma,
+                    "-FREE"               ,hkl.dataset.FREE,
+                    "--cleanup"           ,
+                    "--display_gui"       ,
+                    "-webserver_uri"      ,"jsrview",
+                    "-work_dir"           ,"./",
+                    "-rvapi_document"     ,self.reportDocumentName()
+                  ]
+
+        else:
+
+            level = 'L'
+            app   = "simbad-lattice"
+
+            cmd = [ "-nproc"              ,nSubJobs,
+                    "-uc"                 ,cell_geometry,
+                    "-sg"                 ,SpGroup,
+                    "--cleanup"           ,
+                    "--display_gui"       ,
+                    "-webserver_uri"      ,"jsrview",
+                    "-work_dir"           ,"./",
+                    "-rvapi_document"     ,self.reportDocumentName()
+                  ]
+
 
         if sys.platform.startswith("win"):
             app += ".bat"
-
-        # Prepare simbad input -- script file
-
-        cmd = [ "-nproc"              ,nSubJobs,
-                "-F"                  ,hkl.dataset.Fmean.value,
-                "-SIGF"               ,hkl.dataset.Fmean.sigma,
-                "-FREE"               ,hkl.dataset.FREE,
-                "--cleanup"           ,
-                "--display_gui"       ,
-                "-webserver_uri"      ,"jsrview",
-                "-work_dir"           ,"./",
-                "-rvapi_document"     ,self.reportDocumentName()
-              ]
 
         if level in ['L','C','LC']:
             cmd += [ "-max_lattice_results",maxnlatt,
@@ -127,7 +163,8 @@ class Simbad(asudef.ASUDef):
         if "PDB_DIR" in os.environ:
             cmd += [ "-pdb_db",os.environ["PDB_DIR"] ]
 
-        cmd += [ hkl.getHKLFilePath(self.inputDir()) ]
+        if hkl:
+            cmd += [ hkl.getHKLFilePath(self.inputDir()) ]
 
         self.flush()
         self.storeReportDocument ( self.log_page_id() )
@@ -205,7 +242,7 @@ class Simbad(asudef.ASUDef):
             else:
                 self.putMessage ( "Structure Data cannot be formed (probably a bug)" )
 
-        else:
+        elif hkl:
             self.putTitle ( "No Suitable Models Found" )
 
         # close execution logs and quit

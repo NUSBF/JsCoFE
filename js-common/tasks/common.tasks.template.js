@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    27.12.18   <--  Date of Last Modification.
+ *    12.01.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Task Template Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2018
+ *  (C) E. Krissinel, A. Lebedev 2016-2019
  *
  *  =================================================================
  *
@@ -153,28 +153,6 @@ TaskTemplate.prototype.cpu_credit = function()  {
 // export such that it could be used in both node and a browser
 if (!dbx)  {
   // for client side
-
-/*
-  TaskTemplate.prototype.canMove = function ( parentId,jobTree )  {
-  var can_move = false;
-    if ((this.state!=job_code.new) && (this.state!=job_code.running) &&
-        (this.state!=job_code.exiting))  {
-
-      jobTree.getNodePosition
-
-      can_move = true;
-      for (var dtype in this.input_data.data)  {
-        var d = this.input_data.data[dtype];
-        for (var j=0;j<d.length;j++)
-          if (d[j].jobId==parentId)  {
-            can_move = false;
-            break;
-          }
-      }
-    }
-    return can_move;
-  }
-*/
 
   TaskTemplate.prototype.canMove = function ( node,jobTree )  {
   var parent_task = jobTree.getTaskByNodeId(node.parentId);
@@ -448,6 +426,7 @@ if (!dbx)  {
   // Sets dropdown controls for input data from 'dataBox' in grid 'grid'
   // starting from row 'row'
 
+    // do  nothing if input data fields section is not required
     if ((this.input_dtypes.length==1) && (this.input_dtypes[0]==1))
       return;
 
@@ -485,7 +464,6 @@ if (!dbx)  {
       var dt       = [];
       var df       = false;
 
-//      if (!inp_item.inputId.startsWith('void'))  {
       if (!startsWith(inp_item.inputId,'void'))  {
 
         var k = 0;
@@ -515,9 +493,6 @@ if (!dbx)  {
             }
 
           }
-
-        //for (var j=0;j<dt.length;j++)
-        //  dt[j] = $.extend ( true,{},dt[j] );
 
         // acquire currently selected data, corresponding to current data id,
         // from the task; this list is empty (zero-length) at first creation
@@ -664,16 +639,6 @@ if (!dbx)  {
               ndisabled++;
             }
           }
-
-          /*  temporary workbench --------------------
-          //ddn.disableItem ( -1,true );
-
-          window.setTimeout ( function(){
-            //            if (ddn.getItemByPosition(0).value=='-1')
-            //              ddn.deleteItemByPosition ( 0 );
-            ddn.deleteItem ( -1 );
-          },1000 );
-          --------------------------------- */
 
           if (ndisabled>0)  versionMatch = false;
           if ((n<inp_item.min) && (ndisabled==dn.length) && (ndisabled>0))
@@ -846,14 +811,6 @@ if (!dbx)  {
               }
               k++;
             }
-
-            /*
-            if (layCustom)  {
-              var ntot = Math.max ( dn.length,Math.max(inp_item.min,force) );
-              for (var n=nmax;n<ntot;n++)
-                dropdown[i][n].customGrid.setVisible ( false );
-            }
-            */
 
           }
 
@@ -1034,6 +991,7 @@ if (!dbx)  {
     collectData ( inputPanel );
 
     this.input_data = inp_data;
+    this.input_data.markNotEmpty();
 
     return msg;
 
@@ -1132,9 +1090,13 @@ if (!dbx)  {
           var index = dropdown[j].getValue();
           if ((!grid.wasRowHidden(dropdown[j].row)) && (index>=0))  {
             dataState[inputId]++;
+            var ids = inputId + '.type:' + dt[index]._type;
+            if (!dataState.hasOwnProperty(ids))
+                  dataState[ids] = 1;
+            else  dataState[ids]++;
             var subtype = dt[index].subtype;
             for (var k=0;k<subtype.length;k++)  {
-              var ids = inputId + '.' + subtype[k]
+              ids = inputId + '.subtype:' + subtype[k];
               if (!dataState.hasOwnProperty(ids))
                     dataState[ids] = 1;
               else  dataState[ids]++;
@@ -1236,9 +1198,18 @@ if (!dbx)  {
       if (item.hasOwnProperty('tooltip2'))
         inpParamRef.parameters[key].label.setTooltip ( item.tooltip2 );
       if (item.hasOwnProperty('lwidth2'))  {
-        if (!item.lwidth2.toString().endsWith('%'))
+        //if (!item.lwidth2.toString().endsWith('%'))
+        //  inpParamRef.parameters[key].label2.setWidth_px ( item.lwidth2 );
+        //grid.setCellSize ( item.lwidth2,'',row,col+4 );
+
+        if (!item.lwidth2.toString().endsWith('%'))  {
           inpParamRef.parameters[key].label2.setWidth_px ( item.lwidth2 );
-        grid.setCellSize ( item.lwidth2,'',row,col+4 );
+          grid.setCellSize ( item.lwidth2 + 'px','',row,col+4 );
+        } else  {
+          inpParamRef.parameters[key].label2.setWidth ( item.lwidth2 );
+          grid.setCellSize ( item.lwidth2,'',row,col+4 );
+        }
+
       }
       grid.setVerticalAlignment ( row,col+4,'middle' );
       if (item.hasOwnProperty('align2'))  {
@@ -1332,14 +1303,23 @@ if (!dbx)  {
 
             case 'section'  : inpParamRef.parameters[key]     = {};
                               inpParamRef.parameters[key].ref = item;
-                              var sec = grid.setSection ( item.title,item.open,
-                                                          r,c,rs,cs );
-                              inpParamRef.parameters[key].sec = sec;
-                              inpParamRef.parameters[key].ref.visible  = true;
-                              inpParamRef.parameters[key].ref._visible = true;
-                              sec.grid.setStyle    ( '-compact' );
-                              this._lay_parameters ( sec.grid,0,0,item.contains,
-                                                     inpParamRef );
+                              if (item.title.length>0)  {
+                                var sec = grid.setSection ( item.title,item.open,
+                                                            r,c,rs,cs );
+                                inpParamRef.parameters[key].sec = sec;
+                                inpParamRef.parameters[key].ref.visible  = true;
+                                inpParamRef.parameters[key].ref._visible = true;
+                                sec.grid.setStyle    ( '-compact' );
+                                this._lay_parameters ( sec.grid,0,0,item.contains,
+                                                       inpParamRef );
+                              } else  {
+                                var sec = grid.setGrid ( '-compact',r,c,rs,cs );
+                                inpParamRef.parameters[key].sec = sec;
+                                inpParamRef.parameters[key].ref.visible  = true;
+                                inpParamRef.parameters[key].ref._visible = true;
+                                this._lay_parameters ( sec,0,0,item.contains,
+                                                       inpParamRef );
+                              }
                           break;
 
             case 'label'    : _make_label  ( inpParamRef,key,item,grid,r,c,rs );

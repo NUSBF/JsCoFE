@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    29.12.18   <--  Date of Last Modification.
+#    07.01.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2018
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2018-2019
 #
 # ============================================================================
 #
@@ -42,19 +42,12 @@ class SymMatch(basic.TaskDriver):
 
     def run(self):
 
+
         # Prepare csymmatch input
         # fetch input data
-        #ref_revision = None
-        #ref_hkl      = None
-        ref_struct   = None
-        if hasattr(self.input_data.data,"refstruct_struct"):
-            # reference is revision
-            #ref_revision = self.makeClass ( self.input_data.data.refstruct[0] )
-            #ref_hkl      = self.makeClass ( self.input_data.data.refstruct_hkl[0] )
-            ref_struct   = self.makeClass ( self.input_data.data.refstruct_struct[0] )
-        else:
-            #  reference is structure or xyz
-            ref_struct   = self.makeClass ( self.input_data.data.refstruct[0] )
+        hkl     = self.makeClass ( self.input_data.data.hkl      [0] )
+        istruct = self.makeClass ( self.input_data.data.istruct  [0] )
+        rstruct = self.makeClass ( self.input_data.data.refstruct[0] )
 
         cmd_params = []
         st_radius  = self.getParameter ( self.task.parameters.sec1.contains.RADIUS )
@@ -63,110 +56,62 @@ class SymMatch(basic.TaskDriver):
         if self.getParameter(self.task.parameters.sec1.contains.ORIGINS_CBX)=="True":
             cmd_params += [ "-origin-hand" ]
 
-        ref_file_path = ref_struct.getXYZFilePath ( self.inputDir() )
+        ref_file_path = rstruct.getXYZFilePath ( self.inputDir() )
+        if not ref_file_path and rstruct._type=="DataStructure":
+            ref_file_path = rstruct.getSubFilePath ( self.inputDir() )
 
-        wdata = self.input_data.data.workstruct
+        inp_file_path = istruct.getXYZFilePath ( self.inputDir() )
+        structureType = 0
+        if not inp_file_path:
+            inp_file_path = istruct.getSubFilePath ( self.inputDir() )
+            structureType = 1
 
-        #  Run csymmatch in loop on work structures, and make output widgets
-        #  in the same loop
+        out_suffix    = "_" + self.outputFName
+        out_file_path = istruct.lessDataId ( os.path.basename(inp_file_path) )
+        basename,ext  = os.path.splitext ( out_file_path )
+        if not basename.endswith(out_suffix):
+            basename     += out_suffix
+            out_file_path = basename + ext
 
-        #self.putTitle ( "Symmetry Match Output" )
+        cmd = [ "-pdbin-ref", ref_file_path,
+                "-pdbin"    , inp_file_path,
+                "-pdbout"   , out_file_path ]
 
-        tableId = self.getWidgetId ( "symmatch_out_table" )
-        self.putTable ( tableId,"",self.report_page_id(),self.rvrow,mode=100 )
-        #pyrvapi.rvapi_add_table ( tableId,"",self.report_page_id(),self.rvrow,0,1,1,100 )
-        #pyrvapi.rvapi_set_table_style ( tableId,"table-common","text-align:left;" )
-        self.setTableHorzHeaders ( tableId,["Work structure","Symmetry Match copy"],
-                            [ "Original work structure name",
-                              "Symmetry match copy structure name" ] )
-        self.rvrow += 1
+        st_radius  = self.getParameter ( self.task.parameters.sec1.contains.RADIUS )
+        if st_radius:
+            cmd += [ "-connectivity-radius",st_radius ]
+        if self.getParameter(self.task.parameters.sec1.contains.ORIGINS_CBX)=="True":
+            cmd += [ "-origin-hand" ]
 
-        fsuffix = "_" + self.outputFName
+        # start csymmatch
+        self.runApp ( "csymmatch",cmd,logType="Main" )
 
-        revNo = 0  # output revision counter
-        for i in range(len(wdata)):
+        # check solution and register data
+        if os.path.isfile(out_file_path):
 
-            wdata[i] = self.makeClass ( wdata[i] )
-            pyrvapi.rvapi_put_vert_theader ( tableId,str(i+1),"",i )
-            pyrvapi.rvapi_put_table_string ( tableId,wdata[i].dname,i,0 )
-            #pyrvapi.rvapi_shape_table_cell ( tableId,i,0,"",
-            #        "text-align:left;width:auto;white-space:nowrap;","",1,1 );
+            self.putTitle ( "SymMatch Output" )
+            self.unsetLogParser()
 
-            if wdata[i]._type=="DataRevision":
-                work_hkl    = self.makeClass ( self.input_data.data.workstruct_hkl[revNo] )
-                work_struct = self.makeClass ( self.input_data.data.workstruct_struct[revNo] )
-                revNo += 1
-            else:
-                work_hkl    = None
-                work_struct = wdata[i]
+            structure = self.finaliseStructure ( out_file_path,basename,hkl,None,
+                                                 [],structureType,leadKey=1,
+                                                 openState_bool=False,
+                                                 title="",
+                                                 stitle="Symmetry matched structure and<br>electron density" )
 
-            file_out = work_struct.lessDataId ( work_struct.getXYZFileName() )
-            fsplit   = os.path.splitext ( file_out )
-            if not fsplit[0].endswith(fsuffix):
-                file_out = fsplit[0] + fsuffix + fsplit[1]
+            if structure:
+                structure.copyAssociations   ( istruct )
+                structure.addDataAssociation ( hkl.dataId     )
+                structure.addDataAssociation ( istruct.dataId )  # ???
+                structure.setRefmacLabels    ( None if str(hkl.useHKLSet) in ["Fpm","TI"] else hkl )
+                structure.copySubtype        ( istruct )
+                structure.copyLigands        ( istruct )
+                # update structure revision
+                revision = self.makeClass ( self.input_data.data.revision[0] )
+                revision.setStructureData ( structure )
+                self.registerRevision     ( revision  )
 
-            cmd = [ "-pdbin-ref", ref_file_path,
-                    "-pdbin"    , work_struct.getXYZFilePath(self.inputDir()),
-                    "-pdbout"   , file_out ] + cmd_params
-
-            # start csymmatch
-            self.runApp ( "csymmatch",cmd,logType="Main" )
-
-            # check solution and register data
-            if os.path.isfile(file_out):
-
-                panelId = self.getWidgetId ( "symmatch_out_structure" )
-                #pyrvapi.rvapi_set_table_style ( panelId,"grid-layout-compact","text-align:left;" )
-                pyrvapi.rvapi_add_panel ( panelId,tableId,i+1,2,1,1 )
-
-                self.setReportWidget ( panelId )
-
-                if wdata[i]._type=="DataXYZ":
-
-                    xyz = self.registerXYZ ( file_out,checkout=True )
-                    xyz.putXYZMeta  ( self.outputDir(),self.file_stdout1,self.file_stderr,None )
-                    self.putMessage ( "<b>Assigned name:</b>&nbsp;" + xyz.dname  )
-                    self.putXYZWidget ( "xyz_widget","XYZ Coordinates",xyz,openState=-1 )
-
-                elif wdata[i]._type in ["DataStructure","DataRevision"]:
-
-                    structure = self.registerStructure ( file_out,
-                                    work_struct.getSubFilePath (self.inputDir()),
-                                    work_struct.getMTZFilePath (self.inputDir()),
-                                    work_struct.getMapFilePath (self.inputDir()),
-                                    work_struct.getDMapFilePath(self.inputDir()),
-                                    work_struct.getLibFilePath (self.inputDir()),
-                                    leadKey=work_struct.leadKey )
-                    self.putStructureWidget ( "struct_widget","Structure and electron density",
-                                              structure,openState=-1 )
-
-                    if wdata[i]._type=="DataRevision":
-                        wdata[i].setStructureData ( structure )
-                        self.registerRevision     ( wdata[i],revNo,"" )
-                        self.putMessage ( " " )
-
-                else:
-                    pyrvapi.rvapi_put_table_string ( tableId,"<i>UNRECOGNISED DATA TYPE</i>",i,1 )
-                    pyrvapi.rvapi_shape_table_cell ( tableId,i,1,
-                        "Data type of work structure was not assumed for symmetry " +\
-                        "matching (most probably a bug, please report)",
-                        "text-align:left;white-space:nowrap;color:maroon;" + \
-                        "font-family:\"Courier\";text-decoration:none;" + \
-                        "font-weight:normal;font-style:normal;width:auto;",
-                        "",1,1 );
-
-                self.resetReportPage()
-                pyrvapi.rvapi_shape_table_cell ( tableId,i,1,"",
-                    "text-align:left;width:auto;white-space:nowrap;","",1,1 );
-
-            else:
-                pyrvapi.rvapi_put_table_string ( tableId,"<i>MATCHING FAILED</i>",i,1 )
-                pyrvapi.rvapi_shape_table_cell ( tableId,i,1,"",
-                    "text-align:left;width:100%;white-space:nowrap;color:maroon;" + \
-                    "font-family:\"Courier\";text-decoration:none;" + \
-                    "font-weight:normal;font-style:normal;width:auto;",
-                    "",1,1 );
-
+        else:
+            self.putTitle ( "No Output Generated" )
 
         # close execution logs and quit
         self.success()

@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    31.12.18   <--  Date of Last Modification.
+ *    05.01.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Common Client/Server Modules -- Structure Revision Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2018
+ *  (C) E. Krissinel, A. Lebedev 2016-2019
  *
  *  ==========================================================================
  *
@@ -83,7 +83,7 @@ DataRevision.prototype.icon  = function()  { return 'data_xrayimages'; }
 // when data class version is changed here, change it also in python
 // constructors
 DataRevision.prototype.currentVersion = function()  {
-  var version = 2;  // advanced on leadKey
+  var version = 3;  // advanced on Crank-2
   if (__template)
         return  version + __template.DataTemplate.prototype.currentVersion.call ( this );
   else  return  version + DataTemplate.prototype.currentVersion.call ( this );
@@ -201,15 +201,18 @@ if (!__template)  {
 
 
   DataRevision.prototype._layCDI_Crank2 = function ( dropdown,mode )  {
-    var customGrid = dropdown.customGrid;
-    var row        = customGrid.getNRows();
+  var customGrid = dropdown.customGrid;
+  var row        = customGrid.getNRows();
 
     if (this.Structure)  {
       if ((mode=='crank2') && (this.Structure.subtype.indexOf('xyz')>=0))  {
         customGrid.setLabel ( 'Current structure will be used for calculating ' +
-                              'initial phases (MR-SAD)',row++,0,1,6 )
+                              'initial phases (MR-SAD)',row++,0,1,7 )
                               .setFontBold(true).setFontItalic(true).setNoWrap();
-        customGrid.setLabel ( ' ',++row,0,1,2 ).setHeight_px ( 8 );
+        customGrid.removeNonAnom = customGrid.setCheckbox (
+                              'Remove all non-anomalous atoms before rebuilding',
+                              this.Structure.removeNonAnom,row++,0,1,5 );
+        customGrid.setLabel ( ' ',row,0,1,2 ).setHeight_px ( 2 );
       } else if (mode=='shelx-auto')  {
         customGrid.setLabel ( 'Current structure:',row,0,1,2 )
                               .setFontItalic(true).setNoWrap();
@@ -219,6 +222,8 @@ if (!__template)  {
                               .setFontItalic(true).setNoWrap();
       }
     }
+
+    this.HKL.layCustomDropdownInput ( dropdown );
 
   }
 
@@ -297,25 +302,31 @@ if (!__template)  {
             this.HKL.layCustomDropdownInput ( dropdown );
           break;
       case 'reindex'    :  case 'refmac' :
-            this.HKL.layCustomDropdownInput ( dropdown );   break;
+            this.HKL.layCustomDropdownInput ( dropdown );
+          break;
       case 'parrot'     :  case 'buccaneer-ws' :  case 'acorn'  :
-            this.Structure.layCustomDropdownInput ( dropdown );   break;
+            this.Structure.layCustomDropdownInput ( dropdown );
+          break;
       case 'arpwarp'    :
             this.Structure.layCustomDropdownInput ( dropdown );
             dropdown.Structure = this.Structure;  // this will add phase options for refmac
             this.HKL.layCustomDropdownInput ( dropdown );
           break;
-      case 'crank2'     :
-            this._layCDI_Crank2   ( dropdown,'crank2' );
-          break;
       case 'molrep'     :
-            this._layCDI_Molrep   ( dropdown );  break;
+            this._layCDI_Molrep ( dropdown );
+          break;
       case 'phaser-mr'  :   case 'phaser-mr-fixed' :
-            this._layCDI_PhaserMR ( dropdown );  break;
+            this._layCDI_PhaserMR ( dropdown );
+          break;
+      case 'crank2'     :
+            this._layCDI_Crank2 ( dropdown,'crank2' );
+          break;
       case 'shelx-auto' :
-            this._layCDI_Crank2   ( dropdown,'shelx-auto' );  break;
-      //case 'shelx-substr'  :
-      //      this._layCDI_Crank2 ( dropdown,'shelx-substr' );  break;
+            this._layCDI_Crank2 ( dropdown,'shelx-auto' );
+          break;
+      case 'shelx-substr'  :
+            this._layCDI_Crank2 ( dropdown,'shelx-substr' );
+          break;
       default : ;
     }
 
@@ -325,23 +336,34 @@ if (!__template)  {
   var msg = '';
     switch (dropdown.layCustom)  {
       case 'reindex'   :  case 'phaser-mr'    :  case 'phaser-mr-fixed' :
-          msg = this.HKL.collectCustomDropdownInput ( dropdown );  break;
+          msg = this.HKL.collectCustomDropdownInput ( dropdown );
+        break;
       case 'phaser-ep' :
           msg = this.HKL.collectCustomDropdownInput ( dropdown );
           if (this.Structure)
             msg += this.Structure.collectCustomDropdownInput ( dropdown );
         break;
       case 'refmac'    :
-          msg = this.HKL.collectCustomDropdownInput ( dropdown );  break;
+          msg = this.HKL.collectCustomDropdownInput ( dropdown );
+        break;
       case 'parrot'    :  case 'buccaneer-ws' :  case 'acorn' :
-          msg = this.Structure.collectCustomDropdownInput ( dropdown ); break;
+          msg = this.Structure.collectCustomDropdownInput ( dropdown );
+        break;
       case 'arpwarp'   :
           dropdown.Structure = this.Structure;  // because it gets lost at copying objects
           msg = this.Structure.collectCustomDropdownInput ( dropdown ) +
                 this.HKL.collectCustomDropdownInput       ( dropdown );
         break;
-      //case 'crank2'  :
-      //    msg = this._collectCDI_Crank2 ( dropdown );  break;
+      case 'crank2'  :
+          if ('removeNonAnom' in dropdown.customGrid)
+            this.Structure.removeNonAnom = dropdown.customGrid.removeNonAnom.getValue();
+          msg = this.HKL.collectCustomDropdownInput ( dropdown );
+        break;
+          //msg = this._collectCDI_Crank2 ( dropdown );  break;
+      case 'shelx-auto'   :
+      case 'shelx-substr' :
+          msg = this.HKL.collectCustomDropdownInput ( dropdown );
+        break;
       default : ;
     }
     return msg;

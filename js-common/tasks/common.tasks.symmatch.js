@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    29.12.18   <--  Date of Last Modification.
+ *    07.01.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  SymMatch Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2018
+ *  (C) E. Krissinel, A. Lebedev 2018-2019
  *
  *  =================================================================
  *
@@ -38,27 +38,24 @@ function TaskSymMatch()  {
   this.helpURL = './html/jscofe_task_symmatch.html';
 
   this.input_dtypes = [{    // input data types
-      data_type   : {'DataRevision' :['xyz','~substructure'],
-                     'DataStructure':['xyz','~substructure'],
+      data_type   : {'DataRevision' :['xyz','substructure']}, // data type(s) and subtype(s)
+      label       : 'Structure revision', // label for input dialog
+      inputId     : 'revision',           // input Id for referencing input fields
+      tooltip     : 'Structure that will be matched to reference structure.',
+      version     : 0,                // minimum data version allowed
+      min         : 1,                // minimum acceptable number of data instances
+      max         : 1                 // maximum acceptable number of data instances
+    },{
+      data_type   : {'DataStructure':['xyz','substructure'],
                      'DataXYZ'      :[]
                     }, // data type(s) and subtype(s)
       label       : 'Reference structure', // label for input dialog
-      tooltip     : 'Structure that will be used as a reference to match work structure(s) to.',
+      tooltip     : 'Structure that will be used as a reference to match the ' +
+                    'structure revision to.',
       inputId     : 'refstruct', // input Id for referencing input fields
       version     : 0,          // minimum data version allowed
       min         : 1,          // minimum acceptable number of data instances
       max         : 1           // maximum acceptable number of data instances
-    },{
-      data_type   : {'DataRevision' :['xyz','~substructure'],
-                     'DataStructure':['xyz','~substructure'],
-                     'DataXYZ'      :[]
-                    }, // data type(s) and subtype(s)
-      label       : 'Work structure', // label for input dialog
-      inputId     : 'workstruct',     // input Id for referencing input fields
-      tooltip     : 'Structure that will be matched to reference structure.',
-      version     : 0,                // minimum data version allowed
-      min         : 1,                // minimum acceptable number of data instances
-      max         : 10                // maximum acceptable number of data instances
     }
   ];
 
@@ -124,27 +121,13 @@ if (__template)  {
 
   TaskSymMatch.prototype.makeInputData = function ( login,jobDir )  {
 
-    // put hkl and seq data in input databox for copying their files in
+    // put hkl and structure data in input databox for copying their files in
     // job's 'input' directory
 
-    var idata = this.input_data.data['refstruct'][0];
-    if (idata._type=='DataRevision')  {
-      //this.input_data.data['refstruct_hkl']    = [idata.HKL];
-      this.input_data.data['refstruct_struct'] = [idata.Structure];
-    }
-
-    var whkl    = [];
-    var wstruct = [];
-    for (var i=0;i<this.input_data.data['workstruct'].length;i++)  {
-      idata = this.input_data.data['workstruct'][i];
-      if (idata._type=='DataRevision')  {
-        whkl   .push ( idata.HKL       );
-        wstruct.push ( idata.Structure );
-      }
-    }
-    if (whkl.length>0)  {
-      this.input_data.data['workstruct_hkl']    = whkl;
-      this.input_data.data['workstruct_struct'] = wstruct;
+    if ('revision' in this.input_data.data)  {
+      var revision = this.input_data.data['revision'][0];
+      this.input_data.data['hkl']     = [revision.HKL];
+      this.input_data.data['istruct'] = [revision.Structure];
     }
 
     __template.TaskTemplate.prototype.makeInputData.call ( this,login,jobDir );

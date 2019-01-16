@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    15.10.18   <--  Date of Last Modification.
+ *    09.01.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Generic tree class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2018
+ *  (C) E. Krissinel, A. Lebedev 2016-2019
  *
  *  ==========================================================================
  *
@@ -274,7 +274,8 @@ Tree.prototype.insertNode = function ( parent_node,text,icon_uri,treeNodeCustomI
       $(this.root.element).jstree(true).move_node(children,node,'last',false,false);
       node.data = treeNodeCustomIcon;  // this gets lost, duplicate, jstree bug
       node.children = children;
-      $(this.root.element).jstree().refresh();
+      this.refresh();
+      //$(this.root.element).jstree().refresh(function(){});
       this.selectSingle ( node );  // force selection of new nodes if tree is displayed
       this.confirmCustomIconsVisibility();
     } else
@@ -406,7 +407,9 @@ Tree.prototype.moveNodeUp = function ( node )  {
     // force selection and refresh the tree
     if (this.created)  {
       this.selectSingle ( node );  // force selection of the node if tree is displayed
-      $(this.root.element).jstree().refresh();
+      this.refresh();
+      //$(this.root.element).jstree().refresh(function(){}); // empty function is
+      //                                  // required for making changes smoothly
       this.confirmCustomIconsVisibility();
     }
 
@@ -1047,7 +1050,7 @@ Tree.prototype.createTree = function ( onReady_func,
 
 
 Tree.prototype.refresh = function()  {
-  $(this.root.element).jstree().refresh();
+  $(this.root.element).jstree().refresh(function(){});
 }
 
 

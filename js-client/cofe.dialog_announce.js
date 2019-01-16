@@ -24,7 +24,7 @@
 
 
 // -------------------------------------------------------------------------
-// License dialog class
+// User announcement dialog class
 
 
 

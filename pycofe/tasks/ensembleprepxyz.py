@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    23.12.18   <--  Date of Last Modification.
+#    14.01.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2018
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2019
 #
 # ============================================================================
 #
@@ -37,6 +37,56 @@ import basic
 from   pycofe.proc   import analyse_ensemble, coor
 from   pycofe.dtypes import dtype_template, dtype_sequence
 
+"""
+Unmodified: does not fetch chains
+PDBClip: does not remove HOH
+RNA/DNA: only "Unmodified and PDBCLip" with above defects
+"""
+
+
+"""
+JOBID 21
+ROOTDIR /Users/eugene/tmp/ShelxEi1
+RLEVEL 95
+RESHTML /Users/eugene/tmp/ShelxEi1/results_21.html
+MRNUM 50
+ENSNUM 1
+ENSMODNUM 1
+MAPROGRAM MAFFT
+DEBUG 0
+SCOPSEARCH 0
+SSMSEARCH 0
+PQSSEARCH 0
+MDLU 0
+MDLD 0
+MDLM 1
+MDLC 1
+MDLS 1
+MDLP 0
+FASTALOCAL 0
+UPDATE 0
+DOFASTA 0
+DOPHMMER 0
+EVALUE 0.02
+NMASU 1
+IGNORE
+INCLUDE
+HTMLOUT 0
+CHECK 1
+CLUSTER 0
+DOHHPRED 0
+HHSCORE 1
+GEST 1
+GESE 1
+USEENSEM 1
+LOCALFILE /Users/eugene/Projects/jsCoFE/data/4GOS/4i0k_homolog_035.pdb CHAIN A
+LOCALFILE /Users/eugene/Projects/jsCoFE/data/4GOS/1py9_homolog_025.pdb CHAIN A
+END
+"""
+
+
+
+
 
 # ============================================================================
 # Make Ensembler driver
@@ -44,9 +94,11 @@ from   pycofe.dtypes import dtype_template, dtype_sequence
 class EnsemblePrepXYZ(basic.TaskDriver):
 
     # redefine name of input script file
-    def file_stdin_path(self):  return "ensembler.script"
+    #def file_stdin_path(self):  return "mrbump.script"
 
     # make task-specific definitions
+    def outdir_name    (self):  return "a"
+    def mrbump_report  (self):  return "mrbump_report"
     def gesamt_report  (self):  return "gesamt_report"
 
     # ------------------------------------------------------------------------
@@ -78,7 +130,106 @@ class EnsemblePrepXYZ(basic.TaskDriver):
         if os.path.isfile(outputFile):
             os.remove ( outputFile )
 
-        if len(xyz)>1:
+        sec1 = self.task.parameters.sec1.contains
+        sec2 = self.task.parameters.sec2.contains
+        sec3 = self.task.parameters.sec3.contains
+
+        modeSel = ""
+        if seq:
+            modSel = self.getParameter ( sec1.MODIFICATION_SEQ_SEL )
+        else:
+            modSel = self.getParameter ( sec1.MODIFICATION_NOSEQ_SEL )
+
+        # make a file with input script for mrbump
+        self.open_stdin()
+        self.write_stdin (
+            "JOBID "  + self.outdir_name() +\
+            "\nMDLU " + str(modSel=="U")   +\
+            "\nMDLD " + str(modSel=="D")   +\
+            "\nMDLM " + str(modSel=="M")   +\
+            "\nMDLC " + str(modSel=="C")   +\
+            "\nMDLS " + str(modSel=="S")   +\
+            "\nMDLP " + str(modSel=="P")   +\
+            "\nENSNUM 1"        +\
+            "\nENSMODNUM 1"     +\
+            "\nSCOPSEARCH 0"    +\
+            "\nSSMSEARCH 0"     +\
+            "\nPQSSEARCH 0"     +\
+            "\nFASTALOCAL 0"    +\
+            "\nUPDATE 0"        +\
+            "\nDOFASTA 0"       +\
+            "\nEVALUE 0.02"     +\
+            "\nNMASU 1"         +\
+            "\nIGNORE"          +\
+            "\nINCLUDE"         +\
+            "\nHTMLOUT 0"       +\
+            "\nCHECK 1"         +\
+            "\nCLUSTER 0"       +\
+            "\nHHSCORE 1"       +\
+            "\nCHECK False"     +\
+            "\nUPDATE False"    +\
+            "\nPICKLE False"    +\
+            "\nMRNUM " + str(len(xyz)) +\
+            "\nUSEE True"       +\
+            "\nSCOP False"      +\
+            "\nDEBUG False"     +\
+            #"RLEVEL " + self.getParameter(self.task.parameters.sec1.contains.RLEVEL_SEL,False) + "\n" + \
+            "\nGESE True"       +\
+            "\nGEST True"       +\
+            "\nAMPT False"      +\
+            "\nMAPROGRAM MAFFT" +\
+            "\nDOPHMMER False"  +\
+            "\nDOHHPRED False"
+        )
+
+        """
+        ROOTDIR /Users/eugene/tmp/ShelxEi1
+        RLEVEL 95
+        RESHTML /Users/eugene/tmp/ShelxEi1/results_21.html
+        """
+
+        for i in range(len(xyz)):
+            self.write_stdin ( "\nLOCALFILE " + xyz[i].getXYZFilePath(self.inputDir()) )
+            if xyz[i].chainSel!="(all)":
+                self.write_stdin ( " CHAIN " + xyz[i].chainSel )
+
+        self.write_stdin ( "\nEND\n" )
+        self.close_stdin()
+
+        # make command-line parameters for mrbump run on a SHELL-type node
+        cmd = [ "seqin",seq.getSeqFilePath(self.inputDir()) ]
+
+        # Prepare report parser
+        self.setGenericLogParser ( self.mrbump_report(),True )
+
+        # Start mrbump
+        if sys.platform.startswith("win"):
+            self.runApp ( "mrbump.bat",cmd,logType="Main" )
+        else:
+            self.runApp ( "mrbump",cmd,logType="Main" )
+
+        # check solution and register data
+        self.unsetLogParser()
+
+        if modSel=="M": self.addCitations ( ['molrep'] )
+        if modSel=="C": self.addCitations ( ['chainsaw'] )
+        if modSel=="S": self.addCitations ( ['sculptor'] )
+        if modSel=="P": self.addCitations ( ['chainsaw'] )
+
+        models_dir = ""
+        if modSel=="U":
+            models_dir = os.path.join ( "search_" + self.outdir_name(),"PDB_files" )
+        else:
+            models_dir = os.path.join ( "search_" + self.outdir_name(),"models" )
+        model_xyz  = []
+        if os.path.isdir(models_dir):
+            model_xyz = [fn for fn in os.listdir(models_dir)
+                        if any(fn.endswith(ext) for ext in [".pdb"])]
+
+        for i in range(len(model_xyz)):
+            model_xyz[i] = os.path.join ( models_dir,model_xyz[i] )
+
+        if len(model_xyz)>1:
 
             # make a file with input script
             self.open_stdin()
@@ -88,7 +239,9 @@ class EnsemblePrepXYZ(basic.TaskDriver):
                 "\n{"
             )
 
-            for i in range(len(xyz)):
+            for i in range(len(model_xyz)):
+                self.write_stdin ( "\nmodel = " + model_xyz[i] )
+                """
                 fpath  = xyz[i].getXYZFilePath ( self.inputDir() )
                 if xyz[i].chainSel != "(all)":
                     base, ext = os.path.splitext ( xyz[i].getXYZFileName() )
@@ -97,7 +250,7 @@ class EnsemblePrepXYZ(basic.TaskDriver):
                     self.write_stdin ( "\nmodel = " + fpath_sel )
                 else:
                     self.write_stdin ( "\nmodel = " + fpath )
-                #xyz[i].chainSel
+                """
 
             output_style = "merged"
 
@@ -114,27 +267,27 @@ class EnsemblePrepXYZ(basic.TaskDriver):
                 "\n{"              +\
                 "\nsuperposition"  +\
                 "\n{"              +\
-                "\nmethod = "      + self.getParameter(self.task.parameters.sec1.contains.SUPERPOSITION_SEL,False) +\
-                "\nconvergence = " + self.getParameter(self.task.parameters.sec2.contains.SUPCONV,False) +\
+                "\nmethod = "      + self.getParameter(sec2.SUPERPOSITION_SEL,False) +\
+                "\nconvergence = " + self.getParameter(sec3.SUPCONV,False) +\
                 "\n}"              +\
-                "\nmapping = "     + self.getParameter(self.task.parameters.sec1.contains.MAPPING_SEL,False) +\
-                "\natoms = "       + self.getParameter(self.task.parameters.sec2.contains.ATOMNAMES,False) +\
-                "\nclustering = "  + self.getParameter(self.task.parameters.sec2.contains.CLUSTDIST,False) +\
+                "\nmapping = "     + self.getParameter(sec2.MAPPING_SEL,False) +\
+                "\natoms = "       + self.getParameter(sec3.ATOMNAMES,False) +\
+                "\nclustering = "  + self.getParameter(sec3.CLUSTDIST,False) +\
                 "\nweighting"      +\
                 "\n{"              +\
-                "\nscheme = "      + self.getParameter(self.task.parameters.sec1.contains.WEIGHTING_SEL,False) +\
-                "\nconvergence = " + self.getParameter(self.task.parameters.sec2.contains.WEIGHTCONV,False) +\
-                "\nincremental_damping_factor = " + self.getParameter(self.task.parameters.sec2.contains.WEIGHTDFACTOR,False) +\
-                "\nmax_damping_factor = " + self.getParameter(self.task.parameters.sec2.contains.WEIGHTMAXDFACTOR,False) +\
-                "\n"               + self.getParameter(self.task.parameters.sec1.contains.WEIGHTING_SEL,False) +\
+                "\nscheme = "      + self.getParameter(sec2.WEIGHTING_SEL,False) +\
+                "\nconvergence = " + self.getParameter(sec3.WEIGHTCONV,False) +\
+                "\nincremental_damping_factor = " + self.getParameter(sec3.WEIGHTDFACTOR,False) +\
+                "\nmax_damping_factor = " + self.getParameter(sec3.WEIGHTMAXDFACTOR,False) +\
+                "\n"               + self.getParameter(sec2.WEIGHTING_SEL,False) +\
                 "\n{\n"            +\
-                "\ncritical = "    + self.getParameter(self.task.parameters.sec1.contains.RRCRITICAL,False) +\
+                "\ncritical = "    + self.getParameter(sec2.RRCRITICAL,False) +\
                 "\n}"              +\
                 "\n}"              +\
-                "\ntrim = "        + self.getParameter(self.task.parameters.sec1.contains.TRIM_SEL,False) +\
+                "\ntrim = "        + self.getParameter(sec2.TRIM_SEL,False) +\
                 "\ntrimming"       +\
                 "\n{"              +\
-                "\nthreshold = "   + self.getParameter(self.task.parameters.sec1.contains.TTHRESH,False) +\
+                "\nthreshold = "   + self.getParameter(sec2.TTHRESH,False) +\
                 "\n}"              +\
                 "\n}\n"
             )
@@ -153,9 +306,12 @@ class EnsemblePrepXYZ(basic.TaskDriver):
 
         else:
             # single xyz dataset on input
+            outputFile = model_xyz[0]
+            """
             xyz0  = self.makeClass ( xyz[0] )
             fpath = xyz0.getXYZFilePath ( self.inputDir() )
             coor.fetchChains ( fpath,-1,[xyz0.chainSel],True,True,outputFile )
+            """
             #if xyz0.chainSel != "(all)":
             #    coor.fetchChains ( fpath,-1,[xyz0.chainSel],True,True,outputFile )
             #else:

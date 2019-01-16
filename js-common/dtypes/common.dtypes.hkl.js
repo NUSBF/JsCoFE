@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    27.12.18   <--  Date of Last Modification.
+ *    05.01.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  HKL Data Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2018
+ *  (C) E. Krissinel, A. Lebedev 2016-2019
  *
  *  =================================================================
  *
@@ -218,14 +218,14 @@ if (!__template)  {
     }
 
     this.setWType = function()  {
-      setLabel ( 'type:',0,0 );
+      setLabel ( 'wavelength type:',r,0 );
       customGrid.wtype = new Dropdown();
-      customGrid.wtype.setWidth ( '100%' );
+      customGrid.wtype.setWidth ( '150px' );
       customGrid.wtype.addItem ( 'low remote' ,'','low-remote' ,this.wtype=='low-remote'  );
       customGrid.wtype.addItem ( 'inflection' ,'','inflection' ,this.wtype=='inflection'  );
       customGrid.wtype.addItem ( 'peak'       ,'','peak'       ,this.wtype=='peak'        );
       customGrid.wtype.addItem ( 'high remote','','high-remote',this.wtype=='high-remote' );
-      customGrid.setWidget   ( customGrid.wtype, 0,1,1,1 );
+      customGrid.setWidget   ( customGrid.wtype, r,1,1,1 );
       customGrid.setCellSize ( '160px','',0,1 );
 //      customGrid.wtype.setZIndex ( 399-2*dropdown.serialNo );  // prevent widget overlap
 //      customGrid.wtype.setWidth_px ( 120 );
@@ -239,16 +239,17 @@ if (!__template)  {
     }
 
     this.anomDataLayout = function()  {
-      this.setWType();
-      setLabel ( 'f\':',r,2 );
+      this.setWType ();
+      setLabel ( '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;f\':',r,2 );
       customGrid.f1 = makeRealInput ( this.f1,'',
           'Real part of scattering factor; leave blank for automatic choice.',
           r,3 );
-      setLabel ( 'f":',r,4 );
+      setLabel ( '&nbsp;&nbsp;&nbsp;&nbsp;f":',r,4 );
       customGrid.f11 = makeRealInput ( this.f11,'',
           'Imaginary part of scattering factor; leave blank for automatic ' +
           'choice.',r,5 );
-      customGrid.setLabel ( ' ',1,0,1,1 ).setHeight_px ( 8 );
+      customGrid.setCellSize ( '20%','',r,6 );
+      customGrid.setLabel ( ' ',++r,0,1,1 ).setHeight_px ( 8 );
     }
 
     this.nativeLayout = function()  {
@@ -329,7 +330,9 @@ if (!__template)  {
       if (sglist.length>1) {
         customGrid.spaceGroup.addItem ( 'all compatible space groups','',
                                         'ALL',(this.spg_alt=='ALL') );
-        customGrid.spaceGroup.setTooltip ( 'Compatible space groups:<p>' + sglist.join('<br>') );
+        customGrid.spaceGroup.setTooltip1 ( 'Compatible space groups:<p>' +
+                                            sglist.join('<br>'),'slideDown',
+                                            true,5000 );
       }
       customGrid.setWidget ( customGrid.spaceGroup, r,1,1,4 );
       customGrid.spaceGroup.make();
@@ -495,7 +498,10 @@ if (!__template)  {
 
 
     switch (dropdown.layCustom)  {
+      case 'crank2'          :
       case 'anomData'        :  this.anomDataLayout   ();  break;
+      case 'shelx-auto'      :
+      case 'shelx-substr'    :
       case 'anomData-Shelx'  :  this.setWType         ();  break;
       case 'native'          :  this.nativeLayout     ();  break;
       case 'unmerged-ref'    :  this.unmergedRefLayout();  break;
@@ -612,7 +618,10 @@ if (!__template)  {
     }
 
     switch (dropdown.layCustom)  {
+      case 'crank2'          :
       case 'anomData'        : this.collectAnom     ();  break;
+      case 'shelx-auto'      :
+      case 'shelx-substr'    :
       case 'anomData-Shelx'  : this.collectAnomShelx();  break;
       case 'native'          : this.collectNative   ();  break;
       case 'reindex'         : this.collectReindex  ();  break;

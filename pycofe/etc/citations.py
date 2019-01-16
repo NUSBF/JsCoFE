@@ -3,13 +3,13 @@
 #
 # ============================================================================
 #
-#    29.12.18   <--  Date of Last Modification.
+#    14.01.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  Citation Framework Functions
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2018
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2018-2019
 #
 # ============================================================================
 #
@@ -51,6 +51,7 @@ citations = {
     'cif2mtz'         : { 'name' : 'cif2mtz'      , 'category' : 'service', 'refs' : [] },
     'rwcontents'      : { 'name' : 'RWContents'   , 'category' : 'service', 'refs' : [] },
     'csymmatch'       : { 'name' : 'CSymMatch'    , 'category' : 'primary', 'refs' : [] },
+    'chltofom'        : { 'name' : 'CHLtoFOM'     , 'category' : 'service', 'refs' : [] },
 
     'ps2pdf'          : { 'name' : '', 'category' : 'system' , 'refs' : [] },  # empty name means "Ignore"
     'ccp4-python'     : { 'name' : '', 'category' : 'system' , 'refs' : [] },
@@ -106,6 +107,19 @@ citations = {
                         }]
                   },
 
+    'chainsaw' :  { 'name'     : 'Chainsaw',
+                    'category' : 'primary',
+                    'refs'     : [{
+                            'authors' : 'Stein, N.',
+                            'title'   : 'CHAINSAW: a program for mutating pdb files used as templates in molecular replacement',
+                            'journal' : 'J. Appl. Cryst.',
+                            'volume'  : '41',
+                            'year'    : '2008',
+                            'pages'   : '641-643',
+                            'doi'     : '10.1107/S0021889808006985'
+                        }]
+                  },
+
     'aimless'   : { 'name'     : 'Aimless',
                     'category' : 'primary',
                     'refs'     : [{
@@ -155,19 +169,26 @@ citations = {
                     'copy'     : [['refmac5',-1]]
                   },
 
-
-
     'mrbump' :    { 'name'     : 'MrBUMP',
                     'category' : 'primary',
                     'refs'     : [{
-                            'authors' : 'Keegan, R.M., Winn, M.D.',
-                            'title'   : 'MrBUMP: an automated pipeline for molecular replacement',
+                            'authors' : 'Keegan, R.M., McNicholas, S.J., Thomas, J.M.H., Simpkin, A.J., Simkovic, F., Uski, V., Ballard, C.C., Winn, M.D., Wilson, K.S., Rigden, D.J.',
+                            'title'   : 'Recent developments in MrBUMP: better search-model preparation, graphical interaction with search models, and solution improvement and assessment',
                             'journal' : 'Acta Cryst.',
-                            'volume'  : 'D64',
-                            'year'    : '2008',
-                            'pages'   : '119-124',
-                            'doi'     : '10.1107/S0907444907037195'
+                            'volume'  : 'D74',
+                            'year'    : '2018',
+                            'pages'   : '167-182',
+                            'doi'     : '10.1107/S2059798318003455'
                         }]
+    #                'refs'     : [{
+    #                        'authors' : 'Keegan, R.M., Winn, M.D.',
+    #                        'title'   : 'MrBUMP: an automated pipeline for molecular replacement',
+    #                        'journal' : 'Acta Cryst.',
+    #                        'volume'  : 'D64',
+    #                        'year'    : '2008',
+    #                        'pages'   : '119-124',
+    #                        'doi'     : '10.1107/S0907444907037195'
+    #                    }]
                   },
 
     'morda'  :    { 'name'     : 'MoRDa',
@@ -236,6 +257,26 @@ citations = {
                             'doi'     : '10.1107/S2059798318005752'
                         }]
                   },
+
+    'simbad-lattice'    : { 'name'     : 'SIMBAD',
+                            'category' : 'primary',
+                            'copy'     : [['simbad',-1]]  # -1 means copy all
+                          },
+
+    'simbad-contaminant' : { 'name'     : 'SIMBAD',
+                             'category' : 'primary',
+                             'copy'     : [['simbad',-1]]  # -1 means copy all
+                           },
+
+    'simbad-morda'       : { 'name'     : 'SIMBAD',
+                             'category' : 'primary',
+                             'copy'     : [['simbad',-1]]  # -1 means copy all
+                           },
+
+    'simbad-full'        : { 'name'     : 'SIMBAD',
+                             'category' : 'primary',
+                             'copy'     : [['simbad',-1]]  # -1 means copy all
+                           },
 
     'ample' :     { 'name'     : 'AMPLE',
                     'category' : 'primary',
@@ -493,7 +534,6 @@ citations = {
                   },
 
 
-
     'phaser' :    { 'name'     : 'Phaser',
                     'category' : 'primary',
                     'refs'     : [{
@@ -504,6 +544,19 @@ citations = {
                             'year'    : '2007',
                             'pages'   : '658-674',
                             'doi'     : '10.1107/S0021889807021206'
+                        }]
+                  },
+
+    'sculptor' :  { 'name'     : 'Sculptor',
+                    'category' : 'primary',
+                    'refs'     : [{
+                            'authors' : 'Bunkoczi, G., and Read, R.J.',
+                            'title'   : 'Improvement of molecular-replacement models with Sculptor',
+                            'journal' : 'Acta Cryst.',
+                            'volume'  : 'D67',
+                            'year'    : '2011',
+                            'pages'   : '303-312',
+                            'doi'     : '10.1107/S0907444910051218'
                         }]
                   },
 

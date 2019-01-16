@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    22.12.18   <--  Date of Last Modification.
+ *    09.01.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Common GUI widgets
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2018
+ *  (C) E. Krissinel, A. Lebedev 2016-2019
  *
  *  =================================================================
  *
@@ -80,6 +80,40 @@ Widget.prototype.removeAttribute = function ( attr )  {
 
 Widget.prototype.setTooltip = function ( text )  {
   this.element.setAttribute ( 'title',text );
+  /*
+  $(this.element).tooltip({
+      content : text,
+      show    : { effect: 'slideDown' },
+      track   : true,
+      open    : function (event, ui) {
+          setTimeout(function() {
+              $(ui.tooltip).hide('explode');
+          },1500);
+      }
+  });
+  */
+  return this;
+}
+
+Widget.prototype.setTooltip1 = function ( text,showType,track_bool,delay_ms )  {
+  this.element.setAttribute ( 'title',text );
+  if (delay_ms<=0)
+    $(this.element).tooltip({
+        content : text,
+        show    : { effect : showType, },
+        track   : track_bool
+    })
+  else
+    $(this.element).tooltip({
+        content : text,
+        show    : { effect : showType },
+        track   : track_bool,
+        open    : function (event, ui) {
+            setTimeout(function() {
+                $(ui.tooltip).hide('explode');
+            },delay_ms);
+        }
+    });
   return this;
 }
 
@@ -175,6 +209,15 @@ Widget.prototype.setScrollable = function ( onx_value,ony_value )  {
   if (ony_value.length>0)
     $(this.element).css ({'overflow-y':ony_value});
   return this;
+}
+
+Widget.prototype.getScrollPosition = function()  {
+  return [this.element.scrollLeft,this.element.scrollTop];
+}
+
+Widget.prototype.setScrollPosition = function ( scrollPos )  {
+  this.element.scrollLeft = scrollPos[0];
+  this.element.scrollTop  = scrollPos[1];
 }
 
 Widget.prototype.setHorizontalAlignment = function ( alignment )  {

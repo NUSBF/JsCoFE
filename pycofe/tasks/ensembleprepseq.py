@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    22.12.18   <--  Date of Last Modification.
+#    14.01.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2018
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2019
 #
 # ============================================================================
 #
@@ -118,7 +118,7 @@ class EnsemblePrepSeq(basic.TaskDriver):
         # check solution and register data
         self.unsetLogParser()
 
-        search_dir = "search_" + self.outdir_name();
+        search_dir = "search_" + self.outdir_name()
 
         if os.path.isdir(search_dir):
 
@@ -128,6 +128,7 @@ class EnsemblePrepSeq(basic.TaskDriver):
             domainNo        = 1
             models_dir      = os.path.join ( search_dir,"models" );
             seqName,fext    = os.path.splitext ( seq.getSeqFileName() )
+            file_order      = ["BaseAlignment","100.0","75.0","50.0","25.0"]
 
             if os.path.isdir(models_dir):
 
@@ -141,46 +142,48 @@ class EnsemblePrepSeq(basic.TaskDriver):
 
                     ensembles_dir = os.path.join ( domains_dir,"ensembles" );
                     if os.path.isdir(ensembles_dir):
-                        for filename in os.listdir(ensembles_dir):
-                            if filename.endswith(".pdb"):
+                        flist = [fn for fn in os.listdir(ensembles_dir)
+                                  if any(fn.endswith(ext) for ext in [".pdb"])]
 
-                                if ensembleSerNo==0:
-                                    ensembles_found = True
-                                    self.putTitle ( "Results" )
+                        for fo in file_order:
+                            for filename in flist:
+                                if fo in filename:
 
-                                if secrow == 0:
-                                    secId = "domain_sec_"+str(domainNo)
-                                    self.putSection ( secId,"Domain #" + str(domainNo) )
-                                    secrow += 1
+                                    if ensembleSerNo==0:
+                                        ensembles_found = True
+                                        self.putTitle ( "Results" )
 
-                                ensembleSerNo += 1
-                                ensemble = self.registerEnsemble ( seq,
-                                            os.path.join(ensembles_dir,filename),
-                                            checkout=True )
-                                if ensemble:
+                                    if secrow == 0:
+                                        secId = "domain_sec_"+str(domainNo)
+                                        self.putSection ( secId,"Domain #" + str(domainNo) )
+                                        secrow += 1
 
-                                    self.putMessage1 ( secId,
-                                        "<h3>Ensemble #" + str(ensembleSerNo) + "</h3>",
-                                        secrow )
+                                    ensembleSerNo += 1
+                                    if fo=="BaseAlignment":
+                                        fout_name = self.outputFName + "_base.pdb"
+                                    else:
+                                        fout_name = self.outputFName + "_" + fo + ".pdb"
+                                    os.rename ( os.path.join(ensembles_dir,filename),fout_name )
+                                    ensemble = self.registerEnsemble ( seq,
+                                                        fout_name,checkout=True )
+                                    if ensemble:
 
-                                    alignSecId = self.gesamt_report() + "_" + str(ensembleSerNo)
-                                    pyrvapi.rvapi_add_section ( alignSecId,
-                                                "Structural alignment",secId,
-                                                secrow+1,0,1,1,False )
-                                    analyse_ensemble.run ( self,alignSecId,ensemble )
+                                        self.putMessage1 ( secId,
+                                            "<h3>Ensemble #" + str(ensembleSerNo) + "</h3>",
+                                            secrow )
 
-                                    #self.putMessage1 ( secId,
-                                    #    "<br><b>Assigned name:</b>&nbsp;" + ensemble.dname,
-                                    #    secrow+2 )
+                                        alignSecId = self.getWidgetId ( self.gesamt_report() )
+                                        pyrvapi.rvapi_add_section ( alignSecId,
+                                                    "Structural alignment",secId,
+                                                    secrow+1,0,1,1,False )
+                                        analyse_ensemble.run ( self,alignSecId,ensemble )
 
-                                    ensemble.addDataAssociation ( seq.dataId )
-                                    self.putEnsembleWidget1 ( secId,
-                                        "ensemble_"  + str(ensembleSerNo) + "_btn",
-                                        "Coordinates",ensemble,-1,secrow+3,1 )
-                                    #ensemble.sequence = seq
-                                    #ensemble.files   += [seq.files[0]]
+                                        ensemble.addDataAssociation ( seq.dataId )
+                                        self.putEnsembleWidget1 ( secId,
+                                            "ensemble_"  + str(ensembleSerNo) + "_btn",
+                                            "Coordinates",ensemble,-1,secrow+3,1 )
 
-                                    secrow += 5
+                                        secrow += 5
 
                     domainNo += 1
                     dirName   = "domain_" + str(domainNo)

@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    27.12.18   <--  Date of Last Modification.
+ *    09.01.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Project page
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2018
+ *  (C) E. Krissinel, A. Lebedev 2016-2019
  *
  *  ==========================================================================
  *
@@ -73,17 +73,17 @@ function ProjectPage ( sceneId )  {
     jobTree.addJob ( false,self, function(){ del_btn.setDisabled ( false ); } );
   }
 
-  function insertJob ()  {
+  function insertJob()  {
     selectRemark();
     jobTree.addJob ( true,self, function(){ del_btn.setDisabled ( false ); } );
   }
 
-  function addRemark ()  {
+  function addRemark()  {
     jobTree.addTask ( new TaskRemark(),true,self,
                                 function(){ del_btn.setDisabled ( false ); } );
   }
 
-  function moveJobUp ()  {
+  function moveJobUp()  {
     jobTree.moveJobUp ( true,setButtonState );
   }
 
@@ -430,20 +430,27 @@ function ProjectPage ( sceneId )  {
     });
 
     replay_btn.addOnClickListener ( function(){
+      alert ( 'Feature is not functional' );
+      /*
       if (replay_mode && self.replay_job_tree && jobTree)
         self.replay_job_tree.replayTree ( jobTree );
+      */
     });
 
   }
 
   (function(tree){
     refresh_btn.addOnClickListener ( function(){
+      var scrollPos = jobTree.parent.getScrollPosition();
       jobTree.closeAllJobDialogs();
       jobTree.stopTaskLoop();
       jobTree.delete();
       jobTree = tree.makeJobTree();
-      jobTree.readProjectData ( 'Project',onTreeLoaded,onTreeContextMenu,
-                                          openJob,onTreeItemSelect );
+      jobTree.readProjectData ( 'Project',function(){
+         onTreeLoaded();
+         jobTree.parent.setScrollPosition ( scrollPos );
+         //tree.tree_div.setScrollPosition ( scrollPos );
+       },onTreeContextMenu,openJob,onTreeItemSelect );
       tree.tree_div.addWidget ( jobTree );
     });
   }(this))

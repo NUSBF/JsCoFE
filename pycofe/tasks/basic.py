@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    29.12.18   <--  Date of Last Modification.
+#    14.01.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -11,7 +11,7 @@
 #
 #  Command-line:  N/A
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2018
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2019
 #
 # ============================================================================
 #
@@ -704,9 +704,10 @@ class TaskDriver(object):
     # ============================================================================
 
     def unsetLogParser ( self ):
-        self.file_stdout.flush()
+        self.flush();
+        #self.file_stdout.flush()
         self.log_parser = None
-        pyrvapi.rvapi_flush()
+        #pyrvapi.rvapi_flush()
         return
 
     def setGenericLogParser ( self,panel_id,split_sections_bool,
@@ -718,13 +719,15 @@ class TaskDriver(object):
                                          summary=self.generic_parser_summary,
                                          graph_tables=graphTables,
                                          hide_refs=True )
-        pyrvapi.rvapi_flush()
+        self.flush()
+        #pyrvapi.rvapi_flush()
         return
 
     def setMolrepLogParser ( self,panel_id ):
         self.putPanel ( panel_id )
         self.log_parser = pyrvapi_ext.parsers.molrep_parser ( panel_id )
-        pyrvapi.rvapi_flush()
+        self.flush()
+        #pyrvapi.rvapi_flush()
         return
 
 
@@ -732,7 +735,8 @@ class TaskDriver(object):
         self.putPanel ( panel_id )
         self.log_parser = pyrvapi_ext.parsers.arpwarp_parser ( panel_id,
                 job_params=job_params,resfile=wares_file )
-        pyrvapi.rvapi_flush()
+        self.flush()
+        #pyrvapi.rvapi_flush()
         return
 
 
@@ -801,6 +805,7 @@ class TaskDriver(object):
                             logfile,self.file_stderr,self.log_parser,
                             file_stdout_alt=logfile_alt )
         self.file_stdin = None
+        self.flush()
 
         if rc.msg and quitOnError:
             raise signal.JobFailure ( rc.msg )
@@ -835,9 +840,9 @@ class TaskDriver(object):
         edmap.calcAnomEDMap ( xyzPath,hklData.getHKLFilePath(self.inputDir()),
                               hklData.dataset,anom_form,filePrefix,self.job_dir,
                               self.file_stdout1,self.file_stderr,self.log_parser )
-        return [ filePrefix + edmap.file_pdb(),
-                 filePrefix + edmap.file_mtz(),
-                 filePrefix + edmap.file_map(),
+        return [ filePrefix + edmap.file_pdb (),
+                 filePrefix + edmap.file_mtz (),
+                 filePrefix + edmap.file_map (),
                  filePrefix + edmap.file_dmap() ]
 
 
@@ -852,7 +857,8 @@ class TaskDriver(object):
     def finaliseStructure ( self,xyzPath,name_pattern,hkl,libPath,associated_data_list,
                                  structureType,leadKey=1,openState_bool=False,
                                  title="Output Structure",
-                                 inpDir=None ):
+                                 inpDir=None,
+                                 stitle="Structure and electron density" ):
         #  structureType = 0: macromolecular coordinates at xyzPath
         #                = 1: heavy atom substructure at xyzPath
 
@@ -887,7 +893,7 @@ class TaskDriver(object):
                                 leadKey=leadKey )
             if structure:
                 structure.addDataAssociation ( hkl.dataId )
-                structure.setRefmacLabels ( hkl )
+                structure.setRefmacLabels    ( hkl )
                 for i in range(len(associated_data_list)):
                     if associated_data_list[i]:
                         structure.addDataAssociation ( associated_data_list[i].dataId )
@@ -916,7 +922,7 @@ class TaskDriver(object):
                                         openState_bool,title )
         self.rvrow += 2
         if anom_structure:
-            self.rvrow += 1
+            self.rvrow += 2
             if title:
                 self.rvrow += 1
 
@@ -1436,10 +1442,11 @@ class TaskDriver(object):
         self.rvrow += 1
         self.putMessage ( "<p>&nbsp;" )  # just to make extra space after report
         self.outputDataBox.save ( self.outputDir() )
-        pyrvapi.rvapi_flush   ()
-        self.file_stdout .close()
-        self.file_stdout1.close()
-        self.file_stderr .close()
+        self.flush()
+        #pyrvapi.rvapi_flush   ()
+        #self.file_stdout .close()
+        #self.file_stdout1.close()
+        #self.file_stderr .close()
         raise signal.Success()
 
     def fail ( self,pageMessage,signalMessage ):

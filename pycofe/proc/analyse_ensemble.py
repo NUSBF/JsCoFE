@@ -45,7 +45,7 @@ def run ( body, panelId, ensemble ):  # body is reference to the main Import cla
         for model in ensemble.xyzmeta["xyz"]:
             cmd += [ ensFileName, "-s", "/" + str(model["model"]) ]
 
-        cmd += [ "-o",gesamt_xyz(),"-o-cs" ]
+        cmd += [ "-o",gesamt_xyz(),"-o-cs", "-csv","gesamt.csv" ]
 
         if ensemble.nModels==2:
             cmd += ["-domains"]
@@ -57,6 +57,7 @@ def run ( body, panelId, ensemble ):  # body is reference to the main Import cla
         body.runApp ( "gesamt",cmd )
 
         meta = body.restoreReportDocument()
+        body.file_stdout.write ( " ******* " + str(meta) + "\n" )
         try:
             ensemble.meta = eval(meta)
             ensemble.rmsd = ensemble.meta["rmsd"]

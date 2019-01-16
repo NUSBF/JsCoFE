@@ -3,13 +3,13 @@
 #
 # ============================================================================
 #
-#    24.12.18   <--  Date of Last Modification.
+#    04.01.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  REVISION DATA TYPE
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2018
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2019
 #
 # ============================================================================
 #
@@ -48,7 +48,7 @@ class DType(dtype_template.DType):
             self._type          = dtype()
             self.leadKey        = 0;  # data lead key: 0: undefined, 1: coordinates, 2: phases
             self.dname          = "revision"
-            self.version       += 2   # versioning increments from parent to children
+            self.version       += 3   # versioning increments from parent to children
             self.HKL            = None
             self.ASU            = jsonut.jObject()  # asymetric unit data
             self.ASU.seq        = [];

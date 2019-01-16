@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    27.12.18   <--  Date of Last Modification.
+ *    10.01.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Crank-2 Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2018
+ *  (C) E. Krissinel, A. Lebedev 2016-2019
  *
  *  =================================================================
  *
@@ -39,17 +39,17 @@ function TaskCrank2()  {
   this.helpURL = './html/jscofe_task_crank2.html';
 
   this.input_dtypes = [{    // input data types
-      data_type   : {'DataRevision':['!protein','!asu','~substructure']}, // data type(s) and subtype(s)
+      data_type   : {'DataRevision':['!protein','!asu','~substructure','!anomalous']}, // data type(s) and subtype(s)
       label       : 'Structure revision',     // label for input dialog
       inputId     : 'revision', // input Id for referencing input fields
       customInput : 'crank2',   // lay custom fields next to the selection
                                 // dropdown for 'native' dataset
-      version     : 0,          // minimum data version allowed
+      version     : 5,          // minimum data version allowed
       min         : 1,          // minimum acceptable number of data instances
       max         : 1           // maximum acceptable number of data instances
     },{
       data_type   : {'DataHKL':['anomalous']}, // data type(s) and subtype(s)
-      label       : 'Anomalous reflection<br>data',             // label for input dialog
+      label       : 'Anomalous reflection<br>data (MAD)',  // label for input dialog
       inputId     : 'hkl',       // input Id for referencing input fields
       customInput : 'anomData',  // lay custom fields next to the selection
                                  // dropdown for anomalous data
@@ -57,8 +57,8 @@ function TaskCrank2()  {
                     'may be chosen here. Note that neither of reflection '  +
                     'datasets may coincide with the native dataset, if one is ' +
                     'specified above.',
-      min         : 1,           // minimum acceptable number of data instances
-      max         : 4            // maximum acceptable number of data instances
+      min         : 0,           // minimum acceptable number of data instances
+      max         : 3            // maximum acceptable number of data instances
     },{
       data_type   : {'DataHKL':[]},   // data type(s) and subtype(s)
       label       : 'Native dataset', // label for input dialog
@@ -128,6 +128,7 @@ function TaskCrank2()  {
                     //lwidth2   : 100,
                     position  : [1,0,1,1] // [row,col,rowSpan,colSpan]
                   },
+              /*
               PARTIAL_AS_SUBSTR : {
                     type      : 'checkbox',
                     label     : 'Remove all non-anomalous atoms before rebuilding',
@@ -138,8 +139,9 @@ function TaskCrank2()  {
                     iwidth    : 400,
                     value     : false,
                     position  : [2,0,1,5],
-                    hideon    : {_:'||','revision.xyz':[0,-1],sec1:['shelx-substr']}    // from this and input data section
+                    hideon    : {_:'||','revision.subtype:xyz':[0,-1],sec1:['shelx-substr']}    // from this and input data section
                   },
+              */
               SOLVENT_CONTENT : {
                     type      : 'real_', // blank value is allowed
                     keyword   : 'solvent_content=', // the real keyword for job input stream
@@ -156,7 +158,7 @@ function TaskCrank2()  {
                                              //   [min,max]  : limited from top and bottom
                     value     : '',          // value to be paired with the keyword
                     default   : 'auto',
-                    position  : [3,0,1,1],   // [row,col,rowSpan,colSpan]
+                    position  : [2,0,1,1],   // [row,col,rowSpan,colSpan]
                     hideon    : {sec1:['shelx-substr']} // from this and input data section
                   }
             }
@@ -164,7 +166,7 @@ function TaskCrank2()  {
     sec2: { type     : 'section',
             title    : 'Advanced options for substructure detection',
             open     : false,  // true for the section to be initially open
-            showon   : {_:'||','revision.xyz':[0,-1],sec1:['shelx-substr']}, // from this and input data section
+            showon   : {_:'||','revision.subtype:xyz':[0,-1],sec1:['shelx-substr']}, // from this and input data section
             position : [1,0,1,5],
             contains : {
               SUBSTRDET_NUM_TRIALS : {
@@ -438,7 +440,7 @@ function TaskCrank2()  {
             title    : 'Advanced options for hand determination',
             open     : false,  // true for the section to be initially open
             position : [3,0,1,5],
-            showon   : {'revision.xyz':[0,-1]}, // from this and input data section
+            showon   : {'revision.subtype:xyz':[0,-1]}, // from this and input data section
             contains : {
               HANDDET_DO : {
                     type     : 'checkbox',
@@ -448,7 +450,7 @@ function TaskCrank2()  {
                                'current hand',
                     value    : true,
                     position : [0,0,1,1],
-                    showon   : {'revision.xyz':[0,-1]} // from this and input data section
+                    showon   : {'revision.subtype:xyz':[0,-1]} // from this and input data section
                   }
             }
     },
@@ -457,7 +459,7 @@ function TaskCrank2()  {
             open     : false,  // true for the section to be initially open
             position : [4,0,1,5],
             showon   : {sec1:['crank2']},
-            hideon   : {_:'&&','revision.xyz':[1],PARTIAL_AS_SUBSTR:[false]},
+            hideon   : {_:'&&','revision.subtype:xyz':[1],PARTIAL_AS_SUBSTR:[false]},
             contains : {
               DMFULL_DM_PROGRAM : {
                     type     : 'combobox',
@@ -816,10 +818,10 @@ function TaskCrank2()  {
                     showon    : {sec1:['crank2']},
                     hideon    : { _:'||',
                                   COMB_PHDMMB_DMFULL_DM_PROGRAM:['solomon'],
-                                  MONOMERS_ASYM       : ['1'],
-                                  COMB_PHDMMB_NCS_DET : ['_blank_','False'],
-                                  COMB_PHDMMB_DO      : [false],
-                                  'revision.xyz' : [0,-1],
+                                  MONOMERS_ASYM          : ['1'],
+                                  COMB_PHDMMB_NCS_DET    : ['_blank_','False'],
+                                  COMB_PHDMMB_DO         : [false],
+                                  'revision.subtype:xyz' : [0,-1],
                                   native : [1],
                                   hkl    : [2,3,4]
                                 }
@@ -832,7 +834,7 @@ function TaskCrank2()  {
             open     : false,  // true for the section to be initially open
             position : [6,0,1,5],
             showon   : {sec1:['shelx-auto']},
-            hideon   : {_:'&&','revision.xyz':[1],PARTIAL_AS_SUBSTR:[false]},
+            hideon   : {_:'&&','revision.subtype:xyz':[1],PARTIAL_AS_SUBSTR:[false]},
             contains : {
               PHDMMB_BIGCYC : {
                     type      : 'integer_', // blank value is allowed
@@ -925,9 +927,6 @@ TaskCrank2.prototype.constructor = TaskCrank2;
 
 TaskCrank2.prototype.icon = function()  { return 'task_crank2'; }
 
-//TaskCrank2.prototype.icon_small = function()  { return 'task_crank2_20x20'; }
-//TaskCrank2.prototype.icon_large = function()  { return 'task_crank2';       }
-
 TaskCrank2.prototype.currentVersion = function()  {
   var version = 0;
   if (__template)
@@ -941,7 +940,7 @@ if (!__template)  {
 
   TaskCrank2.prototype.addCustomDataState = function ( inpDataRef,dataState ) {
 
-    var nHKL = dataState['hkl'];
+    //var nHKL = dataState['hkl'];
     var item = this.getInputItem ( inpDataRef,'revision' );
     if (item)  {
       var dropdown = item.dropdown[0];
@@ -1046,7 +1045,6 @@ if (!__template)  {
   }
 */
 
-
   TaskCrank2.prototype.inputChanged = function ( inpParamRef,emitterId,emitterValue )  {
 
     function makeSuffix ( title,suffix )  {
@@ -1060,25 +1058,24 @@ if (!__template)  {
       var nNative    = dataState['native'];
       var isPModel   = (dataState['pmodel']>0);
       var IR         = false;
+      var native     = this.getInputItem ( inpDataRef,'native' );
+      var hkl        = this.getInputItem ( inpDataRef,'hkl'    );
 
-      if (nNative>0)  {
-        var native = this.getInputItem ( inpDataRef,'native' );
-        if (native)  {
-          if (native.dropdown[0].hasOwnProperty('customGrid'))  {
-            var customGrid    = native.dropdown[0].customGrid;
-            var showUFP_cbx   = (nNative>0) && (nHKL<=1);
-            useForPhasing_cbx = customGrid.useForPhasing;
-            IR                = useForPhasing_cbx.getValue();
-            useForPhasing_cbx.setVisible ( showUFP_cbx );
-            customGrid       .setVisible ( showUFP_cbx );
-          }
+      if ((nNative>0) && native)  {
+        if (native.dropdown[0].hasOwnProperty('customGrid'))  {
+          var customGrid    = native.dropdown[0].customGrid;
+          var showUFP_cbx   = (nNative>0) && (nHKL<=0);
+          useForPhasing_cbx = customGrid.useForPhasing;
+          IR                = useForPhasing_cbx.getValue();
+          useForPhasing_cbx.setVisible ( showUFP_cbx );
+          customGrid       .setVisible ( showUFP_cbx );
         }
       }
 
       if (this.state==job_code.new)  {
 
         var name = this.name;
-        if (nHKL<=1)  {
+        if (nHKL<=0)  {
           if (nNative<=0)  {
             if (isPModel)  {
               this.title = makeSuffix ( this.title,'MR-SAD' );
@@ -1124,6 +1121,14 @@ if (!__template)  {
     }
 
     TaskTemplate.prototype.inputChanged.call ( this,inpParamRef,emitterId,emitterValue );
+
+    if (hkl && native && isPModel)  {
+      var row_hkl    = hkl.dropdown[0].row;
+      inpParamRef.grid.setRowVisible ( row_hkl,false );
+      var row_native = native.dropdown[0].row;
+      for (var r=row_hkl;r<row_native;r++)
+        inpParamRef.grid.setRowVisible ( r,false );
+    }
 
   }
 
@@ -1181,6 +1186,7 @@ if (!__template)  {
 
     if ('revision' in this.input_data.data)  {
       var revision = this.input_data.data['revision'][0];
+      this.input_data.data['hklrev'] = [revision.HKL];
       //if (revision.HKL.nativeKey!='unused')
       //  this.input_data.data['native'] = [revision.HKL];
       if (revision.Structure)

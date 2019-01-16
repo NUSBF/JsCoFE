@@ -3,13 +3,13 @@
 #
 # ============================================================================
 #
-#    24.12.18   <--  Date of Last Modification.
+#    06.01.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  PDB DATA IMPORT FUNCTION
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2018
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2018-2019
 #
 # ============================================================================
 #
@@ -145,7 +145,8 @@ def run ( body,pdb_list ):  # body is reference to the main Import class
                     body.putMessage ( "<h3>" + ucode + " Unit Cell</h3>" )
 
                     for i in range(len(seq)):
-                        seq[i].ncopies = seqdesc[i]["n"]
+                        seq[i].ncopies      = seqdesc[i]["n"]
+                        seq[i].ncopies_auto = False  # do not adjust
                     composition = "D"  # AA-NA comples
                     if nAA<=0:  composition = "D"  # NA only
                     if nNA<=0:  composition = "P"  # AA only

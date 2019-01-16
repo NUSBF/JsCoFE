@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    10.12.18   <--  Date of Last Modification.
+ *    02.01.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Front End Server -- Job Run Module
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2018
+ *  (C) E. Krissinel, A. Lebedev 2016-2019
  *
  *  ==========================================================================
  *
@@ -614,8 +614,10 @@ function writeJobStats ( jobEntry )  {
 
     var userRation = ration.updateUserRation_bookJob ( jobEntry.login,jobClass );
 
-    var S = '';
-    if (Math.trunc(feJobRegister.n_jobs/20)*20==feJobRegister.n_jobs)
+    var S     = '';
+    var fpath = path.join ( conf.getFEConfig().projectsPath,feJobStatFile );
+    if ((Math.trunc(feJobRegister.n_jobs/20)*20==feJobRegister.n_jobs) ||
+        (!utils.fileExists(fpath)))
       S = '------------------------------------------------------------------' +
           '------------------------------------------------------------------' +
           '--------------------------------\n' +
@@ -646,7 +648,6 @@ function writeJobStats ( jobEntry )  {
                 ' (' + userRation.jobs_total + ')',' ',20 ) +
                     ' ' + jobClass.title + '\n';
 
-    var fpath = path.join ( conf.getFEConfig().projectsPath,feJobStatFile );
     utils.appendString ( fpath,S );
 
   } else  {

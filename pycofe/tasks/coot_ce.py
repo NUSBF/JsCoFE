@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    22.12.18   <--  Date of Last Modification.
+#    07.01.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2018
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2018-2019
 #
 # ============================================================================
 #
@@ -51,7 +51,7 @@ class Coot(basic.TaskDriver):
 
         # fetch input data
         data_list = [self.input_data.data.ixyz[0]]
-        if hasattr(self.input_data.data,"aux_xyz"):
+        if hasattr(self.input_data.data,"aux_struct"):
             data_list += self.input_data.data.aux_struct
         for i in range(len(data_list)):
             data_list[i] = self.makeClass ( data_list[i] )

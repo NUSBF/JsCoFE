@@ -38,6 +38,7 @@ function UserData()  {
   this.usedCPU    = 0;  // in hours
   this.knownSince = ''; // date
   this.lastSeen   = ''; // date
+  this.admin      = false;
   this.helpTopics = [];
 }
 

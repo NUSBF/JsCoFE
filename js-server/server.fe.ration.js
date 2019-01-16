@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    19.06.18   <--  Date of Last Modification.
+ *    01.01.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Front End Server -- Projects Handler Functions
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2018
+ *  (C) E. Krissinel, A. Lebedev 2016-2019
  *
  *  ==========================================================================
  *
@@ -22,14 +22,10 @@
 //  load system modules
 //var fs            = require('fs-extra');
 /*
-var path          = require('path');
 var child_process = require('child_process');
 
 //  load application modules
 //var emailer  = require('./server.emailer');
-var conf  = require('./server.configuration');
-var prj   = require('./server.fe.projects');
-var utils = require('./server.utils');
 var uh    = require('./server.fe.upload_handler');
 var cmd   = require('../js-common/common.commands');
 var fcl   = require('../js-common/common.data_facility');
@@ -57,7 +53,6 @@ var rationFileExt = '.ration';
 function getUserRationFPath ( login )  {
   return path.join ( conf.getFEConfig().userDataPath,login + rationFileExt );
 }
-
 
 function getUserRation ( login )  {
 var fpath = getUserRationFPath ( login );
@@ -216,6 +211,8 @@ var r = getUserRation ( login );
 
 // ==========================================================================
 // export for use in node
+
+module.exports.getUserRationFPath       = getUserRationFPath;
 module.exports.getUserRation            = getUserRation;
 module.exports.saveUserRation           = saveUserRation;
 module.exports.updateUserRation_bookJob = updateUserRation_bookJob;

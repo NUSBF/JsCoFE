@@ -153,7 +153,7 @@
       return [ conf.pythonName(),         // will use python from configuration
                '-m',                      // will run task as a python module
                'pycofe.tasks.helloworld', // path to python driver
-                exeType,                  // framework's type of run: 'SHELL' or 'SGE'
+                exeType,                  // framework's type of run: 'SHELL', 'SGE' or 'SCRIPT'
                 jobDir,                   // path to job directory given by framework
                 this.id                   // task id (assigned by the framework)
               ];
