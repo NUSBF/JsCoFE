@@ -27,7 +27,7 @@ function RegisterPage ( sceneId )  {
 
 //  if (__login_token)
 //    __login_token.empty();
-  __login_token = '';
+  //__login_token = '';
 
   // prepare the scene and make top-level grid
   BasePage.call ( this,sceneId,'-full','RegisterPage' );
@@ -113,7 +113,15 @@ function RegisterPage ( sceneId )  {
   panel.setCellSize            ( '','1pt',row++,0 );
 
   var reg_btn  = new Button    ( 'Register and send password by e-mail',image_path('email') );
-  var back_btn = new Button    ( 'Back to User Login',image_path('login') );
+
+  var back_btn = null;
+  if (__login_token=='')  {
+    back_btn = new Button       ( 'Back to User Login',image_path('login') );
+    back_btn.addOnClickListener ( function(){ makeLoginPage(sceneId); } );
+  } else  {
+    back_btn = new Button       ( 'Back to Admin Page',image_path('admin') );
+    back_btn.addOnClickListener ( function(){ makeAdminPage(sceneId); } );
+  }
 
   reg_btn .setWidth            ( '100%' );
   back_btn.setWidth            ( '100%' );
@@ -126,8 +134,6 @@ function RegisterPage ( sceneId )  {
       licence_val.setText ( licence );
     });
   });
-
-  back_btn.addOnClickListener  ( function(){ makeLoginPage(sceneId); } );
 
   reg_btn .addOnClickListener  ( function(){
 

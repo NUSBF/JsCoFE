@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    22.12.18   <--  Date of Last Modification.
+#    12.02.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2018
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2019
 #
 # ============================================================================
 #
@@ -45,19 +45,18 @@ class PISA(basic.TaskDriver):
 
     def run(self):
 
-        self.checkCCP4AppExists ( "jspisa" )
-
-        if "JSPISA_CFG" not in os.environ:
-            pyrvapi.rvapi_set_text (
-                "<b>Error: " + self.appName() + " is not configured to work " +\
-                "with jsPISA.</b><p>Please look for support.",
-                self.report_page_id(),self.rvrow,0,1,1 )
-
-            self.fail ( "<p>&nbsp; *** Error: " + self.appName() + " is not " +\
-                        "configured to work with jsPISA.\n" + \
-                        "     Please look for support\n",
-                        "jsPISA is not configured" )
-
+        #self.checkCCP4AppExists ( "jspisa" )
+        #
+        #if "JSPISA_CFG" not in os.environ:
+        #    pyrvapi.rvapi_set_text (
+        #        "<b>Error: " + self.appName() + " is not configured to work " +\
+        #        "with jsPISA.</b><p>Please look for support.",
+        #        self.report_page_id(),self.rvrow,0,1,1 )
+        #
+        #    self.fail ( "<p>&nbsp; *** Error: " + self.appName() + " is not " +\
+        #                "configured to work with jsPISA.\n" + \
+        #                "     Please look for support\n",
+        #                "jsPISA is not configured" )
 
         # Prepare pisa input
         # fetch input data

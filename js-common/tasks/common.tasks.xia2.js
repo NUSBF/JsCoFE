@@ -228,6 +228,9 @@ TaskXia2.prototype.currentVersion = function()  {
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
 }
 
+// default post-job cleanup to save disk space
+TaskXia2.prototype.cleanJobDir = function ( jobDir )  {}
+
 
 // export such that it could be used in both node and a browser
 if (!__template)  {

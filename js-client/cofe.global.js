@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    09.11.18   <--  Date of Last Modification.
+ *    21.01.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Global variables
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2018
+ *  (C) E. Krissinel, A. Lebedev 2016-2019
  *
  *  ==========================================================================
  *
@@ -38,9 +38,11 @@ var __current_project = null;
 var __local_setup     = false;
 var __cloud_storage   = false;  // true if user has cloud storage allocated
 
-var __touch_device = ('ontouchstart' in document.documentElement);
+//var __touch_device = ('ontouchstart' in document.documentElement);
 // the following will also include desktops with touch screens:
 //var __touch_device = (navigator.maxTouchPoints || 'ontouchstart' in document.documentElement);
+
+var __touch_device = (/Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent) );
 
 $(window).resize ( function(){
   if (__current_page)

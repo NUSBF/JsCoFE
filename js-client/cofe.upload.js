@@ -73,7 +73,6 @@ function Upload ( customData,upl_data,onSelect_func,onSelectPDB_func,onReady_fun
   this.pdb_button   = null;
 
   if (!given_files)  {
-
     if (upl_data=='project')  {
       this.button = grid.setButton ( 'Select project archive(s)',
                                      image_path('open_file'),0,col++,1,1 )
@@ -125,6 +124,8 @@ function Upload ( customData,upl_data,onSelect_func,onSelectPDB_func,onReady_fun
         upl.button.setDisabled ( true );
         if (upl.link_button)
           upl.link_button.setDisabled ( true );
+        if (upl.pdb_button)
+          upl.pdb_button.setDisabled ( true );
 
         files = upl.selFile.element.files;
 
@@ -178,6 +179,8 @@ function Upload ( customData,upl_data,onSelect_func,onSelectPDB_func,onReady_fun
 
           upl.button   .setDisabled ( false );
           upl.indicator.setText     ( ''    );
+          if (upl.pdb_button)
+            upl.pdb_button.setDisabled ( false );
 
         } else  {
 
@@ -207,6 +210,8 @@ function Upload ( customData,upl_data,onSelect_func,onSelectPDB_func,onReady_fun
                 upl.button.setEnabled ( true );
                 if (upl.link_button)
                   upl.link_button.setEnabled ( true );
+                if (upl.pdb_button)
+                  upl.pdb_button.setEnabled ( true );
               }
               upl.emitSignal ( cofe_signals.uploadEvent,'upload_finished' );
             },

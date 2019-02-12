@@ -3,13 +3,13 @@
 #
 # ============================================================================
 #
-#    04.12.18   <--  Date of Last Modification.
+#    31.01.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  XYZ HANDLING UTILS
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2018
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2019
 #
 # ============================================================================
 #
@@ -104,7 +104,7 @@ def getXYZMeta ( fpath,file_stdout,file_stderr,log_parser=None ):
                  b=round(st.cell.b,6),
                  c=round(st.cell.c,6),
                  alpha=round(st.cell.alpha,6),
-                 beta=round(st.cell.alpha,6),
+                 beta =round(st.cell.beta ,6),
                  gamma=round(st.cell.gamma,6))
 
     xyz = []

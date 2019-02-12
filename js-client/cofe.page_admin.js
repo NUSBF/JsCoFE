@@ -55,10 +55,13 @@ function AdminPage ( sceneId )  {
   refresh_btn.setSize('30px','30px').setTooltip('Refresh');
 
   // Make Main Menu
-  var account_mi = this.headerPanel.menu.addItem('My Account' ,image_path('settings'));
-  var prjlist_mi = this.headerPanel.menu.addItem('My Projects',image_path('list'));
+  var account_nu = this.headerPanel.menu.addItem('Add New User',image_path('user'));
+  this.headerPanel.menu.addSeparator();
+  var account_mi = this.headerPanel.menu.addItem('My Account'  ,image_path('settings'));
+  var prjlist_mi = this.headerPanel.menu.addItem('My Projects' ,image_path('list'));
   this.addLogoutToMenu ( function(){ logout(sceneId); } );
 
+  account_nu.addOnClickListener ( function(){ makeRegisterPage   (sceneId); });
   account_mi.addOnClickListener ( function(){ makeAccountPage    (sceneId); });
   prjlist_mi.addOnClickListener ( function(){ makeProjectListPage(sceneId); });
 

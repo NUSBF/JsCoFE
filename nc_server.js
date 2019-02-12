@@ -114,7 +114,7 @@ function start()  {
 
   // resume job management
 
-  jm.readNCJobRegister();
+  jm.readNCJobRegister ( 0 );
 
   // --------------------------------------------------------------------------
 

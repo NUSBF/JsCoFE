@@ -3,13 +3,13 @@
 #
 # ============================================================================
 #
-#    29.01.19   <--  Date of Last Modification.
+#    17.12.18   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  CALCULATION OF ED MAPS
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2019
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2018
 #
 # ============================================================================
 #
@@ -17,15 +17,8 @@
 #  python native imports
 import os
 import sys
-import shutil
 
-#  application imports
-sys.path.append ( os.path.join(os.path.dirname(os.path.abspath(__file__)),os.pardir) )
-try:
-    from varut import command
-except:
-    print " import failed in 'proc/edmap'"
-    sys.exit ( 200 )
+import command
 
 # ============================================================================
 
@@ -70,24 +63,6 @@ def calcCCP4Maps ( mtzin,output_file_prefix,job_dir,file_stdout,file_stderr,
         LAB_F1  = _columns[source_key][0]
         LAB_PHI = _columns[source_key][1]
 
-
-    """
-    scr_file = open ( fft_map_script(),"w" )
-    scr_file.write (
-       "TITLE Sigmaa style 2mfo-dfc map calculated with refmac coefficients\n" +
-       "LABI F1=" + LAB_F1 + " PHI=" + LAB_PHI +
-       "\nEND\n"
-    )
-    scr_file.close()
-
-    # Start fft
-    rc = command.call ( "fft",
-              ["HKLIN" ,mtzin,
-               "MAPOUT",output_file_prefix + file_map()
-              ],
-              job_dir,fft_map_script(),file_stdout,file_stderr,log_parser )
-    """
-
     # Start cfft
     rc = command.call ( "cfft",
               ["-mtzin" ,mtzin,
@@ -102,23 +77,6 @@ def calcCCP4Maps ( mtzin,output_file_prefix,job_dir,file_stdout,file_stderr,
 
     #   Sigmaa style mfo-dfc map
     if source_key in ["refmac","acorn-map"]:
-
-        """
-        scr_file = open ( fft_dmap_script(),"w" )
-        scr_file.write (
-           "TITLE Sigmaa style mfo-dfc map calculated with refmac coefficients\n" +
-           "LABI F1=" + _columns[source_key][2] + " PHI=" + _columns[source_key][3] +
-           "\nEND\n"
-        )
-        scr_file.close()
-
-        # Start fft
-        rc = command.call ( "fft",
-                  ["HKLIN" ,mtzin,
-                   "MAPOUT",output_file_prefix + file_dmap()
-                  ],
-                  job_dir,fft_dmap_script(),file_stdout,file_stderr,log_parser )
-        """
 
         # Start cfft
         rc = command.call ( "cfft",
@@ -193,9 +151,8 @@ def calcEDMap ( xyzin,hklin,libin,hkl_dataset,output_file_prefix,job_dir,
     scr_file.close()
 
     # prepare refmac command line
-    xyzout = output_file_prefix + file_pdb()
     cmd = [ "XYZIN" ,xyzin,
-            "XYZOUT",xyzout,
+            "XYZOUT",output_file_prefix + file_pdb(),
             "HKLIN" ,hklin,
             "HKLOUT",output_file_prefix + file_mtz(),
             "LIBOUT",output_file_prefix + file_cif(),
@@ -203,20 +160,10 @@ def calcEDMap ( xyzin,hklin,libin,hkl_dataset,output_file_prefix,job_dir,
     if libin:
         cmd += ["LIBIN",libin]
 
-    #import shutil
-    # check as refmac outs TER card before "UNK" residues
-    #shutil.copy2 ( xyzin,"output/xyz_before_edcalcs_refmac.pdb" )
-
     # Start refmac
     rc = command.call ( "refmac5",cmd,
                 job_dir,refmac_script(),file_stdout,file_stderr,
                 log_parser=log_parser,citation_ref="refmac5-srv" )
-
-    # have to do this copying because refmac an put unwanted TER cards before
-    # UNK residues; since we use 0 refmac cycles for map calculations, this
-    # should not change any coordinates
-    #if xyzin!=xyzout:
-    #    shutil.copy2 ( xyzin,xyzout )
 
     if rc.msg:
         file_stdout.write ( "Error calling refmac5: " + rc.msg )

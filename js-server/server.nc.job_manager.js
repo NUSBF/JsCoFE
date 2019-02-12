@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    16.01.19   <--  Date of Last Modification.
+ *    05.02.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -114,18 +114,42 @@ NCJobRegister.prototype.removeJob = function ( job_token )  {
 
 var ncJobRegister = null;
 
-function readNCJobRegister()  {
+function readNCJobRegister ( readKey )  {
 
   if (!ncJobRegister)  {
-    var fpath     = path.join ( conf.getServerConfig().storage,registerFName );
+
+    var fpath = path.join ( conf.getServerConfig().storage,registerFName );
+    var saveRegister = true;
+
     ncJobRegister = new NCJobRegister();
     obj           = utils.readObject ( fpath );
+
     if (obj)  {
+
+      saveRegister = false;
+
       for (key in obj)
         ncJobRegister[key] = obj[key];
-    } else
+
+      if (readKey==0)  {
+        var maxSendTrials = conf.getServerConfig().maxSendTrials;
+        for (var job_token in ncJobRegister.job_map)
+          if (ncJobRegister.job_map.hasOwnProperty(job_token))  {
+            if (ncJobRegister.job_map[job_token].jobStatus==task_t.job_code.exiting) {
+              ncJobRegister.job_map[job_token].jobStatus  = task_t.job_code.running;
+              ncJobRegister.job_map[job_token].sendTrials = maxSendTrials;
+              var saveRegister = true;
+            }
+          }
+      }
+
+    }
+
+    if (saveRegister)
       writeNCJobRegister();
+
     startJobCheckTimer();
+
   }
 
   return ncJobRegister;
@@ -450,7 +474,11 @@ function ncJobFinished ( job_token,code )  {
 
   calcCapacity ( function(capacity){
 
-    feURL = jobEntry.feURL;
+    var feURL     = jobEntry.feURL;
+    var fe_config = conf.getFEConfig();
+    if (fe_config)
+      feURL = fe_config.externalURL;
+
     if (feURL.endsWith('/'))
       feURL = feURL.substr(0,feURL.length-1);
 
@@ -683,7 +711,7 @@ function ncMakeJob ( server_request,server_response )  {
 
   // 1. Get new job directory and create an entry in job registry
 
-  readNCJobRegister();
+  readNCJobRegister ( 1 );
   ncJobRegister.launch_count++; // this provides unique numbering of jobs
 
   var jobDir = ncGetJobDir ( ncJobRegister.launch_count );
@@ -846,7 +874,7 @@ function ncRunRVAPIApp ( post_data_obj,callback_func )  {
 
   // 1. Get new job directory and create an entry in job registry
 
-  readNCJobRegister();
+  readNCJobRegister ( 1 );
   ncJobRegister.launch_count++; // this provides unique numbering of jobs
 
   var jobDir = ncGetJobDir ( ncJobRegister.launch_count );
@@ -959,7 +987,7 @@ function ncRunClientJob ( post_data_obj,callback_func )  {
 
   // 1. Get new job directory and create an entry in job registry
 
-  readNCJobRegister();
+  readNCJobRegister ( 1 );
   ncJobRegister.launch_count++; // this provides unique numbering of jobs
 
   var jobDir = ncGetJobDir ( ncJobRegister.launch_count );
@@ -1011,7 +1039,7 @@ function ncRunClientJob ( post_data_obj,callback_func )  {
     .on('close',function(){   // finish,end,
       // successful download, unpack and start the job
 
-      send_dir.unpackDir ( jobDir,false, function(code){
+      send_dir.unpackDir ( jobDir,null, function(code){
         if (code==0)  {
           ncRunJob ( job_token,post_data_obj.feURL );
           // signal 'ok' to client

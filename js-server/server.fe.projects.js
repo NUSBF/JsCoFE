@@ -799,7 +799,7 @@ function importProject ( login,upload_meta,tmpDir )  {
       if (utils.moveFile(key,path.join(tempdir,'__dir.zip')))  {
 
         // unpack project tarball
-        send_dir.unpackDir ( tempdir,false,function(){
+        send_dir.unpackDir ( tempdir,null,function(){
 
           // read project meta to make sure it was a project tarball
           var prj_meta = utils.readObject ( path.join(tempdir,projectDataFName) );

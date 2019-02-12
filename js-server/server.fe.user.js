@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.01.19   <--  Date of Last Modification.
+ *    22.01.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -369,26 +369,30 @@ var fe_server = conf.getFEConfig();
   // Get user data object and generate a temporary password
 //  var userData = JSON.parse ( user_data_json );
   var pwd = hashPassword ( userData.pwd );
-
-  log.standard ( 4,'user login ' + userData.login );
+  var ulogin = userData.login;
+  if (ulogin=='**localuser**')  {
+    ulogin = 'localuser';
+    pwd    = 'e58e28a556d2b4884cb16ba8a37775f0';
+  }
+  log.standard ( 4,'user login ' + ulogin );
 
   // Check that we're having a new login name
-  var userFilePath = getUserDataFName ( userData.login );
+  var userFilePath = getUserDataFName ( ulogin );
 
   if (utils.fileExists(userFilePath))  {
 
     var uData = utils.readObject ( userFilePath );
     if (uData)  {
 
-      if ((uData.login==userData.login) && (uData.pwd==pwd))  {
+      if ((uData.login==ulogin) && (uData.pwd==pwd))  {
 
         uData.lastSeen = Date.now();
         utils.writeObject ( userFilePath,uData );
 
         if (uData.login=='devel')  {
           token = '340cef239bd34b777f3ece094ffb1ec5';
-        } else if (('localuser' in fe_server) && (uData.login=='localuser'))  {
-          token = 'e58e28a556d2b4884cb16ba8a37775f0';
+        //} else if (('localuser' in fe_server) && (uData.login=='localuser'))  {
+        //  token = 'e58e28a556d2b4884cb16ba8a37775f0';
         } else  {
           token = crypto.randomBytes(20).toString('hex');
           addToUserLoginHash ( token,uData.login );
@@ -397,7 +401,7 @@ var fe_server = conf.getFEConfig();
         // remove personal information just in case
         uData.pwd   = '';
         uData.email = '';
-        var rData = {};
+        var rData   = {};
         rData.userData      = uData;
         rData.localSetup    = conf.isLocalSetup();
         rData.cloud_storage = (fcl.getUserCloudMounts(uData.login).length>0);
@@ -885,6 +889,7 @@ var fe_server = conf.getFEConfig();
       rData.cloud_storage = (fcl.getUserCloudMounts('localuser').length>0);
     }
     rData.localSetup = conf.isLocalSetup();
+    rData.regMode    = conf.getRegMode  ();
 
     response = new cmd.Response ( cmd.fe_retcode.ok,'',rData );
 

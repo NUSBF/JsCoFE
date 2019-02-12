@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    29.09.18   <--  Date of Last Modification.
+ *    12.02.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Various message dialogs
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2018
+ *  (C) E. Krissinel, A. Lebedev 2016-2019
  *
  *  =================================================================
  *
@@ -132,9 +132,11 @@ var msg = '<b>General failure: data cannot be read.</b>';
 function MessageNotLoggedIn ( title )  {
   new MessageBox ( title,
     '<b>User Not Logged In.</b>' +
-    '<p>This may result from using forward/back/reload functions in your ' +
-    'browser.<p>Please log in again.<p>If problem persists, please report ' +
-    'to ccp4@stfc.ac.uk.' );
+    '<p>This may result from duplicate logging (either explicitly in another ' +
+    'browser<br>or machine, or implicitly by, e.g., copy/pasting URL in another ' +
+    'browser tab<br>or window), or using forward/back/reload buttons in your ' +
+    'browser.<p>Please log in again.' +
+    '<p>If problem persists, please report to ccp4@stfc.ac.uk.' );
 }
 
 function MessageUploadErrors ( title,message )  {
@@ -149,7 +151,9 @@ var msg = '<b>General failure: upload errors.</b>';
 function MessageNoJobDir ( title )  {
   new MessageBox ( title,
     '<b>Job directory not found on server.</b>' +
-    '<p>This may result from using forward/back/reload functions in your ' +
+    '<p>This may result from duplicate logging (either explicitly in another ' +
+    'browser or machine, or implicitly by, e.g., copy/pasting URL in another' +
+    'browser tab or window), or using forward/back/reload buttons in your ' +
     'browser.<p>Please log in again and repeat your actions.' +
     '<p>If problem persists, please report to ccp4@stfc.ac.uk.' );
 }

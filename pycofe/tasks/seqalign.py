@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    22.12.18   <--  Date of Last Modification.
+#    23.01.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2019
 #
 # ============================================================================
 #
@@ -94,21 +94,30 @@ class SeqAlign(basic.TaskDriver):
                 elif seqtype!=stype:
                     seqtype = "x"
             else:
-                chains = s1.xyzmeta.xyz[0].chains
-                for c in chains:
-                    if s1.chainSel=="(all)" or s1.chainSel==c.id:
-                        nseq   += 1
-                        seqname = "s" + str(nseq).zfill(3)
-                        smap[seqname] = {}
-                        smap[seqname]["name"]  = s1.dname + ":" + c.id
-                        smap[seqname]["align"] = ""
-                        seqfile.write ( "\n>" + seqname +
-                                        "\n"  + c.seq   + "\n" )
-                    stype = c.type.lower()
-                    if not seqtype:
-                        seqtype = stype
-                    elif seqtype!=stype:
-                        seqtype = "x"
+                nmodels  = len(s1.xyzmeta.xyz)
+                if s1._type!='DataEnsemble':
+                    chainSel = s1.chainSel
+                else:
+                    chainSel = "(all)"
+                for i in range(nmodels):
+                    chains = s1.xyzmeta.xyz[i].chains
+                    for c in chains:
+                        if chainSel=="(all)" or chainSel==c.id:
+                            nseq   += 1
+                            seqname = "s" + str(nseq).zfill(3)
+                            smap[seqname] = {}
+                            smap[seqname]["name"] = s1.dname + ":"
+                            if s1._type=='DataEnsemble':
+                                smap[seqname]["name"] += str(s1.xyzmeta.xyz[i].model) + ':'
+                            smap[seqname]["name"] += c.id
+                            smap[seqname]["align"] = ""
+                            seqfile.write ( "\n>" + seqname +\
+                                            "\n"  + c.seq   + "\n" )
+                        stype = c.type.lower()
+                        if not seqtype:
+                            seqtype = stype
+                        elif seqtype!=stype:
+                            seqtype = "x"
         seqfile.close()
 
         if nseq<2:
@@ -157,6 +166,15 @@ class SeqAlign(basic.TaskDriver):
                             if w[2]=="median:" : id_med = w[3]
 
                 lines = [line.rstrip('\n') for line in open(self.file_aln_path(),'r')]
+                self.file_stdout.write (
+                    "\n\n"
+                    "===============================================================\n\n"
+                    "    SEQUENCE ALIGNMENT\n\n"
+                    "===============================================================\n\n"
+                )
+                for line in lines:
+                    self.file_stdout.write ( line+"\n" )
+
                 smap["align"] = ""
                 i = 0
                 while i < len(lines):
