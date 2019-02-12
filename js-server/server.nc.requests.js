@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    15.10.18   <--  Date of Last Modification.
+ *    22.01.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Number Cruncher Server -- Requests Module
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2018
+ *  (C) E. Krissinel, A. Lebedev 2016-2019
  *
  *  =================================================================
  *
@@ -112,7 +112,7 @@ function ncGetInfo ( server_request,server_response )  {
   var ncInfo = {};
   ncInfo.config      = conf.getServerConfig();
   ncInfo.jobRegister = {};
-  var jobRegister    = jm.readNCJobRegister();
+  var jobRegister    = jm.readNCJobRegister ( 1 );
   ncInfo.jobRegister.launch_count = jobRegister.launch_count;
   ncInfo.jobRegister.job_map      = jobRegister.job_map;
 

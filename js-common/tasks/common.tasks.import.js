@@ -160,6 +160,8 @@ if (!__template)  {
       widget.upload.button.setDisabled ( disable_bool );
       if (widget.upload.link_button)
         widget.upload.link_button.setDisabled ( disable_bool );
+      if (widget.upload.pdb_button)
+        widget.upload.pdb_button.setDisabled ( disable_bool );
       //if (this.upload_files.length<=0)
         //this.sendTaskStateSignal ( widget,'hide_run_button' );
     }

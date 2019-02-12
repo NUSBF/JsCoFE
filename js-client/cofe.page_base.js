@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.12.18   <--  Date of Last Modification.
+ *    05.02.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Base page class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2018
+ *  (C) E. Krissinel, A. Lebedev 2016-2019
  *
  *  =================================================================
  *
@@ -31,7 +31,7 @@ function BasePage ( sceneId,gridStyle,pageType )  {
 
   // set background image
   if (getClientCode()==client_code.ccp4)
-    $('#'+sceneId).css({"background-image"    : "url('" + image_path('ccp4_diamond_test') + "')",
+    $('#'+sceneId).css({"background-image"    : "url('" + image_path('ccp4_background') + "')",
                         "background-repeat"   : "no-repeat",
                         "background-size"     : "cover",
                         "background-position" : "center center"} );

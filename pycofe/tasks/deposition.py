@@ -226,7 +226,7 @@ class Deposition(basic.TaskDriver):
         worked = run_process ( input_mmcif  = xyzout_cif,
                                output_mmcif = deposition_cif,
                                fasta_file   = deposition_fasta,
-                               sf_file      = sfCIF,
+                               #sf_file      = sfCIF,
                                xml_file     = aimless_meta )
 
         if not worked:
@@ -249,7 +249,7 @@ class Deposition(basic.TaskDriver):
         #)
 
         self.putMessage ( "&nbsp;<h3><i>PDB Deposition</i></h3>" +\
-            "<b>a) Download the following files:<br><hr/>" )
+                          "<b>a) Download the following files:<br><hr/>" )
 
         grid_id = self.getWidgetId ( self.dep_grid() )
         self.putGrid ( grid_id )

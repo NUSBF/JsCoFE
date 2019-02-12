@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    14.01.19   <--  Date of Last Modification.
+#    23.01.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -31,6 +31,7 @@ import shutil
 
 #  ccp4-python imports
 import pyrvapi
+import gemmi
 
 #  application imports
 import basic
@@ -197,7 +198,15 @@ class EnsemblePrepXYZ(basic.TaskDriver):
         self.close_stdin()
 
         # make command-line parameters for mrbump run on a SHELL-type node
-        cmd = [ "seqin",seq.getSeqFilePath(self.inputDir()) ]
+        cmd = []
+        if seq:
+            cmd = [ "seqin",seq.getSeqFilePath(self.inputDir()) ]
+        else:
+            fake_seq_fpath = "__fake.seq"
+            seqf = open(fake_seq_fpath,"w")
+            seqf.write ( ">fake_sequence\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n" )
+            seqf.close()
+            cmd = [ "seqin",fake_seq_fpath ]
 
         # Prepare report parser
         self.setGenericLogParser ( self.mrbump_report(),True )
@@ -216,18 +225,33 @@ class EnsemblePrepXYZ(basic.TaskDriver):
         if modSel=="S": self.addCitations ( ['sculptor'] )
         if modSel=="P": self.addCitations ( ['chainsaw'] )
 
+        '''
         models_dir = ""
         if modSel=="U":
             models_dir = os.path.join ( "search_" + self.outdir_name(),"PDB_files" )
         else:
             models_dir = os.path.join ( "search_" + self.outdir_name(),"models" )
+        '''
         model_xyz  = []
+        models_dir = os.path.join ( "search_" + self.outdir_name(),"PDB_files" )
         if os.path.isdir(models_dir):
             model_xyz = [fn for fn in os.listdir(models_dir)
                         if any(fn.endswith(ext) for ext in [".pdb"])]
+        if len(model_xyz)<=0:
+            models_dir = os.path.join ( "search_" + self.outdir_name(),"models" )
+            if os.path.isdir(models_dir):
+                model_xyz = [fn for fn in os.listdir(models_dir)
+                            if any(fn.endswith(ext) for ext in [".pdb"])]
 
         for i in range(len(model_xyz)):
             model_xyz[i] = os.path.join ( models_dir,model_xyz[i] )
+            st = gemmi.read_structure ( model_xyz[i] )
+            if modSel=="U":
+                st.remove_waters()
+            else:
+                st.remove_ligands_and_waters()
+            st.remove_empty_chains()
+            st.write_pdb ( model_xyz[i] )
 
         if len(model_xyz)>1:
 

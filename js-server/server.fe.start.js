@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    01.06.18   <--  Date of Last Modification.
+ *    05.02.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Front End Server
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2018
+ *  (C) E. Krissinel, A. Lebedev 2016-2019
  *
  *  =================================================================
  *
@@ -78,20 +78,22 @@ function start ( callback_func )  {
   //  instantiate the server
   var server = http.createServer();
 
-  function stopServer ( nc_number )  {
+  function stopServer ( nc_number,final_callback_function )  {
     if (nc_number<ncConfigs.length)  {
       if (ncConfigs[nc_number].stoppable)  {
         request.post({
           url      : ncConfigs[nc_number].url() + '/' + cmd.nc_command.stop,
           formData : {}
         }, function(err,httpResponse,response) {
-          stopServer ( nc_number+1 );
+          stopServer ( nc_number+1,final_callback_function );
         });
       } else
-        stopServer ( nc_number+1 );
+        stopServer ( nc_number+1,final_callback_function );
     } else  {
       setTimeout ( function(){
         server.close();
+        if (final_callback_function)
+          final_callback_function();
         process.exit();
       },500);
     }
@@ -139,8 +141,9 @@ function start ( callback_func )  {
         case cmd.fe_command.stop :
             if (conf.getFEConfig().stoppable)  {
               log.standard ( 6,'stopping' );
-              cmd.sendResponse ( server_response,cmd.fe_retcode.ok,'','' );
-              stopServer ( 0 );
+              stopServer ( 0,function(){
+                cmd.sendResponse ( server_response,cmd.fe_retcode.ok,'','' );
+              });
             } else {
               log.detailed ( 6,'stop command issued -- ignored according configuration' );
             }

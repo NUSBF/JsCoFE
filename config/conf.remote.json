@@ -24,6 +24,7 @@
     "facilitiesPath"   : "./cofe-facilities",
     "bootstrapHTML"    : "jscofe.html",
     "fileCapSize"      : 500000,
+    "regMode"          : "admin",
     "ration"           : {
         "storage"   : 3000,
         "cpu_day"   : 24,
@@ -38,7 +39,7 @@
       "in_use"           : true,
       "protocol"         : "http",
       "host"             : "localhost",
-      "port"             : 8083,
+      "port"             : 8084,
       "externalURL"      : "",
       "exclusive"        : true,
       "stoppable"        : false,

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    14.01.19   <--  Date of Last Modification.
+ *    22.01.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -256,116 +256,20 @@ function sendDir ( dirPath, fileSelection, serverURL, command, metaData,
 
 // ==========================================================================
 
-/*  --- old tar code  23.07.2018
-function unpackDir ( dirPath,cleanTmpDir, onReady_func )  {
-// unpack all service jobballs (their names start with double underscore)
-// and clean them out
-
-  var jobballPath = path.join ( dirPath,'__*.tar' );
-
-  // however silly, we separate ungzipping and untaring because using '-xzf'
-  // has given troubles on one system
-  var unpack_com = 'gzip -d '   + path.join(dirPath,'__*.tar.gz') +
-                   '&& tar -xf ' + jobballPath;
-
-  if (cleanTmpDir)  {
-    var tmpDir1 = '';
-    do {
-      tmpDir1 = path.join ( cleanTmpDir,crypto.randomBytes(20).toString('hex') );
-    } while (utils.fileExists(tmpDir1));
-    utils.mkDir ( tmpDir1 );
-    tmpDir2 = tmpDir1 + '_JOBDIRCOPY'
-    unpack_com += ' -C '       + tmpDir1 +
-                  '&& mv '     + dirPath + ' ' + tmpDir2 +
-                  '&& mv '     + tmpDir1 + ' ' + dirPath +
-                  '&& rm -rf ' + tmpDir2;
-    //unpack_com += ' -C '       + tmpDir1  +
-    //              '&& rm -rf ' + path.join(dirPath,'*') +
-    //              '&& mv '     + path.join(tmpDir1 ,'*') + ' ' + dirPath +
-    //              '&& rm -rf ' + tmpDir1;
-  } else {
-    unpack_com += ' -C ' + dirPath + '; rm ' + jobballPath;
-  }
-
-  var tar = child_process.spawn ( '/bin/sh',['-c',unpack_com],{
-    stdio : ['ignore']
-  });
-
-  tar.stderr.on ( 'data',function(data){
-    log.error ( 15,'tar/unpackDir errors: "' + data + '"; encountered in ' + dirPath );
-  });
-
-  tar.on('close', function(code){
-    onReady_func(code);
-  });
-
-}
-*/
-
-/*  -- node-based zip version (inefficient)  25.07.2018
-function unpackDir ( dirPath,cleanTmpDir, onReady_func )  {
-// unpack all service jobballs (their names start with double underscore)
-// and clean them out
-
-  var jobballPath = path.join ( dirPath,jobballName );
-  var errors = "";
-
-  if (cleanTmpDir)  {
-    var unpackDir = '';
-    do {
-      unpackDir = path.join ( cleanTmpDir,crypto.randomBytes(20).toString('hex') );
-    } while (utils.fileExists(unpackDir));
-    utils.mkDir ( unpackDir );
-    tmpDir = unpackDir + '_JOBDIRCOPY'
-  } else {
-    unpackDir = dirPath;
-  }
-
-  fs.createReadStream(jobballPath)
-    .pipe(unzipper.Extract({ path: unpackDir })
-      .on('error',function(){
-        log.error ( 15,'zip/unpackDir errors encountered in ' + dirPath );
-        errors = "errors";
-      })
-     .on('close', function(){
-       utils.removeFile ( jobballPath )
-       if (!errors)  {
-          if (cleanTmpDir)  {
-            // replace destination with temporary directory used for unpacking;
-            // as all directories are on the same device (see above), the
-            // replace should be done within this thread and, therefore, safe
-            // for concurrent access from client
-            utils.moveFile ( dirPath  ,tmpDir  );
-            utils.moveFile ( unpackDir,dirPath );
-            setTimeout ( function(){  // postpone for speed
-              utils.removePath ( tmpDir );
-            },0 );
-          }
-          onReady_func(0);
-       } else {
-         onReady_func(-1);
-       }
-     }));
-
-}
-*/
-
 function unpackDir ( dirPath,cleanTmpDir, onReady_func )  {
 // unpack all service jobballs (their names start with double underscore)
 // and clean them out
 
   var jobballPath = getJobballPath ( dirPath );
-  //var errors = "";
 
+  var unpack_dir = dirPath;
+  var tmpDir     = '';
   if (cleanTmpDir)  {
-    var unpack_dir = '';
     do {
       unpack_dir = path.join ( cleanTmpDir,'tmp_'+crypto.randomBytes(20).toString('hex') );
     } while (utils.fileExists(unpack_dir));
     utils.mkDir ( unpack_dir );
     tmpDir = unpack_dir + '_JOBDIRCOPY';
-  } else {
-    unpack_dir = dirPath;
   }
 
   /*

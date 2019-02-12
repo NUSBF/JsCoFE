@@ -28,6 +28,7 @@
     "bootstrapHTML"    : "jscofe.html",
     "maxRestarts"      : 100,
     "fileCapSize"      : 500000,
+    "regMode"          : "email",
     "ration"           : {
         "storage"   : 3000,
         "cpu_day"   : 24,

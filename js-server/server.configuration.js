@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    19.11.18   <--  Date of Last Modification.
+ *    12.02.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Configuration Module
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2018
+ *  (C) E. Krissinel, A. Lebedev 2016-2019
  *
  *  =================================================================
  *
@@ -370,6 +370,20 @@ var isLocal = true;
 
 }
 
+function getRegMode()  {
+  var mode = 'email';
+  if ('regMode' in fe_server)
+    mode = fe_server.regMode;
+  if (mode=='email')  {
+    if (emailer)  {
+      if (emailer.type=='desktop')
+        mode = 'admin';
+    } else
+      mode = 'admin';
+  }
+  return mode;
+}
+
 
 function isLocalFE()  {
 // returns true if FE is on local machine
@@ -454,6 +468,7 @@ module.exports.writeConfiguration = writeConfiguration;
 module.exports.pythonName         = pythonName;
 module.exports.isSharedFileSystem = isSharedFileSystem;
 module.exports.isLocalSetup       = isLocalSetup;
+module.exports.getRegMode         = getRegMode;
 module.exports.isLocalFE          = isLocalFE;
 module.exports.getFETmpDir        = getFETmpDir;
 module.exports.getNCTmpDir        = getNCTmpDir;

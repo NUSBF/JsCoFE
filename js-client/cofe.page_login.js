@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.01.19   <--  Date of Last Modification.
+ *    12.02.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -113,8 +113,15 @@ function LoginPage ( sceneId )  {
                                   row++,0,1,2 );
   panel.setCellSize             ( '','24pt',row++,0 );
 
-  reg_btn.addOnClickListener ( function(){ makeRegisterPage      (sceneId) } );
-  pwd_btn.addOnClickListener ( function(){ makeForgottenLoginPage(sceneId) } );
+  reg_btn.addOnClickListener ( function(){
+    if (__regMode=='email')
+      makeRegisterPage(sceneId);
+    else
+      new MessageBox ( 'New user registration',
+        '<p>In order to register as a new user, please contact ' + appName() +
+        '<br>admin or maintainer in your organisation.' );
+  });
+  pwd_btn.addOnClickListener ( function(){ makeForgottenLoginPage(sceneId); } );
 
 /*
   var viewFullScreen = document.getElementById("scene");
@@ -148,44 +155,7 @@ function LoginPage ( sceneId )  {
 
     } else  {
 
-      ud       = new UserData();
-      ud.login = login_inp.getValue();
-      ud.pwd   = pwd_inp  .getValue();
-
-      serverCommand ( fe_command.login,ud,'Login',function(response){
-
-        switch (response.status)  {
-
-          case fe_retcode.ok:
-                  var userData    = response.data.userData;
-                  __login_token   = response.message;
-                  __login_user    = userData.name;
-                  __admin         = userData.admin;
-                  __cloud_storage = response.data.cloud_storage;
-                  if ('helpTopics' in userData)
-                        __doNotShowList = userData.helpTopics;
-                  else  __doNotShowList = [];
-                  __local_setup = response.data.localSetup;
-                  loadKnowledge ( 'Login' )
-                  if (__admin && (userData.login=='admin'))
-                        makeAdminPage       ( sceneId );
-                  else  makeProjectListPage ( sceneId );
-              return true;
-
-          case fe_retcode.wrongLogin:
-                    new MessageBox ( 'Login',
-                      '<b>Login data cannot be recognised.</b><p>' +
-                      'Please check that provided login name and password are ' +
-                      'correct.' );
-              return true;
-
-          default: ;
-
-        }
-
-        return false;
-
-      },null,null);
+      login ( login_inp.getValue(),pwd_inp.getValue(),sceneId );
 
     }
 
