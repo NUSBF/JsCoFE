@@ -113,8 +113,11 @@ class Crank2(basic.TaskDriver):
 
     def add_model ( self ):
 
-        S = "model substr " + self.getKWItem ( self.sec1.HATOM  ) +\
+        ha_type = self.revision.ASU.ha_type
+        S = "model substr atomtype=" + ha_type +\
                               self.getKWItem ( self.sec1.NATOMS )
+        #S = "model substr " + self.getKWItem ( self.sec1.HATOM  ) +\
+        #                      self.getKWItem ( self.sec1.NATOMS )
 
         for hkli in self.hkl:
             S += " d_name=" + hkli.wtype
@@ -129,8 +132,10 @@ class Crank2(basic.TaskDriver):
             S  = "model "
             if self.getParameter(self.sec6.COMB_PHDMMB_NCS_DET_MR)=="True":
                 S += "custom=ncs "
-            S += "unknown \"file=" + self.pmodel.getXYZFilePath(self.inputDir()) + "\"" +\
-                 self.getKWItem ( self.sec1.HATOM  )
+            S += "unknown \"file=" + self.pmodel.getXYZFilePath(self.inputDir()) +\
+                 "\" atomtype=" + ha_type
+            #S += "unknown \"file=" + self.pmodel.getXYZFilePath(self.inputDir()) + "\"" +\
+            #     self.getKWItem ( self.sec1.HATOM  )
             self.config.append ( S )
 
         return
@@ -193,11 +198,15 @@ class Crank2(basic.TaskDriver):
         substrdet_pgm = self.getParameter ( self.sec2.SUBSTRDET_PROGRAM )
         if substrdet_pgm=="_blank_":
             substrdet_pgm = ""
+        ndisulph = self.revision.ASU.ndisulph
+        if ndisulph or ndisulph==0:
+            ndisulph = " num_dsul::" + str(ndisulph)
         self.config.append (
             "substrdet " +\
             self.getKWItem ( self.sec2.SUBSTRDET_HIGH_RES_CUTOFF_SHELXD ) +\
             self.getKWItem ( self.sec2.SUBSTRDET_HIGH_RES_CUTOFF        ) +\
-            self.getKWItem ( self.sec1.NDSULF                           ) +\
+            ndisulph +\
+            #self.getKWItem ( self.sec1.NDSULF                           ) +\
             self.getKWItem ( self.sec2.SUBSTRDET_NUM_TRIALS             ) +\
             self.getKWItem ( self.sec2.SUBSTRDET_THRESHOLD_STOP_SHELXD  ) +\
             self.getKWItem ( self.sec2.SUBSTRDET_THRESHOLD_STOP         ) +\
@@ -451,8 +460,9 @@ class Crank2(basic.TaskDriver):
                         self.structure.addDataAssociation ( s.dataId )
 
                 if self.task._type!="TaskShelxSubstr":
+                    hkls = self.pickHKL()
                     self.structure.addPhasesSubtype()
-                    self.structure.setCrank2Labels ()
+                    self.structure.setCrank2Labels ( hkls )
                     #sub_path = os.path.join ( self.reportDir(),"2-substrdet","fixsubstrpdb","heavy.pdb" )
                     substrdir = [f for f in os.listdir(self.reportDir()) if f.endswith("-substrdet")]
                     if len(substrdir)>0:
@@ -460,7 +470,6 @@ class Crank2(basic.TaskDriver):
                         if os.path.isfile(sub_path):
                             #self.rvrow += 20
                             self.putTitle ( "Heavy Atom Substructure Found" )
-                            hkls = self.pickHKL()
                             substructure = self.finaliseStructure ( sub_path,
                                         self.outputFName,hkls,None,[],1,
                                         leadKey=1,openState_bool=False,title="" )

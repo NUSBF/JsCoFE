@@ -75,8 +75,8 @@ class ASUMod(asudef.ASUDef):
 
         revision = asudef.makeRevision ( self,hkl,seq,
                                        self.getParameter(sec1.COMPOSITION_SEL),
-                                       altEstimateKey,nRes,molWeight,
-                                       self.getParameter(sec1.RESLIMIT),
+                                       altEstimateKey,nRes,molWeight,"",
+                                       #self.getParameter(sec1.RESLIMIT),
                                        revision0 )
 
         if revision:

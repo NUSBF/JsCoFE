@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    23.01.19   <--  Date of Last Modification.
+#    11.04.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -86,8 +86,15 @@ END
 """
 
 
-
-
+def remove_ligands_and_waters ( modSel,fpath_in,fpath_out ):
+    st = gemmi.read_structure ( fpath_in )
+    if modSel=="U":
+        st.remove_waters()
+    else:
+        st.remove_ligands_and_waters()
+    st.remove_empty_chains()
+    st.write_pdb ( fpath_out )
+    return
 
 # ============================================================================
 # Make Ensembler driver
@@ -132,12 +139,15 @@ class EnsemblePrepXYZ(basic.TaskDriver):
             os.remove ( outputFile )
 
         sec1 = self.task.parameters.sec1.contains
-        sec2 = self.task.parameters.sec2.contains
-        sec3 = self.task.parameters.sec3.contains
+        #sec2 = self.task.parameters.sec2.contains
+        #sec3 = self.task.parameters.sec3.contains
 
         modeSel = ""
         if seq:
-            modSel = self.getParameter ( sec1.MODIFICATION_SEQ_SEL )
+            if len(xyz)==1:
+                modSel = self.getParameter ( sec1.MODIFICATION_SEQ_SEL )
+            else:
+                modSel = self.getParameter ( sec1.MODIFICATION_SEQ_MXYZ_SEL )
         else:
             modSel = self.getParameter ( sec1.MODIFICATION_NOSEQ_SEL )
 
@@ -178,6 +188,7 @@ class EnsemblePrepXYZ(basic.TaskDriver):
             "\nGESE True"       +\
             "\nGEST True"       +\
             "\nAMPT False"      +\
+            "\nLITE True"       + \
             "\nMAPROGRAM MAFFT" +\
             "\nDOPHMMER False"  +\
             "\nDOHHPRED False"
@@ -191,16 +202,18 @@ class EnsemblePrepXYZ(basic.TaskDriver):
 
         for i in range(len(xyz)):
             self.write_stdin ( "\nLOCALFILE " + xyz[i].getXYZFilePath(self.inputDir()) )
-            if xyz[i].chainSel!="(all)":
+            if xyz[i].chainSel!="(all)" and xyz[i].chainSel.strip():
                 self.write_stdin ( " CHAIN " + xyz[i].chainSel )
 
         self.write_stdin ( "\nEND\n" )
         self.close_stdin()
 
         # make command-line parameters for mrbump run on a SHELL-type node
-        cmd = []
+        seqPath = None
+        cmd     = []
         if seq:
-            cmd = [ "seqin",seq.getSeqFilePath(self.inputDir()) ]
+            seqPath = seq.getSeqFilePath ( self.inputDir() )
+            cmd     = [ "seqin",seqPath ]
         else:
             fake_seq_fpath = "__fake.seq"
             seqf = open(fake_seq_fpath,"w")
@@ -225,186 +238,166 @@ class EnsemblePrepXYZ(basic.TaskDriver):
         if modSel=="S": self.addCitations ( ['sculptor'] )
         if modSel=="P": self.addCitations ( ['chainsaw'] )
 
-        '''
-        models_dir = ""
-        if modSel=="U":
-            models_dir = os.path.join ( "search_" + self.outdir_name(),"PDB_files" )
-        else:
-            models_dir = os.path.join ( "search_" + self.outdir_name(),"models" )
-        '''
-        model_xyz  = []
-        models_dir = os.path.join ( "search_" + self.outdir_name(),"PDB_files" )
-        if os.path.isdir(models_dir):
-            model_xyz = [fn for fn in os.listdir(models_dir)
-                        if any(fn.endswith(ext) for ext in [".pdb"])]
-        if len(model_xyz)<=0:
-            models_dir = os.path.join ( "search_" + self.outdir_name(),"models" )
+        if len(xyz)<=1:
+            #  single file output
+
+            model_xyz  = []
+            models_dir = os.path.join ( "search_" + self.outdir_name(),"models","domain_1" )
             if os.path.isdir(models_dir):
                 model_xyz = [fn for fn in os.listdir(models_dir)
-                            if any(fn.endswith(ext) for ext in [".pdb"])]
+                             if any(fn.endswith(ext) for ext in [".pdb"])]
 
-        for i in range(len(model_xyz)):
-            model_xyz[i] = os.path.join ( models_dir,model_xyz[i] )
-            st = gemmi.read_structure ( model_xyz[i] )
-            if modSel=="U":
-                st.remove_waters()
+            if len(model_xyz)<=0:
+                self.putTitle ( "No output files created" )
+                self.fail ( "","No output files created" )
+                return
+
             else:
-                st.remove_ligands_and_waters()
-            st.remove_empty_chains()
-            st.write_pdb ( model_xyz[i] )
 
-        if len(model_xyz)>1:
+                outputFile = self.getXYZOFName()
+                remove_ligands_and_waters ( modSel,os.path.join(models_dir,model_xyz[0]),outputFile )
 
-            # make a file with input script
-            self.open_stdin()
+                if not os.path.isfile(outputFile):
+                    self.putTitle ( "No output files found" )
+                    self.fail ( "","No output files found" )
+                    return
 
-            self.write_stdin (
-                "input" +\
-                "\n{"
-            )
-
-            for i in range(len(model_xyz)):
-                self.write_stdin ( "\nmodel = " + model_xyz[i] )
-                """
-                fpath  = xyz[i].getXYZFilePath ( self.inputDir() )
-                if xyz[i].chainSel != "(all)":
-                    base, ext = os.path.splitext ( xyz[i].getXYZFileName() )
-                    fpath_sel = base + "_" + xyz[i].chainSel + ext
-                    coor.fetchChains ( fpath,-1,[xyz[i].chainSel],True,True,fpath_sel )
-                    self.write_stdin ( "\nmodel = " + fpath_sel )
                 else:
-                    self.write_stdin ( "\nmodel = " + fpath )
-                """
 
-            output_style = "merged"
+                    temp = dtype_template.DType ( self.job_id )
+                    for c in xyz:
+                        temp.addSubtypes ( c.subtype )
+                    temp.removeSubtypes ([
+                        dtype_template.subtypeHKL         (),
+                        dtype_template.subtypeAnomalous   (),
+                        dtype_template.subtypeASU         (),
+                        dtype_template.subtypeSequence    (),
+                        dtype_template.subtypeXYZ         (),
+                        dtype_template.subtypeSubstructure(),
+                        dtype_template.subtypeAnomSubstr  (),
+                        dtype_template.subtypePhases      (),
+                        dtype_template.subtypeLigands     (),
+                        dtype_template.subtypeWaters      ()
+                    ])
 
-            self.write_stdin (
-                "\n}"              +\
-                "\noutput"         +\
-                "\n{"              +\
-                #"\nlocation = " + "./" +\  -- not needed, will write to current directory
-                "\nroot = ensemble"+\
-                "\nstyle = "       + output_style +\
-                "\nsort = input"   +\
-                "\n}"              +\
-                "\nconfiguration"  +\
-                "\n{"              +\
-                "\nsuperposition"  +\
-                "\n{"              +\
-                "\nmethod = "      + self.getParameter(sec2.SUPERPOSITION_SEL,False) +\
-                "\nconvergence = " + self.getParameter(sec3.SUPCONV,False) +\
-                "\n}"              +\
-                "\nmapping = "     + self.getParameter(sec2.MAPPING_SEL,False) +\
-                "\natoms = "       + self.getParameter(sec3.ATOMNAMES,False) +\
-                "\nclustering = "  + self.getParameter(sec3.CLUSTDIST,False) +\
-                "\nweighting"      +\
-                "\n{"              +\
-                "\nscheme = "      + self.getParameter(sec2.WEIGHTING_SEL,False) +\
-                "\nconvergence = " + self.getParameter(sec3.WEIGHTCONV,False) +\
-                "\nincremental_damping_factor = " + self.getParameter(sec3.WEIGHTDFACTOR,False) +\
-                "\nmax_damping_factor = " + self.getParameter(sec3.WEIGHTMAXDFACTOR,False) +\
-                "\n"               + self.getParameter(sec2.WEIGHTING_SEL,False) +\
-                "\n{\n"            +\
-                "\ncritical = "    + self.getParameter(sec2.RRCRITICAL,False) +\
-                "\n}"              +\
-                "\n}"              +\
-                "\ntrim = "        + self.getParameter(sec2.TRIM_SEL,False) +\
-                "\ntrimming"       +\
-                "\n{"              +\
-                "\nthreshold = "   + self.getParameter(sec2.TTHRESH,False) +\
-                "\n}"              +\
-                "\n}\n"
-            )
+                    align_meta = analyse_ensemble.align_seq_xyz ( self,
+                                        seqPath,outputFile,seqtype="protein" )
 
-            self.close_stdin()
+                    ensemble = self.registerEnsemble ( temp.subtype,outputFile,checkout=True )
+                    if ensemble:
+                        if seq:
+                            ensemble.putSequence ( seq )
+                        self.putTitle ( "Results" )
+                        if len(xyz)>1:
+                            self.putSection ( self.gesamt_report(),"Structural alignment" )
+                            analyse_ensemble.run ( self,self.gesamt_report(),ensemble )
+                        else:
+                            ensemble.meta = { "rmsd" : "", "seqId" : "" }
+                            self.putMessage (
+                                "<h3>Generated single-model ensemble (" +\
+                                str(ensemble.xyzmeta["xyz"][0]["chains"][0]["size"]) +\
+                                " residues)</h3>" )
 
-            # Start ensembler
-            self.runApp ( "phaser.ensembler",["--stdin"],logType="Main" )
+                        if not seq:
+                            ensemble.meta["seqId"] = ""
+                            self.dataSerialNo += 1
+                            seq = dtype_sequence.DType ( self.job_id )
+                            seq.setSeqFile   ( "(unknown)" )
+                            seq.makeDName ( self.dataSerialNo )
+                            seq.removeFiles()  # no files associated with unknown sequence
+                            seq.setSubtype  ( "unknown" )
+                            self.outputDataBox.add_data ( seq )
+                            self.putMessage ( "<b>Associated with auto-generated " +\
+                                              "unknown sequence:</b>&nbsp;" +\
+                                              seq.dname + "<br>&nbsp;" )
+                        else:
+                            self.putMessage ( "<b>Associated with sequence:</b>&nbsp;" +\
+                                              seq.dname + "<br>&nbsp;" )
+                            if align_meta["status"]=="ok":
+                                ensemble.meta["seqId"] = align_meta["id_avg"]
 
-            #if len(xyz)==1:
-            #    for file in os.listdir("."):
-            #        if file.startswith("ensemble_X_X_"):
-            #            os.rename ( file,outputFile )
-            #            break
-            os.rename ( "ensemble_merged.pdb",outputFile )
+                        ensemble.seqId = ensemble.meta["seqId"]
+                        ensemble.rmsd  = ensemble.meta["rmsd" ]
+
+                        self.putEnsembleWidget ( "ensemble_btn","Coordinates",ensemble )
+                        ensemble.addDataAssociation ( seq.dataId )
+                        ensemble.sequence = seq
+                        seq_file_name = seq.getSeqFileName()
+                        if seq_file_name:
+                            ensemble.setSeqFile ( seq_file_name )
+                            os.rename ( seq.getSeqFilePath(self.inputDir()),
+                                        seq.getSeqFilePath(self.outputDir()) )
+                        else:
+                            ensemble.setSubtype ( "sequnk" )
 
         else:
-            # single xyz dataset on input
-            outputFile = model_xyz[0]
-            """
-            xyz0  = self.makeClass ( xyz[0] )
-            fpath = xyz0.getXYZFilePath ( self.inputDir() )
-            coor.fetchChains ( fpath,-1,[xyz0.chainSel],True,True,outputFile )
-            """
-            #if xyz0.chainSel != "(all)":
-            #    coor.fetchChains ( fpath,-1,[xyz0.chainSel],True,True,outputFile )
-            #else:
-            #    coor.fetchChains ( fpath,-1,['(all)'],True,True,outputFile )
-            #    os.rename ( fpath,outputFile )
+            #  ensemble output
 
-        if os.path.isfile(outputFile):
+            ensembles_found = False;
+            ensembleSerNo   = 0
+            file_order      = ["BaseAlignment","100.0","75.0","50.0","25.0"]
 
-            temp = dtype_template.DType ( self.job_id )
-            for c in xyz:
-                temp.addSubtypes ( c.subtype )
-            temp.removeSubtypes ([
-                dtype_template.subtypeHKL         (),
-                dtype_template.subtypeAnomalous   (),
-                dtype_template.subtypeASU         (),
-                dtype_template.subtypeSequence    (),
-                dtype_template.subtypeXYZ         (),
-                dtype_template.subtypeSubstructure(),
-                dtype_template.subtypeAnomSubstr  (),
-                dtype_template.subtypePhases      (),
-                dtype_template.subtypeLigands     (),
-                dtype_template.subtypeWaters      ()
-            ])
-            ensemble = self.registerEnsemble ( temp.subtype,outputFile,checkout=True )
-            if ensemble:
-                if seq:
-                    ensemble.putSequence ( seq )
-                self.putTitle ( "Results" )
-                if len(xyz)>1:
-                    self.putSection ( self.gesamt_report(),"Structural alignment" )
-                    analyse_ensemble.run ( self,self.gesamt_report(),ensemble )
-                else:
-                    ensemble.meta = None
-                    ensemble.rmsd = 1.0  # just to put in something
-                    self.putMessage (
-                        "<h3>Generated single-model ensemble (" +\
-                        str(ensemble.xyzmeta["xyz"][0]["chains"][0]["size"]) +\
-                        " residues)</h3>" )
+            model_xyz  = []
+            models_dir = os.path.join ( "search_" + self.outdir_name(),"models","domain_1","ensembles" )
+            if os.path.isdir(models_dir):
+                model_xyz = [fn for fn in os.listdir(models_dir)
+                             if any(fn.endswith(ext) for ext in [".pdb"])]
 
-                if not seq:
-                    self.dataSerialNo += 1
-                    seq = dtype_sequence.DType ( self.job_id )
-                    seq.setSeqFile   ( "(unknown)" )
-                    seq.makeDName ( self.dataSerialNo )
-                    seq.removeFiles()  # no files associated with unknown sequence
-                    seq.setSubtype  ( "unknown" )
-                    self.outputDataBox.add_data ( seq )
-                    self.putMessage ( "<b>Associated with auto-generated " +\
-                                      "unknown sequence:</b>&nbsp;" +\
-                                      seq.dname + "<br>&nbsp;" )
-                else:
-                    self.putMessage ( "<b>Associated with sequence:</b>&nbsp;" +\
-                                      seq.dname + "<br>&nbsp;" )
+            if len(model_xyz)<=0:
+                self.putTitle ( "No output files created" )
+                self.fail ( "","No output files created" )
+                return
 
-                self.putEnsembleWidget ( "ensemble_btn","Coordinates",ensemble )
-                ensemble.addDataAssociation ( seq.dataId )
-                ensemble.sequence = seq
-                seq_file_name = seq.getSeqFileName()
-                if seq_file_name:
-                    ensemble.setSeqFile ( seq_file_name )
-                    os.rename ( seq.getSeqFilePath(self.inputDir()),
-                                seq.getSeqFilePath(self.outputDir()) )
-                else:
-                    ensemble.setSubtype ( "sequnk" )
+            self.file_stdout.write ( " ****** " + str(model_xyz) )
 
-        else:
-            self.putTitle ( "No ensembles were made" )
-            self.fail ( "","No ensemblies made" )
-            return
+            for fo in file_order:
+                for filename in model_xyz:
+                    if fo in filename:
+
+                        if ensembleSerNo==0:
+                            ensembles_found = True
+                            self.putTitle ( "Ensembles generated" )
+
+                        ensembleSerNo += 1
+                        if fo=="BaseAlignment":
+                            fout_name = self.outputFName + "_base.pdb"
+                        else:
+                            fout_name = self.outputFName + "_" + fo + ".pdb"
+
+                        remove_ligands_and_waters ( modSel,os.path.join(models_dir,filename),fout_name )
+
+                        align_meta = analyse_ensemble.align_seq_xyz ( self,
+                                            seqPath,fout_name,seqtype="protein" )
+
+                        ensemble = self.registerEnsemble ( seq,fout_name,checkout=True )
+                        if ensemble:
+
+                            self.putMessage ( "<h3>Ensemble #" + str(ensembleSerNo) + "</h3>" )
+
+                            alignSecId = self.getWidgetId ( self.gesamt_report() )
+                            pyrvapi.rvapi_add_section ( alignSecId,
+                                        "Structural alignment",self.report_page_id(),
+                                        self.rvrow,0,1,1,False )
+
+                            self.rvrow += 1
+                            if analyse_ensemble.run(self,alignSecId,ensemble):
+
+                                ensemble.addDataAssociation ( seq.dataId )
+
+                                self.putMessage ( "&nbsp;<br><b>Associated with sequence:</b>&nbsp;" +\
+                                                  seq.dname + "<br>&nbsp;" )
+
+                                if align_meta["status"]=="ok":
+                                    ensemble.meta["seqId"] = align_meta["id_avg"]
+                                ensemble.seqId = ensemble.meta["seqId"]
+                                ensemble.rmsd  = ensemble.meta["rmsd" ]
+
+                                self.putEnsembleWidget ( "ensemble_"  + str(ensembleSerNo) + "_btn",
+                                                         "Coordinates",ensemble )
+
+                            else:
+                                self.putMessage1 ( alignSecId,"<h3>Structural alignment failed, ensemble is not useable.</h3>",0 )
+                            self.putMessage ( "&nbsp;" )
 
         # close execution logs and quit
 
@@ -417,6 +410,7 @@ class EnsemblePrepXYZ(basic.TaskDriver):
 
         self.success()
         return
+
 
 
 # ============================================================================

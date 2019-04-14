@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    09.01.19   <--  Date of Last Modification.
+ *    12.04.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -274,10 +274,11 @@ Tree.prototype.insertNode = function ( parent_node,text,icon_uri,treeNodeCustomI
       $(this.root.element).jstree(true).move_node(children,node,'last',false,false);
       node.data = treeNodeCustomIcon;  // this gets lost, duplicate, jstree bug
       node.children = children;
-      this.refresh();
+      //this.refresh();
       //$(this.root.element).jstree().refresh(function(){});
       this.selectSingle ( node );  // force selection of new nodes if tree is displayed
       this.confirmCustomIconsVisibility();
+      this.refresh();
     } else
       node.children = children;
     return node;
@@ -737,7 +738,7 @@ Tree.prototype.deleteNode = function ( node )  {
 
   //  remove node from children list of its parent
   var pnode     = this.node_map[node.parentId];  // parent node
-  var pchildren = [];  // new paren children
+  var pchildren = [];  // new parent children
   var selNo     = -1;
   for (var i=0;i<pnode.children.length;i++)  {
     if (pnode.children[i].id==node.id) {
@@ -762,7 +763,8 @@ Tree.prototype.deleteNode = function ( node )  {
   this.node_map = node_map;
 
   if (this.created)  {
-    $(this.root.element).jstree(true).move_node(node.children,pnode,'last',false,false);
+//    $(this.root.element).jstree(true).move_node(node.children,pnode,'last',false,false);
+    $(this.root.element).jstree(true).move_node(node.children,pnode,selNo,false,false);
     // remove node from tree
     $(this.root.element).jstree(true).delete_node('#'+node.id);
     this.confirmCustomIconsVisibility();

@@ -28,11 +28,16 @@
     "bootstrapHTML"    : "jscofe.html",
     "maxRestarts"      : 100,
     "fileCapSize"      : 500000,
-    "regMode"          : "email",
+    "regMode"          : "admin",
     "ration"           : {
         "storage"   : 3000,
         "cpu_day"   : 24,
         "cpu_month" : 240
+    },
+    "cloud_mounts"     : {
+      "My Computer"    : "/",
+      "Home"           : ["$HOME","$USERPROFILE"],
+      "CCP4 examples"  : "$CCP4/share/ccp4i2/demo_data"
     }
   },
 
@@ -49,6 +54,7 @@
       "stoppable"        : false,
       "fsmount"          : "/",
       "capacity"         : 4,
+      "max_nproc"        : 3,
       "exclude_tasks"    : [],
       "fasttrack"        : 1,
       "storage"          : "./cofe-nc-storage",

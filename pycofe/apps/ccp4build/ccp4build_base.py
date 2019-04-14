@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    04.02.19   <--  Date of Last Modification.
+#    09.04.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -26,6 +26,7 @@
 
 import sys
 import os
+import json
 
 import pyrvapi
 import pyrvapi_ext.parsers
@@ -39,10 +40,12 @@ import citations
 
 class Base(object):
 
-    stdout_path    = None
-    stderr_path    = None
+    stdout_path    = None  #  main log
+    stderr_path    = None  #  error log
+    srvout_path    = None  #  service log
     file_stdout    = sys.stdout
     file_stderr    = sys.stderr
+    file_srvout    = None
 
     script_path    = ""
     script_file    = None
@@ -62,7 +65,7 @@ class Base(object):
     rvrow          = 0
 
     jobId          = "1"    # jobId (coming from jsCoFE)
-    job_title      = "Pabucor"
+    job_title      = "CCP4Build"
 
     keyword_list   = []     # keyword file read into a list of strings
 
@@ -81,19 +84,52 @@ class Base(object):
         "labin_free"       : None, # e.g. "/*/*/[FREE]"
         "res_low"          : None, # low resolution limit (None for auto)
         "res_high"         : None, # high resolution limit (None for auto)
+        "ref_level"        : 2,    # refinement level 1-2-3
+        "dm_mode"          : "auto",  # "auto", "skip", "force"
+        "fill_mode"        : "auto",  # "auto", "skip", "force"
+        "fit_mode"         : "auto",  # "auto", "skip", "force"
+        "rsr_mode"         : "auto",  # "auto", "skip", "force"
+        "trim_mode"        : "auto",  # for mainchains/sidechains; "auto", "restricted", "fixed"
+        "trim_waters"      : False, # whether to trim waters or not
+        "trim_mode_w"      : "restricted", # for waters; "auto", "restricted", "fixed"
+        "trim_wat_resol"   : 2.5,  # maximal resolution for trimming waters
+        "trim_wat_rfree"   : 0.33, # maximal Rfree for trimming waters
+        "trimmin_zdm"      : 1.8,  # minimum restricted ZD for trimming mainchains
+        "trimmax_zdm"      : 3.2,  # maximum restricted ZD for trimming mainchains
+        "trimmin_zds"      : 1.8,  # minimum restricted ZD for trimming sidechains
+        "trimmax_zds"      : 3.2,  # maximum restricted ZD for trimming sidechains
+        "trimmin_zdw"      : 1.5,  # minimum restricted ZD for trimming waters
+        "trimmax_zdw"      : 2.0,  # maximum restricted ZD for trimming waters
+        "trim_zdm"         : 2.5,  # fixed ZD for trimming mainchains
+        "trim_zds"         : 2.5,  # fixed ZD for trimming sidechains
+        "trim_zdw"         : 2.0,  # fixed ZD for trimming waters
         "pdb_ref_code"     : "1tqw",
-        "outer_cycles_min" : 3,    # minimal number of outer cycles to do
-        "outer_cycles_max" : 20,   # maximal number of outer cycles to do
-        "noimprove_cycles" : 5,    # stop if results do not improve after set
+        "cycles_min"       : 3,    # minimal number of outer cycles to do
+        "cycles_max"       : 20,   # maximal number of outer cycles to do
+        "noimprove_cycles" : 15,   # stop if results do not improve after set
                                    #   number of consequitive cycles
-        "inner_cycles"     : 1     # possibly should be hard-wired
+        "rfree_threshold"  : 0.000 # threshold for rfree comparisons in workflow
     }
 
-    build_meta    = []  # meta structures of results for individual iterations
-    best_build_no = -1  # index of best result in outmeta
+    workflow   = ""            # workflow tracker line
 
-    xyzout_path = None
-    mtzout_path = None
+    build_meta = []            # meta structures of results for individual iterations
+    best_rfree_build_no  = -1  # index of best-rfree result in build_meta
+    best_edcc_build_no   = -1  # index of best-edcc result in build_meta
+    best_nbuilt_build_no = -1  # index of best-nbuilt result in build_meta
+    best_nfrag_build_no  = -1  # index of best-nfragments result in build_meta
+
+    output_prefix_rfree  = ""
+    output_prefix_edcc   = ""
+    output_prefix_nbuilt = ""
+    output_prefix_nfrag  = ""
+
+    output_name_rfree    = None
+    output_name_edcc     = None
+    output_name_nbuilt   = None
+    output_name_nfrag    = None
+
+    resTableId = {}
 
     # ----------------------------------------------------------------------
 
@@ -127,6 +163,7 @@ class Base(object):
                 if   key == "--wkdir"          : self.workdir        = value
                 elif key == "--rdir"           : self.reportdir      = value
                 elif key == "--outdir"         : self.outputdir      = value
+                elif key == "--srvlog"         : self.srvout_path    = value
                 elif key == "--rvapi-prefix"   : self.rvapi_prefix   = value
                 elif key == "--rvapi-document" : self.rvapi_doc_path = value
                 elif key == "--jobid"          : self.jobId          = value
@@ -139,6 +176,9 @@ class Base(object):
         #self.file_stdout.write ( "reportdir    = " + self.reportdir + "\n" )
         #self.file_stdout.write ( "outputdir    = " + self.outputdir + "\n" )
         #self.file_stdout.write ( "rvapi_prefix = " + self.rvapi_prefix + "\n\n" )
+
+        if self.srvout_path:
+            self.file_srvout = open ( self.srvout_path,'a' )
 
         # read data from standard input
 
@@ -202,37 +242,90 @@ class Base(object):
                         "task.tsk",
                         None )
 
-            self.putMessage ( "<h2>Pabucor Combined Model Builder</h2>" )
-
+            #self.putMessage ( "<h2>Pabucor Combined Model Builder</h2>" )
 
         else:  # continue rvapi document given
             pyrvapi.rvapi_restore_document2 ( self.rvapi_doc_path )
-            """
             meta = pyrvapi.rvapi_get_meta();
-            #self.stdout ( "\n META = " + meta )
             if meta:
                 d = json.loads(meta)
-                if "jobId"   in d:  self.jobId    = d["jobId"]
-                if "stageNo" in d:  self.stage_no = d["stageNo"]
-                if "sge_q"   in d:  self.SGE      = True
-                if "sge_tc"  in d:  self.nSubJobs = d["sge_tc"]
-                if "summaryTabId"  in d:
-                        self.summaryTabId   = d["summaryTabId"]
-                        self.page_cursor[0] = self.summaryTabId
-                if "summaryTabRow" in d:
-                        self.summaryTabRow  = d["summaryTabRow"]
-                        self.page_cursor[1] = self.summaryTabRow
-                if "navTreeId"     in d:
-                        self.navTreeId = d["navTreeId"]
-                        pyrvapi.rvapi_set_tab_proxy ( self.navTreeId,"" )
-                if "outputDir"  in d:  self.outputdir  = d["outputDir"]
-                if "outputName" in d:  self.outputname = d["outputName"]
-            """
+                self.report_page_id = d["page_id"]
+                self.input_data["nameout"] = d["nameout"]
+
+                if d["prefix_rfree" ]:
+                    self.output_prefix_rfree  = d["prefix_rfree" ] + "_"
+                if d["prefix_edcc"  ]:
+                    self.output_prefix_edcc   = d["prefix_edcc"  ] + "_"
+                if d["prefix_nbuilt"]:
+                    self.output_prefix_nbuilt = d["prefix_nbuilt"] + "_"
+                if d["prefix_nfrag" ]:
+                    self.output_prefix_nfrag  = d["prefix_nfrag" ] + "_"
 
         #self.file_stdout.write ( "FLUSH\n" )
         pyrvapi.rvapi_flush()
 
         return
+
+    # ----------------------------------------------------------------------
+
+    def storeReportDocument ( self ):
+
+        if self.rvapi_doc_path:  # store rvapi report document
+
+            meta = {}
+
+            meta["outnames"] = [
+                self.output_name_rfree,
+                self.output_name_edcc,
+                self.output_name_nbuilt,
+                self.output_name_nfrag
+            ]
+
+            meta["titles"] = [
+                "best R<sub>free</sub>",
+                "best EDCC",
+                "max N<sub>res</sub>",
+                "least fragmented"
+            ]
+
+            meta["refmac"] = {
+                'R_factor' : self.build_meta[self.best_rfree_build_no]["refmac"]["rfactor"][1],
+                'R_free'   : self.build_meta[self.best_rfree_build_no]["refmac"]["rfree"][1]
+            }
+            meta["refmac_edcc"] = {
+                'R_factor' : self.build_meta[self.best_edcc_build_no]["refmac"]["rfactor"][1],
+                'R_free'   : self.build_meta[self.best_edcc_build_no]["refmac"]["rfree"][1]
+            }
+            meta["refmac_nbuilt"] = {
+                'R_factor' : self.build_meta[self.best_nbuilt_build_no]["refmac"]["rfactor"][1],
+                'R_free'   : self.build_meta[self.best_nbuilt_build_no]["refmac"]["rfree"][1]
+            }
+            meta["refmac_nfrag"] = {
+                'R_factor' : self.build_meta[self.best_nfrag_build_no]["refmac"]["rfactor"][1],
+                'R_free'   : self.build_meta[self.best_nfrag_build_no]["refmac"]["rfree"][1]
+            }
+
+            meta["cbuccaneer"] = {
+                'percentage' : self.build_meta[self.best_rfree_build_no]["cbuccaneer"]["res_complete"],
+            }
+            meta["cbuccaneer_edcc"] = {
+                'percentage' : self.build_meta[self.best_edcc_build_no]["cbuccaneer"]["res_complete"],
+            }
+            meta["cbuccaneer_nbuilt"] = {
+                'percentage' : self.build_meta[self.best_nbuilt_build_no]["cbuccaneer"]["res_complete"],
+            }
+            meta["cbuccaneer_nfrag"] = {
+                'percentage' : self.build_meta[self.best_nfrag_build_no]["cbuccaneer"]["res_complete"],
+            }
+
+            meta["programs_used"] = citations.citation_list
+
+            pyrvapi.rvapi_put_meta ( json.dumps(meta) )
+            pyrvapi.rvapi_store_document2 ( self.rvapi_doc_path )
+
+        return
+
+    # ----------------------------------------------------------------------
 
 
     def readPGMOptions ( self,pgmName,options_dict ):
@@ -291,8 +384,10 @@ class Base(object):
                 self.file_stdout.write ( "res_high   " + self.input_data["res_high"] +\
                                          "   # found from input file\n" )
 
-        self.xyzout_path = os.path.join ( self.outputdir,self.input_data["nameout"]+".pdb" )
-        self.mtzout_path = os.path.join ( self.outputdir,self.input_data["nameout"]+".mtz" )
+        self.output_name_rfree  = self.output_prefix_rfree  + self.input_data["nameout"] + "_rfree"
+        self.output_name_edcc   = self.output_prefix_edcc   + self.input_data["nameout"] + "_edcc"
+        self.output_name_nbuilt = self.output_prefix_nbuilt + self.input_data["nameout"] + "_nbuilt"
+        self.output_name_nfrag  = self.output_prefix_nfrag  + self.input_data["nameout"] + "_nfrag"
 
         return
 
@@ -353,6 +448,11 @@ class Base(object):
             return split1[labelNo]
         return split1[0].split("/")[-1]
 
+    def getLabels ( self,labin ):
+        labels    = labin.replace("[","").replace("]","").split(",")
+        labels[0] = labels[0].split("/")[-1]
+        return labels
+
 
     # ----------------------------------------------------------------------
 
@@ -394,24 +494,90 @@ class Base(object):
     def getStdErrPath ( self,nameout ):
         return os.path.join ( self.workdir, nameout + "_stderr.log" )
 
-    def log ( self,S ):
+    def _log ( self,S,file_out ):
         if type(S) is list:
             for line in S:
-                self.file_stdout.write ( line + "\n" )
+                file_out.write ( line + "\n" )
         else:
-            self.file_stdout.write ( S )
+            file_out.write ( S )
+        return
+
+    def log ( self,S ):
+        self._log ( S,self.file_stdout )
+        return
+
+    def srvlog ( self,S ):
+        if self.file_srvout:
+            self._log ( S,self.file_srvout )
         return
 
 
     # ----------------------------------------------------------------------
 
-    def unsetLogParser ( self ):
+    def mergeHKL ( self,meta_phases,meta_hkl,nameout,fpath_stdout=None,fpath_stderr=None ):
+        #  Merges phases from meta_phases and reflection data from meta_hkl,
+        #  and returns meta_phases object with updated MTZ file. Should be
+        #  used in order to avoid feeding Refmac's output reflection columns
+        #  as observation data for downstream tasks.
+
+
+        hklout = nameout + ".cad.mtz"
+        cmd    = [ "HKLIN1",meta_hkl   ["mtzpath"],
+                   "HKLIN2",meta_phases["mtzpath"],
+                   "HKLOUT",hklout ]
+
+        labin_fo   = self.getLabels ( meta_hkl["labin_fo"] )
+        labin_free = self.getLabel  ( meta_hkl["labin_free"],0 )
+
+        self.open_script ( nameout + ".script" )
+        self.write_script ([
+            "LABIN  FILE 1 E1=" + labin_fo[0] + " E2=" + labin_fo[1] + " E3=" + labin_free
+        ])
+        labin2 = "E1=PHDELWT E2=DELFWT"
+        cn     = 3
+        if meta_phases["labin_phifom"]:
+            labin_phifom = self.getLabels ( meta_phases["labin_phifom"] )
+            labin2 += " E%d=%s E%d=%s" % (cn,labin_phifom[0],cn+1,labin_phifom[1])
+            cn += 2
+        if meta_phases["labin_fc"]:
+            labin_fc = self.getLabels ( meta_phases["labin_fc"] )
+            labin2  += " E%d=%s E%d=%s" % (cn,labin_fc[0],cn+1,labin_fc[1])
+            cn += 2
+        if meta_phases["labin_hl"]:
+            labin_hl = self.getLabels ( meta_phases["labin_hl"] )
+            labin2  += " E%d=%s E%d=%s E%d=%s E%d=%s" %\
+                       (cn,labin_hl[0],cn+1,labin_hl[1],cn+2,labin_hl[2],cn+3,labin_hl[3])
+        if labin2:
+            self.write_script ([
+                "LABIN  FILE 2 " + labin2
+            ])
+        self.close_script()
+
+        self.runApp ( "cad",cmd,fpath_stdout=fpath_stdout,fpath_stderr=fpath_stderr )
+
+        return dict ( meta_phases,
+                      mtzpath    = hklout,
+                      labin_fo   = meta_hkl["labin_fo"],
+                      labin_free = meta_hkl["labin_free"]
+                    )
+
+
+    # ----------------------------------------------------------------------
+
+    def flush ( self ):
         self.file_stdout.flush()
-        self.log_parser = None
+        self.file_stderr.flush()
         pyrvapi.rvapi_flush()
         return
 
+    def unsetLogParser ( self ):
+        if self.log_parser:
+            self.flush()
+            self.log_parser = None
+        return
+
     def setGenericLogParser ( self,split_sections_bool,graphTables=False ):
+        self.unsetLogParser()
         panel_id = self.getWidgetId ( "genlogparser" )
         self.putPanel ( panel_id )
         self.generic_parser_summary = {}
@@ -439,6 +605,17 @@ class Base(object):
             fstdout = open ( fpath_stdout,'a' )
         if fpath_stderr:
             fstderr = open ( fpath_stderr,'a' )
+
+        self.srvlog ([
+            "",
+            "------------------------------------------------------------------",
+            appName + " " + " ".join(cmd)
+        ])
+        if input_script:
+            with open(input_script,'r') as sfile:
+                self.srvlog ( sfile.read() )
+        if self.file_srvout:
+            self.file_srvout.flush()
 
         rc = command.call ( appName,cmd,"./",input_script,
                             fstdout,fstderr,self.log_parser )

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    22.01.19   <--  Date of Last Modification.
+ *    21.02.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -191,65 +191,85 @@ function packDir ( dirPath, fileSelection, onReady_func )  {
 
 function sendDir ( dirPath, fileSelection, serverURL, command, metaData,
                    onReady_func, onErr_func )  {
+var sender_cfg = conf.getServerConfig();
 
-  // 1. Pack files, assume tar
+  function pushToServer ( formData,jobballPath )  {
 
-  packDir ( dirPath, fileSelection, function(code){
+    request.post({
 
-    if (code==0)  {
+      url      : serverURL + '/' + command,
+      formData : formData
 
-      // 2. Send jobball to server
+    }, function(err,httpResponse,response) {
 
-      var formData = {};
-      formData['sender'] = conf.getServerConfig().externalURL;
-
-      if (metaData)  // pass in form of simple key-value pairs
-        for (key in metaData)
-          formData[key] = metaData[key];
-
-      var jobballPath  = path.join(dirPath,jobballName);
-      formData['file'] = fs.createReadStream ( jobballPath );
-
-      request.post({
-
-        url      : serverURL + '/' + command,
-        formData : formData
-
-      }, function(err,httpResponse,response) {
-
-        if (err) {
-          if (onErr_func)
-            onErr_func ( 2,err );  // '2' means an error from upload stage
-          log.error ( 3,'upload failed:', err);
-        } else  {
-          try {
-            var resp = JSON.parse ( response );
-            if (resp.status==cmd.fe_retcode.ok)  {
-              if (onReady_func)
-                onReady_func ( resp.data );
-              log.detailed ( 1,'directory ' + dirPath +
-                               ' has been received at ' + serverURL );
-            } else if (onErr_func)
-              onErr_func ( 3,resp );  // '3' means an error from recipient
-          } catch(err)  {
-            onErr_func ( 4,response );  // '4' means unrecognised response
-          }
+      if (err) {
+        if (onErr_func)
+          onErr_func ( 2,err );  // '2' means an error from upload stage
+        log.error ( 3,'upload failed:', err);
+      } else  {
+        try {
+          var resp = JSON.parse ( response );
+          if (resp.status==cmd.fe_retcode.ok)  {
+            if (onReady_func)
+              onReady_func ( resp.data );
+            log.detailed ( 1,'directory ' + dirPath +
+                             ' has been received at ' + serverURL );
+          } else if (onErr_func)
+            onErr_func ( 3,resp );  // '3' means an error from recipient
+        } catch(err)  {
+          onErr_func ( 4,response );  // '4' means unrecognised response
         }
+      }
 
-        //utils.removeFile ( formData['file'] );
+      if (jobballPath)
         utils.removeFile ( jobballPath );
 
-      });
+    });
 
-      log.detailed ( 2,'directory ' + dirPath +
-                       ' has been packed and is being sent to ' + serverURL );
+  }
 
-    } else if (onErr_func)  {
-      onErr_func ( 1,code );  // '1' means an error from packing stage
-      log.error ( 4,'errors encontered ("' + code + '") at making jobbal in ' + dirPath );
-    }
 
-  });
+  if (sender_cfg.fsmount)  {
+
+    var formData = {};
+    formData['sender' ] = sender_cfg.externalURL;
+    formData['dirpath'] = path.resolve ( dirPath );  // convert to absolute path
+
+    pushToServer ( formData,null );
+
+  } else  {
+
+    // 1. Pack files, assume tar
+
+    packDir ( dirPath, fileSelection, function(code){
+
+      if (code==0)  {
+
+        // 2. Send jobball to server
+
+        var formData = {};
+        formData['sender'] = conf.getServerConfig().externalURL;
+
+        if (metaData)  // pass in form of simple key-value pairs
+          for (key in metaData)
+            formData[key] = metaData[key];
+
+        var jobballPath  = path.join(dirPath,jobballName);
+        formData['file'] = fs.createReadStream ( jobballPath );
+
+        pushToServer ( formData,jobballPath );
+
+        log.detailed ( 2,'directory ' + dirPath +
+                         ' has been packed and is being sent to ' + serverURL );
+
+      } else if (onErr_func)  {
+        onErr_func ( 1,code );  // '1' means an error from packing stage
+        log.error ( 4,'errors encontered ("' + code + '") at making jobbal in ' + dirPath );
+      }
+
+    });
+
+  }
 
 }
 
@@ -277,12 +297,14 @@ function unpackDir ( dirPath,cleanTmpDir, onReady_func )  {
     stdio : ['ignore']
   });
   */
+  var errs = '';
   var zip = utils.spawn ( conf.pythonName(),['-m','pycofe.varut.zipfile','-e',jobballPath,unpack_dir],{
     stdio : ['ignore']
   });
 
   zip.stderr.on ( 'data',function(data){
     log.error ( 15,'zip/unpackDir errors: "' + data + '"; encountered in ' + dirPath );
+    errs = 'data_unpacking_errors';
   });
 
   zip.on('close', function(code){
@@ -298,7 +320,10 @@ function unpackDir ( dirPath,cleanTmpDir, onReady_func )  {
          utils.removePath ( tmpDir );
        },0 );
     }
-    onReady_func ( code );
+    if (errs)
+      onReady_func ( errs );
+    else
+      onReady_func ( code );
   });
 
 }
@@ -361,24 +386,42 @@ function receiveDir ( jobDir,tmpDir,server_request,onFinish_func )  {
 
       if (utils.fileExists(jobDir))  {
 
-        // restore original file names
-        for (key in upload_meta.files)
-          if (!utils.moveFile(key,path.join(jobDir,upload_meta.files[key])))
-            errs = 'file move error';
+        if (upload_meta.hasOwnProperty('dirpath'))  {
 
-        if (errs=='')  {
-
-          // unpack all service jobballs (their names start with double underscore)
-          // and clean them out
-
-          unpackDir ( jobDir,tmpDir, function(code){
+          fs.copy ( upload_meta.dirpath,jobDir,function(err){
             if (onFinish_func)
-              onFinish_func ( code,errs,upload_meta );  //  integer code : unpacking was run
-            log.detailed ( 6,'directory contents has been received in ' + jobDir );
+              onFinish_func ( 0,errs,upload_meta );  //  integer code : unpacking was run
+            if (!err)
+              log.detailed ( 7,'directory contents has been received in ' + jobDir );
+            else
+              log.detailed ( 7,'directory contents has been received in ' + jobDir + ' with errors: ' + err );
           });
 
-        } else if (onFinish_func)
-          onFinish_func ( 'err_rename',errs,upload_meta );  // file renaming errors
+        } else  {
+
+          // restore original file names
+          for (key in upload_meta.files)
+            if (!utils.moveFile(key,path.join(jobDir,upload_meta.files[key])))
+              errs = 'file move error';
+
+          if (errs=='')  {
+
+            // unpack all service jobballs (their names start with double underscore)
+            // and clean them out
+
+            unpackDir ( jobDir,tmpDir, function(code){
+              if (onFinish_func)
+                onFinish_func ( code,errs,upload_meta );  //  integer code : unpacking was run
+              if (code==0)
+                log.detailed ( 6,'directory contents has been received in ' + jobDir );
+              else
+                log.detailed ( 6,'directory contents has been received in ' + jobDir + ' with errors: ' + code );
+            });
+
+          } else if (onFinish_func)
+            onFinish_func ( 'err_rename',errs,upload_meta );  // file renaming errors
+
+        }
 
       } else  {
         if (onFinish_func)

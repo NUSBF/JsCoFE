@@ -131,13 +131,11 @@ if (!__template)  {
       g.setVerticalAlignment ( 0,0,'middle' );
     }
 
-//    if (dropdown.layCustom.startsWith('asu-content'))  {
     if (startsWith(dropdown.layCustom,'asu-content'))  {
 
       var grid = customGrid.setGrid ( '-compact',row++,0,1,2 );
       this.makeASUContentInput ( grid );
 
-//    } else if (dropdown.layCustom.startsWith('stoichiometry'))  {
     } else if (startsWith(dropdown.layCustom,'stoichiometry'))  {
 
       var grid = customGrid.setGrid ( '-compact',row++,0,1,2 );
@@ -153,10 +151,10 @@ if (!__template)  {
                     .setWidth_px ( 50 );
       grid.setVerticalAlignment ( 0,0,'middle' );
 
-    }
+      if (row>0)
+        customGrid.setLabel ( ' ',row,0,1,2 ).setHeight_px ( 8 );
 
-    if (row>0)
-      customGrid.setLabel ( ' ',row,0,1,2 ).setHeight_px ( 8 );
+    }
 
   }
 

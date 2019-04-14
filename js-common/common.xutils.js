@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    30.11.17   <--  Date of Last Modification.
+ *    25.02.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,11 +13,31 @@
  *  **** Content :  X-Utils
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2017
+ *  (C) E. Krissinel, A. Lebedev 2016-2019
  *
  *  =================================================================
  *
  */
+
+_chem_elements = [
+  'H' ,'He','Li','Be','B' ,'C' ,'N' ,'O' ,'F' ,'Ne','Na','Mg','Al','Si','P' ,
+  'S' ,'Cl','Ar','K' ,'Ca','Sc','Ti','V' ,'Cr','Mn','Fe','Co','Ni','Cu','Zn',
+  'Ga','Ge','As','Se','Br','Kr','Rb','Sr','Y' ,'Zr','Nb','Mo','Tc','Ru','Rh',
+  'Pd','Ag','Cd','In','Sn','Sb','Te','I' ,'Xe','Cs','Ba','La','Ce','Pr','Nd',
+  'Pm','Sm','Eu','Gd','Tb','Dy','Ho','Er','Tm','Yb','Lu','Hf','Ta','W' ,'Re',
+  'Os','Ir','Pt','Au','Hg','Tl','Pb','Bi','Po','At','Rn','Fr','Ra','Ac','Th',
+  'Pa','U' ,'Np','Pu','Am','Cm','Bk','Cf','Es','Fm','Md','No','Lr','Rf','Db',
+  'Sg','Bh','Hs','Mt','Ds','Rg','Cn','Nh','Fl','Mc','Lv','Ts','Og'
+];
+
+function checkElementSymbol ( symbol )  {
+  var su = symbol.toUpperCase();
+  var sc = null;
+  for (var i=0;(i<_chem_elements.length) && (!sc);i++)
+    if (_chem_elements[i].toUpperCase()==su)
+      sc = _chem_elements[i];
+  return sc;
+}
 
 _sg_class_list = [
    ['P 4 3 2', 'P 41 3 2', 'P 42 3 2', 'P 43 3 2'],

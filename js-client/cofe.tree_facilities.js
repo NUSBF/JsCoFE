@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    27.12.18   <--  Date of Last Modification.
+ *    21.03.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  FacilityTree
  *       ~~~~~~~~~  StorageTree
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2018
+ *  (C) E. Krissinel, A. Lebedev 2016-2019
  *
  *  =================================================================
  *
@@ -328,8 +328,12 @@ StorageTree.prototype.readStorageData = function ( page_title,
           var name = sdir.name;
           if (name=='..')
             name += ' (&#8593; <i>upper directory</i>)';
-          var dnode = tree.addRootNode ( name,image_path('folder'),
-                                      tree.customIcon() );
+          var icon   = 'folder';
+          var nlower = name.toLowerCase();
+          if (nlower.indexOf('my computer')>=0) icon = 'folder_mycomputer';
+          else if (nlower.indexOf('home')>=0)   icon = 'folder_home';
+          else if (nlower.indexOf('ccp4')>=0)   icon = 'folder_ccp4';
+          var dnode = tree.addRootNode ( name,image_path(icon),tree.customIcon() );
           tree.item_map[dnode.id] = sdir;
         }
 
@@ -342,6 +346,11 @@ StorageTree.prototype.readStorageData = function ( page_title,
           var icon  = image_path('file_dummy');
           var show  = (tree.image_key<2);
           if (ext=='mtz')       icon = image_path('file_mtz');
+          else if ('h5' in sfile)   {
+            if (sfile.h5>0)  icon = image_path('file_hdf');
+                       else  name = '(' + Array(name.length).join('....') + ')';
+            show = false;
+          } else if (ext=='h5')   icon = image_path('file_hdf');
           else if (['pdb','ent','mmcif'].indexOf(ext)>=0)
                                 icon = image_path('file_pdb');
           else if (ext=='cif')  {  // use wild heuristics
@@ -353,7 +362,6 @@ StorageTree.prototype.readStorageData = function ( page_title,
           else if ('image' in sfile)  {
             if (sfile.image>0)  icon = image_path('file_xray');
                           else  name = '(' + Array(name.length).join('....') + ')';
-            if (sfile.image==2) name = '<i>' + name + '</i>';
             show = (tree.image_key>0);
           }
           if (show)  {

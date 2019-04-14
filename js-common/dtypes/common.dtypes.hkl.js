@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    05.01.19   <--  Date of Last Modification.
+ *    13.04.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -48,7 +48,7 @@ function DataHKL()  {
   this.res_high      = '';     // high resolution limit
   this.res_ref       = '';     // high resolution for refinement (Phaser-MR)
   this.wavelength    = '';     // wavelength (Phaser-EP)
-  this.anomAtomType  = '';     // anomalous scattering type
+  //this.anomAtomType  = '';     // anomalous scattering type
   this.useForPhasing = false;  // flag for native dataset in SAD/MAD (Crank-2)
   this.new_spg       = '';     // new space group for reindexing
   this.spg_alt       = '';     // alternative space groups for Phaser
@@ -307,47 +307,71 @@ if (!__template)  {
     }
 
     this.spgLayout = function()  {
+
       setLabel ( 'Try Space Group(s):&nbsp;',++r,0 );
       customGrid.spaceGroup = new Dropdown();
       customGrid.spaceGroup.setWidth ( '125%' );
-      var sg0   = this.getSpaceGroup();
-      var sgsel = '';
+
+      var sg0         = this.getSpaceGroup();
+      var sg_enant    = getEnantiomorphSpG ( sg0 );
+      var sg_ind      = getIndistinguishableSpG ( sg0 );
+
+      var sg0_id      = sg0.replace(/\s+/g,'');
+      var sg_enant_id = '';
+      var sg_ind_id   = '';
+      var sgsel       = this.spg_alt;
+
+      if (sg_enant)
+        sg_enant_id = sg0_id + ';' + sg_enant.replace(/\s+/g,'');
+      if (sg_ind)
+        sg_ind_id   = sg0_id + ';' + sg_ind.replace(/\s+/g,'');
+
+      if (!sgsel)  {
+        if (sg_enant)     sgsel = sg_enant_id;
+        else if (sg_ind)  sgsel = sg_ind_id;
+                    else  sgsel = sg0_id;
+      }
+
       customGrid.spaceGroup.addItem  ( sg0 + ' (as in the dataset)','',
-            sg0.replace(/\s+/g,''),(this.spg_alt==sgsel) || (this.sg_alt==sg0) );
-      var sg2 = getEnantiomorphSpG ( sg0 );
-      if (sg2)  {
-        sgsel = sg0.replace(/\s+/g,'') + ';' + sg2.replace(/\s+/g,'');
-        customGrid.spaceGroup.addItem  ( sg0 + ' + ' + sg2 + ' (enantiomorphs)',
-              '',sgsel,(this.spg_alt==sgsel) );
-      }
-      var sg2 = getIndistinguishableSpG ( sg0 );
-      if (sg2)  {
-        sgsel = sg0.replace(/\s+/g,'') + ';' + sg2.replace(/\s+/g,'');
-        customGrid.spaceGroup.addItem  ( sg0 + ' + ' + sg2 + ' (indistinguishable)',
-              '',sgsel,(this.spg_alt==sgsel) );
-      }
+                                       sg0_id,(sgsel==sg0_id) );
+      if (sg_enant)
+        customGrid.spaceGroup.addItem  ( sg0 + ' + ' + sg_enant + ' (enantiomorphs)',
+                                         '',sg_enant_id,(sgsel==sg_enant_id) );
+      if (sg_ind)
+        customGrid.spaceGroup.addItem  ( sg0 + ' + ' + sg_ind + ' (indistinguishable)',
+                                         '',sg_ind_id,(sgsel==sg_ind_id) );
+
       var sglist = getAllPointSpG ( sg0 );
       if (sglist.length>1) {
         customGrid.spaceGroup.addItem ( 'all compatible space groups','',
-                                        'ALL',(this.spg_alt=='ALL') );
-        customGrid.spaceGroup.setTooltip1 ( 'Compatible space groups:<p>' +
+                                        'ALL',(sgsel=='ALL') );
+        customGrid.spaceGroup.getItem ( 'ALL' )
+                             .setTooltip1 ( 'Compatible space groups:<p>' +
                                             sglist.join('<br>'),'slideDown',
                                             true,5000 );
       }
+
       customGrid.setWidget ( customGrid.spaceGroup, r,1,1,4 );
       customGrid.spaceGroup.make();
+
     }
 
-    this.makeResolutionLimits = function()  {
+    this.makeResolutionLimits = function ( blank_key )  {
       setLabel ( 'Resolution range (&Aring;):&nbsp;',++r,0 );
       var res_low  = round ( this.getLowResolution (),2 );
       var res_high = round ( this.getHighResolution(),2 );
-      customGrid.res_low = makeRealInput ( this.res_low,res_low,
+      var def_low  = res_low;
+      var def_high = res_high;
+      if (blank_key=='auto')  {
+        def_low  = 'auto';
+        def_high = 'auto';
+      }
+      customGrid.res_low = makeRealInput ( this.res_low,def_low,
           'Low resolution limit. Set a value between ' + res_high + ' and ' +
           res_low + ', or leave blank for automatic choice.',r,1 );
       setLabel ( '&nbsp;to&nbsp;',r,2 );
       customGrid.setCellSize ( '40px','',r,2 );
-      customGrid.res_high = makeRealInput ( this.res_high,res_high,
+      customGrid.res_high = makeRealInput ( this.res_high,def_high,
           'High resolution limit. Set a value between ' + res_high + ' and ' +
           res_low + ', or leave blank for automatic choice.',r,3 );
       customGrid.setLabel    ( ' ',r,4,1,1 );
@@ -365,10 +389,10 @@ if (!__template)  {
 
     this.phaserMRLayout = function()  {
       //r++;
-      this.makeResolutionLimits();
+      this.makeResolutionLimits ( 'auto' );
       var res_high = round ( this.getHighResolution(),2 );
       setLabel ( 'High res-n for final refinement (&Aring;):&nbsp;',++r,0 );
-      customGrid.res_ref = makeRealInput ( this.res_ref,res_high,
+      customGrid.res_ref = makeRealInput ( this.res_ref,'auto',
           'Set a value equal or larger than ' + round(this.getHighResolution(),2) +
           ', or leave blank for automatic choice.',r,1 );
       customGrid.setLabel ( ' ',++r,0,1,1 ).setHeight_px ( 8 );
@@ -376,8 +400,8 @@ if (!__template)  {
 
     this.phaserEPLayout = function()  {
 
-      this.makeResolutionLimits();
-      this.makeWavelengthInput ();
+      this.makeResolutionLimits ( 'auto' );
+      this.makeWavelengthInput  ();
 
       setLabel ( 'Fluorescent Scan Data:&nbsp;',++r,0 );
       customGrid.f_use_mode = new Dropdown();
@@ -390,24 +414,26 @@ if (!__template)  {
                                       this.f_use_mode=='ON'   );
       customGrid.f_use_mode.addItem ( 'use without f" refinement','','OFF',
                                       this.f_use_mode=='OFF'  );
-      customGrid.setWidget   ( customGrid.f_use_mode, r,1,1,7 );
+      customGrid.setWidget   ( customGrid.f_use_mode, r,1,1,5 );
       customGrid.setCellSize ( '460px','',r,1 );
       customGrid.f_use_mode.make();
 
+      /*
       setLabel ( 'Atom type:&nbsp;',++r,0 ).setHorizontalAlignment ( 'right' );
       customGrid.anomAtomType = customGrid.setInputText ( this.anomAtomType,r,1,1,1 )
           .setStyle    ( 'text','','','Chemical type of main anomoalous scatterer' )
           .setWidth_px ( 60 );
+      */
 
-      setLabel ( '&nbsp;&nbsp;f\':',r,2 );
+      setLabel ( '&nbsp;&nbsp;f\':',++r,1 ).setHorizontalAlignment('right').setWidth_px(60);
       customGrid.f1 = makeRealInput ( this.f1,'',
           'Real part of scattering factor; leave blank for automatic choice.',
-          r,3 );
+          r,2 );
 
-      setLabel ( '&nbsp;&nbsp;f":',r,4 );
+      setLabel ( '&nbsp;&nbsp;f":',r,3 ).setHorizontalAlignment('right').setWidth_px(60);
       customGrid.f11 = makeRealInput ( this.f11,'',
           'Imaginary part of scattering factor; leave blank for automatic ' +
-          'choice.',r,5 );
+          'choice.',r,4 );
 
       (function(grid,row){
         grid.f_use_mode.addSignalHandler ( 'state_changed',function(){
@@ -422,7 +448,7 @@ if (!__template)  {
 
     this.refmacLayout = function()  {
       if (dropdown.layCustom=='refmac')
-        this.makeResolutionLimits();
+        this.makeResolutionLimits ( '' );
       var is_Imean = this.isImean();
       var is_Fmean = this.isFmean();
       var is_Ipm   = this.isIpm  ();
@@ -496,6 +522,9 @@ if (!__template)  {
 
     }
 
+    this.ccp4buildLayout = function()  {
+      this.makeResolutionLimits ( 'auto' );
+    }
 
     switch (dropdown.layCustom)  {
       case 'crank2'          :
@@ -512,6 +541,7 @@ if (!__template)  {
       case 'phaser-ep'       :  this.phaserEPLayout   ();  break;
       case 'arpwarp'         :
       case 'refmac'          :  this.refmacLayout     ();  break;
+      case 'ccp4build'       :  this.ccp4buildLayout  ();  break;
       default : ;
     }
 
@@ -574,9 +604,9 @@ if (!__template)  {
       this.res_low  = customGrid.res_low .getValue();
       this.res_high = customGrid.res_high.getValue();
       this.res_ref  = customGrid.res_ref .getValue();
-      if (this.res_low =='') this.res_low  = round ( this.getLowResolution (),2 );
-      if (this.res_high=='') this.res_high = round ( this.getHighResolution(),2 );
-      if (this.res_ref =='') this.res_high = round ( this.getHighResolution(),2 );
+      //if (this.res_low =='') this.res_low  = round ( this.getLowResolution (),2 );
+      //if (this.res_high=='') this.res_high = round ( this.getHighResolution(),2 );
+      //if (this.res_ref =='') this.res_high = round ( this.getHighResolution(),2 );
     }
 
     this.collectPhaserEP = function()  {
@@ -584,15 +614,17 @@ if (!__template)  {
       this.res_high   = customGrid.res_high  .getValue();
       this.wavelength = customGrid.wavelength.getValue();
 
-      if (this.res_low   =='') this.res_low  = round ( this.getLowResolution (),2 );
-      if (this.res_high  =='') this.res_high = round ( this.getHighResolution(),2 );
+      //if (this.res_low   =='') this.res_low  = round ( this.getLowResolution (),2 );
+      //if (this.res_high  =='') this.res_high = round ( this.getHighResolution(),2 );
       if (this.wavelength=='') this.wavelength = this.getWavelength();
 
       this.f_use_mode = customGrid.f_use_mode.getValue();
       if (this.f_use_mode!='NO')  {
+        /*
         this.anomAtomType = customGrid.anomAtomType.getValue();
         if (this.anomAtomType=='')
-          msg += '<b>no atom type for anomalous scatterer is given</b>'
+          msg += '<b>no atom type for anomalous scatterer is given</b>';
+        */
         this.f1  = readF ( customGrid.f1,this.f1,false,
                            '<b>wrong format (empty field?) of f\'</b>' );
         this.f11 = readF ( customGrid.f11,this.f11,false,
@@ -617,6 +649,11 @@ if (!__template)  {
         dropdown.Structure.phaseBlur = customGrid.phaseBlur.getValue();
     }
 
+    this.collectCCP4build = function()  {
+      this.res_low  = customGrid.res_low .getValue();
+      this.res_high = customGrid.res_high.getValue();
+    }
+
     switch (dropdown.layCustom)  {
       case 'crank2'          :
       case 'anomData'        : this.collectAnom     ();  break;
@@ -630,6 +667,7 @@ if (!__template)  {
       case 'phaser-ep'       : this.collectPhaserEP ();  break;
       case 'arpwarp'         :
       case 'refmac'          : this.collectRefmac   ();  break;
+      case 'ccp4build'       : this.collectCCP4build();  break;
       default : ;
     }
 

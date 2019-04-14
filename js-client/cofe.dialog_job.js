@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.12.18   <--  Date of Last Modification.
+ *    12.04.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Job Dialog
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2018
+ *  (C) E. Krissinel, A. Lebedev 2016-2019
  *
  *  =================================================================
  *
@@ -31,7 +31,8 @@ var job_dialog_reason = {
   set_node_icon : 'set_node_icon',  // set    job node icon
   reset_node    : 'reset_node',     // reset  job node label
   select_node   : 'select_node',    // select job node
-  stop_job      : 'stop_job'        // stop job
+  stop_job      : 'stop_job',       // stop job
+  tree_updated  : 'tree_updated'    // job tree should be updated
 }
 
 function JobDialog ( params,          // data and task projections up the tree branch
@@ -150,6 +151,11 @@ JobDialog.prototype = Object.create ( Widget.prototype );
 JobDialog.prototype.constructor = JobDialog;
 
 
+JobDialog.prototype.changeTitle = function ( new_title )  {
+  var title = '[' + padDigits(this.task.id,4) + '] ' + new_title;
+  $(this.element).dialog({ title: title });
+}
+
 JobDialog.prototype.displayInputErrors = function ( input_msg )  {
 //  if (input_msg.startsWith('#'))  {
   if (input_msg[0]=='#')  {
@@ -165,7 +171,9 @@ JobDialog.prototype.displayInputErrors = function ( input_msg )  {
 
 JobDialog.prototype.setDlgState = function()  {
 
-  var isNew     = (this.task.state==job_code.new) || (this.task.state==job_code.remark);
+  var isNew     = (this.task.state==job_code.new)    ||
+                  (this.task.state==job_code.remark) ||
+                  (this.task.state==job_code.remdet);
   var isRunning = (this.task.state==job_code.running);
 
   this.inputPanel.setDisabledAll ( !isNew );
@@ -186,11 +194,11 @@ JobDialog.prototype.setDlgState = function()  {
       },1000 );
     }(this));
   } else  {
-    this.run_image.setVisible    ( isRunning );
-    this.stop_btn .setVisible    ( isRunning );
+    this.run_image.setVisible ( isRunning );
+    this.stop_btn .setVisible ( isRunning );
   }
 
-  this.status_lbl.setVisible     ( (!isNew) && (!isRunning) );
+  this.status_lbl.setVisible  ( (!isNew) && (!isRunning) );
 
   var msg = '';
   switch (this.task.state)  {
@@ -202,6 +210,7 @@ JobDialog.prototype.setDlgState = function()  {
 
   if (msg)
     this.status_lbl.setText ( '<b><i>' + msg + '</i></b>' );
+  this.export_btn.setVisible ( msg!='' );
 
   if (isNew)  { // enforce!
     this.outputPanel.setVisible ( false );
@@ -313,6 +322,7 @@ JobDialog.prototype.makeLayout = function ( onRun_func )  {
 
   this.inputPanel  = this.task.makeInputPanel ( this.dataBox );
   this.outputPanel = new IFrame ( '' );  // always initially empty
+  this.inputPanel.job_dialog = this;
   //$(this.outputPanel.element).css({'overflow':'hidden'});
 
   var toolBar = new Grid('');
@@ -356,12 +366,16 @@ JobDialog.prototype.makeLayout = function ( onRun_func )  {
   this.stop_btn   = toolBar.setButton ( 'Stop',image_path('stopjob'), 0,4, 1,1 )
                                         .setTooltip('Stop job' );
   this.status_lbl = toolBar.setLabel  ( '', 0,5, 1,1 ).setNoWrap();
+
+  this.export_btn = toolBar.setButton ( 'Export',image_path('export'), 0,7, 1,1 )
+                                        .setTooltip('Export job directory' );
+
   if (this.task.helpURL)
-    this.ref_btn  = toolBar.setButton ( 'Ref.',image_path('reference'), 0,7, 1,1 )
+    this.ref_btn  = toolBar.setButton ( 'Ref.',image_path('reference'), 0,8, 1,1 )
                                         .setTooltip('Task Documentation' );
-  this.help_btn   = toolBar.setButton ( 'Help',image_path('help'), 0,8, 1,1 )
+  this.help_btn   = toolBar.setButton ( 'Help',image_path('help'), 0,9, 1,1 )
                                         .setTooltip('Dialog Help' );
-  this.close_btn  = toolBar.setButton ( 'Close',image_path('close'), 0,9, 1,1 )
+  this.close_btn  = toolBar.setButton ( 'Close',image_path('close'), 0,10, 1,1 )
                                         .setTooltip('Close Job Dialog' );
   toolBar.setVerticalAlignment ( 0,5,'middle' );
   toolBar.setCellSize ( '40%','',0,6 );
@@ -517,6 +531,10 @@ JobDialog.prototype.makeLayout = function ( onRun_func )  {
 
     dlg.stop_btn.addOnClickListener ( function(){
       dlg.onDlgSignal_func ( dlg.task.id,job_dialog_reason.stop_job );
+    });
+
+    dlg.export_btn.addOnClickListener ( function(){
+      new ExportJobDialog ( dlg.task );
     });
 
     if (dlg.task.helpURL)

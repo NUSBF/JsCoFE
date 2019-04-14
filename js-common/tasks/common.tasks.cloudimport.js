@@ -127,6 +127,7 @@ if (!__template)  {
       div.select_btn.addOnClickListener ( function(){
         new CloudFileBrowser ( div,task,0,function(items){
           task.setSelectedCloudFiles ( div,items );
+          return 0;  // do not close browser window
         },null );
       });
     }(this))

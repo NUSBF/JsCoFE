@@ -70,100 +70,6 @@ function TaskASUDefStruct()  {
     }
   ];
 
-  /*
-  this.parameters = { // input parameters
-    sec1 : {  type     : 'section',
-              title    : 'Parameters',
-              open     : true,  // true for the section to be initially open
-              position : [0,0,1,5],
-              contains : {
-                ESTIMATE_SEL : {
-                      type      : 'combobox',  // the real keyword for job input stream
-                      keyword   : 'estimate',
-                      label     : 'Estimate molecular size using',
-                      tooltip   : 'When sequence is not given, choose to estimate ' +
-                                  'the molecular size using either the total ' +
-                                  'number of residues or total molecular weight. ' +
-                                  'In case of several different molecules, give ' +
-                                  'the combined size with respect to stoichiometric ' +
-                                  'ratios.',
-                      //iwidth   : 220,      // width of input field in px
-                      range     : ['NR|number of residues',
-                                   'MW|molecular weight'
-                                  ],
-                      value     : 'NR',
-                      position  : [0,0,1,1],
-                      showon    : {seq:[-1,0]}
-                    },
-                NRES : {
-                      type      : 'integer', // blank value is not allowed
-                      keyword   : 'NRES', // the real keyword for job input stream
-                      label     : 'number of residues',
-                      tooltip   : 'Total number of residues in the molecule. In ' +
-                                  'case of several different molecules, give the ' +
-                                  'combined number of residues with respect to ' +
-                                  'stoichiometric ratios.',
-                      iwidth    : 80,
-                      range     : [1,'*'],    // may be absent (no limits) or must
-                                              // be one of the following:
-                                              //   ['*',max]  : limited from top
-                                              //   [min,'*']  : limited from bottom
-                                              //   [min,max]  : limited from top and bottom
-                      value     : '',         // value to be paired with the keyword
-                      position  : [0,3,1,1],  // [row,col,rowSpan,colSpan]
-                      showon    : {ESTIMATE_SEL:['NR'],seq:[-1,0]}
-                    },
-                MOLWEIGHT : {
-                      type      : 'real', // blank value is not allowed
-                      keyword   : 'MOLWEIGHT', // the real keyword for job input stream
-                      label     : 'molecular weight (Daltons)',
-                      tooltip   : 'Total molecular weight of the molecule. In case ' +
-                                  'of several different molecules, give the combined ' +
-                                  'weight with respect to stoichiometric ratios.',
-                      iwidth    : 80,
-                      range     : [1,'*'],    // may be absent (no limits) or must
-                                              // be one of the following:
-                                              //   ['*',max]  : limited from top
-                                              //   [min,'*']  : limited from bottom
-                                              //   [min,max]  : limited from top and bottom
-                      value     : '',         // value to be paired with the keyword
-                      position  : [0,3,1,1],  // [row,col,rowSpan,colSpan]
-                      showon    : {ESTIMATE_SEL:['MW'],seq:[-1,0]}
-                    },
-                COMPOSITION_SEL : {
-                      type      : 'combobox',
-                      keyword   : 'MODE',
-                      label     : 'General crystal composition',
-                      tooltip   : 'Give general crystal composition',
-                      //iwidth   : 220,      // width of input field in px
-                      range     : ['P|protein only',
-                                   'C|protein/polynucletide complex',
-                                   'D|polynucletide only'
-                                  ],
-                      value     : 'P',
-                      position  : [1,0,1,1],
-                      showon    : {seq:[-1,0]}
-                    },
-                RESLIMIT : {
-                      type      : 'real_', // blank value is allowed
-                      keyword   : 'RESO', // the real keyword for job input stream
-                      label     : 'High resolution limit',
-                      tooltip   : 'If given the high resolution limit will be ' +
-                                  'used in Matthews probability scoring.',
-                      iwidth    : 80,
-                      range     : [0.01,'*'], // may be absent (no limits) or must
-                                              // be one of the following:
-                                              //   ['*',max]  : limited from top
-                                              //   [min,'*']  : limited from bottom
-                                              //   [min,max]  : limited from top and bottom
-                      value     : '',         // value to be paired with the keyword
-                      position  : [2,0,1,1]  // [row,col,rowSpan,colSpan]
-                    }
-              }
-    }
-  };
-  */
-
 }
 
 
@@ -177,9 +83,6 @@ TaskASUDefStruct.prototype.constructor = TaskASUDefStruct;
 // export such that it could be used in both node and a browser
 
 TaskASUDefStruct.prototype.icon = function()  { return 'task_asudef'; }
-
-//TaskASUDefStruct.prototype.icon_small = function()  { return 'task_asudef_20x20'; }
-//TaskASUDefStruct.prototype.icon_large = function()  { return 'task_asudef';       }
 
 TaskASUDefStruct.prototype.currentVersion = function()  {
   var version = 0;

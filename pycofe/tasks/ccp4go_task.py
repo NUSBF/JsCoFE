@@ -351,7 +351,8 @@ class CCP4go(import_task.Import):
                     libPath = meta["lib"]
                 structure = self.registerStructure ( meta["pdb"],None,meta["mtz"],
                                                      meta["map"],meta["dmap"],
-                                                     libPath,True )
+                                                     libPath=libPath,copy_files=True )
+
                 if structure:
 
                     structure.addDataAssociation ( hkl_sol.dataId )

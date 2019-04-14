@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.01.19   <--  Date of Last Modification.
+ *    13.04.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -32,7 +32,8 @@ var job_code = {
   finished : 'finished', // job finished normally (nothing to do with the results)
   failed   : 'failed',   // job failed
   stopped  : 'stopped',  // job stopped (terminated by user)
-  remark   : 'remark'    // remark node
+  remark   : 'remark',   // remark node
+  remdet   : 'remdet'    // detached remark node
 }
 
 // ---------------------------------------------------------------------------
@@ -1168,7 +1169,8 @@ if (!dbx)  {
     if (item.hasOwnProperty('tooltip'))
       inpParamRef.parameters[key].label.setTooltip ( item.tooltip );
     if (item.hasOwnProperty('lwidth'))  {
-      if (!item.lwidth.toString().endsWith('%'))  {
+//      if (!item.lwidth.toString().endsWith('%'))  {
+      if (!endsWith(item.lwidth.toString(),'%'))  {
         inpParamRef.parameters[key].label.setWidth_px ( item.lwidth );
         grid.setCellSize ( item.lwidth + 'px','',row,col );
       } else  {
@@ -1182,13 +1184,13 @@ if (!dbx)  {
       grid.setHorizontalAlignment ( row,col,item.align );
     }
     if (item.type!='label')  {
-      inpParamRef.parameters[key].sep = grid.addLabel ( '&nbsp;',row,col+1,1,1 )
-                                            .setWidth_px(4);
-      grid.setCellSize ( '4px','',row,col+1 );
+      inpParamRef.parameters[key].sep = grid.addLabel ( '',row,col+1,1,1 )
+                                            .setWidth_px(1);
+      grid.setCellSize ( '1px','',row,col+1 );
     }
     if (item.hasOwnProperty('label2'))  {
       if (item.type!='label')  {
-        inpParamRef.parameters[key].sep2 = grid.addLabel ( '&nbsp;',row,col+3,1,1 )
+        inpParamRef.parameters[key].sep2 = grid.addLabel ( '',row,col+3,1,1 )
                                                .setWidth_px(4);
         grid.setCellSize ( '4px','',row,col+3 );
       }
@@ -1202,7 +1204,8 @@ if (!dbx)  {
         //  inpParamRef.parameters[key].label2.setWidth_px ( item.lwidth2 );
         //grid.setCellSize ( item.lwidth2,'',row,col+4 );
 
-        if (!item.lwidth2.toString().endsWith('%'))  {
+//        if (!item.lwidth2.toString().endsWith('%'))  {
+        if (!endsWith(item.lwidth2.toString(),'%'))  {
           inpParamRef.parameters[key].label2.setWidth_px ( item.lwidth2 );
           grid.setCellSize ( item.lwidth2 + 'px','',row,col+4 );
         } else  {
@@ -1402,7 +1405,8 @@ if (!dbx)  {
                                                          item.value,r,c,rs,cs );
                               checkbox.setTooltip ( item.tooltip );
                               if (item.hasOwnProperty('iwidth'))  {
-                                if (item.iwidth.toString().endsWith('%'))
+//                                if (item.iwidth.toString().endsWith('%'))
+                                if (endsWith(item.iwidth.toString(),'%'))
                                       checkbox.setWidth    ( item.iwidth );
                                 else  checkbox.setWidth_px ( item.iwidth );
                               } else  checkbox.setWidth    ( '100%' );
@@ -1433,7 +1437,8 @@ if (!dbx)  {
                               textarea.setTooltip ( item.tooltip );
                               $(textarea.element).css ( {'resize':'none'} );
                               if (item.hasOwnProperty('iwidth'))  {
-                                if (item.iwidth.toString().endsWith('%'))
+//                                if (item.iwidth.toString().endsWith('%'))
+                                if (endsWith(item.iwidth.toString(),'%'))
                                       textarea.setWidth    ( item.iwidth );
                                 else  textarea.setWidth_px ( item.iwidth );
                               } else  textarea.setWidth    ( '100%' );
@@ -1620,7 +1625,7 @@ if (!dbx)  {
   }
 
 
- TaskTemplate.prototype.collectParameterValues = function ( widget ) {
+  TaskTemplate.prototype.collectParameterValues = function ( widget ) {
 
     var msg = '';  // The output. If everything's Ok, 'msg' remains empty,
                    // otherwise, it ocntains a concatenation of errors found.
@@ -1849,6 +1854,15 @@ if (!dbx)  {
   var utils = require('../../js-server/server.utils');
   var prj   = require('../../js-server/server.fe.projects');
   var conf  = require('../../js-server/server.configuration');
+
+  TaskTemplate.prototype.getNCores = function ( ncores_available )  {
+  // This function should return the number of cores, up to ncores_available,
+  // that should be reported to a queuing system like SGE or SLURM, in
+  // case the task spawns threds or processes bypassing the queuing system.
+  // It is expected that the task will not utilise more cores than what is
+  // given on input to this function.
+    return 1;
+  }
 
   TaskTemplate.prototype.getCommandLine = function ( exeType,jobDir )  {
     // just the template, no real execution body is assumed

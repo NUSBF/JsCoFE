@@ -590,9 +590,27 @@ class Base(object):
         self.script_file = open ( self.script_path,"w" )
         return
 
-    def write_script ( self,line ):
-        self.script_file.write ( line )
+
+    def write_script ( self,S ):
+
+        if type(S) is list:
+            for line in S:
+                if line:
+                    self.script_file.write ( line + "\n" )
+
+        elif type(S) is dict:
+            for opt in S:
+                value = str(S[opt])
+                if value!="False":
+                    if value=="True":
+                        value = ""
+                    self.write_script ( opt.replace("+"," ") + " " + value + "\n" )
+
+        else:
+            self.script_file.write ( S )
+
         return
+
 
     def close_script ( self ):
         self.script_file.close()
@@ -692,6 +710,11 @@ class Base(object):
             f_map  = os.path.join ( resdir, resfname + ".map" )
             f_dmap = os.path.join ( resdir, resfname + "_dmap.map" )
             f_lib  = os.path.join ( resdir, resfname + ".lib" )
+
+            self.stdout ( fpath_xyz + "  :  " + f_xyz + "\n" )
+            self.stdout ( fpath_mtz + "  :  " + f_mtz + "\n" )
+            self.stdout ( fpath_map + "  :  " + f_map + "\n" )
+            self.stdout ( fpath_dmap + "  :  " + f_dmap + "\n" )
 
             # copy result files with new names
             if fpath_xyz!=f_xyz:

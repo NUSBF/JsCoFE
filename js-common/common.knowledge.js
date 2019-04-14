@@ -1,9 +1,9 @@
 /*
- *  =================================================================
+ *  ========================================================================
  *
- *    29.12.18   <--  Date of Last Modification.
+ *    16.03.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- *  -----------------------------------------------------------------
+ *  ------------------------------------------------------------------------
  *
  *  **** Module  :  js-common/tasks/common.knowledge.js
  *       ~~~~~~~~~
@@ -12,15 +12,23 @@
  *  **** Content :  Knowledge routines and data
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2018
+ *  (C) E. Krissinel, A. Lebedev 2019
  *
- *  =================================================================
+ *  ========================================================================
  *
  */
 
 
 // -------------------------------------------------------------------------
 // Workflow index for calculating initial task suggestions.
+//
+//   Key '0' is fixed for root
+//   Keys must be either single letters (case-sensitive), or single letters
+//   followed by any number of digits from 1 to 9.
+//   Examples of valid keys:
+//     'A', 'z', 'B1', 'X19', 'c935' etc
+//   Examples of keys which will break the system:
+//     '0A', 'A0', 'c101', '23d' etc
 
 var _taskIndex = {
 
@@ -76,26 +84,26 @@ var _taskIndex = {
   // suggest Parrot after both MR and Phaser-EP; do not suggest it after itself
   'T' : { type: 'TaskParrot'         , after: ['J','K','L','M','N','O','R','S'] },
 
-  // suggest Buccaneer after Simbad, Parrot, MR and EP; do not suggest it after itself
-  'U' : { type: 'TaskBuccaneer'      , after: ['J','K','L','M','N','O','S','T'] },
+  // suggest Buccaneer after Simbad, Parrot, Acorn, MR and EP; do not suggest it after itself
+  'U' : { type: 'TaskBuccaneer'      , after: ['J','K','L','M','N','O','S','T','n'] },
 
   // suggest Refmac after both elementary MR, auto-EP, Buccaneer and itself
-  'V' : { type: 'TaskRefmac'         , after: ['M','N','O','P','Q','U','j'] },
+  'V' : { type: 'TaskRefmac'         , after: ['M','N','O','P','Q','U','j','r'] },
 
   // suggest Lorester after Buccaneer and Refmac; not after itself
-  'W' : { type: 'TaskLorestr'        , after: ['U','V'] },
+  'W' : { type: 'TaskLorestr'        , after: ['U','V','r'] },
 
   // sugget FitLigand after Refmac, Lorestr and after itself
-  'X' : { type: 'TaskFitLigand'      , after: ['V','W','X'] },
+  'X' : { type: 'TaskFitLigand'      , after: ['V','W','X','U','r'] },
 
   // suggest FitWaters after Refmac, Lorestr and Ligands, but not after itself
-  'Y' : { type: 'TaskFitWaters'      , after: ['V','W','X'] },
+  'Y' : { type: 'TaskFitWaters'      , after: ['V','W','X','U','r'] },
 
   // suggest Zanuda after Refmac and Lorestr
   'Z' : { type: 'TaskZanuda'         , after: ['V','W'] },
 
   // suggest Gesamt after Buccaneer, Refmac and Lorestr
-  'a' : { type: 'TaskGesamt'         , after: ['U','V','W'] },
+  'a' : { type: 'TaskGesamt'         , after: ['U','V','W','r'] },
 
   // suggest PISA after Refmac and Lorestr
   'b' : { type: 'TaskPISA'           , after: ['V','W','X'] },
@@ -117,13 +125,13 @@ var _taskIndex = {
   'h' : { type: 'TaskXia2'           , after: ['0'] },
 
   // suggest Dimple after phasing
-  'i' : { type: 'TaskDimple'         , after: ['M','N','O','P','Q','U'] },
+  'i' : { type: 'TaskDimple'         , after: ['M','N','O','P','Q','U','r'] },
 
   // suggest Coot after refinememnt
-  'j' : { type: 'TaskCootMB'         , after: ['V','W','i'] },
+  'j' : { type: 'TaskCootMB'         , after: ['V','W','i','U','r'] },
 
-  // do not suggest PDB Deposition
-  'k' : { type: 'TaskDeposition'     , after: [] },
+  // suggest PDB Deposition after Refmac
+  'k' : { type: 'TaskDeposition'     , after: ['V'] },
 
   // suggest Coot after refinememnt
   'l' : { type: 'TaskCootCE'         , after: ['B','C','D','m'] },
@@ -135,13 +143,16 @@ var _taskIndex = {
   'n' : { type: 'TaskAcorn'          , after: ['J','K','L','M','N','O','R','S'] },
 
   // suggest Arp/wArp after Simbad, Parrot, MR and EP; do not suggest it after itself
-  'o' : { type: 'TaskArpWarp'        , after: ['J','K','L','M','N','O','S','T'] },
+  'o' : { type: 'TaskArpWarp'        , after: ['J','K','L','M','N','O','S','T','n','T'] },
 
   // suggest ShelxCD after ASUDef and MR; do not suggest it after auto-EP or itself
   'p' : { type: 'TaskShelxCD'        , after: ['H','J','K','L','M','N'] },
 
   // do not suggest SymMatch
-  'q' : { type: 'TaskSymMatch'       , after: [] }
+  'q' : { type: 'TaskSymMatch'       , after: [] },
+
+  // suggest Buccaneer after Simbad, MR and EP; do not suggest it after itself
+  'r' : { type: 'TaskCCP4Build'      , after: ['J','K','L','M','N','O','S'] }
 
 };
 
@@ -230,11 +241,12 @@ if ((typeof module === 'undefined') || (typeof module.exports === 'undefined')) 
 
       where k1, k2, k3 are task keys (obtainable from getTaskKey(...))
       that define a sequence of 3 tasks. m1, m2 etc are keys of tasks that
-      appear after 'k1k2k3' sequence with counts c1, c2 etc.
+      appear after 'k1k2k3' workflow sequence with counts c1, c2 etc.,
+      respectively.
 
-    Initially null, gets loaded from server at user login.
-    Initially null on server, but gets computed from _taskIndex as first
-    approximation, per concrete query.
+    _wfKnowledge is initially null, gets loaded from server at user login.
+    _wfKnowledge is initially null on server, but gets computed from _taskIndex
+    as first approximation, per concrete query.
    */
 
   var _wfKnowledge = {};

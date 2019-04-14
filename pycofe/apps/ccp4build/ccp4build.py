@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    05.02.19   <--  Date of Last Modification.
+#    11.04.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -44,6 +44,8 @@
 
 
 import sys
+import os
+import shutil
 
 import pyrvapi
 
@@ -54,79 +56,254 @@ import ccp4build_report
 
 class Build(ccp4build_report.Report):
 
-    # ----------------------------------------------------------------------
+    # ------------------------------------------------------------------------
+
+    def choose_build ( self,meta1,meta2,item_name ):
+        n1 = meta1["cbuccaneer"][item_name]
+        n2 = meta2["cbuccaneer"][item_name]
+        if n1>n2:
+            return 1
+        elif n1<n2:
+            return 2
+        return 0
+
+    def chooseBuild ( self,meta1,meta2 ):
+        n = self.choose_build ( meta1,meta2,"n_res_built" )
+        if n==0:  n = self.choose_build ( meta1,meta2,"n_res_sequenced" )
+        if n==0:  n = self.choose_build ( meta1,meta2,"n_res_alloc" )
+        if n==0:  n = self.choose_build ( meta2,meta1,"unklist_len" )
+        if n==0:  n = 1
+        return n
+
+    def choose_solution ( self,workflow_ind,meta1,meta2 ):
+        #  meta1 : check-point
+        #  meta2 : trial
+        rfree1 = meta1["refmac"]["rfree"][1]
+        rfree2 = meta2["refmac"]["rfree"][1]
+        if rfree1<rfree2-self.input_data["rfree_threshold"]:
+            #  roll back to check point
+            self.workflow += "-"
+            return meta1
+        elif rfree1<=rfree2+self.input_data["rfree_threshold"]:
+            rfactor1 = meta1["refmac"]["rfactor"][1]
+            rfactor2 = meta2["refmac"]["rfactor"][1]
+            #if rfactor1<rfactor2:
+            if abs(rfree1-rfactor1)<abs(rfree2-rfactor2):
+                #  roll back to check point
+                self.workflow += "-"
+                return meta1
+        #  in case of no roll-back, accept trial
+        self.workflow += workflow_ind
+        return meta2
+
+    """
+    def choose_solution ( self,workflow_ind,meta1,meta2 ):
+        rfactor1 = meta1["refmac"]["rfactor"][1]
+        rfactor2 = meta2["refmac"]["rfactor"][1]
+        if rfactor1<rfactor2:
+            self.workflow += "-"
+            return meta1
+        elif rfactor1==rfactor2:
+            rfree1 = meta1["refmac"]["rfree"][1]
+            rfree2 = meta2["refmac"]["rfree"][1]
+            if rfree1<rfree2:
+                self.workflow += "-"
+                return meta1
+        self.workflow += workflow_ind
+        return meta2
+    """
+
+    def choose_build ( self,workflow_ind,meta1,meta2 ):
+        zedcc1 = meta1["edstats"]["ZEDCC"]
+        zedcc2 = meta2["edstats"]["ZEDCC"]
+        if zedcc1>zedcc2:
+            self.workflow += "-"
+            return meta1
+        elif zedcc1==zedcc2:
+            edcc1 = meta1["edstats"]["EDCC"]
+            edcc2 = meta2["edstats"]["EDCC"]
+            if edcc1>edcc2:
+                self.workflow += "-"
+                return meta1
+            elif edcc1==edcc2:
+                return self.choose_solution ( workflow_ind,meta1,meta2 )
+        self.workflow += workflow_ind
+        return meta2
+
+
+    ref_cycles = [
+        { "initial":10, "inter":5,  "final":10 },
+        { "initial":20, "inter":7,  "final":15 },
+        { "initial":50, "inter":10, "final":20 },
+    ]
+
 
     def ccp4build_mr ( self ):
 
+        refcyc = self.ref_cycles[min(3,max(0,int(self.input_data["ref_level"])-1))]
+
         meta = self.input_data.copy()
+        meta["labin_phifom"] = None
+        meta["labin_fc"]     = None
         if not meta["xyzpath"]:
             meta["xyzpath"] = meta["xyzpath_mr"]
 
         self.log ( "\nInitial refinement:\n" )
         self.setGenericLogParser ( True )
-        meta  = self.refmac ( meta,mode="jelly",ncycles=50,nameout="refmac_init" )
+        meta  = self.refmac ( meta,mode="jelly",ncycles=refcyc["initial"],nameout="00-1.refmac" )
         self.unsetLogParser()
         rmeta = meta["refmac"]
         self.log ([
-            "R-factor: {0:7.3} -> {1:7.3}".format(rmeta["rfactor"][0],rmeta["rfactor"][1]),
-            "R-free:   {0:7.3} -> {1:7.3}".format(rmeta["rfree"][0],rmeta["rfree"][1])
+            "R-factor: {0:7.3} -> {1:5.3}".format(rmeta["rfactor"][0],rmeta["rfactor"][1]),
+            "R-free:   {0:7.3} -> {1:5.3}".format(rmeta["rfree"][0],rmeta["rfree"][1])
         ])
 
         self.putMessage ( "<h3>Performing build in Molecular Replacement Phases</h3>" )
 
-        self.printMetrics ( -1,-1,None )
+        self.printMetrics ( -1,None )
         self.prepareGraph()
 
-        outer_cycles_max = self.input_data["outer_cycles_max"]
-        outer_cycles_min = self.input_data["outer_cycles_min"]
-        inner_cycles     = self.input_data["inner_cycles"]
-        noimprove_cycles = self.input_data["noimprove_cycles"]*inner_cycles
+        cycles_max = int(self.input_data["cycles_max"])
+        cycles_min = int(self.input_data["cycles_min"])
+        noimprove_cycles = int(self.input_data["noimprove_cycles"])
 
-        for i in range(outer_cycles_max):
+        dm_mode     = self.input_data["dm_mode"  ]
+        fill_mode   = self.input_data["fill_mode"]
+        fit_mode    = self.input_data["fit_mode" ]
+        rsr_mode    = self.input_data["rsr_mode" ]
+
+        trim_waters = self.input_data["trim_waters"] and float(self.input_data["res_high"])<=float(self.input_data["trim_wat_resol"])
+
+        meta["xyzpath_mr"] = meta["xyzpath"]  #  to be used in first buccaneer
+
+        for i in range(cycles_max):
+
+            self.workflow = ""  # will keep track of workflow for reporting
+            prefix = str(i+1).zfill(2) + "_"
+
+            #  remove waters from current model
+            meta["xyzpath_mr"] = self.remove_waters ( meta["xyzpath_mr"] )
+            meta["xyzpath"]    = self.remove_waters ( meta["xyzpath"]    )
+
+            #meta["labin_hl"]   = None  # enforce using PHIFOM at all times
 
             #  modify density
 
-            meta["labin_hl"] = None
-            #meta["xyzpath_mr"] = meta["xyzpath"]
+            if dm_mode in ["auto","never"]:
+                #  first attempt: build without DM
+                meta_mb1 = self.cbuccaneer ( dict(meta,xyzpath=None,labin_fc=None),
+                                             nameout=prefix+"01-1.cbuccaneer" )
 
-            meta_dm = self.parrot ( meta,nameout=str(i)+"-parrot" )
+            if dm_mode in ["auto","always"]:
+                #  second attempt: build after DM
+                meta_dm  = self.parrot      ( meta,nameout=prefix+"01-2.parrot" )
+                meta_mb2 = self.cbuccaneer  ( dict(meta_dm,xyzpath=None,labin_fc=None),
+                                              nameout=prefix+"01-2.cbuccaneer" )
 
-            #  and start from empty list
-            meta = dict ( meta_dm,xyzpath=None,labin_fc=None )
+                if dm_mode=="auto":
+                    meta_mb = self.choose_solution ( "M",
+                            self.refmac(meta_mb1,ncycles=refcyc["inter"],nameout=prefix+"03-1.refmac"),
+                            self.refmac(meta_mb2,ncycles=refcyc["inter"],nameout=prefix+"03-2.refmac")
+                    )
+                else:
+                    self.workflow += "M"
+                    meta_mb = meta_mb2
+            else:
+                self.workflow += "-"
+                meta_mb = meta_mb1
 
-            for j in range(inner_cycles):
+            meta1 = self.refmac ( self.edstats(meta_mb,trim="all",nameout=prefix+"04.edstats"),
+                                  ncycles=refcyc["inter"],nameout=prefix+"05.refmac" )
+            meta1["trim"] = meta1["edstats"]
 
-                prefix = str(i) + "_" + str(j) + "_"
+            if fill_mode in ["auto","always"]:
+                meta2 = self.refmac ( self.coot(meta1,script="fill_partial_residues",
+                                                nameout=prefix+"06.coot_fill" ),
+                                      ncycles=refcyc["inter"],nameout=prefix+"07.refmac" )
+                if fill_mode=="auto":
+                    meta2 = self.choose_solution ( "E",meta1,meta2 )
+                else:
+                    self.workflow += "E"
+            else:
+                self.workflow += "-"
+                meta2 = meta1
 
-                meta_mb = self.cbuccaneer ( meta,j,nameout=prefix+"cbuccaneer" )
+            if fit_mode in ["auto","always"]:
+                meta3 = self.refmac ( self.coot(meta2,script="fit_protein",
+                                                nameout=prefix+"08.coot_fit" ),
+                                      ncycles=refcyc["inter"],nameout=prefix+"09.refmac" )
+                if fit_mode=="auto":
+                    meta3 = self.choose_solution ( "F",meta2,meta3 )
+                else:
+                    self.workflow += "F"
+            else:
+                self.workflow += "-"
+                meta3 = meta2
 
-                #  refine and adjust
-                meta = self.refmac  ( dict(meta_dm,xyzpath=meta_mb["xyzpath"]),
-                                      ncycles=10,nameout=prefix+"1.refmac" )
-                meta = self.coot    ( meta,script="fill_partial_residues",
-                                      nameout=prefix+"2.coot_fill" )
-                meta = self.refmac  ( meta,ncycles=10,nameout=prefix+"3.refmac" )
-                meta = self.coot    ( meta,script="fit_protein",
-                                      nameout=prefix+"4.coot_fit" )
-                meta = self.refmac  ( meta,ncycles=10,nameout=prefix+"5.refmac" )
-                meta = self.coot    ( meta,script="stepped_refine_protein",
-                                      nameout=prefix+"6.coot_refine" )
-                meta = self.refmac  ( meta,ncycles=10,nameout=prefix+"7.refmac" )
-                meta = self.edstats ( meta,nameout=prefix+"8.edstats" )
+            if rsr_mode in ["auto","always"]:
+                meta4 = self.refmac ( self.coot(meta3,script="stepped_refine_protein",
+                                                nameout=prefix+"10.coot_refine" ),
+                                      ncycles=refcyc["inter"],nameout=prefix+"11.refmac" )
+                if rsr_mode=="auto":
+                    meta4 = self.choose_solution ( "R",meta3,meta4 )
+                else:
+                    self.workflow += "R"
+            else:
+                self.workflow += "-"
+                meta4 = meta3
 
-                meta["cbuccaneer"] = meta_mb["cbuccaneer"]
-                self.stock_result ( meta )
-                self.printMetrics ( i,j,meta )
-                self.drawGraph()
-                self.makeResultTable()
+            if trim_waters:
+                if meta4["refmac"]["rfree"][1]<=float(self.input_data["trim_wat_rfree"]):
+                    meta_rf = self.choose_solution ( "W",meta4,
+                                self.refmac (
+                                    self.findwaters(meta4,
+                                              nameout=prefix+"12.findwaters" ),
+                                    ncycles=refcyc["inter"],nameout=prefix+"13.refmac" ) )
+                else:
+                    self.workflow += "-"
+                    meta_rf = meta4
+            else:
+                self.workflow += "-"
+                meta_rf = meta4
 
-            if len(self.build_meta)-self.best_build_no>noimprove_cycles:
+            meta_ed = self.edstats ( dict(meta_rf,cbuccaneer=meta_mb["cbuccaneer"]),
+                                     nameout=prefix+"14.edstats" )
+
+            meta_rf["edstats"] = meta_ed["edstats"]
+            self.stock_result  ( meta_rf )
+            self.printMetrics  ( i,meta_rf )
+            self.rvapiDrawGraph()
+            self.drawEDStats   ( meta_ed["edstats"]["reslist"],i+1 )
+            self.rvapiMakeResultTable ( "res_rfree","Solution with lowest R<sub>free</sub>",
+                                        self.output_name_rfree,self.best_rfree_build_no )
+            self.rvapiMakeResultTable ( "res_edcc","Solution with highest ED Correlation",
+                                        self.output_name_edcc,self.best_edcc_build_no )
+            self.rvapiMakeResultTable ( "res_nbuilt","Solution with highest number of residues built",
+                                        self.output_name_nbuilt,self.best_nbuilt_build_no )
+            self.rvapiMakeResultTable ( "res_nfrag" ,"Solution with least number of fragments",
+                                        self.output_name_nfrag,self.best_nfrag_build_no )
+
+            last_best = max ( self.best_rfree_build_no,
+                              max ( self.best_edcc_build_no,
+                                    self.best_nbuilt_build_no ) )
+            if len(self.build_meta)-last_best > noimprove_cycles:
                 break;
+            elif i<cycles_max-1:
+                meta = self.refmac ( dict(meta_ed,labin_hl=None),ncycles=refcyc["final"],
+                                     nameout=prefix+"15.refmac" )
+                meta["xyzpath_mr"] = meta   ["xyzpath"]  #  for next buccaneer
+                meta["xyzpath"]    = meta_rf["xyzpath"]  #  for next parrot
+
+            self.flush()
+
+        self.printMetrics ( -2,None )
 
         return
 
 
     def ccp4build_ep ( self ):
+
+        refcyc = self.ref_cycles[min(3,max(0,int(self.input_data["ref_level"])-1))]
 
         self.putMessage ( "<h3>Performing build in Experimental Phases</h3>" )
 
@@ -134,57 +311,146 @@ class Build(ccp4build_report.Report):
         #meta["xyzpath_ha"] = meta["xyzpath"]
         #meta["xyzpath"   ] = None
 
-        self.printMetrics ( -1,-1,None )
+        self.printMetrics ( -1,None )
         self.prepareGraph()
 
-        outer_cycles_max = self.input_data["outer_cycles_max"]
-        outer_cycles_min = self.input_data["outer_cycles_min"]
-        inner_cycles     = self.input_data["inner_cycles"]
-        noimprove_cycles = self.input_data["noimprove_cycles"]*inner_cycles
+        cycles_max = int(self.input_data["cycles_max"])
+        cycles_min = int(self.input_data["cycles_min"])
+        noimprove_cycles = int(self.input_data["noimprove_cycles"])
 
-        for i in range(outer_cycles_max):
+        dm_mode     = self.input_data["dm_mode"  ]
+        fill_mode   = self.input_data["fill_mode"]
+        fit_mode    = self.input_data["fit_mode" ]
+        rsr_mode    = self.input_data["rsr_mode" ]
 
-            #  modify density; note that meta contains xyzpath after previous
-            #  iteration, or initial one if given on input
-            meta_dm = self.parrot ( meta,nameout=str(i)+"-parrot" )
+        trim_waters = self.input_data["trim_waters"] and float(self.input_data["res_high"])<=float(self.input_data["trim_wat_resol"])
 
-            #  and start building loop from empty structure
-            meta = dict ( meta_dm,xyzpath=None,labin_fc=None )
+        for i in range(cycles_max):
 
-            for j in range(inner_cycles):
+            self.workflow = ""  # will keep track of workflow for reporting
+            prefix = str(i+1).zfill(2) + "_"
 
-                prefix = str(i) + "_" + str(j) + "_"
+            #  remove waters from current model
+            meta["xyzpath_mr"] = self.remove_waters ( meta["xyzpath_mr"] )
+            meta["xyzpath"]    = self.remove_waters ( meta["xyzpath"]    )
 
-                meta_mb = self.cbuccaneer ( meta,j,nameout=prefix+"cbuccaneer" )
+            #  modify density
 
-                #  refine and adjust
-                meta = self.refmac  ( meta_mb,
-                                      ncycles=10,nameout=prefix+"1.refmac" )
-                meta = self.coot    ( meta,
-                                      script="fill_partial_residues",
-                                      nameout=prefix+"2.coot_fill" )
-                meta = self.refmac  ( dict(meta_mb,xyzpath=meta["xyzpath"]),
-                                      ncycles=10,nameout=prefix+"3.refmac" )
-                meta = self.coot    ( meta,
-                                      script="fit_protein",
-                                      nameout=prefix+"4.coot_fit" )
-                meta = self.refmac  ( dict(meta_mb,xyzpath=meta["xyzpath"]),
-                                      ncycles=10,nameout=prefix+"5.refmac" )
-                meta = self.coot    ( meta,
-                                      script="stepped_refine_protein",
-                                      nameout=prefix+"6.coot_refine" )
-                meta = self.refmac  ( dict(self.input_data,xyzpath=meta["xyzpath"]),
-                                      ncycles=20,nameout=prefix+"7.refmac" )
-                meta = self.edstats ( meta,nameout=prefix+"8.edstats" )
+            if dm_mode in ["auto","never"]:
+                #  first attempt: build without DM
+                meta_mb1 = self.cbuccaneer ( dict(meta,labin_fc=None),
+                                             nameout=prefix+"01-1.cbuccaneer" )
 
-                meta["cbuccaneer"] = meta_mb["cbuccaneer"]
-                self.stock_result ( meta )
-                self.printMetrics ( i,j,meta )
-                self.drawGraph()
-                self.makeResultTable()
+            if dm_mode in ["auto","always"]:
+                #  second attempt: build after DM
+                #  modify density; note that meta contains xyzpath_mr ("MR model")
+                #  and xyzpath (fixed model) after previous iteration or if given
+                #  on input, and xyzpath_ha (HA substructure) used on 1st
+                #  iteration
+                meta_dm  = self.parrot     ( meta,nameout=prefix+"01-2.parrot" )
+                meta_mb2 = self.cbuccaneer ( dict(meta_dm,labin_fc=None),
+                                             nameout=prefix+"01-2.cbuccaneer" )
 
-            if len(self.build_meta)-self.best_build_no > noimprove_cycles:
+                if dm_mode=="auto":
+                    meta_mb = self.choose_solution ( "M",
+                            self.refmac(meta_mb1,ncycles=refcyc["inter"],nameout=prefix+"03-1.refmac"),
+                            self.refmac(meta_mb2,ncycles=refcyc["inter"],nameout=prefix+"03-2.refmac")
+                    )
+                else:
+                    self.workflow += "M"
+                    meta_mb = meta_mb2
+            else:
+                self.workflow += "-"
+                meta_mb = meta_mb1
+
+            meta1 = self.refmac ( self.edstats(meta_mb,trim="all",nameout=prefix+"04.edstats"),
+                                  ncycles=refcyc["inter"],nameout=prefix+"05.refmac" )
+            #meta1["trim"] = meta1["edstats"]
+
+            if fill_mode in ["auto","always"]:
+                meta2 = self.refmac ( self.coot(meta1,script="fill_partial_residues",
+                                                nameout=prefix+"06.coot_fill" ),
+                                      ncycles=refcyc["inter"],nameout=prefix+"07.refmac" )
+                if fill_mode=="auto":
+                    meta2 = self.choose_solution ( "E",meta1,meta2 )
+                else:
+                    self.workflow += "E"
+            else:
+                self.workflow += "-"
+                meta2 = meta1
+
+            if fit_mode in ["auto","always"]:
+                meta3 = self.refmac ( self.coot(meta2,script="fit_protein",
+                                                nameout=prefix+"08.coot_fit" ),
+                                      ncycles=refcyc["inter"],nameout=prefix+"09.refmac" )
+                if fit_mode=="auto":
+                    meta3 = self.choose_solution ( "F",meta2,meta3 )
+                else:
+                    self.workflow += "F"
+            else:
+                self.workflow += "-"
+                meta3 = meta2
+
+            if rsr_mode in ["auto","always"]:
+                meta4 = self.refmac ( self.coot(meta3,script="stepped_refine_protein",
+                                                nameout=prefix+"10.coot_refine" ),
+                                      ncycles=refcyc["inter"],nameout=prefix+"11.refmac" )
+                if rsr_mode=="auto":
+                    meta4 = self.choose_solution ( "R",meta3,meta4 )
+                else:
+                    self.workflow += "R"
+            else:
+                self.workflow += "-"
+                meta4 = meta3
+
+            if trim_waters:
+                if meta4["refmac"]["rfree"][1]<=float(self.input_data["trim_wat_rfree"]):
+                    meta5 = self.choose_solution ( "W",meta4,
+                                self.refmac (
+                                    self.findwaters(meta4,
+                                              nameout=prefix+"12.findwaters" ),
+                                    ncycles=refcyc["inter"],nameout=prefix+"13.refmac" ) )
+                else:
+                    self.workflow += "-"
+                    meta5 = meta4
+            else:
+                meta5 = meta4
+
+            meta_rf = self.refmac  ( dict(self.input_data,xyzpath=meta5["xyzpath"],
+                                          cbuccaneer=meta_mb["cbuccaneer"]),
+                                     ncycles=refcyc["inter"],nameout=prefix+"14.refmac" )
+            meta_ed = self.edstats ( meta_rf,nameout=prefix+"15.edstats" )
+
+            #meta_rf["cbuccaneer"] = meta_mb["cbuccaneer"]
+            meta_rf["edstats"] = meta_ed["edstats"]
+            meta_rf["trim"]    = meta1  ["edstats"]
+            self.stock_result  ( meta_rf   )
+            self.printMetrics  ( i,meta_rf )
+            self.rvapiDrawGraph()
+            self.drawEDStats   ( meta_ed["edstats"]["reslist"],i+1 )
+            self.rvapiMakeResultTable ( "res_rfree","Solution with lowest R<sub>free</sub>",
+                                        self.output_name_rfree,self.best_rfree_build_no )
+            self.rvapiMakeResultTable ( "res_edcc","Solution with highest ED Correlation",
+                                        self.output_name_edcc,self.best_edcc_build_no )
+            self.rvapiMakeResultTable ( "res_nbuilt","Solution with highest number of residues built",
+                                        self.output_name_nbuilt,self.best_nbuilt_build_no )
+            self.rvapiMakeResultTable ( "res_nfrag" ,"Solution with least number of fragments",
+                                        self.output_name_nfrag,self.best_nfrag_build_no )
+            self.flush()
+
+            last_best = max ( self.best_rfree_build_no,
+                              max ( self.best_edcc_build_no,
+                                    self.best_nbuilt_build_no ) )
+            if len(self.build_meta)-last_best > noimprove_cycles:
                 break;
+            elif i<cycles_max-1:
+                meta = self.refmac ( dict(self.input_data,xyzpath=meta_ed["xyzpath"]),
+                                     ncycles=refcyc["final"],nameout=prefix+"16.refmac" )
+                meta["xyzpath_mr"] = meta   ["xyzpath"]  #  for next buccaneer
+                meta["xyzpath"]    = meta_rf["xyzpath"]  #  for next parrot
+                #meta["labin_hl"]   = None  # enforce using PHIFOM at all iterations but 1st one
+
+        self.printMetrics ( -2,None )
 
         return
 
@@ -200,7 +466,9 @@ class Build(ccp4build_report.Report):
         self.readParrotOptions    ()
         self.readCBuccaneerOptions()
         self.readRefmacOptions    ()
+        self.readFindWatersOptions()
         self.log ([
+            " ",
             "---------------------------------------------------------------------------"
         ])
 
@@ -208,6 +476,13 @@ class Build(ccp4build_report.Report):
             self.ccp4build_mr()
         else:
             self.ccp4build_ep()
+
+        self.storeReportDocument()
+
+        if os.path.isdir("coot-backup"):
+            shutil.rmtree ( "coot-backup" )
+        if os.path.isdir("coot-download"):
+            shutil.rmtree ( "coot-download" )
 
         return
 

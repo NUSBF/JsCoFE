@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.12.18   <--  Date of Last Modification.
+ *    08.03.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Task Data Dialog (shows data availability for given task)
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2018
+ *  (C) E. Krissinel, A. Lebedev 2016-2019
  *
  *  =================================================================
  *
@@ -136,7 +136,7 @@ DataSummaryPage.prototype.addViewHKLButton = function ( task )  {
 
 function DataInspectDialog ( dataSummaryPage,title,width,height )  {
 
-  Dialog.call ( this,title );
+  Dialog.call ( this,strip_html_tags(title) );
 
   this._options.width     = width;
   this._options.maxHeight = height;

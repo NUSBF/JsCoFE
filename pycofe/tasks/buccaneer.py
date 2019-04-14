@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    24.12.18   <--  Date of Last Modification.
+#    14.02.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2018
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2019
 #
 # ============================================================================
 #
@@ -223,6 +223,7 @@ class BuccaneerMR(basic.TaskDriver):
                 structure.removeSubtype    ( dtype_template.subtypeSubstructure() )
                 structure.setXYZSubtype    ()
                 structure.copyLabels       ( istruct )
+                structure.setRefmacLabels  ( None    )
                 structure.copyLigands      ( istruct )
                 self.putStructureWidget    ( "structure_btn",
                                              "Structure and electron density",

@@ -48,7 +48,7 @@ class Dimple(ccp4go_asu.PrepareASU):
             title = "Homologue MR"
         else:
             title = "Refinement"
-        self.putWaitMessageLF ( "<b>" + str(self.stage_no+1) +
+        self.putWaitMessageLF ( "<b>" + str(self.stage_no+1) +\
                                 ". " + title + " (Dimple)</b>" )
         self.page_cursor[1] -= 1
 

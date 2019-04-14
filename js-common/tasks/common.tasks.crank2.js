@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    10.01.19   <--  Date of Last Modification.
+ *    13.04.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -81,6 +81,7 @@ function TaskCrank2()  {
             position : [0,0,1,5],
             value    : 'crank2', // used to hide elements in SHELX pipeline
             contains : {
+              /*
               HATOM : {
                     type      : 'string',   // empty string not allowed
                     keyword   : 'atomtype=',
@@ -109,6 +110,7 @@ function TaskCrank2()  {
                     position  : [0,4,1,1], // [row,col,rowSpan,colSpan]
                     showon    : {HATOM:['S']}
                   },
+              */
               NATOMS : {
                     type      : 'integer_',       // '_' means blank value is allowed
                     keyword   : 'exp_num_atoms=', // the real keyword for job input stream
@@ -440,7 +442,7 @@ function TaskCrank2()  {
             title    : 'Advanced options for hand determination',
             open     : false,  // true for the section to be initially open
             position : [3,0,1,5],
-            showon   : {'revision.subtype:xyz':[0,-1]}, // from this and input data section
+            showon   : {'revision.subtype:xyz':[0,-1],sec1:['crank2']}, // from this and input data section
             contains : {
               HANDDET_DO : {
                     type     : 'checkbox',
@@ -1109,8 +1111,9 @@ if (!__template)  {
         if (this.name!=name)  {
           var inputPanel = inpParamRef.grid.parent.parent;
           inputPanel.header.title.setText ( '<b>' + this.title + '</b>' );
-          inputPanel.header.uname_inp.setStyle ( 'text','',
-                                this.name.replace(/<(?:.|\n)*?>/gm, '') );
+          var new_title = this.name.replace ( /<(?:.|\n)*?>/gm,'' );
+          inputPanel.header.uname_inp.setStyle ( 'text','',new_title );
+          inputPanel.job_dialog.changeTitle ( new_title );
           this.updateInputPanel ( inputPanel );
           inputPanel.emitSignal ( cofe_signals.jobDlgSignal,
                                   job_dialog_reason.rename_node );

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    09.01.19   <--  Date of Last Modification.
+ *    21.02.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -450,6 +450,14 @@ Grid.prototype.getCell = function ( row,col )  {
   }
 }
 
+Grid.prototype.insertCell = function ( row,col )  {
+  // make sure that cell [row,col] is there
+  this.getCell ( row,col );
+  var gridRow = this.element.rows[row];
+  gridRow.insertCell ( col );  // this inserts a cell
+  return gridRow.cells[col];   // return inserted cell
+}
+
 Grid.prototype.getNRows = function()  {
   return this.element.rows.length;
 }
@@ -486,6 +494,17 @@ var cell = this.getCell ( row,col );
 
 Grid.prototype.addWidget = function ( widget, row,col, rowSpan,colSpan )  {
 var cell = this.getCell ( row,col );
+  cell.rowSpan = rowSpan;
+  cell.colSpan = colSpan;
+  if (widget)  {
+    cell.appendChild ( widget.element );
+    widget.parent = this;
+  }
+  return cell;
+}
+
+Grid.prototype.insertWidget = function ( widget, row,col, rowSpan,colSpan )  {
+var cell = this.insertCell ( row,col );
   cell.rowSpan = rowSpan;
   cell.colSpan = colSpan;
   if (widget)  {
@@ -869,6 +888,7 @@ function Button ( text,icon_uri )  {
   this.div = document.createElement ( 'div' );
   this.element.appendChild ( this.div );
   this._set_button ( text,icon_uri );
+  this.click_count = 1;
 }
 
 Button.prototype = Object.create ( Widget.prototype );
@@ -925,6 +945,22 @@ Button.prototype.setSize_px = function ( width,height )  {
   $(this.element).css({'background-size':(height-4)+'px'});
   this.element.style.width  = width  + 'px';
   this.element.style.height = height + 'px';
+  return this;
+}
+
+
+Button.prototype.addOnClickListener = function ( listener_func )  {
+  (function(button){
+    button.element.addEventListener('click',function(){
+      if (button.click_count>0)  {
+        button.click_count = 0;
+        listener_func();
+        window.setTimeout ( function(){
+          button.click_count = 1;
+        },1000 );
+      }
+    });
+  }(this))
   return this;
 }
 

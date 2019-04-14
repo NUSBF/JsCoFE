@@ -155,12 +155,6 @@ if (!__template)  {
 
     if (startsWith(dropdown.layCustom,'phaser-ep'))  {
 
-      /*
-      if (this.subtype.indexOf('substructure')<0)
-            setLabel ( 'Calculate from coordinates; assumed r.m.s.d. from target',row,0 );
-      else  setLabel ( 'Assumed r.m.s.d. from target',row,0 );
-      */
-
       if (this.subtype.indexOf('xyz')>=0)  {
 
         if (dropdown.in_revision)  {

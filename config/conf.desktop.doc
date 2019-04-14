@@ -1,0 +1,133 @@
+
+
+FrontEnd.fsmount
+NumberCrunchers[n].fsmount
+
+Either null or path to a common mount point. If fsmount is null, then file
+transfer between servers is done using http(s) protocols. Otherwise, files
+are transferred by direct copying.
+
+For example, FE has fsmount='/mount_fe' and it communicates with NC, which has
+fsmount defined as '/mount_nc'. Suppose that file '/mount_fe/x/y/z.dat' needs
+to be sent from FE to the NC. Then, FE sends path '/x/y/z.dat' to NC via http(s),
+and NC attempts to copy file from '/mount_nc/x/y/z.dat'. If fsmount is null,
+FE and NC use http(s) for sending files and not just file paths.
+
+Limitations:
+1) fsmount fields should be either null or valid paths for all servers in the
+system
+2) currently, only fsmount='/' are supported
+
+Default:  fsmount=null
+
+Direct file copy is recommended if http(s) fails, which is sometimes observed
+in localhost-based setups.
+
+{
+
+  "_comment"  : [
+    "====================================================================================",
+    "                    jsCoFE Configuration for desktop setup mode                     ",
+    "===================================================================================="
+  ],
+
+  "Desktop"  : {
+    "clientApp"  : "/bin/bash",
+    "args"       : ["-c","open -a Firefox $feURL$clientURL"]
+  },
+
+  "FrontEnd" : {
+    "protocol"         : "http",
+    "host"             : "localhost",
+    "port"             : 8081,
+    "externalURL"      : "http://localhost:8081",
+    "exclusive"        : true,
+    "stoppable"        : false,
+    "exclude_tasks"    : [],
+    "fsmount"          : "/",
+    "userDataPath"     : "./cofe-users",
+    "projectsPath"     : "./cofe-projects",
+    "facilitiesPath"   : "./cofe-facilities",
+    "ICAT_wdsl"        : "https://icat02.diamond.ac.uk/ICATService/ICAT?wsdl",
+    "ICAT_ids"         : "https://ids01.diamond.ac.uk/ids",
+    "bootstrapHTML"    : "jscofe.html",
+    "maxRestarts"      : 100,
+    "fileCapSize"      : 500000,
+    "regMode"          : "admin",
+    "ration"           : {
+        "storage"   : 3000,
+        "cpu_day"   : 24,
+        "cpu_month" : 240
+    },
+    "cloud_mounts"     : {
+      "ccp4-examples"  : "$CCP4/share/ccp4i2/demo_data",
+      "home"           : ["$HOME","$USERPROFILE"]
+    }
+  },
+
+  "NumberCrunchers" : [
+    {
+      "serNo"            : 0,
+      "name"             : "local-nc",
+      "in_use"           : true,
+      "protocol"         : "http",
+      "host"             : "localhost",
+      "port"             : 8082,
+      "externalURL"      : "http://localhost:8082",
+      "exclusive"        : true,
+      "stoppable"        : false,
+      "fsmount"          : "/",
+      "capacity"         : 4,
+      "max_nproc"        : 3,
+      "exclude_tasks"    : [],
+      "fasttrack"        : 1,
+      "storage"          : "./cofe-nc-storage",
+      "exeType"          : "SHELL",
+      "exeData"          : "",
+      "jobCheckPeriod"   : 2000,
+      "sendDataWaitTime" : 1000,
+      "maxSendTrials"    : 10,
+      "jobRemoveTimeout" : 10000,
+      "maxRestarts"      : 100,
+      "fileCapSize"      : 500000
+    },
+    {
+      "serNo"            : 1,
+      "name"             : "client",
+      "in_use"           : true,
+      "protocol"         : "http",
+      "host"             : "localhost",
+      "port"             : 8083,
+      "externalURL"      : "http://localhost:8083",
+      "exclusive"        : true,
+      "stoppable"        : false,
+      "fsmount"          : "/",
+      "capacity"         : 4,
+      "exclude_tasks"    : [],
+      "fasttrack"        : 1,
+      "storage"          : "./cofe-client-storage",
+      "exeType"          : "CLIENT",
+      "exeData"          : "",
+      "jobCheckPeriod"   : 2000,
+      "sendDataWaitTime" : 1000,
+      "maxSendTrials"    : 10,
+      "jobRemoveTimeout" : 10000,
+      "maxRestarts"      : 100,
+      "fileCapSize"      : 500000
+    }
+  ],
+
+  "Emailer" : {
+    "type"               : "nodemailer",
+    "emailFrom"          : "CCP4 on-line <ccp4.cofe@gmail.com>",
+    "maintainerEmail"    : "ccp4.cofe@gmail.com",
+    "host"               : "smtp.gmail.com",
+    "port"               : 465,
+    "secure"             : true,
+    "auth"               : {
+      "user" : "ccp4.cofe@gmail.com",
+      "pass" : "ccp4.cofe.2016"
+    }
+  }
+
+}

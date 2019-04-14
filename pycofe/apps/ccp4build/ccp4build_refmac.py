@@ -75,7 +75,7 @@ class Refmac(ccp4build_cbuccaneer.CBuccaneer):
         "MAKE+NEWLIGAND"    : "NOEXIT",
         "SCALE+TYPE"        : "SIMPLE",
         "SOLVENT"           : "YES",
-        "PHOUT"             : True,
+        "PHOUT"             : True
     }
 
     refmac_options_jelly = {
@@ -104,7 +104,8 @@ class Refmac(ccp4build_cbuccaneer.CBuccaneer):
         "SOLVENT"        : "YES",
         "NCSR"           : "LOCAL",
         #"REFI RESO"      : " 19.91 1.59
-        "MAKE+NEWLIGAND" : "EXIT"
+        "MAKE+NEWLIGAND" : "EXIT",
+        "PHOUT"             : True
     }
 
 
@@ -150,7 +151,10 @@ class Refmac(ccp4build_cbuccaneer.CBuccaneer):
         labin_hkl  = self.splitLabin ( meta["labin_fo"] )
         labin_free = meta["labin_free"].replace("[","").replace("]","")
 
-        if meta["mode"]=="EP":
+        hklin = self.input_data["mtzpath"]  # works in case of MR
+
+        if (self.input_data["mode"]=="EP") and meta["labin_hl"]:
+            hklin = meta["mtzpath"]
             labin_abcd = self.splitLabin ( meta["labin_hl"] )
             self.write_script ([
                 "labin HLA="  + labin_abcd[0]  + " HLB="    + labin_abcd[1] +\
@@ -158,10 +162,17 @@ class Refmac(ccp4build_cbuccaneer.CBuccaneer):
                      " FP="   + labin_hkl[0]   + " SIGFP="  + labin_hkl[1]  +\
                      " FREE=" + labin_free
             ])
+        #elif meta["labin_phifom"]:
+        #    labin_phifom = self.splitLabin ( meta["labin_phifom"] )
+        #    self.write_script ([
+        #        "labin PHIB=" + labin_phifom[0] + " FOM="   + labin_phifom[1] +\
+        #             " FP="   + labin_hkl[0]    + " SIGFP=" + labin_hkl[1]    +\
+        #             " FREE=" + labin_free
+        #    ])
         else:
             self.write_script ([
-                "labin FP="   + labin_hkl[0]   + " SIGFP="  + labin_hkl[1]  +\
-                     " FREE=" + labin_free
+                "labin FP="  + labin_hkl[0] + " SIGFP=" + labin_hkl[1] +\
+                    " FREE=" + labin_free
             ])
 
         if ncycles>=0:
@@ -176,13 +187,18 @@ class Refmac(ccp4build_cbuccaneer.CBuccaneer):
         else:
             self.write_script ( self.refmac_options_jelly  )
 
+        self.write_script ([
+            "REFI RESO  " + self.input_data["res_low"] + " " + self.input_data["res_high"]
+        ])
+
+
         self.write_script ([ "END" ])
         self.close_script()
 
         refmac_mtzout = os.path.join ( self.workdir,nameout + ".mtz" )
         refmac_xyzout = os.path.join ( self.workdir,nameout + ".pdb" )
 
-        cmd = [ "hklin" ,meta["mtzpath"],
+        cmd = [ "hklin" ,hklin,
                 "xyzin" ,meta["xyzpath"],
                 "hklout",refmac_mtzout,
                 "xyzout",refmac_xyzout,
@@ -193,15 +209,32 @@ class Refmac(ccp4build_cbuccaneer.CBuccaneer):
         self.runApp ( "refmac5",cmd,
                       fpath_stdout=stdout_fpath,fpath_stderr=stderr_fpath )
 
+        self.unsetLogParser()
+
+        f = open ( refmac_xyzout,"r" )
+        flist = f.readlines()
+        f.close()
+        f = open ( refmac_xyzout,"w" )
+        for line in flist:
+            if not line.startswith("TER "):
+                f.write ( line )
+        f.close()
+
         out_meta = meta.copy()
         out_meta["mtzpath"]      = refmac_mtzout
         out_meta["xyzpath"]      = refmac_xyzout
         out_meta["labin_phifom"] = "/*/*/[PHIC_ALL_LS,FOM]"
         out_meta["labin_fc"]     = "/*/*/[FWT,PHWT]"
+        out_meta["labin_dfc"]    = "/*/*/[DELFWT,PHDELWT]"
         out_meta["labin_hl"]     = "/*/*/[HLACOMB,HLBCOMB,HLCCOMB,HLDCOMB]"
         out_meta["refmac"]       = self.getRefmacMetrics ( stdout_fpath )
 
-        return out_meta
+        #return out_meta
+
+        return self.mergeHKL ( out_meta,self.input_data,nameout,
+                               fpath_stdout=stdout_fpath,fpath_stderr=stderr_fpath )
+
+
 
 
     def getRefmacMetrics ( self,stdout_fpath ):

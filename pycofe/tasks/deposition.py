@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    24.12.18   <--  Date of Last Modification.
+#    04.03.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2018
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2019
 #
 # ============================================================================
 #
@@ -241,13 +241,6 @@ class Deposition(basic.TaskDriver):
 
         # 4. Put download widgets
 
-        #self.putMessage ( "&nbsp;<h3><i>Deposition files</i></h3>" +\
-        #    "<b>Use download buttons below to download files for further upload to " +\
-        #    "<a href='https://deposit-1.wwpdb.org' target='_blank'>" +\
-        #    "wwPDB Deposition Site</a></b> <i>(link opens in new tab/window)</i>" +\
-        #    "<br><hr/>"
-        #)
-
         self.putMessage ( "&nbsp;<h3><i>PDB Deposition</i></h3>" +\
                           "<b>a) Download the following files:<br><hr/>" )
 
@@ -260,7 +253,7 @@ class Deposition(basic.TaskDriver):
 
         self.putMessage ( "<hr/><br><b>" +\
             "b) Start new deposition session at " +\
-            "<a href='https://deposit-1.wwpdb.org' target='_blank'>wwPDB " +\
+            "<a href='https://deposit.wwpdb.org' target='_blank'>wwPDB " +\
             "Deposition Site</a></b> <i>(link opens in new tab/window)</i><p><b>" +\
             "c) Follow instructions in the wwPDB deposition site and upload " +\
             "the files downloaded when prompted.</b>"

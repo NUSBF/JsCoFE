@@ -20,75 +20,131 @@ import re
 import json
 from PyQt4 import QtGui, QtCore
 
-def dirlist2sectors(dirlist, sectors, file_list):
-    rec_img = re.compile('([^.]*[^.0-9])([0-9]{2,})(.*)$')
-    sector_dict = {}
-    sector_lst1 = []
-    for fname in dirlist:
-        match_obj = rec_img.match(fname)
-        if match_obj:
-            prefix, cou_str, suffix = match_obj.groups()
-            cou = int(cou_str)
-            template = prefix + len(cou_str)* '#' + suffix
-            range_lst1 = sector_dict.get(template)
-            if range_lst1:
-                range = range_lst1[-1]
-                if range[1][0] + 1 == cou:
-                    range[1] = cou, fname
+def dirpath2sectors(dirpath, sectors, file_list):
+    '''
+    indices for:
+    c = block of didgits within a filename
+    q = template with all didgits replaced with \0
+    i = filenames belonging to a given q
+    p = subtemplate with didgits replaced with \0
+        within the most diverse block of didgits
+    j = filenames belonging to a given p
+    o = output file list with ranges merged
+    values:
+    f = filename (also used as a mapping key)
+    l = left token (text)
+    r = right token (didgits)
+    k = kind of file (dir, seq, dat, unk) or
+        the last file of the range
+    '''
+    fk_o = file_list
+    rec_dat = re.compile('.+\.(?:pdb|mtz|cif)$(?i)')
+    rec_seq = re.compile('.+\.(?:seq|fasta|pir)$(?i)')
+    rec_img = re.compile('((?!$)[^0-9]*)([0-9]+|$)')
+    t_q = []
+    l_cq = []
+    r_ciq = []
+    for f in sorted(os.listdir(dirpath)):
+        if os.path.isdir(os.path.join(dirpath, f)):
+            fk_o.append((f, 'dir'))
 
-                else:
-                    range = [(cou, fname), (cou, fname)]
-                    range_lst1.append(range)
+        elif rec_seq.match(f):
+            fk_o.append((f, 'seq'))
+
+        elif rec_dat.match(f):
+            fk_o.append((f, 'dat'))
+
+        else:
+            l_c, r_c = zip(*rec_img.findall(f))
+            if not r_c[0]:
+                fk_o.append((f, 'unk'))
 
             else:
-                range_lst1 = [[(cou, fname), (cou, fname)]]
-                sector_dict[template] = range_lst1
-                sector_lst1.append([template, range_lst1])
+                t = re.sub('[0-9]', chr(0), f)
+                q = len(t_q) - 1
+                while q >= 0:
+                    if t_q[q] == t:
+                        break
 
-        else:
-            sector_lst1.append([fname, None])
+                    q -= 1
 
-    sector_lst2 = []
-    for sector_meta in sector_lst1:
-        range_lst1 = sector_meta[1]
-        if range_lst1:
-            range_lst2 = []
-            for range in range_lst1:
-                if range[1][0] > range[0][0]:
-                    range_lst2.append(range)
+                if q >= 0:
+                    r_ciq[q].append(r_c)
 
-            if range_lst2:
-                sector_lst2.append([sector_meta[0], range_lst2])
+                else:
+                    t_q.append(t)
+                    l_cq.append(l_c)
+                    r_ciq.append([r_c])
 
-    sector_lst3 = sectors
-    for sector_meta in sector_lst2:
-        range_lst2 = sector_meta[1]
-        range_lst3 = []
-        for range in range_lst2:
-            range_lst3.append([range[0][0], range[1][0]])
+    f_p = []
+    t_f = {}
+    rr_jf = {}
+    for q in range(len(t_q)):
+        l_c = l_cq[q]
+        r_ci = r_ciq[q]
+        r_ic = zip(*r_ci)
+        c_c = range(len(r_ic))
+        u_max = 0
+        for r_i, c in zip(r_ic, c_c):
+          u = len(set(r_i))
+          if u_max <= u:
+            u_max = u
+            c_max = c
 
-        sector_lst3.append({
-            'template': sector_meta[0],
-            'name': range_lst2[0][0][1],
-            'ranges': range_lst3
-        })
+        l_max = l_c[c_max]
+        t_prev = None
+        for r_c in r_ci:
+            r_max = r_c[c_max]
+            f = ''.join([l + r for l, r in zip(l_c, r_c)])
+            h_c = list(r_c)
+            h_c[c_max] = chr(0)
+            t = ''.join([l + h for l, h in zip(l_c, h_c)])
+            if t != t_prev:
+                f_p.append(f)
+                t_prev = t
+                t_f[f] = t
+                rr = [r_max, r_max]
+                rr_j = [rr]
+                rr_jf[f] = rr_j
 
-    for sector_meta in sector_lst1:
-        range_lst1 = sector_meta[1]
-        if range_lst1:
-            for range in range_lst1:
-                cou = range[1][0] - range[0][0] + 1
-                file_list.append([range[0][1], range[1][1], cou])
+            elif int(r_max) != int(rr[1]) + 1:
+                rr = [r_max, r_max]
+                rr_j.append(rr)
 
-        else:
-            file_list.append([sector_meta[0], sector_meta[0], 1])
+            else:
+                rr[1] = r_max
 
+    f_p.sort()
+    for f in f_p:
+        t = t_f[f]
+        rr_j = []
+        nn_j = []
+        for r0, r1 in rr_jf[f]:
+            f0 = t.replace(chr(0), r0)
+            if r1 == r0:
+                fk_o.append((f0, 'unk'))
 
+            else:
+                i0 = int(r0)
+                i1 = int(r1)
+                assert i1 >= i0
+                rr_j.append([r0, r1])
+                nn_j.append([i0, i1])
+                f1 = t.replace(chr(0), r1)
+                if i1 == i0 + 1:
+                    fk_o.append((f0, 'unk'))
+                    fk_o.append((f1, 'unk'))
 
-def dump_meta(meta):
-    dump_keyargs = dict(sort_keys=True, indent=4, separators=(',', ': '))
-    with open('/tmp/jjjjjj', 'a') as jjj:
-        print >>jjj, json.dumps(meta, **dump_keyargs)
+                else:
+                    fk_o.append((f0, f1))
+
+        if rr_j:
+            h = t.replace(chr(0), len(rr_j[0][0])* '#')
+            sectors.append({'name': f, 'ranges': nn_j, 'template': h})
+
+        rr_jf[f] = rr_j
+
+    fk_o.sort()
 
 def select ( title ):
 
@@ -123,10 +179,9 @@ def select ( title ):
             dirpath      = str ( dialog.selectedFiles()[0] )
             meta["path"] = dirpath
             sectors = list()
-            dirlist2sectors(sorted(os.listdir(dirpath)), sectors, [])
+            dirpath2sectors(dirpath, sectors, [])
             meta["sectors"] = sectors
 
-#   dump_meta(meta)
     return meta
 
 

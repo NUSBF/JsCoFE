@@ -3,13 +3,13 @@
 #
 # ============================================================================
 #
-#    30.07.18   <--  Date of Last Modification.
+#    09.04.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  CCP4EZ Combined Auto-Solver Buccaneer module
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2018
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2019
 #
 # ============================================================================
 #
@@ -41,7 +41,7 @@ class Buccaneer(ccp4go_crank2.Crank2):
         self.page_cursor[1] -= 1
 
         branch_data = self.start_branch ( "Auto-Build",
-                        "CCP4go Automated Structure Solver: Automated Model " +
+                        "CCP4go Automated Structure Solver: Model " +
                         "Building with Buccaneer", resultdir,parent_branch_id )
 
         self.flush()

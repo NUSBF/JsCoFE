@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.12.18   <--  Date of Last Modification.
+ *    09.04.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  File upload class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2018
+ *  (C) E. Krissinel, A. Lebedev 2016-2019
  *
  *  =================================================================
  *
@@ -155,17 +155,20 @@ function Upload ( customData,upl_data,onSelect_func,onSelectPDB_func,onReady_fun
         if (!ext_files)  {
           for (var i = 0; i < files.length; i++) {
             var file = files[i];
-            if (!file.name.endsWith('.zip'))
+//            if (!file.name.endsWith('.zip'))
+            if (!endsWith(file.name,'.zip'))
               targz = false;
             // add the files to formData object for the data payload
             formData.append ( 'uploads[]', file, file.name);
+            //formData.append ( 'uploads[]', file, {type:"application/octet-stream"} );
           }
         } else  {
           for (var i = 0; i < ext_files.length; i++) {
             var files_i = ext_files[i];
             for (var j=0;j<files_i.length;j++)  {
               var file = files_i[j];
-              formData.append ( 'uploads[]', file, file.name);
+              formData.append ( 'uploads[]', file, file.name );
+              //formData.append ( 'uploads[]', file, {type:"application/octet-stream"} );
             }
           }
         }
@@ -190,6 +193,7 @@ function Upload ( customData,upl_data,onSelect_func,onSelectPDB_func,onReady_fun
             url         : fe_command.upload,
             type        : 'POST',
             data        : formData,
+            cache       : false,   // added on 27.03.2019
             processData : false,
             contentType : false,
             success     : function(data){

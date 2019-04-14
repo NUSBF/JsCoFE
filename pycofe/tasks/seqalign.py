@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    23.01.19   <--  Date of Last Modification.
+#    11.04.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -94,8 +94,8 @@ class SeqAlign(basic.TaskDriver):
                 elif seqtype!=stype:
                     seqtype = "x"
             else:
-                nmodels  = len(s1.xyzmeta.xyz)
-                if s1._type!='DataEnsemble':
+                nmodels = len(s1.xyzmeta.xyz)
+                if s1._type!="DataEnsemble":
                     chainSel = s1.chainSel
                 else:
                     chainSel = "(all)"
@@ -113,11 +113,11 @@ class SeqAlign(basic.TaskDriver):
                             smap[seqname]["align"] = ""
                             seqfile.write ( "\n>" + seqname +\
                                             "\n"  + c.seq   + "\n" )
-                        stype = c.type.lower()
-                        if not seqtype:
-                            seqtype = stype
-                        elif seqtype!=stype:
-                            seqtype = "x"
+                            stype = c.type.lower()
+                            if not seqtype:
+                                seqtype = stype
+                            elif seqtype!=stype:
+                                seqtype = "x"
         seqfile.close()
 
         if nseq<2:

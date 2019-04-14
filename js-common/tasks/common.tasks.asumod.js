@@ -45,7 +45,8 @@ function TaskASUMod()  {
     tooltip     : 'Structure revision, in which the ASU contents needs to be '+
                   'modified',
     inputId     : 'revision', // input Id for referencing input fields
-    version     : 4,          // minimum data version allowed
+    customInput : 'asumod',   // lay custom fields next to the selection
+    version     : 5,          // minimum data version allowed
     min         : 1,          // minimum acceptable number of data instances
     max         : 1           // maximum acceptable number of data instances
   });
@@ -64,6 +65,7 @@ function TaskASUMod()  {
 
   this.input_dtypes[2].force = 1;
 
+  delete this.parameters.HATOM;
 
   this.parameters.sec1.contains.ESTIMATE_SEL.range = [
     'KE|do not estimate, leave as is',
@@ -96,9 +98,9 @@ TaskASUMod.prototype.currentVersion = function()  {
   else  return  version + TaskASUDef.prototype.currentVersion.call ( this );
 }
 
+
 if (!__template)  {
   //  for client side
-
 
   TaskASUMod.prototype.collectInput = function ( inputPanel )  {
 

@@ -2,7 +2,7 @@
 /*
  *  ===========================================================================
  *
- *    27.12.18   <--  Date of Last Modification.
+ *    19.03.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  ---------------------------------------------------------------------------
  *
@@ -15,7 +15,7 @@
  *                  FacilityBrowser
  *                  CloudFileBrowser
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2018
+ *  (C) E. Krissinel, A. Lebedev 2016-2019
  *
  *  ===========================================================================
  *
@@ -479,6 +479,7 @@ function CloudFileBrowser ( inputPanel,task,imageKey,onSelect_func,onClose_func 
   this.tree_panel.element.setAttribute ( 'class','tree-content' );
   this.storageTree = null;
 
+  this.tree_loading = false;
   this.loadStorageTree();
 
   var dlg_options = {
@@ -524,6 +525,8 @@ CloudFileBrowser.prototype.setButtonLabel = function ( btn_no,label_text )  {
 CloudFileBrowser.prototype.loadStorageTree = function()  {
 
   (function(browser){
+
+    browser.tree_loading = true;
 
     var storageTree = new StorageTree ( 'files',browser.task.currentCloudPath,
                                                 browser.image_key );
@@ -595,6 +598,7 @@ CloudFileBrowser.prototype.loadStorageTree = function()  {
               '<p>Please contact your ' + appName() + ' maintainer if you believe ' +
               'that you should have access to Cloud storage.' ) );
         }
+        browser.tree_loading = false;
         //Test data : /Users/eugene/Projects/jsCoFE/data
       },
       function(node){ return null; }, // browser.onTreeContextMenu(node); },
@@ -608,6 +612,10 @@ CloudFileBrowser.prototype.loadStorageTree = function()  {
 
 
 CloudFileBrowser.prototype.openItem = function()  {
+
+  if (this.tree_loading)
+    return;
+
   var items = this.storageTree.getSelectedItems();
   if (items.length>0)  {
     if (items[0]._type=='FacilityDir')  {
@@ -631,9 +639,11 @@ CloudFileBrowser.prototype.openItem = function()  {
         this.onSelect_func ( this.storageTree.storageList );
       $(this.element).dialog( "close" );
     } else if (this.onSelect_func)  {
-      this.onSelect_func ( items );
+      if (this.onSelect_func(items)==1)
+        $(this.element).dialog( "close" );
     }
   }
+
 }
 
 
@@ -683,8 +693,10 @@ CloudFileBrowser.prototype.selectItem = function()  {
             }(this))
           }
         }
-      } else if (this.onSelect_func)
-        this.onSelect_func ( items );
+      } else if (this.onSelect_func)  {
+        if (this.onSelect_func(items)==1)
+          $(this.element).dialog( "close" );
+      }
     }
   }
 }

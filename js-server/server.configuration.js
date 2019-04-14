@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.02.19   <--  Date of Last Modification.
+ *    03.04.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -42,6 +42,23 @@ var fe_server     = null;   // FE server configuration
 var nc_servers    = null;   // vector of NC server configurations
 var client_server = null;   // Client server configuration
 var emailer       = null;   // E-mailer configuration
+
+// ===========================================================================
+
+var windows_drives = [];   // list of Windows drives
+
+function listWindowsDrives ( callback_func )  {
+  if (isWindows())  {
+    var child = require('child_process');
+    child.exec('wmic logicaldisk get name', (error, stdout) => {
+      windows_drives = stdout.split('\r\r\n')
+              .filter(value => /[A-Za-z]:/.test(value))
+              .map(value => value.trim());
+      if (callback_func)
+        callback_func();
+    });
+  }
+}
 
 
 // ===========================================================================
@@ -101,6 +118,83 @@ var pid     = utils.readString ( pidfile );
   }
 }
 
+ServerConfig.prototype.getMaxNProc = function()  {
+// returns maximal number of process a task is allowed to spawn
+var nproc = 1;
+  if ('exeType' in this)  {
+    if ('capacity' in this)
+      nproc = this.capacity;
+    if (this.exeType!='CLIENT')
+      nproc = Math.floor ( nproc/4 );
+    if ('max_nproc' in this)
+      nproc = Math.min(nproc,this.max_nproc);
+  }
+  return Math.max(1,nproc);
+}
+
+
+function _make_path ( filepath )  {
+  if (filepath.constructor === Array)  {
+    for (var i=0;i<filepath.length;i++)  {
+      var plist = filepath[i].split ( '/' ); // paths in config file always to have '/' separator
+      var found = false;
+      for (var j=0;j<plist.length;j++)
+        if (plist[j].startsWith('$'))  {
+          var env_name = plist[j].slice(1)
+          if (process.env.hasOwnProperty(env_name))  {
+            plist[j] = process.env[env_name];
+            found    = true;
+          }
+        }
+      if (found)
+        return plist.join ( path.sep ); // return path with system's separator
+    }
+  } else  {
+    var plist = filepath.split ( '/' ); // paths in config file always tohave '/' separator
+    var found = true;
+    for (var i=0;i<plist.length;i++)
+      if (plist[i].startsWith('$'))  {
+        var env_name = plist[i].slice(1)
+        if (process.env.hasOwnProperty(env_name))
+          plist[i] = process.env[env_name];
+        else
+          found = false;
+      }
+    if (found)
+      return plist.join ( path.sep ); // return path with system's separator
+  }
+  return null;
+}
+
+
+ServerConfig.prototype.getCloudMounts = function()  {
+var paths = [];
+  if ('cloud_mounts' in this)  {
+    for (name in this.cloud_mounts)  {
+      var cloud_path = _make_path(this.cloud_mounts[name]);
+      if (cloud_path)
+        paths.push ( [name,cloud_path] );
+    }
+  }
+  return paths;
+}
+
+
+ServerConfig.prototype.checkStatus = function ( callback_func )  {
+
+  request({
+    uri     : cmd.nc_command.getNCInfo,
+    baseUrl : externalURL,
+    method  : 'POST',
+    body    : '',
+    json    : true
+  },function(error,response,body){
+    callback_func ( error,response.statusCode,body,this );
+  });
+
+}
+
+
 // ===========================================================================
 // Config service functions
 
@@ -142,14 +236,6 @@ function getEmailerConfig()  {
 // ===========================================================================
 // Config read function
 
-function _make_path ( filepath )  {
-  plist = filepath.split ( '/' );
-  for (var i=0;i<plist.length;i++)
-    if (plist[i].startsWith('$'))
-      plist[i] = process.env[plist[i].slice(1)];
-  return plist.join ( '/' );
-}
-
 function readConfiguration ( confFilePath,serverType )  {
 
   var confObj = utils.readObject ( confFilePath );
@@ -168,6 +254,20 @@ function readConfiguration ( confFilePath,serverType )  {
       fe_server.externalURL = fe_server.url();
     fe_server.userDataPath = _make_path ( fe_server.userDataPath );
     fe_server.projectsPath = _make_path ( fe_server.projectsPath );
+    if (isWindows())
+      listWindowsDrives ( function(){
+        if (fe_server.hasOwnProperty('cloud_mounts'))  {
+          if (fe_server.cloud_mounts.hasOwnProperty('My Computer'))  {
+            var cmounts = {};
+            for (var i=0;i<windows_drives.length;i++)
+              cmounts['My Computer ' + windows_drives[i]] = windows_drives[i] + '/';
+            for (var mount in fe_server.cloud_mounts)
+              if (mount!='My Computer')
+               cmounts[mount] = fe_server.cloud_mounts[mount];
+            fe_server.cloud_mounts = cmounts;
+          }
+        }
+      });
   } else if (serverType=='FE')
     return 'front-end configuration is missing in file ' + confFilePath;
 
@@ -337,8 +437,8 @@ var isClient   = false;
     if (nc_servers[i].in_use)  {
       if (nc_servers[i].exeType=='CLIENT')  {
         isClient   = true;
-        isFSClient = (nc_servers[i].fsmount != '');
-      } else if (nc_servers[i].fsmount!='')
+        isFSClient = (nc_servers[i].fsmount != null);
+      } else if (nc_servers[i].fsmount != null)
         isFSNC = true;
     }
 
@@ -475,4 +575,5 @@ module.exports.getNCTmpDir        = getNCTmpDir;
 module.exports.getTmpDir          = getTmpDir;
 module.exports.getTmpFile         = getTmpFile;
 module.exports.isWindows          = isWindows;
+module.exports.windows_drives     = windows_drives;
 module.exports.getExcludedTasks   = getExcludedTasks;

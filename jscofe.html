@@ -5,7 +5,7 @@
  *
  *  =================================================================
  *
- *    12.02.19   <..  Date of Last Modification.
+ *    22.03.19   <..  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  =================================================================
  *
@@ -34,7 +34,7 @@
   <meta name=apple-mobile-web-app-capable content=yes>
   <meta name=apple-mobile-web-app-status-bar-style content=black>
 
-  <title>jsCoFE</title>
+  <title>CCP4 Cloud</title>
 
   <link rel="stylesheet" type="text/css" href="js-lib/jquery-ui/jquery-ui.min.css"/>
   <link rel="stylesheet" type="text/css" href="js-lib/jquery-ui/jquery-ui.structure.min.css"/>
@@ -75,6 +75,7 @@
 
   <script src="js-client/cofe.local_service.js"></script>
   <script src="js-client/cofe.dialog_announce.js"></script>
+  <script src="js-client/cofe.dialog_export_job.js"></script>
   <script src="js-client/cofe.dialog_export_project.js"></script>
   <script src="js-client/cofe.dialog_import_annotation.js"></script>
   <script src="js-client/cofe.dialog_import_pdb.js"></script>
@@ -124,6 +125,7 @@
   <script src="js-common/tasks/common.tasks.asumod.js"></script>
   <script src="js-common/tasks/common.tasks.balbes.js"></script>
   <script src="js-common/tasks/common.tasks.buccaneer.js"></script>
+  <script src="js-common/tasks/common.tasks.ccp4build.js"></script>
   <script src="js-common/tasks/common.tasks.ccp4go.js"></script>
   <script src="js-common/tasks/common.tasks.ccp4ez.js"></script>
   <script src="js-common/tasks/common.tasks.cloudimport.js"></script>
@@ -132,8 +134,10 @@
   <script src="js-common/tasks/common.tasks.coot.js"></script>
   <script src="js-common/tasks/common.tasks.changespg.js"></script>
   <script src="js-common/tasks/common.tasks.crank2.js"></script>
+  <script src="js-common/tasks/common.tasks.crossec.js"></script>
   <script src="js-common/tasks/common.tasks.deposition.js"></script>
   <script src="js-common/tasks/common.tasks.dimple.js"></script>
+  <script src="js-common/tasks/common.tasks.dui.js"></script>
   <script src="js-common/tasks/common.tasks.ensembleprepseq.js"></script>
   <script src="js-common/tasks/common.tasks.ensembleprepxyz.js"></script>
   <script src="js-common/tasks/common.tasks.facilityimport.js"></script>
@@ -177,7 +181,7 @@
 
   <script>
     $(document).ready(function()  {
-var dev_switch = 0; //3;
+      var dev_switch = 0; //3;
       startSession ( 'scene',dev_switch );
     });
   </script>

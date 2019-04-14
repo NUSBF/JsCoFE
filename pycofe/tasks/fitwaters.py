@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    24.12.18   <--  Date of Last Modification.
+#    20.03.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2018
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2019
 #
 # ============================================================================
 #
@@ -43,7 +43,7 @@ class FitWaters(basic.TaskDriver):
 
     def run(self):
 
-        # Prepare makeligand input
+        # Prepare findwaters input
         # fetch input data
 
         istruct = self.makeClass ( self.input_data.data.istruct[0] )
@@ -67,7 +67,7 @@ class FitWaters(basic.TaskDriver):
         #    cmd += [ "--min-dist"    ,self.getParameter(sec1.MIN_DIST),
         #             "--max-dist"    ,self.getParameter(sec1.MAX_DIST) ]
 
-        # Start findligand
+        # Start findwaters
         if sys.platform.startswith("win"):
             self.runApp ( "findwaters.bat",cmd,logType="Main" )
         else:

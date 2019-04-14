@@ -904,6 +904,8 @@ TaskAcorn.prototype.currentVersion = function()  {
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
 }
 
+//TaskAcorn.prototype.cleanJobDir = function ( jobDir )  {}
+
 
 if (__template)  {
   //  for server side

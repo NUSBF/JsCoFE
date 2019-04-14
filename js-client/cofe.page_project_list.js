@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    27.12.18   <--  Date of Last Modification.
+ *    03.04.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Project list page
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2018
+ *  (C) E. Krissinel, A. Lebedev 2016-2019
  *
  *  =================================================================
  *
@@ -366,7 +366,7 @@ function ProjectListPage ( sceneId )  {
     new HelpBox ( '','./html/jscofe_myprojects.html',null );
   });
 
-  launchHelpBox ( '','./html/jscofe_myprojects.html',doNotShowAgain,1000 );
+  //launchHelpBox ( '','./html/jscofe_myprojects.html',doNotShowAgain,1000 );
 
   //  Read list of projects from server
   loadProjectList();
@@ -378,4 +378,5 @@ ProjectListPage.prototype.constructor = ProjectListPage;
 
 function makeProjectListPage ( sceneId )  {
   makePage ( new ProjectListPage(sceneId) );
+  setHistoryState ( 'ProjectListPage' );
 }

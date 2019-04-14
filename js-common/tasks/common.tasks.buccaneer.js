@@ -148,7 +148,7 @@ function TaskBuccaneer()  {
                       label    : 'Build Selenomethionine (MSE instead of MET)',
                       keyword  : 'buccaneer-build-semet',
                       tooltip  : 'Check to build selenomethionine',
-                      value    : true,
+                      value    : false,
                       position : [2,0,1,3]
                     },
                TITLE2 : {

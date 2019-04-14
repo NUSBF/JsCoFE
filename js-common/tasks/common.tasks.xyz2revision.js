@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    27.12.18   <--  Date of Last Modification.
+ *    09.04.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Convert XYZ-to-Revision Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2018
+ *  (C) E. Krissinel, A. Lebedev 2016-2019
  *
  *  =================================================================
  *
@@ -161,12 +161,16 @@ if (!__template)  {
     } else if (emitterId=='USEDIMPLE_CBX')  {
 
       if (dimple_cbx.getValue())  {
-        if (!this.title.endsWith(' + Dimple'))  this.title += ' + Dimple';
-        if (!this.name.endsWith(' + dimple'))   this.name  += ' + dimple';
+//        if (!this.title.endsWith(' + Dimple'))  this.title += ' + Dimple';
+//        if (!this.name.endsWith(' + dimple'))   this.name  += ' + dimple';
+        if (!endsWith(this.title,' + Dimple'))  this.title += ' + Dimple';
+        if (!endsWith(this.name,' + dimple'))   this.name  += ' + dimple';
       } else  {
-        if (this.title.endsWith(' + Dimple'))
+//        if (this.title.endsWith(' + Dimple'))
+        if (endsWith(this.title,' + Dimple'))
           this.title = this.title.substr(0,this.title.length-9);
-        if (this.name.endsWith(' + dimple'))
+//        if (this.name.endsWith(' + dimple'))
+        if (endsWith(this.name,' + dimple'))
           this.name = this.name.substr(0,this.name.length-9);
       }
       var inputPanel = inpParamRef.grid.parent.parent;

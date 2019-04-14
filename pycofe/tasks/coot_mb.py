@@ -119,7 +119,7 @@ class Coot(basic.TaskDriver):
         # Check for PDB files left by Coot and convert them to type structure
 
         files = os.listdir ( "./" )
-        mtime = 0;
+        mtime = 0
         fname = None
         for f in files:
             if f.lower().endswith(".pdb") or f.lower().endswith(".cif"):
@@ -139,7 +139,7 @@ class Coot(basic.TaskDriver):
                 fn,fext = os.path.splitext ( fname[fname.find("_")+1:] )
             else:
                 fn,fext = os.path.splitext ( f )
-            #coot_xyz = fn + "_xyz" + fext;
+            #coot_xyz = fn + "_xyz" + fext
             #coot_mtz = fn + "_map.mtz"
             coot_xyz = self.getOFName ( fext )
             coot_mtz = istruct.getMTZFileName()

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    27.12.18   <--  Date of Last Modification.
+ *    19.03.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -10,10 +10,10 @@
  *       ~~~~~~~~~
  *  **** Project :  jsCoFE - javascript-based Cloud Front End
  *       ~~~~~~~~~
- *  **** Content :  CCP4go Task Class
+ *  **** Content :  Xia-2 Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2018
+ *  (C) E. Krissinel, A. Lebedev 2016-2019
  *
  *  =================================================================
  *
@@ -42,6 +42,7 @@ function TaskXia2()  {
                                   // odinary NC if cloud storage is there
 
   this.imageDirMeta = [];       // paths, ranges and sectors
+  this.datatype     = 'images'; //  images/hdf5
   this.file_system  = 'local';  //  local/cloud
 
   // fields needed for CloudBrowser
@@ -218,11 +219,8 @@ TaskXia2.prototype.constructor = TaskXia2;
 
 TaskXia2.prototype.icon = function()  { return 'task_xia2'; }
 
-//TaskXia2.prototype.icon_small = function()  { return 'task_xia2_20x20'; }
-//TaskXia2.prototype.icon_large = function()  { return 'task_xia2';       }
-
 TaskXia2.prototype.currentVersion = function()  {
-  var version = 0;
+  var version = 1;
   if (__template)
         return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
@@ -242,20 +240,9 @@ if (!__template)  {
       inputPanel.dir_input[i].browse_btn.setDisabled ( disable_bool );
     if (inputPanel.source_select_ddn)
       inputPanel.source_select_ddn.setDisabled ( disable_bool );
+    if (inputPanel.datatype_ddn)
+      inputPanel.datatype_ddn.setDisabled ( disable_bool );
   }
-
-  /*
-  TaskXia2.prototype.collectDirMeta = function ( inputPanel ) {
-    var imageDirMeta = [];
-    for (var i=0;i<inputPanel.dir_input.length;i++)  {
-      var dpath = inputPanel.dir_input[i].dir_path.getValue();
-      if (dpath!='')
-        imageDirMeta.push ( {'path':dpath} );
-    }
-    return imageDirMeta;
-  }
-  */
-
 
   TaskXia2.prototype.collectRangesInput = function ( inputPanel ) {
     for (var i=0;i<inputPanel.dir_input.length;i++)
@@ -270,14 +257,22 @@ if (!__template)  {
 
   TaskXia2.prototype.layDirLine = function ( inputPanel,dirNo,row )  {
     var dir_input = {};
-    var dlabel = 'directory';
 
-    if (dirNo>0)
-      dlabel = 'directory #' + (dirNo+1);
-    dir_input.label = inputPanel.grid1.setLabel (
-          'Image '+dlabel+':&nbsp;&nbsp;',row,0,1,1 )
-              .setTooltip('Path to '+dlabel+' containing diffraction images')
-              .setFontItalic(true).setFontBold(true).setNoWrap();
+    if (inputPanel.datatype=='images')  {
+      var dlabel = 'directory';
+      if (dirNo>0)
+        dlabel = 'directory #' + (dirNo+1);
+      dir_input.label = inputPanel.grid1.setLabel (
+            'Image '+dlabel+':&nbsp;&nbsp;',row,0,1,1 )
+                .setTooltip('Path to '+dlabel+' containing diffraction images')
+                .setFontItalic(true).setFontBold(true).setNoWrap();
+    } else  {
+      dir_input.label = inputPanel.grid1.setLabel (
+            'Master HDF5 file:&nbsp;&nbsp;',row,0,1,1 )
+                .setTooltip('Path to master file of HDF5 set of diffraction images')
+                .setFontItalic(true).setFontBold(true).setNoWrap();
+
+    }
 
     dir_input.browse_btn = inputPanel.grid1.setButton (
                                 'Browse',image_path('open_file'), row,1,1,1 )
@@ -287,7 +282,8 @@ if (!__template)  {
     if (dirNo<inputPanel.imageDirMeta.length)
       dirpath = inputPanel.imageDirMeta[dirNo].path;
     dir_input.dir_path = inputPanel.grid1.setInputText ( dirpath,row,2,1,1 )
-                            .setWidth('99%').setReadOnly(true).setNoWrap(true);
+                            .setWidth('100%').setReadOnly(true).setNoWrap(true);
+
     if ((dirNo>0) && (dirNo>=inputPanel.imageDirMeta.length))
       dir_input.dir_path.setStyle ( '','','not used',
                   'Use "Browse" button to choose directory with image files, ' +
@@ -301,45 +297,47 @@ if (!__template)  {
 
     dir_input.sectors_inp = [];
     if (dirNo<inputPanel.imageDirMeta.length)  {
-      dir_input.sectors_grid = inputPanel.grid1.setGrid ( '',row+1,2,1,1 );
       var sectors = inputPanel.imageDirMeta[dirNo].sectors;
-      for (var i=0;i<sectors.length;i++)  {
-        dir_input.sectors_grid.setLabel ( sectors[i].template,i,0,1,1 )
-                              .setFontItalic(true)
-                              .setTooltip ( 'Image files template' );
-        var ranges = '';
-        for (var j=0;j<sectors[i].ranges.length;j++)  {
-          if (ranges!='')  ranges += ',';
-          ranges += sectors[i].ranges[j][0] + '-' + sectors[i].ranges[j][1];
+      if (sectors.length>0)  {
+        dir_input.sectors_grid = inputPanel.grid1.setGrid ( '',row+1,2,1,1 );
+        for (var i=0;i<sectors.length;i++)  {
+          dir_input.sectors_grid.setLabel ( sectors[i].template,i,0,1,1 )
+                                .setFontItalic(true)
+                                .setTooltip ( 'Image files template' );
+          var ranges = '';
+          for (var j=0;j<sectors[i].ranges.length;j++)  {
+            if (ranges!='')  ranges += ',';
+            ranges += sectors[i].ranges[j][0] + '-' + sectors[i].ranges[j][1];
+          }
+          if (!('ranges_inp' in sectors[i]))
+            sectors[i].ranges_inp = ranges;
+          dir_input.sectors_inp.push (
+            dir_input.sectors_grid.setInputText ( sectors[i].ranges_inp,i,1,1,1 )
+                                  .setWidth('99%').setNoWrap(true)
+          );
+          dir_input.sectors_inp[i].setStyle ( '','',
+                'not used; available range(s) ' + ranges,
+                'Give a comma-separated list of desirable image ranges (e.g., ' +
+                '"1-10,20-30"), or leave empty if the corresponding file ' +
+                'template should not be used. Available range(s) include"' +
+                ranges + '"' );
+          dir_input.sectors_grid.setVerticalAlignment ( i,0,'middle' );
+          dir_input.sectors_grid.setVerticalAlignment ( i,1,'middle' );
+          dir_input.sectors_grid.setCellSize ( '3%'  ,'', i,0 );
+          dir_input.sectors_grid.setCellSize ( 'auto','', i,1 );
         }
-        if (!('ranges_inp' in sectors[i]))
-          sectors[i].ranges_inp = ranges;
-        dir_input.sectors_inp.push (
-          dir_input.sectors_grid.setInputText ( sectors[i].ranges_inp,i,1,1,1 )
-                                .setWidth('99%').setNoWrap(true)
-        );
-        dir_input.sectors_inp[i].setStyle ( '','',
-              'not used; available range(s) ' + ranges,
-              'Give a comma-separated list of desirable image ranges (e.g., ' +
-              '"1-10,20-30"), or leave empty if the corresponding file ' +
-              'template should not be used. Available range(s) include"' +
-              ranges + '"' );
-        dir_input.sectors_grid.setVerticalAlignment ( i,0,'middle' );
-        dir_input.sectors_grid.setVerticalAlignment ( i,1,'middle' );
-        dir_input.sectors_grid.setCellSize ( '3%'  ,'', i,0 );
-        dir_input.sectors_grid.setCellSize ( 'auto','', i,1 );
+        dir_input.sectors_grid.setLabel ( '&nbsp;',sectors.length,0,1,1 );
       }
-      dir_input.sectors_grid.setLabel ( '&nbsp;',sectors.length,0,1,1 );
     }
 
     inputPanel.grid1.setVerticalAlignment ( row,0,'middle' );
     inputPanel.grid1.setVerticalAlignment ( row,1,'middle' );
     inputPanel.grid1.setVerticalAlignment ( row,2,'middle' );
-    inputPanel.grid1.setVerticalAlignment ( row,3,'middle' );
-    inputPanel.grid1.setCellSize ( 'auto','', 0,0 );
-    inputPanel.grid1.setCellSize ( 'auto','', 0,1 );
-    inputPanel.grid1.setCellSize ( '95%' ,'', 0,2 );
-    inputPanel.grid1.setCellSize ( 'auto','', 0,3 );
+    //inputPanel.grid1.setVerticalAlignment ( row,3,'middle' );
+    inputPanel.grid1.setCellSize ( 'auto','', row,0 );
+    inputPanel.grid1.setCellSize ( 'auto','', row,1 );
+    inputPanel.grid1.setCellSize ( '95%' ,'', row,2 );
+    //inputPanel.grid1.setCellSize ( 'auto','', row,3 );
 
     var ndirs = inputPanel.imageDirMeta.length;
     if ((ndirs<=1) || ((dirNo==ndirs) && (dirpath=='')))
@@ -355,7 +353,7 @@ if (!__template)  {
     var row   = inputPanel.drow;
     var row0  = row + inputPanel.dir_input.length;
     var ndirs = inputPanel.imageDirMeta.length;
-    if (ndirs>0)  {
+    if ((ndirs>0) && (inputPanel.datatype=='images'))  {
       if (inputPanel.imageDirMeta[ndirs-1].path!='')
         ndirs++;
     } else {
@@ -383,35 +381,69 @@ if (!__template)  {
         });
 
         dinput.browse_btn.addOnClickListener ( function(){
+
           task.disableDirectoryInput ( inputPanel,true );
+
           if (inputPanel.file_system=='local')  {
-            localCommand ( nc_command.selectImageDir,{
-                'dataType' : 'X-ray',
-                'title'    : 'Select Directory with X-ray Diffraction Images'
-              },'Select Directory',function(response){
-                if (!response)
-                  return false;  // issue standard AJAX failure message
-                if (response.status==nc_retcode.ok)  {
-                  if (response.data.path!='')  {
-                    //alert ( JSON.stringify(response.data) );
-                    task.collectRangesInput ( inputPanel );
-                    if (dirNo<inputPanel.imageDirMeta.length)
-                          inputPanel.imageDirMeta[dirNo] = response.data;
-                    else  inputPanel.imageDirMeta.push ( response.data );
-                    window.setTimeout ( function(){
-                      task.layDirectoryInput ( inputPanel );
-                    },0);
+
+            if (inputPanel.datatype=='images')  {
+              localCommand ( nc_command.selectImageDir,{
+                  'dataType' : 'X-ray',
+                  'title'    : 'Select Directory with X-ray Diffraction Images'
+                },'Select Directory',function(response){
+                  if (!response)
+                    return false;  // issue standard AJAX failure message
+                  if (response.status==nc_retcode.ok)  {
+                    if (response.data.path!='')  {
+                      //alert ( JSON.stringify(response.data) );
+                      task.collectRangesInput ( inputPanel );
+                      if (dirNo<inputPanel.imageDirMeta.length)
+                            inputPanel.imageDirMeta[dirNo] = response.data;
+                      else  inputPanel.imageDirMeta.push ( response.data );
+                      window.setTimeout ( function(){
+                        task.layDirectoryInput ( inputPanel );
+                      },0);
+                    }
+                  } else  {
+                    new MessageBox ( 'Select Directory Error',
+                      'Directory selection failed:<p>' +
+                      '<b>stdout</b>:&nbsp;&nbsp;' + response.data.stdout + '<br>' +
+                      '<b>stderr</b>:&nbsp;&nbsp;' + response.data.stderr );
                   }
-                } else  {
-                  new MessageBox ( 'Select Directory Error',
-                    'Directory selection failed:<p>' +
-                    '<b>stdout</b>:&nbsp;&nbsp;' + response.data.stdout + '<br>' +
-                    '<b>stderr</b>:&nbsp;&nbsp;' + response.data.stderr );
-                }
-                task.disableDirectoryInput ( inputPanel,false );
-                return true;
-              });
-          } else  {
+                  task.disableDirectoryInput ( inputPanel,false );
+                  return true;
+                });
+            } else  {  //  datatype=='hdf5'
+              localCommand ( nc_command.selectFile,{
+                  'dataType' : 'HDF5',
+                  'filters'  : 'HDF5 files (*.h5);All files (*)',
+                  'title'    : 'Select Master HDF5 file'
+                },'Select Master HDF5 file',function(response){
+                  if (!response)
+                    return false;  // issue standard AJAX failure message
+                  if (response.status==nc_retcode.ok)  {
+                    if (response.data.file!='')  {
+                      inputPanel.imageDirMeta = [{
+                        'path'    : response.data.file,
+                        'sectors' : []
+                      }]
+                      window.setTimeout ( function(){
+                        task.layDirectoryInput ( inputPanel );
+                      },0);
+                    }
+                  } else  {
+                    new MessageBox ( 'Select File Error',
+                      'File selection failed:<p>' +
+                      '<b>stdout</b>:&nbsp;&nbsp;' + response.data.stdout + '<br>' +
+                      '<b>stderr</b>:&nbsp;&nbsp;' + response.data.stderr );
+                  }
+                  task.disableDirectoryInput ( inputPanel,false );
+                  return true;
+                });
+            }
+
+          } else if (inputPanel.datatype=='images')  {
+
             new CloudFileBrowser ( inputPanel,task,2,
               function(dirmeta){
                 //alert ( JSON.stringify(dirmeta) );
@@ -423,11 +455,34 @@ if (!__template)  {
                 window.setTimeout ( function(){
                   task.layDirectoryInput ( inputPanel );
                 },0);
+                return 0;  // do not close the browser
+              },
+              function(){
+                task.disableDirectoryInput ( inputPanel,false );
+              });
+
+          } else  {
+
+            new CloudFileBrowser ( inputPanel,task,0,
+              function(file_items){
+                //alert ( JSON.stringify(file_items) );
+                if (file_items.length>0)  {
+                  var cfpath = 'cloudstorage::/' + task.currentCloudPath + '/' + file_items[0].name;
+                  inputPanel.imageDirMeta = [{
+                    'path'    : cfpath,
+                    'sectors' : []
+                  }]
+                  window.setTimeout ( function(){
+                    task.layDirectoryInput ( inputPanel );
+                  },0);
+                }
+                return 1;  // close the browser
               },
               function(){
                 task.disableDirectoryInput ( inputPanel,false );
               });
           }
+
         });
 
       }(i,this))
@@ -450,6 +505,8 @@ if (!__template)  {
 
     div.imageDirMeta = this.imageDirMeta;  // paths displayed in task dialog
     div.file_system  = this.file_system;   //  local/cloud
+    div.datatype     = this.datatype;      //  images/hdf5
+//    alert ( div.datatype );
 
     this.setInputDataFields ( div.grid,0,dataBox,this );
 
@@ -472,16 +529,40 @@ if (!__template)  {
     div.grid.setLabel ( '&nbsp;',2,0,1,4 );
 
     var row = 0;
+    div.grid2 = div.grid1.setGrid ( '-compact',row,0,1,4 );
+
+    div.grid2.setLabel ( 'Look for&nbsp;&nbsp;',0,0,1,1 )
+             .setTooltip('Choose "X-ray images" if your experimental data is ' +
+                         'presented in form of directories with image files, ' +
+                         'and "HDF5 datasets" if images are packed in .h5 ' +
+                         'containers.' )
+             .setFontItalic(true).setFontBold(true).setNoWrap();
+    div.datatype_ddn = new Dropdown();
+    div.grid2.addWidget ( div.datatype_ddn,0,1,1,1 );
+    div.datatype_ddn.addItem ( 'X-ray images' ,'','images',div.datatype=='images' );
+    div.datatype_ddn.addItem ( 'HDF5 datasets','','hdf5'  ,div.datatype=='hdf5'     );
+    div.datatype_ddn.make();
+    div.grid2.setVerticalAlignment ( 0,0,'middle' );
+    div.grid2.setVerticalAlignment ( 0,1,'middle' );
+    div.datatype_ddn.addOnChangeListener ( function(text,value){
+      div.imageDirMeta = [];    // paths displayed in task dialog
+      div.dir_path     = [];
+      div.datatype     = value;
+      div.task.layDirectoryInput ( div );
+    });
+    div.datatype_ddn.setWidth ( '180px' );
+
     if (__local_service && __cloud_storage)  {
-      div.grid1.setLabel ( 'Image data location:&nbsp;&nbsp;',row,0,1,1 )
+
+      div.grid2.setLabel ( 'in&nbsp;&nbsp;',0,2,1,1 )
                .setTooltip('Choose "local" if diffraction images are found in ' +
                            'your computer, and choose "cloud" if images are ' +
                            'stored in cloud.' )
                .setFontItalic(true).setFontBold(true).setNoWrap();
       div.source_select_ddn = new Dropdown();
-      div.grid1.addWidget ( div.source_select_ddn,row,1,1,1 );
-      div.source_select_ddn.addItem ( 'local','','local',div.file_system=='local' );
-      div.source_select_ddn.addItem ( 'cloud','','cloud',div.file_system=='cloud' );
+      div.grid2.addWidget ( div.source_select_ddn,0,3,1,1 );
+      div.source_select_ddn.addItem ( 'local file system','','local',div.file_system=='local' );
+      div.source_select_ddn.addItem ( 'cloud storage'    ,'','cloud',div.file_system=='cloud' );
       div.source_select_ddn.make();
       div.source_select_ddn.addOnChangeListener ( function(text,value){
         div.imageDirMeta = [];    // paths displayed in task dialog
@@ -489,11 +570,11 @@ if (!__template)  {
         div.file_system  = value;
         div.task.layDirectoryInput ( div );
       });
-      div.source_select_ddn.setWidth ( '120px' );
-      div.grid1.setVerticalAlignment ( row,0,'middle' );
-      div.grid1.setVerticalAlignment ( row,1,'middle' );
-      div.grid1.setLabel ( '&nbsp;',row+1,0,1,1 )
-      row += 2;
+      div.source_select_ddn.setWidth ( '180px' );
+
+      div.grid2.setVerticalAlignment ( 0,2,'middle' );
+      div.grid2.setVerticalAlignment ( 0,3,'middle' );
+
     } else  {
       div.source_select_ddn = null;
       if (__local_service)  div.file_system = 'local';
@@ -503,7 +584,9 @@ if (!__template)  {
                                 else  this.nc_type = 'ordinary';
     }
 
-    div.drow      = row;
+    div.grid1.setLabel ( '&nbsp;',row+1,0,1,1 )
+
+    div.drow      = row+2;
     div.dir_input = [];
     this.layDirectoryInput ( div );
 
@@ -523,51 +606,62 @@ if (!__template)  {
     var msg = '';  // Ok if stays empty
 
     if (__local_service || __cloud_storage)  {
+
+      this.datatype    = inputPanel.datatype;
       this.file_system = inputPanel.file_system;
       if (this.file_system=='local')  this.nc_type = 'client';
                                 else  this.nc_type = 'ordinary';
+
       this.collectRangesInput ( inputPanel );
       this.imageDirMeta = [];
-      var empty = true;
-      for (var i=0;i<inputPanel.dir_input.length;i++)
-        if (inputPanel.dir_input[i].dir_path.getValue()!='')  {
-          var sectors = inputPanel.imageDirMeta[i].sectors;
-          for (var j=0;j<sectors.length;j++)  {
-            var ranges = sectors[j].ranges;
-            sectors[j].ranges_sel = [];
-            if (sectors[j].ranges_inp!='')  {
-              var lst = sectors[j].ranges_inp.split(',');
-              for (var k=0;k<lst.length;k++)  {
-                var plst = lst[k].split('-');
-                var err  = (plst.length!=2);
-                if (!err)  {
-                  err = isNaN(plst[0]) || isNaN(plst[1]);
+
+      if (this.datatype=='images')  {
+
+        var empty = true;
+        for (var i=0;i<inputPanel.dir_input.length;i++)
+          if (inputPanel.dir_input[i].dir_path.getValue()!='')  {
+            var sectors = inputPanel.imageDirMeta[i].sectors;
+            for (var j=0;j<sectors.length;j++)  {
+              var ranges = sectors[j].ranges;
+              sectors[j].ranges_sel = [];
+              if (sectors[j].ranges_inp!='')  {
+                var lst = sectors[j].ranges_inp.split(',');
+                for (var k=0;k<lst.length;k++)  {
+                  var plst = lst[k].split('-');
+                  var err  = (plst.length!=2);
                   if (!err)  {
-                    var n1 = parseInt ( plst[0] );
-                    var n2 = parseInt ( plst[1] );
-                    var rc = 0;
-                    for (var l=0;(l<ranges.length) && (!rc);l++)
-                      if ((ranges[l][0]<=n1) && (n1<=ranges[l][1]))  {
-                        if ((ranges[l][0]<=n2) && (n2<=ranges[l][1]))  rc =  1;
-                                                                 else  rc = -1;
-                      }
-                    if (rc>0)  {
-                      sectors[j].ranges_sel.push ( [Math.min(n1,n2),Math.max(n1,n2)] );
-                      empty = false;
-                    } else if (rc<=0)
-                      msg += '<b><i>Range "' +lst[k]+ '" of "' +sectors[j].ranges_inp +
-                             ' is not within available options"</i></b>';
+                    err = isNaN(plst[0]) || isNaN(plst[1]);
+                    if (!err)  {
+                      var n1 = parseInt ( plst[0] );
+                      var n2 = parseInt ( plst[1] );
+                      var rc = 0;
+                      for (var l=0;(l<ranges.length) && (!rc);l++)
+                        if ((ranges[l][0]<=n1) && (n1<=ranges[l][1]))  {
+                          if ((ranges[l][0]<=n2) && (n2<=ranges[l][1]))  rc =  1;
+                                                                   else  rc = -1;
+                        }
+                      if (rc>0)  {
+                        sectors[j].ranges_sel.push ( [Math.min(n1,n2),Math.max(n1,n2)] );
+                        empty = false;
+                      } else if (rc<=0)
+                        msg += '<b><i>Range "' +lst[k]+ '" of "' +sectors[j].ranges_inp +
+                               ' is not within available options"</i></b>';
+                    } else
+                      msg += '<b><i>Numeric format error in "' + lst[k] + '" of "' +
+                             sectors[j].ranges_inp + '"</i></b>';
                   } else
-                    msg += '<b><i>Numeric format error in "' + lst[k] + '" of "' +
+                    msg += '<b><i>Range specification error in "' + lst[k] + '" of "' +
                            sectors[j].ranges_inp + '"</i></b>';
-                } else
-                  msg += '<b><i>Range specification error in "' + lst[k] + '" of "' +
-                         sectors[j].ranges_inp + '"</i></b>';
+                }
               }
             }
+            this.imageDirMeta.push ( inputPanel.imageDirMeta[i] );
           }
-          this.imageDirMeta.push ( inputPanel.imageDirMeta[i] );
-        }
+
+      } else if (inputPanel.imageDirMeta.length>0)  {
+        //  HDF5 master
+        this.imageDirMeta = [ inputPanel.imageDirMeta[0] ];
+      }
 
       if (this.imageDirMeta.length<=0)
         msg += '<b><i>No directory with X-ray images is specified</i></b>';
@@ -589,6 +683,7 @@ if (!__template)  {
     for (var i=0;i<task.imageDirMeta.length;i++)
       this.imageDirMeta.push ( $.extend(true,{},task.imageDirMeta[i]) );
     this.file_system  = task.file_system;  //  local/cloud
+    this.datatype     = task.datatype;     //  local/cloud
     this.uname = '';
     return;
   }
@@ -605,6 +700,15 @@ if (!__template)  {
   var fcl   = require('../../js-server/server.fe.facilities');
   var prj   = require('../../js-server/server.fe.projects');
   var utils = require('../../js-server/server.utils');
+
+  TaskXia2.prototype.getNCores = function ( ncores_available )  {
+  // This function should return the number of cores, up to ncores_available,
+  // that should be reported to a queuing system like SGE or SLURM, in
+  // case the task spawns threds or processes bypassing the queuing system.
+  // It is expected that the task will not utilise more cores than what is
+  // given on input to this function.
+    return ncores_available;
+  }
 
   TaskXia2.prototype.makeInputData = function ( login,jobDir )  {
 

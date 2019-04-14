@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    27.12.18   <--  Date of Last Modification.
+ *    12.04.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Job Tree
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2018
+ *  (C) E. Krissinel, A. Lebedev 2016-2019
  *
  *  ==========================================================================
  *
@@ -209,7 +209,8 @@ JobTree.prototype.readProjectData = function ( page_title,
         for (var key in tree.task_map)  {
           if (!tree.task_map[key].job_dialog_data.viewed)
             tree.setStyle ( tree.node_map[key],__notViewedStyle,0 );
-          if (tree.task_map[key].state==job_code.remark)
+          if ((tree.task_map[key].state==job_code.remark) ||
+              (tree.task_map[key].state==job_code.remdet))
             tree.setStyle ( tree.node_map[key],__remarkStyle,0 );
         }
         onLoaded_func();
@@ -288,7 +289,7 @@ JobTree.prototype.setNodeName = function ( nodeId,save_bool )  {
   if (newName!=node.text)  {
     this.setText ( node,newName );
     this.confirmCustomIconsVisibility();
-    if (task.state==job_code.remark)
+    if ((task.state==job_code.remark) || (task.state==job_code.remdet))
       this.setStyle ( node,__remarkStyle,0 );
     if (save_bool)
       this.saveProjectData ( [],[], null );
@@ -310,7 +311,7 @@ JobTree.prototype.resetNodeName = function ( nodeId )  {
   if (task)  {
     var node = this.node_map[nodeId];
     this.setText ( node,this.makeNodeName(task) );
-    if (task.state==job_code.remark)
+    if ((task.state==job_code.remark) || (task.state==job_code.remdet))
       this.setStyle ( node,__remarkStyle,0 );
   }
   this.confirmCustomIconsVisibility();
@@ -495,7 +496,7 @@ JobTree.prototype._add_job = function ( insert_bool,task,dataBox,
     // now set the new node name
     this.setText ( node,this.makeNodeName(task) );
 
-    if (task.state==job_code.remark)
+    if ((task.state==job_code.remark) || (task.state==job_code.remdet))
       this.setStyle ( node,__remarkStyle,0 );
 
     /*
@@ -617,7 +618,7 @@ JobTree.prototype.deleteJob = function ( onDelete_func ) {
       for (var i=0;i<delNodeId.length;i++)  {
         var task = tree.task_map[delNodeId[i]];
         var propagate = 1;
-        if (task && (task.state==job_code.remark))
+        if (task && ((task.state==job_code.remark) || (task.state==job_code.remdet)))
           propagate = 0;
         tree.setStyle ( tree.node_map[delNodeId[i]],
                         'color:#FF0000;text-decoration:line-through;',propagate );
@@ -705,7 +706,8 @@ JobTree.prototype.deleteJob = function ( onDelete_func ) {
       },'No',function(){
 
         for (var i=0;i<delNodeId.length;i++)
-          if (tree.task_map[delNodeId[i]].state==job_code.remark)
+          if ((tree.task_map[delNodeId[i]].state==job_code.remark) ||
+              (tree.task_map[delNodeId[i]].state==job_code.remdet))
                 tree.setStyle ( tree.node_map[delNodeId[i]],__remarkStyle,0 );
           else  tree.setStyle ( tree.node_map[delNodeId[i]],'',1 );
 
@@ -844,17 +846,20 @@ JobTree.prototype.openJob = function ( dataBox,parent_page )  {
               // trigerred on custom events
 
               switch (reason)  {
-                case job_dialog_reason.rename_node :
+                case job_dialog_reason.rename_node   :
                           tree.setNodeName   ( nodeId,true );           break;
                 case job_dialog_reason.set_node_icon :
                           tree.setNodeIcon   ( nodeId,true );           break;
-                case job_dialog_reason.reset_node  :
+                case job_dialog_reason.reset_node    :
                           tree.node_map[nodeId].setCustomIconVisible ( false );
                           tree.resetNodeName ( nodeId );                break;
-                case job_dialog_reason.select_node :
+                case job_dialog_reason.select_node   :
                           tree.selectSingle  ( tree.node_map[nodeId] ); break;
-                case job_dialog_reason.stop_job    :
+                case job_dialog_reason.stop_job      :
                           tree.stopJob       ( nodeId );                break;
+                case job_dialog_reason.tree_updated  :
+                          tree.emitSignal ( cofe_signals.treeUpdated,{} ); break;
+
                 default : ;
               }
 
@@ -887,8 +892,8 @@ JobTree.prototype.cloneJob = function ( parent_page,onAdd_func )  {
       var nodeId = tree.selected_node_id;
       var task0  = tree.task_map[nodeId];
       var task1  = task0;
-      if (task0.state==job_code.remark)  // then take remark's parent
-        task1 = tree.task_map[tree.node_map[nodeId].parentId];
+      //if (task0.state==job_code.remark)  // then take remark's parent
+      //  task1 = tree.task_map[tree.node_map[nodeId].parentId];
 
       // create an instance of selected task with default parameters
       var task   = eval ( 'new ' + task1._type + '()' );
@@ -925,6 +930,9 @@ JobTree.prototype.cloneJob = function ( parent_page,onAdd_func )  {
 
         tree.saveProjectData ( [task],[],null );
         tree.openJob ( null,parent_page );
+
+        if ((task.state==job_code.remark) || (task.state==job_code.remdet))
+          tree.setStyle ( node,__remarkStyle,0 );
 
       }
 

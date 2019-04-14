@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    07.01.19   <--  Date of Last Modification.
+ *    09.04.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -47,7 +47,9 @@ function DataEnsemble()  {
                          //   this.files.seq  - sequence file
   this.ncopies  = 1;     // number of copies in ASU to look for in MR
   this.nModels  = 1;     // number of MR models in ensemble
-  this.rmsd     = 1.0;   // estimate of ensemble dispersion
+  this.simtype  = 'seqid'; // target similarity type 'seqid' or 'rmsd'
+  this.rmsd     = '';    // estimate of ensemble dispersion
+  this.seqId    = '';    // estimate of ensemble homology
   this.xyzmeta  = {};
   this.meta     = null;  // Gesamt alignment results
 
@@ -151,15 +153,37 @@ if (!__template)  {
       customGrid.setVerticalAlignment ( row  ,0,'middle' );
       customGrid.setVerticalAlignment ( row++,2,'middle' );
 
-      customGrid.setLabel ( 'Similarity',row,0,1,1 ).setFontItalic ( true );
-      customGrid.rmsd = customGrid.setInputText ( this.rmsd,row,1,1,1 )
+      customGrid.setLabel ( 'Similarity to target',row,0,1,2 ).setFontItalic ( true );
+      customGrid.simtype = new Dropdown();
+      customGrid.simtype.setWidth ( '200px' );
+      customGrid.simtype.addItem ( 'by sequence identity'       ,'','seqid',this.simtype=='seqid' );
+      customGrid.simtype.addItem ( 'by rms difference (&Aring;)','','rmsd' ,this.simtype=='rmsd'  );
+      customGrid.setWidget   ( customGrid.simtype, row,1,1,1 );
+      customGrid.setCellSize ( '210px','',0,1 );
+      customGrid.simtype.make();
+
+      customGrid.rmsd = customGrid.setInputText ( this.rmsd,row,2,1,1 )
                     .setStyle ( 'text','real','',
             'Specify the measure of dispersion (in angstroms) for model' )
                     .setWidth_px ( 50 );
-      customGrid.setLabel ( '(estimated r.m.s.d. to target, &Aring;)',row,2,1,1 )
-                .setFontItalic ( true );
+      customGrid.seqid = customGrid.addInputText ( this.seqId,row,2,1,1 )
+                    .setStyle ( 'text','real','',
+            'Specify sequence identity between target sequence and model structure ' +
+            'between 0-1.' )
+                    .setWidth_px ( 50 );
+      customGrid.rmsd .setVisible ( this.simtype=='rmsd'  );
+      customGrid.seqid.setVisible ( this.simtype=='seqid' );
+      //alert ( JSON.stringify(this.meta));
+      //customGrid.setLabel ( '(estimated r.m.s.d. to target, &Aring;)',row,2,1,1 )
+      //          .setFontItalic ( true );
+
       customGrid.setVerticalAlignment ( row  ,0,'middle' );
       customGrid.setVerticalAlignment ( row++,2,'middle' );
+
+      customGrid.simtype.addOnChangeListener ( function(text,value){
+        customGrid.rmsd .setVisible ( value=='rmsd'  );
+        customGrid.seqid.setVisible ( value=='seqid' );
+      });
 
       row++;
       customGrid.setLabel ( ' ',row,0,1,2 ).setHeight_px ( 8 );
@@ -174,8 +198,19 @@ if (!__template)  {
 
 //    if (dropdown.layCustom.startsWith('phaser-mr'))  {
     if (startsWith(dropdown.layCustom,'phaser-mr'))  {
-      this.ncopies = parseInt   ( customGrid.ncopies.getValue() );
-      this.rmsd    = parseFloat ( customGrid.rmsd   .getValue() );
+      this.ncopies = parseInt ( customGrid.ncopies.getValue() );
+      this.simtype = customGrid.simtype.getValue();
+      if (this.simtype=='seqid')  {
+        var v = customGrid.seqid.getValue();
+        if (v && (!isNaN(v)))
+              this.seqId = parseFloat ( v );
+        else  msg += '<b><i>Sequence Identity not given or poorly formatted</i></b>';
+      } else  {
+        var v = customGrid.rmsd.getValue();
+        if (v && (!isNaN(v)))
+              this.rmsd = parseFloat ( v );
+        else  msg += '<b><i>RMS difference not given or poorly formatted</i></b>';
+      }
     }
 
     return msg;

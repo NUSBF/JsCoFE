@@ -101,6 +101,8 @@ function startSession ( sceneId,dev_switch )  {
 
       }
 
+      setHistoryListener ( sceneId );
+
     }
 
   });

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    15.10.18   <--  Date of Last Modification.
+ *    31.03.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Number Cruncher Server
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2018
+ *  (C) E. Krissinel, A. Lebedev 2016-2019
  *
  *  =================================================================
  *
@@ -163,6 +163,13 @@ function start()  {
               }
             break;
 
+          case cmd.fe_command.whoareyou :
+              var cfg = conf.getServerConfig();
+              cmd.sendResponseMessage ( server_response,
+                  cmd.appName() + ' NC-' + cfg.serNo + ' (' + cfg.name + ') ' +
+                  cmd.jsCoFE_version );
+            break;
+
           case cmd.nc_command.runJob :
               response = jm.ncMakeJob ( server_request,server_response );
             break;
@@ -177,6 +184,10 @@ function start()  {
 
           case cmd.nc_command.selectDir :
               pp.processPOSTData ( server_request,server_response,rm.ncSelectDir );
+            break;
+
+          case cmd.nc_command.selectFile :
+              pp.processPOSTData ( server_request,server_response,rm.ncSelectFile );
             break;
 
           case cmd.nc_command.selectImageDir :

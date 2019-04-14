@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    22.12.18   <--  Date of Last Modification.
+#    09.04.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2018
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2019
 #
 # ============================================================================
 #
@@ -27,6 +27,11 @@
 #  python native imports
 import os
 import sys
+import shutil
+
+#  ccp4-python imports
+import gemmi
+from   gemmi   import  cif
 
 #  application imports
 import basic
@@ -47,10 +52,16 @@ class MakeLigand(basic.TaskDriver):
         # fetch input data
 
         sourceKey = self.getParameter ( self.task.parameters.SOURCE_SEL )
+        cmd       = []
+        xyzPath   = None
+        cifPath   = None
+        lig_path  = None
 
         if sourceKey == "S":
-            smiles = self.getParameter ( self.task.parameters.SMILES )
-            code   = self.getParameter ( self.task.parameters.CODE   ).upper()
+            smiles  = self.getParameter ( self.task.parameters.SMILES )
+            code    = self.getParameter ( self.task.parameters.CODE   ).upper()
+            xyzPath = code + ".pdb"
+            cifPath = code + ".cif"
 
             f = open ( self.smiles_file_path(),'w' )
             f.write  ( smiles + '\n' )
@@ -61,24 +72,46 @@ class MakeLigand(basic.TaskDriver):
                     "-r",code,"-o",code ]
 
         else:
-            code = self.getParameter ( self.task.parameters.CODE3 ).upper()
-            cmd = [ "-c",os.path.join(os.environ["CCP4"],"lib","data","monomers",
-                                      code[0].lower(),code + ".cif" ),
-                    "-r",code,"-o",code ]
+            code     = self.getParameter ( self.task.parameters.CODE3 ).upper()
+            xyzPath  = code + ".pdb"
+            cifPath  = code + ".cif"
+            lig_path = os.path.join(os.environ["CCP4"],"lib","data","monomers",
+                                      code[0].lower(),code + ".cif" )
+            if os.path.isfile(lig_path):
+                # make AceDrg command line
+                cmd = [ "-c",lig_path,"-r",code,"-o",code ]
+                # check if we need to run AceDrg at all: is AceDrg forced and
+                # are XYZ coordinates found in Monomer Library Entry?
+                if self.getParameter(self.task.parameters.FORCE_ACEDRG_CBX)=="False":
+                    # AceDrg is not forced by user
+                    block = cif.read(lig_path)[-1]
+                    if block.find_values('_chem_comp_atom.x'):
+                        # XYZ coordinates are found in dictionary, just copy
+                        # them over
+                        st = gemmi.make_structure_from_chemcomp_block ( block )
+                        st.write_pdb ( xyzPath )
+                        cmd = []  # do not use AceDrg
+            else:
+                self.putMessage ( "<h3>Ligand \"" + code + "\" is not found in CCP4 Monomer Library.</h3>" )
+                self.putTitle ( "No Ligand Structure Created" )
+                code = None  # signal not to continue with making ligand
 
-        if self.outputFName == "":
-            self.outputFName = code.upper()
+        if code:  # can continue
 
-        # Start makeligand
-        if sys.platform.startswith("win"):
-            self.runApp ( "acedrg.bat",cmd,logType="Main" )
-        else:
-            self.runApp ( "acedrg",cmd,logType="Main" )
+            if self.outputFName == "":
+                self.outputFName = code.upper()
 
-        xyzPath = code + ".pdb"
-        cifPath = code + ".cif"
+            if len(cmd)>0:
+                # Start makeligand
+                if sys.platform.startswith("win"):
+                    self.runApp ( "acedrg.bat",cmd,logType="Main" )
+                else:
+                    self.runApp ( "acedrg",cmd,logType="Main" )
+            else:
+                # copy ORIGINAL restraints in place
+                shutil.copyfile ( lig_path,cifPath )
 
-        self.finaliseLigand ( code,xyzPath,cifPath )
+            self.finaliseLigand ( code,xyzPath,cifPath )
 
         # close execution logs and quit
         self.success()

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    29.07.18   <--  Date of Last Modification.
+ *    14.02.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Front End Server -- Projects Handler Functions
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2018
+ *  (C) E. Krissinel, A. Lebedev 2016-2019
  *
  *  =================================================================
  *
@@ -631,6 +631,56 @@ function finishProjectExport ( login,projectList )  {
 
 // ===========================================================================
 
+function getJobExportNames ( login,task )  {
+  var exportName  = task.project + '-job_' + task.id + '.zip';
+  var jobDirPath  = getJobDirPath ( login,task.project,task.id );
+  var archivePath = path.join     ( jobDirPath,exportName );
+  return [ exportName,jobDirPath,archivePath ];
+}
+
+function prepareJobExport ( login,task )  {
+
+  log.standard ( 19,'export job "' + task.project + '-job_' + task.id + '", login '+login );
+
+  var exp_names   = getJobExportNames ( login,task );
+  var exportName  = exp_names[0];
+  var jobDirPath  = exp_names[1];
+  var archivePath = exp_names[2];
+  utils.removeFile ( archivePath );  // just in case
+
+  send_dir.packDir ( jobDirPath,'*',function(code){
+    var jobballPath = send_dir.getJobballPath ( jobDirPath );
+    if (code)  {
+      log.error ( 20,'errors at packing ' + jobDirPath + ' for export' );
+      utils.removeFile ( jobballPath );  // export will never get ready!
+    } else  {
+      log.standard ( 20,'packed' );
+      utils.moveFile   ( jobballPath,archivePath );
+    }
+  });
+
+  return new cmd.Response ( cmd.fe_retcode.ok,'','' );
+
+}
+
+function checkJobExport ( login,task )  {
+  var archivePath = getJobExportNames(login,task)[2];
+  rdata = {};
+  if (utils.fileExists(archivePath))
+        rdata.size = utils.fileSize(archivePath);
+  else  rdata.size = -1;
+  return new cmd.Response ( cmd.fe_retcode.ok,'',rdata );
+}
+
+function finishJobExport ( login,task )  {
+  var archivePath = getJobExportNames(login,task)[2];
+  utils.removeFile ( archivePath );
+  return new cmd.Response ( cmd.fe_retcode.ok,'','' );
+}
+
+
+// ===========================================================================
+
 function getProjectData ( login,data )  {
 
   var response = getProjectList ( login );
@@ -984,6 +1034,9 @@ module.exports.checkProjectExport     = checkProjectExport;
 module.exports.finishProjectExport    = finishProjectExport;
 module.exports.checkProjectImport     = checkProjectImport;
 module.exports.finishProjectImport    = finishProjectImport;
+module.exports.prepareJobExport       = prepareJobExport;
+module.exports.checkJobExport         = checkJobExport;
+module.exports.finishJobExport        = finishJobExport;
 module.exports.getProjectData         = getProjectData;
 module.exports.saveProjectData        = saveProjectData;
 module.exports.importProject          = importProject;

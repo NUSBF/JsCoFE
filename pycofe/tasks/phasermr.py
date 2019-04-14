@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    24.12.18   <--  Date of Last Modification.
+#    11.04.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2018
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2019
 #
 # ============================================================================
 #
@@ -153,12 +153,20 @@ class PhaserMR(basic.TaskDriver):
 
         for i in range(len(ens0)):
             ename = ens0[i].ensembleName()
-            self.write_stdin (
-                    "\nENSEMBLE " + ename + " &" +\
-                    "\n    PDB \"" + ens0[i].getXYZFilePath(self.inputDir()) +\
-                    "\" RMS " + str(ens0[i].rmsd) +\
-                    "\nENSEMBLE " + ename + " HETATM ON"
-                )
+            if ens0[i].simtype=="seqid":
+                self.write_stdin (
+                        "\nENSEMBLE " + ename + " &" +\
+                        "\n    PDB \"" + ens0[i].getXYZFilePath(self.inputDir()) +\
+                        "\" IDENT " + str(ens0[i].seqId) +\
+                        "\nENSEMBLE " + ename + " HETATM ON"
+                    )
+            else:
+                self.write_stdin (
+                        "\nENSEMBLE " + ename + " &" +\
+                        "\n    PDB \"" + ens0[i].getXYZFilePath(self.inputDir()) +\
+                        "\" RMS " + str(ens0[i].rmsd) +\
+                        "\nENSEMBLE " + ename + " HETATM ON"
+                    )
 
         self.write_stdin ( "\nCOMPOSITION BY ASU" )
         for i in range(len(seq)):

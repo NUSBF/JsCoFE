@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    14.01.19   <--  Date of Last Modification.
+#    08.03.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -48,10 +48,13 @@ citations = {
     'unique'          : { 'name' : 'Unique'       , 'category' : 'service', 'refs' : [] },
     'ecalc'           : { 'name' : 'ECalc'        , 'category' : 'service', 'refs' : [] },
     'sftools'         : { 'name' : 'SFTools'      , 'category' : 'service', 'refs' : [] },
+    'mtzfix'          : { 'name' : 'MTZFix'       , 'category' : 'service', 'refs' : [] },
     'cif2mtz'         : { 'name' : 'cif2mtz'      , 'category' : 'service', 'refs' : [] },
     'rwcontents'      : { 'name' : 'RWContents'   , 'category' : 'service', 'refs' : [] },
     'csymmatch'       : { 'name' : 'CSymMatch'    , 'category' : 'primary', 'refs' : [] },
     'chltofom'        : { 'name' : 'CHLtoFOM'     , 'category' : 'service', 'refs' : [] },
+    'ccp4go'          : { 'name' : 'CCP4go'       , 'category' : 'primary', 'refs' : [] },
+    'ccp4build'       : { 'name' : 'CCP4Build'    , 'category' : 'primary', 'refs' : [] },
 
     'ps2pdf'          : { 'name' : '', 'category' : 'system' , 'refs' : [] },  # empty name means "Ignore"
     'ccp4-python'     : { 'name' : '', 'category' : 'system' , 'refs' : [] },
@@ -768,9 +771,33 @@ citations = {
                   }]
                 },
 
+    'crossec' : { 'name'     : 'CROSSEC',
+                  'category' : 'primary',
+                  'refs'     : [{
+                            'authors' : 'Cromer, D.T.',
+                            'title'   : 'Calculation of anomalous scattering factors at arbitrary wavelengths',
+                            'journal' : 'J. Appl. Cryst.',
+                            'volume'  : '16',
+                            'year'    : '1983',
+                            'pages'   : '437',
+                            'doi'     : '10.1107/S0021889883010791'
+                  }]
+                },
+
+    'edstats' : { 'name'     : 'EDStats',
+                  'category' : 'primary',
+                  'refs'     : [{
+                            'authors' : 'Tickle, I.J., Laskowski, R.A. and Moss, D.S.',
+                            'title'   : 'Error Estimates of Protein Structure Coordinates and Deviations from Standard Geometry by Full-Matrix Refinement of &gamma;B- and &beta;B2-Crystallin',
+                            'journal' : 'Acta Cryst.',
+                            'volume'  : 'D54',
+                            'year'    : '1998',
+                            'pages'   : '243-252',
+                            'doi'     : '10.1107/S090744499701041X'
+                  }]
+                },
 
 }
-
 
 #
 #  possible description with reference:
@@ -806,6 +833,10 @@ analysis_tasks = {
    'TaskSeqAlign' : { 'name' : 'ClustalW2',
                       'desc' : 'Sequence alignment',
                       'copy' : [['clustalw2',-1]]
+                    },
+   'TaskCrosSec' :  { 'name' : 'CROSSEC',
+                      'desc' : 'Anomalous scattering factors calculations',
+                      'copy' : [['crossec',-1]]
                     },
 }
 

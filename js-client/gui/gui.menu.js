@@ -95,6 +95,10 @@ function Menu ( text,icon_uri )  {
 Menu.prototype = Object.create ( Widget.prototype );
 Menu.prototype.constructor = Menu;
 
+Menu.prototype.setMenuIcon = function ( icon_uri )  {
+  this.button.setBackground ( icon_uri );
+}
+
 Menu.prototype.addItem = function ( text,icon_uri )  {
 var mi = new MenuItem ( text,icon_uri );
   this.dropdown.addWidget ( mi );

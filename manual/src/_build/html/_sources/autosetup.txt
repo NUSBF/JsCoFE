@@ -36,36 +36,36 @@ Download |jsCoFE| package
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Download
-`jscofe_alpha_lin64.tar.gz <http://ccp4serv7.rc-harwell.ac.uk/jscofe-alpha/downloads/jscofe_alpha_lin64.tar.gz>`_.
+`ccp4cloud_lin64.tar.gz <http://ccp4serv7.rc-harwell.ac.uk/jscofe-alpha/downloads/ccp4cloud_lin64.tar.gz>`_.
 
 ~~~~~~~~~~~~~~~~
 Install |jsCoFE|
 ~~~~~~~~~~~~~~~~
 
-In the example below, ``jscofe_alpha_lin64.tar.gz`` has been downloaded into
+In the example below, ``ccp4cloud_lin64.tar.gz`` has been downloaded into
 ``~/Download`` directory and |jsCoFE| is being installed in
-``~/jscofe_alpha`` (where ``~`` stands for user's home directory): ::
+``~/ccp4cloud`` (where ``~`` stands for user's home directory): ::
 
   $ cd
-  $ tar -xzf ~/Downloads/jscofe_alpha_lin64.tar.gz
-  $ jscofe_alpha/SETUP.sh
+  $ tar -xzf ~/Downloads/ccp4cloud_lin64.tar.gz
+  $ ccp4cloud/SETUP.sh
 
 If path to ``ccp4-7.0`` is not defined in shell initialisation script,
 ``SETUP.sh`` will complain that it cannot find it. Assuming that the path is
 ``/usr/opt/ccp4-7.0``, the following command will do the job: ::
 
-  $ jscofe_alpha/SETUP.sh -c /usr/opt/ccp4-7.0
+  $ ccp4cloud/SETUP.sh /usr/opt/ccp4-7.0
 
 To change |jsCoFE| storage directory from the default ``~/jscofe_storage`` to,
 e.g., ``~/jscofe_test`` and default web-browser from ``Firefox`` to ``Opera``,
-rerun the setup script as follows: ::
+run ``ccp4cloud.sh`` in configuration mode: ::
 
-  $ jscofe_alpha/SETUP.sh -b opera -d jscofe_test
+  $ ccp4cloud/bin/ccp4cloud.sh config -b opera -d jscofe_test
 
 |jsCoFE| alpha will not announce updates. Therefore it will be useful to run the
 following command time from time: ::
 
-  $ ~/jscofe_alpha/UPDATE.sh
+  $ ~/ccp4cloud/UPDATE.sh
 
 
 ~~~~~~~~~~~~~~~~~
@@ -81,8 +81,8 @@ through the context menu (e.g. ``Ubuntu 16``). In the former case, |jsCoFE|
 can still be launched from the command line using one of the following
 commands: ::
 
-  $ /path/to/jscofe_alpha/bin/ccp4cloud-desktop.sh
-  $ /path/to/jscofe_alpha/bin/ccp4cloud-remote.sh
+  $ /path/to/ccp4cloud/bin/ccp4cloud-desktop.sh
+  $ /path/to/ccp4cloud/bin/ccp4cloud-remote.sh
 
 
 ---------
@@ -104,37 +104,37 @@ Download |jsCoFE| package
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Download
-`jscofe_alpha_osx64.tar.gz <http://ccp4serv7.rc-harwell.ac.uk/jscofe-alpha/downloads/jscofe_alpha_osx64.tar.gz>`_.
+`ccp4cloud_osx64.tar.gz <http://ccp4serv7.rc-harwell.ac.uk/jscofe-alpha/downloads/ccp4cloud_osx64.tar.gz>`_.
 
 
 ~~~~~~~~~~~~~~~~
 Install |jsCoFE|
 ~~~~~~~~~~~~~~~~
 
-In the example below, ``jscofe_alpha_osx64.tar.gz`` has been downloaded into
+In the example below, ``ccp4cloud_osx64.tar.gz`` has been downloaded into
 ``~/Download`` directory and |jsCoFE| is being installed in
-``~/Applications/jscofe_alpha`` (where ``~`` stands for user's home directory): ::
+``~/Applications/ccp4cloud`` (where ``~`` stands for user's home directory): ::
 
   $ cd ~/Applications
-  $ tar -xzf ~/Downloads/jscofe_alpha_osx64.tar.gz
-  $ jscofe_alpha/SETUP.sh
+  $ tar -xzf ~/Downloads/ccp4cloud_osx64.tar.gz
+  $ ccp4cloud/SETUP.sh
 
 If path to ``ccp4-7.0`` is not defined in shell initialisation script,
 ``SETUP.sh`` will complain that it cannot find it. Assuming that the path is
 ``/Applications/ccp4-7.0``, the following command will do the job: ::
 
-  $ jscofe_alpha/SETUP.sh -c /Applications/ccp4-7.0
+  $ ccp4cloud/SETUP.sh /Applications/ccp4-7.0
 
 To change |jsCoFE| storage directory from the default ``~/jscofe_storage`` to,
 e.g., ``~/jscofe_test`` and default web-browser from ``Safari`` to ``Opera``,
-rerun the setup script as follows: ::
+run ``ccp4cloud.sh`` in configuration mode: ::
 
-  $ jscofe_alpha/SETUP.sh -b opera -d jscofe_test
+  $ ccp4cloud/bin/ccp4cloud.sh config -b opera -d jscofe_test
 
 |jsCoFE| alpha will not announce updates. Therefore it will be useful to run the
 following command time from time: ::
 
-  $ ~/Applications/jscofe_alpha/UPDATE.sh
+  $ ~/Applications/ccp4cloud/UPDATE.sh
 
 
 ~~~~~~~~~~~~~~~~~
@@ -166,14 +166,14 @@ Download |jsCoFE| package
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Download
-`jscofe_alpha_win64.exe <http://ccp4serv7.rc-harwell.ac.uk/jscofe-alpha/downloads/jscofe_alpha_win64.exe>`_.
+`ccp4cloud_win64.exe <http://ccp4serv7.rc-harwell.ac.uk/jscofe-alpha/downloads/ccp4cloud_win64.exe>`_.
 
 
 ~~~~~~~~~~~~~~~~
 Install |jsCoFE|
 ~~~~~~~~~~~~~~~~
 
-* launch ``jscofe_alpha_win64.exe`` in ``Downloads`` folder
+* launch ``ccp4cloud_win64.exe`` in ``Downloads`` folder
 * the installer has sensible defaults for storage directory and features and there is no need to change them.
 
 ~~~~~~~~~~~~~~~~~

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    27.12.18   <--  Date of Last Modification.
+ *    13.04.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  ASU Definition Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2018
+ *  (C) E. Krissinel, A. Lebedev 2016-2019
  *
  *  =================================================================
  *
@@ -74,11 +74,31 @@ function TaskASUDef()  {
   ];
 
   this.parameters = { // input parameters
-    sec1 : {  type     : 'section',
-              title    : 'Parameters',
-              open     : true,  // true for the section to be initially open
-              position : [0,0,1,5],
-              contains : {
+
+    HATOM : {
+              type      : 'string_',   // empty string allowed
+              keyword   : 'atomtype=',
+              label     : '<b><i>Heavy atom type</i></b>',
+              tooltip   : 'Specify atom type of anomalous scatterers (e.g., S, SE etc.), ' +
+                          'or leave blank if uncertain.',
+              iwidth    : 36,
+              value     : '',
+              emitting  : true,    // will emit 'onchange' signal
+              maxlength : 2,       // maximum input length
+              position  : [0,0,1,3]
+           },
+
+    NSPL : {  type      : 'label',
+              label     : '&nbsp',
+              position  : [1,0,1,1]
+           },
+
+    sec1 : {  type      : 'section',
+              title     : 'Parameters',
+              open      : true,  // true for the section to be initially open
+              position  : [2,0,1,5],
+              showon    : {seq:[-1,0]},
+              contains  : {
                 ESTIMATE_SEL : {
                       type      : 'combobox',  // the real keyword for job input stream
                       keyword   : 'estimate',
@@ -145,7 +165,8 @@ function TaskASUDef()  {
                       value     : 'P',
                       position  : [1,0,1,1],
                       showon    : {seq:[-1,0]}
-                    },
+                    }
+                /*
                 RESLIMIT : {
                       type      : 'real_', // blank value is allowed
                       keyword   : 'RESO', // the real keyword for job input stream
@@ -161,6 +182,7 @@ function TaskASUDef()  {
                       value     : '',         // value to be paired with the keyword
                       position  : [2,0,1,1]  // [row,col,rowSpan,colSpan]
                     }
+                */
               }
     }
   };
@@ -179,16 +201,12 @@ TaskASUDef.prototype.constructor = TaskASUDef;
 
 TaskASUDef.prototype.icon = function()  { return 'task_asudef'; }
 
-//TaskASUDef.prototype.icon_small = function()  { return 'task_asudef_20x20'; }
-//TaskASUDef.prototype.icon_large = function()  { return 'task_asudef';       }
-
 TaskASUDef.prototype.currentVersion = function()  {
   var version = 0;
   if (__template)
         return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
 }
-
 
 if (__template)  {
   //  for server side

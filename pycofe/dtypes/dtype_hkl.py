@@ -3,13 +3,13 @@
 #
 # ============================================================================
 #
-#    16.11.18   <--  Date of Last Modification.
+#    13.04.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  HKL DATA TYPE
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2018
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2019
 #
 # ============================================================================
 #
@@ -42,7 +42,7 @@ class DType(dtype_template.DType):
             self.res_high      = ""     # high resolution limit
             self.res_ref       = ""     # high resolution for refinement (Phaser-MR)
             self.wavelength    = ""     # wavelength (Phaser-EP)
-            self.anomAtomType  = ""     # anomalous scattering type
+            #self.anomAtomType  = ""     # anomalous scattering type
             self.useForPhasing = False  # flag for native dataset in SAD/MAD (Crank-2)
             self.new_spg       = ""     # new space group for reindexing
             self.spg_alt       = ""     # alternative space groups for Phaser

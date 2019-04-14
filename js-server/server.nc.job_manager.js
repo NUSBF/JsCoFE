@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    05.02.19   <--  Date of Last Modification.
+ *    07.03.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -545,6 +545,8 @@ function ncRunJob ( job_token,feURL )  {
   var taskDataPath = path.join ( jobEntry.jobDir,task_t.jobDataFName );
   var jobDir       = path.dirname ( taskDataPath );
   var task         = utils.readClass ( taskDataPath );
+  var nproc        = ncConfig.getMaxNProc();
+  var ncores       = task.getNCores ( nproc );
 
   if (task)  { // the task is instantiated, start the job
 
@@ -560,7 +562,9 @@ function ncRunJob ( job_token,feURL )  {
 
       default      :
       case 'CLIENT':
-      case 'SHELL' :  var job = utils.spawn ( cmd[0],cmd.slice(1),{} );
+      case 'SHELL' :  log.standard ( 5,'starting... ' );
+                      cmd.push ( nproc.toString() );
+                      var job = utils.spawn ( cmd[0],cmd.slice(1),{} );
                       jobEntry.pid = job.pid;
 
                       log.standard ( 5,'task ' + task.id + ' started, pid=' +
@@ -603,13 +607,13 @@ function ncRunJob ( job_token,feURL )  {
                         }
 
                       });
-
                   break;
 
       case 'SGE'   :  var queueName = ncConfig.getQueueName();
                       if (queueName.length>0)
                         cmd.push ( queueName );
-                      cmd.push ( Math.max(1,Math.floor(ncConfig.capacity/4)).toString() );
+                      //cmd.push ( Math.max(1,Math.floor(ncConfig.capacity/4)).toString() );
+                      cmd.push ( nproc.toString() );
                       var qsub_params = ncConfig.exeData.concat ([
                         '-o',path.join(jobDir,'_job.stdo'),  // qsub stdout
                         '-e',path.join(jobDir,'_job.stde'),  // qsub stderr
@@ -642,12 +646,14 @@ function ncRunJob ( job_token,feURL )  {
 
                   break;
 
-      case 'SCRIPT' : cmd.push ( Math.max(1,Math.floor(ncConfig.capacity/4)).toString() );
+      case 'SCRIPT' : //cmd.push ( Math.max(1,Math.floor(ncConfig.capacity/4)).toString() );
+                      cmd.push ( nproc.toString() );
                       var qsub_params = [
                         'start',
                         path.join(jobDir,'_job.stdo'),  // qsub stdout
                         path.join(jobDir,'_job.stde'),  // qsub stderr
-                        'cofe_' + ncJobRegister.launch_count
+                        'cofe_' + ncJobRegister.launch_count,
+                        ncores
                       ];
                       var job = utils.spawn ( ncConfig.exeData,qsub_params.concat(cmd),{} );
                       // in this mode, we DO NOT put job listener on the spawn
