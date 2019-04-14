@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    14.01.19   <--  Date of Last Modification.
+#    11.04.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -424,6 +424,30 @@ class TaskDriver(object):
             pyrvapi.rvapi_append_content ( content,True,tabId )
         return
 
+    def stdout ( self,message ):
+        self.file_stdout.write ( message )
+        return
+
+    def stdoutln ( self,message ):
+        self.file_stdout.write ( message + "\n" )
+        return
+
+    def stdout1 ( self,message ):
+        self.file_stdout1.write ( message )
+        return
+
+    def stdout1ln ( self,message ):
+        self.file_stdout1.write ( message + "\n" )
+        return
+
+    def stderr ( self,message ):
+        self.file_stderr.write ( message )
+        return
+
+    def stderrln ( self,message ):
+        self.file_stderr.write ( message + "\n" )
+        return
+
     def flush(self):
         pyrvapi.rvapi_flush()
         self.file_stdout .flush()
@@ -566,7 +590,10 @@ class TaskDriver(object):
         return
 
     def addFileImport ( self,dirPath,fname,ftype=None ):
-        fpath = os.path.join ( dirPath,fname )
+        if dirPath:
+            fpath = os.path.join ( dirPath,fname )
+        else:
+            fpath = fname
         self.files_all.append ( fpath )
         if ftype:
             self.file_type[fpath] = ftype
@@ -751,6 +778,7 @@ class TaskDriver(object):
     # ============================================================================
 
     def storeReportDocument(self,meta_str):
+        self.flush()
         if meta_str:
             pyrvapi.rvapi_put_meta ( meta_str )
         pyrvapi.rvapi_store_document2 ( self.reportDocumentName() )
@@ -1054,9 +1082,12 @@ class TaskDriver(object):
 
     def registerRevision ( self,revision,serialNo=1,title="Structure Revision",
                            message="<b><i>New structure revision name:</i></b>",
-                           gridId = "" ):
+                           gridId = "", revisionName=None ):
 
-        revision.makeRevDName ( self.job_id,serialNo,self.outputFName )
+        revName = revisionName
+        if not revName:
+            revName = self.outputFName
+        revision.makeRevDName ( self.job_id,serialNo,revName )
         revision.register     ( self.outputDataBox )
         if title:
             self.putTitle ( title )
@@ -1304,8 +1335,13 @@ class TaskDriver(object):
         return
 
     def putEnsembleWidget1 ( self,pageId,widgetId,title_str,ensemble,openState,row,colSpan ):
-        self.putMessage1 ( pageId,"<b>Assigned name:</b>&nbsp;" +\
-                                  ensemble.dname + "<br>&nbsp;",row )
+
+        msg = "<b>Assigned name&nbsp;&nbsp;&nbsp;:</b>&nbsp;&nbsp;&nbsp;" + ensemble.dname + "<br>"
+        if ensemble.seqId:
+            msg += "<b>Estimated seqId :</b>&nbsp;&nbsp;&nbsp;" + str(ensemble.seqId)
+
+        self.putMessage1 ( pageId,msg + "&nbsp;",row )
+
         pyrvapi.rvapi_add_data ( widgetId,title_str,
                     # always relative to job_dir from job_dir/html
                     "/".join(["..",self.outputDir(),ensemble.getXYZFileName()]),

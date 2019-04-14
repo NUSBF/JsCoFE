@@ -118,7 +118,6 @@ class FitLigands(ccp4go_acedrg.AceDrg):
             else:
                 self.runApp ( os.path.join(os.environ["CCP4"],"libexec","findligand-bin"),cmd )
 
-
             # check results
             ligands = [fn for fn in os.listdir("./") if fn.startswith("fitted-ligand-") and fn.endswith(".pdb") ]
             #self.file_stdout.write ( "ligands=" + str(ligands) + "\n" )
@@ -127,7 +126,7 @@ class FitLigands(ccp4go_acedrg.AceDrg):
                 # merge all ligands in the coordinate file
                 nligs  = coor.mergeLigands ( xyzPath,ligands,"X",xyzPath )
 
-                # remove ligands files
+                # remove ligand files
                 for lig in ligands:
                     os.remove ( lig )
 
@@ -225,7 +224,7 @@ class FitLigands(ccp4go_acedrg.AceDrg):
                 quit_message = "fitted ligands " + quit_message
             quit_message += " (<i>R<sub>free</sub>=" + str(rfree) + "</i>)"
 
-            # put structure vew widget; files will be made into place latyer
+            # put structure vew widget; files will be made into place later
             # by self.saveResults(...)
             dfpath = "/".join ( ["..",self.outputdir,resultdir,"fitligands"] )
             self.putStructureWidget ( "Structure and density map",
@@ -238,9 +237,10 @@ class FitLigands(ccp4go_acedrg.AceDrg):
             if not "lib" in strmeta:
                 libPath = None
 
-        self.saveResults ( "FitLigands",resultdir,nResults,
-            rfree,rfactor,"fitligands", xyzPath,mtzPath,mapPath,dmapPath,libPath,
-            libIndex,columns,spg_info )  # no space group change at fitting ligands
+        self.saveResults ( "FitLigands",resultdir,
+            nResults,rfree,rfactor,"fitligands",xyzPath,mtzPath,mapPath,
+            dmapPath,libPath,libIndex,columns,
+            spg_info )  # no space group change at fitting ligands
 
         self.quit_branch ( branch_data,resultdir,
                            "Fitting ligands (Coot): " + quit_message )

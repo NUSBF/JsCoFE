@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    01.01.19   <--  Date of Last Modification.
+ *    28.03.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -315,4 +315,5 @@ AdminPage.prototype.makeNodesInfoTab = function ( ndata )  {
 
 function makeAdminPage ( sceneId )  {
   makePage ( new AdminPage(sceneId) );
+  setHistoryState ( 'AdminPage' );
 }

@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    05.01.19   <--  Date of Last Modification.
+ *    13.04.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -52,6 +52,8 @@ function DataRevision()  {
   this.HKL            = null;
   this.ASU            = {};     // Asymmetric Unit Data
   this.ASU.seq        = [];
+  this.ASU.ha_type    = '';     // heavy atom type
+  this.ASU.ndisulph   = '';     // number of disulphides
   this.ASU.nRes       = 0;
   this.ASU.molWeight  = 0.0;
   this.ASU.solvent    = 0.0;
@@ -77,13 +79,10 @@ DataRevision.prototype.constructor = DataRevision;
 DataRevision.prototype.title = function()  { return 'Revision';        }
 DataRevision.prototype.icon  = function()  { return 'data_xrayimages'; }
 
-//DataRevision.prototype.icon_small = function()  { return 'data_xrayimages_20x20'; }
-//DataRevision.prototype.icon_large = function()  { return 'data_xrayimages';       }
-
 // when data class version is changed here, change it also in python
 // constructors
 DataRevision.prototype.currentVersion = function()  {
-  var version = 3;  // advanced on Crank-2
+  var version = 4;  // advanced on ASUDef
   if (__template)
         return  version + __template.DataTemplate.prototype.currentVersion.call ( this );
   else  return  version + DataTemplate.prototype.currentVersion.call ( this );
@@ -118,6 +117,7 @@ if (!__template)  {
 
 
   DataRevision.prototype.makeASUSummaryPage = function ( task )  {
+
     var dsp = new DataSummaryPage ( this );
 
     dsp.trow = 1;
@@ -148,6 +148,10 @@ if (!__template)  {
       dsp.table.setLabel ( round(seqi.weight,1).toString(),dsp.trow,4, 1,1 );
       dsp.trow++;
     }
+
+    if (this.ASU.ha_type)
+          dsp.makeRow ( 'HA type',this.ASU.ha_type,'Heavy Atom type' );
+    else  dsp.makeRow ( 'HA type','<i>unspecified</i>','Heavy Atom type' );
 
     return dsp;
 
@@ -223,6 +227,30 @@ if (!__template)  {
       }
     }
 
+    customGrid.setLabel ( 'heavy atom type:',row,0,1,1 ).setFontItalic(true).setNoWrap();
+    customGrid.ha_type = customGrid.setInputText ( this.ASU.ha_type,row,1,1,1 )
+              .setStyle    ( 'text','','','Specify atom type of anomolous ' +
+                             'scatterers, or leave blank if uncertain.' )
+              .setWidth_px ( 36 ).setMaxInputLength ( 2 );
+    customGrid.setVerticalAlignment ( row,0,'middle' );
+
+    customGrid.ndis_lbl = customGrid.setLabel ( 'number of S-S pairs:',row,2,1,3 )
+                                    .setFontItalic(true).setNoWrap();
+    customGrid.ndisulph = customGrid.setInputText ( this.ASU.ndisulph,row,3,1,1 )
+              .setStyle    ( 'text','integer','','Optional number of disulphides ' +
+                             'to be treated as S-S pairs. Ignored if left blank (default).' )
+              .setWidth_px ( 36 ).setMaxInputLength ( 2 );
+    customGrid.setVerticalAlignment ( row,2,'middle' );
+
+    function showNDis()  {
+      var showdis = (customGrid.ha_type.getValue().toLowerCase()=='s');
+      customGrid.ndis_lbl.setVisible ( showdis );
+      customGrid.ndisulph.setVisible ( showdis );
+    }
+
+    customGrid.ha_type.addOnInputListener ( showNDis );
+    showNDis();
+
     this.HKL.layCustomDropdownInput ( dropdown );
 
   }
@@ -239,6 +267,27 @@ if (!__template)  {
       customGrid.setLabel ( ' ',2,0,1,1 ).setHeight_px ( 8 );
     }
 
+  }
+
+  DataRevision.prototype._layCDI_AsuMod = function ( dropdown )  {
+    var customGrid = dropdown.customGrid;
+    customGrid.setLabel ( 'heavy atom type:',0,0,1,1 ).setFontItalic(true).setNoWrap();
+    customGrid.ha_type = customGrid.setInputText ( this.ASU.ha_type,0,1,1,1 )
+              .setStyle    ( 'text','','','Specify atom type of anomolous ' +
+                             'scatterers, or leave blank if uncertain.' )
+              .setWidth_px ( 36 ).setMaxInputLength ( 2 );
+    customGrid.setVerticalAlignment ( 0,0,'middle' );
+  }
+
+  DataRevision.prototype._layCDI_PhaserEP = function ( dropdown )  {
+  var customGrid = dropdown.customGrid;
+    customGrid.setLabel ( 'Heavy atom type:',0,0,1,1 ).setFontItalic(true).setNoWrap();
+    customGrid.setLabel ( this.ASU.ha_type  ,0,1,1,1 );
+    if (this.Structure)  {
+      dropdown.in_revision = true;
+      this.Structure.layCustomDropdownInput ( dropdown );
+    }
+    this.HKL.layCustomDropdownInput ( dropdown );
   }
 
   DataRevision.prototype._layCDI_PhaserMR = function ( dropdown )  {
@@ -294,14 +343,20 @@ if (!__template)  {
   DataRevision.prototype.layCustomDropdownInput = function ( dropdown )  {
 
     switch (dropdown.layCustom)  {
-      case 'phaser-ep'  :
+      case 'asumod'    :
+            this._layCDI_AsuMod ( dropdown );
+          break;
+      case 'phaser-ep' :
+            this._layCDI_PhaserEP ( dropdown );
+            /*
             if (this.Structure)  {
               dropdown.in_revision = true;
               this.Structure.layCustomDropdownInput ( dropdown );
             }
             this.HKL.layCustomDropdownInput ( dropdown );
+            */
           break;
-      case 'reindex'    :  case 'refmac' :
+      case 'reindex'    :  case 'refmac'       :  case 'ccp4build' :
             this.HKL.layCustomDropdownInput ( dropdown );
           break;
       case 'parrot'     :  case 'buccaneer-ws' :  case 'acorn'  :
@@ -332,9 +387,38 @@ if (!__template)  {
 
   }
 
+  DataRevision.prototype._collectCDI_Crank2 = function ( dropdown )  {
+    var msg = '';
+    if ('removeNonAnom' in dropdown.customGrid)
+      this.Structure.removeNonAnom = dropdown.customGrid.removeNonAnom.getValue();
+    if (this.ASU)  {
+      this.ASU.ha_type = dropdown.customGrid.ha_type.getValue().trim();
+      if (!this.ASU.ha_type)
+        msg += '<b><i>Heavy atom type must be given</i></b>';
+      if (dropdown.customGrid.hasOwnProperty('ndisulph') &&
+          (this.ASU.ha_type.toLowerCase()=='s'))  {
+        var ndisulph = dropdown.customGrid.ndisulph.getValue();
+        if (isInteger(ndisulph))  {
+          var ndisulph = parseInt(ndisulph);
+          if (ndisulph>=0)
+            this.ASU.ndisulph = ndisulph;
+          else
+            msg += '<b><i>Number of disulphides should be positive</i></b>';
+        } else
+          msg += '<b><i>Wrong format for number of disulphides</i></b>';
+      }
+    }
+    msg += this.HKL.collectCustomDropdownInput ( dropdown );
+    return msg;
+  }
+
   DataRevision.prototype.collectCustomDropdownInput = function ( dropdown ) {
   var msg = '';
     switch (dropdown.layCustom)  {
+      case 'asumod'    :
+            if (this.ASU)
+              this.ASU.ha_type = dropdown.customGrid.ha_type.getValue();
+          break;
       case 'reindex'   :  case 'phaser-mr'    :  case 'phaser-mr-fixed' :
           msg = this.HKL.collectCustomDropdownInput ( dropdown );
         break;
@@ -343,7 +427,7 @@ if (!__template)  {
           if (this.Structure)
             msg += this.Structure.collectCustomDropdownInput ( dropdown );
         break;
-      case 'refmac'    :
+      case 'refmac'    :  case 'ccp4build'    :
           msg = this.HKL.collectCustomDropdownInput ( dropdown );
         break;
       case 'parrot'    :  case 'buccaneer-ws' :  case 'acorn' :
@@ -355,14 +439,34 @@ if (!__template)  {
                 this.HKL.collectCustomDropdownInput       ( dropdown );
         break;
       case 'crank2'  :
+          msg = this._collectCDI_Crank2 ( dropdown );
+          /*
           if ('removeNonAnom' in dropdown.customGrid)
             this.Structure.removeNonAnom = dropdown.customGrid.removeNonAnom.getValue();
-          msg = this.HKL.collectCustomDropdownInput ( dropdown );
+          if (this.ASU)  {
+            this.ASU.ha_type = dropdown.customGrid.ha_type.getValue().trim();
+            if (!this.ASU.ha_type)
+              msg += '<b><i>Heavy atom type must be given</i></b>';
+            if (this.ASU.ha_type.toLowerCase()=='s')  {
+              var ndisulph = dropdown.customGrid.ndisulph.getValue();
+              if (isInteger(ndisulph))  {
+                var ndisulph = parseInt(ndisulph);
+                if (ndisulph>=0)
+                  this.ASU.ndisulph = ndisulph;
+                else
+                  msg += '<b><i>Number of disulphides should be positive</i></b>';
+              } else
+                msg += '<b><i>Wrong format for number of disulphides</i></b>';
+            }
+          }
+          msg += this.HKL.collectCustomDropdownInput ( dropdown );
+          */
         break;
           //msg = this._collectCDI_Crank2 ( dropdown );  break;
       case 'shelx-auto'   :
       case 'shelx-substr' :
-          msg = this.HKL.collectCustomDropdownInput ( dropdown );
+          msg = this._collectCDI_Crank2 ( dropdown );
+          //msg = this.HKL.collectCustomDropdownInput ( dropdown );
         break;
       default : ;
     }

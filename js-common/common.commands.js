@@ -2,7 +2,7 @@
 /*
  *  ===========================================================================
  *
- *    05.02.19   <--  Date of Last Modification.
+ *    13.04.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  ---------------------------------------------------------------------------
  *
@@ -24,7 +24,7 @@
 // name and version tag
 
 function appName()  { return 'CCP4 Cloud' }
-var jsCoFE_version = '1.0.0 [05.02.2019]';
+var jsCoFE_version = '1.0.13 [13.04.2019]';
 
 
 // ============================================================================
@@ -36,6 +36,7 @@ var jsCoFE_version = '1.0.0 [05.02.2019]';
 var fe_command = {
   cofe         : 'cofe',           // load jsCoFE login page
   stop         : 'stop',           // quit the server
+  whoareyou    : 'whoareyou',      // request server id
   getInfo      : '=getinfo',       // register a new user
   register     : '=register',      // register a new user
   login        : '=login',         // register a new user
@@ -71,6 +72,9 @@ var fe_reqtype = {
   finishPrjExport   : '-finishPrjExport',   // request to finish project export
   checkPrjImport    : '-checkPrjImport',    // request to check project import state
   finishPrjImport   : '-finishPrjImport',   // request to finish project import
+  prepareJobExport  : '-prepareJobExport',  // request to prepare job for export
+  checkJobExport    : '-checkJobExport',    // request to check job export state
+  finishJobExport   : '-finishJobExport',   // request to finish job export
   importProject     : '-importProject',     // request to save import a project
   saveJobData       : '-saveJobData',       // request to save job data
   runJob            : '-runJob',            // request to run job
@@ -107,6 +111,7 @@ var fe_retcode = {
   notLoggedIn    : 'notLoggedIn',    // request without loggin in
   wrongRequest   : 'wrongRequest',   // unrecognised request
   uploadErrors   : 'uploadErrors',   // upload errors
+  unpackErrors   : 'unpackErrors',   // unpack errors
   noUploadDir    : 'noUploadDir',    // no upload directory within a job directory
   noTempDir      : 'noTempDir',      // no temporary directory
   noJobDir       : 'noJobDir',       // job directory not found
@@ -125,6 +130,7 @@ var nc_command = {
   runJob         : '-runJob',         // request to upload job data and run the job
   stopJob        : '-stopJob',        // request to stop a running job
   selectDir      : '-selectDir',      // request to select directory (local service)
+  selectFile     : '-selectFile',     // request to select file (local service)
   selectImageDir : '-selectImageDir', // request to select image directory (local service)
   runRVAPIApp    : '-runRVAPIApp',    // run RVAPI helper application (local service)
   runClientJob   : '-runClientJob',   // run client job (local service)
@@ -185,6 +191,12 @@ var resp = new Response ( status,message,data );
   resp.send ( server_response );
 }
 
+function sendResponseMessage ( server_response, message )  {
+  server_response.writeHead ( 200, {'Content-Type': 'text/plain',
+                                    'Access-Control-Allow-Origin':'*' } );
+  server_response.end ( message );
+}
+
 
 function Request ( request,token,data )  {
   this._type   = 'Request';
@@ -199,15 +211,17 @@ function Request ( request,token,data )  {
 
 // export such that it could be used in both node and a browser
 if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
-  module.exports.appName         = appName;
-  module.exports.image_path      = image_path;
-  module.exports.fe_command      = fe_command;
-  module.exports.fe_reqtype      = fe_reqtype;
-  module.exports.fe_retcode      = fe_retcode;
-  module.exports.nc_command      = nc_command;
-  module.exports.nc_retcode      = nc_retcode;
-  module.exports.special_url_tag = special_url_tag;
-  module.exports.Response        = Response;
-  module.exports.sendResponse    = sendResponse;
-  module.exports.Request         = Request;
+  module.exports.appName             = appName;
+  module.exports.jsCoFE_version      = jsCoFE_version;
+  module.exports.image_path          = image_path;
+  module.exports.fe_command          = fe_command;
+  module.exports.fe_reqtype          = fe_reqtype;
+  module.exports.fe_retcode          = fe_retcode;
+  module.exports.nc_command          = nc_command;
+  module.exports.nc_retcode          = nc_retcode;
+  module.exports.special_url_tag     = special_url_tag;
+  module.exports.Response            = Response;
+  module.exports.sendResponse        = sendResponse;
+  module.exports.sendResponseMessage = sendResponseMessage;
+  module.exports.Request             = Request;
 }

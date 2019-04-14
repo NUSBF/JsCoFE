@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    27.12.18   <--  Date of Last Modification.
+#    13.04.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2018
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2019
 #
 # ============================================================================
 #
@@ -493,12 +493,13 @@ class ASUDef(basic.TaskDriver):
                                   self.getParameter(sec1.COMPOSITION_SEL),
                                   self.getParameter(sec1.ESTIMATE_SEL),
                                   self.getParameter(sec1.NRES),
-                                  self.getParameter(sec1.MOLWEIGHT),
-                                  self.getParameter(sec1.RESLIMIT) )
+                                  self.getParameter(sec1.MOLWEIGHT),"" )
+        #                          self.getParameter(sec1.RESLIMIT) )
 
         if revision[0]:
             if istruct:
                 revision[0].setStructureData ( istruct )
+            revision[0].ASU.ha_type = self.getParameter ( self.task.parameters.HATOM )
             self.registerRevision ( revision[0] )
 
         # close execution logs and quit

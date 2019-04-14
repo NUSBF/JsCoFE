@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    05.01.19   <--  Date of Last Modification.
+ *    13.04.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -44,7 +44,7 @@ function TaskShelxCD()  {
       inputId     : 'revision',      // input Id for referencing input fields
       customInput : 'shelx-substr',  // lay custom fields next to the selection
                                 // dropdown for 'native' dataset
-      version     : 0,          // minimum data version allowed
+      version     : 5,          // minimum data version allowed
       min         : 1,          // minimum acceptable number of data instances
       max         : 1           // maximum acceptable number of data instances
     },{
@@ -91,9 +91,11 @@ function TaskShelxCD()  {
                                             //   [min,'*']  : limited from bottom
                                             //   [min,max]  : limited from top and bottom
                     value     : '',         // value to be paired with the keyword
+                    label2    : 'atoms',
                     placeholder : 'auto',
                     position  : [0,0,1,1]   // [row,col,rowSpan,colSpan]
                   },
+              /*
               SFAC : {
                     type      : 'string',   // empty string not allowed
                     keyword   : 'SFAC',
@@ -106,6 +108,7 @@ function TaskShelxCD()  {
                     maxlength : 2,       // maximum input length
                     position  : [0,3,1,1]
                   },
+              */
               DSUL : {
                     type      : 'integer_', // blank value is allowed
                     keyword   : 'DSUL',  // the real keyword for job input stream

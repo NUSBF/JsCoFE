@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    02.01.19   <--  Date of Last Modification.
+ *    08.04.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -26,6 +26,7 @@ var crypto    = require('crypto');
 var request   = require('request');
 
 //  load application modules
+var emailer   = require('./server.emailer');
 var utils     = require('./server.utils');
 var user      = require('./server.fe.user');
 var prj       = require('./server.fe.projects');
@@ -156,25 +157,24 @@ var n0         = -1;
       if (nc_servers[n].in_use && (nc_servers[n].exeType!='CLIENT') &&
           (nc_servers[n].exclude_tasks.indexOf(task._type)<0))  {
 
+        //  fasttrack==2 means a fast-track dedicted server
         if ((nc_servers[n].fasttrack==2) && (nc_servers[n].current_capacity>0))  {
           nc_number = n;
         } else if (nc_servers[n].fasttrack==1)  {
-          if (nc_servers[n].current_capacity>0)  {
-            maxcap0 = Number.MAX_SAFE_INTEGER;
-            n0      = n;
-          } else if (nc_servers[n].current_capacity>maxcap0)  {
-            maxcap0 = nc_servers[n].current_capacity;
-            n0      = n;
+          if (nc_servers[n].current_capacity>maxcap0)  {
+            if ((nc_servers[n].current_capacity>0) && (n!=last_number_cruncher))
+                 maxcap0 = Number.MAX_SAFE_INTEGER;
+            else maxcap0 = nc_servers[n].current_capacity;
+            n0 = n;
           }
         }
 
         if (nc_servers[n].exeType=='SHELL')  {
-          if (nc_servers[n].current_capacity>0)  {
-            maxcap1 = Number.MAX_SAFE_INTEGER;
-            n1      = n;
-          } else if (nc_servers[n].current_capacity>maxcap1)  {
-            maxcap1 = nc_servers[n].current_capacity;
-            n1      = n;
+          if (nc_servers[n].current_capacity>maxcap1)  {
+            if ((nc_servers[n].current_capacity>0) && (n!=last_number_cruncher))
+                 maxcap1 = Number.MAX_SAFE_INTEGER;
+            else maxcap1 = nc_servers[n].current_capacity;
+            n1 = n;
           }
         }
 
@@ -182,9 +182,17 @@ var n0         = -1;
 
     }
 
-    if (nc_number>=0)  return nc_number;  // first free dedicated
-    if (maxcap0>0)     return n0;         // first free accepting
-    if (maxcap1>-2)    return n1;         // first free of SHELL type
+    if (nc_number<0)  {   // no dedicated fast track servers found
+      if (maxcap0>0)
+        nc_number = n0;     // take first free accepting fast track in principle
+      else if (maxcap1>-2)
+        nc_number = n1;     // take first free of SHELL type
+    }
+
+    if (nc_number>=0)  {
+      last_number_cruncher = nc_number
+      return nc_number;
+    }
 
     // if no suitable servers found, choose one as for a not fast-track request
     // below
@@ -342,11 +350,22 @@ function runJob ( login,data, callback_func )  {
             case 2: utils.writeJobReportMessage ( jobDir,
                     '<h1>[00003] Failed: data transmission errors.</h1>' +
                     '<p><i>Return: ' + code + '</i>',false );
-                    log.error ( 2,'[00003] Cannot send data to NC at ' + nc_url );
+                    log.error ( 2,'[00003] Cannot send data to NC at ' + nc_url + ' please try again' );
+                    emailer.send ( conf.getEmailerConfig().maintainerEmail,
+                      'Cannot send job to NC',
+                      'Detected data transmision errors while communicating to NC at '  + nc_url +
+                      '.\nPossible NC failure, please investigate.' );
+                    /*
+                    conf.getNCConfig(nc_number).checkStatus ( function(error,response.statusCode,body,cfg){
+                      if (error || (response.statusCode!=200))  {
+                        cfg.in_use = false;
+                      }
+                    });
+                    */
                   break;
 
             default: utils.writeJobReportMessage ( jobDir,
-                     '<h1>[00004] Failed: number cruncher errors.</h1>' +
+                     '<h1>[00004] Failed: number cruncher errors, please try again.</h1>' +
                      '<p><i>Return: ' + code.message + '</i>',false );
 
           }
@@ -447,7 +466,7 @@ function replayJob ( login,data, callback_func )  {
 
         } else  {
           callback_func ( new cmd.Response(cmd.fe_retcode.jobballError,
-                          '[00001] Jobball creation errors',{}) );
+                          '[00006] Jobball creation errors',{}) );
         }
 
       });
@@ -477,18 +496,18 @@ function replayJob ( login,data, callback_func )  {
           switch (stageNo)  {
 
             case 1: utils.writeJobReportMessage ( jobDir,
-                    '<h1>[00002] Failed: data preparation error (' + code + ').</h1>',
+                    '<h1>[00007] Failed: data preparation error (' + code + ').</h1>',
                     false );
                   break;
 
             case 2: utils.writeJobReportMessage ( jobDir,
-                    '<h1>[00003] Failed: data transmission errors.</h1>' +
+                    '<h1>[00008] Failed: data transmission errors.</h1>' +
                     '<p><i>Return: ' + code + '</i>',false );
-                    log.error ( 2,'[00003] Cannot send data to NC at ' + nc_url );
+                    log.error ( 2,'[00008] Cannot send data to NC at ' + nc_url );
                   break;
 
             default: utils.writeJobReportMessage ( jobDir,
-                     '<h1>[00004] Failed: number cruncher errors.</h1>' +
+                     '<h1>[00009] Failed: number cruncher errors.</h1>' +
                      '<p><i>Return: ' + code.message + '</i>',false );
 
           }
@@ -505,7 +524,7 @@ function replayJob ( login,data, callback_func )  {
   } else  {
 
     callback_func ( new cmd.Response ( cmd.fe_retcode.writeError,
-                                '[00005] Job metadata cannot be written.',{} ) );
+                                '[00010] Job metadata cannot be written.',{} ) );
 
   }
 
@@ -564,7 +583,7 @@ var response = null;
     utils.writeObject ( jobDataPath,jobData );
 
     response = new cmd.Response ( cmd.fe_retcode.ok,
-                                  '[00006] Job was not running',jobData );
+                                  '[00011] Job was not running',jobData );
 
   }
 
@@ -581,24 +600,6 @@ var _min  = 60000;
 var _sec  = 1000;
 
 function writeJobStats ( jobEntry )  {
-
-  /*
-  var userFilePath = user.getUserDataFName ( jobEntry.login );
-  var nJobs        = 0;
-  if (utils.fileExists(userFilePath))  {
-    var uData = utils.readObject ( userFilePath );
-    if (uData)  {
-      if (!('nJobs' in uData))
-            uData.nJobs = 1;
-      else  uData.nJobs++;
-      nJobs = uData.nJobs;
-      if (!utils.writeObject(userFilePath,uData))
-        log.error ( 3,'User file: ' + userFilePath + ' cannot be written' );
-    } else
-      log.error ( 4,'User file: ' + userFilePath + ' cannot be read' );
-  } else
-    log.error ( 5,'User file: ' + userFilePath + ' is not found' );
-  */
 
   var t  = Date.now();
   var dt = t - jobEntry.start_time;
@@ -642,8 +643,6 @@ function writeJobStats ( jobEntry )  {
          com_utils.padDigits ( jobEntry.nc_number.toString(),3 ) + ' ' +
          com_utils.padStringRight ( jobClass.state,' ',8 )       + ' ' +
 
-//         com_utils.padStringRight ( jobEntry.login+' ('+nJobs+')',' ',20 ) + ' ' +
-//            jobClass.title + '\n';
          com_utils.padStringRight ( jobEntry.login +
                 ' (' + userRation.jobs_total + ')',' ',20 ) +
                     ' ' + jobClass.title + '\n';
@@ -692,16 +691,19 @@ function getJobResults ( job_token,server_request,server_response )  {
           writeFEJobRegister();
         } else if (code=='err_rename')  { // file renaming errors
           cmd.sendResponse ( server_response, cmd.nc_retcode.fileErrors,
-                            '[00007] File rename errors' );
+                            '[00012] File rename errors' );
         } else if (code=='err_dirnoexist')  { // work directory deleted
           cmd.sendResponse ( server_response, cmd.nc_retcode.fileErrors,
-                            '[00008] Recepient directory does not exist (job deleted?)' );
+                            '[00013] Recepient directory does not exist (job deleted?)' );
         } else if (code=='err_transmission')  {  // data transmission errors
           cmd.sendResponse ( server_response, cmd.nc_retcode.uploadErrors,
-                            '[00009] Data transmission errors: ' + errs );
+                            '[00014] Data transmission errors: ' + errs );
+        } else if (code=='data_unpacking_errors')  {  // data transmission errors
+          cmd.sendResponse ( server_response, cmd.nc_retcode.uploadErrors,
+                            '[00015] Data unpack errors: ' + errs );
         } else  {
           cmd.sendResponse ( server_response, cmd.nc_retcode.unpackErrors,
-                           '[00010] Tarball unpack errors' );
+                            '[00016] Unspecified unpacking errors' );
         }
       });
 

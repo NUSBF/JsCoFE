@@ -87,33 +87,33 @@ a browser and has identical appearance and functionality.</p>
 <div class="section" id="download-jscofe-package">
 <h3>1.1.2. Download CCP4 Cloud package<a class="headerlink" href="#download-jscofe-package" title="Permalink to this headline">¶</a></h3>
 <p>Download
-<a class="reference external" href="http://ccp4serv7.rc-harwell.ac.uk/jscofe-alpha/downloads/jscofe_alpha_lin64.tar.gz">jscofe_alpha_lin64.tar.gz</a>.</p>
+<a class="reference external" href="http://ccp4serv7.rc-harwell.ac.uk/jscofe-alpha/downloads/ccp4cloud_lin64.tar.gz">ccp4cloud_lin64.tar.gz</a>.</p>
 </div>
 <div class="section" id="install-jscofe">
 <h3>1.1.3. Install CCP4 Cloud<a class="headerlink" href="#install-jscofe" title="Permalink to this headline">¶</a></h3>
-<p>In the example below, <code class="docutils literal"><span class="pre">jscofe_alpha_lin64.tar.gz</span></code> has been downloaded into
+<p>In the example below, <code class="docutils literal"><span class="pre">ccp4cloud_lin64.tar.gz</span></code> has been downloaded into
 <code class="docutils literal"><span class="pre">~/Download</span></code> directory and CCP4 Cloud is being installed in
-<code class="docutils literal"><span class="pre">~/jscofe_alpha</span></code> (where <code class="docutils literal"><span class="pre">~</span></code> stands for user&#8217;s home directory):</p>
+<code class="docutils literal"><span class="pre">~/ccp4cloud</span></code> (where <code class="docutils literal"><span class="pre">~</span></code> stands for user&#8217;s home directory):</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span>$ cd
-$ tar -xzf ~/Downloads/jscofe_alpha_lin64.tar.gz
-$ jscofe_alpha/SETUP.sh
+$ tar -xzf ~/Downloads/ccp4cloud_lin64.tar.gz
+$ ccp4cloud/SETUP.sh
 </pre></div>
 </div>
 <p>If path to <code class="docutils literal"><span class="pre">ccp4-7.0</span></code> is not defined in shell initialisation script,
 <code class="docutils literal"><span class="pre">SETUP.sh</span></code> will complain that it cannot find it. Assuming that the path is
 <code class="docutils literal"><span class="pre">/usr/opt/ccp4-7.0</span></code>, the following command will do the job:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span>$ jscofe_alpha/SETUP.sh -c /usr/opt/ccp4-7.0
+<div class="highlight-default"><div class="highlight"><pre><span></span>$ ccp4cloud/SETUP.sh /usr/opt/ccp4-7.0
 </pre></div>
 </div>
 <p>To change CCP4 Cloud storage directory from the default <code class="docutils literal"><span class="pre">~/jscofe_storage</span></code> to,
 e.g., <code class="docutils literal"><span class="pre">~/jscofe_test</span></code> and default web-browser from <code class="docutils literal"><span class="pre">Firefox</span></code> to <code class="docutils literal"><span class="pre">Opera</span></code>,
-rerun the setup script as follows:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span>$ jscofe_alpha/SETUP.sh -b opera -d jscofe_test
+run <code class="docutils literal"><span class="pre">ccp4cloud.sh</span></code> in configuration mode:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>$ ccp4cloud/bin/ccp4cloud.sh config -b opera -d jscofe_test
 </pre></div>
 </div>
 <p>CCP4 Cloud alpha will not announce updates. Therefore it will be useful to run the
 following command time from time:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span>$ ~/jscofe_alpha/UPDATE.sh
+<div class="highlight-default"><div class="highlight"><pre><span></span>$ ~/ccp4cloud/UPDATE.sh
 </pre></div>
 </div>
 </div>
@@ -127,8 +127,8 @@ the Desktop. Current icons may be unsuitable for latest Linuxes (e.g.
 through the context menu (e.g. <code class="docutils literal"><span class="pre">Ubuntu</span> <span class="pre">16</span></code>). In the former case, CCP4 Cloud
 can still be launched from the command line using one of the following
 commands:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span>$ /path/to/jscofe_alpha/bin/ccp4cloud-desktop.sh
-$ /path/to/jscofe_alpha/bin/ccp4cloud-remote.sh
+<div class="highlight-default"><div class="highlight"><pre><span></span>$ /path/to/ccp4cloud/bin/ccp4cloud-desktop.sh
+$ /path/to/ccp4cloud/bin/ccp4cloud-remote.sh
 </pre></div>
 </div>
 </div>
@@ -152,33 +152,33 @@ $ /path/to/jscofe_alpha/bin/ccp4cloud-remote.sh
 <div class="section" id="id2">
 <h3>1.2.2. Download CCP4 Cloud package<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
 <p>Download
-<a class="reference external" href="http://ccp4serv7.rc-harwell.ac.uk/jscofe-alpha/downloads/jscofe_alpha_osx64.tar.gz">jscofe_alpha_osx64.tar.gz</a>.</p>
+<a class="reference external" href="http://ccp4serv7.rc-harwell.ac.uk/jscofe-alpha/downloads/ccp4cloud_osx64.tar.gz">ccp4cloud_osx64.tar.gz</a>.</p>
 </div>
 <div class="section" id="id3">
 <h3>1.2.3. Install CCP4 Cloud<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
-<p>In the example below, <code class="docutils literal"><span class="pre">jscofe_alpha_osx64.tar.gz</span></code> has been downloaded into
+<p>In the example below, <code class="docutils literal"><span class="pre">ccp4cloud_osx64.tar.gz</span></code> has been downloaded into
 <code class="docutils literal"><span class="pre">~/Download</span></code> directory and CCP4 Cloud is being installed in
-<code class="docutils literal"><span class="pre">~/Applications/jscofe_alpha</span></code> (where <code class="docutils literal"><span class="pre">~</span></code> stands for user&#8217;s home directory):</p>
+<code class="docutils literal"><span class="pre">~/Applications/ccp4cloud</span></code> (where <code class="docutils literal"><span class="pre">~</span></code> stands for user&#8217;s home directory):</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span>$ cd ~/Applications
-$ tar -xzf ~/Downloads/jscofe_alpha_osx64.tar.gz
-$ jscofe_alpha/SETUP.sh
+$ tar -xzf ~/Downloads/ccp4cloud_osx64.tar.gz
+$ ccp4cloud/SETUP.sh
 </pre></div>
 </div>
 <p>If path to <code class="docutils literal"><span class="pre">ccp4-7.0</span></code> is not defined in shell initialisation script,
 <code class="docutils literal"><span class="pre">SETUP.sh</span></code> will complain that it cannot find it. Assuming that the path is
 <code class="docutils literal"><span class="pre">/Applications/ccp4-7.0</span></code>, the following command will do the job:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span>$ jscofe_alpha/SETUP.sh -c /Applications/ccp4-7.0
+<div class="highlight-default"><div class="highlight"><pre><span></span>$ ccp4cloud/SETUP.sh /Applications/ccp4-7.0
 </pre></div>
 </div>
 <p>To change CCP4 Cloud storage directory from the default <code class="docutils literal"><span class="pre">~/jscofe_storage</span></code> to,
 e.g., <code class="docutils literal"><span class="pre">~/jscofe_test</span></code> and default web-browser from <code class="docutils literal"><span class="pre">Safari</span></code> to <code class="docutils literal"><span class="pre">Opera</span></code>,
-rerun the setup script as follows:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span>$ jscofe_alpha/SETUP.sh -b opera -d jscofe_test
+run <code class="docutils literal"><span class="pre">ccp4cloud.sh</span></code> in configuration mode:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>$ ccp4cloud/bin/ccp4cloud.sh config -b opera -d jscofe_test
 </pre></div>
 </div>
 <p>CCP4 Cloud alpha will not announce updates. Therefore it will be useful to run the
 following command time from time:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span>$ ~/Applications/jscofe_alpha/UPDATE.sh
+<div class="highlight-default"><div class="highlight"><pre><span></span>$ ~/Applications/ccp4cloud/UPDATE.sh
 </pre></div>
 </div>
 </div>
@@ -205,12 +205,12 @@ needs to be done only once for every icon.</p>
 <div class="section" id="id6">
 <h3>1.3.2. Download CCP4 Cloud package<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h3>
 <p>Download
-<a class="reference external" href="http://ccp4serv7.rc-harwell.ac.uk/jscofe-alpha/downloads/jscofe_alpha_win64.exe">jscofe_alpha_win64.exe</a>.</p>
+<a class="reference external" href="http://ccp4serv7.rc-harwell.ac.uk/jscofe-alpha/downloads/ccp4cloud_win64.exe">ccp4cloud_win64.exe</a>.</p>
 </div>
 <div class="section" id="id7">
 <h3>1.3.3. Install CCP4 Cloud<a class="headerlink" href="#id7" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li>launch <code class="docutils literal"><span class="pre">jscofe_alpha_win64.exe</span></code> in <code class="docutils literal"><span class="pre">Downloads</span></code> folder</li>
+<li>launch <code class="docutils literal"><span class="pre">ccp4cloud_win64.exe</span></code> in <code class="docutils literal"><span class="pre">Downloads</span></code> folder</li>
 <li>the installer has sensible defaults for storage directory and features and there is no need to change them.</li>
 </ul>
 </div>

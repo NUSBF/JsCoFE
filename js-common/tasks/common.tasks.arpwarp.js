@@ -394,9 +394,6 @@ TaskArpWarp.prototype.constructor = TaskArpWarp;
 
 TaskArpWarp.prototype.icon = function()  { return 'task_arpwarp'; }
 
-//TaskArpWarp.prototype.icon_small = function()  { return 'task_arpwarp_20x20'; }
-//TaskArpWarp.prototype.icon_large = function()  { return 'task_arpwarp';       }
-
 TaskArpWarp.prototype.currentVersion = function()  {
   var version = 0;
   if (__template)

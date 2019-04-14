@@ -79,24 +79,6 @@ TaskRemark.prototype.constructor = TaskRemark;
 if (!__template)  {
   // only on client
 
-  /*
-  var __remark_icon = [
-    ['task_remark_black'   ,'task_remark_black_20x20'   ,'Black'    ],
-    ['task_remark_darkblue','task_remark_darkblue_20x20','Midnight' ],
-    ['task_remark_navy'    ,'task_remark_navy_20x20'    ,'Navy'     ],
-    ['task_remark_blue'    ,'task_remark_blue_20x20'    ,'Blue'     ],
-    ['task_remark_green'   ,'task_remark_green_20x20'   ,'Green'    ],
-    ['task_remark_cyan'    ,'task_remark_cyan_20x20'    ,'Cyan'     ],
-    ['task_remark'         ,'task_remark_20x20'         ,'Lemon'    ],
-    ['task_remark_yellow'  ,'task_remark_yellow_20x20'  ,'Gold'     ],
-    ['task_remark_pink'    ,'task_remark_pink_20x20'    ,'Pink'     ],
-    ['task_remark_red'     ,'task_remark_red_20x20'     ,'Red'      ]
-  ];
-
-  TaskRemark.prototype.icon_small = function()  { return __remark_icon[this.theme_no][1]; }
-  TaskRemark.prototype.icon_large = function()  { return __remark_icon[this.theme_no][0]; }
-  */
-
   var __remark_icon = [
     ['task_remark_black'   ,'Black'    ],
     ['task_remark_darkblue','Midnight' ],
@@ -110,30 +92,41 @@ if (!__template)  {
     ['task_remark_red'     ,'Red'      ]
   ];
 
-  TaskRemark.prototype.icon = function()  { return __remark_icon[this.theme_no][0]; }
+  TaskRemark.prototype.icon = function()  {
+    if (this.state==job_code.remark)
+      return __remark_icon[this.theme_no][0] + '_s';
+    return __remark_icon[this.theme_no][0];
+  }
+
+  // This function is called at cloning jobs and should do copying of all
+  // custom class fields not found in the Template class
+  TaskRemark.prototype.customDataClone = function ( task )  {
+    this.theme_no = task.theme_no;
+    this.state    = task.state;
+    return;
+  }
 
 
   TaskRemark.prototype.setTheme = function ( themeNo,inputPanel )  {
     this.theme_no = themeNo;
-    inputPanel.header.icon_menu.button.setBackground (  image_path(this.icon()) );
+    inputPanel.header.icon_menu.button.setBackground (
+        image_path(__remark_icon[this.theme_no][0])
+    );
+    inputPanel.header.icon_menu_s.button.setBackground (
+        image_path(__remark_icon[this.theme_no][0]+'_s')
+    );
     inputPanel.emitSignal ( cofe_signals.jobDlgSignal,
                             job_dialog_reason.set_node_icon );
   }
 
-  // reserved function name
-  TaskRemark.prototype.makeInputPanel = function ( dataBox )  {
+  TaskRemark.prototype.makeThemeMenu = function ( suffix,inputPanel )  {
 
-    var div = TaskTemplate.prototype.makeInputPanel.call ( this,dataBox );
-    div.header.uname_lbl.setText ( 'Remark title:&nbsp;&nbsp;' );
-    div.header.title.setTooltip ( 'Click on icon to change theme' );
-    //div.header.setLabel ( 'XXXX',2,0,1,1 ).setTooltip ( 'Click on icon to change theme' );
-    //                .setFontItalic(true).setNoWrap().setHeight('1em');
+    var icon_menu = new Menu ( '', image_path(__remark_icon[this.theme_no][0]+suffix) );
 
-    div.header.icon_menu = new Menu ( '', image_path(this.icon()) );
-    div.header.setWidget ( div.header.icon_menu,0,0,3,1 );
-    div.header.icon_menu.button.setWidth  ( '80px' );
-    div.header.icon_menu.button.setHeight ( '80px' );
-    $(div.header.icon_menu.button.element).css({
+    icon_menu.button.setWidth  ( '80px' );
+    icon_menu.button.setHeight ( '80px' );
+    icon_menu.setTooltip ( 'Click on icon to change theme' );
+    $(icon_menu.button.element).css({
         'background-size'    :'80px',
         'padding'            :'0px',
         'background-position':'0.0em center'
@@ -141,12 +134,52 @@ if (!__template)  {
 
     for (var i=0;i<__remark_icon.length;i++)
       (function(themeNo,task){
-        div.header.icon_menu.addItem ( image_path(__remark_icon[themeNo][1]),
-                                       image_path(__remark_icon[themeNo][0]) )
-                            .addOnClickListener ( function(){
-          task.setTheme ( themeNo,div );
+        icon_menu.addItem ( __remark_icon[themeNo][1],
+                            image_path(__remark_icon[themeNo][0]+suffix) )
+                 .addOnClickListener ( function(){
+          task.setTheme ( themeNo,inputPanel );
         });
       }(i,this))
+
+    return icon_menu;
+
+  }
+
+  // reserved function name
+  TaskRemark.prototype.makeInputPanel = function ( dataBox )  {
+
+    var div = TaskTemplate.prototype.makeInputPanel.call ( this,dataBox );
+
+    div.fix_cbx = new Checkbox ( 'Sticky',(this.state==job_code.remark) );
+    div.header.insertWidget ( div.fix_cbx,1,0,1,1 );
+    div.fix_cbx.setWidth_px ( 70 );
+    div.fix_cbx.setTooltip  ( 'If checked, the remark is fixed to the above ' +
+                              'item of job tree.' );
+
+    div.header.uname_lbl.setText ( 'Remark title:&nbsp;&nbsp;' );
+
+    div.header.icon_menu = this.makeThemeMenu ( '',div );
+    div.header.setWidget ( div.header.icon_menu,0,0,3,1 );
+    div.header.icon_menu.setVisible ( this.state!=job_code.remark );
+    div.header.icon_menu_s = this.makeThemeMenu ( '_s',div );
+    div.header.addWidget ( div.header.icon_menu_s,0,0,3,1 );
+    div.header.icon_menu_s.setVisible ( this.state==job_code.remark );
+    div.header.setCellSize  ( '','84px', 0,0 );
+
+    (function(self){
+      div.fix_cbx.addOnClickListener ( function(){
+        if (self.state==job_code.remark)
+              self.state = job_code.remdet;
+        else  self.state = job_code.remark;
+        div.emitSignal ( cofe_signals.jobDlgSignal,job_dialog_reason.set_node_icon );
+        div.emitSignal ( cofe_signals.jobDlgSignal,job_dialog_reason.tree_updated  );
+        //div.header.icon_menu.setMenuIcon ( image_path(self.icon()) );
+        div.header.icon_menu  .setVisible ( self.state!=job_code.remark );
+        div.header.icon_menu_s.setVisible ( self.state==job_code.remark );
+      });
+    }(this))
+
+    div.header.setHLine ( 1, 3,0,1,5 );
 
     return div;
 
@@ -154,12 +187,14 @@ if (!__template)  {
 
 }
 
-TaskRemark.prototype.cleanJobDir    = function ( jobDir )  {}
-TaskRemark.prototype.runButtonName  = function() { return ''; }  // removes Run Button and I/O panel switch
-TaskRemark.prototype.canMove        = function ( node,jobTree )  { return false; }
+TaskRemark.prototype.cleanJobDir   = function ( jobDir )  {}
+TaskRemark.prototype.runButtonName = function() { return ''; }  // removes Run Button and I/O panel switch
+TaskRemark.prototype.canMove       = function ( node,jobTree )  {
+  return (this.state!=job_code.remark);
+}
 
 TaskRemark.prototype.currentVersion = function()  {
-  var version = 0;
+  var version = 1;
   if (__template)
         return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );

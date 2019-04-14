@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.01.19   <--  Date of Last Modification.
+ *    14.02.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -113,6 +113,18 @@ var response = null;
 
     case cmd.fe_reqtype.finishPrjImport :
           response = prj.finishProjectImport ( login,data );
+       break;
+
+    case cmd.fe_reqtype.prepareJobExport :
+          response = prj.prepareJobExport ( login,data );
+       break;
+
+    case cmd.fe_reqtype.checkJobExport :
+          response = prj.checkJobExport ( login,data );
+       break;
+
+    case cmd.fe_reqtype.finishJobExport :
+          response = prj.finishJobExport ( login,data );
        break;
 
     case cmd.fe_reqtype.saveJobData :

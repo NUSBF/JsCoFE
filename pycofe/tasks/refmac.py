@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    24.12.18   <--  Date of Last Modification.
+#    28.02.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev, Robert Nicholls 2017-2018
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev, Robert Nicholls 2017-2019
 #
 # ============================================================================
 #
@@ -262,7 +262,7 @@ class Refmac(basic.TaskDriver):
                 "xyzin" ,istruct.getXYZFilePath(self.inputDir()),
                 "hklout",self.getMTZOFName(),
                 "xyzout",self.getXYZOFName(),
-                "tmpdir",os.path.join(os.environ["CCP4_SCR"],uuid.uuid4().hex) ]
+                "scrref",os.path.join(os.environ["CCP4_SCR"],uuid.uuid4().hex) ]
 
         libin = istruct.getLibFilePath ( self.inputDir() )
         if libin:

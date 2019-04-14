@@ -62,19 +62,11 @@ class PhaserEP(basic.TaskDriver):
 
     def process_solution ( self,suffix,title,hkl,seq,revisionNo ):
 
-        namepattern   = self.outputFName + suffix
-        pdbfile       = namepattern + ".pdb"
-        solfile       = namepattern + ".sol"
-        mtzfile       = namepattern + ".mtz"
-        llgmapsfile   = namepattern + ".llgmaps.mtz"
-        #anompdbfile   = namepattern + ".ha.pdb"
-
-        #xyzfile       = None
-        #xmodelfile    = None
-        #if self.xmodel:
-        #    xyzfile    = namepattern + ".xyz.pdb"
-        #    xmodelfile = self.xmodel.getXYZFilePath ( self.inputDir() )
-
+        namepattern = self.outputFName + suffix
+        pdbfile     = namepattern + ".pdb"
+        solfile     = namepattern + ".sol"
+        mtzfile     = namepattern + ".mtz"
+        llgmapsfile = namepattern + ".llgmaps.mtz"
 
         # get rid of 'SUB' residue
         scattering_type = []
@@ -108,38 +100,29 @@ class PhaserEP(basic.TaskDriver):
                 sol_spg   = None
                 sol_hkl   = hkl
                 anom_form = ""
-                #scattering_type = []   # phaser puts extra scattering types in sol file,
-                                        # therefore we do not use it for this purpose,
-                                        # delete later  05.12.2018
 
                 for line in soll:
                     if line.startswith("SOLU SPAC "):
                         sol_spg = line.replace("SOLU SPAC ","").strip()
                     if line.startswith("SPACEGROUP "):
                         sol_spg = line.replace("SPACEGROUP ","").strip()
-                    #  delete later 05.12.2018
-                    #if line.startswith("SCATTERING TYPE"):
-                    #    list = line.replace("="," ").split()
-                    #    anom_form += "anom form "  + list[2] + " " +\
-                    #                 list[4] + " " + list[6] + "\n"
-                    #    scattering_type.append ( list[2] )
 
                 spg_change = self.checkSpaceGroupChanged ( sol_spg,hkl,mtzfile )
                 if spg_change:
                     mtzfile = spg_change[0]
                     sol_hkl = spg_change[1]
 
-                # make a copy of pdb file, because it will be moved by registration
-                #shutil.copy2 ( pdbfile,anompdbfile )
-                #if xmodelfile:
-                #    shutil.copy2 ( xmodelfile,xyzfile  )
-
                 fnames       = self.calcCCP4Maps ( mtzfile,namepattern,"phaser-ep" )
                 protein_map  = fnames[0]
 
+                sname = self.outputFName
+                if revisionNo==1:
+                    sname += "-original_hand"
+                else:
+                    sname += "-inverted_hand"
                 structure = self.registerStructure1 (
                                 None,pdbfile,mtzfile,protein_map,None,None,
-                                self.outputFName,leadKey=2,copy_files=True )
+                                sname,leadKey=2,copy_files=True )
                 if structure:
                     if seq:
                         for i in range(len(seq)):
@@ -148,22 +131,17 @@ class PhaserEP(basic.TaskDriver):
                     structure.setPhaserEPLabels ( sol_hkl )
                     structure.addPhasesSubtype()
 
-                    #if self.xmodel:
-                    #    shutil.copy2 ( self.xmodel.getXYZFilePath(self.inputDir()),
-                    #                   self.xmodel.getXYZFilePath(self.outputDir()) )
-                    #    structure.setXYZFile ( self.xmodel.getXYZFileName() )
-
                     outputDataBox = self.outputDataBox
                     self.outputDataBox = None
 
                     for stype in scattering_type:
                         self.putMessage ( "<b style='font-size:120%'>" + stype + " scatterers</b>" )
-                        fnames = self.calcCCP4Maps ( llgmapsfile,namepattern+".llgmap_"+stype,"phaser-ep:"+stype )
+                        fnames = self.calcCCP4Maps (
+                                llgmapsfile,namepattern+".llgmap_"+stype,"phaser-ep:"+stype )
                         anom_struct = self.registerStructure1 (
-                                        None,pdbfile,llgmapsfile,protein_map,fnames[0],None,
-                                        self.outputFName,leadKey=2,copy_files=True )
+                                None,pdbfile,llgmapsfile,protein_map,fnames[0],None,
+                                sname,leadKey=2,copy_files=True )
                         if anom_struct:
-                            #anom_struct.setXYZFile ( self.xmodel.getXYZFileName() )
                             self.putStructureWidget ( "structure_btn_"+stype,
                                                       "Substructure and electron density",
                                                       anom_struct )
@@ -175,7 +153,8 @@ class PhaserEP(basic.TaskDriver):
                     revision = self.makeClass ( self.input_data.data.revision[0] )
                     revision.setStructureData ( structure )
                     revision.removeSubtype    ( dtype_template.subtypeXYZ() )
-                    self.registerRevision     ( revision,revisionNo,"" )
+                    self.registerRevision     ( revision,revisionNo,"",
+                                                revisionName=sname )
                     self.putMessage ( "&nbsp;" )
 
                 else:
@@ -202,9 +181,10 @@ class PhaserEP(basic.TaskDriver):
 
         # Prepare phaser input
         # fetch input data
-        hkl    = self.makeClass ( self.input_data.data.hkl[0] )
-        seq    = self.input_data.data.seq
-        substr = None
+        revision = self.makeClass ( self.input_data.data.revision[0] )
+        hkl      = self.makeClass ( self.input_data.data.hkl[0] )
+        seq      = self.input_data.data.seq
+        substr   = None
         if hasattr(self.input_data.data,'substructure'):
             substr = self.makeClass ( self.input_data.data.substructure[0] )
 
@@ -245,9 +225,14 @@ class PhaserEP(basic.TaskDriver):
         self.write_stdin (
             "\nCRYSTAL crystal1 DATASET dataset1 LABIN &" +\
             "\n    "          + hkl_labin                 +\
-            "\nWAVELENGTH "   + str(hkl.wavelength)       +\
-            "\nRESOLUTION "   + str(hkl.res_low) + " " + str(hkl.res_high)
+            "\nWAVELENGTH "   + str(hkl.wavelength)
+            #"\nRESOLUTION "   + str(hkl.res_low) + " " + str(hkl.res_high)
         )
+
+        if hkl.res_high:
+            self.write_stdin ( "\nRESOLUTION HIGH " + str(hkl.res_high) )
+        if hkl.res_low:
+            self.write_stdin ( "\nRESOLUTION LOW " + str(hkl.res_low) )
 
         self.write_stdin ( "\nCOMPOSITION BY ASU" )
         for i in range(len(seq)):
@@ -260,7 +245,8 @@ class PhaserEP(basic.TaskDriver):
 
         if hkl.f_use_mode!="NO":
             self.write_stdin (
-                "\nSCATTERING TYPE " + hkl.anomAtomType +\
+                #"\nSCATTERING TYPE " + hkl.anomAtomType +\
+                "\nSCATTERING TYPE " + revision.ASU.ha_type +\
                             " FP = " + str(hkl.f1) + " FDP = " + str(hkl.f11) +\
                             " FIX "  + hkl.f_use_mode
             )

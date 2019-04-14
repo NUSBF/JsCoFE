@@ -3,23 +3,25 @@
 #
 # ============================================================================
 #
-#    04.08.18   <--  Date of Last Modification.
+#    09.04.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  CCP4EZ Combined Auto-Solver AceDrg module
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2018
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2019
 #
 # ============================================================================
 #
 
 import os
-import shutil
 import sys
+import shutil
 
 #  ccp4-python imports
 #import pyrvapi
+import gemmi
+from   gemmi   import  cif
 
 import edmap
 
@@ -49,12 +51,17 @@ class AceDrg(ccp4go_lorestr.Lorestr):
 
         # loop over ligands
 
-        meta = {}
-        nResults = 0
+        meta         = {}
+        nResults     = 0
         quit_message = ""
+        cmd          = []
         for i in range(len(self.ligands)):
-            ldata = self.ligands[i]
-            code  = ldata[0].upper()
+
+            ldata   = self.ligands[i]
+            code    = ldata[0].upper()
+            xyzPath = code + ".pdb"
+            cifPath = code + ".cif"
+
             if len(ldata)>1:
                 fname = os.path.join ( resultdir,"smiles_"+code )
                 f = open ( fname,'w' )
@@ -63,18 +70,28 @@ class AceDrg(ccp4go_lorestr.Lorestr):
                 # make command-line parameters
                 cmd = [ "-i",fname,"-r",code,"-o",code ]
             else:
-                cmd = [ "-c",os.path.join(os.environ["CCP4"],"lib","data",
-                                    "monomers",code[0].lower(),code + ".cif"),
-                        "-r",code,"-o",code ]
+                ligpath = os.path.join(os.environ["CCP4"],"lib","data",
+                                       "monomers",code[0].lower(),code + ".cif")
+                if os.path.isfile(ligpath):
+                    block = cif.read(ligpath)[-1]
+                    if block.find_values('_chem_comp_atom.x'):
+                        # XYZ coordinates are found in dictionary, just copy
+                        # them over
+                        st = gemmi.make_structure_from_chemcomp_block ( block )
+                        st.write_pdb ( xyzPath )
+                        # complement with cif dictionary
+                        shutil.copy2 ( ligpath,cifPath  )
+                        cmd = []  # do not use AceDrg
+                    else:
+                        cmd = [ "-c",ligpath,"-r",code,"-o",code ] # run AceDrg
 
             # start acedrg
-            if sys.platform.startswith("win"):
-                self.runApp ( "acedrg.bat",cmd )
-            else:
-                self.runApp ( "acedrg",cmd )
+            if len(cmd)>0:
+                if sys.platform.startswith("win"):
+                    self.runApp ( "acedrg.bat",cmd )
+                else:
+                    self.runApp ( "acedrg",cmd )
 
-            xyzPath = code + ".pdb"
-            cifPath = code + ".cif"
             if os.path.isfile(xyzPath):
                 xyzPath1 = os.path.join ( resultdir,xyzPath  )
                 cifPath1 = os.path.join ( resultdir,cifPath  )
@@ -91,8 +108,6 @@ class AceDrg(ccp4go_lorestr.Lorestr):
                 quit_message += code + " "
                 if nResults==1:
                     self.putMessage ( "<h2><i>Results</i></h2>" )
-                #self.putStructureWidget ( code + " structure",
-                #                          [ "/".join(["..",xyzPath2]) ],-1 )
                 self.putStructureWidget ( code + " structure",
                                           [ os.path.join("..",xyzPath2) ],-1 )
 

@@ -106,12 +106,6 @@ if (__template)  {
     // tasks, which is used for identification of service tasks (cf.
     // pycofe/etc/citations.py)
 
-    /*
-    var job_dirs = fs.readdirSync(path.join('..',jobDir)).filter(function(file) {
-      return file.startsWith ( prj.jobDirPrefix );
-      //return fs.statSync(path+'/'+file).isDirectory();
-    });
-    */
     var allTasks = [];
     var entries  = fs.readdirSync ( path.join(jobDir,'..') );
     for (var i=0;i<entries.length;i++)

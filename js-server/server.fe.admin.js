@@ -61,12 +61,6 @@ function _getNCData ( adminData,callback_func )  {
 
   if (cfg.name=='client')  {
 
-    /*
-    var nci    = {};
-    nci.config = {};
-    nci.config.name = 'client';
-    adminData.nodesInfo.ncInfo.push ( nci );
-    */
     adminData.nodesInfo.ncInfo.push ( null );
 
     startNext();

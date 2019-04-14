@@ -130,9 +130,13 @@ class CCP4go(ccp4go_fitligands.FitLigands):
             phasing_mode = "ep"
 
         if d and rfree <= 0.45:
-            self.buccaneer  ( d,"buccaneer","" )
-            d = self.checkResult ( "buccaneer",d,1.0 )
-            self.acedrg     ( "acedrg","" )
+            if sys.platform.startswith("win"):
+                self.buccaneer ( d,"buccaneer","" )
+                d = self.checkResult ( "buccaneer",d,1.0 )
+            else:
+                self.ccp4build ( d,"ccp4build","" )
+                d = self.checkResult ( "ccp4build",d,1.0 )
+            self.acedrg ( "acedrg","" )
             if "acedrg" in self.output_meta["results"]:
                 if self.output_meta["results"]["acedrg"]["nResults"] > 0:
                     self.dimple  ( d,"dimple_refine",phasing_mode,"" )

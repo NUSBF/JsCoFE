@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.02.19   <--  Date of Last Modification.
+ *    28.03.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -170,4 +170,5 @@ LoginPage.prototype.constructor = LoginPage;
 
 function makeLoginPage ( sceneId )  {
   makePage ( new LoginPage(sceneId) );
+  setHistoryState ( 'LoginPage' );
 }

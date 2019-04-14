@@ -3,13 +3,13 @@
 #
 # ============================================================================
 #
-#    17.07.18   <--  Date of Last Modification.
+#    08.04.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  LIGAND DATA IMPORT FUNCTION
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2018
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2018-19
 #
 # ============================================================================
 #
@@ -20,6 +20,7 @@ import shutil
 
 #  ccp4-python imports
 import pyrvapi
+import gemmi
 from   gemmi         import  cif
 
 #  application imports
@@ -61,21 +62,31 @@ def run ( body ):  # body is reference to the main Import class
             col = block.find_values("_chem_comp_atom.comp_id")
 
             if col:
-                code = col[0]
-                fout = code
-
-                # fetch the block in a temporary file
-                doc_tmp = cif.Document()
-                doc_tmp.add_copied_block(block)
-                doc_tmp.write_file ( ftmp )
-
-                # Start acedrg (only to calculate coordinates for ligand visualisation)
-                rc = command.call ( "acedrg",["-c",ftmp,"-r",code,"-o",fout],"./",
-                                    None,body.file_stdout,body.file_stderr )
-
+                code    = col[0]
+                fout    = code
                 fileXYZ = fout + ".pdb"
                 fileCIF = fout + ".cif"
-                shutil.copyfile ( ftmp,fileCIF )  # use ORIGINAL restraints
+
+                # fetch the block in a temporary document
+                doc_tmp = cif.Document()
+                doc_tmp.add_copied_block(block)
+
+                # check whether the block has coordinates
+                if block.find_values('_chem_comp_atom.x'):
+                    # then simply write out the block and coordinates
+                    doc_tmp.write_file ( fileCIF )
+                    st = gemmi.make_structure_from_chemcomp_block(block)
+                    st.write_pdb ( fileXYZ )
+                else:
+                    # generate coordinates with AceDrg
+                    # firstly write out temporary document
+                    doc_tmp.write_file ( ftmp )
+
+                    # Start acedrg (only to calculate coordinates for ligand visualisation)
+                    rc = command.call ( "acedrg",["-c",ftmp,"-r",code,"-o",fout],"./",
+                                        None,body.file_stdout,body.file_stderr )
+
+                    shutil.copyfile ( ftmp,fileCIF )  # use ORIGINAL restraints
 
                 if not os.path.isfile(fileXYZ) or not os.path.isfile(fileCIF):
 
@@ -114,7 +125,7 @@ def run ( body ):  # body is reference to the main Import class
                         wrow += 2
 
                     else:
-                        body.putSummaryLine_red ( f,"UNKNOWN","Failed to form ligand" )
+                        body.putSummaryLine_red ( f,"UNKNOWN","Failed to form ligand data" )
 
 
         body.file_stdout.write ( "... processed: " + f + "\n" )

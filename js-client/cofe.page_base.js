@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    05.02.19   <--  Date of Last Modification.
+ *    06.04.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -43,6 +43,7 @@ function BasePage ( sceneId,gridStyle,pageType )  {
 
   this.element = document.getElementById ( sceneId );
   this._type   = pageType;
+  this.sceneId = sceneId;
 
   this.ration      = null;
   this.rationPanel = null;
@@ -278,6 +279,26 @@ BasePage.prototype.destructor = function ( function_ready )  {
   function_ready();
 }
 
+
+var __history_count = 0;
+
+function setHistoryState ( stateName )  {
+  if (__history_count==0)
+    replaceHistoryState ( stateName );
+  else if (window.history && window.history.pushState)  {
+    window.history.pushState ( stateName, null, '' );
+    __history_count++;
+  }
+}
+
+function replaceHistoryState ( stateName )  {
+  if (window.history && window.history.replaceState)  {
+    window.history.replaceState ( stateName, null, '' );
+    __history_count++;
+  }
+}
+
+
 function makePage ( new_page )  {
 
     function launch()  {
@@ -292,4 +313,30 @@ function makePage ( new_page )  {
       launch();
     }
 
+}
+
+function setHistoryListener ( sceneId )  {
+  $(window).on('popstate', function(event) {
+    //alert ( JSON.stringify(event.originalEvent.state) );
+    if (event.originalEvent.state)  {
+      makePage ( eval ( 'new ' + event.originalEvent.state + ' ( "' + sceneId + '" );' ) );
+    } else if (__current_page)  {
+      if ((__current_page._type!='LoginPage') && (__current_page._type!='LogoutPage'))
+        new MessageBoxF ( 'Exit ' + appName(),
+                          '<h3>Are you leaving your ' + appName() + ' session?</h3>' +
+                          'Pressing <i><b>Back</b></i> button again will take you to ' +
+                          'previous page<br>in your browser history and end your ' +
+                          'current ' + appName() + '<br>session, but leave you ' +
+                          'logged in.<p>' +
+                          '<i>It is strongly recommended that you end your ' + appName() +
+                          '<br>session via regular logout.</i>',
+                          'Continue ' + appName() + ' session',
+                          function(){
+                            window.history.forward();
+                          },true );
+      else
+        window.history.back();
+    } else
+      window.history.back();
+  });
 }

@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    24.12.18   <--  Date of Last Modification.
+#    12.02.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -21,7 +21,7 @@
 #    jobId      is job id assigned by jsCoFE (normally an integer but should
 #               be treated as a string with no assumptions)
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2018
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2019
 #
 # ============================================================================
 #
@@ -107,7 +107,7 @@ class Acorn(basic.TaskDriver):
         self.open_stdin()
         labin = "LABIN  FILE 1 E1=" + cols[0] + " E2=" + cols[1] + " E3=" + hkl.getFreeRColumn()
         if istruct.initPhaseSel=="phases":
-            labin += " E3=PHIN E4=FOMIN"
+            labin += " E4=PHIN E5=FOMIN"
         self.write_stdin ([labin])
         self.close_stdin()
         self.runApp ( "cad",["HKLIN1","__tmp2.mtz","HKLOUT","__tmp3.mtz"],logType="Service" )

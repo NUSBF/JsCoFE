@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    24.12.18   <--  Date of Last Modification.
+#    11.03.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2018
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2019
 #
 # ============================================================================
 #
@@ -104,7 +104,7 @@ class MrBump(basic.TaskDriver):
                 "LABIN F=" + hkl.dataset.Fmean.value + \
                   " SIGF=" + hkl.dataset.Fmean.sigma + \
                   " FreeR_flag=" + hkl.dataset.FREE + "\n" + \
-                "LITE False\n" + \
+                "LITE True\n" + \
                 "END\n"
             )
 
@@ -132,6 +132,7 @@ class MrBump(basic.TaskDriver):
                 "DOPHMMER True\n" + \
                 pdbLine + \
                 "DOHHPRED False\n" + \
+                "LITE True\n" + \
                 "END\n"
             )
 

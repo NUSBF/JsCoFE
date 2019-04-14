@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    22.01.19   <--  Date of Last Modification.
+ *    18.03.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -57,6 +57,41 @@ function ncSelectDir ( post_data_obj,callback_func )  {
     if (code==0)
       callback_func ( new cmd.Response ( cmd.nc_retcode.ok,'',
                                      {'directory':stdout.replace('\n','')} ) );
+    else
+      callback_func ( new cmd.Response ( cmd.nc_retcode.selDirError,'',
+                                         {'stdout':stdout,'stderr':stderr }) );
+
+  });
+
+}
+
+
+// ===========================================================================
+
+function ncSelectFile ( post_data_obj,callback_func )  {
+
+  //console.log ( ' request='+JSON.stringify(post_data_obj));
+
+  var job = utils.spawn ( conf.pythonName(),
+                          ['-m', 'pycofe.varut.selectfile',
+                           post_data_obj.title,post_data_obj.filters],
+                          {} );
+
+  // make stdout and stderr catchers for debugging purposes
+  var stdout = '';
+  var stderr = '';
+  job.stdout.on('data', function(buf) {
+    stdout += buf;
+  });
+  job.stderr.on('data', function(buf) {
+    stderr += buf;
+  });
+
+  job.on('close',function(code){
+
+    if (code==0)
+      callback_func ( new cmd.Response ( cmd.nc_retcode.ok,'',
+                                         {'file':stdout.replace('\n','')} ) );
     else
       callback_func ( new cmd.Response ( cmd.nc_retcode.selDirError,'',
                                          {'stdout':stdout,'stderr':stderr }) );
@@ -124,5 +159,6 @@ function ncGetInfo ( server_request,server_response )  {
 // ==========================================================================
 // export for use in node
 module.exports.ncSelectDir      = ncSelectDir;
+module.exports.ncSelectFile     = ncSelectFile;
 module.exports.ncSelectImageDir = ncSelectImageDir;
 module.exports.ncGetInfo        = ncGetInfo;

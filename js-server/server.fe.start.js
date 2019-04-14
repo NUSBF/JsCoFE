@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    05.02.19   <--  Date of Last Modification.
+ *    31.03.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -147,6 +147,11 @@ function start ( callback_func )  {
             } else {
               log.detailed ( 6,'stop command issued -- ignored according configuration' );
             }
+          break;
+
+        case cmd.fe_command.whoareyou :
+            cmd.sendResponseMessage ( server_response,
+                            cmd.appName() + ' FE ' + cmd.jsCoFE_version );
           break;
 
         default :

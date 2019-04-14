@@ -2,7 +2,7 @@
 #
 #  ============================================================================
 #
-#    16.01.19   <--  Date of Last Modification.
+#    07.03.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #  ----------------------------------------------------------------------------
 #
@@ -17,9 +17,7 @@
 #
 #  ============================================================================
 #
-#  This script exemplifies custom job launcher script for SGE engine and is
-#  fully equivalent to the "SGE" exeType value in NC configuration file.
-#
+#  This script exemplifies custom job launcher script for SLURM engine
 #
 #  In order to use your own custom launcher:
 #
@@ -44,7 +42,7 @@
 #
 #   1. Stage a job:
 #
-#     > script-name.sh start file_stdout file_stderr job_name executable [parameters]
+#     > script-name.sh start file_stdout file_stderr job_name ncores executable [parameters]
 #
 #   where [parameters] is an arbitrary-length array of parameters to be passed
 #   to executable. MUST print JOB_ID of staged job in standard output but
@@ -76,21 +74,25 @@ case "$1" in
       #  "$2" is file path for qsub standard printout
       #  "$3" is file path for qsub error printout
       #  "$4" is job name (to identify the job in qsub queue)
-      #  "$5" is path to executable script (usually ccp4-python)
-      #  "$6" on are parameters to pass to the executable script
-      qsub -cwd -V -b y -q all.q -notify -o "$2" -e "$3" -N "$4" "${@:5}" | cut -d " " -f 3
+      #  "$5" is number of cores spawned to report to the queuing system
+      #  "$6" is path to executable script (usually ccp4-python)
+      #  "$7" on are parameters to pass to the executable script
+      #qsub -cwd -V -b y -q all.q -notify -o "$2" -e "$3" -N "$4" "${@:5}" | cut -d " " -f 3
+      sbatch -o "$2" -e "$3" -J "$4" -c "$5" "${@:6}" | cut -d " " -f 4
       ;;
 
   check_waiting)
       # prints the number of waiting jobs: script-name.sh check_waiting user_name
       # "$2" is login name for account running jsCoFE (CCP4 Cloud) on NC machine
-      qstat -u "$2" | grep "  qw  " | wc -l
+      #qstat -u "$2" | grep "  qw  " | wc -l
+      squeue -u "$2" | egrep "^\s*[0-9]+\s" | wc -l
       ;;
 
   kill)
       # kill jobs: script-name.sh kill JOB_ID_1 JOB_ID_2 ... JOB_ID_N
       # "$2" on are JOB_ID(s) obtained at job staging (primary and secondary)
-      qdel "${@:2}"
+      #qdel "${@:2}"
+      scancel "${@:2}"
       ;;
 
   *)

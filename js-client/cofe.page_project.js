@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    09.01.19   <--  Date of Last Modification.
+ *    03.04.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -119,13 +119,14 @@ function ProjectPage ( sceneId )  {
     del_btn  .setEnabled ( dsel );
 
     if (task)  {
-      var is_remark = (task.state==job_code.remark);
+      var is_remark = (task.state==job_code.remark) || (task.state==job_code.remdet);
       add_btn.setEnabled ( (task.state==job_code.finished) ||
                            (task.state==job_code.failed)   ||
                            (task.state==job_code.stopped)  ||
                            is_remark );
       //insert_btn.setEnabled ( add_btn.isEnabled() );
-      clone_btn  .setEnabled ( dsel && (!is_remark) );
+      //clone_btn  .setEnabled ( dsel && (task.state!=job_code.remark) );
+      clone_btn  .setEnabled ( dsel );
       moveup_btn .setEnabled ( task.canMove(node,jobTree) );
       stop_btn   .setEnabled ( dsel && (task.state==job_code.running) );
       add_rem_btn.setEnabled ( (!has_remark) && (!is_remark) );
@@ -140,7 +141,6 @@ function ProjectPage ( sceneId )  {
       stop_btn  .setEnabled ( false );
       add_rem_btn.setEnabled ( (!has_remark) );
     }
-
 
     if (replay_btn)  {
       replay_btn.setVisible ( replay_mode );
@@ -292,7 +292,7 @@ function ProjectPage ( sceneId )  {
 
     account_mi.addOnClickListener ( function(){
       jobTree.saveProjectData ( [],[],null );
-      makeAccountPage       ( sceneId );
+      makeAccountPage         ( sceneId );
     });
 
     if (admin_mi)
@@ -314,7 +314,7 @@ function ProjectPage ( sceneId )  {
   this.grid.setWidget ( this.toolbar_div, 1,0,1,1 );
 
   //var toolbar = this.grid.setGrid ( '',1,0,1,1 );
-  var panel   = this.grid.setGrid ( '',1,1,1,1 );
+  var panel = this.grid.setGrid ( '',1,1,1,1 );
   // center panel horizontally and make left- and right-most columns page margins
   // note that actual panel size is set in function resizeTreePanel() below
   this.grid.setCellSize ( '40px',''    ,1,0,1,1 );
@@ -379,7 +379,7 @@ function ProjectPage ( sceneId )  {
   help_btn.addOnClickListener ( function(){
     new HelpBox ( '','./html/jscofe_project.html',null );
   });
-  launchHelpBox ( '','./html/jscofe_project.html',doNotShowAgain,1000 );
+  //launchHelpBox ( '','./html/jscofe_project.html',doNotShowAgain,1000 );
 
   this.tree_div = new Widget ( 'div' );
   this.tree_div.element.setAttribute ( 'class','tree-content' );
@@ -538,4 +538,6 @@ ProjectPage.prototype.getJobTree = function()  {
 
 function makeProjectPage ( sceneId )  {
   makePage ( new ProjectPage(sceneId) );
+  setHistoryState ( 'ProjectPage' );
+  //__current_project
 }

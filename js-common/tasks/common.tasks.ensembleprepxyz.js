@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    13.01.19   <--  Date of Last Modification.
+ *    01.04.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -43,7 +43,7 @@ function TaskEnsemblePrepXYZ()  {
 
   this._type   = 'TaskEnsemblePrepXYZ';
   this.name    = 'ensemble preparation (xyz)';
-  this.oname   = '';  // default output file name template
+  this.oname   = 'ensemble';  // default output file name template
   this.title   = 'Ensemble Preparation for MR from Coordinates';
   this.helpURL = './html/jscofe_task_ensembleprepxyz.html';
 
@@ -81,6 +81,7 @@ function TaskEnsemblePrepXYZ()  {
               open     : true,  // true for the section to be initially open
               position : [0,0,1,5],
               contains : {
+
                 MODIFICATION_SEQ_SEL : {
                         type     : 'combobox',
                         keyword  : 'none',
@@ -94,44 +95,88 @@ function TaskEnsemblePrepXYZ()  {
                                      'P|Polyalanine'
                                    ],
                         value    : 'M',
-                        showon   : { 'seq':[1] },
+                        showon   : { _:'&&', 'seq':[1], 'xyz':[1] },
                         position : [0,0,1,1]
                       },
                 LEGEND_SEQ_U : {
                         type      : 'label',  // just a separator
                         label     : '<i>(models are not changed)</i>',
                         position  : [0,3,1,1],
-                        showon    : { _:'&&','seq':[1],'MODIFICATION_SEQ_SEL':['U'] }
+                        showon    : { _:'&&','seq':[1],'xyz':[1],'MODIFICATION_SEQ_SEL':['U'] }
                       },
                 LEGEND_SEQ_D : {
                         type      : 'label',  // just a separator
                         label     : '<i>(remove solvent, hydrogens, and select most probable conformations)</i>',
                         position  : [0,3,1,1],
-                        showon    : { _:'&&','seq':[1],'MODIFICATION_SEQ_SEL':['D'] }
+                        showon    : { _:'&&','seq':[1],'xyz':[1],'MODIFICATION_SEQ_SEL':['D'] }
                       },
                 LEGEND_SEQ_M : {
                         type      : 'label',  // just a separator
                         label     : '<i>(side chain truncation based on Molrep)</i>',
                         position  : [0,3,1,1],
-                        showon    : { _:'&&','seq':[1],'MODIFICATION_SEQ_SEL':['M'] }
+                        showon    : { _:'&&','seq':[1],'xyz':[1],'MODIFICATION_SEQ_SEL':['M'] }
                       },
                 LEGEND_SEQ_C : {
                         type      : 'label',  // just a separator
                         label     : '<i>(side chain truncation based on Chainsaw)</i>',
                         position  : [0,3,1,1],
-                        showon    : { _:'&&','seq':[1],'MODIFICATION_SEQ_SEL':['C'] }
+                        showon    : { _:'&&','seq':[1],'xyz':[1],'MODIFICATION_SEQ_SEL':['C'] }
                       },
                 LEGEND_SEQ_S : {
                         type      : 'label',  // just a separator
                         label     : '<i>(side chain truncation based on Sculptor)</i>',
                         position  : [0,3,1,1],
-                        showon    : { _:'&&','seq':[1],'MODIFICATION_SEQ_SEL':['S'] }
+                        showon    : { _:'&&','seq':[1],'xyz':[1],'MODIFICATION_SEQ_SEL':['S'] }
                       },
                 LEGEND_SEQ_P : {
                         type      : 'label',  // just a separator
                         label     : '<i>(removal of all side chains)</i>',
                         position  : [0,3,1,1],
-                        showon    : { _:'&&','seq':[1],'MODIFICATION_SEQ_SEL':['P'] }
+                        showon    : { _:'&&','seq':[1],'xyz':[1],'MODIFICATION_SEQ_SEL':['P'] }
+                      },
+
+                MODIFICATION_SEQ_MXYZ_SEL : {
+                        type      : 'combobox',
+                        keyword   : 'none',
+                        label     : 'Modification protocol:',
+                        tooltip   : 'Choose trim option',
+                        range     : [ 'U|Unmodified',
+                                      'D|PDB Clip',
+                                      'M|Molrep',
+                                      'P|Polyalanine'
+                                    ],
+                        value     : 'M',
+                        showon    : { _:'&&', 'seq':[1] },
+                        hideon    : { 'xyz':[1] },
+                        position  : [0,0,1,1]
+                      },
+                LEGEND_SEQ_MXYZ_U : {
+                        type      : 'label',  // just a separator
+                        label     : '<i>(models are not changed)</i>',
+                        position  : [0,3,1,1],
+                        showon    : { _:'&&','seq':[1],'MODIFICATION_SEQ_MXYZ_SEL':['U'] },
+                        hideon    : { 'xyz':[1] }
+                      },
+                LEGEND_SEQ_MXYZ_D : {
+                        type      : 'label',  // just a separator
+                        label     : '<i>(remove solvent, hydrogens, and select most probable conformations)</i>',
+                        position  : [0,3,1,1],
+                        showon    : { _:'&&','seq':[1],'MODIFICATION_SEQ_MXYZ_SEL':['D'] },
+                        hideon    : { 'xyz':[1] }
+                      },
+                LEGEND_SEQ_MXYZ_M : {
+                        type      : 'label',  // just a separator
+                        label     : '<i>(side chain truncation based on Molrep)</i>',
+                        position  : [0,3,1,1],
+                        showon    : { _:'&&','seq':[1],'MODIFICATION_SEQ_MXYZ_SEL':['M'] },
+                        hideon    : { 'xyz':[1] }
+                      },
+                LEGEND_SEQ_MXYZ_P : {
+                        type      : 'label',  // just a separator
+                        label     : '<i>(removal of all side chains)</i>',
+                        position  : [0,3,1,1],
+                        showon    : { _:'&&','seq':[1],'MODIFICATION_SEQ_MXYZ_SEL':['P'] },
+                        hideon    : { 'xyz':[1] }
                       },
 
                 MODIFICATION_NOSEQ_SEL : {
@@ -166,8 +211,9 @@ function TaskEnsemblePrepXYZ()  {
                         showon    : { _:'&&','seq':[0,-1],'MODIFICATION_NOSEQ_SEL':['P'] }
                       }
               }
-            },
+            }
 
+    /*
     sec2 :  { type     : 'section',
               title    : 'Ensembler parameters',
               open     : false,  // true for the section to be initially open
@@ -305,6 +351,7 @@ function TaskEnsemblePrepXYZ()  {
 
               }
             }
+      */
 
   }
 

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    19.02.18   <--  Date of Last Modification.
+ *    11.04.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Import Annotation Dialog (to annotate data before upload)
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2018
+ *  (C) E. Krissinel, A. Lebedev 2016-2019
  *
  *  =================================================================
  *
@@ -123,7 +123,8 @@ ImportAnnotationDialog.prototype.makePage = function()  {
         if (this.annotation[i].items[j].type=='none')  {
           var clist = this.annotation[i].items[j].contents.split('\n');
           clist[0]  = '';
-          if ((clist.length>2) && this.annotation[i].file.toLowerCase().endsWith('.pir'))
+//          if ((clist.length>2) && this.annotation[i].file.toLowerCase().endsWith('.pir'))
+          if ((clist.length>2) && endsWith(this.annotation[i].file.toLowerCase(),'.pir'))
             clist[1] = '';
           var s = clist.join(' ');
           var isProtein = false;

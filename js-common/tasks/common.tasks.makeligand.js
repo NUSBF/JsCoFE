@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    27.12.18   <--  Date of Last Modification.
+ *    09.04.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -10,10 +10,10 @@
  *       ~~~~~~~~~
  *  **** Project :  jsCoFE - javascript-based Cloud Front End
  *       ~~~~~~~~~
- *  **** Content :  MoRDa Task Class
+ *  **** Content :  MakeLigand Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2018
+ *  (C) E. Krissinel, A. Lebedev 2016-2019
  *
  *  =================================================================
  *
@@ -78,9 +78,22 @@ function TaskMakeLigand()  {
           iwidth    : 40,
           value     : '',
           maxlength : 3,       // maximum input length
+          label2    : "&nbsp;",
+          lwidth2   : 100,
           position  : [3,2,1,1],
           showon    : {SOURCE_SEL:['M']}
+        },
+    FORCE_ACEDRG_CBX  : {
+          type      : 'checkbox',
+          label     : 'Recalculate with AceDrg',
+          tooltip   : 'Check for recalculating ligand data using AceDrg. If ' +
+                      'unchecked, both restraints and atomic coordinates ' +
+                      'will be merely copied from CCP4 Monomer Library.',
+          value     : false,
+          position  : [3,7,1,2],
+          showon    : {SOURCE_SEL:['M']}
         }
+
   };
 
 }
@@ -101,7 +114,7 @@ TaskMakeLigand.prototype.icon = function()  { return 'task_makeligand'; }
 //TaskMakeLigand.prototype.icon_large = function()  { return 'task_makeligand';       }
 
 TaskMakeLigand.prototype.currentVersion = function()  {
-  var version = 0;
+  var version = 1;
   if (__template)
         return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );

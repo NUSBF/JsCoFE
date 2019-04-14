@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    31.01.19   <--  Date of Last Modification.
+#    09.03.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -49,6 +49,9 @@ class Parrot(ccp4build_base.Base):
                   colout  = "parrot",
                 ):
 
+        if int(self.parrot_options["cycles"])<=0:
+            return meta.copy()
+
         self.open_script ( "parrot" )
 
         parrot_mtzout = os.path.join ( self.workdir,nameout+".mtz" )
@@ -77,18 +80,20 @@ class Parrot(ccp4build_base.Base):
                 "colin-fc "     + meta["labin_fc"]
             ])
 
-        if meta["mode"]=="MR":
-            self.write_script ([ "pdbin-mr " + meta["xyzpath_mr"] ])
-        else:
-            #self.write_script ([ "pdbin-ha " + meta["xyzpath_ha"] ])
-            if meta["xyzpath"]:
-                self.write_script ([ "pdbin-mr " + meta["xyzpath"] ])
-            elif meta["xyzpath_ha"]:
-                self.write_script ([ "pdbin-ha " + meta["xyzpath_ha"] ])
-            #if meta["xyzpath"]:
-            #    self.write_script ([ "pdbin " + meta["xyzpath"] ])
-            #if meta["xyzpath_ha"]:
-            #    self.write_script ([ "pdbin-ha " + meta["xyzpath_ha"] ])
+        #if self.input_data["mode"]=="MR":
+        #    self.write_script ([
+        #        "colin-phifom " + meta["labin_phifom"],
+        #        "colin-fc "     + meta["labin_fc"]
+        #    ])
+        #else:
+        #    self.write_script ([
+        #        "colin-hl " + meta["labin_hl"],
+        #    ])
+
+        if meta["xyzpath"]:
+            self.write_script ([ "pdbin-mr " + meta["xyzpath"] ])
+        elif meta["xyzpath_ha"]:
+            self.write_script ([ "pdbin-ha " + meta["xyzpath_ha"] ])
 
         self.write_script ( self.parrot_options )
         self.close_script()

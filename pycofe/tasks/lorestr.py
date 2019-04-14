@@ -27,7 +27,7 @@
 #  python native imports
 import os
 import sys
-import uuid
+import json
 
 #  application imports
 import basic
@@ -77,6 +77,7 @@ class Lorestr(basic.TaskDriver):
                  "-labin" ,"FP="     + hkl.dataset.Fmean.value +
                            " SIGFP=" + hkl.dataset.Fmean.sigma +
                            " FREE="  + hkl.dataset.FREE
+                 #"-rvapi" ,self.reportDir()
                 ]
 
         if self.getParameter(self.task.parameters.sec1.contains.PDB_CBX)=="True":
@@ -92,13 +93,26 @@ class Lorestr(basic.TaskDriver):
         if self.getParameter(self.task.parameters.sec1.contains.MR_CBX)=="True":
             cmd += [ "-mr" ]
 
-        cmd += ["-xml","lorestr.xml"]
+        meta = {}
+        meta["page_id"]  = self.report_page_id()
+        meta["jobId"]    = self.job_id
+        meta["nameout" ] = self.outputFName
+
+        self.storeReportDocument ( json.dumps(meta) )
+
+        cmd += [ "-xml"  ,"lorestr.xml",
+                 "-rvapi",self.reportDir(),
+                 "-rvapi-document",self.reportDocumentName()
+               ]
 
         # Start lorestr
         if sys.platform.startswith("win"):
             self.runApp ( "lorestr.bat",cmd,logType="Main" )
         else:
             self.runApp ( "lorestr",cmd,logType="Main" )
+
+        self.restoreReportDocument()
+        self.rvrow += 100
 
         # check solution and register data
         if os.path.isfile(self.getXYZOFName()):

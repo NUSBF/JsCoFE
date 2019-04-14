@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    17.01.19   <--  Date of Last Modification.
+#    11.04.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -23,8 +23,10 @@ import sys
 
 #  ccp4-python imports
 import pyrvapi
+import gemmi
 
 #  application imports
+from  pycofe.dtypes  import dtype_sequence
 from  pycofe.varut   import command
 
 
@@ -60,7 +62,7 @@ def run ( body, panelId, ensemble ):  # body is reference to the main Import cla
         file_stdout1      = body.file_stdout1
         body.file_stdout1 = open ( gesamt_log(),'w' )
 
-        body.runApp ( "gesamt",cmd,logType="Service" )
+        body.runApp ( "gesamt",cmd,logType="Service",quitOnError=False )
 
         body.file_stdout1.close()
         body.file_stdout1 = file_stdout1
@@ -95,12 +97,86 @@ def run ( body, panelId, ensemble ):  # body is reference to the main Import cla
 
         if meta:
             ensemble.meta = meta
+            return True
         else:
             ensemble.meta = None
+            return False
 
     else:
         body.putMessage1 ( panelId,"Single-chain ensemble, " + \
                            str(ensemble.xyzmeta["xyz"][0]["chains"][0]["size"]) +\
                            " residues",0 )
+        return True
 
-    return
+
+def align_seq_xyz ( body,seqPath,xyzPath,seqtype="protein" ):
+
+    if not seqPath:
+        return {"status":"undefined"}
+
+    seqlist = [dtype_sequence.readSeqFile(seqPath,delete_reduntant_bool=True)[0][1]]
+    name    = ["REFERENCE"]
+    ncopies = [1]
+
+    st  = gemmi.read_structure ( xyzPath )
+    st.assign_subchains()  # internally marks polymer, ligand and waters
+    cnt = 1
+    for model in st:
+        chains = []
+        for chain in model:
+            polymer = chain.get_polymer()
+            if polymer:
+                seqlist.append ( str(polymer.make_one_letter_sequence()) )
+                name   .append ( "TARGET_" + str(cnt) )
+                ncopies.append ( 1 )
+                cnt += 1
+
+    #body.stdoutln ( str(seqlist) )
+
+    seqFName = "__ens_tmp_YUIUYEDKJBSO.seq"
+    dtype_sequence.writeMultiSeqFile ( seqFName,name,seqlist,ncopies )
+
+    statsFName = "__ens_tmp_YUIUYEDKJBSO.stats"
+    cmd = [seqFName,"-type="+seqtype,"-stats="+statsFName]
+
+    # Start clustalw2
+    body.runApp ( os.path.join(os.environ["CCP4"],"libexec","clustalw2"),
+                  cmd,logType="Service" )
+
+    # check solution file and fetch results
+    meta = {"status":"fail"}
+    if os.path.isfile(statsFName):
+
+        meta = {"status":"ok"}
+
+        meta["len_max"] = "0"
+        meta["len_min"] = "0"
+        meta["len_avg"] = "0"
+        meta["len_dev"] = "0"
+        meta["len_med"] = "0"
+        meta["id_max"]  = "0"
+        meta["id_min"]  = "0"
+        meta["id_avg"]  = "0"
+        meta["id_dev"]  = "0"
+        meta["id_med"]  = "0"
+        lines = [line.rstrip('\n') for line in open(statsFName,'r')]
+        for l in lines:
+            w = l.split(" ")
+            if w[0]=="seqlen":
+                if w[1]=="longest:" : meta["len_max"] = w[2]
+                if w[1]=="shortest:": meta["len_min"] = w[2]
+                if w[1]=="avg:"     : meta["len_avg"] = w[2]
+                if w[1]=="std-dev:" : meta["len_dev"] = w[2]
+                if w[1]=="median:"  : meta["len_med"] = w[2]
+            if w[0]=="aln":
+                if w[1]=="pw-id":
+                    if w[2]=="highest:": meta["id_max"] = w[3]
+                    if w[2]=="lowest:" : meta["id_min"] = w[3]
+                    if w[2]=="avg:"    : meta["id_avg"] = w[3]
+                    if w[2]=="std-dev:": meta["id_dev"] = w[3]
+                    if w[2]=="median:" : meta["id_med"] = w[3]
+
+    if os.path.exists(seqFName):   os.remove(seqFName)
+    if os.path.exists(statsFName): os.remove(statsFName)
+
+    return meta

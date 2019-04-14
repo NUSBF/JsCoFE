@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    29.12.18   <--  Date of Last Modification.
+ *    12.04.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Task List Dialog
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2018
+ *  (C) E. Krissinel, A. Lebedev 2016-2019
  *
  *  =================================================================
  *
@@ -34,7 +34,8 @@ function TaskListDialog ( dataBox,branch_task_list,onSelect_func )  {
 
   this.branch_tasks  = [];
   for (var i=0;i<branch_task_list.length;i++)
-    if (branch_task_list[i].state!=job_code.remark)
+    if ((branch_task_list[i].state!=job_code.remark) &&
+        (branch_task_list[i].state!=job_code.remdet))
       this.branch_tasks.push ( branch_task_list[i] );
 
   this.dataBox       = dataBox;
@@ -80,7 +81,7 @@ function TaskListDialog ( dataBox,branch_task_list,onSelect_func )  {
   $(this.tabs.element).height ( this.element.innerHeight-16 );
   this.tabs.refresh();
 
-  launchHelpBox ( '','./html/jscofe_tasklist.html',doNotShowAgain,1000 );
+  //launchHelpBox ( '','./html/jscofe_tasklist.html',doNotShowAgain,1000 );
 
 }
 
@@ -282,6 +283,7 @@ var row      = 0;
 
   this.makeSection ( 'Data Processing',[
     new TaskXia2     (),
+    new TaskDUI      (),
     new TaskAimless  (),
     new TaskChangeSpG(),
     new TaskFreeRFlag()
@@ -328,6 +330,7 @@ var row      = 0;
   this.makeSection ( 'Refinement and Model Building',[
     new TaskRefmac   (),
     new TaskLorestr  (),
+    new TaskCCP4Build(),
     new TaskBuccaneer(),
     new TaskArpWarp  (),
     new TaskDimple   (),
@@ -347,6 +350,7 @@ var row      = 0;
   ]);
 
   this.makeSection ( 'Toolbox',[
+    new TaskCrosSec (),
     new TaskCootCE  (),
     new TaskGesamt  (),
     new TaskSeqAlign(),
@@ -355,8 +359,8 @@ var row      = 0;
 
   if (__login_user=='Developer')
     this.makeSection ( 'Tasks in Development',[
-      new TaskMergeData  (),
-      new TaskHelloWorld ()
+      new TaskMergeData (),
+      new TaskHelloWorld()
     ]);
 
   if (navail==1)

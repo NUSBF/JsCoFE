@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    04.01.19   <--  Date of Last Modification.
+#    13.04.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -48,10 +48,12 @@ class DType(dtype_template.DType):
             self._type          = dtype()
             self.leadKey        = 0;  # data lead key: 0: undefined, 1: coordinates, 2: phases
             self.dname          = "revision"
-            self.version       += 3   # versioning increments from parent to children
+            self.version       += 4   # versioning increments from parent to children
             self.HKL            = None
             self.ASU            = jsonut.jObject()  # asymetric unit data
-            self.ASU.seq        = [];
+            self.ASU.seq        = []
+            self.ASU.ha_type    = ""                # heavy atom type
+            self.ASU.ndisulph   = ""                # number of disulphides
             self.ASU.nRes       = 0;
             self.ASU.molWeight  = 0.0;
             self.ASU.solvent    = 0.0;

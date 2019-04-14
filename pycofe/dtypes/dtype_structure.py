@@ -60,7 +60,7 @@ class DType(dtype_template.DType):
             #  Free R-flag
             self.FreeR_flag = ""
 
-            self.leadKey    = 0;   # data lead key: 0: undefined, 1: coordinates, 2: phases
+            self.leadKey  = 0;   # data lead key: 0: undefined, 1: coordinates, 2: phases
 
             self.useCoordinates = True   # flag for using in Phaser-EP
             self.rmsd           = 0.3    # used in Phaser-EP
@@ -194,7 +194,7 @@ class DType(dtype_template.DType):
         self.HLD     = ""
         return
 
-    def setCrank2Labels ( self ):
+    def setCrank2Labels ( self,hkl_class ):
         self.FP         = "REFM_F"
         self.SigFP      = "REFM_SIGF"
         self.PHI        = "REFM_PHCOMB"
@@ -204,6 +204,9 @@ class DType(dtype_template.DType):
         self.DELFWT     = "REFM_DELFWT"
         self.PHDELWT    = "REFM_PHDELWT"
         self.FreeR_flag = "FREER"
+        if hkl_class:
+            if hasattr(hkl_class.dataset,"FREE"):
+                self.FreeR_flag = hkl_class.dataset.FREE
         return
 
     def copyLabels ( self,struct_class ):

@@ -162,9 +162,9 @@ function TaskSimbad()  {
                       //iwidth   : 220,      // width of input field in px
                       range     : ['L|Lattice',
                                    'C|Contaminants',
-                                   'S|Structural database',
-                                   'LC|Lattice and contaminants',
-                                   'LCS|Lattice, contaminants and structural database'
+                                   //'S|Structural database',
+                                   'LC|Lattice and contaminants'
+                                   //'LCS|Lattice, contaminants and structural database'
                                   ],
                       value     : 'LC',
                       position  : [0,0,1,1],

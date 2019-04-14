@@ -3,13 +3,13 @@
 #
 # ============================================================================
 #
-#    04.08.18   <--  Date of Last Modification.
+#    09.04.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  CCP4EZ Combined Auto-Solver Lorestr module
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2018
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2019
 #
 # ============================================================================
 #
@@ -21,11 +21,11 @@ import sys
 #import pyrvapi
 
 import edmap
-import ccp4go_buccaneer
+import ccp4go_ccp4build
 
 # ============================================================================
 
-class Lorestr(ccp4go_buccaneer.Buccaneer):
+class Lorestr(ccp4go_ccp4build.CCP4Build):
 
     # ----------------------------------------------------------------------
 

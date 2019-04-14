@@ -17,7 +17,6 @@
 
 import sys
 import os
-import uuid
 
 import ccp4build_refmac
 

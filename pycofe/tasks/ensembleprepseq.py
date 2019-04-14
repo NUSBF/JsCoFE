@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    14.01.19   <--  Date of Last Modification.
+#    11.04.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -27,6 +27,7 @@
 #  python native imports
 import os
 import sys
+import time
 
 #  ccp4-python imports
 import pyrvapi
@@ -95,6 +96,7 @@ class EnsemblePrepSeq(basic.TaskDriver):
             "DOPHMMER True\n" + \
             pdbLocal +\
             "DOHHPRED False\n" + \
+            "LITE True\n" + \
             "END\n"
         )
 
@@ -102,9 +104,11 @@ class EnsemblePrepSeq(basic.TaskDriver):
         # MRNUM 5
 
         self.close_stdin()
+        self.flush()
 
         # make command-line parameters for mrbump run on a SHELL-type node
-        cmd = [ "seqin",seq.getSeqFilePath(self.inputDir()) ]
+        seqPath = seq.getSeqFilePath ( self.inputDir() )
+        cmd = [ "seqin",seqPath ]
 
         # Prepare report parser
         self.setGenericLogParser ( self.mrbump_report(),True )
@@ -117,6 +121,12 @@ class EnsemblePrepSeq(basic.TaskDriver):
 
         # check solution and register data
         self.unsetLogParser()
+
+        # apparently log parser completes action when stdout is closed. this
+        # may happen after STOP_POLL is issued, in which case parser's report
+        # is not seen until the whole page is reloaded.
+        #  is there a way to flush generic parser at some moment?
+        time.sleep(1)
 
         search_dir = "search_" + self.outdir_name()
 
@@ -163,27 +173,50 @@ class EnsemblePrepSeq(basic.TaskDriver):
                                         fout_name = self.outputFName + "_base.pdb"
                                     else:
                                         fout_name = self.outputFName + "_" + fo + ".pdb"
+
                                     os.rename ( os.path.join(ensembles_dir,filename),fout_name )
+
+                                    align_meta = analyse_ensemble.align_seq_xyz ( self,
+                                                        seqPath,fout_name,seqtype="protein" )
+
                                     ensemble = self.registerEnsemble ( seq,
                                                         fout_name,checkout=True )
                                     if ensemble:
 
-                                        self.putMessage1 ( secId,
-                                            "<h3>Ensemble #" + str(ensembleSerNo) + "</h3>",
-                                            secrow )
+                                        if secrow < 5:
+                                            self.putMessage1 ( secId,
+                                                "<h3>Ensemble #" + str(ensembleSerNo) + "</h3>",
+                                                secrow )
+                                        else:
+                                            self.putMessage1 ( secId,
+                                                "&nbsp;<br><h3><hr/>Ensemble #" + str(ensembleSerNo) + "</h3>",
+                                                secrow )
 
                                         alignSecId = self.getWidgetId ( self.gesamt_report() )
                                         pyrvapi.rvapi_add_section ( alignSecId,
                                                     "Structural alignment",secId,
                                                     secrow+1,0,1,1,False )
-                                        analyse_ensemble.run ( self,alignSecId,ensemble )
 
-                                        ensemble.addDataAssociation ( seq.dataId )
-                                        self.putEnsembleWidget1 ( secId,
-                                            "ensemble_"  + str(ensembleSerNo) + "_btn",
-                                            "Coordinates",ensemble,-1,secrow+3,1 )
+                                        if analyse_ensemble.run(self,alignSecId,ensemble):
 
-                                        secrow += 5
+                                            ensemble.addDataAssociation ( seq.dataId )
+
+                                            self.putMessage1 ( secId,"&nbsp;<br><b>Associated with sequence:</b>&nbsp;" +\
+                                                              seq.dname + "<br>&nbsp;",secrow+3 )
+
+                                            if align_meta["status"]=="ok":
+                                                ensemble.meta["seqId"] = align_meta["id_avg"]
+                                            ensemble.seqId = ensemble.meta["seqId"]
+                                            ensemble.rmsd  = ensemble.meta["rmsd" ]
+
+                                            self.putEnsembleWidget1 ( secId,
+                                                "ensemble_"  + str(ensembleSerNo) + "_btn",
+                                                "Coordinates",ensemble,-1,secrow+5,1 )
+                                        else:
+                                            self.putMessage1 ( secId,
+                                                    "<h3>Structural alignment failed, ensemble is not useable.</h3>",0 )
+
+                                        secrow += 6
 
                     domainNo += 1
                     dirName   = "domain_" + str(domainNo)
@@ -195,15 +228,9 @@ class EnsemblePrepSeq(basic.TaskDriver):
             if not ensembles_found:
                 self.putTitle ( "No models found" )
 
-        # close execution logs and quit
-
-        # apparently log parser completes action when stdout is closed. this
-        # may happen after STOP_POLL is issued, in which case parser's report
-        # is not seen until the whole page is reloaded.
-        #  is there a way to flush generic parser at some moment?
-        import time
         time.sleep(1)
 
+        # close execution logs and quit
         self.success()
         return
 

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    27.12.18   <--  Date of Last Modification.
+ *    03.04.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Change Space Group Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2018
+ *  (C) E. Krissinel, A. Lebedev 2016-2019
  *
  *  =================================================================
  *
@@ -39,7 +39,7 @@ function TaskChangeSpG()  {
   this.fasttrack = true;  // enforces immediate execution
 
   this.input_dtypes = [{    // input data types
-      data_type   : {'DataRevision':['hkl']}, // data type(s) and subtype(s)
+      data_type   : {'DataRevision':['hkl','~xyz','~substructure']}, // data type(s) and subtype(s)
       label       : 'Structure revision',     // label for input dialog
       inputId     : 'revision', // input Id for referencing input fields
       customInput : 'reindex',  // lay custom fields next to the selection

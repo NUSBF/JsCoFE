@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    22.12.18   <--  Date of Last Modification.
+#    18.03.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2018
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2019
 #
 # ============================================================================
 #
@@ -29,6 +29,8 @@ import os
 import sys
 import shutil
 import json
+import re
+import math
 
 #  ccp4 imports
 import pyrvapi
@@ -56,7 +58,13 @@ class Xia2(basic.TaskDriver):
     def import_summary_id(self):  return None   # don't make import summary table
 
     def run(self):
-        # Prepare coot job
+        # Prepare xia2 job
+
+        nSubJobs = "4";
+        if self.exeType in ["SGE","SCRIPT"]:
+            nSubJobs = "1";
+            if len(sys.argv)>=5:
+                nSubJobs = sys.argv[-1]
 
         # fetch input data
 
@@ -94,6 +102,8 @@ class Xia2(basic.TaskDriver):
                 "pipeline=" + pipeline,
                 "small_molecule=" + small_mol ]
 
+        cmd.append ( "nproc=" + nSubJobs )
+
         if hatom      :  cmd.append ( "atom="          + hatom   )
         if space_group:  cmd.append ( "space_group=\"" + space_group + "\"" )
         if unit_cell  :  cmd.append ( "unit_cell=\""   + unit_cell   + "\"" )
@@ -102,15 +112,18 @@ class Xia2(basic.TaskDriver):
         if misigma    :  cmd.append ( "misigma="       + misigma )
         if isigma     :  cmd.append ( "isigma="        + isigma  )
 
-        for i in range(len(imageDirMeta)):
-            if imageDirMeta[i]["path"]:
-                sectors = imageDirMeta[i]["sectors"]
-                for j in range(len(sectors)):
-                    ranges_sel = sectors[j]["ranges_sel"]
-                    dirpath    = os.path.join ( imageDirMeta[i]["path"],sectors[j]["name"] )
-                    for k in range(len(ranges_sel)):
-                        cmd.append ( "image=" + dirpath + ":" + str(ranges_sel[k][0]) +\
-                                                          ":" + str(ranges_sel[k][1]) )
+        if self.task.datatype=="images":
+            for i in range(len(imageDirMeta)):
+                if imageDirMeta[i]["path"]:
+                    sectors = imageDirMeta[i]["sectors"]
+                    for j in range(len(sectors)):
+                        ranges_sel = sectors[j]["ranges_sel"]
+                        dirpath    = os.path.join ( imageDirMeta[i]["path"],sectors[j]["name"] )
+                        for k in range(len(ranges_sel)):
+                            cmd.append ( "image=" + dirpath + ":" + str(ranges_sel[k][0]) +\
+                                                              ":" + str(ranges_sel[k][1]) )
+        else:
+            cmd.append ( "image=" + imageDirMeta[0]["path"] )
 
         #xia2 \
         #pipeline=dials \
@@ -130,7 +143,7 @@ class Xia2(basic.TaskDriver):
         else:
             self.addCitations ( ['dials','aimless'] )
 
-        # Check for PDB files left by Xia2 and convert them to type structure
+        # Check for MTZ files left by Xia2 and convert them to type structure
         resDir = "DataFiles"
         file_names = [fn for fn in os.listdir(resDir)
                                 if any(fn.endswith(ext) for ext in [".mtz"])]
@@ -227,10 +240,10 @@ class Xia2(basic.TaskDriver):
                     #    self.file_stdout.write ( " --- stdin ref NOT FOUND" )
                     self.file_stdin = None
                     if sys.platform.startswith("win"):
-                        self.runApp ( "dials.export.bat",["format=json",rlp_json,rlp_pickle],
+                        self.runApp ( "dials.export.bat",["format=json","d_min=8",rlp_json,rlp_pickle],
                                       logType="Service" )
                     else:
-                        self.runApp ( "dials.export",["format=json",rlp_json,rlp_pickle],
+                        self.runApp ( "dials.export",["format=json","d_min=8",rlp_json,rlp_pickle],
                                       logType="Service" )
 
                     rlpFileName = "rlp.json"
@@ -248,7 +261,9 @@ class Xia2(basic.TaskDriver):
                     for fname in ind_names:
                         if not ind_json or fname > ind_json:
                             ind_json = fname
+                    ind_prefix = ind_json.partition("_")[0] + "_"
                     ind_json = os.path.join ( indexDir,ind_json )
+                    d_min = d_min_for_rs_mapper(self, indexDir, ind_prefix)
 
                     #self.open_stdin  ()
                     #self.write_stdin ( ind_json + "\n" )
@@ -258,11 +273,11 @@ class Xia2(basic.TaskDriver):
                     #  size under 10MB, or else it does not download with XHR
                     if sys.platform.startswith("win"):
                         rc1 = self.runApp ( "dials.rs_mapper.bat",
-                                            ["grid_size=128","max_resolution=8",ind_json],
+                                            ["grid_size=128","max_resolution="+d_min,ind_json],
                                             quitOnError=False )
                     else:
                         rc1 = self.runApp ( "dials.rs_mapper",
-                                            ["grid_size=128","max_resolution=8",ind_json],
+                                            ["grid_size=128","max_resolution="+d_min,ind_json],
                                             quitOnError=False )
 
                     # ===== For old version of rs_mapper =======
@@ -274,7 +289,9 @@ class Xia2(basic.TaskDriver):
                         for fname in ind_names:
                             if not ind_json or fname < ind_json:
                                 ind_json = fname
+                        ind_prefix = ind_json.partition("_")[0] + "_"
                         ind_json   = os.path.join ( indexDir,ind_json )
+                        d_min = d_min_for_rs_mapper(self, indexDir, ind_prefix)
 
                         self.open_stdin  ()
                         self.write_stdin ( ind_json + "\n" )
@@ -283,10 +300,10 @@ class Xia2(basic.TaskDriver):
                         #  grid size and resolution are chosen such as to keep file
                         #  size under 10MB, or else it does not download with XHR
                         if sys.platform.startswith("win"):
-                            self.runApp ( "dials.rs_mapper.bat",["grid_size=128","max_resolution=8"],
+                            self.runApp ( "dials.rs_mapper.bat",["grid_size=128","max_resolution="+d_min],
                                           logType="Service" )
                         else:
-                            self.runApp ( "dials.rs_mapper",["grid_size=128","max_resolution=8"],
+                            self.runApp ( "dials.rs_mapper",["grid_size=128","max_resolution="+d_min],
                                           logType="Service" )
 
                     mapFileName = "rs_mapper_output.ccp4"
@@ -347,9 +364,15 @@ class Xia2(basic.TaskDriver):
             "style=\"border:none;position:absolute;top:50px;left:0;width:100%;height:90%;\"></iframe>",
             0 )
 
-        # clean directory
+        # clean directories
         if os.path.isdir(crystalName):
             shutil.rmtree ( crystalName )
+
+        if os.path.isdir("DataFiles"):
+            shutil.rmtree ( "DataFiles" )
+
+        if os.path.isdir("LogFiles"):
+            shutil.rmtree ( "LogFiles" )
 
         # ============================================================================
         # close execution logs and quit
@@ -366,6 +389,36 @@ class Xia2(basic.TaskDriver):
 
             raise signal.JobFailure ( rc.msg )
 
+
+def d_min_for_rs_mapper(self, indexDir, ind_prefix):
+    contents = ''
+    for fname in os.listdir(indexDir):
+        if fname.startswith(ind_prefix) and fname.endswith('.log'):
+            ind_log = os.path.join(indexDir, fname)
+            try:
+                with open(ind_log) as istream:
+                    contents = istream.read()
+
+            except:
+                pass
+
+            break
+
+    # to be adjusted to keep the size of json file for uglimol within limits
+    coef = 0.07
+    d_min = 8.0
+
+    rec_re = '([0-9]+\.[0-9]+)(?:\([0-9]+\))?'
+    fmt_uc = ' Unit cell: \(%s, +%s, +%s, +%s, +%s, +%s\)'
+    match_uc = re.search(fmt_uc %((rec_re,)* 6), contents)
+    if match_uc:
+        uc6 = [float(s) for s in match_uc.groups()]
+        al, bl, cl = uc6[:3]
+        ac, bc, cc = [math.cos(angle* math.pi/ 180.0) for angle in uc6[3:]]
+        det = al* bl* cl* (1 - ac* ac - bc* bc -cc* cc + 2* ac* bc* cc)
+        d_min = coef* math.pow(det, 1.0/ 3.0)
+
+    return ('%10.2f' %d_min).strip()
 
 # ============================================================================
 
