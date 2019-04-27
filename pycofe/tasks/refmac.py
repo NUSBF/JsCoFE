@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    28.02.19   <--  Date of Last Modification.
+#    25.04.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -303,6 +303,7 @@ class Refmac(basic.TaskDriver):
                 structure.setRefmacLabels    ( None if str(hkl.useHKLSet) in ["Fpm","TI"] else hkl )
                 structure.copySubtype        ( istruct )
                 structure.copyLigands        ( istruct )
+                structure.addPhasesSubtype   ()
                 self.putStructureWidget      ( "structure_btn",
                                                "Structure and electron density",
                                                structure )

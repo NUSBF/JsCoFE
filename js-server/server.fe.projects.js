@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    14.02.19   <--  Date of Last Modification.
+ *    24.04.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -31,6 +31,7 @@ var conf     = require('./server.configuration');
 var utils    = require('./server.utils');
 var send_dir = require('./server.send_dir');
 var ration   = require('./server.fe.ration');
+var fcl      = require('./server.fe.facilities');
 var pd       = require('../js-common/common.data_project');
 var cmd      = require('../js-common/common.commands');
 var task_t   = require('../js-common/tasks/common.tasks.template');
@@ -827,6 +828,81 @@ function saveProjectData ( login,data )  {
 
 // ===========================================================================
 
+function _import_project ( login,tempdir )  {
+
+  // read project meta to make sure it was a project tarball
+  var prj_meta = utils.readObject ( path.join(tempdir,projectDataFName) );
+
+  // validate metadata and read project name
+  var projectDesc = new pd.ProjectDesc();
+  try {
+    if (prj_meta._type=='ProjectData')  {
+      projectDesc.name         = prj_meta.desc.name;
+      projectDesc.title        = prj_meta.desc.title;
+      projectDesc.disk_space   = prj_meta.desc.disk_space;
+      projectDesc.cpu_time     = prj_meta.desc.cpu_time;
+      projectDesc.njobs        = prj_meta.desc.njobs;
+      projectDesc.dateCreated  = prj_meta.desc.dateCreated;
+      projectDesc.dateLastUsed = prj_meta.desc.dateLastUsed;
+    } else
+      prj_meta = null;
+  } catch(err) {
+    prj_meta = null;
+  }
+
+  var signal_path = path.join ( tempdir,'signal' );
+
+  if (!prj_meta)  {
+
+    utils.writeString ( signal_path,'Invalid or corrupt project data\n',
+                                    projectDesc.name );
+
+  } else  {
+
+    var projectDir = getProjectDirPath ( login,projectDesc.name );
+    if (utils.fileExists(projectDir))  {
+
+      utils.writeString ( signal_path,'Project "' + projectDesc.name +
+                                      '" already exists.\n' +
+                                      projectDesc.name );
+
+    } else if (utils.moveFile(tempdir,projectDir))  {
+      // the above relies on tmp and project directories to be
+      // on the same file system
+
+      utils.mkDir ( tempdir );  // because it was moved
+
+      // the project's content was moved to user's area, now
+      // make the corresponding entry in project list
+
+      // Get users' projects list file name
+      var userProjectsListPath = getUserProjectListPath ( login );
+      var pList = null;
+      if (utils.fileExists(userProjectsListPath))
+            pList = utils.readObject ( userProjectsListPath );
+      else  pList = new pd.ProjectList();
+
+      pList.projects.unshift ( projectDesc );  // put it first
+      pList.current = projectDesc.name;        // make it current
+      if (utils.writeObject(userProjectsListPath,pList))
+            utils.writeString ( signal_path,'Success\n' + projectDesc.name );
+      else  utils.writeString ( signal_path,'Cannot write project list\n' +
+                                            projectDesc.name );
+
+      ration.changeUserDiskSpace ( login,projectDesc.disk_space );
+
+    } else {
+
+      utils.writeString ( signal_path,'Cannot copy to project ' +
+                                      'directory (disk full?)\n' +
+                                      projectDesc.name );
+
+    }
+
+  }
+
+}
+
 function importProject ( login,upload_meta,tmpDir )  {
 
   // create temporary directory, where all project tarball will unpack;
@@ -851,6 +927,9 @@ function importProject ( login,upload_meta,tmpDir )  {
         // unpack project tarball
         send_dir.unpackDir ( tempdir,null,function(){
 
+          _import_project ( login,tempdir );
+
+          /*
           // read project meta to make sure it was a project tarball
           var prj_meta = utils.readObject ( path.join(tempdir,projectDataFName) );
 
@@ -921,8 +1000,10 @@ function importProject ( login,upload_meta,tmpDir )  {
             }
 
           }
+          */
 
         });
+
 
       } else
         errs = 'file move error';
@@ -943,6 +1024,60 @@ function importProject ( login,upload_meta,tmpDir )  {
     return new cmd.Response ( cmd.fe_retcode.noTempDir,
                              'Temporary directory cannot be created',
                              fdata );
+
+}
+
+
+function startDemoImport ( login,meta )  {
+
+  // store all uploads in the /uploads directory
+  var tmpDir = conf.getFETmpDir();  //path.join ( conf.getFEConfig().projectsPath,'tmp' );
+
+  if (!utils.fileExists(tmpDir))  {
+    if (!utils.mkDir(tmpDir))  {
+      cmd.sendResponse ( server_response, cmd.fe_retcode.mkDirError,
+                         'Cannot make temporary directory for demo import','' );
+      return;
+    }
+  }
+
+  var rc     = cmd.fe_retcode.ok;
+  var rc_msg = 'success';
+
+  var tempdir = path.join ( tmpDir,login+'_project_import' );
+  utils.removePath ( tempdir );  // just in case
+
+  if (utils.mkDir(tempdir))  {
+
+    var cloudMounts = fcl.getUserCloudMounts ( login );
+    var demoProjectPath = null;
+    var lst = meta.cloudpath.split('/');
+
+    for (var j=0;(j<cloudMounts.length) && (!demoProjectPath);j++)
+      if (cloudMounts[j][0]==lst[0])
+        demoProjectPath = path.join ( cloudMounts[j][1],lst.slice(1).join('/'),
+                                      meta.demoprj.name );
+
+    if (demoProjectPath)  {
+      if (utils.fileExists(demoProjectPath))  {
+        send_dir.unpackDir1 ( tempdir,demoProjectPath,null,false,function(){
+          _import_project ( login,tempdir );
+        });
+      } else  {
+        rc     = cmd.fe_retcode.fileNotFound;
+        rc_msg = 'Demo project ' + meta.demoprj.name + ' does not exist';
+      }
+    } else  {
+      rc     = cmd.fe_retcode.fileNotFound;
+      rc_msg = 'Cannot calculate path for demo project ' + meta.demoprj.name;
+    }
+
+  } else {
+    rc     = cmd.fe_retcode.mkDirError;
+    rc_msg = 'Cannot make project directory for demo import';
+  }
+
+  return new cmd.Response ( rc,rc_msg,{} );
 
 }
 
@@ -1040,6 +1175,7 @@ module.exports.finishJobExport        = finishJobExport;
 module.exports.getProjectData         = getProjectData;
 module.exports.saveProjectData        = saveProjectData;
 module.exports.importProject          = importProject;
+module.exports.startDemoImport        = startDemoImport;
 module.exports.getProjectDirPath      = getProjectDirPath;
 module.exports.getUserProjectsDirPath = getUserProjectsDirPath;
 module.exports.getUserProjectListPath = getUserProjectListPath;

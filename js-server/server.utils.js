@@ -33,7 +33,7 @@ var log = require('./server.log').newLog(14);
 
 // ==========================================================================
 
-function fileExists ( path ) {
+function fileExists ( path )  {
   try {
     return fs.statSync(path);
   } catch (e)  {

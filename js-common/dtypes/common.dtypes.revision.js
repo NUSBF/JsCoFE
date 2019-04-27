@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    13.04.19   <--  Date of Last Modification.
+ *    25.04.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -398,14 +398,17 @@ if (!__template)  {
       if (dropdown.customGrid.hasOwnProperty('ndisulph') &&
           (this.ASU.ha_type.toLowerCase()=='s'))  {
         var ndisulph = dropdown.customGrid.ndisulph.getValue();
-        if (isInteger(ndisulph))  {
-          var ndisulph = parseInt(ndisulph);
-          if (ndisulph>=0)
-            this.ASU.ndisulph = ndisulph;
-          else
-            msg += '<b><i>Number of disulphides should be positive</i></b>';
+        if (ndisulph.trim().length>0)  {
+          if (isInteger(ndisulph))  {
+            var ndisulph = parseInt(ndisulph);
+            if (ndisulph>=0)
+              this.ASU.ndisulph = ndisulph;
+            else
+              msg += '<b><i>Number of disulphides should be positive</i></b>';
+          } else
+            msg += '<b><i>Wrong format for number of disulphides</i></b>';
         } else
-          msg += '<b><i>Wrong format for number of disulphides</i></b>';
+          this.ASU.ndisulph = '';
       }
     }
     msg += this.HKL.collectCustomDropdownInput ( dropdown );

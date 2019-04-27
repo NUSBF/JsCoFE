@@ -36,6 +36,7 @@ var path          = require('path');
 var conf     = require('./js-server/server.configuration');
 var fe_start = require('./js-server/server.fe.start');
 var utils    = require('./js-server/server.utils');
+var fs       = require('fs-extra');
 
 //  prepare log
 var log = require('./js-server/server.log').newLog(17);
@@ -49,6 +50,10 @@ if (process.argv.length!=3) {
   log.error ( 1,'Restart as "node ./desktop.js configFile"' );
   process.exit();
 }
+
+var lockDir = path.join(path.dirname(process.argv[2]), 'LOCK');
+//mock a failure:
+//fs.rmdirsSync(lockDir + 'K')
 
 var msg = conf.readConfiguration ( process.argv[2],'FE' );
 if (msg)  {
@@ -132,6 +137,7 @@ function startClientApplication()  {
 
     var job = child_process.spawn ( desktopConfig.clientApp,command );
 
+    fs.mkdirsSync(lockDir)
     log.standard ( 5,'client application "' + msg + '" started, pid=' + job.pid );
 
     job.on ( 'close',function(code){

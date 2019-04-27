@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    11.04.19   <--  Date of Last Modification.
+#    24.04.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -216,7 +216,7 @@ class EnsemblePrepSeq(basic.TaskDriver):
                                             self.putMessage1 ( secId,
                                                     "<h3>Structural alignment failed, ensemble is not useable.</h3>",0 )
 
-                                        secrow += 6
+                                        secrow += 7
 
                     domainNo += 1
                     dirName   = "domain_" + str(domainNo)

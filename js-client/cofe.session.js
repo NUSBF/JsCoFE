@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    22.01.19   <--  Date of Last Modification.
+ *    24.04.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -126,6 +126,7 @@ function login ( user_login_name,user_password,sceneId )  {
               __login_user    = userData.name;
               __admin         = userData.admin;
               __cloud_storage = response.data.cloud_storage;
+              __demo_projects = response.data.demo_projects;
               if ('helpTopics' in userData)
                     __doNotShowList = userData.helpTopics;
               else  __doNotShowList = [];

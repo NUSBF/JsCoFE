@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    21.03.19   <--  Date of Last Modification.
+ *    24.04.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -333,6 +333,7 @@ StorageTree.prototype.readStorageData = function ( page_title,
           if (nlower.indexOf('my computer')>=0) icon = 'folder_mycomputer';
           else if (nlower.indexOf('home')>=0)   icon = 'folder_home';
           else if (nlower.indexOf('ccp4')>=0)   icon = 'folder_ccp4';
+          else if (nlower.indexOf('demo')>=0)   icon = 'folder_ccp4';
           var dnode = tree.addRootNode ( name,image_path(icon),tree.customIcon() );
           tree.item_map[dnode.id] = sdir;
         }
@@ -345,14 +346,16 @@ StorageTree.prototype.readStorageData = function ( page_title,
           base = base.join('.').toLowerCase();
           var icon  = image_path('file_dummy');
           var show  = (tree.image_key<2);
-          if (ext=='mtz')       icon = image_path('file_mtz');
+          if (ext=='mtz')    icon = image_path('file_mtz');
           else if ('h5' in sfile)   {
             if (sfile.h5>0)  icon = image_path('file_hdf');
                        else  name = '(' + Array(name.length).join('....') + ')';
             show = false;
-          } else if (ext=='h5')   icon = image_path('file_hdf');
+          }
+          else if (ext=='h5')         icon = image_path('file_hdf');
+          else if (ext=='ccp4_demo')  icon = image_path('file_ccp4demo');
           else if (['pdb','ent','mmcif'].indexOf(ext)>=0)
-                                icon = image_path('file_pdb');
+                                      icon = image_path('file_pdb');
           else if (ext=='cif')  {  // use wild heuristics
             if (endsWith(base,'-sf'))
                   icon = image_path('file_mtz');

@@ -69,7 +69,7 @@ DataEnsemble.prototype.title = function()  { return 'Structure ensemble'; }
 // when data class version is changed here, change it also in python
 // constructors
 DataEnsemble.prototype.currentVersion = function()  {
-  var version = 0;
+  var version = 1;
   if (__template)
         return  version + __template.DataXYZ.prototype.currentVersion.call ( this );
   else  return  version + DataXYZ.prototype.currentVersion.call ( this );

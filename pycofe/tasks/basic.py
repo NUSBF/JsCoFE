@@ -1118,6 +1118,14 @@ class TaskDriver(object):
     def registerStructure ( self,xyzPath,subPath,mtzPath,mapPath,dmapPath,
                             libPath=None,leadKey=1,copy_files=False ):
         self.dataSerialNo += 1
+
+        #self.file_stderr.write ( "  xyzPath=" + str(xyzPath) + "\n" )
+        #self.file_stderr.write ( "  cwd=" + os.getcwd() + "\n" )
+        #if os.path.isfile(xyzPath):
+        #    self.file_stderr.write ( "  exists\n" )
+        #else:
+        #    self.file_stderr.write ( "  does not exists\n" )
+
         structure = dtype_structure.register (
                                     xyzPath,subPath,mtzPath,mapPath,dmapPath,libPath,
                                     self.dataSerialNo ,self.job_id,leadKey,

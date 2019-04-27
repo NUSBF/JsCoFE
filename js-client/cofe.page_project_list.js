@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    03.04.19   <--  Date of Last Modification.
+ *    24.04.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -48,9 +48,11 @@ function ProjectListPage ( sceneId )  {
   var del_btn       = null;
   var export_btn    = null;
   var import_btn    = null;
+  var demoprj_btn   = null;
   var help_btn      = null;
   var panel         = null;
   var welcome_lbl   = null;
+  var nCols         = 0;                  // column span of project table
   var table_row     = 0;                  // project list position in panel
   var self          = this;               // for reference to Base class
 
@@ -99,7 +101,7 @@ function ProjectListPage ( sceneId )  {
     ]);
     tablesort_tbl.setHeaderNoWrap   ( -1      );
     tablesort_tbl.setHeaderColWidth ( 1,'80%' );
-    panel.setWidget ( tablesort_tbl,table_row,0,1,6 );
+    panel.setWidget ( tablesort_tbl,table_row,0,1,nCols );
     var message = '&nbsp;<p>&nbsp;<p><h2>' +
                   'Your List of Projects is currently empty.<br>' +
                   'Press "Add" button to create a new Project<br>' +
@@ -108,7 +110,7 @@ function ProjectListPage ( sceneId )  {
                   'the "Import" button) if one was previously<br>' +
                   'exported from ' + appName() + '.</h2>';
     welcome_lbl = panel.setLabel ( message.fontcolor('darkgrey'),
-                                   table_row+1,0,1,6 )
+                                   table_row+1,0,1,nCols )
                        .setFontItalic ( true )
                        .setNoWrap ( true );
     panel.setHorizontalAlignment ( table_row+1,0,"center" );
@@ -233,7 +235,11 @@ function ProjectListPage ( sceneId )  {
   del_btn    = new Button ( 'Delete',image_path('remove') );
   export_btn = new Button ( 'Export',image_path('export') );
   import_btn = new Button ( 'Import',image_path('import') );
-  help_btn   = new Button ( 'Help'  ,image_path('help') ).setTooltip('Documentation' );
+  if (__demo_projects)  {
+    demoprj_btn = new Button ( 'Demo projects',image_path('demoprj') );
+    demoprj_btn.setWidth     ( '120pt' );
+  }
+  help_btn = new Button ( 'Help'  ,image_path('help') ).setTooltip('Documentation' );
   open_btn  .setWidth     ( '80pt' );
   add_btn   .setWidth     ( '80pt' );
   del_btn   .setWidth     ( '80pt' );
@@ -242,15 +248,25 @@ function ProjectListPage ( sceneId )  {
   help_btn  .setWidth     ( '80pt' );
 
   var row = 0;
-  panel.setWidget              ( title_lbl, row,0,1,6 );
+  //panel.setWidget        ( title_lbl, row,0,1,6 );
+
   panel.setHorizontalAlignment ( row++ ,0,'center'    );
   panel.setCellSize            ( '','10pt',row++,0    );
-  panel.setWidget              ( open_btn  ,row,0,1,1 );
-  panel.setWidget              ( add_btn   ,row,1,1,1 );
-  panel.setWidget              ( del_btn   ,row,2,1,1 );
-  panel.setWidget              ( export_btn,row,3,1,1 );
-  panel.setWidget              ( import_btn,row,4,1,1 );
-  panel.setWidget              ( help_btn  ,row,5,1,1 );
+  nCols = 0;
+  panel.setWidget              ( open_btn  ,row,nCols++,1,1 );
+  panel.setWidget              ( add_btn   ,row,nCols++,1,1 );
+  panel.setWidget              ( del_btn   ,row,nCols++,1,1 );
+  panel.setWidget              ( export_btn,row,nCols++,1,1 );
+  panel.setWidget              ( import_btn,row,nCols++,1,1 );
+  if (demoprj_btn)
+    panel.setWidget            ( demoprj_btn,row,nCols++,1,1 );
+  panel.setWidget              ( help_btn  ,row,nCols++,1,1  );
+  panel.setWidget              ( title_lbl, row-2,0,1,nCols  );
+
+  for (var i=0;i<nCols-1;i++)
+    panel.setCellSize ( '2%' ,'',row,i );
+  panel.setCellSize            ( 'auto','',row++,nCols-1 );
+  /*
   panel.setCellSize            ( '2%' ,'',row,0     );
   panel.setCellSize            ( '2%' ,'',row,1     );
   panel.setCellSize            ( '2%' ,'',row,2     );
@@ -258,6 +274,7 @@ function ProjectListPage ( sceneId )  {
   panel.setCellSize            ( '2%' ,'',row,4     );
   panel.setCellSize            ( '2%' ,'',row,5     );
   panel.setCellSize            ( '88%','',row++,5   );
+  */
   open_btn.setDisabled         ( true );
   add_btn .setDisabled         ( true );
   del_btn .setDisabled         ( true );
@@ -361,6 +378,12 @@ function ProjectListPage ( sceneId )  {
   import_btn.addOnClickListener ( function(){
     new ImportProjectDialog ( loadProjectList1 );
   });
+
+  // add a listener to 'demo project' button
+  if (demoprj_btn)
+    demoprj_btn.addOnClickListener ( function(){
+      new ImportDemoProjectDialog ( loadProjectList1 );
+    });
 
   help_btn.addOnClickListener ( function(){
     new HelpBox ( '','./html/jscofe_myprojects.html',null );

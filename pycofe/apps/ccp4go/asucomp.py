@@ -352,7 +352,8 @@ def getASUComp ( coorFilePath,sequenceList,clustThresh=0.9 ):
     asuComp = []
     for i in range(len(seqlist)):
         if seqlist[i]:
-            asuentry = { "seq":seqlist[i], "n":1, "type":seqtype[i][0], "chain_id":seqtype[i][1], "name":str(i) }
+            asuentry = { "seq":seqlist[i], "n":1, "type":seqtype[i][0],
+                         "chain_id":seqtype[i][1], "name":str(i) }
             for j in range(i+1,len(seqlist)):
                 if seqlist[j]:
                     align = pairwise2.align.globalxx ( seqlist[i],seqlist[j] )
@@ -425,7 +426,7 @@ def getASUComp1 ( coorFilePath,seqFilePath,clustThresh=0.9 ):
         clist = filter ( None,content.split('>') )
         for i in range(len(clist)):
             seqdata = clist[i].splitlines()
-            seq = ""
+            seq     = ""
             for j in range(1,len(seqdata)):
                 seq += seqdata[j].strip()
             seqlist.append ( [seqdata[0],seq] )

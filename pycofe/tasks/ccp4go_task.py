@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    23.12.18   <--  Date of Last Modification.
+#    25.04.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2018
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2019
 #
 # ============================================================================
 #
@@ -357,7 +357,8 @@ class CCP4go(import_task.Import):
 
                     structure.addDataAssociation ( hkl_sol.dataId )
                     structure.setRefmacLabels ( hkl_sol )
-                    structure.setXYZSubtype()
+                    structure.setXYZSubtype   ()
+                    structure.addPhasesSubtype()
 
                     if "libindex" in meta:
                         structure.addLigands ( meta["libindex"] )

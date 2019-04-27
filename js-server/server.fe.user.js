@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    22.01.19   <--  Date of Last Modification.
+ *    24.04.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Front End Server -- User Support Module
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2018
+ *  (C) E. Krissinel, A. Lebedev 2016-2019
  *
  *  =================================================================
  *
@@ -405,6 +405,7 @@ var fe_server = conf.getFEConfig();
         rData.userData      = uData;
         rData.localSetup    = conf.isLocalSetup();
         rData.cloud_storage = (fcl.getUserCloudMounts(uData.login).length>0);
+        rData.demo_projects = fe_server.getDemoProjectsMount();
 
         response = new cmd.Response ( cmd.fe_retcode.ok,token,rData );
 
@@ -877,6 +878,7 @@ var fe_server = conf.getFEConfig();
     rData.helpTopics    = [];
     rData.exclude_tasks = conf.getExcludedTasks();
     rData.cloud_storage = false;
+    rData.demo_projects = fe_server.getDemoProjectsMount();
     if ('localuser' in fe_server)  {
       rData.localuser  = fe_server.localuser;
       rData.logintoken = getTokenFromHash ( 'localuser' );

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    15.01.19   <--  Date of Last Modification.
+ *    26.04.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -239,7 +239,8 @@ DataBox.prototype.getDataSummary = function ( task )  {
   if ((task.input_dtypes.length==1) && (task.input_dtypes[0]==1))  {
     var ndata = 0;
     for (var dtype in this.data)
-      ndata += this.data[dtype].length;
+      if (dtype!='undefined')
+        ndata += this.data[dtype].length;
     if (ndata>0)
       summary.status = 0;
     return summary;

@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    21.01.19   <--  Date of Last Modification.
+ *    24.04.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -37,6 +37,7 @@ var __current_page    = null;
 var __current_project = null;
 var __local_setup     = false;
 var __cloud_storage   = false;  // true if user has cloud storage allocated
+var __demo_projects   = false;  // true if demo projects are configured
 
 //var __touch_device = ('ontouchstart' in document.documentElement);
 // the following will also include desktops with touch screens:

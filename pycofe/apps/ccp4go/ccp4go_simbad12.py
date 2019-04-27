@@ -143,6 +143,7 @@ class Simbad12(ccp4go_dimple.Dimple):
         if simbad_meta:
             nResults   = simbad_meta["nResults"]
             meta       = simbad_meta["results"][0]
+            self.file_stdout.write ( json.dumps ( meta,indent=2 ))
             if nResults>0:
                 fpath_xyz  = os.path.join(self.reportdir,meta["pdb"])
                 fpath_mtz  = os.path.join(self.reportdir,meta["mtz"])

@@ -2,7 +2,7 @@
 /*
  *  ===========================================================================
  *
- *    13.04.19   <--  Date of Last Modification.
+ *    26.04.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  ---------------------------------------------------------------------------
  *
@@ -24,7 +24,7 @@
 // name and version tag
 
 function appName()  { return 'CCP4 Cloud' }
-var jsCoFE_version = '1.0.13 [13.04.2019]';
+var jsCoFE_version = '1.0.14 [26.04.2019]';
 
 
 // ============================================================================
@@ -70,6 +70,7 @@ var fe_reqtype = {
   preparePrjExport  : '-preparePrjExport',  // request to prepare project for export
   checkPrjExport    : '-checkPrjExport',    // request to check project export state
   finishPrjExport   : '-finishPrjExport',   // request to finish project export
+  startDemoImport   : '-startDemoImport',   // request to start demo project import
   checkPrjImport    : '-checkPrjImport',    // request to check project import state
   finishPrjImport   : '-finishPrjImport',   // request to finish project import
   prepareJobExport  : '-prepareJobExport',  // request to prepare job for export
