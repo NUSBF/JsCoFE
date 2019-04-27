@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    05.10.17   <--  Date of Last Modification.
+ *    25.04.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Export Project Dialog
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2017
+ *  (C) E. Krissinel, A. Lebedev 2016-2019
  *
  *  =================================================================
  *
@@ -84,7 +84,7 @@ function ExportProjectDialog ( projectList )  {
           },
           {
             id    : "cancel_btn",
-            text  : "Cancel",
+            text  : "Close",
             click : function() {
               $(this).dialog("close");
             }

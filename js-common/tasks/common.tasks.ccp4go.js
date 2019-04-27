@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    29.12.18   <--  Date of Last Modification.
+ *    27.04.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  CCP4go Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2018
+ *  (C) E. Krissinel, A. Lebedev 2016-2019
  *
  *  =================================================================
  *
@@ -104,7 +104,7 @@ function TaskCCP4go()  {
                                     'compatible lattice parameters and possible ' +
                                     'contaminants.',
                         iwidth    : 350,
-                        value     : true,
+                        value     : false,
                         position  : [1,0,1,3]
                       },
                 MORDA_CBX : {

@@ -276,11 +276,9 @@ var sender_cfg = conf.getServerConfig();
 
 // ==========================================================================
 
-function unpackDir ( dirPath,cleanTmpDir, onReady_func )  {
+function unpackDir1 ( dirPath,jobballPath,cleanTmpDir,remove_jobball_bool,onReady_func )  {
 // unpack all service jobballs (their names start with double underscore)
-// and clean them out
-
-  var jobballPath = getJobballPath ( dirPath );
+// and clean them out if remove_jobball_bool is true
 
   var unpack_dir = dirPath;
   var tmpDir     = '';
@@ -292,11 +290,56 @@ function unpackDir ( dirPath,cleanTmpDir, onReady_func )  {
     tmpDir = unpack_dir + '_JOBDIRCOPY';
   }
 
-  /*
-  var zip = utils.spawn ( conf.pythonName(),['-m','zip_file','-e',jobballPath,unpack_dir],{
+  var errs = '';
+  var zip = utils.spawn ( conf.pythonName(),['-m','pycofe.varut.zipfile','-e',jobballPath,unpack_dir],{
     stdio : ['ignore']
   });
-  */
+
+  zip.stderr.on ( 'data',function(data){
+    log.error ( 15,'zip/unpackDir errors: "' + data + '"; encountered in ' + dirPath );
+    errs = 'data_unpacking_errors';
+  });
+
+  zip.on('close', function(code){
+    if (remove_jobball_bool)
+      utils.removeFile ( jobballPath )
+    if (cleanTmpDir)  {
+       // replace destination with temporary directory used for unpacking;
+       // as all directories are on the same device (see above), the
+       // replace should be done within this thread and, therefore, safe
+       // for concurrent access from client
+       utils.moveFile ( dirPath   ,tmpDir  );
+       utils.moveFile ( unpack_dir,dirPath );
+       setTimeout ( function(){  // postpone for speed
+         utils.removePath ( tmpDir );
+       },0 );
+    }
+    if (errs)
+      onReady_func ( errs );
+    else
+      onReady_func ( code );
+  });
+
+}
+
+
+function unpackDir ( dirPath,cleanTmpDir, onReady_func )  {
+// unpack all service jobballs (their names start with double underscore)
+// and clean them out
+  var jobballPath = getJobballPath ( dirPath );
+  unpackDir1 ( dirPath,jobballPath,cleanTmpDir,true,onReady_func );
+
+  /*
+  var unpack_dir = dirPath;
+  var tmpDir     = '';
+  if (cleanTmpDir)  {
+    do {
+      unpack_dir = path.join ( cleanTmpDir,'tmp_'+crypto.randomBytes(20).toString('hex') );
+    } while (utils.fileExists(unpack_dir));
+    utils.mkDir ( unpack_dir );
+    tmpDir = unpack_dir + '_JOBDIRCOPY';
+  }
+
   var errs = '';
   var zip = utils.spawn ( conf.pythonName(),['-m','pycofe.varut.zipfile','-e',jobballPath,unpack_dir],{
     stdio : ['ignore']
@@ -325,6 +368,7 @@ function unpackDir ( dirPath,cleanTmpDir, onReady_func )  {
     else
       onReady_func ( code );
   });
+  */
 
 }
 
@@ -447,6 +491,7 @@ function receiveDir ( jobDir,tmpDir,server_request,onFinish_func )  {
 // export for use in node
 module.exports.jobballName    = jobballName;
 module.exports.packDir        = packDir;
+module.exports.unpackDir1     = unpackDir1;
 module.exports.unpackDir      = unpackDir;
 module.exports.getJobballPath = getJobballPath;
 module.exports.sendDir        = sendDir;

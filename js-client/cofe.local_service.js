@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.02.19   <--  Date of Last Modification.
+ *    24.04.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -45,6 +45,7 @@ function checkLocalService ( callback_func )  {
     if (response.status==fe_retcode.ok)  {
       __exclude_tasks = response.data.exclude_tasks;
       __cloud_storage = response.data.cloud_storage;
+      __demo_projects = response.data.demo_projects;
       __local_setup   = response.data.localSetup;
       __regMode       = response.data.regMode;
       if (response.data.localuser)  {

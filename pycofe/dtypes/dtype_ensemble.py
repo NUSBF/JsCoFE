@@ -3,13 +3,13 @@
 #
 # ============================================================================
 #
-#    25.09.18   <--  Date of Last Modification.
+#    27.04.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  ENSEMBLE DATA TYPE
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2018
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2019
 #
 # ============================================================================
 #
@@ -32,13 +32,15 @@ class DType(dtype_template.DType):
         if not json_str:
             self._type    = dtype()
             self.dname    = "ensemble"
-            self.version  = 2
-            self.sequence = None  # associated sequence class;
-                                  #   self.files[file_key["xyz"]]  - ensemble file
-                                  #   self.files[file_key["seq"]]  - sequence file
-            self.ncopies  = 1     # number of copies in ASU to look for in MR
-            self.nModels  = 1     # number of MR models in ensemble
-            self.rmsd     = 1.0   # estimate of ensemble dispersion
+            self.version  = 3
+            self.sequence = None    # associated sequence class;
+                                    #   self.files[file_key["xyz"]]  - ensemble file
+                                    #   self.files[file_key["seq"]]  - sequence file
+            self.ncopies  = 1       # number of copies in ASU to look for in MR
+            self.nModels  = 1       # number of MR models in ensemble
+            self.simtype  = "seqid" # target similarity type 'seqid' or 'rmsd'
+            self.rmsd     = ""      # estimate of ensemble dispersion
+            self.seqId    = "";     # estimate of ensemble homology
             self.xyzmeta  = {}
             self.meta     = None  # Gesamt alignment results
         return

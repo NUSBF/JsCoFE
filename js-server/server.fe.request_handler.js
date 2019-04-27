@@ -107,6 +107,10 @@ var response = null;
           response = prj.finishProjectExport ( login,data );
        break;
 
+    case cmd.fe_reqtype.startDemoImport :
+          response = prj.startDemoImport ( login,data );
+       break;
+
     case cmd.fe_reqtype.checkPrjImport :
           response = prj.checkProjectImport ( login,data );
        break;

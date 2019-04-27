@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    03.04.19   <--  Date of Last Modification.
+ *    24.04.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -179,6 +179,19 @@ var paths = [];
   return paths;
 }
 
+ServerConfig.prototype.getDemoProjectsMount = function()  {
+  var mount = null;
+  if (this.hasOwnProperty('cloud_mounts'))  {
+    for (name in this.cloud_mounts)  {
+      var lname = name.toLowerCase();
+      if ((lname.indexOf('demo')>=0) && (lname.indexOf('projects')>=0))  {
+        mount = name;
+        break;
+      }
+    }
+  }
+  return mount;
+}
 
 ServerConfig.prototype.checkStatus = function ( callback_func )  {
 
