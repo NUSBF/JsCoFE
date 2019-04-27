@@ -1,0 +1,14 @@
+
+INSTALLATION
+
+Please see  ./manual/html/index.html .
+
+STOPPING jsCoFE
+
+Currently, this may be done only by killing node instances:
+
+> killall node
+
+This should be done in periods when jsCoFE is idle: when it is not running any
+jobs and when there is no users interacting with the system. A graceful way of
+stopping jsCoFE will be provided later.
