@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    27.12.18   <--  Date of Last Modification.
+ *    01.05.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Facility Import Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2018
+ *  (C) E. Krissinel, A. Lebedev 2018-2019
  *
  *  =================================================================
  *
@@ -138,29 +138,49 @@ if (!__template)  {
 
   TaskCloudImport.prototype.setSelectedCloudFiles = function ( inputPanel,file_items )  {
 
+    var fitems = [];
+    var ignore = '';
+    for (var i=0;i<file_items.length;i++)  {
+      var lcname = file_items[i].name.toLowerCase();
+      if (endsWith(lcname,'.ccp4_demo') || endsWith(lcname,'.zip'))
+            ignore += '<li><b>' + file_items[i].name + '</b></li>';
+      else  fitems.push ( file_items[i] );
+    }
+
+    if (ignore.length>0)
+      new MessageBox ( 'File(s) not importable',
+                       'Archive file(s) <ul>' + ignore + '</ul> cannot be ' +
+                       'imported as data files and will be ignored.<p>' +
+                       'If you try to import ' + appName() + ' projects, ' +
+                       'do this from<br><i>Project List</i> page.' );
+
     (function(task){
 
-      _import_checkFiles ( file_items,task.file_mod,task.upload_files,function(){
+      if (fitems.length>0)  {
 
-        for (var i=0;i<file_items.length;i++)  {
-          var cfpath = 'cloudstorage::/' + task.currentCloudPath + '/' + file_items[i].name;
-          if (task.upload_files.indexOf(cfpath)<0)
-            task.upload_files.push ( cfpath );
-        }
+        _import_checkFiles ( fitems,task.file_mod,task.upload_files,function(){
 
-        if ('fileListPanel' in inputPanel)  {
-          inputPanel.fileListTitle.setVisible ( task.upload_files.length>0 );
-          if (task.upload_files.length>0)  {
-            var txt = '';
-            for (var i=0;i<task.upload_files.length;i++)  {
-              if (i>0)  txt += '<br>';
-              txt += task.upload_files[i];
-            }
-            inputPanel.fileListPanel.setText(txt).show();
+          for (var i=0;i<fitems.length;i++)  {
+            var cfpath = 'cloudstorage::/' + task.currentCloudPath + '/' + fitems[i].name;
+            if (task.upload_files.indexOf(cfpath)<0)
+              task.upload_files.push ( cfpath );
           }
-        }
 
-      });
+          if ('fileListPanel' in inputPanel)  {
+            inputPanel.fileListTitle.setVisible ( task.upload_files.length>0 );
+            if (task.upload_files.length>0)  {
+              var txt = '';
+              for (var i=0;i<task.upload_files.length;i++)  {
+                if (i>0)  txt += '<br>';
+                txt += task.upload_files[i];
+              }
+              inputPanel.fileListPanel.setText(txt).show();
+            }
+          }
+
+        });
+
+      }
 
     }(this))
 

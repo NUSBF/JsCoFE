@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    05.01.19   <--  Date of Last Modification.
+#    04.05.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -264,17 +264,18 @@ class Crank2(basic.TaskDriver):
                     " \"file=" + self.hkl[0].getHKLFilePath(self.inputDir()) + "\""
 
     def add_mbref ( self ):
-        if self.getParameter(self.sec6.MBREF_EXCLUDE_FREE)=="True" or \
-           self.getParameter(self.sec6.MBREF_EXCLUDE_FREE)=="_blank":
+        exclude_free = self.getParameter ( self.sec6.MBREF_EXCLUDE_FREE )
+        reflections  = ""
+        if exclude_free=="True" or exclude_free=="_blank_":
             #reflections = "exclude obj_from=0,typ=freeR"
             reflections = self.get_exclude()
-        else:
-            reflections = ""
         pgm = self.getParameter ( self.sec6.MBREF_MB_PROGRAM )
         if pgm=="_blank_":
             pgm = ""
         elif pgm!="arpwarp":
             pgm = "mb " + pgm
+            #if pgm=="buccaneer" and self.getParameter(self.sec1.SELEN_CBX)=="True":
+            #    pgm += " -build-semet"
         self.config.append ( "mbref " + reflections +\
             self.getKWItem ( self.sec6.MBREF_BIGCYC ) + " " + pgm
         )
@@ -293,6 +294,9 @@ class Crank2(basic.TaskDriver):
             else:
                 #always_exclude += " exclude obj_from=0,typ=freeR"
                 always_exclude += " " + self.get_exclude()
+            #semet = ""
+            #if self.getParameter(self.sec1.SELEN_CBX)=="True":
+            #    semet = " -build-semet"
             self.config.append ( "comb_phdmmb" + always_exclude +\
                 self.getKWItem ( self.sec6.COMB_PHDMMB_START_SHELXE       ) +\
                 self.getKWItem ( self.sec6.COMB_PHDMMB_SKIP_INITIAL_BUILD ) +\

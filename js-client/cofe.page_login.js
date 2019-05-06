@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    28.03.19   <--  Date of Last Modification.
+ *    05.05.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -129,11 +129,13 @@ function LoginPage ( sceneId )  {
       viewFullScreen.addEventListener("click",setFullScreen );
 */
 
-  if (__touch_device)
-    login_btn.addOnClickListener ( setFullScreen );
+  //if (__touch_device)
+  //  login_btn.addOnClickListener ( setFullScreen );
 
   login_btn.addOnClickListener ( function(){
 
+    if (__touch_device)
+      setFullScreen();
 
     // Validate the input
     var msg = '';

@@ -63,8 +63,8 @@ function TaskShelxCD()  {
       data_type   : {'DataHKL':[]},   // data type(s) and subtype(s)
       label       : 'Native dataset', // label for input dialog
       inputId     : 'native',     // input Id for referencing input fields
-      customInput : 'native',     // lay custom fields next to the selection
-                                  // dropdown for 'native' dataset
+      //customInput : 'native',     // lay custom fields next to the selection
+      //                            // dropdown for 'native' dataset
       tooltip     : 'Native dataset is optional and may be chosen from both ' +
                     'non-anomalous (typical case) and anomalous diffraction ' +
                     'datasets. Native dataset must not coincide with any of ' +

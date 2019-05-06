@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    09.04.19   <--  Date of Last Modification.
+#    29.04.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -66,8 +66,8 @@ class CCP4Build(ccp4go_buccaneer.Buccaneer):
             "labin_fo         /*/*/[" + columns["F"] + "," + columns["SIGF"] + "]",
             "labin_free       /*/*/[" + columns["FREE"] + "]",
             "cycles_min       2",
-            "cycles_max       2",
-            "noimprove_cycles 3",
+            "cycles_max       8",
+            "noimprove_cycles 4",
             "dm_mode          auto",
             "fill_mode        auto",
             "fit_mode         auto",
@@ -152,7 +152,7 @@ class CCP4Build(ccp4go_buccaneer.Buccaneer):
 
         if meta:  # check for solution
 
-            fname = meta["outnames"][1]  # edcc
+            fname = meta["outnames"][1]  # best edcc
             ccp4build_xyz  = os.path.join ( resultdir,fname + ".pdb" )
             ccp4build_mtz  = os.path.join ( resultdir,fname + ".mtz" )
             ccp4build_map  = os.path.join ( resultdir,fname + ".map" )

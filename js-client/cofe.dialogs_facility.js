@@ -473,9 +473,11 @@ function CloudFileBrowser ( inputPanel,task,imageKey,onSelect_func,onClose_func 
   document.body.appendChild ( this.element );
 
   this.grid = new Grid('-compact');
+  this.grid.setWidth ( '100%' );
   this.addWidget ( this.grid );
 
-  this.tree_panel = this.grid.setPanel ( 0,0,1,1 );
+  this.dir_desc   = this.grid.setLabel ( '',0,0,1,1 ).setWidth ( '100%' );
+  this.tree_panel = this.grid.setPanel ( 1,0,1,1 );
   this.tree_panel.element.setAttribute ( 'class','tree-content' );
   this.storageTree = null;
 
@@ -529,7 +531,7 @@ CloudFileBrowser.prototype.loadStorageTree = function()  {
     browser.tree_loading = true;
 
     var storageTree = new StorageTree ( 'files',browser.task.currentCloudPath,
-                                                browser.image_key );
+                                                browser.image_key,browser.dir_desc );
 
     storageTree.element.style.paddingTop    = '0px';
     storageTree.element.style.paddingBottom = '25px';
@@ -655,7 +657,7 @@ CloudFileBrowser.prototype.getStorageList = function ( path,callback_func )  {
 
   } else  {
 
-    var storageTree = new StorageTree ( 'files',path,this.image_key );
+    var storageTree = new StorageTree ( 'files',path,this.image_key,this.dir_desc );
     storageTree.readStorageData ( 'Cloud File Storage',
       function(){
         if (storageTree.storageList)  {

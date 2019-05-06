@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    13.04.19   <--  Date of Last Modification.
+#    03.05.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -34,7 +34,7 @@ class DType(dtype_template.DType):
             self._type         = dtype()
             self.dname         = "hkl"
             self.version      += 1      # versioning increments from parent to children
-            self.wtype         = "peak" # 'low-remote', 'peak', 'native', 'high-remote'
+            self.wtype         = "choose-one" # 'low-remote', 'peak', 'native', 'high-remote'
             self.f_use_mode    = "NO"   # 'NO','EDGE','ON','OFF' (Phaser-EP)
             self.f1            = ""     # amplitude shift  (Crank-2, Phaser-EP)
             self.f11           = ""     # phase shift      (Crank-2, Phaser-EP)

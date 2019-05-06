@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    25.04.19   <--  Date of Last Modification.
+ *    03.05.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -150,8 +150,8 @@ if (!__template)  {
     }
 
     if (this.ASU.ha_type)
-          dsp.makeRow ( 'HA type',this.ASU.ha_type,'Heavy Atom type' );
-    else  dsp.makeRow ( 'HA type','<i>unspecified</i>','Heavy Atom type' );
+          dsp.makeRow ( 'HA type',this.ASU.ha_type,'Main anomalous scatterer' );
+    else  dsp.makeRow ( 'HA type','<i>unspecified</i>','Main anomalous scatterer' );
 
     return dsp;
 
@@ -227,10 +227,10 @@ if (!__template)  {
       }
     }
 
-    customGrid.setLabel ( 'heavy atom type:',row,0,1,1 ).setFontItalic(true).setNoWrap();
+    customGrid.setLabel ( 'main anomalous scatterer:',row,0,1,1 ).setFontItalic(true).setNoWrap();
     customGrid.ha_type = customGrid.setInputText ( this.ASU.ha_type,row,1,1,1 )
-              .setStyle    ( 'text','','','Specify atom type of anomolous ' +
-                             'scatterers, or leave blank if uncertain.' )
+              .setStyle    ( 'text','','','Specify the atom type of dominant anomolous ' +
+                             'scatterer (e.g., S, SE etc.)' )
               .setWidth_px ( 36 ).setMaxInputLength ( 2 );
     customGrid.setVerticalAlignment ( row,0,'middle' );
 
@@ -281,7 +281,7 @@ if (!__template)  {
 
   DataRevision.prototype._layCDI_PhaserEP = function ( dropdown )  {
   var customGrid = dropdown.customGrid;
-    customGrid.setLabel ( 'Heavy atom type:',0,0,1,1 ).setFontItalic(true).setNoWrap();
+    customGrid.setLabel ( 'Main anomalous scatterer:',0,0,1,1 ).setFontItalic(true).setNoWrap();
     customGrid.setLabel ( this.ASU.ha_type  ,0,1,1,1 );
     if (this.Structure)  {
       dropdown.in_revision = true;
@@ -394,7 +394,7 @@ if (!__template)  {
     if (this.ASU)  {
       this.ASU.ha_type = dropdown.customGrid.ha_type.getValue().trim();
       if (!this.ASU.ha_type)
-        msg += '<b><i>Heavy atom type must be given</i></b>';
+        msg += '<b><i>Main anomalous scatterer must be given</i></b>';
       if (dropdown.customGrid.hasOwnProperty('ndisulph') &&
           (this.ASU.ha_type.toLowerCase()=='s'))  {
         var ndisulph = dropdown.customGrid.ndisulph.getValue();
@@ -443,29 +443,7 @@ if (!__template)  {
         break;
       case 'crank2'  :
           msg = this._collectCDI_Crank2 ( dropdown );
-          /*
-          if ('removeNonAnom' in dropdown.customGrid)
-            this.Structure.removeNonAnom = dropdown.customGrid.removeNonAnom.getValue();
-          if (this.ASU)  {
-            this.ASU.ha_type = dropdown.customGrid.ha_type.getValue().trim();
-            if (!this.ASU.ha_type)
-              msg += '<b><i>Heavy atom type must be given</i></b>';
-            if (this.ASU.ha_type.toLowerCase()=='s')  {
-              var ndisulph = dropdown.customGrid.ndisulph.getValue();
-              if (isInteger(ndisulph))  {
-                var ndisulph = parseInt(ndisulph);
-                if (ndisulph>=0)
-                  this.ASU.ndisulph = ndisulph;
-                else
-                  msg += '<b><i>Number of disulphides should be positive</i></b>';
-              } else
-                msg += '<b><i>Wrong format for number of disulphides</i></b>';
-            }
-          }
-          msg += this.HKL.collectCustomDropdownInput ( dropdown );
-          */
         break;
-          //msg = this._collectCDI_Crank2 ( dropdown );  break;
       case 'shelx-auto'   :
       case 'shelx-substr' :
           msg = this._collectCDI_Crank2 ( dropdown );

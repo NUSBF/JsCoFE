@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    13.04.19   <--  Date of Last Modification.
+ *    03.05.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -34,7 +34,7 @@ function TaskASUDef()  {
 
   this._type     = 'TaskASUDef';
   this.name      = 'asymmetric unit contents';
-  this.oname     = 'asu contents';  //'*';   // asterisk here means do not use
+  this.oname     = '';  //'*';   // asterisk here means do not use
   this.title     = 'Asymmetric Unit Contents';
   this.helpURL   = './html/jscofe_task_asudef.html';
   this.fasttrack = true;  // enforces immediate execution
@@ -75,28 +75,36 @@ function TaskASUDef()  {
 
   this.parameters = { // input parameters
 
-    HATOM : {
-              type      : 'string_',   // empty string allowed
+    HATOM : { type      : 'string_',   // empty string allowed
               keyword   : 'atomtype=',
-              label     : '<b><i>Heavy atom type</i></b>',
-              tooltip   : 'Specify atom type of anomalous scatterers (e.g., S, SE etc.), ' +
-                          'or leave blank if uncertain.',
+              label     : '<b><i>Main anomalous<br>scatterer</i></b>',
+              tooltip   : 'Specify atom type of dominant anomalous scatterer ' +
+                          '(e.g., S, SE etc.), or leave blank if uncertain.',
               iwidth    : 36,
               value     : '',
               emitting  : true,    // will emit 'onchange' signal
               maxlength : 2,       // maximum input length
-              position  : [0,0,1,3]
-           },
+              position  : [0,0,1,1],
+              showon    : {'hkl.subtype:anomalous':[1]}
+            },
+
+    EPLBL : { type      : 'label',
+              label     : '<h3>Reflection data does not contain anomalous differences.</h3>' +
+                          '<font color="maroon"><i>Not suitable for Experimental Phasing.</i></font>',
+              position  : [1,0,1,5],
+              showon    : {'hkl.subtype:anomalous':[0,-1]}
+            },
+
 
     NSPL : {  type      : 'label',
               label     : '&nbsp',
-              position  : [1,0,1,1]
+              position  : [2,0,1,5]
            },
 
     sec1 : {  type      : 'section',
               title     : 'Parameters',
               open      : true,  // true for the section to be initially open
-              position  : [2,0,1,5],
+              position  : [3,0,1,5],
               showon    : {seq:[-1,0]},
               contains  : {
                 ESTIMATE_SEL : {

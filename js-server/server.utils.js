@@ -73,7 +73,7 @@ function removeFile ( path ) {
 }
 
 
-function readString ( path ) {
+function readString ( path )  {
   try {
     return fs.readFileSync(path).toString();
   } catch (e)  {

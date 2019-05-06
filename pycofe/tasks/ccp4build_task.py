@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    11.04.19   <--  Date of Last Modification.
+#    28.04.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -50,6 +50,30 @@ class CCP4Build(basic.TaskDriver):
     # task-specific definitions
     def workdir        (self):  return "workdir"
     def ccp4build_seq  (self):  return "ccp4build.seq"
+    def mtz_cad        (self):  return "__cad.mtz"
+
+
+    # ----------------------------------------------------------------------
+
+    def mergeMTZ ( self,mtzHKL,lblHKL,mtzPhases,lblPhases,mtzOut ):
+
+        cmd = [ "HKLIN1",mtzHKL,
+                "HKLIN2",mtzPhases,
+                "HKLOUT",mtzOut ]
+
+        self.open_stdin()
+        self.write_stdin ( "LABIN  FILE 1" )
+        for i in range(len(lblHKL)):
+            self.write_stdin ( " E%d=%s" % (i+1,lblHKL[i]) )
+        self.write_stdin ( "\nLABIN  FILE 2" )
+        for i in range(len(lblPhases)):
+            self.write_stdin ( " E%d=%s" % (i+1,lblPhases[i]) )
+        self.write_stdin ( "\n" )
+        self.close_stdin()
+
+        self.runApp ( "cad",cmd,logType="Service" )
+
+        return
 
 
     # ------------------------------------------------------------------------
@@ -70,6 +94,9 @@ class CCP4Build(basic.TaskDriver):
         sec1     = self.task.parameters.sec1.contains
         sec2     = self.task.parameters.sec2.contains
 
+        mtzHKL    = hkl    .getHKLFilePath ( self.inputDir() )
+        mtzPhases = istruct.getMTZFilePath ( self.inputDir() )
+
         # Prepare combined sequence file for cbuccaneer
         with open(self.ccp4build_seq(),'wb') as newf:
             if len(seq)>0:
@@ -81,14 +108,35 @@ class CCP4Build(basic.TaskDriver):
             else:
                 newf.write ( ">polyUNK\nU\n" );
 
-        self.open_stdin()
-        self.write_stdin ([
-            "[input_data]",
-            "seqpath      " + self.ccp4build_seq()
-        ])
+        #self.open_stdin()
+        #self.write_stdin ([
+        #    "[input_data]",
+        #    "seqpath      " + self.ccp4build_seq()
+        #])
+
+        labin_fo = hkl.getMeanF()
 
         if istruct.HLA and istruct.getSubFileName():
             #  experimental phases
+
+            self.mergeMTZ ( mtzHKL   ,[labin_fo[0],labin_fo[1],hkl.getFreeRColumn()],
+                            mtzPhases,[istruct.HLA,istruct.HLB,istruct.HLC,istruct.HLD],
+                            self.mtz_cad() )
+
+            self.open_stdin()
+            self.write_stdin ([
+                "[input_data]",
+                "seqpath      " + self.ccp4build_seq()
+            ])
+            self.write_stdin ([
+                "xyzpath_ha   " + istruct.getSubFilePath(self.inputDir()),
+                "mtzpath      " + istruct.getMTZFilePath(self.inputDir()),
+                "labin_fo     /*/*/[" + labin_fo[0] + "," + labin_fo[1] + "]",
+                "labin_hl     /*/*/[" + istruct.HLA + "," + istruct.HLB + "," +\
+                                        istruct.HLC + "," + istruct.HLD + "]",
+                "labin_free   /*/*/[" + hkl.getFreeRColumn() + "]"
+            ])
+            """
             self.write_stdin ([
                 "xyzpath_ha   " + istruct.getSubFilePath(self.inputDir()),
                 "mtzpath      " + istruct.getMTZFilePath(self.inputDir()),
@@ -97,16 +145,33 @@ class CCP4Build(basic.TaskDriver):
                                         istruct.HLC + "," + istruct.HLD + "]",
                 "labin_free   /*/*/[" + istruct.FreeR_flag + "]"
             ])
+            """
+
         else:
             #  molecular replacement phases
-            labin_fo = hkl.getMeanF()
+
+            self.mergeMTZ ( mtzHKL   ,[labin_fo[0],labin_fo[1],hkl.getFreeRColumn()],
+                            mtzPhases,[istruct.PHI,istruct.FOM],
+                            self.mtz_cad() )
+
+            self.open_stdin()
             self.write_stdin ([
-                "xyzpath_mr   " + istruct.getXYZFilePath(self.inputDir()),
-                "mtzpath      " + hkl.getHKLFilePath(self.inputDir()),
-                "labin_fo     /*/*/[" + labin_fo[0] + "," + labin_fo[1] + "]",
-                #"labin_phifom  /*/*/[" + istruct.PHI + "," + istruct.FOM  + "]",
-                #"labin_fc      /*/*/[" + istruct.FWT + "," + istruct.PHWT + "]"
-                "labin_free   /*/*/[" + hkl.getFreeRColumn() + "]"
+                "[input_data]",
+                "seqpath      " + self.ccp4build_seq()
+            ])
+
+            xyzpath_mr = istruct.getXYZFilePath(self.inputDir())
+            if xyzpath_mr:
+                self.write_stdin ([
+                    "xyzpath_mr   " + xyzpath_mr
+                ])
+            self.write_stdin ([
+                #"mtzpath      " + hkl.getHKLFilePath(self.inputDir()),
+                "mtzpath       " + self.mtz_cad(),
+                "labin_fo      /*/*/[" + labin_fo[0] + "," + labin_fo[1] + "]",
+                "labin_phifom  /*/*/[" + istruct.PHI + "," + istruct.FOM  + "]",
+                #"labin_fc      /*/*/[" + istruct.FWT + "," + istruct.PHWT + "]",
+                "labin_free    /*/*/[" + hkl.getFreeRColumn() + "]"
             ])
 
         solcont = float( revision.ASU.solvent )

@@ -39,7 +39,7 @@ function TaskCootMB()  {
   this.nc_type = 'client';  // job may be run only on client NC
 
   this.input_dtypes = [{      // input data types
-      data_type : {'DataRevision':['xyz','substructure','phases']}, // data type(s) and subtype(s)
+      data_type : {'DataRevision':['xyz','substructure','!phases']}, // data type(s) and subtype(s)
       label     : 'Structure revision',     // label for input dialog
       inputId   : 'revision', // input Id for referencing input fields
       version   : 4,          // minimum data version allowed

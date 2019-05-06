@@ -3,13 +3,13 @@
 #
 # ============================================================================
 #
-#    17.07.18   <--  Date of Last Modification.
+#    30.04.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  FILE TYPE DETECTION FUNCTION
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2018
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2018-2019
 #
 # ============================================================================
 #
@@ -36,6 +36,13 @@ def ftype_CIFMerged    ():  return "cif_merged"
 def ftype_XYZ          ():  return "xyz"
 def ftype_Ligand       ():  return "ligand"
 def ftype_Sequence     ():  return "sequence"
+def ftype_HTML         ():  return "html"
+def ftype_PDF          ():  return "pdf"
+def ftype_TEXT         ():  return "text"
+def ftype_JPG          ():  return "jpg"
+def ftype_JPEG         ():  return "jpeg"
+def ftype_PNG          ():  return "png"
+def ftype_GIF          ():  return "gif"
 def ftype_Unknown      ():  return "unknown"
 
 # ============================================================================
@@ -79,5 +86,13 @@ def getFileType ( fname,importDir,file_stdout ):
     if fext in ('.map','.mrc'):           return ftype_Map()
     if fext in ('.pdb','.mmcif','.ent'):  return ftype_XYZ()
     if fext in ('.seq','.fasta','.pir'):  return ftype_Sequence()
+
+    if fext=='.html':  return ftype_HTML()
+    if fext=='.pdf' :  return ftype_PDF ()
+    if fext=='.txt' :  return ftype_TEXT()
+    if fext=='.jpg' :  return ftype_JPG ()
+    if fext=='.jpeg':  return ftype_JPEG()
+    if fext=='.png' :  return ftype_PNG ()
+    if fext=='.gif' :  return ftype_GIF ()
 
     return ftype_Unknown()

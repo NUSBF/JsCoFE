@@ -68,7 +68,7 @@ TaskShelxSubstr.prototype.currentVersion = function()  {
 if (__template)  {
   //  for server side
 
-  var conf         = require('../../js-server/server.configuration');
+  var conf = require('../../js-server/server.configuration');
   //var tsk_template = require ( './common.tasks.template' );
 
   TaskShelxSubstr.prototype.getCommandLine = function ( exeType,jobDir )  {

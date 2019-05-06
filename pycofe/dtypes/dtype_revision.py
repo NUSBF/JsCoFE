@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    13.04.19   <--  Date of Last Modification.
+#    04.05.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -27,16 +27,16 @@ from   pycofe.varut  import jsonut
 def dtype(): return "DataRevision"  # must coincide with data definitions in JS
 
 spec1_list = [
-    [dtype_template.subtypeAnomalous(),"anomalous"],
-    [dtype_template.subtypeProtein  (),"protein"  ],
-    [dtype_template.subtypeDNA      (),"dna"      ],
-    [dtype_template.subtypeRNA      (),"rna"      ]
+    [dtype_template.subtypeAnomalous(),"anom"    ],
+    [dtype_template.subtypeProtein  (),"protein" ],
+    [dtype_template.subtypeDNA      (),"dna"     ],
+    [dtype_template.subtypeRNA      (),"rna"     ]
 ]
 
 spec2_list = [
-    [dtype_template.subtypeSubstructure(),"substructure"],
-    [dtype_template.subtypeXYZ         (),"xyz"         ],
-    [dtype_template.subtypePhases      (),"phases"      ]
+    [dtype_template.subtypeSubstructure(),"substructure" ],
+    [dtype_template.subtypeXYZ         (),"xyz"          ],
+    [dtype_template.subtypePhases      (),"phases"       ]
 ]
 
 
@@ -170,6 +170,8 @@ class DType(dtype_template.DType):
         self.addSubtype ( dtype_template.subtypeHKL() )
         if hkl.isAnomalous():
             self.addSubtype ( dtype_template.subtypeAnomalous() )
+        else:
+            self.removeSubtype ( dtype_template.subtypeAnomalous() )
         return
 
     def setASUData ( self,seq,nRes,molWeight,dataKey,mc1,sol1,prb1 ):

@@ -213,7 +213,9 @@ class DType(jsonut.jObject):
 
 
     def copySubtype ( self,data ):
-        self.subtype = data.subtype
+        self.subtype = []
+        for st in data.subtype:
+            self.subtype.append ( st )
         return
 
 

@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    21.12.18   <--  Date of Last Modification.
+#    30.04.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -20,7 +20,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2018
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2019
 #
 # ============================================================================
 #
@@ -34,11 +34,11 @@ import pyrvapi
 #  application imports
 import basic
 from proc import (import_xrayimages, import_unmerged, import_merged,
-                  import_xyz, import_ligand, import_sequence)
+                  import_xyz, import_ligand, import_sequence, import_doc)
 from proc import import_pdb
 
 importers = [import_xrayimages, import_unmerged, import_merged,
-             import_xyz, import_ligand, import_sequence]
+             import_xyz, import_ligand, import_sequence, import_doc]
 
 # import_map can fail if the mrcfile package is not available. Once mrcfile is
 # properly included in CCP4 builds, this can be changed to a normal import.
