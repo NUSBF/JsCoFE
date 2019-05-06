@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    13.04.19   <--  Date of Last Modification.
+#    01.05.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -53,9 +53,9 @@ class ShelxCD(basic.TaskDriver):
 
     def writeHKLIN ( self,key,hkl ):
         if hkl.cols[-1]=="F":
-            self.write_stdin ( [key + " -f " + hkl.basename + ".hkl"] )
+            self.write_stdin ( [key + " -f " + hkl.cnvfname] )
         else:
-            self.write_stdin ( [key + " " + hkl.basename + ".hkl"] )
+            self.write_stdin ( [key + " " + hkl.cnvfname] )
         return
 
 
@@ -82,12 +82,16 @@ class ShelxCD(basic.TaskDriver):
         for i in range(len(hkl)):
             hkl[i] = self.makeClass ( hkl[i] )
             hkl[i].cols = hkl[i].getAnomalousColumns()
-            self.open_stdin()
             if hkl[i].cols[4]!="X":
                 dmin = min ( dmin,hkl[i].getHighResolution(True) )
                 dmax = max ( dmax,hkl[i].getLowResolution(True) )
-                if hkl[i].wtype=="peak" or (hkl[i].wtype=="inflection" and not hkl0):
+                if hkl[i].wtype=="peak":
                     hkl0 = hkl[i]
+                elif hkl[i].wtype=="inflection" and not hkl0:
+                    hkl0 = hkl[i]
+                """
+                hkl[i].cnvfname = os.path.splitext(hkl[i].getHKLFileName())[0] + ".hkl"
+                self.open_stdin()
                 if hkl[i].cols[4]=="F":
                     self.write_stdin ([
                         "OUTP shelx",
@@ -101,18 +105,43 @@ class ShelxCD(basic.TaskDriver):
                             " I(-)=" + hkl[i].cols[2] + " SIGI(-)=" + hkl[i].cols[3]
                     ])
                 self.close_stdin()
-                hkl[i].basename = os.path.splitext(hkl[i].getHKLFileName())[0]
                 self.runApp ( "mtz2various",[
                     "HKLIN" ,hkl[i].getHKLFilePath(self.inputDir()),
-                    "HKLOUT",hkl[i].basename + ".hkl"
+                    "HKLOUT",hkl[i].cnvfname
                 ],logType="Service")
+                """
+
+                if hkl[i].cols[4]=="F":
+                    hkl[i].cnvfname = os.path.splitext(hkl[i].getHKLFileName())[0] + ".hkl"
+                    self.open_stdin()
+                    self.write_stdin ([
+                        "OUTP shelx",
+                        "LABI F(+)=" + hkl[i].cols[0] + " SIGF(+)=" + hkl[i].cols[1] +\
+                            " F(-)=" + hkl[i].cols[2] + " SIGF(-)=" + hkl[i].cols[3]
+                    ])
+                    self.close_stdin()
+                    self.runApp ( "mtz2various",[
+                        "HKLIN" ,hkl[i].getHKLFilePath(self.inputDir()),
+                        "HKLOUT",hkl[i].cnvfname
+                    ],logType="Service")
+                elif hkl[i].cols[4]=="I":
+                    hkl[i].cnvfname = os.path.splitext(hkl[i].getHKLFileName())[0] + ".sca"
+                    self.runApp ( "mtz2sca",[
+                        "-p",hkl[i].cols[0], "-m",hkl[i].cols[2],
+                        "-P",hkl[i].cols[1], "-M",hkl[i].cols[3],
+                        hkl[i].getHKLFilePath(self.inputDir()),
+                        hkl[i].cnvfname
+                    ],logType="Service")
+
+        hkla = hkl0  # "leading" anomalous dataset
 
         if hasattr(self.input_data.data,"native"):  # optional data parameter
             native = self.makeClass ( self.input_data.data.native[0] )
             hkl0   = native
-            self.open_stdin()
             native.cols = native.getMeanColumns()
             if native.cols[2]!="X":
+                native.cnvfname = os.path.splitext(native.getHKLFileName())[0] + ".hkl"
+                self.open_stdin()
                 if native.cols[2]=="F":
                     self.write_stdin ([
                         "OUTP shelx",
@@ -124,10 +153,9 @@ class ShelxCD(basic.TaskDriver):
                         "LABI I=" + native.cols[0] + " SIGI=" + native.cols[1]
                     ])
                 self.close_stdin()
-                native.basename = os.path.splitext(native.getHKLFileName())[0]
                 self.runApp ( "mtz2various",[
                     "HKLIN" ,native.getHKLFilePath(self.inputDir()),
-                    "HKLOUT",native.basename + ".hkl"
+                    "HKLOUT",native.cnvfname
                 ],logType="Service" )
 
         if not hkl0:
@@ -187,7 +215,7 @@ class ShelxCD(basic.TaskDriver):
                     self.writeHKLIN ( "PEAK",hkl[i] )
                 elif hkl[i].wtype=="inflection":
                     self.writeHKLIN ( "INFL",hkl[i] )
-                elif hkl[i].wtype=="low-rempte":
+                elif hkl[i].wtype=="low-remote":
                     self.writeHKLIN ( "LREM",hkl[i] )
                 elif hkl[i].wtype=="high-remote":
                     self.writeHKLIN ( "HREM",hkl[i] )
@@ -226,15 +254,15 @@ class ShelxCD(basic.TaskDriver):
                                                  title="" )
             if structure:
 
-                self.putMessage ( "&nbsp;" )
-
-                anom_structure = self.finaliseAnomSubstructure ( pdbfile,
-                                            "anom_substructure",hkl0,[],"",False )
-                if anom_structure:
-                    anom_structure.setAnomSubstrSubtype() # substructure
-                    #anom_structure.setHLLabels()
-                else:
-                    self.putMessage ( "Anomalous substructure calculations failed." )
+                if hkla:
+                    self.putMessage ( "&nbsp;" )
+                    anom_structure = self.finaliseAnomSubstructure ( pdbfile,
+                                                "anom_substructure",hkla,[],"",False )
+                    if anom_structure:
+                        anom_structure.setAnomSubstrSubtype() # substructure
+                        #anom_structure.setHLLabels()
+                    else:
+                        self.putMessage ( "Anomalous substructure calculations failed." )
 
                 # finalise output revision(s)
                 # remove Refmac results from structure:
@@ -289,8 +317,8 @@ class ShelxCD(basic.TaskDriver):
                     # make structure revision
                     ri = dtype_revision.DType ( -1 )
                     ri.copy ( revision )
-                    ri.setReflectionData ( hkl_all[i]     )
-                    ri.setStructureData  ( structure )
+                    ri.setStructureData  ( structure  )
+                    ri.setReflectionData ( hkl_all[i] )
 
                     if len(hkl_all)==1:
                         ri.makeRevDName  ( self.job_id,i+1,self.outputFName )

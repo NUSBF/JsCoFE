@@ -607,6 +607,11 @@ class TaskDriver(object):
             return (self.file_type[fpath]==ftype)
         return False
 
+    def checkFileImportL ( self,fpath,ftype_list ):
+        if fpath in self.file_type:
+            return (self.file_type[fpath] in ftype_list)
+        return False
+
     # ============================================================================
 
     def writeKWParameter ( self,item ):

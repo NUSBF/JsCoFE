@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    13.04.19   <--  Date of Last Modification.
+#    04.05.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -324,7 +324,7 @@ def makeRevision ( base,hkl,seq,composition,altEstimateKey,altNRes,
                                 base.rvrow,0,1,1 )
         base.rvrow += 1
 
-        #  create first structure revision
+        #  create initial structure revision
         revision = revision0
         if not revision:
             revision = dtype_revision.DType ( -1 )
@@ -374,10 +374,9 @@ def revisionFromStructure ( base,hkl,structure,name,useSequences=None,
     annotation = {"rename":{}, "annotation":[] }
     base.resetFileImport()
     for i in range(len(seq)):
-        if base.outputFName!="*":
+        fname = ""
+        if base.outputFName and base.outputFName!="*":
             fname = base.outputFName +  "_"
-        else:
-            fname = ""
         fname += name + "_" + id[i] + ".fasta"
         dtype_sequence.writeSeqFile ( os.path.join(base.importDir(),fname),
                                       name + "_" + id[i],seq[i] )
@@ -430,7 +429,7 @@ def revisionFromStructure ( base,hkl,structure,name,useSequences=None,
 
     if make_revision:
 
-        if base.outputFName=="*":
+        if base.outputFName and base.outputFName=="*":
             base.outputFName = name
 
         composition = "P"
@@ -500,7 +499,11 @@ class ASUDef(basic.TaskDriver):
             if istruct:
                 revision[0].setStructureData ( istruct )
             revision[0].ASU.ha_type = self.getParameter ( self.task.parameters.HATOM )
-            self.registerRevision ( revision[0] )
+            revName = None
+            if self.outputFName in ["*",""]:
+                revName = "asu [" + hkl.getDataSetName() + "]"
+            revision[0].addSubtypes ( hkl.subtype )
+            self.registerRevision ( revision[0],revisionName=revName )
 
         # close execution logs and quit
         self.success()

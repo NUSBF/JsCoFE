@@ -520,7 +520,6 @@ class Base(object):
         #  used in order to avoid feeding Refmac's output reflection columns
         #  as observation data for downstream tasks.
 
-
         hklout = nameout + ".cad.mtz"
         cmd    = [ "HKLIN1",meta_hkl   ["mtzpath"],
                    "HKLIN2",meta_phases["mtzpath"],

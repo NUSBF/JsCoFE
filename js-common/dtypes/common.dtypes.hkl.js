@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    13.04.19   <--  Date of Last Modification.
+ *    06.05.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -40,7 +40,7 @@ function DataHKL()  {
              else  DataTemplate.call ( this );
 
   this._type         = 'DataHKL';
-  this.wtype         = 'peak'; // 'low-remote', 'peak', 'native', 'high-remote'
+  this.wtype         = 'choose-one'; // 'low-remote', 'peak', 'native', 'high-remote'
   this.f_use_mode    = 'NO';   // 'NO','EDGE','ON','OFF' (Phaser-EP)
   this.f1            = '';     // amplitude shift  (Crank-2, Phaser-EP)
   this.f11           = '';     // phase shift      (Crank-2, Phaser-EP)
@@ -221,6 +221,7 @@ if (!__template)  {
       setLabel ( 'wavelength type:',r,0 );
       customGrid.wtype = new Dropdown();
       customGrid.wtype.setWidth ( '150px' );
+      customGrid.wtype.addItem ( '[choose one]' ,'','choose-one' ,this.wtype=='choose-one'  );
       customGrid.wtype.addItem ( 'low remote' ,'','low-remote' ,this.wtype=='low-remote'  );
       customGrid.wtype.addItem ( 'inflection' ,'','inflection' ,this.wtype=='inflection'  );
       customGrid.wtype.addItem ( 'peak'       ,'','peak'       ,this.wtype=='peak'        );
@@ -574,11 +575,15 @@ if (!__template)  {
                    (dropdown.serialNo+1) + '</b> wrong format of f\'' );
       this.f11   = readF ( customGrid.f11,this.f11,true,'<b>hkl dataset #' +
                    (dropdown.serialNo+1) + '</b> wrong format of f"' );
+      if (this.wtype=='choose-one')
+        msg += '<b><i>Wavelength type must be chosen</i></b>';
     }
 
     this.collectAnomShelx = function()  {
       // get the wavelength type
       this.wtype = customGrid.wtype.getValue();
+      if (this.wtype=='choose-one')
+        msg += '<b><i>Wavelength type must be chosen</i></b>';
     }
 
     this.collectNative = function()  {
@@ -614,17 +619,10 @@ if (!__template)  {
       this.res_high   = customGrid.res_high  .getValue();
       this.wavelength = customGrid.wavelength.getValue();
 
-      //if (this.res_low   =='') this.res_low  = round ( this.getLowResolution (),2 );
-      //if (this.res_high  =='') this.res_high = round ( this.getHighResolution(),2 );
       if (this.wavelength=='') this.wavelength = this.getWavelength();
 
       this.f_use_mode = customGrid.f_use_mode.getValue();
       if (this.f_use_mode!='NO')  {
-        /*
-        this.anomAtomType = customGrid.anomAtomType.getValue();
-        if (this.anomAtomType=='')
-          msg += '<b>no atom type for anomalous scatterer is given</b>';
-        */
         this.f1  = readF ( customGrid.f1,this.f1,false,
                            '<b>wrong format (empty field?) of f\'</b>' );
         this.f11 = readF ( customGrid.f11,this.f11,false,

@@ -134,6 +134,7 @@ class Simbad12(ccp4go_dimple.Dimple):
             rfree   = r2[1]
             rfactor = r2[0]
 
+        nResults   = 0
         fpath_xyz  = ""
         fpath_mtz  = ""
         fpath_map  = ""
@@ -141,17 +142,21 @@ class Simbad12(ccp4go_dimple.Dimple):
         asuComp    = {}
         spg_info   = { "spg":self.hkl.HM, "hkl":"" }
         if simbad_meta:
-            nResults   = simbad_meta["nResults"]
-            meta       = simbad_meta["results"][0]
-            self.file_stdout.write ( json.dumps ( meta,indent=2 ))
+            nResults = simbad_meta["nResults"]
+            meta     = simbad_meta["results"][0]
+            #self.file_stdout.write ( json.dumps ( meta,indent=2 ))
             if nResults>0:
                 fpath_xyz  = os.path.join(self.reportdir,meta["pdb"])
-                fpath_mtz  = os.path.join(self.reportdir,meta["mtz"])
-                fpath_map  = os.path.join(self.reportdir,meta["map"])
-                fpath_dmap = os.path.join(self.reportdir,meta["dmap"])
-                asuComp    = asucomp.getASUComp1 ( fpath_xyz,self.seqpath )
-                self.file_stdout.write ( json.dumps ( asuComp,indent=2 ))
-                spg_info   = self.checkSpaceGroup ( self.hkl.HM,fpath_xyz )
+                if os.path.isfile(fpath_xyz):
+                    fpath_mtz  = os.path.join(self.reportdir,meta["mtz"])
+                    fpath_map  = os.path.join(self.reportdir,meta["map"])
+                    fpath_dmap = os.path.join(self.reportdir,meta["dmap"])
+                    asuComp    = asucomp.getASUComp1 ( fpath_xyz,self.seqpath )
+                    #self.file_stdout.write ( json.dumps ( asuComp,indent=2 ))
+                    spg_info   = self.checkSpaceGroup ( self.hkl.HM,fpath_xyz )
+                else:
+                    nResults   = 0
+                    fpath_xyz  = ""
         else:
             nResults = -1  # indication of an error
 

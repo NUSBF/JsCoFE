@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    25.04.19   <--  Date of Last Modification.
+#    27.04.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -94,7 +94,7 @@ class Refmac(basic.TaskDriver):
 
         if str(self.task.parameters.sec3.contains.HBOND_RESTR.value) == 'yes':
            prosmart_cmd = [ "-quick", "-o", "ProSMART_Output_hbond", "-p1", istruct.getXYZFilePath(self.inputDir())]
-           self.runApp ( "prosmart",prosmart_cmd,logTytpe="Main" )
+           self.runApp ( "prosmart",prosmart_cmd,logType="Main" )
            external_restraint_files.append(os.path.join('ProSMART_Output_hbond',os.path.splitext(istruct.getXYZFileName())[0]+'.txt'))
 
 
@@ -222,7 +222,7 @@ class Refmac(basic.TaskDriver):
                print >>scr_file, 'MAKE HOUT', str(self.task.parameters.sec4.contains.RIDING_HYDROGENS.value)
 
             if str(self.task.parameters.sec4.contains.MAP_SHARPEN.value) == 'yes':
-               if str(self.task.parameters.sec4.contains.MAP_SHARPEN_CUSTOM.value) == 'default':
+               if str(self.task.parameters.sec4.contains.MAP_SHARPEN_B.value) == 'default':
                   print >>scr_file, 'MAPC SHAR'
                else:
                   print >>scr_file, 'MAPC SHAR', self.task.parameters.sec4.contains.MAP_SHARPEN_B.value

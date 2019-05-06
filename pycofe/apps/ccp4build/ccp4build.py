@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    11.04.19   <--  Date of Last Modification.
+#    28.04.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -58,7 +58,8 @@ class Build(ccp4build_report.Report):
 
     # ------------------------------------------------------------------------
 
-    def choose_build ( self,meta1,meta2,item_name ):
+    """
+    def _choose_build ( self,meta1,meta2,item_name ):
         n1 = meta1["cbuccaneer"][item_name]
         n2 = meta2["cbuccaneer"][item_name]
         if n1>n2:
@@ -68,12 +69,13 @@ class Build(ccp4build_report.Report):
         return 0
 
     def chooseBuild ( self,meta1,meta2 ):
-        n = self.choose_build ( meta1,meta2,"n_res_built" )
-        if n==0:  n = self.choose_build ( meta1,meta2,"n_res_sequenced" )
-        if n==0:  n = self.choose_build ( meta1,meta2,"n_res_alloc" )
-        if n==0:  n = self.choose_build ( meta2,meta1,"unklist_len" )
+        n = self._choose_build ( meta1,meta2,"n_res_built" )
+        if n==0:  n = self._choose_build ( meta1,meta2,"n_res_sequenced" )
+        if n==0:  n = self._choose_build ( meta1,meta2,"n_res_alloc" )
+        if n==0:  n = self._choose_build ( meta2,meta1,"unklist_len" )
         if n==0:  n = 1
         return n
+    """
 
     def choose_solution ( self,workflow_ind,meta1,meta2 ):
         #  meta1 : check-point
@@ -113,6 +115,7 @@ class Build(ccp4build_report.Report):
         return meta2
     """
 
+    """
     def choose_build ( self,workflow_ind,meta1,meta2 ):
         zedcc1 = meta1["edstats"]["ZEDCC"]
         zedcc2 = meta2["edstats"]["ZEDCC"]
@@ -129,7 +132,7 @@ class Build(ccp4build_report.Report):
                 return self.choose_solution ( workflow_ind,meta1,meta2 )
         self.workflow += workflow_ind
         return meta2
-
+    """
 
     ref_cycles = [
         { "initial":10, "inter":5,  "final":10 },
@@ -143,20 +146,21 @@ class Build(ccp4build_report.Report):
         refcyc = self.ref_cycles[min(3,max(0,int(self.input_data["ref_level"])-1))]
 
         meta = self.input_data.copy()
-        meta["labin_phifom"] = None
-        meta["labin_fc"]     = None
         if not meta["xyzpath"]:
             meta["xyzpath"] = meta["xyzpath_mr"]
 
-        self.log ( "\nInitial refinement:\n" )
-        self.setGenericLogParser ( True )
-        meta  = self.refmac ( meta,mode="jelly",ncycles=refcyc["initial"],nameout="00-1.refmac" )
-        self.unsetLogParser()
-        rmeta = meta["refmac"]
-        self.log ([
-            "R-factor: {0:7.3} -> {1:5.3}".format(rmeta["rfactor"][0],rmeta["rfactor"][1]),
-            "R-free:   {0:7.3} -> {1:5.3}".format(rmeta["rfree"][0],rmeta["rfree"][1])
-        ])
+        if meta["xyzpath"]:
+            meta["labin_phifom"] = None
+            meta["labin_fc"]     = None
+            self.log ( "\nInitial refinement:\n" )
+            self.setGenericLogParser ( True )
+            meta  = self.refmac ( meta,mode="jelly",ncycles=refcyc["initial"],nameout="00-1.refmac" )
+            self.unsetLogParser()
+            rmeta = meta["refmac"]
+            self.log ([
+                "R-factor: {0:7.3} -> {1:5.3}".format(rmeta["rfactor"][0],rmeta["rfactor"][1]),
+                "R-free:   {0:7.3} -> {1:5.3}".format(rmeta["rfree"][0],rmeta["rfree"][1])
+            ])
 
         self.putMessage ( "<h3>Performing build in Molecular Replacement Phases</h3>" )
 
@@ -201,16 +205,31 @@ class Build(ccp4build_report.Report):
                                               nameout=prefix+"01-2.cbuccaneer" )
 
                 if dm_mode=="auto":
-                    meta_mb = self.choose_solution ( "M",
-                            self.refmac(meta_mb1,ncycles=refcyc["inter"],nameout=prefix+"03-1.refmac"),
-                            self.refmac(meta_mb2,ncycles=refcyc["inter"],nameout=prefix+"03-2.refmac")
-                    )
+                    n1 = meta_mb1["cbuccaneer"]["n_res_built"]
+                    n2 = meta_mb2["cbuccaneer"]["n_res_built"]
+                    if n1>0 and n2>0:
+                        meta_mb = self.choose_solution ( "M",
+                                self.refmac(meta_mb1,ncycles=refcyc["inter"],nameout=prefix+"03-1.refmac"),
+                                self.refmac(meta_mb2,ncycles=refcyc["inter"],nameout=prefix+"03-2.refmac")
+                        )
+                    elif n2>0:
+                        self.workflow += "M"
+                        meta_mb = self.refmac(meta_mb2,ncycles=refcyc["inter"],nameout=prefix+"03-2.refmac")
+                    elif n1>0:
+                        self.workflow += "-"
+                        meta_mb = self.refmac(meta_mb1,ncycles=refcyc["inter"],nameout=prefix+"03-1.refmac")
+                    else:
+                        self.workflow += "*"
+                        meta_mb = meta_mb1  # will break later
                 else:
                     self.workflow += "M"
                     meta_mb = meta_mb2
             else:
                 self.workflow += "-"
                 meta_mb = meta_mb1
+
+            if meta_mb["cbuccaneer"]["n_res_built"]<=0:
+                break
 
             meta1 = self.refmac ( self.edstats(meta_mb,trim="all",nameout=prefix+"04.edstats"),
                                   ncycles=refcyc["inter"],nameout=prefix+"05.refmac" )
@@ -352,16 +371,32 @@ class Build(ccp4build_report.Report):
                                              nameout=prefix+"01-2.cbuccaneer" )
 
                 if dm_mode=="auto":
-                    meta_mb = self.choose_solution ( "M",
-                            self.refmac(meta_mb1,ncycles=refcyc["inter"],nameout=prefix+"03-1.refmac"),
-                            self.refmac(meta_mb2,ncycles=refcyc["inter"],nameout=prefix+"03-2.refmac")
-                    )
+                    n1 = meta_mb1["cbuccaneer"]["n_res_built"]
+                    n2 = meta_mb2["cbuccaneer"]["n_res_built"]
+                    if n1>0 and n2>0:
+                        meta_mb = self.choose_solution ( "M",
+                                self.refmac(meta_mb1,ncycles=refcyc["inter"],nameout=prefix+"03-1.refmac"),
+                                self.refmac(meta_mb2,ncycles=refcyc["inter"],nameout=prefix+"03-2.refmac")
+                        )
+                    elif n2>0:
+                        self.workflow += "M"
+                        meta_mb = self.refmac(meta_mb2,ncycles=refcyc["inter"],nameout=prefix+"03-2.refmac")
+                    elif n1>0:
+                        self.workflow += "-"
+                        meta_mb = self.refmac(meta_mb1,ncycles=refcyc["inter"],nameout=prefix+"03-1.refmac")
+                    else:
+                        self.workflow += "*"
+                        meta_mb = meta_mb1  # will break later
                 else:
                     self.workflow += "M"
                     meta_mb = meta_mb2
             else:
                 self.workflow += "-"
                 meta_mb = meta_mb1
+
+            if meta_mb["cbuccaneer"]["n_res_built"]<=0:
+                break
+
 
             meta1 = self.refmac ( self.edstats(meta_mb,trim="all",nameout=prefix+"04.edstats"),
                                   ncycles=refcyc["inter"],nameout=prefix+"05.refmac" )

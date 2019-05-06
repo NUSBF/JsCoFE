@@ -3,13 +3,13 @@
 #
 # ============================================================================
 #
-#    22.12.18   <--  Date of Last Modification.
+#    02.05.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  MERGED MTZ DATA IMPORT FUNCTIONS
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2018
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2019
 #
 # ============================================================================
 #
@@ -189,17 +189,21 @@ def run ( body,   # body is reference to the main Import class
 
             if freeRflag:
 
-                if k==0:
-                    scr_file = open ( freerflag_script(),"w" )
-                    mf = mtz.mtz_file ( p_mtzin )
-                    if mf.FREE:
-                        scr_file.write ( "COMPLETE FREE=" + mf.FREE + "\n" )
-                    scr_file.close ()
+                #if k==0 or True:  <-- to be deleted later  02.05.2019
+                scr_file = open ( freerflag_script(),"w" )
+                mf = mtz.mtz_file ( p_mtzin )
+                if mf.FREE:
+                    scr_file.write ( "COMPLETE FREE=" + mf.FREE + "\n" )
+                scr_file.close ()
 
                 # run freerflag: generate FreeRFlag if it is absent, and expand
                 # all reflections
 
                 p_mtzin1 = "temp.mtz"
+                try:
+                    os.remove ( p_mtzin1 )
+                except OSError:
+                    pass
                 rc = command.call ( "freerflag",
                                     ["HKLIN",p_mtzin,
                                      "HKLOUT",p_mtzin1],"./",

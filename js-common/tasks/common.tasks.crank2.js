@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    13.04.19   <--  Date of Last Modification.
+ *    04.05.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -81,36 +81,6 @@ function TaskCrank2()  {
             position : [0,0,1,5],
             value    : 'crank2', // used to hide elements in SHELX pipeline
             contains : {
-              /*
-              HATOM : {
-                    type      : 'string',   // empty string not allowed
-                    keyword   : 'atomtype=',
-                    label     : 'Substructure atom',
-                    tooltip   : 'Substructure atom giving anomalous scattering',
-                    iwidth    : 80,
-                    value     : 'Se',
-                    emitting  : true,    // will emit 'onchange' signal
-                    maxlength : 2,       // maximum input length
-                    position  : [0,0,1,1]
-                  },
-              NDSULF : {
-                    type      : 'integer_',   // '_' means blank value is allowed
-                    keyword   : 'num_dsul::', // the real keyword for job input stream
-                    label     : '&nbsp;&nbsp;&nbsp;No. of disulphides to ' +
-                                'be treated as S-S pairs',
-                    tooltip   : 'Optional number of disulphides to be treated ' +
-                                'as S-S pairs. Ignored if left blank (default).',
-                    iwidth    : 50,
-                    range     : [0,'*'],  // may be absent (no limits) or must
-                                          // be one of the following:
-                                          //   ['*',max]  : limited from top
-                                          //   [min,'*']  : limited from bottom
-                                          //   [min,max]  : limited from top and bottom
-                    value     : '',       // value to be paired with the keyword
-                    position  : [0,4,1,1], // [row,col,rowSpan,colSpan]
-                    showon    : {HATOM:['S']}
-                  },
-              */
               NATOMS : {
                     type      : 'integer_',       // '_' means blank value is allowed
                     keyword   : 'exp_num_atoms=', // the real keyword for job input stream
@@ -128,7 +98,7 @@ function TaskCrank2()  {
                     value     : '',       // value to be paired with the keyword
                     //label2    : ' ',
                     //lwidth2   : 100,
-                    position  : [1,0,1,1] // [row,col,rowSpan,colSpan]
+                    position  : [0,0,1,1] // [row,col,rowSpan,colSpan]
                   },
               /*
               PARTIAL_AS_SUBSTR : {
@@ -160,7 +130,7 @@ function TaskCrank2()  {
                                              //   [min,max]  : limited from top and bottom
                     value     : '',          // value to be paired with the keyword
                     default   : 'auto',
-                    position  : [2,0,1,1],   // [row,col,rowSpan,colSpan]
+                    position  : [1,0,1,1],   // [row,col,rowSpan,colSpan]
                     hideon    : {sec1:['shelx-substr']} // from this and input data section
                   }
             }
@@ -581,6 +551,17 @@ function TaskCrank2()  {
                                         }
                                 }
                   },
+              /*
+              SELEN_CBX : {
+                    type     : 'checkbox',
+                    label    : 'Build Selenomethionine (MSE instead of MET)',
+                    keyword  : '-build-semet',
+                    tooltip  : 'Check to build selenomethionine',
+                    value    : false,
+                    position : [5,0,1,3],
+                    showon   : {MBREF_MB_PROGRAM:['buccaneer']}
+                  },
+              */
               MBREF_BIGCYC : {
                     type      : 'integer_', // blank value is allowed
                     keyword   : 'bigcyc::', // the real keyword for job input stream

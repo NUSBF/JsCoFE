@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    23.12.18   <--  Date of Last Modification.
+#    06.05.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2018
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2019
 #
 # ============================================================================
 #
@@ -97,11 +97,11 @@ class ASUMod(asudef.ASUDef):
                     self.putMessage ( "<h3>Conversion failed, no output</h3>" )
                     revision = None
                 else:
-                    structure.copySubtype     ( istruct   )
+                    structure.copySubtype ( istruct   )
                     revision[0].setStructureData ( structure )
 
             if revision[0]:
-                revision[0].copySubtype  ( revision0 )
+                revision[0].addSubtypes ( revision0.subtype )
                 self.registerRevision ( revision[0]  )
 
         else:

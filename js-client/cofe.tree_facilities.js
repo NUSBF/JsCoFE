@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    24.04.19   <--  Date of Last Modification.
+ *    01.05.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -260,7 +260,7 @@ var item = this.getItem ( 'FacilityDataset',this.selected_node_id );
 // =========================================================================
 // StorageTree class
 
-function StorageTree ( treeType,rootPath,imageKey )  {
+function StorageTree ( treeType,rootPath,imageKey,dirDesc_lbl )  {
 
   Tree.call ( this,'_____' );
 
@@ -269,6 +269,8 @@ function StorageTree ( treeType,rootPath,imageKey )  {
   this.image_key   = imageKey; // 0: do not show images
                                // 1: show images
                                // 2: show only images
+  this.dirdesc_lbl = dirDesc_lbl;  // label to receive directory descriptions
+                                   // from __jscofe__.meta files, or null
 
   this.storageList = null;
   this.item_map    = {};
@@ -302,6 +304,8 @@ StorageTree.prototype.readStorageData = function ( page_title,
   (function(tree){
     serverRequest ( fe_reqtype.getFacilityData,meta,page_title,function(data){
 
+      tree.dirdesc_lbl.setText ( '' );
+
       if ('message' in data)
         MessageDataReadError ( page_title,data['message'] );
 
@@ -326,8 +330,11 @@ StorageTree.prototype.readStorageData = function ( page_title,
         for (var i=0;i<tree.storageList.dirs.length;i++)  {
           var sdir = tree.storageList.dirs[i];
           var name = sdir.name;
-          if (name=='..')
+          if (name=='..')  {
             name += ' (&#8593; <i>upper directory</i>)';
+            if (sdir.hasOwnProperty('fullDesc'))
+              tree.dirdesc_lbl.setText ( sdir.fullDesc + '<hr/>&nbsp;<br>' );
+          }
           var icon   = 'folder';
           var nlower = name.toLowerCase();
           if (nlower.indexOf('my computer')>=0) icon = 'folder_mycomputer';
@@ -335,6 +342,8 @@ StorageTree.prototype.readStorageData = function ( page_title,
           else if (nlower.indexOf('ccp4')>=0)   icon = 'folder_ccp4';
           else if (nlower.indexOf('demo')>=0)   icon = 'folder_ccp4';
           var dnode = tree.addRootNode ( name,image_path(icon),tree.customIcon() );
+          if ((name!='..') && sdir.hasOwnProperty('shortDesc'))
+            dnode.setTooltip ( sdir.shortDesc );
           tree.item_map[dnode.id] = sdir;
         }
 
@@ -356,6 +365,10 @@ StorageTree.prototype.readStorageData = function ( page_title,
           else if (ext=='ccp4_demo')  icon = image_path('file_ccp4demo');
           else if (['pdb','ent','mmcif'].indexOf(ext)>=0)
                                       icon = image_path('file_pdb');
+          else if (['jpg','jpeg','png','gif'].indexOf(ext)>=0)
+                                      icon = image_path('file_image');
+          else if (['html','txt','pdf'].indexOf(ext)>=0)
+                                      icon = image_path('file_doc');
           else if (ext=='cif')  {  // use wild heuristics
             if (endsWith(base,'-sf'))
                   icon = image_path('file_mtz');

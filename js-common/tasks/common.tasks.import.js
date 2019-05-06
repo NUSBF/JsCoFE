@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    27.12.18   <--  Date of Last Modification.
+ *    01.05.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Import Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2018
+ *  (C) E. Krissinel, A. Lebedev 2016-2019
  *
  *  =================================================================
  *
@@ -292,18 +292,42 @@ if (!__template)  {
 
 
   function _import_checkFiles ( files,file_mod,uploaded_files,onReady_func )  {
-    file_mod.rename = {};  // clean up every upload
-    var upl_files = [];
-    for (var i=0;i<uploaded_files.length;i++)
-      upl_files.push ( getBasename(uploaded_files[i]) );
-    _import_scanFiles ( files,0,file_mod,upl_files,function(file_mod){
-      //alert ( ' annot=' + JSON.stringify(file_mod) );
-      var nannot = file_mod.annotation.length;
-      if ((nannot>0) && (file_mod.annotation[nannot-1].items[0].type=='none'))
-        new ImportAnnotationDialog ( file_mod.annotation,onReady_func );
-      else
-        onReady_func();
-    });
+
+    var sel_files = [];
+    var ignore    = '';
+    for (var i=0;i<files.length;i++)  {
+      var lcname = files[i].name.toLowerCase();
+      if (endsWith(lcname,'.ccp4_demo') || endsWith(lcname,'.zip'))
+            ignore += '<li><b>' + files[i].name + '</b></li>';
+      else  sel_files.push ( files[i] );
+    }
+
+    if (ignore.length>0)
+      new MessageBox ( 'File(s) not importable',
+                       'Archive file(s) <ul>' + ignore + '</ul> cannot be ' +
+                       'imported as data files and will be ignored.<p>' +
+                       'If you try to import ' + appName() + ' projects, ' +
+                       'do this from<br><i>Project List</i> page.' );
+
+    if (sel_files.length>0)  {
+
+      file_mod.rename = {};  // clean up every upload
+
+      var upl_files = [];
+      for (var i=0;i<uploaded_files.length;i++)
+        upl_files.push ( getBasename(uploaded_files[i]) );
+
+      _import_scanFiles ( sel_files,0,file_mod,upl_files,function(file_mod){
+        //alert ( ' annot=' + JSON.stringify(file_mod) );
+        var nannot = file_mod.annotation.length;
+        if ((nannot>0) && (file_mod.annotation[nannot-1].items[0].type=='none'))
+          new ImportAnnotationDialog ( file_mod.annotation,onReady_func );
+        else
+          onReady_func();
+      });
+
+    }
+
   }
 
 

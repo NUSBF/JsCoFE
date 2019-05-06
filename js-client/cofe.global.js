@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    24.04.19   <--  Date of Last Modification.
+ *    05.05.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -51,38 +51,6 @@ $(window).resize ( function(){
 });
 
 
-function setFullScreen() {
-  var docElm = document.documentElement;
-  if (docElm.requestFullscreen) {
-      docElm.requestFullscreen();
-  }
-  else if (docElm.msRequestFullscreen) {
-      docElm.msRequestFullscreen();
-  }
-  else if (docElm.mozRequestFullScreen) {
-      docElm.mozRequestFullScreen();
-  }
-  else if (docElm.webkitRequestFullScreen) {
-      docElm.webkitRequestFullScreen();
-  }
-};
-
-function quitFullScreen() {
-  if (document.exitFullscreen) {
-      document.exitFullscreen();
-  }
-  else if (document.mozCancelFullScreen) {
-      document.mozCancelFullScreen();
-  }
-  else if (document.webkitCancelFullScreen) {
-      document.webkitCancelFullScreen();
-  }
-  else if (document.msExitFullscreen) {
-      document.msExitFullscreen();
-  }
-}
-
-
 function isFullScreen() {
   if (typeof document.fullscreen!=='undefined')
     return document.fullscreen;
@@ -94,6 +62,45 @@ function isFullScreen() {
     return document.msFullscreenElement;
   return -1;
 }
+
+
+function setFullScreen() {
+  if (!isFullScreen())  {
+    var docElm = document.documentElement;
+    if (docElm.requestFullscreen) {
+      docElm.requestFullscreen();
+    }
+    else if (docElm.msRequestFullscreen) {
+      docElm.msRequestFullscreen();
+    }
+    else if (docElm.mozRequestFullScreen) {
+      docElm.mozRequestFullScreen();
+    }
+    else if (docElm.webkitRequestFullScreen) {
+      docElm.webkitRequestFullScreen();
+    }
+  }
+};
+
+
+function quitFullScreen() {
+  var ifs = isFullScreen();
+  if ((ifs!=-1) && ifs)  {
+    if (document.exitFullscreen) {
+        document.exitFullscreen();
+    }
+    else if (document.mozCancelFullScreen) {
+        document.mozCancelFullScreen();
+    }
+    else if (document.webkitCancelFullScreen) {
+        document.webkitCancelFullScreen();
+    }
+    else if (document.msExitFullscreen) {
+        document.msExitFullscreen();
+    }
+  }
+}
+
 
 function toggleFullScreen() {
 var ifs = isFullScreen();

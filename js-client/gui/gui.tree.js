@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    12.04.19   <--  Date of Last Modification.
+ *    01.05.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -41,6 +41,7 @@
  *      function setSelected();
  *      function copy ( node );
  *      function setCustomIconVisible ( visible_bool );
+ *      function setTooltip ( text );
  *
  *   }
  *
@@ -138,6 +139,7 @@ TreeNode.prototype.copy = function ( node )  {
   this.data.ci_width   = node.data.ci_width;
   this.data.ci_height  = node.data.ci_height;
   this.data.ci_state   = new String(node.data.ci_state);
+  this.a_attr          = $.extend({},node.a_attr);
   return this;
 }
 
@@ -156,6 +158,14 @@ TreeNode.prototype.setCustomIconVisible = function ( visible_bool )  {
                  else  $(ci_element).hide();
     */
   }
+}
+
+
+TreeNode.prototype.setTooltip = function ( text )  {
+  if (text)
+    this.a_attr.title = text;
+  else if ('title' in this.a_attr)
+    delete this.a_attr.title;
 }
 
 

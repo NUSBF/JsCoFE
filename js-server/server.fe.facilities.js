@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    21.03.19   <--  Date of Last Modification.
+ *    30.04.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -40,6 +40,7 @@ var log   = require('./server.log').newLog(18);
 var facilityListFName  = 'facilities.list';
 var cloudFileListFName = 'cloudfiles.list';
 var ICATDirName        = 'ICAT_facility';
+var cloudDirMetaFName  = '__jscofe__.meta';
 
 // ===========================================================================
 
@@ -113,49 +114,51 @@ function dirpath2sectors(dirpath, sectors, file_list) {
   // k = kind of file (dir, seq, dat, unk) or
   //     the last file of the range
   //
-  let fk_o = file_list;
+  let fk_o    = file_list;
   let rec_dat = /.+\.(?:pdb|mtz|cif)$/i;
   let rec_seq = /.+\.(?:seq|fasta|pir)$/i;
   let rec_img = /((?!$)[^0-9]*)([0-9]+|$)/g;
   let t_q = [];
   let l_cq = [];
   let r_ciq = [];
-  for (let f of fs.readdirSync(dirpath).sort()) {
-    let fpath = path.join(dirpath, f);
-    if (fs.existsSync(fpath) && fs.statSync(fpath).isDirectory()) {
-      fk_o.push([f, 'dir']);
-    }
-    else if (rec_seq.test(f)) {
-      fk_o.push([f, 'seq']);
-    }
-    else if (rec_dat.test(f)) {
-      fk_o.push([f, 'dat']);
-    }
-    else {
-      let l_c = [], r_c = [];
-      let match;
-      while ((match = rec_img.exec(f)) !== null) {
-        l_c.push(match[1]);
-        r_c.push(match[2]);
+  for (let f of fs.readdirSync(dirpath).sort())
+    if (f!=cloudDirMetaFName)  {
+      let fpath = path.join(dirpath, f);
+      if (fs.existsSync(fpath) && fs.statSync(fpath).isDirectory()) {
+        fk_o.push([f, 'dir']);
       }
-      if (!r_c[0]) {
-        fk_o.push([f, 'unk']);
+      else if (rec_seq.test(f)) {
+        fk_o.push([f, 'seq']);
+      }
+      else if (rec_dat.test(f)) {
+        fk_o.push([f, 'dat']);
       }
       else {
-        let t = f.replace(/[0-9]/g, '\0')
-        let q = t_q.length;
-        while (--q >= 0 && t_q[q] != t) {}
-        if (q >= 0) {
-          r_ciq[q].push(r_c);
+        let l_c = [], r_c = [];
+        let match;
+        while ((match = rec_img.exec(f)) !== null) {
+          l_c.push(match[1]);
+          r_c.push(match[2]);
+        }
+        if (!r_c[0]) {
+          fk_o.push([f, 'unk']);
         }
         else {
-          t_q.push(t);
-          l_cq.push(l_c);
-          r_ciq.push([r_c]);
+          let t = f.replace(/[0-9]/g, '\0')
+          let q = t_q.length;
+          while (--q >= 0 && t_q[q] != t) {}
+          if (q >= 0) {
+            r_ciq[q].push(r_c);
+          }
+          else {
+            t_q.push(t);
+            l_cq.push(l_c);
+            r_ciq.push([r_c]);
+          }
         }
       }
     }
-  }
+
   let f_p = [];
   let t_f = {};
   let rr_jf = {};
@@ -237,8 +240,33 @@ function dirpath2sectors(dirpath, sectors, file_list) {
     }
     rr_jf[f] = rr_j
   }
+
   fk_o.sort()
+
+  return fk_o;
+
 }
+
+
+function readDirMeta ( dirpath,facilityDir )  {
+//  Directory meta-file format:
+//  -------------------------------------------------------------------------
+//  Short description of directory content (will be used as tooltip)
+//  [[[]]]
+//  Full description of dircetory content (will be displayed in browser)
+//  -------------------------------------------------------------------------
+//
+  var jscofe_meta = utils.readString ( path.join(dirpath,facilityDir.name,cloudDirMetaFName) );
+  if (jscofe_meta)  {
+    var jsmeta = jscofe_meta.split ( '[[[]]]' );
+    if (jsmeta.length>1)  {
+      facilityDir.shortDesc = jsmeta[0].trim();
+      facilityDir.fullDesc  = jsmeta[1].trim();
+    }
+  }
+  return facilityDir;
+}
+
 
 function getCloudDirListing ( cloudMounts,spath )  {
 var slist = new fcl.StorageList()
@@ -256,6 +284,7 @@ var slist = new fcl.StorageList()
     for (var i=0;i<cloudMounts.length;i++)  {
       var sdir  = new fcl.FacilityDir();
       sdir.name = cloudMounts[i][0];
+      sdir      = readDirMeta ( cloudMounts[i][1],sdir );
       slist.dirs.push ( sdir );
     }
 
@@ -294,20 +323,21 @@ var slist = new fcl.StorageList()
     if (dirpath)  {
       if (utils.dirExists(dirpath))  {
         var sdir  = new fcl.FacilityDir();
+        sdir      = readDirMeta ( dirpath,sdir );
         sdir.name = '..';
         slist.dirs.push ( sdir );
         slist.sectors = [];
-        var file_list = [];
-        dirpath2sectors(dirpath, slist.sectors, file_list);
+        var file_list = dirpath2sectors ( dirpath,slist.sectors,[] );
         for (let file_tuple of file_list) {
           let fstr0 = file_tuple[0];
           let fstr1 = file_tuple[1];
-          let fpath = path.join(dirpath, fstr0);
-          let stat = utils.fileExists(fpath);
+          let fpath = path.join ( dirpath,fstr0 );
+          let stat  = utils.fileExists(fpath);
           if (stat) {
             if (fstr1 == 'dir') {
-              sdir = new fcl.FacilityDir();
+              sdir      = new fcl.FacilityDir();
               sdir.name = fstr0;
+              sdir      = readDirMeta ( dirpath,sdir );
               slist.dirs.push(sdir);
             }
             else if (['seq', 'dat', 'unk'].indexOf(fstr1) >= 0) {
