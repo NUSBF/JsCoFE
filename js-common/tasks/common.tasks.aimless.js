@@ -39,6 +39,7 @@ function TaskAimless()  {
 
   this.input_dtypes = [{      // input data types
     data_type   : {'DataUnmerged':[]}, // data type(s) and subtype(s)
+    desc        : 'dataset to merge',
     label       : 'Unmerged<br>reflections',       // label for input dialog
     inputId     : 'unmerged',   // input Id for referencing input fields
     customInput : 'unmerged',   // lay custom fields next to the selection
@@ -47,6 +48,7 @@ function TaskAimless()  {
     max         : 50            // maximum acceptable number of data instances
    },{
     data_type   : {'DataHKL':[],'DataUnmerged':[]}, // data type(s) and subtype(s)
+    desc        : 'symmetry reference',
     cast        : 'symmetry',     // will replace data type names in comboboxes
     label       : 'Crystal<br>Symmetry', // label for input dialog
     inputId     : 'ds0',          // input Id for referencing input fields
@@ -1234,8 +1236,8 @@ if (!__template)  {
 
   var conf = require('../../js-server/server.configuration');
 
-  TaskAimless.prototype.getCommandLine = function ( exeType,jobDir )  {
-    return [conf.pythonName(), '-m', 'pycofe.tasks.aimless', exeType, jobDir, this.id];
+  TaskAimless.prototype.getCommandLine = function ( jobManager,jobDir )  {
+    return [conf.pythonName(), '-m', 'pycofe.tasks.aimless', jobManager, jobDir, this.id];
   }
 
   // -------------------------------------------------------------------------

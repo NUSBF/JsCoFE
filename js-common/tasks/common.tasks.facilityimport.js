@@ -55,9 +55,6 @@ TaskFacilityImport.prototype.constructor = TaskFacilityImport;
 
 TaskFacilityImport.prototype.icon = function()  { return 'task_fimport'; }
 
-//TaskFacilityImport.prototype.icon_small = function()  { return 'task_fimport_20x20'; }
-//TaskFacilityImport.prototype.icon_large = function()  { return 'task_fimport';       }
-
 TaskFacilityImport.prototype.currentVersion = function()  {
   var version = 0;
   if (__template)
@@ -148,8 +145,8 @@ if (!__template)  {
 
   var conf = require('../../js-server/server.configuration');
 
-  TaskFacilityImport.prototype.getCommandLine = function ( exeType,jobDir )  {
-    return [conf.pythonName(), '-m', 'pycofe.tasks.import_task', exeType, jobDir, this.id];
+  TaskFacilityImport.prototype.getCommandLine = function ( jobManager,jobDir )  {
+    return [conf.pythonName(), '-m', 'pycofe.tasks.import_task', jobManager, jobDir, this.id];
   }
 
   module.exports.TaskFacilityImport = TaskFacilityImport;

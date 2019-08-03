@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    08.04.19   <--  Date of Last Modification.
+ *    01.08.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -33,9 +33,11 @@ var prj       = require('./server.fe.projects');
 var conf      = require('./server.configuration');
 var send_dir  = require('./server.send_dir');
 var ration    = require('./server.fe.ration');
+var ustats    = require('./server.fe.usagestats');
 var class_map = require('./server.class_map');
 var task_t    = require('../js-common/tasks/common.tasks.template');
 var cmd       = require('../js-common/common.commands');
+var ud        = require('../js-common/common.data_user');
 var com_utils = require('../js-common/common.utils');
 var knlg      = require('../js-common/common.knowledge');
 
@@ -154,8 +156,11 @@ var n0         = -1;
       n++;
       if (n>=nc_servers.length)  n = 0;
 
-      if (nc_servers[n].in_use && (nc_servers[n].exeType!='CLIENT') &&
-          (nc_servers[n].exclude_tasks.indexOf(task._type)<0))  {
+      if (nc_servers[n].in_use  &&
+           (nc_servers[n].exeType!='CLIENT')  &&
+           (nc_servers[n].exclude_tasks.indexOf(task._type)<0)  &&
+           ( (nc_servers[n].only_tasks.length<=0) ||
+             (nc_servers[n].only_tasks.indexOf(task._type)>=0) ) )  {
 
         //  fasttrack==2 means a fast-track dedicted server
         if ((nc_servers[n].fasttrack==2) && (nc_servers[n].current_capacity>0))  {
@@ -203,8 +208,11 @@ var n0         = -1;
   for (var i=0;(i<nc_servers.length) && (nc_number<0);i++)  {
     n++;
     if (n>=nc_servers.length)  n = 0;
-    if (nc_servers[n].in_use && (nc_servers[n].exeType!='CLIENT') &&
-        (nc_servers[n].exclude_tasks.indexOf(task._type)<0))  {
+    if (nc_servers[n].in_use  &&
+         (nc_servers[n].exeType!='CLIENT')  &&
+         (nc_servers[n].exclude_tasks.indexOf(task._type)<0)  &&
+         ( (nc_servers[n].only_tasks.length<=0) ||
+           (nc_servers[n].only_tasks.indexOf(task._type)>=0) ) )  {
       if (nc_servers[n].current_capacity>0)  {
         nc_number = n;
       } else if (nc_servers[n].current_capacity>maxcap0)  {
@@ -213,6 +221,7 @@ var n0         = -1;
       }
     }
   }
+
 
   if (nc_number<0)
     nc_number = n0;
@@ -324,7 +333,21 @@ function runJob ( login,data, callback_func )  {
 
       // job for ordinary NC, pack and send all job directory to number cruncher
       var nc_url = conf.getNCConfig(nc_number).externalURL;
-      send_dir.sendDir ( jobDir,'*',nc_url,cmd.nc_command.runJob,{},
+      var uData  = user.readUserData ( login );
+      var meta   = {};
+      meta.setup_id  = conf.getSetupID();
+      meta.user_id   = login;
+      meta.feedback  = ud.feedback_code.decline;
+      meta.user_name = '';
+      meta.email     = '';
+      if (uData)  {
+        meta.feedback = uData.feedback;
+        if (uData.feedback==ud.feedback_code.agree2)  {
+          meta.user_name = uData.name;
+          meta.email     = uData.email;
+        }
+      }
+      send_dir.sendDir ( jobDir,'*',nc_url,cmd.nc_command.runJob,meta,
 
         function ( rdata ){  // send successful
 
@@ -477,7 +500,10 @@ function replayJob ( login,data, callback_func )  {
 
       // job for ordinary NC, pack and send all job directory to number cruncher
       var nc_url = conf.getNCConfig(nc_number).externalURL;
-      send_dir.sendDir ( jobDir,'*',nc_url,cmd.nc_command.runJob,{},
+      var meta   = {};
+      meta.setup_id = conf.getSetupID();
+      meta.user_id  = login;
+      send_dir.sendDir ( jobDir,'*',nc_url,cmd.nc_command.runJob,meta,
 
         function ( rdata ){  // send successful
 
@@ -684,11 +710,12 @@ function getJobResults ( job_token,server_request,server_response )  {
           // print usage stats and update the user ration state
           //ration.updateUserRation_bookJob ( jobEntry.login,writeJobStats(jobEntry) );
           //var jobClass = writeJobStats    ( jobEntry );
-          writeJobStats    ( jobEntry );
-          cmd.sendResponse ( server_response, cmd.nc_retcode.ok,'','' );
+          var jobClass = writeJobStats ( jobEntry );
+          ustats.registerJob ( jobClass );
           feJobRegister.removeJob ( job_token );
           feJobRegister.n_jobs++;
           writeFEJobRegister();
+          cmd.sendResponse ( server_response, cmd.nc_retcode.ok,'','' );
         } else if (code=='err_rename')  { // file renaming errors
           cmd.sendResponse ( server_response, cmd.nc_retcode.fileErrors,
                             '[00012] File rename errors' );

@@ -66,12 +66,12 @@ class FindWaters(ccp4build_coot.Coot):
         labin_dfc = self.getLabels ( meta["labin_dfc"] )
         watout    = os.path.join  ( self.workdir,nameout+"_waters.pdb" )
 
-        cmd = [ "--pdbin"       ,meta["xyzpath"],
-                "--hklin"       ,meta["mtzpath"],
-                "--pdbout"      ,watout,
-                "--f"           ,labin_dfc[0],
-                "--phi"         ,labin_dfc[1],
-                "--sigma"       ,str(self.findwaters_options["sigma"])
+        cmd = [ "--pdbin" , meta["xyzpath"],
+                "--hklin" , meta["mtzpath"],
+                "--pdbout", watout,
+                "--f"     , labin_dfc[0],
+                "--phi"   , labin_dfc[1],
+                "--sigma" , str(self.findwaters_options["sigma"])
               ]
 
         if self.findwaters_options["flood"]:

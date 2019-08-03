@@ -32,7 +32,7 @@ class DataBox(jsonut.jObject):
         self._type = "DataBox"  # must coincide with DataBox in JS layer
         self.data  = {}
 
-        # The class keep output data, represented by dtype_XXX classes, as
+        # The class keeps output data, represented by dtype_XXX classes, as
         # data[dtype] = [data11,data12,... ]
 
         return

@@ -38,7 +38,7 @@ function TaskPISA()  {
   this.helpURL = './html/jscofe_task_pisa.html';
 
   this.input_dtypes = [{        // input data types
-     data_type   : {'DataStructure':[],'DataXYZ':[]},  // data type(s) and subtype(s)
+     data_type   : {'DataStructure':['!xyz'],'DataXYZ':[]},  // data type(s) and subtype(s)
      label       : 'Structure', // label for input dialog
      inputId     : 'xyz',       // input Id for referencing input fields
      customInput : 'pisa',      // lay custom fields next to the selection
@@ -85,9 +85,6 @@ TaskPISA.prototype.constructor = TaskPISA;
 
 TaskPISA.prototype.icon = function()  { return 'task_pisa'; }
 
-//TaskPISA.prototype.icon_small = function()  { return 'task_pisa_20x20'; }
-//TaskPISA.prototype.icon_large = function()  { return 'task_pisa';       }
-
 TaskPISA.prototype.currentVersion = function()  {
   var version = 0;
   if (__template)
@@ -101,8 +98,8 @@ if (__template)  {
 
   var conf = require('../../js-server/server.configuration');
 
-  TaskPISA.prototype.getCommandLine = function ( exeType,jobDir )  {
-    return [conf.pythonName(), '-m', 'pycofe.tasks.pisa', exeType, jobDir, this.id];
+  TaskPISA.prototype.getCommandLine = function ( jobManager,jobDir )  {
+    return [conf.pythonName(), '-m', 'pycofe.tasks.pisa', jobManager, jobDir, this.id];
   }
 
   // -------------------------------------------------------------------------

@@ -10,10 +10,10 @@
 #  FITWATERS EXECUTABLE MODULE
 #
 #  Command-line:
-#     ccp4-python -m pycofe.tasks.fitwaters exeType jobDir jobId
+#     ccp4-python -m pycofe.tasks.fitwaters jobManager jobDir jobId
 #
 #  where:
-#    exeType  is either SHELL or SGE
+#    jobManager  is either SHELL or SGE
 #    jobDir   is path to job directory, having:
 #      jobDir/output  : directory receiving output files with metadata of
 #                       all successful imports

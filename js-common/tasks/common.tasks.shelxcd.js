@@ -61,6 +61,7 @@ function TaskShelxCD()  {
       max         : 3            // maximum acceptable number of data instances
     },{
       data_type   : {'DataHKL':[]},   // data type(s) and subtype(s)
+      desc        : 'native dataset',
       label       : 'Native dataset', // label for input dialog
       inputId     : 'native',     // input Id for referencing input fields
       //customInput : 'native',     // lay custom fields next to the selection
@@ -433,8 +434,8 @@ if (!__template)  {
 
   }
 
-  TaskShelxCD.prototype.getCommandLine = function ( exeType,jobDir )  {
-    return [conf.pythonName(), '-m', 'pycofe.tasks.shelxcd', exeType, jobDir, this.id];
+  TaskShelxCD.prototype.getCommandLine = function ( jobManager,jobDir )  {
+    return [conf.pythonName(), '-m', 'pycofe.tasks.shelxcd', jobManager, jobDir, this.id];
   }
 
   // -------------------------------------------------------------------------

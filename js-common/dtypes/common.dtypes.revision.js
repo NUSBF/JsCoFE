@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    03.05.19   <--  Date of Last Modification.
+ *    07.05.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -76,8 +76,8 @@ DataRevision.prototype.constructor = DataRevision;
 
 // ===========================================================================
 
-DataRevision.prototype.title = function()  { return 'Revision';        }
-DataRevision.prototype.icon  = function()  { return 'data_xrayimages'; }
+DataRevision.prototype.title = function()  { return 'Structure Revision'; }
+DataRevision.prototype.icon  = function()  { return 'data_xrayimages';    }
 
 // when data class version is changed here, change it also in python
 // constructors
@@ -231,21 +231,29 @@ if (!__template)  {
     customGrid.ha_type = customGrid.setInputText ( this.ASU.ha_type,row,1,1,1 )
               .setStyle    ( 'text','','','Specify the atom type of dominant anomolous ' +
                              'scatterer (e.g., S, SE etc.)' )
-              .setWidth_px ( 36 ).setMaxInputLength ( 2 );
+              .setWidth_px ( 40 ).setMaxInputLength ( 2 );
+    customGrid.ha_lbl  = customGrid.setLabel (
+                  '<font color="maroon">(must be chosen)</font>&nbsp;&nbsp;&nbsp;' +
+                  '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;',row,2,1,1 )
+              .setFontSize('80%').setNoWrap();
     customGrid.setVerticalAlignment ( row,0,'middle' );
+    customGrid.setVerticalAlignment ( row,2,'middle' );
+    customGrid.setCellSize ( '80%','',row,2 );
 
-    customGrid.ndis_lbl = customGrid.setLabel ( 'number of S-S pairs:',row,2,1,3 )
+    customGrid.ndis_lbl = customGrid.setLabel ( 'number of S-S pairs:',row,3,1,3 )
                                     .setFontItalic(true).setNoWrap();
-    customGrid.ndisulph = customGrid.setInputText ( this.ASU.ndisulph,row,3,1,1 )
+    customGrid.ndisulph = customGrid.setInputText ( this.ASU.ndisulph,row,4,1,1 )
               .setStyle    ( 'text','integer','','Optional number of disulphides ' +
                              'to be treated as S-S pairs. Ignored if left blank (default).' )
               .setWidth_px ( 36 ).setMaxInputLength ( 2 );
-    customGrid.setVerticalAlignment ( row,2,'middle' );
+    customGrid.setVerticalAlignment ( row,3,'middle' );
 
     function showNDis()  {
-      var showdis = (customGrid.ha_type.getValue().toLowerCase()=='s');
+      let ha_type = customGrid.ha_type.getValue().trim();
+      let showdis = (ha_type.toLowerCase()=='s');
       customGrid.ndis_lbl.setVisible ( showdis );
       customGrid.ndisulph.setVisible ( showdis );
+      customGrid.ha_lbl  .setVisible ( (ha_type.length<=0) );
     }
 
     customGrid.ha_type.addOnInputListener ( showNDis );
@@ -270,13 +278,15 @@ if (!__template)  {
   }
 
   DataRevision.prototype._layCDI_AsuMod = function ( dropdown )  {
-    var customGrid = dropdown.customGrid;
-    customGrid.setLabel ( 'heavy atom type:',0,0,1,1 ).setFontItalic(true).setNoWrap();
-    customGrid.ha_type = customGrid.setInputText ( this.ASU.ha_type,0,1,1,1 )
-              .setStyle    ( 'text','','','Specify atom type of anomolous ' +
-                             'scatterers, or leave blank if uncertain.' )
-              .setWidth_px ( 36 ).setMaxInputLength ( 2 );
-    customGrid.setVerticalAlignment ( 0,0,'middle' );
+    if (this.HKL.hasAnomalousSignal())  {
+      var customGrid = dropdown.customGrid;
+      customGrid.setLabel ( 'main anomalous scatterer:',0,0,1,1 ).setFontItalic(true).setNoWrap();
+      customGrid.ha_type = customGrid.setInputText ( this.ASU.ha_type,0,1,1,1 )
+                .setStyle    ( 'text','','','Specify atom type of anomolous ' +
+                               'scatterers, or leave blank if uncertain.' )
+                .setWidth_px ( 40 ).setMaxInputLength ( 2 );
+      customGrid.setVerticalAlignment ( 0,0,'middle' );
+    }
   }
 
   DataRevision.prototype._layCDI_PhaserEP = function ( dropdown )  {
@@ -357,6 +367,7 @@ if (!__template)  {
             */
           break;
       case 'reindex'    :  case 'refmac'       :  case 'ccp4build' :
+      case 'cell-info'  :
             this.HKL.layCustomDropdownInput ( dropdown );
           break;
       case 'parrot'     :  case 'buccaneer-ws' :  case 'acorn'  :
@@ -419,7 +430,7 @@ if (!__template)  {
   var msg = '';
     switch (dropdown.layCustom)  {
       case 'asumod'    :
-            if (this.ASU)
+            if (this.ASU && this.HKL.hasAnomalousSignal())
               this.ASU.ha_type = dropdown.customGrid.ha_type.getValue();
           break;
       case 'reindex'   :  case 'phaser-mr'    :  case 'phaser-mr-fixed' :

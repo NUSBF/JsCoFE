@@ -1,12 +1,12 @@
 
 /*
- *  =================================================================
+ *  ==========================================================================
  *
- *    01.05.19   <--  Date of Last Modification.
+ *    07.05.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- *  -----------------------------------------------------------------
+ *  --------------------------------------------------------------------------
  *
- *  **** Module  :  js-common/cofe.tasks.phasermr.js
+ *  **** Module  :  js-common/cofe.tasks.import.js
  *       ~~~~~~~~~
  *  **** Project :  jsCoFE - javascript-based Cloud Front End
  *       ~~~~~~~~~
@@ -15,7 +15,7 @@
  *
  *  (C) E. Krissinel, A. Lebedev 2016-2019
  *
- *  =================================================================
+ *  ==========================================================================
  *
  */
 
@@ -62,11 +62,6 @@ TaskImport.prototype.constructor = TaskImport;
 
 // ===========================================================================
 
-TaskImport.prototype.icon = function()  { return 'task_import'; }
-
-//TaskImport.prototype.icon_small = function()  { return 'task_import_20x20'; }
-//TaskImport.prototype.icon_large = function()  { return 'task_import';       }
-
 TaskImport.prototype.currentVersion = function()  {
   var version = 0;
   if (__template)
@@ -82,6 +77,12 @@ if (!__template)  {
   TaskImport.prototype.customDataClone = function ( task )  {
     this.uname = '';
     return;
+  }
+
+  TaskImport.prototype.icon = function()  {
+    if (this.state==job_code.remdoc)
+          return 'task_remdoc';
+    else  return 'task_import';
   }
 
   // reserved function name
@@ -215,15 +216,24 @@ if (!__template)  {
 
 
   function _check_sequence ( files,uploaded_files,contents,file_mod,p,onDone_func )  {
-    var fname         = files[p].name;
-    var new_name      = _import_renameFile1 ( fname,uploaded_files );
-    var contents_list = contents.split('>');
-    var seq_counter   = 1;
-    var annotation    = {
+    var fname       = files[p].name;
+    var new_name    = _import_renameFile1 ( fname,uploaded_files );
+    var seq_counter = 1;
+    var annotation  = {
       'file'   : fname,
       'rename' : new_name,
       'items'  : []
     }
+
+    // the following makes files without sequence names acceptable
+    var lines = contents.split(/\r\n|\r|\n/);
+    for (var i=0;i<lines.length;i++)  {
+      lines[i] = lines[i].trim();
+      if (lines[i]=='>')
+        lines[i] = '>no name';
+    }
+    var contents_list = lines.join('\n').split('>');
+
     for (var i=0;i<contents_list.length;i++)
       if (contents_list[i].replace(/\s/g,''))  {
         var fname1 = new_name;
@@ -236,11 +246,14 @@ if (!__template)  {
         annotation.items.push ({
           'rename'   : fname1,
           'contents' : '>' + contents_list[i].trim(),
+          //'contents' : '>' + contents_list[i],
           'type'     : 'none'
         });
       }
+
     file_mod.annotation.push ( annotation );
     _import_scanFiles ( files,p+1,file_mod,uploaded_files,onDone_func );
+
   }
 
 
@@ -258,6 +271,8 @@ if (!__template)  {
 
       while ((!isSeqFile) && (p<files.length))  {
         var ns    = files[p].name.split('.');
+        if (ns[ns.length-1].toLowerCase()=='txt')
+          ns.pop();
         isSeqFile = (ns.length>1) &&
                     (['seq','fasta','pir'].indexOf(ns.pop().toLowerCase())>=0);
         if (!isSeqFile)  {
@@ -335,7 +350,7 @@ if (!__template)  {
   TaskImport.prototype.collectInput = function ( inputPanel )  {
     // collects data from input widgets, created in makeInputPanel() and
     // stores it in internal fields
-    TaskTemplate.prototype.currentVersion.call ( this );
+    TaskTemplate.prototype.collectInput.call ( this,inputPanel );
     this.upload_files = inputPanel.upload.upload_files;
     if (this.upload_files.length>0)
       return '';   // input is Ok
@@ -350,10 +365,16 @@ if (!__template)  {
 } else  {
   // for server side
 
+  TaskImport.prototype.icon = function()  {
+    if (this.state==__template.job_code.remdoc)
+          return 'task_remdoc';
+    else  return 'task_import';
+  }
+
   var conf = require('../../js-server/server.configuration');
 
-  TaskImport.prototype.getCommandLine = function ( exeType,jobDir )  {
-    return [conf.pythonName(), '-m', 'pycofe.tasks.import_task', exeType, jobDir, this.id];
+  TaskImport.prototype.getCommandLine = function ( jobManager,jobDir )  {
+    return [conf.pythonName(), '-m', 'pycofe.tasks.import_task', jobManager, jobDir, this.id];
   }
 
   module.exports.TaskImport = TaskImport;

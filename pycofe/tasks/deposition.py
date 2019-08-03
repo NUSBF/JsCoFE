@@ -10,10 +10,10 @@
 #  DEPOSITION EXECUTABLE MODULE
 #
 #  Command-line:
-#     ccp4-python -m pycofe.tasks.deposition exeType jobDir jobId
+#     ccp4-python -m pycofe.tasks.deposition jobManager jobDir jobId
 #
 #  where:
-#    exeType  is either SHELL or SGE
+#    jobManager  is either SHELL or SGE
 #    jobDir   is path to job directory, having:
 #      jobDir/output  : directory receiving output files with metadata of
 #                       all successful imports
@@ -102,6 +102,8 @@ class Deposition(basic.TaskDriver):
                            "labin  FP=" + hkl.dataset.Fmean.value +
                            " SIGFP="    + hkl.dataset.Fmean.sigma +
                            " FREE="     + hkl.dataset.FREE + "\n" +
+                           "PNAME Deposition\n" +
+                           "DNAME\n" +
                            "end\n" )
         self.close_stdin()
 
@@ -131,8 +133,11 @@ class Deposition(basic.TaskDriver):
         self.runApp ( "refmac5",cmd,logType="Main" )
 
         # make a copy of refmac output file with ".cif" extension
-        xyzout_cif = self.getOFName ( "_tmp.cif" )
-        shutil.copyfile ( xyzout,xyzout_cif  )
+        if os.path.isfile(xyzout) and os.path.getsize(xyzout)>10:
+            xyzout_cif = self.getOFName ( "_tmp.cif" )
+            shutil.copyfile ( xyzout,xyzout_cif )
+        else:
+            xyzout_cif = self.getOFName ( ".mmcif" )
 
         # prepare files for the structure visualisation widget
         mapout  = self.getMapOFName()

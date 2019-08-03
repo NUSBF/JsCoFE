@@ -3,23 +3,23 @@
 #
 # ============================================================================
 #
-#    22.12.18   <--  Date of Last Modification.
+#    23.06.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  CHANGE SPACEGROUP EXECUTABLE MODULE
 #
 #  Command-line:
-#     ccp4-python changespg.py exeType jobDir jobId
+#     ccp4-python changespg.py jobManager jobDir jobId
 #
 #  where:
-#    exeType  is either SHELL or SGE
+#    jobManager  is either SHELL or SGE
 #    jobDir   is path to job directory, having:
 #      jobDir/output  : directory receiving output files with metadata of
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2018
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2019
 #
 # ============================================================================
 #
@@ -47,7 +47,14 @@ class ChangeSpG(basic.TaskDriver):
     def run(self):
 
         # fetch input data
-        hkl = self.makeClass ( self.input_data.data.hkl[0] )
+        revision = None
+        hkl      = None
+        idata    = self.makeClass ( self.input_data.data.idata[0] )
+        if idata._type=="DataRevision":
+            revision = idata
+            hkl = self.makeClass ( self.input_data.data.hkl[0] )
+        else:
+            hkl = idata
 
         # make new file name
         outputMTZFName = self.getOFName ( "_" + hkl.new_spg.replace(" ","") +\
@@ -86,12 +93,13 @@ class ChangeSpG(basic.TaskDriver):
             import_merged.run ( self,"Reflection dataset" )
 
             # update structure revision
-            revision = self.makeClass  ( self.input_data.data.revision[0] )
-            new_hkl  = self.outputDataBox.data[hkl._type][0]
-            new_hkl.new_spg      = hkl.new_spg.replace(" ","")
-            new_hkl.aimless_meta = hkl.aimless_meta
-            revision.setReflectionData ( new_hkl  )
-            self.registerRevision      ( revision )
+            if revision:
+                #revision = self.makeClass  ( self.input_data.data.revision[0] )
+                new_hkl  = self.outputDataBox.data[hkl._type][0]
+                new_hkl.new_spg      = hkl.new_spg.replace(" ","")
+                new_hkl.aimless_meta = hkl.aimless_meta
+                revision.setReflectionData ( new_hkl  )
+                self.registerRevision      ( revision )
             self.generic_parser_summary["z01"] = {'SpaceGroup':hkl.new_spg}
 
         else:

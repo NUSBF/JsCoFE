@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    12.01.19   <--  Date of Last Modification.
+#    01.07.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -17,7 +17,6 @@
 #  python native imports
 import os
 import sys
-import shutil
 
 #  application imports
 from   pycofe.dtypes import dtype_template, dtype_xyz
@@ -74,6 +73,8 @@ class DType(dtype_template.DType):
             self.chains         = []
 
             self.ligands        = []     # list of ligands fitted
+            self.refmacLinks    = []     # List of links with description
+            self.links          = []     # List of links without description
 
         return
 
@@ -111,7 +112,7 @@ class DType(dtype_template.DType):
         self.PHDELWT    = "PHDELWT"
         return
 
-    def setShelxELabels ( self ):
+    def setShelxELabels ( self,struct_class ):
         self.FP      = "ShelxE.F"
         self.SigFP   = "ShelxE.SIGF"
         self.PHI     = "ShelxE.PHI"
@@ -120,7 +121,10 @@ class DType(dtype_template.DType):
         self.PHWT    = "PHWT"
         self.DELFWT  = ""
         self.PHDELWT = ""
-        self.FreeR_flag = "FreeR_flag"
+        if struct_class:
+            self.FreeR_flag = struct_class.FreeR_flag
+        else:
+            self.FreeR_flag = "FreeR_flag"
         return
 
     def setPhaserEPLabels ( self,hkl_class ):
@@ -195,14 +199,18 @@ class DType(dtype_template.DType):
         return
 
     def setCrank2Labels ( self,hkl_class ):
-        self.FP         = "REFM_F"
-        self.SigFP      = "REFM_SIGF"
-        self.PHI        = "REFM_PHCOMB"
-        self.FOM        = "REFM_FOMCOMB"
-        self.FWT        = "REFM_FWT"
-        self.PHWT       = "REFM_PHWT"
-        self.DELFWT     = "REFM_DELFWT"
-        self.PHDELWT    = "REFM_PHDELWT"
+        self.FP      = "REFM_F"
+        self.SigFP   = "REFM_SIGF"
+        self.PHI     = "REFM_PHCOMB"
+        self.FOM     = "REFM_FOMCOMB"
+        self.FWT     = "REFM_FWT"
+        self.PHWT    = "REFM_PHWT"
+        self.DELFWT  = "REFM_DELFWT"
+        self.PHDELWT = "REFM_PHDELWT"
+        self.HLA     = "REFM_HLACOMB"
+        self.HLB     = "REFM_HLBCOMB"
+        self.HLC     = "REFM_HLCCOMB"
+        self.HLD     = "REFM_HLDCOMB"
         self.FreeR_flag = "FREER"
         if hkl_class:
             if hasattr(hkl_class.dataset,"FREE"):
@@ -224,6 +232,16 @@ class DType(dtype_template.DType):
         self.HLD     = struct_class.HLD
         self.FreeR_flag = struct_class.FreeR_flag
         return
+
+    def getAllLabels ( self ):
+        lbl = [ self.FP    ,self.SigFP  ,self.PHI,self.FOM,self.FWT,self.PHWT,
+                self.DELFWT,self.PHDELWT,self.HLA,self.HLB,self.HLC,self.HLD,
+                self.FreeR_flag ]
+        labels = []
+        for l in lbl:
+            if len(l)>0:
+                labels.append ( l )
+        return labels
 
     def setXYZSubtype ( self ):
         self.addSubtype ( dtype_template.subtypeXYZ() )
@@ -343,8 +361,8 @@ class DType(dtype_template.DType):
     def getSolFileName(self):
         return self.getFileName ( dtype_template.file_key["sol"] )
 
-    def getSubFileName(self):
-        return self.getFileName ( dtype_template.file_key["sub"] )
+    #def getSubFileName(self):
+    #    return self.getFileName ( dtype_template.file_key["sub"] )
 
     def getSubFileName(self):
         return self.getFileName ( dtype_template.file_key["sub"] )
@@ -393,6 +411,8 @@ class DType(dtype_template.DType):
             self.ligands = struct_class.ligands
         if struct_class.hasLigandSubtype():
             self.addLigandSubtype()
+        self.links = getattr(struct_class,'links',[])
+        self.refmacLinks = getattr(struct_class,'refmacLinks',[])
         return
 
     def addLigands ( self,ligCode ):

@@ -10,10 +10,10 @@
 #  SHELX-AUTO EXECUTABLE MODULE
 #
 #  Command-line:
-#     ccp4-python python.tasks.shelxauto.py exeType jobDir jobId
+#     ccp4-python python.tasks.shelxauto.py jobManager jobDir jobId
 #
 #  where:
-#    exeType  is either SHELL or SGE
+#    jobManager  is either SHELL or SGE
 #    jobDir   is path to job directory, having:
 #      jobDir/output  : directory receiving output files with metadata of
 #                       all successful imports

@@ -10,10 +10,10 @@
 #  MATTHEWS EXECUTABLE MODULE
 #
 #  Command-line:
-#     ccp4-python matthews.py exeType jobDir jobId
+#     ccp4-python matthews.py jobManager jobDir jobId
 #
 #  where:
-#    exeType  is either SHELL or SGE
+#    jobManager  is either SHELL or SGE
 #    jobDir   is path to job directory, having:
 #      jobDir/output  : directory receiving output files with metadata of
 #                       all successful imports
@@ -38,9 +38,9 @@ class ASUMod(asudef.ASUDef):
 
     # make task-specific definitions
     def matthews_report(self):  return "refmac_report"
-    def getXMLFName    (self):  return "matthews.xml"
-    def seq_table_id   (self):  return "seq_table"
-    def res_table_id   (self):  return "res_table"
+    #def getXMLFName    (self):  return "matthews.xml"
+    #def seq_table_id   (self):  return "seq_table"
+    #def res_table_id   (self):  return "res_table"
 
     # ------------------------------------------------------------------------
 

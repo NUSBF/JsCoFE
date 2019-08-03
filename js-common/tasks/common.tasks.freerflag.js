@@ -100,9 +100,6 @@ TaskFreeRFlag.prototype.constructor = TaskFreeRFlag;
 
 TaskFreeRFlag.prototype.icon = function()  { return 'task_freerflag'; }
 
-//TaskFreeRFlag.prototype.icon_small = function()  { return 'task_freerflag_20x20'; }
-//TaskFreeRFlag.prototype.icon_large = function()  { return 'task_freerflag';       }
-
 TaskFreeRFlag.prototype.currentVersion = function()  {
   var version = 0;
   if (__template)
@@ -170,8 +167,8 @@ if (!__template)  {
 
   }
 
-  TaskFreeRFlag.prototype.getCommandLine = function ( exeType,jobDir )  {
-    return [conf.pythonName(), '-m', 'pycofe.tasks.freerflag', exeType, jobDir, this.id];
+  TaskFreeRFlag.prototype.getCommandLine = function ( jobManager,jobDir )  {
+    return [conf.pythonName(), '-m', 'pycofe.tasks.freerflag', jobManager, jobDir, this.id];
   }
 
   // -------------------------------------------------------------------------

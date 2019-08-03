@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    24.04.19   <--  Date of Last Modification.
+ *    07.07.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -28,15 +28,20 @@ function startSession ( sceneId,dev_switch )  {
   _jsrview_uri = 'js-lib/jsrview/';
 
   //$(function() {
+  /*  -- now done on per-widget basis
     $(document).tooltip({
-        show  : { effect : 'slideDown' },
+        show  : { effect : 'slideDown', delay: 1500 },
         track : true,
+        content: function (callback) {
+            callback($(this).prop('title'));
+        },
         open  : function (event, ui) {
             setTimeout(function() {
                 $(ui.tooltip).hide('explode');
-            },3000);
+            },6000);
         }
     });
+  */
   //});
 
   checkLocalService ( function(rc){
@@ -60,8 +65,9 @@ function startSession ( sceneId,dev_switch )  {
           __login_token = 'a6ed8a1570e6c2bc8211997f9f1672528711e286';
           __login_user  = 'Admin';
           __doNotShowList = ['*'];
-          loadKnowledge ( 'Login' )
+          loadKnowledge ( 'Login' );
           makeAdminPage ( sceneId );
+          makeSessionCheck ( sceneId );
 
         } else  {
 
@@ -74,7 +80,7 @@ function startSession ( sceneId,dev_switch )  {
           }
           __doNotShowList = ['*'];
           __cloud_storage = true;  // fixed for developer
-          loadKnowledge ( 'Login' )
+          loadKnowledge ( 'Login' );
 
           if (dev_switch==1)  {
 
@@ -96,6 +102,8 @@ function startSession ( sceneId,dev_switch )  {
             makeProjectPage ( sceneId );
 
           }
+
+          makeSessionCheck  ( sceneId );
 
         }
 
@@ -134,7 +142,11 @@ function login ( user_login_name,user_password,sceneId )  {
               loadKnowledge ( 'Login' )
               if (__admin && (userData.login=='admin'))
                     makeAdminPage       ( sceneId );
+              else if ((!__local_setup) && (userData.action!=userdata_action.none))
+              //else if (userData.action!=userdata_action.none)
+                    makeAccountPage     ( sceneId );
               else  makeProjectListPage ( sceneId );
+              makeSessionCheck ( sceneId );
           return true;
 
       case fe_retcode.wrongLogin:
@@ -152,4 +164,49 @@ function login ( user_login_name,user_password,sceneId )  {
 
   },null,null);
 
+}
+
+
+var __session_check_timer  = null;
+
+function checkSession ( sceneId )  {
+
+  serverCommand ( fe_command.checkSession,{'login_token':__login_token},
+                  'Check session',
+    function(rdata){ // successful reply
+      if (__session_check_timer)  {
+        if ((rdata.status==fe_retcode.wrongSession) ||
+            (rdata.status==fe_retcode.notLoggedIn))  {
+          __login_token = '';
+          logout ( sceneId,1 );
+        } else
+          makeSessionCheck ( sceneId );
+      }
+      return true;
+    },
+    function(){}, // always do nothing
+    function(){   // fail
+      if (__session_check_timer)  {
+        if (__local_setup)  {
+          __login_token = '';
+          logout ( sceneId,2 );
+        } else
+          makeSessionCheck ( sceneId );
+      }
+    }
+  );
+
+}
+
+function makeSessionCheck ( sceneId )  {
+  __session_check_timer = setTimeout ( function(){
+    checkSession ( sceneId );
+  },__check_session_period);
+}
+
+function stopSessionChecks()  {
+  if (__session_check_timer)  {
+    clearTimeout ( __session_check_timer );
+    __session_check_timer = null;
+  }
 }

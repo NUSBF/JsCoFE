@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    27.12.18   <--  Date of Last Modification.
+ *    10.05.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  MrBUMP Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2018
+ *  (C) E. Krissinel, A. Lebedev 2016-2019
  *
  *  =================================================================
  *
@@ -39,7 +39,7 @@ function TaskMrBump()  {
   this.helpURL = './html/jscofe_task_mrbump.html';
 
   this.input_dtypes = [{  // input data types
-      data_type : {'DataRevision':['!protein','!asu']}, // data type(s) and subtype(s)
+      data_type : {'DataRevision':['!protein','!asu','~xyz']}, // data type(s) and subtype(s)
       label     : 'Structure revision',     // label for input dialog
       inputId   : 'revision', // input Id for referencing input fields
       version   : 0,          // minimum data version allowed
@@ -71,9 +71,6 @@ TaskMrBump.prototype.constructor = TaskMrBump;
 // ===========================================================================
 
 TaskMrBump.prototype.icon = function()  { return 'task_mrbump'; }
-
-//TaskMrBump.prototype.icon_small = function()  { return 'task_mrbump_20x20'; }
-//TaskMrBump.prototype.icon_large = function()  { return 'task_mrbump';       }
 
 TaskMrBump.prototype.currentVersion = function()  {
   var version = 0;
@@ -145,8 +142,8 @@ if (!__template)  {
 
   }
 
-  TaskMrBump.prototype.getCommandLine = function ( exeType,jobDir )  {
-    return [conf.pythonName(), '-m', 'pycofe.tasks.mrbump', exeType, jobDir, this.id];
+  TaskMrBump.prototype.getCommandLine = function ( jobManager,jobDir )  {
+    return [conf.pythonName(), '-m', 'pycofe.tasks.mrbump', jobManager, jobDir, this.id];
   }
 
   // -------------------------------------------------------------------------

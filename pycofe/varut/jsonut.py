@@ -3,13 +3,13 @@
 #
 # ============================================================================
 #
-#    05.07.17   <--  Date of Last Modification.
+#    28.06.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  JSON HANDLING CLASS
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2019
 #
 # ============================================================================
 #
@@ -52,6 +52,12 @@ def readjObject ( file_path ):
         return jObject(json_str)
     except:
         return None
+
+def writejObject ( obj,file_path ):
+    file     = open ( file_path,"w" )
+    json_str = file.write ( obj.to_JSON() )
+    file.close()
+    return
 
 
 #

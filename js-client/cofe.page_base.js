@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    06.04.19   <--  Date of Last Modification.
+ *    18.07.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -59,17 +59,59 @@ function BasePage ( sceneId,gridStyle,pageType )  {
 
 BasePage.prototype.onResize = function ( width,height )  {}
 
+BasePage.prototype.makeSetupNamePanel = function()  {
+  var setupPanel = new Grid ( '' );
+
+  function _make_panel ( name,icon )  {
+    setupPanel.setImage ( icon,'30px','30px', 0,1,1,1 );
+    setupPanel.setLabel ( name, 0,2,1,1 )
+              .setFont  ( 'times','150%',true,true ).setNoWrap();
+    setupPanel.setCellSize ( '40%','',0,0 );
+    setupPanel.setCellSize ( '10%','',0,1 );
+    setupPanel.setCellSize ( '10%','',0,2 );
+    setupPanel.setCellSize ( '40%','',0,3 );
+    setupPanel.setVerticalAlignment ( 0,1,'bottom' );
+    setupPanel.setVerticalAlignment ( 0,2,'bottom' );
+  }
+
+  if (__setup_desc)  {
+    _make_panel ( __setup_desc.name,__setup_desc.icon );
+  } else if (__local_setup)  {
+    _make_panel ( 'Home setup',image_path('setup_home') );
+  } else  {
+    _make_panel ( 'Unnamed setup',image_path('setup_unnamed') );
+    /*
+    setupPanel.setLabel ( 'Unnamed setup', 0,0,1,1 )
+              .setFont  ( 'times','150%',true,true ).setNoWrap();
+    setupPanel.setHorizontalAlignment  ( 0,0,'center' );
+    */
+  }
+
+  return setupPanel;
+
+}
+
+
+var __ccp4online_logo = new ImageButton ( image_path('logo-ccp4_online'),'','28px' );
+var __stfc_logo       = new ImageButton ( image_path('logo-stfc')       ,'','28px' );
+var __bbsrc_logo      = new ImageButton ( image_path('logo-bbsrc')      ,'','28px' );
 
 BasePage.prototype.makeLogoPanel = function ( row,col,colSpan )  {
   var logoPanel = this.grid.setGrid ( '',row,col,1,colSpan );
   var c = 0;
+  logoPanel.setLabel ( 'Powered by CCP4 v.' + __ccp4_version,0,c,1,1 )
+                     .setFontSize ( '75%' ).setNoWrap()
+                     .setVerticalAlignment('bottom');
   logoPanel.setCellSize ( '50%','', 0,c++ );
   if (getClientCode()==client_code.ccp4)  {
-    logoPanel.setImage ( image_path('logo-ccp4_online'),'','28px',0,c++,1,1 );
-    logoPanel.setLabel ( '',0,c++,1,1 ).setWidth ( '40px' );
-    logoPanel.setImage ( image_path('logo-stfc'),'','28px'  ,0,c++,1,1 );
-    logoPanel.setLabel ( '',0,c++,1,1 ).setWidth ( '30px' );
-    logoPanel.setImage ( image_path('logo-bbsrc'),'','28px' ,0,c++,1,1 );
+    //logoPanel.setImage ( image_path('logo-ccp4_online'),'','28px',0,c++,1,1 );
+    logoPanel.setWidget ( __ccp4online_logo, 0,c++,1,1 );
+    logoPanel.setLabel  ( '',0,c++,1,1 ).setWidth ( '40px' );
+    //logoPanel.setImage ( image_path('logo-stfc'),'','28px'  ,0,c++,1,1 );
+    logoPanel.setWidget ( __stfc_logo, 0,c++,1,1 );
+    logoPanel.setLabel  ( '',0,c++,1,1 ).setWidth ( '30px' );
+    //logoPanel.setImage ( image_path('logo-bbsrc'),'','28px' ,0,c++,1,1 );
+    logoPanel.setWidget ( __bbsrc_logo, 0,c++,1,1 );
   } else {
     logoPanel.setImage ( image_path('logo-ccpem'),'','28px',0,c++,1,1 );
     logoPanel.setLabel ( '',0,c++,1,1 ).setWidth ( '40px' );
@@ -82,6 +124,7 @@ BasePage.prototype.makeLogoPanel = function ( row,col,colSpan )  {
   logoPanel.setLabel ( appName() + ' v.' + jsCoFE_version,0,c,1,1 )
                      .setFontSize ( '75%' ).setNoWrap()
                      .setVerticalAlignment('bottom');
+  logoPanel.setVerticalAlignment   ( 0,0,'bottom'  );
   logoPanel.setCellSize            ( '50%','', 0,c );
   logoPanel.setHorizontalAlignment ( 0,c,'right'   );
   logoPanel.setVerticalAlignment   ( 0,c,'bottom'  );
@@ -110,6 +153,58 @@ BasePage.prototype.getUserRation = function()  {
 }
 
 
+BasePage.prototype._setModeIcon = function ( colNo )  {
+  var icon_path;
+  var tooltip  = '<i>' + appName();
+  var ul_style = '<ul style="font-size:80%;margin:2px;padding-left:24px;">';
+  if (__local_setup)  {
+    icon_path = image_path ( 'setup_local'  );
+    tooltip  += ' is in <b>local</b> mode:</i>' + ul_style +
+                '<li>projects and data are stored on local drive</li>';
+    if (__local_service)
+          tooltip += '<li>all tasks run on your computer</li>';
+    else  tooltip += '<li>non-interactive tasks run on your computer</li>'   +
+                     '<li><b>interactive tasks are not available</b>' +
+                     '<br><i>(' + appName() + ' Client not configured)</i></li>';
+  } else  {
+    icon_path = image_path ( 'setup_remote' );
+    tooltip  += ' is in <b>remote</b> mode:</i>' + ul_style +
+                '<li>projects and data are stored on server</li>' +
+                '<li>non-interactive tasks run on server</li>';
+    if (__local_service)
+          tooltip += '<li>interactive tasks run on your computer</li>';
+    else  tooltip += '<li><b>interactive tasks are not available</b>' +
+                     '<br><i>(' + appName() + ' Client not configured)</i></li>';
+  }
+  this.headerPanel.setImageButton ( icon_path,'22px','22px',0,colNo,1,1 )
+                  .setTooltip1    ( tooltip + '</ul>','show',false,0 )
+                  .setFontSize    ( '90%' )
+                  .setVerticalAlignment ( 'middle' );
+
+  var setup_name = 'Unnamed CCP4 Cloud Setup';
+  var setup_icon = 'images_com/setup_unknown.png';
+  if (__setup_desc)  {
+    setup_name = 'CCP4 Cloud Setup at ' + __setup_desc.name;
+    setup_icon = __setup_desc.icon;
+  } else if (__local_setup)  {
+    setup_name = 'Local CCP4 Cloud Setup';
+    setup_icon = image_path ( 'setup_home' );
+  }
+  this.headerPanel.setImageButton ( setup_icon,'22px','22px',0,colNo+1,1,1 )
+                  .setTooltip1    ( setup_name,'show',false,0 )
+                  .setFontSize    ( '90%' )
+                  .setVerticalAlignment ( 'middle' );
+  /*
+  this.headerPanel.setLabel ( setup_name, 0,colNo+1,1,1 )
+                  .setFont  ( '','80%',false,true )
+                  .setFontLineHeight ( '85%' );
+  */
+  this.headerPanel.setVerticalAlignment ( 0,colNo  ,'top' );
+  this.headerPanel.setVerticalAlignment ( 0,colNo+1,'top' );
+  this.headerPanel.setLabel ( '&nbsp;', 0,colNo+2,1,1 )
+}
+
+
 BasePage.prototype.makeHeader = function ( colSpan,on_logout_function )  {
 
   this.headerPanel = new Grid('');
@@ -123,7 +218,8 @@ BasePage.prototype.makeHeader = function ( colSpan,on_logout_function )  {
   this.headerPanel.setCellSize ( '40px','',0,1 );
 
   if (__login_user)  {
-    this.headerPanel.setCellSize ( '99%','',0,17 );
+    this.headerPanel.setCellSize ( '99%','',0,14 );
+    this._setModeIcon ( 15 );
     this.rationPanel = new Grid('');
     this.headerPanel.setWidget   ( this.rationPanel,0,18,1,1 );
     this.headerPanel.setLabel( '&nbsp;',0,19,1,1 ).setWidth('40px');
@@ -135,7 +231,8 @@ BasePage.prototype.makeHeader = function ( colSpan,on_logout_function )  {
 //    this.headerPanel.setNoWrap   ( 0,20 );
   } else {
     this.rationPanel = null;
-    this.headerPanel.setCellSize ( '99%','',0,19 );
+    this.headerPanel.setCellSize ( '99%','',0,16 );
+    this._setModeIcon ( 17 );
   }
 
   this.logout_btn = new ImageButton ( image_path('logout'),'24px','24px' );
@@ -143,17 +240,29 @@ BasePage.prototype.makeHeader = function ( colSpan,on_logout_function )  {
   this.headerPanel.setHorizontalAlignment ( 0,21,'right' );
   this.headerPanel.setVerticalAlignment   ( 0,21,'top'   );
   this.headerPanel.setCellSize ( '32px','32px',0,21 );
-  this.logout_btn.element.title = 'Logout';
+  this.logout_btn .setTooltip  ( 'Logout' );
 
   (function(page){
     page.logout_btn.addOnClickListener ( function(){
       if (on_logout_function)
-        on_logout_function ( function(){ logout(page.element.id); } );
+        on_logout_function ( function(){ logout(page.element.id,0); } );
       else
-        logout ( page.element.id );
+        logout ( page.element.id,0 );
     });
   }(this));
 
+}
+
+
+BasePage.prototype.addMenuItem = function ( name,icon_name,listener_func )  {
+  this.headerPanel.menu.addItem ( name,image_path(icon_name) )
+                       .addOnClickListener ( listener_func );
+  return this;
+}
+
+BasePage.prototype.addMenuSeparator = function()  {
+  this.headerPanel.menu.addSeparator();
+  return this;
 }
 
 
@@ -177,13 +286,13 @@ BasePage.prototype.makeUserRationIndicator = function()  {
     if (this.ration)  {
       if (this.ration.storage>0.0)  {
         this.rationPanel.disk_icon  = this.rationPanel.setImageButton (
-                                    image_path('disk'),'20px','20px',0,0,1,1 );
+                                      image_path('disk'),'20px','20px',0,0,1,1 );
         this.rationPanel.disk_usage = this.rationPanel.setLabel ( '',0,1,1,1 )
                                                       .setFontSize('90%');
         this.rationPanel.sep_label  = this.rationPanel.setLabel (
-                                    '&nbsp;',0,2,1,1 ).setWidth('4px');
+                                      '&nbsp;',0,2,1,1 ).setWidth('4px');
         this.rationPanel.cpu_icon   = this.rationPanel.setImageButton (
-                                    image_path('cpu'),'20px','20px',0,3,1,1 );
+                                      image_path('cpu'),'20px','20px',0,3,1,1 );
         this.rationPanel.cpu_usage  = this.rationPanel.setLabel ( '',0,4,1,1 )
                                           .setNoWrap().setFontSize('90%');
         this.displayUserRation ( null );
@@ -301,17 +410,17 @@ function replaceHistoryState ( stateName )  {
 
 function makePage ( new_page )  {
 
-    function launch()  {
-      window.setTimeout ( function(){
-        __current_page = new_page;
-      },10 );
-    }
+  function launch()  {
+    window.setTimeout ( function(){
+      __current_page = new_page;
+    },10 );
+  }
 
-    if (__current_page)  {
-      __current_page.destructor ( launch );
-    } else  {
-      launch();
-    }
+  if (__current_page)  {
+    __current_page.destructor ( launch );
+  } else  {
+    launch();
+  }
 
 }
 

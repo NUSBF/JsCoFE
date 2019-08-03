@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    28.03.19   <--  Date of Last Modification.
+ *    18.07.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -19,14 +19,6 @@
  *
  */
 
-
-/*
-http://tablesorter.com/docs/#Introduction
-https://mottie.github.io/tablesorter/docs/example-widget-filter-custom.html
-
-https://mottie.github.io/tablesorter/docs/example-css-highlighting.html
-
-*/
 
 // -------------------------------------------------------------------------
 // admin page class
@@ -55,20 +47,17 @@ function AdminPage ( sceneId )  {
   refresh_btn.setSize('30px','30px').setTooltip('Refresh');
 
   // Make Main Menu
-  var account_nu = this.headerPanel.menu.addItem('Add New User',image_path('user'));
-  this.headerPanel.menu.addSeparator();
-  var account_mi = this.headerPanel.menu.addItem('My Account'  ,image_path('settings'));
-  var prjlist_mi = this.headerPanel.menu.addItem('My Projects' ,image_path('list'));
-  this.addLogoutToMenu ( function(){ logout(sceneId); } );
-
-  account_nu.addOnClickListener ( function(){ makeRegisterPage   (sceneId); });
-  account_mi.addOnClickListener ( function(){ makeAccountPage    (sceneId); });
-  prjlist_mi.addOnClickListener ( function(){ makeProjectListPage(sceneId); });
+  this.addMenuItem ( 'Add New User','user',function(){ makeRegisterPage(sceneId); })
+      .addMenuSeparator()
+      .addMenuItem ( 'My Account','settings',function(){ makeAccountPage(sceneId); })
+      .addMenuItem ( 'My Projects','list',function(){ makeProjectListPage(sceneId); })
+      .addLogoutToMenu ( function(){ logout(sceneId,0); });
 
   // make tabs
   this.tabs = new Tabs();
   this.usersTab = this.tabs.addTab ( 'Users',true  );
   this.nodesTab = this.tabs.addTab ( 'Nodes',false );
+  this.usageTab = this.tabs.addTab ( 'Usage',false );
   this.jobsTab  = this.tabs.addTab ( 'Jobs' ,false );
 
   // center panel horizontally and make left- and right-most columns page margins
@@ -78,18 +67,27 @@ function AdminPage ( sceneId )  {
 
   this.makeLogoPanel ( 2,0,3 );
 
-  this.jobsTitle     = this.jobsTab.grid.setLabel ( '',0,0,1,1 );
-  this.jobStats      = this.jobsTab.grid.setLabel ( '',1,0,1,1 );
+  this.jobsTitle     = this.jobsTab.grid.setLabel   ( '',0,0,1,1 );
+  this.jobStats      = this.jobsTab.grid.setLabel   ( '',1,0,1,1 );
 
-  this.usersTitle    = this.usersTab.grid.setLabel ( '',0,0,1,1 );
+  this.usersTitle    = this.usersTab.grid.setLabel  ( '',0,0,1,1 );
   this.userListTable = null;
 
-  this.nodesTitle    = this.nodesTab.grid.setLabel ( '',0,0,1,1 );
+  this.usageStats    = this.usageTab.grid.setIFrame ( '',0,0,1,1 )
+                           .setFramePosition ( '0px','50px','100%','92%' );
+  this.usageStats._url    = '';
+  this.usageStats._loaded = false;
+
+  this.nodesTitle    = this.nodesTab.grid.setLabel  ( '',0,0,1,1 );
   this.nodeListTable = null;
 
   this.onResize ( window.innerWidth,window.innerHeight );
 
   (function(self){
+
+    self.tabs.setTabChangeListener ( function(ui){
+      self.loadUsageStats();
+    });
 
     announce_btn.addOnClickListener ( function(){
       new AnnounceDialog();
@@ -113,16 +111,26 @@ AdminPage.prototype.destructor = function ( function_ready )  {
 }
 */
 
+AdminPage.prototype.loadUsageStats = function()  {
+  if ((this.tabs.getActiveTabNo()==2) && (!this.usageStats._loaded))  {
+    this.usageStats.loadPage ( this.usageStats._url );
+    this.usageStats._loaded = true;
+  }
+}
+
 AdminPage.prototype.refresh = function()  {
   (function(self){
     serverRequest ( fe_reqtype.getAdminData,0,'Admin Page',function(data){
       if (!data.served)  {
-        self.jobsTitle .setText ( data.jobsStat );
-        self.usersTitle.setText ( data.jobsStat );
-        self.nodesTitle.setText ( data.jobsStat );
+        self.jobsTitle .setText  ( data.jobsStat );
+        self.usersTitle.setText  ( data.jobsStat );
+        self.nodesTitle.setText  ( data.jobsStat );
       } else  {
-        self.jobsTitle.setText ( '<h2>Jobs Log</h2>' );
-        self.jobStats .setText ( '<pre>' + data.jobsStat + '</pre>' );
+        self.jobsTitle .setText  ( '<h2>Jobs Log</h2>' );
+        self.jobStats  .setText  ( '<pre>' + data.jobsStat + '</pre>' );
+        self.usageStats._url    = data.usageReportURL;
+        self.usageStats._loaded = false;
+        self.loadUsageStats();
         self.makeUsersInfoTab ( data.usersInfo );
         if (!__local_service)
           self.makeNodesInfoTab ( data.nodesInfo );
@@ -150,6 +158,7 @@ AdminPage.prototype.refresh = function()  {
 AdminPage.prototype.onResize = function ( width,height )  {
   this.tabs.setWidth_px  ( width -50  );
   this.tabs.setHeight_px ( height-100 );
+  this.usageStats.setFramePosition ( '0px','50px','100%',(height-148)+'px' );
   this.tabs.refresh();
 }
 
@@ -249,6 +258,7 @@ AdminPage.prototype.makeNodesInfoTab = function ( ndata )  {
       'URL',
       'Type',
       'Time started',
+      'CCP4<br>version',
       'Fast<br>track',
       'State',
       'Jobs<br>done',
@@ -260,6 +270,7 @@ AdminPage.prototype.makeNodesInfoTab = function ( ndata )  {
       'Node URL',
       'Node type',
       'Node start time',
+      'Version of CCP4 running on the node',
       'Yes if accepts fast track jobs',
       'Current node state',
       'Total number of jobs executed on the node',
@@ -271,8 +282,8 @@ AdminPage.prototype.makeNodesInfoTab = function ( ndata )  {
   var row = 1;
 
   this.nodeListTable.setRow ( 'Front End','Front End Server',
-    [appName(),ndata.FEconfig.externalURL,'FE',ndata.FEconfig.startDate,
-     'N/A','running','N/A','N/A','N/A'],
+    [ appName(),ndata.FEconfig.externalURL,'FE',ndata.FEconfig.startDate,
+      ndata.ccp4_version,'N/A','running','N/A','N/A','N/A' ],
     row,(row & 1)==1 );
   row++;
 
@@ -296,10 +307,13 @@ AdminPage.prototype.makeNodesInfoTab = function ( ndata )  {
       } else {
         state = 'dead';
       }
+      var nc_name = 'NC-' + nci.config.exeType;
+      if (nci.config.jobManager!=nci.config.exeType)
+        nc_name += '(' + nci.config.jobManager + ')';
       this.nodeListTable.setRow ( 'NC-' + ncn,'Number Cruncher #' + ncn,
-        [nci.config.name,nci.config.externalURL,'NC-'+nci.config.exeType,
-         nci.config.startDate,fasttrack,state,njdone,nci.config.capacity,
-         njobs],row,(row & 1)==1 );
+        [nci.config.name,nci.config.externalURL,nc_name,
+         nci.config.startDate,nci.ccp4_version,fasttrack,state,
+         njdone,nci.config.capacity,njobs],row,(row & 1)==1 );
       row++;
       ncn++;
     }

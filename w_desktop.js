@@ -120,9 +120,9 @@ function startClientApplication()  {
     var clientConfig = conf.getClientNCConfig();
     var clientURL    = '';
     if (clientConfig)  {
-      if (clientConfig.host=='localhost')
-            clientURL = 'lsp=' + clientConfig.port;
-      else  clientURL = 'lsp=' + clientConfig.url();
+      let key = clientConfig.protocol == 'https' ? 'lsps=' : 'lsp=';
+      let value = clientConfig.host == 'localhost' ? clientConfig.port : clientConfig.url();
+      clientURL = key + value;
     }
 
     var command = [];

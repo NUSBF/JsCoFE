@@ -25,6 +25,7 @@ import command
 def file_pdb       ():  return ".pdb"
 def file_mtz       ():  return ".mtz"
 def file_cif       ():  return ".cif"
+def file_lib       ():  return ".lib"
 def refmac_script  ():  return "_refmac.script"
 def file_map       ():  return ".map"
 def file_dmap      ():  return ".diff.map"
@@ -155,7 +156,7 @@ def calcEDMap ( xyzin,hklin,libin,hkl_dataset,output_file_prefix,job_dir,
             "XYZOUT",output_file_prefix + file_pdb(),
             "HKLIN" ,hklin,
             "HKLOUT",output_file_prefix + file_mtz(),
-            "LIBOUT",output_file_prefix + file_cif(),
+            "LIBOUT",output_file_prefix + file_lib(),
           ]
     if libin:
         cmd += ["LIBIN",libin]
@@ -206,7 +207,7 @@ def calcAnomEDMap ( xyzin,hklin,hkl_dataset,anom_form,output_file_prefix,job_dir
             "XYZOUT",output_file_prefix + file_pdb(),
             "HKLIN" ,hklin,
             "HKLOUT",output_file_prefix + file_mtz(),
-            "LIBOUT",output_file_prefix + file_cif(),
+            "LIBOUT",output_file_prefix + file_lib(),
           ]
 
     # Start refmac

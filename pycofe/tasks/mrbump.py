@@ -3,17 +3,17 @@
 #
 # ============================================================================
 #
-#    11.03.19   <--  Date of Last Modification.
+#    21.07.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  MRBUMP EXECUTABLE MODULE
 #
 #  Command-line:
-#     ccp4-python python.tasks.mrbump.py exeType jobDir jobId
+#     ccp4-python python.tasks.mrbump.py jobManager jobDir jobId
 #
 #  where:
-#    exeType  is either SHELL or SGE
+#    jobManager  is either SHELL or SGE
 #    jobDir   is path to job directory, having:
 #      jobDir/output  : directory receiving output files with metadata of
 #                       all successful imports
@@ -160,32 +160,62 @@ class MrBump(basic.TaskDriver):
         if os.path.isdir(search_dir):
 
             if hkl:
-                molrep_dir = os.path.join ( search_dir,"results","solution",
-                                                       "mr","molrep","refine" )
+                xyzfile = None
+                result_file = os.path.join ( search_dir,"results","data","results.txt" )
+                if not os.path.isfile(result_file):
+                    result_file = os.path.join ( search_dir,"results","results.txt" )
+                if os.path.isfile(result_file):
+                    lines = [line.strip() for line in open(result_file)]
+                    for i in range(len(lines)):
+                        if lines[i].startswith("Refmac PDBOUT:"):
+                            xyzfile = lines[i+1]
+                        elif lines[i].startswith("Buccaneer PDBOUT:"):
+                            xyzfile = lines[i+1]
+                    if xyzfile:
+                        structure = self.finaliseStructure ( xyzfile,"mrbump",hkl,
+                                                             None,[seq],0,
+                                                             leadKey=1,
+                                                             openState_bool=False )
+                        if structure:
+                            # update structure revision
+                            revision = self.makeClass ( self.input_data.data.revision[0] )
+                            revision.setStructureData ( structure )
+                            self.registerRevision     ( revision  )
+                        else:
+                            self.putMessage ( "<h3>Structure cannot be formed</h3>" )
 
-                if os.path.isdir(molrep_dir):
-                    dirlist = os.listdir(molrep_dir)
-                    xyzfile = None
-                    #mtzfile = None
-                    for filename in dirlist:
-                        if filename.startswith("refmac"):
-                            if filename.endswith(".pdb"):
-                                xyzfile = os.path.join(molrep_dir,filename)
-                            #if filename.endswith(".mtz"):
-                                #mtzfile = os.path.join(molrep_dir,filename)
-
-                    structure = self.finaliseStructure ( xyzfile,"mrbump",hkl,
-                                                         None,[seq],0,
-                                                         leadKey=1,
-                                                         openState_bool=False )
-                    if structure:
-                        # update structure revision
-                        revision = self.makeClass ( self.input_data.data.revision[0] )
-                        revision.setStructureData ( structure )
-                        self.registerRevision     ( revision  )
-
-                else:
+                if not xyzfile:
                     self.putTitle ( "No solution found" )
+
+                    """
+                    #  old mrbump
+                    molrep_dir = os.path.join ( search_dir,"results","solution",
+                                                           "mr","molrep","refine" )
+
+                    if os.path.isdir(molrep_dir):
+                        dirlist = os.listdir(molrep_dir)
+                        xyzfile = None
+                        #mtzfile = None
+                        for filename in dirlist:
+                            if filename.startswith("refmac"):
+                                if filename.endswith(".pdb"):
+                                    xyzfile = os.path.join(molrep_dir,filename)
+                                #if filename.endswith(".mtz"):
+                                    #mtzfile = os.path.join(molrep_dir,filename)
+
+                        structure = self.finaliseStructure ( xyzfile,"mrbump",hkl,
+                                                             None,[seq],0,
+                                                             leadKey=1,
+                                                             openState_bool=False )
+                        if structure:
+                            # update structure revision
+                            revision = self.makeClass ( self.input_data.data.revision[0] )
+                            revision.setStructureData ( structure )
+                            self.registerRevision     ( revision  )
+
+                    else:
+                        self.putTitle ( "No solution found" )
+                    """
 
             else:
                 models_found    = False;

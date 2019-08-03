@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    07.03.19   <--  Date of Last Modification.
+ *    01.08.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -34,6 +34,7 @@ var utils         = require('./server.utils');
 var task_t        = require('../js-common/tasks/common.tasks.template');
 var task_rvapiapp = require('../js-common/tasks/common.tasks.rvapiapp');
 var cmd           = require('../js-common/common.commands');
+var ud            = require('../js-common/common.data_user');
 var comut         = require('../js-common/common.utils');
 
 //  prepare log
@@ -177,6 +178,22 @@ var fpath = path.join ( conf.getServerConfig().storage,registerFName );
 }
 
 
+function removeJobDelayed ( job_token,jobStatus )  {
+  if (ncJobRegister)  {
+    var jobEntry = ncJobRegister.getJobEntry ( job_token );
+    if (jobEntry)  {
+      jobEntry.jobStatus = jobStatus;
+      writeNCJobRegister();
+      setTimeout ( function(){
+        ncJobRegister.removeJob ( job_token );
+        writeNCJobRegister();
+      },
+      conf.getServerConfig().jobCheckPeriod );
+    }
+  }
+}
+
+
 // ===========================================================================
 
 function writeJobDriverFailureMessage ( code,stdout,stderr,jobDir )  {
@@ -316,12 +333,29 @@ var cap   = false;
       for (var i=2;i<plist.length;i++)
         fname = path.join ( fname,plist[i] );
 
+//console.log ( ' jobEntry found, fname=' + fname );
+
     } else  {
 
+//console.log ( ' jobEntry NOT found, url=' + url );
+
       log.error ( 2,'Unrecognised job token in url ' + url );
-      server_response.writeHead ( 404, {'Content-Type': 'text/html;charset=UTF-8'} );
-      server_response.end ( '<p><b>UNRECOGNISED JOB TOKEN</b></p>' );
-      return;
+      if (url.endsWith('.html'))  {
+        // assume that this is due to a delay in job launching
+        server_response.writeHead ( 200, {'Content-Type': 'text/html;charset=UTF-8'} );
+        server_response.end (
+          '<html><head>' +
+            '<title>Job is not prepared yet</title>' +
+            '<meta http-equiv="refresh" content="2" />' +
+          '</head><body>' +
+            '<h2>Waiting for Job to start ....</h2><i>Issuing job token ...</i>' +
+          '</body></html>'
+        );
+      } else  {
+        server_response.writeHead ( 404, {'Content-Type': 'text/html;charset=UTF-8'} );
+        server_response.end ( '<p><b>UNRECOGNISED JOB TOKEN</b></p>' );
+        return;
+      }
 
     }
 
@@ -400,6 +434,71 @@ var capacity = ncConfig.capacity;  // total number of jobs the number cruncher
 
 // ===========================================================================
 
+function copyToSafe ( task,jobEntry )  {
+
+  if ([ud.feedback_code.agree1,ud.feedback_code.agree2].indexOf(jobEntry.feedback)>=0)  {
+
+    var jobsSafe    = conf.getServerConfig().getJobsSafe();
+    var safeDirPath = path.join ( jobsSafe.path,task._type );
+
+    try {
+
+      if (!utils.fileExists(safeDirPath))  {
+
+        if (!utils.mkDir(safeDirPath))  {
+          log.error ( 40,'cannot create safe job area at ' + safeDirPath );
+          return;
+        }
+        log.standard ( 40,'created safe job area at ' + safeDirPath );
+
+      } else  {
+        // check that the safe is not full
+
+        var files  = fs.readdirSync ( safeDirPath );
+        var dpaths = [];
+        for (var i=0;i<files.length;i++)  {
+          var fpath = path.join ( safeDirPath,files[i] );
+          var stat  = fs.statSync ( fpath );
+          if (stat && stat.isDirectory())
+            dpaths.push ( fpath );
+        }
+
+        if (dpaths.length>=jobsSafe.capacity)  {
+          // safe is full, remove old entries
+          for (var i=0;i<dpaths.length;i++)
+            for (var j=i+1;j<dpaths.length;j++)
+              if (dpaths[j]>dpaths[i])  {
+                var dname = dpaths[j];
+                dpaths[j] = dpaths[i];
+                dpaths[i] = dname;
+              }
+          for (var i=Math.max(0,jobsSafe.capacity-1);i<dpaths.length;i++)
+            utils.removePath ( dpaths[i] );
+        }
+
+      }
+
+      safeDirPath = path.join ( safeDirPath,'job_' + Date.now() );
+      fs.copySync ( jobEntry.jobDir,safeDirPath );
+
+      if (jobEntry.feedback==ud.feedback_code.agree2)
+        utils.writeString ( path.join(safeDirPath,'__user_info.txt'),
+          'Name:  '   + jobEntry.user_name +
+          '\nEmail: ' + jobEntry.email     + '\n'
+        );
+      log.standard ( 50,'failed job stored in safe at ' + safeDirPath );
+
+    } catch (e)  {
+      log.error ( 50,'cannot put failed job in safe at ' + safeDirPath );
+    }
+
+  }
+
+}
+
+// ===========================================================================
+
+
 function ncJobFinished ( job_token,code )  {
 
   log.debug2 ( 100,'term code=' + code );
@@ -437,11 +536,14 @@ function ncJobFinished ( job_token,code )  {
   }
 
   if (task && (jobEntry.sendTrials==conf.getServerConfig().maxSendTrials)) {
+
     log.debug2 ( 101,'put status' );
+
     // task instance is Ok, put status code in
     if (code==0)  {
       log.debug2 ( 102,'status finished' );
-      task.state = task_t.job_code.finished;
+      if (task.state!=task_t.job_code.remdoc)
+        task.state = task_t.job_code.finished;
     } else if (code==1001)  {
       task.state = task_t.job_code.stopped;
     } else  {
@@ -449,6 +551,7 @@ function ncJobFinished ( job_token,code )  {
       if (code==200)
         utils.writeJobReportMessage ( jobEntry.jobDir,
                                   '<h2>Python import(s) failure</h2>',false );
+      copyToSafe ( task,jobEntry );
     }
 
     // deal with output data here -- in future
@@ -474,10 +577,15 @@ function ncJobFinished ( job_token,code )  {
 
   calcCapacity ( function(capacity){
 
+    // get original front-edn url
     var feURL     = jobEntry.feURL;
+
+    // but, if FE is configured, take it from configuration
     var fe_config = conf.getFEConfig();
+    /*  ######################################
     if (fe_config)
       feURL = fe_config.externalURL;
+    */
 
     if (feURL.endsWith('/'))
       feURL = feURL.substr(0,feURL.length-1);
@@ -492,8 +600,11 @@ function ncJobFinished ( job_token,code )  {
         // The number cruncher will start dealing with the job automatically.
         // On FE end, register the job as engaged for further communication
         // with NC and client.
-        ncJobRegister.removeJob ( job_token );
-        writeNCJobRegister      ();
+
+        removeJobDelayed ( job_token,task_t.job_code.finished );
+
+        //ncJobRegister.removeJob ( job_token );
+        //writeNCJobRegister      ();
 
       },function(stageNo,code){  // send failed
 
@@ -506,8 +617,9 @@ function ncJobFinished ( job_token,code )  {
 
         } else  { // what to do??? clean NC storage, the job was a waste.
 
-          ncJobRegister.removeJob ( job_token );
-          writeNCJobRegister      ();
+          removeJobDelayed ( job_token,task_t.job_code.finished );
+          //ncJobRegister.removeJob ( job_token );
+          //writeNCJobRegister      ();
 
           log.error ( 4,'cannot send job results to FE. JOB DELETED.' );
 
@@ -522,12 +634,15 @@ function ncJobFinished ( job_token,code )  {
 
 // ===========================================================================
 
-function ncRunJob ( job_token,feURL )  {
+function ncRunJob ( job_token,meta )  {
 // This function must not contain asynchronous code.
 
   // acquire the corresponding job entry
   var jobEntry = ncJobRegister.getJobEntry ( job_token );
-  jobEntry.feURL = feURL;
+  jobEntry.feURL     = meta.sender;
+  jobEntry.feedback  = meta.feedback;
+  jobEntry.user_name = meta.user_name;
+  jobEntry.email     = meta.email;
 
   // get number cruncher configuration object
   var ncConfig = conf.getServerConfig();
@@ -548,6 +663,16 @@ function ncRunJob ( job_token,feURL )  {
   var nproc        = ncConfig.getMaxNProc();
   var ncores       = task.getNCores ( nproc );
 
+  function getJobName()  {
+    //return 'cofe_' + ncJobRegister.launch_count;
+    var jname = 'ccp4cloud-' + ncJobRegister.launch_count;
+    if (meta.user_id)   jname += '.' + meta.user_id + '.' + task.project + '.' + task.id;
+    if (meta.setup_id)  jname += '.' + meta.setup_id;
+    return jname;
+  }
+
+//console.log ( getJobName() );
+
   if (task)  { // the task is instantiated, start the job
 
     utils.removeJobSignal ( jobDir );
@@ -556,7 +681,7 @@ function ncRunJob ( job_token,feURL )  {
     if (task.fasttrack)
       jobEntry.exeType = 'SHELL';
 
-    var cmd = task.getCommandLine ( jobEntry.exeType,jobDir );
+    var cmd = task.getCommandLine ( ncConfig.jobManager,jobDir );
 
     switch (jobEntry.exeType)  {
 
@@ -609,15 +734,14 @@ function ncRunJob ( job_token,feURL )  {
                       });
                   break;
 
-      case 'SGE'   :  var queueName = ncConfig.getQueueName();
-                      if (queueName.length>0)
-                        cmd.push ( queueName );
+      case 'SGE'   :  cmd.push ( ncConfig.getQueueName() );
                       //cmd.push ( Math.max(1,Math.floor(ncConfig.capacity/4)).toString() );
                       cmd.push ( nproc.toString() );
+                      var jname = getJobName();
                       var qsub_params = ncConfig.exeData.concat ([
                         '-o',path.join(jobDir,'_job.stdo'),  // qsub stdout
                         '-e',path.join(jobDir,'_job.stde'),  // qsub stderr
-                        '-N','cofe_' + ncJobRegister.launch_count
+                        '-N',jname
                       ]);
                       var job = utils.spawn ( 'qsub',qsub_params.concat(cmd),{} );
                       // in this mode, we DO NOT put job listener on the spawn
@@ -635,8 +759,9 @@ function ncRunJob ( job_token,feURL )  {
                           if ((w[0]=='Your') && (w[1]=='job'))
                             jobEntry.pid = parseInt(w[2]);
                         }
-                        log.standard ( 6,'task ' + task.id + ' qsubbed, jobId=' +
-                                         jobEntry.pid );
+                        log.standard ( 6,'task '  + task.id + ' qsubbed, '  +
+                                         'name='  + jname   +
+                                         ', pid=' + jobEntry.pid );
                       });
 
                       // indicate queuing to please the user
@@ -646,16 +771,18 @@ function ncRunJob ( job_token,feURL )  {
 
                   break;
 
-      case 'SCRIPT' : //cmd.push ( Math.max(1,Math.floor(ncConfig.capacity/4)).toString() );
+      case 'SCRIPT' : cmd.push ( ncConfig.getQueueName() );
+                      //cmd.push ( Math.max(1,Math.floor(ncConfig.capacity/4)).toString() );
                       cmd.push ( nproc.toString() );
-                      var qsub_params = [
+                      var jname = getJobName();
+                      var script_params = [
                         'start',
                         path.join(jobDir,'_job.stdo'),  // qsub stdout
                         path.join(jobDir,'_job.stde'),  // qsub stderr
-                        'cofe_' + ncJobRegister.launch_count,
+                        jname,
                         ncores
                       ];
-                      var job = utils.spawn ( ncConfig.exeData,qsub_params.concat(cmd),{} );
+                      var job = utils.spawn ( ncConfig.exeData,script_params.concat(cmd),{} );
                       // in this mode, we DO NOT put job listener on the spawn
                       // process, because it is just the launcher script, which
                       // quits nearly immediately; however, we use listeners to
@@ -669,8 +796,9 @@ function ncRunJob ( job_token,feURL )  {
                         // escape just in case
                         try {
                           jobEntry.pid = parseInt(job_output);
-                          log.standard ( 7,'task ' + task.id + ' submitted, pid=' +
-                                           jobEntry.pid );
+                          log.standard ( 7,'task '  + task.id + ' submitted, ' +
+                                           'name='  + jname   +
+                                           ', pid=' + jobEntry.pid );
                         }
                         catch(err) {
                           jobEntry.pid = 0;
@@ -753,7 +881,7 @@ function ncMakeJob ( server_request,server_response )  {
   send_dir.receiveDir ( jobDir,conf.getNCTmpDir(),server_request,
     function(code,errs,meta){
       if (code==0)  {
-        ncRunJob ( job_token,meta.sender );
+        ncRunJob ( job_token,meta );
         cmd.sendResponse ( server_response, cmd.nc_retcode.ok,
                            '[00104] Job started',
                            {job_token:job_token} );
@@ -968,7 +1096,11 @@ function ncRunRVAPIApp ( post_data_obj,callback_func )  {
       taskRVAPIApp.rvapi_args    = args;
       utils.writeObject ( path.join(jobDir,task_t.jobDataFName),taskRVAPIApp );
 
-      ncRunJob ( job_token,'' );
+      ncRunJob ( job_token,{
+        'sender'   : '',
+        'setup_id' : '',
+        'user_id'  : ''
+      });
 
       // signal 'ok' to client
       callback_func ( new cmd.Response ( cmd.nc_retcode.ok,'[00115] Ok',{} ) );
@@ -1021,8 +1153,12 @@ function ncRunClientJob ( post_data_obj,callback_func )  {
 
   var dnlURL = post_data_obj.feURL + post_data_obj.dnlURL;
 
+  var get_options = { url: dnlURL };
+  if (conf.getServerConfig().useRootCA)
+    get_options.ca = fs.readFileSync ( path.join('certificates','rootCA.pem') );
+
   request  // issue the download request
-    .get ( dnlURL )
+    .get ( get_options )
     .on('error', function(err) {
       log.error ( 20,'Download errors from ' + dnlURL );
       log.error ( 20,'Error: ' + err );
@@ -1047,7 +1183,11 @@ function ncRunClientJob ( post_data_obj,callback_func )  {
 
       send_dir.unpackDir ( jobDir,null, function(code){
         if (code==0)  {
-          ncRunJob ( job_token,post_data_obj.feURL );
+          ncRunJob ( job_token,{
+            'sender'   : post_data_obj.feURL,
+            'setup_id' : '',
+            'user_id'  : ''
+          });
           // signal 'ok' to client
           callback_func ( new cmd.Response ( cmd.nc_retcode.ok,'[00118] Job started',
                                              {job_token:job_token} ) );

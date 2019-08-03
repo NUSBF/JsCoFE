@@ -78,8 +78,8 @@ if (__template)  {
 
   var conf = require('../../js-server/server.configuration');
 
-  TaskDUI.prototype.getCommandLine = function ( exeType,jobDir )  {
-    return [conf.pythonName(), '-m', 'pycofe.tasks.dui', exeType, jobDir, this.id];
+  TaskDUI.prototype.getCommandLine = function ( jobManager,jobDir )  {
+    return [conf.pythonName(), '-m', 'pycofe.tasks.dui', jobManager, jobDir, this.id];
   }
 
   // -------------------------------------------------------------------------

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    28.05.18   <--  Date of Last Modification.
+ *    02.08.18   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -25,6 +25,17 @@ var licence_code = {
   commercial : 'commercial'
 }
 
+var feedback_code = {
+  agree1  : 'accepted (1)',
+  agree2  : 'accepted (2)',
+  decline : 'declined'
+}
+
+var userdata_action = {
+  none   : 'none',
+  chpwd  : 'chpwd',
+  revise : 'revise'
+}
 
 function UserData()  {
   this._type      = 'UserData';  // do not change
@@ -32,6 +43,7 @@ function UserData()  {
   this.email      = '';
   this.login      = '';
   this.licence    = '';
+  this.feedback   = '';
   this.pwd        = '';
   this.nJobs      = 0;
   this.usedSpace  = 0;  // in MB
@@ -40,12 +52,36 @@ function UserData()  {
   this.lastSeen   = ''; // date
   this.admin      = false;
   this.helpTopics = [];
+  this.action     = userdata_action.none;
 }
+
+function checkUserData ( uData )  {
+  var msg = '';
+  if (!uData.hasOwnProperty('action'))
+    uData.action   = userdata_action.revise;
+  if (!uData.hasOwnProperty('feedback'))
+    uData.feedback = '';
+  if (uData.feedback.length<=0)  {
+    uData.action   = userdata_action.revise;
+    msg = '<li>choose suitable <b>feedback agreement</b></li>';
+  }
+  if ((uData.action!=userdata_action.none) && (msg.length<=0))  {
+    if (uData.action==userdata_action.chpwd)
+      msg = '<li>change your <b>password</b></li>';
+    else
+      msg = '<li>confirm your account details</li>';
+  }
+  return msg;
+}
+
 
 // ===========================================================================
 
 // export such that it could be used in both node and a browser
 if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
-  module.exports.licence_code = licence_code;
-  module.exports.UserData     = UserData;
+  module.exports.licence_code    = licence_code;
+  module.exports.feedback_code   = feedback_code;
+  module.exports.userdata_action = userdata_action;
+  module.exports.UserData        = UserData;
+  module.exports.checkUserData   = checkUserData;
 }

@@ -53,9 +53,6 @@ DataUnmerged.prototype.constructor = DataUnmerged;
 DataUnmerged.prototype.title = function()  { return 'Unmerged Data'; }
 DataUnmerged.prototype.icon  = function()  { return 'data';          }
 
-//DataUnmerged.prototype.icon_small = function()  { return 'data_20x20'; }
-//DataUnmerged.prototype.icon_large = function()  { return 'data';       }
-
 // when data class version is changed here, change it also in python
 // constructors
 DataUnmerged.prototype.currentVersion = function()  {

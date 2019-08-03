@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    01.06.18   <--  Date of Last Modification.
+ *    22.07.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Local (on-desktop) jsCoFE launcher
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2018
+ *  (C) E. Krissinel, A. Lebedev 2016-2019
  *
  *  =================================================================
  *
@@ -160,11 +160,11 @@ function startClientApplication()  {
     var clientConfig = conf.getClientNCConfig();
     var clientURL    = '';
     if (clientConfig)  {
-      if (clientConfig.host=='localhost')
-            clientURL = 'lsp=' + clientConfig.port;
-      else  clientURL = 'lsp=' + clientConfig.url();
-//      if (conf.isSharedFileSystem())
-//        clientURL += '%3BSFS';
+      if (clientConfig.protocol=='http')  clientURL  = 'lsp=';
+                                    else  clientURL  = 'lsps=';
+      if ((clientConfig.host=='localhost') || (clientConfig.host=='127.0.0.1'))
+                                          clientURL += clientConfig.port;
+                                    else  clientURL += clientConfig.url();
     }
 
     //var localUser = '';
@@ -178,7 +178,7 @@ function startClientApplication()  {
                                      .replace('$clientURL','?'+clientURL);
       command.push ( arg );
       if (arg.indexOf(' ')>=0)  msg += " '" + arg + "'";
-                          else  msg += ' ' + arg;
+                          else  msg += ' '  + arg;
     }
 
     var job = child_process.spawn ( desktopConfig.clientApp,command );

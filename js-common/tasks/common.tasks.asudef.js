@@ -44,21 +44,13 @@ function TaskASUDef()  {
       label       : 'Reflections',   // label for input dialog
       tooltip     : 'Reflection dataset to be used for phasing and refinement ' +
                     'in further tasks, or a Structure object.',
-      inputId     : 'hkl',          // input Id for referencing input fields
+      inputId     : 'hkl',           // input Id for referencing input fields
       min         : 1,               // minimum acceptable number of data instances
       max         : 1                // maximum acceptable number of data instances
-      /*
-    },{
-      // enforce having at least 1 DataHKL in the branch, and also get access to them
-      data_type   : {'DataHKL':[]}, // data type(s) and subtype(s)
-      label       : '',         // label for input dialog
-      inputId     : 'void1',    // void input Id for not showing the item
-      min         : 1,          // minimum acceptable number of data instances
-      max         : 100000      // maximum acceptable number of data instances
-      */
     },{
       data_type   : {'DataSequence':['~unknown']}, // data type(s) and subtype(s)
       label       : 'Sequence',    // label for input dialog
+      unchosen_label : 'sequence unknown',
       tooltip     : 'Macromolecular sequence(s) expected in ASU. If unknown, choose ' +
                     '[do not use] and set the estimated molecular size in the ' +
                     'parameters section below in the page.',
@@ -80,7 +72,7 @@ function TaskASUDef()  {
               label     : '<b><i>Main anomalous<br>scatterer</i></b>',
               tooltip   : 'Specify atom type of dominant anomalous scatterer ' +
                           '(e.g., S, SE etc.), or leave blank if uncertain.',
-              iwidth    : 36,
+              iwidth    : 40,
               value     : '',
               emitting  : true,    // will emit 'onchange' signal
               maxlength : 2,       // maximum input length
@@ -172,7 +164,8 @@ function TaskASUDef()  {
                                   ],
                       value     : 'P',
                       position  : [1,0,1,1],
-                      showon    : {seq:[-1,0]}
+//                      showon    : {seq:[-1,0]}
+                      showon    : {ESTIMATE_SEL:['NR','MW'],seq:[-1,0]}
                     }
                 /*
                 RESLIMIT : {
@@ -221,8 +214,8 @@ if (__template)  {
 
   var conf = require('../../js-server/server.configuration');
 
-  TaskASUDef.prototype.getCommandLine = function ( exeType,jobDir )  {
-    return [conf.pythonName(), '-m', 'pycofe.tasks.asudef', exeType, jobDir, this.id];
+  TaskASUDef.prototype.getCommandLine = function ( jobManager,jobDir )  {
+    return [conf.pythonName(), '-m', 'pycofe.tasks.asudef', jobManager, jobDir, this.id];
   }
 
   // -------------------------------------------------------------------------

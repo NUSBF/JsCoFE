@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    31.03.19   <--  Date of Last Modification.
+ *    01.08.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -29,7 +29,6 @@
  */
 
 //  load system modules
-var http   = require('http');
 var url    = require('url');
 var path   = require('path');
 
@@ -55,7 +54,7 @@ function cmdLineError()  {
     log.error ( 8,'Restart as "node ./nc_server.js configFile n", ' +
                         'with 0 <= n < ' + conf.getNumberOfNCs() );
   else
-    log.error ( 8,'Restart as "node ./nc_server.js configFile n", where ' +
+    log.error ( 9,'Restart as "node ./nc_server.js configFile n", where ' +
                         '"n" is the NC serial number')
   process.exit();
 }
@@ -65,8 +64,8 @@ if (process.argv.length!=4)
 
 var msg = conf.readConfiguration ( process.argv[2],'NC' );
 if (msg)  {
-  log.error ( 9,'NC configuration failed. Stop.' );
-  log.error ( 9,msg );
+  log.error ( 10,'NC configuration failed. Stop.' );
+  log.error ( 10,msg );
   process.exit();
 }
 
@@ -88,7 +87,8 @@ srvConfig.savePID();
 
 // --------------------------------------------------------------------------
 
-var ncrash = 0;
+var ncrash       = 0;
+var browserCount = 0;  // browser start counter
 
 function start()  {
 
@@ -105,10 +105,20 @@ function start()  {
   var jobsDir = jm.ncGetJobsDir();
   if (!utils.fileExists(jobsDir))  {
     if (!utils.mkDir(jobsDir))  {
-      log.error ( 10,'cannot create job area at ' + jobsDir );
+      log.error ( 11,'cannot create job area at ' + jobsDir );
       process.exit();
     } else  {
       log.standard ( 5,'created job area at ' + jobsDir );
+    }
+  }
+
+  var safeDir = srvConfig.getJobsSafe().path;
+  if (!utils.fileExists(safeDir))  {
+    if (!utils.mkDir(safeDir))  {
+      log.error ( 12,'cannot create safe area at ' + safeDir );
+      process.exit();
+    } else  {
+      log.standard ( 6,'created job area at ' + safeDir );
     }
   }
 
@@ -118,8 +128,21 @@ function start()  {
 
   // --------------------------------------------------------------------------
 
+
   //  instantiate server
-  var server = http.createServer();
+  var server = null;
+  if (srvConfig.protocol=='http')  {
+    var http = require('http');
+    server   = http.createServer();
+  } else  {
+    var https = require('https');
+    var fs    = require('fs');
+    var options = {
+      key : fs.readFileSync ( path.join('certificates','key.pem'   ) ),
+      cert: fs.readFileSync ( path.join('certificates','cert.pem'  ) )
+    };
+    server = https.createServer ( options );
+  }
 
   //  make request listener
   server.on ( 'request', function(server_request,server_response)  {
@@ -140,7 +163,7 @@ function start()  {
       //console.log ( ' command=' + command );
 
       if (command.startsWith(cmd.special_url_tag))  {  // special access to files not
-                                        // supposed to be on http path --
+                                        // supposed to be on http(s) path --
                                         // download from job directory
 
         jm.ncSendFile ( command,server_response,url_parse.search );
@@ -151,7 +174,7 @@ function start()  {
 
           case cmd.nc_command.stop :
               if (srvConfig.stoppable)  {
-                log.standard ( 7,'stopping' );
+                log.standard ( 8,'stopping' );
                 jm.writeNCJobRegister();
                 response = new cmd.Response ( cmd.nc_retcode.ok,'','' );
                 setTimeout ( function(){
@@ -159,15 +182,20 @@ function start()  {
                   process.exit();
                 },0);
               } else {
-                log.detailed ( 7,'stop command issued -- ignored according configuration' )
+                log.detailed ( 8,'stop command issued -- ignored according configuration' )
               }
+            break;
+
+          case cmd.nc_command.countBrowser :
+              browserCount++;
+              response = new cmd.Response ( cmd.nc_retcode.ok,'','' );
             break;
 
           case cmd.fe_command.whoareyou :
               var cfg = conf.getServerConfig();
               cmd.sendResponseMessage ( server_response,
                   cmd.appName() + ' NC-' + cfg.serNo + ' (' + cfg.name + ') ' +
-                  cmd.jsCoFE_version );
+                  cmd.jsCoFE_version + ' ' + browserCount );
             break;
 
           case cmd.nc_command.runJob :
@@ -226,20 +254,19 @@ function start()  {
 
       ncrash++;
       if ((maxRestarts<0) || (ncrash<maxRestarts))  {
-        log.error  ( 10,'NC-' + nc_number + ' crash #' + ncrash + ', recovering ... ' );
+        log.error  ( 13,'NC-' + nc_number + ' crash #' + ncrash + ', recovering ... ' );
         setTimeout ( function(){ start(); },0 );
       } else
-        log.error  ( 11,'NC-' + nc_number + ' crash #' + ncrash + ', exceeds maximum -- stop.' );
+        log.error  ( 14,'NC-' + nc_number + ' crash #' + ncrash + ', exceeds maximum -- stop.' );
 
     }
 
   });
 
   server.on ( 'error',function(e){
-    log.error ( 12,'server error' );
+    log.error ( 15,'server error' );
     console.error ( e.stack || e );
   });
-
 
   server.listen({
     host      : srvConfig.host,
@@ -247,15 +274,17 @@ function start()  {
     exclusive : srvConfig.exclusive
   },function(){
     if (srvConfig.exclusive)
-      log.standard ( 6,'number cruncher #'  + nc_number +
+      log.standard ( 7,'number cruncher #'  + nc_number +
                      ' started, listening to ' +
                      srvConfig.url() + ' (exclusive)' );
     else
-      log.standard ( 6,'number cruncher #'  + nc_number +
+      log.standard ( 7,'number cruncher #'  + nc_number +
                      ' started, listening to ' +
                      srvConfig.url() + ' (non-exclusive)' );
   });
 
 }
+
+// ---------------------------------------------------------------------------
 
 start();

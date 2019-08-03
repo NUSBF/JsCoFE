@@ -134,8 +134,8 @@ if (__template)  {
 
   }
 
-  TaskSymMatch.prototype.getCommandLine = function ( exeType,jobDir )  {
-    return [conf.pythonName(), '-m', 'pycofe.tasks.symmatch', exeType, jobDir, this.id];
+  TaskSymMatch.prototype.getCommandLine = function ( jobManager,jobDir )  {
+    return [conf.pythonName(), '-m', 'pycofe.tasks.symmatch', jobManager, jobDir, this.id];
   }
 
   // -------------------------------------------------------------------------

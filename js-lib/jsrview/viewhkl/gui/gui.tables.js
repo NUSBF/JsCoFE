@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    20.08.17   <--  Date of Last Modification.
+ *    08.06.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -372,7 +372,11 @@ var tr = new TableRow();
       table.selectRow ( trow );
     });
     trow.addOnDblClickListener ( function(){
-      table.emitSignal ( 'row_dblclick',tr );
+      table.emitSignal ( 'row_dblclick',trow );
+    });
+    trow.addOnRightClickListener ( function(e) {
+      table.selectRow  ( trow );
+      table.emitSignal ( 'row_rightclick',trow );
     });
   }(this,tr));
   return tr;

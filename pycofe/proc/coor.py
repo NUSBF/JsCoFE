@@ -3,13 +3,13 @@
 #
 # ============================================================================
 #
-#    10.09.18   <--  Date of Last Modification.
+#    19.07.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  COORDINATE FILE HANDLING ROUTINES
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2018
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2019
 #
 # ============================================================================
 #
@@ -44,7 +44,10 @@ def stripLigWat ( mmFile,outFile ):
 def mergeLigands ( mmFile, ligFiles, chainId, outFile ):
     st    = gemmi.read_structure ( mmFile )
     nligs = 0
-    chain = st[0].find_last_chain(chainId) or st[0].add_chain(chainId)
+    try:
+        chain = st[0].find_last_chain(chainId) or st[0].add_chain(gemmi.Chain(chainId))
+    except:
+        chain = st[0].find_last_chain(chainId) or st[0].add_chain(chainId)
     for lf in ligFiles:
         lig = gemmi.read_structure ( lf )
         for lig_chain in lig[0]:

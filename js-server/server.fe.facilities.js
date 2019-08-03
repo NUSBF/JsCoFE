@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    30.04.19   <--  Date of Last Modification.
+ *    08.07.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -76,7 +76,7 @@ function getUserCloudMounts ( login )  {
 //
 
 var fileListPath = path.join ( prj.getUserProjectsDirPath(login),cloudFileListFName );
-var paths = conf.getFEConfig().getCloudMounts();
+var paths = conf.getFEConfig().getCloudMounts ( login );
 var text  = utils.readString ( fileListPath );
 
   if (text) {

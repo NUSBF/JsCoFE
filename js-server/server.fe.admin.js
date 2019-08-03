@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    30.10.17   <--  Date of Last Modification.
+ *    28.06.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,34 +13,21 @@
  *  **** Content :  Front End Server -- Admin Module
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2017
+ *  (C) E. Krissinel, A. Lebedev 2016-2019
  *
  *  =================================================================
  *
  */
 
-/*
 //  load system modules
-var path      = require('path');
-var crypto    = require('crypto');
+var request = require('request');
 
 //  load application modules
-var utils     = require('./server.utils');
-var user      = require('./server.fe.user');
-var prj       = require('./server.fe.projects');
-var send_dir  = require('./server.send_dir');
-var task_t    = require('../js-common/tasks/common.tasks.template');
-var com_utils = require('../js-common/common.utils');
-*/
-
-//  load system modules
-var request   = require('request');
-
-//  load application modules
-var conf      = require('./server.configuration');
-var user      = require('./server.fe.user');
-var cmd       = require('../js-common/common.commands');
-var rj        = require('./server.fe.run_job');
+var conf    = require('./server.configuration');
+var user    = require('./server.fe.user');
+var cmd     = require('../js-common/common.commands');
+var rj      = require('./server.fe.run_job');
+var ustats  = require('./server.fe.usagestats')
 
 //  prepare log
 var log = require('./server.log').newLog(16);
@@ -107,6 +94,8 @@ function getAdminData ( login,data,callback_func )  {
   adminData.nodesInfo = {};
   adminData.nodesInfo.FEconfig = {};
   adminData.nodesInfo.ncInfo   = [];
+  adminData.usageReportURL     = ustats.getUsageReportURL();
+  adminData.nodesInfo.ccp4_version = conf.CCP4Version();
 
   var uData = user.readUserData ( login );
   if (!uData.admin)  {

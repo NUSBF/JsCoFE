@@ -122,9 +122,6 @@
 
   TaskHelloWorld.prototype.icon = function()  { return 'task_helloworld'; }
 
-  //TaskHelloWorld.prototype.icon_small = function()  { return 'task_helloworld_20x20'; }
-  //TaskHelloWorld.prototype.icon_large = function()  { return 'task_helloworld';       }
-
   // 3. Define task version. Whenever task changes (e.g. receives new input
   //    parameters or data), the version number must be advanced. jsCoFE framework
   //    forbids cloning jobs with version numbers lower than specified here.
@@ -149,11 +146,11 @@
     // note that last 3 parameters are optional and task driver will not use
     // them in most cases.
 
-    TaskHelloWorld.prototype.getCommandLine = function ( exeType,jobDir )  {
+    TaskHelloWorld.prototype.getCommandLine = function ( jobManager,jobDir )  {
       return [ conf.pythonName(),         // will use python from configuration
                '-m',                      // will run task as a python module
                'pycofe.tasks.helloworld', // path to python driver
-                exeType,                  // framework's type of run: 'SHELL', 'SGE' or 'SCRIPT'
+                jobManager,                  // framework's type of run: 'SHELL', 'SGE' or 'SCRIPT'
                 jobDir,                   // path to job directory given by framework
                 this.id                   // task id (assigned by the framework)
               ];

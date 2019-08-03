@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>3. General (Server-based) CCP4 Cloud Setup &#8212; CCP4 Cloud v0.2.0</title>
+    <title>General (Server-based) CCP4 Cloud Setup &#8212; CCP4 Cloud Series 1.0.xxx</title>
     
     <link rel="stylesheet" href="_static/agogo.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.2.0',
+        VERSION:     '1.0.xxx',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -26,20 +26,14 @@
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="top" title="CCP4 Cloud v0.2.0" href="index.html" />
-    <link rel="next" title="1. CCP4 Cloud Task Development: Hello World!" href="dev_hello_world.html" />
-    <link rel="prev" title="2. Manual Setup of CCP4 Cloud Desktop" href="desktop.html" /> 
+    <link rel="top" title="CCP4 Cloud Series 1.0.xxx" href="index.html" /> 
   </head>
   <body role="document">
     <div class="header-wrapper" role="banner">
       <div class="header">
         <div class="headertitle"><a
-          href="index.html">CCP4 Cloud v0.2.0</a></div>
+          href="index.html">CCP4 Cloud Series 1.0.xxx</a></div>
         <div class="rel" role="navigation" aria-label="related navigation">
-          <a href="desktop.html" title="2. Manual Setup of CCP4 Cloud Desktop"
-             accesskey="P">previous</a> |
-          <a href="dev_hello_world.html" title="1. CCP4 Cloud Task Development: Hello World!"
-             accesskey="N">next</a> |
           <a href="genindex.html" title="General Index"
              accesskey="I">index</a>
         </div>
@@ -55,9 +49,9 @@
           <div class="body" role="main">
             
   <div class="section" id="general-server-based-jscofe-setup">
-<h1>3. General (Server-based) CCP4 Cloud Setup<a class="headerlink" href="#general-server-based-jscofe-setup" title="Permalink to this headline">¶</a></h1>
+<h1>General (Server-based) CCP4 Cloud Setup<a class="headerlink" href="#general-server-based-jscofe-setup" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="understanding-jscofe-architecture">
-<h2>3.1. Understanding CCP4 Cloud architecture<a class="headerlink" href="#understanding-jscofe-architecture" title="Permalink to this headline">¶</a></h2>
+<h2>Understanding CCP4 Cloud architecture<a class="headerlink" href="#understanding-jscofe-architecture" title="Permalink to this headline">¶</a></h2>
 <p>CCP4 Cloud includes 3 types of web (http or https) servers:</p>
 <ol class="arabic simple">
 <li><em>Front-End Server</em></li>
@@ -109,9 +103,9 @@ configuring Apache to redirect all requests from chosen URL to that port (see
 details below).</p>
 </div>
 <div class="section" id="common-setup-prerequisites">
-<h2>3.2. Common setup prerequisites<a class="headerlink" href="#common-setup-prerequisites" title="Permalink to this headline">¶</a></h2>
+<h2>Common setup prerequisites<a class="headerlink" href="#common-setup-prerequisites" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="node-js">
-<h3>3.2.1. Node JS<a class="headerlink" href="#node-js" title="Permalink to this headline">¶</a></h3>
+<h3>Node JS<a class="headerlink" href="#node-js" title="Permalink to this headline">¶</a></h3>
 <p>All CCP4 Cloud servers are built on Node JS platform, therefore, make sure that
 Node JS is running on all machines, where any of CCP4 Cloud servers will be
 installed. Run <code class="docutils literal"><span class="pre">node</span> <span class="pre">-v</span></code> from the Terminal, and acceptable output will be
@@ -143,7 +137,7 @@ $ sudo dnf install npm
 correctly, both commands should report the corresponding version numbers.</p>
 </div>
 <div class="section" id="jscofe-source-code">
-<h3>3.2.2. CCP4 Cloud source code<a class="headerlink" href="#jscofe-source-code" title="Permalink to this headline">¶</a></h3>
+<h3>CCP4 Cloud source code<a class="headerlink" href="#jscofe-source-code" title="Permalink to this headline">¶</a></h3>
 <p>Every CCP4 Cloud server must have access to the directory with CCP4 Cloud source codes.
 The code is obtainable from CCP4&#8217;s Bazaar repositories:</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span>$ bzr checkout http://fg.oisin.rc-harwell.ac.uk/anonscm/bzr/jscofe/trunk /path/to/jscofe
@@ -181,7 +175,7 @@ $ npm install
 <p>and restarting CCP4 Cloud servers.</p>
 </div>
 <div class="section" id="ccp4-setup-and-other-dependencies">
-<span id="dependencies"></span><h3>3.2.3. CCP4 Setup and other dependencies<a class="headerlink" href="#ccp4-setup-and-other-dependencies" title="Permalink to this headline">¶</a></h3>
+<span id="dependencies"></span><h3>CCP4 Setup and other dependencies<a class="headerlink" href="#ccp4-setup-and-other-dependencies" title="Permalink to this headline">¶</a></h3>
 <p>A fully functional CCP4 Setup must be available for every Number Cruncher and
 Client-side Servers, which must run in CCP4-sourced environment. See
 <a class="reference external" href="http://www.ccp4.ac.uk">http://www.ccp4.ac.uk</a> for CCP4 download and installation instructions.
@@ -215,7 +209,7 @@ few hours):</p>
 parameters for detail instructions and further options.</p>
 </div>
 <div class="section" id="web-server-s-for-external-communications">
-<h3>3.2.4. Web-server(s) for external communications<a class="headerlink" href="#web-server-s-for-external-communications" title="Permalink to this headline">¶</a></h3>
+<h3>Web-server(s) for external communications<a class="headerlink" href="#web-server-s-for-external-communications" title="Permalink to this headline">¶</a></h3>
 <p>A convenient way to make CCP4 Cloud servers to see each other and the Front End to
 be visible from client machines, is to arrange for redirection of relevant http(s)
 requests to localhost ports that jsCofe servers are configured to listen.
@@ -259,7 +253,7 @@ and <code class="docutils literal"><span class="pre">/etc/apache2/sites-availabl
 </div>
 </div>
 <div class="section" id="jscofe-configuration">
-<h2>3.3. CCP4 Cloud Configuration<a class="headerlink" href="#jscofe-configuration" title="Permalink to this headline">¶</a></h2>
+<h2>CCP4 Cloud Configuration<a class="headerlink" href="#jscofe-configuration" title="Permalink to this headline">¶</a></h2>
 <p>Before CCP4 Cloud servers may be started, they must be configured using a special
 Configuration File (CF) in <a class="reference external" href="http://www.json.org">JSON format</a>. All servers in
 given CCP4 Cloud setup may use the same CF, however, for security reasons, you may
@@ -316,7 +310,7 @@ contain only configuration for that NC and E-mailer configuration:</p>
 easier for any reason.</p>
 <p>Consider configuration modules in more detail.</p>
 <div class="section" id="front-end-configuration-module">
-<h3>3.3.1. Front-End Configuration Module<a class="headerlink" href="#front-end-configuration-module" title="Permalink to this headline">¶</a></h3>
+<h3>Front-End Configuration Module<a class="headerlink" href="#front-end-configuration-module" title="Permalink to this headline">¶</a></h3>
 <p>The FE Configuration Module represents the following JSON object:</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="s2">&quot;protocol&quot;</span>         <span class="p">:</span> <span class="s2">&quot;http&quot;</span><span class="p">,</span>
@@ -421,7 +415,7 @@ finished.</dd>
 </dl>
 </div>
 <div class="section" id="configuration-module-for-number-cruncher">
-<span id="nc-config"></span><h3>3.3.2. Configuration Module for Number Cruncher<a class="headerlink" href="#configuration-module-for-number-cruncher" title="Permalink to this headline">¶</a></h3>
+<span id="nc-config"></span><h3>Configuration Module for Number Cruncher<a class="headerlink" href="#configuration-module-for-number-cruncher" title="Permalink to this headline">¶</a></h3>
 <p>The NC Configuration Module represents the following JSON object:</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="s2">&quot;serNo&quot;</span>            <span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
@@ -579,7 +573,7 @@ requirements of CCP4 Cloud setups. Note that the cap is not applied if job has
 finished.</dd>
 </dl>
 <div class="section" id="configuration-module-for-jscofe-s-e-mailer">
-<h4>3.3.2.1. Configuration Module for CCP4 Cloud&#8216;s E-mailer<a class="headerlink" href="#configuration-module-for-jscofe-s-e-mailer" title="Permalink to this headline">¶</a></h4>
+<h4>Configuration Module for CCP4 Cloud&#8216;s E-mailer<a class="headerlink" href="#configuration-module-for-jscofe-s-e-mailer" title="Permalink to this headline">¶</a></h4>
 <p>CCP4 Cloud send e-mails to users upon registration or changing details of their
 accounts (such as passwords), or resetting their accounts in case of lost
 password. CCP4 Cloud also sends e-mails to the setup maintainer in case of
@@ -629,11 +623,11 @@ should be configured as follows:</p>
 </div>
 </div>
 <div class="section" id="jscofe-start-scripts">
-<h2>3.4. CCP4 Cloud start scripts<a class="headerlink" href="#jscofe-start-scripts" title="Permalink to this headline">¶</a></h2>
+<h2>CCP4 Cloud start scripts<a class="headerlink" href="#jscofe-start-scripts" title="Permalink to this headline">¶</a></h2>
 <p>CCP4 Cloud setup is concluded by writing start scripts for all servers. Below we
 give sample scripts that should be suitable in most, if not all, cases.</p>
 <div class="section" id="start-script-for-the-front-end-server">
-<h3>3.4.1. Start script for the Front End Server<a class="headerlink" href="#start-script-for-the-front-end-server" title="Permalink to this headline">¶</a></h3>
+<h3>Start script for the Front End Server<a class="headerlink" href="#start-script-for-the-front-end-server" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-default"><div class="highlight"><pre><span></span>#!/bin/bash
 
 server_dir=/path/to/jscofe
@@ -648,7 +642,7 @@ node ./fe_server.js /path/to/jscofe_config.json &gt; /logdir/node_fe.log 2&gt; /
 and <code class="docutils literal"><span class="pre">logdir</span></code> is directory to host CCP4 Cloud&#8216;s log files.</p>
 </div>
 <div class="section" id="start-script-for-a-number-cruncher-server">
-<h3>3.4.2. Start script for a Number Cruncher Server<a class="headerlink" href="#start-script-for-a-number-cruncher-server" title="Permalink to this headline">¶</a></h3>
+<h3>Start script for a Number Cruncher Server<a class="headerlink" href="#start-script-for-a-number-cruncher-server" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-default"><div class="highlight"><pre><span></span>#!/bin/bash
 
 server_dir=/path/to/jscofe
@@ -680,7 +674,7 @@ when NC is configured to run on the same machine as FE, otherwise node instance
 that runs FE server, will be also killed.</p>
 </div>
 <div class="section" id="start-script-for-a-client-number-cruncher">
-<h3>3.4.3. Start script for a Client Number Cruncher<a class="headerlink" href="#start-script-for-a-client-number-cruncher" title="Permalink to this headline">¶</a></h3>
+<h3>Start script for a Client Number Cruncher<a class="headerlink" href="#start-script-for-a-client-number-cruncher" title="Permalink to this headline">¶</a></h3>
 <p>Client Number Cruncher uses only standard CCP4 release, therefore the start
 script may be simplified as follows:</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span>#!/bin/bash
@@ -702,7 +696,7 @@ node ./nc_server.js /path/to/jscofe_config.json $serNo &gt; \
 </div>
 </div>
 <div class="section" id="starting-jscofe">
-<h2>3.5. Starting CCP4 Cloud<a class="headerlink" href="#starting-jscofe" title="Permalink to this headline">¶</a></h2>
+<h2>Starting CCP4 Cloud<a class="headerlink" href="#starting-jscofe" title="Permalink to this headline">¶</a></h2>
 <p>CCP4 Cloud is started by invoking start scripts on the front-end machine and all
 number crunchers.</p>
 <p>If a user has local CCP4 Cloud setup, they may start the client number cruncher first
@@ -723,43 +717,9 @@ configuration file). For example, on Linux:</p>
         </div>
         <div class="sidebar">
           <h3>Table Of Contents</h3>
-          <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="autosetup.html">1. Automated Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="desktop.html">2. Manual Setup of CCP4 Cloud Desktop</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">3. General (Server-based) CCP4 Cloud Setup</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#understanding-jscofe-architecture">3.1. Understanding CCP4 Cloud architecture</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#common-setup-prerequisites">3.2. Common setup prerequisites</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#node-js">3.2.1. Node JS</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#jscofe-source-code">3.2.2. CCP4 Cloud source code</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#ccp4-setup-and-other-dependencies">3.2.3. CCP4 Setup and other dependencies</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#web-server-s-for-external-communications">3.2.4. Web-server(s) for external communications</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#jscofe-configuration">3.3. CCP4 Cloud Configuration</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#front-end-configuration-module">3.3.1. Front-End Configuration Module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#configuration-module-for-number-cruncher">3.3.2. Configuration Module for Number Cruncher</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#jscofe-start-scripts">3.4. CCP4 Cloud start scripts</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#start-script-for-the-front-end-server">3.4.1. Start script for the Front End Server</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#start-script-for-a-number-cruncher-server">3.4.2. Start script for a Number Cruncher Server</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#start-script-for-a-client-number-cruncher">3.4.3. Start script for a Client Number Cruncher</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#starting-jscofe">3.5. Starting CCP4 Cloud</a></li>
-</ul>
-</li>
-</ul>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="dev_hello_world.html">1. CCP4 Cloud Task Development: Hello World!</a></li>
-<li class="toctree-l1"><a class="reference internal" href="dev_task_input.html">2. CCP4 Cloud Task Development: Input Data</a></li>
-<li class="toctree-l1"><a class="reference internal" href="dev_task_parameters.html">3. CCP4 Cloud Task Development: Input Parameters</a></li>
-<li class="toctree-l1"><a class="reference internal" href="dev_run_application.html">4. CCP4 Cloud Task Development: Run Applications</a></li>
-</ul>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="ref_input_data.html">1. Reference: Input Data Descriptors</a></li>
-<li class="toctree-l1"><a class="reference internal" href="ref_parameters.html">2. Reference: Description of Input Parameters</a></li>
-<li class="toctree-l1"><a class="reference internal" href="ref_pyrvapi.html">3. Reference: PyRVAPI Interface</a></li>
+          <ul>
+<li class="toctree-l1"><a class="reference internal" href="clientwhatfor.html">1. CCP4 Cloud Client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="clientsetup.html">2. CCP4 Cloud Client Installation</a></li>
 </ul>
 
           <div role="search">
@@ -780,10 +740,6 @@ configuration file). For example, on Linux:</p>
       <div class="footer">
         <div class="left">
           <div role="navigation" aria-label="related navigaton">
-            <a href="desktop.html" title="2. Manual Setup of CCP4 Cloud Desktop"
-              >previous</a> |
-            <a href="dev_hello_world.html" title="1. CCP4 Cloud Task Development: Hello World!"
-              >next</a> |
             <a href="genindex.html" title="General Index"
               >index</a>
           </div>
@@ -797,7 +753,7 @@ configuration file). For example, on Linux:</p>
         <div class="right">
           
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2017-2018, E. Krissinel and A. Lebedev.
+        &#169; Copyright 2017-2019, E. Krissinel and A. Lebedev.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.8.
     </div>
         </div>

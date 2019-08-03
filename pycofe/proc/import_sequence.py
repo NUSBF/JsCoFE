@@ -3,13 +3,13 @@
 #
 # ============================================================================
 #
-#    09.08.18   <--  Date of Last Modification.
+#    23.06.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  SEQUENCE DATA IMPORT FUNCTION
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2018
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2019
 #
 # ============================================================================
 #
@@ -87,12 +87,11 @@ def run ( body,sectionTitle="Macromolecular sequences" ):  # body is reference t
     for f in body.files_all:
         if body.checkFileImport ( f,import_filetype.ftype_Sequence() ):
             files_seq.append ( f )
-        #fl = f.lower();
-        #if fl.endswith(('.seq','.fasta','.pir')):
-        #    files_seq.append ( f )
 
     if len(files_seq) <= 0:
         return  seq_imported
+
+    files_seq.sort()
 
     annotation = None;
     try:

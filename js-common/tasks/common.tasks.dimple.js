@@ -209,9 +209,6 @@ TaskDimple.prototype.constructor = TaskDimple;
 
 TaskDimple.prototype.icon = function()  { return 'task_dimple'; }
 
-//TaskDimple.prototype.icon_small = function()  { return 'task_dimple_20x20'; }
-//TaskDimple.prototype.icon_large = function()  { return 'task_dimple';       }
-
 TaskDimple.prototype.currentVersion = function()  {
   var version = 0;
   if (__template)
@@ -241,8 +238,8 @@ if (__template)  {
 
   }
 
-  TaskDimple.prototype.getCommandLine = function ( exeType,jobDir )  {
-    return [conf.pythonName(), '-m', 'pycofe.tasks.dimple', exeType, jobDir, this.id];
+  TaskDimple.prototype.getCommandLine = function ( jobManager,jobDir )  {
+    return [conf.pythonName(), '-m', 'pycofe.tasks.dimple', jobManager, jobDir, this.id];
   }
 
   // -------------------------------------------------------------------------

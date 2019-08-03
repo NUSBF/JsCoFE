@@ -71,8 +71,8 @@ if (__template)  {
   var conf = require('../../js-server/server.configuration');
   //var tsk_template = require ( './common.tasks.template' );
 
-  TaskShelxSubstr.prototype.getCommandLine = function ( exeType,jobDir )  {
-    return [conf.pythonName(), '-m', 'pycofe.tasks.shelxsubstr', exeType, jobDir, this.id];
+  TaskShelxSubstr.prototype.getCommandLine = function ( jobManager,jobDir )  {
+    return [conf.pythonName(), '-m', 'pycofe.tasks.shelxsubstr', jobManager, jobDir, this.id];
   }
 
   // -------------------------------------------------------------------------

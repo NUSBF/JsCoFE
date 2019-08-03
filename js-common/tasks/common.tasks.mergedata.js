@@ -53,9 +53,6 @@ TaskMergeData.prototype.constructor = TaskMergeData;
 
 TaskMergeData.prototype.icon = function()  { return 'task_merge'; }
 
-//TaskMergeData.prototype.icon_small = function()  { return 'task_merge_20x20'; }
-//TaskMergeData.prototype.icon_large = function()  { return 'task_merge';       }
-
 TaskMergeData.prototype.currentVersion = function()  {
   var version = 0;
   if (__template)
@@ -132,8 +129,8 @@ if (!__template)  {
 
   var conf = require('../../js-server/server.configuration');
 
-  TaskMergeData.prototype.getCommandLine = function ( exeType,jobDir )  {
-    return [conf.pythonName(), '-m', 'pycofe.tasks.mergedata', exeType, jobDir, this.id];
+  TaskMergeData.prototype.getCommandLine = function ( jobManager,jobDir )  {
+    return [conf.pythonName(), '-m', 'pycofe.tasks.mergedata', jobManager, jobDir, this.id];
   }
 
   // -------------------------------------------------------------------------

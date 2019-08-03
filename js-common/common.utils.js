@@ -134,4 +134,5 @@ if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
   module.exports.isFloat        = isFloat;
   module.exports.replaceAll     = replaceAll;
   module.exports.startsWith     = startsWith;
+  module.exports.round          = round;
 }

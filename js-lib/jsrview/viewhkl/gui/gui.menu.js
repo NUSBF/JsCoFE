@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    09.01.19   <--  Date of Last Modification.
+ *    17.07.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -66,29 +66,58 @@ MenuItem.prototype.constructor = MenuItem;
 
 
 // -------------------------------------------------------------------------
+// Menu closure functions
+
+function __close_all_menus()  {
+  var dropdowns = document.getElementsByClassName("menu-dropdown-content");
+  for (var i=0;i<dropdowns.length;i++) {
+    var openDropdown = dropdowns[i];
+    if (openDropdown.classList.contains('menu-show')) {
+      openDropdown.classList.remove('menu-show');
+    }
+  }
+}
+
+// Close the dropdown if the user clicks outside of it
+var __onclick_ignore_counter = 0;
+document.onclick = function(event)  {
+  if (__onclick_ignore_counter>0)  __onclick_ignore_counter--;
+                             else  __close_all_menus();
+}
+
+// -------------------------------------------------------------------------
 // Menu class
 
 function Menu ( text,icon_uri )  {
   Widget.call ( this,'div' );
   this.element.setAttribute ( 'class','menu-dropdown' );
   this.disabled = false;
-  this.button = new IconLabel ( text,icon_uri );
-  this.button.setNoWrap();
-  this.button.element.setAttribute ( 'class','menu-dropbtn' );
-  if ((text=='') && (icon_uri!=''))  {
-    $(this.button.element).css( {'background-color':'transparent',
-                                 'background-size' :'28px'} );
+  if ((text!='') || (icon_uri!=''))  {
+    this.button = new IconLabel ( text,icon_uri );
+    this.button.setNoWrap();
+    this.button.element.setAttribute ( 'class','menu-dropbtn' );
+    if ((text=='') && (icon_uri!=''))  {
+      $(this.button.element).css ({'background-color':'transparent',
+                                   'background-size' :'28px'});
+    }
+    this.addWidget ( this.button   );
+    (function(menu){
+      menu.button.addOnClickListener ( function(){
+        //if (!menu.disabled)
+        //  menu.dropdown.element.classList.toggle ( 'menu-show' );
+        __close_all_menus();
+        if (!menu.disabled)  {
+          __onclick_ignore_counter++;
+          menu.dropdown.element.classList.toggle ( 'menu-show' );
+        }
+      });
+    }(this));
+  } else {
+    this.button = null;
   }
   this.dropdown = new Widget ( 'div' );
   this.dropdown.element.setAttribute ( 'class','menu-dropdown-content' );
-  this.addWidget ( this.button   );
   this.addWidget ( this.dropdown );
-  (function(menu){
-    menu.button.addOnClickListener ( function(){
-      if (!menu.disabled)
-        menu.dropdown.element.classList.toggle ( 'menu-show' );
-    });
-  }(this));
   this.n_items = 0;
 }
 
@@ -131,15 +160,17 @@ Menu.prototype.setZIndex = function ( zindex )  {
 }
 
 Menu.prototype.setWidth = function ( width )  {
-  this.element.style.width  = width;
-  this.button .setWidth ( width );
+  this.element.style.width = width;
+  if (this.button)
+    this.button.setWidth ( width );
   for (var i=0;i<this.child.length;i++)
     this.child[i].setWidth ( width );
 }
 
 Menu.prototype.setWidth_px = function ( width_int )  {
   $(this.element).width ( width_int );
-  this.button .setWidth_px ( width_int );
+  if (this.button)
+    this.button.setWidth_px ( width_int );
   for (var i=0;i<this.child.length;i++)
     this.child[i].setWidth_px ( width_int );
 }
@@ -148,15 +179,16 @@ Menu.prototype.setHeight_px = function ( height_int )  {
   $(this.dropdown.element).css ( 'max-height', height_int + 'px' );
 }
 
-
-// Close the dropdown if the user clicks outside of it
-document.onclick = function(event) {
-
-  if (event.target !== undefined)  {
+/*
+document.onclick = function(event)  {
+  if (__onclick_ignore_counter>0)
+    __onclick_ignore_counter--;
+  else if (event.target!==undefined)  {
+    //console.log ( event.target );
     try {
       if (!event.target.matches('.menu-dropbtn'))  {
         var dropdowns = document.getElementsByClassName("menu-dropdown-content");
-        for (var i = 0; i < dropdowns.length; i++) {
+        for (var i=0;i<dropdowns.length;i++) {
           var openDropdown = dropdowns[i];
           if (openDropdown.classList.contains('menu-show')) {
             openDropdown.classList.remove('menu-show');
@@ -165,14 +197,35 @@ document.onclick = function(event) {
       }
     } catch (e) {}
   }
+}
+*/
 
+// -------------------------------------------------------------------------
+// ContextMenu class
+
+function ContextMenu ( widget )  {
+  Menu.call ( this,'','' );
+  $(this.element).width  ( 1 );
+  $(this.element).height ( 1 );
+  (function(menu){
+    widget.addOnRightClickListener ( function(){
+      if (!menu.disabled)  {
+        __close_all_menus();
+        if (!menu.disabled)  {
+          __onclick_ignore_counter++;
+          menu.dropdown.element.classList.toggle ( 'menu-show' );
+        }
+      }
+    });
+  }(this));
 }
 
+ContextMenu.prototype = Object.create ( Menu.prototype );
+ContextMenu.prototype.constructor = ContextMenu;
 
 
 // -------------------------------------------------------------------------
 // Dropdown class -- jQuery-based version
-
 
 function DropdownItemGroup ( groupName )  {
   Widget.call ( this,'optgroup' );
@@ -214,6 +267,14 @@ function Dropdown()  {
 Dropdown.prototype = Object.create ( Widget.prototype );
 Dropdown.prototype.constructor = Dropdown;
 
+
+Dropdown.prototype.reset = function()  {
+  $(this.select.element).selectmenu('destroy');
+  //this.select.innerHTML = '';
+  this.removeChild ( this.select );
+  this.select = new Widget ( 'select' );
+  this.addWidget ( this.select );
+}
 
 Dropdown.prototype.addItem = function ( text,icon_uri,itemId,selected_bool )  {
 var item = new Widget ( 'option' );
@@ -390,6 +451,20 @@ Dropdown.prototype.selectItemByPosition = function ( itemNo )  {
 
 }
 
+Dropdown.prototype.getContent = function()  {
+var content = [];
+
+  for (var j=0;j<this.select.child.length;j++)
+    content.push ([
+      this.select.child[j].element.innerHTML,
+      this.select.child[j].value,
+      this.select.child[j].hasAttribute ( 'selected' )
+    ]);
+
+  return content;
+
+}
+
 
 Dropdown.prototype.disableItem = function ( itemId,disable_bool )  {
 
@@ -548,7 +623,6 @@ Dropdown.prototype.isItemDisabled = function ( itemId )  {
   return isDis ( this,this.select );
 
 }
-
 
 Dropdown.prototype.getValue = function()  {
   return this.selected_value;

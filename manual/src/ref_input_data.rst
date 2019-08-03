@@ -22,6 +22,7 @@ Input Data Field (IDF) has the following structure ((*) marks mandatory items): 
     force       : forceN,          // integer specifying how many data instance to show
                                    // initially (from the range of [minN...maxN] and if
                                    // available
+    unchosen_label : '[do not use]', // placeholder for unchosen items (at min=0)
     min         : minN,            // (*) minimum acceptable number of data instances
     max         : maxN             // (*) maximum acceptable number of data instances
   }

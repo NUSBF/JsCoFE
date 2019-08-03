@@ -3,17 +3,17 @@
 #
 # ============================================================================
 #
-#    30.04.19   <--  Date of Last Modification.
+#    05.07.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  DATA IMPORT EXECUTABLE MODULE
 #
 #  Command-line:
-#     ccp4-python import.py exeType jobDir jobId
+#     ccp4-python import.py jobManager jobDir jobId
 #
 #  where:
-#    exeType  is either SHELL or SGE
+#    jobManager  is either SHELL or SGE
 #    jobDir   is path to job directory, having:
 #      jobDir/uploads : directory containing all uploaded files
 #      jobDir/output  : directory receiving output files with metadata of
@@ -91,6 +91,7 @@ class Import(basic.TaskDriver):
         # ============================================================================
         # do individual data type imports
 
+        self.nImportedDocs = 0
         for importer in importers:
             importer.run(self)
 
@@ -126,7 +127,6 @@ class Import(basic.TaskDriver):
         return
 
 
-
     def run(self):
 
         # copy pre-existing revisions into output first
@@ -138,16 +138,29 @@ class Import(basic.TaskDriver):
 
         self.import_all()
 
-        # modify job name to display in job tree
-        ilist = ""
-        for key in self.outputDataBox.data:
-            ilist += key[4:] + " (" + str(len(self.outputDataBox.data[key])) + ") "
-        if ilist:
+        if self.summary_row<=0 and self.nImportedDocs>0:
+            self.removeTab ( self.report_page_id() )
+            self.removeTab ( self.log_page_id   () )
+            self.removeTab ( self.log_page_1_id () )
+            self.removeTab ( self.err_page_id   () )
+            #self.task.nImportedDocs = self.nImportedDocs  #  signal to convert to Remark-Doc
+            self.task.state = "remdoc"  # signal to convert to Remark-doc
             if self.task.uname:
-                self.task.uname += " / "
-            self.task.uname += "imported: <i><b>" + ilist + "</b></i>"
-            with open('job.meta','w') as file_:
-                file_.write ( self.task.to_JSON() )
+                self.task.uname = "<i><b>" + self.task.uname + "</b></i>"
+            else:
+                self.task.uname = "<i><b>READ ME</b></i>"
+        else:
+            #self.task.nImportedDocs = 0  #  signal not to convert to Remark-Doc
+            # modify job name to display in job tree
+            ilist = ""
+            for key in self.outputDataBox.data:
+                ilist += key[4:] + " (" + str(len(self.outputDataBox.data[key])) + ") "
+            if ilist:
+                if self.task.uname:
+                    self.task.uname += " / "
+                self.task.uname += "imported: <i><b>" + ilist + "</b></i>"
+                #with open('job.meta','w') as file_:
+                #    file_.write ( self.task.to_JSON() )
 
         # close execution logs and quit
         self.success()

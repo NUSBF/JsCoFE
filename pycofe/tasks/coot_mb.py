@@ -10,10 +10,10 @@
 #  COOT MODEL BUILDING EXECUTABLE MODULE (CLIENT-SIDE TASK)
 #
 #  Command-line:
-#     ccp4-python python.tasks.coot_mb.py exeType jobDir jobId
+#     ccp4-python python.tasks.coot_mb.py jobManager jobDir jobId
 #
 #  where:
-#    exeType  is either SHELL or SGE
+#    jobManager  is either SHELL or SGE
 #    jobDir   is path to job directory, having:
 #      jobDir/output  : directory receiving output files with metadata of
 #                       all successful imports
@@ -37,6 +37,7 @@ try:
 except:
     messagebox = None
 
+from pycofe.proc.coot_link import LinkLists
 
 # ============================================================================
 # Make Coot driver
@@ -78,7 +79,8 @@ class Coot(basic.TaskDriver):
                 # new ligand is not the list of existing ligands, so append it
                 # to local ligand library with libcheck
 
-                libnew = self.outputFName + ".dict.cif"
+#               libnew = self.outputFName + ".dict.cif"
+                libnew = self.outputFName
 
                 self.open_stdin()
                 self.write_stdin (
@@ -116,10 +118,14 @@ class Coot(basic.TaskDriver):
         args += ["--no-guano"]
 
         # Run coot
+#t      os.system('rsync -av /tmp/job_coot_mb/ ./')
         if sys.platform.startswith("win"):
             rc = self.runApp ( "coot.bat",args,logType="Main",quitOnError=False )
         else:
             rc = self.runApp ( "coot",args,logType="Main",quitOnError=False )
+
+        # remove prasite directories
+
 
         # Check for PDB files left by Coot and convert them to type structure
 
@@ -154,6 +160,31 @@ class Coot(basic.TaskDriver):
             # calculate maps for UglyMol using final mtz from temporary location
             fnames = self.calcCCP4Maps ( coot_mtz,fn )
 
+            # add covalent links from coot to restraint dictionary, modify output pdb-file
+            libout = "links.lib"
+            pdbout = "links.pdb"
+            try:
+                exe_obj = self, [], dict(logType='Service')
+                links = LinkLists(coot_xyz)
+                links.add_coot_links(exe_obj, '.', libnew, coot_xyz, libout, pdbout, using_libcheck=True)
+                links.prn(self.file_stdout)
+            except:
+                if os.path.isfile(pdbout):
+                    os.remove(pdbout)
+                if os.path.isfile(libout):
+                    os.remove(libout)
+            else:
+                if os.path.isfile(pdbout):
+                    if os.path.isfile(coot_xyz):  # fix for windows
+                        os.remove(coot_xyz)
+                    os.rename(pdbout, coot_xyz)
+                if os.path.isfile(libout):
+                    if not libnew:
+                        libnew = self.outputFName + ".lib"
+                    if os.path.isfile(libnew):    # fix for windows
+                        os.remove(libnew)
+                    os.rename(libout, libnew)
+
             # register output data from temporary location (files will be moved
             # to output directory by the registration procedure)
 
@@ -170,6 +201,11 @@ class Coot(basic.TaskDriver):
                 struct.copyLigands      ( istruct )
                 if ligand:
                     struct.addLigands ( ligand.code )
+
+                # add link formulas and counts to struct metadata
+                struct.links = links.count_links(['LINK', 'SYMLINK'])
+                struct.refmacLinks = links.count_links(['LINKR'])
+
                 # create output data widget in the report page
                 self.putTitle ( "Output Structure" )
                 self.putStructureWidget ( "structure_btn","Output Structure",struct )
@@ -185,6 +221,7 @@ class Coot(basic.TaskDriver):
         # ============================================================================
         # close execution logs and quit
 
+#t      if True:
         if rc.msg == "":
             self.success()
         else:

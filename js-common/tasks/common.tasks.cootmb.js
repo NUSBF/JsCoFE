@@ -75,9 +75,6 @@ TaskCootMB.prototype.constructor = TaskCootMB;
 
 TaskCootMB.prototype.icon = function()  { return 'task_coot'; }
 
-//TaskCootMB.prototype.icon_small = function()  { return 'task_coot_20x20'; }
-//TaskCootMB.prototype.icon_large = function()  { return 'task_coot';       }
-
 TaskCootMB.prototype.currentVersion = function()  {
   var version = 0;
   if (__template)
@@ -104,8 +101,8 @@ if (__template)  {
 
   }
 
-  TaskCootMB.prototype.getCommandLine = function ( exeType,jobDir )  {
-    return [conf.pythonName(), '-m', 'pycofe.tasks.coot_mb', exeType, jobDir, this.id];
+  TaskCootMB.prototype.getCommandLine = function ( jobManager,jobDir )  {
+    return [conf.pythonName(), '-m', 'pycofe.tasks.coot_mb', jobManager, jobDir, this.id];
   }
 
   // -------------------------------------------------------------------------

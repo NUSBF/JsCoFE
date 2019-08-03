@@ -3,13 +3,13 @@
 #
 # ============================================================================
 #
-#    25.10.18   <--  Date of Last Modification.
+#    16.06.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  CCP4EZ Combined Auto-Solver MoRDa module
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2018
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2019
 #
 # ============================================================================
 #
@@ -69,7 +69,8 @@ class MoRDa(ccp4go_simbad12.Simbad12):
 
         # make command-line parameters for morda_sge.py
         cmd = [ "-m","morda",
-                self.exeType,
+                #"--sge" if self.jobManager == "SGE" else "--mp",
+                "--mp",  #  temporary because of problems on hpc01
                 "-f",self.mtzpath,
                 "-s",self.seqpath,
                 "-d",self.rvapi_doc_path,

@@ -3,17 +3,17 @@
 #
 # ============================================================================
 #
-#    04.05.19   <--  Date of Last Modification.
+#    02.08.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  CRANK2 EXECUTABLE MODULE
 #
 #  Command-line:
-#     ccp4-python python.tasks.crank2.py exeType jobDir jobId
+#     ccp4-python python.tasks.crank2.py jobManager jobDir jobId
 #
 #  where:
-#    exeType  is either SHELL or SGE
+#    jobManager  is either SHELL or SGE
 #    jobDir   is path to job directory, having:
 #      jobDir/output  : directory receiving output files with metadata of
 #                       all successful imports
@@ -241,8 +241,8 @@ class Crank2(basic.TaskDriver):
 
 
     def add_handdet ( self ):
-        if self.pmodel:
-            if self.getParameter ( self.sec4.HANDDET_DO ):
+        if not self.pmodel:
+            if self.getParameter(self.sec4.HANDDET_DO)=="True":
                 self.config.append ( "handdet" )
         else:
             self.config.append ( "handdet" )
@@ -651,8 +651,32 @@ class Crank2(basic.TaskDriver):
         else:
             self.runApp ( "ccp4-python",cmd,logType="Main" )
 
+        """
+        cad hklin1 x.mtz hklin2 x.mtz  hklout y.mtz <<eof
+        LABIN file 1 e1=REFM_FWT e2=REFM_PHWT ...
+        LABOUT file 1 e1=FWT e2=PHWT ....
+        LABIN file 2 allin
+        END
+        eof
+        """
+
         if self.task._type=="TaskCrank2":
             self.addCitations ( ['crank2'] )
+            if os.path.isfile(self.hklout_fpath):
+                # provide copy of phase columns for using in Coot
+                self.open_stdin()
+                self.write_stdin ([
+                    "LABIN  FILE 1 ALLIN",
+                    "LABIN  FILE 2 E1=REFM_FWT E2=REFM_PHWT E3=REFM_DELFWT E4=REFM_PHDELWT",
+                    "LABOUT FILE 2 E1=FWT E2=PHWT E3=DELFWT E4=PHDELWT"
+                ])
+                tmp_mtz = "__tmp.mtz"
+                os.rename ( self.hklout_fpath,tmp_mtz )
+                cmd = [ "HKLIN1",tmp_mtz,
+                        "HKLIN2",tmp_mtz,
+                        "HKLOUT",self.hklout_fpath]
+                self.close_stdin()
+                self.runApp ( "cad",cmd,logType="Service" )
 
         meta_str = self.restoreReportDocument()
         if not meta_str:

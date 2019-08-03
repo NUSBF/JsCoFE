@@ -10,10 +10,10 @@
 #  ACORN EXECUTABLE MODULE
 #
 #  Command-line:
-#     ccp4-python arpwarp.py exeType jobDir jobId [queueName [nSubJobs]]
+#     ccp4-python arpwarp.py jobManager jobDir jobId [queueName [nSubJobs]]
 #
 #  where:
-#    exeType    is either SHELL or SGE
+#    jobManager    is either SHELL or SGE
 #    jobDir     is path to job directory, having:
 #      jobDir/output  : directory receiving output files with metadata of
 #                       all successful imports

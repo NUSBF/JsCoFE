@@ -8,7 +8,7 @@
 
   "Desktop"  : {
     "clientApp"  : "/bin/bash",
-    "args"       : ["-c","open -a Firefox $feURL$clientURL"]
+    "args"       : ["-c","open -a Safari $feURL$clientURL"]
   },
 
   "FrontEnd" : {
@@ -28,7 +28,8 @@
     "bootstrapHTML"    : "jscofe.html",
     "maxRestarts"      : 100,
     "fileCapSize"      : 500000,
-    "regMode"          : "admin",
+    "regMode"          : "email",
+    "sessionCheckPeriod" : 2000,
     "ration"           : {
         "storage"   : 3000,
         "cpu_day"   : 24,
@@ -49,8 +50,8 @@
       "in_use"           : true,
       "protocol"         : "http",
       "host"             : "localhost",
-      "port"             : 8082,
-      "externalURL"      : "http://localhost:8082",
+      "port"             : 8084,
+      "externalURL"      : "http://localhost:8084",
       "exclusive"        : true,
       "stoppable"        : false,
       "fsmount"          : "/",
@@ -59,6 +60,10 @@
       "exclude_tasks"    : [],
       "fasttrack"        : 1,
       "storage"          : "./cofe-nc-storage",
+      "jobs_safe"        : {
+          "path"     : "./cofe-nc-storage/jobs_safe",
+          "capacity" : 10
+      },
       "exeType"          : "SHELL",
       "exeData"          : "",
       "jobCheckPeriod"   : 2000,
@@ -72,10 +77,10 @@
       "serNo"            : 1,
       "name"             : "client",
       "in_use"           : true,
-      "protocol"         : "http",
+      "protocol"         : "https",
       "host"             : "localhost",
-      "port"             : 8083,
-      "externalURL"      : "http://localhost:8083",
+      "port"             : 8085,
+      "externalURL"      : "https://localhost:8085",
       "exclusive"        : true,
       "stoppable"        : false,
       "fsmount"          : "/",

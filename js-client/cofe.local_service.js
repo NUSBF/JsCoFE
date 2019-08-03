@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    24.04.19   <--  Date of Last Modification.
+ *    25.07.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -25,44 +25,97 @@ var __local_user    = false;    // true if running as a desktop
 var __shared_fs     = false;    // shared file system setup when true
 var __regMode       = 'email';  // 'email' (by user) or 'admin' (by admin)
 var __exclude_tasks = [];
+var __setup_desc    = null;     // setup description
+var __check_session_period = 2000;  // in ms
+var __ccp4_version  = '';       // undefined
+
+
+// ---------------------------------------------------------------------------
 
 function checkLocalService ( callback_func )  {
-//  alert ( ' search=' + window.location.search );
-  var n = window.location.search.indexOf ( 'lsp=' );
-  if (n>=0)  {
-    var port = window.location.search.substring ( n+4 );
-//    if (port.startsWith('http:'))
-    if (startsWith(port,'http:'))
-          __local_service = port;
-    else  __local_service = 'http://localhost:' + port;
-  } else
-    __local_service = null;
-  //__local_user = (window.location.search.indexOf('lusr')>=0);
 
-  // alert ( window.navigator.onLine );  -- seems to work
-
-  serverCommand ( fe_command.getInfo,{},'getInfo',function(response){
-    if (response.status==fe_retcode.ok)  {
-      __exclude_tasks = response.data.exclude_tasks;
-      __cloud_storage = response.data.cloud_storage;
-      __demo_projects = response.data.demo_projects;
-      __local_setup   = response.data.localSetup;
-      __regMode       = response.data.regMode;
-      if (response.data.localuser)  {
-        __local_user    = true;
-        __login_user    = response.data.localuser;
-        __login_token   = response.data.logintoken;
-        __doNotShowList = response.data.helpTopics;
+  function getServerInfo()  {
+    serverCommand ( fe_command.getInfo,{},'getInfo',function(response){
+      if (response.status==fe_retcode.ok)  {
+        __exclude_tasks = response.data.exclude_tasks;
+        __cloud_storage = response.data.cloud_storage;
+        __demo_projects = response.data.demo_projects;
+        __local_setup   = response.data.localSetup;
+        __regMode       = response.data.regMode;
+        __setup_desc    = response.data.setup_desc;
+        __ccp4_version  = response.data.ccp4_version;
+        __check_session_period = response.data.check_session_period;
+        if (response.data.localuser)  {
+          __local_user    = true;
+          __login_user    = response.data.localuser;
+          __login_token   = response.data.logintoken;
+          __doNotShowList = response.data.helpTopics;
+        }
+        callback_func ( 0 );
+      } else  {
+        new MessageBox ( 'Server not Configured',
+            'Server not configured, contact administrator.' );
+        callback_func ( 1 );
       }
-      callback_func ( 0 );
-    } else  {
-      new MessageBox ( 'Server not Configured',
-          'Server not configured, contact administrator.' );
-      callback_func ( 1 );
-    }
-    return true;
-//    alert ( JSON.stringify(response) );
-  },null,null);
+      return true;
+  //    alert ( JSON.stringify(response) );
+    },null,null);
+  }
+
+  function probeClient ( attemptCount )  {
+    localCommand ( nc_command.countBrowser,{},'Advance Browser Count',
+      function(response){
+        var count = attemptCount-1;
+        if (!response)  {
+          if (count<=0)  {
+            __local_service = null;
+            new MessageBox ( 'Local service',
+              '<h2>Cannot connect to Local Service</h2>' +
+              'You will not be able to use Coot and other local applications.<p>' +
+              '<i>Local Service was either not launched or has terminated because ' +
+              'of error.<br>Please contact ' + appName() + ' maintainer.<i>' );
+            //return false;  // issue standard AJAX failure message
+          }
+        } else if (response.status!=nc_retcode.ok)  {
+          //console.log ( ' point 1 ' + response.status );
+          if (count<=0)  {
+            __local_service = null;
+            new MessageBox ( 'Local service',
+              '<h2>Local Service Is Not Available</h2>' +
+              'You will not be able to use Coot and other local applications.<p>' +
+              '<i>Local Service was either not launched or has terminated because ' +
+              'of error.<br>Please contact ' + appName() + ' maintainer.<i>' );
+          }
+        } else  {
+          count = 0;
+        }
+        if (count>0)
+              window.setTimeout ( function(){ probeClient(count); },100);
+        else  getServerInfo();
+        return true;
+      });
+  }
+
+  var n = window.location.search.indexOf ( 'lsp=' );
+  __local_service = 'http';
+  if (n<0)  {
+    n = window.location.search.indexOf ( 'lsps=' ) + 1;
+    __local_service = 'https';
+  }
+  if (n>=1)  {
+    var port = window.location.search.substring ( n+4 );
+    if (startsWith(port,'http'))
+          __local_service  = port;
+    else  __local_service += '://' + localhost_name + ':' + port;
+
+    // check that local service is actually running
+    probeClient ( 20 );
+
+  } else  {
+    __local_service = null;
+    getServerInfo();
+  }
+  // alert ( window.navigator.onLine );  -- seems to work
 
 }
 

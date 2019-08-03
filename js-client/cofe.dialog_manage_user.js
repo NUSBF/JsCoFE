@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.01.19   <--  Date of Last Modification.
+ *    03.08.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -156,7 +156,7 @@ ManageUserDialog.prototype.putLine = function ( label,value,maxvalue,row,key )  
   switch (key)  {
 
     //case 0 :  w = this.grid.setInputText(value,row,1,1,5).setWidth('100%').setReadOnly(true);
-    case 0 :  w = this.grid.setLabel(value,row,1,1,5).setWidth('100%').setFontItalic(true);
+    case 0 :  w = this.grid.setLabel(value,row,1,1,5).setWidth('100%').setFontItalic(true).setNoWrap();
             break;
 
     case 1 :  w = this.grid.setInputText(value,row,1,1,5).setWidth('100%');
@@ -170,7 +170,7 @@ ManageUserDialog.prototype.putLine = function ( label,value,maxvalue,row,key )  
             break;
 
     case 3 :  w = this.grid.setLabel ( new Date(value).toISOString().slice(0,10),
-                                       row,1,1,1 ).setFontItalic(true);
+                                       row,1,1,1 ).setFontItalic(true).setNoWrap();
             break;
 
     //case 4 :  this.grid.setInputText(value,row,1,1,1).setReadOnly(true).setWidth_px(80);
@@ -217,9 +217,16 @@ ManageUserDialog.prototype.makeLayout = function()  {
                                 0,row++,2 );
   this.licence = this.putLine ( 'Licence:',['academic','commercial',
                                 this.userData.licence!='academic'],0,row++,2 );
+  if (this.userData.hasOwnProperty('feedback'))  {
+    if (this.userData.feedback.length>0)
+      this.putLine ( 'Feedback agreement:',this.userData.feedback,0,row++,0 );
+    else
+      this.putLine ( 'Feedback agreement:','not chosen',0,row++,0 );
+  } else
+    this.putLine ( 'Feedback agreement:','undefined',0,row++,0 );
   this.putLine ( 'Known since:' ,this.userData.knownSince,0,row++,3 );
   if ('lastSeen' in this.userData)
-        this.putLine ( 'Last seen:',this.userData.lastSeen  ,0,row++,3 );
+        this.putLine ( 'Last seen:',this.userData.lastSeen,0,row++,3 );
   else  this.putLine ( 'Last seen:','unknown',0,row++,0 );
   this.storage = this.putLine ( 'Storage used (MB):',
                                 round(this.userData.ration.storage_used,1),

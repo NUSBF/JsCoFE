@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    24.04.19   <--  Date of Last Modification.
+ *    01.08.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -71,6 +71,7 @@ var fe_server = conf.getFEConfig();
   log.standard ( 1,'making new user, login: ' + userData.login );
   log.standard ( 1,'    temporary password: ' + pwd );
   userData.pwd = hashPassword ( pwd );
+  userData.action = ud.userdata_action.chpwd;
 
   userData.helpTopics = [];
 
@@ -106,7 +107,7 @@ var fe_server = conf.getFEConfig();
             'selectable from the Main Menu found on the top-left.<p>';
 
       msg += '<b><i>PLEASE NOTE:</i></b> <b>CCP4 on-line services are currently ' +
-             'in the development mode. Therefore, we do not guarantee a permanent ' +
+             'in the development mode. Therefore, we do not guarantee permanent ' +
              'access to services; your data and projects may become unavailable ' +
              'to you from time to time (however, confidentiality of your projects ' +
              'and data will be fully respected). In addition, you may experience ' +
@@ -384,6 +385,8 @@ var fe_server = conf.getFEConfig();
     var uData = utils.readObject ( userFilePath );
     if (uData)  {
 
+      ud.checkUserData ( uData );
+
       if ((uData.login==ulogin) && (uData.pwd==pwd))  {
 
         uData.lastSeen = Date.now();
@@ -406,6 +409,9 @@ var fe_server = conf.getFEConfig();
         rData.localSetup    = conf.isLocalSetup();
         rData.cloud_storage = (fcl.getUserCloudMounts(uData.login).length>0);
         rData.demo_projects = fe_server.getDemoProjectsMount();
+        if (fe_server.hasOwnProperty('description'))
+              rData.setup_desc = fe_server.description;
+        else  rData.setup_desc = null;
 
         response = new cmd.Response ( cmd.fe_retcode.ok,token,rData );
 
@@ -426,14 +432,25 @@ var fe_server = conf.getFEConfig();
 
 }
 
+function checkSession ( userData,callback_func )  {  // gets UserData object
+  var retcode = cmd.fe_retcode.wrongSession;
+  if (getLoginFromHash(userData.login_token))
+    retcode = cmd.fe_retcode.ok;
+  callback_func ( new cmd.Response(retcode,'','') );
+}
+
 
 // ===========================================================================
 
 function readUserData ( login )  {
+  var uData = null;
   var userFilePath = getUserDataFName ( login );
-  if (utils.fileExists(userFilePath))
-    return utils.readObject ( userFilePath );
-  return null;
+  if (utils.fileExists(userFilePath))  {
+    uData = utils.readObject ( userFilePath );
+    if (uData)
+      ud.checkUserData ( uData );
+  }
+  return uData;
 }
 
 
@@ -482,6 +499,7 @@ var response = 0;  // must become a cmd.Response object to return
   if (utils.fileExists(userFilePath))  {
     var uData = utils.readObject ( userFilePath );
     if (uData)  {
+      ud.checkUserData ( uData );
       response = new cmd.Response ( cmd.fe_retcode.ok,'',uData );
     } else  {
       log.error ( 5,'User file: ' + userFilePath + ' cannot be read.' );
@@ -515,6 +533,7 @@ var response = 0;  // must become a cmd.Response object to return
   if (utils.fileExists(userFilePath))  {
     var uData = utils.readObject ( userFilePath );
     if (uData)  {
+      ud.checkUserData ( uData );
       uData.helpTopics = userData.helpTopics;
       if (utils.writeObject(userFilePath,uData))  {
         response = new cmd.Response ( cmd.fe_retcode.ok,'','' );
@@ -624,6 +643,9 @@ var userFilePath = getUserDataFName ( login );
 
           uData.admin   = userData.admin;
           uData.licence = userData.licence;
+          if (userData.hasOwnProperty('feedback'))
+                uData.feedback = userData.feedback;
+          else  uData.feedback = '';
 
           if (utils.writeObject(userFilePath,uData))  {
 
@@ -634,10 +656,11 @@ var userFilePath = getUserDataFName ( login );
               emailer.send ( uData.email,'CCP4 Login Update',
                 'Dear ' + uData.name + ',<p>' +
                 'Your CCP4 on-line account has been updated <b>BY ADMIN</b> as follows:<p>' +
-                'Login name: <b>'                + uData.login   + '</b><br>' +
-                'E-mail: <b>'                    + uData.email   + '</b><br>' +
-                'Licence: <b>'                   + uData.licence + '</b><br>' +
-                'Status: <b>'                    + role          + '</b><br>' +
+                'Login name: <b>'                + uData.login    + '</b><br>' +
+                'E-mail: <b>'                    + uData.email    + '</b><br>' +
+                'Licence: <b>'                   + uData.licence  + '</b><br>' +
+                'Feedback agreement: <b>'        + uData.feedback + '</b><br>' +
+                'Status: <b>'                    + role           + '</b><br>' +
                 'Disk quota (MBytes): <b>'       + uRation.storage     + '</b><br>' +
                 'CPU daily quota (hours): <b>'   + uRation.cpu_day     + '</b><br>' +
                 'CPU monthly quota (hours): <b>' + uRation.cpu_month   + '</b><p>'  +
@@ -696,8 +719,13 @@ var response = null;  // must become a cmd.Response object to return
   var userFilePath = getUserDataFName ( login );
 
   if (utils.fileExists(userFilePath))  {
+
     var uData = utils.readObject ( userFilePath );
+
     if (uData)  {
+
+      ud.checkUserData ( uData );
+
       if (userData.pwd==uData.pwd)  {
 
         var rationFilePath = ration.getUserRationFPath ( login );
@@ -762,6 +790,8 @@ var userFilePath = getUserDataFName ( login );
     var uData = utils.readObject ( userFilePath );
 
     if (uData)  {
+
+      ud.checkUserData ( uData );
 
       if (uData.admin)  {
 
@@ -839,6 +869,9 @@ function sendAnnouncement ( login,message )  {
 
     var uData = utils.readObject ( userFilePath );
     if (uData)  {
+
+      ud.checkUserData ( uData );
+
       if (uData.admin)  {
 
         usersData = readUsersData();
@@ -892,6 +925,11 @@ var fe_server = conf.getFEConfig();
     }
     rData.localSetup = conf.isLocalSetup();
     rData.regMode    = conf.getRegMode  ();
+    if (fe_server.hasOwnProperty('description'))
+          rData.setup_desc = fe_server.description;
+    else  rData.setup_desc = null;
+    rData.check_session_period = fe_server.sessionCheckPeriod;  // ms
+    rData.ccp4_version = conf.CCP4Version();
 
     response = new cmd.Response ( cmd.fe_retcode.ok,'',rData );
 
@@ -909,6 +947,7 @@ var fe_server = conf.getFEConfig();
 // ==========================================================================
 // export for use in node
 module.exports.userLogin            = userLogin;
+module.exports.checkSession         = checkSession;
 module.exports.userLogout           = userLogout;
 module.exports.makeNewUser          = makeNewUser;
 module.exports.recoverUserLogin     = recoverUserLogin;

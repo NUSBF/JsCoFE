@@ -3,17 +3,17 @@
 #
 # ============================================================================
 #
-#    24.12.18   <--  Date of Last Modification.
+#    14.06.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  AMPLE EXECUTABLE MODULE
 #
 #  Command-line:
-#     ccp4-python ample.py exeType jobDir jobId [queueName [nSubJobs]]
+#     ccp4-python ample.py jobManager jobDir jobId [queueName [nSubJobs]]
 #
 #  where:
-#    exeType    is either SHELL or SGE
+#    jobManager    is either SHELL or SGE
 #    jobDir     is path to job directory, having:
 #      jobDir/output  : directory receiving output files with metadata of
 #                       all successful imports
@@ -21,7 +21,7 @@
 #    jobId      is job id assigned by jsCoFE (normally an integer but should
 #               be treated as a string with no assumptions)
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2018
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2019
 #
 # ============================================================================
 #
@@ -47,17 +47,35 @@ class Ample(basic.TaskDriver):
 
     # ------------------------------------------------------------------------
 
+    # the following will provide for import of generated mtzs
+    def importDir        (self):  return "./"   # import from working directory
+    def import_summary_id(self):  return None   # don't make import summary table
+
+    # ------------------------------------------------------------------------
+
     def run(self):
 
         # Prepare ample job
+
+        if "ROSETTA_DIR" not in os.environ:
+            pyrvapi.rvapi_set_text (
+                "<b>Error: " + self.appName() + " is not configured to work " +\
+                "with AMPLE.</b><p>Please look for support.",
+                self.report_page_id(),self.rvrow,0,1,1 )
+
+            self.fail ( "<p>&nbsp; *** Error: " + self.appName() + " is not " +\
+                        "configured to work with AMPLE.\n" + \
+                        "     Please look for support\n",
+                        "AMPLE is not configured" )
 
         # fetch input data
         hkl = self.makeClass ( self.input_data.data.hkl[0] )
         seq = self.makeClass ( self.input_data.data.seq[0] )
 
         # make command line parameters
-        cmd = [ hkl.getHKLFilePath(self.inputDir()),
-                seq.getSeqFilePath(self.inputDir()),
+        cmd = [ "-mtz"  ,hkl.getHKLFilePath(self.inputDir()),
+                "-fasta",seq.getSeqFilePath(self.inputDir()),
+                "-rosetta_dir", os.environ["ROSETTA_DIR"],
                 "-rvapi_document",self.reportDocumentName() ]
 
         # pass rvapi document with metadata
@@ -74,8 +92,8 @@ class Ample(basic.TaskDriver):
         #test_ample_path = os.path.join ( os.environ["CCP4"],"bin","ample_mock.py" )
 
         # run ample
-        #self.runApp ( "ccp4-python",[test_ample_path] + cmd )
         self.runApp ( "ample",cmd,logType="Main" )
+        #self.runApp ( "/opt/xtal/repos/ample/bin/ample-mock",cmd,logType="Main" )
 
         self.restoreReportDocument()
 

@@ -10,10 +10,10 @@
 #  PHASEREP EXECUTABLE MODULE
 #
 #  Command-line:
-#     ccp4-python -m pycofe.tasks.phaserep.py exeType jobDir jobId
+#     ccp4-python -m pycofe.tasks.phaserep.py jobManager jobDir jobId
 #
 #  where:
-#    exeType  is either SHELL or SGE
+#    jobManager  is either SHELL or SGE
 #    jobDir   is path to job directory, having:
 #      jobDir/output  : directory receiving output files with metadata of
 #                       all successful imports
@@ -115,6 +115,7 @@ class PhaserEP(basic.TaskDriver):
                 fnames       = self.calcCCP4Maps ( mtzfile,namepattern,"phaser-ep" )
                 protein_map  = fnames[0]
 
+                """
                 sname = self.outputFName
                 if revisionNo==1:
                     sname += "-original_hand"
@@ -123,6 +124,17 @@ class PhaserEP(basic.TaskDriver):
                 structure = self.registerStructure1 (
                                 None,pdbfile,mtzfile,protein_map,None,None,
                                 sname,leadKey=2,copy_files=True )
+                """
+
+                ofname = self.outputFName
+                if revisionNo==1:
+                    self.outputFName += "-original_hand"
+                else:
+                    self.outputFName += "-inverted_hand"
+                structure = self.registerStructure (
+                                None,pdbfile,mtzfile,protein_map,None,None,
+                                leadKey=2,copy_files=True )
+
                 if structure:
                     if seq:
                         for i in range(len(seq)):
@@ -138,9 +150,12 @@ class PhaserEP(basic.TaskDriver):
                         self.putMessage ( "<b style='font-size:120%'>" + stype + " scatterers</b>" )
                         fnames = self.calcCCP4Maps (
                                 llgmapsfile,namepattern+".llgmap_"+stype,"phaser-ep:"+stype )
-                        anom_struct = self.registerStructure1 (
+                        anom_struct = self.registerStructure (
                                 None,pdbfile,llgmapsfile,protein_map,fnames[0],None,
-                                sname,leadKey=2,copy_files=True )
+                                leadKey=2,copy_files=True )
+                        #anom_struct = self.registerStructure1 (
+                        #        None,pdbfile,llgmapsfile,protein_map,fnames[0],None,
+                        #        sname,leadKey=2,copy_files=True )
                         if anom_struct:
                             self.putStructureWidget ( "structure_btn_"+stype,
                                                       "Substructure and electron density",
@@ -153,13 +168,16 @@ class PhaserEP(basic.TaskDriver):
                     revision = self.makeClass ( self.input_data.data.revision[0] )
                     revision.setStructureData ( structure )
                     revision.removeSubtype    ( dtype_template.subtypeXYZ() )
-                    self.registerRevision     ( revision,revisionNo,"",
-                                                revisionName=sname )
+                    self.registerRevision     ( revision,revisionNo,"" )
+                    #self.registerRevision     ( revision,revisionNo,"",
+                    #                            revisionName=sname )
                     self.putMessage ( "&nbsp;" )
 
                 else:
                     self.putMessage (
                             "<h3><i>Failed to created output data object</i></h3>" )
+
+                self.outputFName = ofname
 
             else:
                 self.putMessage (

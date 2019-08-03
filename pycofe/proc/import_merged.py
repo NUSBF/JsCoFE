@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    02.05.19   <--  Date of Last Modification.
+#    24.07.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -25,7 +25,7 @@ import pyrvapi_ext.parsers
 #  application imports
 from   pycofe.varut   import command
 from   pycofe.dtypes  import dtype_hkl
-from   pycofe.proc    import import_filetype, mtz, srf
+from   pycofe.proc    import import_filetype, mtz, srf, patterson
 
 
 # ============================================================================
@@ -194,6 +194,7 @@ def run ( body,   # body is reference to the main Import class
                 mf = mtz.mtz_file ( p_mtzin )
                 if mf.FREE:
                     scr_file.write ( "COMPLETE FREE=" + mf.FREE + "\n" )
+                scr_file.write ( "END\n" )
                 scr_file.close ()
 
                 # run freerflag: generate FreeRFlag if it is absent, and expand
@@ -211,6 +212,17 @@ def run ( body,   # body is reference to the main Import class
                                     body.file_stderr,log_parser=None,
                                     citation_ref="freerflag-srv",
                                     file_stdout_alt=body.file_stdout )
+                if rc.msg:
+                    scr_file = open ( freerflag_script(),"w" )
+                    scr_file.write ( "FREERFRAC  0.05\nEND\n" )
+                    scr_file.close ()
+                    rc = command.call ( "freerflag",
+                                        ["HKLIN",p_mtzin,
+                                         "HKLOUT",p_mtzin1],"./",
+                                        freerflag_script(),body.file_stdout1,
+                                        body.file_stderr,log_parser=None,
+                                        citation_ref="freerflag-srv",
+                                        file_stdout_alt=body.file_stdout )
 
             #  get rid of redundant reflections with cad
 
@@ -349,16 +361,21 @@ def run ( body,   # body is reference to the main Import class
                                             body.reportDir(),subSecId,
                                             3,0,1,1, body.file_stdout,
                                             body.file_stderr, None )
+                        patterson.putPattersonMap (
+                                            body,hkl,body.outputDir(),
+                                            body.reportDir(),subSecId,
+                                            4,0,1,1, body.file_stdout,
+                                            body.file_stderr, None )
 
                         pyrvapi.rvapi_set_text (
                                 "&nbsp;<br><hr/><h3>Created Reflection Data Set (merged)</h3>" + \
                                 "<b>Assigned name:</b>&nbsp;&nbsp;" + datasetName + "<br>&nbsp;",
-                                subSecId,4,0,1,1 )
+                                subSecId,5,0,1,1 )
                         pyrvapi.rvapi_add_data ( body.getWidgetId("hkl_data_"+str(body.dataSerialNo)),
                                  "Merged reflections",
                                  # always relative to job_dir from job_dir/html
                                  "/".join([ "..",body.outputDir(),hkl.getHKLFileName()]),
-                                 "hkl:hkl",subSecId,5,0,1,1,-1 )
+                                 "hkl:hkl",subSecId,6,0,1,1,-1 )
                         body.addCitation ( 'viewhkl' )
 
                     else:
@@ -383,16 +400,21 @@ def run ( body,   # body is reference to the main Import class
                                                 body.reportDir(),subSecId,
                                                 3,0,1,1, body.file_stdout,
                                                 body.file_stderr, None )
+                            patterson.putPattersonMap (
+                                                body,hkl_data,body.outputDir(),
+                                                body.reportDir(),subSecId,
+                                                4,0,1,1, body.file_stdout,
+                                                body.file_stderr, None )
 
                             pyrvapi.rvapi_set_text (
                                 "&nbsp;<br><hr/><h3>Created Reflection Data Set (merged)</h3>" + \
                                 "<b>Assigned name:</b>&nbsp;&nbsp;" + datasetName + "<br>&nbsp;",
-                                subSecId,4,0,1,1 )
+                                subSecId,5,0,1,1 )
                             pyrvapi.rvapi_add_data ( body.getWidgetId("hkl_data_"+str(body.dataSerialNo)),
                                  "Merged reflections",
                                  # always relative to job_dir from job_dir/html
                                  "/".join([ "..",body.outputDir(),hkl_data.getHKLFileName()]),
-                                 "hkl:hkl",subSecId,5,0,1,1,-1 )
+                                 "hkl:hkl",subSecId,6,0,1,1,-1 )
                             body.addCitation ( 'viewhkl' )
 
                     if body.summary_row_0<0:

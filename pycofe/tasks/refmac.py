@@ -3,17 +3,17 @@
 #
 # ============================================================================
 #
-#    27.04.19   <--  Date of Last Modification.
+#    19.06.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  REFMAC EXECUTABLE MODULE
 #
 #  Command-line:
-#     ccp4-python -m pycofe.tasks.refmac exeType jobDir jobId
+#     ccp4-python -m pycofe.tasks.refmac jobManager jobDir jobId
 #
 #  where:
-#    exeType  is either SHELL or SGE
+#    jobManager  is either SHELL or SGE
 #    jobDir   is path to job directory, having:
 #      jobDir/output  : directory receiving output files with metadata of
 #                       all successful imports
@@ -28,6 +28,7 @@
 import os
 import sys
 import uuid
+import shutil
 
 #  application imports
 import basic
@@ -258,10 +259,12 @@ class Refmac(basic.TaskDriver):
         self.file_stdin = 1 # a trick necessary because of using 'print' above
 
         # make command-line parameters for bare morda run on a SHELL-type node
+        xyzin  = istruct.getXYZFilePath ( self.inputDir() )
+        xyzout = self.getXYZOFName()
         cmd = [ "hklin" ,hkl.getFilePath(self.inputDir(),dtype_template.file_key["mtz"]),
-                "xyzin" ,istruct.getXYZFilePath(self.inputDir()),
+                "xyzin" ,xyzin,
                 "hklout",self.getMTZOFName(),
-                "xyzout",self.getXYZOFName(),
+                "xyzout",xyzout,
                 "scrref",os.path.join(os.environ["CCP4_SCR"],uuid.uuid4().hex) ]
 
         libin = istruct.getLibFilePath ( self.inputDir() )
@@ -280,8 +283,13 @@ class Refmac(basic.TaskDriver):
         # Start refmac
         self.runApp ( "refmac5",cmd,logType="Main" )
 
+        if not xyzin.lower().endswith(".pdb"):
+            xyzout1 = xyzout
+            xyzout  = os.path.splitext(xyzout1)[0] + ".cif"
+            shutil.copy2 ( xyzout1,xyzout )
+
         # check solution and register data
-        if os.path.isfile(self.getXYZOFName()):
+        if os.path.isfile(xyzout):
 
             self.putTitle ( "Refmac Output" )
             self.unsetLogParser()
@@ -292,7 +300,7 @@ class Refmac(basic.TaskDriver):
             # register output data from temporary location (files will be moved
             # to output directory by the registration procedure)
 
-            structure = self.registerStructure ( self.getXYZOFName(),None,
+            structure = self.registerStructure ( xyzout,None,
                                                  self.getMTZOFName(),
                                                  fnames[0],fnames[1],libin,
                                                  leadKey=1 )

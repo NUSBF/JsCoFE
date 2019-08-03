@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.12.18   <--  Date of Last Modification.
+ *    28.07.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Logout page
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2018
+ *  (C) E. Krissinel, A. Lebedev 2016-2019
  *
  *  =================================================================
  *
@@ -23,7 +23,7 @@
 // -------------------------------------------------------------------------
 // logout page class
 
-function LogoutPage ( sceneId )  {
+function LogoutPage ( sceneId,reason_key )  {
 
   //if (__login_token)  __login_token.empty();
   //if (__login_user)   __login_user .empty();
@@ -47,8 +47,18 @@ function LogoutPage ( sceneId )  {
   panel.setWidth      ( '300pt' );
   this.grid.setWidget ( panel,0,1,1,1 );
 
-  var thank_lbl  = new Label    ( 'Thank you for using ' + appName() );
-  var logout_lbl = new Label    ( 'You are now logged out.'  );
+  var thank_lbl = new Label ( 'Thank you for using ' + appName() );
+  var msg = '';
+  switch (reason_key)  {
+    case 1 :  msg = 'Your session in this window was cancelled automatically ' +
+                    'because of identical logining somewhere else.';
+            break;
+    case 2 :  msg = 'Your session in this window was terminated because local ' +
+                    appName() + ' service has stopped or was restared.';
+            break;
+    default : msg = 'You are now logged out.';
+  }
+  var logout_lbl = new Label    ( msg );
 
   thank_lbl .setFont            ( 'times','200%',true,true );
   thank_lbl .setNoWrap          ();
@@ -76,17 +86,22 @@ LogoutPage.prototype = Object.create ( BasePage.prototype );
 LogoutPage.prototype.constructor = LogoutPage;
 
 
-function logout ( sceneId )  {
+function logout ( sceneId,reason_key )  {
+
+  stopSessionChecks();
+
+  if (__current_page && (__current_page._type=='ProjectPage'))
+    __current_page.getJobTree().stopTaskLoop();
 
   if (__login_token)  {
 
     serverRequest ( fe_reqtype.logout,0,'Logout',function(data){
-      makePage ( new LogoutPage(sceneId) );
+      makePage ( new LogoutPage(sceneId,reason_key) );
     },null,null);
 
   } else {
 
-    makePage ( new LogoutPage(sceneId) );
+    makePage ( new LogoutPage(sceneId,reason_key) );
 
   }
 

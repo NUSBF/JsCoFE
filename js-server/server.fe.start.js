@@ -138,6 +138,10 @@ function start ( callback_func )  {
             rj.getJobResults ( c.job_token,server_request,server_response );
           break;
 
+        case cmd.fe_command.checkSession :
+            pp.processPOSTData ( server_request,server_response,user.checkSession );
+          break;
+
         case cmd.fe_command.stop :
             if (conf.getFEConfig().stoppable)  {
               log.standard ( 6,'stopping' );

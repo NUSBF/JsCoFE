@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.12.18   <--  Date of Last Modification.
+ *    21.05.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Task Data Dialog (shows data availability for given task)
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2018
+ *  (C) E. Krissinel, A. Lebedev 2016-2019
  *
  *  =================================================================
  *
@@ -62,7 +62,7 @@ function TaskDataDialog ( dataSummary,task )  {
     var hints = [];
     for (var key in dataSummary)
       if (key!='status')  {
-        table.setLabel ( key,row,0, 1,1 );
+        table.setLabel ( this.getDataDescription(dataSummary[key]),row,0, 1,1 );
         var icon_uri;
         switch (dataSummary[key].status)  {
           default :
@@ -83,12 +83,13 @@ function TaskDataDialog ( dataSummary,task )  {
         row++;
       }
 
+    var foont_family = '"Trebuchet MS", Arial, Helvetica, sans-serif';
     for (var i=0;i<row;i++)  {
       table.setNoWrap              ( i,0 );
-      table.setHorizontalAlignment ( i,0,'left'   );
+      table.setHorizontalAlignment ( i,0,'left'   ).setFontFamily(i,0,foont_family);
       table.setHorizontalAlignment ( i,1,'center' );
-      table.setHorizontalAlignment ( i,2,'right'  );
-      table.setHorizontalAlignment ( i,3,'right'  );
+      table.setHorizontalAlignment ( i,2,'right'  ).setFontFamily(i,2,foont_family);
+      table.setHorizontalAlignment ( i,3,'right'  ).setFontFamily(i,3,foont_family);
       table.setVerticalAlignment   ( i,0,'middle' );
       table.setVerticalAlignment   ( i,1,'middle' );
       table.setVerticalAlignment   ( i,2,'middle' );
@@ -132,3 +133,70 @@ function TaskDataDialog ( dataSummary,task )  {
 
 TaskDataDialog.prototype = Object.create ( Widget.prototype );
 TaskDataDialog.prototype.constructor = TaskDataDialog;
+
+TaskDataDialog.prototype.getDataDescription = function ( dataSpec )  {
+
+  function _make_list ( items )  {
+    if (items.length<=0)  return '';
+    if (items.length==1)  return ' ' + items[0];
+    var s = '<ul style="margin:0;">';
+    for (var k=0;k<items.length;k++)
+      s += '<li>' + items[k] + '</li>';
+    return s+'</ul>';
+  }
+
+  var html = '';
+  for (var dtype in dataSpec.dtypes)  {
+
+    var dobj = getObjectInstance ( '{ "_type" : "' + dtype + '" }' );
+
+    if (html.length>0)  {
+      if (!endsWith(html,'</ul>'))
+        html += '<br>';
+      html += '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b><i>-- or --</i></b><br>';
+    }
+    html += '<b>' + dobj.title() + '</b>';
+    if (dataSpec.desc)
+      html += ' (' + dataSpec.desc + ')';
+    var items_of = [];  // one of
+    var items_cp = [];  // compulsory
+    var subtypes = dataSpec.dtypes[dtype];
+    if (subtypes.length>1)  {
+      for (var i=0;i<subtypes.length;i++)  {
+        let stype = dobj.getSubtypeDescription ( subtypes[i] );
+        if (stype)  {
+          if (stype[0]==0)  items_of.push ( stype.substring(1) );
+                      else  items_cp.push ( stype );
+        }
+      }
+    } else if (subtypes.length==1)  {
+      let stype = dobj.getSubtypeDescription ( subtypes[0] );
+      if (stype)  {
+        if (stype[0]==0)  items_of.push ( stype.substring(1) );
+                    else  items_cp.push ( stype );
+      }
+    }// else
+    //  html += ' (any)';
+
+    var bridge_word = dobj.ddesc_bridge_word();
+    var n = items_cp.length + items_of.length;
+    if (n==1)  {
+      html += bridge_word;
+      if (items_cp.length==1)  html += items_cp[0];
+                         else  html += items_of[0];
+    } else if (n>1)  {
+      html += bridge_word;
+      if (items_cp.length==0)
+        html += 'at least one of' + _make_list(items_of);
+      else  {
+        for (var i=0;i<items_of.length;i++)
+          items_cp.push ( 'optional ' + items_of[i] );
+        html += _make_list(items_cp);
+      }
+    }
+
+  }
+
+  return html;
+
+}

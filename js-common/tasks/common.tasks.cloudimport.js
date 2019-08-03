@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    01.05.19   <--  Date of Last Modification.
+ *    22.06.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -66,11 +66,6 @@ TaskCloudImport.prototype.constructor = TaskCloudImport;
 
 // ===========================================================================
 
-TaskCloudImport.prototype.icon = function()  { return 'task_cimport'; }
-
-//TaskCloudImport.prototype.icon_small = function()  { return 'task_cimport_20x20'; }
-//TaskCloudImport.prototype.icon_large = function()  { return 'task_cimport';       }
-
 TaskCloudImport.prototype.currentVersion = function()  {
   var version = 0;
   if (__template)
@@ -81,6 +76,12 @@ TaskCloudImport.prototype.currentVersion = function()  {
 // export such that it could be used in both node and a browser
 if (!__template)  {
   // for client side
+
+  TaskCloudImport.prototype.icon = function()  {
+    if (this.state==job_code.remdoc)
+          return 'task_remdoc';
+    else  return 'task_cimport';
+  }
 
   // This function is called at cloning jobs and should do copying of all
   // custom class fields not found in the Template class
@@ -127,7 +128,7 @@ if (!__template)  {
       div.select_btn.addOnClickListener ( function(){
         new CloudFileBrowser ( div,task,0,function(items){
           task.setSelectedCloudFiles ( div,items );
-          return 0;  // do not close browser window
+          return 1;  // do not close browser window
         },null );
       });
     }(this))
@@ -215,6 +216,13 @@ if (!__template)  {
   var uh    = require('../../js-server/server.fe.upload_handler');
   var fcl   = require('../../js-server/server.fe.facilities');
 
+
+  TaskCloudImport.prototype.icon = function()  {
+    if (this.state==__template.job_code.remdoc)
+          return 'task_remdoc';
+    else  return 'task_cimport';
+  }
+
   TaskCloudImport.prototype.makeInputData = function ( login,jobDir )  {
     var uploads_dir = path.join ( jobDir,uh.uploadDir() );
 
@@ -266,8 +274,8 @@ if (!__template)  {
 
   }
 
-  TaskCloudImport.prototype.getCommandLine = function ( exeType,jobDir )  {
-    return [conf.pythonName(), '-m', 'pycofe.tasks.import_task', exeType, jobDir, this.id];
+  TaskCloudImport.prototype.getCommandLine = function ( jobManager,jobDir )  {
+    return [conf.pythonName(), '-m', 'pycofe.tasks.import_task', jobManager, jobDir, this.id];
   }
 
   module.exports.TaskCloudImport = TaskCloudImport;

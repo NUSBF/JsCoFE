@@ -195,12 +195,26 @@ var sender_cfg = conf.getServerConfig();
 
   function pushToServer ( formData,jobballPath )  {
 
-    request.post({
-
+    var post_options = {
       url      : serverURL + '/' + command,
       formData : formData
+    };
+    if (serverURL.startsWith('https:'))  {
+      post_options.agentOptions = {};
+      post_options.agentOptions.key  = fs.readFileSync ( path.join('certificates','key.pem'   ) );
+      post_options.agentOptions.cert = fs.readFileSync ( path.join('certificates','cert.pem'  ) );
+      if (sender_cfg.useRootCA)
+        post_options.agentOptions.ca = fs.readFileSync ( path.join('certificates','rootCA.pem') );
+    }
 
-    }, function(err,httpResponse,response) {
+    request.post ( post_options,
+      /*
+    {
+      url      : serverURL + '/' + command,
+      formData : formData
+    },
+    */
+    function(err,httpResponse,response) {
 
       if (err) {
         if (onErr_func)
@@ -234,6 +248,9 @@ var sender_cfg = conf.getServerConfig();
     var formData = {};
     formData['sender' ] = sender_cfg.externalURL;
     formData['dirpath'] = path.resolve ( dirPath );  // convert to absolute path
+    if (metaData)  // pass in form of simple key-value pairs
+      for (key in metaData)
+        formData[key] = metaData[key];
 
     pushToServer ( formData,null );
 

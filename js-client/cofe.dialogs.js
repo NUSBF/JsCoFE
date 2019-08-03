@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.02.19   <--  Date of Last Modification.
+ *    28.07.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -36,7 +36,7 @@ function calcDialogSize ( defW,defH, defWT,defHT, job_dialog_data )  {
   var h0 = window.innerHeight;
   var w,h;
 
-  if (__touch_device)  {
+  if (__mobile_device)  {
 
     w = defWT*$(window).width () - 8;
     h = defHT*$(window).height() - 46;
@@ -130,6 +130,8 @@ var msg = '<b>General failure: data cannot be read.</b>';
 }
 
 function MessageNotLoggedIn ( title )  {
+  if (__current_page && (['LogoutPage','LoginPage'].indexOf(__current_page._type)>=0))
+    return;
   new MessageBox ( title,
     '<b>User Not Logged In.</b>' +
     '<p>This may result from duplicate logging (either explicitly in another ' +
@@ -137,6 +139,7 @@ function MessageNotLoggedIn ( title )  {
     'browser tab<br>or window), or using forward/back/reload buttons in your ' +
     'browser.<p>Please log in again.' +
     '<p>If problem persists, please report to ccp4@stfc.ac.uk.' );
+  return;
 }
 
 function MessageUploadErrors ( title,message )  {

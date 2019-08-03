@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    24.12.18   <--  Date of Last Modification.
+#    16.06.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -12,10 +12,10 @@
 #  MORDA EXECUTABLE MODULE
 #
 #  Command-line:
-#     ccp4-python morda.py exeType jobDir jobId [queueName [nSubJobs]]
+#     ccp4-python morda.py jobManager jobDir jobId [queueName [nSubJobs]]
 #
 #  where:
-#    exeType    is either SHELL or SGE
+#    jobManager    is either SHELL or SGE
 #    jobDir     is path to job directory, having:
 #      jobDir/output  : directory receiving output files with metadata of
 #                       all successful imports
@@ -32,7 +32,7 @@
 #               even if job is run by SGE, so it should be checked upon using
 #               comman line length
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2018
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2019
 #
 # ============================================================================
 #
@@ -87,12 +87,12 @@ class Morda(basic.TaskDriver):
             if sys.argv[4]!="-":
                 queueName = sys.argv[4]
 
-        if self.exeType == "SGE":
+        if self.jobManager == "SGE":
             nSubJobs = "0";
             if len(sys.argv)>5:
                 nSubJobs = sys.argv[5]
         else:
-            nSubJobs = "4";
+            nSubJobs = "4"
 
         # end temporary fix
 
@@ -127,7 +127,7 @@ class Morda(basic.TaskDriver):
 
         # make command-line parameters for morda_sge.py
         cmd = [ "-m","morda",
-                "--sge" if self.exeType == "SGE" else "--mp",
+                "--sge" if self.jobManager == "SGE" else "--mp",
                 "-f",cad_mtz,
                 "-s",self.morda_seq(),
                 "-d",self.reportDocumentName() ]

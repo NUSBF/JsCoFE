@@ -3,17 +3,17 @@
 #
 # ============================================================================
 #
-#    18.03.19   <--  Date of Last Modification.
+#    15.05.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  XIA2 EXECUTABLE MODULE (OPTIONAL CLIENT-SIDE TASK)
 #
 #  Command-line:
-#     ccp4-python python.tasks.xia2.py exeType jobDir jobId
+#     ccp4-python python.tasks.xia2.py jobManager jobDir jobId
 #
 #  where:
-#    exeType  is either SHELL or SGE
+#    jobManager  is either SHELL or SGE
 #    jobDir   is path to job directory, having:
 #      jobDir/output  : directory receiving output files with metadata of
 #                       all successful imports
@@ -61,7 +61,7 @@ class Xia2(basic.TaskDriver):
         # Prepare xia2 job
 
         nSubJobs = "4";
-        if self.exeType in ["SGE","SCRIPT"]:
+        if self.jobManager in ["SGE","SCRIPT"]:
             nSubJobs = "1";
             if len(sys.argv)>=5:
                 nSubJobs = sys.argv[-1]
@@ -84,8 +84,8 @@ class Xia2(basic.TaskDriver):
 
         projectName  = self.getParameter ( sec1.PROJECT     )
         crystalName  = self.getParameter ( sec1.CRYSTAL     )
+        hatom        = self.getParameter ( sec1.HATOM       )
         pipeline     = self.getParameter ( sec2.PIPELINE    )
-        hatom        = self.getParameter ( sec2.HATOM       )
         small_mol    = self.getParameter ( sec2.SMALL_MOLECULE ).lower()
         space_group  = self.getParameter ( sec2.SPACE_GROUP )
         unit_cell    = self.getParameter ( sec2.UNIT_CELL   )

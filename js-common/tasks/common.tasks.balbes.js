@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    27.12.18   <--  Date of Last Modification.
+ *    21.07.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  BALBES Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2018
+ *  (C) E. Krissinel, A. Lebedev 2016-2019
  *
  *  =================================================================
  *
@@ -38,7 +38,7 @@ function TaskBalbes()  {
   this.helpURL = './html/jscofe_task_balbes.html';
 
   this.input_dtypes = [{    // input data types
-      data_type   : {'DataRevision':['!protein','!asu']}, // data type(s) and subtype(s)
+      data_type   : {'DataRevision':['!protein','!asu','~xyz']}, // data type(s) and subtype(s)
       label       : 'Structure revision',     // label for input dialog
       inputId     : 'revision', // input Id for referencing input fields
       version     : 0,          // minimum data version allowed
@@ -47,6 +47,7 @@ function TaskBalbes()  {
     }
   ];
 
+/*
   this.parameters = { // input parameters
     sec1 : { type     : 'section',
              title    : 'Additional parameters',
@@ -63,6 +64,7 @@ function TaskBalbes()  {
              }
            }
   };
+*/
 
 }
 
@@ -77,9 +79,6 @@ TaskBalbes.prototype.constructor = TaskBalbes;
 // export such that it could be used in both node and a browser
 
 TaskBalbes.prototype.icon = function()  { return 'task_balbes'; }
-
-//TaskBalbes.prototype.icon_small = function()  { return 'task_balbes_20x20'; }
-//TaskBalbes.prototype.icon_large = function()  { return 'task_balbes';       }
 
 // task.platforms() identifies suitable platforms:
 //   'W"  : Windows
@@ -116,8 +115,8 @@ if (__template)  {
 
   }
 
-  TaskBalbes.prototype.getCommandLine = function ( exeType,jobDir )  {
-    return [conf.pythonName(), '-m', 'pycofe.tasks.balbes', exeType, jobDir, this.id];
+  TaskBalbes.prototype.getCommandLine = function ( jobManager,jobDir )  {
+    return [conf.pythonName(), '-m', 'pycofe.tasks.balbes', jobManager, jobDir, this.id];
   }
 
   // -------------------------------------------------------------------------

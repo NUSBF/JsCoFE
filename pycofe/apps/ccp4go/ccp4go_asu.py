@@ -74,7 +74,7 @@ class PrepareASU(ccp4go_mtz.PrepareMTZ):
                         "CCP4go Automated Structure Solver: " + title,
                         self.asu_dir(),parent_branch_id )
 
-        self.asu = asucomp.suggestASUComp1 ( self.hkl,self.seqpath )
+        self.asu = asucomp.suggestASUComp1 ( self.hkl,self.seqpath,True )
 
         quit_message = ""
 
@@ -98,7 +98,7 @@ class PrepareASU(ccp4go_mtz.PrepareMTZ):
 
             spaceGroup = self.hkl.HM
             cell       = self.hkl.DCELL
-            asudesc     = self.asu["asu"]
+            asudesc    = self.asu["asu"]
 
             self.open_script  ( "matthews" )
             self.write_script (

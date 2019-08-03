@@ -92,23 +92,25 @@ class Base(object):
         "trim_mode"        : "auto",  # for mainchains/sidechains; "auto", "restricted", "fixed"
         "trim_waters"      : False, # whether to trim waters or not
         "trim_mode_w"      : "restricted", # for waters; "auto", "restricted", "fixed"
-        "trim_wat_resol"   : 2.5,  # maximal resolution for trimming waters
-        "trim_wat_rfree"   : 0.33, # maximal Rfree for trimming waters
-        "trimmin_zdm"      : 1.8,  # minimum restricted ZD for trimming mainchains
-        "trimmax_zdm"      : 3.2,  # maximum restricted ZD for trimming mainchains
-        "trimmin_zds"      : 1.8,  # minimum restricted ZD for trimming sidechains
-        "trimmax_zds"      : 3.2,  # maximum restricted ZD for trimming sidechains
-        "trimmin_zdw"      : 1.5,  # minimum restricted ZD for trimming waters
-        "trimmax_zdw"      : 2.0,  # maximum restricted ZD for trimming waters
-        "trim_zdm"         : 2.5,  # fixed ZD for trimming mainchains
-        "trim_zds"         : 2.5,  # fixed ZD for trimming sidechains
-        "trim_zdw"         : 2.0,  # fixed ZD for trimming waters
+        "trim_wat_resol"   : 2.5,   # maximal resolution for trimming waters
+        "trim_wat_rfree"   : 0.33,  # maximal Rfree for trimming waters
+        "trimmin_zdm"      : 1.8,   # minimum restricted ZD for trimming mainchains
+        "trimmax_zdm"      : 3.2,   # maximum restricted ZD for trimming mainchains
+        "trimmin_zds"      : 1.8,   # minimum restricted ZD for trimming sidechains
+        "trimmax_zds"      : 3.2,   # maximum restricted ZD for trimming sidechains
+        "trimmin_zdw"      : 1.5,   # minimum restricted ZD for trimming waters
+        "trimmax_zdw"      : 2.0,   # maximum restricted ZD for trimming waters
+        "trim_zdm"         : 2.5,   # fixed ZD for trimming mainchains
+        "trim_zds"         : 2.5,   # fixed ZD for trimming sidechains
+        "trim_zdw"         : 2.0,   # fixed ZD for trimming waters
         "pdb_ref_code"     : "1tqw",
-        "cycles_min"       : 3,    # minimal number of outer cycles to do
-        "cycles_max"       : 20,   # maximal number of outer cycles to do
-        "noimprove_cycles" : 15,   # stop if results do not improve after set
-                                   #   number of consequitive cycles
-        "rfree_threshold"  : 0.000 # threshold for rfree comparisons in workflow
+        "cycles_min"       : 3,     # minimal number of outer cycles to do
+        "cycles_max"       : 20,    # maximal number of outer cycles to do
+        "noimprove_cycles" : 15,    # stop if results do not improve after set
+                                    #   number of consequitive cycles
+        "rfree_threshold"  : 0.000, # threshold for rfree comparisons in workflow
+        "experiment_type"  : "xray",
+        "form_factor"      : "default"
     }
 
     workflow   = ""            # workflow tracker line

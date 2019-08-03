@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    03.04.19   <--  Date of Last Modification.
+ *    18.07.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -119,7 +119,10 @@ function ProjectPage ( sceneId )  {
     del_btn  .setEnabled ( dsel );
 
     if (task)  {
-      var is_remark = (task.state==job_code.remark) || (task.state==job_code.remdet);
+      var is_remark = task.isRemark();
+                      //(task.state==job_code.remark) ||
+                      //(task.state==job_code.remdet) ||
+                      //(task.state==job_code.remdoc);
       add_btn.setEnabled ( (task.state==job_code.finished) ||
                            (task.state==job_code.failed)   ||
                            (task.state==job_code.stopped)  ||
@@ -275,34 +278,22 @@ function ProjectPage ( sceneId )  {
   this.headerPanel.setVerticalAlignment ( 0,2,'middle' );
 
   // Make Main Menu
-  var prjlist_mi = this.headerPanel.menu.addItem('My Projects',image_path('list'));
-
-  // set menu listeners
-  prjlist_mi.addOnClickListener ( function(){
-    jobTree.saveProjectData ( [],[],null );
-    makeProjectListPage   ( sceneId );
+  this.addMenuItem ( 'My Projects','list',function(){
+    jobTree.saveProjectData ( [],[],function(){ makeProjectListPage(sceneId); });
   });
 
   if (!__local_user)  {
-
-    var account_mi = this.headerPanel.menu.addItem('My Account',image_path('settings'));
-    var admin_mi   = null;
-    if (__admin)
-      admin_mi = this.headerPanel.menu.addItem('Admin Page',image_path('admin'));
-
-    account_mi.addOnClickListener ( function(){
-      jobTree.saveProjectData ( [],[],null );
-      makeAccountPage         ( sceneId );
+    this.addMenuItem ( 'My Account','settings',function(){
+      jobTree.saveProjectData ( [],[],function(){ makeAccountPage(sceneId); });
     });
-
-    if (admin_mi)
-      admin_mi.addOnClickListener ( function(){
+    if (__admin)
+      this.addMenuItem ( 'Admin Page','admin',function(){
         jobTree.saveProjectData ( [],[],function(){ makeAdminPage(sceneId); } );
       });
   }
 
   this.addLogoutToMenu ( function(){
-    jobTree.saveProjectData ( [],[],function(){ logout(sceneId); } );
+    jobTree.saveProjectData ( [],[],function(){ logout(sceneId,0); } );
   });
 
 

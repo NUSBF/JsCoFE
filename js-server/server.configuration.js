@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    24.04.19   <--  Date of Last Modification.
+ *    01.08.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -30,7 +30,7 @@ var utils  = require('./server.utils');
 var cmd    = require('../js-common/common.commands');
 
 //  prepare log
-var log = require('./server.log').newLog(3);
+var log    = require('./server.log').newLog(3);
 
 
 // ===========================================================================
@@ -69,7 +69,8 @@ function ServerConfig()  {
   this.host          = 'localhost';
   this.port          = 'port';
   this.externalURL   = '';
-  this.exclude_tasks = [];
+  this.exclude_tasks = [];   // tasks that should not run on given server
+  this.only_tasks    = [];   // tasks that server can only run
   this.startDate     = new Date(Date.now()).toUTCString();
 }
 
@@ -94,7 +95,7 @@ ServerConfig.prototype.getQueueName = function()  {
         return this.exeData[n+1];
     }
   }
-  return '';
+  return '-';
 }
 
 ServerConfig.prototype.getPIDFilePath = function()  {
@@ -133,12 +134,16 @@ var nproc = 1;
 }
 
 
-function _make_path ( filepath )  {
+function _make_path ( filepath,login )  {
+var plist;
   if (filepath.constructor === Array)  {
+    // list of paths is used when environmental variables depend on OS
     for (var i=0;i<filepath.length;i++)  {
-      var plist = filepath[i].split ( '/' ); // paths in config file always to have '/' separator
+      // paths in config file always to have '/' separator
+      if (login)  plist = filepath[i].replace(/\$LOGIN/g,login).split('/');
+            else  plist = filepath[i].split ( '/' );
       var found = false;
-      for (var j=0;j<plist.length;j++)
+      for (var j=0;j<plist.length;j++)  {
         if (plist[j].startsWith('$'))  {
           var env_name = plist[j].slice(1)
           if (process.env.hasOwnProperty(env_name))  {
@@ -146,11 +151,14 @@ function _make_path ( filepath )  {
             found    = true;
           }
         }
+      }
       if (found)
         return plist.join ( path.sep ); // return path with system's separator
     }
   } else  {
-    var plist = filepath.split ( '/' ); // paths in config file always tohave '/' separator
+    // paths in config file always to have '/' separator
+    if (login)  plist = filepath.replace(/\$LOGIN/g,login).split('/');
+          else  plist = filepath.split ( '/' );
     var found = true;
     for (var i=0;i<plist.length;i++)
       if (plist[i].startsWith('$'))  {
@@ -167,11 +175,11 @@ function _make_path ( filepath )  {
 }
 
 
-ServerConfig.prototype.getCloudMounts = function()  {
+ServerConfig.prototype.getCloudMounts = function ( login )  {
 var paths = [];
   if ('cloud_mounts' in this)  {
     for (name in this.cloud_mounts)  {
-      var cloud_path = _make_path(this.cloud_mounts[name]);
+      var cloud_path = _make_path ( this.cloud_mounts[name],login );
       if (cloud_path)
         paths.push ( [name,cloud_path] );
     }
@@ -191,6 +199,15 @@ ServerConfig.prototype.getDemoProjectsMount = function()  {
     }
   }
   return mount;
+}
+
+ServerConfig.prototype.getJobsSafe = function()  {
+  if (this.hasOwnProperty('jobs_safe'))
+    return this.jobs_safe;
+  return {
+    'path'     : path.join(this.storage,'jobs_safe'),
+    'capacity' : 10
+  };
 }
 
 ServerConfig.prototype.checkStatus = function ( callback_func )  {
@@ -245,9 +262,138 @@ function getEmailerConfig()  {
   return emailer;
 }
 
+function CCP4Version()  {
+var version = '';
+  if (process.env.hasOwnProperty('CCP4'))  {
+    var s = utils.readString ( path.join(process.env.CCP4,'lib','ccp4','MAJOR_MINOR') );
+    if (s)
+      version = s.split(/,?\s+/)[0];
+  }
+  return version;
+}
+
 
 // ===========================================================================
 // Config read function
+
+/*  --------------------------------------------------------------------------
+
+{
+  "FrontEnd" : {
+    "description"      : {
+      "id"   : "ccp4",
+      "name" : "CCP4-Harwell",
+      "icon" : "images_com/ccp4-harwell.png"
+    },
+    "protocol"         : "http",
+    "host"             : "localhost",
+    "port"             : 8081,
+    "externalURL"      : "http://localhost:8081",
+    "exclusive"        : true,
+    "stoppable"        : false,
+    "exclude_tasks"    : [],
+    "fsmount"          : "/",
+    "userDataPath"     : "./cofe-users",
+    "projectsPath"     : "./cofe-projects",
+    "facilitiesPath"   : "./cofe-facilities",
+    "ICAT_wdsl"        : "https://icat02.diamond.ac.uk/ICATService/ICAT?wsdl",
+    "ICAT_ids"         : "https://ids01.diamond.ac.uk/ids",
+    "bootstrapHTML"    : "jscofe.html",
+    "maxRestarts"      : 100,
+    "fileCapSize"      : 500000,
+    "regMode"          : "admin",
+    "sessionCheckPeriod" : 2000,
+    "ration"           : {
+        "storage"   : 3000,
+        "cpu_day"   : 24,
+        "cpu_month" : 240
+    },
+    "cloud_mounts"     : {
+      "My Computer"    : "/",
+      "Home"           : ["$HOME","$USERPROFILE"],
+      "CCP4 examples"  : "$CCP4/share/ccp4i2/demo_data",
+      "Demo projects"  : "./demo-projects",
+      "My files"       : "./$LOGIN/files"
+    }
+  },
+
+  "NumberCrunchers" : [
+    {
+      "serNo"            : 0,
+      "name"             : "local-nc",
+      "in_use"           : true,
+      "protocol"         : "http",
+      "host"             : "localhost",
+      "port"             : 8082,
+      "externalURL"      : "http://localhost:8082",
+      "exclusive"        : true,
+      "stoppable"        : false,
+      "fsmount"          : "/",
+      "capacity"         : 4,
+      "max_nproc"        : 3,
+      "exclude_tasks"    : [],
+      "only_tasks"       : [],
+      "fasttrack"        : 1,
+      "storage"          : "./cofe-nc-storage",
+      "jobs_safe"        : {
+          "path"     : "./cofe-nc-storage/jobs_safe",
+          "capacity" : 10
+      },
+      "exeType"          : "SHELL",
+      "jobManager"       : "SLURM",
+      "exeData"          : "",
+      "jobCheckPeriod"   : 2000,
+      "sendDataWaitTime" : 1000,
+      "maxSendTrials"    : 10,
+      "jobRemoveTimeout" : 10000,
+      "maxRestarts"      : 100,
+      "fileCapSize"      : 500000
+    },
+    {
+      "serNo"            : 1,
+      "name"             : "client",
+      "in_use"           : true,
+      "protocol"         : "http",
+      "host"             : "localhost",
+      "port"             : 8083,
+      "externalURL"      : "http://localhost:8083",
+      "useRootCA"        : 1,
+      "exclusive"        : true,
+      "stoppable"        : false,
+      "fsmount"          : "/",
+      "capacity"         : 4,
+      "exclude_tasks"    : [],
+      "only_tasks"       : [],
+      "fasttrack"        : 1,
+      "storage"          : "./cofe-client-storage",
+      "exeType"          : "CLIENT",
+      "exeData"          : "",
+      "jobCheckPeriod"   : 2000,
+      "sendDataWaitTime" : 1000,
+      "maxSendTrials"    : 10,
+      "jobRemoveTimeout" : 10000,
+      "maxRestarts"      : 100,
+      "fileCapSize"      : 500000
+    }
+  ],
+
+  "Emailer" : {
+    "type"               : "nodemailer",
+    "emailFrom"          : "CCP4 on-line <ccp4.cofe@gmail.com>",
+    "maintainerEmail"    : "ccp4.cofe@gmail.com",
+    "host"               : "smtp.gmail.com",
+    "port"               : 465,
+    "secure"             : true,
+    "auth"               : {
+      "user" : "ccp4.cofe@gmail.com",
+      "pass" : "ccp4.cofe.2016"
+    }
+  }
+
+}
+
+--------------------------------------------------------------------------  */
+
 
 function readConfiguration ( confFilePath,serverType )  {
 
@@ -265,8 +411,10 @@ function readConfiguration ( confFilePath,serverType )  {
       fe_server[key] = confObj.FrontEnd[key];
     if (!fe_server.externalURL)
       fe_server.externalURL = fe_server.url();
-    fe_server.userDataPath = _make_path ( fe_server.userDataPath );
-    fe_server.projectsPath = _make_path ( fe_server.projectsPath );
+    fe_server.userDataPath = _make_path ( fe_server.userDataPath,null );
+    fe_server.projectsPath = _make_path ( fe_server.projectsPath,null );
+    if (!fe_server.hasOwnProperty('sessionCheckPeriod'))
+      fe_server.sessionCheckPeriod = 2000;  // ms
     if (isWindows())
       listWindowsDrives ( function(){
         if (fe_server.hasOwnProperty('cloud_mounts'))  {
@@ -281,6 +429,14 @@ function readConfiguration ( confFilePath,serverType )  {
           }
         }
       });
+    /*
+    if (!fe_server.hasOwnProperty("description"))
+      fe_server.description = {
+        "id"   : "ccp4",
+        "name" : "CCP4-Harwell",
+        "icon" : "images_com/ccp4-harwell.png"
+      };
+    */
   } else if (serverType=='FE')
     return 'front-end configuration is missing in file ' + confFilePath;
 
@@ -294,10 +450,12 @@ function readConfiguration ( confFilePath,serverType )  {
       nc_server.current_capacity = nc_server.capacity;
       if (!nc_server.externalURL)
         nc_server.externalURL = nc_server.url();
-      nc_server.storage = _make_path ( nc_server.storage );
+      nc_server.storage = _make_path ( nc_server.storage,null );
       nc_servers.push ( nc_server );
       if (nc_server.exeType=='CLIENT')
         client_server = nc_server;
+      if (!nc_server.hasOwnProperty('jobManager'))
+        nc_server.jobManager = nc_server.exeType;
     }
   } else
     return 'number cruncher(s) configuration is missing in file ' + confFilePath;
@@ -510,6 +668,12 @@ function getFETmpDir()  {
   return path.join ( getFEConfig().projectsPath,'tmp' );
 }
 
+function getSetupID()  {
+  if (fe_server.hasOwnProperty('description'))
+    return fe_server.description.id;
+  return '';
+}
+
 function getNCTmpDir()  {
   return path.join ( getServerConfig().storage,'tmp' );
 }
@@ -541,7 +705,8 @@ function isWindows()  {
 
 
 function getExcludedTasks()  {
-// returns list of tasks excluded on all number crunchers
+// Returns list of tasks excluded on all number crunchers.
+// NB: does not take into account servers with 'only_tasks' lists.
 var excluded = [];
 
   for (var i=0;i<nc_servers.length;i++)
@@ -583,10 +748,12 @@ module.exports.isSharedFileSystem = isSharedFileSystem;
 module.exports.isLocalSetup       = isLocalSetup;
 module.exports.getRegMode         = getRegMode;
 module.exports.isLocalFE          = isLocalFE;
+module.exports.getSetupID         = getSetupID;
 module.exports.getFETmpDir        = getFETmpDir;
 module.exports.getNCTmpDir        = getNCTmpDir;
 module.exports.getTmpDir          = getTmpDir;
 module.exports.getTmpFile         = getTmpFile;
+module.exports.CCP4Version        = CCP4Version;
 module.exports.isWindows          = isWindows;
 module.exports.windows_drives     = windows_drives;
 module.exports.getExcludedTasks   = getExcludedTasks;

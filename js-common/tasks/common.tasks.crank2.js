@@ -61,6 +61,7 @@ function TaskCrank2()  {
       max         : 3            // maximum acceptable number of data instances
     },{
       data_type   : {'DataHKL':[]},   // data type(s) and subtype(s)
+      desc        : 'native dataset',
       label       : 'Native dataset', // label for input dialog
       inputId     : 'native',     // input Id for referencing input fields
       customInput : 'native',     // lay custom fields next to the selection
@@ -1095,7 +1096,7 @@ if (!__template)  {
           var new_title = this.name.replace ( /<(?:.|\n)*?>/gm,'' );
           inputPanel.header.uname_inp.setStyle ( 'text','',new_title );
           inputPanel.job_dialog.changeTitle ( new_title );
-          this.updateInputPanel ( inputPanel );
+          //this.updateInputPanel ( inputPanel );
           inputPanel.emitSignal ( cofe_signals.jobDlgSignal,
                                   job_dialog_reason.rename_node );
         }
@@ -1182,8 +1183,8 @@ if (!__template)  {
 
   }
 
-  TaskCrank2.prototype.getCommandLine = function ( exeType,jobDir )  {
-    return [conf.pythonName(), '-m', 'pycofe.tasks.crank2', exeType, jobDir, this.id];
+  TaskCrank2.prototype.getCommandLine = function ( jobManager,jobDir )  {
+    return [conf.pythonName(), '-m', 'pycofe.tasks.crank2', jobManager, jobDir, this.id];
   }
 
   // -------------------------------------------------------------------------

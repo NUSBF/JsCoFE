@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    03.04.19   <--  Date of Last Modification.
+ *    25.06.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -39,9 +39,10 @@ function TaskChangeSpG()  {
   this.fasttrack = true;  // enforces immediate execution
 
   this.input_dtypes = [{    // input data types
-      data_type   : {'DataRevision':['hkl','~xyz','~substructure']}, // data type(s) and subtype(s)
-      label       : 'Structure revision',     // label for input dialog
-      inputId     : 'revision', // input Id for referencing input fields
+      data_type   : {'DataRevision':['hkl','~xyz','~substructure'],
+                     'DataHKL':[]}, // data type(s) and subtype(s)
+      label       : 'ASU definition or<br>Reflection Data', // label for input dialog
+      inputId     : 'idata',    // input Id for referencing input fields
       customInput : 'reindex',  // lay custom fields next to the selection
                                 // dropdown for anomalous data
       version     : 0,          // minimum data version allowed
@@ -66,9 +67,6 @@ TaskChangeSpG.prototype.constructor = TaskChangeSpG;
 
 TaskChangeSpG.prototype.icon = function()  { return 'task_changespg'; }
 
-//TaskChangeSpG.prototype.icon_small = function()  { return 'task_changespg_20x20'; }
-//TaskChangeSpG.prototype.icon_large = function()  { return 'task_changespg';       }
-
 TaskChangeSpG.prototype.currentVersion = function()  {
   var version = 0;
   if (__template)
@@ -76,7 +74,57 @@ TaskChangeSpG.prototype.currentVersion = function()  {
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
 }
 
-if (__template)  {
+
+if (!__template)  {
+  // for client side
+
+  TaskChangeSpG.prototype.inputChanged = function ( inpParamRef,emitterId,emitterValue )  {
+
+    function makeSuffix ( title,suffix )  {
+      return title.split(' (')[0] + ' (' + suffix + ')';
+    }
+
+    if ((emitterId=='idata') && (this.state==job_code.new))  {
+      var inpDataRef = inpParamRef.grid.inpDataRef;
+      var item       = this.getInputItem ( inpDataRef,'idata' ).dropdown[0];
+      var idata      = item.dt[item.getValue()];
+      var name       = this.name;
+      if (idata._type=='DataHKL')  {
+        this.title = makeSuffix ( this.title,'HKL' );
+        this.name  = makeSuffix ( this.name ,'HKL' );
+      } else  {
+        this.title = makeSuffix ( this.title,'ASU' );
+        this.name  = makeSuffix ( this.name ,'ASU' );
+      }
+
+      if (this.name!=name)  {
+        var inputPanel = inpParamRef.grid.parent.parent;
+        inputPanel.header.title.setText ( '<b>' + this.title + '</b>' );
+        var new_title = this.name.replace ( /<(?:.|\n)*?>/gm,'' );
+        inputPanel.header.uname_inp.setStyle ( 'text','',new_title );
+        inputPanel.job_dialog.changeTitle ( new_title );
+        this.updateInputPanel ( inputPanel );
+        inputPanel.emitSignal ( cofe_signals.jobDlgSignal,
+                                job_dialog_reason.rename_node );
+      }
+
+    }
+
+    TaskTemplate.prototype.inputChanged.call ( this,inpParamRef,emitterId,emitterValue );
+
+  }
+
+
+  TaskChangeSpG.prototype.updateInputPanel = function ( inputPanel )  {
+    if (this.state==job_code.new)  {
+      var event = new CustomEvent ( cofe_signals.jobDlgSignal,{
+         'detail' : job_dialog_reason.rename_node
+      });
+      inputPanel.element.dispatchEvent(event);
+    }
+  }
+
+} else  {
   //  for server side
 
   var conf = require('../../js-server/server.configuration');
@@ -86,15 +134,16 @@ if (__template)  {
     // put hkl and structure data in input databox for copying their files in
     // job's 'input' directory
 
-    if ('revision' in this.input_data.data)
-      this.input_data.data['hkl'] = [this.input_data.data['revision'][0].HKL];
+    if (('idata' in this.input_data.data) &&
+        (this.input_data.data['idata'][0]._type=='DataRevision') )
+      this.input_data.data['hkl'] = [this.input_data.data['idata'][0].HKL];
 
     __template.TaskTemplate.prototype.makeInputData.call ( this,login,jobDir );
 
   }
 
-  TaskChangeSpG.prototype.getCommandLine = function ( exeType,jobDir )  {
-    return [conf.pythonName(), '-m', 'pycofe.tasks.changespg', exeType, jobDir, this.id];
+  TaskChangeSpG.prototype.getCommandLine = function ( jobManager,jobDir )  {
+    return [conf.pythonName(), '-m', 'pycofe.tasks.changespg', jobManager, jobDir, this.id];
   }
 
   // -------------------------------------------------------------------------

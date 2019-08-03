@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    27.12.18   <--  Date of Last Modification.
+ *    30.06.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Common Client/Server Modules -- Base Data Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2018
+ *  (C) E. Krissinel, A. Lebedev 2016-2019
  *
  *  =================================================================
  *
@@ -58,9 +58,6 @@ function DataTemplate()  {
 DataTemplate.prototype.title = function()  { return 'Template Data'; }
 DataTemplate.prototype.icon  = function()  { return 'data';          }
 
-//DataTemplate.prototype.icon_small = function()  { return 'data_20x20'; }
-//DataTemplate.prototype.icon_large = function()  { return 'data';       }
-
 DataTemplate.prototype.currentVersion = function()  { return 2; } // from 25.08.2018
 
 // export such that it could be used in both node and a browser
@@ -80,6 +77,15 @@ if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
 
   DataTemplate.prototype.hasSubtype = function ( stype ) {
     return (this.subtype.indexOf(stype)>=0);
+  }
+
+  DataTemplate.prototype.setSubtype = function ( stype ) {
+    this.subtype = [stype];
+  }
+
+  DataTemplate.prototype.addSubtype = function ( stype ) {
+    if (this.subtype.indexOf(stype)<0)
+      this.subtype.push ( stype );
   }
 
   // cast() should extend (deep-copy) all data classes referenced in
@@ -151,6 +157,88 @@ if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
   // when there is no sufficient data in project to run the task.
   DataTemplate.prototype.dataDialogHints = function ( subtype_list ) {
     return [];  // No help hints by default
+  }
+
+  // subtypeDescription() should return detail description of given subtype
+  // in context of specific data object. This description is used in
+  // TaskDataDialog. Empty return will suppress description output in
+  // task data dialog.
+  DataTemplate.prototype.subtypeDescription = function ( subtype )  {
+    switch (subtype)  {
+      case 'anomalous'    : return 'anomalous signal';
+      case 'protein'      : return 'protein sequence(s)';
+      case 'unknown'      : return 'unknown';
+      case 'rna'          : return 'RNA sequence(s)';
+      case 'dna'          : return 'DNA sequence(s)';
+      case 'xyz'          : return 'macromolecular model(s)';
+      case 'substructure' : return 'heavy atom substructure';
+      case 'phases'       : return 'phases';
+      default : ;
+    }
+    return '';
+  }
+
+  // See use of this function in cofe.dialog_taskdata.js
+  DataTemplate.prototype.ddesc_bridge_word = function()  {
+    return ', containing ';
+  }
+
+  // getSubtypeDescription() should return detail description of given subtype
+  // in context of specific data object. This description is used in
+  // TaskDataDialog. Empty return will suppress description output in
+  // task data dialog.
+  DataTemplate.prototype.getSubtypeDescription = function ( stype )  {
+  var with_items    = [];
+  var without_items = [];
+
+    this.get_item = function ( subtype )  {
+      if (['!','~'].indexOf(subtype[0])>=0)  {
+        let s = this.subtypeDescription ( subtype.substring(1) );
+        if (s)  {
+          if (subtype[0]=='!')  with_items   .push ( s );
+                          else  without_items.push ( s );
+        }
+      } else  {
+        let s = this.subtypeDescription ( subtype );
+        if (s)
+          with_items.push ( ' ' + s );
+      }
+    }
+
+    if (stype.constructor==Array)  {
+      for (var j=0;j<stype.length;j++)
+        this.get_item ( stype[j] );
+    } else
+      this.get_item ( stype );
+
+    var sdesc = '';
+    var n     = with_items.length + without_items.length;
+    if (n==1)  {
+      if (with_items.length==1)  sdesc = with_items[0];
+                           else  sdesc = 'no ' + without_items[0];
+    } else if (n>1)  {
+      sdesc = 'at least one of<ul style="margin:0;">';
+      for (var i=0;i<with_items.length;i++)
+        sdesc += '<li>' + with_items[i].trim() + '</li>';
+      for (var i=0;i<without_items.length;i++)
+        sdesc += '<li>no ' + without_items[i] + '</li>';
+      sdesc += '</ul>';
+    }
+
+    return sdesc;
+
+    /*
+    var subtype = stype;
+    var mod     = '';
+    if (stype[0]=='!')  {
+      mod     = '!';
+      subtype = stype.substring(1);
+    } else if (stype[0]=='~')  {
+      mod     = '~';
+      subtype = stype.substring(1);
+    }
+    return this.subtypeDescription ( subtype,mod );
+    */
   }
 
   /*

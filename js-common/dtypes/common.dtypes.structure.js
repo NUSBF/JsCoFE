@@ -77,6 +77,8 @@ function DataStructure()  {
   this.phaseBlur      = 1.0;   // used in arpwarp
 
   this.ligands        = [];    // list of ligands fitted
+  this.refmacLinks    = [];    // list of LINKR records
+  this.links          = [];    // list of LINK records
 
 }
 
@@ -91,9 +93,6 @@ DataStructure.prototype.constructor = DataStructure;
 DataStructure.prototype.title = function()  { return 'Structure Data'; }
 DataStructure.prototype.icon  = function()  { return 'data';           }
 
-//DataStructure.prototype.icon_small = function()  { return 'data_20x20'; }
-//DataStructure.prototype.icon_large = function()  { return 'data';       }
-
 // when data class version is changed here, change it also in python
 // constructors
 DataStructure.prototype.currentVersion = function()  {
@@ -107,6 +106,14 @@ DataStructure.prototype.currentVersion = function()  {
 // export such that it could be used in both node and a browser
 if (!__template)  {
   // for client side
+
+  DataStructure.prototype.getCellParameters = function() {
+    return DataXYZ.prototype.getCellParameters.call ( this );
+  }
+
+  DataStructure.prototype.getSpaceGroup = function() {
+    return DataXYZ.prototype.getSpaceGroup.call ( this );
+  }
 
   DataStructure.prototype.makeDataSummaryPage = function ( task )  {
 
@@ -126,6 +133,12 @@ if (!__template)  {
       dsp.makeRow ( 'Restraints file',this.files[file_key.lib],'Name of file with crystallogtaphic restraints' );
     if (this.ligands.length>0)
       dsp.makeRow ( 'Ligands fitted',this.ligands.join(', '),'Codes for fitted ligands' );
+    if (this.refmacLinks.length>0)
+      dsp.makeRow ( 'Links with description',this.refmacLinks.join(', '),
+        'Formulas (Residue1.Atom1-Atom2.Residue2) for covalent links with descripton (LINKR)' );
+    if (this.links.length>0)
+      dsp.makeRow ( 'Links without description',this.links.join(', '),
+        'Formulas (Residue1.Atom1-Atom2.Residue2) for covalent links without descripton (LINK)' );
 
     dsp.addViewHKLButton ( task );
 
@@ -232,6 +245,10 @@ if (!__template)  {
         customGrid.setLabel ( ' ',++row,0,1,2 ).setHeight_px ( 8 );
 
     } else if (startsWith(dropdown.layCustom,'chain-sel'))  {
+
+      DataXYZ.prototype.layCustomDropdownInput.call ( this,dropdown );
+
+    } else if (startsWith(dropdown.layCustom,'cell-info'))  {
 
       DataXYZ.prototype.layCustomDropdownInput.call ( this,dropdown );
 

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    28.03.19   <--  Date of Last Modification.
+ *    15.06.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -65,6 +65,7 @@ function ForgottenLoginPage ( sceneId )  {
   var row = 0;
   panel.setWidget               ( title_lbl, row,0,1,2 );
   panel.setHorizontalAlignment  ( row++,0,'center'  );
+  panel.setWidget               ( this.makeSetupNamePanel(), row++,0,1,2 );
   panel.setCellSize             ( '','20pt',row++,0 );
   panel.setWidget               ( email_lbl,row  ,0,1,1 );
   panel.setVerticalAlignment    ( row  ,0,'middle' );

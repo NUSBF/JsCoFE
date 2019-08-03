@@ -288,6 +288,15 @@ StorageTree.prototype.customIcon = function() {
   return ci;
 }
 
+/*
+},
+"cloud_mounts"     : {
+  "My Computer"    : "/",
+  "Home"           : ["$HOME","$USERPROFILE"],
+  "CCP4 examples"  : "$CCP4/share/ccp4i2/demo_data",
+  "Demo projects"  : "./demo-projects"
+*/
+
 StorageTree.prototype.readStorageData = function ( page_title,
                                                    onLoaded_func,
                                                    onRightClick_func,
@@ -304,89 +313,94 @@ StorageTree.prototype.readStorageData = function ( page_title,
   (function(tree){
     serverRequest ( fe_reqtype.getFacilityData,meta,page_title,function(data){
 
-      tree.dirdesc_lbl.setText ( '' );
-
-      if ('message' in data)
+      if ('message' in data)  {
         MessageDataReadError ( page_title,data['message'] );
-
-      tree.storageList = jQuery.extend ( true, new StorageList(),data );
-
-      if ((tree.storageList.path.length<=0) &&
-          (tree.storageList.dirs.length<=0) &&
-          (tree.storageList.files.length<=0))  {
-
         tree.storageList = null;
         onLoaded_func();
-
       } else  {
 
-        var rootLabel = 'Cloud File Storage';
-        if (tree.tree_root)
-          rootLabel = tree.tree_root;
-        tree.root_label.setText ( '<u><i><b>' + rootLabel + '</b></i></u>' );
-        tree.root.element.style.paddingTop  = '4px';
-        tree.root.element.style.paddingLeft = '40px';
+        tree.dirdesc_lbl.setText ( '' );
 
-        for (var i=0;i<tree.storageList.dirs.length;i++)  {
-          var sdir = tree.storageList.dirs[i];
-          var name = sdir.name;
-          if (name=='..')  {
-            name += ' (&#8593; <i>upper directory</i>)';
-            if (sdir.hasOwnProperty('fullDesc'))
-              tree.dirdesc_lbl.setText ( sdir.fullDesc + '<hr/>&nbsp;<br>' );
+        tree.storageList = jQuery.extend ( true, new StorageList(),data );
+
+        if ((tree.storageList.path.length<=0) &&
+            (tree.storageList.dirs.length<=0) &&
+            (tree.storageList.files.length<=0))  {
+
+          tree.storageList.size = -1;
+          onLoaded_func();
+
+        } else  {
+
+          var rootLabel = 'Cloud File Storage';
+          if (tree.tree_root)
+            rootLabel = tree.tree_root;
+          tree.root_label.setText ( '<u><i><b>' + rootLabel + '</b></i></u>' );
+          tree.root.element.style.paddingTop  = '4px';
+          tree.root.element.style.paddingLeft = '40px';
+
+          for (var i=0;i<tree.storageList.dirs.length;i++)  {
+            var sdir = tree.storageList.dirs[i];
+            var name = sdir.name;
+            if (name=='..')  {
+              name += ' (&#8593; <i>upper directory</i>)';
+              if (sdir.hasOwnProperty('fullDesc'))
+                tree.dirdesc_lbl.setText ( sdir.fullDesc + '<hr/>&nbsp;<br>' );
+            }
+            var icon   = 'folder';
+            var nlower = name.toLowerCase();
+            if (nlower.indexOf('my computer')>=0) icon = 'folder_mycomputer';
+            else if (nlower.indexOf('home')>=0)   icon = 'folder_home';
+            else if (nlower.indexOf('ccp4')>=0)   icon = 'folder_ccp4';
+            else if (nlower.indexOf('demo')>=0)   icon = 'folder_ccp4';
+            var dnode = tree.addRootNode ( name,image_path(icon),tree.customIcon() );
+            if ((name!='..') && sdir.hasOwnProperty('shortDesc'))
+              dnode.setTooltip ( sdir.shortDesc );
+            tree.item_map[dnode.id] = sdir;
           }
-          var icon   = 'folder';
-          var nlower = name.toLowerCase();
-          if (nlower.indexOf('my computer')>=0) icon = 'folder_mycomputer';
-          else if (nlower.indexOf('home')>=0)   icon = 'folder_home';
-          else if (nlower.indexOf('ccp4')>=0)   icon = 'folder_ccp4';
-          else if (nlower.indexOf('demo')>=0)   icon = 'folder_ccp4';
-          var dnode = tree.addRootNode ( name,image_path(icon),tree.customIcon() );
-          if ((name!='..') && sdir.hasOwnProperty('shortDesc'))
-            dnode.setTooltip ( sdir.shortDesc );
-          tree.item_map[dnode.id] = sdir;
+
+          for (var i=0;i<tree.storageList.files.length;i++)  {
+            var sfile = tree.storageList.files[i];
+            var name  = sfile.name;
+            var base  = sfile.name.split('.');
+            var ext   = base.pop().toLowerCase();
+            base = base.join('.').toLowerCase();
+            var icon  = image_path('file_dummy');
+            var show  = (tree.image_key<2);
+            if (ext=='mtz')    icon = image_path('file_mtz');
+            else if ('h5' in sfile)   {
+              if (sfile.h5>0)  icon = image_path('file_hdf');
+                         else  name = '(' + Array(name.length).join('....') + ')';
+              show = false;
+            }
+            else if (ext=='h5')         icon = image_path('file_hdf');
+            else if (ext=='ccp4_demo')  icon = image_path('file_ccp4demo');
+            else if (['pdb','ent','mmcif'].indexOf(ext)>=0)
+                                        icon = image_path('file_pdb');
+            else if (['jpg','jpeg','png','gif'].indexOf(ext)>=0)
+                                        icon = image_path('file_image');
+            else if (['html','txt','pdf'].indexOf(ext)>=0)
+                                        icon = image_path('file_doc');
+            else if (ext=='cif')  {  // use wild heuristics
+              if (endsWith(base,'-sf'))
+                    icon = image_path('file_mtz');
+              else  icon = image_path('file_pdb');
+            } else if (['seq','fasta','pir'].indexOf(ext)>=0)
+                                  icon = image_path('file_seq' );
+            else if ('image' in sfile)  {
+              if (sfile.image>0)  icon = image_path('file_xray');
+                            else  name = '(' + Array(name.length).join('....') + ')';
+              show = (tree.image_key>0);
+            }
+            if (show)  {
+              var fnode = tree.addRootNode ( name,icon,tree.customIcon() );
+              tree.item_map[fnode.id] = sfile;
+            }
+          }
+
+          tree.createTree ( onLoaded_func,onRightClick_func,onDblClick_func,onSelect_func );
+
         }
-
-        for (var i=0;i<tree.storageList.files.length;i++)  {
-          var sfile = tree.storageList.files[i];
-          var name  = sfile.name;
-          var base  = sfile.name.split('.');
-          var ext   = base.pop().toLowerCase();
-          base = base.join('.').toLowerCase();
-          var icon  = image_path('file_dummy');
-          var show  = (tree.image_key<2);
-          if (ext=='mtz')    icon = image_path('file_mtz');
-          else if ('h5' in sfile)   {
-            if (sfile.h5>0)  icon = image_path('file_hdf');
-                       else  name = '(' + Array(name.length).join('....') + ')';
-            show = false;
-          }
-          else if (ext=='h5')         icon = image_path('file_hdf');
-          else if (ext=='ccp4_demo')  icon = image_path('file_ccp4demo');
-          else if (['pdb','ent','mmcif'].indexOf(ext)>=0)
-                                      icon = image_path('file_pdb');
-          else if (['jpg','jpeg','png','gif'].indexOf(ext)>=0)
-                                      icon = image_path('file_image');
-          else if (['html','txt','pdf'].indexOf(ext)>=0)
-                                      icon = image_path('file_doc');
-          else if (ext=='cif')  {  // use wild heuristics
-            if (endsWith(base,'-sf'))
-                  icon = image_path('file_mtz');
-            else  icon = image_path('file_pdb');
-          } else if (['seq','fasta','pir'].indexOf(ext)>=0)
-                                icon = image_path('file_seq' );
-          else if ('image' in sfile)  {
-            if (sfile.image>0)  icon = image_path('file_xray');
-                          else  name = '(' + Array(name.length).join('....') + ')';
-            show = (tree.image_key>0);
-          }
-          if (show)  {
-            var fnode = tree.addRootNode ( name,icon,tree.customIcon() );
-            tree.item_map[fnode.id] = sfile;
-          }
-        }
-
-        tree.createTree ( onLoaded_func,onRightClick_func,onDblClick_func,onSelect_func );
 
       }
 

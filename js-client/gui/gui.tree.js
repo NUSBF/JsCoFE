@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    01.05.19   <--  Date of Last Modification.
+ *    15.05.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -652,7 +652,8 @@ Tree.prototype.forceSingleSelection = function()  {
 
 
 Tree.prototype.setText = function ( node,text )  {
-  node.text = text;
+  node.text  = text;
+  node.text0 = text;
   if (this.created)
     $(this.root.element).jstree(true).rename_node('#'+node.id,text);
 }
@@ -689,11 +690,15 @@ Tree.prototype.setStyle = function ( treeNode,style_str,propagate_int )  {
 
   if (this.created && treeNode)  {
 
-    if (style_str.length>0)
-      $(this.root.element).jstree(true).rename_node('#' + treeNode.id,
-         '<span style="' + style_str + '">' + treeNode.text + '</span>');
-    else  // reset style
+    if (style_str.length>0)  {
+      if (!('text0' in treeNode))
+        treeNode.text0 = treeNode.text;
+      treeNode.text = '<span style="' + style_str + '">' + treeNode.text0 + '</span>';
       $(this.root.element).jstree(true).rename_node('#'+treeNode.id,treeNode.text );
+    } else if ('text0' in treeNode)  {  // empty string removes any custom style
+      treeNode.text = treeNode.text0;
+      $(this.root.element).jstree(true).rename_node('#'+treeNode.id,treeNode.text );
+    }
 
     if (propagate_int<0)
       this.setStyle ( treeNode.parentId,style_str,propagate_int );
@@ -1143,6 +1148,7 @@ Tree.prototype.moveSelectedNodeUp = function()  {
 var snode = this.getSelectedNode();
   if (snode)
     this.moveNodeUp ( snode );
+  return snode;
 }
 
 
