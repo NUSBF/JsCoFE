@@ -1,7 +1,7 @@
 /*
  *  ========================================================================
  *
- *    16.03.19   <--  Date of Last Modification.
+ *    04.07.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  ------------------------------------------------------------------------
  *
@@ -12,7 +12,7 @@
  *  **** Content :  Knowledge routines and data
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2019
+ *  (C) E. Krissinel, A. Lebedev 2018-2019
  *
  *  ========================================================================
  *
@@ -47,12 +47,12 @@ var _taskIndex = {
   // suggest Aimless, Simbad and ASUDef after Import or Model Preparation in
   // the specified order; do not suggest them after themselves (user should
   // branch/clone instead)
-  'F' : { type: 'TaskAimless'        , after: ['B','C','D','E','h','m'] },
-  'G' : { type: 'TaskSimbad'         , after: ['B','C','D','E','F','h','m'] },
-  'H' : { type: 'TaskASUDef'         , after: ['B','C','D','E','F','h','m'] },
+  'F' : { type: 'TaskAimless'        , after: ['B','C','D','E','h','m', 't', 'u'] },
+  'G' : { type: 'TaskSimbad'         , after: ['B','C','D','E','F','h','m', 't', 'u'] },
+  'H' : { type: 'TaskASUDef'         , after: ['B','C','D','E','F','h','m', 't', 'u'] },
 
   // suggest Xyz2Revision after Import, Models and Ligands
-  'I' : { type: 'TaskXyz2Revision'   , after: ['B','C','D','E','F','h','m'] },
+  'I' : { type: 'TaskXyz2Revision'   , after: ['B','C','D','E','F','h','m', 't', 'u'] },
 
   // suggest Morda, MrBump, and Balbes after ASUDef; do not suggest them after
   // themselves (user should branch/clone instead)
@@ -108,11 +108,12 @@ var _taskIndex = {
   // suggest PISA after Refmac and Lorestr
   'b' : { type: 'TaskPISA'           , after: ['V','W','X'] },
 
-  // suggest ChangeSpG after ASUDef only
-  'c' : { type: 'TaskChangeSpG'      , after: ['H'] },
+  // suggest ChangeSpG after dataprocessing tasks
+  'c' : { type: 'TaskChangeSpG'      , after: ['h','t','u'] },
 
   // do not suggest ASUMod
-  'd' : { type: 'TaskASUMod'         , after: [] },
+  //'d' : { type: 'TaskASUMod'         , after: [] },
+  'd' : { type: 'TaskEditRevision'   , after: [] },
   'e' : { type: 'TaskASUDefStruct'   , after: ['A'] },
 
   // suggest SeqAlign after Import
@@ -151,11 +152,19 @@ var _taskIndex = {
   // do not suggest SymMatch
   'q' : { type: 'TaskSymMatch'       , after: [] },
 
-  // suggest Buccaneer after Simbad, MR and EP; do not suggest it after itself
-  'r' : { type: 'TaskCCP4Build'      , after: ['J','K','L','M','N','O','S'] }
+  // suggest CCP4Build after Simbad, MR and EP; do not suggest it after itself
+  'r' : { type: 'TaskCCP4Build'      , after: ['J','K','L','M','N','O','S'] },
+
+  // suggest LsqKab after Buccaneer, Refmac and Lorestr
+  's' : { type: 'TaskLsqKab'         , after: ['U','V','W','r'] },
+
+  // suggest iMosflm after root
+  't' : { type: 'TaskDUI'            , after: ['0'] },
+
+  // suggest iMosflm after root
+  'u' : { type: 'TaskIMosflm'        , after: ['0'] }
 
 };
-
 
 
 function getTasksFromTaskIndex ( ckey )  {

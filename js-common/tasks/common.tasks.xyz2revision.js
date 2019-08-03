@@ -86,9 +86,6 @@ TaskXyz2Revision.prototype.constructor = TaskXyz2Revision;
 
 TaskXyz2Revision.prototype.icon = function()  { return 'task_formstructure'; }
 
-//TaskXyz2Revision.prototype.icon_small = function()  { return 'task_formstructure_20x20'; }
-//TaskXyz2Revision.prototype.icon_large = function()  { return 'task_formstructure';       }
-
 TaskXyz2Revision.prototype.currentVersion = function()  {
   var version = 0;
   if (__template)
@@ -190,8 +187,8 @@ if (!__template)  {
 
   var conf = require('../../js-server/server.configuration');
 
-  TaskXyz2Revision.prototype.getCommandLine = function ( exeType,jobDir )  {
-    return [conf.pythonName(), '-m', 'pycofe.tasks.xyz2revision', exeType, jobDir, this.id];
+  TaskXyz2Revision.prototype.getCommandLine = function ( jobManager,jobDir )  {
+    return [conf.pythonName(), '-m', 'pycofe.tasks.xyz2revision', jobManager, jobDir, this.id];
   }
 
   // -------------------------------------------------------------------------

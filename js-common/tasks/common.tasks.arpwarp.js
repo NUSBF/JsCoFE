@@ -430,8 +430,8 @@ if (__template)  {
 
   }
 
-  TaskArpWarp.prototype.getCommandLine = function ( exeType,jobDir )  {
-    return [conf.pythonName(), '-m', 'pycofe.tasks.arpwarp', exeType, jobDir, this.id];
+  TaskArpWarp.prototype.getCommandLine = function ( jobManager,jobDir )  {
+    return [conf.pythonName(), '-m', 'pycofe.tasks.arpwarp', jobManager, jobDir, this.id];
   }
 
   // -------------------------------------------------------------------------

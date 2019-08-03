@@ -10,10 +10,10 @@
 #  ENSEMBLEPREPXYZ EXECUTABLE MODULE
 #
 #  Command-line:
-#     ccp4-python -m pycofe.tasks.ensembleprepxyz exeType jobDir jobId
+#     ccp4-python -m pycofe.tasks.ensembleprepxyz jobManager jobDir jobId
 #
 #  where:
-#    exeType  is either SHELL or SGE
+#    jobManager  is either SHELL or SGE
 #    jobDir   is path to job directory, having:
 #      jobDir/output  : directory receiving output files with metadata of
 #                       all successful imports
@@ -151,7 +151,8 @@ class EnsemblePrepXYZ(basic.TaskDriver):
         else:
             modSel = self.getParameter ( sec1.MODIFICATION_NOSEQ_SEL )
 
-        # make a file with input script for mrbump
+        #  Use MrBump for ensemble preparation
+        #  Make a file with input script for mrbump
         self.open_stdin()
         self.write_stdin (
             "JOBID "  + self.outdir_name() +\

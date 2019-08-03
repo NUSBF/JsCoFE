@@ -3,23 +3,23 @@
 #
 # ============================================================================
 #
-#    22.12.18   <--  Date of Last Modification.
+#    30.06.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  SHELXE-MR EXECUTABLE MODULE
 #
 #  Command-line:
-#     ccp4-python -m pycofe.tasks.shelxemr.py exeType jobDir jobId
+#     ccp4-python -m pycofe.tasks.shelxemr.py jobManager jobDir jobId
 #
 #  where:
-#    exeType  is either SHELL or SGE
+#    jobManager  is either SHELL or SGE
 #    jobDir   is path to job directory, having:
 #      jobDir/output  : directory receiving output files with metadata of
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2018
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2019
 #
 # ============================================================================
 #
@@ -54,6 +54,7 @@ class ShelxEMR(basic.TaskDriver):
     def shelxe_wrk_pdo   (self):  return "shelxe_wrk.pdo"
     def shelxe_wrk_phs   (self):  return "shelxe_wrk.phs"
     def shelxe_tmp_mtz   (self):  return "shelxe_tmp.mtz"
+    def shelxe_tmp_mtz1  (self):  return "shelxe_tmp_1.mtz"
     def shelxe_pdb       (self):  return "shelxe.pdb"
     def shelxe_mtz       (self):  return "shelxe.mtz"
 
@@ -70,7 +71,7 @@ class ShelxEMR(basic.TaskDriver):
         # Prepare shelxe input
         # fetch input data
         revision = self.makeClass ( self.input_data.data.revision[0] )
-        istruct  = self.makeClass ( self.input_data.data.istruct[0] )
+        istruct  = self.makeClass ( self.input_data.data.istruct [0] )
 
         # Prepare set of input files for shelxe
         # copy files according to Shelx notations
@@ -100,7 +101,6 @@ class ShelxEMR(basic.TaskDriver):
         # run mtz-to-hkl converter
         self.runApp ( "mtz2various",cmd,logType="Service" )
 
-
         # Prepare command line for shelxe
 
         sec1 = self.task.parameters.sec1.contains
@@ -124,7 +124,86 @@ class ShelxEMR(basic.TaskDriver):
 
         self.runApp ( "shelxe",cmd,logType="Main" )
 
+        # - every cycle
+        #CC for partial structure against native data =   7.29 %
+
+        # - in the end
+        # Estimated mean FOM = 0.630   Pseudo-free CC = 63.71 %
+        # Best trace (cycle   1 with CC  8.39%) was saved as shelxe_wrk.pdb
+
         if os.path.isfile(self.shelxe_wrk_phs()):
+
+            # fetch data for displayig in Job Tree and report page
+
+            cycleNo   = []
+            CC        = []
+            nResBuilt = []
+            meanFOM   = 0.0
+            pseudoCC  = 0.0
+            bestCC    = 0.0
+
+            self.file_stdout.close()
+            cNo      = 1.0
+            with open(self.file_stdout_path(),"r") as f:
+                for line in f:
+                    if "CC for partial structure against native data =" in line:
+                        CC     .append ( float(line.split()[8]) )
+                        cycleNo.append ( cNo )
+                        cNo += 1.0
+                    elif "Estimated mean FOM = " in line:
+                        lst = line.split()
+                        meanFOM  = float(lst[4])
+                        pseudoCC = float(lst[8])
+                    elif "residues left after pruning, divided into chains as follows:" in line:
+                        nResBuilt.append ( float(line.split()[0]) )
+                    elif "Best trace (cycle" in line:
+                        bestCC   = float(line.split()[6][:-2])
+
+            self.generic_parser_summary["shelxemr"] = {
+                "meanFOM"  : meanFOM,
+                "pseudoCC" : pseudoCC,
+                "bestCC"   : bestCC
+            }
+
+            tableId = self.getWidgetId("table")
+            self.putTable     ( tableId,"",self.report_page_id(),self.rvrow,mode=0 )
+            self.putTableLine ( tableId,"Best CC","Best Correlation Coefficient achieved",
+                                str(bestCC) + "%",0 )
+            self.putTableLine ( tableId,"Mean FOM"  ,"Estimated mean FOM",str(meanFOM) ,1 )
+            self.putTableLine ( tableId,"Pseudo-free CC","Pseudo-free CC",str(pseudoCC),2 )
+
+
+            #self.putGraphWidget ( self.getWidgetId("graph"),cycleNo,[CC],
+            #     "Cycle No","Correlation Coefficient", width=700,height=400 )
+            #self.putMessage ( "&nbsp;" )
+
+            self.putLogGraphWidget ( self.getWidgetId("graph"),[
+                { "name"  : "Build statistics",
+                  "plots" : [
+                    {
+                      "name"   : "Correlation Coefficient",
+                      "xtitle" : "Cycle No.",
+                      "ytitle" : "Correlation Coefficient (%%)",
+                      "x"      : {  "name":"Cycle No.", "values": cycleNo },
+                      "y"      : [{ "name":"CC", "values": CC }]
+                    },{
+                      "name"   : "Residues Built",
+                      "xtitle" : "Cycle No.",
+                      "ytitle" : "No. of Resdues Built",
+                      "x"      : {  "name":"Cycle No.", "values": cycleNo },
+                      "y"      : [{ "name":"Nres"     , "values": nResBuilt }]
+                    }
+                  ]
+                }
+            ])
+            self.putMessage ( "&nbsp;" )
+
+            # continue writing to stdout
+            self.file_stdout = open ( self.file_stdout_path (),'a' )
+
+            #self.stdoutln ( " ****** " + str(cycleNo) )
+            #self.stdoutln ( " ****** " + str(CC) )
+            #self.stdoutln ( " ****** " + str(nResBuilt) )
 
             # Convert output to an mtz file
             cryst = istruct.xyzmeta.cryst
@@ -151,12 +230,32 @@ class ShelxEMR(basic.TaskDriver):
                   ]
             self.runApp ( "f2mtz",cmd,logType="Service" )
 
+            labels = istruct.getAllLabels()
+            llist  = ""
+            n      = 1
+            for l in labels:
+                if not "ShelxE" in l:
+                    llist += " E" + str(n) + "=" + l
+                    n     += 1
+            self.open_stdin  ()
+            self.write_stdin ([
+                "LABIN FILE 1 ALLIN",
+                "LABIN FILE 2 " + llist,
+                "END"
+            ])
+            self.close_stdin()
+            cmd = [ "hklin1",self.shelxe_tmp_mtz(),
+                    "hklin2",self.shelxe_wrk_mtz(),
+                    "hklout",self.shelxe_tmp_mtz1()
+                  ]
+            self.runApp ( "cad",cmd,logType="Service" )
+
             # Calculate map coefficients
             self.open_stdin  ()
             self.write_stdin (
                 "mode batch\n" +\
-                "read " + self.shelxe_wrk_mtz() + " mtz\n" +\
-                "read " + self.shelxe_tmp_mtz() + " mtz\n" +\
+                #"read " + self.shelxe_wrk_mtz() + " mtz\n" +\
+                "read " + self.shelxe_tmp_mtz1() + " mtz\n" +\
                 "CALC F COL FWT  = COL ShelxE.F COL ShelxE.FOM *\n" +\
                 "CALC P COL PHWT = COL ShelxE.PHI 0 +\n" +\
                 "write " + self.shelxe_mtz() + " mtz\n" +\
@@ -177,7 +276,8 @@ class ShelxEMR(basic.TaskDriver):
                         self.outputFName,leadKey=2 )
             if structure:
                 structure.copyAssociations ( istruct )
-                structure.setShelxELabels  ()
+                structure.copyLabels       ( istruct )
+                structure.setShelxELabels  ( istruct )
                 structure.copySubtype      ( istruct )
                 self.putStructureWidget    ( "structure_btn",
                                              "Structure and electron density",
@@ -188,7 +288,6 @@ class ShelxEMR(basic.TaskDriver):
 
         else:
             self.putTitle ( "No Solution Found" )
-
 
         # close execution logs and quit
         self.success()

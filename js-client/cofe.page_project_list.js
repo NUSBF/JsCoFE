@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    24.04.19   <--  Date of Last Modification.
+ *    18.07.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -45,6 +45,7 @@ function ProjectListPage ( sceneId )  {
   var tablesort_tbl = null;               // project list table
   var open_btn      = null;
   var add_btn       = null;
+  var rename_btn    = null;
   var del_btn       = null;
   var export_btn    = null;
   var import_btn    = null;
@@ -85,6 +86,145 @@ function ProjectListPage ( sceneId )  {
     makeProjectPage ( sceneId );
   }
 
+  var addProject = function() {
+    var inputBox  = new InputBox  ( 'Add New Project' );
+    var ibx_grid  = new Grid      ( '' );
+    var name_inp  = new InputText ( '' );
+    var title_inp = new InputText ( '' );
+    name_inp. setStyle ( 'text',"^[A-Za-z0-9\\-\\._]+$",'project_001',
+                         'Project ID should contain only latin ' +
+                         'letters, numbers, undescores, dashes ' +
+                         'and dots, and must start with a letter' );
+    title_inp.setStyle ( 'text','','Example project',
+                         'Project Name is used to give a short description ' +
+                         'to aid identification of the project' );
+    name_inp .setFontItalic        ( true    );
+    title_inp.setFontItalic        ( true    );
+    name_inp .setWidth             ( '400pt' );
+    title_inp.setWidth             ( '400pt' );
+    ibx_grid .setWidget            ( new Label('Project ID:'  ),0,0,1,1 );
+    ibx_grid .setWidget            ( new Label('Project Name:'),1,0,1,1 );
+    ibx_grid .setNoWrap            ( 0,0 );
+    ibx_grid .setNoWrap            ( 1,0 );
+    ibx_grid .setWidget            ( name_inp ,0,1,1,1 );
+    ibx_grid .setWidget            ( title_inp,1,1,1,1 );
+    inputBox .addWidget            ( ibx_grid     );
+    ibx_grid .setVerticalAlignment ( 0,0,'middle' );
+    ibx_grid .setVerticalAlignment ( 1,0,'middle' );
+
+    inputBox.launch ( 'Add',function(){
+      var msg = '';
+
+      if (name_inp.getValue().length<=0)
+        msg += '<b>Project ID</b> must be provided.';
+      else if (name_inp.element.validity.patternMismatch)
+        msg += 'Project ID should contain only latin letters, numbers,\n ' +
+               'undescores, dashes and dots, and must start with a letter.';
+
+      if (title_inp.getValue().length<=0)
+        msg += '<b>Project Name</b> must be provided.<p>';
+
+      if (msg)  {
+        new MessageBox ( 'Incomplete data',
+                 'New project cannot be created due to the following:<p>' +
+                  msg + '<p>Please provide all needful data and try again' );
+        return false;
+      }
+
+      if (projectList.addProject(name_inp.getValue(),
+                                 title_inp.getValue(),getDateString()))  {
+        projectList.current = name_inp.getValue();
+        makeProjectListTable   ();
+        saveProjectList        ( null );
+        welcome_lbl.setVisible ( (projectList.projects.length<1) );
+        return true;  // close dialog
+      } else  {
+        new MessageBox ( 'Duplicate Project ID',
+            'The Project ID chosen (<b>'+name_inp.getValue()+'</b>)<br>' +
+            'is already in the list. Please choose a different Project ID.' );
+        return false;  // keep dialog
+      }
+
+    });
+  }
+
+  // function to rename selected Project
+  var renameProject = function() {
+    var inputBox  = new InputBox ( 'Rename Project' );
+    var prjName   = tablesort_tbl.selectedRow.child[0].text;
+    var ibx_grid  = new Grid      ( '' );
+    var title_inp = new InputText ( tablesort_tbl.selectedRow.child[1].text );
+    title_inp.setStyle   ( 'text','','Example project',
+                           'Project title is used to give a short description ' +
+                           'to aid identification' );
+    title_inp.setFontItalic        ( true    );
+    title_inp.setWidth             ( '400pt' );
+    ibx_grid .setLabel             ( 'Project ID:'  ,0,0,1,1 );
+    ibx_grid .setLabel             ( prjName        ,0,1,1,1 ).setFontItalic(true);
+    ibx_grid .setLabel             ( 'Project Name:',1,0,1,1 );
+    ibx_grid .setNoWrap            ( 0,0 );
+    ibx_grid .setNoWrap            ( 1,0 );
+    ibx_grid .setWidget            ( title_inp,1,1,1,1 );
+    inputBox .addWidget            ( ibx_grid     );
+    ibx_grid .setVerticalAlignment ( 0,0,'middle' );
+    ibx_grid .setVerticalAlignment ( 1,0,'middle' );
+
+    inputBox.launch ( 'Rename',function(){
+      if (title_inp.getValue().length<=0)  {
+        new MessageBox ( 'No Project Name',
+                 '<b>Project Name is not given</b>.<p>' +
+                 'Project cannot be renamed with empty name.' );
+        return false;
+      }
+      var pDesc = projectList.renameProject ( prjName,title_inp.getValue(),getDateString() );
+      if (pDesc)  {
+        projectList.current = prjName;
+        serverRequest ( fe_reqtype.renameProject,pDesc,'Rename Project',
+          function(data){
+            makeProjectListTable   ();
+            saveProjectList        ( null );
+          },null,'persist' );
+        //makeProjectListTable   ();
+        //saveProjectList        ( null );
+        return true;  // close dialog
+      } else  {
+        new MessageBox ( 'Project ID not found',
+            'The Project ID <b>'+prjName+'</b> is not found in the list.<p>' +
+            'This is program error, please report as a bug.' );
+        return false;
+      }
+    });
+
+  }
+
+  var deleteProject = function() {
+    var inputBox = new InputBox ( 'Delete Project' );
+    var delName  = tablesort_tbl.selectedRow.child[0].text;
+    inputBox.setText ( 'Project:<br><b><center>' + delName +
+                       '</center></b><p>will be deleted. All project ' +
+                       'structure and data will be lost.' +
+                       '<br>Please confirm your choice.' );
+    inputBox.launch ( 'Delete',function(){
+      projectList.deleteProject ( delName );
+      makeProjectListTable   ();
+      saveProjectList        ( null );
+      welcome_lbl.setVisible ( (projectList.projects.length<1) );
+      return true;  // close dialog
+    });
+  }
+
+  var exportProject = function() {
+    if (tablesort_tbl.selectedRow)  {
+      projectList.current = tablesort_tbl.selectedRow.child[0].text;
+      new ExportProjectDialog ( projectList );
+    } else
+      new MessageBox ( 'No project selected',
+                       'No project is currently selected<br>' +
+                       '-- nothing to export.' );
+  }
+
+
+
   // function to create project list table and fill it with data
   function makeProjectListTable()  {
 
@@ -93,7 +233,7 @@ function ProjectListPage ( sceneId )  {
 
     tablesort_tbl = new TableSort();
     tablesort_tbl.setHeaders ([
-        'Name','Title',
+        'ID','Name',
         '<center>Disk<br>(MBytes)</center>',
         '<center>CPU<br>(hours)</center>',
         '<center>Date<br>Created</center>',
@@ -112,10 +252,12 @@ function ProjectListPage ( sceneId )  {
     welcome_lbl = panel.setLabel ( message.fontcolor('darkgrey'),
                                    table_row+1,0,1,nCols )
                        .setFontItalic ( true )
-                       .setNoWrap ( true );
+                       .setNoWrap();
     panel.setHorizontalAlignment ( table_row+1,0,"center" );
 
     if (projectList.projects.length<=0)  {
+
+      __current_project = null;
 
       var trow = tablesort_tbl.addRow();
       trow.addCell ( '' );
@@ -127,6 +269,7 @@ function ProjectListPage ( sceneId )  {
       tablesort_tbl.createTable();
       open_btn  .setDisabled ( true  );
       add_btn   .setDisabled ( false );
+      rename_btn.setDisabled ( true  );
       del_btn   .setDisabled ( true  );
       export_btn.setDisabled ( true  );
 //      unsetDefaultButton   ( open_btn,panel );
@@ -137,9 +280,20 @@ function ProjectListPage ( sceneId )  {
       var selectedRow = null;
       for (var i=0;i<projectList.projects.length;i++)  {
         var trow = tablesort_tbl.addRow();
+
+        var contextMenu = new ContextMenu ( trow );
+        contextMenu.addItem('Open'  ,image_path('go')    ).addOnClickListener(openProject  );
+        contextMenu.addItem('Rename',image_path('rename')).addOnClickListener(renameProject);
+        contextMenu.addItem('Delete',image_path('remove')).addOnClickListener(deleteProject);
+        contextMenu.addItem('Export',image_path('export')).addOnClickListener(exportProject);
+
+        //contextMenu.setWidth ( '10px' );
+        //contextMenu.setHeight_px ( 400 );
+        //contextMenu.setZIndex ( 101 );
+
         var pDesc = projectList.projects[i];
-        trow.addCell ( pDesc.name        ).setNoWrap();
-        trow.addCell ( pDesc.title       );
+        trow.addCell ( pDesc.name  ).setNoWrap();
+        trow.addCell ( pDesc.title ).insertWidget ( contextMenu,0 );
         if (pDesc.hasOwnProperty('disk_space'))
               trow.addCell ( round(pDesc.disk_space,1) ).setNoWrap();
         else  trow.addCell ( '-:-' ).setNoWrap();
@@ -151,14 +305,16 @@ function ProjectListPage ( sceneId )  {
         //tablesort_tbl.addRow ( trow );
         if ((i==0) || (pDesc.name==projectList.current))
           selectedRow = trow;
+
       }
       tablesort_tbl.createTable();
       if (projectList.sortList)
         tablesort_tbl.applySortList ( projectList.sortList );
       tablesort_tbl.selectRow ( selectedRow );
-      open_btn.setDisabled ( false );
-      add_btn .setDisabled ( false );
-      del_btn .setDisabled ( false );
+      open_btn  .setDisabled ( false );
+      add_btn   .setDisabled ( false );
+      rename_btn.setDisabled ( false );
+      del_btn   .setDisabled ( false );
 //      unsetDefaultButton ( add_btn ,panel );
 //      setDefaultButton   ( open_btn,panel );
       welcome_lbl.hide();
@@ -189,30 +345,28 @@ function ProjectListPage ( sceneId )  {
 
 
   this.makeHeader ( 3,null );
+
+  this.headerPanel.setCellSize ( '30%','',0,2 );
+  this.headerPanel.setLabel ( 'My Projects',0,3,1,1 )
+                  .setFont  ( 'times','200%',true,true )
+                  .setNoWrap()
+                  .setHorizontalAlignment ( 'center' );
+  this.headerPanel.setCellSize ( '60%','',0,3 );
+  this.headerPanel.setVerticalAlignment ( 0,3,'middle' );
+  this.headerPanel.setHorizontalAlignment ( 0,3,'center' );
+
   // Make Main Menu
   if (!__local_user)  {
-
-    var account_mi = this.headerPanel.menu.addItem('My Account',image_path('settings') );
-    var admin_mi   = null;
-    if (__admin)
-      admin_mi = this.headerPanel.menu.addItem('Admin Page',image_path('admin') );
-
-    account_mi.addOnClickListener ( function(){
+    this.addMenuItem ( 'My Account','settings',function(){
       saveProjectList ( function(data){ makeAccountPage(sceneId); } );
     });
-
-    if (admin_mi)
-      admin_mi.addOnClickListener ( function(){
+    if (__admin)
+      this.addMenuItem ( 'Admin Page','admin',function(){
         saveProjectList ( function(data){ makeAdminPage(sceneId); } );
       });
-
-    //this.headerPanel.menu.addSeparator ();
-
   }
-
-  //this.addFullscreenToMenu();
   this.addLogoutToMenu ( function(){
-    saveProjectList ( function(data){ logout(sceneId); } );
+    saveProjectList ( function(data){ logout(sceneId,0); } );
   });
 
   // make panel
@@ -227,11 +381,12 @@ function ProjectListPage ( sceneId )  {
 
   this.makeLogoPanel ( 2,0,3 );
 
-  var title_lbl = new Label ( 'My Projects'  );
-  title_lbl.setFont         ( 'times','200%',true,true );
+  //var title_lbl = new Label ( 'My Projects'  );
+  //title_lbl.setFont         ( 'times','200%',true,true );
 
   open_btn   = new Button ( 'Open'  ,image_path('go') );
   add_btn    = new Button ( 'Add'   ,image_path('add') );
+  rename_btn = new Button ( 'Rename',image_path('rename') );
   del_btn    = new Button ( 'Delete',image_path('remove') );
   export_btn = new Button ( 'Export',image_path('export') );
   import_btn = new Button ( 'Import',image_path('import') );
@@ -239,29 +394,29 @@ function ProjectListPage ( sceneId )  {
     demoprj_btn = new Button ( 'Demo projects',image_path('demoprj') );
     demoprj_btn.setWidth     ( '120pt' );
   }
-  help_btn = new Button ( 'Help'  ,image_path('help') ).setTooltip('Documentation' );
+  help_btn   = new Button ( 'Help'  ,image_path('help') ); //.setTooltip('Documentation' );
   open_btn  .setWidth     ( '80pt' );
   add_btn   .setWidth     ( '80pt' );
+  rename_btn.setWidth     ( '80pt' );
   del_btn   .setWidth     ( '80pt' );
   export_btn.setWidth     ( '80pt' );
   import_btn.setWidth     ( '80pt' );
   help_btn  .setWidth     ( '80pt' );
 
   var row = 0;
-  //panel.setWidget        ( title_lbl, row,0,1,6 );
-
-  panel.setHorizontalAlignment ( row++ ,0,'center'    );
+  panel.setHorizontalAlignment ( row,0,'center'    );
   panel.setCellSize            ( '','10pt',row++,0    );
   nCols = 0;
   panel.setWidget              ( open_btn  ,row,nCols++,1,1 );
   panel.setWidget              ( add_btn   ,row,nCols++,1,1 );
+  panel.setWidget              ( rename_btn,row,nCols++,1,1 );
   panel.setWidget              ( del_btn   ,row,nCols++,1,1 );
   panel.setWidget              ( export_btn,row,nCols++,1,1 );
   panel.setWidget              ( import_btn,row,nCols++,1,1 );
   if (demoprj_btn)
     panel.setWidget            ( demoprj_btn,row,nCols++,1,1 );
   panel.setWidget              ( help_btn  ,row,nCols++,1,1  );
-  panel.setWidget              ( title_lbl, row-2,0,1,nCols  );
+  //panel.setWidget              ( title_lbl, row-2,0,1,nCols  );
 
   for (var i=0;i<nCols-1;i++)
     panel.setCellSize ( '2%' ,'',row,i );
@@ -275,104 +430,18 @@ function ProjectListPage ( sceneId )  {
   panel.setCellSize            ( '2%' ,'',row,5     );
   panel.setCellSize            ( '88%','',row++,5   );
   */
-  open_btn.setDisabled         ( true );
-  add_btn .setDisabled         ( true );
-  del_btn .setDisabled         ( true );
+  open_btn  .setDisabled       ( true );
+  add_btn   .setDisabled       ( true );
+  rename_btn.setDisabled       ( true );
+  del_btn   .setDisabled       ( true );
   table_row = row;  // note the project list table position here
 
-  // add a listener to 'open' button
-  open_btn.addOnClickListener ( openProject );
-
-  // add a listener to 'add' button
-  add_btn.addOnClickListener ( function(){
-    var inputBox  = new InputBox  ( 'Add New Project' );
-    var ibx_grid  = new Grid      ( '' );
-    var name_inp  = new InputText ( '' );
-    var title_inp = new InputText ( '' );
-    name_inp. setStyle ( 'text',"^[A-Za-z0-9\\-\\._]+$",'project_001',
-                         'Project name should contain only latin ' +
-                         'letters, numbers, undescores, dashes ' +
-                         'and dots, and must start with a letter' );
-    title_inp.setStyle ( 'text','','Example project',
-                         'Project title is used to give a short description ' +
-                         'to aid identification' );
-    name_inp .setFontItalic        ( true    );
-    title_inp.setFontItalic        ( true    );
-    name_inp .setWidth             ( '400pt' );
-    title_inp.setWidth             ( '400pt' );
-    ibx_grid .setWidget            ( new Label('Project name:' ),0,0,1,1 );
-    ibx_grid .setWidget            ( new Label('Project title:'),1,0,1,1 );
-    ibx_grid .setNoWrap            ( 0,0 );
-    ibx_grid .setNoWrap            ( 1,0 );
-    ibx_grid .setWidget            ( name_inp ,0,1,1,1 );
-    ibx_grid .setWidget            ( title_inp,1,1,1,1 );
-    inputBox .addWidget            ( ibx_grid     );
-    ibx_grid .setVerticalAlignment ( 0,0,'middle' );
-    ibx_grid .setVerticalAlignment ( 1,0,'middle' );
-
-    inputBox.launch ( 'Add',function(){
-      var msg = '';
-
-      if (name_inp.getValue().length<=0)
-        msg += '<b>Project name</b> must be provided.';
-      else if (name_inp.element.validity.patternMismatch)
-        msg += 'Project name should contain only latin letters, numbers,\n ' +
-               'undescores, dashes and dots, and must start with a letter.';
-
-      if (title_inp.getValue().length<=0)
-        msg += '<b>Project title</b> must be provided.<p>';
-
-      if (msg)  {
-        new MessageBox ( 'Incomplete data',
-                 'New project cannot be created due to the following:<p>' +
-                  msg + '<p>Please provide all needful data and try again' );
-        return false;
-      }
-
-      if (projectList.addProject(name_inp.getValue(),
-                                 title_inp.getValue(),getDateString()))  {
-        projectList.current = name_inp.getValue();
-        makeProjectListTable   ();
-        saveProjectList        ( null );
-        welcome_lbl.setVisible ( (projectList.projects.length<1) );
-        return true;  // close dialog
-      } else  {
-        new MessageBox ( 'Duplicate Name',
-            'The Project Name chosen (<b>'+name_inp.getValue()+'</b>)<br>' +
-            'is already in the list. Please choose a different name.' );
-        return false;  // keep dialog
-      }
-
-    });
-  });
-
-  // add a listener to 'delete' button
-  del_btn.addOnClickListener ( function(){
-    var inputBox = new InputBox ( 'Delete Project' );
-    var delName  = tablesort_tbl.selectedRow.child[0].text;
-    inputBox.setText ( 'Project:<br><b><center>' + delName +
-                       '</center></b><p>will be deleted. All project ' +
-                       'structure and data will be lost.' +
-                       '<br>Please confirm your choice.' );
-    inputBox.launch ( 'Delete',function(){
-      projectList.deleteProject ( delName );
-      makeProjectListTable   ();
-      saveProjectList        ( null );
-      welcome_lbl.setVisible ( (projectList.projects.length<1) );
-      return true;  // close dialog
-    });
-  });
-
-  // add a listener to 'export' button
-  export_btn.addOnClickListener ( function(){
-    if (tablesort_tbl.selectedRow)  {
-      projectList.current = tablesort_tbl.selectedRow.child[0].text;
-      new ExportProjectDialog ( projectList );
-    } else
-      new MessageBox ( 'No project selected',
-                       'No project is currently selected<br>' +
-                       '-- nothing to export.' );
-  });
+  // add a listeners to toolbar buttons
+  open_btn  .addOnClickListener ( openProject   );
+  add_btn   .addOnClickListener ( addProject    );
+  rename_btn.addOnClickListener ( renameProject );
+  del_btn   .addOnClickListener ( deleteProject );
+  export_btn.addOnClickListener ( exportProject );
 
   // add a listener to 'import' button
   import_btn.addOnClickListener ( function(){

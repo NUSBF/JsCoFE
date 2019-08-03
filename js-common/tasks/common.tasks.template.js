@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    13.04.19   <--  Date of Last Modification.
+ *    19.07.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -33,7 +33,8 @@ var job_code = {
   failed   : 'failed',   // job failed
   stopped  : 'stopped',  // job stopped (terminated by user)
   remark   : 'remark',   // remark node
-  remdet   : 'remdet'    // detached remark node
+  remdet   : 'remdet',   // detached remark node
+  remdoc   : 'remdoc'    // remark node converted from documentation import
 }
 
 // ---------------------------------------------------------------------------
@@ -119,9 +120,6 @@ function TaskTemplate()  {
 
 TaskTemplate.prototype.icon = function()  { return 'process'; }
 
-//TaskTemplate.prototype.icon_small = function()  { return 'process_20x20'; }
-//TaskTemplate.prototype.icon_large = function()  { return 'process';       }
-
 // task.platforms() identifies suitable platforms:
 //   'W"  : Windows
 //   'L'  : Linux
@@ -135,6 +133,12 @@ TaskTemplate.prototype.doPackSuffixes    = function()  { return ['']; }
 // when data class version is changed here, change it also in python
 // constructors
 TaskTemplate.prototype.currentVersion = function()  { return 1; }
+
+TaskTemplate.prototype.isRemark = function()  {
+  return  (this.state==job_code.remark) ||
+          (this.state==job_code.remdet) ||
+          (this.state==job_code.remdoc);
+}
 
 TaskTemplate.prototype.isRunning = function()  {
   return ((this.state==job_code.running) || (this.state==job_code.exiting));
@@ -357,15 +361,6 @@ if (!dbx)  {
     this.setInputDataFields ( div.grid,0,dataBox,this );
     this.layParameters      ( div.grid,div.grid.getNRows()+1,0 );
 
-    /*
-    (function(t){
-      setTimeout ( function(){
-        t.setInputDataFields ( div.grid,0,dataBox,this );
-        t.layParameters      ( div.grid,div.grid.getNRows()+1,0 );
-      },0);
-    }(this))
-    */
-
     return div;
 
   }
@@ -422,10 +417,82 @@ if (!dbx)  {
     return 'Run';
   }
 
+  /*
+  function _fill_dropdown ( ddn )  {
+    for (var j=0;j<ddn.ddndata.length;j++)
+      if (ddn.ddndata[j][0])  {
+        ddn.addItem ( ddn.ddndata[j][0],'',ddn.ddndata[j][1],ddn.ddndata[j][2] );
+        if (ddn.ddndata[j][3])
+          ddn.disableItem ( k,true );
+      }
+    return;
+  }
+  */
+
 
   TaskTemplate.prototype.setInputDataFields = function ( grid,row,dataBox ) {
   // Sets dropdown controls for input data from 'dataBox' in grid 'grid'
   // starting from row 'row'
+
+    /*
+    function _fill_dropdowns ( dropdowns )  {
+      for (var n=0;n<dropdowns.length;n++)  {
+        var ddn = dropdowns[n];
+        for (var j=0;j<ddn.ddndata.length;j++)
+          if (ddn.ddndata[j][0])  {
+            ddn.addItem ( ddn.ddndata[j][0],'',ddn.ddndata[j][1],ddn.ddndata[j][2] );
+            if (ddn.ddndata[j][3])
+              ddn.disableItem ( k,true );
+          }
+      }
+      return;
+    }
+    */
+
+    function _fill_dropdown ( ddn )  {
+      var ddndata = ddn.ddndata;
+      for (var j=0;j<ddndata.length;j++)
+        if (ddndata[j][0])  {
+          ddn.addItem ( ddndata[j][0],'',ddndata[j][1],ddndata[j][2] );
+          if (ddn.ddndata[j][3])
+            ddn.disableItem ( ddndata[j][1],true );
+        }
+      return;
+    }
+
+    function _select_item ( ddn,itemId )  {
+      for (var j=0;j<ddn.ddndata.length;j++)
+        if (ddn.ddndata[j][0])
+          ddn.ddndata[j][2] = (ddn.ddndata[j][1]==itemId);
+      return;
+    }
+
+    function _fill_optimized ( ddn,selItemId )  {
+      var ddndata = ddn.ddndata;
+
+      for (var j=0;j<ddndata.length;j++)
+        if (ddndata[j][0])
+          ddndata[j][2] = (ddndata[j][1]==selItemId);
+
+      for (var j=0;j<ddndata.length-1;j++)
+        if (ddndata[j][0])
+          for (var k=j+1;k<ddndata.length;k++)
+            if (ddndata[k][0] && (ddndata[k][0]==ddndata[j][0]))  {
+              if (ddndata[k][2])
+                ddndata[j] = ddndata[k];
+              ddndata[k] = [null];
+            }
+
+      for (var j=0;j<ddndata.length;j++)
+        if (ddndata[j][0])  {
+          ddn.addItem ( ddndata[j][0],'',ddndata[j][1],ddndata[j][2] );
+          if (ddndata[j][3])
+            ddn.disableItem ( ddndata[j][1],true );
+        }
+
+      return;
+
+    }
 
     // do  nothing if input data fields section is not required
     if ((this.input_dtypes.length==1) && (this.input_dtypes[0]==1))
@@ -499,12 +566,14 @@ if (!dbx)  {
         // from the task; this list is empty (zero-length) at first creation
         // of the interface
         var inp_data = this.input_data.getData ( inp_item.inputId );
+
+        var j = -1;
         for (var n=0;n<inp_data.length;n++)  {
-          for (var j=0;j<dt.length;j++)
-            if (dt[j].dataId==inp_data[n].dataId)  {
-              dt[j] = inp_data[n].extend();
-              break;
-            }
+          j++;
+          while ((j<dt.length) && (dt[j].dataId!=inp_data[n].dataId))
+            j++;
+          if (j<dt.length)
+            dt[j] = inp_data[n].extend();
         }
 
       } else  {
@@ -601,7 +670,11 @@ if (!dbx)  {
 
           var sel = true;
           if (n>=inp_item.min)  {
-            ddn.addItem ( '[do not use]','',-1,(n>=ndset) );
+            if (inp_item.hasOwnProperty('unchosen_label') && (n==0))  {
+              ddn.addItem ( inp_item.unchosen_label,'',-1,(n>=ndset) );
+              //ddn.addItem ( 'something else','',-2,(n>=ndset+1) );
+            } else
+              ddn.addItem ( '[do not use]','',-1,(n>=ndset) );
             sel = (n<inp_item.min);
           }
           /*
@@ -613,6 +686,7 @@ if (!dbx)  {
 
           // fill up the combobox with data names from the box, using positive
           // itemIds and making selections as appropriate
+          /*
           var ndisabled = 0;
           for (var j=0;j<dn.length;j++)  {
             var k = dn[j];
@@ -621,18 +695,20 @@ if (!dbx)  {
               var cast1  = '/' + inp_item.cast + '/';
               var p = data_title.indexOf ( '/xyz/' );
               if (p<0)  p = data_title.indexOf ( '/hkl/' );
-              if (p<0)  p = data_title.indexOf ( '/unmerged/' );
-              if (p<0)  p = data_title.indexOf ( '/seqeunce/' );
-              if (p<0)  p = data_title.indexOf ( '/ensemble/' );
+              if (p<0)  p = data_title.indexOf ( '/unmerged/'  );
+              if (p<0)  p = data_title.indexOf ( '/seqeunce/'  );
+              if (p<0)  p = data_title.indexOf ( '/ensemble/'  );
+              if (p<0)  p = data_title.indexOf ( '/structure/' );
+              if (p<0)  p = data_title.indexOf ( '/substructure/' );
               if (p>0)  data_title = data_title.substr(0,p) + cast1;
                   else  data_title += ' ' + cast1;
-              /*
-              data_title = data_title.replace ( '/xyz/'     ,cast1 );
-              data_title = data_title.replace ( '/hkl/'     ,cast1 );
-              data_title = data_title.replace ( '/unmerged/',cast1 );
-              data_title = data_title.replace ( '/sequence/',cast1 );
-              data_title = data_title.replace ( '/ensemble/',cast1 );
-              */
+
+              //data_title = data_title.replace ( '/xyz/'     ,cast1 );
+              //data_title = data_title.replace ( '/hkl/'     ,cast1 );
+              //data_title = data_title.replace ( '/unmerged/',cast1 );
+              //data_title = data_title.replace ( '/sequence/',cast1 );
+              //data_title = data_title.replace ( '/ensemble/',cast1 );
+
             }
             ddn.addItem ( data_title,'',k,sel && (j==n) );
             if (dt[k].version<inp_item_version)  {
@@ -640,6 +716,64 @@ if (!dbx)  {
               ndisabled++;
             }
           }
+          */
+
+          var ndisabled = 0;
+          var ddndata   = [];
+          for (var j=0;j<dn.length;j++)  {
+            var k = dn[j];
+            var data_title = dt[k].dname;
+            if ('cast' in inp_item)  {
+              var cast1  = '/' + inp_item.cast + '/';
+              var p = data_title.indexOf ( '/xyz/' );
+              if (p<0)  p = data_title.indexOf ( '/hkl/' );
+              if (p<0)  p = data_title.indexOf ( '/unmerged/'  );
+              if (p<0)  p = data_title.indexOf ( '/seqeunce/'  );
+              if (p<0)  p = data_title.indexOf ( '/ensemble/'  );
+              if (p<0)  p = data_title.indexOf ( '/structure/' );
+              if (p<0)  p = data_title.indexOf ( '/substructure/' );
+              if (p>0)  data_title = data_title.substr(0,p) + cast1;
+                  else  data_title += ' ' + cast1;
+
+              //data_title = data_title.replace ( '/xyz/'     ,cast1 );
+              //data_title = data_title.replace ( '/hkl/'     ,cast1 );
+              //data_title = data_title.replace ( '/unmerged/',cast1 );
+              //data_title = data_title.replace ( '/sequence/',cast1 );
+              //data_title = data_title.replace ( '/ensemble/',cast1 );
+
+            }
+            ddndata.push ( [data_title,k,(sel && (j==n)),(dt[k].version<inp_item_version)] )
+            if (dt[k].version<inp_item_version)
+              ndisabled++;
+          }
+
+          ddn.ddndata = ddndata;
+
+          /*
+          console.log ( ' -------------------------------------------------------------------')
+          if (!this.input_data.isEmpty())
+            for (var j=0;j<ddndata.length-1;j++)
+              if (ddndata[j][0])  {
+                console.log ( '1  '+j+'  ' + ddndata[j] );
+                for (var k=j+1;k<ddndata.length;k++)
+                  if (ddndata[k][0] && (ddndata[k][0]==ddndata[j][0]))  {
+                    console.log ( '2  '+k+'  ' + ddndata[k] );
+                    if (ddndata[k][2])
+                      ddndata[j] = ddndata[k];
+                    ddndata[k] = [null];
+                  }
+              }
+
+          var ndisabled = 0;
+          for (var j=0;j<ddndata.length;j++)
+            if (ddndata[j][0])  {
+              ddn.addItem ( ddndata[j][0],'',ddndata[j][1],ddndata[j][2] );
+              if (ddndata[j][3])  {
+                ddn.disableItem ( k,true );
+                ndisabled++;
+              }
+            }
+          */
 
           if (ndisabled>0)  versionMatch = false;
           if ((n<inp_item.min) && (ndisabled==dn.length) && (ndisabled>0))
@@ -664,6 +798,9 @@ if (!dbx)  {
             ddn.customGrid.setVisible ( (n<ndset) );
           }
           ddn.dt   = dt;
+          //ddn.dt = [];
+          //for (var j=0;j<dt.length;j++)
+          //  ddn.dt.push ( dt[j] );
           (function(dd,m){
             dd[m].addSignalHandler ( 'state_changed',function(data){
               dd[m].inspect_btn.setVisible ( data.item!=-1 );
@@ -730,11 +867,15 @@ if (!dbx)  {
             for (var n=0;n<nmax;n++)  {
               if (dn[n]>=0)
                 associated_data = associated_data.concat ( dt[dn[n]].associated );
-              dropdown[i][n].selectItem ( dn[n] );
+              //dropdown[i][n].selectItem ( dn[n] );
+              _select_item ( dropdown[i][n],dn[n] );
               dropdown[i][n].inspect_btn.setVisible ( true );
             }
 
           }
+
+          for (var n=0;n<dropdown[i].length;n++)
+            _fill_dropdown ( dropdown[i][n] );
 
         }
 
@@ -802,7 +943,8 @@ if (!dbx)  {
                 associated_data = associated_data.concat ( dt[dn[k]].associated );
               var layCustom = dropdown[i][n].layCustom;
               dropdown[i][n].layCustom = '';
-              dropdown[i][n].selectItem ( dn[k] );
+              //dropdown[i][n].selectItem ( dn[k] );
+              _select_item ( dropdown[i][n],dn[n] );
               dropdown[i][n].inspect_btn.setVisible ( true );
               if (layCustom)  {
                 dropdown[i][n].layCustom = layCustom;
@@ -814,6 +956,9 @@ if (!dbx)  {
             }
 
           }
+
+          for (var n=0;n<dropdown[i].length;n++)
+            _fill_dropdown ( dropdown[i][n] );
 
         }
 
@@ -837,23 +982,31 @@ if (!dbx)  {
             // of the interface
             var inp_data = this.input_data.getData ( inp_item.inputId );
 
+            var j = -1;
             for (var n=0;n<inp_data.length;n++)  {
-              for (var j=0;j<dn.length;j++)  {
-                if (dt[dn[j]].dataId==inp_data[n].dataId)  {
-                  var layCustom = dropdown[i][n].layCustom;
-                  dropdown[i][n].layCustom = '';
-                  dropdown[i][n].selectItem ( dn[j] );
-                  dropdown[i][n].inspect_btn.setVisible ( true );
-                  if (layCustom)  {
-                    dropdown[i][n].layCustom = layCustom;
-                    dropdown[i][n].customGrid.clear();
-                    dt[dn[j]].layCustomDropdownInput ( dropdown[i][n] );
-                    dropdown[i][n].customGrid.setVisible ( true );
-                  }
-                  break;
+              j++;
+              while ((j<dn.length) && (dt[dn[j]].dataId!=inp_data[n].dataId))
+                j++;
+              if (j<dn.length)  {
+                var layCustom = dropdown[i][n].layCustom;
+                dropdown[i][n].layCustom = '';
+                //dropdown[i][n].selectItem ( dn[j] );
+                _fill_optimized ( dropdown[i][n],dn[j] );
+                dropdown[i][n].inspect_btn.setVisible ( true );
+                if (layCustom)  {
+                  dropdown[i][n].layCustom = layCustom;
+                  dropdown[i][n].customGrid.clear();
+                  dt[dn[j]].layCustomDropdownInput ( dropdown[i][n] );
+                  dropdown[i][n].customGrid.setVisible ( true );
                 }
-              }
+                //console.log ( dropdown[i][n].getContent() );
+              } else
+                _fill_dropdown ( dropdown[i][n] );
+
             }
+
+            for (var n=inp_data.length;n<dropdown[i].length;n++)
+              _fill_dropdown ( dropdown[i][n] );
 
           }
 
@@ -938,12 +1091,13 @@ if (!dbx)  {
 
   }
 
+
   TaskTemplate.prototype.collectInputData = function ( inputPanel ) {
   // This function collects input data (that is, secification of input files),
   // from input panel. The data populates this.input_data structure.
 
-  var msg = '';  // The output. If everything's Ok, 'msg' remains empty,
-                 // otherwise, it ocntains a concatenation of errors found.
+    var msg = '';  // The output. If everything's Ok, 'msg' remains empty,
+                   // otherwise, it ocntains a concatenation of errors found.
 
     var inp_data = new DataBox();
 
@@ -962,7 +1116,9 @@ if (!dbx)  {
                              // 'do not use'
               // clone data object, otherwise input from customGrid will be
               // stored in original metadata, which is not good
+              //$$$$ does not clone!
               dtj = jQuery.extend ( true,{},dt[index] );
+              //dtj = deepClone ( dt[index] );
               if (dropdown[j].hasOwnProperty('customGrid'))  {
                 var msg_j = dtj.collectCustomDropdownInput ( dropdown[j] );
                 if (msg_j.length>0)  {
@@ -1228,7 +1384,7 @@ if (!dbx)  {
 
   TaskTemplate.prototype._make_show_links = function ( inpParamRef )  {
 
-    var par  = inpParamRef.parameters;
+    var par = inpParamRef.parameters;
 
     for (var key in par)  {
       var item = par[key].ref;
@@ -1378,7 +1534,7 @@ if (!dbx)  {
                                 if (choice.length<2)
                                   choice = [i.toString(),item.range[i]];
                                 dropdown.addItem ( choice[1],'',choice[0],
-                                                      choice[0]==item.value );
+                                                   choice[0]==item.value );
                               }
                               grid.addWidget   ( dropdown, r,c,rs,cs );
                               if (item.hasOwnProperty('iwidth'))
@@ -1394,6 +1550,9 @@ if (!dbx)  {
                                   function(e){
                                     task.inputChanged ( paramRef,Id,e.detail.item );
                                   },false );
+                                window.setTimeout ( function(){
+                                  task.inputChanged ( paramRef,Id,item.value );
+                                },0);
                               }(inpParamRef,key,this));
                           break;
 
@@ -1823,17 +1982,19 @@ if (!dbx)  {
                                 ' R<sub>meas_ano</sub>=' + d.R_meas_ano   +
                                 ' SpG=' + d.Space_group  + ' ';
                       break;
-          case 'phaser' : S += 'N<sub>sol</sub>=' + d.count +
-                               ' LLG=' + d.llg + ' TFZ=' + d.tfz + ' ';
+          case 'phaser'   : S += 'N<sub>sol</sub>=' + d.count +
+                                 ' LLG=' + d.llg + ' TFZ=' + d.tfz + ' ';
                       break;
           case 'cbuccaneer' : S += 'Compl=' + d.percentage + '% ';
                       break;
-          case 'refmac' : S += 'R=' + d.R_factor + ' R<sub>free</sub>=' +
-                                      d.R_free   + ' ';
+          case 'refmac'   : S += 'R=' + d.R_factor + ' R<sub>free</sub>=' +
+                                        d.R_free   + ' ';
                       break;
-          case 'z01'    : S += '<u>SpG=' + d.SpaceGroup  + '</u> ';
+          case 'z01'      : S += '<u>SpG=' + d.SpaceGroup  + '</u> ';
                       break;
-          case 'z02'    : S += 'Solv=' + d.SolventPercent + '% ';
+          case 'z02'      : S += 'Solv=' + d.SolventPercent + '% ';
+                      break;
+          case 'shelxemr' : S += 'CC=' + d.bestCC + '% FOM=' + d.meanFOM;
                       break;
           default : ;
         }
@@ -1864,9 +2025,9 @@ if (!dbx)  {
     return 1;
   }
 
-  TaskTemplate.prototype.getCommandLine = function ( exeType,jobDir )  {
+  TaskTemplate.prototype.getCommandLine = function ( jobManager,jobDir )  {
     // just the template, no real execution body is assumed
-    return [conf.pythonName(), '-m', 'pycofe.tasks.template', exeType, jobDir];
+    return [conf.pythonName(), '-m', 'pycofe.tasks.template', jobManager, jobDir];
   }
 
 
@@ -1897,7 +2058,6 @@ if (!dbx)  {
       var td = this.input_data.data[dtype];
       for (var i=0;i<td.length;i++)
         if (td[i])  {
-  //console.log ( ' ==== try ' + td[i]._type );
           var srcJobDir = prj.getSiblingJobDirPath ( jobDir,td[i].jobId );
           for (var fileKey in td[i].files) {
             if (td[i].files.hasOwnProperty(fileKey)) {
@@ -1913,7 +2073,6 @@ if (!dbx)  {
                 if (pack)  {
                   var src_file  = prj.getOutputFilePath ( srcJobDir,fname );
                   var dest_file = prj.getInputFilePath  ( jobDir   ,fname );
-  //console.log ( ' --- copy ' + src_file + ' -> ' + dest_file );
                   try {
                     fs.copySync ( src_file,dest_file );
                   } catch (err) {
@@ -1949,12 +2108,8 @@ if (!dbx)  {
 
     var dboxPath = path.join ( jobDir,'output','databox.meta' );
     var dbox     = utils.readClass ( dboxPath );
-    if (dbox)
-      this.output_data = dbox;
-    else  {
-      this.output_data = new dbx.DataBox();
-//      console.log ( ' databox not found in ' + dboxPath );
-    }
+    if (dbox)  this.output_data = dbox;
+         else  this.output_data = new dbx.DataBox();
 
   }
 
@@ -1969,6 +2124,7 @@ if (!dbx)  {
     utils.mkDir_anchor ( inputDir );
     utils.writeString  ( dboxPath,dbox );
     utils.removeFiles  ( jobDir,['.mtz','.map','.pdb','.seq','.fasta','.pir',
+                                 '.seq.txt','.fasta.txt','.pir.txt',
                                  '.cif','.mmcif','.ent','.pdbx'] );
   }
 

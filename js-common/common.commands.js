@@ -2,7 +2,7 @@
 /*
  *  ===========================================================================
  *
- *    06.05.19   <--  Date of Last Modification.
+ *    02.08.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  ---------------------------------------------------------------------------
  *
@@ -24,8 +24,12 @@
 // name and version tag
 
 function appName()  { return 'CCP4 Cloud' }
-var jsCoFE_version = '1.0.20 [06.05.2019]';
+var jsCoFE_version = '1.2.002 [02.08.2019]';
 
+
+// ============================================================================
+
+var localhost_name = 'localhost';
 
 // ============================================================================
 // Commands for client - FE Server AJAX exchange. Commands are passed as paths
@@ -43,7 +47,8 @@ var fe_command = {
   recoverLogin : '=recover_login', // recover login details
   request      : '=request',       // general request to server
   upload       : '=upload',        // upload request, hard-coded in gui.upload.js
-  jobFinished  : '=job_finished'   // request to accept data from finished job
+  jobFinished  : '=job_finished',  // request to accept data from finished job
+  checkSession : '=check_session'  // request to check facility update
 }
 
 
@@ -76,6 +81,7 @@ var fe_reqtype = {
   prepareJobExport  : '-prepareJobExport',  // request to prepare job for export
   checkJobExport    : '-checkJobExport',    // request to check job export state
   finishJobExport   : '-finishJobExport',   // request to finish job export
+  renameProject     : '-renameProject',     // request to rename a project
   importProject     : '-importProject',     // request to save import a project
   saveJobData       : '-saveJobData',       // request to save job data
   runJob            : '-runJob',            // request to run job
@@ -111,6 +117,7 @@ var fe_retcode = {
   wrongPassword  : 'wrongPassword',  // wrong password given
   notLoggedIn    : 'notLoggedIn',    // request without loggin in
   wrongRequest   : 'wrongRequest',   // unrecognised request
+  wrongSession   : 'wrongSession',   // unrecognised session code
   uploadErrors   : 'uploadErrors',   // upload errors
   unpackErrors   : 'unpackErrors',   // unpack errors
   noUploadDir    : 'noUploadDir',    // no upload directory within a job directory
@@ -128,6 +135,7 @@ var fe_retcode = {
 
 var nc_command = {
   stop           : 'stop',            // quit the server
+  countBrowser   : '-countBrowser',   // request to advance browser start counter
   runJob         : '-runJob',         // request to upload job data and run the job
   stopJob        : '-stopJob',        // request to stop a running job
   selectDir      : '-selectDir',      // request to select directory (local service)
@@ -214,6 +222,7 @@ function Request ( request,token,data )  {
 if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
   module.exports.appName             = appName;
   module.exports.jsCoFE_version      = jsCoFE_version;
+  module.exports.localhost_name      = localhost_name;
   module.exports.image_path          = image_path;
   module.exports.fe_command          = fe_command;
   module.exports.fe_reqtype          = fe_reqtype;

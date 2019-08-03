@@ -150,6 +150,7 @@ function ncGetInfo ( server_request,server_response )  {
   var jobRegister    = jm.readNCJobRegister ( 1 );
   ncInfo.jobRegister.launch_count = jobRegister.launch_count;
   ncInfo.jobRegister.job_map      = jobRegister.job_map;
+  ncInfo.ccp4_version = conf.CCP4Version();
 
   return new cmd.Response (  cmd.nc_retcode.ok,'',ncInfo );
 

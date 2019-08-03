@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    02.12.18   <--  Date of Last Modification.
+ *    28.06.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Front End Server -- Communication Module
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2018
+ *  (C) E. Krissinel, A. Lebedev 2016-2019
  *
  *  ==========================================================================
  *
@@ -33,6 +33,7 @@ var utils     = require('./server.utils');
 var user      = require('./server.fe.user');
 var prj       = require('./server.fe.projects');
 var rj        = require('./server.fe.run_job');
+var ustats    = require('./server.fe.usagestats');
 var cmd       = require('../js-common/common.commands');
 
 //  prepare log
@@ -55,6 +56,7 @@ function Communicate ( server_request )  {
   this.search   = url_parse.search;
   this.ncURL    = '';
 //console.log ( "requested " + server_request.url );
+//console.log ( "parsed    " + JSON.stringify(url_parse) );
 
   if ((this.command=='') || (this.command==cmd.fe_command.cofe))
         this.filePath = conf.getFEConfig().bootstrapHTML;
@@ -73,11 +75,28 @@ function Communicate ( server_request )  {
     ix = this.filePath.indexOf('ccp4i2_support');
   if (ix>=0)  {  // request for jsrview library file, load it from js-lib
                  // REGARDLESS the actual path requested
-
     this.filePath = path.join ( 'js-lib',this.filePath.substr(ix) );
     log.debug2 ( 2,"calculated path " + this.filePath);
+  }
+  if (ix<0) {
+    var rtag = cmd.special_url_tag + '-fe/';
+    ix = this.filePath.lastIndexOf(rtag);
+//console.log ( 'rtag=' + rtag + ',  file=' + this.filePath + ', ix=' + ix );
+    if (ix>=0)  {
+      this.filePath = this.filePath.substr(ix+rtag.length);
+      log.debug2 ( 4,"calculated path " + this.filePath);
+    }
+  }
+  if (ix<0) {
+    var utag = cmd.special_url_tag + '/' + ustats.statsDirName + '/';
+    ix = this.filePath.lastIndexOf(utag);
+    if (ix>=0)  {
+      this.filePath = ustats.getUsageReportFilePath ( this.filePath.substr(ix+utag.length) );
+      log.debug2 ( 3,"calculated path " + this.filePath);
+    }
+  }
+  if (ix<0) {
 
-  } else  {
     //if (this.filePath.startsWith(cmd.special_url_tag))  { // special access to files not
     //                                             // supposed to be on http path
 
@@ -143,13 +162,21 @@ function Communicate ( server_request )  {
 }
 
 
+/*
+send file = /home/jscofe/jscofe/cofe-projects/apsdemo.projects/insulin.prj/job_1/output/SWEEP1_rlp.json
+send file = /home/jscofe/jscofe/cofe-projects/apsdemo.projects/insulin.prj/job_1/output/SWEEP1_rs_mapper_output.ccp4.map
+send file = /home/jscofe/jscofe/cofe-projects/apsdemo.projects/insulin.prj/job_1/output/SWEEP1_rlp.json
+send file = /home/jscofe/jscofe/cofe-projects/apsdemo.projects/insulin.prj/job_1/output/SWEEP1_rlp.json
+send file = /home/jscofe/jscofe/cofe-projects/apsdemo.projects/insulin.prj/job_1/output/SWEEP1_rlp.json
+*/
+
 Communicate.prototype.sendFile = function ( server_response )  {
 
   var mtype = this.mimeType;
 
   log.debug2 ( 5,'send file = ' + this.filePath );
 
-//console.log ( 'send file = ' + this.filePath );
+//console.log ( 'send file = ' + this.filePath + ',  mtype=' + mtype );
 
   function send_file ( filepath,deleteOnDone,cap )  {
     // Read the requested file content from file system
@@ -167,10 +194,14 @@ Communicate.prototype.sendFile = function ( server_response )  {
         server_response.writeHead ( 404, {'Content-Type':'text/html;charset=UTF-8'} );
         server_response.end ( '<p><b>[05-0006] FILE NOT FOUND [' + fpath + ']</b></p>' );
       } else if ((!cap) || (stats.size<=conf.getFEConfig().fileCapSize))  {
-//        if (stats.size>=100000000)  {
+//        if (stats.size>=50000000)  {
           server_response.writeHeader ( 200, {
-              'Content-Type'   : mtype,
-              'Content-Length' : stats.size
+              'Content-Type'      : mtype,
+              'Content-Length'    : stats.size
+              //'Transfer-Encoding' : 'chunked'
+              //'Content-Encoding' : 'gzip'
+              //'Vary'           : 'Accept-Encoding'
+              //'Content-Disposition' : 'inline'
           });
           /*
           var fReadStream = fs.createReadStream ( fpath, {
@@ -179,7 +210,7 @@ Communicate.prototype.sendFile = function ( server_response )  {
           });
           */
           var fReadStream = fs.createReadStream ( fpath );
-          fReadStream.pipe ( server_response );
+          //fReadStream.setEncoding('binary')
           /*
 //var ntotal = 0;
           fReadStream.on ( 'data',function(chunk){
@@ -203,7 +234,8 @@ Communicate.prototype.sendFile = function ( server_response )  {
             if (deleteOnDone)
               utils.removeFile ( fpath );
           });
-        /*
+          fReadStream.pipe ( server_response );  //.encoding: null,;
+          /*
         } else  {
           fs.readFile ( fpath, function(err,data) {
             if (err)  {
@@ -229,7 +261,10 @@ Communicate.prototype.sendFile = function ( server_response )  {
             server_response.writeHead ( 404, {'Content-Type':'text/html;charset=UTF-8'} );
             server_response.end ( '<p><b>[05-0008] FILE NOT FOUND OR FILE READ ERRORS</b></p>' );
           } else  {
-            server_response.writeHeader ( 200, {'Content-Type':mtype} );
+            server_response.writeHeader ( 200, {
+              'Content-Type'   : mtype,
+              'Content-Length' : stats.size
+            });
             server_response.end ( utils.capData(data,conf.getFEConfig().fileCapSize) );
             if (deleteOnDone)
               utils.removeFile ( fpath );

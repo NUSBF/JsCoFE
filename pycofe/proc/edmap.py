@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    29.01.19   <--  Date of Last Modification.
+#    20.06.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -32,6 +32,7 @@ except:
 def file_pdb       ():  return ".pdb"
 def file_mtz       ():  return ".mtz"
 def file_cif       ():  return ".cif"
+def file_lib       ():  return ".lib"
 def refmac_script  ():  return "_refmac.script"
 def file_map       ():  return ".map"
 def file_dmap      ():  return ".diff.map"
@@ -194,11 +195,12 @@ def calcEDMap ( xyzin,hklin,libin,hkl_dataset,output_file_prefix,job_dir,
 
     # prepare refmac command line
     xyzout = output_file_prefix + file_pdb()
+    mtzout = output_file_prefix + file_mtz()
     cmd = [ "XYZIN" ,xyzin,
             "XYZOUT",xyzout,
             "HKLIN" ,hklin,
-            "HKLOUT",output_file_prefix + file_mtz(),
-            "LIBOUT",output_file_prefix + file_cif(),
+            "HKLOUT",mtzout,
+            "LIBOUT",output_file_prefix + file_lib(),
           ]
     if libin:
         cmd += ["LIBIN",libin]
@@ -212,6 +214,9 @@ def calcEDMap ( xyzin,hklin,libin,hkl_dataset,output_file_prefix,job_dir,
                 job_dir,refmac_script(),file_stdout,file_stderr,
                 log_parser=log_parser,citation_ref="refmac5-srv" )
 
+    if not xyzin.lower().endswith('.pdb'):
+        shutil.copy2 ( xyzout,output_file_prefix + file_cif() )
+
     # have to do this copying because refmac an put unwanted TER cards before
     # UNK residues; since we use 0 refmac cycles for map calculations, this
     # should not change any coordinates
@@ -223,7 +228,7 @@ def calcEDMap ( xyzin,hklin,libin,hkl_dataset,output_file_prefix,job_dir,
         file_stderr.write ( "Error calling refmac5: " + rc.msg )
 
     else: # Generate maps
-        calcCCP4Maps ( output_file_prefix+file_mtz(),output_file_prefix,
+        calcCCP4Maps ( mtzout,output_file_prefix,
                        job_dir,file_stdout,file_stderr,"refmac",log_parser )
 
     return
@@ -255,11 +260,16 @@ def calcAnomEDMap ( xyzin,hklin,hkl_dataset,anom_form,output_file_prefix,job_dir
     scr_file.close()
 
     # prepare refmac command line
+    xyzout = output_file_prefix
+    if xyzin.lower().endswith('.pdb'):
+        xyzout += file_pdb()
+    else:
+        xyzout += file_cif()
     cmd = [ "XYZIN" ,xyzin,
-            "XYZOUT",output_file_prefix + file_pdb(),
+            "XYZOUT",xyzout,
             "HKLIN" ,hklin,
             "HKLOUT",output_file_prefix + file_mtz(),
-            "LIBOUT",output_file_prefix + file_cif(),
+            "LIBOUT",output_file_prefix + file_lib(),
           ]
 
     # Start refmac

@@ -65,8 +65,8 @@ if (__template)  {
 
   var conf = require('../../js-server/server.configuration');
 
-  TaskRVAPIApp.prototype.getCommandLine = function ( exeType,jobDir )  {
-    return [conf.pythonName(), '-m', 'pycofe.tasks.rvapiapp', exeType, jobDir, this.id];
+  TaskRVAPIApp.prototype.getCommandLine = function ( jobManager,jobDir )  {
+    return [conf.pythonName(), '-m', 'pycofe.tasks.rvapiapp', jobManager, jobDir, this.id];
   }
 
   // -------------------------------------------------------------------------

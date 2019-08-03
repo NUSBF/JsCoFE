@@ -3,17 +3,17 @@
 #
 # ============================================================================
 #
-#    11.04.19   <--  Date of Last Modification.
+#    24.07.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  PHASERMR EXECUTABLE MODULE
 #
 #  Command-line:
-#     ccp4-python -m pycofe.tasks.phasermr.py exeType jobDir jobId
+#     ccp4-python -m pycofe.tasks.phasermr.py jobManager jobDir jobId
 #
 #  where:
-#    exeType  is either SHELL or SGE
+#    jobManager  is either SHELL or SGE
 #    jobDir   is path to job directory, having:
 #      jobDir/output  : directory receiving output files with metadata of
 #                       all successful imports
@@ -79,7 +79,6 @@ class PhaserMR(basic.TaskDriver):
                 if ensname.startswith("ensemble"):
                     ens_dict[ensname].data = self.makeClass ( ens_dict[ensname].data )
                     ens0.append ( ens_dict[ensname].data )
-
 
         for x in os.listdir(self.inputDir()):
             self.file_stdout.write(x + '\n')
@@ -335,10 +334,10 @@ class PhaserMR(basic.TaskDriver):
                     sol_spg = line.replace("SOLU SPAC ","").strip()
                 elif line.startswith("SOLU SET "):
                     pos = line.rfind("LLG=")
-                    if pos>=0:
+                    if pos>=0 and not llg:
                         llg = line[pos:].split()[0][4:]
                     pos = line.rfind("TFZ==")
-                    if pos>=0:
+                    if pos>=0 and not tfz:
                         tfz = line[pos:].split()[0][5:]
 
             mtzfile = self.outputFName + ".1.mtz"
@@ -364,6 +363,7 @@ class PhaserMR(basic.TaskDriver):
                 revision.setReflectionData ( sol_hkl )
 
         #self.putMessage ( "&nbsp;" );
+        #shutil.copyfile ( self.outputFName+".1.pdb","output/phaser_out.pdb" )
         structure = self.finaliseStructure ( self.outputFName+".1.pdb",
                                     self.outputFName,sol_hkl,None,seq,0,
                                     leadKey=1,openState_bool=False )

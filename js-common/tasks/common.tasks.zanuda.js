@@ -87,9 +87,6 @@ TaskZanuda.prototype.constructor = TaskZanuda;
 
 TaskZanuda.prototype.icon = function()  { return 'task_zanuda'; }
 
-//TaskZanuda.prototype.icon_small = function()  { return 'task_zanuda_20x20'; }
-//TaskZanuda.prototype.icon_large = function()  { return 'task_zanuda';       }
-
 TaskZanuda.prototype.currentVersion = function()  {
   var version = 0;
   if (__template)
@@ -118,8 +115,8 @@ if (__template)  {
 
   }
 
-  TaskZanuda.prototype.getCommandLine = function ( exeType,jobDir )  {
-    return [conf.pythonName(), '-m', 'pycofe.tasks.zanuda', exeType, jobDir, this.id];
+  TaskZanuda.prototype.getCommandLine = function ( jobManager,jobDir )  {
+    return [conf.pythonName(), '-m', 'pycofe.tasks.zanuda', jobManager, jobDir, this.id];
   }
 
   // -------------------------------------------------------------------------

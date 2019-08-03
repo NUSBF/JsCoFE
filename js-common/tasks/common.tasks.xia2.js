@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    19.03.19   <--  Date of Last Modification.
+ *    16.05.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -53,7 +53,7 @@ function TaskXia2()  {
   this.parameters = { // input parameters
     sec1  : { type     : 'section',
               title    : 'Parameters',
-              open     : false,  // true for the section to be initially open
+              open     : true,  // true for the section to be initially open
               position : [0,0,1,8],
               contains : {
                 PROJECT : {
@@ -75,6 +75,16 @@ function TaskXia2()  {
                       value     : '',
                       default   : 'DEFAULT',
                       position  : [1,0,1,1]
+                    },
+                HATOM : {
+                      type      : 'string_',   // empty string allowed
+                      keyword   : 'atom',
+                      label     : 'Heavy atom type',
+                      tooltip   : 'Heavy atom giving anomalous scattering',
+                      iwidth    : 40,
+                      value     : '',
+                      maxlength : 2,       // maximum input length
+                      position  : [2,0,1,1]
                     }
               }
             },
@@ -96,16 +106,6 @@ function TaskXia2()  {
                         value    : 'dials',
                         position : [0,0,1,5]
                       },
-                HATOM : {
-                        type      : 'string_',   // empty string allowed
-                        keyword   : 'atom',
-                        label     : 'Heavy atom type',
-                        tooltip   : 'Heavy atom giving anomalous scattering',
-                        iwidth    : 30,
-                        value     : '',
-                        maxlength : 2,       // maximum input length
-                        position  : [1,0,1,1]
-                      },
                 SMALL_MOLECULE : {
                         type      : 'checkbox',
                         label     : 'Small molecule',
@@ -113,7 +113,7 @@ function TaskXia2()  {
                                     'suited to small molecule data.',
                         //iwidth    : 400,
                         value     : false,
-                        position  : [2,0,1,3]
+                        position  : [1,0,1,3]
                       },
                 SPACE_GROUP : {
                         type      : 'string_',   // empty string allowed
@@ -123,7 +123,7 @@ function TaskXia2()  {
                         iwidth    : 80,
                         value     : '',
                         maxlength : 7,       // maximum input length
-                        position  : [3,0,1,1]
+                        position  : [2,0,1,1]
                       },
                 UNIT_CELL : {
                         type      : 'string_',   // empty string allowed
@@ -133,12 +133,12 @@ function TaskXia2()  {
                                     'parameters given as a,b,c,&alpha;,&beta;,&gamma;',
                         iwidth    : 400,
                         value     : '',
-                        position  : [3,4,1,1]
+                        position  : [2,4,1,1]
                       },
                 TITLE1 : {
                         type      : 'label',  // just a separator
                         label     : '<h3>Resolution limits</h3>',
-                        position  : [4,0,1,4]
+                        position  : [3,0,1,4]
                       },
                 D_MIN : {
                       type      : 'real_', // blank value is allowed
@@ -151,7 +151,7 @@ function TaskXia2()  {
                                                //   [min,'*']  : limited from bottom
                                                //   [min,max]  : limited from top and bottom
                       value     : '',          // value to be paired with the keyword
-                      position  : [5,0,1,1]    // [row,col,rowSpan,colSpan]
+                      position  : [4,0,1,1]    // [row,col,rowSpan,colSpan]
                     },
                 CC_HALF : {
                       type      : 'real_', // blank value is allowed
@@ -167,7 +167,7 @@ function TaskXia2()  {
                                                //   [min,max]  : limited from top and bottom
                       value     : '',          // value to be paired with the keyword
                       //default   : 0.5,
-                      position  : [6,0,1,1]    // [row,col,rowSpan,colSpan]
+                      position  : [5,0,1,1]    // [row,col,rowSpan,colSpan]
                     },
                 MISIGMA : {
                       type      : 'real_', // blank value is allowed
@@ -184,7 +184,7 @@ function TaskXia2()  {
                                                //   [min,max]  : limited from top and bottom
                       value     : '',          // value to be paired with the keyword
                       //default   : 1.0,
-                      position  : [7,0,1,1]    // [row,col,rowSpan,colSpan]
+                      position  : [6,0,1,1]    // [row,col,rowSpan,colSpan]
                     },
                 ISIGMA : {
                       type      : 'real_', // blank value is allowed
@@ -201,7 +201,7 @@ function TaskXia2()  {
                                                //   [min,max]  : limited from top and bottom
                       value     : '',          // value to be paired with the keyword
                       //default   : 0.25,
-                      position  : [8,0,1,1]    // [row,col,rowSpan,colSpan]
+                      position  : [7,0,1,1]    // [row,col,rowSpan,colSpan]
                     }
               }
             }
@@ -282,7 +282,7 @@ if (!__template)  {
     if (dirNo<inputPanel.imageDirMeta.length)
       dirpath = inputPanel.imageDirMeta[dirNo].path;
     dir_input.dir_path = inputPanel.grid1.setInputText ( dirpath,row,2,1,1 )
-                            .setWidth('100%').setReadOnly(true).setNoWrap(true);
+                            .setWidth('100%').setReadOnly(true).setNoWrap();
 
     if ((dirNo>0) && (dirNo>=inputPanel.imageDirMeta.length))
       dir_input.dir_path.setStyle ( '','','not used',
@@ -303,7 +303,8 @@ if (!__template)  {
         for (var i=0;i<sectors.length;i++)  {
           dir_input.sectors_grid.setLabel ( sectors[i].template,i,0,1,1 )
                                 .setFontItalic(true)
-                                .setTooltip ( 'Image files template' );
+                                .setTooltip ( 'Image files template' )
+                                .setNoWrap();
           var ranges = '';
           for (var j=0;j<sectors[i].ranges.length;j++)  {
             if (ranges!='')  ranges += ',';
@@ -313,7 +314,7 @@ if (!__template)  {
             sectors[i].ranges_inp = ranges;
           dir_input.sectors_inp.push (
             dir_input.sectors_grid.setInputText ( sectors[i].ranges_inp,i,1,1,1 )
-                                  .setWidth('99%').setNoWrap(true)
+                                  .setWidth('99%').setNoWrap()
           );
           dir_input.sectors_inp[i].setStyle ( '','',
                 'not used; available range(s) ' + ranges,
@@ -749,8 +750,8 @@ if (!__template)  {
   }
 
 
-  TaskXia2.prototype.getCommandLine = function ( exeType,jobDir )  {
-    return [conf.pythonName(), '-m', 'pycofe.tasks.xia2', exeType, jobDir, this.id];
+  TaskXia2.prototype.getCommandLine = function ( jobManager,jobDir )  {
+    return [conf.pythonName(), '-m', 'pycofe.tasks.xia2', jobManager, jobDir, this.id];
   }
 
   module.exports.TaskXia2 = TaskXia2;

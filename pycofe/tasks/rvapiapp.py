@@ -10,10 +10,10 @@
 #  EXECUTABLE MODULE FOR RVAPI HELPER APPLICATIONS
 #
 #  Command-line:
-#     ccp4-python pycofe.tasks.rvapiapp.py exeType jobDir jobId
+#     ccp4-python pycofe.tasks.rvapiapp.py jobManager jobDir jobId
 #
 #  where:
-#    exeType  is either SHELL or SGE
+#    jobManager  is either SHELL or SGE
 #    jobDir   is path to job directory, having:
 #      jobDir/output  : directory receiving output files with metadata of
 #                       all successful imports
@@ -50,12 +50,12 @@ signal.clear()
 # get command line arguments and change to job directory; keep all file names
 # relative to job directory, this is a must
 
-exeType = sys.argv[1]
+jobManager = sys.argv[1]
 job_dir = sys.argv[2]
 job_id  = sys.argv[3]
 
 # set scratch area if necessary
-if exeType=="SGE" and "TMP" in os.environ:
+if jobManager=="SGE" and "TMP" in os.environ:
     os.environ["CCP4_SCR"] = os.environ["TMP"]
 
 if "CCP4_SCR" in os.environ:

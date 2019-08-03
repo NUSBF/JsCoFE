@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    27.12.18   <--  Date of Last Modification.
+ *    11.05.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  RefMac Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2018
+ *  (C) E. Krissinel, A. Lebedev 2016-2019
  *
  *  =================================================================
  *
@@ -38,14 +38,15 @@ function TaskLorestr()  {
   this.helpURL = './html/jscofe_task_lorestr.html';
 
   this.input_dtypes = [{      // input data types
-      data_type   : {'DataRevision':['xyz']}, // data type(s) and subtype(s)
-      label       : 'Structure revision',     // label for input dialog
-      inputId     : 'revision', // input Id for referencing input fields
-      version     : 0,          // minimum data version allowed
-      min         : 1,          // minimum acceptable number of data instances
-      max         : 1           // maximum acceptable number of data instances
+      data_type : {'DataRevision':['xyz']}, // data type(s) and subtype(s)
+      label     : 'Structure revision',     // label for input dialog
+      inputId   : 'revision', // input Id for referencing input fields
+      version   : 0,          // minimum data version allowed
+      min       : 1,          // minimum acceptable number of data instances
+      max       : 1           // maximum acceptable number of data instances
     },{
       data_type : {'DataXYZ':[],'DataStructure':[]}, // data type(s) and subtype(s)
+      desc      : 'reference structure',
       label     : 'Reference structure',    // label for input dialog
       inputId   : 'rstruct',  // input Id for referencing input fields
       min       : 0,          // minimum acceptable number of data instances
@@ -108,9 +109,6 @@ TaskLorestr.prototype.constructor = TaskLorestr;
 
 TaskLorestr.prototype.icon = function()  { return 'task_lorestr'; }
 
-//TaskLorestr.prototype.icon_small = function()  { return 'task_lorestr_20x20'; }
-//TaskLorestr.prototype.icon_large = function()  { return 'task_lorestr';       }
-
 TaskLorestr.prototype.currentVersion = function()  {
   var version = 0;
   if (__template)
@@ -139,8 +137,8 @@ if (__template)  {
 
   }
 
-  TaskLorestr.prototype.getCommandLine = function ( exeType,jobDir )  {
-    return [conf.pythonName(), '-m', 'pycofe.tasks.lorestr', exeType, jobDir, this.id];
+  TaskLorestr.prototype.getCommandLine = function ( jobManager,jobDir )  {
+    return [conf.pythonName(), '-m', 'pycofe.tasks.lorestr', jobManager, jobDir, this.id];
   }
 
   // -------------------------------------------------------------------------

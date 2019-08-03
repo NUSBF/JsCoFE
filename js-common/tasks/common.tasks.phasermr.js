@@ -857,9 +857,6 @@ TaskPhaserMR.prototype.constructor = TaskPhaserMR;
 
 TaskPhaserMR.prototype.icon = function()  { return 'task_phasermr'; }
 
-//TaskPhaserMR.prototype.icon_small = function()  { return 'task_phasermr_20x20'; }
-//TaskPhaserMR.prototype.icon_large = function()  { return 'task_phasermr';       }
-
 TaskPhaserMR.prototype.currentVersion = function()  {
   var version = 1;
   if (__template)
@@ -930,8 +927,8 @@ if (!__template)  {
 
   }
 
-  TaskPhaserMR.prototype.getCommandLine = function ( exeType,jobDir )  {
-    return [conf.pythonName(), '-m', 'pycofe.tasks.phasermr', exeType, jobDir, this.id];
+  TaskPhaserMR.prototype.getCommandLine = function ( jobManager,jobDir )  {
+    return [conf.pythonName(), '-m', 'pycofe.tasks.phasermr', jobManager, jobDir, this.id];
   }
 
   // -------------------------------------------------------------------------

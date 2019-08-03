@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.01.19   <--  Date of Last Modification.
+ *    07.07.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -34,7 +34,7 @@ function TaskSimbad()  {
   this._type   = 'TaskSimbad';
   this.name    = 'simbad';
   this.oname   = 'simbad';  // default output file name template
-  this.title   = 'Lattice, Contaminant and Database Searches with Simbad';
+  this.title   = 'Lattice and Contaminants Search with Simbad'; // changes on input
   this.helpURL = './html/jscofe_task_simbad.html';
 
   this.input_dtypes = [{    // input data types
@@ -162,11 +162,12 @@ function TaskSimbad()  {
                       //iwidth   : 220,      // width of input field in px
                       range     : ['L|Lattice',
                                    'C|Contaminants',
-                                   //'S|Structural database',
-                                   'LC|Lattice and contaminants'
-                                   //'LCS|Lattice, contaminants and structural database'
+                                   'S|Structural database',
+                                   'LC|Lattice and contaminants',
+                                   'LCS|Lattice, contaminants and structural database'
                                   ],
                       value     : 'LC',
+                      emitting  : true,    // allow to emit signals on change
                       position  : [0,0,1,1],
                       showon    : {'hkl.type:DataHKL':[1]}   // from input data section
                     },
@@ -181,7 +182,7 @@ function TaskSimbad()  {
                       value    : '',
                       default  : '5',
                       position : [2,0,1,1],
-                      showon   : {_:'||','SEARCH_SEL':['L','C','LC','LCS'],'hkl':[0,-1],'hkl.type:DataXYZ':[1]}
+                      showon   : {_:'||','SEARCH_SEL':['L','LC'],'hkl':[0,-1],'hkl.type:DataXYZ':[1]}
                     },
                 MAXPENALTY : {
                       type     : 'integer_',
@@ -194,7 +195,7 @@ function TaskSimbad()  {
                       value    : '',
                       default  : '4',
                       position : [3,0,1,1],
-                      showon   : {_:'||','SEARCH_SEL':['L','LC','LCS'],'hkl':[0,-1],'hkl.type:DataXYZ':[1]}
+                      showon   : {_:'||','SEARCH_SEL':['L','LC'],'hkl':[0,-1],'hkl.type:DataXYZ':[1]}
                     }
               }
     }
@@ -214,9 +215,6 @@ TaskSimbad.prototype.constructor = TaskSimbad;
 
 TaskSimbad.prototype.icon = function()  { return 'task_simbad'; }
 
-//TaskSimbad.prototype.icon_small = function()  { return 'task_simbad_20x20'; }
-//TaskSimbad.prototype.icon_large = function()  { return 'task_simbad';       }
-
 TaskSimbad.prototype.currentVersion = function()  {
   var version = 0;
   if (__template)
@@ -228,102 +226,30 @@ TaskSimbad.prototype.currentVersion = function()  {
 if (!__template)  {
 //  for client side
 
-/*
-  TaskSimbad.prototype.inputChanged = function ( inpParamRef,emitterId,emitterValue )  {
-
-    function makeSuffix ( title,suffix )  {
-      return title.split(' (')[0] + ' (' + suffix + ')';
+  TaskSimbad.prototype.changeTitle = function ( newTitle,inpParamRef )  {
+    if (newTitle!=this.title)  {
+      this.title = newTitle;
+      var inputPanel = inpParamRef.grid.parent.parent;
+      inputPanel.header.title.setText ( '<b>' + this.title + '</b>' );
+      this.updateInputPanel ( inputPanel );
     }
-
-    if (emitterId=='hkl') || (emitterId=='native') || (emitterId=='pmodel')) {
-      var inpDataRef = inpParamRef.grid.inpDataRef;
-      var dataState  = this.getDataState ( inpDataRef );
-      var nHKL       = dataState['hkl'];
-      var nNative    = dataState['native'];
-      var nPModel    = dataState['pmodel'];
-
-      //var nHKL    = this.countInputData ( inpDataRef,'hkl'   ,'' );
-      //var nNative = this.countInputData ( inpDataRef,'native','' );
-
-      //var IR       = (nNative==2);
-      //var isPModel = (nHKL==1) && (!IR) && (nPModel>0);
-      var IR = false;
-      if (nNative>0)  {
-        var native = this.getInputItem ( inpDataRef,'native' );
-        if (native)  {
-          if (native.dropdown[0].hasOwnProperty('customGrid'))  {
-            var customGrid    = native.dropdown[0].customGrid;
-            var showUFP_cbx   = (nNative>0) && (nHKL<=1);
-            useForPhasing_cbx = customGrid.useForPhasing;
-            IR                = useForPhasing_cbx.getValue();
-            useForPhasing_cbx.setVisible ( showUFP_cbx );
-            customGrid       .setVisible ( showUFP_cbx );
-          }
-        }
-      }
-
-      var pmodel   = this.getInputItem ( inpDataRef,'pmodel' );
-      var isPModel = false;
-      if (pmodel)  {
-        inpParamRef.grid.setRowVisible ( pmodel.dropdown[0].row,
-                                         (nHKL==1) && (!IR) );
-        isPModel = (nHKL==1) && (!IR) && (pmodel.dropdown[0].getValue()>=0);
-      }
-
-      if (this.state==job_code.new)  {
-
-        var name = this.name;
-        if (nHKL<=1)  {
-          if (nNative<=0)  {
-            if (isPModel)  {
-              this.title = makeSuffix ( this.title,'MR-SAD' );
-              this.name  = makeSuffix ( this.name ,'MR-SAD' );
-            } else  {
-              this.title = makeSuffix ( this.title,'SAD' );
-              this.name  = makeSuffix ( this.name ,'SAD' );
-            }
-          } else if (IR)  {
-            this.title = makeSuffix ( this.title,'SIRAS' );
-            this.name  = makeSuffix ( this.name ,'SIRAS' );
-          } else  {
-            if (isPModel)  {
-              this.title = makeSuffix ( this.title,'MR-SAD + Native' );
-              this.name  = makeSuffix ( this.name ,'MR-SAD + Native' );
-            } else  {
-              this.title = makeSuffix ( this.title,'SAD + Native' );
-              this.name  = makeSuffix ( this.name ,'SAD + Native' );
-            }
-          }
-        } else  {
-          if (nNative<=0)  {
-            this.title = makeSuffix ( this.title,'MAD' );
-            this.name  = makeSuffix ( this.name ,'MAD' );
-          } else  {
-            this.title = makeSuffix ( this.title,'MAD + Native' );
-            this.name  = makeSuffix ( this.name ,'MAD + Native' );
-          }
-        }
-
-        if (this.name!=name)  {
-          var inputPanel = inpParamRef.grid.parent.parent;
-          inputPanel.header.title.setText ( '<b>' + this.title + '</b>' );
-          inputPanel.header.uname_inp.setStyle ( 'text','',
-                                this.name.replace(/<(?:.|\n)*?>/gm, '') );
-          this.updateInputPanel ( inputPanel );
-        }
-
-      }
-
-    }
-
-    TaskTemplate.prototype.inputChanged.call ( this,inpParamRef,emitterId,emitterValue );
-
   }
 
-
-
-*/
-
+  TaskSimbad.prototype.searchSelTitle = function ( selValue,inpParamRef )  {
+    switch (selValue)  {
+      case 'C'   : this.changeTitle ( 'Contaminants Search with Simbad',inpParamRef );
+                break;
+      case 'S'   : this.changeTitle ( 'Structure Search with Simbad',inpParamRef );
+                break;
+      case 'LC'  : this.changeTitle ( 'Lattice and Contaminants Search with Simbad',inpParamRef );
+                break;
+      case 'LC'  : this.changeTitle ( 'Lattice, Contaminants and Structure Search with Simbad',
+                                       inpParamRef );
+                break;
+      case 'L'   :
+      default    : this.changeTitle ( 'Lattice Search with Simbad',inpParamRef );
+    }
+  }
 
   TaskSimbad.prototype.inputChanged = function ( inpParamRef,emitterId,emitterValue )  {
 
@@ -331,24 +257,17 @@ if (!__template)  {
 
       var inpDataRef = inpParamRef.grid.inpDataRef;
       var hkl        = this.getInputData ( inpDataRef,'hkl' );
-      var title      = this.title;
-
       if (hkl && (hkl.length>0))  {
-
         if (hkl[0]._type=='DataHKL')
-          this.title = 'Lattice, Contaminant and Database Searches with Simbad';
+          this.searchSelTitle ( inpParamRef.parameters['SEARCH_SEL'].input.getValue(),
+                                inpParamRef );
         else
-          this.title = 'Lattice Search with Simbad';
+          this.changeTitle ( 'Lattice Search with Simbad',inpParamRef );
       } else
-        this.title = 'Lattice Search with Simbad';
+        this.changeTitle ( 'Lattice Search with Simbad',inpParamRef );
 
-      if (this.title!=title)  {
-        var inputPanel = inpParamRef.grid.parent.parent;
-        inputPanel.header.title.setText ( '<b>' + this.title + '</b>' );
-        this.updateInputPanel ( inputPanel );
-      }
-
-    }
+    } else if (emitterId=='SEARCH_SEL')
+      this.searchSelTitle ( emitterValue,inpParamRef );
 
     TaskTemplate.prototype.inputChanged.call ( this,inpParamRef,emitterId,emitterValue );
 
@@ -386,10 +305,55 @@ if (!__template)  {
 } else  {
   //  for server side
 
-  var conf = require('../../js-server/server.configuration');
+  var path  = require('path');
+  var fs    = require('fs-extra');
+  var conf  = require('../../js-server/server.configuration');
+  var utils = require('../../js-server/server.utils');
 
-  TaskSimbad.prototype.getCommandLine = function ( exeType,jobDir )  {
-    return [conf.pythonName(), '-m', 'pycofe.tasks.simbad', exeType, jobDir, this.id];
+  TaskSimbad.prototype.getNCores = function ( ncores_available )  {
+  // This function should return the number of cores, up to ncores_available,
+  // that should be reported to a queuing system like SGE or SLURM, in
+  // case the task spawns threds or processes bypassing the queuing system.
+  // It is expected that the task will not utilise more cores than what is
+  // given on input to this function.
+    return ncores_available;
+  }
+
+
+  TaskSimbad.prototype.cleanJobDir = function ( jobDir )  {
+
+    __template.TaskTemplate.prototype.cleanJobDir.call ( this,jobDir );
+
+    if ((this.state==__template.job_code.stopped) ||
+        (this.state==__template.job_code.failed))  {
+
+      fs.readdirSync(jobDir).forEach(function(file,index){
+        if (([ __template.jobDataFName,    __template.jobReportDirName,
+               __template.jobInputDirName, __template.jobOutputDirName,
+               'output_files', 'signal', 'rvapi_document',
+               'references.bib', '_job.stde', '_job.stdo' ].indexOf(file)<0) &&
+            (!file.endsWith('.log')))  {
+          var curPath = path.join ( jobDir,file );
+          if (fs.lstatSync(curPath).isDirectory()) {
+            utils.removePath ( curPath );
+          } else { // delete file
+            try {
+              fs.unlinkSync ( curPath );
+            } catch (e)  {
+              console.log ( ' +++ cannot remove file ' + curPath +
+                            ' from failed or terminated Simbad directory' );
+            }
+          }
+        }
+      });
+
+    }
+
+  }
+
+
+  TaskSimbad.prototype.getCommandLine = function ( jobManager,jobDir )  {
+    return [conf.pythonName(), '-m', 'pycofe.tasks.simbad', jobManager, jobDir, this.id];
   }
 
   // -------------------------------------------------------------------------

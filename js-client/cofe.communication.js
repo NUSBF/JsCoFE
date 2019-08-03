@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    03.09.18   <--  Date of Last Modification.
+ *    10.05.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -15,7 +15,7 @@
  *                  serverCommand()
  *                  serverRequest()
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2018
+ *  (C) E. Krissinel, A. Lebedev 2016-2019
  *
  *  =================================================================
  *
@@ -112,7 +112,7 @@ function checkVersionMatch ( response,localServer_bool )  {
 
   if (response.version!=jsCoFE_version)  {
     new MessageBoxF ( appName() + ' update',
-        '<center>' + appName() + ' has been changed on server side to version' +
+        '<center>' + appName() + ' has advanced to version' +
         '<br><center><sup>&nbsp;</sup><b><i>' +
         response.version + '</i></b><sub>&nbsp;</sub></center>' +
         'which is incompatible with version<br><center><sup>&nbsp;</sup><b><i>'
@@ -203,7 +203,7 @@ if ((typeof function_fail === 'string' || function_fail instanceof String) &&
         } else
           makeCommErrorMessage ( page_title,response );
         // we put this function here and in fail section because we do not want to
-        // have it exwcuted multiple times due to multiple retries
+        // have it executed multiple times due to multiple retries
         if (function_always)
           function_always(0);
       }
@@ -248,7 +248,7 @@ function localCommand ( cmd,data_obj,command_title,function_response )  {
 //   data_obj:          data object to pass with the command
 //   command_title:     identification title for error messages
 //   function_response: callback function, invoked when server relpies to
-//                      command. The only argumnet to response function is
+//                      command. The only argument to response function is
 //                      a common.commands::Response class filled with data
 //                      sent by the server. The function should return false
 //                      in case something is wrong, in which case a
@@ -257,7 +257,8 @@ function localCommand ( cmd,data_obj,command_title,function_response )  {
   if (!__local_service)
     return;
 
-// alert ( ' url=' + __local_service + "/" + cmd );
+//console.log ( ' url=' + __local_service + "/" + cmd );
+//alert ( ' url=' + __local_service + "/" + cmd );
 
   $.ajax ({
     url     : __local_service + '/' + cmd,
@@ -265,11 +266,13 @@ function localCommand ( cmd,data_obj,command_title,function_response )  {
     type    : 'POST',
     data    : JSON.stringify(data_obj),
     dataType: 'text',
+    crossDomain: true,
     timeout : 0  // in ms; '0' means no timeout
   })
   .done ( function(rdata) {
 
 //    alert ( ' done rdata=' + rdata );
+//console.log ( ' rdata=' + rdata );
 
     var rsp = jQuery.parseJSON ( rdata );
     if (checkVersionMatch(rsp,true))  {
@@ -281,6 +284,8 @@ function localCommand ( cmd,data_obj,command_title,function_response )  {
   })
   .always ( function(){} )
   .fail   ( function(xhr,err){
+//console.log ( ' local request to ' + __local_service + '/' + cmd + ' failed ' + err );
+//console.log ( xhr );
     if (function_response && (!function_response(null)))
       MessageAJAXFailure(command_title,xhr,err);
   });

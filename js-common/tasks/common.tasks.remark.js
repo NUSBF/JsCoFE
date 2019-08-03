@@ -54,13 +54,13 @@ function TaskRemark()  {
     DESCRIPTION : {
         type        : 'textarea_',  // can be also 'textarea'
         keyword     : 'none',       // optional
-        tooltip     : '',  // mandatory
+        tooltip     : '',           // mandatory
         placeholder : 'Optional detail description may be placed here', // optional
-        nrows       : 14,         // optional
-        ncols       : 90,        // optional
-        iwidth      : 750,       // optional
-        value       : '',        // mandatory
-        position    : [1,0,1,1]  // mandatory
+        nrows       : 14,           // optional
+        ncols       : 90,           // optional
+        iwidth      : 750,          // optional
+        value       : '',           // mandatory
+        position    : [1,0,1,1]     // mandatory
     }
   };
 
@@ -76,21 +76,21 @@ TaskRemark.prototype.constructor = TaskRemark;
 // ===========================================================================
 // export such that it could be used in both node and a browser
 
+var __remark_icon = [
+  ['task_remark_black'   ,'Black'    ],
+  ['task_remark_darkblue','Midnight' ],
+  ['task_remark_navy'    ,'Navy'     ],
+  ['task_remark_blue'    ,'Blue'     ],
+  ['task_remark_green'   ,'Green'    ],
+  ['task_remark_cyan'    ,'Cyan'     ],
+  ['task_remark'         ,'Lemon'    ],
+  ['task_remark_yellow'  ,'Gold'     ],
+  ['task_remark_pink'    ,'Pink'     ],
+  ['task_remark_red'     ,'Red'      ]
+];
+
 if (!__template)  {
   // only on client
-
-  var __remark_icon = [
-    ['task_remark_black'   ,'Black'    ],
-    ['task_remark_darkblue','Midnight' ],
-    ['task_remark_navy'    ,'Navy'     ],
-    ['task_remark_blue'    ,'Blue'     ],
-    ['task_remark_green'   ,'Green'    ],
-    ['task_remark_cyan'    ,'Cyan'     ],
-    ['task_remark'         ,'Lemon'    ],
-    ['task_remark_yellow'  ,'Gold'     ],
-    ['task_remark_pink'    ,'Pink'     ],
-    ['task_remark_red'     ,'Red'      ]
-  ];
 
   TaskRemark.prototype.icon = function()  {
     if (this.state==job_code.remark)
@@ -105,7 +105,6 @@ if (!__template)  {
     this.state    = task.state;
     return;
   }
-
 
   TaskRemark.prototype.setTheme = function ( themeNo,inputPanel )  {
     this.theme_no = themeNo;
@@ -204,7 +203,13 @@ TaskRemark.prototype.currentVersion = function()  {
 if (__template)  {
   //  for server side
 
-  TaskRemark.prototype.getCommandLine = function ( exeType,jobDir )  { return null; }
+  TaskRemark.prototype.icon = function()  {
+    if (this.state==__template.job_code.remark)
+      return __remark_icon[this.theme_no][0] + '_s';
+    return __remark_icon[this.theme_no][0];
+  }
+
+  TaskRemark.prototype.getCommandLine = function ( jobManager,jobDir )  { return null; }
 
   // -------------------------------------------------------------------------
 

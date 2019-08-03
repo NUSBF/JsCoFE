@@ -427,9 +427,6 @@ TaskRefmac.prototype.constructor = TaskRefmac;
 
 TaskRefmac.prototype.icon = function()  { return 'task_refmac'; }
 
-//TaskRefmac.prototype.icon_small = function()  { return 'task_refmac_20x20'; }
-//TaskRefmac.prototype.icon_large = function()  { return 'task_refmac';       }
-
 TaskRefmac.prototype.currentVersion = function()  {
   var version = 1;
   if (__template)
@@ -459,8 +456,8 @@ if (__template)  {
 
   }
 
-  TaskRefmac.prototype.getCommandLine = function ( exeType,jobDir )  {
-    return [conf.pythonName(), '-m', 'pycofe.tasks.refmac', exeType, jobDir, this.id];
+  TaskRefmac.prototype.getCommandLine = function ( jobManager,jobDir )  {
+    return [conf.pythonName(), '-m', 'pycofe.tasks.refmac', jobManager, jobDir, this.id];
   }
 
   // -------------------------------------------------------------------------

@@ -828,10 +828,46 @@ function saveProjectData ( login,data )  {
 
 // ===========================================================================
 
+function renameProject ( login,data )  {  // data must contain new title
+  console.log ( ' ****** data='+JSON.stringify(data) );
+  var response = null;
+  var projectName = data.name;
+  var projectDataPath = getProjectDataPath ( login,projectName );
+  console.log ( ' **** projwctName=' + projectName );
+
+  if (utils.fileExists(projectDataPath))  {
+    var pData = utils.readObject ( projectDataPath );
+    if (pData)  {
+      pData.desc.title = data.title;
+      if (!utils.writeObject(projectDataPath,pData))  {
+        response = new cmd.Response ( cmd.fe_retcode.writeError,
+                                 '[00030] Project metadata cannot be written.','' );
+      } else  {
+        var rdata  = {};
+        rdata.meta = pData;
+        response   = new cmd.Response ( cmd.fe_retcode.ok,'',rdata );
+      }
+    } else  {
+      response = new cmd.Response ( cmd.fe_retcode.readError,
+                               '[00031] Project metadata cannot be read.','' );
+    }
+  } else  {
+    response  = new cmd.Response ( cmd.fe_retcode.readError,
+                                   '[00032] Project metadata does not exist.','' );
+  }
+
+  return response;
+
+}
+
+// ===========================================================================
+
 function _import_project ( login,tempdir )  {
 
   // read project meta to make sure it was a project tarball
   var prj_meta = utils.readObject ( path.join(tempdir,projectDataFName) );
+
+//console.log ( JSON.stringify(prj_meta,2) );
 
   // validate metadata and read project name
   var projectDesc = new pd.ProjectDesc();
@@ -928,79 +964,6 @@ function importProject ( login,upload_meta,tmpDir )  {
         send_dir.unpackDir ( tempdir,null,function(){
 
           _import_project ( login,tempdir );
-
-          /*
-          // read project meta to make sure it was a project tarball
-          var prj_meta = utils.readObject ( path.join(tempdir,projectDataFName) );
-
-          // validate metadata and read project name
-          var projectDesc = new pd.ProjectDesc();
-          try {
-            if (prj_meta._type=='ProjectData')  {
-              projectDesc.name         = prj_meta.desc.name;
-              projectDesc.title        = prj_meta.desc.title;
-              projectDesc.disk_space   = prj_meta.desc.disk_space;
-              projectDesc.cpu_time     = prj_meta.desc.cpu_time;
-              projectDesc.njobs        = prj_meta.desc.njobs;
-              projectDesc.dateCreated  = prj_meta.desc.dateCreated;
-              projectDesc.dateLastUsed = prj_meta.desc.dateLastUsed;
-            } else
-              prj_meta = null;
-          } catch(err) {
-            prj_meta = null;
-          }
-
-          var signal_path = path.join ( tempdir,'signal' );
-
-          if (!prj_meta)  {
-
-            utils.writeString ( signal_path,'Invalid or corrupt project data\n',
-                                            projectDesc.name );
-
-          } else  {
-
-            var projectDir = getProjectDirPath ( login,projectDesc.name );
-            if (utils.fileExists(projectDir))  {
-
-              utils.writeString ( signal_path,'Project "' + projectDesc.name +
-                                              '" already exists.\n' +
-                                              projectDesc.name );
-
-            } else if (utils.moveFile(tempdir,projectDir))  {
-              // the above relies on tmp and project directories to be
-              // on the same file system
-
-              utils.mkDir ( tempdir );  // because it was moved
-
-              // the project's content was moved to user's area, now
-              // make the corresponding entry in project list
-
-              // Get users' projects list file name
-              var userProjectsListPath = getUserProjectListPath ( login );
-              var pList = null;
-              if (utils.fileExists(userProjectsListPath))
-                    pList = utils.readObject ( userProjectsListPath );
-              else  pList = new pd.ProjectList();
-
-              pList.projects.unshift ( projectDesc );  // put it first
-              pList.current = projectDesc.name;        // make it current
-              if (utils.writeObject(userProjectsListPath,pList))
-                    utils.writeString ( signal_path,'Success\n' + projectDesc.name );
-              else  utils.writeString ( signal_path,'Cannot write project list\n' +
-                                                    projectDesc.name );
-
-              ration.changeUserDiskSpace ( login,projectDesc.disk_space );
-
-            } else {
-
-              utils.writeString ( signal_path,'Cannot copy to project ' +
-                                              'directory (disk full?)\n' +
-                                              projectDesc.name );
-
-            }
-
-          }
-          */
 
         });
 
@@ -1174,6 +1137,7 @@ module.exports.checkJobExport         = checkJobExport;
 module.exports.finishJobExport        = finishJobExport;
 module.exports.getProjectData         = getProjectData;
 module.exports.saveProjectData        = saveProjectData;
+module.exports.renameProject          = renameProject;
 module.exports.importProject          = importProject;
 module.exports.startDemoImport        = startDemoImport;
 module.exports.getProjectDirPath      = getProjectDirPath;

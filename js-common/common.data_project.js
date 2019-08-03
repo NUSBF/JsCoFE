@@ -47,6 +47,22 @@ ProjectList.prototype.isProject = function ( name_str )  {
   return is_project;
 }
 
+ProjectList.prototype.getProjectNo = function ( name_str )  {
+  var projectNo = -1;
+  for (var i=0;(i<this.projects.length) && (projectNo<0);i++)
+    if (this.projects[i].name == name_str)
+      projectNo = i;
+  return projectNo;
+}
+
+ProjectList.prototype.getProject = function ( name_str )  {
+  var project = null;
+  for (var i=0;(i<this.projects.length) && (!project);i++)
+    if (this.projects[i].name == name_str)
+      project = this.projects[i];
+  return project;
+}
+
 
 ProjectList.prototype.addProject = function ( name_str,title_str,time_str )  {
   if (!this.isProject(name_str))  {
@@ -61,6 +77,17 @@ ProjectList.prototype.addProject = function ( name_str,title_str,time_str )  {
     return true;
   } else
     return false;
+}
+
+
+ProjectList.prototype.renameProject = function ( name_str,title_str,time_str )  {
+  var pDesc = this.getProject ( name_str );
+  if (pDesc)  {
+    pDesc.title        = title_str;
+    pDesc.dateLastUsed = time_str;
+    return pDesc;
+  } else
+    return null;
 }
 
 ProjectList.prototype.deleteProject = function ( name_str )  {

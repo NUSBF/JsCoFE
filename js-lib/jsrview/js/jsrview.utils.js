@@ -1,7 +1,7 @@
 //
 //  =================================================================
 //
-//    10.05.16   <--  Date of Last Modification.
+//    23.07.19   <--  Date of Last Modification.
 //                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  -----------------------------------------------------------------
 //
@@ -12,7 +12,7 @@
 //  **** Content :  RVAPI javascript layer's general utils
 //       ~~~~~~~~~
 //
-//  (C) E. Krissinel 2013-2016
+//  (C) E. Krissinel 2013-2019
 //
 //  =================================================================
 //
@@ -145,4 +145,15 @@ var alink = document.getElementById(hiddenALinkID);
   alink.download = uri.split('/').pop();
   alink.href     = uri;
   alink.click();
+}
+
+function normalize_path ( path )  {
+  path = Array.prototype.join.apply(arguments,['/'])
+  var sPath;
+  while (sPath!==path) {
+    sPath = n(path);
+    path = n(sPath);
+  }
+  function n(s){return s.replace(/\/+/g,'/').replace(/\w+\/+\.\./g,'')}
+  return path.replace(/^\//,'').replace(/\/$/,'');
 }

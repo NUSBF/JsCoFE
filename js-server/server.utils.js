@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    09.10.18   <--  Date of Last Modification.
+ *    25.06.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Server-side utility functions
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2018
+ *  (C) E. Krissinel, A. Lebedev 2016-2019
  *
  *  =================================================================
  *
@@ -42,7 +42,7 @@ function fileExists ( path )  {
 }
 
 
-function dirExists ( path ) {
+function dirExists ( path )  {
   try {
     var stat = fs.statSync(path);
     if (stat)
@@ -148,7 +148,7 @@ function moveDir ( old_path,new_path,overwrite_bool )  {
   // uses sync mode, which is Ok for source/destinations being on the same
   // file systems; use not-synced version when moving across devices
   try {
-    fs.moveSync  ( old_path,new_path,{'overwrite':overwrite_bool} );
+    fs.moveSync ( old_path,new_path,{'overwrite':overwrite_bool} );
     return true;
   } catch (e)  {
     log.error ( 5,'cannot move directory ' + old_path + ' to ' + new_path +
@@ -351,23 +351,24 @@ var mimeType = '';
   // mime types from
   //    https://www.sitepoint.com/web-foundations/mime-types-complete-list/
   switch (path.split('.').pop().toLowerCase())  {
-    case 'html'  : mimeType = 'text/html;charset=UTF-8';  break;
-    case 'js'    : mimeType = 'application/javascript';   break;
-    case 'css'   : mimeType = 'text/css';                 break;
+    case 'html'  : mimeType = 'text/html;charset=UTF-8';         break;
+    case 'js'    : mimeType = 'application/javascript';          break;
+    case 'css'   : mimeType = 'text/css';                        break;
     case 'jpg'   :
-    case 'jpeg'  : mimeType = 'image/jpeg';               break;
-    case 'png'   : mimeType = 'image/png';                break;
-    case 'svg'   : mimeType = 'image/svg+xml';            break;
+    case 'jpeg'  : mimeType = 'image/jpeg';                      break;
+    case 'png'   : mimeType = 'image/png';                       break;
+    case 'svg'   : mimeType = 'image/svg+xml';                   break;
+    case 'json'  : mimeType = 'application/json;charset=UTF-8';  break;
     case 'pdb'   :
     case 'map'   :
     case 'ccp4'  : //mimeType = 'application/x-binary';     break;
-    case 'mtz'   : mimeType = 'application/octet-stream'; break;
-    case 'pdf'   : mimeType = 'application/pdf';          break;
+    case 'mtz'   : mimeType = 'application/octet-stream';        break;
+    case 'pdf'   : mimeType = 'application/pdf';                 break;
     case 'table' :
     case 'loggraph_data' :
     case 'graph_data'    :
     case 'txt'   :
-    case 'tsk'   : mimeType = 'text/plain;charset=UTF-8'; break;
+    case 'tsk'   : mimeType = 'text/plain;charset=UTF-8';        break;
     default      : mimeType = 'application/octet-stream';
   }
 

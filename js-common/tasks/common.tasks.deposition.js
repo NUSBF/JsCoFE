@@ -61,10 +61,7 @@ TaskDeposition.prototype.constructor = TaskDeposition;
 
 TaskDeposition.prototype.icon = function()  { return 'task_deposition'; }
 
-//TaskDeposition.prototype.icon_small = function()  { return 'task_deposition_20x20'; }
-//TaskDeposition.prototype.icon_large = function()  { return 'task_deposition';       }
-
-//TaskDeposition.prototype.cleanJobDir = function ( jobDir )  {}
+TaskDeposition.prototype.cleanJobDir = function ( jobDir )  {}
 
 TaskDeposition.prototype.currentVersion = function()  {
   var version = 1;
@@ -124,8 +121,8 @@ if (__template)  {
 
   }
 
-  TaskDeposition.prototype.getCommandLine = function ( exeType,jobDir )  {
-    return [conf.pythonName(), '-m', 'pycofe.tasks.deposition', exeType, jobDir, this.id];
+  TaskDeposition.prototype.getCommandLine = function ( jobManager,jobDir )  {
+    return [conf.pythonName(), '-m', 'pycofe.tasks.deposition', jobManager, jobDir, this.id];
   }
 
   // -------------------------------------------------------------------------

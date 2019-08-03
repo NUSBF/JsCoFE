@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    05.05.19   <--  Date of Last Modification.
+ *    15.06.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -47,13 +47,11 @@ function LoginPage ( sceneId )  {
   panel.setWidth      ( '300pt' );
   this.grid.setWidget ( panel,0,1,1,1 );
 
-  var ccp4_lbl  = new Label     ( appName() + ' Login' );
-  var login_lbl = new Label     ( 'Login name:' );
-  var pwd_lbl   = new Label     ( 'Password:'   );
-  var login_inp = new InputText ( '' );
-  var pwd_inp   = new InputText ( '' );
+  var login_lbl   = new Label     ( 'Login name:' );
+  var pwd_lbl     = new Label     ( 'Password:'   );
+  var login_inp   = new InputText ( '' );
+  var pwd_inp     = new InputText ( '' );
   login_lbl.setNoWrap();
-  ccp4_lbl .setFont             ( 'times','300%',true,true ).setNoWrap();
   login_lbl.setFontSize         ( '125%' );
   pwd_lbl  .setFontSize         ( '125%' );
   login_inp.setFontSize         ( '112%' );
@@ -72,8 +70,10 @@ function LoginPage ( sceneId )  {
   pwd_inp  .setWidth            ( '95%' );
 
   var row = 0;
-  panel.setWidget               ( ccp4_lbl, row,0,1,2 );
+  panel.setLabel ( appName() + ' Login', row,0,1,2 )
+       .setFont  ( 'times','300%',true,true ).setNoWrap();
   panel.setHorizontalAlignment  ( row++ ,0,'center' );
+  panel.setWidget               ( this.makeSetupNamePanel(), row++,0,1,2 );
   panel.setCellSize             ( '','20pt',row++,0 );
   panel.setWidget               ( login_lbl,row  ,0,1,1 );
   panel.setWidget               ( pwd_lbl  ,row+1,0,1,1 );
@@ -101,10 +101,9 @@ function LoginPage ( sceneId )  {
   panel.setWidget               ( login_btn,row++,0,1,2 );
   panel.setWidget               ( pwd_btn  ,row++,0,1,2 );
   panel.setWidget               ( reg_btn  ,row++,0,1,2 );
-  panel.setLabel                ( '&nbsp;<br><center><i>' + appName() +
-                                  ' is available for ' +
-                                  'local setups,<br>see instructions ' +
-                                  '<a href="manual/html/index.html">here</a>.' +
+  panel.setLabel                ( '&nbsp;<br><center><i>For best experience, access ' +
+                                  'this web site via<br>' +
+                                  '<a href="manual/html/index.html">' + appName() + ' Client</a>.' +
                                   '</i></center>',
                                   row++,0,1,2 );
   panel.setLabel                ( '&nbsp;<br><center><i>' +
@@ -129,12 +128,12 @@ function LoginPage ( sceneId )  {
       viewFullScreen.addEventListener("click",setFullScreen );
 */
 
-  //if (__touch_device)
+  //if (__mobile_device)
   //  login_btn.addOnClickListener ( setFullScreen );
 
   login_btn.addOnClickListener ( function(){
 
-    if (__touch_device)
+    if (__mobile_device)
       setFullScreen();
 
     // Validate the input

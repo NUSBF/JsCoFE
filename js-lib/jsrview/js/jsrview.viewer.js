@@ -1,7 +1,7 @@
 //
 //  ==========================================================================
 //
-//    11.10.18   <--  Date of Last Modification.
+//    30.07.19   <--  Date of Last Modification.
 //                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  --------------------------------------------------------------------------
 //
@@ -12,12 +12,14 @@
 //  **** Content :  RVAPI javascript layer's window module
 //       ~~~~~~~~~
 //
-//  (C) E. Krissinel 2013-2018
+//  (C) E. Krissinel 2013-2019
 //
 //  ==========================================================================
 //
 
-var _jsrview_uri       = "";
+var _jsrview_uri = "";
+//var __base_url = 'xxJsCoFExx/' + __login_token + '/rnase/1/';
+
 
 // ===========================================================================
 //  Structure Viewer:  XYZ and Map
@@ -28,6 +30,7 @@ function makeUglyMolHtml ( xyz_uri,map_uri,diffmap_uri )  {
 var html   =
     '<!doctype html>\n' +
     '<html lang="en">\n' +
+    '<base target="_parent">\n' +
     '<head>\n' +
     '  <meta charset="utf-8">\n' +
     '  <meta name="viewport" content="width=device-width, user-scalable=no">\n' +
@@ -54,7 +57,7 @@ var html   =
   if (xyz_uri.length>0)
     html = html + '    V.load_pdb("' + xyz_uri + '");\n';
 
-//  alert ( "xyz_uri='" + xyz_uri + "'\n map_uri='"+ map_uri + "'\n diffmap_uri='" + diffmap_uri + "'" );
+//alert ( "xyz_uri='" + xyz_uri + "'\n map_uri='"+ map_uri + "'\n diffmap_uri='" + diffmap_uri + "'" );
 
   if ((map_uri.length>0) && (diffmap_uri.length>0))
     html = html + '    V.load_ccp4_maps("' + map_uri + '","' + diffmap_uri + '");\n';
@@ -94,18 +97,31 @@ function calcViewerSize ( widthF,heightF )  {
 
 function startUglyMol ( title,xyz_uri,map_uri,diffmap_uri )  {
 
+  //console.log ( 'xyz_uri=' + xyz_uri );
+  //console.log ( 'map_uri=' + map_uri );
+  //console.log ( 'diffmap_uri=' + diffmap_uri );
+
   var doc = window.parent.document;
   var jq  = window.parent.$;
 
+  //var doc = window.document;
+  //var jq  = window.$;
+
+//  alert ( window.parent.location + '\n' + window.location );
+
   var dialog = doc.createElement ( 'div' );
-  jq(dialog).css({'box-shadow' : '8px 8px 16px 16px rgba(0,0,0,0.2)',
-                  'overflow'   : 'hidden'
+  jq(dialog).css({
+    'box-shadow' : '8px 8px 16px 16px rgba(0,0,0,0.2)',
+    'overflow'   : 'hidden'
   });
+//  doc.getElementById ( 'scene').appendChild ( dialog );
+//  document.getElementById("scene").appendChild ( dialog );
   doc.body.appendChild ( dialog );
 
   var iframe = doc.createElement ( 'iframe' );
-  jq(iframe).css ( {'border'   : 'none',
-                    'overflow' : 'hidden'
+  jq(iframe).css({
+    'border'   : 'none',
+    'overflow' : 'hidden'
   });
 
   //alert ( typeof window.parent.__touch_device + ' : ' + ((typeof window.parent.__touch_device) === 'undefined') );
@@ -116,18 +132,18 @@ function startUglyMol ( title,xyz_uri,map_uri,diffmap_uri )  {
   dialog.appendChild ( iframe );
 
   jq(dialog).dialog({
-      resizable  : true,
-      height     : 'auto',
-      width      : 'auto',
-      modal      : false,
-      title      : title,
-      effect     : 'fade',
-      create     : function() { iframe.contentWindow.focus(); },
-      focus      : function() { iframe.contentWindow.focus(); },
-      open       : function() { iframe.contentWindow.focus(); },
-      dragStop   : function() { iframe.contentWindow.focus(); },
-      resizeStop : function() { iframe.contentWindow.focus(); },
-      buttons: {}
+    resizable  : true,
+    height     : 'auto',
+    width      : 'auto',
+    modal      : false,
+    title      : title,
+    effect     : 'fade',
+    create     : function() { iframe.contentWindow.focus(); },
+    focus      : function() { iframe.contentWindow.focus(); },
+    open       : function() { iframe.contentWindow.focus(); },
+    dragStop   : function() { iframe.contentWindow.focus(); },
+    resizeStop : function() { iframe.contentWindow.focus(); },
+    buttons: {}
   });
 
   var html = makeUglyMolHtml ( xyz_uri,map_uri,diffmap_uri );
@@ -160,10 +176,42 @@ function _startUglyMol ( data )  {
 //  data is a string made of title and 3 file uri:
 //  title>>>xyz_uri*map_uri*diffmap_uri
 
-  var title     = "";
-  var xyz_path  = "";
-  var map_path  = "";
-  var dmap_path = "";
+/*
+  var base_url = '';
+  if (document.hasOwnProperty('__url_path_prefix'))
+    base_url = window.document.__url_path_prefix;
+
+  function _add_base ( path )  {
+    if (path && base_url)  {
+      if (path.startsWith('../'))
+        return base_url + path.substring(3);
+      else if (path.startsWith('./../'))
+        return base_url + path.substring(5);
+      else if (path.startsWith('./'))
+        return base_url + 'report/' + path.substring(2);
+      else
+        return base_url + 'report/' + path;
+    }
+    return path;
+  }
+*/
+
+  var base_url = window.location.pathname.substring ( 0,
+                                  window.location.pathname.lastIndexOf('/')+1 );
+
+  function _make_path ( path )  {
+    //console.log ( 'base_url=' + base_url );
+    //console.log ( 'path=' + path );
+    if (path.length<=0)             return '';
+    if (path.endsWith('/'))         return '';
+    if (path.startsWith(base_url))  return path;
+    return normalize_path ( base_url+path );
+  }
+
+  var title     = '';
+  var xyz_path  = '';
+  var map_path  = '';
+  var dmap_path = '';
 
   var tlist = data.split('>>>');
   var dlist = [];
@@ -180,14 +228,20 @@ function _startUglyMol ( data )  {
     dlist = tlist[1].split('*');
   }
 
+  //console.log ( 'dlist=' + JSON.stringify(dlist) );
+
   if (dlist.length>0)  {
-    xyz_path = dlist[0];
+    xyz_path = _make_path ( base_url+dlist[0] );
     if (dlist.length>1)  {
-      map_path = dlist[1];
+      map_path = _make_path ( base_url+dlist[1] );
       if (dlist.length>2)
-        dmap_path = dlist[2];
+        dmap_path = _make_path ( base_url+dlist[2] );
     }
   }
+
+  //console.log ( 'xyzpath='  + xyz_path );
+  //console.log ( 'mappath='  + map_path );
+  //console.log ( 'dmappath=' + dmap_path );
 
   startUglyMol ( title,xyz_path,map_path,dmap_path );
 
@@ -321,6 +375,7 @@ function startViewHKL ( title,mtz_uri )  {
 // ===========================================================================
 
 
+/*
 function makeRSViewerHtml ( json_uri,map_uri )  {
 var html   =
     '<!doctype html>\n' +
@@ -372,20 +427,18 @@ var html   =
     '        }\n' +
     '      }\n' +
     '    }\n' +
-    /*
-    '    oReq.onload = function(oEvent) {\n' +
-    '      if (this.status == 200) {\n' +
-    '        var arrayBuffer = oReq.response;\n' +
-    '        if (arrayBuffer) {\n' +
-    '          V.load_map_from_ab ( arrayBuffer )\n' +
-    '        } else {\n' +
-    '          alert ( "null buffer received as map file" );\n' +
-    '        }\n' +
-    '      } else {\n' +
-    '         alert ( "cannot load map file, status="+this.status );\n' +
-    '      }\n' +
-    '    }\n' +
-    */
+//    '    oReq.onload = function(oEvent) {\n' +
+//    '      if (this.status == 200) {\n' +
+//    '        var arrayBuffer = oReq.response;\n' +
+//    '        if (arrayBuffer) {\n' +
+//    '          V.load_map_from_ab ( arrayBuffer )\n' +
+//    '        } else {\n' +
+//    '          alert ( "null buffer received as map file" );\n' +
+//    '        }\n' +
+//    '      } else {\n' +
+//    '         alert ( "cannot load map file, status="+this.status );\n' +
+//    '      }\n' +
+//    '    }\n' +
     '    oReq.onerror = function()  {\n' +
     '      alert ( "errors at loading map file" );\n' +
     '    }\n' +
@@ -397,6 +450,110 @@ var html   =
   return html;
 
 }
+*/
+
+function makeRSViewerHtml ( json_uri,map_uri )  {
+var html   =
+  '<!doctype html>\n' +
+  '<html lang="en">\n' +
+  '<head>\n' +
+  '  <meta charset="utf-8">\n' +
+  '  <meta name="viewport" content="width=device-width, user-scalable=no">\n' +
+  '  <meta name="theme-color" content="#333333">\n' +
+  '  <link rel="stylesheet" type="text/css" href="' + _jsrview_uri + 'uglymol/uglymol.css"/>\n' +
+  '  <script src="' + _jsrview_uri + 'uglymol/uglymol.js"><\/script>\n' +
+  '</head>\n' +
+  '<body style="background-color: black">\n' +
+  '  <div id="viewer"></div>\n' +
+  '  <header id="hud" onmousedown="event.stopPropagation();"\n' +
+  '                   ondblclick="event.stopPropagation();"\n' +
+  '             >This is reciprocal UM. <a href="#"\n' +
+  '                         onclick="V.toggle_help(); return false;"\n' +
+  '                         >H shows help.</a></header>\n' +
+  '  <footer id="help"></footer>\n' +
+  '  <div id="inset"></div>\n' +
+  '  <script>\n' +
+  '    V = new UM.ReciprocalViewer({viewer: "viewer", hud: "hud", help: "help"});\n' +
+  '    V.load_data ( "' + json_uri + '",{\n' +
+  '      callback : function(){\n' +
+  '        var oReq = new XMLHttpRequest();\n' +
+  '        oReq.open ( "POST", "' + map_uri + '", true );\n' +
+  '        oReq.responseType = "arraybuffer";\n' +
+  '        oReq.timeout      = 9999999;\n' +
+  '        oReq.onreadystatechange = function(oEvent) {\n' +
+  '          if (oReq.readyState === 4) {\n' +
+  '            // chrome --allow-file-access-from-files gives status 0\n' +
+  '            if (oReq.status === 200 || (oReq.status   === 0 &&\n' +
+  '                                        oReq.response !== null &&\n' +
+  '                                        oReq.response !== "")) {\n' +
+  '              try {\n' +
+  '                var arrayBuffer = oReq.response;\n' +
+  '                if (arrayBuffer) {\n' +
+  '                  V.load_map_from_ab ( arrayBuffer )\n' +
+  '                } else {\n' +
+  '                  alert ( "null buffer received as map file" );\n' +
+  '                }\n' +
+  '              } catch (e) {\n' +
+  '                alert ( "Error: " + e.message + "\\nin ' + map_uri + '", "ERR");\n' +
+  '              }\n' +
+  '            } else {\n' +
+  '              alert ( "Failed to fetch ' + map_uri + '", "ERR");\n' +
+  '            }\n' +
+  '          }\n' +
+  '        }\n' +
+  '        oReq.onerror = function()  {\n' +
+  '          alert ( "errors at loading map file" );\n' +
+  '        }\n' +
+  '        oReq.send(null);\n' +
+  '      }\n' +
+  '    });\n' +
+  '  </script>\n' +
+  '</body>\n' +
+  '</html>\n';
+
+  return html;
+
+}
+
+
+/*
+function makeRSViewerHtml ( json_uri,map_uri )  {
+var html   =
+  '<!doctype html>\n' +
+  '<html lang="en">\n' +
+  '<head>\n' +
+  '  <meta charset="utf-8">\n' +
+  '  <meta name="viewport" content="width=device-width, user-scalable=no">\n' +
+  '  <meta name="theme-color" content="#333333">\n' +
+  '  <link rel="stylesheet" type="text/css" href="' + _jsrview_uri + 'uglymol/uglymol.css"/>\n' +
+  '  <script src="' + _jsrview_uri + 'uglymol/uglymol.js"><\/script>\n' +
+  '</head>\n' +
+  '<body style="background-color: black">\n' +
+  '  <div id="viewer"></div>\n' +
+  '  <header id="hud" onmousedown="event.stopPropagation();"\n' +
+  '                   ondblclick="event.stopPropagation();"\n' +
+  '             >This is reciprocal UM. <a href="#"\n' +
+  '                         onclick="V.toggle_help(); return false;"\n' +
+  '                         >H shows help.</a></header>\n' +
+  '  <footer id="help"></footer>\n' +
+  '  <div id="inset"></div>\n' +
+  '  <script>\n' +
+  '    V = new UM.ReciprocalViewer({viewer: "viewer", hud: "hud", help: "help"});\n' +
+//  '    V.load_data ( "' + json_uri + '" );\n' +
+  '    V.load_map  ( "' + map_uri  + '",{diff_map: false, format: "ccp4"});\n' +
+  //'    V.load_data ( "' + json_uri + '",{\n' +
+  //'      callback : function(){\n' +
+  //'        V.load_map ( "' + map_uri + '" );\n' +
+  //'      }\n' +
+  //'    });\n' +
+  '  </script>\n' +
+  '</body>\n' +
+  '</html>\n';
+
+  return html;
+
+}
+*/
 
 
 function startRSViewer ( title,json_uri,map_uri )  {

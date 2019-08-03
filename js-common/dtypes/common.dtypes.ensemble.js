@@ -75,15 +75,12 @@ DataEnsemble.prototype.currentVersion = function()  {
   else  return  version + DataXYZ.prototype.currentVersion.call ( this );
 }
 
+DataEnsemble.prototype.icon = function()  { return 'data'; }
+
 
 // export such that it could be used in both node and a browser
 if (!__template)  {
   // for client side
-
-  DataEnsemble.prototype.icon = function()  { return 'data'; }
-
-  //DataEnsemble.prototype.icon_small = function()  { return 'data_20x20'; }
-  //DataEnsemble.prototype.icon_large = function()  { return 'data';       }
 
   DataEnsemble.prototype.extend = function() {
     var ensext = $.extend ( true,{},this );

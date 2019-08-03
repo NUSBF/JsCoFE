@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.04.19   <--  Date of Last Modification.
+ *    11.07.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -34,8 +34,12 @@ function TaskListDialog ( dataBox,branch_task_list,onSelect_func )  {
 
   this.branch_tasks  = [];
   for (var i=0;i<branch_task_list.length;i++)
+    /*
     if ((branch_task_list[i].state!=job_code.remark) &&
-        (branch_task_list[i].state!=job_code.remdet))
+        (branch_task_list[i].state!=job_code.remdet) &&
+        (branch_task_list[i].state!=job_code.remdoc))
+    */
+    if (!branch_task_list[i].isRemark())
       this.branch_tasks.push ( branch_task_list[i] );
 
   this.dataBox       = dataBox;
@@ -269,6 +273,13 @@ var row      = 0;
   var section1 = section0;
 
 
+  if (__login_user=='Developer')
+    this.makeSection ( 'Tasks in Development',[
+      new TaskEnsemblePrepMG(),
+      new TaskMergeData (),
+      new TaskHelloWorld()
+    ]);
+
   var data_import_tasks = [
     new TaskImport        (),
     new TaskFacilityImport()
@@ -284,22 +295,24 @@ var row      = 0;
   this.makeSection ( 'Data Processing',[
     new TaskXia2     (),
     new TaskDUI      (),
+    new TaskIMosflm  (),
     new TaskAimless  (),
     new TaskChangeSpG(),
     new TaskFreeRFlag()
   ]);
 
-  this.makeSection ( 'Asymmetric Unit Contents',[
+  this.makeSection ( 'Asymmetric Unit and Structure Revision',[
     new TaskASUDef      (),
     new TaskASUDefStruct(),
-    new TaskASUMod      ()
+    //new TaskASUMod      ()
+    new TaskEditRevision()
   ]);
 
   this.makeSection ( 'Molecular Replacement',[
     'No-sequence methods',
     new TaskSimbad(),
     //'No-model methods',
-    //new TaskAmple (),
+    new TaskAmple (),
     'Automated MR',
     new TaskBalbes(),
     new TaskMorda (),
@@ -313,8 +326,8 @@ var row      = 0;
 
   this.makeSection ( 'Experimental Phasing',[
     'Automated EP',
-    new TaskCrank2   (),
-    new TaskShelxAuto(),
+    new TaskCrank2     (),
+    new TaskShelxAuto  (),
     'Elementary EP',
     new TaskShelxSubstr(),
     new TaskShelxCD    (),
@@ -353,15 +366,10 @@ var row      = 0;
     new TaskCrosSec (),
     new TaskCootCE  (),
     new TaskGesamt  (),
+    new TaskLsqKab  (),
     new TaskSeqAlign(),
     new TaskSymMatch()
   ]);
-
-  if (__login_user=='Developer')
-    this.makeSection ( 'Tasks in Development',[
-      new TaskMergeData (),
-      new TaskHelloWorld()
-    ]);
 
   if (navail==1)
     section0.open();

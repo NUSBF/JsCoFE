@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    11.04.19   <--  Date of Last Modification.
+#    05.07.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -117,7 +117,7 @@ class TaskDriver(object):
     # ========================================================================
     # class variables
 
-    exeType       = None
+    jobManager       = None
     job_dir       = None
     job_id        = None
 
@@ -194,16 +194,26 @@ class TaskDriver(object):
 
         if args is None:
             args = sys.argv[1:]
-        self.exeType = args[0]
+        self.jobManager = args[0]
         self.job_dir = args[1]
         self.job_id  = args[2]
 
-        # set scratch area if necessary
-        if self.exeType=="SGE" and "TMP" in os.environ:
-            os.environ["CCP4_SCR"] = os.environ["TMP"]
+        temp = None
+        for tmp in 'CCP4_SCR', 'TMPDIR', 'TEMP', 'TMP':
+            if tmp in os.environ and os.path.isdir(os.environ[tmp]):
+                temp = tmp
+                break
 
-        if "CCP4_SCR" in os.environ:
-            os.environ["TMPDIR"] = os.environ["CCP4_SCR"]
+        if temp:
+            for tmp in 'CCP4_SCR', 'TMPDIR', 'TEMP', 'TMP':
+                os.environ[tmp] = os.environ[temp]
+
+        # set scratch area if necessary
+        #if self.jobManager=="SGE" and "TMP" in os.environ:
+        #    os.environ["CCP4_SCR"] = os.environ["TMP"]
+        #
+        #if "CCP4_SCR" in os.environ:
+        #    os.environ["TMPDIR"] = os.environ["CCP4_SCR"]
 
         # always make job directory current
         os.chdir ( self.job_dir )
@@ -422,6 +432,10 @@ class TaskDriver(object):
         pyrvapi.rvapi_insert_tab ( tabId,tabName,self.log_page_id(),focus )
         if content:
             pyrvapi.rvapi_append_content ( content,True,tabId )
+        return
+
+    def removeTab ( self,tabId ):
+        pyrvapi.rvapi_remove_tab ( tabId )
         return
 
     def stdout ( self,message ):
@@ -695,6 +709,9 @@ class TaskDriver(object):
         return ""
         """
 
+    def getParameterN ( self,item,name,checkVisible=True ):
+        return self.getParameter ( getattr(item,name) )
+
 
     def getCheckbox ( self,item,checkVisible=True ):
         if  item.type=="checkbox" and (item.visible or not checkVisible):
@@ -769,6 +786,84 @@ class TaskDriver(object):
                 job_params=job_params,resfile=wares_file )
         self.flush()
         #pyrvapi.rvapi_flush()
+        return
+
+
+    # ============================================================================
+
+    def putGraphWidget ( self,graphId,xData,yData,xTitle,yTitle, width=700,height=400 ):
+
+        pyrvapi.rvapi_add_graph ( graphId,self.report_page_id(),self.rvrow,0,1,1 )
+        pyrvapi.rvapi_set_graph_size    ( graphId,width,height )
+        self.rvrow += 1
+
+        pyrvapi.rvapi_add_graph_data    ( "data",graphId,"xydata" )
+        pyrvapi.rvapi_add_graph_dataset ( "X","data",graphId,"Xcol","Xcol" )
+        pyrvapi.rvapi_add_graph_plot    ( "plot",graphId,"---",xTitle,yTitle )
+
+        for j in range(len(xData)):
+            pyrvapi.rvapi_add_graph_real ( "X","data",graphId,xData[j],"%g" )
+        for i in range(len(yData)):
+            yId = "Y"+str(i)
+            pyrvapi.rvapi_add_graph_dataset ( yId,"data",graphId,
+                                              "Ycol"+str(i),"Ycol"+str(i) )
+            for j in range(len(yData[i])):
+                pyrvapi.rvapi_add_graph_real ( yId,"data",graphId,float(yData[i][j]),"%g" )
+            pyrvapi.rvapi_add_plot_line ( "plot","data",graphId,"X",yId )
+
+        #pyrvapi.rvapi_set_line_options ( "dist","plot","data",self.dist_graph_id(),
+        #                                     "#00008B","solid","filledCircle",2.5,True )
+
+        return
+
+    def putLogGraphWidget ( self,graphId,data ):
+    #  data is list of data blocks of the following structure:
+    #    [{ name: "Block name",
+    #       plots: [
+    #           { name: "Plot name",
+    #             xtitle : "X-title",
+    #             ytitle : "Y-title",
+    #             x   : {name:"X name", values:[x1,x2,x3,...]},
+    #             y   : [{name:"Y1 name", values:[y11,y12,...]},
+    #                    {name:"Y2 name", values:[y21,y22,...],
+    #                    ...]
+    #           },
+    #           ....
+    #        ]
+    #      },
+    #      .........
+    #    ]
+
+
+        pyrvapi.rvapi_add_loggraph ( graphId,self.report_page_id(),self.rvrow,0,1,1 )
+        self.rvrow += 1
+
+        for i in range(len(data)):
+            dataId = "data" + str(i)
+            pyrvapi.rvapi_add_graph_data ( dataId,graphId,data[i]["name"] )
+            plots = data[i]["plots"]
+            for j in range(len(plots)):
+                plot = plots[j]
+                plotId = "plot_" + str(i) + "_" + str(j)
+                pyrvapi.rvapi_add_graph_plot ( plotId,graphId,plot["name"],
+                                               plot["xtitle"],plot["ytitle"] )
+                x   = plot["x"]
+                y   = plot["y"]
+                xId = "x_" + str(i) + "_" + str(j)
+                pyrvapi.rvapi_add_graph_dataset ( xId,dataId,graphId,x["name"],x["name"] )
+                values = x["values"]
+                for k in range(len(values)):
+                    pyrvapi.rvapi_add_graph_real ( xId,dataId,graphId,values[k],"%g" )
+                for n in range(len(y)):
+                    yId = "y_" + str(i) + "_" + str(j) + "_" + str(n)
+                    pyrvapi.rvapi_add_graph_dataset ( yId,dataId,graphId,y[n]["name"],y[n]["name"] )
+                    values = y[n]["values"]
+                    for k in range(len(values)):
+                        pyrvapi.rvapi_add_graph_real ( yId,dataId,graphId,values[k],"%g" )
+                    pyrvapi.rvapi_add_plot_line ( plotId,dataId,graphId,xId,yId )
+                    #pyrvapi.rvapi_set_line_options ( yset,"plot","data",self.hits_graph_id(),
+                    #                                         color,"solid","off",2.5,True )
+
         return
 
 
@@ -864,7 +959,12 @@ class TaskDriver(object):
         edmap.calcEDMap ( xyzPath,hklData.getHKLFilePath(idir),
                           libPath,hklData.dataset,filePrefix,self.job_dir,
                           self.file_stdout1,self.file_stderr,self.log_parser )
-        return [ filePrefix + edmap.file_pdb (),
+        xyzout = filePrefix
+        if xyzPath.lower().endswith('.pdb'):
+            xyzout += edmap.file_pdb()
+        else:
+            xyzout += edmap.file_cif()
+        return [ xyzout,
                  filePrefix + edmap.file_mtz (),
                  filePrefix + edmap.file_map (),
                  filePrefix + edmap.file_dmap() ]
@@ -1039,8 +1139,9 @@ class TaskDriver(object):
     # ============================================================================
 
     def putInspectButton ( self,dataObject,title,gridId,row,col ):
-        buttonId = "inspect_data_" + str(self.widget_no)
-        self.widget_no += 1
+        #buttonId = "inspect_data_" + str(self.widget_no)
+        #self.widget_no += 1
+        buttonId = self.getWidgetId ( "inspect_data" )
         pyrvapi.rvapi_add_button ( buttonId,title,"{function}",
                     "window.parent.rvapi_inspectData(" + self.job_id +\
                     ",'" + dataObject._type + "','" + dataObject.dataId + "')",
@@ -1049,8 +1150,9 @@ class TaskDriver(object):
 
 
     def putRSViewerButton ( self,rlpFilePath,mapFilePath,title,text_btn,gridId,row,col ):
-        buttonId = "rsviewer_" + str(self.widget_no)
-        self.widget_no += 1
+        #buttonId = "rsviewer_" + str(self.widget_no)
+        #self.widget_no += 1
+        buttonId = self.getWidgetId ( "rsviewer" )
         pyrvapi.rvapi_add_button ( buttonId,text_btn,"{function}",
                     "window.parent.rvapi_rsviewer(" + self.job_id +\
                     ",'" + title + "','" + rlpFilePath + "','" + mapFilePath + "')",
@@ -1059,9 +1161,21 @@ class TaskDriver(object):
         return
 
 
+    def putUglyMolButton ( self,xyzFilePath,mapFilePath,dmapFilePath,title,text_btn,gridId,row,col ):
+        buttonId = self.getWidgetId ( "uglymol" )
+        pyrvapi.rvapi_add_button ( buttonId,text_btn,"{function}",
+                    "window.parent.rvapi_umviewer(" + self.job_id +\
+                    ",'" + title + "','" + xyzFilePath + "','" +\
+                    mapFilePath + "','" + dmapFilePath + "')",
+                    False,gridId, row,col,1,1 )
+        self.addCitations ( ['uglymol'] )
+        return
+
+
     def putDownloadButton ( self,dnlFilePath,text_btn,gridId,row,col ):
-        buttonId = "download_" + str(self.widget_no)
-        self.widget_no += 1
+        #buttonId = "download_" + str(self.widget_no)
+        #self.widget_no += 1
+        buttonId = self.getWidgetId ( "download" )
         pyrvapi.rvapi_add_button ( buttonId,text_btn,"{function}",
                     "window.parent.downloadJobFile(" + self.job_id +\
                     ",'" + dnlFilePath + "')",False,gridId, row,col,1,1 )
@@ -1142,6 +1256,8 @@ class TaskDriver(object):
         else:
             structure.putXYZMeta ( self.outputDir(),self.file_stdout1,
                                    self.file_stderr,None )
+
+        #self.stdoutln ( str(structure.files) )
         return structure
 
 
@@ -1349,9 +1465,9 @@ class TaskDriver(object):
 
     def putEnsembleWidget1 ( self,pageId,widgetId,title_str,ensemble,openState,row,colSpan ):
 
-        msg = "<b>Assigned name&nbsp;&nbsp;&nbsp;:</b>&nbsp;&nbsp;&nbsp;" + ensemble.dname + "<br>"
+        msg = "<b>Assigned name&nbsp;&nbsp;&nbsp;:</b>&nbsp;&nbsp;&nbsp;" + ensemble.dname
         if ensemble.seqId:
-            msg += "<b>Estimated seqId :</b>&nbsp;&nbsp;&nbsp;" + str(ensemble.seqId)
+            msg += "<br><b>Estimated seqId :</b>&nbsp;&nbsp;&nbsp;" + str(ensemble.seqId)
 
         self.putMessage1 ( pageId,msg + "&nbsp;",row )
 
@@ -1540,6 +1656,7 @@ class TaskDriver(object):
         pyrvapi.rvapi_set_text ( msg, page_id, 0, 0, 1, 1 )
 
     def start(self):
+
         try:
             self.run()
 

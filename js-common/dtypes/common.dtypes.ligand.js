@@ -52,9 +52,6 @@ DataLigand.prototype.constructor = DataLigand;
 DataLigand.prototype.title = function()  { return 'Ligand Structure'; }
 DataLigand.prototype.icon  = function()  { return 'data';             }
 
-//DataLigand.prototype.icon_small = function()  { return 'data_20x20';       }
-//DataLigand.prototype.icon_large = function()  { return 'data';             }
-
 // when data class version is changed here, change it also in python
 // constructors
 DataLigand.prototype.currentVersion = function()  {

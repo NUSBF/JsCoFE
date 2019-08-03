@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    27.12.18   <--  Date of Last Modification.
+ *    10.05.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Sequence Data Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2018
+ *  (C) E. Krissinel, A. Lebedev 2016-2019
  *
  *  =================================================================
  *
@@ -58,9 +58,6 @@ DataSequence.prototype.constructor = DataSequence;
 DataSequence.prototype.title = function()  { return 'Macromolecular sequence'; }
 DataSequence.prototype.icon  = function()  { return 'data';                    }
 
-//DataSequence.prototype.icon_small = function()  { return 'data_20x20'; }
-//DataSequence.prototype.icon_large = function()  { return 'data';       }
-
 // when data class version is changed here, change it also in python
 // constructors
 DataSequence.prototype.currentVersion = function()  {
@@ -76,14 +73,19 @@ DataSequence.prototype.currentVersion = function()  {
 if (!__template)  {
   // for client side
 
+/*
+  DataSequence.prototype.setUnknown = function() {
+    this.setSubtype ( 'unknown' );
+    this.files[file_key.seq] = '(unknown)';
+    this.jobId      = '0';                 // Id of producing job
+    this.dataId     = '0000-00';           // (unique) data Id
+    this.dname      = 'unknown sequence';  // data name for displaying
+  }
+*/
+
   DataSequence.prototype.extend = function() {
-    var seqext = $.extend ( true,{},this );
+    var seqext     = $.extend ( true,{},this );
     seqext.xyzmeta = $.extend ( true,{},this.xyzmeta );
-    /*
-    seqext.ensembles = [];
-    for (var i=0;i<this.ensembles.length;i++)
-      seqext.ensembles.push ( this.ensembles[i].extend() );
-    */
     return seqext;
   }
 
@@ -97,7 +99,7 @@ if (!__template)  {
 
     else  {
 
-      dsp.makeRow ( 'Contents'            ,'','Macromolecular sequence' );
+      dsp.makeRow ( 'Contents','','Macromolecular sequence' );
 
       var req_data  = {};
       req_data.meta = {};
@@ -164,8 +166,6 @@ if (!__template)  {
     var msg = '';   // Ok by default
     var customGrid = dropdown.customGrid;
 
-//    if ((dropdown.layCustom.startsWith('asu-content')) ||
-//        (dropdown.layCustom.startsWith('stoichiometry')))  {
     if (startsWith(dropdown.layCustom,'asu-content') ||
         startsWith(dropdown.layCustom,'stoichiometry'))  {
       var nc_value = customGrid.ncopies_inp.getValue();
@@ -174,25 +174,27 @@ if (!__template)  {
         this.ncopies = parseInt ( nc_value );
     }
 
-    /*
-    this.ensembles = [];  // list of chosen ensemble models for MR
-
-    if ('widgets' in customGrid)  {
-      var n = 0;
-      for (var i=0;i<customGrid.widgets.length;i++)  {
-        var k = customGrid.widgets[i].ddn.getValue();
-        if (k>=0)  {
-          var de     = customGrid.ensembles[k].extend();
-          de.ncopies = parseInt   ( customGrid.widgets[i].ncopies.getValue() );
-          de.rmsd    = parseFloat ( customGrid.widgets[i].rmsd   .getValue() );
-          this.ensembles.push ( de );
-        }
-      }
-    }
-    */
-
     return msg;
 
+  }
+
+  // subtypeDescription() should return detail description of given subtype
+  // in context of specific data object. This description is used in
+  // TaskDataDialog. Empty return will suppress description output in
+  // task data dialog.
+  DataSequence.prototype.subtypeDescription = function ( subtype )  {
+    switch (subtype)  {
+      case 'protein' : return '(protein)';
+      case 'rna'     : return '(RNA)';
+      case 'dna'     : return '(DNA)';
+      default : ;
+    }
+    return DataTemplate.prototype.subtypeDescription.call ( this,subtype );
+  }
+
+  // See use of this function in cofe.dialog_taskdata.js
+  DataSequence.prototype.ddesc_bridge_word = function()  {
+    return ' ';
   }
 
 

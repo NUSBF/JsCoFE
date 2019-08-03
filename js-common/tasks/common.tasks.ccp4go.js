@@ -152,9 +152,6 @@ TaskCCP4go.prototype.constructor = TaskCCP4go;
 
 TaskCCP4go.prototype.icon = function()  { return 'task_ccp4go'; }
 
-//TaskCCP4go.prototype.icon_small = function()  { return 'task_ccp4go_20x20'; }
-//TaskCCP4go.prototype.icon_large = function()  { return 'task_ccp4go';       }
-
 // task.platforms() identifies suitable platforms:
 //   'W"  : Windows
 //   'L'  : Linux
@@ -217,7 +214,7 @@ if (!__template)  {
       if (this.state==job_code.new)
         filename = '';
       var itext = div.grid.setInputText ( filename,rowNo,3,1,2 )
-                          .setWidth_px(300).setReadOnly(true).setNoWrap(true);
+                          .setWidth_px(300).setReadOnly(true).setNoWrap();
       div.grid.setVerticalAlignment ( rowNo,2,'middle' );
       div.grid.setVerticalAlignment ( rowNo,3,'middle' );
       btn.addOnClickListener ( function(){
@@ -430,10 +427,10 @@ if (!__template)  {
       sel.addItem ( 'Code'  ,'','code'  ,this.ligands[i].source=='code'   );
       sel.make();
       var code   = div.grid.setInputText ( this.ligands[i].code,row,3,1,1 )
-                           .setWidth_px(50).setNoWrap(true).setMaxInputLength(3)
+                           .setWidth_px(50).setNoWrap().setMaxInputLength(3)
                            .setVisible(this.ligands[i].source=='code');
       var smiles = div.grid.setInputText ( this.ligands[i].smiles,row,4,1,1 )
-                           .setWidth_px(600).setNoWrap(true)
+                           .setWidth_px(600).setNoWrap()
                            .setVisible(this.ligands[i].source=='smiles');
       div.grid.setVerticalAlignment ( row,2,'middle' );
       div.grid.setVerticalAlignment ( row,3,'middle' );
@@ -570,8 +567,8 @@ if (!__template)  {
 
   var conf = require('../../js-server/server.configuration');
 
-  TaskCCP4go.prototype.getCommandLine = function ( exeType,jobDir )  {
-    return [conf.pythonName(), '-m', 'pycofe.tasks.ccp4go_task', exeType, jobDir, this.id];
+  TaskCCP4go.prototype.getCommandLine = function ( jobManager,jobDir )  {
+    return [conf.pythonName(), '-m', 'pycofe.tasks.ccp4go_task', jobManager, jobDir, this.id];
   }
 
   module.exports.TaskCCP4go = TaskCCP4go;

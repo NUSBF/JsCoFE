@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    21.02.19   <--  Date of Last Modification.
+ *    28.06.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -80,6 +80,23 @@ Widget.prototype.removeAttribute = function ( attr )  {
 
 Widget.prototype.setTooltip = function ( text )  {
   this.element.setAttribute ( 'title',text );
+  let delay    = 1500;
+  let duration = Math.sqrt(text.split(' ').length)*1500; // dynamic duration
+  if (duration>0)  {
+    $(this.element).tooltip({
+        show  : { effect : 'slideDown', delay: delay },
+        track : true,
+        content: function (callback) {
+            callback($(this).prop('title'));
+        },
+        open  : function (event, ui) {
+            setTimeout(function() {
+                $(ui.tooltip).hide('explode');
+            },delay+duration);
+        }
+    });
+  }
+
   /*
   $(this.element).tooltip({
       content : text,
@@ -92,6 +109,7 @@ Widget.prototype.setTooltip = function ( text )  {
       }
   });
   */
+
   return this;
 }
 
@@ -190,6 +208,11 @@ Widget.prototype.setFontColor = function ( color )  {
 
 Widget.prototype.setFontFamily = function ( family )  {
   this.element.style.fontFamily = family;
+  return this;
+}
+
+Widget.prototype.setFontLineHeight = function ( lineHeight )  {
+  this.element.style.lineHeight = lineHeight;
   return this;
 }
 
@@ -344,6 +367,15 @@ Widget.prototype.addOnClickListener = function ( listener_func )  {
 
 Widget.prototype.addOnDblClickListener = function ( listener_func )  {
   this.element.addEventListener('dblclick',listener_func );
+  return this;
+}
+
+Widget.prototype.addOnRightClickListener = function ( listener_func )  {
+  this.element.addEventListener ( 'contextmenu',function(e){
+    e.preventDefault();
+    listener_func();
+    return false;
+  },false );
   return this;
 }
 
@@ -579,6 +611,12 @@ var label = new Label ( text );
   return label;
 }
 
+Grid.prototype.setIconLabel = function ( text,icon_uri, row,col, rowSpan,colSpan )  {
+var label = new IconLabel ( text,icon_uri );
+  this.setWidget ( label, row,col, rowSpan,colSpan );
+  return label;
+}
+
 Grid.prototype.setInputText = function ( text, row,col, rowSpan,colSpan )  {
 var input = new InputText ( text );
   this.setWidget ( input, row,col, rowSpan,colSpan );
@@ -665,6 +703,18 @@ var checkbox = new Checkbox ( label_txt,checked_bool );
   return checkbox;
 }
 
+Grid.prototype.setIFrame = function ( url, row,col, rowSpan,colSpan )  {
+var iframe = new IFrame ( url );
+  this.setWidget ( iframe, row,col, rowSpan,colSpan );
+  return iframe;
+}
+
+Grid.prototype.addIFrame = function ( url, row,col, rowSpan,colSpan )  {
+  var iframe = new IFrame ( url );
+  this.addWidget ( iframe, row,col, rowSpan,colSpan );
+  return iframe;
+}
+
 Grid.prototype.setCellSize = function ( width,height, row,col )  {
 // Sets specified widths to cell in row,col
 var cell = this.getCell ( row,col );
@@ -678,6 +728,14 @@ var cell = this.getCell ( row,col );
   */
   return this;
 }
+
+
+Grid.prototype.setFontFamily = function ( row,col,family )  {
+  var cell = this.getCell ( row,col );
+  $(cell).css ({"font-family":family});
+  return this;
+}
+
 
 Grid.prototype.setNoWrap = function ( row,col )  {
 var cell = this.getCell ( row,col );
@@ -725,6 +783,11 @@ Label.prototype.constructor = Label;
 
 Label.prototype.setText = function ( text )  {
   this.element.innerHTML = text;
+  return this;
+}
+
+Label.prototype.setDocFromURL = function ( url )  {
+  this.element.innerHTML = '<object type="text/html" data="' + url + '" ></object>';
   return this;
 }
 
@@ -777,8 +840,8 @@ InputText.prototype.constructor = InputText;
 
 InputText.prototype.setStyle = function ( type,pattern,placeholder,tooltip )  {
   if (placeholder) this.element.setAttribute ( 'placeholder',placeholder );
-  if (tooltip)     this.element.setAttribute ( 'title'  ,tooltip );
-  if (type)        this.element.setAttribute ( 'type'   ,type    );
+  if (tooltip)     this.setTooltip ( tooltip );
+  if (type)        this.element.setAttribute ( 'type',type );
   if (pattern)     {
     if ((pattern=='integer') || (pattern=='integer_'))
       this.element.setAttribute ( 'pattern','^(-?[0-9]+\d*)$|^0$' );
@@ -1019,7 +1082,7 @@ RadioSet.prototype.addButton = function ( text,btnId,tooltip,checked_bool )  {
   label.element.innerHTML = text;
   this.addWidget ( label );
   if (tooltip)
-    label.element.setAttribute ( 'title',tooltip );
+    label.setTooltip ( tooltip );
 
   var button = new Widget ( 'input' );
   button.element.setAttribute ( 'type','radio' );
@@ -1082,78 +1145,6 @@ RadioSet.prototype.isDisabled = function()  {
 RadioSet.prototype.getValue = function()  {
   return this.selected;
 }
-
-
-/*
-function RadioSet()  {
-  Widget.call ( this,'div' );
-  // now use addButton to stuff Set with buttons,
-  // then call make()
-}
-
-RadioSet.prototype = Object.create ( Widget.prototype );
-RadioSet.prototype.constructor = RadioSet;
-
-RadioSet.prototype.addButton = function ( text,btnId,tooltip,checked_bool )  {
-  var _id = this.element.id + '_' + btnId;
-  var button = new Widget ( 'input' );
-  button.element.setAttribute ( 'type','radio' );
-  button.setId ( _id );
-  button.element.setAttribute ( 'name',this.element.id );
-  if (tooltip)
-    button.element.setAttribute ( 'title',tooltip );
-  if (checked_bool)
-    button.element.setAttribute ( 'checked','checked' );
-  this.addWidget ( button );
-  var label = new Widget ( 'label' );
-  label.element.setAttribute ( 'for',_id );
-  label.element.innerHTML = text;
-  this.addWidget ( label );
-  return this;  // for chaining
-}
-
-
-RadioSet.prototype.make = function (  onClick_func  )  {
-  (function(rs){
-    function onClick()  {
-      for (var i=0;i<rs.child.length;i++)
-        if (rs.child[i].type=='input')  {
-          if (rs.child[i].element.checked)  {
-            onClick_func ( rs.child[i].element.id.substr(rs.element.id.length+1) );
-          }
-        }
-    }
-    for (var i=0;i<rs.child.length;i++)
-      if (rs.child[i].type=='input')
-        rs.child[i].addOnClickListener ( onClick );
-  }(this));
-  $(this.element).buttonset();
-//  $(this.element).controlgroup();
-  return this;
-}
-
-RadioSet.prototype.selectButton = function ( btnId )  {
-  var _id = this.element.id + '_' + btnId;
-  for (var i=0;i<this.child.length;i++)
-    if (this.child[i].element.id==_id)
-      $(this.child[i].element).click();
-  return this;
-}
-
-RadioSet.prototype.setDisabled = function ( disabled_bool )  {
-  $(this.element).buttonset ( 'option','disabled',disabled_bool );
-  return this;
-}
-
-RadioSet.prototype.setEnabled = function ( enabled_bool )  {
-  $(this.element).buttonset ( 'option','disabled',!enabled_bool );
-  return this;
-}
-
-RadioSet.prototype.isDisabled = function()  {
-  return $(this.element).buttonset ( 'option','disabled' );
-}
-*/
 
 
 // -------------------------------------------------------------------------
@@ -1229,42 +1220,6 @@ ToolBar.prototype.constructor = ToolBar;
 // -------------------------------------------------------------------------
 // IFrame class
 
-/*
-function IFrame ( uri )  {
-  Widget.call ( this,'object' );
-  if (uri.length>0)
-    this.element.setAttribute ( 'data',uri );
-  $(this.element).css ( {'border':'none'} );
-}
-
-IFrame.prototype = Object.create ( Widget.prototype );
-IFrame.prototype.constructor = IFrame;
-
-IFrame.prototype.loadPage = function ( uri )  {
-  //this.setVisible ( false );
-  this.element.data = uri;
-}
-
-IFrame.prototype.setHTML = function ( html )  {
-  //this.setVisible ( false );
-  this.element.data = 'data:text/html;charset=utf-8,' + encodeURI(html);
-}
-
-IFrame.prototype.getURL = function()  {
-  return this.element.data;
-}
-
-IFrame.prototype.clear = function()  {
-  //this.setVisible ( false );
-  this.element.data = 'about:blank';
-}
-
-IFrame.prototype.reload = function()  {
-  //this.setVisible ( false );
-  this.element.data = this.element.src;
-}
-*/
-
 function IFrame ( uri )  {
   Widget.call ( this,'iframe' );
   if (uri.length>0)
@@ -1279,14 +1234,31 @@ function IFrame ( uri )  {
 IFrame.prototype = Object.create ( Widget.prototype );
 IFrame.prototype.constructor = IFrame;
 
+IFrame.prototype.setFramePosition = function ( left,top,width,height )  {
+  this.setAttribute ( 'style','border:none;position:absolute;top:' + top +
+                              ';left:' + left + ';width:' + width +
+                              ';height:' + height + ';' );
+  return this;
+}
+
+IFrame.prototype.setOnLoadListener = function ( onload_func )  {
+// this does not wait until ready
+  this.element.addEventListener ( 'load',function() {
+    onload_func();
+  });
+}
+
 IFrame.prototype.loadPage = function ( uri )  {
   //this.setVisible ( false );
   this.element.src = uri;
+  //this.setVisible ( true );
+  return this;
 }
 
 IFrame.prototype.setHTML = function ( html )  {
   //this.setVisible ( false );
   this.element.src = 'data:text/html;charset=utf-8,' + encodeURI(html);
+  return this;
 }
 
 IFrame.prototype.getURL = function()  {
@@ -1296,13 +1268,20 @@ IFrame.prototype.getURL = function()  {
 IFrame.prototype.clear = function()  {
   //this.setVisible ( false );
   this.element.src = 'about:blank';
+  return this;
 }
 
 IFrame.prototype.reload = function()  {
   //this.setVisible ( false );
   this.element.src = this.element.src;
+  return this;
 }
 
+IFrame.prototype.getDocument = function()  {
+  return this.element.contentDocument || this.element.contentWindow;
+  //return this.element.contentWindow || this.element.contentDocument.document ||
+  //       this.element.contentDocument;
+}
 
 // -------------------------------------------------------------------------
 // Section class

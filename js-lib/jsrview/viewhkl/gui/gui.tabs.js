@@ -1,7 +1,7 @@
 //
 //  =================================================================
 //
-//    19.08.17   <--  Date of Last Modification.
+//    29.06.19   <--  Date of Last Modification.
 //                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  -----------------------------------------------------------------
 //
@@ -12,7 +12,7 @@
 //  **** Content :  Tabs module
 //       ~~~~~~~~~
 //
-//  (C) E. Krissinel 2017
+//  (C) E. Krissinel 2017-2019
 //
 //  =================================================================
 //
@@ -79,6 +79,13 @@ Tabs.prototype.addTab = function ( name,open_bool )  {
 }
 
 
+Tabs.prototype.setTabChangeListener = function ( onactivate_func )  {
+  $(this.element).on( "tabsactivate", function(event,ui){
+    onactivate_func ( ui );
+  });
+}
+
+
 Tabs.prototype.numberOfTabs = function()  {
   return this.child.length - 1;
 }
@@ -89,9 +96,17 @@ Tabs.prototype.refresh = function()  {
 }
 
 Tabs.prototype.getTabNo = function ( tab )  {
-  return $("#"+this.id+" >div").index(tab.id);
+  return $("#"+this.id+" >div").index(tab.id)-1;
+}
+
+Tabs.prototype.getActiveTabNo = function()  {
+  return $(this.element).tabs ( "option", "active" );
 }
 
 Tabs.prototype.setActiveTab = function ( tab )  {
   $(this.element).tabs ( "option", "active",this.getTabNo(tab) );
+}
+
+Tabs.prototype.setActiveTabByNo = function ( tabNo )  {
+  $(this.element).tabs ( "option", "active",tabNo );
 }

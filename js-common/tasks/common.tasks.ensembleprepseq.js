@@ -92,9 +92,6 @@ TaskEnsemblePrepSeq.prototype.constructor = TaskEnsemblePrepSeq;
 
 TaskEnsemblePrepSeq.prototype.icon = function()  { return 'task_ensembleprepseq'; }
 
-//TaskEnsemblePrepSeq.prototype.icon_small = function()  { return 'task_ensembleprepseq_20x20'; }
-//TaskEnsemblePrepSeq.prototype.icon_large = function()  { return 'task_ensembleprepseq';       }
-
 TaskEnsemblePrepSeq.prototype.currentVersion = function()  {
   var version = 0;
   if (__template)
@@ -152,8 +149,8 @@ if (!__template)  {
 
   var conf = require('../../js-server/server.configuration');
 
-  TaskEnsemblePrepSeq.prototype.getCommandLine = function ( exeType,jobDir )  {
-    return [conf.pythonName(), '-m', 'pycofe.tasks.ensembleprepseq', exeType, jobDir, this.id];
+  TaskEnsemblePrepSeq.prototype.getCommandLine = function ( jobManager,jobDir )  {
+    return [conf.pythonName(), '-m', 'pycofe.tasks.ensembleprepseq', jobManager, jobDir, this.id];
   }
 
   // -------------------------------------------------------------------------

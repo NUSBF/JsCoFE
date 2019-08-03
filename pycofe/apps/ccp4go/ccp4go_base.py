@@ -3,13 +3,13 @@
 #
 # ============================================================================
 #
-#    29.12.18   <--  Date of Last Modification.
+#    16.06.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  CCP4EZ Combined Auto-Solver Base class
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2018
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2019
 #
 # ============================================================================
 #
@@ -90,7 +90,7 @@ class Base(object):
     rvapi_doc_path = None       # path to rvapi document
 
     jobId          = ""         # jobId (comind from jsCoFE)
-    exeType        = "--mp"     # or "--sge" if the pipeline runs on SGE cluster
+    jobManager     = ""         # or "SGE" if the pipeline runs on SGE cluster
     queueName      = ""         # SGE queue
     nSubJobs       = 1          # permissible number of sub-jobs to launch
     trySimbad12    = True
@@ -225,8 +225,8 @@ class Base(object):
         while narg<len(args):
             key   = args[narg]
             narg += 1
-            if key=="--sge" or key=="--mp" : self.exeType       = key
-            elif key == "--no-simbad12"    : self.trySimbad12   = False
+            #if key=="--sge" or key=="--mp" : self.jobManager    = key
+            if   key == "--no-simbad12"    : self.trySimbad12   = False
             elif key == "--no-morda"       : self.tryMoRDa      = False
             elif key == "--no-crank2"      : self.tryCrank2     = False
             elif key == "--no-fitligands"  : self.tryFitLigands = False
@@ -239,6 +239,7 @@ class Base(object):
                 elif key == "--rvapi-document" : self.rvapi_doc_path = value
                 elif key == "--jobid"          : self.jobId          = value
                 elif key == "--qname"          : self.queueName      = value
+                elif key == "--job-manager"    : self.jobManager     = value
                 elif key == "--njobs"          : self.nSubJobs       = int(value)
                 else:
                     self.output_meta["retcode"] = "[01-001] unknown command line parameter"
@@ -507,6 +508,7 @@ class Base(object):
             conn.close()
             return False
 
+
     # ----------------------------------------------------------------------
 
     def setOutputPage ( self,cursor ):
@@ -563,6 +565,7 @@ class Base(object):
     def flush(self):
         pyrvapi.rvapi_flush()
         return
+
 
     # ----------------------------------------------------------------------
 

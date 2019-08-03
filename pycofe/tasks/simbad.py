@@ -3,17 +3,17 @@
 #
 # ============================================================================
 #
-#    12.01.19   <--  Date of Last Modification.
+#    14.06.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  SIMBAD EXECUTABLE MODULE
 #
 #  Command-line:
-#     ccp4-python python.tasks.simbad.py exeType jobDir jobId
+#     ccp4-python python.tasks.simbad.py jobManager jobDir jobId [queueName [nSubJobs]]
 #
 #  where:
-#    exeType    is either SHELL or SGE
+#    jobManager    is either SHELL or SGE
 #    jobDir     is path to job directory, having:
 #      jobDir/output  : directory receiving output files with metadata of
 #                       all successful imports
@@ -63,10 +63,12 @@ class Simbad(asudef.ASUDef):
 
     def run(self):
 
-        if self.exeType == "SGE":
+        qtype = []
+        if self.jobManager in ["SGE","SLURM"]:
             nSubJobs = "0";
             if len(sys.argv)>5:
                 nSubJobs = sys.argv[5]
+            #qtype = ["-submit_qtype",self.jobManager.lower()]
         else:
             nSubJobs = "4";
 
@@ -141,13 +143,19 @@ class Simbad(asudef.ASUDef):
                     "-rvapi_document"     ,self.reportDocumentName()
                   ]
 
+        if len(qtype)>0:
+            cmd += qtype
 
         if sys.platform.startswith("win"):
             app += ".bat"
 
-        if level in ['L','C','LC']:
-            cmd += [ "-max_lattice_results",maxnlatt,
-                     "-max_penalty_score"  ,maxpenalty ]
+        if level in ['L','LC']:
+            cmd += [ "-max_penalty_score"  ,maxpenalty,
+                     "-max_lattice_results",maxnlatt ]
+            if "PDB_DIR" in os.environ:
+                cmd += [ "-pdb_db",os.environ["PDB_DIR"] ]
+
+        """
         else:
             # check that simbad database is installed
             if "SIMBAD_DB" not in os.environ:
@@ -155,13 +163,12 @@ class Simbad(asudef.ASUDef):
                     "<p>&nbsp; *** SIMBAD database is not installed, or is not configured",
                     "simbad database is not found" )
                 return
-            else:
-                cmd += [ "-morda_db",os.environ["SIMBAD_DB"] ]
+            #else:
+            #    cmd += [ "-morda_db",os.environ["SIMBAD_DB"] ]
+        """
 
         if "TMPDIR" in os.environ:
             cmd += [ "-tmp_dir",os.environ["TMPDIR"] ]
-        if "PDB_DIR" in os.environ:
-            cmd += [ "-pdb_db",os.environ["PDB_DIR"] ]
 
         if hkl:
             cmd += [ hkl.getHKLFilePath(self.inputDir()) ]

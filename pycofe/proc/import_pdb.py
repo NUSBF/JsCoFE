@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    06.01.19   <--  Date of Last Modification.
+#    05.07.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -122,7 +122,7 @@ def run ( body,pdb_list ):  # body is reference to the main Import class
                 f = open ( "annotation.json","w" )
                 f.write ( json.dumps(annotation) )
                 f.close ()
-                body.file_stdout.write ( str(asuComp) + "\n" )
+                #body.file_stdout.write ( str(asuComp) + "\n" )
 
         if not rc_sf:
             body.addFileImport ( "",fname_sf,import_filetype.ftype_CIFMerged() )

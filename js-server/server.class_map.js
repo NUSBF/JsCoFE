@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    28.04.17   <--  Date of Last Modification.
+ *    26.06.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Class extension functions
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2017
+ *  (C) E. Krissinel, A. Lebedev 2016-2019
  *
  *  =================================================================
  *
@@ -47,6 +47,8 @@ function __object_to_instance ( key,value ) {
     className = getClassName ( value._type,4,'../js-common/dtypes/common.dtypes.' );
   } else if (value._type=='UserRation')  {
     className = getClassName ( value._type,0,'../js-common/common.' );
+  } else if (value._type=='UsageStats')  {
+    className = getClassName ( value._type,0,'../js-server/server.fe.' );
   }
 
   var obj = null;
@@ -68,7 +70,7 @@ function getClassInstance ( class_json )  {
 
 function makeClass ( classObject )  {
   try {
-    return getClassInstance ( JSON.stringify(classObject) )
+    return getClassInstance ( JSON.stringify(classObject) );
   } catch(e) {
     return null;
   }

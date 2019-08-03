@@ -10,10 +10,10 @@
 #  COOT EDIT COORDINATES EXECUTABLE MODULE (CLIENT-SIDE TASK)
 #
 #  Command-line:
-#     ccp4-python python.tasks.coot_ce.py exeType jobDir jobId
+#     ccp4-python python.tasks.coot_ce.py jobManager jobDir jobId
 #
 #  where:
-#    exeType  is either SHELL or SGE
+#    jobManager  is either SHELL or SGE
 #    jobDir   is path to job directory, having:
 #      jobDir/output  : directory receiving output files with metadata of
 #                       all successful imports

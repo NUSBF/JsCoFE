@@ -71,9 +71,6 @@ DataHKL.prototype.constructor = DataHKL;
 DataHKL.prototype.title = function()  { return 'Reflection Data'; }
 DataHKL.prototype.icon  = function()  { return 'data';            }
 
-//DataHKL.prototype.icon_small = function()  { return 'data_20x20';      }
-//DataHKL.prototype.icon_large = function()  { return 'data';            }
-
 // change this synchronously with the version in dtype.hkl.py
 DataHKL.prototype.currentVersion = function()  {
   var version = 1;
@@ -155,6 +152,10 @@ if (!__template)  {
             this.getMeta('Fpm.minus.sigma','');
   }
 
+  DataHKL.prototype.hasAnomalousSignal = function()  {
+    return ($.inArray('anomalous',this.subtype)>=0);
+  }
+
   DataHKL.prototype.makeDataSummaryPage = function ( task )  {
   var dsp = new DataSummaryPage ( this );
 
@@ -172,7 +173,8 @@ if (!__template)  {
     dsp.makeRow ( 'Resolution high',round(this.getHighResolution(),2),'High resolution limit' );
 
     v = 'Not present';
-    if ($.inArray('anomalous',this.subtype)>=0)
+    //if ($.inArray('anomalous',this.subtype)>=0)
+    if (this.hasAnomalousSignal())
       v = 'Present';
     dsp.makeRow ( 'Anomalous scattering',v,'Presence of anomalous data' );
 
@@ -220,13 +222,13 @@ if (!__template)  {
     this.setWType = function()  {
       setLabel ( 'wavelength type:',r,0 );
       customGrid.wtype = new Dropdown();
-      customGrid.wtype.setWidth ( '150px' );
-      customGrid.wtype.addItem ( '[choose one]' ,'','choose-one' ,this.wtype=='choose-one'  );
+      customGrid.wtype.setWidth ( '180px' );
+      customGrid.wtype.addItem ( '[must be chosen]' ,'','choose-one' ,this.wtype=='choose-one'  );
       customGrid.wtype.addItem ( 'low remote' ,'','low-remote' ,this.wtype=='low-remote'  );
       customGrid.wtype.addItem ( 'inflection' ,'','inflection' ,this.wtype=='inflection'  );
       customGrid.wtype.addItem ( 'peak'       ,'','peak'       ,this.wtype=='peak'        );
       customGrid.wtype.addItem ( 'high remote','','high-remote',this.wtype=='high-remote' );
-      customGrid.setWidget   ( customGrid.wtype, r,1,1,1 );
+      customGrid.setWidget   ( customGrid.wtype, r,1,1,2 );
       customGrid.setCellSize ( '160px','',0,1 );
 //      customGrid.wtype.setZIndex ( 399-2*dropdown.serialNo );  // prevent widget overlap
 //      customGrid.wtype.setWidth_px ( 120 );
@@ -316,6 +318,7 @@ if (!__template)  {
       var sg0         = this.getSpaceGroup();
       var sg_enant    = getEnantiomorphSpG ( sg0 );
       var sg_ind      = getIndistinguishableSpG ( sg0 );
+      var sglist      = getAllPointSpG ( sg0 );
 
       var sg0_id      = sg0.replace(/\s+/g,'');
       var sg_enant_id = '';
@@ -328,9 +331,10 @@ if (!__template)  {
         sg_ind_id   = sg0_id + ';' + sg_ind.replace(/\s+/g,'');
 
       if (!sgsel)  {
-        if (sg_enant)     sgsel = sg_enant_id;
-        else if (sg_ind)  sgsel = sg_ind_id;
-                    else  sgsel = sg0_id;
+        if (sglist.length>1)  sgsel = 'ALL';
+        else if (sg_enant)    sgsel = sg_enant_id;  // perhaps silly :)
+        else if (sg_ind)      sgsel = sg_ind_id;
+                    else      sgsel = sg0_id;
       }
 
       customGrid.spaceGroup.addItem  ( sg0 + ' (as in the dataset)','',
@@ -342,8 +346,7 @@ if (!__template)  {
         customGrid.spaceGroup.addItem  ( sg0 + ' + ' + sg_ind + ' (indistinguishable)',
                                          '',sg_ind_id,(sgsel==sg_ind_id) );
 
-      var sglist = getAllPointSpG ( sg0 );
-      if (sglist.length>1) {
+      if (sglist.length>1)  {
         customGrid.spaceGroup.addItem ( 'all compatible space groups','',
                                         'ALL',(sgsel=='ALL') );
         customGrid.spaceGroup.getItem ( 'ALL' )

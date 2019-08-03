@@ -70,8 +70,8 @@ if (__template)  {
 
   var conf = require('../../js-server/server.configuration');
 
-  TaskShelxAuto.prototype.getCommandLine = function ( exeType,jobDir )  {
-    return [conf.pythonName(), '-m', 'pycofe.tasks.shelxauto', exeType, jobDir, this.id];
+  TaskShelxAuto.prototype.getCommandLine = function ( jobManager,jobDir )  {
+    return [conf.pythonName(), '-m', 'pycofe.tasks.shelxauto', jobManager, jobDir, this.id];
   }
 
   // -------------------------------------------------------------------------

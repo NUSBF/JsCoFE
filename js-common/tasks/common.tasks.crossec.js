@@ -170,8 +170,8 @@ if (__template)  {
 
   var conf = require('../../js-server/server.configuration');
 
-  TaskCrosSec.prototype.getCommandLine = function ( exeType,jobDir )  {
-    return [conf.pythonName(), '-m', 'pycofe.tasks.crossec', exeType, jobDir, this.id];
+  TaskCrosSec.prototype.getCommandLine = function ( jobManager,jobDir )  {
+    return [conf.pythonName(), '-m', 'pycofe.tasks.crossec', jobManager, jobDir, this.id];
   }
 
   // -------------------------------------------------------------------------

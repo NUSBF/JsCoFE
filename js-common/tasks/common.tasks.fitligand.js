@@ -156,9 +156,6 @@ TaskFitLigand.prototype.constructor = TaskFitLigand;
 
 TaskFitLigand.prototype.icon = function()  { return 'task_fitligand'; }
 
-//TaskFitLigand.prototype.icon_small = function()  { return 'task_fitligand_20x20'; }
-//TaskFitLigand.prototype.icon_large = function()  { return 'task_fitligand';       }
-
 TaskFitLigand.prototype.currentVersion = function()  {
   var version = 0;
   if (__template)
@@ -187,8 +184,8 @@ if (__template)  {
 
   }
 
-  TaskFitLigand.prototype.getCommandLine = function ( exeType,jobDir )  {
-    return [conf.pythonName(), '-m', 'pycofe.tasks.fitligand', exeType, jobDir, this.id];
+  TaskFitLigand.prototype.getCommandLine = function ( jobManager,jobDir )  {
+    return [conf.pythonName(), '-m', 'pycofe.tasks.fitligand', jobManager, jobDir, this.id];
   }
 
   // -------------------------------------------------------------------------

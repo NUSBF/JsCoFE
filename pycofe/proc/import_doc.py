@@ -44,8 +44,10 @@ def run ( body,sectionTitle="" ):  # body is reference to the main Import class,
         import_filetype.ftype_GIF ()
     ]
 
+    body.nImportedDocs = 0
+
     processed = []
-    for f in body.files_all:
+    for f in sorted(body.files_all):
         isDoc = body.checkFileImportL ( f,doctypes )
         isImg = False
         if not isDoc:
@@ -55,11 +57,12 @@ def run ( body,sectionTitle="" ):  # body is reference to the main Import class,
             fout = os.path.join ( body.outputDir(),f )
             os.rename ( os.path.join(body.importDir(),f),fout )
             if isDoc:
+                body.nImportedDocs += 1
                 fname,fext = os.path.splitext(f)
                 tabId = body.getWidgetId ( "doc_tab" )
                 body.insertTab ( tabId,fname,None,focus=False )
                 body.putMessage1 ( tabId,"<iframe src=\"../" + fout + "\" " +\
-                    "style=\"border:none;position:absolute;top:50px;left:0;width:100%;height:95%;\"></iframe>",
+                    "style=\"border:none;position:absolute;top:50px;left:0;width:100%;height:92%;\"></iframe>",
                     0 )
 
                 popId = body.getWidgetId ( "popId" )

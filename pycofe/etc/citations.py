@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    08.03.19   <--  Date of Last Modification.
+#    21.05.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -62,6 +62,7 @@ citations = {
     'dials.rs_mapper' : { 'name' : '', 'category' : 'service', 'refs' : [] },
     'mapro'           : { 'name' : '', 'category' : 'primary', 'refs' : [] },
     'find-blobs'      : { 'name' : '', 'category' : 'service', 'refs' : [] },
+    'f2mtz'           : { 'name' : '', 'category' : 'service', 'refs' : [] },
 
     'pointless' : { 'name'     : 'Pointless',
                     'category' : 'primary',
@@ -807,6 +808,40 @@ citations = {
                             'year'    : '2016',
                             'pages'   : 's189-s189',
                             'doi'     : '10.1107/S2053273316097199'
+                  }]
+                },
+
+    'imosflm' : { 'name'     : 'iMosflm',
+                  'category' : 'primary',
+                  'refs'     : [{
+                            'authors' : 'Leslie, A. G. W.',
+                            'title'   : 'The integration of macromolecular diffraction data',
+                            'journal' : 'Acta Cryst.',
+                            'volume'  : 'D62',
+                            'year'    : '2006',
+                            'pages'   : '48-57',
+                            'doi'     : '10.1107/S0907444905039107'
+                        },{
+                            'authors' : 'Battye, T. G. G., Kontogiannis, L., Johnson, O., Powell, H. R. & Leslie, A. G. W.',
+                            'title'   : 'iMOSFLM: a new graphical interface for diffraction-image processing with MOSFLM',
+                            'journal' : 'Acta Cryst.',
+                            'volume'  : 'D67',
+                            'year'    : '2011',
+                            'pages'   : '271-281',
+                            'doi'     : '10.1107/S0907444910048675'
+                  }]
+                },
+
+    'lsqkab'  : { 'name'     : 'LSQKAB',
+                  'category' : 'primary',
+                  'refs'     : [{
+                            'authors' : 'Kabsch, W.',
+                            'title'   : 'A solution for the best rotation to relate two sets of vectors',
+                            'journal' : 'Acta Cryst.',
+                            'volume'  : 'A32',
+                            'year'    : '1976',
+                            'pages'   : '922-923',
+                            'doi'     : '10.1107/S0567739476001873'
                   }]
                 }
 

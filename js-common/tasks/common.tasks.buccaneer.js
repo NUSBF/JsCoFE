@@ -108,6 +108,7 @@ function TaskBuccaneer()  {
       */
     },{
       data_type   : {'DataStructure':['~substructure','~substructure-am','!xyz']}, // data type(s) and subtype(s)
+      desc        : 'fixed model',  // used in TaskDataDialog to discriminate between alike items
       label       : 'Fixed model',  // label for input dialog
       inputId     : 'xmodel',       // input Id for referencing input fields
       customInput : 'buccaneer-xm', // lay custom fields below the dropdown
@@ -116,6 +117,7 @@ function TaskBuccaneer()  {
       max         : 1           // maximum acceptable number of data instances
     },{
       data_type   : {'DataStructure':['~substructure-am','!xyz']}, // data type(s) and subtype(s)
+      desc        : 'model to aid sequencing',  // used in TaskDataDialog to discriminate between alike items
       label       : 'Model to aid<br>sequencing',  // label for input dialog
       inputId     : 'smodel',   // input Id for referencing input fields
       tooltip     : 'Optional part(s) of model to aid sequencing.',
@@ -362,9 +364,6 @@ TaskBuccaneer.prototype.constructor = TaskBuccaneer;
 
 TaskBuccaneer.prototype.icon = function()  { return 'task_buccaneer'; }
 
-//TaskBuccaneer.prototype.icon_small = function()  { return 'task_buccaneer_20x20'; }
-//TaskBuccaneer.prototype.icon_large = function()  { return 'task_buccaneer';       }
-
 TaskBuccaneer.prototype.currentVersion = function()  {
   var version = 0;
   if (__template)
@@ -392,8 +391,8 @@ if (__template)  {
 
   }
 
-  TaskBuccaneer.prototype.getCommandLine = function ( exeType,jobDir )  {
-    return [conf.pythonName(), '-m', 'pycofe.tasks.buccaneer', exeType, jobDir, this.id];
+  TaskBuccaneer.prototype.getCommandLine = function ( jobManager,jobDir )  {
+    return [conf.pythonName(), '-m', 'pycofe.tasks.buccaneer', jobManager, jobDir, this.id];
   }
 
   // -------------------------------------------------------------------------

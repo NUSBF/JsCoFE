@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    27.12.18   <--  Date of Last Modification.
+ *    15.05.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  GESAMT Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2018
+ *  (C) E. Krissinel, A. Lebedev 2016-2019
  *
  *  =================================================================
  *
@@ -35,7 +35,7 @@ function TaskGesamt()  {
   this._type   = 'TaskGesamt';
   this.name    = 'gesamt';
   this.oname   = 'gesamt';      // default output file name template
-  this.title   = 'Structure Alignment with Gesamt';
+  this.title   = 'Structure Alignment and Superposition with Gesamt';
   this.helpURL = './html/jscofe_task_gesamt.html';
 
   this.input_dtypes = [{      // input data types
@@ -180,9 +180,6 @@ TaskGesamt.prototype.constructor = TaskGesamt;
 
 TaskGesamt.prototype.icon = function()  { return 'task_gesamt'; }
 
-//TaskGesamt.prototype.icon_small = function()  { return 'task_gesamt_20x20'; }
-//TaskGesamt.prototype.icon_large = function()  { return 'task_gesamt';       }
-
 TaskGesamt.prototype.currentVersion = function()  {
   var version = 0;
   if (__template)
@@ -234,8 +231,8 @@ if (!__template)  {
 
   var conf = require('../../js-server/server.configuration');
 
-  TaskGesamt.prototype.getCommandLine = function ( exeType,jobDir )  {
-    return [conf.pythonName(), '-m', 'pycofe.tasks.gesamt', exeType, jobDir, this.id];
+  TaskGesamt.prototype.getCommandLine = function ( jobManager,jobDir )  {
+    return [conf.pythonName(), '-m', 'pycofe.tasks.gesamt', jobManager, jobDir, this.id];
   }
 
   // -------------------------------------------------------------------------

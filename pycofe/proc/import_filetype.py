@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    30.04.19   <--  Date of Last Modification.
+#    24.07.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -49,7 +49,7 @@ def ftype_Unknown      ():  return "unknown"
 
 def getFileType ( fname,importDir,file_stdout ):
 
-    fext = os.path.splitext(fname.lower())[1]
+    fn,fext = os.path.splitext(fname.lower())
 
     if fext in ('.hkl','.mtz'):
         fpath = os.path.join ( importDir,fname )
@@ -87,9 +87,18 @@ def getFileType ( fname,importDir,file_stdout ):
     if fext in ('.pdb','.mmcif','.ent'):  return ftype_XYZ()
     if fext in ('.seq','.fasta','.pir'):  return ftype_Sequence()
 
+    if fext=='.txt' :
+        fn1,fext1 = os.path.splitext(fn.lower())
+        if fext1 in ('.seq','.fasta','.pir'):
+            return ftype_Sequence()
+        elif fext1.startswith('.s'):
+            fext2 = os.path.splitext(fn1.lower())[1]
+            if fext2 in ('.seq','.fasta','.pir'):
+                return ftype_Sequence()
+        return ftype_TEXT()
+
     if fext=='.html':  return ftype_HTML()
     if fext=='.pdf' :  return ftype_PDF ()
-    if fext=='.txt' :  return ftype_TEXT()
     if fext=='.jpg' :  return ftype_JPG ()
     if fext=='.jpeg':  return ftype_JPEG()
     if fext=='.png' :  return ftype_PNG ()

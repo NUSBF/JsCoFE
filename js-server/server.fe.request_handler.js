@@ -91,6 +91,10 @@ var response = null;
           response = prj.getProjectData ( login,data );
        break;
 
+    case cmd.fe_reqtype.renameProject :  // returns _current_ project data
+          response = prj.renameProject ( login,data );
+       break;
+
     case cmd.fe_reqtype.saveProjectData :
           response = prj.saveProjectData ( login,data );
        break;

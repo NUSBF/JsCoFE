@@ -115,8 +115,8 @@ if (__template)  {
   }
 
 
-  TaskASUDefStruct.prototype.getCommandLine = function ( exeType,jobDir )  {
-    return [conf.pythonName(), '-m', 'pycofe.tasks.asudef', exeType, jobDir, this.id];
+  TaskASUDefStruct.prototype.getCommandLine = function ( jobManager,jobDir )  {
+    return [conf.pythonName(), '-m', 'pycofe.tasks.asudef', jobManager, jobDir, this.id];
   }
 
   // -------------------------------------------------------------------------

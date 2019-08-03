@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    27.07.18   <--  Date of Last Modification.
+ *    24.07.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  E-mail Support
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2018
+ *  (C) E. Krissinel, A. Lebedev 2016-2019
  *
  *  =================================================================
  *
@@ -62,26 +62,28 @@ var telnet  = utils.spawn ( 'telnet',[emailer.host,emailer.port],{} );
 
   telnet.stdin.setEncoding ( 'utf-8' );
 
-  (function(){
+  (function(t){
 
-    telnet.on ( 'exit',function(code){
-      telnet = null;
+    var finish = false;
+    t.on ( 'exit',function(code){
+      finish = true;
     });
 
-    telnet.on ( 'error',function(e){
+    t.on ( 'error',function(e){
       log.error ( 2,'Emailer error: cannot send e-mail' );
-      console.error ( e.stack || e );
+      log.error ( e.stack || e );
     });
 
+    /*
     var stage = 0;
 
-    telnet.stdout.on ( 'data', function(data){
-      if (telnet && (stage>0))  {
+    t.stdout.on ( 'data', function(data){
+      if ((!finish) && (stage>0))  {
         var msg = '';
         switch (stage)  {
           case 1 : msg = 'HELO '        + emailer.host;             break;
-          case 2 : msg = 'MAIL FROM: '  + emailer.emailFrom;        break;
-          case 3 : msg = 'RCPT TO: '    + to;                       break;
+          case 2 : msg = 'MAIL FROM: <' + emailer.emailFrom + '>';  break;
+          case 3 : msg = 'RCPT TO: <'   + to + '>';                 break;
           case 4 : msg = 'DATA';                                    break;
           case 5 : msg = 'From: '       + emailer.headerFrom +
                          '\nTo: '       + to +
@@ -96,17 +98,57 @@ var telnet  = utils.spawn ( 'telnet',[emailer.host,emailer.port],{} );
           default: msg = 'QUIT';
         }
         try {
-          telnet.stdin.write ( msg + '\n' );
+          t.stdin.write ( msg + '\n' );
         } catch (e)  {
           log.error ( 3,'Emailer error: cannot send e-mail' );
-          console.error ( e.stack || e );
+          log.error ( e.stack || e );
           //telnet = null;
         }
       }
       stage += 1;
     });
 
-  }());
+    */
+
+    var stage = 0;
+
+    t.stdout.on ( 'data', function(data){
+      if ((!finish) && (stage>0))  {
+        var msg = '';
+        switch (stage)  {
+          case 1  : msg = 'HELO '         + emailer.host;             break;
+          case 2  : msg = 'MAIL FROM: <'  + emailer.emailFrom + '>';  break;
+          case 3  : msg = 'RCPT TO: <'    + to + '>';                 break;
+          case 4  : msg = 'DATA';                                     break;
+          case 5  : msg = 'From: '        + emailer.headerFrom +
+                          '\nTo: '        + to      +
+                          '\nSubject: '   + subject +
+                          '\nMIME-Version: 1.0'     +
+                          '\nContent-Type: text/html; charset="ISO-8859-1"' +
+                          '\n\n<html><body>\n'      +
+                          message                   +
+                          '\n</body></html>\n'      +
+                          '.';
+                    break;
+          case 6  : msg = 'QUIT';  break;
+          default : ;
+        }
+        if (msg)  {
+          try {
+            t.stdin.write ( msg + '\n' );
+          } catch (e)  {
+            log.error ( 3,'Emailer error: cannot send e-mail' );
+            log.error ( e.stack || e );
+            finish = false;
+          }
+        }
+      }
+      stage += 1;
+    });
+
+  }(telnet));
+
+  return;
 
 }
 

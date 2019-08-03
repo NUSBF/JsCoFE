@@ -3,13 +3,13 @@
 #
 # ============================================================================
 #
-#    28.06.18   <--  Date of Last Modification.
+#    16.07.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  ASYMETRIC UNIT INFERENCE
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2018
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2019
 #
 # ============================================================================
 #
@@ -159,7 +159,7 @@ c assume 25%/75% DNA/protein, as in Kantardjieff
 """
 
 
-def suggestASUComp1 ( hkl,seqFilePath ):
+def suggestASUComp1 ( hkl,seqFilePath,stoichiometry=False ):
 # version with all template sequences taken from file
     asu = []
     if seqFilePath:
@@ -171,7 +171,10 @@ def suggestASUComp1 ( hkl,seqFilePath ):
             seq = ""
             for j in range(1,len(seqdata)):
                 seq += seqdata[j].strip()
-            asu.append ( [seq,0.0,'protein',0] )  # only protein seq for now -- to be changed
+            if stoichiometry:
+                asu.append ( [seq,0.0,'protein',1] )  # only protein seq for now -- to be changed
+            else:
+                asu.append ( [seq,0.0,'protein',0] )  # only protein seq for now -- to be changed
     return suggestASUComp ( hkl,asu )
 
 

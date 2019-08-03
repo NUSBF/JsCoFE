@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    31.01.19   <--  Date of Last Modification.
+#    29.07.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -105,7 +105,7 @@ class Refmac(ccp4build_cbuccaneer.CBuccaneer):
         "NCSR"           : "LOCAL",
         #"REFI RESO"      : " 19.91 1.59
         "MAKE+NEWLIGAND" : "EXIT",
-        "PHOUT"             : True
+        "PHOUT"          : True
     }
 
 
@@ -191,6 +191,11 @@ class Refmac(ccp4build_cbuccaneer.CBuccaneer):
             "REFI RESO  " + self.input_data["res_low"] + " " + self.input_data["res_high"]
         ])
 
+        if self.input_data["experiment_type"]=="electron":
+            if self.input_data["form_factor"]=="mb":
+                self.write_script ([ "SOURCE ELECTRON MB" ])
+            else:
+                self.write_script ([ "SOURCE ELECTRON" ])
 
         self.write_script ([ "END" ])
         self.close_script()
@@ -203,6 +208,12 @@ class Refmac(ccp4build_cbuccaneer.CBuccaneer):
                 "hklout",refmac_mtzout,
                 "xyzout",refmac_xyzout,
                 "tmpdir",os.path.join(os.environ["CCP4_SCR"],uuid.uuid4().hex) ]
+
+        if self.input_data["experiment_type"]=="electron":
+           if self.input_data["form_factor"] == "gaussian":
+              cmd += ["libin",os.path.join(os.environ["CCP4"], 'lib', 'data', 'atomsf_electron.lib')]
+        elif self.input_data["experiment_type"] == "neutron":
+           cmd += ["libin",os.path.join(os.environ["CCP4"], 'lib', 'data', 'atomsf_neutron.lib')]
 
         stdout_fpath = self.getStdOutPath ( nameout )
         stderr_fpath = self.getStdErrPath ( nameout )
@@ -238,7 +249,13 @@ class Refmac(ccp4build_cbuccaneer.CBuccaneer):
 
 
     def getRefmacMetrics ( self,stdout_fpath ):
-        meta = {}
+        meta = {
+          "rfactor"     : ["",""],
+          "rfree"       : ["",""],
+          "bond_length" : ["",""],
+          "bond_angle"  : ["",""],
+          "chir_volume" : ["",""]
+        }
         with open(stdout_fpath,"r") as f:
             key = 0
             for line in f:

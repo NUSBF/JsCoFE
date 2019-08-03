@@ -151,9 +151,6 @@ TaskFitWaters.prototype.constructor = TaskFitWaters;
 
 TaskFitWaters.prototype.icon = function()  { return 'task_fitwaters'; }
 
-//TaskFitWaters.prototype.icon_small = function()  { return 'task_fitwaters_20x20'; }
-//TaskFitWaters.prototype.icon_large = function()  { return 'task_fitwaters';       }
-
 TaskFitWaters.prototype.currentVersion = function()  {
   var version = 0;
   if (__template)
@@ -182,8 +179,8 @@ if (__template)  {
 
   }
 
-  TaskFitWaters.prototype.getCommandLine = function ( exeType,jobDir )  {
-    return [conf.pythonName(), '-m', 'pycofe.tasks.fitwaters', exeType, jobDir, this.id];
+  TaskFitWaters.prototype.getCommandLine = function ( jobManager,jobDir )  {
+    return [conf.pythonName(), '-m', 'pycofe.tasks.fitwaters', jobManager, jobDir, this.id];
   }
 
   // -------------------------------------------------------------------------

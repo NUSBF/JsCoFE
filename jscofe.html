@@ -5,7 +5,7 @@
  *
  *  =================================================================
  *
- *    24.04.19   <..  Date of Last Modification.
+ *    29.07.19   <..  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  =================================================================
  *
@@ -77,6 +77,7 @@
   <script src="js-client/cofe.dialog_announce.js"></script>
   <script src="js-client/cofe.dialog_export_job.js"></script>
   <script src="js-client/cofe.dialog_export_project.js"></script>
+  <script src="js-client/cofe.dialog_feedback.js"></script>
   <script src="js-client/cofe.dialog_import_annotation.js"></script>
   <script src="js-client/cofe.dialog_import_pdb.js"></script>
   <script src="js-client/cofe.dialog_import_project.js"></script>
@@ -98,11 +99,11 @@
   <script src="js-client/cofe.page_project_list.js"></script>
   <script src="js-client/cofe.page_project.js"></script>
   <script src="js-client/cofe.page_register.js"></script>
-  <script src="js-client/cofe.rsviewer.js"></script>
   <script src="js-client/cofe.session.js"></script>
   <script src="js-client/cofe.tree_facilities.js"></script>
   <script src="js-client/cofe.tree_job.js"></script>
   <script src="js-client/cofe.upload.js"></script>
+  <script src="js-client/cofe.viewers.js"></script>
 
   <script src="js-common/dtypes/common.dtypes.box.js"></script>
   <script src="js-common/dtypes/common.dtypes.template.js"></script>
@@ -139,6 +140,8 @@
   <script src="js-common/tasks/common.tasks.deposition.js"></script>
   <script src="js-common/tasks/common.tasks.dimple.js"></script>
   <script src="js-common/tasks/common.tasks.dui.js"></script>
+  <script src="js-common/tasks/common.tasks.editrevision.js"></script>
+  <script src="js-common/tasks/common.tasks.ensembleprepmg.js"></script>
   <script src="js-common/tasks/common.tasks.ensembleprepseq.js"></script>
   <script src="js-common/tasks/common.tasks.ensembleprepxyz.js"></script>
   <script src="js-common/tasks/common.tasks.facilityimport.js"></script>
@@ -147,7 +150,9 @@
   <script src="js-common/tasks/common.tasks.freerflag.js"></script>
   <script src="js-common/tasks/common.tasks.gesamt.js"></script>
   <script src="js-common/tasks/common.tasks.import.js"></script>
+  <script src="js-common/tasks/common.tasks.imosflm.js"></script>
   <script src="js-common/tasks/common.tasks.lorestr.js"></script>
+  <script src="js-common/tasks/common.tasks.lsqkab.js"></script>
   <script src="js-common/tasks/common.tasks.makeligand.js"></script>
   <script src="js-common/tasks/common.tasks.mergedata.js"></script>
   <script src="js-common/tasks/common.tasks.molrep.js"></script>
@@ -181,7 +186,8 @@
   <div id='scene' style="width:100%;"></div>
 
   <script>
-    $(document).ready(function()  {
+    $(window).on( 'load', function(){
+      //console.log ( '   ready=' + document.readyState );
       var dev_switch = 0; //3;
       startSession ( 'scene',dev_switch );
     });

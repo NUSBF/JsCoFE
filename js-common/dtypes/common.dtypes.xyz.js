@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    27.12.18   <--  Date of Last Modification.
+ *    10.05.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  XYZ Data Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2018
+ *  (C) E. Krissinel, A. Lebedev 2016-2019
  *
  *  =================================================================
  *
@@ -50,11 +50,8 @@ DataXYZ.prototype.constructor = DataXYZ;
 
 // ===========================================================================
 
-DataXYZ.prototype.title = function()  { return 'Coordinates'; }
-DataXYZ.prototype.icon  = function()  { return 'data';        }
-
-//DataXYZ.prototype.icon_small = function()  { return 'data_20x20'; }
-//DataXYZ.prototype.icon_large = function()  { return 'data';       }
+DataXYZ.prototype.title = function()  { return 'Structure Model'; }
+DataXYZ.prototype.icon  = function()  { return 'data';            }
 
 // when data class version is changed here, change it also in python
 // constructors
@@ -206,6 +203,28 @@ if (!__template)  {
   ];
 
 
+  DataXYZ.prototype.getChainList = function()  {
+  var xyz  = this.xyzmeta.xyz;
+  var list = [];
+    for (var i=0;i<xyz.length;i++)  {
+      var chains = xyz[i].chains;
+      for (var j=0;j<chains.length;j++)  {
+        var item   = {};
+        item.id    = chains[j].id;
+        item.model = xyz[i].model;
+        item.type  = chains[j].type;
+        if (xyz.length>1)
+          item.fullId = '/' + xyz[i].model + '/' + chains[j].id;
+        else
+          item.fullId = chains[j].id;
+        item.label = item.fullId + ' (' + chains[j].type.toLowerCase() + ')';
+        list.push ( item );
+      }
+    }
+    return list;
+  }
+
+
   DataXYZ.prototype.layCustomDropdownInput = function ( dropdown ) {
 
     var customGrid = dropdown.customGrid;
@@ -308,6 +327,21 @@ if (!__template)  {
 
     return msg;
 
+  }
+
+
+  // subtypeDescription() should return detail description of given subtype
+  // in context of specific data object. This description is used in
+  // TaskDataDialog. Empty return will suppress description output in
+  // task data dialog.
+  DataXYZ.prototype.subtypeDescription = function ( subtype )  {
+    switch (subtype)  {
+      case 'protein' : return 'protein chain(s)';
+      case 'rna'     : return 'RNA chain(s)';
+      case 'dna'     : return 'DNA chain(s)';
+      default : ;
+    }
+    return DataTemplate.prototype.subtypeDescription.call ( this,subtype );
   }
 
 

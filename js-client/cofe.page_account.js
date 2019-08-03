@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    28.03.19   <--  Date of Last Modification.
+ *    02.08.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -36,16 +36,18 @@ function AccountPage ( sceneId )  {
   this.makeHeader ( 3,null );
 
   // Make Main Menu
-  var project_mi = this.headerPanel.menu.addItem('Current project',image_path('project'));
-  var prjlist_mi = this.headerPanel.menu.addItem('My Projects'    ,image_path('list'));
+  if (__current_project)
+    this.addMenuItem ( 'Current project','project',function(){
+      makeProjectPage ( sceneId );
+    });
+  this.addMenuItem ( 'My Projects','list',function(){
+    makeProjectListPage ( sceneId );
+  });
   if (__admin)
-    admin_mi = this.headerPanel.menu.addItem('Admin Page',image_path('admin'));
-  this.addLogoutToMenu ( function(){ logout(sceneId); } );
-
-  project_mi.addOnClickListener ( function(){ makeProjectPage    (sceneId); });
-  prjlist_mi.addOnClickListener ( function(){ makeProjectListPage(sceneId); });
-  if (__admin)
-    admin_mi.addOnClickListener ( function(){ makeAdminPage      (sceneId); });
+    this.addMenuItem ( 'Admin Page','admin',function(){
+      makeAdminPage ( sceneId );
+    });
+  this.addLogoutToMenu ( function(){ logout(sceneId,0); } );
 
   // adjust scene grid attributes such that login panel is centered
   this.grid.setCellSize          ( '45%','',1,0,1,1 );
@@ -60,67 +62,77 @@ function AccountPage ( sceneId )  {
   panel.setWidth      ( '300pt' );
   this.grid.setWidget ( panel,1,1,1,1 );
 
-  var title_lbl   = new Label     ( 'My Account'  );
-  var user_lbl    = new Label     ( 'User name:'  );
-  var email_lbl   = new Label     ( 'E-mail:'     );
-  var login_lbl   = new Label     ( 'Login name:' );
-  var pwd_lbl     = new Label     ( 'Password:'   );
-  var licence_lbl = new Label     ( 'Licence:'    );
-  var licence_val = new Label     ( ''            );
-  var user_inp    = new InputText ( '' );
-  var email_inp   = new InputText ( '' );
-  var login_inp   = new InputText ( '' );
-  var pwd_inp     = new InputText ( '' );
-  user_inp   .setStyle          ( 'text',"^[A-Za-z\\-\\.\\s]+$",'John Smith',
+  var title_lbl    = new Label     ( 'My Account'  );
+  var user_lbl     = new Label     ( 'User name:'  );
+  var email_lbl    = new Label     ( 'E-mail:'     );
+  var login_lbl    = new Label     ( 'Login name:' );
+  var pwd_lbl      = new Label     ( 'Password:'   );
+  var licence_lbl  = new Label     ( 'Licence agreement:&nbsp;&nbsp;&nbsp;' ).setNoWrap();
+  var licence_val  = new Label     ( 'not chosen'  ).setFontItalic(true)     .setNoWrap();
+  var feedback_lbl = new Label     ( 'Feedback agreement:&nbsp;&nbsp;&nbsp;').setNoWrap();
+  var feedback_val = new Label     ( 'not chosen'  ).setFontItalic(true)     .setNoWrap();
+  var user_inp     = new InputText ( '' );
+  var email_inp    = new InputText ( '' );
+  var login_inp    = new InputText ( '' );
+  var pwd_inp      = new InputText ( '' );
+  user_inp    .setStyle         ( 'text',"^[A-Za-z\\-\\.\\s]+$",'John Smith',
                                   'User name should only contain latin ' +
                                   'letters,\n dots, dashes and spaces' );
-  email_inp  .setStyle          ( 'email','','john.smith@university.ac.uk',
+  email_inp   .setStyle         ( 'email','','john.smith@university.ac.uk',
                                   'Should be a valid e-mail address, at which ' +
                                   'your\n new password will be sent' );
-  login_inp  .setStyle          ( 'text',"^[A-Za-z0-9\\-\\._]+$",'john.smith',
+  login_inp   .setStyle         ( 'text',"^[A-Za-z0-9\\-\\._]+$",'john.smith',
                                   'Login name cannot be changed' );
-  pwd_inp    .setStyle          ( 'password','','New password',
+  pwd_inp     .setStyle         ( 'password','','password (old or new)',
                                   'Choose new password' );
-  licence_val.setTooltip        ( 'Type of licence may be changed, please ' +
+  licence_val .setTooltip       ( 'Type of licence may be changed, please ' +
                                   'press "Choose" button.' );
-  title_lbl  .setFont           ( 'times','300%',true,true );
-  user_lbl   .setFontSize       ( '125%' );
-  email_lbl  .setFontSize       ( '125%' );
-  login_lbl  .setFontSize       ( '125%' );
-  pwd_lbl    .setFontSize       ( '125%' );
-  licence_lbl.setFontSize       ( '125%' );
-  licence_val.setFontSize       ( '125%' );
-  user_inp   .setFontSize('112%').setFontItalic(true).setWidth('97%');
-  email_inp  .setFontSize('112%').setFontItalic(true).setWidth('97%');
-  login_inp  .setFontSize('112%').setFontItalic(true).setWidth('97%').setReadOnly(true);
-  pwd_inp    .setFontSize('112%').setFontItalic(true).setWidth('97%');
+  feedback_val.setTooltip       ( 'Terms of feedback agremment may be changed, ' +
+                                  'please press "Choose" button.' );
+  title_lbl   .setFont          ( 'times','300%',true,true );
+  user_lbl    .setFontSize      ( '125%' ).setWidth('auto');
+  email_lbl   .setFontSize      ( '125%' );
+  login_lbl   .setFontSize      ( '125%' );
+  pwd_lbl     .setFontSize      ( '125%' );
+  licence_lbl .setFontSize      ( '125%' );
+  licence_val .setFontSize      ( '112%' ).setFontWeight(700);
+  feedback_lbl.setFontSize      ( '125%' );
+  feedback_val.setFontSize      ( '112%' ).setFontWeight(700);
+  user_inp    .setFontSize('112%').setFontItalic(true).setWidth('97%');
+  email_inp   .setFontSize('112%').setFontItalic(true).setWidth('97%');
+  login_inp   .setFontSize('112%').setFontItalic(true).setWidth('97%').setReadOnly(true);
+  pwd_inp     .setFontSize('112%').setFontItalic(true).setWidth('97%');
 
   var row = 0;
-  panel.setWidget               ( title_lbl  ,row,0,1,3 );
-  panel.setHorizontalAlignment  ( row++ ,0   ,'center'  );
-  panel.setCellSize             ( '','20pt'  ,row++,0   );
-  panel.setWidget               ( user_lbl   ,row  ,0,1,1 );
-  panel.setWidget               ( email_lbl  ,row+1,0,1,1 );
-  panel.setWidget               ( login_lbl  ,row+2,0,1,1 );
-  panel.setWidget               ( pwd_lbl    ,row+3,0,1,1 );
-  panel.setWidget               ( licence_lbl,row+4,0,1,1 );
-  panel.setVerticalAlignment    ( row  ,0,'middle' );
-  panel.setVerticalAlignment    ( row+1,0,'middle' );
-  panel.setVerticalAlignment    ( row+2,0,'middle' );
-  panel.setVerticalAlignment    ( row+3,0,'middle' );
-  panel.setVerticalAlignment    ( row+4,0,'middle' );
-  panel.setWidget               ( user_inp   ,row++,1,1,2 );
-  panel.setWidget               ( email_inp  ,row++,1,1,2 );
-  panel.setWidget               ( login_inp  ,row++,1,1,2 );
-  panel.setWidget               ( pwd_inp    ,row++,1,1,2 );
-  panel.setWidget               ( licence_val,row  ,1,1,1 );
-  panel.setVerticalAlignment    ( row,1,'middle' );
+  panel.setWidget               ( title_lbl   ,row,0,1,4 );
+  panel.setHorizontalAlignment  ( row++ ,0    ,'center'  );
+  panel.setWidget               ( this.makeSetupNamePanel(), row++,0,1,4 );
+  panel.setCellSize             ( '','20pt'   ,row++,0   );
+  panel.setWidget               ( user_lbl    ,row  ,0,1,1 );
+  panel.setWidget               ( email_lbl   ,row+1,0,1,1 );
+  panel.setWidget               ( login_lbl   ,row+2,0,1,1 );
+  panel.setWidget               ( pwd_lbl     ,row+3,0,1,1 );
+  panel.setWidget               ( licence_lbl ,row+4,0,1,2 );
+  panel.setWidget               ( feedback_lbl,row+5,0,1,2 );
+  for (var i=0;i<4;i++)
+    panel.setCellSize  ( '96pt','',row+i,0   );
+  panel.setWidget               ( user_inp    ,row  ,1,1,3 );
+  panel.setWidget               ( email_inp   ,row+1,1,1,3 );
+  panel.setWidget               ( login_inp   ,row+2,1,1,3 );
+  panel.setWidget               ( pwd_inp     ,row+3,1,1,3 );
+  panel.setWidget               ( licence_val ,row+4,1,1,1 );
+  panel.setWidget               ( feedback_val,row+5,1,1,1 );
+  for (var i=0;i<6;i++)  {
+    panel.setVerticalAlignment  ( row+i,0,'middle' );
+    panel.setVerticalAlignment  ( row+i,1,'middle' );
+  }
 
+  row += 4;
   var licence_btn = new Button  ( 'Choose',image_path('licence') );
   licence_btn.setWidth          ( '100%' );
   panel.setWidget               ( licence_btn,row,2,1,1 );
   panel.setVerticalAlignment    ( row,2,'middle'  );
-  panel.setCellSize             ( '','40pt',row,2 );
+  //panel.setCellSize             ( '','40pt',row,2 );
   licence_btn.setDisabled       ( true );
 
   licence_btn.addOnClickListener  ( function(){
@@ -129,18 +141,31 @@ function AccountPage ( sceneId )  {
     });
   });
 
+  row++;
+  var feedback_btn = new Button ( 'Choose',image_path('feedback') );
+  feedback_btn.setWidth         ( '100%' );
+  panel.setWidget               ( feedback_btn,row,2,1,1 );
+  panel.setVerticalAlignment    ( row,2,'middle'  );
+  //panel.setCellSize             ( '','40pt',row,2 );
+  feedback_btn.setDisabled      ( true );
+
+  feedback_btn.addOnClickListener  ( function(){
+    new FeedbackDialog(feedback_val.getText(),function(feedback){
+      feedback_val.setText ( feedback );
+    });
+  });
+
   panel.setCellSize             ( '','12pt',row++,0 );
-  panel.setWidget               ( new HLine('3pt'), row++,0,1,3 );
+  panel.setWidget               ( new HLine('3pt'), row++,0,1,4 );
   panel.setCellSize             ( '','1pt',row++,0 );
 
   var update_btn = panel.setButton ( 'Update my account',image_path('email'),
-                                    row++,0,1,3  );
-  update_btn.setWidth           ( '100%' );
-  // disable button until user data arrives from server
-  update_btn.setDisabled        ( true   );
+                                     row++,0,1,4 )
+                        .setWidth  ( '100%' )
+                        .setDisabled ( true ); // disable button until user data arrives from server
 
   var delete_btn = panel.setButton ( 'Delete my account',image_path('remove'),
-                                     row++,0,1,3  );
+                                     row++,0,1,4  );
   delete_btn.setWidth           ( '100%' );
   // disable button until user data arrives from server
   delete_btn.setDisabled        ( true   );
@@ -156,11 +181,15 @@ function AccountPage ( sceneId )  {
     var msg = validateUserData ( user_inp,email_inp,login_inp );
 
     if (pwd_inp.getValue().length<=0)
-      msg += '<b>Password</b> must be provided.<p>';
+      msg += '<b>Password</b> must be provided (old or new).<p>';
 
-    if ((licence_val.getText()!=licence_code.academic) &&
-        (licence_val.getText()!=licence_code.commercial))
+    if ([licence_code.academic,licence_code.commercial]
+        .indexOf(licence_val.getText())<0)
       msg += '<b>Licence</b> must be chosen.<p>';
+
+    if ([feedback_code.agree1,feedback_code.agree2,feedback_code.decline]
+        .indexOf(feedback_val.getText())<0)
+      msg += '<b>Feedback agreement</b> must be chosen.<p>';
 
     if (msg)  {
 
@@ -170,24 +199,28 @@ function AccountPage ( sceneId )  {
 
     } else  {
 
-      userData.name    = user_inp  .getValue();
-      userData.email   = email_inp .getValue();
-      userData.login   = login_inp .getValue();
-      userData.pwd     = pwd_inp   .getValue();
-      userData.licence = licence_val.getText();
+      userData.name     = user_inp    .getValue();
+      userData.email    = email_inp   .getValue();
+      userData.login    = login_inp   .getValue();
+      userData.pwd      = pwd_inp     .getValue();
+      userData.licence  = licence_val .getText();
+      userData.feedback = feedback_val.getText();
+      userData.action   = userdata_action.none;
 
       serverRequest ( fe_reqtype.updateUserData,userData,'My Account',
                       function(response){
         if (response)
           new MessageBoxW ( 'My Account',response,0.5 );
-        else
+        else  {
           new MessageBox ( 'My Account',
             'Dear ' + userData.name +
             ',<p>Your account has been successfully updated, and ' +
             'notification<br>sent to your e-mail address:<p><b><i>' +
             userData.email + '</i></b>.' +
             '<p>You are logged out now, please login again.' );
-            makeLoginPage ( sceneId );
+          stopSessionChecks();
+          makeLoginPage ( sceneId );
+        }
       },null,'persist' );
     }
 
@@ -226,11 +259,12 @@ function AccountPage ( sceneId )  {
         return false;  // close dialog
       } else  {
 
-        userData.name    = user_inp   .getValue();
-        userData.email   = email_inp  .getValue();
-        userData.login   = login_inp  .getValue();
-        userData.pwd     = pswd_inp   .getValue();
-        userData.licence = licence_val.getText();
+        userData.name     = user_inp    .getValue();
+        userData.email    = email_inp   .getValue();
+        userData.login    = login_inp   .getValue();
+        userData.pwd      = pswd_inp    .getValue();
+        userData.licence  = licence_val .getText();
+        userData.feedback = feedback_val.getText();
 
         serverRequest ( fe_reqtype.deleteUser,userData,'Delete My Account',
                         function(response){
@@ -253,19 +287,28 @@ function AccountPage ( sceneId )  {
 
   });
 
-
   // fetch user data from server
   serverRequest ( fe_reqtype.getUserData,0,'My Account',function(data){
     userData = data;
-    user_inp   .setValue ( userData.name    );
-    email_inp  .setValue ( userData.email   );
-    login_inp  .setValue ( userData.login   );
-    licence_val.setText  ( userData.licence );
+    var msg = checkUserData ( userData );
+    if (msg.length>0)
+      window.setTimeout ( function(){
+        new MessageBox ( 'Update Account',
+          'Please check your account settings:<ul>' + msg + '</ul>' +
+          'To confirm your changes, push <b>Update</b> button.' );
+      },0);
+    user_inp    .setValue ( userData.name     );
+    email_inp   .setValue ( userData.email    );
+    login_inp   .setValue ( userData.login    );
+    licence_val .setText  ( userData.licence  );
+    if (userData.feedback)
+      feedback_val.setText  ( userData.feedback );
     // now activate the update button:
-    licence_btn.setDisabled ( false );
-    update_btn .setDisabled ( false );
-    delete_btn .setDisabled ( false );
-    setDefaultButton   ( update_btn,panel   );
+    licence_btn .setDisabled ( false );
+    feedback_btn.setDisabled ( false );
+    update_btn  .setDisabled ( false );
+    delete_btn  .setDisabled ( false );
+    setDefaultButton ( update_btn,panel );
   },null,'persist');
 
 }

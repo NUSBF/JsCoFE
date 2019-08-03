@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.04.19   <--  Date of Last Modification.
+ *    28.07.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -105,7 +105,7 @@ function JobDialog ( params,          // data and task projections up the tree b
                   }
   };
 
-  if (!__touch_device)
+  if (!__mobile_device)
     this.dialog_options.position = this.task.job_dialog_data.position;
   else
     this.dialog_options.position =  { my : 'left top',   // job dialog position reference
@@ -120,21 +120,22 @@ function JobDialog ( params,          // data and task projections up the tree b
 
   (function(dlg){
     $(dlg.element).on( "dialogclose",function(event,ui){
-      if (!dlg.task.job_dialog_data.viewed)
+      if (dlg.close_btn && (!dlg.task.job_dialog_data.viewed))
         dlg.close_btn.click();
       else  {
         dlg.outputPanel.clear();
-        onClose_func(dlg.task.id);
+        //onClose_func(dlg.task.id);
         window.setTimeout ( function(){
           $(dlg.element).dialog( "destroy" );
           dlg.delete();
         },10 );
       }
+      onClose_func ( dlg.task.id );
     });
   }(this))
 
   // Listen for input event, emitted when input data changes
-  if (this.task.state!=job_code.running)  {
+  if ((this.task.state!=job_code.running) && this.inputPanel)  {
     this.inputPanel.element.addEventListener(cofe_signals.jobDlgSignal,function(e){
       onDlgSignal_func ( taskId,e.detail );
     },false );
@@ -171,13 +172,23 @@ JobDialog.prototype.displayInputErrors = function ( input_msg )  {
 
 JobDialog.prototype.setDlgState = function()  {
 
+  if ((this.task.state==job_code.remdoc) && this.toolBar)  {
+    this.toolBar   .setVisible ( false );
+    this.toolBarSep.setVisible ( false );
+    this.toolBar = null;
+    this.outputPanel.setFramePosition ( '16px','8px','100%','100%' );
+    this.onDlgResize();
+  }
+
   var isNew     = (this.task.state==job_code.new)    ||
                   (this.task.state==job_code.remark) ||
                   (this.task.state==job_code.remdet);
   var isRunning = (this.task.state==job_code.running);
 
-  this.inputPanel.setDisabledAll ( !isNew );
-  this.task.disableInputWidgets  ( this.inputPanel,!isNew );
+  if (this.inputPanel)  {
+    this.inputPanel.setDisabledAll ( !isNew );
+    this.task.disableInputWidgets  ( this.inputPanel,!isNew );
+  }
   if (this.radioSet)
     this.radioSet.setDisabled ( isNew  );
   if (this.run_btn)
@@ -189,28 +200,35 @@ JobDialog.prototype.setDlgState = function()  {
   if (isRunning && (!this.stop_btn.isVisible()))  {
     (function(dlg){
       dlg.ind_timer = window.setTimeout ( function(){
-        dlg.run_image.setVisible ( true );
-        dlg.stop_btn .setVisible ( true );
+        if (dlg.run_image) dlg.run_image.setVisible ( true );
+        if (dlg.stop_btn)  dlg.stop_btn .setVisible ( true );
       },1000 );
     }(this));
   } else  {
-    this.run_image.setVisible ( isRunning );
-    this.stop_btn .setVisible ( isRunning );
+    if (this.run_image) this.run_image.setVisible ( isRunning );
+    if (this.stop_btn)  this.stop_btn .setVisible ( isRunning );
   }
 
-  this.status_lbl.setVisible  ( (!isNew) && (!isRunning) );
+  if (this.status_lbl)
+    this.status_lbl.setVisible  ( (!isNew) && (!isRunning) );
 
   var msg = '';
   switch (this.task.state)  {
     case job_code.finished :  msg = 'Job completed';          break;
     case job_code.failed   :  msg = 'Job failed';             break;
     case job_code.stopped  :  msg = 'Job terminated by user'; break;
+    /*
+    case job_code.remdoc   :  this.toolBar   .setVisible ( false );
+                              this.toolBarSep.setVisible ( false );
+                          break;
+    */
     default : ;
   }
 
-  if (msg)
+  if (msg && this.status_lbl)
     this.status_lbl.setText ( '<b><i>' + msg + '</i></b>' );
-  this.export_btn.setVisible ( msg!='' );
+  if (this.export_btn)
+    this.export_btn.setVisible ( msg!='' );
 
   if (isNew)  { // enforce!
     this.outputPanel.setVisible ( false );
@@ -224,7 +242,7 @@ JobDialog.prototype.setDlgState = function()  {
 }
 
 JobDialog.prototype.getDlgSize = function ()  {
-  if (!__touch_device)  {
+  if (!__mobile_device)  {
     this.task.job_dialog_data.width  = this.width_px ();
     this.task.job_dialog_data.height = this.height_px();
     var p = $(this.element).dialog ( "option", "position" );
@@ -236,30 +254,44 @@ JobDialog.prototype.getDlgSize = function ()  {
 
 JobDialog.prototype.onDlgResize = function ()  {
 
+  if (__mobile_device)
+    return;
+
   var panelHeight;
-  if (__touch_device)  {
-    panelHeight = this.initialHeight - 36 -
-                  this.child[0].height_px() - this.child[1].height_px();
+  var panelWidth;
+  if (this.toolBar)  {
+    if (__mobile_device)  {
+      panelHeight = this.initialHeight - 36 -
+                    this.child[0].height_px() - this.child[1].height_px();
+    } else  {
+      panelHeight = this.task.job_dialog_data.height - 36 -
+                    this.child[0].height_px() - this.child[1].height_px();
+    }
+    panelWidth = this.child[1].width_px();
   } else  {
-    panelHeight = this.task.job_dialog_data.height - 36 -
-                  this.child[0].height_px() - this.child[1].height_px();
+    if (__mobile_device)
+          panelHeight = this.initialHeight - 24;
+    else  panelHeight = this.task.job_dialog_data.height - 24;
+    panelWidth = this.task.job_dialog_data.width - 30;
   }
-  var panelWidth  = this.child[1].width_px();
 
-  this.inputPanel .setSize_px ( panelWidth,panelHeight );
+  if (this.inputPanel)  {
+    this.inputPanel .setSize_px ( panelWidth,panelHeight );
+    if (this.inputPanel.hasOwnProperty('panel'))  {
+      if (this.inputPanel.hasOwnProperty('header'))
+        panelHeight -= this.inputPanel.header.height_px();
+      this.inputPanel.panel.setSize_px ( panelWidth,panelHeight );
+    }
+  }
+
   this.outputPanel.setSize_px ( panelWidth,panelHeight );
-
-  if (this.inputPanel.hasOwnProperty('panel'))  {
-    if (this.inputPanel.hasOwnProperty('header'))
-      panelHeight -= this.inputPanel.header.height_px();
-    this.inputPanel.panel.setSize_px ( panelWidth,panelHeight );
-  }
+  //this.outputPanel.setSize ( panelWidth+'px',panelHeight+'px' );
 
 }
 
 
 JobDialog.prototype.setDlgSize = function()  {
-  if (__touch_device)  {
+  if (__mobile_device)  {
     this.setSize_px ( this.initialWidth,this.initialHeight );
   } else  {
     if (this.task.job_dialog_data.height<=0)  {
@@ -293,7 +325,8 @@ JobDialog.prototype.loadReport = function()  {
 JobDialog.prototype.collectTaskData = function ( ignore_bool )  {
   this.getDlgSize ();
   var input_msg = '';
-  if ((this.task.state==job_code.new) || (this.task.state==job_code.remark))  {
+  if ((this.task.state==job_code.new) || (this.task.state==job_code.remark) ||
+      (this.task.state==job_code.remdet))  {
     input_msg = this.task.collectInput ( this.inputPanel );
     if (ignore_bool)
       input_msg = '';
@@ -317,80 +350,115 @@ JobDialog.prototype.requestServer = function ( request,callback_ok )  {
   serverRequest ( request,data,this.task.title,callback_ok,null,null );
 }
 
+window.document.__base_url_cache = {};
 
 JobDialog.prototype.makeLayout = function ( onRun_func )  {
 
-  this.inputPanel  = this.task.makeInputPanel ( this.dataBox );
   this.outputPanel = new IFrame ( '' );  // always initially empty
-  this.inputPanel.job_dialog = this;
+  //this.outputPanel.setWidth ( '100%' );
   //$(this.outputPanel.element).css({'overflow':'hidden'});
+//  "style=\"border:none;position:absolute;top:50px;left:0;width:100%;height:92%;\"></iframe>",
 
-  var toolBar = new Grid('');
-  this.addWidget ( toolBar );
-  this.addWidget ( new HLine('2px') );
-  this.addWidget ( this.inputPanel  );
-  this.addWidget ( this.outputPanel );
+  if (this.task.state!=job_code.remdoc)  {
+    this.outputPanel.setFramePosition ( '16px','58px','100%','100%' );
 
-  if (this.task.runButtonName())  {
-    this.radioSet = toolBar.setRadioSet(0,0,1,1)
-            .addButton('Input' ,'input' ,'',this.task.job_dialog_data.panel=='input' )
-            .addButton('Output','output','',this.task.job_dialog_data.panel=='output');
+    this.inputPanel = this.task.makeInputPanel ( this.dataBox );
+    this.inputPanel.job_dialog = this;
+
+    this.toolBar = new Grid('');
+    this.addWidget ( this.toolBar );
+    this.toolBarSep = new HLine('2px');
+    this.addWidget ( this.toolBarSep  );
+    this.addWidget ( this.inputPanel  );
+    this.addWidget ( this.outputPanel );
+
+    if (this.task.runButtonName())  {
+      this.radioSet = this.toolBar.setRadioSet(0,0,1,1)
+              .addButton('Input' ,'input' ,'',this.task.job_dialog_data.panel=='input' )
+              .addButton('Output','output','',this.task.job_dialog_data.panel=='output');
+      (function(dlg){
+        $(dlg.outputPanel.element).on ( 'load',function(){
+          dlg.onDlgResize();
+          //dlg.outputPanel.getDocument().__url_path_prefix = dlg.task.getURL('');
+        });
+        dlg.radioSet.make ( function(btnId){
+          dlg.inputPanel .setVisible ( (btnId=='input' ) );
+          dlg.outputPanel.setVisible ( (btnId=='output') );
+          dlg.task.job_dialog_data.panel = btnId;
+          dlg.onDlgResize();  // this is needed for getting all elements in
+                              // inputPanel available by scrolling, in case
+                              // when dialog first opens for 'output'
+          // if dialog was created in input mode, check whether report
+          // page should be loaded at first switch to output mode
+          if (dlg.outputPanel.element.src.length<=0)
+            dlg.loadReport();
+        });
+      }(this));
+      this.radioSet.setSize ( '220px','' );
+
+      if (!this.inputPanel.fullVersionMismatch)
+        this.run_btn  = this.toolBar.setButton ( this.task.runButtonName(),
+                                           image_path('runjob'), 0,2, 1,1 )
+                                           .setTooltip('Start job' );
+    }
+    this.toolBar.setCellSize ( '40%','',0,1 );
+
+    this.run_image  = this.toolBar.setImage  ( './images_com/activity.gif',
+                                               '36px','36px', 0,3, 1,1 );
+    this.stop_btn   = this.toolBar.setButton ( 'Stop',image_path('stopjob'), 0,4, 1,1 )
+                                  .setTooltip('Stop job' );
+    this.status_lbl = this.toolBar.setLabel  ( '', 0,5, 1,1 ).setNoWrap();
+
+    this.export_btn = this.toolBar.setButton ( 'Export',image_path('export'), 0,7, 1,1 )
+                                  .setTooltip('Export job directory' );
+
+    if (this.task.helpURL)
+      this.ref_btn  = this.toolBar.setButton ( 'Ref.',image_path('reference'), 0,8, 1,1 )
+                                  .setTooltip('Task Documentation' );
+    this.help_btn   = this.toolBar.setButton ( 'Help',image_path('help'), 0,9, 1,1 )
+                                  .setTooltip('Dialog Help' );
+    this.close_btn  = this.toolBar.setButton ( 'Close',image_path('close'), 0,10, 1,1 )
+                                  .setTooltip('Close Job Dialog' );
+    this.toolBar.setVerticalAlignment ( 0,5,'middle' );
+    this.toolBar.setCellSize ( '40%','',0,6 );
+
+  } else  {
+    this.outputPanel.setFramePosition ( '16px','8px','100%','100%' );
+
+    this.inputPanel = null;
+    this.toolBar    = null;
+    this.toolBarSep = null;
+    this.radioSet   = null;
+    this.run_btn    = null;
+    this.run_image  = null;
+    this.stop_btn   = null;
+    this.status_lbl = null;
+    this.export_btn = null;
+    this.ref_btn    = null;
+    this.help_btn   = null;
+    this.close_btn  = null;
+
+    this.addWidget ( this.outputPanel );
     (function(dlg){
-      $(dlg.outputPanel.element).load(function() {
+      $(dlg.outputPanel.element).on ( 'load',function(){
         dlg.onDlgResize();
       });
-      dlg.radioSet.make ( function(btnId){
-                  dlg.inputPanel .setVisible ( (btnId=='input' ) );
-                  dlg.outputPanel.setVisible ( (btnId=='output') );
-                  dlg.task.job_dialog_data.panel = btnId;
-                  dlg.onDlgResize();  // this is needed for getting all elements in
-                                      // inputPanel available by scrolling, in case
-                                      // when dialog first opens for 'output'
-                  // if dialog was created in input mode, check whether report
-                  // page should be loaded at first switch to output mode
-                  if (dlg.outputPanel.element.src.length<=0)
-                    dlg.loadReport();
-               });
     }(this));
-    this.radioSet.setSize ( '220px','' );
 
-    if (!this.inputPanel.fullVersionMismatch)
-      this.run_btn  = toolBar.setButton ( this.task.runButtonName(),
-                                         image_path('runjob'), 0,2, 1,1 )
-                                         .setTooltip('Start job' );
   }
-  toolBar.setCellSize ( '40%','',0,1 );
-
-  this.run_image  = toolBar.setImage  ( './images_com/activity.gif','36px','36px',
-                                        0,3, 1,1 );
-  this.stop_btn   = toolBar.setButton ( 'Stop',image_path('stopjob'), 0,4, 1,1 )
-                                        .setTooltip('Stop job' );
-  this.status_lbl = toolBar.setLabel  ( '', 0,5, 1,1 ).setNoWrap();
-
-  this.export_btn = toolBar.setButton ( 'Export',image_path('export'), 0,7, 1,1 )
-                                        .setTooltip('Export job directory' );
-
-  if (this.task.helpURL)
-    this.ref_btn  = toolBar.setButton ( 'Ref.',image_path('reference'), 0,8, 1,1 )
-                                        .setTooltip('Task Documentation' );
-  this.help_btn   = toolBar.setButton ( 'Help',image_path('help'), 0,9, 1,1 )
-                                        .setTooltip('Dialog Help' );
-  this.close_btn  = toolBar.setButton ( 'Close',image_path('close'), 0,10, 1,1 )
-                                        .setTooltip('Close Job Dialog' );
-  toolBar.setVerticalAlignment ( 0,5,'middle' );
-  toolBar.setCellSize ( '40%','',0,6 );
 
   if ((this.task.state!='new') && (this.task.job_dialog_data.panel=='output') &&
       (this.outputPanel.getURL().length<=0))
     this.loadReport();
 
-  this.inputPanel .setVisible ( this.task.job_dialog_data.panel=='input'  );
+  if (this.inputPanel)
+    this.inputPanel.setVisible ( this.task.job_dialog_data.panel=='input' );
   this.outputPanel.setVisible ( this.task.job_dialog_data.panel=='output' );
 
   (function(dlg){
 
     // Listen for input event, emitted when input data changes
-    if (dlg.run_btn)
+    if (dlg.run_btn && dlg.inputPanel)
       dlg.inputPanel.element.addEventListener(cofe_signals.taskReady,function(e){
         //alert ( ' run_btn=' + e.detail + ' l=' + e.detail.length );
         if (e.detail.length<=0)  {
@@ -413,7 +481,7 @@ JobDialog.prototype.makeLayout = function ( onRun_func )  {
 
     $(dlg.element).on ( 'dialogresize', function(event,ui){
       dlg.task.job_dialog_data.width  = dlg.width_px();
-      if (!__touch_device)  {
+      if (!__mobile_device)  {
         dlg.task.job_dialog_data.height = dlg.height_px();
         dlg.onDlgResize();
       }
@@ -529,40 +597,44 @@ JobDialog.prototype.makeLayout = function ( onRun_func )  {
 
     }
 
-    dlg.stop_btn.addOnClickListener ( function(){
-      dlg.onDlgSignal_func ( dlg.task.id,job_dialog_reason.stop_job );
-    });
+    if (dlg.stop_btn)
+      dlg.stop_btn.addOnClickListener ( function(){
+        dlg.onDlgSignal_func ( dlg.task.id,job_dialog_reason.stop_job );
+      });
 
-    dlg.export_btn.addOnClickListener ( function(){
-      new ExportJobDialog ( dlg.task );
-    });
+    if (dlg.export_btn)
+      dlg.export_btn.addOnClickListener ( function(){
+        new ExportJobDialog ( dlg.task );
+      });
 
-    if (dlg.task.helpURL)
+    if (dlg.task.helpURL && dlg.ref_btn)
       dlg.ref_btn.addOnClickListener ( function(){
         new HelpBox ( '',dlg.task.helpURL,null );
       });
 
-    dlg.help_btn.addOnClickListener ( function(){
-      new HelpBox ( '','./html/jscofe_jobdialog.html',null );
-    });
+    if (dlg.help_btn)
+      dlg.help_btn.addOnClickListener ( function(){
+        new HelpBox ( '','./html/jscofe_jobdialog.html',null );
+      });
 
-    dlg.close_btn.addOnClickListener ( function(){
-      if ((dlg.task.state!=job_code.running) &&
-          (dlg.task.state!=job_code.exiting))  {
-        dlg.collectTaskData ( true );
-        dlg.requestServer   ( fe_reqtype.saveJobData,null );
-      }
-      $(dlg.element).dialog ( "close" );
-      /*  strict version with input validation ( does not close if error)
-      if (dlg.task.state!=job_code.exiting)  {
-        if (dlg.collectTaskData(false))  {
-          requestServer ( fe_reqtype.saveJobData,null );
-          $(dlg.element).dialog ( "close" );
+    if (dlg.close_btn)
+      dlg.close_btn.addOnClickListener ( function(){
+        if ((dlg.task.state!=job_code.running) &&
+            (dlg.task.state!=job_code.exiting))  {
+          dlg.collectTaskData ( true );
+          dlg.requestServer   ( fe_reqtype.saveJobData,null );
         }
-      } else
         $(dlg.element).dialog ( "close" );
-      */
-    });
+        /*  strict version with input validation ( does not close if error)
+        if (dlg.task.state!=job_code.exiting)  {
+          if (dlg.collectTaskData(false))  {
+            requestServer ( fe_reqtype.saveJobData,null );
+            $(dlg.element).dialog ( "close" );
+          }
+        } else
+          $(dlg.element).dialog ( "close" );
+        */
+      });
 
   }(this));
 

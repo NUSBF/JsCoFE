@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    28.03.19   <--  Date of Last Modification.
+ *    30.07.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -44,72 +44,82 @@ function RegisterPage ( sceneId )  {
   panel.setWidth      ( '300pt' );
   this.grid.setWidget ( panel,0,1,1,1 );
 
-  var reg_lbl     = new Label     ( 'Registration' );
-  var user_lbl    = new Label     ( 'User name:'   );
-  var email_lbl   = new Label     ( 'E-mail:'      );
-  var login_lbl   = new Label     ( 'Login name:'  );
-  var licence_lbl = new Label     ( 'Licence:'     );
-  var defLicence  = '<i>not chosen</i>';
-  var licence_val = new Label     ( defLicence     );
-  var user_inp    = new InputText ( '' );
-  var email_inp   = new InputText ( '' );
-  var login_inp   = new InputText ( '' );
-  user_lbl   .setNoWrap();
-  login_lbl  .setNoWrap();
-  user_inp   .setStyle          ( 'text',"^[A-Za-z\\-\\.\\s]+$",'John Smith',
-                                  'User name should only contain latin ' +
-                                  'letters,\n dots, dashes and spaces' );
-  email_inp  .setStyle          ( 'email','','john.smith@university.ac.uk',
-                                  'Should be a valid e-mail address, at which ' +
-                                  'your\n temporary password will be sent' );
-  login_inp  .setStyle          ( 'text',"^[A-Za-z0-9\\-\\._]+$",'john.smith',
-                                  'Login name should contain only latin ' +
-                                  'letters, numbers,\n undescores, dashes ' +
-                                  'and dots, and must start with a letter' );
-  licence_val.setTooltip        ( 'Type of licence must be chosen, please ' +
-                                  'press "Choose" button.' );
-  reg_lbl    .setFont           ( 'times','300%',true,true );
-  user_lbl   .setFontSize       ( '125%' );
-  email_lbl  .setFontSize       ( '125%' );
-  login_lbl  .setFontSize       ( '125%' );
-  licence_lbl.setFontSize       ( '125%' );
-  licence_val.setFontSize       ( '125%' );
-  user_inp   .setFontSize       ( '112%' );
-  email_inp  .setFontSize       ( '112%' );
-  login_inp  .setFontSize       ( '112%' );
-  user_inp   .setFontItalic     ( true   );
-  email_inp  .setFontItalic     ( true   );
-  login_inp  .setFontItalic     ( true   );
-  user_inp   .setWidth          ( '97%'  );
-  email_inp  .setWidth          ( '97%'  );
-  login_inp  .setWidth          ( '97%'  );
+  var reg_lbl      = new Label     ( 'Registration' );
+  var user_lbl     = new Label     ( 'User name:'   ).setNoWrap();
+  var email_lbl    = new Label     ( 'E-mail:'      ).setNoWrap();
+  var login_lbl    = new Label     ( 'Login name:'  ).setNoWrap();
+  var licence_lbl  = new Label     ( 'Licence agreement:&nbsp;&nbsp;&nbsp;' ).setNoWrap();
+  var licence_val  = new Label     ( 'not chosen'  ).setFontItalic(true)     .setNoWrap();
+  var feedback_lbl = new Label     ( 'Feedback agreement:&nbsp;&nbsp;&nbsp;').setNoWrap();
+  var feedback_val = new Label     ( 'not chosen'  ).setFontItalic(true)     .setNoWrap();
+  var user_inp     = new InputText ( '' );
+  var email_inp    = new InputText ( '' );
+  var login_inp    = new InputText ( '' );
+  user_inp   .setStyle         ( 'text',"^[A-Za-z\\-\\.\\s]+$",'John Smith',
+                                 'User name should only contain latin ' +
+                                 'letters,\n dots, dashes and spaces' );
+  email_inp  .setStyle         ( 'email','','john.smith@university.ac.uk',
+                                 'Should be a valid e-mail address, at which ' +
+                                 'your\n temporary password will be sent' );
+  login_inp  .setStyle         ( 'text',"^[A-Za-z0-9\\-\\._]+$",'john.smith',
+                                 'Login name should contain only latin ' +
+                                 'letters, numbers,\n undescores, dashes ' +
+                                 'and dots, and must start with a letter' );
+  licence_val.setTooltip       ( 'Type of licence must be chosen, please ' +
+                                 'press "Choose" button.' );
+  feedback_val.setTooltip      ( 'Terms of feedback agremment must be chosen, ' +
+                                 'please press "Choose" button.' );
+  reg_lbl     .setFont         ( 'times','300%',true,true );
+  user_lbl    .setFontSize     ( '125%' );
+  email_lbl   .setFontSize     ( '125%' );
+  login_lbl   .setFontSize     ( '125%' );
+  licence_lbl .setFontSize     ( '125%' );
+  licence_val .setFontSize     ( '112%' ).setFontItalic(true).setFontWeight(700);
+  feedback_lbl.setFontSize     ( '125%' );
+  feedback_val.setFontSize     ( '112%' ).setFontItalic(true).setFontWeight(700);
+  user_inp    .setFontSize     ( '112%' ).setFontItalic(true).setWidth('97%');
+  email_inp   .setFontSize     ( '112%' ).setFontItalic(true).setWidth('97%');
+  login_inp   .setFontSize     ( '112%' ).setFontItalic(true).setWidth('97%');
 
   var row = 0;
-  panel.setWidget              ( reg_lbl, row,0,1,3 );
+  panel.setWidget              ( reg_lbl, row,0,1,4 );
   panel.setHorizontalAlignment ( row++  ,0,'center' );
-  panel.setCellSize            ( '','20pt'  ,row++,0 );
-  panel.setWidget              ( user_lbl   ,row  ,0,1,1 );
-  panel.setWidget              ( email_lbl  ,row+1,0,1,1 );
-  panel.setWidget              ( login_lbl  ,row+2,0,1,1 );
-  panel.setWidget              ( licence_lbl,row+3,0,1,1 );
-  panel.setVerticalAlignment   ( row  ,0,'middle' );
-  panel.setVerticalAlignment   ( row+1,0,'middle' );
-  panel.setVerticalAlignment   ( row+2,0,'middle' );
-  panel.setVerticalAlignment   ( row+3,0,'middle' );
-  panel.setWidget              ( user_inp   ,row++,1,1,2 );
-  panel.setWidget              ( email_inp  ,row++,1,1,2 );
-  panel.setWidget              ( login_inp  ,row++,1,1,2 );
-  panel.setWidget              ( licence_val,row  ,1,1,1 );
-  panel.setVerticalAlignment   ( row,1,'middle' );
+  panel.setWidget              ( this.makeSetupNamePanel(), row++,0,1,4 );
+  panel.setCellSize            ( '','20pt'   ,row++,0 );
+  panel.setWidget              ( user_lbl    ,row  ,0,1,1 );
+  panel.setWidget              ( email_lbl   ,row+1,0,1,1 );
+  panel.setWidget              ( login_lbl   ,row+2,0,1,1 );
+  for (var i=0;i<3;i++)
+    panel.setCellSize  ( '96pt','',row+i,0   );
+  panel.setWidget              ( licence_lbl ,row+3,0,1,2 );
+  panel.setWidget              ( feedback_lbl,row+4,0,1,2 );
+  panel.setWidget              ( user_inp    ,row  ,1,1,3 );
+  panel.setWidget              ( email_inp   ,row+1,1,1,3 );
+  panel.setWidget              ( login_inp   ,row+2,1,1,3 );
+  panel.setWidget              ( licence_val ,row+3,1,1,1 );
+  panel.setWidget              ( feedback_val,row+4,1,1,1 );
+  for (var i=0;i<5;i++)  {
+    panel.setVerticalAlignment ( row+i,0,'middle' );
+    panel.setVerticalAlignment ( row+i,1,'middle' );
+  }
 
+  row += 3;
   var licence_btn = new Button ( 'Choose',image_path('licence') );
   licence_btn.setWidth         ( '100%' );
   panel.setWidget              ( licence_btn,row,2,1,1 );
   panel.setVerticalAlignment   ( row,2,'middle'  );
-  panel.setCellSize            ( '','40pt',row,2 );
+  //panel.setCellSize            ( '','40pt',row,2 );
 
+  row++;
+  var feedback_btn = new Button ( 'Choose',image_path('feedback') );
+  feedback_btn.setWidth         ( '100%' );
+  panel.setWidget               ( feedback_btn,row,2,1,1 );
+  panel.setVerticalAlignment    ( row,2,'middle'  );
+  //panel.setCellSize             ( '','40pt',row,2 );
+
+  row++;
   panel.setCellSize            ( '','12pt',row++,0 );
-  panel.setWidget              ( new HLine('3pt'), row++,0,1,3 );
+  panel.setWidget              ( new HLine('3pt'), row++,0,1,4 );
   panel.setCellSize            ( '','1pt',row++,0 );
 
   var reg_btn  = new Button    ( 'Register and send password by e-mail',image_path('email') );
@@ -126,8 +136,8 @@ function RegisterPage ( sceneId )  {
   reg_btn .setWidth            ( '100%' );
   back_btn.setWidth            ( '100%' );
 
-  panel.setWidget              ( reg_btn ,row++,0,1,3 );
-  panel.setWidget              ( back_btn,row++,0,1,3 );
+  panel.setWidget              ( reg_btn ,row++,0,1,4 );
+  panel.setWidget              ( back_btn,row++,0,1,4 );
 
   licence_btn.addOnClickListener  ( function(){
     new LicenceDialog(licence_val.getText(),function(licence){
@@ -135,12 +145,24 @@ function RegisterPage ( sceneId )  {
     });
   });
 
-  reg_btn .addOnClickListener  ( function(){
+  feedback_btn.addOnClickListener  ( function(){
+    new FeedbackDialog(feedback_val.getText(),function(feedback){
+      feedback_val.setText ( feedback );
+    });
+  });
+
+  reg_btn.addOnClickListener  ( function(){
 
     // Validate the input
     var msg = validateUserData ( user_inp,email_inp,login_inp );
-    if (licence_val.getText()==defLicence)
+
+    if ([licence_code.academic,licence_code.commercial]
+        .indexOf(licence_val.getText())<0)
       msg += '<b>Licence</b> must be chosen.<p>';
+
+    if ([feedback_code.agree1,feedback_code.agree2,feedback_code.decline]
+        .indexOf(feedback_val.getText())<0)
+      msg += '<b>Feedback agreement</b> must be chosen.<p>';
 
     if (msg)  {
 
@@ -150,12 +172,13 @@ function RegisterPage ( sceneId )  {
 
     } else  {
 
-      ud         = new UserData();
-      ud.name    = user_inp   .getValue();
-      ud.email   = email_inp  .getValue();
-      ud.login   = login_inp  .getValue();
-      ud.licence = licence_val.getText();
-      ud.pwd     = '';  // will be generated by server when empty
+      ud          = new UserData();
+      ud.name     = user_inp    .getValue();
+      ud.email    = email_inp   .getValue();
+      ud.login    = login_inp   .getValue();
+      ud.licence  = licence_val .getText();
+      ud.feedback = feedback_val.getText();
+      ud.pwd      = '';  // will be generated by server when empty
 
       serverCommand ( fe_command.register,ud,'Registration',function(response){
 

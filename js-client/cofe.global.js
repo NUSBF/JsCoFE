@@ -39,11 +39,13 @@ var __local_setup     = false;
 var __cloud_storage   = false;  // true if user has cloud storage allocated
 var __demo_projects   = false;  // true if demo projects are configured
 
-//var __touch_device = ('ontouchstart' in document.documentElement);
+//var __mobile_device = ('ontouchstart' in document.documentElement);
 // the following will also include desktops with touch screens:
-//var __touch_device = (navigator.maxTouchPoints || 'ontouchstart' in document.documentElement);
+//var __mobile_device = (navigator.maxTouchPoints || 'ontouchstart' in document.documentElement);
 
-var __touch_device = (/Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent) );
+var __mobile_device = (/Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent) );
+var __iOS_device    = (/iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream );
+//var iOS = !!navigator.platform && /iPad|iPhone|iPod/.test(navigator.platform);
 
 $(window).resize ( function(){
   if (__current_page)
@@ -246,8 +248,10 @@ function doNotShowAgain ( key,url )  {
 // ===========================================================================
 // allow HTML markup in tooltips
 
+/* -- now in cofe.session.js
 $(document).tooltip({
   content: function (callback) {
      callback($(this).prop('title'));
   }
 });
+*/

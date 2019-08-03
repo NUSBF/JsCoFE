@@ -894,9 +894,6 @@ TaskAcorn.prototype.constructor = TaskAcorn;
 
 TaskAcorn.prototype.icon = function()  { return 'task_acorn'; }
 
-//TaskAcorn.prototype.icon_small = function()  { return 'task_acorn_20x20'; }
-//TaskAcorn.prototype.icon_large = function()  { return 'task_acorn';       }
-
 TaskAcorn.prototype.currentVersion = function()  {
   var version = 1;
   if (__template)
@@ -927,8 +924,8 @@ if (__template)  {
 
   }
 
-  TaskAcorn.prototype.getCommandLine = function ( exeType,jobDir )  {
-    return [conf.pythonName(), '-m', 'pycofe.tasks.acorn', exeType, jobDir, this.id];
+  TaskAcorn.prototype.getCommandLine = function ( jobManager,jobDir )  {
+    return [conf.pythonName(), '-m', 'pycofe.tasks.acorn', jobManager, jobDir, this.id];
   }
 
   // -------------------------------------------------------------------------

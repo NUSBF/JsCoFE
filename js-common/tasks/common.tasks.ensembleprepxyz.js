@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    01.04.19   <--  Date of Last Modification.
+ *    17.07.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -213,146 +213,6 @@ function TaskEnsemblePrepXYZ()  {
               }
             }
 
-    /*
-    sec2 :  { type     : 'section',
-              title    : 'Ensembler parameters',
-              open     : false,  // true for the section to be initially open
-              position : [1,0,1,5],
-              hideon   : {'xyz':[-1,0,1]},
-              contains : {
-                SUPERPOSITION_SEL : {
-                        type     : 'combobox',
-                        keyword  : 'SUPERPOSITION',
-                        label    : 'Superposition method',
-                        tooltip  : 'Choose superposition method',
-                        range    : ['gapless|gapless','gapped|gapped'],
-                        value    : 'gapless',
-                        position : [0,0,1,1]
-                      },
-                MAPPING_SEL : {
-                        type     : 'combobox',
-                        keyword  : 'MAPPING',
-                        label    : 'Mapping method',
-                        tooltip  : 'Choose mapping method',
-                        range    : ['ssm|SSM',
-                                    //'alignments|alignments',
-                                    'resid|residue Id'
-                                    //'multiple_alignment|multiple alignment'
-                                  ],
-                        value    : 'ssm',
-                        position : [1,0,1,1]
-                      },
-                WEIGHTING_SEL : {
-                        type     : 'combobox',
-                        keyword  : 'WEIGHTING',
-                        label    : 'Weighting scheme',
-                        tooltip  : 'Choose weighting scheme',
-                        range    : ['unit|unit','robust_resistant|robust resistant'],
-                        value    : 'robust_resistant',
-                        position : [2,0,1,1]
-                      },
-                RRCRITICAL : {
-                        type     : 'real',
-                        keyword  : 'RRCRITICAL',
-                        label    : 'critical value',
-                        reportas : 'robust-resistant critical value', // to use in error reports
-                                                                      // instead of 'label'
-                        tooltip  : 'Choose a value between 0 and 50',
-                        range    : [0,50],
-                        value    : 9,
-                        position : [2,3,1,1],
-                        align    : 'right',
-                        showon   : {'WEIGHTING_SEL':['robust_resistant']}
-                      },
-                TRIM_SEL : {
-                        type     : 'combobox',
-                        keyword  : 'TRIM',
-                        label    : 'Trim ensemble',
-                        tooltip  : 'Choose trim option',
-                        range    : ['1|yes','0|no'],
-                        value    : '1',
-                        position : [3,0,1,1]
-                      },
-                TTHRESH : {
-                        type     : 'real',
-                        keyword  : 'TTHRESH',
-                        label    : 'threshold',
-                        tooltip  : 'Choose a value between 0 and 10',
-                        range    : [0,10],
-                        value    : 3,
-                        position : [3,3,1,1],
-                        align    : 'right',
-                        showon   : {'TRIM_SEL':['1']}
-                      }
-              }
-            },
-
-    sec3 :  { type     : 'section',
-              title    : 'Ensembler Configuration',
-              open     : false,  // true for the section to be initially open
-              position : [2,0,1,5],
-              hideon   : {'xyz':[-1,0,1]},
-              contains : {
-                SUPCONV : {
-                       type     : 'real',
-                       keyword  : 'SUPCONV',
-                       label    : 'Superposition convergence',
-                       tooltip  : 'Choose a value between 1.0e-6 and 0.1',
-                       range    : [0.000001,0.1],
-                       value    : 0.0001,
-                       position : [1,0,1,1]
-                     },
-                WEIGHTCONV : {
-                       type     : 'real',
-                       keyword  : 'WEIGHTCONV',
-                       label    : 'Superposition convergence',
-                       tooltip  : 'Choose a value between 1.0e-5 and 0.1',
-                       range    : [0.00001,0.1],
-                       value    : 0.001,
-                       position : [2,0,1,1]
-                     },
-                WEIGHTDFACTOR : {
-                       type     : 'real',
-                       keyword  : 'WEIGHTDFACTOR',
-                       label    : 'Weighting incremental damping factor',
-                       tooltip  : 'Choose a value between 1 and 10',
-                       range    : [1,10],
-                       value    : 1.5,
-                       position : [3,0,1,1]
-                     },
-                WEIGHTMAXDFACTOR : {
-                       type     : 'real',
-                       keyword  : 'WEIGHTMAXDFACTOR',
-                       label    : 'Weighting maximal damping factor',
-                       tooltip  : 'Choose a value between 1 and 10',
-                       range    : [1,10],
-                       value    : 3.34,
-                       position : [4,0,1,1]
-                     },
-                CLUSTDIST : {
-                       type     : 'real',
-                       keyword  : 'CLUSTDIST',
-                       label    : 'Clustering distance',
-                       tooltip  : 'Choose a value between 0 and 5',
-                       range    : [0,5],
-                       value    : 0.5,
-                       position : [5,0,1,1]
-                     },
-                ATOMNAMES : {
-                       type      : 'string',   // empty string not allowed
-                       keyword   : 'ATOMNAMES',
-                       label     : 'Atom name(s)',
-                       tooltip   : 'Comma-separated list of atom names',
-                       value     : 'CA',
-                       iwidth    : 150,
-                       maxlength : 200,       // maximum input length
-                       position  : [6,0,1,1]
-                     }
-
-              }
-            }
-      */
-
   }
 
 }
@@ -367,9 +227,6 @@ TaskEnsemblePrepXYZ.prototype.constructor = TaskEnsemblePrepXYZ;
 
 TaskEnsemblePrepXYZ.prototype.icon = function()  { return 'task_ensembleprepxyz'; }
 
-//TaskEnsemblePrepXYZ.prototype.icon_small = function()  { return 'task_ensembleprepxyz_20x20'; }
-//TaskEnsemblePrepXYZ.prototype.icon_large = function()  { return 'task_ensembleprepxyz';       }
-
 TaskEnsemblePrepXYZ.prototype.currentVersion = function()  {
   var version = 0;
   if (__template)
@@ -380,46 +237,6 @@ TaskEnsemblePrepXYZ.prototype.currentVersion = function()  {
 // export such that it could be used in both node and a browser
 
 if (!__template)  {
-
-  /*
-  TaskEnsemblePrepXYZ.prototype.inputChanged = function ( inpParamRef,emitterId,emitterValue )  {
-
-    function makeSuffix ( title,suffix )  {
-      return title.split(' (')[0] + ' (' + suffix + ')';
-    }
-
-    TaskTemplate.prototype.inputChanged.call ( this,inpParamRef,emitterId,emitterValue );
-
-    if ((emitterId=='hkl') && (this.state==job_code.new))  {
-
-      var name = this.name;
-      if (emitterValue<=0)  {
-        this.name  = 'mrbump-search';
-        this.title = 'Search for MR Models with MrBump';
-      } else  {
-        this.name  = 'mrbump';
-        this.title = 'MrBump Automated Molecular Replacement';
-      }
-
-      if (this.name!=name)  {
-        var inputPanel = inpParamRef.grid.parent.parent;
-        inputPanel.header.title.setText ( '<b>' + this.title + '</b>' );
-        this.updateInputPanel ( inputPanel );
-      }
-
-    }
-
-  }
-
-  TaskEnsemblePrepXYZ.prototype.updateInputPanel = function ( inputPanel )  {
-    if (this.state==job_code.new)  {
-      var event = new CustomEvent ( cofe_signals.jobDlgSignal,{
-         'detail' : job_dialog_reason.rename_node
-      });
-      inputPanel.element.dispatchEvent(event);
-    }
-  }
-  */
 
   TaskEnsemblePrepXYZ.prototype.collectInput = function ( inputPanel )  {
 
@@ -469,8 +286,8 @@ if (!__template)  {
 
   var conf = require('../../js-server/server.configuration');
 
-  TaskEnsemblePrepXYZ.prototype.getCommandLine = function ( exeType,jobDir )  {
-    return [conf.pythonName(), '-m', 'pycofe.tasks.ensembleprepxyz', exeType, jobDir, this.id];
+  TaskEnsemblePrepXYZ.prototype.getCommandLine = function ( jobManager,jobDir )  {
+    return [conf.pythonName(), '-m', 'pycofe.tasks.ensembleprepxyz', jobManager, jobDir, this.id];
   }
 
   // -------------------------------------------------------------------------

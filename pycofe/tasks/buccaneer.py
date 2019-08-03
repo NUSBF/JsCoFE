@@ -3,17 +3,17 @@
 #
 # ============================================================================
 #
-#    14.02.19   <--  Date of Last Modification.
+#    30.09.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  BUCCANEER EXECUTABLE MODULE
 #
 #  Command-line:
-#     ccp4-python bbuccaneermr.py exeType jobDir jobId
+#     ccp4-python bbuccaneermr.py jobManager jobDir jobId
 #
 #  where:
-#    exeType  is either SHELL or SGE
+#    jobManager  is either SHELL or SGE
 #    jobDir   is path to job directory, having:
 #      jobDir/output  : directory receiving output files with metadata of
 #                       all successful imports
@@ -193,14 +193,31 @@ class BuccaneerMR(basic.TaskDriver):
 
         # start buccaneer
         if sys.platform.startswith("win"):
-            self.runApp ( "ccp4-python.bat",cmd,logType="Main" )
+            rc = self.runApp ( "ccp4-python.bat",cmd,logType="Main",quitOnError=False )
         else:
-            self.runApp ( "ccp4-python",cmd,logType="Main" )
+            rc = self.runApp ( "ccp4-python",cmd,logType="Main",quitOnError=False )
 
         self.addCitations ( ['buccaneer','refmac5'] )
 
+        if rc.msg:
+            self.flush()
+            self.file_stdout.close()
+            nobuild = False
+            with (open(self.file_stdout_path(),'r')) as fstd:
+                for line in fstd:
+                    if "0 residues were built in   0 fragments, the longest having    0 residues." in line:
+                        nobuild = True
+                        break
+            self.file_stdout  = open ( self.file_stdout_path(),'a' )
+            self.putTitle   ( "Results" )
+            if nobuild:
+                self.putMessage ( "<h3>Failed to build structure</h3>" )
+            else:
+                self.putMessage ( "<h3>Buccaneer failure</h3>" )
+                raise signal.JobFailure ( rc.msg )
+
         # check solution and register data
-        if os.path.isfile(self.buccaneer_xyz()):
+        elif os.path.isfile(self.buccaneer_xyz()):
 
             shutil.copyfile ( os.path.join(self.buccaneer_tmp(),"refine.mtz"),
                                            self.buccaneer_mtz() )
@@ -225,6 +242,9 @@ class BuccaneerMR(basic.TaskDriver):
                 structure.copyLabels       ( istruct )
                 structure.setRefmacLabels  ( None    )
                 structure.copyLigands      ( istruct )
+                structure.FP         = istruct.FP
+                structure.SigFP      = istruct.SigFP
+                structure.FreeR_flag = istruct.FreeR_flag
                 self.putStructureWidget    ( "structure_btn",
                                              "Structure and electron density",
                                              structure )

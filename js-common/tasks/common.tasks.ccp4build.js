@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    11.04.19   <--  Date of Last Modification.
+ *    22.05.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -127,7 +127,7 @@ function TaskCCP4Build()  {
     },
 
     sec2 : { type     : 'section',
-             title    : 'Advanced Parameters',
+             title    : 'Advanced Build Parameters',
              open     : false,  // true for the section to be initially open
              position : [1,0,1,5],
              contains : {
@@ -342,10 +342,43 @@ function TaskCCP4Build()  {
                     }
 
              }
-    }
+           },
 
+    sec3 : { type     : 'section',
+             title    : 'Advanced Refinement Parameters',
+             open     : false,  // true for the section to be initially open
+             position : [2,0,1,5],
+             contains : {
 
-  }
+                EXPERIMENT : {
+                      type     : 'combobox',
+                      keyword  : 'none',
+                      label    : 'Diffraction experiment type',
+                      tooltip  : 'Diffraction experiment type',
+                      range    : ['xray|X-ray',
+                                  'electron|Electron',
+                                  'neutron|Neutron'
+                                 ],
+                      value    : 'xray',
+                      position : [0,0,1,1]
+                    },
+                FORM_FACTOR : {
+                      type     : 'combobox',
+                      keyword  : 'none',
+                      label    : 'form factor calculation method',
+                      tooltip  : 'Electron form factor calculation method',
+                      range    : ['gaussian|Sum of Gaussians',
+                                  'mb|Mott-Bethe'
+                                 ],
+                      value    : 'gaussian',
+                      showon   : {'EXPERIMENT':['electron']},
+                      position : [0,5,1,1]
+                    }
+
+            }
+          }
+
+  };
 
 }
 
@@ -362,7 +395,7 @@ TaskCCP4Build.prototype.constructor = TaskCCP4Build;
 TaskCCP4Build.prototype.icon = function()  { return 'task_ccp4build'; }
 
 TaskCCP4Build.prototype.currentVersion = function()  {
-  var version = 4;
+  var version = 5;
   if (__template)
         return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
@@ -430,8 +463,8 @@ if (!__template)  {
 
   }
 
-  TaskCCP4Build.prototype.getCommandLine = function ( exeType,jobDir )  {
-    return [conf.pythonName(), '-m', 'pycofe.tasks.ccp4build_task', exeType, jobDir, this.id];
+  TaskCCP4Build.prototype.getCommandLine = function ( jobManager,jobDir )  {
+    return [conf.pythonName(), '-m', 'pycofe.tasks.ccp4build_task', jobManager, jobDir, this.id];
   }
 
   // -------------------------------------------------------------------------

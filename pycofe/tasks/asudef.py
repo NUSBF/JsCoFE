@@ -10,10 +10,10 @@
 #  ASUDEF EXECUTABLE MODULE
 #
 #  Command-line:
-#     ccp4-python asudef.py exeType jobDir jobId
+#     ccp4-python asudef.py jobManager jobDir jobId
 #
 #  where:
-#    exeType  is either SHELL or SGE
+#    jobManager  is either SHELL or SGE
 #    jobDir   is path to job directory, having:
 #      jobDir/output  : directory receiving output files with metadata of
 #                       all successful imports
@@ -460,7 +460,7 @@ class ASUDef(basic.TaskDriver):
     # ------------------------------------------------------------------------
 
     # make task-specific definitions
-    def matthews_report(self):  return "refmac_report"
+    def matthews_report(self):  return "matthews_report"
     def getXMLFName    (self):  return "matthews.xml"
 
     # the following will provide for import of generated sequences

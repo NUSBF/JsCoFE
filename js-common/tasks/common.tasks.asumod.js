@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    27.12.18   <--  Date of Last Modification.
+ *    07.01.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  ASU Definition Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2018
+ *  (C) E. Krissinel, A. Lebedev 2016-2019
  *
  *  =================================================================
  *
@@ -52,9 +52,10 @@ function TaskASUMod()  {
   });
 
   this.input_dtypes[1].min = 0;
+  this.input_dtypes[1].unchosen_label = '[do not change]';
   this.input_dtypes[1].tooltip = 'Reflection dataset to be used for phasing ' +
             'and refinement in further tasks. If change of the reflection ' +
-            'dataset is not required, choose [do not use].';
+            'dataset is not required, choose [do not change].';
 
   this.input_dtypes[2].min     = 0;
   this.input_dtypes[2].tooltip = 'Macromolecular sequence(s) expected in ASU. ' +
@@ -88,11 +89,8 @@ TaskASUMod.prototype.constructor = TaskASUMod;
 
 TaskASUMod.prototype.icon = function()  { return 'task_asumod'; }
 
-//TaskASUMod.prototype.icon_small = function()  { return 'task_asumod_20x20'; }
-//TaskASUMod.prototype.icon_large = function()  { return 'task_asumod';       }
-
 TaskASUMod.prototype.currentVersion = function()  {
-  var version = 0;
+  var version = 1;
   if (__template)
         return  version + __template.TaskASUDef.prototype.currentVersion.call ( this );
   else  return  version + TaskASUDef.prototype.currentVersion.call ( this );
@@ -139,8 +137,8 @@ if (!__template)  {
 
   }
 
-  TaskASUMod.prototype.getCommandLine = function ( exeType,jobDir )  {
-    return [conf.pythonName(), '-m', 'pycofe.tasks.asumod', exeType, jobDir, this.id];
+  TaskASUMod.prototype.getCommandLine = function ( jobManager,jobDir )  {
+    return [conf.pythonName(), '-m', 'pycofe.tasks.asumod', jobManager, jobDir, this.id];
   }
 
   // -------------------------------------------------------------------------

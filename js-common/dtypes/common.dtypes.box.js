@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    26.04.19   <--  Date of Last Modification.
+ *    19.07.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -61,6 +61,44 @@ var empty = true;
 
 }
 
+DataBox.prototype.merge = function ( dBox )  {
+
+  this.mergeIds = function ( name )  {
+    if (name in dBox)  {
+      if (name in this)  {
+        for (var i=0;i<dBox[name].length;i++)
+          if (this[name].indexOf(dBox[name][i])<0)
+            this[name].push ( dBox[name][i] );
+      } else
+        this[name] = dBox[name];
+    }
+  }
+
+  for (var dtype in dBox.data)
+    if (dtype in this.data)  {
+      var d1 = this.data[dtype];
+      var d2 = dBox.data[dtype];
+      for (var i=0;i<d2.length;i++)  {
+        var found = false;
+        for (var j=0;(j<d1.length) && (!found);j++)
+          found = (d1[j].dataId==d2[i].dataId);
+        if (!found)
+          d1.push ( d2[i] );
+      }
+    } else
+      this.data[dtype] = dBox.data[dtype];
+
+  this.mergeIds ( 'jobs'      );
+  this.mergeIds ( 'inp_assoc' );
+
+  for (var item in dBox)
+    if (!(item in this))
+      this[item] = dBox[item];
+
+  return;
+
+}
+
 DataBox.prototype.extendData = function()  {
 // Extends all data objects in the box (i.e. deep copies them in-place).
   for (var dtype in this.data)
@@ -70,27 +108,26 @@ DataBox.prototype.extendData = function()  {
 }
 
 
+DataBox.prototype._add_assoc_data = function ( task )  {
+  var input_data_data  = task.input_data.data;
+  if ('inp_assoc' in this)  {
+    for (var dtype in input_data_data)  {
+      if (!(dtype in this.inp_assoc))
+        this.inp_assoc[dtype] = [];
+      for (var i=0;i<input_data_data[dtype].length;i++)
+        if (this.inp_assoc[dtype].indexOf(input_data_data[dtype][i].dataId)<0)
+          this.inp_assoc[dtype].push ( input_data_data[dtype][i].dataId );
+    }
+  }
+}
+
+
 DataBox.prototype.addTaskData = function ( task,include_used_bool )  {
 
   var output_data_data = task.output_data.data;
-  var input_data_data  = task.input_data.data;
-  this.jobs.push ( task.id );
-
-/*  <-- nasty bug fixed 04.12.2018, remove commented when verified
-  for (var dtype in output_data_data)
-    if (!(dtype in this.data))
-      this.data[dtype] = output_data_data[dtype];
-    else if (output_data_data[dtype][0].backtrace)  {
-      for (var i=0;i<output_data_data[dtype].length;i++)  {
-        var dt    = output_data_data[dtype][i];
-        var found = false;
-        for (var j=0;(j<this.data[dtype].length) && (!found);j++)
-          found = (this.data[dtype][j].dataId==dt.dataId);
-        if (!found)
-          this.data[dtype].push ( dt );
-      }
-    }
-*/
+  //var input_data_data  = task.input_data.data;
+  if (this.jobs.indexOf(task.id)<0)
+    this.jobs.push ( task.id );
 
   for (var dtype in output_data_data)  {
     if (!(dtype in this.data))
@@ -107,37 +144,40 @@ DataBox.prototype.addTaskData = function ( task,include_used_bool )  {
     }
   }
 
-  if (include_used_bool)  {
+  if (include_used_bool)
+        this.addTaskInputData ( task,false );
+  else  this._add_assoc_data  ( task );
 
-    for (var inpId in input_data_data)
-//      if (!inpId.startsWith('void'))  {
-      if (!startsWith(inpId,'void'))  {
-        for (var i=0;i<input_data_data[inpId].length;i++)  {
-          var dt    = input_data_data[inpId][i];
-          var dtype = dt._type;
-          if (!(dtype in this.data))
-            this.data[dtype] = [dt];
-          else if (dt.backtrace)  {
-            var found = false;
-            for (var j=0;(j<this.data[dtype].length) && (!found);j++)
-              found = (this.data[dtype][j].dataId==dt.dataId);
-            if (!found)
-              this.data[dtype].push ( dt );
-          }
+}
+
+
+DataBox.prototype.addTaskInputData = function ( task,addall_bool )  {
+
+  var output_data_data = task.output_data.data;
+  var input_data_data  = task.input_data.data;
+  if (this.jobs.indexOf(task.id)<0)
+    this.jobs.push ( task.id );
+
+  for (var inpId in input_data_data)
+    if (!startsWith(inpId,'void'))  {
+      for (var i=0;i<input_data_data[inpId].length;i++)  {
+        var dt    = input_data_data[inpId][i];
+        var dtype = dt._type;
+        if (!(dtype in this.data))
+          this.data[dtype] = [dt];
+        else if (addall_bool)
+          this.data[dtype].push ( dt );
+        else if (dt.backtrace)  {
+          var found = false;
+          for (var j=0;(j<this.data[dtype].length) && (!found);j++)
+            found = (this.data[dtype][j].dataId==dt.dataId);
+          if (!found)
+            this.data[dtype].push ( dt );
         }
       }
-
-  }
-
-  if ('inp_assoc' in this)  {
-    for (var dtype in input_data_data)  {
-      if (!(dtype in this.inp_assoc))
-        this.inp_assoc[dtype] = [];
-      for (var i=0;i<input_data_data[dtype].length;i++)
-        if (this.inp_assoc[dtype].indexOf(input_data_data[dtype][i].dataId)<0)
-          this.inp_assoc[dtype].push ( input_data_data[dtype][i].dataId );
     }
-  }
+
+  this._add_assoc_data ( task );
 
 }
 
@@ -151,6 +191,13 @@ DataBox.prototype.addData = function ( data )  {
 
 }
 
+/*
+DataBox.prototype.addDefaultData = function()  {
+  var unknownSequence = new DataSequence();
+  unknownSequence.setUnknown();
+  this.addData ( unknownSequence );
+}
+*/
 
 DataBox.prototype.addCustomData = function ( dataId,data )  {
 
@@ -252,13 +299,21 @@ DataBox.prototype.getDataSummary = function ( task )  {
     var inp_item = task.input_dtypes[i];
     var inp_data = inp_item.data_type;
     var title    = '';
+    var desc     = '';
+    if (inp_item.hasOwnProperty('desc'))
+      desc = inp_item.desc;
     var hints    = [];
+    //var mustHaveTypes    = [];
+    //var mustNotHaveTypes = [];
+    var data_types = {};  // will contain required data types with subtypes
 
     for (var dtype in inp_data)  {
 
+      data_types[dtype] = inp_data[dtype];
+
       if (dtype in this.data)  {
-        var idata = inp_data[dtype];
-        var tdata = this.data[dtype];
+        var idata = inp_data[dtype];   // input data specs
+        var tdata = this.data[dtype];  // list of data available to task
         if (idata.length<=0)  {  // all subtypes are good
           nDTypes += tdata.length;
         } else  {  // count datasets with suitable subtypes
@@ -304,7 +359,9 @@ DataBox.prototype.getDataSummary = function ( task )  {
       status    : rc,
       available : nDTypes,
       required  : required,
-      hints     : hints
+      hints     : hints,
+      dtypes    : data_types,
+      desc      : desc
     }
 
   }

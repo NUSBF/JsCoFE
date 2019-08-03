@@ -92,9 +92,6 @@ TaskMorda.prototype.constructor = TaskMorda;
 
 TaskMorda.prototype.icon = function()  { return 'task_morda'; }
 
-//TaskMorda.prototype.icon_small = function()  { return 'task_morda_20x20'; }
-//TaskMorda.prototype.icon_large = function()  { return 'task_morda';       }
-
 // task.platforms() identifies suitable platforms:
 //   'W"  : Windows
 //   'L'  : Linux
@@ -130,8 +127,8 @@ if (__template)  {
 
   }
 
-  TaskMorda.prototype.getCommandLine = function ( exeType,jobDir )  {
-    return [conf.pythonName(), '-m', 'pycofe.tasks.morda', exeType, jobDir, this.id];
+  TaskMorda.prototype.getCommandLine = function ( jobManager,jobDir )  {
+    return [conf.pythonName(), '-m', 'pycofe.tasks.morda', jobManager, jobDir, this.id];
   }
 
   // -------------------------------------------------------------------------

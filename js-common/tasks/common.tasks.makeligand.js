@@ -110,9 +110,6 @@ TaskMakeLigand.prototype.constructor = TaskMakeLigand;
 
 TaskMakeLigand.prototype.icon = function()  { return 'task_makeligand'; }
 
-//TaskMakeLigand.prototype.icon_small = function()  { return 'task_makeligand_20x20'; }
-//TaskMakeLigand.prototype.icon_large = function()  { return 'task_makeligand';       }
-
 TaskMakeLigand.prototype.currentVersion = function()  {
   var version = 1;
   if (__template)
@@ -126,8 +123,8 @@ if (__template)  {
 
   var conf = require('../../js-server/server.configuration');
 
-  TaskMakeLigand.prototype.getCommandLine = function ( exeType,jobDir )  {
-    return [conf.pythonName(), '-m', 'pycofe.tasks.makeligand', exeType, jobDir, this.id];
+  TaskMakeLigand.prototype.getCommandLine = function ( jobManager,jobDir )  {
+    return [conf.pythonName(), '-m', 'pycofe.tasks.makeligand', jobManager, jobDir, this.id];
   }
 
   // -------------------------------------------------------------------------

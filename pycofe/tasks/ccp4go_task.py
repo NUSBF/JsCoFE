@@ -3,17 +3,17 @@
 #
 # ============================================================================
 #
-#    25.04.19   <--  Date of Last Modification.
+#    16.07.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  CCP4go EXECUTABLE MODULE
 #
 #  Command-line:
-#     ccp4-python -m pycofe.tasks.ccp4go exeType jobDir jobId
+#     ccp4-python -m pycofe.tasks.ccp4go jobManager jobDir jobId
 #
 #  where:
-#    exeType  is either SHELL, SGE or SCRIPT
+#    jobManager  is either SHELL, SGE or SCRIPT
 #    jobDir   is path to job directory, having:
 #      jobDir/output  : directory receiving output files with metadata of
 #                       all successful imports
@@ -35,7 +35,7 @@ import pyrvapi
 import pyrvapi_ext.parsers
 
 #  application imports
-from   pycofe.dtypes import dtype_revision, dtype_template
+from   pycofe.dtypes import dtype_revision, dtype_sequence, dtype_template
 from   pycofe.tasks  import asudef, import_task
 from   pycofe.proc   import import_filetype, import_merged
 from   pycofe.varut  import rvapi_utils
@@ -56,6 +56,7 @@ class CCP4go(import_task.Import):
 
     # redefine name of input script file
     def file_stdin_path   (self):  return "ccp4go.script"
+    def file_seq_path     (self):  return "_ccp4go.seq"
 
     # the following will provide for import of generated sequences
 
@@ -356,7 +357,10 @@ class CCP4go(import_task.Import):
                 if structure:
 
                     structure.addDataAssociation ( hkl_sol.dataId )
-                    structure.setRefmacLabels ( hkl_sol )
+                    if resdir == "crank2_results":
+                        structure.setCrank2Labels ( hkl_sol )
+                    else:
+                        structure.setRefmacLabels ( hkl_sol )
                     structure.setXYZSubtype   ()
                     structure.addPhasesSubtype()
 
@@ -462,7 +466,9 @@ class CCP4go(import_task.Import):
             elif self.hkl:
                 self.write_stdin ( "HKLIN " + self.hkl.getFilePath(self.outputDir(),dtype_template.file_key["mtz"]) )
             if self.seq:  # takes just a single sequence for now -- to be changed
-                self.write_stdin ( "\nSEQIN " + self.seq[0].getFilePath(self.outputDir(),dtype_template.file_key["seq"]) )
+                dtype_sequence.writeMultiSeqFile1 ( self.file_seq_path(),self.seq,self.outputDir() )
+                #self.write_stdin ( "\nSEQIN " + self.seq[0].getFilePath(self.outputDir(),dtype_template.file_key["seq"]) )
+                self.write_stdin ( "\nSEQIN " + self.file_seq_path() )
             if self.xyz:
                 self.write_stdin ( "\nXYZIN " + self.xyz.getFilePath(self.outputDir(),dtype_template.file_key["xyz"]) )
             if self.task.ha_type:
@@ -480,7 +486,7 @@ class CCP4go(import_task.Import):
                 if sys.argv[4]!="-":
                     queueName = sys.argv[4]
 
-            if self.exeType == "SGE":
+            if self.jobManager == "SGE":
                 nSubJobs = "0";
                 if len(sys.argv)>5:
                     nSubJobs = sys.argv[5]
@@ -504,8 +510,8 @@ class CCP4go(import_task.Import):
                                 os.path.dirname(os.path.abspath(__file__)),
                                 "../apps/ccp4go/ccp4go.py" ) )
             cmd = [ ccp4go_path,
-                    "--sge" if self.exeType == "SGE" else "--mp",
-                    "--rdir","report",
+                    "--job-manager"   ,self.jobManager,
+                    "--rdir","report" ,
                     "--rvapi-document",self.reportDocumentName()
                   ]
 

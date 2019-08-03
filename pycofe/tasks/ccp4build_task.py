@@ -3,17 +3,17 @@
 #
 # ============================================================================
 #
-#    28.04.19   <--  Date of Last Modification.
+#    20.06.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  CCP4BUILD EXECUTABLE MODULE
 #
 #  Command-line:
-#     ccp4-python -m pycofe.tasks.ccp4build_task exeType jobDir jobId
+#     ccp4-python -m pycofe.tasks.ccp4build_task jobManager jobDir jobId
 #
 #  where:
-#    exeType  is either SHELL or SGE
+#    jobManager  is either SHELL or SGE
 #    jobDir   is path to job directory, having:
 #      jobDir/output  : directory receiving output files with metadata of
 #                       all successful imports
@@ -93,6 +93,7 @@ class CCP4Build(basic.TaskDriver):
         seq      = idata.seq
         sec1     = self.task.parameters.sec1.contains
         sec2     = self.task.parameters.sec2.contains
+        sec3     = self.task.parameters.sec3.contains
 
         mtzHKL    = hkl    .getHKLFilePath ( self.inputDir() )
         mtzPhases = istruct.getMTZFilePath ( self.inputDir() )
@@ -242,6 +243,17 @@ class CCP4Build(basic.TaskDriver):
                 "res_high         " + res_high
             ])
 
+        experiment_type = self.getParameter(sec3.EXPERIMENT)
+        if experiment_type == "electron":
+            form_factor = self.getParameter(sec3.FORM_FACTOR)
+        else:
+            form_factor = "default"
+
+        self.write_stdin ([
+            "experiment_type  " + experiment_type,
+            "form_factor      " + form_factor
+        ])
+
         self.write_stdin ([
             " ",
             "[parrot]",
@@ -344,7 +356,10 @@ class CCP4Build(basic.TaskDriver):
                         structure.copyLigands      ( istruct )
                     structure.removeSubtype   ( dtype_template.subtypeSubstructure() )
                     structure.setXYZSubtype   ()
-                    structure.setRefmacLabels ( None    )
+                    structure.setRefmacLabels ( None )
+                    structure.FP         = istruct.FP
+                    structure.SigFP      = istruct.SigFP
+                    structure.FreeR_flag = istruct.FreeR_flag
 
                     # make structure revision
                     rev = dtype_revision.DType ( -1 )

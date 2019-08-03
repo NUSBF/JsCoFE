@@ -1,7 +1,7 @@
 //
 //  =================================================================
 //
-//    10.05.16   <--  Date of Last Modification.
+//    12.07.19   <--  Date of Last Modification.
 //                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  -----------------------------------------------------------------
 //
@@ -12,7 +12,7 @@
 //  **** Content :  RVAPI javascript layer's tabs module
 //       ~~~~~~~~~
 //
-//  (C) E. Krissinel 2013-2016
+//  (C) E. Krissinel 2013-2019
 //
 //  =================================================================
 //
@@ -68,12 +68,19 @@ function getSelectedTabId() {
   return selected.substring(1);
 }
 
+var __iOS_device = (/iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream );
+
 function resizeTabBar() {
 // this resizes the tab bar when window is resized by user
 var mainToolBar = $("#"+mainToolBarId);
 var mainTabBar  = $("#"+mainTabBarId);
 var header      = $("#"+pageHeaderId);
-var h = window.innerHeight - 2 -
+var h;
+
+  if (__iOS_device)
+    h = window.parent.innerHeight - 46;
+  else
+    h = window.innerHeight + 6 -
         parseInt($(_document_body).css('margin-top'),10) -
         parseInt($(_document_body).css('margin-bottom'),10) -
         parseInt(mainTabBar.css('padding-top'),10) -

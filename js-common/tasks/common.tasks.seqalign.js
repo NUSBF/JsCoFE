@@ -64,9 +64,6 @@ TaskSeqAlign.prototype.constructor = TaskSeqAlign;
 
 TaskSeqAlign.prototype.icon = function()  { return 'task_seqalign'; }
 
-//TaskSeqAlign.prototype.icon_small = function()  { return 'task_seqalign_20x20'; }
-//TaskSeqAlign.prototype.icon_large = function()  { return 'task_seqalign';       }
-
 TaskSeqAlign.prototype.currentVersion = function()  {
   var version = 1;
   if (__template)
@@ -80,8 +77,8 @@ if (__template)  {
 
   var conf = require('../../js-server/server.configuration');
 
-  TaskSeqAlign.prototype.getCommandLine = function ( exeType,jobDir )  {
-    return [conf.pythonName(), '-m', 'pycofe.tasks.seqalign', exeType, jobDir, this.id];
+  TaskSeqAlign.prototype.getCommandLine = function ( jobManager,jobDir )  {
+    return [conf.pythonName(), '-m', 'pycofe.tasks.seqalign', jobManager, jobDir, this.id];
   }
 
   // -------------------------------------------------------------------------

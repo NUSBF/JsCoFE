@@ -384,7 +384,7 @@ function StorageList()  {
   this._type   = 'StorageList';
   this.path    = '';
   this.name    = '';
-  this.size    = '';
+  this.size    = 0;
   this.dirs    = [];  // sub-directories (FacilityDir)
   this.files   = [];  // dataset files (FacilityFile)
   this.sectors = [];  // file templates and ranges, for example:

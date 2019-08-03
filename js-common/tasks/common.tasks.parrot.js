@@ -214,9 +214,6 @@ TaskParrot.prototype.constructor = TaskParrot;
 
 TaskParrot.prototype.icon = function()  { return 'task_parrot'; }
 
-//TaskParrot.prototype.icon_small = function()  { return 'task_parrot_20x20'; }
-//TaskParrot.prototype.icon_large = function()  { return 'task_parrot';       }
-
 TaskParrot.prototype.doPackSuffixes = function()  {
   return [ '.mtz_diff.map', // when comes from shelx-substructure
            '.diff.map'      // when comes from MR
@@ -277,8 +274,8 @@ if (!__template)  {
 
   }
 
-  TaskParrot.prototype.getCommandLine = function ( exeType,jobDir )  {
-    return [conf.pythonName(), '-m', 'pycofe.tasks.parrot', exeType, jobDir, this.id];
+  TaskParrot.prototype.getCommandLine = function ( jobManager,jobDir )  {
+    return [conf.pythonName(), '-m', 'pycofe.tasks.parrot', jobManager, jobDir, this.id];
   }
 
   // -------------------------------------------------------------------------

@@ -3,17 +3,17 @@
 #
 # ============================================================================
 #
-#    22.03.19   <--  Date of Last Modification.
+#    22.06.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  COOT MODEL BUILDING EXECUTABLE MODULE (CLIENT-SIDE TASK)
 #
 #  Command-line:
-#     ccp4-python python.tasks.dui.py exeType jobDir jobId
+#     ccp4-python python.tasks.dui.py jobManager jobDir jobId
 #
 #  where:
-#    exeType  is either SHELL or SGE
+#    jobManager  is either SHELL or SGE
 #    jobDir   is path to job directory, having:
 #      jobDir/output  : directory receiving output files with metadata of
 #                       all successful imports
@@ -63,50 +63,51 @@ class DUI(basic.TaskDriver):
 
         # Check for MTZ files left by DUI and import them as Unmerged
 
-        files = os.listdir ( "./" )
-        fname = []
-        for f in files:
-            if f.lower().endswith(".mtz"):
-                fname.append ( f )
+        if os.path.isdir("dui_files"):
 
-        self.resetFileImport()
+            files = os.listdir ( "dui_files" )
+            fname = []
+            for f in files:
+                if f.lower().endswith(".mtz"):
+                    fname.append ( os.path.join("dui_files",f) )
 
-        if len(fname)>0:
-            if len(fname)<2:
-                self.putTitle ( "Unmerged Reflection Dataset" )
+            if len(fname)>0:
+                if len(fname)<2:
+                    self.putTitle ( "Unmerged Reflection Dataset" )
+                else:
+                    self.putTitle ( "Unmerged Reflection Datasets" )
+                #newHKLFPath = os.path.join ( resDir,self.getOFName("_unmerged_scaled.mtz",-1) )
+                #os.rename ( os.path.join(resDir,mtzUnmergedName),newHKLFPath )
+                for filename in fname:
+                    self.resetFileImport()
+                    self.addFileImport ( "",filename,import_filetype.ftype_MTZIntegrated() )
+                    unmerged_imported = import_unmerged.run ( self,"Unmerged Reflection Dataset" )
+                    self.putMessage ( "<b>Assigned name:</b>&nbsp;" + unmerged_imported[0].dname  )
+
+                # modify job name to display in job tree
+                ilist = ""
+                for key in self.outputDataBox.data:
+                    ilist += key[4:] + " (" + str(len(self.outputDataBox.data[key])) + ") "
+
+                if not ilist:
+                    self.putTitle   ( "Image Processing Failed" )
+                    self.putMessage ( "No output files were produced" )
+                    ilist = "None"
+
+                if self.task.uname:
+                    self.task.uname += " / "
+                self.task.uname += "created datasets: <i><b>" + ilist + "</b></i>"
+                with open('job.meta','w') as file_:
+                    file_.write ( self.task.to_JSON() )
+
             else:
-                self.putTitle ( "Unmerged Reflection Datasets" )
-            #newHKLFPath = os.path.join ( resDir,self.getOFName("_unmerged_scaled.mtz",-1) )
-            #os.rename ( os.path.join(resDir,mtzUnmergedName),newHKLFPath )
-            for filename in fname:
-                self.addFileImport ( "",filename,import_filetype.ftype_MTZIntegrated() )
-            unmerged_imported = import_unmerged.run ( self,"Unmerged Reflection Dataset" )
-            for i in range(len(unmerged_imported)):
-                self.putMessage ( "<b>Assigned name:</b>&nbsp;" + unmerged_imported[i].dname  )
+                self.putTitle ( "No Output Data Generated" )
 
-            # modify job name to display in job tree
-            ilist = ""
-            for key in self.outputDataBox.data:
-                ilist += key[4:] + " (" + str(len(self.outputDataBox.data[key])) + ") "
-
-            if not ilist:
-                self.putTitle   ( "Image Processing Failed" )
-                self.putMessage ( "No output files were produced" )
-                ilist = "None"
-
-            if self.task.uname:
-                self.task.uname += " / "
-            self.task.uname += "created datasets: <i><b>" + ilist + "</b></i>"
-            with open('job.meta','w') as file_:
-                file_.write ( self.task.to_JSON() )
+            # clean directories
+            shutil.rmtree ( "dui_files" )
 
         else:
-            self.putTitle ( "No Output Data Generated" )
-
-
-        # clean directories
-        if os.path.isdir("dui_files"):
-            shutil.rmtree ( "dui_files" )
+            self.putTitle ( "No DUI Data Found" )
 
         # ============================================================================
         # close execution logs and quit

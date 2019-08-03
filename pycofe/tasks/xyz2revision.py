@@ -10,10 +10,10 @@
 #  Xyz2Revision EXECUTABLE MODULE
 #
 #  Command-line:
-#     ccp4-python python.tasks.Xyz2Revision.py exeType jobDir jobId
+#     ccp4-python python.tasks.Xyz2Revision.py jobManager jobDir jobId
 #
 #  where:
-#    exeType  is either SHELL or SGE
+#    jobManager  is either SHELL or SGE
 #    jobDir   is path to job directory, having:
 #      jobDir/output  : directory receiving output files with metadata of
 #                       all successful imports

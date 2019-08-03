@@ -10,10 +10,10 @@
 #  CROSSEC EXECUTABLE MODULE
 #
 #  Command-line:
-#     ccp4-python -m pycofe.tasks.crossec exeType jobDir jobId
+#     ccp4-python -m pycofe.tasks.crossec jobManager jobDir jobId
 #
 #  where:
-#    exeType  is either SHELL or SGE/SCRIPT
+#    jobManager  is either SHELL or SGE/SCRIPT
 #    jobDir   is path to job directory, having:
 #      jobDir/output  : directory receiving output files with metadata of
 #                       all successful imports
