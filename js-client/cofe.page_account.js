@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.08.19   <--  Date of Last Modification.
+ *    06.08.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -68,9 +68,9 @@ function AccountPage ( sceneId )  {
   var login_lbl    = new Label     ( 'Login name:' );
   var pwd_lbl      = new Label     ( 'Password:'   );
   var licence_lbl  = new Label     ( 'Licence agreement:&nbsp;&nbsp;&nbsp;' ).setNoWrap();
-  var licence_val  = new Label     ( 'not chosen'  ).setFontItalic(true)     .setNoWrap();
+  //var licence_val  = new Label     ( '-/-/-/-/-/-' ).setNoWrap();
   var feedback_lbl = new Label     ( 'Feedback agreement:&nbsp;&nbsp;&nbsp;').setNoWrap();
-  var feedback_val = new Label     ( 'not chosen'  ).setFontItalic(true)     .setNoWrap();
+  //var feedback_val = new Label     ( '-/-/-/-/-/-' ).setFontColor('darkred').setNoWrap();
   var user_inp     = new InputText ( '' );
   var email_inp    = new InputText ( '' );
   var login_inp    = new InputText ( '' );
@@ -85,19 +85,21 @@ function AccountPage ( sceneId )  {
                                   'Login name cannot be changed' );
   pwd_inp     .setStyle         ( 'password','','password (old or new)',
                                   'Choose new password' );
+  /*
   licence_val .setTooltip       ( 'Type of licence may be changed, please ' +
                                   'press "Choose" button.' );
   feedback_val.setTooltip       ( 'Terms of feedback agremment may be changed, ' +
                                   'please press "Choose" button.' );
+  */
   title_lbl   .setFont          ( 'times','300%',true,true );
   user_lbl    .setFontSize      ( '125%' ).setWidth('auto');
   email_lbl   .setFontSize      ( '125%' );
   login_lbl   .setFontSize      ( '125%' );
   pwd_lbl     .setFontSize      ( '125%' );
   licence_lbl .setFontSize      ( '125%' );
-  licence_val .setFontSize      ( '112%' ).setFontWeight(700);
+  //licence_val .setFontSize      ( '112%' ).setFontWeight(700);
   feedback_lbl.setFontSize      ( '125%' );
-  feedback_val.setFontSize      ( '112%' ).setFontWeight(700);
+  //feedback_val.setFontSize      ( '112%' ).setFontWeight(700);
   user_inp    .setFontSize('112%').setFontItalic(true).setWidth('97%');
   email_inp   .setFontSize('112%').setFontItalic(true).setWidth('97%');
   login_inp   .setFontSize('112%').setFontItalic(true).setWidth('97%').setReadOnly(true);
@@ -120,39 +122,57 @@ function AccountPage ( sceneId )  {
   panel.setWidget               ( email_inp   ,row+1,1,1,3 );
   panel.setWidget               ( login_inp   ,row+2,1,1,3 );
   panel.setWidget               ( pwd_inp     ,row+3,1,1,3 );
-  panel.setWidget               ( licence_val ,row+4,1,1,1 );
-  panel.setWidget               ( feedback_val,row+5,1,1,1 );
+  //panel.setWidget               ( licence_val ,row+4,1,1,1 );
+  //panel.setWidget               ( feedback_val,row+5,1,1,1 );
   for (var i=0;i<6;i++)  {
     panel.setVerticalAlignment  ( row+i,0,'middle' );
     panel.setVerticalAlignment  ( row+i,1,'middle' );
   }
 
   row += 4;
-  var licence_btn = new Button  ( 'Choose',image_path('licence') );
+  var licence_btn = new Button  ( 'choose',image_path('licence') );
   licence_btn.setWidth          ( '100%' );
-  panel.setWidget               ( licence_btn,row,2,1,1 );
-  panel.setVerticalAlignment    ( row,2,'middle'  );
+  licence_btn.setTooltip        ( 'Type of licence must be chosen' );
+  panel.setWidget               ( licence_btn,row,1,1,2 );
+  panel.setVerticalAlignment    ( row,1,'middle'  );
+  //panel.setWidget               ( licence_btn,row,2,1,1 );
+  //panel.setVerticalAlignment    ( row,2,'middle'  );
   //panel.setCellSize             ( '','40pt',row,2 );
   licence_btn.setDisabled       ( true );
 
   licence_btn.addOnClickListener  ( function(){
-    new LicenceDialog(licence_val.getText(),function(licence){
-      licence_val.setText ( licence );
+    new LicenceDialog(licence_btn.getText(),function(licence){
+      licence_btn.setButton ( licence,image_path('licence') );
     });
+    /*
+    new LicenceDialog(licence_val.getText(),function(licence){
+      licence_val.setFontItalic(true).setFontColor('black').setText ( licence );
+      licence_btn.setButton ( 'Change',image_path('feedback') )
+    });
+    */
   });
 
   row++;
   var feedback_btn = new Button ( 'Choose',image_path('feedback') );
   feedback_btn.setWidth         ( '100%' );
-  panel.setWidget               ( feedback_btn,row,2,1,1 );
-  panel.setVerticalAlignment    ( row,2,'middle'  );
+  feedback_btn.setTooltip       ( 'Terms of feedback agremment must be chosen' );
+  panel.setWidget               ( feedback_btn,row,1,1,2 );
+  panel.setVerticalAlignment    ( row,1,'middle'  );
+  //panel.setWidget               ( feedback_btn,row,2,1,1 );
+  //panel.setVerticalAlignment    ( row,2,'middle'  );
   //panel.setCellSize             ( '','40pt',row,2 );
   feedback_btn.setDisabled      ( true );
 
   feedback_btn.addOnClickListener  ( function(){
-    new FeedbackDialog(feedback_val.getText(),function(feedback){
-      feedback_val.setText ( feedback );
+    new FeedbackDialog(feedback_btn.getText(),function(feedback){
+      feedback_btn.setButton ( feedback,image_path('feedback') );
     });
+    /*
+    new FeedbackDialog(feedback_val.getText(),function(feedback){
+      feedback_val.setFontItalic(true).setFontColor('black').setText ( feedback );
+      feedback_btn.setButton ( 'Change',image_path('feedback') )
+    });
+    */
   });
 
   panel.setCellSize             ( '','12pt',row++,0 );
@@ -165,11 +185,9 @@ function AccountPage ( sceneId )  {
                         .setDisabled ( true ); // disable button until user data arrives from server
 
   var delete_btn = panel.setButton ( 'Delete my account',image_path('remove'),
-                                     row++,0,1,4  );
-  delete_btn.setWidth           ( '100%' );
-  // disable button until user data arrives from server
-  delete_btn.setDisabled        ( true   );
-
+                                     row++,0,1,4 )
+                        .setWidth  ( '100%' )
+                        .setDisabled ( true );
 
   // however add update button listener
   var response;  // will keep user data
@@ -184,11 +202,11 @@ function AccountPage ( sceneId )  {
       msg += '<b>Password</b> must be provided (old or new).<p>';
 
     if ([licence_code.academic,licence_code.commercial]
-        .indexOf(licence_val.getText())<0)
+        .indexOf(licence_btn.getText())<0)
       msg += '<b>Licence</b> must be chosen.<p>';
 
     if ([feedback_code.agree1,feedback_code.agree2,feedback_code.decline]
-        .indexOf(feedback_val.getText())<0)
+        .indexOf(feedback_btn.getText())<0)
       msg += '<b>Feedback agreement</b> must be chosen.<p>';
 
     if (msg)  {
@@ -203,8 +221,8 @@ function AccountPage ( sceneId )  {
       userData.email    = email_inp   .getValue();
       userData.login    = login_inp   .getValue();
       userData.pwd      = pwd_inp     .getValue();
-      userData.licence  = licence_val .getText();
-      userData.feedback = feedback_val.getText();
+      userData.licence  = licence_btn .getText ();
+      userData.feedback = feedback_btn.getText ();
       userData.action   = userdata_action.none;
 
       serverRequest ( fe_reqtype.updateUserData,userData,'My Account',
@@ -263,8 +281,8 @@ function AccountPage ( sceneId )  {
         userData.email    = email_inp   .getValue();
         userData.login    = login_inp   .getValue();
         userData.pwd      = pswd_inp    .getValue();
-        userData.licence  = licence_val .getText();
-        userData.feedback = feedback_val.getText();
+        userData.licence  = licence_btn .getText();
+        userData.feedback = feedback_btn.getText();
 
         serverRequest ( fe_reqtype.deleteUser,userData,'Delete My Account',
                         function(response){
@@ -297,12 +315,27 @@ function AccountPage ( sceneId )  {
           'Please check your account settings:<ul>' + msg + '</ul>' +
           'To confirm your changes, push <b>Update</b> button.' );
       },0);
-    user_inp    .setValue ( userData.name     );
-    email_inp   .setValue ( userData.email    );
-    login_inp   .setValue ( userData.login    );
-    licence_val .setText  ( userData.licence  );
-    if (userData.feedback)
-      feedback_val.setText  ( userData.feedback );
+    user_inp    .setValue  ( userData.name     );
+    email_inp   .setValue  ( userData.email    );
+    login_inp   .setValue  ( userData.login    );
+    //licence_val .setText   ( userData.licence  );
+    //licence_btn .setButton ( 'Change',image_path('feedback') )
+    licence_btn .setButton ( userData.licence,image_path('licence') )
+    /*
+    if (userData.feedback)  {
+      feedback_val.setText ( userData.feedback );
+      if ([feedback_code.agree1,feedback_code.agree2,feedback_code.decline]
+            .indexOf(userData.feedback)>=0)  {
+        feedback_val.setFontColor ( 'black' );
+        feedback_btn.setButton ( 'Change',image_path('feedback') )
+      }
+    }
+    */
+    if ((userData.feedback.length>0) &&
+        ([feedback_code.agree1,feedback_code.agree2,feedback_code.decline]
+            .indexOf(userData.feedback)>=0))
+      feedback_btn.setButton ( userData.feedback,image_path('feedback') )
+
     // now activate the update button:
     licence_btn .setDisabled ( false );
     feedback_btn.setDisabled ( false );

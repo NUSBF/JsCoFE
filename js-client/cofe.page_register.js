@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    30.07.19   <--  Date of Last Modification.
+ *    06.08.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -49,9 +49,9 @@ function RegisterPage ( sceneId )  {
   var email_lbl    = new Label     ( 'E-mail:'      ).setNoWrap();
   var login_lbl    = new Label     ( 'Login name:'  ).setNoWrap();
   var licence_lbl  = new Label     ( 'Licence agreement:&nbsp;&nbsp;&nbsp;' ).setNoWrap();
-  var licence_val  = new Label     ( 'not chosen'  ).setFontItalic(true)     .setNoWrap();
+  //var licence_val  = new Label     ( '--/--/--/--'  ).setFontColor('darkred').setNoWrap();
   var feedback_lbl = new Label     ( 'Feedback agreement:&nbsp;&nbsp;&nbsp;').setNoWrap();
-  var feedback_val = new Label     ( 'not chosen'  ).setFontItalic(true)     .setNoWrap();
+  //var feedback_val = new Label     ( '--/--/--/--'  ).setFontColor('darkred').setNoWrap();
   var user_inp     = new InputText ( '' );
   var email_inp    = new InputText ( '' );
   var login_inp    = new InputText ( '' );
@@ -65,18 +65,20 @@ function RegisterPage ( sceneId )  {
                                  'Login name should contain only latin ' +
                                  'letters, numbers,\n undescores, dashes ' +
                                  'and dots, and must start with a letter' );
+  /*
   licence_val.setTooltip       ( 'Type of licence must be chosen, please ' +
                                  'press "Choose" button.' );
   feedback_val.setTooltip      ( 'Terms of feedback agremment must be chosen, ' +
                                  'please press "Choose" button.' );
+  */
   reg_lbl     .setFont         ( 'times','300%',true,true );
   user_lbl    .setFontSize     ( '125%' );
   email_lbl   .setFontSize     ( '125%' );
   login_lbl   .setFontSize     ( '125%' );
   licence_lbl .setFontSize     ( '125%' );
-  licence_val .setFontSize     ( '112%' ).setFontItalic(true).setFontWeight(700);
+  //licence_val .setFontSize     ( '112%' ).setFontItalic(true).setFontWeight(700);
   feedback_lbl.setFontSize     ( '125%' );
-  feedback_val.setFontSize     ( '112%' ).setFontItalic(true).setFontWeight(700);
+  //feedback_val.setFontSize     ( '112%' ).setFontItalic(true).setFontWeight(700);
   user_inp    .setFontSize     ( '112%' ).setFontItalic(true).setWidth('97%');
   email_inp   .setFontSize     ( '112%' ).setFontItalic(true).setWidth('97%');
   login_inp   .setFontSize     ( '112%' ).setFontItalic(true).setWidth('97%');
@@ -96,33 +98,40 @@ function RegisterPage ( sceneId )  {
   panel.setWidget              ( user_inp    ,row  ,1,1,3 );
   panel.setWidget              ( email_inp   ,row+1,1,1,3 );
   panel.setWidget              ( login_inp   ,row+2,1,1,3 );
-  panel.setWidget              ( licence_val ,row+3,1,1,1 );
-  panel.setWidget              ( feedback_val,row+4,1,1,1 );
+  //panel.setWidget              ( licence_val ,row+3,1,1,1 );
+  //panel.setWidget              ( feedback_val,row+4,1,1,1 );
   for (var i=0;i<5;i++)  {
     panel.setVerticalAlignment ( row+i,0,'middle' );
     panel.setVerticalAlignment ( row+i,1,'middle' );
   }
 
   row += 3;
-  var licence_btn = new Button ( 'Choose',image_path('licence') );
-  licence_btn.setWidth         ( '100%' );
-  panel.setWidget              ( licence_btn,row,2,1,1 );
-  panel.setVerticalAlignment   ( row,2,'middle'  );
+  //var licence_btn = new Button ( 'Choose',image_path('licence') );
+  var licence_btn = new Button  ( 'choose',image_path('licence') );
+  licence_btn.setWidth          ( '100%' );
+  licence_btn.setTooltip        ( 'Type of licence must be chosen' );
+  panel.setWidget               ( licence_btn,row,1,1,2 );
+  panel.setVerticalAlignment    ( row,1,'middle'  );
+  //panel.setWidget              ( licence_btn,row,2,1,1 );
+  //panel.setVerticalAlignment   ( row,2,'middle'  );
   //panel.setCellSize            ( '','40pt',row,2 );
 
   row++;
-  var feedback_btn = new Button ( 'Choose',image_path('feedback') );
+  var feedback_btn = new Button ( 'choose',image_path('feedback') );
   feedback_btn.setWidth         ( '100%' );
-  panel.setWidget               ( feedback_btn,row,2,1,1 );
-  panel.setVerticalAlignment    ( row,2,'middle'  );
+  feedback_btn.setTooltip       ( 'Terms of feedback agremment must be chosen' );
+  panel.setWidget               ( feedback_btn,row,1,1,2 );
+  panel.setVerticalAlignment    ( row,1,'middle'  );
+  //panel.setWidget               ( feedback_btn,row,2,1,1 );
+  //panel.setVerticalAlignment    ( row,2,'middle'  );
   //panel.setCellSize             ( '','40pt',row,2 );
 
   row++;
-  panel.setCellSize            ( '','12pt',row++,0 );
-  panel.setWidget              ( new HLine('3pt'), row++,0,1,4 );
-  panel.setCellSize            ( '','1pt',row++,0 );
+  panel.setCellSize             ( '','12pt',row++,0 );
+  panel.setWidget               ( new HLine('3pt'), row++,0,1,4 );
+  panel.setCellSize             ( '','1pt',row++,0 );
 
-  var reg_btn  = new Button    ( 'Register and send password by e-mail',image_path('email') );
+  var reg_btn  = new Button     ( 'Register and send password by e-mail',image_path('email') );
 
   var back_btn = null;
   if (__login_token=='')  {
@@ -133,22 +142,34 @@ function RegisterPage ( sceneId )  {
     back_btn.addOnClickListener ( function(){ makeAdminPage(sceneId); } );
   }
 
-  reg_btn .setWidth            ( '100%' );
-  back_btn.setWidth            ( '100%' );
+  reg_btn .setWidth             ( '100%' );
+  back_btn.setWidth             ( '100%' );
 
-  panel.setWidget              ( reg_btn ,row++,0,1,4 );
-  panel.setWidget              ( back_btn,row++,0,1,4 );
+  panel.setWidget               ( reg_btn ,row++,0,1,4 );
+  panel.setWidget               ( back_btn,row++,0,1,4 );
 
-  licence_btn.addOnClickListener  ( function(){
-    new LicenceDialog(licence_val.getText(),function(licence){
-      licence_val.setText ( licence );
+  licence_btn.addOnClickListener ( function(){
+    new LicenceDialog(licence_btn.getText(),function(licence){
+      licence_btn.setButton ( licence,image_path('licence') );
     });
+    /*
+    new LicenceDialog(licence_val.getText(),function(licence){
+      licence_val.setFontItalic(true).setFontColor('black').setText ( licence );
+      licence_btn.setButton ( 'Change',image_path('feedback') );
+    });
+    */
   });
 
-  feedback_btn.addOnClickListener  ( function(){
-    new FeedbackDialog(feedback_val.getText(),function(feedback){
-      feedback_val.setText ( feedback );
+  feedback_btn.addOnClickListener ( function(){
+    new FeedbackDialog(feedback_btn.getText(),function(feedback){
+      feedback_btn.setButton ( feedback,image_path('feedback') );
     });
+    /*
+    new FeedbackDialog(feedback_val.getText(),function(feedback){
+      feedback_val.setFontItalic(true).setFontColor('black').setText ( feedback );
+      feedback_btn.setButton ( 'Change',image_path('feedback') )
+    });
+    */
   });
 
   reg_btn.addOnClickListener  ( function(){
@@ -157,11 +178,11 @@ function RegisterPage ( sceneId )  {
     var msg = validateUserData ( user_inp,email_inp,login_inp );
 
     if ([licence_code.academic,licence_code.commercial]
-        .indexOf(licence_val.getText())<0)
+        .indexOf(licence_btn.getText())<0)
       msg += '<b>Licence</b> must be chosen.<p>';
 
     if ([feedback_code.agree1,feedback_code.agree2,feedback_code.decline]
-        .indexOf(feedback_val.getText())<0)
+        .indexOf(feedback_btn.getText())<0)
       msg += '<b>Feedback agreement</b> must be chosen.<p>';
 
     if (msg)  {
@@ -176,8 +197,8 @@ function RegisterPage ( sceneId )  {
       ud.name     = user_inp    .getValue();
       ud.email    = email_inp   .getValue();
       ud.login    = login_inp   .getValue();
-      ud.licence  = licence_val .getText();
-      ud.feedback = feedback_val.getText();
+      ud.licence  = licence_btn .getText();
+      ud.feedback = feedback_btn.getText();
       ud.pwd      = '';  // will be generated by server when empty
 
       serverCommand ( fe_command.register,ud,'Registration',function(response){

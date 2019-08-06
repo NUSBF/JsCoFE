@@ -971,6 +971,10 @@ Button.prototype._set_button = function ( text,icon_uri )  {
   $(this.element).button();
 }
 
+Button.prototype.getText = function()  {
+  return this.div.innerHTML;
+}
+
 Button.prototype.setButton = function ( text,icon_uri )  {
   this._set_button ( text,icon_uri );
   return this;
