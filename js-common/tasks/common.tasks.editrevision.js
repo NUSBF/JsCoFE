@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    30.06.19   <--  Date of Last Modification.
+ *    07.08.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -35,7 +35,7 @@ function TaskEditRevision()  {
 
   this._type     = 'TaskEditRevision';
   this.name      = 'edit structure revision';
-  this.oname     = 'edit revision';  //'*';   // asterisk here means do not use
+  this.oname     = 'edit_revision';  //'*';   // asterisk here means do not use
   this.title     = 'Edit Structure Revision';
   this.helpURL   = './html/jscofe_task_editrevision.html';
   this.fasttrack = true;  // enforces immediate execution
@@ -45,58 +45,68 @@ function TaskEditRevision()  {
       label       : 'Structure revision',  // label for input dialog
       tooltip     : 'Structure revision, in which the ASU contents needs to be '+
                     'modified',
-      inputId     : 'revision', // input Id for referencing input fields
-      customInput : 'cell-info', // lay custom fields next to the selection
-      //customInput : 'asumod',   // lay custom fields next to the selection
-      version     : 5,          // minimum data version allowed
-      min         : 1,          // minimum acceptable number of data instances
-      max         : 1           // maximum acceptable number of data instances
+      inputId     : 'revision',     // input Id for referencing input fields
+      customInput : 'cell-info',    // lay custom fields next to the selection
+      //customInput : 'asumod',     // lay custom fields next to the selection
+      version     : 5,              // minimum data version allowed
+      min         : 1,              // minimum acceptable number of data instances
+      max         : 1               // maximum acceptable number of data instances
    },{
-      data_type   : {'DataHKL':[]},  // data type(s) and subtype(s)
-      label       : 'Reflections',   // label for input dialog
+      data_type   : {'DataHKL':[]}, // data type(s) and subtype(s)
+      label       : 'Reflections',  // label for input dialog
       unchosen_label : '[do not change]',
       tooltip     : 'Reflection dataset to be used for phasing and refinement ' +
                     'in further tasks. If no changes are required, choose ' +
                     '[do not change].',
-      inputId     : 'hkl',           // input Id for referencing input fields
-      customInput : 'cell-info', // lay custom fields next to the selection
-      min         : 0,               // minimum acceptable number of data instances
-      max         : 1                // maximum acceptable number of data instances
+      inputId     : 'hkl',          // input Id for referencing input fields
+      customInput : 'cell-info',    // lay custom fields next to the selection
+      min         : 0,              // minimum acceptable number of data instances
+      max         : 1               // maximum acceptable number of data instances
     },{
       data_type   : {'DataSequence':['~unknown']}, // data type(s) and subtype(s)
-      label       : 'Sequence',    // label for input dialog
+      label       : 'Sequence',     // label for input dialog
       unchosen_label : '[do not change]',
       tooltip     : 'Macromolecular sequence(s) expected in ASU. If no ' +
                     'changes in ASU compositon are required, choose ' +
                     '[do not change].',
-      inputId     : 'seq',         // input Id for referencing input fields
+      inputId     : 'seq',          // input Id for referencing input fields
       customInput : 'stoichiometry-wauto', // lay custom fields below the dropdown
-      version     : 0,             // minimum data version allowed
-      min         : 0,             // minimum acceptable number of data instances
-      max         : 10             // maximum acceptable number of data instances
+      version     : 0,              // minimum data version allowed
+      min         : 0,              // minimum acceptable number of data instances
+      max         : 10              // maximum acceptable number of data instances
     },{
       data_type   : {'DataStructure':['xyz','substructure'],'DataXYZ':[]},  // data type(s) and subtype(s)
-      label       : 'Atomic model',  // label for input dialog
+      label       : 'Atomic model', // label for input dialog
       cast        : 'xyz',
       unchosen_label : '[do not change]',
       tooltip     : 'Atomic model of macromolecule(s). If no changes are ' +
                     'required, choose [do not change].',
-      inputId     : 'xyz',           // input Id for referencing input fields
-      customInput : 'cell-info', // lay custom fields next to the selection
-      version     : 0,               // minimum data version allowed
-      min         : 0,               // minimum acceptable number of data instances
-      max         : 1                // maximum acceptable number of data instances
+      inputId     : 'xyz',          // input Id for referencing input fields
+      customInput : 'cell-info',    // lay custom fields next to the selection
+      version     : 0,              // minimum data version allowed
+      min         : 0,              // minimum acceptable number of data instances
+      max         : 1               // maximum acceptable number of data instances
     },{
       data_type   : {'DataStructure':['phases']},  // data type(s) and subtype(s)
-      label       : 'Phases',        // label for input dialog
+      label       : 'Phases',       // label for input dialog
       cast        : 'phases',
       unchosen_label : '[do not change]',
       tooltip     : 'Phases. If no changes are required, choose [do not change].',
-      inputId     : 'phases',           // input Id for referencing input fields
-      customInput : 'cell-info', // lay custom fields next to the selection
-      version     : 0,               // minimum data version allowed
-      min         : 0,               // minimum acceptable number of data instances
+      inputId     : 'phases',       // input Id for referencing input fields
+      customInput : 'cell-info',    // lay custom fields next to the selection
+      version     : 0,              // minimum data version allowed
+      min         : 0,              // minimum acceptable number of data instances
       max         : 1               // maximum acceptable number of data instances
+    },{
+      data_type   : {'DataLigand':[]},  // data type(s) and subtype(s)
+      label       : 'Ligand data',  // label for input dialog
+      unchosen_label : '[do not change]',
+      tooltip     : 'Ligand(s). If no changes are required, choose [do not change]. ' +
+                    'Note that if ligand structures are given, they will replace ' +
+                    'any pre-existing ligands in structure revision.',
+      inputId     : 'ligand',       // input Id for referencing input fields
+      min         : 0,              // minimum acceptable number of data instances
+      max         : 20              // maximum acceptable number of data instances
     }
   ];
 
@@ -115,7 +125,7 @@ TaskEditRevision.prototype.constructor = TaskEditRevision;
 TaskEditRevision.prototype.icon = function()  { return 'task_editrevision'; }
 
 TaskEditRevision.prototype.currentVersion = function()  {
-  var version = 0;
+  var version = 1;
   if (__template)
         return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );

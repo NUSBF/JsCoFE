@@ -24,7 +24,7 @@
 // name and version tag
 
 function appName()  { return 'CCP4 Cloud' }
-var jsCoFE_version = '1.2.003 [06.08.2019]';
+var jsCoFE_version = '1.2.004 [07.08.2019]';
 
 
 // ============================================================================

@@ -415,9 +415,14 @@ class DType(dtype_template.DType):
         self.refmacLinks = getattr(struct_class,'refmacLinks',[])
         return
 
-    def addLigands ( self,ligCode ):
+    def addLigand ( self,ligCode ):
         if not ligCode in self.ligands:
             self.ligands += [ligCode]
+        self.addLigandSubtype()
+        return
+
+    def setLigands ( self,ligCodes ):
+        self.ligands = ligCodes
         self.addLigandSubtype()
         return
 
@@ -425,7 +430,6 @@ class DType(dtype_template.DType):
         if not self.getXYZFileName() and self.getSubFileName():
             self.dname = self.dname.replace ( "/structure/","/substructure/" )
         return
-
 
 
 # ============================================================================

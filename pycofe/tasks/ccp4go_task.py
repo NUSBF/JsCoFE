@@ -365,7 +365,7 @@ class CCP4go(import_task.Import):
                     structure.addPhasesSubtype()
 
                     if "libindex" in meta:
-                        structure.addLigands ( meta["libindex"] )
+                        structure.addLigand ( meta["libindex"] )
 
                     self.putMessage ( "&nbsp;" ) # just vertical spacer
                     self.putStructureWidget ( "structure_btn_" + str(row),

@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    04.03.19   <--  Date of Last Modification.
+#    07.08.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -75,7 +75,6 @@ class Deposition(basic.TaskDriver):
         revision = self.makeClass ( self.input_data.data.revision[0] )
         hkl      = self.makeClass ( self.input_data.data.hkl     [0] )
         istruct  = self.makeClass ( self.input_data.data.istruct [0] )
-        lead_key = istruct.leadKey
         seq      = self.input_data.data.seq
         for i in range(len(seq)):
             seq[i] = self.makeClass ( seq[i] )
@@ -108,10 +107,11 @@ class Deposition(basic.TaskDriver):
         self.close_stdin()
 
         # make command-line parameters for bare morda run on a SHELL-type node
+        xyzin  = istruct.getXYZFilePath ( self.inputDir() )
         xyzout = self.getXYZOFName()   # refmac output cif (refmac wants ".pdb" anyway)
         mtzout = self.getMTZOFName()   # refmac output mtz (used only for map visualisation)
         cmd = [ "hklin" ,hkl.getFilePath(self.inputDir(),dtype_template.file_key["mtz"]),
-                "xyzin" ,istruct.getXYZFilePath(self.inputDir()),
+                "xyzin" ,xyzin,
                 "hklout",mtzout,
                 "xyzout",xyzout,
                 "tmpdir",os.path.join(os.environ["CCP4_SCR"],uuid.uuid4().hex) ]
@@ -140,16 +140,26 @@ class Deposition(basic.TaskDriver):
             xyzout_cif = self.getOFName ( ".mmcif" )
 
         # prepare files for the structure visualisation widget
-        mapout  = self.getMapOFName()
-        dmapout = self.getDMapOFName()
+        mapout   = self.getMapOFName()
+        dmapout  = self.getDMapOFName()
+        mapout0  = istruct.getMapFilePath  ( self.inputDir() )
+        dmapout0 = istruct.getDMapFilePath ( self.inputDir() )
+
+        if not mapout0 or not dmapout0:
+            # calculate maps for UglyMol using final mtz from temporary location
+            fnames  = self.calcCCP4Maps ( mtzout,self.outputFName )
+            mapout  = fnames[0]
+            dmapout = fnames[1]
 
         #  This replaces Refmac output with the original ".pdb". Because Refmac
         # was run with zero cycles, all coordinates remain the same, but ".pdb"
         # is currently needed for the visualisation widget
-        shutil.copyfile ( istruct.getXYZFilePath (self.inputDir()), xyzout  )
+        shutil.copyfile ( xyzin,xyzout  )
         #shutil.copyfile ( istruct.getMTZFilePath (self.inputDir()), mtzout  )
-        shutil.copyfile ( istruct.getMapFilePath (self.inputDir()), mapout  )
-        shutil.copyfile ( istruct.getDMapFilePath(self.inputDir()), dmapout )
+        if mapout0:
+            shutil.copyfile ( mapout0 ,mapout  )
+        if dmapout0:
+            shutil.copyfile ( dmapout0,dmapout )
 
         libout = None
         if libin:
@@ -158,7 +168,7 @@ class Deposition(basic.TaskDriver):
 
         # create output structure and visualisation widget
         structure = self.registerStructure ( xyzout,None,mtzout,mapout,dmapout,libout,
-                                             leadKey=lead_key )
+                                             leadKey=istruct.leadKey )
         if structure:
             structure.copyAssociations ( istruct )
             structure.copyLabels       ( istruct )
