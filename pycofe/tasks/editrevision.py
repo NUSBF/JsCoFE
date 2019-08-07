@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    01.07.19   <--  Date of Last Modification.
+#    07.08.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -28,7 +28,9 @@
 import os
 
 #  application imports
-from  pycofe.tasks  import asudef
+from  pycofe.dtypes  import dtype_structure
+from  pycofe.tasks   import asudef
+from  pycofe.proc    import makelib
 
 
 # ============================================================================
@@ -52,7 +54,9 @@ class EditRevision(asudef.ASUDef):
 
         # fetch input data
         revision0 = self.makeClass ( self.input_data.data.revision[0] )
-        struct0   = self.makeClass ( self.input_data.data.struct0 [0] )
+        struct0   = None
+        if hasattr(self.input_data.data,"struct0"):  # optional data parameter
+            struct0 = self.makeClass ( self.input_data.data.struct0 [0] )
 
         associated_data_list = []
         change_list          = []
@@ -75,21 +79,27 @@ class EditRevision(asudef.ASUDef):
             for s in self.input_data.data.seq0:
                 seq.append ( self.makeClass(s) )
 
-        xyz = None
+        xyz = struct0
         if hasattr(self.input_data.data,"xyz"):  # optional data parameter
             xyz = self.makeClass ( self.input_data.data.xyz[0] )
             associated_data_list.append ( xyz )
             change_list.append ( 'xyz' )
-        else:
-            xyz = struct0
 
-        phases = None
+        phases = struct0
         if hasattr(self.input_data.data,"phases"):  # optional data parameter
             phases = self.makeClass ( self.input_data.data.phases[0] )
             associated_data_list.append ( phases )
             change_list.append ( 'phases' )
-        else:
-            phases = struct0
+
+        ligands = []
+        if hasattr(self.input_data.data,"ligand"):  # optional data parameter
+            for lig in self.input_data.data.ligand:
+                ligands.append ( self.makeClass(lig) )
+                associated_data_list.append ( ligands[-1] )
+            change_list.append ( 'lig' )
+
+
+        # --------------------------------------------------------------------
 
         revision = None
 
@@ -105,23 +115,43 @@ class EditRevision(asudef.ASUDef):
 
         if revision:
 
-            if 'xyz' in change_list or 'phases' in change_list:
+            if 'xyz' in change_list or 'phases' in change_list or 'lig' in change_list:
                 # redefine structure
                 self.putMessage  ( "<h2>Compose new Structure</h2>" )
+                sub_fpath  = None
+                mtz_fpath  = None
+                map_fpath  = None
+                dmap_fpath = None
+                lib_fpath  = None
+                lig_codes  = None
+                if xyz._type==dtype_structure.dtype():
+                    sub_fpath = xyz.getSubFilePath ( self.inputDir() )
+                    lib_fpath = xyz.getLibFilePath ( self.inputDir() )
+                if phases:
+                    mtz_fpath  = phases.getMTZFilePath ( self.inputDir() )
+                    map_fpath  = phases.getMapFilePath ( self.inputDir() )
+                    dmap_fpath = phases.getDMapFilePath( self.inputDir() )
+                if len(ligands)>0:
+                    lib_fpath  = self.stampFileName ( self.dataSerialNo,self.getOFName(".dict.cif") )
+                    self.dataSerialNo += 1
+                    lig_codes  = makelib.makeLibrary ( self,ligands,lib_fpath )
+
                 structure = self.registerStructure1 (
-                                xyz   .getXYZFilePath ( self.inputDir() ),
-                                xyz   .getSubFilePath ( self.inputDir() ),
-                                phases.getMTZFilePath ( self.inputDir() ),
-                                phases.getMapFilePath ( self.inputDir() ),
-                                phases.getDMapFilePath( self.inputDir() ),
-                                xyz   .getLibFilePath ( self.inputDir() ),
+                                xyz.getXYZFilePath ( self.inputDir() ),
+                                sub_fpath ,
+                                mtz_fpath ,
+                                map_fpath ,
+                                dmap_fpath,
+                                lib_fpath ,
                                 self.outputFName,
                                 leadKey=2 if 'phases' in change_list else 1,
                                 copy_files=False )
                 if structure:
+                    if lig_codes:
+                        structure.setLigands ( lig_codes )
                     self.putStructureWidget ( self.getWidgetId("structure_btn_"),
                                               "Structure and electron density",
-                                               structure )
+                                              structure )
                     revision.setStructureData ( structure )
                 else:
                     self.putMessage  ( "<b><i>Structure was not replaced (error)</i></b>" )

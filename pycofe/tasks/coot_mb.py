@@ -200,7 +200,7 @@ class Coot(basic.TaskDriver):
                 struct.copyLabels       ( istruct )
                 struct.copyLigands      ( istruct )
                 if ligand:
-                    struct.addLigands ( ligand.code )
+                    struct.addLigand ( ligand.code )
 
                 # add link formulas and counts to struct metadata
                 struct.links = links.count_links(['LINK', 'SYMLINK'])

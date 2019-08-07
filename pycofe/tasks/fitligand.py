@@ -128,7 +128,7 @@ class FitLigand(basic.TaskDriver):
                 structure.copySubtype      ( istruct )
                 structure.copyLabels       ( istruct )
                 structure.copyLigands      ( istruct )
-                structure.addLigands       ( ligand.code )
+                structure.addLigand       ( ligand.code )
                 self.putTitle ( "Results" )
                 self.putMessage ( "<b>Total " + str(nligs) + " '" + ligand.code +\
                                   "' ligands were fitted</b><br>&nbsp;" )

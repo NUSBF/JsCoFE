@@ -153,7 +153,7 @@ function AccountPage ( sceneId )  {
   });
 
   row++;
-  var feedback_btn = new Button ( 'Choose',image_path('feedback') );
+  var feedback_btn = new Button ( 'choose',image_path('feedback') );
   feedback_btn.setWidth         ( '100%' );
   feedback_btn.setTooltip       ( 'Terms of feedback agremment must be chosen' );
   panel.setWidget               ( feedback_btn,row,1,1,2 );
