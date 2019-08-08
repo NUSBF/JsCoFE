@@ -76,7 +76,7 @@ function DataStructure()  {
   this.BFthresh       = 3.0;
   this.phaseBlur      = 1.0;   // used in arpwarp
 
-  this.ligands        = [];    // list of ligands fitted
+  this.ligands        = [];    // list of ligand codes fitted
   this.refmacLinks    = [];    // list of LINKR records
   this.links          = [];    // list of LINK records
 

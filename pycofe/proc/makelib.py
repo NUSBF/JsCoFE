@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    06.08.19   <--  Date of Last Modification.
+#    08.08.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -28,13 +28,17 @@ from pycofe.varut   import command
 
 # ============================================================================
 
+# should be rewritten using AceDrg accummulator
 def makeLibrary ( body,ligands,library_path ):
 
     lib_path = library_path + ".tmp"
     codes    = []
 
     for ligand in ligands:
-        if not ligand.code in codes:
+        process = True  # i.e. library is taken anyway, which is wrong
+        if ligand._type=="DataLigand":
+            process = not ligand.code in codes
+        if process:
             ligpath = ligand.getLibFilePath ( body.inputDir() )
             if len(codes)>0:
                 body.open_stdin()
@@ -49,7 +53,10 @@ def makeLibrary ( body,ligands,library_path ):
                 shutil.copy2 ( lib_path,library_path )
             else:
                 shutil.copy2 ( ligpath,library_path )
-            codes.append ( ligand.code )
+            if ligand._type=="DataLigand":
+                codes.append ( ligand.code )
+            else:
+                codes += ligand.codes
 
     if os.path.exists(lib_path):
         os.remove ( lib_path )

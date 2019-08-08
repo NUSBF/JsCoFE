@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    07.08.19   <--  Date of Last Modification.
+ *    08.08.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -98,7 +98,7 @@ function TaskEditRevision()  {
       min         : 0,              // minimum acceptable number of data instances
       max         : 1               // maximum acceptable number of data instances
     },{
-      data_type   : {'DataLigand':[]},  // data type(s) and subtype(s)
+      data_type   : {'DataLigand':[],'DataLibrary':[]},  // data type(s) and subtype(s)
       label       : 'Ligand data',  // label for input dialog
       unchosen_label : '[do not change]',
       tooltip     : 'Ligand(s). If no changes are required, choose [do not change]. ' +
@@ -171,18 +171,24 @@ if (!__template)  {
           input_ready = (inpi.dropdown[j].getValue()>=0);
       }
 
-      function check_object ( n )  {
-        var ddn = inpDataRef.input[n].dropdown[0];
-        var msg = compare_objects ( n,ddn );
-        ddn.customGrid.setLabel ( msg.fontcolor('red'),0,2,1,1 )
-                      .setFontItalic(true).setNoWrap();
-        if (msg.length>0)
-          input_ready = false;
+      function check_object ( input_id )  {
+        var n = -1;
+        for (var i=0;(i<inpDataRef.input.length) && (n<0);i++)
+          if (inpDataRef.input[i].inputId==input_id)
+            n = i;
+        if (n>=0)  {
+          var ddn = inpDataRef.input[n].dropdown[0];
+          var msg = compare_objects ( n,ddn );
+          ddn.customGrid.setLabel ( msg.fontcolor('red'),0,2,1,1 )
+                        .setFontItalic(true).setNoWrap();
+          if (msg.length>0)
+            input_ready = false;
+        }
       }
 
-      check_object ( 1 );
-      check_object ( 3 );
-      check_object ( 4 );
+      check_object ( 'hkl'    );
+      check_object ( 'xyz'    );
+      check_object ( 'phases' );
 
       if (!input_ready)  this.sendTaskStateSignal ( inpParamRef.grid.inputPanel,'hide_run_button' );
                    else  this.sendTaskStateSignal ( inpParamRef.grid.inputPanel,'' );

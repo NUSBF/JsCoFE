@@ -53,7 +53,7 @@ import pyrvapi_ext.parsers
 # pycofe imports
 from pycofe.dtypes import dtype_template, dtype_xyz, dtype_structure, databox
 from pycofe.dtypes import dtype_ensemble, dtype_hkl, dtype_ligand
-from pycofe.dtypes import dtype_sequence
+from pycofe.dtypes import dtype_sequence, dtype_library
 from pycofe.proc   import edmap,  import_filetype,   import_merged
 from pycofe.varut  import signal, jsonut, command
 from pycofe.etc    import citations
@@ -1302,9 +1302,20 @@ class TaskDriver(object):
                                          self.outputDataBox,self.outputDir(),
                                          copy=copy_files )
         if not ligand:
-            self.file_stderr.write ( "  NONE LIGAND" )
+            self.file_stderr.write ( "  NONE LIGAND\n" )
             self.file_stderr.flush()
         return ligand
+
+
+    def registerLibrary ( self,libPath,copy_files=False ):
+        self.dataSerialNo += 1
+        library = dtype_library.register ( libPath,self.dataSerialNo,self.job_id,
+                                           self.outputDataBox,self.outputDir(),
+                                           copy=copy_files )
+        if not library:
+            self.file_stderr.write ( "  NONE LIBRARY\n" )
+            self.file_stderr.flush()
+        return library
 
 
     # ----------------------------------------------------------------------------
@@ -1392,6 +1403,18 @@ class TaskDriver(object):
                                             ligand.getLibFileName()]),
                                  "LIB" )
         self.addCitations ( ["uglymol","ccp4mg"] )
+        return row+2
+
+
+    def putLibraryWidget1 ( self,pageId,title_str,library,row,colSpan ):
+        self.putMessage1 ( pageId,"<b>Assigned name:</b>&nbsp;" + library.dname +
+                                  "<font size='+2'><sub>&nbsp;</sub></font>",row )
+        codes = "<b>Content:</b>&nbsp;"
+        for i in range(len(library.codes)):
+            if i>0:
+                codes += ", "
+            codes += library.codes[i]
+        self.putMessage1 ( pageId,codes,row+1 )
         return row+2
 
 
