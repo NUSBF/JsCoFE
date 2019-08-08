@@ -132,9 +132,16 @@ class EditRevision(asudef.ASUDef):
                     map_fpath  = phases.getMapFilePath ( self.inputDir() )
                     dmap_fpath = phases.getDMapFilePath( self.inputDir() )
                 if len(ligands)>0:
-                    lib_fpath  = self.stampFileName ( self.dataSerialNo,self.getOFName(".dict.cif") )
-                    self.dataSerialNo += 1
-                    lig_codes  = makelib.makeLibrary ( self,ligands,lib_fpath )
+                    if len(ligands)>1:
+                        lib_fpath = self.stampFileName ( self.dataSerialNo,self.getOFName(".dict.cif") )
+                        self.dataSerialNo += 1
+                        lig_codes = makelib.makeLibrary ( self,ligands,lib_fpath )
+                    else:
+                        lib_fpath = ligands[0].getLibFilePath ( self.inputDir() )
+                        if ligands[0]._type=="DataLigand":
+                            lig_codes = [ligands[0].code]
+                        else:
+                            lig_codes = ligands[0].codes
 
                 structure = self.registerStructure1 (
                                 xyz.getXYZFilePath ( self.inputDir() ),

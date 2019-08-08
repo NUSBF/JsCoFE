@@ -2,18 +2,18 @@
 /*
  *  =================================================================
  *
- *    27.12.18   <--  Date of Last Modification.
+ *    08.08.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
- *  **** Module  :  js-common/dtypes/common.dtypes.ligand.js
+ *  **** Module  :  js-common/dtypes/common.dtypes.library.js
  *       ~~~~~~~~~
  *  **** Project :  jsCoFE - javascript-based Cloud Front End
  *       ~~~~~~~~~
- *  **** Content :  Ligand Data Class
+ *  **** Content :  Library Data Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2018
+ *  (C) E. Krissinel, A. Lebedev 2019
  *
  *  =================================================================
  *
@@ -30,31 +30,30 @@ if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
 // ./js-common/dtypes/common.dtypes.something.js . This convention is used
 // for class reconstruction from json strings
 
-function DataLigand()  {
+function DataLibrary()  {
 
   if (__template)  __template.DataTemplate.call ( this );
              else  DataTemplate.call ( this );
 
-  this._type      = 'DataLigand';
-  //this.title      = 'Ligand Library';
-  this.code       = 'DRG';
+  this._type = 'DataLibrary';
+  this.codes = [];  // contains ligand codes
 
 }
 
 if (__template)
-      DataLigand.prototype = Object.create ( __template.DataTemplate.prototype );
-else  DataLigand.prototype = Object.create ( DataTemplate.prototype );
-DataLigand.prototype.constructor = DataLigand;
+      DataLibrary.prototype = Object.create ( __template.DataTemplate.prototype );
+else  DataLibrary.prototype = Object.create ( DataTemplate.prototype );
+DataLibrary.prototype.constructor = DataLibrary;
 
 
 // ===========================================================================
 
-DataLigand.prototype.title = function()  { return 'Ligand Structure'; }
-DataLigand.prototype.icon  = function()  { return 'data';             }
+DataLibrary.prototype.title = function()  { return 'Ligand Library'; }
+DataLibrary.prototype.icon  = function()  { return 'data';           }
 
 // when data class version is changed here, change it also in python
 // constructors
-DataLigand.prototype.currentVersion = function()  {
+DataLibrary.prototype.currentVersion = function()  {
   var version = 0;
   if (__template)
         return  version + __template.DataTemplate.prototype.currentVersion.call ( this );
@@ -66,17 +65,14 @@ DataLigand.prototype.currentVersion = function()  {
 if (!__template)  {
   // for client side
 
-  DataLigand.prototype.makeDataSummaryPage = function ( task )  {
+  DataLibrary.prototype.makeDataSummaryPage = function ( task )  {
     var dsp = new DataSummaryPage ( this );
-
-    dsp.makeRow ( 'File name',this.files[file_key.xyz],'Imported or generated file name' );
-
+    dsp.makeRow ( 'File name',this.files[file_key.lib],'Imported or generated file name' );
     return dsp;
-
   }
 
 } else  {
   //  for server side
-  module.exports.DataLigand = DataLigand;
+  module.exports.DataLibrary = DataLibrary;
 
 }
