@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    04.05.19   <--  Date of Last Modification.
+#    12.08.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -140,7 +140,8 @@ class DType(dtype_template.DType):
         spec1 = ""
         for item in spec1_list:
             if item[0] in self.subtype:
-                spec1 += item[1] + ","
+                if item[1]!=dtype_template.subtypeRegular():
+                    spec1 += item[1] + ","
 
         spec2  = ""
         slist2 = spec2_list;
@@ -149,11 +150,12 @@ class DType(dtype_template.DType):
         first = True
         for item in slist2:
             if item[0] in self.subtype:
-                if first:
-                    spec2 += "<b>" + item[1] + "</b>,"
-                    first  = False
-                else:
-                    spec2 += item[1] + ","
+                if item[1]!=dtype_template.subtypeRegular():
+                    if first:
+                        spec2 += "<b>" + item[1] + "</b>,"
+                        first  = False
+                    else:
+                        spec2 += item[1] + ","
 
         if spec1:
             self.dname += "(" + spec1[:-1] + ")"

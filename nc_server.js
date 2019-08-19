@@ -55,7 +55,7 @@ function cmdLineError()  {
                         'with 0 <= n < ' + conf.getNumberOfNCs() );
   else
     log.error ( 9,'Restart as "node ./nc_server.js configFile n", where ' +
-                        '"n" is the NC serial number')
+                        '"n" is the NC serial number');
   process.exit();
 }
 

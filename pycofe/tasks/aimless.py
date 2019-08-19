@@ -225,13 +225,13 @@ class Aimless(basic.TaskDriver):
                     break
 
             if output_ok:
-                hkl = import_merged.run ( self )
+                hkl = import_merged.run ( self,importPhases=False )
 
         else:
             file_i = self.getMTZOFName()
             if os.path.isfile(file_i):
                 self.addFileImport ( "",file_i,import_filetype.ftype_MTZMerged() )
-                hkl = import_merged.run ( self,"Reflection dataset" )
+                hkl = import_merged.run ( self,"Reflection dataset",importPhases=False )
             else:
                 output_ok = False
 

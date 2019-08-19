@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    25.07.19   <--  Date of Last Modification.
+ *    13.08.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -37,21 +37,31 @@ function checkLocalService ( callback_func )  {
   function getServerInfo()  {
     serverCommand ( fe_command.getInfo,{},'getInfo',function(response){
       if (response.status==fe_retcode.ok)  {
-        __exclude_tasks = response.data.exclude_tasks;
-        __cloud_storage = response.data.cloud_storage;
-        __demo_projects = response.data.demo_projects;
-        __local_setup   = response.data.localSetup;
-        __regMode       = response.data.regMode;
-        __setup_desc    = response.data.setup_desc;
-        __ccp4_version  = response.data.ccp4_version;
-        __check_session_period = response.data.check_session_period;
-        if (response.data.localuser)  {
+        var rData = response.data;
+        __exclude_tasks = rData.exclude_tasks;
+        __cloud_storage = rData.cloud_storage;
+        __demo_projects = rData.demo_projects;
+        __local_setup   = rData.localSetup;
+        __regMode       = rData.regMode;
+        __setup_desc    = rData.setup_desc;
+        __ccp4_version  = rData.ccp4_version;
+        __check_session_period = rData.check_session_period;
+        if (rData.localuser)  {
           __local_user    = true;
-          __login_user    = response.data.localuser;
-          __login_token   = response.data.logintoken;
-          __doNotShowList = response.data.helpTopics;
+          __login_user    = rData.localuser;
+          __login_token   = rData.logintoken;
+          __doNotShowList = rData.helpTopics;
         }
-        callback_func ( 0 );
+        if (!__local_service)
+          serverCommand ( fe_command.getClientInfo,{},'getClientInfo',
+                          function(rsp){
+            if (rsp.status==fe_retcode.ok)
+              __local_service = rsp.data.local_service;
+            callback_func ( 0 );
+            return true;
+          });
+        else
+          callback_func ( 0 );
       } else  {
         new MessageBox ( 'Server not Configured',
             'Server not configured, contact administrator.' );

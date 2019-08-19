@@ -176,9 +176,9 @@ class FreeRFlag(basic.TaskDriver):
                 self.putTitle ( "Output Data" )
                 if len(self.files_all) > 1:
                     import_merged.run ( self,"Reflection datasets created",
-                                             True,False )
+                                             True,False,importPhases=False )
                 else:
-                    import_merged.run ( self,"",False,False )
+                    import_merged.run ( self,"",False,False,importPhases=False )
 
                 outhkl = self.outputDataBox.data[hkl[0]._type]
                 if n0 >= 0:

@@ -931,6 +931,10 @@ var fe_server = conf.getFEConfig();
     rData.check_session_period = fe_server.sessionCheckPeriod;  // ms
     rData.ccp4_version = conf.CCP4Version();
 
+    var client_conf = conf.getClientNCConfig();
+    if (client_conf) rData.local_service = client_conf.externalURL;
+                else rData.local_service = null;
+
     response = new cmd.Response ( cmd.fe_retcode.ok,'',rData );
 
   } else  {

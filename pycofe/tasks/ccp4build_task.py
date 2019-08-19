@@ -52,30 +52,6 @@ class CCP4Build(basic.TaskDriver):
     def ccp4build_seq  (self):  return "ccp4build.seq"
     def mtz_cad        (self):  return "__cad.mtz"
 
-
-    # ----------------------------------------------------------------------
-
-    def mergeMTZ ( self,mtzHKL,lblHKL,mtzPhases,lblPhases,mtzOut ):
-
-        cmd = [ "HKLIN1",mtzHKL,
-                "HKLIN2",mtzPhases,
-                "HKLOUT",mtzOut ]
-
-        self.open_stdin()
-        self.write_stdin ( "LABIN  FILE 1" )
-        for i in range(len(lblHKL)):
-            self.write_stdin ( " E%d=%s" % (i+1,lblHKL[i]) )
-        self.write_stdin ( "\nLABIN  FILE 2" )
-        for i in range(len(lblPhases)):
-            self.write_stdin ( " E%d=%s" % (i+1,lblPhases[i]) )
-        self.write_stdin ( "\n" )
-        self.close_stdin()
-
-        self.runApp ( "cad",cmd,logType="Service" )
-
-        return
-
-
     # ------------------------------------------------------------------------
 
     def run(self):
@@ -120,9 +96,10 @@ class CCP4Build(basic.TaskDriver):
         if istruct.HLA and istruct.getSubFileName():
             #  experimental phases
 
-            self.mergeMTZ ( mtzHKL   ,[labin_fo[0],labin_fo[1],hkl.getFreeRColumn()],
-                            mtzPhases,[istruct.HLA,istruct.HLB,istruct.HLC,istruct.HLD],
-                            self.mtz_cad() )
+            self.makePhasesMTZ (
+                    mtzHKL   ,[labin_fo[0],labin_fo[1],hkl.getFreeRColumn()],
+                    mtzPhases,[istruct.HLA,istruct.HLB,istruct.HLC,istruct.HLD],
+                    self.mtz_cad() )
 
             self.open_stdin()
             self.write_stdin ([
@@ -151,9 +128,10 @@ class CCP4Build(basic.TaskDriver):
         else:
             #  molecular replacement phases
 
-            self.mergeMTZ ( mtzHKL   ,[labin_fo[0],labin_fo[1],hkl.getFreeRColumn()],
-                            mtzPhases,[istruct.PHI,istruct.FOM],
-                            self.mtz_cad() )
+            self.makePhasesMTZ (
+                    mtzHKL   ,[labin_fo[0],labin_fo[1],hkl.getFreeRColumn()],
+                    mtzPhases,[istruct.PHI,istruct.FOM],
+                    self.mtz_cad() )
 
             self.open_stdin()
             self.write_stdin ([

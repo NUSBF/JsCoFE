@@ -94,16 +94,50 @@ class DType(dtype_template.DType):
             return [self.FP,self.SigFP,"F"]
         return [None,None,"X"]
 
+    def setImportMergedData ( self,dataset ):
+
+        #if dataset.Fmean:
+        #    self.FP    = dataset.Fmean.value
+        #    self.SigFP = dataset.Fmean.sigma
+        #if dataset.FREE:
+        #    self.FreeR_flag = dataset.FREE
+
+        if dataset.PhiFOM and len(dataset.PhiFOM) == 1:
+            self.PHI, self.FOM = dataset.PhiFOM[0]
+
+        if dataset.ABCD and len(dataset.ABCD) == 1:
+            self.HLA, self.HLB, self.HLC, self.HLD = dataset.ABCD[0]
+
+        if dataset.FwPhi and len(dataset.FwPhi) == 1:
+          self.FWT, self.PHWT = dataset.FwPhi[0]
+
+        a, b, c, al, be, ga = dataset.DCELL
+        self.xyzmeta = dict(
+            cryst = dict(
+                a = a,
+                b = b,
+                c = c,
+                alpha = al,
+                beta = be,
+                gamma = ga,
+                spaceGroup = dataset.HM
+            )
+        )
+
+    def setHKLLabels ( self,hkl_class ):
+        if hasattr(hkl_class.dataset,"Fmean"):
+            self.FP    = hkl_class.dataset.Fmean.value
+            self.SigFP = hkl_class.dataset.Fmean.sigma
+        if hasattr(hkl_class.dataset,"FREE"):
+            self.FreeR_flag = hkl_class.dataset.FREE
+        return
+
     def setRefmacLabels ( self,hkl_class ):
         self.FP         = "FP"
         self.SigFP      = "SIGFP"
         self.FreeR_flag = "FreeR_flag"
         if hkl_class:
-            if hasattr(hkl_class.dataset,"Fmean"):
-                self.FP    = hkl_class.dataset.Fmean.value
-                self.SigFP = hkl_class.dataset.Fmean.sigma
-            if hasattr(hkl_class.dataset,"FREE"):
-                self.FreeR_flag = hkl_class.dataset.FREE
+            self.setHKLLabels ( hkl_class )
         self.PHI        = "PHIC_ALL_LS"
         self.FOM        = "FOM"
         self.FWT        = "FWT"
@@ -184,7 +218,6 @@ class DType(dtype_template.DType):
         self.HLD     = "parrot.ABCD.D"
         return
 
-
     def setAcornLabels ( self ):
         self.FWT     = "acorn.FWT"
         self.PHWT    = "acorn.PHI"
@@ -237,6 +270,15 @@ class DType(dtype_template.DType):
         lbl = [ self.FP    ,self.SigFP  ,self.PHI,self.FOM,self.FWT,self.PHWT,
                 self.DELFWT,self.PHDELWT,self.HLA,self.HLB,self.HLC,self.HLD,
                 self.FreeR_flag ]
+        labels = []
+        for l in lbl:
+            if len(l)>0:
+                labels.append ( l )
+        return labels
+
+    def getPhaseLabels ( self ):
+        lbl = [ self.PHI,self.FOM,self.FWT,self.PHWT,
+                self.DELFWT,self.PHDELWT,self.HLA,self.HLB,self.HLC,self.HLD ]
         labels = []
         for l in lbl:
             if len(l)>0:

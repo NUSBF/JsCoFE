@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    18.07.19   <--  Date of Last Modification.
+ *    18.08.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -60,10 +60,12 @@ function ProjectPage ( sceneId )  {
     var child_nodes = jobTree.getChildNodes ( node );
     if (child_nodes.length==1)  {
       var task = jobTree.getTaskByNodeId ( child_nodes[0].id );
-      if (task.state==job_code.remark)  {
-        if (jobTree.calcSelectedNodeId().length<=1)
-              jobTree.selectSingle   ( child_nodes[0] );
-        else  jobTree.selectMultiple ( child_nodes[0] );
+      if (task)  {
+        if (task.state==job_code.remark)  {
+          if (jobTree.calcSelectedNodeId().length<=1)
+                jobTree.selectSingle   ( child_nodes[0] );
+          else  jobTree.selectMultiple ( child_nodes[0] );
+        }
       }
     }
   }

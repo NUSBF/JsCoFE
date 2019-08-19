@@ -31,6 +31,7 @@ if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
 // for class reconstruction from json strings
 
 var hkl_subtype = {
+  regular   : 'regular',
   anomalous : 'anomalous'
 }
 

@@ -239,7 +239,7 @@ class CCP4go(import_task.Import):
             self.resetFileImport()
             self.addFileImport ( "",meta["mtz"],import_filetype.ftype_MTZMerged() )
             #self.files_all = [meta["mtz"]]
-            import_merged.run ( self,"Import merged HKL" )
+            import_merged.run ( self,"Import merged HKL",importPhases=False )
             # get reference to imported structure
             self.hkl = self.outputDataBox.data["DataHKL"][0]
 
@@ -336,7 +336,7 @@ class CCP4go(import_task.Import):
                         self.addFileImport ( "",meta["hkl"],import_filetype.ftype_MTZMerged() )
                         #self.files_all = [meta["hkl"]]
                         import_merged.run ( self,"Import merged HKL reindexed in " +
-                                                 meta["spg"] )
+                                                 meta["spg"],importPhases=False )
                         self.rvrow += 10
                         # get reference to imported structure
                         hkl0 = self.outputDataBox.data["DataHKL"]
