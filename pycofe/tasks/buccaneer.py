@@ -14,7 +14,7 @@
 #
 #  where:
 #    jobManager  is either SHELL or SGE
-#    jobDir   is path to job directory, having:
+#    jobDir      is path to job directory, having:
 #      jobDir/output  : directory receiving output files with metadata of
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
@@ -32,6 +32,7 @@ import shutil
 #  application imports
 import basic
 from   pycofe.dtypes  import dtype_template
+from   varut          import signal
 
 
 # ============================================================================
@@ -209,7 +210,7 @@ class BuccaneerMR(basic.TaskDriver):
                         nobuild = True
                         break
             self.file_stdout  = open ( self.file_stdout_path(),'a' )
-            self.putTitle   ( "Results" )
+            self.putTitle ( "Results" )
             if nobuild:
                 self.putMessage ( "<h3>Failed to build structure</h3>" )
             else:

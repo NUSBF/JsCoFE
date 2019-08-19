@@ -3,13 +3,13 @@
 #
 # ============================================================================
 #
-#    23.12.18   <--  Date of Last Modification.
+#    12.08.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  BASE (TEMPLATE) DATA TYPE
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2018
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2019
 #
 # ============================================================================
 #
@@ -27,6 +27,7 @@ from pycofe.varut import jsonut
 def dtype(): return "DataTemplate"  # must coincide with data definitions in JS
 
 def subtypeHKL         (): return "hkl"
+def subtypeRegular     (): return "regular"
 def subtypeAnomalous   (): return "anomalous"
 def subtypeASU         (): return "asu"
 def subtypeSequence    (): return "seq"
@@ -134,7 +135,8 @@ class DType(jsonut.jObject):
                 fname = os.path.splitext(fname)[0]
             fname += " /" + self._type[4:].lower() + "/"
             for st in self.subtype:
-                fname += st + "/"
+                if st!=subtypeRegular():
+                    fname += st + "/"
             if serialNo > 0:
                 self.dname = "[" + self.dataId + "] " + fname
             else:
@@ -211,12 +213,14 @@ class DType(jsonut.jObject):
         self.subtype = st
         return
 
-
     def copySubtype ( self,data ):
         self.subtype = []
         for st in data.subtype:
             self.subtype.append ( st )
         return
+
+    def getSubtypes ( self ):
+        return self.subtype
 
 
     def add_file ( self,fn,outputDir,fileKeyName,copy_bool=False ):

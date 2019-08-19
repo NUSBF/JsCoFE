@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    10.05.19   <--  Date of Last Modification.
+ *    12.08.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -133,8 +133,9 @@ if (!__template)  {
 
     var n   = 1;
     var xyz = this.xyzmeta.xyz;
-    for (var i=0;i<xyz.length;i++)
-      n += xyz[i].chains.length;
+    if (xyz)
+      for (var i=0;i<xyz.length;i++)
+        n += xyz[i].chains.length;
 
     dsp.table.setHeaderText ( 'Contents',dsp.trow,0, n,1 );
     dsp.table.setHorizontalAlignment ( dsp.trow,0,'left' );
@@ -146,18 +147,19 @@ if (!__template)  {
     dsp.table.setCellSize   ( '90%',''  ,dsp.trow,5 );
     dsp.trow++;
 
-    for (var i=0;i<this.xyzmeta.xyz.length;i++)  {
-      var xyzi = this.xyzmeta.xyz[i];
-      var col  = 1;
-      dsp.table.setLabel ( xyzi.model,dsp.trow,0,xyzi.chains.length,1 );
-      for (var j=0;j<xyzi.chains.length;j++)  {
-        dsp.table.setLabel ( xyzi.chains[j].id  ,dsp.trow,col  , 1,1 );
-        dsp.table.setLabel ( xyzi.chains[j].type,dsp.trow,col+1, 1,1 );
-        dsp.table.setLabel ( xyzi.chains[j].size,dsp.trow,col+2, 1,1 );
-        col = 0;
-        dsp.trow++;
+    if (xyz)
+      for (var i=0;i<xyz.length;i++)  {
+        var xyzi = xyz[i];
+        var col  = 1;
+        dsp.table.setLabel ( xyzi.model,dsp.trow,0,xyzi.chains.length,1 );
+        for (var j=0;j<xyzi.chains.length;j++)  {
+          dsp.table.setLabel ( xyzi.chains[j].id  ,dsp.trow,col  , 1,1 );
+          dsp.table.setLabel ( xyzi.chains[j].type,dsp.trow,col+1, 1,1 );
+          dsp.table.setLabel ( xyzi.chains[j].size,dsp.trow,col+2, 1,1 );
+          col = 0;
+          dsp.trow++;
+        }
       }
-    }
 
   }
 
@@ -206,21 +208,22 @@ if (!__template)  {
   DataXYZ.prototype.getChainList = function()  {
   var xyz  = this.xyzmeta.xyz;
   var list = [];
-    for (var i=0;i<xyz.length;i++)  {
-      var chains = xyz[i].chains;
-      for (var j=0;j<chains.length;j++)  {
-        var item   = {};
-        item.id    = chains[j].id;
-        item.model = xyz[i].model;
-        item.type  = chains[j].type;
-        if (xyz.length>1)
-          item.fullId = '/' + xyz[i].model + '/' + chains[j].id;
-        else
-          item.fullId = chains[j].id;
-        item.label = item.fullId + ' (' + chains[j].type.toLowerCase() + ')';
-        list.push ( item );
+    if (xyz)
+      for (var i=0;i<xyz.length;i++)  {
+        var chains = xyz[i].chains;
+        for (var j=0;j<chains.length;j++)  {
+          var item   = {};
+          item.id    = chains[j].id;
+          item.model = xyz[i].model;
+          item.type  = chains[j].type;
+          if (xyz.length>1)
+            item.fullId = '/' + xyz[i].model + '/' + chains[j].id;
+          else
+            item.fullId = chains[j].id;
+          item.label = item.fullId + ' (' + chains[j].type.toLowerCase() + ')';
+          list.push ( item );
+        }
       }
-    }
     return list;
   }
 
@@ -285,17 +288,18 @@ if (!__template)  {
       customGrid.chainSel.setWidth ( '120%' );
       customGrid.chainSel.addItem ( 'All','','(all)',this.chainSel=='(all)' );
       var xyz = this.xyzmeta.xyz;
-      for (var i=0;i<xyz.length;i++)  {
-        var chains = xyz[i].chains;
-        for (var j=0;j<chains.length;j++)
-          if ((chains[j].type=='Protein') || (dropdown.layCustom=='chain-sel')) {
-            var id = chains[j].id;
-            if (xyz.length>1)
-              id = '/' + xyz[i].model + '/' + id;
-            customGrid.chainSel.addItem ( id + ' (' + chains[j].type.toLowerCase() + ')',
-                                          '',id,this.chainSel==id );
-          }
-      }
+      if (xyz)
+        for (var i=0;i<xyz.length;i++)  {
+          var chains = xyz[i].chains;
+          for (var j=0;j<chains.length;j++)
+            if ((chains[j].type=='Protein') || (dropdown.layCustom=='chain-sel')) {
+              var id = chains[j].id;
+              if (xyz.length>1)
+                id = '/' + xyz[i].model + '/' + id;
+              customGrid.chainSel.addItem ( id + ' (' + chains[j].type.toLowerCase() + ')',
+                                            '',id,this.chainSel==id );
+            }
+        }
       customGrid.setWidget ( customGrid.chainSel, 0,1,1,2 );
       //customGrid.setCellSize ( '160px','',0,1 );
       customGrid.chainSel.make();

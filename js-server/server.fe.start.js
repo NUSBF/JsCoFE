@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    31.03.19   <--  Date of Last Modification.
+ *    13.08.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -112,6 +112,10 @@ function start ( callback_func )  {
 
         case cmd.fe_command.getInfo :
             pp.processPOSTData ( server_request,server_response,user.getInfo );
+          break;
+
+        case cmd.fe_command.getClientInfo :
+            pp.processPOSTData ( server_request,server_response,conf.getClientInfo );
           break;
 
         case cmd.fe_command.login :

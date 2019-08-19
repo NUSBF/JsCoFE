@@ -32,7 +32,7 @@ var conf     = require('./js-server/server.configuration');
 var fe_start = require('./js-server/server.fe.start');
 
 //  prepare log
-var log = require('./js-server/server.log').newLog(16);
+var log = require('./js-server/server.log').newLog(21);
 
 /*
 conf.setEmailerConfig ( 'telnet'          );

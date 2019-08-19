@@ -90,7 +90,7 @@ class ChangeSpG(basic.TaskDriver):
             self.resetFileImport()
             self.addFileImport ( "",outputMTZFName,import_filetype.ftype_MTZMerged() )
             #self.files_all = [ outputMTZFName ]
-            import_merged.run ( self,"Reflection dataset" )
+            import_merged.run ( self,"Reflection dataset",importPhases=False )
 
             # update structure revision
             if revision:

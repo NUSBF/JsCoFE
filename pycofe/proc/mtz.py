@@ -32,34 +32,113 @@ class bfpair():
         self.plus = measured(v[0], s[0])
         self.minus = measured(v[1], s[1])
 
+def extract_blocks(label_list, ctype_list, block_str):
+    block_len = len(block_str)
+    block_rep = list(block_len* ' ')
+    block_end = 0
+    block_list = list()
+    while True:
+        ctype_str = ''.join(ctype_list)
+        block_start = ctype_str.find(block_str, block_end)
+        if block_start < 0:
+            break
+
+        block_end = block_start + block_len
+        ctype_list[block_start:block_end] = block_rep
+        block = tuple(label_list[block_start:block_end])
+        block_list.append(block)
+
+    return block_list
+
+def block_name(block, merge=None):
+    if merge is None:
+        merge = len(block) == 4
+
+    letter_list = list()
+    for letters in zip(*block):
+        letter = letters[0]
+        if letters.count(letter) == len(block):
+            letter_list.append(letter)
+
+        elif merge:
+            letter_list.append(''.join(letters))
+
+        else:
+            break
+
+    if letter_list:
+        return ''.join(letter_list)
+
+    else:
+        return '-'.join(block)
+
 class mtz_dataset(object):
     H = K = L = FREE = HM = None
     Ipm = Fpm = Imean = Fmean = None
     MTZ = PROJECT = CRYSTAL = DATASET = DCELL = DWAVEL = None
     RESO = None
+    PhiFOM = ABCD = FwPhi = None
+    
 
-    def __init__(self, columns, header, isunmerged=False):
+    def __init__(self, clist, header, isunmerged=False, vstream=None):
         self.MTZ  = header.MTZ
         self.H    = header.H
         self.K    = header.K
         self.L    = header.L
         self.FREE = header.FREE
         self.HM   = header.HM
-        for type in 'K', 'M', 'G', 'L':
-            labs = columns.pop(type, None)
+        if not clist:
+            return
+
+        ctype_list, label_list = [list(t) for t in zip(*clist)]
+        abcd_list = extract_blocks(label_list, ctype_list, 'AAAA')
+        fwtphi_list = extract_blocks(label_list, ctype_list, 'FP')
+        phifom_list = extract_blocks(label_list, ctype_list, 'PW')
+        fomphi_list = extract_blocks(label_list, ctype_list, 'WP')
+        phifom_list.extend(zip(*reversed(zip(*fomphi_list))))
+        clist = zip(ctype_list, label_list)
+
+        # print [block_name(b) for b in phifom_list]
+        # print [block_name(b, merge=True) for b in abcd_list]
+        
+        self.ABCD = tuple(abcd_list)
+        self.FwPhi = tuple(fwtphi_list)
+
+        columns = dict()
+        for ctype, label in clist:
+            labs = columns.get(ctype, None)
+            if not labs:
+                labs = list()
+                columns[ctype] = labs
+
+            labs.append(label)
+
+        if vstream:
+            print >>vstream, columns
+
+        phi_list = columns.get('P')
+        fom_list = columns.get('W')
+        if phi_list and fom_list and len(phi_list) == 1 and len(fom_list) == 1:
+            phifom_list.append((phi_list[0], fom_list[0]))
+
+        if phifom_list:
+            self.PhiFOM = tuple(phifom_list)
+
+        for ctype in 'K', 'M', 'G', 'L':
+            labs = columns.pop(ctype, None)
             if labs and len(labs) == 2:
                 lab1, lab2 = labs
                 if lab1.replace('+', '-') == lab2 and lab2.replace('-', '+') == lab1:
-                    columns[type] = lab1, lab2
+                    columns[ctype] = lab1, lab2
 
                 elif lab1.replace('-', '+') == lab2 and lab2.replace('+', '-') == lab1:
-                    columns[type] = lab2, lab1
+                    columns[ctype] = lab2, lab1
 
                 elif lab1.replace('plus', 'minus') == lab2 and lab2.replace('minus', 'plus') == lab1:
-                    columns[type] = lab1, lab2
+                    columns[ctype] = lab1, lab2
 
                 elif lab1.replace('minus', 'plus') == lab2 and lab2.replace('plus', 'minus') == lab1:
-                    columns[type] = lab2, lab1
+                    columns[ctype] = lab2, lab1
 
         for vtype, stype, tag in (('K', 'M', 'Ipm'), ('G', 'L', 'Fpm')):
             vlabs = columns.pop(vtype, None)
@@ -143,6 +222,15 @@ class mtz_dataset(object):
             print 'Fmean.value =', self.Fmean.value
             print 'Fmean.sigma =', self.Fmean.sigma
 
+        if self.PhiFOM:
+            print 'Ph =', self.PhiFOM
+
+        if self.ABCD:
+            print 'ABCD =', self.ABCD
+
+        if self.FwPhi:
+            print 'FwPhi =', self.FwPhi
+
         print
 
 class mtz_dataset_list(list):
@@ -175,30 +263,25 @@ class mtz_dataset_list(list):
         for data in header_dict['COLUMN']:
             words = data.split()
             label = words[0]
-            type = words[1]
+            ctype = words[1]
             index = words[4] if len(words) > 4 else '0'
-            if type == 'H' and label in ('H', 'K', 'L'):
+            if ctype == 'H' and label in ('H', 'K', 'L'):
                 if getattr(self, label, None):
                     raise Exception()
 
                 else:
                     setattr(self, label, label)
 
-            if type == 'I' and label.upper().find('FREE') >= 0:
+            if ctype == 'I' and label.upper().find('FREE') >= 0:
                 if not self.FREE:
                     self.FREE = label
 
-            columns = columns_dict.get(index, None)
-            if not columns:
-                columns = dict()
-                columns_dict[index] = columns
+            clist = columns_dict.get(index, None)
+            if not clist:
+                clist = list()
+                columns_dict[index] = clist
 
-            labs = columns.get(type, None)
-            if not labs:
-                labs = list()
-                columns[type] = labs
-
-            labs.append(label)
+            clist.append((ctype, label))
 
         if 'SYMINF' in header_dict:
             data = header_dict['SYMINF'][0].replace("'", '"')
@@ -220,11 +303,8 @@ class mtz_dataset_list(list):
             raise Exception()
 
         ds_dict = dict()
-        for index, columns in columns_dict.items():
-            if vstream:
-                print >>vstream, columns
-
-            ds_dict[index] = mtz_dataset(columns, self, bool(self.BRNG))
+        for index, clist in columns_dict.items():
+            ds_dict[index] = mtz_dataset(clist, self, bool(self.BRNG), vstream)
 
         for key in 'PROJECT', 'CRYSTAL', 'DATASET', 'DCELL', 'DWAVEL':
             if key in header_dict:
@@ -371,7 +451,15 @@ def test_default(vstream=None):
     for ds in mf:
         ds.prn()
 
-    mf = mtz_file(ccp4 + '/share/ccp4i2/demo_data/mdm2/r4hg7sf_1.mtz', vstream)
+    mf = mtz_file('data/r4hg7sf_1.mtz', vstream)
+    for ds in mf:
+        ds.prn()
+
+    mf = mtz_file('data/sad.mtz', vstream)
+    for ds in mf:
+        ds.prn()
+
+    mf = mtz_file('data/ensad.mtz', vstream)
     for ds in mf:
         ds.prn()
 

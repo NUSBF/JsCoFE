@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    29.09.17   <--  Date of Last Modification.
+ *    13.08.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,12 +13,11 @@
  *  **** Content :  POST Processing Module
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2017
+ *  (C) E. Krissinel, A. Lebedev 2016-2019
  *
  *  =================================================================
  *
  */
-
 
  //  load application modules
  var class_map = require('./server.class_map');
@@ -51,25 +50,29 @@ function processPOSTData ( server_request,server_response,process_data_function 
 
       var data_obj = class_map.getClassInstance ( data );
 
-      if (data_obj.hasOwnProperty('_type'))  {
-        if (data_obj._type=='Request')  {
-          var login = user.getLoginFromHash ( data_obj.token );
-          if (login.length<=0)
-            cmd.sendResponse ( server_response, cmd.fe_retcode.notLoggedIn,
-                               'user not logged in','' );
-          else
-            process_data_function ( login,data_obj.request,data_obj.data,
-              function(response){
-                response.send ( server_response );
-              });
+      if (data_obj)  {
+        if (data_obj.hasOwnProperty('_type'))  {
+          if (data_obj._type=='Request')  {
+            var login = user.getLoginFromHash ( data_obj.token );
+            if (login.length<=0)
+              cmd.sendResponse ( server_response, cmd.fe_retcode.notLoggedIn,
+                                 'user not logged in','' );
+            else
+              process_data_function ( login,data_obj.request,data_obj.data,
+                function(response){
+                  response.send ( server_response );
+                });
+          } else
+            process_data_function ( data_obj,function(response){
+              response.send ( server_response );
+            });
         } else
           process_data_function ( data_obj,function(response){
             response.send ( server_response );
           });
       } else
-        process_data_function ( data_obj,function(response){
-          response.send ( server_response );
-        });
+        cmd.sendResponse ( server_response, cmd.fe_retcode.corruptDO,
+                           'corrupt data object found','' );
 
     });
 

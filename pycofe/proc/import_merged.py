@@ -120,6 +120,7 @@ def makeHKLTable ( body,tableId,holderId,original_data,new_data,
 def run ( body,   # body is reference to the main Import class
           sectionTitle="Reflection datasets created",
           sectionOpen=False,  # to keep result section closed if several datasets
+          importPhases=True,  # will create structure for set of phases
           freeRflag=True      # will be run if necessary
         ):
 
@@ -338,6 +339,7 @@ def run ( body,   # body is reference to the main Import class
 
                     mtzTableId = body.getWidgetId ( "mtz_table" )
 
+                    last_imported = None
                     if rc.msg:
                         msg = "\n\n CTruncate failed with message:\n\n" + \
                               rc.msg + \
@@ -354,6 +356,7 @@ def run ( body,   # body is reference to the main Import class
                         hkl.makeUniqueFNames ( body.outputDir() )
                         body.outputDataBox.add_data ( hkl )
                         hkl_imported.append ( hkl )
+                        last_imported = hkl
                         makeHKLTable ( body,mtzTableId,subSecId,hkl,hkl,0,"",0 )
                         datasetName = hkl.dname
 
@@ -393,6 +396,7 @@ def run ( body,   # body is reference to the main Import class
                             hkl_data.makeUniqueFNames ( body.outputDir() )
                             body.outputDataBox.add_data ( hkl_data )
                             hkl_imported.append ( hkl_data )
+                            last_imported = hkl_data
                             makeHKLTable ( body,mtzTableId,subSecId,hkl,hkl_data,1,"",0 )
                             datasetName = hkl_data.dname
 
@@ -423,6 +427,110 @@ def run ( body,   # body is reference to the main Import class
                         body.addSummaryLine ( "HKL",datasetName )
                     k += 1
                     pyrvapi.rvapi_flush()
+
+                    if importPhases and last_imported:
+                        cou0 = 7
+                        dset = last_imported.dataset
+                        mtzin = os.path.join(body.outputDir(),dset.MTZ)
+                        f_sigf = dset.Fmean.value, dset.Fmean.sigma
+                        phaseBlocks = []
+                        if ds.PhiFOM:
+                            phaseBlocks.extend(ds.PhiFOM)
+                        if ds.ABCD:
+                            phaseBlocks.extend(ds.ABCD)
+                        cou = cou0
+                        for phBlock in phaseBlocks:
+                            assert len(phBlock) in (2,4)
+                            blockname = os.path.splitext(f_orig)[0] + '-' + mtz.block_name(phBlock)
+
+                            mtztmp = blockname + '_tmp.mtz'
+                            args = []
+                            args += ["HKLIN1",mtzin]
+                            args += ["HKLIN2",p_mtzout]
+                            args += ["HKLOUT",mtztmp]
+                            body.open_stdin()
+                            body.write_stdin ( "LABIN FILE 1 E1=%s E2=%s\n" %f_sigf )
+                            body.write_stdin ( "LABIN FILE 2" )
+                            ind = 0
+                            for label in phBlock:
+                                ind += 1
+                                body.write_stdin ( " E" + str(ind) + "=" + label )
+                            body.write_stdin ( "\nEND\n" )
+                            body.close_stdin()
+                            rc = body.runApp ( "cad",args,logType="Service",quitOnError=False )
+                            if rc.msg:
+                                body.file_stdout1.write ( "Error calling cad: " + rc.msg + "\n" )
+                                body.file_stderr.write ( "Error calling cad: " + rc.msg + "\n" )
+                            body.file_stdout.flush()
+
+                            mtzout = os.path.join(body.outputDir(),blockname + '.mtz')
+                            rc = command.call (
+                                "chltofom",
+                                [
+                                    "-mtzin", mtztmp,
+                                    "-colin-fo", "/*/*/[%s,%s]" %f_sigf,
+                                    "-colin-" + ("hl" if len(phBlock) == 4 else "phifom"),
+                                    "/*/*/[" + ",".join(phBlock) + "]",
+                                    "-mtzout", mtzout
+                                ],
+                                body.outputDir(),
+                                None,
+                                body.file_stdout1,
+                                body.file_stderr,
+                                log_parser=None,
+                                file_stdout_alt=body.file_stdout
+                            )
+                            if rc.msg:
+                                body.file_stdout1.write ( "Error calling cfft: " + rc.msg + "\n" )
+                                body.file_stderr.write ( "Error calling cfft: " + rc.msg + "\n" )
+
+                            phlist = mtz.mtz_file ( mtzout )
+                            assert len(phlist) == 1
+                            phset = phlist[0]
+                            assert len(phset.ABCD) == 1 and len(phset.PhiFOM) == 1 and len(phset.FwPhi) == 1
+                            if len(phBlock) == 4:
+                                phset.PhiFOM = None
+                            elif len(phBlock) == 2:
+                                phset.ABCD = None
+
+                            mapout = os.path.join(body.outputDir(),blockname + '.map')
+                            assert len(phBlock) in (2,4)
+                            rc = command.call (
+                                "cfft",
+                                [
+                                    "-mtzin", mtzout,
+                                    "-colin-fc", "/*/*/[%s,%s]" %phset.FwPhi[0],
+                                    "-mapout", mapout
+                                ],
+                                body.outputDir(),
+                                None,
+                                body.file_stdout1,
+                                body.file_stderr,
+                                log_parser=None,
+                                file_stdout_alt=body.file_stdout
+                            )
+                            if rc.msg:
+                                body.file_stdout1.write ( "Error calling cfft: " + rc.msg + "\n" )
+                                body.file_stderr.write ( "Error calling cfft: " + rc.msg + "\n" )
+
+                            structure = body.registerStructure1 (None,None,mtzout,mapout,None,None,blockname)
+                            if structure:
+                                structure.addPhasesSubtype ()
+                                structure.addDataAssociation( last_imported.dataId )
+                                structure.setImportMergedData ( phset )
+
+                                if cou == cou0:
+                                    pyrvapi.rvapi_set_text (
+                                        "<h3>Imported Associated Sets of Phases</h3>",
+                                        subSecId,cou,0,1,1 )
+
+                                cou += 2
+                                body.putStructureWidget1 (
+                                    subSecId, body.getWidgetId("ph_data_"+str(body.dataSerialNo)),
+                                    "Electron density", structure,
+                                    -1, cou, 1 )
+
+                            pyrvapi.rvapi_flush()
 
                 if len(mf)<=0:
                     body.putSummaryLine_red ( f_orig,"UNKNOWN","-- ignored" )

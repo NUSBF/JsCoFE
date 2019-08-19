@@ -98,7 +98,7 @@ function makeCommErrorMessage ( title,response )  {
 
     default:
         alert ( 'unknown error, response='+JSON.stringify(response) );
-        MessageUnknownError ( title,response.message );
+        MessageUnknownError ( title,'"'+response.message+'"' );
 
   }
 

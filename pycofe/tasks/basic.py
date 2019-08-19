@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    07.08.19   <--  Date of Last Modification.
+#    12.08.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -987,6 +987,30 @@ class TaskDriver(object):
                  filePrefix + edmap.file_dmap() ]
 
 
+    # ----------------------------------------------------------------------
+
+    def makePhasesMTZ ( self,mtzHKL,lblHKL,mtzPhases,lblPhases,mtzOut ):
+
+        cmd = [ "HKLIN1",mtzHKL,
+                "HKLIN2",mtzPhases,
+                "HKLOUT",mtzOut ]
+
+        self.open_stdin()
+        self.write_stdin ( "LABIN  FILE 1" )
+        for i in range(len(lblHKL)):
+            self.write_stdin ( " E%d=%s" % (i+1,lblHKL[i]) )
+        self.write_stdin ( "\nLABIN  FILE 2" )
+        for i in range(len(lblPhases)):
+            self.write_stdin ( " E%d=%s" % (i+1,lblPhases[i]) )
+        self.write_stdin ( "\n" )
+        self.close_stdin()
+
+        self.runApp ( "cad",cmd,logType="Service" )
+
+        return
+
+    # ----------------------------------------------------------------------
+
     def finaliseStructure ( self,xyzPath,name_pattern,hkl,libPath,associated_data_list,
                                  structureType,leadKey=1,openState_bool=False,
                                  title="Output Structure",
@@ -1532,7 +1556,7 @@ class TaskDriver(object):
             os.rename ( mtzfilepath,newHKLFPath )
             self.resetFileImport()
             self.addFileImport ( "",newHKLFPath,import_filetype.ftype_MTZMerged() )
-            import_merged.run ( self,"New reflection dataset details" )
+            import_merged.run ( self,"New reflection dataset details",importPhases=False )
 
             if dtype_hkl.dtype() in self.outputDataBox.data:
                 sol_hkl = self.outputDataBox.data[dtype_hkl.dtype()][0]
@@ -1606,7 +1630,7 @@ class TaskDriver(object):
                 else:
                     self.putMessage ( "Error: cannot reindex " + hkl_list[i].dname )
 
-            hkls = import_merged.run ( self,"New reflection datasets" )
+            hkls = import_merged.run ( self,"New reflection datasets",importPhases=False )
             for i in range(len(index)):
                 hkls[i].aimless_meta = hkl_list[index[i]].aimless_meta
 

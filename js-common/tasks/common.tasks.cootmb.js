@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    27.12.18   <--  Date of Last Modification.
+ *    12.08.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Coot Model Building Task Class (for local server)
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2018
+ *  (C) E. Krissinel, A. Lebedev 2016-2019
  *
  *  =================================================================
  *
@@ -33,14 +33,14 @@ function TaskCootMB()  {
 
   this._type   = 'TaskCootMB';
   this.name    = 'coot (model building)';
-  this.oname   = 'coot-mb';  // default output file name template
+  this.oname   = 'coot-mb';   // default output file name template
   this.title   = 'Model Building with Coot';
   this.helpURL = './html/jscofe_task_coot.html';
-  this.nc_type = 'client';  // job may be run only on client NC
+  this.nc_type = 'client';    // job may be run only on client NC
 
   this.input_dtypes = [{      // input data types
-      data_type : {'DataRevision':['xyz','substructure','!phases']}, // data type(s) and subtype(s)
-      label     : 'Structure revision',     // label for input dialog
+      data_type : {'DataRevision':['!phases']}, // data type(s) and subtype(s)
+      label     : 'Structure revision',         // label for input dialog
       inputId   : 'revision', // input Id for referencing input fields
       version   : 4,          // minimum data version allowed
       min       : 1,          // minimum acceptable number of data instances

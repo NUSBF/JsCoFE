@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    28.06.19   <--  Date of Last Modification.
+ *    13.08.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -146,7 +146,6 @@ function Communicate ( server_request )  {
       ix = this.filePath.indexOf('manual');
       if (ix>=0)  {  // request for jsrview library file, load it from js-lib
                      // REGARDLESS the actual path requested
-
         this.filePath = this.filePath.substr(ix);
         log.debug2 ( 2,"calculated path " + this.filePath);
       }

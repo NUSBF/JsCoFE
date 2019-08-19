@@ -39,7 +39,7 @@ var fe_start = require('./js-server/server.fe.start');
 var utils    = require('./js-server/server.utils');
 
 //  prepare log
-var log = require('./js-server/server.log').newLog(17);
+var log = require('./js-server/server.log').newLog(23);
 
 
 // ==========================================================================

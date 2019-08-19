@@ -47,6 +47,7 @@ function DataSummaryPage ( data )  {
   var type = data.title();
   if (data.subtype.length>0)
     type += ' (' + data.subtype.join(',') + ')';
+  type = type.replace(hkl_subtype.regular+',','').replace(','+hkl_subtype.regular,'');
 
   this.makeRow ( 'Type (subtypes)',type,'Data type and assigned subtypes' );
   this.makeRow ( 'Assigned name'  ,data.dname,'Assigned dataset name' );

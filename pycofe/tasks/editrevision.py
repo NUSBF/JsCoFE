@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    07.08.19   <--  Date of Last Modification.
+#    12.08.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -118,19 +118,33 @@ class EditRevision(asudef.ASUDef):
             if 'xyz' in change_list or 'phases' in change_list or 'lig' in change_list:
                 # redefine structure
                 self.putMessage  ( "<h2>Compose new Structure</h2>" )
+                xyz_fpath  = None
                 sub_fpath  = None
                 mtz_fpath  = None
                 map_fpath  = None
                 dmap_fpath = None
                 lib_fpath  = None
                 lig_codes  = None
-                if xyz._type==dtype_structure.dtype():
+                if xyz and xyz._type==dtype_structure.dtype():
+                    xyz_fpath = xyz.getXYZFilePath ( self.inputDir() )
                     sub_fpath = xyz.getSubFilePath ( self.inputDir() )
                     lib_fpath = xyz.getLibFilePath ( self.inputDir() )
+
                 if phases:
                     mtz_fpath  = phases.getMTZFilePath ( self.inputDir() )
                     map_fpath  = phases.getMapFilePath ( self.inputDir() )
                     dmap_fpath = phases.getDMapFilePath( self.inputDir() )
+                    if 'phases' in change_list:
+                        meanF_labels    = hkl.getMeanF()
+                        meanF_labels[2] = hkl.getFreeRColumn()
+                        phases_labels   = phases.getPhaseLabels()
+                        mtz_fname       = phases.lessDataId ( phases.getMTZFileName() )
+                        self.makePhasesMTZ (
+                            hkl.getHKLFilePath(self.inputDir()),meanF_labels,
+                            mtz_fpath,phases_labels,mtz_fname )
+                        mtz_fpath = mtz_fname
+                        struct_labels = meanF_labels + phases_labels
+
                 if len(ligands)>0:
                     if len(ligands)>1:
                         lib_fpath = self.stampFileName ( self.dataSerialNo,self.getOFName(".dict.cif") )
@@ -144,7 +158,7 @@ class EditRevision(asudef.ASUDef):
                             lig_codes = ligands[0].codes
 
                 structure = self.registerStructure1 (
-                                xyz.getXYZFilePath ( self.inputDir() ),
+                                xyz_fpath ,
                                 sub_fpath ,
                                 mtz_fpath ,
                                 map_fpath ,
@@ -156,6 +170,13 @@ class EditRevision(asudef.ASUDef):
                 if structure:
                     if lig_codes:
                         structure.setLigands ( lig_codes )
+                    if xyz:
+                        structure.addSubtypes ( xyz.getSubtypes() )
+                    if phases:
+                        structure.addSubtypes ( phases.getSubtypes() )
+                        structure.copyLabels ( phases )
+                        if 'phases' in change_list:
+                            structure.setHKLLabels ( hkl )
                     self.putStructureWidget ( self.getWidgetId("structure_btn_"),
                                               "Structure and electron density",
                                               structure )
@@ -163,7 +184,7 @@ class EditRevision(asudef.ASUDef):
                 else:
                     self.putMessage  ( "<b><i>Structure was not replaced (error)</i></b>" )
 
-            revision.addSubtypes  ( revision0.subtype )
+            revision.addSubtypes  ( revision0.getSubtypes() )
             self.registerRevision ( revision  )
 
         else:

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    01.08.19   <--  Date of Last Modification.
+ *    13.08.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -39,6 +39,7 @@ var log    = require('./server.log').newLog(3);
 var desktop       = null;   // Configuration for launching single desktop
 var work_server   = null;   // current server configuration (FE or NC/CLIENT)
 var fe_server     = null;   // FE server configuration
+var fe_proxy      = null;   // FE proxy configuration
 var nc_servers    = null;   // vector of NC server configurations
 var client_server = null;   // Client server configuration
 var emailer       = null;   // E-mailer configuration
@@ -240,6 +241,10 @@ function getFEConfig()  {
   return fe_server;
 }
 
+function getFEProxyConfig()  {
+  return fe_proxy;
+}
+
 function getNCConfig ( ncNumber )  {
   return nc_servers[ncNumber];
 }
@@ -315,6 +320,15 @@ var version = '';
       "Demo projects"  : "./demo-projects",
       "My files"       : "./$LOGIN/files"
     }
+  },
+
+  "FEProxy" : {
+    "protocol"         : "http",
+    "host"             : "localhost",
+    "port"             : 8082,
+    "externalURL"      : "http://localhost:8082",
+    "exclusive"        : true,
+    "stoppable"        : false
   },
 
   "NumberCrunchers" : [
@@ -437,8 +451,17 @@ function readConfiguration ( confFilePath,serverType )  {
         "icon" : "images_com/ccp4-harwell.png"
       };
     */
-  } else if (serverType=='FE')
+  } else if ((serverType=='FE') || (serverType=='FE-PROXY'))
     return 'front-end configuration is missing in file ' + confFilePath;
+
+  if (confObj.hasOwnProperty('FEProxy')) {
+    fe_proxy = new ServerConfig();
+    for (var key in confObj.FEProxy)
+      fe_proxy[key] = confObj.FEProxy[key];
+    if (!fe_proxy.externalURL)
+      fe_proxy.externalURL = fe_proxy.url();
+  } else if (serverType=='FE-PROXY')
+    return 'front-end proxy configuration is missing in file ' + confFilePath;
 
   if (confObj.hasOwnProperty('NumberCrunchers')) {
     client_server = null;
@@ -506,28 +529,42 @@ function assignPorts ( assigned_callback )  {
               else  setServer(1,0);
             break;
 
-      case 1: if (n<nc_servers.length)  {
+      case 1: if (!fe_proxy)
+                    setServer(2,0);
+              else if (fe_proxy.port>0)
+                    set_server ( fe_proxy,function(){ setServer(2,0); } );
+              else  setServer(2,0);
+            break;
+
+      case 2: if (n<nc_servers.length)  {
                 if (nc_servers[n].port>0)
-                      set_server ( nc_servers[n],function(){ setServer(1,n+1); } );
-                else  setServer(1,n+1);
+                      set_server ( nc_servers[n],function(){ setServer(2,n+1); } );
+                else  setServer(2,n+1);
               } else
-                setServer ( 2,0 );
+                setServer ( 3,0 );
             break;
 
-      case 2: if ((fe_server.host=='localhost') && (fe_server.port<=0))
-                    set_server ( fe_server,function(){ setServer(3,0); } );
-              else  setServer(3,0);
+      case 3: if ((fe_server.host=='localhost') && (fe_server.port<=0))
+                    set_server ( fe_server,function(){ setServer(4,0); } );
+              else  setServer(4,0);
             break;
 
-      case 3: if (n<nc_servers.length)  {
+      case 4: if (!fe_proxy)
+                    setServer(5,0);
+              else if ((fe_proxy.host=='localhost') && (fe_proxy.port<=0))
+                    set_server ( fe_proxy,function(){ setServer(5,0); } );
+              else  setServer(5,0);
+            break;
+
+      case 5: if (n<nc_servers.length)  {
                 if ((nc_servers[n].host=='localhost') && (nc_servers[n].port<=0))
-                      set_server ( nc_servers[n],function(){ setServer(3,n+1); } );
-                else  setServer(3,n+1);
+                      set_server ( nc_servers[n],function(){ setServer(5,n+1); } );
+                else  setServer(5,n+1);
               } else
-                setServer ( 4,0 );
+                setServer ( 6,0 );
             break;
 
-      case 4: default:
+      case 6: default:
             break;
 
     }
@@ -552,6 +589,8 @@ function assignPorts ( assigned_callback )  {
   checkServers ( function(){
 
     log.standard ( 1,'FE: url=' + fe_server.url() );
+    if (fe_proxy)
+      log.standard ( 1,'FE-Proxy: url=' + fe_proxy.url() );
     for (var i=0;i<nc_servers.length;i++)
       log.standard ( 2,'NC['    + i + ']: name=' + nc_servers[i].name +
                        ' type=' + nc_servers[i].exeType +
@@ -570,6 +609,20 @@ function assignPorts ( assigned_callback )  {
 
   });
 
+}
+
+
+function getClientInfo ( inData,callback_func )  {
+var response = null;  // must become a cmd.Response object to return
+  if (fe_server)  {
+    var rData = {};
+    if (client_server) rData.local_service = client_server.url();
+                  else rData.local_service = null;
+    response = new cmd.Response ( cmd.fe_retcode.ok,'',rData );
+  } else  {
+    response = new cmd.Response ( cmd.fe_retcode.unconfigured,'','' );
+  }
+  callback_func ( response );
 }
 
 
@@ -734,6 +787,7 @@ var excluded = [];
 module.exports.getDesktopConfig   = getDesktopConfig;
 module.exports.getServerConfig    = getServerConfig;
 module.exports.getFEConfig        = getFEConfig;
+module.exports.getFEProxyConfig   = getFEProxyConfig;
 module.exports.getNCConfig        = getNCConfig;
 module.exports.getNCConfigs       = getNCConfigs;
 module.exports.getNumberOfNCs     = getNumberOfNCs;
@@ -746,6 +800,7 @@ module.exports.writeConfiguration = writeConfiguration;
 module.exports.pythonName         = pythonName;
 module.exports.isSharedFileSystem = isSharedFileSystem;
 module.exports.isLocalSetup       = isLocalSetup;
+module.exports.getClientInfo      = getClientInfo;
 module.exports.getRegMode         = getRegMode;
 module.exports.isLocalFE          = isLocalFE;
 module.exports.getSetupID         = getSetupID;

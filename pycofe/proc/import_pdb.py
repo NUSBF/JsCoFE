@@ -135,7 +135,7 @@ def run ( body,pdb_list ):  # body is reference to the main Import class
 
             xyz = import_xyz     .run ( body )
             seq = import_sequence.run ( body )
-            hkl = import_merged  .run ( body )
+            hkl = import_merged  .run ( body,importPhases=False )
 
             if len(hkl)>0:  # compose structure and revision
 
