@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    05.07.19   <--  Date of Last Modification.
+#    25.08.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -102,12 +102,31 @@ class Import(basic.TaskDriver):
         # save unrecognised file list
         unrecognised_files = self.files_all
 
+        pdb_import_coordinates = True
+        pdb_import_sequences   = True
+        pdb_import_reflections = True
+        pdb_make_revisions     = True
+
         pdb_list = []
-        for f in self.task.upload_files:
-            if f.startswith('PDB::'):
-                pdb_list.append ( f[5:] )
+
+        if hasattr(self.task.parameters,"CODES"):
+            pdb_list = [x.strip() for x in self.getParameter(self.task.parameters.CODES).split(",")]
+            pdb_import_coordinates = self.getCheckbox ( self.task.parameters.COORDINATES_CBX )
+            pdb_import_sequences   = self.getCheckbox ( self.task.parameters.SEQUENCES_CBX   )
+            pdb_import_reflections = self.getCheckbox ( self.task.parameters.REFLECTIONS_CBX )
+            pdb_make_revisions     = self.getCheckbox ( self.task.parameters.REVISION_CBX    )
+        else:
+            for f in self.task.upload_files:
+                if f.startswith('PDB::'):
+                    pdb_list.append ( f[5:] )
+
         if len(pdb_list)>0:
-            import_pdb.run ( self,pdb_list )
+            import_pdb.run ( self,pdb_list,
+                                  import_coordinates = pdb_import_coordinates,
+                                  import_sequences   = pdb_import_sequences,
+                                  import_reflections = pdb_import_reflections,
+                                  import_revisions   = pdb_make_revisions
+                            )
         #self.file_stdout.write ( str(pdb_list) + "\n" )
 
 

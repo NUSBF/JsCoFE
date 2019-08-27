@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    18.07.19   <--  Date of Last Modification.
+ *    22.08.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -42,7 +42,7 @@ function ProjectListPage ( sceneId )  {
   }
 
   var projectList   = new ProjectList();  // project list data
-  var tablesort_tbl = null;               // project list table
+  this.tablesort_tbl = null;               // project list table
   var open_btn      = null;
   var add_btn       = null;
   var rename_btn    = null;
@@ -59,8 +59,8 @@ function ProjectListPage ( sceneId )  {
 
   // function to save Project List
   function saveProjectList ( onDone_func )  {
-    if (tablesort_tbl.selectedRow)  {
-      projectList.current = tablesort_tbl.selectedRow.child[0].text;
+    if (self.tablesort_tbl.selectedRow)  {
+      projectList.current = self.tablesort_tbl.selectedRow.child[0].text;
       for (var i=0;i<projectList.projects.length;i++)  {
         var pDesc = projectList.projects[i];
         if (pDesc.name==projectList.current)  {
@@ -71,7 +71,7 @@ function ProjectListPage ( sceneId )  {
     } else  {
       projectList.current = '';
     }
-    projectList.sortList = tablesort_tbl.getSortList();
+    projectList.sortList = self.tablesort_tbl.getSortList();
     serverRequest ( fe_reqtype.saveProjectList,projectList,'Project List',
       function(data){
         if (onDone_func)
@@ -151,9 +151,9 @@ function ProjectListPage ( sceneId )  {
   // function to rename selected Project
   var renameProject = function() {
     var inputBox  = new InputBox ( 'Rename Project' );
-    var prjName   = tablesort_tbl.selectedRow.child[0].text;
+    var prjName   = self.tablesort_tbl.selectedRow.child[0].text;
     var ibx_grid  = new Grid      ( '' );
-    var title_inp = new InputText ( tablesort_tbl.selectedRow.child[1].text );
+    var title_inp = new InputText ( self.tablesort_tbl.selectedRow.child[1].text );
     title_inp.setStyle   ( 'text','','Example project',
                            'Project title is used to give a short description ' +
                            'to aid identification' );
@@ -199,7 +199,7 @@ function ProjectListPage ( sceneId )  {
 
   var deleteProject = function() {
     var inputBox = new InputBox ( 'Delete Project' );
-    var delName  = tablesort_tbl.selectedRow.child[0].text;
+    var delName  = self.tablesort_tbl.selectedRow.child[0].text;
     inputBox.setText ( 'Project:<br><b><center>' + delName +
                        '</center></b><p>will be deleted. All project ' +
                        'structure and data will be lost.' +
@@ -214,8 +214,8 @@ function ProjectListPage ( sceneId )  {
   }
 
   var exportProject = function() {
-    if (tablesort_tbl.selectedRow)  {
-      projectList.current = tablesort_tbl.selectedRow.child[0].text;
+    if (self.tablesort_tbl.selectedRow)  {
+      projectList.current = self.tablesort_tbl.selectedRow.child[0].text;
       new ExportProjectDialog ( projectList );
     } else
       new MessageBox ( 'No project selected',
@@ -228,20 +228,31 @@ function ProjectListPage ( sceneId )  {
   // function to create project list table and fill it with data
   function makeProjectListTable()  {
 
-    if (tablesort_tbl)
-      projectList.sortList = tablesort_tbl.getSortList();
+    if (self.tablesort_tbl)
+      projectList.sortList = self.tablesort_tbl.getSortList();
 
-    tablesort_tbl = new TableSort();
-    tablesort_tbl.setHeaders ([
+    self.tablesort_tbl = new TableSort();
+    self.tablesort_tbl.setHeaders ([
         'ID','Name',
         '<center>Disk<br>(MBytes)</center>',
         '<center>CPU<br>(hours)</center>',
         '<center>Date<br>Created</center>',
         '<center>Date<br>Last Opened</center>'
     ]);
-    tablesort_tbl.setHeaderNoWrap   ( -1      );
-    tablesort_tbl.setHeaderColWidth ( 1,'80%' );
-    panel.setWidget ( tablesort_tbl,table_row,0,1,nCols );
+    self.tablesort_tbl.setHeaderNoWrap   ( -1      );
+    self.tablesort_tbl.setHeaderColWidth ( 0,'5%'  );
+    self.tablesort_tbl.setHeaderColWidth ( 1,'75%' );
+    self.tablesort_tbl.setHeaderColWidth ( 2,'5%'  );
+    self.tablesort_tbl.setHeaderColWidth ( 3,'5%'  );
+    self.tablesort_tbl.setHeaderColWidth ( 4,'5%'  );
+    self.tablesort_tbl.setHeaderColWidth ( 5,'5%'  );
+
+//    self.table_div = new Widget ( 'div' );
+//    self.table_div.element.setAttribute ( 'class','tree-content' );
+
+//    self.table_div.addWidget ( self.tablesort_tbl );
+    panel.setWidget ( self.tablesort_tbl,table_row,0,1,nCols );
+//    panel.setWidget ( self.table_div,table_row,0,1,nCols );
     var message = '&nbsp;<p>&nbsp;<p><h2>' +
                   'Your List of Projects is currently empty.<br>' +
                   'Press "Add" button to create a new Project<br>' +
@@ -259,14 +270,14 @@ function ProjectListPage ( sceneId )  {
 
       __current_project = null;
 
-      var trow = tablesort_tbl.addRow();
+      var trow = self.tablesort_tbl.addRow();
       trow.addCell ( '' );
       trow.addCell ( '' );
       trow.addCell ( '' );
       trow.addCell ( '' );
       trow.addCell ( '' );
       trow.addCell ( '' );
-      tablesort_tbl.createTable();
+      self.tablesort_tbl.createTable();
       open_btn  .setDisabled ( true  );
       add_btn   .setDisabled ( false );
       rename_btn.setDisabled ( true  );
@@ -279,7 +290,7 @@ function ProjectListPage ( sceneId )  {
 
       var selectedRow = null;
       for (var i=0;i<projectList.projects.length;i++)  {
-        var trow = tablesort_tbl.addRow();
+        var trow = self.tablesort_tbl.addRow();
 
         var contextMenu = new ContextMenu ( trow );
         contextMenu.addItem('Open'  ,image_path('go')    ).addOnClickListener(openProject  );
@@ -307,10 +318,12 @@ function ProjectListPage ( sceneId )  {
           selectedRow = trow;
 
       }
-      tablesort_tbl.createTable();
+      self.tablesort_tbl.createTable();
       if (projectList.sortList)
-        tablesort_tbl.applySortList ( projectList.sortList );
-      tablesort_tbl.selectRow ( selectedRow );
+        window.setTimeout ( function(){
+          self.tablesort_tbl.applySortList ( projectList.sortList );
+        },10 );
+      self.tablesort_tbl.selectRow ( selectedRow );
       open_btn  .setDisabled ( false );
       add_btn   .setDisabled ( false );
       rename_btn.setDisabled ( false );
@@ -321,9 +334,10 @@ function ProjectListPage ( sceneId )  {
 
     }
 
-    tablesort_tbl.setHeaderFontSize ( '100%' );
+    self.tablesort_tbl.setHeaderFontSize ( '100%' );
+    self.onResize ( window.innerWidth,window.innerHeight );
 
-    tablesort_tbl.addSignalHandler ( 'row_dblclick',function(trow){
+    self.tablesort_tbl.addSignalHandler ( 'row_dblclick',function(trow){
       openProject();
     });
 
@@ -467,6 +481,14 @@ function ProjectListPage ( sceneId )  {
 
 ProjectListPage.prototype = Object.create ( BasePage.prototype );
 ProjectListPage.prototype.constructor = ProjectListPage;
+
+ProjectListPage.prototype.onResize = function ( width,height )  {
+//  var h = (height - 164) + 'px';
+//  this.tablesort_tbl.table_div.element.style.height = h;
+  this.tablesort_tbl.fixHeader();
+  this.tablesort_tbl.setTableHeight ( height-84 );
+}
+
 
 function makeProjectListPage ( sceneId )  {
   makePage ( new ProjectListPage(sceneId) );

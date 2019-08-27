@@ -1,7 +1,7 @@
 /*
  *  ========================================================================
  *
- *    04.07.19   <--  Date of Last Modification.
+ *    25.08.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  ------------------------------------------------------------------------
  *
@@ -137,7 +137,7 @@ var _taskIndex = {
   // suggest Coot after refinememnt
   'l' : { type: 'TaskCootCE'         , after: ['B','C','D','m'] },
 
-  // do suggest CloudImport alike plain Import
+  // suggest CloudImport alike plain Import
   'm' : { type: 'TaskCloudImport'    , after: ['0','B','C','D','E','m'] },
 
   // suggest Acorn after both MR and Phaser-EP; do not suggest it after itself
@@ -162,7 +162,10 @@ var _taskIndex = {
   't' : { type: 'TaskDUI'            , after: ['0'] },
 
   // suggest iMosflm after root
-  'u' : { type: 'TaskIMosflm'        , after: ['0'] }
+  'u' : { type: 'TaskIMosflm'        , after: ['0'] },
+
+  // suggest PDBImport alike plain Import
+  'v' : { type: 'TaskImportPDB'      , after: ['0','B','C','D','E','m'] }
 
 };
 

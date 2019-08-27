@@ -676,7 +676,7 @@ class TaskDriver(object):
     def getKWItem ( self,item ):
         if item.visible:
             if item.type=="checkbox":
-                if hasattr(item,'translate'):
+                if hasattr(item,"translate"):
                     if item.value:
                         return " " + item.keyword + str(item.translate[1])
                     else:
@@ -1008,6 +1008,21 @@ class TaskDriver(object):
         self.runApp ( "cad",cmd,logType="Service" )
 
         return
+
+    def sliceMTZ ( self,mtzInPath,label_list,mtzOutPath ):
+
+        self.open_stdin()
+        self.write_stdin ( "LABIN  FILE 1" )
+        for i in range(len(label_list)):
+            self.write_stdin ( " E%d=%s" % (i+1,label_list[i]) )
+        self.write_stdin ( "\n" )
+        self.close_stdin()
+
+        self.runApp ( "cad",[ "HKLIN1",mtzInPath,"HKLOUT",mtzOutPath ],
+                            logType="Service" )
+
+        return
+
 
     # ----------------------------------------------------------------------
 
