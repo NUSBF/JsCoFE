@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    21.05.19   <--  Date of Last Modification.
+#    26.08.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -842,6 +842,19 @@ citations = {
                             'year'    : '1976',
                             'pages'   : '922-923',
                             'doi'     : '10.1107/S0567739476001873'
+                  }]
+                },
+
+    'auspex'  : { 'name'     : 'Auspex',
+                  'category' : 'primary',
+                  'refs'     : [{
+                            'authors' : 'Thorn, A., Parkhurst, J., Emsley, P., Nicholls, R. A., Vollmar, M., Evans, G. & Murshudov, G. N.',
+                            'title'   : 'AUSPEX: a graphical tool for X-ray diffraction data analysis',
+                            'journal' : 'Acta Cryst.',
+                            'volume'  : 'D73',
+                            'year'    : '2017',
+                            'pages'   : '729-737',
+                            'doi'     : '10.1107/S205979831700969X'
                   }]
                 }
 

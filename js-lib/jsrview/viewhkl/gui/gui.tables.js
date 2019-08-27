@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    08.06.19   <--  Date of Last Modification.
+ *    22.08.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -304,15 +304,42 @@ TableScroll.prototype.clearBody = function()  {
 // -------------------------------------------------------------------------
 // TableSort class:  table with sortable columns
 
+/*
 function TableSort()  {
   Widget.call ( this,'table' );
   this.element.className = 'tablesorter widget-zebra';
 //  this.element.setAttribute ( 'class','tablesorter widget-zebra' );
-  this.head = new Widget('thead');
-  this.body = new Widget('tbody');
+  this.spacer = new Widget('div');
+  this.head   = new Widget('thead');
+  this.body   = new Widget('tbody');
   this.element.appendChild ( this.head.element );
   this.element.appendChild ( this.body.element );
   this.selectedRow = null;  // none is selected initially
+  this.spacer.setWidth_px ( 1 );
+  this.head_top    = 0;
+  this.head_height = 0;
+}
+*/
+
+function TableSort()  {
+  Widget.call ( this,'div' );
+//  this.element.setAttribute ( 'class','tablesorter widget-zebra' );
+  this.spacer    = new Widget('div');
+  this.table_div = new Widget('div');
+  this.table_div.element.className = 'table-content';
+  this.element.appendChild ( this.spacer   .element );
+  this.element.appendChild ( this.table_div.element );
+  this.table  = new Widget('table');
+  this.table.element.className = 'tablesorter widget-zebra';
+  this.table_div.element.appendChild ( this.table.element );
+  this.head   = new Widget('thead');
+  this.body   = new Widget('tbody');
+  this.table.element.appendChild ( this.head.element );
+  this.table.element.appendChild ( this.body.element );
+  this.selectedRow = null;  // none is selected initially
+  this.spacer.setWidth_px ( 1 );
+  this.head_top    = 0;
+  this.head_height = 0;
 }
 
 TableSort.prototype = Object.create ( Widget.prototype );
@@ -343,6 +370,8 @@ var trow = this.head.child[0];
 TableSort.prototype.setHeaderColWidth = function ( col,width )  {
   var trow = this.head.child[0];
   trow.child[col].element.style.width = width;
+  if (this.body.child.length>0)
+    this.body.child[col].element.style.width = width;
 }
 
 TableSort.prototype.selectRow = function ( trow )  {
@@ -387,31 +416,98 @@ TableSort.prototype.removeAllRows = function()  {
 }
 
 TableSort.prototype.clear = function()  {
-  this.element.removeChild ( this.head.element );
-  this.element.removeChild ( this.body.element );
+  this.table.element.removeChild ( this.head.element );
+  this.table.element.removeChild ( this.body.element );
   this.head = new Widget('thead');
   this.body = new Widget('tbody');
-  this.element.appendChild ( this.head.element );
-  this.element.appendChild ( this.body.element );
+  this.table.element.appendChild ( this.head.element );
+  this.table.element.appendChild ( this.body.element );
 }
 
 TableSort.prototype.createTable = function()  {
 //  alert ( this.parent.element.innerHTML );
-  $(this.element).tablesorter({
-    theme: 'blue'
+
+  $(this.table.element).tablesorter({
+    theme   : 'blue',
+    widgets : ['zebra']
   });
+
+/*
+  $(this.element).tablesorter({
+    theme: 'blue',
+    headerTemplate: '{content} {icon}', // Add icon for various themes
+    widgets: ['zebra', 'filter', 'stickyHeaders'],
+    widgetOptions: {
+      // jQuery selector or object to attach sticky header to
+      stickyHeaders_attachTo: '#tbspopup',
+      stickyHeaders_offset: 0,
+      stickyHeaders_addCaption: true
+    }
+  });
+*/
+
   var child = this.body.child;
   for (var i=0;i<child.length;i++)  {
     var childi = child[i].child;
     for (var j=0;j<childi.length;j++)
       childi[j].css0 = $(childi[j].element).css("background");
   }
+
+  /*
+  this.head.element.className = 'fixthead';
+  var hrow = this.head.child[0];
+  for (var j=0;j<child[0].length;j++)
+    hrow.child[j].element.style.width = child[0][j].element.style.width;
+*/
+
+}
+
+TableSort.prototype.fixHeader = function()  {
+
+  if ((this.body.child.length>0) && (this.head.child.length>0))  {
+
+    $(this.head.element).addClass ('fixthead');
+
+    var hrow = this.head.child[0].child;
+    var trow = this.body.child[0].child;
+
+    if (this.head_height<=0)  {
+      this.head_height = Math.round($(this.head.element).outerHeight());
+      this.head_top    = Math.round($(this.head.element).position().top);
+      //this.head.element.style.top = (this.head_top-this.head_height) + 'px';
+      this.head.element.style.top = this.head_top + 'px';
+      this.spacer.setHeight_px ( this.head_height );
+    }
+
+    this.head.setWidth_px ( this.body.width_px() );
+
+    for (var j=0;j<hrow.length;j++)
+      $(hrow[j].element).outerWidth ( $(trow[j].element).outerWidth() );
+
+    for (var j=0;j<hrow.length;j++)
+      $(trow[j].element).outerWidth ( $(hrow[j].element).outerWidth() );
+
+/*
+    var hwidth = [];
+    vat twidth = [];
+    for (var j=0;j<hrow.length;j++)
+
+
+*/
+
+  }
+
+}
+
+TableSort.prototype.setTableHeight = function ( height_int )  {
+  if (this.body.child.length>1)
+    this.table_div.element.style.height = height_int - this.head_top + 'px';
 }
 
 TableSort.prototype.getSortList = function()  {
-  return $(this.element)[0].config.sortList;
+  return $(this.table.element)[0].config.sortList;
 }
 
 TableSort.prototype.applySortList = function ( sortList )  {
-  $(this.element).trigger("sorton",[sortList]);
+  $(self.table.element).trigger("sorton",[sortList]);
 }

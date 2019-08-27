@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    05.07.19   <--  Date of Last Modification.
+#    25.08.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -60,7 +60,12 @@ def download_file ( url,fpath ):
     return rc
 
 
-def run ( body,pdb_list ):  # body is reference to the main Import class
+def run ( body,pdb_list,
+               import_coordinates = True,
+               import_sequences   = True,
+               import_reflections = True,
+               import_revisions   = True
+        ):  # body is reference to the main Import class
 
 
     if not os.path.exists(body.importDir()):
@@ -77,12 +82,18 @@ def run ( body,pdb_list ):  # body is reference to the main Import class
         fname_sf  = lcode + "-sf.cif"
         fpath_xyz = os.path.join ( body.importDir(),fname_xyz )
         fpath_seq = os.path.join ( body.importDir(),fname_seq )
-        rc_xyz    = download_file ( "https://files.rcsb.org/download/" + ucode + ".pdb",
-                                    fpath_xyz )
-        rc_seq    = download_file ( "https://www.rcsb.org/pdb/download/downloadFastaFiles.do?structureIdList=" +
+        rc_xyz    = -1
+        rc_seq    = -1
+        rc_sf     = -1
+        if import_coordinates:
+            rc_xyz = download_file ( "https://files.rcsb.org/download/" + ucode + ".pdb",
+                                     fpath_xyz )
+        if import_sequences:
+            rc_seq = download_file ( "https://www.rcsb.org/pdb/download/downloadFastaFiles.do?structureIdList=" +
                                     ucode + "&compressionType=uncompressed",
                                     fpath_seq )
-        rc_sf     = download_file ( "https://files.rcsb.org/download/" + ucode + "-sf.cif",
+        if import_reflections:
+            rc_sf  = download_file ( "https://files.rcsb.org/download/" + ucode + "-sf.cif",
                                     os.path.join(body.importDir(),fname_sf) )
 
         body.resetFileImport()
@@ -95,7 +106,7 @@ def run ( body,pdb_list ):  # body is reference to the main Import class
 
             body.addFileImport ( "",fname_xyz,import_filetype.ftype_XYZ() )
 
-            if not rc_seq:
+            if not rc_seq and import_sequences:
 
                 # infer non-redundant sequence composition of ASU
                 asuComp = asucomp.getASUComp1 ( fpath_xyz,fpath_seq,0.9999 )
@@ -137,7 +148,7 @@ def run ( body,pdb_list ):  # body is reference to the main Import class
             seq = import_sequence.run ( body )
             hkl = import_merged  .run ( body,importPhases=False )
 
-            if len(hkl)>0:  # compose structure and revision
+            if len(hkl)>0 and import_revisions:  # compose structure and revision
 
                 seqdesc = asuComp["asucomp"]
                 if len(seq)>0 and len(seq)==len(seqdesc):

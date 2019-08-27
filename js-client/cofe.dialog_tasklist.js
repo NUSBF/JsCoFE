@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    11.07.19   <--  Date of Last Modification.
+ *    26.08.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -280,17 +280,28 @@ var row      = 0;
       new TaskHelloWorld()
     ]);
 
-  var data_import_tasks = [
-    new TaskImport        (),
-    new TaskFacilityImport()
-  ];
-  if (__cloud_storage)
-    data_import_tasks.push ( new TaskCloudImport() );
+  if (__cloud_storage)  {
+    var data_import_tasks = [
+      new TaskImport        (),
+      new TaskImportPDB     (),
+      new TaskCloudImport   (),
+      new TaskFacilityImport()
+    ];
+  } else  {
+    var data_import_tasks = [
+      new TaskImport        (),
+      new TaskImportPDB     (),
+      new TaskFacilityImport()
+    ];
+  }
 
+  this.makeSection ( 'Data Import',data_import_tasks );
+  /*
   this.makeSection ( 'Data Import',data_import_tasks.concat([
     'Utilities',
     new TaskXyz2Revision()
   ]));
+  */
 
   this.makeSection ( 'Data Processing',[
     new TaskXia2     (),
@@ -363,6 +374,7 @@ var row      = 0;
   ]);
 
   this.makeSection ( 'Toolbox',[
+    new TaskAuspex  (),
     new TaskCrosSec (),
     new TaskCootCE  (),
     new TaskGesamt  (),

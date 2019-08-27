@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    07.05.19   <--  Date of Last Modification.
+ *    25.08.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -125,6 +125,8 @@ if (!__template)  {
             _import_checkFiles ( e.target.files,div.customData.file_mod,
                                  panel.upload.upload_files,onReady_func );
         },
+        null,
+        /*  --  commenting this removes PDB import button
         function(){
           new ImportPDBDialog ( function(pdb_list){
             pdb_spec_list = [];
@@ -133,6 +135,7 @@ if (!__template)  {
             panel.upload.setUploadedFiles ( pdb_spec_list );
           });
         },
+        */
         function(returnCode){
           if (!returnCode)
             task.sendInputStateEvent ( panel );

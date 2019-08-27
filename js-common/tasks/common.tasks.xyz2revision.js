@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    09.04.19   <--  Date of Last Modification.
+ *    19.08.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -87,7 +87,7 @@ TaskXyz2Revision.prototype.constructor = TaskXyz2Revision;
 TaskXyz2Revision.prototype.icon = function()  { return 'task_formstructure'; }
 
 TaskXyz2Revision.prototype.currentVersion = function()  {
-  var version = 0;
+  var version = 1;
   if (__template)
         return  version + __template.TaskDimple.prototype.currentVersion.call ( this );
   else  return  version + TaskDimple.prototype.currentVersion.call ( this );
