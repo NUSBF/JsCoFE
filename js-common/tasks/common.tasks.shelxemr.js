@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    27.12.18   <--  Date of Last Modification.
+ *    27.08.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  ShelxE-MR Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2018
+ *  (C) E. Krissinel, A. Lebedev 2016-2019
  *
  *  =================================================================
  *
@@ -32,9 +32,9 @@ function TaskShelxEMR()  {
              else  TaskTemplate.call ( this );
 
   this._type   = 'TaskShelxEMR';
-  this.name    = 'shelxe-MR';
-  this.oname   = 'shelxe_mr';  // default output file name template
-  this.title   = 'C&alpha;-tracing with ShelxE';
+  this.name    = 'shelxe';
+  this.oname   = 'shelxe';  // default output file name template
+  this.title   = 'Density Modificaton and C&alpha;-tracing with ShelxE';
   this.helpURL = './html/jscofe_task_shelxemr.html';
 
   this.input_dtypes = [{  // input data types
@@ -85,7 +85,7 @@ function TaskShelxEMR()  {
                     iwidth   : 50,
                     default  : '15',      // to be displayed in grey
                     tooltip  : 'The total number of global autotracing cycles',
-                    range    : [1,'*'],  // may be absent (no limits) or must
+                    range    : [0,'*'],  // may be absent (no limits) or must
                                           // be one of the following:
                                           //   ['*',max]  : limited from top
                                           //   [min,'*']  : limited from bottom

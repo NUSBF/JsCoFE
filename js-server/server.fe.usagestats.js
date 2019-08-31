@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    30.07.19   <--  Date of Last Modification.
+ *    30.08.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -166,7 +166,8 @@ var generate_report = false;
                          '\n    stdout=\n' + stdout );
         log.error    ( 3,'failed to generate usage report, code=' + code +
                          '\n    stderr=\n' + stderr );
-      }
+      } else
+        usageStats = utils.readClass ( statsFilePath );
     });
   }
 

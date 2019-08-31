@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    30.06.19   <--  Date of Last Modification.
+#    27.08.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -144,6 +144,7 @@ class ShelxEMR(basic.TaskDriver):
 
             self.file_stdout.close()
             cNo      = 1.0
+            
             with open(self.file_stdout_path(),"r") as f:
                 for line in f:
                     if "CC for partial structure against native data =" in line:
@@ -266,14 +267,22 @@ class ShelxEMR(basic.TaskDriver):
 
             self.runApp ( "sftools",[],logType="Service" )
 
-            # copy pdb
-            shutil.copyfile ( self.shelxe_wrk_pdb(),self.shelxe_pdb() )
+            fnames = self.calcCCP4Maps ( self.shelxe_mtz(),self.outputFName,"shelxe" )
 
-            fnames    = self.calcCCP4Maps ( self.shelxe_mtz(),self.outputFName,
-                                            "shelxe" )
-            structure = self.registerStructure1 (
-                        self.shelxe_pdb(),None,self.shelxe_mtz(),fnames[0],None,None,
-                        self.outputFName,leadKey=2 )
+            # copy pdb
+            structure = None
+            if os.path.isfile(self.shelxe_wrk_pdb()):
+                shutil.copyfile ( self.shelxe_wrk_pdb(),self.shelxe_pdb() )
+                structure = self.registerStructure1 (
+                                self.shelxe_pdb(),None,self.shelxe_mtz(),
+                                fnames[0],None,None,self.outputFName,leadKey=2 )
+            else:
+                structure = self.registerStructure1 (
+                                istruct.getXYZFilePath(self.inputDir()),
+                                istruct.getSubFilePath(self.inputDir()),
+                                self.shelxe_mtz(),fnames[0],None,None,
+                                self.outputFName,leadKey=2 )
+
             if structure:
                 structure.copyAssociations ( istruct )
                 structure.copyLabels       ( istruct )

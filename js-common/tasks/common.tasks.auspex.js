@@ -6,14 +6,14 @@
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
- *  **** Module  :  js-common/tasks/common.tasks.reindex.js
+ *  **** Module  :  js-common/tasks/common.tasks.auspex.js
  *       ~~~~~~~~~
  *  **** Project :  jsCoFE - javascript-based Cloud Front End
  *       ~~~~~~~~~
- *  **** Content :  Change Space Group Task Class
+ *  **** Content :  Auspex Plots Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2019
+ *  (C) E. Krissinel, A. Lebedev 2019
  *
  *  =================================================================
  *

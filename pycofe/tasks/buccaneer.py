@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    30.09.19   <--  Date of Last Modification.
+#    27.08.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -73,8 +73,33 @@ class BuccaneerMR(basic.TaskDriver):
         sec2    = self.task.parameters.sec2.contains
         sec3    = self.task.parameters.sec3.contains
 
+        hkl     = self.makeClass ( idata.hkl[0]     )
         istruct = self.makeClass ( idata.istruct[0] )
         seq     = idata.seq
+
+        # prepare input MTZ file by putting original reflection data into
+        # phases MTZ
+
+        labin_fo    = hkl.getMeanF()
+        if labin_fo[2]!="F":
+            self.fail ( "<h3>No amplitude data.</h3>" +\
+                    "This task requires F/sigF columns in reflection data, " +\
+                    "which were not found.",
+                    "No amplitude data." )
+            return
+
+        labin_fo[2] = hkl.getFreeRColumn()
+        input_mtz   = "_input.mtz"
+        labin_ph    = []
+        if istruct.HLA:  #  experimental phases
+            labin_ph = [istruct.HLA,istruct.HLB,istruct.HLC,istruct.HLD]
+        else:  # MR phases
+            labin_ph = [istruct.PHI,istruct.FOM]
+
+        self.makePhasesMTZ (
+                hkl.getHKLFilePath(self.inputDir())    ,labin_fo,
+                istruct.getMTZFilePath(self.inputDir()),labin_ph,
+                input_mtz )
 
         #self.makeFullASUSequenceFile ( seq,self.buccaneer_seq() )
 
@@ -99,9 +124,11 @@ class BuccaneerMR(basic.TaskDriver):
         self.addCmdLine ( "colin-ref-fo","[/*/*/FP.F_sigF.F,/*/*/FP.F_sigF.sigF]" )
         self.addCmdLine ( "colin-ref-hl","[/*/*/FC.ABCD.A,/*/*/FC.ABCD.B,/*/*/FC.ABCD.C,/*/*/FC.ABCD.D]" )
         self.addCmdLine ( "seqin"     ,self.buccaneer_seq() )
-        self.addCmdLine ( "mtzin"     ,istruct.getMTZFilePath(self.inputDir()) )
-        self.addCmdLine ( "colin-fo"  ,"[/*/*/" + istruct.FP + ",/*/*/" + istruct.SigFP + "]" )
-        self.addCmdLine ( "colin-free","[/*/*/" + istruct.FreeR_flag + "]" )
+        self.addCmdLine ( "mtzin"     ,input_mtz )
+        #self.addCmdLine ( "colin-fo"  ,"[/*/*/" + istruct.FP + ",/*/*/" + istruct.SigFP + "]" )
+        #self.addCmdLine ( "colin-free","[/*/*/" + istruct.FreeR_flag + "]" )
+        self.addCmdLine ( "colin-fo"  ,"[/*/*/" + labin_fo[0] + ",/*/*/" + labin_fo[1] + "]" )
+        self.addCmdLine ( "colin-free","[/*/*/" + labin_fo[2] + "]" )
 
         if istruct.HLA:
             self.addCmdLine ( "colin-hl","[/*/*/" + istruct.HLA + ",/*/*/" + istruct.HLB +\
@@ -243,9 +270,12 @@ class BuccaneerMR(basic.TaskDriver):
                 structure.copyLabels       ( istruct )
                 structure.setRefmacLabels  ( None    )
                 structure.copyLigands      ( istruct )
-                structure.FP         = istruct.FP
-                structure.SigFP      = istruct.SigFP
-                structure.FreeR_flag = istruct.FreeR_flag
+                #structure.FP         = istruct.FP
+                #structure.SigFP      = istruct.SigFP
+                #structure.FreeR_flag = istruct.FreeR_flag
+                structure.FP         = labin_fo[0]
+                structure.SigFP      = labin_fo[1]
+                structure.FreeR_flag = labin_fo[2]
                 self.putStructureWidget    ( "structure_btn",
                                              "Structure and electron density",
                                              structure )
