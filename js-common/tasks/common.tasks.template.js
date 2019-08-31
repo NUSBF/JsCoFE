@@ -1994,7 +1994,10 @@ if (!dbx)  {
                       break;
           case 'z02'      : S += 'Solv=' + d.SolventPercent + '% ';
                       break;
-          case 'shelxemr' : S += 'CC=' + d.bestCC + '% FOM=' + d.meanFOM;
+          case 'shelxemr' : if ((d.bestCC==0.0) && (d.pseudoCC>0.0))
+                                  S += 'pseudo-CC=' + d.pseudoCC;
+                            else  S += 'CC=' + d.bestCC;
+                            S += '% FOM=' + d.meanFOM;
                       break;
           default : ;
         }

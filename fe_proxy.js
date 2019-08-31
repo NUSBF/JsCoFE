@@ -61,7 +61,7 @@ if (msg)  {
 
 var proxy_config  = conf.getFEProxyConfig ();
 var fe_config     = conf.getFEConfig      ();
-var client_config = conf.getClientNCConfig();
+//var client_config = conf.getClientNCConfig();
 var fe_url        = fe_config.url();
 
 // --------------------------------------------------------------------------

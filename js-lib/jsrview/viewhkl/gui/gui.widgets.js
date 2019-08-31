@@ -200,6 +200,10 @@ Widget.prototype.setFontItalic = function ( italic )  {
   return this;
 }
 
+Widget.prototype.setBackgroundColor = function ( color )  {
+  this.element.style.backgroundColor = color;
+  return this;
+}
 
 Widget.prototype.setFontColor = function ( color )  {
   this.element.style.color = color;

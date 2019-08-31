@@ -42,7 +42,6 @@ def putSRFDiagram ( body,            # reference on Basic class
     if sys.platform.startswith("win"):
         return [0,"Ok"]
 
-
     fpath = hkl.getHKLFilePath ( dirPath )
     Fmean = hkl.getMeta ( "Fmean.value","" )
     sigF  = hkl.getMeta ( "Fmean.sigma","" )

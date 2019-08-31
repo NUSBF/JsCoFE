@@ -383,6 +383,7 @@ if (__template)  {
 
     if ('revision' in this.input_data.data)  {
       var revision = this.input_data.data['revision'][0];
+      this.input_data.data['hkl']     = [revision.HKL];
       this.input_data.data['istruct'] = [revision.Structure];
       this.input_data.data['seq']     = revision.ASU.seq;
     }

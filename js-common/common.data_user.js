@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.08.18   <--  Date of Last Modification.
+ *    28.08.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  User Data Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2018
+ *  (C) E. Krissinel, A. Lebedev 2016-2019
  *
  *  =================================================================
  *
@@ -38,21 +38,22 @@ var userdata_action = {
 }
 
 function UserData()  {
-  this._type      = 'UserData';  // do not change
-  this.name       = '';
-  this.email      = '';
-  this.login      = '';
-  this.licence    = '';
-  this.feedback   = '';
-  this.pwd        = '';
-  this.nJobs      = 0;
-  this.usedSpace  = 0;  // in MB
-  this.usedCPU    = 0;  // in hours
-  this.knownSince = ''; // date
-  this.lastSeen   = ''; // date
-  this.admin      = false;
-  this.helpTopics = [];
-  this.action     = userdata_action.none;
+  this._type         = 'UserData';  // do not change
+  this.name          = '';
+  this.email         = '';
+  this.login         = '';
+  this.licence       = '';
+  this.feedback      = '';
+  this.pwd           = '';
+  this.nJobs         = 0;
+  this.usedSpace     = 0;  // in MB
+  this.usedCPU       = 0;  // in hours
+  this.knownSince    = ''; // date
+  this.lastSeen      = ''; // date
+  this.admin         = false;
+  this.helpTopics    = [];
+  this.authorisation = {};
+  this.action        = userdata_action.none;
 }
 
 function checkUserData ( uData )  {

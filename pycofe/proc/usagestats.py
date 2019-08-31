@@ -162,6 +162,7 @@ def main():
     usageStats.disk_free_users   [-1] = disk_users   [0]  # free
     usageStats.disk_total_projects    = disk_projects[1]  # total
     usageStats.disk_total_users       = disk_users   [1]  # total
+    #usageStats.currentDate = int(time.time()*1000.0)    
     jsonut.writejObject ( usageStats,statsFile )
 
     disk_total_projects = []

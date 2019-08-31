@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    24.12.18   <--  Date of Last Modification.
+#    27.08.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -21,7 +21,7 @@
 #    jobId      is job id assigned by jsCoFE (normally an integer but should
 #               be treated as a string with no assumptions)
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2018
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2018-2019
 #
 # ============================================================================
 #
@@ -68,6 +68,7 @@ class ArpWarp(basic.TaskDriver):
         istruct = self.makeClass ( idata.istruct[0] )
         seq     = idata.seq
 
+        """
         cols    = []
         if istruct.initPhaseSel=="phases":
             # run cad here
@@ -84,7 +85,6 @@ class ArpWarp(basic.TaskDriver):
             return
 
         #  prepare input mtz with cad
-
         cmd = [ "HKLIN1",hkl.getHKLFilePath(self.inputDir()),
                 "HKLOUT",self.arpwarp_mtz() ]
 
@@ -106,7 +106,28 @@ class ArpWarp(basic.TaskDriver):
 
         self.close_stdin()
         self.runApp ( "cad",cmd,logType="Service" )
+        """
 
+        labin_fo = hkl.getMeanF()
+        if labin_fo[2]!="F":
+            self.fail ( "<h3>No amplitude data.</h3>" +\
+                    "This task requires F/sigF columns in reflection data, " +\
+                    "which were not found.",
+                    "No amplitude data." )
+            return
+
+        labin_fo[2] = hkl.getFreeRColumn()
+        input_mtz   = "_input.mtz"
+        labin_ph    = []
+        if istruct.PHI:
+            labin_ph += [istruct.PHI,istruct.FOM]
+        if istruct.HLA:  #  experimental phases
+            labin_ph += [istruct.HLA,istruct.HLB,istruct.HLC,istruct.HLD]
+
+        self.makePhasesMTZ (
+                hkl.getHKLFilePath(self.inputDir())    ,labin_fo,
+                istruct.getMTZFilePath(self.inputDir()),labin_ph,
+                self.arpwarp_mtz() )
 
         # prepare keyword file for arpwarp
 
@@ -205,9 +226,12 @@ class ArpWarp(basic.TaskDriver):
             scalml += " FREE"
 
         cmdopt += [
-            "fp"              , cols[0],
-            "sigfp"           , cols[1],
-            "freelabin"       , cols[3],
+            #"fp"              , cols[0],
+            #"sigfp"           , cols[1],
+            #"freelabin"       , cols[3],
+            "fp"              , labin_fo[0],
+            "sigfp"           , labin_fo[1],
+            "freelabin"       , labin_fo[2],
             "seqin"           , self.arpwarp_seq(),
             "residues"        , str(nres),
             "cgr"             , "1", # ask Grzhegosh

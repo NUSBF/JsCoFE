@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    26.08.19   <--  Date of Last Modification.
+ *    31.08.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -153,7 +153,7 @@ TaskListDialog.prototype.setTask = function ( task_obj,grid,row,setall )  {
   switch (btn.dataSummary.status)  {
     default :
     case 0  :  $(btn.element).css({'border':'2px solid #FF1C00'});
-               lbl.setFontColor  ( '#AAAAAA' );                     break;
+               lbl.setFontColor('#888888').setFontItalic(true);     break;
     case 1  :  $(btn.element).css({'border':'2px solid #FFBF00'});  break;
     case 2  :  $(btn.element).css({'border':'2px solid #03C03C'});  break;
   }
@@ -374,9 +374,13 @@ var row      = 0;
   ]);
 
   this.makeSection ( 'Toolbox',[
+    'Reflection data tools',
     new TaskAuspex  (),
+    new TaskSRF     (),
     new TaskCrosSec (),
+    'Coordinate data tools',
     new TaskCootCE  (),
+    'Alignment and comparison tools',
     new TaskGesamt  (),
     new TaskLsqKab  (),
     new TaskSeqAlign(),
