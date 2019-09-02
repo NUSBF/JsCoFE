@@ -27,7 +27,6 @@ var __regMode       = 'email';  // 'email' (by user) or 'admin' (by admin)
 var __exclude_tasks = [];
 var __setup_desc    = null;     // setup description
 var __check_session_period = 2000;  // in ms
-var __ccp4_version  = '';       // undefined
 
 
 // ---------------------------------------------------------------------------

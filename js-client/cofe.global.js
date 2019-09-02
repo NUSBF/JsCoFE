@@ -32,6 +32,7 @@ var maintainerEmail = 'ccp4@ccp4.ac.uk';
 var __login_token  = '';
 var __login_user   = '';
 var __admin        = false;
+var __ccp4_version = '';       // undefined
 
 var __current_page    = null;
 var __current_project = null;
