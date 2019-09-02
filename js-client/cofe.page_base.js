@@ -79,7 +79,7 @@ BasePage.prototype.makeSetupNamePanel = function()  {
   } else if (__local_setup)  {
     _make_panel ( 'Home setup',image_path('setup_home') );
   } else  {
-    _make_panel ( 'Unnamed setup',image_path('setup_unnamed') );
+    _make_panel ( 'Unnamed setup',image_path('setup_unknown') );
     /*
     setupPanel.setLabel ( 'Unnamed setup', 0,0,1,1 )
               .setFont  ( 'times','150%',true,true ).setNoWrap();
@@ -182,7 +182,7 @@ BasePage.prototype._setModeIcon = function ( colNo )  {
                   .setVerticalAlignment ( 'middle' );
 
   var setup_name = 'Unnamed CCP4 Cloud Setup';
-  var setup_icon = 'images_com/setup_unknown.png';
+  var setup_icon = 'images_png/setup_unknown.png';
   if (__setup_desc)  {
     setup_name = 'CCP4 Cloud Setup at ' + __setup_desc.name;
     setup_icon = __setup_desc.icon;

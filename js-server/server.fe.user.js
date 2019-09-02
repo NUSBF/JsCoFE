@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    01.08.19   <--  Date of Last Modification.
+ *    01.09.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -491,7 +491,7 @@ function readUsersData()  {
 function getUserData ( login )  {
 var response = 0;  // must become a cmd.Response object to return
 
-  log.standard ( 5,'user get data ' + login );
+  //log.debug ( 5,'user get data ' + login );
 
   // Check that we're having a new login name
   var userFilePath = getUserDataFName ( login );
@@ -948,6 +948,91 @@ var fe_server = conf.getFEConfig();
 }
 
 
+// ===========================================================================
+
+function authResponse ( server_request,server_response )  {
+// process response from authorisation server
+// /?token=WyIxLjIuMy40Iiw1MTM1XQ%3A1i4BlU%3AEyXX0QzMoWCGZqNwPZ5QabHToO8&code=ok&reqid=authorisation-arpwarp-340cef239bd34b777f3ece094ffb1ec5
+
+  var params = {
+    'token' : '',
+    'code'  : '',
+    'reqid' : ''
+  };
+
+  var pstr  = server_request.url;
+  var plist = [];
+  if (pstr.length>0)  {
+    if (pstr.startsWith('/?'))     pstr = pstr.substr(2);
+    else if (pstr.startsWith('?')) pstr = pstr.substr(1);
+    plist = pstr.split('&');
+    for (var i=0;i<plist.length;i++)  {
+      var pair = plist[i].split('=');
+      params[pair[0]] = pair[1];
+    }
+  }
+
+  var auth_result  = '';
+  var software_key = '';
+  if ((params.reqid=='') || (params.code==''))
+    auth_result = 'bad_reply';
+  else if (params.code!='ok')
+    auth_result = 'errors';
+  else if (params.token=='')
+    auth_result = 'denied';
+  else {
+    params.reqid = params.reqid.split('-');
+    if (params.reqid.length==3)  {
+      software_key = params.reqid[1];
+      var login    = getLoginFromHash ( params.reqid[2] );
+      if (login.length>0)  {
+        var userFilePath = getUserDataFName ( login );
+        var uData  = utils.readObject ( userFilePath );
+        if (uData)  {
+          ud.checkUserData ( uData );
+          if (!uData.authorisation.hasOwnProperty(params.reqid[1]))
+            uData.authorisation[params.reqid[1]] = {};
+          uData.authorisation[params.reqid[1]].token     = params.token;
+          uData.authorisation[params.reqid[1]].auth_date = new Date().toUTCString();
+          utils.writeObject ( userFilePath,uData );
+          auth_result = 'ok';
+        } else
+          auth_result = 'no_user_data';
+      } else
+        auth_result = 'user_logout';
+    } else
+      auth_result = 'bad_reqid';
+  }
+
+  //  read page into msg
+  var html = utils.readString ( 'authend.html' );
+  if (html.length>0)  {
+    var fe_server  = conf.getFEConfig();
+    var setup_name = '';
+    var setup_icon = '';
+    if (fe_server.hasOwnProperty('description'))  {
+      setup_name = fe_server.description.name;
+      setup_icon = fe_server.description.icon;
+    } else if (conf.isLocalSetup())  {
+      setup_name = 'Home setup';
+      setup_icon = 'images_png/setup_home.png';
+    } else  {
+      setup_name = 'Unnamed setup';
+      setup_icon = 'images_png/setup_unknown.png';
+    }
+    html = html.replace('$setup_name'  ,setup_name  )
+               .replace('$setup_icon'  ,setup_icon  )
+               .replace('$software_key',software_key)
+               .replace('$auth_result' ,auth_result );
+  } else
+    html = '<html><body><h2>Authorisation response template is missing</h2>' +
+           '<h3>Please file a bug report</h3></body></html>';
+
+  cmd.sendResponseMessage ( server_response,html,'text/html' );
+
+}
+
+
 // ==========================================================================
 // export for use in node
 module.exports.userLogin            = userLogin;
@@ -969,3 +1054,4 @@ module.exports.deleteUser           = deleteUser;
 module.exports.deleteUser_admin     = deleteUser_admin;
 module.exports.sendAnnouncement     = sendAnnouncement;
 module.exports.getInfo              = getInfo;
+module.exports.authResponse         = authResponse;

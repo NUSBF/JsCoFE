@@ -61,6 +61,7 @@ function Communicate ( server_request )  {
   if ((this.command=='') || (this.command==cmd.fe_command.cofe))
         this.filePath = conf.getFEConfig().bootstrapHTML;
   else  this.filePath = url_path;
+//console.log ( "filePath " + this.filePath );
 
   if (this.command.startsWith(cmd.fe_command.jobFinished))  {
     this.job_token = this.command.substr(cmd.fe_command.jobFinished.length);
@@ -93,6 +94,12 @@ function Communicate ( server_request )  {
     if (ix>=0)  {
       this.filePath = ustats.getUsageReportFilePath ( this.filePath.substr(ix+utag.length) );
       log.debug2 ( 3,"calculated path " + this.filePath);
+    }
+  }
+  if (ix<0) {
+    ix = server_request.url.lastIndexOf('reqid=authorisation-');
+    if (ix>=0)  {
+      this.command = cmd.fe_command.authResponse;
     }
   }
   if (ix<0) {
@@ -160,14 +167,6 @@ function Communicate ( server_request )  {
 
 }
 
-
-/*
-send file = /home/jscofe/jscofe/cofe-projects/apsdemo.projects/insulin.prj/job_1/output/SWEEP1_rlp.json
-send file = /home/jscofe/jscofe/cofe-projects/apsdemo.projects/insulin.prj/job_1/output/SWEEP1_rs_mapper_output.ccp4.map
-send file = /home/jscofe/jscofe/cofe-projects/apsdemo.projects/insulin.prj/job_1/output/SWEEP1_rlp.json
-send file = /home/jscofe/jscofe/cofe-projects/apsdemo.projects/insulin.prj/job_1/output/SWEEP1_rlp.json
-send file = /home/jscofe/jscofe/cofe-projects/apsdemo.projects/insulin.prj/job_1/output/SWEEP1_rlp.json
-*/
 
 Communicate.prototype.sendFile = function ( server_response )  {
 

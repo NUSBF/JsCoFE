@@ -2,7 +2,7 @@
 /*
  *  ===========================================================================
  *
- *    31.08.19   <--  Date of Last Modification.
+ *    02.09.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  ---------------------------------------------------------------------------
  *
@@ -24,7 +24,7 @@
 // name and version tag
 
 function appName()  { return 'CCP4 Cloud' }
-var jsCoFE_version = '1.2.007 [31.08.2019]';
+var jsCoFE_version = '1.2.007 [02.09.2019]';
 
 
 // ============================================================================
@@ -49,7 +49,8 @@ var fe_command = {
   request       : '=request',       // general request to server
   upload        : '=upload',        // upload request, hard-coded in gui.upload.js
   jobFinished   : '=job_finished',  // request to accept data from finished job
-  checkSession  : '=check_session'  // request to check facility update
+  checkSession  : '=check_session', // request to check facility update
+  authResponse  : '=auth_response'  // process from software authorisation server
 }
 
 
@@ -202,12 +203,11 @@ var resp = new Response ( status,message,data );
   resp.send ( server_response );
 }
 
-function sendResponseMessage ( server_response, message )  {
-  server_response.writeHead ( 200, {'Content-Type': 'text/plain',
+function sendResponseMessage ( server_response,message,mimeType )  {
+  server_response.writeHead ( 200, {'Content-Type': mimeType,
                                     'Access-Control-Allow-Origin':'*' } );
   server_response.end ( message );
 }
-
 
 function Request ( request,token,data )  {
   this._type   = 'Request';

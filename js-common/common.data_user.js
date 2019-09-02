@@ -72,6 +72,8 @@ function checkUserData ( uData )  {
     else
       msg = '<li>confirm your account details</li>';
   }
+  if (!uData.hasOwnProperty('authorisation'))
+    uData.authorisation = {};
   return msg;
 }
 

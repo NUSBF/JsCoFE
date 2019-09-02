@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    28.08.19   <--  Date of Last Modification.
+ *    02.09.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -26,13 +26,14 @@
 // -------------------------------------------------------------------------
 // Export project dialog class
 
-function AuthorisationDialog ( login,authorisation_dic )  {
+function AuthorisationDialog ( callback_func )  {
 
   Widget.call ( this,'div' );
   this.element.setAttribute ( 'title','Software Authorisations' );
   document.body.appendChild ( this.element );
 
-  this.auth_dic = authorisation_dic;
+  this.auth_dic = {};  // will need to be obtained by request
+  this.timer    = null;
 
   this.grid = new Grid('-compact');
   this.addWidget ( this.grid );
@@ -49,29 +50,43 @@ function AuthorisationDialog ( login,authorisation_dic )  {
                   appName() + '.',1,0,1,5 ).setFontSize('80%');
   this.grid.setHLine ( 1, 2,0,1,5 );
 
-  this.layAuthorisationEntries ( login );
+  // fetch user data from server
+  (function(self){
+    serverRequest ( fe_reqtype.getUserData,0,'My Account',function(data){
 
-  w = 3*$(window).width()/5 + 'px';
+        if (data.hasOwnProperty('authorisation'))
+          self.auth_dic = data.authorisation;
 
-  $(this.element).dialog({
-    resizable : false,
-    height    : 'auto',
-    maxHeight : 500,
-    width     : w,
-    modal     : true,
-    //open      : function(event, ui) {
-    //  entry_list.addOnInputListener  ( enableImportButton );
-    //},
-    buttons   : [
-      {
-        id    : "close_btn",
-        text  : "Close",
-        click : function() {
-          $(this).dialog("close");
-        }
-      }
-    ]
-  });
+        self.layAuthorisationEntries();
+
+        w = 3*$(window).width()/5 + 'px';
+
+        $(self.element).dialog({
+          resizable : false,
+          height    : 'auto',
+          maxHeight : 500,
+          width     : w,
+          modal     : true,
+          buttons   : [
+            {
+              id    : "close_btn",
+              text  : "Close",
+              click : function() {
+                $(this).dialog("close");
+              }
+            }
+          ]
+        });
+
+        $(self.element).on( "dialogclose",function(event,ui){
+          self.stopTimer();
+          if (callback_func)
+            callback_func ( self );
+        });
+
+    },null,'persist');
+
+  }(this))
 
 }
 
@@ -79,135 +94,115 @@ function AuthorisationDialog ( login,authorisation_dic )  {
 AuthorisationDialog.prototype = Object.create ( Widget.prototype );
 AuthorisationDialog.prototype.constructor = AuthorisationDialog;
 
-/*
-AuthorisationDialog.prototype.authoriseArpWarp = function ( login )  {
-var arpwarp_url = 'https://arpwarp.embl-hamburg.de';
+AuthorisationDialog.prototype.startTimer = function()  {
+  (function(self){
+    if (!self.timer)
+      self.timer = window.setTimeout ( function(){ self.updateOnTimer(); },1500 );
+  }(this))
+}
 
-
-var xhttp = new XMLHttpRequest();
-xhttp.onreadystatechange = function() {
-    if (this.readyState == 4 && this.status == 200) {
-       // Typical action to be performed when the document is ready:
-       document.getElementById("demo").innerHTML = xhttp.responseText;
+AuthorisationDialog.prototype.updateOnTimer = function()  {
+  (function(self){
+    if (self.timerCount>0)  {
+      serverRequest ( fe_reqtype.getUserData,0,'My Account',function(data){
+        if (data.hasOwnProperty('authorisation'))  {
+          self.auth_dic = data.authorisation;
+          for (var i=0;i<self.auth_list.length;i++)  {
+            if (self.auth_dic.hasOwnProperty(self.auth_list[i].key)) {
+              var adate = self.auth_dic[self.auth_list[i].key].auth_date;
+              self.auth_list[i].auth_date = adate;
+              if (self.auth_list[i].auth_date0!=adate)  {
+                self.timerCount--;
+                self.auth_list[i].auth_date0 = adate;
+                self.auth_list[i].auth_lbl.setText ( '<b><i>authorised since ' + adate + '</i></b>' )
+                                          .setFontColor('green').setNoWrap();
+              }
+            }
+          }
+        }
+        if (self.timerCount>0)
+          self.timer = window.setTimeout ( function(){ self.updateOnTimer(); },1500 );
+      });
     }
-};
-xhttp.open("GET", 'https://arpwarp.embl-hamburg.de/api/realip/', true);
-xhttp.send();
-
-return;
-
-//https://arpwarp.embl-hamburg.de/api/realip/
-//https://arpwarp.embl-hamburg.de/api/realip/
-
-  $.ajax ({
-    url      : arpwarp_url + '/api/realip/',
-    //url      : 'https://arpwarp.embl-hamburg.de/api/realip/',
-    //url      : 'https://www.google.com',
-    async    : true,
-    type     : 'POST',
-    cache       : false,   // added on 27.03.2019
-    processData : false,
-    contentType : false
-//    crossDomain : true
-    //data     : '',
-    //dataType : 'json'
-    //dataType : 'text'
-  })
-  .done ( function(rdata) {
-    alert ( ' done rdata=' + rdata );
-  })
-  .always ( function(){} )
-  .fail   ( function(xhr,err){
-    alert ( err );
-    new MessageBox ( 'Communication error',
-      'Cannot reach Arp/wArp authorisation server.<p>Sorry and please come back later!' );
-  });
-
-}
-*/
-
-/*
-AuthorisationDialog.prototype.authoriseArpWarp = function ( login )  {
-
-  hamburg_frame = new BrowserFrame ( 'Arp/wArp Authorisation',
-    'https://www.google.com' );
-    //'https://arpwarp.embl-hamburg.de/api/maketoken/?reqid=abcd&addr=1.2.3.4&cburl=https://www.google.com' );
-  hamburg_frame.launch();
-
+  }(this))
 }
 
-
-AuthorisationDialog.prototype.despatchRequest = function ( key,login )  {
-  if (key=='arpwarp')
-    this.authoriseArpWarp ( login );
+AuthorisationDialog.prototype.stopTimer = function()  {
+  if (this.timer)  {
+    window.clearTimeout ( this.timer );
+    this.timer = null;
+  }
 }
-*/
 
-AuthorisationDialog.prototype.layAuthorisationEntries = function ( login )  {
+AuthorisationDialog.prototype.layAuthorisationEntries = function()  {
 
-  var auth_list = [
+  this.timerCount = 0;
+  this.auth_list = [
     { 'key'           : 'arpwarp',
       'desc_software' : 'Arp/wArp Model Building Software from EMBL-Hamburg',
       'icon_software' : 'task_arpwarp',
       'desc_provider' : 'EMBL Outstation in Hamburg',
       'icon_provider' : 'org_emblhamburg',
-      'auth_url'      : 'https://arpwarp.embl-hamburg.de/api/maketoken/?reqid=abcd&addr=1.2.3.4&cburl=',
+      'auth_url'      : 'https://arpwarp.embl-hamburg.de/api/maketoken/?reqid=$reqid&addr=1.2.3.4&cburl=$cburl',
     }
   ];
 
   var row = 3;
-  for (var i=0;i<auth_list.length;i++)  {
+  for (var i=0;i<this.auth_list.length;i++)  {
 
     this.grid.setLabel ( '&nbsp;',row++,0,1,5 ).setHeight('9pt').setBackgroundColor('lightblue');
     this.grid.setLabel ( '&nbsp;',row++,0,1,5 ).setHeight('6pt');
 
-    if (!this.auth_dic.hasOwnProperty(auth_list[i].key))  {
-      this.auth_dic[auth_list[i].key] = {};
-      this.auth_dic[auth_list[i].key].auth_date = '';
+    if (!this.auth_dic.hasOwnProperty(this.auth_list[i].key))  {
+      this.auth_dic[this.auth_list[i].key] = {};
+      this.auth_dic[this.auth_list[i].key].auth_date = '';
     }
-    auth_list[i].auth_date = this.auth_dic[auth_list[i].key].auth_date;
+    this.auth_list[i].auth_date = this.auth_dic[this.auth_list[i].key].auth_date;
 
     row1 = row+1;
     row2 = row+2;
     this.grid.setLabel ( '<b><i>Software:</i></b>',row,0,1,1 );
-    this.grid.setLabel ( '<img src="' + image_path(auth_list[i].icon_software) +
+    this.grid.setLabel ( '<img src="' + image_path(this.auth_list[i].icon_software) +
                          '" height="36pt" style="vertical-align: middle;"/>&nbsp;&nbsp;&nbsp;' +
-                         auth_list[i].desc_software,row,1,1,3 ).setNoWrap();
+                         this.auth_list[i].desc_software,row,1,1,3 ).setNoWrap();
     this.grid.setLabel ( '<b><i>Provider:</i></b>',row1,0,1,1 );
-    this.grid.setLabel ( '<img src="' + image_path(auth_list[i].icon_provider) +
+    this.grid.setLabel ( '<img src="' + image_path(this.auth_list[i].icon_provider) +
                          '" height="36pt" style="vertical-align: middle;"/>&nbsp;&nbsp;&nbsp;' +
-                         auth_list[i].desc_provider,row1,1,1,3 ).setNoWrap();
+                         this.auth_list[i].desc_provider,row1,1,1,3 ).setNoWrap();
     this.grid.setLabel ( '<b><i>Authorisation:&nbsp;&nbsp;</i></b>',row2,0,1,1 );
 
     var auth_msg   = '';
     var auth_color = '';
-    if (auth_list[i].auth_date.length<=0)  {
+    if (this.auth_list[i].auth_date.length<=0)  {
       auth_msg   = '<b><i>not authorised</i></b>';
       auth_color = 'darkred';
-    } else if (auth_list[i].auth_date=='requested')  {
+    } else if (this.auth_list[i].auth_date=='requested')  {
       auth_msg   = '<b><i>requested</i></b>';
       auth_color = '#FFBF00';
     } else  {
-      auth_msg   = '<b><i>authorised since</i></b> ' + auth_list[i].auth_date;
+      auth_msg   = '<b><i>authorised since ' + this.auth_list[i].auth_date + '</i></b>';
       auth_color = 'green';
     }
-    var auth_lbl    = this.grid.setLabel ( auth_msg + '&nbsp;&nbsp;&nbsp;',row2,1,1,1 )
+    this.auth_list[i].auth_date0 = this.auth_list[i].auth_date;
+    this.auth_list[i].auth_lbl   =
+                      this.grid.setLabel ( auth_msg + '&nbsp;&nbsp;&nbsp;',row2,1,1,1 )
                                .setFontColor(auth_color).setNoWrap();
     var request_btn = this.grid.setButton ( 'request authorisation',image_path('authorisation'),
                                             row2,2,1,1 ).setNoWrap();
-    (function(self,req_btn,key,auth_url,auth_label){
+    (function(self,req_btn,alist){
       req_btn.addOnClickListener ( function(){
-        alert ( window.location );
-        window.open ( auth_url + window.location );
-        //  strip '?...' from window.location
-        //  'arpwarp_' + __login_token as reqid in callback
-        //  requested /?token=WyIxLjIuMy40Iiw1MTM1XQ%3A1i412y%3A16YMt11WH05LLVMbs9qSdqbEFKc&code=ok&reqid=abcd
-        self.auth_dic[key].auth_date = 'requested';
-        auth_label.setText ( '<b><i>requested</i></b>' + '&nbsp;&nbsp;&nbsp;' )
-                  .setFontColor('#FFBF00');
-        //  start timer to update on authorisation status, receive and update self.auth_dic
+        var ownURL = window.location.protocol + '//' + window.location.host + window.location.pathname;
+        var reqURL = alist.auth_url.replace ( '$reqid',
+                                              'authorisation-' + alist.key + '-' + __login_token )
+                                   .replace ( '$cburl',ownURL );
+        window.open ( reqURL );
+        self.auth_dic[alist.key].auth_date = 'requested';
+        alist.auth_lbl.setText ( '<b><i>requested</i></b>' + '&nbsp;&nbsp;&nbsp;' )
+                      .setFontColor('#FFBF00');
+        self.timerCount++;
+        self.startTimer();
       });
-    }(this,request_btn,auth_list[i].key,auth_list[i].auth_url,auth_lbl))
+    }(this,request_btn,this.auth_list[i]))
 
     for (var j=0;j<2;j++)  {
       this.grid.setVerticalAlignment ( row ,j,'middle' );

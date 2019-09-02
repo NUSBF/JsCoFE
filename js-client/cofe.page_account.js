@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    28.08.19   <--  Date of Last Modification.
+ *    02.09.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -56,6 +56,9 @@ function AccountPage ( sceneId )  {
   this.grid.setCellSize          ( '65%','',1,2,1,1 );
 //  this.grid.setCellSize          ( '','80pt',2,1,1,3 );
   this.makeLogoPanel             ( 2,0,3 );
+
+//  var response = {};  // will keep user data
+  var userData = {};  // will keep user data
 
   // make account panel
   var panel = new Grid('');
@@ -147,7 +150,6 @@ function AccountPage ( sceneId )  {
     });
   });
 
-
   row++;
   var authoris_btn = new Button ( 'manage',image_path('authorisation') );
   authoris_btn.setWidth         ( '100%' );
@@ -156,8 +158,10 @@ function AccountPage ( sceneId )  {
   panel.setVerticalAlignment    ( row,1,'middle'  );
   authoris_btn.setDisabled      ( true );
   authoris_btn.addOnClickListener ( function(){
-    new MessageBox ( "In development","This feature is in development, IGNORE" );
-    //new AuthorisationDialog ( login_inp.getValue(),authorisation_dic );
+    //new MessageBox ( "In development","This feature is in development, IGNORE" );
+    new AuthorisationDialog ( function(dlg){
+      userData.authorisation = dlg.auth_dic;
+    });
   });
 
   row++;
@@ -176,11 +180,9 @@ function AccountPage ( sceneId )  {
                         .setWidth  ( '100%' )
                         .setDisabled ( true );
 
-  panel.setCellSize             ( '','64pt',row++,0 );
+  panel.setCellSize ( '','64pt',row++,0 );
 
   // however add update button listener
-  var response;  // will keep user data
-  var userData;  // will transfer user data across
 
   update_btn.addOnClickListener ( function(){
 
@@ -297,7 +299,7 @@ function AccountPage ( sceneId )  {
   // fetch user data from server
   serverRequest ( fe_reqtype.getUserData,0,'My Account',function(data){
     userData = data;
-    var msg = checkUserData ( userData );
+    var msg  = checkUserData ( userData );
     if (msg.length>0)
       window.setTimeout ( function(){
         new MessageBox ( 'Update Account',
