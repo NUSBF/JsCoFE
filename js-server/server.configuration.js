@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    13.08.19   <--  Date of Last Modification.
+ *    15.09.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -21,13 +21,14 @@
 
 
 //  load system modules
-var path   = require('path');
-var http   = require('http');
-var crypto = require('crypto');
+var path    = require('path');
+var http    = require('http');
+var crypto  = require('crypto');
+var request = require('request');
 
 //  load application modules
-var utils  = require('./server.utils');
-var cmd    = require('../js-common/common.commands');
+var utils   = require('./server.utils');
+var cmd     = require('../js-common/common.commands');
 
 //  prepare log
 var log    = require('./server.log').newLog(3);
@@ -215,12 +216,12 @@ ServerConfig.prototype.checkStatus = function ( callback_func )  {
 
   request({
     uri     : cmd.nc_command.getNCInfo,
-    baseUrl : externalURL,
+    baseUrl : this.externalURL,
     method  : 'POST',
     body    : '',
     json    : true
   },function(error,response,body){
-    callback_func ( error,response.statusCode,body,this );
+    callback_func ( error,response,body,this );
   });
 
 }
