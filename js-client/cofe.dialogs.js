@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    28.07.19   <--  Date of Last Modification.
+ *    15.09.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -76,7 +76,7 @@ function calcDialogSize ( defW,defH, defWT,defHT, job_dialog_data )  {
 
 function MessageAJAXFailure ( title,jqXHR,exception )  {
 
-  var msg = '<b>General AJAX communication failure.</b><p><i>';
+  var msg = '<h3>Communication errors</h3><p><i>';
   if (!jqXHR)  {
     msg += 'Unknown error.';
   } else if (jqXHR.status === 0) {
@@ -95,9 +95,10 @@ function MessageAJAXFailure ( title,jqXHR,exception )  {
     msg += 'Uncaught Error.<br>' + jqXHR.responseText;
   }
 
-  new MessageBox ( title,msg + '</i><p>This may be due to a poor ' +
-    'internet connection. If problem persists,<br>please report to ' +
-    'ccp4@stfc.ac.uk .' );
+  new MessageBox ( title,msg + '</i><p>' +
+    'This may be an intermittent error due to a poor internet connection,<br>' +
+    'however, persistent appearance of this message is likely to indicate<br>' +
+    appName() + ' failure or temporary shutdown.' );
 
 }
 
