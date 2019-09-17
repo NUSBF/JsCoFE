@@ -28,11 +28,11 @@
 
 
 //  load application modules
-var conf     = require('./js-server/server.configuration');
-var fe_start = require('./js-server/server.fe.start');
+var conf     = require('./server.configuration');
+var fe_start = require('./server.fe.start');
 
 //  prepare log
-var log = require('./js-server/server.log').newLog(21);
+var log = require('./server.log').newLog(21);
 
 /*
 conf.setEmailerConfig ( 'telnet'          );

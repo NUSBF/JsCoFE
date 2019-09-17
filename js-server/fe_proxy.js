@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    13.08.19   <--  Date of Last Modification.
+ *    16.09.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -27,16 +27,16 @@
  */
 
 
-//  load application modules
-var conf      = require('./js-server/server.configuration');
 var http      = require('http');
 var httpProxy = require('http-proxy');
 var url       = require('url');
 
-var cmd       = require('./js-common/common.commands');
+//  load application modules
+var conf      = require('./server.configuration');
+var cmd       = require('../js-common/common.commands');
 
 //  prepare log
-var log = require('./js-server/server.log').newLog(22);
+var log = require('./server.log').newLog(22);
 
 
 // ==========================================================================

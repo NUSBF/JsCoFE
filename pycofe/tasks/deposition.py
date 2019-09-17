@@ -133,11 +133,13 @@ class Deposition(basic.TaskDriver):
         self.runApp ( "refmac5",cmd,logType="Main" )
 
         # make a copy of refmac output file with ".cif" extension
-        if os.path.isfile(xyzout) and os.path.getsize(xyzout)>10:
-            xyzout_cif = self.getOFName ( "_tmp.cif" )
-            shutil.copyfile ( xyzout,xyzout_cif )
-        else:
-            xyzout_cif = self.getOFName ( ".mmcif" )
+        #if os.path.isfile(xyzout) and os.path.getsize(xyzout)>10:
+        #    xyzout_cif = self.getOFName ( "_tmp.cif" )
+        #    shutil.copyfile ( xyzout,xyzout_cif )
+        #else:
+        #    xyzout_cif = self.getOFName ( ".mmcif" )
+
+        xyzout_cif = self.getOFName ( ".mmcif" )
 
         # prepare files for the structure visualisation widget
         mapout   = self.getMapOFName()

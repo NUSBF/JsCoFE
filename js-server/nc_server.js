@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    01.08.19   <--  Date of Last Modification.
+ *    16.09.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -33,15 +33,15 @@ var url    = require('url');
 var path   = require('path');
 
 //  load application modules
-var utils  = require('./js-server/server.utils');
-var conf   = require('./js-server/server.configuration');
-var pp     = require('./js-server/server.process_post');
-var cmd    = require('./js-common/common.commands');
-var jm     = require('./js-server/server.nc.job_manager');
-var rm     = require('./js-server/server.nc.requests');
+var utils  = require('./server.utils');
+var conf   = require('./server.configuration');
+var pp     = require('./server.process_post');
+var cmd    = require('../js-common/common.commands');
+var jm     = require('../js-server/server.nc.job_manager');
+var rm     = require('../js-server/server.nc.requests');
 
 //  prepare log
-var log = require('./js-server/server.log').newLog(1);
+var log = require('./server.log').newLog(1);
 
 
 // ==========================================================================

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    22.07.19   <--  Date of Last Modification.
+ *    16.09.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -34,12 +34,12 @@ var path          = require('path');
 var tmp           = require('tmp');
 
 //  load application modules
-var conf     = require('./js-server/server.configuration');
-var fe_start = require('./js-server/server.fe.start');
-var utils    = require('./js-server/server.utils');
+var conf     = require('./server.configuration');
+var fe_start = require('./server.fe.start');
+var utils    = require('./server.utils');
 
 //  prepare log
-var log = require('./js-server/server.log').newLog(23);
+var log = require('./server.log').newLog(23);
 
 
 // ==========================================================================
@@ -128,7 +128,8 @@ function startNCServer ( nc_number,cfgpath )  {
   utils.writeString ( stdout_path,'' );
   utils.writeString ( stderr_path,'' );
 
-  var job = child_process.spawn ( 'node',['nc_server.js',cfgpath,nc_number.toString()] );
+  var job = child_process.spawn ( 'node',[path.join('js-server','nc_server.js'),
+                                  cfgpath,nc_number.toString()] );
 
   log.standard ( 3,'server ' + ncConfigs[nc_number].name + ' started, pid=' +
                    job.pid );

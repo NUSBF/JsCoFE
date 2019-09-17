@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    01.09.19   <--  Date of Last Modification.
+ *    16.09.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -1005,7 +1005,7 @@ function authResponse ( server_request,server_response )  {
   }
 
   //  read page into msg
-  var html = utils.readString ( 'authend.html' );
+  var html = utils.readString ( path.join('bootstrap','authend.html') );
   if (html.length>0)  {
     var fe_server  = conf.getFEConfig();
     var setup_name = '';

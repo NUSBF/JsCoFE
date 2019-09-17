@@ -25,7 +25,7 @@
     "facilitiesPath"   : "./cofe-facilities",
     "ICAT_wdsl"        : "https://icat02.diamond.ac.uk/ICATService/ICAT?wsdl",
     "ICAT_ids"         : "https://ids01.diamond.ac.uk/ids",
-    "bootstrapHTML"    : "jscofe.html",
+    "bootstrapHTML"    : "./bootstrap/jscofe.html",
     "maxRestarts"      : 100,
     "fileCapSize"      : 500000,
     "regMode"          : "email",
