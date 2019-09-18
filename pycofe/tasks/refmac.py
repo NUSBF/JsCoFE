@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    19.06.19   <--  Date of Last Modification.
+#    17.09.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -283,10 +283,10 @@ class Refmac(basic.TaskDriver):
         # Start refmac
         self.runApp ( "refmac5",cmd,logType="Main" )
 
-        if not xyzin.lower().endswith(".pdb"):
-            xyzout1 = xyzout
-            xyzout  = os.path.splitext(xyzout1)[0] + ".cif"
-            shutil.copy2 ( xyzout1,xyzout )
+        #if not xyzin.lower().endswith(".pdb"):
+        #    xyzout1 = xyzout
+        #    xyzout  = os.path.splitext(xyzout1)[0] + ".cif"
+        #    shutil.copy2 ( xyzout1,xyzout )
 
         # check solution and register data
         if os.path.isfile(xyzout):
@@ -305,6 +305,11 @@ class Refmac(basic.TaskDriver):
                                                  fnames[0],fnames[1],libin,
                                                  leadKey=1 )
             if structure:
+
+                mmcifout = self.getMMCIFOFName()
+                if os.path.isfile(mmcifout):
+                    structure.add_file ( mmcifout,self.outputDir(),"mmcif",copy_bool=False )
+
                 structure.copyAssociations   ( istruct )
                 structure.addDataAssociation ( hkl.dataId     )
                 structure.addDataAssociation ( istruct.dataId )  # ???

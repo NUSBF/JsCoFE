@@ -184,6 +184,7 @@ citations = {
                             'pages'   : '167-182',
                             'doi'     : '10.1107/S2059798318003455'
                         }]
+
     #                'refs'     : [{
     #                        'authors' : 'Keegan, R.M., Winn, M.D.',
     #                        'title'   : 'MrBUMP: an automated pipeline for molecular replacement',
@@ -714,6 +715,20 @@ citations = {
                         }]
                   },
 
+    'ccp4mg-primary'  :   { 'name'     : 'CCP4 MG',
+                    'desc'     : 'CCP4 molecular graphics',
+                    'category' : 'primary',
+                    'refs'     : [{
+                            'authors' : 'McNicholas, S., Potterton, E., Wilson, K.S., Noble, M.E.M.',
+                            'title'   : 'Presenting your structures: the CCP4mg molecular-graphics software',
+                            'journal' : 'Acta Cryst.',
+                            'volume'  : 'D67',
+                            'year'    : '2011',
+                            'pages'   : '386-394',
+                            'doi'     : '10.1107/S0907444911007281'
+                        }]
+                  },
+
     'viewhkl' :   { 'name'     : 'ViewHKL',
                     'desc'     : 'reflection data viewer',
                     'category' : 'viewer',
@@ -917,6 +932,12 @@ def addCitation ( appName ):
 def addCitations ( appName_list ):
     for appName in appName_list:
         addCitation ( appName )
+    return
+
+def removeCitation ( appName ):
+    appRef = os.path.splitext ( os.path.basename(appName) )[0]
+    while appRef in citation_list:
+        citation_list.remove ( appRef )
     return
 
 

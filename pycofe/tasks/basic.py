@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    12.08.19   <--  Date of Last Modification.
+#    17.09.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -339,6 +339,9 @@ class TaskDriver(object):
 
     def getCIFOFName ( self,modifier=-1 ):
         return self.getOFName ( ".cif",modifier )
+
+    def getMMCIFOFName ( self,modifier=-1 ):
+        return self.getOFName ( ".mmcif",modifier )
 
     def getXYZOFName ( self,modifier=-1 ):
         return self.getOFName ( ".pdb",modifier )
@@ -733,6 +736,10 @@ class TaskDriver(object):
 
     def addCitations ( self,appName_list ):
         citations.addCitations ( appName_list )
+        return
+
+    def removeCitation ( self,appName ):
+        citations.removeCitation ( appName )
         return
 
     def _add_citations ( self,clist ):

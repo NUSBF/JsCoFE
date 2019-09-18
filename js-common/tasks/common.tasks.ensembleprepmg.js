@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    11.07.19   <--  Date of Last Modification.
+ *    18.09.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -34,7 +34,7 @@ function TaskEnsemblePrepMG()  {
              else  TaskTemplate.call ( this );
 
   this._type   = 'TaskEnsemblePrepMG';
-  this.name    = 'ensemble preparation (mg)';
+  this.name    = 'ensemble preparation (ccp4mg)';
   this.oname   = 'ensemble';  // default output file name template
   this.title   = 'Ensemble Preparation for MR with CCP4mg';
   this.helpURL = './html/jscofe_task_ensembleprepmg.html';
@@ -61,8 +61,8 @@ function TaskEnsemblePrepMG()  {
                       label    : 'Redundancy level',
                       tooltip  : 'Choose appropriate redundancy level for ' +
                                  'keeping hits in the list of matches. ',
-                      range    : ['100|100%','95|95%','90|90%','70|70%','50|50%'],
-                      value    : '100',
+                      range    : ['ALL|All','100|100%','95|95%','90|90%','70|70%','50|50%'],
+                      value    : 'ALL',
                       position : [0,0,1,1]
                      },
                 CUTOFF : {
@@ -73,6 +73,16 @@ function TaskEnsemblePrepMG()  {
                       range    : [0,200],
                       value    : 20,
                       position : [1,0,1,1]
+                    },
+               MRNUM : {
+                     type     : 'integer',
+                     keyword  : 'MRNUM',
+                     label    : 'Number of ensembles',
+                     tooltip  : 'Specify the number of ensemblies to generate ' +
+                                '(from 1 to 20).',
+                     range    : [1,20],
+                     value    : 5,
+                     position : [2,0,1,1]
                     }
            }
          }

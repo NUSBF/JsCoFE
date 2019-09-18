@@ -71,7 +71,7 @@ class Acorn(basic.TaskDriver):
                     "No amplitude data." )
             return
 
-        self.addCitations ( ['acorn'] )  # to make acorn first in the list
+        self.addCitations ( ["acorn"] )  # to make acorn first in the list
 
         resol = hkl.getHighResolution()
         if self.getParameter(sec1.EXTEND_RESOLUTION_CBX)=="True":
