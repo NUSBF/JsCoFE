@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.08.19   <--  Date of Last Modification.
+ *    17.09.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -165,12 +165,16 @@ if (!__template)  {
 
   DataTemplate.prototype.makeDataSummaryPage = function ( task )  {
   var dsp = new DataSummaryPage ( this );
-    if (this._type=='DataStructure')
+    if (this._type=='DataStructure')  {
       dsp.makeRow ( 'XYZ file name',this.files[file_key.xyz],'Name of file with XYZ coordinates' );
-    else
+      if (file_key.mmcif in this.files)
+        dsp.makeRow ( 'mmCIF file name',this.files[file_key.mmcif],
+                      'Name of file with XYZ coordinates in mmCIF (deposition) format' );
+    } else  {
       for (var key in this.files)
         if (this.files.hasOwnProperty(key))
           dsp.makeRow ( 'File name',this.files[key],'Imported file name' );
+    }
     this.inspectXYZData   ( dsp  );
     this.addToInspectData ( dsp  );
     dsp .addUglyMolButton ( task );

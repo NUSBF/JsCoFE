@@ -1,7 +1,7 @@
 /*
  *  ========================================================================
  *
- *    25.08.19   <--  Date of Last Modification.
+ *    18.09.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  ------------------------------------------------------------------------
  *
@@ -165,7 +165,10 @@ var _taskIndex = {
   'u' : { type: 'TaskIMosflm'        , after: ['0'] },
 
   // suggest PDBImport alike plain Import
-  'v' : { type: 'TaskImportPDB'      , after: ['0','B','C','D','E','m'] }
+  'v' : { type: 'TaskImportPDB'      , after: ['0','B','C','D','E','m'] },
+
+  // suggest EnsemblePrepMG alike TaskEnsemblePrepSeq
+  'w' : { type: 'TaskEnsemblePrepMG' , after: ['B','D','m'] }
 
 };
 

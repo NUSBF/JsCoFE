@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    01.07.19   <--  Date of Last Modification.
+#    17.09.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -400,6 +400,9 @@ class DType(dtype_template.DType):
     def getXYZFileName(self):
         return self.getFileName ( dtype_template.file_key["xyz"] )
 
+    def getMMCIFFileName(self):
+        return self.getFileName ( dtype_template.file_key["mmcif"] )
+
     def getSolFileName(self):
         return self.getFileName ( dtype_template.file_key["sol"] )
 
@@ -429,6 +432,9 @@ class DType(dtype_template.DType):
 
     def getXYZFilePath ( self,dirPath ):
         return self.getFilePath ( dirPath,dtype_template.file_key["xyz"] )
+
+    def getMMCIFFilePath ( self,dirPath ):
+        return self.getFilePath ( dirPath,dtype_template.file_key["mmcif"] )
 
     def getSubFilePath ( self,dirPath ):
         return self.getFilePath ( dirPath,dtype_template.file_key["sub"] )

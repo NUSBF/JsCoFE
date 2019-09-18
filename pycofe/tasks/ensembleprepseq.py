@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    24.04.19   <--  Date of Last Modification.
+#    18.09.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -81,7 +81,7 @@ class EnsemblePrepSeq(basic.TaskDriver):
             "MDLP False\n" + \
             "MDLM False\n" + \
             "MDLU False\n" + \
-            "CHECK False\n" + \
+            "CHECK True\n" + \
             "UPDATE False\n" + \
             "PICKLE False\n" + \
             "MRNUM " + str(self.getParameter(self.task.parameters.sec1.contains.MRNUM,False)) + "\n" + \

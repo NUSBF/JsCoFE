@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    21.07.19   <--  Date of Last Modification.
+#    18.09.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -89,14 +89,14 @@ class MrBump(basic.TaskDriver):
                 "BUCC True\n" + \
                 "BCYC 5\n" + \
                 "ARPW False\n" + \
-                "CHECK False\n" + \
+                "CHECK True\n" + \
                 "UPDATE False\n" + \
                 "PICKLE False\n" + \
                 "MRNUM 10\n" + \
                 "USEE True\n" + \
                 "SCOP False\n" + \
                 "DEBUG True\n" + \
-                "RLEVEL 95\n" + \
+                "RLEVEL 100\n" + \
                 "GESE False\n" + \
                 "GEST False\n" + \
                 "AMPT False\n" + \
@@ -117,14 +117,14 @@ class MrBump(basic.TaskDriver):
                 "MDLP False\n" + \
                 "MDLM False\n" + \
                 "MDLU False\n" + \
-                "CHECK False\n" + \
+                "CHECK True\n" + \
                 "UPDATE False\n" + \
                 "PICKLE False\n" + \
                 "MRNUM 5\n" + \
                 "USEE True\n" + \
                 "SCOP False\n" + \
                 "DEBUG False\n" + \
-                "RLEVEL 95\n" + \
+                "RLEVEL 100\n" + \
                 "GESE True\n" + \
                 "GEST True\n" + \
                 "AMPT False\n" + \

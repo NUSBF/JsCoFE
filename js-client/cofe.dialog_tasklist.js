@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    31.08.19   <--  Date of Last Modification.
+ *    18.09.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -275,7 +275,6 @@ var row      = 0;
 
   if (__login_user=='Developer')
     this.makeSection ( 'Tasks in Development',[
-      new TaskEnsemblePrepMG(),
       new TaskMergeData (),
       new TaskHelloWorld()
     ]);
@@ -329,6 +328,7 @@ var row      = 0;
     new TaskMorda (),
     new TaskMrBump(),
     'Elementary MR',
+    new TaskEnsemblePrepMG (),
     new TaskEnsemblePrepSeq(),
     new TaskEnsemblePrepXYZ(),
     new TaskMolrep  (),

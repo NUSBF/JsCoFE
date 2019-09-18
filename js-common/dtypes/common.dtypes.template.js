@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    30.06.19   <--  Date of Last Modification.
+ *    17.09.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -23,14 +23,15 @@
  // ===========================================================================
 
   var file_key = {
-    'xyz'  : 'xyz',          // atomic coordinates
-    'sol'  : 'sol',          // phaser's sol file
-    'sub'  : 'sub',          // heavy atom (substructure) coordinates
-    'seq'  : 'seq',          // sequence file
-    'mtz'  : 'mtz',          // .mtz file with hkl and/or phases
-    'map'  : 'map',          // map file
-    'dmap' : 'dmap',         // difference map file
-    'lib'  : 'lib'           // ligand dictionary
+    'xyz'   : 'xyz',          // atomic coordinates
+    'mmcif' : 'mmcif',        // atomic coordinates in mmCIF format
+    'sol'   : 'sol',          // phaser's sol file
+    'sub'   : 'sub',          // heavy atom (substructure) coordinates
+    'seq'   : 'seq',          // sequence file
+    'mtz'   : 'mtz',          // .mtz file with hkl and/or phases
+    'map'   : 'map',          // map file
+    'dmap'  : 'dmap',         // difference map file
+    'lib'   : 'lib'           // ligand dictionary
  }
 
 // ===========================================================================

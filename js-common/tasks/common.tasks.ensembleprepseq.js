@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    27.12.18   <--  Date of Last Modification.
+ *    18.09.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -60,8 +60,8 @@ function TaskEnsemblePrepSeq()  {
                       label    : 'Redundancy level',
                       tooltip  : 'Choose appropriate redundancy level for ' +
                                  'keeping hits in the list of matches. ',
-                      range    : ['100|100%','95|95%','90|90%','70|70%','50|50%'],
-                      value    : '100',
+                      range    : ['ALL|All','100|100%','95|95%','90|90%','70|70%','50|50%'],
+                      value    : 'ALL',
                       position : [0,0,1,1]
                      },
                 MRNUM : {

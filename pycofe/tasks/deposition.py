@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    07.08.19   <--  Date of Last Modification.
+#    17.09.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -92,93 +92,100 @@ class Deposition(basic.TaskDriver):
 
         # 1. Use zero cycles of Refmac just to produce the final CIF file
 
-        self.putMessage ( "<h3><i>1. Prepare Deposition Files</i></h3>" )
+        xyzout_cif    = istruct.getMMCIFFilePath ( self.inputDir() )
+        pdbdep_header = "<h3><i>1. PDB Deposition</i></h3>"
 
-        self.open_stdin()
-        self.write_stdin ( "pdbout format mmcif\n" +
-                           "make hydrogen YES hout YES\n" +
-                           "ncyc 0\n"   +
-                           "labin  FP=" + hkl.dataset.Fmean.value +
-                           " SIGFP="    + hkl.dataset.Fmean.sigma +
-                           " FREE="     + hkl.dataset.FREE + "\n" +
-                           "PNAME Deposition\n" +
-                           "DNAME\n" +
-                           "end\n" )
-        self.close_stdin()
+        if not xyzout_cif:
 
-        # make command-line parameters for bare morda run on a SHELL-type node
-        xyzin  = istruct.getXYZFilePath ( self.inputDir() )
-        xyzout = self.getXYZOFName()   # refmac output cif (refmac wants ".pdb" anyway)
-        mtzout = self.getMTZOFName()   # refmac output mtz (used only for map visualisation)
-        cmd = [ "hklin" ,hkl.getFilePath(self.inputDir(),dtype_template.file_key["mtz"]),
-                "xyzin" ,xyzin,
-                "hklout",mtzout,
-                "xyzout",xyzout,
-                "tmpdir",os.path.join(os.environ["CCP4_SCR"],uuid.uuid4().hex) ]
+            pdbdep_header = "&nbsp;<h3><i>PDB Deposition</i></h3>"
 
-        libin = istruct.getLibFilePath ( self.inputDir() )
-        if libin:
-            cmd += ["libin",libin]
+            self.putMessage ( "<h3><i>1. Prepare Deposition Files</i></h3>" )
 
-        # Prepare report parser
+            self.open_stdin()
+            self.write_stdin ( "pdbout format mmcif\n" +
+                               "make hydrogen YES hout YES\n" +
+                               "ncyc 0\n"   +
+                               "labin  FP=" + hkl.dataset.Fmean.value +
+                               " SIGFP="    + hkl.dataset.Fmean.sigma +
+                               " FREE="     + hkl.dataset.FREE + "\n" +
+                               "PNAME Deposition\n" +
+                               "DNAME\n" +
+                               "end\n" )
+            self.close_stdin()
 
-        sec_id = self.getWidgetId ( self.refmac_section() )
-        self.putSection ( sec_id,"Final Coordnates and Metadata from Refmac",
-                          False )
-        panel_id = self.getWidgetId ( self.refmac_report() )
-        self.putPanel1 ( sec_id,panel_id,0,1 )
-        self.setGenericLogParser ( panel_id,False,False,False )
+            # make command-line parameters for bare morda run on a SHELL-type node
+            xyzin  = istruct.getXYZFilePath ( self.inputDir() )
+            xyzout = self.getXYZOFName()   # refmac output cif (refmac wants ".pdb" anyway)
+            mtzout = self.getMTZOFName()   # refmac output mtz (used only for map visualisation)
+            cmd = [ "hklin" ,hkl.getFilePath(self.inputDir(),dtype_template.file_key["mtz"]),
+                    "xyzin" ,xyzin,
+                    "hklout",mtzout,
+                    "xyzout",xyzout,
+                    "tmpdir",os.path.join(os.environ["CCP4_SCR"],uuid.uuid4().hex) ]
 
-        # Start refmac
-        self.runApp ( "refmac5",cmd,logType="Main" )
+            libin = istruct.getLibFilePath ( self.inputDir() )
+            if libin:
+                cmd += ["libin",libin]
 
-        # make a copy of refmac output file with ".cif" extension
-        #if os.path.isfile(xyzout) and os.path.getsize(xyzout)>10:
-        #    xyzout_cif = self.getOFName ( "_tmp.cif" )
-        #    shutil.copyfile ( xyzout,xyzout_cif )
-        #else:
-        #    xyzout_cif = self.getOFName ( ".mmcif" )
+            # Prepare report parser
 
-        xyzout_cif = self.getOFName ( ".mmcif" )
+            sec_id = self.getWidgetId ( self.refmac_section() )
+            self.putSection ( sec_id,"Final Coordnates and Metadata from Refmac",
+                              False )
+            panel_id = self.getWidgetId ( self.refmac_report() )
+            self.putPanel1 ( sec_id,panel_id,0,1 )
+            self.setGenericLogParser ( panel_id,False,False,False )
 
-        # prepare files for the structure visualisation widget
-        mapout   = self.getMapOFName()
-        dmapout  = self.getDMapOFName()
-        mapout0  = istruct.getMapFilePath  ( self.inputDir() )
-        dmapout0 = istruct.getDMapFilePath ( self.inputDir() )
+            # Start refmac
+            self.runApp ( "refmac5",cmd,logType="Main" )
 
-        if not mapout0 or not dmapout0:
-            # calculate maps for UglyMol using final mtz from temporary location
-            fnames  = self.calcCCP4Maps ( mtzout,self.outputFName )
-            mapout  = fnames[0]
-            dmapout = fnames[1]
+            # make a copy of refmac output file with ".cif" extension
+            #if os.path.isfile(xyzout) and os.path.getsize(xyzout)>10:
+            #    xyzout_cif = self.getOFName ( "_tmp.cif" )
+            #    shutil.copyfile ( xyzout,xyzout_cif )
+            #else:
+            #    xyzout_cif = self.getOFName ( ".mmcif" )
 
-        #  This replaces Refmac output with the original ".pdb". Because Refmac
-        # was run with zero cycles, all coordinates remain the same, but ".pdb"
-        # is currently needed for the visualisation widget
-        shutil.copyfile ( xyzin,xyzout  )
-        #shutil.copyfile ( istruct.getMTZFilePath (self.inputDir()), mtzout  )
-        if mapout0:
-            shutil.copyfile ( mapout0 ,mapout  )
-        if dmapout0:
-            shutil.copyfile ( dmapout0,dmapout )
+            xyzout_cif = self.getOFName ( ".mmcif" )
 
-        libout = None
-        if libin:
-            libout = self.getOFName ( ".lib.cif" )
-            shutil.copyfile ( libin,libout )
+            # prepare files for the structure visualisation widget
+            mapout   = self.getMapOFName()
+            dmapout  = self.getDMapOFName()
+            mapout0  = istruct.getMapFilePath  ( self.inputDir() )
+            dmapout0 = istruct.getDMapFilePath ( self.inputDir() )
 
-        # create output structure and visualisation widget
-        structure = self.registerStructure ( xyzout,None,mtzout,mapout,dmapout,libout,
-                                             leadKey=istruct.leadKey )
-        if structure:
-            structure.copyAssociations ( istruct )
-            structure.copyLabels       ( istruct )
-            structure.copySubtype      ( istruct )
-            self.putMessage ( "&nbsp;" )
-            self.putStructureWidget   ( "structure_btn_",
-                                        "Structure and electron density",
-                                        structure )
+            if not mapout0 or not dmapout0:
+                # calculate maps for UglyMol using final mtz from temporary location
+                fnames  = self.calcCCP4Maps ( mtzout,self.outputFName )
+                mapout  = fnames[0]
+                dmapout = fnames[1]
+
+            #  This replaces Refmac output with the original ".pdb". Because Refmac
+            # was run with zero cycles, all coordinates remain the same, but ".pdb"
+            # is currently needed for the visualisation widget
+            shutil.copyfile ( xyzin,xyzout  )
+            #shutil.copyfile ( istruct.getMTZFilePath (self.inputDir()), mtzout  )
+            if mapout0:
+                shutil.copyfile ( mapout0 ,mapout  )
+            if dmapout0:
+                shutil.copyfile ( dmapout0,dmapout )
+
+            libout = None
+            if libin:
+                libout = self.getOFName ( ".lib.cif" )
+                shutil.copyfile ( libin,libout )
+
+            # create output structure and visualisation widget
+            structure = self.registerStructure ( xyzout,None,mtzout,mapout,dmapout,libout,
+                                                 leadKey=istruct.leadKey )
+            if structure:
+                structure.copyAssociations ( istruct )
+                structure.copyLabels       ( istruct )
+                structure.copySubtype      ( istruct )
+                self.putMessage ( "&nbsp;" )
+                self.putStructureWidget   ( "structure_btn_",
+                                            "Structure and electron density",
+                                            structure )
 
         # 2. Prepare CIF with structure factors
 
@@ -258,8 +265,7 @@ class Deposition(basic.TaskDriver):
 
         # 4. Put download widgets
 
-        self.putMessage ( "&nbsp;<h3><i>PDB Deposition</i></h3>" +\
-                          "<b>a) Download the following files:<br><hr/>" )
+        self.putMessage ( pdbdep_header + "<b>a) Download the following files:<br><hr/>" )
 
         grid_id = self.getWidgetId ( self.dep_grid() )
         self.putGrid ( grid_id )
