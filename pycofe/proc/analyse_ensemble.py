@@ -20,6 +20,8 @@
 #  python native imports
 import os
 import sys
+import random
+import string
 
 #  ccp4-python imports
 import pyrvapi
@@ -133,10 +135,15 @@ def align_seq_xyz ( body,seqPath,xyzPath,seqtype="protein" ):
 
     #body.stdoutln ( str(seqlist) )
 
-    seqFName = "__ens_tmp_YUIUYEDKJBSO.seq"
+    baseName   = "__ens_tmp_" + ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(20))
+    seqFName   = baseName + ".seq"
+    statsFName = baseName + ".stats"
+
+    if os.path.exists(seqFName):   os.remove(seqFName)
+    if os.path.exists(statsFName): os.remove(statsFName)
+
     dtype_sequence.writeMultiSeqFile ( seqFName,name,seqlist,ncopies )
 
-    statsFName = "__ens_tmp_YUIUYEDKJBSO.stats"
     cmd = [seqFName,"-type="+seqtype,"-stats="+statsFName]
 
     # Start clustalw2
@@ -175,8 +182,5 @@ def align_seq_xyz ( body,seqPath,xyzPath,seqtype="protein" ):
                     if w[2]=="avg:"    : meta["id_avg"] = w[3]
                     if w[2]=="std-dev:": meta["id_dev"] = w[3]
                     if w[2]=="median:" : meta["id_med"] = w[3]
-
-    if os.path.exists(seqFName):   os.remove(seqFName)
-    if os.path.exists(statsFName): os.remove(statsFName)
 
     return meta

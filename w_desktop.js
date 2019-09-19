@@ -90,7 +90,7 @@ function startNCServer ( nc_number,cfgpath )  {
   utils.writeString ( stdout_path,'' );
   utils.writeString ( stderr_path,'' );
 
-  var job = child_process.spawn ( 'node',['nc_server.js',cfgpath,nc_number.toString()] );
+  var job = child_process.spawn ( 'node',['js-server/nc_server.js',cfgpath,nc_number.toString()] );
 
   log.standard ( 3,'server ' + ncConfigs[nc_number].name + ' started, pid=' +
                    job.pid );

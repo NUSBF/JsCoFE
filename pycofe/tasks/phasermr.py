@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    24.07.19   <--  Date of Last Modification.
+#    19.09.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -342,6 +342,8 @@ class PhaserMR(basic.TaskDriver):
 
             mtzfile = self.outputFName + ".1.mtz"
 
+            if "phaser" not in self.generic_parser_summary:
+                self.generic_parser_summary["phaser"] = {}
             self.generic_parser_summary["phaser"]["count"] = nsol
             self.generic_parser_summary["phaser"]["llg"]   = llg
             self.generic_parser_summary["phaser"]["tfz"]   = tfz

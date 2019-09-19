@@ -60,6 +60,22 @@ function TaskMrBump()  {
     */
   ];
 
+  this.parameters = { // input parameters
+    SEP_LBL      : {
+            type     : 'label',
+            label    : '<hr/>',
+            position : [0,0,1,5]
+          },
+    DEVMODE_CBX  : {
+          type      : 'checkbox',
+          label     : 'Development mode',
+          tooltip   : 'Switches on experimental features -- use at own risk.',
+          value     : false,
+          position  : [1,0,1,3]
+        }
+  };
+
+
 }
 
 if (__template)
