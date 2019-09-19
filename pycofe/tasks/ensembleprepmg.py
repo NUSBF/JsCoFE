@@ -52,6 +52,11 @@ class EnsemblePrepMG(basic.TaskDriver):
 
     def run(self):
 
+        self.putMessage ( "<h3>This task will launch CCP4 MG now</h3>" +\
+                          "Make sure that you save each ensemble prepared in CCP4 MG " +\
+                          "using menu item \"<i>File / Save all visible to CCP4 Cloud</i>\"" )
+        self.flush()
+
         # Check avalability of PDB archive
         pdbLocal = ""
         if "PDB_DIR" in os.environ:
@@ -113,25 +118,38 @@ class EnsemblePrepMG(basic.TaskDriver):
                 align_meta = analyse_ensemble.align_seq_xyz ( self,
                                         seqPath,fout_name,seqtype="protein" )
                 ensemble = self.registerEnsemble ( seq,fout_name,checkout=True )
+
                 if ensemble:
+
+                    ensemble.putSequence ( seq )
+
                     if ensembleSerNo==1:
                         self.putMessage ( "<h3>Ensemble #" + str(ensembleSerNo) + "</h3>" )
                     else:
                         self.putMessage ( "&nbsp;<br><h3><hr/>Ensemble #" + str(ensembleSerNo) + "</h3>" )
-                    alignSecId = self.getWidgetId ( self.gesamt_report() )
-                    self.putSection ( alignSecId,"Structural alignment",openState_bool=False )
-                    if analyse_ensemble.run(self,alignSecId,ensemble):
-                        ensemble.addDataAssociation ( seq.dataId )
-                        self.putMessage ( "&nbsp;<br><b>Associated with sequence:</b>&nbsp;" +\
-                                                          seq.dname + "<br>&nbsp;" )
-                        if align_meta["status"]=="ok":
-                            ensemble.meta["seqId"] = align_meta["id_avg"]
-                        ensemble.seqId = ensemble.meta["seqId"]
-                        ensemble.rmsd  = ensemble.meta["rmsd" ]
-                        self.putEnsembleWidget ( self.getWidgetId("ensemble"),"Coordinates",
-                                                 ensemble,openState=-1 )
+
+                    if len(ensemble.xyzmeta["xyz"])>1:
+                        alignSecId = self.getWidgetId ( self.gesamt_report() )
+                        self.putSection ( alignSecId,"Structural alignment",openState_bool=False )
+                        if not analyse_ensemble.run(self,alignSecId,ensemble):
+                            self.putMessage ( "<h3>Structural alignment failed, ensemble is not useable.</h3>" )
                     else:
-                        self.putMessage ( "<h3>Structural alignment failed, ensemble is not useable.</h3>" )
+                        ensemble.meta = { "rmsd" : "", "seqId" : "" }
+                        self.putMessage (
+                            "<b>Generated single-model ensemble</b> (" +\
+                            str(ensemble.xyzmeta["xyz"][0]["chains"][0]["size"]) +\
+                            " residues)" )
+
+                    ensemble.addDataAssociation ( seq.dataId )
+                    self.putMessage ( "&nbsp;<br><b>Associated with sequence:</b>&nbsp;" +\
+                                                      seq.dname + "<br>&nbsp;" )
+                    if align_meta["status"]=="ok":
+                        ensemble.meta["seqId"] = align_meta["id_avg"]
+                    ensemble.seqId = ensemble.meta["seqId"]
+                    ensemble.rmsd  = ensemble.meta["rmsd" ]
+                    self.putEnsembleWidget ( self.getWidgetId("ensemble"),"Coordinates",
+                                             ensemble,openState=-1 )
+
                 else:
                     self.putMessage ( "<h3>Error</h3><i>Ensemble object could not be formed</i><p>" +\
                                       "Please report this to server maintainer." )
