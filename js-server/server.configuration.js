@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    05.10.19   <--  Date of Last Modification.
+ *    07.10.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -115,8 +115,14 @@ ServerConfig.prototype.getPIDFilePath = function()  {
   return path.join ( this.storage,this.type.toLowerCase() + '_pid.dat' );
 }
 */
+
 ServerConfig.prototype.getPIDFilePath = function()  {
-  return 'pids.dat';
+var pidfilepath = null;
+  if (this.storage)
+    pidfilepath = path.join ( this.storage,'pids.dat' );
+  else if (fe_server && fe_server.storage)
+    pidfilepath = path.join ( fe_server.storage,'pids.dat' );
+  return pidfilepath;
 }
 
 ServerConfig.prototype.savePID = function()  {
@@ -237,7 +243,7 @@ ServerConfig.prototype.getJobsSafe = function()  {
   };
 }
 
-ServerConfig.prototype.checkStatus = function ( callback_func )  {
+ServerConfig.prototype.checkNCStatus = function ( callback_func )  {
 
   request({
     uri     : cmd.nc_command.getNCInfo,
@@ -723,6 +729,19 @@ var response = null;  // must become a cmd.Response object to return
   callback_func ( response );
 }
 
+function getFEProxyInfo ( inData,callback_func )  {
+var response = null;  // must become a cmd.Response object to return
+  if (fe_server)  {
+    var rData = {};
+    rData.config = fe_proxy;
+    rData.ccp4_version = CCP4Version();
+    response = new cmd.Response ( cmd.fe_retcode.ok,'',rData );
+  } else  {
+    response = new cmd.Response ( cmd.fe_retcode.unconfigured,'','' );
+  }
+  callback_func ( response );
+}
+
 
 // ==========================================================================
 // write configuration function
@@ -903,6 +922,7 @@ module.exports.pythonName         = pythonName;
 module.exports.isSharedFileSystem = isSharedFileSystem;
 module.exports.isLocalSetup       = isLocalSetup;
 module.exports.getClientInfo      = getClientInfo;
+module.exports.getFEProxyInfo     = getFEProxyInfo;
 module.exports.getRegMode         = getRegMode;
 module.exports.isLocalFE          = isLocalFE;
 module.exports.getSetupID         = getSetupID;

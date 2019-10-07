@@ -118,6 +118,10 @@ function start ( callback_func )  {
             pp.processPOSTData ( server_request,server_response,conf.getClientInfo );
           break;
 
+        case cmd.fe_command.getFEProxyInfo :
+            pp.processPOSTData ( server_request,server_response,conf.getFEProxyInfo );
+          break;
+
         case cmd.fe_command.login :
             pp.processPOSTData ( server_request,server_response,user.userLogin );
           break;

@@ -92,22 +92,34 @@ function start ( callback_func )  {
   var proxy = httpProxy.createProxyServer ( options_proxy );
 
   var server = http.createServer ( function(server_request,server_response){
+
     var command = url.parse(server_request.url).pathname.substr(1).toLowerCase();
-    if (command==cmd.fe_command.getClientInfo)
-      conf.getClientInfo ( {},function(response){ response.send(server_response); });
-    else  {
-      var responded = false;
-      for (var i=0;(i<local_prefixes.length) && (!responded);i++)
-        if (command.startsWith(local_prefixes[i]))  {
-          responded = true;
-          utils.send_file ( command,server_response,utils.getMIMEType(command),
-                            false,0,function(fpath,mimeType,deleteOnDone,capSize){
-            proxy.web ( server_request,server_response, options_web );
-          });
-        }
-      if (!responded)
-        proxy.web ( server_request,server_response, options_web );
+
+    switch (command)  {
+
+      case cmd.fe_command.getClientInfo :
+            conf.getClientInfo ( {},function(response){ response.send(server_response); });
+          break;
+
+      case cmd.fe_command.getFEProxyInfo :
+            conf.getFEProxyInfo ( {},function(response){ response.send(server_response); });
+          break;
+
+      default :
+            var responded = false;
+            for (var i=0;(i<local_prefixes.length) && (!responded);i++)
+              if (command.startsWith(local_prefixes[i]))  {
+                responded = true;
+                utils.send_file ( command,server_response,utils.getMIMEType(command),
+                                  false,0,function(fpath,mimeType,deleteOnDone,capSize){
+                  proxy.web ( server_request,server_response, options_web );
+                });
+              }
+            if (!responded)
+              proxy.web ( server_request,server_response, options_web );
+
     }
+
   });
 
   server.listen({
