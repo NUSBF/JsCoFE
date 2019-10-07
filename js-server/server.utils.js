@@ -405,7 +405,7 @@ function send_file ( fpath,server_response,mimeType,deleteOnDone,capSize,
     if (err)  {
 
       if (nofile_callback)
-        nofile_callback ( fpath,mimeType,deleteOnDone,calSize );
+        nofile_callback ( fpath,mimeType,deleteOnDone,capSize );
       else  {
         log.error ( 12,'Read file errors, file = ' + fpath );
         log.error ( 12,'Error: ' + err );
