@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    27.09.19   <--  Date of Last Modification.
+ *    07.10.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -132,23 +132,35 @@ AdminPage.prototype.refresh = function()  {
         self.usageStats._loaded = false;
         self.loadUsageStats();
         self.makeUsersInfoTab ( data.usersInfo );
-        if (!__local_service)
-          self.makeNodesInfoTab ( data.nodesInfo );
-        else  {
-          localCommand ( nc_command.getNCInfo,{},'NC Info Request',
-            function(response){
-              if (response)  {
-                if (response.status==nc_retcode.ok)
-                  data.nodesInfo.ncInfo.push ( response.data );
-                else
-                  new MessageBox ( 'Get NC Info Error',
-                    'Unknown error: <b>' + response.status + '</b><p>' +
-                    'when trying to fetch Client NC data.' );
-              }
+        serverCommand ( fe_command.getFEProxyInfo,{},'FE Proxy Info Request',
+          function(rsp){
+            if (rsp)  {
+              if (rsp.status==nc_retcode.ok)
+                data.nodesInfo.FEProxy = rsp.data;
+              else
+                new MessageBox ( 'Get FE Proxy Info Error',
+                  'Unknown error: <b>' + rsp.status + '</b><p>' +
+                  'when trying to fetch FE Proxy data.' );
+            }
+            if (!__local_service)
               self.makeNodesInfoTab ( data.nodesInfo );
-              return (response!=null);
-            });
-        }
+            else  {
+              localCommand ( nc_command.getNCInfo,{},'NC Info Request',
+                function(response){
+                  if (response)  {
+                    if (response.status==nc_retcode.ok)
+                      data.nodesInfo.ncInfo.push ( response.data );
+                    else
+                      new MessageBox ( 'Get NC Info Error',
+                        'Unknown error: <b>' + response.status + '</b><p>' +
+                        'when trying to fetch Client NC data.' );
+                  }
+                  self.makeNodesInfoTab ( data.nodesInfo );
+                  return (response!=null);
+                });
+            }
+            return (rsp!=null);
+          });
       }
       self.tabs.refresh();
     },null,'persist');
@@ -281,16 +293,31 @@ AdminPage.prototype.makeNodesInfoTab = function ( ndata )  {
 
   var row = 1;
 
+  /*
   var FEname = appName();
   if (__setup_desc)        FEname += ' (' + __setup_desc.name + ')';
   else if (__local_setup)  FEname += ' (Home setup)';
                      else  FEname += ' (Unnamed setup)';
+  */
+  var FEname;
+  if (__setup_desc)        FEname = __setup_desc.name;
+  else if (__local_setup)  FEname = 'Home setup';
+                     else  FEname = 'Unnamed setup';
 
   this.nodeListTable.setRow ( 'Front End','Front End Server',
     [ FEname,ndata.FEconfig.externalURL,'FE',ndata.FEconfig.startDate,
       ndata.ccp4_version,'N/A','running','N/A','N/A','N/A' ],
     row,(row & 1)==1 );
   row++;
+
+  if ('FEProxy' in ndata)  {
+    this.nodeListTable.setRow ( 'FE Proxy','Front End Proxy Server',
+      [ 'Local proxy',ndata.FEProxy.config.externalURL,'FE-PROXY',
+        ndata.FEProxy.config.startDate,
+        ndata.ccp4_version,'N/A','running','N/A','N/A','N/A' ],
+      row,(row & 1)==1 );
+    row++;
+  }
 
   var ncn = 1;
   for (var i=0;i<ndata.ncInfo.length;i++)  {

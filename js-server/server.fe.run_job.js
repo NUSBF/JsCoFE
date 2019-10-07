@@ -246,7 +246,7 @@ function ncSelectAndCheck ( nc_counter,task,callback_func )  {
   if (nc_number>=0)  {
     var cfg = conf.getNCConfig ( nc_number );
     if (cfg)  {
-      cfg.checkStatus ( function(error,response,body,config){
+      cfg.checkNCStatus ( function(error,response,body,config){
         if ((!error) && (response.statusCode==200))  {
           callback_func ( nc_number );
         } else  {
@@ -438,13 +438,6 @@ function runJob ( login,data, callback_func )  {
                         'Cannot send job to NC',
                         'Detected data transmision errors while communicating to NC at '  + nc_url +
                         '.\nPossible NC failure, please investigate.' );
-                      /*
-                      conf.getNCConfig(nc_number).checkStatus ( function(error,response.statusCode,body,cfg){
-                        if (error || (response.statusCode!=200))  {
-                          cfg.in_use = false;
-                        }
-                      });
-                      */
                     break;
 
               default: utils.writeJobReportMessage ( jobDir,

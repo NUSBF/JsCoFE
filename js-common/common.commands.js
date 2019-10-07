@@ -37,19 +37,20 @@ var localhost_name = 'localhost';
 // be logged in.
 
 var fe_command = {
-  cofe          : 'cofe',           // load jsCoFE login page
-  stop          : 'stop',           // quit the server
-  whoareyou     : 'whoareyou',      // request server id
-  getInfo       : '=getinfo',       // request server metadata
-  getClientInfo : '=getclientinfo', // request client server metadata
-  register      : '=register',      // register a new user
-  login         : '=login',         // register a new user
-  recoverLogin  : '=recover_login', // recover login details
-  request       : '=request',       // general request to server
-  upload        : '=upload',        // upload request, hard-coded in gui.upload.js
-  jobFinished   : '=job_finished',  // request to accept data from finished job
-  checkSession  : '=check_session', // request to check facility update
-  authResponse  : '=auth_response'  // process from software authorisation server
+  cofe           : 'cofe',           // load jsCoFE login page
+  stop           : 'stop',           // quit the server
+  whoareyou      : 'whoareyou',      // request server id
+  getInfo        : '=getinfo',       // request server metadata
+  getClientInfo  : '=getclientinfo', // request client server metadata
+  register       : '=register',      // register a new user
+  login          : '=login',         // register a new user
+  recoverLogin   : '=recover_login', // recover login details
+  request        : '=request',       // general request to server
+  upload         : '=upload',        // upload request, hard-coded in gui.upload.js
+  jobFinished    : '=job_finished',  // request to accept data from finished job
+  checkSession   : '=check_session', // request to check facility update
+  authResponse   : '=auth_response', // process from software authorisation server
+  getFEProxyInfo : '=getfeproxyinfo' // get FE Proxy config and other info
 }
 
 
