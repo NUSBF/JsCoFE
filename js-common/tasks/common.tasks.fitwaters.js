@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    27.12.18   <--  Date of Last Modification.
+ *    02.10.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Find Ligand Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2017
+ *  (C) E. Krissinel, A. Lebedev 2016-2019
  *
  *  =================================================================
  *
@@ -33,7 +33,7 @@ function TaskFitWaters()  {
 
   this._type   = 'TaskFitWaters';
   this.name    = 'fit waters';
-  this.oname   = 'fit_waters';  // default output file name template
+  this.setOName ( 'fitwaters' );  // default output file name template
   this.title   = 'Find and Fit Waters with Coot';
   this.helpURL = './html/jscofe_task_fitwaters.html';
 

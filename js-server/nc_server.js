@@ -128,7 +128,6 @@ function start()  {
 
   // --------------------------------------------------------------------------
 
-
   //  instantiate server
   var server = null;
   if (srvConfig.protocol=='http')  {

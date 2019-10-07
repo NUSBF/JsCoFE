@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    27.12.18   <--  Date of Last Modification.
+ *    02.10.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Find Ligand Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2018
+ *  (C) E. Krissinel, A. Lebedev 2016-2019
  *
  *  =================================================================
  *
@@ -33,7 +33,7 @@ function TaskFitLigand()  {
 
   this._type   = 'TaskFitLigand';
   this.name    = 'fit ligand';
-  this.oname   = 'fit_ligand';  // default output file name template
+  this.setOName ( 'fitligand' );  // default output file name template
   this.title   = 'Find and Fit Ligand with Coot';
   this.helpURL = './html/jscofe_task_fitligand.html';
 

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    27.12.18   <--  Date of Last Modification.
+ *    02.10.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Parrot Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2018
+ *  (C) E. Krissinel, A. Lebedev 2016-2019
  *
  *  =================================================================
  *
@@ -33,7 +33,7 @@ function TaskParrot()  {
 
   this._type   = 'TaskParrot';
   this.name    = 'parrot DM';
-  this.oname   = 'parrot';  // default output file name template
+  this.setOName ( 'parrot' );  // default output file name template
   this.title   = 'Density Modification with Parrot';
   this.helpURL = './html/jscofe_task_parrot.html';
 

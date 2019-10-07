@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    27.12.18   <--  Date of Last Modification.
+ *    02.10.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  MoRDa Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2018
+ *  (C) E. Krissinel, A. Lebedev 2016-2019
  *
  *  =================================================================
  *
@@ -33,7 +33,7 @@ function TaskMorda()  {
 
   this._type   = 'TaskMorda';
   this.name    = 'morda';
-  this.oname   = 'morda';  // default output file name template
+  this.setOName ( 'morda' );  // default output file name template
   this.title   = 'Morda: Model Search & Preparation + MR';
   this.helpURL = './html/jscofe_task_morda.html';
 

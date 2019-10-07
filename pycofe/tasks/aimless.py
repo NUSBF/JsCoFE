@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    22.12.18   <--  Date of Last Modification.
+#    30.09.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -27,9 +27,6 @@
 #  python native imports
 import os
 import sys
-#import uuid
-#import glob
-#import traceback
 import shutil
 
 #  ccp4-python imports
@@ -122,7 +119,6 @@ class Aimless(basic.TaskDriver):
             mtzRef = ds0.getHKLFilePath ( self.inputDir() )
         symm_select = ds0.symm_select if ds0._type=="DataUnmerged" else None
 
-        #plist = [[ds.dataset,os.path.join(self.inputDir(),ds.files[dtype_template.file_key["mtz"]]),ds.runs] for ds in unmerged]
         plist = [[ds.dataset,ds.getUnmergedFilePath(self.inputDir()),ds.runs] for ds in unmerged]
         format_list = [getattr(ds.dataset,'original_format','unknown') for ds in unmerged]
         # see (A) below
@@ -244,6 +240,8 @@ class Aimless(basic.TaskDriver):
             shutil.copyfile ( self.aimless_xml(),
                               os.path.join(self.outputDir(),aimless_meta["file"]) )
             for i in range(len(hkl)):
+                if i<len(unmerged) and hasattr(unmerged[i],"ha_type"):
+                    hkl[i].ha_type = unmerged[i].ha_type
                 hkl[i].aimless_meta = aimless_meta
 
         """

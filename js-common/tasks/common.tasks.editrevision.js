@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    08.08.19   <--  Date of Last Modification.
+ *    02.10.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -35,7 +35,7 @@ function TaskEditRevision()  {
 
   this._type     = 'TaskEditRevision';
   this.name      = 'edit structure revision';
-  this.oname     = 'edit_revision';  //'*';   // asterisk here means do not use
+  this.setOName ( 'editrevision' );  // default output file name template
   this.title     = 'Edit Structure Revision';
   this.helpURL   = './html/jscofe_task_editrevision.html';
   this.fasttrack = true;  // enforces immediate execution

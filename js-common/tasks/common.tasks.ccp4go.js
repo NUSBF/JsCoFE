@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    27.04.19   <--  Date of Last Modification.
+ *    02.10.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -35,7 +35,7 @@ function TaskCCP4go()  {
 
   this._type   = 'TaskCCP4go';
   this.name    = 'ccp4go';
-  this.oname   = 'ccp4go';  // default output file name template
+  this.setOName ( 'ccp4go' );  // default output file name template
   this.title   = 'CCP4go auto-solver (experimental)';
   this.helpURL = './html/jscofe_task_ccp4go.html';
 

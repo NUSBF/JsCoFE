@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    31.12.18   <--  Date of Last Modification.
+#    30.09.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -263,7 +263,6 @@ class PhaserEP(basic.TaskDriver):
 
         if hkl.f_use_mode!="NO":
             self.write_stdin (
-                #"\nSCATTERING TYPE " + hkl.anomAtomType +\
                 "\nSCATTERING TYPE " + revision.ASU.ha_type +\
                             " FP = " + str(hkl.f1) + " FDP = " + str(hkl.f11) +\
                             " FIX "  + hkl.f_use_mode

@@ -2,7 +2,7 @@
 /*
 *  ==========================================================================
  *
- *    07.06.18   <--  Date of Last Modification.
+ *    02.10.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -------------------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Project Data Classes
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2018
+ *  (C) E. Krissinel, A. Lebedev 2016-2019
  *
  *  ==========================================================================
  *
@@ -114,8 +114,19 @@ function ProjectData()  {
   this.desc     = new ProjectDesc();  // project description
   this.jobCount = 0;                  // job count
   this.tree     = [];                 // project tree
+  this.settings = {};
+  this.settings.prefix_key = 0;
+  this.settings.prefix     = '';
 }
 
+function checkProjectData ( pData )  {
+  if (!pData.settings)
+    pData.settings = {};
+  if (!pData.settings.hasOwnProperty('prefix_key'))  {
+    pData.settings.prefix_key = 0;   // 0: default; 1: custom
+    pData.settings.prefix     = '';  // custom
+  }
+}
 
 // ===========================================================================
 

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    22.03.19   <--  Date of Last Modification.
+ *    02.10.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -33,7 +33,7 @@ function TaskIMosflm()  {
 
   this._type   = 'TaskIMosflm';
   this.name    = 'iMosflm (image processing)';
-  this.oname   = 'imosflm';  // default output file name template
+  this.setOName ( 'imosflm' );  // default output file name template
   this.title   = 'Interactive Image Processing with iMosflm';
   this.helpURL = './html/jscofe_task_imosflm.html';
   this.nc_type = 'client';  // job may be run only on client NC

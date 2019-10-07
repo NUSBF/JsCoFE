@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    13.04.19   <--  Date of Last Modification.
+ *    02.10.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -34,7 +34,7 @@ function TaskShelxCD()  {
 
   this._type   = 'TaskShelxCD';
   this.name    = 'shelx-cd substructure search';
-  this.oname   = 'shelx_cd';  // default output file name template
+  this.setOName ( 'shelx-cd' );  // default output file name template
   this.title   = 'Substructure Search with SHELX-C/D';
   this.helpURL = './html/jscofe_task_shelxcd.html';
 

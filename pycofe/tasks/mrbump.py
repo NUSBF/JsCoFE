@@ -75,38 +75,63 @@ class MrBump(basic.TaskDriver):
         # make a file with input script
         self.open_stdin()
 
+        devmode = self.getCheckbox ( self.task.parameters.DEVMODE_CBX,
+                                     checkVisible=True )
+
         if hkl:
-            self.write_stdin (
-                "JOBID " + self.outdir_name() + "\n" + \
-                "MDLS False\n" + \
-                "MDLC True\n" + \
-                "MDLD False\n" + \
-                "MDLP False\n" + \
-                "MDLM False\n" + \
-                "MDLU False\n" + \
-                "MRPROG molrep phaser\n" + \
-                "SHELX False\n" + \
-                "BUCC True\n" + \
-                "BCYC 5\n" + \
-                "ARPW False\n" + \
-                "CHECK True\n" + \
-                "UPDATE False\n" + \
-                "PICKLE False\n" + \
-                "MRNUM 10\n" + \
-                "USEE True\n" + \
-                "SCOP False\n" + \
-                "DEBUG True\n" + \
-                "RLEVEL 100\n" + \
-                "GESE False\n" + \
-                "GEST False\n" + \
-                "AMPT False\n" + \
-                pdbLine + \
-                "LABIN F=" + hkl.dataset.Fmean.value + \
-                  " SIGF=" + hkl.dataset.Fmean.sigma + \
-                  " FreeR_flag=" + hkl.dataset.FREE + "\n" + \
-                "LITE True\n" + \
-                "END\n"
-            )
+            if devmode:
+                self.write_stdin ([
+                    "JOBID " + self.outdir_name(),
+                    "rlevel 100",
+                    "mrnum 100",
+                    "sgall true",
+                    "mdlc true",
+                    "mdls false",
+                    "mdlm false",
+                    "mdlu false",
+                    "mdlp false",
+                    "mdld false",
+                    "phaq true",
+                    "mrprog phaser",
+                    "pjobs 10",
+                    "debug true",
+                    pdbLine,
+                    #"pdblocal /data1/opt/db/pdb",
+                    "end",
+                ])
+
+            else:
+                self.write_stdin (
+                    "JOBID " + self.outdir_name() + "\n" + \
+                    "MDLS False\n" + \
+                    "MDLC True\n" + \
+                    "MDLD False\n" + \
+                    "MDLP False\n" + \
+                    "MDLM False\n" + \
+                    "MDLU False\n" + \
+                    "MRPROG molrep phaser\n" + \
+                    "SHELX False\n" + \
+                    "BUCC True\n" + \
+                    "BCYC 5\n" + \
+                    "ARPW False\n" + \
+                    "CHECK True\n" + \
+                    "UPDATE False\n" + \
+                    "PICKLE False\n" + \
+                    "MRNUM 10\n" + \
+                    "USEE True\n" + \
+                    "SCOP False\n" + \
+                    "DEBUG True\n" + \
+                    "RLEVEL 100\n" + \
+                    "GESE False\n" + \
+                    "GEST False\n" + \
+                    "AMPT False\n" + \
+                    pdbLine + \
+                    "LABIN F=" + hkl.dataset.Fmean.value + \
+                      " SIGF=" + hkl.dataset.Fmean.sigma + \
+                      " FreeR_flag=" + hkl.dataset.FREE + "\n" + \
+                    "LITE True\n" + \
+                    "END\n"
+                )
 
         else:
             self.write_stdin (

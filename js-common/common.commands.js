@@ -2,7 +2,7 @@
 /*
  *  ===========================================================================
  *
- *    18.09.19   <--  Date of Last Modification.
+ *    02.10.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  ---------------------------------------------------------------------------
  *
@@ -24,8 +24,7 @@
 // name and version tag
 
 function appName()  { return 'CCP4 Cloud' }
-var jsCoFE_version = '1.3.001 [18.09.2019]';
-
+var jsCoFE_version = '1.3.002 [02.10.2019]';
 
 // ============================================================================
 
@@ -129,7 +128,8 @@ var fe_retcode = {
   noJobRunning   : 'noJobRunning',   // requested job was not found as running
   fileNotFound   : 'fileNotFound',   // file not found
   inProgress     : 'inProgress',     // process in progress
-  askPassword    : 'askPassword'     // request password
+  askPassword    : 'askPassword',    // request password
+  regFailed      : 'regFailed'       // user registration failed
 }
 
 

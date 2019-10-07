@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    07.07.19   <--  Date of Last Modification.
+ *    02.10.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -27,23 +27,6 @@ function startSession ( sceneId,dev_switch )  {
   // set jsrview path (primarily for UglyMol)
   _jsrview_uri = 'js-lib/jsrview/';
 
-  //$(function() {
-  /*  -- now done on per-widget basis
-    $(document).tooltip({
-        show  : { effect : 'slideDown', delay: 1500 },
-        track : true,
-        content: function (callback) {
-            callback($(this).prop('title'));
-        },
-        open  : function (event, ui) {
-            setTimeout(function() {
-                $(ui.tooltip).hide('explode');
-            },6000);
-        }
-    });
-  */
-  //});
-
   checkLocalService ( function(rc){
 
     if (!rc)  {
@@ -51,7 +34,7 @@ function startSession ( sceneId,dev_switch )  {
       if (__local_user)  {
         //__login_token = 'e58e28a556d2b4884cb16ba8a37775f0';
         //__login_user  = 'Local user';
-        login ( '**localuser**','',sceneId );
+        login ( '**localuser**','',sceneId,0 );
         //loadKnowledge ( 'Login' )
         //makeProjectListPage(sceneId);
       } else  {
@@ -65,21 +48,24 @@ function startSession ( sceneId,dev_switch )  {
           __login_token = 'a6ed8a1570e6c2bc8211997f9f1672528711e286';
           __login_user  = 'Admin';
           __doNotShowList = ['*'];
-          loadKnowledge ( 'Login' );
-          makeAdminPage ( sceneId );
+          loadKnowledge    ( 'Login' );
+          makeAdminPage    ( sceneId );
           makeSessionCheck ( sceneId );
 
         } else  {
 
-          if (!__login_token)  {
-            __login_token = '340cef239bd34b777f3ece094ffb1ec5';
-            __login_user  = 'Developer';
-          } else {
-            __login_token = 'devel';
-            __login_user  = 'Developer';
-          }
           __doNotShowList = ['*'];
           __cloud_storage = true;  // fixed for developer
+          if (__login_token)  {
+            __login_token = 'devel';
+            __login_user  = 'Developer';
+          } else  {
+            __login_token = '340cef239bd34b777f3ece094ffb1ec5';
+            __login_user  = 'Developer';
+          }
+          login ( 'devel','devel',sceneId,dev_switch );
+
+          /*
           loadKnowledge ( 'Login' );
 
           if (dev_switch==1)  {
@@ -104,6 +90,7 @@ function startSession ( sceneId,dev_switch )  {
           }
 
           makeSessionCheck  ( sceneId );
+          */
 
         }
 
@@ -118,7 +105,7 @@ function startSession ( sceneId,dev_switch )  {
 }
 
 
-function login ( user_login_name,user_password,sceneId )  {
+function login ( user_login_name,user_password,sceneId,page_switch )  {
 
   ud       = new UserData();
   ud.login = user_login_name;
@@ -132,21 +119,38 @@ function login ( user_login_name,user_password,sceneId )  {
               var userData    = response.data.userData;
               __login_token   = response.message;
               __login_user    = userData.name;
+              __user_settings = userData.settings;
               __admin         = userData.admin;
               __cloud_storage = response.data.cloud_storage;
               __demo_projects = response.data.demo_projects;
+              __fe_url        = response.data.fe_url;
+
               if ('helpTopics' in userData)
                     __doNotShowList = userData.helpTopics;
               else  __doNotShowList = [];
               __local_setup = response.data.localSetup;
-              loadKnowledge ( 'Login' )
-              if (__admin && (userData.login=='admin'))
-                    makeAdminPage       ( sceneId );
-              else if ((!__local_setup) && (userData.action!=userdata_action.none))
-              //else if (userData.action!=userdata_action.none)
-                    makeAccountPage     ( sceneId );
-              else  makeProjectListPage ( sceneId );
+
+              loadKnowledge ( 'Login' );
+
+              switch (page_switch)  {
+
+                case 0 : if (__admin && (userData.login=='admin'))
+                               makeAdminPage       ( sceneId );
+                         else if ((!__local_setup) && (userData.action!=userdata_action.none))
+                         //else if (userData.action!=userdata_action.none)
+                               makeAccountPage     ( sceneId );
+                         else  makeProjectListPage ( sceneId );
+                      break;
+
+                case 1 : makeProjectListPage ( sceneId );  break;
+                case 2 : makeAccountPage     ( sceneId );  break;
+                default: if (__admin)  makeAdminPage   ( sceneId );
+                                 else  makeProjectPage ( sceneId );
+
+              }
+
               makeSessionCheck ( sceneId );
+
           return true;
 
       case fe_retcode.wrongLogin:

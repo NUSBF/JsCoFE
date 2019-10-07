@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    27.12.18   <--  Date of Last Modification.
+ *    02.10.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Ample Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2018
+ *  (C) E. Krissinel, A. Lebedev 2016-2019
  *
  *  =================================================================
  *
@@ -33,7 +33,7 @@ function TaskAmple()  {
 
   this._type  = 'TaskAmple';
   this.name   = 'ample';
-  this.oname  = 'ample';  // default output file name template
+  this.setOName ( 'ample' );  // default output file name template
   this.title  = 'Ab-Initio Molecular Replacement with Ample';
 
   this.input_dtypes = [{  // input data types

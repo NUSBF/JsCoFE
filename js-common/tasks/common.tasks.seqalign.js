@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    23.01.19   <--  Date of Last Modification.
+ *    02.10.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -33,7 +33,7 @@ function TaskSeqAlign()  {
 
   this._type     = 'TaskSeqAlign';
   this.name      = 'seqalign';
-  this.oname     = 'seqalign';  // default output file name template
+  this.setOName ( 'seqalign' );  // default output file name template
   this.title     = 'Sequence Alignment with ClustalW';
   this.helpURL   = './html/jscofe_task_seqalign.html';
   this.fasttrack = true;  // enforces immediate execution

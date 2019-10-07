@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    16.05.19   <--  Date of Last Modification.
+ *    02.10.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -35,7 +35,7 @@ function TaskXia2()  {
 
   this._type   = 'TaskXia2';
   this.name    = 'xia2';
-  this.oname   = 'xia2';  // default output file name template
+  this.setOName ( 'xia2' );  // default output file name template
   this.title   = 'Automatic Image Processing with Xia-2';
   this.helpURL = './html/jscofe_task_xia2.html';
   this.nc_type = 'client-cloud';  // job may be run only on either client NC or

@@ -239,15 +239,29 @@ class TaskDriver(object):
         else:
             self.outputFName = self.task.oname
 
+
+        despatch_meta = jsonut.readjObject  ( "__despatch.meta" )
+        head_msg  = ""
+        if despatch_meta:
+            head_msg += "## despatched by: " + despatch_meta.setup_id
+            if despatch_meta.setup_id.startswith("<"):
+                head_msg += " at " + despatch_meta.sender
+            head_msg += "\n##  processed by: " + despatch_meta.nc_name
+        else:
+            head_msg += "## despatch data not available"
+
         # print title in standard logs
         if title_str:
             tstr = title_str
         else:
             tstr = self.task.title
-        self.file_stdout .write ( "[" + self.job_id.zfill(4) + "] " + tstr.upper() + "\n\n" +\
-                                  "            MAIN LOG\n\n" )
-        self.file_stdout1.write ( "[" + self.job_id.zfill(4) + "] " + tstr.upper() + "\n\n" +\
-                                  "            SERVICE PROGRAMS LOG\n\n" )
+
+            #"\n--------------------------------------------------------------------------------\n\n\n[" +\
+        head_msg += \
+            "\n\n\n[" + self.job_id.zfill(4) + "] " + tstr.upper() + "\n\n"
+
+        self.file_stdout .write ( head_msg + "       MAIN LOG\n\n" )
+        self.file_stdout1.write ( head_msg + "       SERVICE PROGRAMS LOG\n\n" )
         self.file_stderr .write ( " " )
 
         # initialise HTML report document; note that we use absolute path for

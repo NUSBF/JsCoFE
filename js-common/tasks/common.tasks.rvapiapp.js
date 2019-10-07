@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    31.10.18   <--  Date of Last Modification.
+ *    02.10.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Task Class for starting applications from RVAPI pages
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2018
+ *  (C) E. Krissinel, A. Lebedev 2016-2019
  *
  *  =================================================================
  *
@@ -33,7 +33,7 @@ function TaskRVAPIApp()  {
 
   this._type = 'TaskRVAPIApp';
   this.name  = 'rvapiapp';
-  this.oname = 'rvapiapp';  // default output file name template
+  this.setOName ( 'rvapiapp' );  // default output file name template
   this.title = 'RVAPI Local Application launcher';
 
   this.informFE = false;    // end of job and results are not sent back to FE

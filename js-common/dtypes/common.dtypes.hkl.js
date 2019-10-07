@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    06.05.19   <--  Date of Last Modification.
+ *    30.09.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -42,6 +42,7 @@ function DataHKL()  {
 
   this._type         = 'DataHKL';
   this.wtype         = 'choose-one'; // 'low-remote', 'peak', 'native', 'high-remote'
+  this.ha_type       = '';     // heavy atom type
   this.f_use_mode    = 'NO';   // 'NO','EDGE','ON','OFF' (Phaser-EP)
   this.f1            = '';     // amplitude shift  (Crank-2, Phaser-EP)
   this.f11           = '';     // phase shift      (Crank-2, Phaser-EP)
@@ -49,12 +50,10 @@ function DataHKL()  {
   this.res_high      = '';     // high resolution limit
   this.res_ref       = '';     // high resolution for refinement (Phaser-MR)
   this.wavelength    = '';     // wavelength (Phaser-EP)
-  //this.anomAtomType  = '';     // anomalous scattering type
   this.useForPhasing = false;  // flag for native dataset in SAD/MAD (Crank-2)
   this.new_spg       = '';     // new space group for reindexing
   this.spg_alt       = '';     // alternative space groups for Phaser
   this.freeRds       = null;   // reference to freeR dataset meta
-  //this.useHKLSet     = 'F';    // if given, forces use of F,I,Fpm,Ipm (Refmac)
   this.useHKLSet     = 'F';    // if given, forces use of F,Fpm,TI,TF (Refmac)
   this.aimless_meta  = {'jobId':0,'file':null};  // reference to aimless xml file
 
@@ -174,9 +173,11 @@ if (!__template)  {
     dsp.makeRow ( 'Resolution high',round(this.getHighResolution(),2),'High resolution limit' );
 
     v = 'Not present';
-    //if ($.inArray('anomalous',this.subtype)>=0)
-    if (this.hasAnomalousSignal())
+    if (this.hasAnomalousSignal())  {
       v = 'Present';
+      if (this.ha_type)
+        v += ' (' + this.ha_type + ')';
+    }
     dsp.makeRow ( 'Anomalous scattering',v,'Presence of anomalous data' );
 
     dsp.makeRow ( 'Columns',
@@ -422,13 +423,6 @@ if (!__template)  {
       customGrid.setWidget   ( customGrid.f_use_mode, r,1,1,5 );
       customGrid.setCellSize ( '460px','',r,1 );
       customGrid.f_use_mode.make();
-
-      /*
-      setLabel ( 'Atom type:&nbsp;',++r,0 ).setHorizontalAlignment ( 'right' );
-      customGrid.anomAtomType = customGrid.setInputText ( this.anomAtomType,r,1,1,1 )
-          .setStyle    ( 'text','','','Chemical type of main anomoalous scatterer' )
-          .setWidth_px ( 60 );
-      */
 
       setLabel ( '&nbsp;&nbsp;f\':',++r,1 ).setHorizontalAlignment('right').setWidth_px(60);
       customGrid.f1 = makeRealInput ( this.f1,'',

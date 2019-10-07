@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    27.12.18   <--  Date of Last Modification.
+ *    02.10.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  RefMac Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev, R. Nicholls 2016-2018
+ *  (C) E. Krissinel, A. Lebedev, R. Nicholls 2016-2019
  *
  *  =================================================================
  *
@@ -33,7 +33,7 @@ function TaskRefmac()  {
 
   this._type   = 'TaskRefmac';
   this.name    = 'refmac5';
-  this.oname   = 'refmac';  // default output file name template
+  this.setOName ( 'refmac' );  // default output file name template
   this.title   = 'Refinement with Refmac';
   this.helpURL = './html/jscofe_task_refmac.html';
 

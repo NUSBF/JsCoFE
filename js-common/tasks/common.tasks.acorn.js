@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    27.12.18   <--  Date of Last Modification.
+ *    02.10.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -33,7 +33,7 @@ function TaskAcorn()  {
 
   this._type   = 'TaskAcorn';
   this.name    = 'acorn';
-  this.oname   = 'acorn';  // default output file name template
+  this.setOName ( 'acorn' );  // default output file name template
   this.title   = 'Phase Refinement and Dynamic Density Modification with ACORN';
   this.helpURL = './html/jscofe_task_acorn.html';
 

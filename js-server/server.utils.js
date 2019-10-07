@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    25.06.19   <--  Date of Last Modification.
+ *    06.10.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -179,7 +179,7 @@ function mkDir_anchor ( dirPath )  {
     fs.writeFileSync ( path.join(dirPath,'__anchor__'),'anchor' );
     return true;
   } catch (e)  {
-    log.error ( 6,'cannot create directory ' + dirPath );
+    log.error ( 7,'cannot create directory ' + dirPath );
     return false;
   }
 }
@@ -197,7 +197,7 @@ function removePath ( dir_path ) {
         try {
           fs.unlinkSync ( curPath );
         } catch (e)  {
-          log.error ( 7,'cannot remove file ' + curPath );
+          log.error ( 8,'cannot remove file ' + curPath );
           rc = false;
         }
       }
@@ -205,7 +205,7 @@ function removePath ( dir_path ) {
     try {
       fs.rmdirSync ( dir_path );
     } catch (e)  {
-      log.error ( 8,'cannot remove directory ' + dir_path );
+      log.error ( 9,'cannot remove directory ' + dir_path );
       rc = false;
     }
   }
@@ -230,7 +230,7 @@ function getDirectorySize ( dir_path )  {
       });
     }
   } catch (e)  {
-    log.error ( 9,'error scanning directory ' + dir_path );
+    log.error ( 10,'error scanning directory ' + dir_path );
   }
   return size;
 }
@@ -252,7 +252,7 @@ function removeFiles ( dir_path,extList ) {
           try {
             fs.unlinkSync ( curPath );
           } catch (e)  {
-            log.error ( 10,'cannot remove file ' + curPath );
+            log.error ( 11,'cannot remove file ' + curPath );
             rc = false;
           }
         }
@@ -397,6 +397,150 @@ function capData ( data,n )  {
 }
 
 
+function send_file ( fpath,server_response,mimeType,deleteOnDone,capSize,
+                     nofile_callback )  {
+
+  fs.stat ( fpath,function(err,stats){
+
+    if (err)  {
+
+      if (nofile_callback)
+        nofile_callback ( fpath,mimeType,deleteOnDone,calSize );
+      else  {
+        log.error ( 12,'Read file errors, file = ' + fpath );
+        log.error ( 12,'Error: ' + err );
+        server_response.writeHead ( 404, {'Content-Type':'text/html;charset=UTF-8'} );
+        server_response.end ( '<p><b>[05-0006] FILE NOT FOUND [' + fpath + ']</b></p>' );
+      }
+
+    } else  {
+
+      server_response.writeHeader ( 200, {
+          'Content-Type'      : mimeType,
+          //'Content-Length'    : stats.size
+          //'Transfer-Encoding' : 'chunked'
+          //'Content-Encoding' : 'gzip'
+          //'Vary'           : 'Accept-Encoding'
+          //'Content-Disposition' : 'inline'
+      });
+
+      var fReadStream = fs.createReadStream ( fpath );
+      fReadStream.on ( 'end',function(){
+        server_response.end();
+        if (deleteOnDone)
+          removeFile ( fpath );
+      });
+
+      if ((capSize<=0) || (stats.size<=capSize))  {  // send whole file
+
+        fReadStream.on ( 'error',function(e){
+          log.error ( 13,'Read file errors, file = ' + fpath );
+          console.error ( e.stack || e );
+          server_response.writeHead ( 404, {'Content-Type':'text/html;charset=UTF-8'} );
+          server_response.end ( '<p><b>[05-0007] FILE READ ERRORS</b></p>' );
+        });
+        fReadStream.pipe ( server_response );
+
+      } else  {  // send capped file
+
+        server_response.write ( '[[[[]]]]\n' );
+
+        var inlet =
+          '\n\n' +
+          ' ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||\n' +
+          ' ************************************************************************\n' +
+          '            C  O  N  T  E  N  T       R  E  M  O  V  E  D \n' +
+          ' ************************************************************************\n' +
+          ' ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||\n' +
+          '\n';
+
+        var ncut1 = (capSize - inlet.length)/2;
+        var ncut2 = stats.size - ncut1;
+        var nsent = 0;
+        fReadStream.on ( 'data',function(chunk){
+          var key = 0;  // do not write by default
+          var ns  = nsent + chunk.length;
+          var s;
+          if (nsent<ncut1)  {
+            if (ns<ncut1)
+              key = 1;  // write the whole chunk
+            else if (ns>ncut1)  {
+              key = 2;  // write modified data from s
+              var cstr = chunk.toString();
+              s   = cstr.substring(0,cstr.indexOf('\n',cstr.length-(ns-ncut1))) + inlet;
+              if (ns>ncut2)  {
+                cstr = cstr.slice ( ncut2-ns );
+                s   += cstr.substr(cstr.indexOf('\n'));
+              }
+            }
+          } else if (nsent>=ncut1)  {
+            if (ns>ncut2)  {
+              key = 2;
+              var cstr = chunk.toString().slice(ncut2-ns);
+              s   = cstr.substr(cstr.indexOf('\n'));
+            }
+          } else  {
+            key = 1;
+          }
+
+          if (key==1)  {
+            if (!server_response.write(chunk))
+              fReadStream.pause();
+          } else if (key==2)  {
+            if (!server_response.write(s))
+              fReadStream.pause();
+          }
+          nsent = ns;
+
+        });
+
+        server_response.on('drain',function(){
+          fReadStream.resume();
+        });
+
+      }
+
+              /*
+            } else  {
+              fs.readFile ( fpath, function(err,data) {
+                if (err)  {
+                  log.error ( 8,'Read file errors, file = ' + fpath );
+                  log.error ( 8,'Error: ' + err );
+                  server_response.writeHead ( 404, {'Content-Type':'text/html;charset=UTF-8'} );
+                  server_response.end ( '<p><b>[05-0008] FILE NOT FOUND OR FILE READ ERRORS</b></p>' );
+                } else  {
+      //console.log ( "one-off " + stats.size + ' : ' + data.length );
+                  server_response.writeHeader ( 200, {'Content-Type':mtype,'Content-Length':stats.size} );
+                  server_response.end ( data );
+                  if (deleteOnDone)
+                    removeFile ( fpath );
+                }
+              });
+            }
+
+      /*
+      fs.readFile ( fpath, function(err,data) {
+        if (err)  {
+          log.error ( 9,'Read file errors, file = ' + fpath );
+          log.error ( 9,'Error: ' + err );
+          server_response.writeHead ( 404, {'Content-Type':'text/html;charset=UTF-8'} );
+          server_response.end ( '<p><b>[05-0008] FILE NOT FOUND OR FILE READ ERRORS</b></p>' );
+        } else  {
+          server_response.writeHeader ( 200, {'Content-Type' : mimeType });
+          server_response.end ( capData(data,capSize) );
+          if (deleteOnDone)
+            removeFile ( fpath );
+        }
+      });
+      */
+
+    }
+
+  });
+
+}
+
+
 function spawn ( exeName,arguments,options )  {
   if (/^win/.test(process.platform))  {  // MS Windows
     return  child_process.spawn ( 'cmd',['/s','/c',exeName].concat(arguments),
@@ -439,6 +583,7 @@ module.exports.getJobSignalCode      = getJobSignalCode;
 module.exports.clearRVAPIreport      = clearRVAPIreport;
 module.exports.getMIMEType           = getMIMEType;
 module.exports.capData               = capData;
+module.exports.send_file             = send_file;
 module.exports.killProcess           = killProcess;
 module.exports.spawn                 = spawn;
 module.exports.padDigits             = padDigits;

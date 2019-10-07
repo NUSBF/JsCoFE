@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    27.12.18   <--  Date of Last Modification.
+ *    02.10.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  RefMac Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2018
+ *  (C) E. Krissinel, A. Lebedev 2016-2019
  *
  *  =================================================================
  *
@@ -33,7 +33,7 @@ function TaskDeposition()  {
 
   this._type   = 'TaskDeposition';
   this.name    = 'deposition';
-  this.oname   = 'deposition';  // default output file name template
+  this.setOName ( 'deposition' );  // default output file name template
   this.title   = 'Prepare data for deposition';
   this.helpURL = './html/jscofe_task_deposition.html';
 

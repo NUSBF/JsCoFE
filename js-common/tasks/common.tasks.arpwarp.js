@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    31.12.18   <--  Date of Last Modification.
+ *    02.10.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  ArpWarp Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2018
+ *  (C) E. Krissinel, A. Lebedev 2016-2019
  *
  *  =================================================================
  *
@@ -33,7 +33,7 @@ function TaskArpWarp()  {
 
   this._type  = 'TaskArpWarp';
   this.name   = 'arpwarp';
-  this.oname  = 'arpwarp';  // default output file name template
+  this.setOName ( 'arpwarp' );  // default output file name template
   this.title  = 'Automated Model Building with Arp/wArp';
 
   this.input_dtypes = [{      // input data types

@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    13.08.19   <--  Date of Last Modification.
+ *    27.09.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -176,102 +176,6 @@ Communicate.prototype.sendFile = function ( server_response )  {
 
 //console.log ( 'send file = ' + this.filePath + ',  mtype=' + mtype );
 
-  function send_file ( filepath,deleteOnDone,cap )  {
-    // Read the requested file content from file system
-    var fpath = filepath;
-
-    if (fpath=='favicon.ico')  {
-      if (conf.isLocalSetup())  fpath = './images_com/favicon-desktop.ico';
-                          else  fpath = './images_com/favicon-remote.ico';
-    }
-
-    fs.stat ( fpath,function(err,stats){
-      if (err)  {
-        log.error ( 6,'Read file errors, file = ' + fpath );
-        log.error ( 6,'Error: ' + err );
-        server_response.writeHead ( 404, {'Content-Type':'text/html;charset=UTF-8'} );
-        server_response.end ( '<p><b>[05-0006] FILE NOT FOUND [' + fpath + ']</b></p>' );
-      } else if ((!cap) || (stats.size<=conf.getFEConfig().fileCapSize))  {
-//        if (stats.size>=50000000)  {
-          server_response.writeHeader ( 200, {
-              'Content-Type'      : mtype,
-              'Content-Length'    : stats.size
-              //'Transfer-Encoding' : 'chunked'
-              //'Content-Encoding' : 'gzip'
-              //'Vary'           : 'Accept-Encoding'
-              //'Content-Disposition' : 'inline'
-          });
-          /*
-          var fReadStream = fs.createReadStream ( fpath, {
-            bufferSize   : 64*1024,
-            highWaterMark: 64*1024
-          });
-          */
-          var fReadStream = fs.createReadStream ( fpath );
-          //fReadStream.setEncoding('binary')
-          /*
-//var ntotal = 0;
-          fReadStream.on ( 'data',function(chunk){
-//ntotal += chunk.length;
-//console.log ( 'read ' + fpath + ' ' + chunk.length + '/' + ntotal + '/' + stats.size );
-            if (!server_response.write(chunk))
-              fReadStream.pause();
-          });
-          server_response.on('drain',function(){
-            fReadStream.resume();
-          });
-          */
-          fReadStream.on ( 'error',function(e){
-            log.error ( 7,'Read file errors, file = ' + fpath );
-            console.error ( e.stack || e );
-            server_response.writeHead ( 404, {'Content-Type':'text/html;charset=UTF-8'} );
-            server_response.end ( '<p><b>[05-0007] FILE READ ERRORS</b></p>' );
-          });
-          fReadStream.on ( 'end',function(){
-            server_response.end();
-            if (deleteOnDone)
-              utils.removeFile ( fpath );
-          });
-          fReadStream.pipe ( server_response );  //.encoding: null,;
-          /*
-        } else  {
-          fs.readFile ( fpath, function(err,data) {
-            if (err)  {
-              log.error ( 8,'Read file errors, file = ' + fpath );
-              log.error ( 8,'Error: ' + err );
-              server_response.writeHead ( 404, {'Content-Type':'text/html;charset=UTF-8'} );
-              server_response.end ( '<p><b>[05-0008] FILE NOT FOUND OR FILE READ ERRORS</b></p>' );
-            } else  {
-//console.log ( "one-off " + stats.size + ' : ' + data.length );
-              server_response.writeHeader ( 200, {'Content-Type':mtype,'Content-Length':stats.size} );
-              server_response.end ( data );
-              if (deleteOnDone)
-                utils.removeFile ( fpath );
-            }
-          });
-        }
-        */
-      } else  {
-        fs.readFile ( fpath, function(err,data) {
-          if (err)  {
-            log.error ( 9,'Read file errors, file = ' + fpath );
-            log.error ( 9,'Error: ' + err );
-            server_response.writeHead ( 404, {'Content-Type':'text/html;charset=UTF-8'} );
-            server_response.end ( '<p><b>[05-0008] FILE NOT FOUND OR FILE READ ERRORS</b></p>' );
-          } else  {
-            server_response.writeHeader ( 200, {
-              'Content-Type'   : mtype,
-              'Content-Length' : stats.size
-            });
-            server_response.end ( utils.capData(data,conf.getFEConfig().fileCapSize) );
-            if (deleteOnDone)
-              utils.removeFile ( fpath );
-          }
-        });
-      }
-    });
-  }
-
   if (this.ncURL.length>0)  {
     // the file is on an NC, fetch it from there through a temporary file on FE
 
@@ -296,15 +200,29 @@ Communicate.prototype.sendFile = function ( server_response )  {
               utils.removeFile ( fpath );
             })
             .on('close',function(){   // finish,end,
-              send_file ( fpath,true,false );
+              utils.send_file ( fpath,server_response,mtype,false,0,null );
             });
         }
       });
     }(this.ncURL));
 
-  } else if (!this.search)
-        send_file ( this.filePath,false,false );
-  else  send_file ( this.filePath,false,(this.search.indexOf('?capsize')>=0) );
+  } else  {
+
+    var fpath = this.filePath;
+    if (fpath=='favicon.ico')  {
+      if (conf.isLocalSetup())  fpath = './images_com/favicon-desktop.ico';
+                          else  fpath = './images_com/favicon-remote.ico';
+    }
+
+    if (!this.search)
+      utils.send_file ( fpath,server_response,mtype,false,0,null );
+    else if (this.search.indexOf('?capsize')>=0)
+      utils.send_file ( fpath,server_response,mtype,false,
+                        conf.getFEConfig().fileCapSize,null );
+    else
+      utils.send_file ( fpath,server_response,mtype,false,0,null );
+
+  }
 
 }
 

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    27.12.18   <--  Date of Last Modification.
+ *    02.10.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Coot Coorinate Editor Task Class (for local server)
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2018
+ *  (C) E. Krissinel, A. Lebedev 2018-2019
  *
  *  =================================================================
  *
@@ -33,7 +33,7 @@ function TaskCootCE()  {
 
   this._type   = 'TaskCootCE';
   this.name    = 'coot (edit coordinates)';
-  this.oname   = 'coot-ce';   // default output file name template
+  this.setOName ( 'coot-ce' );  // default output file name template
   this.title   = 'Edit Coordinates with Coot';
   this.helpURL = './html/jscofe_task_coot_ce.html';
   this.nc_type = 'client';    // job may be run only on client NC

@@ -1,0 +1,84 @@
+{
+
+  "_comment"  : [
+    "====================================================================================",
+    "               jsCoFE Configuration for desktop-remote setup mode                   ",
+    "===================================================================================="
+  ],
+
+  "Desktop"  : {
+    "clientApp"  : "/bin/bash",
+    "args"       : ["-c","open -a Firefox $feURL$clientURL"]
+  },
+
+  "FrontEnd" : {
+    "protocol"         : "http",
+    "host"             : "ccp4serv6.rc-harwell.ac.uk/jscofe/",
+    "port"             : 0,
+    "externalURL"      : "http://ccp4serv6.rc-harwell.ac.uk/jscofe/",
+    "exclusive"        : true,
+    "stoppable"        : false,
+    "fsmount"          : null,
+    "userDataPath"     : "./cofe-users",
+    "projectsPath"     : "./cofe-projects",
+    "facilitiesPath"   : "./cofe-facilities",
+    "bootstrapHTML"    : "jscofe.html",
+    "fileCapSize"      : 500000,
+    "regMode"          : "admin",
+    "ration"           : {
+        "storage"   : 3000,
+        "cpu_day"   : 24,
+        "cpu_month" : 240
+    }
+  },
+
+  "FEProxy" : {
+    "protocol"         : "http",
+    "host"             : "localhost",
+    "port"             : 8083,
+    "externalURL"      : "http://localhost:8083",
+    "exclusive"        : true,
+    "stoppable"        : false,
+    "localisation"     : 1
+  },
+
+  "NumberCrunchers" : [
+    {
+      "serNo"            : 1,
+      "name"             : "client",
+      "in_use"           : true,
+      "protocol"         : "http",
+      "host"             : "localhost",
+      "port"             : 8084,
+      "externalURL"      : "http://localhost:8084",
+      "exclusive"        : true,
+      "stoppable"        : false,
+      "fsmount"          : "/",
+      "capacity"         : 4,
+      "exclude_tasks"    : [],
+      "fasttrack"        : 1,
+      "storage"          : "./cofe-client-storage",
+      "exeType"          : "CLIENT",
+      "exeData"          : "",
+      "jobCheckPeriod"   : 2000,
+      "sendDataWaitTime" : 1000,
+      "maxSendTrials"    : 10,
+      "jobRemoveTimeout" : 10000,
+      "maxRestarts"      : 100,
+      "fileCapSize"      : 500000
+    }
+  ],
+
+  "Emailer" : {
+    "type"               : "nodemailer",
+    "emailFrom"          : "CCP4 on-line <ccp4.cofe@gmail.com>",
+    "maintainerEmail"    : "ccp4.cofe@gmail.com",
+    "host"               : "smtp.gmail.com",
+    "port"               : 465,
+    "secure"             : true,
+    "auth"               : {
+      "file" : "auth_pass.txt"
+    }
+  }
+
+}

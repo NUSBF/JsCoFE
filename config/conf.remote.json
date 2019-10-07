@@ -32,18 +32,27 @@
     }
   },
 
+  "FEProxy" : {
+    "protocol"         : "http",
+    "host"             : "localhost",
+    "port"             : 8082,
+    "externalURL"      : "http://localhost:8082",
+    "exclusive"        : true,
+    "stoppable"        : false
+  },
+
   "NumberCrunchers" : [
     {
-      "serNo"            : 0,
+      "serNo"            : 1,
       "name"             : "client",
       "in_use"           : true,
       "protocol"         : "http",
       "host"             : "localhost",
       "port"             : 8084,
-      "externalURL"      : "",
+      "externalURL"      : "http://localhost:8084",
       "exclusive"        : true,
       "stoppable"        : false,
-      "fsmount"          : null,
+      "fsmount"          : "/",
       "capacity"         : 4,
       "exclude_tasks"    : [],
       "fasttrack"        : 1,
@@ -54,6 +63,7 @@
       "sendDataWaitTime" : 1000,
       "maxSendTrials"    : 10,
       "jobRemoveTimeout" : 10000,
+      "maxRestarts"      : 100,
       "fileCapSize"      : 500000
     }
   ],
@@ -66,8 +76,7 @@
     "port"               : 465,
     "secure"             : true,
     "auth"               : {
-      "user" : "ccp4.cofe@gmail.com",
-      "pass" : "ccp4.cofe.2016"
+      "file" : "auth_pass.txt"
     }
   }
 

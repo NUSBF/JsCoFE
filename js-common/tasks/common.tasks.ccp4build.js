@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    22.05.19   <--  Date of Last Modification.
+ *    02.10.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -35,7 +35,7 @@ function TaskCCP4Build()  {
 
   this._type   = 'TaskCCP4Build';
   this.name    = 'ccp4build';
-  this.oname   = 'ccp4build';  // default output file name template
+  this.setOName ( 'ccp4build' );  // default output file name template
   this.title   = 'Automatic Model Building with CCP4Build';
   this.helpURL = './html/jscofe_task_ccp4build.html';
 

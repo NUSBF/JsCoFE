@@ -114,7 +114,7 @@ function getUsageReportURL()  {
 }
 
 function getUsageReportFilePath ( fname )  {
-  return path.join ( conf.getFEConfig().projectsPath,statsDirName,fname );
+  return path.join ( conf.getFEConfig().storage,statsDirName,fname );
 }
 
 // ---------------------------------------------------------------------------
@@ -123,7 +123,7 @@ var usageStats = null;
 
 function registerJob ( job_class )  {
 var fe_config       = conf.getFEConfig();
-var statsDirPath    = path.join ( fe_config.projectsPath,statsDirName );
+var statsDirPath    = path.join ( fe_config.storage,statsDirName );
 var statsFilePath   = path.join ( statsDirPath,statsFileName );
 var generate_report = false;
 
@@ -146,7 +146,7 @@ var generate_report = false;
   if (generate_report)  {
     log.standard ( 2,'generate usage stats report ...' );
     var cmd = [ '-m', 'pycofe.proc.usagestats',
-                fe_config.projectsPath,
+                fe_config.projectsPath['fs0'].path,
                 fe_config.userDataPath,
                 statsFilePath,
                 statsDirPath ];

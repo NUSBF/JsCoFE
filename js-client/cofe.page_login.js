@@ -156,7 +156,7 @@ function LoginPage ( sceneId )  {
 
     } else  {
 
-      login ( login_inp.getValue(),pwd_inp.getValue(),sceneId );
+      login ( login_inp.getValue(),pwd_inp.getValue(),sceneId,0 );
 
     }
 

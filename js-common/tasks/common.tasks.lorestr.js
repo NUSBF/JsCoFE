@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    11.05.19   <--  Date of Last Modification.
+ *    02.10.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -33,7 +33,7 @@ function TaskLorestr()  {
 
   this._type   = 'TaskLorestr';
   this.name    = 'lorestr';
-  this.oname   = 'lorestr';  // default output file name template
+  this.setOName ( 'lorestr' );  // default output file name template
   this.title   = 'Low-Resolution Refinement with Lorestr';
   this.helpURL = './html/jscofe_task_lorestr.html';
 

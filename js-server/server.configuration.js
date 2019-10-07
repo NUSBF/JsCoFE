@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    15.09.19   <--  Date of Last Modification.
+ *    05.10.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -66,13 +66,15 @@ function listWindowsDrives ( callback_func )  {
 // ===========================================================================
 // ServerConfig class template
 
-function ServerConfig()  {
+function ServerConfig ( type )  {
+  this.type          = type;
   this.protocol      = 'http';
   this.host          = 'localhost';
   this.port          = 'port';
   this.externalURL   = '';
   this.exclude_tasks = [];   // tasks that should not run on given server
   this.only_tasks    = [];   // tasks that server can only run
+  this.storage       = null;
   this.startDate     = new Date(Date.now()).toUTCString();
 }
 
@@ -100,25 +102,48 @@ ServerConfig.prototype.getQueueName = function()  {
   return '-';
 }
 
+/*
 ServerConfig.prototype.getPIDFilePath = function()  {
-var pidfilepath = null;
-  if ('storage' in this)
-        pidfilepath = path.join ( this.storage,'pid.dat' );
-  else  pidfilepath = path.join ( this.projectsPath,'pid.dat' );
-  return pidfilepath;
+//var pidfilepath = null;
+//  if ('storage' in this)
+//    pidfilepath = path.join ( this.storage,'pid.dat' );
+//  else if ('projectsPath' in this)
+//    pidfilepath = path.join ( this.projectsPath,'pid.dat' );
+//  else if (fe_server)
+//    pidfilepath = path.join ( fe_server.projectsPath,'pid.dat' );
+//  return pidfilepath;
+  return path.join ( this.storage,this.type.toLowerCase() + '_pid.dat' );
+}
+*/
+ServerConfig.prototype.getPIDFilePath = function()  {
+  return 'pids.dat';
 }
 
 ServerConfig.prototype.savePID = function()  {
-  utils.writeString ( this.getPIDFilePath(),process.pid.toString() );
+var pidfile = this.getPIDFilePath();
+var pids = utils.readObject ( pidfile );
+  if (!pids)
+    pids = {};
+  pids[this.type] = process.pid.toString();
+  utils.writeObject ( pidfile,pids );
+  //utils.writeString ( this.getPIDFilePath(),process.pid.toString() );
 }
 
 ServerConfig.prototype.killPrevious = function()  {
 var pidfile = this.getPIDFilePath();
+var pids    = utils.readObject ( pidfile );
+  if (pids && (this.type in pids) && (pids[this.type]!=process.pid))  {
+    utils.killProcess ( pids[this.type] );
+    delete pids[this.type];
+    utils.writeObject ( pidfile,pids );
+  }
+/*
 var pid     = utils.readString ( pidfile );
-  if (pid)  {
+  if (pid && (pid!=process.pid))  {
     utils.killProcess ( pid     );
     utils.removeFile  ( pidfile );
   }
+*/
 }
 
 ServerConfig.prototype.getMaxNProc = function()  {
@@ -300,14 +325,31 @@ var version = '';
     "exclude_tasks"    : [],
     "fsmount"          : "/",
     "userDataPath"     : "./cofe-users",
-    "projectsPath"     : "./cofe-projects",
+    "storage"          : "./cofe-projects",  // for logs, stats, pids, tmp etc.
+    "projectsPath"     : "./cofe-projects",  // in this case, "storage" may be omitted
+    "projectsPath"     : {   // in this case, "storage" must be given
+        "fs0"   : { "path" : "./cofe-projects", // equivalent to "projectPath"
+                    "type" : "volume"           //    given by single string
+                        // type "volume" means an ordinary file system
+                        // type "home" places projects in path/login/ccp4cloud-projects
+                        //      if path/login already exists and is writable
+                  },
+        "nameN" : { "path" : "pathN",   // any number of any names and any paths
+                    "type" : "typeN"
+                  }
+    },
+    "diskReserve"      : 10000,  // new user will not be registered if disk
+                                 // has space less than 'diskReserve' (in MB)
+                                 // less of already committed space for user
+                                 // accounts
     "facilitiesPath"   : "./cofe-facilities",
     "ICAT_wdsl"        : "https://icat02.diamond.ac.uk/ICATService/ICAT?wsdl",
     "ICAT_ids"         : "https://ids01.diamond.ac.uk/ids",
     "bootstrapHTML"    : "jscofe.html",
     "maxRestarts"      : 100,
     "fileCapSize"      : 500000,
-    "regMode"          : "admin",
+    "regMode"          : "admin",  // if 'email':  registration by user;
+                                   // 'admin': all users are registration by admin
     "sessionCheckPeriod" : 2000,
     "ration"           : {
         "storage"   : 3000,
@@ -329,7 +371,11 @@ var version = '';
     "port"             : 8082,
     "externalURL"      : "http://localhost:8082",
     "exclusive"        : true,
-    "stoppable"        : false
+    "stoppable"        : false,
+    "localisation"     : 1  // 0: all files are taken from remote server
+                            // 1: images are taken from local setup
+                            // 2: images and js libraries are taken from local setup
+                            // 3: images and all js codes are taken from local setup
   },
 
   "NumberCrunchers" : [
@@ -400,8 +446,9 @@ var version = '';
     "port"               : 465,
     "secure"             : true,
     "auth"               : {
-      "user" : "ccp4.cofe@gmail.com",
-      "pass" : "ccp4.cofe.2016"
+      "user" : "ccp4.cofe@gmail.com",  // either "user"&"pass" or "file"
+      "pass" : "ccp4.cofe.2016"        //    should be given
+      "file" : "path-to-file-with-userId-and-password"  // UserId and PWD space-separated
     }
   }
 
@@ -421,15 +468,48 @@ function readConfiguration ( confFilePath,serverType )  {
     desktop = confObj.Desktop;
 
   if (confObj.hasOwnProperty('FrontEnd')) {
-    fe_server  = new ServerConfig();
+
+    fe_server = new ServerConfig('FE');
+
+    // assign default values
+    fe_server.diskReserve        = 10000; // MBytes
+    fe_server.sessionCheckPeriod = 2000;  // ms
+    /*
+    if (!fe_server.hasOwnProperty("description"))
+      fe_server.description = {
+        "id"   : "ccp4",
+        "name" : "CCP4-Harwell",
+        "icon" : "images_com/ccp4-harwell.png"
+      };
+    */
+
+    // read configuration file
     for (var key in confObj.FrontEnd)
       fe_server[key] = confObj.FrontEnd[key];
+
+    // complete configuration
     if (!fe_server.externalURL)
       fe_server.externalURL = fe_server.url();
     fe_server.userDataPath = _make_path ( fe_server.userDataPath,null );
-    fe_server.projectsPath = _make_path ( fe_server.projectsPath,null );
-    if (!fe_server.hasOwnProperty('sessionCheckPeriod'))
-      fe_server.sessionCheckPeriod = 2000;  // ms
+
+    if (Object.prototype.toString.call(fe_server.projectsPath) === '[object String]')
+      fe_server.projectsPath = {
+        'fs0' : { 'path' : fe_server.projectsPath,
+                  'type' : 'volume'
+                }
+      };
+
+    var storagePath = '';
+    for (var fsname in fe_server.projectsPath)  {
+      fe_server.projectsPath[fsname].path =
+                        _make_path ( fe_server.projectsPath[fsname].path,null );
+      if ((!storagePath) || (fsname=='fs0'))
+        storagePath = fe_server.projectsPath[fsname].path;
+    }
+    if (fe_server.storage)
+          fe_server.storage = _make_path ( fe_server.storage,null );
+    else  fe_server.storage = storagePath;
+
     if (isWindows())
       listWindowsDrives ( function(){
         if (fe_server.hasOwnProperty('cloud_mounts'))  {
@@ -444,19 +524,13 @@ function readConfiguration ( confFilePath,serverType )  {
           }
         }
       });
-    /*
-    if (!fe_server.hasOwnProperty("description"))
-      fe_server.description = {
-        "id"   : "ccp4",
-        "name" : "CCP4-Harwell",
-        "icon" : "images_com/ccp4-harwell.png"
-      };
-    */
+
   } else if ((serverType=='FE') || (serverType=='FE-PROXY'))
     return 'front-end configuration is missing in file ' + confFilePath;
 
   if (confObj.hasOwnProperty('FEProxy')) {
-    fe_proxy = new ServerConfig();
+    fe_proxy = new ServerConfig('FEProxy');
+    fe_proxy.localisation = 1;  // default
     for (var key in confObj.FEProxy)
       fe_proxy[key] = confObj.FEProxy[key];
     if (!fe_proxy.externalURL)
@@ -468,7 +542,7 @@ function readConfiguration ( confFilePath,serverType )  {
     client_server = null;
     nc_servers    = [];
     for (var i=0;i<confObj.NumberCrunchers.length;i++)  {
-      var nc_server = new ServerConfig();
+      var nc_server = new ServerConfig('NC'+i);
       for (var key in confObj.NumberCrunchers[i])
         nc_server[key] = confObj.NumberCrunchers[i][key];
       nc_server.current_capacity = nc_server.capacity;
@@ -476,8 +550,11 @@ function readConfiguration ( confFilePath,serverType )  {
         nc_server.externalURL = nc_server.url();
       nc_server.storage = _make_path ( nc_server.storage,null );
       nc_servers.push ( nc_server );
-      if (nc_server.exeType=='CLIENT')
+      if (nc_server.exeType=='CLIENT')  {
         client_server = nc_server;
+        if (fe_proxy && (!fe_proxy.storage))
+          fe_proxy.storage = client_server.storage;
+      }
       if (!nc_server.hasOwnProperty('jobManager'))
         nc_server.jobManager = nc_server.exeType;
     }
@@ -486,6 +563,24 @@ function readConfiguration ( confFilePath,serverType )  {
 
   if (confObj.hasOwnProperty('Emailer')) {
     emailer = confObj.Emailer;
+    if (emailer.hasOwnProperty('auth'))  {
+      if (emailer.auth.hasOwnProperty('file'))  {
+        var auth = utils.readString ( emailer.auth.file );
+        if (auth)  {
+          var up = auth.split(' ').filter(function(i){return i});
+          emailer.auth.user = up[0].trim();
+          emailer.auth.pass = up[1].trim();
+        } else  {
+          emailer.auth.user = 'xxx';  // will fail
+          emailer.auth.pass = 'xxx';  // will fail
+          var msg = 'cannot read e-mail account data file ' + emailer.auth.file;
+          log.standard ( 4,msg );
+          log.error    ( 4,msg );
+          log.standard ( 4,'e-mailer will not work' );
+          log.error    ( 4,'e-mailer will not work' );
+        }
+      }
+    }
   } else
     return 'emailer configuration is missing in file ' + confFilePath;
 
@@ -525,20 +620,20 @@ function assignPorts ( assigned_callback )  {
 
     switch (key)  {
 
-      case 0: if (fe_server.port>0)
+      case 0: if ((fe_server.host=='localhost') && (fe_server.port>0))
                     set_server ( fe_server,function(){ setServer(1,0); } );
               else  setServer(1,0);
             break;
 
       case 1: if (!fe_proxy)
                     setServer(2,0);
-              else if (fe_proxy.port>0)
+              else if ((fe_proxy.host=='localhost') && (fe_proxy.port>0))
                     set_server ( fe_proxy,function(){ setServer(2,0); } );
               else  setServer(2,0);
             break;
 
       case 2: if (n<nc_servers.length)  {
-                if (nc_servers[n].port>0)
+                if ((nc_servers[n].host=='localhost') && (nc_servers[n].port>0))
                       set_server ( nc_servers[n],function(){ setServer(2,n+1); } );
                 else  setServer(2,n+1);
               } else
@@ -578,6 +673,8 @@ function assignPorts ( assigned_callback )  {
 
   function checkServers ( callback )  {
     var b = (fe_server.host!='localhost') || (fe_server.port>0);
+    if (fe_proxy)
+      b = b && ((fe_proxy.host!='localhost') || (fe_proxy.port>0));
     nc_servers.forEach ( function(config){
       b = b && ((config.host!='localhost') || (config.port>0));
     });
@@ -635,12 +732,13 @@ function writeConfiguration ( fpath )  {
   var confObj = {};
   if (desktop)    confObj['Desktop']         = desktop;
   if (fe_server)  confObj['FrontEnd']        = fe_server;
+  if (fe_proxy)   confObj['FEProxy']         = fe_proxy;
   if (nc_servers) confObj['NumberCrunchers'] = nc_servers;
   if (emailer)    confObj['Emailer']         = emailer;
 
   if (utils.writeObject(fpath,confObj))
         log.standard ( 3,'configuration written to ' + fpath );
-  else  log.error ( 4,'error writing to ' + fpath );
+  else  log.error    ( 3,'error writing to ' + fpath );
 
 }
 
@@ -719,13 +817,16 @@ function isLocalFE()  {
 
 
 function getFETmpDir()  {
-  return path.join ( getFEConfig().projectsPath,'tmp' );
+//  return path.join ( getFEConfig().projectsPath,'tmp' );
+  return path.join ( getFEConfig().storage,'tmp' );
 }
 
 function getSetupID()  {
   if (fe_server.hasOwnProperty('description'))
     return fe_server.description.id;
-  return '';
+  if (isLocalFE())
+    return '<client-side setup>';
+  return '<unnamed setup>';
 }
 
 function getNCTmpDir()  {

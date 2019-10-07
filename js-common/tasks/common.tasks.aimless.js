@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    07.01.19   <--  Date of Last Modification.
+ *    02.10.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -33,7 +33,7 @@ function TaskAimless()  {
 
   this._type   = 'TaskAimless';
   this.name    = 'aimless';
-  this.oname   = 'aimless';  // default output file name template
+  this.setOName ( 'aimless' );  // default output file name template
   this.title   = 'Data Reduction with Aimless';
   this.helpURL = './html/jscofe_task_aimless.html';
 

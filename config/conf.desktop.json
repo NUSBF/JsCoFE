@@ -46,10 +46,11 @@
   "FEProxy" : {
     "protocol"         : "http",
     "host"             : "localhost",
-    "port"             : 8082,
-    "externalURL"      : "http://localhost:8082",
+    "port"             : 8085,
+    "externalURL"      : "http://localhost:8085",
     "exclusive"        : true,
-    "stoppable"        : false
+    "stoppable"        : false,
+    "localisation"     : 1
   },
 
   "NumberCrunchers" : [
@@ -116,8 +117,7 @@
     "port"               : 465,
     "secure"             : true,
     "auth"               : {
-      "user" : "ccp4.cofe@gmail.com",
-      "pass" : "ccp4.cofe.2016"
+      "file" : "auth_pass.txt"
     }
   }
 

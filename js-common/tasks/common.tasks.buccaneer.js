@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    27.12.18   <--  Date of Last Modification.
+ *    02.10.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Buccaneer Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2018
+ *  (C) E. Krissinel, A. Lebedev 2016-2019
  *
  *  =================================================================
  *
@@ -76,7 +76,7 @@ function TaskBuccaneer()  {
 
   this._type   = 'TaskBuccaneer';
   this.name    = 'buccaneer';
-  this.oname   = 'buccaneer';  // default output file name template
+  this.setOName ( 'buccaneer' );  // default output file name template
   this.title   = 'Automatic Model Building with Buccaneer';
   this.helpURL = './html/jscofe_task_buccaneer.html';
 

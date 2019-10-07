@@ -55,7 +55,7 @@ var upload_meta = {};
   form.multiples = true;
 
   // store all uploads in the /uploads directory
-  var tmpDir = conf.getFETmpDir();  //path.join ( conf.getFEConfig().projectsPath,'tmp' );
+  var tmpDir = conf.getFETmpDir();
 
   if (!utils.fileExists(tmpDir))  {
     if (!utils.mkDir(tmpDir))  {

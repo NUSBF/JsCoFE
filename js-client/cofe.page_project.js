@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    18.08.19   <--  Date of Last Modification.
+ *    02.10.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -280,6 +280,15 @@ function ProjectPage ( sceneId )  {
   this.headerPanel.setVerticalAlignment ( 0,2,'middle' );
 
   // Make Main Menu
+
+  this.addMenuItem ( 'Project settings','project_settings',function(){
+    if (jobTree)
+          new ProjectSettingsDialog ( jobTree,function(){
+            jobTree.saveProjectData ( [],[],null );
+          });
+    else  new MessageBox ( 'No Project','No Prject loaded' );
+  });
+
   this.addMenuItem ( 'My Projects','list',function(){
     jobTree.saveProjectData ( [],[],function(){ makeProjectListPage(sceneId); });
   });

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    16.09.19   <--  Date of Last Modification.
+ *    03.10.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -10,15 +10,15 @@
  *       ~~~~~~~~~
  *  **** Project :  jsCoFE - javascript-based Cloud Front End
  *       ~~~~~~~~~
- *  **** Content :  Front End Proxy Server
+ *  **** Content :  Front End Server
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2019
+ *  (C) E. Krissinel, A. Lebedev 2019
  *
  *  =================================================================
  *
  *  Invokation:
- *    node ./fe_server.js configFile
+ *    node ./fe_proxy.js configFile
  *
  *  where "configFile" is path to JSON-formatted configuration file for FE.
  *
@@ -27,21 +27,15 @@
  */
 
 
-var http      = require('http');
-var httpProxy = require('http-proxy');
-var url       = require('url');
-
 //  load application modules
-var conf      = require('./server.configuration');
-var cmd       = require('../js-common/common.commands');
+var conf          = require('./server.configuration');
+var feproxy_start = require('./server.feproxy.start');
 
 //  prepare log
-var log = require('./server.log').newLog(22);
+var log = require('./server.log').newLog(23);
 
 
 // ==========================================================================
-
-// check server serial number
 
 function cmdLineError()  {
   log.error ( 1,'Incorrect command line. Stop.' );
@@ -59,33 +53,6 @@ if (msg)  {
   process.exit();
 }
 
-var proxy_config  = conf.getFEProxyConfig ();
-var fe_config     = conf.getFEConfig      ();
-//var client_config = conf.getClientNCConfig();
-var fe_url        = fe_config.url();
+conf.setServerConfig ( conf.getFEProxyConfig() );
 
-// --------------------------------------------------------------------------
-// Create a proxy server with custom application logic
-
-var proxy = httpProxy.createProxyServer({});
-
-var server = http.createServer ( function(server_request,server_response){
-  var command = url.parse(server_request.url).pathname.substr(1).toLowerCase();
-  if (command==cmd.fe_command.getClientInfo)
-    conf.getClientInfo ( {},function(response){ response.send(server_response); });
-  else
-    proxy.web ( server_request,server_response, { target : fe_url } );
-});
-
-server.listen({
-  host      : proxy_config.host,
-  port      : proxy_config.port,
-  exclusive : proxy_config.exclusive
-},function(){
-  if (proxy_config.exclusive)
-    log.standard ( 1,'front-end proxy started, listening to ' +
-                     proxy_config.url() + ' (exclusive)' );
-  else
-    log.standard ( 1,'front-end proxy started, listening to ' +
-                     proxy_config.url() + ' (non-exclusive)' );
-});
+feproxy_start.start ( null );

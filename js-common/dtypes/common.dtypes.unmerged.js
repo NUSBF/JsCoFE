@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    27.12.18   <--  Date of Last Modification.
+ *    30.09.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -36,6 +36,7 @@ function DataUnmerged()  {
              else  DataTemplate.call ( this );
 
   this._type       = 'DataUnmerged';
+  this.ha_type     = '';     // heavy atom type
   this.symm_select = [];
   this.runs        = '';
 

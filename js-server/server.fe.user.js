@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    16.09.19   <--  Date of Last Modification.
+ *    04.10.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -23,6 +23,7 @@
 var crypto  = require('crypto');
 var fs      = require('fs-extra');
 var path    = require('path');
+var checkDiskSpace = require('check-disk-space');
 
 //  load application modules
 var emailer = require('./server.emailer');
@@ -53,7 +54,7 @@ function getUserDataFName ( login )  {
   return path.join ( conf.getFEConfig().userDataPath,login + userDataExt );
 }
 
-function makeNewUser ( userData,callback_func )  {  // gets UserData object
+function _make_new_user ( userData,callback_func )  {  // gets UserData object
 var response  = null;  // must become a cmd.Response object to return
 var fe_server = conf.getFEConfig();
 
@@ -139,6 +140,55 @@ var fe_server = conf.getFEConfig();
   }
 
   callback_func ( response );
+
+}
+
+function makeNewUser ( userData,callback_func )  {  // gets UserData object
+
+  var rpath = path.resolve ( conf.getFEConfig().projectsPath['fs0'].path );
+  checkDiskSpace(rpath).then((diskSpace) => {
+
+    var disk_committed = 0.0;
+    var disk_used      = 0.0;
+    var users = readUsersData().userList;
+    for (var i=0;i<users.length;i++)  {
+      disk_committed += users[i].ration.storage;
+      disk_used      += users[i].ration.storage_used;
+    }
+
+    var disk_free = diskSpace.free/(1024.0*1024.0);
+    if ((disk_free-conf.getFEConfig().diskReserve) > (disk_committed-disk_used))  {
+
+      _make_new_user ( userData,callback_func );
+
+    } else  {
+
+      var msg = 'not enough disk space to create new user at\n' +
+                '                                  '       + rpath +
+                '\n                                  ('    +
+                Math.round(disk_committed)     + ' MB committed, '   +
+                Math.round(disk_used)          + ' MB used, '        +
+                Math.round(disk_free)          + ' MB free at '      +
+                conf.getFEConfig().diskReserve + ' MB reserved)';
+
+      log.standard ( 3,msg );
+      log.error    ( 3,msg );
+
+      callback_func (
+        response = new cmd.Response ( cmd.fe_retcode.regFailed,
+          '<h3>Sorry</h3>' +
+          'New User cannot be registered because of insufficient disk space.' +
+          '<p><i>Server maintenance team is informed. Please come back later</i>',
+          emailer.send ( conf.getEmailerConfig().maintainerEmail,
+            'User Registration Failure',
+            'User registration failed due to insufficient disk space, ' +
+            'please investigate.' )
+        )
+      );
+
+    }
+
+  });
 
 }
 
@@ -412,6 +462,7 @@ var fe_server = conf.getFEConfig();
         if (fe_server.hasOwnProperty('description'))
               rData.setup_desc = fe_server.description;
         else  rData.setup_desc = null;
+        rData.fe_url = fe_server.url();
 
         response = new cmd.Response ( cmd.fe_retcode.ok,token,rData );
 
@@ -874,8 +925,8 @@ function sendAnnouncement ( login,message )  {
 
       if (uData.admin)  {
 
-        usersData = readUsersData();
-        users     = usersData.userList;
+        var usersData = readUsersData();
+        var users     = usersData.userList;
         for (var i=0;i<users.length;i++)  {
           emailer.send ( users[i].email,cmd.appName() + ' Announcement',
                          message.replace( '&lt;User Name&gt;',users[i].name ) );

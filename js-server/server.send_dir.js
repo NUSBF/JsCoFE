@@ -406,8 +406,6 @@ function receiveDir ( jobDir,tmpDir,server_request,onFinish_func )  {
   form.multiples = true;
 
   // store all uploads in the /uploads directory
-  //var tmpDir = path.join ( conf.getFEConfig().projectsPath,'tmp' );
-
   if (!utils.fileExists(tmpDir))  {
     if (!utils.mkDir(tmpDir))  {
       if (onFinish_func)

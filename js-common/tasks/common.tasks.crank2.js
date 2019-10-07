@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    04.05.19   <--  Date of Last Modification.
+ *    02.10.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -34,7 +34,7 @@ function TaskCrank2()  {
 
   this._type   = 'TaskCrank2';
   this.name    = 'EP with Crank2';
-  this.oname   = 'crank2';  // default output file name template
+  this.setOName ( 'crank2' );  // default output file name template
   this.title   = 'Crank-2 Automated Experimental Phasing';
   this.helpURL = './html/jscofe_task_crank2.html';
 

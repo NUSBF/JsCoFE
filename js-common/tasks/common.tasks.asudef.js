@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    03.05.19   <--  Date of Last Modification.
+ *    30.09.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -209,7 +209,28 @@ TaskASUDef.prototype.currentVersion = function()  {
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
 }
 
-if (__template)  {
+
+if (!__template)  {
+  //  for client side
+
+  TaskASUDef.prototype.inputChanged = function ( inpParamRef,emitterId,emitterValue )  {
+
+    if (emitterId=='hkl')  {
+      var inpDataRef = inpParamRef.grid.inpDataRef;
+      var item       = this.getInputItem ( inpDataRef,'hkl' ).dropdown[0];
+      var hkl        = item.dt[item.getValue()];
+      if (hkl.subtype.indexOf(hkl_subtype.anomalous)>=0)  {
+        var hatom = inpParamRef.parameters['HATOM'].input;
+        if (hkl.hasOwnProperty('ha_type') && hkl.ha_type)
+          hatom.setValue ( hkl.ha_type );
+      }
+    }
+
+    TaskTemplate.prototype.inputChanged.call ( this,inpParamRef,emitterId,emitterValue );
+
+  }
+
+} else  {
   //  for server side
 
   var conf = require('../../js-server/server.configuration');

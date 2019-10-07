@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    01.08.19   <--  Date of Last Modification.
+ *    06.10.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -362,19 +362,14 @@ var cap   = false;
   }
 
   // Read the requested file content from file system
-  fs.readFile ( fname, function(err,data) {
-    if (err)  {
-      log.error ( 1,'Read file errors, file = ' + fname );
-      log.error ( 1,'Error: ' + err );
-      server_response.writeHead ( 404, {'Content-Type': 'text/html;charset=UTF-8'} );
-      server_response.end ( '<p><b>FILE NOT FOUND [' + fname + ']</b></p>' );
-    } else  {
-      server_response.writeHead ( 200, {'Content-Type': utils.getMIMEType(fname)} );
-      if (cap)
-            server_response.end ( utils.capData(data,conf.getServerConfig().fileCapSize) );
-      else  server_response.end ( data );
-    }
-  });
+
+  if (fname)  {
+    var capSize = 0;
+    if (cap)
+      capSize = conf.getServerConfig().fileCapSize;
+    utils.send_file ( fname,server_response,utils.getMIMEType(fname),false,
+                      capSize,null );
+  }
 
 }
 
@@ -506,8 +501,10 @@ function ncJobFinished ( job_token,code )  {
   // acquire the corresponding job entry
   var jobEntry = ncJobRegister.getJobEntry ( job_token );
 
-  if (!jobEntry)
+  if (!jobEntry)  {
+    log.error ( 51,'job token ' + job_token + 'not found in registry upon job end' );
     return;  // job token is not valid
+  }
 
   // This function will finalise a finished job and send all data back to FE
   // asynchronously. However, we DO NOT stop the job checking loop here.
@@ -560,7 +557,7 @@ function ncJobFinished ( job_token,code )  {
     // deal with cleanup here -- in future
     task.cleanJobDir ( jobEntry.jobDir );
 
-    // note residual disk space (in MBs)
+    // note residual disk space (in MB)
     task.disk_space = utils.getDirectorySize ( jobEntry.jobDir ) / 1024.0 / 1024.0;
 
     // write job metadata back to job directory
@@ -577,8 +574,8 @@ function ncJobFinished ( job_token,code )  {
 
   calcCapacity ( function(capacity){
 
-    // get original front-edn url
-    var feURL     = jobEntry.feURL;
+    // get original front-end url
+    var feURL = jobEntry.feURL;
 
     // but, if FE is configured, take it from configuration
     var fe_config = conf.getFEConfig();
@@ -660,8 +657,6 @@ function ncRunJob ( job_token,meta )  {
   var taskDataPath = path.join ( jobEntry.jobDir,task_t.jobDataFName );
   var jobDir       = path.dirname ( taskDataPath );
   var task         = utils.readClass ( taskDataPath );
-  var nproc        = ncConfig.getMaxNProc();
-  var ncores       = task.getNCores ( nproc );
 
   function getJobName()  {
     //return 'cofe_' + ncJobRegister.launch_count;
@@ -674,6 +669,14 @@ function ncRunJob ( job_token,meta )  {
 //console.log ( getJobName() );
 
   if (task)  { // the task is instantiated, start the job
+
+    var nproc  = ncConfig.getMaxNProc();
+    var ncores = task.getNCores ( nproc );
+    utils.writeObject ( path.join(jobEntry.jobDir,'__despatch.meta'),{
+      'sender'   : meta.sender,
+      'setup_id' : meta.setup_id,
+      'nc_name'  : meta.nc_name
+    });
 
     utils.removeJobSignal ( jobDir );
 
@@ -1099,6 +1102,7 @@ function ncRunRVAPIApp ( post_data_obj,callback_func )  {
       ncRunJob ( job_token,{
         'sender'   : '',
         'setup_id' : '',
+        'nc_name'  : 'client-rvapi',
         'user_id'  : ''
       });
 
@@ -1186,6 +1190,7 @@ function ncRunClientJob ( post_data_obj,callback_func )  {
           ncRunJob ( job_token,{
             'sender'   : post_data_obj.feURL,
             'setup_id' : '',
+            'nc_name'  : 'client',
             'user_id'  : ''
           });
           // signal 'ok' to client

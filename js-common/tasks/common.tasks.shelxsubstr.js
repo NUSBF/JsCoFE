@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    05.01.19   <--  Date of Last Modification.
+ *    02.10.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -34,7 +34,7 @@ function TaskShelxSubstr()  {
 
   this._type   = 'TaskShelxSubstr';
   this.name    = 'shelx substructure search (crank-2)';
-  this.oname   = 'shelx_substr';  // default output file name template
+  this.setOName ( 'shelx-substr' );  // default output file name template
   this.title   = 'Substructure Search with SHELX via Crank-2';
   this.helpURL = './html/jscofe_task_shelxsubstr.html';
 

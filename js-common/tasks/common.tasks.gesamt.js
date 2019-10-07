@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    15.05.19   <--  Date of Last Modification.
+ *    02.10.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -35,6 +35,7 @@ function TaskGesamt()  {
   this._type   = 'TaskGesamt';
   this.name    = 'gesamt';
   this.oname   = 'gesamt';      // default output file name template
+  this.setOName ( 'gesamt' );  // default output file name template
   this.title   = 'Structure Alignment and Superposition with Gesamt';
   this.helpURL = './html/jscofe_task_gesamt.html';
 

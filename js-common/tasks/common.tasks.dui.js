@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    22.03.19   <--  Date of Last Modification.
+ *    02.10.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -33,7 +33,7 @@ function TaskDUI()  {
 
   this._type   = 'TaskDUI';
   this.name    = 'dui (image processing)';
-  this.oname   = 'dials';  // default output file name template
+  this.setOName ( 'dials' );  // default output file name template
   this.title   = 'Interactive Image Processing with DUI';
   this.helpURL = './html/jscofe_task_dui.html';
   this.nc_type = 'client';  // job may be run only on client NC

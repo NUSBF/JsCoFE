@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    18.07.19   <--  Date of Last Modification.
+ *    27.09.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -281,8 +281,13 @@ AdminPage.prototype.makeNodesInfoTab = function ( ndata )  {
 
   var row = 1;
 
+  var FEname = appName();
+  if (__setup_desc)        FEname += ' (' + __setup_desc.name + ')';
+  else if (__local_setup)  FEname += ' (Home setup)';
+                     else  FEname += ' (Unnamed setup)';
+
   this.nodeListTable.setRow ( 'Front End','Front End Server',
-    [ appName(),ndata.FEconfig.externalURL,'FE',ndata.FEconfig.startDate,
+    [ FEname,ndata.FEconfig.externalURL,'FE',ndata.FEconfig.startDate,
       ndata.ccp4_version,'N/A','running','N/A','N/A','N/A' ],
     row,(row & 1)==1 );
   row++;
