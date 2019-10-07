@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    21.07.19   <--  Date of Last Modification.
+ *    02.10.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -33,7 +33,7 @@ function TaskBalbes()  {
 
   this._type   = 'TaskBalbes';
   this.name    = 'balbes';
-  this.oname   = 'balbes';  // default output file name template
+  this.setOName ( 'balbes' );  // default output file name template
   this.title   = 'Balbes: Model Search & Preparation + MR';
   this.helpURL = './html/jscofe_task_balbes.html';
 

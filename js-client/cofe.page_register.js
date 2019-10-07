@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    06.08.19   <--  Date of Last Modification.
+ *    29.09.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -225,6 +225,10 @@ function RegisterPage ( sceneId )  {
               '<i>Forgotten password</i><p>' +
               'If you try to register a new user: Please choose a different ' +
               'login name.' );
+            return true;
+
+          case fe_retcode.regFailed:
+            new MessageBox ( 'Registration Failed',response.message );
             return true;
 
           default: ;

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    10.05.19   <--  Date of Last Modification.
+ *    02.10.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -34,7 +34,7 @@ function TaskMrBump()  {
 
   this._type   = 'TaskMrBump';
   this.name    = 'mrbump';
-  this.oname   = 'mrbump';  // default output file name template
+  this.setOName ( 'mrbump' ); // default output file name template
   this.title   = 'MrBump: Model Search & Preparation + MR + Model Building';
   this.helpURL = './html/jscofe_task_mrbump.html';
 

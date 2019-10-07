@@ -165,13 +165,6 @@ function start ( callback_func )  {
 
         case cmd.fe_command.authResponse :
             user.authResponse ( server_request,server_response );
-/*
-                            response.writeHead(302, {
-                              'Location': 'your/404/path.html'
-                              //add other headers here...
-                            });
-                            response.end();
-*/
           break;
 
         default :

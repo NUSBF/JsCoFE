@@ -100,10 +100,18 @@ FEJobRegister.prototype.removeJob = function ( job_token )  {
 
 var feJobRegister = null;
 
+function getJobRegisterPath()  {
+  return path.join ( conf.getFEConfig().storage,feJobRegisterFile );
+}
+
+function getJobStatPath()  {
+  return path.join ( conf.getFEConfig().storage,feJobStatFile );
+}
+
 function readFEJobRegister()  {
 
   if (!feJobRegister)  {
-    var fpath     = path.join ( conf.getFEConfig().projectsPath,feJobRegisterFile );
+    var fpath     = getJobRegisterPath();
     feJobRegister = new FEJobRegister();
     obj           = utils.readObject ( fpath );
     if (obj)  {
@@ -116,7 +124,7 @@ function readFEJobRegister()  {
 }
 
 function writeFEJobRegister()  {
-var fpath = path.join ( conf.getFEConfig().projectsPath,feJobRegisterFile );
+var fpath = getJobRegisterPath();
 
   if (!feJobRegister)
     feJobRegister = new FEJobRegister();
@@ -386,6 +394,7 @@ function runJob ( login,data, callback_func )  {
         var uData  = user.readUserData ( login );
         var meta   = {};
         meta.setup_id  = conf.getSetupID();
+        meta.nc_name   = conf.getNCConfig(nc_number).name;
         meta.user_id   = login;
         meta.feedback  = ud.feedback_code.decline;
         meta.user_name = '';
@@ -690,7 +699,7 @@ function writeJobStats ( jobEntry )  {
     var userRation = ration.updateUserRation_bookJob ( jobEntry.login,jobClass );
 
     var S     = '';
-    var fpath = path.join ( conf.getFEConfig().projectsPath,feJobStatFile );
+    var fpath = getJobStatPath();
     if ((Math.trunc(feJobRegister.n_jobs/20)*20==feJobRegister.n_jobs) ||
         (!utils.fileExists(fpath)))
       S = '------------------------------------------------------------------' +
@@ -734,7 +743,7 @@ function writeJobStats ( jobEntry )  {
 }
 
 function readJobStats()  {
-  var stats = utils.readString ( path.join(conf.getFEConfig().projectsPath,feJobStatFile) );
+  var stats = utils.readString ( getJobStatPath() );
   if (!stats)
     stats = 'Job stats are not available.';
   return stats;

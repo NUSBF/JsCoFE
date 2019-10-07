@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    18.07.19   <--  Date of Last Modification.
+ *    04.10.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -184,10 +184,11 @@ BasePage.prototype._setModeIcon = function ( colNo )  {
   var setup_name = 'Unnamed CCP4 Cloud Setup';
   var setup_icon = 'images_png/setup_unknown.png';
   if (__setup_desc)  {
-    setup_name = 'CCP4 Cloud Setup at ' + __setup_desc.name;
+    setup_name = 'CCP4 Cloud Setup "' + __setup_desc.name + '" at<br><i>' +
+                 __fe_url + '</i>';
     setup_icon = __setup_desc.icon;
   } else if (__local_setup)  {
-    setup_name = 'Local CCP4 Cloud Setup';
+    setup_name = 'Local CCP4 Cloud Setup at<br><i>' + __fe_url + '</i>';
     setup_icon = image_path ( 'setup_home' );
   }
   this.headerPanel.setImageButton ( setup_icon,'22px','22px',0,colNo+1,1,1 )

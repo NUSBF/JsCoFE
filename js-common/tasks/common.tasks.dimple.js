@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    27.12.18   <--  Date of Last Modification.
+ *    02.10.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  DimpleMR Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2018
+ *  (C) E. Krissinel, A. Lebedev 2016-2019
  *
  *  =================================================================
  *
@@ -34,7 +34,7 @@ function TaskDimple()  {
 
   this._type   = 'TaskDimple';
   this.name    = 'dimple';
-  this.oname   = 'dimple';  // default output file name template
+  this.setOName ( 'dimple' );  // default output file name template
   this.title   = 'Dimple refinement';
   this.helpURL = './html/jscofe_task_dimple.html';
 

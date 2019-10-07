@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    05.01.19   <--  Date of Last Modification.
+ *    02.10.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -34,7 +34,7 @@ function TaskShelxAuto()  {
 
   this._type   = 'TaskShelxAuto';
   this.name    = 'SHELX Auto-EP';
-  this.oname   = 'shelx';  // default output file name template
+  this.setOName ( 'shelx' );  // default output file name template
   this.title   = 'SHELX Automated Experimental Phasing via Crank-2';
   this.helpURL = './html/jscofe_task_shelxauto.html';
 

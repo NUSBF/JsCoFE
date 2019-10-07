@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    16.09.19   <--  Date of Last Modification.
+ *    07.10.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -32,10 +32,12 @@
 var child_process = require('child_process');
 var path          = require('path');
 var tmp           = require('tmp');
+var fse           = require('fs-extra');
 
 //  load application modules
 var conf     = require('./server.configuration');
 var fe_start = require('./server.fe.start');
+var fe_proxy = require('./server.feproxy.start');
 var utils    = require('./server.utils');
 
 //  prepare log
@@ -49,17 +51,38 @@ tmp.setGracefulCleanup();
 // ==========================================================================
 // check command line and configuration
 
-function cmdLineError()  {
-  log.error ( 1,'Incorrect command line. Stop.' );
-  log.error ( 1,'Restart as "node ./desktop.js configFile [-localuser Name]"' );
-  process.exit();
+var arg2      = null;
+var localuser = null;
+var confout   = null;
+for (let arg of process.argv.slice(2).reverse()) {
+  if (arg == '-localuser') {
+    if (arg2 == null) break;
+    localuser = arg2;
+    arg2 = null;
+  }
+  else if (arg == '-confout') {
+    if (arg2 == null) break;
+    confout = arg2;
+    arg2 = null;
+  }
+  else if (arg[0] == '-' || arg2) {
+    arg2 = null;
+    break;
+  }
+  else {
+    arg2 = arg;
+  }
 }
 
-if (((process.argv.length!=3) && (process.argv.length!=5)) ||
-    ((process.argv.length==5) && (process.argv[3]!='-localuser')))
-  cmdLineError();
+if (!arg2) {
+  var usage = 'Usage: ' + process.argv[0] + ' ' + process.argv[1];
+  usage += ' [-localuser Name] [-confout Path]';
+  log.error ( 1,'Incorrect command line. Stop.' );
+  log.error ( 1,usage );
+  process.exit(1);
+}
 
-var msg = conf.readConfiguration ( process.argv[2],'FE' );
+var msg = conf.readConfiguration ( arg2,'FE' );
 if (msg)  {
   log.error ( 2,'Desktop configuration failed. Stop.' );
   log.error ( 2,msg );
@@ -75,15 +98,16 @@ if (msg)  {
 // closed). Such servers should have 'stoppable' attribute set to false in
 // their configuration.
 
-var feConfig  = conf.getFEConfig ();
-var ncConfigs = conf.getNCConfigs();
+var feConfig      = conf.getFEConfig ();
+var feProxyConfig = conf.getFEProxyConfig()
+var ncConfigs     = conf.getNCConfigs();
 
 feConfig.killPrevious();
 for (var i=0;i<ncConfigs.length;i++)
   ncConfigs[i].killPrevious();
 
-if (process.argv.length==5)
-  feConfig.localuser = process.argv[4];
+if (localuser)
+  feConfig.localuser = localuser;
 
 var forceStart = false;  // debugging option forcing start of servers with fixed
                          // port numbers
@@ -92,8 +116,9 @@ var forceStart = false;  // debugging option forcing start of servers with fixed
 //if ((feConfig.host=='localhost') && (feConfig.port<=0))
 //  forceStart = true;
 
-var startFE = false;  // whether to start FE server
-var startNC = [];     // whether to start NCs
+var startFE      = false;  // whether to start FE server
+var startFEProxy = false;  // whether to start FE proxy server
+var startNC      = [];     // whether to start NCs
 
 if (forceStart)  {
   startFE = true;
@@ -106,16 +131,10 @@ if (forceStart)  {
                    (ncConfigs[i].host=='localhost') );
 }
 
-
-/*
-var locked  = false;
-if (startFE)
-  locked = utils.fileExists ( path.join(feConfig.projectsPath,'lock') );
-for (var i=0;i<ncConfigs.length;i++)
-  if (startNC[i])
-    locked = locked || utils.fileExists ( path.join(ncConfigs[i].storage,'lock') );
-*/
-
+if (feProxyConfig)  {
+  feProxyConfig.killPrevious();
+  startFEProxy = (feProxyConfig.host=='localhost');
+}
 
 // ==========================================================================
 // Define NC-starting function
@@ -152,14 +171,24 @@ function startNCServer ( nc_number,cfgpath )  {
 // ==========================================================================
 // Define function to start client application
 
-function startClientApplication()  {
+function start_client_application()  {
 
   var desktopConfig = conf.getDesktopConfig();
+  if (!desktopConfig)
+    return;   // no client application to
 
-  if (desktopConfig)  {
+  var command   = [];
+  var msg       = desktopConfig.clientApp;
+  var feURL     = feConfig.url();
+  var clientURL = '';
+
+  if (feProxyConfig)  {
+
+    feURL = feProxyConfig.url();
+
+  } else  {
 
     var clientConfig = conf.getClientNCConfig();
-    var clientURL    = '';
     if (clientConfig)  {
       if (clientConfig.protocol=='http')  clientURL  = 'lsp=';
                                     else  clientURL  = 'lsps=';
@@ -167,31 +196,47 @@ function startClientApplication()  {
                                           clientURL += clientConfig.port;
                                     else  clientURL += clientConfig.url();
     }
-
-    //var localUser = '';
-    //if ('localuser' in feConfig)
-    //  localUser = 'lusr=';
-
-    var command = [];
-    var msg     = desktopConfig.clientApp;
-    for (var i=0;i<desktopConfig.args.length;i++)  {
-      var arg = desktopConfig.args[i].replace('$feURL',feConfig.url())
-                                     .replace('$clientURL','?'+clientURL);
-      command.push ( arg );
-      if (arg.indexOf(' ')>=0)  msg += " '" + arg + "'";
-                          else  msg += ' '  + arg;
-    }
-
-    var job = child_process.spawn ( desktopConfig.clientApp,command );
-
-    log.standard ( 5,'client application "' + msg + '" started, pid=' + job.pid );
-
-    job.on ( 'close',function(code){
-      log.standard ( 6,'client application "' + msg + '" quit with code ' + code );
-    });
+    if (clientURL)
+      clientURL = '?' + clientURL;
 
   }
 
+  for (var i=0;i<desktopConfig.args.length;i++)  {
+    var arg = desktopConfig.args[i].replace('$feURL',feURL)
+                                   .replace('$clientURL',clientURL);
+    command.push ( arg );
+    if (arg.indexOf(' ')>=0)  msg += " '" + arg + "'";
+                        else  msg += ' '  + arg;
+  }
+
+  var job = child_process.spawn ( desktopConfig.clientApp,command );
+
+  if ( confout ) fse.mkdirsSync(confout + '.READY');
+  log.standard ( 5,'client application "' + msg + '" started, pid=' + job.pid );
+
+  job.on ( 'close',function(code){
+    log.standard ( 6,'client application "' + msg + '" quit with code ' + code );
+  });
+
+}
+
+
+function startClientApplication()  {
+  if (startFEProxy)  {
+    fe_proxy.start ( function(){
+      start_client_application();
+    });
+  } else
+    start_client_application();
+}
+
+
+function configFileName(callback) {
+  if ( confout ) {
+    callback(null, confout);
+  } else {
+    tmp.tmpName(callback);
+  }
 }
 
 
@@ -203,7 +248,7 @@ conf.assignPorts ( function(){
   // Port numbers are assigned and stored in current configuration. Write
   // it to a temporary file for starting servers.
 
-  tmp.tmpName(function(err,cfgpath) {
+  configFileName(function(err,cfgpath) {
 
     if (err) {  // error; not much to do, just write into log and exit
 

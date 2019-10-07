@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    13.08.19   <--  Date of Last Modification.
+ *    07.10.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -33,45 +33,7 @@ var __check_session_period = 2000;  // in ms
 
 function checkLocalService ( callback_func )  {
 
-  function getServerInfo()  {
-    serverCommand ( fe_command.getInfo,{},'getInfo',function(response){
-      if (response.status==fe_retcode.ok)  {
-        var rData = response.data;
-        __exclude_tasks = rData.exclude_tasks;
-        __cloud_storage = rData.cloud_storage;
-        __demo_projects = rData.demo_projects;
-        __local_setup   = rData.localSetup;
-        __regMode       = rData.regMode;
-        __setup_desc    = rData.setup_desc;
-        __ccp4_version  = rData.ccp4_version;
-        __check_session_period = rData.check_session_period;
-        if (rData.localuser)  {
-          __local_user    = true;
-          __login_user    = rData.localuser;
-          __login_token   = rData.logintoken;
-          __doNotShowList = rData.helpTopics;
-        }
-        if (!__local_service)
-          serverCommand ( fe_command.getClientInfo,{},'getClientInfo',
-                          function(rsp){
-            if (rsp.status==fe_retcode.ok)
-              __local_service = rsp.data.local_service;
-            callback_func ( 0 );
-            return true;
-          });
-        else
-          callback_func ( 0 );
-      } else  {
-        new MessageBox ( 'Server not Configured',
-            'Server not configured, contact administrator.' );
-        callback_func ( 1 );
-      }
-      return true;
-  //    alert ( JSON.stringify(response) );
-    },null,null);
-  }
-
-  function probeClient ( attemptCount )  {
+  function probeClient ( attemptCount,callback )  {
     localCommand ( nc_command.countBrowser,{},'Advance Browser Count',
       function(response){
         var count = attemptCount-1;
@@ -100,25 +62,66 @@ function checkLocalService ( callback_func )  {
         }
         if (count>0)
               window.setTimeout ( function(){ probeClient(count); },100);
-        else  getServerInfo();
+        else  callback();
+        //else  getServerInfo();
         return true;
       });
   }
 
+  function getServerInfo()  {
+    serverCommand ( fe_command.getInfo,{},'getInfo',function(response){
+      if (response.status==fe_retcode.ok)  {
+        var rData = response.data;
+        __exclude_tasks = rData.exclude_tasks;
+        __cloud_storage = rData.cloud_storage;
+        __demo_projects = rData.demo_projects;
+        __local_setup   = rData.localSetup;
+        __regMode       = rData.regMode;
+        __setup_desc    = rData.setup_desc;
+        __ccp4_version  = rData.ccp4_version;
+        __check_session_period = rData.check_session_period;
+        if (rData.localuser)  {
+          __local_user    = true;
+          __login_user    = rData.localuser;
+          __login_token   = rData.logintoken;
+          __doNotShowList = rData.helpTopics;
+        }
+        if (!__local_service)
+          serverCommand ( fe_command.getClientInfo,{},'getClientInfo',
+                          function(rsp){
+            if (rsp.status==fe_retcode.ok)
+              __local_service = rsp.data.local_service;
+            if (__local_service)
+                  probeClient ( 20,function(){ callback_func(0); });
+            else  callback_func ( 0 );
+            return true;
+          });
+        else
+          callback_func ( 0 );
+      } else  {
+        new MessageBox ( 'Server not Configured',
+            'Server not configured, contact administrator.' );
+        callback_func ( 1 );
+      }
+      return true;
+  //    alert ( JSON.stringify(response) );
+    },null,null);
+  }
+
   var n = window.location.search.indexOf ( 'lsp=' );
-  __local_service = 'http';
+  var ls_protocol = 'http';
   if (n<0)  {
     n = window.location.search.indexOf ( 'lsps=' ) + 1;
-    __local_service = 'https';
+    ls_protocol = 'https';
   }
   if (n>=1)  {
     var port = window.location.search.substring ( n+4 );
-    if (startsWith(port,'http'))
+    if (startsWith(port,'http'))  // full specification of local service given
           __local_service  = port;
-    else  __local_service += '://' + localhost_name + ':' + port;
+    else  __local_service = ls_protocol + '://' + localhost_name + ':' + port;
 
     // check that local service is actually running
-    probeClient ( 20 );
+    probeClient ( 20,function(){ getServerInfo(); });
 
   } else  {
     __local_service = null;

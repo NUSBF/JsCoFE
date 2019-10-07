@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    22.08.19   <--  Date of Last Modification.
+ *    02.10.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -509,5 +509,5 @@ TableSort.prototype.getSortList = function()  {
 }
 
 TableSort.prototype.applySortList = function ( sortList )  {
-  $(self.table.element).trigger("sorton",[sortList]);
+  $(this.table.element).trigger("sorton",[sortList]);
 }

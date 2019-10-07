@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    15.05.19   <--  Date of Last Modification.
+#    30.09.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -125,11 +125,6 @@ class Xia2(basic.TaskDriver):
         else:
             cmd.append ( "image=" + imageDirMeta[0]["path"] )
 
-        #xia2 \
-        #pipeline=dials \
-        #image="/Users/andrey/Xtal/Cofe/F_xia2/cd44_3_2/cd44_3_2_001.img:1:140"
-        #\ image="/Users/andrey/Xtal/Cofe/F_xia2/cd44_3_3/cd44_3_3_001.img:1:20"
-
         # Run xia2
         if sys.platform.startswith("win"):
             rc = self.runApp ( "xia2.bat",cmd,logType="Main" )
@@ -170,7 +165,6 @@ class Xia2(basic.TaskDriver):
             scaleDir = os.path.join(crystalName,"scale")
             aimless_xml_names = [fn for fn in os.listdir(scaleDir)
                                 if any(fn.endswith(ext) for ext in ["_aimless.xml"])]
-            #self.file_stdout.write ( str(aimless_xml_names) + "\n" )
             if len(hkl_imported)>0 and len(aimless_xml_names)>0:
                 aimless_xml  = max(aimless_xml_names)
                 aimless_meta = {
@@ -182,6 +176,7 @@ class Xia2(basic.TaskDriver):
                                   os.path.join(self.outputDir(),aimless_meta["file"]) )
                 for i in range(len(hkl_imported)):
                     hkl_imported[i].aimless_meta = aimless_meta
+                    hkl_imported[i].ha_type      = hatom
                     self.putMessage ( "<b>Assigned name:</b>&nbsp;" + hkl_imported[i].dname  )
 
             nsweeps -= 1
@@ -191,9 +186,9 @@ class Xia2(basic.TaskDriver):
             newHKLFPath = os.path.join ( resDir,self.getOFName("_unmerged_scaled.mtz",-1) )
             os.rename ( os.path.join(resDir,mtzUnmergedName),newHKLFPath )
             self.addFileImport ( "",newHKLFPath,import_filetype.ftype_MTZIntegrated() )
-            #self.files_all = [ newHKLFPath ]
             unmerged_imported = import_unmerged.run ( self,"Unmerged Scaled Reflection Dataset" )
             for i in range(len(unmerged_imported)):
+                unmerged_imported[i].ha_type = hatom
                 self.putMessage ( "<b>Assigned name:</b>&nbsp;" + unmerged_imported[i].dname  )
             nsweeps -= 1
 
@@ -202,7 +197,6 @@ class Xia2(basic.TaskDriver):
             title_made = False
             for n in range(nsweeps):
                 sweepId = "SWEEP" + str(n+1)
-                #mtzSweepName = fnPrefix +"_"+ datasetName +"_"+ sweepId + "_INTEGRATE.mtz"
                 mtzSweepName = "_".join([fnPrefix,datasetName,sweepId,"INTEGRATE.mtz"])
                 if mtzSweepName in file_names:
 
@@ -230,14 +224,6 @@ class Xia2(basic.TaskDriver):
 
                     rlp_pickle = os.path.join ( refDir,rlp_pickle )
                     rlp_json   = os.path.join ( refDir,rlp_json   )
-                    #self.open_stdin  ()
-                    #self.write_stdin ( rlp_json   + "\n" )
-                    #self.write_stdin ( rlp_pickle + "\n" )
-                    #self.close_stdin ()
-                    #if self.file_stdin:
-                    #    self.file_stdout.write ( " --- stdin ref FOUND" )
-                    #else:
-                    #    self.file_stdout.write ( " --- stdin ref NOT FOUND" )
                     self.file_stdin = None
                     if sys.platform.startswith("win"):
                         self.runApp ( "dials.export.bat",["format=json","d_min=8",rlp_json,rlp_pickle],
@@ -264,10 +250,6 @@ class Xia2(basic.TaskDriver):
                     ind_prefix = ind_json.partition("_")[0] + "_"
                     ind_json = os.path.join ( indexDir,ind_json )
                     d_min = d_min_for_rs_mapper(self, indexDir, ind_prefix)
-
-                    #self.open_stdin  ()
-                    #self.write_stdin ( ind_json + "\n" )
-                    #self.close_stdin ()
 
                     #  grid size and resolution are chosen such as to keep file
                     #  size under 10MB, or else it does not download with XHR
@@ -323,6 +305,7 @@ class Xia2(basic.TaskDriver):
                         "Unmerged Reflection Dataset (Sweep " + str(n+1) + ")" )
 
                     if len(imported_data)>0 and rlpFilePath and mapFilePath:
+                        imported_data[0].ha_type = hatom
                         grid_id = self.getWidgetId ( "grid" )  #"grid_" + str(self.rvrow)
                         pyrvapi.rvapi_add_grid ( grid_id,False,self.report_page_id(),
                                                  self.rvrow,0,1,1 )

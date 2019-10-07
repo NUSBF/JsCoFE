@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.09.19   <--  Date of Last Modification.
+ *    02.10.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -52,8 +52,8 @@ function AccountPage ( sceneId )  {
   // adjust scene grid attributes such that login panel is centered
   this.grid.setCellSize          ( '25%','',1,0,1,1 );
   this.grid.setVerticalAlignment ( 1,1,'middle' );
-  this.grid.setCellSize          ( '10%','',1,1,1,1 );
-  this.grid.setCellSize          ( '65%','',1,2,1,1 );
+  this.grid.setCellSize          ( '50%','',1,1,1,1 );
+  this.grid.setCellSize          ( '25%','',1,2,1,1 );
 //  this.grid.setCellSize          ( '','80pt',2,1,1,3 );
   this.makeLogoPanel             ( 2,0,3 );
 
@@ -62,22 +62,23 @@ function AccountPage ( sceneId )  {
 
   // make account panel
   var panel = new Grid('');
-  panel.setWidth      ( '300pt' );
+  //panel.setWidth      ( '600pt' );
   this.grid.setWidget ( panel,1,1,1,1 );
 
-  var title_lbl    = new Label     ( 'My Account'  );
-  var user_lbl     = new Label     ( 'User name:'  );
+  var title_lbl    = new Label     ( 'My Account'  ).setNoWrap();
+  var user_lbl     = new Label     ( 'User name:'  ).setNoWrap();
   var email_lbl    = new Label     ( 'E-mail:'     );
-  var login_lbl    = new Label     ( 'Login name:' );
+  var login_lbl    = new Label     ( 'Login name:' ).setNoWrap();
   var pwd_lbl      = new Label     ( 'Password:'   );
   var licence_lbl  = new Label     ( 'Licence agreement:&nbsp;&nbsp;&nbsp;' ).setNoWrap();
   var feedback_lbl = new Label     ( 'Feedback agreement:&nbsp;&nbsp;&nbsp;').setNoWrap();
-  var authoris_lbl = new Label     ( 'Software authorisations:&nbsp;'       ).setNoWrap();
+  /* == var authoris_lbl = new Label     ( 'Software authorisations:&nbsp;'       ).setNoWrap(); */
   var user_inp     = new InputText ( '' );
   var email_inp    = new InputText ( '' );
   var login_inp    = new InputText ( '' );
   var pwd_inp      = new InputText ( '' );
-  var authorisation_dic = {};
+  /* == var authorisation_dic = {}; */
+
   user_inp    .setStyle   ( 'text',"^[A-Za-z\\-\\.\\s]+$",'John Smith',
                             'User name should only contain latin ' +
                             'letters,\n dots, dashes and spaces' );
@@ -95,11 +96,11 @@ function AccountPage ( sceneId )  {
   pwd_lbl     .setFontSize( '112%' );
   licence_lbl .setFontSize( '112%' );
   feedback_lbl.setFontSize( '112%' );
-  authoris_lbl.setFontSize( '112%' );
-  user_inp    .setFontSize( '112%' ).setFontItalic(true).setWidth('97%');
-  email_inp   .setFontSize( '112%' ).setFontItalic(true).setWidth('97%');
-  login_inp   .setFontSize( '112%' ).setFontItalic(true).setWidth('97%').setReadOnly(true);
-  pwd_inp     .setFontSize( '112%' ).setFontItalic(true).setWidth('97%');
+  /* == authoris_lbl.setFontSize( '112%' ); */
+  user_inp    .setFontSize( '112%' ).setFontItalic(true).setWidth('200pt');
+  email_inp   .setFontSize( '112%' ).setFontItalic(true).setWidth('200pt');
+  login_inp   .setFontSize( '112%' ).setFontItalic(true).setWidth('200pt').setReadOnly(true);
+  pwd_inp     .setFontSize( '112%' ).setFontItalic(true).setWidth('200pt');
 
   var row = 0;
   panel.setWidget               ( title_lbl   ,row,0,1,4   );
@@ -112,17 +113,44 @@ function AccountPage ( sceneId )  {
   panel.setWidget               ( pwd_lbl     ,row+3,0,1,1 );
   panel.setWidget               ( licence_lbl ,row+4,0,1,2 );
   panel.setWidget               ( feedback_lbl,row+5,0,1,2 );
-  panel.setWidget               ( authoris_lbl,row+6,0,1,2 );
+  /* == panel.setWidget               ( authoris_lbl,row+6,0,1,2 ); */
   for (var i=0;i<4;i++)
     panel.setCellSize  ( '96pt','',row+i,0   );
   panel.setWidget               ( user_inp    ,row  ,1,1,3 );
   panel.setWidget               ( email_inp   ,row+1,1,1,3 );
   panel.setWidget               ( login_inp   ,row+2,1,1,3 );
   panel.setWidget               ( pwd_inp     ,row+3,1,1,3 );
-  for (var i=0;i<7;i++)  {
+  /* == for (var i=0;i<7;i++)  { */
+  for (var i=0;i<6;i++)  {
     panel.setVerticalAlignment  ( row+i,0,'middle' );
     panel.setVerticalAlignment  ( row+i,1,'middle' );
   }
+
+
+  // make settings panel
+  var spanel = new Grid('');
+  spanel.setWidth ( '300pt' );
+  panel.setLabel ( '&nbsp;',row,2,1,1 ).setWidth ( '80px' );
+  panel.setWidget ( spanel ,row,3,6,1 );
+
+  panel.setLabel ( 'Preferences<sup>*</sup>',row-1,5,1,1 )
+       .setFont ( 'times','150%',true,true );
+  //spanel.setCellSize ( '','10pt',1,0   );
+
+  var fprefix_cbx = spanel.setCheckbox ( 'Use project name as default file prefix',
+                                         false, 0,0,1,1 )
+                          .setTooltip  ( 'If selected, all generated file names ' +
+                                         'will be prefixed with project name '    +
+                                         'unless another prefix is specified in ' +
+                                         'project settings'
+                                       );
+  if (__user_settings.hasOwnProperty('project_prefix'))
+    fprefix_cbx.setValue ( __user_settings.project_prefix );
+
+  spanel.setLabel ( '&nbsp;<p><sup>*</sup> Save changes for Preferences to ' +
+                    'take an effect',5,0,1,1 )
+        .setFontSize ( '90%' ).setFontItalic(true);
+
 
   row += 4;
   var licence_btn = new Button  ( 'choose',image_path('licence') );
@@ -150,10 +178,11 @@ function AccountPage ( sceneId )  {
     });
   });
 
+  /* ==
   row++;
   var authoris_btn = new Button ( 'manage',image_path('authorisation') );
   authoris_btn.setWidth         ( '100%' );
-  authoris_btn.setTooltip       ( 'Terms of feedback agremment must be chosen' );
+  authoris_btn.setTooltip       ( 'Optional 3rd-part software authorisation' );
   panel.setWidget               ( authoris_btn,row,1,1,2 );
   panel.setVerticalAlignment    ( row,1,'middle'  );
   authoris_btn.setDisabled      ( true );
@@ -163,6 +192,7 @@ function AccountPage ( sceneId )  {
       userData.authorisation = dlg.auth_dic;
     });
   });
+  */
 
   row++;
   panel.setCellSize  ( '','12pt',row++,0 );
@@ -170,7 +200,7 @@ function AccountPage ( sceneId )  {
   panel.setHLine     ( 2, row++,0, 1,4 );
   panel.setCellSize  ( '','12pt',row++,0 );
 
-  var update_btn = panel.setButton ( 'Update my account',image_path('email'),
+  var update_btn = panel.setButton ( 'Save changes',image_path('email'),
                                      row++,0,1,4 )
                         .setWidth  ( '100%' )
                         .setDisabled ( true ); // disable button until user data arrives from server
@@ -215,6 +245,9 @@ function AccountPage ( sceneId )  {
       userData.licence  = licence_btn .getText ();
       userData.feedback = feedback_btn.getText ();
       userData.action   = userdata_action.none;
+
+      __user_settings.project_prefix = fprefix_cbx.getValue();
+      userData.settings = __user_settings;
 
       serverRequest ( fe_reqtype.updateUserData,userData,'My Account',
                       function(response){
@@ -318,7 +351,7 @@ function AccountPage ( sceneId )  {
     // now activate buttons:
     licence_btn .setDisabled ( false );
     feedback_btn.setDisabled ( false );
-    authoris_btn.setDisabled ( false );
+    /* == authoris_btn.setDisabled ( false );  */
     update_btn  .setDisabled ( false );
     delete_btn  .setDisabled ( false );
     setDefaultButton ( update_btn,panel );

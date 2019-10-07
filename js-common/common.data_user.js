@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    28.08.19   <--  Date of Last Modification.
+ *    01.10.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -53,6 +53,8 @@ function UserData()  {
   this.admin         = false;
   this.helpTopics    = [];
   this.authorisation = {};
+  this.settings      = {};
+  this.settings.project_prefix = false;
   this.action        = userdata_action.none;
 }
 
@@ -74,6 +76,8 @@ function checkUserData ( uData )  {
   }
   if (!uData.hasOwnProperty('authorisation'))
     uData.authorisation = {};
+  if (!uData.hasOwnProperty('settings'))
+    uData.settings = {};
   return msg;
 }
 

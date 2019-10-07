@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    31.08.19   <--  Date of Last Modification.
+#    30.09.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -46,6 +46,13 @@ class Auspex(basic.TaskDriver):
         # fetch input data
 
         hkl = self.makeClass ( self.input_data.data.hkl[0] )
+
+        if sys.platform=="darwin" and not hkl.hasIntensities():
+            self.putMessage ( "<h3>The task cannot be run</h3>" +\
+                "<i>On Mac OSX, the task works only with intensity data, " +\
+                "which is absent in the provided reflection dataset.</i>" )
+            self.fail ( "","no intensity data" )
+            return
 
         # prepare input file with cad (needed because Auspex does not take column
         # labels on input)

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    27.12.18   <--  Date of Last Modification.
+ *    02.10.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Phaser-EP Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2018
+ *  (C) E. Krissinel, A. Lebedev 2016-2019
  *
  *  =================================================================
  *
@@ -33,7 +33,7 @@ function TaskPhaserEP()  {
 
   this._type   = 'TaskPhaserEP';
   this.name    = 'phaser EP';
-  this.oname   = 'phaser-ep';  // default output file name template
+  this.setOName ( 'phaser-ep' );  // default output file name template
   this.title   = 'Experimental Phasing with Phaser';
   this.helpURL = './html/jscofe_task_phaserep.html';
 
@@ -100,7 +100,7 @@ function TaskPhaserEP()  {
                                 'OFF|off',
                                 'SEL|on: selected atom types'
                                ],
-                    value    : 'ON',
+                    value    : 'SEL',
                     position : [0,0,1,3]
                   },
               LLG_REAL_CBX : {
@@ -117,12 +117,12 @@ function TaskPhaserEP()  {
                     label     : 'complete with purely anomalous scatterers',
                     tooltip   : 'Check to complete LLG map with purely real scatterers.',
                     iwidth    : 350,
-                    value     : true,
+                    value     : false,
                     position  : [2,2,1,3],
                     showon    : {LLG_SEL:['SEL']}  // from this and input data section
                   },
               LLG_ATYPE : {
-                    type      : 'string',   // empty string allowed
+                    type      : 'string_',   // empty string allowed
                     keyword   : 'atomtype=',
                     label     : 'complete with atom type(s)',
                     tooltip   : 'Give a comma-separated list of atom types to ' +
@@ -315,6 +315,10 @@ if (!__template)  {
       var main_xyz          = (dt.subtype.indexOf('xyz')>=0);
 
       var name = this.name;
+
+      var llg_atype = inpParamRef.parameters['LLG_ATYPE'].input;
+      if (!llg_atype.getValue())
+        llg_atype.setValue ( dt.ASU.ha_type );
 
       if (substr)  {
         substr = substr.dropdown[0];

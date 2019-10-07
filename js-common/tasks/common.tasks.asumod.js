@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    07.01.19   <--  Date of Last Modification.
+ *    02.10.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -34,7 +34,7 @@ function TaskASUMod()  {
 
   this._type     = 'TaskASUMod';
   this.name      = 'asymmetric unit correction';
-  this.oname     = 'asu correction';  //'*';   // asterisk here means do not use
+  this.setOName ( 'asucorr' );  // default output file name template
   this.title     = 'Asymmetric Unit Correction';
   this.helpURL   = './html/jscofe_task_asumod.html';
   this.fasttrack = true;  // enforces immediate execution

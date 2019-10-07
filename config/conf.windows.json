@@ -94,8 +94,7 @@
     "port"               : 465,
     "secure"             : true,
     "auth"               : {
-      "user" : "ccp4.cofe@gmail.com",
-      "pass" : "ccp4.cofe.2016"
+      "file" : "auth_pass.txt"
     }
   }
 

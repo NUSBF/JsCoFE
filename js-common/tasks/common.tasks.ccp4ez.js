@@ -5,7 +5,7 @@
 /*
  *  =================================================================
  *
- *    19.02.18   <--  Date of Last Modification.
+ *    02.10.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -16,7 +16,7 @@
  *  **** Content :  CCP4ez Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2018
+ *  (C) E. Krissinel, A. Lebedev 2016-2019
  *
  *  =================================================================
  *
@@ -38,7 +38,7 @@ function TaskCCP4ez()  {
 
   this._type   = 'TaskCCP4go';
   this.name    = 'ccp4go';
-  this.oname   = 'ccp4go';  // default output file name template
+  this.setOName ( 'ccp4go' );  // default output file name template
   this.title   = 'CCP4go "Don\'t make me think!" (experimental)';
   this.helpURL = './html/jscofe_task_ccp4go.html';
 

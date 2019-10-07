@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    27.12.18   <--  Date of Last Modification.
+ *    02.10.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  PISA Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2018
+ *  (C) E. Krissinel, A. Lebedev 2016-2019
  *
  *  =================================================================
  *
@@ -33,7 +33,7 @@ function TaskPISA()  {
 
   this._type   = 'TaskPISA';
   this.name    = 'pisa';
-  this.oname   = 'pisa';  // default output file name template
+  this.setOName ( 'pisa' );  // default output file name template
   this.title   = 'Surface, Interfaces and Assembly Analysis with PISA';
   this.helpURL = './html/jscofe_task_pisa.html';
 

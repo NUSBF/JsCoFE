@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    03.05.19   <--  Date of Last Modification.
+#    30.09.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -35,6 +35,7 @@ class DType(dtype_template.DType):
             self.dname         = "hkl"
             self.version      += 1      # versioning increments from parent to children
             self.wtype         = "choose-one" # 'low-remote', 'peak', 'native', 'high-remote'
+            self.ha_type       = ""     # heavy atom type
             self.f_use_mode    = "NO"   # 'NO','EDGE','ON','OFF' (Phaser-EP)
             self.f1            = ""     # amplitude shift  (Crank-2, Phaser-EP)
             self.f11           = ""     # phase shift      (Crank-2, Phaser-EP)
@@ -42,12 +43,10 @@ class DType(dtype_template.DType):
             self.res_high      = ""     # high resolution limit
             self.res_ref       = ""     # high resolution for refinement (Phaser-MR)
             self.wavelength    = ""     # wavelength (Phaser-EP)
-            #self.anomAtomType  = ""     # anomalous scattering type
             self.useForPhasing = False  # flag for native dataset in SAD/MAD (Crank-2)
             self.new_spg       = ""     # new space group for reindexing
             self.spg_alt       = ""     # alternative space groups for Phaser
             self.freeRds       = None   # reference to freeR dataset
-            #self.useHKLSet     = "auto" # if given, forces use of F,I,Fpm,Ipm (Refmac)
             self.useHKLSet     = "F"    # if given, forces use of F,Fpm,TI,TF (Refmac)
             self.aimless_meta  = {"jobId":0,"file":None}  # reference to aimless xml file
         return
@@ -148,6 +147,14 @@ class DType(dtype_template.DType):
                self.getMeta ( "Fpm.minus.value","" ) + " " + \
                self.getMeta ( "Fpm.minus.sigma","" ) + " " + \
                self.getMeta ( "FREE"           ,"" )
+
+
+    def hasIntensities ( self ):
+        if hasattr(self.dataset,"Imean") and self.dataset.Imean is not None:
+            return True
+        if hasattr(self.dataset,"Ipm") and self.dataset.Ipm is not None:
+            return True
+        return False
 
 
     def getMeanColumns ( self ):

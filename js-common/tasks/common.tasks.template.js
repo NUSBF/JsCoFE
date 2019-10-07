@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    19.07.19   <--  Date of Last Modification.
+ *    02.10.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -65,8 +65,8 @@ function TaskTemplate()  {
   this.name         = 'template';
   this.uname        = '';   // name given by user, overrides 'name' if not empty
   this.title        = 'Template';
-  this.oname        = 'template'; // default output file name template
-  this.uoname       = '';         // output file name template given by user
+  this.setOName ( 'template' );  // default output file name template
+  this.uoname       = '';        // output file name template given by user
   this.state        = job_code.new;  // 'new', 'running', 'finished'
   this.helpURL      = null;   // (relative) url to help file, null will hide the help button
   this.nc_type      = 'ordinary'; // required Number Cruncher type
@@ -158,6 +158,26 @@ TaskTemplate.prototype.cpu_credit = function()  {
 // export such that it could be used in both node and a browser
 if (!dbx)  {
   // for client side
+
+  TaskTemplate.prototype.setOName = function ( base_name )  {
+  // sets default oname (output file name template) according to account and
+  // current project settings
+    if (base_name && (base_name!='*'))  {
+      this.oname = '';
+      if (__current_page && (__current_page._type=='ProjectPage'))  {
+        var pData = __current_page.job_tree.projectData;
+        checkProjectData ( pData );
+        if (__user_settings.hasOwnProperty('project_prefix') &&
+            __user_settings.project_prefix && (pData.settings.prefix_key==0))
+              this.oname = pData.desc.name;
+        else  this.oname = pData.settings.prefix;
+      }
+      if (this.oname)
+        this.oname += '_';
+      this.oname += base_name;
+    } else
+      this.oname = base_name;
+  }
 
   TaskTemplate.prototype.canMove = function ( node,jobTree )  {
   var parent_task = jobTree.getTaskByNodeId(node.parentId);
@@ -2018,6 +2038,10 @@ if (!dbx)  {
   var utils = require('../../js-server/server.utils');
   var prj   = require('../../js-server/server.fe.projects');
   var conf  = require('../../js-server/server.configuration');
+
+  TaskTemplate.prototype.setOName = function ( base_name )  {
+    this.oname = base_name;
+  }
 
   TaskTemplate.prototype.getNCores = function ( ncores_available )  {
   // This function should return the number of cores, up to ncores_available,

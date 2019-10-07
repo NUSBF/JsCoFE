@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    27.12.18   <--  Date of Last Modification.
+ *    02.10.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Molrep Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2018
+ *  (C) E. Krissinel, A. Lebedev 2016-2019
  *
  *  =================================================================
  *
@@ -34,7 +34,7 @@ function TaskMolrep()  {
 
   this._type   = 'TaskMolrep';
   this.name    = 'molrep';
-  this.oname   = 'molrep';  // default output file name template
+  this.setOName ( 'molrep' );  // default output file name template
   this.title   = 'Molecular Replacement with Molrep';
   this.helpURL = './html/jscofe_task_molrep.html';
 

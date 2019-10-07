@@ -38,12 +38,6 @@ from  pycofe.proc    import makelib
 
 class EditRevision(asudef.ASUDef):
 
-    # make task-specific definitions
-    #def matthews_report(self):  return "matthews_report"
-    #def getXMLFName    (self):  return "matthews.xml"
-    #def seq_table_id   (self):  return "seq_table"
-    #def res_table_id   (self):  return "res_table"
-
     # ------------------------------------------------------------------------
 
     def run(self):
@@ -59,7 +53,7 @@ class EditRevision(asudef.ASUDef):
             struct0 = self.makeClass ( self.input_data.data.struct0 [0] )
 
         associated_data_list = []
-        change_list          = []
+        change_list          = []  # receives a list of changes required
 
         hkl = None
         if hasattr(self.input_data.data,"hkl"):  # optional data parameter
@@ -113,7 +107,7 @@ class EditRevision(asudef.ASUDef):
         else:
             revision = revision0
 
-        if revision:
+        if revision:  # should be always True
 
             if 'xyz' in change_list or 'phases' in change_list or 'lig' in change_list:
                 # redefine structure
@@ -169,12 +163,12 @@ class EditRevision(asudef.ASUDef):
                                 copy_files=False )
                 if structure:
                     if lig_codes:
-                        structure.setLigands ( lig_codes )
+                        structure.setLigands  ( lig_codes )
                     if xyz:
                         structure.addSubtypes ( xyz.getSubtypes() )
                     if phases:
                         structure.addSubtypes ( phases.getSubtypes() )
-                        structure.copyLabels ( phases )
+                        structure.copyLabels  ( phases )
                         if 'phases' in change_list:
                             structure.setHKLLabels ( hkl )
                     self.putStructureWidget ( self.getWidgetId("structure_btn_"),

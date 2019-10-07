@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    27.08.19   <--  Date of Last Modification.
+ *    02.10.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -33,7 +33,7 @@ function TaskShelxEMR()  {
 
   this._type   = 'TaskShelxEMR';
   this.name    = 'shelxe';
-  this.oname   = 'shelxe';  // default output file name template
+  this.setOName ( 'shelxe' );  // default output file name template
   this.title   = 'Density Modificaton and C&alpha;-tracing with ShelxE';
   this.helpURL = './html/jscofe_task_shelxemr.html';
 

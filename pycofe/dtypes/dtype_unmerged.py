@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    31.10.18   <--  Date of Last Modification.
+#    30.09.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -35,6 +35,7 @@ class DType(dtype_template.DType):
         if not json_str:
             self._type    = dtype()
             self.dname    = "unmerged"
+            self.ha_type  = ""   # heavy atom type
             self.version += 0    # versioning increments from parent to children
         return
 

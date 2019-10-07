@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    25.06.19   <--  Date of Last Modification.
+ *    02.10.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -33,7 +33,7 @@ function TaskChangeSpG()  {
 
   this._type     = 'TaskChangeSpG';
   this.name      = 'change space group';  // short name for job tree
-  this.oname     = 'SpG';          // default output file name template
+  this.setOName ( 'SpG' );  // default output file name template
   this.title     = 'Change Space Group';  // full title
   this.helpURL   = './html/jscofe_task_changespg.html';
   this.fasttrack = true;  // enforces immediate execution

@@ -14,6 +14,7 @@
         "request": ">0.2.0",
         "tmp": "*",
         "url": "*",
-        "util": "*"
+        "util": "*",
+        "check-disk-space": "*"
     }
 }

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    18.09.19   <--  Date of Last Modification.
+ *    02.10.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Ensemble Preparation from Sequence Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2017
+ *  (C) E. Krissinel, A. Lebedev 2016-2019
  *
  *  =================================================================
  *
@@ -35,7 +35,7 @@ function TaskEnsemblePrepSeq()  {
 
   this._type   = 'TaskEnsemblePrepSeq';
   this.name    = 'ensemble preparation (seq)';
-  this.oname   = 'ensemble';  // default output file name template
+  this.setOName ( 'ensemble' );  // default output file name template
   this.title   = 'Ensemble Preparation for MR from Sequence';
   this.helpURL = './html/jscofe_task_ensembleprepseq.html';
 

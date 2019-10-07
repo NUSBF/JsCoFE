@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    07.07.19   <--  Date of Last Modification.
+ *    02.10.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -33,7 +33,7 @@ function TaskSimbad()  {
 
   this._type   = 'TaskSimbad';
   this.name    = 'simbad';
-  this.oname   = 'simbad';  // default output file name template
+  this.setOName ( 'simbad' );  // default output file name template
   this.title   = 'Lattice and Contaminants Search with Simbad'; // changes on input
   this.helpURL = './html/jscofe_task_simbad.html';
 

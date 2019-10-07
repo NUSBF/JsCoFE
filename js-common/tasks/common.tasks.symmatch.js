@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    07.01.19   <--  Date of Last Modification.
+ *    02.10.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -33,7 +33,7 @@ function TaskSymMatch()  {
 
   this._type   = 'TaskSymMatch';
   this.name    = 'symmatch';
-  this.oname   = 'symmatch';  // default output file name template
+  this.setOName ( 'symmatch' );  // default output file name template
   this.title   = 'Symmetry Match to Reference Structure with CSymMatch';
   this.helpURL = './html/jscofe_task_symmatch.html';
 

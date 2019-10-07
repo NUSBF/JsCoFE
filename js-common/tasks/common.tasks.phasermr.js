@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    11.04.19   <--  Date of Last Modification.
+ *    02.10.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -33,7 +33,7 @@ function TaskPhaserMR()  {
 
   this._type   = 'TaskPhaserMR';
   this.name    = 'phaser MR';
-  this.oname   = 'phaser-mr';  // default output file name template
+  this.setOName ( 'phaser-mr' );  // default output file name template
   this.title   = 'Molecular Replacement with Phaser';
   this.helpURL = './html/jscofe_task_phasermr.html';
 

@@ -46,7 +46,7 @@ function processPOSTData ( server_request,server_response,process_data_function 
 
     });
 
-    server_request.on ( 'end', function() {
+    server_request.on ( 'end', function(){
 
       var data_obj = class_map.getClassInstance ( data );
 

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    17.07.19   <--  Date of Last Modification.
+ *    02.10.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -43,7 +43,7 @@ function TaskEnsemblePrepXYZ()  {
 
   this._type   = 'TaskEnsemblePrepXYZ';
   this.name    = 'ensemble preparation (xyz)';
-  this.oname   = 'ensemble';  // default output file name template
+  this.setOName ( 'ensemble' );  // default output file name template
   this.title   = 'Ensemble Preparation for MR from Coordinates';
   this.helpURL = './html/jscofe_task_ensembleprepxyz.html';
 
