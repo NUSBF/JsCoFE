@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    06.10.19   <--  Date of Last Modification.
+ *    07.10.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -101,7 +101,7 @@ function start ( callback_func )  {
         if (command.startsWith(local_prefixes[i]))  {
           responded = true;
           utils.send_file ( command,server_response,utils.getMIMEType(command),
-                            false,0,function(fpath,mimeType,deleteOnDone,calSize){
+                            false,0,function(fpath,mimeType,deleteOnDone,capSize){
             proxy.web ( server_request,server_response, options_web );
           });
         }
