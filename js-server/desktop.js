@@ -263,6 +263,11 @@ conf.assignPorts ( function(){
 
       var cfg = conf.getFEConfig();
       cfg.externalURL = cfg.url();
+
+      var cfg = conf.getFEProxyConfig();
+      if (cfg)
+        cfg.externalURL = cfg.url();
+
       for (var i=0;i<ncConfigs.length;i++)  {
         cfg = conf.getNCConfig(i);
         cfg.externalURL = cfg.url();

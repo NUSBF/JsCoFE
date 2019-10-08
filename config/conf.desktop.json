@@ -47,7 +47,7 @@
     "protocol"         : "http",
     "host"             : "localhost",
     "port"             : 8085,
-    "externalURL"      : "http://localhost:8085",
+    "externalURL"      : "",
     "exclusive"        : true,
     "stoppable"        : false,
     "localisation"     : 1

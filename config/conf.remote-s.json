@@ -12,10 +12,10 @@
   },
 
   "FrontEnd" : {
-    "protocol"         : "http",
-    "host"             : "ccp4serv6.rc-harwell.ac.uk/jscofe/",
+    "protocol"         : "https",
+    "host"             : "cloud.ccp4.ac.uk",
     "port"             : 0,
-    "externalURL"      : "http://ccp4serv6.rc-harwell.ac.uk/jscofe/",
+    "externalURL"      : "https://cloud.ccp4.ac.uk",
     "exclusive"        : true,
     "stoppable"        : false,
     "fsmount"          : null,
@@ -35,8 +35,8 @@
   "FEProxy" : {
     "protocol"         : "http",
     "host"             : "localhost",
-    "port"             : 8083,
-    "externalURL"      : "http://localhost:8083",
+    "port"             : 0,
+    "externalURL"      : "",
     "exclusive"        : true,
     "stoppable"        : false,
     "localisation"     : 1

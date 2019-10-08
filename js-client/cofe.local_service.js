@@ -80,6 +80,9 @@ function checkLocalService ( callback_func )  {
         __setup_desc    = rData.setup_desc;
         __ccp4_version  = rData.ccp4_version;
         __check_session_period = rData.check_session_period;
+        __fe_url        = document.location.protocol + '//' +
+                          document.location.host     +
+                          document.location.pathname;
         if (rData.localuser)  {
           __local_user    = true;
           __login_user    = rData.localuser;
@@ -89,8 +92,11 @@ function checkLocalService ( callback_func )  {
         if (!__local_service)
           serverCommand ( fe_command.getClientInfo,{},'getClientInfo',
                           function(rsp){
-            if (rsp.status==fe_retcode.ok)
+            if (rsp.status==fe_retcode.ok)  {
               __local_service = rsp.data.local_service;
+              if (rsp.data.fe_url)
+                __fe_url = rsp.data.fe_url;
+            }
             if (__local_service)
                   probeClient ( 20,function(){ callback_func(0); });
             else  callback_func ( 0 );

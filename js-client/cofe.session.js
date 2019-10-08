@@ -123,7 +123,6 @@ function login ( user_login_name,user_password,sceneId,page_switch )  {
               __admin         = userData.admin;
               __cloud_storage = response.data.cloud_storage;
               __demo_projects = response.data.demo_projects;
-              __fe_url        = response.data.fe_url;
 
               if ('helpTopics' in userData)
                     __doNotShowList = userData.helpTopics;

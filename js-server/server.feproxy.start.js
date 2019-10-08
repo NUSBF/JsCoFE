@@ -98,7 +98,7 @@ function start ( callback_func )  {
     switch (command)  {
 
       case cmd.fe_command.getClientInfo :
-            conf.getClientInfo ( {},function(response){ response.send(server_response); });
+            conf.getClientInfo ( null,function(response){ response.send(server_response); });
           break;
 
       case cmd.fe_command.getFEProxyInfo :

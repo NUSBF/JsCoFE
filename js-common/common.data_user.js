@@ -51,6 +51,7 @@ function UserData()  {
   this.knownSince    = ''; // date
   this.lastSeen      = ''; // date
   this.admin         = false;
+  this.file_system   = 'fs0';  // where users projects are kept
   this.helpTopics    = [];
   this.authorisation = {};
   this.settings      = {};
@@ -78,6 +79,8 @@ function checkUserData ( uData )  {
     uData.authorisation = {};
   if (!uData.hasOwnProperty('settings'))
     uData.settings = {};
+  if (!uData.hasOwnProperty('file_system'))
+    uData.file_system = 'fs0';
   return msg;
 }
 
