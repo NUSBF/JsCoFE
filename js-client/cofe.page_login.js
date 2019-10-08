@@ -47,6 +47,19 @@ function LoginPage ( sceneId )  {
   panel.setWidth      ( '300pt' );
   this.grid.setWidget ( panel,0,1,1,1 );
 
+  /*
+  var connected_lbl = null;
+  var host_lbl      = null;
+  if (__fe_url != document.location.protocol + '//' +
+                  document.location.host     +
+                  document.location.pathname)  {
+    connected_lbl = new Label ( 'Connected to:' );
+    host_lbl      = new Label ( __fe_url );
+    connected_lbl.setNoWrap().setFontSize ( '125%' );
+    host_lbl.setNoWrap().setFontSize ( '125%' ).setFontItalic(true);
+  }
+  */
+
   var login_lbl   = new Label     ( 'Login name:' );
   var pwd_lbl     = new Label     ( 'Password:'   );
   var login_inp   = new InputText ( '' );
@@ -74,7 +87,27 @@ function LoginPage ( sceneId )  {
        .setFont  ( 'times','300%',true,true ).setNoWrap();
   panel.setHorizontalAlignment  ( row++ ,0,'center' );
   panel.setWidget               ( this.makeSetupNamePanel(), row++,0,1,2 );
-  panel.setCellSize             ( '','20pt',row++,0 );
+  /*
+  if (__fe_url != document.location.protocol + '//' +
+                  document.location.host     +
+                  document.location.pathname)  {
+    panel.setLabel ( __fe_url, row,0,1,2 )
+         .setFontSize ( '125%' ).setFontItalic(true).setNoWrap();
+    panel.setCellSize ( '','24pt',row,0 );
+    panel.setVerticalAlignment   ( row   ,0,'bottom' );
+    panel.setHorizontalAlignment ( row++ ,0,'center' );
+  }
+  */
+  panel.setCellSize ( '','20pt',row++,0 );
+
+  /*
+  if (connected_lbl)  {
+    panel.setWidget   ( connected_lbl,row,0,1,1 );
+    panel.setCellSize ( '','24pt'    ,row++,0 );
+    panel.setWidget   ( host_lbl     ,row,1,1,1 );
+  }
+  */
+
   panel.setWidget               ( login_lbl,row  ,0,1,1 );
   panel.setWidget               ( pwd_lbl  ,row+1,0,1,1 );
   panel.setVerticalAlignment    ( row  ,0,'middle' );
@@ -101,7 +134,9 @@ function LoginPage ( sceneId )  {
   panel.setWidget               ( login_btn,row++,0,1,2 );
   panel.setWidget               ( pwd_btn  ,row++,0,1,2 );
   panel.setWidget               ( reg_btn  ,row++,0,1,2 );
-  panel.setLabel                ( '&nbsp;<br><center><i>For best experience, access ' +
+
+  if (!__local_service)
+    panel.setLabel              ( '&nbsp;<br><center><i>For best experience, access ' +
                                   'this web site via<br>' +
                                   '<a href="manual/html/index.html">' + appName() + ' Client</a>.' +
                                   '</i></center>',

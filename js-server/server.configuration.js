@@ -102,19 +102,6 @@ ServerConfig.prototype.getQueueName = function()  {
   return '-';
 }
 
-/*
-ServerConfig.prototype.getPIDFilePath = function()  {
-//var pidfilepath = null;
-//  if ('storage' in this)
-//    pidfilepath = path.join ( this.storage,'pid.dat' );
-//  else if ('projectsPath' in this)
-//    pidfilepath = path.join ( this.projectsPath,'pid.dat' );
-//  else if (fe_server)
-//    pidfilepath = path.join ( fe_server.projectsPath,'pid.dat' );
-//  return pidfilepath;
-  return path.join ( this.storage,this.type.toLowerCase() + '_pid.dat' );
-}
-*/
 
 ServerConfig.prototype.getPIDFilePath = function()  {
 var pidfilepath = null;
@@ -722,6 +709,8 @@ var response = null;  // must become a cmd.Response object to return
     var rData = {};
     if (client_server) rData.local_service = client_server.url();
                   else rData.local_service = null;
+    if (fe_server && (inData==null)) rData.fe_url = fe_server.url();
+                                else rData.fe_url = null;
     response = new cmd.Response ( cmd.fe_retcode.ok,'',rData );
   } else  {
     response = new cmd.Response ( cmd.fe_retcode.unconfigured,'','' );
@@ -733,7 +722,8 @@ function getFEProxyInfo ( inData,callback_func )  {
 var response = null;  // must become a cmd.Response object to return
   if (fe_server)  {
     var rData = {};
-    rData.config = fe_proxy;
+    rData.proxy_config = fe_proxy;
+    rData.fe_config    = fe_server;
     rData.ccp4_version = CCP4Version();
     response = new cmd.Response ( cmd.fe_retcode.ok,'',rData );
   } else  {
@@ -836,7 +826,6 @@ function isLocalFE()  {
 
 
 function getFETmpDir()  {
-//  return path.join ( getFEConfig().projectsPath,'tmp' );
   return path.join ( getFEConfig().storage,'tmp' );
 }
 

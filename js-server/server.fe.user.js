@@ -462,7 +462,6 @@ var fe_server = conf.getFEConfig();
         if (fe_server.hasOwnProperty('description'))
               rData.setup_desc = fe_server.description;
         else  rData.setup_desc = null;
-        rData.fe_url = fe_server.url();
 
         response = new cmd.Response ( cmd.fe_retcode.ok,token,rData );
 

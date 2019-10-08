@@ -80,12 +80,18 @@ BasePage.prototype.makeSetupNamePanel = function()  {
     _make_panel ( 'Home setup',image_path('setup_home') );
   } else  {
     _make_panel ( 'Unnamed setup',image_path('setup_unknown') );
-    /*
-    setupPanel.setLabel ( 'Unnamed setup', 0,0,1,1 )
-              .setFont  ( 'times','150%',true,true ).setNoWrap();
-    setupPanel.setHorizontalAlignment  ( 0,0,'center' );
-    */
   }
+
+  if (__fe_url != document.location.protocol + '//' +
+                  document.location.host     +
+                  document.location.pathname)  {
+    setupPanel.setLabel ( __fe_url, 1,0,1,4 )
+              .setFontSize ( '100%' ).setFontItalic(true).setNoWrap();
+    setupPanel.setCellSize ( '','20pt',1,0 );
+    setupPanel.setVerticalAlignment   ( 1,0,'bottom' );
+    setupPanel.setHorizontalAlignment ( 1,0,'center' );
+  }
+
 
   return setupPanel;
 

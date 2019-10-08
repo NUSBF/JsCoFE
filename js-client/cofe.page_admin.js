@@ -304,16 +304,26 @@ AdminPage.prototype.makeNodesInfoTab = function ( ndata )  {
   else if (__local_setup)  FEname = 'Home setup';
                      else  FEname = 'Unnamed setup';
 
+
+  var fe_url;
+  if (('FEProxy' in ndata) && ndata.FEProxy.fe_config)
+        fe_url = ndata.FEProxy.fe_config.externalURL;
+  else  fe_url = document.location.protocol + '//' +
+                 document.location.host +
+                 document.location.pathname;
+  if (ndata.FEconfig.externalURL!=fe_url)
+    fe_url += '<br><i>[' + ndata.FEconfig.externalURL + ']</i>';
+
   this.nodeListTable.setRow ( 'Front End','Front End Server',
-    [ FEname,ndata.FEconfig.externalURL,'FE',ndata.FEconfig.startDate,
+    [ FEname,fe_url,'FE',ndata.FEconfig.startDate,
       ndata.ccp4_version,'N/A','running','N/A','N/A','N/A' ],
     row,(row & 1)==1 );
   row++;
 
-  if ('FEProxy' in ndata)  {
+  if (('FEProxy' in ndata) && ndata.FEProxy.proxy_config)  {
     this.nodeListTable.setRow ( 'FE Proxy','Front End Proxy Server',
-      [ 'Local proxy',ndata.FEProxy.config.externalURL,'FE-PROXY',
-        ndata.FEProxy.config.startDate,
+      [ 'Local proxy',ndata.FEProxy.proxy_config.externalURL,'FE-PROXY',
+        ndata.FEProxy.proxy_config.startDate,
         ndata.ccp4_version,'N/A','running','N/A','N/A','N/A' ],
       row,(row & 1)==1 );
     row++;
