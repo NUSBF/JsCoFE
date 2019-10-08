@@ -14,11 +14,12 @@ def write_json(json_obj, json_path, indent=4):
 
 def main():
   confin = os.path.join('config', 'conf.')
-  confout = os.path.join('config2', 'conf.')
+# confout = os.path.join('config2', 'conf.')
+  confout = 'w_conf.'
 
-  dirout = os.path.dirname(confout)
-  if not os.path.isdir(dirout):
-    os.makedirs(dirout)
+# dirout = os.path.dirname(confout)
+# if not os.path.isdir(dirout):
+#   os.makedirs(dirout)
 
   for key in 'desktop', 'remote':
     json_obj = read_json(confin + key + '.json')

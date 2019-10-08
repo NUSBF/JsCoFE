@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    29.09.19   <--  Date of Last Modification.
+ *    08.10.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -96,8 +96,12 @@ function makeCommErrorMessage ( title,response )  {
         MessageNoJobDir ( title );
       break;
 
+    case fe_retcode.proxyError:
+        MessageProxyError ( title );
+      break;
+
     default:
-        alert ( 'unknown error, response='+JSON.stringify(response) );
+        //alert ( 'unknown error, response='+JSON.stringify(response) );
         MessageUnknownError ( title,'"'+response.message+'"' );
 
   }

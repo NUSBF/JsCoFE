@@ -211,7 +211,8 @@ function start_client_application()  {
 
   var job = child_process.spawn ( desktopConfig.clientApp,command );
 
-  if ( confout ) fse.mkdirsSync(confout + '.READY');
+//if ( confout ) fse.mkdirsSync(confout + '.READY');
+  if ( confout ) fse.mkdirsSync(path.join(path.dirname(confout), 'LOCK'));
   log.standard ( 5,'client application "' + msg + '" started, pid=' + job.pid );
 
   job.on ( 'close',function(code){

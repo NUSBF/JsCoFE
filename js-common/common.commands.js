@@ -2,7 +2,7 @@
 /*
  *  ===========================================================================
  *
- *    07.10.19   <--  Date of Last Modification.
+ *    08.10.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  ---------------------------------------------------------------------------
  *
@@ -130,7 +130,8 @@ var fe_retcode = {
   fileNotFound   : 'fileNotFound',   // file not found
   inProgress     : 'inProgress',     // process in progress
   askPassword    : 'askPassword',    // request password
-  regFailed      : 'regFailed'       // user registration failed
+  regFailed      : 'regFailed',      // user registration failed
+  proxyError     : 'proxyError'      // fe-proxy error
 }
 
 

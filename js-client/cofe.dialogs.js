@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    15.09.19   <--  Date of Last Modification.
+ *    08.10.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -159,6 +159,14 @@ function MessageNoJobDir ( title )  {
     'browser or machine, or implicitly by, e.g., copy/pasting URL in another' +
     'browser tab or window), or using forward/back/reload buttons in your ' +
     'browser.<p>Please log in again and repeat your actions.' +
+    '<p>If problem persists, please report to ccp4@stfc.ac.uk.' );
+}
+
+function MessageProxyError ( title )  {
+  new MessageBox ( title,
+    '<b>Proxy server error.</b>' +
+    '<p>Usually, this means that connection with ' + appName() +
+    ' is lost.<br>Please check your internet connection. ' +
     '<p>If problem persists, please report to ccp4@stfc.ac.uk.' );
 }
 
