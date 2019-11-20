@@ -1,8 +1,9 @@
+// *** TO BE RETIRED (19.10.19)
 
 /*
  *  =================================================================
  *
- *    02.10.19   <--  Date of Last Modification.
+ *    10.10.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -97,7 +98,7 @@ if (__template)  {
 
   var conf = require('../../js-server/server.configuration');
 
-  TaskASUDefStruct.prototype.makeInputData = function ( login,jobDir )  {
+  TaskASUDefStruct.prototype.makeInputData = function ( loginData,jobDir )  {
 
     // put hkl in input databox for copying their files in
     // job's 'input' directory
@@ -110,7 +111,7 @@ if (__template)  {
         hkl_sel.push ( hkl[i] );
     this.input_data.data['hkl'] = hkl_sel;
 
-    __template.TaskASUDef.prototype.makeInputData.call ( this,login,jobDir );
+    __template.TaskASUDef.prototype.makeInputData.call ( this,loginData,jobDir );
 
   }
 

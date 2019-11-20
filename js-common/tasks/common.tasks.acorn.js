@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.10.19   <--  Date of Last Modification.
+ *    12.11.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -42,7 +42,7 @@ function TaskAcorn()  {
       label       : 'Structure revision',     // label for input dialog
       inputId     : 'revision', // input Id for referencing input fields
       customInput : 'acorn',    // lay custom fields below the dropdown
-      version     : 0,          // minimum data version allowed
+      version     : 7,          // minimum data version allowed
       min         : 1,          // minimum acceptable number of data instances
       max         : 1           // maximum acceptable number of data instances
     }
@@ -909,18 +909,20 @@ if (__template)  {
 
   var conf = require('../../js-server/server.configuration');
 
-  TaskAcorn.prototype.makeInputData = function ( login,jobDir )  {
+  TaskAcorn.prototype.makeInputData = function ( loginData,jobDir )  {
 
     // put hkl and seq data in input databox for copying their files in
     // job's 'input' directory
 
     if ('revision' in this.input_data.data)  {
       var revision = this.input_data.data['revision'][0];
-      this.input_data.data['hkl']     = [revision.HKL];
-      this.input_data.data['istruct'] = [revision.Structure];
+      this.input_data.data['hkl'] = [revision.HKL];
+      if (revision.Options.leading_structure=='substructure')
+            this.input_data.data['istruct'] = [revision.Substructure];
+      else  this.input_data.data['istruct'] = [revision.Structure];
     }
 
-    __template.TaskTemplate.prototype.makeInputData.call ( this,login,jobDir );
+    __template.TaskTemplate.prototype.makeInputData.call ( this,loginData,jobDir );
 
   }
 

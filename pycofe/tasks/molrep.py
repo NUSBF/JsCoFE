@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    24.12.18   <--  Date of Last Modification.
+#    16.01.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -85,9 +85,13 @@ class Molrep(basic.TaskDriver):
             )
 
         model_2 = None
-        if revision.hasSubtype(dtype_template.subtypeXYZ()):  # optional data parameter
-            xstruct = self.makeClass ( revision.Structure )
-            model_2 = xstruct.getXYZFilePath(self.inputDir())
+        #if revision.hasSubtype(dtype_template.subtypeXYZ()):  # optional data parameter
+        #    xstruct = self.makeClass ( revision.Structure )
+        #    model_2 = xstruct.getXYZFilePath(self.inputDir())
+
+        if hasattr(self.input_data.data,"xmodel"):
+            xmodel = self.makeClass ( self.input_data.data.xmodel[0] )
+            model_2 = xmodel.getXYZFilePath(self.inputDir())
 
         if hasattr(self.input_data.data, "phases"):
             phases = self.makeClass ( self.input_data.data.phases[0] )

@@ -3,13 +3,13 @@
 #
 # ============================================================================
 #
-#    25.10.18   <--  Date of Last Modification.
+#    13.10.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  UNMERGED DATA IMPORT CLASS
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2018
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2019
 #
 # ============================================================================
 #
@@ -107,21 +107,22 @@ def run ( body,        # body is reference to the main Import class
     files_mtz = []
     for f_orig in body.files_all:
         if body.checkFileImport ( f_orig,import_filetype.ftype_MTZIntegrated() ):
-            files_mtz.append((f_orig,import_filetype.ftype_MTZIntegrated()))
+            files_mtz.append ( [f_orig,import_filetype.ftype_MTZIntegrated()] )
         elif body.checkFileImport ( f_orig,import_filetype.ftype_XDSIntegrated() ):
-            files_mtz.append((f_orig,import_filetype.ftype_XDSIntegrated()))
+            files_mtz.append ( [f_orig,import_filetype.ftype_XDSIntegrated()] )
         elif body.checkFileImport ( f_orig,import_filetype.ftype_XDSScaled() ):
-            files_mtz.append((f_orig,import_filetype.ftype_XDSScaled()))
-
-        #f_base, f_ext = os.path.splitext(f_orig)
-        #if f_ext.lower() in ('.hkl', '.mtz'):
-        #    p_orig = os.path.join(body.importDir(), f_orig)
-        #    f_fmt = mtz.hkl_format(p_orig, body.file_stdout)
-        #    if f_fmt in ('xds_integrated', 'xds_scaled', 'mtz_integrated'):
-        #        files_mtz.append((f_orig, f_fmt))
+            files_mtz.append ( [f_orig,import_filetype.ftype_XDSScaled()] )
 
     if not files_mtz:
         return
+
+    flist = []
+    for i in range(len(files_mtz)):
+        body.files_all.remove ( files_mtz[i][0] )
+        flist.append ( files_mtz[i][0] )
+    flist = body.despaceFileNames ( flist,body.importDir() )
+    for i in range(len(files_mtz)):
+        files_mtz[i][0] = flist[i]
 
     unmergedSecId = body.getWidgetId ( "unmerged_mtz_sec" )
     imported_data = []
@@ -129,7 +130,6 @@ def run ( body,        # body is reference to the main Import class
     k = 0
     for f_orig, f_fmt in files_mtz:
       try:
-        body.files_all.remove ( f_orig )
         p_orig = os.path.join(body.importDir(), f_orig)
         p_mtzin = p_orig
         if not f_fmt.startswith('mtz_'):

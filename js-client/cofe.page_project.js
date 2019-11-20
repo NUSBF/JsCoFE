@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    02.10.19   <--  Date of Last Modification.
+ *    20.10.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -125,26 +125,27 @@ function ProjectPage ( sceneId )  {
                       //(task.state==job_code.remark) ||
                       //(task.state==job_code.remdet) ||
                       //(task.state==job_code.remdoc);
-      add_btn.setEnabled ( (task.state==job_code.finished) ||
-                           (task.state==job_code.failed)   ||
-                           (task.state==job_code.stopped)  ||
-                           is_remark );
+      add_btn.setEnabled ( (!__dormant) &&
+                           ((task.state==job_code.finished) ||
+                            (task.state==job_code.failed)   ||
+                            (task.state==job_code.stopped)  ||
+                            is_remark) );
       //insert_btn.setEnabled ( add_btn.isEnabled() );
       //clone_btn  .setEnabled ( dsel && (task.state!=job_code.remark) );
-      clone_btn  .setEnabled ( dsel );
-      moveup_btn .setEnabled ( task.canMove(node,jobTree) );
+      clone_btn  .setEnabled ( (!__dormant) && dsel && task.canClone(node,jobTree) );
+      moveup_btn .setEnabled ( (!__dormant) && task.canMove(node,jobTree) );
       stop_btn   .setEnabled ( dsel && (task.state==job_code.running) );
-      add_rem_btn.setEnabled ( (!has_remark) && (!is_remark) );
+      add_rem_btn.setEnabled ( (!__dormant) && (!has_remark) && (!is_remark) );
       if (is_remark)
             del_btn.setTooltip ( 'Delete remark' );
       else  del_btn.setTooltip ( 'Delete job' );
     } else  {  // root
-      add_btn   .setEnabled ( true  );
+      add_btn   .setEnabled ( !__dormant );
       //insert_btn.setEnabled ( true  );
-      clone_btn .setEnabled ( dsel  );
+      clone_btn .setEnabled ( false );  // dsel ???
       moveup_btn.setEnabled ( false );
       stop_btn  .setEnabled ( false );
-      add_rem_btn.setEnabled ( (!has_remark) );
+      add_rem_btn.setEnabled ( (!__dormant) && (!has_remark) );
     }
 
     if (replay_btn)  {
@@ -227,9 +228,11 @@ function ProjectPage ( sceneId )  {
 
 //alert ( 'on tree');
 
-    add_btn    .setDisabled ( false );
+    add_btn    .setDisabled ( __dormant );
     //insert_btn .setDisabled ( false );
-    moveup_btn .setDisabled ( false );
+    moveup_btn .setDisabled ( __dormant );
+    clone_btn  .setDisabled ( __dormant );
+    add_rem_btn.setDisabled ( __dormant );
     refresh_btn.setDisabled ( false );
 
     setButtonState();
@@ -376,6 +379,8 @@ function ProjectPage ( sceneId )  {
   add_btn    .setDisabled ( true );
   //insert_btn .setDisabled ( true );
   moveup_btn .setDisabled ( true );
+  clone_btn  .setDisabled ( true );
+  add_rem_btn.setDisabled ( true );
   refresh_btn.setDisabled ( true );
 
   help_btn.addOnClickListener ( function(){

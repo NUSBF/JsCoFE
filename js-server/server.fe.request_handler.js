@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    14.02.19   <--  Date of Last Modification.
+ *    20.10.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -34,145 +34,149 @@ var cmd  = require('../js-common/common.commands');
 
 // ==========================================================================
 
-function requestHandler ( login,request_cmd,data,callback_func )  {
+function requestHandler ( loginData,request_cmd,data,callback_func )  {
 var response = null;
 
   switch (request_cmd)  {
 
     case cmd.fe_reqtype.logout :
-          response = user.userLogout ( login );
+          response = user.userLogout ( loginData );
         break;
 
     case cmd.fe_reqtype.getUserData :
-          response = user.getUserData ( login );
+          response = user.getUserData ( loginData );
         break;
 
     case cmd.fe_reqtype.getUserRation :
-          response = user.getUserRation ( login );
+          response = user.getUserRation ( loginData );
         break;
 
     case cmd.fe_reqtype.updateUserData :
-          response = user.updateUserData ( login,data );
+          response = user.updateUserData ( loginData,data );
         break;
 
     case cmd.fe_reqtype.updateUData_admin :
-          response = user.updateUserData_admin ( login,data );
+          response = user.updateUserData_admin ( loginData,data );
         break;
 
     case cmd.fe_reqtype.deleteUser :
-          response = user.deleteUser ( login,data );
+          response = user.deleteUser ( loginData,data );
         break;
 
     case cmd.fe_reqtype.deleteUser_admin :
-          response = user.deleteUser_admin ( login,data );
+          response = user.deleteUser_admin ( loginData,data );
         break;
 
     case cmd.fe_reqtype.saveHelpTopics :
-          response = user.saveHelpTopics ( login,data );
+          response = user.saveHelpTopics ( loginData,data );
        break;
 
     case cmd.fe_reqtype.sendAnnouncement :
-          response = user.sendAnnouncement ( login,data );
+          response = user.sendAnnouncement ( loginData,data );
+       break;
+
+    case cmd.fe_reqtype.manageDormancy :
+          response = user.manageDormancy ( loginData,data );
        break;
 
     case cmd.fe_reqtype.getProjectList :
-          response = prj.getProjectList ( login );
+          response = prj.getProjectList ( loginData );
        break;
 
     case cmd.fe_reqtype.getUserKnowledge :
-          response = prj.getUserKnowledgeData ( login );
+          response = prj.getUserKnowledgeData ( loginData );
        break;
 
     case cmd.fe_reqtype.saveProjectList :
-          response = prj.saveProjectList ( login,data );
+          response = prj.saveProjectList ( loginData,data );
        break;
 
     case cmd.fe_reqtype.getProjectData :  // returns _current_ project data
-          response = prj.getProjectData ( login,data );
+          response = prj.getProjectData ( loginData,data );
        break;
 
     case cmd.fe_reqtype.renameProject :  // returns _current_ project data
-          response = prj.renameProject ( login,data );
+          response = prj.renameProject ( loginData,data );
        break;
 
     case cmd.fe_reqtype.saveProjectData :
-          response = prj.saveProjectData ( login,data );
+          response = prj.saveProjectData ( loginData,data );
        break;
 
     case cmd.fe_reqtype.preparePrjExport :
-          response = prj.prepareProjectExport ( login,data );
+          response = prj.prepareProjectExport ( loginData,data );
        break;
 
     case cmd.fe_reqtype.checkPrjExport :
-          response = prj.checkProjectExport ( login,data );
+          response = prj.checkProjectExport ( loginData,data );
        break;
 
     case cmd.fe_reqtype.finishPrjExport :
-          response = prj.finishProjectExport ( login,data );
+          response = prj.finishProjectExport ( loginData,data );
        break;
 
     case cmd.fe_reqtype.startDemoImport :
-          response = prj.startDemoImport ( login,data );
+          response = prj.startDemoImport ( loginData,data );
        break;
 
     case cmd.fe_reqtype.checkPrjImport :
-          response = prj.checkProjectImport ( login,data );
+          response = prj.checkProjectImport ( loginData,data );
        break;
 
     case cmd.fe_reqtype.finishPrjImport :
-          response = prj.finishProjectImport ( login,data );
+          response = prj.finishProjectImport ( loginData,data );
        break;
 
     case cmd.fe_reqtype.prepareJobExport :
-          response = prj.prepareJobExport ( login,data );
+          response = prj.prepareJobExport ( loginData,data );
        break;
 
     case cmd.fe_reqtype.checkJobExport :
-          response = prj.checkJobExport ( login,data );
+          response = prj.checkJobExport ( loginData,data );
        break;
 
     case cmd.fe_reqtype.finishJobExport :
-          response = prj.finishJobExport ( login,data );
+          response = prj.finishJobExport ( loginData,data );
        break;
 
     case cmd.fe_reqtype.saveJobData :
-          response = prj.saveJobData ( login,data );
+          response = prj.saveJobData ( loginData,data );
        break;
 
     case cmd.fe_reqtype.getJobFile :
-          response = prj.getJobFile ( login,data );
+          response = prj.getJobFile ( loginData,data );
        break;
 
     case cmd.fe_reqtype.runJob :
-          rj.runJob ( login,data,callback_func );
+          rj.runJob ( loginData,data,callback_func );
        break;
 
     case cmd.fe_reqtype.replayJob :
-          rj.replayJob ( login,data,callback_func );
+          rj.replayJob ( loginData,data,callback_func );
        break;
 
     case cmd.fe_reqtype.checkJobs :
-          response = rj.checkJobs ( login,data );
+          response = rj.checkJobs ( loginData,data );
        break;
 
     case cmd.fe_reqtype.stopJob :
-          response = rj.stopJob ( login,data );
+          response = rj.stopJob ( loginData,data );
        break;
 
     case cmd.fe_reqtype.getFacilityData :
-          response = fcl.getUserFacilityList ( login,data,callback_func );
+          response = fcl.getUserFacilityList ( loginData,data,callback_func );
        break;
 
     case cmd.fe_reqtype.updateFacility :
-          response = fcl.updateFacility ( login,data );
+          response = fcl.updateFacility ( loginData,data );
        break;
 
     case cmd.fe_reqtype.checkFclUpdate :
-          response = fcl.checkFacilityUpdate ( login,data );
+          response = fcl.checkFacilityUpdate ( loginData,data );
        break;
 
     case cmd.fe_reqtype.getAdminData :
-          response = adm.getAdminData ( login,data,callback_func );
+          response = adm.getAdminData ( loginData,data,callback_func );
        break;
 
     default: response = new cmd.Response ( cmd.fe_retcode.wrongRequest,

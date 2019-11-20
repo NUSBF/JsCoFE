@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    27.09.19   <--  Date of Last Modification.
+ *    09.10.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -110,10 +110,10 @@ function Communicate ( server_request )  {
     var sindex = this.filePath.lastIndexOf ( cmd.special_url_tag );
     if (sindex>=0)  {
 
-      var flist = this.filePath.slice(sindex).split('/');
-      var login = user.getLoginFromHash ( flist[1] );
+      var flist     = this.filePath.slice(sindex).split('/');
+      var loginData = user.getLoginData ( flist[1] );
 
-      if (login.length>0)  {  // login is valid
+      if (loginData.login.length>0)  {  // login is valid
 
         // calculate path within job directory
         var localPath = '';
@@ -122,16 +122,16 @@ function Communicate ( server_request )  {
 
         // make full path for local (FE-based) file
         if (localPath.length>0)  // file in a job directory
-          this.filePath = path.join ( prj.getJobDirPath(login,flist[2],flist[3]),
+          this.filePath = path.join ( prj.getJobDirPath(loginData,flist[2],flist[3]),
                                       localPath );
         else // file in a project directory
-          this.filePath = path.join ( prj.getProjectDirPath(login,flist[2]),
+          this.filePath = path.join ( prj.getProjectDirPath(loginData,flist[2]),
                                       flist[3] );
         //console.log ( ' fp='+this.filePath );
 
         // now check whether the job is currently running, in which case the
         // requested file should be fetched from the respective number cruncher
-        var jobEntry = rj.getEFJobEntry ( login,flist[2],flist[3] );
+        var jobEntry = rj.getEFJobEntry ( loginData,flist[2],flist[3] );
 //      if (jobEntry && ((jobEntry.nc_type=='ordinary') ||
 //                       (conf.isLocalFE() &&
 //                        (!localPath.endsWith('__dir.tar.gz')))))  {  // yes the job is running

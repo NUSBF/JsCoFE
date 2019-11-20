@@ -162,8 +162,8 @@ class MrBUMP(ccp4go_morda.MoRDa):
 
         if mrbump_mtz:
 
-            edmap.calcCCP4Maps ( mrbump_mtz,os.path.join(self.mrbump_dir(),"mrbump"),
-                        "./",self.file_stdout,self.file_stderr,"refmac",None )
+            #edmap.calcCCP4Maps ( mrbump_mtz,os.path.join(self.mrbump_dir(),"mrbump"),
+            #            "./",self.file_stdout,self.file_stderr,"refmac",None )
             mrbump_map  = os.path.join ( self.mrbump_dir(),"mrbump.map" )
             mrbump_dmap = os.path.join ( self.mrbump_dir(),"mrbump.diff.map" )
 

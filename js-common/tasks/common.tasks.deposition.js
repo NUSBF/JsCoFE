@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.10.19   <--  Date of Last Modification.
+ *    10.10.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -81,7 +81,7 @@ if (__template)  {
   var utils  = require('../../js-server/server.utils');
   var task_t = require('./common.tasks.template');
 
-  TaskDeposition.prototype.makeInputData = function ( login,jobDir )  {
+  TaskDeposition.prototype.makeInputData = function ( loginData,jobDir )  {
 
     // put hkl and structure data in input databox for copying their files in
     // job's 'input' directory
@@ -97,7 +97,7 @@ if (__template)  {
       this.input_data.data['seq']     = revision.ASU.seq;
     }
 
-    __template.TaskTemplate.prototype.makeInputData.call ( this,login,jobDir );
+    __template.TaskTemplate.prototype.makeInputData.call ( this,loginData,jobDir );
 
     // here, we also use this function to compose the list of all project's
     // tasks, which is used for identification of service tasks (cf.

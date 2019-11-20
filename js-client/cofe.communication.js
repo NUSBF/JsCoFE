@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    08.10.19   <--  Date of Last Modification.
+ *    29.10.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -319,7 +319,6 @@ function downloadJobFile ( jobId,filePath )  {
         url += __login_token;
   else  url += '404';
   url += '/' + __current_project + '/' + jobId + '/' + filePath;
-  //downloadFile ( replaceAll(url,'/','@') );
   downloadFile ( url );
 }
 

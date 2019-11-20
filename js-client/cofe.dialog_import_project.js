@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    24.04.19   <--  Date of Last Modification.
+ *    09.11.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -47,7 +47,8 @@ function ImportProjectDialog ( onSuccess_func )  {
   //  customData.login_token = __login_token.getValue();
   customData.login_token = __login_token;
 
-  var upload = new Upload ( customData,'project',null,null,function(returnCode){
+  var upload = new Upload ( customData,{ 'type':'project', 'accept' : '.zip' },
+                            null,null,function(returnCode){
 
     if (!returnCode)  {
 

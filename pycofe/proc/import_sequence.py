@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    23.06.19   <--  Date of Last Modification.
+#    13.10.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -93,6 +93,12 @@ def run ( body,sectionTitle="Macromolecular sequences" ):  # body is reference t
 
     files_seq.sort()
 
+    for f in files_seq:
+        body.files_all.remove ( f )
+    flist = body.despaceFileNames ( files_seq,body.importDir() )
+    for i in range(len(files_seq)):
+        files_seq[i] = [flist[i],files_seq[i]]
+
     annotation = None;
     try:
         f = open ( 'annotation.json','r' )
@@ -116,14 +122,12 @@ def run ( body,sectionTitle="Macromolecular sequences" ):  # body is reference t
     pyrvapi.rvapi_add_section ( seqSecId,sectionTitle,
                                 body.report_page_id(),body.rvrow,0,1,1,False )
     k = 0
-    for f in files_seq:
-
-        body.files_all.remove ( f )
+    for f, f_orig in files_seq:
 
         annot = None
         for a in annotation:
             for item in a.items:
-                if item.rename==f:
+                if item.rename==f_orig:
                     annot = item
         if not annot:
             body.file_stdout.write (

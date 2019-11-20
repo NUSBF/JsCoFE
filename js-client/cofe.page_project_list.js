@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    22.08.19   <--  Date of Last Modification.
+ *    20.10.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -279,7 +279,7 @@ function ProjectListPage ( sceneId )  {
       trow.addCell ( '' );
       self.tablesort_tbl.createTable();
       open_btn  .setDisabled ( true  );
-      add_btn   .setDisabled ( false );
+      add_btn   .setDisabled ( __dormant );
       rename_btn.setDisabled ( true  );
       del_btn   .setDisabled ( true  );
       export_btn.setDisabled ( true  );
@@ -325,7 +325,7 @@ function ProjectListPage ( sceneId )  {
         },10 );
       self.tablesort_tbl.selectRow ( selectedRow );
       open_btn  .setDisabled ( false );
-      add_btn   .setDisabled ( false );
+      add_btn   .setDisabled ( __dormant );
       rename_btn.setDisabled ( false );
       del_btn   .setDisabled ( false );
 //      unsetDefaultButton ( add_btn ,panel );
@@ -370,15 +370,16 @@ function ProjectListPage ( sceneId )  {
   this.headerPanel.setHorizontalAlignment ( 0,3,'center' );
 
   // Make Main Menu
-  if (!__local_user)  {
+  if (!__local_user)
     this.addMenuItem ( 'My Account','settings',function(){
       saveProjectList ( function(data){ makeAccountPage(sceneId); } );
     });
-    if (__admin)
-      this.addMenuItem ( 'Admin Page','admin',function(){
-        saveProjectList ( function(data){ makeAdminPage(sceneId); } );
-      });
-  }
+
+  if (__admin)
+    this.addMenuItem ( 'Admin Page','admin',function(){
+      saveProjectList ( function(data){ makeAdminPage(sceneId); } );
+    });
+
   this.addLogoutToMenu ( function(){
     saveProjectList ( function(data){ logout(sceneId,0); } );
   });
@@ -445,7 +446,7 @@ function ProjectListPage ( sceneId )  {
   panel.setCellSize            ( '88%','',row++,5   );
   */
   open_btn  .setDisabled       ( true );
-  add_btn   .setDisabled       ( true );
+  add_btn   .setDisabled       ( !__dormant );
   rename_btn.setDisabled       ( true );
   del_btn   .setDisabled       ( true );
   table_row = row;  // note the project list table position here

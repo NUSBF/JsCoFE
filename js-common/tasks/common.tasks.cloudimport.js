@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    22.06.19   <--  Date of Last Modification.
+ *    10.10.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -223,7 +223,7 @@ if (!__template)  {
     else  return 'task_cimport';
   }
 
-  TaskCloudImport.prototype.makeInputData = function ( login,jobDir )  {
+  TaskCloudImport.prototype.makeInputData = function ( loginData,jobDir )  {
     var uploads_dir = path.join ( jobDir,uh.uploadDir() );
 
     if (!utils.writeObject(path.join(jobDir,'annotation.json'),this.file_mod))
@@ -234,7 +234,7 @@ if (!__template)  {
         console.log ( ' ***** cannot create directory ' + uploads_dir );
     }
 
-    var cloudMounts = fcl.getUserCloudMounts ( login );
+    var cloudMounts = fcl.getUserCloudMounts ( loginData );
     for (var i=0;i<this.upload_files.length;i++)  {
       var lst = this.upload_files[i].split('/');
       if (lst.length>2)  {
@@ -270,7 +270,7 @@ if (!__template)  {
       }
     }
 
-    __template.TaskTemplate.prototype.makeInputData.call ( this,login,jobDir );
+    __template.TaskTemplate.prototype.makeInputData.call ( this,loginData,jobDir );
 
   }
 

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    17.09.19   <--  Date of Last Modification.
+ *    18.10.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -194,13 +194,13 @@ if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
 
     this.get_item = function ( subtype )  {
       if (['!','~'].indexOf(subtype[0])>=0)  {
-        let s = this.subtypeDescription ( subtype.substring(1) );
+        var s = this.subtypeDescription ( subtype.substring(1) );
         if (s)  {
           if (subtype[0]=='!')  with_items   .push ( s );
                           else  without_items.push ( s );
         }
       } else  {
-        let s = this.subtypeDescription ( subtype );
+        var s = this.subtypeDescription ( subtype );
         if (s)
           with_items.push ( ' ' + s );
       }

@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    16.06.19   <--  Date of Last Modification.
+#    08.11.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -498,16 +498,29 @@ class Base(object):
 
     # ----------------------------------------------------------------------
 
-    def have_internet ( self,url="www.google.com",time_out=5 ):
-        conn = httplib.HTTPConnection(url,timeout=time_out)
-        try:
-            conn.request("HEAD", "/")
-            conn.close()
-            return True
-        except:
-            conn.close()
-            return False
+    #def have_internet ( self,url="www.pdb.org",time_out=5 ):
+    #    conn = httplib.HTTPConnection(url,timeout=time_out)
+    #    try:
+    #        conn.request("HEAD", "/")
+    #        conn.close()
+    #        return True
+    #    except:
+    #        conn.close()
+    #        return False
 
+    def have_internet ( self,url_list=["www.pdb.org","www.google.com","pdbj.org","www.ebi.ac.uk"],time_out=5 ):
+        haveit = False
+        for url in  url_list:
+            conn = httplib.HTTPConnection(url,timeout=time_out)
+            try:
+                conn.request("HEAD", "/")
+                conn.close()
+                haveit = True
+                break
+            except:
+                conn.close()
+                pass
+        return haveit
 
     # ----------------------------------------------------------------------
 
@@ -576,10 +589,11 @@ class Base(object):
                 "xyz",self.page_cursor[0],self.page_cursor[1],0,1,1,openState )
         if len(fpath_list)>1:
             pyrvapi.rvapi_append_to_data ( wId,fpath_list[1],"hkl:map" )
-        if len(fpath_list)>2:
-            pyrvapi.rvapi_append_to_data ( wId,fpath_list[2],"hkl:ccp4_map" )
-        if len(fpath_list)>3:
-            pyrvapi.rvapi_append_to_data ( wId,fpath_list[3],"hkl:ccp4_dmap" )
+
+        #if len(fpath_list)>2:
+        #    pyrvapi.rvapi_append_to_data ( wId,fpath_list[2],"hkl:ccp4_map" )
+        #if len(fpath_list)>3:
+        #    pyrvapi.rvapi_append_to_data ( wId,fpath_list[3],"hkl:ccp4_dmap" )
 
         self.page_cursor[1] +=1
         self.addCitations ( ['uglymol','ccp4mg','viewhkl'] )
@@ -710,29 +724,29 @@ class Base(object):
             # make new file names in dedicated result directory
             f_xyz  = os.path.join ( resdir, resfname + ".pdb" )
             f_mtz  = os.path.join ( resdir, resfname + ".mtz" )
-            f_map  = os.path.join ( resdir, resfname + ".map" )
-            f_dmap = os.path.join ( resdir, resfname + "_dmap.map" )
+            #f_map  = os.path.join ( resdir, resfname + ".map" )
+            #f_dmap = os.path.join ( resdir, resfname + "_dmap.map" )
             f_lib  = os.path.join ( resdir, resfname + ".lib" )
 
             self.stdout ( fpath_xyz + "  :  " + f_xyz + "\n" )
             self.stdout ( fpath_mtz + "  :  " + f_mtz + "\n" )
-            self.stdout ( fpath_map + "  :  " + f_map + "\n" )
-            self.stdout ( fpath_dmap + "  :  " + f_dmap + "\n" )
+            #self.stdout ( fpath_map + "  :  " + f_map + "\n" )
+            #self.stdout ( fpath_dmap + "  :  " + f_dmap + "\n" )
 
             # copy result files with new names
             if fpath_xyz!=f_xyz:
                 shutil.copy2 ( fpath_xyz ,f_xyz  )
                 shutil.copy2 ( fpath_mtz ,f_mtz  )
-                shutil.copy2 ( fpath_map ,f_map  )
-                shutil.copy2 ( fpath_dmap,f_dmap )
+                #shutil.copy2 ( fpath_map ,f_map  )
+                #shutil.copy2 ( fpath_dmap,f_dmap )
                 if fpath_lib:
                     shutil.copy2 ( fpath_lib,f_lib )
 
             # store new file names in meta structure
             meta["pdb"]  = f_xyz
             meta["mtz"]  = f_mtz
-            meta["map"]  = f_map
-            meta["dmap"] = f_dmap
+            #meta["map"]  = f_map
+            #meta["dmap"] = f_dmap
             if fpath_lib:
                 meta["lib"] = f_lib
             if libIndex:

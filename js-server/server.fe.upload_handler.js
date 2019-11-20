@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    18.04.18   <--  Date of Last Modification.
+ *    10.10.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Front End Server -- Uploads Handler
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2018
+ *  (C) E. Krissinel, A. Lebedev 2016-2019
  *
  *  =================================================================
  *
@@ -72,7 +72,7 @@ var upload_meta = {};
   });
 
   // every time a file has been uploaded successfully, retain mapping of
-  // it's temporary path and original name
+  // its temporary path and original name
   form.on ( 'file', function(field, file) {
     upload_meta.files[file.path] = file.name;
   });
@@ -90,12 +90,12 @@ var upload_meta = {};
 
       if ('login_token' in upload_meta)  {
 
-        var login = user.getLoginFromHash ( upload_meta.login_token );
+        var loginData = user.getLoginData ( upload_meta.login_token );
 
-        if (('project' in upload_meta) &&
-            ('job_id' in upload_meta))  {  // upload from import job
+        if (('project' in upload_meta) && ('job_id' in upload_meta))  {
+          // upload from import job
 
-          var jobDir = prj.getJobDirPath ( login,upload_meta.project,
+          var jobDir = prj.getJobDirPath ( loginData,upload_meta.project,
                                            upload_meta.job_id );
           if (utils.fileExists(jobDir))  {
 
@@ -173,7 +173,7 @@ var upload_meta = {};
 
         } else  {  // upload from project import
 
-          var response = prj.importProject ( login,upload_meta,tmpDir );
+          var response = prj.importProject ( loginData,upload_meta,tmpDir );
           response.send ( server_response );
 
         }

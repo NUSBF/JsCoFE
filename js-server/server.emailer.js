@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    24.07.19   <--  Date of Last Modification.
+ *    03.11.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -20,12 +20,15 @@
  */
 
 //  load system modules
-var nodemailer    = require('nodemailer');
+var nodemailer = require('nodemailer');
+var path       = require('path');
 //var child_process = require('child_process');
 
 //  load application modules
-var conf  = require('./server.configuration');
-var utils = require('./server.utils');
+var conf       = require('./server.configuration');
+var utils      = require('./server.utils');
+var cmd        = require('../js-common/common.commands');
+var com_utils  = require('../js-common/common.utils');
 
 //  prepare log
 var log = require('./server.log').newLog(4);
@@ -74,42 +77,6 @@ var telnet  = utils.spawn ( 'telnet',[emailer.host,emailer.port],{} );
       log.error ( e.stack || e );
     });
 
-    /*
-    var stage = 0;
-
-    t.stdout.on ( 'data', function(data){
-      if ((!finish) && (stage>0))  {
-        var msg = '';
-        switch (stage)  {
-          case 1 : msg = 'HELO '        + emailer.host;             break;
-          case 2 : msg = 'MAIL FROM: <' + emailer.emailFrom + '>';  break;
-          case 3 : msg = 'RCPT TO: <'   + to + '>';                 break;
-          case 4 : msg = 'DATA';                                    break;
-          case 5 : msg = 'From: '       + emailer.headerFrom +
-                         '\nTo: '       + to +
-                         '\nSubject: '  + subject +
-                         '\nMIME-Version: 1.0' +
-                         '\nContent-Type: text/html; charset="ISO-8859-1"' +
-                         '\n\n<html><body>\n' +
-                         message +
-                         '\n</body></html>\n' +
-                         '.';
-                   break;
-          default: msg = 'QUIT';
-        }
-        try {
-          t.stdin.write ( msg + '\n' );
-        } catch (e)  {
-          log.error ( 3,'Emailer error: cannot send e-mail' );
-          log.error ( e.stack || e );
-          //telnet = null;
-        }
-      }
-      stage += 1;
-    });
-
-    */
-
     var stage = 0;
 
     t.stdout.on ( 'data', function(data){
@@ -154,21 +121,67 @@ var telnet  = utils.spawn ( 'telnet',[emailer.host,emailer.port],{} );
 
 
 function send ( to,subject,message )  {
-var emailer_type = conf.getEmailerConfig().type;
-
-  if (emailer_type=='nodemailer')  {
-    send_nodemailer ( to,subject,message );
-  } else if (emailer_type=='telnet')  {
-    send_telnet ( to,subject,message );
-  } else if (emailer_type=='desktop')  {
-    return message;
-  }
-
+  if (message)  {
+    var emailer_type = conf.getEmailerConfig().type;
+    if (emailer_type=='nodemailer')  {
+      send_nodemailer ( to,subject,message );
+    } else if (emailer_type=='telnet')  {
+      send_telnet ( to,subject,message );
+    } else if (emailer_type=='desktop')  {
+      return message;
+    }
+  } else
+    log.error ( 4,'attempt to send an empty e-mail to user; e-mail was not sent' );
   return '';
 
+}
+
+/*
+function makeMessage ( template_name,userData,subs_dict )  {
+// example:  makeMessage ( 'made_dormant',userData,{
+//             'reason' : 'you do not use your account'
+//           });
+var msg = utils.readString ( path,join('message_templates',template_name+'.msg') );
+  if (msg)  {
+    if (userName)
+      msg = utils.replaceAll ( msg,'$userName',userName );
+    msg = utils.replaceAll ( msg,'$appName'        ,cmd.appName );
+    msg = utils.replaceAll ( msg,'$appURL'         ,conf.getFEConfig.url() );
+    msg = utils.replaceAll ( msg,'$maintainerEmail',conf.getEmailerConfig().maintainerEmail );
+    for (var key in subs_dict)
+      msg = utils.replaceAll ( msg,'$'+key,subs_dict[key] );
+  }
+  return msg;  // null is valid and indicative of program error
+}
+*/
+
+function sendTemplateMessage ( userData,subject,template_name,subs_dict )  {
+var message = utils.readString ( path.join('message_templates',template_name+'.html') );
+  if (message)  {
+    var userStatus = 'active';
+    if (userData.dormant)
+      userStatus = 'dormant since ' + (new Date(userData.dormant).toISOString().slice(0,10));
+    var user_dict = {
+      'userName'        : userData.name,
+      'userLogin'       : userData.login,
+      'userEMail'       : userData.email,
+      'userLicence'     : userData.licence,
+      'userFeedback'    : userData.feedback,
+      'userStatus'      : userStatus,
+      'appName'         : cmd.appName(),
+      'appURL'          : conf.getFEConfig().reportURL,
+      'maintainerEmail' : conf.getEmailerConfig().maintainerEmail
+    };
+    for (var key in user_dict)
+      message = com_utils.replaceAll ( message,'$'+key,user_dict[key] );
+    for (var key in subs_dict)
+      message = com_utils.replaceAll ( message,'$'+key,subs_dict[key] );
+  }
+  send ( userData.email,subject,message );
 }
 
 
 // ==========================================================================
 // export for use in node
-module.exports.send = send;
+module.exports.sendTemplateMessage = sendTemplateMessage;
+module.exports.send                = send;

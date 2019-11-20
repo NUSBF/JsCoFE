@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    18.09.19   <--  Date of Last Modification.
+ *    20.11.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -313,9 +313,11 @@ var row      = 0;
 
   this.makeSection ( 'Asymmetric Unit and Structure Revision',[
     new TaskASUDef      (),
-    new TaskASUDefStruct(),
+    //new TaskASUDefStruct(),
     //new TaskASUMod      ()
-    new TaskEditRevision()
+    new TaskEditRevisionASU   (),
+    new TaskEditRevisionStruct(),
+    new TaskEditRevisionSubstr()
   ]);
 
   this.makeSection ( 'Molecular Replacement',[

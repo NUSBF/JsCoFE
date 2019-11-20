@@ -146,10 +146,11 @@ var generate_report = false;
   if (generate_report)  {
     log.standard ( 2,'generate usage stats report ...' );
     var cmd = [ '-m', 'pycofe.proc.usagestats',
-                fe_config.projectsPath['fs0'].path,
+                fe_config.storage,
                 fe_config.userDataPath,
                 statsFilePath,
-                statsDirPath ];
+                statsDirPath
+              ];
     var job = utils.spawn ( conf.pythonName(),cmd,{} );
     // make stdout and stderr catchers for debugging purposes
     var stdout = '';

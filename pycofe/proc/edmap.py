@@ -227,9 +227,9 @@ def calcEDMap ( xyzin,hklin,libin,hkl_dataset,output_file_prefix,job_dir,
         file_stdout.write ( "Error calling refmac5: " + rc.msg )
         file_stderr.write ( "Error calling refmac5: " + rc.msg )
 
-    else: # Generate maps
-        calcCCP4Maps ( mtzout,output_file_prefix,
-                       job_dir,file_stdout,file_stderr,"refmac",log_parser )
+    #else: # Generate maps
+    #    calcCCP4Maps ( mtzout,output_file_prefix,
+    #                   job_dir,file_stdout,file_stderr,"refmac",log_parser )
 
     return
 

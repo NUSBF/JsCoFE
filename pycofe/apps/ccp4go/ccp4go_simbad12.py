@@ -149,8 +149,8 @@ class Simbad12(ccp4go_dimple.Dimple):
                 fpath_xyz  = os.path.join(self.reportdir,meta["pdb"])
                 if os.path.isfile(fpath_xyz):
                     fpath_mtz  = os.path.join(self.reportdir,meta["mtz"])
-                    fpath_map  = os.path.join(self.reportdir,meta["map"])
-                    fpath_dmap = os.path.join(self.reportdir,meta["dmap"])
+                    #fpath_map  = os.path.join(self.reportdir,meta["map"])
+                    #fpath_dmap = os.path.join(self.reportdir,meta["dmap"])
                     asuComp    = asucomp.getASUComp1 ( fpath_xyz,self.seqpath )
                     #self.file_stdout.write ( json.dumps ( asuComp,indent=2 ))
                     spg_info   = self.checkSpaceGroup ( self.hkl.HM,fpath_xyz )

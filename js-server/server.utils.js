@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    06.10.19   <--  Date of Last Modification.
+ *    19.10.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -369,6 +369,7 @@ var mimeType = '';
     case 'graph_data'    :
     case 'txt'   :
     case 'tsk'   : mimeType = 'text/plain;charset=UTF-8';        break;
+    case 'wasm'  : mimeType = 'application/wasm';                break;
     default      : mimeType = 'application/octet-stream';
   }
 

@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    30.09.19   <--  Date of Last Modification.
+#    27.10.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -239,10 +239,16 @@ class Aimless(basic.TaskDriver):
             }
             shutil.copyfile ( self.aimless_xml(),
                               os.path.join(self.outputDir(),aimless_meta["file"]) )
+            res_high = 10000.0
+            res_low  = 0.0
             for i in range(len(hkl)):
                 if i<len(unmerged) and hasattr(unmerged[i],"ha_type"):
                     hkl[i].ha_type = unmerged[i].ha_type
                 hkl[i].aimless_meta = aimless_meta
+                res_high = min ( res_high,float(hkl[i].getHighResolution()) )
+                res_low  = max ( res_low ,float(hkl[i].getLowResolution ()) )
+            self.generic_parser_summary["aimless"]["res_high"] = res_high
+            self.generic_parser_summary["aimless"]["res_low"]  = res_low
 
         """
         #
@@ -283,9 +289,16 @@ class Aimless(basic.TaskDriver):
         # close execution logs and quit
 
         if output_ok:
+            dsum = self.generic_parser_summary["aimless"]
+            dsum["summary_line"] = "Compl="                 + str(dsum["Completeness"]) + "%" +\
+                                   " CC<sub>1/2</sub>="     + str(dsum["Half_set_CC"])  +\
+                                   " R<sub>meas_all</sub>=" + str(dsum["R_meas_all"])   +\
+                                   " R<sub>meas_ano</sub>=" + str(dsum["R_meas_ano"])   +\
+                                   " Res=" + str(dsum["res_high"])  + "-" + str(dsum["res_low"]) +\
+                                   " SpG=" + dsum["Space_group"] ;
             self.success()
         else:
-            self.file_stdout.write ( "Aimles failed, see above." )
+            self.file_stdout.write ( "Aimless failed, see above." )
             self.fail ( "<p>&nbsp;Aimless failed, see Log and Error tabs for details",
                         "Aimless_Failed" )
 

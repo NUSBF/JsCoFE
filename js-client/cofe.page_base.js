@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    08.10.19   <--  Date of Last Modification.
+ *    19.10.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -171,7 +171,7 @@ BasePage.prototype._setModeIcon = function ( colNo )  {
           tooltip += '<li>all tasks run on your computer</li>';
     else  tooltip += '<li>non-interactive tasks run on your computer</li>'   +
                      '<li><b>interactive tasks are not available</b>' +
-                     '<br><i>(' + appName() + ' Client not configured)</i></li>';
+                     '<br><i>(' + appName() + ' Client not used)</i></li>';
   } else  {
     icon_path = image_path ( 'setup_remote' );
     tooltip  += ' is in <b>remote</b> mode:</i>' + ul_style +
@@ -180,7 +180,7 @@ BasePage.prototype._setModeIcon = function ( colNo )  {
     if (__local_service)
           tooltip += '<li>interactive tasks run on your computer</li>';
     else  tooltip += '<li><b>interactive tasks are not available</b>' +
-                     '<br><i>(' + appName() + ' Client not configured)</i></li>';
+                     '<br><i>(' + appName() + ' Client not used)</i></li>';
   }
   this.headerPanel.setImageButton ( icon_path,'22px','22px',0,colNo,1,1 )
                   .setTooltip1    ( tooltip + '</ul>','show',false,0 )

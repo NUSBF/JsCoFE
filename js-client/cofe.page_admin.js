@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    07.10.19   <--  Date of Last Modification.
+ *    19.10.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -41,15 +41,21 @@ function AdminPage ( sceneId )  {
   this.headerPanel.setVerticalAlignment ( 0,2,'middle' );
   this.headerPanel.setCellSize ( '99%','',0,3 );
 
-  var announce_btn = this.headerPanel.setButton ( '',image_path('announce'),0,5,1,1 );
-  announce_btn.setSize('30px','30px').setTooltip('Send announcement to all users');
-  var refresh_btn = this.headerPanel.setButton ( '',image_path('refresh'),0,6,1,1 );
+  var col = 4;
+  var refresh_btn = this.headerPanel.setButton ( '',image_path('refresh'),0,col,1,1 );
   refresh_btn.setSize('30px','30px').setTooltip('Refresh');
 
   // Make Main Menu
-  this.addMenuItem ( 'Add New User','user',function(){ makeRegisterPage(sceneId); })
+  /*
+  this.addMenuItem ( 'Add New User'     ,'user'    ,function(){ makeRegisterPage(sceneId); })
+      .addMenuItem ( 'Dormant accounts' ,'dormant' ,function(){ new DormantUsersDialog();  })
+      .addMenuItem ( 'Make announcement','announce',function(){ new AnnounceDialog();      })
       .addMenuSeparator()
       .addMenuItem ( 'My Account','settings',function(){ makeAccountPage(sceneId); })
+      .addMenuItem ( 'My Projects','list',function(){ makeProjectListPage(sceneId); })
+      .addLogoutToMenu ( function(){ logout(sceneId,0); });
+  */
+  this.addMenuItem ( 'My Account','settings',function(){ makeAccountPage(sceneId); })
       .addMenuItem ( 'My Projects','list',function(){ makeProjectListPage(sceneId); })
       .addLogoutToMenu ( function(){ logout(sceneId,0); });
 
@@ -67,14 +73,36 @@ function AdminPage ( sceneId )  {
 
   this.makeLogoPanel ( 2,0,3 );
 
-  this.jobsTitle     = this.jobsTab.grid.setLabel   ( '',0,0,1,1 );
-  this.jobStats      = this.jobsTab.grid.setLabel   ( '',1,0,1,1 );
+  this.jobsTitle     = this.jobsTab.grid.setLabel  ( '',0,0,1,1 );
+  this.jobStats      = this.jobsTab.grid.setLabel  ( '',1,0,1,1 );
 
-  this.usersTitle    = this.usersTab.grid.setLabel  ( '',0,0,1,1 );
+  this.usersTitle    = this.usersTab.grid.setLabel ( '',0,0,1,1 )
+                                         .setHeight_px ( 32 );
   this.userListTable = null;
+  this.uaPanel       = new Grid('');
+  this.usersTab.grid.setWidget   ( this.uaPanel,0,1,1,1 );
+  this.usersTab.grid.setCellSize ( '','32px',0,0 );
+  this.usersTab.grid.setCellSize ( '','32px',0,1 );
+  this.usersTab.grid.setVerticalAlignment ( 0,0,'middle' );
+  this.usersTab.grid.setVerticalAlignment ( 0,1,'middle' );
 
-  this.usageStats    = this.usageTab.grid.setIFrame ( '',0,0,1,1 )
-                           .setFramePosition ( '0px','50px','100%','92%' );
+  this.uaPanel.setLabel    ( '   ',0,0,1,1 );
+  this.uaPanel.setCellSize ( '95%','32px',0,0 );
+  col = 1;
+  var newuser_btn  = this.uaPanel.setButton ( '',image_path('user'   ),0,col++,1,1 )
+                                 .setSize('30px','30px')
+                                 .setTooltip('Make new user');
+  var dormant_btn  = this.uaPanel.setButton ( '',image_path('dormant'),0,col++,1,1 )
+                                 .setSize('30px','30px')
+                                 .setTooltip('Identify and mark dormant users');
+  var announce_btn = this.uaPanel.setButton ( '',image_path('announce'),0,col++,1,1 )
+                                 .setSize('30px','30px')
+                                 .setTooltip('Send announcement to all users');
+  for (var i=1;i<col;i++)
+    this.uaPanel.setCellSize ( 'auto','32px',0,i );
+
+  this.usageStats = this.usageTab.grid.setIFrame ( '',0,0,1,1 )
+                                      .setFramePosition ( '0px','50px','100%','92%' );
   this.usageStats._url    = '';
   this.usageStats._loaded = false;
 
@@ -87,6 +115,14 @@ function AdminPage ( sceneId )  {
 
     self.tabs.setTabChangeListener ( function(ui){
       self.loadUsageStats();
+    });
+
+    newuser_btn.addOnClickListener ( function(){
+      makeRegisterPage ( sceneId );
+    });
+
+    dormant_btn.addOnClickListener ( function(){
+      new DormantUsersDialog();
     });
 
     announce_btn.addOnClickListener ( function(){
@@ -178,29 +214,34 @@ AdminPage.prototype.onResize = function ( width,height )  {
 AdminPage.prototype.makeUsersInfoTab = function ( udata )  {
   // function to create user info tables and fill them with data
 
-  this.usersTitle.setText ( '<h2>Users</h2>' );
+  this.usersTitle.setText('Users').setFontSize('1.5em').setFontBold(true);
 
   this.userListTable = new TableSort();
-  this.usersTab.grid.setWidget ( this.userListTable,1,0,1,1 );
+  this.usersTab.grid.setWidget ( this.userListTable,1,0,1,2 );
 
-  this.userListTable.setHeaders ( ['##','Name','Login','Online','Role','E-mail',
+  this.userListTable.setHeaders ( ['##','Name','Login','Online','Profile',
+                                   'Dormant<br>since' ,'E-mail',
                                    'Licence','N<sub>jobs</sub>',
-                                   'Space<br>(MBytes)','CPU<br>(hours)',
+                                   'Space<br>(MB)','CPU<br>(hours)',
                                    'Known<br>since','Last<br>seen'] );
   this.userListTable.setHeaderNoWrap   ( -1       );
   this.userListTable.setHeaderColWidth ( 0 ,'3%'   );  // Number
   this.userListTable.setHeaderColWidth ( 1 ,'auto' );  // Name
-  this.userListTable.setHeaderColWidth ( 2 ,'5%'   );  // Login
-  this.userListTable.setHeaderColWidth ( 3 ,'5%'   );  // Online
-  this.userListTable.setHeaderColWidth ( 4 ,'5%'   );  // Role
-  this.userListTable.setHeaderColWidth ( 5 ,'auto' );  // E-mail
-  this.userListTable.setHeaderColWidth ( 6 ,'5%'   );  // Licence
-  this.userListTable.setHeaderColWidth ( 7 ,'5%'   );  // Jobs run
-  this.userListTable.setHeaderColWidth ( 8 ,'5%'   );  // Space used
-  this.userListTable.setHeaderColWidth ( 9 ,'5%'   );  // CPU used
-  this.userListTable.setHeaderColWidth ( 10,'5%'   );  // Known since
-  this.userListTable.setHeaderColWidth ( 11,'5%'   );  // Last seen
+  this.userListTable.setHeaderColWidth ( 2 ,'4%'   );  // Login
+  this.userListTable.setHeaderColWidth ( 3 ,'3%'   );  // Online
+  this.userListTable.setHeaderColWidth ( 4 ,'3%'   );  // Profile
+  this.userListTable.setHeaderColWidth ( 5 ,'4%'   );  // Dormancy date
+  this.userListTable.setHeaderColWidth ( 6 ,'auto' );  // E-mail
+  this.userListTable.setHeaderColWidth ( 7 ,'4%'   );  // Licence
+  this.userListTable.setHeaderColWidth ( 8 ,'3%'   );  // Jobs run
+  this.userListTable.setHeaderColWidth ( 9 ,'3%'   );  // Space used
+  this.userListTable.setHeaderColWidth ( 10,'3%'   );  // CPU used
+  this.userListTable.setHeaderColWidth ( 11,'4%'   );  // Known since
+  this.userListTable.setHeaderColWidth ( 12,'4%'   );  // Last seen
 
+  var loggedUsers;
+  if ('loggedUsers' in udata)  loggedUsers = udata.loggedUsers;
+                         else  loggedUsers = udata.loginHash.loggedUsers;
   for (var i=0;i<udata.userList.length;i++)  {
     var trow  = this.userListTable.addRow();
     var uDesc = udata.userList[i];
@@ -208,8 +249,8 @@ AdminPage.prototype.makeUsersInfoTab = function ( udata )  {
     trow.addCell ( uDesc.name  ).setNoWrap();
     trow.addCell ( uDesc.login ).setNoWrap();
     var online = '';
-    for (var token in udata.loggedUsers)
-      if (udata.loggedUsers[token]==uDesc.login)  {
+    for (var token in loggedUsers)
+      if (loggedUsers[token].login==uDesc.login)  {
         online = '&check;';
         break;
       }
@@ -218,6 +259,9 @@ AdminPage.prototype.makeUsersInfoTab = function ( udata )  {
     if (uDesc.login=='devel')  role = 'developer';
     else if (uDesc.admin)      role = 'admin';
     trow.addCell ( role            ).setNoWrap();
+    if (uDesc.dormant)
+          trow.addCell ( new Date(uDesc.dormant).toISOString().slice(0,10) ).setNoWrap();
+    else  trow.addCell ( 'active' ).setNoWrap();
     trow.addCell ( uDesc.email     ).setNoWrap();
     trow.addCell ( uDesc.licence   ).setNoWrap();
     /*
@@ -337,16 +381,18 @@ AdminPage.prototype.makeNodesInfoTab = function ( ndata )  {
       var fasttrack = '&check;';
       if (!nci.config.fasttrack)
         fasttrack = '-';
-      var state = 'running';
+      var njobs     = 0;
+      var njdone    = 0;
+      var state     = 'running';
+      var startDate = 'N/A';
       if (!nci.config.in_use)
         state = 'not in use';
-      var njobs  = 0;
-      var njdone = 0;
-      if (nci.jobRegister)  {
+      else if (nci.jobRegister)  {
         njdone = nci.jobRegister.launch_count;
         for (var item in nci.jobRegister.job_map)
           njobs++;
-      } else {
+        startDate = nci.config.startDate;
+      } else  {
         state = 'dead';
       }
       var nc_name = 'NC-' + nci.config.exeType;
@@ -354,7 +400,7 @@ AdminPage.prototype.makeNodesInfoTab = function ( ndata )  {
         nc_name += '(' + nci.config.jobManager + ')';
       this.nodeListTable.setRow ( 'NC-' + ncn,'Number Cruncher #' + ncn,
         [nci.config.name,nci.config.externalURL,nc_name,
-         nci.config.startDate,nci.ccp4_version,fasttrack,state,
+         startDate,nci.ccp4_version,fasttrack,state,
          njdone,nci.config.capacity,njobs],row,(row & 1)==1 );
       row++;
       ncn++;

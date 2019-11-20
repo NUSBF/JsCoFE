@@ -351,7 +351,8 @@ class CCP4go(import_task.Import):
                 if "lib" in meta:
                     libPath = meta["lib"]
                 structure = self.registerStructure ( meta["pdb"],None,meta["mtz"],
-                                                     meta["map"],meta["dmap"],
+                                                     None,None,
+                                                     #meta["map"],meta["dmap"],
                                                      libPath=libPath,copy_files=True )
 
                 if structure:

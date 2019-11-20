@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    27.08.19   <--  Date of Last Modification.
+#    12.11.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -158,49 +158,28 @@ class ArpWarp(basic.TaskDriver):
         if hkl.useHKLSet in ["TI","TF"]:
             twin = 1
 
-
-        #self.open_stdin()
-        #self.write_stdin ([
-        #    "datafile " + self.arpwarp_mtz()
-        #])
-
         cmdopt = ["datafile",self.arpwarp_mtz()]
 
         if hkl.useHKLSet=="PF":
-            #self.write_stdin ([
-            #    "phaselabin PHIB=" + istruct.PHI + " FOM=" + istruct.FOM
-            #])
             cmdopt += [ "phaselabin","PHIB=" + istruct.PHI + " FOM=" + istruct.FOM,
                         "phaseref","PHAS SCBL " + str(istruct.phaseBlur) ]
 
         elif hkl.useHKLSet=="HL":
-            #self.write_stdin ([
-            #    "phaselabin HLA=" + istruct.HLA + " HLB=" + istruct.HLB +\
-            #              " HLC=" + istruct.HLC + " HLD=" + istruct.HLD
-            #])
             cmdopt += [ "phaselabin","HLA=" + istruct.HLA + " HLB=" + istruct.HLB +\
                                     " HLC=" + istruct.HLC + " HLD=" + istruct.HLD,
                         "phaseref","PHAS SCBL " + str(istruct.phaseBlur) ]
 
         if istruct.initPhaseSel=="phases":
-            #self.write_stdin ([
-            #    "phibest "            + istruct.PHI,
-            #    "fom "                + istruct.FOM,
-            #    "phaseref PHAS SCBL " + str(istruct.phaseBlur)
-            #])
             cmdopt += [ "phibest" ,istruct.PHI,
                         "fom"     ,istruct.FOM ]
 
         else:
-            #self.write_stdin ([
-            #    "modelin"   + istruct.getXYZFilePath(self.inputDir()),
-            #    "freebuild" + self.getCheckbox(sec1.AWA_FREEBUILD_CBX),
-            #    "flatten"   + self.getCheckbox(sec1.AWA_FLATTEN_CBX)
-            #])
-            cmdopt += [ "modelin"  ,istruct.getXYZFilePath(self.inputDir()),
-                        "freebuild",self.getCheckbox(sec1.AWA_FREEBUILD_CBX),
+            if istruct.hasSubSubtype():
+                cmdopt += [ "modelin",istruct.getSubFilePath(self.inputDir()) ]
+            else:
+                cmdopt += [ "modelin",istruct.getXYZFilePath(self.inputDir()) ]
+            cmdopt += [ "freebuild",self.getCheckbox(sec1.AWA_FREEBUILD_CBX),
                         "flatten"  ,self.getCheckbox(sec1.AWA_FLATTEN_CBX) ]
-
 
         restraints = 0
         if self.getCheckbox(sec1.AWA_USE_COND_CBX):
@@ -319,14 +298,15 @@ class ArpWarp(basic.TaskDriver):
 
 
             # calculate maps for UglyMol using final mtz from temporary location
-            fnames = self.calcCCP4Maps ( mtzout,self.outputFName )
+            #fnames = self.calcCCP4Maps ( mtzout,self.outputFName )
 
             # register output data from temporary location (files will be moved
             # to output directory by the registration procedure)
 
             structure = self.registerStructure (
                                     pdbout,None,mtzout,
-                                    fnames[0],fnames[1],None,
+                                    None,None,None,
+                                    #fnames[0],fnames[1],None,  -- not needed for new UglyMol
                                     leadKey=1 )
             if structure:
                 structure.copyAssociations ( istruct )

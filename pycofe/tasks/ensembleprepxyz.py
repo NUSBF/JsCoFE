@@ -286,6 +286,7 @@ class EnsemblePrepXYZ(basic.TaskDriver):
 
                     ensemble = self.registerEnsemble ( temp.subtype,outputFile,checkout=True )
                     if ensemble:
+                        self.stdoutln ( str(ensemble.xyzmeta) )
                         if seq:
                             ensemble.putSequence ( seq )
                         self.putTitle ( "Results" )

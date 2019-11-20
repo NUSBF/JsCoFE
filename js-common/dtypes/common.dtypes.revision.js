@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    07.05.19   <--  Date of Last Modification.
+ *    16.11.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -60,9 +60,17 @@ function DataRevision()  {
   this.ASU.matthews   = 0.0;
   this.ASU.prob_matth = 0.0;
   this.Structure      = null;
+  this.Substructure   = null;
   this.Ligands        = [];     // can be a few
-  this.Options        = {};     // input options used in interfaces
-  this.Options.seqNo  = 0;      // selected sequence number (not used?)
+  this.Options        = {       // input options used in interfaces
+    'leading_structure' : '',   // substructure or structure
+    'phasing_sel'       : 'substructure', // for phaser-ep
+    'structure_sel'     : 'fixed-model',  // for mr-phases
+    //'fixedmodel_cbx'    : true,           // for mr-phases
+    //'fitindensity_cbx'  : false,          // for mr-phases
+    'ncsmodel_sel'      : 'do-not-use',   // for parrot
+    'seqNo'             : 0               // selected sequence number (not used?)
+  };
 
   this.backtrace      = false;  // take data only from the latest job
 
@@ -82,7 +90,7 @@ DataRevision.prototype.icon  = function()  { return 'data_xrayimages';    }
 // when data class version is changed here, change it also in python
 // constructors
 DataRevision.prototype.currentVersion = function()  {
-  var version = 4;  // advanced on ASUDef
+  var version = 5;  // advanced on Substructure inclusion
   if (__template)
         return  version + __template.DataTemplate.prototype.currentVersion.call ( this );
   else  return  version + DataTemplate.prototype.currentVersion.call ( this );
@@ -107,6 +115,9 @@ if (!__template)  {
 
     if (this.Structure)
       revext.Structure = this.Structure.extend();
+
+    if (this.Substructure)
+      revext.Substructure = this.Substructure.extend();
 
     for (var i=0;i<revext.Ligands.length;i++)
       revext.Ligands[i] = this.Ligands[i].extend();
@@ -178,6 +189,11 @@ if (!__template)  {
       tab4.grid.setWidget ( this.Structure.makeDataSummaryPage(task), 0,0,1,1 );
     }
 
+    if (this.Substructure)  {
+      var tab5 = dsp.tabs.addTab ( 'Substructure',false );
+      tab5.grid.setWidget ( this.Substructure.makeDataSummaryPage(task), 0,0,1,1 );
+    }
+
     dsp.setWidget ( dsp.tabs, 0,0,1,1 );
 
     return dsp;
@@ -203,19 +219,53 @@ if (!__template)  {
 
   }
 
+/*
+    DataRevision.prototype._layCDI_PhaserEP = function ( dropdown )  {
+    var customGrid = dropdown.customGrid;
+
+      customGrid.setLabel ( '<i>Phase using:</i>',0,0,1,1 );
+      customGrid.setVerticalAlignment ( 0,0,'middle' );
+      customGrid.phasing_sel = new Dropdown();
+      if (this.Substructure)
+        customGrid.phasing_sel.addItem (
+                  'heavy-atom substructure (' + this.ASU.ha_type + ')',
+                  '','substructure' ,this.Options.phasing_sel=='substructure' );
+      if (this.Structure)  {
+        customGrid.phasing_sel.addItem ( 'macromolecular model',
+                  '','model' ,this.Options.phasing_sel=='model' );
+        this.Structure.layCustomDropdownInput ( dropdown );
+      }
+      customGrid.setWidget ( customGrid.phasing_sel, 0,1,1,5 );
+      customGrid.phasing_sel.addOnChangeListener ( function(text,value){
+        customGrid.setRowVisible ( 1,value=='model' );
+      });
+
+      customGrid.phasing_sel.make();
+      customGrid.setRowVisible ( 1,this.Options.phasing_sel=='model' );
+      this.HKL.layCustomDropdownInput ( dropdown );
+
+    }
+*/
 
   DataRevision.prototype._layCDI_Crank2 = function ( dropdown,mode )  {
   var customGrid = dropdown.customGrid;
   var row        = customGrid.getNRows();
 
+    /*
     if (this.Structure)  {
-      if ((mode=='crank2') && (this.Structure.subtype.indexOf('xyz')>=0))  {
-        customGrid.setLabel ( 'Current structure will be used for calculating ' +
-                              'initial phases (MR-SAD)',row++,0,1,7 )
-                              .setFontBold(true).setFontItalic(true).setNoWrap();
-        customGrid.removeNonAnom = customGrid.setCheckbox (
-                              'Remove all non-anomalous atoms before rebuilding',
-                              this.Structure.removeNonAnom,row++,0,1,5 );
+      if (mode=='crank2')  {
+        if (this.Structure.subtype.indexOf('xyz')>=0)  {
+          customGrid.setLabel ( 'Current protein model will be used for calculating ' +
+                                'initial phases (MR-SAD)',row++,0,1,7 )
+                                .setFontBold(true).setFontItalic(true).setNoWrap();
+          customGrid.removeNonAnom = customGrid.setCheckbox (
+                                'Remove all non-anomalous atoms before rebuilding',
+                                this.Structure.removeNonAnom,row++,0,1,5 );
+        } else if (this.Structure.isSubstructure())  {
+          customGrid.setLabel ( 'Current substructure will be used for calculating ' +
+                                'initial phases (MR-SAD)',row++,0,1,7 )
+                                .setFontBold(true).setFontItalic(true).setNoWrap();
+        }
         customGrid.setLabel ( ' ',row,0,1,2 ).setHeight_px ( 2 );
       } else if (mode=='shelx-auto')  {
         customGrid.setLabel ( 'Current structure:',row,0,1,2 )
@@ -226,7 +276,43 @@ if (!__template)  {
                               .setFontItalic(true).setNoWrap();
       }
     }
+    */
 
+    customGrid.phasing_sel = null;
+    if ((mode=='crank2') && (this.Structure || this.Substructure))  {
+      customGrid.setLabel ( 'phase using:',row,0,1,1 ).setFontItalic(true).setNoWrap();
+      customGrid.setVerticalAlignment ( row,0,'middle' );
+      customGrid.phasing_sel = new Dropdown();
+      if (this.Substructure)
+        customGrid.phasing_sel.addItem (
+                  'heavy-atom substructure (' + this.ASU.ha_type + ')',
+                  '','substructure',this.Options.phasing_sel=='substructure' );
+      if (this.Structure)  {
+        customGrid.phasing_sel.addItem ( 'protein model',
+                  '','model',this.Options.phasing_sel=='model' );
+        this.Structure.layCustomDropdownInput ( dropdown );
+      }
+      if (this.Structure && this.Substructure)  {
+        customGrid.phasing_sel.addItem (
+                  'protein model and heavy-atom substructure (' + this.ASU.ha_type + ')',
+                  '','model-and-substr',this.Options.phasing_sel=='model-and-substr' );
+        this.Structure.layCustomDropdownInput ( dropdown );
+      }
+      customGrid.setWidget ( customGrid.phasing_sel, row++,1,1,7 );
+      /*
+      (function(rowNo){
+        customGrid.phasing_sel.addOnChangeListener ( function(text,value){
+          customGrid.setRowVisible ( rowNo,value!='substructure' );
+        });
+      }(row))
+      */
+      customGrid.phasing_sel.make();
+      //if (this.Structure)
+      //  customGrid.setRowVisible ( row,this.Options.phasing_sel!='substructure' );
+      row++;
+    }
+
+    customGrid.sctNRow = row;
     customGrid.setLabel ( 'main anomalous scatterer:',row,0,1,1 ).setFontItalic(true).setNoWrap();
     customGrid.ha_type = customGrid.setInputText ( this.ASU.ha_type,row,1,1,1 )
               .setStyle    ( 'text','','','Specify the atom type of dominant anomolous ' +
@@ -249,32 +335,110 @@ if (!__template)  {
     customGrid.setVerticalAlignment ( row,3,'middle' );
 
     function showNDis()  {
-      let ha_type = customGrid.ha_type.getValue().trim();
-      let showdis = (ha_type.toLowerCase()=='s');
+      var ha_type = customGrid.ha_type.getValue().trim();
+      var showdis = (ha_type.toLowerCase()=='s');
       customGrid.ndis_lbl.setVisible ( showdis );
       customGrid.ndisulph.setVisible ( showdis );
       customGrid.ha_lbl  .setVisible ( (ha_type.length<=0) );
     }
 
+    function showHA()  {
+      if (customGrid.phasing_sel)  {
+        customGrid.setRowVisible ( customGrid.sctNRow,
+                                   customGrid.phasing_sel.getValue()=='model' );
+        if ('inpParamRef' in dropdown.grid)
+          dropdown.task.inputChanged ( dropdown.grid.inpParamRef,'revision',1 );
+      }
+      showNDis();
+    }
+
     customGrid.ha_type.addOnInputListener ( showNDis );
-    showNDis();
+    if (customGrid.phasing_sel)
+      customGrid.phasing_sel.addOnChangeListener ( showHA );
+    //showNDis();
+    showHA();
 
     this.HKL.layCustomDropdownInput ( dropdown );
 
   }
 
-  DataRevision.prototype._layCDI_Molrep = function ( dropdown )  {
+  DataRevision.prototype._layMROptions = function ( customGrid,row,sep_bool )  {
+  var struct_sel_list = null;
 
-    if (this.subtype.indexOf(structure_subtype.XYZ)>=0)  {
-      var customGrid = dropdown.customGrid;
-      customGrid.setLabel ( 'Structure:',0,0,1,1 )
-                            .setFontItalic(true).setNoWrap();
-      customGrid.setLabel ( this.Structure.dname,0,1,1,1 ).setNoWrap();
-      customGrid.setLabel ( 'will be used as fixed model.',1,1,1,2 )
-                            .setFontItalic(true).setNoWrap();
-      customGrid.setLabel ( ' ',2,0,1,1 ).setHeight_px ( 8 );
+    if (this.Options.leading_structure=='structure')  {
+
+      struct_sel_list = [
+        ['as fixed model'                       ,'fixed-model'      ],
+        ['for fit in density and as fixed model','edfit-fixed-model'],
+        ['only for fit in density'              ,'edfit'            ]
+      ];
+
+      /*
+      customGrid.setLabel ( 'Structure:',row,0,1,1 )
+                .setFontItalic(true).setNoWrap();
+      customGrid.setCellSize ( '5%','',row,0 );
+      customGrid.setLabel ( this.Structure.dname,row++,1,1,1 ).setNoWrap();
+      customGrid.setLabel ( 'will be used as fixed model.',row,1,1,1 )
+                .setFontItalic(true).setNoWrap();
+      customGrid.setCellSize ( '95%','',row++,1 );
+      customGrid.fitInDensity = customGrid.setCheckbox (
+                            'Fit MR model in electron density of current structure',
+                            this.Options.fitindensity_cbx,row++,0,1,2 );
+      customGrid.setLabel ( ' ',row,0,1,1 ).setHeight_px ( 8 );
+
+      use current structure: as fixed model
+                             for fit in density and as a fixed model
+                             only for fit in density
+      */
+
+    } else if (this.Options.leading_structure=='substructure')  {
+
+      customGrid.setLabel ( 'MR model will be fit in electron density of ' +
+                            'heavy atom substructure',row++,0,1,4 )
+                .setFontItalic(true).setNoWrap();
+
+      if (this.Structure)
+        struct_sel_list = [
+          ['as fixed model'    ,'fixed-model' ],
+          ['ignore and replace','ignore'      ]
+        ];
+      else if (sep_bool)
+        customGrid.setLabel ( ' ',row,0,1,1 ).setHeight_px ( 8 );
+
+      /*
+      if (this.Structure)
+        customGrid.useFixedModel = customGrid.setCheckbox (
+                            'Use current structure as fixed model',
+                            this.Options.fixedmodel_cbx,row++,0,1,3 );
+      customGrid.setLabel ( ' ',row,0,1,1 ).setHeight_px ( 8 );
+      */
+
     }
 
+    if (struct_sel_list)  {
+      customGrid.setLabel ( 'Use current structure:',row,0,1,1 )
+                .setFontItalic(true).setNoWrap();
+      customGrid.setVerticalAlignment ( row,0,'middle' );
+      customGrid.structure_sel = new Dropdown();
+      customGrid.setWidget ( customGrid.structure_sel,row,1,1,4 );
+      for (var i=0;i<struct_sel_list.length;i++)
+        customGrid.structure_sel.addItem (
+                            struct_sel_list[i][0],'',struct_sel_list[i][1],
+                            this.Options.structure_sel==struct_sel_list[i][1] );
+      customGrid.structure_sel.make();
+      customGrid.setCellSize ( '5%' ,'',row,0 );
+      customGrid.setCellSize ( '95%','',row,1 );
+      if (sep_bool)
+        customGrid.setLabel ( ' ',++row,0,1,1 ).setHeight_px ( 8 );
+    }
+
+  }
+
+
+  DataRevision.prototype._layCDI_Molrep = function ( dropdown )  {
+  var customGrid = dropdown.customGrid;
+  var row        = customGrid.getNRows();
+    this._layMROptions ( customGrid,row,true );
   }
 
   DataRevision.prototype._layCDI_AsuMod = function ( dropdown )  {
@@ -291,18 +455,36 @@ if (!__template)  {
 
   DataRevision.prototype._layCDI_PhaserEP = function ( dropdown )  {
   var customGrid = dropdown.customGrid;
-    customGrid.setLabel ( 'Main anomalous scatterer:',0,0,1,1 ).setFontItalic(true).setNoWrap();
-    customGrid.setLabel ( this.ASU.ha_type  ,0,1,1,1 );
+
+    customGrid.setLabel ( 'Phase using:',0,0,1,1 ).setFontItalic(true).setNoWrap();
+    customGrid.setVerticalAlignment ( 0,0,'middle' );
+    customGrid.phasing_sel = new Dropdown();
+    if (this.Substructure)
+      customGrid.phasing_sel.addItem (
+                'heavy-atom substructure (' + this.ASU.ha_type + ')',
+                '','substructure' ,this.Options.phasing_sel=='substructure' );
     if (this.Structure)  {
-      dropdown.in_revision = true;
+      customGrid.phasing_sel.addItem ( 'macromolecular model',
+                '','model' ,this.Options.phasing_sel!='substructure' ); // != is correct!
       this.Structure.layCustomDropdownInput ( dropdown );
     }
+    customGrid.setWidget ( customGrid.phasing_sel, 0,1,1,5 );
+    customGrid.phasing_sel.addOnChangeListener ( function(text,value){
+      customGrid.setRowVisible ( 1,value=='model' );
+    });
+
+    customGrid.phasing_sel.make();
+    if (this.Structure)
+      customGrid.setRowVisible ( 1,this.Options.phasing_sel!='substructure' );
     this.HKL.layCustomDropdownInput ( dropdown );
+
   }
 
   DataRevision.prototype._layCDI_PhaserMR = function ( dropdown )  {
   var customGrid = dropdown.customGrid;
-  var row = 0;
+  var row        = customGrid.getNRows();
+  var row0       = row;
+  var struct_sel_list = null;
 
     if (this.hasOwnProperty('phaser_meta'))  {
 
@@ -326,8 +508,9 @@ if (!__template)  {
         customGrid.setLabel ( '<b>absent (can be in error)</b>',row++,1,1,4 )
                   .setFontItalic(true).setNoWrap();
 
-      dropdown.layCustom = 'phaser-mr-fixed';
-    } else if (this.subtype.indexOf(structure_subtype.XYZ)>=0)  {
+      //dropdown.layCustom = 'phaser-mr-fixed';
+    }
+    /* else if (this.subtype.indexOf(structure_subtype.XYZ)>=0)  {
       customGrid.setLabel ( '<b>Fixed structure</b>:',row,0,1,1 )
                 .setFontItalic(true).setNoWrap();
       customGrid.setLabel ( '<b>' + this.Structure.dname + '</b>',row++,1,1,4 )
@@ -337,15 +520,80 @@ if (!__template)  {
       customGrid.setLabel ( '<b><i>annulled</i></b>',row++,1,1,4 ).setNoWrap();
       dropdown.layCustom = 'phaser-mr-fixed';
     }
+    */
 
-    for (var i=0;i<row;i++)  {
+    for (var i=row0;i<row;i++)  {
       customGrid.setCellSize ( '','12pt',i,0 );
       customGrid.setVerticalAlignment ( i,0,'middle' );
       customGrid.setCellSize ( '','12pt',i,1 );
       customGrid.setVerticalAlignment ( i,1,'middle' );
     }
 
+    this._layMROptions ( customGrid,row,false );
+
+    if (this.Structure || this.Substructure)
+      dropdown.layCustom = 'phaser-mr-fixed';
+
     this.HKL.layCustomDropdownInput ( dropdown );
+
+  }
+
+  DataRevision.prototype._layCDI_Parrot = function ( dropdown )  {
+  var customGrid = dropdown.customGrid;
+  var row        = customGrid.getNRows();
+
+    if (this.Structure && this.Substructure)  {
+      var text = 'Will use phases from ';
+      if (this.Options.leading_structure=='substructure')
+            text += 'heavy-atom substructure (' + this.ASU.ha_type + ')';
+      else  text += 'macromolecular model';
+      customGrid.setLabel ( text,row++,0,1,7 )
+                .setFontBold(true).setFontItalic(true).setNoWrap();
+    }
+
+    customGrid.setLabel ( 'Model for NCS detection:',row,0,1,1 ).setFontItalic(true).setNoWrap();
+    customGrid.setVerticalAlignment ( row,0,'middle' );
+    customGrid.ncsmodel_sel = new Dropdown();
+    customGrid.ncsmodel_sel.addItem ( 'do not use',
+              '','do-not-use' ,this.Options.ncsmodel_sel=='do-not-use' );
+    if (this.Substructure)
+      customGrid.ncsmodel_sel.addItem (
+                'heavy-atom substructure (' + this.ASU.ha_type + ')',
+                '','substructure' ,this.Options.ncsmodel_sel=='substructure' );
+    if (this.Structure)
+      customGrid.ncsmodel_sel.addItem ( 'macromolecular model',
+                '','model' ,this.Options.ncsmodel_sel=='model' );
+
+    customGrid.setWidget ( customGrid.ncsmodel_sel, row,1,1,5 );
+    customGrid.ncsmodel_sel.make();
+
+  }
+
+  DataRevision.prototype._layCDI_Structure = function ( dropdown,key )  {
+  var customGrid = dropdown.customGrid;
+  var row        = customGrid.getNRows();
+
+    if (this.Structure && this.Substructure)  {
+      var text = 'Will use phases from ';
+      if (this.Options.leading_structure=='substructure')
+            text += 'heavy-atom substructure (' + this.ASU.ha_type + ')';
+      else  text += 'macromolecular model';
+      customGrid.setLabel ( text,row++,0,1,7 )
+                .setFontBold(true).setFontItalic(true).setNoWrap();
+    }
+
+    var structure = null;
+    if (key>0)  {
+      if (this.Options.leading_structure=='substructure')
+            structure = this.Substructure;
+      else  structure = this.Structure;
+      structure.layCustomDropdownInput ( dropdown );
+      if ((key==2) && this.Structure &&
+          (this.Options.leading_structure=='substructure'))
+        this.Structure.layCustomDropdownInput ( dropdown );
+    }
+
+    return structure;
 
   }
 
@@ -353,29 +601,32 @@ if (!__template)  {
   DataRevision.prototype.layCustomDropdownInput = function ( dropdown )  {
 
     switch (dropdown.layCustom)  {
-      case 'asumod'    :
+      case 'asumod'     :
             this._layCDI_AsuMod ( dropdown );
           break;
-      case 'phaser-ep' :
+      case 'phaser-ep'  :
             this._layCDI_PhaserEP ( dropdown );
-            /*
-            if (this.Structure)  {
-              dropdown.in_revision = true;
-              this.Structure.layCustomDropdownInput ( dropdown );
-            }
-            this.HKL.layCustomDropdownInput ( dropdown );
-            */
           break;
       case 'reindex'    :  case 'refmac'       :  case 'ccp4build' :
       case 'cell-info'  :
             this.HKL.layCustomDropdownInput ( dropdown );
           break;
-      case 'parrot'     :  case 'buccaneer-ws' :  case 'acorn'  :
-            this.Structure.layCustomDropdownInput ( dropdown );
+      case 'parrot'     :
+            this._layCDI_Parrot ( dropdown );
+          break;
+      case 'shelxe'     :
+            this._layCDI_Structure ( dropdown,0 );
+          break;
+      case 'acorn'      :
+            this._layCDI_Structure ( dropdown,1 );
+          break;
+      case 'buccaneer-ws':
+            this._layCDI_Structure ( dropdown,2 );
           break;
       case 'arpwarp'    :
-            this.Structure.layCustomDropdownInput ( dropdown );
-            dropdown.Structure = this.Structure;  // this will add phase options for refmac
+            dropdown.Structure = this._layCDI_Structure ( dropdown,1 );
+            //this.Structure.layCustomDropdownInput ( dropdown );
+            //dropdown.Structure = this.Structure;  // this will add phase options for refmac
             this.HKL.layCustomDropdownInput ( dropdown );
           break;
       case 'molrep'     :
@@ -399,16 +650,19 @@ if (!__template)  {
   }
 
   DataRevision.prototype._collectCDI_Crank2 = function ( dropdown )  {
+    var customGrid = dropdown.customGrid;
     var msg = '';
-    if ('removeNonAnom' in dropdown.customGrid)
-      this.Structure.removeNonAnom = dropdown.customGrid.removeNonAnom.getValue();
+    if ('removeNonAnom' in customGrid)
+      this.Structure.removeNonAnom = customGrid.removeNonAnom.getValue();
+    if (customGrid.phasing_sel)
+      this.Options.phasing_sel = customGrid.phasing_sel.getValue();
     if (this.ASU)  {
-      this.ASU.ha_type = dropdown.customGrid.ha_type.getValue().trim();
+      this.ASU.ha_type = customGrid.ha_type.getValue().trim();
       if (!this.ASU.ha_type)
         msg += '<b><i>Main anomalous scatterer must be given</i></b>';
-      if (dropdown.customGrid.hasOwnProperty('ndisulph') &&
+      if (customGrid.hasOwnProperty('ndisulph') &&
           (this.ASU.ha_type.toLowerCase()=='s'))  {
-        var ndisulph = dropdown.customGrid.ndisulph.getValue();
+        var ndisulph = customGrid.ndisulph.getValue();
         if (ndisulph.trim().length>0)  {
           if (isInteger(ndisulph))  {
             var ndisulph = parseInt(ndisulph);
@@ -428,41 +682,82 @@ if (!__template)  {
 
   DataRevision.prototype.collectCustomDropdownInput = function ( dropdown ) {
   var msg = '';
+
     switch (dropdown.layCustom)  {
+
       case 'asumod'    :
             if (this.ASU && this.HKL.hasAnomalousSignal())
               this.ASU.ha_type = dropdown.customGrid.ha_type.getValue();
           break;
-      case 'reindex'   :  case 'phaser-mr'    :  case 'phaser-mr-fixed' :
+
+      case 'reindex'   :
           msg = this.HKL.collectCustomDropdownInput ( dropdown );
         break;
+
+      case 'phaser-mr' :  case 'phaser-mr-fixed' :
+          if ('structure_sel' in dropdown.customGrid)
+            this.Options.structure_sel = dropdown.customGrid.structure_sel.getValue();
+          msg = this.HKL.collectCustomDropdownInput ( dropdown );
+        break;
+
       case 'phaser-ep' :
           msg = this.HKL.collectCustomDropdownInput ( dropdown );
-          if (this.Structure)
+          this.Options.phasing_sel = dropdown.customGrid.phasing_sel.getValue();
+          if (this.Structure && (this.Options.phasing_sel=='model'))
             msg += this.Structure.collectCustomDropdownInput ( dropdown );
         break;
+
       case 'refmac'    :  case 'ccp4build'    :
           msg = this.HKL.collectCustomDropdownInput ( dropdown );
         break;
-      case 'parrot'    :  case 'buccaneer-ws' :  case 'acorn' :
-          msg = this.Structure.collectCustomDropdownInput ( dropdown );
+
+      case 'parrot'    :
+          this.Options.ncsmodel_sel = dropdown.customGrid.ncsmodel_sel.getValue();
         break;
+
+      case 'acorn'     :
+          if (this.Options.leading_structure=='substructure')
+                msg = this.Substructure.collectCustomDropdownInput ( dropdown );
+          else  msg = this.Structure   .collectCustomDropdownInput ( dropdown );
+        break;
+
+      case 'buccaneer-ws' :
+          if (this.Options.leading_structure=='substructure')  {
+            msg = this.Substructure.collectCustomDropdownInput ( dropdown );
+            if (this.Structure)
+              msg = this.Structure.collectCustomDropdownInput ( dropdown );
+          } else
+            msg = this.Structure.collectCustomDropdownInput ( dropdown );
+        break;
+
       case 'arpwarp'   :
-          dropdown.Structure = this.Structure;  // because it gets lost at copying objects
-          msg = this.Structure.collectCustomDropdownInput ( dropdown ) +
-                this.HKL.collectCustomDropdownInput       ( dropdown );
+          if (this.Options.leading_structure=='substructure')
+                dropdown.Structure = this.Substructure;  // because it gets lost at copying objects
+          else  dropdown.Structure = this.Structure;     // because it gets lost at copying objects
+          msg = dropdown.Structure.collectCustomDropdownInput ( dropdown ) +
+                this.HKL.collectCustomDropdownInput ( dropdown );
         break;
+
+      case 'molrep'     :
+          if ('structure_sel' in dropdown.customGrid)
+            this.Options.structure_sel = dropdown.customGrid.structure_sel.getValue();
+          break;
+
       case 'crank2'  :
           msg = this._collectCDI_Crank2 ( dropdown );
         break;
+
       case 'shelx-auto'   :
       case 'shelx-substr' :
           msg = this._collectCDI_Crank2 ( dropdown );
-          //msg = this.HKL.collectCustomDropdownInput ( dropdown );
         break;
+
       default : ;
+
     }
+
     return msg;
+
   }
 
   // dataDialogHint() may return a hint for TaskDataDialog, which is shown

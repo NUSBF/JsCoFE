@@ -106,8 +106,8 @@ class Crank2(ccp4go_mrbump.MrBUMP):
 
         crank2_xyz  = os.path.join ( self.crank2_dir(),self.outputname + ".pdb" )
         crank2_mtz  = os.path.join ( self.crank2_dir(),self.outputname + ".mtz" )
-        crank2_map  = os.path.join ( self.crank2_dir(),self.outputname + ".mtz.map" )
-        crank2_dmap = os.path.join ( self.crank2_dir(),self.outputname + ".mtz_diff.map" )
+        crank2_map  = None  #os.path.join ( self.crank2_dir(),self.outputname + ".mtz.map" )
+        crank2_dmap = None  #os.path.join ( self.crank2_dir(),self.outputname + ".mtz_diff.map" )
 
         cmd = [
             os.path.join(os.environ["CCP4"],"share","ccp4i","crank2","crank2.py"),

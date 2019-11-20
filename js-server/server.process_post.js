@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    13.08.19   <--  Date of Last Modification.
+ *    09.10.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -53,12 +53,12 @@ function processPOSTData ( server_request,server_response,process_data_function 
       if (data_obj)  {
         if (data_obj.hasOwnProperty('_type'))  {
           if (data_obj._type=='Request')  {
-            var login = user.getLoginFromHash ( data_obj.token );
-            if (login.length<=0)
+            var loginData = user.getLoginData ( data_obj.token );
+            if (loginData.login.length<=0)
               cmd.sendResponse ( server_response, cmd.fe_retcode.notLoggedIn,
                                  'user not logged in','' );
             else
-              process_data_function ( login,data_obj.request,data_obj.data,
+              process_data_function ( loginData,data_obj.request,data_obj.data,
                 function(response){
                   response.send ( server_response );
                 });

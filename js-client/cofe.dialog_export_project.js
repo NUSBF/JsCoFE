@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    25.04.19   <--  Date of Last Modification.
+ *    29.10.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -76,7 +76,6 @@ function ExportProjectDialog ( projectList )  {
                 url = special_url_tag + '/' + token + '/' + projectList.current +
                                         '/' + projectList.current + '.zip';
 //                                        '/' + projectList.current + '.tar.gz';
-                //downloadFile ( replaceAll(url,'/','@') );
                 downloadFile ( url );
                 $( "#cancel_btn" ).button ( "option","label","Close" );
                 //$(dlg).dialog("close");

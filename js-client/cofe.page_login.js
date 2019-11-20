@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    15.06.19   <--  Date of Last Modification.
+ *    12.11.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -155,7 +155,14 @@ function LoginPage ( sceneId )  {
         '<p>In order to register as a new user, please contact ' + appName() +
         '<br>admin or maintainer in your organisation.' );
   });
-  pwd_btn.addOnClickListener ( function(){ makeForgottenLoginPage(sceneId); } );
+  pwd_btn.addOnClickListener ( function(){
+    if (__regMode=='email')
+      makeForgottenLoginPage(sceneId);
+    else
+      new MessageBox ( 'Password recovery',
+        '<p>In order to reset your password, please contact ' + appName() +
+        '<br>admin or maintainer in your organisation.' );
+  });
 
 /*
   var viewFullScreen = document.getElementById("scene");

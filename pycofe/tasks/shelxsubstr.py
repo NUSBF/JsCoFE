@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    24.12.18   <--  Date of Last Modification.
+#    18.11.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2018
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2019
 #
 # ============================================================================
 #
@@ -157,7 +157,7 @@ class ShelxSubstr(crank2.Crank2):
             xyz_file = structure.getSubFileName()
             structure.removeFiles()
             structure.setSubFile ( xyz_file )
-            structure.setMTZFile ( hkls.getHKLFileName() )
+            #structure.setMTZFile ( hkls.getHKLFileName() )  -- no maps, substructure is not phased
             structure.removeSubtype ( dtype_template.subtypePhases() )
             super ( ShelxSubstr,self ).finalise ( structure )
 

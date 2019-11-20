@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    08.07.19   <--  Date of Last Modification.
+ *    09.10.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -51,15 +51,15 @@ function getFacilityPath ( name_str )  {
   return '';
 }
 
-function getUserFacilityListPath ( login )  {
+function getUserFacilityListPath ( loginData )  {
 // path to JSON file containing list of all projects (with project
 // descriptions, represented as class ProjectList) of user with
 // given login name
-  return path.join ( prj.getUserProjectsDirPath(login),facilityListFName );
+  return path.join ( prj.getUserProjectsDirPath(loginData),facilityListFName );
 }
 
 
-function getUserCloudMounts ( login )  {
+function getUserCloudMounts ( loginData )  {
 //
 //  Reads cloud storage configuration file, which is placed by admin in
 //  users' project directory. The file has the following format:
@@ -75,8 +75,8 @@ function getUserCloudMounts ( login )  {
 //  [[name1,path1],[name2,path2],...[nameN,pathN]] otherwise.
 //
 
-var fileListPath = path.join ( prj.getUserProjectsDirPath(login),cloudFileListFName );
-var paths = conf.getFEConfig().getCloudMounts ( login );
+var fileListPath = path.join ( prj.getUserProjectsDirPath(loginData),cloudFileListFName );
+var paths = conf.getFEConfig().getCloudMounts ( loginData.login );
 var text  = utils.readString ( fileListPath );
 
   if (text) {
@@ -419,25 +419,25 @@ function initFacilities ( facilityListPath )  {
 
 // ===========================================================================
 
-function getUserFacilityList ( login,data,callback_func )  {
+function getUserFacilityList ( loginData,data,callback_func )  {
   if (data['type']=='files')  {
     callback_func ( new cmd.Response ( cmd.fe_retcode.ok,'',
                         getCloudDirListing (
-                               getUserCloudMounts(login),data['path']
+                               getUserCloudMounts(loginData.login),data['path']
                                              ) ) );
   } else  {
-    get_user_facility_list ( login,callback_func );
+    get_user_facility_list ( loginData,callback_func );
   }
 }
 
 
-function get_user_facility_list ( login,callback_func )  {
+function get_user_facility_list ( loginData,callback_func )  {
 var response = null;  // must become a cmd.Response object to return
 
-  log.detailed ( 4,'get facilities list, login ' + login );
+  log.detailed ( 4,'get facilities list, login ' + loginData.login );
 
   // Get users' projects list file name
-  var userFacilityListPath = getUserFacilityListPath ( login );
+  var userFacilityListPath = getUserFacilityListPath ( loginData );
 
   if (!utils.fileExists(userFacilityListPath))  {
     if (!initFacilities(userFacilityListPath))  {
@@ -472,14 +472,15 @@ var updateInputFName  = 'update_input.json';
 
 // ---------------------------------------------------------------------------
 
-function updateFacility ( login,data )  {
+function updateFacility ( loginData,data )  {
 
-  log.standard ( 4,'updating facility "' + data.facility.name + '", login ' + login );
+  log.standard ( 4,'updating facility "' + data.facility.name +
+                   '", login ' + loginData.login );
 
   var response_data = {};
   response_data.status = cmd.fe_retcode.ok;
 
-  var jobDir = prj.getJobDirPath ( login,data.project,data.tid );
+  var jobDir = prj.getJobDirPath ( loginData,data.project,data.tid );
 
   var pwd  = data.pwd;
   data.pwd = '';  // do not write password on disk
@@ -542,12 +543,12 @@ function updateFacility ( login,data )  {
 
 // ---------------------------------------------------------------------------
 
-function checkFacilityUpdate ( login,data )  {
+function checkFacilityUpdate ( loginData,data )  {
 
   var response_data = {};
   response_data.status = cmd.fe_retcode.inProgress;
 
-  var jobDir = prj.getJobDirPath ( login,data.project,data.tid );
+  var jobDir = prj.getJobDirPath ( loginData,data.project,data.tid );
 
   // check result file
   var resultFilePath = path.join(jobDir,updateResultFName);
@@ -558,7 +559,7 @@ function checkFacilityUpdate ( login,data )  {
         var updateFilePath = path.join(jobDir,updateInputFName);
         var update_data = utils.readObject ( updateFilePath );
         if (update_data)  {
-          var userFacilityListPath = getUserFacilityListPath ( login );
+          var userFacilityListPath = getUserFacilityListPath ( loginData );
           var userFacilityList = new fcl.FacilityList();
           if (utils.fileExists(userFacilityListPath))
             userFacilityList.from_JSON ( utils.readString(userFacilityListPath) );

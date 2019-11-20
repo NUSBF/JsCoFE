@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    15.09.19   <--  Date of Last Modification.
+ *    10.10.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -56,23 +56,23 @@ function FEJobRegister()  {
   this.n_jobs    = 0;   // serial counter for total number of jobs
 }
 
-FEJobRegister.prototype.addJob = function (
-                                   job_token,nc_number,login,project,jobId )  {
+FEJobRegister.prototype.addJob = function ( job_token,nc_number,loginData,
+                                            project,jobId )  {
   this.job_map[job_token] = {
     nc_number  : nc_number,
     nc_type    : 'ordinary',
     job_token  : job_token,  // job_token issued by NC
-    login      : login,
+    loginData  : loginData,
     project    : project,
     jobId      : jobId,
     start_time : Date.now()
   };
-  var index = login + ':' + project + ':' + jobId;
+  var index = loginData.login + ':' + project + ':' + jobId;
   this.token_map[index] = job_token;
 }
 
-FEJobRegister.prototype.getJobEntry = function ( login,project,jobId )  {
-var index = login + ':' + project + ':' + jobId;
+FEJobRegister.prototype.getJobEntry = function ( loginData,project,jobId )  {
+var index = loginData.login + ':' + project + ':' + jobId;
   if (index in this.token_map)  {
     return this.job_map[this.token_map[index]];
   } else {
@@ -90,8 +90,8 @@ FEJobRegister.prototype.getJobEntryByToken = function ( job_token )  {
 
 FEJobRegister.prototype.removeJob = function ( job_token )  {
   if (job_token in this.job_map)  {
-    var index = this.job_map[job_token].login   + ':' +
-                this.job_map[job_token].project + ':' +
+    var index = this.job_map[job_token].loginData.login + ':' +
+                this.job_map[job_token].project         + ':' +
                 this.job_map[job_token].jobId;
     this.token_map = com_utils.mapExcludeKey ( this.token_map,index     );
     this.job_map   = com_utils.mapExcludeKey ( this.job_map  ,job_token );
@@ -115,8 +115,14 @@ function readFEJobRegister()  {
     feJobRegister = new FEJobRegister();
     obj           = utils.readObject ( fpath );
     if (obj)  {
-      for (key in obj)
+      for (var key in obj)
         feJobRegister[key] = obj[key];
+      for (var token in feJobRegister.job_map)
+        if ('login' in feJobRegister.job_map[token])
+          feJobRegister.job_map[token].loginData = {
+            'login'  : feJobRegister.job_map[token].login,
+            'volume' : '***'
+          }
     } else
       writeFEJobRegister();
   }
@@ -133,8 +139,8 @@ var fpath = getJobRegisterPath();
 
 }
 
-function getEFJobEntry ( login,project,jobId )  {
-  return feJobRegister.getJobEntry ( login,project,jobId );
+function getEFJobEntry ( loginData,project,jobId )  {
+  return feJobRegister.getJobEntry ( loginData,project,jobId );
 }
 
 
@@ -275,7 +281,7 @@ function ncSelectAndCheck ( nc_counter,task,callback_func )  {
 
 // ===========================================================================
 
-function runJob ( login,data, callback_func )  {
+function runJob ( loginData,data, callback_func )  {
 
   var task = class_map.makeClass ( data.meta );
   if (!task)  {
@@ -286,7 +292,7 @@ function runJob ( login,data, callback_func )  {
   }
 
   // modify user knowledge
-  var userKnowledgePath = prj.getUserKnowledgePath ( login );
+  var userKnowledgePath = prj.getUserKnowledgePath ( loginData );
   var knowledge = {};
   if (utils.fileExists(userKnowledgePath))
     knowledge = utils.readObject ( userKnowledgePath );
@@ -296,7 +302,7 @@ function runJob ( login,data, callback_func )  {
 
   // run job
 
-  var jobDataPath = prj.getJobDataPath ( login,task.project,task.id );
+  var jobDataPath = prj.getJobDataPath ( loginData,task.project,task.id );
   task.state      = task_t.job_code.running;
   var job_token   = crypto.randomBytes(20).toString('hex');
   if (task.nc_type=='client')
@@ -310,7 +316,7 @@ function runJob ( login,data, callback_func )  {
   }
 
 
-  var jobDir = prj.getJobDirPath ( login,task.project,task.id );
+  var jobDir = prj.getJobDirPath ( loginData,task.project,task.id );
 
   if (task.nc_type=='client')  {
     // job for client NC, just pack the job directory and inform client
@@ -320,7 +326,7 @@ function runJob ( login,data, callback_func )  {
     utils.writeJobReportMessage ( jobDir,'<h1>Preparing ...</h1>',true );
 
     // prepare input data
-    task.makeInputData ( login,jobDir );
+    task.makeInputData ( loginData,jobDir );
 
     send_dir.packDir ( jobDir,'*', function(code){
 
@@ -330,13 +336,13 @@ function runJob ( login,data, callback_func )  {
                     'Job is running on client machine. Full report will ' +
                     'become available after job finishes.',true );
 
-        feJobRegister.addJob ( job_token,0,login,  // 0 is nc number
+        feJobRegister.addJob ( job_token,0,loginData,  // 0 is nc number
                                task.project,task.id );
         feJobRegister.getJobEntryByToken(job_token).nc_type = task.nc_type;
         writeFEJobRegister();
 
         // update the user ration state
-        ration.updateUserRation_bookJob ( login,task );
+        ration.updateUserRation_bookJob ( loginData,task );
 
         rdata = {};
         rdata.job_token   = job_token;
@@ -388,14 +394,14 @@ function runJob ( login,data, callback_func )  {
         utils.writeJobReportMessage ( jobDir,'<h1>Preparing ...</h1>',true );
 
         // prepare input data
-        task.makeInputData ( login,jobDir );
+        task.makeInputData ( loginData,jobDir );
 
         var nc_url = conf.getNCConfig(nc_number).externalURL;
-        var uData  = user.readUserData ( login );
+        var uData  = user.readUserData ( loginData );
         var meta   = {};
         meta.setup_id  = conf.getSetupID();
         meta.nc_name   = conf.getNCConfig(nc_number).name;
-        meta.user_id   = login;
+        meta.user_id   = loginData.login;
         meta.feedback  = ud.feedback_code.decline;
         meta.user_name = '';
         meta.email     = '';
@@ -414,12 +420,12 @@ function runJob ( login,data, callback_func )  {
             // The number cruncher will start dealing with the job automatically.
             // On FE end, register job as engaged for further communication with
             // NC and client.
-            feJobRegister.addJob ( rdata.job_token,nc_number,login,
+            feJobRegister.addJob ( rdata.job_token,nc_number,loginData,
                                    task.project,task.id );
             writeFEJobRegister();
 
             // update the user ration state
-            ration.updateUserRation_bookJob ( login,task );
+            ration.updateUserRation_bookJob ( loginData,task );
 
           },function(stageNo,code){  // send failed
 
@@ -464,7 +470,7 @@ function runJob ( login,data, callback_func )  {
 
 // ===========================================================================
 
-function replayJob ( login,data, callback_func )  {
+function replayJob ( loginData,data, callback_func )  {
 
   var replay_task = class_map.makeClass ( data.meta );
   if (!replay_task)  {
@@ -476,13 +482,13 @@ function replayJob ( login,data, callback_func )  {
 
   // run job
 
-  var replayJobDataPath = prj.getJobDataPath ( login,replay_task.project,task.id );
+  var replayJobDataPath = prj.getJobDataPath ( loginData,replay_task.project,task.id );
   replay_task.state = task_t.job_code.running;
 
   // write task data because it may have latest changes
   if (utils.writeObject(jobDataPath,task))  {
 
-    var jobDir = prj.getJobDirPath ( login,task.project,task.id );
+    var jobDir = prj.getJobDirPath ( loginData,task.project,task.id );
 
     var nc_number = 0;
     if (task.nc_type=='ordinary')  {
@@ -510,7 +516,7 @@ function replayJob ( login,data, callback_func )  {
     utils.writeJobReportMessage ( jobDir,'<h1>Preparing ...</h1>',true );
 
     // prepare input data
-    task.makeInputData ( login,jobDir );
+    task.makeInputData ( loginData,jobDir );
 
     if (task.nc_type=='client')  {
       // job for client NC, just pack the job directory and inform client
@@ -524,13 +530,13 @@ function replayJob ( login,data, callback_func )  {
                       'become available after job finishes.',true );
 
           var job_token = crypto.randomBytes(20).toString('hex');
-          feJobRegister.addJob ( job_token,nc_number,login,
+          feJobRegister.addJob ( job_token,nc_number,loginData,
                                  task.project,task.id );
           feJobRegister.getJobEntryByToken(job_token).nc_type = task.nc_type;
           writeFEJobRegister();
 
           // update the user ration state
-          ration.updateUserRation_bookJob ( login,task );
+          ration.updateUserRation_bookJob ( loginData,task );
 
           rdata = {};
           rdata.job_token   = job_token;
@@ -552,7 +558,7 @@ function replayJob ( login,data, callback_func )  {
       var nc_url = conf.getNCConfig(nc_number).externalURL;
       var meta   = {};
       meta.setup_id = conf.getSetupID();
-      meta.user_id  = login;
+      meta.user_id  = loginData.login;
       send_dir.sendDir ( jobDir,'*',nc_url,cmd.nc_command.runJob,meta,
 
         function ( rdata ){  // send successful
@@ -560,12 +566,12 @@ function replayJob ( login,data, callback_func )  {
           // The number cruncher will start dealing with the job automatically.
           // On FE end, register job as engaged for further communication with
           // NC and client.
-          feJobRegister.addJob ( rdata.job_token,nc_number,login,
+          feJobRegister.addJob ( rdata.job_token,nc_number,loginData,
                                  task.project,task.id );
           writeFEJobRegister();
 
           // update the user ration state
-          ration.updateUserRation_bookJob ( login,task );
+          ration.updateUserRation_bookJob ( loginData,task );
 
         },function(stageNo,code){  // send failed
 
@@ -609,13 +615,13 @@ function replayJob ( login,data, callback_func )  {
 
 // ===========================================================================
 
-function stopJob ( login,data )  {
+function stopJob ( loginData,data )  {
 // Request to stop a running job. 'data' must contain a 'meta' field, which
 // must be the Task class of job to be terminated.
 var response = null;
 
   var task     = data.meta;
-  var jobEntry = getEFJobEntry ( login,task.project,task.id );
+  var jobEntry = getEFJobEntry ( loginData,task.project,task.id );
 
   if (jobEntry)  {
 
@@ -640,8 +646,8 @@ var response = null;
 
   } else  {  // repair job metadata
 
-    var jobDir      = prj  .getJobDirPath    ( login,task.project,task.id );
-    var jobDataPath = prj  .getJobDataPath   ( login,task.project,task.id );
+    var jobDir      = prj  .getJobDirPath    ( loginData,task.project,task.id );
+    var jobDataPath = prj  .getJobDataPath   ( loginData,task.project,task.id );
     var code        = utils.getJobSignalCode ( jobDir      );
     var jobData     = utils.readObject       ( jobDataPath );
 
@@ -684,12 +690,13 @@ function writeJobStats ( jobEntry )  {
   var dm = Math.trunc(dt/_min);   dt -= dm*_min;
   var ds = Math.trunc(dt/_sec);
 
-  var jobDataPath = prj  .getJobDataPath ( jobEntry.login,jobEntry.project,jobEntry.jobId );
+  var jobDataPath = prj  .getJobDataPath ( jobEntry.loginData,jobEntry.project,
+                                           jobEntry.jobId );
   var jobClass    = utils.readClass      ( jobDataPath );
 
   if (jobClass)  {
 
-    var userRation = ration.updateUserRation_bookJob ( jobEntry.login,jobClass );
+    var userRation = ration.updateUserRation_bookJob ( jobEntry.loginData,jobClass );
 
     var S     = '';
     var fpath = getJobStatPath();
@@ -719,7 +726,7 @@ function writeJobStats ( jobEntry )  {
          com_utils.padDigits ( jobEntry.nc_number.toString(),3 ) + ' ' +
          com_utils.padStringRight ( jobClass.state,' ',8 )       + ' ' +
 
-         com_utils.padStringRight ( jobEntry.login +
+         com_utils.padStringRight ( jobEntry.loginData.login +
                 ' (' + userRation.jobs_total + ')',' ',20 ) +
                     ' ' + jobClass.title + '\n';
 
@@ -751,15 +758,13 @@ function getJobResults ( job_token,server_request,server_response )  {
 
   if (jobEntry)  {
 
-    var jobDir = prj.getJobDirPath ( jobEntry.login,jobEntry.project,
+    var jobDir = prj.getJobDirPath ( jobEntry.loginData,jobEntry.project,
                                      jobEntry.jobId );
 
     send_dir.receiveDir ( jobDir,conf.getFETmpDir(),server_request,
       function(code,errs,meta){
         if (code==0)  {
           // print usage stats and update the user ration state
-          //ration.updateUserRation_bookJob ( jobEntry.login,writeJobStats(jobEntry) );
-          //var jobClass = writeJobStats    ( jobEntry );
           var jobClass = writeJobStats ( jobEntry );
           ustats.registerJob ( jobClass );
           feJobRegister.removeJob ( job_token );
@@ -792,7 +797,7 @@ function getJobResults ( job_token,server_request,server_response )  {
 
 // ===========================================================================
 
-function checkJobs ( login,data )  {
+function checkJobs ( loginData,data )  {
 
   var projectName = data.project;
   var run_map     = data.run_map;
@@ -801,7 +806,7 @@ function checkJobs ( login,data )  {
   var empty = true;
 
   for (key in run_map)  {
-    var jobDataPath = prj.getJobDataPath ( login,projectName,key );
+    var jobDataPath = prj.getJobDataPath ( loginData,projectName,key );
     var jobData     = utils.readObject   ( jobDataPath );
     if (jobData)  {
       if ((jobData.state!=task_t.job_code.running) &&
@@ -816,8 +821,8 @@ function checkJobs ( login,data )  {
   rdata.completed_map = completed_map;
 
   if (!empty)  {  // save on reading files if nothing changes
-    rdata.ration = ration.getUserRation(login).clearJobs();
-    var p = utils.readObject ( prj.getProjectDataPath(login,projectName) );
+    rdata.ration = ration.getUserRation(loginData).clearJobs();
+    var p = utils.readObject ( prj.getProjectDataPath(loginData,projectName) );
     if (p)
       rdata.pdesc = p.desc;
   }

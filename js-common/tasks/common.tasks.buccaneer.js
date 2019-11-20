@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.10.19   <--  Date of Last Modification.
+ *    14.10.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -88,7 +88,7 @@ function TaskBuccaneer()  {
       version     : 0,          // minimum data version allowed
       min         : 1,          // minimum acceptable number of data instances
       max         : 1           // maximum acceptable number of data instances
-/*
+    /*
     },
       data_type   : {'DataStructure':['~substructure-am']}, // data type(s) and subtype(s)
       label       : 'Work structure', // label for input dialog
@@ -105,7 +105,7 @@ function TaskBuccaneer()  {
                     'sequence irrespective of the expected numbers in a.s.u.',
       min         : 1,          // minimum acceptable number of data instances
       max         : 10000       // maximum acceptable number of data instances
-      */
+    */
     },{
       data_type   : {'DataStructure':['~substructure','~substructure-am','!xyz']}, // data type(s) and subtype(s)
       desc        : 'fixed model',  // used in TaskDataDialog to discriminate between alike items
@@ -376,19 +376,24 @@ if (__template)  {
 
   var conf = require('../../js-server/server.configuration');
 
-  TaskBuccaneer.prototype.makeInputData = function ( login,jobDir )  {
+  TaskBuccaneer.prototype.makeInputData = function ( loginData,jobDir )  {
 
     // put hkl and structure data in input databox for copying their files in
     // job's 'input' directory
 
     if ('revision' in this.input_data.data)  {
       var revision = this.input_data.data['revision'][0];
-      this.input_data.data['hkl']     = [revision.HKL];
-      this.input_data.data['istruct'] = [revision.Structure];
-      this.input_data.data['seq']     = revision.ASU.seq;
+      this.input_data.data['hkl'] = [revision.HKL];
+      this.input_data.data['seq'] = revision.ASU.seq;
+      if (revision.Options.leading_structure=='substructure')  {
+        this.input_data.data['istruct'] = [revision.Substructure];
+        if (this.Structure)
+          this.input_data.data['ixyz'] = [revision.Structure];
+      } else
+        this.input_data.data['istruct'] = [revision.Structure];
     }
 
-    __template.TaskTemplate.prototype.makeInputData.call ( this,login,jobDir );
+    __template.TaskTemplate.prototype.makeInputData.call ( this,loginData,jobDir );
 
   }
 

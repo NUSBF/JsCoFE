@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.10.19   <--  Date of Last Modification.
+ *    10.10.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -40,7 +40,7 @@ function TaskArpWarp()  {
       data_type   : {'DataRevision':['!protein','!asu','!phases']}, // data type(s) and subtype(s)
       label       : 'Structure revision',        // label for input dialog
       inputId     : 'revision',      // input Id for referencing input fields
-      version     : 0,          // minimum data version allowed
+      version     : 7,          // minimum data version allowed
       customInput : 'arpwarp',  // lay custom fields below the dropdown
       min         : 1,          // minimum acceptable number of data instances
       max         : 1           // maximum acceptable number of data instances
@@ -414,19 +414,21 @@ if (__template)  {
 
   var conf = require('../../js-server/server.configuration');
 
-  TaskArpWarp.prototype.makeInputData = function ( login,jobDir )  {
+  TaskArpWarp.prototype.makeInputData = function ( loginData,jobDir )  {
 
     // put hkl and structure data in input databox for copying their files in
     // job's 'input' directory
 
     if ('revision' in this.input_data.data)  {
       var revision = this.input_data.data['revision'][0];
-      this.input_data.data['hkl']     = [revision.HKL];
-      this.input_data.data['seq']     = revision.ASU.seq;
-      this.input_data.data['istruct'] = [revision.Structure];
+      this.input_data.data['hkl'] = [revision.HKL];
+      this.input_data.data['seq'] = revision.ASU.seq;
+      if (revision.Options.leading_structure=='substructure')
+            this.input_data.data['istruct'] = [revision.Substructure];
+      else  this.input_data.data['istruct'] = [revision.Structure];
     }
 
-    __template.TaskTemplate.prototype.makeInputData.call ( this,login,jobDir );
+    __template.TaskTemplate.prototype.makeInputData.call ( this,loginData,jobDir );
 
   }
 

@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    25.08.19   <--  Date of Last Modification.
+ *    09.11.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -119,7 +119,9 @@ if (!__template)  {
     div.customData.job_id      = this.id;
     div.customData.file_mod    = {'rename':{},'annotation':[]}; // file modification and annotation
     (function(panel,task){
-      panel.upload = new Upload ( panel.customData,'project_data',
+      panel.upload = new Upload ( panel.customData,
+        { 'type' : 'project_data',
+          'accept' : '.pdb,.seq,.fasta,.pir,.mtz,.cif,.mmcif,.ent,.doc,.txt,.pdf,.jpg,.jpeg,.gif,.png' },
         function(e,onReady_func) {
           if (e.target.files.length>0)
             _import_checkFiles ( e.target.files,div.customData.file_mod,

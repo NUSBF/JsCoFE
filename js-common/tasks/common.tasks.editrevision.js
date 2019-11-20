@@ -1,8 +1,10 @@
+// LEGACY CODE, ONLY USED IN OLD PROJECTS   19.11.19  v.1.4.003
+
 
 /*
  *  =================================================================
  *
- *    02.10.19   <--  Date of Last Modification.
+ *    20.11.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -76,22 +78,23 @@ function TaskEditRevision()  {
       max         : 10              // maximum acceptable number of data instances
     },{
       data_type   : {'DataStructure':['xyz','substructure'],'DataXYZ':[]},  // data type(s) and subtype(s)
-      label       : 'Atomic model', // label for input dialog
+      label       : 'Macromolecular model<br>or substructure', // label for input dialog
       cast        : 'xyz',
       unchosen_label : '[do not change]',
-      tooltip     : 'Atomic model of macromolecule(s). If no changes are ' +
-                    'required, choose [do not change].',
+      tooltip     : 'Atomic model of macromolecule(s) or heavy-atom substructure. ' +
+                    'If no changes are required, choose [do not change].',
       inputId     : 'xyz',          // input Id for referencing input fields
       customInput : 'cell-info',    // lay custom fields next to the selection
       version     : 0,              // minimum data version allowed
       min         : 0,              // minimum acceptable number of data instances
       max         : 1               // maximum acceptable number of data instances
     },{
-      data_type   : {'DataStructure':['phases']},  // data type(s) and subtype(s)
+      data_type   : {'DataStructure':['!phases']},  // data type(s) and subtype(s)
       label       : 'Phases',       // label for input dialog
       cast        : 'phases',
       unchosen_label : '[do not change]',
-      tooltip     : 'Phases. If no changes are required, choose [do not change].',
+      tooltip     : 'Phases to replace in current model or substructure (whichever ' +
+                    'is leading). If no changes are required, choose [do not change].',
       inputId     : 'phases',       // input Id for referencing input fields
       customInput : 'cell-info',    // lay custom fields next to the selection
       version     : 0,              // minimum data version allowed
@@ -125,7 +128,7 @@ TaskEditRevision.prototype.constructor = TaskEditRevision;
 TaskEditRevision.prototype.icon = function()  { return 'task_editrevision'; }
 
 TaskEditRevision.prototype.currentVersion = function()  {
-  var version = 1;
+  var version = 2;
   if (__template)
         return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
@@ -223,7 +226,7 @@ if (!__template)  {
 
   TaskEditRevision.prototype.doNotPackSuffixes = function()  { return []; }
 
-  TaskEditRevision.prototype.makeInputData = function ( login,jobDir )  {
+  TaskEditRevision.prototype.makeInputData = function ( loginData,jobDir )  {
 
     // put hkl and sequence data in input databox for copying their files in
     // job's 'input' directory
@@ -232,11 +235,13 @@ if (!__template)  {
       var revision = this.input_data.data['revision'][0];
       this.input_data.data['hkl0'] = [revision.HKL];
       this.input_data.data['seq0'] = revision.ASU.seq;
-      if (revision.Structure)
+      if (revision.Options.leading_structure=='substructure')
+        this.input_data.data['struct0'] = [revision.Substructure];
+      else if (revision.Options.leading_structure=='structure')
         this.input_data.data['struct0'] = [revision.Structure];
     }
 
-    __template.TaskTemplate.prototype.makeInputData.call ( this,login,jobDir );
+    __template.TaskTemplate.prototype.makeInputData.call ( this,loginData,jobDir );
 
   }
 

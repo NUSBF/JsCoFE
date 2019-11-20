@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.10.19   <--  Date of Last Modification.
+ *    10.10.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -40,12 +40,12 @@ function TaskZanuda()  {
   this.helpURL = './html/jscofe_task_zanuda.html';
 
   this.input_dtypes = [{      // input data types
-      data_type   : {'DataRevision':['xyz']}, // data type(s) and subtype(s)
-      label       : 'Structure revision',     // label for input dialog
-      inputId     : 'revision', // input Id for referencing input fields
-      version     : 0,          // minimum data version allowed
-      min         : 1,          // minimum acceptable number of data instances
-      max         : 1           // maximum acceptable number of data instances
+      data_type : {'DataRevision':['xyz']}, // data type(s) and subtype(s)
+      label     : 'Structure revision',     // label for input dialog
+      inputId   : 'revision', // input Id for referencing input fields
+      version   : 0,          // minimum data version allowed
+      min       : 1,          // minimum acceptable number of data instances
+      max       : 1           // maximum acceptable number of data instances
     }
   ];
 
@@ -100,7 +100,7 @@ if (__template)  {
 
   var conf = require('../../js-server/server.configuration');
 
-  TaskZanuda.prototype.makeInputData = function ( login,jobDir )  {
+  TaskZanuda.prototype.makeInputData = function ( loginData,jobDir )  {
 
     // put hkl and structure data in input databox for copying their files in
     // job's 'input' directory
@@ -111,7 +111,7 @@ if (__template)  {
       this.input_data.data['struct'] = [revision.Structure];
     }
 
-    __template.TaskTemplate.prototype.makeInputData.call ( this,login,jobDir );
+    __template.TaskTemplate.prototype.makeInputData.call ( this,loginData,jobDir );
 
   }
 

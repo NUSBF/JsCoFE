@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    30.09.19   <--  Date of Last Modification.
+#    13.10.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -25,7 +25,8 @@ import pyrvapi_ext.parsers
 #  application imports
 from   pycofe.varut   import command
 from   pycofe.dtypes  import dtype_hkl
-from   pycofe.proc    import import_filetype, mtz, srf, patterson
+from   pycofe.proc    import import_filetype, mtz, patterson
+#from   pycofe.proc    import srf
 
 
 # ============================================================================
@@ -128,31 +129,28 @@ def run ( body,   # body is reference to the main Import class
 
     files_mtz = []
     for f_orig in body.files_all:
-        #f_base, f_ext = os.path.splitext(f_orig)
-        #if f_ext.lower() in ('.hkl', '.mtz'):
-        #body.file_stdout.write ( " mtz=" + f_orig + "\n" )
         if body.checkFileImport ( f_orig,import_filetype.ftype_MTZMerged() ):
-            files_mtz.append((f_orig,import_filetype.ftype_MTZMerged()))
+            files_mtz.append ( [f_orig,import_filetype.ftype_MTZMerged()] )
         elif body.checkFileImport ( f_orig,import_filetype.ftype_XDSMerged() ):
-            files_mtz.append((f_orig,import_filetype.ftype_XDSMerged()))
+            files_mtz.append ( [f_orig,import_filetype.ftype_XDSMerged()] )
         elif body.checkFileImport ( f_orig,import_filetype.ftype_CIFMerged() ):
-            files_mtz.append((f_orig,import_filetype.ftype_CIFMerged()))
-
-            #p_orig = os.path.join(body.importDir(), f_orig)
-            #body.file_stdout.write ( " pmtz=" + p_orig + "\n" )
-            #f_fmt = mtz.hkl_format(p_orig, body.file_stdout)
-            #if f_fmt in ('xds_merged', 'mtz_merged'):
-            #    files_mtz.append((f_orig, f_fmt))
+            files_mtz.append ( [f_orig,import_filetype.ftype_CIFMerged()] )
 
     if not files_mtz:
         return hkl_imported
+
+    flist = []
+    for i in range(len(files_mtz)):
+        body.files_all.remove ( files_mtz[i][0] )
+        flist.append ( files_mtz[i][0] )
+    flist = body.despaceFileNames ( flist,body.importDir() )
+    for i in range(len(files_mtz)):
+        files_mtz[i][0] = flist[i]
 
     mtzSecId = body.getWidgetId ( "mtz_sec" )
 
     k = 0
     for f_orig, f_fmt in files_mtz:
-
-        body.files_all.remove ( f_orig )
 
         p_orig  = os.path.join(body.importDir(), f_orig)
         p_mtzin = p_orig
@@ -360,25 +358,27 @@ def run ( body,   # body is reference to the main Import class
                         makeHKLTable ( body,mtzTableId,subSecId,hkl,hkl,0,"",0 )
                         datasetName = hkl.dname
 
-                        srf.putSRFDiagram ( body,hkl,body.outputDir(),
-                                            body.reportDir(),subSecId,
-                                            3,0,1,1, body.file_stdout,
-                                            body.file_stderr, None )
+                        row = 3
+                        #srf.putSRFDiagram ( body,hkl,body.outputDir(),
+                        #                    body.reportDir(),subSecId,
+                        #                    3,0,1,1, body.file_stdout,
+                        #                    body.file_stderr, None )
+                        #  row += 1
                         patterson.putPattersonMap (
                                             body,hkl,body.outputDir(),
                                             body.reportDir(),subSecId,
-                                            4,0,1,1, body.file_stdout,
+                                            row,0,1,1, body.file_stdout,
                                             body.file_stderr, None )
 
                         pyrvapi.rvapi_set_text (
                                 "&nbsp;<br><hr/><h3>Created Reflection Data Set (merged)</h3>" + \
                                 "<b>Assigned name:</b>&nbsp;&nbsp;" + datasetName + "<br>&nbsp;",
-                                subSecId,5,0,1,1 )
+                                subSecId,row+1,0,1,1 )
                         pyrvapi.rvapi_add_data ( body.getWidgetId("hkl_data_"+str(body.dataSerialNo)),
                                  "Merged reflections",
                                  # always relative to job_dir from job_dir/html
                                  "/".join([ "..",body.outputDir(),hkl.getHKLFileName()]),
-                                 "hkl:hkl",subSecId,6,0,1,1,-1 )
+                                 "hkl:hkl",subSecId,row+2,0,1,1,-1 )
                         body.addCitation ( 'viewhkl' )
 
                     else:
@@ -400,25 +400,27 @@ def run ( body,   # body is reference to the main Import class
                             makeHKLTable ( body,mtzTableId,subSecId,hkl,hkl_data,1,"",0 )
                             datasetName = hkl_data.dname
 
-                            srf.putSRFDiagram ( body,hkl_data,body.outputDir(),
-                                                body.reportDir(),subSecId,
-                                                3,0,1,1, body.file_stdout,
-                                                body.file_stderr, None )
+                            row = 3
+                            #srf.putSRFDiagram ( body,hkl_data,body.outputDir(),
+                            #                    body.reportDir(),subSecId,
+                            #                    3,0,1,1, body.file_stdout,
+                            #                    body.file_stderr, None )
+                            # row += 1
                             patterson.putPattersonMap (
                                                 body,hkl_data,body.outputDir(),
                                                 body.reportDir(),subSecId,
-                                                4,0,1,1, body.file_stdout,
+                                                row,0,1,1, body.file_stdout,
                                                 body.file_stderr, None )
 
                             pyrvapi.rvapi_set_text (
                                 "&nbsp;<br><hr/><h3>Created Reflection Data Set (merged)</h3>" + \
                                 "<b>Assigned name:</b>&nbsp;&nbsp;" + datasetName + "<br>&nbsp;",
-                                subSecId,5,0,1,1 )
+                                subSecId,row+1,0,1,1 )
                             pyrvapi.rvapi_add_data ( body.getWidgetId("hkl_data_"+str(body.dataSerialNo)),
                                  "Merged reflections",
                                  # always relative to job_dir from job_dir/html
                                  "/".join([ "..",body.outputDir(),hkl_data.getHKLFileName()]),
-                                 "hkl:hkl",subSecId,6,0,1,1,-1 )
+                                 "hkl:hkl",subSecId,row+2,0,1,1,-1 )
                             body.addCitation ( 'viewhkl' )
 
                     if body.summary_row_0<0:

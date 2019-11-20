@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    08.03.19   <--  Date of Last Modification.
+ *    20.10.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -95,9 +95,15 @@ DataSummaryPage.prototype.addUglyMolButton = function ( task )  {
       var coors = t._getPath(task,t.data,file_key.xyz);
       if (!coors)
         coors = t._getPath(task,t.data,file_key.sub);
-      startUglyMol ( t.data.dname,coors,
-                     t._getPath(task,t.data,file_key.map),
-                     t._getPath(task,t.data,file_key.dmap) );
+      var map_path  = t._getPath(task,t.data,file_key.map);
+      var dmap_path = t._getPath(task,t.data,file_key.dmap);
+      if (map_path || dmap_path)
+        startUglyMol ( t.data.dname,coors,'',
+                       t._getPath(task,t.data,file_key.map),
+                       t._getPath(task,t.data,file_key.dmap) );
+      else
+        startUglyMol ( t.data.dname,coors,
+                       t._getPath(task,t.data,file_key.mtz),'','' );
     });
   }(this))
 

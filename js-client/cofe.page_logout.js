@@ -51,7 +51,7 @@ function LogoutPage ( sceneId,reason_key )  {
   var msg = '';
   switch (reason_key)  {
     case 1 :  msg = 'Your session in this window was cancelled automatically ' +
-                    'because of identical logining somewhere else.';
+                    'because of identical login somewhere else.';
             break;
     case 2 :  msg = 'Your session in this window was terminated because local ' +
                     appName() + ' service has stopped or was restared.';

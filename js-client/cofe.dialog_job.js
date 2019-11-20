@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    28.07.19   <--  Date of Last Modification.
+ *    29.10.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -191,8 +191,10 @@ JobDialog.prototype.setDlgState = function()  {
   }
   if (this.radioSet)
     this.radioSet.setDisabled ( isNew  );
-  if (this.run_btn)
-    this.run_btn.setVisible ( isNew  );
+  if (this.run_btn)  {
+    this.run_btn.setVisible  ( isNew     );
+    this.run_btn.setDisabled ( __dormant );
+  }
 
   if (this.ind_timer)
     window.clearTimeout ( this.ind_timer );
@@ -314,7 +316,6 @@ JobDialog.prototype.loadReport = function()  {
         reportURL = special_url_tag + '/' +
                     this.task.job_dialog_data.job_token + '/' +
                     this.task.getLocalReportPath();
-        //reportURL = __local_service + '/' + replaceAll(reportURL,'/','@');
         reportURL = __local_service + '/' + reportURL;
   } else
     reportURL = this.task.getReportURL();
@@ -399,7 +400,8 @@ JobDialog.prototype.makeLayout = function ( onRun_func )  {
       if (!this.inputPanel.fullVersionMismatch)
         this.run_btn  = this.toolBar.setButton ( this.task.runButtonName(),
                                            image_path('runjob'), 0,2, 1,1 )
-                                           .setTooltip('Start job' );
+                                    .setTooltip  ( 'Start job' )
+                                    .setDisabled ( __dormant   );
     }
     this.toolBar.setCellSize ( '40%','',0,1 );
 
@@ -462,7 +464,7 @@ JobDialog.prototype.makeLayout = function ( onRun_func )  {
       dlg.inputPanel.element.addEventListener(cofe_signals.taskReady,function(e){
         //alert ( ' run_btn=' + e.detail + ' l=' + e.detail.length );
         if (e.detail.length<=0)  {
-          dlg.run_btn  .setEnabled ( true );
+          dlg.run_btn  .setEnabled ( !__dormant );
           dlg.close_btn.setEnabled ( true );
         } else if (e.detail=='hide_run_button')  {
           dlg.run_btn  .setEnabled ( false );
@@ -471,7 +473,7 @@ JobDialog.prototype.makeLayout = function ( onRun_func )  {
           dlg.run_btn  .setEnabled ( false );
           dlg.close_btn.setEnabled ( false );
         } else if (e.detail=='upload_finished')  {
-          dlg.run_btn  .setEnabled ( true );
+          dlg.run_btn  .setEnabled ( !__dormant );
           dlg.close_btn.setEnabled ( true );
         } else  {
           dlg.run_btn  .setEnabled ( false );

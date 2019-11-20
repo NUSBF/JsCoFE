@@ -50,7 +50,7 @@ class MoRDa(ccp4go_simbad12.Simbad12):
         morda_xyz  = os.path.join ( self.morda_dir(),self.outputname + ".pdb" )
         morda_mtz  = os.path.join ( self.morda_dir(),self.outputname + ".mtz" )
         morda_map  = os.path.join ( self.morda_dir(),self.outputname + ".map" )
-        morda_dmap = os.path.join ( self.morda_dir(),self.outputname + "_dmap.pdb" )
+        morda_dmap = os.path.join ( self.morda_dir(),self.outputname + "_dmap.map" )
 
         self.flush()
         self.storeReportDocument (

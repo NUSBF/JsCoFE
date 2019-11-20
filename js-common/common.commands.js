@@ -2,7 +2,7 @@
 /*
  *  ===========================================================================
  *
- *    08.10.19   <--  Date of Last Modification.
+ *    20.11.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  ---------------------------------------------------------------------------
  *
@@ -23,8 +23,8 @@
 // ============================================================================
 // name and version tag
 
-function appName()  { return 'CCP4 Cloud' }
-var jsCoFE_version = '1.4.001 [07.10.2019]';
+function appName()  { return 'CCP4 Cloud' }  // application name for reporting
+var jsCoFE_version = '1.4.003 [20.11.2019]';
 
 // ============================================================================
 
@@ -93,6 +93,7 @@ var fe_reqtype = {
   getJobFile        : '-getJobFile',        // request to download a job's file
   getAdminData      : '-getAdminData',      // request to serve data for admin page
   sendAnnouncement  : '-sendAnnouncement',  // request to send announcement to users
+  manageDormancy    : '-manageDormancy',    // request to manage dormant users
   getUserKnowledge  : '-getUserKnowledge',  // request to send user knowledge data
   getFacilityData   : '-getFacilityData',   // request for facility metadata
   updateFacility    : '-updateFacility',    // request to update facility metadata

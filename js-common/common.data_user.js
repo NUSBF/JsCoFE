@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    01.10.19   <--  Date of Last Modification.
+ *    20.10.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -51,7 +51,8 @@ function UserData()  {
   this.knownSince    = ''; // date
   this.lastSeen      = ''; // date
   this.admin         = false;
-  this.file_system   = 'fs0';  // where users projects are kept
+  this.dormant       = 0;
+  this.volume        = '***';  // where users projects are kept
   this.helpTopics    = [];
   this.authorisation = {};
   this.settings      = {};
@@ -61,10 +62,8 @@ function UserData()  {
 
 function checkUserData ( uData )  {
   var msg = '';
-  if (!uData.hasOwnProperty('action'))
-    uData.action   = userdata_action.revise;
-  if (!uData.hasOwnProperty('feedback'))
-    uData.feedback = '';
+  if (!uData.hasOwnProperty('action'))    uData.action   = userdata_action.revise;
+  if (!uData.hasOwnProperty('feedback'))  uData.feedback = '';
   if (uData.feedback.length<=0)  {
     uData.action   = userdata_action.revise;
     msg = '<li>choose suitable <b>feedback agreement</b></li>';
@@ -75,12 +74,10 @@ function checkUserData ( uData )  {
     else
       msg = '<li>confirm your account details</li>';
   }
-  if (!uData.hasOwnProperty('authorisation'))
-    uData.authorisation = {};
-  if (!uData.hasOwnProperty('settings'))
-    uData.settings = {};
-  if (!uData.hasOwnProperty('file_system'))
-    uData.file_system = 'fs0';
+  if (!uData.hasOwnProperty('authorisation'))  uData.authorisation = {};
+  if (!uData.hasOwnProperty('settings'))       uData.settings      = {};
+  if (!uData.hasOwnProperty('volume'))         uData.volume        = '***';
+  if (!uData.hasOwnProperty('dormant'))        uData.dormant       = 0;
   return msg;
 }
 

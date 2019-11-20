@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    07.10.19   <--  Date of Last Modification.
+ *    18.10.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -54,7 +54,7 @@ tmp.setGracefulCleanup();
 var arg2      = null;
 var localuser = null;
 var confout   = null;
-for (let arg of process.argv.slice(2).reverse()) {
+for (var arg of process.argv.slice(2).reverse()) {
   if (arg == '-localuser') {
     if (arg2 == null) break;
     localuser = arg2;

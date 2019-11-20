@@ -96,6 +96,7 @@ class Deposition(basic.TaskDriver):
         pdbdep_header = "<h3><i>1. PDB Deposition</i></h3>"
 
         if not xyzout_cif:
+            #  this branch is deprecated
 
             pdbdep_header = "&nbsp;<h3><i>PDB Deposition</i></h3>"
 

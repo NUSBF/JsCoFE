@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    21.05.19   <--  Date of Last Modification.
+ *    18.10.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -163,14 +163,14 @@ TaskDataDialog.prototype.getDataDescription = function ( dataSpec )  {
     var subtypes = dataSpec.dtypes[dtype];
     if (subtypes.length>1)  {
       for (var i=0;i<subtypes.length;i++)  {
-        let stype = dobj.getSubtypeDescription ( subtypes[i] );
+        var stype = dobj.getSubtypeDescription ( subtypes[i] );
         if (stype)  {
           if (stype[0]==0)  items_of.push ( stype.substring(1) );
                       else  items_cp.push ( stype );
         }
       }
     } else if (subtypes.length==1)  {
-      let stype = dobj.getSubtypeDescription ( subtypes[0] );
+      var stype = dobj.getSubtypeDescription ( subtypes[0] );
       if (stype)  {
         if (stype[0]==0)  items_of.push ( stype.substring(1) );
                     else  items_cp.push ( stype );

@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    27.08.19   <--  Date of Last Modification.
+#    14.11.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -76,6 +76,11 @@ class BuccaneerMR(basic.TaskDriver):
         hkl     = self.makeClass ( idata.hkl[0]     )
         istruct = self.makeClass ( idata.istruct[0] )
         seq     = idata.seq
+        if hasattr(idata,"ixyz"):
+            ixyz = self.makeClass ( idata.ixyz[0] )
+        else:
+            ixyz = istruct
+
 
         # prepare input MTZ file by putting original reflection data into
         # phases MTZ
@@ -114,7 +119,8 @@ class BuccaneerMR(basic.TaskDriver):
                 newf.write ( ">polyUNK\nU\n" );
 
         refname = "reference-" + sec2.REFMDL_SEL.value
-        isCoor  = istruct.hasXYZSubtype()
+        #isCoor  = istruct.hasXYZSubtype()
+        isCoor  = ixyz.hasXYZSubtype();
 
         self.open_stdin()
         reffile = os.path.join(os.environ["CCP4"],"lib","data","reference_structures",refname)
@@ -181,7 +187,7 @@ class BuccaneerMR(basic.TaskDriver):
             self.addCmdLine ( "buccaneer-keyword model-filter-sigma",str(xmodel.BFthresh) )
 
         if isCoor:
-            self.addCmdLine ( "buccaneer-keyword mr-model-filter-sigma",str(istruct.BFthresh) )
+            self.addCmdLine ( "buccaneer-keyword mr-model-filter-sigma",str(ixyz.BFthresh) )
 
         #if sec2.KEEPATMCID.visible:
         #    self.write_stdin ( "buccaneer-keyword known-structure " + \
@@ -196,9 +202,9 @@ class BuccaneerMR(basic.TaskDriver):
         self.write_stdin ( self.putKWParameter ( sec3.USEPHI_CBX ) )
 
         if isCoor:
-            self.addCmdLine ( "pdbin-mr",istruct.getXYZFilePath(self.inputDir()) )
+            self.addCmdLine ( "pdbin-mr",ixyz.getXYZFilePath(self.inputDir()) )
             if istruct.useModelSel!="N":
-                self.addCmdLine ( "buccaneer-keyword",istruct.useModelSel )
+                self.addCmdLine ( "buccaneer-keyword",ixyz.useModelSel )
             #self.write_stdin ( self.putKWParameter ( sec1.USEMR_SEL ) )
 
         self.write_stdin ( self.putKWParameter ( sec3.REFTWIN_CBX ) )
@@ -254,14 +260,16 @@ class BuccaneerMR(basic.TaskDriver):
             self.unsetLogParser()
 
             # calculate maps for UglyMol using final mtz from temporary location
-            fnames = self.calcCCP4Maps ( self.buccaneer_mtz(),self.outputFName )
+            #fnames = self.calcCCP4Maps ( self.buccaneer_mtz(),self.outputFName )
 
             # register output data from temporary location (files will be moved
             # to output directory by the registration procedure)
 
             structure = self.registerStructure (
                                     self.buccaneer_xyz(),None,self.buccaneer_mtz(),
-                                    fnames[0],fnames[1],None,leadKey=1 )
+                                    None,None,None,
+                                    #fnames[0],fnames[1],None,  -- not needed for new UglyMol
+                                    leadKey=1 )
             if structure:
                 structure.copyAssociations ( istruct )
                 structure.copySubtype      ( istruct )

@@ -52,8 +52,8 @@ class Lorestr(ccp4go_ccp4build.CCP4Build):
 
         lorestr_xyz  = os.path.join ( resultdir,"lorestr.pdb" )
         lorestr_mtz  = os.path.join ( resultdir,"lorestr.mtz" )
-        lorestr_map  = os.path.join ( resultdir,"lorestr.map" )
-        lorestr_dmap = os.path.join ( resultdir,"lorestr.diff.map" )
+        lorestr_map  = None  #os.path.join ( resultdir,"lorestr.map" )
+        lorestr_dmap = None  #os.path.join ( resultdir,"lorestr.diff.map" )
         lorestr_xml  = os.path.join ( resultdir,"lorestr.xml" )
 
         lorestr_lib  = None
@@ -107,8 +107,8 @@ class Lorestr(ccp4go_ccp4build.CCP4Build):
         quit_message = ""
         if os.path.isfile(lorestr_xyz):
 
-            edmap.calcCCP4Maps ( lorestr_mtz,os.path.join(resultdir,"lorestr"),
-                        "./",self.file_stdout,self.file_stderr,"refmac",None )
+            #edmap.calcCCP4Maps ( lorestr_mtz,os.path.join(resultdir,"lorestr"),
+            #            "./",self.file_stdout,self.file_stderr,"refmac",None )
 
             nResults = 1
             self.mk_std_streams ( None )

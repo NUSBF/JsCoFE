@@ -118,6 +118,11 @@ class FitLigand(basic.TaskDriver):
                 libadd += ".lib"
 
             pdbout = self.outputFName + ".pdb"
+            self.stdoutln ( "pdbin="+str(pdbin) )
+            self.stdoutln ( "ligands="+str(ligands) )
+            import shutil
+            shutil.copyfile ( pdbin,"pdbin.xxx" )
+            shutil.copyfile ( ligands[0],"ligandin.yyy" )
             nligs  = coor.mergeLigands ( pdbin,ligands,"X",pdbout )
             structure = self.registerStructure ( pdbout,None,mtzin,
                                 istruct.getMapFilePath (self.inputDir()),

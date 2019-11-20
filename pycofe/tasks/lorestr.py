@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    24.12.18   <--  Date of Last Modification.
+#    08.11.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2018
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2019
 #
 # ============================================================================
 #
@@ -121,14 +121,15 @@ class Lorestr(basic.TaskDriver):
             self.unsetLogParser()
 
             # calculate maps for UglyMol using final mtz from temporary location
-            fnames = self.calcCCP4Maps ( self.getMTZOFName(),self.outputFName )
+            #fnames = self.calcCCP4Maps ( self.getMTZOFName(),self.outputFName )
 
             # register output data from temporary location (files will be moved
             # to output directory by the registration procedure)
 
             structure = self.registerStructure ( self.getXYZOFName(),None,
                                                  self.getMTZOFName(),
-                                                 fnames[0],fnames[1],None,
+                                                 None,None,None,
+                                                 #fnames[0],fnames[1],None,  -- not needed for new UglyMol
                                                  leadKey=1 )
             if structure:
                 structure.copyAssociations   ( istruct )

@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    26.08.19   <--  Date of Last Modification.
+#    12.11.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -63,6 +63,7 @@ citations = {
     'mapro'           : { 'name' : '', 'category' : 'primary', 'refs' : [] },
     'find-blobs'      : { 'name' : '', 'category' : 'service', 'refs' : [] },
     'f2mtz'           : { 'name' : '', 'category' : 'service', 'refs' : [] },
+    'auto_tracing'    : { 'name' : '', 'category' : 'service', 'refs' : [] },
 
     'pointless' : { 'name'     : 'Pointless',
                     'category' : 'primary',

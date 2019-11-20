@@ -42,6 +42,10 @@ def run ( body ):  # body is reference to the main Import class
     if len(files_lig) <= 0:
         return
 
+    for f in files_lig:
+        body.files_all.remove ( f )
+    files_xyz = body.despaceFileNames ( files_lig,body.importDir() )
+
     body.file_stdout.write ( "\n" + "%"*80 + "\n"  )
     body.file_stdout.write ( "%%%%%  IMPORT OF LIGAND COORDINATES AND RESTRAINTS\n" )
     body.file_stdout.write ( "%"*80 + "\n" )
@@ -52,8 +56,6 @@ def run ( body ):  # body is reference to the main Import class
     librow   = 0
     k        = 0
     for f in files_lig:
-
-        body.files_all.remove ( f )
 
         fin  = os.path.join ( body.importDir(),f )
         doc  = cif.read ( fin )
