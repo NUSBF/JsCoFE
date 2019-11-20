@@ -70,13 +70,13 @@ def call ( executable,command_line,job_dir,stdin_fname,file_stdout,
     indent = "      "
     msg    = indent
     for c in command_line:
-        if len(msg)+len(c) > 78:
+        if len(msg)+len(str(c)) > 78:
             msg += " "*max(0,78-len(msg)) + " \\\n"
             file_stdout.write ( msg )
             if file_stdout_alt:
                 file_stdout_alt.write ( msg )
             msg = indent
-        msg += "'" + c + "' "
+        msg += "'" + str(c) + "' "
     file_stdout.write ( msg + "\n" )
     if file_stdout_alt:
         file_stdout_alt.write ( msg + "\n" )

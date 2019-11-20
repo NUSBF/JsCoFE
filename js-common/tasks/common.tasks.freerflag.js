@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.10.19   <--  Date of Last Modification.
+ *    10.10.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -152,7 +152,7 @@ if (!__template)  {
 
   var conf = require('../../js-server/server.configuration');
 
-  TaskFreeRFlag.prototype.makeInputData = function ( login,jobDir )  {
+  TaskFreeRFlag.prototype.makeInputData = function ( loginData,jobDir )  {
 
     // put hkl and structure data in input databox for copying their files in
     // job's 'input' directory
@@ -163,7 +163,7 @@ if (!__template)  {
         this.input_data.data['freer0'] = [freer.freeRds];
     }
 
-    __template.TaskTemplate.prototype.makeInputData.call ( this,login,jobDir );
+    __template.TaskTemplate.prototype.makeInputData.call ( this,loginData,jobDir );
 
   }
 

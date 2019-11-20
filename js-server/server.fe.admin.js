@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    28.06.19   <--  Date of Last Modification.
+ *    10.10.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -52,7 +52,7 @@ function _getNCData ( adminData,callback_func )  {
 
     startNext();
 
-  } else  {
+  } else if (cfg.in_use)  {
 
     var nc_url = cfg.externalURL;
     request({
@@ -68,12 +68,13 @@ function _getNCData ( adminData,callback_func )  {
       //console.log ( JSON.stringify(response) );
       //console.log ( JSON.stringify(body) );
 
-      if (!error && (response.statusCode==200))  {
+      if ((!error) && (response.statusCode==200))  {
         adminData.nodesInfo.ncInfo.push ( body.data );
       } else  {
         var nci = {};
         nci.config = cfg;
         nci.jobRegister = null;
+        nci.ccp4_version = 'unknown';
         adminData.nodesInfo.ncInfo.push ( nci );
       }
 
@@ -81,11 +82,20 @@ function _getNCData ( adminData,callback_func )  {
 
     });
 
+  } else  {
+
+    var nci = {};
+    nci.config = cfg;
+    nci.jobRegister = null;
+    nci.ccp4_version = 'unknown';
+    adminData.nodesInfo.ncInfo.push ( nci );
+    startNext();
+
   }
 
 }
 
-function getAdminData ( login,data,callback_func )  {
+function getAdminData ( loginData,data,callback_func )  {
 
   adminData = {};
   adminData.served    = false;
@@ -97,7 +107,7 @@ function getAdminData ( login,data,callback_func )  {
   adminData.usageReportURL     = ustats.getUsageReportURL();
   adminData.nodesInfo.ccp4_version = conf.CCP4Version();
 
-  var uData = user.readUserData ( login );
+  var uData = user.readUserData ( loginData );
   if (!uData.admin)  {
     adminData.jobsStat  = 'Data available only in account with administrative privileges.';
     return new cmd.Response ( cmd.fe_retcode.ok,'',adminData );

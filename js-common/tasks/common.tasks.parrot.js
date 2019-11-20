@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.10.19   <--  Date of Last Modification.
+ *    12.11.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -42,10 +42,11 @@ function TaskParrot()  {
       data_type   : {'DataRevision':['phases']}, // data type(s) and subtype(s)
       label       : 'Structure revision',        // label for input dialog
       inputId     : 'revision', // input Id for referencing input fields
-      //customInput : 'parrot',   // lay custom fields below the dropdown
-      version     : 0,          // minimum data version allowed
+      customInput : 'parrot',   // lay custom fields below the dropdown
+      version     : 7,          // minimum data version allowed
       min         : 1,          // minimum acceptable number of data instances
       max         : 1           // maximum acceptable number of data instances
+    /*
     },{
       data_type   : {'DataStructure':['xyz','substructure']},  // data type(s) and subtype(s)
       label       : 'Model for NCS<br>detection', // label for input dialog
@@ -53,6 +54,7 @@ function TaskParrot()  {
       force       : 1,            // will display tree-closest item by default
       min         : 0,            // minimum acceptable number of data instances
       max         : 1             // maximum acceptable number of data instances
+    */
     }
       /*
     {
@@ -259,18 +261,29 @@ if (!__template)  {
 
   var conf = require('../../js-server/server.configuration');
 
-  TaskParrot.prototype.makeInputData = function ( login,jobDir )  {
+  TaskParrot.prototype.makeInputData = function ( loginData,jobDir )  {
 
     // put hkl and structure data in input databox for copying their files in
     // job's 'input' directory
 
     if ('revision' in this.input_data.data)  {
       var revision = this.input_data.data['revision'][0];
-      this.input_data.data['istruct'] = [revision.Structure];
-      this.input_data.data['seq']     = revision.ASU.seq;
+      if (revision.Options.leading_structure=='substructure')
+            this.input_data.data['istruct'] = [revision.Substructure];
+      else  this.input_data.data['istruct'] = [revision.Structure];
+      this.input_data.data['seq'] = revision.ASU.seq;
+      switch (revision.Options.ncsmodel_sel)  {
+        case 'substructure':
+                  this.input_data.data['ncs_struct'] = [revision.Substructure];
+                break;
+        case 'model'       :
+                  this.input_data.data['ncs_struct'] = [revision.Structure];
+                break;
+        default : ;
+      }
     }
 
-    __template.TaskTemplate.prototype.makeInputData.call ( this,login,jobDir );
+    __template.TaskTemplate.prototype.makeInputData.call ( this,loginData,jobDir );
 
   }
 

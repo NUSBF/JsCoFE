@@ -1,7 +1,7 @@
 //
 //  ==========================================================================
 //
-//    30.07.19   <--  Date of Last Modification.
+//    08.11.19   <--  Date of Last Modification.
 //                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  --------------------------------------------------------------------------
 //
@@ -25,8 +25,68 @@ var _jsrview_uri = "";
 //  Structure Viewer:  XYZ and Map
 // ===========================================================================
 
+function makeUglyMolHtml ( xyz_uri,mtz_uri,map_uri,diffmap_uri )  {
+var html =
+    '<!doctype html>\n' +
+    '<html lang="en">\n' +
+    '<base target="_parent">\n' +
+    '<head>\n' +
+    '  <meta charset="utf-8">\n' +
+    '  <meta name="viewport" content="width=device-width, user-scalable=no">\n' +
+    '  <meta name="theme-color" content="#333333">\n' +
+    '  <link rel="stylesheet" type="text/css" href="' + _jsrview_uri + 'uglymol/uglymol.css"/>\n' +
+    '  <script src="' + _jsrview_uri + 'uglymol/uglymol.js"><\/script>\n' +
+    '</head>\n' +
+    '<body style="overflow:hidden;">\n' +
+    '  <div id="viewer" style="position:absolute; left:0px; top:0px; ' +
+                              'overflow:hidden;"></div>\n' +
+    '  <header id="hud" onmousedown="event.stopPropagation();"\n' +
+    '                   onmousemove="event.stopPropagation();"\n' +
+    '                   ondblclick="event.stopPropagation();">\n' +
+    '             This is uglymol not coot.\n' +
+    '           <a href="#" onclick="V.toggle_help(); return false;">\n' +
+    '             H shows help.\n' +
+    '           </a>\n' +
+    '  </header>\n' +
+    '  <footer id="help"></footer>\n' +
+    '  <div id="inset"></div>\n' +
+    '  <script>\n' +
+    '    V = new UM.Viewer({viewer:"viewer",hud:"hud",help:"help"});\n';
 
-function makeUglyMolHtml ( xyz_uri,map_uri,diffmap_uri )  {
+  if (xyz_uri.length>0)
+    html += '    V.load_pdb("' + xyz_uri + '");\n';
+
+//alert ( "xyz_uri='" + xyz_uri + "'\n map_uri='"+ map_uri + "'\n diffmap_uri='" + diffmap_uri + "'" );
+
+  var wasm = '';
+  if ((map_uri.length>0) && (diffmap_uri.length>0))
+    html += '    V.load_ccp4_maps("' + map_uri + '","' + diffmap_uri + '");\n';
+  else if (map_uri.length>0)
+    html += '    V.load_map("' + map_uri + '",{diff_map: false, format: "ccp4"});\n';
+  else if (diffmap_uri.length>0)
+    html += '    V.load_map("' + diffmap_uri + '",{diff_map: true, format: "ccp4"});\n';
+  else if (mtz_uri.length>0)  {
+    html += '    var Module = {\n' +
+            '      onRuntimeInitialized: function() {\n' +
+            '        UM.load_maps_from_mtz(V, "' + mtz_uri + '");\n' +
+            '      }\n' +
+            '    };\n';
+    wasm  = '  <script src="' + _jsrview_uri + 'uglymol/mtzmap.js"><\/script>\n';
+  }
+
+  html += '  </script>\n' + wasm +
+          '</body>\n' +
+          '</html>\n';
+
+//  alert ( " html=" + html );
+//console.log ( ' html=' + html );
+
+  return html;
+
+}
+
+/*
+function makeUglyMolHtml_map ( xyz_uri,map_uri,diffmap_uri )  {
 var html   =
     '<!doctype html>\n' +
     '<html lang="en">\n' +
@@ -72,11 +132,12 @@ var html   =
     '</html>\n';
 
 //  alert ( " html=" + html );
+//console.log ( ' html=' + html );
 
   return html;
 
 }
-
+*/
 
 function calcViewerSize ( widthF,heightF )  {
   //var jq = window.parent.$;
@@ -95,6 +156,87 @@ function calcViewerSize ( widthF,heightF )  {
 }
 
 
+function startUglyMol ( title,xyz_uri,mtz_uri,map_uri,diffmap_uri )  {
+
+  //console.log ( 'xyz_uri=' + xyz_uri );
+  //console.log ( 'map_uri=' + map_uri );
+  //console.log ( 'diffmap_uri=' + diffmap_uri );
+
+  var doc = window.parent.document;
+  var jq  = window.parent.$;
+
+  //var doc = window.document;
+  //var jq  = window.$;
+
+//alert ( window.parent.location + '\n' + window.location );
+
+  var dialog = doc.createElement ( 'div' );
+  jq(dialog).css({
+    'box-shadow' : '8px 8px 16px 16px rgba(0,0,0,0.2)',
+    'overflow'   : 'hidden'
+  });
+//  doc.getElementById ( 'scene').appendChild ( dialog );
+//  document.getElementById("scene").appendChild ( dialog );
+  doc.body.appendChild ( dialog );
+
+  var iframe = doc.createElement ( 'iframe' );
+  jq(iframe).css({
+    'border'   : 'none',
+    'overflow' : 'hidden'
+  });
+
+  //alert ( typeof window.parent.__touch_device + ' : ' + ((typeof window.parent.__touch_device) === 'undefined') );
+
+  var size;
+  if (window.parent.__mobile_device)
+        size = calcViewerSize ( 1.0,1.0    );
+  else  size = calcViewerSize ( 0.75,0.875 );
+  jq(iframe).width  ( size[0] );
+  jq(iframe).height ( size[1] );
+  dialog.appendChild ( iframe );
+
+  jq(dialog).dialog({
+    resizable  : true,
+    height     : 'auto',
+    width      : 'auto',
+    modal      : false,
+    title      : title,
+    effect     : 'fade',
+    headerVisible: false,
+    create     : function() { iframe.contentWindow.focus(); },
+    focus      : function() { iframe.contentWindow.focus(); },
+    open       : function() { iframe.contentWindow.focus(); },
+    dragStop   : function() { iframe.contentWindow.focus(); },
+    resizeStop : function() { iframe.contentWindow.focus(); },
+    buttons: {}
+  });
+
+  var html = makeUglyMolHtml ( xyz_uri,mtz_uri,map_uri,diffmap_uri );
+  iframe.contentWindow.document.write(html);
+  iframe.contentWindow.document.close();
+
+  jq(dialog).on ( 'dialogresize', function(event,ui){
+    var w = jq(dialog).width ();
+    var h = jq(dialog).height();
+    jq(iframe).width  ( w );
+    jq(iframe).height ( h );
+  });
+
+  jq(dialog).on( "dialogclose",function(event,ui){
+    window.setTimeout ( function(){
+      jq(dialog).dialog( "destroy" );
+      if (dialog.parentNode)
+        dialog.parentNode.removeChild ( dialog );
+    },10 );
+  });
+
+  jq(dialog).click ( function() {
+    iframe.contentWindow.focus();
+  });
+
+}
+
+/*
 function startUglyMol ( title,xyz_uri,map_uri,diffmap_uri )  {
 
   //console.log ( 'xyz_uri=' + xyz_uri );
@@ -146,7 +288,7 @@ function startUglyMol ( title,xyz_uri,map_uri,diffmap_uri )  {
     buttons: {}
   });
 
-  var html = makeUglyMolHtml ( xyz_uri,map_uri,diffmap_uri );
+  var html = makeUglyMolHtml_map ( xyz_uri,map_uri,diffmap_uri );
   iframe.contentWindow.document.write(html);
   iframe.contentWindow.document.close();
 
@@ -170,31 +312,89 @@ function startUglyMol ( title,xyz_uri,map_uri,diffmap_uri )  {
   });
 
 }
-
+*/
 
 function _startUglyMol ( data )  {
 //  data is a string made of title and 3 file uri:
 //  title>>>xyz_uri*map_uri*diffmap_uri
 
-/*
-  var base_url = '';
-  if (document.hasOwnProperty('__url_path_prefix'))
-    base_url = window.document.__url_path_prefix;
+  var base_url = window.location.pathname.substring ( 0,
+                                  window.location.pathname.lastIndexOf('/')+1 );
 
-  function _add_base ( path )  {
-    if (path && base_url)  {
-      if (path.startsWith('../'))
-        return base_url + path.substring(3);
-      else if (path.startsWith('./../'))
-        return base_url + path.substring(5);
-      else if (path.startsWith('./'))
-        return base_url + 'report/' + path.substring(2);
-      else
-        return base_url + 'report/' + path;
-    }
-    return path;
+  function _make_path ( path )  {
+    //console.log ( 'base_url=' + base_url );
+    //console.log ( 'path=' + path );
+    if (path.length<=0)             return '';
+    if (path.endsWith('/'))         return '';
+    if (path.startsWith(base_url))  return path;
+    return normalize_path ( base_url+path );
   }
-*/
+
+  var title     = '';
+  var xyz_path  = '';
+  var mtz_path  = '';
+  var map_path  = '';
+  var dmap_path = '';
+
+  var tlist = data.split('>>>');
+  var dlist = [];
+  if (tlist.length<=1)  {
+    dlist = data.split('*');
+    if (dlist.length>0)  {
+      // take structure file basename as title
+      title = dlist[0].split(/[\\/]/).pop();
+    } else {
+      title = "No title";
+    }
+  } else  {
+    title = tlist[0];
+    dlist = tlist[1].split('*');
+  }
+
+//console.log ( 'dlist=' + JSON.stringify(dlist) );
+
+  //if (dlist.length>0)  {
+  //  xyz_path = _make_path ( base_url+dlist[0] );
+  //  if (dlist.length>1)
+  //    mtz_path = _make_path ( base_url+dlist[1] );
+  //}
+
+  if (dlist.length>0)  {
+    xyz_path = _make_path ( base_url+dlist[0] );
+    if (dlist.length>1)  {
+      map_path = _make_path ( base_url+dlist[1] );
+      if (map_path.toLowerCase().endsWith('.mtz'))  {
+        mtz_path = map_path;
+        map_path = '';
+        if (dlist.length>2)  {
+          map_path = _make_path ( base_url+dlist[2] );
+          if (dlist.length>3)
+            dmap_path = _make_path ( base_url+dlist[3] );
+        }
+      } else if (dlist.length>2)
+        dmap_path = _make_path ( base_url+dlist[2] );
+    }
+  }
+
+//  if (map_path.toLowerCase().endsWith('.mtz'))  {
+//    mtz_path = map_path;
+//    map_path = '';
+//  }
+
+//console.log ( 'xyzpath='  + xyz_path );
+//console.log ( 'mtzpath='  + mtz_path );
+//console.log ( 'mappath='  + map_path );
+//console.log ( 'dmappath=' + dmap_path );
+
+  startUglyMol ( title,xyz_path,mtz_path,map_path,dmap_path );
+
+}
+
+
+/*
+function _startUglyMol ( data )  {
+//  data is a string made of title and 3 file uri:
+//  title>>>xyz_uri*map_uri*diffmap_uri
 
   var base_url = window.location.pathname.substring ( 0,
                                   window.location.pathname.lastIndexOf('/')+1 );
@@ -246,6 +446,7 @@ function _startUglyMol ( data )  {
   startUglyMol ( title,xyz_path,map_path,dmap_path );
 
 }
+*/
 
 
 // ===========================================================================
@@ -323,7 +524,10 @@ function startViewHKL ( title,mtz_uri )  {
                     'overflow' : 'hidden'
   });
 
-  var size = calcViewerSize (  0.75,0.875 );
+  var size;
+  if (window.parent.__mobile_device)
+        size = calcViewerSize (  1.0,1.0    );
+  else  size = calcViewerSize (  0.75,0.875 );
   jq(iframe).width  ( size[0] );
   jq(iframe).height ( size[1] );
   dialog.appendChild ( iframe );

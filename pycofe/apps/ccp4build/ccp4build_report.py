@@ -492,9 +492,9 @@ class Report(ccp4build_edstats.EDStats):
             shutil.copy2 ( meta0["xyzpath"],output_path + ".pdb" )
             shutil.copy2 ( meta0["mtzpath"],output_path + ".mtz" )
             #  calculate maps for viewer
-            edmap.calcCCP4Maps ( output_path + ".mtz",output_path,
-                                 #os.path.join(self.outputdir,self.input_data["nameout"]+"_rfree"),
-                                 self.workdir,fstdout,fstderr,"refmac",None )
+            #edmap.calcCCP4Maps ( output_path + ".mtz",output_path,
+            #                     #os.path.join(self.outputdir,self.input_data["nameout"]+"_rfree"),
+            #                     self.workdir,fstdout,fstderr,"refmac",None )
 
         if self.best_edcc_build_no!=edcc_no:
             #  copy best results
@@ -504,9 +504,9 @@ class Report(ccp4build_edstats.EDStats):
             shutil.copy2 ( meta0["xyzpath"],output_path + ".pdb" )
             shutil.copy2 ( meta0["mtzpath"],output_path + ".mtz" )
             #  calculate maps for viewer
-            edmap.calcCCP4Maps ( output_path + ".mtz",output_path,
-                                 #os.path.join(self.outputdir,self.input_data["nameout"]+"_edcc"),
-                                 self.workdir,fstdout,fstderr,"refmac",None )
+            #edmap.calcCCP4Maps ( output_path + ".mtz",output_path,
+            #                     #os.path.join(self.outputdir,self.input_data["nameout"]+"_edcc"),
+            #                     self.workdir,fstdout,fstderr,"refmac",None )
 
         if self.best_nbuilt_build_no!=nbuilt_no:
             #  copy best results
@@ -516,9 +516,9 @@ class Report(ccp4build_edstats.EDStats):
             shutil.copy2 ( meta0["xyzpath"],output_path + ".pdb" )
             shutil.copy2 ( meta0["mtzpath"],output_path + ".mtz" )
             #  calculate maps for viewer
-            edmap.calcCCP4Maps ( output_path + ".mtz",output_path,
-                                 #os.path.join(self.outputdir,self.input_data["nameout"]+"_nbuilt"),
-                                 self.workdir,fstdout,fstderr,"refmac",None )
+            #edmap.calcCCP4Maps ( output_path + ".mtz",output_path,
+            #                     #os.path.join(self.outputdir,self.input_data["nameout"]+"_nbuilt"),
+            #                     self.workdir,fstdout,fstderr,"refmac",None )
 
         if self.best_nfrag_build_no!=nfrag_no:
             #  copy best results
@@ -528,9 +528,9 @@ class Report(ccp4build_edstats.EDStats):
             shutil.copy2 ( meta0["xyzpath"],output_path + ".pdb" )
             shutil.copy2 ( meta0["mtzpath"],output_path + ".mtz" )
             #  calculate maps for viewer
-            edmap.calcCCP4Maps ( output_path + ".mtz",output_path,
-                                 #os.path.join(self.outputdir,self.input_data["nameout"]+"_nfrag"),
-                                 self.workdir,fstdout,fstderr,"refmac",None )
+            #edmap.calcCCP4Maps ( output_path + ".mtz",output_path,
+            #                     #os.path.join(self.outputdir,self.input_data["nameout"]+"_nfrag"),
+            #                     self.workdir,fstdout,fstderr,"refmac",None )
 
         fstdout.close()
         fstderr.close()

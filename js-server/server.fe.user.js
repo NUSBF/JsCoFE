@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    04.10.19   <--  Date of Last Modification.
+ *    04.11.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -41,8 +41,8 @@ var log = require('./server.log').newLog(10);
 
 // ===========================================================================
 
-var userDataExt       = '.user';
-var userLoginHashFile = 'login.hash';
+var __userDataExt       = '.user';
+var __userLoginHashFile = 'login.hash';
 
 // ===========================================================================
 
@@ -50,8 +50,8 @@ function hashPassword ( pwd )  {
   return crypto.createHash('md5').update(pwd).digest("hex");
 }
 
-function getUserDataFName ( login )  {
-  return path.join ( conf.getFEConfig().userDataPath,login + userDataExt );
+function getUserDataFName ( loginData )  {
+  return path.join ( conf.getFEConfig().userDataPath,loginData.login + __userDataExt );
 }
 
 function _make_new_user ( userData,callback_func )  {  // gets UserData object
@@ -81,12 +81,12 @@ var fe_server = conf.getFEConfig();
   userData.lastSeen   = Date.now();
 
   // Check that we're having a new login name
-  var userFilePath = getUserDataFName ( userData.login );
+  var userFilePath = getUserDataFName ( userData );
   log.standard ( 1,'        user data path: ' + userFilePath );
 
   if (utils.fileExists(userFilePath))  {
 
-    log.error ( 2,'new user login: ' + userData.login +
+    log.error ( 1,'new user login: ' + userData.login +
                   ' -- already exists, rejected' );
     response  = new cmd.Response ( cmd.fe_retcode.existingLogin,
                                    'Login name exists','');
@@ -95,35 +95,20 @@ var fe_server = conf.getFEConfig();
 
     log.standard ( 2,'new user login: ' + userData.login + ' -- created' );
 
-    response = prj.makeNewUserProjectsDir ( userData.login );
+    response = prj.makeNewUserProjectsDir ( userData );
 
     if (response.status==cmd.fe_retcode.ok)  {
 
-      msg = 'Dear ' + userData.name + ',<p>' +
-            'Thank you for registering with CCP4 on-line services.<p>' +
-            'Your login name is:         <b>' + userData.login + '</b><br>' +
-            'Your temporary password is: <b>' + pwd + '</b><p>' +
-            'Please use these data to login in CCP4 on-line services next time. ' +
-            'When you log in, you may change your password in "My CCP4 Account", ' +
-            'selectable from the Main Menu found on the top-left.<p>';
-
-      msg += '<b><i>PLEASE NOTE:</i></b> <b>CCP4 on-line services are currently ' +
-             'in the development mode. Therefore, we do not guarantee permanent ' +
-             'access to services; your data and projects may become unavailable ' +
-             'to you from time to time (however, confidentiality of your projects ' +
-             'and data will be fully respected). In addition, you may experience ' +
-             'a permanent corruption or dysfunction in your projects. In such ' +
-             'cases, you will need to delete all corrupt or dysfunctional ' +
-             'projects and start them over again.</b><p>'
-
+      var msg = '';
       if (response.message.length>0)
-        msg += '<b><i>Note:</i></b> your login was re-used and may ' +
-               'contain pre-existing projects and data.<p>'
+        msg = '<p><b><i>Note:</i></b> your login was re-used and may ' +
+              'contain pre-existing projects and data.';
 
-      msg += 'Best Regards,<p>' +
-             'CCP4 on-line.';
-
-      response.data = emailer.send ( userData.email,'CCP4 Registration',msg );
+      response.data = emailer.sendTemplateMessage ( userData,
+            cmd.appName() + ' Registration','user_registration',{
+              'text1' : pwd,
+              'text2' : msg
+            });
 
     }
 
@@ -134,8 +119,9 @@ var fe_server = conf.getFEConfig();
                       emailer.send ( conf.getEmailerConfig().maintainerEmail,
                         'CCP4 Registration Write Fails',
                         'Detected write failure at new user registration, ' +
-                        'please investigate.' )
-      );
+                        'please investigate.'
+                      )
+    );
 
   }
 
@@ -143,9 +129,114 @@ var fe_server = conf.getFEConfig();
 
 }
 
+
+function makeNewUser ( userData,callback_func )  {  // gets UserData object
+var vconf = conf.getFEConfig().projectsPath;  // volumes configuration
+var vdata = [];  // volumes actual data
+var index = {};  // links volumes in config file and in vdata
+
+  for (var vname in vconf)  {
+    index[vname] = vdata.length;
+    vdata.push ({
+      'name'      : vname,
+      'free'      : 0.0,
+      'size'      : 0.0,
+      'committed' : 0.0,
+      'used'      : 0.0,
+    });
+  }
+
+  function _select_disk()  {
+    var users = readUsersData().userList;
+
+    for (var i=0;i<users.length;i++)  {
+      if (users[i].dormant)
+            vdata[index[users[i].volume]].committed += users[i].ration.storage_used;
+      else  vdata[index[users[i].volume]].committed += users[i].ration.storage;
+      vdata[index[users[i].volume]].used += users[i].ration.storage_used;
+    }
+
+    var volume      = null;
+    var home_volume = false;
+    var pfill0      = 1000.0;
+
+    for (var i=0;(i<vdata.length) && (!home_volume);i++)  {
+      var pfill = 1.0 - ((vdata[i].free-vconf[vdata[i].name].diskReserve) -
+                         (vdata[i].committed-vdata[i].used)) /
+                        (vdata[i].size-vconf[vdata[i].name].diskReserve);
+      if (pfill<pfill0)  {
+        pfill0 = pfill;
+        volume = vdata[i];
+      }
+      if (vconf[vdata[i].name].type=='home')  {
+        var hpath = path.join ( vconf[vdata[i].name].path,userData.login );
+        if (utils.dirExists(hpath))  {  // does user exist on this volume?
+          home_volume = true;   // user should be put on 'home' volume
+          pfill0      = pfill;
+          volume      = vdata[i];
+        }
+      }
+    }
+
+    if (pfill0<1.0)  {
+
+      userData.volume = volume.name;
+      _make_new_user ( userData,callback_func );
+
+    } else  {
+
+      var msg = 'not enough disk space to create new user';
+      if (home_volume)  msg += ' on home volume "';
+                  else  msg += '; most free volume is "';
+      msg += volume.name + '" at\n' +
+             '                                      '    + volume.path +
+             '\n                                      (' +
+             Math.round(volume.size)        + ' MB total, '       +
+             Math.round(volume.committed)   + ' MB committed, '   +
+             Math.round(volume.used)        + ' MB used, '        +
+             Math.round(volume.free)        + ' MB free at '      +
+             vconf[volume.name].diskReserve + ' MB reserved)';
+
+      log.standard ( 3,msg );
+      log.error    ( 3,msg );
+
+      callback_func (
+        response = new cmd.Response ( cmd.fe_retcode.regFailed,
+          '<h3>Sorry</h3>' +
+          'New User cannot be registered because of insufficient disk space.' +
+          '<p><i>Server maintenance team is informed. Please come back later</i>',
+          emailer.send ( conf.getEmailerConfig().maintainerEmail,
+            'User Registration Failure',
+            'User registration failed due to insufficient disk space, ' +
+            'please investigate.' )
+        )
+      );
+
+    }
+  }
+
+  function _check_disks ( n )  {
+    if (n<vdata.length)  {
+      vdata[n].path = path.resolve ( vconf[vdata[n].name].path );
+      checkDiskSpace(vdata[n].path).then((diskSpace) => {
+          vdata[n].free = diskSpace.free/(1024.0*1024.0);
+          vdata[n].size = diskSpace.size/(1024.0*1024.0);
+          _check_disks ( n+1 );
+        }
+      );
+    } else
+      _select_disk();
+  }
+
+  _check_disks(0);
+
+}
+
+/*
 function makeNewUser ( userData,callback_func )  {  // gets UserData object
 
-  var rpath = path.resolve ( conf.getFEConfig().projectsPath['fs0'].path );
+  var volConf = conf.getFEConfig().projectsPath['***'];
+  var rpath   = path.resolve ( volConf.path );
   checkDiskSpace(rpath).then((diskSpace) => {
 
     var disk_committed = 0.0;
@@ -157,7 +248,7 @@ function makeNewUser ( userData,callback_func )  {  // gets UserData object
     }
 
     var disk_free = diskSpace.free/(1024.0*1024.0);
-    if ((disk_free-conf.getFEConfig().diskReserve) > (disk_committed-disk_used))  {
+    if ((disk_free-volConf.diskReserve) > (disk_committed-disk_used))  {
 
       _make_new_user ( userData,callback_func );
 
@@ -166,10 +257,10 @@ function makeNewUser ( userData,callback_func )  {  // gets UserData object
       var msg = 'not enough disk space to create new user at\n' +
                 '                                  '       + rpath +
                 '\n                                  ('    +
-                Math.round(disk_committed)     + ' MB committed, '   +
-                Math.round(disk_used)          + ' MB used, '        +
-                Math.round(disk_free)          + ' MB free at '      +
-                conf.getFEConfig().diskReserve + ' MB reserved)';
+                Math.round(disk_committed) + ' MB committed, '   +
+                Math.round(disk_used)      + ' MB used, '        +
+                Math.round(disk_free)      + ' MB free at '      +
+                volConf.diskReserve        + ' MB reserved)';
 
       log.standard ( 3,msg );
       log.error    ( 3,msg );
@@ -191,6 +282,7 @@ function makeNewUser ( userData,callback_func )  {  // gets UserData object
   });
 
 }
+*/
 
 
 // ===========================================================================
@@ -201,7 +293,7 @@ var fe_server = conf.getFEConfig();
 
   // Get user data object and generate a temporary password
 
-  log.standard ( 3,'recover user login for ' + userData.email + ' at ' +
+  log.standard ( 4,'recover user login for ' + userData.email + ' at ' +
                    fe_server.userDataPath );
 
   files = fs.readdirSync ( fe_server.userDataPath );
@@ -211,7 +303,7 @@ var fe_server = conf.getFEConfig();
   var pwds     = [];
   var n = 0;
   for (var i=0;i<files.length;i++)
-    if (files[i].endsWith(userDataExt))  {
+    if (files[i].endsWith(__userDataExt))  {
       var userFilePath = path.join ( fe_server.userDataPath,files[i] );
       var uData = utils.readObject ( userFilePath );
       if (uData)  {
@@ -265,6 +357,13 @@ var fe_server = conf.getFEConfig();
       msg += '&nbsp;<br>';
 
       response = new cmd.Response ( cmd.fe_retcode.ok,userName,
+        emailer.sendTemplateMessage ( userData,
+                  cmd.appName() + ' Login Recovery',
+                  'login_recovery',{ 'text1' : msg } )
+      );
+
+      /*
+      response = new cmd.Response ( cmd.fe_retcode.ok,userName,
         emailer.send ( userData.email,'CCP4 Login Recovery',
           'Dear ' + userName + ',<p>' +
           'Thank you for your request regarding CCP4 on-line login recovery.<p>' +
@@ -275,6 +374,7 @@ var fe_server = conf.getFEConfig();
           'Best Regards,<p>' +
           'CCP4 on-line.' )
       );
+      */
 
     }
 
@@ -287,16 +387,116 @@ var fe_server = conf.getFEConfig();
 
 // ===========================================================================
 
-var userLoginHash = {
-  '340cef239bd34b777f3ece094ffb1ec5' : 'devel'
+function UserLoginHash()  {
+  this._type       = 'UserLoginHash';  // do not change
+  this.loggedUsers = {
+    '340cef239bd34b777f3ece094ffb1ec5' : {
+      'login'  : 'devel',
+      'volume' : '*storage*'
+    }
+  };
+}
+
+UserLoginHash.prototype.save = function()  {
+  var userHashPath = path.join ( conf.getFEConfig().userDataPath,__userLoginHashFile );
+  if (!utils.writeObject(userHashPath,this))
+    return emailer.send ( conf.getEmailerConfig().maintainerEmail,
+                          'CCP4 Login Hash Write Fails',
+                          'Detected file read failure at user login hash write, ' +
+                          'please investigate.' );
+  return '';
+}
+
+UserLoginHash.prototype.read = function()  {
+  var userHashPath = path.join ( conf.getFEConfig().userDataPath,__userLoginHashFile );
+  hash = utils.readObject ( userHashPath);
+  if (hash)  {
+    if (!hash.hasOwnProperty('_type'))  {
+      // transformation for backward compatibility
+      var loggedUsers = {};
+      for (var token in hash)
+        loggedUsers[token] = {
+          'login'  : hash[token],
+          'volume' : '***'
+        };
+      this.loggedUsers = loggedUsers;
+      this.save();
+    } else
+      this.loggedUsers = hash.loggedUsers;
+    return true;
+  }
+  return false;
+}
+
+UserLoginHash.prototype.addUser = function ( token,login_data )  {
+
+  var loggedUsers = {};
+
+  for(var key in this.loggedUsers)
+    if (this.loggedUsers[key].login!=login_data.login)
+      loggedUsers[key] = this.loggedUsers[key];
+
+  loggedUsers[token] = login_data;
+  this.loggedUsers   = loggedUsers;
+
+  this.save();
+
+}
+
+/*
+UserLoginHash.prototype.removeUser = function ( token )  {
+  if (token in this.loggedUsers)
+    delete this.loggedUsers[token];
+  this.save();
+}
+*/
+
+UserLoginHash.prototype.removeUser = function ( login_name )  {
+  var loggedUsers = {};
+  for(var key in this.loggedUsers)
+    if (this.loggedUsers[key].login!=login_name)
+      loggedUsers[key] = this.loggedUsers[key];
+  this.loggedUsers = loggedUsers;
+  this.save();
+}
+
+UserLoginHash.prototype.getLoginData = function ( token )  {
+  if (token in this.loggedUsers)
+    return this.loggedUsers[token];
+  return { 'login':'', 'volume' : '' };
+}
+
+UserLoginHash.prototype.getToken = function ( login_name )  {
+  var token = null;
+  for(var key in this.loggedUsers)
+    if (this.loggedUsers[key].login==login_name)  {
+      token = key;
+      break;
+    }
+  return token;
+}
+
+
+
+var __userLoginHash = new UserLoginHash();
+
+/*
+var __userLoginHash = {
+  '_type'       : 'UserLoginHash',
+  'loggedUsers' :  {
+    '340cef239bd34b777f3ece094ffb1ec5' : {
+      'login'  : 'devel',
+      'volume' : '*storage*'
+    }
+  }
 };
 
 
 function writeUserLoginHash()  {
 
-  var userHashPath = path.join ( conf.getFEConfig().userDataPath,userLoginHashFile );
+  var userHashPath = path.join ( conf.getFEConfig().userDataPath,__userLoginHashFile );
 
-  if (!utils.writeObject(userHashPath,userLoginHash))
+  if (!utils.writeObject(userHashPath,__userLoginHash))
     return emailer.send ( conf.getEmailerConfig().maintainerEmail,
                           'CCP4 Login Hash Write Fails',
                           'Detected file read failure at user login hash write, ' +
@@ -305,17 +505,16 @@ function writeUserLoginHash()  {
   return '';
 
 }
+*/
 
 
 function readUserLoginHash()  {
 var fe_server  = conf.getFEConfig();
 var updateHash = false;
 
-  var userHashPath = path.join ( conf.getFEConfig().userDataPath,userLoginHashFile );
+  __userLoginHash = new UserLoginHash();
 
-  userLoginHash = utils.readObject ( userHashPath);
-  if (!userLoginHash)  {
-
+  if (!__userLoginHash.read())  {
     userData = new ud.UserData();
     userData.name    = 'Developer';
     userData.email   = conf.getEmailerConfig().maintainerEmail;
@@ -324,16 +523,10 @@ var updateHash = false;
     userData.licence = 'academic';
     userData.admin   = false;
     makeNewUser ( userData,function(response){} );
-
-    userLoginHash = {
-      '340cef239bd34b777f3ece094ffb1ec5' : 'devel'
-    };
-
     updateHash = true;
-
   }
 
-  if (('localuser' in fe_server) && (!getTokenFromHash('localuser')))  {
+  if (('localuser' in fe_server) && (!__userLoginHash.getToken('localuser')))  {
     userData = new ud.UserData();
     userData.name    = fe_server.localuser;
     userData.email   = conf.getEmailerConfig().maintainerEmail;
@@ -342,73 +535,79 @@ var updateHash = false;
     userData.licence = 'academic';
     userData.admin   = false;
     makeNewUser ( userData,function(response){} );
-    addToUserLoginHash ( 'e58e28a556d2b4884cb16ba8a37775f0','localuser' );
-    updateHash = true;
+    __userLoginHash.addUser ( 'e58e28a556d2b4884cb16ba8a37775f0',{
+                                'login'  : 'localuser',
+                                'volume' : '*storage*'
+                            });
+    updateHash = false;
   }
 
   if (updateHash)
-    writeUserLoginHash();
+    __userLoginHash.save();
 
 }
 
+/*
+function addToUserLoginHash ( token,login_data )  {
 
-function addToUserLoginHash ( token,login_name )  {
+  var loggedUsers = {};
 
-  var newHash = {};
-  for(var key in userLoginHash)
-    if (userLoginHash[key]!=login_name)
-      newHash[key] = userLoginHash[key];
+  for(var key in __userLoginHash.loggedUsers)
+    if (__userLoginHash.loggedUsers[key].login!=login_data.login)
+      loggedUsers[key] = __userLoginHash.loggedUsers[key];
 
-  userLoginHash = newHash;
-  userLoginHash[token] = login_name;
+  __userLoginHash.loggedUsers = loggedUsers;
+  __userLoginHash.loggedUsers[token] = login_data;
 
-  writeUserLoginHash();
+  __userLoginHash.save();
 
 }
-
 
 function removeFromUserLoginHash ( token )  {
 
-  var newHash = {};
-  for(var key in userLoginHash)
-    if (key!=token)
-      newHash[key] = userLoginHash[key];
-  userLoginHash = newHash;
+//  var newHash = {};
+//  for(var key in __userLoginHash)
+//    if (key!=token)
+//      newHash[key] = __userLoginHash[key];
+//  __userLoginHash = newHash;
 
-  writeUserLoginHash();
+  if (token in __userLoginHash.loggedUsers)
+    delete __userLoginHash.loggedUsers[token];
+
+  __userLoginHash.save();
 
 }
 
 
 function removeUserFromHash ( login_name )  {
 
-  var newHash = {};
-  for(var key in userLoginHash)
-    if (userLoginHash[key]!=login_name)
-      newHash[key] = userLoginHash[key];
-  userLoginHash = newHash;
+  var newHash = new UserLoginHash;
+  for(var key in __userLoginHash)
+    if (__userLoginHash[key].login!=login_name)
+      newHash[key] = __userLoginHash[key];
+  __userLoginHash = newHash;
 
-  writeUserLoginHash();
+  __userLoginHash.save();
 
 }
-
-
-function getLoginFromHash ( token )  {
-  if (token in userLoginHash)
-        return userLoginHash[token];
-  else  return '';
-}
-
 
 function getTokenFromHash ( login_name )  {
   var token = null;
-  for(var key in userLoginHash)
-    if (userLoginHash[key]==login_name)  {
+  for(var key in __userLoginHash.loggedUsers)
+    if (__userLoginHash.loggedUsers[key].login==login_name)  {
       token = key;
       break;
     }
   return token;
 }
+
+*/
+
+
+function getLoginData ( token )  {
+  return __userLoginHash.getLoginData ( token );
+}
+
 
 
 // ===========================================================================
@@ -420,15 +619,22 @@ var fe_server = conf.getFEConfig();
   // Get user data object and generate a temporary password
 //  var userData = JSON.parse ( user_data_json );
   var pwd = hashPassword ( userData.pwd );
+  if (userData.login=='**localuser**')  {
+    userData.login = 'localuser';
+    userData.pwd   = 'e58e28a556d2b4884cb16ba8a37775f0';
+    pwd = userData.pwd;
+  }
   var ulogin = userData.login;
+  /*
   if (ulogin=='**localuser**')  {
     ulogin = 'localuser';
     pwd    = 'e58e28a556d2b4884cb16ba8a37775f0';
   }
-  log.standard ( 4,'user login ' + ulogin );
+  */
+  log.standard ( 5,'user login ' + ulogin );
 
   // Check that we're having a new login name
-  var userFilePath = getUserDataFName ( ulogin );
+  var userFilePath = getUserDataFName ( userData );
 
   if (utils.fileExists(userFilePath))  {
 
@@ -448,7 +654,10 @@ var fe_server = conf.getFEConfig();
         //  token = 'e58e28a556d2b4884cb16ba8a37775f0';
         } else  {
           token = crypto.randomBytes(20).toString('hex');
-          addToUserLoginHash ( token,uData.login );
+          __userLoginHash.addUser ( token,{
+            'login'  : uData.login,
+            'volume' : uData.volume
+          });
         }
 
         // remove personal information just in case
@@ -457,7 +666,7 @@ var fe_server = conf.getFEConfig();
         var rData   = {};
         rData.userData      = uData;
         rData.localSetup    = conf.isLocalSetup();
-        rData.cloud_storage = (fcl.getUserCloudMounts(uData.login).length>0);
+        rData.cloud_storage = (fcl.getUserCloudMounts(uData).length>0);
         rData.demo_projects = fe_server.getDemoProjectsMount();
         if (fe_server.hasOwnProperty('description'))
               rData.setup_desc = fe_server.description;
@@ -465,16 +674,21 @@ var fe_server = conf.getFEConfig();
 
         response = new cmd.Response ( cmd.fe_retcode.ok,token,rData );
 
-      } else
+      } else  {
+        log.error ( 41,'Login name/password mismatch:' );
+        log.error ( 41,' ' + ulogin + ':' + pwd );
+        log.error ( 41,' ' + uData.login + ':' + uData.pwd );
         response = new cmd.Response ( cmd.fe_retcode.wrongLogin,'','' );
+      }
 
     } else  {
-      log.error ( 4,'User file: ' + userFilePath + ' cannot be read.' );
+      log.error ( 42,'User file: ' + userFilePath + ' cannot be read.' );
       response = new cmd.Response ( cmd.fe_retcode.readError,
                                       'User file cannot be read.','' );
     }
 
   } else  {
+    log.error ( 43,'User file: ' + userFilePath + ' not found.' );
     response  = new cmd.Response ( cmd.fe_retcode.wrongLogin,'','' );
   }
 
@@ -484,7 +698,7 @@ var fe_server = conf.getFEConfig();
 
 function checkSession ( userData,callback_func )  {  // gets UserData object
   var retcode = cmd.fe_retcode.wrongSession;
-  if (getLoginFromHash(userData.login_token))
+  if (__userLoginHash.getLoginData(userData.login_token).login)
     retcode = cmd.fe_retcode.ok;
   callback_func ( new cmd.Response(retcode,'','') );
 }
@@ -492,9 +706,9 @@ function checkSession ( userData,callback_func )  {  // gets UserData object
 
 // ===========================================================================
 
-function readUserData ( login )  {
+function readUserData ( loginData )  {
   var uData = null;
-  var userFilePath = getUserDataFName ( login );
+  var userFilePath = getUserDataFName ( loginData );
   if (utils.fileExists(userFilePath))  {
     uData = utils.readObject ( userFilePath );
     if (uData)
@@ -507,24 +721,28 @@ function readUserData ( login )  {
 function readUsersData()  {
 
   var usersData = {};
-  usersData.loggedUsers = userLoginHash;
-  usersData.userList    = [];
+  usersData.loginHash = __userLoginHash;
+  usersData.userList  = [];
   var udir_path = conf.getFEConfig().userDataPath;
 
   if (utils.fileExists(udir_path))  {
     fs.readdirSync(udir_path).forEach(function(file,index){
-      if (file.endsWith(userDataExt))  {
+      if (file.endsWith(__userDataExt))  {
         var udata = utils.readObject ( path.join(udir_path,file) );
         if (udata)  {
+          ud.checkUserData ( udata );
           if (!('knownSince' in udata) || (udata.knownSince==''))  {
             udata.knownSince = new Date("2017-09-01").valueOf();
             utils.writeObject ( path.join(udir_path,file),udata );
           }
-          var login = file.slice ( 0,file.length-userDataExt.length );
-          udata.ration = ration.getUserRation ( login );
+          var loginData = {
+            'login'  : file.slice ( 0,file.length-__userDataExt.length ),
+            'volume' : ''
+          };
+          udata.ration = ration.getUserRation ( loginData );
           if (udata.ration.jobs_total<udata.nJobs)  {  // backward compatibility 07.06.2018
             udata.ration.jobs_total = udata.nJobs;
-            ration.saveUserRation ( login,udata.ration );
+            ration.saveUserRation ( loginData,udata.ration );
           }
           udata.ration.clearJobs();
           usersData.userList.push ( udata );
@@ -538,13 +756,13 @@ function readUsersData()  {
 }
 
 
-function getUserData ( login )  {
+function getUserData ( loginData )  {
 var response = 0;  // must become a cmd.Response object to return
 
   //log.debug ( 5,'user get data ' + login );
 
   // Check that we're having a new login name
-  var userFilePath = getUserDataFName ( login );
+  var userFilePath = getUserDataFName ( loginData );
 
   if (utils.fileExists(userFilePath))  {
     var uData = utils.readObject ( userFilePath );
@@ -565,20 +783,20 @@ var response = 0;  // must become a cmd.Response object to return
 }
 
 
-function getUserRation ( login )  {
-  return new cmd.Response ( cmd.fe_retcode.ok,'',ration.getUserRation(login) );
+function getUserRation ( loginData )  {
+  return new cmd.Response ( cmd.fe_retcode.ok,'',ration.getUserRation(loginData) );
 }
 
 
 // ===========================================================================
 
-function saveHelpTopics ( login,userData )  {
+function saveHelpTopics ( loginData,userData )  {
 var response = 0;  // must become a cmd.Response object to return
 
-  log.standard ( 6,'user save help topics ' + login );
+  log.standard ( 6,'user save help topics ' + loginData.login );
 
   // Check that we're having a new login name
-  var userFilePath = getUserDataFName ( login );
+  var userFilePath = getUserDataFName ( loginData );
 
   if (utils.fileExists(userFilePath))  {
     var uData = utils.readObject ( userFilePath );
@@ -588,12 +806,12 @@ var response = 0;  // must become a cmd.Response object to return
       if (utils.writeObject(userFilePath,uData))  {
         response = new cmd.Response ( cmd.fe_retcode.ok,'','' );
       } else  {
-        log.error ( 6,'User file: ' + userFilePath + ' cannot be written' );
+        log.error ( 61,'User file: ' + userFilePath + ' cannot be written' );
         response = new cmd.Response ( cmd.fe_retcode.writeError,
                                       'User file cannot be written.','' );
       }
     } else  {
-      log.error ( 7,'User file: ' + userFilePath + ' cannot be read' );
+      log.error ( 62,'User file: ' + userFilePath + ' cannot be read' );
       response = new cmd.Response ( cmd.fe_retcode.readError,
                                       'User file cannot be read.','' );
     }
@@ -608,12 +826,12 @@ var response = 0;  // must become a cmd.Response object to return
 
 // ===========================================================================
 
-function userLogout ( login )  {
+function userLogout ( loginData )  {
 
-  log.standard ( 7,'user logout ' + login );
+  log.standard ( 7,'user logout ' + loginData.login );
 
-  if ((login!='devel') && (login!='localuser'))
-    removeUserFromHash ( login );
+  if (['devel','localuser'].indexOf(loginData.login)<0)
+    __userLoginHash.removeUser ( loginData.login );
 
   return new cmd.Response ( cmd.fe_retcode.ok,'','' );
 
@@ -622,33 +840,24 @@ function userLogout ( login )  {
 
 // ===========================================================================
 
-function updateUserData ( login,userData )  {
+function updateUserData ( loginData,userData )  {
 var response = null;  // must become a cmd.Response object to return
 
-  log.standard ( 8,'update user data, login ' + login );
+  log.standard ( 8,'update user data, login ' + loginData.login );
 
   var pwd = userData.pwd;
   userData.pwd = hashPassword ( pwd );
 
-  var userFilePath = getUserDataFName ( login );
+  var userFilePath = getUserDataFName ( loginData );
 
   if (utils.fileExists(userFilePath))  {
 
     if (utils.writeObject(userFilePath,userData))  {
 
       response = new cmd.Response ( cmd.fe_retcode.ok,'',
-        emailer.send ( userData.email,'CCP4 Login Update',
-          'Dear ' + userData.name + ',<p>' +
-          'Your CCP4 on-line account has been updated as follows:<p>' +
-          'Login name: <b>' + userData.login + '</b><br>' +
-          'Password: <b>*****</b><br>' +
-          'E-mail: <b>' + userData.email + '</b><p>' +
-          'This e-mail is sent only for your information. However, if<br>' +
-          'update request was not initiated by you, please contact<br>' +
-          'CCP4 team at ' +
-          conf.getEmailerConfig().maintainerEmail + ' .<p>' +
-          'Best Regards,<p>' +
-          'CCP4 on-line.' )
+        emailer.sendTemplateMessage ( userData,
+                  cmd.appName() + ' Account Update',
+                  'account_updated_user',{} )
       );
 
     } else  {
@@ -665,12 +874,12 @@ var response = null;  // must become a cmd.Response object to return
 }
 
 
-function updateUserData_admin ( login,userData )  {
+function updateUserData_admin ( loginData,userData )  {
 var response     = null;  // must become a cmd.Response object to return
-var userFilePath = getUserDataFName ( login );
+var userFilePath = getUserDataFName ( loginData );
 
-  log.standard ( 11,'update user\'s ' + userData.login +
-                    ' data by admin, login: ' + login );
+  log.standard ( 9,'update user\'s ' + userData.login +
+                   ' data by admin, login: ' + loginData.login );
 
   if (utils.fileExists(userFilePath))  {
 
@@ -680,72 +889,65 @@ var userFilePath = getUserDataFName ( login );
 
       if (uData.admin)  {
 
-        userFilePath = getUserDataFName ( userData.login );
+        userFilePath = getUserDataFName ( userData );
         var uData    = utils .readObject  ( userFilePath );
-        var uRation  = ration.getUserRation ( userData.login );
+        var uRation  = ration.getUserRation ( userData );
 
         if (uData && uRation)  {
 
           uRation.storage   = Number(userData.ration.storage);
           uRation.cpu_day   = Number(userData.ration.cpu_day);
           uRation.cpu_month = Number(userData.ration.cpu_month);
-          ration.saveUserRation ( userData.login,uRation );
+          ration.saveUserRation ( userData,uRation );
 
           uData.admin   = userData.admin;
           uData.licence = userData.licence;
           if (userData.hasOwnProperty('feedback'))
                 uData.feedback = userData.feedback;
           else  uData.feedback = '';
+          uData.dormant = userData.dormant;
 
           if (utils.writeObject(userFilePath,uData))  {
 
             var role = 'user';
             if (uData.admin)
               role = 'admin';
+
             response = new cmd.Response ( cmd.fe_retcode.ok,'',
-              emailer.send ( uData.email,'CCP4 Login Update',
-                'Dear ' + uData.name + ',<p>' +
-                'Your CCP4 on-line account has been updated <b>BY ADMIN</b> as follows:<p>' +
-                'Login name: <b>'                + uData.login    + '</b><br>' +
-                'E-mail: <b>'                    + uData.email    + '</b><br>' +
-                'Licence: <b>'                   + uData.licence  + '</b><br>' +
-                'Feedback agreement: <b>'        + uData.feedback + '</b><br>' +
-                'Status: <b>'                    + role           + '</b><br>' +
-                'Disk quota (MBytes): <b>'       + uRation.storage     + '</b><br>' +
-                'CPU daily quota (hours): <b>'   + uRation.cpu_day     + '</b><br>' +
-                'CPU monthly quota (hours): <b>' + uRation.cpu_month   + '</b><p>'  +
-                'This e-mail is sent only for your information. Please feel free<br>' +
-                'to contact CCP4 on-line Admin at ' +
-                conf.getEmailerConfig().maintainerEmail + ' .<br>' +
-                'should you require any relevant information.<p>' +
-                'Best Regards,<p>' +
-                'CCP4 on-line.' )
+              emailer.sendTemplateMessage ( uData,
+                        cmd.appName() + ' Account Update',
+                        'account_updated_admin',{
+                          'userProfile'  : role,
+                          'userStorage'  : uRation.storage,
+                          'userCPUDay'   : uRation.cpu_day,
+                          'userCPUMonth' : uRation.cpu_month
+                        })
             );
 
           } else  {
-            log.error ( 14,'User file: ' + userFilePath + ' cannot be written.' );
+            log.error ( 91,'User file: ' + userFilePath + ' cannot be written.' );
             response = new cmd.Response ( cmd.fe_retcode.writeError,
                                           'User file cannot be written.','' );
           }
 
         } else  {
-          log.error ( 15,'User file: ' + userFilePath + ' cannot be read.' );
+          log.error ( 92,'User file: ' + userFilePath + ' cannot be read.' );
           response = new cmd.Response ( cmd.fe_retcode.readError,
                                         'User file cannot be read.','' );
         }
       } else  {
-        log.error ( 16,'Attempt to update user data without privileges from login ' +
-                       login );
+        log.error ( 93,'Attempt to update user data without privileges from login ' +
+                       loginData.login );
         response  = new cmd.Response ( cmd.fe_retcode.wrongLogin,
                                        'No admin privileges','' );
       }
     } else  {
-      log.error ( 17,'Admin user file: ' + userFilePath + ' cannot be read.' );
+      log.error ( 94,'Admin user file: ' + userFilePath + ' cannot be read.' );
       response = new cmd.Response ( cmd.fe_retcode.readError,
                                     'Admin user file cannot be read.','' );
     }
   } else  {
-    log.error ( 18,'Admin user file: ' + userFilePath + ' does not exist.' );
+    log.error ( 95,'Admin user file: ' + userFilePath + ' does not exist.' );
     response  = new cmd.Response ( cmd.fe_retcode.wrongLogin,
                                    'Wrong admin login','' );
   }
@@ -757,16 +959,16 @@ var userFilePath = getUserDataFName ( login );
 
 // ===========================================================================
 
-function deleteUser ( login,userData )  {
+function deleteUser ( loginData,userData )  {
 var response = null;  // must become a cmd.Response object to return
 
-  log.standard ( 10,'delete user, login ' + login );
+  log.standard ( 10,'delete user, login ' + loginData.login );
 
   var pwd = userData.pwd;
   userData.pwd = hashPassword ( pwd );
 
   // Check that we're having a new login name
-  var userFilePath = getUserDataFName ( login );
+  var userFilePath = getUserDataFName ( loginData );
 
   if (utils.fileExists(userFilePath))  {
 
@@ -778,33 +980,23 @@ var response = null;  // must become a cmd.Response object to return
 
       if (userData.pwd==uData.pwd)  {
 
-        var rationFilePath = ration.getUserRationFPath ( login );
+        var rationFilePath = ration.getUserRationFPath ( loginData );
         if (!utils.removeFile(rationFilePath))
-          log.error ( 11,'User ration file: ' + rationFilePath + ' cannot be removed.' );
+          log.error ( 101,'User ration file: ' + rationFilePath + ' cannot be removed.' );
 
-        var userProjectsDir = prj.getUserProjectsDirPath ( login );
+        var userProjectsDir = prj.getUserProjectsDirPath ( loginData );
         if (!utils.removePath(userProjectsDir))
-          log.error ( 12,'User directory: ' + userProjectsDir + ' cannot be removed.' );
+          log.error ( 102,'User directory: ' + userProjectsDir + ' cannot be removed.' );
 
         if (utils.removeFile(userFilePath))  {
 
           response = new cmd.Response ( cmd.fe_retcode.ok,'',
-            emailer.send ( userData.email,cmd.appName() + ' Account Deleted',
-              'Dear ' + userData.name + ',<p>' +
-              'Your ' + cmd.appName() + ' account and all associated data have been deleted<br>' +
-              'per your request:<p>' +
-              'Login name: <b>' + userData.login + '</b><br>' +
-              'Password: <b>*****</b><br>' +
-              'E-mail: <b>' + userData.email + '</b><p>' +
-              'This e-mail is sent only for your information. Your data cannot<br>' +
-              'be restored. If account delete request was not initiated by you,<br>' +
-              'please contact CCP4 team at ' +
-              conf.getEmailerConfig().maintainerEmail + ' .<p>' +
-              'Best Regards,<p>' +
-              'CCP4 on-line.' )
+            emailer.sendTemplateMessage ( uData,
+                      cmd.appName() + ' Account Deleted',
+                      'account_deleted_user',{})
           );
 
-          removeUserFromHash ( login );
+          __userLoginHash.removeUser ( loginData.login );
 
         } else  {
           response = new cmd.Response ( cmd.fe_retcode.userNotDeleted,
@@ -816,7 +1008,7 @@ var response = null;  // must become a cmd.Response object to return
                                       'Incorrect password.','' );
       }
     } else  {
-      log.error ( 13,'User file: ' + userFilePath + ' cannot be read.' );
+      log.error ( 101,'User file: ' + userFilePath + ' cannot be read.' );
       response = new cmd.Response ( cmd.fe_retcode.readError,
                                       'User file cannot be read.','' );
     }
@@ -829,11 +1021,12 @@ var response = null;  // must become a cmd.Response object to return
 }
 
 
-function deleteUser_admin ( login,userData )  {
+function deleteUser_admin ( loginData,userData )  {
 var response     = null;  // must become a cmd.Response object to return
-var userFilePath = getUserDataFName ( login );
+var userFilePath = getUserDataFName ( loginData );
 
-  log.standard ( 12,'delete user ' + userData.login + ' by admin, login ' + login );
+  log.standard ( 11,'delete user ' + userData.login +
+                    ' by admin, login ' + loginData.login );
 
   if (utils.fileExists(userFilePath))  {
 
@@ -845,37 +1038,28 @@ var userFilePath = getUserDataFName ( login );
 
       if (uData.admin)  {
 
-        userFilePath = getUserDataFName ( userData.login );
+        userFilePath = getUserDataFName ( userData );
 
         if (utils.fileExists(userFilePath))  {
 
-          var rationFilePath = ration.getUserRationFPath ( userData.login );
+          var rationFilePath = ration.getUserRationFPath ( userData );
           if (!utils.removeFile(rationFilePath))
-            log.error ( 21,'User ration file: ' + rationFilePath + ' cannot be removed.' );
+            log.error ( 111,'User ration file: ' + rationFilePath + ' cannot be removed.' );
 
-          var userProjectsDir = prj.getUserProjectsDirPath ( userData.login );
+          var userProjectsDir = prj.getUserProjectsDirPath ( userData );
           if (!utils.removePath(userProjectsDir))
-            log.error ( 22,'User directory: ' + userProjectsDir + ' cannot be removed.' );
+            log.error ( 112,'User directory: ' + userProjectsDir + ' cannot be removed.' );
 
           if (utils.removeFile(userFilePath))  {
 
             response = new cmd.Response ( cmd.fe_retcode.ok,'',
-              emailer.send ( userData.email,cmd.appName() + ' Account Deleted',
-                'Dear ' + userData.name + ',<p>' +
-                'Your ' + cmd.appName() + ' account and all associated data have been deleted<br>' +
-                'by admin:<p>' +
-                'Login name: <b>' + userData.login + '</b><br>' +
-                'Password: <b>*****</b><br>' +
-                'E-mail: <b>' + userData.email + '</b><p>' +
-                'This e-mail is sent only for your information. Please feel free<br>' +
-                'to contact CCP4 on-line Admin at ' +
-                conf.getEmailerConfig().maintainerEmail + ' .<br>' +
-                'should you require any relevant information.<p>' +
-                'Best Regards,<p>' +
-                'CCP4 on-line.' )
+              emailer.sendTemplateMessage ( uData,
+                        cmd.appName() + ' Account Deleted',
+                        'account_deleted_admin',{})
             );
 
-            removeUserFromHash ( userData.login );
+            //removeUserFromHash ( userData.login );
+            __userLoginHash.removeUser ( userData.login );
 
           } else  {
             response = new cmd.Response ( cmd.fe_retcode.userNotDeleted,
@@ -887,18 +1071,18 @@ var userFilePath = getUserDataFName ( login );
         }
 
       } else  {
-        log.error ( 23,'Attempt to delete user data without privileges from login ' +
-                       login );
+        log.error ( 113,'Attempt to delete user data without privileges from login ' +
+                        loginData.login );
         response  = new cmd.Response ( cmd.fe_retcode.wrongLogin,
                                        'No admin privileges','' );
       }
     } else  {
-      log.error ( 24,'Admin user file: ' + userFilePath + ' cannot be read.' );
+      log.error ( 114,'Admin user file: ' + userFilePath + ' cannot be read.' );
       response = new cmd.Response ( cmd.fe_retcode.readError,
                                     'Admin user file cannot be read.','' );
     }
   } else  {
-    log.error ( 25,'Admin user file: ' + userFilePath + ' does not exist.' );
+    log.error ( 115,'Admin user file: ' + userFilePath + ' does not exist.' );
     response  = new cmd.Response ( cmd.fe_retcode.wrongLogin,
                                    'Wrong admin login','' );
   }
@@ -910,10 +1094,10 @@ var userFilePath = getUserDataFName ( login );
 
 // ===========================================================================
 
-function sendAnnouncement ( login,message )  {
+function sendAnnouncement ( loginData,message )  {
 
   // Check that we're having a new login name
-  var userFilePath = getUserDataFName ( login );
+  var userFilePath = getUserDataFName ( loginData );
 
   if (utils.fileExists(userFilePath))  {
 
@@ -929,25 +1113,132 @@ function sendAnnouncement ( login,message )  {
         for (var i=0;i<users.length;i++)  {
           emailer.send ( users[i].email,cmd.appName() + ' Announcement',
                          message.replace( '&lt;User Name&gt;',users[i].name ) );
-          log.standard ( 9,'Announcement sent to ' + users[i].name + ' at ' +
+          log.standard ( 12,'Announcement sent to ' + users[i].name + ' at ' +
                            users[i].email );
         }
 
       } else
-        log.error ( 8,'Attempt to broadcast from a non-admin login -- stop.' );
+        log.error ( 121,'Attempt to broadcast from a non-admin login -- stop.' );
 
     } else
-      log.error ( 9,'User file: ' + userFilePath + ' cannot be read -- ' +
+      log.error ( 122,'User file: ' + userFilePath + ' cannot be read -- ' +
                     'cannot verify identity for broadcasting.' );
 
   } else
-    log.error ( 10,'User file: ' + userFilePath + ' does not exist -- ' +
+    log.error ( 123,'User file: ' + userFilePath + ' does not exist -- ' +
                    'cannot verify identity for broadcasting.' );
 
   return new cmd.Response ( cmd.fe_retcode.ok,'','' );
 
 }
 
+
+// ===========================================================================
+
+function manageDormancy ( loginData,params )  {
+var userFilePath = getUserDataFName ( loginData );
+var ddata = { 'status' : 'ok' };
+
+  // Check that we're having a new login name
+
+  if (utils.fileExists(userFilePath))  {
+
+    var uData = utils.readObject ( userFilePath );
+    if (uData)  {
+
+      ud.checkUserData ( uData );
+
+      if (uData.admin)  {
+
+        var usersData = readUsersData();
+        var users     = usersData.userList;
+
+        ddata.total_users   = users.length;
+        ddata.dormant_users = 0;
+        ddata.disk_released = 0;  // in case of dormancy
+        ddata.deleted_users = 0;
+        ddata.disk_freed    = 0;  // in case of deletion
+        ddata.check_date    = Date.now();
+
+        for (var key in params)
+          ddata[key] = params[key];
+
+        var tnorm = 1000 * 60 * 60 * 24;
+        for (var i=0;i<users.length;i++)
+          if (users[i].dormant)  {
+            var ndays = (ddata.check_date-users[i].dormant) / tnorm;
+            if (ndays>ddata.period3)  {
+              ddata.deleted_users++;
+              ddata.disk_freed += users[i].ration.storage_used;
+              if (!ddata.checkOnly)  {
+                log.standard ( 131,'dormant user ' + users[i].login + ' deleted' );
+              }
+            }
+          } else  {
+            var ndays = (ddata.check_date-users[i].lastSeen) / tnorm;
+            if ((ndays>ddata.period1) ||
+                ((users[i].nJobs<=ddata.njobs) && (ndays>ddata.period2)))  {
+              ddata.dormant_users++;
+              if (!ddata.checkOnly)  {
+                ddata.disk_released += users[i].ration.storage - users[i].ration.storage_used;
+                var uiFilePath = getUserDataFName ( users[i] );
+                var uiData     = utils.readObject ( uiFilePath );
+                if (uiData)  {
+                  ud.checkUserData ( uiData );
+                  uiData.dormant = ddata.check_date;
+                  if (utils.writeObject(uiFilePath,uiData))  {
+                    var reason_msg = '';
+                    if (ndays>ddata.period1)
+                      reason_msg = 'you have not used your account during last ' +
+                                   ddata.period1 + ' days';
+                    else
+                      reason_msg = 'you have run fewer than ' + (ddata.njobs+1) +
+                                   ' jobs during ' + ddata.period2 + ' days';
+                    response = new cmd.Response ( cmd.fe_retcode.ok,'',
+                      emailer.sendTemplateMessage ( uiData,
+                                'Your ' + cmd.appName() + ' account made dormant',
+                                'made_dormant',{
+                                  'reason' : reason_msg
+                                })
+                    );
+                    log.standard ( 132,'user ' + users[i].login + ' made dormant' );
+                  } else  {
+                    log.error ( 134,'User file: ' + uiFilePath + ' cannot be written.' );
+                    response = new cmd.Response ( cmd.fe_retcode.writeError,
+                                                  'User file cannot be written.','' );
+                  }
+                } else  {
+                  log.error ( 135,'User file: ' + uiFilePath + ' cannot be read.' );
+                  response = new cmd.Response ( cmd.fe_retcode.readError,
+                                                'User file cannot be read.','' );
+                }
+              }
+            }
+          }
+
+      } else  {
+        ddata.status = 'request from non-admin account';
+        log.error ( 131,'Attempt to manage dormancy from a non-admin login -- stop.' );
+      }
+
+    } else  {
+      ddata.status = 'cannot read admin account data';
+      log.error ( 132,'User file: ' + userFilePath + ' cannot be read -- ' +
+                      'cannot verify identity for dormancy management.' );
+    }
+
+  } else  {
+    ddata.status = 'cannot find admin account data';
+    log.error ( 133,'User file: ' + userFilePath + ' does not exist -- ' +
+                    'cannot verify identity for dormancy management.' );
+  }
+
+  return new cmd.Response ( cmd.fe_retcode.ok,'',ddata );
+
+}
+
+
+// ===========================================================================
 
 function getInfo ( inData,callback_func )  {
 var response  = null;  // must become a cmd.Response object to return
@@ -964,14 +1255,15 @@ var fe_server = conf.getFEConfig();
     rData.demo_projects = fe_server.getDemoProjectsMount();
     if ('localuser' in fe_server)  {
       rData.localuser  = fe_server.localuser;
-      rData.logintoken = getTokenFromHash ( 'localuser' );
-      var userFilePath = getUserDataFName ( 'localuser' );
+      rData.logintoken = __userLoginHash.getToken ( 'localuser' );
+      var loginData    = __userLoginHash.getLoginData ( rData.logintoken );
+      var userFilePath = getUserDataFName ( loginData );
       if (utils.fileExists(userFilePath))  {
         var uData = utils.readObject ( userFilePath );
         if (uData)
           rData.helpTopics = uData.helpTopics;
       }
-      rData.cloud_storage = (fcl.getUserCloudMounts('localuser').length>0);
+      rData.cloud_storage = (fcl.getUserCloudMounts(loginData).length>0);
     }
     rData.localSetup = conf.isLocalSetup();
     rData.regMode    = conf.getRegMode  ();
@@ -1033,10 +1325,10 @@ function authResponse ( server_request,server_response )  {
   else {
     params.reqid = params.reqid.split('-');
     if (params.reqid.length==3)  {
-      software_key = params.reqid[1];
-      var login    = getLoginFromHash ( params.reqid[2] );
-      if (login.length>0)  {
-        var userFilePath = getUserDataFName ( login );
+      software_key  = params.reqid[1];
+      var loginData = __userLoginHash.getLoginData ( params.reqid[2] );
+      if (loginData.login.length>0)  {
+        var userFilePath = getUserDataFName ( loginData );
         var uData  = utils.readObject ( userFilePath );
         if (uData)  {
           ud.checkUserData ( uData );
@@ -1091,17 +1383,18 @@ module.exports.userLogout           = userLogout;
 module.exports.makeNewUser          = makeNewUser;
 module.exports.recoverUserLogin     = recoverUserLogin;
 module.exports.readUserLoginHash    = readUserLoginHash;
-module.exports.getLoginFromHash     = getLoginFromHash;
+module.exports.getLoginData         = getLoginData;
 module.exports.readUserData         = readUserData;
 module.exports.getUserRation        = getUserRation;
 module.exports.readUsersData        = readUsersData;
 module.exports.getUserData          = getUserData;
-module.exports.getUserDataFName     = getUserDataFName;
+//module.exports.getUserDataFName     = getUserDataFName;
 module.exports.saveHelpTopics       = saveHelpTopics;
 module.exports.updateUserData       = updateUserData;
 module.exports.updateUserData_admin = updateUserData_admin;
 module.exports.deleteUser           = deleteUser;
 module.exports.deleteUser_admin     = deleteUser_admin;
 module.exports.sendAnnouncement     = sendAnnouncement;
+module.exports.manageDormancy       = manageDormancy;
 module.exports.getInfo              = getInfo;
 module.exports.authResponse         = authResponse;

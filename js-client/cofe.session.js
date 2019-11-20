@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.10.19   <--  Date of Last Modification.
+ *    19.10.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -24,7 +24,7 @@ function startSession ( sceneId,dev_switch )  {
 
   setClientCode ( client_code.ccp4 );
 
-  // set jsrview path (primarily for UglyMol)
+  // set jsrview path, which is used in jsrview iframes
   _jsrview_uri = 'js-lib/jsrview/';
 
   checkLocalService ( function(rc){
@@ -121,6 +121,7 @@ function login ( user_login_name,user_password,sceneId,page_switch )  {
               __login_user    = userData.name;
               __user_settings = userData.settings;
               __admin         = userData.admin;
+              __dormant       = userData.dormant;
               __cloud_storage = response.data.cloud_storage;
               __demo_projects = response.data.demo_projects;
 

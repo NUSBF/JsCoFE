@@ -98,52 +98,6 @@ function ImportDemoProjectDialog ( onSuccess_func )  {
     });
   }(this))
 
-  /*
-  var customData = {};
-  //  customData.login_token = __login_token.getValue();
-  customData.login_token = __login_token;
-
-  var upload = new Upload ( customData,'project',null,null,function(returnCode){
-
-    if (!returnCode)  {
-
-      upload.hide();
-      msgLabel.setText ( 'The project is being imported, please wait ... ' );
-      var progressBar = new ProgressBar ( 0 );
-      grid.setWidget ( progressBar, 3,0,1,3 );
-
-      function checkReady() {
-        serverRequest ( fe_reqtype.checkPrjImport,0,'Project Import',function(data){
-          if (!data.signal)
-            window.setTimeout ( checkReady,1000 );
-          else {
-            progressBar.hide();
-            $( "#cancel_btn" ).button ( "option","label","Close" );
-            if (data.signal=='Success')  {
-              msgLabel.setText ( 'Project "' + data.name + '" is imported, ' +
-                                 'you may close this dialog now.' );
-              if (onSuccess_func)
-                onSuccess_func();
-            } else
-              msgLabel.setText ( 'Project "' + data.name + '" failed to import, ' +
-                                 'the reason being:<p><b><i>' + data.signal +
-                                 '</i></b>.' );
-          }
-        },null,function(){
-          window.setTimeout ( checkReady,1000 );  // depress error messages
-        });
-      }
-
-      window.setTimeout ( checkReady,2000 );
-
-    }
-
-  });
-
-  grid.setWidget ( upload,2,0,1,3 );
-
-  */
-
 //  w = 3*$(window).width()/5 + 'px';
 
   $(this.element).dialog({

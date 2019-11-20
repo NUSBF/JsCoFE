@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    08.10.19   <--  Date of Last Modification.
+ *    03.11.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -221,6 +221,17 @@ ServerConfig.prototype.getDemoProjectsMount = function()  {
   return mount;
 }
 
+ServerConfig.prototype.getVolumeDir = function ( loginData )  {
+  if ((loginData.volume=='*storage*') || (!this.hasOwnProperty('projectsPath')))
+        return this.storage;
+  else if (this.projectsPath[loginData.volume].type=='home')
+        return path.join ( this.projectsPath[loginData.volume].path,
+                           loginData.login,
+                           this.projectsPath[loginData.volume].dirName );
+  else  return this.projectsPath[loginData.volume].path;
+}
+
+
 ServerConfig.prototype.getJobsSafe = function()  {
   if (this.hasOwnProperty('jobs_safe'))
     return this.jobs_safe;
@@ -313,6 +324,7 @@ var version = '';
     "host"             : "localhost",
     "port"             : 8081,
     "externalURL"      : "http://localhost:8081",
+    "reportURL"        : "https://cloud.ccp4.ac.uk",  // used only for reporting
     "exclusive"        : true,
     "stoppable"        : false,
     "exclude_tasks"    : [],
@@ -321,20 +333,22 @@ var version = '';
     "storage"          : "./cofe-projects",  // for logs, stats, pids, tmp etc.
     "projectsPath"     : "./cofe-projects",  // in this case, "storage" may be omitted
     "projectsPath"     : {   // in this case, "storage" must be given
-        "fs0"   : { "path" : "./cofe-projects", // equivalent to "projectPath"
+        "***"   : { "path" : "./cofe-projects", // equivalent to "projectPath"
                     "type" : "volume"           //    given by single string
                         // type "volume" means an ordinary file system
-                        // type "home" places projects in path/login/ccp4cloud-projects
+                        // type "home" places projects in path/login/[dirName]
                         //      if path/login already exists and is writable
+                    "diskReserve" : 10000,  // new user will not be registered if disk
+                                            // has space less than 'diskReserve' (in MB)
+                                            // less of already committed space for user
+                                            // accounts
+                    "dirName" : "ccp4cloud_projects"  // used only for "home" volumes
                   },
         "nameN" : { "path" : "pathN",   // any number of any names and any paths
-                    "type" : "typeN"
+                    "type" : "typeN",
+                    "diskReserve" : 10000
                   }
     },
-    "diskReserve"      : 10000,  // new user will not be registered if disk
-                                 // has space less than 'diskReserve' (in MB)
-                                 // less of already committed space for user
-                                 // accounts
     "facilitiesPath"   : "./cofe-facilities",
     "ICAT_wdsl"        : "https://icat02.diamond.ac.uk/ICATService/ICAT?wsdl",
     "ICAT_ids"         : "https://ids01.diamond.ac.uk/ids",
@@ -465,7 +479,6 @@ function readConfiguration ( confFilePath,serverType )  {
     fe_server = new ServerConfig('FE');
 
     // assign default values
-    fe_server.diskReserve        = 10000; // MBytes
     fe_server.sessionCheckPeriod = 2000;  // ms
     /*
     if (!fe_server.hasOwnProperty("description"))
@@ -485,10 +498,14 @@ function readConfiguration ( confFilePath,serverType )  {
       fe_server.externalURL = fe_server.url();
     fe_server.userDataPath = _make_path ( fe_server.userDataPath,null );
 
+    if (!('reportURL' in fe_server))
+      fe_server.reportURL = fe_server.externalURL;
+
     if (Object.prototype.toString.call(fe_server.projectsPath) === '[object String]')
       fe_server.projectsPath = {
-        'fs0' : { 'path' : fe_server.projectsPath,
-                  'type' : 'volume'
+        '***' : { 'path'        : fe_server.projectsPath,
+                  'type'        : 'volume',
+                  'diskReserve' : 10000 // MBytes
                 }
       };
 
@@ -496,8 +513,12 @@ function readConfiguration ( confFilePath,serverType )  {
     for (var fsname in fe_server.projectsPath)  {
       fe_server.projectsPath[fsname].path =
                         _make_path ( fe_server.projectsPath[fsname].path,null );
-      if ((!storagePath) || (fsname=='fs0'))
+      if ((!storagePath) || (fsname=='***'))
         storagePath = fe_server.projectsPath[fsname].path;
+      if (!('diskReserve' in fe_server.projectsPath[fsname]))
+        fe_server.projectsPath[fsname].diskReserve = 10000;  // 10GBytes
+      if (!('dirName' in fe_server.projectsPath[fsname]))
+        fe_server.dirName = 'ccp4cloud_projects';  // for "home" volumes
     }
     if (fe_server.storage)
           fe_server.storage = _make_path ( fe_server.storage,null );

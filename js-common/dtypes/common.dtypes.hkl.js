@@ -381,7 +381,11 @@ if (!__template)  {
           'High resolution limit. Set a value between ' + res_high + ' and ' +
           res_low + ', or leave blank for automatic choice.',r,3 );
       customGrid.setLabel    ( ' ',r,4,1,1 );
-      customGrid.setCellSize ( '90%','',r,4 );
+      customGrid.setCellSize ( '4%' ,'',r,0 );
+      customGrid.setCellSize ( '4%' ,'',r,1 );
+      customGrid.setCellSize ( '4%' ,'',r,2 );
+      customGrid.setCellSize ( '4%' ,'',r,3 );
+      customGrid.setCellSize ( '84%','',r,4 );
     }
 
     this.makeWavelengthInput = function()  {

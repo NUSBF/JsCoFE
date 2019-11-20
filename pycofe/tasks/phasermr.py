@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    19.09.19   <--  Date of Last Modification.
+#    16.11.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -69,7 +69,7 @@ class PhaserMR(basic.TaskDriver):
         phaser_meta = None
         ens0        = []
         solFile     = None
-        if hasattr(revision,"phaser_meta"):
+        if hasattr(revision,"phaser_meta") and hasattr(self.input_data.data,"sol"):
             phaser_meta     = revision.phaser_meta
             phaser_meta.sol = self.makeClass  ( phaser_meta.sol )
             solFile         = phaser_meta.sol.getFilePath (
@@ -88,8 +88,11 @@ class PhaserMR(basic.TaskDriver):
             phases = self.makeClass ( self.input_data.data.phases[0] )
 
         xstruct = None
-        if revision.hasSubtype(dtype_template.subtypeXYZ()):
-            xstruct = self.makeClass ( revision.Structure )
+        #if revision.hasSubtype(dtype_template.subtypeXYZ()):
+        #    xstruct = self.makeClass ( revision.Structure )
+
+        if hasattr(self.input_data.data,"xmodel"):
+            xstruct = self.makeClass ( self.input_data.data.xmodel[0] )
 
         for i in range(len(seq)):
             seq[i] = self.makeClass ( seq[i] )
@@ -99,18 +102,10 @@ class PhaserMR(basic.TaskDriver):
             if not phaser_meta or ens[i].ensembleName() not in ens_dict:
                 ens0.append ( ens[i] )
 
-        try:
-            hkl_labels = ( hkl.dataset.Imean.value, hkl.dataset.Imean.sigma )
-            hkl_labin  =  "\nLABIN  I=" + hkl_labels[0] + " SIGI=" + hkl_labels[1]
-        except:
-            hkl_labels = ( hkl.dataset.Fmean.value, hkl.dataset.Fmean.sigma )
-            hkl_labin  =  "\nLABIN  F=" + hkl_labels[0] + " SIGF=" + hkl_labels[1]
-
-        hklfile = hkl.getHKLFilePath ( self.inputDir() )
-
         if phases:
             phases_mtz = phases.getMTZFilePath(self.inputDir())
             phases_labels = ( phases.FWT, phases.PHWT )
+            """
             self.open_stdin()
             self.write_stdin ( "LABIN FILE 1 E1=%s E2=%s\n" %hkl_labels     )
             self.write_stdin ( "LABIN FILE 2 E1=%s E2=%s\n" %phases_labels )
@@ -119,14 +114,29 @@ class PhaserMR(basic.TaskDriver):
             cmd = [ "HKLIN1", hklfile,
                     "HKLIN2", phases.getMTZFilePath(self.inputDir()),
                     "HKLOUT", self.cad_mtz() ]
+            """
+            self.open_stdin()
+            self.write_stdin ( "LABIN FILE 1 E1=%s E2=%s\n" %phases_labels )
+            self.write_stdin ( "END\n" )
+            self.close_stdin()
+            cmd = [ "HKLIN1", phases.getMTZFilePath(self.inputDir()),
+                    "HKLOUT", self.cad_mtz() ]
             self.runApp ( "cad",cmd,logType="Service" )
-            hklfile    = self.cad_mtz()
-            hkl_labin += "\nLABIN FWT=" + phases_labels[0] + " PHWT=" + phases_labels[1]
+            hklfile   = self.cad_mtz()
+            hkl_labin = "\nLABIN FWT=" + phases_labels[0] + " PHWT=" + phases_labels[1]
+
+        else:
+            try:
+                hkl_labels = ( hkl.dataset.Imean.value, hkl.dataset.Imean.sigma )
+                hkl_labin  =  "\nLABIN  I=" + hkl_labels[0] + " SIGI=" + hkl_labels[1]
+            except:
+                hkl_labels = ( hkl.dataset.Fmean.value, hkl.dataset.Fmean.sigma )
+                hkl_labin  =  "\nLABIN  F=" + hkl_labels[0] + " SIGF=" + hkl_labels[1]
+            hklfile = hkl.getHKLFilePath ( self.inputDir() )
 
 
         # make a file with input script
         self.open_stdin()
-
         self.write_stdin (
             "TITLE Phaser-MR" +\
             "\nMODE MR_AUTO"  +\
@@ -324,16 +334,17 @@ class PhaserMR(basic.TaskDriver):
             tfz     = None
             for line in soll:
                 if line.startswith("SOLU 6DIM ENSE"):
-                    nsol += 1
-                    ensname = line.split()[3]
-                    if ensname in ens_meta:
-                        ens_meta[ensname]["ncopies"] += 1
-                    else:
-                        ens_meta[ensname] = { "ncopies" : 1 }
+                    if nsol<=1:
+                        ensname = line.split()[3]
+                        if ensname in ens_meta:
+                            ens_meta[ensname]["ncopies"] += 1
+                        else:
+                            ens_meta[ensname] = { "ncopies" : 1 }
                 elif line.startswith("SOLU SPAC "):
                     sol_spg = line.replace("SOLU SPAC ","").strip()
                 elif line.startswith("SOLU SET "):
-                    pos = line.rfind("LLG=")
+                    nsol += 1
+                    pos   = line.rfind("LLG=")
                     if pos>=0 and not llg:
                         llg = line[pos:].split()[0][4:]
                     pos = line.rfind("TFZ==")

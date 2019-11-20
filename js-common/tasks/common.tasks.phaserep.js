@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.10.19   <--  Date of Last Modification.
+ *    12.11.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -46,9 +46,10 @@ function TaskPhaserEP()  {
       inputId     : 'revision',  // input Id for referencing input fields
       customInput : 'phaser-ep', // lay custom fields next to the selection
                                  // dropdown for 'native' dataset
-      version     : 0,           // minimum data version allowed
+      version     : 7,           // minimum data version allowed
       min         : 1,           // minimum acceptable number of data instances
       max         : 1            // maximum acceptable number of data instances
+    /*
     },{
       data_type   : {'DataStructure':['!substructure']}, // data type(s) and subtype(s)
       label       : 'Anomalous scatterers', // label for input dialog
@@ -67,7 +68,6 @@ function TaskPhaserEP()  {
                                  // be selected
       min         : 0,           // minimum acceptable number of data instances
       max         : 1            // maximum acceptable number of data instances
-      /*
     },{
       // enforce having at least 1 Structure in the branch
       data_type   : {'DataStructure':[]}, // data type(s) and subtype(s)
@@ -380,7 +380,7 @@ if (!__template)  {
 
   var conf = require('../../js-server/server.configuration');
 
-  TaskPhaserEP.prototype.makeInputData = function ( login,jobDir )  {
+  TaskPhaserEP.prototype.makeInputData = function ( loginData,jobDir )  {
 
     // put hkl and structure data in input databox for copying their files in
     // job's 'input' directory
@@ -389,13 +389,18 @@ if (!__template)  {
       var revision = this.input_data.data['revision'][0];
       this.input_data.data['hkl'] = [revision.HKL];
       this.input_data.data['seq'] = revision.ASU.seq;
+      if (revision.Options.phasing_sel=='substructure')
+            this.input_data.data['substructure'] = [revision.Substructure];
+      else  this.input_data.data['xmodel'] = [revision.Structure];
+      /*
       if (revision.subtype.indexOf('substructure')>=0)
-        this.input_data.data['substructure'] = [revision.Structure];
+        this.input_data.data['substructure'] = [revision.Substructure];
       else if (revision.subtype.indexOf('xyz')>=0)
         this.input_data.data['xmodel'] = [revision.Structure];
+      */
     }
 
-    __template.TaskTemplate.prototype.makeInputData.call ( this,login,jobDir );
+    __template.TaskTemplate.prototype.makeInputData.call ( this,loginData,jobDir );
 
   }
 

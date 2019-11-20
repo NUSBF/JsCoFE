@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    08.10.19   <--  Date of Last Modification.
+ *    27.10.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -29,6 +29,7 @@
 var http      = require('http');
 var httpProxy = require('http-proxy');
 var url       = require('url');
+var path      = require('path');
 
 //  load application modules
 var conf      = require('./server.configuration');
@@ -53,16 +54,33 @@ function start ( callback_func )  {
   proxy_config.killPrevious();
   proxy_config.savePID();
 
-  var options_proxy = {};
-  var options_web   = { target : fe_url };
+  //var options_proxy = { proxyTimeout : 100, timeout : 0 };
+  //var options_web   = { target  : fe_url, timeout : 0 };
+  var options_proxy = {
+    target : fe_url
+  };
+  //var options_web = {
+  //  target : fe_url
+  //};
   if (fe_config.protocol=='https')  {
     options_proxy.secure = true;
     options_proxy.changeOrigin = true;
-    options_proxy.target = {
-      protocol : 'https:',
-      host     : fe_config.host
-    };
-    options_web.secure = true;
+    //options_web  .changeOrigin = true;
+    //options_proxy.target = {
+    //  protocol : 'https:',
+    //  host     : fe_config.host
+    //};
+    //options_web.secure = true;
+    var https = require('https');
+    //options_proxy.agent = new https.Agent ({ keepAlive: true, maxSockets: 10000 });
+    //options_web  .agent = new https.Agent ({ keepAlive: true, maxSockets: 10000 });
+    options_proxy.agent = new https.Agent ({ keepAlive: true });
+    //options_web  .agent = new https.Agent ({ keepAlive: true });
+  } else  {
+    //options_proxy.agent = new http.Agent ({ keepAlive: true, maxSockets: 10000 });
+    //options_web  .agent = new http.Agent ({ keepAlive: true, maxSockets: 10000 });
+    options_proxy.agent = new http.Agent ({ keepAlive: true });
+    //options_web  .agent = new http.Agent ({ keepAlive: true });
   }
 
 /*
@@ -79,12 +97,20 @@ function start ( callback_func )  {
 */
 
   var local_prefixes = [];
+  //console.log ( ' localisation='+proxy_config.localisation );
   switch (proxy_config.localisation)  {
-    case 3 : local_prefixes = ['images_','js-'];     break;
-    case 2 : local_prefixes = ['images_','js-lib'];  break;
-    case 1 : local_prefixes = ['images_'];           break;
+    case 3 : local_prefixes = local_prefixes.concat ([
+               'js-client/', 'js-common/', 'js-server/'
+             ]);
+    case 2 : local_prefixes = local_prefixes.concat ([
+               'js-lib/', '/jsrview/'
+             ]);
+    case 1 : local_prefixes = local_prefixes.concat ([
+               'images_com/','images_png/','images_svg/', 'css/', 'html/'
+             ]);
     default: ;
   }
+  //console.log ( ' local_prefixes='+JSON.stringify(local_prefixes) );
 
   // --------------------------------------------------------------------------
   // Create a proxy server with custom application logic
@@ -99,16 +125,31 @@ function start ( callback_func )  {
     res.end('Something went wrong. And we are reporting a custom error message.');
     */
     //log.error ( 2,'fe-proxy failure' );
-    cmd.sendResponse ( server_response, cmd.fe_retcode.proxyError,'Proxy error #2',{} );
+    //cmd.sendResponse ( server_response, cmd.fe_retcode.proxyError,'Proxy error #2',{} );
+    //log.warning ( 3,'failed proxy fetch ' + url.parse(server_request.url).pathname.substr(1) );
+    //log.warning ( 3,'             error ' + err );
+    log.warning ( 3,err + ' fetching ' + url.parse(server_request.url).pathname.substr(1) );
+    proxy.web ( server_request,server_response ); //, options_web );
+/*  -- losing internet symptoms:
+    [2019-10-29T02:42:46.962Z] 22-003 +++ Error: socket hang up fetching =check_session
+    [2019-10-29T02:43:14.071Z] 22-003 +++ Error: read ECONNRESET fetching =check_session
+    [2019-10-29T02:43:14.166Z] 22-003 +++ Error: read ECONNRESET fetching xxJsCoFExx/usage_stats/task.tsk
+    [2019-10-29T02:43:35.116Z] 22-003 +++ Error: connect ETIMEDOUT 130.246.93.68:443 fetching =check_session
+    [2019-10-29T02:43:35.120Z] 22-003 +++ Error: getaddrinfo ENOTFOUND cloud.ccp4.ac.uk cloud.ccp4.ac.uk:443 fetching =check_session
+    [2019-10-29T02:43:35.120Z] 22-003 +++ Error: getaddrinfo ENOTFOUND cloud.ccp4.ac.uk cloud.ccp4.ac.uk:443 fetching =check_session
+    [2019-10-29T02:43:35.124Z] 22-003 +++ Error: getaddrinfo ENOTFOUND cloud.ccp4.ac.uk cloud.ccp4.ac.uk:443 fetching =check_session
+    [
+*/
   });
 
   var server = http.createServer ( function(server_request,server_response){
 
-    try {
+//    try {
 
-      var command = url.parse(server_request.url).pathname.substr(1).toLowerCase();
+      var command = url.parse(server_request.url).pathname.substr(1);
+//console.log ( 'proxy ' + command );
 
-      switch (command)  {
+      switch (command.toLowerCase())  {
 
         case cmd.fe_command.getClientInfo :
               conf.getClientInfo ( null,function(response){ response.send(server_response); });
@@ -119,28 +160,47 @@ function start ( callback_func )  {
             break;
 
         default :
+              var fpath     = '';
               var responded = false;
-              for (var i=0;(i<local_prefixes.length) && (!responded);i++)
-                if (command.startsWith(local_prefixes[i]))  {
+              for (var i=0;(i<local_prefixes.length) && (!responded);i++)  {
+                //if (command.startsWith(local_prefixes[i]))  {
+                var n = command.lastIndexOf ( local_prefixes[i] );
+                if (n>=0)  {
                   responded = true;
-                  utils.send_file ( command,server_response,utils.getMIMEType(command),
-                                    false,0,function(fpath,mimeType,deleteOnDone,capSize){
-                    proxy.web ( server_request,server_response, options_web );
+                  if (local_prefixes[i]=='/jsrview/')
+                        fpath = path.join ( 'js-lib',command.slice(n+1) );
+                  else  fpath = command.slice(n);
+//                  console.log ( ' local fetch ' + fpath );
+                  utils.send_file ( fpath,server_response,utils.getMIMEType(fpath),
+                                    false,0,function(filepath,mimeType,deleteOnDone,capSize){
+//                    console.log ( ' repeat fetch ' + filepath );
+                    proxy.web ( server_request,server_response ); //, options_web );
                   });
                 }
-              if (!responded)
-                proxy.web ( server_request,server_response, options_web );
+              }
+              if (!responded)  {
+//                console.log ( ' remote fetch ' + command );
+                proxy.web ( server_request,server_response ); //, options_web );
+              }
 
       }
 
-    } catch (e)  {
-
-      log.error ( 1,'fe-proxy failure on ' + command );
-      cmd.sendResponse ( server_response, cmd.fe_retcode.proxyError,'Proxy error #1',{} );
-
-    }
+//    } catch (e)  {
+//
+//      log.error ( 1,'fe-proxy failure on ' + command );
+//      cmd.sendResponse ( server_response, cmd.fe_retcode.proxyError,'Proxy error #1',{} );
+//
+//    }
 
   });
+
+  /*
+  server.on('connection', function (socket) {
+      'use strict';
+      //console.log('server.on.connection - setNoDelay');
+      socket.setNoDelay(true);
+  });
+  */
 
   server.listen({
     host      : proxy_config.host,

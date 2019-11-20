@@ -1,7 +1,7 @@
 /*
  *  ========================================================================
  *
- *    18.09.19   <--  Date of Last Modification.
+ *    20.09.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  ------------------------------------------------------------------------
  *
@@ -113,8 +113,9 @@ var _taskIndex = {
 
   // do not suggest ASUMod
   //'d' : { type: 'TaskASUMod'         , after: [] },
-  'd' : { type: 'TaskEditRevision'   , after: [] },
-  'e' : { type: 'TaskASUDefStruct'   , after: ['A'] },
+  'd'  : { type: 'TaskEditRevisionASU'   , after: [] },
+  'd1' : { type: 'TaskEditRevisionStruct', after: [] },
+  'e'  : { type: 'TaskASUDefStruct'      , after: ['A'] },
 
   // suggest SeqAlign after Import
   'f' : { type: 'TaskSeqAlign'       , after: ['B','m'] },

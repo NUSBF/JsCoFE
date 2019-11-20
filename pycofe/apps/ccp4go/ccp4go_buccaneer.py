@@ -7,7 +7,7 @@
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
-#  CCP4EZ Combined Auto-Solver Buccaneer module
+#  CCP4go Combined Auto-Solver Buccaneer module
 #
 #  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2019
 #
@@ -103,12 +103,12 @@ class Buccaneer(ccp4go_crank2.Crank2):
         quit_message   = ""
         buccaneer_xyz  = os.path.join ( resultdir,"refine.pdb" )
         buccaneer_mtz  = os.path.join ( resultdir,"refine.mtz" )
-        buccaneer_map  = os.path.join ( resultdir,"refine.map" )
-        buccaneer_dmap = os.path.join ( resultdir,"refine.diff.map" )
+        buccaneer_map  = None  #os.path.join ( resultdir,"refine.map" )
+        buccaneer_dmap = None  #os.path.join ( resultdir,"refine.diff.map" )
         if os.path.isfile(buccaneer_xyz):
 
-            edmap.calcCCP4Maps ( buccaneer_mtz,os.path.join(resultdir,"refine"),
-                        "./",self.file_stdout,self.file_stderr,"refmac",None )
+            #edmap.calcCCP4Maps ( buccaneer_mtz,os.path.join(resultdir,"refine"),
+            #            "./",self.file_stdout,self.file_stderr,"refmac",None )
 
             nResults = 1
             self.mk_std_streams ( None )

@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    16.04.19   <--  Date of Last Modification.
+#    08.11.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -115,6 +115,9 @@ class Coot(basic.TaskDriver):
         if ligand:
             args += ["--python","-c","get_monomer('" + ligand.code + "')"]
 
+        coot_scr = "coot_jscofe.py"
+        coot_scr = os.path.join ( os.path.dirname ( os.path.abspath(__file__)),"..","proc",coot_scr )
+        args += ["--python",coot_scr,"--no-guano"]
         args += ["--no-guano"]
 
         # Run coot
@@ -158,7 +161,7 @@ class Coot(basic.TaskDriver):
             shutil.copy2 ( mtzfile,coot_mtz )
 
             # calculate maps for UglyMol using final mtz from temporary location
-            fnames = self.calcCCP4Maps ( coot_mtz,fn )
+            #fnames = self.calcCCP4Maps ( coot_mtz,fn )
 
             # add covalent links from coot to restraint dictionary, modify output pdb-file
             libout = "links.lib"
@@ -189,8 +192,9 @@ class Coot(basic.TaskDriver):
             # to output directory by the registration procedure)
 
             struct = self.registerStructure ( coot_xyz,None,coot_mtz,
-                                              fnames[0],fnames[1],
-                                              libnew,leadKey=lead_key )
+                                              None,None,libnew,
+                                              #fnames[0],fnames[1],libnew,  -- not needed for new UglyMol
+                                              leadKey=lead_key )
 
             #                                  istruct.getLibFilePath(self.inputDir()) )
             if struct:

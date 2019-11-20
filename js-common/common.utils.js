@@ -97,8 +97,8 @@ function shallowCopy ( object )  {
 }
 
 function replaceAll ( str,find,rep )  {
-  return str;
-//  return str.replace(new RegExp(find.replace(/[-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g,"\\$&"),'g'),rep);
+  return str.split(find).join(rep);
+//  return str;
 }
 
 function strip_html_tags ( str )  {

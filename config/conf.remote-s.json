@@ -39,7 +39,7 @@
     "externalURL"      : "",
     "exclusive"        : true,
     "stoppable"        : false,
-    "localisation"     : 1
+    "localisation"     : 3
   },
 
   "NumberCrunchers" : [

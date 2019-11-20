@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.10.19   <--  Date of Last Modification.
+ *    13.10.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -312,14 +312,16 @@ function AccountPage ( sceneId )  {
                         function(response){
           if (response)
             new MessageBoxW ( 'Delete My Account',response,0.5 );
-          else
+          else  {
             new MessageBox ( 'Delete My Account',
               'Dear ' + userData.name +
               ',<p>Your account and all associated data have been<br>successfully ' +
               'deleted, and notification sent<br>to your e-mail address:<p><b><i>' +
               userData.email + '</i></b>.' +
               '<p>You are logged out now.' );
-              makeLoginPage ( sceneId );
+            stopSessionChecks();
+            makeLoginPage ( sceneId );
+          }
         },null,'persist' );
 
         return true;  // close dialog

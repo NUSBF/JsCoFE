@@ -100,15 +100,15 @@ class Dimple(ccp4go_asu.PrepareASU):
         rfactor     = 1.0
         dimple_xyz  = os.path.join ( resultdir,"final.pdb" )
         dimple_mtz  = os.path.join ( resultdir,"final.mtz" )
-        dimple_map  = os.path.join ( resultdir,"final.map" )
-        dimple_dmap = os.path.join ( resultdir,"final.diff.map" )
+        dimple_map  = None  #os.path.join ( resultdir,"final.map" )
+        dimple_dmap = None  #os.path.join ( resultdir,"final.diff.map" )
         spg_info    = None
         if os.path.isfile(dimple_xyz):
 
             spg_info = self.checkSpaceGroup ( spg,dimple_xyz )
 
-            edmap.calcCCP4Maps ( dimple_mtz,os.path.join(resultdir,"final"),
-                   "./",self.file_stdout,self.file_stderr,"refmac",None )
+            #edmap.calcCCP4Maps ( dimple_mtz,os.path.join(resultdir,"final"),
+            #       "./",self.file_stdout,self.file_stderr,"refmac",None )
 
             nResults = 1
             self.mk_std_streams ( None )

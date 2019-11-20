@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    17.09.19   <--  Date of Last Modification.
+#    19.10.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -360,6 +360,9 @@ class TaskDriver(object):
     def getXYZOFName ( self,modifier=-1 ):
         return self.getOFName ( ".pdb",modifier )
 
+    def getSubOFName ( self,modifier=-1 ):
+        return self.getOFName ( "_sub.pdb",modifier )
+
     def getMTZOFName ( self,modifier=-1 ):
         return self.getOFName ( ".mtz",modifier )
 
@@ -368,6 +371,18 @@ class TaskDriver(object):
 
     def getDMapOFName ( self,modifier=-1 ):
         return self.getOFName ( ".diff.map",modifier )
+
+    def despaceFileNames ( self,flist,dirPath ):
+        flist_out = []
+        for f in flist:
+            if " " in f:
+                f1 = f.replace ( " ","_" )
+                os.rename ( os.path.join(dirPath,f),os.path.join(dirPath,f1) )
+                flist_out.append ( f1 )
+            else:
+                flist_out.append ( f )
+        return flist_out
+
 
     # ============================================================================
 
@@ -391,15 +406,19 @@ class TaskDriver(object):
             return False
         return True
 
-    def have_internet ( self,url="www.google.com",time_out=5 ):
-        conn = httplib.HTTPConnection(url,timeout=time_out)
-        try:
-            conn.request("HEAD", "/")
-            conn.close()
-            return True
-        except:
-            conn.close()
-            return False
+    def have_internet ( self,url_list=["www.pdb.org","www.google.com","pdbj.org","www.ebi.ac.uk"],time_out=5 ):
+        haveit = False
+        for url in  url_list:
+            conn = httplib.HTTPConnection(url,timeout=time_out)
+            try:
+                conn.request("HEAD", "/")
+                conn.close()
+                haveit = True
+                break
+            except:
+                conn.close()
+                pass
+        return haveit
 
 
     # ============================================================================
@@ -985,10 +1004,12 @@ class TaskDriver(object):
             xyzout += edmap.file_pdb()
         else:
             xyzout += edmap.file_cif()
-        return [ xyzout,
-                 filePrefix + edmap.file_mtz (),
-                 filePrefix + edmap.file_map (),
-                 filePrefix + edmap.file_dmap() ]
+        return [ xyzout,filePrefix + edmap.file_mtz(),None,None ]
+        # for old UglyMol
+        #return [ xyzout,
+        #         filePrefix + edmap.file_mtz (),
+        #         filePrefix + edmap.file_map (),
+        #         filePrefix + edmap.file_dmap() ]
 
     def calcAnomEDMap ( self,xyzPath,hklData,anom_form,filePrefix ):
         edmap.calcAnomEDMap ( xyzPath,hklData.getHKLFilePath(self.inputDir()),
@@ -1677,7 +1698,6 @@ class TaskDriver(object):
 
 
     # ============================================================================
-
 
     def success(self):
         self.putCitations()

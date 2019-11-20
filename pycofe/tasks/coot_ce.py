@@ -67,7 +67,10 @@ class Coot(basic.TaskDriver):
         for s in data_list:
             if s.getXYZFileName():
                 args += ["--pdb",s.getXYZFilePath(self.inputDir())]
-        args += ["--no-guano"]
+
+        coot_scr = "coot_jscofe.py"
+        coot_scr = os.path.join ( os.path.dirname ( os.path.abspath(__file__)),"..","proc",coot_scr )
+        args += ["--python",coot_scr,"--no-guano"]
 
         # Run coot
         if sys.platform.startswith("win"):

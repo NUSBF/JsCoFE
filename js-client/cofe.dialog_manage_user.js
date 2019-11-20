@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    03.08.19   <--  Date of Last Modification.
+ *    01.11.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -53,8 +53,13 @@ function ManageUserDialog ( userData,onExit_func )  {
           text : "Update",
           click: function() {
 
-            dlg.userData.admin   = (dlg.status.getValue()==1);
+            dlg.userData.admin   = (dlg.profile.getValue()==1);
             dlg.userData.licence = ['academic','commercial'][dlg.licence.getValue()];
+            if (dlg.status.getValue()==1)  {
+              if (!dlg.userData.dormant)
+                dlg.userData.dormant = Date.now();
+            } else
+              dlg.userData.dormant = 0;
             dlg.userData.ration.storage   = dlg.storage.getValue();
             dlg.userData.ration.cpu_day   = dlg.cpu_day.getValue();
             dlg.userData.ration.cpu_month = dlg.cpu_month.getValue();
@@ -163,7 +168,7 @@ ManageUserDialog.prototype.putLine = function ( label,value,maxvalue,row,key )  
             break;
 
     case 2 :  w = new Dropdown();
-              this.grid.setWidget ( w,row,1,1,3 );
+              this.grid.setWidget ( w,row,1,1,4 );
               w.addItem ( value[0],'',0,!value[2] );
               w.addItem ( value[1],'',1, value[2] );
               w.make();
@@ -213,10 +218,18 @@ ManageUserDialog.prototype.makeLayout = function()  {
   this.putLine ( 'Name:'        ,this.userData.name ,0,row++,0 );
   this.putLine ( 'Login:'       ,this.userData.login,0,row++,0 );
   this.putLine ( 'E-mail:'      ,this.userData.email,0,row++,0 );
-  this.status  = this.putLine ( 'Status:' ,['user','admin',this.userData.admin],
+  this.profile = this.putLine ( 'Profile:',['user','admin',this.userData.admin],
                                 0,row++,2 );
   this.licence = this.putLine ( 'Licence:',['academic','commercial',
                                 this.userData.licence!='academic'],0,row++,2 );
+  var dormant_lbl = 'dormant';
+  var dormant_sel = false;
+  if (this.userData.dormant)  {
+    dormant_lbl += ' since ' + new Date(this.userData.dormant).toISOString().slice(0,10);
+    dormant_sel  = true;
+  }
+  this.status  = this.putLine ( 'Status:',['active',dormant_lbl,dormant_sel],
+                                0,row++,2 );
   if (this.userData.hasOwnProperty('feedback'))  {
     if (this.userData.feedback.length>0)
       this.putLine ( 'Feedback agreement:',this.userData.feedback,0,row++,0 );

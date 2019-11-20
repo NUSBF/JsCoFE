@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    12.08.19   <--  Date of Last Modification.
+#    12.11.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -48,7 +48,7 @@ class DType(dtype_template.DType):
             self._type          = dtype()
             self.leadKey        = 0;  # data lead key: 0: undefined, 1: coordinates, 2: phases
             self.dname          = "revision"
-            self.version       += 4   # versioning increments from parent to children
+            self.version       += 5   # versioning increments from parent to children
             self.HKL            = None
             self.ASU            = jsonut.jObject()  # asymetric unit data
             self.ASU.seq        = []
@@ -60,6 +60,7 @@ class DType(dtype_template.DType):
             self.ASU.matthews   = 0.0;
             self.ASU.prob_matth = 0.0;
             self.Structure      = None              # structure metadata
+            self.Substructure   = None              # substructure metadata
             self.Ligands        = []                # ligands metadata
             self.Options        = jsonut.jObject()  # input options used in interfaces
             self.Options.seqNo  = 0   # selected sequence number
@@ -87,6 +88,10 @@ class DType(dtype_template.DType):
                 self.Structure = jsonut.jObject ( prevRevision.Structure.to_JSON() )
             else:
                 self.Structure = None
+            if prevRevision.Substructure:
+                self.Substructure = jsonut.jObject ( prevRevision.Substructure.to_JSON() )
+            else:
+                self.Substructure = None
             self.Ligands = []
             for l in prevRevision.Ligands:
                 self.Ligands.append ( l )
@@ -194,13 +199,21 @@ class DType(dtype_template.DType):
         return
 
     def setStructureData ( self,structure ):
-        self.Structure = structure
+        if structure.hasSubSubtype():
+            self.Substructure = structure
+            self.Options.leading_structure = "substructure"
+        else:
+            self.Structure = structure
+            self.Options.leading_structure = "structure"
         self.removeSubtypes ([
             dtype_template.subtypeXYZ(),
             dtype_template.subtypeSubstructure(),
             dtype_template.subtypePhases()
         ])
-        self.addSubtypes ( structure.subtype )
+        if self.Structure:
+            self.addSubtypes ( self.Structure.subtype )
+        if self.Substructure:
+            self.addSubtypes ( self.Substructure.subtype )
         if hasattr(self,"phaser_meta"):
             delattr ( self,"phaser_meta" )
         self.leadKey = structure.leadKey

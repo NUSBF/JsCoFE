@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.10.19   <--  Date of Last Modification.
+ *    19.10.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -41,7 +41,9 @@ function TaskGesamt()  {
 
   this.input_dtypes = [{      // input data types
      data_type   : {'DataStructure':['protein'],
-                    'DataXYZ':['protein'] },  // data type(s) and subtype(s)
+                    'DataEnsemble' :['protein'],
+                    'DataXYZ'      :['protein']
+                   },  // data type(s) and subtype(s)
      label       : 'Structure',    // label for input dialog
      inputId     : 'xyz',          // input Id for referencing input fields
      customInput : 'chain-sel-protein', // lay custom fields next to the selection

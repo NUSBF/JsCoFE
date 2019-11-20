@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    02.08.19   <--  Date of Last Modification.
+#    04.11.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -50,19 +50,20 @@ class Crank2(basic.TaskDriver):
     # ------------------------------------------------------------------------
     # class variables
 
-    hkl     = None  # anomalous HKL dataset(s)
-    seq     = None  # sequence class
-    native  = None  # HKL dataset used as "Native"
-    pmodel  = None  # structure class used as "Partial model"
-    expType = ""    # principal experimet type: "SAD","SIRAS","MAD"
+    hkl          = None  # anomalous HKL dataset(s)
+    seq          = None  # sequence class
+    native       = None  # HKL dataset used as "Native"
+    pmodel       = None  # structure class used as "Partial model"
+    substructure = None  # structure class with input substructure
+    expType      = ""    # principal experimet type: "SAD","SIRAS","MAD"
 
-    sec1    = None  # input parameters from section No.1
-    sec3    = None  # input parameters from section No.2
-    sec2    = None  # input parameters from section No.3
-    sec4    = None  # input parameters from section No.4
-    sec5    = None  # input parameters from section No.5
-    sec6    = None  # input parameters from section No.6
-    sec7    = None  # input parameters from section No.7
+    sec1   = None  # input parameters from section No.1
+    sec3   = None  # input parameters from section No.2
+    sec2   = None  # input parameters from section No.3
+    sec4   = None  # input parameters from section No.4
+    sec5   = None  # input parameters from section No.5
+    sec6   = None  # input parameters from section No.6
+    sec7   = None  # input parameters from section No.7
 
     config = []  # lines of crank configuration script
 
@@ -114,18 +115,22 @@ class Crank2(basic.TaskDriver):
     def add_model ( self ):
 
         ha_type = self.revision.ASU.ha_type
-        S = "model substr atomtype=" + ha_type +\
-                              self.getKWItem ( self.sec1.NATOMS )
-        #S = "model substr " + self.getKWItem ( self.sec1.HATOM  ) +\
-        #                      self.getKWItem ( self.sec1.NATOMS )
 
+        substr_spec = ""
         for hkli in self.hkl:
-            S += " d_name=" + hkli.wtype
+            substr_spec += " d_name=" + hkli.wtype
             if hkli.f1:
-                S += " fp=" + hkli.f1
+                substr_spec += " fp=" + hkli.f1
             if hkli.f11:
-                S += " fpp=" + hkli.f11
+                substr_spec += " fpp=" + hkli.f11
 
+        if self.substructure:
+            S  = "model substr atomtype=" + ha_type + substr_spec +\
+                 " \"file=" + self.substructure.getSubFilePath(self.inputDir()) +\
+                 "\""
+        else:
+            S = "model substr atomtype=" + ha_type  +\
+                self.getKWItem ( self.sec1.NATOMS ) + substr_spec
         self.config.append ( S )
 
         if self.pmodel:
@@ -134,8 +139,6 @@ class Crank2(basic.TaskDriver):
                 S += "custom=ncs "
             S += "unknown \"file=" + self.pmodel.getXYZFilePath(self.inputDir()) +\
                  "\" atomtype=" + ha_type
-            #S += "unknown \"file=" + self.pmodel.getXYZFilePath(self.inputDir()) + "\"" +\
-            #     self.getKWItem ( self.sec1.HATOM  )
             self.config.append ( S )
 
         return
@@ -419,7 +422,8 @@ class Crank2(basic.TaskDriver):
         xyzout = None
         subout = None
         if self.task._type=="TaskShelxSubstr":
-            subout = self.xyzout_fpath
+            #subout = self.xyzout_fpath
+            subout = self.subout_fpath
         else:
             xyzout = self.xyzout_fpath
 
@@ -467,10 +471,11 @@ class Crank2(basic.TaskDriver):
                     hkls = self.pickHKL()
                     self.structure.addPhasesSubtype()
                     self.structure.setCrank2Labels ( hkls )
-                    #sub_path = os.path.join ( self.reportDir(),"2-substrdet","fixsubstrpdb","heavy.pdb" )
+                    ### sub_path = os.path.join ( self.reportDir(),"2-substrdet","fixsubstrpdb","heavy.pdb" )
                     substrdir = [f for f in os.listdir(self.reportDir()) if f.endswith("-substrdet")]
                     if len(substrdir)>0:
-                        sub_path = os.path.join ( self.reportDir(),substrdir[0],"fixsubstrpdb","heavy.pdb" )
+                        #sub_path = os.path.join ( self.reportDir(),substrdir[0],"fixsubstrpdb","heavy.pdb" )
+                        sub_path = self.subout_fpath
                         if os.path.isfile(sub_path):
                             #self.rvrow += 20
                             self.putTitle ( "Heavy Atom Substructure Found" )
@@ -599,6 +604,9 @@ class Crank2(basic.TaskDriver):
             #    if self.input_data.data.pmodel[0].visible:
             #        self.pmodel = self.makeClass ( self.input_data.data.pmodel[0] )
 
+        if hasattr(self.input_data.data,"substructure"):  # optional data parameter
+            self.substructure = self.makeClass ( self.input_data.data.substructure[0] )
+
         # --------------------------------------------------------------------
         # make shortcuts to folders with input parameters
 
@@ -629,6 +637,7 @@ class Crank2(basic.TaskDriver):
         self.storeReportDocument ( "" )
 
         self.xyzout_fpath = os.path.join ( os.getcwd(),self.outputDir(),self.stampFileName(1,self.getXYZOFName()) )
+        self.subout_fpath = os.path.join ( os.getcwd(),self.outputDir(),self.stampFileName(1,self.getSubOFName()) )
         self.hklout_fpath = os.path.join ( os.getcwd(),self.outputDir(),self.stampFileName(1,self.getMTZOFName()) )
 
         # make command-line parameters
@@ -637,11 +646,12 @@ class Crank2(basic.TaskDriver):
             "--xyzout"          ,self.xyzout_fpath,
             "--hklout"          ,self.hklout_fpath,
             "--dirout"          ,"report",
-            "--rvapi-viewer"    ,"0",
+            "--rvapi-viewer"    ,"0"     ,
             "--graceful-preliminary-stop",
             "--rvapi-uri-prefix","./",
             "--rvapi-document"  ,os.path.join ( os.getcwd(),self.reportDocumentName() ),
-            "--rvapi-no-tree"
+            "--rvapi-no-tree"   ,
+            "--xyzsubout"       ,self.subout_fpath
         ]
 
         # run crank-2

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    17.09.19   <--  Date of Last Modification.
+ *    07.11.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -166,7 +166,10 @@ if (!__template)  {
   DataTemplate.prototype.makeDataSummaryPage = function ( task )  {
   var dsp = new DataSummaryPage ( this );
     if (this._type=='DataStructure')  {
-      dsp.makeRow ( 'XYZ file name',this.files[file_key.xyz],'Name of file with XYZ coordinates' );
+      if (this.files.hasOwnProperty(file_key.xyz))
+        dsp.makeRow ( 'XYZ file name',this.files[file_key.xyz],'Name of file with XYZ coordinates' );
+      else if (this.files.hasOwnProperty(file_key.sub))
+        dsp.makeRow ( 'HA-XYZ file',this.files[file_key.sub],'Heavy atom (substructure) file name' );
       if (file_key.mmcif in this.files)
         dsp.makeRow ( 'mmCIF file name',this.files[file_key.mmcif],
                       'Name of file with XYZ coordinates in mmCIF (deposition) format' );

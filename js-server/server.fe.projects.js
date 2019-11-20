@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    24.04.19   <--  Date of Last Modification.
+ *    10.10.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -51,53 +51,53 @@ var replayDir          = 'replay';
 
 // ===========================================================================
 
-function getUserProjectsDirPath ( login )  {
+function getUserProjectsDirPath ( loginData )  {
 // path to directory containing all project directories of user with
-// given login name
-  return path.join ( conf.getFEConfig().projectsPath['fs0'].path,
-                     login + userProjectsExt );
+// given login data
+  return path.join ( conf.getFEConfig().getVolumeDir(loginData),
+                     loginData.login + userProjectsExt );
 }
 
-function getUserProjectListPath ( login )  {
+function getUserProjectListPath ( loginData )  {
 // path to JSON file containing list of all projects (with project
 // descriptions, represented as class ProjectList) of user with
-// given login name
-  return path.join ( conf.getFEConfig().projectsPath['fs0'].path,
-                     login + userProjectsExt,projectListFName );
+// given login data
+  return path.join ( conf.getFEConfig().getVolumeDir(loginData),
+                     loginData.login + userProjectsExt,projectListFName );
 }
 
-function getUserKnowledgePath ( login )  {
+function getUserKnowledgePath ( loginData )  {
 // path to JSON file containing knowledge data of user with
-// given login name
-  return path.join ( conf.getFEConfig().projectsPath['fs0'].path,
-                     login + userProjectsExt,userKnowledgeFName );
+// given login data
+  return path.join ( conf.getFEConfig().getVolumeDir(loginData),
+                     loginData.login + userProjectsExt,userKnowledgeFName );
 }
 
-function getProjectDirPath ( login,projectName )  {
+function getProjectDirPath ( loginData,projectName )  {
 // path to directory containing project 'projectName' of user with
-// given login name
+// given login data
   var n = projectName.lastIndexOf(':'+replayDir);
   if (n>0)
-    return path.join ( conf.getFEConfig().projectsPath['fs0'].path,
-                       login + userProjectsExt,
+    return path.join ( conf.getFEConfig().getVolumeDir(loginData),
+                       loginData.login + userProjectsExt,
                        projectName.slice(0,n) + projectExt,
                        replayDir );
   else
-    return path.join ( conf.getFEConfig().projectsPath['fs0'].path,
-                       login + userProjectsExt,
+    return path.join ( conf.getFEConfig().getVolumeDir(loginData),
+                       loginData.login + userProjectsExt,
                        projectName + projectExt );
 }
 
-function getProjectDataPath ( login,projectName )  {
+function getProjectDataPath ( loginData,projectName )  {
 // path to JSON file containing metadata (see class ProjectData) of
 // project 'projectName' of user with given login name
-  return path.join ( getProjectDirPath(login,projectName),projectDataFName );
+  return path.join ( getProjectDirPath(loginData,projectName),projectDataFName );
 }
 
-function getJobDirPath ( login,projectName,jobId )  {
+function getJobDirPath ( loginData,projectName,jobId )  {
 // path to directory containing job identified by 'jobId' in project
-// 'projectName' of user with given login name
-  return path.join ( getProjectDirPath(login,projectName),jobDirPrefix+jobId );
+// 'projectName' of user with given login data
+  return path.join ( getProjectDirPath(loginData,projectName),jobDirPrefix+jobId );
 }
 
 function getSiblingJobDirPath ( jobDir,jobId )  {
@@ -106,17 +106,17 @@ function getSiblingJobDirPath ( jobDir,jobId )  {
   return path.join ( jobDir,'..',jobDirPrefix + jobId );
 }
 
-function getJobReportDirPath ( login,projectName,jobId )  {
+function getJobReportDirPath ( loginData,projectName,jobId )  {
 // path to directory containing report for job identified by 'jobId' in project
-// 'projectName' of user with given login name
-  return path.join ( getProjectDirPath(login,projectName),jobDirPrefix+jobId,
+// 'projectName' of user with given login data
+  return path.join ( getProjectDirPath(loginData,projectName),jobDirPrefix+jobId,
                                        task_t.jobReportDirName );
 }
 
-function getJobInputDirPath ( login,projectName,jobId )  {
+function getJobInputDirPath ( loginData,projectName,jobId )  {
 // path to directory used to keep data for sending job, identified by 'jobId'
-// in project 'projectName' of user with given login name, to NC
-  return path.join ( getProjectDirPath(login,projectName),jobDirPrefix+jobId,
+// in project 'projectName' of user with given login data, to NC
+  return path.join ( getProjectDirPath(loginData,projectName),jobDirPrefix+jobId,
                                        task_t.jobInputDirName );
 }
 
@@ -131,10 +131,10 @@ function getInputFilePath ( jobDir,fileName )  {
   return path.join ( jobDir,task_t.jobInputDirName,fileName );
 }
 
-function getJobOutputDirPath ( login,projectName,jobId )  {
+function getJobOutputDirPath ( loginData,projectName,jobId )  {
 // path to directory used to keep data generated by job identified by 'jobId'
-// in project 'projectName' of user with given login name
-  return path.join ( getProjectDirPath(login,projectName),jobDirPrefix+jobId,
+// in project 'projectName' of user with given login data
+  return path.join ( getProjectDirPath(loginData,projectName),jobDirPrefix+jobId,
                                        task_t.jobOutputDirName );
 }
 
@@ -149,32 +149,33 @@ function getOutputFilePath ( jobDir,fileName )  {
   return path.join ( jobDir,task_t.jobOutputDirName,fileName );
 }
 
-function getJobDataPath ( login,projectName,jobId )  {
+function getJobDataPath ( loginData,projectName,jobId )  {
 // path to JSON file containing metadata (see task classes in 'js-common.tasks')
 // of job identified by 'jobId' in project 'projectName' of user with given
-// login name
-  return path.join ( getProjectDirPath(login,projectName),jobDirPrefix+jobId,
+// login data
+  return path.join ( getProjectDirPath(loginData,projectName),jobDirPrefix+jobId,
                                        task_t.jobDataFName );
 }
 
 
 // ===========================================================================
 
-function makeNewUserProjectsDir ( login )  {
+function makeNewUserProjectsDir ( loginData )  {
 var response = null;  // must become a cmd.Response object to return
 
-  log.standard ( 1,'make new user projects directory, login ' + login );
+  log.standard ( 1,'make new user projects directory, login ' + loginData.login );
 
   // Get users' projects directory name
-  var userProjectsDirPath = getUserProjectsDirPath ( login );
+  var userProjectsDirPath = getUserProjectsDirPath ( loginData );
 
   if (utils.fileExists(userProjectsDirPath))  {
     // just a message, do not change anything in the existing projects directory
-    log.error ( 2,'repeat attempt to create user projects directory, login ' + login );
+    log.error ( 2,'repeat attempt to create user projects directory, login ' +
+                  loginData.login );
     response = new cmd.Response ( cmd.fe_retcode.ok,
                                 '[00012] User projects directory exists','' );
   } else if (utils.mkDir(userProjectsDirPath)) {
-    if (utils.writeObject(getUserProjectListPath(login),new pd.ProjectList())) {
+    if (utils.writeObject(getUserProjectListPath(loginData),new pd.ProjectList())) {
       response = new cmd.Response ( cmd.fe_retcode.ok,'','' );
     } else  {
       response = new cmd.Response ( cmd.fe_retcode.writeError,
@@ -197,13 +198,13 @@ var response = null;  // must become a cmd.Response object to return
 
 // ===========================================================================
 
-function getProjectList ( login )  {
+function getProjectList ( loginData )  {
 var response = null;  // must become a cmd.Response object to return
 
-  log.detailed ( 3,'get project list, login ' + login );
+  log.detailed ( 3,'get project list, login ' + loginData.login );
 
   // Get users' projects list file name
-  var userProjectsListPath = getUserProjectListPath ( login );
+  var userProjectsListPath = getUserProjectListPath ( loginData );
 
   if (utils.fileExists(userProjectsListPath))  {
     var pList = utils.readObject ( userProjectsListPath );
@@ -225,14 +226,14 @@ var response = null;  // must become a cmd.Response object to return
 
 // ===========================================================================
 
-function getUserKnowledgeData ( login )  {
+function getUserKnowledgeData ( loginData )  {
 var response  = null;  // must become a cmd.Response object to return
 var knowledge = {};
 
-  log.detailed ( 4,'get knowledge data, login ' + login );
+  log.detailed ( 4,'get knowledge data, login ' + loginData.login );
 
   // Get users' projects list file name
-  var userKnowledgePath = getUserKnowledgePath ( login );
+  var userKnowledgePath = getUserKnowledgePath ( loginData );
 
   if (utils.fileExists(userKnowledgePath))
     knowledge = utils.readObject ( userKnowledgePath );
@@ -246,43 +247,35 @@ var knowledge = {};
 
 // ===========================================================================
 
-function makeNewProject ( login,projectDesc )  {
+function makeNewProject ( loginData,projectDesc )  {
 var response = null;  // must become a cmd.Response object to return
 
 //  console.log ( JSON.stringify(projectDesc) );
 
-  log.standard ( 5,'make new project ' + projectDesc.name + ', login ' + login );
+  log.standard ( 5,'make new project ' + projectDesc.name +
+                   ', login ' + loginData.login );
 
   // Get users' projects directory name
-  var projectDirPath = getProjectDirPath ( login,projectDesc.name );
+  var projectDirPath = getProjectDirPath ( loginData,projectDesc.name );
 
   if (utils.fileExists(projectDirPath))  {
     // just issue a message, do not change anything in the existing
     // projects directory
 
     log.error ( 6,'repeat attempt to create project directory ' + projectDesc.name +
-                  ', login ' + login );
+                  ', login ' + loginData.login );
     response = new cmd.Response ( cmd.fe_retcode.ok,'Project directory exists','' );
 
   } else if (utils.mkDir(projectDirPath)) {
 
     var projectData  = new pd.ProjectData();
     projectData.desc = projectDesc;
-    /*
-    if (utils.writeObject(getProjectDataPath(login,projectDesc.name),
-                                             projectData)) {
-      response = new cmd.Response ( cmd.fe_retcode.ok,'','' );
-    } else  {
-      response = new cmd.Response ( cmd.fe_retcode.writeError,
-                                '[00017] Project data cannot be written.','' );
-    }
-    */
-    if (utils.writeObject(getProjectDataPath(login,projectDesc.name),
+    if (utils.writeObject(getProjectDataPath(loginData,projectDesc.name),
                                              projectData)) {
       if (utils.mkDir(path.join(projectDirPath,replayDir))) {
         var pname = projectData.desc.name;
         projectData.desc.name = projectData.desc.name + ':' + replayDir;
-        if (utils.writeObject(getProjectDataPath(login,projectDesc.name),
+        if (utils.writeObject(getProjectDataPath(loginData,projectDesc.name),
                                                  projectData)) {
           response = new cmd.Response ( cmd.fe_retcode.ok,'','' );
         }
@@ -312,17 +305,17 @@ var response = null;  // must become a cmd.Response object to return
 
 // ===========================================================================
 
-function deleteProject ( login,projectName )  {
+function deleteProject ( loginData,projectName )  {
 var response = null;  // must become a cmd.Response object to return
 
-  log.standard ( 7,'delete project ' + projectName + ', login ' + login );
+  log.standard ( 7,'delete project ' + projectName + ', login ' + loginData.login );
 
   // Get users' projects directory name
-  var projectDirPath = getProjectDirPath ( login,projectName );
+  var projectDirPath = getProjectDirPath ( loginData,projectName );
 
   utils.removePath ( projectDirPath );
 
-  ration.maskProject ( login,projectName );
+  ration.maskProject ( loginData,projectName );
 
   var erc = '';
   if (utils.fileExists(projectDirPath))
@@ -339,13 +332,13 @@ var response = null;  // must become a cmd.Response object to return
 
 // ===========================================================================
 
-function saveProjectList ( login,newProjectList )  {
+function saveProjectList ( loginData,newProjectList )  {
 var response = null;  // must become a cmd.Response object to return
 
-  log.detailed ( 8,'save project list, login ' + login );
+  log.detailed ( 8,'save project list, login ' + loginData.login );
 
   // Get users' projects list file name
-  var userProjectsListPath = getUserProjectListPath ( login );
+  var userProjectsListPath = getUserProjectListPath ( loginData );
 
   if (utils.fileExists(userProjectsListPath))  {
     var pList = utils.readObject ( userProjectsListPath );
@@ -359,7 +352,7 @@ var response = null;  // must become a cmd.Response object to return
         for (var j=0;(j<newProjectList.projects.length) && (!found);j++)
           found = (pName==newProjectList.projects[j].name);
         if (!found)  {
-          var rsp = deleteProject ( login,pName );
+          var rsp = deleteProject ( loginData,pName );
           if (rsp.status!=cmd.fe_retcode.ok)
             response = rsp;
           else  {
@@ -370,7 +363,7 @@ var response = null;  // must become a cmd.Response object to return
       }
 
       if (disk_space_change!=0.0)
-        ration.changeProjectDiskSpace ( login,null,disk_space_change,false );
+        ration.changeProjectDiskSpace ( loginData,null,disk_space_change,false );
 
       // create new projects
       for (var i=0;i<newProjectList.projects.length;i++)  {
@@ -379,7 +372,7 @@ var response = null;  // must become a cmd.Response object to return
         for (var j=0;(j<pList.projects.length) && (!found);j++)
           found = (pName==pList.projects[j].name);
         if (!found)  {
-          var rsp = makeNewProject ( login,newProjectList.projects[i] );
+          var rsp = makeNewProject ( loginData,newProjectList.projects[i] );
           if (rsp.status!=cmd.fe_retcode.ok)
             response = rsp;
         }
@@ -389,7 +382,7 @@ var response = null;  // must become a cmd.Response object to return
         if (utils.writeObject ( userProjectsListPath,newProjectList ))  {
           var rdata = {};
           if (disk_space_change!=0.0)  {  // save on reading files ration does not change
-            rdata.ration = ration.getUserRation(login).clearJobs();
+            rdata.ration = ration.getUserRation(loginData).clearJobs();
           }
           response = new cmd.Response ( cmd.fe_retcode.ok,'',rdata );
         } else
@@ -414,11 +407,12 @@ var response = null;  // must become a cmd.Response object to return
 
 // ===========================================================================
 
-function prepareProjectExport ( login,projectList )  {
+function prepareProjectExport ( loginData,projectList )  {
 
-  log.standard ( 9,'export project "'+projectList.current+'", login '+login );
+  log.standard ( 9,'export project "' + projectList.current +
+                   '", login ' + loginData.login );
 
-  var projectDirPath = getProjectDirPath ( login,projectList.current );
+  var projectDirPath = getProjectDirPath ( loginData,projectList.current );
   var archivePath    = path.join ( projectDirPath,projectList.current+'.zip' );
   utils.removeFile ( archivePath );  // just in case
 
@@ -437,8 +431,8 @@ function prepareProjectExport ( login,projectList )  {
 
 }
 
-function checkProjectExport ( login,projectList )  {
-  var projectDirPath = getProjectDirPath ( login,projectList.current );
+function checkProjectExport ( loginData,projectList )  {
+  var projectDirPath = getProjectDirPath ( loginData,projectList.current );
   var archivePath    = path.join ( projectDirPath,projectList.current+'.zip' );
   rdata = {};
   if (utils.fileExists(archivePath))
@@ -447,8 +441,8 @@ function checkProjectExport ( login,projectList )  {
   return new cmd.Response ( cmd.fe_retcode.ok,'',rdata );
 }
 
-function finishProjectExport ( login,projectList )  {
-  var projectDirPath = getProjectDirPath ( login,projectList.current );
+function finishProjectExport ( loginData,projectList )  {
+  var projectDirPath = getProjectDirPath ( loginData,projectList.current );
   var archivePath    = path.join ( projectDirPath,projectList.current+'.zip' );
   //var tarballPath2   = path.join ( projectDirPath,'__' + projectList.current+'.tar.gz' );
   utils.removeFile ( archivePath );
@@ -460,18 +454,19 @@ function finishProjectExport ( login,projectList )  {
 
 // ===========================================================================
 
-function getJobExportNames ( login,task )  {
+function getJobExportNames ( loginData,task )  {
   var exportName  = task.project + '-job_' + task.id + '.zip';
-  var jobDirPath  = getJobDirPath ( login,task.project,task.id );
+  var jobDirPath  = getJobDirPath ( loginData,task.project,task.id );
   var archivePath = path.join     ( jobDirPath,exportName );
   return [ exportName,jobDirPath,archivePath ];
 }
 
-function prepareJobExport ( login,task )  {
+function prepareJobExport ( loginData,task )  {
 
-  log.standard ( 19,'export job "' + task.project + '-job_' + task.id + '", login '+login );
+  log.standard ( 19,'export job "' + task.project + '-job_' + task.id +
+                    '", login ' + loginData.login );
 
-  var exp_names   = getJobExportNames ( login,task );
+  var exp_names   = getJobExportNames ( loginData,task );
   var exportName  = exp_names[0];
   var jobDirPath  = exp_names[1];
   var archivePath = exp_names[2];
@@ -492,8 +487,8 @@ function prepareJobExport ( login,task )  {
 
 }
 
-function checkJobExport ( login,task )  {
-  var archivePath = getJobExportNames(login,task)[2];
+function checkJobExport ( loginData,task )  {
+  var archivePath = getJobExportNames(loginData,task)[2];
   rdata = {};
   if (utils.fileExists(archivePath))
         rdata.size = utils.fileSize(archivePath);
@@ -501,8 +496,8 @@ function checkJobExport ( login,task )  {
   return new cmd.Response ( cmd.fe_retcode.ok,'',rdata );
 }
 
-function finishJobExport ( login,task )  {
-  var archivePath = getJobExportNames(login,task)[2];
+function finishJobExport ( loginData,task )  {
+  var archivePath = getJobExportNames(loginData,task)[2];
   utils.removeFile ( archivePath );
   return new cmd.Response ( cmd.fe_retcode.ok,'','' );
 }
@@ -510,20 +505,20 @@ function finishJobExport ( login,task )  {
 
 // ===========================================================================
 
-function getProjectData ( login,data )  {
+function getProjectData ( loginData,data )  {
 
-  var response = getProjectList ( login );
+  var response = getProjectList ( loginData );
   if (response.status!=cmd.fe_retcode.ok)
     return response;
 
   log.detailed ( 11,'get current project data (' + response.data.current +
-                         '), login ' + login );
+                         '), login ' + loginData.login );
 
   // Get users' projects list file name
   var projectName = response.data.current;
   if (data.mode=='replay')
     projectName += ':' + replayDir;
-  var projectDataPath = getProjectDataPath ( login,projectName );
+  var projectDataPath = getProjectDataPath ( loginData,projectName );
 
   if (utils.fileExists(projectDataPath))  {
     var pData = utils.readObject ( projectDataPath );
@@ -532,7 +527,7 @@ function getProjectData ( login,data )  {
       d.meta      = pData;
       d.tasks_add = [];
       d.tasks_del = [];
-      var projectDirPath = getProjectDirPath ( login,projectName );
+      var projectDirPath = getProjectDirPath ( loginData,projectName );
       response = new cmd.Response ( cmd.fe_retcode.ok,'',d );
       fs.readdirSync(projectDirPath).forEach(function(file,index){
         if (file.startsWith(jobDirPrefix)) {
@@ -562,7 +557,7 @@ function getProjectData ( login,data )  {
 
 // ===========================================================================
 
-function saveProjectData ( login,data )  {
+function saveProjectData ( loginData,data )  {
   var response = null;
 
   var projectName = data.meta.desc.name;
@@ -570,7 +565,7 @@ function saveProjectData ( login,data )  {
 //                '), login ' + login );
 
   // Get users' projects list file name
-  var projectDataPath = getProjectDataPath ( login,projectName );
+  var projectDataPath = getProjectDataPath ( loginData,projectName );
 
   if (utils.fileExists(projectDataPath))  {
 
@@ -585,13 +580,13 @@ function saveProjectData ( login,data )  {
       data.meta.desc.cpu_time    = 0.0;   // should be eventually removed
     }
 
-    ration.changeProjectDiskSpace ( login,projectName,disk_space_change,false );
+    ration.changeProjectDiskSpace ( loginData,projectName,disk_space_change,false );
 
     if (utils.writeObject(projectDataPath,data.meta))  {
 
       var rdata = {};
       if (data.tasks_del.length>0)  {  // save on reading files ration does not change
-        rdata.ration = ration.getUserRation(login).clearJobs();
+        rdata.ration = ration.getUserRation(loginData).clearJobs();
         rdata.pdesc  = data.meta.desc;
       }
 
@@ -599,29 +594,29 @@ function saveProjectData ( login,data )  {
 
       // remove job directories from the 'delete' list
       for (var i=0;i<data.tasks_del.length;i++)
-        utils.removePath ( getJobDirPath(login,projectName,data.tasks_del[i][0]) );
+        utils.removePath ( getJobDirPath(loginData,projectName,data.tasks_del[i][0]) );
 
       // add job directories from the 'add' list
       for (var i=0;i<data.tasks_add.length;i++)  {
 
-        var jobDirPath = getJobDirPath ( login,projectName,data.tasks_add[i].id );
+        var jobDirPath = getJobDirPath ( loginData,projectName,data.tasks_add[i].id );
 
         if (utils.mkDir(jobDirPath)) {
 
-          var jobDataPath = getJobDataPath(login,projectName,data.tasks_add[i].id );
+          var jobDataPath = getJobDataPath(loginData,projectName,data.tasks_add[i].id );
           if (!utils.writeObject(jobDataPath,data.tasks_add[i])) {
             response = new cmd.Response ( cmd.fe_retcode.writeError,
                                 '[00024] Job metadata cannot be written.','' );
           }
 
           // create report directory
-          utils.mkDir_anchor ( getJobReportDirPath(login,projectName,data.tasks_add[i].id) );
+          utils.mkDir_anchor ( getJobReportDirPath(loginData,projectName,data.tasks_add[i].id) );
 
           // create input directory (used only for sending data to NC)
-          utils.mkDir_anchor ( getJobInputDirPath(login,projectName,data.tasks_add[i].id) );
+          utils.mkDir_anchor ( getJobInputDirPath(loginData,projectName,data.tasks_add[i].id) );
 
           // create output directory (used for hosting output data)
-          utils.mkDir_anchor ( getJobOutputDirPath(login,projectName,data.tasks_add[i].id) );
+          utils.mkDir_anchor ( getJobOutputDirPath(loginData,projectName,data.tasks_add[i].id) );
 
           // write out the self-updating html starting page, which will last
           // only until it gets replaced by real report's bootstrap
@@ -656,12 +651,10 @@ function saveProjectData ( login,data )  {
 
 // ===========================================================================
 
-function renameProject ( login,data )  {  // data must contain new title
-  console.log ( ' ****** data='+JSON.stringify(data) );
+function renameProject ( loginData,data )  {  // data must contain new title
   var response = null;
   var projectName = data.name;
-  var projectDataPath = getProjectDataPath ( login,projectName );
-  console.log ( ' **** projwctName=' + projectName );
+  var projectDataPath = getProjectDataPath ( loginData,projectName );
 
   if (utils.fileExists(projectDataPath))  {
     var pData = utils.readObject ( projectDataPath );
@@ -690,7 +683,7 @@ function renameProject ( login,data )  {  // data must contain new title
 
 // ===========================================================================
 
-function _import_project ( login,tempdir )  {
+function _import_project ( loginData,tempdir )  {
 
   // read project meta to make sure it was a project tarball
   var prj_meta = utils.readObject ( path.join(tempdir,projectDataFName) );
@@ -723,7 +716,7 @@ function _import_project ( login,tempdir )  {
 
   } else  {
 
-    var projectDir = getProjectDirPath ( login,projectDesc.name );
+    var projectDir = getProjectDirPath ( loginData,projectDesc.name );
     if (utils.fileExists(projectDir))  {
 
       utils.writeString ( signal_path,'Project "' + projectDesc.name +
@@ -740,7 +733,7 @@ function _import_project ( login,tempdir )  {
       // make the corresponding entry in project list
 
       // Get users' projects list file name
-      var userProjectsListPath = getUserProjectListPath ( login );
+      var userProjectsListPath = getUserProjectListPath ( loginData );
       var pList = null;
       if (utils.fileExists(userProjectsListPath))
             pList = utils.readObject ( userProjectsListPath );
@@ -753,7 +746,7 @@ function _import_project ( login,tempdir )  {
       else  utils.writeString ( signal_path,'Cannot write project list\n' +
                                             projectDesc.name );
 
-      ration.changeUserDiskSpace ( login,projectDesc.disk_space );
+      ration.changeUserDiskSpace ( loginData,projectDesc.disk_space );
 
     } else {
 
@@ -767,13 +760,13 @@ function _import_project ( login,tempdir )  {
 
 }
 
-function importProject ( login,upload_meta,tmpDir )  {
+function importProject ( loginData,upload_meta,tmpDir )  {
 
   // create temporary directory, where all project tarball will unpack;
   // directory name is derived from user login in order to check on
   // import outcome in subsequent 'checkPrjImport' requests
 
-  var tempdir = path.join ( tmpDir,login+'_project_import' );
+  var tempdir = path.join ( tmpDir,loginData.login+'_project_import' );
   utils.removePath ( tempdir );  // just in case
 
   if (utils.mkDir(tempdir))  {
@@ -791,7 +784,7 @@ function importProject ( login,upload_meta,tmpDir )  {
         // unpack project tarball
         send_dir.unpackDir ( tempdir,null,function(){
 
-          _import_project ( login,tempdir );
+          _import_project ( loginData,tempdir );
 
         });
 
@@ -819,7 +812,7 @@ function importProject ( login,upload_meta,tmpDir )  {
 }
 
 
-function startDemoImport ( login,meta )  {
+function startDemoImport ( loginData,meta )  {
 
   // store all uploads in the /uploads directory
   var tmpDir = conf.getFETmpDir();
@@ -835,12 +828,12 @@ function startDemoImport ( login,meta )  {
   var rc     = cmd.fe_retcode.ok;
   var rc_msg = 'success';
 
-  var tempdir = path.join ( tmpDir,login+'_project_import' );
+  var tempdir = path.join ( tmpDir,loginData.login+'_project_import' );
   utils.removePath ( tempdir );  // just in case
 
   if (utils.mkDir(tempdir))  {
 
-    var cloudMounts = fcl.getUserCloudMounts ( login );
+    var cloudMounts = fcl.getUserCloudMounts ( loginData );
     var demoProjectPath = null;
     var lst = meta.cloudpath.split('/');
 
@@ -852,7 +845,7 @@ function startDemoImport ( login,meta )  {
     if (demoProjectPath)  {
       if (utils.fileExists(demoProjectPath))  {
         send_dir.unpackDir1 ( tempdir,demoProjectPath,null,false,function(){
-          _import_project ( login,tempdir );
+          _import_project ( loginData,tempdir );
         });
       } else  {
         rc     = cmd.fe_retcode.fileNotFound;
@@ -873,8 +866,8 @@ function startDemoImport ( login,meta )  {
 }
 
 
-function checkProjectImport ( login,data )  {
-  var signal_path = path.join ( conf.getFETmpDir(),login+'_project_import','signal' );
+function checkProjectImport ( loginData,data )  {
+  var signal_path = path.join ( conf.getFETmpDir(),loginData.login+'_project_import','signal' );
   var rdata  = {};
   var signal = utils.readString ( signal_path );
   if (signal)  {
@@ -889,8 +882,8 @@ function checkProjectImport ( login,data )  {
 }
 
 
-function finishProjectImport ( login,data )  {
-  var tempdir = path.join ( conf.getFETmpDir(),login+'_project_import' );
+function finishProjectImport ( loginData,data )  {
+  var tempdir = path.join ( conf.getFETmpDir(),loginData.login+'_project_import' );
   utils.removePath ( tempdir );
   return new cmd.Response ( cmd.fe_retcode.ok,'success','' );
 }
@@ -898,13 +891,13 @@ function finishProjectImport ( login,data )  {
 
 // ===========================================================================
 
-function saveJobData ( login,data )  {
+function saveJobData ( loginData,data )  {
   var response = null;
 
   var projectName = data.meta.project;
   var jobId       = data.meta.id;
 
-  var jobDataPath = getJobDataPath ( login,projectName,jobId );
+  var jobDataPath = getJobDataPath ( loginData,projectName,jobId );
 
   if (utils.writeObject(jobDataPath,data.meta))  {
     response = new cmd.Response ( cmd.fe_retcode.ok,'','' );
@@ -920,16 +913,16 @@ function saveJobData ( login,data )  {
 
 // ===========================================================================
 
-function getJobFile ( login,data )  {
+function getJobFile ( loginData,data )  {
   var response = null;
 
   var projectName = data.meta.project;
   var jobId       = data.meta.id;
 
-  var jobDirPath  = getJobDirPath ( login,projectName,jobId );
+  var jobDirPath  = getJobDirPath ( loginData,projectName,jobId );
   var pfile       = data.meta.file.split('/');
 
-  var fpath = getJobDirPath ( login,projectName,jobId );
+  var fpath = getJobDirPath ( loginData,projectName,jobId );
   for (var i=0;i<pfile.length;i++)
     fpath = path.join ( fpath,pfile[i] );
 

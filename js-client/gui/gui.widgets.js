@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    28.06.19   <--  Date of Last Modification.
+ *    20.10.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -80,8 +80,8 @@ Widget.prototype.removeAttribute = function ( attr )  {
 
 Widget.prototype.setTooltip = function ( text )  {
   this.element.setAttribute ( 'title',text );
-  let delay    = 1500;
-  let duration = Math.sqrt(text.split(' ').length)*1500; // dynamic duration
+  var delay    = 1500;
+  var duration = Math.sqrt(text.split(' ').length)*1500; // dynamic duration
   if (duration>0)  {
     $(this.element).tooltip({
         show  : { effect : 'slideDown', delay: delay },
@@ -756,6 +756,12 @@ var cell = this.getCell ( row,col );
 Grid.prototype.setVerticalAlignment = function ( row,col,alignment )  {
 var cell = this.getCell ( row,col );
   $(cell).css ({"vertical-align":alignment});
+  return this;
+}
+
+Grid.prototype.setAlignment = function ( row,col,valign,halign )  {
+var cell = this.getCell ( row,col );
+  $(cell).css ({ "text-align":halign, "vertical-align":valign });
   return this;
 }
 

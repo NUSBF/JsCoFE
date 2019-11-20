@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    09.04.19   <--  Date of Last Modification.
+ *    19.10.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -136,6 +136,8 @@ if (!__template)  {
         displaySequence ( this.sequence.dname );
         customGrid.setLabel ( ' ',row,0,1,2 ).setHeight_px ( 8 );
       }
+    } else if (startsWith(dropdown.layCustom,'chain-sel'))  {
+      DataXYZ.prototype.layCustomDropdownInput.call ( this,dropdown );
 //    } else if (dropdown.layCustom.startsWith('phaser-mr'))  {
     } else if (startsWith(dropdown.layCustom,'phaser-mr'))  {
       if (this.sequence)
@@ -208,6 +210,8 @@ if (!__template)  {
               this.rmsd = parseFloat ( v );
         else  msg += '<b><i>RMS difference not given or poorly formatted</i></b>';
       }
+    } else if (startsWith(dropdown.layCustom,'chain-sel'))  {
+      msg = DataXYZ.prototype.collectCustomDropdownInput.call ( this,dropdown );
     }
 
     return msg;

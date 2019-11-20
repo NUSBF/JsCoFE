@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    09.04.19   <--  Date of Last Modification.
+ *    09.11.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -33,10 +33,14 @@ function Upload ( customData,upl_data,onSelect_func,onSelectPDB_func,onReady_fun
 // When given, parameters and values from customData are appended to FormData
 // sent off to server, before files to be uploaded. Put 'null' if no custom data
 // should be used.
-// 'upl_data' may be 'project' for upload of project tarballs, or 'project_data'
-// for uploading project data, or a LIST of 'files' objects from FileReader API.
+// 'upl_data' may be eithe a LIST of 'files' objects from FileReader API, or
+// an object with fields 'type' (=='project' for upload of project tarballs, or
+// 'project_data' for uploading project data) and 'accept' with accept string
+// for file select dialog.
 
-  var given_files = (!(typeof upl_data === 'string' || upl_data instanceof String));
+  //var given_files = (!(typeof upl_data === 'string' || upl_data instanceof String));
+
+  var given_files = (upl_data instanceof Array);
 
   Widget.call ( this,'div' );
 
@@ -73,7 +77,7 @@ function Upload ( customData,upl_data,onSelect_func,onSelectPDB_func,onReady_fun
   this.pdb_button   = null;
 
   if (!given_files)  {
-    if (upl_data=='project')  {
+    if (upl_data.type=='project')  {
       this.button = grid.setButton ( 'Select project archive(s)',
                                      image_path('open_file'),0,col++,1,1 )
                         .setNoWrap();
@@ -95,18 +99,19 @@ function Upload ( customData,upl_data,onSelect_func,onSelectPDB_func,onReady_fun
     this.fileListPanel = new Label ( '' );
     this.fileListPanel.element.setAttribute ( 'class','upload-filelist' );
     this.addWidget ( this.fileListPanel );
-    if (upl_data=='project')
+    if (upl_data.type=='project')
       this.fileListPanel.setHeight_px ( 40 );
     this.setScrollable ( 'hidden','hidden' );
 
-    if (upl_data=='project')  {
+    if (upl_data.type=='project')  {
       this.fileListTitle.hide();
       this.fileListPanel.hide();
     }
 
-    if (upl_data=='project')
-          this.selFile = new SelectFile ( false,'.zip' );
-    else  this.selFile = new SelectFile ( true,'' );
+    //if (upl_data.type=='project')
+    //      this.selFile = new SelectFile ( false,'.zip' );
+    //else  this.selFile = new SelectFile ( true,upl_data.accept );
+    this.selFile = new SelectFile ( (upl_data.type=='project_data'),upl_data.accept );
     this.selFile.hide();
     this.addWidget ( this.selFile );
 
@@ -173,7 +178,7 @@ function Upload ( customData,upl_data,onSelect_func,onSelectPDB_func,onReady_fun
           }
         }
 
-        if ((upl_data=='project') && (!targz))  {
+        if ((upl_data.type=='project') && (!targz))  {
 
           new MessageBox ( 'Not a project archive',
               'Selected file is not a project archive. Please<br>' +

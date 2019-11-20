@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.10.19   <--  Date of Last Modification.
+ *    12.11.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -39,12 +39,13 @@ function TaskCrank2()  {
   this.helpURL = './html/jscofe_task_crank2.html';
 
   this.input_dtypes = [{    // input data types
-      data_type   : {'DataRevision':['!protein','!asu','~substructure','!anomalous']}, // data type(s) and subtype(s)
+      data_type   : {'DataRevision':['!protein','!anomalous','!asu']},
+      //data_type   : {'DataRevision':['!protein','!asu','~substructure','!anomalous']}, // data type(s) and subtype(s)
       label       : 'Structure revision',     // label for input dialog
       inputId     : 'revision', // input Id for referencing input fields
       customInput : 'crank2',   // lay custom fields next to the selection
                                 // dropdown for 'native' dataset
-      version     : 5,          // minimum data version allowed
+      version     : 7,          // minimum data version allowed
       min         : 1,          // minimum acceptable number of data instances
       max         : 1           // maximum acceptable number of data instances
     },{
@@ -58,7 +59,8 @@ function TaskCrank2()  {
                     'datasets may coincide with the native dataset, if one is ' +
                     'specified above.',
       min         : 0,           // minimum acceptable number of data instances
-      max         : 3            // maximum acceptable number of data instances
+      max         : 3,           // maximum acceptable number of data instances
+      force       : 0            // SAD by default
     },{
       data_type   : {'DataHKL':[]},   // data type(s) and subtype(s)
       desc        : 'native dataset',
@@ -71,7 +73,28 @@ function TaskCrank2()  {
                     'datasets. Native dataset must not coincide with any of ' +
                     'the reflection datasets chosen above.',
       min         : 0,            // minimum acceptable number of data instances
-      max         : 1             // maximum acceptable number of data instances
+      max         : 1,            // maximum acceptable number of data instances
+      force       : 0             // native dataset off by default
+    /*
+    },{
+      data_type   : {'DataStructure':['!substructure']}, // data type(s) and subtype(s)
+      label       : 'Anomalous scatterers', // label for input dialog
+      inputId     : 'substructure',   // input Id for referencing input fields
+      force       : 1,           // will display [do not use] by default
+      min         : 0,           // minimum acceptable number of data instances
+      max         : 1            // maximum acceptable number of data instances
+    },{
+      data_type   : {'DataStructure':['!xyz']}, // data type(s) and subtype(s)
+      label       : 'Initial phases from', // label for input dialog
+      inputId     : 'pmodel',    // input Id for referencing input fields
+      //customInput : 'phaser-ep', // lay custom fields below the dropdown
+      version     : 0,           // minimum data version allowed
+      force       : 1,           // meaning choose, by default, 1 structure if
+                                 // available; otherwise, 0 (do not use) will
+                                 // be selected
+      min         : 0,           // minimum acceptable number of data instances
+      max         : 1            // maximum acceptable number of data instances
+    */
     }
   ];
 
@@ -907,12 +930,11 @@ TaskCrank2.prototype.constructor = TaskCrank2;
 
 
 // ===========================================================================
-// export such that it could be used in both node and a browser
 
 TaskCrank2.prototype.icon = function()  { return 'task_crank2'; }
 
 TaskCrank2.prototype.currentVersion = function()  {
-  var version = 0;
+  var version = 1;
   if (__template)
         return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
@@ -921,7 +943,7 @@ TaskCrank2.prototype.currentVersion = function()  {
 
 if (!__template)  {
 
-
+/*
   TaskCrank2.prototype.addCustomDataState = function ( inpDataRef,dataState ) {
 
     //var nHKL = dataState['hkl'];
@@ -938,6 +960,7 @@ if (!__template)  {
     return;
 
   }
+*/
 
 /*
   TaskCrank2.prototype.inputChanged = function ( inpParamRef,emitterId,emitterValue )  {
@@ -1029,13 +1052,15 @@ if (!__template)  {
   }
 */
 
+/*
   TaskCrank2.prototype.inputChanged = function ( inpParamRef,emitterId,emitterValue )  {
 
     function makeSuffix ( title,suffix )  {
       return title.split(' (')[0] + ' (' + suffix + ')';
     }
 
-    if ((emitterId=='hkl') || (emitterId=='native') || (emitterId=='pmodel')) {
+    //if ((emitterId=='hkl') || (emitterId=='native') || (emitterId=='pmodel')) {
+    if (['revision','hkl','native','substructure','pmodel'].indexOf(emitterId)>=0)  {
       var inpDataRef = inpParamRef.grid.inpDataRef;
       var dataState  = this.getDataState ( inpDataRef );
       var nHKL       = dataState['hkl'];
@@ -1116,6 +1141,120 @@ if (!__template)  {
     }
 
   }
+*/
+
+  TaskCrank2.prototype.inputChanged = function ( inpParamRef,emitterId,emitterValue )  {
+
+    function makeSuffix ( title,suffix )  {
+      return title.split(' (')[0] + ' (' + suffix + ')';
+    }
+
+//    if (['revision','hkl','native','substructure','pmodel'].indexOf(emitterId)>=0)  {
+    if (['revision','hkl','native'].indexOf(emitterId)>=0)  {
+      var inpDataRef = inpParamRef.grid.inpDataRef;
+      var revision   = this.getInputItem ( inpDataRef,'revision' ).dropdown[0];
+      var native     = this.getInputItem ( inpDataRef,'native' );
+      var hkl        = this.getInputItem ( inpDataRef,'hkl'    );
+      //var substr     = this.getInputItem ( inpDataRef,'substructure' );
+      //var pmodel     = this.getInputItem ( inpDataRef,'pmodel'       );
+
+      //console.log ( JSON.stringify(dt) );
+      //var dt         = revision.dt[revision.getValue()];
+      //var substr     = (dt.Options.phasing_sel!='model');
+      //var pmodel     = (dt.Options.phasing_sel!='substructure');
+      //var main_substructure = (dt.subtype.indexOf('substructure')>=0);
+      //var main_xyz          = (dt.subtype.indexOf('xyz')>=0);
+
+      var dataState  = this.getDataState ( inpDataRef );
+      var nHKL       = dataState['hkl'];
+      var nNative    = dataState['native'];
+      //var dt         = revision.dt[revision.getValue()];
+      var isPModel   = false;
+      if (revision.customGrid.phasing_sel)
+        isPModel = (revision.customGrid.phasing_sel.getValue()!='substructure');
+      //var isPModel   = (dt.Options.phasing_sel!='substructure');
+      //var isPModel   = main_xyz || (dataState['pmodel']>0);
+      var IR         = false;
+
+      if ((nNative>0) && native)  {
+        if (native.dropdown[0].hasOwnProperty('customGrid'))  {
+          var customGrid    = native.dropdown[0].customGrid;
+          var showUFP_cbx   = (nNative>0) && (nHKL<=0);
+          useForPhasing_cbx = customGrid.useForPhasing;
+          IR                = useForPhasing_cbx.getValue();
+          useForPhasing_cbx.setVisible ( showUFP_cbx );
+          customGrid       .setVisible ( showUFP_cbx );
+        }
+      }
+
+      if (this.state==job_code.new)  {
+
+        var name = this.name;
+
+        if (nHKL<=0)  {
+          if (nNative<=0)  {
+            if (isPModel)  {
+              this.title = makeSuffix ( this.title,'MR-SAD' );
+              this.name  = makeSuffix ( this.name ,'MR-SAD' );
+            } else  {
+              this.title = makeSuffix ( this.title,'SAD' );
+              this.name  = makeSuffix ( this.name ,'SAD' );
+            }
+          } else if (IR)  {
+            this.title = makeSuffix ( this.title,'SIRAS' );
+            this.name  = makeSuffix ( this.name ,'SIRAS' );
+          } else  {
+            if (isPModel)  {
+              this.title = makeSuffix ( this.title,'MR-SAD + Native' );
+              this.name  = makeSuffix ( this.name ,'MR-SAD + Native' );
+            } else  {
+              this.title = makeSuffix ( this.title,'SAD + Native' );
+              this.name  = makeSuffix ( this.name ,'SAD + Native' );
+            }
+          }
+        } else  {
+          if (nNative<=0)  {
+            this.title = makeSuffix ( this.title,'MAD' );
+            this.name  = makeSuffix ( this.name ,'MAD' );
+          } else  {
+            this.title = makeSuffix ( this.title,'MAD + Native' );
+            this.name  = makeSuffix ( this.name ,'MAD + Native' );
+          }
+        }
+
+        if (this.name!=name)  {
+          var inputPanel = inpParamRef.grid.parent.parent;
+          inputPanel.header.title.setText ( '<b>' + this.title + '</b>' );
+          var new_title = this.name.replace ( /<(?:.|\n)*?>/gm,'' );
+          inputPanel.header.uname_inp.setStyle ( 'text','',new_title );
+          inputPanel.job_dialog.changeTitle ( new_title );
+          //this.updateInputPanel ( inputPanel );
+          inputPanel.emitSignal ( cofe_signals.jobDlgSignal,
+                                  job_dialog_reason.rename_node );
+        }
+
+      }
+
+    }
+
+    TaskTemplate.prototype.inputChanged.call ( this,inpParamRef,emitterId,emitterValue );
+
+    /*
+    if (substr)
+      inpParamRef.grid.setRowVisible ( substr.dropdown[0].row,(nHKL<=0) && (!main_substructure) );
+    if (pmodel)
+      inpParamRef.grid.setRowVisible ( pmodel.dropdown[0].row,(nHKL<=0) && (!main_xyz) );
+    */
+
+    if (hkl && native && isPModel)  {
+      // make sure that HKL comboboxes are hidden for MR-SAD
+      var row_hkl    = hkl.dropdown[0].row;
+      var row_native = native.dropdown[0].row;
+      for (var r=row_hkl;r<row_native;r++)
+        inpParamRef.grid.setRowVisible ( r,false );
+    }
+
+  }
 
 
   TaskCrank2.prototype.updateInputPanel = function ( inputPanel )  {
@@ -1164,7 +1303,7 @@ if (!__template)  {
 
   var conf = require('../../js-server/server.configuration');
 
-  TaskCrank2.prototype.makeInputData = function ( login,jobDir )  {
+  TaskCrank2.prototype.makeInputData = function ( loginData,jobDir )  {
 
     // put hkl and structure data in input databox for copying their files in
     // job's 'input' directory
@@ -1172,14 +1311,27 @@ if (!__template)  {
     if ('revision' in this.input_data.data)  {
       var revision = this.input_data.data['revision'][0];
       this.input_data.data['hklrev'] = [revision.HKL];
-      //if (revision.HKL.nativeKey!='unused')
-      //  this.input_data.data['native'] = [revision.HKL];
-      if (revision.Structure)
-        this.input_data.data['pmodel'] = [revision.Structure];
+      //if (revision.Structure)  {
+      //  if (revision.Structure.isSubstructure())
+      //        this.input_data.data['substructure'] = [revision.Structure];
+      //  else  this.input_data.data['pmodel']       = [revision.Structure];
+      //}
+      switch (revision.Options.phasing_sel)  {
+        case 'substructure'     :
+                this.input_data.data['substructure'] = [revision.Substructure];
+                break;
+        case 'model'            :
+                this.input_data.data['pmodel']       = [revision.Structure];
+                break;
+        case 'model-and-substr' :
+                this.input_data.data['substructure'] = [revision.Substructure];
+                this.input_data.data['pmodel']       = [revision.Structure];
+        default : ;
+      }
       this.input_data.data['seq'] = revision.ASU.seq;
     }
 
-    __template.TaskTemplate.prototype.makeInputData.call ( this,login,jobDir );
+    __template.TaskTemplate.prototype.makeInputData.call ( this,loginData,jobDir );
 
   }
 
@@ -1188,6 +1340,7 @@ if (!__template)  {
   }
 
   // -------------------------------------------------------------------------
+  // export such that it could be used in both node and a browser
 
   module.exports.TaskCrank2 = TaskCrank2;
 

@@ -155,13 +155,13 @@ class CCP4Build(ccp4go_buccaneer.Buccaneer):
             fname = meta["outnames"][1]  # best edcc
             ccp4build_xyz  = os.path.join ( resultdir,fname + ".pdb" )
             ccp4build_mtz  = os.path.join ( resultdir,fname + ".mtz" )
-            ccp4build_map  = os.path.join ( resultdir,fname + ".map" )
-            ccp4build_dmap = os.path.join ( resultdir,fname + ".diff.map" )
+            ccp4build_map  = None #os.path.join ( resultdir,fname + ".map" )
+            ccp4build_dmap = None #os.path.join ( resultdir,fname + ".diff.map" )
 
             if os.path.isfile(ccp4build_xyz):
 
-                edmap.calcCCP4Maps ( ccp4build_mtz,os.path.join(resultdir,"refine"),
-                            "./",self.file_stdout,self.file_stderr,"refmac",None )
+                #edmap.calcCCP4Maps ( ccp4build_mtz,os.path.join(resultdir,"refine"),
+                #            "./",self.file_stdout,self.file_stderr,"refmac",None )
 
                 nResults = 1
                 rfree    = float(meta["refmac_edcc"]["R_free"])

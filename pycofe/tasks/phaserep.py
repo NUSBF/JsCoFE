@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    30.09.19   <--  Date of Last Modification.
+#    09.11.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2018
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2019
 #
 # ============================================================================
 #
@@ -112,19 +112,8 @@ class PhaserEP(basic.TaskDriver):
                     mtzfile = spg_change[0]
                     sol_hkl = spg_change[1]
 
-                fnames       = self.calcCCP4Maps ( mtzfile,namepattern,"phaser-ep" )
-                protein_map  = fnames[0]
-
-                """
-                sname = self.outputFName
-                if revisionNo==1:
-                    sname += "-original_hand"
-                else:
-                    sname += "-inverted_hand"
-                structure = self.registerStructure1 (
-                                None,pdbfile,mtzfile,protein_map,None,None,
-                                sname,leadKey=2,copy_files=True )
-                """
+                fnames      = self.calcCCP4Maps ( mtzfile,namepattern,"phaser-ep" )
+                protein_map = fnames[0]
 
                 ofname = self.outputFName
                 if revisionNo==1:
@@ -133,6 +122,7 @@ class PhaserEP(basic.TaskDriver):
                     self.outputFName += "-inverted_hand"
                 structure = self.registerStructure (
                                 None,pdbfile,mtzfile,protein_map,None,None,
+                                #None,pdbfile,mtzfile,None,None,None,
                                 leadKey=2,copy_files=True )
 
                 if structure:
@@ -153,9 +143,6 @@ class PhaserEP(basic.TaskDriver):
                         anom_struct = self.registerStructure (
                                 None,pdbfile,llgmapsfile,protein_map,fnames[0],None,
                                 leadKey=2,copy_files=True )
-                        #anom_struct = self.registerStructure1 (
-                        #        None,pdbfile,llgmapsfile,protein_map,fnames[0],None,
-                        #        sname,leadKey=2,copy_files=True )
                         if anom_struct:
                             self.putStructureWidget ( "structure_btn_"+stype,
                                                       "Substructure and electron density",
@@ -165,10 +152,11 @@ class PhaserEP(basic.TaskDriver):
                     self.outputDataBox = outputDataBox
 
                     self.putMessage ( "&nbsp;<br><hr><h3>Structure Revision</h3>" )
-                    revision = self.makeClass ( self.input_data.data.revision[0] )
-                    revision.setStructureData ( structure )
-                    revision.removeSubtype    ( dtype_template.subtypeXYZ() )
-                    self.registerRevision     ( revision,revisionNo,"" )
+                    revision = self.makeClass  ( self.input_data.data.revision[0] )
+                    revision.setReflectionData ( sol_hkl   )
+                    revision.setStructureData  ( structure )
+                    revision.removeSubtype     ( dtype_template.subtypeXYZ() )
+                    self.registerRevision      ( revision,revisionNo,"" )
                     #self.registerRevision     ( revision,revisionNo,"",
                     #                            revisionName=sname )
                     self.putMessage ( "&nbsp;" )

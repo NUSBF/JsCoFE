@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    17.01.19   <--  Date of Last Modification.
+ *    14.11.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -31,9 +31,9 @@ if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
 // for class reconstruction from json strings
 
 var structure_subtype = {
-  XYZ           : 'xyz',
-  SUBSTRUCTURUE : 'substructure',
-  PHASES        : 'phases'
+  XYZ          : 'xyz',
+  SUBSTRUCTURE : 'substructure',
+  PHASES       : 'phases'
 }
 
 function DataStructure()  {
@@ -103,6 +103,10 @@ DataStructure.prototype.currentVersion = function()  {
 }
 
 
+DataStructure.prototype.isSubstructure = function()  {
+  return (this.subtype.indexOf(structure_subtype.SUBSTRUCTURE)>=0);
+}
+
 // export such that it could be used in both node and a browser
 if (!__template)  {
   // for client side
@@ -119,8 +123,8 @@ if (!__template)  {
 
     var dsp = DataXYZ.prototype.makeDataSummaryPage.call ( this,task );
 
-    if (this.files.hasOwnProperty(file_key.sub))
-      dsp.makeRow ( 'HA-XYZ file',this.files[file_key.sub],'Heavy atom (substructure) file name' );
+    //if (this.files.hasOwnProperty(file_key.sub))
+    //  dsp.makeRow ( 'HA-XYZ file',this.files[file_key.sub],'Heavy atom (substructure) file name' );
     if (this.files.hasOwnProperty(file_key.sol))
       dsp.makeRow ( 'Phaser\'s SOL file',this.files[file_key.sol],'SOL file with phaser\' output metadata' );
     if (this.files.hasOwnProperty(file_key.mtz))
@@ -168,8 +172,9 @@ if (!__template)  {
 
     if (startsWith(dropdown.layCustom,'phaser-ep'))  {
 
-      if (this.subtype.indexOf('xyz')>=0)  {
+      if (this.subtype.indexOf(structure_subtype.XYZ)>=0)  {
 
+        /*
         if (dropdown.in_revision)  {
           customGrid.setLabel ( '<b>Current structure model will be used for the ' +
                                 'calculation of initial phases (MR-SAD)</b>',
@@ -178,6 +183,9 @@ if (!__template)  {
           setLabel ( 'Assumed r.m.s.d. from target:',row,0 );
         } else
           setLabel ( 'Calculate from coordinates; assumed r.m.s.d. from target',row,0 );
+        */
+
+        setLabel ( 'Assumed r.m.s.d. from target:',row,0 );
 
         customGrid.rmsd = customGrid.setInputText ( this.rmsd,row,1,1,1 )
             .setStyle     ( 'text','real','0.3','Estimated difference between ' +
@@ -185,8 +193,8 @@ if (!__template)  {
             .setWidth_px  ( 60 );
         customGrid.setVerticalAlignment ( row,1,'middle' );
 
-        if (!dropdown.in_revision)
-          customGrid.setLabel ( ' ',++row,0,1,2 ).setHeight_px ( 8 );
+        //if (!dropdown.in_revision)
+        //  customGrid.setLabel ( ' ',++row,0,1,2 ).setHeight_px ( 8 );
 
       }
 
@@ -220,28 +228,30 @@ if (!__template)  {
       }
 
     } else if (['acorn','arpwarp'].indexOf(dropdown.layCustom)>=0)  {
-      var ddn_list = [];
 
+      var ddn_list = [];
       if (this.subtype.indexOf(structure_subtype.XYZ)>=0)
-        ddn_list.push ( ['structure coordinates',structure_subtype.XYZ] );
-      if (this.subtype.indexOf(structure_subtype.SUBSTRUCTURE)>=0)
-        ddn_list.push ( ['heavy atom coordinates',structure_subtype.SUBSTRUCTURE] );
+        ddn_list.push ( ['model coordinates',structure_subtype.XYZ] );
       if (this.subtype.indexOf(structure_subtype.PHASES)>=0)
         ddn_list.push ( ['phases',structure_subtype.PHASES] );
+      if ((dropdown.layCustom=='acorn') &&
+          (this.subtype.indexOf(structure_subtype.SUBSTRUCTURE)>=0))
+        ddn_list.push ( ['substructure coordinates',structure_subtype.SUBSTRUCTURE] );
 
       if (ddn_list.length>1)  {
         setLabel ( 'Obtain density from',row,0 );
         customGrid.initPhaseSel = new Dropdown();
         //customGrid.initPhaseSel.setWidth ( '120%' );
+        customGrid.initPhaseSel.setWidth ( '240px' );
         for (var i=0;i<ddn_list.length;i++)
           customGrid.initPhaseSel.addItem ( ddn_list[i][0],'',ddn_list[i][1],
                                            this.initPhaseSel==ddn_list[i][1] );
-        customGrid.setWidget ( customGrid.initPhaseSel, row,1,1,2 );
+        customGrid.setWidget ( customGrid.initPhaseSel, row,1,1,4 );
         customGrid.initPhaseSel.make();
       } else
         customGrid.initPhaseSel = null;
 
-      if (dropdown.layCustom!='arpwarp')
+      if (dropdown.layCustom=='acorn')
         customGrid.setLabel ( ' ',++row,0,1,2 ).setHeight_px ( 8 );
 
     } else if (startsWith(dropdown.layCustom,'chain-sel'))  {
@@ -263,7 +273,7 @@ if (!__template)  {
     var customGrid = dropdown.customGrid;
 
     if (startsWith(dropdown.layCustom,'phaser-ep'))  {
-      if (this.subtype.indexOf('xyz')>=0)
+      if (this.subtype.indexOf(structure_subtype.XYZ)>=0)
         this.rmsd = customGrid.rmsd.getValue();
     } else if (dropdown.layCustom=='buccaneer-ws')  {
       if (this.subtype.indexOf(structure_subtype.XYZ)>=0)  {
@@ -279,6 +289,8 @@ if (!__template)  {
         this.initPhaseSel = customGrid.initPhaseSel.getValue();
       else if (this.subtype.indexOf(structure_subtype.XYZ)>=0)
         this.initPhaseSel = structure_subtype.XYZ;
+      else if (dropdown.layCustom=='arpwarp')
+        this.initPhaseSel = structure_subtype.PHASES;
       else if (this.subtype.indexOf(structure_subtype.SUBSTRUCTURE)>=0)
         this.initPhaseSel = structure_subtype.SUBSTRUCTURE;
       else if (this.subtype.indexOf(structure_subtype.PHASES)>=0)

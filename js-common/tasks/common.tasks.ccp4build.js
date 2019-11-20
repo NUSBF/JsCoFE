@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    02.10.19   <--  Date of Last Modification.
+ *    14.11.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -447,19 +447,21 @@ if (!__template)  {
 
   var conf = require('../../js-server/server.configuration');
 
-  TaskCCP4Build.prototype.makeInputData = function ( login,jobDir )  {
+  TaskCCP4Build.prototype.makeInputData = function ( loginData,jobDir )  {
 
     // put hkl and structure data in input databox for copying their files in
     // job's 'input' directory
 
     if ('revision' in this.input_data.data)  {
       var revision = this.input_data.data['revision'][0];
-      this.input_data.data['istruct'] = [revision.Structure];
-      this.input_data.data['hkl']     = [revision.HKL];
-      this.input_data.data['seq']     = revision.ASU.seq;
+      this.input_data.data['hkl'] = [revision.HKL];
+      this.input_data.data['seq'] = revision.ASU.seq;
+      if (revision.Options.leading_structure=='substructure')
+            this.input_data.data['istruct'] = [revision.Substructure];
+      else  this.input_data.data['istruct'] = [revision.Structure];
     }
 
-    __template.TaskTemplate.prototype.makeInputData.call ( this,login,jobDir );
+    __template.TaskTemplate.prototype.makeInputData.call ( this,loginData,jobDir );
 
   }
 

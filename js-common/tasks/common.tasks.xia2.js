@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.10.19   <--  Date of Last Modification.
+ *    10.10.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -711,7 +711,7 @@ if (!__template)  {
     return ncores_available;
   }
 
-  TaskXia2.prototype.makeInputData = function ( login,jobDir )  {
+  TaskXia2.prototype.makeInputData = function ( loginData,jobDir )  {
 
     var imageDirMeta = [];
     if (this.file_system=='local')  {
@@ -721,7 +721,7 @@ if (!__template)  {
 
     } else  {
 
-      var cloudMounts = fcl.getUserCloudMounts ( login );
+      var cloudMounts = fcl.getUserCloudMounts ( loginData );
       for (var i=0;i<this.imageDirMeta.length;i++)  {
         imageDirMeta.push ( this.imageDirMeta[i] );
         var lst = imageDirMeta[i].path.split('/');
@@ -740,12 +740,12 @@ if (!__template)  {
 
     }
 
-    utils.writeObject ( prj.getJobDataPath(login,this.project,this.id),this );
+    utils.writeObject ( prj.getJobDataPath(loginData,this.project,this.id),this );
 
     utils.writeObject ( path.join(prj.getInputDirPath(jobDir),'__imageDirMeta.json'),
                         {'imageDirMeta':imageDirMeta} );
 
-    __template.TaskTemplate.prototype.makeInputData.call ( this,login,jobDir );
+    __template.TaskTemplate.prototype.makeInputData.call ( this,loginData,jobDir );
 
   }
 

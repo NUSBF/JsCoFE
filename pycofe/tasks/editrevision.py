@@ -1,9 +1,11 @@
 ##!/usr/bin/python
 
+#  LEGACY CODE TO BE REMOVED.  20.11.19  v.1.4.003
+
 #
 # ============================================================================
 #
-#    12.08.19   <--  Date of Last Modification.
+#    18.11.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -73,15 +75,19 @@ class EditRevision(asudef.ASUDef):
             for s in self.input_data.data.seq0:
                 seq.append ( self.makeClass(s) )
 
-        xyz = struct0
+        xyz = struct0  # this is leading Structure/Substructure or None
         if hasattr(self.input_data.data,"xyz"):  # optional data parameter
             xyz = self.makeClass ( self.input_data.data.xyz[0] )
+            #  note this may be XYZ, Structure or Substructure
             associated_data_list.append ( xyz )
             change_list.append ( 'xyz' )
 
-        phases = struct0
+        phases = struct0  # ground default
+        if xyz._type==dtype_structure.dtype():
+            phases = xyz  # need to be in sync with xyz by default
         if hasattr(self.input_data.data,"phases"):  # optional data parameter
             phases = self.makeClass ( self.input_data.data.phases[0] )
+            #  note this may be either Structure or Substructure, but not XYZ
             associated_data_list.append ( phases )
             change_list.append ( 'phases' )
 
@@ -119,10 +125,13 @@ class EditRevision(asudef.ASUDef):
                 dmap_fpath = None
                 lib_fpath  = None
                 lig_codes  = None
-                if xyz and xyz._type==dtype_structure.dtype():
+                if xyz:
                     xyz_fpath = xyz.getXYZFilePath ( self.inputDir() )
-                    sub_fpath = xyz.getSubFilePath ( self.inputDir() )
-                    lib_fpath = xyz.getLibFilePath ( self.inputDir() )
+                    if xyz._type==dtype_structure.dtype():
+                        sub_fpath = xyz.getSubFilePath ( self.inputDir() )
+                        lib_fpath = xyz.getLibFilePath ( self.inputDir() )
+                    # Either xyz_path or sub_path get defined here, which will
+                    # replace Structure or Substructure, respectively
 
                 if phases:
                     mtz_fpath  = phases.getMTZFilePath ( self.inputDir() )
@@ -138,6 +147,7 @@ class EditRevision(asudef.ASUDef):
                             mtz_fpath,phases_labels,mtz_fname )
                         mtz_fpath = mtz_fname
                         struct_labels = meanF_labels + phases_labels
+                    # else phases are taken from leading Structure/Substructure
 
                 if len(ligands)>0:
                     if len(ligands)>1:

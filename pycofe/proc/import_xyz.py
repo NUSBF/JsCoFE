@@ -3,13 +3,13 @@
 #
 # ============================================================================
 #
-#    22.12.18   <--  Date of Last Modification.
+#    13.10.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  XYZ DATA IMPORT FUNCTION
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2018
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2019
 #
 # ============================================================================
 #
@@ -59,6 +59,10 @@ def run ( body ):  # body is reference to the main Import class
     if len(files_xyz) <= 0:
         return  xyz_imported
 
+    for f in files_xyz:
+        body.files_all.remove ( f )
+    files_xyz = body.despaceFileNames ( files_xyz,body.importDir() )
+
     body.file_stdout.write ( "\n" + "%"*80 + "\n"  )
     body.file_stdout.write ( "%%%%%  IMPORT OF XYZ COORDINATES\n" )
     body.file_stdout.write ( "%"*80 + "\n" )
@@ -71,8 +75,6 @@ def run ( body ):  # body is reference to the main Import class
                                 body.rvrow,0,1,1,False )
     k = 0
     for f in files_xyz:
-
-        body.files_all.remove ( f )
 
         fpath = os.path.join ( body.importDir(),f )
         #coor.stripLigWat ( fpath,fpath )  #  strip ligands and waters

@@ -424,10 +424,11 @@ class Base(object):
 
         if len(fpath_list)>1:
             pyrvapi.rvapi_append_to_data ( wId,fpath_list[1],"hkl:map" )
-        if len(fpath_list)>2:
-            pyrvapi.rvapi_append_to_data ( wId,fpath_list[2],"hkl:ccp4_map" )
-        if len(fpath_list)>3:
-            pyrvapi.rvapi_append_to_data ( wId,fpath_list[3],"hkl:ccp4_dmap" )
+
+        #if len(fpath_list)>2:
+        #    pyrvapi.rvapi_append_to_data ( wId,fpath_list[2],"hkl:ccp4_map" )
+        #if len(fpath_list)>3:
+        #    pyrvapi.rvapi_append_to_data ( wId,fpath_list[3],"hkl:ccp4_dmap" )
 
         self.addCitations ( ['uglymol','ccp4mg','viewhkl'] )
 

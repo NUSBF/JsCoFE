@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    30.06.19   <--  Date of Last Modification.
+ *    08.11.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -59,15 +59,12 @@ function rvapi_umviewer ( jobId,title,xyzFilePath,mapFilePath,dmapFilePath )  {
     var task = __current_page.getJobTree().getTask ( jobId );
     if (task)  {
       var xyz_uri = '';
-      if (xyzFilePath)
-        xyz_uri = task.getProjectURL ( jobId,xyzFilePath );
-      var map_uri = '';
-      if (mapFilePath)
-        map_uri = task.getProjectURL ( jobId,mapFilePath );
+      var map_uri  = '';
       var dmap_uri = '';
-      if (dmapFilePath)
-        dmap_uri = task.getProjectURL ( jobId,dmapFilePath );
-      startUglyMol ( title,xyz_uri,map_uri,dmap_uri );
+      if (xyzFilePath)  xyz_uri  = task.getProjectURL ( jobId,xyzFilePath );
+      if (mapFilePath)  map_uri  = task.getProjectURL ( jobId,mapFilePath );
+      if (dmapFilePath) dmap_uri = task.getProjectURL ( jobId,dmapFilePath );
+      startUglyMol ( title,xyz_uri,'',map_uri,dmap_uri );
     } else  {
       new MessageBox ( 'Task not found','Project Task not found. This is a bug, ' +
                        'please contact ' + appName() + ' developer.' );

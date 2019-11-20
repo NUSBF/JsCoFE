@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.10.19   <--  Date of Last Modification.
+ *    29.10.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -179,6 +179,12 @@ if (!dbx)  {
       this.oname = base_name;
   }
 
+  TaskTemplate.prototype.canClone = function ( node,jobTree )  {
+    if ((this.nc_type=='client') && (!__local_service))
+      return false;
+    return true;
+  }
+
   TaskTemplate.prototype.canMove = function ( node,jobTree )  {
   var parent_task = jobTree.getTaskByNodeId(node.parentId);
   var can_move    = false;
@@ -228,7 +234,6 @@ if (!dbx)  {
                   else  token = '404';
     var url = special_url_tag + '/' + token + '/' + this.project + '/' +
               jobId + '/' + filePath;
-    //return replaceAll ( url,'/','@' );
     return url;
   }
 
@@ -242,7 +247,6 @@ if (!dbx)  {
                   else  token = '404';
     var url = special_url_tag + '/' + token + '/' + this.project + '/' +
               this.id + '/' + filePath;
-    //return replaceAll ( url,'/','@' );
     return url;
   }
 
@@ -260,7 +264,6 @@ if (!dbx)  {
     // which sends cofe-specific jsrview bootrstrap html file back.
     var url = special_url_tag + '/' + token + '/' + this.project + '/' +
               this.id + '/' + this.getLocalReportPath();
-    //return replaceAll ( url,'/','@' );
     return url;
   }
 
@@ -453,21 +456,6 @@ if (!dbx)  {
   TaskTemplate.prototype.setInputDataFields = function ( grid,row,dataBox ) {
   // Sets dropdown controls for input data from 'dataBox' in grid 'grid'
   // starting from row 'row'
-
-    /*
-    function _fill_dropdowns ( dropdowns )  {
-      for (var n=0;n<dropdowns.length;n++)  {
-        var ddn = dropdowns[n];
-        for (var j=0;j<ddn.ddndata.length;j++)
-          if (ddn.ddndata[j][0])  {
-            ddn.addItem ( ddn.ddndata[j][0],'',ddn.ddndata[j][1],ddn.ddndata[j][2] );
-            if (ddn.ddndata[j][3])
-              ddn.disableItem ( k,true );
-          }
-      }
-      return;
-    }
-    */
 
     function _fill_dropdown ( ddn )  {
       var ddndata = ddn.ddndata;
@@ -697,46 +685,9 @@ if (!dbx)  {
               ddn.addItem ( '[do not use]','',-1,(n>=ndset) );
             sel = (n<inp_item.min);
           }
-          /*
-          if (n>=ndset)  {
-            ddn.addItem ( '[do not use]','',-1,sel );
-            sel = false;
-          }
-          */
 
           // fill up the combobox with data names from the box, using positive
           // itemIds and making selections as appropriate
-          /*
-          var ndisabled = 0;
-          for (var j=0;j<dn.length;j++)  {
-            var k = dn[j];
-            var data_title = dt[k].dname;
-            if ('cast' in inp_item)  {
-              var cast1  = '/' + inp_item.cast + '/';
-              var p = data_title.indexOf ( '/xyz/' );
-              if (p<0)  p = data_title.indexOf ( '/hkl/' );
-              if (p<0)  p = data_title.indexOf ( '/unmerged/'  );
-              if (p<0)  p = data_title.indexOf ( '/seqeunce/'  );
-              if (p<0)  p = data_title.indexOf ( '/ensemble/'  );
-              if (p<0)  p = data_title.indexOf ( '/structure/' );
-              if (p<0)  p = data_title.indexOf ( '/substructure/' );
-              if (p>0)  data_title = data_title.substr(0,p) + cast1;
-                  else  data_title += ' ' + cast1;
-
-              //data_title = data_title.replace ( '/xyz/'     ,cast1 );
-              //data_title = data_title.replace ( '/hkl/'     ,cast1 );
-              //data_title = data_title.replace ( '/unmerged/',cast1 );
-              //data_title = data_title.replace ( '/sequence/',cast1 );
-              //data_title = data_title.replace ( '/ensemble/',cast1 );
-
-            }
-            ddn.addItem ( data_title,'',k,sel && (j==n) );
-            if (dt[k].version<inp_item_version)  {
-              ddn.disableItem ( k,true );
-              ndisabled++;
-            }
-          }
-          */
 
           var ndisabled = 0;
           var ddndata   = [];
@@ -754,13 +705,6 @@ if (!dbx)  {
               if (p<0)  p = data_title.indexOf ( '/substructure/' );
               if (p>0)  data_title = data_title.substr(0,p) + cast1;
                   else  data_title += ' ' + cast1;
-
-              //data_title = data_title.replace ( '/xyz/'     ,cast1 );
-              //data_title = data_title.replace ( '/hkl/'     ,cast1 );
-              //data_title = data_title.replace ( '/unmerged/',cast1 );
-              //data_title = data_title.replace ( '/sequence/',cast1 );
-              //data_title = data_title.replace ( '/ensemble/',cast1 );
-
             }
             ddndata.push ( [data_title,k,(sel && (j==n)),(dt[k].version<inp_item_version)] )
             if (dt[k].version<inp_item_version)
@@ -768,32 +712,6 @@ if (!dbx)  {
           }
 
           ddn.ddndata = ddndata;
-
-          /*
-          console.log ( ' -------------------------------------------------------------------')
-          if (!this.input_data.isEmpty())
-            for (var j=0;j<ddndata.length-1;j++)
-              if (ddndata[j][0])  {
-                console.log ( '1  '+j+'  ' + ddndata[j] );
-                for (var k=j+1;k<ddndata.length;k++)
-                  if (ddndata[k][0] && (ddndata[k][0]==ddndata[j][0]))  {
-                    console.log ( '2  '+k+'  ' + ddndata[k] );
-                    if (ddndata[k][2])
-                      ddndata[j] = ddndata[k];
-                    ddndata[k] = [null];
-                  }
-              }
-
-          var ndisabled = 0;
-          for (var j=0;j<ddndata.length;j++)
-            if (ddndata[j][0])  {
-              ddn.addItem ( ddndata[j][0],'',ddndata[j][1],ddndata[j][2] );
-              if (ddndata[j][3])  {
-                ddn.disableItem ( k,true );
-                ndisabled++;
-              }
-            }
-          */
 
           if (ndisabled>0)  versionMatch = false;
           if ((n<inp_item.min) && (ndisabled==dn.length) && (ndisabled>0))
@@ -805,7 +723,6 @@ if (!dbx)  {
           grid.setCellSize ( '10%','',r,3 );
           grid.setLabel    ( ' ',r,4, 1,1 );
           grid.setCellSize ( '84%','',r,4 );
-//          ddn.setZIndex    ( 400-r );  // prevent widget overlap
           ddn.make();
 
           r++;
@@ -814,13 +731,9 @@ if (!dbx)  {
           if (layCustom)  {
             ddn.customGrid = grid.setGrid ( '-compact',r++,3,1,1 );
             dt[dn[n]].layCustomDropdownInput ( ddn );
-//            ddn.customGrid.setVisible ( (n<inp_item.min) );
             ddn.customGrid.setVisible ( (n<ndset) );
           }
           ddn.dt   = dt;
-          //ddn.dt = [];
-          //for (var j=0;j<dt.length;j++)
-          //  ddn.dt.push ( dt[j] );
           (function(dd,m){
             dd[m].addSignalHandler ( 'state_changed',function(data){
               dd[m].inspect_btn.setVisible ( data.item!=-1 );
@@ -1995,32 +1908,35 @@ if (!dbx)  {
       S = '';
       for (var key in this.scores)  {
         d = this.scores[key];
-        switch (key)  {
-          case 'aimless' : S += 'Compl='                 + d.Completeness + '%' +
-                                ' CC<sub>1/2</sub>='     + d.Half_set_CC  +
-                                ' R<sub>meas_all</sub>=' + d.R_meas_all   +
-                                ' R<sub>meas_ano</sub>=' + d.R_meas_ano   +
-                                ' SpG=' + d.Space_group  + ' ';
-                      break;
-          case 'phaser'   : S += 'N<sub>sol</sub>=' + d.count +
-                                 ' LLG=' + d.llg + ' TFZ=' + d.tfz + ' ';
-                      break;
-          case 'cbuccaneer' : S += 'Compl=' + d.percentage + '% ';
-                      break;
-          case 'refmac'   : S += 'R=' + d.R_factor + ' R<sub>free</sub>=' +
-                                        d.R_free   + ' ';
-                      break;
-          case 'z01'      : S += '<u>SpG=' + d.SpaceGroup  + '</u> ';
-                      break;
-          case 'z02'      : S += 'Solv=' + d.SolventPercent + '% ';
-                      break;
-          case 'shelxemr' : if ((d.bestCC==0.0) && (d.pseudoCC>0.0))
-                                  S += 'pseudo-CC=' + d.pseudoCC;
-                            else  S += 'CC=' + d.bestCC;
-                            S += '% FOM=' + d.meanFOM;
-                      break;
-          default : ;
-        }
+        if (d.hasOwnProperty('summary_line'))
+          S += d.summary_line + ' ';
+        else
+          switch (key)  {
+            case 'aimless' : S += 'Compl='                 + d.Completeness + '%' +
+                                  ' CC<sub>1/2</sub>='     + d.Half_set_CC  +
+                                  ' R<sub>meas_all</sub>=' + d.R_meas_all   +
+                                  ' R<sub>meas_ano</sub>=' + d.R_meas_ano   +
+                                  ' SpG=' + d.Space_group  + ' ';
+                        break;
+            case 'phaser'   : S += 'N<sub>sol</sub>=' + d.count +
+                                   ' LLG=' + d.llg + ' TFZ=' + d.tfz + ' ';
+                        break;
+            case 'cbuccaneer' : S += 'Compl=' + d.percentage + '% ';
+                        break;
+            case 'refmac'   : S += 'R=' + d.R_factor + ' R<sub>free</sub>=' +
+                                          d.R_free   + ' ';
+                        break;
+            case 'z01'      : S += '<u>SpG=' + d.SpaceGroup  + '</u> ';
+                        break;
+            case 'z02'      : S += 'Solv=' + d.SolventPercent + '% ';
+                        break;
+            case 'shelxemr' : if ((d.bestCC==0.0) && (d.pseudoCC>0.0))
+                                    S += 'pseudo-CC=' + d.pseudoCC;
+                              else  S += 'CC=' + d.bestCC;
+                              S += '% FOM=' + d.meanFOM;
+                        break;
+            default : ;
+          }
       }
       if (S!='')
         S = '-- <font style="font-size:80%">' + S + '</font>';
@@ -2073,7 +1989,7 @@ if (!dbx)  {
   }
 
 
-  TaskTemplate.prototype.makeInputData = function ( login,jobDir )  {
+  TaskTemplate.prototype.makeInputData = function ( loginData,jobDir )  {
   // Collects all input files, listed in this.input_data, from other job
   // directories and places them in jobDir/input. Simultaneously, creates
   // the correspondong dataBox structure with input metadata, and writes

@@ -72,15 +72,15 @@ class FitLigands(ccp4go_acedrg.AceDrg):
 
         xyzPath  = os.path.join ( resultdir,"fitligands.pdb" )
         mtzPath  = os.path.join ( resultdir,"fitligands.mtz" )
-        mapPath  = os.path.join ( resultdir,"fitligands.map" )
-        dmapPath = os.path.join ( resultdir,"fitligands.diff.map" )
+        mapPath  = None  #os.path.join ( resultdir,"fitligands.map" )
+        dmapPath = None  #os.path.join ( resultdir,"fitligands.diff.map" )
         libPath  = os.path.join ( resultdir,"fitligands.lib" )
         libIndex = []
 
         shutil.copy2 ( strmeta["pdb"] ,xyzPath  )
         shutil.copy2 ( strmeta["mtz"] ,mtzPath  )
-        shutil.copy2 ( strmeta["map"] ,mapPath  )
-        shutil.copy2 ( strmeta["dmap"],dmapPath )
+        #shutil.copy2 ( strmeta["map"] ,mapPath  )
+        #shutil.copy2 ( strmeta["dmap"],dmapPath )
         if "lib" in strmeta:
             shutil.copy2 ( strmeta["lib"],libPath )
             libIndex = strmeta["libindex"]
@@ -214,9 +214,9 @@ class FitLigands(ccp4go_acedrg.AceDrg):
             self.mk_std_streams ( resultdir,"a+" )  # reopen output streams
 
             # calculate final electron density maps
-            edmap.calcCCP4Maps ( mtzPath,
-                    os.path.join(resultdir,"fitligands"),
-                    "./",self.file_stdout,self.file_stderr,"refmac",None )
+            #edmap.calcCCP4Maps ( mtzPath,
+            #        os.path.join(resultdir,"fitligands"),
+            #        "./",self.file_stdout,self.file_stderr,"refmac",None )
 
             if nResults==1:
                 quit_message = "fitted ligand " + quit_message
