@@ -3,14 +3,14 @@
 #
 # ============================================================================
 #
-#    14.11.19   <--  Date of Last Modification.
+#    09.12.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  BUCCANEER EXECUTABLE MODULE
 #
 #  Command-line:
-#     ccp4-python buccaneer.py jobManager jobDir jobId
+#     ccp4-python nautilus.py jobManager jobDir jobId
 #
 #  where:
 #    jobManager  is either SHELL or SGE
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2019
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2019
 #
 # ============================================================================
 #
@@ -36,18 +36,18 @@ from   varut          import signal
 
 
 # ============================================================================
-# Make Buccaneer driver
+# Make Nautilus driver
 
-class Buccaneer(basic.TaskDriver):
+class Nautilus(basic.TaskDriver):
 
     # redefine name of input script file
-    def file_stdin_path (self):  return "buccaneer.script"
+    def file_stdin_path (self):  return "nautilus.script"
 
     # make task-specific definitions
-    def buccaneer_seq   (self):  return "buccaneer.seq"
-    def buccaneer_xyz   (self):  return "buccaneer.pdb"
-    def buccaneer_mtz   (self):  return "buccaneer.mtz"
-    def buccaneer_tmp   (self):  return "buccaneer_pipeline"
+    def nautilus_seq   (self):  return "nautilus.seq"
+    def nautilus_xyz   (self):  return "nautilus.pdb"
+    def nautilus_mtz   (self):  return "nautilus.mtz"
+    def nautilus_tmp   (self):  return "nautilus_pipeline"
 
     # ------------------------------------------------------------------------
 
@@ -59,21 +59,19 @@ class Buccaneer(basic.TaskDriver):
 
     def run(self):
 
-        # Just in case (of repeated run) remove the output xyz file. When buccaneer
+        # Just in case (of repeated run) remove the output xyz file. When nautilus
         # succeeds, this file is created.
-        if os.path.isfile(self.buccaneer_xyz()):
-            os.remove(self.buccaneer_xyz())
+        if os.path.isfile(self.nautilus_xyz()):
+            os.remove(self.nautilus_xyz())
 
-        if not os.path.exists(self.buccaneer_tmp()):
-            os.makedirs(self.buccaneer_tmp())
+        if not os.path.exists(self.nautilus_tmp()):
+            os.makedirs(self.nautilus_tmp())
 
-        # Prepare buccaneer input
+        # Prepare nautilus input
         # fetch input data
 
         idata   = self.input_data.data
         sec1    = self.task.parameters.sec1.contains
-        sec2    = self.task.parameters.sec2.contains
-        sec3    = self.task.parameters.sec3.contains
 
         hkl     = self.makeClass ( idata.hkl[0]     )
         istruct = self.makeClass ( idata.istruct[0] )
@@ -83,11 +81,10 @@ class Buccaneer(basic.TaskDriver):
         else:
             ixyz = istruct
 
-
         # prepare input MTZ file by putting original reflection data into
         # phases MTZ
 
-        labin_fo    = hkl.getMeanF()
+        labin_fo = hkl.getMeanF()
         if labin_fo[2]!="F":
             self.fail ( "<h3>No amplitude data.</h3>" +\
                     "This task requires F/sigF columns in reflection data, " +\
@@ -108,9 +105,7 @@ class Buccaneer(basic.TaskDriver):
                 istruct.getMTZFilePath(self.inputDir()),labin_ph,
                 input_mtz )
 
-        #self.makeFullASUSequenceFile ( seq,self.buccaneer_seq() )
-
-        with open(self.buccaneer_seq(),'wb') as newf:
+        with open(self.nautilus_seq(),'wb') as newf:
             if len(seq)>0:
                 for s in seq:
                     s1 = self.makeClass ( s )
@@ -120,40 +115,56 @@ class Buccaneer(basic.TaskDriver):
             else:
                 newf.write ( ">polyUNK\nU\n" );
 
-        refname = "reference-" + sec2.REFMDL_SEL.value
-        #isCoor  = istruct.hasXYZSubtype()
+        #refname = "reference-" + sec2.REFMDL_SEL.value
         isCoor  = ixyz.hasXYZSubtype();
 
         self.open_stdin()
-        reffile = os.path.join(os.environ["CCP4"],"lib","data","reference_structures",refname)
-        self.addCmdLine ( "title Job",self.job_id.zfill(4) )
-        self.addCmdLine ( "pdbin-ref",reffile + ".pdb" )
-        self.addCmdLine ( "mtzin-ref",reffile + ".mtz" )
-        self.addCmdLine ( "colin-ref-fo","[/*/*/FP.F_sigF.F,/*/*/FP.F_sigF.sigF]" )
-        self.addCmdLine ( "colin-ref-hl","[/*/*/FC.ABCD.A,/*/*/FC.ABCD.B,/*/*/FC.ABCD.C,/*/*/FC.ABCD.D]" )
-        self.addCmdLine ( "seqin"     ,self.buccaneer_seq() )
+        #reffile = os.path.join(os.environ["CCP4"],"lib","data","reference_structures",refname)
+        self.addCmdLine ( "title Job" ,self.job_id.zfill(4) )
+        self.addCmdLine ( "seqin"     ,self.nautilus_seq() )
         self.addCmdLine ( "mtzin"     ,input_mtz )
-        #self.addCmdLine ( "colin-fo"  ,"[/*/*/" + istruct.FP + ",/*/*/" + istruct.SigFP + "]" )
-        #self.addCmdLine ( "colin-free","[/*/*/" + istruct.FreeR_flag + "]" )
         self.addCmdLine ( "colin-fo"  ,"[/*/*/" + labin_fo[0] + ",/*/*/" + labin_fo[1] + "]" )
         self.addCmdLine ( "colin-free","[/*/*/" + labin_fo[2] + "]" )
-
         if istruct.HLA:
             self.addCmdLine ( "colin-hl","[/*/*/" + istruct.HLA + ",/*/*/" + istruct.HLB +\
                                          ",/*/*/" + istruct.HLC + ",/*/*/" + istruct.HLD + "]" )
         else:
             self.addCmdLine ( "colin-phifom","[/*/*/" + istruct.PHI + ",/*/*/" + istruct.FOM + "]" )
+        self.addCmdLine ( "pdbout",self.nautilus_xyz()  )
+
+        if isCoor and istruct.useModelSel!="N":
+            self.addCmdLine ( "pdbin",ixyz.getXYZFilePath(self.inputDir()) )
+
+        #self.addCmdLine ( "pdbin-ref",reffile + ".pdb" )
+        #self.addCmdLine ( "mtzin-ref",reffile + ".mtz" )
+        #self.addCmdLine ( "colin-ref-fo","[/*/*/FP.F_sigF.F,/*/*/FP.F_sigF.sigF]" )
+        #self.addCmdLine ( "colin-ref-hl","[/*/*/FC.ABCD.A,/*/*/FC.ABCD.B,/*/*/FC.ABCD.C,/*/*/FC.ABCD.D]" )
+        #self.addCmdLine ( "colin-fo"  ,"[/*/*/" + istruct.FP + ",/*/*/" + istruct.SigFP + "]" )
+        #self.addCmdLine ( "colin-free","[/*/*/" + istruct.FreeR_flag + "]" )
+
+        self.write_stdin (
+            self.putKWParameter ( sec1.NCYCLES       ) + \
+            self.putKWParameter ( sec1.ANISO_CBX     )
+        #    self.putKWParameter ( sec1.REFPHASES_CBX ) + \
+        #    self.putKWParameter ( sec1.REFTWIN_CBX   )
+        )
+
+        #self.addCmdLine ( "refmac-mlhl",self.getParameter(sec1.REFPHASES_CBX) )
+        #self.addCmdLine ( "refmac-twin",self.getParameter(sec1.REFTWIN_CBX)   )
+
+        self.writeKWParameter ( sec1.REFPHASES_CBX )
+        self.writeKWParameter ( sec1.REFTWIN_CBX   )
+
+        if self.getParameter(sec1.AUTOWEIGH_CBX)=="False":
+            self.addCmdLine ( "refmac-weight",self.getParameter(sec1.WEIGHTVAL) )
+
+        if hkl.res_high:
+            self.addCmdLine ( "nautilus-resolution",hkl.res_high )
+
+
+        # Fixed model to be preserved by Nautilus
 
         """
-        if isCoor:
-            self.addCmdLine ( "colin-phifom","[/*/*/" + istruct.PHI + ",/*/*/" + istruct.FOM + "]" )
-        else:
-            self.addCmdLine ( "colin-hl","[/*/*/" + istruct.HLA + ",/*/*/" + istruct.HLB +\
-                                         ",/*/*/" + istruct.HLC + ",/*/*/" + istruct.HLD + "]" )
-        """
-
-        # Fixed model to be preserved by Buccaneer
-
         xmodel = None
         smodel = None
         if hasattr(idata,"xmodel"):
@@ -164,8 +175,6 @@ class Buccaneer(basic.TaskDriver):
             smodel = self.makeClass(idata.smodel[0])
             self.addCmdLine ( "pdbin-sequence-prior",
                               smodel.getXYZFilePath(self.inputDir()) )
-
-        self.addCmdLine ( "pdbout",self.buccaneer_xyz()  )
 
         self.write_stdin (
             self.putKWParameter ( sec1.NCYCLES          ) + \
@@ -186,89 +195,80 @@ class Buccaneer(basic.TaskDriver):
         )
 
         if xmodel:
-            self.addCmdLine ( "buccaneer-keyword model-filter-sigma",str(xmodel.BFthresh) )
+            self.addCmdLine ( "nautilus-keyword model-filter-sigma",str(xmodel.BFthresh) )
 
         if isCoor:
-            self.addCmdLine ( "buccaneer-keyword mr-model-filter-sigma",str(ixyz.BFthresh) )
-
-        #if sec2.KEEPATMCID.visible:
-        #    self.write_stdin ( "buccaneer-keyword known-structure " + \
-        #                       sec2.KEEPATMCID.value + ":" + \
-        #                       str(sec2.KEEPATMRAD.value) + "\n" )
-
-        if hasattr(sec1,"NCPUS"):
-            self.write_stdin ( self.putKWParameter ( sec1.NCPUS ) )
-        else:
-            self.write_stdin ( "jobs 2\n" )
-
-        self.write_stdin ( self.putKWParameter ( sec3.USEPHI_CBX ) )
+            self.addCmdLine ( "nautilus-keyword mr-model-filter-sigma",str(ixyz.BFthresh) )
 
         if isCoor:
             self.addCmdLine ( "pdbin-mr",ixyz.getXYZFilePath(self.inputDir()) )
             if istruct.useModelSel!="N":
-                self.addCmdLine ( "buccaneer-keyword",ixyz.useModelSel )
-            #self.write_stdin ( self.putKWParameter ( sec1.USEMR_SEL ) )
+                self.addCmdLine ( "nautilus-keyword",ixyz.useModelSel )
 
         self.write_stdin ( self.putKWParameter ( sec3.REFTWIN_CBX ) )
 
-        if self.getParameter(sec3.AUTOWEIGH_CBX)=="False":
-            self.addCmdLine ( "refmac-weight",self.getParameter(sec3.WEIGHTVAL) )
+        """
 
-        self.addCmdLine ( "prefix","./" + self.buccaneer_tmp() + "/" )
+        self.addCmdLine ( "prefix","./" + self.nautilus_tmp() + "/" )
 
         self.close_stdin()
 
         # make command-line parameters
         cmd = [ "-u",
-                os.path.join(os.environ["CCP4"],"bin","buccaneer_pipeline"),
+                os.path.join(os.environ["CCP4"],"bin","nautilus_pipeline"),
                 "-stdin"
               ]
 
         # prepare report parser
-        self.setGenericLogParser ( "buccaneer_report",True )
+        self.setGenericLogParser ( "nautilus_report",True )
 
-        # start buccaneer
+        # start nautilus
         if sys.platform.startswith("win"):
             rc = self.runApp ( "ccp4-python.bat",cmd,logType="Main",quitOnError=False )
         else:
             rc = self.runApp ( "ccp4-python",cmd,logType="Main",quitOnError=False )
 
-        self.addCitations ( ['buccaneer','refmac5'] )
+        self.addCitations ( ['nautilus','refmac5'] )
 
         if rc.msg:
+            nobuild = False
             self.flush()
             self.file_stdout.close()
-            nobuild = False
+
+            #$TEXT:Result: $$ $$
+            #     25 sugar-phosphate residues built in   2 chains, the longest having   15 residues.
+            #     15 nucleic acids were sequenced.
+
             with (open(self.file_stdout_path(),'r')) as fstd:
                 for line in fstd:
-                    if "0 residues were built in   0 fragments, the longest having    0 residues." in line:
+                    if "0 sugar-phosphate residues built in   0 chains, the longest having    0 residues" in line:
                         nobuild = True
                         break
-            self.file_stdout  = open ( self.file_stdout_path(),'a' )
+            self.file_stdout = open ( self.file_stdout_path(),'a' )
             self.putTitle ( "Results" )
             if nobuild:
                 self.putMessage ( "<h3>Failed to build structure</h3>" )
             else:
-                self.putMessage ( "<h3>Buccaneer failure</h3>" )
+                self.putMessage ( "<h3>Nautilus failure</h3>" )
                 raise signal.JobFailure ( rc.msg )
 
         # check solution and register data
-        elif os.path.isfile(self.buccaneer_xyz()):
+        elif os.path.isfile(self.nautilus_xyz()):
 
-            shutil.copyfile ( os.path.join(self.buccaneer_tmp(),"refine.mtz"),
-                                           self.buccaneer_mtz() )
+            shutil.copyfile ( os.path.join(self.nautilus_tmp(),"refine.mtz"),
+                                           self.nautilus_mtz() )
 
-            self.putTitle ( "Buccaneer Output" )
+            self.putTitle ( "Nautilus Output" )
             self.unsetLogParser()
 
             # calculate maps for UglyMol using final mtz from temporary location
-            #fnames = self.calcCCP4Maps ( self.buccaneer_mtz(),self.outputFName )
+            #fnames = self.calcCCP4Maps ( self.nautilus_mtz(),self.outputFName )
 
             # register output data from temporary location (files will be moved
             # to output directory by the registration procedure)
 
             structure = self.registerStructure (
-                                    self.buccaneer_xyz(),None,self.buccaneer_mtz(),
+                                    self.nautilus_xyz(),None,self.nautilus_mtz(),
                                     None,None,None,
                                     #fnames[0],fnames[1],None,  -- not needed for new UglyMol
                                     leadKey=1 )
@@ -307,5 +307,5 @@ class Buccaneer(basic.TaskDriver):
 
 if __name__ == "__main__":
 
-    drv = Buccaneer ( "",os.path.basename(__file__) )
+    drv = Nautilus ( "",os.path.basename(__file__) )
     drv.start()

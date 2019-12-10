@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.11.19   <--  Date of Last Modification.
+ *    08.12.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -39,8 +39,8 @@ function TaskShelxEMR()  {
 
   this.input_dtypes = [{  // input data types
       //data_type   : {'DataRevision':['!protein','!asu',['xyz','substructure']]}, // data type(s) and subtype(s)
-      data_type   : {'DataRevision':['!protein','!asu','!phases']}, // data type(s) and subtype(s)
-      label       : 'Structure revision',        // label for input dialog
+      data_type   : {'DataRevision':['!phases']}, // data type(s) and subtype(s)
+      label       : 'Structure revision',         // label for input dialog
       inputId     : 'revision', // input Id for referencing input fields
       customInput : 'shelxe',   // lay custom fields below the dropdown
       version     : 7,          // minimum data version allowed
@@ -60,25 +60,51 @@ function TaskShelxEMR()  {
             open     : true,  // true for the section to be initially open
             position : [1,0,1,5],
             contains : {
-              /*
-              SOLVENT_CONTENT : {
-                    type     : 'real',    // '_' means blank value is allowed
-                    keyword  : '-s',      // parameter keyword
-                    label    : 'Solvent content (%)',
+              DM_CYCLES      : {
+                    type     : 'integer',  // '_' means blank value is allowed
+                    keyword  : '-m',       //  parameter keyword
+                    label    : 'Number of density modification cycles',
                     align    : 'left',
                     iwidth   : 50,
-                    default  : '50',      // to be displayed in grey
-                    tooltip  : 'Choose a value between 1 and 99 (run Cell ' +
-                               'Content Estimation task if unknown)',
-                    range    : [1,99],    // may be absent (no limits) or must
+                    default  : '20',      // to be displayed in grey
+                    tooltip  : 'The total number of global autotracing cycles',
+                    range    : [1,'*'],   // may be absent (no limits) or must
                                           // be one of the following:
                                           //   ['*',max]  : limited from top
                                           //   [min,'*']  : limited from bottom
                                           //   [min,max]  : limited from top and bottom
-                    value    : '50',      // value to be paired with the keyword
+                    value    : '20',      // value to be paired with the keyword
                     position : [0,0,1,1]  // [row,col,rowSpan,colSpan]
                   },
-              */
+              SOLVENT_CONTENT: {
+                    type     : 'real_', // blank value is allowed
+                    keyword  : '-s',    // the real keyword for job input stream
+                    label    : 'Efective solvent content',
+                    tooltip  : 'Solvent content to be used in calculations (must ' +
+                               'be between 0.01 and 0.99). If left blank, ' +
+                               'solvent fraction from asymmetric unit definition ' +
+                               'will be used.',
+                    iwidth   : 80,
+                    range    : [0.01,0.99], // may be absent (no limits) or must
+                                            // be one of the following:
+                                            //   ['*',max]  : limited from top
+                                            //   [min,'*']  : limited from bottom
+                                            //   [min,max]  : limited from top and bottom
+                    value    : '',          // value to be paired with the keyword
+                    default  : 'auto',
+                    position : [1,0,1,1],   // [row,col,rowSpan,colSpan]
+                    hideon   : {sec1:['shelx-substr']} // from this and input data section
+                  },
+              AUTOTRACE_CBX  : {
+                    type     : 'checkbox',
+                    keyword  : 'autotrace',       //  parameter keyword
+                    label    : 'Perform mainchain tracing',
+                    tooltip  : 'Check to perform the mainchain tracing.',
+                    //iwidth    : 150,
+                    value    : true,
+                    position : [2,0,1,3],
+                    emitting : true
+                  },
               TRACING_CYCLES : {
                     type     : 'integer',  // '_' means blank value is allowed
                     keyword  : '-a',       //  parameter keyword
@@ -93,23 +119,8 @@ function TaskShelxEMR()  {
                                           //   [min,'*']  : limited from bottom
                                           //   [min,max]  : limited from top and bottom
                     value    : '15',      // value to be paired with the keyword
-                    position : [0,0,1,1]  // [row,col,rowSpan,colSpan]
-                  },
-              DM_CYCLES : {
-                    type     : 'integer',  // '_' means blank value is allowed
-                    keyword  : '-m',       //  parameter keyword
-                    label    : 'Number of density modification cycles',
-                    align    : 'left',
-                    iwidth   : 50,
-                    default  : '20',      // to be displayed in grey
-                    tooltip  : 'The total number of global autotracing cycles',
-                    range    : [1,'*'],  // may be absent (no limits) or must
-                                          // be one of the following:
-                                          //   ['*',max]  : limited from top
-                                          //   [min,'*']  : limited from bottom
-                                          //   [min,max]  : limited from top and bottom
-                    value    : '20',      // value to be paired with the keyword
-                    position : [1,0,1,1]  // [row,col,rowSpan,colSpan]
+                    position : [3,0,1,1],  // [row,col,rowSpan,colSpan]
+                    hideon   : {AUTOTRACE_CBX:[false]}
                   },
               AH_SEARCH_CBX : {
                     type     : 'checkbox',
@@ -118,7 +129,8 @@ function TaskShelxEMR()  {
                     tooltip  : 'Check to perform alpha-helix search.',
                     //iwidth    : 150,
                     value    : true,
-                    position : [2,0,1,3]
+                    position : [4,0,1,3],
+                    hideon   : {AUTOTRACE_CBX:[false]}
                   },
               NCS_CBX : {
                     type     : 'checkbox',
@@ -127,7 +139,8 @@ function TaskShelxEMR()  {
                     tooltip  : 'Check to apply NCS in autotracing.',
                     //iwidth    : 150,
                     value    : true,
-                    position : [3,0,1,3]
+                    position : [5,0,1,3],
+                    hideon   : {AUTOTRACE_CBX:[false]}
                   },
               OMIT_RES_CBX : {
                     type     : 'checkbox',
@@ -137,7 +150,8 @@ function TaskShelxEMR()  {
                                'optimize CC.',
                     //iwidth    : 150,
                     value    : true,
-                    position : [4,0,1,3]
+                    position : [6,0,1,3],
+                    hideon   : {AUTOTRACE_CBX:[false]}
                   }
             }
           },
@@ -213,7 +227,7 @@ TaskShelxEMR.prototype.constructor = TaskShelxEMR;
 TaskShelxEMR.prototype.icon = function()  { return 'task_shelxemr'; }
 
 TaskShelxEMR.prototype.currentVersion = function()  {
-  var version = 0;
+  var version = 1;
   if (__template)
         return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
@@ -222,6 +236,43 @@ TaskShelxEMR.prototype.currentVersion = function()  {
 
 if (!__template)  {
   //  for client side
+
+  TaskShelxEMR.prototype.inputChanged = function ( inpParamRef,emitterId,emitterValue )  {
+
+    if (emitterId=='AUTOTRACE_CBX')  {
+
+      if (emitterValue)  {
+        this.title = 'Density Modificaton and C&alpha;-tracing with ShelxE';
+        this.name  = 'shelxe DM and autotrace';
+      } else  {
+        this.title = 'Density Modificaton with ShelxE';
+        this.name  = 'shelxe DM';
+      }
+
+      var inputPanel = inpParamRef.grid.parent.parent;
+      inputPanel.header.title.setText ( '<b>' + this.title + '</b>' );
+      var name = this.name.replace ( /<(?:.|\n)*?>/gm,'' );
+      inputPanel.header.uname_inp.setStyle ( 'text','',name );
+      inputPanel.job_dialog.changeTitle ( name );
+      this.updateInputPanel ( inputPanel );
+      inputPanel.emitSignal ( cofe_signals.jobDlgSignal,
+                              job_dialog_reason.rename_node );
+
+    }
+
+    TaskTemplate.prototype.inputChanged.call ( this,inpParamRef,emitterId,emitterValue );
+
+  }
+
+  TaskShelxEMR.prototype.updateInputPanel = function ( inputPanel )  {
+    if (this.state==job_code.new)  {
+      var event = new CustomEvent ( cofe_signals.jobDlgSignal,{
+         'detail' : job_dialog_reason.rename_node
+      });
+      inputPanel.element.dispatchEvent(event);
+    }
+  }
+
 
 /*
   TaskShelxEMR.prototype.inputChanged = function ( inpParamRef,emitterId,emitterValue )  {

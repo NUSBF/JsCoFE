@@ -423,7 +423,7 @@ function getUserFacilityList ( loginData,data,callback_func )  {
   if (data['type']=='files')  {
     callback_func ( new cmd.Response ( cmd.fe_retcode.ok,'',
                         getCloudDirListing (
-                               getUserCloudMounts(loginData.login),data['path']
+                               getUserCloudMounts(loginData),data['path']
                                              ) ) );
   } else  {
     get_user_facility_list ( loginData,callback_func );

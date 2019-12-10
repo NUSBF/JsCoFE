@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    24.12.18   <--  Date of Last Modification.
+#    08.12.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2018
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2019
 #
 # ============================================================================
 #
@@ -198,7 +198,7 @@ class Parrot(basic.TaskDriver):
             self.putTitle ( "Results" )
 
             # calculate maps for UglyMol using final mtz from temporary location
-            fnames = self.calcCCP4Maps ( output_file,self.outputFName,"parrot" )
+            #fnames = self.calcCCP4Maps ( output_file,self.outputFName,"parrot" )
 
             # register output data from temporary location (files will be moved
             # to output directory by the registration procedure)
@@ -216,8 +216,9 @@ class Parrot(basic.TaskDriver):
             #                      fnames[1] )
 
             structure = self.registerStructure (
-                    parrot_xyz,parrot_sub,output_file,fnames[0],None,None,
-                    leadKey=2 )
+                    #parrot_xyz,parrot_sub,output_file,fnames[0],None,None,leadKey=2,
+                    parrot_xyz,parrot_sub,output_file,None,None,None,leadKey=2,
+                    map_labels="parrot.F_phi.F,parrot.F_phi.phi" )
 
             if structure:
                 structure.copyAssociations ( istruct )

@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    11.04.19   <--  Date of Last Modification.
+#    22.11.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -120,6 +120,8 @@ class SeqAlign(basic.TaskDriver):
                                 seqtype = "x"
         seqfile.close()
 
+        summary_line = "did not align"
+
         if nseq<2:
             self.putTitle   ( "Input Error" )
             self.putMessage ( "Number of sequences is less than 2" )
@@ -192,6 +194,7 @@ class SeqAlign(basic.TaskDriver):
                         id_cmb += 1
                 if float(len_avg)>0:
                     id_cmb = id_cmb/float(len_avg)
+                summary_line = "Seq.Id=%.1f%%" % (100*id_cmb)
                 id_cmb = "%.2f" % id_cmb
 
                 tableId = self.getWidgetId ( "stat_table" )
@@ -229,6 +232,12 @@ class SeqAlign(basic.TaskDriver):
 
             else:
                 self.putTitle ( "Alignment was not generated" )
+
+
+        # this will go in the project tree job's line
+        self.generic_parser_summary["seqalign"] = {
+          "summary_line" : summary_line
+        }
 
         # close execution logs and quit
         self.success()

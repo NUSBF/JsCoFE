@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    12.11.19   <--  Date of Last Modification.
+#    10.12.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -43,6 +43,7 @@ citations = {
     'mtz2various'     : { 'name' : 'mtz2various'  , 'category' : 'service', 'refs' : [] },
     'matthews_coef'   : { 'name' : 'Matthews_Coef', 'category' : 'primary', 'refs' : [] },
     'reindex'         : { 'name' : 'Reindex'      , 'category' : 'primary', 'refs' : [] },
+    'cad-primary'     : { 'name' : 'CAD'          , 'category' : 'primary', 'refs' : [] },
     'cad'             : { 'name' : 'CAD'          , 'category' : 'service', 'refs' : [] },
     'cfft'            : { 'name' : 'CFFT'         , 'category' : 'service', 'refs' : [] },
     'unique'          : { 'name' : 'Unique'       , 'category' : 'service', 'refs' : [] },
@@ -431,6 +432,19 @@ citations = {
     'cbuccaneer': { 'name'     : 'Buccaneer',
                     'category' : 'primary',
                     'copy'     : [['buccaneer',-1]]  # -1 means copy all
+                  },
+
+    'nautilus' :  { 'name'     : 'Nautilus',
+                    'category' : 'primary',
+                    'refs'     : [{
+                            'authors' : 'Cowtan, K.',
+                            'title'   : 'Automated nucleic acid chain tracing in real time',
+                            'journal' : 'IUCrJ',
+                            'volume'  : '1(Pt 6)',
+                            'year'    : '2014',
+                            'pages'   : '387–392',
+                            'doi'     : '10.1107/S2052252514019290'
+                        }]
                   },
 
     #'solomon' :   { 'name'     : 'SOLOMON',

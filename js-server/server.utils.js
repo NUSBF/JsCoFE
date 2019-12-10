@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    19.10.19   <--  Date of Last Modification.
+ *    02.12.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -399,15 +399,20 @@ function capData ( data,n )  {
 
 
 function send_file ( fpath,server_response,mimeType,deleteOnDone,capSize,
-                     nofile_callback )  {
+                     persistance,nofile_callback )  {
 
   fs.stat ( fpath,function(err,stats){
 
     if (err)  {
 
-      if (nofile_callback)
+      if (persistance>0)  {
+        setTimeout ( function(){
+          send_file ( fpath,server_response,mimeType,deleteOnDone,capSize,
+                      persistance-1,nofile_callback );
+        },50 );
+      } else if (nofile_callback)  {
         nofile_callback ( fpath,mimeType,deleteOnDone,capSize );
-      else  {
+      } else  {
         log.error ( 12,'Read file errors, file = ' + fpath );
         log.error ( 12,'Error: ' + err );
         server_response.writeHead ( 404, {'Content-Type':'text/html;charset=UTF-8'} );

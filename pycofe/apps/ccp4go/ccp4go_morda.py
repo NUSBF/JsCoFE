@@ -108,9 +108,9 @@ class MoRDa(ccp4go_simbad12.Simbad12):
             f = open ( os.path.join(self.outputdir,"morda.res") )
             flines = f.readlines()
             f.close()
-            self.file_stdout.write ( " --------- morda\n" )
-            for i in range(len(flines)):
-                self.file_stdout.write ( flines[i]+"\n" )
+            #self.file_stdout.write ( " --------- morda\n" )
+            #for i in range(len(flines)):
+            #    self.file_stdout.write ( flines[i]+"\n" )
             rfree   = float(flines[1])
             rfactor = float(flines[0])
         else:

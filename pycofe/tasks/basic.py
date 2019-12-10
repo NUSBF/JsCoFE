@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    19.10.19   <--  Date of Last Modification.
+#    08.12.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -239,9 +239,8 @@ class TaskDriver(object):
         else:
             self.outputFName = self.task.oname
 
-
         despatch_meta = jsonut.readjObject  ( "__despatch.meta" )
-        head_msg  = ""
+        head_msg      = ""
         if despatch_meta:
             head_msg += "## despatched by: " + despatch_meta.setup_id
             if despatch_meta.setup_id.startswith("<"):
@@ -263,6 +262,9 @@ class TaskDriver(object):
         self.file_stdout .write ( head_msg + "       MAIN LOG\n\n" )
         self.file_stdout1.write ( head_msg + "       SERVICE PROGRAMS LOG\n\n" )
         self.file_stderr .write ( " " )
+        self.file_stdout .flush()
+        self.file_stdout1.flush()
+        self.file_stderr .flush()
 
         # initialise HTML report document; note that we use absolute path for
         # the report directory, which is necessary for passing RVAPI document
@@ -1038,13 +1040,22 @@ class TaskDriver(object):
                 "HKLOUT",mtzOut ]
 
         self.open_stdin()
+
         self.write_stdin ( "LABIN  FILE 1" )
-        for i in range(len(lblHKL)):
-            self.write_stdin ( " E%d=%s" % (i+1,lblHKL[i]) )
+        if len(lblHKL)>0:
+            for i in range(len(lblHKL)):
+                self.write_stdin ( " E%d=%s" % (i+1,lblHKL[i]) )
+        else:
+            self.write_stdin ( " ALL" )
+
         self.write_stdin ( "\nLABIN  FILE 2" )
-        for i in range(len(lblPhases)):
-            self.write_stdin ( " E%d=%s" % (i+1,lblPhases[i]) )
+        if len(lblPhases)>0:
+            for i in range(len(lblPhases)):
+                self.write_stdin ( " E%d=%s" % (i+1,lblPhases[i]) )
+        else:
+            self.write_stdin ( " ALL" )
         self.write_stdin ( "\n" )
+
         self.close_stdin()
 
         self.runApp ( "cad",cmd,logType="Service" )
@@ -1242,7 +1253,10 @@ class TaskDriver(object):
         return
 
 
-    def putUglyMolButton ( self,xyzFilePath,mapFilePath,dmapFilePath,title,text_btn,gridId,row,col ):
+    def putUglyMolButton ( self,xyzFilePath,mapFilePath,dmapFilePath,title,
+                                text_btn,gridId,row,col ):
+        #  currently this function is used only with patterson plot, so mtz is
+        #  not relevant
         buttonId = self.getWidgetId ( "uglymol" )
         pyrvapi.rvapi_add_button ( buttonId,text_btn,"{function}",
                     "window.parent.rvapi_umviewer(" + self.job_id +\
@@ -1316,7 +1330,7 @@ class TaskDriver(object):
 
 
     def registerStructure ( self,xyzPath,subPath,mtzPath,mapPath,dmapPath,
-                            libPath=None,leadKey=1,copy_files=False ):
+                            libPath=None,leadKey=1,copy_files=False,map_labels=None ):
         self.dataSerialNo += 1
 
         #self.file_stderr.write ( "  xyzPath=" + str(xyzPath) + "\n" )
@@ -1330,7 +1344,7 @@ class TaskDriver(object):
                                     xyzPath,subPath,mtzPath,mapPath,dmapPath,libPath,
                                     self.dataSerialNo ,self.job_id,leadKey,
                                     self.outputDataBox,self.outputDir(),
-                                    copy_files=copy_files )
+                                    copy_files=copy_files,map_labels=map_labels )
         if not structure:
             self.file_stderr.write ( "  NONE STRUCTURE" )
             self.file_stderr.flush()
@@ -1355,12 +1369,13 @@ class TaskDriver(object):
 
 
     def registerStructure1 ( self,xyzPath,subPath,mtzPath,mapPath,dmapPath,
-                                  libPath,regName,leadKey=1,copy_files=False ):
+                                  libPath,regName,leadKey=1,copy_files=False,
+                                  map_labels=None ):
         self.dataSerialNo += 1
         structure = dtype_structure.register1 (
                                 xyzPath,subPath,mtzPath,mapPath,dmapPath,libPath,
                                 regName,self.dataSerialNo,self.job_id,leadKey,
-                                self.outputDataBox )
+                                self.outputDataBox,map_labels=map_labels )
         if not structure:
             self.file_stderr.write ( "  NONE STRUCTURE\n" )
             self.file_stderr.flush()
@@ -1441,6 +1456,8 @@ class TaskDriver(object):
         for i in range(len(type)):
             fname = structure.getFileName ( type[i][0] )
             if fname:
+                if type[i][0]=="mtz" and structure.mapLabels:
+                    fname += "{{meta " + structure.mapLabels + "}}"
                 if not created:
                     pyrvapi.rvapi_add_data ( wId,title_str,
                             # always relative to job_dir from job_dir/html

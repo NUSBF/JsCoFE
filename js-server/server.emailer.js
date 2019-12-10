@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    03.11.19   <--  Date of Last Modification.
+ *    01.12.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -136,24 +136,6 @@ function send ( to,subject,message )  {
 
 }
 
-/*
-function makeMessage ( template_name,userData,subs_dict )  {
-// example:  makeMessage ( 'made_dormant',userData,{
-//             'reason' : 'you do not use your account'
-//           });
-var msg = utils.readString ( path,join('message_templates',template_name+'.msg') );
-  if (msg)  {
-    if (userName)
-      msg = utils.replaceAll ( msg,'$userName',userName );
-    msg = utils.replaceAll ( msg,'$appName'        ,cmd.appName );
-    msg = utils.replaceAll ( msg,'$appURL'         ,conf.getFEConfig.url() );
-    msg = utils.replaceAll ( msg,'$maintainerEmail',conf.getEmailerConfig().maintainerEmail );
-    for (var key in subs_dict)
-      msg = utils.replaceAll ( msg,'$'+key,subs_dict[key] );
-  }
-  return msg;  // null is valid and indicative of program error
-}
-*/
 
 function sendTemplateMessage ( userData,subject,template_name,subs_dict )  {
 var message = utils.readString ( path.join('message_templates',template_name+'.html') );
@@ -169,7 +151,8 @@ var message = utils.readString ( path.join('message_templates',template_name+'.h
       'userFeedback'    : userData.feedback,
       'userStatus'      : userStatus,
       'appName'         : cmd.appName(),
-      'appURL'          : conf.getFEConfig().reportURL,
+      'appURL'          : '<a href="' + conf.getFEConfig().reportURL + '">' +
+                          conf.getFEConfig().reportURL + '</a>',
       'maintainerEmail' : conf.getEmailerConfig().maintainerEmail
     };
     for (var key in user_dict)

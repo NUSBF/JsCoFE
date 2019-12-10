@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    18.03.19   <--  Date of Last Modification.
+ *    21.11.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -150,7 +150,8 @@ function ncGetInfo ( server_request,server_response )  {
   var jobRegister    = jm.readNCJobRegister ( 1 );
   ncInfo.jobRegister.launch_count = jobRegister.launch_count;
   ncInfo.jobRegister.job_map      = jobRegister.job_map;
-  ncInfo.ccp4_version = conf.CCP4Version();
+  ncInfo.ccp4_version   = conf.CCP4Version();
+  ncInfo.jscofe_version = cmd.appVersion();
 
   return new cmd.Response (  cmd.nc_retcode.ok,'',ncInfo );
 

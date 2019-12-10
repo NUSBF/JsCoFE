@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    03.11.19   <--  Date of Last Modification.
+ *    21.11.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -577,6 +577,8 @@ function readConfiguration ( confFilePath,serverType )  {
 
   if (confObj.hasOwnProperty('Emailer')) {
     emailer = confObj.Emailer;
+    if (!emailer.hasOwnProperty('maintainerEmail'))
+      emailer.maintainerEmail = 'ccp4@ccp4.ac.uk';
     if (emailer.hasOwnProperty('auth'))  {
       if (emailer.auth.hasOwnProperty('file'))  {
         var auth = utils.readString ( emailer.auth.file );
@@ -743,9 +745,10 @@ function getFEProxyInfo ( inData,callback_func )  {
 var response = null;  // must become a cmd.Response object to return
   if (fe_server)  {
     var rData = {};
-    rData.proxy_config = fe_proxy;
-    rData.fe_config    = fe_server;
-    rData.ccp4_version = CCP4Version();
+    rData.proxy_config   = fe_proxy;
+    rData.fe_config      = fe_server;
+    rData.ccp4_version   = CCP4Version();
+    rData.jscofe_version = cmd.appVersion();
     response = new cmd.Response ( cmd.fe_retcode.ok,'',rData );
   } else  {
     response = new cmd.Response ( cmd.fe_retcode.unconfigured,'','' );

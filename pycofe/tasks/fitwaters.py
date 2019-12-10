@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    20.03.19   <--  Date of Last Modification.
+#    22.11.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -101,6 +101,11 @@ class FitWaters(basic.TaskDriver):
 
         else:
             self.putTitle ( "No water molecules were found and fitted." )
+
+        # this will go in the project tree job's line
+        self.generic_parser_summary["fitwaters"] = {
+          "summary_line" : "N<sub>waters</sub>=" + str(nwaters)
+        }
 
         # close execution logs and quit
         self.success()

@@ -91,38 +91,80 @@ class CCP4Build(basic.TaskDriver):
         #    "seqpath      " + self.ccp4build_seq()
         #])
 
-        labin_fo = hkl.getMeanF()
-
-        if istruct.HLA and istruct.getSubFileName():
-            #  experimental phases
-
+        labin_fo     = hkl.getMeanF()
+        labin_phases = ""
+        if istruct.HLA:
             self.makePhasesMTZ (
                     mtzHKL   ,[labin_fo[0],labin_fo[1],hkl.getFreeRColumn()],
                     mtzPhases,[istruct.HLA,istruct.HLB,istruct.HLC,istruct.HLD],
                     self.mtz_cad() )
+            labin_phases = "labin_hl     /*/*/[" +\
+                           istruct.HLA + "," + istruct.HLB + "," +\
+                           istruct.HLC + "," + istruct.HLD + "]"
+        else:
+            self.makePhasesMTZ (
+                    mtzHKL   ,[labin_fo[0],labin_fo[1],hkl.getFreeRColumn()],
+                    mtzPhases,[istruct.PHI,istruct.FOM],
+                    self.mtz_cad() )
+            labin_phases = "labin_phifom  /*/*/[" +\
+                           istruct.PHI + "," + istruct.FOM  + "]"
+
+
+        if istruct.leadKey==2:
+            #  experimental phases
 
             self.open_stdin()
             self.write_stdin ([
                 "[input_data]",
-                "seqpath      " + self.ccp4build_seq()
-            ])
-            self.write_stdin ([
-                "xyzpath_ha   " + istruct.getSubFilePath(self.inputDir()),
+                "mode         EP",
+                "seqpath      " + self.ccp4build_seq(),
                 "mtzpath      " + istruct.getMTZFilePath(self.inputDir()),
                 "labin_fo     /*/*/[" + labin_fo[0] + "," + labin_fo[1] + "]",
-                "labin_hl     /*/*/[" + istruct.HLA + "," + istruct.HLB + "," +\
-                                        istruct.HLC + "," + istruct.HLD + "]",
-                "labin_free   /*/*/[" + hkl.getFreeRColumn() + "]"
+                "labin_free   /*/*/[" + hkl.getFreeRColumn() + "]",
+                labin_phases
             ])
+
+            if istruct.getSubFileName():
+                self.write_stdin ([
+                    "xyzpath_ha   " + istruct.getSubFilePath(self.inputDir())
+                ])
+            elif istruct.getXYZFileName():
+                self.write_stdin ([
+                    "xyzpath_mr   " + istruct.getXYZFilePath(self.inputDir())
+                ])
+
             """
-            self.write_stdin ([
-                "xyzpath_ha   " + istruct.getSubFilePath(self.inputDir()),
-                "mtzpath      " + istruct.getMTZFilePath(self.inputDir()),
-                "labin_fo     /*/*/[" + istruct.FP + "," + istruct.SigFP + "]",
-                "labin_hl     /*/*/[" + istruct.HLA + "," + istruct.HLB + "," +\
-                                        istruct.HLC + "," + istruct.HLD + "]",
-                "labin_free   /*/*/[" + istruct.FreeR_flag + "]"
-            ])
+            if istruct.HLA and istruct.getSubFileName():
+                #  experimental phases
+
+                self.makePhasesMTZ (
+                        mtzHKL   ,[labin_fo[0],labin_fo[1],hkl.getFreeRColumn()],
+                        mtzPhases,[istruct.HLA,istruct.HLB,istruct.HLC,istruct.HLD],
+                        self.mtz_cad() )
+
+                self.open_stdin()
+                self.write_stdin ([
+                    "[input_data]",
+                    "mode         EP",
+                    "seqpath      " + self.ccp4build_seq()
+                ])
+                self.write_stdin ([
+                    "xyzpath_ha   " + istruct.getSubFilePath(self.inputDir()),
+                    "mtzpath      " + istruct.getMTZFilePath(self.inputDir()),
+                    "labin_fo     /*/*/[" + labin_fo[0] + "," + labin_fo[1] + "]",
+                    "labin_hl     /*/*/[" + istruct.HLA + "," + istruct.HLB + "," +\
+                                            istruct.HLC + "," + istruct.HLD + "]",
+                    "labin_free   /*/*/[" + hkl.getFreeRColumn() + "]"
+                ])
+
+                #self.write_stdin ([
+                #    "xyzpath_ha   " + istruct.getSubFilePath(self.inputDir()),
+                #    "mtzpath      " + istruct.getMTZFilePath(self.inputDir()),
+                #    "labin_fo     /*/*/[" + istruct.FP + "," + istruct.SigFP + "]",
+                #    "labin_hl     /*/*/[" + istruct.HLA + "," + istruct.HLB + "," +\
+                #                            istruct.HLC + "," + istruct.HLD + "]",
+                #    "labin_free   /*/*/[" + istruct.FreeR_flag + "]"
+                #])
             """
 
         else:
@@ -136,6 +178,7 @@ class CCP4Build(basic.TaskDriver):
             self.open_stdin()
             self.write_stdin ([
                 "[input_data]",
+                "mode         MR",
                 "seqpath      " + self.ccp4build_seq()
             ])
 
@@ -319,8 +362,8 @@ class CCP4Build(basic.TaskDriver):
                                 os.path.join(self.outputDir(),fname + ".pdb"),
                                 None,
                                 os.path.join(self.outputDir(),fname + ".mtz"),
-                                os.path.join(self.outputDir(),fname + ".map"),
-                                os.path.join(self.outputDir(),fname + ".diff.map"),
+                                None, #os.path.join(self.outputDir(),fname + ".map"),
+                                None, #os.path.join(self.outputDir(),fname + ".diff.map"),
                                 None,
                                 self.outputFName,leadKey=istruct.leadKey,
                                 copy_files=False )

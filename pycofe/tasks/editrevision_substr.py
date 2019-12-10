@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    20.11.19   <--  Date of Last Modification.
+#    22.11.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -96,8 +96,10 @@ class EditRevisionSubstr(basic.TaskDriver):
             summary.append ( "phases" )
             # else phases are taken from leading Structure/Substructure
 
-        self.putMessage ( "<b>Heavy-atom substructure to be taken from:&nbsp;</b> "  + sub.dname     )
-        self.putMessage ( "<b>Phases to be taken from:&nbsp;&nbsp;&nbsp;&nbsp;</b> " + phases.dname  )
+        if sub:
+            self.putMessage ( "<b>Heavy-atom substructure to be taken from:&nbsp;</b> "  + sub.dname     )
+        if phases:
+            self.putMessage ( "<b>Phases to be taken from:&nbsp;&nbsp;&nbsp;&nbsp;</b> " + phases.dname  )
 
         lead_key = str
         substructure = self.registerStructure1 (
@@ -111,6 +113,7 @@ class EditRevisionSubstr(basic.TaskDriver):
                         leadKey=2,
                         copy_files=False )
         if substructure:
+            # in case there was no substructure coordinates
             substructure.addSubtype ( dtype_template.subtypeSubstructure )
             if phases:
                 substructure.addSubtypes ( phases.getSubtypes() )

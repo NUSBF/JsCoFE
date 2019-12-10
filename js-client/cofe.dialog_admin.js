@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    19.10.19   <--  Date of Last Modification.
+ *    01.12.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -99,7 +99,7 @@ AnnounceDialog.prototype.constructor = AnnounceDialog;
 // -------------------------------------------------------------------------
 // User dormant users dialog class
 
-function DormantUsersDialog()  {
+function DormantUsersDialog ( callback_func )  {
 
   function getInteger ( param_inp )  {
   var text = param_inp.getValue().trim();
@@ -217,13 +217,15 @@ function DormantUsersDialog()  {
                                              '<h2>Failure</h2>' + data.status );
                           } else  {
                             new MessageBox ( 'Dormancy management',
-                               '<h2>Summary<h2>Out of ' + data.total_users +
+                               '<h2>Summary</h2>Out of ' + data.total_users +
                                ' users accounts, ' +
-                               data.dormant_users + ' were declared dormant, and ' +
+                               data.dormant_users + ' were declared dormant,<br>and ' +
                                data.deleted_users + ' were deleted. ' +
                                (data.disk_freed + data.disk_released) +
-                               'MBytes of disk released.' );
+                               ' MBytes of disk released.' );
                             $(dlg.element).dialog("close");
+                            if (callback_func)
+                              callback_func();
                           }
                         },null,'persist' );
                       },

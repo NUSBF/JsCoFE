@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    12.02.19   <--  Date of Last Modification.
+#    08.12.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -261,7 +261,7 @@ class Acorn(basic.TaskDriver):
                 self.close_stdin()
                 self.runApp ( "sftools",[],logType="Service" )
 
-                fnames = self.calcCCP4Maps ( acorn_map,self.outputFName+".map","acorn-map" )
+                #fnames = self.calcCCP4Maps ( acorn_map,self.outputFName+".map","acorn-map" )
 
                 # register output data from temporary location (files will be moved
                 # to output directory by the registration procedure)
@@ -275,9 +275,18 @@ class Acorn(basic.TaskDriver):
                     acorn_sub = self.getOFName ( ".ha.pdb" )
                     shutil.copyfile ( istruct.getSubFilePath(self.inputDir()),acorn_sub )
 
+                #structure = self.registerStructure (
+                #        acorn_xyz,acorn_sub,acorn_map,fnames[0],fnames[1],None,
+                #        leadKey=2,copy_files=True )
+
                 structure = self.registerStructure (
-                        acorn_xyz,acorn_sub,acorn_map,fnames[0],fnames[1],None,
-                        leadKey=2,copy_files=True )
+                        acorn_xyz,acorn_sub,acorn_map,None,None,None,
+                        leadKey=2,copy_files=True,
+                        map_labels="acorn.EO.FWT,acorn.PHI,acorn.EC.FWT,acorn.PHI" )
+
+                #    def registerStructure ( self,xyzPath,subPath,mtzPath,mapPath,dmapPath,
+                #                            libPath=None,leadKey=1,copy_files=False,map_labels=None ):
+
 
                 self.putStructureWidget ( "sharpened_map","Sharpened Map",structure )
 
@@ -299,12 +308,16 @@ class Acorn(basic.TaskDriver):
             self.close_stdin()
             self.runApp ( "sftools",[],logType="Service" )
 
-            fnames = self.calcCCP4Maps ( output_file,self.outputFName,
-                                         "acorn:" + cols[0] )
+            #fnames = self.calcCCP4Maps ( output_file,self.outputFName,
+            #                             "acorn:" + cols[0] )
+
+            #structure = self.registerStructure (
+            #        acorn_xyz,acorn_sub,output_file,fnames[0],None,None,
+            #        leadKey=2 )
 
             structure = self.registerStructure (
-                    acorn_xyz,acorn_sub,output_file,fnames[0],None,None,
-                    leadKey=2 )
+                    acorn_xyz,acorn_sub,output_file,None,None,None,
+                    leadKey=2,map_labels=cols[0] + ",acorn.PHI" )
 
 
             if structure:

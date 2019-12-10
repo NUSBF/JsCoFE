@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    17.09.19   <--  Date of Last Modification.
+#    22.11.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -150,26 +150,26 @@ class Deposition(basic.TaskDriver):
             xyzout_cif = self.getOFName ( ".mmcif" )
 
             # prepare files for the structure visualisation widget
-            mapout   = self.getMapOFName()
-            dmapout  = self.getDMapOFName()
-            mapout0  = istruct.getMapFilePath  ( self.inputDir() )
-            dmapout0 = istruct.getDMapFilePath ( self.inputDir() )
+            #mapout   = self.getMapOFName()
+            #dmapout  = self.getDMapOFName()
+            #mapout0  = istruct.getMapFilePath  ( self.inputDir() )
+            #dmapout0 = istruct.getDMapFilePath ( self.inputDir() )
 
-            if not mapout0 or not dmapout0:
-                # calculate maps for UglyMol using final mtz from temporary location
-                fnames  = self.calcCCP4Maps ( mtzout,self.outputFName )
-                mapout  = fnames[0]
-                dmapout = fnames[1]
+            #if not mapout0 or not dmapout0:
+            #    # calculate maps for UglyMol using final mtz from temporary location
+            #    fnames  = self.calcCCP4Maps ( mtzout,self.outputFName )
+            #    mapout  = fnames[0]
+            #    dmapout = fnames[1]
 
             #  This replaces Refmac output with the original ".pdb". Because Refmac
             # was run with zero cycles, all coordinates remain the same, but ".pdb"
             # is currently needed for the visualisation widget
             shutil.copyfile ( xyzin,xyzout  )
             #shutil.copyfile ( istruct.getMTZFilePath (self.inputDir()), mtzout  )
-            if mapout0:
-                shutil.copyfile ( mapout0 ,mapout  )
-            if dmapout0:
-                shutil.copyfile ( dmapout0,dmapout )
+            #if mapout0:
+            #    shutil.copyfile ( mapout0 ,mapout  )
+            #if dmapout0:
+            #    shutil.copyfile ( dmapout0,dmapout )
 
             libout = None
             if libin:
@@ -177,7 +177,8 @@ class Deposition(basic.TaskDriver):
                 shutil.copyfile ( libin,libout )
 
             # create output structure and visualisation widget
-            structure = self.registerStructure ( xyzout,None,mtzout,mapout,dmapout,libout,
+            #structure = self.registerStructure ( xyzout,None,mtzout,mapout,dmapout,libout,
+            structure = self.registerStructure ( xyzout,None,mtzout,None,None,libout,
                                                  leadKey=istruct.leadKey )
             if structure:
                 structure.copyAssociations ( istruct )
@@ -283,6 +284,8 @@ class Deposition(basic.TaskDriver):
             "the files downloaded when prompted.</b>"
         )
 
+        line_summary = ["package prepared","pdb report not obtained"]
+
 
         # 5. Obtain validation report from the PDB
 
@@ -341,20 +344,23 @@ class Deposition(basic.TaskDriver):
                 self.putDownloadButton ( repFilePath1,"download",grid_id1,0,1 )
                 self.putMessage ( "<hr/>" )
 
+                line_summary[1] = "pdb report obtained"
+
             else:
                 self.putMessage ( "&nbsp;<p><b><i> -- failed to download</i></b>" )
 
         self._add_citations ( citations.citation_list )
         if self.citation_list:
             self.putTitle ( "References" )
-            #self.file_stdout.write ( "clist =" + str(self.citation_list) + "\n" )
-            #self.file_stdout.write ( "etasks=" + str(eol_tasks) + "\n" )
-            #self.file_stdout.flush()
             html = citations.makeSummaryCitationsHTML ( self.citation_list,eol_tasks )
-            #self.file_stdout.write ( "html=" + str(html) + "\n" )
-            #self.file_stdout.flush()
             self.putMessage ( html )
         citations.citation_list = []
+
+
+        # this will go in the project tree line
+        self.generic_parser_summary["deposition"] = {
+          "summary_line" : ", ".join(line_summary) + " "
+        }
 
         # close execution logs and quit
         self.success()

@@ -3,13 +3,13 @@
 #
 # ============================================================================
 #
-#    10.02.18   <--  Date of Last Modification.
+#    28.11.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  CCP4go Combined Auto-Solver Simbad stages 1 (L) and 2 (C) class
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2018
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2019
 #
 # ============================================================================
 #
@@ -135,6 +135,7 @@ class Simbad12(ccp4go_dimple.Dimple):
             rfactor = r2[0]
 
         nResults   = 0
+        resultName = "xxxx"
         fpath_xyz  = ""
         fpath_mtz  = ""
         fpath_map  = ""
@@ -145,6 +146,7 @@ class Simbad12(ccp4go_dimple.Dimple):
             nResults = simbad_meta["nResults"]
             meta     = simbad_meta["results"][0]
             #self.file_stdout.write ( json.dumps ( meta,indent=2 ))
+            resultName = meta["name"]
             if nResults>0:
                 fpath_xyz  = os.path.join(self.reportdir,meta["pdb"])
                 if os.path.isfile(fpath_xyz):
@@ -170,20 +172,19 @@ class Simbad12(ccp4go_dimple.Dimple):
           "PHDELWT" : "PHDELWT"
         }
 
-        quit_message = self.saveResults ( "Simbad-LC ["+meta["name"]+"]",
+        quit_message = self.saveResults ( "Simbad-LC [" + resultName + "]",
                 self.simbad12_dir(),nResults,rfree,rfactor,
-                "simbad_"+meta["name"],fpath_xyz,fpath_mtz,fpath_map,fpath_dmap,
+                "simbad_"+resultName,fpath_xyz,fpath_mtz,fpath_map,fpath_dmap,
                 None,None,columns,spg_info )
 
-        self.output_meta["results"][self.simbad12_dir()]["pdbcode"] = meta["name"]
+        self.output_meta["results"][self.simbad12_dir()]["pdbcode"] = resultName
         self.output_meta["results"][self.simbad12_dir()]["asucomp"] = asuComp
-        """
-        if self.output_meta["retcode"] != "not solved" and self.seqpath:
-            if asuComp["retcode"] == 1:
-                self.output_meta["retcode"] = "sequence problem"
-            elif asuComp["minseqid"]<0.7:
-                self.output_meta["retcode"] = "sequence mismatch"
-        """
+
+        #if self.output_meta["retcode"] != "not solved" and self.seqpath:
+        #    if asuComp["retcode"] == 1:
+        #        self.output_meta["retcode"] = "sequence problem"
+        #    elif asuComp["minseqid"]<0.7:
+        #        self.output_meta["retcode"] = "sequence mismatch"
 
         self.quit_branch ( branch_data,self.simbad12_dir(),
                            "Lattice and Contaminant Searches (Simbad): " +

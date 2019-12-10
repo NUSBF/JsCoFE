@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    30.09.19   <--  Date of Last Modification.
+ *    05.12.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -362,6 +362,19 @@ if (!__template)  {
 
     }
 
+    this.makeHighResolutionLimit = function()  {
+      setLabel ( 'High resolution limit (&Aring;):&nbsp;',++r,0 );
+      var res_low  = round ( this.getLowResolution (),2 );
+      var res_high = round ( this.getHighResolution(),2 );
+      customGrid.res_high = makeRealInput ( this.res_high,'auto',
+          'High resolution limit. Set a value between ' + res_high + ' and ' +
+          res_low + ', or leave blank for automatic choice.',r,1 );
+      customGrid.setLabel    ( ' ',r,2,1,1 );
+      customGrid.setCellSize ( '4%' ,'',r,0 );
+      customGrid.setCellSize ( '4%' ,'',r,1 );
+      customGrid.setCellSize ( '92%','',r,2 );
+    }
+
     this.makeResolutionLimits = function ( blank_key )  {
       setLabel ( 'Resolution range (&Aring;):&nbsp;',++r,0 );
       var res_low  = round ( this.getLowResolution (),2 );
@@ -539,6 +552,8 @@ if (!__template)  {
       case 'unmerged-ref'    :  this.unmergedRefLayout();  break;
       case 'cell-info'       :  this.cellInfoLayout   ();  break;
       case 'reindex'         :  this.reindexLayout    ();  break;
+      case 'changereso'      :  this.makeResolutionLimits ( '' );  break;
+      case 'nautilus'        :  this.makeHighResolutionLimit();    break;
       case 'phaser-mr'       :  this.spgLayout        (); // should be no break here!
       case 'phaser-mr-fixed' :  this.phaserMRLayout   ();  break;
       case 'phaser-ep'       :  this.phaserEPLayout   ();  break;
@@ -649,25 +664,57 @@ if (!__template)  {
         dropdown.Structure.phaseBlur = customGrid.phaseBlur.getValue();
     }
 
+    this.collectResoLimits = function()  {
+      if ('res_low' in customGrid)
+        this.res_low  = customGrid.res_low .getValue();
+      if ('res_high' in customGrid)
+        this.res_high = customGrid.res_high.getValue();
+    }
+
     this.collectCCP4build = function()  {
-      this.res_low  = customGrid.res_low .getValue();
-      this.res_high = customGrid.res_high.getValue();
+      this.collectResoLimits();
+    }
+
+    this.collectChangeReso = function()  {
+      this.collectResoLimits();
+      if ((this.res_high=='') && (this.res_low==''))
+        msg += '<b><i>At least one resolution limit must be specified</i></b>';
+      else  {
+        var res_low0  = round ( this.getLowResolution (),2 );
+        var res_high0 = round ( this.getHighResolution(),2 );
+        if (this.res_high!='')  {
+          if ((this.res_high<res_high0) || (this.res_high>res_low0))
+            msg += '<b><i>High resolution limit must be within ' + res_high0 + ' - ' +
+                   res_low0 + '</i></b>';
+        }
+        if (this.res_low!='')  {
+          if ((this.res_low<res_high0)  || (this.res_low>res_low0))
+            msg += '<b><i>Resolution limits must be within ' + res_high0 + ' - ' +
+                   res_low0 + '</i></b>';
+        }
+        if ((this.res_high!='') && (this.res_low!=''))  {
+          if (this.res_low<this.res_high)
+            msg += '<b><i>High resolution limit must be lower than low resolution limit</i></b>';
+        }
+      }
     }
 
     switch (dropdown.layCustom)  {
       case 'crank2'          :
-      case 'anomData'        : this.collectAnom     ();  break;
+      case 'anomData'        : this.collectAnom      ();  break;
       case 'shelx-auto'      :
       case 'shelx-substr'    :
-      case 'anomData-Shelx'  : this.collectAnomShelx();  break;
-      case 'native'          : this.collectNative   ();  break;
-      case 'reindex'         : this.collectReindex  ();  break;
-      case 'phaser-mr'       : this.collectSpG      (); // should be no break here!
-      case 'phaser-mr-fixed' : this.collectPhaserMR ();  break;
-      case 'phaser-ep'       : this.collectPhaserEP ();  break;
+      case 'anomData-Shelx'  : this.collectAnomShelx ();  break;
+      case 'native'          : this.collectNative    ();  break;
+      case 'reindex'         : this.collectReindex   ();  break;
+      case 'changereso'      : this.collectChangeReso();  break;
+      case 'nautilus'        : this.collectResoLimits();  break;
+      case 'phaser-mr'       : this.collectSpG       (); // should be no break here!
+      case 'phaser-mr-fixed' : this.collectPhaserMR  ();  break;
+      case 'phaser-ep'       : this.collectPhaserEP  ();  break;
       case 'arpwarp'         :
-      case 'refmac'          : this.collectRefmac   ();  break;
-      case 'ccp4build'       : this.collectCCP4build();  break;
+      case 'refmac'          : this.collectRefmac    ();  break;
+      case 'ccp4build'       : this.collectCCP4build ();  break;
       default : ;
     }
 

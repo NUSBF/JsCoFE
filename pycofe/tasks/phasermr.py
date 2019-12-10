@@ -80,8 +80,8 @@ class PhaserMR(basic.TaskDriver):
                     ens_dict[ensname].data = self.makeClass ( ens_dict[ensname].data )
                     ens0.append ( ens_dict[ensname].data )
 
-        for x in os.listdir(self.inputDir()):
-            self.file_stdout.write(x + '\n')
+        #for x in os.listdir(self.inputDir()):
+        #    self.file_stdout.write(x + '\n')
 
         phases = None
         if hasattr(self.input_data.data,"phases"):
@@ -312,7 +312,7 @@ class PhaserMR(basic.TaskDriver):
         # prepare report parser
         self.setGenericLogParser ( self.phaser_report(),True )
 
-        # Start mrbump
+        # Start phaser
         self.runApp ( "phaser",cmd,logType="Main" )
         self.unsetLogParser()
 
@@ -335,11 +335,13 @@ class PhaserMR(basic.TaskDriver):
             for line in soll:
                 if line.startswith("SOLU 6DIM ENSE"):
                     if nsol<=1:
-                        ensname = line.split()[3]
-                        if ensname in ens_meta:
-                            ens_meta[ensname]["ncopies"] += 1
-                        else:
-                            ens_meta[ensname] = { "ncopies" : 1 }
+                        lnsplit = line.split()
+                        if len(lnsplit)>3:
+                            ensname = line.split()[3]
+                            if ensname in ens_meta:
+                                ens_meta[ensname]["ncopies"] += 1
+                            else:
+                                ens_meta[ensname] = { "ncopies" : 1 }
                 elif line.startswith("SOLU SPAC "):
                     sol_spg = line.replace("SOLU SPAC ","").strip()
                 elif line.startswith("SOLU SET "):
@@ -375,14 +377,11 @@ class PhaserMR(basic.TaskDriver):
                 sol_hkl = spg_change[1]
                 revision.setReflectionData ( sol_hkl )
 
-        #self.putMessage ( "&nbsp;" );
-        #shutil.copyfile ( self.outputFName+".1.pdb","output/phaser_out.pdb" )
         structure = self.finaliseStructure ( self.outputFName+".1.pdb",
                                     self.outputFName,sol_hkl,None,seq,0,
                                     leadKey=1,openState_bool=False )
 
         if structure:
-            #revision.add_file ( sol_file,self.outputDir(),"sol" )
             # update structure revision
             revision.setStructureData ( structure )
             self.registerRevision     ( revision  )

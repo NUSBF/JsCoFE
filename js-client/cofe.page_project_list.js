@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    20.10.19   <--  Date of Last Modification.
+ *    01.12.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -82,8 +82,7 @@ function ProjectListPage ( sceneId )  {
 
   // function to open selected Project
   var openProject = function() {
-    saveProjectList ( null );
-    makeProjectPage ( sceneId );
+    saveProjectList ( function(data){ makeProjectPage(sceneId); });
   }
 
   var addProject = function() {
@@ -134,9 +133,11 @@ function ProjectListPage ( sceneId )  {
       if (projectList.addProject(name_inp.getValue(),
                                  title_inp.getValue(),getDateString()))  {
         projectList.current = name_inp.getValue();
-        makeProjectListTable   ();
-        saveProjectList        ( null );
-        welcome_lbl.setVisible ( (projectList.projects.length<1) );
+        saveProjectList ( function(data){
+          projectList.current = name_inp.getValue();
+          makeProjectListTable   ();
+          welcome_lbl.setVisible ( (projectList.projects.length<1) );
+        });
         return true;  // close dialog
       } else  {
         new MessageBox ( 'Duplicate Project ID',
@@ -181,11 +182,8 @@ function ProjectListPage ( sceneId )  {
         projectList.current = prjName;
         serverRequest ( fe_reqtype.renameProject,pDesc,'Rename Project',
           function(data){
-            makeProjectListTable   ();
-            saveProjectList        ( null );
+            saveProjectList ( function(data){ makeProjectListTable(); });
           },null,'persist' );
-        //makeProjectListTable   ();
-        //saveProjectList        ( null );
         return true;  // close dialog
       } else  {
         new MessageBox ( 'Project ID not found',
@@ -206,9 +204,10 @@ function ProjectListPage ( sceneId )  {
                        '<br>Please confirm your choice.' );
     inputBox.launch ( 'Delete',function(){
       projectList.deleteProject ( delName );
-      makeProjectListTable   ();
-      saveProjectList        ( null );
-      welcome_lbl.setVisible ( (projectList.projects.length<1) );
+      saveProjectList ( function(data){
+        makeProjectListTable   ();
+        welcome_lbl.setVisible ( (projectList.projects.length<1) );
+      });
       return true;  // close dialog
     });
   }
@@ -279,12 +278,11 @@ function ProjectListPage ( sceneId )  {
       trow.addCell ( '' );
       self.tablesort_tbl.createTable();
       open_btn  .setDisabled ( true  );
-      add_btn   .setDisabled ( __dormant );
+      add_btn   .setDisabled ( (__dormant!=0) ); // for strange reason Firefox wants this!
       rename_btn.setDisabled ( true  );
       del_btn   .setDisabled ( true  );
+      import_btn.setDisabled ( (__dormant!=0) ); // for strange reason Firefox wants this!
       export_btn.setDisabled ( true  );
-//      unsetDefaultButton   ( open_btn,panel );
-//      setDefaultButton     ( add_btn,panel  );
 
     } else  {
 
@@ -325,11 +323,11 @@ function ProjectListPage ( sceneId )  {
         },10 );
       self.tablesort_tbl.selectRow ( selectedRow );
       open_btn  .setDisabled ( false );
-      add_btn   .setDisabled ( __dormant );
+      add_btn   .setDisabled ( (__dormant!=0) ); // for strange reason Firefox wants this!
       rename_btn.setDisabled ( false );
       del_btn   .setDisabled ( false );
-//      unsetDefaultButton ( add_btn ,panel );
-//      setDefaultButton   ( open_btn,panel );
+      import_btn.setDisabled ( (__dormant!=0) ); // for strange reason Firefox wants this!
+
       welcome_lbl.hide();
 
     }
@@ -446,9 +444,10 @@ function ProjectListPage ( sceneId )  {
   panel.setCellSize            ( '88%','',row++,5   );
   */
   open_btn  .setDisabled       ( true );
-  add_btn   .setDisabled       ( !__dormant );
+  add_btn   .setDisabled       ( true );
   rename_btn.setDisabled       ( true );
   del_btn   .setDisabled       ( true );
+  import_btn.setDisabled       ( true );
   table_row = row;  // note the project list table position here
 
   // add a listeners to toolbar buttons

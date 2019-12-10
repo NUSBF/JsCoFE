@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    27.08.19   <--  Date of Last Modification.
+#    08.12.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -34,7 +34,7 @@ import pyrvapi
 
 #  application imports
 import basic
-from   pycofe.dtypes import dtype_sequence
+from   pycofe.dtypes import dtype_sequence, dtype_template
 
 
 # ============================================================================
@@ -106,19 +106,26 @@ class ShelxEMR(basic.TaskDriver):
         sec1 = self.task.parameters.sec1.contains
         sec2 = self.task.parameters.sec2.contains
 
+        solvent_content = self.getParameter ( sec1.SOLVENT_CONTENT )
+        if not solvent_content:
+            solvent_content = str(revision.ASU.solvent/100.0)
+
         cmd = [ self.shelxe_wrk_pda(),
-                "-a" + self.getParameter(sec1.TRACING_CYCLES),
                 "-m" + self.getParameter(sec1.DM_CYCLES),
                 "-t" + self.getParameter(sec2.TIME_FACTOR),
-                "-s" + str(revision.ASU.solvent/100.0)
+                "-s" + solvent_content
               ]
 
-        if self.getParameter(sec1.AH_SEARCH_CBX)=="True":
-            cmd += ["-q"]
-        if self.getParameter(sec1.OMIT_RES_CBX)=="True":
-            cmd += ["-o"]
-        if self.getParameter(sec1.NCS_CBX)=="True":
-            cmd += ["-n"]
+        autotrace = (self.getParameter(sec1.AUTOTRACE_CBX)=="True")
+
+        if autotrace:
+            cmd += ["-a" + self.getParameter(sec1.TRACING_CYCLES)]
+            if self.getParameter(sec1.AH_SEARCH_CBX)=="True":
+                cmd += ["-q"]
+            if self.getParameter(sec1.OMIT_RES_CBX)=="True":
+                cmd += ["-o"]
+            if self.getParameter(sec1.NCS_CBX)=="True":
+                cmd += ["-n"]
 
         cmd += ["-f"]  # read amplitudes not intensities
 
@@ -144,7 +151,7 @@ class ShelxEMR(basic.TaskDriver):
 
             self.file_stdout.close()
             cNo      = 1.0
-            
+
             with open(self.file_stdout_path(),"r") as f:
                 for line in f:
                     if "CC for partial structure against native data =" in line:
@@ -172,31 +179,33 @@ class ShelxEMR(basic.TaskDriver):
                                 str(bestCC) + "%",0 )
             self.putTableLine ( tableId,"Mean FOM"  ,"Estimated mean FOM",str(meanFOM) ,1 )
             self.putTableLine ( tableId,"Pseudo-free CC","Pseudo-free CC",str(pseudoCC),2 )
+            self.rvrow += 1
 
 
             #self.putGraphWidget ( self.getWidgetId("graph"),cycleNo,[CC],
             #     "Cycle No","Correlation Coefficient", width=700,height=400 )
             #self.putMessage ( "&nbsp;" )
 
-            self.putLogGraphWidget ( self.getWidgetId("graph"),[
-                { "name"  : "Build statistics",
-                  "plots" : [
-                    {
-                      "name"   : "Correlation Coefficient",
-                      "xtitle" : "Cycle No.",
-                      "ytitle" : "Correlation Coefficient (%%)",
-                      "x"      : {  "name":"Cycle No.", "values": cycleNo },
-                      "y"      : [{ "name":"CC", "values": CC }]
-                    },{
-                      "name"   : "Residues Built",
-                      "xtitle" : "Cycle No.",
-                      "ytitle" : "No. of Resdues Built",
-                      "x"      : {  "name":"Cycle No.", "values": cycleNo },
-                      "y"      : [{ "name":"Nres"     , "values": nResBuilt }]
+            if autotrace:
+                self.putLogGraphWidget ( self.getWidgetId("graph"),[
+                    { "name"  : "Build statistics",
+                      "plots" : [
+                        {
+                          "name"   : "Correlation Coefficient",
+                          "xtitle" : "Cycle No.",
+                          "ytitle" : "Correlation Coefficient (%%)",
+                          "x"      : {  "name":"Cycle No.", "values": cycleNo },
+                          "y"      : [{ "name":"CC", "values": CC }]
+                        },{
+                          "name"   : "Residues Built",
+                          "xtitle" : "Cycle No.",
+                          "ytitle" : "No. of Resdues Built",
+                          "x"      : {  "name":"Cycle No.", "values": cycleNo },
+                          "y"      : [{ "name":"Nres"     , "values": nResBuilt }]
+                        }
+                      ]
                     }
-                  ]
-                }
-            ])
+                ])
             self.putMessage ( "&nbsp;" )
 
             # continue writing to stdout
@@ -267,32 +276,65 @@ class ShelxEMR(basic.TaskDriver):
 
             self.runApp ( "sftools",[],logType="Service" )
 
-            fnames = self.calcCCP4Maps ( self.shelxe_mtz(),self.outputFName,"shelxe" )
+            #fnames = self.calcCCP4Maps ( self.shelxe_mtz(),self.outputFName,"shelxe" )
 
-            # copy pdb
             structure = None
             if os.path.isfile(self.shelxe_wrk_pdb()):
+                # copy pdb
                 shutil.copyfile ( self.shelxe_wrk_pdb(),self.shelxe_pdb() )
                 structure = self.registerStructure1 (
                                 self.shelxe_pdb(),None,self.shelxe_mtz(),
-                                fnames[0],None,None,self.outputFName,leadKey=2 )
-            else:
+                                None,None,None,self.outputFName,leadKey=2,
+                                map_labels="FWT,PHWT" )
+                                #fnames[0],None,None,self.outputFName,leadKey=2 )
+            elif istruct.hasXYZSubtype():
                 structure = self.registerStructure1 (
                                 istruct.getXYZFilePath(self.inputDir()),
-                                istruct.getSubFilePath(self.inputDir()),
-                                self.shelxe_mtz(),fnames[0],None,None,
-                                self.outputFName,leadKey=2 )
+                                None,self.shelxe_mtz(),None,None,None,
+                                #None,self.shelxe_mtz(),fnames[0],None,None,
+                                self.outputFName,leadKey=2,
+                                map_labels="FWT,PHWT" )
 
             if structure:
                 structure.copyAssociations ( istruct )
                 structure.copyLabels       ( istruct )
                 structure.setShelxELabels  ( istruct )
-                structure.copySubtype      ( istruct )
-                self.putStructureWidget    ( "structure_btn",
-                                             "Structure and electron density",
-                                             structure )
+                #structure.copySubtype      ( istruct )
+                structure.mergeSubtypes    ( istruct,exclude_types=[
+                  dtype_template.subtypeXYZ(),
+                  dtype_template.subtypeSubstructure(),
+                  dtype_template.subtypeAnomSubstr()
+                ])
+                self.putStructureWidget   ( "structure_btn",
+                                            "Structure and electron density",
+                                            structure )
                 # update structure revision
                 revision.setStructureData ( structure )
+
+            substructure = None
+            if istruct.hasSubSubtype():
+                substructure = self.registerStructure1 (
+                                None,istruct.getSubFilePath(self.inputDir()),
+                                #self.shelxe_mtz(),fnames[0],None,None,
+                                self.shelxe_mtz(),None,None,None,
+                                self.outputFName,leadKey=2,
+                                map_labels="FWT,PHWT" )
+                if substructure:
+                    substructure.copyAssociations ( istruct )
+                    substructure.copyLabels       ( istruct )
+                    substructure.setShelxELabels  ( istruct )
+                    #substructure.copySubtype      ( istruct )
+                    substructure.mergeSubtypes    ( istruct,exclude_types=[
+                      dtype_template.subtypeXYZ(),
+                      dtype_template.subtypeSubstructure(),
+                      dtype_template.subtypeAnomSubstr()
+                    ])
+                    self.putStructureWidget   ( "substructure_btn",
+                                                "Heavy-atom substructure and electron density",
+                                                substructure )
+                    revision.setStructureData ( substructure )
+
+            if structure or substructure:
                 self.registerRevision     ( revision  )
 
         else:

@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    16.04.19   <--  Date of Last Modification.
+#    23.11.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -50,9 +50,9 @@ class Coot(basic.TaskDriver):
 
         # Prepare coot job
 
-        self.putMessage ( "<h3><i>Make sure that you save your work from Coot " +\
-                          "<u>without changing directory and file name offered</u></i></h3>" )
-        self.flush()
+        #self.putMessage ( "<h3><i>Make sure that you save your work from Coot " +\
+        #                  "<u>without changing directory and file name offered</u></i></h3>" )
+        #self.flush()
 
         # fetch input data
         data_list = [self.input_data.data.ixyz[0]]

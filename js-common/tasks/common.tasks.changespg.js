@@ -6,7 +6,7 @@
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
- *  **** Module  :  js-common/tasks/common.tasks.reindex.js
+ *  **** Module  :  js-common/tasks/common.tasks.changespg.js
  *       ~~~~~~~~~
  *  **** Project :  jsCoFE - javascript-based Cloud Front End
  *       ~~~~~~~~~

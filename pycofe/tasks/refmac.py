@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    08.11.19   <--  Date of Last Modification.
+#    08.12.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -304,7 +304,7 @@ class Refmac(basic.TaskDriver):
                                                  self.getMTZOFName(),
                                                  None,None,libin,
                                                  #fnames[0],fnames[1],libin,  -- not needed for new UglyMol
-                                                 leadKey=1 )
+                                                 leadKey=1,map_labels="FWT,PHWT,DELFWT,PHDELWT" )
             if structure:
 
                 mmcifout = self.getMMCIFOFName()

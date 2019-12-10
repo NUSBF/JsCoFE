@@ -1,7 +1,7 @@
 //
 //  =================================================================
 //
-//    17.12.17   <--  Date of Last Modification.
+//    07.12.19   <--  Date of Last Modification.
 //                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  -----------------------------------------------------------------
 //
@@ -12,7 +12,7 @@
 //  **** Content :  RVAPI javascript layer's grid module
 //       ~~~~~~~~~
 //
-//  (C) E. Krissinel 2013-2017
+//  (C) E. Krissinel 2013-2019
 //
 //  =================================================================
 //
@@ -247,7 +247,8 @@ var cell = getGridCell ( holderId,row,col );
   if (cell)  {
     cell.rowSpan = rowSpan;
     cell.colSpan = colSpan;
-    $("<div id='"+tbxId+"' class='text-box'>"+text+"</div>")
+    //  '{{meta' is reserved for optional metadata appended after text string
+    $("<div id='"+tbxId+"' class='text-box'>"+text.split('{{meta')[0]+"</div>")
          .appendTo(cell);
     return cell;
   }

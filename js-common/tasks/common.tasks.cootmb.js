@@ -94,7 +94,9 @@ if (__template)  {
 
     if ('revision' in this.input_data.data)  {
       var revision = this.input_data.data['revision'][0];
-      this.input_data.data['istruct'] = [revision.Structure];
+      if (revision.Options.leading_structure=='substructure')
+            this.input_data.data['istruct'] = [revision.Substructure];
+      else  this.input_data.data['istruct'] = [revision.Structure];
     }
 
     __template.TaskTemplate.prototype.makeInputData.call ( this,loginData,jobDir );

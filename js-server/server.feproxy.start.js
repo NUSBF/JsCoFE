@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    27.10.19   <--  Date of Last Modification.
+ *    02.12.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -142,6 +142,11 @@ function start ( callback_func )  {
 */
   });
 
+  // Listen to the `upgrade` event in order to proxy the WebSocket requests as well.
+  proxy.on ( 'upgrade', function (req, socket, head) {
+    proxy.ws(req, socket, head);
+  });
+
   var server = http.createServer ( function(server_request,server_response){
 
 //    try {
@@ -160,28 +165,42 @@ function start ( callback_func )  {
             break;
 
         default :
+              var n = -1;
+              for (var i=0;(i<local_prefixes.length) && (n<0);i++)
+                n = command.lastIndexOf ( local_prefixes[i] );
+              if (n>=0)  {
+                var fpath;
+                if (local_prefixes[i]=='/jsrview/')
+                      fpath = path.join ( 'js-lib',command.slice(n+1) );
+                else  fpath = command.slice(n);
+                utils.send_file ( fpath,server_response,utils.getMIMEType(fpath),
+                                  false,0,0,
+                                  function(filepath,mimeType,deleteOnDone,capSize){
+                  proxy.web ( server_request,server_response ); //, options_web );
+                });
+              } else
+                proxy.web ( server_request,server_response ); //, options_web );
+
+              /*
               var fpath     = '';
               var responded = false;
               for (var i=0;(i<local_prefixes.length) && (!responded);i++)  {
-                //if (command.startsWith(local_prefixes[i]))  {
                 var n = command.lastIndexOf ( local_prefixes[i] );
                 if (n>=0)  {
                   responded = true;
                   if (local_prefixes[i]=='/jsrview/')
                         fpath = path.join ( 'js-lib',command.slice(n+1) );
                   else  fpath = command.slice(n);
-//                  console.log ( ' local fetch ' + fpath );
                   utils.send_file ( fpath,server_response,utils.getMIMEType(fpath),
-                                    false,0,function(filepath,mimeType,deleteOnDone,capSize){
-//                    console.log ( ' repeat fetch ' + filepath );
+                                    false,0,0,function(filepath,mimeType,deleteOnDone,capSize){
                     proxy.web ( server_request,server_response ); //, options_web );
                   });
                 }
               }
               if (!responded)  {
-//                console.log ( ' remote fetch ' + command );
                 proxy.web ( server_request,server_response ); //, options_web );
               }
+              */
 
       }
 
