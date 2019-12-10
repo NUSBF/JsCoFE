@@ -2,7 +2,7 @@
 /*
  *  ===========================================================================
  *
- *    20.11.19   <--  Date of Last Modification.
+ *    10.12.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  ---------------------------------------------------------------------------
  *
@@ -24,7 +24,12 @@
 // name and version tag
 
 function appName()  { return 'CCP4 Cloud' }  // application name for reporting
-var jsCoFE_version = '1.4.003 [20.11.2019]';
+
+var jsCoFE_version = '1.5.002 [10.12.2019]';
+
+function appVersion()  {
+  return jsCoFE_version;
+}
 
 // ============================================================================
 
@@ -189,7 +194,7 @@ var special_url_tag = 'xxJsCoFExx';
 
 function Response ( status,message,data )  {
   this._type   = 'Response';
-  this.version = jsCoFE_version;
+  this.version = appVersion();
   this.status  = status;
   this.message = message;
   this.data    = data;
@@ -214,7 +219,7 @@ function sendResponseMessage ( server_response,message,mimeType )  {
 
 function Request ( request,token,data )  {
   this._type   = 'Request';
-  this.version = jsCoFE_version;
+  this.version = appVersion();
   this.request = request;      // request code from fe_request list
   this.token   = token;        // user login data token
   this.data    = data;         // request data
@@ -226,7 +231,7 @@ function Request ( request,token,data )  {
 // export such that it could be used in both node and a browser
 if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
   module.exports.appName             = appName;
-  module.exports.jsCoFE_version      = jsCoFE_version;
+  module.exports.appVersion          = appVersion;
   module.exports.localhost_name      = localhost_name;
   module.exports.image_path          = image_path;
   module.exports.fe_command          = fe_command;

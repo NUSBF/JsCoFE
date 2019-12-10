@@ -163,7 +163,7 @@ function start ( callback_func )  {
 
         case cmd.fe_command.whoareyou :
             cmd.sendResponseMessage ( server_response,
-                            cmd.appName() + ' FE ' + cmd.jsCoFE_version,
+                            cmd.appName() + ' FE ' + cmd.appVersion(),
                             'text/plain' );
           break;
 

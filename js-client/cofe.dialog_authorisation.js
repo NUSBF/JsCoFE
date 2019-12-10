@@ -195,6 +195,7 @@ AuthorisationDialog.prototype.layAuthorisationEntries = function()  {
         var reqURL = alist.auth_url.replace ( '$reqid',
                                               'authorisation-' + alist.key + '-' + __login_token )
                                    .replace ( '$cburl',ownURL );
+//console.log ( ' >>>>>>>> 3 ' + reqURL );
         window.open ( reqURL );
         self.auth_dic[alist.key].auth_date = 'requested';
         alist.auth_lbl.setText ( '<b><i>requested</i></b>' + '&nbsp;&nbsp;&nbsp;' )

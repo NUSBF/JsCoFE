@@ -92,6 +92,7 @@ class FitLigand(basic.TaskDriver):
             self.runApp ( os.path.join(os.environ["CCP4"],"libexec","findligand-bin"),
                           cmd,logType="Main" )
 
+        nligs   = 0
         ligands = [fn for fn in os.listdir("./") if fn.endswith(".pdb")]
         if len(ligands)>0:
 
@@ -120,9 +121,9 @@ class FitLigand(basic.TaskDriver):
             pdbout = self.outputFName + ".pdb"
             self.stdoutln ( "pdbin="+str(pdbin) )
             self.stdoutln ( "ligands="+str(ligands) )
-            import shutil
-            shutil.copyfile ( pdbin,"pdbin.xxx" )
-            shutil.copyfile ( ligands[0],"ligandin.yyy" )
+            #import shutil
+            #shutil.copyfile ( pdbin,"pdbin.xxx" )
+            #shutil.copyfile ( ligands[0],"ligandin.yyy" )
             nligs  = coor.mergeLigands ( pdbin,ligands,"X",pdbout )
             structure = self.registerStructure ( pdbout,None,mtzin,
                                 istruct.getMapFilePath (self.inputDir()),
@@ -148,6 +149,12 @@ class FitLigand(basic.TaskDriver):
 
         else:
             self.putTitle ( "Ligand " + ligand.code + " could not be fit in density" )
+
+
+        # this will go in the project tree job's line
+        self.generic_parser_summary["fitligand"] = {
+          "summary_line" : "N<sub>fitted</sub>=" + str(nligs)
+        }
 
         # close execution logs and quit
         self.success()

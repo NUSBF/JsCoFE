@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    13.10.19   <--  Date of Last Modification.
+ *    01.12.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -32,6 +32,8 @@ function AccountPage ( sceneId )  {
     alert ( ' NOT LOGED IN');
     return;
   }
+
+  var include_authorisation = false;
 
   this.makeHeader ( 3,null );
 
@@ -72,12 +74,16 @@ function AccountPage ( sceneId )  {
   var pwd_lbl      = new Label     ( 'Password:'   );
   var licence_lbl  = new Label     ( 'Licence agreement:&nbsp;&nbsp;&nbsp;' ).setNoWrap();
   var feedback_lbl = new Label     ( 'Feedback agreement:&nbsp;&nbsp;&nbsp;').setNoWrap();
-  /* == var authoris_lbl = new Label     ( 'Software authorisations:&nbsp;'       ).setNoWrap(); */
+  var authoris_lbl = null;
+  var authorisation_dic = {};
+  if (include_authorisation)  {
+    authoris_lbl = new Label ( 'Software authorisations:&nbsp;' ).setNoWrap();
+    authoris_lbl.setFontSize( '112%' );
+  }
   var user_inp     = new InputText ( '' );
   var email_inp    = new InputText ( '' );
   var login_inp    = new InputText ( '' );
   var pwd_inp      = new InputText ( '' );
-  /* == var authorisation_dic = {}; */
 
   user_inp    .setStyle   ( 'text',"^[A-Za-z\\-\\.\\s]+$",'John Smith',
                             'User name should only contain latin ' +
@@ -113,7 +119,8 @@ function AccountPage ( sceneId )  {
   panel.setWidget               ( pwd_lbl     ,row+3,0,1,1 );
   panel.setWidget               ( licence_lbl ,row+4,0,1,2 );
   panel.setWidget               ( feedback_lbl,row+5,0,1,2 );
-  /* == panel.setWidget               ( authoris_lbl,row+6,0,1,2 ); */
+  if (include_authorisation)
+    panel.setWidget               ( authoris_lbl,row+6,0,1,2 );
   for (var i=0;i<4;i++)
     panel.setCellSize  ( '96pt','',row+i,0   );
   panel.setWidget               ( user_inp    ,row  ,1,1,3 );
@@ -121,9 +128,16 @@ function AccountPage ( sceneId )  {
   panel.setWidget               ( login_inp   ,row+2,1,1,3 );
   panel.setWidget               ( pwd_inp     ,row+3,1,1,3 );
   /* == for (var i=0;i<7;i++)  { */
-  for (var i=0;i<6;i++)  {
-    panel.setVerticalAlignment  ( row+i,0,'middle' );
-    panel.setVerticalAlignment  ( row+i,1,'middle' );
+  if (include_authorisation)  {
+    for (var i=0;i<7;i++)  {
+      panel.setVerticalAlignment  ( row+i,0,'middle' );
+      panel.setVerticalAlignment  ( row+i,1,'middle' );
+    }
+  } else  {
+    for (var i=0;i<6;i++)  {
+      panel.setVerticalAlignment  ( row+i,0,'middle' );
+      panel.setVerticalAlignment  ( row+i,1,'middle' );
+    }
   }
 
 
@@ -178,21 +192,22 @@ function AccountPage ( sceneId )  {
     });
   });
 
-  /* ==
-  row++;
-  var authoris_btn = new Button ( 'manage',image_path('authorisation') );
-  authoris_btn.setWidth         ( '100%' );
-  authoris_btn.setTooltip       ( 'Optional 3rd-part software authorisation' );
-  panel.setWidget               ( authoris_btn,row,1,1,2 );
-  panel.setVerticalAlignment    ( row,1,'middle'  );
-  authoris_btn.setDisabled      ( true );
-  authoris_btn.addOnClickListener ( function(){
-    //new MessageBox ( "In development","This feature is in development, IGNORE" );
-    new AuthorisationDialog ( function(dlg){
-      userData.authorisation = dlg.auth_dic;
+  var authoris_btn = null;
+  if (include_authorisation)  {
+    row++;
+    authoris_btn = new Button ( 'manage',image_path('authorisation') );
+    authoris_btn.setWidth         ( '100%' );
+    authoris_btn.setTooltip       ( 'Optional 3rd-part software authorisation' );
+    panel.setWidget               ( authoris_btn,row,1,1,2 );
+    panel.setVerticalAlignment    ( row,1,'middle'  );
+    authoris_btn.setDisabled      ( true );
+    authoris_btn.addOnClickListener ( function(){
+      //new MessageBox ( "In development","This feature is in development, IGNORE" );
+      new AuthorisationDialog ( function(dlg){
+        userData.authorisation = dlg.auth_dic;
+      });
     });
-  });
-  */
+  }
 
   row++;
   panel.setCellSize  ( '','12pt',row++,0 );
@@ -200,7 +215,7 @@ function AccountPage ( sceneId )  {
   panel.setHLine     ( 2, row++,0, 1,4 );
   panel.setCellSize  ( '','12pt',row++,0 );
 
-  var update_btn = panel.setButton ( 'Save changes',image_path('email'),
+  var update_btn = panel.setButton ( 'Save changes',image_path('disk'),
                                      row++,0,1,4 )
                         .setWidth  ( '100%' )
                         .setDisabled ( true ); // disable button until user data arrives from server
@@ -337,9 +352,9 @@ function AccountPage ( sceneId )  {
     var msg  = checkUserData ( userData );
     if (msg.length>0)
       window.setTimeout ( function(){
-        new MessageBox ( 'Update Account',
+        new MessageBox ( 'Update Account Data',
           'Please check your account settings:<ul>' + msg + '</ul>' +
-          'To confirm your changes, push <b>Update</b> button.' );
+          'To confirm your changes, push <b>Save changes</b> button.' );
       },0);
     user_inp    .setValue  ( userData.name     );
     email_inp   .setValue  ( userData.email    );
@@ -353,7 +368,8 @@ function AccountPage ( sceneId )  {
     // now activate buttons:
     licence_btn .setDisabled ( false );
     feedback_btn.setDisabled ( false );
-    /* == authoris_btn.setDisabled ( false );  */
+    if (authoris_btn)
+      authoris_btn.setDisabled ( false );
     update_btn  .setDisabled ( false );
     delete_btn  .setDisabled ( false );
     setDefaultButton ( update_btn,panel );

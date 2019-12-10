@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    20.11.19   <--  Date of Last Modification.
+ *    03.12.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -303,12 +303,13 @@ var row      = 0;
   */
 
   this.makeSection ( 'Data Processing',[
-    new TaskXia2     (),
-    new TaskDUI      (),
-    new TaskIMosflm  (),
-    new TaskAimless  (),
-    new TaskChangeSpG(),
-    new TaskFreeRFlag()
+    new TaskXia2      (),
+    new TaskDUI       (),
+    new TaskIMosflm   (),
+    new TaskAimless   (),
+    new TaskChangeSpG (),
+    new TaskChangeReso(),
+    new TaskFreeRFlag ()
   ]);
 
   this.makeSection ( 'Asymmetric Unit and Structure Revision',[
@@ -323,7 +324,7 @@ var row      = 0;
   this.makeSection ( 'Molecular Replacement',[
     'No-sequence methods',
     new TaskSimbad(),
-    //'No-model methods',
+    'No-model methods',
     new TaskAmple (),
     'Automated MR',
     new TaskBalbes(),
@@ -359,6 +360,7 @@ var row      = 0;
     new TaskCCP4Build(),
     new TaskBuccaneer(),
     new TaskArpWarp  (),
+    new TaskNautilus (),
     new TaskDimple   (),
     new TaskCootMB   ()
   ]);

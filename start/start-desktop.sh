@@ -1,7 +1,7 @@
 #!/bin/bash
 
 server_dir=/Users/eugene/Projects/jsCoFE
-ccp4_dir=$server_dir/ccp4cloud
+ccp4_dir=$server_dir/cloudccp4
 #ccp4_dir=/Applications/ccp4-7.0
 #ccp4_dir=/Users/eugene/Projects/ccp4jh/ccp4-dev
 #morda_dir=/Users/eugene/Projects/MoRDa_DB

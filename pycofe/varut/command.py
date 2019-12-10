@@ -105,6 +105,7 @@ def call ( executable,command_line,job_dir,stdin_fname,file_stdout,
     try:
         iswindows = sys.platform.startswith("win")
         if iswindows:  t1 = time.clock()
+
         p = subprocess.Popen ( [executable] + command_line,
                           shell=False,
                           stdin=file_stdin,

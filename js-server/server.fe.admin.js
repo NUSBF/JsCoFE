@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    10.10.19   <--  Date of Last Modification.
+ *    21.11.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -71,23 +71,26 @@ function _getNCData ( adminData,callback_func )  {
       if ((!error) && (response.statusCode==200))  {
         adminData.nodesInfo.ncInfo.push ( body.data );
       } else  {
-        var nci = {};
-        nci.config = cfg;
-        nci.jobRegister = null;
-        nci.ccp4_version = 'unknown';
+        var nci = {
+          'config'         : cfg,
+          'jobRegister'    : null,
+          'ccp4_version'   : 'unknown',
+          'jscofe_version' : cmd.appVersion()
+        };
         adminData.nodesInfo.ncInfo.push ( nci );
       }
-
       startNext();
 
     });
 
   } else  {
 
-    var nci = {};
-    nci.config = cfg;
-    nci.jobRegister = null;
-    nci.ccp4_version = 'unknown';
+    var nci = {
+      'config'         : cfg,
+      'jobRegister'    : null,
+      'ccp4_version'   : 'unknown',
+      'jscofe_version' : cmd.appVersion()
+    };
     adminData.nodesInfo.ncInfo.push ( nci );
     startNext();
 
@@ -105,7 +108,8 @@ function getAdminData ( loginData,data,callback_func )  {
   adminData.nodesInfo.FEconfig = {};
   adminData.nodesInfo.ncInfo   = [];
   adminData.usageReportURL     = ustats.getUsageReportURL();
-  adminData.nodesInfo.ccp4_version = conf.CCP4Version();
+  adminData.nodesInfo.ccp4_version   = conf.CCP4Version();
+  adminData.nodesInfo.jscofe_version = cmd.appVersion();
 
   var uData = user.readUserData ( loginData );
   if (!uData.admin)  {

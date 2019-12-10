@@ -40,7 +40,6 @@ def stripLigWat ( mmFile,outFile ):
     return  (nat1-nat2)    # !=0 indicates of changes made
 """
 
-
 def mergeLigands ( mmFile, ligFiles, chainId, outFile ):
     st    = gemmi.read_structure ( mmFile )
     nligs = 0

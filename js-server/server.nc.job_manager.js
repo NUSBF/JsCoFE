@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    06.10.19   <--  Date of Last Modification.
+ *    02.12.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -354,8 +354,8 @@ var cap   = false;
       } else  {
         server_response.writeHead ( 404, {'Content-Type': 'text/html;charset=UTF-8'} );
         server_response.end ( '<p><b>UNRECOGNISED JOB TOKEN</b></p>' );
-        return;
       }
+      return;
 
     }
 
@@ -368,7 +368,7 @@ var cap   = false;
     if (cap)
       capSize = conf.getServerConfig().fileCapSize;
     utils.send_file ( fname,server_response,utils.getMIMEType(fname),false,
-                      capSize,null );
+                      capSize,20,null );
   }
 
 }

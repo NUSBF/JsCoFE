@@ -97,66 +97,63 @@ resCodes = {
 
 # ============================================================================
 
-"""
+#C     PROTDEN protein density
+#C     DNADEN dna density
+#C     PDDEN protein/dna complex density
+#C     PROTSOL protein solvent content
+#C     DNASOL dna solvent content
+#C     PDSOL protein/dna complex solvent content
+#      REAL PROTDEN, DNADEN, PDDEN, PROTSOL, DNASOL, PDSOL
+#      PARAMETER (PROTDEN=1.0/0.74)
+#      PARAMETER (DNADEN=1.0/0.50)
+#      PARAMETER (PROTSOL=0.47)
+#      PARAMETER (DNASOL=0.64)
+#      PARAMETER (PDDEN=PROTDEN*0.75+DNADEN*0.25)
+#      PARAMETER (PDSOL=0.60)
+#
+#
+#        IF(LDNA) THEN
+#c use average weight of C G A T residue (NOT base pair)
+#         WEIGHT = 325.96*NRES
+#         write(6,*)' Molecular weight of DNA estimated from NRES is ',
+#     +         WEIGHT
+#        ELSEIF (LCOMP) THEN
+#c assume 25%/75% DNA/protein, as in Kantardjieff
+#         WEIGHT =  12.0*5 + 14.0*1.35 + 16.0*1.5 +1.0*8 +32.0*0.05
+#         WEIGHT = (WEIGHT*0.75+325.96*0.25)*NRES
+#         write(6,*) ' Molecular weight of DNA/protein complex',
+#     +       ' estimated from NRES is ',WEIGHT
+#        ELSE
+#         WEIGHT =  12.0*5 + 14.0*1.35 + 16.0*1.5 +1.0*8 +32.0*0.05
+#                    60       18.9        24        8      1.6
+#         WEIGHT = WEIGHT*NRES
+#         write(6,*)' Molecular weight estimated from NRES is ',WEIGHT
+#
+#
+#
+#      CELL(4)=CELL(4)*PI/180.0
+#      CELL(5)=CELL(5)*PI/180.0
+#      CELL(6)=CELL(6)*PI/180.0
+#      ULT = 1.0 + 2.0*COS(CELL(4))*COS(CELL(5))*COS(CELL(6)) -
+#     +      COS(CELL(4))**2 - COS(CELL(5))**2 - COS(CELL(6))**2
+#      IF (ULT .LE. 0.0) CALL CCPERR(1,
+#     +' *** The cell volume cannot be calculated; check CELL card ***')
+#      VOLUME=CELL(1)*CELL(2)*CELL(3)*SQRT(ULT)
+#
+#
+#      DENSITY = PROTDEN, DNADEN, PDDEN
+#      FRACSOL = PROTSOL, DNASOL, PDSOL
+#
+#        FRAC2 = FRACSOL
+#        RO = (1-FRAC2)*DENSITY
+#        WEIGHT =RO*(0.602*VOLUME)/(NMOL*NSYM)
+#
+#
+#     +    '(density of solvent = 1.0, density of dna = 2.0)',
+#     +'(density of solvent = 1.0, density of protein/dna = 1.35/2.0',
+#     +    '(density of solvent = 1.0, density of protein = 1.35)',
+#
 
-C     PROTDEN protein density
-C     DNADEN dna density
-C     PDDEN protein/dna complex density
-C     PROTSOL protein solvent content
-C     DNASOL dna solvent content
-C     PDSOL protein/dna complex solvent content
-      REAL PROTDEN, DNADEN, PDDEN, PROTSOL, DNASOL, PDSOL
-      PARAMETER (PROTDEN=1.0/0.74)
-      PARAMETER (DNADEN=1.0/0.50)
-      PARAMETER (PROTSOL=0.47)
-      PARAMETER (DNASOL=0.64)
-      PARAMETER (PDDEN=PROTDEN*0.75+DNADEN*0.25)
-      PARAMETER (PDSOL=0.60)
-
-
-        IF(LDNA) THEN
-c use average weight of C G A T residue (NOT base pair)
-         WEIGHT = 325.96*NRES
-         write(6,*)' Molecular weight of DNA estimated from NRES is ',
-     +         WEIGHT
-        ELSEIF (LCOMP) THEN
-c assume 25%/75% DNA/protein, as in Kantardjieff
-         WEIGHT =  12.0*5 + 14.0*1.35 + 16.0*1.5 +1.0*8 +32.0*0.05
-         WEIGHT = (WEIGHT*0.75+325.96*0.25)*NRES
-         write(6,*) ' Molecular weight of DNA/protein complex',
-     +       ' estimated from NRES is ',WEIGHT
-        ELSE
-         WEIGHT =  12.0*5 + 14.0*1.35 + 16.0*1.5 +1.0*8 +32.0*0.05
-                    60       18.9        24        8      1.6
-         WEIGHT = WEIGHT*NRES
-         write(6,*)' Molecular weight estimated from NRES is ',WEIGHT
-
-
-
-      CELL(4)=CELL(4)*PI/180.0
-      CELL(5)=CELL(5)*PI/180.0
-      CELL(6)=CELL(6)*PI/180.0
-      ULT = 1.0 + 2.0*COS(CELL(4))*COS(CELL(5))*COS(CELL(6)) -
-     +      COS(CELL(4))**2 - COS(CELL(5))**2 - COS(CELL(6))**2
-      IF (ULT .LE. 0.0) CALL CCPERR(1,
-     +' *** The cell volume cannot be calculated; check CELL card ***')
-      VOLUME=CELL(1)*CELL(2)*CELL(3)*SQRT(ULT)
-
-
-      DENSITY = PROTDEN, DNADEN, PDDEN
-      FRACSOL = PROTSOL, DNASOL, PDSOL
-
-        FRAC2 = FRACSOL
-        RO = (1-FRAC2)*DENSITY
-        WEIGHT =RO*(0.602*VOLUME)/(NMOL*NSYM)
-
-
-     +    '(density of solvent = 1.0, density of dna = 2.0)',
-     +'(density of solvent = 1.0, density of protein/dna = 1.35/2.0',
-     +    '(density of solvent = 1.0, density of protein = 1.35)',
-
-
-"""
 
 
 def suggestASUComp1 ( hkl,seqFilePath,stoichiometry=False ):
@@ -266,7 +263,7 @@ def suggestASUComp ( hkl,asu ):
                     w0 += p["asu"][i][1]*p["comp"][i]
                 sol = 1.0 - w0/p["maxWeight"]
                 if sol>0.0:
-                    # denominator makes a trend to ward wetter crystals
+                    # denominator makes a trend to wetter crystals
                     dsol = math.fabs(sol-p["solvent"])/(sol+p["solvent"])
                     if dsol<p["dsol0"]:
                         p["dsol0"]   = dsol

@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    09.10.19   <--  Date of Last Modification.
+ *    02.12.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -200,7 +200,7 @@ Communicate.prototype.sendFile = function ( server_response )  {
               utils.removeFile ( fpath );
             })
             .on('close',function(){   // finish,end,
-              utils.send_file ( fpath,server_response,mtype,false,0,null );
+              utils.send_file ( fpath,server_response,mtype,false,0,0,null );
             });
         }
       });
@@ -210,17 +210,18 @@ Communicate.prototype.sendFile = function ( server_response )  {
 
     var fpath = this.filePath;
     if (fpath=='favicon.ico')  {
-      if (conf.isLocalSetup())  fpath = './images_com/favicon-desktop.ico';
-                          else  fpath = './images_com/favicon-remote.ico';
+      if (conf.isLocalSetup())  fpath = 'favicon-desktop.ico';
+                          else  fpath = 'favicon-remote.ico';
+      fpath = path.join ( 'images_com',fpath );
     }
 
     if (!this.search)
-      utils.send_file ( fpath,server_response,mtype,false,0,null );
+      utils.send_file ( fpath,server_response,mtype,false,0,0,null );
     else if (this.search.indexOf('?capsize')>=0)
       utils.send_file ( fpath,server_response,mtype,false,
-                        conf.getFEConfig().fileCapSize,null );
+                        conf.getFEConfig().fileCapSize,0,null );
     else
-      utils.send_file ( fpath,server_response,mtype,false,0,null );
+      utils.send_file ( fpath,server_response,mtype,false,0,0,null );
 
   }
 

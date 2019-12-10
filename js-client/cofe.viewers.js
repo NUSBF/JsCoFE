@@ -64,7 +64,7 @@ function rvapi_umviewer ( jobId,title,xyzFilePath,mapFilePath,dmapFilePath )  {
       if (xyzFilePath)  xyz_uri  = task.getProjectURL ( jobId,xyzFilePath );
       if (mapFilePath)  map_uri  = task.getProjectURL ( jobId,mapFilePath );
       if (dmapFilePath) dmap_uri = task.getProjectURL ( jobId,dmapFilePath );
-      startUglyMol ( title,xyz_uri,'',map_uri,dmap_uri );
+      startUglyMol ( title,xyz_uri,'',map_uri,dmap_uri,null );
     } else  {
       new MessageBox ( 'Task not found','Project Task not found. This is a bug, ' +
                        'please contact ' + appName() + ' developer.' );

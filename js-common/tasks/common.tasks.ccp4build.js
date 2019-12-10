@@ -44,7 +44,7 @@ function TaskCCP4Build()  {
       label       : 'Structure revision',   // label for input dialog
       inputId     : 'revision',   // input Id for referencing input fields
       customInput : 'ccp4build',  // lay custom fields below the dropdown
-      version     : 0,            // minimum data version allowed
+      version     : 7,            // minimum data version allowed
       min         : 1,            // minimum acceptable number of data instances
       max         : 1             // maximum acceptable number of data instances
     }

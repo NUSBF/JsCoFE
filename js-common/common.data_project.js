@@ -71,7 +71,7 @@ ProjectList.prototype.addProject = function ( name_str,title_str,time_str )  {
     pDesc.title        = title_str;
     pDesc.dateCreated  = time_str;
     pDesc.dateLastUsed = time_str;
-    this.projects.push ( pDesc );
+    this.projects.unshift ( pDesc );  // put new project at beginning
     this.current       = name_str;
     this.sortList      = null;
     return true;

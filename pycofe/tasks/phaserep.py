@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    09.11.19   <--  Date of Last Modification.
+#    08.12.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -112,8 +112,8 @@ class PhaserEP(basic.TaskDriver):
                     mtzfile = spg_change[0]
                     sol_hkl = spg_change[1]
 
-                fnames      = self.calcCCP4Maps ( mtzfile,namepattern,"phaser-ep" )
-                protein_map = fnames[0]
+                #fnames      = self.calcCCP4Maps ( mtzfile,namepattern,"phaser-ep" )
+                #protein_map = fnames[0]
 
                 ofname = self.outputFName
                 if revisionNo==1:
@@ -121,9 +121,10 @@ class PhaserEP(basic.TaskDriver):
                 else:
                     self.outputFName += "-inverted_hand"
                 structure = self.registerStructure (
-                                None,pdbfile,mtzfile,protein_map,None,None,
+                                #None,pdbfile,mtzfile,protein_map,None,None,
                                 #None,pdbfile,mtzfile,None,None,None,
-                                leadKey=2,copy_files=True )
+                                None,pdbfile,mtzfile,None,None,None,
+                                leadKey=2,copy_files=True,map_labels="FWT,PHWT" )
 
                 if structure:
                     if seq:
@@ -136,13 +137,18 @@ class PhaserEP(basic.TaskDriver):
                     outputDataBox = self.outputDataBox
                     self.outputDataBox = None
 
+                    self.makePhasesMTZ ( mtzfile,["FWT","PHWT"],
+                                         llgmapsfile,[],llgmapsfile )
+
                     for stype in scattering_type:
                         self.putMessage ( "<b style='font-size:120%'>" + stype + " scatterers</b>" )
-                        fnames = self.calcCCP4Maps (
-                                llgmapsfile,namepattern+".llgmap_"+stype,"phaser-ep:"+stype )
+                        #fnames = self.calcCCP4Maps (
+                        #        llgmapsfile,namepattern+".llgmap_"+stype,"phaser-ep:"+stype )
                         anom_struct = self.registerStructure (
-                                None,pdbfile,llgmapsfile,protein_map,fnames[0],None,
-                                leadKey=2,copy_files=True )
+                                #None,pdbfile,llgmapsfile,protein_map,fnames[0],None,
+                                None,pdbfile,llgmapsfile,None,None,None,
+                                leadKey=2,copy_files=True,
+                                map_labels="FWT,PHWT,FLLG_"+stype+",PHLLG_"+stype )
                         if anom_struct:
                             self.putStructureWidget ( "structure_btn_"+stype,
                                                       "Substructure and electron density",

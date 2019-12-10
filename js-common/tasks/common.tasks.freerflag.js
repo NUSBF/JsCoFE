@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    10.10.19   <--  Date of Last Modification.
+ *    23.11.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -34,7 +34,7 @@ function TaskFreeRFlag()  {
   this._type   = 'TaskFreeRFlag';
   this.name    = 'free R-flag';
   this.setOName ( 'freerflag' );  // default output file name template
-  this.title   = 'Free R-flag';
+  this.title   = 'Free R-flag (transfer or (re-)generate)';
   this.helpURL = './html/jscofe_task_freerflag.html';
 
   this.input_dtypes = [  // input data types

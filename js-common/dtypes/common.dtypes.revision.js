@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    16.11.19   <--  Date of Last Modification.
+ *    05.12.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -174,7 +174,23 @@ if (!__template)  {
 
     var tab1 = dsp.tabs.addTab ( 'General',true  );
     tab1.grid.setLabel  ( '<h3>Structure Revision R' + this.dataId + '</h3>',0,0,1,1 );
-    tab1.grid.setWidget ( new DataSummaryPage(this), 1,0,1,1 );
+    var dataSummaryPage = new DataSummaryPage(this);
+    var phases_source = 'unknown (possible bug)';
+    var phases_type   = 'Not phased';
+    if (this.Options.leading_structure=='structure')  {
+      phases_source = 'Structure';
+      phases_type   = this.Structure.phaseType();
+    } else if (this.Options.leading_structure=='substructure')  {
+      phases_source = 'Substructure';
+      phases_type   = this.Substructure.phaseType();
+    }
+    if (this.Structure && this.Substructure)
+      dataSummaryPage.makeRow ( 'Revision\'s phases from',phases_source,
+                     'Dataset containing phases for using in subsequent tasks' );
+    if (this.Structure || this.Substructure)
+      dataSummaryPage.makeRow ( 'Phases\' type',phases_type,
+                     'Type of phasing method used to calculate revision\'s phases' );
+    tab1.grid.setWidget ( dataSummaryPage, 1,0,1,1 );
 
     if (this.HKL)  {
       var tab2 = dsp.tabs.addTab ( 'HKL',false );
@@ -607,8 +623,8 @@ if (!__template)  {
       case 'phaser-ep'  :
             this._layCDI_PhaserEP ( dropdown );
           break;
-      case 'reindex'    :  case 'refmac'       :  case 'ccp4build' :
-      case 'cell-info'  :
+      case 'reindex'    :  case 'refmac'     :  case 'ccp4build' :
+      case 'cell-info'  :  case 'changereso' :
             this.HKL.layCustomDropdownInput ( dropdown );
           break;
       case 'parrot'     :
@@ -622,6 +638,10 @@ if (!__template)  {
           break;
       case 'buccaneer-ws':
             this._layCDI_Structure ( dropdown,2 );
+          break;
+      case 'nautilus':
+            this._layCDI_Structure ( dropdown,2 );
+            this.HKL.layCustomDropdownInput ( dropdown );
           break;
       case 'arpwarp'    :
             dropdown.Structure = this._layCDI_Structure ( dropdown,1 );
@@ -685,37 +705,34 @@ if (!__template)  {
 
     switch (dropdown.layCustom)  {
 
-      case 'asumod'    :
+      case 'asumod'     :
             if (this.ASU && this.HKL.hasAnomalousSignal())
               this.ASU.ha_type = dropdown.customGrid.ha_type.getValue();
           break;
 
-      case 'reindex'   :
+      case 'reindex'    :  case 'refmac'     :  case 'ccp4build' :
+      case 'changereso' :
           msg = this.HKL.collectCustomDropdownInput ( dropdown );
         break;
 
-      case 'phaser-mr' :  case 'phaser-mr-fixed' :
+      case 'phaser-mr'  :  case 'phaser-mr-fixed' :
           if ('structure_sel' in dropdown.customGrid)
             this.Options.structure_sel = dropdown.customGrid.structure_sel.getValue();
           msg = this.HKL.collectCustomDropdownInput ( dropdown );
         break;
 
-      case 'phaser-ep' :
+      case 'phaser-ep'  :
           msg = this.HKL.collectCustomDropdownInput ( dropdown );
           this.Options.phasing_sel = dropdown.customGrid.phasing_sel.getValue();
           if (this.Structure && (this.Options.phasing_sel=='model'))
             msg += this.Structure.collectCustomDropdownInput ( dropdown );
         break;
 
-      case 'refmac'    :  case 'ccp4build'    :
-          msg = this.HKL.collectCustomDropdownInput ( dropdown );
-        break;
-
-      case 'parrot'    :
+      case 'parrot'     :
           this.Options.ncsmodel_sel = dropdown.customGrid.ncsmodel_sel.getValue();
         break;
 
-      case 'acorn'     :
+      case 'acorn'      :
           if (this.Options.leading_structure=='substructure')
                 msg = this.Substructure.collectCustomDropdownInput ( dropdown );
           else  msg = this.Structure   .collectCustomDropdownInput ( dropdown );
@@ -730,7 +747,17 @@ if (!__template)  {
             msg = this.Structure.collectCustomDropdownInput ( dropdown );
         break;
 
-      case 'arpwarp'   :
+      case 'nautilus' :
+          if (this.Options.leading_structure=='substructure')  {
+            msg = this.Substructure.collectCustomDropdownInput ( dropdown );
+            if (this.Structure)
+              msg = this.Structure.collectCustomDropdownInput ( dropdown );
+          } else
+            msg = this.Structure.collectCustomDropdownInput ( dropdown );
+          msg = this.HKL.collectCustomDropdownInput ( dropdown );
+        break;
+
+      case 'arpwarp'    :
           if (this.Options.leading_structure=='substructure')
                 dropdown.Structure = this.Substructure;  // because it gets lost at copying objects
           else  dropdown.Structure = this.Structure;     // because it gets lost at copying objects
@@ -743,7 +770,7 @@ if (!__template)  {
             this.Options.structure_sel = dropdown.customGrid.structure_sel.getValue();
           break;
 
-      case 'crank2'  :
+      case 'crank2'     :
           msg = this._collectCDI_Crank2 ( dropdown );
         break;
 
@@ -752,7 +779,8 @@ if (!__template)  {
           msg = this._collectCDI_Crank2 ( dropdown );
         break;
 
-      default : ;
+      case 'cell-info' :
+      default          : ;
 
     }
 

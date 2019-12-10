@@ -111,16 +111,20 @@ function makeCommErrorMessage ( title,response )  {
 
 function checkVersionMatch ( response,localServer_bool )  {
 
+  var v0 = appVersion().split(' ')[0];
+  var v1 = response.version.split(' ')[0];
+
   if (localServer_bool)
     return true;  // may need a better solution
 
-  if (response.version!=jsCoFE_version)  {
+  if ((response.version!='*') && (v0<v1))  {
+    // this works if server is updated in the midst of user's session
     new MessageBoxF ( appName() + ' update',
         '<center>' + appName() + ' has advanced to version' +
         '<br><center><sup>&nbsp;</sup><b><i>' +
         response.version + '</i></b><sub>&nbsp;</sub></center>' +
         'which is incompatible with version<br><center><sup>&nbsp;</sup><b><i>'
-        + jsCoFE_version + '</b></i><sub>&nbsp;</sub></center>you are currently using.' +
+        + appVersion() + '</b></i><sub>&nbsp;</sub></center>you are currently using.' +
         '<hr/>' + appName() + ' will now update in your browser, which will ' +
         'end the current login<br>' +
         'session. Please login again after update; your projects and data should<br>' +

@@ -728,8 +728,8 @@ class Base(object):
             #f_dmap = os.path.join ( resdir, resfname + "_dmap.map" )
             f_lib  = os.path.join ( resdir, resfname + ".lib" )
 
-            self.stdout ( fpath_xyz + "  :  " + f_xyz + "\n" )
-            self.stdout ( fpath_mtz + "  :  " + f_mtz + "\n" )
+            #self.stdout ( fpath_xyz + "  :  " + f_xyz + "\n" )
+            #self.stdout ( fpath_mtz + "  :  " + f_mtz + "\n" )
             #self.stdout ( fpath_map + "  :  " + f_map + "\n" )
             #self.stdout ( fpath_dmap + "  :  " + f_dmap + "\n" )
 

@@ -21,7 +21,7 @@
 
 
 // ===========================================================================
-// mainteiner's e-mail
+// maintainer's e-mail
 
 var maintainerEmail = 'ccp4@ccp4.ac.uk';
 

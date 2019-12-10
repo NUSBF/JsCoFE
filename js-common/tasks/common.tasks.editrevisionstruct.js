@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    20.11.19   <--  Date of Last Modification.
+ *    22.11.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -116,7 +116,7 @@ if (!__template)  {
   TaskEditRevisionStruct.prototype.inputChanged = function ( inpParamRef,emitterId,emitterValue )  {
     TaskTemplate.prototype.inputChanged.call ( this,inpParamRef,emitterId,emitterValue );
     var signal = '';
-    if (!this.checkObjects(inpParamRef,emitterId,['revision','xyz','phases'],['xyz','phases']))
+    if (!this.checkObjects(inpParamRef,emitterId,['revision','xyz','phases','ligand'],['xyz','phases']))
       signal = 'hide_run_button';
     this.sendTaskStateSignal ( inpParamRef.grid.inputPanel,signal );
   }

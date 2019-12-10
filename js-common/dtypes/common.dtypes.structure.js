@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    14.11.19   <--  Date of Last Modification.
+ *    08.12.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -80,6 +80,8 @@ function DataStructure()  {
   this.refmacLinks    = [];    // list of LINKR records
   this.links          = [];    // list of LINK records
 
+  this.mapLabels      = null;  // used in UglyMol widgets
+
 }
 
 if (__template)
@@ -105,6 +107,17 @@ DataStructure.prototype.currentVersion = function()  {
 
 DataStructure.prototype.isSubstructure = function()  {
   return (this.subtype.indexOf(structure_subtype.SUBSTRUCTURE)>=0);
+}
+
+DataStructure.prototype.phaseType = function()  {
+  switch (this.leadKey)  {
+    case 1 : if (this.isSubstructure())
+                  return 'Calculated from substructure coordinates'
+             else return 'Calculated from macrimolecular model';
+    case 2 : return 'Calculated via Experimental Phasing';
+    default : ;
+  }
+  return 'Not phased';
 }
 
 // export such that it could be used in both node and a browser
@@ -143,6 +156,7 @@ if (!__template)  {
     if (this.links.length>0)
       dsp.makeRow ( 'Links without description',this.links.join(', '),
         'Formulas (Residue1.Atom1-Atom2.Residue2) for covalent links without descripton (LINK)' );
+    dsp.makeRow ( 'Phases\' type',this.phaseType(),'Type of phasing method used to calculate phases' );
 
     dsp.addViewHKLButton ( task );
 
@@ -227,6 +241,20 @@ if (!__template)  {
         setBFthresh ( row,0,this.BFthresh );
       }
 
+    } else if (dropdown.layCustom=='nautilus')  {
+
+      if (this.subtype.indexOf(structure_subtype.XYZ)>=0)  {
+        // macromolecular coordinates are present in the input structures
+        setLabel ( 'Current model:',row,0 );
+        customGrid.useModelSel = new Dropdown();
+        customGrid.useModelSel.setWidth ( '120%' );
+        customGrid.useModelSel.addItem ( 'ignore','','N',this.useModelSel=='N' );
+        customGrid.useModelSel.addItem ( 'consider fixed','','mr-model-fixed',
+                                          this.useModelSel=='mr-model-fixed' );
+        customGrid.setWidget ( customGrid.useModelSel, row,1,1,2 );
+        customGrid.useModelSel.make();
+      }
+
     } else if (['acorn','arpwarp'].indexOf(dropdown.layCustom)>=0)  {
 
       var ddn_list = [];
@@ -284,6 +312,9 @@ if (!__template)  {
       if (this.subtype.indexOf(structure_subtype.XYZ)>=0)  {
         this.BFthresh = customGrid.BFthresh.getValue();
       }
+    } else if (dropdown.layCustom=='nautilus')  {
+      if (this.subtype.indexOf(structure_subtype.XYZ)>=0)
+        this.useModelSel = customGrid.useModelSel.getValue();
     } else if (['acorn','arpwarp'].indexOf(dropdown.layCustom)>=0)  {
       if (customGrid.initPhaseSel)
         this.initPhaseSel = customGrid.initPhaseSel.getValue();

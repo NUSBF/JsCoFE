@@ -38,7 +38,7 @@ function ProjectSettingsDialog ( jobTree,callback_func )  {
   this.grid = new Grid('');
   this.addWidget ( this.grid );
 
-  this.grid.setLabel ( 'File name prefix:&nbsp;&nbsp;',0,0,1,1 )
+  this.grid.setLabel ( 'File name prefix to prepend all generated file names:&nbsp;&nbsp;',0,0,1,1 )
            .setTooltip ( 'Chosen prefix will be used for forming file names ' +
                          'in all project tasks' );
   var prefix_ddn = null;

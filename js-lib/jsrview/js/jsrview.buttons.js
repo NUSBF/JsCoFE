@@ -1,7 +1,7 @@
 //
 //  =================================================================
 //
-//    03.02.18   <--  Date of Last Modification.
+//    07.12.19   <--  Date of Last Modification.
 //                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  -----------------------------------------------------------------
 //
@@ -12,7 +12,7 @@
 //  **** Content :  RVAPI javascript layer's button module
 //       ~~~~~~~~~
 //
-//  (C) E. Krissinel 2013-2018
+//  (C) E. Krissinel 2013-2019
 //
 //  =================================================================
 //
@@ -231,27 +231,36 @@ var test = document.getElementsByName(rbName);
 function buttonClicked ( command,data )  {
 // General button click dispatcher
 
+  var l1 = data.split ( '{{meta ' );
+  var data_item = data;
+  var meta_item = null;
+  if (l1.length>1)  {
+    var l2 = l1[1].split('}}');
+    meta_item = l2[0];
+    data_item = l1[0] + l2[1];
+  }
   if (command=="{export}")  {
     if (window.rvGate)
-          window.rvGate.buttonClicked ( command,data );
-    else  downloadUri ( data );
+          window.rvGate.buttonClicked ( command,data_item );
+    else  downloadUri ( data_item );
   } else if (command=="{uglymol}")  {
-    _startUglyMol ( data );
+    _startUglyMol ( data_item,meta_item );
   } else if (command=="{display}")  {
-    displayData ( data );
+    displayData ( data_item );
   } else if (command=="{popup}")  {
-    popupWindow ( data );
+    popupWindow ( data_item );
   } else if (command=="{print-gwd}")  {
-    printPlot ( data );
+    printPlot ( data_item );
   } else if (command!="{void}")  {
     if (window.rvGate)
-      window.rvGate.buttonClicked ( command,data );
+      window.rvGate.buttonClicked ( command,data_item );
     else if (window.parent.__local_service)  {
       var base_url = window.location.href;
       window.parent.ls_RVAPIAppButtonClicked (
-                base_url.substring(0,base_url.lastIndexOf('/')),command,data )  ;
+                base_url.substring(0,base_url.lastIndexOf('/')),command,
+                data_item )  ;
     } else if (command=="{viewhkl}")  {
-      startViewHKL ( "",data );
+      startViewHKL ( "",data_item );
     }
   }
 

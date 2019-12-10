@@ -151,6 +151,29 @@ function login ( user_login_name,user_password,sceneId,page_switch )  {
 
               makeSessionCheck ( sceneId );
 
+              if (__dormant)
+                window.setTimeout ( function(){
+                  new MessageBox ( 'Dormant Account',
+                          'Dear ' + __login_user + ',' +
+                          '<p>Your account was deemed dormant due to low use rate.<br>' +
+                          'This means: ' +
+                          '<ul>' +
+                          '  <li>you can login as before</li>' +
+                          '  <li>you can browse your projects and jobs</li>' +
+                          '  <li>you can export all your data, job directories and projects</li>' +
+                          '  <li>you can delete your account, jobs and projects</li>' +
+                          '  <li>you <b>cannot run</b> new jobs</li>' +
+                          '  <li>you <b>cannot create</b> new projects</li>' +
+                          '  <li>you <b>cannot import</b> projects</li>' +
+                          '</ul>' +
+                          'In order to re-activate your account, please send an e-mail<br>' +
+                          'request to server\'s maintainer at<p>' +
+                          '<a href="mailto:' + maintainerEmail +
+                            '?Subject=' + appName() + '%20Account re-activation">' + maintainerEmail +
+                          '</a>.<p>Kind regards<p>' + appName() + ' maintenance.'
+                        );
+                },100);
+
           return true;
 
       case fe_retcode.wrongLogin:

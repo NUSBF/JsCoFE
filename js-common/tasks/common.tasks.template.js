@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    29.10.19   <--  Date of Last Modification.
+ *    03.12.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -1258,7 +1258,6 @@ if (!dbx)  {
     if (item.hasOwnProperty('tooltip'))
       inpParamRef.parameters[key].label.setTooltip ( item.tooltip );
     if (item.hasOwnProperty('lwidth'))  {
-//      if (!item.lwidth.toString().endsWith('%'))  {
       if (!endsWith(item.lwidth.toString(),'%'))  {
         inpParamRef.parameters[key].label.setWidth_px ( item.lwidth );
         grid.setCellSize ( item.lwidth + 'px','',row,col );
@@ -1280,8 +1279,8 @@ if (!dbx)  {
     if (item.hasOwnProperty('label2'))  {
       if (item.type!='label')  {
         inpParamRef.parameters[key].sep2 = grid.addLabel ( '',row,col+3,1,1 )
-                                               .setWidth_px(4);
-        grid.setCellSize ( '4px','',row,col+3 );
+                                               .setWidth_px(1);
+        grid.setCellSize ( '1px','',row,col+3 );
       }
       inpParamRef.parameters[key].label2 =
                              grid.addLabel ( item.label2,row,col+4,rowSpan,1 )
@@ -1289,11 +1288,6 @@ if (!dbx)  {
       if (item.hasOwnProperty('tooltip2'))
         inpParamRef.parameters[key].label.setTooltip ( item.tooltip2 );
       if (item.hasOwnProperty('lwidth2'))  {
-        //if (!item.lwidth2.toString().endsWith('%'))
-        //  inpParamRef.parameters[key].label2.setWidth_px ( item.lwidth2 );
-        //grid.setCellSize ( item.lwidth2,'',row,col+4 );
-
-//        if (!item.lwidth2.toString().endsWith('%'))  {
         if (!endsWith(item.lwidth2.toString(),'%'))  {
           inpParamRef.parameters[key].label2.setWidth_px ( item.lwidth2 );
           grid.setCellSize ( item.lwidth2 + 'px','',row,col+4 );

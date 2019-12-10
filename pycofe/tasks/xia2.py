@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    30.09.19   <--  Date of Last Modification.
+#    03.12.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -82,7 +82,7 @@ class Xia2(basic.TaskDriver):
         sec1         = self.task.parameters.sec1.contains
         sec2         = self.task.parameters.sec2.contains
 
-        projectName  = self.getParameter ( sec1.PROJECT     )
+        projectName  = self.getParameter ( sec1.PROJECT     ).replace(".","_").replace(" ","_");
         crystalName  = self.getParameter ( sec1.CRYSTAL     )
         hatom        = self.getParameter ( sec1.HATOM       )
         pipeline     = self.getParameter ( sec2.PIPELINE    )
@@ -139,8 +139,10 @@ class Xia2(basic.TaskDriver):
             self.addCitations ( ['dials','aimless'] )
 
         # Check for MTZ files left by Xia2 and convert them to type structure
-        resDir = "DataFiles"
-        file_names = [fn for fn in os.listdir(resDir)
+        resDir     = "DataFiles"
+        file_names = []
+        if os.path.isdir(resDir):
+            file_names = [fn for fn in os.listdir(resDir)
                                 if any(fn.endswith(ext) for ext in [".mtz"])]
         fnPrefix        = projectName + "_" + crystalName
         mtzMergedName   = fnPrefix + "_free.mtz"

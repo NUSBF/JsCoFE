@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    18.09.19   <--  Date of Last Modification.
+#    02.12.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -60,7 +60,7 @@ class EnsemblePrepMG(basic.TaskDriver):
         # Check avalability of PDB archive
         pdbLocal = ""
         if "PDB_DIR" in os.environ:
-            pdbLocal = "PDBLOCAL " + os.environ["PDB_DIR"] + "\n"
+            pdbLocal = os.environ["PDB_DIR"]
         elif not self.have_internet():
             self.fail ( "<h3>No internet connection.</h3>" +\
                     "This task requires access to PDB archive, which is not " +\
@@ -76,7 +76,10 @@ class EnsemblePrepMG(basic.TaskDriver):
         seq = self.makeClass ( self.input_data.data.seq[0] )
 
         # make command-line parameters for ccp4mg run on a SHELL-type node
-        if not os.path.isdir(self.mrbump_dir()):
+        workdir = os.path.join ( self.job_dir,self.mrbump_dir() )
+        #if not os.path.isdir(self.mrbump_dir()):
+        #    os.mkdir ( self.mrbump_dir() )
+        if not os.path.isdir(workdir):
             os.mkdir ( self.mrbump_dir() )
         seqPath    = seq.getSeqFilePath ( self.inputDir() )
         ccp4mg_scr = "CLOUDCCP4MGInterface.py"
@@ -91,6 +94,8 @@ class EnsemblePrepMG(basic.TaskDriver):
             "-scriptArg","mrBumpCutoff="  + str(self.getParameter(sec1.CUTOFF,False)),
             "-scriptArg","mrBumpSim="     + self.getParameter(sec1.RLEVEL_SEL,False)
         ]
+        if pdbLocal:
+            cmd += [ "-scriptArg","mrBumpUsePDBLocal=" + pdbLocal ]
 
         # Start mrbump
         if sys.platform.startswith("win"):

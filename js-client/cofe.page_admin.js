@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    19.10.19   <--  Date of Last Modification.
+ *    01.12.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -122,7 +122,7 @@ function AdminPage ( sceneId )  {
     });
 
     dormant_btn.addOnClickListener ( function(){
-      new DormantUsersDialog();
+      new DormantUsersDialog ( function(){ refresh_btn.click(); });
     });
 
     announce_btn.addOnClickListener ( function(){
@@ -315,6 +315,7 @@ AdminPage.prototype.makeNodesInfoTab = function ( ndata )  {
       'Type',
       'Time started',
       'CCP4<br>version',
+      appName() + ' version',
       'Fast<br>track',
       'State',
       'Jobs<br>done',
@@ -327,6 +328,7 @@ AdminPage.prototype.makeNodesInfoTab = function ( ndata )  {
       'Node type',
       'Node start time',
       'Version of CCP4 running on the node',
+      'Version of ' + appName() + ' running on the node',
       'Yes if accepts fast track jobs',
       'Current node state',
       'Total number of jobs executed on the node',
@@ -358,18 +360,24 @@ AdminPage.prototype.makeNodesInfoTab = function ( ndata )  {
   if (ndata.FEconfig.externalURL!=fe_url)
     fe_url += '<br><i>[' + ndata.FEconfig.externalURL + ']</i>';
 
+  var app_version = 'unspecified';
+  if ('jscofe_version' in ndata)
+    app_version = ndata.jscofe_version;
   this.nodeListTable.setRow ( 'Front End','Front End Server',
     [ FEname,fe_url,'FE',ndata.FEconfig.startDate,
-      ndata.ccp4_version,'N/A','running','N/A','N/A','N/A' ],
+      ndata.ccp4_version,app_version,'N/A','running','N/A','N/A','N/A' ],
     row,(row & 1)==1 );
   row++;
 
   if (('FEProxy' in ndata) && ndata.FEProxy.proxy_config)  {
+    if ('jscofe_version' in ndata.FEProxy)  app_version = ndata.FEProxy.jscofe_version;
+                                      else  app_version = 'unspecified';
     this.nodeListTable.setRow ( 'FE Proxy','Front End Proxy Server',
       [ 'Local proxy',ndata.FEProxy.proxy_config.externalURL,'FE-PROXY',
         ndata.FEProxy.proxy_config.startDate,
-        ndata.ccp4_version,'N/A','running','N/A','N/A','N/A' ],
-      row,(row & 1)==1 );
+        ndata.FEProxy.ccp4_version,app_version,
+        'N/A','running','N/A','N/A','N/A'
+      ], row,(row & 1)==1 );
     row++;
   }
 
@@ -398,9 +406,11 @@ AdminPage.prototype.makeNodesInfoTab = function ( ndata )  {
       var nc_name = 'NC-' + nci.config.exeType;
       if (nci.config.jobManager!=nci.config.exeType)
         nc_name += '(' + nci.config.jobManager + ')';
+      if ('jscofe_version' in nci)  app_version = ndata.jscofe_version;
+                              else  app_version = 'unspecified';
       this.nodeListTable.setRow ( 'NC-' + ncn,'Number Cruncher #' + ncn,
         [nci.config.name,nci.config.externalURL,nc_name,
-         startDate,nci.ccp4_version,fasttrack,state,
+         startDate,nci.ccp4_version,app_version,fasttrack,state,
          njdone,nci.config.capacity,njobs],row,(row & 1)==1 );
       row++;
       ncn++;

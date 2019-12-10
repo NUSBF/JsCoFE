@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    04.11.19   <--  Date of Last Modification.
+#    28.11.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -152,15 +152,17 @@ class Crank2(basic.TaskDriver):
             name     = []
             sequence = []
             ncopies  = []
+            monomers_asym = 0
             for i in range(len(self.seq)):
                 name.append ( 'seq' + str(i+1) )
                 s = self.makeClass ( self.seq[i] )
                 sequence.append ( s.getSequence(self.inputDir()) )
                 ncopies.append ( s.ncopies )
+                monomers_asym += s.ncopies
             dtype_sequence.writeMultiSeqFile ( self.file_seq_path(),
                                                name,sequence,ncopies )
             self.config.append ( "sequence" +\
-                " monomers_asym=1" +\
+                " monomers_asym=" + str(monomers_asym) +\
                 " solvent_content=" + str(solvent_content) +\
                 " file=" + self.file_seq_path() )
 

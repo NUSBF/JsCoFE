@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    09.11.19   <--  Date of Last Modification.
+#    08.12.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -75,6 +75,8 @@ class DType(dtype_template.DType):
             self.ligands        = []     # list of ligands fitted
             self.refmacLinks    = []     # List of links with description
             self.links          = []     # List of links without description
+
+            self.mapLabels      = None;  # used in UglyMol widgets
 
         return
 
@@ -155,6 +157,10 @@ class DType(dtype_template.DType):
         self.PHWT    = "PHWT"
         self.DELFWT  = ""
         self.PHDELWT = ""
+        self.HLA     = ""
+        self.HLB     = ""
+        self.HLC     = ""
+        self.HLD     = ""
         if struct_class:
             self.FreeR_flag = struct_class.FreeR_flag
         else:
@@ -338,6 +344,12 @@ class DType(dtype_template.DType):
         self.subtype = struct_class.subtype
         return
 
+    def mergeSubtypes ( self,struct_class,exclude_types=[] ):
+        for t in struct_class.subtype:
+            if t not in exclude_types and t not in self.subtype:
+                self.subtype += [t]
+        return
+
     def putXYZMeta ( self,fdir,file_stdout,file_stderr,log_parser=None ):
         fpath = self.getXYZFilePath ( fdir )
         if not fpath:
@@ -492,7 +504,8 @@ def getValidFileName ( xyzFilePath,subFilePath,mtzFilePath,mapFilePath ):
 # ----------------------------------------------------------------------------
 
 def register ( xyzFilePath,subFilePath,mtzFilePath,mapFilePath,dmapFilePath,libFilePath,
-               dataSerialNo,job_id,leadKey,outDataBox,outputDir,copy_files=False ):
+               dataSerialNo,job_id,leadKey,outDataBox,outputDir,copy_files=False,
+               map_labels=None ):
     fname0 = getValidFileName ( xyzFilePath,subFilePath,mtzFilePath,mapFilePath )
     if fname0 and os.path.isfile(fname0):
         structure = DType   ( job_id )
@@ -514,6 +527,7 @@ def register ( xyzFilePath,subFilePath,mtzFilePath,mapFilePath,dmapFilePath,libF
         if outDataBox:
             outDataBox.add_data ( structure )
         structure.adjust_dname()
+        structure.mapLabels = map_labels
         return structure
 
     else:
@@ -531,7 +545,7 @@ def basename ( fpath ):
 #  register1() assumes that all files are in output directory and named
 #  properly -- so just checks them in
 def register1 ( xyzFilePath,subFilePath,mtzFilePath,mapFilePath,dmapFilePath,libFilePath,
-                regName,dataSerialNo,job_id,leadKey,outDataBox ):
+                regName,dataSerialNo,job_id,leadKey,outDataBox,map_labels=None ):
 
     fname0 = getValidFileName ( xyzFilePath,subFilePath,mtzFilePath,mapFilePath )
     if fname0 and os.path.isfile(fname0):
@@ -553,6 +567,7 @@ def register1 ( xyzFilePath,subFilePath,mtzFilePath,mapFilePath,dmapFilePath,lib
         if outDataBox:
             outDataBox.add_data ( structure )
         structure.adjust_dname()
+        structure.mapLabels = map_labels
         return structure
 
     else:

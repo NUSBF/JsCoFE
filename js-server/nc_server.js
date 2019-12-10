@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    18.09.19   <--  Date of Last Modification.
+ *    21.11.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -194,7 +194,7 @@ function start()  {
               var cfg = conf.getServerConfig();
               cmd.sendResponseMessage ( server_response,
                   cmd.appName() + ' NC-' + cfg.serNo + ' (' + cfg.name + ') ' +
-                  cmd.jsCoFE_version + ' ' + browserCount,'text/plain' );
+                  cmd.appVersion() + ' ' + browserCount,'text/plain' );
             break;
 
           case cmd.nc_command.runJob :

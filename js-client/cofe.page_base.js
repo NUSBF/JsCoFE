@@ -127,7 +127,7 @@ BasePage.prototype.makeLogoPanel = function ( row,col,colSpan )  {
     logoPanel.setLabel ( '',0,c++,1,1 ).setWidth ( '30px' );
     logoPanel.setImage ( image_path('logo-mrc'),'','28px'  ,0,c++,1,1 );
   }
-  logoPanel.setLabel ( appName() + ' v.' + jsCoFE_version,0,c,1,1 )
+  logoPanel.setLabel ( appName() + ' v.' + appVersion(),0,c,1,1 )
                      .setFontSize ( '75%' ).setNoWrap()
                      .setVerticalAlignment('bottom');
   logoPanel.setVerticalAlignment   ( 0,0,'bottom'  );

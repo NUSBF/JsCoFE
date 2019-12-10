@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    08.03.19   <--  Date of Last Modification.
+#    23.11.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -43,6 +43,7 @@ citations = {
     'mtz2various'     : { 'name' : 'mtz2various'  , 'category' : 'service', 'refs' : [] },
     'matthews_coef'   : { 'name' : 'Matthews_Coef', 'category' : 'primary', 'refs' : [] },
     'reindex'         : { 'name' : 'Reindex'      , 'category' : 'primary', 'refs' : [] },
+    'cad-primary'     : { 'name' : 'CAD'          , 'category' : 'primary', 'refs' : [] },
     'cad'             : { 'name' : 'CAD'          , 'category' : 'service', 'refs' : [] },
     'cfft'            : { 'name' : 'CFFT'         , 'category' : 'service', 'refs' : [] },
     'unique'          : { 'name' : 'Unique'       , 'category' : 'service', 'refs' : [] },
@@ -62,6 +63,8 @@ citations = {
     'dials.rs_mapper' : { 'name' : '', 'category' : 'service', 'refs' : [] },
     'mapro'           : { 'name' : '', 'category' : 'primary', 'refs' : [] },
     'find-blobs'      : { 'name' : '', 'category' : 'service', 'refs' : [] },
+    'f2mtz'           : { 'name' : '', 'category' : 'service', 'refs' : [] },
+    'auto_tracing'    : { 'name' : '', 'category' : 'service', 'refs' : [] },
 
     'pointless' : { 'name'     : 'Pointless',
                     'category' : 'primary',
@@ -183,6 +186,7 @@ citations = {
                             'pages'   : '167-182',
                             'doi'     : '10.1107/S2059798318003455'
                         }]
+
     #                'refs'     : [{
     #                        'authors' : 'Keegan, R.M., Winn, M.D.',
     #                        'title'   : 'MrBUMP: an automated pipeline for molecular replacement',
@@ -713,6 +717,20 @@ citations = {
                         }]
                   },
 
+    'ccp4mg-primary'  :   { 'name'     : 'CCP4 MG',
+                    'desc'     : 'CCP4 molecular graphics',
+                    'category' : 'primary',
+                    'refs'     : [{
+                            'authors' : 'McNicholas, S., Potterton, E., Wilson, K.S., Noble, M.E.M.',
+                            'title'   : 'Presenting your structures: the CCP4mg molecular-graphics software',
+                            'journal' : 'Acta Cryst.',
+                            'volume'  : 'D67',
+                            'year'    : '2011',
+                            'pages'   : '386-394',
+                            'doi'     : '10.1107/S0907444911007281'
+                        }]
+                  },
+
     'viewhkl' :   { 'name'     : 'ViewHKL',
                     'desc'     : 'reflection data viewer',
                     'category' : 'viewer',
@@ -797,6 +815,66 @@ citations = {
                   }]
                 },
 
+    'dui'     : { 'name'     : 'DUI',
+                  'category' : 'primary',
+                  'refs'     : [{
+                            'authors' : 'Fuentes-Montero, L., Parkhurst, J., Gerstel, M., Gildea, R., Winter, G., Vollmar, M., Waterman, D. and Evans, G.',
+                            'title'   : 'Introducing DUI, a graphical interface for DIALS',
+                            'journal' : 'Acta Cryst.',
+                            'volume'  : 'A72',
+                            'year'    : '2016',
+                            'pages'   : 's189-s189',
+                            'doi'     : '10.1107/S2053273316097199'
+                  }]
+                },
+
+    'imosflm' : { 'name'     : 'iMosflm',
+                  'category' : 'primary',
+                  'refs'     : [{
+                            'authors' : 'Leslie, A. G. W.',
+                            'title'   : 'The integration of macromolecular diffraction data',
+                            'journal' : 'Acta Cryst.',
+                            'volume'  : 'D62',
+                            'year'    : '2006',
+                            'pages'   : '48-57',
+                            'doi'     : '10.1107/S0907444905039107'
+                        },{
+                            'authors' : 'Battye, T. G. G., Kontogiannis, L., Johnson, O., Powell, H. R. & Leslie, A. G. W.',
+                            'title'   : 'iMOSFLM: a new graphical interface for diffraction-image processing with MOSFLM',
+                            'journal' : 'Acta Cryst.',
+                            'volume'  : 'D67',
+                            'year'    : '2011',
+                            'pages'   : '271-281',
+                            'doi'     : '10.1107/S0907444910048675'
+                  }]
+                },
+
+    'lsqkab'  : { 'name'     : 'LSQKAB',
+                  'category' : 'primary',
+                  'refs'     : [{
+                            'authors' : 'Kabsch, W.',
+                            'title'   : 'A solution for the best rotation to relate two sets of vectors',
+                            'journal' : 'Acta Cryst.',
+                            'volume'  : 'A32',
+                            'year'    : '1976',
+                            'pages'   : '922-923',
+                            'doi'     : '10.1107/S0567739476001873'
+                  }]
+                },
+
+    'auspex'  : { 'name'     : 'Auspex',
+                  'category' : 'primary',
+                  'refs'     : [{
+                            'authors' : 'Thorn, A., Parkhurst, J., Emsley, P., Nicholls, R. A., Vollmar, M., Evans, G. & Murshudov, G. N.',
+                            'title'   : 'AUSPEX: a graphical tool for X-ray diffraction data analysis',
+                            'journal' : 'Acta Cryst.',
+                            'volume'  : 'D73',
+                            'year'    : '2017',
+                            'pages'   : '729-737',
+                            'doi'     : '10.1107/S205979831700969X'
+                  }]
+                }
+
 }
 
 #
@@ -856,6 +934,12 @@ def addCitation ( appName ):
 def addCitations ( appName_list ):
     for appName in appName_list:
         addCitation ( appName )
+    return
+
+def removeCitation ( appName ):
+    appRef = os.path.splitext ( os.path.basename(appName) )[0]
+    while appRef in citation_list:
+        citation_list.remove ( appRef )
     return
 
 

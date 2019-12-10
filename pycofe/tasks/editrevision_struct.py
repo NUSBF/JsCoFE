@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    20.11.19   <--  Date of Last Modification.
+#    22.11.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -118,12 +118,14 @@ class EditRevisionStruct(basic.TaskDriver):
             summary.append ( "ligands" )
 
 
-        self.putMessage ( "<b>Macromolecular model to be taken from:&nbsp;</b> " + xyz.dname )
+        if xyz:
+            self.putMessage ( "<b>Macromolecular model to be taken from:&nbsp;</b> " + xyz.dname )
         if lig_codes:
             self.putMessage ( "<b>Ligands replaced:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b> " + str(lig_codes) )
         elif lib_fpath:
             self.putMessage ( "<b>Ligands to be taken from:&nbsp;&nbsp;&nbsp;&nbsp;</b> " + xyz.dname )
-        self.putMessage ( "<b>Phases to be taken from:&nbsp;&nbsp;&nbsp;&nbsp;</b> " + phases.dname  )
+        if phases:
+            self.putMessage ( "<b>Phases to be taken from:&nbsp;&nbsp;&nbsp;&nbsp;</b> " + phases.dname  )
 
         structure = self.registerStructure1 (
                         xyz_fpath ,

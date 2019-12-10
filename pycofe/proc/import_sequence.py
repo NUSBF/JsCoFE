@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    13.10.19   <--  Date of Last Modification.
+#    08.12.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -152,20 +152,10 @@ def run ( body,sectionTitle="Macromolecular sequences" ):  # body is reference t
         os.rename ( os.path.join(body.importDir(),f),os.path.join(body.outputDir(),f) )
         seq.makeUniqueFNames ( body.outputDir() )
 
-        body.outputDataBox.add_data ( seq )
-        seq_imported.append ( seq )
-
-        seqTableId = body.getWidgetId ( "seq_"+str(k)+"_table" )
-        body.putTable     ( seqTableId,"",subSecId,0 )
-        body.putTableLine ( seqTableId,"File name","Imported file name",f,0 )
-        body.putTableLine ( seqTableId,"Assigned name",
-                                       "Assigned data name",seq.dname,1 )
-        body.putTableLine ( seqTableId,"Type","Polymer type",seq.subtype[0],2 )
-
         lines = filter ( None,
             (line.rstrip() for line in open(seq.getSeqFilePath(body.outputDir()),"r")))
 
-        htmlLine = ""
+        htmlLine = "<pre>"
         body.file_stdout.write ( "\n" )
 
         weights = aaWeight
@@ -177,18 +167,51 @@ def run ( body,sectionTitle="Macromolecular sequences" ):  # body is reference t
                 body.file_stdout.write ( "    " )
             #body.file_stdout.write ( lines[i] + "\n" )
             if i > 0:
-                htmlLine += "<br>"
-                seq.size += len ( lines[i].strip() )
-                for j in range(len(lines[i])):
-                    if lines[i][j] in weights:
-                        seq.weight += weights[lines[i][j]]
+                htmlLine += "\n"
+                line      = lines[i].replace(" ","").strip()
+                seq.size += len(line)
+                for j in range(len(line)):
+                    if line[j] in weights:
+                        seq.weight += weights[line[j]]
+                    #else:
+                    #    body.file_stdout.write ( "  ----- unrecognised sequence char " + str(line[j]) + "\n" )
             htmlLine += lines[i]
+        htmlLine += "</pre>"
 
-        body.putTableLine ( seqTableId,"Contents","Data contents"   ,htmlLine,3 )
-        body.putTableLine ( seqTableId,"Length  ","Sequence length" ,str(seq.size),4 )
-        body.putTableLine ( seqTableId,"Weight  ","Molecular weight",str(seq.weight),5 )
+        if seq.size>0:
 
-        body.putSummaryLine ( f,"SEQ",seq.dname )
+            if annot.type=="dna":
+                seq.weight += (seq.size-1)*79.0
+            elif annot.type=="rna":
+                seq.weight += (seq.size-1)*96.0
+
+            body.outputDataBox.add_data ( seq )
+            seq_imported.append ( seq )
+
+            seqTableId = body.getWidgetId ( "seq_"+str(k)+"_table" )
+            body.putTable     ( seqTableId,"",subSecId,0 )
+            body.putTableLine ( seqTableId,"File name","Imported file name",f,0 )
+            body.putTableLine ( seqTableId,"Assigned name",
+                                           "Assigned data name",seq.dname,1 )
+            body.putTableLine ( seqTableId,"Type"    ,"Polymer type",seq.subtype[0],2 )
+            body.putTableLine ( seqTableId,"Contents","Data contents"   ,htmlLine,3 )
+            body.putTableLine ( seqTableId,"Length  ","Sequence length" ,str(seq.size),4 )
+            body.putTableLine ( seqTableId,"Weight  ","Molecular weight",str(seq.weight),5 )
+
+            body.putSummaryLine ( f,"SEQ",seq.dname )
+
+        else:
+            body.putMessage1 ( subSecId,
+                "<h3>Sequence was not imported due to zero size</h3>" +\
+                "This often occurs if sequence file format is not recognised. " +\
+                "A valid format should follow the following pattern:<pre>" +\
+                "&gt;Sequence name for your reference\n" +\
+                "\n" +\
+                "EFQSKPLLTKREREVFELLVQDKTTKEIASELFISEKTVRNHISNAMQKLGVKGRSQAVVELLRMGELEL\n" +\
+                "RNHISNAMQKLGVKGRSQAVVELLRMGELELEFQSKPLLTKREREVFELLVQDKTTKEIASELFISEKTV\n" +\
+                "</pre>Your file reads:" + htmlLine + ""
+                ,0 )
+            body.putSummaryLine_red ( f,"SEQ","UNUSABLE: no sequence found (file format wrong?)" )
 
         body.file_stdout.write ( "\n... processed: " + f + "\n    " )
         k += 1

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    04.11.19   <--  Date of Last Modification.
+ *    01.12.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -178,7 +178,8 @@ var index = {};  // links volumes in config file and in vdata
       }
     }
 
-    if (pfill0<1.0)  {
+    if (pfill0<1.0)  {  // correct statement
+//    if (pfill0<100000000000.0)  {    //temporary hack before dormancy is introduced
 
       userData.volume = volume.name;
       _make_new_user ( userData,callback_func );
@@ -1163,9 +1164,11 @@ var ddata = { 'status' : 'ok' };
         for (var key in params)
           ddata[key] = params[key];
 
+        var timer_delay = 0; // ms
         var tnorm = 1000 * 60 * 60 * 24;
         for (var i=0;i<users.length;i++)
           if (users[i].dormant)  {
+            // THIS IS NOT FINISHED !!!!!
             var ndays = (ddata.check_date-users[i].dormant) / tnorm;
             if (ndays>ddata.period3)  {
               ddata.deleted_users++;
@@ -1176,41 +1179,51 @@ var ddata = { 'status' : 'ok' };
             }
           } else  {
             var ndays = (ddata.check_date-users[i].lastSeen) / tnorm;
+//ndays = 10000;
             if ((ndays>ddata.period1) ||
-                ((users[i].nJobs<=ddata.njobs) && (ndays>ddata.period2)))  {
+                ((users[i].ration.jobs_total<=ddata.njobs) && (ndays>ddata.period2)))  {
               ddata.dormant_users++;
+              ddata.disk_released += users[i].ration.storage - users[i].ration.storage_used;
               if (!ddata.checkOnly)  {
-                ddata.disk_released += users[i].ration.storage - users[i].ration.storage_used;
                 var uiFilePath = getUserDataFName ( users[i] );
                 var uiData     = utils.readObject ( uiFilePath );
                 if (uiData)  {
                   ud.checkUserData ( uiData );
                   uiData.dormant = ddata.check_date;
+//uiData.dormant = 0;
                   if (utils.writeObject(uiFilePath,uiData))  {
                     var reason_msg = '';
                     if (ndays>ddata.period1)
                       reason_msg = 'you have not used your account during last ' +
                                    ddata.period1 + ' days';
                     else
-                      reason_msg = 'you have run fewer than ' + (ddata.njobs+1) +
-                                   ' jobs during ' + ddata.period2 + ' days';
-                    response = new cmd.Response ( cmd.fe_retcode.ok,'',
-                      emailer.sendTemplateMessage ( uiData,
-                                'Your ' + cmd.appName() + ' account made dormant',
-                                'made_dormant',{
-                                  'reason' : reason_msg
-                                })
-                    );
-                    log.standard ( 132,'user ' + users[i].login + ' made dormant' );
+                      reason_msg = 'you have not used your account during last ' +
+                                   ddata.period2 + ' days, having run fewer than ' +
+                                   (ddata.njobs+1) + ' jobs in total';
+                    timer_delay += 100; // ms
+                    (function(udata,reason_line,delay){
+                      setTimeout ( function(){
+                        emailer.sendTemplateMessage ( udata,
+                                  'Your ' + cmd.appName() + ' account made dormant',
+                                  'made_dormant',{
+                                    'reason' : reason_line
+                                  });
+                      },delay);
+                    }(uiData,reason_msg,timer_delay))
+                    log.standard ( 132,'user ' + users[i].login + ' made dormant (' +
+                                       ndays + ' days inactivity, ' +
+                                       users[i].ration.jobs_total + ' jobs)' );
                   } else  {
                     log.error ( 134,'User file: ' + uiFilePath + ' cannot be written.' );
-                    response = new cmd.Response ( cmd.fe_retcode.writeError,
-                                                  'User file cannot be written.','' );
+                    ddata.status = 'cannot write user data';
+                    //response = new cmd.Response ( cmd.fe_retcode.writeError,
+                    //                              'User file cannot be written.','' );
                   }
                 } else  {
                   log.error ( 135,'User file: ' + uiFilePath + ' cannot be read.' );
-                  response = new cmd.Response ( cmd.fe_retcode.readError,
-                                                'User file cannot be read.','' );
+                  ddata.status = 'cannot read user data';
+                  //response = new cmd.Response ( cmd.fe_retcode.readError,
+                  //                              'User file cannot be read.','' );
                 }
               }
             }
@@ -1271,7 +1284,9 @@ var fe_server = conf.getFEConfig();
           rData.setup_desc = fe_server.description;
     else  rData.setup_desc = null;
     rData.check_session_period = fe_server.sessionCheckPeriod;  // ms
-    rData.ccp4_version = conf.CCP4Version();
+    rData.ccp4_version    = conf.CCP4Version();
+    rData.maintainerEmail = conf.getEmailerConfig().maintainerEmail;
+    rData.jscofe_version  = cmd.appVersion();
 
     var client_conf = conf.getClientNCConfig();
     if (client_conf) rData.local_service = client_conf.externalURL;
@@ -1303,6 +1318,7 @@ function authResponse ( server_request,server_response )  {
   };
 
   var pstr  = server_request.url;
+//console.log ( ' >>>>>>> 1 ' + pstr );
   var plist = [];
   if (pstr.length>0)  {
     if (pstr.startsWith('/?'))     pstr = pstr.substr(2);
@@ -1323,6 +1339,7 @@ function authResponse ( server_request,server_response )  {
   else if (params.token=='')
     auth_result = 'denied';
   else {
+//console.log ( ' >>>>>>> 2 ' + params.reqid );
     params.reqid = params.reqid.split('-');
     if (params.reqid.length==3)  {
       software_key  = params.reqid[1];

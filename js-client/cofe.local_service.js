@@ -79,6 +79,7 @@ function checkLocalService ( callback_func )  {
         __regMode       = rData.regMode;
         __setup_desc    = rData.setup_desc;
         __ccp4_version  = rData.ccp4_version;
+        maintainerEmail = rData.maintainerEmail;
         __check_session_period = rData.check_session_period;
         __fe_url        = document.location.protocol + '//' +
                           document.location.host     +
