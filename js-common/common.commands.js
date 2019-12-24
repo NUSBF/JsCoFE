@@ -2,7 +2,7 @@
 /*
  *  ===========================================================================
  *
- *    10.12.19   <--  Date of Last Modification.
+ *    23.12.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  ---------------------------------------------------------------------------
  *
@@ -25,7 +25,7 @@
 
 function appName()  { return 'CCP4 Cloud' }  // application name for reporting
 
-var jsCoFE_version = '1.5.002 [10.12.2019]';
+var jsCoFE_version = '1.5.003 [21.12.2019]';
 
 function appVersion()  {
   return jsCoFE_version;
@@ -74,6 +74,7 @@ var fe_reqtype = {
   updateUData_admin : '-updateUData_admin', // request to update user data by admin
   deleteUser        : '-deleteUser',        // request to delete user account and data
   deleteUser_admin  : '-deleteUser_admin',  // request to delete user account and data by admin
+  updateAndRestart  : '-updateAndRestart',  // request to update and restart all servers
   getUserRation     : '-getUserRation',     // request to retrieve current user ration
   getProjectList    : '-getProjectList',    // request for project list
   saveProjectList   : '-saveProjectList',   // request to save project list

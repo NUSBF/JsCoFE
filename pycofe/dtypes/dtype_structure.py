@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    08.12.19   <--  Date of Last Modification.
+#    18.12.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -170,10 +170,12 @@ class DType(dtype_template.DType):
     def setPhaserEPLabels ( self,hkl_class ):
         self.FP      = "F"
         self.SigFP   = "SIGF"
+        self.FreeR_flag = "FreeR_flag"
         if hkl_class:
             if hasattr(hkl_class.dataset,"Fmean"):
                 self.FP    = hkl_class.dataset.Fmean.value
                 self.SigFP = hkl_class.dataset.Fmean.sigma
+            self.FreeR_flag = hkl.getFreeRColumn()
         self.PHI     = "PHIB"
         self.FOM     = "FOM"
         self.FWT     = "FWT"
@@ -184,7 +186,6 @@ class DType(dtype_template.DType):
         self.HLB     = "HLB"
         self.HLC     = "HLC"
         self.HLD     = "HLD"
-        self.FreeR_flag = "FreeR_flag"
         return;
 
 

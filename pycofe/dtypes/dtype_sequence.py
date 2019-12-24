@@ -3,13 +3,13 @@
 #
 # ============================================================================
 #
-#    31.10.18   <--  Date of Last Modification.
+#    18.12.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  SEQUENCE DATA TYPE
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2018
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2019
 #
 # ============================================================================
 #
@@ -165,27 +165,28 @@ class DType(dtype_template.DType):
 
 
     def convert2Seq(self,inputDir,outputDir):
-        # convert to *.seq if necessary
+        # convert to *.seq if necessary and enforce capital letters in sequence
         if dtype_template.file_key["seq"] in self.files:
             fname = self.files[dtype_template.file_key["seq"]]
+            fname_seq = fname
             if fname.lower().endswith('.pir'):
                 self.files["pir"] = fname
                 fname_seq = os.path.splitext(fname)[0] + "_pir.seq"
                 self.files[dtype_template.file_key["seq"]] = fname_seq
-                f     = open(os.path.join(inputDir,fname),'r')
-                lines = f.readlines()
-                f.close()
-                f     = open(os.path.join(outputDir,fname_seq),'w')
-                i     = 0
-                while (i<len(lines)):
-                    if lines[i].strip().startswith(">"):
-                        break
-                    else:
-                        i += 1
-                if i<len(lines):
-                    f.write ( lines[i].strip() + "\n" )
-                    i += 2
-                while (i<len(lines)):
-                    f.write ( lines[i].strip().upper().replace ( " ","" ) + "\n" )
+            f     = open(os.path.join(inputDir,fname),'r')
+            lines = f.readlines()
+            f.close()
+            f     = open(os.path.join(outputDir,fname_seq),'w')
+            i     = 0
+            while (i<len(lines)):
+                if lines[i].strip().startswith(">"):
+                    break
+                else:
                     i += 1
+            if i<len(lines):
+                f.write ( lines[i].strip() + "\n" )
+                i += 2
+            while (i<len(lines)):
+                f.write ( lines[i].strip().upper().replace ( " ","" ) + "\n" )
+                i += 1
         return

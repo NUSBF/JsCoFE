@@ -442,7 +442,7 @@ citations = {
                             'journal' : 'IUCrJ',
                             'volume'  : '1(Pt 6)',
                             'year'    : '2014',
-                            'pages'   : '387–392',
+                            'pages'   : '387-392',
                             'doi'     : '10.1107/S2052252514019290'
                         }]
                   },

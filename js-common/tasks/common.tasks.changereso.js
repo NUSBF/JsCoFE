@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    23.11.19   <--  Date of Last Modification.
+ *    18.12.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -33,11 +33,12 @@ function TaskChangeReso()  {
 
   this._type     = 'TaskChangeReso';
   this.name      = 'change dataset resolution';  // short name for job tree
-  this.setOName ( 'SpG' );  // default output file name template
+  this.setOName ( 'ChangeRes' );  // default output file name template
   this.title     = 'Change Dataset Resolution';  // full title
   this.helpURL   = './html/jscofe_task_changereso.html';
   this.fasttrack = true;  // enforces immediate execution
 
+  /* ===== left here for showing how an 'ASU' version of the task can be done
   this.input_dtypes = [{    // input data types
       data_type   : {'DataRevision':['hkl'],
                      'DataHKL':[]}, // data type(s) and subtype(s)
@@ -48,6 +49,26 @@ function TaskChangeReso()  {
       version     : 0,            // minimum data version allowed
       min         : 1,            // minimum acceptable number of data instances
       max         : 1             // maximum acceptable number of data instances
+    }
+  ];
+  */
+
+  this.input_dtypes = [{    // input data types
+      data_type   : {'DataHKL':[]},    // data type(s) and subtype(s)
+      label       : 'Reflection data', // label for input dialog
+      inputId     : 'idata',      // input Id for referencing input fields
+      customInput : 'changereso', // lay custom fields next to the selection
+                                  // dropdown for anomalous data
+      version     : 0,            // minimum data version allowed
+      min         : 1,            // minimum acceptable number of data instances
+      max         : 1             // maximum acceptable number of data instances
+    },{
+      data_type   : {'DataRevision':[]}, // data type(s) and subtype(s)
+      label       : 'Structure revision', // label for input dialog
+      inputId     : 'revision', // input Id for referencing input fields
+      version     : 0,          // minimum data version allowed
+      min         : 0,          // minimum acceptable number of data instances
+      max         : 0           // maximum acceptable number of data instances
     }
   ];
 
@@ -75,11 +96,39 @@ TaskChangeReso.prototype.currentVersion = function()  {
 }
 
 
-if (__template)  {
+if (!__template)  {
+  //  for client side
+
+  TaskChangeReso.prototype.addDataDialogHints = function ( inp_item,summary )  {
+    // This function may be used for adding or modifying hints in summary.hints
+    // when they are dependent on task rather than, or in addition to, daat type.
+    // 'inp_item' corresponds to an item in this.input_data.
+    summary.hints.push (
+      'Why <i>"Structure Revision"</i> is not allowed? This means that the ' +
+      'task can be used only before a <i>"Structure Revision"</i> ' +
+      'is created. If you are past this point in your Project, you may have ' +
+      'to start, with this task, a new branch in your Project after data ' +
+      'import or data processing.'
+    );
+    /*
+    summary.hints.push (
+      'Is it possible to change Space Group in <i>"Structure Revision"</i>? ' +
+      'The answer is "in general, no", because such change would be incompatible ' +
+      'with results of phasing and refinement. However, you can choose an ' +
+      'alternative (compatible) space group in an empty ASU, before any phasing ' +
+      'is done, with <i>"Change ASU Space Group"</i> task. This may require ' +
+      'starting a new branch in your Project.'
+    );
+    */
+    return summary;
+  }
+
+} else  {
   //  for server side
 
   var conf = require('../../js-server/server.configuration');
 
+  /* ===== left here for showing how an 'ASU' version of the task can be done
   TaskChangeReso.prototype.makeInputData = function ( loginData,jobDir )  {
     // put hkl and structure data in input databox for copying their files in
     // job's 'input' directory
@@ -91,7 +140,9 @@ if (__template)  {
     __template.TaskTemplate.prototype.makeInputData.call ( this,loginData,jobDir );
 
   }
+  */
 
+  // changereso.py can handle both 'hkl' and 'asu' versions
   TaskChangeReso.prototype.getCommandLine = function ( jobManager,jobDir )  {
     return [conf.pythonName(), '-m', 'pycofe.tasks.changereso', jobManager, jobDir, this.id];
   }

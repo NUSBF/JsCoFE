@@ -58,6 +58,7 @@
  *      function harvestTaskData ( includeSelected_bool,harvestedTaskIds );
  *      function inspectData     ( jobId,dataType,dataId );
  *      function getAllAncestors ();
+ *      function getNonRemarkParent ( task );
  *      function replayTree      ( ref_tree );
  *
  *   }
@@ -538,11 +539,19 @@ JobTree.prototype._add_job = function ( insert_bool,task,dataBox,
 }
 
 
-JobTree.prototype.addJob = function ( insert_bool,parent_page,onAdd_func )  {
+JobTree.prototype.addJob = function ( insert_bool,copy_params,parent_page,onAdd_func )  {
   (function(tree){
     var dataBox = tree.harvestTaskData ( 1,[] );
     var branch_task_list = tree.getAllAncestors ( tree.getSelectedTask() );
     new TaskListDialog ( dataBox,branch_task_list,function(task){
+      if (copy_params)  {
+        var reftask = null;
+        for (var i=0;(i<branch_task_list.length) && (!reftask);i++)
+          if (task._type==branch_task_list[i]._type)
+            reftask = branch_task_list[i];
+        if (reftask)
+          task.parameters = jQuery.extend ( true,{},reftask.parameters );
+      }
       tree._add_job ( insert_bool,task,dataBox, parent_page,onAdd_func );
     });
   }(this));
@@ -1153,6 +1162,28 @@ JobTree.prototype.getAllAncestors = function ( task )  {
   }
 
   return tasks;
+
+}
+
+
+JobTree.prototype.getNonRemarkParent = function ( task )  {
+
+  if (!task)
+    return [];
+
+  var nodeId = this.getTaskNodeId ( task.id );
+  nodeId     = this.node_map[nodeId].parentId;
+  var nrtask = null;
+  while (nodeId && (!nrtask))  {
+    if (nodeId in this.task_map)  {
+      nrtask = this.task_map[nodeId];
+      if (nrtask.isRemark())
+        nrtask = null;
+    }
+    nodeId = this.node_map[nodeId].parentId;
+  }
+
+  return nrtask;
 
 }
 

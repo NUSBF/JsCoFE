@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    10.10.19   <--  Date of Last Modification.
+ *    18.12.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -217,7 +217,37 @@ TaskDimple.prototype.currentVersion = function()  {
 }
 
 
-if (__template)  {
+if (!__template)  {
+  //  for client side
+
+  TaskDimple.prototype.collectInput = function ( inputPanel )  {
+    var input_msg = TaskTemplate.prototype.collectInput.call ( this,inputPanel );
+    var hkl = null;
+
+    if ('revision' in this.input_data.data)
+      hkl = this.input_data.getData('revision')[0].HKL;
+    else if ('hkl' in this.input_data.data)  // used in derived tasks
+      hkl = this.input_data.getData('hkl')[0];
+
+    if (!hkl)  {
+      if (input_msg.length>0)
+        input_msg += '<br>';
+      input_msg += '<b>Reflection data is not found</b> This indicates a program ' +
+                   'bug, please report to software maintainer or developer';
+    } else if (!hkl.isImean())  {
+      if (input_msg.length>0)
+        input_msg += '<br>';
+      input_msg += '<b>Reflection data:</b> Dimple can work only with ' +
+                   'reflection datasets that include<br>mean intensities, ' +
+                   'and they are not found in the dataset from the selected<br>' +
+                   'structure revision';
+    }
+
+    return input_msg;
+
+  }
+
+} else  {
   //  for server side
 
   var conf = require('../../js-server/server.configuration');

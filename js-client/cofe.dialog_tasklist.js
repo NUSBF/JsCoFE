@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    03.12.19   <--  Date of Last Modification.
+ *    19.12.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -275,8 +275,9 @@ var row      = 0;
 
   if (__login_user=='Developer')
     this.makeSection ( 'Tasks in Development',[
-      new TaskMergeData (),
-      new TaskHelloWorld()
+      new TaskCombStructure(),
+      new TaskMergeData    (),
+      new TaskHelloWorld   ()
     ]);
 
   if (__cloud_storage)  {
@@ -303,17 +304,19 @@ var row      = 0;
   */
 
   this.makeSection ( 'Data Processing',[
-    new TaskXia2      (),
-    new TaskDUI       (),
-    new TaskIMosflm   (),
-    new TaskAimless   (),
-    new TaskChangeSpG (),
-    new TaskChangeReso(),
-    new TaskFreeRFlag ()
+    new TaskXia2        (),
+    new TaskDUI         (),
+    new TaskIMosflm     (),
+    new TaskAimless     (),
+//    new TaskChangeSpG (),
+    new TaskChangeSpGHKL(),
+    new TaskChangeReso  (),
+    new TaskFreeRFlag   ()
   ]);
 
   this.makeSection ( 'Asymmetric Unit and Structure Revision',[
-    new TaskASUDef      (),
+    new TaskASUDef            (),
+    new TaskChangeSpGASU      (),
     //new TaskASUDefStruct(),
     //new TaskASUMod      ()
     new TaskEditRevisionASU   (),

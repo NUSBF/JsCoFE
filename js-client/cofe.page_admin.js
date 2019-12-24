@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    01.12.19   <--  Date of Last Modification.
+ *    23.12.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -106,8 +106,27 @@ function AdminPage ( sceneId )  {
   this.usageStats._url    = '';
   this.usageStats._loaded = false;
 
-  this.nodesTitle    = this.nodesTab.grid.setLabel  ( '',0,0,1,1 );
+  //  nodes tab controls
+  this.nodesTitle    = this.nodesTab.grid.setLabel ( '',0,0,1,1 )
+                                         .setHeight_px ( 32 );
   this.nodeListTable = null;
+
+  this.naPanel       = new Grid('');
+  this.nodesTab.grid.setWidget   ( this.naPanel,0,1,1,1 );
+  this.nodesTab.grid.setCellSize ( '','32px',0,0 );
+  this.nodesTab.grid.setCellSize ( '','32px',0,1 );
+  this.nodesTab.grid.setVerticalAlignment ( 0,0,'middle' );
+  this.nodesTab.grid.setVerticalAlignment ( 0,1,'middle' );
+
+  this.naPanel.setLabel    ( '   ',0,0,1,1 );
+  this.naPanel.setCellSize ( '95%','32px',0,0 );
+
+  col = 1;
+  var update_btn  = this.naPanel.setButton ( '',image_path('update'),0,col++,1,1 )
+                                .setSize('30px','30px')
+                                .setTooltip('Update and restart');
+  for (var i=1;i<col;i++)
+    this.naPanel.setCellSize ( 'auto','32px',0,i );
 
   this.onResize ( window.innerWidth,window.innerHeight );
 
@@ -123,6 +142,14 @@ function AdminPage ( sceneId )  {
 
     dormant_btn.addOnClickListener ( function(){
       new DormantUsersDialog ( function(){ refresh_btn.click(); });
+    });
+
+    update_btn.addOnClickListener ( function(){
+      serverRequest ( fe_reqtype.updateAndRestart,'','Admin Page',
+                      function(data){
+        logout ( self.element.id,0 );
+        window.setTimeout ( function(){ window.location=window.location; },2000 );  // reload
+      },null,'persist' );
     });
 
     announce_btn.addOnClickListener ( function(){
@@ -303,10 +330,11 @@ AdminPage.prototype.makeNodesInfoTab = function ( ndata )  {
 
 //console.log ( JSON.stringify(ndata) );
 
-  this.nodesTitle.setText ( '<h2>Nodes</h2>' );
+  //this.nodesTitle.setText ( '<h2>Nodes</h2>' );
+  this.nodesTitle.setText('Nodes').setFontSize('1.5em').setFontBold(true);
 
   this.nodeListTable = new Table();
-  this.nodesTab.grid.setWidget ( this.nodeListTable,1,0,1,1 );
+  this.nodesTab.grid.setWidget ( this.nodeListTable,1,0,1,2 );
 
   this.nodeListTable.setHeaderRow (
     [ 'Node',

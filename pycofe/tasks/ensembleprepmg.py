@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    02.12.19   <--  Date of Last Modification.
+#    15.12.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -86,11 +86,11 @@ class EnsemblePrepMG(basic.TaskDriver):
         shutil.copy2 ( os.path.join(os.path.dirname(os.path.abspath(__file__)),"..","proc",ccp4mg_scr),"." )
         cmd = [
             "-norestore",
-            seqPath,
-            "-scr",ccp4mg_scr,
+            os.path.abspath(seqPath),
+            "-scr",os.path.abspath(ccp4mg_scr),
             "-scriptArg","mrBumpMRNUM="   + str(self.getParameter(sec1.MRNUM,False)),
             "-scriptArg","mrBumpJOBID=F_" + ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(40)),
-            "-scriptArg","mrBumpWorkDir=" + self.mrbump_dir(),
+            "-scriptArg","mrBumpWorkDir=" + os.path.abspath(self.mrbump_dir()),
             "-scriptArg","mrBumpCutoff="  + str(self.getParameter(sec1.CUTOFF,False)),
             "-scriptArg","mrBumpSim="     + self.getParameter(sec1.RLEVEL_SEL,False)
         ]

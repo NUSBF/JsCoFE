@@ -1,7 +1,7 @@
 /*
  *  ========================================================================
  *
- *    23.11.19   <--  Date of Last Modification.
+ *    19.12.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  ------------------------------------------------------------------------
  *
@@ -47,12 +47,12 @@ var _taskIndex = {
   // suggest Aimless, Simbad and ASUDef after Import or Model Preparation in
   // the specified order; do not suggest them after themselves (user should
   // branch/clone instead)
-  'F'  : { type: 'TaskAimless'        , after: ['B','C','D','E','h','m', 't', 'u'] },
-  'G'  : { type: 'TaskSimbad'         , after: ['B','C','D','E','F','h','m', 't', 'u'] },
-  'H'  : { type: 'TaskASUDef'         , after: ['B','C','D','E','F','h','m', 't', 'u'] },
+  'F'  : { type: 'TaskAimless'        , after: ['B','C','D','E',    'h','m','t','u'] },
+  'G'  : { type: 'TaskSimbad'         , after: ['B','C','D','E','F','h','m','t','u'] },
+  'H'  : { type: 'TaskASUDef'         , after: ['B','C','D','E','F','h','m','t','u'] },
 
   // suggest Xyz2Revision after Import, Models and Ligands
-  'I'  : { type: 'TaskXyz2Revision'   , after: ['B','C','D','E','F','h','m', 't', 'u'] },
+  'I'  : { type: 'TaskXyz2Revision'   , after: ['B','C','D','E','F','h','m','t','u'] },
 
   // suggest Morda, MrBump, and Balbes after ASUDef; do not suggest them after
   // themselves (user should branch/clone instead)
@@ -112,7 +112,9 @@ var _taskIndex = {
   'b'  : { type: 'TaskPISA'           , after: ['V','W','X'] },
 
   // suggest ChangeSpG after dataprocessing tasks
-  'c'  : { type: 'TaskChangeSpG'      , after: ['h','t','u'] },
+  //'c'  : { type: 'TaskChangeSpG'      , after: ['h','t','u'] },
+  'c'  : { type: 'TaskChangeSpGHKL'   , after: ['h','t','u'] },
+  'c2' : { type: 'TaskChangeSpGASU'   , after: ['H'] },
 
   // suggest ChangeReso after dataprocessing tasks
   'c1' : { type: 'TaskChangeReso'     , after: ['h','t','u'] },

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    21.11.19   <--  Date of Last Modification.
+ *    23.12.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -25,9 +25,10 @@ var request = require('request');
 //  load application modules
 var conf    = require('./server.configuration');
 var user    = require('./server.fe.user');
-var cmd     = require('../js-common/common.commands');
 var rj      = require('./server.fe.run_job');
 var ustats  = require('./server.fe.usagestats')
+var utils   = require('./server.utils');
+var cmd     = require('../js-common/common.commands');
 
 //  prepare log
 var log = require('./server.log').newLog(16);
@@ -126,6 +127,26 @@ function getAdminData ( loginData,data,callback_func )  {
 
 }
 
+
+function updateAndRestart ( loginData,data )  {
+
+  var uData = user.readUserData ( loginData );
+  if (!uData.admin)  {
+    log.standard ( 1,'attempt to update and restart from non-administrative account' );
+  } else  {
+    var FEconfig = conf.getFEConfig();
+    if (FEconfig.update_rcode>0)  {
+      log.standard ( 2,'update and restart ...' );
+      setTimeout ( function(){ process.exit(FEconfig.update_rcode); },100 );
+    }
+  }
+
+  return new cmd.Response ( cmd.fe_retcode.ok,'',{} );
+
+}
+
+
 // ==========================================================================
 // export for use in node
-module.exports.getAdminData  = getAdminData;
+module.exports.getAdminData     = getAdminData;
+module.exports.updateAndRestart = updateAndRestart;

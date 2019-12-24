@@ -5,9 +5,19 @@
 #  05.12.2019
 #
 
+info_dialog ( "!!! IMPORTANT TEMPORARY CHANGE !!!\n" +\
+              "In order to save the edited structure in your Project,\n" +\
+              "use \"Save coordinates\" from Main Menu/Files\n" +\
+              "before closing Coot, without changing file name\n" +\
+              "and directory offered by default, and only then\n" +\
+              "end Coot session as usual." )
+
+
+"""
 info_dialog ( "In order to save edited structure in your Project,\n" +\
               "use \"Save to CCP4 Cloud and Exit\" from Main Menu/Files\n" +\
               "before closing Coot" )
+"""
 
 
 if (have_coot_python):
@@ -76,7 +86,7 @@ if (have_coot_python):
             #quick_save()
             coot_real_exit(0)
 
-
+        """
         menu = coot_menubar_menu("File")
 
         # add as many as you like
@@ -117,5 +127,6 @@ if (have_coot_python):
             save_to_cloud_and_exit(),
             gtk.STOCK_QUIT
         )
-#            ["test-id", "tpp.png"])
-#            gtk.STOCK_QUIT)
+        #            ["test-id", "tpp.png"])
+        #            gtk.STOCK_QUIT)
+        """

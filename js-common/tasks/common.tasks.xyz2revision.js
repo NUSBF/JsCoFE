@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    19.08.19   <--  Date of Last Modification.
+ *    18.12.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -182,6 +182,9 @@ if (!__template)  {
 
   }
 
+//  TaskXyz2Revision.prototype.collectInput = function ( inputPanel )  {
+//    return TaskTemplate.prototype.collectInput.call ( this,inputPanel );
+//  }
 
 } else  {  //  for server side
 

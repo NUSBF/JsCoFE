@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    10.10.19   <--  Date of Last Modification.
+ *    10.12.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -234,7 +234,6 @@ TaskXia2.prototype.cleanJobDir = function ( jobDir )  {}
 if (!__template)  {
   // for client side
 
-
   TaskXia2.prototype.disableDirectoryInput = function ( inputPanel,disable_bool ) {
     for (var i=0;i<inputPanel.dir_input.length;i++)
       inputPanel.dir_input[i].browse_btn.setDisabled ( disable_bool );
@@ -253,7 +252,6 @@ if (!__template)  {
           sectors[j].ranges_inp = sectors_inp[j].getValue();
       }
   }
-
 
   TaskXia2.prototype.layDirLine = function ( inputPanel,dirNo,row )  {
     var dir_input = {};
@@ -591,7 +589,7 @@ if (!__template)  {
     div.dir_input = [];
     this.layDirectoryInput ( div );
 
-    this.parameters.sec1.contains.PROJECT.default = this.project;
+    this.parameters.sec1.contains.PROJECT.default = this.project.replace(/[^a-zA-Z0-9]/g, '_');
 
     this.layParameters ( div.grid,div.grid.getNRows()+1,0 );
 

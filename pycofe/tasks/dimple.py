@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    24.12.18   <--  Date of Last Modification.
+#    10.12.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2018
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2019
 #
 # ============================================================================
 #
@@ -47,6 +47,18 @@ class Dimple(basic.TaskDriver):
     def runDimple ( self,hkl,istruct ):
 
         sec1 = self.task.parameters.sec1.contains
+
+        if not hkl.hasMeanIntensities():
+            self.putTitle   ( "Unsuitable Data" )
+            self.putMessage ( "Dimple requires reflection data with mean intensities, " +\
+                              "which is not found in this case." )
+            # this will go in the project tree line
+            self.generic_parser_summary["editrevision_asu"] = {
+              "summary_line" : "no mean intensity data, therefore stop"
+            }
+            # close execution logs and quit
+            self.success()
+            return
 
         # make command-line parameters for dimple
         cmd = [

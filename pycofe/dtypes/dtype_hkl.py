@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    30.09.19   <--  Date of Last Modification.
+#    10.12.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -153,6 +153,11 @@ class DType(dtype_template.DType):
         if hasattr(self.dataset,"Imean") and self.dataset.Imean is not None:
             return True
         if hasattr(self.dataset,"Ipm") and self.dataset.Ipm is not None:
+            return True
+        return False
+
+    def hasMeanIntensities ( self ):
+        if hasattr(self.dataset,"Imean") and self.dataset.Imean is not None:
             return True
         return False
 
