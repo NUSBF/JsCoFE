@@ -148,7 +148,7 @@ function AdminPage ( sceneId )  {
       serverRequest ( fe_reqtype.updateAndRestart,'','Admin Page',
                       function(data){
         logout ( self.element.id,0 );
-        window.setTimeout ( function(){ window.location=window.location; },2000 );  // reload
+        window.setTimeout ( function(){ window.location=window.location; },30000 );  // reload
       },null,'persist' );
     });
 
