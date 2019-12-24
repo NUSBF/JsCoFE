@@ -1,8 +1,14 @@
+/* ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  THIS IS A LEGACY CODE AFTER 18.12.2019 WHICH MAY BE EVENTUALLY REMOVED
+  If removed, check reference and documentation files, and also
+  remove task icon from image_* directories.
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ */
+
 
 /*
  *  =================================================================
  *
- *    10.10.19   <--  Date of Last Modification.
+ *    19.12.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -39,7 +45,7 @@ function TaskChangeSpG()  {
   this.fasttrack = true;  // enforces immediate execution
 
   this.input_dtypes = [{    // input data types
-      data_type   : {'DataRevision':['hkl','~xyz','~substructure'],
+      data_type   : {'DataRevision':['~xyz','~substructure','~phases'],
                      'DataHKL':[]}, // data type(s) and subtype(s)
       label       : 'ASU definition or<br>Reflection Data', // label for input dialog
       inputId     : 'idata',    // input Id for referencing input fields
@@ -68,7 +74,7 @@ TaskChangeSpG.prototype.constructor = TaskChangeSpG;
 TaskChangeSpG.prototype.icon = function()  { return 'task_changespg'; }
 
 TaskChangeSpG.prototype.currentVersion = function()  {
-  var version = 0;
+  var version = 1;  // was advanced to prevent cloning in old projects
   if (__template)
         return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );

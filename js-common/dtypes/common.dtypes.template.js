@@ -156,7 +156,7 @@ if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
 
   // dataDialogHint() may return a hint for TaskDataDialog, which is shown
   // when there is no sufficient data in project to run the task.
-  DataTemplate.prototype.dataDialogHints = function ( subtype_list ) {
+  DataTemplate.prototype.dataDialogHints = function ( subtype_list,n_allowed ) {
     return [];  // No help hints by default
   }
 

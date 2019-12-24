@@ -170,7 +170,7 @@ function Communicate ( server_request )  {
 
 Communicate.prototype.sendFile = function ( server_response )  {
 
-  var mtype = this.mimeType;
+  //var mtype = this.mimeType;
 
   log.debug2 ( 5,'send file = ' + this.filePath );
 
@@ -179,7 +179,7 @@ Communicate.prototype.sendFile = function ( server_response )  {
   if (this.ncURL.length>0)  {
     // the file is on an NC, fetch it from there through a temporary file on FE
 
-    (function(ncURL){
+    (function(ncURL,mimeType){
       tmp.tmpName(function(err,fpath) {
         if (err) {
           log.error ( 10,'cannot create temporary storage for file ' +
@@ -200,11 +200,11 @@ Communicate.prototype.sendFile = function ( server_response )  {
               utils.removeFile ( fpath );
             })
             .on('close',function(){   // finish,end,
-              utils.send_file ( fpath,server_response,mtype,false,0,0,null );
+              utils.send_file ( fpath,server_response,mimeType,false,0,0,null );
             });
         }
       });
-    }(this.ncURL));
+    }(this.ncURL,this.mimeType));
 
   } else  {
 
@@ -216,12 +216,12 @@ Communicate.prototype.sendFile = function ( server_response )  {
     }
 
     if (!this.search)
-      utils.send_file ( fpath,server_response,mtype,false,0,0,null );
+      utils.send_file ( fpath,server_response,this.mimeType,false,0,0,null );
     else if (this.search.indexOf('?capsize')>=0)
-      utils.send_file ( fpath,server_response,mtype,false,
+      utils.send_file ( fpath,server_response,this.mimeType,false,
                         conf.getFEConfig().fileCapSize,0,null );
     else
-      utils.send_file ( fpath,server_response,mtype,false,0,0,null );
+      utils.send_file ( fpath,server_response,this.mimeType,false,0,0,null );
 
   }
 

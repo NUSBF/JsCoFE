@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    03.12.19   <--  Date of Last Modification.
+#    11.12.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -102,7 +102,10 @@ class Xia2(basic.TaskDriver):
                 "pipeline=" + pipeline,
                 "small_molecule=" + small_mol ]
 
-        cmd.append ( "nproc=" + nSubJobs )
+        if sys.platform.startswith("win"):
+            cmd.append ( "nproc=1" )
+        else:
+            cmd.append ( "nproc=" + nSubJobs )
 
         if hatom      :  cmd.append ( "atom="          + hatom   )
         if space_group:  cmd.append ( "space_group=\"" + space_group + "\"" )

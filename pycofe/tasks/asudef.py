@@ -91,7 +91,7 @@ def makeRevision ( base,hkl,seq,composition,altEstimateKey,altNRes,
     )
 
     nRes      = 0
-    molWeight = 0
+    molWeight = 0.0
     dataKey   = 0
 
     nc0   = -1
@@ -237,7 +237,7 @@ def makeRevision ( base,hkl,seq,composition,altEstimateKey,altNRes,
                           cellv[0].attributes["volume"].value.strip() +\
                           "&nbsp;&Aring;<sup>3</sup>" )
 
-    if molWeight>0 or nRes>0:
+    if molWeight>0.0 or nRes>0:
         items = xmldoc.getElementsByTagName ( "result" )
     else:
         items = []
@@ -254,7 +254,7 @@ def makeRevision ( base,hkl,seq,composition,altEstimateKey,altNRes,
                               "can be fit in asymmetric unit.<br> No " +\
                               "structure revision created.</h3>" )
         elif dataKey==0:
-            if molWeight<=0:
+            if molWeight<=0.0:
                 base.putMessage ( "<h3 class='header-red'>No molecules with " +\
                                   "given sequences can be fit in asymmetric " +\
                                   "unit.<br>No structure revision created.</h3>" )

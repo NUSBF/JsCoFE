@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    19.07.19   <--  Date of Last Modification.
+ *    18.12.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -305,7 +305,7 @@ DataBox.prototype.getDataSummary = function ( task )  {
     var hints    = [];
     //var mustHaveTypes    = [];
     //var mustNotHaveTypes = [];
-    var data_types = {};  // will contain required data types with subtypes
+    var data_types = {};  // will contain n_required data types with subtypes
 
     for (var dtype in inp_data)  {
 
@@ -341,28 +341,44 @@ DataBox.prototype.getDataSummary = function ( task )  {
         title += ')';
       }
 
-      hints = hints.concat ( dobj.dataDialogHints(inp_data[dtype]) );
+      hints = hints.concat ( dobj.dataDialogHints(inp_data[dtype],inp_item.max) );
 
     }
 
-    var required = inp_item.min;
-    if (title in summary)
-      required = Math.max ( required,summary[title].required );
+    var n_required = inp_item.min;
+    var n_allowed  = inp_item.max;
+    if (title in summary)  {
+      n_required = Math.max ( n_required,summary[title].n_required );
+      n_allowed  = Math.min ( n_allowed ,summary[title].n_allowed  );
+    }
 
     var rc = 2;
-    if (nDTypes<required)  // no match (red)
+    if ((nDTypes<n_required) || ((inp_item.max<=0) && (nDTypes>0)))  // no match (red)
       rc = 0;
-    else if (nDTypes>required)
+    else if (nDTypes>n_required)
       rc = 1;  // ok, but umbiguous (amber)
 
+    /*
     summary[title] = {
-      status    : rc,
-      available : nDTypes,
-      required  : required,
-      hints     : hints,
-      dtypes    : data_types,
-      desc      : desc
+      status      : rc,
+      n_available : nDTypes,
+      n_required  : n_required,
+      n_allowed   : n_allowed,
+      hints       : hints,
+      dtypes      : data_types,
+      desc        : desc
     }
+    */
+
+    summary[title] = task.addDataDialogHints ( inp_item,{
+      status      : rc,
+      n_available : nDTypes,
+      n_required  : n_required,
+      n_allowed   : n_allowed,
+      hints       : hints,
+      dtypes      : data_types,
+      desc        : desc
+    });
 
   }
 

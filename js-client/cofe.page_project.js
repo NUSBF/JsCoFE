@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    20.10.19   <--  Date of Last Modification.
+ *    18.12.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -72,12 +72,17 @@ function ProjectPage ( sceneId )  {
 
   function addJob()  {
     selectRemark();
-    jobTree.addJob ( false,self, function(){ del_btn.setDisabled ( false ); } );
+    jobTree.addJob ( false,false,self, function(){ del_btn.setDisabled ( false ); } );
+  }
+
+  function addJobRepeat()  {
+    selectRemark();
+    jobTree.addJob ( false,true,self, function(){ del_btn.setDisabled ( false ); } );
   }
 
   function insertJob()  {
     selectRemark();
-    jobTree.addJob ( true,self, function(){ del_btn.setDisabled ( false ); } );
+    jobTree.addJob ( true,false,self, function(){ del_btn.setDisabled ( false ); } );
   }
 
   function addRemark()  {
@@ -121,15 +126,20 @@ function ProjectPage ( sceneId )  {
     del_btn  .setEnabled ( dsel );
 
     if (task)  {
-      var is_remark = task.isRemark();
-                      //(task.state==job_code.remark) ||
-                      //(task.state==job_code.remdet) ||
-                      //(task.state==job_code.remdoc);
+      var is_remark   = task.isRemark();
+      var add_enabled = is_remark;
+      if (is_remark)  {
+        var tparent = jobTree.getNonRemarkParent ( task );
+        if (tparent)
+          add_enabled = ((tparent.state==job_code.finished) ||
+                         (tparent.state==job_code.failed)   ||
+                         (tparent.state==job_code.stopped));
+      }
       add_btn.setEnabled ( (!__dormant) &&
                            ((task.state==job_code.finished) ||
                             (task.state==job_code.failed)   ||
                             (task.state==job_code.stopped)  ||
-                            is_remark) );
+                            (is_remark && add_enabled)) );
       //insert_btn.setEnabled ( add_btn.isEnabled() );
       //clone_btn  .setEnabled ( dsel && (task.state!=job_code.remark) );
       clone_btn  .setEnabled ( (!__dormant) && dsel && task.canClone(node,jobTree) );
@@ -163,15 +173,20 @@ function ProjectPage ( sceneId )  {
 
     if (!$(add_btn.element).button('option','disabled'))  {
       items.addJobItem = { // The "Add job" menu item
-        label : "Add job",
+        label : "Add new job",
         icon  : image_path('add'),
         action: addJob
+      };
+      items.addJobRepeatItem = { // The "Add job" menu item
+        label : "Add job with last used parameters",
+        icon  : image_path('add_repeat'),
+        action: addJobRepeat
       };
     }
 
     if (!$(moveup_btn.element).button('option','disabled'))  {
       items.moveJobUpItem = { // The "Add job" menu item
-        label : "Move up",
+        label : "Move job up the tree",
         icon  : image_path('moveup'),
         action: moveJobUp
       };
@@ -187,7 +202,7 @@ function ProjectPage ( sceneId )  {
 
     if (!$(del_btn.element).button('option','disabled'))  {
       items.delJobItem = { // The "Delete job" menu item
-        label : 'Delete job',
+        label : 'Delete job with ancestors',
         icon  : image_path('remove'),
         action: deleteJob
       };
@@ -198,7 +213,7 @@ function ProjectPage ( sceneId )  {
 
     if (!$(open_btn.element).button('option','disabled'))  {
       items.runJobItem = { // The "Open job" menu item
-        label : "Open job",
+        label : "Open job dialog",
         icon  : image_path('openjob'),
         action: openJob
       };
@@ -206,7 +221,7 @@ function ProjectPage ( sceneId )  {
 
     if (!$(stop_btn.element).button('option','disabled'))  {
       items.stopJobItem = { // The "Stop job" menu item
-        label : "Stop job",
+        label : "Stop job running",
         icon  : image_path('stopjob'),
         action: stopJob
       };
@@ -228,17 +243,19 @@ function ProjectPage ( sceneId )  {
 
 //alert ( 'on tree');
 
+    /*
     add_btn    .setDisabled ( __dormant );
     //insert_btn .setDisabled ( false );
     moveup_btn .setDisabled ( __dormant );
     clone_btn  .setDisabled ( __dormant );
     add_rem_btn.setDisabled ( __dormant );
     refresh_btn.setDisabled ( false );
-
-    setButtonState();
+    */
 
     if (split_btn)
       split_btn.setEnabled ( true );
+
+    setButtonState();
 
     // add button listeners
     add_btn    .addOnClickListener ( addJob    );
@@ -259,6 +276,8 @@ function ProjectPage ( sceneId )  {
     jobTree.addSignalHandler ( cofe_signals.treeUpdated,function(data){
       setButtonState();
     });
+
+//    window.setTimeout ( function(){ alert('p1'); setButtonState(); },1000 );
 
     if ((jobTree.root_nodes.length==1) &&
         (jobTree.root_nodes[0].children.length<=0))

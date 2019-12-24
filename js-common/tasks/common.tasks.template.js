@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    03.12.19   <--  Date of Last Modification.
+ *    18.12.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -222,6 +222,13 @@ if (!dbx)  {
 
     return can_move;
 
+  }
+
+  TaskTemplate.prototype.addDataDialogHints = function ( inp_item,summary )  {
+    // This function may be used for adding or modifying hints in summary.hints
+    // when they are dependent on task rather than, or in addition to, daat type.
+    // 'inp_item' corresponds to an item in this.input_data.
+    return summary;
   }
 
 

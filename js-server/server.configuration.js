@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    21.11.19   <--  Date of Last Modification.
+ *    23.12.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -75,6 +75,7 @@ function ServerConfig ( type )  {
   this.exclude_tasks = [];   // tasks that should not run on given server
   this.only_tasks    = [];   // tasks that server can only run
   this.storage       = null;
+  this.update_rcode  = 0;    // can be bde detected by launcher script to do the needful
   this.startDate     = new Date(Date.now()).toUTCString();
 }
 
@@ -329,6 +330,7 @@ var version = '';
     "stoppable"        : false,
     "exclude_tasks"    : [],
     "fsmount"          : "/",
+    "update_rcode"     : 212, // optional
     "userDataPath"     : "./cofe-users",
     "storage"          : "./cofe-projects",  // for logs, stats, pids, tmp etc.
     "projectsPath"     : "./cofe-projects",  // in this case, "storage" may be omitted

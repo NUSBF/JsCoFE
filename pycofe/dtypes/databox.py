@@ -3,13 +3,13 @@
 #
 # ============================================================================
 #
-#    26.08.18   <--  Date of Last Modification.
+#    10.12.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  THE DATABOX
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2018
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2019
 #
 # ============================================================================
 #
@@ -20,6 +20,9 @@ import os
 
 #  application imports
 from pycofe.varut import jsonut
+
+#  seems to be necessary for __import__ calls below in the body
+sys.path.append ( os.path.join(os.path.dirname(os.path.abspath(__file__)),os.pardir) )
 
 # ============================================================================
 

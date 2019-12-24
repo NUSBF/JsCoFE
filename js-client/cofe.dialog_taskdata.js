@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    18.10.19   <--  Date of Last Modification.
+ *    18.12.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -74,12 +74,14 @@ function TaskDataDialog ( dataSummary,task )  {
         }
         table.setImage ( icon_uri,'','20px',row,1, 1,1 );
   //      table.setLabel ( dataSummary[key].note,row,2, 1,1 );
-        if (dataSummary[key].required<=0)
-              table.setLabel ( 'optional',                row,2, 1,1 );
-        else  table.setLabel ( dataSummary[key].required, row,2, 1,1 );
-        if (dataSummary[key].available<=0)
-              table.setLabel ( 'none',                    row,3, 1,1 );
-        else  table.setLabel ( dataSummary[key].available,row,3, 1,1 );
+        if (dataSummary[key].n_allowed<=0)
+              table.setLabel ( 'not allowed',               row,2, 1,1 );
+        else if (dataSummary[key].n_required<=0)
+              table.setLabel ( 'optional',                  row,2, 1,1 );
+        else  table.setLabel ( dataSummary[key].n_required, row,2, 1,1 );
+        if (dataSummary[key].n_available<=0)
+              table.setLabel ( 'none',                      row,3, 1,1 );
+        else  table.setLabel ( dataSummary[key].n_available,row,3, 1,1 );
         row++;
       }
 
@@ -106,6 +108,7 @@ function TaskDataDialog ( dataSummary,task )  {
                             String('here').fontcolor('blue') + '</i></a>.',
                          2,0, 1,2 );
 
+    hints = hints.filter(function(hint) { return hint.trim()!=''; });
     if (hints.length==1)  {
       this.grid.setLabel ( '<b><i>Hint:</i></b>', 3,0, 1,1 );
       this.grid.setLabel ( hints[0], 3,1, 1,1 ).setWidth_px ( 600 );

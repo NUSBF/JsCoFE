@@ -790,23 +790,26 @@ if (!__template)  {
 
   // dataDialogHint() may return a hint for TaskDataDialog, which is shown
   // when there is no sufficient data in project to run the task.
-  DataRevision.prototype.dataDialogHints = function ( subtype_list ) {
-  var hints = 'A suitabe <i>"Structure Revision"</i> is missing ';
-    if ((subtype_list.indexOf('xyz')>=0) || (subtype_list.indexOf('phases')>=0))
-      hints += '-- perform phasing first.';
-    else if (subtype_list.indexOf('substructure')>=0)
-      hints += '-- perform substructure search first.';
-    else
-      hints += '-- run the <i>"Asymmetric Unit Content"</i> task to ' +
-               'create a new revision.';
-    if (subtype_list.indexOf('anomalous')>=0)
-      hints += ' Make sure to use revision with reflection dataset having ' +
-               'anomalous signal.';
-    hints += ' See full description <a href="javascript:' +
-                    'launchHelpBox(\'Structure Revision\',' +
-                                  '\'./html/jscofe_data.html\',' +
-                                  'null,10)"><i>' +
-                String('here').fontcolor('blue') + '</i></a>.';
+  DataRevision.prototype.dataDialogHints = function ( subtype_list,n_allowed ) {
+  var hints = '';
+    if (n_allowed>0)  {
+      hints = 'A suitabe <i>"Structure Revision"</i> is missing ';
+      if ((subtype_list.indexOf('xyz')>=0) || (subtype_list.indexOf('phases')>=0))
+        hints += '-- perform phasing first.';
+      else if (subtype_list.indexOf('substructure')>=0)
+        hints += '-- perform substructure search first.';
+      else
+        hints += '-- run the <i>"Asymmetric Unit Content"</i> task to ' +
+                 'create a new revision.';
+      if (subtype_list.indexOf('anomalous')>=0)
+        hints += ' Make sure to use revision with reflection dataset having ' +
+                 'anomalous signal.';
+      hints += ' See full description <a href="javascript:' +
+                      'launchHelpBox(\'Structure Revision\',' +
+                                    '\'./html/jscofe_data.html\',' +
+                                    'null,10)"><i>' +
+                  String('here').fontcolor('blue') + '</i></a>.';
+    }
     return [hints];  // No help hints by default
   }
 

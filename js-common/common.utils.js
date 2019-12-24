@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    31.07.18   <--  Date of Last Modification.
+ *    15.12.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Common Utils
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2018
+ *  (C) E. Krissinel, A. Lebedev 2016-2019
  *
  *  =================================================================
  *
@@ -49,9 +49,11 @@ function padDigits ( number,digits ) {
 }
 
 function round ( number,digits ) {
-  if (number!=null)
-    return Number(number.toFixed(digits));
-  return '';
+  try {
+    return Number(Number(number).toFixed(digits));
+  } catch (e)  {
+    return 0;
+  }
 }
 
 function padStringLeft ( S,char,n ) {

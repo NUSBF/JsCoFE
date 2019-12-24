@@ -20,6 +20,7 @@
     "stoppable"        : false,
     "exclude_tasks"    : [],
     "fsmount"          : "/",
+    "update_rcode"     : 212,
     "userDataPath"     : "./cofe-users",
     "projectsPath"     : "./cofe-projects",
     "facilitiesPath"   : "./cofe-facilities",

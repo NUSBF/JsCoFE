@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    08.12.19   <--  Date of Last Modification.
+ *    10.12.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -113,7 +113,7 @@ DataStructure.prototype.phaseType = function()  {
   switch (this.leadKey)  {
     case 1 : if (this.isSubstructure())
                   return 'Calculated from substructure coordinates'
-             else return 'Calculated from macrimolecular model';
+             else return 'Calculated from macromolecular model';
     case 2 : return 'Calculated via Experimental Phasing';
     default : ;
   }
@@ -338,7 +338,7 @@ if (!__template)  {
 
   // dataDialogHint() may return a hint for TaskDataDialog, which is shown
   // when there is no sufficient data in project to run the task.
-  DataStructure.prototype.dataDialogHints = function ( subtype_list ) {
+  DataStructure.prototype.dataDialogHints = function ( subtype_list,n_allowed ) {
   var hints = [ 'Have imported a PDB or mmCIF file with coordinates and ' +
                 'wonder why <i>"Structure"</i> data type is not available to ' +
                 'the task? <a href="javascript:' +

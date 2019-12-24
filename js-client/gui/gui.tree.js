@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    15.05.19   <--  Date of Last Modification.
+ *    20.12.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -971,7 +971,8 @@ Tree.prototype.createTree = function ( onReady_func,
         tree.selected_node_id = tree.root_nodes[0].id;
       } else  {
         // always note the first selected one!
-        tree.selected_node_id = selId[0];
+        //tree.selected_node_id = selId[0];
+        tree.selectSingleById ( selId[0] );
       }
 
       if (onReady_func)

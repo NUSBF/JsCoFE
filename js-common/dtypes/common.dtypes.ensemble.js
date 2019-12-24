@@ -220,7 +220,7 @@ if (!__template)  {
 
   // dataDialogHint() may return a hint for TaskDataDialog, which is shown
   // when there is no sufficient data in project to run the task.
-  DataEnsemble.prototype.dataDialogHints = function ( subtype_list ) {
+  DataEnsemble.prototype.dataDialogHints = function ( subtype_list,n_allowed ) {
   var hints = [ 'An ensemble of MR models is missing. Use a suitable <i>"Ensemble ' +
                 'preparation"</i> task to create one.',
                 'Have you imported a PDB or mmCIF file with coordinates and ' +

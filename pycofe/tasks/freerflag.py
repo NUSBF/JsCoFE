@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    22.12.18   <--  Date of Last Modification.
+#    18.12.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2018
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2019
 #
 # ============================================================================
 #
@@ -176,9 +176,11 @@ class FreeRFlag(basic.TaskDriver):
                 self.putTitle ( "Output Data" )
                 if len(self.files_all) > 1:
                     import_merged.run ( self,"Reflection datasets created",
-                                             True,False,importPhases=False )
+                                             sectionOpen=True,importPhases=False,
+                                             freeRflag=True )
                 else:
-                    import_merged.run ( self,"",False,False,importPhases=False )
+                    import_merged.run ( self,"",sectionOpen=False,importPhases=False,
+                                             freeRflag=True  )
 
                 outhkl = self.outputDataBox.data[hkl[0]._type]
                 if n0 >= 0:

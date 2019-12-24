@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    20.10.19   <--  Date of Last Modification.
+ *    23.12.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -65,6 +65,10 @@ var response = null;
 
     case cmd.fe_reqtype.deleteUser_admin :
           response = user.deleteUser_admin ( loginData,data );
+        break;
+
+    case cmd.fe_reqtype.updateAndRestart :
+          response = adm.updateAndRestart ( loginData,data );
         break;
 
     case cmd.fe_reqtype.saveHelpTopics :

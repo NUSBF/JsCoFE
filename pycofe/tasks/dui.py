@@ -56,10 +56,11 @@ class DUI(basic.TaskDriver):
         # Prepare dui job
 
         # Run dui
-        if sys.platform.startswith("win"):
-            rc = self.runApp ( "dui.bat",[],logType="Main",quitOnError=False )
-        else:
-            rc = self.runApp ( "dui",[],logType="Main",quitOnError=False )
+        #if sys.platform.startswith("win"):
+        #    rc = self.runApp ( "dui.bat",[],logType="Main",quitOnError=False )
+        #else:
+        #    rc = self.runApp ( "dui",[],logType="Main",quitOnError=False )
+        rc = self.runApp ( "dui",[],logType="Main",quitOnError=False )
 
         # Check for MTZ files left by DUI and import them as Unmerged
 
