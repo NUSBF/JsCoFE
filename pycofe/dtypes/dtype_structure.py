@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    18.12.19   <--  Date of Last Modification.
+#    25.12.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -175,7 +175,8 @@ class DType(dtype_template.DType):
             if hasattr(hkl_class.dataset,"Fmean"):
                 self.FP    = hkl_class.dataset.Fmean.value
                 self.SigFP = hkl_class.dataset.Fmean.sigma
-            self.FreeR_flag = hkl.getFreeRColumn()
+            if hasattr(hkl_class.dataset,"FREE"):
+                 self.FreeR_flag = hkl_class.dataset.FREE
         self.PHI     = "PHIB"
         self.FOM     = "FOM"
         self.FWT     = "FWT"

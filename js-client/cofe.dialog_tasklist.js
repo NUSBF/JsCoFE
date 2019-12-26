@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    19.12.19   <--  Date of Last Modification.
+ *    25.12.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -275,7 +275,6 @@ var row      = 0;
 
   if (__login_user=='Developer')
     this.makeSection ( 'Tasks in Development',[
-      new TaskCombStructure(),
       new TaskMergeData    (),
       new TaskHelloWorld   ()
     ]);
@@ -365,7 +364,8 @@ var row      = 0;
     new TaskArpWarp  (),
     new TaskNautilus (),
     new TaskDimple   (),
-    new TaskCootMB   ()
+    new TaskCootMB   (),
+    new TaskCombStructure()
   ]);
 
   this.makeSection ( 'Ligands',[

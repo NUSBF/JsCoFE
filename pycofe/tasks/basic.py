@@ -533,7 +533,6 @@ class TaskDriver(object):
         pyrvapi.rvapi_add_panel ( panel_id,pageId,row,0,1,colSpan )
         return
 
-
     def putFieldset ( self,fset_id,title ):
         pyrvapi.rvapi_add_fieldset ( fset_id,title,self.report_page_id(),self.rvrow,0,1,1 )
         self.rvrow += 1
