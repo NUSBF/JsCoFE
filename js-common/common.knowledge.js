@@ -1,7 +1,7 @@
 /*
  *  ========================================================================
  *
- *    19.12.19   <--  Date of Last Modification.
+ *    25.12.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  ------------------------------------------------------------------------
  *
@@ -139,6 +139,9 @@ var _taskIndex = {
 
   // suggest Coot after refinememnt
   'j'  : { type: 'TaskCootMB'         , after: ['V','W','i','U','r'] },
+
+  // suggest CombStructure after refinememnt
+  'j1' : { type: 'TaskCombStructure'  , after: ['V','W','i','U','r'] },
 
   // suggest PDB Deposition after Refmac
   'k'  : { type: 'TaskDeposition'     , after: ['V'] },

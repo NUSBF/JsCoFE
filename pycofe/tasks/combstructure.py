@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    20.12.19   <--  Date of Last Modification.
+#    25.12.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -27,7 +27,10 @@
 #  python native imports
 import os
 import sys
-import json
+import uuid
+import math
+
+import gemmi
 
 #  application imports
 import basic
@@ -46,86 +49,148 @@ class CombStructure(basic.TaskDriver):
 
     # ------------------------------------------------------------------------
 
-    def make_pass ( self,passId,hkl,params ):
+    def assess_results ( self,xyz1,xyz2 ):
+        st1 = gemmi.read_structure ( xyz1 )
+        st2 = gemmi.read_structure ( xyz2 )
+        result = {
+            "nmodified" : 0,
+            "rmsd"      : 0.0,
+            "modlist"   : []
+        }
+        nrmsd = 0
+        for mno in range(len(st1)):
+            model1 = st1[mno]
+            model2 = st2[mno]
+            for cno in range(len(model1)):
+                chain1 = model1[cno]
+                chain2 = model2[cno]
+                for rno in range(len(chain1)):
+                    res1 = chain1[rno]
+                    res2 = chain2[rno]
+                    if len(res1)!=len(res2):
+                        result["nmodified"] += 1
+                    for ano in range(len(res1)):
+                        pos1 = res1[ano].pos
+                        pos2 = res2[ano].pos
+                        dx = pos1[0] - pos2[0]
+                        dy = pos1[1] - pos2[1]
+                        dz = pos1[2] - pos2[2]
+                        result["rmsd"] += dx*dx + dy*dy + dz*dz
+                        nrmsd += 1
+        if nrmsd>0:
+            result["rmsd"] = math.sqrt ( result["rmsd"]/nrmsd )
+        return result
+
+
+    # ------------------------------------------------------------------------
+
+    pass_meta = {
+        "FR" :  { "title"  : "Fill partial residues",
+                  "script" : "fill_partial_residues"
+                },
+        "FP" :  { "title"  : "Fit protein",
+                  "script" : "fit_protein"
+                },
+        "SR" :  { "title"  : "Stepped refine",
+                  "script" : "stepped_refine_protein"
+                },
+        "RR" :  { "title"  : "Ramachandran Plot refine/improve",
+                  "script" : "stepped_refine_protein_for_rama"
+                }
+    }
+
+    def make_pass ( self,secId,passId,hkl,params ):
+
+        self.putMessage1 ( secId,"<h3>" + self.pass_meta[passId]["title"] +\
+                                 " with Coot</h3>",0 )
+        self.flush()
+        report_row = 1
 
         #  comb structure
 
-        self.open_script ( "coot" )
+        coot_xyzout = self.coot_out() + str(passId) + ".pdb"
+        coot_script = self.coot_out() + str(passId) + ".py"
 
-        lab_f   = self.getLabel ( meta["labin_fc"],0 )
-        lab_phi = self.getLabel ( meta["labin_fc"],1 )
-        xyzout  = os.path.join  ( self.workdir,nameout+".pdb" )
-
-        self.write_script ([
+        f = open ( coot_script,"w" )
+        f.write(
             "make_and_draw_map('" + params["mtzin"]  +\
                                 "', '" + params["labin_fc"][0] +\
                                 "', '" + params["labin_fc"][1] +\
-                                "', '', 0, 0)",
-            script + "(0)",
-            "write_pdb_file(0,'" + xyzout + "')",
-            "coot_real_exit(0)"
-        ])
-
-        self.close_script()
-
-        script_path = self.script_path + ".py"
-        os.rename ( self.script_path,script_path )
-        self.script_path = None
+                                "', '', 0, 0)\n"        +\
+            params["function"] + "(0)\n"                +\
+            "write_pdb_file(0,'" + coot_xyzout + "')\n" +\
+            "coot_real_exit(0)\n"
+        )
+        f.close()
 
         cmd = [ "--no-state-script", "--no-graphics", "--no-guano", "--python",
-                "--pdb",params["xyzin"], "--script",script_path ]
+                "--pdb",params["xyzin"], "--script",coot_script ]
 
-        stdout_fpath = self.getStdOutPath ( nameout )
-        stderr_fpath = self.getStdErrPath ( nameout )
-        if sys.platform.startswith("win"):
-            self.runApp ( "coot.bat",cmd,
-                          fpath_stdout=stdout_fpath,fpath_stderr=stderr_fpath )
-        else:
-            self.runApp ( "coot",cmd,
-                          fpath_stdout=stdout_fpath,fpath_stderr=stderr_fpath )
+        self.runApp ( "coot",cmd,logType="Main" )
 
-        out_meta = meta.copy()
-        out_meta["xyzpath"  ] = xyzout
+        results = self.assess_results ( params["xyzin"],coot_xyzout )
+        out_msg = []
+        if passId=="FR" or results["nmodified"]>0:
+            out_msg.append ( str(results["nmodified"]) + " residues were modified" )
+        if passId!="FR":
+            out_msg.append ( "Cumulative r.m.s.d. of changes: {:.3f} &Aring;".format(results["rmsd"]) )
+        for msg in out_msg:
+            self.putMessage1 ( secId,msg,report_row )
+            report_row += 1
 
+        #  refine phases
 
-
-        #  polish with Refmac
-
+        """
         hkl_labels = hkl.getMeanColumns()
         if hkl_labels[2]=="F":
             hkl_labin = "LABIN FP=" + hkl_labels[0] + " SIGFP=" + hkl_labels[1]
         else:
             hkl_labin = "LABIN IP=" + hkl_labels[0] + " SIGIP=" + hkl_labels[1]
-        hkl_labin += " FREE=" + hkl.getFreeRColumn()
+        """
 
-        self.open_stdin()
-        self.write_stdin ([
-            hkl_labin,
-            "NCYC " + params["NCYCLES"],
-            "WEIGHT AUTO",
-            "MAKE HYDR NO",
-            "REFI BREF ISOT",
-            "SCALE TYPE SIMPLE",
-            "SOLVENT YES",
-            "NCSR LOCAL",
-            "MAKE NEWLIGAND EXIT",
-            "END"
-        ])
-        self.close_stdin()
+        if int(params["ncycles"])>0:
 
-        refmac_mtzout = self.refmac_out() + str(passId) + ".mtz"
-        refmac_xyzout = self.refmac_out() + str(passId) + ".pdb"
+            hkl_labels = hkl.getMeanF()
+            hkl_labin  = "LABIN FP=" + hkl_labels[0] + " SIGFP=" + hkl_labels[1]
+            hkl_labin += " FREE=" + hkl.getFreeRColumn()
 
-        cmd = [ "hklin" ,hkl.getHKLFilePath(self.inputDir()),
-                "xyzin" ,meta["xyzpath"],
-                "hklout",refmac_mtzout,
-                "xyzout",refmac_xyzout,
-                "tmpdir",os.path.join(os.environ["CCP4_SCR"],uuid.uuid4().hex) ]
+            self.open_stdin()
+            self.write_stdin ([
+                hkl_labin,
+                "NCYC " + params["ncycles"],
+                "WEIGHT AUTO",
+                "MAKE HYDR NO",
+                "REFI BREF ISOT",
+                "SCALE TYPE SIMPLE",
+                "SOLVENT YES",
+                "NCSR LOCAL",
+                "MAKE NEWLIGAND EXIT",
+                "END"
+            ])
+            self.close_stdin()
 
-        if params["libin"]:
-            cmd += ["libin",params["libin"]]
+            refmac_mtzout = self.refmac_out() + str(passId) + ".mtz"
+            refmac_xyzout = self.refmac_out() + str(passId) + ".pdb"
 
-        self.runApp ( "refmac5",cmd,logType="Main" )
+            cmd = [ "hklin" ,hkl.getHKLFilePath(self.inputDir()),
+                    "xyzin" ,coot_xyzout,
+                    "hklout",refmac_mtzout,
+                    "xyzout",refmac_xyzout,
+                    "tmpdir",os.path.join(os.environ["CCP4_SCR"],uuid.uuid4().hex) ]
+
+            if params["libin"]:
+                cmd += ["libin",params["libin"]]
+
+            # Prepare report parser
+            panelId = self.getWidgetId ( self.refmac_report() + "_" + secId )
+            self.putPanel1 ( secId,panelId,report_row,colSpan=1 )
+            self.setGenericLogParser ( panelId,False,graphTables=False,makePanel=False )
+            self.runApp ( "refmac5",cmd,logType="Main" )
+            self.unsetLogParser()
+
+        else:
+            refmac_mtzout = params["mtzin"]
+            refmac_xyzout = coot_xyzout
 
         return [refmac_mtzout,refmac_xyzout]
 
@@ -143,51 +208,48 @@ class CombStructure(basic.TaskDriver):
         # fetch input data
         hkl     = self.makeClass ( self.input_data.data.hkl[0] )
         istruct = self.makeClass ( self.input_data.data.istruct[0] )
+        libin   = istruct.getLibFilePath ( self.inputDir() )
 
-        # Prepare report parser
-        #self.setGenericLogParser ( self._report(),False )
+        sec1    = self.task.parameters.sec1.contains
+        mtzxyz  = [
+            istruct.getMTZFilePath ( self.inputDir() ),
+            istruct.getXYZFilePath ( self.inputDir() )
+        ]
+        labin_fc = [istruct.FWT,istruct.PHWT]
 
-
-        if self.getParameter(self.task.parameters.sec1.contains.PDB_CBX)=="True":
-            cmd += [ "-auto" ]
-
-        minres = self.getParameter(self.task.parameters.sec1.contains.MINRES)
-        if minres:
-            cmd += [ "-minres",minres ]
-
-        if self.getParameter(self.task.parameters.sec1.contains.DNA_CBX)=="True":
-            cmd += [ "-dna" ]
-
-        if self.getParameter(self.task.parameters.sec1.contains.MR_CBX)=="True":
-            cmd += [ "-mr" ]
-
-
-        libin = istruct.getLibFilePath ( self.inputDir() )
-
-        self.make_pass ( 1,hkl,{
-          "libin"    : libin,
-          "xyzin"    : istruct.getXYZFilePath ( self.inputDir() ),
-          "mtzin"    : istruct.getMTZFilePath ( self.inputDir() ),
-          "labin_fc" : [istruct.FWT,istruct.PHWT]
-        })
+        for i in range(4):
+            passN = "PASS" + str(i+1) + "_"
+            code  = self.getParameter ( getattr(sec1,passN+"SEL") )
+            if code!="N":
+                secId   = self.getWidgetId ( "comb_"+code )
+                self.putSection ( secId,self.pass_meta[code]["title"] )
+                ncycles = self.getParameter ( getattr(sec1,passN+"NCYC") )
+                mtzxyz  = self.make_pass ( secId,code,hkl,{
+                  "libin"    : libin,
+                  "mtzin"    : mtzxyz[0],
+                  "xyzin"    : mtzxyz[1],
+                  "labin_fc" : labin_fc,
+                  "ncycles"  : ncycles,
+                  "function" : self.pass_meta[code]["script"]
+                })
+                if ncycles>0:
+                    labin_fc = ["FWT","PHWT"]
 
 
         # check solution and register data
-        if os.path.isfile(self.getXYZOFName()):
+        if os.path.isfile(mtzxyz[1]):
+
+            os.rename ( mtzxyz[0],self.getMTZOFName() )
+            os.rename ( mtzxyz[1],self.getXYZOFName() )
 
             self.putTitle ( "CombStructure Output" )
-            self.unsetLogParser()
-
-            # calculate maps for UglyMol using final mtz from temporary location
-            #fnames = self.calcCCP4Maps ( self.getMTZOFName(),self.outputFName )
 
             # register output data from temporary location (files will be moved
             # to output directory by the registration procedure)
 
             structure = self.registerStructure ( self.getXYZOFName(),None,
                                                  self.getMTZOFName(),
-                                                 None,None,None,
-                                                 #fnames[0],fnames[1],None,  -- not needed for new UglyMol
+                                                 None,None,libin,
                                                  leadKey=1 )
             if structure:
                 structure.copyAssociations   ( istruct )

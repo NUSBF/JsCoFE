@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    19.12.19   <--  Date of Last Modification.
+ *    25.12.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -61,10 +61,11 @@ function TaskCombStructure()  {
                     tooltip  : 'Action for 1st pass',
                     range    : ['FR|Fill partial residues',
                                 'FP|Fit protein',
-                                'SR|Stepped refine'
+                                'SR|Stepped refine',
+                                'RR|Ramachandran Plot improve',
                                ],
                     value    : 'FR',
-                    iwidth   : 200,
+                    iwidth   : 270,
                     position : [0,0,1,1]
                 },
                 PASS1_NCYC : {
@@ -86,10 +87,11 @@ function TaskCombStructure()  {
                     range    : ['FR|Fill partial residues',
                                 'FP|Fit protein',
                                 'SR|Stepped refine',
+                                'RR|Ramachandran Plot improve',
                                 'N|None'
                                ],
                     value    : 'FP',
-                    iwidth   : 200,
+                    iwidth   : 270,
                     position : [1,0,1,1]
                 },
                 PASS2_NCYC : {
@@ -111,10 +113,11 @@ function TaskCombStructure()  {
                     range    : ['FR|Fill partial residues',
                                 'FP|Fit protein',
                                 'SR|Stepped refine',
+                                'RR|Ramachandran Plot improve',
                                 'N|None'
                                ],
                     value    : 'SR',
-                    iwidth   : 200,
+                    iwidth   : 270,
                     position : [2,0,1,1]
                 },
                 PASS3_NCYC : {
@@ -127,6 +130,32 @@ function TaskCombStructure()  {
                     iwidth   : 50,
                     label2   : 'cycles of refinement',
                     position : [2,4,1,1]
+                  },
+                  PASS4_SEL : {
+                      type     : 'combobox',
+                      keyword  : 'none',
+                      label    : '4<sup>th</sup> pass:',
+                      tooltip  : 'Action for 1st pass',
+                      range    : ['FR|Fill partial residues',
+                                  'FP|Fit protein',
+                                  'SR|Stepped refine',
+                                  'RR|Ramachandran Plot improve',
+                                  'N|None'
+                                 ],
+                      value    : 'RR',
+                      iwidth   : 270,
+                      position : [3,0,1,1]
+                  },
+                  PASS4_NCYC : {
+                      type     : 'integer',
+                      keyword  : 'none',
+                      label    : 'followed by',
+                      tooltip  : 'Number of refinement cycles',
+                      range    : [0,'*'],
+                      value    : '10',
+                      iwidth   : 50,
+                      label2   : 'cycles of refinement',
+                      position : [3,4,1,1]
                 }
              }
     }
