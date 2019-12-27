@@ -41,6 +41,8 @@ import matplotlib.colors as mplcolors
 
 # ============================================================================
 
+plt.switch_backend ( "agg" )
+
 RAMA_PREFERENCES = {
     "General": {
         "file": os.path.join('rama_data', 'pref_general.data'),
