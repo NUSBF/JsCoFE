@@ -47,6 +47,16 @@ function TaskAmple()  {
     }
   ];
 
+  this.parameters = { // input parameters
+
+    WARNING_LBL : { type     : 'label',
+                    label    : '&nbsp;<br><i><b>Note:</b> this task takes ' +
+                               'significant computational resources and may ' +
+                               'put you outside your monthly quota.</i>',
+                    position : [0,0,1,5]
+                  }
+  };
+
 }
 
 
