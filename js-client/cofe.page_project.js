@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    18.12.19   <--  Date of Last Modification.
+ *    27.12.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -249,8 +249,8 @@ function ProjectPage ( sceneId )  {
     moveup_btn .setDisabled ( __dormant );
     clone_btn  .setDisabled ( __dormant );
     add_rem_btn.setDisabled ( __dormant );
-    refresh_btn.setDisabled ( false );
     */
+    refresh_btn.setDisabled ( false );
 
     if (split_btn)
       split_btn.setEnabled ( true );
