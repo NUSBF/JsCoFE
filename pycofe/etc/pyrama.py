@@ -38,6 +38,7 @@ from   matplotlib import colors
 
 import matplotlib.colors as mplcolors
 
+plt.switch_backend ( "agg" )
 
 # ============================================================================
 
@@ -178,7 +179,6 @@ def plot_ramachandran1 ( key,title,normals,outliers,outimagepath ):
     if RAMA_PREF_VALUES is None:
         RAMA_PREF_VALUES = _cache_RAMA_PREF_VALUES()
 
-    plt.switch_backend ( "agg" )
     plt.figure  ( figsize=(5.5, 5.5) )
     plt.title   ( title, fontsize=18 )
     plt.imshow  ( RAMA_PREF_VALUES[key], cmap=RAMA_PREFERENCES[key]["cmap"],
