@@ -3,14 +3,14 @@
 #
 # ============================================================================
 #
-#    25.12.19   <--  Date of Last Modification.
+#    27.12.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
-#  LORESTR EXECUTABLE MODULE
+#  COMBSTRUCTURE EXECUTABLE MODULE
 #
 #  Command-line:
-#     ccp4-python -m pycofe.tasks. jobManager jobDir jobId
+#     ccp4-python -m pycofe.tasks.combstructure jobManager jobDir jobId
 #
 #  where:
 #    jobManager  is either SHELL or SGE
@@ -34,6 +34,7 @@ import gemmi
 
 #  application imports
 import basic
+from   pycofe.etc  import pyrama
 
 
 # ============================================================================
@@ -55,6 +56,7 @@ class CombStructure(basic.TaskDriver):
         result = {
             "nmodified" : 0,
             "rmsd"      : 0.0,
+            "max_rmsd"  : 0.0,
             "modlist"   : []
         }
         nrmsd = 0
@@ -75,7 +77,9 @@ class CombStructure(basic.TaskDriver):
                         dx = pos1[0] - pos2[0]
                         dy = pos1[1] - pos2[1]
                         dz = pos1[2] - pos2[2]
-                        result["rmsd"] += dx*dx + dy*dy + dz*dz
+                        rmsd = dx*dx + dy*dy + dz*dz
+                        result["rmsd"]    += rmsd
+                        result["max_rmsd"] = max ( result["max_rmsd"],rmsd )
                         nrmsd += 1
         if nrmsd>0:
             result["rmsd"] = math.sqrt ( result["rmsd"]/nrmsd )
@@ -102,7 +106,7 @@ class CombStructure(basic.TaskDriver):
     def make_pass ( self,secId,passId,hkl,params ):
 
         self.putMessage1 ( secId,"<h3>" + self.pass_meta[passId]["title"] +\
-                                 " with Coot</h3>",0 )
+                                 " with Coot</h3>",0,col=0,colSpan=2 )
         self.flush()
         report_row = 1
 
@@ -133,10 +137,32 @@ class CombStructure(basic.TaskDriver):
         if passId=="FR" or results["nmodified"]>0:
             out_msg.append ( str(results["nmodified"]) + " residues were modified" )
         if passId!="FR":
-            out_msg.append ( "Cumulative r.m.s.d. of changes: {:.3f} &Aring;".format(results["rmsd"]) )
+            out_msg.append (
+                "Cumulative r.m.s.d. of changes: {:.3f} &Aring;".format(results["rmsd"])
+            )
+            out_msg.append (
+                "Maximum residue r.m.s.d.:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" +\
+                "&nbsp;&nbsp;{:.3f} &Aring;".format(results["max_rmsd"])
+            )
         for msg in out_msg:
-            self.putMessage1 ( secId,msg,report_row )
+            self.putMessage1 ( secId,msg,report_row,col=0,colSpan=2 )
             report_row += 1
+
+        if passId=="RR":
+            plot1_png = "_rama_general_1.png"
+            plot2_png = "_rama_general_2.png"
+            pyrama.make_ramaplot1 ( "General","Original Ramachandran Plot",
+                                     params["xyzin"],os.path.join(self.reportDir(),plot1_png) )
+            pyrama.make_ramaplot1 ( "General","Refined Ramachandran Plot",
+                                    coot_xyzout,os.path.join(self.reportDir(),plot2_png) )
+            self.putMessage1 ( secId,"<img src=\"" + plot1_png +
+                        "\" height=\"420pt\" style=\"vertical-align: middle;\"/>",
+                        report_row,0 )
+            self.putMessage1 ( secId,"<img src=\"" + plot2_png +
+                        "\" height=\"420pt\" style=\"vertical-align: middle;\"/>",
+                        report_row,1 )
+            report_row += 1
+
 
         #  refine phases
 
@@ -183,7 +209,7 @@ class CombStructure(basic.TaskDriver):
 
             # Prepare report parser
             panelId = self.getWidgetId ( self.refmac_report() + "_" + secId )
-            self.putPanel1 ( secId,panelId,report_row,colSpan=1 )
+            self.putPanel1 ( secId,panelId,report_row,colSpan=2 )
             self.setGenericLogParser ( panelId,False,graphTables=False,makePanel=False )
             self.runApp ( "refmac5",cmd,logType="Main" )
             self.unsetLogParser()

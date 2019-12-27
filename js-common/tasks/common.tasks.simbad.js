@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.10.19   <--  Date of Last Modification.
+ *    26.12.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -170,6 +170,14 @@ function TaskSimbad()  {
                       emitting  : true,    // allow to emit signals on change
                       position  : [0,0,1,1],
                       showon    : {'hkl.type:DataHKL':[1]}   // from input data section
+                    },
+                WARNING_LBL : {
+                      type      : 'label',
+                      label     : '<i><b>Note:</b> this search level takes ' +
+                                  'significant computational resources and may ' +
+                                  'have adverse effect on your monthly quota.</i>',
+                      position  : [1,2,1,5],
+                      showon    : { SEARCH_SEL : ['S','LCS'] }
                     },
                 MAXNLATTICES  : {
                       type     : 'integer_',
