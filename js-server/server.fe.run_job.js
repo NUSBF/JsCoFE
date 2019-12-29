@@ -772,25 +772,37 @@ function getJobResults ( job_token,server_request,server_response )  {
           writeFEJobRegister();
           cmd.sendResponse ( server_response, cmd.nc_retcode.ok,'','' );
         } else if (code=='err_rename')  { // file renaming errors
+          log.error ( 10,'cannot accept job from NC due to file rename errors' );
           cmd.sendResponse ( server_response, cmd.nc_retcode.fileErrors,
                             '[00012] File rename errors' );
         } else if (code=='err_dirnoexist')  { // work directory deleted
+          log.error ( 11,'cannot accept job from NC as job directory does not ' +
+                         'exist' );
           cmd.sendResponse ( server_response, cmd.nc_retcode.fileErrors,
-                            '[00013] Recepient directory does not exist (job deleted?)' );
+                            '[00013] Recepient directory does not exist ' +
+                            '(job deleted?)' );
         } else if (code=='err_transmission')  {  // data transmission errors
+          log.error ( 12,'cannot accept job from NC due to transmission errors: ' +
+                         errs );
           cmd.sendResponse ( server_response, cmd.nc_retcode.uploadErrors,
                             '[00014] Data transmission errors: ' + errs );
-        } else if (code=='data_unpacking_errors')  {  // data transmission errors
+        } else if (code=='data_unpacking_errors')  {  // data unpacking errors
+          log.error ( 13,'cannot accept job from NC due to unpacking errors: ' +
+                         errs ); 
           cmd.sendResponse ( server_response, cmd.nc_retcode.uploadErrors,
                             '[00015] Data unpack errors: ' + errs );
         } else  {
+          log.error ( 14,'cannot accept job from NC due to unspecified unpacking ' +
+                         'errors' );
           cmd.sendResponse ( server_response, cmd.nc_retcode.unpackErrors,
                             '[00016] Unspecified unpacking errors' );
         }
       });
 
-  } else   // job token not recognised, return Ok
+  } else  { // job token not recognised, return Ok
+    log.error ( 15,'cannot accept job from NC because job token is not recognised' );
     cmd.sendResponse ( server_response, cmd.fe_retcode.ok,'','' );
+  }
 
 }
 

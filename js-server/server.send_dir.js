@@ -281,7 +281,8 @@ var sender_cfg = conf.getServerConfig();
 
       } else if (onErr_func)  {
         onErr_func ( 1,code );  // '1' means an error from packing stage
-        log.error ( 4,'errors encontered ("' + code + '") at making jobbal in ' + dirPath );
+        log.error ( 4,'errors encontered ("' + code + '") at making jobbal in ' +
+                      dirPath );
       }
 
     });

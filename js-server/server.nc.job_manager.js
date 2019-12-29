@@ -342,7 +342,8 @@ var cap   = false;
       log.error ( 2,'Unrecognised job token in url ' + url );
       if (url.endsWith('.html'))  {
         // assume that this is due to a delay in job launching
-        server_response.writeHead ( 200, {'Content-Type': 'text/html;charset=UTF-8'} );
+        server_response.writeHead ( 200, 
+                                    {'Content-Type': 'text/html;charset=UTF-8'} );
         server_response.end (
           '<html><head>' +
             '<title>Job is not prepared yet</title>' +
@@ -352,7 +353,8 @@ var cap   = false;
           '</body></html>'
         );
       } else  {
-        server_response.writeHead ( 404, {'Content-Type': 'text/html;charset=UTF-8'} );
+        server_response.writeHead ( 404, 
+                                    {'Content-Type': 'text/html;charset=UTF-8'} );
         server_response.end ( '<p><b>UNRECOGNISED JOB TOKEN</b></p>' );
       }
       return;
@@ -403,7 +405,8 @@ var capacity = ncConfig.capacity;  // total number of jobs the number cruncher
                     });
                 break;
 
-    case 'SCRIPT' : var job = utils.spawn ( ncConfig.exeData,['check_waiting',process.env.USER],{} );
+    case 'SCRIPT' : var job = utils.spawn ( ncConfig.exeData,
+                                            ['check_waiting',process.env.USER],{} );
                     var job_output = '';
                     job.stdout.on ( 'data', function(data) {
                       job_output += data.toString();
@@ -414,7 +417,8 @@ var capacity = ncConfig.capacity;  // total number of jobs the number cruncher
                       try {
                         n = parseInt(job_output);
                       } catch(err)  {
-                        log.error ( 31,'error parsing NC capacity: "' + job_output + '"' );
+                        log.error ( 31,'error parsing NC capacity: "' + 
+                                       job_output + '"' );
                       }
                       if (n>0)  capacity = -n;
                           else  capacity -= Object.keys(ncJobRegister.job_map).length;
@@ -594,14 +598,10 @@ function ncJobFinished ( job_token,code )  {
 
       function ( rdata ){  // send was successful
 
-        // The number cruncher will start dealing with the job automatically.
-        // On FE end, register the job as engaged for further communication
-        // with NC and client.
-
+        // just remove the job; do it in a separate thread and delayed,
+        // which is useful for debugging etc.
+        
         removeJobDelayed ( job_token,task_t.job_code.finished );
-
-        //ncJobRegister.removeJob ( job_token );
-        //writeNCJobRegister      ();
 
       },function(stageNo,code){  // send failed
 
@@ -615,8 +615,6 @@ function ncJobFinished ( job_token,code )  {
         } else  { // what to do??? clean NC storage, the job was a waste.
 
           removeJobDelayed ( job_token,task_t.job_code.finished );
-          //ncJobRegister.removeJob ( job_token );
-          //writeNCJobRegister      ();
 
           log.error ( 4,'cannot send job results to FE. JOB DELETED.' );
 
