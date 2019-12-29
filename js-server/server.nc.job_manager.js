@@ -601,6 +601,7 @@ function ncJobFinished ( job_token,code )  {
         // just remove the job; do it in a separate thread and delayed,
         // which is useful for debugging etc.
         
+        log.standard ( 103,'job sent back to FE' );
         removeJobDelayed ( job_token,task_t.job_code.finished );
 
       },function(stageNo,code){  // send failed
