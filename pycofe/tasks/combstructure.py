@@ -138,11 +138,11 @@ class CombStructure(basic.TaskDriver):
             out_msg.append ( str(results["nmodified"]) + " residues were modified" )
         if passId!="FR":
             out_msg.append (
-                "Cumulative r.m.s.d. of changes: {:.3f} &Aring;".format(results["rmsd"])
+                "Overall r.m.s.d. of changes: {:.3f} &Aring;".format(results["rmsd"])
             )
             out_msg.append (
-                "Maximum residue r.m.s.d.:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" +\
-                "&nbsp;&nbsp;{:.3f} &Aring;".format(results["max_rmsd"])
+                "Maximum residue r.m.s.d.:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" +\
+                "{:.3f} &Aring;".format(results["max_rmsd"])
             )
         for msg in out_msg:
             self.putMessage1 ( secId,msg,report_row,col=0,colSpan=2 )
