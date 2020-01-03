@@ -133,6 +133,7 @@ class CombStructure(basic.TaskDriver):
         self.runApp ( "coot",cmd,logType="Main" )
 
         results = self.assess_results ( params["xyzin"],coot_xyzout )
+        
         out_msg = []
         if combId=="FR" or results["nmodified"]>0:
             out_msg.append ( str(results["nmodified"]) + " residues were modified" )
