@@ -103,17 +103,17 @@ class CombStructure(basic.TaskDriver):
                 }
     }
 
-    def make_pass ( self,secId,passId,hkl,params ):
+    def comb_structure ( self,secId,combId,hkl,params ):
 
-        self.putMessage1 ( secId,"<h3>" + self.pass_meta[passId]["title"] +\
+        self.putMessage1 ( secId,"<h3>" + self.pass_meta[combId]["title"] +\
                                  " with Coot</h3>",0,col=0,colSpan=2 )
         self.flush()
         report_row = 1
 
         #  comb structure
 
-        coot_xyzout = self.coot_out() + str(passId) + ".pdb"
-        coot_script = self.coot_out() + str(passId) + ".py"
+        coot_xyzout = self.coot_out() + str(combId) + ".pdb"
+        coot_script = self.coot_out() + str(combId) + ".py"
 
         f = open ( coot_script,"w" )
         f.write(
@@ -148,13 +148,14 @@ class CombStructure(basic.TaskDriver):
             self.putMessage1 ( secId,msg,report_row,col=0,colSpan=2 )
             report_row += 1
 
-        if passId=="RR" and sys.platform == "darwin":  # gemmi-numpy clash in 7.0
+        #if passId=="RR" and sys.platform == "darwin":  # gemmi-numpy clash in 7.0
+        if True:
             plot1_png = "_rama_general_1.png"
             plot2_png = "_rama_general_2.png"
             pyrama.make_ramaplot1 ( "General","Original Ramachandran Plot",
-                                     params["xyzin"],os.path.join(self.reportDir(),plot1_png) )
+                        params["xyzin"],os.path.join(self.reportDir(),plot1_png) )
             pyrama.make_ramaplot1 ( "General","Refined Ramachandran Plot",
-                                    coot_xyzout,os.path.join(self.reportDir(),plot2_png) )
+                        coot_xyzout,os.path.join(self.reportDir(),plot2_png) )
             self.putMessage1 ( secId,"<img src=\"" + plot1_png +
                         "\" height=\"420pt\" style=\"vertical-align: middle;\"/>",
                         report_row,0 )
@@ -210,7 +211,8 @@ class CombStructure(basic.TaskDriver):
             # Prepare report parser
             panelId = self.getWidgetId ( self.refmac_report() + "_" + secId )
             self.putPanel1 ( secId,panelId,report_row,colSpan=2 )
-            self.setGenericLogParser ( panelId,False,graphTables=False,makePanel=False )
+            self.setGenericLogParser ( panelId,False,graphTables=False,
+                                       makePanel=False )
             self.runApp ( "refmac5",cmd,logType="Main" )
             self.unsetLogParser()
 
@@ -244,17 +246,19 @@ class CombStructure(basic.TaskDriver):
         labin_fc = [istruct.FWT,istruct.PHWT]
 
         for i in range(4):
-            passN = "PASS" + str(i+1) + "_"
-            code  = self.getParameter ( getattr(sec1,passN+"SEL") )
+            combN = "COMB" + str(i+1) + "_"
+            code  = self.getParameter ( getattr(sec1,combN+"SEL") )
             if code!="N":
                 secId   = self.getWidgetId ( "comb_"+code )
                 self.putSection ( secId,self.pass_meta[code]["title"] )
-                ncycles = self.getParameter ( getattr(sec1,passN+"NCYC") )
-                mtzxyz  = self.make_pass ( secId,code,hkl,{
+                npasses = self.getParameter ( getattr(sec1,combN+"NPASS") )
+                ncycles = self.getParameter ( getattr(sec1,combN+"NCYC" ) )
+                mtzxyz  = self.comb_structure ( secId,code,hkl,{
                   "libin"    : libin,
                   "mtzin"    : mtzxyz[0],
                   "xyzin"    : mtzxyz[1],
                   "labin_fc" : labin_fc,
+                  "npasses"  : npasses,
                   "ncycles"  : ncycles,
                   "function" : self.pass_meta[code]["script"]
                 })
