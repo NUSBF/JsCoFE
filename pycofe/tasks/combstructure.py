@@ -134,9 +134,9 @@ class CombStructure(basic.TaskDriver):
 
         results = self.assess_results ( params["xyzin"],coot_xyzout )
         out_msg = []
-        if passId=="FR" or results["nmodified"]>0:
+        if combId=="FR" or results["nmodified"]>0:
             out_msg.append ( str(results["nmodified"]) + " residues were modified" )
-        if passId!="FR":
+        if combId!="FR":
             out_msg.append (
                 "Overall r.m.s.d. of changes: {:.3f} &Aring;".format(results["rmsd"])
             )
