@@ -149,7 +149,7 @@ class CombStructure(basic.TaskDriver):
             self.putMessage1 ( secId,msg,report_row,col=0,colSpan=2 )
             report_row += 1
 
-        if passId=="RR" and sys.platform == "darwin":  # gemmi-numpy clash in 7.0
+        if combId=="RR" and sys.platform == "darwin":  # gemmi-numpy clash in 7.0
         #if True:
             plot1_png = "_rama_general_1.png"
             plot2_png = "_rama_general_2.png"
