@@ -197,8 +197,8 @@ class CombStructure(basic.TaskDriver):
             ])
             self.close_stdin()
 
-            refmac_mtzout = self.refmac_out() + str(passId) + ".mtz"
-            refmac_xyzout = self.refmac_out() + str(passId) + ".pdb"
+            refmac_mtzout = self.refmac_out() + str(combId) + ".mtz"
+            refmac_xyzout = self.refmac_out() + str(combId) + ".pdb"
 
             cmd = [ "hklin" ,hkl.getHKLFilePath(self.inputDir()),
                     "xyzin" ,coot_xyzout,
