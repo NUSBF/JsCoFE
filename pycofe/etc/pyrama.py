@@ -40,7 +40,7 @@ import matplotlib.colors as mplcolors
 
 import gemmi
 
-plt.switch_backend ( "agg" )
+plt .switch_backend ( "agg" )
 
 # ============================================================================
 
@@ -143,6 +143,8 @@ def calc_ramachandran ( file_name_list ):
                                 aa_type = "General"
                             phi = math.degrees ( v[0] )
                             psi = math.degrees ( v[1] )
+                            phi = max ( -180.0,min(179.0,phi) )
+                            psi = max ( -180.0,min(179.0,psi) )
                             if RAMA_PREF_VALUES[aa_type][int(psi)+180][int(phi)+180] < \
                                     RAMA_PREFERENCES[aa_type]["bounds"][1]:
                                 outliers[aa_type]["x"].append(phi)
