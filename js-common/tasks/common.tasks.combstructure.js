@@ -54,11 +54,11 @@ function TaskCombStructure()  {
              open     : true,
              position : [0,0,1,5],
              contains : {
-                PASS1_SEL : {
+                COMB1_SEL : {
                     type     : 'combobox',
                     keyword  : 'none',
-                    label    : '1<sup>st</sup> pass:',
-                    tooltip  : 'Action for 1st pass',
+                    label    : '1<sup>st</sup> comb:',
+                    tooltip  : 'Choose 1st comb action',
                     range    : ['FR|Fill partial residues',
                                 'FP|Fit protein',
                                 'SR|Stepped refine',
@@ -68,22 +68,32 @@ function TaskCombStructure()  {
                     iwidth   : 270,
                     position : [0,0,1,1]
                 },
-                PASS1_NCYC : {
+                COMB1_NPASS : {
                     type     : 'integer',
                     keyword  : 'none',
-                    label    : 'followed by',
+                    label    : 'make',
+                    tooltip  : 'Number of 1st comb passes',
+                    range    : [0,'*'],
+                    value    : '3',
+                    iwidth   : 50,
+                    position : [0,4,1,1]
+                },
+                COMB1_NCYC : {
+                    type     : 'integer',
+                    keyword  : 'none',
+                    label    : 'passes with',
                     tooltip  : 'Number of refinement cycles',
                     range    : [0,'*'],
                     value    : '10',
                     iwidth   : 50,
-                    label2   : 'cycles of refinement',
-                    position : [0,4,1,1]
+                    label2   : 'cycles of refinement each',
+                    position : [0,8,1,1]
                 },
-                PASS2_SEL : {
+                COMB2_SEL : {
                     type     : 'combobox',
                     keyword  : 'none',
-                    label    : '2<sup>nd</sup> pass:',
-                    tooltip  : 'Action for 1st pass',
+                    label    : '2<sup>nd</sup> comb:',
+                    tooltip  : 'Choose 2nd comb action',
                     range    : ['FR|Fill partial residues',
                                 'FP|Fit protein',
                                 'SR|Stepped refine',
@@ -94,7 +104,18 @@ function TaskCombStructure()  {
                     iwidth   : 270,
                     position : [1,0,1,1]
                 },
-                PASS2_NCYC : {
+                COMB2_NPASS : {
+                    type     : 'integer',
+                    keyword  : 'none',
+                    label    : 'make',
+                    tooltip  : 'Number of 2nd comb passes',
+                    range    : [0,'*'],
+                    value    : '3',
+                    iwidth   : 50,
+                    position : [1,4,1,1],
+                    hideon   : {COMB2_SEL:['N']}
+                },
+                COMB2_NCYC : {
                     type     : 'integer',
                     keyword  : 'none',
                     label    : 'followed by',
@@ -103,13 +124,14 @@ function TaskCombStructure()  {
                     value    : '10',
                     iwidth   : 50,
                     label2   : 'cycles of refinement',
-                    position : [1,4,1,1]
+                    position : [1,8,1,1],
+                    hideon   : {COMB2_SEL:['N']}
                 },
-                PASS3_SEL : {
+                COMB3_SEL : {
                     type     : 'combobox',
                     keyword  : 'none',
-                    label    : '3<sup>rd</sup> pass:',
-                    tooltip  : 'Action for 1st pass',
+                    label    : '3<sup>rd</sup> comb:',
+                    tooltip  : 'Choose 3rd comb action',
                     range    : ['FR|Fill partial residues',
                                 'FP|Fit protein',
                                 'SR|Stepped refine',
@@ -120,7 +142,18 @@ function TaskCombStructure()  {
                     iwidth   : 270,
                     position : [2,0,1,1]
                 },
-                PASS3_NCYC : {
+                COMB3_NPASS : {
+                    type     : 'integer',
+                    keyword  : 'none',
+                    label    : 'make',
+                    tooltip  : 'Number of 3rd comb passes',
+                    range    : [0,'*'],
+                    value    : '3',
+                    iwidth   : 50,
+                    position : [2,4,1,1],
+                    hideon   : {COMB3_SEL:['N']}
+                },
+                COMB3_NCYC : {
                     type     : 'integer',
                     keyword  : 'none',
                     label    : 'followed by',
@@ -129,13 +162,14 @@ function TaskCombStructure()  {
                     value    : '10',
                     iwidth   : 50,
                     label2   : 'cycles of refinement',
-                    position : [2,4,1,1]
+                    position : [2,8,1,1],
+                    hideon   : {COMB3_SEL:['N']}
                   },
-                  PASS4_SEL : {
+                COMB4_SEL : {
                       type     : 'combobox',
                       keyword  : 'none',
-                      label    : '4<sup>th</sup> pass:',
-                      tooltip  : 'Action for 1st pass',
+                      label    : '4<sup>th</sup> comb:',
+                      tooltip  : 'Choose 4th comb action',
                       range    : ['FR|Fill partial residues',
                                   'FP|Fit protein',
                                   'SR|Stepped refine',
@@ -145,17 +179,29 @@ function TaskCombStructure()  {
                       value    : 'RR',
                       iwidth   : 270,
                       position : [3,0,1,1]
+                },
+                COMB4_NPASS : {
+                    type     : 'integer',
+                    keyword  : 'none',
+                    label    : 'make',
+                    tooltip  : 'Number of 4th comb passes',
+                    range    : [0,'*'],
+                    value    : '3',
+                    iwidth   : 50,
+                    position : [3,4,1,1],
+                    hideon   : {COMB4_SEL:['N']}
                   },
-                  PASS4_NCYC : {
-                      type     : 'integer',
-                      keyword  : 'none',
-                      label    : 'followed by',
-                      tooltip  : 'Number of refinement cycles',
-                      range    : [0,'*'],
-                      value    : '10',
-                      iwidth   : 50,
-                      label2   : 'cycles of refinement',
-                      position : [3,4,1,1]
+                COMB4_NCYC : {
+                    type     : 'integer',
+                    keyword  : 'none',
+                    label    : 'followed by',
+                    tooltip  : 'Number of refinement cycles',
+                    range    : [0,'*'],
+                    value    : '10',
+                    iwidth   : 50,
+                    label2   : 'cycles of refinement',
+                    position : [3,8,1,1],
+                    hideon   : {COMB4_SEL:['N']}
                 }
              }
     }

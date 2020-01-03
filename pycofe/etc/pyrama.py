@@ -32,7 +32,7 @@ import os
 import sys
 
 import matplotlib.pyplot as plt
-import numpy as np
+#import numpy as np
 from   Bio import PDB
 from   matplotlib import colors
 
@@ -75,7 +75,8 @@ def _cache_RAMA_PREF_VALUES():
     f_path = os.path.realpath ( os.path.dirname ( __file__ ) )
     RAMA_PREF_VALUES = {}
     for key, val in RAMA_PREFERENCES.items():
-        RAMA_PREF_VALUES[key] = np.full((360, 360), 0, dtype=np.float64)
+        #RAMA_PREF_VALUES[key] = np.full((360, 360), 0, dtype=np.float64)
+        RAMA_PREF_VALUES[key] = [ [0.0]*360 for _ in xrange(360) ]
         with open(os.path.join(f_path, val["file"])) as fn:
             for line in fn:
                 if line.startswith("#"):
