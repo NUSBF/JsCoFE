@@ -33,10 +33,12 @@ import sys
 
 import matplotlib.pyplot as plt
 #import numpy as np
-from   Bio import PDB
+#from   Bio import PDB
 from   matplotlib import colors
 
 import matplotlib.colors as mplcolors
+
+import gemmi
 
 plt.switch_backend ( "agg" )
 
@@ -114,31 +116,43 @@ def calc_ramachandran ( file_name_list ):
         outliers[key] = {"x": [], "y": []}
 
     # Calculate the torsion angle of the inputs
+    
     for inp in file_name_list:
+    
         if not os.path.isfile(inp):
             continue
             
-        """
-        st    = gemmi.read_structure ( inp )
-        model = st[0]
-        x     = []
-        y     = []
-        for chain in model:
-            for res in chain.get_polymer():
-                # previous_residue() and next_residue() return previous/next
-                # residue only if the residues are bonded. Otherwise -- None.
-                prev_res = chain.previous_residue(res)
-                next_res = chain.next_residue(res)
-                if prev_res and next_res and next_res.name != 'PRO':
-                    v = gemmi.calculate_phi_psi ( prev_res, res, next_res )
-                    if not math.isnan(v[0]) and not math.isnan(v[1]):
-                        x.append ( math.degrees(v[0]) )
-                        y.append ( math.degrees(v[1]) )
-                        print str(x[len(x)-1]) + "   " + str(y[len(x)-1])
+        st = gemmi.read_structure ( inp )
+        for model in st:
+            for chain in model:
+                for res in chain.get_polymer():
+                    # previous_residue() and next_residue() return previous/next
+                    # residue only if the residues are bonded. Otherwise -- None.
+                    prev_res = chain.previous_residue(res)
+                    next_res = chain.next_residue(res)
+                    if prev_res and next_res:
+                        v = gemmi.calculate_phi_psi ( prev_res, res, next_res )
+                        if not math.isnan(v[0]) and not math.isnan(v[1]):
+                            if next_res.name == "PRO":
+                                aa_type = "PRE-PRO"
+                            elif res.name == "PRO":
+                                aa_type = "PRO"
+                            elif res.name == "GLY":
+                                aa_type = "GLY"
+                            else:
+                                aa_type = "General"
+                            phi = math.degrees ( v[0] )
+                            psi = math.degrees ( v[1] )
+                            if RAMA_PREF_VALUES[aa_type][int(psi)+180][int(phi)+180] < \
+                                    RAMA_PREFERENCES[aa_type]["bounds"][1]:
+                                outliers[aa_type]["x"].append(phi)
+                                outliers[aa_type]["y"].append(psi)
+                            else:
+                                normals[aa_type]["x"].append(phi)
+                                normals[aa_type]["y"].append(psi)
+  
+            
         """    
-            
-            
-            
         structure = PDB.PDBParser().get_structure('input_structure', inp)
         for model in structure:
             for chain in model:
@@ -165,6 +179,8 @@ def calc_ramachandran ( file_name_list ):
                             else:
                                 normals[aa_type]["x"].append(math.degrees(phi))
                                 normals[aa_type]["y"].append(math.degrees(psi))
+        """
+
     return normals, outliers
 
 
