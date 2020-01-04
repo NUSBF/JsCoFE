@@ -33,7 +33,7 @@ import sys
 
 import matplotlib.pyplot as plt
 #import numpy as np
-from   Bio import PDB
+#from   Bio import PDB
 from   matplotlib import colors
 
 import matplotlib.colors as mplcolors
@@ -124,10 +124,10 @@ def calc_ramachandran ( file_name_list ):
             
         st = gemmi.read_structure ( inp )
         for model in st:
-            print ( "  do model " )
+            #print ( "  do model " )
             for chain in model:
-                print ( "   do chain " )
-                #for res in chain.get_polymer():
+                #print ( "   do chain " )
+                #for res in chain.get_polymer(): <- should work, check with new gemmi
                 for res in chain:
                     print ( "  do residue " + res.name )
                     # previous_residue() and next_residue() return previous/next
@@ -135,9 +135,9 @@ def calc_ramachandran ( file_name_list ):
                     prev_res = chain.previous_residue(res)
                     next_res = chain.next_residue(res)
                     if prev_res and next_res:
-                        print ( " prev="+prev_res.name + "  next=" + next_res.name )
+                        #print ( " prev="+prev_res.name + "  next=" + next_res.name )
                         v = gemmi.calculate_phi_psi ( prev_res, res, next_res )
-                        print ( "  v=" + str(v) )
+                        #print ( "  v=" + str(v) )
                         if not math.isnan(v[0]) and not math.isnan(v[1]):
                             if next_res.name == "PRO":
                                 aa_type = "PRE-PRO"
@@ -149,9 +149,9 @@ def calc_ramachandran ( file_name_list ):
                                 aa_type = "General"
                             phi = math.degrees ( v[0] )
                             psi = math.degrees ( v[1] )
-                            print ( str(phi) + " : " + str(psi) )
-                            phi = max ( -180.0,min(179.0,phi) )
-                            psi = max ( -180.0,min(179.0,psi) )
+                            #print ( str(phi) + " : " + str(psi) )
+                            #phi = max ( -180.0,min(179.0,phi) )
+                            #psi = max ( -180.0,min(179.0,psi) )
                             if RAMA_PREF_VALUES[aa_type][int(psi)+180][int(phi)+180] < \
                                     RAMA_PREFERENCES[aa_type]["bounds"][1]:
                                 outliers[aa_type]["x"].append(phi)
@@ -160,8 +160,8 @@ def calc_ramachandran ( file_name_list ):
                                 normals[aa_type]["x"].append(phi)
                                 normals[aa_type]["y"].append(psi)
   
-            
-        print ( " ===================================" )
+        """    
+        #print ( " ===================================" )
             
         structure = PDB.PDBParser().get_structure('input_structure', inp)
         for model in structure:
@@ -182,7 +182,7 @@ def calc_ramachandran ( file_name_list ):
                                 aa_type = "GLY"
                             else:
                                 aa_type = "General"
-                            print ( str(math.degrees(phi)) + " : " + str(math.degrees(psi)) )
+                            #print ( str(math.degrees(phi)) + " : " + str(math.degrees(psi)) )
                             if RAMA_PREF_VALUES[aa_type][int(math.degrees(psi)) + 180][int(math.degrees(phi)) + 180] < \
                                     RAMA_PREFERENCES[aa_type]["bounds"][1]:
                                 outliers[aa_type]["x"].append(math.degrees(phi))
@@ -190,7 +190,8 @@ def calc_ramachandran ( file_name_list ):
                             else:
                                 normals[aa_type]["x"].append(math.degrees(phi))
                                 normals[aa_type]["y"].append(math.degrees(psi))
-
+        """
+        
     return normals, outliers
 
 
