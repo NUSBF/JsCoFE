@@ -127,7 +127,8 @@ def calc_ramachandran ( file_name_list ):
             print ( "  do model " )
             for chain in model:
                 print ( "   do chain " )
-                for res in chain.get_polymer():
+                #for res in chain.get_polymer():
+                for res in chain:
                     print ( "  do residue " + res.name )
                     # previous_residue() and next_residue() return previous/next
                     # residue only if the residues are bonded. Otherwise -- None.
