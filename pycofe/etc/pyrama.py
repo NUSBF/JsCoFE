@@ -38,7 +38,7 @@ from   matplotlib import colors
 
 import matplotlib.colors as mplcolors
 
-#import gemmi
+import gemmi
 
 plt.switch_backend ( "agg" )
 
