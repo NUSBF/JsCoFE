@@ -196,7 +196,8 @@ def plot_ramachandran ( normals,outliers ):
         plt.subplot(2, 2, idx + 1)
         plt.title(key)
         plt.imshow(RAMA_PREF_VALUES[key], cmap=RAMA_PREFERENCES[key]["cmap"],
-                   norm=colors.BoundaryNorm(RAMA_PREFERENCES[key]["bounds"], RAMA_PREFERENCES[key]["cmap"].N),
+                   norm=colors.BoundaryNorm(RAMA_PREFERENCES[key]["bounds"],
+                                            RAMA_PREFERENCES[key]["cmap"].N),
                    extent=(-180, 180, 180, -180))
         plt.scatter(normals[key]["x"], normals[key]["y"])
         plt.scatter(outliers[key]["x"], outliers[key]["y"], color="red")
@@ -254,10 +255,31 @@ def make_ramaplot1 ( key,title,xyzpath,outimagepath ):
     plot_ramachandran1 ( key,title,normals,outliers,outimagepath )
     return
 
+def make_ramaplot2 ( title,xyzpath,outputname ):
+    normals, outliers = calc_ramachandran( [xyzpath] )
+    plot_ramachandran1 ( "General",title,normals,outliers,outputname+".png" )
+    plot_ramachandran1 ( "GLY",title+" (GLY)",normals,outliers,outputname+"_gly.png" )
+    plot_ramachandran1 ( "PRO",title+" (PRO)",normals,outliers,outputname+"_pro.png" )
+    plot_ramachandran1 ( "PRE-PRO",title+" (Pre-PRO)",normals,outliers,
+                         outputname+"_pre_pro.png" )
+    return
+
 
 # ============================================================================
 
 if __name__ == "__main__":
+    #
+    #  Usage:
+    #
+    #  ccp4-python pyrama.py input.pdb title output-name
+    #
+    #  will produce
+    #     
+    #     output-name.png
+    #     output-name_gly.png
+    #     output-name_pro.png
+    #     output-name_pre_pro.png
+    #
 
-    make_ramaplot ( sys.argv[1] )
+    make_ramaplot2 ( sys.argv[1],sys.argv[2],sys.argv[3] )
     sys.exit(0)
