@@ -33,14 +33,14 @@ import sys
 
 import matplotlib.pyplot as plt
 #import numpy as np
-#from   Bio import PDB
+from   Bio import PDB
 from   matplotlib import colors
 
 import matplotlib.colors as mplcolors
 
-import gemmi
+#import gemmi
 
-plt .switch_backend ( "agg" )
+plt.switch_backend ( "agg" )
 
 # ============================================================================
 
@@ -122,6 +122,7 @@ def calc_ramachandran ( file_name_list ):
         if not os.path.isfile(inp):
             continue
             
+        """
         st = gemmi.read_structure ( inp )
         for model in st:
             for chain in model:
@@ -154,7 +155,8 @@ def calc_ramachandran ( file_name_list ):
                                 normals[aa_type]["y"].append(psi)
   
             
-        """    
+        """
+            
         structure = PDB.PDBParser().get_structure('input_structure', inp)
         for model in structure:
             for chain in model:
@@ -181,7 +183,6 @@ def calc_ramachandran ( file_name_list ):
                             else:
                                 normals[aa_type]["x"].append(math.degrees(phi))
                                 normals[aa_type]["y"].append(math.degrees(psi))
-        """
 
     return normals, outliers
 
