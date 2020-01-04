@@ -142,63 +142,12 @@ class CombStructure(basic.TaskDriver):
                 "Overall r.m.s.d. of changes: {:.3f} &Aring;".format(results["rmsd"])
             )
             out_msg.append (
-                "Maximum residue r.m.s.d.:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" +\
+                "Maximum residue r.m.s.d.:&nbsp;&nbsp;&nbsp;&nbsp;" +\
                 "{:.3f} &Aring;".format(results["max_rmsd"])
             )
         for msg in out_msg:
             self.putMessage1 ( secId,msg,report_row,col=0,colSpan=2 )
             report_row += 1
-
-        #if combId=="RR" and sys.platform == "darwin":  # gemmi-numpy clash in 7.0
-        if True:
-            #plot1_png = "_rama_general_1.png"
-            #plot2_png = "_rama_general_2.png"
-            #pyrama.make_ramaplot1 ( "General","Original Ramachandran Plot",
-            #            params["xyzin"],os.path.join(self.reportDir(),plot1_png) )
-            #pyrama.make_ramaplot1 ( "General","Refined Ramachandran Plot",
-            #            coot_xyzout,os.path.join(self.reportDir(),plot2_png) )
-            #self.putMessage1 ( secId,"<img src=\"" + plot1_png +
-            #            "\" height=\"420pt\" style=\"vertical-align: middle;\"/>",
-            #            report_row,0 )
-            #self.putMessage1 ( secId,"<img src=\"" + plot2_png +
-            #            "\" height=\"420pt\" style=\"vertical-align: middle;\"/>",
-            #            report_row,1 )
-            plot1_png = "_rama_general_1"
-            plot2_png = "_rama_general_2"
-
-            pyrama_path = os.path.normpath ( os.path.join (
-                                os.path.dirname(os.path.abspath(__file__)),
-                                "../etc/pyrama.py" ) )
-
-            cmd1 = [
-                pyrama_path,
-                params["xyzin"],
-                "Original Ramachandran Plot",
-                os.path.join(self.reportDir(),plot1_png)
-            ]            
-            cmd2 = [
-                pyrama_path,
-                coot_xyzout,
-                "Refined Ramachandran Plot",
-                os.path.join(self.reportDir(),plot2_png)
-            ]            
-            if sys.platform.startswith("win"):
-                self.runApp ( "ccp4-python.bat",cmd1,logType="Main" )
-                self.runApp ( "ccp4-python.bat",cmd2,logType="Main" )
-            else:
-                self.runApp ( "ccp4-python",cmd1,logType="Main" )
-                self.runApp ( "ccp4-python",cmd2,logType="Main" )
-
-            self.putMessage1 ( secId,"<img src=\"" + plot1_png +
-                        ".png\" height=\"420pt\" style=\"vertical-align: middle;\"/>",
-                        report_row,0 )
-            self.putMessage1 ( secId,"<img src=\"" + plot2_png +
-                        ".png\" height=\"420pt\" style=\"vertical-align: middle;\"/>",
-                        report_row,1 )
-
-            
-            report_row += 1
-
 
         #  refine phases
 
@@ -254,6 +203,58 @@ class CombStructure(basic.TaskDriver):
         else:
             refmac_mtzout = params["mtzin"]
             refmac_xyzout = coot_xyzout
+
+
+        #if combId=="RR" and sys.platform == "darwin":  # gemmi-numpy clash in 7.0
+        if combId=="RR":
+
+            report_row += 1
+
+            #plot1_png = "_rama_general_1.png"
+            #plot2_png = "_rama_general_2.png"
+            #pyrama.make_ramaplot1 ( "General","Original Ramachandran Plot",
+            #            params["xyzin"],os.path.join(self.reportDir(),plot1_png) )
+            #pyrama.make_ramaplot1 ( "General","Refined Ramachandran Plot",
+            #            coot_xyzout,os.path.join(self.reportDir(),plot2_png) )
+            #self.putMessage1 ( secId,"<img src=\"" + plot1_png +
+            #            "\" height=\"420pt\" style=\"vertical-align: middle;\"/>",
+            #            report_row,0 )
+            #self.putMessage1 ( secId,"<img src=\"" + plot2_png +
+            #            "\" height=\"420pt\" style=\"vertical-align: middle;\"/>",
+            #            report_row,1 )
+            plot1_png = "_rama_general_1"
+            plot2_png = "_rama_general_2"
+
+            pyrama_path = os.path.normpath ( os.path.join (
+                                os.path.dirname(os.path.abspath(__file__)),
+                                "../etc/pyrama.py" ) )
+
+            cmd1 = [
+                pyrama_path,
+                params["xyzin"],
+                "Original Ramachandran Plot",
+                os.path.join(self.reportDir(),plot1_png)
+            ]            
+            cmd2 = [
+                pyrama_path,
+                refmac_xyzout,
+                "Refined Ramachandran Plot",
+                os.path.join(self.reportDir(),plot2_png)
+            ]            
+            if sys.platform.startswith("win"):
+                self.runApp ( "ccp4-python.bat",cmd1,logType="Main" )
+                self.runApp ( "ccp4-python.bat",cmd2,logType="Main" )
+            else:
+                self.runApp ( "ccp4-python",cmd1,logType="Main" )
+                self.runApp ( "ccp4-python",cmd2,logType="Main" )
+
+            self.putMessage1 ( secId,"<img src=\"" + plot1_png +
+                        ".png\" height=\"420pt\" style=\"vertical-align: middle;\"/>",
+                        report_row,0 )
+            self.putMessage1 ( secId,"<img src=\"" + plot2_png +
+                        ".png\" height=\"420pt\" style=\"vertical-align: middle;\"/>",
+                        report_row,1 )
+
 
         return [refmac_mtzout,refmac_xyzout]
 
