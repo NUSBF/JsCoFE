@@ -166,16 +166,18 @@ class CombStructure(basic.TaskDriver):
             plot1_png = "_rama_general_1"
             plot2_png = "_rama_general_2"
 
+            pyrama_path = os.path.normpath ( os.path.join (
+                                os.path.dirname(os.path.abspath(__file__)),
+                                "../etc/pyrama.py" ) )
+
             cmd1 = [
-                "-m",
-                "pycofe.etc.pyrama",
+                pyrama_path,
                 params["xyzin"],
                 "Original Ramachandran Plot",
                 os.path.join(self.reportDir(),plot1_png)
             ]            
             cmd2 = [
-                "-m",
-                "pycofe.etc.pyrama",
+                pyrama_path,
                 coot_xyzout,
                 "Refined Ramachandran Plot",
                 os.path.join(self.reportDir(),plot2_png)
