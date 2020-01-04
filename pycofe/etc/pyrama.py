@@ -122,7 +122,7 @@ def calc_ramachandran ( file_name_list ):
         if not os.path.isfile(inp):
             continue
             
-        """
+        
         st = gemmi.read_structure ( inp )
         for model in st:
             for chain in model:
@@ -144,6 +144,7 @@ def calc_ramachandran ( file_name_list ):
                                 aa_type = "General"
                             phi = math.degrees ( v[0] )
                             psi = math.degrees ( v[1] )
+                            print  "   " + str(phi) + " : " + str(psi)
                             phi = max ( -180.0,min(179.0,phi) )
                             psi = max ( -180.0,min(179.0,psi) )
                             if RAMA_PREF_VALUES[aa_type][int(psi)+180][int(phi)+180] < \
@@ -155,7 +156,7 @@ def calc_ramachandran ( file_name_list ):
                                 normals[aa_type]["y"].append(psi)
   
             
-        """
+        print " ==================================="
             
         structure = PDB.PDBParser().get_structure('input_structure', inp)
         for model in structure:
@@ -176,6 +177,7 @@ def calc_ramachandran ( file_name_list ):
                                 aa_type = "GLY"
                             else:
                                 aa_type = "General"
+                            print  "  " + str(math.degrees(phi)) + " : " + str(math.degrees(psi))
                             if RAMA_PREF_VALUES[aa_type][int(math.degrees(psi)) + 180][int(math.degrees(phi)) + 180] < \
                                     RAMA_PREFERENCES[aa_type]["bounds"][1]:
                                 outliers[aa_type]["x"].append(math.degrees(phi))
