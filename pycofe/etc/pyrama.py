@@ -122,17 +122,21 @@ def calc_ramachandran ( file_name_list ):
         if not os.path.isfile(inp):
             continue
             
-        
         st = gemmi.read_structure ( inp )
         for model in st:
+            print ( "  do model " )
             for chain in model:
+                print ( "   do chain " )
                 for res in chain.get_polymer():
+                    print ( "  do residue " + res.name )
                     # previous_residue() and next_residue() return previous/next
                     # residue only if the residues are bonded. Otherwise -- None.
                     prev_res = chain.previous_residue(res)
                     next_res = chain.next_residue(res)
                     if prev_res and next_res:
+                        print ( " prev="+prev_res.name + "  next=" + next_res.name )
                         v = gemmi.calculate_phi_psi ( prev_res, res, next_res )
+                        print ( "  v=" + str(v) )
                         if not math.isnan(v[0]) and not math.isnan(v[1]):
                             if next_res.name == "PRO":
                                 aa_type = "PRE-PRO"
