@@ -145,13 +145,14 @@ function AdminPage ( sceneId )  {
     });
 
     update_btn.addOnClickListener ( function(){
+      stopSessionChecks();
       serverRequest ( fe_reqtype.updateAndRestart,'','Admin Page',
                       function(data){
-        //logout ( self.element.id,0 );
-        //window.setTimeout ( function(){ window.location=window.location; },30000 );  // reload
+        window.setTimeout ( function(){ window.location=window.location; },30000 );  // reload
+        logout ( self.element.id,0 );
       },null,'persist' );
-      logout ( self.element.id,0 );
-      window.setTimeout ( function(){ window.location=window.location; },30000 );  // reload
+      //logout ( self.element.id,0 );
+      //window.setTimeout ( function(){ window.location=window.location; },30000 );  // reload
     });
 
     announce_btn.addOnClickListener ( function(){
