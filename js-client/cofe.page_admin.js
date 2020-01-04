@@ -150,7 +150,7 @@ function AdminPage ( sceneId )  {
                       function(data){
         window.setTimeout ( function(){ window.location=window.location; },30000 );  // reload
         logout ( self.element.id,0 );
-      },null,'persist' );
+      },null,null );
       //logout ( self.element.id,0 );
       //window.setTimeout ( function(){ window.location=window.location; },30000 );  // reload
     });
