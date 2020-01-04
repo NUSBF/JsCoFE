@@ -151,18 +151,50 @@ class CombStructure(basic.TaskDriver):
 
         #if combId=="RR" and sys.platform == "darwin":  # gemmi-numpy clash in 7.0
         if True:
-            plot1_png = "_rama_general_1.png"
-            plot2_png = "_rama_general_2.png"
-            pyrama.make_ramaplot1 ( "General","Original Ramachandran Plot",
-                        params["xyzin"],os.path.join(self.reportDir(),plot1_png) )
-            pyrama.make_ramaplot1 ( "General","Refined Ramachandran Plot",
-                        coot_xyzout,os.path.join(self.reportDir(),plot2_png) )
+            #plot1_png = "_rama_general_1.png"
+            #plot2_png = "_rama_general_2.png"
+            #pyrama.make_ramaplot1 ( "General","Original Ramachandran Plot",
+            #            params["xyzin"],os.path.join(self.reportDir(),plot1_png) )
+            #pyrama.make_ramaplot1 ( "General","Refined Ramachandran Plot",
+            #            coot_xyzout,os.path.join(self.reportDir(),plot2_png) )
+            #self.putMessage1 ( secId,"<img src=\"" + plot1_png +
+            #            "\" height=\"420pt\" style=\"vertical-align: middle;\"/>",
+            #            report_row,0 )
+            #self.putMessage1 ( secId,"<img src=\"" + plot2_png +
+            #            "\" height=\"420pt\" style=\"vertical-align: middle;\"/>",
+            #            report_row,1 )
+            plot1_png = "_rama_general_1"
+            plot2_png = "_rama_general_2"
+
+            cmd1 = [
+                "-m",
+                "pycofe.etc.pyrama",
+                params["xyzin"],
+                "Original Ramachandran Plot",
+                os.path.join(self.reportDir(),plot1_png)
+            ]            
+            cmd2 = [
+                "-m",
+                "pycofe.etc.pyrama",
+                coot_xyzout,
+                "Refined Ramachandran Plot",
+                os.path.join(self.reportDir(),plot2_png)
+            ]            
+            if sys.platform.startswith("win"):
+                self.runApp ( "ccp4-python.bat",cmd1,logType="Main" )
+                self.runApp ( "ccp4-python.bat",cmd2,logType="Main" )
+            else:
+                self.runApp ( "ccp4-python",cmd1,logType="Main" )
+                self.runApp ( "ccp4-python",cmd2,logType="Main" )
+
             self.putMessage1 ( secId,"<img src=\"" + plot1_png +
-                        "\" height=\"420pt\" style=\"vertical-align: middle;\"/>",
+                        ".png\" height=\"420pt\" style=\"vertical-align: middle;\"/>",
                         report_row,0 )
             self.putMessage1 ( secId,"<img src=\"" + plot2_png +
-                        "\" height=\"420pt\" style=\"vertical-align: middle;\"/>",
+                        ".png\" height=\"420pt\" style=\"vertical-align: middle;\"/>",
                         report_row,1 )
+
+            
             report_row += 1
 
 
