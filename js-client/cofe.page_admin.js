@@ -145,11 +145,13 @@ function AdminPage ( sceneId )  {
     });
 
     update_btn.addOnClickListener ( function(){
-      //stopSessionChecks();
-      logout ( self.element.id,10 );
+      stopSessionChecks();
       window.setTimeout ( function(){
         serverRequest ( fe_reqtype.updateAndRestart,'','Admin Page',
-                      function(data){},null,function(){} );
+                      function(data){},function(){
+          logout ( self.element.id,10 );
+          window.setTimeout ( function(){ window.location=window.location; },30000 );  // reload
+        },function(){} );
       },100 );
       /*
       serverRequest ( fe_reqtype.updateAndRestart,'','Admin Page',
@@ -158,7 +160,6 @@ function AdminPage ( sceneId )  {
         logout ( self.element.id,0 );
       },null,function(){} );
       */
-      window.setTimeout ( function(){ window.location=window.location; },30000 );  // reload
     });
 
     announce_btn.addOnClickListener ( function(){
