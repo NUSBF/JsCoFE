@@ -157,8 +157,8 @@ function AdminPage ( sceneId )  {
         window.setTimeout ( function(){ window.location=window.location; },30000 );  // reload
         logout ( self.element.id,0 );
       },null,function(){} );
-      //window.setTimeout ( function(){ window.location=window.location; },30000 );  // reload
       */
+      window.setTimeout ( function(){ window.location=window.location; },30000 );  // reload
     });
 
     announce_btn.addOnClickListener ( function(){
