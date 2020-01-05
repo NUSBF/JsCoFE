@@ -148,9 +148,9 @@ function AdminPage ( sceneId )  {
       stopSessionChecks();
       window.setTimeout ( function(){
         serverRequest ( fe_reqtype.updateAndRestart,'','Admin Page',
-                      function(data){
-          logout ( self.element.id,10 );
+                        function(data){
           window.setTimeout ( function(){ window.location=window.location; },30000 );  // reload
+          logout ( self.element.id,10 );
         },null,function(){} );
       },100 );
       /*

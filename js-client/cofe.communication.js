@@ -85,7 +85,8 @@ function makeCommErrorMessage ( title,response )  {
 
     case fe_retcode.notLoggedIn:
         MessageNotLoggedIn ( title );
-        makePage ( new LogoutPage(__current_page.element.id) );
+        //makePage ( new LogoutPage(__current_page.element.id) );
+        logout ( __current_page.element.id,0 )
       break;
 
     case fe_retcode.uploadErrors:
