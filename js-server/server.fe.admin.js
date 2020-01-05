@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    23.12.19   <--  Date of Last Modification.
+ *    05.01.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Front End Server -- Admin Module
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2019
+ *  (C) E. Krissinel, A. Lebedev 2016-2020
  *
  *  =================================================================
  *
@@ -137,7 +137,7 @@ function updateAndRestart ( loginData,data )  {
     var FEconfig = conf.getFEConfig();
     if (FEconfig.update_rcode>0)  {
       log.standard ( 2,'update and restart ...' );
-      setTimeout ( function(){ process.exit(FEconfig.update_rcode); },100 );
+      setTimeout ( function(){ process.exit(FEconfig.update_rcode); },1000 );
     }
   }
 

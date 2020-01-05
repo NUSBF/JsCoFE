@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    28.07.19   <--  Date of Last Modification.
+ *    05.01.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Logout page
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2019
+ *  (C) E. Krissinel, A. Lebedev 2016-2020
  *
  *  =================================================================
  *
@@ -50,11 +50,14 @@ function LogoutPage ( sceneId,reason_key )  {
   var thank_lbl = new Label ( 'Thank you for using ' + appName() );
   var msg = '';
   switch (reason_key)  {
-    case 1 :  msg = 'Your session in this window was cancelled automatically ' +
-                    'because of identical login somewhere else.';
+    case 1  :  msg = 'Your session in this window was cancelled automatically ' +
+                     'because of identical login somewhere else.';
             break;
-    case 2 :  msg = 'Your session in this window was terminated because local ' +
-                    appName() + ' service has stopped or was restared.';
+    case 2  :  msg = 'Your session in this window was terminated because local ' +
+                     appName() + ' service has stopped or was restared.';
+            break;
+    case 10 :  msg = appName() + ' is now restarting. Please wait, the page will ' +
+                     'reload automatically.';
             break;
     default : msg = 'You are now logged out.';
   }
@@ -72,7 +75,7 @@ function LogoutPage ( sceneId,reason_key )  {
   panel.setHorizontalAlignment  ( row++ ,0,'center' );
   panel.setCellSize             ( '','20pt',row++,0 );
 
-  if (!__local_user)  {
+  if ((!__local_user) && (reason_key!=10))  {
     var back_btn = new Button   ( 'Back to User Login',image_path('login') );
     panel.setWidget             ( back_btn ,row++,0,1,1 );
     back_btn  .setWidth         ( '100%' );
@@ -93,7 +96,7 @@ function logout ( sceneId,reason_key )  {
   if (__current_page && (__current_page._type=='ProjectPage'))
     __current_page.getJobTree().stopTaskLoop();
 
-  if (__login_token)  {
+  if (__login_token && (reason_key!=10))  {
 
     serverRequest ( fe_reqtype.logout,0,'Logout',function(data){
       makePage ( new LogoutPage(sceneId,reason_key) );

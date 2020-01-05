@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    23.12.19   <--  Date of Last Modification.
+ *    05.01.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Admin page
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2019
+ *  (C) E. Krissinel, A. Lebedev 2016-2020
  *
  *  =================================================================
  *
@@ -145,14 +145,20 @@ function AdminPage ( sceneId )  {
     });
 
     update_btn.addOnClickListener ( function(){
-      stopSessionChecks();
+      //stopSessionChecks();
+      logout ( self.element.id,10 );
+      window.setTimeout ( function(){
+        serverRequest ( fe_reqtype.updateAndRestart,'','Admin Page',
+                      function(data){},null,function(){} );
+      },100 );
+      /*
       serverRequest ( fe_reqtype.updateAndRestart,'','Admin Page',
                       function(data){
         window.setTimeout ( function(){ window.location=window.location; },30000 );  // reload
         logout ( self.element.id,0 );
-      },null,null );
-      //logout ( self.element.id,0 );
+      },null,function(){} );
       //window.setTimeout ( function(){ window.location=window.location; },30000 );  // reload
+      */
     });
 
     announce_btn.addOnClickListener ( function(){
