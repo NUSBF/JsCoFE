@@ -146,13 +146,13 @@ function AdminPage ( sceneId )  {
 
     update_btn.addOnClickListener ( function(){
       stopSessionChecks();
-      window.setTimeout ( function(){
+      //window.setTimeout ( function(){
         serverRequest ( fe_reqtype.updateAndRestart,'','Admin Page',
                         function(data){
           window.setTimeout ( function(){ window.location=window.location; },30000 );  // reload
           logout ( self.element.id,10 );
         },null,function(){} );
-      },100 );
+      //},100 );
       /*
       serverRequest ( fe_reqtype.updateAndRestart,'','Admin Page',
                       function(data){
