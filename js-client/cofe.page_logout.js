@@ -59,6 +59,7 @@ function LogoutPage ( sceneId,reason_key )  {
     case 10 :  msg = appName() + ' is now restarting. Please wait, the page will ' +
                      'reload automatically.';
             break;
+    case 0  :
     default : msg = 'You are now logged out.';
   }
   var logout_lbl = new Label    ( msg );
