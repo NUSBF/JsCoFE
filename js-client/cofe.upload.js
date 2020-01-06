@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    09.11.19   <--  Date of Last Modification.
+ *    06.01.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  File upload class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2019
+ *  (C) E. Krissinel, A. Lebedev 2016-2020
  *
  *  =================================================================
  *
@@ -215,7 +215,7 @@ function Upload ( customData,upl_data,onSelect_func,onSelectPDB_func,onReady_fun
                 upl.returnCode = '';  // Ok
               }
               onReady_func ( upl.returnCode );
-              if ('button' in upl)  {
+              if (('button' in upl) && upl.button)  {
                 upl.button.setEnabled ( true );
                 if (upl.link_button)
                   upl.link_button.setEnabled ( true );
