@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    08.12.19   <--  Date of Last Modification.
+#    06.01.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -11,7 +11,7 @@
 #
 #  Command-line:  N/A
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2019
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2020
 #
 # ============================================================================
 #
@@ -584,16 +584,35 @@ class TaskDriver(object):
         return
 
 
-    def putTable ( self,tableId,title_str,holderId,row,mode=100 ):
-        pyrvapi.rvapi_add_table ( tableId,title_str,holderId,row,0,1,1, mode )
+    def putTable ( self,tableId,title_str,holderId,row,
+                        col=0,rowSpan=1,colSpan=1,mode=100 ):
+        pyrvapi.rvapi_add_table ( tableId,title_str,holderId,row,col,
+                                  rowSpan,colSpan, mode )
         pyrvapi.rvapi_set_table_style ( tableId,
-                                   "table-blue","text-align:left;" )
+                                        "table-blue","text-align:left;" )
+        return
+
+    def setTableHorzHeader ( self,tableId,col,header,tooltip ):
+        pyrvapi.rvapi_put_horz_theader ( tableId,header,tooltip,col )
+        return
+
+    def setTableVertHeader ( self,tableId,row,header,tooltip ):
+        pyrvapi.rvapi_put_vert_theader ( tableId,header,tooltip,row )
         return
 
     def setTableHorzHeaders ( self,tableId,header_list,tooltip_list ):
         for i in range(len(header_list)):
             pyrvapi.rvapi_put_horz_theader ( tableId,header_list[i],
                                              tooltip_list[i],i )
+        return
+
+    def putTableString ( self,tableId,S,tooltip,row,col,rowSpan=1,colSpan=1 ):
+        pyrvapi.rvapi_put_table_string ( tableId,S,row,col )
+        pyrvapi.rvapi_shape_table_cell ( tableId,row,col,tooltip,
+            "text-align:left;width:100%;white-space:nowrap;" + \
+            "font-family:\"Courier\";text-decoration:none;" + \
+            "font-weight:normal;font-style:normal;width:auto;",
+            "",rowSpan,colSpan )
         return
 
     def putTableLine ( self,tableId,header,tooltip,line,row ):
@@ -604,7 +623,7 @@ class TaskDriver(object):
                 "text-align:left;width:100%;white-space:nowrap;" + \
                 "font-family:\"Courier\";text-decoration:none;" + \
                 "font-weight:normal;font-style:normal;width:auto;",
-                "",1,1 );
+                "",1,1 )
         return row+1
 
     def putGrid ( self,gridId,filling_bool=False ):

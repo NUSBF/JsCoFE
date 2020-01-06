@@ -200,7 +200,7 @@ class SeqAlign(basic.TaskDriver):
                 tableId = self.getWidgetId ( "stat_table" )
                 self.putTable ( tableId,"<span style='font-size:1.25em'>" +
                                         "Alignment statistics</span>",
-                                        self.report_page_id(),self.rvrow,0 )
+                                        self.report_page_id(),self.rvrow,mode=0 )
                 self.setTableHorzHeaders ( tableId,["Length","Score"],
                                         ["Sequence length","Sequence ID"] )
                 self.putTableLine2 ( tableId,"Highest",len_max,id_max,0 )
@@ -216,7 +216,7 @@ class SeqAlign(basic.TaskDriver):
                 tableId = self.getWidgetId ( "align_table" )
                 self.putTable ( tableId,"<span style='font-size:1.25em'>" +
                                         "Aligned sequences</span>",
-                                        self.report_page_id(),self.rvrow,100 )
+                                        self.report_page_id(),self.rvrow,mode=100 )
                 self.setTableHorzHeaders ( tableId,["Sequence","Alignment"],
                                                    ["Sequence","Alignment"] )
 

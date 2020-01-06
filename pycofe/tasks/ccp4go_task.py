@@ -157,7 +157,7 @@ class CCP4go(import_task.Import):
         #                        "1. Input Data</font>",self.report_page_id(),
         #                        self.rvrow,0 )
         #self.rvrow += 1
-        self.putTable ( tableId,"Input data",panelId,0,0 )
+        self.putTable ( tableId,"Input data",panelId,0,mode=0 )
         self.setTableHorzHeaders ( tableId,["Assigned Name","View"],
                 ["Name of the assocuated data object","Data view and export"] )
 

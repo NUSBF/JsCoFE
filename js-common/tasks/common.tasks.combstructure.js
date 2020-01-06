@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    25.12.19   <--  Date of Last Modification.
+ *    06.01.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  CombStructure Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2019
+ *  (C) E. Krissinel, A. Lebedev 2019-2020
  *
  *  =================================================================
  *
@@ -73,15 +73,28 @@ function TaskCombStructure()  {
                     keyword  : 'none',
                     label    : 'make',
                     tooltip  : 'Number of 1st comb passes',
-                    range    : [0,'*'],
+                    range    : [1,'*'],
                     value    : '3',
                     iwidth   : 50,
-                    position : [0,4,1,1]
+                    position : [0,4,1,1],
+                    hideon   : {COMB1_SEL:['FR']}
+                  },
+                COMB1FR_NPASS : {
+                    type     : 'integer',
+                    keyword  : 'none',
+                    label    : 'make',
+                    tooltip  : 'Number of 1st comb passes',
+                    range    : [1,1],
+                    value    : '1',
+                    readonly : true,
+                    iwidth   : 50,
+                    position : [0,4,1,1],
+                    showon   : {COMB1_SEL:['FR']}
                 },
                 COMB1_NCYC : {
                     type     : 'integer',
                     keyword  : 'none',
-                    label    : 'passes, each with',
+                    label    : 'pass(es), each with',
                     tooltip  : 'Number of refinement cycles for 1st comb',
                     range    : [0,'*'],
                     value    : '10',
@@ -113,12 +126,24 @@ function TaskCombStructure()  {
                     value    : '3',
                     iwidth   : 50,
                     position : [1,4,1,1],
-                    hideon   : {COMB2_SEL:['N']}
+                    hideon   : {COMB2_SEL:['N','FR']}
+                  },
+                COMB2FR_NPASS : {
+                    type     : 'integer',
+                    keyword  : 'none',
+                    label    : 'make',
+                    tooltip  : 'Number of 1st comb passes',
+                    range    : [1,1],
+                    value    : '1',
+                    readonly : true,
+                    iwidth   : 50,
+                    position : [1,4,1,1],
+                    showon   : {COMB2_SEL:['FR']}
                 },
                 COMB2_NCYC : {
                     type     : 'integer',
                     keyword  : 'none',
-                    label    : 'passes, each with',
+                    label    : 'pass(es), each with',
                     tooltip  : 'Number of refinement cycles for 2nd comb',
                     range    : [0,'*'],
                     value    : '10',
@@ -151,12 +176,24 @@ function TaskCombStructure()  {
                     value    : '3',
                     iwidth   : 50,
                     position : [2,4,1,1],
-                    hideon   : {COMB3_SEL:['N']}
+                    hideon   : {COMB3_SEL:['N','FR']}
+                  },
+                COMB3FR_NPASS : {
+                    type     : 'integer',
+                    keyword  : 'none',
+                    label    : 'make',
+                    tooltip  : 'Number of 1st comb passes',
+                    range    : [1,1],
+                    value    : '1',
+                    readonly : true,
+                    iwidth   : 50,
+                    position : [2,4,1,1],
+                    showon   : {COMB3_SEL:['FR']}
                 },
                 COMB3_NCYC : {
                     type     : 'integer',
                     keyword  : 'none',
-                    label    : 'passes, each with',
+                    label    : 'pass(es), each with',
                     tooltip  : 'Number of refinement cycles for 3rd comb',
                     range    : [0,'*'],
                     value    : '10',
@@ -189,12 +226,24 @@ function TaskCombStructure()  {
                     value    : '3',
                     iwidth   : 50,
                     position : [3,4,1,1],
-                    hideon   : {COMB4_SEL:['N']}
+                    hideon   : {COMB4_SEL:['N','FR']}
+                  },
+                COMB4FR_NPASS : {
+                    type     : 'integer',
+                    keyword  : 'none',
+                    label    : 'make',
+                    tooltip  : 'Number of 1st comb passes',
+                    range    : [1,1],
+                    value    : '1',
+                    readonly : true,
+                    iwidth   : 50,
+                    position : [3,4,1,1],
+                    showon   : {COMB4_SEL:['FR']}
                   },
                 COMB4_NCYC : {
                     type     : 'integer',
                     keyword  : 'none',
-                    label    : 'passes, each with',
+                    label    : 'pass(es), each with',
                     tooltip  : 'Number of refinement cycles for 4th comb',
                     range    : [0,'*'],
                     value    : '10',
