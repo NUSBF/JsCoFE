@@ -1429,6 +1429,9 @@ if (!dbx)  {
                                      .setStyle ( 'text','integer',defval,tooltip )
                                      .setWidth_px ( iwidth );
                               this._set_item_emitting   ( inpParamRef,key,item );
+                              if (item.hasOwnProperty('readonly'))
+                                inpParamRef.parameters[key].input
+                                           .setReadOnly ( item.readonly );
                               grid.setVerticalAlignment ( r,c,'middle' );
                           break;
 
@@ -1442,6 +1445,9 @@ if (!dbx)  {
                                      .setStyle ( 'text','real',defval,tooltip )
                                      .setWidth_px ( iwidth );
                               this._set_item_emitting   ( inpParamRef,key,item );
+                              if (item.hasOwnProperty('readonly'))
+                                inpParamRef.parameters[key].input
+                                           .setReadOnly ( item.readonly );
                               grid.setVerticalAlignment ( r,c,'middle' );
                           break;
 
@@ -1458,6 +1464,9 @@ if (!dbx)  {
                                 inpParamRef.parameters[key].input
                                            .setMaxInputLength ( item.maxlength );
                               this._set_item_emitting   ( inpParamRef,key,item );
+                              if (item.hasOwnProperty('readonly'))
+                                inpParamRef.parameters[key].input
+                                           .setReadOnly ( item.readonly );
                               grid.setVerticalAlignment ( r,c,'middle' );
                           break;
 

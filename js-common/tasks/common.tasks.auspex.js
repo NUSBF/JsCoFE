@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    25.08.19   <--  Date of Last Modification.
+ *    06.01.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Auspex Plots Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2019
+ *  (C) E. Krissinel, A. Lebedev 2019-2020
  *
  *  =================================================================
  *
@@ -129,7 +129,26 @@ TaskAuspex.prototype.currentVersion = function()  {
 }
 
 
-if (__template)  {
+if (!__template)  {
+
+  TaskAuspex.prototype.collectInput = function ( inputPanel )  {
+    var input_msg = TaskTemplate.prototype.collectInput.call ( this,inputPanel );
+    var hkl = this.input_data.getData('hkl')[0];
+
+    if (!hkl.isImean())  {
+      if (input_msg.length>0)
+        input_msg += '<br>';
+      input_msg += '<b>Reflection data:</b> Auspex can work only with ' +
+                   'reflection datasets that include<br>mean intensities, ' +
+                   'and they are not found in the dataset from the selected<br>' +
+                   'structure revision';
+    }
+
+    return input_msg;
+
+  }
+
+} else  {
   //  for server side
 
   var conf = require('../../js-server/server.configuration');

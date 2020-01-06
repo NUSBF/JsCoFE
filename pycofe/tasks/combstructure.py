@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    27.12.19   <--  Date of Last Modification.
+#    06.01.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2019
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2019-2020
 #
 # ============================================================================
 #
@@ -112,98 +112,157 @@ class CombStructure(basic.TaskDriver):
 
         #  comb structure
 
-        coot_xyzout = self.coot_out() + str(combId) + ".pdb"
-        coot_script = self.coot_out() + str(combId) + ".py"
+        work_xyz = params["xyzin"]
+        work_mtz = params["mtzin"]
+        table_id = None
 
-        f = open ( coot_script,"w" )
-        f.write(
-            "make_and_draw_map('" + params["mtzin"]  +\
-                                "', '" + params["labin_fc"][0] +\
-                                "', '" + params["labin_fc"][1] +\
-                                "', '', 0, 0)\n"        +\
-            params["function"] + "(0)\n"                +\
-            "write_pdb_file(0,'" + coot_xyzout + "')\n" +\
-            "coot_real_exit(0)\n"
-        )
-        f.close()
+        for passNo in xrange(params["npasses"]):
 
-        cmd = [ "--no-state-script", "--no-graphics", "--no-guano", "--python",
-                "--pdb",params["xyzin"], "--script",coot_script ]
+            passId = combId + "_" + str(passNo+1).zfill(2)
 
-        self.runApp ( "coot",cmd,logType="Main" )
+            coot_xyzout = self.coot_out() + passId + ".pdb"
+            coot_script = self.coot_out() + passId + ".py"
 
-        results = self.assess_results ( params["xyzin"],coot_xyzout )
-        
-        out_msg = []
-        if combId=="FR" or results["nmodified"]>0:
-            out_msg.append ( str(results["nmodified"]) + " residues were modified" )
-        if combId!="FR":
-            out_msg.append (
-                "Overall r.m.s.d. of changes: {:.3f} &Aring;".format(results["rmsd"])
+            f = open ( coot_script,"w" )
+            f.write(
+                "make_and_draw_map('" + work_mtz +\
+                                    "', '" + params["labin_fc"][0] +\
+                                    "', '" + params["labin_fc"][1] +\
+                                    "', '', 0, 0)\n"        +\
+                params["function"] + "(0)\n"                +\
+                "write_pdb_file(0,'" + coot_xyzout + "')\n" +\
+                "coot_real_exit(0)\n"
             )
-            out_msg.append (
-                "Maximum residue r.m.s.d.:&nbsp;&nbsp;&nbsp;&nbsp;" +\
-                "{:.3f} &Aring;".format(results["max_rmsd"])
-            )
-        for msg in out_msg:
-            self.putMessage1 ( secId,msg,report_row,col=0,colSpan=2 )
-            report_row += 1
+            f.close()
 
-        #  refine phases
+            cmd = [ "--no-state-script", "--no-graphics", "--no-guano", "--python",
+                    "--pdb",work_xyz, "--script",coot_script ]
 
-        """
-        hkl_labels = hkl.getMeanColumns()
-        if hkl_labels[2]=="F":
-            hkl_labin = "LABIN FP=" + hkl_labels[0] + " SIGFP=" + hkl_labels[1]
-        else:
-            hkl_labin = "LABIN IP=" + hkl_labels[0] + " SIGIP=" + hkl_labels[1]
-        """
+            self.runApp ( "coot",cmd,logType="Service" )
 
-        if int(params["ncycles"])>0:
+            results = self.assess_results ( work_xyz,coot_xyzout )
 
-            hkl_labels = hkl.getMeanF()
-            hkl_labin  = "LABIN FP=" + hkl_labels[0] + " SIGFP=" + hkl_labels[1]
-            hkl_labin += " FREE=" + hkl.getFreeRColumn()
+            if combId=="FR" or results["nmodified"]>0:
+                self.putMessage1 ( secId,
+                        str(results["nmodified"]) + " residues were modified",
+                        report_row,col=0,colSpan=2 )
+                report_row += 1
+                if results["nmodified"]<=0:
+                    refmac_xyzout = work_xyz
+                    refmac_mtzout = work_mtz
+                    break  # do not refine
+            else:
+                if not table_id:
+                    table_id = self.getWidgetId ( combId + "_table" )
+                    self.putTable ( table_id,"Summary",secId,report_row,
+                                    colSpan=3,mode=0 )
+                    self.setTableVertHeader ( table_id,0,
+                                "Overall r.m.s.d. of changes (&Aring;)","" )
+                    self.setTableVertHeader ( table_id,1,
+                                "Maximum residue r.m.s.d. (&Aring;)","" )
+                    self.setTableVertHeader ( table_id,2,"R-factor","" )
+                    self.setTableVertHeader ( table_id,3,"R-free","" )
+                    report_row += 1
+                self.setTableHorzHeader ( table_id,passNo,"Pass "+str(passNo+1),"" )
+                self.putTableString ( table_id,
+                            "{:.3f}".format(results["rmsd"]),"",0,passNo )
+                self.putTableString ( table_id,
+                            "{:.3f}".format(results["max_rmsd"]),"",1,passNo )
 
-            self.open_stdin()
-            self.write_stdin ([
-                hkl_labin,
-                "NCYC " + params["ncycles"],
-                "WEIGHT AUTO",
-                "MAKE HYDR NO",
-                "REFI BREF ISOT",
-                "SCALE TYPE SIMPLE",
-                "SOLVENT YES",
-                "NCSR LOCAL",
-                "MAKE NEWLIGAND EXIT",
-                "END"
-            ])
-            self.close_stdin()
+            """
+            out_msg = []
+            if combId=="FR" or results["nmodified"]>0:
+                out_msg.append ( str(results["nmodified"]) + " residues were modified" )
+            if combId!="FR":
+                out_msg.append (
+                    "Overall r.m.s.d. of changes: {:.3f} &Aring;".format(results["rmsd"])
+                )
+                out_msg.append (
+                    "Maximum residue r.m.s.d.:&nbsp;&nbsp;&nbsp;&nbsp;" +\
+                    "{:.3f} &Aring;".format(results["max_rmsd"])
+                )
+            for msg in out_msg:
+                self.putMessage1 ( secId,msg,report_row,col=0,colSpan=2 )
+                report_row += 1
+            """
 
-            refmac_mtzout = self.refmac_out() + str(combId) + ".mtz"
-            refmac_xyzout = self.refmac_out() + str(combId) + ".pdb"
+            #  refine phases
 
-            cmd = [ "hklin" ,hkl.getHKLFilePath(self.inputDir()),
-                    "xyzin" ,coot_xyzout,
-                    "hklout",refmac_mtzout,
-                    "xyzout",refmac_xyzout,
-                    "tmpdir",os.path.join(os.environ["CCP4_SCR"],uuid.uuid4().hex) ]
+            """
+            hkl_labels = hkl.getMeanColumns()
+            if hkl_labels[2]=="F":
+                hkl_labin = "LABIN FP=" + hkl_labels[0] + " SIGFP=" + hkl_labels[1]
+            else:
+                hkl_labin = "LABIN IP=" + hkl_labels[0] + " SIGIP=" + hkl_labels[1]
+            """
 
-            if params["libin"]:
-                cmd += ["libin",params["libin"]]
+            if int(params["ncycles"])>0:
 
-            # Prepare report parser
-            panelId = self.getWidgetId ( self.refmac_report() + "_" + secId )
-            self.putPanel1 ( secId,panelId,report_row,colSpan=2 )
-            self.setGenericLogParser ( panelId,False,graphTables=False,
-                                       makePanel=False )
-            self.runApp ( "refmac5",cmd,logType="Main" )
-            self.unsetLogParser()
+                hkl_labels = hkl.getMeanF()
+                hkl_labin  = "LABIN FP=" + hkl_labels[0] + " SIGFP=" + hkl_labels[1]
+                hkl_labin += " FREE=" + hkl.getFreeRColumn()
 
-        else:
-            refmac_mtzout = params["mtzin"]
-            refmac_xyzout = coot_xyzout
+                self.open_stdin()
+                self.write_stdin ([
+                    hkl_labin,
+                    "NCYC " + params["ncycles"],
+                    "WEIGHT AUTO",
+                    "MAKE HYDR NO",
+                    "REFI BREF ISOT",
+                    "SCALE TYPE SIMPLE",
+                    "SOLVENT YES",
+                    "NCSR LOCAL",
+                    "MAKE NEWLIGAND EXIT",
+                    "END"
+                ])
+                self.close_stdin()
 
+                refmac_mtzout = self.refmac_out() + passId + ".mtz"
+                refmac_xyzout = self.refmac_out() + passId + ".pdb"
+
+                cmd = [ "hklin" ,hkl.getHKLFilePath(self.inputDir()),
+                        "xyzin" ,coot_xyzout,
+                        "hklout",refmac_mtzout,
+                        "xyzout",refmac_xyzout,
+                        "tmpdir",os.path.join(os.environ["CCP4_SCR"],uuid.uuid4().hex) ]
+
+                if params["libin"]:
+                    cmd += ["libin",params["libin"]]
+
+                # Prepare report parser
+                if passNo==0:
+                    panelId = self.getWidgetId ( self.refmac_report() + "_" + secId )
+                    self.putPanel1 ( secId,panelId,report_row,colSpan=2 )
+                    self.setGenericLogParser ( panelId,True,graphTables=False,
+                                               makePanel=False )
+                self.runApp ( "refmac5",cmd,logType="Main" )
+                #self.unsetLogParser()
+                #self.stdoutln ( str(self.generic_parser_summary) )
+                self.putTableString ( table_id,
+                    self.generic_parser_summary["refmac"]["R_factor"],"",2,passNo )
+                self.putTableString ( table_id,
+                    self.generic_parser_summary["refmac"]["R_free"],"",3,passNo )
+
+            else:
+                refmac_mtzout = params["mtzin"]
+                refmac_xyzout = coot_xyzout
+                self.putTableString ( table_id,"fail","",2,passNo )
+                self.putTableString ( table_id,"fail","",3,passNo )
+
+            work_xyz = refmac_xyzout
+            work_mtz = refmac_mtzout
+
+            self.flush()
+
+        self.unsetLogParser()
+
+        if table_id:
+            results = self.assess_results ( params["xyzin"],refmac_xyzout )
+            self.setTableHorzHeader ( table_id,params["npasses"],"Overall","" )
+            self.putTableString ( table_id,
+                    "{:.3f}".format(results["rmsd"]),"",0,params["npasses"] )
+            self.putTableString ( table_id,
+                    "{:.3f}".format(results["max_rmsd"]),"",1,params["npasses"] )
 
         #if combId=="RR" and sys.platform == "darwin":  # gemmi-numpy clash in 7.0
         if combId=="RR":
@@ -222,8 +281,8 @@ class CombStructure(basic.TaskDriver):
             #self.putMessage1 ( secId,"<img src=\"" + plot2_png +
             #            "\" height=\"420pt\" style=\"vertical-align: middle;\"/>",
             #            report_row,1 )
-            plot1_png = "_rama_general_1"
-            plot2_png = "_rama_general_2"
+            plot1_png = combId + "_rama_general_1"
+            plot2_png = combId + "_rama_general_2"
 
             pyrama_path = os.path.normpath ( os.path.join (
                                 os.path.dirname(os.path.abspath(__file__)),
@@ -234,13 +293,14 @@ class CombStructure(basic.TaskDriver):
                 params["xyzin"],
                 "Original Ramachandran Plot",
                 os.path.join(self.reportDir(),plot1_png)
-            ]            
+            ]
             cmd2 = [
                 pyrama_path,
                 refmac_xyzout,
                 "Refined Ramachandran Plot",
                 os.path.join(self.reportDir(),plot2_png)
-            ]            
+            ]
+
             if sys.platform.startswith("win"):
                 self.runApp ( "ccp4-python.bat",cmd1,logType="Main" )
                 self.runApp ( "ccp4-python.bat",cmd2,logType="Main" )
@@ -249,12 +309,11 @@ class CombStructure(basic.TaskDriver):
                 self.runApp ( "ccp4-python",cmd2,logType="Main" )
 
             self.putMessage1 ( secId,"<img src=\"" + plot1_png +
-                        ".png\" height=\"420pt\" style=\"vertical-align: middle;\"/>",
-                        report_row,0 )
+                    ".png\" height=\"420pt\" style=\"vertical-align: middle;\"/>",
+                    report_row,0 )
             self.putMessage1 ( secId,"<img src=\"" + plot2_png +
-                        ".png\" height=\"420pt\" style=\"vertical-align: middle;\"/>",
-                        report_row,1 )
-
+                    ".png\" height=\"420pt\" style=\"vertical-align: middle;\"/>",
+                    report_row,1 )
 
         return [refmac_mtzout,refmac_xyzout]
 
@@ -287,14 +346,16 @@ class CombStructure(basic.TaskDriver):
             if code!="N":
                 secId   = self.getWidgetId ( "comb_"+code )
                 self.putSection ( secId,self.pass_meta[code]["title"] )
-                npasses = self.getParameter ( getattr(sec1,combN+"NPASS") )
+                npasses = 1
+                if code!="FR":
+                    npasses = self.getParameter ( getattr(sec1,combN+"NPASS") )
                 ncycles = self.getParameter ( getattr(sec1,combN+"NCYC" ) )
                 mtzxyz  = self.comb_structure ( secId,code,hkl,{
                   "libin"    : libin,
                   "mtzin"    : mtzxyz[0],
                   "xyzin"    : mtzxyz[1],
                   "labin_fc" : labin_fc,
-                  "npasses"  : npasses,
+                  "npasses"  : int(npasses),
                   "ncycles"  : ncycles,
                   "function" : self.pass_meta[code]["script"]
                 })
