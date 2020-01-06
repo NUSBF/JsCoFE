@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    29.10.19   <--  Date of Last Modification.
+ *    06.01.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Job Dialog
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2019
+ *  (C) E. Krissinel, A. Lebedev 2016-2020
  *
  *  =================================================================
  *
@@ -113,7 +113,9 @@ function JobDialog ( params,          // data and task projections up the tree b
 
   this.makeLayout ( onRun_func );
 
-  $(this.element).dialog ( this.dialog_options );
+  var dialog = $(this.element).dialog ( this.dialog_options );
+  if (__mobile_device)
+    dialog.siblings('.ui-dialog-titlebar').remove();
 
   this.setDlgState();
   this.setDlgSize ();

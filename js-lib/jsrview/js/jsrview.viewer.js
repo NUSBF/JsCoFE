@@ -209,7 +209,7 @@ function startUglyMol ( title,xyz_uri,mtz_uri,map_uri,diffmap_uri,mapLabels )  {
   jq(iframe).height ( size[1] );
   dialog.appendChild ( iframe );
 
-  jq(dialog).dialog({
+  var dlg = jq(dialog).dialog({
     resizable  : true,
     height     : 'auto',
     width      : 'auto',
@@ -224,6 +224,8 @@ function startUglyMol ( title,xyz_uri,mtz_uri,map_uri,diffmap_uri,mapLabels )  {
     resizeStop : function() { iframe.contentWindow.focus(); },
     buttons: {}
   });
+  //if (window.parent.__mobile_device)
+  //  dlg.siblings('.ui-dialog-titlebar').remove();
 
   var html = makeUglyMolHtml ( xyz_uri,mtz_uri,map_uri,diffmap_uri,mapLabels );
   iframe.contentWindow.document.write(html);

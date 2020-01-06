@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    08.10.19   <--  Date of Last Modification.
+ *    06.01.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Various message dialogs
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2019
+ *  (C) E. Krissinel, A. Lebedev 2016-2020
  *
  *  =================================================================
  *
@@ -39,7 +39,7 @@ function calcDialogSize ( defW,defH, defWT,defHT, job_dialog_data )  {
   if (__mobile_device)  {
 
     w = defWT*$(window).width () - 8;
-    h = defHT*$(window).height() - 46;
+    h = defHT*$(window).height() - 8;// - 46;
 
   } else  {
 
