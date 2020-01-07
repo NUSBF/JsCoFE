@@ -48,9 +48,13 @@ var __fe_url          = '';     // front-end url as returned by the server (not 
 //var __mobile_device = (navigator.maxTouchPoints || 'ontouchstart' in document.documentElement);
 
 var __mobile_device = (/Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent) );
-var __iOS_device    = (/iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream );
+var __iOS_device    = (/iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream ) ||
+                      (navigator.maxTouchPoints && (navigator.maxTouchPoints > 2) &&
+                       /MacIntel/.test(navigator.platform));
 var __any_mobile_device = __mobile_device || __iOS_device;
 //var iOS = !!navigator.platform && /iPad|iPhone|iPod/.test(navigator.platform);
+
+alert ( '  ' + navigator.userAgent );
 
 $(window).resize ( function(){
   if (__current_page)
