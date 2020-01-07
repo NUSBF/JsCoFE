@@ -258,8 +258,8 @@ JobDialog.prototype.getDlgSize = function ()  {
 
 JobDialog.prototype.onDlgResize = function ()  {
 
-  if (__any_mobile_device)
-    return;
+  //if (__any_mobile_device)
+  //  return;
 
   var panelHeight;
   var panelWidth;
