@@ -1,7 +1,7 @@
 //
 //  ==========================================================================
 //
-//    07.12.19   <--  Date of Last Modification.
+//    07.01.20   <--  Date of Last Modification.
 //                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  --------------------------------------------------------------------------
 //
@@ -12,7 +12,7 @@
 //  **** Content :  RVAPI javascript layer's window module
 //       ~~~~~~~~~
 //
-//  (C) E. Krissinel 2013-2019
+//  (C) E. Krissinel 2013-2020
 //
 //  ==========================================================================
 //
@@ -238,7 +238,7 @@ function startUglyMol ( title,xyz_uri,mtz_uri,map_uri,diffmap_uri,mapLabels )  {
     buttons: {}
   };
 
-  if (__any_mobile_device)  {
+  if (window.parent.__any_mobile_device)  {
     dialog_options.position  =  { my : 'left top',   // job dialog position reference
                                   at : 'left top' }; // job dialog offset in the screen
     dialog_options.resizable = false;
