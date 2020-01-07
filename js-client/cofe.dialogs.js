@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    06.01.20   <--  Date of Last Modification.
+ *    07.01.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -39,7 +39,7 @@ function calcDialogSize ( defW,defH, defWT,defHT, job_dialog_data )  {
   if (__any_mobile_device)  {
 
     w = defWT*$(window).width () - 8;
-    h = defHT*$(window).height() - 8;// - 46;
+    h = defHT*$(window).height() - 24;// - 46;
 
   } else  {
 
