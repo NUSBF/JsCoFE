@@ -40,6 +40,8 @@ function calcDialogSize ( defW,defH, defWT,defHT, job_dialog_data )  {
 
     w = defWT*$(window).width () - 8;
     h = defHT*$(window).height() - 40;// - 46;
+    if (__mobile_device)
+      h += 24;
 
   } else  {
 
