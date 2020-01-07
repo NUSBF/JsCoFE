@@ -157,12 +157,25 @@ function calcViewerSize ( widthF,heightF )  {
   //var jq = window.parent.$;
   //var w  = jq(window.parent).width () - 40;
   //var h  = jq(window.parent).height() - 64;
-  var w  = window.parent.innerWidth  - 40;
-  var h  = window.parent.innerHeight - 64;
 
-  if ((typeof window.parent.__touch_device === 'undefined') || (!window.parent.__touch_device))  {
-    w = widthF*w;
-    h = heightF*h;
+  var w = window.parent.innerWidth;
+  var h = window.parent.innerHeight;
+
+  if (window.parent.__any_mobile_device)  {
+
+    w -= 8;
+    h -= 8;
+
+  } else  {
+
+    w -= 40;
+    h -= 64;
+
+    if ((typeof window.parent.__touch_device === 'undefined') || (!window.parent.__touch_device))  {
+      w = widthF*w;
+      h = heightF*h;
+    }
+
   }
 
   return [w,h];
@@ -202,14 +215,14 @@ function startUglyMol ( title,xyz_uri,mtz_uri,map_uri,diffmap_uri,mapLabels )  {
   //alert ( typeof window.parent.__touch_device + ' : ' + ((typeof window.parent.__touch_device) === 'undefined') );
 
   var size;
-  if (window.parent.__mobile_device)
+  if (window.parent.__any_mobile_device)
         size = calcViewerSize ( 1.0,1.0    );
   else  size = calcViewerSize ( 0.75,0.875 );
   jq(iframe).width  ( size[0] );
   jq(iframe).height ( size[1] );
   dialog.appendChild ( iframe );
 
-  var dlg = jq(dialog).dialog({
+  var dialog_options = {
     resizable  : true,
     height     : 'auto',
     width      : 'auto',
@@ -223,7 +236,18 @@ function startUglyMol ( title,xyz_uri,mtz_uri,map_uri,diffmap_uri,mapLabels )  {
     dragStop   : function() { iframe.contentWindow.focus(); },
     resizeStop : function() { iframe.contentWindow.focus(); },
     buttons: {}
-  });
+  };
+
+  if (__any_mobile_device)  {
+    dialog_options.position  =  { my : 'left top',   // job dialog position reference
+                                  at : 'left top' }; // job dialog offset in the screen
+    dialog_options.resizable = false;
+    //dialog_options.height     : 'auto',
+    //dialog_options.width      : 'auto',
+    dialog_options.modal     = true;
+  }
+
+  var dlg = jq(dialog).dialog ( dialog_options );
   //if (window.parent.__mobile_device)
   //  dlg.siblings('.ui-dialog-titlebar').remove();
 
