@@ -164,7 +164,7 @@ function calcViewerSize ( widthF,heightF )  {
   if (window.parent.__any_mobile_device)  {
 
     w -= 40;
-    h -= 64;
+    h -= 60;
 
   } else  {
 
