@@ -105,16 +105,16 @@ function JobDialog ( params,          // data and task projections up the tree b
                   }
   };
 
-  if (!__mobile_device)
-    this.dialog_options.position = this.task.job_dialog_data.position;
-  else
+  if (__any_mobile_device)
     this.dialog_options.position =  { my : 'left top',   // job dialog position reference
                                       at : 'left top' }; // job dialog offset in the screen
+  else
+    this.dialog_options.position = this.task.job_dialog_data.position;
 
   this.makeLayout ( onRun_func );
 
   var dialog = $(this.element).dialog ( this.dialog_options );
-  if (__mobile_device)
+  if (__any_mobile_device)
     dialog.siblings('.ui-dialog-titlebar').remove();
 
   this.setDlgState();
@@ -246,7 +246,7 @@ JobDialog.prototype.setDlgState = function()  {
 }
 
 JobDialog.prototype.getDlgSize = function ()  {
-  if (!__mobile_device)  {
+  if (!__any_mobile_device)  {
     this.task.job_dialog_data.width  = this.width_px ();
     this.task.job_dialog_data.height = this.height_px();
     var p = $(this.element).dialog ( "option", "position" );
@@ -258,13 +258,13 @@ JobDialog.prototype.getDlgSize = function ()  {
 
 JobDialog.prototype.onDlgResize = function ()  {
 
-  if (__mobile_device)
+  if (__any_mobile_device)
     return;
 
   var panelHeight;
   var panelWidth;
   if (this.toolBar)  {
-    if (__mobile_device)  {
+    if (__any_mobile_device)  {
       panelHeight = this.initialHeight - 36 -
                     this.child[0].height_px() - this.child[1].height_px();
     } else  {
@@ -273,7 +273,7 @@ JobDialog.prototype.onDlgResize = function ()  {
     }
     panelWidth = this.child[1].width_px();
   } else  {
-    if (__mobile_device)
+    if (__any_mobile_device)
           panelHeight = this.initialHeight - 24;
     else  panelHeight = this.task.job_dialog_data.height - 24;
     panelWidth = this.task.job_dialog_data.width - 30;
@@ -295,7 +295,7 @@ JobDialog.prototype.onDlgResize = function ()  {
 
 
 JobDialog.prototype.setDlgSize = function()  {
-  if (__mobile_device)  {
+  if (__any_mobile_device)  {
     this.setSize_px ( this.initialWidth,this.initialHeight );
   } else  {
     if (this.task.job_dialog_data.height<=0)  {
@@ -485,7 +485,7 @@ JobDialog.prototype.makeLayout = function ( onRun_func )  {
 
     $(dlg.element).on ( 'dialogresize', function(event,ui){
       dlg.task.job_dialog_data.width  = dlg.width_px();
-      if (!__mobile_device)  {
+      if (!__any_mobile_device)  {
         dlg.task.job_dialog_data.height = dlg.height_px();
         dlg.onDlgResize();
       }

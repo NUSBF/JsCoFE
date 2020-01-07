@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    08.10.19   <--  Date of Last Modification.
+ *    06.01.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Global variables
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2019
+ *  (C) E. Krissinel, A. Lebedev 2016-2020
  *
  *  ==========================================================================
  *
@@ -49,6 +49,7 @@ var __fe_url          = '';     // front-end url as returned by the server (not 
 
 var __mobile_device = (/Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent) );
 var __iOS_device    = (/iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream );
+var __any_mobile_device = __mobile_device || __iOS_device;
 //var iOS = !!navigator.platform && /iPad|iPhone|iPod/.test(navigator.platform);
 
 $(window).resize ( function(){
