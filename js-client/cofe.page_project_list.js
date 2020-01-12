@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    01.12.19   <--  Date of Last Modification.
+ *    12.01.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Project list page
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2019
+ *  (C) E. Krissinel, A. Lebedev 2016-2020
  *
  *  =================================================================
  *
@@ -50,6 +50,7 @@ function ProjectListPage ( sceneId )  {
   var export_btn    = null;
   var import_btn    = null;
   var demoprj_btn   = null;
+  var impshare_btn  = null;
   var help_btn      = null;
   var panel         = null;
   var welcome_lbl   = null;
@@ -57,10 +58,14 @@ function ProjectListPage ( sceneId )  {
   var table_row     = 0;                  // project list position in panel
   var self          = this;               // for reference to Base class
 
+  function currentProjectName()  {
+    return self.tablesort_tbl.selectedRow.child[0].text.split(']:').pop();
+  }
+
   // function to save Project List
   function saveProjectList ( onDone_func )  {
     if (self.tablesort_tbl.selectedRow)  {
-      projectList.current = self.tablesort_tbl.selectedRow.child[0].text;
+      projectList.current = currentProjectName();
       for (var i=0;i<projectList.projects.length;i++)  {
         var pDesc = projectList.projects[i];
         if (pDesc.name==projectList.current)  {
@@ -152,7 +157,7 @@ function ProjectListPage ( sceneId )  {
   // function to rename selected Project
   var renameProject = function() {
     var inputBox  = new InputBox ( 'Rename Project' );
-    var prjName   = self.tablesort_tbl.selectedRow.child[0].text;
+    var prjName   = currentProjectName();
     var ibx_grid  = new Grid      ( '' );
     var title_inp = new InputText ( self.tablesort_tbl.selectedRow.child[1].text );
     title_inp.setStyle   ( 'text','','Example project',
@@ -197,7 +202,7 @@ function ProjectListPage ( sceneId )  {
 
   var deleteProject = function() {
     var inputBox = new InputBox ( 'Delete Project' );
-    var delName  = self.tablesort_tbl.selectedRow.child[0].text;
+    var delName  = currentProjectName();
     inputBox.setText ( 'Project:<br><b><center>' + delName +
                        '</center></b><p>will be deleted. All project ' +
                        'structure and data will be lost.' +
@@ -214,7 +219,7 @@ function ProjectListPage ( sceneId )  {
 
   var exportProject = function() {
     if (self.tablesort_tbl.selectedRow)  {
-      projectList.current = self.tablesort_tbl.selectedRow.child[0].text;
+      projectList.current = currentProjectName();
       new ExportProjectDialog ( projectList );
     } else
       new MessageBox ( 'No project selected',
@@ -222,7 +227,17 @@ function ProjectListPage ( sceneId )  {
                        '-- nothing to export.' );
   }
 
-
+  /*
+  var importSharedProject = function() {
+    if (self.tablesort_tbl.selectedRow)  {
+      projectList.current = currentProjectName();
+      new ShareProjectsDialog ( projectList );
+    } else
+      new MessageBox ( 'No project selected',
+                       'No project is currently selected<br>' +
+                       '-- nothing to share.' );
+  }
+  */
 
   // function to create project list table and fill it with data
   function makeProjectListTable()  {
@@ -277,12 +292,13 @@ function ProjectListPage ( sceneId )  {
       trow.addCell ( '' );
       trow.addCell ( '' );
       self.tablesort_tbl.createTable();
-      open_btn  .setDisabled ( true  );
-      add_btn   .setDisabled ( (__dormant!=0) ); // for strange reason Firefox wants this!
-      rename_btn.setDisabled ( true  );
-      del_btn   .setDisabled ( true  );
-      import_btn.setDisabled ( (__dormant!=0) ); // for strange reason Firefox wants this!
-      export_btn.setDisabled ( true  );
+      open_btn    .setDisabled ( true  );
+      add_btn     .setDisabled ( (__dormant!=0) ); // for strange reason Firefox wants this!
+      rename_btn  .setDisabled ( true  );
+      del_btn     .setDisabled ( true  );
+      import_btn  .setDisabled ( (__dormant!=0) ); // for strange reason Firefox wants this!
+      export_btn  .setDisabled ( true  );
+      impshare_btn.setDisabled ( (__dormant!=0) );
 
     } else  {
 
@@ -301,7 +317,10 @@ function ProjectListPage ( sceneId )  {
         //contextMenu.setZIndex ( 101 );
 
         var pDesc = projectList.projects[i];
-        trow.addCell ( pDesc.name  ).setNoWrap();
+        var pName = pDesc.name;
+        if (('owner' in pDesc) && pDesc.owner.is_shared)
+          pName = '[<b><i>' + pDesc.owner.login + '</i></b>]:' + pName
+        trow.addCell ( pName  ).setNoWrap();
         trow.addCell ( pDesc.title ).insertWidget ( contextMenu,0 );
         if (pDesc.hasOwnProperty('disk_space'))
               trow.addCell ( round(pDesc.disk_space,1) ).setNoWrap();
@@ -322,11 +341,13 @@ function ProjectListPage ( sceneId )  {
           self.tablesort_tbl.applySortList ( projectList.sortList );
         },10 );
       self.tablesort_tbl.selectRow ( selectedRow );
-      open_btn  .setDisabled ( false );
-      add_btn   .setDisabled ( (__dormant!=0) ); // for strange reason Firefox wants this!
-      rename_btn.setDisabled ( false );
-      del_btn   .setDisabled ( false );
-      import_btn.setDisabled ( (__dormant!=0) ); // for strange reason Firefox wants this!
+      open_btn    .setDisabled ( false );
+      add_btn     .setDisabled ( (__dormant!=0) ); // for strange reason Firefox wants this!
+      rename_btn  .setDisabled ( false );
+      del_btn     .setDisabled ( false );
+      import_btn  .setDisabled ( (__dormant!=0) ); // for strange reason Firefox wants this!
+      export_btn  .setDisabled ( false );
+      impshare_btn.setDisabled ( (__dormant!=0) );
 
       welcome_lbl.hide();
 
@@ -340,7 +361,6 @@ function ProjectListPage ( sceneId )  {
     });
 
   }
-
 
   function loadProjectList()  {
     //  Read list of projects from server
@@ -397,38 +417,41 @@ function ProjectListPage ( sceneId )  {
   //var title_lbl = new Label ( 'My Projects'  );
   //title_lbl.setFont         ( 'times','200%',true,true );
 
-  open_btn   = new Button ( 'Open'  ,image_path('go') );
-  add_btn    = new Button ( 'Add'   ,image_path('add') );
-  rename_btn = new Button ( 'Rename',image_path('rename') );
-  del_btn    = new Button ( 'Delete',image_path('remove') );
-  export_btn = new Button ( 'Export',image_path('export') );
-  import_btn = new Button ( 'Import',image_path('import') );
+  open_btn     = new Button ( 'Open'  ,image_path('go') );
+  add_btn      = new Button ( 'Add'   ,image_path('add') );
+  rename_btn   = new Button ( 'Rename',image_path('rename') );
+  del_btn      = new Button ( 'Delete',image_path('remove') );
+  export_btn   = new Button ( 'Export',image_path('export') );
+  import_btn   = new Button ( 'Import',image_path('import') );
+  impshare_btn = new Button ( 'Shared',image_path('share') );
   if (__demo_projects)  {
     demoprj_btn = new Button ( 'Demo projects',image_path('demoprj') );
     demoprj_btn.setWidth     ( '120pt' );
   }
-  help_btn   = new Button ( 'Help'  ,image_path('help') ); //.setTooltip('Documentation' );
-  open_btn  .setWidth     ( '80pt' );
-  add_btn   .setWidth     ( '80pt' );
-  rename_btn.setWidth     ( '80pt' );
-  del_btn   .setWidth     ( '80pt' );
-  export_btn.setWidth     ( '80pt' );
-  import_btn.setWidth     ( '80pt' );
-  help_btn  .setWidth     ( '80pt' );
+  help_btn   = new Button ( 'Help',image_path('help') ); //.setTooltip('Documentation' );
+  open_btn    .setWidth     ( '80pt'  );
+  add_btn     .setWidth     ( '80pt'  );
+  rename_btn  .setWidth     ( '80pt'  );
+  del_btn     .setWidth     ( '80pt'  );
+  export_btn  .setWidth     ( '80pt'  );
+  import_btn  .setWidth     ( '80pt'  );
+  impshare_btn.setWidth     ( '80pt' );
+  help_btn    .setWidth     ( '80pt'  );
 
   var row = 0;
   panel.setHorizontalAlignment ( row,0,'center'    );
   panel.setCellSize            ( '','10pt',row++,0    );
   nCols = 0;
-  panel.setWidget              ( open_btn  ,row,nCols++,1,1 );
-  panel.setWidget              ( add_btn   ,row,nCols++,1,1 );
-  panel.setWidget              ( rename_btn,row,nCols++,1,1 );
-  panel.setWidget              ( del_btn   ,row,nCols++,1,1 );
-  panel.setWidget              ( export_btn,row,nCols++,1,1 );
-  panel.setWidget              ( import_btn,row,nCols++,1,1 );
+  panel.setWidget              ( open_btn    ,row,nCols++,1,1 );
+  panel.setWidget              ( add_btn     ,row,nCols++,1,1 );
+  panel.setWidget              ( rename_btn  ,row,nCols++,1,1 );
+  panel.setWidget              ( del_btn     ,row,nCols++,1,1 );
+  panel.setWidget              ( export_btn  ,row,nCols++,1,1 );
+  panel.setWidget              ( import_btn  ,row,nCols++,1,1 );
+  panel.setWidget              ( impshare_btn,row,nCols++,1,1 );
   if (demoprj_btn)
-    panel.setWidget            ( demoprj_btn,row,nCols++,1,1 );
-  panel.setWidget              ( help_btn  ,row,nCols++,1,1  );
+    panel.setWidget            ( demoprj_btn ,row,nCols++,1,1 );
+  panel.setWidget              ( help_btn    ,row,nCols++,1,1  );
   //panel.setWidget              ( title_lbl, row-2,0,1,nCols  );
 
   for (var i=0;i<nCols-1;i++)
@@ -451,15 +474,21 @@ function ProjectListPage ( sceneId )  {
   table_row = row;  // note the project list table position here
 
   // add a listeners to toolbar buttons
-  open_btn  .addOnClickListener ( openProject   );
-  add_btn   .addOnClickListener ( addProject    );
-  rename_btn.addOnClickListener ( renameProject );
-  del_btn   .addOnClickListener ( deleteProject );
-  export_btn.addOnClickListener ( exportProject );
+  open_btn    .addOnClickListener ( openProject   );
+  add_btn     .addOnClickListener ( addProject    );
+  rename_btn  .addOnClickListener ( renameProject );
+  del_btn     .addOnClickListener ( deleteProject );
+  export_btn  .addOnClickListener ( exportProject );
+  //impshare_btn.addOnClickListener ( importSharedProject  );
 
   // add a listener to 'import' button
   import_btn.addOnClickListener ( function(){
     new ImportProjectDialog ( loadProjectList1 );
+  });
+
+  // add a listener to 'import' button
+  impshare_btn.addOnClickListener ( function(){
+    new ImportSharedProjectDialog ( loadProjectList1 );
   });
 
   // add a listener to 'demo project' button

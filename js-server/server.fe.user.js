@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    01.12.19   <--  Date of Last Modification.
+ *    12.01.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Front End Server -- User Support Module
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2019
+ *  (C) E. Krissinel, A. Lebedev 2016-2020
  *
  *  =================================================================
  *
@@ -718,6 +718,13 @@ function readUserData ( loginData )  {
   return uData;
 }
 
+function getUserLoginData ( login )  {
+  var uLoginData = { login:login };
+  var uData      = readUserData ( uLoginData );
+  if (uData)  uLoginData.volume = uData.volume;
+        else  uLoginData = null;
+  return uLoginData;
+}
 
 function readUsersData()  {
 
@@ -1402,6 +1409,7 @@ module.exports.recoverUserLogin     = recoverUserLogin;
 module.exports.readUserLoginHash    = readUserLoginHash;
 module.exports.getLoginData         = getLoginData;
 module.exports.readUserData         = readUserData;
+module.exports.getUserLoginData     = getUserLoginData;
 module.exports.getUserRation        = getUserRation;
 module.exports.readUsersData        = readUsersData;
 module.exports.getUserData          = getUserData;

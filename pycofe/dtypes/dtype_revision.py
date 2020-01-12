@@ -3,13 +3,13 @@
 #
 # ============================================================================
 #
-#    12.11.19   <--  Date of Last Modification.
+#    10.01.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  REVISION DATA TYPE
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2019
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2020
 #
 # ============================================================================
 #
@@ -33,10 +33,22 @@ spec1_list = [
     [dtype_template.subtypeRNA      (),"rna"     ]
 ]
 
-spec2_list = [
+spec21_list = [
+    [dtype_template.subtypeXYZ         (),"xyz"          ],
+    [dtype_template.subtypeSubstructure(),"substructure" ],
+    [dtype_template.subtypePhases      (),"phases"       ]
+]
+
+spec22_list = [
     [dtype_template.subtypeSubstructure(),"substructure" ],
     [dtype_template.subtypeXYZ         (),"xyz"          ],
     [dtype_template.subtypePhases      (),"phases"       ]
+]
+
+spec3_list = [
+    [dtype_template.subtypePhases      (),"phases"       ],
+    [dtype_template.subtypeSubstructure(),"substructure" ],
+    [dtype_template.subtypeXYZ         (),"xyz"          ]
 ]
 
 
@@ -134,7 +146,7 @@ class DType(dtype_template.DType):
         return
     """
 
-    def makeRevDName(self,jobId,serialNo,title):
+    def makeRevDName ( self,jobId,serialNo,title ):
 
         self.jobId = jobId
         self.makeDataId ( serialNo )
@@ -149,9 +161,13 @@ class DType(dtype_template.DType):
                     spec1 += item[1] + ","
 
         spec2  = ""
-        slist2 = spec2_list;
+        slist2 = spec21_list
         if self.leadKey==2:
-            slist2.insert ( 0,slist2.pop() )
+            slist2 = spec3_list
+            #slist2.insert ( 0,slist2.pop() )
+        elif getattr(self.Options,"leading_structure","*")=="substructure":
+            slist2 = spec22_list
+
         first = True
         for item in slist2:
             if item[0] in self.subtype:

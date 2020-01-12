@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    06.01.20   <--  Date of Last Modification.
+ *    11.01.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -99,6 +99,10 @@ function JobDialog ( params,          // data and task projections up the tree b
       width     : size[0],
       height    : size[1],
       buttons   : {},
+      open      : function(event, ui) {
+        if (__any_mobile_device)
+          $(this).siblings('.ui-dialog-titlebar').remove();
+      },
       focus     : function() {
                     if (onDlgSignal_func)
                       onDlgSignal_func ( taskId,job_dialog_reason.select_node );
@@ -114,8 +118,8 @@ function JobDialog ( params,          // data and task projections up the tree b
   this.makeLayout ( onRun_func );
 
   var dialog = $(this.element).dialog ( this.dialog_options );
-  if (__any_mobile_device)
-    dialog.siblings('.ui-dialog-titlebar').remove();
+  //if (__any_mobile_device)
+  //  dialog.siblings('.ui-dialog-titlebar').remove();
 
   this.setDlgState();
   this.setDlgSize ();

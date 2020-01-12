@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    23.12.19   <--  Date of Last Modification.
+ *    12.01.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Configuration Module
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2019
+ *  (C) E. Krissinel, A. Lebedev 2016-2020
  *
  *  =================================================================
  *
@@ -855,6 +855,11 @@ function getFETmpDir()  {
   return path.join ( getFEConfig().storage,'tmp' );
 }
 
+
+function getFETmpDir1 ( loginData )  {
+  return path.join ( getFEConfig().getVolumeDir(loginData),'tmp' );
+}
+
 function getSetupID()  {
   if (fe_server.hasOwnProperty('description'))
     return fe_server.description.id;
@@ -942,6 +947,7 @@ module.exports.getRegMode         = getRegMode;
 module.exports.isLocalFE          = isLocalFE;
 module.exports.getSetupID         = getSetupID;
 module.exports.getFETmpDir        = getFETmpDir;
+module.exports.getFETmpDir1       = getFETmpDir1;
 module.exports.getNCTmpDir        = getNCTmpDir;
 module.exports.getTmpDir          = getTmpDir;
 module.exports.getTmpFile         = getTmpFile;

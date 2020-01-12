@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    10.10.19   <--  Date of Last Modification.
+ *    12.01.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Front End Server -- Projects Handler Functions
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2019
+ *  (C) E. Krissinel, A. Lebedev 2016-2020
  *
  *  =================================================================
  *
@@ -32,6 +32,7 @@ var utils    = require('./server.utils');
 var send_dir = require('./server.send_dir');
 var ration   = require('./server.fe.ration');
 var fcl      = require('./server.fe.facilities');
+var user     = require('./server.fe.user');
 var pd       = require('../js-common/common.data_project');
 var cmd      = require('../js-common/common.commands');
 var task_t   = require('../js-common/tasks/common.tasks.template');
@@ -44,6 +45,7 @@ var log = require('./server.log').newLog(6);
 var projectExt         = '.prj';
 var userProjectsExt    = '.projects';
 var projectListFName   = 'projects.list';
+var projectShareFName  = 'projects.share';
 var userKnowledgeFName = 'knowledge.meta';
 var projectDataFName   = 'project.meta';
 var jobDirPrefix       = 'job_';
@@ -64,6 +66,14 @@ function getUserProjectListPath ( loginData )  {
 // given login data
   return path.join ( conf.getFEConfig().getVolumeDir(loginData),
                      loginData.login + userProjectsExt,projectListFName );
+}
+
+function getUserProjectSharePath ( loginData )  {
+// path to JSON file containing list of all projects (with project
+// descriptions, represented as class ProjectList) of user with
+// given login data
+  return path.join ( conf.getFEConfig().getVolumeDir(loginData),
+                     loginData.login + userProjectsExt,projectShareFName );
 }
 
 function getUserKnowledgePath ( loginData )  {
@@ -226,6 +236,30 @@ var response = null;  // must become a cmd.Response object to return
 
 // ===========================================================================
 
+function _make_unique_list ( line )  {
+  return line.split(',')
+             .map(function(item){ return item.trim(); })
+             .filter(function(item,pos,self){ return self.indexOf(item)==pos; });
+}
+
+function readProjectShare ( loginData )  {
+var pShare = utils.readClass ( getUserProjectSharePath ( loginData ) );
+  if (!pShare)
+    pShare = new pd.ProjectShare();
+  return pShare;
+}
+
+function writeProjectShare ( loginData,pShare )  {
+  return utils.writeObject ( getUserProjectSharePath(loginData),pShare );
+}
+
+function getSharedPrjList ( loginData )  {
+  return new cmd.Response ( cmd.fe_retcode.ok,'',readProjectShare(loginData) );
+}
+
+
+// ===========================================================================
+
 function getUserKnowledgeData ( loginData )  {
 var response  = null;  // must become a cmd.Response object to return
 var knowledge = {};
@@ -309,6 +343,25 @@ function deleteProject ( loginData,projectName )  {
 var response = null;  // must become a cmd.Response object to return
 
   log.standard ( 7,'delete project ' + projectName + ', login ' + loginData.login );
+
+  // maintain share lists
+  var projectDataPath = getProjectDataPath ( loginData,projectName );
+  if (utils.fileExists(projectDataPath))  {
+    var pData = utils.readObject ( projectDataPath );
+    if (pData)  {
+      checkProjectOwner ( pData.desc,loginData );
+      var share = _make_unique_list ( pData.desc.owner.share );
+      for (var i=0;i<share.length;i++)
+        if (share[i])  {
+          var uLoginData = user.getUserLoginData ( share[i] );
+          if (uLoginData)  {
+            var pShare = readProjectShare ( uLoginData );
+            pShare.removeShare ( pData.desc );
+            writeProjectShare  ( uLoginData,pShare );
+          }
+        }
+    }
+  }
 
   // Get users' projects directory name
   var projectDirPath = getProjectDirPath ( loginData,projectName );
@@ -505,6 +558,19 @@ function finishJobExport ( loginData,task )  {
 
 // ===========================================================================
 
+function checkProjectOwner ( projectDesc,loginData )  {
+  if (!('owner' in projectDesc))  {  // backward compatibility on 11.01.2020
+    var uData = user.readUserData ( loginData );
+    projectDesc.owner = {
+      login     : loginData.login,
+      name      : uData.name,
+      email     : uData.email,
+      share     : '',
+      is_shared : false
+    };
+  }
+}
+
 function getProjectData ( loginData,data )  {
 
   var response = getProjectList ( loginData );
@@ -512,7 +578,7 @@ function getProjectData ( loginData,data )  {
     return response;
 
   log.detailed ( 11,'get current project data (' + response.data.current +
-                         '), login ' + loginData.login );
+                    '), login ' + loginData.login );
 
   // Get users' projects list file name
   var projectName = response.data.current;
@@ -523,6 +589,7 @@ function getProjectData ( loginData,data )  {
   if (utils.fileExists(projectDataPath))  {
     var pData = utils.readObject ( projectDataPath );
     if (pData)  {
+      checkProjectOwner ( pData.desc,loginData );
       var d = {};
       d.meta      = pData;
       d.tasks_add = [];
@@ -579,6 +646,20 @@ function saveProjectData ( loginData,data )  {
       data.meta.desc.disk_space  = 0.0;   // should be eventually removed
       data.meta.desc.cpu_time    = 0.0;   // should be eventually removed
     }
+
+    checkProjectOwner ( data.meta.desc,loginData );
+
+    /*
+    if (!('owner' in data.meta.desc))  {  // backward compatibility on 11.01.2020
+      var uData = user.readUserData ( loginData );
+      data.meta.desc.owner = {
+        login : loginData.login,
+        name  : uData.name,
+        email : uData.email,
+        share : []
+      };
+    }
+    */
 
     ration.changeProjectDiskSpace ( loginData,projectName,disk_space_change,false );
 
@@ -651,10 +732,55 @@ function saveProjectData ( loginData,data )  {
 
 // ===========================================================================
 
+function shareProject ( loginData,data )  {  // data must contain new title
+var pDesc    = data.desc;
+var share    = _make_unique_list ( pDesc.owner.share );
+var share0   = _make_unique_list ( data.share0 );
+var shared   = [];
+var unshared = [];
+var unknown  = [];
+
+  // unshare by comparison of share0 and share
+  for (var i=0;i<share0.length;i++)
+    if (share0[i] && (share.indexOf(share0[i])<0))  {
+      var uLoginData = user.getUserLoginData ( share0[i] );
+      if (uLoginData)  {
+        var pShare = readProjectShare ( uLoginData );
+        pShare.removeShare ( pDesc );
+        writeProjectShare  ( uLoginData,pShare );
+      }
+      unshared.push ( share0[i] );
+    }
+
+  // share with users given by share
+  for (var i=0;i<share.length;i++)
+    if (share[i])  {
+      var uLoginData = user.getUserLoginData ( share[i] );
+      if (uLoginData)  {
+        var pShare = readProjectShare ( uLoginData );
+        pShare.addShare ( pDesc );
+        writeProjectShare ( uLoginData,pShare );
+        shared.push  ( share[i] );
+      } else
+        unknown.push ( share[i] );
+    }
+
+  pDesc.owner.share = shared.join(',');
+
+  return new cmd.Response ( cmd.fe_retcode.ok,'',{
+    desc     : pDesc,
+    unshared : unshared,
+    unknown  : unknown
+  });
+
+}
+
+// ===========================================================================
+
 function renameProject ( loginData,data )  {  // data must contain new title
-  var response = null;
-  var projectName = data.name;
-  var projectDataPath = getProjectDataPath ( loginData,projectName );
+var response = null;
+var projectName = data.name;
+var projectDataPath = getProjectDataPath ( loginData,projectName );
 
   if (utils.fileExists(projectDataPath))  {
     var pData = utils.readObject ( projectDataPath );
@@ -686,7 +812,12 @@ function renameProject ( loginData,data )  {  // data must contain new title
 function _import_project ( loginData,tempdir )  {
 
   // read project meta to make sure it was a project tarball
-  var prj_meta = utils.readObject ( path.join(tempdir,projectDataFName) );
+  var prj_meta_path = path.join ( tempdir,projectDataFName );
+  var prj_meta = utils.readObject ( prj_meta_path );
+  if (('owner' in prj_meta.desc) && prj_meta.desc.owner.share)  {
+    prj_meta.desc.owner.share = '';
+    utils.writeObject ( prj_meta_path,prj_meta );
+  }
 
 //console.log ( JSON.stringify(prj_meta,2) );
 
@@ -701,6 +832,12 @@ function _import_project ( loginData,tempdir )  {
       projectDesc.njobs        = prj_meta.desc.njobs;
       projectDesc.dateCreated  = prj_meta.desc.dateCreated;
       projectDesc.dateLastUsed = prj_meta.desc.dateLastUsed;
+      if ('owner' in prj_meta.desc)  {
+        projectDesc.owner = prj_meta.desc.owner;
+        projectDesc.owner.share = '';
+        if (projectDesc.owner.login!=loginData.login)
+          projectDesc.owner.is_shared = true;
+      }
     } else
       prj_meta = null;
   } catch(err) {
@@ -711,7 +848,7 @@ function _import_project ( loginData,tempdir )  {
 
   if (!prj_meta)  {
 
-    utils.writeString ( signal_path,'Invalid or corrupt project data\n',
+    utils.writeString ( signal_path,'Invalid or corrupt project data\n' +
                                     projectDesc.name );
 
   } else  {
@@ -815,7 +952,7 @@ function importProject ( loginData,upload_meta,tmpDir )  {
 function startDemoImport ( loginData,meta )  {
 
   // store all uploads in the /uploads directory
-  var tmpDir = conf.getFETmpDir();
+  var tmpDir = conf.getFETmpDir1 ( loginData );
 
   if (!utils.fileExists(tmpDir))  {
     if (!utils.mkDir(tmpDir))  {
@@ -866,8 +1003,56 @@ function startDemoImport ( loginData,meta )  {
 }
 
 
+function startSharedImport ( loginData,meta )  {
+
+  // store all uploads in the /uploads directory
+  var tmpDir = conf.getFETmpDir1 ( loginData );
+
+  if (!utils.fileExists(tmpDir))  {
+    if (!utils.mkDir(tmpDir))  {
+      cmd.sendResponse ( server_response, cmd.fe_retcode.mkDirError,
+                         'Cannot make temporary directory for demo import','' );
+      return;
+    }
+  }
+
+  var rc     = cmd.fe_retcode.ok;
+  var rc_msg = 'success';
+
+  var tempdir = path.join ( tmpDir,loginData.login+'_project_import' );
+  utils.removePath ( tempdir );  // just in case
+
+  if (utils.mkDir(tempdir))  {
+
+    var uLoginData = user.getUserLoginData ( meta.owner.login );
+    var sProjectDirPath = getProjectDirPath ( uLoginData,meta.name );
+    if (utils.fileExists(sProjectDirPath))  {
+      fs.copy ( sProjectDirPath,tempdir,function(err){
+        if (err)
+          utils.writeString ( path.join(tempdir,'signal'),
+                              'Errors during data copy\n' +
+                              projectDesc.name );
+        else
+          _import_project ( loginData,tempdir );
+      });
+    } else  {
+      rc     = cmd.fe_retcode.fileNotFound;
+      rc_msg = 'Shared project ' + meta.name + ' does not exist';
+    }
+
+  } else {
+    rc     = cmd.fe_retcode.mkDirError;
+    rc_msg = 'Cannot make project directory for shared import';
+  }
+
+  return new cmd.Response ( rc,rc_msg,{} );
+
+}
+
+
 function checkProjectImport ( loginData,data )  {
-  var signal_path = path.join ( conf.getFETmpDir(),loginData.login+'_project_import','signal' );
+  var signal_path = path.join ( conf.getFETmpDir1(loginData),
+                                loginData.login+'_project_import','signal' );
   var rdata  = {};
   var signal = utils.readString ( signal_path );
   if (signal)  {
@@ -883,7 +1068,8 @@ function checkProjectImport ( loginData,data )  {
 
 
 function finishProjectImport ( loginData,data )  {
-  var tempdir = path.join ( conf.getFETmpDir(),loginData.login+'_project_import' );
+  var tempdir = path.join ( conf.getFETmpDir1(loginData),
+                            loginData.login+'_project_import' );
   utils.removePath ( tempdir );
   return new cmd.Response ( cmd.fe_retcode.ok,'success','' );
 }
@@ -944,6 +1130,7 @@ function getJobFile ( loginData,data )  {
 module.exports.jobDirPrefix           = jobDirPrefix;
 module.exports.makeNewUserProjectsDir = makeNewUserProjectsDir;
 module.exports.getProjectList         = getProjectList;
+module.exports.getSharedPrjList       = getSharedPrjList;
 module.exports.getProjectDataPath     = getProjectDataPath;
 module.exports.getUserKnowledgePath   = getUserKnowledgePath;
 module.exports.getUserKnowledgeData   = getUserKnowledgeData;
@@ -958,9 +1145,11 @@ module.exports.checkJobExport         = checkJobExport;
 module.exports.finishJobExport        = finishJobExport;
 module.exports.getProjectData         = getProjectData;
 module.exports.saveProjectData        = saveProjectData;
+module.exports.shareProject           = shareProject;
 module.exports.renameProject          = renameProject;
 module.exports.importProject          = importProject;
 module.exports.startDemoImport        = startDemoImport;
+module.exports.startSharedImport      = startSharedImport;
 module.exports.getProjectDirPath      = getProjectDirPath;
 module.exports.getUserProjectsDirPath = getUserProjectsDirPath;
 module.exports.getUserProjectListPath = getUserProjectListPath;

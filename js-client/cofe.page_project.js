@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    27.12.19   <--  Date of Last Modification.
+ *    12.01.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Project page
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2019
+ *  (C) E. Krissinel, A. Lebedev 2016-2020
  *
  *  ==========================================================================
  *
@@ -165,6 +165,60 @@ function ProjectPage ( sceneId )  {
 
   }
 
+  function shareProject()  {
+    if (jobTree)  {
+      var inputBox  = new InputBox ( 'Share Project [' +
+                                     jobTree.projectData.desc.name + ']' );
+      var ibx_grid  = new Grid     ( '' );
+      ibx_grid.setLabel ( '<h2>Share Project</h2>',0,0,1,1 );
+      ibx_grid.setLabel ( 'The following users:<br>&nbsp;',1,0,1,1 );
+      var share_inp = new InputText ( jobTree.projectData.desc.owner.share );
+      share_inp.setStyle   ( 'text','','login1,login2,...',
+                             'Give a comma-separated list of login names of ' +
+                             'users who will be allowed to copy this project ' +
+                             'in their accounts.'
+                            );
+      share_inp.setFontItalic ( true    );
+      ibx_grid .setWidget     ( share_inp,2,0,1,1 );
+      share_inp.setWidth      ( '300pt' );
+      ibx_grid.setLabel       ( '&nbsp;<br>can copy this project in their accounts.',
+                                3,0,1,1  );
+      inputBox .addWidget     ( ibx_grid );
+      inputBox.launch ( 'Apply',function(){
+        var logins = share_inp.getValue();
+        //alert ( logins );
+        //a.split(",").map(function(item){ return item.trim(); });
+        var share0 = jobTree.projectData.desc.owner.share;
+        jobTree.projectData.desc.owner.share = logins;
+        serverRequest ( fe_reqtype.shareProject,{
+                          desc   : jobTree.projectData.desc,
+                          share0 : share0
+                        },'Share Project',function(data){
+                          jobTree.projectData.desc = data.desc;
+                          jobTree.saveProjectData ( [],[],null );
+                          var msg = '<h2>Project\'s Share Status</h2>' +
+                                    '<b>Shared with:</b>&nbsp;<i>';
+                          if (data.desc.owner.share.length<=0)
+                                msg += 'nobody';
+                          else  msg += data.desc.owner.share +
+                                '<br><font size="-1">(these users can import ' +
+                                'the project in their accounts)</font>';
+                          msg += '</i>';
+                          if (data.unshared.length>0)
+                            msg += '<p><b>Unshared with:</b>&nbsp;<i>' +
+                                   data.unshared.join(',') + '</i>';
+                          if (data.unknown.length>0)
+                            msg += '<p><b>Unknown users:</b>&nbsp;<i>' +
+                                   data.unknown.join(',') +
+                                   '<br><font size="-1">(sharing request was not ' +
+                                   'fulfilled for these users)</font></i>';
+                          new MessageBox ( 'Share Project [' + data.desc.name + ']',msg );
+                        },null,null );
+        return true;
+      });
+    } else
+      new MessageBox ( 'No Project','No Project loaded' );
+  }
 
   function onTreeContextMenu(node) {
     // The default set of all items
@@ -303,14 +357,6 @@ function ProjectPage ( sceneId )  {
 
   // Make Main Menu
 
-  this.addMenuItem ( 'Project settings','project_settings',function(){
-    if (jobTree)
-          new ProjectSettingsDialog ( jobTree,function(){
-            jobTree.saveProjectData ( [],[],null );
-          });
-    else  new MessageBox ( 'No Project','No Prject loaded' );
-  });
-
   this.addMenuItem ( 'My Projects','list',function(){
     jobTree.saveProjectData ( [],[],function(){ makeProjectListPage(sceneId); });
   });
@@ -324,6 +370,18 @@ function ProjectPage ( sceneId )  {
         jobTree.saveProjectData ( [],[],function(){ makeAdminPage(sceneId); } );
       });
   }
+
+  this.addMenuSeparator();
+
+  this.addMenuItem ( 'Project settings','project_settings',function(){
+    if (jobTree)
+          new ProjectSettingsDialog ( jobTree,function(){
+            jobTree.saveProjectData ( [],[],null );
+          });
+    else  new MessageBox ( 'No Project','No Project loaded' );
+  });
+
+  this.addMenuItem ( 'Share Project','share',shareProject );
 
   this.addLogoutToMenu ( function(){
     jobTree.saveProjectData ( [],[],function(){ logout(sceneId,0); } );

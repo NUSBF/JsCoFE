@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    13.08.19   <--  Date of Last Modification.
+ *    12.01.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Class extension functions
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2019
+ *  (C) E. Krissinel, A. Lebedev 2016-2020
  *
  *  =================================================================
  *
@@ -29,6 +29,12 @@ function getClassName ( name,offset,pattern )  {
   if (!(n in classMap))
     classMap[n] = require ( pattern + n );
   return 'classMap.' + n + '.' + name;
+}
+
+function getClassName1 ( name,modref,module )  {
+  if (!(modref in classMap))
+    classMap[modref] = require ( module );
+  return 'classMap.' + modref + '.' + name;
 }
 
 // auxiliary function for getObjectInstance(), not to be used by itself
@@ -47,6 +53,8 @@ function __object_to_instance ( key,value ) {
     className = getClassName ( value._type,4,'../js-common/dtypes/common.dtypes.' );
   } else if (value._type=='UserRation')  {
     className = getClassName ( value._type,0,'../js-common/common.' );
+  } else if (value._type=='ProjectShare')  {
+    className = getClassName1 ( value._type,'pd','../js-common/common.data_project' );
   } else if (value._type=='UsageStats')  {
     className = getClassName ( value._type,0,'../js-server/server.fe.' );
   }
