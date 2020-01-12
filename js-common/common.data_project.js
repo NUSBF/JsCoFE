@@ -26,12 +26,22 @@ function ProjectDesc()  {
   this._type        = 'ProjectDesc';
   this.name         = '';
   this.title        = '';
+  this.owner        = {
+    login     : '',
+    name      : '',
+    email     : '',
+    share     : '',   // comma-separated list of login names
+    is_shared : false
+  };
   this.disk_space   = 0.0;  // in MBs, corresponds to current project state
   this.cpu_time     = 0.0;  // in hours, accumulated over all project history
   this.njobs        = 0;    // over all project history
   this.dateCreated  = '';   // year/mm/dd
   this.dateLastUsed = '';   // year/mm/dd
 }
+
+
+// ===========================================================================
 
 function ProjectList()  {
   this._type    = 'ProjectList';
@@ -130,9 +140,36 @@ function checkProjectData ( pData )  {
 
 // ===========================================================================
 
+function ProjectShare()  {
+  this._type = 'ProjectShare';
+  this.shared_projects = [];
+}
+
+ProjectShare.prototype.removeShare = function ( pDesc )  {
+  var share = this.shared_projects;
+  this.shared_projects = [];
+  for (var i=0;i<share.length;i++)
+    if ((pDesc.name!=share[i].name) || (pDesc.owner.login!=pDesc.owner.login))
+      this.shared_projects.push ( share[i] );
+  return (share.length-this.shared_projects.length);
+}
+
+ProjectShare.prototype.addShare = function ( pDesc )  {
+  var found = false;
+  for (var i=0;(i<this.shared_projects.length) && (!found);i++)
+    found = (pDesc.name==this.shared_projects[i].name) &&
+            (pDesc.owner.login==this.shared_projects[i].owner.login);
+  if (!found)
+    this.shared_projects.push ( pDesc );
+  return (!found);
+}
+
+// ===========================================================================
+
 // export such that it could be used in both node and a browser
 if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
-  module.exports.ProjectDesc = ProjectDesc;
-  module.exports.ProjectList = ProjectList;
-  module.exports.ProjectData = ProjectData;
+  module.exports.ProjectDesc  = ProjectDesc;
+  module.exports.ProjectList  = ProjectList;
+  module.exports.ProjectData  = ProjectData;
+  module.exports.ProjectShare = ProjectShare;
 }

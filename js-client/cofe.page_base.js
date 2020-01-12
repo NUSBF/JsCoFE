@@ -99,8 +99,9 @@ BasePage.prototype.makeSetupNamePanel = function()  {
 
 
 var __ccp4online_logo = new ImageButton ( image_path('logo-ccp4_online'),'','28px' );
-var __stfc_logo       = new ImageButton ( image_path('logo-stfc')       ,'','28px' );
-var __bbsrc_logo      = new ImageButton ( image_path('logo-bbsrc')      ,'','28px' );
+//var __stfc_logo       = new ImageButton ( image_path('logo-stfc')       ,'','28px' );
+//var __bbsrc_logo      = new ImageButton ( image_path('logo-bbsrc')      ,'','28px' );
+var __ukri_logo       = new ImageButton ( image_path('logo-ukri')       ,'','28px' );
 
 BasePage.prototype.makeLogoPanel = function ( row,col,colSpan )  {
   var logoPanel = this.grid.setGrid ( '',row,col,1,colSpan );
@@ -110,14 +111,12 @@ BasePage.prototype.makeLogoPanel = function ( row,col,colSpan )  {
                      .setVerticalAlignment('bottom');
   logoPanel.setCellSize ( '50%','', 0,c++ );
   if (getClientCode()==client_code.ccp4)  {
-    //logoPanel.setImage ( image_path('logo-ccp4_online'),'','28px',0,c++,1,1 );
     logoPanel.setWidget ( __ccp4online_logo, 0,c++,1,1 );
     logoPanel.setLabel  ( '',0,c++,1,1 ).setWidth ( '40px' );
-    //logoPanel.setImage ( image_path('logo-stfc'),'','28px'  ,0,c++,1,1 );
-    logoPanel.setWidget ( __stfc_logo, 0,c++,1,1 );
-    logoPanel.setLabel  ( '',0,c++,1,1 ).setWidth ( '30px' );
-    //logoPanel.setImage ( image_path('logo-bbsrc'),'','28px' ,0,c++,1,1 );
-    logoPanel.setWidget ( __bbsrc_logo, 0,c++,1,1 );
+    //logoPanel.setWidget ( __stfc_logo, 0,c++,1,1 );
+    //logoPanel.setLabel  ( '',0,c++,1,1 ).setWidth ( '30px' );
+    //logoPanel.setWidget ( __bbsrc_logo, 0,c++,1,1 );
+    logoPanel.setWidget ( __ukri_logo, 0,c++,1,1 );
   } else {
     logoPanel.setImage ( image_path('logo-ccpem'),'','28px',0,c++,1,1 );
     logoPanel.setLabel ( '',0,c++,1,1 ).setWidth ( '40px' );

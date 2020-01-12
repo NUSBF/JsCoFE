@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    14.11.19   <--  Date of Last Modification.
+#    10.01.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2019
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2020
 #
 # ============================================================================
 #
@@ -291,8 +291,8 @@ class Buccaneer(basic.TaskDriver):
                                              structure )
                 # update structure revision
                 revision = self.makeClass  ( self.input_data.data.revision[0] )
-                revision.removeSubtype     ( dtype_template.subtypeSubstructure() )
                 revision.setStructureData  ( structure )
+                #revision.removeSubtype     ( dtype_template.subtypeSubstructure() )
                 self.registerRevision      ( revision  )
 
         else:

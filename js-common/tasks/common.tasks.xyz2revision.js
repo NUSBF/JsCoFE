@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    18.12.19   <--  Date of Last Modification.
+ *    10.01.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Convert XYZ-to-Revision Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2019
+ *  (C) E. Krissinel, A. Lebedev 2016-2020
  *
  *  =================================================================
  *
@@ -135,6 +135,7 @@ if (!__template)  {
         }
       }
 
+      dimple_cbx.setDisabled ( false );
       if (message)  {
         this.forceDimple = true;
         xyz_ddn.customGrid.setLabel ( message.fontcolor('red'),0,2,1,1 )
@@ -182,9 +183,11 @@ if (!__template)  {
 
   }
 
-//  TaskXyz2Revision.prototype.collectInput = function ( inputPanel )  {
-//    return TaskTemplate.prototype.collectInput.call ( this,inputPanel );
-//  }
+  TaskXyz2Revision.prototype.collectInput = function ( inputPanel )  {
+    if (this.forceDimple)
+          return TaskDimple.prototype.collectInput.call ( this,inputPanel );
+    else  return TaskTemplate.prototype.collectInput.call ( this,inputPanel );
+  }
 
 } else  {  //  for server side
 

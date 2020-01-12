@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    09.11.19   <--  Date of Last Modification.
+ *    12.11.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -11,7 +11,7 @@
  *  **** Project :  jsCoFE - javascript-based Cloud Front End
  *       ~~~~~~~~~
  *  **** Content :  Import Project Dialog
- *       ~~~~~~~~~
+ *       ~~~~~~~~~ 
  *
  *  (C) E. Krissinel, A. Lebedev 2016-2019
  *
@@ -32,7 +32,7 @@ function ImportProjectDialog ( onSuccess_func )  {
   this.element.setAttribute ( 'title','Import Project' );
   document.body.appendChild ( this.element );
 
-  var grid = new Grid('');
+  grid = new Grid('');
   this.addWidget ( grid );
   grid.setLabel ( '<h3>Import Project</h3>',0,0,1,3 );
 

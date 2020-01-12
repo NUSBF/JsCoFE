@@ -2,7 +2,7 @@
 /*
  *  ===========================================================================
  *
- *    06.01.20   <--  Date of Last Modification.
+ *    12.01.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  ---------------------------------------------------------------------------
  *
@@ -25,7 +25,7 @@
 
 function appName()  { return 'CCP4 Cloud' }  // application name for reporting
 
-var jsCoFE_version = '1.6.002 [07.01.2020]';
+var jsCoFE_version = '1.6.003 [12.01.2020]';
 
 function appVersion()  {
   return jsCoFE_version;
@@ -76,7 +76,8 @@ var fe_reqtype = {
   deleteUser_admin  : '-deleteUser_admin',  // request to delete user account and data by admin
   updateAndRestart  : '-updateAndRestart',  // request to update and restart all servers
   getUserRation     : '-getUserRation',     // request to retrieve current user ration
-  getProjectList    : '-getProjectList',    // request for project list
+  getProjectList    : '-getProjectList',    // request for projects list
+  getSharedPrjList  : '-getSharedPrjList',  // request for shared projects list
   saveProjectList   : '-saveProjectList',   // request to save project list
   getProjectData    : '-getProjectData',    // request for project data
   saveProjectData   : '-saveProjectData',   // request to save project data
@@ -84,6 +85,7 @@ var fe_reqtype = {
   checkPrjExport    : '-checkPrjExport',    // request to check project export state
   finishPrjExport   : '-finishPrjExport',   // request to finish project export
   startDemoImport   : '-startDemoImport',   // request to start demo project import
+  startSharedImport : '-startSharedImport', // request to start shared project import
   checkPrjImport    : '-checkPrjImport',    // request to check project import state
   finishPrjImport   : '-finishPrjImport',   // request to finish project import
   prepareJobExport  : '-prepareJobExport',  // request to prepare job for export
@@ -91,6 +93,7 @@ var fe_reqtype = {
   finishJobExport   : '-finishJobExport',   // request to finish job export
   renameProject     : '-renameProject',     // request to rename a project
   importProject     : '-importProject',     // request to save import a project
+  shareProject      : '-shareProject',      // request to share a project
   saveJobData       : '-saveJobData',       // request to save job data
   runJob            : '-runJob',            // request to run job
   replayJob         : '-replayJob',         // request to replay job

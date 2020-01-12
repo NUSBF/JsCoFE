@@ -3,13 +3,13 @@
 #
 # ============================================================================
 #
-#    25.12.19   <--  Date of Last Modification.
+#    10.01.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  STRUCTURE DATA TYPE
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2019
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2020
 #
 # ============================================================================
 #
@@ -140,12 +140,16 @@ class DType(dtype_template.DType):
         self.FreeR_flag = "FreeR_flag"
         if hkl_class:
             self.setHKLLabels ( hkl_class )
-        self.PHI        = "PHIC_ALL_LS"
-        self.FOM        = "FOM"
-        self.FWT        = "FWT"
-        self.PHWT       = "PHWT"
-        self.DELFWT     = "DELFWT"
-        self.PHDELWT    = "PHDELWT"
+        self.PHI     = "PHIC_ALL_LS"
+        self.FOM     = "FOM"
+        self.FWT     = "FWT"
+        self.PHWT    = "PHWT"
+        self.DELFWT  = "DELFWT"
+        self.PHDELWT = "PHDELWT"
+        self.HLA     = ""
+        self.HLB     = ""
+        self.HLC     = ""
+        self.HLD     = ""
         return
 
     def setShelxELabels ( self,struct_class ):
