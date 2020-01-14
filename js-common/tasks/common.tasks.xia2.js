@@ -39,7 +39,7 @@ function TaskXia2()  {
   this.title   = 'Automatic Image Processing with Xia-2';
   this.helpURL = './html/jscofe_task_xia2.html';
   this.nc_type = 'client-cloud';  // job may be run only on either client NC or
-                                  // odinary NC if cloud storage is there
+                                  // ordinary NC if cloud storage is there
 
   this.imageDirMeta = [];       // paths, ranges and sectors
   this.datatype     = 'images'; //  images/hdf5

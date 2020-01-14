@@ -307,7 +307,7 @@ class DType(dtype_template.DType):
         return
 
     def addPhasesSubtype ( self ):
-        self.addSubtype    ( dtype_template.subtypePhases() )
+        self.addSubtype ( dtype_template.subtypePhases() )
         return
 
     def hasXYZSubtype ( self ):
