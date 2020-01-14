@@ -3,13 +3,13 @@
 #
 # ============================================================================
 #
-#    08.12.19   <--  Date of Last Modification.
+#    14.01.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  SEQUENCE DATA IMPORT FUNCTION
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2019
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2020
 #
 # ============================================================================
 #
@@ -149,7 +149,6 @@ def run ( body,sectionTitle="Macromolecular sequences" ):  # body is reference t
         body.dataSerialNo += 1
         seq.makeDName   ( body.dataSerialNo )
 
-        os.rename ( os.path.join(body.importDir(),f),os.path.join(body.outputDir(),f) )
         seq.makeUniqueFNames ( body.outputDir() )
 
         lines = filter ( None,

@@ -238,7 +238,8 @@ class Simbad(asudef.ASUDef):
 
                 structure.addDataAssociation ( hkl.dataId )
                 structure.setRefmacLabels ( hkl )
-                structure.setXYZSubtype()
+                structure.setXYZSubtype   ()
+                structure.addPhasesSubtype()
 
                 self.putStructureWidget ( "structure_btn_",
                           result0["name"] + " structure and electron density",

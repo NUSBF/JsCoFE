@@ -2,7 +2,7 @@
 /*
  *  ===========================================================================
  *
- *    12.01.20   <--  Date of Last Modification.
+ *    14.01.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  ---------------------------------------------------------------------------
  *
@@ -25,10 +25,30 @@
 
 function appName()  { return 'CCP4 Cloud' }  // application name for reporting
 
-var jsCoFE_version = '1.6.003 [12.01.2020]';
+var jsCoFE_version = '1.6.003 [14.01.2020]';
 
 function appVersion()  {
   return jsCoFE_version;
+}
+
+function splitVersion ( version )  {
+// returns [main_version,major_version,minor_version,day,month,year],
+// all integers
+  return  version.replace('[','.').replace(']','')
+                 .split('.').map(function(item){ return parseInt(item); });
+}
+
+function compareVersions ( version1,version2 )  {
+// returns -1,0,1 if version1<,=,>version2, dates disregarded
+  var v1 = splitVersion ( version1 );
+  var v2 = splitVersion ( version2 );
+  function _compare ( n )  {
+    if (n>2)  return 0;
+    else if (v1[n]<v2[n])  return -1;
+    else if (v1[n]>v2[n])  return  1;
+                     else  return _compare(n+1);
+  }
+  return _compare(0);
 }
 
 // ============================================================================

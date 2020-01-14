@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    25.12.19   <--  Date of Last Modification.
+ *    12.01.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Task List Dialog
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2019
+ *  (C) E. Krissinel, A. Lebedev 2016-2020
  *
  *  =================================================================
  *
@@ -97,18 +97,28 @@ TaskListDialog.prototype.isTaskAvailable = function ( task_obj )  {
 
   if (task_obj.nc_type=='client')  {
     if (!__local_service)
-      return false;
+      return 'client';   // client task while there is no client running
   } else if (task_obj.nc_type=='client-cloud')  {
     if ((!__local_service) && (!__cloud_storage))
-      return false;
+      return 'client-cloud';  // task require either client or cloud storage
+                              // but neither is given
   }
 
+  if (__exclude_tasks.indexOf(task_obj._type)>=0)
+    return 'server-excluded';  // task excluded in server configuration
+
+  if ((__exclude_tasks.indexOf('unix-only')>=0) &&
+      (task_obj.platforms().indexOf('W')<0))
+    return 'windows-excluded';  // task not supported on Windows
+
+  /*
   if ((__exclude_tasks.indexOf(task_obj._type)>=0) ||
       ((__exclude_tasks.indexOf('unix-only')>=0) &&
        (task_obj.platforms().indexOf('W')<0)))
     return false;
+  */
 
-  return true;
+  return 'ok';
 
 }
 
@@ -132,7 +142,7 @@ TaskListDialog.prototype.setTask = function ( task_obj,grid,row,setall )  {
     return null;
   */
 
-  if (!this.isTaskAvailable(task_obj))
+  if (this.isTaskAvailable(task_obj)!='ok')
     return null;
 
   var dataSummary = this.dataBox.getDataSummary ( task_obj );
@@ -152,10 +162,10 @@ TaskListDialog.prototype.setTask = function ( task_obj,grid,row,setall )  {
 
   switch (btn.dataSummary.status)  {
     default :
-    case 0  :  $(btn.element).css({'border':'2px solid #FF1C00'});
-               lbl.setFontColor('#888888').setFontItalic(true);     break;
-    case 1  :  $(btn.element).css({'border':'2px solid #FFBF00'});  break;
-    case 2  :  $(btn.element).css({'border':'2px solid #03C03C'});  break;
+    case 0 : $(btn.element).css({'border':'2px solid #FF1C00'});        // maroon
+             lbl.setFontColor('#888888').setFontItalic(true);    break;
+    case 1 : $(btn.element).css({'border':'2px solid #FFBF00'}); break; // amber
+    case 2 : $(btn.element).css({'border':'2px solid #03C03C'}); break; // green
   }
 
   (function(dlg){
@@ -265,7 +275,7 @@ var row      = 0;
 
 
   var ccp4go_task = new TaskCCP4go();
-  if (this.isTaskAvailable(ccp4go_task))
+  if (this.isTaskAvailable(ccp4go_task)=='ok')
     this.makeSection ( 'Combined Automated Solver <i>"CCP4 Go"</i>',[
       'Recommended as first attempt or in easy cases',
       ccp4go_task

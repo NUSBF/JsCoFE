@@ -3,13 +3,13 @@
 #
 # ============================================================================
 #
-#    18.12.19   <--  Date of Last Modification.
+#    14.01.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  SEQUENCE DATA TYPE
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2019
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2020
 #
 # ============================================================================
 #
@@ -170,7 +170,6 @@ class DType(dtype_template.DType):
             fname = self.files[dtype_template.file_key["seq"]]
             fname_seq = fname
             if fname.lower().endswith('.pir'):
-                self.files["pir"] = fname
                 fname_seq = os.path.splitext(fname)[0] + "_pir.seq"
                 self.files[dtype_template.file_key["seq"]] = fname_seq
             f     = open(os.path.join(inputDir,fname),'r')
@@ -180,13 +179,13 @@ class DType(dtype_template.DType):
             i     = 0
             while (i<len(lines)):
                 if lines[i].strip().startswith(">"):
+                    f.write ( lines[i].strip() + "\n" )
+                    i += 1
                     break
                 else:
                     i += 1
-            if i<len(lines):
-                f.write ( lines[i].strip() + "\n" )
-                i += 2
             while (i<len(lines)):
                 f.write ( lines[i].strip().upper().replace ( " ","" ) + "\n" )
                 i += 1
+            f.close()
         return
