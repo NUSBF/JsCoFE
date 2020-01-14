@@ -602,7 +602,7 @@ ProjectPage.prototype.makeReplayJobTree = function()  {
 
 ProjectPage.prototype.onResize = function ( width,height )  {
   var h = (height - 104) + 'px';
-  var w = (width-110) + 'px';
+  var w = (width  - 110) + 'px';
   this.toolbar_div.element.style.height = h;
   this.tree_div.element.style.height    = h;
   if (this.replay_div)  {
