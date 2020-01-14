@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    11.01.20   <--  Date of Last Modification.
+ *    14.01.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -405,7 +405,7 @@ JobDialog.prototype.makeLayout = function ( onRun_func )  {
 
       if (!this.inputPanel.fullVersionMismatch)
         this.run_btn  = this.toolBar.setButton ( this.task.runButtonName(),
-                                           image_path('runjob'), 0,2, 1,1 )
+                                                 image_path('runjob'), 0,2, 1,1 )
                                     .setTooltip  ( 'Start job' )
                                     .setDisabled ( __dormant   );
     }
@@ -499,107 +499,126 @@ JobDialog.prototype.makeLayout = function ( onRun_func )  {
 
       dlg.run_btn.addOnClickListener ( function(){
 
-        serverRequest ( fe_reqtype.getUserRation,{},'User Ration',
-          function(ration){
+        if ((dlg.task.nc_type=='client') && (!__local_service))  {
 
-            var pdesc = dlg.parent_page.ration.pdesc;
-            dlg.parent_page.ration = ration;
-            dlg.parent_page.displayUserRation ( pdesc );
+          msg = '<h3>CCP4 Cloud Client is required</h3>';
+          if (__any_mobile_device)
+            msg += 'This task cannot be run when working with ' + appName() +
+                   ' from mobile devices.<br>In order to use the task, ' +
+                   'access ' + appName() + ' via CCP4 Cloud Client,<br>' +
+                   'found in CCP4 Software Suite.';
+          else
+            msg += 'This task can be run only if ' + appName() +
+                   ' was accessed via CCP4 Cloud Client,<br>found in ' +
+                   'CCP4 Software Suite.';
 
-            if (ration)  {
-              if ((ration.storage>0.0) && (ration.storage_used>=ration.storage))  {
-                new MessageBox ( 'Disk Quota Exceeded',
-                    'The job cannot be run because disk quota is up. ' +
-                    'Your<br>account currently uses <b>' + round(ration.storage_used,1) +
-                    '</b> MBytes at <b>' + round(ration.storage,1) +
-                    '</b> MBytes<br>allocated.<p>' +
-                    '<i><b>Hint 1:</b></i> deleting jobs and projects will free up disk space.<p>' +
-                    '<i><b>Hint 2:</b></i> resource usage can be monitored using disk and<br>' +
-                    'CPU widgets in the top-right corner of the screen.<p>' +
-                    '<i><b>Recommended action:</b></i> export an old project and then<br>' +
-                    'delete it from the list. You will be able to re-import that<br>' +
-                    'project later using the file exported.' );
-                return;
+          new MessageBox ( 'No CCP4 Cloud Client running',msg );
+
+        } else  {
+
+          serverRequest ( fe_reqtype.getUserRation,{},'User Ration',
+            function(ration){
+
+              var pdesc = dlg.parent_page.ration.pdesc;
+              dlg.parent_page.ration = ration;
+              dlg.parent_page.displayUserRation ( pdesc );
+
+              if (ration)  {
+                if ((ration.storage>0.0) && (ration.storage_used>=ration.storage))  {
+                  new MessageBox ( 'Disk Quota Exceeded',
+                      'The job cannot be run because disk quota is up. ' +
+                      'Your<br>account currently uses <b>' + round(ration.storage_used,1) +
+                      '</b> MBytes at <b>' + round(ration.storage,1) +
+                      '</b> MBytes<br>allocated.<p>' +
+                      '<i><b>Hint 1:</b></i> deleting jobs and projects will free up disk space.<p>' +
+                      '<i><b>Hint 2:</b></i> resource usage can be monitored using disk and<br>' +
+                      'CPU widgets in the top-right corner of the screen.<p>' +
+                      '<i><b>Recommended action:</b></i> export an old project and then<br>' +
+                      'delete it from the list. You will be able to re-import that<br>' +
+                      'project later using the file exported.' );
+                  return;
+                }
+                if ((ration.cpu_day>0.0) && (ration.cpu_day_used>=ration.cpu_day))  {
+                  new MessageBox ( '24-hour CPU Quota Exceeded',
+                      'The job cannot be run because the 24-hour CPU quota<br>' +
+                      'is up. In last 24 hours, you have used <b>' + round(ration.cpu_day_used,3) +
+                      '</b> CPU hours<br>at <b>' + round(ration.cpu_day,3) +
+                      '</b> CPU hours allocated.<p>' +
+                      '<i><b>Hint:</b></i> resource usage can be monitored using disk and<br>' +
+                      'CPU widgets in the top-right corner of the screen. You<br>' +
+                      'may need to push "Reload" button in the toolbar after<br>' +
+                      'periods of inactivity to get updated readings.<p>' +
+                      '<i><b>Recommended action:</b></i> run the job later.' );
+                  return;
+                }
+                if ((ration.cpu_month>0.0) && (ration.cpu_month_used>=ration.cpu_month))  {
+                  new MessageBox ( '30-day CPU Quota Exceeded',
+                      'The job cannot be run because the 30-day CPU quota<br>' +
+                      'is up. In last 30 days, you have used <b>' + round(ration.cpu_month_used,3) +
+                      '</b> CPU hours<br>at <b>' + round(ration.cpu_month,3) +
+                      '</b> CPU hours allocated.<p>' +
+                      '<i><b>Hint:</b></i> resource usage can be monitored using disk and<br>' +
+                      'CPU widgets in the top-right corner of the screen. You<br>' +
+                      'may need to push "Reload" button in the toolbar after<br>' +
+                      'periods of inactivity to get updated readings.<p>' +
+                      '<i><b>Recommended action:</b></i> run the job later.' );
+                  return;
+                }
               }
-              if ((ration.cpu_day>0.0) && (ration.cpu_day_used>=ration.cpu_day))  {
-                new MessageBox ( '24-hour CPU Quota Exceeded',
-                    'The job cannot be run because the 24-hour CPU quota<br>' +
-                    'is up. In last 24 hours, you have used <b>' + round(ration.cpu_day_used,3) +
-                    '</b> CPU hours<br>at <b>' + round(ration.cpu_day,3) +
-                    '</b> CPU hours allocated.<p>' +
-                    '<i><b>Hint:</b></i> resource usage can be monitored using disk and<br>' +
-                    'CPU widgets in the top-right corner of the screen. You<br>' +
-                    'may need to push "Reload" button in the toolbar after<br>' +
-                    'periods of inactivity to get updated readings.<p>' +
-                    '<i><b>Recommended action:</b></i> run the job later.' );
-                return;
-              }
-              if ((ration.cpu_month>0.0) && (ration.cpu_month_used>=ration.cpu_month))  {
-                new MessageBox ( '30-day CPU Quota Exceeded',
-                    'The job cannot be run because the 30-day CPU quota<br>' +
-                    'is up. In last 30 days, you have used <b>' + round(ration.cpu_month_used,3) +
-                    '</b> CPU hours<br>at <b>' + round(ration.cpu_month,3) +
-                    '</b> CPU hours allocated.<p>' +
-                    '<i><b>Hint:</b></i> resource usage can be monitored using disk and<br>' +
-                    'CPU widgets in the top-right corner of the screen. You<br>' +
-                    'may need to push "Reload" button in the toolbar after<br>' +
-                    'periods of inactivity to get updated readings.<p>' +
-                    '<i><b>Recommended action:</b></i> run the job later.' );
-                return;
-              }
-            }
 
-            if (dlg.collectTaskData(false))  {
+              if (dlg.collectTaskData(false))  {
 
-              dlg.task.doRun ( dlg.inputPanel,function(){
+                dlg.task.doRun ( dlg.inputPanel,function(){
 
-                dlg.task.job_dialog_data.panel = 'output';
-                dlg.task.state = job_code.running;
-                dlg.outputPanel.clear();
-                dlg.setDlgState();
+                  dlg.task.job_dialog_data.panel = 'output';
+                  dlg.task.state = job_code.running;
+                  dlg.outputPanel.clear();
+                  dlg.setDlgState();
 
-                dlg.requestServer ( fe_reqtype.runJob,function(rdata){
+                  dlg.requestServer ( fe_reqtype.runJob,function(rdata){
 
-                  addWfKnowledge ( dlg.task,dlg.ancestors.slice(1) );
+                    addWfKnowledge ( dlg.task,dlg.ancestors.slice(1) );
 
-                  if (dlg.task.nc_type=='client')  {
+                    if (dlg.task.nc_type=='client')  {
 
-                    dlg.task.job_dialog_data.job_token = rdata.job_token;
-                    var data_obj       = {};
-                    data_obj.job_token = rdata.job_token;
-                    data_obj.feURL     = getFEURL();
-                    data_obj.dnlURL    = dlg.task.getURL ( rdata.jobballName );
-                    localCommand ( nc_command.runClientJob,data_obj,'Run Client Job',
-                      function(response){
-                        if (!response)
-                          return false;  // issue standard AJAX failure message
-                        if (response.status!=nc_retcode.ok)  {
-                          new MessageBox ( 'Run Client Job',
-                            '<p>Launching local application ' + dlg.task.name +
-                            ' failed due to:<p><i>' + response.message + '</i><p>' +
-                            'Please report this as possible bug to <a href="mailto:' +
-                            maintainerEmail + '">' + maintainerEmail + '</a>' );
-                        } else  {
-                          dlg.loadReport();
-                          dlg.radioSet.selectButton ( 'output' );
-                        }
-                        return true;
-                      });
+                      dlg.task.job_dialog_data.job_token = rdata.job_token;
+                      var data_obj       = {};
+                      data_obj.job_token = rdata.job_token;
+                      data_obj.feURL     = getFEURL();
+                      data_obj.dnlURL    = dlg.task.getURL ( rdata.jobballName );
+                      localCommand ( nc_command.runClientJob,data_obj,'Run Client Job',
+                        function(response){
+                          if (!response)
+                            return false;  // issue standard AJAX failure message
+                          if (response.status!=nc_retcode.ok)  {
+                            new MessageBox ( 'Run Client Job',
+                              '<p>Launching local application ' + dlg.task.name +
+                              ' failed due to:<p><i>' + response.message + '</i><p>' +
+                              'Please report this as possible bug to <a href="mailto:' +
+                              maintainerEmail + '">' + maintainerEmail + '</a>' );
+                          } else  {
+                            dlg.loadReport();
+                            dlg.radioSet.selectButton ( 'output' );
+                          }
+                          return true;
+                        });
 
-                  } else  {
-                    dlg.loadReport();
-                    dlg.radioSet.selectButton ( 'output' );
-                  }
+                    } else  {
+                      dlg.loadReport();
+                      dlg.radioSet.selectButton ( 'output' );
+                    }
 
-                  onRun_func ( dlg.task.id );
+                    onRun_func ( dlg.task.id );
+
+                  });
 
                 });
 
-              });
+              }
 
-            }
+            },null,'persist');
 
-          },null,'persist');
+        }
 
       });
 

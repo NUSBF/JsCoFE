@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.01.20   <--  Date of Last Modification.
+ *    14.01.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -95,14 +95,13 @@ TaskListDialog.prototype.constructor = TaskListDialog;
 
 TaskListDialog.prototype.isTaskAvailable = function ( task_obj )  {
 
-  if (task_obj.nc_type=='client')  {
-    if (!__local_service)
-      return 'client';   // client task while there is no client running
-  } else if (task_obj.nc_type=='client-cloud')  {
-    if ((!__local_service) && (!__cloud_storage))
-      return 'client-cloud';  // task require either client or cloud storage
+  if ((task_obj.nc_type=='client') && (!__local_service))
+    return 'client';   // client task while there is no client running
+
+  if ((task_obj.nc_type=='client-storage') &&
+      (!__local_service) && (!__cloud_storage))
+    return 'client-storage';  // task require either client or cloud storage
                               // but neither is given
-  }
 
   if (__exclude_tasks.indexOf(task_obj._type)>=0)
     return 'server-excluded';  // task excluded in server configuration
@@ -127,25 +126,17 @@ TaskListDialog.prototype.setTask = function ( task_obj,grid,row,setall )  {
   //if ((!__local_service) && (task_obj.nc_type=='client'))
   //  return null;
 
-  /*
-  if (task_obj.nc_type=='client')  {
-    if (!__local_service)
-      return null;
-  } else if (task_obj.nc_type=='client-cloud')  {
-    if ((!__local_service) && (!__cloud_storage))
-      return null;
-  }
+  var avail_key = this.isTaskAvailable ( task_obj );
 
-  if ((__exclude_tasks.indexOf(task_obj._type)>=0) ||
-      ((__exclude_tasks.indexOf('unix-only')>=0) &&
-       (task_obj.platforms().indexOf('W')<0)))
+  /*   example just in case:
+  if (['ok','client','server-excluded','windows-excluded','client-storage']
+      .indexOf(avail_key)<0)
     return null;
   */
 
-  if (this.isTaskAvailable(task_obj)!='ok')
-    return null;
-
   var dataSummary = this.dataBox.getDataSummary ( task_obj );
+  if (avail_key!='ok')
+    dataSummary.status = -1;
 
   if ((!setall) && (!dataSummary.status))
     return null;
@@ -153,7 +144,30 @@ TaskListDialog.prototype.setTask = function ( task_obj,grid,row,setall )  {
   var btn = grid.setButton  ( '',image_path(task_obj.icon()),row,0,1,1 )
                 .setSize_px ( 54,40 );
   grid.setLabel             ( ' ', row,1,1,1 );
-  var lbl = grid.setLabel   ( task_obj.title, row,2,1,1 );
+  var title = task_obj.title;
+  if (avail_key!='ok')  {
+    title += '<br><i><font size="-1">';
+    switch (avail_key)  {
+      case 'client' :
+            if (__any_mobile_device)
+                  title += '** task is not available on mobile devices';
+            else  title += '** task is available only if started via CCP4 Cloud Client';
+          break;
+      case 'client-storage' :
+            title += '** task is available only if started via CCP4 Cloud Client ' +
+                     'or if Cloud Storage is configured';
+          break;
+      case 'server-excluded' :
+            title += '** task is not available on this ' + appName() + ' server';
+          break;
+      case 'windows-excluded' :
+            title += '** task is not available on MS Windows systems';
+          break;
+      default : ;
+    }
+    title += '</font></i>';
+  }
+  var lbl = grid.setLabel   ( title,row,2,1,1 );
   grid.setNoWrap            ( row,2 );
   grid.setVerticalAlignment ( row,2,'middle' );
   grid.setCellSize          ( '99%','',row,2 );
@@ -177,7 +191,7 @@ TaskListDialog.prototype.setTask = function ( task_obj,grid,row,setall )  {
         $(dlg.element).dialog ( 'close' );
       } else  {
         // insufficient data
-        new TaskDataDialog ( btn.dataSummary,task_obj );
+        new TaskDataDialog ( btn.dataSummary,task_obj,avail_key );
       }
     }
 
