@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    10.12.19   <--  Date of Last Modification.
+ *    15.01.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Xia-2 Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2019
+ *  (C) E. Krissinel, A. Lebedev 2016-2020
  *
  *  =================================================================
  *
@@ -218,6 +218,8 @@ TaskXia2.prototype.constructor = TaskXia2;
 // ===========================================================================
 
 TaskXia2.prototype.icon = function()  { return 'task_xia2'; }
+
+TaskXia2.prototype.lowestClientVersion = function() { return '1.6.001 [01.01.2019]'; }
 
 TaskXia2.prototype.currentVersion = function()  {
   var version = 1;

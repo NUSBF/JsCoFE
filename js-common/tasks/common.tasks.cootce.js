@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.10.19   <--  Date of Last Modification.
+ *    15.01.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Coot Coorinate Editor Task Class (for local server)
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2018-2019
+ *  (C) E. Krissinel, A. Lebedev 2018-2020
  *
  *  =================================================================
  *
@@ -67,6 +67,8 @@ TaskCootCE.prototype.constructor = TaskCootCE;
 // export such that it could be used in both node and a browser
 
 TaskCootCE.prototype.icon = function()  { return 'task_coot'; }
+
+TaskCootCE.prototype.lowestClientVersion = function() { return '1.6.001 [01.01.2019]'; }
 
 TaskCootCE.prototype.currentVersion = function()  {
   var version = 0;

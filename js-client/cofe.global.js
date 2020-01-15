@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    06.01.20   <--  Date of Last Modification.
+ *    15.01.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -29,12 +29,12 @@ var maintainerEmail = 'ccp4@ccp4.ac.uk';
 // ===========================================================================
 // session identification
 
-var __login_token   = '';
-var __login_user    = '';
-var __user_settings = {};
-var __admin         = false;
-var __dormant       = 0;
-var __ccp4_version  = '';       // undefined
+var __login_token     = '';
+var __login_user      = '';
+var __user_settings   = {};
+var __admin           = false;
+var __dormant         = 0;
+var __ccp4_version    = '';       // undefined
 
 var __current_page    = null;
 var __current_project = null;

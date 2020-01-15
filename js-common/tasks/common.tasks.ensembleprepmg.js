@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.10.19   <--  Date of Last Modification.
+ *    15.01.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Ensemble Preparation from Sequence Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2019
+ *  (C) E. Krissinel, A. Lebedev 2019-2020
  *
  *  =================================================================
  *
@@ -101,6 +101,8 @@ TaskEnsemblePrepMG.prototype.constructor = TaskEnsemblePrepMG;
 // ===========================================================================
 
 TaskEnsemblePrepMG.prototype.icon = function()  { return 'task_ensembleprepmg'; }
+
+TaskEnsemblePrepMG.prototype.lowestClientVersion = function() { return '1.6.001 [01.01.2019]'; }
 
 TaskEnsemblePrepMG.prototype.currentVersion = function()  {
   var version = 0;

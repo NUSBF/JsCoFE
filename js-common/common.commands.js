@@ -2,7 +2,7 @@
 /*
  *  ===========================================================================
  *
- *    14.01.20   <--  Date of Last Modification.
+ *    15.01.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  ---------------------------------------------------------------------------
  *
@@ -25,17 +25,23 @@
 
 function appName()  { return 'CCP4 Cloud' }  // application name for reporting
 
-var jsCoFE_version = '1.6.004 [14.01.2020]';
+var jsCoFE_version = '1.6.004 [15.01.2020]';
 
 function appVersion()  {
   return jsCoFE_version;
 }
 
 function splitVersion ( version )  {
-// returns [main_version,major_version,minor_version,day,month,year],
+// returns [main_version,major_version,minor_version,year,month,day],
 // all integers
-  return  version.replace('[','.').replace(']','')
-                 .split('.').map(function(item){ return parseInt(item); });
+  var vsplit = version.replace('[','.').replace(']','')
+                      .split('.').map(function(item){ return parseInt(item); });
+  if (vsplit.length==6)  {
+    var year  = vsplit[5];
+    vsplit[5] = vsplit[3];
+    vsplit[3] = year;
+  }
+  return vsplit;
 }
 
 function compareVersions ( version1,version2 )  {
@@ -43,7 +49,8 @@ function compareVersions ( version1,version2 )  {
   var v1 = splitVersion ( version1 );
   var v2 = splitVersion ( version2 );
   function _compare ( n )  {
-    if (n>2)  return 0;
+    if ((n>=v1.length) || (n>=v2.length))
+                           return  0;
     else if (v1[n]<v2[n])  return -1;
     else if (v1[n]>v2[n])  return  1;
                      else  return _compare(n+1);

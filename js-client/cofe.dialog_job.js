@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    14.01.20   <--  Date of Last Modification.
+ *    15.01.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -499,20 +499,31 @@ JobDialog.prototype.makeLayout = function ( onRun_func )  {
 
       dlg.run_btn.addOnClickListener ( function(){
 
-        if ((dlg.task.nc_type=='client') && (!__local_service))  {
+        var stopmsg = null;
+        if (dlg.task.nc_type=='client')  {
+          if (!__local_service)  {
+            stopmsg = ['CCP4 Cloud Client not found',
+                       '<h3>CCP4 Cloud Client is required</h3>'];
+            if (__any_mobile_device)
+              stopmsg[1] += 'This task cannot be run when working with ' + appName() +
+                            ' from mobile devices.<br>In order to use the task, ' +
+                            'access ' + appName() + ' via the CCP4 Cloud Client,<br>' +
+                            'found in CCP4 Software Suite.';
+            else
+              stopmsg[1] += 'This task can be run only if ' + appName() +
+                            ' was accessed via the CCP4 Cloud Client,<br>found in ' +
+                            'CCP4 Software Suite.';
+          } else if (compareVersions(__client_version,dlg.task.lowestClientVersion())<0){
+            stopmsg = ['CCP4 Cloud Client needs updating',
+                       '<h3>Too low version of CCP4 Cloud Client</h3>' +
+                       'This task requires a higher version of the CCP4 Cloud Client' +
+                       '<br>(update CCP4 Software Suite on your device).'];
+          }
+        }
 
-          msg = '<h3>CCP4 Cloud Client is required</h3>';
-          if (__any_mobile_device)
-            msg += 'This task cannot be run when working with ' + appName() +
-                   ' from mobile devices.<br>In order to use the task, ' +
-                   'access ' + appName() + ' via CCP4 Cloud Client,<br>' +
-                   'found in CCP4 Software Suite.';
-          else
-            msg += 'This task can be run only if ' + appName() +
-                   ' was accessed via CCP4 Cloud Client,<br>found in ' +
-                   'CCP4 Software Suite.';
+        if (stopmsg)  {
 
-          new MessageBox ( 'No CCP4 Cloud Client running',msg );
+          new MessageBox ( stopmsg[0],stopmsg[1] );
 
         } else  {
 
