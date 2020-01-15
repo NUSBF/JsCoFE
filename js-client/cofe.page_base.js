@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    19.10.19   <--  Date of Last Modification.
+ *    14.01.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Base page class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2019
+ *  (C) E. Krissinel, A. Lebedev 2016-2020
  *
  *  =================================================================
  *
@@ -369,7 +369,7 @@ BasePage.prototype.displayUserRation = function ( pdesc )  {
                 round(this.ration.cpu_total_used,4) +
                 '&nbsp;</i></td><td></td></tr>' +
         '</table>';
-      this.rationPanel.setTooltip1 ( stats,'show',false,0 );
+      this.rationPanel.setTooltip1 ( stats,'show',false,20000 );  // 20 secs
       this.rationPanel.disk_usage.setText ( storage_pp );
       this.rationPanel.cpu_usage .setText ( cpu_day_pp + ':' + cpu_month_pp );
 

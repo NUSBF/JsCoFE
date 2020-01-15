@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    06.01.20   <--  Date of Last Modification.
+ *    15.01.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -126,6 +126,8 @@ TaskTemplate.prototype.icon = function()  { return 'process'; }
 //   'M'  : Mac
 //   'U'  : Unix ( = Linux + Mac)
 TaskTemplate.prototype.platforms = function()  { return 'WLMU'; }
+
+TaskTemplate.prototype.lowestClientVersion = function() { return '0.0.0 [0.0.0]'; }
 
 TaskTemplate.prototype.doNotPackSuffixes = function()  { return ['.map']; }
 TaskTemplate.prototype.doPackSuffixes    = function()  { return ['']; }

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    08.10.19   <--  Date of Last Modification.
+ *    15.01.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,19 +13,20 @@
  *  **** Content :  Functions for communication with local (on-client)
  *       ~~~~~~~~~  number cruncher
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2019
+ *  (C) E. Krissinel, A. Lebedev 2016-2020
  *
  *  =================================================================
  *
  */
 
 // local service url (used also as indicator of presentce in RVAPI)
-var __local_service = null;     // full URL when defined
-var __local_user    = false;    // true if running as a desktop
-var __shared_fs     = false;    // shared file system setup when true
-var __regMode       = 'email';  // 'email' (by user) or 'admin' (by admin)
-var __exclude_tasks = [];
-var __setup_desc    = null;     // setup description
+var __local_service  = null;     // full URL when defined
+var __client_version = null;     // will be a version string if client is running
+var __local_user     = false;    // true if running as a desktop
+var __shared_fs      = false;    // shared file system setup when true
+var __regMode        = 'email';  // 'email' (by user) or 'admin' (by admin)
+var __exclude_tasks  = [];
+var __setup_desc     = null;     // setup description
 var __check_session_period = 2000;  // in ms
 
 
@@ -58,6 +59,7 @@ function checkLocalService ( callback_func )  {
               'of error.<br>Please contact ' + appName() + ' maintainer.<i>' );
           }
         } else  {
+          __client_version = response.version;
           count = 0;
         }
         if (count>0)

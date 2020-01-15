@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    14.01.20   <--  Date of Last Modification.
+ *    15.01.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -67,6 +67,12 @@ function TaskDataDialog ( dataSummary,task,avail_key )  {
                      ' was accessed via CCP4 Cloud Client,<br>found in ' +
                      'CCP4 Software Suite, or if user has access to ' +
                      'Cloud Storage.';
+          break;
+      case 'client-version' :
+              msg += '<h3>Too low version of CCP4 Cloud Client</h3>' +
+                     'This task requires a higher version of CCP4 Cloud ' +
+                     'Client.<br>Please update CCP4 Software Suite on ' +
+                     'your device.';
           break;
       case 'server-excluded' :
               msg = '<h3>Task is not available on server</h3>' +

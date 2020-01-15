@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    14.01.20   <--  Date of Last Modification.
+ *    15.01.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -103,6 +103,10 @@ TaskListDialog.prototype.isTaskAvailable = function ( task_obj )  {
     return 'client-storage';  // task require either client or cloud storage
                               // but neither is given
 
+  if (startsWith(task_obj.nc_type,'client') && __local_service &&
+      (compareVersions(__client_version,task_obj.lowestClientVersion())<0))
+    return 'client-version';   // task requires client of higher version
+
   if (__exclude_tasks.indexOf(task_obj._type)>=0)
     return 'server-excluded';  // task excluded in server configuration
 
@@ -156,6 +160,10 @@ TaskListDialog.prototype.setTask = function ( task_obj,grid,row,setall )  {
       case 'client-storage' :
             title += '** task is available only if started via CCP4 Cloud Client ' +
                      'or if Cloud Storage is configured';
+          break;
+      case 'client-version' :
+            title += '** task requires a higher version of CCP4 Cloud Client ' +
+                     '(update CCP4 on your device)';
           break;
       case 'server-excluded' :
             title += '** task is not available on this ' + appName() + ' server';
