@@ -78,8 +78,8 @@ function TaskDataDialog ( dataSummary,task,avail_key )  {
               msg = '<h3>Task is not available on server</h3>' +
                     'The task is excluded from configuration on ' + appName() +
                     ' server which you use.<br>This may be due to the ' +
-                    'availability of software or resources, which<br>' +
-                    'are required for the task.';
+                    'availability of software or resources, which are ' +
+                    '<br>required for the task.';
           break;
       case 'windows-excluded' :
               msg = '<h3>Task is not available on MS Windows systems</h3>' +

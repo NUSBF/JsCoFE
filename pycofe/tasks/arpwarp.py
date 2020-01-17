@@ -57,6 +57,17 @@ class ArpWarp(basic.TaskDriver):
 
     def run(self):
 
+        # checks for case when Arp/wArp is run as a client job
+        if sys.platform.startswith("win"):
+            self.fail ( "<h3>Arp/wArp is not available on MS Windows systems.</h3>" +\
+                        "Arp/wArp can be run only on UNIX systems.",
+                        "Not available on MS Windows." )
+
+        if not "warpbin" in os.environ:
+            self.fail ( "<h3>Arp/wArp is not installed.</h3>" +\
+                        "Arp/wArp not found on the device.",
+                        "Arp/wArp is not installed." )
+
         # Prepare arpwarp job
 
         # fetch input data
