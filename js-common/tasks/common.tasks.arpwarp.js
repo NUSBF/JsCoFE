@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    10.10.19   <--  Date of Last Modification.
+ *    15.01.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  ArpWarp Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2019
+ *  (C) E. Krissinel, A. Lebedev 2016-2020
  *
  *  =================================================================
  *
@@ -31,10 +31,11 @@ function TaskArpWarp()  {
   if (__template)  __template.TaskTemplate.call ( this );
              else  TaskTemplate.call ( this );
 
-  this._type  = 'TaskArpWarp';
-  this.name   = 'arpwarp';
+  this._type   = 'TaskArpWarp';
+  this.name    = 'arpwarp';
   this.setOName ( 'arpwarp' );  // default output file name template
-  this.title  = 'Automated Model Building with Arp/wArp';
+  this.title   = 'Automated Model Building with Arp/wArp';
+  this.nc_type = 'client';    // job may be run only on client NC
 
   this.input_dtypes = [{      // input data types
       data_type   : {'DataRevision':['!protein','!asu','!phases']}, // data type(s) and subtype(s)
