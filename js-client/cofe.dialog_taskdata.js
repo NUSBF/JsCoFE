@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    15.01.20   <--  Date of Last Modification.
+ *    21.01.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -73,6 +73,12 @@ function TaskDataDialog ( dataSummary,task,avail_key )  {
                      'This task requires a higher version of CCP4 Cloud ' +
                      'Client.<br>Please update CCP4 Software Suite on ' +
                      'your device.';
+          break;
+      case 'authorisation'   :
+              msg += '<h3>Authorisation is required</h3>' +
+                     'This task requires authorisation from ' +
+                     __auth_software[task.authorisationID()].desc_provider +
+                     ',<br>which may be obtained in "My Account" page.';
           break;
       case 'server-excluded' :
               msg = '<h3>Task is not available on server</h3>' +

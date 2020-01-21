@@ -35,9 +35,9 @@
         "auth_url"      : "https://arpwarp.embl-hamburg.de/api/maketoken/?reqid=$reqid&addr=1.2.3.4&cburl=$cburl"
       },
       "gphl"  : {
-        "desc_software" : "Global Phasing Limited Software Suite",
+        "desc_software" : "Global Phasing Ltd. Software Suite",
         "icon_software" : "task_buster",
-        "desc_provider" : "Global Phasing Limited",
+        "desc_provider" : "Global Phasing Ltd.",
         "icon_provider" : "org_gphl",
         "auth_url"      : "https://arpwarp.embl-hamburg.de/api/maketoken/?reqid=$reqid&addr=1.2.3.4&cburl=$cburl"
       }
