@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    19.01.20   <--  Date of Last Modification.
+ *    21.01.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -103,9 +103,19 @@ TaskListDialog.prototype.isTaskAvailable = function ( task_obj )  {
     return 'client-storage';  // task require either client or cloud storage
                               // but neither is given
 
-  if (startsWith(task_obj.nc_type,'client') && __local_service &&
-      (compareVersions(__client_version,task_obj.lowestClientVersion())<0))
-    return 'client-version';   // task requires client of higher version
+  if (startsWith(task_obj.nc_type,'client'))  {
+    if (__local_service &&
+        (compareVersions(__client_version,task_obj.lowestClientVersion())<0))
+      return 'client-version';   // task requires client of higher version
+  } else  {
+    var authID = task_obj.authorisationID();
+    if (authID && __auth_software && (authID in __auth_software) &&
+        ((!(authID in __user_authorisation)) ||
+         (!__user_authorisation[authID].auth_date)))  {
+console.log ( 'authID=' + authID + ', auth_date="' + __user_authorisation[authID].auth_date + '"' );
+      return 'authorisation';
+    }
+  }
 
   if (__exclude_tasks.indexOf(task_obj._type)>=0)
     return 'server-excluded';  // task excluded in server configuration
@@ -164,6 +174,11 @@ TaskListDialog.prototype.setTask = function ( task_obj,grid,row,setall )  {
       case 'client-version' :
             title += '** task requires a higher version of CCP4 Cloud Client ' +
                      '(update CCP4 on your device)';
+          break;
+      case 'authorisation'   :
+            title += '** task requires authorisation from ' +
+                     __auth_software[task_obj.authorisationID()].desc_provider +
+                     ' (available in "My Account")';
           break;
       case 'server-excluded' :
             title += '** task is not available on this ' + appName() + ' server';

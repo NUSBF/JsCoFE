@@ -124,7 +124,7 @@ function login ( user_login_name,user_password,sceneId,page_switch )  {
               __dormant       = userData.dormant;
               __cloud_storage = response.data.cloud_storage;
               __demo_projects = response.data.demo_projects;
-              __auth_software = response.data.auth_software;
+              __user_authorisation = userData.authorisation;
 
               if ('helpTopics' in userData)
                     __doNotShowList = userData.helpTopics;

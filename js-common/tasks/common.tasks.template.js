@@ -125,12 +125,13 @@ TaskTemplate.prototype.icon = function()  { return 'process'; }
 //   'L'  : Linux
 //   'M'  : Mac
 //   'U'  : Unix ( = Linux + Mac)
-TaskTemplate.prototype.platforms = function()  { return 'WLMU'; }
+TaskTemplate.prototype.platforms           = function() { return 'WLMU'; }
 
 TaskTemplate.prototype.lowestClientVersion = function() { return '0.0.0 [0.0.0]'; }
+TaskTemplate.prototype.authorisationID     = function() { return ''; }
 
-TaskTemplate.prototype.doNotPackSuffixes = function()  { return ['.map']; }
-TaskTemplate.prototype.doPackSuffixes    = function()  { return ['']; }
+TaskTemplate.prototype.doNotPackSuffixes   = function() { return ['.map']; }
+TaskTemplate.prototype.doPackSuffixes      = function() { return ['']; }
 
 // when data class version is changed here, change it also in python
 // constructors

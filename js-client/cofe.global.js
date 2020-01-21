@@ -43,6 +43,7 @@ var __cloud_storage   = false;  // true if user has cloud storage allocated
 var __demo_projects   = false;  // true if demo projects are configured
 var __fe_url          = '';     // front-end url as returned by the server (not proxy)
 var __auth_software   = null;   // software authorisation data
+var __user_authorisation = null;  // user authorisation data 
 
 //var __mobile_device = ('ontouchstart' in document.documentElement);
 // the following will also include desktops with touch screens:

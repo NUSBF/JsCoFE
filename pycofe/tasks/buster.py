@@ -107,6 +107,8 @@ class Buster(basic.TaskDriver):
             if ncs_mode=="Group2":
                 cmd.append ( "-sim_swap_equiv_plus" )
 
+        #cmd.append ( "UsePdbchk=no" )
+
         """
         -R <reslow> <reshigh>         : low- and high-resolution limits for refinement (default is all data)
         -nbig <no. of BIG cycles>     : how many BIG cycles, i.e. refinement/water building (default 5)
@@ -139,16 +141,77 @@ class Buster(basic.TaskDriver):
         if os.path.isfile(mtzout):
 
             self.file_stdout.close()
+
+            graphData = [
+                { "name"  : "R-factors" , "plots" : [] },
+                { "name"  : "LLG scores", "plots" : [] },
+                { "name"  : "RMS scores", "plots" : [] }
+            ]
+            plot_ref = None
+            plot_llg = None
+            plot_rms = None
             with open(self.file_stdout_path(),"r") as f:
                 for line in f:
-                    if "best refinement in BUSTER reached for" in line:
+                    if "Ncyc       Total        Grms       Rfact       Rfree         LLG     LLGfree  Geom_Funct     rmsBOND    rmsANGLE" in line:
+                        iter = "Iteration #" + str(len(graphData[0]["plots"])+1) + ": "
+                        plot_ref = {
+                            "name"   : iter + "R-factors",
+                            "xtitle" : "Cycle No.",
+                            "ytitle" : "R-factors",
+                            "x"      : {  "name":"Cycle No.", "values": [] },
+                            "y"      : [{ "name":"R-factor" , "values": [] },
+                                        { "name":"R-free"   , "values": [] }]
+                        }
+                        plot_llg = {
+                            "name"   : iter + "LLG scores",
+                            "xtitle" : "Cycle No.",
+                            "ytitle" : "LLG scores",
+                            "x"      : {  "name":"Cycle No.", "values": [] },
+                            "y"      : [{ "name":"LLG"     , "values": [] },
+                                        { "name":"LLG-free", "values": [] }]
+                        }
+                        plot_rms = {
+                            "name"   : iter + "LLG scores",
+                            "xtitle" : "Cycle No.",
+                            "ytitle" : "RMS scores",
+                            "x"      : {  "name":"Cycle No.", "values": [] },
+                            "y"      : [{ "name":"rmsBOND" , "values": [] },
+                                        { "name":"rmsANGLE", "values": [] }]
+                        }
+                    elif plot_ref and line.strip()=="":
+                        graphData[0]["plots"].append ( plot_ref )
+                        graphData[1]["plots"].append ( plot_llg )
+                        graphData[2]["plots"].append ( plot_rms )
+                        plot_ref = None
+                        plot_llg = None
+                        plot_rms = None
+                    elif "best refinement in BUSTER reached for" in line:
                         vals = line.split()[-1].split("/")
                         self.generic_parser_summary["buster"] = {
                             "R_factor" : vals[0],
                             "R_free"   : vals[1]
                         }
+                    elif plot_ref:
+                        vals = line.split()
+                        plot_ref["x"]   ["values"].append ( float(vals[0]) )
+                        plot_ref["y"][0]["values"].append ( float(vals[3]) )
+                        plot_ref["y"][1]["values"].append ( float(vals[4]) )
+                        if vals[0]!="0":
+                            plot_llg["x"]   ["values"].append ( float(vals[0]) )
+                            plot_llg["y"][0]["values"].append ( float(vals[5]) )
+                            plot_llg["y"][1]["values"].append ( float(vals[6]) )
+                        plot_rms["x"]   ["values"].append ( float(vals[0]) )
+                        plot_rms["y"][0]["values"].append ( float(vals[8]) )
+                        plot_rms["y"][1]["values"].append ( float(vals[9]) )
+
             # continue writing to stdout
             self.file_stdout = open ( self.file_stdout_path(),'a' )
+
+            #self.stdoutln ( str(plots) )
+
+            self.putLogGraphWidget ( self.getWidgetId("graph"),graphData )
+
+            self.putMessage ( "&nbsp;" )
 
             structure = self.registerStructure ( xyzout,None,mtzout,
                                 None,None,None,leadKey=1,

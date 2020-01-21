@@ -117,6 +117,7 @@ AuthorisationDialog.prototype.updateOnTimer = function()  {
                 self.auth_dic[key].token0     = token;
                 self.auth_dic[key].auth_date  = adate;
                 self.auth_dic[key].token      = token;
+                __user_authorisation[key]     = data.authorisation[key];
                 var auth_msg   = '';
                 var auth_color = '';
                 if (adate.length<=0)  {
