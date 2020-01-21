@@ -843,7 +843,7 @@ class TaskDriver(object):
     def setArpWarpLogParser ( self,panel_id,job_params,wares_file ):
         self.putPanel ( panel_id )
         self.log_parser = pyrvapi_ext.parsers.arpwarp_parser ( panel_id,
-                job_params=job_params,resfile=wares_file )
+                                    job_params=job_params,resfile=wares_file )
         self.flush()
         #pyrvapi.rvapi_flush()
         return

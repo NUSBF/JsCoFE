@@ -38,7 +38,7 @@ function TaskRefmac()  {
   this.helpURL = './html/jscofe_task_refmac.html';
 
   this.input_dtypes = [{  // input data types
-      data_type   : {'DataRevision':['xyz']}, // data type(s) and subtype(s)
+      data_type   : {'DataRevision':['!xyz']}, // data type(s) and subtype(s)
       label       : 'Structure revision',     // label for input dialog
       inputId     : 'revision', // input Id for referencing input fields
       customInput : 'refmac',   // lay custom fields below the dropdown

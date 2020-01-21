@@ -303,8 +303,8 @@ class ArpWarp(basic.TaskDriver):
                 rfree   = float(lines[1])
                 if rfree>0.0 and rfactor>0.0:
                     self.generic_parser_summary["refmac"] = {
-                        'R_factor' : rfactor,
-                        'R_free'   : rfree
+                        "R_factor" : rfactor,
+                        "R_free"   : rfree
                     }
 
 

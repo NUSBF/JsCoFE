@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    15.01.20   <--  Date of Last Modification.
+ *    19.01.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -1935,6 +1935,7 @@ if (!dbx)  {
                         break;
             case 'cbuccaneer' : S += 'Compl=' + d.percentage + '% ';
                         break;
+            case 'buster'   :
             case 'refmac'   : S += 'R=' + d.R_factor + ' R<sub>free</sub>=' +
                                           d.R_free   + ' ';
                         break;

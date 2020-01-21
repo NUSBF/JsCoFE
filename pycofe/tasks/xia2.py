@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    11.12.19   <--  Date of Last Modification.
+#    20.01.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2019
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2020
 #
 # ============================================================================
 #
@@ -216,11 +216,22 @@ class Xia2(basic.TaskDriver):
                     # generate files for reciprocal space viewer
 
                     self.unsetLogParser()
-                    refDir = os.path.join ( crystalName,datasetName,sweepId,"refine" )
-                    ref_names = [fn for fn in os.listdir(refDir)
-                        if any(fn.endswith(ext) for ext in ["_refined_experiments.json","_refined.pickle"])]
+
                     rlp_json   = ""
                     rlp_pickle = ""
+                    refDir = os.path.join ( crystalName,datasetName,sweepId,"refine" )
+                    ind_list = sorted(set(["%3s" %f.split("_")[0] for f in os.listdir(refDir)]), reverse=True)
+                    for ind in ind_list:
+                        for e1, e2 in ("_refined.expt","_refined.refl"),("_refined_experiments.json","_refined.pickle"):
+                            f1 = os.path.join(refDir, ind.strip() + e1)
+                            f2 = os.path.join(refDir, ind.strip() + e2)
+                            if os.path.isfile(f1) and os.path.isfile(f2):
+                                rlp_json   = f1
+                                rlp_pickle = f2
+                                break
+                    """
+                    ref_names = [fn for fn in os.listdir(refDir)
+                        if any(fn.endswith(ext) for ext in ["_refined_experiments.json","_refined.pickle"])]
                     for fname in ref_names:
                         if fname.endswith(".pickle") and fname > rlp_pickle:
                             rlp_pickle = fname
@@ -229,6 +240,8 @@ class Xia2(basic.TaskDriver):
 
                     rlp_pickle = os.path.join ( refDir,rlp_pickle )
                     rlp_json   = os.path.join ( refDir,rlp_json   )
+                    """
+
                     self.file_stdin = None
                     if sys.platform.startswith("win"):
                         self.runApp ( "dials.export.bat",["format=json","d_min=8",rlp_json,rlp_pickle],
@@ -245,6 +258,7 @@ class Xia2(basic.TaskDriver):
                         rlpFilePath = None
 
                     # ===== For new version of rs_mapper =======
+                    """
                     indexDir  = os.path.join ( crystalName,datasetName,sweepId,"refine" )
                     ind_names = [fn for fn in os.listdir(indexDir)
                         if any(fn.endswith(ext) for ext in ["_refined_experiments.json"])]
@@ -254,19 +268,26 @@ class Xia2(basic.TaskDriver):
                             ind_json = fname
                     ind_prefix = ind_json.partition("_")[0] + "_"
                     ind_json = os.path.join ( indexDir,ind_json )
-                    d_min = d_min_for_rs_mapper(self, indexDir, ind_prefix)
+                    """
+
+                    ind_prefix = rlp_json.partition("_")[0] + "_"
+                    d_min = d_min_for_rs_mapper(self, refDir, ind_prefix)
 
                     #  grid size and resolution are chosen such as to keep file
                     #  size under 10MB, or else it does not download with XHR
+                    mapFileName = "rs_mapper_output.ccp4"
                     if sys.platform.startswith("win"):
                         rc1 = self.runApp ( "dials.rs_mapper.bat",
-                                            ["grid_size=128","max_resolution="+d_min,ind_json],
-                                            quitOnError=False )
+                                            ["grid_size=128","max_resolution="+d_min,
+                                             "map_file="+mapFileName,rlp_json],
+                                            quitOnError=False,logType="Service" )
                     else:
                         rc1 = self.runApp ( "dials.rs_mapper",
-                                            ["grid_size=128","max_resolution="+d_min,ind_json],
-                                            quitOnError=False )
+                                            ["grid_size=128","max_resolution="+d_min,
+                                             "map_file="+mapFileName,rlp_json],
+                                            quitOnError=False,logType="Service" )
 
+                    """
                     # ===== For old version of rs_mapper =======
                     if rc1.msg:
                         indexDir  = os.path.join ( crystalName,datasetName,sweepId,"index" )
@@ -292,8 +313,8 @@ class Xia2(basic.TaskDriver):
                         else:
                             self.runApp ( "dials.rs_mapper",["grid_size=128","max_resolution="+d_min],
                                           logType="Service" )
+                    """
 
-                    mapFileName = "rs_mapper_output.ccp4"
                     mapFilePath = os.path.join ( self.outputDir(),sweepId +"_"+ mapFileName + ".map" )
                     if os.path.isfile(mapFileName):
                         os.rename ( mapFileName,mapFilePath )

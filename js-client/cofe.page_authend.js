@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.09.19   <--  Date of Last Modification.
+ *    20.01.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Authorisation end page
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2019
+ *  (C) E. Krissinel, A. Lebedev 2019-2020
  *
  *  =================================================================
  *
@@ -24,8 +24,39 @@
 // authorisation end page class
 
 var software_title = {
-  'arpwarp' : 'Arp/wArp'
+  'arpwarp' : 'Arp/wArp',
+  'gphl'    : 'Global Phasing Limited'
 }
+
+/*
+<html>
+<head>
+<title>ARP/wARP Webservice - External resource authorisation</title>
+</head>
+<body>
+<h1>Request for permissions to run tasks and download results</h1>
+<p>Site localhost (not resolved) is requesting authorisation for
+the host 1.2.3.4 (not resolved).
+</p>
+<p>Please check the host and confirm permit by providing username and password.</p>
+<form method="post" novalidate>
+  <input type='hidden' name='csrfmiddlewaretoken' value='BZn9Fnmscra6S8kaXKaUaOUo57AibtHM1utI12iCpeolDF1IVNSrDdKYX3LumPA1' />
+  <input type="hidden" name="reqid" value="authorisation-gphl-340cef239bd34b777f3ece094ffb1ec5" id="id_reqid" />
+  <input type="hidden" name="addr" value="1.2.3.4" id="id_addr" />
+  <input type="hidden" name="cburl" value="http://localhost:8085/" id="id_cburl" />
+  <tr>
+    <th><label for="id_username">Username:</label></th>
+    <td><input type="text" name="username" autofocus required id="id_username" maxlength="254" /></td>
+  </tr><tr>
+    <th><label for="id_password">Password:</label></th>
+    <td><input type="password" name="password" required id="id_password" /></td>
+  </tr>
+  <input name="decision" type="submit" value="Sign" />
+  <input name="decision" type="submit" value="Decline" />
+</form>
+</body>
+</html>
+*/
 
 function AuthEndPage ( sceneId,software_key,auth_result )  {
 

@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    05.12.19   <--  Date of Last Modification.
+ *    19.01.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Common Client/Server Modules -- Structure Revision Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2019
+ *  (C) E. Krissinel, A. Lebedev 2016-2020
  *
  *  ==========================================================================
  *
@@ -643,6 +643,9 @@ if (!__template)  {
             this._layCDI_Structure ( dropdown,2 );
             this.HKL.layCustomDropdownInput ( dropdown );
           break;
+      case 'buster':
+            this.HKL.layCustomDropdownInput ( dropdown );
+          break;
       case 'arpwarp'    :
             dropdown.Structure = this._layCDI_Structure ( dropdown,1 );
             //this.Structure.layCustomDropdownInput ( dropdown );
@@ -754,6 +757,10 @@ if (!__template)  {
               msg = this.Structure.collectCustomDropdownInput ( dropdown );
           } else
             msg = this.Structure.collectCustomDropdownInput ( dropdown );
+          msg = this.HKL.collectCustomDropdownInput ( dropdown );
+        break;
+
+      case 'buster' :
           msg = this.HKL.collectCustomDropdownInput ( dropdown );
         break;
 
