@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    01.12.19   <--  Date of Last Modification.
+ *    21.12.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  User account settings page
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2019
+ *  (C) E. Krissinel, A. Lebedev 2016-2020
  *
  *  =================================================================
  *
@@ -32,8 +32,6 @@ function AccountPage ( sceneId )  {
     alert ( ' NOT LOGED IN');
     return;
   }
-
-  var include_authorisation = false;
 
   this.makeHeader ( 3,null );
 
@@ -76,7 +74,7 @@ function AccountPage ( sceneId )  {
   var feedback_lbl = new Label     ( 'Feedback agreement:&nbsp;&nbsp;&nbsp;').setNoWrap();
   var authoris_lbl = null;
   var authorisation_dic = {};
-  if (include_authorisation)  {
+  if (__auth_software)  {
     authoris_lbl = new Label ( 'Software authorisations:&nbsp;' ).setNoWrap();
     authoris_lbl.setFontSize( '112%' );
   }
@@ -119,7 +117,7 @@ function AccountPage ( sceneId )  {
   panel.setWidget               ( pwd_lbl     ,row+3,0,1,1 );
   panel.setWidget               ( licence_lbl ,row+4,0,1,2 );
   panel.setWidget               ( feedback_lbl,row+5,0,1,2 );
-  if (include_authorisation)
+  if (__auth_software)
     panel.setWidget               ( authoris_lbl,row+6,0,1,2 );
   for (var i=0;i<4;i++)
     panel.setCellSize  ( '96pt','',row+i,0   );
@@ -128,7 +126,7 @@ function AccountPage ( sceneId )  {
   panel.setWidget               ( login_inp   ,row+2,1,1,3 );
   panel.setWidget               ( pwd_inp     ,row+3,1,1,3 );
   /* == for (var i=0;i<7;i++)  { */
-  if (include_authorisation)  {
+  if (__auth_software)  {
     for (var i=0;i<7;i++)  {
       panel.setVerticalAlignment  ( row+i,0,'middle' );
       panel.setVerticalAlignment  ( row+i,1,'middle' );
@@ -193,7 +191,7 @@ function AccountPage ( sceneId )  {
   });
 
   var authoris_btn = null;
-  if (include_authorisation)  {
+  if (__auth_software)  {
     row++;
     authoris_btn = new Button ( 'manage',image_path('authorisation') );
     authoris_btn.setWidth         ( '100%' );

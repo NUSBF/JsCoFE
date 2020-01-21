@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    05.12.19   <--  Date of Last Modification.
+ *    19.01.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  HKL Data Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2019
+ *  (C) E. Krissinel, A. Lebedev 2016-2020
  *
  *  =================================================================
  *
@@ -552,8 +552,9 @@ if (!__template)  {
       case 'unmerged-ref'    :  this.unmergedRefLayout();  break;
       case 'cell-info'       :  this.cellInfoLayout   ();  break;
       case 'reindex'         :  this.reindexLayout    ();  break;
-      case 'changereso'      :  this.makeResolutionLimits ( '' );  break;
-      case 'nautilus'        :  this.makeHighResolutionLimit();    break;
+      case 'changereso'      :  this.makeResolutionLimits ( '' );     break;
+      case 'nautilus'        :  this.makeHighResolutionLimit();       break;
+      case 'buster'          :  this.makeResolutionLimits ( 'auto' ); break;
       case 'phaser-mr'       :  this.spgLayout        (); // should be no break here!
       case 'phaser-mr-fixed' :  this.phaserMRLayout   ();  break;
       case 'phaser-ep'       :  this.phaserEPLayout   ();  break;
@@ -709,6 +710,7 @@ if (!__template)  {
       case 'reindex'         : this.collectReindex   ();  break;
       case 'changereso'      : this.collectChangeReso();  break;
       case 'nautilus'        : this.collectResoLimits();  break;
+      case 'buster'          : this.collectResoLimits();  break;
       case 'phaser-mr'       : this.collectSpG       (); // should be no break here!
       case 'phaser-mr-fixed' : this.collectPhaserMR  ();  break;
       case 'phaser-ep'       : this.collectPhaserEP  ();  break;

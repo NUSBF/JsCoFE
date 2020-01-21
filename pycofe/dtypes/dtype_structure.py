@@ -152,6 +152,24 @@ class DType(dtype_template.DType):
         self.HLD     = ""
         return
 
+    def setBusterLabels ( self,hkl_class ):
+        self.FP         = "FP"
+        self.SigFP      = "SIGFP"
+        self.FreeR_flag = "FreeR_flag"
+        if hkl_class:
+            self.setHKLLabels ( hkl_class )
+        self.PHI     = "PHICTR"
+        self.FOM     = "FOM"
+        self.FWT     = "2FOFCWT"
+        self.PHWT    = "PH2FOFCWT"
+        self.DELFWT  = "FOFCWT"
+        self.PHDELWT = "PHFOFCWT"
+        self.HLA     = ""
+        self.HLB     = ""
+        self.HLC     = ""
+        self.HLD     = ""
+        return
+
     def setShelxELabels ( self,struct_class ):
         self.FP      = "ShelxE.F"
         self.SigFP   = "ShelxE.SIGF"

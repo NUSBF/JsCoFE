@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    15.01.20   <--  Date of Last Modification.
+ *    21.01.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -34,7 +34,7 @@ var __login_user      = '';
 var __user_settings   = {};
 var __admin           = false;
 var __dormant         = 0;
-var __ccp4_version    = '';       // undefined
+var __ccp4_version    = '';     // undefined
 
 var __current_page    = null;
 var __current_project = null;
@@ -42,6 +42,7 @@ var __local_setup     = false;
 var __cloud_storage   = false;  // true if user has cloud storage allocated
 var __demo_projects   = false;  // true if demo projects are configured
 var __fe_url          = '';     // front-end url as returned by the server (not proxy)
+var __auth_software   = null;   // software authorisation data
 
 //var __mobile_device = ('ontouchstart' in document.documentElement);
 // the following will also include desktops with touch screens:

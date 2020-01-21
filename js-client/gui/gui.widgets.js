@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    20.10.19   <--  Date of Last Modification.
+ *    20.01.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Common GUI widgets
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2019
+ *  (C) E. Krissinel, A. Lebedev 2016-2020
  *
  *  =================================================================
  *
@@ -135,6 +135,12 @@ Widget.prototype.setTooltip1 = function ( text,showType,track_bool,delay_ms )  {
   return this;
 }
 
+Widget.prototype.redraw = function ( width )  {
+var disp = this.element.display;
+  this.element.display = 'none';
+  this.element.offsetHeight; // no need to store this anywhere, the reference is enough
+  this.element.display = disp;
+}
 
 Widget.prototype.setWidth = function ( width )  {
   this.element.style.width = width;

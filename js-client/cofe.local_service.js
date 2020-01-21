@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    15.01.20   <--  Date of Last Modification.
+ *    21.01.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -77,6 +77,7 @@ function checkLocalService ( callback_func )  {
         __exclude_tasks = rData.exclude_tasks;
         __cloud_storage = rData.cloud_storage;
         __demo_projects = rData.demo_projects;
+        __auth_software = rData.auth_software;
         __local_setup   = rData.localSetup;
         __regMode       = rData.regMode;
         __setup_desc    = rData.setup_desc;

@@ -18,7 +18,7 @@
     "externalURL"      : "http://localhost:8081",
     "exclusive"        : true,
     "stoppable"        : false,
-    "exclude_tasks"    : [],
+    "exclude_tasks"    : ["TaskAmple"],
     "fsmount"          : "/",
     "update_rcode"     : 212,
     "userDataPath"     : "./cofe-users",
@@ -26,6 +26,22 @@
     "facilitiesPath"   : "./cofe-facilities",
     "ICAT_wdsl"        : "https://icat02.diamond.ac.uk/ICATService/ICAT?wsdl",
     "ICAT_ids"         : "https://ids01.diamond.ac.uk/ids",
+    "auth_software"    : {
+      "arpwarp" : {
+        "desc_software" : "Arp/wArp Model Building Software from EMBL-Hamburg",
+        "icon_software" : "task_arpwarp",
+        "desc_provider" : "EMBL Outstation in Hamburg",
+        "icon_provider" : "org_emblhamburg",
+        "auth_url"      : "https://arpwarp.embl-hamburg.de/api/maketoken/?reqid=$reqid&addr=1.2.3.4&cburl=$cburl"
+      },
+      "gphl"  : {
+        "desc_software" : "Global Phasing Limited Software Suite",
+        "icon_software" : "task_buster",
+        "desc_provider" : "Global Phasing Limited",
+        "icon_provider" : "org_gphl",
+        "auth_url"      : "https://arpwarp.embl-hamburg.de/api/maketoken/?reqid=$reqid&addr=1.2.3.4&cburl=$cburl"
+      }
+    },
     "bootstrapHTML"    : "./bootstrap/jscofe.html",
     "maxRestarts"      : 100,
     "fileCapSize"      : 500000,

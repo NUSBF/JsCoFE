@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.01.20   <--  Date of Last Modification.
+ *    21.01.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -333,8 +333,8 @@ var version = '';
     "update_rcode"     : 212, // optional
     "userDataPath"     : "./cofe-users",
     "storage"          : "./cofe-projects",  // for logs, stats, pids, tmp etc.
-    "projectsPath"     : "./cofe-projects",  // in this case, "storage" may be omitted
-    "projectsPath"     : {   // in this case, "storage" must be given
+    "projectsPath"     : "./cofe-projects",  // old version; in this case, "storage" may be omitted
+    "projectsPath"     : {   // new version; in this case, "storage" must be given
         "***"   : { "path" : "./cofe-projects", // equivalent to "projectPath"
                     "type" : "volume"           //    given by single string
                         // type "volume" means an ordinary file system
@@ -354,6 +354,22 @@ var version = '';
     "facilitiesPath"   : "./cofe-facilities",
     "ICAT_wdsl"        : "https://icat02.diamond.ac.uk/ICATService/ICAT?wsdl",
     "ICAT_ids"         : "https://ids01.diamond.ac.uk/ids",
+    "auth_software"    : {  // optional item, may be null or missing
+      "arpwarp" : {
+        "desc_software" : "Arp/wArp Model Building Software from EMBL-Hamburg",
+        "icon_software" : "task_arpwarp",
+        "desc_provider" : "EMBL Outstation in Hamburg",
+        "icon_provider" : "org_emblhamburg",
+        "auth_url"      : "https://arpwarp.embl-hamburg.de/api/maketoken/?reqid=$reqid&addr=1.2.3.4&cburl=$cburl",
+      },
+      "gphl"  : {
+        "desc_software" : "Global Phasing Limited Software Suite",
+        "icon_software" : "task_buster",
+        "desc_provider" : "Global Phasing Limited",
+        "icon_provider" : "org_gphl",
+        "auth_url"      : "https://arpwarp.embl-hamburg.de/api/maketoken/?reqid=$reqid&addr=1.2.3.4&cburl=$cburl",
+      }
+    },
     "bootstrapHTML"    : "jscofe.html",
     "maxRestarts"      : 100,
     "fileCapSize"      : 500000,
@@ -365,7 +381,7 @@ var version = '';
         "cpu_day"   : 24,
         "cpu_month" : 240
     },
-    "cloud_mounts"     : {
+    "cloud_mounts"     : {  // optional item
       "My Computer"    : "/",
       "Home"           : ["$HOME","$USERPROFILE"],
       "CCP4 examples"  : "$CCP4/share/ccp4i2/demo_data",
@@ -374,7 +390,7 @@ var version = '';
     }
   },
 
-  "FEProxy" : {
+  "FEProxy" : {  // optional proxy configuration
     "protocol"         : "http",
     "host"             : "localhost",
     "port"             : 8082,
@@ -482,6 +498,7 @@ function readConfiguration ( confFilePath,serverType )  {
 
     // assign default values
     fe_server.sessionCheckPeriod = 2000;  // ms
+    fe_server.auth_software      = null;
     /*
     if (!fe_server.hasOwnProperty("description"))
       fe_server.description = {

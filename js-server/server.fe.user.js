@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.01.20   <--  Date of Last Modification.
+ *    21.01.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -669,6 +669,7 @@ var fe_server = conf.getFEConfig();
         rData.localSetup    = conf.isLocalSetup();
         rData.cloud_storage = (fcl.getUserCloudMounts(uData).length>0);
         rData.demo_projects = fe_server.getDemoProjectsMount();
+        rData.auth_software = fe_server.auth_software;
         if (fe_server.hasOwnProperty('description'))
               rData.setup_desc = fe_server.description;
         else  rData.setup_desc = null;
@@ -1273,6 +1274,7 @@ var fe_server = conf.getFEConfig();
     rData.exclude_tasks = conf.getExcludedTasks();
     rData.cloud_storage = false;
     rData.demo_projects = fe_server.getDemoProjectsMount();
+    rData.auth_software = fe_server.auth_software;
     if ('localuser' in fe_server)  {
       rData.localuser  = fe_server.localuser;
       rData.logintoken = __userLoginHash.getToken ( 'localuser' );
@@ -1337,15 +1339,19 @@ function authResponse ( server_request,server_response )  {
     }
   }
 
-  var auth_result  = '';
+  var auth_result  = 'ok';
   var software_key = '';
+
   if ((params.reqid=='') || (params.code==''))
     auth_result = 'bad_reply';
+  else if (params.code=='declined')
+    auth_result = 'denied';
   else if (params.code!='ok')
     auth_result = 'errors';
   else if (params.token=='')
     auth_result = 'denied';
-  else {
+
+  if (params.reqid) {
 //console.log ( ' >>>>>>> 2 ' + params.reqid );
     params.reqid = params.reqid.split('-');
     if (params.reqid.length==3)  {
@@ -1358,10 +1364,15 @@ function authResponse ( server_request,server_response )  {
           ud.checkUserData ( uData );
           if (!uData.authorisation.hasOwnProperty(params.reqid[1]))
             uData.authorisation[params.reqid[1]] = {};
-          uData.authorisation[params.reqid[1]].token     = params.token;
-          uData.authorisation[params.reqid[1]].auth_date = new Date().toUTCString();
+          if (auth_result=='ok')  {
+            uData.authorisation[params.reqid[1]].token     = params.token;
+            uData.authorisation[params.reqid[1]].auth_date = new Date().toUTCString();
+          } else  {
+            uData.authorisation[params.reqid[1]].token     = new Date().toUTCString();
+            uData.authorisation[params.reqid[1]].auth_date = '';
+          }
           utils.writeObject ( userFilePath,uData );
-          auth_result = 'ok';
+//          auth_result = 'ok';
         } else
           auth_result = 'no_user_data';
       } else
