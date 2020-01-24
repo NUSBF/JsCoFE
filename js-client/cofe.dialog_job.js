@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    15.01.20   <--  Date of Last Modification.
+ *    23.01.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -499,6 +499,7 @@ JobDialog.prototype.makeLayout = function ( onRun_func )  {
 
       dlg.run_btn.addOnClickListener ( function(){
 
+        /*
         var stopmsg = null;
         if (dlg.task.nc_type=='client')  {
           if (!__local_service)  {
@@ -524,6 +525,12 @@ JobDialog.prototype.makeLayout = function ( onRun_func )  {
         if (stopmsg)  {
 
           new MessageBox ( stopmsg[0],stopmsg[1] );
+        */
+
+        var avail_key = dlg.task.isTaskAvailable();
+        if (avail_key[0]!='ok')  {
+
+          new MessageBox ( 'The task cannot be run',avail_key[2] );
 
         } else  {
 
@@ -606,7 +613,7 @@ JobDialog.prototype.makeLayout = function ( onRun_func )  {
                               '<p>Launching local application ' + dlg.task.name +
                               ' failed due to:<p><i>' + response.message + '</i><p>' +
                               'Please report this as possible bug to <a href="mailto:' +
-                              maintainerEmail + '">' + maintainerEmail + '</a>' );
+                              __maintainerEmail + '">' + __maintainerEmail + '</a>' );
                           } else  {
                             dlg.loadReport();
                             dlg.radioSet.selectButton ( 'output' );

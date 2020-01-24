@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    21.01.20   <--  Date of Last Modification.
+ *    24.01.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -63,7 +63,7 @@ function checkLocalService ( callback_func )  {
           count = 0;
         }
         if (count>0)
-              window.setTimeout ( function(){ probeClient(count); },100);
+              window.setTimeout ( function(){ probeClient(count,callback); },100);
         else  callback();
         //else  getServerInfo();
         return true;
@@ -74,19 +74,19 @@ function checkLocalService ( callback_func )  {
     serverCommand ( fe_command.getInfo,{},'getInfo',function(response){
       if (response.status==fe_retcode.ok)  {
         var rData = response.data;
-        __exclude_tasks = rData.exclude_tasks;
-        __cloud_storage = rData.cloud_storage;
-        __demo_projects = rData.demo_projects;
-        __auth_software = rData.auth_software;
-        __local_setup   = rData.localSetup;
-        __regMode       = rData.regMode;
-        __setup_desc    = rData.setup_desc;
-        __ccp4_version  = rData.ccp4_version;
-        maintainerEmail = rData.maintainerEmail;
+        __exclude_tasks   = rData.exclude_tasks;
+        __cloud_storage   = rData.cloud_storage;
+        __demo_projects   = rData.demo_projects;
+        __auth_software   = rData.auth_software;
+        __local_setup     = rData.localSetup;
+        __regMode         = rData.regMode;
+        __setup_desc      = rData.setup_desc;
+        __ccp4_version    = rData.ccp4_version;
+        __maintainerEmail = rData.maintainerEmail;
         __check_session_period = rData.check_session_period;
-        __fe_url        = document.location.protocol + '//' +
-                          document.location.host     +
-                          document.location.pathname;
+        __fe_url          = document.location.protocol + '//' +
+                            document.location.host     +
+                            document.location.pathname;
         if (rData.localuser)  {
           __local_user    = true;
           __login_user    = rData.localuser;
@@ -162,7 +162,7 @@ function ls_RVAPIAppButtonClicked ( base_url,command,data )  {
             '<p>Launching local application ' + command +
             ' failed due to:<p><i>' + response.message +
             '</i><p>Please report this as a bug to <a href="mailto:' +
-            maintainerEmail + '">' + maintainerEmail + '</a>' );
+            __maintainerEmail + '">' + __maintainerEmail + '</a>' );
         return true;
       });
 

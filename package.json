@@ -1,6 +1,6 @@
 {
-    "name": "jsCoFE-Server",
-    "version": "1.2.006",
+    "name": "CCP4_Cloud",
+    "version": "1.6.005",
     "dependencies": {
         "child_process": "*",
         "crypto": "*",

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    21.01.20   <--  Date of Last Modification.
+ *    23.01.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -47,6 +47,10 @@ function TaskDataDialog ( dataSummary,task,avail_key )  {
 
   } else  {
 
+    if (avail_key[0]!='ok')
+      this.grid.setLabel ( avail_key[2],drow++,0, 1,2 );
+
+    /*
     var msg = '';
     switch (avail_key)  {
       case 'client' :
@@ -92,11 +96,24 @@ function TaskDataDialog ( dataSummary,task,avail_key )  {
                     'The task is based on program components that are not ' +
                     'suitable for MS Windows,<br>and, therefore, cannot be run.';
           break;
+      case 'environment-server' :
+              msg += '<h3>Task software is not installed on server</h3>' +
+                     'Software, needed to run the task, is not installed on ' +
+                     appName() + ' server which you use.<br>Contact server ' +
+                     'maintainer for further details.';
+          break;
+      case 'environment-client' :
+              msg += '<h3>Task software is not installed on your device</h3>' +
+                     'The task is run on your device, but needful software is ' +
+                     'not installed on it.<br>Consult software documentation ' +
+                     'for further details.';
+          break;
       default : ;
     }
 
     if (msg)
       this.grid.setLabel ( msg,drow++,0, 1,2 );
+    */
 
     var dataCount = 0;
     for (var key in dataSummary)

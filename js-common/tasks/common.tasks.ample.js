@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    10.10.19   <--  Date of Last Modification.
+ *    22.01.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Ample Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2019
+ *  (C) E. Krissinel, A. Lebedev 2016-2020
  *
  *  =================================================================
  *
@@ -70,6 +70,7 @@ TaskAmple.prototype.constructor = TaskAmple;
 // export such that it could be used in both node and a browser
 
 TaskAmple.prototype.icon = function()  { return 'task_ample'; }
+TaskAmple.prototype.requiredEnvironment = function() { return ['CCP4','ROSETTA_DIR']; }
 
 TaskAmple.prototype.currentVersion = function()  {
   var version = 0;

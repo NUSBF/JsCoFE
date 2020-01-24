@@ -21,12 +21,14 @@
 
 //  load system modules
 //var child_process = require('child_process');
+var path   = require('path');
 
 //  load application modules
-var conf  = require('./server.configuration');
-var utils = require('./server.utils');
-var cmd   = require('../js-common/common.commands');
-var jm    = require('./server.nc.job_manager');
+var conf   = require('./server.configuration');
+var utils  = require('./server.utils');
+var jm     = require('./server.nc.job_manager');
+var cmd    = require('../js-common/common.commands');
+var task_t = require('../js-common/tasks/common.tasks.template');
 
 //  prepare log
 var log  = require('./server.log').newLog(15);
@@ -144,6 +146,24 @@ function ncSelectImageDir ( post_data_obj,callback_func )  {
 
 function ncGetInfo ( server_request,server_response )  {
 
+  function checkFile ( fpath )  {
+    var flist = fpath.split('/');
+    var ok    = true;
+    var vpath = null;
+    for (var i=0;(i<flist.length) && ok;i++)  {
+      if (flist[i].startsWith('$'))  {
+        var vname = flist[i].substring(1);
+        if (vname in process.env)  flist[i] = process.env[vname];
+                             else  ok = false;
+      }
+      if (!vpath)  vpath = flist[i];
+             else  vpath = path.join ( vpath,flist[i] );
+    }
+    if (!ok)
+      return null;
+    return utils.fileExists(vpath);
+  }
+
   var ncInfo = {};
   ncInfo.config      = conf.getServerConfig();
   ncInfo.jobRegister = {};
@@ -152,8 +172,17 @@ function ncGetInfo ( server_request,server_response )  {
   ncInfo.jobRegister.job_map      = jobRegister.job_map;
   ncInfo.ccp4_version   = conf.CCP4Version();
   ncInfo.jscofe_version = cmd.appVersion();
+  ncInfo.environ = [];
+  for (var i=0;i<task_t.keyEnvironment.length;i++)
+    if ((task_t.keyEnvironment[i] in process.env) ||
+        checkFile(task_t.keyEnvironment[i]))
+      ncInfo.environ.push ( task_t.keyEnvironment[i] );
 
-  return new cmd.Response (  cmd.nc_retcode.ok,'',ncInfo );
+//$CCP4/lib/py2/morda/LINKED
+//$CCP4/share/mrd_data/VERSION
+
+
+  return new cmd.Response ( cmd.nc_retcode.ok,'',ncInfo );
 
 }
 

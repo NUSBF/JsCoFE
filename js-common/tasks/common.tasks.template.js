@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    19.01.20   <--  Date of Last Modification.
+ *    23.01.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -46,6 +46,11 @@ var jobInputDirName   = 'input';
 var jobOutputDirName  = 'output';
 var jobReportHTMLName = 'index.html';
 var jobReportTaskName = 'task.tsk';
+
+var keyEnvironment = ['CCP4','BALBES_ROOT','ROSETTA_DIR','warpbin','BDG_home',
+                      '$CCP4/bin/shelxe','$CCP4/bin/shelxe.exe',
+                      '$CCP4/share/mrd_data/VERSION','$CCP4/lib/py2/morda/LINKED'
+                     ];
 
 var dbx = null;
 if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
@@ -125,10 +130,11 @@ TaskTemplate.prototype.icon = function()  { return 'process'; }
 //   'L'  : Linux
 //   'M'  : Mac
 //   'U'  : Unix ( = Linux + Mac)
-TaskTemplate.prototype.platforms           = function() { return 'WLMU'; }
+TaskTemplate.prototype.platforms           = function() { return 'WLMU';   }
 
 TaskTemplate.prototype.lowestClientVersion = function() { return '0.0.0 [0.0.0]'; }
-TaskTemplate.prototype.authorisationID     = function() { return ''; }
+TaskTemplate.prototype.authorisationID     = function() { return '';       }
+TaskTemplate.prototype.requiredEnvironment = function() { return ['CCP4']; }
 
 TaskTemplate.prototype.doNotPackSuffixes   = function() { return ['.map']; }
 TaskTemplate.prototype.doPackSuffixes      = function() { return ['']; }
@@ -182,10 +188,136 @@ if (!dbx)  {
       this.oname = base_name;
   }
 
+  TaskTemplate.prototype.checkEnvironment = function ( env )  {
+    var reqEnv = this.requiredEnvironment();
+    var ok = true;
+    for (var i=0;(i<reqEnv.length) && ok;i++)
+      if (reqEnv[i].constructor === Array)  {
+        ok = false;
+        for (var j=0;(j<reqEnv[i].length) && (!ok);j++)
+          ok = (env.indexOf(reqEnv[i][j])>=0);
+      } else
+        ok = (env.indexOf(reqEnv[i])>=0);
+  //console.log ( ' ' + env + ' <-> ' + reqEnv + ' = ' + ok );
+    return ok;
+  }
+
+  TaskTemplate.prototype.isTaskAvailable = function()  {
+
+    if (__exclude_tasks.indexOf(this._type)>=0)  {
+      // task excluded in server configuration
+      return ['server-excluded',
+              'task is not available on ' + appName() + ' server',
+              '<h3>Task is not available on server</h3>' +
+              'The task is excluded from configuration on ' + appName() +
+              ' server which you use.<br>This may be due to the ' +
+              'availability of software or resources, which are ' +
+              '<br>required for the task.'];
+    }
+
+    if ((__exclude_tasks.indexOf('unix-only')>=0) &&
+        (this.platforms().indexOf('W')<0))  {
+      // task not supported on Windows
+      return ['windows-excluded',
+              'task is not available on MS Windows systems',
+              '<h3>Task is not available on MS Windows systems</h3>' +
+              'The task is based on program components that are not ' +
+              'suitable for MS Windows,<br>and, therefore, cannot be run.'];
+
+    }
+
+    if ((this.nc_type=='client') && (!__local_service))  {
+      // client task while there is no client running
+      if (__any_mobile_device)  {
+        return ['client',
+                'task is not available on mobile devices',
+                '<h3>CCP4 Cloud Client is required</h3>'+
+                'This task cannot be used when working with ' + appName() +
+                ' from mobile devices.<br>In order to use the task, ' +
+                'access ' + appName() + ' via CCP4 Cloud Client,<br>' +
+                'found in CCP4 Software Suite.'];
+      } else  {
+        return ['client',
+                'task is available only if started via CCP4 Cloud Client',
+                '<h3>CCP4 Cloud Client is required</h3>' +
+                'This task can be used only if ' + appName() +
+                ' was accessed via CCP4 Cloud Client,<br>found in ' +
+                'CCP4 Software Suite.'];
+      }
+    }
+
+    if ((this.nc_type=='client-storage') &&
+        (!__local_service) && (!__cloud_storage))  {
+      // task require either client or cloud storage but neither is given
+      return ['client-storage',
+              'task is available only if started via CCP4 Cloud Client ' +
+              'or if Cloud Storage is configured',
+              '<h3>CCP4 Cloud Client is required</h3>' +
+              'This task can be used only if ' + appName() +
+              ' was accessed via CCP4 Cloud Client,<br>found in ' +
+              'CCP4 Software Suite, or if user has access to ' +
+              'Cloud Storage.'];
+    }
+
+    if (startsWith(this.nc_type,'client'))  {
+
+      if (__local_service &&
+          (compareVersions(__client_version,this.lowestClientVersion())<0))  {
+        // task requires client of higher version
+        return ['client-version',
+                'task requires a higher version of CCP4 Cloud Client ' +
+                '(update CCP4 on your device)',
+                '<h3>Too low version of CCP4 Cloud Client</h3>' +
+                'This task requires a higher version of CCP4 Cloud ' +
+                'Client.<br>Please update CCP4 Software Suite on ' +
+                'your device.'];
+      }
+
+      if (!this.checkEnvironment(__environ_client))
+        return ['environment-client',
+                'task software is not installed on your device',
+                '<h3>Task software is not installed on your device</h3>' +
+                'The task is run on your device, but needful software is ' +
+                'not installed on it.<br>Consult software documentation ' +
+                'for further details.'];
+
+    } else  {
+
+      var authID = this.authorisationID();
+      if (authID && __auth_software && (authID in __auth_software) &&
+          ((!(authID in __user_authorisation)) ||
+           (!__user_authorisation[authID].auth_date))) {
+        return ['authorisation',
+                'task requires authorisation from ' +
+                __auth_software[this.authorisationID()].desc_provider +
+                ' (available in "My Account")',
+                '<h3>Authorisation is required</h3>' +
+                'This task requires authorisation from ' +
+                __auth_software[this.authorisationID()].desc_provider +
+                ',<br>which may be obtained in "My Account" page.'];
+      }
+
+    }
+
+    if ((this.nc_type!='client') && (!this.checkEnvironment(__environ_server)))
+      return ['environment-server',
+              'task software is not installed on ' + appName() + ' server',
+              '<h3>Task software is not installed on server</h3>' +
+              'Software, needed to run the task, is not installed on ' +
+              appName() + ' server which you use.<br>Contact server ' +
+              'maintainer for further details.'];
+
+    return ['ok','',''];
+
+  }
+
   TaskTemplate.prototype.canClone = function ( node,jobTree )  {
+    return (this.isTaskAvailable()[0]=='ok');
+    /*
     if ((this.nc_type=='client') && (!__local_service))
       return false;
     return true;
+    */
   }
 
   TaskTemplate.prototype.canMove = function ( node,jobTree )  {
@@ -2095,6 +2227,7 @@ if (!dbx)  {
   module.exports.jobOutputDirName  = jobOutputDirName;
   module.exports.jobReportHTMLName = jobReportHTMLName;
   module.exports.jobReportTaskName = jobReportTaskName;
+  module.exports.keyEnvironment    = keyEnvironment;
   module.exports.TaskTemplate      = TaskTemplate;
 
 }

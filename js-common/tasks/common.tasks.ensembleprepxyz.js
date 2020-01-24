@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.10.19   <--  Date of Last Modification.
+ *    22.01.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Ensemble Preparation from Coordinates Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2019
+ *  (C) E. Krissinel, A. Lebedev 2016-2020
  *
  *  =================================================================
  *
@@ -59,7 +59,7 @@ function TaskEnsemblePrepXYZ()  {
       min         : 0,          // minimum acceptable number of data instances
       max         : 1           // maximum acceptable number of data instances
     },{
-      data_type   : {'DataStructure':['~substructure','~substructure-am'],
+      data_type   : {'DataStructure':['~substructure','~substructure-am','!xyz'],
                      'DataXYZ':[]},  // data type(s) and subtype(s)
       label       : 'Coordinates',   // label for input dialog
       tooltip     : 'Specify coordinate sets to be merged in an ensamble for ' +

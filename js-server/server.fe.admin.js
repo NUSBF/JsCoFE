@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    05.01.20   <--  Date of Last Modification.
+ *    22.01.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -33,8 +33,73 @@ var cmd     = require('../js-common/common.commands');
 //  prepare log
 var log = require('./server.log').newLog(16);
 
+
 // ===========================================================================
 
+function getNCData ( ncInfo,callback_func )  {
+
+  function startNext()  {
+    if (ncInfo.length<conf.getNumberOfNCs())  {
+      getNCData ( ncInfo,callback_func );
+    } else {
+      callback_func ( ncInfo );
+    }
+  }
+
+  var cfg = conf.getNCConfig(ncInfo.length);
+
+  if (cfg.name=='client')  {
+
+    ncInfo.push ( null );
+    startNext();
+
+  } else if (cfg.in_use)  {
+
+    var nc_url = cfg.externalURL;
+    request({
+      uri     : cmd.nc_command.getNCInfo,
+      baseUrl : nc_url,
+      method  : 'POST',
+      body    : '',
+      json    : true
+    },function(error,response,body){
+
+      //console.log ( error );
+      //console.log ( response.statusCode );
+      //console.log ( JSON.stringify(response) );
+      //console.log ( JSON.stringify(body) );
+
+      if ((!error) && (response.statusCode==200))  {
+        ncInfo.push ( body.data );
+      } else  {
+        var nci = {
+          'config'         : cfg,
+          'jobRegister'    : null,
+          'ccp4_version'   : 'unknown',
+          'jscofe_version' : cmd.appVersion()
+        };
+        ncInfo.push ( nci );
+      }
+      startNext();
+
+    });
+
+  } else  {
+
+    var nci = {
+      'config'         : cfg,
+      'jobRegister'    : null,
+      'ccp4_version'   : 'unknown',
+      'jscofe_version' : cmd.appVersion()
+    };
+    ncInfo.push ( nci );
+    startNext();
+
+  }
+
+}
+
+/*
 function _getNCData ( adminData,callback_func )  {
 
   function startNext()  {
@@ -98,6 +163,7 @@ function _getNCData ( adminData,callback_func )  {
   }
 
 }
+*/
 
 function getAdminData ( loginData,data,callback_func )  {
 
@@ -121,7 +187,10 @@ function getAdminData ( loginData,data,callback_func )  {
     adminData.jobsStat  = rj.readJobStats();
     adminData.usersInfo = user.readUsersData();
     adminData.nodesInfo.FEconfig = conf.getFEConfig();
-    _getNCData ( adminData,callback_func );
+    getNCData ( adminData.nodesInfo.ncInfo,function(ncInfo){
+      callback_func ( new cmd.Response(cmd.fe_retcode.ok,'',adminData) );
+    });
+    //_getNCData ( adminData,callback_func );
     return null;
   }
 
@@ -148,5 +217,6 @@ function updateAndRestart ( loginData,data )  {
 
 // ==========================================================================
 // export for use in node
+module.exports.getNCData        = getNCData;
 module.exports.getAdminData     = getAdminData;
 module.exports.updateAndRestart = updateAndRestart;

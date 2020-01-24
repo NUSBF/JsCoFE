@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    21.01.20   <--  Date of Last Modification.
+ *    23.01.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -92,8 +92,29 @@ function TaskListDialog ( dataBox,branch_task_list,onSelect_func )  {
 TaskListDialog.prototype = Object.create ( Widget.prototype );
 TaskListDialog.prototype.constructor = TaskListDialog;
 
+/*
+function checkEnvironment ( task_obj,env )  {
+  var reqEnv = task_obj.requiredEnvironment();
+  var ok = true;
+  for (var i=0;(i<reqEnv.length) && ok;i++)
+    if (reqEnv[i].constructor === Array)  {
+      ok = false;
+      for (var j=0;(j<reqEnv[i].length) && (!ok);j++)
+        ok = (env.indexOf(reqEnv[i][j])>=0);
+    } else
+      ok = (env.indexOf(reqEnv[i])>=0);
+//console.log ( ' ' + env + ' <-> ' + reqEnv + ' = ' + ok );
+  return ok;
+}
 
 TaskListDialog.prototype.isTaskAvailable = function ( task_obj )  {
+
+  if (__exclude_tasks.indexOf(task_obj._type)>=0)
+    return 'server-excluded';  // task excluded in server configuration
+
+  if ((__exclude_tasks.indexOf('unix-only')>=0) &&
+      (task_obj.platforms().indexOf('W')<0))
+    return 'windows-excluded';  // task not supported on Windows
 
   if ((task_obj.nc_type=='client') && (!__local_service))
     return 'client';   // client task while there is no client running
@@ -107,40 +128,35 @@ TaskListDialog.prototype.isTaskAvailable = function ( task_obj )  {
     if (__local_service &&
         (compareVersions(__client_version,task_obj.lowestClientVersion())<0))
       return 'client-version';   // task requires client of higher version
+    if (!checkEnvironment(task_obj,__environ_client))
+      return 'environment-client';
   } else  {
     var authID = task_obj.authorisationID();
     if (authID && __auth_software && (authID in __auth_software) &&
         ((!(authID in __user_authorisation)) ||
-         (!__user_authorisation[authID].auth_date)))  {
-console.log ( 'authID=' + authID + ', auth_date="' + __user_authorisation[authID].auth_date + '"' );
+         (!__user_authorisation[authID].auth_date)))
       return 'authorisation';
-    }
   }
 
-  if (__exclude_tasks.indexOf(task_obj._type)>=0)
-    return 'server-excluded';  // task excluded in server configuration
+  if ((task_obj.nc_type!='client') && (!checkEnvironment(task_obj,__environ_server)))
+    return 'environment-server';
 
-  if ((__exclude_tasks.indexOf('unix-only')>=0) &&
-      (task_obj.platforms().indexOf('W')<0))
-    return 'windows-excluded';  // task not supported on Windows
-
-  /*
-  if ((__exclude_tasks.indexOf(task_obj._type)>=0) ||
-      ((__exclude_tasks.indexOf('unix-only')>=0) &&
-       (task_obj.platforms().indexOf('W')<0)))
-    return false;
-  */
+  //if ((__exclude_tasks.indexOf(task_obj._type)>=0) ||
+  //    ((__exclude_tasks.indexOf('unix-only')>=0) &&
+  //     (task_obj.platforms().indexOf('W')<0)))
+  //  return false;
 
   return 'ok';
 
 }
+*/
 
 TaskListDialog.prototype.setTask = function ( task_obj,grid,row,setall )  {
 
   //if ((!__local_service) && (task_obj.nc_type=='client'))
   //  return null;
 
-  var avail_key = this.isTaskAvailable ( task_obj );
+  var avail_key = task_obj.isTaskAvailable();
 
   /*   example just in case:
   if (['ok','client','server-excluded','windows-excluded','client-storage']
@@ -149,18 +165,19 @@ TaskListDialog.prototype.setTask = function ( task_obj,grid,row,setall )  {
   */
 
   var dataSummary = this.dataBox.getDataSummary ( task_obj );
-  if (avail_key!='ok')
+  if (avail_key[0]!='ok')
     dataSummary.status = -1;
 
-  if ((!setall) && (!dataSummary.status))
+  if ((!setall) && (dataSummary.status<=0))
     return null;
 
   var btn = grid.setButton  ( '',image_path(task_obj.icon()),row,0,1,1 )
                 .setSize_px ( 54,40 );
   grid.setLabel             ( ' ', row,1,1,1 );
   var title = task_obj.title;
-  if (avail_key!='ok')  {
-    title += '<br><i><font size="-1">';
+  if (avail_key[0]!='ok')  {
+    title += '<br><i><font size="-1">** ' + avail_key[1] + '</font></i>';
+    /*
     switch (avail_key)  {
       case 'client' :
             if (__any_mobile_device)
@@ -181,14 +198,21 @@ TaskListDialog.prototype.setTask = function ( task_obj,grid,row,setall )  {
                      ' (available in "My Account")';
           break;
       case 'server-excluded' :
-            title += '** task is not available on this ' + appName() + ' server';
+            title += '** task is not available on ' + appName() + ' server';
           break;
       case 'windows-excluded' :
             title += '** task is not available on MS Windows systems';
           break;
+      case 'environment-client' :
+            title += '** task software is not installed on your device';
+          break;
+      case 'environment-server' :
+            title += '** task software is not installed on ' + appName() + ' server';
+          break;
       default : ;
     }
     title += '</font></i>';
+    */
   }
   var lbl = grid.setLabel   ( title,row,2,1,1 );
   grid.setNoWrap            ( row,2 );
@@ -312,7 +336,7 @@ var row      = 0;
 
 
   var ccp4go_task = new TaskCCP4go();
-  if (this.isTaskAvailable(ccp4go_task)=='ok')
+  if (ccp4go_task.isTaskAvailable()[0]=='ok')
     this.makeSection ( 'Combined Automated Solver <i>"CCP4 Go"</i>',[
       'Recommended as first attempt or in easy cases',
       ccp4go_task

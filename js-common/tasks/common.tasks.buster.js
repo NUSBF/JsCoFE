@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    21.01.20   <--  Date of Last Modification.
+ *    22.01.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -202,9 +202,9 @@ TaskBuster.prototype.icon = function()  { return 'task_buster'; }
 //   'L'  : Linux
 //   'M'  : Mac
 //   'U'  : Unix ( = Linux + Mac)
-TaskBuster.prototype.platforms = function()  { return 'LMU'; }  // UNIX only
-
-TaskBuster.prototype.authorisationID = function() { return 'gphl'; }
+TaskBuster.prototype.platforms           = function() { return 'LMU'; }  // UNIX only
+TaskBuster.prototype.requiredEnvironment = function() { return ['CCP4','BDG_home']; }
+TaskBuster.prototype.authorisationID     = function() { return 'gphl'; }
 
 TaskBuster.prototype.currentVersion = function()  {
   var version = 0;

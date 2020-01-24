@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.12.19   <--  Date of Last Modification.
+ *    22.01.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Number Cruncher Server -- Job Manager
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2019
+ *  (C) E. Krissinel, A. Lebedev 2016-2020
  *
  *  =================================================================
  *
@@ -342,7 +342,7 @@ var cap   = false;
       log.error ( 2,'Unrecognised job token in url ' + url );
       if (url.endsWith('.html'))  {
         // assume that this is due to a delay in job launching
-        server_response.writeHead ( 200, 
+        server_response.writeHead ( 200,
                                     {'Content-Type': 'text/html;charset=UTF-8'} );
         server_response.end (
           '<html><head>' +
@@ -353,7 +353,7 @@ var cap   = false;
           '</body></html>'
         );
       } else  {
-        server_response.writeHead ( 404, 
+        server_response.writeHead ( 404,
                                     {'Content-Type': 'text/html;charset=UTF-8'} );
         server_response.end ( '<p><b>UNRECOGNISED JOB TOKEN</b></p>' );
       }
@@ -417,7 +417,7 @@ var capacity = ncConfig.capacity;  // total number of jobs the number cruncher
                       try {
                         n = parseInt(job_output);
                       } catch(err)  {
-                        log.error ( 31,'error parsing NC capacity: "' + 
+                        log.error ( 31,'error parsing NC capacity: "' +
                                        job_output + '"' );
                       }
                       if (n>0)  capacity = -n;
@@ -600,16 +600,26 @@ function ncJobFinished ( job_token,code )  {
 
         // just remove the job; do it in a separate thread and delayed,
         // which is useful for debugging etc.
-        
-        log.standard ( 103,'job sent back to FE' );
+
+        log.standard ( 103,'task ' + task.id + ' sent back to FE' );
         removeJobDelayed ( job_token,task_t.job_code.finished );
 
       },function(stageNo,code){  // send failed
 
-        if (jobEntry.sendTrials>0)  {  // try to send again
+        if (stageNo==2)  {
+
+          // do not countdown trials here
+          log.warning ( 3,'repeat sending task ' + task.id +
+                          ' back to FE due to send errors' );
+          setTimeout ( function(){ ncJobFinished(job_token,code); },
+                                conf.getServerConfig().sendDataWaitTime );
+
+        } else if (jobEntry.sendTrials>0)  {  // try to send again
 
           jobEntry.sendTrials--;
-          log.warning ( 3,'repeat sending job results to FE' );
+          log.warning ( 4,'repeat sending task ' + task.id +
+                          ' back to FE due to FE errors (stage' +
+                          stageNo + ')' );
           setTimeout ( function(){ ncJobFinished(job_token,code); },
                                 conf.getServerConfig().sendDataWaitTime );
 
@@ -617,7 +627,8 @@ function ncJobFinished ( job_token,code )  {
 
           removeJobDelayed ( job_token,task_t.job_code.finished );
 
-          log.error ( 4,'cannot send job results to FE. JOB DELETED.' );
+          log.error ( 4,'cannot send task ' + task.id +
+                        ' back to FE. TASK DELETED.' );
 
         }
 

@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    23.11.19   <--  Date of Last Modification.
+#    24.01.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2018-2019
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2018-2020
 #
 # ============================================================================
 #
@@ -81,6 +81,65 @@ class Coot(basic.TaskDriver):
         # Check for PDB files left by Coot and convert them to type structure
 
         files = os.listdir ( "./" )
+        fdic  = {}
+        mlist = []
+        for f in files:
+            if f.lower().endswith(".pdb") or f.lower().endswith(".cif"):
+                mt = os.path.getmtime(f)
+                fdic[mt] = f
+                mlist.append ( mt )
+
+        if len(mlist)>0:
+
+            self.putTitle ( "Output coordinate data" )
+
+            f = ixyz.getXYZFileName()
+            if not f:
+                f = istruct.getSubFileName()
+            fnprefix = f[:f.find("_")]
+
+            mlist = sorted(mlist)
+            for i in range(len(mlist)):
+
+                fname = fdic[mlist[i]]
+                """
+                fcnt  = str(i+1)
+                if len(mlist)<=1:
+                    fcnt = ""
+                elif len(mlist)<9:
+                    fcnt = "_" + fcnt
+                elif len(mlist)<99:
+                    fcnt = "_" + fcnt.zfill(2)
+                elif len(mlist)<999:
+                    fcnt = "_" + fcnt.zfill(3)
+
+                if fname.startswith(fnprefix):
+                    fn,fext = os.path.splitext ( fname[fname.find("_")+1:] )
+                else:
+                    fn,fext = os.path.splitext ( f )
+
+                coot_xyz = fn + fcnt + "_xyz" + fext;
+                """
+
+                # register output data from temporary location (files will be moved
+                # to output directory by the registration procedure)
+
+                #xyz = self.registerXYZ ( coot_xyz )
+                xyz = self.registerXYZ ( fname )
+                if xyz:
+                    xyz.putXYZMeta  ( self.outputDir(),self.file_stdout,self.file_stderr,None )
+                    self.putMessage (
+                        "<b>Assigned name&nbsp;&nbsp;&nbsp;:</b>&nbsp;&nbsp;&nbsp;" +
+                        xyz.dname )
+                    self.putXYZWidget ( "xyz_btn","Edited coordinates",xyz,-1 )
+                    if i<len(mlist)-1:
+                        self.putMessage ( "&nbsp;" )
+
+        else:
+            self.putTitle ( "No output data produced" )
+
+        """
+        files = os.listdir ( "./" )
         mtime = 0;
         fname = None
         for f in files:
@@ -112,6 +171,8 @@ class Coot(basic.TaskDriver):
             if xyz:
                 xyz.putXYZMeta ( self.outputDir(),self.file_stdout,self.file_stderr,None )
                 self.putXYZWidget ( "xyz_btn","Edited coordinates",xyz,-1 )
+
+        """
 
         # ============================================================================
         # close execution logs and quit

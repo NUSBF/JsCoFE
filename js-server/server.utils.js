@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.12.19   <--  Date of Last Modification.
+ *    24.01.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Server-side utility functions
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2019
+ *  (C) E. Krissinel, A. Lebedev 2016-2020
  *
  *  =================================================================
  *
@@ -99,6 +99,44 @@ function readClass ( path ) {  // same as object but with class functions
   }
 }
 
+/*
+function writeString ( path,data_string )  {
+
+  var backup = null;
+  try {
+    if (fs.statSync(path))  {
+      backup = path + '~';
+      fs.renameSync ( path,backup );
+    }
+  } catch (e) {
+    log.error ( 12,'cannot make backup copy at file write at ' + path );
+    return false;
+  }
+
+  var ok = true;
+  try {
+    fs.writeFileSync ( path,data_string );
+    //return true;
+  } catch (e)  {
+    log.error ( 1,'cannot write file ' + path );
+    ok = false;
+    //return false;
+  }
+
+  try {
+    if (ok && backup)
+      fs.unlinkSync ( backup );
+    else if (backup)  {  // rollback
+      if (fs.statSync(path))
+        fs.unlinkSync ( path );
+      fs.renameSync ( backup,path );
+    }
+  } catch (e) {}
+
+  return ok;
+
+}
+*/
 
 function writeString ( path,data_string )  {
   try {
@@ -106,6 +144,7 @@ function writeString ( path,data_string )  {
     return true;
   } catch (e)  {
     log.error ( 1,'cannot write file ' + path );
+    console.error(e);
     return false;
   }
 }
@@ -117,19 +156,78 @@ function appendString ( path,data_string )  {
     return true;
   } catch (e)  {
     log.error ( 2,'cannot write file ' + path );
+    console.error(e);
     return false;
   }
 }
 
+/*
+function writeObject ( path,dataObject )  {
+
+  var json_str = '';
+  try {
+    json_str = JSON.stringify ( dataObject,null,2 );
+  } catch (e) {
+    log.error ( 31,'attempt to write corrupt data object at ' + path );
+    return false;
+  }
+
+  var backup = null;
+  try {
+    if (fs.statSync(path))  {
+      backup = path + '~';
+      fs.renameSync ( path,backup );
+    }
+  } catch (e) {
+    log.error ( 32,'cannot make backup copy at file write at ' + path );
+    return false;
+  }
+
+  var ok = true;
+  try {
+    fs.writeFileSync ( path,json_str );
+    //return true;
+  } catch (e)  {
+    log.error ( 3,'cannot write file ' + path );
+    ok = false;
+    //return false;
+  }
+
+  try {
+    if (ok && backup)
+      fs.unlinkSync ( backup );
+    else if (backup)  {  // rollback
+      if (fs.statSync(path))
+        fs.unlinkSync ( path );
+      fs.renameSync ( backup,path );
+    }
+  } catch (e) {}
+
+  return ok;
+
+}
+*/
 
 function writeObject ( path,dataObject )  {
+
+  var json_str = '';
   try {
-    fs.writeFileSync ( path,JSON.stringify(dataObject,null,2) );
+    json_str = JSON.stringify ( dataObject,null,2 );
+  } catch (e) {
+    log.error ( 31,'attempt to write corrupt data object at ' + path );
+    console.error(e);
+    return false;
+  }
+
+  try {
+    fs.writeFileSync ( path,json_str );
     return true;
   } catch (e)  {
     log.error ( 3,'cannot write file ' + path );
+    console.error(e);
     return false;
   }
+
 }
 
 
@@ -139,6 +237,7 @@ function moveFile ( old_path,new_path )  {
     return true;
   } catch (e)  {
     log.error ( 4,'cannot move file ' + old_path + ' to ' + new_path );
+    console.error(e);
     return false;
   }
 }
@@ -546,6 +645,13 @@ function send_file ( fpath,server_response,mimeType,deleteOnDone,capSize,
 
 }
 
+/*
+function checkInternet ( url,callback_func ) {
+  dns.lookup ( url,function(err) {
+    callback_func ( !(err && (err.code=='ENOTFOUND')) );
+  });
+}
+*/
 
 function spawn ( exeName,arguments,options )  {
   if (/^win/.test(process.platform))  {  // MS Windows

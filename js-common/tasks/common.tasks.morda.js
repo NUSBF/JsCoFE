@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    10.10.19   <--  Date of Last Modification.
+ *    22.01.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  MoRDa Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2019
+ *  (C) E. Krissinel, A. Lebedev 2016-2020
  *
  *  =================================================================
  *
@@ -98,6 +98,9 @@ TaskMorda.prototype.icon = function()  { return 'task_morda'; }
 //   'M'  : Mac
 //   'U'  : Unix ( = Linux + Mac)
 TaskMorda.prototype.platforms = function()  { return 'LMU'; }  // UNIX only
+TaskMorda.prototype.requiredEnvironment = function() {
+  return ['CCP4',['$CCP4/share/mrd_data/VERSION','$CCP4/lib/py2/morda/LINKED']];
+}
 
 TaskMorda.prototype.currentVersion = function()  {
   var version = 1;

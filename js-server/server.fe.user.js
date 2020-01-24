@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    21.01.20   <--  Date of Last Modification.
+ *    22.01.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -32,6 +32,7 @@ var utils   = require('./server.utils');
 var prj     = require('./server.fe.projects');
 var ration  = require('./server.fe.ration');
 var fcl     = require('./server.fe.facilities');
+var adm     = require('./server.fe.admin');
 var ud      = require('../js-common/common.data_user');
 var cmd     = require('../js-common/common.commands');
 
@@ -674,7 +675,16 @@ var fe_server = conf.getFEConfig();
               rData.setup_desc = fe_server.description;
         else  rData.setup_desc = null;
 
-        response = new cmd.Response ( cmd.fe_retcode.ok,token,rData );
+        adm.getNCData ( [],function(ncInfo){
+          rData.environ_server = [];
+          for (var i=0;i<ncInfo.length;i++)
+            if (ncInfo[i] && ('environ' in ncInfo[i]))  {
+              for (var j=0;j<ncInfo[i].environ.length;j++)
+                if (rData.environ_server.indexOf(ncInfo[i].environ[j])<0)
+                  rData.environ_server.push ( ncInfo[i].environ[j] );
+            }
+          callback_func ( new cmd.Response ( cmd.fe_retcode.ok,token,rData ) );
+        });
 
       } else  {
         log.error ( 41,'Login name/password mismatch:' );
@@ -694,7 +704,8 @@ var fe_server = conf.getFEConfig();
     response  = new cmd.Response ( cmd.fe_retcode.wrongLogin,'','' );
   }
 
-  callback_func ( response );
+  if (response)
+    callback_func ( response );
 
 }
 

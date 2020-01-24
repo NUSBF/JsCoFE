@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    06.04.17   <--  Date of Last Modification.
+ *    22.01.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Licence Dialog
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2017
+ *  (C) E. Krissinel, A. Lebedev 2016-2020
  *
  *  =================================================================
  *
@@ -41,8 +41,8 @@ function LicenceDialog ( current_licence,onclose_fnc )  {
   grid.setLabel ( 'Using CCP4 Software is subject to appropriate licencing. ' +
                   'Please choose licence, applicable to your situation, from ' +
                   'choices below. In case of doubts, please contact CCP4 at ' +
-                  '<a href="mailto:' + maintainerEmail +
-                    '?Subject=License%20enquiry">' + maintainerEmail +
+                  '<a href="mailto:' + __maintainerEmail +
+                    '?Subject=License%20enquiry">' + __maintainerEmail +
                   '</a>.<br>&nbsp;',1,0,1,3 );
 
   var academic_btn   = new RadioButton ( 'Academic'  ,false );
@@ -76,8 +76,8 @@ function LicenceDialog ( current_licence,onclose_fnc )  {
     'industrial contracts, where final results or part of them become a private ' +
     'property of funders. Commercial licences are subject to paying a licence ' +
     'fee. Please contact CCP4 at <a ' +
-    'href="mailto:' + maintainerEmail + '?Subject=License%20enquiry">' +
-    maintainerEmail + '</a> ' +
+    'href="mailto:' + __maintainerEmail + '?Subject=License%20enquiry">' +
+    __maintainerEmail + '</a> ' +
     'in order to obtain licence terms and quote. You should not use CCP4 Software ' +
     'if you qualify for Commercial Licence but have not acquired one yet. Note ' +
     'that CCP4 Licences are issued on per-organisation basis, therefore, you may ' +

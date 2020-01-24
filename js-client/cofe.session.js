@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    21.10.19   <--  Date of Last Modification.
+ *    22.10.19   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -116,15 +116,34 @@ function login ( user_login_name,user_password,sceneId,page_switch )  {
     switch (response.status)  {
 
       case fe_retcode.ok:
-              var userData    = response.data.userData;
-              __login_token   = response.message;
-              __login_user    = userData.name;
-              __user_settings = userData.settings;
-              __admin         = userData.admin;
-              __dormant       = userData.dormant;
-              __cloud_storage = response.data.cloud_storage;
-              __demo_projects = response.data.demo_projects;
+              var userData         = response.data.userData;
+              __login_token        = response.message;
+              __cloud_storage      = response.data.cloud_storage;
+              __demo_projects      = response.data.demo_projects;
+              __environ_server     = response.data.environ_server;
+              __login_user         = userData.name;
+              __user_settings      = userData.settings;
+              __admin              = userData.admin;
+              __dormant            = userData.dormant;
               __user_authorisation = userData.authorisation;
+
+              if (!__local_service)  {
+                __environ_client = [];
+              } else  {
+                localCommand ( nc_command.getNCInfo,{},'NC Info Request',
+                  function(response){
+                    if (response)  {
+                      if (response.status==nc_retcode.ok)
+                        __environ_client  = response.data.environ;
+                      else
+                        new MessageBox ( 'Get NC Info Error',
+                          'Unknown error: <b>' + response.status + '</b><p>' +
+                          'when trying to fetch Client NC data.' );
+                      return true;
+                    }
+                    return false;
+                  });
+              }
 
               if ('helpTopics' in userData)
                     __doNotShowList = userData.helpTopics;
@@ -155,24 +174,25 @@ function login ( user_login_name,user_password,sceneId,page_switch )  {
               if (__dormant)
                 window.setTimeout ( function(){
                   new MessageBox ( 'Dormant Account',
-                          'Dear ' + __login_user + ',' +
-                          '<p>Your account was deemed dormant due to low use rate.<br>' +
-                          'This means: ' +
-                          '<ul>' +
-                          '  <li>you can login as before</li>' +
-                          '  <li>you can browse your projects and jobs</li>' +
-                          '  <li>you can export all your data, job directories and projects</li>' +
-                          '  <li>you can delete your account, jobs and projects</li>' +
-                          '  <li>you <b>cannot run</b> new jobs</li>' +
-                          '  <li>you <b>cannot create</b> new projects</li>' +
-                          '  <li>you <b>cannot import</b> projects</li>' +
-                          '</ul>' +
-                          'In order to re-activate your account, please send an e-mail<br>' +
-                          'request to server\'s maintainer at<p>' +
-                          '<a href="mailto:' + maintainerEmail +
-                            '?Subject=' + appName() + '%20Account re-activation">' + maintainerEmail +
-                          '</a>.<p>Kind regards<p>' + appName() + ' maintenance.'
-                        );
+                    'Dear ' + __login_user + ',' +
+                    '<p>Your account was deemed dormant due to low use rate.<br>' +
+                    'This means: ' +
+                    '<ul>' +
+                    '  <li>you can login as before</li>' +
+                    '  <li>you can browse your projects and jobs</li>' +
+                    '  <li>you can export all your data, job directories and projects</li>' +
+                    '  <li>you can delete your account, jobs and projects</li>' +
+                    '  <li>you <b>cannot run</b> new jobs</li>' +
+                    '  <li>you <b>cannot create</b> new projects</li>' +
+                    '  <li>you <b>cannot import</b> projects</li>' +
+                    '</ul>' +
+                    'In order to re-activate your account, please send an e-mail<br>' +
+                    'request to server\'s maintainer at<p>' +
+                    '<a href="mailto:' + __maintainerEmail +
+                      '?Subject=' + appName() + '%20Account re-activation">' +
+                       __maintainerEmail +
+                    '</a>.<p>Kind regards<p>' + appName() + ' maintenance.'
+                  );
                 },100);
 
           return true;
