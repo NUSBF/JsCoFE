@@ -219,7 +219,7 @@ var sender_cfg = conf.getServerConfig();
       if (err) {
         if (onErr_func)
           onErr_func ( 2,err );  // '2' means an error from upload stage
-        log.error ( 3,'upload failed:', err);
+        log.error ( 3,'upload failed:', err );
       } else  {
         try {
           var resp = JSON.parse ( response );

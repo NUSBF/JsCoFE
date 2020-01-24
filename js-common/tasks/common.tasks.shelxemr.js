@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    08.12.19   <--  Date of Last Modification.
+ *    22.01.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  ShelxE-MR Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2019
+ *  (C) E. Krissinel, A. Lebedev 2016-2020
  *
  *  =================================================================
  *
@@ -225,6 +225,9 @@ TaskShelxEMR.prototype.constructor = TaskShelxEMR;
 // export such that it could be used in both node and a browser
 
 TaskShelxEMR.prototype.icon = function()  { return 'task_shelxemr'; }
+TaskShelxEMR.prototype.requiredEnvironment = function() {
+  return ['CCP4',['$CCP4/bin/shelxe','$CCP4/bin/shelxe.exe']];
+}
 
 TaskShelxEMR.prototype.currentVersion = function()  {
   var version = 1;

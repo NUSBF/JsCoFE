@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.10.19   <--  Date of Last Modification.
+ *    22.01.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  SHELX-Auto Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2019
+ *  (C) E. Krissinel, A. Lebedev 2016-2020
  *
  *  =================================================================
  *
@@ -56,6 +56,10 @@ TaskShelxAuto.prototype.constructor = TaskShelxAuto;
 // export such that it could be used in both node and a browser
 
 TaskShelxAuto.prototype.icon = function()  { return 'task_shelx'; }
+
+TaskShelxAuto.prototype.requiredEnvironment = function() {
+  return ['CCP4',['$CCP4/bin/shelxc','$CCP4/bin/shelxc.exe']];
+}
 
 TaskShelxAuto.prototype.currentVersion = function()  {
   var version = 0;

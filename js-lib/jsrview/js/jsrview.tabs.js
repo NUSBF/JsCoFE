@@ -97,7 +97,8 @@ var h;
 $(window).resize ( resizeTabBar )
 
 function numberOfTabs ( tabBarId )  {
-  return $("#"+tabBarId+" >ul >li").size();
+  //return $("#"+tabBarId+" >ul >li").size();
+  return $("#"+tabBarId+" >ul >li").length;
 }
 
 function getTabNo ( tabBarId,tabId )  {

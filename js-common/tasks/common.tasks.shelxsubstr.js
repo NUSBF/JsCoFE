@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.10.19   <--  Date of Last Modification.
+ *    22.01.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  SHELX-Auto Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2019
+ *  (C) E. Krissinel, A. Lebedev 2016-2020
  *
  *  =================================================================
  *
@@ -62,6 +62,10 @@ TaskShelxSubstr.prototype.currentVersion = function()  {
   if (__template)
         return  version + __template.TaskCrank2.prototype.currentVersion.call ( this );
   else  return  version + TaskCrank2.prototype.currentVersion.call ( this );
+}
+
+TaskShelxSubstr.prototype.requiredEnvironment = function() {
+  return ['CCP4',['$CCP4/bin/shelxe','$CCP4/bin/shelxe.exe']];
 }
 
 

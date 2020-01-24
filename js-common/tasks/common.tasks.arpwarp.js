@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    15.01.20   <--  Date of Last Modification.
+ *    22.01.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -407,7 +407,9 @@ TaskArpWarp.prototype.currentVersion = function()  {
 //   'L'  : Linux
 //   'M'  : Mac
 //   'U'  : Unix ( = Linux + Mac)
-TaskArpWarp.prototype.platforms = function()  { return 'LMU'; }  // UNIX only
+TaskArpWarp.prototype.platforms           = function() { return 'LMU'; }  // UNIX only
+TaskArpWarp.prototype.requiredEnvironment = function() { return ['CCP4','warpbin']; }
+TaskArpWarp.prototype.authorisationID     = function() { return 'arpwarp'; }
 
 
 if (__template)  {

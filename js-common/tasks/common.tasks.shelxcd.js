@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    10.10.19   <--  Date of Last Modification.
+ *    22.01.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  SHELX-CD Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2019
+ *  (C) E. Krissinel, A. Lebedev 2016-2020
  *
  *  =================================================================
  *
@@ -287,6 +287,10 @@ TaskShelxCD.prototype.constructor = TaskShelxCD;
 // export such that it could be used in both node and a browser
 
 TaskShelxCD.prototype.icon = function()  { return 'task_shelx_substr'; }
+
+TaskShelxCD.prototype.requiredEnvironment = function() {
+  return ['CCP4',['$CCP4/bin/shelxc','$CCP4/bin/shelxc.exe']];
+}
 
 TaskShelxCD.prototype.currentVersion = function()  {
   var version = 0;

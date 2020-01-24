@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    10.10.19   <--  Date of Last Modification.
+ *    22.01.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  BALBES Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2019
+ *  (C) E. Krissinel, A. Lebedev 2016-2020
  *
  *  =================================================================
  *
@@ -86,6 +86,7 @@ TaskBalbes.prototype.icon = function()  { return 'task_balbes'; }
 //   'M'  : Mac
 //   'U'  : Unix ( = Linux + Mac)
 TaskBalbes.prototype.platforms = function()  { return 'LMU'; }  // UNIX only
+TaskBalbes.prototype.requiredEnvironment = function() { return ['CCP4','BALBES_ROOT']; }
 
 TaskBalbes.prototype.currentVersion = function()  {
   var version = 1;

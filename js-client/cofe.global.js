@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    21.01.20   <--  Date of Last Modification.
+ *    22.01.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -23,8 +23,7 @@
 // ===========================================================================
 // maintainer's e-mail
 
-var maintainerEmail = 'ccp4@ccp4.ac.uk';
-
+var __maintainerEmail = 'ccp4@ccp4.ac.uk';
 
 // ===========================================================================
 // session identification
@@ -43,7 +42,9 @@ var __cloud_storage   = false;  // true if user has cloud storage allocated
 var __demo_projects   = false;  // true if demo projects are configured
 var __fe_url          = '';     // front-end url as returned by the server (not proxy)
 var __auth_software   = null;   // software authorisation data
-var __user_authorisation = null;  // user authorisation data 
+var __user_authorisation = null;  // user authorisation data
+var __environ_server  = [];     // list of key environmental variables on NCs
+var __environ_client  = [];     // list of key environmental variables on Client
 
 //var __mobile_device = ('ontouchstart' in document.documentElement);
 // the following will also include desktops with touch screens:

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    29.07.19   <--  Date of Last Modification.
+ *    22.01.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Feedback Agreement Dialog
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2019
+ *  (C) E. Krissinel, A. Lebedev 2019-2020
  *
  *  =================================================================
  *
@@ -51,8 +51,8 @@ function FeedbackDialog ( current_agreement,onclose_fnc )  {
                   'preference for the Feedback Agreement. The change will have ' +
                   'immediate effect for all new jobs</i>.' +
                   '<p>Should you have any questions, please contact CCP4 at ' +
-                  '<a href="mailto:' + maintainerEmail +
-                       '?Subject=Feedback%20enquiry">' + maintainerEmail +
+                  '<a href="mailto:' + __maintainerEmail +
+                       '?Subject=Feedback%20enquiry">' + __maintainerEmail +
                   '</a>.<br>&nbsp;',1,0,1,3 );
 
   var agree1_btn  = new RadioButton ( 'Agreement (1)',false );

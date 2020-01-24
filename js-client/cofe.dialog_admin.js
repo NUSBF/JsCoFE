@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    01.12.19   <--  Date of Last Modification.
+ *    22.01.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Announcement Dialog
  *       ~~~~~~~~~  Dorman Users Dialog
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2019
+ *  (C) E. Krissinel, A. Lebedev 2016-2020
  *
  *  =================================================================
  *
@@ -49,8 +49,8 @@ function AnnounceDialog()  {
                   'mailbox, please do not reply as replies cannot be<br>' +
                   'received. For any questions, please contact ' + appName() +
                   ' maintainer at ' +
-                  '<a href="mailto:' + maintainerEmail +
-                    '?Subject=jsCoFE%20Question">' + maintainerEmail +
+                  '<a href="mailto:' + __maintainerEmail +
+                    '?Subject=jsCoFE%20Question">' + __maintainerEmail +
                   '</a>.<p>Kind regards<p>' + appName() + ' maintenance.',
                   4,0,1,3 );
 

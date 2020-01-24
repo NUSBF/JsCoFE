@@ -814,10 +814,14 @@ function _import_project ( loginData,tempdir )  {
   // read project meta to make sure it was a project tarball
   var prj_meta_path = path.join ( tempdir,projectDataFName );
   var prj_meta = utils.readObject ( prj_meta_path );
-  if (('owner' in prj_meta.desc) && prj_meta.desc.owner.share)  {
-    prj_meta.desc.owner.share = '';
-    utils.writeObject ( prj_meta_path,prj_meta );
-  }
+  /*
+  try {
+    if (('owner' in prj_meta.desc) && prj_meta.desc.owner.share)  {
+      prj_meta.desc.owner.share = '';
+      utils.writeObject ( prj_meta_path,prj_meta );
+    }
+  } catch (err) {}
+  */
 
 //console.log ( JSON.stringify(prj_meta,2) );
 
@@ -833,6 +837,10 @@ function _import_project ( loginData,tempdir )  {
       projectDesc.dateCreated  = prj_meta.desc.dateCreated;
       projectDesc.dateLastUsed = prj_meta.desc.dateLastUsed;
       if ('owner' in prj_meta.desc)  {
+        if (prj_meta.desc.owner.share)  {
+          prj_meta.desc.owner.share = '';
+          utils.writeObject ( prj_meta_path,prj_meta );
+        }
         projectDesc.owner = prj_meta.desc.owner;
         projectDesc.owner.share = '';
         if (projectDesc.owner.login!=loginData.login)
