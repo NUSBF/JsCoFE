@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    10.10.19   <--  Date of Last Modification.
+ *    26.01.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Front End Server -- Job Run Module
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2019
+ *  (C) E. Krissinel, A. Lebedev 2016-2020
  *
  *  ==========================================================================
  *
@@ -93,10 +93,37 @@ FEJobRegister.prototype.removeJob = function ( job_token )  {
     var index = this.job_map[job_token].loginData.login + ':' +
                 this.job_map[job_token].project         + ':' +
                 this.job_map[job_token].jobId;
-    this.token_map = com_utils.mapExcludeKey ( this.token_map,index     );
-    this.job_map   = com_utils.mapExcludeKey ( this.job_map  ,job_token );
+    //this.token_map = com_utils.mapExcludeKey ( this.token_map,index     );
+    //this.job_map   = com_utils.mapExcludeKey ( this.job_map  ,job_token );
+    if (index in this.token_map)
+      delete this.token_map[index];
+    delete this.job_map[job_token];
   }
 }
+
+FEJobRegister.prototype.cleanup = function ( job_token,token_list )  {
+// removes job identified by job_token and jobs from the same NC with tokens
+// not found in token_list
+  if (job_token in this.job_map)  {
+    var nc_number = this.job_map[job_token].nc_number;
+    this.removeJob ( job_token );
+    for (var token in this.job_map)
+      if ((this.job_map.nc_number==nc_number) && (token_list.indexOf(token)<0))
+        removeJob ( token );
+  }
+}
+
+/*
+FEJobRegister.prototype.getListOfTokens = function ( nc_number )  {
+  var tlist = '';
+  for (var job_token in this.job_map)
+    if (this.job_map[job_token].nc_number==nc_number)  {
+      if (tlist)  tlist += ',';
+      tlist += job_token;
+    }
+  return tlist;
+}
+*/
 
 var feJobRegister = null;
 
@@ -156,7 +183,7 @@ var maxcap0    = Number.MIN_SAFE_INTEGER;
 var n0         = -1;
 
   if (task.nc_type!='ordinary')
-    return 0;  // this will not be used for client job, just make a valid return
+    return -1;  // this will not be used for client job, just make a valid return
 
   if (task.fasttrack)  { // request for fast track
     var maxcap1 = Number.MIN_SAFE_INTEGER;
@@ -321,7 +348,8 @@ function runJob ( loginData,data, callback_func )  {
   if (task.nc_type=='client')  {
     // job for client NC, just pack the job directory and inform client
 
-    log.standard ( 5,'sending job ' + task.id + ' to client service' );
+    log.standard ( 5,'sending job ' + task.id + ' to client service, job token ' +
+                     job_token );
 
     utils.writeJobReportMessage ( jobDir,'<h1>Preparing ...</h1>',true );
 
@@ -336,7 +364,7 @@ function runJob ( loginData,data, callback_func )  {
                     'Job is running on client machine. Full report will ' +
                     'become available after job finishes.',true );
 
-        feJobRegister.addJob ( job_token,0,loginData,  // 0 is nc number
+        feJobRegister.addJob ( job_token,-1,loginData,  // -1 is nc number
                                task.project,task.id );
         feJobRegister.getJobEntryByToken(job_token).nc_type = task.nc_type;
         writeFEJobRegister();
@@ -345,8 +373,9 @@ function runJob ( loginData,data, callback_func )  {
         ration.updateUserRation_bookJob ( loginData,task );
 
         rdata = {};
-        rdata.job_token   = job_token;
-        rdata.jobballName = send_dir.jobballName;
+        rdata.job_token    = job_token;
+        rdata.jobballName  = send_dir.jobballName;
+//        rdata.check_tokens = feJobRegister.getListOfTokens ( -1 );
         callback_func ( new cmd.Response(cmd.fe_retcode.ok,{},rdata) );
 
       } else  {
@@ -389,7 +418,8 @@ function runJob ( loginData,data, callback_func )  {
       } else  {
 
         log.standard ( 6,'sending job ' + task.id + ' to ' +
-                         conf.getNCConfig(nc_number).name );
+                         conf.getNCConfig(nc_number).name + ', job token ' +
+                         job_token );
 
         utils.writeJobReportMessage ( jobDir,'<h1>Preparing ...</h1>',true );
 
@@ -412,6 +442,7 @@ function runJob ( loginData,data, callback_func )  {
             meta.email     = uData.email;
           }
         }
+//        meta.check_tokens = feJobRegister.getListOfTokens ( nc_number );
 
         send_dir.sendDir ( jobDir,'*',nc_url,cmd.nc_command.runJob,meta,
 
@@ -422,6 +453,14 @@ function runJob ( loginData,data, callback_func )  {
             // NC and client.
             feJobRegister.addJob ( rdata.job_token,nc_number,loginData,
                                    task.project,task.id );
+
+            /*
+            // clean dead, abandoned and runaway jobs
+            if ('absent_tokens' in rdata)
+              for (var i=0;i<rdata.absent_tokens.length;i++)
+                feJobRegister.removeJob ( rdata.absent_tokens[i] );
+            */
+
             writeFEJobRegister();
 
             // update the user ration state
@@ -767,6 +806,7 @@ function getJobResults ( job_token,server_request,server_response )  {
           // print usage stats and update the user ration state
           var jobClass = writeJobStats ( jobEntry );
           ustats.registerJob ( jobClass );
+          feJobRegister.cleanup ( job_token,meta.tokens.split(',') );
           feJobRegister.removeJob ( job_token );
           feJobRegister.n_jobs++;
           writeFEJobRegister();
@@ -788,7 +828,7 @@ function getJobResults ( job_token,server_request,server_response )  {
                             '[00014] Data transmission errors: ' + errs );
         } else if (code=='data_unpacking_errors')  {  // data unpacking errors
           log.error ( 13,'cannot accept job from NC due to unpacking errors: ' +
-                         errs ); 
+                         errs );
           cmd.sendResponse ( server_response, cmd.nc_retcode.uploadErrors,
                             '[00015] Data unpack errors: ' + errs );
         } else  {
@@ -801,7 +841,8 @@ function getJobResults ( job_token,server_request,server_response )  {
 
   } else  { // job token not recognised, return Ok
     log.error ( 15,'cannot accept job from NC because job token is not recognised' );
-    cmd.sendResponse ( server_response, cmd.fe_retcode.ok,'','' );
+    log.error ( 15,'job token: [' + JSON.stringify(job_token) + ']' );
+    cmd.sendResponse ( server_response, cmd.fe_retcode.wrongJobToken,'','' );
   }
 
 }

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    06.01.20   <--  Date of Last Modification.
+ *    27.01.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -161,7 +161,7 @@ function Upload ( customData,upl_data,onSelect_func,onSelectPDB_func,onReady_fun
           for (var i = 0; i < files.length; i++) {
             var file = files[i];
 //            if (!file.name.endsWith('.zip'))
-            if (!endsWith(file.name,'.zip'))
+            if (!endsWith(file.name,projectFileExt))
               targz = false;
             // add the files to formData object for the data payload
             formData.append ( 'uploads[]', file, file.name);

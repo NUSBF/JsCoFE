@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    29.10.19   <--  Date of Last Modification.
+ *    27.01.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Export Project Dialog
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2019
+ *  (C) E. Krissinel, A. Lebedev 2016-2020
  *
  *  =================================================================
  *
@@ -74,7 +74,7 @@ function ExportProjectDialog ( projectList )  {
                       token = __login_token;
                 else  token = '404';
                 url = special_url_tag + '/' + token + '/' + projectList.current +
-                                        '/' + projectList.current + '.zip';
+                                        '/' + projectList.current + projectFileExt;
 //                                        '/' + projectList.current + '.tar.gz';
                 downloadFile ( url );
                 $( "#cancel_btn" ).button ( "option","label","Close" );

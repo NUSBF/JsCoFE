@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    22.01.20   <--  Date of Last Modification.
+ *    26.01.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -112,6 +112,26 @@ NCJobRegister.prototype.removeJob = function ( job_token )  {
   }
 }
 
+NCJobRegister.prototype.getListOfTokens = function()  {
+  var tlist = '';
+  for (var job_token in this.job_map)  {
+    if (tlist)  tlist += ',';
+    tlist += job_token;
+  }
+  return tlist;
+}
+
+
+/*
+NCJobRegister.prototype.checkJobTokens = function ( token_list )  {
+// returns a list of non-existing tokens
+var tlist = [];
+  for (var i=0;i<token_list.length;i++)
+    if (!(token_list[i] in this.job_map))
+      tlist.push ( token_list[i] );
+  return tlist;
+}
+*/
 
 var ncJobRegister = null;
 
@@ -593,15 +613,18 @@ function ncJobFinished ( job_token,code )  {
 
     send_dir.sendDir ( jobEntry.jobDir,'*',
                        feURL,
-                       cmd.fe_command.jobFinished + job_token,
-                       {'capacity':capacity},
+                       cmd.fe_command.jobFinished + job_token, {
+                          'capacity' : capacity,
+                          'tokens'   : ncJobRegister.getListOfTokens()
+                       },
 
       function ( rdata ){  // send was successful
 
         // just remove the job; do it in a separate thread and delayed,
         // which is useful for debugging etc.
 
-        log.standard ( 103,'task ' + task.id + ' sent back to FE' );
+        log.standard ( 103,'task ' + task.id + ' sent back to FE, job token ' +
+                           job_token );
         removeJobDelayed ( job_token,task_t.job_code.finished );
 
       },function(stageNo,code){  // send failed
@@ -610,7 +633,8 @@ function ncJobFinished ( job_token,code )  {
 
           // do not countdown trials here
           log.warning ( 3,'repeat sending task ' + task.id +
-                          ' back to FE due to send errors' );
+                          ' back to FE due to send errors [' +
+                           JSON.stringify(code) + ']' );
           setTimeout ( function(){ ncJobFinished(job_token,code); },
                                 conf.getServerConfig().sendDataWaitTime );
 
@@ -619,7 +643,7 @@ function ncJobFinished ( job_token,code )  {
           jobEntry.sendTrials--;
           log.warning ( 4,'repeat sending task ' + task.id +
                           ' back to FE due to FE errors (stage' +
-                          stageNo + ')' );
+                          stageNo + ', code [' + JSON.stringify(code) + '])' );
           setTimeout ( function(){ ncJobFinished(job_token,code); },
                                 conf.getServerConfig().sendDataWaitTime );
 
@@ -706,7 +730,7 @@ function ncRunJob ( job_token,meta )  {
                       jobEntry.pid = job.pid;
 
                       log.standard ( 5,'task ' + task.id + ' started, pid=' +
-                                       jobEntry.pid );
+                                       jobEntry.pid + ', job token ' + job_token );
 
                       // make stdout and stderr catchers for debugging purposes
                       var stdout = '';
@@ -774,7 +798,8 @@ function ncRunJob ( job_token,meta )  {
                         }
                         log.standard ( 6,'task '  + task.id + ' qsubbed, '  +
                                          'name='  + jname   +
-                                         ', pid=' + jobEntry.pid );
+                                         ', pid=' + jobEntry.pid +
+                                         ', job token ' + job_token );
                       });
 
                       // indicate queuing to please the user
@@ -811,7 +836,8 @@ function ncRunJob ( job_token,meta )  {
                           jobEntry.pid = parseInt(job_output);
                           log.standard ( 7,'task '  + task.id + ' submitted, ' +
                                            'name='  + jname   +
-                                           ', pid=' + jobEntry.pid );
+                                           ', pid=' + jobEntry.pid +
+                                           ', job token ' + job_token );
                         }
                         catch(err) {
                           jobEntry.pid = 0;
@@ -896,14 +922,26 @@ function ncMakeJob ( server_request,server_response )  {
       if (code==0)  {
         ncRunJob ( job_token,meta );
         cmd.sendResponse ( server_response, cmd.nc_retcode.ok,
-                           '[00104] Job started',
-                           {job_token:job_token} );
+                           '[00104] Job started', {
+                             job_token     : job_token
+                           });
+        /*
+        var absent_tokens = [];
+        if ('check_tokens' in meta)
+          absent_tokens = ncJobRegister.checkJobTokens ( meta.check_tokens.split(',') );
+        cmd.sendResponse ( server_response, cmd.nc_retcode.ok,
+                           '[00104] Job started', {
+                             job_token     : job_token,
+                             absent_tokens : absent_tokens
+                           });
+        */
       } else if (code=='err_rename')  { // file renaming errors
         sendErrResponse ( cmd.nc_retcode.fileErrors,
                           '[00105] File rename errors' );
       } else if (code=='err_dirnoexist')  { // work directory deleted
-        cmd.sendResponse ( server_response, cmd.nc_retcode.fileErrors,
-                          '[00106] Recepient directory does not exist (job deleted?)' );
+        sendErrResponse ( cmd.nc_retcode.fileErrors,
+                          '[00106] Recepient directory does not exist (job deleted?)'
+                        );
       } else if (code=='err_transmission')  {  // data transmission errors
         sendErrResponse ( cmd.nc_retcode.uploadErrors,
                           '[00107] Data transmission errors: ' + errs );

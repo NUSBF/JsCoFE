@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.01.20   <--  Date of Last Modification.
+ *    27.01.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -457,7 +457,6 @@ var response = null;  // must become a cmd.Response object to return
 }
 
 
-
 // ===========================================================================
 
 function prepareProjectExport ( loginData,projectList )  {
@@ -466,7 +465,8 @@ function prepareProjectExport ( loginData,projectList )  {
                    '", login ' + loginData.login );
 
   var projectDirPath = getProjectDirPath ( loginData,projectList.current );
-  var archivePath    = path.join ( projectDirPath,projectList.current+'.zip' );
+  var archivePath    = path.join ( projectDirPath,
+                                   projectList.current + cmd.projectFileExt );
   utils.removeFile ( archivePath );  // just in case
 
   send_dir.packDir ( projectDirPath,'*',function(code){
@@ -486,7 +486,8 @@ function prepareProjectExport ( loginData,projectList )  {
 
 function checkProjectExport ( loginData,projectList )  {
   var projectDirPath = getProjectDirPath ( loginData,projectList.current );
-  var archivePath    = path.join ( projectDirPath,projectList.current+'.zip' );
+  var archivePath    = path.join ( projectDirPath,
+                                   projectList.current + cmd.projectFileExt );
   rdata = {};
   if (utils.fileExists(archivePath))
         rdata.size = utils.fileSize(archivePath);
@@ -496,7 +497,8 @@ function checkProjectExport ( loginData,projectList )  {
 
 function finishProjectExport ( loginData,projectList )  {
   var projectDirPath = getProjectDirPath ( loginData,projectList.current );
-  var archivePath    = path.join ( projectDirPath,projectList.current+'.zip' );
+  var archivePath    = path.join ( projectDirPath,
+                                   projectList.current + cmd.projectFileExt );
   //var tarballPath2   = path.join ( projectDirPath,'__' + projectList.current+'.tar.gz' );
   utils.removeFile ( archivePath );
   //utils.removeFile ( tarballPath2 );

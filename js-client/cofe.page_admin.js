@@ -295,7 +295,7 @@ AdminPage.prototype.makeUsersInfoTab = function ( udata )  {
     var role = 'user';
     if (uDesc.login=='devel')  role = 'developer';
     else if (uDesc.admin)      role = 'admin';
-    trow.addCell ( role            ).setNoWrap();
+    trow.addCell ( role ).setNoWrap();
     if (uDesc.dormant)
           trow.addCell ( new Date(uDesc.dormant).toISOString().slice(0,10) ).setNoWrap();
     else  trow.addCell ( 'active' ).setNoWrap();

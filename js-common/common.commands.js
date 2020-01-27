@@ -2,7 +2,7 @@
 /*
  *  ===========================================================================
  *
- *    23.01.20   <--  Date of Last Modification.
+ *    27.01.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  ---------------------------------------------------------------------------
  *
@@ -25,7 +25,7 @@
 
 function appName()  { return 'CCP4 Cloud' }  // application name for reporting
 
-var jsCoFE_version = '1.6.005 [23.01.2020]';
+var jsCoFE_version = '1.6.005 [27.01.2020]';
 
 function appVersion()  {
   return jsCoFE_version;
@@ -61,6 +61,7 @@ function compareVersions ( version1,version2 )  {
 // ============================================================================
 
 var localhost_name = 'localhost';
+var projectFileExt = '.ccp4cloud';
 
 // ============================================================================
 // Commands for client - FE Server AJAX exchange. Commands are passed as paths
@@ -168,6 +169,7 @@ var fe_retcode = {
   inProgress     : 'inProgress',     // process in progress
   askPassword    : 'askPassword',    // request password
   regFailed      : 'regFailed',      // user registration failed
+  wrongJobToken  : 'wrongJobToken',  // unrecognised job token received
   proxyError     : 'proxyError'      // fe-proxy error
 }
 
@@ -271,6 +273,7 @@ if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
   module.exports.nc_command          = nc_command;
   module.exports.nc_retcode          = nc_retcode;
   module.exports.special_url_tag     = special_url_tag;
+  module.exports.projectFileExt      = projectFileExt;
   module.exports.Response            = Response;
   module.exports.sendResponse        = sendResponse;
   module.exports.sendResponseMessage = sendResponseMessage;
