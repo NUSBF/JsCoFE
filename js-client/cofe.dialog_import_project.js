@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.11.19   <--  Date of Last Modification.
+ *    27.01.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -11,9 +11,9 @@
  *  **** Project :  jsCoFE - javascript-based Cloud Front End
  *       ~~~~~~~~~
  *  **** Content :  Import Project Dialog
- *       ~~~~~~~~~ 
+ *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2019
+ *  (C) E. Krissinel, A. Lebedev 2016-2020
  *
  *  =================================================================
  *
@@ -37,7 +37,8 @@ function ImportProjectDialog ( onSuccess_func )  {
   grid.setLabel ( '<h3>Import Project</h3>',0,0,1,3 );
 
   var msgLabel = new Label ( 'Use "<i>Select ...</i>" button to select archive file ' +
-                             '(project_name.zip)<br>with previously exported project. ' +
+                             '(project_name' + projectFileExt +
+                             ')<br>with previously exported project. ' +
                              'The import will commence<br>automatically once '  +
                              'the upload is completed -- <b><i>do not close<br>' +
                              'this dialog until then</i></b>.<br>&nbsp;' );
@@ -47,8 +48,10 @@ function ImportProjectDialog ( onSuccess_func )  {
   //  customData.login_token = __login_token.getValue();
   customData.login_token = __login_token;
 
-  var upload = new Upload ( customData,{ 'type':'project', 'accept' : '.zip' },
-                            null,null,function(returnCode){
+  var upload = new Upload ( customData,{
+      'type'   : 'project',
+      'accept' : projectFileExt
+  }, null,null,function(returnCode){
 
     if (!returnCode)  {
 
