@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    15.01.20   <--  Date of Last Modification.
+ *    28.01.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -57,10 +57,11 @@ function TaskXia2()  {
               position : [0,0,1,8],
               contains : {
                 PROJECT : {
-                      type      : 'string_',   // empty string not allowed
+                      type      : 'string_',   // empty string allowed
                       keyword   : 'project',
                       label     : 'Project name',
-                      tooltip   : 'Project name for dataset identification',
+                      tooltip   : 'Project name for dataset identification ' +
+                                  '(must start with a letter, no spaces)',
                       iwidth    : 120,
                       value     : '',
                       default   : 'AUTOMATIC',
@@ -672,6 +673,11 @@ if (!__template)  {
     }
 
     msg += TaskTemplate.prototype.collectInput.call ( this,inputPanel );
+
+    if (this.parameters.sec1.contains.PROJECT.value &&
+        (!(/^[A-Za-z][A-Za-z0-9\\-\\._-]+$/.test(this.parameters.sec1.contains.PROJECT.value))))
+      msg += '<b><i>Project name should contain only latin letters, numbers, ' +
+             'undescores,<br>dashes and dots, and must start with a letter</i></b>';
 
     return  msg;
 

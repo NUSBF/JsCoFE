@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    01.11.19   <--  Date of Last Modification.
+ *    27.01.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Manage User Dialog
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2019
+ *  (C) E. Krissinel, A. Lebedev 2016-2020
  *
  *  =================================================================
  *
@@ -53,7 +53,9 @@ function ManageUserDialog ( userData,onExit_func )  {
           text : "Update",
           click: function() {
 
-            dlg.userData.admin   = (dlg.profile.getValue()==1);
+//            dlg.userData.admin   = (dlg.profile.getValue()==1);
+            dlg.userData.role    = [role_code.user,role_code.admin,
+                                    role_code.developer][dlg.profile.getValue()];
             dlg.userData.licence = ['academic','commercial'][dlg.licence.getValue()];
             if (dlg.status.getValue()==1)  {
               if (!dlg.userData.dormant)
@@ -169,8 +171,8 @@ ManageUserDialog.prototype.putLine = function ( label,value,maxvalue,row,key )  
 
     case 2 :  w = new Dropdown();
               this.grid.setWidget ( w,row,1,1,4 );
-              w.addItem ( value[0],'',0,!value[2] );
-              w.addItem ( value[1],'',1, value[2] );
+              for (var i=0;i<value.length-1;i++)
+                w.addItem ( value[i],'',i,(value[i]==value[value.length-1]) );
               w.make();
             break;
 
@@ -215,18 +217,21 @@ ManageUserDialog.prototype.makeLayout = function()  {
   this.grid.setLabel ( '<h2>User Data</h2>',0,0,1,4 );
 
   var row = 1;
-  this.putLine ( 'Name:'        ,this.userData.name ,0,row++,0 );
-  this.putLine ( 'Login:'       ,this.userData.login,0,row++,0 );
-  this.putLine ( 'E-mail:'      ,this.userData.email,0,row++,0 );
-  this.profile = this.putLine ( 'Profile:',['user','admin',this.userData.admin],
-                                0,row++,2 );
-  this.licence = this.putLine ( 'Licence:',['academic','commercial',
-                                this.userData.licence!='academic'],0,row++,2 );
+  this.putLine ( 'Name:'  ,this.userData.name ,0,row++,0 );
+  this.putLine ( 'Login:' ,this.userData.login,0,row++,0 );
+  this.putLine ( 'E-mail:',this.userData.email,0,row++,0 );
+  this.profile = this.putLine ( 'Profile:',[
+                                  role_code.user,role_code.admin,
+                                  role_code.developer,this.userData.role
+                                ], 0,row++,2 );
+  this.licence = this.putLine ( 'Licence:',[
+                                  'academic','commercial',this.userData.licence
+                                ], 0,row++,2 );
   var dormant_lbl = 'dormant';
-  var dormant_sel = false;
+  var dormant_sel = 'active';
   if (this.userData.dormant)  {
     dormant_lbl += ' since ' + new Date(this.userData.dormant).toISOString().slice(0,10);
-    dormant_sel  = true;
+    dormant_sel  = dormant_lbl;
   }
   this.status  = this.putLine ( 'Status:',['active',dormant_lbl,dormant_sel],
                                 0,row++,2 );

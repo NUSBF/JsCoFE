@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    12.01.20   <--  Date of Last Modification.
+ *    27.01.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -365,8 +365,9 @@ function ProjectPage ( sceneId )  {
     this.addMenuItem ( 'My Account','settings',function(){
       jobTree.saveProjectData ( [],[],function(){ makeAccountPage(sceneId); });
     });
-    if (__admin)
-      this.addMenuItem ( 'Admin Page','admin',function(){
+//    if (__admin)
+    if (__user_role==role_code.admin)
+      this.addMenuItem ( 'Admin Page',role_code.admin,function(){
         jobTree.saveProjectData ( [],[],function(){ makeAdminPage(sceneId); } );
       });
   }
@@ -417,7 +418,8 @@ function ProjectPage ( sceneId )  {
   refresh_btn = toolbar.setButton ( '',image_path('refresh')  ,10,0,1,1 );
   help_btn    = toolbar.setButton ( '',image_path('help')     ,11,0,1,1 );
 
-  if (__admin || (__login_user=='Developer'))  {
+//  if (__admin || (__login_user=='Developer'))  {
+  if ((__user_role==role_code.admin) || (__user_role==role_code.developer))  {
     toolbar.setLabel ( '<hr style="border:1px dotted;"/>' ,12,0,1,1 );
     split_btn = toolbar.setButton ( '',image_path('split_page'),13,0,1,1 );
   }
