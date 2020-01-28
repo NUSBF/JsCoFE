@@ -59,12 +59,16 @@ RVAPIReportWidgets.prototype.addButtonGrid = function ( btnId,title,command,data
                                                      rvOnly,holderId,
                                                      row,col,rowSpan,colSpan ) {
 
+  /*
   if (command=='{coot}')  {
     if (typeof window.parent.__rvapi_config_coot_btn !== 'undefined')  {
       if (!window.parent.__rvapi_config_coot_btn)
         return;
     }
   }
+  */
+  if (command=='{coot}')
+    return;
 
   if (document.getElementById(btnId))
     return;
@@ -106,12 +110,16 @@ RVAPIReportWidgets.prototype.addButtonGrid = function ( btnId,title,command,data
 RVAPIReportWidgets.prototype.addButton = function ( btnId,title,command,data,
                                                     rvOnly,holderId )  {
 
+  /*
   if (command=='{coot}')  {
     if (typeof window.parent.__rvapi_config_coot_btn !== 'undefined')  {
       if (!window.parent.__rvapi_config_coot_btn)
         return;
     }
   }
+  */
+  if (command=='{coot}')
+    return;
 
   if (document.getElementById(btnId))
     return;
@@ -139,12 +147,16 @@ RVAPIReportWidgets.prototype.addIconButtonGrid = function ( btnId,button_class,t
                                                      command,data,rvOnly,holderId,
                                                      row,col,rowSpan,colSpan )  {
 
+  /*
   if (command=='{coot}')  {
     if (typeof window.parent.__rvapi_config_coot_btn !== 'undefined')  {
       if (!window.parent.__rvapi_config_coot_btn)
         return;
     }
   }
+  */
+  if (command=='{coot}')
+    return;
 
   if (document.getElementById(btnId))
     return;
@@ -180,12 +192,16 @@ RVAPIReportWidgets.prototype.addIconButtonGrid = function ( btnId,button_class,t
 RVAPIReportWidgets.prototype.addIconButton = function ( btnId,button_class,tooltip,
                                                  command,data,rvOnly,holderId ) {
 
+  /*
   if (command=='{coot}')  {
     if (typeof window.parent.__rvapi_config_coot_btn !== 'undefined')  {
       if (!window.parent.__rvapi_config_coot_btn)
         return;
     }
   }
+  */
+  if (command=='{coot}')
+    return;
 
   if (document.getElementById(btnId))
     return;
