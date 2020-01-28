@@ -42,12 +42,16 @@ function addSubmitButton ( inpId,title,formAction,formId,
 function addButtonGrid ( btnId,title,command,data,rvOnly,holderId,
                          row,col,rowSpan,colSpan )  {
 
+  /*
   if (command=='{coot}')  {
     if (typeof window.parent.__rvapi_config_coot_btn !== 'undefined')  {
       if (!window.parent.__rvapi_config_coot_btn)
         return;
     }
   }
+  */
+  if (command=='{coot}')
+    return;
 
   if (document.getElementById(btnId))
     return;
@@ -87,12 +91,16 @@ function addButtonGrid ( btnId,title,command,data,rvOnly,holderId,
 
 function addButton ( btnId,title,command,data,rvOnly,holderId )  {
 
+  /*
   if (command=='{coot}')  {
     if (typeof window.parent.__rvapi_config_coot_btn !== 'undefined')  {
       if (!window.parent.__rvapi_config_coot_btn)
         return;
     }
   }
+  */
+  if (command=='{coot}')
+    return;
 
   if (document.getElementById(btnId))
     return;
@@ -119,12 +127,16 @@ function addButton ( btnId,title,command,data,rvOnly,holderId )  {
 function addIconButtonGrid ( btnId,button_class,tooltip,command,data,
                              rvOnly,holderId,row,col,rowSpan,colSpan )  {
 
+  /*
   if (command=='{coot}')  {
     if (typeof window.parent.__rvapi_config_coot_btn !== 'undefined')  {
       if (!window.parent.__rvapi_config_coot_btn)
         return;
     }
   }
+  */
+  if (command=='{coot}')
+    return;
 
   if (document.getElementById(btnId))
     return;
@@ -160,12 +172,16 @@ function addIconButtonGrid ( btnId,button_class,tooltip,command,data,
 function addIconButton ( btnId,button_class,tooltip,command,data,rvOnly,
                          holderId )  {
 
+  /*
   if (command=='{coot}')  {
     if (typeof window.parent.__rvapi_config_coot_btn !== 'undefined')  {
       if (!window.parent.__rvapi_config_coot_btn)
         return;
     }
   }
+  */
+  if (command=='{coot}')
+    return;
 
   if (document.getElementById(btnId))
     return;
