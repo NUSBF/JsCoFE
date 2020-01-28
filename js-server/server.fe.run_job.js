@@ -806,7 +806,8 @@ function getJobResults ( job_token,server_request,server_response )  {
           // print usage stats and update the user ration state
           var jobClass = writeJobStats ( jobEntry );
           ustats.registerJob ( jobClass );
-          feJobRegister.cleanup ( job_token,meta.tokens.split(',') );
+          if ('tokens' in meta)
+            feJobRegister.cleanup ( job_token,meta.tokens.split(',') );
           feJobRegister.removeJob ( job_token );
           feJobRegister.n_jobs++;
           writeFEJobRegister();
