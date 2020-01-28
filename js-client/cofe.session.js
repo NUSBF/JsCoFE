@@ -134,12 +134,16 @@ function login ( user_login_name,user_password,sceneId,page_switch )  {
                 localCommand ( nc_command.getNCInfo,{},'NC Info Request',
                   function(response){
                     if (response)  {
-                      if (response.status==nc_retcode.ok)
-                        __environ_client  = response.data.environ;
-                      else
+                      if (response.status==nc_retcode.ok)  {
+                        if ('environ' in response.data)
+                          __environ_client = response.data.environ;
+                        else  // fallback
+                          __environ_client = ['CCP4'];
+                      } else  {
                         new MessageBox ( 'Get NC Info Error',
                           'Unknown error: <b>' + response.status + '</b><p>' +
                           'when trying to fetch Client NC data.' );
+                      }
                       return true;
                     }
                     return false;
