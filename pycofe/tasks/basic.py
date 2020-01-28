@@ -117,7 +117,7 @@ class TaskDriver(object):
     # ========================================================================
     # class variables
 
-    jobManager       = None
+    jobManager    = None
     job_dir       = None
     job_id        = None
 
@@ -976,7 +976,7 @@ class TaskDriver(object):
             return False
 
 
-    def runApp ( self,appName,cmd,logType="Main",quitOnError=True ):
+    def runApp ( self,appName,cmd,logType="Main",quitOnError=True,env=None ):
 
         input_script = None
         if self.file_stdin:
@@ -991,7 +991,7 @@ class TaskDriver(object):
 
         rc = command.call ( appName,cmd,"./",input_script,
                             logfile,self.file_stderr,self.log_parser,
-                            file_stdout_alt=logfile_alt )
+                            file_stdout_alt=logfile_alt,env=env )
         self.file_stdin = None
         self.flush()
 

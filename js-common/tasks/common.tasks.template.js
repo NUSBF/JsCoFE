@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    23.01.20   <--  Date of Last Modification.
+ *    28.01.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -48,6 +48,7 @@ var jobReportHTMLName = 'index.html';
 var jobReportTaskName = 'task.tsk';
 
 var keyEnvironment = ['CCP4','BALBES_ROOT','ROSETTA_DIR','warpbin','BDG_home',
+                      'XDS_home','XDSGUI_home',
                       '$CCP4/bin/shelxe','$CCP4/bin/shelxe.exe',
                       '$CCP4/share/mrd_data/VERSION','$CCP4/lib/py2/morda/LINKED'
                      ];

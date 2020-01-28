@@ -349,7 +349,8 @@ var response = null;  // must become a cmd.Response object to return
   if (utils.fileExists(projectDataPath))  {
     var pData = utils.readObject ( projectDataPath );
     if (pData)  {
-      checkProjectOwner ( pData.desc,loginData );
+      if (!checkProjectOwner(pData.desc,loginData))
+        utils.writeObject ( projectDataPath,pData );
       var share = _make_unique_list ( pData.desc.owner.share );
       for (var i=0;i<share.length;i++)
         if (share[i])  {
@@ -561,7 +562,7 @@ function finishJobExport ( loginData,task )  {
 // ===========================================================================
 
 function checkProjectOwner ( projectDesc,loginData )  {
-  if (!('owner' in projectDesc))  {  // backward compatibility on 11.01.2020
+  if ((!('owner' in projectDesc)) || (!projectDesc.owner.login))  {  // backward compatibility on 11.01.2020
     var uData = user.readUserData ( loginData );
     projectDesc.owner = {
       login     : loginData.login,
@@ -570,7 +571,9 @@ function checkProjectOwner ( projectDesc,loginData )  {
       share     : '',
       is_shared : false
     };
+    return false;
   }
+  return true;
 }
 
 function getProjectData ( loginData,data )  {
@@ -591,7 +594,8 @@ function getProjectData ( loginData,data )  {
   if (utils.fileExists(projectDataPath))  {
     var pData = utils.readObject ( projectDataPath );
     if (pData)  {
-      checkProjectOwner ( pData.desc,loginData );
+      if (!checkProjectOwner(pData.desc,loginData))
+        utils.writeObject ( projectDataPath,pData );
       var d = {};
       d.meta      = pData;
       d.tasks_add = [];
@@ -845,7 +849,9 @@ function _import_project ( loginData,tempdir )  {
         }
         projectDesc.owner = prj_meta.desc.owner;
         projectDesc.owner.share = '';
-        if (projectDesc.owner.login!=loginData.login)
+        if (!projectDesc.owner.login)
+          projectDesc.owner.login = loginData.login;
+        else if (projectDesc.owner.login!=loginData.login)
           projectDesc.owner.is_shared = true;
       }
     } else
