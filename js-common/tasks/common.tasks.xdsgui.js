@@ -2,18 +2,18 @@
 /*
  *  =================================================================
  *
- *    15.01.20   <--  Date of Last Modification.
+ *    28.01.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
- *  **** Module  :  js-common/tasks/common.tasks.dui.js
+ *  **** Module  :  js-common/tasks/common.tasks.xdsgui.js
  *       ~~~~~~~~~
  *  **** Project :  jsCoFE - javascript-based Cloud Front End
  *       ~~~~~~~~~
- *  **** Content :  DUI Task Class (for local server)
+ *  **** Content :  XDSGUI Task Class (for local server)
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2019-2020
+ *  (C) E. Krissinel, A. Lebedev 2020
  *
  *  =================================================================
  *
@@ -26,27 +26,27 @@ if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
 
 // ===========================================================================
 
-function TaskDUI()  {
+function TaskXDSGUI()  {
 
   if (__template)  __template.TaskTemplate.call ( this );
              else  TaskTemplate.call ( this );
 
-  this._type   = 'TaskDUI';
-  this.name    = 'dui (image processing)';
-  this.setOName ( 'dials' );  // default output file name template
-  this.title   = 'Interactive Image Processing with DUI';
-  this.helpURL = './html/jscofe_task_dui.html';
+  this._type   = 'TaskXDSGUI';
+  this.name    = 'xds (image processing)';
+  this.setOName ( 'xds' );  // default output file name template
+  this.title   = 'Interactive Image Processing with XDS';
+  this.helpURL = './html/jscofe_task_xds.html';
   this.nc_type = 'client';  // job may be run only on client NC
 
   this.input_dtypes = [];   // no input data for this task
 
   this.parameters = {       // no input parameters, just label
     L1 : { type     : 'label',
-           label    : '<h3>This task will launch DIALS GUI (DUI) on your computer.</h3>',
+           label    : '<h3>This task will launch XDS GUI on your computer.</h3>',
            position : [0,0,1,1]
          },
     L2 : { type     : 'label',
-           label    : '<i>In the end of DUI session, simply save integrated MTZ in ' +
+           label    : '<i>In the end of XDS GUI session, simply save integrated MTZ in ' +
                       'default directory</i>',
            position : [1,0,1,1]
          }
@@ -56,19 +56,19 @@ function TaskDUI()  {
 
 
 if (__template)
-      TaskDUI.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskDUI.prototype = Object.create ( TaskTemplate.prototype );
-TaskDUI.prototype.constructor = TaskDUI;
+      TaskXDSGUI.prototype = Object.create ( __template.TaskTemplate.prototype );
+else  TaskXDSGUI.prototype = Object.create ( TaskTemplate.prototype );
+TaskXDSGUI.prototype.constructor = TaskXDSGUI;
 
 
 // ===========================================================================
 // export such that it could be used in both node and a browser
 
-TaskDUI.prototype.icon = function()  { return 'task_dui'; }
+TaskXDSGUI.prototype.icon = function()  { return 'task_xdsgui'; }
+TaskXDSGUI.prototype.requiredEnvironment = function() { return ['CCP4','XDS_home','XDSGUI_home']; }
+TaskXDSGUI.prototype.lowestClientVersion = function() { return '1.6.005 [28.01.2019]'; }
 
-TaskDUI.prototype.lowestClientVersion = function() { return '1.6.001 [01.01.2019]'; }
-
-TaskDUI.prototype.currentVersion = function()  {
+TaskXDSGUI.prototype.currentVersion = function()  {
   var version = 0;
   if (__template)
         return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );
@@ -80,12 +80,12 @@ if (__template)  {
 
   var conf = require('../../js-server/server.configuration');
 
-  TaskDUI.prototype.getCommandLine = function ( jobManager,jobDir )  {
-    return [conf.pythonName(), '-m', 'pycofe.tasks.dui', jobManager, jobDir, this.id];
+  TaskXDSGUI.prototype.getCommandLine = function ( jobManager,jobDir )  {
+    return [conf.pythonName(), '-m', 'pycofe.tasks.xdsgui', jobManager, jobDir, this.id];
   }
 
   // -------------------------------------------------------------------------
 
-  module.exports.TaskDUI = TaskDUI;
+  module.exports.TaskXDSGUI = TaskXDSGUI;
 
 }

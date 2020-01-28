@@ -56,7 +56,8 @@ def getTimes():
 
 
 def call ( executable,command_line,job_dir,stdin_fname,file_stdout,
-           file_stderr,log_parser=None,citation_ref=None,file_stdout_alt=None ):
+           file_stderr,log_parser=None,citation_ref=None,file_stdout_alt=None,
+           env=None ):
 
     msg = "\n" + "="*80 + "\n" +\
           time.strftime("## Run %Y-%m-%d at %H:%M:%S on ") + platform.uname()[1] +\
@@ -106,11 +107,14 @@ def call ( executable,command_line,job_dir,stdin_fname,file_stdout,
         iswindows = sys.platform.startswith("win")
         if iswindows:  t1 = time.clock()
 
+        environ = env
+        if not env:
+            environ = os.environ
         p = subprocess.Popen ( [executable] + command_line,
                           shell=False,
                           stdin=file_stdin,
                           stdout=subprocess.PIPE if log_parser else file_stdout,
-                          stderr=file_stderr )
+                          stderr=file_stderr,env=environ )
         if log_parser:
             log_parser.parse_stream ( p.stdout,file_stdout )
 
