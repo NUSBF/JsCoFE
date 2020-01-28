@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    21.12.20   <--  Date of Last Modification.
+ *    27.01.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -43,8 +43,9 @@ function AccountPage ( sceneId )  {
   this.addMenuItem ( 'My Projects','list',function(){
     makeProjectListPage ( sceneId );
   });
-  if (__admin)
-    this.addMenuItem ( 'Admin Page','admin',function(){
+//  if (__admin)
+  if (__user_role==role_code.admin)
+    this.addMenuItem ( 'Admin Page',role_code.admin,function(){
       makeAdminPage ( sceneId );
     });
   this.addLogoutToMenu ( function(){ logout(sceneId,0); } );

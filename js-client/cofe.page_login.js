@@ -68,7 +68,7 @@ function LoginPage ( sceneId )  {
   login_lbl.setFontSize         ( '125%' );
   pwd_lbl  .setFontSize         ( '125%' );
   login_inp.setFontSize         ( '112%' );
-  login_inp.setStyle            ( 'text',"^[A-Za-z0-9\\-\\._]+$",
+  login_inp.setStyle            ( 'text','^[A-Za-z][A-Za-z0-9\\-\\._-]+$',
                                   'Your CCP4 login','' );
   /*
                                   'Login name should contain only latin ' +

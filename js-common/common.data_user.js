@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    20.10.19   <--  Date of Last Modification.
+ *    27.01.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  User Data Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2019
+ *  (C) E. Krissinel, A. Lebedev 2016-2020
  *
  *  =================================================================
  *
@@ -37,6 +37,12 @@ var userdata_action = {
   revise : 'revise'
 }
 
+var role_code = {
+  user      : 'user',
+  admin     : 'admin',
+  developer : 'developer'
+}
+
 function UserData()  {
   this._type         = 'UserData';  // do not change
   this.name          = '';
@@ -50,7 +56,8 @@ function UserData()  {
   this.usedCPU       = 0;  // in hours
   this.knownSince    = ''; // date
   this.lastSeen      = ''; // date
-  this.admin         = false;
+//  this.admin         = false;
+  this.role          = role_code.user;
   this.dormant       = 0;
   this.volume        = '***';  // where users projects are kept
   this.helpTopics    = [];
@@ -78,6 +85,13 @@ function checkUserData ( uData )  {
   if (!uData.hasOwnProperty('settings'))       uData.settings      = {};
   if (!uData.hasOwnProperty('volume'))         uData.volume        = '***';
   if (!uData.hasOwnProperty('dormant'))        uData.dormant       = 0;
+  if (uData.hasOwnProperty('admin'))  {
+    if (!uData.hasOwnProperty('role'))  {
+      if (uData.admin)  uData.role = role_code.admin;
+                  else  uData.role = role_code.user;
+    }
+    delete uData.admin;
+  }
   return msg;
 }
 
@@ -89,6 +103,7 @@ if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
   module.exports.licence_code    = licence_code;
   module.exports.feedback_code   = feedback_code;
   module.exports.userdata_action = userdata_action;
+  module.exports.role_code       = role_code;
   module.exports.UserData        = UserData;
   module.exports.checkUserData   = checkUserData;
 }

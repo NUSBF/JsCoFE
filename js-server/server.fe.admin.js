@@ -29,6 +29,7 @@ var rj      = require('./server.fe.run_job');
 var ustats  = require('./server.fe.usagestats')
 var utils   = require('./server.utils');
 var cmd     = require('../js-common/common.commands');
+var ud      = require('../js-common/common.data_user');
 
 //  prepare log
 var log = require('./server.log').newLog(16);
@@ -179,7 +180,7 @@ function getAdminData ( loginData,data,callback_func )  {
   adminData.nodesInfo.jscofe_version = cmd.appVersion();
 
   var uData = user.readUserData ( loginData );
-  if (!uData.admin)  {
+  if (uData.role!=ud.role_code.admin)  {
     adminData.jobsStat  = 'Data available only in account with administrative privileges.';
     return new cmd.Response ( cmd.fe_retcode.ok,'',adminData );
   } else  {
@@ -200,7 +201,7 @@ function getAdminData ( loginData,data,callback_func )  {
 function updateAndRestart ( loginData,data )  {
 
   var uData = user.readUserData ( loginData );
-  if (!uData.admin)  {
+  if (uData.role!=ud.role_code.admin)  {
     log.standard ( 1,'attempt to update and restart from non-administrative account' );
   } else  {
     var FEconfig = conf.getFEConfig();

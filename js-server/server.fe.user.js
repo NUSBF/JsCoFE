@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    22.01.20   <--  Date of Last Modification.
+ *    27.01.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -77,7 +77,9 @@ var fe_server = conf.getFEConfig();
 
   userData.helpTopics = [];
 
-  userData.admin      = (userData.login=='admin');
+//  userData.admin      = (userData.login=='admin');
+  if (userData.login=='admin')  userData.role = ud.role_code.admin;
+                          else  userData.role = ud.role_code.user;
   userData.knownSince = Date.now();
   userData.lastSeen   = Date.now();
 
@@ -523,7 +525,8 @@ var updateHash = false;
     userData.login   = 'devel';
     userData.pwd     = 'devel';
     userData.licence = 'academic';
-    userData.admin   = false;
+    //userData.admin   = false;
+    userData.role    = ud.role_code.user;
     makeNewUser ( userData,function(response){} );
     updateHash = true;
   }
@@ -535,7 +538,8 @@ var updateHash = false;
     userData.login   = 'localuser';
     userData.pwd     = 'localuser';
     userData.licence = 'academic';
-    userData.admin   = false;
+    //userData.admin   = false;
+    userData.role    = ud.role_code.user;
     makeNewUser ( userData,function(response){} );
     __userLoginHash.addUser ( 'e58e28a556d2b4884cb16ba8a37775f0',{
                                 'login'  : 'localuser',
@@ -907,7 +911,8 @@ var userFilePath = getUserDataFName ( loginData );
 
     if (uData)  {
 
-      if (uData.admin)  {
+//      if (uData.admin)  {
+      if (uData.role==ud.role_code.admin)  {
 
         userFilePath = getUserDataFName ( userData );
         var uData    = utils .readObject  ( userFilePath );
@@ -920,7 +925,8 @@ var userFilePath = getUserDataFName ( loginData );
           uRation.cpu_month = Number(userData.ration.cpu_month);
           ration.saveUserRation ( userData,uRation );
 
-          uData.admin   = userData.admin;
+//          uData.admin   = userData.admin;
+          uData.role    = userData.role;
           uData.licence = userData.licence;
           if (userData.hasOwnProperty('feedback'))
                 uData.feedback = userData.feedback;
@@ -929,15 +935,15 @@ var userFilePath = getUserDataFName ( loginData );
 
           if (utils.writeObject(userFilePath,uData))  {
 
-            var role = 'user';
-            if (uData.admin)
-              role = 'admin';
+//            var role = 'user';
+//            if (uData.admin)
+//              role = 'admin';
 
             response = new cmd.Response ( cmd.fe_retcode.ok,'',
               emailer.sendTemplateMessage ( uData,
                         cmd.appName() + ' Account Update',
                         'account_updated_admin',{
-                          'userProfile'  : role,
+                          'userProfile'  : uData.role,
                           'userStorage'  : uRation.storage,
                           'userCPUDay'   : uRation.cpu_day,
                           'userCPUMonth' : uRation.cpu_month
@@ -1056,7 +1062,8 @@ var userFilePath = getUserDataFName ( loginData );
 
       ud.checkUserData ( uData );
 
-      if (uData.admin)  {
+//      if (uData.admin)  {
+      if (uData.role==ud.role_code.admin)  {
 
         userFilePath = getUserDataFName ( userData );
 
@@ -1126,7 +1133,8 @@ function sendAnnouncement ( loginData,message )  {
 
       ud.checkUserData ( uData );
 
-      if (uData.admin)  {
+//      if (uData.admin)  {
+      if (uData.role==ud.role_code.admin)  {
 
         var usersData = readUsersData();
         var users     = usersData.userList;
@@ -1168,7 +1176,8 @@ var ddata = { 'status' : 'ok' };
 
       ud.checkUserData ( uData );
 
-      if (uData.admin)  {
+//      if (uData.admin)  {
+      if (uData.role==ud.role_code.admin)  {
 
         var usersData = readUsersData();
         var users     = usersData.userList;

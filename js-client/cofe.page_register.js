@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    29.09.19   <--  Date of Last Modification.
+ *    28.01.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  User registration page
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2019
+ *  (C) E. Krissinel, A. Lebedev 2016-2020
  *
  *  =================================================================
  *
@@ -61,7 +61,8 @@ function RegisterPage ( sceneId )  {
   email_inp  .setStyle         ( 'email','','john.smith@university.ac.uk',
                                  'Should be a valid e-mail address, at which ' +
                                  'your\n temporary password will be sent' );
-  login_inp  .setStyle         ( 'text',"^[A-Za-z0-9\\-\\._]+$",'john.smith',
+  login_inp  .setStyle         ( 'text','^[A-Za-z][A-Za-z0-9\\-\\._-]+$',
+                                 'john.smith',
                                  'Login name should contain only latin ' +
                                  'letters, numbers,\n undescores, dashes ' +
                                  'and dots, and must start with a letter' );

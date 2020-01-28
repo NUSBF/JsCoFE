@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    08.12.19   <--  Date of Last Modification.
+#    28.01.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2019
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2020
 #
 # ============================================================================
 #
@@ -83,6 +83,8 @@ class Parrot(basic.TaskDriver):
         revision = self.makeClass ( self.input_data.data.revision[0] )
         istruct  = self.makeClass ( self.input_data.data.istruct [0] )
 
+        sec1     = self.task.parameters.sec1.contains
+
         seq = None
         if hasattr(self.input_data.data,"seq"):  # optional data parameter
             seq = self.input_data.data.seq
@@ -99,10 +101,9 @@ class Parrot(basic.TaskDriver):
         if hasattr(self.input_data.data,"ncs_struct"):  # optional data parameter
             ncs_struct = self.makeClass ( self.input_data.data.ncs_struct[0] )
 
-
         refname = os.path.join ( os.environ["CCP4"],"lib","data",
             "reference_structures",
-            "reference-" + self.task.parameters.sec1.contains.REFMDL_SEL.value )
+            "reference-" + sec1.REFMDL_SEL.value )
 
         self.open_stdin()
         self.write_stdin (
@@ -139,6 +140,7 @@ class Parrot(basic.TaskDriver):
 
         ncs_xyz = None
         ncs_kwd = None
+        ncycles = "3"
         if ncs_struct:
             if ncs_struct.hasSubSubtype():
                 ncs_xyz = ncs_struct.getSubFilePath ( self.inputDir() )
@@ -146,8 +148,11 @@ class Parrot(basic.TaskDriver):
             elif ncs_struct.hasXYZSubtype():
                 ncs_xyz = ncs_struct.getXYZFilePath ( self.inputDir() )
                 ncs_kwd = "pdbin-wrk-mr"
+            ncycles = "10"
         if ncs_kwd:
             self.write_stdin( "\n" + ncs_kwd + " " + ncs_xyz )
+        if sec1.NCYCLES.value:
+            ncycles = str(sec1.NCYCLES.value)
 
         solcont = float( revision.ASU.solvent )
         if solcont > 1.0:
@@ -159,14 +164,15 @@ class Parrot(basic.TaskDriver):
             "\ncolout parrot"  +\
             "\nncs-average"  +\
             "\nsolvent-content " + str( solcont ) + "\n"  +\
-            self.putKWParameter ( self.task.parameters.sec1.contains.SOLVENT_CBX   ) + \
-            self.putKWParameter ( self.task.parameters.sec1.contains.HISTOGRAM_CBX ) + \
-            #self.putKWParameter ( self.task.parameters.sec1.contains.NCSAVER_CBX   ) + \
-            self.putKWParameter ( self.task.parameters.sec1.contains.ANISO_CBX     ) + \
-            self.putKWParameter ( self.task.parameters.sec1.contains.NCYCLES       ) + \
-            self.putKWParameter ( self.task.parameters.sec1.contains.RESMIN        ) + \
-            self.putKWParameter ( self.task.parameters.sec1.contains.NCSRAD        )
-            #self.putKWParameter ( self.task.parameters.sec1.contains.SOLVCONT      )
+            "\ncycles " + ncycles + "\n" +
+            self.putKWParameter ( sec1.SOLVENT_CBX   ) + \
+            self.putKWParameter ( sec1.HISTOGRAM_CBX ) + \
+            #self.putKWParameter ( sec1.NCSAVER_CBX   ) + \
+            self.putKWParameter ( sec1.ANISO_CBX     ) + \
+            #self.putKWParameter ( sec1.NCYCLES       ) + \
+            self.putKWParameter ( sec1.RESMIN        ) + \
+            self.putKWParameter ( sec1.NCSRAD        )
+            #self.putKWParameter ( sec1.contains.SOLVCONT      )
         )
 
         self.close_stdin()

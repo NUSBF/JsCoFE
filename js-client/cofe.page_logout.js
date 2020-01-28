@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    05.01.20   <--  Date of Last Modification.
+ *    27.01.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -29,7 +29,8 @@ function LogoutPage ( sceneId,reason_key )  {
   //if (__login_user)   __login_user .empty();
   __login_token = '';
   __login_user  = '';
-  __admin       = false;
+  __user_role   = role_code.user;
+//  __admin       = false;
 
   // prepare the scene and make top-level grid
   BasePage.call ( this,sceneId,'-full','LogoutPage' );

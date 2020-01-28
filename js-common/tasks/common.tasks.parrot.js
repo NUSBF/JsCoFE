@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.11.19   <--  Date of Last Modification.
+ *    28.01.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Parrot Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2019
+ *  (C) E. Krissinel, A. Lebedev 2016-2020
  *
  *  =================================================================
  *
@@ -109,13 +109,14 @@ function TaskParrot()  {
                      },
                 */
                 NCYCLES : {
-                        type      : 'integer',
-                        keyword   : 'cycles',
-                        label     : 'Number of cycles of phase improvement',
-                        tooltip   : 'Choose a value between 1 and 50',
-                        range     : [1,50],
-                        value     : '3',
-                        position  : [1,0,1,1]
+                        type        : 'integer_',
+                        keyword     : 'cycles',
+                        label       : 'Number of cycles of phase improvement',
+                        tooltip     : 'Choose a value between 1 and 50',
+                        range       : [1,50],
+                        value       : '',
+                        placeholder : 'auto',
+                        position    : [1,0,1,1]
                       },
                 /*
                 NCS_CBX : {
