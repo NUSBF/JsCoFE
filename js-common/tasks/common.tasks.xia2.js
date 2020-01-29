@@ -679,6 +679,16 @@ if (!__template)  {
       msg += '<b><i>Project name should contain only latin letters, numbers, ' +
              'undescores,<br>dashes and dots, and must start with a letter</i></b>';
 
+    if (startsWith(this.parameters.sec2.contains.PIPELINE.value,'3d'))  {
+      // check XDS availability
+      var env = __environ_server;
+      if (this.file_system=='local')
+        env = __environ_client;
+      if (!this.compareEnvironment(['CCP4','XDS_home','XDSGUI_home'],env))
+        msg += '<b><i>Chosen pipeline protocol requires XDS Software,<br>' +
+               'however, it was not found installed</i></b>';
+    }
+
     return  msg;
 
   }

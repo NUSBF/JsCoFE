@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    27.01.20   <--  Date of Last Modification.
+ *    29.01.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -26,16 +26,17 @@ var path     = require('path');
 //var archiver      = require('archiver');
 
 //  load application modules
-var emailer  = require('./server.emailer');
-var conf     = require('./server.configuration');
-var utils    = require('./server.utils');
-var send_dir = require('./server.send_dir');
-var ration   = require('./server.fe.ration');
-var fcl      = require('./server.fe.facilities');
-var user     = require('./server.fe.user');
-var pd       = require('../js-common/common.data_project');
-var cmd      = require('../js-common/common.commands');
-var task_t   = require('../js-common/tasks/common.tasks.template');
+var emailer   = require('./server.emailer');
+var conf      = require('./server.configuration');
+var utils     = require('./server.utils');
+var send_dir  = require('./server.send_dir');
+var ration    = require('./server.fe.ration');
+var fcl       = require('./server.fe.facilities');
+var user      = require('./server.fe.user');
+var class_map = require('./server.class_map');
+var pd        = require('../js-common/common.data_project');
+var cmd       = require('../js-common/common.commands');
+var task_t    = require('../js-common/tasks/common.tasks.template');
 
 //  prepare log
 var log = require('./server.log').newLog(6);
@@ -694,6 +695,31 @@ function saveProjectData ( loginData,data )  {
           if (!utils.writeObject(jobDataPath,data.tasks_add[i])) {
             response = new cmd.Response ( cmd.fe_retcode.writeError,
                                 '[00024] Job metadata cannot be written.','' );
+          }
+
+          if (('cloned_id' in data.tasks_add[i]) && data.tasks_add[i].cloned_id)  {
+            var taski      = class_map.makeClass ( data.tasks_add[i] );
+            var cloneItems = taski.cloneItems();
+            if (cloneItems.length>0)  {
+              // We copy items into cloned directory asynchronously without
+              // making sure that copy completes before response is sent back
+              // to client. This is a potential trouble, however, we assume
+              // no massive copying here, so that it should work.
+              var jobDirPath0 = getJobDirPath ( loginData,projectName,taski.cloned_id );
+              for (var j=0;j<cloneItems.length;j++)  {
+                var item_src  = path.join ( jobDirPath0,cloneItems[j] );
+                var item_dest = path.join ( jobDirPath ,cloneItems[j] );
+                fs.copy ( item_src,item_dest,function(err)  {
+                  if (err)  {
+                    log.error ( 30,'error copying item ' + item_src  );
+                    log.error ( 30,'                to ' + item_dest );
+                    log.error ( 30,'error: ' + err );
+                  }
+                  //log.standard ( 31,'copied item ' + item_src  );
+                  //log.standard ( 31,'         to ' + item_dest );
+                });
+              }
+            }
           }
 
           // create report directory

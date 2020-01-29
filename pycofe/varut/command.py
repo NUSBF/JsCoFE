@@ -3,13 +3,13 @@
 #
 # ============================================================================
 #
-#    05.07.17   <--  Date of Last Modification.
+#    29.01.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  APPLICATION CALL ROUTINES
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2020
 #
 # ============================================================================
 #
@@ -57,7 +57,7 @@ def getTimes():
 
 def call ( executable,command_line,job_dir,stdin_fname,file_stdout,
            file_stderr,log_parser=None,citation_ref=None,file_stdout_alt=None,
-           env=None ):
+           env=None,work_dir="." ):
 
     msg = "\n" + "="*80 + "\n" +\
           time.strftime("## Run %Y-%m-%d at %H:%M:%S on ") + platform.uname()[1] +\
@@ -114,7 +114,7 @@ def call ( executable,command_line,job_dir,stdin_fname,file_stdout,
                           shell=False,
                           stdin=file_stdin,
                           stdout=subprocess.PIPE if log_parser else file_stdout,
-                          stderr=file_stderr,env=environ )
+                          stderr=file_stderr,env=environ,cwd=work_dir )
         if log_parser:
             log_parser.parse_stream ( p.stdout,file_stdout )
 

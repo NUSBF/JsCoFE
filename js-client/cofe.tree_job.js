@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    19.07.19   <--  Date of Last Modification.
+ *    29.01.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Job Tree
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2019
+ *  (C) E. Krissinel, A. Lebedev 2016-2020
  *
  *  ==========================================================================
  *
@@ -925,6 +925,7 @@ JobTree.prototype.cloneJob = function ( parent_page,onAdd_func )  {
 //        if (['TaskImport','TaskFacilityImport'].indexOf(task._type)<0) {
           task.uname      = task1.uname;
           task.uoname     = task1.uoname;
+          task.cloned_id  = task1.id;
           task.input_data = $.extend ( true,{},task1.input_data );
           task.parameters = $.extend ( true,{},task1.parameters );
           for (var i=0;i<task0.harvestedTaskIds.length;i++)
