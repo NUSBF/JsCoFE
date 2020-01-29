@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    28.01.20   <--  Date of Last Modification.
+#    29.01.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -47,6 +47,7 @@ class XDSGUI(basic.TaskDriver):
     # ------------------------------------------------------------------------
 
     # the following will provide for import of generated HKL dataset(s)
+    def xds_dir          (self):  return "xds_dir"  # XDS working subdirectory
     def importDir        (self):  return "./"   # import from working directory
     def import_summary_id(self):  return None   # don't make import summary table
 
@@ -66,18 +67,32 @@ class XDSGUI(basic.TaskDriver):
         #else:
         #    rc = self.runApp ( "xdsgui",[],logType="Main",quitOnError=False )
 
+        xdshkl_path = os.path.join ( self.xds_dir(),"XDS_ASCII.HKL" )
+        xdshkl_time = 0
+
+        if not os.path.isdir(self.xds_dir()):
+            os.mkdir ( self.xds_dir() )
+        elif os.path.isfile(xdshkl_path):
+            xdshkl_time = os.path.getmtime ( xdshkl_path )
+
+        self.putMessage ( "<h3><i>XDS Gui may start beneath browser window, check there ...</h3>" )
+        self.rvrow -= 1
+        self.flush()
+
         environ = os.environ.copy()
-        environ["HOME"] = os.path.abspath ( os.getcwd() )
+        environ["HOME"] = os.path.join ( os.path.abspath(os.getcwd()),self.xds_dir() )
         environ["PATH"] = os.environ["XDSGUI_home"] + ":" +\
                           os.environ["XDS_home"] + ":" +\
                           os.environ["PATH"]
 
-        rc = self.runApp ( "xdsgui",[],logType="Main",quitOnError=False,env=environ )
+        rc = self.runApp ( "xdsgui",[],logType="Main",quitOnError=False,
+                                       env=environ,work_dir=self.xds_dir() )
+
+        self.addCitation ( "xds" )
 
         # Check for HKL files left by XDSGUI and import them as Unmerged
 
-        xdshkl_path = "XDS_ASCII.HKL"
-        if os.path.isfile(xdshkl_path):
+        if os.path.isfile(xdshkl_path) and (os.path.getmtime(xdshkl_path)!=xdshkl_time):
 
             self.putTitle ( "Unmerged Reflection Dataset" )
 
@@ -97,7 +112,10 @@ class XDSGUI(basic.TaskDriver):
                 ilist = "None"
 
             if self.task.uname:
-                self.task.uname += " / "
+                if self.task.uname.startswith("created datasets:"):
+                    self.task.uname = ""
+                else:
+                    self.task.uname += " / "
             self.task.uname += "created datasets: <i><b>" + ilist + "</b></i>"
             with open('job.meta','w') as file_:
                 file_.write ( self.task.to_JSON() )

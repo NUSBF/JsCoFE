@@ -66,6 +66,8 @@ class Xia2(basic.TaskDriver):
             if len(sys.argv)>=5:
                 nSubJobs = sys.argv[-1]
 
+        have_xds = ("XDS_home" in os.environ) and ("XDSGUI_home" in os.environ)
+
         # fetch input data
 
         imageMetadata = None
@@ -95,12 +97,19 @@ class Xia2(basic.TaskDriver):
         isigma       = self.getParameter ( sec2.ISIGMA      )
 
         space_group = "".join(space_group.split())
-        unit_cell = ",".join(unit_cell.replace(",", " ").split())
+        unit_cell   = ",".join(unit_cell.replace(",", " ").split())
 
         cmd = [ "project="  + projectName,
                 "crystal="  + crystalName,
                 "pipeline=" + pipeline,
                 "small_molecule=" + small_mol ]
+
+        if (not have_xds) and pipeline.startswith("3d"):
+            self.fail ( "<h3>XDS Software is not installed</h3>" +\
+                    "Chosen pipeline protocol requires XDS Software, " +\
+                    "installation of which was not found.",
+                    "Image metadata errors." )
+            return
 
         if sys.platform.startswith("win"):
             cmd.append ( "nproc=1" )
@@ -129,17 +138,25 @@ class Xia2(basic.TaskDriver):
             cmd.append ( "image=" + imageDirMeta[0]["path"] )
 
         # Run xia2
+
+        environ = os.environ.copy()
+        if have_xds:
+            #environ["HOME"] = os.path.join ( os.path.abspath(os.getcwd()),self.xds_dir() )
+            environ["PATH"] = os.environ["XDSGUI_home"] + ":" +\
+                              os.environ["XDS_home"] + ":" +\
+                              os.environ["PATH"]
+
         if sys.platform.startswith("win"):
-            rc = self.runApp ( "xia2.bat",cmd,logType="Main" )
+            rc = self.runApp ( "xia2.bat",cmd,logType="Main",env=environ )
         else:
-            rc = self.runApp ( "xia2",cmd,logType="Main" )
+            rc = self.runApp ( "xia2",cmd,logType="Main",env=environ )
 
         if pipeline=="2d":
-            self.addCitations ( ['dials','mosflm','aimless'] )
+            self.addCitations ( ["dials","mosflm","aimless"] )
         elif pipeline.startswith("3d"):
-            self.addCitations ( ['dials','xds'] )
+            self.addCitations ( ["xds"] )
         else:
-            self.addCitations ( ['dials','aimless'] )
+            self.addCitations ( ["dials","aimless"] )
 
         # Check for MTZ files left by Xia2 and convert them to type structure
         resDir     = "DataFiles"
@@ -229,96 +246,48 @@ class Xia2(basic.TaskDriver):
                                 rlp_json   = f1
                                 rlp_pickle = f2
                                 break
-                    """
-                    ref_names = [fn for fn in os.listdir(refDir)
-                        if any(fn.endswith(ext) for ext in ["_refined_experiments.json","_refined.pickle"])]
-                    for fname in ref_names:
-                        if fname.endswith(".pickle") and fname > rlp_pickle:
-                            rlp_pickle = fname
-                        elif fname.endswith(".json") and fname > rlp_json:
-                            rlp_json = fname
 
-                    rlp_pickle = os.path.join ( refDir,rlp_pickle )
-                    rlp_json   = os.path.join ( refDir,rlp_json   )
-                    """
+                    if rlp_json and rlp_pickle:
 
-                    self.file_stdin = None
-                    if sys.platform.startswith("win"):
-                        self.runApp ( "dials.export.bat",["format=json","d_min=8",rlp_json,rlp_pickle],
-                                      logType="Service" )
-                    else:
-                        self.runApp ( "dials.export",["format=json","d_min=8",rlp_json,rlp_pickle],
-                                      logType="Service" )
+                        self.file_stdin = None
+                        if sys.platform.startswith("win"):
+                            self.runApp ( "dials.export.bat",["format=json","d_min=8",rlp_json,rlp_pickle],
+                                          logType="Service" )
+                        else:
+                            self.runApp ( "dials.export",["format=json","d_min=8",rlp_json,rlp_pickle],
+                                          logType="Service" )
 
-                    rlpFileName = "rlp.json"
-                    rlpFilePath = os.path.join ( self.outputDir(),sweepId +"_"+ rlpFileName )
-                    if os.path.isfile(rlpFileName):
-                        os.rename ( rlpFileName,rlpFilePath )
-                    else:
-                        rlpFilePath = None
+                        rlpFileName = "rlp.json"
+                        rlpFilePath = os.path.join ( self.outputDir(),sweepId +"_"+ rlpFileName )
+                        if os.path.isfile(rlpFileName):
+                            os.rename ( rlpFileName,rlpFilePath )
+                        else:
+                            rlpFilePath = None
 
-                    # ===== For new version of rs_mapper =======
-                    """
-                    indexDir  = os.path.join ( crystalName,datasetName,sweepId,"refine" )
-                    ind_names = [fn for fn in os.listdir(indexDir)
-                        if any(fn.endswith(ext) for ext in ["_refined_experiments.json"])]
-                    ind_json = ""
-                    for fname in ind_names:
-                        if not ind_json or fname > ind_json:
-                            ind_json = fname
-                    ind_prefix = ind_json.partition("_")[0] + "_"
-                    ind_json = os.path.join ( indexDir,ind_json )
-                    """
-
-                    ind_prefix = rlp_json.partition("_")[0] + "_"
-                    d_min = d_min_for_rs_mapper(self, refDir, ind_prefix)
-
-                    #  grid size and resolution are chosen such as to keep file
-                    #  size under 10MB, or else it does not download with XHR
-                    mapFileName = "rs_mapper_output.ccp4"
-                    if sys.platform.startswith("win"):
-                        rc1 = self.runApp ( "dials.rs_mapper.bat",
-                                            ["grid_size=128","max_resolution="+d_min,
-                                             "map_file="+mapFileName,rlp_json],
-                                            quitOnError=False,logType="Service" )
-                    else:
-                        rc1 = self.runApp ( "dials.rs_mapper",
-                                            ["grid_size=128","max_resolution="+d_min,
-                                             "map_file="+mapFileName,rlp_json],
-                                            quitOnError=False,logType="Service" )
-
-                    """
-                    # ===== For old version of rs_mapper =======
-                    if rc1.msg:
-                        indexDir  = os.path.join ( crystalName,datasetName,sweepId,"index" )
-                        ind_names = [fn for fn in os.listdir(indexDir)
-                            if any(fn.endswith(ext) for ext in ["_datablock.json"])]
-                        ind_json = ""
-                        for fname in ind_names:
-                            if not ind_json or fname < ind_json:
-                                ind_json = fname
-                        ind_prefix = ind_json.partition("_")[0] + "_"
-                        ind_json   = os.path.join ( indexDir,ind_json )
-                        d_min = d_min_for_rs_mapper(self, indexDir, ind_prefix)
-
-                        self.open_stdin  ()
-                        self.write_stdin ( ind_json + "\n" )
-                        self.close_stdin ()
+                        ind_prefix = rlp_json.partition("_")[0] + "_"
+                        d_min = d_min_for_rs_mapper(self, refDir, ind_prefix)
 
                         #  grid size and resolution are chosen such as to keep file
                         #  size under 10MB, or else it does not download with XHR
+                        mapFileName = "rs_mapper_output.ccp4"
                         if sys.platform.startswith("win"):
-                            self.runApp ( "dials.rs_mapper.bat",["grid_size=128","max_resolution="+d_min],
-                                          logType="Service" )
+                            rc1 = self.runApp ( "dials.rs_mapper.bat",
+                                                ["grid_size=128","max_resolution="+d_min,
+                                                 "map_file="+mapFileName,rlp_json],
+                                                quitOnError=False,logType="Service" )
                         else:
-                            self.runApp ( "dials.rs_mapper",["grid_size=128","max_resolution="+d_min],
-                                          logType="Service" )
-                    """
+                            rc1 = self.runApp ( "dials.rs_mapper",
+                                                ["grid_size=128","max_resolution="+d_min,
+                                                 "map_file="+mapFileName,rlp_json],
+                                                quitOnError=False,logType="Service" )
 
-                    mapFilePath = os.path.join ( self.outputDir(),sweepId +"_"+ mapFileName + ".map" )
-                    if os.path.isfile(mapFileName):
-                        os.rename ( mapFileName,mapFilePath )
+                        mapFilePath = os.path.join ( self.outputDir(),sweepId +"_"+ mapFileName + ".map" )
+                        if os.path.isfile(mapFileName):
+                            os.rename ( mapFileName,mapFilePath )
+                        else:
+                            mapFilePath = None
                     else:
+                        rlpFilePath = None
                         mapFilePath = None
 
                     # import unmerged mtz file for the sweep:
@@ -345,7 +314,6 @@ class Xia2(basic.TaskDriver):
                                     imported_data[0].dname,
                                     "View in reciprocal space",
                                     grid_id,0,1 )
-
                         self.rvrow += 1
 
                     self.putMessage ( "&nbsp;" )
@@ -361,7 +329,10 @@ class Xia2(basic.TaskDriver):
             ilist = "None"
 
         if self.task.uname:
-            self.task.uname += " / "
+            if self.task.uname.startswith("created datasets:"):
+                self.task.uname = ""
+            else:
+                self.task.uname += " / "
         self.task.uname += "created datasets: <i><b>" + ilist + "</b></i>"
         with open('job.meta','w') as file_:
             file_.write ( self.task.to_JSON() )

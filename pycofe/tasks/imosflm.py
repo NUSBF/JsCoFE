@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    22.06.19   <--  Date of Last Modification.
+#    29.01.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2019
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2019-2020
 #
 # ============================================================================
 #
@@ -93,7 +93,10 @@ class iMosflm(basic.TaskDriver):
                     ilist = "None"
 
                 if self.task.uname:
-                    self.task.uname += " / "
+                    if self.task.uname.startswith("created datasets:"):
+                        self.task.uname = ""
+                    else:
+                        self.task.uname += " / "
                 self.task.uname += "created datasets: <i><b>" + ilist + "</b></i>"
                 with open('job.meta','w') as file_:
                     file_.write ( self.task.to_JSON() )

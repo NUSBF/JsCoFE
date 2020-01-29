@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    28.01.20   <--  Date of Last Modification.
+ *    29.01.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -66,7 +66,8 @@ TaskXDSGUI.prototype.constructor = TaskXDSGUI;
 
 TaskXDSGUI.prototype.icon = function()  { return 'task_xdsgui'; }
 TaskXDSGUI.prototype.requiredEnvironment = function() { return ['CCP4','XDS_home','XDSGUI_home']; }
-TaskXDSGUI.prototype.lowestClientVersion = function() { return '1.6.005 [28.01.2019]'; }
+TaskXDSGUI.prototype.lowestClientVersion = function() { return '1.6.005 [29.01.2019]'; }
+TaskXDSGUI.prototype.cloneItems          = function() { return ['xds_dir']; }
 
 TaskXDSGUI.prototype.currentVersion = function()  {
   var version = 0;

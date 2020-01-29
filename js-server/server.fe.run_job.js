@@ -442,7 +442,6 @@ function runJob ( loginData,data, callback_func )  {
             meta.email     = uData.email;
           }
         }
-//        meta.check_tokens = feJobRegister.getListOfTokens ( nc_number );
 
         send_dir.sendDir ( jobDir,'*',nc_url,cmd.nc_command.runJob,meta,
 
@@ -453,14 +452,6 @@ function runJob ( loginData,data, callback_func )  {
             // NC and client.
             feJobRegister.addJob ( rdata.job_token,nc_number,loginData,
                                    task.project,task.id );
-
-            /*
-            // clean dead, abandoned and runaway jobs
-            if ('absent_tokens' in rdata)
-              for (var i=0;i<rdata.absent_tokens.length;i++)
-                feJobRegister.removeJob ( rdata.absent_tokens[i] );
-            */
-
             writeFEJobRegister();
 
             // update the user ration state

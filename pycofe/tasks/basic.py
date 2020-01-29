@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    06.01.20   <--  Date of Last Modification.
+#    29.01.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -976,7 +976,7 @@ class TaskDriver(object):
             return False
 
 
-    def runApp ( self,appName,cmd,logType="Main",quitOnError=True,env=None ):
+    def runApp ( self,appName,cmd,logType="Main",quitOnError=True,env=None,work_dir="." ):
 
         input_script = None
         if self.file_stdin:
@@ -991,7 +991,8 @@ class TaskDriver(object):
 
         rc = command.call ( appName,cmd,"./",input_script,
                             logfile,self.file_stderr,self.log_parser,
-                            file_stdout_alt=logfile_alt,env=env )
+                            file_stdout_alt=logfile_alt,env=env,
+                            work_dir=work_dir )
         self.file_stdin = None
         self.flush()
 

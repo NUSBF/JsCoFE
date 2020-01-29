@@ -3,13 +3,13 @@
 #
 # ============================================================================
 #
-#    10.12.19   <--  Date of Last Modification.
+#    29.01.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  Citation Framework Functions
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2018-2019
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2018-2020
 #
 # ============================================================================
 #
@@ -566,6 +566,21 @@ citations = {
                             'doi'     : '10.1107/S0021889807021206'
                         }]
                   },
+
+
+    'refine' :    { 'name'     : 'BUSTER',
+                    'category' : 'primary',
+                    'refs'     : [{
+                            'authors' : 'Bricogne G., Blanc E., Brandl M., Flensburg C., Keller P., Paciorek W., Roversi P, Sharff A., Smart O.S., Vonrhein C., Womack T.O.',
+                            'title'   : 'BUSTER Version 2.10.3',
+                            'journal' : 'Cambridge, United Kingdom: Global Phasing Ltd.',
+                            'volume'  : '',
+                            'year'    : '2017',
+                            'pages'   : '',
+                            'doi'     : ''
+                        }]
+                  },
+
 
     'sculptor' :  { 'name'     : 'Sculptor',
                     'category' : 'primary',

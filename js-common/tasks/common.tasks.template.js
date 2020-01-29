@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    28.01.20   <--  Date of Last Modification.
+ *    29.01.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -139,6 +139,7 @@ TaskTemplate.prototype.requiredEnvironment = function() { return ['CCP4']; }
 
 TaskTemplate.prototype.doNotPackSuffixes   = function() { return ['.map']; }
 TaskTemplate.prototype.doPackSuffixes      = function() { return ['']; }
+TaskTemplate.prototype.cloneItems          = function() { return [];   }
 
 // when data class version is changed here, change it also in python
 // constructors
@@ -189,7 +190,21 @@ if (!dbx)  {
       this.oname = base_name;
   }
 
+  TaskTemplate.prototype.compareEnvironment = function ( reqEnv,env )  {
+    var ok = true;
+    for (var i=0;(i<reqEnv.length) && ok;i++)
+      if (reqEnv[i].constructor === Array)  {
+        ok = false;
+        for (var j=0;(j<reqEnv[i].length) && (!ok);j++)
+          ok = (env.indexOf(reqEnv[i][j])>=0);
+      } else
+        ok = (env.indexOf(reqEnv[i])>=0);
+    return ok;
+  }
+
   TaskTemplate.prototype.checkEnvironment = function ( env )  {
+    return this.compareEnvironment ( this.requiredEnvironment(),env );
+    /*
     var reqEnv = this.requiredEnvironment();
     var ok = true;
     for (var i=0;(i<reqEnv.length) && ok;i++)
@@ -201,6 +216,7 @@ if (!dbx)  {
         ok = (env.indexOf(reqEnv[i])>=0);
   //console.log ( ' ' + env + ' <-> ' + reqEnv + ' = ' + ok );
     return ok;
+    */
   }
 
   TaskTemplate.prototype.isTaskAvailable = function()  {
