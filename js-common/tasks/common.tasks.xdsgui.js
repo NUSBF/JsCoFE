@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    29.01.20   <--  Date of Last Modification.
+ *    31.01.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -76,7 +76,14 @@ TaskXDSGUI.prototype.currentVersion = function()  {
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
 }
 
-if (__template)  {
+if (!__template)  {
+  //  for client side
+
+  TaskXDSGUI.prototype.onJobDialogStart = function ( job_dialog )  {
+    job_dialog.run_btn.click();  // start automatically
+  }
+
+} else  {
   //  for server side
 
   var conf = require('../../js-server/server.configuration');

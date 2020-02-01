@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    29.01.20   <--  Date of Last Modification.
+#    31.01.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -53,6 +53,10 @@ class iMosflm(basic.TaskDriver):
     # ------------------------------------------------------------------------
 
     def run(self):
+
+        self.putMessage ( "<h3><i>iMOSFLM is starting on your device, please wait ...</h3>" )
+        self.rvrow -= 1
+        self.flush()
 
         if sys.platform.startswith("win"):
             os.environ['MOSDIR'] = "."

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    28.01.20   <--  Date of Last Modification.
+ *    31.01.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -346,7 +346,6 @@ var row      = 0;
 
   if (__user_role==role_code.developer)
     this.makeSection ( 'Tasks in Development',[
-      new TaskXDSGUI       (),
       new TaskBuster       (),
       new TaskMergeData    (),
       new TaskHelloWorld   ()
@@ -377,6 +376,7 @@ var row      = 0;
 
   this.makeSection ( 'Data Processing',[
     new TaskXia2        (),
+    new TaskXDSGUI      (),
     new TaskDUI         (),
     new TaskIMosflm     (),
     new TaskAimless     (),

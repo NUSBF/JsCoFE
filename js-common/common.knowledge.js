@@ -1,7 +1,7 @@
 /*
  *  ========================================================================
  *
- *    22.01.20   <--  Date of Last Modification.
+ *    31.01.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  ------------------------------------------------------------------------
  *
@@ -180,7 +180,10 @@ var _taskIndex = {
   'v'  : { type: 'TaskImportPDB'      , after: ['0','B','C','D','E','m'] },
 
   // suggest EnsemblePrepMG alike TaskEnsemblePrepSeq
-  'w'  : { type: 'TaskEnsemblePrepMG' , after: ['B','D','m'] }
+  'w'  : { type: 'TaskEnsemblePrepMG' , after: ['B','D','m'] },
+
+  // suggest XDSGUI after root
+  'x'  : { type: 'TaskXDSGUI'         , after: ['0'] }
 
 };
 
