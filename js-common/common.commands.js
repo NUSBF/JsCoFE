@@ -2,7 +2,7 @@
 /*
  *  ===========================================================================
  *
- *    28.01.20   <--  Date of Last Modification.
+ *    31.01.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  ---------------------------------------------------------------------------
  *
@@ -25,7 +25,7 @@
 
 function appName()  { return 'CCP4 Cloud' }  // application name for reporting
 
-var jsCoFE_version = '1.6.005 [28.01.2020]';
+var jsCoFE_version = '1.6.006 [31.01.2020]';
 
 function appVersion()  {
   return jsCoFE_version;

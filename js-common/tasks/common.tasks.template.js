@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    29.01.20   <--  Date of Last Modification.
+ *    31.01.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -169,6 +169,8 @@ TaskTemplate.prototype.cpu_credit = function()  {
 // export such that it could be used in both node and a browser
 if (!dbx)  {
   // for client side
+
+  TaskTemplate.prototype.onJobDialogStart = function ( job_dialog )  {}
 
   TaskTemplate.prototype.setOName = function ( base_name )  {
   // sets default oname (output file name template) according to account and

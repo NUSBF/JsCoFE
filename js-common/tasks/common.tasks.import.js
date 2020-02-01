@@ -85,6 +85,15 @@ if (!__template)  {
     else  return 'task_import';
   }
 
+  TaskImport.prototype.onJobDialogStart = function ( job_dialog )  {
+
+//    $(job_dialog.inputPanel.upload.selFile.element).click();
+
+//    job_dialog.inputPanel.upload.button.setEnabled ( true );  // start automatically
+    job_dialog.inputPanel.upload.button.click();  // start automatically
+
+  }
+
   // reserved function name
   TaskImport.prototype.makeInputPanel = function ( dataBox )  {
   // makes input panel for Import task; dataBox is not used as import task

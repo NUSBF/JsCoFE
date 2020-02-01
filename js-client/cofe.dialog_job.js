@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    23.01.20   <--  Date of Last Modification.
+ *    31.01.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -92,7 +92,8 @@ function JobDialog ( params,          // data and task projections up the tree b
   this.initialHeight = size[1];
 
   var taskId = this.task.id;
-  this.dialog_options = {
+  (function(dlg){
+    dlg.dialog_options = {
       resizable : true,
       //height    : 'auto',
       //width     : w,
@@ -102,12 +103,18 @@ function JobDialog ( params,          // data and task projections up the tree b
       open      : function(event, ui) {
         if (__any_mobile_device)
           $(this).siblings('.ui-dialog-titlebar').remove();
+        if (dlg.task.state==job_code.new)  {
+          window.setTimeout ( function(){
+            dlg.task.onJobDialogStart ( dlg );
+          },0);
+        }
       },
       focus     : function() {
                     if (onDlgSignal_func)
                       onDlgSignal_func ( taskId,job_dialog_reason.select_node );
                   }
-  };
+    };
+  }(this))
 
   if (__any_mobile_device)
     this.dialog_options.position =  { my : 'left top',   // job dialog position reference
