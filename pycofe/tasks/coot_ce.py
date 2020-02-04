@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    24.01.20   <--  Date of Last Modification.
+#    04.02.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -55,6 +55,7 @@ class Coot(basic.TaskDriver):
         #self.flush()
 
         # fetch input data
+        """
         data_list = [self.input_data.data.ixyz[0]]
         if hasattr(self.input_data.data,"aux_struct"):
             data_list += self.input_data.data.aux_struct
@@ -67,6 +68,15 @@ class Coot(basic.TaskDriver):
         for s in data_list:
             if s.getXYZFileName():
                 args += ["--pdb",s.getXYZFilePath(self.inputDir())]
+        """
+
+        # make command line arguments
+        args = []
+        ixyz = self.input_data.data.ixyz
+        for i in range(len(ixyz)):
+            ixyz[i] = self.makeClass ( ixyz[i] )
+            if ixyz[i].getXYZFileName():
+                args += ["--pdb",ixyz[i].getXYZFilePath(self.inputDir())]
 
         coot_scr = "coot_jscofe.py"
         coot_scr = os.path.join ( os.path.dirname ( os.path.abspath(__file__)),"..","proc",coot_scr )
@@ -93,7 +103,7 @@ class Coot(basic.TaskDriver):
 
             self.putTitle ( "Output coordinate data" )
 
-            f = ixyz.getXYZFileName()
+            f = ixyz[0].getXYZFileName()
             if not f:
                 f = istruct.getSubFileName()
             fnprefix = f[:f.find("_")]

@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    29.01.20   <--  Date of Last Modification.
+#    04.02.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -802,10 +802,12 @@ class TaskDriver(object):
         return
 
     def makeClass ( self,data_obj ):
-        if type(data_obj) == dict:
+        if (type(data_obj)==dict) and ("citations" in data_obj):
             clist = data_obj["citations"]
-        else:
+        elif hasattr(data_obj,"citations"):
             clist = data_obj.citations
+        else:
+            clist = []
         self._add_citations ( clist )
         return databox.make_class ( data_obj )
 

@@ -2,11 +2,10 @@
 # from Bernhard Lohkamp for Eugene
 # run: --script coot_jscofe.py
 #
-#  05.12.2019
+#  04.02.2020
 #
 
-info_dialog ( "!!! IMPORTANT TEMPORARY CHANGE !!!\n" +\
-              "In order to save the edited structure in your Project,\n" +\
+info_dialog ( "In order to save the edited structure in your Project,\n" +\
               "use \"Save coordinates\" from Main Menu/Files\n" +\
               "before closing Coot, without changing file name\n" +\
               "and directory offered by default, and only then\n" +\
