@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    15.01.20   <--  Date of Last Modification.
+ *    04.02.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -39,6 +39,18 @@ function TaskCootCE()  {
   this.nc_type = 'client';    // job may be run only on client NC
 
   this.input_dtypes = [{      // input data types
+      data_type : {'DataStructure':['xyz'],'DataXYZ':[],'DataEnsemble':[]}, // data type(s) and subtype(s)
+      label     : 'Structure to edit',     // label for input dialog
+      inputId   : 'ixyz',     // input Id for referencing input fields
+      cast      : 'xyz',
+      version   : 0,          // minimum data version allowed
+      min       : 1,          // minimum acceptable number of data instances
+      max       : 20          // maximum acceptable number of data instances
+    }
+  ];
+
+  /*
+  this.input_dtypes = [{      // input data types
       data_type : {'DataXYZ':[],'DataEnsemble':[]}, // data type(s) and subtype(s)
       label     : 'Structure to edit',     // label for input dialog
       inputId   : 'ixyz',     // input Id for referencing input fields
@@ -53,6 +65,7 @@ function TaskCootCE()  {
       max       : 20            // maximum acceptable number of data instances
     }
   ];
+  */
 
 }
 
@@ -81,6 +94,28 @@ if (__template)  {
   //  for server side
 
   var conf = require('../../js-server/server.configuration');
+
+/*
+  TaskCootCE.prototype.makeInputData = function ( loginData,jobDir )  {
+
+    // put hkl and structure data in input databox for copying their files in
+    // job's 'input' directory
+
+    ixyz = [];
+
+    if ('istruct' in this.input_data.data)  {
+      var istruct = this.input_data.data['istruct'];
+      for (var i=0;i<istruct.length;i++)
+        if (istruct[i]._type=='DataRevision')
+              ixyz.push ( istruct[i].Structure );
+        else  ixyz.push ( istruct[i] );
+    }
+    this.input_data.data['ixyz'] = ixyz
+
+    __template.TaskTemplate.prototype.makeInputData.call ( this,loginData,jobDir );
+
+  }
+*/
 
   TaskCootCE.prototype.getCommandLine = function ( jobManager,jobDir )  {
     return [conf.pythonName(), '-m', 'pycofe.tasks.coot_ce', jobManager, jobDir, this.id];
