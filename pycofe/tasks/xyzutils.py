@@ -52,18 +52,18 @@ class XyzUtils(basic.TaskDriver):
 
         st = gemmi.read_structure ( xyzpath )
 
-        msg = "<ul>"
-
-        if self.getParameter(sec1.RMSOLVENT_CBX)=="True":
-            msg += "<li>waters were removed</li>"
-            st.remove_waters()
+        log = []
 
         if self.getParameter(sec1.RMLIGANDS_CBX)=="True":
-            msg += "<li>waters and ligands were removed</li>"
+            log.append ( "waters and ligands removed" )
             st.remove_ligands_and_waters()
 
+        elif self.getParameter(sec1.RMSOLVENT_CBX)=="True":
+            log.append ( "waters removed" )
+            st.remove_waters()
+
         if self.getParameter(sec1.RMPROTEIN_CBX)=="True":
-            msg1 = ""
+            clist = []
             for model in st:
                 cnames = []
                 for ch in model:
@@ -77,36 +77,68 @@ class XyzUtils(basic.TaskDriver):
                 self.stdoutln ( ">>>>>>>>>> " + str(cnames) )
                 for name in [ch.name for ch in model if ch.get_polymer().check_polymer_type() in\
                                 (gemmi.PolymerType.PeptideL,gemmi.PolymerType.PeptideD)]:
-                    if msg1:  msg1 += ","
-                    msg1 += name
+                    clist.append ( name )
                     model.remove_chain ( name )
-            if msg1:
-                msg += "<li>protein chains " + msg1 + " were removed</li>"
+            if len(clist)>0:
+                log.append ( "protein chain(s) " + ",".join(clist) + " removed" )
 
         if self.getParameter(sec1.RMDNARNA_CBX)=="True":
-            msg1 = ""
+            clist = []
             for model in st:
                 for name in [ch.name for ch in model if ch.get_polymer().check_polymer_type() in\
                                 (gemmi.PolymerType.Dna,gemmi.PolymerType.Rna,
                                  gemmi.PolymerType.DnaRnaHybrid)]:
-                    if msg1:  msg1 += ","
-                    msg1 += name
+                    clist.append ( name )
                     model.remove_chain ( name )
-            if msg1:
-                msg += "<li>protein chains " + msg1 + " were removed</li>"
+            if len(clist)>0:
+                log.append ( "dna/rna chain(s) " + ",".join(clist) + " removed" )
 
         st.remove_empty_chains()
 
+        xyzout = ixyz.lessDataId ( ixyz.getXYZFileName() )
+        self.outputFName = os.path.splitext(xyzout)[0]
         if self.getParameter(sec1.SPLITTOCHAINS_CBX)=="True":
+            log.append ( "split in chains" )
+            self.putMessage ( "<b>Data object <i>" + ixyz.dname +\
+                              "</i> transformed:</b><ul><li>" +\
+                              "</li><li>".join(log) +\
+                              "</li></ul>" )
+            self.putTitle ( "Results" )
             for model in st:
                 for chain in model:
-                    xyzout = self.getOFName ( "." + model.name + "." + chain.name + ".pdb" )
+                    st1 = gemmi.Structure()
+                    md1 = gemmi.Model ( "1" )
+                    md1.add_chain ( chain )
+                    st1.add_model ( md1   )
+                    if len(st)>1:
+                        xyzout = self.getOFName ( "." + model.name + "." + chain.name + ".pdb" )
+                    else:
+                        xyzout = self.getOFName ( "." + chain.name + ".pdb" )
+                    st1.write_pdb ( xyzout )
+                    oxyz = self.registerXYZ ( xyzout,checkout=True )
+                    if oxyz:
+                        oxyz.putXYZMeta  ( self.outputDir(),self.file_stdout,self.file_stderr,None )
+                        self.putMessage (
+                            "&nbsp;<br><b>Assigned name&nbsp;&nbsp;&nbsp;:</b>&nbsp;&nbsp;&nbsp;" +
+                            oxyz.dname )
+                        if len(st)>1:
+                            self.putXYZWidget ( "xyz_btn","Model " + model.name +
+                                                          ", chain " + chain.name,oxyz,-1 )
+                        else:
+                            self.putXYZWidget ( "xyz_btn","Chain " + chain.name,oxyz,-1 )
+                    else:
+                        # close execution logs and quit
+                        self.fail ( "<h3>XYZ Data was not formed (error)</h3>",
+                                    "XYZ Data was not formed" )
 
         else:
-            xyzout = ixyz.lessDataId ( ixyz.getXYZFileName() )
-            self.outputFName = os.path.splitext(xyzout)[0]
-            #xyzout = os.path.splitext(ixyz.getXYZFileName())[0] + ".pdb"
             st.write_pdb ( xyzout )
+
+            self.putMessage ( "<b>Data object <i>" + ixyz.dname +\
+                              "</i> transformed:</b><ul><li>" +\
+                              "</li><li>".join(log) +\
+                              "</li></ul>" )
+            self.putTitle ( "Results" )
 
             if istruct._type==dtype_xyz.dtype():
                 oxyz = self.registerXYZ ( xyzout,checkout=True )
@@ -164,12 +196,11 @@ class XyzUtils(basic.TaskDriver):
                     self.fail ( "<h3>Structure was not formed (error)</h3>",
                                 "Structure was not formed" )
 
-        """
         # this will go in the project tree line
-        self.generic_parser_summary["editrevision_struct"] = {
-          "summary_line" : ", ".join(summary) + " replaced"
-        }
-        """
+        if len(log)>0:
+            self.generic_parser_summary["xyzutils"] = {
+              "summary_line" : ", ".join(log)
+            }
 
         # close execution logs and quit
         self.success()
