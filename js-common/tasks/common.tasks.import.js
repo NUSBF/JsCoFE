@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    08.12.19   <--  Date of Last Modification.
+ *    07.02.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Import Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2019
+ *  (C) E. Krissinel, A. Lebedev 2016-2020
  *
  *  ==========================================================================
  *
@@ -39,6 +39,9 @@ function TaskImport()  {
   this.title     = 'Data Import';
   this.helpURL   = './html/jscofe_task_import.html';
   this.fasttrack = true;  // enforces immediate execution
+
+  this.file_mod     = {'rename':{},'annotation':[]}; // file modification and annotation
+  this.upload_files = [];
 
   // declare void input data for passing pre-existing revisions through the task
   this.input_dtypes = [{       // input data types
@@ -75,7 +78,9 @@ if (!__template)  {
   // for client side
 
   TaskImport.prototype.customDataClone = function ( task )  {
-    this.uname = '';
+    this.uname        = '';
+    this.file_mod     = {'rename':{},'annotation':[]}; // file modification and annotation
+    this.upload_files = [];
     return;
   }
 
@@ -86,12 +91,25 @@ if (!__template)  {
   }
 
   TaskImport.prototype.onJobDialogStart = function ( job_dialog )  {
+    job_dialog.inputPanel.upload.button.click();
+  }
 
-//    $(job_dialog.inputPanel.upload.selFile.element).click();
-
-//    job_dialog.inputPanel.upload.button.setEnabled ( true );  // start automatically
-    job_dialog.inputPanel.upload.button.click();  // start automatically
-
+  TaskImport.prototype.onJobDialogClose = function ( job_dialog,callback_func )  {
+    if ((this.upload_files.length>0) && (this.state==job_code.new))  {
+      new QuestionBox ( 'Import not finished',
+                        '<h3>Import not finished</h3>' +
+                        'You have uploaded data files, however the import<br>' +
+                        'is not finished yet: the files need to be processed<br>' +
+                        'before they can be used in subsequent tasks.',
+                        'Finish now',function(){
+                          job_dialog.run_btn.click();
+                          callback_func ( false );
+                        },
+                        'Finish later',function(){
+                          callback_func ( true );
+                        });
+    } else
+      callback_func ( true );
   }
 
   // reserved function name
@@ -126,7 +144,7 @@ if (!__template)  {
     div.customData.login_token = __login_token;
     div.customData.project     = this.project;
     div.customData.job_id      = this.id;
-    div.customData.file_mod    = {'rename':{},'annotation':[]}; // file modification and annotation
+    div.customData.file_mod    = this.file_mod; // file modification and annotation
     (function(panel,task){
       panel.upload = new Upload ( panel.customData,
         { 'type'   : 'project_data',
@@ -150,6 +168,19 @@ if (!__template)  {
         function(returnCode){
           if (!returnCode)
             task.sendInputStateEvent ( panel );
+          if (panel.upload.new_files.length>0)  {
+            panel.upload.button.setText ( 'Upload more files' );
+            new QuestionBox ( 'Files uploaded',
+                              '<h3>Files uploaded:</h3><ul><li>' +
+                              panel.upload.new_files.join('</li><li>') +
+                              '</li></ul?',
+                              'Upload more files',function(){
+                                panel.upload.button.click();
+                              },
+                              'Finish import',function(){
+                                panel.job_dialog.run_btn.click();
+                              });
+          }
         });
 
       panel.upload.addSignalHandler ( cofe_signals.uploadEvent, function(detail){
@@ -157,9 +188,12 @@ if (!__template)  {
       });
 
     }(div,this));
+
     div.upload.setUploadedFiles ( this.upload_files );
     if (this.upload_files.length<=0)
       this.sendTaskStateSignal ( div,'hide_run_button' );
+    else
+      div.upload.button.setText ( 'Upload more files' );
 
     div.grid.setWidget ( div.upload,grid_row+1,0,1,1 );
     div.panel.setScrollable ( 'hidden','hidden' );
@@ -260,7 +294,6 @@ if (!__template)  {
         annotation.items.push ({
           'rename'   : fname1,
           'contents' : '>' + contents_list[i].trim(),
-          //'contents' : '>' + contents_list[i],
           'type'     : 'none'
         });
       }
@@ -284,7 +317,7 @@ if (!__template)  {
       var new_name  = '';
 
       while ((!isSeqFile) && (p<files.length))  {
-        var ns    = files[p].name.split('.');
+        var ns = files[p].name.split('.');
         if (ns[ns.length-1].toLowerCase()=='txt')
           ns.pop();
         isSeqFile = (ns.length>1) &&
@@ -366,10 +399,11 @@ if (!__template)  {
     // stores it in internal fields
     TaskTemplate.prototype.collectInput.call ( this,inputPanel );
     this.upload_files = inputPanel.upload.upload_files;
+    this.file_mod     = inputPanel.customData.file_mod;
     if (this.upload_files.length>0)
       return '';   // input is Ok
     else
-      return 'No file(s) have been selected';  // input is not ok
+      return '<b><i>No file(s) have been uploaded</i></b>';  // input is not ok
   }
 
 

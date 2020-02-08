@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    20.01.20   <--  Date of Last Modification.
+ *    07.02.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -993,6 +993,11 @@ Button.prototype.getText = function()  {
 
 Button.prototype.setButton = function ( text,icon_uri )  {
   this._set_button ( text,icon_uri );
+  return this;
+}
+
+Button.prototype.setText = function ( text )  {
+  this._set_button ( text,'' );
   return this;
 }
 

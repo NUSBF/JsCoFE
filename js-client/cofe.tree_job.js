@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    29.01.20   <--  Date of Last Modification.
+ *    07.02.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -262,13 +262,14 @@ JobTree.prototype.makeNodeName = function ( task )  {
         node_name += task.uname;
   else  node_name += task.name;
 
+  /*
   switch (task.state)  {
 
     case job_code.exiting  : node_name += ' <b><i>-- exiting.</i></b>';
                              break;
 
     case job_code.finished : var S = task.score_string();
-                             if (S=='')  S = '-- done.';
+                             if (S=='')  S = '-- finished.';
                              node_name += ' <b><i>' + S + '</i></b>';
                              break;
 
@@ -281,7 +282,31 @@ JobTree.prototype.makeNodeName = function ( task )  {
     default: ;
 
   }
+  */
 
+  var resind = '';
+  switch (task.state)  {
+
+    case job_code.exiting  : resind = 'exiting';
+                             break;
+
+    case job_code.finished : resind = task.score_string();
+                             if (resind=='')  resind = 'finished.';
+                             break;
+
+    case job_code.failed   : resind = 'failed.';
+                             break;
+
+    case job_code.stopped  : resind = 'terminated.';
+                             break;
+
+    default: ;
+
+  }
+
+  if (resind && (resind!='*none*'))
+    node_name += ' <b><i>-- <font style="font-size:80%">' + resind +
+                 '</font></i></b>';
   return node_name;
 
 }
@@ -482,6 +507,8 @@ JobTree.prototype._add_job = function ( insert_bool,task,dataBox,
 
   if (this.selected_node_id)  {
 
+    //this.forceSingleSelection();
+
     this.projectData.jobCount++;
 
     task.project           = this.projectData.desc.name;
@@ -519,9 +546,10 @@ JobTree.prototype._add_job = function ( insert_bool,task,dataBox,
     if (onAdd_func)
       onAdd_func();
 
+    /*
     (function(tree){
       tree.saveProjectData ( [task],[],function(){
-        tree.openJob ( dataBox,parent_page  );
+        window.setTimeout ( function(){
         if (insert_bool)
           window.setTimeout ( function(){
             for (var key in tree.node_map)  {
@@ -530,8 +558,23 @@ JobTree.prototype._add_job = function ( insert_bool,task,dataBox,
                 tree.resetNodeName ( node.id );
             }
           },100 );
-      } );
+      });
     }(this))
+    */
+
+    this.openJob ( dataBox,parent_page );
+    this.saveProjectData ( [task],[],null );
+
+    if (insert_bool)
+      (function(tree){
+        window.setTimeout ( function(){
+          for (var key in tree.node_map)  {
+            var node = tree.node_map[key];
+            if (node)
+              tree.resetNodeName ( node.id );
+          }
+        },100 );
+      }(this))
 
   } else
     alert ( ' no selection in the tree! ' );

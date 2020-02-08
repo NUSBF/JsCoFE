@@ -121,8 +121,6 @@ if (!__template)  {
     this.sendTaskStateSignal ( inpParamRef.grid.inputPanel,signal );
   }
 
-
-
 } else  {
   //  for server side
 

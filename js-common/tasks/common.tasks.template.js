@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    31.01.20   <--  Date of Last Modification.
+ *    07.02.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -171,6 +171,9 @@ if (!dbx)  {
   // for client side
 
   TaskTemplate.prototype.onJobDialogStart = function ( job_dialog )  {}
+  TaskTemplate.prototype.onJobDialogClose = function ( job_dialog,callback_func ) {
+    callback_func ( true );
+  }
 
   TaskTemplate.prototype.setOName = function ( base_name )  {
   // sets default oname (output file name template) according to account and
@@ -2103,10 +2106,10 @@ if (!dbx)  {
             default : ;
           }
       }
-      if (S!='')
-        S = '-- <font style="font-size:80%">' + S + '</font>';
+//      if (S.trim()!='')
+//        S = '-- <font style="font-size:80%">' + S + '</font>';
     }
-    return S;
+    return S.trim();
   }
 
 
