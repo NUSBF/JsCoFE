@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    27.01.20   <--  Date of Last Modification.
+ *    07.02.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -82,7 +82,7 @@ function Upload ( customData,upl_data,onSelect_func,onSelectPDB_func,onReady_fun
                                      image_path('open_file'),0,col++,1,1 )
                         .setNoWrap();
     } else {
-      this.button = grid.setButton ( 'Upload local file(s)',image_path('open_file'),0,col++,1,1 )
+      this.button = grid.setButton ( 'Upload file(s)',image_path('open_file'),0,col++,1,1 )
                         .setNoWrap();
       if (onSelectPDB_func)  {
         this.pdb_button = grid.setButton ( 'Select PDB entry(s)',image_path('open_file'),0,col++,1,1 )
@@ -204,6 +204,7 @@ function Upload ( customData,upl_data,onSelect_func,onSelectPDB_func,onReady_fun
             success     : function(data){
               var response = jQuery.extend ( true, new Response(),
                                              jQuery.parseJSON(data) );
+              upl.new_files = [];
               if (response.status!=fe_retcode.ok)  {
                 makeCommErrorMessage  ( 'Upload',response );
                 upl.indicator.setText ( 'upload failed'   );
@@ -323,9 +324,12 @@ Upload.prototype = Object.create ( Widget.prototype );
 Upload.prototype.constructor = Upload;
 
 Upload.prototype.setUploadedFiles = function ( file_list )  {
+  this.new_files = [];
   for (var i=0;i<file_list.length;i++)
-    if (this.upload_files.indexOf(file_list[i])<0)
+    if (this.upload_files.indexOf(file_list[i])<0)  {
       this.upload_files.push ( file_list[i] );
+      this.new_files   .push ( file_list[i] );
+    }
   if ('fileListPanel' in this)  {
     if (this.upload_files.length>0)  {
       this.fileListTitle.show();

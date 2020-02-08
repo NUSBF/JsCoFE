@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    10.10.19   <--  Date of Last Modification.
+ *    08.02.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Facility Import Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2018-2019
+ *  (C) E. Krissinel, A. Lebedev 2018-2020
  *
  *  =================================================================
  *
@@ -42,7 +42,8 @@ function TaskCloudImport()  {
   this.file_mod    = {'rename':{},'annotation':[]}; // file modification and annotation
   this.fasttrack   = true;  // enforces immediate execution
 
-  this.upload_files = [];  // list of uploaded files
+  this.selected_items = [];  // list of selected file items
+  this.file_mod       = {'rename':{},'annotation':[]}; // file modification and annotation
 
   // declare void input data for passing pre-existing revisions through the task
   this.input_dtypes = [{       // input data types
@@ -86,9 +87,33 @@ if (!__template)  {
   // This function is called at cloning jobs and should do copying of all
   // custom class fields not found in the Template class
   TaskCloudImport.prototype.customDataClone = function ( task )  {
-    this.uname = '';
+    this.uname        = '';
     this.currentCloudPath = task.currentCloudPath;
+    this.selected_items = [];
+    this.file_mod     = {'rename':{},'annotation':[]}; // file modification and annotation
     return;
+  }
+
+  TaskCloudImport.prototype.onJobDialogStart = function ( job_dialog )  {
+    job_dialog.inputPanel.select_btn.click();
+  }
+
+  TaskCloudImport.prototype.onJobDialogClose = function ( job_dialog,callback_func )  {
+    if ((this.selected_items.length>0) && (this.state==job_code.new))  {
+      new QuestionBox ( 'Import not finished',
+                        '<h3>Import not finished</h3>' +
+                        'You have selected data files, however the import<br>' +
+                        'is not finished yet: the files need to be processed<br>' +
+                        'before they can be used in subsequent tasks.',
+                        'Finish now',function(){
+                          job_dialog.run_btn.click();
+                          callback_func ( false );
+                        },
+                        'Finish later',function(){
+                          callback_func ( true );
+                        });
+    } else
+      callback_func ( true );
   }
 
   // reserved function name
@@ -122,12 +147,28 @@ if (!__template)  {
     div.fileListTitle = div.grid.setLabel ( '<b><i>Selected data</i></b>',grid_row+1,0,1,1 );
     div.fileListPanel = div.grid.setLabel ( '',grid_row+2,0,1,1 );
 
-    this.setSelectedCloudFiles ( div,[] );
+    this.setSelectedCloudFiles ( div,[],null );
+    if (this.selected_items.length>0)
+      div.select_btn.setText ( 'Select more files' );
 
     (function(task){
       div.select_btn.addOnClickListener ( function(){
         new CloudFileBrowser ( div,task,0,function(items){
-          task.setSelectedCloudFiles ( div,items );
+          task.setSelectedCloudFiles ( div,items,function(new_items){
+            if (new_items.length>0)  {
+              div.select_btn.setText ( 'Upload more files' );
+              new QuestionBox ( 'Files selected',
+                                '<h3>Files selected:</h3><ul><li>' +
+                                new_items.join('</li><li>') +
+                                '</li></ul?',
+                                'Select more files',function(){
+                                  div.select_btn.click();
+                                },
+                                'Finish import',function(){
+                                  div.job_dialog.run_btn.click();
+                                });
+            }
+          });
           return 1;  // do not close browser window
         },null );
       });
@@ -137,7 +178,41 @@ if (!__template)  {
 
   }
 
-  TaskCloudImport.prototype.setSelectedCloudFiles = function ( inputPanel,file_items )  {
+/*
+  TaskCloudImport.prototype.setSelectedCloudFiles1 = function (
+                                  inputPanel,file_list,callback_func )  {
+    var file_items = [];
+    for (var i=0;i<file_list.length;i++)  {
+      var ffile  = new FacilityFile();
+      ffile.name = file_list[i];
+      file_items.push ( ffile );
+    }
+    this.setSelectedCloudFiles ( inputPanel,file_items,callback_func );
+  }
+*/
+
+  TaskCloudImport.prototype._display_selected_files = function ( inputPanel )  {
+    if ('fileListPanel' in inputPanel)  {
+      inputPanel.fileListTitle.setVisible ( this.selected_items.length>0 );
+      if (this.selected_items.length>0)  {
+        var txt = '';
+        for (var i=0;i<this.selected_items.length;i++)  {
+          if (i>0)  txt += '<br>';
+          txt += this.selected_items[i].name;
+        }
+        inputPanel.fileListPanel.setText(txt).show();
+      }
+    }
+  }
+
+
+  TaskCloudImport.prototype.setSelectedCloudFiles = function (
+                                  inputPanel,file_items,callback_func )  {
+
+    if (file_items.length<=0)  {
+      this._display_selected_files ( inputPanel );
+      return;
+    }
 
     var fitems = [];
     var ignore = '';
@@ -152,36 +227,55 @@ if (!__template)  {
       new MessageBox ( 'File(s) not importable',
                        'Archive file(s) <ul>' + ignore + '</ul> cannot be ' +
                        'imported as data files and will be ignored.<p>' +
-                       'If you try to import ' + appName() + ' projects, ' +
+                       'If you are trying to import ' + appName() + ' projects, ' +
                        'do this from<br><i>Project List</i> page.' );
 
     (function(task){
 
       if (fitems.length>0)  {
 
-        _import_checkFiles ( fitems,task.file_mod,task.upload_files,function(){
+        var sfnames = [];
+        for (var i=0;i<task.selected_items.length;i++)
+          sfnames.push ( task.selected_items[i].name );
 
+        _import_checkFiles ( fitems,task.file_mod,sfnames,function(){
+
+          var new_items = [];
           for (var i=0;i<fitems.length;i++)  {
-            var cfpath = 'cloudstorage::/' + task.currentCloudPath + '/' + fitems[i].name;
-            if (task.upload_files.indexOf(cfpath)<0)
-              task.upload_files.push ( cfpath );
+            if (!startsWith(fitems[i].name,'cloudstorage::/'))
+              fitems[i].name = 'cloudstorage::/' + task.currentCloudPath + '/' + fitems[i].name;
+            var found = false;
+            for (var j=0;(j<task.selected_items.length) && (!found);j++)
+              found = (task.selected_items[j].name==fitems[i].name);
+            if (!found)  {
+              task.selected_items.push ( fitems[i] );
+              new_items.push ( fitems[i].name );
+            }
           }
 
+          task._display_selected_files ( inputPanel );
+
+          /*
           if ('fileListPanel' in inputPanel)  {
-            inputPanel.fileListTitle.setVisible ( task.upload_files.length>0 );
-            if (task.upload_files.length>0)  {
+            inputPanel.fileListTitle.setVisible ( task.selected_items.length>0 );
+            if (task.selected_items.length>0)  {
               var txt = '';
-              for (var i=0;i<task.upload_files.length;i++)  {
+              for (var i=0;i<task.selected_items.length;i++)  {
                 if (i>0)  txt += '<br>';
-                txt += task.upload_files[i];
+                txt += task.selected_items[i].name;
               }
               inputPanel.fileListPanel.setText(txt).show();
             }
           }
+          */
+
+          if (callback_func)
+            callback_func ( new_items );
 
         });
 
-      }
+      } else
+        task._display_selected_files ( inputPanel );
 
     }(this))
 
@@ -191,10 +285,10 @@ if (!__template)  {
   TaskCloudImport.prototype.collectInput = function ( inputPanel )  {
     // collects data from input widgets, created in makeInputPanel() and
     // stores it in internal fields
-    //this.upload_files = inputPanel.upload.upload_files;
+    //this.selected_items = inputPanel.upload.selected_items;
     //this.file_mod     = inputPanel.customData.file_mod;
     TaskTemplate.prototype.collectInput.call ( this,inputPanel );
-    if (this.upload_files.length>0)
+    if (this.selected_items.length>0)
       return '';   // input is Ok
     else
       return 'No file(s) have been uploaded';  // input is not ok
@@ -235,8 +329,8 @@ if (!__template)  {
     }
 
     var cloudMounts = fcl.getUserCloudMounts ( loginData );
-    for (var i=0;i<this.upload_files.length;i++)  {
-      var lst = this.upload_files[i].split('/');
+    for (var i=0;i<this.selected_items.length;i++)  {
+      var lst = this.selected_items[i].name.split('/');
       if (lst.length>2)  {
         if (lst[0]=='cloudstorage::')  {
           var cfpath = null;
@@ -253,7 +347,7 @@ if (!__template)  {
               console.log ( '       error: ' + err) ;
             }
           } else {
-            console.log ( ' ***** path ' + this.upload_files[i] + ' not found' );
+            console.log ( ' ***** path ' + this.selected_items[i].name + ' not found' );
           }
         }
       }

@@ -95,28 +95,6 @@ if (__template)  {
 
   var conf = require('../../js-server/server.configuration');
 
-/*
-  TaskCootCE.prototype.makeInputData = function ( loginData,jobDir )  {
-
-    // put hkl and structure data in input databox for copying their files in
-    // job's 'input' directory
-
-    ixyz = [];
-
-    if ('istruct' in this.input_data.data)  {
-      var istruct = this.input_data.data['istruct'];
-      for (var i=0;i<istruct.length;i++)
-        if (istruct[i]._type=='DataRevision')
-              ixyz.push ( istruct[i].Structure );
-        else  ixyz.push ( istruct[i] );
-    }
-    this.input_data.data['ixyz'] = ixyz
-
-    __template.TaskTemplate.prototype.makeInputData.call ( this,loginData,jobDir );
-
-  }
-*/
-
   TaskCootCE.prototype.getCommandLine = function ( jobManager,jobDir )  {
     return [conf.pythonName(), '-m', 'pycofe.tasks.coot_ce', jobManager, jobDir, this.id];
   }

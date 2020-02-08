@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    31.01.20   <--  Date of Last Modification.
+ *    07.02.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -676,7 +676,10 @@ JobDialog.prototype.makeLayout = function ( onRun_func )  {
           dlg.collectTaskData ( true );
           dlg.requestServer   ( fe_reqtype.saveJobData,null );
         }
-        $(dlg.element).dialog ( "close" );
+        dlg.task.onJobDialogClose(dlg,function(close_bool){
+          if (close_bool)
+            $(dlg.element).dialog ( "close" );
+        });
         /*  strict version with input validation ( does not close if error)
         if (dlg.task.state!=job_code.exiting)  {
           if (dlg.collectTaskData(false))  {
