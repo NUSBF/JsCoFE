@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    12.11.19   <--  Date of Last Modification.
+#    09.02.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -21,7 +21,7 @@
 #    jobId      is job id assigned by jsCoFE (normally an integer but should
 #               be treated as a string with no assumptions)
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2018-2019
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2018-2020
 #
 # ============================================================================
 #
@@ -286,6 +286,8 @@ class ArpWarp(basic.TaskDriver):
         pdbouts = [f for f in outfiles if any(f.endswith(ext) for ext in ["trace.pdb"])]
         mtzouts = [f for f in outfiles if any(f.endswith(ext) for ext in ["trace.mtz"])]
 
+        have_results = False
+
         if len(pdbouts)>0 and len(mtzouts)>0:
 
             pdbout = self.getXYZOFName()
@@ -334,13 +336,14 @@ class ArpWarp(basic.TaskDriver):
                 revision.removeSubtype     ( dtype_template.subtypeSubstructure() )
                 revision.setStructureData  ( structure )
                 self.registerRevision      ( revision  )
+                have_results = True
 
         else:
             self.putTitle ( "No Output Generated" )
 
 
         # close execution logs and quit
-        self.success()
+        self.success ( have_results )
         return
 
 

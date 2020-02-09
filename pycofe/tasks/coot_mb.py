@@ -79,7 +79,7 @@ class Coot(basic.TaskDriver):
                 # new ligand is not the list of existing ligands, so append it
                 # to local ligand library with libcheck
 
-#               libnew = self.outputFName + ".dict.cif"
+                # libnew = self.outputFName + ".dict.cif"
                 libnew = self.outputFName
 
                 self.open_stdin()
@@ -121,7 +121,6 @@ class Coot(basic.TaskDriver):
         args += ["--no-guano"]
 
         # Run coot
-#t      os.system('rsync -av /tmp/job_coot_mb/ ./')
         if sys.platform.startswith("win"):
             rc = self.runApp ( "coot.bat",args,logType="Main",quitOnError=False )
         else:
@@ -138,6 +137,8 @@ class Coot(basic.TaskDriver):
                 if mt > mtime:
                     mtime = mt
                     fname = f
+
+        have_results = False
 
         if fname:
 
@@ -214,6 +215,7 @@ class Coot(basic.TaskDriver):
                 revision = self.makeClass ( self.input_data.data.revision[0] )
                 revision.setStructureData ( struct   )
                 self.registerRevision     ( revision )
+                have_results = True
 
         else:
             self.putTitle ( "No Output Structure Generated" )
@@ -222,9 +224,8 @@ class Coot(basic.TaskDriver):
         # ============================================================================
         # close execution logs and quit
 
-#t      if True:
         if rc.msg == "":
-            self.success()
+            self.success ( have_results )
         else:
             self.file_stdout.close()
             self.file_stderr.close()

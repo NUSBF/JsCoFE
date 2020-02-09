@@ -98,6 +98,7 @@ class ChangeReso(basic.TaskDriver):
         self.addCitation    ( "cad-primary" )
 
         # check solution and register data
+        have_results = False
         summary_line = ""
         if os.path.isfile(outputMTZFName):
 
@@ -117,6 +118,7 @@ class ChangeReso(basic.TaskDriver):
                 new_hkl.aimless_meta = hkl.aimless_meta
                 revision.setReflectionData ( new_hkl  )
                 self.registerRevision      ( revision )
+                have_results = True
 
             summary_line = "new resolution limits: Res=" + res_high +\
                            "&mdash;" + res_low + " &Aring;"
@@ -130,7 +132,7 @@ class ChangeReso(basic.TaskDriver):
         }
 
         # close execution logs and quit
-        self.success()
+        self.success ( have_results )
         return
 
 

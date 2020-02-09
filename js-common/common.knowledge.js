@@ -1,7 +1,7 @@
 /*
  *  ========================================================================
  *
- *    31.01.20   <--  Date of Last Modification.
+ *    09.02.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  ------------------------------------------------------------------------
  *
@@ -146,8 +146,11 @@ var _taskIndex = {
   // suggest PDB Deposition after Refmac
   'k'  : { type: 'TaskDeposition'     , after: ['V'] },
 
-  // suggest Coot after refinememnt
-  'l'  : { type: 'TaskCootCE'         , after: ['B','C','D','m'] },
+  // do not suggest Coot Cooridinate Editing
+  'l'  : { type: 'TaskCootCE'         , after: [] },
+
+  // do not suggest XYZ Utils
+  'l1'  : { type: 'TaskXyzUtils'      , after: [] },
 
   // suggest CloudImport alike plain Import
   'm'  : { type: 'TaskCloudImport'    , after: ['0','B','C','D','E','m'] },

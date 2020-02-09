@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    07.02.20   <--  Date of Last Modification.
+ *    09.02.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -287,18 +287,21 @@ JobTree.prototype.makeNodeName = function ( task )  {
   var resind = '';
   switch (task.state)  {
 
-    case job_code.exiting  : resind = 'exiting';
-                             break;
+    case job_code.exiting   : resind = 'exiting';
+                              break;
 
-    case job_code.finished : resind = task.score_string();
-                             if (resind=='')  resind = 'finished.';
-                             break;
+    case job_code.finished  : resind = task.score_string();
+                              if (resind=='')  resind = 'finished.';
+                              break;
 
-    case job_code.failed   : resind = 'failed.';
-                             break;
+    case job_code.noresults : resind = 'executed.';
+                              break;
 
-    case job_code.stopped  : resind = 'terminated.';
-                             break;
+    case job_code.failed    : resind = 'failed.';
+                              break;
+
+    case job_code.stopped   : resind = 'terminated.';
+                              break;
 
     default: ;
 
@@ -903,24 +906,56 @@ JobTree.prototype.openJob = function ( dataBox,parent_page )  {
 
               tree.dlg_map = mapExcludeKey ( tree.dlg_map,task_id );
 
-            },function(task_id,reason){
+            },function(task_id,reason,options){
               // trigerred on custom events
 
               switch (reason)  {
-                case job_dialog_reason.rename_node   :
-                          tree.setNodeName   ( nodeId,true );           break;
+                case job_dialog_reason.rename_node :
+                          tree.setNodeName ( nodeId,true );
+                        break;
                 case job_dialog_reason.set_node_icon :
-                          tree.setNodeIcon   ( nodeId,true );           break;
-                case job_dialog_reason.reset_node    :
+                          tree.setNodeIcon ( nodeId,true );
+                        break;
+                case job_dialog_reason.reset_node :
                           tree.node_map[nodeId].setCustomIconVisible ( false );
-                          tree.resetNodeName ( nodeId );                break;
-                case job_dialog_reason.select_node   :
-                          tree.selectSingle  ( tree.node_map[nodeId] ); break;
-                case job_dialog_reason.stop_job      :
-                          tree.stopJob       ( nodeId );                break;
-                case job_dialog_reason.tree_updated  :
-                          tree.emitSignal ( cofe_signals.treeUpdated,{} ); break;
-
+                          tree.resetNodeName ( nodeId );
+                        break;
+                case job_dialog_reason.select_node :
+                          tree.selectSingle ( tree.node_map[nodeId] );
+                        break;
+                case job_dialog_reason.stop_job :
+                          tree.stopJob ( nodeId );
+                        break;
+                case job_dialog_reason.tree_updated :
+                          tree.emitSignal ( cofe_signals.treeUpdated,{} );
+                        break;
+                case job_dialog_reason.add_job :
+                          tree.addJob ( false,false,dlg.parent_page,function(){
+                            dlg.close();
+                          });
+                        break;
+                case job_dialog_reason.clone_job :
+                          tree.cloneJob ( dlg.parent_page,function(){
+                            dlg.close();
+                          });
+                        break;
+                case job_dialog_reason.run_job :
+                          var dataBox          = tree.harvestTaskData ( 1,[] );
+                          var branch_task_list = tree.getAllAncestors ( tree.getSelectedTask() );
+                          var reftask          = null;
+                          for (var i=0;(i<branch_task_list.length) && (!reftask);i++)
+                            if (options._type==branch_task_list[i]._type)
+                              reftask = branch_task_list[i];
+                          if (reftask)
+                            options.parameters = jQuery.extend ( true,{},reftask.parameters );
+                          options.onJobDialogStart = function ( job_dialog )  {
+                            job_dialog.run_btn.click();  // start automatically
+                          };
+                          tree._add_job ( false,options,dataBox,dlg.parent_page,function(){
+                            dlg.close();
+                            //tree.dlg_map[options.id].run_btn.click();
+                          });
+                        break;
                 default : ;
               }
 

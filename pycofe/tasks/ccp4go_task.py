@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    16.07.19   <--  Date of Last Modification.
+#    09.02.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2019
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2020
 #
 # ============================================================================
 #
@@ -458,6 +458,9 @@ class CCP4go(import_task.Import):
         self.flush()
 
         # run ccp4go pipeline
+
+        have_results = False
+
         if self.unm or self.hkl:
 
             # write input file
@@ -555,6 +558,7 @@ class CCP4go(import_task.Import):
                     d = resorder[i]  # stage's result directory
                     if d in results:
                         self.makeOutputData ( d,results[d] )
+                        have_results = True
                         self.flush()
 
                 #self.putMessage ( "<hr/><i><b>Note:</b> In order to further " +
@@ -569,7 +573,7 @@ class CCP4go(import_task.Import):
 
 
         # close execution logs and quit
-        self.success()
+        self.success ( have_results )
         return
 
 

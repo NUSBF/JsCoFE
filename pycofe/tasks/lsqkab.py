@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    19.05.19   <--  Date of Last Modification.
+#    09.02.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2019
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2019-2020
 #
 # ============================================================================
 #
@@ -163,6 +163,8 @@ class LsqKab(basic.TaskDriver):
             self.putMessage ( "&nbsp;" )
 
 
+        have_results = False
+
         if os.path.isfile(self.lsqkab_xyz()):
 
             # compose a superposed ensemble
@@ -194,13 +196,14 @@ class LsqKab(basic.TaskDriver):
                 self.putEnsembleWidget ( self.getWidgetId("ensemble_btn"),
                                          "Superposed ensemble&nbsp;&nbsp;",
                                          ensemble,-1 )
+                have_results = True
 
         else:
             self.putTitle ( "No Output Files Generated" )
 
 
         # close execution logs and quit
-        self.success()
+        self.success ( have_results )
         return
 
 

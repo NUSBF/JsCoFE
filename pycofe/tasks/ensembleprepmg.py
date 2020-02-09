@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    15.12.19   <--  Date of Last Modification.
+#    09.02.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2019
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2019-2020
 #
 # ============================================================================
 #
@@ -112,6 +112,8 @@ class EnsemblePrepMG(basic.TaskDriver):
                        if any(fn.endswith(ext) for ext in [".pdb"]) and
                           any(fn.startswith(pref) for pref in ["output"]) ]
 
+        have_results = False
+
         if len(filelist)<=0:
             self.putTitle ( "No ensembles were created" )
         else:
@@ -154,6 +156,7 @@ class EnsemblePrepMG(basic.TaskDriver):
                     ensemble.rmsd  = ensemble.meta["rmsd" ]
                     self.putEnsembleWidget ( self.getWidgetId("ensemble"),"Coordinates",
                                              ensemble,openState=-1 )
+                    have_results = True
 
                 else:
                     self.putMessage ( "<h3>Error</h3><i>Ensemble object could not be formed</i><p>" +\
@@ -162,7 +165,7 @@ class EnsemblePrepMG(basic.TaskDriver):
         self.removeCitation ( "ccp4mg" )
 
         # close execution logs and quit
-        self.success()
+        self.success ( have_results )
         return
 
 

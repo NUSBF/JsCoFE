@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    24.12.18   <--  Date of Last Modification.
+#    09.02.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2018
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2020
 #
 # ============================================================================
 #
@@ -55,14 +55,17 @@ class Xyz2Revision(dimple.Dimple,asudef.ASUDef):
         else:
             structure = self.runDimple ( hkl,xyz )
 
+        have_results = False
+
         if not structure:
             self.putMessage ( "<h3>Conversion failed, no output</h3>" )
         else:
             asudef.revisionFromStructure ( self,hkl,structure,
                                            os.path.splitext(xyz.getXYZFileName())[0] )
+            have_results = True
 
         # close execution logs and quit
-        self.success()
+        self.success ( have_results )
         return
 
 

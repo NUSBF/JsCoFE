@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    28.11.19   <--  Date of Last Modification.
+#    09.02.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -20,7 +20,7 @@
 #      jobDir/report  : directory receiving HTML report
 #
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2019
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2020
 #
 # ============================================================================
 #
@@ -710,10 +710,10 @@ class Crank2(basic.TaskDriver):
 
         #pyrvapi.rvapi_reset_task()
 
-        self.finalise()
+        revisions = self.finalise()
 
         # close execution logs and quit
-        self.success()
+        self.success ( (len(revisions)>0) )
         return
 
 

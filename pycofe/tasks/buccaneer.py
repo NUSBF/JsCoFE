@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    10.01.20   <--  Date of Last Modification.
+#    09.02.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -235,6 +235,8 @@ class Buccaneer(basic.TaskDriver):
 
         self.addCitations ( ['buccaneer','refmac5'] )
 
+        have_results = False
+
         if rc.msg:
             self.flush()
             self.file_stdout.close()
@@ -294,12 +296,13 @@ class Buccaneer(basic.TaskDriver):
                 revision.setStructureData  ( structure )
                 #revision.removeSubtype     ( dtype_template.subtypeSubstructure() )
                 self.registerRevision      ( revision  )
+                have_results = True
 
         else:
             self.putTitle ( "No Output Generated" )
 
         # close execution logs and quit
-        self.success()
+        self.success ( have_results )
         return
 
 

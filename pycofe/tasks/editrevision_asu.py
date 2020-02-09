@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    20.11.19   <--  Date of Last Modification.
+#    09.02.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2019
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2020
 #
 # ============================================================================
 #
@@ -84,7 +84,7 @@ class EditRevisionASU(asudef.ASUDef):
             }
 
             # close execution logs and quit
-            self.success()
+            self.success ( True )
 
         else:
             self.putTitle   ( "Revision was not produced" )

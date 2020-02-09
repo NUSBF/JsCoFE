@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    29.01.20   <--  Date of Last Modification.
+#    09.02.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -92,6 +92,8 @@ class XDSGUI(basic.TaskDriver):
 
         # Check for HKL files left by XDSGUI and import them as Unmerged
 
+        have_results = False
+
         if os.path.isfile(xdshkl_path) and (os.path.getmtime(xdshkl_path)!=xdshkl_time):
 
             self.putTitle ( "Unmerged Reflection Dataset" )
@@ -99,6 +101,7 @@ class XDSGUI(basic.TaskDriver):
             self.resetFileImport()
             self.addFileImport ( "",xdshkl_path,import_filetype.ftype_XDSIntegrated() )
             unmerged_imported = import_unmerged.run ( self,"Unmerged Reflection Dataset" )
+            have_results = True
 
             self.putMessage ( "<b>Assigned name:</b>&nbsp;" + unmerged_imported[0].dname )
 
@@ -176,7 +179,7 @@ class XDSGUI(basic.TaskDriver):
         # close execution logs and quit
 
         if rc.msg == "":
-            self.success()
+            self.success ( have_results )
         else:
             self.file_stdout.close()
             self.file_stderr.close()

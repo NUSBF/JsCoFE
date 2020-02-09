@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    24.12.18   <--  Date of Last Modification.
+#    09.02.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2018
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2020
 #
 # ============================================================================
 #
@@ -94,6 +94,7 @@ class FitLigand(basic.TaskDriver):
 
         nligs   = 0
         ligands = [fn for fn in os.listdir("./") if fn.endswith(".pdb")]
+        have_results = False
         if len(ligands)>0:
 
             # prepare dictionary file for structure
@@ -146,6 +147,7 @@ class FitLigand(basic.TaskDriver):
                 revision.setStructureData ( structure )
                 revision.addLigandData    ( ligand    )
                 self.registerRevision     ( revision  )
+                have_results = True
 
         else:
             self.putTitle ( "Ligand " + ligand.code + " could not be fit in density" )
@@ -157,7 +159,7 @@ class FitLigand(basic.TaskDriver):
         }
 
         # close execution logs and quit
-        self.success()
+        self.success ( have_results )
         return
 
 

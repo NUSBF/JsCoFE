@@ -567,6 +567,8 @@ function ncJobFinished ( job_token,code )  {
         task.state = task_t.job_code.finished;
     } else if (code==1001)  {
       task.state = task_t.job_code.stopped;
+    } else if (code==204)  {
+      task.state = task_t.job_code.noresults;
     } else  {
       task.state = task_t.job_code.failed;
       if (code==200)
@@ -763,7 +765,7 @@ function ncRunJob ( job_token,meta )  {
                                           '] stderr=' + stderr );
 
                         if (jobEntry.jobStatus!=task_t.job_code.stopped)  {
-                          if ((code!=0) && (code!=203))
+                          if ((code!=0) && (code!=203) && (code!=204))
                             writeJobDriverFailureMessage ( code,stdout,stderr,jobDir );
                           ncJobFinished ( job_token,code );
                         }

@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    23.06.19   <--  Date of Last Modification.
+#    09.02.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2019
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2020
 #
 # ============================================================================
 #
@@ -81,6 +81,8 @@ class ChangeSpG(basic.TaskDriver):
         self.runApp ( "reindex",cmd,logType="Main" )
         self.unsetLogParser()
 
+        have_results = False
+
         # check solution and register data
         if os.path.isfile(outputMTZFName):
 
@@ -89,8 +91,8 @@ class ChangeSpG(basic.TaskDriver):
             # make list of files to import
             self.resetFileImport()
             self.addFileImport ( "",outputMTZFName,import_filetype.ftype_MTZMerged() )
-            #self.files_all = [ outputMTZFName ]
             import_merged.run ( self,"Reflection dataset",importPhases=False )
+            have_results = True
 
             # update structure revision
             if revision:
@@ -106,7 +108,7 @@ class ChangeSpG(basic.TaskDriver):
             self.putTitle ( "No Output Generated" )
 
         # close execution logs and quit
-        self.success()
+        self.success ( have_results )
         return
 
 

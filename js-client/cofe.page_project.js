@@ -131,14 +131,19 @@ function ProjectPage ( sceneId )  {
       if (is_remark)  {
         var tparent = jobTree.getNonRemarkParent ( task );
         if (tparent)
-          add_enabled = ((tparent.state==job_code.finished) ||
-                         (tparent.state==job_code.failed)   ||
+          add_enabled = (tparent.state==job_code.finished);
+          /*
+          add_enabled = ((tparent.state==job_code.finished)  ||
+                         (tparent.state==job_code.noresults) ||
+                         (tparent.state==job_code.failed)    ||
                          (tparent.state==job_code.stopped));
+          */
       }
       add_btn.setEnabled ( (!__dormant) &&
-                           ((task.state==job_code.finished) ||
-                            (task.state==job_code.failed)   ||
-                            (task.state==job_code.stopped)  ||
+                           ((task.state==job_code.finished)  ||
+                            //(task.state==job_code.noresults) ||
+                            //(task.state==job_code.failed)    ||
+                            //(task.state==job_code.stopped)   ||
                             (is_remark && add_enabled)) );
       //insert_btn.setEnabled ( add_btn.isEnabled() );
       //clone_btn  .setEnabled ( dsel && (task.state!=job_code.remark) );

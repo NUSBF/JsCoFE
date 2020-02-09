@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    22.11.19   <--  Date of Last Modification.
+#    09.02.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2019
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2020
 #
 # ============================================================================
 #
@@ -240,7 +240,7 @@ class SeqAlign(basic.TaskDriver):
         }
 
         # close execution logs and quit
-        self.success()
+        self.success ( False )
         return
 
 

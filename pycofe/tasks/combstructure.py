@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    06.01.20   <--  Date of Last Modification.
+#    09.02.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -362,8 +362,8 @@ class CombStructure(basic.TaskDriver):
                 if ncycles>0:
                     labin_fc = ["FWT","PHWT"]
 
-
         # check solution and register data
+        have_results = False
         if os.path.isfile(mtzxyz[1]):
 
             os.rename ( mtzxyz[0],self.getMTZOFName() )
@@ -392,11 +392,13 @@ class CombStructure(basic.TaskDriver):
                 revision = self.makeClass ( self.input_data.data.revision[0] )
                 revision.setStructureData ( structure )
                 self.registerRevision     ( revision  )
+                have_results = True
+
         else:
             self.putTitle ( "No Output Generated" )
 
         # close execution logs and quit
-        self.success()
+        self.success ( have_results )
         return
 
 

@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    04.05.19   <--  Date of Last Modification.
+#    09.02.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2019
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2020
 #
 # ============================================================================
 #
@@ -495,6 +495,8 @@ class ASUDef(basic.TaskDriver):
                                   self.getParameter(sec1.MOLWEIGHT),"" )
         #                          self.getParameter(sec1.RESLIMIT) )
 
+        have_results = False
+
         if revision[0]:
             if istruct:
                 revision[0].setStructureData ( istruct )
@@ -504,9 +506,10 @@ class ASUDef(basic.TaskDriver):
                 revName = "asu [" + hkl.getDataSetName() + "]"
             revision[0].addSubtypes ( hkl.subtype )
             self.registerRevision ( revision[0],revisionName=revName )
+            have_results = True
 
         # close execution logs and quit
-        self.success()
+        self.success ( have_results )
         return
 
 

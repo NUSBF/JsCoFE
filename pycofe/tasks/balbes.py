@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    24.12.18   <--  Date of Last Modification.
+#    09.02.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2018
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2020
 #
 # ============================================================================
 #
@@ -88,6 +88,8 @@ class Balbes(basic.TaskDriver):
         # run balbes
         self.runApp ( "balbes",cmd,logType="Main" )
 
+        have_results = False
+
         pdb_path = os.path.join ( workDir,"results","refmac_final_result.pdb" )
 
         structure = self.finaliseStructure ( pdb_path,self.outputFName,hkl,None,
@@ -97,9 +99,10 @@ class Balbes(basic.TaskDriver):
             revision = self.makeClass ( self.input_data.data.revision[0] )
             revision.setStructureData ( structure )
             self.registerRevision     ( revision  )
+            have_results = True
 
         # close execution logs and quit
-        self.success()
+        self.success ( have_results )
         return
 
 

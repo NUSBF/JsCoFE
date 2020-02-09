@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    10.12.19   <--  Date of Last Modification.
+#    09.02.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2019
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2020
 #
 # ============================================================================
 #
@@ -57,7 +57,7 @@ class Dimple(basic.TaskDriver):
               "summary_line" : "no mean intensity data, therefore stop"
             }
             # close execution logs and quit
-            self.success()
+            self.success ( False )
             return
 
         # make command-line parameters for dimple
@@ -148,15 +148,18 @@ class Dimple(basic.TaskDriver):
 
         structure = self.runDimple ( hkl,istruct )
 
+        have_results = False
+
         if structure:
             # update structure revision
             revision = self.makeClass  ( self.input_data.data.revision[0] )
             revision.setReflectionData ( hkl       )
             revision.setStructureData  ( structure )
             self.registerRevision      ( revision  )
+            have_results = True
 
         # close execution logs and quit
-        self.success()
+        self.success ( have_results )
         return
 
 

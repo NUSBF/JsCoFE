@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    08.12.19   <--  Date of Last Modification.
+#    09.02.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2019
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2020
 #
 # ============================================================================
 #
@@ -137,6 +137,8 @@ class ShelxEMR(basic.TaskDriver):
         # - in the end
         # Estimated mean FOM = 0.630   Pseudo-free CC = 63.71 %
         # Best trace (cycle   1 with CC  8.39%) was saved as shelxe_wrk.pdb
+
+        have_results = False
 
         if os.path.isfile(self.shelxe_wrk_phs()):
 
@@ -336,12 +338,13 @@ class ShelxEMR(basic.TaskDriver):
 
             if structure or substructure:
                 self.registerRevision     ( revision  )
+                have_results = True
 
         else:
             self.putTitle ( "No Solution Found" )
 
         # close execution logs and quit
-        self.success()
+        self.success ( have_results )
         return
 
 

@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    09.12.19   <--  Date of Last Modification.
+#    09.02.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2019
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2019-2020
 #
 # ============================================================================
 #
@@ -230,6 +230,8 @@ class Nautilus(basic.TaskDriver):
 
         self.addCitations ( ['nautilus','refmac5'] )
 
+        have_results = False
+
         if rc.msg:
             nobuild = False
             self.flush()
@@ -294,12 +296,13 @@ class Nautilus(basic.TaskDriver):
                 revision.removeSubtype     ( dtype_template.subtypeSubstructure() )
                 revision.setStructureData  ( structure )
                 self.registerRevision      ( revision  )
+                have_results = True
 
         else:
             self.putTitle ( "No Output Generated" )
 
         # close execution logs and quit
-        self.success()
+        self.success ( have_results )
         return
 
 

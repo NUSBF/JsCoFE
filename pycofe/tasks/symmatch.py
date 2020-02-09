@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    07.01.19   <--  Date of Last Modification.
+#    09.02.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2018-2019
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2018-2020
 #
 # ============================================================================
 #
@@ -87,6 +87,7 @@ class SymMatch(basic.TaskDriver):
         self.runApp ( "csymmatch",cmd,logType="Main" )
 
         # check solution and register data
+        have_results = False
         if os.path.isfile(out_file_path):
 
             self.putTitle ( "SymMatch Output" )
@@ -109,12 +110,13 @@ class SymMatch(basic.TaskDriver):
                 revision = self.makeClass ( self.input_data.data.revision[0] )
                 revision.setStructureData ( structure )
                 self.registerRevision     ( revision  )
+                have_results = True
 
         else:
             self.putTitle ( "No Output Generated" )
 
         # close execution logs and quit
-        self.success()
+        self.success ( have_results )
         return
 
 

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    07.02.20   <--  Date of Last Modification.
+ *    09.02.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -26,15 +26,16 @@
 // for class reconstruction from json strings
 
 var job_code = {
-  new      : 'new',      // new job_code
-  running  : 'running',  // job is running
-  exiting  : 'exiting',  // job is in post-run processing
-  finished : 'finished', // job finished normally (nothing to do with the results)
-  failed   : 'failed',   // job failed
-  stopped  : 'stopped',  // job stopped (terminated by user)
-  remark   : 'remark',   // remark node
-  remdet   : 'remdet',   // detached remark node
-  remdoc   : 'remdoc'    // remark node converted from documentation import
+  new       : 'new',       // new job_code
+  running   : 'running',   // job is running
+  exiting   : 'exiting',   // job is in post-run processing
+  finished  : 'finished',  // job finished normally (nothing to do with the results)
+  noresults : 'noresults', // job finished normally but no results produced
+  failed    : 'failed',    // job failed
+  stopped   : 'stopped',   // job stopped (terminated by user)
+  remark    : 'remark',    // remark node
+  remdet    : 'remdet',    // detached remark node
+  remdoc    : 'remdoc'     // remark node converted from documentation import
 }
 
 // ---------------------------------------------------------------------------
@@ -139,7 +140,16 @@ TaskTemplate.prototype.requiredEnvironment = function() { return ['CCP4']; }
 
 TaskTemplate.prototype.doNotPackSuffixes   = function() { return ['.map']; }
 TaskTemplate.prototype.doPackSuffixes      = function() { return ['']; }
-TaskTemplate.prototype.cloneItems          = function() { return [];   }
+
+// cloneItems return list of files and directories in job directory which need
+// to be cloned when task is cloned
+TaskTemplate.prototype.cloneItems = function() { return []; }
+
+// hotButtons return list of buttons added in JobDialog's toolBar.
+// Description template:
+//  { 'task'    : 'TaskCootMB',
+//    'tooltip' : 'Model building with Coot' }
+TaskTemplate.prototype.hotButtons = function() { return []; }
 
 // when data class version is changed here, change it also in python
 // constructors

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    10.10.19   <--  Date of Last Modification.
+ *    09.02.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  RefMac Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev, R. Nicholls 2016-2019
+ *  (C) E. Krissinel, A. Lebedev, R. Nicholls 2016-2020
  *
  *  =================================================================
  *
@@ -436,7 +436,23 @@ TaskRefmac.prototype.currentVersion = function()  {
 
 //TaskRefmac.prototype.cleanJobDir = function ( jobDir )  {}
 
-if (__template)  {
+if (!__template)  {
+  //  for client side
+
+  // hotButtons return list of buttons added in JobDialog's toolBar.
+  function RefmacHotButton()  {
+    return {
+      'task'    : 'TaskRefmac',
+      'tooltip' : 'Refine results using parameters of last refinement'
+    };
+  }
+
+  // hotButtons return list of buttons added in JobDialog's toolBar.
+  TaskRefmac.prototype.hotButtons = function() {
+    return [CootMBHotButton()];
+  }
+
+} else  {
   //  for server side
 
   var conf = require('../../js-server/server.configuration');
