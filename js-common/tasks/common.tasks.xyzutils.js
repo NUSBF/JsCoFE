@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    07.02.20   <--  Date of Last Modification.
+ *    08.02.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -34,7 +34,7 @@ function TaskXyzUtils()  {
   this._type   = 'TaskXyzUtils';
   this.name    = 'xyz utils';
   this.oname   = '*'; // asterisk means do not use (XYZ name will be used)
-  this.title   = 'XYZ Utilities';
+  this.title   = 'Coordinate Utilities';
   this.helpURL = './html/jscofe_task_xyzutils.html';
 
   this.input_dtypes = [{      // input data types
@@ -54,6 +54,57 @@ function TaskXyzUtils()  {
               open     : true,  // true for the section to be initially open
               position : [0,0,1,5],
               contains : {
+                SOLLIG_SEL : {
+                        type     : 'combobox',
+                        label    : 'Solvent and ligands:',
+                        tooltip  : '',
+                        range    : ['U|Leave as is',
+                                    'W|Remove waters',
+                                    'WL|Remove waters and ligands'
+                                   ],
+                        value    : 'U',
+                        iwidth   : 260,
+                        position : [0,0,1,1]
+                      },
+                CHAINS_SEL : {
+                        type     : 'combobox',
+                        label    : 'Polymeric chains:',
+                        tooltip  : '',
+                        range    : ['U|Leave as is',
+                                    'P|Remove protein chains',
+                                    'D|Remove dna/rna chains',
+                                    'S|Remove selected chains',
+                                   ],
+                        value    : 'U',
+                        iwidth   : 260,
+                        position : [1,0,1,1]
+                      },
+                CHAIN_LIST : {
+                        type      : 'string',
+                        label     : 'chains:',
+                        tooltip   : 'Comma-separated list of chains to remove',
+                        iwidth    : '200',
+                        value     : '',
+                        placeholder : 'A,B,...',
+                        position  : [1,4,1,1],
+                        showon    : {CHAINS_SEL:['S']}
+                      },
+                SEP_LBL : {
+                      type      : 'label',  // just a separator
+                      label     : '&nbsp;',
+                      position  : [2,0,1,4]
+                    },
+                SPLITTOCHAINS_CBX : {
+                        type     : 'checkbox',
+                        keyword  : 'splittochains',
+                        label    : 'Split to chains',
+                        tooltip  : 'Check in order to split structure into ' +
+                                   'separate chains',
+                        iwidth   : 140,
+                        value    : false,
+                        position : [3,0,1,3]
+                      }
+                /*
                 RMSOLVENT_CBX : {
                         type      : 'checkbox',
                         keyword   : 'rmsolvent',
@@ -104,6 +155,7 @@ function TaskXyzUtils()  {
                         value     : false,
                         position  : [4,0,1,1]
                       }
+                */
               }
             }
   };
@@ -137,6 +189,21 @@ if (!__template)  {
 
     var msg = TaskTemplate.prototype.collectInput.call ( this,inputPanel );
 
+    if ((this.parameters.sec1.contains.SOLLIG_SEL.value=='U') &&
+        (this.parameters.sec1.contains.CHAINS_SEL.value=='U') &&
+        (!this.parameters.sec1.contains.SPLITTOCHAINS_CBX.value))
+      msg += '<b>at least one action must be specified</b>';
+
+    return msg;
+
+  }
+
+
+/*
+  TaskXyzUtils.prototype.collectInput = function ( inputPanel )  {
+
+    var msg = TaskTemplate.prototype.collectInput.call ( this,inputPanel );
+
     if ((!this.parameters.sec1.contains.RMSOLVENT_CBX.value) &&
         (!this.parameters.sec1.contains.RMLIGANDS_CBX.value) &&
         (!this.parameters.sec1.contains.RMPROTEIN_CBX.value) &&
@@ -155,6 +222,7 @@ if (!__template)  {
     return msg;
 
   }
+*/
 
 } else  {
   // server side
