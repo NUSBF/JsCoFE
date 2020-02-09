@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    07.02.20   <--  Date of Last Modification.
+ *    08.02.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -346,7 +346,6 @@ var row      = 0;
 
   if (__user_role==role_code.developer)
     this.makeSection ( 'Tasks in Development',[
-      new TaskXyzUtils     (),
       new TaskBuster       (),
       new TaskMergeData    (),
       new TaskHelloWorld   ()
@@ -460,6 +459,7 @@ var row      = 0;
     new TaskSRF     (),
     new TaskCrosSec (),
     'Coordinate data tools',
+    new TaskXyzUtils(),
     new TaskCootCE  (),
     'Alignment and comparison tools',
     new TaskGesamt  (),
