@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    22.01.20   <--  Date of Last Modification.
+ *    09.02.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -96,7 +96,15 @@ TaskBalbes.prototype.currentVersion = function()  {
 }
 
 
-if (__template)  {
+if (!__template)  {
+  //  for client side
+
+  // hotButtons return list of buttons added in JobDialog's toolBar.
+  TaskBalbes.prototype.hotButtons = function() {
+    return [CootMBHotButton()];
+  }
+
+} else  {
   //  for server side
 
   var conf = require('../../js-server/server.configuration');

@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    14.06.19   <--  Date of Last Modification.
+#    09.02.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -30,7 +30,7 @@
 #               even if job is run by SGE, so it should be checked upon using
 #               comman line length
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2019
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2020
 #
 # ============================================================================
 #
@@ -219,6 +219,8 @@ class Simbad(asudef.ASUDef):
             simbad_meta = {}
             simbad_meta["nResults"] = 0
 
+        have_results = False
+
         if simbad_meta["nResults"]>0:
 
             result0 = simbad_meta["results"][0]
@@ -246,6 +248,7 @@ class Simbad(asudef.ASUDef):
                           structure )
 
                 asudef.revisionFromStructure ( self,hkl,structure,result0["name"] )
+                have_results = True
 
             else:
                 self.putMessage ( "Structure Data cannot be formed (probably a bug)" )
@@ -254,7 +257,7 @@ class Simbad(asudef.ASUDef):
             self.putTitle ( "No Suitable Models Found" )
 
         # close execution logs and quit
-        self.success()
+        self.success ( have_results )
         return
 
 

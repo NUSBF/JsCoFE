@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    14.06.19   <--  Date of Last Modification.
+#    09.02.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -21,7 +21,7 @@
 #    jobId      is job id assigned by jsCoFE (normally an integer but should
 #               be treated as a string with no assumptions)
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2019
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2020
 #
 # ============================================================================
 #
@@ -125,6 +125,8 @@ class Ample(basic.TaskDriver):
         }
         """
 
+        have_results = False
+
         rvapi_meta = pyrvapi.rvapi_get_meta()
         if rvapi_meta:
             try:
@@ -176,6 +178,7 @@ class Ample(basic.TaskDriver):
                     self.registerRevision      ( revision,i+1,"" )
                     if not generic_parser_summary:
                         generic_parser_summary = self.generic_parser_summary.copy()
+                    have_results = True
 
                 else:
                     self.putMessage ( "Structure Data cannot be formed (probably a bug)" )
@@ -183,9 +186,8 @@ class Ample(basic.TaskDriver):
             if generic_parser_summary:
                 self.generic_parser_summary = generic_parser_summary.copy()
 
-
         # close execution logs and quit
-        self.success()
+        self.success ( have_results )
         return
 
 

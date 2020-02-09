@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    04.02.20   <--  Date of Last Modification.
+#    09.02.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -1737,7 +1737,7 @@ class TaskDriver(object):
 
     # ============================================================================
 
-    def success(self):
+    def success ( self,have_results=True ):
         self.putCitations()
         if self.task:
             self.task.cpu_time = command.getTimes()[1]
@@ -1749,11 +1749,10 @@ class TaskDriver(object):
         self.putMessage ( "<p>&nbsp;" )  # just to make extra space after report
         self.outputDataBox.save ( self.outputDir() )
         self.flush()
-        #pyrvapi.rvapi_flush   ()
-        #self.file_stdout .close()
-        #self.file_stdout1.close()
-        #self.file_stderr .close()
-        raise signal.Success()
+        if have_results:
+            raise signal.Success()
+        else:
+            raise signal.NoResults()
 
     def fail ( self,pageMessage,signalMessage ):
         self.putCitations()
@@ -1763,8 +1762,6 @@ class TaskDriver(object):
                 self.task.scores = self.generic_parser_summary
             with open('job.meta','w') as file_:
                 file_.write ( self.task.to_JSON() )
-        #if extraLine:
-        #    self.putMessage ( "<p>&nbsp;" )  # just to make extra space after report
         pyrvapi.rvapi_set_text ( pageMessage,self.report_page_id(),self.rvrow,0,1,1 )
         pyrvapi.rvapi_flush    ()
         msg = pageMessage.replace("<b>","").replace("</b>","").replace("<i>","") \
@@ -1802,6 +1799,9 @@ class TaskDriver(object):
             self.run()
 
         except signal.Success, s:
+            signal_obj = s
+
+        except signal.NoResults, s:
             signal_obj = s
 
         except signal.JobFailure, s:

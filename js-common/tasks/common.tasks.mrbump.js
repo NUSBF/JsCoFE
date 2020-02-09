@@ -99,6 +99,12 @@ TaskMrBump.prototype.currentVersion = function()  {
 // export such that it could be used in both node and a browser
 
 if (!__template)  {
+  //  for client side
+
+  // hotButtons return list of buttons added in JobDialog's toolBar.
+  TaskMrBump.prototype.hotButtons = function() {
+    return [CootMBHotButton()];
+  }
 
   TaskMrBump.prototype.inputChanged = function ( inpParamRef,emitterId,emitterValue )  {
 
@@ -127,7 +133,6 @@ if (!__template)  {
 
   }
 
-
   TaskMrBump.prototype.updateInputPanel = function ( inputPanel )  {
     if (this.state==job_code.new)  {
       var event = new CustomEvent ( cofe_signals.jobDlgSignal,{
@@ -136,7 +141,6 @@ if (!__template)  {
       inputPanel.element.dispatchEvent(event);
     }
   }
-
 
 } else  {
   //  for server side

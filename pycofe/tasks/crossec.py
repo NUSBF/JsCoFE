@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    22.02.19   <--  Date of Last Modification.
+#    09.02.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2019
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2019-2020
 #
 # ============================================================================
 #
@@ -120,7 +120,7 @@ class CrosSec(basic.TaskDriver):
         self.file_stdout = open ( self.file_stdout_path(),'a' )
 
         # close execution logs and quit
-        self.success()
+        self.success ( False )
         return
 
 

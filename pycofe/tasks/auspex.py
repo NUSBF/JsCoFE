@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    06.01.20   <--  Date of Last Modification.
+#    09.02.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -92,7 +92,7 @@ class Auspex(basic.TaskDriver):
                                   filename + "' width='100%'/>" )
 
         # close execution logs and quit
-        self.success()
+        self.success ( False )
         return
 
 

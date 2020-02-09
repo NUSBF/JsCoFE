@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    07.02.20   <--  Date of Last Modification.
+ *    09.02.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -32,7 +32,10 @@ var job_dialog_reason = {
   reset_node    : 'reset_node',     // reset  job node label
   select_node   : 'select_node',    // select job node
   stop_job      : 'stop_job',       // stop job
-  tree_updated  : 'tree_updated'    // job tree should be updated
+  tree_updated  : 'tree_updated',   // job tree should be updated
+  add_job       : 'add_job',        // add job from task list
+  clone_job     : 'clone_job',      // clone job
+  run_job       : 'run_job'         // clone job
 }
 
 function JobDialog ( params,          // data and task projections up the tree branch
@@ -111,7 +114,7 @@ function JobDialog ( params,          // data and task projections up the tree b
       },
       focus     : function() {
                     if (onDlgSignal_func)
-                      onDlgSignal_func ( taskId,job_dialog_reason.select_node );
+                      onDlgSignal_func ( taskId,job_dialog_reason.select_node,null );
                   }
     };
   }(this))
@@ -150,7 +153,7 @@ function JobDialog ( params,          // data and task projections up the tree b
   // Listen for input event, emitted when input data changes
   if ((this.task.state!=job_code.running) && this.inputPanel)  {
     this.inputPanel.element.addEventListener(cofe_signals.jobDlgSignal,function(e){
-      onDlgSignal_func ( taskId,e.detail );
+      onDlgSignal_func ( taskId,e.detail,null );
     },false );
   }
 
@@ -229,9 +232,12 @@ JobDialog.prototype.setDlgState = function()  {
 
   var msg = '';
   switch (this.task.state)  {
-    case job_code.finished :  msg = 'Job completed';          break;
-    case job_code.failed   :  msg = 'Job failed';             break;
-    case job_code.stopped  :  msg = 'Job terminated by user'; break;
+//    case job_code.finished :  msg = 'Job completed';          break;
+    case job_code.finished  :
+    case job_code.noresults :  msg = '&nbsp;';                 break;
+//    case job_code.noresults :  msg = 'Job completed';          break;
+    case job_code.failed    :  msg = 'Job failed';             break;
+    case job_code.stopped   :  msg = 'Job terminated by user'; break;
     /*
     case job_code.remdoc   :  this.toolBar   .setVisible ( false );
                               this.toolBarSep.setVisible ( false );
@@ -239,6 +245,14 @@ JobDialog.prototype.setDlgState = function()  {
     */
     default : ;
   }
+
+  var show_hot_buttons = (!__dormant) && (this.task.state==job_code.finished);
+  this.done_sign .setVisible ( (this.task.state==job_code.finished)  );
+  this.nores_sign.setVisible ( (this.task.state==job_code.noresults) );
+  for (var i=0;i<this.hot_btn.length;i++)
+    this.hot_btn[i].setVisible ( show_hot_buttons );
+  this.addjob_btn.setVisible ( show_hot_buttons );
+  this.clone_btn .setVisible ( (!__dormant) && (!isNew) && (!isRunning) );
 
   if (msg && this.status_lbl)
     this.status_lbl.setText ( '<b><i>' + msg + '</i></b>' );
@@ -358,13 +372,118 @@ JobDialog.prototype.requestServer = function ( request,callback_ok )  {
   for (var i=1;i<this.ancestors.length;i++)
     data.ancestors.push ( this.ancestors[i]._type );
   if (!this.task.job_dialog_data.viewed)  {
-    this.onDlgSignal_func ( this.task.id,job_dialog_reason.reset_node );
+    this.onDlgSignal_func ( this.task.id,job_dialog_reason.reset_node,null );
     this.task.job_dialog_data.viewed = true;
   }
   serverRequest ( request,data,this.task.title,callback_ok,null,null );
 }
 
-window.document.__base_url_cache = {};
+//window.document.__base_url_cache = {};
+
+JobDialog.prototype.makeToolBar = function()  {
+
+  this.toolBar = new Grid('');
+
+  if (this.task.runButtonName())  {
+    this.radioSet = this.toolBar.setRadioSet(0,0,1,1)
+            .addButton('Input' ,'input' ,'',this.task.job_dialog_data.panel=='input' )
+            .addButton('Output','output','',this.task.job_dialog_data.panel=='output');
+    (function(dlg){
+      $(dlg.outputPanel.element).on ( 'load',function(){
+        dlg.onDlgResize();
+        //dlg.outputPanel.getDocument().__url_path_prefix = dlg.task.getURL('');
+      });
+      dlg.radioSet.make ( function(btnId){
+        dlg.inputPanel .setVisible ( (btnId=='input' ) );
+        dlg.outputPanel.setVisible ( (btnId=='output') );
+        dlg.task.job_dialog_data.panel = btnId;
+        dlg.onDlgResize();  // this is needed for getting all elements in
+                            // inputPanel available by scrolling, in case
+                            // when dialog first opens for 'output'
+        // if dialog was created in input mode, check whether report
+        // page should be loaded at first switch to output mode
+        if (dlg.outputPanel.element.src.length<=0)
+          dlg.loadReport();
+      });
+    }(this));
+    this.radioSet.setSize ( '220px','' );
+
+    if (!this.inputPanel.fullVersionMismatch)
+      this.run_btn  = this.toolBar.setButton ( this.task.runButtonName(),
+                                               image_path('runjob'), 0,2, 1,1 )
+                                  .setTooltip  ( 'Start job' )
+                                  .setDisabled ( __dormant   );
+  }
+
+  this.toolBar.setCellSize ( '40%','',0,1 );
+
+  var col = 3;
+  this.run_image  = this.toolBar.setImage  ( './images_com/activity.gif',
+                                             '36px','36px', 0,col++, 1,1 );
+  this.stop_btn   = this.toolBar.setButton ( 'Stop',image_path('stopjob'), 0,col++, 1,1 )
+                                .setTooltip('Stop job' );
+
+  this.status_lbl = this.toolBar.setLabel  ( '', 0,col, 1,1 ).setNoWrap();
+  this.toolBar.setVerticalAlignment ( 0,col++,'middle' );
+
+  this.done_sign  = this.toolBar.setImage (
+                          image_path('job_done'),'34px','34px',0,col++,1,1
+                    ).setTooltip('Job completed');
+  this.nores_sign = this.toolBar.setImage (
+                          image_path('job_noresults'),'34px','34px',0,col++,1,1
+                    ).setTooltip('Job completed with no results ' +
+                                 'that can be passed to subsequent jobs');
+  this.toolBar.setLabel   ( '&nbsp;&nbsp;', 0,col++, 1,1 ).setNoWrap();
+
+  (function(dlg){
+    dlg.hot_btn  = [];
+    var hot_list = dlg.task.hotButtons();
+    for (var i=0;i<hot_list.length;i++)  {
+      var task_obj  = eval ( 'new ' + hot_list[i].task + '()' );
+      var avail_key = task_obj.isTaskAvailable();
+      if (avail_key[0]=='ok')  {
+        var hbtn = dlg.toolBar.setButton ( '',image_path(task_obj.icon()),
+                                          0,col++, 1,1 )
+                              .setSize('34px','34px').setTooltip(hot_list[i].tooltip)
+                              .addOnClickListener ( function(){
+                                dlg.onDlgSignal_func ( dlg.task.id,
+                                                       job_dialog_reason.run_job,
+                                                       task_obj );
+                              });
+        dlg.hot_btn.push ( hbtn );
+      }
+    }
+    dlg.addjob_btn = dlg.toolBar.setButton ( '',image_path('add'), 0,col++, 1,1 )
+                                .setSize('34px','34px').setTooltip('Add next job')
+                                .addOnClickListener ( function(){
+                                  dlg.onDlgSignal_func ( dlg.task.id,
+                                                         job_dialog_reason.add_job,
+                                                         null );
+                                });
+    dlg.clone_btn  = dlg.toolBar.setButton ( '',image_path('clonejob'), 0,col++, 1,1 )
+                                .setSize('34px','34px').setTooltip('Clone job')
+                                .addOnClickListener ( function(){
+                                  dlg.onDlgSignal_func ( dlg.task.id,
+                                                         job_dialog_reason.clone_job,
+                                                         null );
+                                });
+  }(this))
+
+  this.toolBar.setLabel  ( '&nbsp;&nbsp;', 0,col, 1,1 ).setNoWrap();
+  this.toolBar.setCellSize ( '40%','',0,col++ );
+
+  this.export_btn = this.toolBar.setButton ( 'Export',image_path('export'), 0,col++, 1,1 )
+                                .setTooltip('Export job directory' );
+
+  if (this.task.helpURL)
+    this.ref_btn  = this.toolBar.setButton ( 'Ref.',image_path('reference'), 0,col++, 1,1 )
+                                .setTooltip('Task Documentation' );
+  this.help_btn   = this.toolBar.setButton ( 'Help',image_path('help'), 0,col++, 1,1 )
+                                .setTooltip('Dialog Help' );
+  this.close_btn  = this.toolBar.setButton ( 'Close',image_path('close'), 0,col, 1,1 )
+                                .setTooltip('Close Job Dialog' );
+
+}
 
 JobDialog.prototype.makeLayout = function ( onRun_func )  {
 
@@ -379,6 +498,15 @@ JobDialog.prototype.makeLayout = function ( onRun_func )  {
     this.inputPanel = this.task.makeInputPanel ( this.dataBox );
     this.inputPanel.job_dialog = this;
 
+    this.makeToolBar();
+
+    this.addWidget ( this.toolBar );
+    this.toolBarSep = new HLine('2px');
+    this.addWidget ( this.toolBarSep  );
+    this.addWidget ( this.inputPanel  );
+    this.addWidget ( this.outputPanel );
+
+    /*
     this.toolBar = new Grid('');
     this.addWidget ( this.toolBar );
     this.toolBarSep = new HLine('2px');
@@ -436,6 +564,7 @@ JobDialog.prototype.makeLayout = function ( onRun_func )  {
                                   .setTooltip('Close Job Dialog' );
     this.toolBar.setVerticalAlignment ( 0,5,'middle' );
     this.toolBar.setCellSize ( '40%','',0,6 );
+    */
 
   } else  {
     this.outputPanel.setFramePosition ( '16px','8px','100%','100%' );
@@ -651,7 +780,7 @@ JobDialog.prototype.makeLayout = function ( onRun_func )  {
 
     if (dlg.stop_btn)
       dlg.stop_btn.addOnClickListener ( function(){
-        dlg.onDlgSignal_func ( dlg.task.id,job_dialog_reason.stop_job );
+        dlg.onDlgSignal_func ( dlg.task.id,job_dialog_reason.stop_job,null );
       });
 
     if (dlg.export_btn)

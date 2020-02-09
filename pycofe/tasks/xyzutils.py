@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    08.02.20   <--  Date of Last Modification.
+#    09.02.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -137,6 +137,8 @@ class XyzUtils(basic.TaskDriver):
         for model in st:
             nchains += len(model)
 
+        have_results = False
+
         xyzout = ixyz.lessDataId ( ixyz.getXYZFileName() )
         self.outputFName = os.path.splitext(xyzout)[0]
         if self.getParameter(sec1.SPLITTOCHAINS_CBX)=="True":
@@ -172,6 +174,7 @@ class XyzUtils(basic.TaskDriver):
                                                               ", chain " + chain.name,oxyz,-1 )
                             else:
                                 self.putXYZWidget ( "xyz_btn","Chain " + chain.name,oxyz,-1 )
+                            have_results = True
                             self.putMessage ( "&nbsp;" )
                         else:
                             # close execution logs and quit
@@ -204,6 +207,7 @@ class XyzUtils(basic.TaskDriver):
                             "<b>Assigned name&nbsp;&nbsp;&nbsp;:</b>&nbsp;&nbsp;&nbsp;" +
                             oxyz.dname )
                         self.putXYZWidget ( "xyz_btn","Edited coordinates",oxyz,-1 )
+                        have_results = True
                     else:
                         # close execution logs and quit
                         self.fail ( "<h3>XYZ Data was not formed (error)</h3>",
@@ -216,6 +220,7 @@ class XyzUtils(basic.TaskDriver):
                     oxyz = self.registerEnsemble ( seq,xyzout,checkout=True )
                     if oxyz:
                         self.putEnsembleWidget ( "ensemble_btn","Coordinates",oxyz )
+                        have_results = True
                     else:
                         # close execution logs and quit
                         self.fail ( "<h3>Ensemble was not formed (error)</h3>",
@@ -250,6 +255,7 @@ class XyzUtils(basic.TaskDriver):
                         revision = self.makeClass ( istruct  )
                         revision.setStructureData ( oxyz     )
                         self.registerRevision     ( revision )
+                        have_results = True
                     else:
                         # close execution logs and quit
                         self.fail ( "<h3>Structure was not formed (error)</h3>",
@@ -267,7 +273,7 @@ class XyzUtils(basic.TaskDriver):
             }
 
         # close execution logs and quit
-        self.success()
+        self.success ( have_results )
 
         return
 

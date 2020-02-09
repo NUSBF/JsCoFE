@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    22.01.20   <--  Date of Last Modification.
+ *    09.02.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -412,7 +412,15 @@ TaskArpWarp.prototype.requiredEnvironment = function() { return ['CCP4','warpbin
 TaskArpWarp.prototype.authorisationID     = function() { return 'arpwarp'; }
 
 
-if (__template)  {
+if (!__template)  {
+  //  for client side
+
+  // hotButtons return list of buttons added in JobDialog's toolBar.
+  TaskArpWarp.prototype.hotButtons = function() {
+    return [CootMBHotButton()];
+  }
+
+} else  {
   //  for server side
 
   var conf = require('../../js-server/server.configuration');

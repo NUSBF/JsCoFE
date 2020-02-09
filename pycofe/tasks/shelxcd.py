@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    06.05.19   <--  Date of Last Modification.
+#    09.02.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2019
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2020
 #
 # ============================================================================
 #
@@ -234,6 +234,7 @@ class ShelxCD(basic.TaskDriver):
         self.runApp ( "shelxd",[stemname+"_fa"],logType="Main" )
 
         # check results
+        have_results = False
         if os.path.isfile(pdbfile):
             st = gemmi.read_structure(pdbfile)
             for model in st:
@@ -331,6 +332,7 @@ class ShelxCD(basic.TaskDriver):
                             hkl_all[i].wtype + " dataset:</i></b>",ri )
 
                     ri.register ( self.outputDataBox )
+                    have_results = True
 
             else:
                 self.rvrow = rvrow0
@@ -342,7 +344,7 @@ class ShelxCD(basic.TaskDriver):
         self.flush()
 
         # close execution logs and quit
-        self.success()
+        self.success ( have_results )
         return
 
 

@@ -296,7 +296,7 @@ class Aimless(basic.TaskDriver):
                                    " R<sub>meas_ano</sub>=" + str(dsum["R_meas_ano"])   +\
                                    " Res=" + str(dsum["res_high"])  + "-" + str(dsum["res_low"]) +\
                                    " SpG=" + dsum["Space_group"] ;
-            self.success()
+            self.success ( True )
         else:
             self.file_stdout.write ( "Aimless failed, see above." )
             self.fail ( "<p>&nbsp;Aimless failed, see Log and Error tabs for details",

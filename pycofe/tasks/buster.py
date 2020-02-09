@@ -136,6 +136,7 @@ class Buster(basic.TaskDriver):
         self.runApp ( "refine",cmd,logType="Main" )
 
         # check results and finish report
+        have_results = False
         mtzout = os.path.join ( self.buster_dir(),"refine.mtz" )
         xyzout = os.path.join ( self.buster_dir(),"refine.pdb" )
         if os.path.isfile(mtzout):
@@ -231,9 +232,10 @@ class Buster(basic.TaskDriver):
                 revision = self.makeClass ( self.input_data.data.revision[0] )
                 revision.setStructureData ( structure )
                 self.registerRevision     ( revision  )
+                have_results = True
 
         # close execution logs and quit
-        self.success()
+        self.success ( have_results )
         return
 
 

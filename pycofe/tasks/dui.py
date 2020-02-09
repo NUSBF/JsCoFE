@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    31.01.20   <--  Date of Last Modification.
+#    09.02.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -69,6 +69,8 @@ class DUI(basic.TaskDriver):
 
         # Check for MTZ files left by DUI and import them as Unmerged
 
+        have_results = False
+
         if os.path.isdir("dui_files"):
 
             files = os.listdir ( "dui_files" )
@@ -88,7 +90,8 @@ class DUI(basic.TaskDriver):
                     self.resetFileImport()
                     self.addFileImport ( "",filename,import_filetype.ftype_MTZIntegrated() )
                     unmerged_imported = import_unmerged.run ( self,"Unmerged Reflection Dataset" )
-                    self.putMessage ( "<b>Assigned name:</b>&nbsp;" + unmerged_imported[0].dname  )
+                    self.putMessage ( "<b>Assigned name:</b>&nbsp;" + unmerged_imported[0].dname )
+                    have_results = True
 
                 # modify job name to display in job tree
                 ilist = ""
@@ -122,7 +125,7 @@ class DUI(basic.TaskDriver):
         # close execution logs and quit
 
         if rc.msg == "":
-            self.success()
+            self.success ( have_results )
         else:
             self.file_stdout.close()
             self.file_stderr.close()

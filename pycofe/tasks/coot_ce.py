@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    04.02.20   <--  Date of Last Modification.
+#    09.02.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -99,6 +99,8 @@ class Coot(basic.TaskDriver):
                 fdic[mt] = f
                 mlist.append ( mt )
 
+        have_results = False
+
         if len(mlist)>0:
 
             self.putTitle ( "Output coordinate data" )
@@ -144,6 +146,7 @@ class Coot(basic.TaskDriver):
                     self.putXYZWidget ( "xyz_btn","Edited coordinates",xyz,-1 )
                     if i<len(mlist)-1:
                         self.putMessage ( "&nbsp;" )
+                    have_results = True
 
         else:
             self.putTitle ( "No output data produced" )
@@ -188,7 +191,7 @@ class Coot(basic.TaskDriver):
         # close execution logs and quit
 
         if rc.msg == "":
-            self.success()
+            self.success ( have_results )
         else:
             self.file_stdout.close()
             self.file_stderr.close()

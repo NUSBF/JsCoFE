@@ -40,9 +40,6 @@ class ASUMod(asudef.ASUDef):
 
     # make task-specific definitions
     def matthews_report(self):  return "refmac_report"
-    #def getXMLFName    (self):  return "matthews.xml"
-    #def seq_table_id   (self):  return "seq_table"
-    #def res_table_id   (self):  return "res_table"
 
     # ------------------------------------------------------------------------
 
@@ -81,6 +78,8 @@ class ASUMod(asudef.ASUDef):
                                        #self.getParameter(sec1.RESLIMIT),
                                        revision0 )
 
+        have_results = False
+
         if revision:
 
             if hasattr(self.input_data.data,"hkl") and revision0.Structure:
@@ -104,7 +103,8 @@ class ASUMod(asudef.ASUDef):
 
             if revision[0]:
                 revision[0].addSubtypes ( revision0.subtype )
-                self.registerRevision ( revision[0]  )
+                self.registerRevision ( revision[0] )
+                have_results = True
 
         else:
             self.putTitle   ( "Revision was not produced" )
@@ -112,7 +112,7 @@ class ASUMod(asudef.ASUDef):
                               "report to the maintainer" )
 
         # close execution logs and quit
-        self.success()
+        self.success ( have_results )
         return
 
 

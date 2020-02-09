@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    08.12.19   <--  Date of Last Modification.
+#    09.02.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -238,6 +238,9 @@ class Acorn(basic.TaskDriver):
         self.unsetLogParser()
 
         # check solution and register data
+
+        have_results = False
+
         if os.path.isfile("__tmp6.mtz"):
 
             # calculate maps for UglyMol using final mtz from temporary location
@@ -333,14 +336,14 @@ class Acorn(basic.TaskDriver):
                 revision = self.makeClass  ( self.input_data.data.revision[0] )
                 revision.setStructureData  ( structure )
                 self.registerRevision      ( revision  )
-
+                have_results = True
 
         else:
             self.putTitle ( "No Output Generated" )
 
 
         # close execution logs and quit
-        self.success()
+        self.success ( have_results )
         return
 
 

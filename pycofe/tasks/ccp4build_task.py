@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    20.06.19   <--  Date of Last Modification.
+#    09.02.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2019
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2019-2020
 #
 # ============================================================================
 #
@@ -327,6 +327,8 @@ class CCP4Build(basic.TaskDriver):
         self.addCitations ( ['ccp4build'] )
         self.rvrow += 100
 
+        have_results = False
+
         meta = None
         meta_str = self.restoreReportDocument()
         if not meta_str:
@@ -391,6 +393,7 @@ class CCP4Build(basic.TaskDriver):
                     rev.makeRevDName ( self.job_id,i+1, self.outputFName + " (" + titles[i] + ")" )
                     self.putRevisionWidget ( gridId,i,"<b><i>" + titles[i] + " build:</i></b>",rev )
                     rev.register ( self.outputDataBox )
+                    have_results = True
 
                 else:
                     self.putMessage ( "<i>Cannot make structure for " +\
@@ -407,7 +410,7 @@ class CCP4Build(basic.TaskDriver):
         shutil.rmtree ( self.workdir() )
 
         # close execution logs and quit
-        self.success()
+        self.success ( have_results )
         return
 
 

@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    16.06.19   <--  Date of Last Modification.
+#    09.02.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -32,7 +32,7 @@
 #               even if job is run by SGE, so it should be checked upon using
 #               comman line length
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2019
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2020
 #
 # ============================================================================
 #
@@ -169,6 +169,8 @@ class Morda(basic.TaskDriver):
 
         final_pdb = os.path.join ( self.outputDir(),morda_out_pdb )
 
+        have_results = False
+
         if os.path.isfile(final_pdb):
 
             # solution found; firstly, check whether the space group has changed
@@ -197,9 +199,10 @@ class Morda(basic.TaskDriver):
                 revision.setReflectionData ( sol_hkl   )
                 revision.setStructureData  ( structure )
                 self.registerRevision      ( revision  )
+                have_results = True
 
         # close execution logs and quit
-        self.success()
+        self.success ( have_results )
         return
 
 

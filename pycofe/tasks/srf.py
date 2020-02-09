@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    31.08.19   <--  Date of Last Modification.
+#    09.02.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2019
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2019-2020
 #
 # ============================================================================
 #
@@ -142,7 +142,7 @@ class SRF(basic.TaskDriver):
             self.putMessage ( "<h3>SRF postscript was not generated</h3>" )
 
         # close execution logs and quit
-        self.success()
+        self.success ( False )
         return
 
 

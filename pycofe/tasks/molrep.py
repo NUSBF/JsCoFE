@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    16.01.19   <--  Date of Last Modification.
+#    09.02.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2018
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2020
 #
 # ============================================================================
 #
@@ -160,6 +160,8 @@ class Molrep(basic.TaskDriver):
             logType="Main"
         )
 
+        have_results = False
+
         self.putMessage ( '&nbsp;' );
         structure = self.finaliseStructure ( self.molrep_pdb(),self.outputFName,
                                 hkl,None,[seq],0,leadKey=1,openState_bool=False,
@@ -169,9 +171,10 @@ class Molrep(basic.TaskDriver):
             # update structure revision
             revision.setStructureData ( structure )
             self.registerRevision     ( revision  )
+            have_results = True
 
         # close execution logs and quit
-        self.success()
+        self.success ( have_results )
         return
 
 

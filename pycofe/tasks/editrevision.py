@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    18.11.19   <--  Date of Last Modification.
+#    09.02.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -21,7 +21,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2019
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2020
 #
 # ============================================================================
 #
@@ -113,6 +113,8 @@ class EditRevision(asudef.ASUDef):
         else:
             revision = revision0
 
+        have_results = False
+
         if revision:  # should be always True
 
             if 'xyz' in change_list or 'phases' in change_list or 'lig' in change_list:
@@ -190,6 +192,7 @@ class EditRevision(asudef.ASUDef):
 
             revision.addSubtypes  ( revision0.getSubtypes() )
             self.registerRevision ( revision  )
+            have_results = True
 
         else:
             self.putTitle   ( "Revision was not produced" )
@@ -197,7 +200,7 @@ class EditRevision(asudef.ASUDef):
                               "report to the maintainer" )
 
         # close execution logs and quit
-        self.success()
+        self.success ( have_results )
         return
 
 
