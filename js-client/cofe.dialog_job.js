@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    09.02.20   <--  Date of Last Modification.
+ *    10.02.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -441,17 +441,18 @@ JobDialog.prototype.makeToolBar = function()  {
     for (var i=0;i<hot_list.length;i++)  {
       var task_obj  = eval ( 'new ' + hot_list[i].task + '()' );
       var avail_key = task_obj.isTaskAvailable();
-      if (avail_key[0]=='ok')  {
-        var hbtn = dlg.toolBar.setButton ( '',image_path(task_obj.icon()),
-                                          0,col++, 1,1 )
-                              .setSize('34px','34px').setTooltip(hot_list[i].tooltip)
-                              .addOnClickListener ( function(){
-                                dlg.onDlgSignal_func ( dlg.task.id,
-                                                       job_dialog_reason.run_job,
-                                                       task_obj );
-                              });
-        dlg.hot_btn.push ( hbtn );
-      }
+      if (avail_key[0]=='ok')
+        (function(task){
+          var hbtn = dlg.toolBar.setButton ( '',image_path(task_obj.icon()),
+                                            0,col++, 1,1 )
+                                .setSize('34px','34px').setTooltip(hot_list[i].tooltip)
+                                .addOnClickListener ( function(){
+                                  dlg.onDlgSignal_func ( dlg.task.id,
+                                                         job_dialog_reason.run_job,
+                                                         task );
+                                });
+          dlg.hot_btn.push ( hbtn );
+        }(task_obj))
     }
     dlg.addjob_btn = dlg.toolBar.setButton ( '',image_path('add'), 0,col++, 1,1 )
                                 .setSize('34px','34px').setTooltip('Add next job')

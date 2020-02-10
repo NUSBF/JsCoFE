@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    22.12.18   <--  Date of Last Modification.
+#    10.02.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2018
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2020
 #
 # ============================================================================
 #
@@ -133,6 +133,8 @@ class Gesamt(basic.TaskDriver):
         # run gesamt
         self.runApp ( "gesamt",cmd,logType="Main" )
 
+        have_results = False
+
         if nXYZ<2:  # PDB scan
 
             pyrvapi.rvapi_remove_widget ( self.progress_grid_id() )
@@ -214,11 +216,9 @@ class Gesamt(basic.TaskDriver):
                                 pyrvapi.rvapi_shape_table_cell (
                                     self.hits_table_id(),j,i,"",td_css,"",1,1 )
 
-
                     pyrvapi.rvapi_add_button ( "hits_dnl_btn","Export hit list","{function}",
                         "window.parent.downloadJobFile(" + self.job_id + ",'hits.txt')",
                         False,self.hits_table_sec_id(), 1,0,1,1 )
-
 
                     if nHits > 1:
 
@@ -321,6 +321,7 @@ class Gesamt(basic.TaskDriver):
                     self.putEnsembleWidget ( self.getWidgetId("ensemble_btn"),
                                              "Superposed ensemble&nbsp;&nbsp;",
                                              ensemble,-1 )
+                    have_results = True
 
                 for i in range(1,len(outFiles)-1):
                     ensemble = self.registerEnsemble ( dtype_template.subtypeProtein(),
@@ -330,12 +331,13 @@ class Gesamt(basic.TaskDriver):
                         self.putEnsembleWidget ( self.getWidgetId("ensemble_"+str(i)+"_btn"),
                                                  "Superposed domain #" + str(i),
                                                  ensemble,-1 )
+                        have_results = True
 
             else:
                 self.putTitle ( "No Output Files Generated" )
 
         # close execution logs and quit
-        self.success()
+        self.success ( have_results )
         return
 
 

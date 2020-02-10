@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    18.09.19   <--  Date of Last Modification.
+#    10.02.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -128,7 +128,8 @@ class EnsemblePrepSeq(basic.TaskDriver):
         #  is there a way to flush generic parser at some moment?
         time.sleep(1)
 
-        search_dir = "search_" + self.outdir_name()
+        search_dir   = "search_" + self.outdir_name()
+        have_results = False
 
         if os.path.isdir(search_dir):
 
@@ -212,6 +213,8 @@ class EnsemblePrepSeq(basic.TaskDriver):
                                             self.putEnsembleWidget1 ( secId,
                                                 "ensemble_"  + str(ensembleSerNo) + "_btn",
                                                 "Coordinates",ensemble,-1,secrow+5,1 )
+                                            have_results = True
+
                                         else:
                                             self.putMessage1 ( secId,
                                                     "<h3>Structural alignment failed, ensemble is not useable.</h3>",0 )
@@ -231,7 +234,7 @@ class EnsemblePrepSeq(basic.TaskDriver):
         time.sleep(1)
 
         # close execution logs and quit
-        self.success()
+        self.success ( have_results )
         return
 
 

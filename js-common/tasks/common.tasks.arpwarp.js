@@ -416,6 +416,14 @@ if (!__template)  {
   //  for client side
 
   // hotButtons return list of buttons added in JobDialog's toolBar.
+  function ArpWarpHotButton()  {
+    return {
+      'task'    : 'TaskArpWarp',
+      'tooltip' : 'Automated model building with Arp/wArp'
+    };
+  }
+
+  // hotButtons return list of buttons added in JobDialog's toolBar.
   TaskArpWarp.prototype.hotButtons = function() {
     return [CootMBHotButton()];
   }

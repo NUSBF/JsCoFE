@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.11.19   <--  Date of Last Modification.
+ *    10.02.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  ACORN Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2018
+ *  (C) E. Krissinel, A. Lebedev 2018-2020
  *
  *  =================================================================
  *
@@ -904,7 +904,15 @@ TaskAcorn.prototype.currentVersion = function()  {
 //TaskAcorn.prototype.cleanJobDir = function ( jobDir )  {}
 
 
-if (__template)  {
+if (__template)
+  //  for client side
+
+  // hotButtons return list of buttons added in JobDialog's toolBar.
+  TaskAcorn.prototype.hotButtons = function() {
+    return [ArpWarpHotButton(),CCP4BuildHotButton(),BuccaneerHotButton()];
+  }
+
+} else  {
   //  for server side
 
   var conf = require('../../js-server/server.configuration');

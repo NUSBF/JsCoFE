@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    18.12.19   <--  Date of Last Modification.
+#    10.02.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2019
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2020
 #
 # ============================================================================
 #
@@ -116,6 +116,8 @@ class FreeRFlag(basic.TaskDriver):
                 "\"</b> dataset;<br>" +\
                 "-- no extension is required.<br>&nbsp;" )
 
+        have_results = False
+
         if os.path.isfile(freerPath):
 
             if n0 >= 0:
@@ -191,6 +193,8 @@ class FreeRFlag(basic.TaskDriver):
                     for i in range(len(outhkl)):
                         outhkl[i].freeRds = freer
 
+                have_results = True
+
             else:
                 self.fail ( "<p>&nbsp;Setting free R-flag columns failed",
                             "Error in setting free R-flag" )
@@ -252,7 +256,7 @@ class FreeRFlag(basic.TaskDriver):
         """
 
         # close execution logs and quit
-        self.success()
+        self.success ( have_results )
         return
 
 

@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    31.01.20   <--  Date of Last Modification.
+#    10.02.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -64,6 +64,8 @@ class iMosflm(basic.TaskDriver):
         else:
             rc = self.runApp ( "imosflm",[],logType="Main",quitOnError=False )
 
+        have_results = False
+
         if os.path.isdir("."):
 
             files = os.listdir ( "." )
@@ -85,6 +87,7 @@ class iMosflm(basic.TaskDriver):
                     self.addFileImport ( "",filename,import_filetype.ftype_MTZIntegrated() )
                     unmerged_imported = import_unmerged.run ( self,"Unmerged Reflection Dataset" )
                     self.putMessage ( "<b>Assigned name:</b>&nbsp;" + unmerged_imported[0].dname  )
+                    have_results = True
 
                 # modify job name to display in job tree
                 ilist = ""
@@ -117,7 +120,7 @@ class iMosflm(basic.TaskDriver):
         # close execution logs and quit
 
         if rc.msg == "":
-            self.success()
+            self.success ( have_results )
         else:
             self.file_stdout.close()
             self.file_stderr.close()

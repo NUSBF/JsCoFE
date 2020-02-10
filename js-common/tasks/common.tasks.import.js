@@ -77,6 +77,11 @@ TaskImport.prototype.currentVersion = function()  {
 if (!__template)  {
   // for client side
 
+  // hotButtons return list of buttons added in JobDialog's toolBar.
+  TaskImport.prototype.hotButtons = function() {
+    return [AsuDefHotButton()];
+  }
+
   TaskImport.prototype.customDataClone = function ( task )  {
     this.uname        = '';
     this.file_mod     = {'rename':{},'annotation':[]}; // file modification and annotation

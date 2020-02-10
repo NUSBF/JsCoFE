@@ -213,6 +213,14 @@ TaskASUDef.prototype.currentVersion = function()  {
 if (!__template)  {
   //  for client side
 
+  // hotButtons return list of buttons added in JobDialog's toolBar.
+  function AsuDefHotButton()  {
+    return {
+      'task'    : 'TaskASUDef',
+      'tooltip' : 'Define Asymmetric Unit'
+    };
+  }
+
   TaskASUDef.prototype.inputChanged = function ( inpParamRef,emitterId,emitterValue )  {
 
     if (emitterId=='hkl')  {

@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    09.04.19   <--  Date of Last Modification.
+#    10.02.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2019
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2020
 #
 # ============================================================================
 #
@@ -114,7 +114,7 @@ class MakeLigand(basic.TaskDriver):
             self.finaliseLigand ( code,xyzPath,cifPath )
 
         # close execution logs and quit
-        self.success()
+        self.success ( code is not None )
         return
 
 

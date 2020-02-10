@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    11.04.19   <--  Date of Last Modification.
+#    10.02.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2019
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2020
 #
 # ============================================================================
 #
@@ -28,6 +28,7 @@
 import os
 import sys
 import shutil
+import time
 
 #  ccp4-python imports
 import pyrvapi
@@ -239,6 +240,8 @@ class EnsemblePrepXYZ(basic.TaskDriver):
         if modSel=="S": self.addCitations ( ['sculptor'] )
         if modSel=="P": self.addCitations ( ['chainsaw'] )
 
+        have_results = False
+
         if len(xyz)<=1:
             #  single file output
 
@@ -331,6 +334,7 @@ class EnsemblePrepXYZ(basic.TaskDriver):
                                         seq.getSeqFilePath(self.outputDir()) )
                         else:
                             ensemble.setSubtype ( "sequnk" )
+                        have_results = True
 
         else:
             #  ensemble output
@@ -396,9 +400,11 @@ class EnsemblePrepXYZ(basic.TaskDriver):
 
                                 self.putEnsembleWidget ( "ensemble_"  + str(ensembleSerNo) + "_btn",
                                                          "Coordinates",ensemble )
+                                have_results = True
 
                             else:
-                                self.putMessage1 ( alignSecId,"<h3>Structural alignment failed, ensemble is not useable.</h3>",0 )
+                                self.putMessage1 ( alignSecId,
+                                    "<h3>Structural alignment failed, ensemble is not useable.</h3>",0 )
                             self.putMessage ( "&nbsp;" )
 
         # close execution logs and quit
@@ -407,10 +413,9 @@ class EnsemblePrepXYZ(basic.TaskDriver):
         # may happen after STOP_POLL is issued, in which case parser's report
         # is not seen until the whole page is reloaded.
         #  is there a way to flush generic parser at some moment?
-        import time
         time.sleep(1)
 
-        self.success()
+        self.success ( have_results )
         return
 
 

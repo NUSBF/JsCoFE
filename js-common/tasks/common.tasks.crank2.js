@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.11.19   <--  Date of Last Modification.
+ *    10.02.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Crank-2 Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2019
+ *  (C) E. Krissinel, A. Lebedev 2016-2020
  *
  *  =================================================================
  *
@@ -942,6 +942,11 @@ TaskCrank2.prototype.currentVersion = function()  {
 
 
 if (!__template)  {
+
+  // hotButtons return list of buttons added in JobDialog's toolBar.
+  TaskCrank2.prototype.hotButtons = function() {
+    return [CootMBHotButton()];
+  }
 
 /*
   TaskCrank2.prototype.addCustomDataState = function ( inpDataRef,dataState ) {

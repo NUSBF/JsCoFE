@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    28.01.20   <--  Date of Last Modification.
+ *    10.02.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -233,6 +233,11 @@ TaskParrot.prototype.currentVersion = function()  {
 
 if (!__template)  {
   //  for client side
+
+  // hotButtons return list of buttons added in JobDialog's toolBar.
+  TaskParrot.prototype.hotButtons = function() {
+    return [CCP4BuildHotButton(),BuccaneerHotButton(),ArpWarpHotButton()];
+  }
 
 /*
   TaskParrot.prototype.inputChanged = function ( inpParamRef,emitterId,emitterValue )  {

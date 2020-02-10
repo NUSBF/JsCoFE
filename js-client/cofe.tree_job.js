@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    09.02.20   <--  Date of Last Modification.
+ *    10.02.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -948,9 +948,15 @@ JobTree.prototype.openJob = function ( dataBox,parent_page )  {
                               reftask = branch_task_list[i];
                           if (reftask)
                             options.parameters = jQuery.extend ( true,{},reftask.parameters );
-                          options.onJobDialogStart = function ( job_dialog )  {
-                            job_dialog.run_btn.click();  // start automatically
-                          };
+                          var dataSummary = dataBox.getDataSummary ( options );
+                          if ((dataSummary.status==2) ||
+                              (('DataRevision' in dataBox.data) &&
+                               (dataBox.data.DataRevision.length==1))) {
+                            // unambiguous data -- just start the job
+                            options.onJobDialogStart = function ( job_dialog )  {
+                              job_dialog.run_btn.click();  // start automatically
+                            };
+                          }
                           tree._add_job ( false,options,dataBox,dlg.parent_page,function(){
                             dlg.close();
                             //tree.dlg_map[options.id].run_btn.click();
