@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    22.01.20   <--  Date of Last Modification.
+ *    10.02.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -302,6 +302,11 @@ TaskShelxCD.prototype.currentVersion = function()  {
 
 if (!__template)  {
   // for client side
+
+  // hotButtons return list of buttons added in JobDialog's toolBar.
+  TaskShelxCD.prototype.hotButtons = function() {
+    return [PhaserEPHotButton()];
+  }
 
   TaskShelxCD.prototype.inputChanged = function ( inpParamRef,emitterId,emitterValue )  {
 

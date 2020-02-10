@@ -83,6 +83,7 @@ class PhaserEP(basic.TaskDriver):
 
         structure     = None
         anomstructure = None
+        revision      = None
 
         if len(scattering_type)>0:
 
@@ -184,7 +185,7 @@ class PhaserEP(basic.TaskDriver):
             self.putMessage (
                 "<h3><i>Heavy Atom Substructure Not Found.</i></h3>" )
 
-        return  (structure,anomstructure)
+        return  (structure,anomstructure,revision)
 
 
     # ------------------------------------------------------------------------
@@ -328,14 +329,16 @@ class PhaserEP(basic.TaskDriver):
         # check solution and register data
 
         self.putTitle         ( "Results" )
-        self.process_solution ( ".1","<h3><i>Original Hand</i></h3>",hkl,seq,1 )
+        sol = self.process_solution ( ".1","<h3><i>Original Hand</i></h3>",hkl,seq,1 )
+        have_results = sol[2] is not None
         self.putMessage       ( "&nbsp;"  )
         if not self.xmodel:
-            self.process_solution ( ".1.hand","<h3><i>Inverted Hand</i></h3>",hkl,seq,2 )
+            sol = self.process_solution ( ".1.hand","<h3><i>Inverted Hand</i></h3>",hkl,seq,2 )
+            have_results = have_results or (sol[2] is not None)
             self.putMessage       ( "&nbsp;<p>" )
 
         # close execution logs and quit
-        self.success()
+        self.success ( have_results )
         return
 
 

@@ -69,7 +69,15 @@ TaskShelxSubstr.prototype.requiredEnvironment = function() {
 }
 
 
-if (__template)  {
+if (!__template)  {
+  //  for client side
+
+  // hotButtons return list of buttons added in JobDialog's toolBar.
+  TaskShelxSubstr.prototype.hotButtons = function() {
+    return [PhaserEPHotButton()];
+  }
+
+} else  {
   //  for server side
 
   var conf = require('../../js-server/server.configuration');

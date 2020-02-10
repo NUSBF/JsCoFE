@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    16.11.19   <--  Date of Last Modification.
+ *    10.02.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Molrep Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2019
+ *  (C) E. Krissinel, A. Lebedev 2016-2020
  *
  *  =================================================================
  *
@@ -442,7 +442,15 @@ TaskMolrep.prototype.currentVersion = function()  {
 }
 
 
-if (__template)  {
+if (!__template)  {
+  //  for client side
+
+  // hotButtons return list of buttons added in JobDialog's toolBar.
+  TaskMolrep.prototype.hotButtons = function() {
+    return [RefmacHotButton()];
+  }
+
+} else  {
   //  for server side
 
   var conf = require('../../js-server/server.configuration');

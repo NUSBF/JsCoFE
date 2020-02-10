@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.11.19   <--  Date of Last Modification.
+ *    10.02.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Phaser-EP Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2019
+ *  (C) E. Krissinel, A. Lebedev 2016-2020
  *
  *  =================================================================
  *
@@ -296,6 +296,14 @@ TaskPhaserEP.prototype.currentVersion = function()  {
 
 if (!__template)  {
   //  for client side
+
+  // hotButtons return list of buttons added in JobDialog's toolBar.
+  function PhaserEPHotButton()  {
+    return {
+      'task'    : 'TaskPhaserEP',
+      'tooltip' : 'Calculate Experimental Phases with Phaser-EP'
+    };
+  }
 
   TaskPhaserEP.prototype.inputChanged = function ( inpParamRef,emitterId,emitterValue )  {
 

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    16.11.19   <--  Date of Last Modification.
+ *    10.02.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Phaser-MR Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2019
+ *  (C) E. Krissinel, A. Lebedev 2016-2020
  *
  *  =================================================================
  *
@@ -867,6 +867,11 @@ TaskPhaserMR.prototype.currentVersion = function()  {
 
 
 if (!__template)  {
+
+  // hotButtons return list of buttons added in JobDialog's toolBar.
+  TaskPhaserMR.prototype.hotButtons = function() {
+    return [RefmacHotButton()];
+  }
 
   /*
   TaskPhaserMR.prototype.inputChanged = function ( inpParamRef,emitterId,emitterValue )  {

@@ -375,6 +375,14 @@ if (!__template)  {
   //  for client side
 
   // hotButtons return list of buttons added in JobDialog's toolBar.
+  function BuccaneerHotButton()  {
+    return {
+      'task'    : 'TaskBuccaneer',
+      'tooltip' : 'Automated model building with Buccaneer'
+    };
+  }
+
+  // hotButtons return list of buttons added in JobDialog's toolBar.
   TaskBuccaneer.prototype.hotButtons = function() {
     return [CootMBHotButton()];
   }

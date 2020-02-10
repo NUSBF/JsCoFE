@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    08.11.19   <--  Date of Last Modification.
+#    10.02.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2019
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2020
 #
 # ============================================================================
 #
@@ -115,6 +115,7 @@ class Lorestr(basic.TaskDriver):
         self.rvrow += 100
 
         # check solution and register data
+        have_results = False
         if os.path.isfile(self.getXYZOFName()):
 
             self.putTitle ( "Lorestr Output" )
@@ -145,11 +146,12 @@ class Lorestr(basic.TaskDriver):
                 revision = self.makeClass ( self.input_data.data.revision[0] )
                 revision.setStructureData ( structure )
                 self.registerRevision     ( revision  )
+                have_results = True
         else:
             self.putTitle ( "No Output Generated" )
 
         # close execution logs and quit
-        self.success()
+        self.success ( have_results )
         return
 
 
