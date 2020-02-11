@@ -3,13 +3,13 @@
 #
 # ============================================================================
 #
-#    10.12.19   <--  Date of Last Modification.
+#    11.02.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  HKL DATA TYPE
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2019
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2020
 #
 # ============================================================================
 #
@@ -133,20 +133,22 @@ class DType(dtype_template.DType):
         return self.getMeta ( "FREE","" )
 
 
-    def getColumnNames ( self ):
-        return self.getMeta ( "Imean.value"    ,"" ) + " " + \
-               self.getMeta ( "Imean.sigma"    ,"" ) + " " + \
-               self.getMeta ( "Fmean.value"    ,"" ) + " " + \
-               self.getMeta ( "Fmean.sigma"    ,"" ) + " " + \
-               self.getMeta ( "Ipm.plus.value" ,"" ) + " " + \
-               self.getMeta ( "Ipm.plus.sigma" ,"" ) + " " + \
-               self.getMeta ( "Ipm.minus.value","" ) + " " + \
-               self.getMeta ( "Ipm.minus.sigma","" ) + " " + \
-               self.getMeta ( "Fpm.plus.value" ,"" ) + " " + \
-               self.getMeta ( "Fpm.plus.sigma" ,"" ) + " " + \
-               self.getMeta ( "Fpm.minus.value","" ) + " " + \
-               self.getMeta ( "Fpm.minus.sigma","" ) + " " + \
-               self.getMeta ( "FREE"           ,"" )
+    def getColumnNames ( self,sep=" ",includeFreeR=True ):
+        cols = self.getMeta ( "Imean.value"    ,"" ) + sep + \
+               self.getMeta ( "Imean.sigma"    ,"" ) + sep + \
+               self.getMeta ( "Fmean.value"    ,"" ) + sep + \
+               self.getMeta ( "Fmean.sigma"    ,"" ) + sep + \
+               self.getMeta ( "Ipm.plus.value" ,"" ) + sep + \
+               self.getMeta ( "Ipm.plus.sigma" ,"" ) + sep + \
+               self.getMeta ( "Ipm.minus.value","" ) + sep + \
+               self.getMeta ( "Ipm.minus.sigma","" ) + sep + \
+               self.getMeta ( "Fpm.plus.value" ,"" ) + sep + \
+               self.getMeta ( "Fpm.plus.sigma" ,"" ) + sep + \
+               self.getMeta ( "Fpm.minus.value","" ) + sep + \
+               self.getMeta ( "Fpm.minus.sigma","" )
+        if includeFreeR:
+            cols += sep + self.getMeta ( "FREE","" )
+        return cols
 
 
     def hasIntensities ( self ):

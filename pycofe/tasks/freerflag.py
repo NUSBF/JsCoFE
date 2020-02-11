@@ -88,18 +88,40 @@ class FreeRFlag(basic.TaskDriver):
 
         if n0 >= 0:  # need to regenerate or extend freeR-flag
 
-            self.open_stdin()
             if freer:
+                self.open_stdin()
                 self.write_stdin ( "COMPLETE FREE=" + freer.getMeta("FREE","") + "\n" )
             else:
+                # remove FreeR column from file in order to avoid column name clash
+                # in freerflag
+                col_list = hkl[0].getColumnNames ( sep=",",includeFreeR=False ).split(",")
+                col_str  = ""
+                ncols    = 0
+                for i in range(len(col_list)):
+                    if col_list[i]:
+                        ncols   += 1
+                        col_str += " E" + str(ncols) + "=" + col_list[i]
+                self.open_stdin()
+                self.write_stdin ([ "LABIN FILE 1" + col_str,"END" ])
+                self.close_stdin()
+                self.runApp ( "cad",["hklin1",hklinPath,"hklout","__tmp.mtz"],
+                              logType="Service" )
+                os.remove ( hklinPath )
+                os.rename ( "__tmp.mtz",hklinPath )
+                #cad hklin1 path1 hklout path2 <<eof
+                #LABIN FILE 1 E1=... E2=...
+                #END
+                #eof
+                self.open_stdin()
                 self.writeKWParameter ( sec1.FREERFRAC )
+
             if self.getParameter(sec1.SEED_CBX) == "True":
                 self.write_stdin ( "SEED\n" )
-            self.write_stdin (
-                "RESOL " + str(res0) + "\n" +\
-                "UNIQUE\n"
-                "END\n"
-            )
+            self.write_stdin ([
+                "RESOL " + str(res0),
+                "UNIQUE",
+                "END",
+            ])
             self.close_stdin()
 
             freerPath = self.freer_mtz()
@@ -108,7 +130,27 @@ class FreeRFlag(basic.TaskDriver):
             # Start freerflag
             self.runApp ( "freerflag",cmd,logType="Main" )
 
-        else:  # just us freeR-flag from the reference dataset
+            if not freer:
+                # freerflag added column FreeR_flag; rename it to original name
+                if freeRColumn!="FreeR_flag":
+                    self.open_stdin()
+                    self.write_stdin ([
+                      "LABIN  FILE 1" + col_str + " E" + str(ncols+1) + "=FreeR_flag",
+                      "LABOUT FILE 1" + col_str + " E" + str(ncols+1) + "=" + freeRColumn,
+                      "END"
+                    ])
+                    self.close_stdin()
+                    self.runApp ( "cad",["hklin1",freerPath,"hklout","__tmp.mtz"],
+                                  logType="Service" )
+                    os.remove ( freerPath )
+                    os.rename ( "__tmp.mtz",freerPath )
+                #cad hklin1 path_after_freerflag hklout path3 <<eof
+                #LABIN  FILE 1 E1=... E2=...        E16=FreeR_flag
+                #LABOUT FILE 1 E1=... E2=...        E16=freeRColumn
+                #END
+                #eof
+
+        else:  # just use freeR-flag from the reference dataset
             freerPath = hklinPath
             self.putMessage (
                 "Free R-flag is given at " + freer.getHighResolution() +\
