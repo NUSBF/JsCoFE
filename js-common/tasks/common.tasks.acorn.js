@@ -904,7 +904,7 @@ TaskAcorn.prototype.currentVersion = function()  {
 //TaskAcorn.prototype.cleanJobDir = function ( jobDir )  {}
 
 
-if (__template)
+if (!__template)  {
   //  for client side
 
   // hotButtons return list of buttons added in JobDialog's toolBar.
