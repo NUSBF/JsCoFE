@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    27.01.20   <--  Date of Last Modification.
+ *    11.02.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -940,7 +940,7 @@ var userFilePath = getUserDataFName ( loginData );
 //              role = 'admin';
 
             response = new cmd.Response ( cmd.fe_retcode.ok,'',
-              emailer.sendTemplateMessage ( uData,
+              emailer.sendTemplateMessage ( userData,
                         cmd.appName() + ' Account Update',
                         'account_updated_admin',{
                           'userProfile'  : uData.role,
@@ -1080,7 +1080,7 @@ var userFilePath = getUserDataFName ( loginData );
           if (utils.removeFile(userFilePath))  {
 
             response = new cmd.Response ( cmd.fe_retcode.ok,'',
-              emailer.sendTemplateMessage ( uData,
+              emailer.sendTemplateMessage ( userData,
                         cmd.appName() + ' Account Deleted',
                         'account_deleted_admin',{})
             );
