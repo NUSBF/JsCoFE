@@ -236,6 +236,26 @@ Widget.prototype.setFont = function ( family,size,bold,italic )  {
   return this;
 }
 
+Widget.prototype.setPaddings = function ( left,top,right,bottom )  {
+  var css = {};
+  if (left)   css['padding-left'  ] = left;
+  if (top)    css['padding-top'   ] = top;
+  if (right)  css['padding-right' ] = right;
+  if (bottom) css['padding-bottom'] = bottom;
+  $(this.element).css ( css );
+  return this;
+}
+
+Widget.prototype.setMargins = function ( left,top,right,bottom )  {
+  var css = {};
+  if (left)   css['margin-left'  ] = left;
+  if (top)    css['margin-top'   ] = top;
+  if (right)  css['margin-right' ] = right;
+  if (bottom) css['margin-bottom'] = bottom;
+  $(this.element).css ( css );
+  return this;
+}
+
 Widget.prototype.setScrollable = function ( onx_value,ony_value )  {
   if (onx_value.length>0)
     $(this.element).css ({'overflow-x':onx_value});

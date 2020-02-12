@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    10.01.20   <--  Date of Last Modification.
+#    12.02.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -189,7 +189,7 @@ class DType(dtype_template.DType):
             self.FreeR_flag = "FreeR_flag"
         return
 
-    def setPhaserEPLabels ( self,hkl_class ):
+    def setPhaserEPLabels ( self,hkl_class,afterMRSAD ):
         self.FP      = "F"
         self.SigFP   = "SIGF"
         self.FreeR_flag = "FreeR_flag"
@@ -205,10 +205,16 @@ class DType(dtype_template.DType):
         self.PHWT    = "PHWT"
         self.DELFWT  = ""
         self.PHDELWT = ""
-        self.HLA     = "HLA"
-        self.HLB     = "HLB"
-        self.HLC     = "HLC"
-        self.HLD     = "HLD"
+        if afterMRSAD:
+            self.HLA = "HLanomA"
+            self.HLB = "HLanomB"
+            self.HLC = "HLanomC"
+            self.HLD = "HLanomD"
+        else:
+            self.HLA = "HLA"
+            self.HLB = "HLB"
+            self.HLC = "HLC"
+            self.HLD = "HLD"
         return;
 
 
