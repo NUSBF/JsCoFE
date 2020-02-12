@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    08.12.19   <--  Date of Last Modification.
+#    12.02.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2019
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2020
 #
 # ============================================================================
 #
@@ -132,7 +132,7 @@ class PhaserEP(basic.TaskDriver):
                         for i in range(len(seq)):
                             if seq[i]:
                                 structure.addDataAssociation ( seq[i].dataId )
-                    structure.setPhaserEPLabels ( sol_hkl )
+                    structure.setPhaserEPLabels ( sol_hkl,self.MRSAD )
                     structure.addPhasesSubtype()
 
                     outputDataBox = self.outputDataBox
@@ -264,6 +264,7 @@ class PhaserEP(basic.TaskDriver):
             )
 
         self.xmodel = None
+        self.MRSAD  = False
         if hasattr(self.input_data.data,"xmodel"):  # optional data parameter
             self.xmodel = self.makeClass ( self.input_data.data.xmodel[0] )
             if "substructure" in self.xmodel.subtype:
@@ -273,6 +274,7 @@ class PhaserEP(basic.TaskDriver):
                         "\" RMS " + str(self.xmodel.rmsd)
                 )
             else:
+                self.MRSAD = True
                 self.write_stdin (
                     "\nPARTIAL PDB \"" +\
                         self.xmodel.getXYZFilePath(self.inputDir()) +\

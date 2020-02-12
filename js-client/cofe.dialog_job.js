@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    10.02.20   <--  Date of Last Modification.
+ *    12.02.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -55,6 +55,7 @@ function JobDialog ( params,          // data and task projections up the tree b
   var title = '[' + padDigits(this.task.id,4) + '] '
   if (this.task.uname.length>0)  title += this.task.uname;
                            else  title += this.task.name;
+  title += this.statusLine();
   this.element.setAttribute ( 'title',strip_html_tags(title) );
 
   $(this.element).css({'box-shadow':'8px 8px 16px 16px rgba(0,0,0,0.2)',
@@ -169,8 +170,21 @@ JobDialog.prototype.constructor = JobDialog;
 
 
 JobDialog.prototype.changeTitle = function ( new_title )  {
-  var title = '[' + padDigits(this.task.id,4) + '] ' + new_title;
-  $(this.element).dialog({ title: title });
+  var title = '[' + padDigits(this.task.id,4) + '] ' + new_title +
+              this.statusLine();
+  $(this.element).dialog({ title : title });
+}
+
+JobDialog.prototype.statusLine = function()  {
+  switch (this.task.state)  {
+    case job_code.new       :  return ' (new)';
+    case job_code.finished  :  return ' -- finished';
+    case job_code.noresults :  return ' -- executed';
+    case job_code.failed    :  return ' -- failed';
+    case job_code.stopped   :  return ' -- terminated by user';
+    default : ;
+  }
+  return '';
 }
 
 JobDialog.prototype.displayInputErrors = function ( input_msg )  {
@@ -227,9 +241,9 @@ JobDialog.prototype.setDlgState = function()  {
     if (this.stop_btn)  this.stop_btn .setVisible ( isRunning );
   }
 
-  if (this.status_lbl)
-    this.status_lbl.setVisible  ( (!isNew) && (!isRunning) );
-
+  //if (this.status_lbl)
+  //  this.status_lbl.setVisible  ( (!isNew) && (!isRunning) );
+  /*
   var msg = '';
   switch (this.task.state)  {
 //    case job_code.finished :  msg = 'Job completed';          break;
@@ -238,26 +252,26 @@ JobDialog.prototype.setDlgState = function()  {
 //    case job_code.noresults :  msg = 'Job completed';          break;
     case job_code.failed    :  msg = 'Job failed';             break;
     case job_code.stopped   :  msg = 'Job terminated by user'; break;
-    /*
-    case job_code.remdoc   :  this.toolBar   .setVisible ( false );
-                              this.toolBarSep.setVisible ( false );
-                          break;
-    */
+    //case job_code.remdoc   :  this.toolBar   .setVisible ( false );
+    //                          this.toolBarSep.setVisible ( false );
+    //                      break;
     default : ;
   }
+  */
 
   var show_hot_buttons = (!__dormant) && (this.task.state==job_code.finished);
-  this.done_sign .setVisible ( (this.task.state==job_code.finished)  );
-  this.nores_sign.setVisible ( (this.task.state==job_code.noresults) );
+  //this.done_sign .setVisible ( (this.task.state==job_code.finished)  );
+  //this.nores_sign.setVisible ( (this.task.state==job_code.noresults) );
   for (var i=0;i<this.hot_btn.length;i++)
     this.hot_btn[i].setVisible ( show_hot_buttons );
   this.addjob_btn.setVisible ( show_hot_buttons );
   this.clone_btn .setVisible ( (!__dormant) && (!isNew) && (!isRunning) );
 
-  if (msg && this.status_lbl)
-    this.status_lbl.setText ( '<b><i>' + msg + '</i></b>' );
+  //if (msg && this.status_lbl)
+  //  this.status_lbl.setText ( '<b><i>' + msg + '</i></b>' );
   if (this.export_btn)
-    this.export_btn.setVisible ( msg!='' );
+    this.export_btn.setVisible ( !this.task.isRemark() );
+    //this.export_btn.setVisible ( msg!='' );
 
   if (isNew)  { // enforce!
     this.outputPanel.setVisible ( false );
@@ -380,6 +394,16 @@ JobDialog.prototype.requestServer = function ( request,callback_ok )  {
 
 //window.document.__base_url_cache = {};
 
+JobDialog.prototype.addToolBarButton = function ( gap,icon,tooltip )  {
+//  if (gap)
+//    this.toolBar.setLabel ( '', 0,this.col++, 1,1 ).setWidth_px ( 1 );
+var btn = this.toolBar.setButton ( '',image_path(icon), 0,this.col++, 1,1 )
+                      .setSize('34px','34px').setTooltip(tooltip);
+  if (gap)
+    btn.setMargins ( '4px','','','' );
+  return btn;
+}
+
 JobDialog.prototype.makeToolBar = function()  {
 
   this.toolBar = new Grid('');
@@ -415,45 +439,56 @@ JobDialog.prototype.makeToolBar = function()  {
                                   .setDisabled ( __dormant   );
   }
 
-  this.toolBar.setCellSize ( '40%','',0,1 );
+  this.toolBar.setCellSize ( '35%','',0,1 );
 
-  var col = 3;
+  this.col = 3;
   this.run_image  = this.toolBar.setImage  ( './images_com/activity.gif',
-                                             '36px','36px', 0,col++, 1,1 );
-  this.stop_btn   = this.toolBar.setButton ( 'Stop',image_path('stopjob'), 0,col++, 1,1 )
+                                             '36px','36px', 0,this.col++, 1,1 );
+  //this.stop_btn   = this.addToolBarButton  ( false,'stopjob','Stop job' );
+  this.stop_btn   = this.toolBar.setButton ( 'Stop',image_path('stopjob'),
+                                             0,this.col++, 1,1 )
                                 .setTooltip('Stop job' );
 
-  this.status_lbl = this.toolBar.setLabel  ( '', 0,col, 1,1 ).setNoWrap();
-  this.toolBar.setVerticalAlignment ( 0,col++,'middle' );
+  //this.status_lbl = this.toolBar.setLabel  ( '', 0,col, 1,1 ).setNoWrap();
+  //this.toolBar.setVerticalAlignment ( 0,col++,'middle' );
 
-  this.done_sign  = this.toolBar.setImage (
-                          image_path('job_done'),'34px','34px',0,col++,1,1
-                    ).setTooltip('Job completed');
-  this.nores_sign = this.toolBar.setImage (
-                          image_path('job_noresults'),'34px','34px',0,col++,1,1
-                    ).setTooltip('Job completed with no results ' +
-                                 'that can be passed to subsequent jobs');
-  this.toolBar.setLabel   ( '&nbsp;&nbsp;', 0,col++, 1,1 ).setNoWrap();
+  //this.done_sign  = this.toolBar.setImage (
+  //                        image_path('job_done'),'34px','34px',0,col++,1,1
+  //                  ).setTooltip('Job completed');
+  //this.nores_sign = this.toolBar.setImage (
+  //                        image_path('job_noresults'),'34px','34px',0,col++,1,1
+  //                  ).setTooltip('Job completed with no results ' +
+  //                               'that can be passed to subsequent jobs');
+  //this.toolBar.setLabel   ( '&nbsp;&nbsp;', 0,col++, 1,1 ).setNoWrap();
 
   (function(dlg){
     dlg.hot_btn  = [];
     var hot_list = dlg.task.hotButtons();
+    var gap      = false;
     for (var i=0;i<hot_list.length;i++)  {
       var task_obj  = eval ( 'new ' + hot_list[i].task + '()' );
       var avail_key = task_obj.isTaskAvailable();
       if (avail_key[0]=='ok')
         (function(task){
-          var hbtn = dlg.toolBar.setButton ( '',image_path(task_obj.icon()),
-                                            0,col++, 1,1 )
-                                .setSize('34px','34px').setTooltip(hot_list[i].tooltip)
-                                .addOnClickListener ( function(){
-                                  dlg.onDlgSignal_func ( dlg.task.id,
-                                                         job_dialog_reason.run_job,
-                                                         task );
-                                });
+//          var hbtn = dlg.toolBar.setButton ( '',image_path(task_obj.icon()),
+//                                            0,col++, 1,1 )
+//                                .setSize('34px','34px').setTooltip(hot_list[i].tooltip)
+//                                .addOnClickListener ( function(){
+//                                  dlg.onDlgSignal_func ( dlg.task.id,
+//                                                         job_dialog_reason.run_job,
+//                                                         task );
+//                                });
+          var hbtn = dlg.addToolBarButton ( gap,task_obj.icon(),hot_list[i].tooltip )
+                        .addOnClickListener ( function(){
+                          dlg.onDlgSignal_func ( dlg.task.id,
+                                                 job_dialog_reason.run_job,
+                                                 task );
+                        });
+          gap = true;
           dlg.hot_btn.push ( hbtn );
         }(task_obj))
     }
+    /*
     dlg.addjob_btn = dlg.toolBar.setButton ( '',image_path('add'), 0,col++, 1,1 )
                                 .setSize('34px','34px').setTooltip('Add next job')
                                 .addOnClickListener ( function(){
@@ -468,11 +503,26 @@ JobDialog.prototype.makeToolBar = function()  {
                                                          job_dialog_reason.clone_job,
                                                          null );
                                 });
+    */
+    dlg.addjob_btn = dlg.addToolBarButton ( gap,'add','Add next job' )
+                        .addOnClickListener ( function(){
+                          dlg.onDlgSignal_func ( dlg.task.id,
+                                                 job_dialog_reason.add_job,
+                                                 null );
+                        });
+    gap = true;
+    dlg.clone_btn  = dlg.addToolBarButton ( gap,'clonejob','Clone job' )
+                        .addOnClickListener ( function(){
+                          dlg.onDlgSignal_func ( dlg.task.id,
+                                                 job_dialog_reason.clone_job,
+                                                 null );
+                        });
   }(this))
 
-  this.toolBar.setLabel  ( '&nbsp;&nbsp;', 0,col, 1,1 ).setNoWrap();
-  this.toolBar.setCellSize ( '40%','',0,col++ );
+  this.toolBar.setLabel  ( '&nbsp;&nbsp;', 0,this.col, 1,1 ).setNoWrap();
+  this.toolBar.setCellSize ( '45%','',0,this.col++ );
 
+  /*
   this.export_btn = this.toolBar.setButton ( 'Export',image_path('export'), 0,col++, 1,1 )
                                 .setTooltip('Export job directory' );
 
@@ -482,6 +532,15 @@ JobDialog.prototype.makeToolBar = function()  {
   this.help_btn   = this.toolBar.setButton ( 'Help',image_path('help'), 0,col++, 1,1 )
                                 .setTooltip('Dialog Help' );
   this.close_btn  = this.toolBar.setButton ( 'Close',image_path('close'), 0,col, 1,1 )
+                                .setTooltip('Close Job Dialog' );
+  */
+
+  this.export_btn = this.addToolBarButton  ( false,'export'  ,'Export job directory' );
+  if (this.task.helpURL)
+    this.ref_btn  = this.addToolBarButton  ( true,'reference','Task Documentation'   );
+  this.help_btn   = this.addToolBarButton  ( true,'help'     ,'Dialog Help'          );
+  //this.close_btn  = this.addToolBarButton  ( true,'close'    ,'Close Job Dialog'     );
+  this.close_btn  = this.toolBar.setButton ( 'Close',image_path('close'), 0,this.col, 1,1 )
                                 .setTooltip('Close Job Dialog' );
 
 }
@@ -577,7 +636,7 @@ JobDialog.prototype.makeLayout = function ( onRun_func )  {
     this.run_btn    = null;
     this.run_image  = null;
     this.stop_btn   = null;
-    this.status_lbl = null;
+    //this.status_lbl = null;
     this.export_btn = null;
     this.ref_btn    = null;
     this.help_btn   = null;

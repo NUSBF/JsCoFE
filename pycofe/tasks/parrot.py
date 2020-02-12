@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    09.02.20   <--  Date of Last Modification.
+#    12.02.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -125,7 +125,8 @@ class Parrot(basic.TaskDriver):
         if istruct.HLA!="":
             self.write_stdin (
                 "\ncolin-wrk-hl /*/*/[" + istruct.HLA + "," + istruct.HLB + \
-                                    "," + istruct.HLC + "," + istruct.HLD + "]"
+                                    "," + istruct.HLC + "," + istruct.HLD + "]" +\
+                "\ncolin-wrk-fc /*/*/["     + istruct.FWT + "," + istruct.PHWT + "]"
             )
         else:
             self.write_stdin (
