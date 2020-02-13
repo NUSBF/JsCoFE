@@ -78,10 +78,11 @@ class Parrot(ccp4build_base.Base):
             self.write_script ([
                 "colin-phifom " + meta["labin_phifom"]
             ])
-            if meta["labin_fc"]:
-                self.write_script ([
-                    "colin-fc "     + meta["labin_fc"]
-                ])
+
+        if meta["labin_fc"]:
+            self.write_script ([
+                "colin-fc "     + meta["labin_fc"]
+            ])
 
         #if self.input_data["mode"]=="MR":
         #    self.write_script ([
