@@ -128,6 +128,8 @@ function login ( user_login_name,user_password,sceneId,page_switch )  {
               __dormant            = userData.dormant;
               __user_authorisation = userData.authorisation;
 
+console.log ( __environ_server );
+
               if (!__local_service)  {
                 __environ_client = [];
               } else  {

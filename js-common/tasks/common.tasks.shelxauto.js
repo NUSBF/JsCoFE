@@ -58,7 +58,7 @@ TaskShelxAuto.prototype.constructor = TaskShelxAuto;
 TaskShelxAuto.prototype.icon = function()  { return 'task_shelx'; }
 
 TaskShelxAuto.prototype.requiredEnvironment = function() {
-  return ['CCP4',['$CCP4/bin/shelxc','$CCP4/bin/shelxc.exe']];
+  return ['CCP4',['$CCP4/bin/shelxe','$CCP4/bin/shelxe.exe']];
 }
 
 TaskShelxAuto.prototype.currentVersion = function()  {
