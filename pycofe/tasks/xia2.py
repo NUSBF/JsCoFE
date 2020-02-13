@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    20.01.20   <--  Date of Last Modification.
+#    13.02.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -358,7 +358,7 @@ class Xia2(basic.TaskDriver):
         # close execution logs and quit
 
         if rc.msg == "":
-            self.success()
+            self.success ( (body.outputDataBox.nDTypes()>0) )
         else:
             self.file_stdout.close()
             self.file_stderr.close()

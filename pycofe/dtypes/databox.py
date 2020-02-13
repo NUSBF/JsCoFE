@@ -3,13 +3,13 @@
 #
 # ============================================================================
 #
-#    10.12.19   <--  Date of Last Modification.
+#    13.02.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  THE DATABOX
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2019
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2020
 #
 # ============================================================================
 #
@@ -56,6 +56,13 @@ class DataBox(jsonut.jObject):
         self.data[data_class._type].append ( data_class );
 
         return
+
+
+    def nDTypes ( self ):
+        n = 0
+        for dtype in self.data:
+            n += 1
+        return n
 
 
     def delete_data ( self,dataId ):

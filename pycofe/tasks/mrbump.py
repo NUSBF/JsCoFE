@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    18.09.19   <--  Date of Last Modification.
+#    13.02.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2019
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2020
 #
 # ============================================================================
 #
@@ -320,7 +320,7 @@ class MrBump(basic.TaskDriver):
             self.putTitle ( "No resuts produced" )
 
         # close execution logs and quit
-        self.success()
+        self.success ( (body.outputDataBox.nDTypes()>0) )
         return
 
 
