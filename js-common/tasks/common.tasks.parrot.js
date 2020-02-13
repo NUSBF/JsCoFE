@@ -244,7 +244,7 @@ if (!__template)  {
 
   // hotButtons return list of buttons added in JobDialog's toolBar.
   TaskParrot.prototype.hotButtons = function() {
-    return [CCP4BuildHotButton(),BuccaneerHotButton(),ArpWarpHotButton()];
+    return [BuccaneerHotButton(),ArpWarpHotButton()];
   }
 
 /*

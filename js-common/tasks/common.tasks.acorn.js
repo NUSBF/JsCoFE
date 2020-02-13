@@ -917,7 +917,7 @@ if (!__template)  {
 
   // hotButtons return list of buttons added in JobDialog's toolBar.
   TaskAcorn.prototype.hotButtons = function() {
-    return [ArpWarpHotButton(),CCP4BuildHotButton(),BuccaneerHotButton()];
+    return [ArpWarpHotButton(),BuccaneerHotButton()];
   }
 
 } else  {
