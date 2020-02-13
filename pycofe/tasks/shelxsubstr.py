@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    18.11.19   <--  Date of Last Modification.
+#    13.02.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2019
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2020
 #
 # ============================================================================
 #
@@ -139,6 +139,8 @@ class ShelxSubstr(crank2.Crank2):
                                              hkls,None,[],1,
                                              leadKey=1,openState_bool=False,
                                              title="" )
+        revisions = []
+
         if structure:
 
             self.putMessage ( "&nbsp;" )
@@ -159,7 +161,7 @@ class ShelxSubstr(crank2.Crank2):
             structure.setSubFile ( xyz_file )
             #structure.setMTZFile ( hkls.getHKLFileName() )  -- no maps, substructure is not phased
             structure.removeSubtype ( dtype_template.subtypePhases() )
-            super ( ShelxSubstr,self ).finalise ( structure )
+            revisions = super ( ShelxSubstr,self ).finalise ( structure )
 
         else:
             self.rvrow = rvrow0
@@ -169,7 +171,7 @@ class ShelxSubstr(crank2.Crank2):
 
         self.flush()
 
-        return
+        return revisions
 
 
 # ============================================================================

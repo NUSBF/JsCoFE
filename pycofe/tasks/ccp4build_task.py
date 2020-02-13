@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    09.02.20   <--  Date of Last Modification.
+#    13.02.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -121,6 +121,7 @@ class CCP4Build(basic.TaskDriver):
                 "mtzpath      " + istruct.getMTZFilePath(self.inputDir()),
                 "labin_fo     /*/*/[" + labin_fo[0] + "," + labin_fo[1] + "]",
                 "labin_free   /*/*/[" + hkl.getFreeRColumn() + "]",
+                "labin_fc     /*/*/[" + istruct.FWT + "," + istruct.PHWT + "]",
                 labin_phases
             ])
 
@@ -192,7 +193,7 @@ class CCP4Build(basic.TaskDriver):
                 "mtzpath       " + self.mtz_cad(),
                 "labin_fo      /*/*/[" + labin_fo[0] + "," + labin_fo[1] + "]",
                 "labin_phifom  /*/*/[" + istruct.PHI + "," + istruct.FOM  + "]",
-                #"labin_fc      /*/*/[" + istruct.FWT + "," + istruct.PHWT + "]",
+                "labin_fc      /*/*/[" + istruct.FWT + "," + istruct.PHWT + "]",
                 "labin_free    /*/*/[" + hkl.getFreeRColumn() + "]"
             ])
 
