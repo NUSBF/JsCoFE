@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    22.01.20   <--  Date of Last Modification.
+ *    13.02.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -239,6 +239,14 @@ TaskShelxEMR.prototype.currentVersion = function()  {
 
 if (!__template)  {
   //  for client side
+
+  // hotButtons return list of buttons added in JobDialog's toolBar.
+  function ShelxEMRHotButton()  {
+    return {
+      'task'    : 'TaskShelxEMR',
+      'tooltip' : 'Density Modificaton and C&alpha;-tracing with ShelxE'
+    };
+  }
 
   TaskShelxEMR.prototype.inputChanged = function ( inpParamRef,emitterId,emitterValue )  {
 

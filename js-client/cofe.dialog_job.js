@@ -398,7 +398,7 @@ JobDialog.prototype.addToolBarButton = function ( gap,icon,tooltip )  {
 //  if (gap)
 //    this.toolBar.setLabel ( '', 0,this.col++, 1,1 ).setWidth_px ( 1 );
 var btn = this.toolBar.setButton ( '',image_path(icon), 0,this.col++, 1,1 )
-                      .setSize('34px','34px').setTooltip(tooltip);
+                      .setSize('40px','34px').setTooltip(tooltip);
   if (gap)
     btn.setMargins ( '4px','','','' );
   return btn;
@@ -541,6 +541,7 @@ JobDialog.prototype.makeToolBar = function()  {
   this.help_btn   = this.addToolBarButton  ( true,'help'     ,'Dialog Help'          );
   //this.close_btn  = this.addToolBarButton  ( true,'close'    ,'Close Job Dialog'     );
   this.close_btn  = this.toolBar.setButton ( 'Close',image_path('close'), 0,this.col, 1,1 )
+                                .setMargins ( '4px','','','' )
                                 .setTooltip('Close Job Dialog' );
 
 }

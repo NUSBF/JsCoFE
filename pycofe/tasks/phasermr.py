@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    16.11.19   <--  Date of Last Modification.
+#    13.02.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2019
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2020
 #
 # ============================================================================
 #
@@ -317,9 +317,10 @@ class PhaserMR(basic.TaskDriver):
         self.unsetLogParser()
 
         # check solution and register data
-        phaser_meta = None
-        sol_hkl     = hkl
-        sol_file    = self.outputFName + ".sol"
+        phaser_meta  = None
+        have_results = False
+        sol_hkl      = hkl
+        sol_file     = self.outputFName + ".sol"
         if os.path.isfile(sol_file):
 
             phaser_meta = { "ensembles" : {} }
@@ -385,6 +386,7 @@ class PhaserMR(basic.TaskDriver):
             # update structure revision
             revision.setStructureData ( structure )
             self.registerRevision     ( revision  )
+            have_results = True
             if phaser_meta:
                 # set sol file
                 solData = dtype_template.DType ( self.job_id )
@@ -399,7 +401,7 @@ class PhaserMR(basic.TaskDriver):
                 revision.phaser_meta = phaser_meta
 
         # close execution logs and quit
-        self.success()
+        self.success ( have_results )
         return
 
 

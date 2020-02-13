@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    07.02.20   <--  Date of Last Modification.
+#    13.02.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -186,7 +186,7 @@ class Import(basic.TaskDriver):
         }
 
         # close execution logs and quit
-        self.success()
+        self.success ( (body.outputDataBox.nDTypes()>0) )
         return
 
 

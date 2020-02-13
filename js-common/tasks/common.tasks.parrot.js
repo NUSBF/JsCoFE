@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    10.02.20   <--  Date of Last Modification.
+ *    13.02.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -233,6 +233,14 @@ TaskParrot.prototype.currentVersion = function()  {
 
 if (!__template)  {
   //  for client side
+
+  // hotButtons return list of buttons added in JobDialog's toolBar.
+  function ParrotHotButton()  {
+    return {
+      'task'    : 'TaskParrot',
+      'tooltip' : 'Density Modification with Parrot'
+    };
+  }
 
   // hotButtons return list of buttons added in JobDialog's toolBar.
   TaskParrot.prototype.hotButtons = function() {
