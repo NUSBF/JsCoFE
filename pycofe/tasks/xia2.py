@@ -358,7 +358,7 @@ class Xia2(basic.TaskDriver):
         # close execution logs and quit
 
         if rc.msg == "":
-            self.success ( (body.outputDataBox.nDTypes()>0) )
+            self.success ( (self.outputDataBox.nDTypes()>0) )
         else:
             self.file_stdout.close()
             self.file_stderr.close()

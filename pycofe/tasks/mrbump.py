@@ -320,7 +320,7 @@ class MrBump(basic.TaskDriver):
             self.putTitle ( "No resuts produced" )
 
         # close execution logs and quit
-        self.success ( (body.outputDataBox.nDTypes()>0) )
+        self.success ( (self.outputDataBox.nDTypes()>0) )
         return
 
 
