@@ -193,7 +193,7 @@ class CCP4Build(basic.TaskDriver):
                 "mtzpath       " + self.mtz_cad(),
                 "labin_fo      /*/*/[" + labin_fo[0] + "," + labin_fo[1] + "]",
                 "labin_phifom  /*/*/[" + istruct.PHI + "," + istruct.FOM  + "]",
-                "labin_fc      /*/*/[" + istruct.FWT + "," + istruct.PHWT + "]",
+                #"labin_fc      /*/*/[" + istruct.FWT + "," + istruct.PHWT + "]",
                 "labin_free    /*/*/[" + hkl.getFreeRColumn() + "]"
             ])
 
