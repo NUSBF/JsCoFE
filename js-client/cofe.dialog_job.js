@@ -269,12 +269,17 @@ JobDialog.prototype.setDlgState = function()  {
   //this.done_sign .setVisible ( (this.task.state==job_code.finished)  );
   //this.nores_sign.setVisible ( (this.task.state==job_code.noresults) );
   for (var i=0;i<this.hot_btn.length;i++)  {
-    this.hot_btn[i].setVisible ( show_hot_buttons   );
-    this.hot_btn[i].setEnabled ( enable_hot_buttons );
+    this.hot_btn[i].setVisible ( show_hot_buttons );
+    this.hot_btn[i].setEnabled ( (!__dormant) && (this.task.state==job_code.finished) );
   }
-  this.addjob_btn.setVisible ( show_hot_buttons   );
-  this.addjob_btn.setEnabled ( enable_hot_buttons );
-  this.clone_btn .setVisible ( (!__dormant) && (!isNew) && (!isRunning) );
+  this.addjob_btn.setVisible ( show_hot_buttons );
+  this.addjob_btn.setEnabled ( (!__dormant) && (
+                                   (this.task.state==job_code.finished) ||
+                                   this.task.isRemark()
+                                 )
+                             );
+  this.clone_btn .setVisible ( (!__dormant) && (this.task.state!=job_code.new) &&
+                               (!isRunning) );
 
   //if (msg && this.status_lbl)
   //  this.status_lbl.setText ( '<b><i>' + msg + '</i></b>' );

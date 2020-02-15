@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    10.02.20   <--  Date of Last Modification.
+ *    15.02.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -321,7 +321,7 @@ if (!__template)  {
       var revision   = this.getInputItem ( inpDataRef,'revision'     ).dropdown[0];
       var dt         = revision.dt[revision.getValue()];
       var substr     = this.getInputItem ( inpDataRef,'substructure' );
-      var xmodel     = this.getInputItem ( inpDataRef,'xmodel'       );
+      //var xmodel     = this.getInputItem ( inpDataRef,'xmodel'       );
 
       //console.log ( JSON.stringify(dt) );
       var main_substructure = (dt.subtype.indexOf('substructure')>=0);
@@ -337,10 +337,15 @@ if (!__template)  {
         substr = substr.dropdown[0];
         inpParamRef.grid.setRowVisible ( substr.row,!main_substructure );
       }
+      /*
       if (xmodel)  {
         xmodel = xmodel.dropdown[0];
         inpParamRef.grid.setRowVisible ( xmodel.row  ,!main_xyz );
         inpParamRef.grid.setRowVisible ( xmodel.row+1,!main_xyz );
+        this.title = makeSuffix ( this.title,'MR-SAD' );
+        this.name  = makeSuffix ( this.name ,'MR-SAD' );
+      */
+      if (main_xyz)  {
         this.title = makeSuffix ( this.title,'MR-SAD' );
         this.name  = makeSuffix ( this.name ,'MR-SAD' );
       } else  {
