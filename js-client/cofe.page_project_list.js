@@ -399,10 +399,12 @@ function ProjectListPage ( sceneId )  {
       saveProjectList ( function(data){ makeAdminPage(sceneId); } );
     });
 
+  /*
   if (__user_role==role_code.developer)
     this.addMenuItem ( 'DocDev Page','development',function(){
       saveProjectList ( function(data){ makeAdminPage(sceneId); } );
     });
+  */
 
   this.addLogoutToMenu ( function(){
     saveProjectList ( function(data){ logout(sceneId,0); } );
