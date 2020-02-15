@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    21.01.20   <--  Date of Last Modification.
+ *    15.02.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -256,6 +256,14 @@ ServerConfig.prototype.checkNCStatus = function ( callback_func )  {
 
 }
 
+ServerConfig.prototype._checkLocalStatus = function()  {
+  if (!('localSetup' in this))  {
+    if (this.externalURL.length>0)
+          this.localSetup = (this.externalURL.indexOf('localhost') >= 0);
+    else  this.localSetup = (this.host == 'localhost');
+  }
+}
+
 
 // ===========================================================================
 // Config service functions
@@ -330,6 +338,7 @@ var version = '';
     "stoppable"        : false,
     "exclude_tasks"    : [],
     "fsmount"          : "/",
+    "localSetup"       : true,  // optional, overrides automatic definition
     "update_rcode"     : 212, // optional
     "userDataPath"     : "./cofe-users",
     "storage"          : "./cofe-projects",  // for logs, stats, pids, tmp etc.
@@ -415,6 +424,7 @@ var version = '';
       "exclusive"        : true,
       "stoppable"        : false,
       "fsmount"          : "/",
+      "localSetup"       : true,  // optional, overrides automatic definition
       "capacity"         : 4,
       "max_nproc"        : 3,
       "exclude_tasks"    : [],
@@ -558,6 +568,8 @@ function readConfiguration ( confFilePath,serverType )  {
         }
       });
 
+    fe_server._checkLocalStatus();
+
   } else if ((serverType=='FE') || (serverType=='FE-PROXY'))
     return 'front-end configuration is missing in file ' + confFilePath;
 
@@ -582,6 +594,7 @@ function readConfiguration ( confFilePath,serverType )  {
       if (!nc_server.externalURL)
         nc_server.externalURL = nc_server.url();
       nc_server.storage = _make_path ( nc_server.storage,null );
+      nc_server._checkLocalStatus();
       nc_servers.push ( nc_server );
       if (nc_server.exeType=='CLIENT')  {
         client_server = nc_server;
@@ -822,14 +835,9 @@ var isClient   = false;
 }
 
 
+/*
 function isLocalSetup()  {
 // Returns true if all servers are running on localhost.
-/*
-var isLocal = (fe_server.host == 'localhost');
-
-  for (var i=0;(i<nc_servers.length) && isLocal;i++)
-    isLocal = (nc_servers[i].host == 'localhost');
-*/
 var isLocal = true;
 
   if (fe_server.externalURL.length>0)
@@ -844,6 +852,16 @@ var isLocal = true;
   return isLocal;
 
 }
+*/
+
+function isLocalSetup()  {
+// Returns true if all servers are running on localhost.
+var isLocal = fe_server.localSetup;
+  for (var i=0;(i<nc_servers.length) && isLocal;i++)
+    isLocal = nc_servers[i].localSetup;
+  return isLocal;
+}
+
 
 function getRegMode()  {
   var mode = 'email';
@@ -860,13 +878,19 @@ function getRegMode()  {
 }
 
 
+/*
 function isLocalFE()  {
 // returns true if FE is on local machine
   if (fe_server.externalURL.length>0)
     return (fe_server.externalURL.indexOf('localhost') >= 0);
   return (fe_server.host == 'localhost');
 }
+*/
 
+function isLocalFE()  {
+// returns true if FE is on local machine
+  return fe_server.localSetup;
+}
 
 function getFETmpDir()  {
   return path.join ( getFEConfig().storage,'tmp' );

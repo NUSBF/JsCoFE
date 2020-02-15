@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    10.02.20   <--  Date of Last Modification.
+ *    14.02.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -336,6 +336,17 @@ if (!__template)  {
       }
 
       if (this.state==job_code.new)  {
+
+        var revision = this.getInputItem ( inpDataRef,'revision' );
+        if (revision)  {
+          if (revision.dropdown[0].hasOwnProperty('customGrid'))  {
+            var customGrid = revision.dropdown[0].customGrid;
+            if (customGrid.hasOwnProperty('wtype'))  {
+              customGrid.wtype_lbl.setVisible ( (nHKL>0) );
+              customGrid.wtype    .setVisible ( (nHKL>0) );
+            }
+          }
+        }
 
         var name = this.name;
         if (nHKL<=0)  {

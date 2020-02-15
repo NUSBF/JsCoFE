@@ -27,8 +27,8 @@ which |jsCoFE| Clients do not exist.
 However, without |jsCoFE| Client installed, you cannot use certain software,
 such as **Coot**, directly with |jsCoFE|. There will be other functional
 limitations as well, for example, you will not be able to process X-ray
-diffraction images locally on your machine with either **Xia2** or **DUI/DIALS**
-software. Besides, |jsCoFE| Client provides a convenient launcher and
+diffraction images locally on your machine with either **Xia2**, **DUI/DIALS** or
+**iMosflm** software. Besides, |jsCoFE| Client provides a convenient launcher and
 configuration facilities.
 
 

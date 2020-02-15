@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    09.02.20   <--  Date of Last Modification.
+#    14.02.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -133,6 +133,8 @@ class ShelxCD(basic.TaskDriver):
                         hkl[i].cnvfname
                     ],logType="Service")
 
+        if not hkl0:
+            hkl0 = hkl[0]
         hkla = hkl0  # "leading" anomalous dataset
 
         if hasattr(self.input_data.data,"native"):  # optional data parameter
@@ -285,12 +287,12 @@ class ShelxCD(basic.TaskDriver):
                 #  top of the list
                 hkl_all_0  = []
                 hkl_all_0 += hkl
-                sort_order = ["peak","inflection","native","low-remote","high-remote"]
+                sort_order = ["choose-one","peak","inflection","native","low-remote","high-remote"]
                 if native:
                     native.wtype = "native"
                     hkl_all_0.append ( native )
                     if native.useForPhasing:
-                        sort_order = ["native","peak","inflection","low-remote","high-remote"]
+                        sort_order = ["native","choose-one","peak","inflection","low-remote","high-remote"]
                 hkl_all = []
                 for wtype in sort_order:
                     for i in range(len(hkl_all_0)):
