@@ -295,6 +295,7 @@ The FE Configuration Module represents the following JSON object: ::
     "externalURL"      : "http://www.my.server.com/jscofe",
     "exclusive"        : true,
     "stoppable"        : false,
+    "exclude_tasks"    : ["TaskAmple"],
     "fsmount"          : "",
     "userDataPath"     : "./cofe-users",
     "projectsPath"     : "./cofe-projects",
@@ -304,7 +305,21 @@ The FE Configuration Module represents the following JSON object: ::
     "bootstrapHTML"    : "jscofe.html",
     "maxRestarts"      : 100,
     "fileCapSize"      : 500000
+    "regMode"          : "admin",
+    "sessionCheckPeriod" : 2000,
+    "ration"           : {
+        "storage"   : 3000,
+        "cpu_day"   : 24,
+        "cpu_month" : 240
+    },
+    "cloud_mounts"     : {
+      "My Computer"    : "/",
+      "Home"           : ["$HOME","$USERPROFILE"],
+      "CCP4 examples"  : "$CCP4/share/ccp4i2/demo_data",
+      "Demo projects"  : "./demo-projects"
+    }
   }
+
 
 **protocol**
   Communication protocol (``http`` or ``https``) for the front-end Node JS to
@@ -423,6 +438,10 @@ The NC Configuration Module represents the following JSON object: ::
     "exclude_tasks"    : [],
     "fasttrack"        : 1,
     "storage"          : "./cofe-nc-storage",
+    "jobs_safe"        : {
+        "path"     : "./cofe-nc-storage/jobs_safe",
+        "capacity" : 10
+    },
     "exeType"          : "SHELL",
     "exeData"          : "",
     "jobCheckPeriod"   : 2000,

@@ -307,7 +307,7 @@ if (!__template)  {
 
   // hotButtons return list of buttons added in JobDialog's toolBar.
   TaskPhaserEP.prototype.hotButtons = function() {
-    return [ParrotHotButton(),AcornHotButton(),ShelxEMRHotButton()];
+    return [ParrotHotButton(),AcornHotButton(),ShelxEMRHotButton(),CCP4BuildHotButton()];
   }
 
   TaskPhaserEP.prototype.inputChanged = function ( inpParamRef,emitterId,emitterValue )  {

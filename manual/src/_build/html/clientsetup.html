@@ -10,6 +10,7 @@
     
     <link rel="stylesheet" href="_static/agogo.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/contentui.css" type="text/css" />
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
@@ -23,6 +24,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/contentui.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -53,8 +55,13 @@
             
   <div class="section" id="ccp4-cloud-client-setup">
 <h1>2. CCP4 Cloud Client Setup<a class="headerlink" href="#ccp4-cloud-client-setup" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="ms-windows">
-<h2>2.1. MS Windows<a class="headerlink" href="#ms-windows" title="Permalink to this headline">¶</a></h2>
+<p class="toggle-header">Example 1 <strong>Show/Hide Code</strong></p>
+<div class="toggle-content docutils container">
+<blockquote>
+<div>Content for header</div></blockquote>
+</div>
+<div class="section" id="ms-windows-xxx">
+<h2>2.1. MS Windows XXX<a class="headerlink" href="#ms-windows-xxx" title="Permalink to this headline">¶</a></h2>
 <p><strong>Installation</strong></p>
 <p>Installation should be performed in account with administrative privileges.</p>
 <ol class="arabic simple">
@@ -95,12 +102,15 @@ button to continue.</li>
 <li>Next several pages present licences for CCP4 components. Read and agree to
 the licences. Keep pressing the &#8220;Next&#8221; button until you arrive at the
 directory selection page.</li>
-<li>In case of new CCP4 setup, the directory page will contain an input field
-for CCP4 destination path. If CCP4 components, other than CCP4 Cloud, have
-been chosen for addition to the existing CCP4 setup, the current CCP4 path
-is displayed but cannot be changed. Destination directory for CCP4 Cloud
-component is shown separately in order to allow installation of CCP4 Cloud
-either in the main CCP4 directory or anywhere else.</li>
+<li>There are three ways how the directory page may be presented.
+This depends on previous choices. In case of new CCP4 setup,
+the directory page will contain an input field for installation directory.
+In case of installation of additional components, the installation directory
+is shown but is not editable. If CCP4 Cloud is the only component to be added,
+it can be installed in a different location than all other CCP4 components.
+In this case an additional input field is presented for that location.
+In all three modes the input filed is presented for temporary directory,
+which is used for downloads. The temporary directory must be writable.</li>
 <li>After setting all required paths in the directory selection page, press the
 &#8220;Next&#8221; button and wait until all downloads finish, then press the &#8220;Next&#8221;
 button again.</li>
@@ -152,12 +162,15 @@ button to continue.</li>
 <li>Next several pages present licences for CCP4 components. Read and agree to
 the licences. Keep pressing the &#8220;Next&#8221; button until you arrive at the
 directory selection page.</li>
-<li>In case of new CCP4 setup, the directory page will contain an input field
-for CCP4 destination path (e.g., <code class="docutils literal"><span class="pre">/Applications</span></code>). If CCP4 components,
-other than CCP4 Cloud, have been chosen for addition to the existing CCP4 setup,
-the current CCP4 path is displayed but cannot be changed. Destination directory
-for CCP4 Cloud component is shown separately in order to allow installation of
-CCP4 Cloud either in the main CCP4 directory or anywhere else.</li>
+<li>There are three ways how the directory page may be presented.
+This depends on previous choices. In case of new CCP4 setup,
+the directory page will contain an input field for installation directory.
+In case of installation of additional components, the installation directory
+is shown but is not editable. If CCP4 Cloud is the only component to be added,
+it can be installed in a different location than all other CCP4 components.
+In this case an additional input field is presented for that location.
+In all three modes the input filed is presented for temporary directory,
+which is used for downloads. The temporary directory must be writable.</li>
 <li>After setting all required paths in the directory selection page, press the
 &#8220;Next&#8221; button and wait until all downloads finish, then press the &#8220;Next&#8221;
 button again.</li>
@@ -205,7 +218,7 @@ from p.2, and execute command <code class="docutils literal"><span class="pre">s
           <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="clientwhatfor.html">1. What is CCP4 Cloud Client Software</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">2. CCP4 Cloud Client Setup</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#ms-windows">2.1. MS Windows</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#ms-windows-xxx">2.1. MS Windows XXX</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#linux">2.2. Linux</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#mac-osx">2.3. Mac OSX</a></li>
 </ul>

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.02.20   <--  Date of Last Modification.
+ *    15.02.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -52,7 +52,7 @@ function JobDialog ( params,          // data and task projections up the tree b
 
   Widget.call ( this,'div' );
 
-  var title = '[' + padDigits(this.task.id,4) + '] '
+  var title = '[' + padDigits(this.task.id,4) + '] ';
   if (this.task.uname.length>0)  title += this.task.uname;
                            else  title += this.task.name;
   title += this.statusLine();
@@ -259,12 +259,21 @@ JobDialog.prototype.setDlgState = function()  {
   }
   */
 
-  var show_hot_buttons = (!__dormant) && (this.task.state==job_code.finished);
+  var title = '';
+  if (this.task.uname.length>0)  title += this.task.uname;
+                           else  title += this.task.name;
+  this.changeTitle ( title );
+
+  var show_hot_buttons   = (!__dormant) && this.task.isComplete();
+  var enable_hot_buttons = (!__dormant) && (this.task.state==job_code.finished);
   //this.done_sign .setVisible ( (this.task.state==job_code.finished)  );
   //this.nores_sign.setVisible ( (this.task.state==job_code.noresults) );
-  for (var i=0;i<this.hot_btn.length;i++)
-    this.hot_btn[i].setVisible ( show_hot_buttons );
-  this.addjob_btn.setVisible ( show_hot_buttons );
+  for (var i=0;i<this.hot_btn.length;i++)  {
+    this.hot_btn[i].setVisible ( show_hot_buttons   );
+    this.hot_btn[i].setEnabled ( enable_hot_buttons );
+  }
+  this.addjob_btn.setVisible ( show_hot_buttons   );
+  this.addjob_btn.setEnabled ( enable_hot_buttons );
   this.clone_btn .setVisible ( (!__dormant) && (!isNew) && (!isRunning) );
 
   //if (msg && this.status_lbl)

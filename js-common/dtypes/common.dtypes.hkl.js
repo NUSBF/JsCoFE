@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    19.01.20   <--  Date of Last Modification.
+ *    14.02.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -222,7 +222,7 @@ if (!__template)  {
     }
 
     this.setWType = function()  {
-      setLabel ( 'wavelength type:',r,0 );
+      customGrid.wtype_lbl = setLabel ( 'wavelength type:',r,0 );
       customGrid.wtype = new Dropdown();
       customGrid.wtype.setWidth ( '180px' );
       customGrid.wtype.addItem ( '[must be chosen]' ,'','choose-one' ,this.wtype=='choose-one'  );
@@ -599,9 +599,11 @@ if (!__template)  {
 
     this.collectAnomShelx = function()  {
       // get the wavelength type
-      this.wtype = customGrid.wtype.getValue();
-      if (this.wtype=='choose-one')
-        msg += '<b><i>Wavelength type must be chosen</i></b>';
+      if (customGrid.wtype.isVisible())  {
+        this.wtype = customGrid.wtype.getValue();
+        if (this.wtype=='choose-one')
+          msg += '<b><i>Wavelength type must be chosen</i></b>';
+      }
     }
 
     this.collectNative = function()  {

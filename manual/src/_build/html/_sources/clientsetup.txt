@@ -3,8 +3,15 @@
 CCP4 Cloud Client Setup
 =======================
 
+
+.. toggle-header::
+    :header: Example 1 **Show/Hide Code**
+
+        Content for header
+
+
 ----------
-MS Windows
+MS Windows XXX
 ----------
 
 **Installation**
@@ -54,12 +61,15 @@ Linux
 #. Next several pages present licences for CCP4 components. Read and agree to
    the licences. Keep pressing the "Next" button until you arrive at the
    directory selection page.
-#. In case of new CCP4 setup, the directory page will contain an input field
-   for CCP4 destination path. If CCP4 components, other than |jsCoFE|, have
-   been chosen for addition to the existing CCP4 setup, the current CCP4 path
-   is displayed but cannot be changed. Destination directory for |jsCoFE|
-   component is shown separately in order to allow installation of |jsCoFE|
-   either in the main CCP4 directory or anywhere else.
+#. There are three ways how the directory page may be presented.
+   This depends on previous choices. In case of new CCP4 setup,
+   the directory page will contain an input field for installation directory.
+   In case of installation of additional components, the installation directory
+   is shown but is not editable. If CCP4 Cloud is the only component to be added,
+   it can be installed in a different location than all other CCP4 components.
+   In this case an additional input field is presented for that location.
+   In all three modes the input filed is presented for temporary directory,
+   which is used for downloads. The temporary directory must be writable.
 #. After setting all required paths in the directory selection page, press the
    "Next" button and wait until all downloads finish, then press the "Next"
    button again.
@@ -116,12 +126,15 @@ Mac OSX
 #. Next several pages present licences for CCP4 components. Read and agree to
    the licences. Keep pressing the "Next" button until you arrive at the
    directory selection page.
-#. In case of new CCP4 setup, the directory page will contain an input field
-   for CCP4 destination path (e.g., ``/Applications``). If CCP4 components,
-   other than |jsCoFE|, have been chosen for addition to the existing CCP4 setup,
-   the current CCP4 path is displayed but cannot be changed. Destination directory
-   for |jsCoFE| component is shown separately in order to allow installation of
-   |jsCoFE| either in the main CCP4 directory or anywhere else.
+#. There are three ways how the directory page may be presented.
+   This depends on previous choices. In case of new CCP4 setup,
+   the directory page will contain an input field for installation directory.
+   In case of installation of additional components, the installation directory
+   is shown but is not editable. If CCP4 Cloud is the only component to be added,
+   it can be installed in a different location than all other CCP4 components.
+   In this case an additional input field is presented for that location.
+   In all three modes the input filed is presented for temporary directory,
+   which is used for downloads. The temporary directory must be writable.
 #. After setting all required paths in the directory selection page, press the
    "Next" button and wait until all downloads finish, then press the "Next"
    button again.
