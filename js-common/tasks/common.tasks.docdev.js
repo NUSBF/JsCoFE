@@ -36,6 +36,7 @@ function TaskDocDev()  {
   this.setOName ( '*' );  // default output file name template
   this.title   = 'Documentation Development with Sphinx';
   this.helpURL = './html/jscofe_task_docdev.html';
+  this.nc_number = 1;  // forces to use specific number cruncher
 
   this.input_dtypes = [];   // no input data for this task
 
@@ -58,8 +59,15 @@ TaskDocDev.prototype.constructor = TaskDocDev;
 // ===========================================================================
 // export such that it could be used in both node and a browser
 
-TaskDocDev.prototype.icon                = function()  { return 'task_docdev'; }
+TaskDocDev.prototype.icon = function() { return 'task_docdev'; }
 //TaskDocDev.prototype.requiredEnvironment = function() { return ['CCP4','XDS_home','XDSGUI_home']; }
+
+// task.platforms() identifies suitable platforms:
+//   'W"  : Windows
+//   'L'  : Linux
+//   'M'  : Mac
+//   'U'  : Unix ( = Linux + Mac)
+TaskDocDev.prototype.platforms = function() { return 'LMU'; }  // UNIX only
 
 TaskDocDev.prototype.currentVersion = function()  {
   var version = 0;

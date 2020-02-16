@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    09.02.20   <--  Date of Last Modification.
+#    16.02.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -312,7 +312,8 @@ class TaskDriver(object):
         if getOption("report_page","show",True):
             pyrvapi.rvapi_add_tab ( self.report_page_id(),
                                     getOption("report_page","name","Report"),focus )
-            self.putTitle         ( tstr )
+            if tstr and getOption("report_page","showTitle",True):
+                self.putTitle ( tstr )
             focus = False
         if getOption("log_page","show",True):
             if self.navTreeId:

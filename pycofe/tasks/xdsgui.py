@@ -7,7 +7,7 @@
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
-#  COOT MODEL BUILDING EXECUTABLE MODULE (CLIENT-SIDE TASK)
+#  DATA PROCESSING WITH XDS EXECUTABLE MODULE (CLIENT-SIDE TASK)
 #
 #  Command-line:
 #     ccp4-python python.tasks.xdsgui.py jobManager jobDir jobId

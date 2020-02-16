@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    26.01.20   <--  Date of Last Modification.
+ *    16.02.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -182,6 +182,11 @@ var n          = last_number_cruncher;
 var maxcap0    = Number.MIN_SAFE_INTEGER;
 var n0         = -1;
 
+  if ('nc_number' in task)  {
+    last_number_cruncher = task.nc_number;
+    return task.nc_number;
+  }
+
   if (task.nc_type!='ordinary')
     return -1;  // this will not be used for client job, just make a valid return
 
@@ -236,7 +241,7 @@ var n0         = -1;
     }
 
     if (nc_number>=0)  {
-      last_number_cruncher = nc_number
+      last_number_cruncher = nc_number;
       return nc_number;
     }
 
