@@ -55,7 +55,7 @@ class DocDev(basic.TaskDriver):
         f = open ( script,"w" )
         f.write (
             "rm -rf src html jscofe-doc\n" +\
-            "git clone https://gitlab.com/CCP4/jscofe-doc.git\n" +\
+            "git clone https://krissinel:ekr%40ccp4.ac.uk@gitlab.com/CCP4/jscofe-doc.git\n" +\
             "cd " + os.path.join(repname,"src") + "\n" +\
             "cp ../build/* .\n" +\
             "make html\n"
