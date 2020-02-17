@@ -50,15 +50,20 @@ class DocDev(basic.TaskDriver):
     def run(self):
         # Prepare docdev job
 
+        cwd     = os.path.abspath(os.getcwd())
         script  = "process.sh"
+        reppath = os.environ["DOCREPO"]
         repname = "jscofe-doc"
         f = open ( script,"w" )
         f.write (
-            "rm -rf src html jscofe-doc\n" +\
-            "git clone https://krissinel:ekr%40ccp4.ac.uk@gitlab.com/CCP4/jscofe-doc.git\n" +\
-            "cd " + os.path.join(repname,"src") + "\n" +\
-            "cp ../build/* .\n" +\
-            "make html\n"
+            "#!/bin/bash" +\
+            "\ncd "    + reppath +\
+            "\ngit pull origin master" +\
+            "\ncd "    + cwd +\
+            "\ncp -r " + reppath + " " + repname +\
+            "\ncd "    + os.path.join(repname,"src") +\
+            "\ncp ../build/* ." +\
+            "\nmake html\n"
         )
         f.close()
 

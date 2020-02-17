@@ -60,7 +60,7 @@ TaskDocDev.prototype.constructor = TaskDocDev;
 // export such that it could be used in both node and a browser
 
 TaskDocDev.prototype.icon = function() { return 'task_docdev'; }
-//TaskDocDev.prototype.requiredEnvironment = function() { return ['CCP4','XDS_home','XDSGUI_home']; }
+TaskDocDev.prototype.requiredEnvironment = function() { return ['DOCREPO']; }
 
 // task.platforms() identifies suitable platforms:
 //   'W"  : Windows
