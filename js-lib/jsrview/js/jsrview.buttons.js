@@ -274,7 +274,7 @@ function buttonClicked ( command,data )  {
       var base_url = window.location.href;
       window.parent.ls_RVAPIAppButtonClicked (
                 base_url.substring(0,base_url.lastIndexOf('/')),command,
-                data_item )  ;
+                data_item );
     } else if (command=="{viewhkl}")  {
       startViewHKL ( "",data_item );
     }

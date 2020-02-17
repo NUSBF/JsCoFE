@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    29.01.20   <--  Date of Last Modification.
+#    17.02.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -952,6 +952,7 @@ citation_list = []
 
 
 def addCitation ( appName ):
+    global citation_list
     appRef = os.path.splitext ( os.path.basename(appName) )[0]
     #if appName.endswith(".bat"):
     #    appRef = appName[:len(appName)-4]
@@ -965,9 +966,15 @@ def addCitations ( appName_list ):
     return
 
 def removeCitation ( appName ):
+    global citation_list
     appRef = os.path.splitext ( os.path.basename(appName) )[0]
     while appRef in citation_list:
         citation_list.remove ( appRef )
+    return
+
+def clearCitations():
+    global citation_list
+    citation_list = []
     return
 
 

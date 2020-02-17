@@ -172,7 +172,7 @@ function HelpBox ( title,helpURL,onDoNotShowAgain_func )  {
     w0 = $(window).width () - 8;
     h0 = $(window).height();
   } else  {
-    w0 = 800;
+    w0 = 1000;
     h0 = 600;
   }
 
