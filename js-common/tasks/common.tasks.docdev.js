@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    15.02.20   <--  Date of Last Modification.
+ *    17.02.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -49,11 +49,11 @@ function TaskDocDev()  {
            type     : 'combobox',
            label    : 'Documentation theme:',
            tooltip  : 'Choose documentation theme',
-           range    : ['agogo|AGOGO (default)',
-                       'haiku|HAIKU'
+           range    : ['haiku|HAIKU',
+                       'agogo|AGOGO'
                       ],
-           value    : 'agogo',
-           iwidth   : 250,
+           value    : 'haiku',
+           iwidth   : 200,
            position : [1,0,1,1]
          }
   };
