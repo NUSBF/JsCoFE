@@ -43,7 +43,18 @@ function TaskDocDev()  {
   this.parameters = {       // no input parameters, just label
     L1 : { type     : 'label',
            label    : '<h3>This task is available only from developer\'s account</h3>',
-           position : [0,0,1,1]
+           position : [0,0,1,5]
+         },
+    THEME_SEL : {
+           type     : 'combobox',
+           label    : 'Documentation theme:',
+           tooltip  : 'Choose documentation theme',
+           range    : ['agogo|AGOGO (default)',
+                       'haiku|HAIKU'
+                      ],
+           value    : 'agogo',
+           iwidth   : 250,
+           position : [1,0,1,1]
          }
   };
 
