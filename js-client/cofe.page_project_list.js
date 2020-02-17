@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    27.01.20   <--  Date of Last Modification.
+ *    17.02.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -251,7 +251,7 @@ function ProjectListPage ( sceneId )  {
         '<center>Disk<br>(MBytes)</center>',
         '<center>CPU<br>(hours)</center>',
         '<center>Date<br>Created</center>',
-        '<center>Date<br>Last Opened</center>'
+        '<center>Last<br>Opened</center>'
     ]);
     self.tablesort_tbl.setHeaderNoWrap   ( -1      );
     self.tablesort_tbl.setHeaderColWidth ( 0,'5%'  );
