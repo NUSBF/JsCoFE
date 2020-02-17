@@ -54,6 +54,9 @@ class DocDev(basic.TaskDriver):
         script  = "process.sh"
         reppath = os.environ["DOCREPO"]
         repname = "jscofe-doc"
+
+        theme = self.getParameter ( self.task.parameters.THEME_SEL )
+
         f = open ( script,"w" )
         f.write (
             "#!/bin/bash" +\
@@ -62,7 +65,8 @@ class DocDev(basic.TaskDriver):
             "\ncd "    + cwd +\
             "\ncp -r " + reppath + " " + repname +\
             "\ncd "    + os.path.join(repname,"src") +\
-            "\ncp ../build/* ." +\
+            "\ncp ../build/Makefile ." +\
+            "\ncp ../build/conf-" + theme + ".py conf.py" +\
             "\nmake html\n"
         )
         f.close()
