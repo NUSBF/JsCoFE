@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    16.02.20   <--  Date of Last Modification.
+#    17.02.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -796,6 +796,10 @@ class TaskDriver(object):
         citations.removeCitation ( appName )
         return
 
+    def clearCitations ( self ):
+        citations.clearCitations()
+        return
+
     def _add_citations ( self,clist ):
         for c in clist:
             if c not in self.citation_list:
@@ -1006,7 +1010,7 @@ class TaskDriver(object):
 
 
     def putCitations(self):
-        if citations.citation_list:
+        if len(citations.citation_list)>0:
             self.putTitle ( "References" )
             self.putMessage ( citations.makeCitationsHTML(self) )
         self._add_citations ( citations.citation_list )

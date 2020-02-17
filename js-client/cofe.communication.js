@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    29.10.19   <--  Date of Last Modification.
+ *    17.02.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -15,7 +15,7 @@
  *                  serverCommand()
  *                  serverRequest()
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2019
+ *  (C) E. Krissinel, A. Lebedev 2016-2020
  *
  *  =================================================================
  *
@@ -318,13 +318,25 @@ var alink = document.getElementById(hiddenALinkID);
 }
 
 
+function getJobFileURL ( jobId,filePath )  {
+  var url = special_url_tag + '/';
+  if (__login_token)
+        url += __login_token;
+  else  url += '404';
+  return url + '/' + __current_project + '/' + jobId + '/' + filePath;
+}
+
+
 function downloadJobFile ( jobId,filePath )  {
+  /*
   var url = special_url_tag + '/';
   if (__login_token)
         url += __login_token;
   else  url += '404';
   url += '/' + __current_project + '/' + jobId + '/' + filePath;
   downloadFile ( url );
+  */
+  downloadFile ( getJobFileURL(jobId,filePath) );
 }
 
 window.onbeforeunload = function(e)  {

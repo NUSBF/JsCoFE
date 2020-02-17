@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    16.02.20   <--  Date of Last Modification.
+#    17.02.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -83,20 +83,29 @@ class DocDev(basic.TaskDriver):
             for f in files:
                 url = "html/" + f
                 self.putMessage (
-                    "<a href=\"" + url + "\">" + f + "</a>"
+                    "<a href=\"" + url + "\" " +\
+                    "onclick='window.parent.launchHelpBox(" +\
+                        "\"\",window.parent.getJobFileURL(" + self.job_id +\
+                        ",\"report/" + url + "\"),null,0); return false;'>" + f +\
+                    "</a>"
                 )
-                #self.putMessage ( "<span onclick='alert(\"xxx\");'>" + f + "</span>" )
 
+#getJobFileURL ( jobId,filePath )
+
+#function launchHelpBox ( title,helpURL,onDoNotShowAgain_func,delay_msec )  {
+
+
+                #self.putMessage ( "<span onclick='alert(\"xxx\");'>" + f + "</span>" )
 
 #              help_btn.addOnClickListener ( function(){
 #                new HelpBox ( '','./html/jscofe_myprojects.html',null );
 #              });
 
-
         else:
             self.putTitle   ( "Documentation build failed" )
             self.putMessage ( "<b>Error:</b> " + rc.msg )
 
+        self.clearCitations()
         self.success ( False )
         return
 
