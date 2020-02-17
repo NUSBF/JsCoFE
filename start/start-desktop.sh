@@ -17,6 +17,7 @@ export GESAMT_ARCHIVE=$gesamt_dir
 export JSPISA_CFG=$CCP4/share/pisa/jspisa.cfg
 export XDS_home=$xds_dir
 export XDSGUI_home=$xdsgui_dir
+export DOCREPO=/Users/eugene/Projects/jsCoFE/trunk-doc
 
 # comment out if buster is not installed
 source /Applications/GPhL/buster/setup.sh
@@ -28,7 +29,7 @@ echo $PYTHONPATH
 which ccp4-python
 echo $XDS_home
 echo $XDSGUI_home
-
+echo $DOCREPO_URL
 
 #killall node
 
