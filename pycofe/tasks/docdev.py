@@ -54,6 +54,7 @@ class DocDev(basic.TaskDriver):
         script  = "process.sh"
         reppath = os.environ["DOCREPO"]
         repname = "jscofe-doc"
+        srcpath = os.path.join ( repname,"src-user" )
 
         theme = self.getParameter ( self.task.parameters.THEME_SEL )
 
@@ -64,7 +65,7 @@ class DocDev(basic.TaskDriver):
             "\ngit pull origin master" +\
             "\ncd "    + cwd +\
             "\ncp -r " + reppath + " " + repname +\
-            "\ncd "    + os.path.join(repname,"src") +\
+            "\ncd "    + srcpath +\
             "\ncp ../build/Makefile ." +\
             "\ncp ../build/conf-" + theme + ".py conf.py" +\
             "\nmake html\n"
@@ -76,7 +77,7 @@ class DocDev(basic.TaskDriver):
         rc = self.runApp ( "/bin/bash",["-c","./"+script],logType="Main",quitOnError=False )
 
         if not rc.msg:
-            shutil.move ( os.path.join(repname,"src","_build","html"),self.reportDir() )
+            shutil.move ( os.path.join(srcpath,"_build","html"),self.reportDir() )
             self.putTitle ( "Generated documents" )
             htmlDir = os.path.join ( self.reportDir(),"html" )
             files = [f for f in os.listdir(htmlDir) if f.lower().endswith(".html")]
