@@ -671,6 +671,10 @@ CloudFileBrowser.prototype.getStorageList = function ( path,callback_func )  {
 
 CloudFileBrowser.prototype.selectItem = function()  {
   var items = this.storageTree.getSelectedItems();
+  for (var i=items.length-1;i--;)  {
+    if (items[i].name=='..')
+      items.splice(i,1);
+  }
   if (items.length>0)  {
     if ((items[0]._type=='FacilityDir') && (this.image_key==2))  {
       if (this.onSelect_func) {

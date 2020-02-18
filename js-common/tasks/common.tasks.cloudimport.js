@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    08.02.20   <--  Date of Last Modification.
+ *    18.02.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -216,12 +216,15 @@ if (!__template)  {
 
     var fitems = [];
     var ignore = '';
-    for (var i=0;i<file_items.length;i++)  {
-      var lcname = file_items[i].name.toLowerCase();
-      if (endsWith(lcname,'.ccp4_demo') || endsWith(lcname,'.zip'))
-            ignore += '<li><b>' + file_items[i].name + '</b></li>';
-      else  fitems.push ( file_items[i] );
-    }
+    for (var i=0;i<file_items.length;i++)
+      if (file_items[i]._type!='FacilityDir')  {
+        var lcname = file_items[i].name.toLowerCase();
+        if (endsWith(lcname,'.ccp4_demo') ||
+            endsWith(lcname,'.ccp4cloud') ||
+            endsWith(lcname,'.zip'))
+              ignore += '<li><b>' + file_items[i].name + '</b></li>';
+        else  fitems.push ( file_items[i] );
+      }
 
     if (ignore.length>0)
       new MessageBox ( 'File(s) not importable',

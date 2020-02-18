@@ -51,38 +51,57 @@ class DocDev(basic.TaskDriver):
         # Prepare docdev job
 
         cwd     = os.path.abspath(os.getcwd())
-        script  = "process.sh"
+        scriptf = "process.sh"
         reppath = os.environ["DOCREPO"]
         repname = "jscofe-doc"
-        srcpath = os.path.join ( repname,"src-user" )
+        doctype = self.getParameter ( self.task.parameters.DOC_SEL    )
+        restype = self.getParameter ( self.task.parameters.OUTPUT_SEL )
+        srcpath = os.path.join ( repname,"src-" + doctype )
+
+        if doctype=="dev":
+            self.putMessage ( "<h3>Generating developer's reference</h3>" )
+        else:
+            self.putMessage ( "<h3>Generating user manual</h3>" )
+
+        self.putMessage ( os.path.realpath ( os.path.dirname ( __file__ ) ) )
 
         theme = self.getParameter ( self.task.parameters.THEME_SEL )
 
-        f = open ( script,"w" )
-        f.write (
-            "#!/bin/bash" +\
-            "\ncd "    + reppath +\
-            "\ngit pull origin master" +\
-            "\ncd "    + cwd +\
-            "\ncp -r " + reppath + " " + repname +\
-            "\ncd "    + srcpath +\
-            "\ncp ../build/Makefile ." +\
-            "\ncp ../build/conf-" + theme + ".py conf.py" +\
-            "\nmake html\n"
+        script = "#!/bin/bash" +\
+                 "\ncd "    + reppath +\
+                 "\ngit pull origin master" +\
+                 "\ncd "    + cwd +\
+                 "\ncp -r " + reppath + " " + repname +\
+                 "\ncd "    + srcpath +\
+                 "\ncp   tasks/* ." +\
+                 "\ncp ../build/Makefile ." +\
+                 "\ncp ../build/conf-" + theme + ".py conf.py" +\
+                 "\nmake html\n";
+
+        self.stdout (
+            " ============================================================\n" +\
+            "   Processing script:\n\n" +\
+            script +\
+            " ============================================================\n"
         )
+
+        f = open ( scriptf,"w" )
+        f.write ( script )
         f.close()
 
-        os.chmod ( script, stat.S_IRUSR  | stat.S_IXUSR )
+        os.chmod ( scriptf, stat.S_IRUSR  | stat.S_IXUSR )
 
-        rc = self.runApp ( "/bin/bash",["-c","./"+script],logType="Main",quitOnError=False )
+        rc = self.runApp ( "/bin/bash",["-c","./"+scriptf],logType="Main",quitOnError=False )
 
         if not rc.msg:
-            shutil.move ( os.path.join(srcpath,"_build","html"),self.reportDir() )
+            docdir = "html-" + doctype
+            shutil.move ( os.path.join(srcpath,"_build","html"),
+                          os.path.join(self.reportDir(),docdir) )
             self.putTitle ( "Generated documents" )
-            htmlDir = os.path.join ( self.reportDir(),"html" )
+            htmlDir = os.path.join ( self.reportDir(),docdir )
             files = [f for f in os.listdir(htmlDir) if f.lower().endswith(".html")]
             for f in files:
-                url = "html/" + f
+                url = docdir + "/" + f
                 self.putMessage (
                     "<a href=\"" + url + "\" " +\
                     "onclick='window.parent.launchHelpBox(" +\
