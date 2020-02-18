@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    17.02.20   <--  Date of Last Modification.
+ *    18.02.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -42,8 +42,19 @@ function TaskDocDev()  {
 
   this.parameters = {       // no input parameters, just label
     L1 : { type     : 'label',
-           label    : '<h3>This task is available only from developer\'s account</h3>',
+           label    : '<h3>This task compiles and deploys documentation packages</h3>',
            position : [0,0,1,5]
+         },
+    DOC_SEL : {
+           type     : 'combobox',
+           label    : 'Documentation package:',
+           tooltip  : 'Choose documentation package to compile',
+           range    : ['user|User Manual',
+                       'dev|Developers Reference'
+                      ],
+           value    : 'user',
+           iwidth   : 260,
+           position : [1,0,1,1]
          },
     THEME_SEL : {
            type     : 'combobox',
@@ -53,8 +64,19 @@ function TaskDocDev()  {
                        'agogo|AGOGO'
                       ],
            value    : 'haiku',
-           iwidth   : 200,
-           position : [1,0,1,1]
+           iwidth   : 260,
+           position : [2,0,1,1]
+         },
+    OUTPUT_SEL : {
+           type     : 'combobox',
+           label    : 'Result required:',
+           tooltip  : 'Choose required result',
+           range    : ['compile|Compile only',
+                       'deploy|Compile and deploy'
+                      ],
+           value    : 'compile',
+           iwidth   : 260,
+           position : [3,0,1,1]
          }
   };
 
