@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    18.10.19   <--  Date of Last Modification.
+ *    19.02.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Common Client/Server Modules -- Base Data Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2019
+ *  (C) E. Krissinel, A. Lebedev 2016-2020
  *
  *  =================================================================
  *
@@ -23,15 +23,16 @@
  // ===========================================================================
 
   var file_key = {
-    'xyz'   : 'xyz',          // atomic coordinates
-    'mmcif' : 'mmcif',        // atomic coordinates in mmCIF format
-    'sol'   : 'sol',          // phaser's sol file
-    'sub'   : 'sub',          // heavy atom (substructure) coordinates
-    'seq'   : 'seq',          // sequence file
-    'mtz'   : 'mtz',          // .mtz file with hkl and/or phases
-    'map'   : 'map',          // map file
-    'dmap'  : 'dmap',         // difference map file
-    'lib'   : 'lib'           // ligand dictionary
+    'xyz'   : 'xyz',     // atomic coordinates
+    'mmcif' : 'mmcif',   // atomic coordinates in mmCIF format
+    'sol'   : 'sol',     // phaser's sol file
+    'sub'   : 'sub',     // heavy atom (substructure) coordinates
+    'seq'   : 'seq',     // sequence file
+    'mtz'   : 'mtz',     // .mtz file with hkl and/or phases
+    'map'   : 'map',     // map file
+    'dmap'  : 'dmap',    // difference map file
+    'lib'   : 'lib',     // ligand dictionary
+    'coot'  : 'coot'     // Coot python script
  }
 
 // ===========================================================================

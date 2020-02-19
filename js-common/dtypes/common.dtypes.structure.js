@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    10.12.19   <--  Date of Last Modification.
+ *    19.02.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Common Client/Server Modules -- Structure Data Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2019
+ *  (C) E. Krissinel, A. Lebedev 2016-2020
  *
  *  =================================================================
  *
@@ -140,6 +140,8 @@ if (!__template)  {
     //  dsp.makeRow ( 'HA-XYZ file',this.files[file_key.sub],'Heavy atom (substructure) file name' );
     if (this.files.hasOwnProperty(file_key.sol))
       dsp.makeRow ( 'Phaser\'s SOL file',this.files[file_key.sol],'SOL file with phaser\' output metadata' );
+    if (this.files.hasOwnProperty(file_key.coot))
+      dsp.makeRow ( 'Coot python script',this.files[file_key.coot],'Coot script with custom settings or data' );
     if (this.files.hasOwnProperty(file_key.mtz))
       dsp.makeRow ( 'MTZ file',this.files[file_key.mtz],'Associated MTZ file name' );
     if (this.files.hasOwnProperty(file_key.map))

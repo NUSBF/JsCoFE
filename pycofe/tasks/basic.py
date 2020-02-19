@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    17.02.20   <--  Date of Last Modification.
+#    19.02.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -54,7 +54,7 @@ import pyrvapi_ext.parsers
 from pycofe.dtypes import dtype_template, dtype_xyz, dtype_structure, databox
 from pycofe.dtypes import dtype_ensemble, dtype_hkl, dtype_ligand
 from pycofe.dtypes import dtype_sequence, dtype_library
-from pycofe.proc   import edmap,  import_filetype,   import_merged
+from pycofe.proc   import edmap,  import_filetype, import_merged
 from pycofe.varut  import signal, jsonut, command
 from pycofe.etc    import citations
 
@@ -534,11 +534,14 @@ class TaskDriver(object):
         pyrvapi.rvapi_add_panel ( panel_id,pageId,row,0,1,colSpan )
         return
 
+    def appendContent ( self,panel_id,fpath,watch=False ):
+        pyrvapi.rvapi_append_content ( fpath,watch,panel_id )
+        return
+
     def putFieldset ( self,fset_id,title ):
         pyrvapi.rvapi_add_fieldset ( fset_id,title,self.report_page_id(),self.rvrow,0,1,1 )
         self.rvrow += 1
         return
-
 
     def putSection ( self,sec_id,sectionName,openState_bool=False ):
         pyrvapi.rvapi_add_section ( sec_id,sectionName,self.report_page_id(),
@@ -630,6 +633,10 @@ class TaskDriver(object):
     def putGrid ( self,gridId,filling_bool=False ):
         pyrvapi.rvapi_add_grid ( gridId,filling_bool,self.report_page_id(),self.rvrow,0,1,1 )
         self.rvrow += 1
+        return
+
+    def putGrid1 ( self,gridId,holderId,filling_bool,row,col=0,rowSpan=1,colSpan=1 ):
+        pyrvapi.rvapi_add_grid ( gridId,filling_bool,holderId,row,col,rowSpan,colSpan )
         return
 
 

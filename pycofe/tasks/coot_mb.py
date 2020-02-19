@@ -115,10 +115,26 @@ class Coot(basic.TaskDriver):
         if ligand:
             args += ["--python","-c","get_monomer('" + ligand.code + "')"]
 
-        coot_scr = "coot_jscofe.py"
-        coot_scr = os.path.join ( os.path.dirname ( os.path.abspath(__file__)),"..","proc",coot_scr )
+        #coot_scr = "coot_jscofe.py"
+        #coot_scr = os.path.join ( os.path.dirname ( os.path.abspath(__file__)),"..","proc",coot_scr )
+        coot_scr = istruct.getCootFilePath ( self.inputDir() )
+        if coot_scr:
+            f = open ( coot_scr,"a" )
+            f.write (
+                "\n\n" +\
+                "info_dialog ( \"" +\
+                    "In order to save the edited structure in your Project,\\n" +\
+                    "use 'Save coordinates' from Main Menu/Files\\n" +\
+                    "before closing Coot, without changing file name\\n" +\
+                    "and directory offered by default, and only then\\n" +\
+                    "end Coot session as usual.\"" +\
+                " )"
+            )
+            f.close()
+        else:
+            coot_scr = os.path.join ( os.path.dirname(os.path.abspath(__file__)),
+                                      "..","proc","coot_jscofe.py" )
         args += ["--python",coot_scr,"--no-guano"]
-        args += ["--no-guano"]
 
         # Run coot
         if sys.platform.startswith("win"):
@@ -139,6 +155,7 @@ class Coot(basic.TaskDriver):
                     fname = f
 
         have_results = False
+        summary_line = "model not saved"
 
         if fname:
 
@@ -216,6 +233,7 @@ class Coot(basic.TaskDriver):
                 revision.setStructureData ( struct   )
                 self.registerRevision     ( revision )
                 have_results = True
+                summary_line = "model saved"
 
         else:
             self.putTitle ( "No Output Structure Generated" )
@@ -223,6 +241,10 @@ class Coot(basic.TaskDriver):
 
         # ============================================================================
         # close execution logs and quit
+
+        self.generic_parser_summary["coot"] = {
+            "summary_line" : summary_line
+        }
 
         if rc.msg == "":
             self.success ( have_results )
