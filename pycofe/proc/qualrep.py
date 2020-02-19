@@ -123,7 +123,7 @@ def put_molprobity_section ( body,revision ):
 
     body.file_stdout1 = open ( body.file_stdout1_path(),'a' )
 
-    body.putMessage1 ( grid_id,"&nbsp;<p><b><i>Molprobity report</i></b>",grid_row,col=0 )
+    body.putMessage1 ( grid_id,"&nbsp;<p><h3>Molprobity report</h3>",grid_row,col=0 )
     grid_row += 1
 
     molprob_out = "molprobity.out"
@@ -132,7 +132,7 @@ def put_molprobity_section ( body,revision ):
         with (open(os.path.join(body.reportDir(),molprob_out),"w")) as f2:
             f2.write ( "<pre style=\"border:1px solid #488090; padding:12px; " +\
                                 "height: 400px; width: 100%; overflow: auto; " +\
-                                "box-shadow : 5px 5px 6px #888888;\">" + content +\
+                                "font-family : 'Courier'; font-size: 1em; box-shadow : 5px 5px 6px #888888;\">" + content +\
                        "</pre>" )
 
     panelId = body.getWidgetId ( "molpanel" )

@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    17.02.20   <--  Date of Last Modification.
+#    19.02.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -874,6 +874,31 @@ citations = {
                             'year'    : '2011',
                             'pages'   : '271-281',
                             'doi'     : '10.1107/S0907444910048675'
+                  }]
+                },
+
+    'molprobity' : { 'name'  : 'MolProbity',
+                  'category' : 'primary',
+                  'refs'     : [{
+                            'authors' : 'Williams C. J., Hintze B. J., Headd J. J., Moriarty N. W., Chen V. B., Jain S., ' +
+                                        'Prisant M. G., Lewis S. M., Videau L. L. , Keedy D. A., Deis L. N., ' +
+                                        'Arendall W. B. III, Verma V., Snoeyink J. S., Adams P. D., Lovell S. C., ' +
+                                        'Richardson J. S., Richardson D. C.',
+                            'title'   : 'MolProbity: More and better reference data for improved all-atom structure validation',
+                            'journal' : 'Protein Science',
+                            'volume'  : '27',
+                            'year'    : '2018',
+                            'pages'   : '293-315',
+                            'doi'     : '10.1002/pro.3330'
+                        },{
+                            'authors' : 'Grosse-Kunstleve R. W., Sauter N. K., Moriarty N. W., Adams P. D.',
+                            'title'   : 'The Computational Crystallography Toolbox: crystallographic algorithms in ' +
+                                        'a reusable software framework',
+                            'journal' : 'J. Appl. Cryst.',
+                            'volume'  : '35',
+                            'year'    : '2002',
+                            'pages'   : '126-136',
+                            'doi'     : '10.1107/S0021889801017824'
                   }]
                 },
 
