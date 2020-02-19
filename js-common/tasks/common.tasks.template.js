@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    09.02.20   <--  Date of Last Modification.
+ *    19.02.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -2120,6 +2120,36 @@ if (!dbx)  {
 //        S = '-- <font style="font-size:80%">' + S + '</font>';
     }
     return S.trim();
+  }
+
+  TaskTemplate.prototype.result_indicator = function() {
+    var resind = '';
+
+    switch (this.state)  {
+
+      case job_code.exiting   : resind = 'exiting';
+                                break;
+
+      case job_code.finished  : resind = this.score_string();
+                                if (resind=='')  resind = 'completed.';
+                                break;
+
+      case job_code.noresults : resind = this.score_string();
+                                if (resind=='')  resind = 'finished.';
+                                break;
+
+      case job_code.failed    : resind = 'failed.';
+                                break;
+
+      case job_code.stopped   : resind = 'terminated.';
+                                break;
+
+      default: ;
+
+    }
+
+    return resind;
+
   }
 
 

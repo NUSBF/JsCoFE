@@ -3,13 +3,13 @@
 #
 # ============================================================================
 #
-#    12.08.19   <--  Date of Last Modification.
+#    19.02.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  BASE (TEMPLATE) DATA TYPE
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2019
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2020
 #
 # ============================================================================
 #
@@ -53,7 +53,8 @@ file_key = {
     'mtz'   : 'mtz',   # .mtz file with hkl and/or phases
     'map'   : 'map',   # map file
     'dmap'  : 'dmap',  # difference map file
-    'lib'   : 'lib'    # ligand dictionary
+    'lib'   : 'lib',   # ligand dictionary
+    'coot'  : 'coot'   # Coot python script
 }
 
 

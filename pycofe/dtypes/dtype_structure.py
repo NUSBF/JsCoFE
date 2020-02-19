@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    12.02.20   <--  Date of Last Modification.
+#    19.02.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -439,6 +439,10 @@ class DType(dtype_template.DType):
         self.setFile ( fname,dtype_template.file_key["sol"] )
         return
 
+    def setCootFile ( self,fname ):
+        self.setFile ( fname,dtype_template.file_key["coot"] )
+        return
+
     def getXYZFileName(self):
         return self.getFileName ( dtype_template.file_key["xyz"] )
 
@@ -447,6 +451,9 @@ class DType(dtype_template.DType):
 
     def getSolFileName(self):
         return self.getFileName ( dtype_template.file_key["sol"] )
+
+    def getCootFileName(self):
+        return self.getFileName ( dtype_template.file_key["coot"] )
 
     #def getSubFileName(self):
     #    return self.getFileName ( dtype_template.file_key["sub"] )
@@ -471,6 +478,9 @@ class DType(dtype_template.DType):
 
     def getSolFilePath ( self,dirPath ):
         return self.getFilePath ( dirPath,dtype_template.file_key["sol"] )
+
+    def getCootFilePath ( self,dirPath ):
+        return self.getFilePath ( dirPath,dtype_template.file_key["coot"] )
 
     def getXYZFilePath ( self,dirPath ):
         return self.getFilePath ( dirPath,dtype_template.file_key["xyz"] )

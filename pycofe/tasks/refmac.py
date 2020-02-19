@@ -32,8 +32,8 @@ import uuid
 
 #  application imports
 import basic
-from pycofe.dtypes import dtype_template
-
+from   pycofe.dtypes import dtype_template
+from   pycofe.proc   import qualrep
 
 # ============================================================================
 # Make Refmac driver
@@ -327,6 +327,8 @@ class Refmac(basic.TaskDriver):
                 revision.setStructureData ( structure )
                 self.registerRevision     ( revision  )
                 have_results = True
+
+                qualrep.quality_report ( self,revision )
 
         else:
             self.putTitle ( "No Output Generated" )

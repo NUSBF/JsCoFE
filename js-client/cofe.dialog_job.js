@@ -178,8 +178,9 @@ JobDialog.prototype.changeTitle = function ( new_title )  {
 JobDialog.prototype.statusLine = function()  {
   switch (this.task.state)  {
     case job_code.new       :  return ' (new)';
-    case job_code.finished  :  return ' -- finished';
-    case job_code.noresults :  return ' -- executed';
+    case job_code.running   :  return ' -- running';
+    case job_code.finished  :  return ' -- completed';
+    case job_code.noresults :  return ' -- finished';
     case job_code.failed    :  return ' -- failed';
     case job_code.stopped   :  return ' -- terminated by user';
     default : ;

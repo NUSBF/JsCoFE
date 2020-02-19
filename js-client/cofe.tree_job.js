@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    10.02.20   <--  Date of Last Modification.
+ *    19.02.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -262,50 +262,7 @@ JobTree.prototype.makeNodeName = function ( task )  {
         node_name += task.uname;
   else  node_name += task.name;
 
-  /*
-  switch (task.state)  {
-
-    case job_code.exiting  : node_name += ' <b><i>-- exiting.</i></b>';
-                             break;
-
-    case job_code.finished : var S = task.score_string();
-                             if (S=='')  S = '-- finished.';
-                             node_name += ' <b><i>' + S + '</i></b>';
-                             break;
-
-    case job_code.failed   : node_name += ' <b><i>-- failed.</i></b>';
-                             break;
-
-    case job_code.stopped  : node_name += ' <b><i>-- terminated.</i></b>';
-                             break;
-
-    default: ;
-
-  }
-  */
-
-  var resind = '';
-  switch (task.state)  {
-
-    case job_code.exiting   : resind = 'exiting';
-                              break;
-
-    case job_code.finished  : resind = task.score_string();
-                              if (resind=='')  resind = 'finished.';
-                              break;
-
-    case job_code.noresults : resind = 'executed.';
-                              break;
-
-    case job_code.failed    : resind = 'failed.';
-                              break;
-
-    case job_code.stopped   : resind = 'terminated.';
-                              break;
-
-    default: ;
-
-  }
+  var resind = task.result_indicator();
 
   if (resind && (resind!='*none*'))
     node_name += ' <b><i>-- <font style="font-size:80%">' + resind +

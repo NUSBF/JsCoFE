@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    28.12.19   <--  Date of Last Modification.
+#    18.02.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -20,7 +20,7 @@
 #
 #  Reference data should be in 'rama_data' subdirectory relative to this file.
 #
-#  Adopted in present form by Eugene Krissinel, Andrey Lebedev 2019
+#  Adopted in present form by Eugene Krissinel, Andrey Lebedev 2019-2020
 #
 # ============================================================================
 #
@@ -30,6 +30,7 @@ from __future__ import division, print_function
 import math
 import os
 import sys
+import json
 
 import matplotlib.pyplot as plt
 #import numpy as np
@@ -109,19 +110,20 @@ def calc_ramachandran ( file_name_list ):
         RAMA_PREF_VALUES = _cache_RAMA_PREF_VALUES()
 
     # Read in the expected torsion angles
-    normals = {}
+    reslist  = { "normals" : [], "outliers" : [] }
+    normals  = {}
     outliers = {}
     for key, val in RAMA_PREFERENCES.items():
-        normals[key] = {"x": [], "y": []}
-        outliers[key] = {"x": [], "y": []}
+        normals [key] = {"x": [], "y": [] }
+        outliers[key] = {"x": [], "y": [] }
 
     # Calculate the torsion angle of the inputs
-    
+
     for inp in file_name_list:
-    
+
         if not os.path.isfile(inp):
             continue
-            
+
         st = gemmi.read_structure ( inp )
         for model in st:
             #print ( "  do model " )
@@ -129,7 +131,7 @@ def calc_ramachandran ( file_name_list ):
                 #print ( "   do chain " )
                 #for res in chain.get_polymer(): <- should work, check with new gemmi
                 for res in chain:
-                    print ( "  do residue " + res.name )
+                    #print ( "  do residue " + res.name )
                     # previous_residue() and next_residue() return previous/next
                     # residue only if the residues are bonded. Otherwise -- None.
                     prev_res = chain.previous_residue(res)
@@ -152,17 +154,28 @@ def calc_ramachandran ( file_name_list ):
                             #print ( str(phi) + " : " + str(psi) )
                             #phi = max ( -180.0,min(179.0,phi) )
                             #psi = max ( -180.0,min(179.0,psi) )
+
+                            litem = [ model.name,chain.name,str(res.seqid.num),
+                                      res.name,res.seqid.icode,phi,psi ]
                             if RAMA_PREF_VALUES[aa_type][int(psi)+180][int(phi)+180] < \
                                     RAMA_PREFERENCES[aa_type]["bounds"][1]:
                                 outliers[aa_type]["x"].append(phi)
                                 outliers[aa_type]["y"].append(psi)
+                                if aa_type!="General":
+                                    outliers["General"]["x"].append(phi)
+                                    outliers["General"]["y"].append(psi)
+                                reslist["outliers"].append ( litem )
                             else:
                                 normals[aa_type]["x"].append(phi)
                                 normals[aa_type]["y"].append(psi)
-  
-        """    
+                                if aa_type!="General":
+                                    normals["General"]["x"].append(phi)
+                                    normals["General"]["y"].append(psi)
+                                reslist["normals"].append ( litem )
+
+        """
         #print ( " ===================================" )
-            
+
         structure = PDB.PDBParser().get_structure('input_structure', inp)
         for model in structure:
             for chain in model:
@@ -191,8 +204,8 @@ def calc_ramachandran ( file_name_list ):
                                 normals[aa_type]["x"].append(math.degrees(phi))
                                 normals[aa_type]["y"].append(math.degrees(psi))
         """
-        
-    return normals, outliers
+
+    return normals, outliers, reslist
 
 
 def plot_ramachandran ( normals,outliers ):
@@ -255,22 +268,25 @@ def plot_ramachandran1 ( key,title,normals,outliers,outimagepath ):
 
 
 def make_ramaplot ( xyzpath ):
-    normals, outliers = calc_ramachandran( [xyzpath] )
+    normals, outliers, reslist = calc_ramachandran( [xyzpath] )
     plot_ramachandran ( normals,outliers )
     return
 
 def make_ramaplot1 ( key,title,xyzpath,outimagepath ):
-    normals, outliers = calc_ramachandran( [xyzpath] )
+    normals, outliers, reslist = calc_ramachandran( [xyzpath] )
     plot_ramachandran1 ( key,title,normals,outliers,outimagepath )
     return
 
 def make_ramaplot2 ( title,xyzpath,outputname ):
-    normals, outliers = calc_ramachandran( [xyzpath] )
+    normals, outliers, reslist = calc_ramachandran( [xyzpath] )
     plot_ramachandran1 ( "General",title,normals,outliers,outputname+".png" )
     plot_ramachandran1 ( "GLY",title+" (GLY)",normals,outliers,outputname+"_gly.png" )
     plot_ramachandran1 ( "PRO",title+" (PRO)",normals,outliers,outputname+"_pro.png" )
     plot_ramachandran1 ( "PRE-PRO",title+" (Pre-PRO)",normals,outliers,
                          outputname+"_pre_pro.png" )
+    f = open ( outputname+"_reslist.json","w" )
+    f.write ( json.dumps(reslist) )
+    f.close()
     return
 
 
@@ -283,11 +299,12 @@ if __name__ == "__main__":
     #  ccp4-python pyrama.py input.pdb title output-name
     #
     #  will produce
-    #     
+    #
     #     output-name.png
     #     output-name_gly.png
     #     output-name_pro.png
     #     output-name_pre_pro.png
+    #     output-name_reslist.json
     #
 
     make_ramaplot2 ( sys.argv[2],sys.argv[1],sys.argv[3] )
