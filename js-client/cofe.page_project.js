@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    27.01.20   <--  Date of Last Modification.
+ *    20.02.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -86,7 +86,7 @@ function ProjectPage ( sceneId )  {
   }
 
   function addRemark()  {
-    jobTree.addTask ( new TaskRemark(),true,self,
+    jobTree.addTask ( new TaskRemark(),true,false,self,
                                 function(){ del_btn.setDisabled ( false ); } );
   }
 

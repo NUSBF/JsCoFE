@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    19.02.20   <--  Date of Last Modification.
+ *    20.02.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -142,6 +142,8 @@ if (!__template)  {
       dsp.makeRow ( 'Phaser\'s SOL file',this.files[file_key.sol],'SOL file with phaser\' output metadata' );
     if (this.files.hasOwnProperty(file_key.coot))
       dsp.makeRow ( 'Coot python script',this.files[file_key.coot],'Coot script with custom settings or data' );
+    if (this.files.hasOwnProperty(file_key.molp))
+      dsp.makeRow ( 'MolProbity probe',this.files[file_key.molp],'MolProbity "probe" file' );
     if (this.files.hasOwnProperty(file_key.mtz))
       dsp.makeRow ( 'MTZ file',this.files[file_key.mtz],'Associated MTZ file name' );
     if (this.files.hasOwnProperty(file_key.map))
