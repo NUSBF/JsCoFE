@@ -156,7 +156,7 @@ var __suggested_task_prob = 0.03;  // do not list tasks with combined probabilit
 var __suggested_task_nmin = 3;     // minimum 3 tasks to suggest
 
 
-var __rvapi_config_coot_btn = false;  // switch Coot button off in RVAPI
+//var __rvapi_config_coot_btn = true;  // switch Coot button off (when undefined) in RVAPI
 
 // ===========================================================================
 // miscellaneous functions

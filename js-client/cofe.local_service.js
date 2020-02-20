@@ -21,6 +21,7 @@
 
 // local service url (used also as indicator of presentce in RVAPI)
 var __local_service  = null;     // full URL when defined
+__rvapi_local_service = null;    // no var! used as flag in rvapi
 var __client_version = null;     // will be a version string if client is running
 var __local_user     = false;    // true if running as a desktop
 var __shared_fs      = false;    // shared file system setup when true
@@ -29,6 +30,14 @@ var __exclude_tasks  = [];
 var __setup_desc     = null;     // setup description
 var __check_session_period = 2000;  // in ms
 
+
+function setLocalService ( local_service )  {
+  __local_service = local_service;
+  if ((!local_service) && (window.hasOwnProperty('__rvapi_local_service')))
+    delete window.__rvapi_local_service;
+  else
+    __rvapi_local_service = local_service;
+}
 
 // ---------------------------------------------------------------------------
 
@@ -40,7 +49,7 @@ function checkLocalService ( callback_func )  {
         var count = attemptCount-1;
         if (!response)  {
           if (count<=0)  {
-            __local_service = null;
+            setLocalService ( null );
             new MessageBox ( 'Local service',
               '<h2>Cannot connect to Local Service</h2>' +
               'You will not be able to use Coot and other local applications.<p>' +
@@ -51,7 +60,7 @@ function checkLocalService ( callback_func )  {
         } else if (response.status!=nc_retcode.ok)  {
           //console.log ( ' point 1 ' + response.status );
           if (count<=0)  {
-            __local_service = null;
+            setLocalService ( null );
             new MessageBox ( 'Local service',
               '<h2>Local Service Is Not Available</h2>' +
               'You will not be able to use Coot and other local applications.<p>' +
@@ -97,7 +106,7 @@ function checkLocalService ( callback_func )  {
           serverCommand ( fe_command.getClientInfo,{},'getClientInfo',
                           function(rsp){
             if (rsp.status==fe_retcode.ok)  {
-              __local_service = rsp.data.local_service;
+              setLocalService ( rsp.data.local_service );
               if (rsp.data.fe_url)
                 __fe_url = rsp.data.fe_url;
             }
@@ -127,14 +136,14 @@ function checkLocalService ( callback_func )  {
   if (n>=1)  {
     var port = window.location.search.substring ( n+4 );
     if (startsWith(port,'http'))  // full specification of local service given
-          __local_service  = port;
-    else  __local_service = ls_protocol + '://' + localhost_name + ':' + port;
+          setLocalService ( port );
+    else  setLocalService ( ls_protocol + '://' + localhost_name + ':' + port );
 
     // check that local service is actually running
     probeClient ( 20,function(){ getServerInfo(); });
 
   } else  {
-    __local_service = null;
+    setLocalService ( null );
     getServerInfo();
   }
   // alert ( window.navigator.onLine );  -- seems to work

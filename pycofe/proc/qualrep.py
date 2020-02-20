@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    18.02.20   <--  Date of Last Modification.
+#    20.02.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -132,7 +132,8 @@ def put_molprobity_section ( body,revision ):
         with (open(os.path.join(body.reportDir(),molprob_out),"w")) as f2:
             f2.write ( "<pre style=\"border:1px solid #488090; padding:12px; " +\
                                 "height: 400px; width: 100%; overflow: auto; " +\
-                                "font-family : 'Courier'; font-size: 1em; box-shadow : 5px 5px 6px #888888;\">" + content +\
+                                "font-family : 'Courier'; font-size: 1em; " +\
+                                "box-shadow : 5px 5px 6px #888888;\">" + content +\
                        "</pre>" )
 
     panelId = body.getWidgetId ( "molpanel" )
@@ -142,7 +143,10 @@ def put_molprobity_section ( body,revision ):
     coot_script = "molprobity_coot.py"
     if os.path.isfile(coot_script):
         coot_spath = body.stampFileName ( body.dataSerialNo,body.getOFName(".coot.py") )
+        molp_spath = body.stampFileName ( body.dataSerialNo,body.getOFName(".probe.txt") )
         os.rename ( coot_script,os.path.join(body.outputDir(),coot_spath) )
+        os.rename ( "molprobity_probe.txt",os.path.join(body.outputDir(),molp_spath) )
+        revision.Structure.setMolProbityFile ( molp_spath )
         revision.Structure.setCootFile ( coot_spath )
 
     return

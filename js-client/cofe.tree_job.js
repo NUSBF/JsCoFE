@@ -354,6 +354,8 @@ JobTree.prototype.__checkTaskLoop = function()  {
                 tree.dlg_map[key].outputPanel.reload();
             }
 
+            tree.startChainTask ( task,nodeId );
+
           }
 
           tree.run_map = mapMaskOut ( tree.run_map,completedJobs );
@@ -542,11 +544,22 @@ JobTree.prototype._add_job = function ( insert_bool,task,dataBox,
 }
 
 
+JobTree.prototype._copy_task_parameters = function ( task,branch_task_list )  {
+  var reftask = null;
+  for (var i=0;(i<branch_task_list.length) && (!reftask);i++)
+    if (task._type==branch_task_list[i]._type)
+      reftask = branch_task_list[i];
+  if (reftask)
+    task.parameters = jQuery.extend ( true,{},reftask.parameters );
+}
+
+
 JobTree.prototype.addJob = function ( insert_bool,copy_params,parent_page,onAdd_func )  {
   (function(tree){
     var dataBox = tree.harvestTaskData ( 1,[] );
     var branch_task_list = tree.getAllAncestors ( tree.getSelectedTask() );
     new TaskListDialog ( dataBox,branch_task_list,function(task){
+      /*
       if (copy_params)  {
         var reftask = null;
         for (var i=0;(i<branch_task_list.length) && (!reftask);i++)
@@ -555,16 +568,56 @@ JobTree.prototype.addJob = function ( insert_bool,copy_params,parent_page,onAdd_
         if (reftask)
           task.parameters = jQuery.extend ( true,{},reftask.parameters );
       }
+      */
+      if (copy_params)
+        tree._copy_task_parameters ( task,branch_task_list );
       tree._add_job ( insert_bool,task,dataBox, parent_page,onAdd_func );
     });
   }(this));
 }
 
 
-JobTree.prototype.addTask = function ( task,insert_bool,parent_page,onAdd_func )  {
+JobTree.prototype.addTask = function ( task,insert_bool,copy_params,parent_page,onAdd_func )  {
   var dataBox = this.harvestTaskData ( 1,[] );
-  var branch_task_list = this.getAllAncestors ( this.getSelectedTask() );
+  if (copy_params)  {
+    var branch_task_list = this.getAllAncestors ( this.getSelectedTask() );
+    this._copy_task_parameters ( task,branch_task_list );
+  }
   this._add_job ( insert_bool,task,dataBox, parent_page,onAdd_func );
+}
+
+
+JobTree.prototype.startChainTask = function ( task,nodeId )  {
+
+  if (!task.hasOwnProperty('task_chain'))
+    return;
+
+  if (task.task_chain.length<=0)  {
+    delete task.task_chain;
+    return;
+  }
+
+  if (task.state!=job_code.finished)
+    return;
+
+  this.selectSingleById ( nodeId );
+  var newtask = eval ( 'new ' + task.task_chain[0] + '()' );
+  if (task.task_chain.length>1)  {
+    newtask.task_chain = [];
+    for (var i=1;i<task.task_chain.length;i++)
+      newtask.task_chain.push ( task.task_chain[i] );
+  }
+  newtask.onJobDialogStart = function ( job_dialog )  {
+    job_dialog.run_btn.click();  // start automatically
+  };
+
+  (function(tree){
+    tree.addTask ( newtask,false,true,__current_page,function(){
+      if (task.id in tree.dlg_map)
+        tree.dlg_map[task.id].close();
+    });
+  }(this))
+
 }
 
 
@@ -899,12 +952,15 @@ JobTree.prototype.openJob = function ( dataBox,parent_page )  {
                 case job_dialog_reason.run_job :
                           var dataBox          = tree.harvestTaskData ( 1,[] );
                           var branch_task_list = tree.getAllAncestors ( tree.getSelectedTask() );
+                          tree._copy_task_parameters ( options.parameters,branch_task_list );
+                          /*
                           var reftask          = null;
                           for (var i=0;(i<branch_task_list.length) && (!reftask);i++)
                             if (options._type==branch_task_list[i]._type)
                               reftask = branch_task_list[i];
                           if (reftask)
                             options.parameters = jQuery.extend ( true,{},reftask.parameters );
+                          */
                           var dataSummary = dataBox.getDataSummary ( options );
                           if ((dataSummary.status==2) ||
                               (('DataRevision' in dataBox.data) &&

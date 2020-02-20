@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    19.02.20   <--  Date of Last Modification.
+#    20.02.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -54,7 +54,8 @@ file_key = {
     'map'   : 'map',   # map file
     'dmap'  : 'dmap',  # difference map file
     'lib'   : 'lib',   # ligand dictionary
-    'coot'  : 'coot'   # Coot python script
+    'coot'  : 'coot',  # Coot python script
+    'molp'  : 'molp'   # molprobity_probe.txt file
 }
 
 

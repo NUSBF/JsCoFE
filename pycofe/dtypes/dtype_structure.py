@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    19.02.20   <--  Date of Last Modification.
+#    20.02.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -443,6 +443,10 @@ class DType(dtype_template.DType):
         self.setFile ( fname,dtype_template.file_key["coot"] )
         return
 
+    def setMolProbityFile ( self,fname ):
+        self.setFile ( fname,dtype_template.file_key["molp"] )
+        return
+
     def getXYZFileName(self):
         return self.getFileName ( dtype_template.file_key["xyz"] )
 
@@ -454,6 +458,9 @@ class DType(dtype_template.DType):
 
     def getCootFileName(self):
         return self.getFileName ( dtype_template.file_key["coot"] )
+
+    def getMolProbityFileName(self):
+        return self.getFileName ( dtype_template.file_key["molp"] )
 
     #def getSubFileName(self):
     #    return self.getFileName ( dtype_template.file_key["sub"] )
@@ -481,6 +488,9 @@ class DType(dtype_template.DType):
 
     def getCootFilePath ( self,dirPath ):
         return self.getFilePath ( dirPath,dtype_template.file_key["coot"] )
+
+    def getMolProbityFilePath ( self,dirPath ):
+        return self.getFilePath ( dirPath,dtype_template.file_key["molp"] )
 
     def getXYZFilePath ( self,dirPath ):
         return self.getFilePath ( dirPath,dtype_template.file_key["xyz"] )

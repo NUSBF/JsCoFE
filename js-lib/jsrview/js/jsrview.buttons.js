@@ -1,7 +1,7 @@
 //
 //  =================================================================
 //
-//    07.12.19   <--  Date of Last Modification.
+//    20.02.20   <--  Date of Last Modification.
 //                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  -----------------------------------------------------------------
 //
@@ -12,7 +12,7 @@
 //  **** Content :  RVAPI javascript layer's button module
 //       ~~~~~~~~~
 //
-//  (C) E. Krissinel 2013-2019
+//  (C) E. Krissinel 2013-2020
 //
 //  =================================================================
 //
@@ -42,14 +42,9 @@ function addSubmitButton ( inpId,title,formAction,formId,
 function addButtonGrid ( btnId,title,command,data,rvOnly,holderId,
                          row,col,rowSpan,colSpan )  {
 
-  /*
-  if (command=='{coot}')  {
-    if (typeof window.parent.__rvapi_config_coot_btn !== 'undefined')  {
-      if (!window.parent.__rvapi_config_coot_btn)
-        return;
-    }
-  }
-  */
+//  if ((command=='{coot}') && (!('__rvapi_config_coot_btn' in window.parent)))
+//    return;
+
   if (command=='{coot}')
     return;
 
@@ -59,7 +54,7 @@ function addButtonGrid ( btnId,title,command,data,rvOnly,holderId,
   if (window.rvGate && (command=="{uglymol}"))
     return;
 
-  if ((window.rvGate || window.parent.__local_service || (!rvOnly)) &&
+  if ((window.rvGate || ('__rvapi_local_service' in window.parent) || (!rvOnly)) &&
       document.getElementById(holderId+"-grid"))  {
     var cell = getGridCell ( holderId,row,col );
     if (cell)  {
@@ -91,14 +86,9 @@ function addButtonGrid ( btnId,title,command,data,rvOnly,holderId,
 
 function addButton ( btnId,title,command,data,rvOnly,holderId )  {
 
-  /*
-  if (command=='{coot}')  {
-    if (typeof window.parent.__rvapi_config_coot_btn !== 'undefined')  {
-      if (!window.parent.__rvapi_config_coot_btn)
-        return;
-    }
-  }
-  */
+//  if ((command=='{coot}') && (!('__rvapi_config_coot_btn' in window.parent)))
+//    return;
+
   if (command=='{coot}')
     return;
 
@@ -108,7 +98,7 @@ function addButton ( btnId,title,command,data,rvOnly,holderId )  {
   if (window.rvGate && (command=="{uglymol}"))
     return;
 
-  if ((window.rvGate || window.parent.__local_service || (!rvOnly)) &&
+  if ((window.rvGate || ('__rvapi_local_service' in window.parent) || (!rvOnly)) &&
       document.getElementById(holderId))  {
     if (command=="{function}")  {
       $("<button id=\""+btnId+"\" onclick=\"" + data +
@@ -127,14 +117,9 @@ function addButton ( btnId,title,command,data,rvOnly,holderId )  {
 function addIconButtonGrid ( btnId,button_class,tooltip,command,data,
                              rvOnly,holderId,row,col,rowSpan,colSpan )  {
 
-  /*
-  if (command=='{coot}')  {
-    if (typeof window.parent.__rvapi_config_coot_btn !== 'undefined')  {
-      if (!window.parent.__rvapi_config_coot_btn)
-        return;
-    }
-  }
-  */
+//  if ((command=='{coot}') && (!('__rvapi_config_coot_btn' in window.parent)))
+//    return;
+
   if (command=='{coot}')
     return;
 
@@ -144,7 +129,7 @@ function addIconButtonGrid ( btnId,button_class,tooltip,command,data,
   if (window.rvGate && (command=="{uglymol}"))
     return;
 
-  if ((window.rvGate || window.parent.__local_service || (!rvOnly)) &&
+  if ((window.rvGate || ('__rvapi_local_service' in window.parent) || (!rvOnly)) &&
       document.getElementById(holderId+"-grid"))  {
     var cell = getGridCell ( holderId,row,col );
     if (cell)  {
@@ -172,14 +157,9 @@ function addIconButtonGrid ( btnId,button_class,tooltip,command,data,
 function addIconButton ( btnId,button_class,tooltip,command,data,rvOnly,
                          holderId )  {
 
-  /*
-  if (command=='{coot}')  {
-    if (typeof window.parent.__rvapi_config_coot_btn !== 'undefined')  {
-      if (!window.parent.__rvapi_config_coot_btn)
-        return;
-    }
-  }
-  */
+//  if ((command=='{coot}') && (!('__rvapi_config_coot_btn' in window.parent)))
+//    return;
+
   if (command=='{coot}')
     return;
 
@@ -189,7 +169,7 @@ function addIconButton ( btnId,button_class,tooltip,command,data,rvOnly,
   if (window.rvGate && (command=="{uglymol}"))
     return;
 
-  if ((window.rvGate || window.parent.__local_service || (!rvOnly)) &&
+  if ((window.rvGate || ('__rvapi_local_service' in window.parent) || (!rvOnly)) &&
       document.getElementById(holderId))  {
     if (command=="{function}")  {
       $("<div id=\""+btnId+"\" title=\"" + tooltip +
@@ -270,7 +250,7 @@ function buttonClicked ( command,data )  {
   } else if (command!="{void}")  {
     if (window.rvGate)
       window.rvGate.buttonClicked ( command,data_item );
-    else if (window.parent.__local_service)  {
+    else if ('__rvapi_local_service' in window.parent)  {
       var base_url = window.location.href;
       window.parent.ls_RVAPIAppButtonClicked (
                 base_url.substring(0,base_url.lastIndexOf('/')),command,

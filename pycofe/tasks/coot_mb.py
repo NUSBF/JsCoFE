@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    23.11.19   <--  Date of Last Modification.
+#    20.02.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2019
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2020
 #
 # ============================================================================
 #
@@ -117,23 +117,33 @@ class Coot(basic.TaskDriver):
 
         #coot_scr = "coot_jscofe.py"
         #coot_scr = os.path.join ( os.path.dirname ( os.path.abspath(__file__)),"..","proc",coot_scr )
+        coot_mod = os.path.join ( os.path.dirname(os.path.abspath(__file__)),
+                                  "..","proc","coot_modifier.py" )
         coot_scr = istruct.getCootFilePath ( self.inputDir() )
         if coot_scr:
+            f = open ( coot_mod,"r" )
+            coot_mod_content = f.read()
+            f.close()
             f = open ( coot_scr,"a" )
-            f.write (
-                "\n\n" +\
-                "info_dialog ( \"" +\
-                    "In order to save the edited structure in your Project,\\n" +\
-                    "use 'Save coordinates' from Main Menu/Files\\n" +\
-                    "before closing Coot, without changing file name\\n" +\
-                    "and directory offered by default, and only then\\n" +\
-                    "end Coot session as usual.\"" +\
-                " )"
-            )
+            f.write  ( coot_mod_content )
+            #f.write (
+            #    "\n\n" +\
+            #    "info_dialog ( \"" +\
+            #        "In order to save the edited structure in your Project,\\n" +\
+            #        "use 'Save coordinates' from Main Menu/Files\\n" +\
+            #        "before closing Coot, without changing file name\\n" +\
+            #        "and directory offered by default, and only then\\n" +\
+            #        "end Coot session as usual.\"" +\
+            #    " )"
+            #)
             f.close()
         else:
-            coot_scr = os.path.join ( os.path.dirname(os.path.abspath(__file__)),
-                                      "..","proc","coot_jscofe.py" )
+            coot_scr = coot_mod
+
+        molp_path = istruct.getMolProbityFilePath ( self.inputDir() )
+        if molp_path:
+            shutil.copy2 ( molp_path,"molprobity_probe.txt" )
+
         args += ["--python",coot_scr,"--no-guano"]
 
         # Run coot
@@ -141,6 +151,11 @@ class Coot(basic.TaskDriver):
             rc = self.runApp ( "coot.bat",args,logType="Main",quitOnError=False )
         else:
             rc = self.runApp ( "coot",args,logType="Main",quitOnError=False )
+
+        if os.path.isfile("task_chain.cmd"):
+            file = open ( "task_chain.cmd","r" )
+            self.task.task_chain = file.read().strip().split(",")
+            file.close()
 
         # Check for PDB files left by Coot and convert them to type structure
 
