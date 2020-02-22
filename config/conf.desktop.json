@@ -34,12 +34,13 @@
         "icon_provider" : "org_emblhamburg",
         "auth_url"      : "https://arpwarp.embl-hamburg.de/api/maketoken/?reqid=$reqid&addr=1.2.3.4&cburl=$cburl"
       },
-      "gphl"  : {
+      "gphl-buster"  : {
         "desc_software" : "Global Phasing Ltd. Software Suite",
         "icon_software" : "task_buster",
         "desc_provider" : "Global Phasing Ltd.",
         "icon_provider" : "org_gphl",
-        "auth_url"      : "https://arpwarp.embl-hamburg.de/api/maketoken/?reqid=$reqid&addr=1.2.3.4&cburl=$cburl"
+        "auth_url"      : "https://www.globalphasing.com/cgi-bin/ccp4_licence.cgi?reqid=$reqid&addr=1.2.3.4&cburl=$cburl",
+        "__auth_url"    : "https://arpwarp.embl-hamburg.de/api/maketoken/?reqid=$reqid&addr=1.2.3.4&cburl=$cburl"
       }
     },
     "bootstrapHTML"    : "./bootstrap/jscofe.html",

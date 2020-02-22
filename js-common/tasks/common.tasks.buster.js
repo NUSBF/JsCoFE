@@ -204,7 +204,7 @@ TaskBuster.prototype.icon = function()  { return 'task_buster'; }
 //   'U'  : Unix ( = Linux + Mac)
 TaskBuster.prototype.platforms           = function() { return 'LMU'; }  // UNIX only
 TaskBuster.prototype.requiredEnvironment = function() { return ['CCP4','BDG_home']; }
-TaskBuster.prototype.authorisationID     = function() { return 'gphl'; }
+TaskBuster.prototype.authorisationID     = function() { return 'gphl-buster'; }
 
 TaskBuster.prototype.currentVersion = function()  {
   var version = 0;

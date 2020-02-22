@@ -201,7 +201,6 @@ function AccountPage ( sceneId )  {
     panel.setVerticalAlignment    ( row,1,'middle'  );
     authoris_btn.setDisabled      ( true );
     authoris_btn.addOnClickListener ( function(){
-      //new MessageBox ( "In development","This feature is in development, IGNORE" );
       new AuthorisationDialog ( function(dlg){
         userData.authorisation = dlg.auth_dic;
       });

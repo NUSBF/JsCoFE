@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    11.02.20   <--  Date of Last Modification.
+ *    21.02.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -1359,6 +1359,8 @@ function authResponse ( server_request,server_response )  {
     }
   }
 
+//console.log ( ' >>>>>>> 2 ' + JSON.stringify(params) );
+
   var auth_result  = 'ok';
   var software_key = '';
 
@@ -1372,9 +1374,10 @@ function authResponse ( server_request,server_response )  {
     auth_result = 'denied';
 
   if (params.reqid) {
-//console.log ( ' >>>>>>> 2 ' + params.reqid );
-    params.reqid = params.reqid.split('-');
-    if (params.reqid.length==3)  {
+    var rlist = params.reqid.split('-');
+    if (rlist.length>2)  {
+      params.reqid  = [rlist[0],rlist.slice(1,rlist.length-1).join('-'),rlist[rlist.length-1]];
+//console.log ( ' >>>>>>> 3 ' + params.reqid );
       software_key  = params.reqid[1];
       var loginData = __userLoginHash.getLoginData ( params.reqid[2] );
       if (loginData.login.length>0)  {
