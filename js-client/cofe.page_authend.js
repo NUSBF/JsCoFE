@@ -24,8 +24,8 @@
 // authorisation end page class
 
 var software_title = {
-  'arpwarp' : 'Arp/wArp',
-  'gphl'    : 'Global Phasing Limited'
+  'arpwarp'     : 'Arp/wArp',
+  'gphl-buster' : 'Global Phasing Limited: BUSTER'
 }
 
 /*
@@ -41,7 +41,7 @@ the host 1.2.3.4 (not resolved).
 <p>Please check the host and confirm permit by providing username and password.</p>
 <form method="post" novalidate>
   <input type='hidden' name='csrfmiddlewaretoken' value='BZn9Fnmscra6S8kaXKaUaOUo57AibtHM1utI12iCpeolDF1IVNSrDdKYX3LumPA1' />
-  <input type="hidden" name="reqid" value="authorisation-gphl-340cef239bd34b777f3ece094ffb1ec5" id="id_reqid" />
+  <input type="hidden" name="reqid" value="authorisation-gphl-buster-340cef239bd34b777f3ece094ffb1ec5" id="id_reqid" />
   <input type="hidden" name="addr" value="1.2.3.4" id="id_addr" />
   <input type="hidden" name="cburl" value="http://localhost:8085/" id="id_cburl" />
   <tr>

@@ -371,7 +371,7 @@ var version = '';
         "icon_provider" : "org_emblhamburg",
         "auth_url"      : "https://arpwarp.embl-hamburg.de/api/maketoken/?reqid=$reqid&addr=1.2.3.4&cburl=$cburl",
       },
-      "gphl"  : {
+      "gphl-buster"  : {
         "desc_software" : "Global Phasing Limited Software Suite",
         "icon_software" : "task_buster",
         "desc_provider" : "Global Phasing Limited",
