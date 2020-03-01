@@ -66,6 +66,7 @@ class DUI(basic.TaskDriver):
         #else:
         #    rc = self.runApp ( "dui",[],logType="Main",quitOnError=False )
         rc = self.runApp ( "dui",[],logType="Main",quitOnError=False )
+        self.addCitation ( "dials" )
 
         # Check for MTZ files left by DUI and import them as Unmerged
 

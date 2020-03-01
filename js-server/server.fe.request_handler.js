@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.01.20   <--  Date of Last Modification.
+ *    01.03.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -155,6 +155,18 @@ var response = null;
           response = prj.finishJobExport ( loginData,data );
        break;
 
+    case cmd.fe_reqtype.prepareFJobExport :
+          response = prj.prepareFailedJobExport ( loginData,data );
+       break;
+
+    case cmd.fe_reqtype.checkFJobExport :
+          response = prj.checkFailedJobExport ( loginData,data );
+       break;
+
+    case cmd.fe_reqtype.finishFJobExport :
+          response = prj.finishFailedJobExport ( loginData,data );
+       break;
+
     case cmd.fe_reqtype.saveJobData :
           response = prj.saveJobData ( loginData,data );
        break;
@@ -179,8 +191,8 @@ var response = null;
           response = rj.stopJob ( loginData,data );
        break;
 
-    case cmd.fe_reqtype.getFacilityData :
-          response = fcl.getUserFacilityList ( loginData,data,callback_func );
+    case cmd.fe_reqtype.getCloudFileTree :
+          response = fcl.getCloudFileTree ( loginData,data,callback_func );
        break;
 
     case cmd.fe_reqtype.updateFacility :

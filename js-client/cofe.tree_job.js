@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    19.02.20   <--  Date of Last Modification.
+ *    28.02.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -17,7 +17,7 @@
  *
  *  ==========================================================================
  *
- *    requires:  js-common/dtypes/common.dtypes.box.js
+ *   requires:  js-common/dtypes/common.dtypes.box.js
  *
  *   class JobTree : Tree {
  *
@@ -80,7 +80,7 @@ function JobTree()  {
 
   this.checkTimeout = null;  // timeout timer Id
 
-  this.mode         = 'project';  //  'replay', 'select'
+  this.mode        = 'project';  //  'replay', 'select'
 //  this.replay_mode  = false;  // works with the replay project if true
 
 }
@@ -276,14 +276,14 @@ JobTree.prototype.setNodeName = function ( nodeId,save_bool )  {
   var task = this.task_map[nodeId];
   var node = this.node_map[nodeId];
   var newName = this.makeNodeName ( task );
-  if (newName!=node.text)  {
+//  if (newName!=node.text)  {  // to enforce managing custom icon visibility
     this.setText ( node,newName );
     this.confirmCustomIconsVisibility();
     if (task.isRemark())
       this.setStyle ( node,__remarkStyle,0 );
     if (save_bool)
       this.saveProjectData ( [],[], null );
-  }
+//  }
 }
 
 
@@ -812,17 +812,20 @@ JobTree.prototype.stopJob = function ( nodeId )  {
 
   this.forceSingleSelection();
 
-  var jobId = this.makeNodeId ( this.task_map[this.selected_node_id].id );
+  var jobId   = this.makeNodeId ( this.task_map[this.selected_node_id].id );
 
-  var data = {};
-  var word = '';
+  var data    = {};
+  var word    = '';
+  var node_id = nodeId;
   if (nodeId)  {
-    data.meta = this.task_map[nodeId];
-    word = 'this';
+    //data.meta = this.task_map[nodeId];
+    word    = 'this';
   } else  {
-    data.meta = this.task_map[this.selected_node_id];
-    word = 'selected';
+    //data.meta = this.task_map[this.selected_node_id];
+    node_id = this.selected_node_id;
+    word    = 'selected';
   }
+  data.meta = this.task_map[node_id];
   data.job_token = data.meta.job_dialog_data.job_token;
 
   if (data.meta.state==job_code.running)  {
@@ -856,6 +859,13 @@ JobTree.prototype.stopJob = function ( nodeId )  {
 
     new MessageBox ( 'Stop Job','The job ' + jobId +
                      ' is not running -- nothing to do.' );
+
+    if (node_id in this.node_map)
+      this.node_map[node_id].setCustomIconVisible ( false );
+
+    if (data.meta.nc_type=='client')
+         localCommand  ( nc_command.stopJob,data,data.meta.title,null );
+    else serverRequest ( fe_reqtype.stopJob,data,data.meta.title,null,null,null );
 
   }
 

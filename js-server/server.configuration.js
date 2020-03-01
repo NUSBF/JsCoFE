@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    15.02.20   <--  Date of Last Modification.
+ *    28.02.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -208,6 +208,12 @@ var paths = [];
   return paths;
 }
 
+ServerConfig.prototype.getJobsSafePath = function()  {
+  if (this.hasOwnProperty('jobs_safe'))
+    return this.jobs_safe.path;
+  return '';
+}
+
 ServerConfig.prototype.getDemoProjectsMount = function()  {
   var mount = null;
   if (this.hasOwnProperty('cloud_mounts'))  {
@@ -359,6 +365,10 @@ var version = '';
                     "type" : "typeN",
                     "diskReserve" : 10000
                   }
+    },
+    "jobs_safe" : {  // should point on jobs_safe directory as in NCs
+        "path"     : "./cofe-nc-storage/jobs_safe",
+        "capacity" : 10
     },
     "facilitiesPath"   : "./cofe-facilities",
     "ICAT_wdsl"        : "https://icat02.diamond.ac.uk/ICATService/ICAT?wsdl",

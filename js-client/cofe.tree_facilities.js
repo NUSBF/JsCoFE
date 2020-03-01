@@ -67,7 +67,7 @@ FacilityTree.prototype.readFacilitiesData = function ( page_title,
   };
 
   (function(tree){
-    serverRequest ( fe_reqtype.getFacilityData,meta,page_title,function(data){
+    serverRequest ( fe_reqtype.getCloudFileTree,meta,page_title,function(data){
 
       if ('message' in data)
         MessageDataReadError ( page_title,data['message'] );
@@ -311,7 +311,7 @@ StorageTree.prototype.readStorageData = function ( page_title,
   };
 
   (function(tree){
-    serverRequest ( fe_reqtype.getFacilityData,meta,page_title,function(data){
+    serverRequest ( fe_reqtype.getCloudFileTree,meta,page_title,function(data){
 
       if ('message' in data)  {
         MessageDataReadError ( page_title,data['message'] );

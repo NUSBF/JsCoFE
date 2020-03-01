@@ -2,7 +2,7 @@
 /*
  *  ===========================================================================
  *
- *    20.02.20   <--  Date of Last Modification.
+ *    01.03.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  ---------------------------------------------------------------------------
  *
@@ -25,7 +25,7 @@
 
 function appName()  { return 'CCP4 Cloud' }  // application name for reporting
 
-var jsCoFE_version = '1.6.008 [20.02.2020]';
+var jsCoFE_version = '1.6.009 [01.03.2020]';
 
 function appVersion()  {
   return jsCoFE_version;
@@ -119,6 +119,9 @@ var fe_reqtype = {
   prepareJobExport  : '-prepareJobExport',  // request to prepare job for export
   checkJobExport    : '-checkJobExport',    // request to check job export state
   finishJobExport   : '-finishJobExport',   // request to finish job export
+  prepareFJobExport : '-prepareFJobExport', // request to prepare failed job for export
+  checkFJobExport   : '-checkFJobExport',   // request to check failed job export state
+  finishFJobExport  : '-finishFJobExport',  // request to finish failed job export
   renameProject     : '-renameProject',     // request to rename a project
   importProject     : '-importProject',     // request to save import a project
   shareProject      : '-shareProject',      // request to share a project
@@ -132,7 +135,7 @@ var fe_reqtype = {
   sendAnnouncement  : '-sendAnnouncement',  // request to send announcement to users
   manageDormancy    : '-manageDormancy',    // request to manage dormant users
   getUserKnowledge  : '-getUserKnowledge',  // request to send user knowledge data
-  getFacilityData   : '-getFacilityData',   // request for facility metadata
+  getCloudFileTree  : '-getCloudFileTree',  // request for cloud file tree metadata
   updateFacility    : '-updateFacility',    // request to update facility metadata
   checkFclUpdate    : '-checkFclUpdate'     // request to check facility update
 }

@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    09.02.20   <--  Date of Last Modification.
+#    28.02.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -494,6 +494,7 @@ class Crank2(basic.TaskDriver):
                                 substructure.removeFiles()
                                 substructure.setSubFile ( xyz_file )
                                 substructure.setMTZFile ( hkls.getHKLFileName() )
+                                substructure.removeRefmacLabels()
                                 substructure.removeSubtype ( dtype_template.subtypePhases() )
                         else:
                             self.putTitle ( "No heavy atom substructure found" )

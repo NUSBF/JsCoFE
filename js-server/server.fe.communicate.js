@@ -96,6 +96,16 @@ function Communicate ( server_request )  {
       log.debug2 ( 3,"calculated path " + this.filePath);
     }
   }
+  /*
+  if (ix<0) {
+    var utag = '/Failed Jobs Safe/0';
+    ix = this.filePath.lastIndexOf(utag);
+    if (ix>=0)  {
+      this.filePath = ustats.getUsageReportFilePath ( this.filePath.substr(ix+utag.length) );
+      log.debug2 ( 3,"calculated path " + this.filePath);
+    }
+  }
+  */
   if (ix<0) {
     ix = server_request.url.lastIndexOf('reqid=authorisation-');
     if (ix>=0)  {
