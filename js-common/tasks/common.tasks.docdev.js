@@ -112,6 +112,19 @@ TaskDocDev.prototype.currentVersion = function()  {
 if (!__template)  {
   //  for client side
 
+  // hotButtons return list of buttons added in JobDialog's toolBar.
+  function DocDevHotButton()  {
+    return {
+      'task'    : 'TaskDocDev',
+      'tooltip' : 'Documentation Development with Sphinx'
+    };
+  }
+
+  // hotButtons return list of buttons added in JobDialog's toolBar.
+  TaskDocDev.prototype.hotButtons = function() {
+    return [DocDevHotButton()];
+  }
+
   TaskDocDev.prototype.onJobDialogStart = function ( job_dialog )  {
     //job_dialog.run_btn.click();  // start automatically
   }
