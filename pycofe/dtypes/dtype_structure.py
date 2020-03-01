@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    20.02.20   <--  Date of Last Modification.
+#    28.02.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -151,6 +151,15 @@ class DType(dtype_template.DType):
         self.HLC     = ""
         self.HLD     = ""
         return
+
+    def removeRefmacLabels ( self ):
+        self.PHI     = ""
+        self.FOM     = ""
+        self.FWT     = ""
+        self.PHWT    = ""
+        self.DELFWT  = ""
+        self.PHDELWT = ""
+        return;
 
     def setBusterLabels ( self,hkl_class ):
         self.FP         = "FP"

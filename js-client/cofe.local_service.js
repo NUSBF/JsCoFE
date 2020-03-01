@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    24.01.20   <--  Date of Last Modification.
+ *    28.02.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -85,6 +85,7 @@ function checkLocalService ( callback_func )  {
         var rData = response.data;
         __exclude_tasks   = rData.exclude_tasks;
         __cloud_storage   = rData.cloud_storage;
+        __jobs_safe       = rData.jobs_safe;
         __demo_projects   = rData.demo_projects;
         __auth_software   = rData.auth_software;
         __local_setup     = rData.localSetup;

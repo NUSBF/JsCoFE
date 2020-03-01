@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    29.01.20   <--  Date of Last Modification.
+ *    01.03.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -508,7 +508,6 @@ function finishProjectExport ( loginData,projectList )  {
 }
 
 
-
 // ===========================================================================
 
 function getJobExportNames ( loginData,task )  {
@@ -555,6 +554,60 @@ function checkJobExport ( loginData,task )  {
 
 function finishJobExport ( loginData,task )  {
   var archivePath = getJobExportNames(loginData,task)[2];
+  utils.removeFile ( archivePath );
+  return new cmd.Response ( cmd.fe_retcode.ok,'','' );
+}
+
+
+// ===========================================================================
+// Failed Job Export
+
+function getFailedJobExportNames ( fjdata )  {
+  var path_list   = fjdata.path.split('/');
+  var exportName  = path_list[path_list.length-1] + '.zip';
+  var jobDirPath  = conf.getFEConfig().getJobsSafePath();
+  for (var i=1;i<path_list.length;i++)
+    jobDirPath  = path.join ( jobDirPath,path_list[i] );
+  var archivePath = path.join ( jobDirPath,exportName );
+  return [ exportName,jobDirPath,archivePath ];
+}
+
+function prepareFailedJobExport ( loginData,fjdata )  {
+
+  log.standard ( 19,'export failed job "' + fjdata.path + '", login ' + loginData.login );
+
+  var exp_names   = getFailedJobExportNames ( fjdata );
+  var exportName  = exp_names[0];
+  var jobDirPath  = exp_names[1];
+  var archivePath = exp_names[2];
+  utils.removeFile ( archivePath );  // just in case
+
+  send_dir.packDir ( jobDirPath,'*',function(code){
+    var jobballPath = send_dir.getJobballPath ( jobDirPath );
+    if (code)  {
+      log.error ( 20,'errors at packing ' + jobDirPath + ' for export' );
+      utils.removeFile ( jobballPath );  // export will never get ready!
+    } else  {
+      log.standard ( 20,'packed' );
+      utils.moveFile   ( jobballPath,archivePath );
+    }
+  });
+
+  return new cmd.Response ( cmd.fe_retcode.ok,'',archivePath );
+
+}
+
+function checkFailedJobExport ( loginData,fjdata )  {
+  var archivePath = getFailedJobExportNames(fjdata)[2];
+  rdata = {};
+  if (utils.fileExists(archivePath))
+        rdata.size = utils.fileSize(archivePath);
+  else  rdata.size = -1;
+  return new cmd.Response ( cmd.fe_retcode.ok,'',rdata );
+}
+
+function finishFailedJobExport ( loginData,fjdata )  {
+  var archivePath = getFailedJobExportNames(fjdata)[2];
   utils.removeFile ( archivePath );
   return new cmd.Response ( cmd.fe_retcode.ok,'','' );
 }
@@ -1185,6 +1238,9 @@ module.exports.finishProjectImport    = finishProjectImport;
 module.exports.prepareJobExport       = prepareJobExport;
 module.exports.checkJobExport         = checkJobExport;
 module.exports.finishJobExport        = finishJobExport;
+module.exports.prepareFailedJobExport = prepareFailedJobExport;
+module.exports.checkFailedJobExport   = checkFailedJobExport;
+module.exports.finishFailedJobExport  = finishFailedJobExport;
 module.exports.getProjectData         = getProjectData;
 module.exports.saveProjectData        = saveProjectData;
 module.exports.shareProject           = shareProject;

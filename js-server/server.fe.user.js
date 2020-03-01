@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    21.02.20   <--  Date of Last Modification.
+ *    01.03.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -673,6 +673,7 @@ var fe_server = conf.getFEConfig();
         rData.userData      = uData;
         rData.localSetup    = conf.isLocalSetup();
         rData.cloud_storage = (fcl.getUserCloudMounts(uData).length>0);
+        rData.jobs_safe     = (fe_server.getJobsSafePath().length>0);
         rData.demo_projects = fe_server.getDemoProjectsMount();
         rData.auth_software = fe_server.auth_software;
         if (fe_server.hasOwnProperty('description'))
@@ -1299,11 +1300,15 @@ var fe_server = conf.getFEConfig();
       rData.localuser  = fe_server.localuser;
       rData.logintoken = __userLoginHash.getToken ( 'localuser' );
       var loginData    = __userLoginHash.getLoginData ( rData.logintoken );
-      var userFilePath = getUserDataFName ( loginData );
-      if (utils.fileExists(userFilePath))  {
-        var uData = utils.readObject ( userFilePath );
-        if (uData)
-          rData.helpTopics = uData.helpTopics;
+      if (loginData.login)  {
+        var userFilePath = getUserDataFName ( loginData );
+        if (utils.fileExists(userFilePath))  {
+          var uData = utils.readObject ( userFilePath );
+          if (uData)
+            rData.helpTopics = uData.helpTopics;
+        }
+      } else  {
+        rData.helpTopics = [];
       }
       rData.cloud_storage = (fcl.getUserCloudMounts(loginData).length>0);
     }

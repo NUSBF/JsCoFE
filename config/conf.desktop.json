@@ -23,6 +23,10 @@
     "update_rcode"     : 212,
     "userDataPath"     : "./cofe-users",
     "projectsPath"     : "./cofe-projects",
+    "jobs_safe"        : {
+        "path"     : "./cofe-nc-storage/jobs_safe",
+        "capacity" : 10
+    },
     "facilitiesPath"   : "./cofe-facilities",
     "ICAT_wdsl"        : "https://icat02.diamond.ac.uk/ICATService/ICAT?wsdl",
     "ICAT_ids"         : "https://ids01.diamond.ac.uk/ids",

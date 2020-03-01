@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    09.10.19   <--  Date of Last Modification.
+ *    01.03.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Front End Server -- Projects Handler Functions
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2019
+ *  (C) E. Krissinel, A. Lebedev 2016-2020
  *
  *  =================================================================
  *
@@ -83,7 +83,7 @@ var text  = utils.readString ( fileListPath );
     let regex_path = /^\s*([^\s#].+?)\s*:\s*(.+?)\s*$/gm;
     let match;
     while ((match = regex_path.exec(text)) !== null) {
-      paths.push([match[1], match[2]] );
+      paths.push ( [match[1], match[2]] );
     }
   } else
     utils.writeString ( fileListPath,
@@ -96,6 +96,12 @@ var text  = utils.readString ( fileListPath );
   return paths;
 
 }
+
+
+function getJobSafeMount()  {
+  return [ ['Failed Jobs Safe',conf.getFEConfig().getJobsSafePath()] ];
+}
+
 
 function dirpath2sectors(dirpath, sectors, file_list) {
   //
@@ -360,21 +366,57 @@ var slist = new fcl.StorageList()
             }
           }
         }
-      }
-      else {
+      } else {
         slist.message = 'directory ' + spath + ' does not exist';
         log.error    ( 20,'could not find cloud storage directory ' + dirpath );
         log.standard ( 20,'could not find cloud storage directory ' + dirpath );
       }
-    }
-    else {
+    } else {
       slist.message = 'mount ' + lst[0] + ' not found';
       log.error    ( 21,'cloud storage mount ' + lst[0] + ' not found' );
       log.standard ( 21,'cloud storage mount ' + lst[0] + ' not found' );
     }
   }
 
-//  console.log ( JSON.stringify(slist) );
+//console.log ( JSON.stringify(slist) );
+/* Example of output:
+  { "_type":"StorageList",
+    "path":"Demo projects",
+    "name":"Demo projects",
+    "size":0,
+    "dirs":[
+      {"_type":"FacilityDir",
+       "name":"..",
+       "size":"",
+       "dirs":[],"files":[]
+      },{
+       "_type":"FacilityDir",
+       "name":"howtos",
+       "size":"",
+       "dirs":[],"files":[]}
+     ],
+     "files":[
+      {"_type":"FacilityFile",
+       "id":"",
+       "name":"beta-blip phaser example.ccp4_demo",
+       "size":67394556,
+       "date":""
+      },{
+       "_type":"FacilityFile",
+       "id":"",
+       "name":"beta-blip.ccp4_demo",
+       "size":67394556,
+       "date":""
+      },{
+       "_type":"FacilityFile",
+       "id":"",
+       "name":"beta-blip.zip",
+       "size":67394556,
+       "date":""}
+     ],
+     "sectors":[]
+   }
+*/
 
   return slist;
 
@@ -419,11 +461,15 @@ function initFacilities ( facilityListPath )  {
 
 // ===========================================================================
 
-function getUserFacilityList ( loginData,data,callback_func )  {
+function getCloudFileTree ( loginData,data,callback_func )  {
   if (data['type']=='files')  {
     callback_func ( new cmd.Response ( cmd.fe_retcode.ok,'',
                         getCloudDirListing (
                                getUserCloudMounts(loginData),data['path']
+                                             ) ) );
+  } else if (data['type']=='jobs_safe')  {
+    callback_func ( new cmd.Response ( cmd.fe_retcode.ok,'',
+                        getCloudDirListing ( getJobSafeMount(),data['path']
                                              ) ) );
   } else  {
     get_user_facility_list ( loginData,callback_func );
@@ -600,7 +646,7 @@ function checkFacilityUpdate ( loginData,data )  {
 // export for use in node
 //module.exports.checkFacilities     = checkFacilities;
 module.exports.initFacilities      = initFacilities;
-module.exports.getUserFacilityList = getUserFacilityList;
+module.exports.getCloudFileTree    = getCloudFileTree;
 module.exports.updateFacility      = updateFacility;
 module.exports.checkFacilityUpdate = checkFacilityUpdate;
 module.exports.getUserCloudMounts  = getUserCloudMounts;

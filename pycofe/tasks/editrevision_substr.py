@@ -48,7 +48,7 @@ class EditRevisionSubstr(basic.TaskDriver):
 
         substr0   = None
         if hasattr(self.input_data.data,"substr0"):  # optional data parameter
-            substr0 = self.makeClass ( self.input_data.data.substr0 [0] )
+            substr0 = self.makeClass ( self.input_data.data.substr0[0] )
 
         sub = substr0  # this is current Substructure or None
         if hasattr(self.input_data.data,"sub"):  # optional data parameter

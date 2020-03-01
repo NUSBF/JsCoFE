@@ -2,7 +2,7 @@
 /*
  *  ===========================================================================
  *
- *    07.05.19   <--  Date of Last Modification.
+ *    01.03.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  ---------------------------------------------------------------------------
  *
@@ -15,7 +15,7 @@
  *                  FacilityBrowser
  *                  CloudFileBrowser
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2019
+ *  (C) E. Krissinel, A. Lebedev 2016-2020
  *
  *  ===========================================================================
  *
@@ -459,10 +459,14 @@ FacilityBrowser.prototype.updateItem = function ( askpwd )  {
 function CloudFileBrowser ( inputPanel,task,imageKey,onSelect_func,onClose_func )  {
 
   this.inputPanel = inputPanel;  // input panel from facility import dialog
+  this.tree_type  = 'files';     // cloud file tree type specificator
+  if (task.hasOwnProperty('tree_type'))
+    this.tree_type = task.tree_type;
   this.task       = task;        // facility import task
   this.image_key  = imageKey;    // 0: do not show images
                                  // 1: show images
                                  // 2: show only images
+                                 // 3: browse directories, show all files
   this.onSelect_func = onSelect_func;
 
   this.uid = '';
@@ -530,7 +534,7 @@ CloudFileBrowser.prototype.loadStorageTree = function ( cloudPath )  {
 
     browser.tree_loading = true;
 
-    var storageTree = new StorageTree ( 'files',cloudPath,
+    var storageTree = new StorageTree ( browser.tree_type,cloudPath,
                                                 browser.image_key,browser.dir_desc );
 
     storageTree.element.style.paddingTop    = '0px';
@@ -651,6 +655,7 @@ CloudFileBrowser.prototype.getStorageList = function ( path,callback_func )  {
   } else  {
 
     var storageTree = new StorageTree ( 'files',path,this.image_key,this.dir_desc );
+    storageTree.tree_type = this.tree_type;
     storageTree.readStorageData ( 'Cloud File Storage',
       function(){
         if (storageTree.storageList)  {
@@ -676,7 +681,7 @@ CloudFileBrowser.prototype.selectItem = function()  {
       items.splice(i,1);
   }
   if (items.length>0)  {
-    if ((items[0]._type=='FacilityDir') && (this.image_key==2))  {
+    if ((items[0]._type=='FacilityDir') && (this.image_key>=2))  {
       if (this.onSelect_func) {
         if (items[0].name=='..')  {
           this.onSelect_func ( this.storageTree.storageList );
@@ -704,10 +709,19 @@ CloudFileBrowser.prototype.onTreeItemSelect = function()  {
     var items   = this.storageTree.getSelectedItems();
     var n_dirs  = 0;
     var n_files = 0;
+    var parent_dir = false;
     for (var i=0;i<items.length;i++)
-      if (items[i]._type=='FacilityDir')  n_dirs++;
-                                    else  n_files++;
-    if (this.image_key==2)  {
+      if (items[i]._type=='FacilityDir')  {
+        n_dirs++;
+        if (items[i].name=='..')
+          parent_dir = true;
+      } else
+        n_files++;
+    if (this.image_key==3)  {
+      var disable = (n_dirs!=1) && (n_files==0);
+      this.disableButton  ( 0,disable );
+      this.disableButton  ( 1,disable || parent_dir );
+    } else if (this.image_key==2)  {
       var disable = (n_dirs!=1) || (n_files>0);
       this.disableButton  ( 0,disable );
       this.disableButton  ( 1,disable );

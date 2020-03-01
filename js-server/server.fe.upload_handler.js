@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    10.10.19   <--  Date of Last Modification.
+ *    01.03.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -91,92 +91,97 @@ var upload_meta = {};
       if ('login_token' in upload_meta)  {
 
         var loginData = user.getLoginData ( upload_meta.login_token );
+        if (loginData.login)  {
 
-        if (('project' in upload_meta) && ('job_id' in upload_meta))  {
-          // upload from import job
+          if (('project' in upload_meta) && ('job_id' in upload_meta))  {
+            // upload from import job
 
-          var jobDir = prj.getJobDirPath ( loginData,upload_meta.project,
-                                           upload_meta.job_id );
-          if (utils.fileExists(jobDir))  {
+            var jobDir = prj.getJobDirPath ( loginData,upload_meta.project,
+                                             upload_meta.job_id );
+            if (utils.fileExists(jobDir))  {
 
-            var uplDir = path.join ( jobDir,uploadDir() );
-            if (!utils.fileExists(uplDir))  {
-              if (!utils.mkDir(uplDir))
-                uplDir = '';
-            }
+              var uplDir = path.join ( jobDir,uploadDir() );
+              if (!utils.fileExists(uplDir))  {
+                if (!utils.mkDir(uplDir))
+                  uplDir = '';
+              }
 
-            if (uplDir.length>0)  {
+              if (uplDir.length>0)  {
 
-              var fdata       = {};
-              var file_mod    = null;
-              var file_rename = {};
-              var redundant_files = [];
-              fdata.files     = [];
+                var fdata       = {};
+                var file_mod    = null;
+                var file_rename = {};
+                var redundant_files = [];
+                fdata.files     = [];
 
-              if ('file_mod' in upload_meta)  {
-                file_mod    = JSON.parse ( upload_meta.file_mod );
-                file_rename = file_mod.rename;
-                if (!utils.writeObject(path.join(jobDir,'annotation.json'),
-                                       file_mod))
-                  errs = 'error writing annotation.json';
-                for (var i=0;i<file_mod.annotation.length;i++)  {
-                  redundant_files.push ( file_mod.annotation[i].file );
-                  for (var j=0;j<file_mod.annotation[i].items.length;j++)  {
-                    var fname = file_mod.annotation[i].items[j].rename;
-                    utils.writeString ( path.join(uplDir,fname),
-                                        file_mod.annotation[i].items[j].contents );
+                if ('file_mod' in upload_meta)  {
+                  file_mod    = JSON.parse ( upload_meta.file_mod );
+                  file_rename = file_mod.rename;
+                  if (!utils.writeObject(path.join(jobDir,'annotation.json'),
+                                         file_mod))
+                    errs = 'error writing annotation.json';
+                  for (var i=0;i<file_mod.annotation.length;i++)  {
+                    redundant_files.push ( file_mod.annotation[i].file );
+                    for (var j=0;j<file_mod.annotation[i].items.length;j++)  {
+                      var fname = file_mod.annotation[i].items[j].rename;
+                      utils.writeString ( path.join(uplDir,fname),
+                                          file_mod.annotation[i].items[j].contents );
+                      fdata.files.push ( fname );
+                    }
+                  }
+                }
+
+                for (key in upload_meta.files)  {
+                  var fname = upload_meta.files[key];
+                  if (redundant_files.indexOf(fname)>=0)  {
+                    utils.removeFile ( key );
+                  } else  {
+                    if (fname in file_rename)
+                      fname = file_rename[fname];
+                    if (!utils.moveFile(key,path.join(uplDir,fname)))
+                      errs = 'error';
                     fdata.files.push ( fname );
                   }
                 }
-              }
 
-              for (key in upload_meta.files)  {
-                var fname = upload_meta.files[key];
-                if (redundant_files.indexOf(fname)>=0)  {
-                  utils.removeFile ( key );
-                } else  {
-                  if (fname in file_rename)
-                    fname = file_rename[fname];
-                  if (!utils.moveFile(key,path.join(uplDir,fname)))
-                    errs = 'error';
-                  fdata.files.push ( fname );
+                if ('link_directory' in upload_meta)  {
+                  var ldir = path.basename(upload_meta.link_directory);
+                  var ext  = '';
+                  if (upload_meta.link_data_type=='X-ray')  {
+                    ext = '.xray.link';
+                    fdata.files.push  ( ldir + ' [x-ray images,link]' );
+                  } else  {
+                    ext = '.em.link';
+                    fdata.files.push  ( ldir + ' [EM micrograms,link]' );
+                  }
+                  utils.writeString ( path.join(uplDir,ldir + ext),
+                                      upload_meta.link_directory );
                 }
-              }
 
-              if ('link_directory' in upload_meta)  {
-                var ldir = path.basename(upload_meta.link_directory);
-                var ext  = '';
-                if (upload_meta.link_data_type=='X-ray')  {
-                  ext = '.xray.link';
-                  fdata.files.push  ( ldir + ' [x-ray images,link]' );
-                } else  {
-                  ext = '.em.link';
-                  fdata.files.push  ( ldir + ' [EM micrograms,link]' );
-                }
-                utils.writeString ( path.join(uplDir,ldir + ext),
-                                    upload_meta.link_directory );
-              }
+                if (errs=='')
+                      cmd.sendResponse ( server_response, cmd.fe_retcode.ok,
+                                         'success',fdata );
+                else  cmd.sendResponse ( server_response, cmd.fe_retcode.writeError,
+                                         'Cannot store upload data in job directory',
+                                         fdata );
+              } else
+                cmd.sendResponse ( server_response, cmd.fe_retcode.noUploadDir,
+                                   'Upload directory cannot be created','' );
 
-              if (errs=='')
-                    cmd.sendResponse ( server_response, cmd.fe_retcode.ok,
-                                       'success',fdata );
-              else  cmd.sendResponse ( server_response, cmd.fe_retcode.writeError,
-                                       'Cannot store upload data in job directory',
-                                       fdata );
             } else
-              cmd.sendResponse ( server_response, cmd.fe_retcode.noUploadDir,
-                                 'Upload directory cannot be created','' );
+              cmd.sendResponse ( server_response, cmd.fe_retcode.noJobDir,
+                                 'Job directory not found','' );
 
-          } else
-            cmd.sendResponse ( server_response, cmd.fe_retcode.noJobDir,
-                               'Job directory not found','' );
+          } else  {  // upload from project import
 
-        } else  {  // upload from project import
+            var response = prj.importProject ( loginData,upload_meta,tmpDir );
+            response.send ( server_response );
 
-          var response = prj.importProject ( loginData,upload_meta,tmpDir );
-          response.send ( server_response );
+          }
 
-        }
+        } else
+          cmd.sendResponse ( server_response, cmd.fe_retcode.notLoggedIn,
+                             'User is not logged in','' );
 
       } else
         cmd.sendResponse ( server_response, cmd.fe_retcode.notLoggedIn,
