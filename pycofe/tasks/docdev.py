@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    17.02.20   <--  Date of Last Modification.
+#    01.03.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -73,7 +73,7 @@ class DocDev(basic.TaskDriver):
                  "\ncd "    + cwd +\
                  "\ncp -r " + reppath + " " + repname +\
                  "\ncd "    + srcpath +\
-                 "\ncp   tasks/* ." +\
+                 "\ncp -r tasks/* ."  +\
                  "\ncp ../build/Makefile ." +\
                  "\ncp ../build/conf-" + theme + ".py conf.py" +\
                  "\nmake html\n";
@@ -126,7 +126,7 @@ class DocDev(basic.TaskDriver):
             self.putMessage ( "<b>Error:</b> " + rc.msg )
 
         self.clearCitations()
-        self.success ( False )
+        self.success ( True )
         return
 
 
