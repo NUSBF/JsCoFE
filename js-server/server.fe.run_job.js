@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    16.02.20   <--  Date of Last Modification.
+ *    03.03.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -361,7 +361,7 @@ function runJob ( loginData,data, callback_func )  {
     // prepare input data
     task.makeInputData ( loginData,jobDir );
 
-    send_dir.packDir ( jobDir,'*', function(code){
+    send_dir.packDir ( jobDir,'*',null, function(code){
 
       if (code==0)  {
 
@@ -556,7 +556,7 @@ function replayJob ( loginData,data, callback_func )  {
     if (task.nc_type=='client')  {
       // job for client NC, just pack the job directory and inform client
 
-      send_dir.packDir ( jobDir,'*', function(code){
+      send_dir.packDir ( jobDir,'*',null, function(code){
 
         if (code==0)  {
 

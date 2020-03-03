@@ -471,7 +471,7 @@ function prepareProjectExport ( loginData,projectList )  {
                                    projectList.current + cmd.projectFileExt );
   utils.removeFile ( archivePath );  // just in case
 
-  send_dir.packDir ( projectDirPath,'*',function(code){
+  send_dir.packDir ( projectDirPath,'*',null,function(code){
     var jobballPath = send_dir.getJobballPath ( projectDirPath );
     if (code)  {
       log.error ( 10,'errors at packing ' + projectDirPath + ' for export' );
@@ -528,7 +528,7 @@ function prepareJobExport ( loginData,task )  {
   var archivePath = exp_names[2];
   utils.removeFile ( archivePath );  // just in case
 
-  send_dir.packDir ( jobDirPath,'*',function(code){
+  send_dir.packDir ( jobDirPath,'*',null,function(code){
     var jobballPath = send_dir.getJobballPath ( jobDirPath );
     if (code)  {
       log.error ( 20,'errors at packing ' + jobDirPath + ' for export' );
@@ -590,7 +590,12 @@ function prepareFailedJobExport ( loginData,fjdata )  {
   var archivePath = exp_names[2];
   utils.removeFile ( archivePath );  // just in case
 
-  send_dir.packDir ( jobDirPath,'*',function(code){
+  send_dir.packDir ( jobDirPath,'*',archivePath,function(code){
+    if (code)  {
+      log.error ( 20,'errors at packing ' + jobDirPath + ' for export' );
+      utils.removeFile ( archivePath );  // export will never get ready!
+    }
+    /*
     var jobballPath = send_dir.getJobballPath ( jobDirPath );
     if (code)  {
       log.error ( 20,'errors at packing ' + jobDirPath + ' for export' );
@@ -599,6 +604,7 @@ function prepareFailedJobExport ( loginData,fjdata )  {
       log.standard ( 20,'packed' );
       utils.moveFile   ( jobballPath,archivePath );
     }
+    */
   });
 
   return new cmd.Response ( cmd.fe_retcode.ok,'',exp_names[3] );
