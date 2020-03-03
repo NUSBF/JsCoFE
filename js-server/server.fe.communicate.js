@@ -48,12 +48,13 @@ tmp.setGracefulCleanup();
 // ==========================================================================
 
 var __malicious_ext = [
-  '.exe', '.php', '.cgi'
+  '.exe', '.php', '.cgi', '.jsp', '.asp'
 ];
 
 function Communicate ( server_request )  {
 
-  this.ncURL = '';
+  this.ncURL    = '';
+  this.filePath = '';
 
   var ext = server_request.url.slice ( server_request.url.lastIndexOf('.') );
   if (__malicious_ext.indexOf(ext)>=0)  {
@@ -229,7 +230,7 @@ Communicate.prototype.sendFile = function ( server_response )  {
       });
     }(this.ncURL,this.mimeType));
 
-  } else  {
+  } else if (this.filePath)  {
 
     var fpath = this.filePath;
     if (fpath=='favicon.ico')  {
