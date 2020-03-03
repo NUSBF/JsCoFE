@@ -525,13 +525,16 @@ function send_file ( fpath,server_response,mimeType,deleteOnDone,capSize,
           send_file ( fpath,server_response,mimeType,deleteOnDone,capSize,
                       persistance-1,nofile_callback );
         },50 );
-      } else if (nofile_callback)  {
-        nofile_callback ( fpath,mimeType,deleteOnDone,capSize );
       } else  {
-        log.error ( 12,'Read file errors, file = ' + fpath );
-        log.error ( 12,'Error: ' + err );
-        server_response.writeHead ( 404, {'Content-Type':'text/html;charset=UTF-8'} );
-        server_response.end ( '<p><b>[05-0006] FILE NOT FOUND [' + fpath + ']</b></p>' );
+        var rc = true;
+        if (nofile_callback)
+          rc = nofile_callback ( fpath,mimeType,deleteOnDone,capSize );
+        if (rc)  {
+          log.error ( 12,'Read file errors, file = ' + fpath );
+          log.error ( 12,'Error: ' + err );
+          server_response.writeHead ( 404, {'Content-Type':'text/html;charset=UTF-8'} );
+          server_response.end ( '<p><b>[05-0006] FILE NOT FOUND [' + fpath + ']</b></p>' );
+        }
       }
 
     } else  {

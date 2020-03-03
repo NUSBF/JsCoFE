@@ -177,6 +177,7 @@ function start ( callback_func )  {
                                   false,0,0,
                                   function(filepath,mimeType,deleteOnDone,capSize){
                   proxy.web ( server_request,server_response ); //, options_web );
+                  return false;  // no standard processing
                 });
               } else
                 proxy.web ( server_request,server_response ); //, options_web );
@@ -194,6 +195,7 @@ function start ( callback_func )  {
                   utils.send_file ( fpath,server_response,utils.getMIMEType(fpath),
                                     false,0,0,function(filepath,mimeType,deleteOnDone,capSize){
                     proxy.web ( server_request,server_response ); //, options_web );
+                    return false;  // no standard processing
                   });
                 }
               }

@@ -47,20 +47,50 @@ tmp.setGracefulCleanup();
 
 // ==========================================================================
 
+/*
 var __malicious_ext = [
-  '.exe', '.php', '.cgi', '.jsp', '.asp'
+  '.exe', '.php', '.cgi', '.jsp', '.asp', '.pl'
 ];
+*/
+
+var __malicious_ip_register  = {};
+var __malicious_attempts_max = 100;
+
+function __count_malicious_ip ( ip,count )  {
+  if ((ip in __malicious_ip_register) ||
+      (__malicious_ip_register[ip]>-__malicious_attempts_max)) {
+    __malicious_ip_register[ip] += count;
+    if (__malicious_ip_register[ip]>__malicious_attempts_max)
+      log.standard ( 1,'ip address ' + ip + ' is deemed as malicious and will be ignored' );
+  } else
+    __malicious_ip_register[ip] = count;
+}
+
 
 function Communicate ( server_request )  {
 
   this.ncURL    = '';
   this.filePath = '';
 
+  this.requester_ip =
+        (server_request.headers['x-forwarded-for'] || '').split(',').pop() ||
+        server_request.connection.remoteAddress ||
+        server_request.socket.remoteAddress     ||
+        server_request.connection.socket.remoteAddress;
+
+  if ((this.requester_ip in __malicious_ip_register) &&
+      (__malicious_ip_register[this.requester_ip]>__malicious_attempts_max)) {
+    this.command = cmd.ignore;
+    return;
+  }
+
+/*
   var ext = server_request.url.slice ( server_request.url.lastIndexOf('.') );
   if (__malicious_ext.indexOf(ext)>=0)  {
     this.command = cmd.ignore;
     return;
   }
+*/
 
   // Parse the server request command
   var url_parse = url.parse(server_request.url);
@@ -239,13 +269,27 @@ Communicate.prototype.sendFile = function ( server_response )  {
       fpath = path.join ( 'images_com',fpath );
     }
 
-    if (!this.search)
-      utils.send_file ( fpath,server_response,this.mimeType,false,0,0,null );
-    else if (this.search.indexOf('?capsize')>=0)
-      utils.send_file ( fpath,server_response,this.mimeType,false,
-                        conf.getFEConfig().fileCapSize,0,null );
-    else
-      utils.send_file ( fpath,server_response,this.mimeType,false,0,0,null );
+    __count_malicious_ip ( this.requester_ip,-1 );
+
+    (function(self){
+      if (!self.search)
+        utils.send_file ( fpath,server_response,self.mimeType,false,0,0,
+                          function(){
+                            __count_malicious_ip(self.requester_ip,2);
+                            return true;
+                          });
+      else if (self.search.indexOf('?capsize')>=0)
+        utils.send_file ( fpath,server_response,self.mimeType,false,
+                          conf.getFEConfig().fileCapSize,0,function(){
+                            __count_malicious_ip(self.requester_ip,2);
+                            return true;
+                          });
+      else
+        utils.send_file ( fpath,server_response,self.mimeType,false,0,0,function(){
+                            __count_malicious_ip(self.requester_ip,2);
+                            return true;
+                          });
+    }(this))
 
   }
 
