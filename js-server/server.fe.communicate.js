@@ -53,6 +53,8 @@ var __malicious_ext = [
 
 function Communicate ( server_request )  {
 
+  this.ncURL = '';
+
   var ext = server_request.url.slice ( server_request.url.lastIndexOf('.') );
   if (__malicious_ext.indexOf(ext)>=0)  {
     this.command = cmd.ignore;
@@ -64,7 +66,6 @@ function Communicate ( server_request )  {
   var url_path  = url_parse.pathname.substr(1);
   this.command  = url_path.toLowerCase();
   this.search   = url_parse.search;
-  this.ncURL    = '';
   var fe_server = conf.getFEConfig();
 //console.log ( "requested " + server_request.url );
 //console.log ( "parsed    " + JSON.stringify(url_parse) );
@@ -184,6 +185,8 @@ function Communicate ( server_request )  {
 
   // Print the name of the file for which server_request is made.
   log.debug2 ( 4,"Command " + this.command );
+
+  return;
 
 }
 
