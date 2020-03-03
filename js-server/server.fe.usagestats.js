@@ -110,7 +110,7 @@ UsageStats.prototype.registerJob = function ( job_class )  {
 // ---------------------------------------------------------------------------
 
 function getUsageReportURL()  {
-  return [cmd.special_url_tag,statsDirName,'index.html'].join('/');
+  return [cmd.__special_url_tag,statsDirName,'index.html'].join('/');
 }
 
 function getUsageReportFilePath ( fname )  {

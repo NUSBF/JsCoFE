@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    01.03.20   <--  Date of Last Modification.
+ *    03.03.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -563,13 +563,17 @@ function finishJobExport ( loginData,task )  {
 // Failed Job Export
 
 function getFailedJobExportNames ( fjdata )  {
-  var path_list   = fjdata.path.split('/');
+  //var path_list   = fjdata.path.split('/');
+  var path_list   = fjdata.path.split('\\').pop().split('/');
   var exportName  = path_list[path_list.length-1] + '.zip';
   var jobDirPath  = conf.getFEConfig().getJobsSafePath();
   for (var i=1;i<path_list.length;i++)
     jobDirPath  = path.join ( jobDirPath,path_list[i] );
   var archivePath = path.join ( jobDirPath,exportName );
-  return [ exportName,jobDirPath,archivePath ];
+  var url         = cmd.__special_fjsafe_tag     + '/' +
+                    path_list.slice(1).join('/') + '/' +
+                    exportName;
+  return [ exportName,jobDirPath,archivePath,url ];
 }
 
 function prepareFailedJobExport ( loginData,fjdata )  {
@@ -593,7 +597,7 @@ function prepareFailedJobExport ( loginData,fjdata )  {
     }
   });
 
-  return new cmd.Response ( cmd.fe_retcode.ok,'',archivePath );
+  return new cmd.Response ( cmd.fe_retcode.ok,'',exp_names[3] );
 
 }
 

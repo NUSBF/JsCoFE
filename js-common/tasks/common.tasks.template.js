@@ -406,7 +406,7 @@ if (!dbx)  {
     //if (__login_token)  token = __login_token.getValue();
     if (__login_token)  token = __login_token;
                   else  token = '404';
-    var url = special_url_tag + '/' + token + '/' + this.project + '/' +
+    var url = __special_url_tag + '/' + token + '/' + this.project + '/' +
               jobId + '/' + filePath;
     return url;
   }
@@ -419,7 +419,7 @@ if (!dbx)  {
     //if (__login_token)  token = __login_token.getValue();
     if (__login_token)  token = __login_token;
                   else  token = '404';
-    var url = special_url_tag + '/' + token + '/' + this.project + '/' +
+    var url = __special_url_tag + '/' + token + '/' + this.project + '/' +
               this.id + '/' + filePath;
     return url;
   }
@@ -436,7 +436,7 @@ if (!dbx)  {
                   else  token = '404';
     // 'report/index.html' is hard-wired here and is used by cofe server,
     // which sends cofe-specific jsrview bootrstrap html file back.
-    var url = special_url_tag + '/' + token + '/' + this.project + '/' +
+    var url = __special_url_tag + '/' + token + '/' + this.project + '/' +
               this.id + '/' + this.getLocalReportPath();
     return url;
   }
