@@ -171,6 +171,8 @@ function start ( callback_func )  {
             user.authResponse ( server_request,server_response );
           break;
 
+        case cmd.fe_command.ignore : ;
+
         default :
             c.sendFile ( server_response );
 

@@ -47,7 +47,17 @@ tmp.setGracefulCleanup();
 
 // ==========================================================================
 
+var __malicious_ext = [
+  '.exe', '.php', '.cgi'
+];
+
 function Communicate ( server_request )  {
+
+  var ext = server_request.url.slice ( server_request.url.lastIndexOf('.') );
+  if (__malicious_ext.indexOf(ext)>=0)  {
+    this.command = cmd.ignore;
+    return;
+  }
 
   // Parse the server request command
   var url_parse = url.parse(server_request.url);
