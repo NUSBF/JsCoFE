@@ -569,10 +569,14 @@ function getFailedJobExportNames ( fjdata )  {
   var jobDirPath  = conf.getFEConfig().getJobsSafePath();
   for (var i=1;i<path_list.length;i++)
     jobDirPath  = path.join ( jobDirPath,path_list[i] );
+  /*
   var archivePath = path.join ( jobDirPath,exportName );
   var url         = cmd.__special_fjsafe_tag     + '/' +
                     path_list.slice(1).join('/') + '/' +
                     exportName;
+  */
+  var archivePath = path.join ( conf.getFEConfig().getJobsSafePath(),exportName );
+  var url         = cmd.__special_fjsafe_tag + '/' + exportName;
   return [ exportName,jobDirPath,archivePath,url ];
 }
 
