@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    13.08.19   <--  Date of Last Modification.
+ *    03.03.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Front End Server
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2019
+ *  (C) E. Krissinel, A. Lebedev 2016-2020
  *
  *  =================================================================
  *
@@ -171,7 +171,8 @@ function start ( callback_func )  {
             user.authResponse ( server_request,server_response );
           break;
 
-        case cmd.fe_command.ignore : ;
+        case cmd.fe_command.ignore :
+          break;
 
         default :
             c.sendFile ( server_response );
