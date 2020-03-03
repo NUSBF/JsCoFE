@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    21.02.19   <--  Date of Last Modification.
+ *    03.03.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Send Directory Module
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2019
+ *  (C) E. Krissinel, A. Lebedev 2016-2020
  *
  *  =================================================================
  *
@@ -45,7 +45,7 @@ var jobballName = '__dir.zip';
 // ==========================================================================
 
 /*  --- old tar version 23.07.2018
-function packDir ( dirPath, fileSelection, onReady_func )  {
+function packDir ( dirPath, fileSelection,dest_path, onReady_func )  {
 // Pack files, assume tar
 
   utils.removeFile ( jobballName );
@@ -72,7 +72,7 @@ function packDir ( dirPath, fileSelection, onReady_func )  {
 */
 
 /*  ---  node-based zip version (inefficient) 25.07.2018
-function packDir ( dirPath, fileSelection, onReady_func )  {
+function packDir ( dirPath, fileSelection,dest_path, onReady_func )  {
 // Pack files, use zip
 
   //utils.removeFile ( jobballName );
@@ -146,7 +146,7 @@ function getJobballPath ( dirPath )  {
   return path.join ( dirPath,jobballName );
 }
 
-function packDir ( dirPath, fileSelection, onReady_func )  {
+function packDir ( dirPath, fileSelection, dest_path, onReady_func )  {
 // Pack files, assume zip
 
   var tmpFile = conf.getTmpFile();
@@ -178,7 +178,9 @@ function packDir ( dirPath, fileSelection, onReady_func )  {
     if (code!=0)  {
       log.error ( 11,'zip packing code: ' + code + ', encountered in ' + dirPath );
       utils.removeFile ( tmpFile );
-    } else {
+    } else  if (dest_path) {
+      utils.moveFile ( tmpFile,dest_path );
+    } else  {
       utils.moveFile ( tmpFile,getJobballPath(dirPath) );
     }
     onReady_func(code);
@@ -258,7 +260,7 @@ var sender_cfg = conf.getServerConfig();
 
     // 1. Pack files, assume tar
 
-    packDir ( dirPath, fileSelection, function(code){
+    packDir ( dirPath, fileSelection, null, function(code){
 
       if (code==0)  {
 
