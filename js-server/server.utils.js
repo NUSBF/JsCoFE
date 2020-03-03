@@ -231,9 +231,25 @@ function writeObject ( path,dataObject )  {
 }
 
 
-function moveFile ( old_path,new_path )  {
+function copyFile ( old_path,new_path )  {
   try {
     fs.renameSync ( old_path,new_path );
+    return true;
+  } catch (e)  {
+    log.error ( 4,'cannot copy file ' + old_path + ' to ' + new_path );
+    console.error(e);
+    return false;
+  }
+}
+
+
+function moveFile ( old_path,new_path )  {
+  // this function should be used in asynchronous code; use in synchronous code
+  // must be limited only when source and destination are known to be in
+  // the same partition
+  try {
+    fs.moveSync ( old_path,new_path,{'overwrite':true} );
+//    fs.renameSync ( old_path,new_path );
     return true;
   } catch (e)  {
     log.error ( 4,'cannot move file ' + old_path + ' to ' + new_path );
