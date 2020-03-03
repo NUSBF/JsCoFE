@@ -319,7 +319,7 @@ var alink = document.getElementById(hiddenALinkID);
 
 
 function getJobFileURL ( jobId,filePath )  {
-  var url = special_url_tag + '/';
+  var url = __special_url_tag + '/';
   if (__login_token)
         url += __login_token;
   else  url += '404';
@@ -329,7 +329,7 @@ function getJobFileURL ( jobId,filePath )  {
 
 function downloadJobFile ( jobId,filePath )  {
   /*
-  var url = special_url_tag + '/';
+  var url = __special_url_tag + '/';
   if (__login_token)
         url += __login_token;
   else  url += '404';

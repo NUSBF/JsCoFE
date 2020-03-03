@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    02.12.19   <--  Date of Last Modification.
+ *    03.03.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Front End Server -- Communication Module
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2019
+ *  (C) E. Krissinel, A. Lebedev 2016-2020
  *
  *  ==========================================================================
  *
@@ -55,11 +55,12 @@ function Communicate ( server_request )  {
   this.command  = url_path.toLowerCase();
   this.search   = url_parse.search;
   this.ncURL    = '';
+  var fe_server = conf.getFEConfig();
 //console.log ( "requested " + server_request.url );
 //console.log ( "parsed    " + JSON.stringify(url_parse) );
 
   if ((this.command=='') || (this.command==cmd.fe_command.cofe))
-        this.filePath = conf.getFEConfig().bootstrapHTML;
+        this.filePath = fe_server.bootstrapHTML;
   else  this.filePath = url_path;
 //console.log ( "filePath " + this.filePath );
 
@@ -80,7 +81,7 @@ function Communicate ( server_request )  {
     log.debug2 ( 2,"calculated path " + this.filePath);
   }
   if (ix<0) {
-    var rtag = cmd.special_url_tag + '-fe/';
+    var rtag = cmd.__special_url_tag + '-fe/';
     ix = this.filePath.lastIndexOf(rtag);
 //console.log ( 'rtag=' + rtag + ',  file=' + this.filePath + ', ix=' + ix );
     if (ix>=0)  {
@@ -89,23 +90,22 @@ function Communicate ( server_request )  {
     }
   }
   if (ix<0) {
-    var utag = cmd.special_url_tag + '/' + ustats.statsDirName + '/';
+    var utag = cmd.__special_url_tag + '/' + ustats.statsDirName + '/';
     ix = this.filePath.lastIndexOf(utag);
     if (ix>=0)  {
       this.filePath = ustats.getUsageReportFilePath ( this.filePath.substr(ix+utag.length) );
       log.debug2 ( 3,"calculated path " + this.filePath);
     }
   }
-  /*
   if (ix<0) {
-    var utag = '/Failed Jobs Safe/0';
-    ix = this.filePath.lastIndexOf(utag);
+    ix = this.filePath.lastIndexOf(cmd.__special_fjsafe_tag);
     if (ix>=0)  {
-      this.filePath = ustats.getUsageReportFilePath ( this.filePath.substr(ix+utag.length) );
+      this.filePath = fe_server.getJobsSafePath() + '/' +
+                      this.filePath.substr(ix+cmd.__special_fjsafe_tag.length);
+      //console.log ( ' fpath=' + this.filePath );
       log.debug2 ( 3,"calculated path " + this.filePath);
     }
   }
-  */
   if (ix<0) {
     ix = server_request.url.lastIndexOf('reqid=authorisation-');
     if (ix>=0)  {
@@ -114,10 +114,10 @@ function Communicate ( server_request )  {
   }
   if (ix<0) {
 
-    //if (this.filePath.startsWith(cmd.special_url_tag))  { // special access to files not
+    //if (this.filePath.startsWith(cmd.__special_url_tag))  { // special access to files not
     //                                             // supposed to be on http path
 
-    var sindex = this.filePath.lastIndexOf ( cmd.special_url_tag );
+    var sindex = this.filePath.lastIndexOf ( cmd.__special_url_tag );
     if (sindex>=0)  {
 
       var flist     = this.filePath.slice(sindex).split('/');
@@ -148,7 +148,7 @@ function Communicate ( server_request )  {
         if (jobEntry && (jobEntry.nc_type=='ordinary'))  {  // yes the job is running
           // form a URL request to forward
           this.ncURL = conf.getNCConfig(jobEntry.nc_number).url() + '/' +
-                                        cmd.special_url_tag + '/' +
+                                        cmd.__special_url_tag + '/' +
                                         jobEntry.job_token + '/' +
                                         localPath;
           if (this.search)

@@ -2,7 +2,7 @@
 /*
  *  ===========================================================================
  *
- *    01.03.20   <--  Date of Last Modification.
+ *    03.03.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  ---------------------------------------------------------------------------
  *
@@ -25,7 +25,7 @@
 
 function appName()  { return 'CCP4 Cloud' }  // application name for reporting
 
-var jsCoFE_version = '1.6.009 [01.03.2020]';
+var jsCoFE_version = '1.6.009 [03.03.2020]';
 
 function appVersion()  {
   return jsCoFE_version;
@@ -226,7 +226,8 @@ function image_path ( image_basename )  {
 // ============================================================================
 // General Request/Response structures for communication with the Front End
 
-var special_url_tag = 'xxJsCoFExx';
+var __special_url_tag    = 'xxJsCoFExx';
+var __special_fjsafe_tag = 'xxFJSafexx';
 
 function Response ( status,message,data )  {
   this._type   = 'Response';
@@ -266,19 +267,20 @@ function Request ( request,token,data )  {
 
 // export such that it could be used in both node and a browser
 if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
-  module.exports.appName             = appName;
-  module.exports.appVersion          = appVersion;
-  module.exports.localhost_name      = localhost_name;
-  module.exports.image_path          = image_path;
-  module.exports.fe_command          = fe_command;
-  module.exports.fe_reqtype          = fe_reqtype;
-  module.exports.fe_retcode          = fe_retcode;
-  module.exports.nc_command          = nc_command;
-  module.exports.nc_retcode          = nc_retcode;
-  module.exports.special_url_tag     = special_url_tag;
-  module.exports.projectFileExt      = projectFileExt;
-  module.exports.Response            = Response;
-  module.exports.sendResponse        = sendResponse;
-  module.exports.sendResponseMessage = sendResponseMessage;
-  module.exports.Request             = Request;
+  module.exports.appName              = appName;
+  module.exports.appVersion           = appVersion;
+  module.exports.localhost_name       = localhost_name;
+  module.exports.image_path           = image_path;
+  module.exports.fe_command           = fe_command;
+  module.exports.fe_reqtype           = fe_reqtype;
+  module.exports.fe_retcode           = fe_retcode;
+  module.exports.nc_command           = nc_command;
+  module.exports.nc_retcode           = nc_retcode;
+  module.exports.__special_url_tag    = __special_url_tag;
+  module.exports.__special_fjsafe_tag = __special_fjsafe_tag;
+  module.exports.projectFileExt       = projectFileExt;
+  module.exports.Response             = Response;
+  module.exports.sendResponse         = sendResponse;
+  module.exports.sendResponseMessage  = sendResponseMessage;
+  module.exports.Request              = Request;
 }

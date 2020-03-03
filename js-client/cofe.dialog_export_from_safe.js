@@ -183,7 +183,7 @@ function ExportFailedJobDialog ( safeDirPath )  {
       $(dlg.element).on( "dialogclose",function(event,ui){
         //alert ( 'jobSize = ' + dlg.jobSize );
         serverRequest ( fe_reqtype.finishFJobExport,fjdata,
-                        'Finish Job Export',null,function(){
+                        'Finish Failed Job Export',null,function(){
           window.setTimeout ( function(){
             $(dlg.element).dialog( "destroy" );
             dlg.delete();

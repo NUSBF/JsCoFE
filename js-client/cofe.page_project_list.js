@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    29.02.20   <--  Date of Last Modification.
+ *    03.03.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -398,13 +398,16 @@ function ProjectListPage ( sceneId )  {
       saveProjectList ( function(data){ makeAdminPage(sceneId); } );
     });
 
-  if (__jobs_safe &&
-      ((__user_role==role_code.developer) || (__user_role==role_code.admin)))
-    this.addMenuItem ( 'Failed Tasks Safe','development',function(){
+  if ((__user_role==role_code.developer) || (__user_role==role_code.admin))  {
+    this.addMenuSeparator();
+    if (__jobs_safe)
+      this.addMenuItem ( 'Failed Tasks Safe','development',function(){
+        new ExportFromSafeDialog ( function(){} );
+      });
+    this.addMenuItem ( 'Developer\'s Documentation','development',function(){
       new ExportFromSafeDialog ( function(){} );
-      //alert ( 'not implemented' );
-      //saveProjectList ( function(data){ makeAdminPage(sceneId); } );
     });
+  }
 
   this.addLogoutToMenu ( function(){
     saveProjectList ( function(data){ logout(sceneId,0); } );

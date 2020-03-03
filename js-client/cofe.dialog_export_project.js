@@ -73,7 +73,7 @@ function ExportProjectDialog ( projectList )  {
                 if (__login_token)
                       token = __login_token;
                 else  token = '404';
-                url = special_url_tag + '/' + token + '/' + projectList.current +
+                url = __special_url_tag + '/' + token + '/' + projectList.current +
                                         '/' + projectList.current + projectFileExt;
 //                                        '/' + projectList.current + '.tar.gz';
                 downloadFile ( url );

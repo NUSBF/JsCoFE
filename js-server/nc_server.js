@@ -161,7 +161,7 @@ function start()  {
       //console.log ( ' url=' + server_request.url );
       //console.log ( ' command=' + command );
 
-      if (command.startsWith(cmd.special_url_tag))  {  // special access to files not
+      if (command.startsWith(cmd.__special_url_tag))  {  // special access to files not
                                         // supposed to be on http(s) path --
                                         // download from job directory
 

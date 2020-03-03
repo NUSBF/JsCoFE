@@ -74,7 +74,7 @@ function ExportJobDialog ( task )  {
                 if (__login_token)
                       token = __login_token;
                 else  token = '404';
-                url = special_url_tag + '/' + token   + '/' + task.project +
+                url = __special_url_tag + '/' + token   + '/' + task.project +
                                         '/' + task.id + '/' + exportName   +
                                         '.zip';
                 downloadFile ( url );
