@@ -71,6 +71,7 @@ var projectFileExt = '.ccp4cloud';
 
 var fe_command = {
   cofe           : 'cofe',           // load jsCoFE login page
+  ignore         : 'ignore',         // special return code from Communicate module
   stop           : 'stop',           // quit the server
   whoareyou      : 'whoareyou',      // request server id
   getInfo        : '=getinfo',       // request server metadata
