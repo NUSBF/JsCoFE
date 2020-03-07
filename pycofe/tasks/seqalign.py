@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    09.02.20   <--  Date of Last Modification.
+#    06.03.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -47,7 +47,7 @@ class SeqAlign(basic.TaskDriver):
     # ------------------------------------------------------------------------
 
     def seqHTML ( self,seqLine,align ):
-        S = ""
+        S = "<div style=\"margin:0;padding:0;white-space:nowrap;\">"
         i = 0
         while i<len(seqLine):
             while i<len(seqLine) and align[i]==" ":
@@ -59,6 +59,7 @@ class SeqAlign(basic.TaskDriver):
                     S += seqLine[i]
                     i += 1
                 S += "</span>"
+        S += "</div>"
         return S
 
     def putTableLine2 ( self,tableId,header,v1,v2,row ):
@@ -95,14 +96,14 @@ class SeqAlign(basic.TaskDriver):
                     seqtype = "x"
             else:
                 nmodels = len(s1.xyzmeta.xyz)
-                if s1._type!="DataEnsemble":
-                    chainSel = s1.chainSel
-                else:
-                    chainSel = "(all)"
                 for i in range(nmodels):
                     chains = s1.xyzmeta.xyz[i].chains
                     for c in chains:
-                        if chainSel=="(all)" or chainSel==c.id:
+                        if s1.chainSel.startswith("/"):
+                            cid = "/" + str(s1.xyzmeta.xyz[i].model) + "/" + c.id
+                        else:
+                            cid = c.id
+                        if s1.chainSel=="(all)" or s1.chainSel==cid:
                             nseq   += 1
                             seqname = "s" + str(nseq).zfill(3)
                             smap[seqname] = {}

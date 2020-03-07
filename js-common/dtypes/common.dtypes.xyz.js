@@ -284,7 +284,6 @@ if (!__template)  {
 
       }
 
-//    } else if (dropdown.layCustom.startsWith('chain-sel')) {
     } else if (startsWith(dropdown.layCustom,'chain-sel')) {
 
       customGrid.setLabel ( 'Select chain:&nbsp;',0,0,1,1 )
@@ -292,7 +291,8 @@ if (!__template)  {
       customGrid.setVerticalAlignment ( 0,0,'middle' );
 
       customGrid.chainSel = new Dropdown();
-      customGrid.chainSel.setWidth ( '120%' );
+      //customGrid.chainSel.setWidth ( '120%' );
+      customGrid.chainSel.setWidth ( '160px' );
       customGrid.chainSel.addItem ( 'All','','(all)',this.chainSel=='(all)' );
       var xyz = this.xyzmeta.xyz;
       if (xyz)
@@ -329,7 +329,6 @@ if (!__template)  {
         if (!customGrid.cbxs[i].getValue())
           this.exclLigs.push ( this.xyzmeta.ligands[i] );
 
-//    } else if (dropdown.layCustom.startsWith('chain-sel'))  {
     } else if (startsWith(dropdown.layCustom,'chain-sel'))  {
 
       this.chainSel = customGrid.chainSel.getValue();

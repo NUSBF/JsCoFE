@@ -405,7 +405,7 @@ function ProjectListPage ( sceneId )  {
         new ExportFromSafeDialog ( function(){} );
       });
     this.addMenuItem ( 'Developer\'s Documentation','development',function(){
-      new ExportFromSafeDialog ( function(){} );
+      new HelpBox ( '','./manuals/html-dev/index.html',null )
     });
   }
 

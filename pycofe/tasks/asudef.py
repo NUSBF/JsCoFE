@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    09.02.20   <--  Date of Last Modification.
+#    05.03.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -147,8 +147,9 @@ def makeRevision ( base,hkl,seq,composition,altEstimateKey,altNRes,
         base.write_stdin ( "MOLWEIGHT " + str(molWeight) + "\n" )
 
         tdict1 = {
-            "title": "<b>Content unit:</b> " + comp +\
-                     " molecule(s) with the following sequence(s)",
+            #"title": "<b>Content unit:</b> " + comp +\
+            #         " molecule(s) with the following sequence(s)",
+            "title": "Suggested ASU contents",
             "state": 0, "class": "table-blue", "css": "text-align:right;",
             "horzHeaders" :  [
                 { "label": "Structural unit components", "tooltip": "Sequence data" },
@@ -279,8 +280,10 @@ def makeRevision ( base,hkl,seq,composition,altEstimateKey,altNRes,
             "title": "Molecule fitting statistics",
             "state": 0, "class": "table-blue", "css": "text-align:right;",
             "horzHeaders" :  [
-                { "label": "N<sub>units</sub>"   , "tooltip":
-                   "Number of given content units placed in asymmetric unit" },
+                #{ "label": "N<sub>units</sub>"   , "tooltip":
+                #   "Number of given content units placed in asymmetric unit" },
+                { "label": "N<sub>asu</sub>"   , "tooltip":
+                   "Number of suggested ASUs placed in asymmetric unit for trial" },
                 { "label": "Matthews"            , "tooltip": "Matthews coefficient" },
                 { "label": "% solvent"           , "tooltip": "Solvent percent" },
                 { "label": "P<sub>matthews</sub>", "tooltip": "Probability" }

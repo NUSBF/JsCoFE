@@ -1,7 +1,7 @@
 /*
  *  ========================================================================
  *
- *    09.02.20   <--  Date of Last Modification.
+ *    07.03.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  ------------------------------------------------------------------------
  *
@@ -90,23 +90,26 @@ var _taskIndex = {
   // suggest Nautilus after Simbad, Parrot, Acorn, MR and EP; do not suggest it after itself
   'U1' : { type: 'TaskNautilus'       , after: ['J','K','L','M','N','O','S','T','n'] },
 
-  // suggest Refmac after both elementary MR, auto-EP, Buccaneer and itself
-  'V'  : { type: 'TaskRefmac'         , after: ['M','N','O','P','Q','U','j','r'] },
+  // suggest Refmac after both elementary MR, auto-EP, Buccaneer
+  'V'  : { type: 'TaskRefmac'         , after: ['M','N','O','P','Q','U','U1','j','r'] },
+
+  // suggest Buster after both elementary MR, auto-EP, Buccaneer
+  'V1' : { type: 'TaskBuster'         , after: ['M','N','O','P','Q','U','U1','j','r'] },
 
   // suggest Lorester after Buccaneer and Refmac; not after itself
   'W'  : { type: 'TaskLorestr'        , after: ['U','V','r'] },
 
   // sugget FitLigand after Refmac, Lorestr and after itself
-  'X'  : { type: 'TaskFitLigand'      , after: ['V','W','X','U','r'] },
+  'X'  : { type: 'TaskFitLigand'      , after: ['V','W','X','U','U1','r'] },
 
   // suggest FitWaters after Refmac, Lorestr and Ligands, but not after itself
-  'Y'  : { type: 'TaskFitWaters'      , after: ['V','W','X','U','r'] },
+  'Y'  : { type: 'TaskFitWaters'      , after: ['V','W','X','U','U1','r'] },
 
   // suggest Zanuda after Refmac and Lorestr
   'Z'  : { type: 'TaskZanuda'         , after: ['V','W'] },
 
   // suggest Gesamt after Buccaneer, Refmac and Lorestr
-  'a'  : { type: 'TaskGesamt'         , after: ['U','V','W','r'] },
+  'a'  : { type: 'TaskGesamt'         , after: ['U','U1','V','W','r'] },
 
   // suggest PISA after Refmac and Lorestr
   'b'  : { type: 'TaskPISA'           , after: ['V','W','X'] },

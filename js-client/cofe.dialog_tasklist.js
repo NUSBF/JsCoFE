@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    15.02.20   <--  Date of Last Modification.
+ *    07.03.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -347,7 +347,7 @@ var row      = 0;
   if (__user_role==role_code.developer)
     this.makeSection ( 'Tasks in Development',[
       new TaskDocDev       (),
-      new TaskBuster       (),
+      //new TaskBuster       (),
       new TaskMergeData    (),
       new TaskHelloWorld   ()
     ]);
@@ -432,6 +432,7 @@ var row      = 0;
 
   this.makeSection ( 'Refinement and Model Building',[
     new TaskRefmac   (),
+    new TaskBuster   (),
     new TaskLorestr  (),
     new TaskCCP4Build(),
     new TaskBuccaneer(),

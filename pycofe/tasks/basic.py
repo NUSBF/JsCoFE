@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    19.02.20   <--  Date of Last Modification.
+#    03.03.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -120,6 +120,7 @@ class TaskDriver(object):
     jobManager    = None
     job_dir       = None
     job_id        = None
+    jscofe_dir    = None
 
     # create output data list structure
     outputDataBox = databox.DataBox()
@@ -195,8 +196,9 @@ class TaskDriver(object):
         if args is None:
             args = sys.argv[1:]
         self.jobManager = args[0]
-        self.job_dir = args[1]
-        self.job_id  = args[2]
+        self.job_dir    = args[1]
+        self.job_id     = args[2]
+        self.jscofe_dir = sys.argv[0][0:sys.argv[0].rfind("pycofe")]
 
         temp = None
         for tmp in 'CCP4_SCR', 'TMPDIR', 'TEMP', 'TMP':
