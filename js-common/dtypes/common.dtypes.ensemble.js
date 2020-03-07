@@ -138,7 +138,6 @@ if (!__template)  {
       }
     } else if (startsWith(dropdown.layCustom,'chain-sel'))  {
       DataXYZ.prototype.layCustomDropdownInput.call ( this,dropdown );
-//    } else if (dropdown.layCustom.startsWith('phaser-mr'))  {
     } else if (startsWith(dropdown.layCustom,'phaser-mr'))  {
       if (this.sequence)
         displaySequence ( this.sequence.dname );

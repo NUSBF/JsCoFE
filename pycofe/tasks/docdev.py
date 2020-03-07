@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    01.03.20   <--  Date of Last Modification.
+#    03.03.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -32,12 +32,6 @@ import shutil
 
 #  application imports
 import basic
-#from   pycofe.proc    import import_filetype, import_unmerged
-#from   pycofe.varut   import signal
-#try:
-#    from pycofe.varut import messagebox
-#except:
-#    messagebox = None
 
 
 # ============================================================================
@@ -58,12 +52,15 @@ class DocDev(basic.TaskDriver):
         restype = self.getParameter ( self.task.parameters.OUTPUT_SEL )
         srcpath = os.path.join ( repname,"src-" + doctype )
 
+        copytasks = ""
         if doctype=="dev":
             self.putMessage ( "<h3>Generating developer's reference</h3>" )
         else:
             self.putMessage ( "<h3>Generating user manual</h3>" )
+            copytasks = "\ncp -r tasks/* ."
 
-        self.putMessage ( os.path.realpath ( os.path.dirname ( __file__ ) ) )
+        #self.putMessage ( os.path.realpath ( os.path.dirname ( __file__ ) ) )
+        #self.putMessage ( self.jscofe_dir )
 
         theme = self.getParameter ( self.task.parameters.THEME_SEL )
 
@@ -73,7 +70,7 @@ class DocDev(basic.TaskDriver):
                  "\ncd "    + cwd +\
                  "\ncp -r " + reppath + " " + repname +\
                  "\ncd "    + srcpath +\
-                 "\ncp -r tasks/* ."  +\
+                 copytasks  +\
                  "\ncp ../build/Makefile ." +\
                  "\ncp ../build/conf-" + theme + ".py conf.py" +\
                  "\nmake html\n";
@@ -94,9 +91,20 @@ class DocDev(basic.TaskDriver):
         rc = self.runApp ( "/bin/bash",["-c","./"+scriptf],logType="Main",quitOnError=False )
 
         if not rc.msg:
-            docdir = "html-" + doctype
-            shutil.move ( os.path.join(srcpath,"_build","html"),
-                          os.path.join(self.reportDir(),docdir) )
+
+            docdir  = "html-" + doctype
+            srcdir  = os.path.join ( srcpath,"_build","html" )
+            deppath = None
+            if restype=="compile":
+                self.putMessage ( "Documentation will be compiled only" )
+            else:
+                self.putMessage ( "Documentation will be compiled and deployed" )
+                depdir = os.path.join ( self.jscofe_dir,"manuals",docdir )
+                if os.path.exists(depdir):
+                    shutil.rmtree ( depdir )
+                shutil.copytree ( srcdir,depdir )
+
+            shutil.move ( srcdir,os.path.join(self.reportDir(),docdir) )
             self.putTitle ( "Generated documents" )
             htmlDir = os.path.join ( self.reportDir(),docdir )
             files = [f for f in os.listdir(htmlDir) if f.lower().endswith(".html")]

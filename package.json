@@ -2,19 +2,19 @@
     "name": "CCP4_Cloud",
     "version": "1.6.005",
     "dependencies": {
+        "check-disk-space": "*",
         "child_process": "*",
-        "crypto": "*",
-        "formidable": "*",
-        "fs-extra": "*",
+        "crypto": "^1.0.1",
+        "formidable": "^1.2.2",
+        "fs-extra": "^8.1.0",
         "http": "*",
+        "http-proxy": "^1.18.0",
         "https": "*",
-        "http-proxy": "*",
-        "nodemailer": "*",
-        "ps-tree": "*",
-        "request": ">0.2.0",
+        "nodemailer": "^6.4.4",
+        "ps-tree": "^1.2.0",
+        "request": "^2.88.2",
         "tmp": "*",
         "url": "*",
-        "util": "*",
-        "check-disk-space": "*"
+        "util": "^0.12.2"
     }
 }
