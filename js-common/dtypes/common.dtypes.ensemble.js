@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    19.10.19   <--  Date of Last Modification.
+ *    08.03.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Common Client/Server Modules -- Ensemble Data Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2019
+ *  (C) E. Krissinel, A. Lebedev 2016-2020
  *
  *  =================================================================
  *
@@ -47,10 +47,11 @@ function DataEnsemble()  {
                          //   this.files.seq  - sequence file
   this.ncopies  = 1;     // number of copies in ASU to look for in MR
   this.nModels  = 1;     // number of MR models in ensemble
-  this.simtype  = 'seqid'; // target similarity type 'seqid' or 'rmsd'
+  this.simtype  = 'seqid'; // target similarity type 'cardon', 'seqid' or 'rmsd'
   this.rmsd     = '';    // estimate of ensemble dispersion
   this.seqId    = '';    // estimate of ensemble homology
   this.xyzmeta  = {};
+  this.seqrem   = false; // true if phaser sequence remark is in xyz file
   this.meta     = null;  // Gesamt alignment results
 
 }
@@ -93,22 +94,29 @@ if (!__template)  {
   DataEnsemble.prototype.addToInspectData = function ( dsp )  {
     if (this.sequence)  {
       dsp.makeRow ( 'Associated sequence',this.sequence.dname,'Associated sequence' );
+      dsp.trow++;
     }
     if (this.meta)  {
-      dsp.table.setHeaderText ( 'Alignment'        ,dsp.trow,0,2,1 );
-      dsp.table.setHorizontalAlignment (            dsp.trow,0,'left' );
-      dsp.table.setHeaderText ( 'Q-score'          ,dsp.trow,1, 1,1 );
-      dsp.table.setHeaderText ( 'R.m.s.d.'         ,dsp.trow,2, 1,1 );
-      dsp.table.setHeaderText ( 'N<sub>align</sub>',dsp.trow,3, 1,1 );
-//      dsp.table.setHeaderText ( 'Seq. Id.'         ,dsp.trow,4, 1,1 );
-      dsp.table.setLabel      ( ' '                ,dsp.trow,4, 2,2 );
-      dsp.table.setCellSize   ( '90%',''           ,dsp.trow,4 );
-      dsp.trow++;
-      dsp.table.setLabel ( this.meta.qscore,dsp.trow,0, 1,1 );
-      dsp.table.setLabel ( this.meta.rmsd  ,dsp.trow,1, 1,1 );
-      dsp.table.setLabel ( this.meta.nalign,dsp.trow,2, 1,1 );
-//      dsp.table.setLabel ( this.meta.seqid ,dsp.trow,3, 1,1 );
-      dsp.trow++;
+      if (('seqrem' in this) && this.seqrem)  {
+        dsp.makeRow ( 'Model(s) seq.Id(s) \%',this.meta.seqId_ens.join(', '),
+                      'Sequence Ids for models in ensemble' );
+        dsp.trow++;
+      }
+      if (this.nModels>1)  {
+        dsp.table.setHeaderText ( 'Alignment'        ,dsp.trow,0,2,1 );
+        dsp.table.setHorizontalAlignment (            dsp.trow,0,'left' );
+        dsp.table.setHeaderText ( 'Q-score'          ,dsp.trow,1, 1,1 );
+        dsp.table.setHeaderText ( 'R.m.s.d.'         ,dsp.trow,2, 1,1 );
+        dsp.table.setHeaderText ( 'N<sub>align</sub>',dsp.trow,3, 1,1 );
+  //      dsp.table.setHeaderText ( 'Seq. Id.'         ,dsp.trow,4, 1,1 );
+        dsp.table.setLabel      ( ' '                ,dsp.trow,4, 2,2 );
+        dsp.table.setCellSize   ( '90%',''           ,dsp.trow,4 );
+        dsp.trow++;
+        dsp.table.setLabel ( this.meta.qscore,dsp.trow,0, 1,1 );
+        dsp.table.setLabel ( this.meta.rmsd  ,dsp.trow,1, 1,1 );
+        dsp.table.setLabel ( this.meta.nalign,dsp.trow,2, 1,1 );
+        dsp.trow++;
+      }
     }
     return dsp.trow;
   }
@@ -153,11 +161,13 @@ if (!__template)  {
 
       customGrid.setLabel ( 'Similarity to target',row,0,1,2 ).setFontItalic ( true );
       customGrid.simtype = new Dropdown();
-      customGrid.simtype.setWidth ( '200px' );
+      customGrid.simtype.setWidth ( '230px' );
+      if (('seqrem' in this) && this.seqrem)
+        customGrid.simtype.addItem ( 'read from ensemble'     ,'','cardon',this.simtype=='cardon' );
       customGrid.simtype.addItem ( 'by sequence identity'       ,'','seqid',this.simtype=='seqid' );
       customGrid.simtype.addItem ( 'by rms difference (&Aring;)','','rmsd' ,this.simtype=='rmsd'  );
       customGrid.setWidget   ( customGrid.simtype, row,1,1,1 );
-      customGrid.setCellSize ( '210px','',0,1 );
+      customGrid.setCellSize ( '240px','',0,1 );
       customGrid.simtype.make();
 
       customGrid.rmsd = customGrid.setInputText ( this.rmsd,row,2,1,1 )
@@ -171,14 +181,21 @@ if (!__template)  {
                     .setWidth_px ( 50 );
       customGrid.rmsd .setVisible ( this.simtype=='rmsd'  );
       customGrid.seqid.setVisible ( this.simtype=='seqid' );
-      //alert ( JSON.stringify(this.meta));
-      //customGrid.setLabel ( '(estimated r.m.s.d. to target, &Aring;)',row,2,1,1 )
-      //          .setFontItalic ( true );
+      /*
+      if (('seqrem' in this) && this.seqrem)  {
+        customGrid.seqid_ens = customGrid.addLabel (
+              'Seq. Id(s) = ' + this.meta.seqId_ens.join(', '),row,2,1,1 )
+              .setTooltip ( 'Sequence similarity will be taken from ensemble data');
+        customGrid.seqid_ens.setVisible ( this.simtype=='cardon' );
+      }
+      */
 
       customGrid.setVerticalAlignment ( row  ,0,'middle' );
       customGrid.setVerticalAlignment ( row++,2,'middle' );
 
       customGrid.simtype.addOnChangeListener ( function(text,value){
+        //if ('seqid_ens' in customGrid)
+        //  customGrid.seqid_ens.setVisible ( value=='cardon'  );
         customGrid.rmsd .setVisible ( value=='rmsd'  );
         customGrid.seqid.setVisible ( value=='seqid' );
       });
@@ -203,7 +220,7 @@ if (!__template)  {
         if (v && (!isNaN(v)))
               this.seqId = parseFloat ( v );
         else  msg += '<b><i>Sequence Identity not given or poorly formatted</i></b>';
-      } else  {
+      } else if (this.simtype=='rmsd')  {
         var v = customGrid.rmsd.getValue();
         if (v && (!isNaN(v)))
               this.rmsd = parseFloat ( v );

@@ -37,8 +37,9 @@ import gemmi
 
 #  application imports
 import basic
-from   pycofe.proc   import analyse_ensemble #, coor
+from   pycofe.proc   import analyse_ensemble
 from   pycofe.proc   import make_ensemble
+from   pycofe.proc   import seqal
 
 #from   pycofe.dtypes import dtype_template, dtype_sequence
 
@@ -119,8 +120,7 @@ class EnsemblePrepXYZ(basic.TaskDriver):
             seq = self.makeClass ( self.input_data.data.seq[0] )
             fpath_seq = seq.getSeqFilePath ( self.inputDir() )
 
-        xyz = self.input_data.data.xyz
-
+        xyz  = self.input_data.data.xyz
         sec1 = self.task.parameters.sec1.contains
 
         modeSel = ""
@@ -138,16 +138,23 @@ class EnsemblePrepXYZ(basic.TaskDriver):
             else:
                 self.outputFName = os.path.splitext(xyz[0].getXYZFileName())[0]
 
-        outputFile = "output/" + self.getXYZOFName()
+        outputFile = self.getXYZOFName()
         if os.path.isfile(outputFile):
             os.remove ( outputFile )
 
-        fprepared  = []
-        #gesamt_cmd = []
+        fprepared = []
+        seqIds    = []
         for i in range(len(xyz)):
-            xyz[i]    = self.makeClass   ( xyz[i] )
-            fpath_in  = self.fetch_chain ( xyz[i].chainSel,
-                                           xyz[i].getXYZFilePath(self.inputDir()))
+            xyz[i]   = self.makeClass   ( xyz[i] )
+            fpath_in = self.fetch_chain ( xyz[i].chainSel,
+                                          xyz[i].getXYZFilePath(self.inputDir()) )
+            sid = ""
+            if seq:
+                rc = seqal.run ( self,[seq,xyz[i]],"__align_"+str(i)+".xfasta" )
+                if rc["code"]==0:
+                    sid = str(round(100.0*rc["stat"]["seq_id"],1))
+            seqIds.append ( sid )
+
             if len(xyz)==1:
                 fpath_out = outputFile
             else:
@@ -163,8 +170,18 @@ class EnsemblePrepXYZ(basic.TaskDriver):
                     self.prepare_molrep ( fpath_in,fpath_seq,fpath_out )
                 elif modSel=="P":
                     self.prepare_polyalanine ( fpath_in,fpath_out )
-                fprepared.append ( fpath_out )
-                #gesamt_cmd.append ( fpath_out )
+            fprepared.append ( fpath_out )
+
+            """
+            if sid:
+                file = open ( fpath_out,"r" )
+                fcnt = file.read()
+                file.close  ()
+                file = open ( fpath_out,"w" )
+                file.write  ( "REMARK PHASER ENSEMBLE MODEL 0 ID " + sid + "\n" )
+                file.write  ( fcnt )
+                file.close  ()
+            """
 
         if modSel=="M": self.addCitations ( ['molrep'] )
         #if modSel=="C": self.addCitations ( ['chainsaw'] )
@@ -176,11 +193,14 @@ class EnsemblePrepXYZ(basic.TaskDriver):
 
         have_results = False
 
+        if len(fout_list)<=0:
+
+            self.putMessage ( "<h3>Structures are too dissimilar, " +
+                              "no ensemble cold be made</h3>" )
+
         for i in range(len(fout_list)):
 
-            self.putMessage ( str(fout_list[i]) )
             fpath = fout_list[i][0]
-            self.putMessage ( fpath )
 
             align_meta = analyse_ensemble.align_seq_xyz ( self,
                                             fpath_seq,fpath,seqtype="protein" )
@@ -200,6 +220,9 @@ class EnsemblePrepXYZ(basic.TaskDriver):
                     self.putMessage ( "&nbsp;<br><b>Associated with sequence:</b>&nbsp;" +\
                                       seq.dname + "<br>&nbsp;" )
 
+                    if not ensemble.meta:
+                        ensemble.meta = { "rmsd" : "", "seqId" : "" }
+
                     if align_meta["status"]=="ok":
                         ensemble.meta["seqId"] = align_meta["id_avg"]
                     ensemble.seqId = ensemble.meta["seqId"]
@@ -208,6 +231,22 @@ class EnsemblePrepXYZ(basic.TaskDriver):
                     self.putEnsembleWidget ( self.getWidgetId("ensemble_btn"),
                                              "Coordinates",ensemble )
                     have_results = True
+
+                    if len(seqIds)==len(xyz):
+                        ens_path = ensemble.getXYZFilePath ( self.outputDir() )
+                        file = open ( ens_path,"r" )
+                        fcnt = file.read()
+                        file.close  ()
+                        file = open ( ens_path,"w" )
+                        ensemble.meta["seqId_ens"] = []
+                        for i in range(len(seqIds)):
+                            file.write  ( "REMARK PHASER ENSEMBLE MODEL " +\
+                                          str(i+1) + " ID " + seqIds[i] + "\n" )
+                            ensemble.meta["seqId_ens"].append ( seqIds[i] )
+                        file.write  ( fcnt )
+                        file.close  ()
+                        ensemble.seqrem  = True
+                        ensemble.simtype = "cardon";
 
                 else:
                     self.putMessage1 ( alignSecId,

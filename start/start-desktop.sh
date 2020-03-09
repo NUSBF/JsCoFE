@@ -34,8 +34,8 @@ echo $DOCREPO_URL
 #killall node
 
 node ./js-server/desktop.js ./config/conf.desktop.json
-while [ $? -eq 212 ]
-do
-    node ./js-server/desktop.js ./config/conf.desktop.json
-done
+#while [ $? -eq 212 ]
+#do
+#    node ./js-server/desktop.js ./config/conf.desktop.json
+#done
 #node ./desktop.js ./config/conf.desktop.json -localuser 'Eugene Krissinel'
