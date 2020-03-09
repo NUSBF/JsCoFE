@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    20.01.20   <--  Date of Last Modification.
+ *    07.03.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -135,8 +135,8 @@ function AuthEndPage ( sceneId,software_key,auth_result )  {
   panel.setWidget               ( details_lbl,row,0,1,1 );
   panel.setHorizontalAlignment  ( row++ ,0,'center' );
   panel.setCellSize             ( '','20pt',row++,0 );
-
   panel.setWidget               ( close_lbl,row,0,1,1 );
+  panel.setHorizontalAlignment  ( row++ ,0,'center' );
 
 }
 

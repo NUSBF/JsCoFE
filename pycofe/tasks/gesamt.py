@@ -309,12 +309,13 @@ class Gesamt(basic.TaskDriver):
             elif nXYZ>2:
                 outFiles = [self.gesamt_xyz()]
 
-            if len(outFiles)>0:
+            if len(outFiles)>0 and os.path.isfile(outFiles[0]):
 
                 self.putTitle ( "Gesamt Output" )
 
                 # register output data from temporary location (files will be moved
                 # to output directory by the registration procedure)
+                self.putMessage ( outFiles[0] )
                 ensemble = self.registerEnsemble ( dtype_template.subtypeProtein(),
                                                    outFiles[0] )
                 if ensemble:
@@ -324,6 +325,7 @@ class Gesamt(basic.TaskDriver):
                     have_results = True
 
                 for i in range(1,len(outFiles)-1):
+                    self.putMessage ( outFiles[i] )
                     ensemble = self.registerEnsemble ( dtype_template.subtypeProtein(),
                                                        outFiles[i] )
                     if ensemble:
@@ -334,7 +336,7 @@ class Gesamt(basic.TaskDriver):
                         have_results = True
 
             else:
-                self.putTitle ( "No Output Files Generated" )
+                self.putTitle ( "Structures are too dissimilar and can not be aligned" )
 
         # close execution logs and quit
         self.success ( have_results )

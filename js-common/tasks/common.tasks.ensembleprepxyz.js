@@ -90,8 +90,8 @@ function TaskEnsemblePrepXYZ()  {
                         range    : [ 'U|Unmodified',
                                      'D|PDB Clip',
                                      'M|Molrep',
-                                     'C|Chainsaw',
-                                     'S|Sculptor',
+                                     //'C|Chainsaw',
+                                     //'S|Sculptor',
                                      'P|Polyalanine'
                                    ],
                         value    : 'M',

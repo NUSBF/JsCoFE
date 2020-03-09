@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    03.03.20   <--  Date of Last Modification.
+#    09.03.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -1606,6 +1606,9 @@ class TaskDriver(object):
             self.file_stderr.write ( "  NONE ENSEMBLE DATA\n" )
             self.file_stderr.flush()
         else:
+            if type(sequence)!=str and type(sequence)!=list:
+                shutil.copy ( sequence.getSeqFilePath(self.inputDir()),
+                              self.outputDir() )
             ensemble.putXYZMeta ( self.outputDir(),self.file_stdout1,
                                   self.file_stderr,None )
 

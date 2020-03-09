@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    08.02.20   <--  Date of Last Modification.
+#    08.03.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -41,6 +41,7 @@ class DType(dtype_template.DType):
             self.simtype  = "seqid" # target similarity type 'seqid' or 'rmsd'
             self.rmsd     = ""      # estimate of ensemble dispersion
             self.seqId    = "";     # estimate of ensemble homology
+            self.seqrem   = False   # True if phaser sequence remark is in xyz file
             self.xyzmeta  = {}
             self.meta     = None  # Gesamt alignment results
         return

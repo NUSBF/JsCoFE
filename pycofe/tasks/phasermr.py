@@ -169,11 +169,18 @@ class PhaserMR(basic.TaskDriver):
                         "\" IDENT " + str(ens0[i].seqId) +\
                         "\nENSEMBLE " + ename + " HETATM ON"
                     )
-            else:
+            elif ens0[i].simtype=="rmsd":
                 self.write_stdin (
                         "\nENSEMBLE " + ename + " &" +\
                         "\n    PDB \"" + ens0[i].getXYZFilePath(self.inputDir()) +\
                         "\" RMS " + str(ens0[i].rmsd) +\
+                        "\nENSEMBLE " + ename + " HETATM ON"
+                    )
+            else:  # "cardon"
+                self.write_stdin (
+                        "\nENSEMBLE " + ename + " &" +\
+                        "\n    PDB \"" + ens0[i].getXYZFilePath(self.inputDir()) +\
+                        "\" CARD ON" +\
                         "\nENSEMBLE " + ename + " HETATM ON"
                     )
 
