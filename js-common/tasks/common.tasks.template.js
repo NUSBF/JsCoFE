@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    19.02.20   <--  Date of Last Modification.
+ *    14.03.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -332,12 +332,20 @@ if (!dbx)  {
     }
 
     if ((this.nc_type!='client') && (!this.checkEnvironment(__environ_server)))
-      return ['environment-server',
-              'task software is not installed on ' + appName() + ' server',
-              '<h3>Task software is not installed on server</h3>' +
-              'Software, needed to run the task, is not installed on ' +
-              appName() + ' server which you use.<br>Contact server ' +
-              'maintainer for further details.'];
+      if (__local_setup)
+        return ['environment-server',
+                'task software is not installed',
+                '<h3>Task software is not installed</h3>' +
+                'Software, needed to run the task, is not available in ' +
+                appName() + ' setup, which you use.<br>Contact your software ' +
+                'maintainer for further details.'];
+      else
+        return ['environment-server',
+                'task software is not installed on ' + appName() + ' server',
+                '<h3>Task software is not installed on server</h3>' +
+                'Software, needed to run the task, is not installed on ' +
+                appName() + ' server, which you use.<br>Contact server ' +
+                'maintainer for further details.'];
 
     return ['ok','',''];
 
@@ -487,13 +495,21 @@ if (!dbx)  {
     header.uname_lbl = putLabel ( 'job description:&nbsp;',row,0 );
     header.setVerticalAlignment ( row,0,'middle' );
     header.uname_inp = putInput ( this.uname.trim(),this.name,row++,1 )
-                                .setWidth ( '90%' ); //.setHeight_px ( 18 );
+                                .setWidth ( '90%' ) //.setHeight_px ( 18 );
+                                .setTooltip ( 'A single-line description of the ' +
+                                   'job, which will appear in the Project Tree. ' +
+                                   'The description can be changed before or '    +
+                                   'after running the job.' );
 
     if (this.oname!='*')  {
       header.uoname_lbl = putLabel ( 'output id:&nbsp;',row,0 );
       header.setVerticalAlignment  ( row,0,'middle' );
       header.uoname_inp = putInput ( this.uoname.trim(),this.oname,row,1 )
-                                   .setWidth_px(200);//.setHeight_px ( 18 );
+                                   .setWidth_px(200) //.setHeight_px ( 18 );
+                                   .setTooltip ( 'Base name for output files, ' +
+                                      'produced by the job. Custom names may '  +
+                                      'help data identification in subsequent ' +
+                                      'tasks' );
     }
 
     header.setHLine ( 1, 3,0,1,4 );

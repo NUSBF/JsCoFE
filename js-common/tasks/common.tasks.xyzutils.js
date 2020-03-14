@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    08.02.20   <--  Date of Last Modification.
+ *    13.03.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -38,9 +38,10 @@ function TaskXyzUtils()  {
   this.helpURL = './html/jscofe_task_xyzutils.html';
 
   this.input_dtypes = [{      // input data types
-    data_type   : { 'DataRevision'  : ['xyz'],
-                    'DataEnsemble'  : [],
-                    'DataXYZ'       : []
+    data_type   : { 'DataRevision' : ['xyz'],
+                    'DataEnsemble' : [],
+                    'DataModel'    : [],
+                    'DataXYZ'      : []
                   },  // data type(s) and subtype(s)
     label       : 'Structure', // label for input dialog
     inputId     : 'istruct',   // input Id for referencing input fields

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    19.10.19   <--  Date of Last Modification.
+ *    13.03.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  GESAMT Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2019
+ *  (C) E. Krissinel, A. Lebedev 2016-2020
  *
  *  =================================================================
  *
@@ -42,6 +42,7 @@ function TaskGesamt()  {
   this.input_dtypes = [{      // input data types
      data_type   : {'DataStructure':['protein'],
                     'DataEnsemble' :['protein'],
+                    'DataModel'    :['protein'],
                     'DataXYZ'      :['protein']
                    },  // data type(s) and subtype(s)
      label       : 'Structure',    // label for input dialog

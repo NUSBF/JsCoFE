@@ -41,7 +41,7 @@ def make_fpath ( fpath,suffix ):
 # ============================================================================
 
 def run ( body, panelId, models,fpath_out, # body is reference to the basic class
-                trims=[3,2,1,0],
+                trims=[80,60,40],
                 logType="Service" ):
 #  models is array of the following form:
 #   [[path1,sel1],[path2,sel2], ..., [pathN,selN]]
@@ -92,6 +92,7 @@ def run ( body, panelId, models,fpath_out, # body is reference to the basic clas
                 tag_end   = "`-------------'------------'-------------'"
                 alind     = 2
             alignment  = []
+            rmsd       = []
             nalign     = 0
             rmsd_ave   = 0.0
             rmsd_sigma = 0.0
@@ -118,9 +119,10 @@ def run ( body, panelId, models,fpath_out, # body is reference to the basic clas
                         alignment.append ( algn )
                         if algn[0]:
                             nalign     += 1
-                            rmsd        = float(algn[0])
-                            rmsd_ave   += rmsd
-                            rmsd_sigma += rmsd*rmsd
+                            rms         = float(algn[0])
+                            rmsd.append ( rms )
+                            rmsd_ave   += rms
+                            rmsd_sigma += rms*rms
             if nalign>0:
                 rmsd_ave   = rmsd_ave / nalign
                 rmsd_sigma = math.sqrt ( rmsd_sigma/nalign   - rmsd_ave*rmsd_ave )
@@ -152,27 +154,30 @@ def run ( body, panelId, models,fpath_out, # body is reference to the basic clas
                             del st[k][0][0]
 
             ftrimmed = make_fpath ( fpath_out,"trimmed" )
-            fout_list.append ( [ ftrimmed,"Ends-trimmed ensemble" ] )
+            fout_list.append ( [ ftrimmed,"Ends-trimmed ensemble (100% trim)" ] )
             st.write_pdb ( ftrimmed )
 
             # trim sigmas
+            rmsd = sorted(rmsd)
             for i in range(len(trims)):
-                rmsd0 = rmsd_ave + trims[i]*rmsd_sigma
-                st = gemmi.read_structure ( fpath_out )
-                nres = []
-                for j in range(nmodels):
-                    nres.append ( len(st[j][0])-1 )
-                for j in range(len(alignment)):
-                    algn = alignment[-1-j]
-                    if not algn[0] or float(algn[0])>rmsd0:
+                if trims[i]<100:
+                    rmsd0 = rmsd[trims[i]*(len(rmsd)-1)/100]
+                    st = gemmi.read_structure ( fpath_out )
+                    nres = []
+                    for j in range(nmodels):
+                        nres.append ( len(st[j][0])-1 )
+                    for j in range(len(alignment)):
+                        algn = alignment[-1-j]
+                        if not algn[0] or float(algn[0])>rmsd0:
+                            for k in range(nmodels):
+                                if algn[k+1]:
+                                    del st[k][0][nres[k]]
                         for k in range(nmodels):
                             if algn[k+1]:
-                                del st[k][0][nres[k]]
-                    for k in range(nmodels):
-                        if algn[k+1]:
-                            nres[k] -= 1
-                ftrimmed = make_fpath ( fpath_out,str(trims[i]) )
-                fout_list.append ( [ ftrimmed,"Ensemble trimmed with &sigma;="+str(trims[i]) ] )
-                st.write_pdb ( ftrimmed )
+                                nres[k] -= 1
+                    ftrimmed = make_fpath ( fpath_out,str(trims[i]) )
+                    fout_list.append ( [ ftrimmed,"Ensemble trimmed at " +\
+                                                  str(trims[i]) + "%" ] )
+                    st.write_pdb ( ftrimmed )
 
     return fout_list

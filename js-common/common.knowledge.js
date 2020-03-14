@@ -1,7 +1,7 @@
 /*
  *  ========================================================================
  *
- *    07.03.20   <--  Date of Last Modification.
+ *    13.03.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  ------------------------------------------------------------------------
  *
@@ -32,95 +32,98 @@
 
 var _taskIndex = {
 
-  '0'  : { type: 'Root'               , after: [] },
+  '0'  : { type: 'Root'                , after: [] },
 
   // suggest CCP4go only after Root
-  'A'  : { type: 'TaskCCP4go'         , after: ['0'] },
+  'A'  : { type: 'TaskCCP4go'          , after: ['0'] },
 
-  'B'  : { type: 'TaskImport'         , after: ['0','B','C','D','E','m'] },
-  'C'  : { type: 'TaskEnsemblePrepSeq', after: ['B','D','m'] },
-  'D'  : { type: 'TaskEnsemblePrepXYZ', after: ['B','C','D','m'] },
+  'B'  : { type: 'TaskImport'          , after: ['0','B','C','D','E','m'] },
+  'C'  : { type: 'TaskEnsemblePrepSeq' , after: ['B','D','m'] },
+  'D'  : { type: 'TaskEnsemblePrepXYZ' , after: ['B','C','D','m'] },
+  'D1' : { type: 'TaskModelPrepXYZ'    , after: ['B','C','D','m'] },
+  'D2' : { type: 'TaskModelPrepAlgn'   , after: ['B','C','D','m'] },
+  'D3' : { type: 'TaskEnsembler'       , after: ['D1','D2'] },
 
   // suggest Make Ligand after Import and Model Preparation
-  'E'  : { type: 'TaskMakeLigand'     , after: ['B','C','D','E','m'] },
+  'E'  : { type: 'TaskMakeLigand'      , after: ['B','C','D','E','m'] },
 
   // suggest Aimless, Simbad and ASUDef after Import or Model Preparation in
   // the specified order; do not suggest them after themselves (user should
   // branch/clone instead)
-  'F'  : { type: 'TaskAimless'        , after: ['B','C','D','E',    'h','m','t','u'] },
-  'G'  : { type: 'TaskSimbad'         , after: ['B','C','D','E','F','h','m','t','u'] },
-  'H'  : { type: 'TaskASUDef'         , after: ['B','C','D','E','F','h','m','t','u'] },
+  'F'  : { type: 'TaskAimless'         , after: ['B','C','D','E',    'h','m','t','u'] },
+  'G'  : { type: 'TaskSimbad'          , after: ['B','C','D','E','F','h','m','t','u'] },
+  'H'  : { type: 'TaskASUDef'          , after: ['B','C','D','E','F','h','m','t','u'] },
 
   // suggest Xyz2Revision after Import, Models and Ligands
-  'I'  : { type: 'TaskXyz2Revision'   , after: ['B','C','D','E','F','h','m','t','u'] },
+  'I'  : { type: 'TaskXyz2Revision'    , after: ['B','C','D','E','F','h','m','t','u'] },
 
   // suggest Morda, MrBump, and Balbes after ASUDef; do not suggest them after
   // themselves (user should branch/clone instead)
-  'J'  : { type: 'TaskMorda'          , after: ['H'] },
-  'K'  : { type: 'TaskBalbes'         , after: ['H'] },
-  'L'  : { type: 'TaskMrBump'         , after: ['H'] },
+  'J'  : { type: 'TaskMorda'           , after: ['H'] },
+  'K'  : { type: 'TaskBalbes'          , after: ['H'] },
+  'L'  : { type: 'TaskMrBump'          , after: ['H'] },
 
   // suggest Phaser-MR and Molrep after ASUDef; do suggest them after
   // themselves (in case of domain-after domain phasing); do not suggest them
   // after auto-MR
-  'M'  : { type: 'TaskPhaserMR'       , after: ['H','M'] },
-  'N'  : { type: 'TaskMolrep'         , after: ['H','N'] },
+  'M'  : { type: 'TaskPhaserMR'        , after: ['H','M'] },
+  'N'  : { type: 'TaskMolrep'          , after: ['H','N'] },
 
   // suggest ShelxE-MR after either Phaser-MR or Molrep; do not suggest it
   // after itself
-  'O'  : { type: 'TaskShelxEMR'       , after: ['M','N'] },
+  'O'  : { type: 'TaskShelxEMR'        , after: ['M','N'] },
 
   // suggest Crank-2 and Shelx-AutoEP after ASUDef and MR; do not suggest
   // them after themselves (user should branch/clone instead)
-  'P'  : { type: 'TaskCrank2'         , after: ['H','J','K','L','M','N'] },
-  'Q'  : { type: 'TaskShelxAuto'      , after: ['H','J','K','L','M','N'] },
+  'P'  : { type: 'TaskCrank2'          , after: ['H','J','K','L','M','N'] },
+  'Q'  : { type: 'TaskShelxAuto'       , after: ['H','J','K','L','M','N'] },
 
   // suggest ShelxSubstr after ASUDef and MR; do not suggest it after auto-EP or itself
-  'R'  : { type: 'TaskShelxSubstr'    , after: ['H','J','K','L','M','N'] },
+  'R'  : { type: 'TaskShelxSubstr'     , after: ['H','J','K','L','M','N'] },
 
   // suggest Phaser-EP after ShelxSubstr; do not suggest it after itself
-  'S'  : { type: 'TaskPhaserEP'       , after: ['R'] },
+  'S'  : { type: 'TaskPhaserEP'        , after: ['R'] },
 
   // suggest Parrot after both MR and Phaser-EP; do not suggest it after itself
-  'T'  : { type: 'TaskParrot'         , after: ['J','K','L','M','N','O','R','S'] },
+  'T'  : { type: 'TaskParrot'          , after: ['J','K','L','M','N','O','R','S'] },
 
   // suggest Buccaneer after Simbad, Parrot, Acorn, MR and EP; do not suggest it after itself
-  'U'  : { type: 'TaskBuccaneer'      , after: ['J','K','L','M','N','O','S','T','n'] },
+  'U'  : { type: 'TaskBuccaneer'       , after: ['J','K','L','M','N','O','S','T','n'] },
 
   // suggest Nautilus after Simbad, Parrot, Acorn, MR and EP; do not suggest it after itself
-  'U1' : { type: 'TaskNautilus'       , after: ['J','K','L','M','N','O','S','T','n'] },
+  'U1' : { type: 'TaskNautilus'        , after: ['J','K','L','M','N','O','S','T','n'] },
 
   // suggest Refmac after both elementary MR, auto-EP, Buccaneer
-  'V'  : { type: 'TaskRefmac'         , after: ['M','N','O','P','Q','U','U1','j','r'] },
+  'V'  : { type: 'TaskRefmac'          , after: ['M','N','O','P','Q','U','U1','j','r'] },
 
   // suggest Buster after both elementary MR, auto-EP, Buccaneer
-  'V1' : { type: 'TaskBuster'         , after: ['M','N','O','P','Q','U','U1','j','r'] },
+  'V1' : { type: 'TaskBuster'          , after: ['M','N','O','P','Q','U','U1','j','r'] },
 
   // suggest Lorester after Buccaneer and Refmac; not after itself
-  'W'  : { type: 'TaskLorestr'        , after: ['U','V','r'] },
+  'W'  : { type: 'TaskLorestr'         , after: ['U','V','r'] },
 
   // sugget FitLigand after Refmac, Lorestr and after itself
-  'X'  : { type: 'TaskFitLigand'      , after: ['V','W','X','U','U1','r'] },
+  'X'  : { type: 'TaskFitLigand'       , after: ['V','W','X','U','U1','r'] },
 
   // suggest FitWaters after Refmac, Lorestr and Ligands, but not after itself
-  'Y'  : { type: 'TaskFitWaters'      , after: ['V','W','X','U','U1','r'] },
+  'Y'  : { type: 'TaskFitWaters'       , after: ['V','W','X','U','U1','r'] },
 
   // suggest Zanuda after Refmac and Lorestr
-  'Z'  : { type: 'TaskZanuda'         , after: ['V','W'] },
+  'Z'  : { type: 'TaskZanuda'          , after: ['V','W'] },
 
   // suggest Gesamt after Buccaneer, Refmac and Lorestr
-  'a'  : { type: 'TaskGesamt'         , after: ['U','U1','V','W','r'] },
+  'a'  : { type: 'TaskGesamt'          , after: ['U','U1','V','W','r'] },
 
   // suggest PISA after Refmac and Lorestr
-  'b'  : { type: 'TaskPISA'           , after: ['V','W','X'] },
+  'b'  : { type: 'TaskPISA'            , after: ['V','W','X'] },
 
   // suggest ChangeSpG after dataprocessing tasks
   //'c'  : { type: 'TaskChangeSpG'      , after: ['h','t','u'] },
-  'c'  : { type: 'TaskChangeSpGHKL'   , after: ['h','t','u'] },
-  'c2' : { type: 'TaskChangeSpGASU'   , after: ['H'] },
+  'c'  : { type: 'TaskChangeSpGHKL'    , after: ['h','t','u'] },
+  'c2' : { type: 'TaskChangeSpGASU'    , after: ['H'] },
 
   // suggest ChangeReso after dataprocessing tasks
-  'c1' : { type: 'TaskChangeReso'     , after: ['h','t','u'] },
+  'c1' : { type: 'TaskChangeReso'      , after: ['h','t','u'] },
 
   // do not suggest ASUMod
   //'d' : { type: 'TaskASUMod'         , after: [] },
@@ -129,67 +132,67 @@ var _taskIndex = {
   'e'  : { type: 'TaskASUDefStruct'      , after: ['A'] },
 
   // suggest SeqAlign after Import
-  'f'  : { type: 'TaskSeqAlign'       , after: ['B','m'] },
+  'f'  : { type: 'TaskSeqAlign'        , after: ['B','m'] },
 
   // do not suggest FacilityImport
-  'g'  : { type: 'TaskFacilityImport' , after: [] },
+  'g'  : { type: 'TaskFacilityImport'  , after: [] },
 
   // suggest Xia2 after root
-  'h'  : { type: 'TaskXia2'           , after: ['0'] },
+  'h'  : { type: 'TaskXia2'            , after: ['0'] },
 
   // suggest Dimple after phasing
-  'i'  : { type: 'TaskDimple'         , after: ['M','N','O','P','Q','U','r'] },
+  'i'  : { type: 'TaskDimple'          , after: ['M','N','O','P','Q','U','r'] },
 
   // suggest Coot after refinememnt
-  'j'  : { type: 'TaskCootMB'         , after: ['V','W','i','U','r'] },
+  'j'  : { type: 'TaskCootMB'          , after: ['V','W','i','U','r'] },
 
   // suggest CombStructure after refinememnt
-  'j1' : { type: 'TaskCombStructure'  , after: ['V','W','i','U','r'] },
+  'j1' : { type: 'TaskCombStructure'   , after: ['V','W','i','U','r'] },
 
   // suggest PDB Deposition after Refmac
-  'k'  : { type: 'TaskDeposition'     , after: ['V'] },
+  'k'  : { type: 'TaskDeposition'      , after: ['V'] },
 
   // do not suggest Coot Cooridinate Editing
-  'l'  : { type: 'TaskCootCE'         , after: [] },
+  'l'  : { type: 'TaskCootCE'          , after: [] },
 
   // do not suggest XYZ Utils
-  'l1'  : { type: 'TaskXyzUtils'      , after: [] },
+  'l1'  : { type: 'TaskXyzUtils'       , after: [] },
 
   // suggest CloudImport alike plain Import
-  'm'  : { type: 'TaskCloudImport'    , after: ['0','B','C','D','E','m'] },
+  'm'  : { type: 'TaskCloudImport'     , after: ['0','B','C','D','E','m'] },
 
   // suggest Acorn after both MR and Phaser-EP; do not suggest it after itself
-  'n'  : { type: 'TaskAcorn'          , after: ['J','K','L','M','N','O','R','S'] },
+  'n'  : { type: 'TaskAcorn'           , after: ['J','K','L','M','N','O','R','S'] },
 
   // suggest Arp/wArp after Simbad, Parrot, MR and EP; do not suggest it after itself
-  'o'  : { type: 'TaskArpWarp'        , after: ['J','K','L','M','N','O','S','T','n','T'] },
+  'o'  : { type: 'TaskArpWarp'         , after: ['J','K','L','M','N','O','S','T','n','T'] },
 
   // suggest ShelxCD after ASUDef and MR; do not suggest it after auto-EP or itself
-  'p'  : { type: 'TaskShelxCD'        , after: ['H','J','K','L','M','N'] },
+  'p'  : { type: 'TaskShelxCD'         , after: ['H','J','K','L','M','N'] },
 
   // do not suggest SymMatch
-  'q'  : { type: 'TaskSymMatch'       , after: [] },
+  'q'  : { type: 'TaskSymMatch'        , after: [] },
 
   // suggest CCP4Build after Simbad, MR and EP; do not suggest it after itself
-  'r'  : { type: 'TaskCCP4Build'      , after: ['J','K','L','M','N','O','S'] },
+  'r'  : { type: 'TaskCCP4Build'       , after: ['J','K','L','M','N','O','S'] },
 
   // suggest LsqKab after Buccaneer, Refmac and Lorestr
-  's'  : { type: 'TaskLsqKab'         , after: ['U','V','W','r'] },
+  's'  : { type: 'TaskLsqKab'          , after: ['U','V','W','r'] },
 
   // suggest iMosflm after root
-  't'  : { type: 'TaskDUI'            , after: ['0'] },
+  't'  : { type: 'TaskDUI'             , after: ['0'] },
 
   // suggest iMosflm after root
-  'u'  : { type: 'TaskIMosflm'        , after: ['0'] },
+  'u'  : { type: 'TaskIMosflm'         , after: ['0'] },
 
   // suggest PDBImport alike plain Import
-  'v'  : { type: 'TaskImportPDB'      , after: ['0','B','C','D','E','m'] },
+  'v'  : { type: 'TaskImportPDB'       , after: ['0','B','C','D','E','m'] },
 
   // suggest EnsemblePrepMG alike TaskEnsemblePrepSeq
-  'w'  : { type: 'TaskEnsemblePrepMG' , after: ['B','D','m'] },
+  'w'  : { type: 'TaskEnsemblePrepMG'  , after: ['B','D','m'] },
 
   // suggest XDSGUI after root
-  'x'  : { type: 'TaskXDSGUI'         , after: ['0'] }
+  'x'  : { type: 'TaskXDSGUI'          , after: ['0'] }
 
 };
 

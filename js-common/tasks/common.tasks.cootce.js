@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    04.02.20   <--  Date of Last Modification.
+ *    13.03.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -39,7 +39,8 @@ function TaskCootCE()  {
   this.nc_type = 'client';    // job may be run only on client NC
 
   this.input_dtypes = [{      // input data types
-      data_type : {'DataStructure':['xyz'],'DataXYZ':[],'DataEnsemble':[]}, // data type(s) and subtype(s)
+      data_type : {'DataStructure':['xyz'],'DataXYZ':[],
+                   'DataEnsemble':[],'DataModel':[]}, // data type(s) and subtype(s)
       label     : 'Structure to edit',     // label for input dialog
       inputId   : 'ixyz',     // input Id for referencing input fields
       cast      : 'xyz',

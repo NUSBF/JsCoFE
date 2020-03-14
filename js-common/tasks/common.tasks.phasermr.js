@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    10.02.20   <--  Date of Last Modification.
+ *    13.03.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -56,8 +56,7 @@ function TaskPhaserMR()  {
       max         : 1           // maximum acceptable number of data instances
     */
     },{
-//**      data_type   : {'DataEnsemble':['~sequnk'],'DataXYZ':[]}, // data type(s) and subtype(s)
-      data_type   : {'DataEnsemble':[]}, // data type(s) and subtype(s)
+      data_type   : {'DataEnsemble':[],'DataModel':[]}, // data type(s) and subtype(s)
       label       : 'Model ensemble', // label for input dialog
       inputId     : 'model',     // input Id for referencing input fields
       customInput : 'phaser-mr', // lay custom fields below the dropdown (Ncopies, R.m.s.d.)

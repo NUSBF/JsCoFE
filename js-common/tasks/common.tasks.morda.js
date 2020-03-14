@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    09.02.20   <--  Date of Last Modification.
+ *    14.03.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -49,7 +49,7 @@ function TaskMorda()  {
 
   this.parameters = { // input parameters
     sec1 : { type     : 'section',
-             title    : 'Additional parameters',
+             title    : 'Parameters',
              open     : true,  // true for the section to be initially open
              position : [0,0,1,5],
              contains : {

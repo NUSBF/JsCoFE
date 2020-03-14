@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    07.11.19   <--  Date of Last Modification.
+ *    12.03.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  XYZ Data Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2019
+ *  (C) E. Krissinel, A. Lebedev 2016-2020
  *
  *  =================================================================
  *
@@ -35,10 +35,11 @@ function DataXYZ()  {
   if (__template)  __template.DataTemplate.call ( this );
              else  DataTemplate.call ( this );
 
-  this._type    = 'DataXYZ';
-  this.xyzmeta  = {};
-  this.exclLigs = ['(agents)'];  // list of excluded ligands for PISA
-  this.selChain = '(all)';       // selected chains for comparison
+  this._type        = 'DataXYZ';
+  this.xyzmeta      = {};
+  this.exclLigs     = ['(agents)'];  // list of excluded ligands for PISA
+  this.selChain     = '(all)';       // selected chains for comparison
+  this.chainSelType = '';
 
 }
 
@@ -332,6 +333,10 @@ if (!__template)  {
     } else if (startsWith(dropdown.layCustom,'chain-sel'))  {
 
       this.chainSel = customGrid.chainSel.getValue();
+      var lst = customGrid.chainSel.getText().replace('(','').replace(')','').split(' ');
+      if (lst.length>1)
+            this.chainSelType = lst[1];
+      else  this.chainSelType = '';
 
     }
 

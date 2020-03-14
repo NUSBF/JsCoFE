@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    07.08.19   <--  Date of Last Modification.
+ *    11.03.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  FacilityTree
  *       ~~~~~~~~~  StorageTree
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2019
+ *  (C) E. Krissinel, A. Lebedev 2016-2020
  *
  *  =================================================================
  *
@@ -389,6 +389,8 @@ StorageTree.prototype.readStorageData = function ( page_title,
               else  icon = image_path('file_pdb');
             } else if (['seq','fasta','pir'].indexOf(ext)>=0)
                                   icon = image_path('file_seq' );
+            else if (ext=='hhr')
+                                  icon = image_path('file_hhpred' );
             else if ('image' in sfile)  {
               if (sfile.image>0)  icon = image_path('file_xray');
                             else  name = '(' + Array(name.length).join('....') + ')';

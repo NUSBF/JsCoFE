@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    07.03.20   <--  Date of Last Modification.
+ *    14.03.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -175,45 +175,8 @@ TaskListDialog.prototype.setTask = function ( task_obj,grid,row,setall )  {
                 .setSize_px ( 54,40 );
   grid.setLabel             ( ' ', row,1,1,1 );
   var title = task_obj.title;
-  if (avail_key[0]!='ok')  {
+  if (avail_key[0]!='ok')
     title += '<br><i><font size="-1">** ' + avail_key[1] + '</font></i>';
-    /*
-    switch (avail_key)  {
-      case 'client' :
-            if (__any_mobile_device)
-                  title += '** task is not available on mobile devices';
-            else  title += '** task is available only if started via CCP4 Cloud Client';
-          break;
-      case 'client-storage' :
-            title += '** task is available only if started via CCP4 Cloud Client ' +
-                     'or if Cloud Storage is configured';
-          break;
-      case 'client-version' :
-            title += '** task requires a higher version of CCP4 Cloud Client ' +
-                     '(update CCP4 on your device)';
-          break;
-      case 'authorisation'   :
-            title += '** task requires authorisation from ' +
-                     __auth_software[task_obj.authorisationID()].desc_provider +
-                     ' (available in "My Account")';
-          break;
-      case 'server-excluded' :
-            title += '** task is not available on ' + appName() + ' server';
-          break;
-      case 'windows-excluded' :
-            title += '** task is not available on MS Windows systems';
-          break;
-      case 'environment-client' :
-            title += '** task software is not installed on your device';
-          break;
-      case 'environment-server' :
-            title += '** task software is not installed on ' + appName() + ' server';
-          break;
-      default : ;
-    }
-    title += '</font></i>';
-    */
-  }
   var lbl = grid.setLabel   ( title,row,2,1,1 );
   grid.setNoWrap            ( row,2 );
   grid.setVerticalAlignment ( row,2,'middle' );
@@ -397,28 +360,35 @@ var row      = 0;
     new TaskEditRevisionSubstr()
   ]);
 
-  this.makeSection ( 'Molecular Replacement',[
+  this.makeSection ( 'Automated Molecular Replacement',[
+    'Conventional Auto-MR',
+    new TaskMorda (),
+    new TaskMrBump(),
+    new TaskBalbes(),
     'No-sequence methods',
     new TaskSimbad(),
     'No-model methods',
-    new TaskAmple (),
-    'Automated MR',
-    new TaskBalbes(),
-    new TaskMorda (),
-    new TaskMrBump(),
-    'Elementary MR',
-    new TaskEnsemblePrepMG (),
+    new TaskAmple ()
+  ]);
+
+  this.makeSection ( 'Molecular Replacement',[
+    'MR model preparation',
+    new TaskModelPrepXYZ   (),
+    new TaskModelPrepAlgn  (),
+    new TaskEnsembler      (),
     new TaskEnsemblePrepSeq(),
     new TaskEnsemblePrepXYZ(),
-    new TaskMolrep  (),
-    new TaskPhaserMR()
+    new TaskEnsemblePrepMG (),
+    'Fundamental MR',
+    new TaskPhaserMR(),
+    new TaskMolrep  ()
   ]);
 
   this.makeSection ( 'Experimental Phasing',[
     'Automated EP',
     new TaskCrank2     (),
     new TaskShelxAuto  (),
-    'Elementary EP',
+    'Fundamental EP',
     new TaskShelxSubstr(),
     new TaskShelxCD    (),
     new TaskPhaserEP   ()

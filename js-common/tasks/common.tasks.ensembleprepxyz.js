@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    22.01.20   <--  Date of Last Modification.
+ *    14.03.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -44,7 +44,7 @@ function TaskEnsemblePrepXYZ()  {
   this._type   = 'TaskEnsemblePrepXYZ';
   this.name    = 'ensemble preparation (xyz)';
   this.setOName ( 'ensemble' );  // default output file name template
-  this.title   = 'Ensemble Preparation for MR from Coordinates';
+  this.title   = 'Prepare MR Ensemble from Coordinate Data';
   this.helpURL = './html/jscofe_task_ensembleprepxyz.html';
 
   this.input_dtypes = [{  // input data types
@@ -90,8 +90,8 @@ function TaskEnsemblePrepXYZ()  {
                         range    : [ 'U|Unmodified',
                                      'D|PDB Clip',
                                      'M|Molrep',
-                                     //'C|Chainsaw',
-                                     //'S|Sculptor',
+                                     'C|Chainsaw',
+                                     'S|Sculptor',
                                      'P|Polyalanine'
                                    ],
                         value    : 'M',
@@ -213,7 +213,7 @@ function TaskEnsemblePrepXYZ()  {
               }
             }
 
-  }
+  };
 
 }
 

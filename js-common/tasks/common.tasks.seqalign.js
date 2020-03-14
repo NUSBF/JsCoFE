@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.10.19   <--  Date of Last Modification.
+ *    13.03.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Sequence Alignment Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2019
+ *  (C) E. Krissinel, A. Lebedev 2016-2020
  *
  *  =================================================================
  *
@@ -39,7 +39,10 @@ function TaskSeqAlign()  {
   this.fasttrack = true;  // enforces immediate execution
 
   this.input_dtypes = [{  // input data types
-      data_type   : {'DataSequence':[],'DataXYZ':[],'DataEnsemble':[],
+      data_type   : {'DataSequence' :[],
+                     'DataEnsemble' :[],
+                     'DataModel'    :[],
+                     'DataXYZ'      :[],
                      'DataStructure':['xyz']}, // data type(s) and subtype(s)
       label       : 'Sequence source',     // label for input dialog
       inputId     : 'seq',       // input Id for referencing input fields
