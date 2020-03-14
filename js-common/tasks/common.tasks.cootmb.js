@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    15.01.20   <--  Date of Last Modification.
+ *    13.03.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -46,7 +46,8 @@ function TaskCootMB()  {
       min       : 1,          // minimum acceptable number of data instances
       max       : 1           // maximum acceptable number of data instances
     },{
-      data_type : {'DataStructure':[],'DataEnsemble':[],'DataXYZ':[]},  // data type(s) and subtype(s)
+      data_type : {'DataStructure':[],'DataEnsemble':[],
+                   'DataModel':[],'DataXYZ':[]},  // data type(s) and subtype(s)
       label     : 'Additional structures', // label for input dialog
       inputId   : 'aux_struct', // input Id for referencing input fields
       version   : 0,            // minimum data version allowed

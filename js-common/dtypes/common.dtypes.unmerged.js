@@ -135,7 +135,7 @@ if (!__template)  {
     var msg = '';   // Ok by default
     var customGrid = dropdown.customGrid;
     var regex_runs = /^\s*(\d+\s*(-\s*\d+\s*)?(,\s*\d+\s*(-\s*\d+\s*)?)*)?$/;
-    var regex_runs2 = /^\d+(-\d+)?(,\d+(-\d+)?)*$/;
+    //var regex_runs2 = /^\d+(-\d+)?(,\d+(-\d+)?)*$/;
 
 //    if (dropdown.layCustom.startsWith('unmerged'))  {
     if (startsWith(dropdown.layCustom,'unmerged'))  {
@@ -144,7 +144,7 @@ if (!__template)  {
         this.symm_select  = customGrid.combosel.getValues();
       } else  {
         this.runs = customGrid.runs.getValue().trim();
-        var ok = this.runs.length == 0
+        var ok    = (this.runs.length==0);
         if (!ok)
         {
           ok = regex_runs.test(this.runs);
@@ -178,8 +178,9 @@ if (!__template)  {
     return msg;
   }
 }
-else
-{
+
+
+else  {
   //  for server side
   module.exports.DataUnmerged = DataUnmerged;
 }

@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    13.02.20   <--  Date of Last Modification.
+#    11.03.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -34,11 +34,13 @@ import pyrvapi
 #  application imports
 import basic
 from proc import (import_xrayimages, import_unmerged, import_merged,
-                  import_xyz, import_ligand, import_sequence, import_doc)
+                  import_xyz, import_ligand, import_sequence, import_doc,
+                  import_alignment)
 from proc import import_pdb
 
 importers = [import_xrayimages, import_unmerged, import_merged,
-             import_xyz, import_ligand, import_sequence, import_doc]
+             import_xyz, import_ligand, import_sequence, import_doc,
+             import_alignment]
 
 # import_map can fail if the mrcfile package is not available. Once mrcfile is
 # properly included in CCP4 builds, this can be changed to a normal import.
@@ -149,8 +151,10 @@ class Import(basic.TaskDriver):
     def run(self):
 
         # copy pre-existing revisions into output first
+        nrevisions0 = 0
         if hasattr(self.input_data.data,"void1"):
-            revision = self.input_data.data.void1
+            revision    = self.input_data.data.void1
+            nrevisions0 = len(revision)
             for i in range(len(revision)):
                 revision[i] = self.makeClass ( revision[i] )
                 revision[i].register ( self.outputDataBox )
@@ -173,7 +177,11 @@ class Import(basic.TaskDriver):
             # modify job name to display in job tree
             ilist = ""
             for key in self.outputDataBox.data:
-                ilist += key[4:] + " (" + str(len(self.outputDataBox.data[key])) + ") "
+                nimported = len(self.outputDataBox.data[key])
+                if key=="DataRevision":
+                    nimported -= nrevisions0
+                if nimported>0:
+                    ilist += key[4:] + " (" + str(nimported) + ") "
             if ilist:
                 if self.task.uname:
                     self.task.uname += " / "

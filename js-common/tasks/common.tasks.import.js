@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    07.02.20   <--  Date of Last Modification.
+ *    11.03.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -153,7 +153,8 @@ if (!__template)  {
     (function(panel,task){
       panel.upload = new Upload ( panel.customData,
         { 'type'   : 'project_data',
-          'accept' : '.pdb,.ent,.seq,.fasta,.pir,.mtz,.cif,.mmcif,.doc,.docx,.pdf,.txt,.jpg,.jpeg,.gif,.png,.html,.htm,.hkl' },
+          'accept' : '.pdb,.ent,.seq,.fasta,.pir,.mtz,.cif,.mmcif,.doc,.docx,' +
+                     '.pdf,.txt,.jpg,.jpeg,.gif,.png,.html,.htm,.hkl,.hhr' },
         function(e,onReady_func) {
           if (e.target.files.length>0)
             _import_checkFiles ( e.target.files,div.customData.file_mod,

@@ -3,13 +3,13 @@
 #
 # ============================================================================
 #
-#    24.07.19   <--  Date of Last Modification.
+#    11.03.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  FILE TYPE DETECTION FUNCTION
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2018-2019
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2018-2020
 #
 # ============================================================================
 #
@@ -36,6 +36,7 @@ def ftype_CIFMerged    ():  return "cif_merged"
 def ftype_XYZ          ():  return "xyz"
 def ftype_Ligand       ():  return "ligand"
 def ftype_Sequence     ():  return "sequence"
+def ftype_Alignment    ():  return "alignment"
 def ftype_HTML         ():  return "html"
 def ftype_PDF          ():  return "pdf"
 def ftype_TEXT         ():  return "text"
@@ -86,6 +87,7 @@ def getFileType ( fname,importDir,file_stdout ):
     if fext in ('.map','.mrc'):           return ftype_Map()
     if fext in ('.pdb','.mmcif','.ent'):  return ftype_XYZ()
     if fext in ('.seq','.fasta','.pir'):  return ftype_Sequence()
+    if fext=='.hhr':                      return ftype_Alignment()
 
     if fext=='.txt' :
         fn1,fext1 = os.path.splitext(fn.lower())

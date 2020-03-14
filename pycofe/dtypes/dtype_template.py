@@ -55,7 +55,8 @@ file_key = {
     'dmap'  : 'dmap',  # difference map file
     'lib'   : 'lib',   # ligand dictionary
     'coot'  : 'coot',  # Coot python script
-    'molp'  : 'molp'   # molprobity_probe.txt file
+    'molp'  : 'molp',  # molprobity_probe.txt file
+    'hhr'   : 'hhr'    # hhpred alignment file
 }
 
 

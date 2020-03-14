@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.10.19   <--  Date of Last Modification.
+ *    14.03.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Ensemble Preparation from Sequence Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2019
+ *  (C) E. Krissinel, A. Lebedev 2016-2020
  *
  *  =================================================================
  *
@@ -36,7 +36,7 @@ function TaskEnsemblePrepSeq()  {
   this._type   = 'TaskEnsemblePrepSeq';
   this.name    = 'ensemble preparation (seq)';
   this.setOName ( 'ensemble' );  // default output file name template
-  this.title   = 'Ensemble Preparation for MR from Sequence';
+  this.title   = 'Prepare MR Ensemble from Sequence';
   this.helpURL = './html/jscofe_task_ensembleprepseq.html';
 
   this.input_dtypes = [{  // input data types
@@ -77,8 +77,7 @@ function TaskEnsemblePrepSeq()  {
            }
          }
 
-  }
-
+  };
 
 }
 
@@ -101,50 +100,7 @@ TaskEnsemblePrepSeq.prototype.currentVersion = function()  {
 
 // export such that it could be used in both node and a browser
 
-if (!__template)  {
-
-  /*
-  TaskEnsemblePrepSeq.prototype.inputChanged = function ( inpParamRef,emitterId,emitterValue )  {
-
-    function makeSuffix ( title,suffix )  {
-      return title.split(' (')[0] + ' (' + suffix + ')';
-    }
-
-    TaskTemplate.prototype.inputChanged.call ( this,inpParamRef,emitterId,emitterValue );
-
-    if ((emitterId=='hkl') && (this.state==job_code.new))  {
-
-      var name = this.name;
-      if (emitterValue<=0)  {
-        this.name  = 'mrbump-search';
-        this.title = 'Search for MR Models with MrBump';
-      } else  {
-        this.name  = 'mrbump';
-        this.title = 'MrBump Automated Molecular Replacement';
-      }
-
-      if (this.name!=name)  {
-        var inputPanel = inpParamRef.grid.parent.parent;
-        inputPanel.header.title.setText ( '<b>' + this.title + '</b>' );
-        this.updateInputPanel ( inputPanel );
-      }
-
-    }
-
-  }
-
-  TaskEnsemblePrepSeq.prototype.updateInputPanel = function ( inputPanel )  {
-    if (this.state==job_code.new)  {
-      var event = new CustomEvent ( cofe_signals.jobDlgSignal,{
-         'detail' : job_dialog_reason.rename_node
-      });
-      inputPanel.element.dispatchEvent(event);
-    }
-  }
-  */
-
-
-} else  {
+if (__template)  {
   //  for server side
 
   var conf = require('../../js-server/server.configuration');

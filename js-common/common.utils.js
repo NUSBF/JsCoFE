@@ -103,10 +103,10 @@ function replaceAll ( str,find,rep )  {
 //  return str;
 }
 
-function strip_html_tags ( str )  {
-  if ((str===null) || (str===''))
-       return '';
-  return str.toString().replace(/<[^>]*>/g, '');
+function strip_html_tags ( S )  {
+  if (!S) return '';
+  return S.toString().replace(/<[^>]*>/g, '');
+  //return S.replace(/(<\?[a-z]*(\s[^>]*)?\?(>|$)|<!\[[a-z]*\[|\]\]>|<!DOCTYPE[^>]*?(>|$)|<!--[\s\S]*?(-->|$)|<[a-z?!\/]([a-z0-9_:.])*(\s[^>]*)?(>|$))/gi, '');
 }
 
 function startsWith ( str,substr )  {

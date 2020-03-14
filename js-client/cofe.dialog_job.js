@@ -172,7 +172,7 @@ JobDialog.prototype.constructor = JobDialog;
 JobDialog.prototype.changeTitle = function ( new_title )  {
   var title = '[' + padDigits(this.task.id,4) + '] ' + new_title +
               this.statusLine();
-  $(this.element).dialog({ title : title });
+  $(this.element).dialog({ title : strip_html_tags(title) });
 }
 
 JobDialog.prototype.statusLine = function()  {

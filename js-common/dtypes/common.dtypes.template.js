@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    19.02.20   <--  Date of Last Modification.
+ *    11.03.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -33,7 +33,8 @@
     'dmap'  : 'dmap',    // difference map file
     'lib'   : 'lib',     // ligand dictionary
     'coot'  : 'coot',    // Coot python script
-    'molp'  : 'molp'     // molprobity_probe.txt file
+    'molp'  : 'molp',    // molprobity_probe.txt file
+    'hhr'   : 'hhr'      // hhpred alignment file
  }
 
 // ===========================================================================

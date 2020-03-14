@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    09.03.20   <--  Date of Last Modification.
+#    13.03.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -51,9 +51,9 @@ import pyrvapi
 import pyrvapi_ext.parsers
 
 # pycofe imports
-from pycofe.dtypes import dtype_template, dtype_xyz, dtype_structure, databox
-from pycofe.dtypes import dtype_ensemble, dtype_hkl, dtype_ligand
-from pycofe.dtypes import dtype_sequence, dtype_library
+from pycofe.dtypes import dtype_template, dtype_xyz,   dtype_structure, databox
+from pycofe.dtypes import dtype_ensemble, dtype_hkl,   dtype_ligand
+from pycofe.dtypes import dtype_sequence, dtype_model, dtype_library
 from pycofe.proc   import edmap,  import_filetype, import_merged
 from pycofe.varut  import signal, jsonut, command
 from pycofe.etc    import citations
@@ -1591,6 +1591,29 @@ class TaskDriver(object):
 
     # ============================================================================
 
+    def registerModel ( self,sequence,modelPath,checkout=True ):
+        self.dataSerialNo += 1
+        if checkout:
+            model = dtype_model.register ( sequence,modelPath,
+                                           self.dataSerialNo,self.job_id,
+                                           self.outputDataBox,
+                                           self.outputDir() )
+        else:
+            model = dtype_model.register ( sequence,modelPath,
+                                           self.dataSerialNo,self.job_id,
+                                           None,self.outputDir() )
+        if not model:
+            self.file_stderr.write ( "  NONE MODEL DATA\n" )
+            self.file_stderr.flush()
+        else:
+            if type(sequence)!=str and type(sequence)!=list:
+                shutil.copy ( sequence.getSeqFilePath(self.inputDir()),
+                              self.outputDir() )
+            model.putXYZMeta ( self.outputDir(),self.file_stdout1,
+                                  self.file_stderr,None )
+
+        return model
+
     def registerEnsemble ( self,sequence,ensemblePath,checkout=True ):
         self.dataSerialNo += 1
         if checkout:
@@ -1615,6 +1638,28 @@ class TaskDriver(object):
         return ensemble
 
     # ----------------------------------------------------------------------------
+
+    def putModelWidget ( self,widgetId,title_str,model,openState=-1 ):
+        self.putModelWidget1 ( self.report_page_id(),widgetId,title_str,
+                               model,openState,self.rvrow,1 )
+        self.rvrow += 2
+        return
+
+    def putModelWidget1 ( self,pageId,widgetId,title_str,model,openState,row,colSpan ):
+
+        msg = "<b>Assigned name&nbsp;&nbsp;&nbsp;:</b>&nbsp;&nbsp;&nbsp;" + model.dname
+        if model.seqId:
+            msg += "<br><b>Estimated seqId :</b>&nbsp;&nbsp;&nbsp;" + str(model.seqId)
+
+        self.putMessage1 ( pageId,msg + "&nbsp;",row )
+
+        pyrvapi.rvapi_add_data ( widgetId,title_str,
+                    # always relative to job_dir from job_dir/html
+                    "/".join(["..",self.outputDir(),model.getXYZFileName()]),
+                    "xyz",pageId,row+1,0,1,colSpan,openState )
+        self.addCitations ( ["uglymol","ccp4mg"] )
+        return row+2
+
 
     def putEnsembleWidget ( self,widgetId,title_str,ensemble,openState=-1 ):
         self.putEnsembleWidget1 ( self.report_page_id(),widgetId,title_str,

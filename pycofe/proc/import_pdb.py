@@ -30,13 +30,11 @@ from pycofe.proc   import import_filetype, asucomp
 from pycofe.proc   import import_xyz, import_sequence, import_merged
 
 
-
-#from   pycofe.varut  import command
-#from   pycofe.proc   import import_filetype, xyzmeta, coor
-
-
 # ============================================================================
 # import pdb files function
+
+def get_pdb_file_url ( ucode ):
+    return "https://files.rcsb.org/download/" + ucode + ".pdb"
 
 def download_file ( url,fpath ):
     rc = 0  # return code
@@ -56,7 +54,7 @@ def download_file ( url,fpath ):
                     break;
                 line = f.readline()
     except:
-      rc = -2
+        rc = -2
     return rc
 
 
@@ -86,8 +84,9 @@ def run ( body,pdb_list,
         rc_seq    = -1
         rc_sf     = -1
         if import_coordinates:
-            rc_xyz = download_file ( "https://files.rcsb.org/download/" + ucode + ".pdb",
-                                     fpath_xyz )
+            rc_xyz = download_file ( get_pdb_file_url(ucode),fpath_xyz )
+            #rc_xyz = download_file ( "https://files.rcsb.org/download/" + ucode + ".pdb",
+            #                         fpath_xyz )
         if import_sequences:
             rc_seq = download_file ( "https://www.rcsb.org/pdb/download/downloadFastaFiles.do?structureIdList=" +
                                     ucode + "&compressionType=uncompressed",
