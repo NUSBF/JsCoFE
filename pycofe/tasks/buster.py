@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    19.01.20   <--  Date of Last Modification.
+#    15.03.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -26,10 +26,11 @@
 
 #  python native imports
 import os
-#import shutil
+import shutil
 
 #  application imports
 import basic
+from   pycofe.proc   import qualrep
 
 
 # ============================================================================
@@ -133,6 +134,9 @@ class Buster(basic.TaskDriver):
         """
 
         # run buster
+        os.environ["autoBUSTER_HIGHLIGHT"] = "no"
+        os.environ["UseDictionaryCommonCompoundsOwn"] =\
+                    os.path.join ( os.environ["CCP4"],"lib","data","monomers" )
         self.runApp ( "refine",cmd,logType="Main" )
 
         # check results and finish report
@@ -140,8 +144,6 @@ class Buster(basic.TaskDriver):
         mtzout = os.path.join ( self.buster_dir(),"refine.mtz" )
         xyzout = os.path.join ( self.buster_dir(),"refine.pdb" )
         if os.path.isfile(mtzout):
-
-            self.file_stdout.close()
 
             graphData = [
                 { "name"  : "R-factors" , "plots" : [] },
@@ -151,62 +153,66 @@ class Buster(basic.TaskDriver):
             plot_ref = None
             plot_llg = None
             plot_rms = None
-            with open(self.file_stdout_path(),"r") as f:
-                for line in f:
-                    if "Ncyc       Total        Grms       Rfact       Rfree         LLG     LLGfree  Geom_Funct     rmsBOND    rmsANGLE" in line:
-                        iter = "Iteration #" + str(len(graphData[0]["plots"])+1) + ": "
-                        plot_ref = {
-                            "name"   : iter + "R-factors",
-                            "xtitle" : "Cycle No.",
-                            "ytitle" : "R-factors",
-                            "x"      : {  "name":"Cycle No.", "values": [] },
-                            "y"      : [{ "name":"R-factor" , "values": [] },
-                                        { "name":"R-free"   , "values": [] }]
-                        }
-                        plot_llg = {
-                            "name"   : iter + "LLG scores",
-                            "xtitle" : "Cycle No.",
-                            "ytitle" : "LLG scores",
-                            "x"      : {  "name":"Cycle No.", "values": [] },
-                            "y"      : [{ "name":"LLG"     , "values": [] },
-                                        { "name":"LLG-free", "values": [] }]
-                        }
-                        plot_rms = {
-                            "name"   : iter + "LLG scores",
-                            "xtitle" : "Cycle No.",
-                            "ytitle" : "RMS scores",
-                            "x"      : {  "name":"Cycle No.", "values": [] },
-                            "y"      : [{ "name":"rmsBOND" , "values": [] },
-                                        { "name":"rmsANGLE", "values": [] }]
-                        }
-                    elif plot_ref and line.strip()=="":
-                        graphData[0]["plots"].append ( plot_ref )
-                        graphData[1]["plots"].append ( plot_llg )
-                        graphData[2]["plots"].append ( plot_rms )
-                        plot_ref = None
-                        plot_llg = None
-                        plot_rms = None
-                    elif "best refinement in BUSTER reached for" in line:
-                        vals = line.split()[-1].split("/")
-                        self.generic_parser_summary["buster"] = {
-                            "R_factor" : vals[0],
-                            "R_free"   : vals[1]
-                        }
-                    elif plot_ref:
-                        vals = line.split()
-                        plot_ref["x"]   ["values"].append ( float(vals[0]) )
-                        plot_ref["y"][0]["values"].append ( float(vals[3]) )
-                        plot_ref["y"][1]["values"].append ( float(vals[4]) )
-                        if vals[0]!="0":
-                            plot_llg["x"]   ["values"].append ( float(vals[0]) )
-                            plot_llg["y"][0]["values"].append ( float(vals[5]) )
-                            plot_llg["y"][1]["values"].append ( float(vals[6]) )
-                        plot_rms["x"]   ["values"].append ( float(vals[0]) )
-                        plot_rms["y"][0]["values"].append ( float(vals[8]) )
-                        plot_rms["y"][1]["values"].append ( float(vals[9]) )
+
+            self.flush()
+            self.file_stdout.close()
+            f = open ( self.file_stdout_path(),"r" )
+            for line in f:
+                if "Ncyc       Total        Grms       Rfact       Rfree         LLG     LLGfree  Geom_Funct     rmsBOND    rmsANGLE" in line:
+                    iter = "Iteration #" + str(len(graphData[0]["plots"])+1) + ": "
+                    plot_ref = {
+                        "name"   : iter + "R-factors",
+                        "xtitle" : "Cycle No.",
+                        "ytitle" : "R-factors",
+                        "x"      : {  "name":"Cycle No.", "values": [] },
+                        "y"      : [{ "name":"R-factor" , "values": [] },
+                                    { "name":"R-free"   , "values": [] }]
+                    }
+                    plot_llg = {
+                        "name"   : iter + "LLG scores",
+                        "xtitle" : "Cycle No.",
+                        "ytitle" : "LLG scores",
+                        "x"      : {  "name":"Cycle No.", "values": [] },
+                        "y"      : [{ "name":"LLG"     , "values": [] },
+                                    { "name":"LLG-free", "values": [] }]
+                    }
+                    plot_rms = {
+                        "name"   : iter + "LLG scores",
+                        "xtitle" : "Cycle No.",
+                        "ytitle" : "RMS scores",
+                        "x"      : {  "name":"Cycle No.", "values": [] },
+                        "y"      : [{ "name":"rmsBOND" , "values": [] },
+                                    { "name":"rmsANGLE", "values": [] }]
+                    }
+                elif plot_ref and line.strip()=="":
+                    graphData[0]["plots"].append ( plot_ref )
+                    graphData[1]["plots"].append ( plot_llg )
+                    graphData[2]["plots"].append ( plot_rms )
+                    plot_ref = None
+                    plot_llg = None
+                    plot_rms = None
+                elif "best refinement in BUSTER reached for" in line:
+                    vals = line.split()[-1].split("/")
+                    self.generic_parser_summary["buster"] = {
+                        "R_factor" : vals[0],
+                        "R_free"   : vals[1]
+                    }
+                elif plot_ref:
+                    vals = line.split()
+                    plot_ref["x"]   ["values"].append ( float(vals[0]) )
+                    plot_ref["y"][0]["values"].append ( float(vals[3]) )
+                    plot_ref["y"][1]["values"].append ( float(vals[4]) )
+                    if vals[0]!="0":
+                        plot_llg["x"]   ["values"].append ( float(vals[0]) )
+                        plot_llg["y"][0]["values"].append ( float(vals[5]) )
+                        plot_llg["y"][1]["values"].append ( float(vals[6]) )
+                    plot_rms["x"]   ["values"].append ( float(vals[0]) )
+                    plot_rms["y"][0]["values"].append ( float(vals[8]) )
+                    plot_rms["y"][1]["values"].append ( float(vals[9]) )
+            f.close()
 
             # continue writing to stdout
-            self.file_stdout = open ( self.file_stdout_path(),'a' )
+            self.file_stdout = open ( self.file_stdout_path(),"a" )
 
             #self.stdoutln ( str(plots) )
 
@@ -233,6 +239,16 @@ class Buster(basic.TaskDriver):
                 revision.setStructureData ( structure )
                 self.registerRevision     ( revision  )
                 have_results = True
+
+                qualrep.quality_report ( self,revision )
+
+        # remove this because it contains soft links not good for copying
+        #shutil.rmtree ( self.buster_dir() )
+        for root, dirs, files in os.walk(self.buster_dir()):
+            for name in files:
+                fpath = os.path.join ( root,name )
+                if os.path.islink(fpath):
+                    os.unlink ( fpath )
 
         # close execution logs and quit
         self.success ( have_results )

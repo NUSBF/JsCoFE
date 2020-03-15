@@ -323,6 +323,7 @@ function unpackDir1 ( dirPath,jobballPath,cleanTmpDir,remove_jobball_bool,onRead
   zip.on('close', function(code){
     if (remove_jobball_bool)
       utils.removeFile ( jobballPath )
+//console.log ( ' ================== jobballPath=' + jobballPath );
     if (cleanTmpDir)  {
        // replace destination with temporary directory used for unpacking;
        // as all directories are on the same device (see above), the
@@ -455,8 +456,10 @@ function receiveDir ( jobDir,tmpDir,server_request,onFinish_func )  {
               onFinish_func ( 0,errs,upload_meta );  //  integer code : unpacking was run
             if (!err)
               log.detailed ( 7,'directory contents has been received in ' + jobDir );
-            else
-              log.detailed ( 7,'directory contents has been received in ' + jobDir + ' with errors: ' + err );
+            else  {
+              log.standard ( 7,'directory contents has been received in ' + jobDir + ' with errors: ' + err );
+              log.error    ( 7,'directory contents has been received in ' + jobDir + ' with errors: ' + err );
+            }
           });
 
         } else  {
@@ -476,8 +479,10 @@ function receiveDir ( jobDir,tmpDir,server_request,onFinish_func )  {
                 onFinish_func ( code,errs,upload_meta );  //  integer code : unpacking was run
               if (code==0)
                 log.detailed ( 6,'directory contents has been received in ' + jobDir );
-              else
-                log.detailed ( 6,'directory contents has been received in ' + jobDir + ' with errors: ' + code );
+              else  {
+                log.standard ( 6,'directory contents has been received in ' + jobDir + ' with errors: ' + code );
+                log.error    ( 6,'directory contents has been received in ' + jobDir + ' with errors: ' + code );
+              }
             });
 
           } else if (onFinish_func)
@@ -488,7 +493,7 @@ function receiveDir ( jobDir,tmpDir,server_request,onFinish_func )  {
       } else  {
         if (onFinish_func)
           onFinish_func ( 'err_dirnoexist',errs,upload_meta );  // file renaming errors
-        log.error ( 7,'target directory ' + jobDir + ' does not exist' );
+        log.error ( 8,'target directory ' + jobDir + ' does not exist' );
       }
 
     } else if (onFinish_func)

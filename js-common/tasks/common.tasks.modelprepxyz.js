@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.03.20   <--  Date of Last Modification.
+ *    15.03.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -86,12 +86,11 @@ function TaskModelPrepXYZ()  {
                         range    : [ 'U|Unmodified',
                                      'D|PDB Clip',
                                      'M|Molrep',
-                                     //'C|Chainsaw',
-                                     //'S|Sculptor',
+                                     'S|Sculptor',
+                                     'C|Chainsaw',
                                      'P|Polyalanine'
                                    ],
                         value    : 'M',
-                        //showon   : { _:'&&', 'seq':[1], 'xyz':[1] },
                         position : [0,0,1,1]
                       },
                 LEGEND_SEQ_U : {
@@ -99,43 +98,76 @@ function TaskModelPrepXYZ()  {
                         label     : '<i>(models are not changed)</i>',
                         position  : [0,3,1,1],
                         showon    : { 'MODIFICATION_SEL':['U'] }
-                        //showon    : { _:'&&','seq':[1],'xyz':[1],'MODIFICATION_SEQ_SEL':['U'] }
                       },
                 LEGEND_SEQ_D : {
                         type      : 'label',  // just a separator
                         label     : '<i>(remove solvent, hydrogens, and select most probable conformations)</i>',
                         position  : [0,3,1,1],
                         showon    : { 'MODIFICATION_SEL':['D'] }
-                        //showon    : { _:'&&','seq':[1],'xyz':[1],'MODIFICATION_SEQ_SEL':['D'] }
                       },
                 LEGEND_SEQ_M : {
                         type      : 'label',  // just a separator
                         label     : '<i>(side chain truncation based on Molrep)</i>',
                         position  : [0,3,1,1],
                         showon    : { 'MODIFICATION_SEL':['M'] }
-                        //showon    : { _:'&&','seq':[1],'xyz':[1],'MODIFICATION_SEQ_SEL':['M'] }
                       },
                 LEGEND_SEQ_C : {
                         type      : 'label',  // just a separator
                         label     : '<i>(side chain truncation based on Chainsaw)</i>',
                         position  : [0,3,1,1],
                         showon    : { 'MODIFICATION_SEL':['C'] }
-                        //showon    : { _:'&&','seq':[1],'xyz':[1],'MODIFICATION_SEQ_SEL':['C'] }
                       },
                 LEGEND_SEQ_S : {
                         type      : 'label',  // just a separator
-                        label     : '<i>(side chain truncation based on Sculptor)</i>',
+                        label     : '<i>(side chain truncation based on Phaser.Sculptor)</i>',
                         position  : [0,3,1,1],
                         showon    : { 'MODIFICATION_SEL':['S'] }
-                        //showon    : { _:'&&','seq':[1],'xyz':[1],'MODIFICATION_SEQ_SEL':['S'] }
                       },
                 LEGEND_SEQ_P : {
                         type      : 'label',  // just a separator
                         label     : '<i>(removal of all side chains)</i>',
                         position  : [0,3,1,1],
                         showon    : { 'MODIFICATION_SEL':['P'] }
-                        //showon    : { _:'&&','seq':[1],'xyz':[1],'MODIFICATION_SEQ_SEL':['P'] }
+                      },
+
+                SCULPTOR_PROTOCOL_SEL : {
+                        type     : 'combobox',
+                        keyword  : 'none',
+                        label    : 'Sculptor protocol:',
+                        tooltip  : 'Choose Sculptor processing protocol',
+                        range    : [ '1|#1',
+                                     '2|#2',
+                                     '3|#3',
+                                     '4|#4',
+                                     '5|#5',
+                                     '6|#6',
+                                     '7|#7',
+                                     '8|#8',
+                                     '9|#9',
+                                     '10|#10',
+                                     '11|#11',
+                                     '12|#12',
+                                     '13|#13'
+                                   ],
+                        value    : '1',
+                        showon   : { 'MODIFICATION_SEL':['S'] },
+                        position : [1,0,1,1]
+                      },
+
+                CHAINSAW_MODE_SEL : {
+                        type     : 'combobox',
+                        keyword  : 'none',
+                        label    : 'Chainsaw protocol:',
+                        tooltip  : 'Choose Chainsaw processing protocol',
+                        range    : [ 'MIXS|gamma atom',
+                                     'MIXA|beta atom',
+                                     'MAXI|last common atom'
+                                   ],
+                        value    : 'MIXS',
+                        showon   : { 'MODIFICATION_SEL':['C'] },
+                        position : [1,0,1,1]
                       }
+
               }
             }
 
@@ -150,6 +182,8 @@ TaskModelPrepXYZ.prototype.constructor = TaskModelPrepXYZ;
 
 
 // ===========================================================================
+
+TaskModelPrepXYZ.prototype.cleanJobDir = function ( jobDir )  {}
 
 TaskModelPrepXYZ.prototype.icon = function()  { return 'task_modelprepxyz'; }
 
