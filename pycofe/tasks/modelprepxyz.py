@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    14.03.20   <--  Date of Last Modification.
+#    15.03.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -36,7 +36,7 @@ import basic
 from   pycofe.proc   import seqal
 
 # ============================================================================
-# Make Ensemble preparation driver
+# Model preparation driver
 
 class ModelPrepXYZ(basic.TaskDriver):
 
@@ -91,6 +91,70 @@ class ModelPrepXYZ(basic.TaskDriver):
         shutil.move ( "align.pdb",fpath_out )
         return
 
+    def prepare_sculptor ( self, protocolNo,fpath_in,fpath_algn,fpath_out ):
+        root_name = "__sculptor"
+        self.open_stdin()
+        self.write_stdin ([
+            "input",
+            "{",
+            "model",
+            "{",
+            "file_name = " + fpath_in,
+            "}",
+            "alignment",
+            "{",
+            "file_name = " + fpath_algn,
+            "target_index = 1",
+            "}",
+            "}",
+            "output",
+            "{",
+            "folder = ./",
+            "root = " + root_name,
+            "}",
+            "macromolecule",
+            "{",
+            "protocols = " + str(protocolNo),
+            "renumber",
+            "{",
+            "use = original",
+            "}",
+            "rename = 0",
+            "}",
+            "hetero = None"
+        ])
+        self.close_stdin()
+        self.runApp (
+            "phaser.sculptor",[
+                "--stdin",
+                "--mode=predefined"
+            ],
+            logType="Service"
+        )
+        files = [f for f in os.listdir("./") if f.startswith(root_name) and f.endswith(".pdb")]
+        if len(files)>0:
+            shutil.move ( files[0],fpath_out )
+        for i in range(1,len(files)):
+            os.remove ( files[i] )
+        return
+
+    def prepare_chainsaw ( self, mode,fpath_in,fpath_algn,fpath_out ):
+        self.open_stdin()
+        self.write_stdin ([
+            "mode " + mode,
+            "END"
+        ])
+        self.close_stdin()
+        self.runApp (
+            "chainsaw",[
+                "XYZIN"  ,fpath_in,
+                "ALIGNIN",fpath_algn,
+                "XYZOUT" ,fpath_out
+            ],
+            logType="Service"
+        )
+        return
+
     def prepare_polyalanine ( self, fpath_in,fpath_out ):
         st = gemmi.read_structure ( fpath_in )
         st.remove_ligands_and_waters()
@@ -119,17 +183,18 @@ class ModelPrepXYZ(basic.TaskDriver):
         return
 
 
-    def make_models ( self,seq,xyz,modSel ):
+    def make_models ( self,seq,xyz,modSel,sclpSel,csMode ):
 
         fpath_seq = seq.getSeqFilePath ( self.inputDir() )
         ensNo     = 0
 
         for i in range(len(xyz)):
 
-            xyz[i]   = self.makeClass   ( xyz[i] )
-            fpath_in = self.fetch_chain ( xyz[i].chainSel,
-                                          xyz[i].getXYZFilePath(self.inputDir()) )
-            rc = seqal.run ( self,[seq,xyz[i]],"__align_"+str(i)+".xfasta" )
+            xyz[i]     = self.makeClass   ( xyz[i] )
+            fpath_in   = self.fetch_chain ( xyz[i].chainSel,
+                                            xyz[i].getXYZFilePath(self.inputDir()) )
+            fpath_algn = "__align_" + str(i) + ".fasta"
+            rc         = seqal.run ( self,[seq,xyz[i]],fpath_algn )
             if rc["code"]==0:
                 sid = str(round(100.0*rc["stat"]["seq_id"],1))
             else:
@@ -151,6 +216,12 @@ class ModelPrepXYZ(basic.TaskDriver):
                 elif modSel=="M":
                     fpath_out = fname + ".mrep" + fext
                     self.prepare_molrep ( fpath_in,fpath_seq,fpath_out )
+                elif modSel=="S":
+                    fpath_out = fname + ".sclp" + fext
+                    self.prepare_sculptor ( sclpSel,fpath_in,fpath_algn,fpath_out )
+                elif modSel=="C":
+                    fpath_out = fname + ".chnw" + fext
+                    self.prepare_chainsaw ( csMode,fpath_in,fpath_algn,fpath_out )
                 elif modSel=="P":
                     fpath_out = fname + ".pala" + fext
                     self.prepare_polyalanine ( fpath_in,fpath_out )
@@ -169,7 +240,9 @@ class ModelPrepXYZ(basic.TaskDriver):
                 model.meta  = { "rmsd" : "", "seqId" : sid }
                 model.seqId = model.meta["seqId"]
                 model.rmsd  = model.meta["rmsd" ]
-                self.add_seqid_remark ( model,[sid] )
+
+                if modSel!="S":
+                    self.add_seqid_remark ( model,[sid] )
 
                 self.putModelWidget ( self.getWidgetId("model_btn"),
                                       "Coordinates",model )
@@ -177,11 +250,6 @@ class ModelPrepXYZ(basic.TaskDriver):
             else:
                 self.putMessage ( "<h3>*** Failed to form Model object for " +\
                                   xyz[i].dname + "</h3>" )
-
-        if modSel=="M": self.addCitations ( ['molrep'] )
-        #if modSel=="C": self.addCitations ( ['chainsaw'] )
-        #if modSel=="S": self.addCitations ( ['sculptor'] )
-        #if modSel=="P": self.addCitations ( ['chainsaw'] )
 
         return ensNo
 
@@ -193,12 +261,15 @@ class ModelPrepXYZ(basic.TaskDriver):
         # Prepare task input
         # fetch input data
 
-        seq    = self.makeClass ( self.input_data.data.seq[0] )
-        xyz    = self.input_data.data.xyz
-        sec1   = self.task.parameters.sec1.contains
-        modSel = self.getParameter ( sec1.MODIFICATION_SEL )
+        seq     = self.makeClass ( self.input_data.data.seq[0] )
+        xyz     = self.input_data.data.xyz
+        sec1    = self.task.parameters.sec1.contains
+        modSel  = self.getParameter ( sec1.MODIFICATION_SEL )
 
-        ensNo  = self.make_models ( seq,xyz,modSel )
+        sclpSel = self.getParameter ( sec1.SCULPTOR_PROTOCOL_SEL )
+        csMode  = self.getParameter ( sec1.CHAINSAW_MODE_SEL     )
+
+        ensNo   = self.make_models ( seq,xyz,modSel,sclpSel,csMode )
 
         # this will go in the project tree job's line
         if ensNo>0:

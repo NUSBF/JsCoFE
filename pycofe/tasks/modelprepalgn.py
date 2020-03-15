@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    12.03.20   <--  Date of Last Modification.
+#    15.03.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -82,10 +82,11 @@ class ModelPrepAlgn(modelprepxyz.ModelPrepXYZ):
         sec1      = self.task.parameters.sec1.contains
         modSel    = self.getParameter ( sec1.MODIFICATION_SEL )
 
-        xyz   = self.get_pdb_entries ( alignment )
-        ensNo = 0
-        if len(xyz)>0:
-            ensNo = self.make_models ( seq,xyz,modSel )
+        sclpSel   = self.getParameter ( sec1.SCULPTOR_PROTOCOL_SEL )
+        csMode    = self.getParameter ( sec1.CHAINSAW_MODE_SEL     )
+
+        xyz       = self.get_pdb_entries ( alignment )
+        ensNo     = self.make_models  ( seq,xyz,modSel,sclpSel,csMode )
 
         # this will go in the project tree job's line
         if ensNo>0:
@@ -95,7 +96,6 @@ class ModelPrepAlgn(modelprepxyz.ModelPrepXYZ):
 
         self.success ( (ensNo>0) )
         return
-
 
 
 # ============================================================================
