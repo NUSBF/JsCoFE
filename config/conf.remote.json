@@ -20,7 +20,12 @@
     "stoppable"        : false,
     "fsmount"          : null,
     "userDataPath"     : "./cofe-users",
-    "projectsPath"     : "./cofe-projects",
+    "projectsPath"     : {
+        "***"   : { "path" : "./cofe-projects",
+                    "type" : "volume",
+                    "diskReserve" : 10000
+                  }
+    },
     "facilitiesPath"   : "./cofe-facilities",
     "bootstrapHTML"    : "jscofe.html",
     "fileCapSize"      : 500000,

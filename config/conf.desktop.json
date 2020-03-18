@@ -17,12 +17,17 @@
     "port"             : 8081,
     "externalURL"      : "http://localhost:8081",
     "exclusive"        : true,
-    "stoppable"        : true,
+    "stoppable"        : false,
     "exclude_tasks"    : ["TaskAmple"],
     "fsmount"          : "/",
     "update_rcode"     : 212,
     "userDataPath"     : "./cofe-users",
-    "projectsPath"     : "./cofe-projects",
+    "projectsPath"     : {
+        "***"   : { "path" : "./cofe-projects",
+                    "type" : "volume",
+                    "diskReserve" : 1000
+                  }
+    },
     "jobs_safe"        : {
         "path"     : "./cofe-nc-storage/jobs_safe",
         "capacity" : 10
@@ -31,6 +36,13 @@
     "ICAT_wdsl"        : "https://icat02.diamond.ac.uk/ICATService/ICAT?wsdl",
     "ICAT_ids"         : "https://ids01.diamond.ac.uk/ids",
     "auth_software"    : {
+      "arpwarp" : {
+        "desc_software" : "Arp/wArp Model Building Software from EMBL-Hamburg",
+        "icon_software" : "task_arpwarp",
+        "desc_provider" : "EMBL Outstation in Hamburg",
+        "icon_provider" : "org_emblhamburg",
+        "auth_url"      : "https://arpwarp.embl-hamburg.de/api/maketoken/?reqid=$reqid&addr=1.2.3.4&cburl=$cburl"
+      },
       "gphl-buster"  : {
         "desc_software" : "Global Phasing Ltd. Software Suite",
         "icon_software" : "task_buster",
@@ -38,13 +50,6 @@
         "icon_provider" : "org_gphl",
         "auth_url"      : "https://www.globalphasing.com/cgi-bin/ccp4_licence.cgi?reqid=$reqid&addr=1.2.3.4&cburl=$cburl",
         "__auth_url"    : "https://arpwarp.embl-hamburg.de/api/maketoken/?reqid=$reqid&addr=1.2.3.4&cburl=$cburl"
-      },
-      "arpwarp" : {
-        "desc_software" : "Arp/wArp Model Building Software from EMBL-Hamburg",
-        "icon_software" : "task_arpwarp",
-        "desc_provider" : "EMBL Outstation in Hamburg",
-        "icon_provider" : "org_emblhamburg",
-        "auth_url"      : "https://arpwarp.embl-hamburg.de/api/maketoken/?reqid=$reqid&addr=1.2.3.4&cburl=$cburl"
       }
     },
     "bootstrapHTML"    : "./bootstrap/jscofe.html",
@@ -71,7 +76,7 @@
     "port"             : 8085,
     "externalURL"      : "",
     "exclusive"        : true,
-    "stoppable"        : true,
+    "stoppable"        : false,
     "localisation"     : 2
   },
 
@@ -85,7 +90,7 @@
       "port"             : 8083,
       "externalURL"      : "http://localhost:8083",
       "exclusive"        : true,
-      "stoppable"        : true,
+      "stoppable"        : false,
       "fsmount"          : "/",
       "capacity"         : 4,
       "max_nproc"        : 3,
@@ -101,7 +106,7 @@
       "jobCheckPeriod"   : 2000,
       "sendDataWaitTime" : 1000,
       "maxSendTrials"    : 10,
-      "jobRemoveTimeout" : 100000,
+      "jobRemoveTimeout" : 10000,
       "maxRestarts"      : 100,
       "fileCapSize"      : 500000
     },
@@ -114,7 +119,7 @@
       "port"             : 8084,
       "externalURL"      : "http://localhost:8084",
       "exclusive"        : true,
-      "stoppable"        : true,
+      "stoppable"        : false,
       "fsmount"          : "/",
       "capacity"         : 4,
       "exclude_tasks"    : [],

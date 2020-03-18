@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    28.01.20   <--  Date of Last Modification.
+ *    18.03.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -65,7 +65,7 @@ function TaskXia2()  {
                       iwidth    : 120,
                       value     : '',
                       default   : 'AUTOMATIC',
-                      position  : [0,0,1,1]
+                      position  : [0,0,1,3]
                     },
                 CRYSTAL : {
                       type      : 'string_',   // empty string not allowed
@@ -75,7 +75,7 @@ function TaskXia2()  {
                       iwidth    : 120,
                       value     : '',
                       default   : 'DEFAULT',
-                      position  : [1,0,1,1]
+                      position  : [1,0,1,3]
                     },
                 HATOM : {
                       type      : 'string_',   // empty string allowed
@@ -86,6 +86,13 @@ function TaskXia2()  {
                       value     : '',
                       maxlength : 2,       // maximum input length
                       position  : [2,0,1,1]
+                    },
+                HATOM_LBL : {
+                      type      : 'label',  // just a separator
+                      label     : '<span style="color:maroon;"><i>(must be ' +
+                                  'specified for generating anomalous data)' +
+                                  '</i></span>',
+                      position  : [2,3,1,2]
                     }
               }
             },
