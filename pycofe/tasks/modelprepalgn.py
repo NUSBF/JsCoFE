@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    15.03.20   <--  Date of Last Modification.
+#    16.03.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -32,7 +32,7 @@ import gemmi
 
 #  application imports
 import modelprepxyz
-from   pycofe.dtypes import dtype_xyz
+from   pycofe.dtypes import dtype_xyz, dtype_alignment
 from   pycofe.proc   import import_pdb
 
 # ============================================================================
@@ -44,13 +44,29 @@ class ModelPrepAlgn(modelprepxyz.ModelPrepXYZ):
 
     def get_pdb_entries ( self,alignment ):
 
+        align_meta = dtype_alignment.parseHHRFile (
+            alignment.getHHRFilePath(self.inputDir()),parse_alignments=True )
+
         ftmp = "__tmp.pdb"
         xyz  = []
         for i in range(len(alignment.align_meta.hits)):
+
             if alignment.isHitSelected(i+1):
+
                 ucode = alignment.align_meta.hits[i][0][0]
                 chId  = alignment.align_meta.hits[i][0][1]
-                rc    = import_pdb.download_file (
+
+                fpath_align = "__align_hit_" + str(i+1) + ".fasta"
+                file = open ( fpath_align,"w" )
+                file.write ( "\n>Hit_" + str(i+1) + "_target_sequence\n" )
+                aline = align_meta["alignments"][i]["Q"]
+                file.write ( "\n".join([aline[0+k:70+k] for k in range(0,len(aline),70)]) + "\n" )
+                file.write ( "\n\n>Hit_" + str(i+1) + "_" + ucode + "_" + chId + "\n" )
+                aline = align_meta["alignments"][i]["T"]
+                file.write ( "\n".join([aline[0+k:70+k] for k in range(0,len(aline),70)]) + "\n" )
+                file.close()
+
+                rc = import_pdb.download_file (
                                     import_pdb.get_pdb_file_url(ucode),ftmp )
                 if not rc:
                     fpath  = self.fetch_chain ( chId,ftmp,
@@ -63,12 +79,15 @@ class ModelPrepAlgn(modelprepxyz.ModelPrepXYZ):
                     xyzi.putXYZMeta ( self.inputDir(),self.file_stdout1,
                                       self.file_stderr,log_parser=None )
                     xyzi.makeDName  ( i+1 )
-                    xyz.append ( xyzi )
+                    xyzi.fpath_algn = fpath_align
+                    xyzi.seqid_algn = align_meta["alignments"][i]["seqid"]
+                    xyz.append ( self.makeClass(xyzi) ) # use makeClass for xyzmeta
                 else:
                     self.putMessage ( "<b>Could not download PDB entry " +\
                                       ucode + " (rc=" + str(rc) + ")</b>" )
 
         return xyz
+
 
     # ------------------------------------------------------------------------
 

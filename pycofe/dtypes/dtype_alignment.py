@@ -24,7 +24,7 @@ import dtype_template
 
 def dtype(): return "DataAlignment"  # must coincide with data definitions in JS
 
-def parseHHRFile ( fpath ):
+def parseHHRFile ( fpath,parse_alignments=False ):
     align_meta = { "type" : "unknown", "msg" : "Not parsed", "hits" : [] }
 
     if not os.path.isfile(fpath):
@@ -55,8 +55,10 @@ def parseHHRFile ( fpath ):
     align_meta["type"] = "hhpred"
 
     hits = []
+    i0   = 0
     for i in range(8,len(lines)):
         if lines[i].startswith("No "):
+            i0 = i
             break
         pdbcode     = lines[i][4:11].strip().split("_")
         title       = lines[i][11:34]
@@ -72,6 +74,32 @@ def parseHHRFile ( fpath ):
         temp_range [1] = int(temp_range [1])
         hits.append ( [pdbcode,title,prob,evalue,pvalue,score,query_range,temp_range] )
     align_meta["hits"] = hits
+
+    if parse_alignments:
+        alignments = []
+        i = i0
+        while i<len(lines):
+            if lines[i].startswith(">"):
+                alignment = { "seqid" : 0, "Q" : "", "T" : "" }
+                lst = lines[i+1].split(" ")
+                for j in range(len(lst)):
+                    if lst[j].startswith("Identities="): # "Identities=98%"
+                        alignment["seqid"] = int(lst[j].split("=")[1][:-1])
+                i += 2
+                while i<len(lines):
+                    if lines[i].startswith(">"):
+                        break
+                    if lines[i].startswith("Q "):
+                        alignment["Q"] += lines[i+1][22:].split(" ")[0]
+                        alignment["T"] += lines[i+5][22:].split(" ")[0]
+                        i += 8
+                    else:
+                        i += 1
+                alignments.append(alignment)
+            else:
+                i += 1
+
+        align_meta["alignments"] = alignments
 
     return align_meta
 

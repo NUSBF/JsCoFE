@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    15.03.20   <--  Date of Last Modification.
+#    16.03.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -68,6 +68,14 @@ class ModelPrepXYZ(basic.TaskDriver):
                     for i in range(resrange[0]-1):
                         del chain[0]
             st.remove_empty_chains()
+        # remove alternative conformations
+        for chain in model:
+            for res in chain:
+                k = len(res)
+                for i in range(len(res)):
+                    k -= 1
+                    if res[k].has_altloc() and res[k].altloc!="A":
+                        del res[k]
         tmpname = "__tmp.pdb"
         st.write_pdb ( tmpname )
         return tmpname
@@ -189,16 +197,19 @@ class ModelPrepXYZ(basic.TaskDriver):
         ensNo     = 0
 
         for i in range(len(xyz)):
-
-            xyz[i]     = self.makeClass   ( xyz[i] )
-            fpath_in   = self.fetch_chain ( xyz[i].chainSel,
+            fpath_in = self.fetch_chain ( xyz[i].chainSel,
                                             xyz[i].getXYZFilePath(self.inputDir()) )
-            fpath_algn = "__align_" + str(i) + ".fasta"
-            rc         = seqal.run ( self,[seq,xyz[i]],fpath_algn )
-            if rc["code"]==0:
-                sid = str(round(100.0*rc["stat"]["seq_id"],1))
+            # do not use hhpred alignments for sculptor: problems
+            if hasattr(xyz[i],"fpath_algn") and modSel!="S":
+                fpath_algn = xyz[i].fpath_algn
+                sid        = str(xyz[i].seqid_algn)
             else:
-                sid = "0"
+                fpath_algn = "__align_" + str(i) + ".fasta"
+                rc         = seqal.run ( self,[seq,xyz[i]],fpath_algn )
+                if rc["code"]==0:
+                    sid = str(round(100.0*rc["stat"]["seq_id"],1))
+                else:
+                    sid = "0"
 
             fpath_out = xyz[i].getXYZFileName()
             if xyz[i].chainSel!="(all)":
@@ -269,7 +280,10 @@ class ModelPrepXYZ(basic.TaskDriver):
         sclpSel = self.getParameter ( sec1.SCULPTOR_PROTOCOL_SEL )
         csMode  = self.getParameter ( sec1.CHAINSAW_MODE_SEL     )
 
-        ensNo   = self.make_models ( seq,xyz,modSel,sclpSel,csMode )
+        for i in range(len(xyz)):
+            xyz[i] = self.makeClass ( xyz[i] )
+
+        ensNo = self.make_models ( seq,xyz,modSel,sclpSel,csMode )
 
         # this will go in the project tree job's line
         if ensNo>0:
