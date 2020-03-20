@@ -88,9 +88,6 @@ class DType(dtype_template.DType):
         self.leadKey = 2
         return
 
-    def ensembleName ( self ):  # for using in phaser interface
-        return "ensemble_" + self.dataId
-
     def getMeanF ( self ):
         if self.FP is not None and self.SigFP is not None:
             return [self.FP,self.SigFP,"F"]

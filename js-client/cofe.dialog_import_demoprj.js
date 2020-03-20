@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    24.04.19   <--  Date of Last Modification.
+ *    20.03.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Import Demo Project Dialog
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2019
+ *  (C) E. Krissinel, A. Lebedev 2016-2020
  *
  *  =================================================================
  *
@@ -52,7 +52,7 @@ function ImportDemoProjectDialog ( onSuccess_func )  {
   this.currentCloudPath = __demo_projects;
   (function(task){
     select_btn.addOnClickListener ( function(){
-      new CloudFileBrowser ( null,task,0,function(items){
+      new CloudFileBrowser ( null,task,5,function(items){
         //alert ( JSON.stringify(items) );
         serverRequest ( fe_reqtype.startDemoImport,{
                             'cloudpath' : task.currentCloudPath,

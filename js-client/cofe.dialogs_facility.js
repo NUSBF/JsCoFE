@@ -2,7 +2,7 @@
 /*
  *  ===========================================================================
  *
- *    01.03.20   <--  Date of Last Modification.
+ *    20.03.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  ---------------------------------------------------------------------------
  *
@@ -456,17 +456,19 @@ FacilityBrowser.prototype.updateItem = function ( askpwd )  {
 // ===========================================================================
 // Cloud File Browser
 
-function CloudFileBrowser ( inputPanel,task,imageKey,onSelect_func,onClose_func )  {
+function CloudFileBrowser ( inputPanel,task,fileKey,onSelect_func,onClose_func )  {
 
   this.inputPanel = inputPanel;  // input panel from facility import dialog
   this.tree_type  = 'files';     // cloud file tree type specificator
   if (task.hasOwnProperty('tree_type'))
     this.tree_type = task.tree_type;
   this.task       = task;        // facility import task
-  this.image_key  = imageKey;    // 0: do not show images
+  this.file_key   = fileKey;     // 0: do not show images
                                  // 1: show images
                                  // 2: show only images
                                  // 3: browse directories, show all files
+                                 // 4: show only importable files
+                                 // 5: show only ccp4_demo files
   this.onSelect_func = onSelect_func;
 
   this.uid = '';
@@ -535,7 +537,7 @@ CloudFileBrowser.prototype.loadStorageTree = function ( cloudPath )  {
     browser.tree_loading = true;
 
     var storageTree = new StorageTree ( browser.tree_type,cloudPath,
-                                                browser.image_key,browser.dir_desc );
+                                                browser.file_key,browser.dir_desc );
 
     storageTree.element.style.paddingTop    = '0px';
     storageTree.element.style.paddingBottom = '25px';
@@ -631,7 +633,7 @@ CloudFileBrowser.prototype.openItem = function()  {
           browser.loadStorageTree ( cloudPath );
         },0);
       }(this))
-    } else if (this.image_key==2)  {
+    } else if (this.file_key==2)  {
       // this if is actually never invoked as "Select" button is grayed if
       // item is not a directory
       if (this.onSelect_func)
@@ -654,7 +656,7 @@ CloudFileBrowser.prototype.getStorageList = function ( path,callback_func )  {
 
   } else  {
 
-    var storageTree = new StorageTree ( 'files',path,this.image_key,this.dir_desc );
+    var storageTree = new StorageTree ( 'files',path,this.file_key,this.dir_desc );
     storageTree.tree_type = this.tree_type;
     storageTree.readStorageData ( 'Cloud File Storage',
       function(){
@@ -681,7 +683,7 @@ CloudFileBrowser.prototype.selectItem = function()  {
       items.splice(i,1);
   }
   if (items.length>0)  {
-    if ((items[0]._type=='FacilityDir') && (this.image_key>=2))  {
+    if ((items[0]._type=='FacilityDir') && (this.file_key>=2))  {
       if (this.onSelect_func) {
         if (items[0].name=='..')  {
           this.onSelect_func ( this.storageTree.storageList );
@@ -717,11 +719,11 @@ CloudFileBrowser.prototype.onTreeItemSelect = function()  {
           parent_dir = true;
       } else
         n_files++;
-    if (this.image_key==3)  {
+    if (this.file_key==3)  {
       var disable = (n_dirs!=1) && (n_files==0);
       this.disableButton  ( 0,disable );
       this.disableButton  ( 1,disable || parent_dir );
-    } else if (this.image_key==2)  {
+    } else if (this.file_key==2)  {
       var disable = (n_dirs!=1) || (n_files>0);
       this.disableButton  ( 0,disable );
       this.disableButton  ( 1,disable );

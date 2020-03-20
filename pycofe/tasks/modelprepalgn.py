@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    16.03.20   <--  Date of Last Modification.
+#    19.03.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -58,10 +58,10 @@ class ModelPrepAlgn(modelprepxyz.ModelPrepXYZ):
 
                 fpath_align = "__align_hit_" + str(i+1) + ".fasta"
                 file = open ( fpath_align,"w" )
-                file.write ( "\n>Hit_" + str(i+1) + "_target_sequence\n" )
+                file.write ( "\n>Hit " + str(i+1) + " target sequence\n" )
                 aline = align_meta["alignments"][i]["Q"]
                 file.write ( "\n".join([aline[0+k:70+k] for k in range(0,len(aline),70)]) + "\n" )
-                file.write ( "\n\n>Hit_" + str(i+1) + "_" + ucode + "_" + chId + "\n" )
+                file.write ( "\n>Hit " + str(i+1) + " " + ucode + " " + chId + "\n" )
                 aline = align_meta["alignments"][i]["T"]
                 file.write ( "\n".join([aline[0+k:70+k] for k in range(0,len(aline),70)]) + "\n" )
                 file.close()
