@@ -251,7 +251,14 @@ function startUglyMol ( title,xyz_uri,mtz_uri,map_uri,diffmap_uri,mapLabels )  {
   //if (window.parent.__mobile_device)
   //  dlg.siblings('.ui-dialog-titlebar').remove();
 
-  var html = makeUglyMolHtml ( xyz_uri,mtz_uri,map_uri,diffmap_uri,mapLabels );
+  function encode_uri ( uri )  {
+    if (uri)  return encodeURI ( uri );
+    return uri;
+  }
+
+  var html = makeUglyMolHtml ( encode_uri(xyz_uri),encode_uri(mtz_uri),
+                               encode_uri(map_uri),encode_uri(diffmap_uri),
+                               mapLabels );
   iframe.contentWindow.document.write(html);
   iframe.contentWindow.document.close();
 

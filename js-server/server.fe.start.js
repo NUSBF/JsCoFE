@@ -157,7 +157,7 @@ function start ( callback_func )  {
                 cmd.sendResponse ( server_response,cmd.fe_retcode.ok,'','' );
               });
             } else {
-              log.detailed ( 6,'stop command issued -- ignored according configuration' );
+              log.standard ( 6,'stop command issued -- ignored according configuration' );
             }
           break;
 
@@ -205,7 +205,6 @@ function start ( callback_func )  {
     console.error ( e.stack || e );
   });
 
-
   server.listen({
     host      : feConfig.host,
     port      : feConfig.port,   // zero is acceptable
@@ -223,7 +222,6 @@ function start ( callback_func )  {
 
     if (callback_func)
       callback_func();
-
 
   });
 

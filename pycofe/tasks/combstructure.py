@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    09.02.20   <--  Date of Last Modification.
+#    20.03.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -138,7 +138,10 @@ class CombStructure(basic.TaskDriver):
             cmd = [ "--no-state-script", "--no-graphics", "--no-guano", "--python",
                     "--pdb",work_xyz, "--script",coot_script ]
 
-            self.runApp ( "coot",cmd,logType="Service" )
+            if sys.platform.startswith("win"):
+                self.runApp ( "coot.bat",cmd,logType="Service" )
+            else:
+                self.runApp ( "coot",cmd,logType="Service" )
 
             results = self.assess_results ( work_xyz,coot_xyzout )
 

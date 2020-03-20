@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    13.03.20   <--  Date of Last Modification.
+#    20.03.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -46,8 +46,8 @@ class DType(dtype_xyz.DType):
             self.meta     = None    # Gesamt alignment results
         return
 
-    def modelName ( self ):  # for using in phaser interface
-        return "model_" + self.dataId
+    def ensembleName ( self ):  # for using in phaser interface
+        return "ensemble_" + self.dataId
 
     def putXYZMeta ( self,fdir,file_stdout,file_stderr,log_parser=None ):
         dtype_xyz.setXYZMeta ( self,xyzmeta.getXYZMeta (

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    30.08.19   <--  Date of Last Modification.
+ *    20.03.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Front End Server -- User Support Module
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2019
+ *  (C) E. Krissinel, A. Lebedev 2019-2020
  *
  *  =================================================================
  *
@@ -79,28 +79,33 @@ UsageStats.prototype.registerJob = function ( job_class )  {
   }
   var n1 = this.njobs.length-1;
   this.njobs[n1]++;
-  this.cpu  [n1] += job_class.cpu_time;
 
-  if (!this.tasks.hasOwnProperty(job_class.title))
-    this.tasks[job_class.title] = {
-      'icon'       : cmd.image_path(job_class.icon()),
-      '_type'      : job_class._type, //title.split('(')[0],
-      'nuses'      : 0,
-      'nfails'     : 0,
-      'nterms'     : 0,
-      'cpu_time'   : 0,
-      'disk_space' : 0
-    };
-  var ts = this.tasks[job_class.title];
-  ts.nuses++;
-  if (job_class.state==task_t.job_code.failed)
-    ts.nfails++;
-  if (job_class.state==task_t.job_code.stopped)
-    ts.nterms++;
+  if (job_class)  {
 
-  var rf = (ts.nuses-1.0)/ts.nuses;
-  ts.cpu_time   = ts.cpu_time*rf   + job_class.cpu_time/ts.nuses;
-  ts.disk_space = ts.disk_space*rf + job_class.disk_space/ts.nuses;
+    this.cpu[n1] += job_class.cpu_time;
+
+    if (!this.tasks.hasOwnProperty(job_class.title))
+      this.tasks[job_class.title] = {
+        'icon'       : cmd.image_path(job_class.icon()),
+        '_type'      : job_class._type, //title.split('(')[0],
+        'nuses'      : 0,
+        'nfails'     : 0,
+        'nterms'     : 0,
+        'cpu_time'   : 0,
+        'disk_space' : 0
+      };
+    var ts = this.tasks[job_class.title];
+    ts.nuses++;
+    if (job_class.state==task_t.job_code.failed)
+      ts.nfails++;
+    if (job_class.state==task_t.job_code.stopped)
+      ts.nterms++;
+
+    var rf = (ts.nuses-1.0)/ts.nuses;
+    ts.cpu_time   = ts.cpu_time*rf   + job_class.cpu_time/ts.nuses;
+    ts.disk_space = ts.disk_space*rf + job_class.disk_space/ts.nuses;
+
+  }
 
   //return true;
   return (n1>=n0);

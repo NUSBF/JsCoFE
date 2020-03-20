@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    16.03.20   <--  Date of Last Modification.
+#    19.03.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -195,12 +195,12 @@ class ModelPrepXYZ(basic.TaskDriver):
 
         fpath_seq = seq.getSeqFilePath ( self.inputDir() )
         ensNo     = 0
+        ensOk     = False
 
         for i in range(len(xyz)):
             fpath_in = self.fetch_chain ( xyz[i].chainSel,
                                             xyz[i].getXYZFilePath(self.inputDir()) )
-            # do not use hhpred alignments for sculptor: problems
-            if hasattr(xyz[i],"fpath_algn") and modSel!="S":
+            if hasattr(xyz[i],"fpath_algn"):
                 fpath_algn = xyz[i].fpath_algn
                 sid        = str(xyz[i].seqid_algn)
             else:
@@ -237,30 +237,41 @@ class ModelPrepXYZ(basic.TaskDriver):
                     fpath_out = fname + ".pala" + fext
                     self.prepare_polyalanine ( fpath_in,fpath_out )
 
-            model = self.registerModel ( seq,fpath_out,checkout=True )
-            if model:
-                if ensNo<1:
-                    self.putMessage ( "<i><b>Prepared models are associated " +\
-                                      "with sequence:&nbsp;" + seq.dname + "</b></i>" )
-                    self.putTitle ( "Results" )
-                else:
+            if os.stat(fpath_out).st_size<100:
+                if ensOk:
                     self.putMessage ( "&nbsp;" )
-                ensNo += 1
-                self.putMessage ( "<h3>Model #" + str(ensNo) + ": " + model.dname + "</h3>" )
-                model.addDataAssociation ( seq.dataId )
-                model.meta  = { "rmsd" : "", "seqId" : sid }
-                model.seqId = model.meta["seqId"]
-                model.rmsd  = model.meta["rmsd" ]
-
-                if modSel!="S":
-                    self.add_seqid_remark ( model,[sid] )
-
-                self.putModelWidget ( self.getWidgetId("model_btn"),
-                                      "Coordinates",model )
-
+                self.putMessage ( "<h3>*** Failed to prepare model for " +\
+                                  xyz[i].dname + " (empty output)</h3>" )
+                ensOk = False
             else:
-                self.putMessage ( "<h3>*** Failed to form Model object for " +\
-                                  xyz[i].dname + "</h3>" )
+                model = self.registerModel ( seq,fpath_out,checkout=True )
+                if model:
+                    if ensNo<1:
+                        self.putMessage ( "<i><b>Prepared models are associated " +\
+                                          "with sequence:&nbsp;" + seq.dname + "</b></i>" )
+                        self.putTitle ( "Results" )
+                    else:
+                        self.putMessage ( "&nbsp;" )
+                    ensNo += 1
+                    ensOk  = True
+                    self.putMessage ( "<h3>Model #" + str(ensNo) + ": " + model.dname + "</h3>" )
+                    model.addDataAssociation ( seq.dataId )
+                    model.meta  = { "rmsd" : "", "seqId" : sid }
+                    model.seqId = model.meta["seqId"]
+                    model.rmsd  = model.meta["rmsd" ]
+
+                    if modSel!="S":
+                        self.add_seqid_remark ( model,[sid] )
+
+                    self.putModelWidget ( self.getWidgetId("model_btn"),
+                                          "Coordinates",model )
+
+                else:
+                    if ensOk:
+                        self.putMessage ( "&nbsp;" )
+                    self.putMessage ( "<h3>*** Failed to form Model object for " +\
+                                      xyz[i].dname + "</h3>" )
+                    ensOk = False
 
         return ensNo
 

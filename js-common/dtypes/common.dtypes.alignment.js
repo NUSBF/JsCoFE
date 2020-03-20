@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.03.20   <--  Date of Last Modification.
+ *    19.03.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -73,8 +73,15 @@ DataAlignment.prototype.currentVersion = function()  {
 if (!__template)  {
   // for client side
 
-  DataAlignment.prototype.inspectData = function ( task ) {
-    new MessageBox ( "Not implemented","Alignment Data Viewer not Implemented." );
+  DataAlignment.prototype.makeDataSummaryPage = function ( task )  {
+    var dsp = new DataSummaryPage ( this );
+
+    dsp.makeRow ( 'File name'     ,this.files[file_key.hhr],'Imported file name' );
+    dsp.makeRow ( 'Alignment type',this.alignment_type,'Aligment type or source' );
+    dsp.makeRow ( 'Hits'          ,this.align_meta.hits.length,'Number of hits' );
+
+    return dsp;
+
   }
 
   DataAlignment.prototype.layCustomDropdownInput = function ( dropdown )  {

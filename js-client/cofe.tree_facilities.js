@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    11.03.20   <--  Date of Last Modification.
+ *    20.03.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -260,15 +260,17 @@ var item = this.getItem ( 'FacilityDataset',this.selected_node_id );
 // =========================================================================
 // StorageTree class
 
-function StorageTree ( treeType,rootPath,imageKey,dirDesc_lbl )  {
+function StorageTree ( treeType,rootPath,fileKey,dirDesc_lbl )  {
 
   Tree.call ( this,'_____' );
 
-  this.tree_type   = treeType;
-  this.tree_root   = rootPath;
-  this.image_key   = imageKey; // 0: do not show images
+  this.tree_type = treeType;
+  this.tree_root = rootPath;
+  this.file_key  = fileKey;    // 0: do not show images
                                // 1: show images
                                // 2: show only images
+                               // 3: browse directories, show all files
+                               // 4: show only importable files
   this.dirdesc_lbl = dirDesc_lbl;  // label to receive directory descriptions
                                    // from __jscofe__.meta files, or null
 
@@ -296,6 +298,33 @@ StorageTree.prototype.customIcon = function() {
   "CCP4 examples"  : "$CCP4/share/ccp4i2/demo_data",
   "Demo projects"  : "./demo-projects"
 */
+
+var icon_ext = {
+  'mtz'       : 'file_mtz',
+  'h5'        : 'file_hdf',
+  'ccp4_demo' : 'file_ccp4demo',
+  'pdb'       : 'file_pdb',
+  'ent'       : 'file_pdb',
+  'mmcif'     : 'file_pdb',
+  'jpg'       : 'file_image',
+  'jpeg'      : 'file_image',
+  'png'       : 'file_image',
+  'gif'       : 'file_image',
+  'html'      : 'file_doc',
+  'txt'       : 'file_doc',
+  'pdf'       : 'file_doc',
+  'seq'       : 'file_seq',
+  'fasta'     : 'file_seq',
+  'pir'       : 'file_seq',
+  'hhr'       : 'file_hhpred'
+};
+
+var importable_ext = [
+  'mtz', 'pdb', 'ent', 'mmcif', 'jpg', 'jpeg', 'png', 'gif', 'html',
+  'txt', 'pdf', 'seq', 'fasta', 'pir', 'hhr'
+];
+
+
 
 StorageTree.prototype.readStorageData = function ( page_title,
                                                    onLoaded_func,
@@ -366,9 +395,36 @@ StorageTree.prototype.readStorageData = function ( page_title,
             var name  = sfile.name;
             var base  = sfile.name.split('.');
             var ext   = base.pop().toLowerCase();
+
             base = base.join('.').toLowerCase();
+            var show = (tree.file_key!=2);
+            if (tree.file_key==4)
+              show = (importable_ext.indexOf(ext)>=0);
+            else if (tree.file_key==5)
+              show = (ext=='ccp4_demo');
+
+            var icon  = 'file_dummy';
+            if (ext in icon_ext)  {
+              icon = icon_ext[ext];
+            } else if ('h5' in sfile)   {
+              if (sfile.h5>0)  icon = 'file_hdf';
+                         else  name = '(' + Array(name.length).join('....') + ')';
+              show = false;
+            } else if (ext=='cif')  {  // use wild heuristics
+              if (endsWith(base,'-sf'))  icon = 'file_mtz';
+                                   else  icon = 'file_pdb';
+            } else if ('image' in sfile)  {
+              if (sfile.image>0)  icon = 'file_xray';
+                            else  name = '(' + Array(name.length).join('....') + ')';
+              show = (tree.file_key==1) || (tree.file_key==2);
+            }
+            if (show)  {
+              var fnode = tree.addRootNode ( name,image_path(icon),tree.customIcon() );
+              tree.item_map[fnode.id] = sfile;
+            }
+
+            /*
             var icon  = image_path('file_dummy');
-            var show  = (tree.image_key<2);
             if (ext=='mtz')    icon = image_path('file_mtz');
             else if ('h5' in sfile)   {
               if (sfile.h5>0)  icon = image_path('file_hdf');
@@ -394,12 +450,13 @@ StorageTree.prototype.readStorageData = function ( page_title,
             else if ('image' in sfile)  {
               if (sfile.image>0)  icon = image_path('file_xray');
                             else  name = '(' + Array(name.length).join('....') + ')';
-              show = (tree.image_key>0);
+              show = (tree.file_key>0);
             }
             if (show)  {
               var fnode = tree.addRootNode ( name,icon,tree.customIcon() );
               tree.item_map[fnode.id] = sfile;
             }
+            */
           }
 
           tree.createTree ( onLoaded_func,onRightClick_func,onDblClick_func,onSelect_func );
