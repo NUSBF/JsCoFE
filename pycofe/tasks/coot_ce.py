@@ -80,7 +80,8 @@ class Coot(basic.TaskDriver):
 
         coot_scr = "coot_jscofe.py"
         coot_scr = os.path.join ( os.path.dirname ( os.path.abspath(__file__)),"..","proc",coot_scr )
-        args += ["--python",coot_scr,"--no-guano"]
+        #args += ["--python",coot_scr,"--no-guano"]
+        args += ["--python",coot_scr]
 
         # Run coot
         if sys.platform.startswith("win"):

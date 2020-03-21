@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    28.02.20   <--  Date of Last Modification.
+#    21.03.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -30,7 +30,7 @@ from   pycofe.proc   import xyzmeta
 
 def dtype(): return "DataStructure"  # must coincide with data definitions in JS
 
-class DType(dtype_template.DType):
+class DType(dtype_xyz.DType):
 
     def __init__(self,job_id,json_str=""):
         super(DType,self).__init__(job_id,json_str)
@@ -394,6 +394,7 @@ class DType(dtype_template.DType):
             dtype_xyz.setXYZMeta ( self,xyzmeta.getXYZMeta (
                                    fpath,file_stdout,file_stderr,log_parser ) )
         return
+
 
     def getSpaceGroup ( self ):
         if type(self.xyzmeta) == dict:

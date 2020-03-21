@@ -72,7 +72,7 @@ function TaskAimless()  {
    */
   ];
 
-    this.parameters =
+  this.parameters =
     {
         secMain:
         {
@@ -1183,6 +1183,7 @@ function TaskAimless()  {
             }
         }
     };
+
 }
 
 

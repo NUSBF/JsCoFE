@@ -40,6 +40,7 @@ function DataXYZ()  {
   this.exclLigs     = ['(agents)'];  // list of excluded ligands for PISA
   this.selChain     = '(all)';       // selected chains for comparison
   this.chainSelType = '';
+  this.coot_meta    = null;
 
 }
 
@@ -164,7 +165,7 @@ if (!__template)  {
 
   }
 
-  DataTemplate.prototype.makeDataSummaryPage = function ( task )  {
+  DataXYZ.prototype.makeDataSummaryPage = function ( task )  {
   var dsp = new DataSummaryPage ( this );
     if (this._type=='DataStructure')  {
       if (this.files.hasOwnProperty(file_key.xyz))
@@ -179,6 +180,10 @@ if (!__template)  {
         if (this.files.hasOwnProperty(key))
           dsp.makeRow ( 'File name',this.files[key],'Imported file name' );
     }
+
+    if (this.coot_meta)
+      dsp.makeRow ( 'Coot state','present','Coot scripts with custom settings or data' );
+
     this.inspectXYZData   ( dsp  );
     this.addToInspectData ( dsp  );
     dsp .addUglyMolButton ( task );

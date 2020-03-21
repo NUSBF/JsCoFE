@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    13.03.20   <--  Date of Last Modification.
+ *    21.03.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -78,6 +78,8 @@ TaskCootMB.prototype.icon = function()  { return 'task_coot'; }
 
 TaskCootMB.prototype.lowestClientVersion = function() { return '1.6.001 [01.01.2019]'; }
 
+//TaskCootMB.prototype.cleanJobDir = function ( jobDir )  {}
+
 TaskCootMB.prototype.currentVersion = function()  {
   var version = 0;
   if (__template)
@@ -103,21 +105,38 @@ if (!__template)  {
 } else  {
   //  for server side
 
-  var conf = require('../../js-server/server.configuration');
+  var path  = require('path');
+
+  var conf  = require('../../js-server/server.configuration');
+  var prj   = require('../../js-server/server.fe.projects');
+  var utils = require('../../js-server/server.utils');
 
   TaskCootMB.prototype.makeInputData = function ( loginData,jobDir )  {
 
     // put structure data in input databox for copying their files in
     // job's 'input' directory
 
+    var istruct = null;
     if ('revision' in this.input_data.data)  {
       var revision = this.input_data.data['revision'][0];
       if (revision.Options.leading_structure=='substructure')
-            this.input_data.data['istruct'] = [revision.Substructure];
-      else  this.input_data.data['istruct'] = [revision.Structure];
+            istruct = revision.Substructure;
+      else  istruct = revision.Structure;
+      this.input_data.data['istruct'] = [istruct];
     }
 
     __template.TaskTemplate.prototype.makeInputData.call ( this,loginData,jobDir );
+
+    if (istruct && ('coot_meta' in istruct) && istruct.coot_meta)  {
+      var coot_meta = istruct.coot_meta;
+      var srcJobDir = prj.getSiblingJobDirPath ( jobDir,coot_meta.jobId );
+      for (var fname of coot_meta.files)
+        utils.copyFile ( path.join(srcJobDir,fname),
+                         path.join(jobDir,fname) );
+      if (coot_meta.backup_dir)
+        utils.copyFile ( path.join(srcJobDir,coot_meta.backup_dir),
+                         path.join(jobDir,coot_meta.backup_dir) );
+    }
 
   }
 

@@ -4,7 +4,7 @@
 # from Bernhard Lohkamp for Eugene
 # run: --script coot_jscofe.py
 #
-#  04.02.2020
+#  21.03.2020
 #
 
 #info_dialog ( "In order to save the edited structure in your Project,\n" +\
@@ -15,6 +15,8 @@
 
 
 if (have_coot_python):
+
+    set_run_state_file_status ( 2 )
 
     if coot_python.main_menubar():
 

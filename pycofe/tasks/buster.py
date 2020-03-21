@@ -63,6 +63,10 @@ class Buster(basic.TaskDriver):
                     "-p",istruct.getXYZFilePath(self.inputDir()),
                     "-d",self.buster_dir() ]
 
+        libin = istruct.getLibFilePath ( self.inputDir() )
+        if libin:
+            cmd += ["-l",libin]
+
         sec1 = self.task.parameters.sec1.contains
 
         if hkl.res_high or hkl.res_high:

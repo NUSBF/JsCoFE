@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    20.02.20   <--  Date of Last Modification.
+ *    21.03.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -136,12 +136,10 @@ if (!__template)  {
 
     var dsp = DataXYZ.prototype.makeDataSummaryPage.call ( this,task );
 
-    //if (this.files.hasOwnProperty(file_key.sub))
-    //  dsp.makeRow ( 'HA-XYZ file',this.files[file_key.sub],'Heavy atom (substructure) file name' );
     if (this.files.hasOwnProperty(file_key.sol))
-      dsp.makeRow ( 'Phaser\'s SOL file',this.files[file_key.sol],'SOL file with phaser\' output metadata' );
+      dsp.makeRow ( 'Phaser\'s SOL file',this.files[file_key.sol],'SOL file with phaser\'s output metadata' );
     if (this.files.hasOwnProperty(file_key.coot))
-      dsp.makeRow ( 'Coot python script',this.files[file_key.coot],'Coot script with custom settings or data' );
+      dsp.makeRow ( 'Molprobity\'s script',this.files[file_key.coot],'Coot script with molprobity data' );
     if (this.files.hasOwnProperty(file_key.molp))
       dsp.makeRow ( 'MolProbity probe',this.files[file_key.molp],'MolProbity "probe" file' );
     if (this.files.hasOwnProperty(file_key.mtz))
