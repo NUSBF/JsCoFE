@@ -3,13 +3,13 @@
 #
 # ============================================================================
 #
-#    12.01.19   <--  Date of Last Modification.
+#    21.03.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  XYZ (COORDINATES) DATA TYPE
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2019
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2020
 #
 # ============================================================================
 #
@@ -37,7 +37,8 @@ class DType(dtype_template.DType):
             self.xyzmeta      = {}
             self.exclLigs     = ["(agents)"]  # list of excluded ligands for PISA
             self.selChain     = "(all)"       # selected chains for comparison
-            self.chainSelType = "";
+            self.chainSelType = ""
+            self.coot_meta    = None
             self.version     += 0             # versioning increments from parent to children
         return
 
@@ -83,6 +84,40 @@ class DType(dtype_template.DType):
         setXYZMeta ( self,xyzmeta.getXYZMeta (
                             os.path.join(fdir,self.files[dtype_template.file_key["xyz"]]),
                             file_stdout,file_stderr,log_parser ) )
+        return
+
+
+    def putCootMeta(self,job_id):
+
+        coot_meta = {
+            "jobId"        : job_id,
+            "files"        : [],
+            "backup_dir"   : "",
+            "backup_files" : []
+        }
+
+        files = [ "0-coot-history.py","0-coot-history.scm",
+                  "0-coot.state.py","0-coot.state.scm" ]
+        for f in files:
+            if os.path.isfile(f):
+                coot_meta["files"].append(f)
+
+        if os.path.isdir("coot-backup"):
+            bfiles = os.listdir("coot-backup")
+            if len(bfiles)>0:
+                coot_meta["backup_dir"]   = "coot-backup"
+                coot_meta["backup_files"] = bfiles
+
+        if len(coot_meta["files"])>0 or len(coot_meta["backup_files"])>0:
+            self.coot_meta = coot_meta
+
+        return
+
+
+    def copyAssociations ( self,data ):
+        if hasattr(data,"coot_meta"):
+            self.coot_meta = data.coot_meta
+        self.associated = data.associated
         return
 
 

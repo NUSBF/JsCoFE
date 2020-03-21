@@ -144,7 +144,8 @@ class Coot(basic.TaskDriver):
         if molp_path:
             shutil.copy2 ( molp_path,"molprobity_probe.txt" )
 
-        args += ["--python",coot_scr,"--no-guano"]
+        #args += ["--python",coot_scr,"--no-guano"]
+        args += ["--python",coot_scr]
 
         # Run coot
         if sys.platform.startswith("win"):
@@ -230,11 +231,13 @@ class Coot(basic.TaskDriver):
             if struct:
                 struct.copyAssociations ( istruct )
                 struct.copySubtype      ( istruct )
+                struct.putCootMeta      ( self.job_id )
                 struct.makeXYZSubtype   ()
                 struct.copyLabels       ( istruct )
                 struct.copyLigands      ( istruct )
                 if ligand:
                     struct.addLigand ( ligand.code )
+
 
                 # add link formulas and counts to struct metadata
                 struct.links = links.count_links(['LINK', 'SYMLINK'])

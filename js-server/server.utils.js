@@ -233,7 +233,8 @@ function writeObject ( path,dataObject )  {
 
 function copyFile ( old_path,new_path )  {
   try {
-    fs.renameSync ( old_path,new_path );
+//    fs.renameSync ( old_path,new_path );
+    fs.copySync ( old_path,new_path );
     return true;
   } catch (e)  {
     log.error ( 4,'cannot copy file ' + old_path + ' to ' + new_path );
@@ -699,6 +700,7 @@ module.exports.readClass             = readClass;
 module.exports.writeString           = writeString;
 module.exports.appendString          = appendString;
 module.exports.writeObject           = writeObject;
+module.exports.copyFile              = copyFile;
 module.exports.moveFile              = moveFile;
 module.exports.moveDir               = moveDir;
 module.exports.mkDir                 = mkDir;
