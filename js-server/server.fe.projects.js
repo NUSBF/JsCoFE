@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    03.03.20   <--  Date of Last Modification.
+ *    23.03.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -1134,19 +1134,24 @@ function startSharedImport ( loginData,meta )  {
   if (utils.mkDir(tempdir))  {
 
     var uLoginData = user.getUserLoginData ( meta.owner.login );
-    var sProjectDirPath = getProjectDirPath ( uLoginData,meta.name );
-    if (utils.fileExists(sProjectDirPath))  {
-      fs.copy ( sProjectDirPath,tempdir,function(err){
-        if (err)
-          utils.writeString ( path.join(tempdir,'signal'),
-                              'Errors during data copy\n' +
-                              projectDesc.name );
-        else
-          _import_project ( loginData,tempdir );
-      });
+    if (uLoginData)  {
+      var sProjectDirPath = getProjectDirPath ( uLoginData,meta.name );
+      if (utils.fileExists(sProjectDirPath))  {
+        fs.copy ( sProjectDirPath,tempdir,function(err){
+          if (err)
+            utils.writeString ( path.join(tempdir,'signal'),
+                                'Errors during data copy\n' +
+                                projectDesc.name );
+          else
+            _import_project ( loginData,tempdir );
+        });
+      } else  {
+        rc     = cmd.fe_retcode.fileNotFound;
+        rc_msg = 'Shared project ' + meta.name + ' does not exist';
+      }
     } else  {
       rc     = cmd.fe_retcode.fileNotFound;
-      rc_msg = 'Shared project ' + meta.name + ' does not exist';
+      rc_msg = 'User data for ' + meta.owner.login + ' not found';
     }
 
   } else {

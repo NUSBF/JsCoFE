@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    01.03.20   <--  Date of Last Modification.
+ *    23.03.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -731,12 +731,15 @@ function readUserData ( loginData )  {
     uData = utils.readObject ( userFilePath );
     if (uData)
       ud.checkUserData ( uData );
-  }
+    else
+      log.error ( 51,'cannot read user settings at ' + userFilePath );
+  } else
+    log.error ( 52,'user settings file not found at ' + userFilePath );
   return uData;
 }
 
 function getUserLoginData ( login )  {
-  var uLoginData = { login:login };
+  var uLoginData = { login:login, volume:null };
   var uData      = readUserData ( uLoginData );
   if (uData)  uLoginData.volume = uData.volume;
         else  uLoginData = null;
