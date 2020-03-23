@@ -4,7 +4,7 @@
 # from Bernhard Lohkamp for Eugene
 # run: --script coot_jscofe.py
 #
-#  21.03.2020
+#  23.03.2020
 #
 
 #info_dialog ( "In order to save the edited structure in your Project,\n" +\
@@ -57,14 +57,40 @@ if (have_coot_python):
 
 
         def exit_and_signal ( signal ):
-            f = open ( "task_chain.cmd","w" )
-            f.write ( signal )
-            f.close()
-            coot_real_exit(0)
+            if signal:
+                f = open ( "task_chain.cmd","w" )
+                f.write ( signal )
+                f.close()
+            coot_checked_exit(0)
+            #coot_real_exit(0)
             return
 
 
         menu = coot_menubar_menu("File")
+
+        # add as many as you like
+        remove_list = [
+            #"Save Coordinates...",
+            "Save Symmetry Coordinates...",
+            "Save State...",
+            "Exit"
+        ]
+
+        for menu_child in menu.get_children():
+            if isinstance(menu_child, gtk.SeparatorMenuItem):
+                pass
+            else:
+                label = menu_child.get_label()
+                if label in remove_list:
+                    menu.remove(menu_child)
+
+        add_simple_coot_menu_menuitem_with_icon (
+            menu,
+            "Exit",
+            lambda func:
+            exit_and_signal ( "" ),
+            gtk.STOCK_QUIT
+        )
 
         add_simple_coot_menu_menuitem_with_icon (
             menu,
