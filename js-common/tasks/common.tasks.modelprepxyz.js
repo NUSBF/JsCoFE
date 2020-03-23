@@ -94,40 +94,40 @@ function TaskModelPrepXYZ()  {
                         position : [0,0,1,1]
                       },
                 LEGEND_SEQ_U : {
-                        type      : 'label',  // just a separator
-                        label     : '<i>(models are not changed)</i>',
-                        position  : [0,3,1,1],
-                        showon    : { 'MODIFICATION_SEL':['U'] }
+                        type     : 'label',  // just a separator
+                        label    : '<i>(models are not changed)</i>',
+                        position : [0,3,1,1],
+                        showon   : { 'MODIFICATION_SEL':['U'] }
                       },
                 LEGEND_SEQ_D : {
-                        type      : 'label',  // just a separator
-                        label     : '<i>(remove solvent, hydrogens, and select most probable conformations)</i>',
-                        position  : [0,3,1,1],
-                        showon    : { 'MODIFICATION_SEL':['D'] }
+                        type     : 'label',  // just a separator
+                        label    : '<i>(remove solvent, hydrogens, and select most probable conformations)</i>',
+                        position : [0,3,1,1],
+                        showon   : { 'MODIFICATION_SEL':['D'] }
                       },
                 LEGEND_SEQ_M : {
-                        type      : 'label',  // just a separator
-                        label     : '<i>(side chain truncation based on Molrep)</i>',
-                        position  : [0,3,1,1],
-                        showon    : { 'MODIFICATION_SEL':['M'] }
+                        type     : 'label',  // just a separator
+                        label    : '<i>(side chain truncation based on Molrep)</i>',
+                        position : [0,3,1,1],
+                        showon   : { 'MODIFICATION_SEL':['M'] }
                       },
                 LEGEND_SEQ_C : {
-                        type      : 'label',  // just a separator
-                        label     : '<i>(side chain truncation based on Chainsaw)</i>',
-                        position  : [0,3,1,1],
-                        showon    : { 'MODIFICATION_SEL':['C'] }
+                        type     : 'label',  // just a separator
+                        label    : '<i>(side chain truncation based on Chainsaw)</i>',
+                        position : [0,3,1,1],
+                        showon   : { 'MODIFICATION_SEL':['C'] }
                       },
                 LEGEND_SEQ_S : {
-                        type      : 'label',  // just a separator
-                        label     : '<i>(side chain truncation based on Phaser.Sculptor)</i>',
-                        position  : [0,3,1,1],
-                        showon    : { 'MODIFICATION_SEL':['S'] }
+                        type     : 'label',  // just a separator
+                        label    : '<i>(side chain truncation based on Phaser.Sculptor)</i>',
+                        position : [0,3,1,1],
+                        showon   : { 'MODIFICATION_SEL':['S'] }
                       },
                 LEGEND_SEQ_P : {
-                        type      : 'label',  // just a separator
-                        label     : '<i>(removal of all side chains)</i>',
-                        position  : [0,3,1,1],
-                        showon    : { 'MODIFICATION_SEL':['P'] }
+                        type     : 'label',  // just a separator
+                        label    : '<i>(removal of all side chains)</i>',
+                        position : [0,3,1,1],
+                        showon   : { 'MODIFICATION_SEL':['P'] }
                       },
 
                 SCULPTOR_PROTOCOL_SEL : {

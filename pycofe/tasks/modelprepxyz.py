@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    19.03.20   <--  Date of Last Modification.
+#    22.03.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -26,6 +26,7 @@
 
 #  python native imports
 import os
+import sys
 import shutil
 
 #  ccp4-python imports
@@ -132,13 +133,13 @@ class ModelPrepXYZ(basic.TaskDriver):
             "hetero = None"
         ])
         self.close_stdin()
-        self.runApp (
-            "phaser.sculptor",[
-                "--stdin",
-                "--mode=predefined"
-            ],
-            logType="Service"
-        )
+
+        cmd = [ "--stdin","--mode=predefined" ]
+        if sys.platform.startswith("win"):
+            self.runApp ( "phaser.sculptor.bat",cmd,logType="Service" )
+        else:
+            self.runApp ( "phaser.sculptor",cmd, logType="Service" )
+
         files = [f for f in os.listdir("./") if f.startswith(root_name) and f.endswith(".pdb")]
         if len(files)>0:
             shutil.move ( files[0],fpath_out )

@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    10.02.20   <--  Date of Last Modification.
+ *    22.03.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -406,7 +406,7 @@ TaskCCP4Build.prototype.currentVersion = function()  {
 //   'L'  : Linux
 //   'M'  : Mac
 //   'U'  : Unix ( = Linux + Mac)
-TaskCCP4Build.prototype.platforms = function()  { return 'LMU'; }  // UNIX only
+//TaskCCP4Build.prototype.platforms = function()  { return 'LMU'; }  // UNIX only
 
 
 if (!__template)  {

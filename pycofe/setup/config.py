@@ -13,6 +13,7 @@ def write_json(json_obj, json_path, indent=4):
     ostream.write('\n')
 
 def main():
+  os.chdir(os.path.abspath(os.path.join(__file__, '..', '..', '..')))
   confin = os.path.join('config', 'conf.')
 # confout = os.path.join('config2', 'conf.')
   confout = 'w_conf.'
@@ -35,6 +36,11 @@ def main():
 
     else:
       json_fe['exclude_tasks'] = []
+
+    json_mounts = json_fe.get('cloud_mounts')
+    json_key = 'Demo projects'
+    if json_mounts and json_key in json_mounts:
+      del json_mounts[json_key]
 
     json_proxy = json_obj.get('FEProxy')
     if json_proxy:
