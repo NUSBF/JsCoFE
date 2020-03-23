@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    20.02.20   <--  Date of Last Modification.
+#    21.03.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -237,7 +237,6 @@ class Coot(basic.TaskDriver):
                 struct.copyLigands      ( istruct )
                 if ligand:
                     struct.addLigand ( ligand.code )
-
 
                 # add link formulas and counts to struct metadata
                 struct.links = links.count_links(['LINK', 'SYMLINK'])

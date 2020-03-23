@@ -233,6 +233,9 @@ function writeObject ( path,dataObject )  {
 
 function copyFile ( old_path,new_path )  {
   try {
+    fs.unlinkSync ( new_path );
+  } catch (e) {}
+  try {
 //    fs.renameSync ( old_path,new_path );
     fs.copySync ( old_path,new_path );
     return true;
@@ -248,6 +251,9 @@ function moveFile ( old_path,new_path )  {
   // this function should be used in asynchronous code; use in synchronous code
   // must be limited only when source and destination are known to be in
   // the same partition
+  try {
+    fs.unlinkSync ( new_path );
+  } catch (e) {}
   try {
     fs.moveSync ( old_path,new_path,{'overwrite':true} );
 //    fs.renameSync ( old_path,new_path );

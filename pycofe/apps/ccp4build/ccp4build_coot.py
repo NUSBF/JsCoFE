@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    31.01.19   <--  Date of Last Modification.
+#    22.03.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -15,8 +15,10 @@
 #
 #
 
-import sys
 import os
+import sys
+
+import shutil
 
 import ccp4build_refmac
 
@@ -25,6 +27,11 @@ import ccp4build_refmac
 class Coot(ccp4build_refmac.Refmac):
 
     # ----------------------------------------------------------------------
+
+    def _escape_path ( self,path ):
+        if sys.platform.startswith("win"):
+            return path.replace ( "\\","\\\\" )
+        return path
 
     def coot (  self,
                 meta,   # meta dictionary
@@ -46,14 +53,14 @@ class Coot(ccp4build_refmac.Refmac):
                                     "', '" + lab_phi +\
                                     "', '', 0, 0)",
             script + "(0)",
-            "write_pdb_file(0,'" + xyzout + "')",
+            "write_pdb_file(0,'" + self._escape_path(xyzout) + "')",
             "coot_real_exit(0)"
         ])
 
         self.close_script()
 
         script_path = self.script_path + ".py"
-        os.rename ( self.script_path,script_path )
+        shutil.move ( self.script_path,script_path )
         self.script_path = None
 
         cmd = [ "--no-state-script", "--no-graphics", "--no-guano", "--python",

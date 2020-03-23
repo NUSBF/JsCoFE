@@ -3,13 +3,13 @@
 #
 # ============================================================================
 #
-#    22.03.19   <--  Date of Last Modification.
+#    22.03.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  CCP4build Report class
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2019
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2019-2020
 #
 # ============================================================================
 #
@@ -373,7 +373,7 @@ class Report(ccp4build_edstats.EDStats):
             #self.putMessage ( "&nbsp;" )
 
             map_path = os.path.join ( os.path.relpath(self.outputdir,self.reportdir),
-                                      output_name )
+                                      output_name ).replace("\\","/")
             self.putStructureWidget ( "Structure and density map",[
                                         map_path + ".pdb",
                                         map_path + ".mtz",
