@@ -218,6 +218,11 @@ var sender_cfg = conf.getServerConfig();
     */
     function(err,httpResponse,response) {
 
+      if (jobballPath)  {
+        if (!utils.removeFile(jobballPath))
+          log.error ( 31,'cannot remove jobball at ' + jobballPath );
+      }
+
       if (err) {
         if (onErr_func)
           onErr_func ( 2,err );  // '2' means an error from upload stage
@@ -236,9 +241,6 @@ var sender_cfg = conf.getServerConfig();
           onErr_func ( 4,response );  // '4' means unrecognised response
         }
       }
-
-      if (jobballPath)
-        utils.removeFile ( jobballPath );
 
     });
 
