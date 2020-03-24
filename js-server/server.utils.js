@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    03.03.20   <--  Date of Last Modification.
+ *    24.03.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -30,6 +30,7 @@ var com_utils     = require('../js-common/common.utils');
 //  prepare log
 var log = require('./server.log').newLog(14);
 
+var _is_windows = /^win/.test(process.platform);
 
 // ==========================================================================
 
@@ -233,7 +234,8 @@ function writeObject ( path,dataObject )  {
 
 function copyFile ( old_path,new_path )  {
   try {
-    fs.unlinkSync ( new_path );
+    if (_is_windows)
+      fs.unlinkSync ( new_path );
   } catch (e) {}
   try {
 //    fs.renameSync ( old_path,new_path );
@@ -252,7 +254,8 @@ function moveFile ( old_path,new_path )  {
   // must be limited only when source and destination are known to be in
   // the same partition
   try {
-    fs.unlinkSync ( new_path );
+    if (_is_windows)
+      fs.unlinkSync ( new_path );
   } catch (e) {}
   try {
     fs.moveSync ( old_path,new_path,{'overwrite':true} );
@@ -394,7 +397,7 @@ function removeFiles ( dir_path,extList ) {
 function killProcess ( pid )  {
   if (pid)  {
     try {
-      if (/^win/.test(process.platform))  {
+      if (_is_windows)  {
         child_process.execSync ( 'taskkill /PID ' + pid + ' /T /F' );
       } else  {
         child_process.execSync ( 'kill -9 ' + pid );
@@ -680,7 +683,7 @@ function checkInternet ( url,callback_func ) {
 */
 
 function spawn ( exeName,arguments,options )  {
-  if (/^win/.test(process.platform))  {  // MS Windows
+  if (_is_windows)  {  // MS Windows
     return  child_process.spawn ( 'cmd',['/s','/c',exeName].concat(arguments),
                                   options );
   } else  { // Mac, Linux

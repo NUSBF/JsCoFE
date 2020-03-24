@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    26.01.20   <--  Date of Last Modification.
+ *    23.03.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -605,10 +605,8 @@ function ncJobFinished ( job_token,code )  {
 
     // but, if FE is configured, take it from configuration
     var fe_config = conf.getFEConfig();
-    /*  ######################################
-    if (fe_config)
+    if (fe_config && fe_config.localSetup)
       feURL = fe_config.externalURL;
-    */
 
     if (feURL.endsWith('/'))
       feURL = feURL.substr(0,feURL.length-1);
@@ -638,7 +636,7 @@ function ncJobFinished ( job_token,code )  {
                           ' back to FE due to send errors [' +
                            JSON.stringify(code) + ']' );
           setTimeout ( function(){ ncJobFinished(job_token,code); },
-                                conf.getServerConfig().sendDataWaitTime );
+                       conf.getServerConfig().sendDataWaitTime );
 
         } else if (jobEntry.sendTrials>0)  {  // try to send again
 
@@ -647,7 +645,7 @@ function ncJobFinished ( job_token,code )  {
                           ' back to FE due to FE errors (stage' +
                           stageNo + ', code [' + JSON.stringify(code) + '])' );
           setTimeout ( function(){ ncJobFinished(job_token,code); },
-                                conf.getServerConfig().sendDataWaitTime );
+                       conf.getServerConfig().sendDataWaitTime );
 
         } else  { // what to do??? clean NC storage, the job was a waste.
 
