@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.10.19   <--  Date of Last Modification.
+ *    26.03.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  LSQKAB Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2019
+ *  (C) E. Krissinel, A. Lebedev 2016-2020
  *
  *  =================================================================
  *
@@ -36,7 +36,7 @@ function TaskLsqKab()  {
   this.name    = 'lsqkab';
   this.setOName ( 'lsqkab' );  // default output file name template
   this.title   = 'Structure Superposition with LsqKab';
-  this.helpURL = './html/jscofe_task_lsqkab.html';
+  //this.helpURL = './html/jscofe_task_lsqkab.html';
 
   this.maxFitParamRows = 10;
 

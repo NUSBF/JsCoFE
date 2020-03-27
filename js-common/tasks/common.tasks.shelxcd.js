@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    14.02.20   <--  Date of Last Modification.
+ *    26.03.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -36,7 +36,7 @@ function TaskShelxCD()  {
   this.name    = 'shelx-cd substructure search';
   this.setOName ( 'shelx-cd' );  // default output file name template
   this.title   = 'Substructure Search with SHELX-C/D';
-  this.helpURL = './html/jscofe_task_shelxcd.html';
+  //this.helpURL = './html/jscofe_task_shelxcd.html';
 
   this.input_dtypes = [{    // input data types
       data_type   : {'DataRevision':['!anomalous','!asu','~xyz','~phases','~substructure']}, // data type(s) and subtype(s)

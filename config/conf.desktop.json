@@ -77,7 +77,7 @@
     "externalURL"      : "",
     "exclusive"        : true,
     "stoppable"        : false,
-    "localisation"     : 2
+    "localisation"     : 0
   },
 
   "NumberCrunchers" : [

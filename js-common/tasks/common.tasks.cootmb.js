@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    21.03.20   <--  Date of Last Modification.
+ *    26.03.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -35,7 +35,7 @@ function TaskCootMB()  {
   this.name    = 'coot (model building)';
   this.setOName ( 'coot-mb' );  // default output file name template
   this.title   = 'Model Building with Coot';
-  this.helpURL = './html/jscofe_task_coot.html';
+  //this.helpURL = './html/jscofe_task_coot.html';
   this.nc_type = 'client';    // job may be run only on client NC
 
   this.input_dtypes = [{      // input data types

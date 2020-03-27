@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    10.02.20   <--  Date of Last Modification.
+#    26.03.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -31,6 +31,7 @@ import json
 
 #  application imports
 import basic
+from   pycofe.proc   import qualrep
 
 
 # ============================================================================
@@ -147,6 +148,9 @@ class Lorestr(basic.TaskDriver):
                 revision.setStructureData ( structure )
                 self.registerRevision     ( revision  )
                 have_results = True
+
+                qualrep.quality_report ( self,revision )
+
         else:
             self.putTitle ( "No Output Generated" )
 

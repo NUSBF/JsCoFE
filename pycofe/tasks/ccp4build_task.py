@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    13.02.20   <--  Date of Last Modification.
+#    26.03.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -35,8 +35,9 @@ import shutil
 import pyrvapi
 
 #  application imports
-from   pycofe.dtypes import dtype_template, dtype_revision
 import basic
+from   pycofe.dtypes import dtype_template, dtype_revision
+from   pycofe.proc   import qualrep
 
 
 # ============================================================================
@@ -395,6 +396,8 @@ class CCP4Build(basic.TaskDriver):
                     self.putRevisionWidget ( gridId,i,"<b><i>" + titles[i] + " build:</i></b>",rev )
                     rev.register ( self.outputDataBox )
                     have_results = True
+
+                    qualrep.quality_report ( self,rev )
 
                 else:
                     self.putMessage ( "<i>Cannot make structure for " +\

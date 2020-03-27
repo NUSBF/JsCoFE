@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    14.03.20   <--  Date of Last Modification.
+ *    26.03.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -37,7 +37,7 @@ function TaskEnsemblePrepSeq()  {
   this.name    = 'ensemble preparation (seq)';
   this.setOName ( 'ensemble' );  // default output file name template
   this.title   = 'Prepare MR Ensemble from Sequence';
-  this.helpURL = './html/jscofe_task_ensembleprepseq.html';
+  //this.helpURL = './html/jscofe_task_ensembleprepseq.html';
 
   this.input_dtypes = [{  // input data types
       data_type : {'DataSequence':['protein']}, // data type(s) and subtype(s)

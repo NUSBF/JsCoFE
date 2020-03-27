@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    06.01.20   <--  Date of Last Modification.
+ *    26.03.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -35,7 +35,7 @@ function TaskAuspex()  {
   this.name    = 'Auspex';     // short name for job tree
   this.oname   = '*';          // asterisk here means do not use
   this.title   = 'Reflection data diagnostics with Auspex plots';     // full title
-  this.helpURL = './html/jscofe_task_auspex.html';
+  //this.helpURL = './html/jscofe_task_auspex.html';
 
   this.input_dtypes = [{    // input data types
       data_type   : {'DataHKL':[]}, // data type(s) and subtype(s)

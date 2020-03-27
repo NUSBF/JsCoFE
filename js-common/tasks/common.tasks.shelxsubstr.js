@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    22.01.20   <--  Date of Last Modification.
+ *    26.03.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -36,7 +36,7 @@ function TaskShelxSubstr()  {
   this.name    = 'shelx substructure search (crank-2)';
   this.setOName ( 'shelx-substr' );  // default output file name template
   this.title   = 'Substructure Search with SHELX via Crank-2';
-  this.helpURL = './html/jscofe_task_shelxsubstr.html';
+  //this.helpURL = './html/jscofe_task_shelxsubstr.html';
 
   this.input_dtypes[0].data_type   = {'DataRevision':['!anomalous','~xyz','~substructure']}, // data type(s) and subtype(s)
   this.input_dtypes[0].customInput = 'shelx-substr';   // lay custom fields next to the selection

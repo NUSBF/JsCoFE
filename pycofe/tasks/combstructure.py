@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    20.03.20   <--  Date of Last Modification.
+#    26.03.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -34,7 +34,8 @@ import gemmi
 
 #  application imports
 import basic
-from   pycofe.etc  import pyrama
+from   pycofe.etc   import pyrama
+from   pycofe.proc  import qualrep
 
 
 # ============================================================================
@@ -139,7 +140,8 @@ class CombStructure(basic.TaskDriver):
                     "--pdb",work_xyz, "--script",coot_script ]
 
             if sys.platform.startswith("win"):
-                self.runApp ( "coot.bat",cmd,logType="Service" )
+                coot_bat = os.path.join(os.environ["CCP4"], "libexec", "coot.bat")
+                self.runApp ( coot_bat,cmd,logType="Service" )
             else:
                 self.runApp ( "coot",cmd,logType="Service" )
 
@@ -396,6 +398,8 @@ class CombStructure(basic.TaskDriver):
                 revision.setStructureData ( structure )
                 self.registerRevision     ( revision  )
                 have_results = True
+
+                qualrep.quality_report ( self,revision )
 
         else:
             self.putTitle ( "No Output Generated" )

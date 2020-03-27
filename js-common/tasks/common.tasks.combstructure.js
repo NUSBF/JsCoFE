@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    06.01.20   <--  Date of Last Modification.
+ *    26.03.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -35,7 +35,7 @@ function TaskCombStructure()  {
   this.name    = 'comb structure';
   this.setOName ( 'combstruct' );  // default output file name template
   this.title   = 'Comb Structure with Coot/Refmac';
-  this.helpURL = './html/jscofe_task_combstructure.html';
+  //this.helpURL = './html/jscofe_task_combstructure.html';
 
   this.input_dtypes = [{  // input data types
       data_type   : {'DataRevision':['xyz','protein']}, // data type(s) and subtype(s)

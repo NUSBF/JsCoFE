@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    22.03.20   <--  Date of Last Modification.
+ *    26.03.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -37,7 +37,7 @@ function TaskCCP4Build()  {
   this.name    = 'ccp4build';
   this.setOName ( 'ccp4build' );  // default output file name template
   this.title   = 'Automatic Model Building with CCP4Build';
-  this.helpURL = './html/jscofe_task_ccp4build.html';
+  //this.helpURL = './html/jscofe_task_ccp4build.html';
 
   this.input_dtypes = [{      // input data types
       data_type   : {'DataRevision':['!protein','!asu','!phases']}, // data type(s) and subtype(s)

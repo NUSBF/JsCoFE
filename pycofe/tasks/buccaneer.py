@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    09.02.20   <--  Date of Last Modification.
+#    26.03.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -33,6 +33,7 @@ import shutil
 import basic
 from   pycofe.dtypes  import dtype_template
 from   varut          import signal
+from   pycofe.proc    import qualrep
 
 
 # ============================================================================
@@ -297,6 +298,8 @@ class Buccaneer(basic.TaskDriver):
                 #revision.removeSubtype     ( dtype_template.subtypeSubstructure() )
                 self.registerRevision      ( revision  )
                 have_results = True
+
+                qualrep.quality_report ( self,revision )
 
         else:
             self.putTitle ( "No Output Generated" )

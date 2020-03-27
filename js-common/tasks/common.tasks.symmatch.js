@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    10.10.19   <--  Date of Last Modification.
+ *    26.03.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  SymMatch Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2018-2019
+ *  (C) E. Krissinel, A. Lebedev 2018-2020
  *
  *  =================================================================
  *
@@ -35,7 +35,7 @@ function TaskSymMatch()  {
   this.name    = 'symmatch';
   this.setOName ( 'symmatch' );  // default output file name template
   this.title   = 'Symmetry Match to Reference Structure with CSymMatch';
-  this.helpURL = './html/jscofe_task_symmatch.html';
+  //this.helpURL = './html/jscofe_task_symmatch.html';
 
   this.input_dtypes = [{    // input data types
       data_type   : {'DataRevision' :['xyz','substructure']}, // data type(s) and subtype(s)

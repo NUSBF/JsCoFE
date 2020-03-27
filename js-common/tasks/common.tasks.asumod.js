@@ -3,7 +3,7 @@
 /*
  *  =================================================================
  *
- *    10.10.19   <--  Date of Last Modification.
+ *    26.03.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -14,7 +14,7 @@
  *  **** Content :  ASU Definition Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2019
+ *  (C) E. Krissinel, A. Lebedev 2016-2020
  *
  *  =================================================================
  *
@@ -37,7 +37,7 @@ function TaskASUMod()  {
   this.name      = 'asymmetric unit correction';
   this.setOName ( 'asucorr' );  // default output file name template
   this.title     = 'Asymmetric Unit Correction';
-  this.helpURL   = './html/jscofe_task_asumod.html';
+  //this.helpURL   = './html/jscofe_task_asumod.html';
   this.fasttrack = true;  // enforces immediate execution
 
   this.input_dtypes.unshift({   // input data types

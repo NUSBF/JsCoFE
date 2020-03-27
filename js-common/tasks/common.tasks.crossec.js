@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    25.02.19   <--  Date of Last Modification.
+ *    26.03.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -35,7 +35,7 @@ function TaskCrosSec()  {
   this.name    = 'x-ray cross sections';
   this.oname   = '*';
   this.title   = 'X-ray cross sections and anomalous scattering factors';
-  this.helpURL = './html/jscofe_task_crossec.html';
+  //this.helpURL = './html/jscofe_task_crossec.html';
 
   this.parameters = { // input parameters
     ATOM : {

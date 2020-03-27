@@ -3,7 +3,7 @@
 /*
  *  =================================================================
  *
- *    10.10.19   <--  Date of Last Modification.
+ *    26.03.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -14,7 +14,7 @@
  *  **** Content :  ASU Definition (from Structure) Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2019
+ *  (C) E. Krissinel, A. Lebedev 2016-2020
  *
  *  =================================================================
  *
@@ -37,7 +37,7 @@ function TaskASUDefStruct()  {
   this.name      = 'asymmetric unit content';
   this.setOName ( 'asudef' );  // default output file name template
   this.title     = 'Asymmetric Unit Content from Structure';
-  this.helpURL   = './html/jscofe_task_asudef_struct.html';
+  //this.helpURL   = './html/jscofe_task_asudef_struct.html';
   this.fasttrack = true;  // enforces immediate execution
 
   this.input_dtypes = [{   // input data types

@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    11.03.20   <--  Date of Last Modification.
+ *    26.03.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -37,7 +37,7 @@ function TaskImport()  {
   this.name      = 'data import';
   this.oname     = '*';   // asterisk here means do not use
   this.title     = 'Data Import';
-  this.helpURL   = './html/jscofe_task_import.html';
+  //this.helpURL   = './html/jscofe_task_import.html';
   this.fasttrack = true;  // enforces immediate execution
 
   this.file_mod     = {'rename':{},'annotation':[]}; // file modification and annotation

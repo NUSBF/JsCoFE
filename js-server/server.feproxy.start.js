@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.12.19   <--  Date of Last Modification.
+ *    26.03.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Front End Proxy Server
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2019
+ *  (C) E. Krissinel, A. Lebedev 2019-2020
  *
  *  =================================================================
  *
@@ -106,7 +106,8 @@ function start ( callback_func )  {
                'js-lib/', '/jsrview/'
              ]);
     case 1 : local_prefixes = local_prefixes.concat ([
-               'images_com/','images_png/','images_svg/', 'css/', 'html/'
+               'images_com/','images_png/','images_svg/',
+               'css/', 'manuals/', 'html/'
              ]);
     default: ;
   }

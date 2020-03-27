@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    27.12.18   <--  Date of Last Modification.
+ *    26.03.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Coot Task Class (for local server)
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2018
+ *  (C) E. Krissinel, A. Lebedev 2018-2020
  *
  *  ==========================================================================
  *
@@ -35,7 +35,7 @@ function TaskMergeData()  {
   this.name    = 'merge data';
   this.oname   = '*';   // asterisk here means do not use
   this.title   = 'Merge Data from Different Branches';
-  this.helpURL = './html/jscofe_task_mergedata.html';
+  //this.helpURL = './html/jscofe_task_mergedata.html';
 
   this.input_dtypes = []; // no input data
 

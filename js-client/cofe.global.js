@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    28.02.20   <--  Date of Last Modification.
+ *    26.03.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -60,6 +60,9 @@ var __iOS_device    = (/iPad|iPhone|iPod/.test(navigator.userAgent) && !window.M
 var __any_mobile_device = __mobile_device || __iOS_device;
 //var iOS = !!navigator.platform && /iPad|iPhone|iPod/.test(navigator.platform);
 
+
+// ===========================================================================
+
 $(window).resize ( function(){
   if (__current_page)
     __current_page.onResize ( window.innerWidth,window.innerHeight );
@@ -102,16 +105,16 @@ function quitFullScreen() {
   var ifs = isFullScreen();
   if ((ifs!=-1) && ifs)  {
     if (document.exitFullscreen) {
-        document.exitFullscreen();
+      document.exitFullscreen();
     }
     else if (document.mozCancelFullScreen) {
-        document.mozCancelFullScreen();
+      document.mozCancelFullScreen();
     }
     else if (document.webkitCancelFullScreen) {
-        document.webkitCancelFullScreen();
+      document.webkitCancelFullScreen();
     }
     else if (document.msExitFullscreen) {
-        document.msExitFullscreen();
+      document.msExitFullscreen();
     }
   }
 }
@@ -125,6 +128,7 @@ var ifs = isFullScreen();
   } else if (ifs)  quitFullScreen();
              else  setFullScreen ();
 }
+
 
 /*
 document.addEventListener("fullscreenchange", function () {
@@ -148,14 +152,15 @@ document.addEventListener("msfullscreenchange", function () {
 // ===========================================================================
 // various constants
 
-var __check_job_interval  = 2000;  // milliseconds
-var __persistence_level   = 100;   // number of retries due to poor internet connection
+var __check_job_interval   = 2000;  // milliseconds
+var __persistence_level    = 100;   // number of retries due to poor internet connection
 
 //  task list parameters
-var __suggested_task_prob = 0.03;  // do not list tasks with combined probability
-                                   // less than 3%
-var __suggested_task_nmin = 3;     // minimum 3 tasks to suggest
+var __suggested_task_prob  = 0.03;  // do not list tasks with combined probability
+                                    // less than 3%
+var __suggested_task_nmin  = 3;     // minimum 3 tasks to suggest
 
+var __user_manual_base_url = './manuals/html-user/';
 
 //var __rvapi_config_coot_btn = true;  // switch Coot button off (when undefined) in RVAPI
 

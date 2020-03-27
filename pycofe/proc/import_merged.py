@@ -189,28 +189,41 @@ def run ( body,   # body is reference to the main Import class
             if freeRflag:
 
                 #if k==0 or True:  <-- to be deleted later  02.05.2019
-                scr_file = open ( freerflag_script(),"w" )
-                mf = mtz.mtz_file ( p_mtzin )
-                if mf.FREE:
-                    scr_file.write ( "COMPLETE FREE=" + mf.FREE + "\n" )
-                scr_file.write ( "END\n" )
-                scr_file.close ()
-
-                # run freerflag: generate FreeRFlag if it is absent, and expand
-                # all reflections
+                rc = command.comrc()
 
                 p_mtzin1 = "temp.mtz"
                 try:
                     os.remove ( p_mtzin1 )
                 except OSError:
                     pass
-                rc = command.call ( "freerflag",
-                                    ["HKLIN",p_mtzin,
-                                     "HKLOUT",p_mtzin1],"./",
-                                    freerflag_script(),body.file_stdout1,
-                                    body.file_stderr,log_parser=None,
-                                    citation_ref="freerflag-srv",
-                                    file_stdout_alt=body.file_stdout )
+
+                """
+                mf = mtz.mtz_file ( p_mtzin )
+                attrs = vars(mf)
+                body.stdoutln ( " ############################################" )
+                body.stdoutln ( ', '.join("%s: %s" % item for item in attrs.items()) )
+                body.stdoutln ( " ############################################" )
+                """
+
+                if f_fmt==import_filetype.ftype_CIFMerged():
+                    rc.msg = "recalculate"
+                else:
+                    scr_file = open ( freerflag_script(),"w" )
+                    mf = mtz.mtz_file ( p_mtzin )
+                    if mf.FREE:
+                        scr_file.write ( "COMPLETE FREE=" + mf.FREE + "\n" )
+                    scr_file.write ( "END\n" )
+                    scr_file.close ()
+
+                    # run freerflag: generate FreeRFlag if it is absent, and expand
+                    # all reflections
+                    rc = command.call ( "freerflag",
+                                        ["HKLIN",p_mtzin,
+                                         "HKLOUT",p_mtzin1],"./",
+                                        freerflag_script(),body.file_stdout1,
+                                        body.file_stderr,log_parser=None,
+                                        citation_ref="freerflag-srv",
+                                        file_stdout_alt=body.file_stdout )
                 if rc.msg:
                     scr_file = open ( freerflag_script(),"w" )
                     scr_file.write ( "FREERFRAC  0.05\nEND\n" )

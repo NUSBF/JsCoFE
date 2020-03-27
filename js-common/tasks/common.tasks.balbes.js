@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    09.02.20   <--  Date of Last Modification.
+ *    26.03.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -35,7 +35,7 @@ function TaskBalbes()  {
   this.name    = 'balbes';
   this.setOName ( 'balbes' );  // default output file name template
   this.title   = 'Balbes: Model Search & Preparation + MR';
-  this.helpURL = './html/jscofe_task_balbes.html';
+  //this.helpURL = './html/jscofe_task_balbes.html';
 
   this.input_dtypes = [{    // input data types
       data_type   : {'DataRevision':['!protein','!asu','~xyz']}, // data type(s) and subtype(s)

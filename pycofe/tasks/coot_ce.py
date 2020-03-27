@@ -85,7 +85,8 @@ class Coot(basic.TaskDriver):
 
         # Run coot
         if sys.platform.startswith("win"):
-            rc = self.runApp ( "coot.bat",args,logType="Main",quitOnError=False )
+            coot_bat = os.path.join(os.environ["CCP4"], "libexec", "coot.bat")
+            rc = self.runApp ( coot_bat,args,logType="Main",quitOnError=False )
         else:
             rc = self.runApp ( "coot",args,logType="Main",quitOnError=False )
 

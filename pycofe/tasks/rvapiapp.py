@@ -86,7 +86,7 @@ args = None;
 
 if sys.platform.startswith("win"):
     if task.rvapi_command == "{coot}":
-        app  = "coot.bat"
+        app  = os.path.join(os.environ["CCP4"], "libexec", "coot.bat")
         args = task.rvapi_args
     elif task.rvapi_command == "{ccp4mg}":
         app  = "ccp4mg.bat"
