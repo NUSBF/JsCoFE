@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    06.07.18   <--  Date of Last Modification.
+ *    27.03.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Various dialog templates
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2018
+ *  (C) E. Krissinel, A. Lebedev 2016-2020
  *
  *  =================================================================
  *
@@ -186,13 +186,17 @@ function HelpBox ( title,helpURL,onDoNotShowAgain_func )  {
     width     : w0,
     height    : h0,
     modal     : false,
-    buttons   : []
+    buttons   : [
+      { text : 'Back'
+        //icons: { primary: 'ui-icon-home' },
+      }
+    ]
   };
 
   this.options.resizable = !__any_mobile_device;
 
   if (onDoNotShowAgain_func)  {
-    this.options.buttons = [
+    this.options.buttons = this.options.buttons.concat ([
       { text : "Do not show again",
         click: function() {
           onDoNotShowAgain_func ( 1,helpURL );
@@ -205,18 +209,24 @@ function HelpBox ( title,helpURL,onDoNotShowAgain_func )  {
           $( this ).dialog( "close" );
         }
       }
-    ];
+    ]);
   } else  {
-    this.options.buttons = [
+    this.options.buttons = this.options.buttons.concat ([
       { text : "Ok",
+        //icon : image_path('add'),
+        //icons: { primary: 'ui-icon-closethick' },
         click: function() {
           $( this ).dialog( "close" );
         }
       }
-    ];
+    ]);
   }
 
   (function(dlg){
+
+    dlg.options.buttons[0].click = function() {
+      dlg.display.loadPage ( helpURL );
+    };
 
     $(dlg.element).on ( 'dialogresize', function(event,ui){
       dlg.resizeDisplay ( dlg.width_px(),dlg.height_px() );
