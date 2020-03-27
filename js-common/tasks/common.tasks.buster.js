@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    22.01.20   <--  Date of Last Modification.
+ *    26.03.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -35,7 +35,7 @@ function TaskBuster()  {
   this.name    = 'buster';
   this.setOName ( 'buster' );  // default output file name template
   this.title   = 'Buster Refinement';
-  this.helpURL = './html/jscofe_task_buster.html';
+  //this.helpURL = './html/jscofe_task_buster.html';
 
   this.input_dtypes = [{    // input data types
       data_type   : {'DataRevision':['!xyz']}, // data type(s) and subtype(s)

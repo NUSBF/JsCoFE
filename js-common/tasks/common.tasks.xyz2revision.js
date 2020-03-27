@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    10.01.20   <--  Date of Last Modification.
+ *    26.03.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -35,7 +35,7 @@ function TaskXyz2Revision()  {
   this.name    = 'link xyz and hkl';
   this.oname   = '*'; // asterisk means do not use (XYZ name will be used)
   this.title   = 'Link Coordinates and Reflections';
-  this.helpURL = './html/jscofe_task_xyz2revision.html';
+  //this.helpURL = './html/jscofe_task_xyz2revision.html';
 
   this.input_dtypes = [{  // input data types
       data_type   : {'DataHKL':[]}, // data type(s) and subtype(s)

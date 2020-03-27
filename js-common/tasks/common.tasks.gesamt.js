@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    13.03.20   <--  Date of Last Modification.
+ *    26.03.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -37,7 +37,7 @@ function TaskGesamt()  {
   this.oname   = 'gesamt';      // default output file name template
   this.setOName ( 'gesamt' );  // default output file name template
   this.title   = 'Structure Alignment and Superposition with Gesamt';
-  this.helpURL = './html/jscofe_task_gesamt.html';
+  //this.helpURL = './html/jscofe_task_gesamt.html';
 
   this.input_dtypes = [{      // input data types
      data_type   : {'DataStructure':['protein'],

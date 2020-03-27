@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.10.19   <--  Date of Last Modification.
+ *    26.03.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  CCP4go Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2019
+ *  (C) E. Krissinel, A. Lebedev 2016-2020
  *
  *  =================================================================
  *
@@ -37,7 +37,7 @@ function TaskCCP4go()  {
   this.name    = 'ccp4go';
   this.setOName ( 'ccp4go' );  // default output file name template
   this.title   = 'CCP4go auto-solver (experimental)';
-  this.helpURL = './html/jscofe_task_ccp4go.html';
+  //this.helpURL = './html/jscofe_task_ccp4go.html';
 
   this.files   = ['','',''];
   this.ha_type = '';

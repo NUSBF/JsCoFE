@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    20.11.19   <--  Date of Last Modification.
+ *    26.03.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Substructure Editing Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2019
+ *  (C) E. Krissinel, A. Lebedev 2019-2020
  *
  *  =================================================================
  *
@@ -37,7 +37,7 @@ function TaskEditRevisionSubstr()  {
   this.name      = 'edit revision substructure';
   this.setOName ( 'edit_revision_substr' );  // default output file name template
   this.title     = 'Edit Revision: Substructure';
-  this.helpURL   = './html/jscofe_task_editrevision_substr.html';
+  //this.helpURL   = './html/jscofe_task_editrevision_substr.html';
   this.fasttrack = true;  // enforces immediate execution
 
   this.input_dtypes = [{   // input data types

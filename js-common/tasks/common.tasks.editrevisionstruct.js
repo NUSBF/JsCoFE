@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    22.11.19   <--  Date of Last Modification.
+ *    26.03.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Structure Editing Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2019
+ *  (C) E. Krissinel, A. Lebedev 2019-2020
  *
  *  =================================================================
  *
@@ -37,7 +37,7 @@ function TaskEditRevisionStruct()  {
   this.name      = 'edit revision structure';
   this.setOName ( 'edit_revision_struct' );  // default output file name template
   this.title     = 'Edit Revision: Structure';
-  this.helpURL   = './html/jscofe_task_editrevision_struct.html';
+  //this.helpURL   = './html/jscofe_task_editrevision_struct.html';
   this.fasttrack = true;  // enforces immediate execution
 
   this.input_dtypes = [{   // input data types

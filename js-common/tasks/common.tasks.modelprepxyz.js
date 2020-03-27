@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    23.03.20   <--  Date of Last Modification.
+ *    26.03.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -45,7 +45,7 @@ function TaskModelPrepXYZ()  {
   this.name    = 'prepare MR model(s) from xyz';
   this.setOName ( '*' );  // default output file name template; '*': hide the field
   this.title   = 'Prepare MR Model(s) from Coordinate data';
-  this.helpURL = './html/jscofe_task_modelprepxyz.html';
+  //this.helpURL = './html/jscofe_task_modelprepxyz.html';
 
   this.input_dtypes = [{  // input data types
       data_type   : {'DataSequence':[]}, // data type(s) and subtype(s)

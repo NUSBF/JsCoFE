@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    15.02.20   <--  Date of Last Modification.
+ *    26.03.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -551,7 +551,7 @@ JobDialog.prototype.makeToolBar = function()  {
   */
 
   this.export_btn = this.addToolBarButton  ( false,'export'  ,'Export job directory' );
-  if (this.task.helpURL)
+  if (this.task.getHelpURL())
     this.ref_btn  = this.addToolBarButton  ( true,'reference','Task Documentation'   );
   this.help_btn   = this.addToolBarButton  ( true,'help'     ,'Dialog Help'          );
   //this.close_btn  = this.addToolBarButton  ( true,'close'    ,'Close Job Dialog'     );
@@ -864,9 +864,9 @@ JobDialog.prototype.makeLayout = function ( onRun_func )  {
         new ExportJobDialog ( dlg.task );
       });
 
-    if (dlg.task.helpURL && dlg.ref_btn)
+    if (dlg.task.getHelpURL() && dlg.ref_btn)
       dlg.ref_btn.addOnClickListener ( function(){
-        new HelpBox ( '',dlg.task.helpURL,null );
+        new HelpBox ( '',dlg.task.getHelpURL(),null );
       });
 
     if (dlg.help_btn)

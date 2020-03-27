@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    14.03.20   <--  Date of Last Modification.
+ *    26.03.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -75,7 +75,7 @@ function TaskTemplate()  {
   this.setOName ( 'template' );  // default output file name template
   this.uoname       = '';        // output file name template given by user
   this.state        = job_code.new;  // 'new', 'running', 'finished'
-  this.helpURL      = null;   // (relative) url to help file, null will hide the help button
+  //this.helpURL      = null;   // (relative) url to help file, null will hide the help button
   this.nc_type      = 'ordinary'; // required Number Cruncher type
   this.fasttrack    = false;  // no fasttrack requirements
   this.informFE     = true;   // end of job and results are sent back to FE
@@ -140,6 +140,16 @@ TaskTemplate.prototype.requiredEnvironment = function() { return ['CCP4']; }
 
 TaskTemplate.prototype.doNotPackSuffixes   = function() { return ['.map']; }
 TaskTemplate.prototype.doPackSuffixes      = function() { return ['']; }
+
+TaskTemplate.prototype.getHelpURL = function()  {
+  return __user_manual_base_url + 'doc.task.' + this._type.substr(4) + '.html';
+  /*
+  if (this.helpURL)
+    return __user_manual_base_url + 'doc.task.' + this._type.substr(4) + '.html' +
+           '?' + this.helpURL;
+  return this.helpURL;
+  */
+}
 
 // cloneItems return list of files and directories in job directory which need
 // to be cloned when task is cloned

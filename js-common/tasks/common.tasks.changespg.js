@@ -8,7 +8,7 @@
 /*
  *  =================================================================
  *
- *    19.12.19   <--  Date of Last Modification.
+ *    26.03.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -19,7 +19,7 @@
  *  **** Content :  Change Space Group Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2019
+ *  (C) E. Krissinel, A. Lebedev 2016-2020
  *
  *  =================================================================
  *
@@ -41,7 +41,7 @@ function TaskChangeSpG()  {
   this.name      = 'change space group';  // short name for job tree
   this.setOName ( 'SpG' );  // default output file name template
   this.title     = 'Change Space Group';  // full title
-  this.helpURL   = './html/jscofe_task_changespg.html';
+  //this.helpURL   = './html/jscofe_task_changespg.html';
   this.fasttrack = true;  // enforces immediate execution
 
   this.input_dtypes = [{    // input data types

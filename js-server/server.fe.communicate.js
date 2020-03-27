@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    03.03.20   <--  Date of Last Modification.
+ *    26.03.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -203,8 +203,15 @@ function Communicate ( server_request )  {
 
     } else  {
       ix = this.filePath.indexOf('manual');
-      if (ix>=0)  {  // request for jsrview library file, load it from js-lib
-                     // REGARDLESS the actual path requested
+      if (ix>=0)  {  // request for documentation file
+        /*
+        console.log ( ' ---- ' + this.filePath );
+        var flst = this.filePath.substr(ix).split('?');
+        if (!utils.fileExists(flst[0]))
+              this.filePath = flst[0];
+        else  this.filePath = flst[flst.length-1];
+        console.log ( ' === ' + this.filePath );
+        */
         this.filePath = this.filePath.substr(ix);
         log.debug2 ( 2,"calculated path " + this.filePath);
       }

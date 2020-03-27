@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    26.12.19   <--  Date of Last Modification.
+ *    26.03.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  SIMBAD Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2019
+ *  (C) E. Krissinel, A. Lebedev 2016-2020
  *
  *  =================================================================
  *
@@ -35,7 +35,7 @@ function TaskSimbad()  {
   this.name    = 'simbad';
   this.setOName ( 'simbad' );  // default output file name template
   this.title   = 'Lattice and Contaminants Search with Simbad'; // changes on input
-  this.helpURL = './html/jscofe_task_simbad.html';
+  //this.helpURL = './html/jscofe_task_simbad.html';
 
   this.input_dtypes = [{    // input data types
      data_type   : {'DataHKL':[],'DataStructure':[],'DataXYZ':[]},  // data type(s) and subtype(s)

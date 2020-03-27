@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    31.01.20   <--  Date of Last Modification.
+ *    26.03.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -35,7 +35,7 @@ function TaskDUI()  {
   this.name    = 'dui (image processing)';
   this.setOName ( 'dials' );  // default output file name template
   this.title   = 'Interactive Image Processing with DUI';
-  this.helpURL = './html/jscofe_task_dui.html';
+  //this.helpURL = './html/jscofe_task_dui.html';
   this.nc_type = 'client';  // job may be run only on client NC
 
   this.input_dtypes = [];   // no input data for this task

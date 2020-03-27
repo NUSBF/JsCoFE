@@ -29,7 +29,7 @@
     this.oname   = '*';               // default output file name template;
                                       // asterisk means do not use
     this.title   = 'Hello World! First Example';         // title for job dialog
-    this.helpURL = './html/jscofe_task_helloworld.html'; // documentation link,
+    //this.helpURL = './html/jscofe_task_helloworld.html'; // documentation link,
                                           // please follow file name convention
 
     this.input_dtypes = [{      // input data types

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    22.01.20   <--  Date of Last Modification.
+ *    26.03.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -36,7 +36,7 @@ function TaskShelxAuto()  {
   this.name    = 'SHELX Auto-EP';
   this.setOName ( 'shelx' );  // default output file name template
   this.title   = 'SHELX Automated Experimental Phasing via Crank-2';
-  this.helpURL = './html/jscofe_task_shelxauto.html';
+  //this.helpURL = './html/jscofe_task_shelxauto.html';
 
   this.input_dtypes[0].data_type   = {'DataRevision':['!anomalous','~xyz','~substructure']}, // data type(s) and subtype(s)
   this.input_dtypes[0].customInput = 'shelx-auto';     // lay custom fields next to the selection

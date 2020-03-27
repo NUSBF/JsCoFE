@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    18.12.19   <--  Date of Last Modification.
+ *    26.03.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Change Space Group Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2019
+ *  (C) E. Krissinel, A. Lebedev 2019-2020
  *
  *  =================================================================
  *
@@ -35,7 +35,7 @@ function TaskChangeReso()  {
   this.name      = 'change dataset resolution';  // short name for job tree
   this.setOName ( 'ChangeRes' );  // default output file name template
   this.title     = 'Change Dataset Resolution';  // full title
-  this.helpURL   = './html/jscofe_task_changereso.html';
+  //this.helpURL   = './html/jscofe_task_changereso.html';
   this.fasttrack = true;  // enforces immediate execution
 
   /* ===== left here for showing how an 'ASU' version of the task can be done

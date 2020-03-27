@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    31.01.20   <--  Date of Last Modification.
+ *    26.03.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -35,7 +35,7 @@ function TaskXDSGUI()  {
   this.name    = 'xds (image processing)';
   this.setOName ( 'xds' );  // default output file name template
   this.title   = 'Interactive Image Processing with XDS';
-  this.helpURL = './html/jscofe_task_xds.html';
+  //this.helpURL = './html/jscofe_task_xds.html';
   this.nc_type = 'client';  // job may be run only on client NC
 
   this.input_dtypes = [];   // no input data for this task

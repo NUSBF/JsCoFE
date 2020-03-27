@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    20.03.20   <--  Date of Last Modification.
+ *    26.03.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -37,7 +37,7 @@ function TaskCloudImport()  {
   this.name        = 'cloud import';
   this.oname       = '*';   // asterisk here means do not use
   this.title       = 'Cloud Import';
-  this.helpURL     = './html/jscofe_task_cimport.html';
+  //this.helpURL     = './html/jscofe_task_cimport.html';
   this.currentCloudPath = '';
   this.file_mod    = {'rename':{},'annotation':[]}; // file modification and annotation
   this.fasttrack   = true;  // enforces immediate execution

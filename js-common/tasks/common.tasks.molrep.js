@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    13.03.20   <--  Date of Last Modification.
+ *    26.03.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -36,7 +36,7 @@ function TaskMolrep()  {
   this.name    = 'molrep';
   this.setOName ( 'molrep' );  // default output file name template
   this.title   = 'Molecular Replacement with Molrep';
-  this.helpURL = './html/jscofe_task_molrep.html';
+  //this.helpURL = './html/jscofe_task_molrep.html';
 
   this.input_dtypes = [{  // input data types
       data_type   : {'DataRevision':['hkl']}, // data type(s) and subtype(s)

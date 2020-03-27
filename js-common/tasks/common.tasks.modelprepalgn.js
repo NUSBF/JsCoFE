@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.03.20   <--  Date of Last Modification.
+ *    26.03.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -36,7 +36,7 @@ function TaskModelPrepAlgn()  {
   this.name    = 'prepare MR model(s) from alignment data';
   //this.setOName ( 'ensemble' );  // default output file name template
   this.title   = 'Prepare MR Model(s) from Alignment data';
-  this.helpURL = './html/jscofe_task_modelprepalgn.html';
+  //this.helpURL = './html/jscofe_task_modelprepalgn.html';
 
   this.input_dtypes[1] = {
     data_type   : {'DataAlignment':[]},  // data type(s) and subtype(s)

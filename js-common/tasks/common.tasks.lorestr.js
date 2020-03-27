@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    10.10.19   <--  Date of Last Modification.
+ *    26.03.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  RefMac Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2019
+ *  (C) E. Krissinel, A. Lebedev 2016-2020
  *
  *  =================================================================
  *
@@ -35,7 +35,7 @@ function TaskLorestr()  {
   this.name    = 'lorestr';
   this.setOName ( 'lorestr' );  // default output file name template
   this.title   = 'Low-Resolution Refinement with Lorestr';
-  this.helpURL = './html/jscofe_task_lorestr.html';
+  //this.helpURL = './html/jscofe_task_lorestr.html';
 
   this.input_dtypes = [{      // input data types
       data_type : {'DataRevision':['xyz']}, // data type(s) and subtype(s)

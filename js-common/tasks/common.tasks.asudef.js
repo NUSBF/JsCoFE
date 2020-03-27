@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    30.09.19   <--  Date of Last Modification.
+ *    26.03.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  ASU Definition Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2019
+ *  (C) E. Krissinel, A. Lebedev 2016-2020
  *
  *  =================================================================
  *
@@ -36,7 +36,7 @@ function TaskASUDef()  {
   this.name      = 'asymmetric unit contents';
   this.oname     = '';  //'*';   // asterisk here means do not use
   this.title     = 'Asymmetric Unit Contents';
-  this.helpURL   = './html/jscofe_task_asudef.html';
+  //this.helpURL   = './html/jscofe_task_asudef.html';
   this.fasttrack = true;  // enforces immediate execution
 
   this.input_dtypes = [{   // input data types

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    27.12.18   <--  Date of Last Modification.
+ *    26.03.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  RefMac Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2018
+ *  (C) E. Krissinel, A. Lebedev 2016-2020
  *
  *  =================================================================
  *
@@ -38,7 +38,7 @@ function TaskRemark()  {
   if (__template)
         this.state = __template.job_code.remark;
   else  this.state = job_code.remark;
-  this.helpURL     = './html/jscofe_task_remark.html';
+  //this.helpURL     = './html/jscofe_task_remark.html';
 
   this.theme_no    = 6;
 

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    19.11.19   <--  Date of Last Modification.
+ *    26.03.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  ASU Modification Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2019
+ *  (C) E. Krissinel, A. Lebedev 2019-2020
  *
  *  =================================================================
  *
@@ -37,7 +37,7 @@ function TaskEditRevisionASU()  {
   this.name      = 'edit revision asu';
   this.setOName ( 'edit_revision_asu' );  // default output file name template
   this.title     = 'Edit Revision: Asymmetric Unit';
-  this.helpURL   = './html/jscofe_task_editrevision_asu.html';
+  //this.helpURL   = './html/jscofe_task_editrevision_asu.html';
   this.fasttrack = true;  // enforces immediate execution
 
   this.input_dtypes = [{   // input data types

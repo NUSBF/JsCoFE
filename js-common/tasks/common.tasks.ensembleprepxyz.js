@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    14.03.20   <--  Date of Last Modification.
+ *    26.03.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -45,7 +45,7 @@ function TaskEnsemblePrepXYZ()  {
   this.name    = 'ensemble preparation (xyz)';
   this.setOName ( 'ensemble' );  // default output file name template
   this.title   = 'Prepare MR Ensemble from Coordinate Data';
-  this.helpURL = './html/jscofe_task_ensembleprepxyz.html';
+  //this.helpURL = './html/jscofe_task_ensembleprepxyz.html';
 
   this.input_dtypes = [{  // input data types
       data_type   : {'DataSequence':[]}, // data type(s) and subtype(s)

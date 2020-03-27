@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    09.04.19   <--  Date of Last Modification.
+ *    26.03.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  MakeLigand Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2019
+ *  (C) E. Krissinel, A. Lebedev 2016-2020
  *
  *  =================================================================
  *
@@ -35,7 +35,7 @@ function TaskMakeLigand()  {
   this.name    = 'make ligand';
   this.oname   = '';  // output file name template (this or ligand name if empty)
   this.title   = 'Make Ligand with Acedrg';
-  this.helpURL = './html/jscofe_task_makeligand.html';
+  //this.helpURL = './html/jscofe_task_makeligand.html';
 
   this.parameters = { // input parameters
     SOURCE_SEL : {

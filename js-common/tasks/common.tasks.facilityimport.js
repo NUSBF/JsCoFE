@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    27.12.18   <--  Date of Last Modification.
+ *    26.03.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Facility Import Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2018
+ *  (C) E. Krissinel, A. Lebedev 2016-2020
  *
  *  =================================================================
  *
@@ -37,7 +37,7 @@ function TaskFacilityImport()  {
   this.name       = 'facility import';
   this.oname      = '*';   // asterisk here means do not use
   this.title      = 'Facility Import';
-  this.helpURL    = './html/jscofe_task_fimport.html';
+  //this.helpURL    = './html/jscofe_task_fimport.html';
   this.fasttrack  = true;  // enforces immediate execution
   this.inprogress = 0;     // indicates whether facility request is in progress
 

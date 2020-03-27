@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    25.08.19   <--  Date of Last Modification.
+ *    26.03.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Import Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2019
+ *  (C) E. Krissinel, A. Lebedev 2019-2020
  *
  *  ==========================================================================
  *
@@ -37,7 +37,7 @@ function TaskImportPDB()  {
   this.name      = 'import from PDB';
   this.oname     = '*';   // asterisk here means do not use
   this.title     = 'Import from PDB';
-  this.helpURL   = './html/jscofe_task_importpdb.html';
+  //this.helpURL   = './html/jscofe_task_importpdb.html';
   this.fasttrack = true;  // enforces immediate execution
 
   // declare void input data for passing pre-existing revisions through the task

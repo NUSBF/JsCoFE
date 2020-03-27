@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    14.03.20   <--  Date of Last Modification.
+ *    26.03.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -37,7 +37,7 @@ function TaskEnsemblePrepMG()  {
   this.name    = 'ensemble preparation (ccp4mg)';
   this.setOName ( 'ensemble' );  // default output file name template
   this.title   = 'Prepare MR Ensemble with CCP4mg';
-  this.helpURL = './html/jscofe_task_ensembleprepmg.html';
+  //this.helpURL = './html/jscofe_task_ensembleprepmg.html';
   this.nc_type = 'client';  // job may be run only on client NC
 
   this.input_dtypes = [{  // input data types

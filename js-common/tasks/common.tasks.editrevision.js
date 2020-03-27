@@ -4,7 +4,7 @@
 /*
  *  =================================================================
  *
- *    20.11.19   <--  Date of Last Modification.
+ *    26.03.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -15,7 +15,7 @@
  *  **** Content :  ASU Definition Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2019
+ *  (C) E. Krissinel, A. Lebedev 2019-2020
  *
  *  =================================================================
  *
@@ -39,7 +39,7 @@ function TaskEditRevision()  {
   this.name      = 'edit structure revision';
   this.setOName ( 'editrevision' );  // default output file name template
   this.title     = 'Edit Structure Revision';
-  this.helpURL   = './html/jscofe_task_editrevision.html';
+  //this.helpURL   = './html/jscofe_task_editrevision.html';
   this.fasttrack = true;  // enforces immediate execution
 
   this.input_dtypes = [{   // input data types

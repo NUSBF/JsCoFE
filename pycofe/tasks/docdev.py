@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    03.03.20   <--  Date of Last Modification.
+#    26.03.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -46,8 +46,8 @@ class DocDev(basic.TaskDriver):
 
         cwd     = os.path.abspath(os.getcwd())
         scriptf = "process.sh"
-        reppath = os.environ["DOCREPO"]
-        repname = "jscofe-doc"
+        reppath = os.environ["DOCREPO"]  # documentation repository path
+        repname = "jscofe-doc"           # documentation repository name
         doctype = self.getParameter ( self.task.parameters.DOC_SEL    )
         restype = self.getParameter ( self.task.parameters.OUTPUT_SEL )
         srcpath = os.path.join ( repname,"src-" + doctype )
@@ -57,7 +57,7 @@ class DocDev(basic.TaskDriver):
             self.putMessage ( "<h3>Generating developer's reference</h3>" )
         else:
             self.putMessage ( "<h3>Generating user manual</h3>" )
-            copytasks = "\ncp -r tasks/* ."
+            copytasks = "\nmv tasks/* .\nrm -rf tasks"
 
         #self.putMessage ( os.path.realpath ( os.path.dirname ( __file__ ) ) )
         #self.putMessage ( self.jscofe_dir )
@@ -68,6 +68,7 @@ class DocDev(basic.TaskDriver):
                  "\ncd "    + reppath +\
                  "\ngit pull origin master" +\
                  "\ncd "    + cwd +\
+                 "\ncp -r " + reppath + " " + repname +\
                  "\ncp -r " + reppath + " " + repname +\
                  "\ncd "    + srcpath +\
                  copytasks  +\
