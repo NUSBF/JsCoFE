@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    30.03.20   <--  Date of Last Modification.
+ *    31.03.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -942,18 +942,18 @@ function _import_project ( loginData,tempdir )  {
       projectDesc.dateCreated  = prj_meta.desc.dateCreated;
       projectDesc.dateLastUsed = prj_meta.desc.dateLastUsed;
       if ('owner' in prj_meta.desc)  {
-        if (prj_meta.desc.owner.share)  {
-          prj_meta.desc.owner.share = '';
-          utils.writeObject ( prj_meta_path,prj_meta );
-        }
+        //if (prj_meta.desc.owner.share)
+        //  prj_meta.desc.owner.share = '';
         projectDesc.owner = prj_meta.desc.owner;
-        projectDesc.owner.share = '';
-        if (!projectDesc.owner.login)
-          projectDesc.owner.login = loginData.login;
-        else if (projectDesc.owner.login!=loginData.login)
-          projectDesc.owner.is_shared = true;
-        projectDesc.owner.keeper = loginData.login;
       }
+      projectDesc.owner.share = '';
+      if (!projectDesc.owner.login)
+        projectDesc.owner.login = loginData.login;
+      else if (projectDesc.owner.login!=loginData.login)
+        projectDesc.owner.is_shared = true;
+      projectDesc.owner.keeper = loginData.login;
+      prj_meta.desc.owner = projectDesc.owner;
+      utils.writeObject ( prj_meta_path,prj_meta );
     } else
       prj_meta = null;
   } catch(err) {

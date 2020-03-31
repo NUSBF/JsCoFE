@@ -104,8 +104,8 @@ ImportSharedProjectDialog.prototype.makeProjectSelectPage = function ( pShare,on
     for (var i=0;i<shared_projects.length;i++)  {
       var keeper = '';
       if (('keeper' in shared_projects[i].owner) &&
-          (shared_projects[i].owner.login!=shared_projects[i].keeper))
-        keeper = shared_projects[i].keeper + ':';
+          (shared_projects[i].owner.login!=shared_projects[i].owner.keeper))
+        keeper = shared_projects[i].owner.keeper + ':';
       share_ddn.addItem (
             keeper +
             shared_projects[i].owner.login + ':[' +
