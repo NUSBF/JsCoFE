@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    26.03.20   <--  Date of Last Modification.
+ *    31.03.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -318,13 +318,8 @@ function ProjectListPage ( sceneId )  {
 
         var pDesc = projectList.projects[i];
         var pName = pDesc.name;
-        if (('owner' in pDesc) && pDesc.owner.is_shared)  {
-          if (('keeper' in pDesc.owner) && (pDesc.owner.login!=pDesc.owner.keeper))
-            pName = '[<b><i>' + pDesc.owner.keeper + ':' + pDesc.owner.login +
-                    '</i></b>]:' + pName;
-          else
-            pName = '[<b><i>' + pDesc.owner.login + '</i></b>]:' + pName;
-        }
+        if (('owner' in pDesc) && pDesc.owner.is_shared)
+          pName = '[<b><i>' + pDesc.owner.login + '</i></b>]:' + pName;
         trow.addCell ( pName  ).setNoWrap();
         trow.addCell ( pDesc.title ).insertWidget ( contextMenu,0 );
         if (pDesc.hasOwnProperty('disk_space'))
