@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    23.03.20   <--  Date of Last Modification.
+ *    30.03.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -630,18 +630,24 @@ function finishFailedJobExport ( loginData,fjdata )  {
 // ===========================================================================
 
 function checkProjectOwner ( projectDesc,loginData )  {
-  if ((!('owner' in projectDesc)) || (!projectDesc.owner.login))  {  // backward compatibility on 11.01.2020
+  if ((!('owner' in projectDesc)) || (!projectDesc.owner.login))  {
+    // backward compatibility on 11.01.2020
     var uData = user.readUserData ( loginData );
     projectDesc.owner = {
       login     : loginData.login,
       name      : uData.name,
       email     : uData.email,
+      keeper    : loginData.login,
       share     : '',
       is_shared : false
     };
-    return false;
+    return false;  // update project metadata
+  } else if (!('keeper' in projectDesc.owner))  {
+    // backward compatibility on 30.03.2020
+    projectDesc.owner.keeper = loginData.login;
+    return false;  // update project metadata
   }
-  return true;
+  return true;  // no changes
 }
 
 function getProjectData ( loginData,data )  {
@@ -946,6 +952,7 @@ function _import_project ( loginData,tempdir )  {
           projectDesc.owner.login = loginData.login;
         else if (projectDesc.owner.login!=loginData.login)
           projectDesc.owner.is_shared = true;
+        projectDesc.owner.keeper = loginData.login;
       }
     } else
       prj_meta = null;
@@ -1133,7 +1140,10 @@ function startSharedImport ( loginData,meta )  {
 
   if (utils.mkDir(tempdir))  {
 
-    var uLoginData = user.getUserLoginData ( meta.owner.login );
+    var project_keeper = meta.owner.login;
+    if (('keeper' in meta.owner) && meta.owner.keeper)
+      project_keeper = meta.owner.keeper;
+    var uLoginData = user.getUserLoginData ( project_keeper );
     if (uLoginData)  {
       var sProjectDirPath = getProjectDirPath ( uLoginData,meta.name );
       if (utils.fileExists(sProjectDirPath))  {
@@ -1151,7 +1161,7 @@ function startSharedImport ( loginData,meta )  {
       }
     } else  {
       rc     = cmd.fe_retcode.fileNotFound;
-      rc_msg = 'User data for ' + meta.owner.login + ' not found';
+      rc_msg = 'User data for ' + project_keeper + ' not found';
     }
 
   } else {

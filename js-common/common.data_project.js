@@ -2,7 +2,7 @@
 /*
 *  ==========================================================================
  *
- *    02.10.19   <--  Date of Last Modification.
+ *    30.03.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -------------------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Project Data Classes
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2019
+ *  (C) E. Krissinel, A. Lebedev 2016-2020
  *
  *  ==========================================================================
  *
@@ -27,9 +27,10 @@ function ProjectDesc()  {
   this.name         = '';
   this.title        = '';
   this.owner        = {
-    login     : '',
+    login     : '',   // login where project was created
     name      : '',
     email     : '',
+    keeper    : '',   // login of current project keeper
     share     : '',   // comma-separated list of login names
     is_shared : false
   };
@@ -149,7 +150,7 @@ ProjectShare.prototype.removeShare = function ( pDesc )  {
   var share = this.shared_projects;
   this.shared_projects = [];
   for (var i=0;i<share.length;i++)
-    if ((pDesc.name!=share[i].name) || (pDesc.owner.login!=pDesc.owner.login))
+    if ((pDesc.name!=share[i].name) || (pDesc.owner.login!=share[i].owner.login))
       this.shared_projects.push ( share[i] );
   return (share.length-this.shared_projects.length);
 }

@@ -1,4 +1,24 @@
 
+/*
+ *  =================================================================
+ *
+ *    31.03.20   <--  Date of Last Modification.
+ *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ *  -----------------------------------------------------------------
+ *
+ *  **** Module  :  css/gui/gui.menu.css
+ *       ~~~~~~~~~
+ *  **** Project :  jsCoFE - javascript-based Cloud Front End
+ *       ~~~~~~~~~
+ *  **** Content :  CSS definitions for Menu widgets
+ *       ~~~~~~~~~
+ *
+ *  (C) E. Krissinel, A. Lebedev 2016-2020
+ *
+ *  =================================================================
+ *
+ */
+
 .menu-dropbtn {
 /*    background-color: #4CAF50;  */
     background-color:  #5080AF;
@@ -36,9 +56,14 @@
     display: block;
 }
 
-.menu-dropdown a:hover {background-color: #f1f1f1}
+.menu-dropdown a:hover {
+  background-color: #f1f1f1;
+}
 
-.menu-show {display:block;}
+.menu-show {
+  position: fixed;
+  display : block;
+}
 
 
 
