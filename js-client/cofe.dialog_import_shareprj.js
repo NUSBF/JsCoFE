@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.01.20   <--  Date of Last Modification.
+ *    30.03.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -101,11 +101,17 @@ ImportSharedProjectDialog.prototype.makeProjectSelectPage = function ( pShare,on
     var share_ddn = new Dropdown();
     share_ddn.setTooltip ( 'Choose a project to import' )
              .setWidth ( '500pt' );
-    for (var i=0;i<shared_projects.length;i++)
+    for (var i=0;i<shared_projects.length;i++)  {
+      var keeper = '';
+      if (('keeper' in shared_projects[i].owner) &&
+          (shared_projects[i].owner.login!=shared_projects[i].keeper))
+        keeper = shared_projects[i].keeper + ':';
       share_ddn.addItem (
+            keeper +
             shared_projects[i].owner.login + ':[' +
             shared_projects[i].name  + '] "' +
             shared_projects[i].title + '"','',i,i==0 );
+    }
     share_ddn.make();
     this.grid.setWidget   ( share_ddn,2,0,1,3 );
     this.grid.setLabel    ( '&nbsp;', 3,0,1,3 );

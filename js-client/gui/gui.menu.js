@@ -209,13 +209,13 @@ function ContextMenu ( widget )  {
   $(this.element).height ( 1 );
   (function(menu){
     widget.addOnRightClickListener ( function(){
-      if (!menu.disabled)  {
+      //if (!menu.disabled)  {
         __close_all_menus();
         if (!menu.disabled)  {
           __onclick_ignore_counter++;
           menu.dropdown.element.classList.toggle ( 'menu-show' );
         }
-      }
+      //}
     });
   }(this));
 }
