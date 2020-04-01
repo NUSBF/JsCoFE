@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    27.01.20   <--  Date of Last Modification.
+ *    01.04.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -71,18 +71,20 @@ function AccountPage ( sceneId )  {
   var email_lbl    = new Label     ( 'E-mail:'     );
   var login_lbl    = new Label     ( 'Login name:' ).setNoWrap();
   var pwd_lbl      = new Label     ( 'Password:'   );
-  var licence_lbl  = new Label     ( 'Licence agreement:&nbsp;&nbsp;&nbsp;' ).setNoWrap();
-  var feedback_lbl = new Label     ( 'Feedback agreement:&nbsp;&nbsp;&nbsp;').setNoWrap();
+  var pwd1_lbl     = new Label     ( 'Retype password:'   ).setNoWrap();
+  var licence_lbl  = new Label     ( 'Licence agreement:' ).setNoWrap();
+  var feedback_lbl = new Label     ( 'Feedback agreement:').setNoWrap();
   var authoris_lbl = null;
   var authorisation_dic = {};
   if (__auth_software)  {
-    authoris_lbl = new Label ( 'Software authorisations:&nbsp;' ).setNoWrap();
+    authoris_lbl = new Label ( 'Software authorisations:' ).setNoWrap();
     authoris_lbl.setFontSize( '112%' );
   }
   var user_inp     = new InputText ( '' );
   var email_inp    = new InputText ( '' );
   var login_inp    = new InputText ( '' );
   var pwd_inp      = new InputText ( '' );
+  var pwd1_inp     = new InputText ( '' );
 
   user_inp    .setStyle   ( 'text',"^[A-Za-z\\-\\.\\s]+$",'John Smith',
                             'User name should only contain latin ' +
@@ -94,11 +96,14 @@ function AccountPage ( sceneId )  {
                             'Login name cannot be changed' );
   pwd_inp     .setStyle   ( 'password','','password (old or new)',
                             'Choose new password' );
+  pwd1_inp    .setStyle   ( 'password','','confirm password',
+                            'Type password again here' );
   title_lbl   .setFont    ( 'times','300%',true,true );
   user_lbl    .setFontSize( '112%' ).setWidth('auto');
   email_lbl   .setFontSize( '112%' );
   login_lbl   .setFontSize( '112%' );
   pwd_lbl     .setFontSize( '112%' );
+  pwd1_lbl    .setFontSize( '112%' );
   licence_lbl .setFontSize( '112%' );
   feedback_lbl.setFontSize( '112%' );
   /* == authoris_lbl.setFontSize( '112%' ); */
@@ -106,36 +111,39 @@ function AccountPage ( sceneId )  {
   email_inp   .setFontSize( '112%' ).setFontItalic(true).setWidth('200pt');
   login_inp   .setFontSize( '112%' ).setFontItalic(true).setWidth('200pt').setReadOnly(true);
   pwd_inp     .setFontSize( '112%' ).setFontItalic(true).setWidth('200pt');
+  pwd1_inp    .setFontSize( '112%' ).setFontItalic(true).setWidth('200pt');
 
   var row = 0;
-  panel.setWidget               ( title_lbl   ,row,0,1,4   );
-  panel.setHorizontalAlignment  ( row++ ,0    ,'center'    );
-  panel.setWidget               ( this.makeSetupNamePanel(), row++,0,1,4 );
-  panel.setCellSize             ( '','20pt'   ,row++,0     );
-  panel.setWidget               ( user_lbl    ,row  ,0,1,1 );
-  panel.setWidget               ( email_lbl   ,row+1,0,1,1 );
-  panel.setWidget               ( login_lbl   ,row+2,0,1,1 );
-  panel.setWidget               ( pwd_lbl     ,row+3,0,1,1 );
-  panel.setWidget               ( licence_lbl ,row+4,0,1,2 );
-  panel.setWidget               ( feedback_lbl,row+5,0,1,2 );
+  panel.setWidget              ( title_lbl   ,row,0,1,4   );
+  panel.setHorizontalAlignment ( row++ ,0    ,'center'    );
+  panel.setWidget              ( this.makeSetupNamePanel(), row++,0,1,4 );
+  panel.setCellSize            ( '','20pt'   ,row++,0     );
+  panel.setWidget              ( user_lbl    ,row  ,0,1,1 );
+  panel.setWidget              ( email_lbl   ,row+1,0,1,1 );
+  panel.setWidget              ( login_lbl   ,row+2,0,1,1 );
+  panel.setWidget              ( pwd_lbl     ,row+3,0,1,1 );
+  panel.setWidget              ( pwd1_lbl    ,row+4,0,1,1 );
+  panel.setWidget              ( licence_lbl ,row+5,0,1,2 );
+  panel.setWidget              ( feedback_lbl,row+6,0,1,2 );
   if (__auth_software)
-    panel.setWidget               ( authoris_lbl,row+6,0,1,2 );
-  for (var i=0;i<4;i++)
+    panel.setWidget            ( authoris_lbl,row+7,0,1,2 );
+  for (var i=0;i<5;i++)
     panel.setCellSize  ( '96pt','',row+i,0   );
-  panel.setWidget               ( user_inp    ,row  ,1,1,3 );
-  panel.setWidget               ( email_inp   ,row+1,1,1,3 );
-  panel.setWidget               ( login_inp   ,row+2,1,1,3 );
-  panel.setWidget               ( pwd_inp     ,row+3,1,1,3 );
+  panel.setWidget              ( user_inp    ,row  ,1,1,3 );
+  panel.setWidget              ( email_inp   ,row+1,1,1,3 );
+  panel.setWidget              ( login_inp   ,row+2,1,1,3 );
+  panel.setWidget              ( pwd_inp     ,row+3,1,1,3 );
+  panel.setWidget              ( pwd1_inp    ,row+4,1,1,3 );
   /* == for (var i=0;i<7;i++)  { */
   if (__auth_software)  {
-    for (var i=0;i<7;i++)  {
-      panel.setVerticalAlignment  ( row+i,0,'middle' );
-      panel.setVerticalAlignment  ( row+i,1,'middle' );
+    for (var i=0;i<8;i++)  {
+      panel.setVerticalAlignment ( row+i,0,'middle' );
+      panel.setVerticalAlignment ( row+i,1,'middle' );
     }
   } else  {
-    for (var i=0;i<6;i++)  {
-      panel.setVerticalAlignment  ( row+i,0,'middle' );
-      panel.setVerticalAlignment  ( row+i,1,'middle' );
+    for (var i=0;i<7;i++)  {
+      panel.setVerticalAlignment ( row+i,0,'middle' );
+      panel.setVerticalAlignment ( row+i,1,'middle' );
     }
   }
 
@@ -165,7 +173,7 @@ function AccountPage ( sceneId )  {
         .setFontSize ( '90%' ).setFontItalic(true);
 
 
-  row += 4;
+  row += 5;
   var licence_btn = new Button  ( 'choose',image_path('licence') );
   licence_btn.setWidth          ( '100%' );
   licence_btn.setTooltip        ( 'Type of licence must be chosen' );
@@ -234,6 +242,10 @@ function AccountPage ( sceneId )  {
 
     if (pwd_inp.getValue().length<=0)
       msg += '<b>Password</b> must be provided (old or new).<p>';
+    else if (pwd1_inp.getValue().length<=0)
+      msg += '<b>Password</b> must be retyped for confirmation.<p>';
+    else if (pwd1_inp.getValue()!=pwd_inp.getValue())
+      msg += '<b>Retyped password</b> does not match the original.<p>';
 
     if ([licence_code.academic,licence_code.commercial]
         .indexOf(licence_btn.getText())<0)

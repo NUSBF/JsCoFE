@@ -438,7 +438,7 @@ function ProjectListPage ( sceneId )  {
   impshare_btn = new Button ( 'Shared',image_path('share') );
   if (__demo_projects)  {
     demoprj_btn = new Button ( 'Demo projects',image_path('demoprj') );
-    demoprj_btn.setWidth     ( '120pt' );
+    demoprj_btn.setWidth     ( '120pt' ).setNoWrap();
   }
   help_btn   = new Button ( 'Help',image_path('help') ); //.setTooltip('Documentation' );
   open_btn    .setWidth     ( '80pt'  );

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    26.03.20   <--  Date of Last Modification.
+ *    01.04.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -599,7 +599,10 @@ if (!__template)  {
     div.dir_input = [];
     this.layDirectoryInput ( div );
 
-    this.parameters.sec1.contains.PROJECT.default = this.project.replace(/[^a-zA-Z0-9]/g, '_');
+    var defprj = this.project.replace(/[^a-zA-Z0-9]/g, '_');
+    if (('0'<=defprj[0]) && (defprj[0]<='9'))
+      defprj = 'P' + defprj;
+    this.parameters.sec1.contains.PROJECT.default = defprj;
 
     this.layParameters ( div.grid,div.grid.getNRows()+1,0 );
 
