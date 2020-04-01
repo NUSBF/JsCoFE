@@ -24,6 +24,7 @@ var elem = document.createElement ( type );
     elem.setAttribute ( attr,attrval );
   if (text.length>0)
     elem.appendChild  ( document.createTextNode(text) );
+  elem.style.fontSize = '16px';
   return elem;
 }
 
