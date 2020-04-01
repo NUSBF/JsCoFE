@@ -166,6 +166,7 @@ function HelpBox ( title,helpURL,onDoNotShowAgain_func )  {
   $(this.element).css({'overflow':'hidden'});
 
   document.body.appendChild ( this.element );
+  document.body.style.fontSize = '16px';
 
   var w0,h0;
   if (__any_mobile_device)  {

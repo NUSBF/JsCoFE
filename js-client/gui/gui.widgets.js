@@ -41,6 +41,7 @@ function Widget ( type )  {
   this.parent  = null;
   this.element = document.createElement ( type );
   this.element.setAttribute ( 'id',this.id );
+  this.element.style.fontSize = '16px';
 }
 
 /** Setting HTML id attribute for Widget.
@@ -1271,9 +1272,14 @@ function IFrame ( uri )  {
     this.element.setAttribute ( 'src',uri );
   //this.element.setAttribute ( 'sandbox','allow-same-origin' );
   $(this.element).css ( {'border':'none'} );
-  //(function(iframe){
-  //  iframe.element.onload = function(){ iframe.setVisible(true); };
-  //}(this))
+  //var body = this.element.contentWindow.document.querySelector('body');
+  //body.style.fontSize = '16px';
+  (function(iframe){
+    iframe.element.onload = function(){
+      var body = iframe.element.contentWindow.document.querySelector('body');
+      body.style.fontSize = '16px';
+    };
+  }(this))
 }
 
 IFrame.prototype = Object.create ( Widget.prototype );
@@ -1294,14 +1300,11 @@ IFrame.prototype.setOnLoadListener = function ( onload_func )  {
 }
 
 IFrame.prototype.loadPage = function ( uri )  {
-  //this.setVisible ( false );
   this.element.src = uri;
-  //this.setVisible ( true );
   return this;
 }
 
 IFrame.prototype.setHTML = function ( html )  {
-  //this.setVisible ( false );
   this.element.src = 'data:text/html;charset=utf-8,' + encodeURI(html);
   return this;
 }
@@ -1311,14 +1314,13 @@ IFrame.prototype.getURL = function()  {
 }
 
 IFrame.prototype.clear = function()  {
-  //this.setVisible ( false );
   this.element.src = 'about:blank';
   return this;
 }
 
 IFrame.prototype.reload = function()  {
-  //this.setVisible ( false );
   this.element.src = this.element.src;
+//  this.element.contentWindow.style.fontSize = '16px';
   return this;
 }
 
