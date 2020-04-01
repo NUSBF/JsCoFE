@@ -61,6 +61,7 @@ function JobDialog ( params,          // data and task projections up the tree b
   $(this.element).css({'box-shadow':'8px 8px 16px 16px rgba(0,0,0,0.2)',
                        'overflow':'hidden'});
   document.body.appendChild ( this.element );
+  document.body.style.fontSize = '16px';
 
   this.inputPanel  = null;
   this.outputPanel = null;

@@ -205,6 +205,7 @@ function startUglyMol ( title,xyz_uri,mtz_uri,map_uri,diffmap_uri,mapLabels )  {
 //  doc.getElementById ( 'scene').appendChild ( dialog );
 //  document.getElementById("scene").appendChild ( dialog );
   doc.body.appendChild ( dialog );
+  doc.body.style.fontSize = '16px';
 
   var iframe = doc.createElement ( 'iframe' );
   jq(iframe).css({
@@ -221,6 +222,7 @@ function startUglyMol ( title,xyz_uri,mtz_uri,map_uri,diffmap_uri,mapLabels )  {
   jq(iframe).width  ( size[0] );
   jq(iframe).height ( size[1] );
   dialog.appendChild ( iframe );
+  dialog.style.fontSize = '16px';
 
   var dialog_options = {
     resizable  : true,
@@ -430,6 +432,7 @@ function startViewHKL ( title,mtz_uri )  {
                  'overflow'   : 'hidden'
   });
   doc.body.appendChild ( dialog );
+  doc.body.style.fontSize = '16px';
 
   var iframe = doc.createElement ( 'iframe' );
   jq(iframe).css ( {'border'   : 'none',
@@ -443,6 +446,7 @@ function startViewHKL ( title,mtz_uri )  {
   jq(iframe).width  ( size[0] );
   jq(iframe).height ( size[1] );
   dialog.appendChild ( iframe );
+  dialog.style.fontSize = '16px';
 
   jq(dialog).dialog({
       resizable  : true,
@@ -565,6 +569,7 @@ function startRSViewer ( title,json_uri,map_uri )  {
                   'overflow'   : 'hidden'
   });
   doc.body.appendChild ( dialog );
+  doc.body.style.fontSize = '16px';
 
   var iframe = doc.createElement ( 'iframe' );
   jq(iframe).css ( {'border'   : 'none',
@@ -575,6 +580,7 @@ function startRSViewer ( title,json_uri,map_uri )  {
   jq(iframe).width  ( size[0] );
   jq(iframe).height ( size[1] );
   dialog.appendChild ( iframe );
+  dialog.style.fontSize = '16px';
 
   jq(dialog).dialog({
       resizable  : true,
