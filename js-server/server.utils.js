@@ -416,9 +416,10 @@ var fpath = path.join ( jobDirPath,task_t.jobReportDirName,
   if (updating_bool)  {
     writeString ( fpath,'<html><script>' +
       '  setTimeout(function(){window.location=window.location;},1000);' +
-      '</script><body>' + message + '</body></html>' );
+      '</script><body class="main-page">' + message + '</body></html>' );
   } else  {
-    writeString ( fpath,'<html><body>' + message + '</body></html>' );
+    writeString ( fpath,'<html><body class="main-page">' + message +
+                        '</body></html>' );
   }
   /*
   fpath = path.join ( jobDirPath,task_t.jobReportDirName,
