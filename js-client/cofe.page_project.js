@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    20.02.20   <--  Date of Last Modification.
+ *    02.04.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -468,7 +468,7 @@ function ProjectPage ( sceneId )  {
   refresh_btn.setDisabled ( true );
 
   help_btn.addOnClickListener ( function(){
-    new HelpBox ( '','./html/jscofe_project.html',null );
+    new HelpBox ( '',__user_guide_base_url + 'jscofe_project.html',null );
   });
   //launchHelpBox ( '','./html/jscofe_project.html',doNotShowAgain,1000 );
 
