@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    23.03.20   <--  Date of Last Modification.
+ *    02.04.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -368,7 +368,7 @@ var cap   = false;
           '<html><head>' +
             '<title>Job is not prepared yet</title>' +
             '<meta http-equiv="refresh" content="2" />' +
-          '</head><body>' +
+          '</head><body class="main-page">' +
             '<h2>Waiting for Job to start ....</h2><i>Issuing job token ...</i>' +
           '</body></html>'
         );

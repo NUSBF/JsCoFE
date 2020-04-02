@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    23.03.20   <--  Date of Last Modification.
+ *    02.04.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -1433,7 +1433,8 @@ function authResponse ( server_request,server_response )  {
                .replace('$software_key',software_key)
                .replace('$auth_result' ,auth_result );
   } else
-    html = '<html><body><h2>Authorisation response template is missing</h2>' +
+    html = '<html><body class="main-page">' +
+           '<h2>Authorisation response template is missing</h2>' +
            '<h3>Please file a bug report</h3></body></html>';
 
   cmd.sendResponseMessage ( server_response,html,'text/html' );

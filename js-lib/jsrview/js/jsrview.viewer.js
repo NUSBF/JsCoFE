@@ -1,7 +1,7 @@
 //
 //  ==========================================================================
 //
-//    07.01.20   <--  Date of Last Modification.
+//    02.04.20   <--  Date of Last Modification.
 //                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  --------------------------------------------------------------------------
 //
@@ -100,7 +100,7 @@ var html =
     '  <script src="' + _jsrview_uri + 'uglymol/uglymol.js"><\/script>\n' +
     '  <script src="' + _jsrview_uri + 'uglymol/mtz.js"><\/script>\n' +
     '</head>\n' +
-    '<body style="overflow:hidden;">\n' +
+    '<body style="overflow:hidden;font-size:16px;">\n' +
     '  <div id="viewer" style="position:absolute; left:0px; top:0px; ' +
                               'overflow:hidden;"></div>\n' +
     '  <header id="hud" onmousedown="event.stopPropagation();"\n' +
@@ -398,7 +398,7 @@ var html   =
     '  <script src="' + _jsrview_uri + 'viewhkl/viewhkl_tab2.js"></script>\n' +
     '  <script src="' + _jsrview_uri + 'viewhkl/viewhkl_tab3.js"></script>\n' +
     '  <script src="' + _jsrview_uri + 'viewhkl/viewhkl_tab4.js"></script>\n' +
-    '<body>\n' +
+    '<body style="font-size:16px;">\n' +
     '  <div id="scene"></div>\n' +
     '   <script>\n' +
     '      $(document).ready(function()  {\n' +
@@ -506,7 +506,7 @@ var html   =
   '  <link rel="stylesheet" type="text/css" href="' + _jsrview_uri + 'uglymol/uglymol.css"/>\n' +
   '  <script src="' + _jsrview_uri + 'uglymol/uglymol.js"><\/script>\n' +
   '</head>\n' +
-  '<body style="background-color: black">\n' +
+  '<body style="background-color:black;font-size:16px;">\n' +
   '  <div id="viewer"></div>\n' +
   '  <header id="hud" onmousedown="event.stopPropagation();"\n' +
   '                   ondblclick="event.stopPropagation();"\n' +

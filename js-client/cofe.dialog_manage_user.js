@@ -246,6 +246,8 @@ ManageUserDialog.prototype.makeLayout = function()  {
   if ('lastSeen' in this.userData)
         this.putLine ( 'Last seen:',this.userData.lastSeen,0,row++,3 );
   else  this.putLine ( 'Last seen:','unknown',0,row++,0 );
+
+  this.putLine ( 'Storage disk:',this.userData.volume,0,row++,0 );
   this.storage = this.putLine ( 'Storage used (MB):',
                                 round(this.userData.ration.storage_used,1),
                                 this.userData.ration.storage,row++,4 );
