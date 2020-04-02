@@ -27,17 +27,20 @@ body {
 
 .tab  {
   font-family : "Trebuchet MS", Arial, Helvetica, sans-serif;
-  font-size   : 1em;
+  /*font-size   : 1em;*/
+  font-size   : 16px;
 }
 
 .display-text  {
   font-family : courier;
-  font-size   : 1em;
+  /*font-size   : 1em;*/
+  font-size   : 16px;
 }
 
 .page-header {
   font-family     : "Trebuchet MS", Arial, Helvetica, sans-serif;
-  font-size       : 1.25em;
+  /*font-size       : 1.25em;*/
+  font-size       : 20px;
   font-style      : italic;
   /*  text-decoration : underline; */
   /*  background-color: #7dbbf0;   */
@@ -61,7 +64,8 @@ body {
 
 .toolbar-legend {
   font-family : "Trebuchet MS", Arial, Helvetica, sans-serif;
-  font-size   : 0.85em;
+  /*font-size   : 0.85em;*/
+  font-size   : 14px;
   font-style  : italic;
   text-align  : center;
 }
@@ -268,7 +272,8 @@ body {
 
 .grid-layout {
   font-family     : "Trebuchet MS", Arial, Helvetica, sans-serif;
-  font-size       : 1em;
+  /*font-size       : 1em;*/
+  font-size       : 16px;
   width           : 100%;
   height          : auto;
   /* table-layout    : auto; */
@@ -279,7 +284,8 @@ body {
 }
 .grid-layout td {
   font-family     : "Trebuchet MS", Arial, Helvetica, sans-serif;
-  font-size       : 1em;
+  /*font-size       : 1em;*/
+  font-size       : 16px;
   vertical-align  : top ;
   margin-top      : 0px ;
   padding-top     : 4px ;
@@ -293,7 +299,8 @@ body {
 
 .grid-layout-compact {
   font-family     : "Trebuchet MS", Arial, Helvetica, sans-serif;
-  font-size       : 1em;
+  /*font-size       : 1em;*/
+  font-size       : 16px;
   width           : auto;
   height          : auto;
   /* table-layout    : auto; */
@@ -304,7 +311,8 @@ body {
 }
 .grid-layout-compact td {
   font-family     : "Trebuchet MS", Arial, Helvetica, sans-serif;
-  font-size       : 1em;
+  /*font-size       : 1em;*/
+  font-size       : 16px;
   vertical-align  : top ;
   margin-top      : 0px ;
   padding-top     : 4px ;
@@ -318,7 +326,8 @@ body {
 
 .dropdown-layout {
   font-family     : "Trebuchet MS", Arial, Helvetica, sans-serif;
-  font-size       : 1em;
+  /*font-size       : 1em;*/
+  font-size       : 16px;
   width           : 100%;
   height          : auto;
   /*table-layout    : auto; */
@@ -329,7 +338,8 @@ body {
 .dropdown-header {
   font-style      : italic;
   font-weight     : bold;
-  font-size       : 1em;
+  /*font-size       : 1em;*/
+  font-size       : 16px;
   white-space     : nowrap;
   border          : 0px ;
   /* border-collapse : collapse; */
@@ -338,7 +348,8 @@ body {
 
 .dropdown-layout-compact {
   font-family     : "Trebuchet MS", Arial, Helvetica, sans-serif;
-  font-size       : 1em;
+  /*font-size       : 1em;*/
+  font-size       : 16px;
   width           : auto;
   height          : auto;
   /*table-layout    : auto;*/
@@ -349,7 +360,8 @@ body {
 
 .table-blue {
   font-family     : "Trebuchet MS", Arial, Helvetica, sans-serif;
-  font-size       : 1em;
+  /*font-size       : 1em;*/
+  font-size       : 16px;
   /*  width           : 100%;  */
   border          : 1px solid #488090;
   border-collapse : collapse;
@@ -357,7 +369,8 @@ body {
 }
 .table-blue-hh {
   font-family     : "Trebuchet MS", Arial, Helvetica, sans-serif;
-  font-size       : 1em;
+  /*font-size       : 1em;*/
+  font-size       : 16px;
   font-style      : italic;
   text-align      : center;
   vertical-align  : middle;
@@ -371,7 +384,8 @@ body {
 }
 .table-blue-vh {
   font-family     : "Trebuchet MS", Arial, Helvetica, sans-serif;
-  font-size       : 1em;
+  /*font-size       : 1em;*/
+  font-size       : 16px;
   font-style      : italic;
   text-align      : left;
   vertical-align  : middle;
@@ -391,7 +405,8 @@ body {
 .table-blue > tbody > tr > td,
 .table-blue > tfoot > tr > td,
 .table-blue > tr > td {
-  font-size       : 1em;
+  /*font-size       : 1em;*/
+  font-size       : 16px;
   font-family     : "Courier";
   text-decoration : none;
   font-weight     : normal;
@@ -403,7 +418,8 @@ body {
   width           : auto;
 }
 .table-blue-alt {
-  font-size       : 1em;
+  /*font-size       : 1em;*/
+  font-size       : 16px;
   font-family     : "Courier";
   text-decoration : none;
   font-weight     : normal;
@@ -421,7 +437,8 @@ body {
   font-family     : "Arial";
   font-style      : normal;
   font-weight     : 400;
-  font-size       : 1em;
+  /*font-size       : 1em;*/
+  font-size       : 16px;
   border          : 1px none #000000;
   border-collapse : collapse;
 }
@@ -429,7 +446,8 @@ body {
   font-family     : "Arial";
   font-style      : normal;
   font-weight     : 600;
-  font-size       : 1em;
+  /*font-size       : 1em;*/
+  font-size       : 16px;
   text-align      : center;
   border          : 1px none #000000;
   padding-top     : 2px;
@@ -439,7 +457,8 @@ body {
   font-family     : "Arial";
   font-style      : normal;
   font-weight     : 600;
-  font-size       : 1em;
+  /*font-size       : 1em;*/
+  font-size       : 16px;
   text-align      : left;
   border          : 1px none #000000;
   padding-top     : 2px;
@@ -450,7 +469,8 @@ body {
   font-family     : "Arial";
   font-style      : normal;
   font-weight     : 400;
-  font-size       : 1em;
+  /*font-size       : 1em;*/
+  font-size       : 16px;
   text-align      : left;
   border          : 1px none #000000;
   padding-top     : 2px;
@@ -489,7 +509,8 @@ body {
   display         : inline-block;
   color           : #222222;
   font-family     : "Trebuchet MS", Arial, Helvetica, sans-serif;
-  font-size       : 1em;
+  /*font-size       : 1em;*/
+  font-size       : 16px;
   font-weight     : normal;
   font-style      : normal;
   padding         : 2px 17px;
@@ -508,7 +529,8 @@ body {
 .text-box {
   font-family     : courier;
   text-decoration : none;
-  font-size       : 1em;
+  /*font-size       : 1em;*/
+  font-size       : 16px;
   font-weight     : normal;
   font-style      : normal;
   background-color: #eeeeee;
@@ -528,7 +550,8 @@ body {
   text-align      : left;
   font-weight     : normal;
   font-style      : normal;
-  font-size       : 1em;
+  /*font-size       : 1em;*/
+  font-size       : 16px;
   /*  background-color: #f5f5f5;  */
   /*  border          : 1px solid #eeeeee;  */
   padding-top     : 0px;
@@ -553,7 +576,8 @@ body {
   /*  margin-bottom   : 29px;  */
 }
 .graphwidget-table td, .graphwidget-table th {
-  font-size       : 1em;
+  /*font-size       : 1em;*/
+  font-size       : 16px;
   border          : 1px solid #488090;
   /*  padding         : 3px 7px 2px 7px;  */
 }
@@ -562,7 +586,8 @@ body {
   height          : 100%;
 }
 .graphwidget-table th {
-  font-size       : 1.1em;
+  /*font-size       : 1.1em;*/
+  font-size       : 18px;
   font-style      : italic;
   text-align      : center;
   padding-top     : 5px;
@@ -577,7 +602,8 @@ body {
   text-align      : left;
   font-weight     : normal;
   font-style      : normal;
-  font-size       : 1em;
+  /*font-size       : 1em;*/
+  font-size       : 16px;
   padding-top     : 0px;
   padding-bottom  : 0px;
   padding-left    : 8px;
@@ -590,26 +616,30 @@ body {
 
 .treewidget-table {
   font-family     : "Trebuchet MS", Arial, Helvetica, sans-serif;
-  font-size       : 1em;
+  /*font-size       : 1em;*/
+  font-size       : 16px;
   border-collapse : collapse;
   /*  margin-top      : 9px;  */
   height          : 100%;
   overflow        : auto;
 }
 .treewidget-table td, .treewidget-table th {
-  font-size       : 1em;
+  /*font-size       : 1em;*/
+  font-size       : 16px;
   border          : 1px solid #488090;
   white-space     : nowrap;
 }
 .treewidget-table td {
-  font-size       : 1em;
+  /*font-size       : 1em;*/
+  font-size       : 16px;
   text-align      : left;
   white-space     : nowrap;
   height          : 100%;
   overflow        : auto;
 }
 .treewidget-table th {
-  font-size       : 1.1em;
+  /*font-size       : 1.1em;*/
+  font-size       : 18px;
   font-style      : italic;
   text-align      : center;
   padding-top     : 5px;
