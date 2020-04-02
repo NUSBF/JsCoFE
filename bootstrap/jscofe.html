@@ -42,11 +42,11 @@
   <link rel="stylesheet" type="text/css" href="js-lib/jsrview/tablesorter/theme.blue.css"/>
   <link rel="stylesheet" type="text/css" href="js-lib/jstree/themes/default/style.min.css"/>
 
+  <link rel="stylesheet" type="text/css" href="css/cofe.page_base.css"/>
   <link rel="stylesheet" type="text/css" href="css/gui/gui.menu.css"/>
   <link rel="stylesheet" type="text/css" href="css/gui/gui.tables.css"/>
   <link rel="stylesheet" type="text/css" href="css/gui/gui.tree.css"/>
   <link rel="stylesheet" type="text/css" href="css/gui/gui.widgets.css"/>
-  <link rel="stylesheet" type="text/css" href="css/cofe.page_base.css"/>
   <link rel="stylesheet" type="text/css" href="css/cofe.upload.css"/>
 
 <!--
@@ -209,11 +209,13 @@
 
 </head>
 
-<body>
+<body class="main-page">
 
-  <div id='scene' style="width:100%;font-size:16px;"></div>
+  <!-- <div id='scene' style="width:100%;font-size:16px;"></div>  -->
+  <div id='scene' class="main-page"></div>
 
   <script>
+    //document.body.style.fontSize = '16px';
     $(window).on( 'load', function(){
       //console.log ( '   ready=' + document.readyState );
       var dev_switch = 0; //3;

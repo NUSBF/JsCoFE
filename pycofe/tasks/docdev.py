@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    26.03.20   <--  Date of Last Modification.
+#    02.04.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -54,10 +54,13 @@ class DocDev(basic.TaskDriver):
 
         copytasks = ""
         if doctype=="dev":
-            self.putMessage ( "<h3>Generating developer's reference</h3>" )
-        else:
-            self.putMessage ( "<h3>Generating user manual</h3>" )
+            self.putMessage ( "<h3>Generating Developer's Reference</h3>" )
+        elif doctype=="taskref":
+            self.putMessage ( "<h3>Generating Task Reference</h3>" )
             copytasks = "\nmv tasks/* .\nrm -rf tasks"
+        elif doctype=="userguide":
+            self.putMessage ( "<h3>Generating User Guide</h3>" )
+            #copytasks = "\nmv tasks/* .\nrm -rf tasks"
 
         #self.putMessage ( os.path.realpath ( os.path.dirname ( __file__ ) ) )
         #self.putMessage ( self.jscofe_dir )
