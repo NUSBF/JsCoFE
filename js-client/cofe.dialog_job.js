@@ -872,7 +872,7 @@ JobDialog.prototype.makeLayout = function ( onRun_func )  {
 
     if (dlg.help_btn)
       dlg.help_btn.addOnClickListener ( function(){
-        new HelpBox ( '','./html/jscofe_jobdialog.html',null );
+        new HelpBox ( '',__user_guide_base_url + 'jscofe_jobdialog.html',null );
       });
 
     if (dlg.close_btn)

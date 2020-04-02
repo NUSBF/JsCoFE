@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    14.03.20   <--  Date of Last Modification.
+ *    02.04.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -62,7 +62,7 @@ function TaskListDialog ( dataBox,branch_task_list,onSelect_func )  {
     buttons   : [
       { text  : 'Help',
         click : function() {
-          new HelpBox ( '','./html/jscofe_tasklist.html',null );
+          new HelpBox ( '',__user_guide_base_url + 'jscofe_tasklist.html',null );
         }
       },
       { text  : 'Cancel',
