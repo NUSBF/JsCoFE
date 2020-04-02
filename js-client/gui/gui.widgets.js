@@ -1285,7 +1285,7 @@ function IFrame ( uri )  {
     };
   }(this))
   */
-  this.setOnLoadListener ( null );
+  //this.setOnLoadListener ( null );
 }
 
 IFrame.prototype = Object.create ( Widget.prototype );
@@ -1300,9 +1300,10 @@ IFrame.prototype.setFramePosition = function ( left,top,width,height )  {
 
 IFrame.prototype.setOnLoadListener = function ( onload_func )  {
 // this does not wait until ready
-  //this.element.addEventListener ( 'load',function() {
-  //  onload_func();
-  //});
+  this.element.addEventListener ( 'load',function() {
+    onload_func();
+  });
+  /*
   (function(iframe){
     iframe.element.onload = function(){
       var body = iframe.element.contentWindow.document.querySelector('body');
@@ -1314,16 +1315,15 @@ IFrame.prototype.setOnLoadListener = function ( onload_func )  {
         onload_func();
     };
   }(this))
+  */
 }
 
 IFrame.prototype.loadPage = function ( uri )  {
-  this.setVisible ( false );
   this.element.src = uri;
   return this;
 }
 
 IFrame.prototype.setHTML = function ( html )  {
-  this.setVisible ( false );
   this.element.src = 'data:text/html;charset=utf-8,' + encodeURI(html);
   return this;
 }
@@ -1338,9 +1338,7 @@ IFrame.prototype.clear = function()  {
 }
 
 IFrame.prototype.reload = function()  {
-  this.setVisible ( false );
   this.element.src = this.element.src;
-//  this.element.contentWindow.style.fontSize = '16px';
   return this;
 }
 

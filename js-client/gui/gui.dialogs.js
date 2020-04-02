@@ -166,7 +166,7 @@ function HelpBox ( title,helpURL,onDoNotShowAgain_func )  {
   $(this.element).css({'overflow':'hidden'});
 
   document.body.appendChild ( this.element );
-  document.body.style.fontSize = '16px';
+//  document.body.style.fontSize = '16px';
 
   var w0,h0;
   if (__any_mobile_device)  {
@@ -184,10 +184,10 @@ function HelpBox ( title,helpURL,onDoNotShowAgain_func )  {
   }
 
   this.options = {
-    width     : w0,
-    height    : h0,
-    modal     : false,
-    buttons   : [
+    width   : w0,
+    height  : h0,
+    modal   : false,
+    buttons : [
       { text : 'Back'
         //icons: { primary: 'ui-icon-home' },
       }
@@ -234,15 +234,21 @@ function HelpBox ( title,helpURL,onDoNotShowAgain_func )  {
     });
 
     $(dlg.display.element).on('load',function(){
+
+      var body = dlg.display.element.contentWindow.document.querySelector('body');
+      body.style.fontSize = '16px';
+
       if (!__any_mobile_device)  {
         dlg.options.width  = w0;
         dlg.options.height = h0 + 116;
       }
+
       var dialog = $(dlg.element).dialog ( dlg.options );
       if (__any_mobile_device)
         dialog.siblings('.ui-dialog-titlebar').remove();
 
       dlg.resizeDisplay ( w0,h0 );
+
     });
 
   }(this))

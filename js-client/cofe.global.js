@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    26.03.20   <--  Date of Last Modification.
+ *    02.04.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -160,7 +160,7 @@ var __suggested_task_prob  = 0.03;  // do not list tasks with combined probabili
                                     // less than 3%
 var __suggested_task_nmin  = 3;     // minimum 3 tasks to suggest
 
-var __user_manual_base_url = './manuals/html-user/';
+var __task_reference_base_url = './manuals/html-taskref/';
 
 //var __rvapi_config_coot_btn = true;  // switch Coot button off (when undefined) in RVAPI
 

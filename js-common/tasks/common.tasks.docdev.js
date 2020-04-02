@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    26.03.20   <--  Date of Last Modification.
+ *    02.04.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -49,10 +49,11 @@ function TaskDocDev()  {
            type     : 'combobox',
            label    : 'Documentation package:',
            tooltip  : 'Choose documentation package to compile',
-           range    : ['user|User Manual',
+           range    : ['taskref|Task Reference',
+                       'userguide|User Guide',
                        'dev|Developers Reference'
                       ],
-           value    : 'user',
+           value    : 'taskref',
            iwidth   : 260,
            position : [1,0,1,1]
          },

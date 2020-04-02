@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    26.03.20   <--  Date of Last Modification.
+ *    02.04.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -142,10 +142,10 @@ TaskTemplate.prototype.doNotPackSuffixes   = function() { return ['.map']; }
 TaskTemplate.prototype.doPackSuffixes      = function() { return ['']; }
 
 TaskTemplate.prototype.getHelpURL = function()  {
-  return __user_manual_base_url + 'doc.task.' + this._type.substr(4) + '.html';
+  return __task_reference_base_url + 'doc.task.' + this._type.substr(4) + '.html';
   /*
   if (this.helpURL)
-    return __user_manual_base_url + 'doc.task.' + this._type.substr(4) + '.html' +
+    return __task_reference_base_url + 'doc.task.' + this._type.substr(4) + '.html' +
            '?' + this.helpURL;
   return this.helpURL;
   */
