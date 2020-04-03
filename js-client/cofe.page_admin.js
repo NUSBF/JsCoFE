@@ -75,6 +75,7 @@ function AdminPage ( sceneId )  {
 
   this.jobsTitle     = this.jobsTab.grid.setLabel  ( '',0,0,1,1 );
   this.jobStats      = this.jobsTab.grid.setLabel  ( '',1,0,1,1 );
+                                  //      .setFontSize ( '14px' );
 
   this.usersTitle    = this.usersTab.grid.setLabel ( '',0,0,1,1 )
                                          .setHeight_px ( 32 );

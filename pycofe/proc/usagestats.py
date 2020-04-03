@@ -35,6 +35,17 @@ def reportPage():  return "body"
 def putGraphWidget ( graphId,legend,xData,yData,xTitle,yTitle,
                      lineNames,styles, row,col, width=700,height=400 ):
 
+    color = [
+        "darkcyan",        "darkred",         "green",
+        "darkblue",        "orange",          "darkgoldenrod",
+        "midnightblue",    "tomato",          "chocolate",
+        "slateblue",       "crimson",         "olive",
+        "aqua",            "brown",           "darkolivegreen",
+        "dodgerblue",      "coral",           "darkseagreen",
+        "mediumslateblue", "mediumvioletred", "mediumspringgreen",
+        "slateblue",       "sandybrown",      "yellowgreen"
+    ]
+
     pyrvapi.rvapi_set_text  ( legend ,reportPage(),  row,col,1,1 )
     pyrvapi.rvapi_add_graph ( graphId,reportPage(),row+1,col,1,1 )
     pyrvapi.rvapi_set_graph_size    ( graphId,width,height )
@@ -47,7 +58,7 @@ def putGraphWidget ( graphId,legend,xData,yData,xTitle,yTitle,
     for j in range(nx):
         pyrvapi.rvapi_add_graph_real ( "X","data",graphId,float(xData[j]),"%g" )
 
-    ny = len(yData)
+    ny   = len(yData)
     ymax = 0.0
     for i in range(ny):
         yId = "Y"+str(i)
@@ -58,9 +69,19 @@ def putGraphWidget ( graphId,legend,xData,yData,xTitle,yTitle,
             pyrvapi.rvapi_add_graph_real ( yId,"data",graphId,y,"%g" )
             ymax = max ( ymax,y );
         pyrvapi.rvapi_add_plot_line ( "plot","data",graphId,"X",yId )
+        colour = color[i % len(color)]
         if styles[i]=="thin":
             pyrvapi.rvapi_set_line_options ( yId,"plot","data",graphId,
-                                             "darkred","solid","off",0.75,True )
+                                             colour,"dashed","off",1.0,True )
+        elif styles[i]=="line":
+            pyrvapi.rvapi_set_line_options ( yId,"plot","data",graphId,
+                                             colour,"solid","off",1.75,True )
+        elif styles[i]=="dotted":
+            pyrvapi.rvapi_set_line_options ( yId,"plot","data",graphId,
+                                             colour,"dotted","off",1.5,True )
+        else:
+            pyrvapi.rvapi_set_line_options ( yId,"plot","data",graphId,
+                                             colour,"solid","filledCircle",2.5,True )
 
     if ymax==0.0:  ymax = 1.0
     pyrvapi.rvapi_set_plot_xrange ( "plot",graphId,0.0,max(5.0,float(nx)) )
@@ -175,8 +196,9 @@ def main():
             usageStats["volumes"][vname]["total"]    = du[1]
         else:
             usageStats["volumes"][vname] = {
-                "free"  : [du[0]]*ndays,
-                "total" :  du[1]
+                "free"      : [du[0]]*ndays,
+                "total"     :  du[1],
+                "committed" : [du[1]]*ndays
             }
 
     """
@@ -191,7 +213,7 @@ def main():
     #usageStats.currentDate = int(time.time()*1000.0)
     #jsonut.writejObject ( usageStats,statsFile )
     with open(statsFile,'w') as outfile:
-        json.dump ( usageStats,outfile )
+        json.dump ( usageStats,outfile,indent=2 )
 
     """
     disk_total_projects = []
@@ -218,18 +240,22 @@ def main():
     for vname in volumes:
         if vname!="user_data" and vname!="storage":
             gdata .append ( usageStats["volumes"][vname]["free"] )
+            gdata .append ( usageStats["volumes"][vname]["committed"] )
             gdata .append ( [usageStats["volumes"][vname]["total"]]*ndays )
-            names .append ( str(vname) + " (free)"  )
-            names .append ( str(vname) + " (total)" )
-            styles.append ( "normal" )
+            names .append ( str(vname) + "-free"  )
+            names .append ( str(vname) + "-comtd" )
+            names .append ( str(vname) + "-total" )
+            styles.append ( "line"   )
             styles.append ( "thin"   )
+            styles.append ( "dotted" )
 
     putGraphWidget ( "disk_projects_graph",
                      "&nbsp;<br>&nbsp;<h2>Disk space for project data</h2>",
                      days,gdata,"Day","Disk space (GBytes)",names,styles,
                      row,0, width=700,height=400 )
 
-    putGraphWidget ( "disk_users_graph","&nbsp;<br>&nbsp;<h2>Disk space for user data</h2>",
+    putGraphWidget ( "disk_users_graph",
+                     "&nbsp;<br>&nbsp;<h2>Disk space for user data</h2>",
                      days,[
                          usageStats["volumes"]["user_data"]["free"],
                         [usageStats["volumes"]["user_data"]["total"]]*ndays,
@@ -237,14 +263,14 @@ def main():
                         [usageStats["volumes"]["storage"  ]["total"]]*ndays
                      ],
                      "Day","Disk space (GBytes)",[
-                        "user data (free)",
-                        "user data (total)",
-                        "storage (free)",
-                        "storage (total)"
+                        "user-free",
+                        "user-total",
+                        "storage-free",
+                        "storage-total"
                      ],[
-                        "normal",
+                        "line",
                         "thin",
-                        "normal",
+                        "line",
                         "thin"
                      ],
                      row,2, width=550,height=400 )

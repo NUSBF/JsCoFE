@@ -28,9 +28,9 @@ var child_process = require('child_process');
 var cmd    = require('../js-common/common.commands');
 var cutils = require('../js-common/common.utils');
 var conf   = require('./server.configuration');
+var user   = require('./server.fe.user');
 var utils  = require('./server.utils');
 var task_t = require('../js-common/tasks/common.tasks.template');
-
 
 //  prepare log
 var log = require('./server.log').newLog(20);
@@ -74,11 +74,13 @@ UsageStats.prototype.registerJob = function ( job_class )  {
   if ('disk_free_projects' in this)  {
     // reshape object
     this.volumes = {
-      '***'       : { 'free'  : this.disk_free_projects,
-                      'total' : this.disk_total_projects
+      '***'       : { 'free'      : this.disk_free_projects,
+                      'total'     : this.disk_total_projects,
+                      'committed' : Array(this.disk_free_projects.length).fill(0)
                     },
-      'user_data' : { 'free'  : this.disk_free_users,
-                      'total' : this.disk_total_users
+      'user_data' : { 'free'      : this.disk_free_users,
+                      'total'     : this.disk_total_users,
+                      'committed' : Array(this.disk_free_users.length).fill(0)
                     }
     };
     delete this.disk_free_projects;
@@ -93,8 +95,10 @@ UsageStats.prototype.registerJob = function ( job_class )  {
     this.currentDate += day_ms;
     this.njobs.push(0);
     this.cpu  .push(0);
-    for (var vname in this.volumes)
-      this.volumes[vname].free.push ( this.volumes[vname].free[n0-1] );
+    for (var vname in this.volumes)  {
+      this.volumes[vname].free     .push ( this.volumes[vname].free     [n0-1] );
+      this.volumes[vname].committed.push ( this.volumes[vname].committed[n0-1] );
+    }
     //this.disk_free_projects.push ( this.disk_free_projects[n0-1] );
     //this.disk_free_users   .push ( this.disk_free_users   [n0-1] );
   }
@@ -166,6 +170,19 @@ var generate_report = false;
 
   if (usageStats.registerJob(job_class))
     generate_report = true;
+
+  if (generate_report)  {
+    var users = user.readUsersData().userList;
+    for (var i=0;i<users.length;i++)  {
+      var c = 0;
+      if (users[i].dormant)  c = users[i].ration.storage_used;
+                       else  c = users[i].ration.storage;
+      if (users[i].volume in usageStats.volumes)  {
+        var committed = usageStats.volumes[users[i].volume].committed;
+        committed[committed.length-1] += c/1024.0;
+      }
+    }
+  }
 
   utils.writeObject ( statsFilePath,usageStats );
 

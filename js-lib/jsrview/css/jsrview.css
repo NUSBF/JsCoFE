@@ -26,7 +26,7 @@ body {
 }
 
 pre {
-  font-size   : 16x;
+  font-size   : 14x;
 }
 
 h2 {
@@ -46,7 +46,7 @@ h3 {
 .display-text  {
   font-family : courier;
   /*font-size   : 1em;*/
-  font-size   : 16px;
+  font-size   : 14px;
 }
 
 .page-header {
@@ -110,7 +110,6 @@ h3 {
   margin : 0;
   border : 0;
 }
-
 
 .icon_ccp4_logo  {
   background-image: url(../images/ccp4_online.png);
@@ -271,7 +270,6 @@ h3 {
   border          : 0;
 }
 
-
 .activity_bar {
   background-image: url(../images/bluebar_stripes_ani.gif);
   width           : 211px;
@@ -280,7 +278,6 @@ h3 {
   margin          : 0;
   border          : 0;
 }
-
 
 .grid-layout {
   font-family     : "Trebuchet MS", Arial, Helvetica, sans-serif;
@@ -357,7 +354,6 @@ h3 {
   /* border-collapse : collapse; */
 }
 
-
 .dropdown-layout-compact {
   font-family     : "Trebuchet MS", Arial, Helvetica, sans-serif;
   /*font-size       : 1em;*/
@@ -368,7 +364,6 @@ h3 {
   border          : 0px ;
   /* border-collapse : collapse; */
 }
-
 
 .table-blue {
   font-family     : "Trebuchet MS", Arial, Helvetica, sans-serif;
@@ -665,14 +660,14 @@ h3 {
 
 
 .ui-selectgroup {
- margin: 0 0 20px;
- font-size: 10px;
+  margin: 0 0 20px;
+  font-size: 10px;
 }
 .ui-selectgroup-group {
- font-size: 10px;
+  font-size: 10px;
 }
 .ui-selectgroup:hover {
- text-decoration: none;
+  text-decoration: none;
 }
 
 .no-close .ui-dialog-titlebar-close {
