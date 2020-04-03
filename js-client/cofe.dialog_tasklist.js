@@ -176,7 +176,8 @@ TaskListDialog.prototype.setTask = function ( task_obj,grid,row,setall )  {
   grid.setLabel             ( ' ', row,1,1,1 );
   var title = task_obj.title;
   if (avail_key[0]!='ok')
-    title += '<br><i><font size="-1">** ' + avail_key[1] + '</font></i>';
+    title += '<span style="font-size:14px;"><br><i>** ' + avail_key[1] + '</i></span>';
+    //title += '<br><i><font size="-1">** ' + avail_key[1] + '</font></i>';
   var lbl = grid.setLabel   ( title,row,2,1,1 );
   grid.setNoWrap            ( row,2 );
   grid.setVerticalAlignment ( row,2,'middle' );

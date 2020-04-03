@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    30.07.19   <--  Date of Last Modification.
+#    03.04.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -13,16 +13,17 @@
 #
 #  ccp4-python -m pycofe.proc.usagestats projectDataPath userDataPath statsFile.json reportDir
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2019
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2019-2020
 #
 # ============================================================================
 #
 
 import os
 import sys
+import json
 
 import pyrvapi
-from   pycofe.varut  import jsonut
+#from   pycofe.varut  import jsonut
 
 
 # ============================================================================
@@ -85,10 +86,14 @@ def main():
         print "Wrong number of arguments"
         return
 
-    projectDataPath = sys.argv[1]
-    userDataPath    = sys.argv[2]
-    statsFile       = sys.argv[3]
-    reportDir       = sys.argv[4]
+    statsFile = sys.argv[1]
+    reportDir = sys.argv[2]
+    volumes   = {}
+    for i in range(3,len(sys.argv),2):
+        volumes[sys.argv[i]] = sys.argv[i+1]
+
+    #userDataPath    = sys.argv[3]
+    #projectDataPath = sys.argv[4]
 
     pyrvapi.rvapi_init_document (
             "stats_report", # document Id
@@ -101,8 +106,15 @@ def main():
             "task.tsk",
             None )
 
+    #usageStats = jsonut.readjObject ( statsFile )
 
-    usageStats = jsonut.readjObject ( statsFile )
+    usageStats = None
+    try:
+        with open(statsFile) as json_file:
+            usageStats = json.load(json_file)
+    except:
+        pass
+
     if usageStats is None:
         pyrvapi.rvapi_set_text (
             "<h2>Usage stats not available</h2>" +\
@@ -112,22 +124,22 @@ def main():
 
     pyrvapi.rvapi_set_text  (
             "<h1>Usage Stats</h2>"   +\
-            "<h3><i>Collected from " + usageStats.startDateS + "</i></h3>",
+            "<h3><i>Collected from " + usageStats["startDateS"] + "</i></h3>",
             reportPage(), 0,0,1,1 )
     row = 1
 
-    ndays = len(usageStats.njobs)
+    ndays = len(usageStats["njobs"])
     days  = range(ndays)
 
-    njobs_total = [usageStats.njobs[0]]
+    njobs_total = [usageStats["njobs"][0]]
     for i in range(1,ndays):
-        njobs_total.append ( njobs_total[i-1] + usageStats.njobs[i] )
+        njobs_total.append ( njobs_total[i-1] + usageStats["njobs"][i] )
     njobs_average = [float(njobs_total[-1])/float(ndays)]
     for i in range(1,ndays):
         njobs_average.append ( njobs_average[0] )
 
     putGraphWidget ( "njobs_graph","<h2>Number of jobs per day</h2>",
-                     days,[usageStats.njobs,njobs_average],"Day",
+                     days,[usageStats["njobs"],njobs_average],"Day",
                      "Number of jobs per day",["number of jobs","average"],
                      ["normal","thin"],row,0, width=700,height=400 )
     pyrvapi.rvapi_set_text ( "&nbsp;&nbsp;&nbsp;",reportPage(), row,1,1,1 )
@@ -139,10 +151,10 @@ def main():
 
     cpu = []
     for i in range(ndays):
-        cpu.append ( usageStats.cpu[i] )
-    cpu_total = [usageStats.cpu[0]]
+        cpu.append ( usageStats["cpu"][i] )
+    cpu_total = [usageStats["cpu"][0]]
     for i in range(1,ndays):
-        cpu_total.append ( cpu_total[i-1] + usageStats.cpu[i] )
+        cpu_total.append ( cpu_total[i-1] + usageStats["cpu"][i] )
     cpu_average = [cpu_total[-1]/ndays]
     for i in range(1,ndays):
         cpu_average.append ( cpu_average[0] )
@@ -156,15 +168,32 @@ def main():
                      row,2, width=550,height=400 )
     row += 2
 
+    for vname in volumes:
+        du = getDiskUsage ( volumes[vname] )
+        if vname in usageStats["volumes"]:
+            usageStats["volumes"][vname]["free"][-1] = du[0]
+            usageStats["volumes"][vname]["total"]    = du[1]
+        else:
+            usageStats["volumes"][vname] = {
+                "free"  : [du[0]]*ndays,
+                "total" :  du[1]
+            }
+
+    """
     disk_projects = getDiskUsage ( projectDataPath )
     disk_users    = getDiskUsage ( userDataPath    )
     usageStats.disk_free_projects[-1] = disk_projects[0]  # free
     usageStats.disk_free_users   [-1] = disk_users   [0]  # free
     usageStats.disk_total_projects    = disk_projects[1]  # total
     usageStats.disk_total_users       = disk_users   [1]  # total
-    #usageStats.currentDate = int(time.time()*1000.0)    
-    jsonut.writejObject ( usageStats,statsFile )
+    """
 
+    #usageStats.currentDate = int(time.time()*1000.0)
+    #jsonut.writejObject ( usageStats,statsFile )
+    with open(statsFile,'w') as outfile:
+        json.dump ( usageStats,outfile )
+
+    """
     disk_total_projects = []
     disk_total_users    = []
     for i in range(ndays):
@@ -180,15 +209,57 @@ def main():
                      days,[usageStats.disk_free_users,disk_total_users],
                      "Day","Disk space (GBytes)",["available","total"],["normal","thin"],
                      row,2, width=550,height=400 )
+
+    """
+
+    gdata  = []
+    names  = []
+    styles = []
+    for vname in volumes:
+        if vname!="user_data" and vname!="storage":
+            gdata .append ( usageStats["volumes"][vname]["free"] )
+            gdata .append ( [usageStats["volumes"][vname]["total"]]*ndays )
+            names .append ( str(vname) + " (free)"  )
+            names .append ( str(vname) + " (total)" )
+            styles.append ( "normal" )
+            styles.append ( "thin"   )
+
+    putGraphWidget ( "disk_projects_graph",
+                     "&nbsp;<br>&nbsp;<h2>Disk space for project data</h2>",
+                     days,gdata,"Day","Disk space (GBytes)",names,styles,
+                     row,0, width=700,height=400 )
+
+    putGraphWidget ( "disk_users_graph","&nbsp;<br>&nbsp;<h2>Disk space for user data</h2>",
+                     days,[
+                         usageStats["volumes"]["user_data"]["free"],
+                        [usageStats["volumes"]["user_data"]["total"]]*ndays,
+                         usageStats["volumes"]["storage"  ]["free"],
+                        [usageStats["volumes"]["storage"  ]["total"]]*ndays
+                     ],
+                     "Day","Disk space (GBytes)",[
+                        "user data (free)",
+                        "user data (total)",
+                        "storage (free)",
+                        "storage (total)"
+                     ],[
+                        "normal",
+                        "thin",
+                        "normal",
+                        "thin"
+                     ],
+                     row,2, width=550,height=400 )
     row += 2
 
     pyrvapi.rvapi_set_text ( "&nbsp;<p>&nbsp;<h2><i>Tasks</i></h2>",
                              reportPage(), row,0,1,1 )
 
     tasks = []
-    for t in usageStats.tasks.__dict__.iteritems():
-        t[1].title = t[0]
-        tasks.append ( t[1] )
+    #for t in usageStats.tasks.__dict__.iteritems():
+    #    t[1].title = t[0]
+    #    tasks.append ( t[1] )
+    for t in usageStats["tasks"]:
+        usageStats["tasks"][t]["title"] = t
+        tasks.append ( usageStats["tasks"][t] )
 
     tableId = "tasks_table"
     pyrvapi.rvapi_add_table        ( tableId,"",reportPage(),row+1,0,1,3, 0 )
@@ -209,13 +280,13 @@ def main():
                                      "Average Disk space taken by task" ,5 )
     for i in range(len(tasks)):
         pyrvapi.rvapi_put_table_string ( tableId,
-            "<img style='vertical-align:middle;' src='xxJsCoFExx-fe/" + tasks[i].icon +\
-            "' width='26px' height='26px'/>&nbsp;&nbsp;" + tasks[i].title,i,0 )
-        pyrvapi.rvapi_put_table_int  ( tableId,tasks[i].nuses ,i,1 )
-        pyrvapi.rvapi_put_table_int  ( tableId,tasks[i].nfails,i,2 )
-        pyrvapi.rvapi_put_table_int  ( tableId,tasks[i].nterms,i,3 )
-        pyrvapi.rvapi_put_table_real ( tableId,tasks[i].cpu_time  ,"%9.4f",i,4 )
-        pyrvapi.rvapi_put_table_real ( tableId,tasks[i].disk_space,"%9.3f",i,5 )
+            "<img style='vertical-align:middle;' src='xxJsCoFExx-fe/" + tasks[i]["icon"] +\
+            "' width='26px' height='26px'/>&nbsp;&nbsp;" + tasks[i]["title"],i,0 )
+        pyrvapi.rvapi_put_table_int  ( tableId,tasks[i]["nuses"] ,i,1 )
+        pyrvapi.rvapi_put_table_int  ( tableId,tasks[i]["nfails"],i,2 )
+        pyrvapi.rvapi_put_table_int  ( tableId,tasks[i]["nterms"],i,3 )
+        pyrvapi.rvapi_put_table_real ( tableId,tasks[i]["cpu_time"]  ,"%9.4f",i,4 )
+        pyrvapi.rvapi_put_table_real ( tableId,tasks[i]["disk_space"],"%9.3f",i,5 )
         pyrvapi.rvapi_shape_table_cell ( tableId,i,0,"", "text-align:left;" +\
             "font-family:\"Trebuchet MS\",\"Helvetica\",\"Arial\"," +\
             "\"Verdana\",\"sans-serif\";","",1,1 )
