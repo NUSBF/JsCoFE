@@ -11,6 +11,7 @@ body {
 .grid-layout {
   width       : 100%;
   height      : auto;
+  font-size   : 16px;
   table-layout: auto;
   border      : 0px ;
   margin-top  : 0px ;
@@ -18,6 +19,7 @@ body {
 }
 .grid-layout td {
   vertical-align: top ;
+  font-size     : 16px;
   margin-top    : 0px ;
   padding-top   : 0px ;
 }
@@ -28,6 +30,7 @@ body {
 .grid-layout-full {
   width          : 100%;
   height         : 98vh;
+  font-size      : 16px;
   table-layout   : auto;
   border         : 0px ;
   margin-top     : 0px ;
@@ -37,6 +40,7 @@ body {
 }
 .grid-layout-full td {
   vertical-align : top ;
+  font-size      : 16px;
   margin-top     : 0px ;
   padding-top    : 0px ;
   margin-bottom  : 0px ;
@@ -50,6 +54,7 @@ body {
 .grid-layout-compact {
   width          : auto;
   height         : auto;
+  font-size      : 16px;
   table-layout   : auto;
   border         : 0px ;
   margin-top     : 0px ;
@@ -59,6 +64,7 @@ body {
 }
 .grid-layout-compact td {
   vertical-align : top ;
+  font-size      : 16px;
   margin-top     : 0px ;
   margin-bottom  : 0px ;
   padding-top    : 0px ;
@@ -69,8 +75,9 @@ body {
 
 
 .toolbar {
-    width  : 100%;
-    padding: 4px;
+    width     : 100%;
+    padding   : 4px;
+    font-size : 16px;
     /*    display: inline-block; */
 }
 /* support: IE7

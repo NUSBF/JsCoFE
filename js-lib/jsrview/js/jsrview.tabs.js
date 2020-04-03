@@ -56,7 +56,7 @@ var div = element ( "div","id",mainTabBarId,"" );
     }
   });
 
-  $(document.body).css({'overflow':'hidden'});
+  $(document.body).css({'overflow':'hidden','font-size':'16px'});
 
   resizeTabBar();
 

@@ -1,7 +1,7 @@
 //
 //  =================================================================
 //
-//    25.10.15   <--  Date of Last Modification.
+//    03.04.20   <--  Date of Last Modification.
 //                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  -----------------------------------------------------------------
 //
@@ -12,7 +12,7 @@
 //  **** Content :  RVAPI javascript layer's main page module
 //       ~~~~~~~~~
 //
-//  (C) E. Krissinel 2013-2015
+//  (C) E. Krissinel 2013-2020
 //
 //  =================================================================
 //
@@ -79,8 +79,12 @@ function initPage ( layHeaderKey,layToolbar,layTabs,sceneId )  {
 
   // initialisations in case of reload
 
-  if (sceneId)
-    _document_body  = document.getElementById ( sceneId );
+  document.body.style.fontSize = '16px';
+
+  if (sceneId)  {
+    _document_body = document.getElementById ( sceneId );
+    _document_body.style.fontSize = '16px';
+  }
   if (!_document_body)
     _document_body = document.body;  // a fallback
 

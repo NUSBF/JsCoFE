@@ -25,6 +25,18 @@ body {
   font-size   : 16px;
 }
 
+pre {
+  font-size   : 16x;
+}
+
+h2 {
+  font-size   : 22px;
+}
+
+h3 {
+  font-size   : 20px;
+}
+
 .tab  {
   font-family : "Trebuchet MS", Arial, Helvetica, sans-serif;
   /*font-size   : 1em;*/
@@ -701,10 +713,12 @@ body {
     display    : block;
     text-align : left;
     color      : red;
+    font-size  : 18px;
 }
 
 .header-green {
     display    : block;
     text-align : left;
     color      : green;
+    font-size  : 18px;
 }

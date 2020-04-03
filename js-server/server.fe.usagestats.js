@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    20.03.20   <--  Date of Last Modification.
+ *    03.04.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -52,10 +52,13 @@ function UsageStats()  {
   this.currentDate = this.startDate;  // current date
   this.njobs       = [0];  // njobs[n] is number of jobs passed in nth day since start
   this.cpu         = [0];  // cpu[n] is number of cpu hours booked in nth day since start
+  /*
   this.disk_free_projects  = [0.0];
   this.disk_free_users     = [0.0];
   this.disk_total_projects = 0.0;
   this.disk_total_users    = 0.0;
+  */
+  this.volumes     = {};
   this.tasks       = {};   // task[TaskTitle].icon       is path to task's icon
                            // task[TaskTitle]._type      is task's type
                            // task[TaskTitle].nuses      is number of uses since start
@@ -68,14 +71,32 @@ function UsageStats()  {
 UsageStats.prototype.registerJob = function ( job_class )  {
 // returns true if 24-hour period was counted
 
+  if ('disk_free_projects' in this)  {
+    // reshape object
+    this.volumes = {
+      '***'       : { 'free'  : this.disk_free_projects,
+                      'total' : this.disk_total_projects
+                    },
+      'user_data' : { 'free'  : this.disk_free_users,
+                      'total' : this.disk_total_users
+                    }
+    };
+    delete this.disk_free_projects;
+    delete this.disk_total_projects;
+    delete this.disk_free_users;
+    delete this.disk_total_users;
+  }
+
   var currDate = Date.now();
   var n0 = this.njobs.length;
   while (currDate-this.currentDate>day_ms)  {
     this.currentDate += day_ms;
     this.njobs.push(0);
     this.cpu  .push(0);
-    this.disk_free_projects.push ( this.disk_free_projects[n0-1] );
-    this.disk_free_users   .push ( this.disk_free_users   [n0-1] );
+    for (var vname in this.volumes)
+      this.volumes[vname].free.push ( this.volumes[vname].free[n0-1] );
+    //this.disk_free_projects.push ( this.disk_free_projects[n0-1] );
+    //this.disk_free_users   .push ( this.disk_free_users   [n0-1] );
   }
   var n1 = this.njobs.length-1;
   this.njobs[n1]++;
@@ -150,12 +171,27 @@ var generate_report = false;
 
   if (generate_report)  {
     log.standard ( 2,'generate usage stats report ...' );
+    /*
     var cmd = [ '-m', 'pycofe.proc.usagestats',
                 fe_config.storage,
                 fe_config.userDataPath,
                 statsFilePath,
                 statsDirPath
               ];
+    */
+    var cmd = [ '-m', 'pycofe.proc.usagestats',
+                statsFilePath,
+                statsDirPath,
+                'user_data', fe_config.userDataPath,
+                'storage',   fe_config.storage
+              ];
+    for (var fsname in fe_config.projectsPath)  {
+      cmd.push ( fsname );
+      cmd.push ( fe_config.projectsPath[fsname].path );
+    }
+
+    //console.log ( conf.pythonName() + ' ' + cmd.join(' ') );
+
     var job = utils.spawn ( conf.pythonName(),cmd,{} );
     // make stdout and stderr catchers for debugging purposes
     var stdout = '';
