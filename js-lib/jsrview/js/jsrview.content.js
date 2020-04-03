@@ -162,7 +162,6 @@ function updateWatchedContent ( updateHidden_bool )  {
           var pre = document.getElementById ( preId );
           if (!pre)  {
             pre = element ( "pre","id",preId,"" );
-            pre.setAttribute ( "class","display-text" );
             var holder = document.getElementById ( hId );
             if (holder)
               holder.appendChild ( pre );
@@ -172,6 +171,9 @@ function updateWatchedContent ( updateHidden_bool )  {
           }
           if (n)  pre.appendChild ( document.createTextNode(data.substr(n)) );
             else  pre.appendChild ( document.createTextNode(data) );
+          pre.setAttribute ( "class","display-text" );
+          pre.style.fontSize = '15px';
+          //pre.classList.add ( "display-text" );
 
         },
         function() {},

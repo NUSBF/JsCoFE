@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    03.03.20   <--  Date of Last Modification.
+ *    03.04.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -175,7 +175,8 @@ function packDir ( dirPath, fileSelection, dest_path, onReady_func )  {
   });
 
   zip.on ( 'close', function(code){
-    if (code!=0)  {
+    //if (code!=0)  {
+    if (code)  {
       log.error ( 11,'zip packing code: ' + code + ', encountered in ' + dirPath );
       utils.removeFile ( tmpFile );
     } else  if (dest_path) {

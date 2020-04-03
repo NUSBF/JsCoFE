@@ -8,7 +8,8 @@
 
   "Desktop"  : {
     "clientApp"  : "/bin/bash",
-    "args"       : ["-c","open -a Firefox $feURL$clientURL"]
+    "args"       : ["-c","open -a 'Google Chrome' $feURL$clientURL"],
+    "__args"       : ["-c","open -a Firefox $feURL$clientURL"]
   },
 
   "FrontEnd" : {
