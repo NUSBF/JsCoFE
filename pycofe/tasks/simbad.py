@@ -232,9 +232,9 @@ class Simbad(asudef.ASUDef):
                             os.path.join(self.reportDir(),result0["pdb"]),
                             None,
                             os.path.join(self.reportDir(),result0["mtz"]),
-                            os.path.join(self.reportDir(),result0["map"]),
-                            os.path.join(self.reportDir(),result0["dmap"]),
-                            None,leadKey=1,copy_files=True )
+                            #os.path.join(self.reportDir(),result0["map"]),
+                            #os.path.join(self.reportDir(),result0["dmap"]),
+                            None,None,None,leadKey=1,copy_files=True )
 
             if structure:
 
