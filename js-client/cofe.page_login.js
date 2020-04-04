@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.11.19   <--  Date of Last Modification.
+ *    04.04.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Login page
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2019
+ *  (C) E. Krissinel, A. Lebedev 2016-2020
  *
  *  =================================================================
  *
@@ -64,12 +64,15 @@ function LoginPage ( sceneId )  {
   var pwd_lbl     = new Label     ( 'Password:'   );
   var login_inp   = new InputText ( '' );
   var pwd_inp     = new InputText ( '' );
+  var vis_btn     = new ImageButton ( image_path('pwd_hidden'),'38px','14px' );
   login_lbl.setNoWrap();
   login_lbl.setFontSize         ( '125%' );
   pwd_lbl  .setFontSize         ( '125%' );
   login_inp.setFontSize         ( '112%' );
   login_inp.setStyle            ( 'text','^[A-Za-z][A-Za-z0-9\\-\\._-]+$',
                                   'Your CCP4 login','' );
+  vis_btn  .setTooltip          ( 'Toggle password visibility' );
+  vis_btn  .icon_hidden = true;
   /*
                                   'Login name should contain only latin ' +
                                   'letters, numbers,\n undescores, dashes ' +
@@ -78,9 +81,9 @@ function LoginPage ( sceneId )  {
   login_inp.setFontItalic       ( true   );
   pwd_inp  .setFontSize         ( '112%' );
   pwd_inp  .setStyle            ( 'password','','Your CCP4 password','' );
-  pwd_inp  .setFontItalic       ( true  );
-  login_inp.setWidth            ( '95%' );
-  pwd_inp  .setWidth            ( '95%' );
+  pwd_inp  .setFontItalic       ( true   );
+  login_inp.setWidth            ( '99%'  );
+  pwd_inp  .setWidth            ( '95%'  );
 
   var row = 0;
   panel.setLabel ( appName() + ' Login', row,0,1,2 )
@@ -112,11 +115,13 @@ function LoginPage ( sceneId )  {
   panel.setWidget               ( pwd_lbl  ,row+1,0,1,1 );
   panel.setVerticalAlignment    ( row  ,0,'middle' );
   panel.setVerticalAlignment    ( row+1,0,'middle' );
-  panel.setWidget               ( login_inp,row++,1,1,1 );
-  panel.setWidget               ( pwd_inp  ,row++,1,1,1 );
+  panel.setWidget               ( login_inp,row++,1,1,2 );
+  panel.setWidget               ( pwd_inp  ,row  ,1,1,1 );
+  panel.setWidget               ( vis_btn  ,row  ,2,1,1 );
+  panel.setVerticalAlignment    ( row++,2,'middle' );
 
   panel.setCellSize             ( '','12pt',row++,0 );
-  panel.setWidget               ( new HLine('3pt'), row++,0,1,2 );
+  panel.setWidget               ( new HLine('3pt'), row++,0,1,3 );
   panel.setCellSize             ( '','1pt',row++,0 );
 
   var login_btn = new Button    ( 'Login',image_path('login') );
@@ -131,21 +136,34 @@ function LoginPage ( sceneId )  {
   pwd_btn  .setWidth            ( '100%' );
   reg_btn  .setWidth            ( '100%' );
 
-  panel.setWidget               ( login_btn,row++,0,1,2 );
-  panel.setWidget               ( pwd_btn  ,row++,0,1,2 );
-  panel.setWidget               ( reg_btn  ,row++,0,1,2 );
+  panel.setWidget               ( login_btn,row++,0,1,3 );
+  panel.setWidget               ( pwd_btn  ,row++,0,1,3 );
+  panel.setWidget               ( reg_btn  ,row++,0,1,3 );
 
   if (!__local_service)
     panel.setLabel              ( '&nbsp;<br><center><i>For best experience, access ' +
                                   'this web site via<br>' +
                                   '<a href="manual/html/index.html">' + appName() + ' Client</a>.' +
                                   '</i></center>',
-                                  row++,0,1,2 );
+                                  row++,0,1,3 );
   panel.setLabel                ( '&nbsp;<br><center><i>' +
                                   '<a href="javascript:_privacyStatement()">' +
                                   'Privacy Statement<a></i></center>',
-                                  row++,0,1,2 );
+                                  row++,0,1,3 );
   panel.setCellSize             ( '','24pt',row++,0 );
+
+
+
+  vis_btn.addOnClickListener ( function(){
+    vis_btn.icon_hidden = !vis_btn.icon_hidden;
+    if (vis_btn.icon_hidden)  {
+      vis_btn.setImage ( image_path('pwd_hidden')  );
+      pwd_inp.setType  ( 'password' );
+    } else  {
+      vis_btn.setImage ( image_path('pwd_visible') );
+      pwd_inp.setType  ( 'text' );
+    }
+  });
 
   reg_btn.addOnClickListener ( function(){
     if (__regMode=='email')
