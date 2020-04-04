@@ -174,6 +174,12 @@ var generate_report = false;
     generate_report = true;
 
   if (generate_report)  {
+
+    for (var vname in usageStats.volumes)  {
+      var committed = usageStats.volumes[vname].committed;
+      committed[committed.length-1] = 0.0;
+    }
+
     var users = user.readUsersData().userList;
     for (var i=0;i<users.length;i++)  {
       var c = 0;
@@ -181,7 +187,7 @@ var generate_report = false;
                        else  c = users[i].ration.storage;
       if (users[i].volume in usageStats.volumes)  {
         var committed = usageStats.volumes[users[i].volume].committed;
-        committed[committed.length-1] += c/1024.0;
+        committed[committed.length-1] += c/1024.0;  // from MB to GB
       }
     }
   }

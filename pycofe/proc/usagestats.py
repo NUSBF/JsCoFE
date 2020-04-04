@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    03.04.20   <--  Date of Last Modification.
+#    04.04.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -86,6 +86,7 @@ def putGraphWidget ( graphId,legend,xData,yData,xTitle,yTitle,
     if ymax==0.0:  ymax = 1.0
     pyrvapi.rvapi_set_plot_xrange ( "plot",graphId,0.0,max(5.0,float(nx)) )
     pyrvapi.rvapi_set_plot_yrange ( "plot",graphId,0.0,ymax*1.05 )
+    pyrvapi.rvapi_set_plot_legend ( "plot",graphId,"nw","" )
 
     return
 

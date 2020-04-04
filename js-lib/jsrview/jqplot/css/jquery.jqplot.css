@@ -1,3 +1,11 @@
+
+/*
+
+  With custom adjustments from  04.04.2020
+
+*/
+
+
 /*rules for the plot target div.  These will be cascaded down to all plot elements according to css rules*/
 .jqplot-target {
     position: relative;
@@ -141,6 +149,8 @@ table.jqplot-table-legend, table.jqplot-cursor-legend {
 
 td.jqplot-table-legend {
     vertical-align:middle;
+    font-size: 1em!important;
+    white-space: nowrap;
 }
 
 /*
@@ -218,7 +228,7 @@ table.jqplot-cursor-tooltip {
     font-size: 0.75em;
     z-index: 2;
 }
-      
+
 td.jqplot-cursor-legend-swatch {
     vertical-align: middle;
     text-align: center;

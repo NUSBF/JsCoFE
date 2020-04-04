@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    20.03.20   <--  Date of Last Modification.
+ *    04.04.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -395,6 +395,11 @@ StorageTree.prototype.readStorageData = function ( page_title,
             var name  = sfile.name;
             var base  = sfile.name.split('.');
             var ext   = base.pop().toLowerCase();
+            if (ext=='gz')  {
+              ext = base.pop().toLowerCase();
+              if (importable_ext.indexOf(ext)<0)
+                ext = 'gz';  // do not consider for import
+            }
 
             base = base.join('.').toLowerCase();
             var show = (tree.file_key!=2);
@@ -423,40 +428,6 @@ StorageTree.prototype.readStorageData = function ( page_title,
               tree.item_map[fnode.id] = sfile;
             }
 
-            /*
-            var icon  = image_path('file_dummy');
-            if (ext=='mtz')    icon = image_path('file_mtz');
-            else if ('h5' in sfile)   {
-              if (sfile.h5>0)  icon = image_path('file_hdf');
-                         else  name = '(' + Array(name.length).join('....') + ')';
-              show = false;
-            }
-            else if (ext=='h5')         icon = image_path('file_hdf');
-            else if (ext=='ccp4_demo')  icon = image_path('file_ccp4demo');
-            else if (['pdb','ent','mmcif'].indexOf(ext)>=0)
-                                        icon = image_path('file_pdb');
-            else if (['jpg','jpeg','png','gif'].indexOf(ext)>=0)
-                                        icon = image_path('file_image');
-            else if (['html','txt','pdf'].indexOf(ext)>=0)
-                                        icon = image_path('file_doc');
-            else if (ext=='cif')  {  // use wild heuristics
-              if (endsWith(base,'-sf'))
-                    icon = image_path('file_mtz');
-              else  icon = image_path('file_pdb');
-            } else if (['seq','fasta','pir'].indexOf(ext)>=0)
-                                  icon = image_path('file_seq' );
-            else if (ext=='hhr')
-                                  icon = image_path('file_hhpred' );
-            else if ('image' in sfile)  {
-              if (sfile.image>0)  icon = image_path('file_xray');
-                            else  name = '(' + Array(name.length).join('....') + ')';
-              show = (tree.file_key>0);
-            }
-            if (show)  {
-              var fnode = tree.addRootNode ( name,icon,tree.customIcon() );
-              tree.item_map[fnode.id] = sfile;
-            }
-            */
           }
 
           tree.createTree ( onLoaded_func,onRightClick_func,onDblClick_func,onSelect_func );
