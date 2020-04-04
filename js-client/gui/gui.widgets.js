@@ -891,6 +891,11 @@ InputText.prototype.setStyle = function ( type,pattern,placeholder,tooltip )  {
   return this;
 }
 
+InputText.prototype.setType = function ( type )  {
+  if (type) this.element.setAttribute ( 'type',type );
+  return this;
+}
+
 InputText.prototype.setReadOnly = function ( yn_bool )  {
   this.element.readOnly = yn_bool;
   return this;
@@ -978,6 +983,11 @@ function Image ( source,width,height )  {
 
 Image.prototype = Object.create ( Widget.prototype );
 Image.prototype.constructor = Image;
+
+Image.prototype.setImage = function ( image_source )  {
+  if (image_source.length>0)
+    this.element.setAttribute ( 'src',image_source );
+}
 
 
 // -------------------------------------------------------------------------
@@ -1079,14 +1089,18 @@ Button.prototype.addOnClickListener = function ( listener_func )  {
 
 function ImageButton ( icon_uri,width,height )  {
   Label.call ( this,' ' );
-  var image = new Image ( icon_uri,width,height );
-  this.addWidget ( image  );
-  this.setWidth  ( width  );
-  this.setHeight ( height );
+  this.image = new Image ( icon_uri,width,height );
+  this.addWidget ( this.image );
+  this.setWidth  ( width      );
+  this.setHeight ( height     );
 }
 
 ImageButton.prototype = Object.create ( Label.prototype );
 ImageButton.prototype.constructor = ImageButton;
+
+ImageButton.prototype.setImage = function ( icon_uri )  {
+  this.image.setImage ( icon_uri );
+}
 
 function setDefaultButton ( button,context_widget )  {
   button.element.style.fontWeight = 'bold';
