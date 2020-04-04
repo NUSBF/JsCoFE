@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    09.02.20   <--  Date of Last Modification.
+#    04.04.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -99,7 +99,7 @@ class XDSGUI(basic.TaskDriver):
             self.putTitle ( "Unmerged Reflection Dataset" )
 
             self.resetFileImport()
-            self.addFileImport ( "",xdshkl_path,import_filetype.ftype_XDSIntegrated() )
+            self.addFileImport ( xdshkl_path,import_filetype.ftype_XDSIntegrated() )
             unmerged_imported = import_unmerged.run ( self,"Unmerged Reflection Dataset" )
             have_results = True
 
@@ -144,7 +144,7 @@ class XDSGUI(basic.TaskDriver):
                 #os.rename ( os.path.join(resDir,mtzUnmergedName),newHKLFPath )
                 for filename in fname:
                     self.resetFileImport()
-                    self.addFileImport ( "",filename,import_filetype.ftype_MTZIntegrated() )
+                    self.addFileImport ( filename,import_filetype.ftype_MTZIntegrated() )
                     unmerged_imported = import_unmerged.run ( self,"Unmerged Reflection Dataset" )
                     self.putMessage ( "<b>Assigned name:</b>&nbsp;" + unmerged_imported[0].dname  )
 

@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    09.02.20   <--  Date of Last Modification.
+#    04.04.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -90,7 +90,7 @@ class ChangeSpG(basic.TaskDriver):
 
             # make list of files to import
             self.resetFileImport()
-            self.addFileImport ( "",outputMTZFName,import_filetype.ftype_MTZMerged() )
+            self.addFileImport ( outputMTZFName,import_filetype.ftype_MTZMerged() )
             import_merged.run ( self,"Reflection dataset",importPhases=False )
             have_results = True
 

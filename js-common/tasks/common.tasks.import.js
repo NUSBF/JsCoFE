@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    26.03.20   <--  Date of Last Modification.
+ *    03.04.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -154,7 +154,9 @@ if (!__template)  {
       panel.upload = new Upload ( panel.customData,
         { 'type'   : 'project_data',
           'accept' : '.pdb,.ent,.seq,.fasta,.pir,.mtz,.cif,.mmcif,.doc,.docx,' +
-                     '.pdf,.txt,.jpg,.jpeg,.gif,.png,.html,.htm,.hkl,.hhr' },
+                     '.pdf,.txt,.jpg,.jpeg,.gif,.png,.html,.htm,.hkl,.hhr',
+          'gzip'   : true
+        },
         function(e,onReady_func) {
           if (e.target.files.length>0)
             _import_checkFiles ( e.target.files,div.customData.file_mod,
@@ -176,10 +178,15 @@ if (!__template)  {
             task.sendInputStateEvent ( panel );
           if (panel.upload.new_files.length>0)  {
             panel.upload.button.setText ( 'Upload more files' );
+            var files_ignored = '';
+            if (panel.upload.ignored_list.length>0)
+              files_ignored = '<h3>Files ignored:</h3><ul><li>' +
+                              panel.upload.ignored_list.join('</li><li>') +
+                              '</li></ul>';
             new QuestionBox ( 'Files uploaded',
                               '<h3>Files uploaded:</h3><ul><li>' +
                               panel.upload.new_files.join('</li><li>') +
-                              '</li></ul?',
+                              '</li></ul>' + files_ignored,
                               'Upload more files',function(){
                                 panel.upload.button.click();
                               },

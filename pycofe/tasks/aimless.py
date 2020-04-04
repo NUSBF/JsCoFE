@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    27.10.19   <--  Date of Last Modification.
+#    04.04.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2018
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2020
 #
 # ============================================================================
 #
@@ -215,7 +215,7 @@ class Aimless(basic.TaskDriver):
             for i in range(len(unmerged)):
                 file_i = "aimless_" + str(i+1) + ".mtz"
                 if os.path.isfile(file_i):
-                    self.addFileImport ( "",file_i,import_filetype.ftype_MTZMerged() )
+                    self.addFileImport ( file_i,import_filetype.ftype_MTZMerged() )
                 else:
                     output_ok = False
                     break
@@ -226,7 +226,7 @@ class Aimless(basic.TaskDriver):
         else:
             file_i = self.getMTZOFName()
             if os.path.isfile(file_i):
-                self.addFileImport ( "",file_i,import_filetype.ftype_MTZMerged() )
+                self.addFileImport ( file_i,import_filetype.ftype_MTZMerged() )
                 hkl = import_merged.run ( self,"Reflection dataset",importPhases=False )
             else:
                 output_ok = False

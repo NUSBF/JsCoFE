@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    27.01.20   <--  Date of Last Modification.
+ *    03.04.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -50,7 +50,8 @@ function ImportProjectDialog ( onSuccess_func )  {
 
   var upload = new Upload ( customData,{
       'type'   : 'project',
-      'accept' : projectFileExt
+      'accept' : projectFileExt,
+      'gzip'   : false
   }, null,null,function(returnCode){
 
     if (!returnCode)  {

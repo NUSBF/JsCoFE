@@ -3,13 +3,13 @@
 #
 # ============================================================================
 #
-#    25.08.19   <--  Date of Last Modification.
+#    04.04.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  PDB DATA IMPORT FUNCTION
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2018-2019
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2018-2020
 #
 # ============================================================================
 #
@@ -103,7 +103,7 @@ def run ( body,pdb_list,
 
         if not rc_xyz:
 
-            body.addFileImport ( "",fname_xyz,import_filetype.ftype_XYZ() )
+            body.addFileImport ( fname_xyz,import_filetype.ftype_XYZ() )
 
             if not rc_seq and import_sequences:
 
@@ -117,7 +117,7 @@ def run ( body,pdb_list,
                     fname = lcode + "_" + seqdesc[i]["chain_id"] + ".fasta"
                     dtype_sequence.writeSeqFile ( os.path.join(body.importDir(),fname),
                                                   seqdesc[i]["name"],seqdesc[i]["seq"] )
-                    body.addFileImport ( "",fname,import_filetype.ftype_Sequence() )
+                    body.addFileImport ( fname,import_filetype.ftype_Sequence() )
                     annot = { "file":fname, "rename":fname, "items":[
                       { "rename"   : fname,
                         "contents" : seqdesc[i]["name"] + "\n" + seqdesc[i]["seq"],
@@ -134,7 +134,7 @@ def run ( body,pdb_list,
                 #body.file_stdout.write ( str(asuComp) + "\n" )
 
         if not rc_sf:
-            body.addFileImport ( "",fname_sf,import_filetype.ftype_CIFMerged() )
+            body.addFileImport ( fname_sf,import_filetype.ftype_CIFMerged() )
 
         if len(body.files_all)>0:
 
