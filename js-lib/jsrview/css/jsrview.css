@@ -26,7 +26,7 @@ body {
 }
 
 pre {
-  font-size   : 14x;
+  font-size   : 15px!important;
 }
 
 h2 {
@@ -46,7 +46,7 @@ h3 {
 .display-text  {
   font-family : courier;
   /*font-size   : 1em;*/
-  font-size   : 14px;
+  font-size   : 15px!important;
 }
 
 .page-header {
@@ -413,7 +413,7 @@ h3 {
 .table-blue > tfoot > tr > td,
 .table-blue > tr > td {
   /*font-size       : 1em;*/
-  font-size       : 16px;
+  font-size       : 15px!important;
   font-family     : "Courier";
   text-decoration : none;
   font-weight     : normal;
@@ -426,7 +426,7 @@ h3 {
 }
 .table-blue-alt {
   /*font-size       : 1em;*/
-  font-size       : 16px;
+  font-size       : 15px!important;
   font-family     : "Courier";
   text-decoration : none;
   font-weight     : normal;
@@ -537,7 +537,7 @@ h3 {
   font-family     : courier;
   text-decoration : none;
   /*font-size       : 1em;*/
-  font-size       : 16px;
+  font-size       : 14px!important;
   font-weight     : normal;
   font-style      : normal;
   background-color: #eeeeee;

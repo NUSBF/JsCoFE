@@ -10,7 +10,7 @@ h2 {
 }
 
 h3 {
-  font-size : 20px;  
+  font-size : 20px;
 }
 
 pre {
@@ -45,6 +45,6 @@ pre {
 
 .pre-heavy {
   font-family : "Courier New";
-  font-size   : 14px;
+  font-size   : 14px!important;
   font-weight : bold;
 }
