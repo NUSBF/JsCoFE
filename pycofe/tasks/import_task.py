@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    11.03.20   <--  Date of Last Modification.
+#    04.04.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -87,8 +87,7 @@ class Import(basic.TaskDriver):
         for dirName, subdirList, fileList in os.walk(self.importDir(),topdown=False):
             dName = dirName[len(self.importDir())+1:]
             for fname in fileList:
-                self.addFileImport ( dName,fname )
-
+                self.addFileImport ( os.path.join(dName,fname),baseDirPath=self.importDir() )
 
         # ============================================================================
         # do individual data type imports

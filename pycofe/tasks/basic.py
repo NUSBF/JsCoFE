@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    13.03.20   <--  Date of Last Modification.
+#    04.04.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -55,7 +55,7 @@ from pycofe.dtypes import dtype_template, dtype_xyz,   dtype_structure, databox
 from pycofe.dtypes import dtype_ensemble, dtype_hkl,   dtype_ligand
 from pycofe.dtypes import dtype_sequence, dtype_model, dtype_library
 from pycofe.proc   import edmap,  import_filetype, import_merged
-from pycofe.varut  import signal, jsonut, command
+from pycofe.varut  import signal, jsonut, command, zutils
 from pycofe.etc    import citations
 
 
@@ -669,17 +669,24 @@ class TaskDriver(object):
         self.file_type = {}
         return
 
-    def addFileImport ( self,dirPath,fname,ftype=None ):
-        if dirPath:
-            fpath = os.path.join ( dirPath,fname )
-        else:
-            fpath = fname
+    def addFileImport ( self,filePath,ftype=None,baseDirPath="" ):
+
+        #if dirPath:
+        #    fpath = os.path.join ( dirPath,fname )
+        #else:
+        #    fpath = fname
+
+        fpath = filePath
+        if fpath.endswith(".gz"):   # ungzip files as necessary
+            fpath = zutils.gunzip ( filePath,baseDirPath=baseDirPath )
+
         self.files_all.append ( fpath )
         if ftype:
             self.file_type[fpath] = ftype
         else:
             self.file_type[fpath] = import_filetype.getFileType (
                                        fpath,self.importDir(),self.file_stdout )
+
         return
 
     def checkFileImport ( self,fpath,ftype ):
@@ -1712,7 +1719,7 @@ class TaskDriver(object):
             newHKLFPath = self.getOFName ( "_" + solSpg + "_" + hkl.getHKLFileName(),-1 )
             os.rename ( mtzfilepath,newHKLFPath )
             self.resetFileImport()
-            self.addFileImport ( "",newHKLFPath,import_filetype.ftype_MTZMerged() )
+            self.addFileImport ( newHKLFPath,import_filetype.ftype_MTZMerged() )
             import_merged.run ( self,"New reflection dataset details",importPhases=False )
 
             if dtype_hkl.dtype() in self.outputDataBox.data:
@@ -1782,7 +1789,7 @@ class TaskDriver(object):
                 self.runApp ( "reindex",cmd,logType="Service" )
 
                 if os.path.isfile(newHKLFPath):
-                    self.addFileImport ( "",newHKLFPath,import_filetype.ftype_MTZMerged() )
+                    self.addFileImport ( newHKLFPath,import_filetype.ftype_MTZMerged() )
                     index.append ( i )
                 else:
                     self.putMessage ( "Error: cannot reindex " + hkl_list[i].dname )

@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    10.02.20   <--  Date of Last Modification.
+#    04.04.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -207,7 +207,7 @@ class FreeRFlag(basic.TaskDriver):
                 # Start cad
                 self.runApp ( "cad",cmd,logType="Service" )
                 if os.path.isfile(outFName):
-                    self.addFileImport ( "",outFName,import_filetype.ftype_MTZMerged() )
+                    self.addFileImport ( outFName,import_filetype.ftype_MTZMerged() )
                     #files_all += [outFName]
                     self.putMessage ( "Free R-flag set to <b>\"" + hkl[i].dname +\
                                       "\"</b> dataset." )

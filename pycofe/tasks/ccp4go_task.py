@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    09.02.20   <--  Date of Last Modification.
+#    04.04.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -237,7 +237,7 @@ class CCP4go(import_task.Import):
             #shutil.rmtree(dirpath)
             #os.mkdir(dirpath)
             self.resetFileImport()
-            self.addFileImport ( "",meta["mtz"],import_filetype.ftype_MTZMerged() )
+            self.addFileImport ( meta["mtz"],import_filetype.ftype_MTZMerged() )
             #self.files_all = [meta["mtz"]]
             import_merged.run ( self,"Import merged HKL",importPhases=False )
             # get reference to imported structure
@@ -333,7 +333,7 @@ class CCP4go(import_task.Import):
                         for i in range(len(hkl0)):
                             id0 += [hkl0[i].dataId]
                         self.resetFileImport()
-                        self.addFileImport ( "",meta["hkl"],import_filetype.ftype_MTZMerged() )
+                        self.addFileImport ( meta["hkl"],import_filetype.ftype_MTZMerged() )
                         #self.files_all = [meta["hkl"]]
                         import_merged.run ( self,"Import merged HKL reindexed in " +
                                                  meta["spg"],importPhases=False )

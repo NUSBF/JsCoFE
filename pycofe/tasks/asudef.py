@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    05.03.20   <--  Date of Last Modification.
+#    04.04.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -383,7 +383,7 @@ def revisionFromStructure ( base,hkl,structure,name,useSequences=None,
         fname += name + "_" + id[i] + ".fasta"
         dtype_sequence.writeSeqFile ( os.path.join(base.importDir(),fname),
                                       name + "_" + id[i],seq[i] )
-        base.addFileImport ( "",fname,import_filetype.ftype_Sequence() )
+        base.addFileImport ( fname,import_filetype.ftype_Sequence() )
         annot = { "file":fname, "rename":fname, "items":[
           { "rename":fname, "contents": seq[i], "type": stype[i] }
         ]}

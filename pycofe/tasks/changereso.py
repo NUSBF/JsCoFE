@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    23.06.19   <--  Date of Last Modification.
+#    04.04.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2019
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2020
 #
 # ============================================================================
 #
@@ -106,7 +106,7 @@ class ChangeReso(basic.TaskDriver):
 
             # make list of files to import
             self.resetFileImport()
-            self.addFileImport ( "",outputMTZFName,import_filetype.ftype_MTZMerged() )
+            self.addFileImport ( outputMTZFName,import_filetype.ftype_MTZMerged() )
             #self.files_all = [ outputMTZFName ]
             import_merged.run ( self,"Reflection dataset",importPhases=False )
 

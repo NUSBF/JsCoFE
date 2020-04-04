@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    13.02.20   <--  Date of Last Modification.
+#    04.04.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -180,7 +180,7 @@ class Xia2(basic.TaskDriver):
             self.putTitle ( "Merged Reflection Dataset" )
             newHKLFPath = os.path.join ( resDir,self.getOFName("_merged.mtz",-1) )
             os.rename ( os.path.join(resDir,mtzMergedName),newHKLFPath )
-            self.addFileImport ( "",newHKLFPath,import_filetype.ftype_MTZMerged() )
+            self.addFileImport ( newHKLFPath,import_filetype.ftype_MTZMerged() )
             #self.files_all = [ newHKLFPath ]
             hkl_imported = import_merged.run ( self,"Merged Reflection Dataset",importPhases=False )
 
@@ -207,7 +207,7 @@ class Xia2(basic.TaskDriver):
             self.putTitle   ( "Unmerged Scaled Reflection Dataset" )
             newHKLFPath = os.path.join ( resDir,self.getOFName("_unmerged_scaled.mtz",-1) )
             os.rename ( os.path.join(resDir,mtzUnmergedName),newHKLFPath )
-            self.addFileImport ( "",newHKLFPath,import_filetype.ftype_MTZIntegrated() )
+            self.addFileImport ( newHKLFPath,import_filetype.ftype_MTZIntegrated() )
             unmerged_imported = import_unmerged.run ( self,"Unmerged Scaled Reflection Dataset" )
             for i in range(len(unmerged_imported)):
                 unmerged_imported[i].ha_type = hatom
@@ -294,7 +294,7 @@ class Xia2(basic.TaskDriver):
                     newHKLFPath = os.path.join ( resDir,self.getOFName("_"+sweepId.lower()+"_unmerged.mtz",-1) )
                     os.rename ( os.path.join(resDir,mtzSweepName),newHKLFPath )
                     self.resetFileImport()
-                    self.addFileImport ( "",newHKLFPath,import_filetype.ftype_MTZIntegrated() )
+                    self.addFileImport ( newHKLFPath,import_filetype.ftype_MTZIntegrated() )
                     #self.files_all = [ newHKLFPath ]
                     imported_data = import_unmerged.run ( self,
                         "Unmerged Reflection Dataset (Sweep " + str(n+1) + ")" )

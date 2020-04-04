@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    09.02.20   <--  Date of Last Modification.
+#    04.04.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -89,7 +89,7 @@ class DUI(basic.TaskDriver):
                 #os.rename ( os.path.join(resDir,mtzUnmergedName),newHKLFPath )
                 for filename in fname:
                     self.resetFileImport()
-                    self.addFileImport ( "",filename,import_filetype.ftype_MTZIntegrated() )
+                    self.addFileImport ( filename,import_filetype.ftype_MTZIntegrated() )
                     unmerged_imported = import_unmerged.run ( self,"Unmerged Reflection Dataset" )
                     self.putMessage ( "<b>Assigned name:</b>&nbsp;" + unmerged_imported[0].dname )
                     have_results = True

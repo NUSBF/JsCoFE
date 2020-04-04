@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    03.04.20   <--  Date of Last Modification.
+ *    04.04.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -96,7 +96,9 @@ UsageStats.prototype.registerJob = function ( job_class )  {
     this.njobs.push(0);
     this.cpu  .push(0);
     for (var vname in this.volumes)  {
-      this.volumes[vname].free     .push ( this.volumes[vname].free     [n0-1] );
+      if (!('committed' in this.volumes[vname]))
+        this.volumes[vname].committed = Array(this.volumes[vname].free.length).fill(0)
+      this.volumes[vname].free.push ( this.volumes[vname].free[n0-1] );
       this.volumes[vname].committed.push ( this.volumes[vname].committed[n0-1] );
     }
     //this.disk_free_projects.push ( this.disk_free_projects[n0-1] );

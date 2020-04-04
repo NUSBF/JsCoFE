@@ -70,7 +70,12 @@ function Upload ( customData,upl_data,onSelect_func,onSelectPDB_func,onReady_fun
 
   this.returnCode = 'in progress';
 
-  this.upload_files = [];  // list of uploaded files
+  this.upload_files = [];     // list of uploaded files
+  this.accept_gzip  = false;  // no check for '.ext.gz' will be made, and all
+                              // '.gz' will be accepted if this suffix appears
+                              // in 'accept' string
+  this.ignored_list = [];
+
   this.linkDataType = null;
   this.link_button  = null;
   this.button       = null;
@@ -111,7 +116,16 @@ function Upload ( customData,upl_data,onSelect_func,onSelectPDB_func,onReady_fun
     //if (upl_data.type=='project')
     //      this.selFile = new SelectFile ( false,'.zip' );
     //else  this.selFile = new SelectFile ( true,upl_data.accept );
-    this.selFile = new SelectFile ( (upl_data.type=='project_data'),upl_data.accept );
+    this.accept_files = upl_data.accept;
+    this.accept_gzip  = upl_data.gzip;
+    var accept_list   = this.accept_files;
+    if (this.accept_gzip)  {
+      // this assumes that '.gz' is not given in 'accept' string
+      if (accept_list)
+        accept_list += ',';
+      accept_list += '.gz';
+    }
+    this.selFile = new SelectFile ( (upl_data.type=='project_data'),accept_list );
     this.selFile.hide();
     this.addWidget ( this.selFile );
 
@@ -134,6 +148,30 @@ function Upload ( customData,upl_data,onSelect_func,onSelectPDB_func,onReady_fun
 
         files = upl.selFile.element.files;
 
+      }
+
+      // filter out unsuitable '.gz' files
+      upl.ignored_list = [];
+      if (upl.accept_gzip)  {
+        var files0   = files;
+        files        = [];
+        var ext_list = upl.accept_files.split(',');
+        for (var i=0;i<files0.length;i++)
+          if (endsWith(files0[i].name,'.gz'))  {
+            var lst = files0[i].name.split('.');
+            if ((lst.length>2) && (ext_list.indexOf('.'+lst[lst.length-2])>=0))
+                  files.push ( files0[i] );
+            else  upl.ignored_list.push ( files0[i].name );
+          } else
+            files.push ( files0[i] );
+        /*
+        if (ignored_list.length>0)
+          new MessageBox ( 'Invalid files',
+                'The following files are ignored as invalid:<ul><li>' +
+                ignored_list.join('</li><li>') +
+                '</li></ul>'
+              );
+        */
       }
 
       if ((files.length>0) || upl.link_directory) {
