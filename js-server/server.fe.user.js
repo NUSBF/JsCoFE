@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.04.20   <--  Date of Last Modification.
+ *    05.04.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -236,58 +236,6 @@ var index = {};  // links volumes in config file and in vdata
 
 }
 
-/*
-function makeNewUser ( userData,callback_func )  {  // gets UserData object
-
-  var volConf = conf.getFEConfig().projectsPath['***'];
-  var rpath   = path.resolve ( volConf.path );
-  checkDiskSpace(rpath).then((diskSpace) => {
-
-    var disk_committed = 0.0;
-    var disk_used      = 0.0;
-    var users = readUsersData().userList;
-    for (var i=0;i<users.length;i++)  {
-      disk_committed += users[i].ration.storage;
-      disk_used      += users[i].ration.storage_used;
-    }
-
-    var disk_free = diskSpace.free/(1024.0*1024.0);
-    if ((disk_free-volConf.diskReserve) > (disk_committed-disk_used))  {
-
-      _make_new_user ( userData,callback_func );
-
-    } else  {
-
-      var msg = 'not enough disk space to create new user at\n' +
-                '                                  '       + rpath +
-                '\n                                  ('    +
-                Math.round(disk_committed) + ' MB committed, '   +
-                Math.round(disk_used)      + ' MB used, '        +
-                Math.round(disk_free)      + ' MB free at '      +
-                volConf.diskReserve        + ' MB reserved)';
-
-      log.standard ( 3,msg );
-      log.error    ( 3,msg );
-
-      callback_func (
-        response = new cmd.Response ( cmd.fe_retcode.regFailed,
-          '<h3>Sorry</h3>' +
-          'New User cannot be registered because of insufficient disk space.' +
-          '<p><i>Server maintenance team is informed. Please come back later</i>',
-          emailer.send ( conf.getEmailerConfig().maintainerEmail,
-            'User Registration Failure',
-            'User registration failed due to insufficient disk space, ' +
-            'please investigate.' )
-        )
-      );
-
-    }
-
-  });
-
-}
-*/
-
 
 // ===========================================================================
 
@@ -365,20 +313,6 @@ var fe_server = conf.getFEConfig();
                   cmd.appName() + ' Login Recovery',
                   'login_recovery',{ 'text1' : msg } )
       );
-
-      /*
-      response = new cmd.Response ( cmd.fe_retcode.ok,userName,
-        emailer.send ( userData.email,'CCP4 Login Recovery',
-          'Dear ' + userName + ',<p>' +
-          'Thank you for your request regarding CCP4 on-line login recovery.<p>' +
-           msg +
-          'Please use these data to login in CCP4 on-line services next time. ' +
-          'You may change your password(s) in "My Account", selectable from ' +
-          'Main Menu, when you log in.<p>' +
-          'Best Regards,<p>' +
-          'CCP4 on-line.' )
-      );
-      */
 
     }
 
@@ -494,21 +428,6 @@ var __userLoginHash = {
     }
   }
 };
-
-
-function writeUserLoginHash()  {
-
-  var userHashPath = path.join ( conf.getFEConfig().userDataPath,__userLoginHashFile );
-
-  if (!utils.writeObject(userHashPath,__userLoginHash))
-    return emailer.send ( conf.getEmailerConfig().maintainerEmail,
-                          'CCP4 Login Hash Write Fails',
-                          'Detected file read failure at user login hash write, ' +
-                          'please investigate.' );
-
-  return '';
-
-}
 */
 
 
@@ -552,63 +471,6 @@ var updateHash = false;
     __userLoginHash.save();
 
 }
-
-/*
-function addToUserLoginHash ( token,login_data )  {
-
-  var loggedUsers = {};
-
-  for(var key in __userLoginHash.loggedUsers)
-    if (__userLoginHash.loggedUsers[key].login!=login_data.login)
-      loggedUsers[key] = __userLoginHash.loggedUsers[key];
-
-  __userLoginHash.loggedUsers = loggedUsers;
-  __userLoginHash.loggedUsers[token] = login_data;
-
-  __userLoginHash.save();
-
-}
-
-function removeFromUserLoginHash ( token )  {
-
-//  var newHash = {};
-//  for(var key in __userLoginHash)
-//    if (key!=token)
-//      newHash[key] = __userLoginHash[key];
-//  __userLoginHash = newHash;
-
-  if (token in __userLoginHash.loggedUsers)
-    delete __userLoginHash.loggedUsers[token];
-
-  __userLoginHash.save();
-
-}
-
-
-function removeUserFromHash ( login_name )  {
-
-  var newHash = new UserLoginHash;
-  for(var key in __userLoginHash)
-    if (__userLoginHash[key].login!=login_name)
-      newHash[key] = __userLoginHash[key];
-  __userLoginHash = newHash;
-
-  __userLoginHash.save();
-
-}
-
-function getTokenFromHash ( login_name )  {
-  var token = null;
-  for(var key in __userLoginHash.loggedUsers)
-    if (__userLoginHash.loggedUsers[key].login==login_name)  {
-      token = key;
-      break;
-    }
-  return token;
-}
-
-*/
-
 
 function getLoginData ( token )  {
   return __userLoginHash.getLoginData ( token );
@@ -1123,6 +985,172 @@ var userFilePath = getUserDataFName ( loginData );
 }
 
 
+function resetUser_admin ( loginData,userData )  {
+var response     = null;  // must become a cmd.Response object to return
+var fe_server    = conf.getFEConfig();
+var userFilePath = getUserDataFName ( loginData );
+
+  log.standard ( 141,'reset pasword for user ' + userData.login +
+                     ' by admin, login ' + loginData.login );
+
+  if (utils.fileExists(userFilePath))  {
+    var uaData = utils.readObject ( userFilePath );
+    if (uaData)  {
+      ud.checkUserData ( uaData );
+      if (uaData.role==ud.role_code.admin)  {
+        // admin privileges confirmed
+
+        userFilePath = getUserDataFName ( userData );
+        var uData = utils.readObject ( userFilePath );
+        if (uData)  {
+          // reset password
+          var pwd = '';
+          if (uData.login=='devel')
+                pwd = 'devel';
+          else if (('localuser' in fe_server) && (uData.login=='localuser'))
+                pwd = 'localuser';
+          else  pwd = crypto.randomBytes(3).toString('hex');
+          uData.pwd    = hashPassword ( pwd );
+          uData.action = ud.userdata_action.chpwd;
+          // save file
+          if (!utils.writeObject(userFilePath,uData))  {
+            log.error ( 142,'User file: ' + userFilePath + ' cannot be written' );
+            log.error ( 142,'Password reset for user ' + userData.login + ' failed.' );
+            response = new cmd.Response ( cmd.fe_retcode.writeError,
+                          'User file cannot be written.',
+                          emailer.send ( conf.getEmailerConfig().maintainerEmail,
+                            'CCP4 Password Reset Write Fails',
+                            'Detected file write failure at user password reset, ' +
+                            'please investigate.' )
+                      );
+          } else  {
+            log.standard ( 143,'Password for user ' + userData.login +
+                               ' reset by admin, pwd=' + pwd );
+            response = new cmd.Response ( cmd.fe_retcode.ok,uData.userName,
+              emailer.sendTemplateMessage ( uData,
+                        cmd.appName() + ' Login Password Reset',
+                        'password_reset_admin',{ 'text1' : pwd } )
+            );
+          }
+        } else  {
+          response = new cmd.Response ( cmd.fe_retcode.readError,
+                        'User file cannot be read.',
+                        emailer.send ( conf.getEmailerConfig().maintainerEmail,
+                          'CCP4 Login Recovery Read Fails',
+                          'Detected file read failure at user login recovery, ' +
+                          'please investigate.' )
+                    );
+        }
+
+      } else  {
+        log.error ( 144,'Attempt to reset user password without privileges ' +
+                        'from login ' + loginData.login );
+        response  = new cmd.Response ( cmd.fe_retcode.wrongLogin,
+                                       'No admin privileges','' );
+      }
+    } else  {
+      log.error ( 145,'Admin user file: ' + userFilePath + ' cannot be read.' );
+      response = new cmd.Response ( cmd.fe_retcode.readError,
+                                    'Admin user file cannot be read.','' );
+    }
+  } else  {
+    log.error ( 146,'Admin user file: ' + userFilePath + ' does not exist.' );
+    response  = new cmd.Response ( cmd.fe_retcode.wrongLogin,
+                                   'Wrong admin login','' );
+  }
+
+  return response;
+
+
+
+
+/*
+var response  = null;  // must become a cmd.Response object to return
+var fe_server = conf.getFEConfig();
+
+    // Get user data object and generate a temporary password
+
+    log.standard ( 4,'recover user login for ' + userData.email + ' at ' +
+                     fe_server.userDataPath );
+
+    files = fs.readdirSync ( fe_server.userDataPath );
+
+    var userName = '???';
+    var logins   = [];
+    var pwds     = [];
+    var n = 0;
+    for (var i=0;i<files.length;i++)
+      if (files[i].endsWith(__userDataExt))  {
+        var userFilePath = path.join ( fe_server.userDataPath,files[i] );
+        var uData = utils.readObject ( userFilePath );
+        if (uData)  {
+          if (uData.email==userData.email)  {
+            userName  = uData.name;
+            logins[n] = uData.login;
+            // reset password
+            if (uData.login=='devel')
+                  pwds[n] = 'devel';
+            else if (('localuser' in fe_server) && (uData.login=='localuser'))
+                  pwds[n] = 'localuser';
+            else  pwds[n] = crypto.randomBytes(3).toString('hex');
+            uData.pwd = hashPassword ( pwds[n] );
+            // save file
+            if (!utils.writeObject(userFilePath,uData))  {
+              response = new cmd.Response ( cmd.fe_retcode.writeError,
+                        'User file cannot be written.',
+                        emailer.send ( conf.getEmailerConfig().maintainerEmail,
+                          'CCP4 Login Recovery Write Fails',
+                          'Detected file write failure at user login recovery, ' +
+                          'please investigate.' )
+                    );
+            }
+            n++;
+          }
+        } else  {
+          response = new cmd.Response ( cmd.fe_retcode.readError,
+                        'User file cannot be read.',
+                        emailer.send ( conf.getEmailerConfig().maintainerEmail,
+                          'CCP4 Login Recovery Read Fails',
+                          'Detected file read failure at user login recovery, ' +
+                          'please investigate.' )
+                    );
+        }
+      }
+
+    if (!response)  {
+
+      if (logins.length<=0)  {
+
+        response = new cmd.Response ( cmd.fe_retcode.userNotFound,'','' );
+
+      } else  {
+
+        var msg = 'The following account(s) have been identified as ' +
+                  'registered with your e-mail address, and their passwords ' +
+                  'are now reset as below:<p>';
+        for (var i=0;i<logins.length;i++)
+          msg += 'Login: <b>' + logins[i] +
+                 '</b>, new password: <b>' + pwds[i] + '</b><br>';
+        msg += '&nbsp;<br>';
+
+        response = new cmd.Response ( cmd.fe_retcode.ok,userName,
+          emailer.sendTemplateMessage ( userData,
+                    cmd.appName() + ' Login Recovery',
+                    'login_recovery',{ 'text1' : msg } )
+        );
+
+      }
+
+    }
+
+    callback_func ( response );
+*/
+
+
+
+}
+
+
 // ===========================================================================
 
 function sendAnnouncement ( loginData,message )  {
@@ -1462,6 +1490,7 @@ module.exports.updateUserData       = updateUserData;
 module.exports.updateUserData_admin = updateUserData_admin;
 module.exports.deleteUser           = deleteUser;
 module.exports.deleteUser_admin     = deleteUser_admin;
+module.exports.resetUser_admin      = resetUser_admin;
 module.exports.sendAnnouncement     = sendAnnouncement;
 module.exports.manageDormancy       = manageDormancy;
 module.exports.getInfo              = getInfo;

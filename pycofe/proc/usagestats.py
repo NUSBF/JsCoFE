@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    04.04.20   <--  Date of Last Modification.
+#    05.04.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -72,13 +72,13 @@ def putGraphWidget ( graphId,legend,xData,yData,xTitle,yTitle,
         colour = color[i % len(color)]
         if styles[i]=="thin":
             pyrvapi.rvapi_set_line_options ( yId,"plot","data",graphId,
-                                             colour,"dashed","off",1.0,True )
+                                             colour,"dashed","off",1.25,True )
         elif styles[i]=="line":
             pyrvapi.rvapi_set_line_options ( yId,"plot","data",graphId,
-                                             colour,"solid","off",1.75,True )
+                                             colour,"solid","off",2.0,True )
         elif styles[i]=="dotted":
             pyrvapi.rvapi_set_line_options ( yId,"plot","data",graphId,
-                                             colour,"dotted","off",1.5,True )
+                                             colour,"dotted","off",2.0,True )
         else:
             pyrvapi.rvapi_set_line_options ( yId,"plot","data",graphId,
                                              colour,"solid","filledCircle",2.5,True )
@@ -244,7 +244,7 @@ def main():
             gdata .append ( usageStats["volumes"][vname]["committed"] )
             gdata .append ( [usageStats["volumes"][vname]["total"]]*ndays )
             names .append ( str(vname) + "-free"  )
-            names .append ( str(vname) + "-comtd" )
+            names .append ( str(vname) + "-comt"  )
             names .append ( str(vname) + "-total" )
             styles.append ( "line"   )
             styles.append ( "thin"   )
@@ -270,9 +270,9 @@ def main():
                         "storage-total"
                      ],[
                         "line",
-                        "thin",
+                        "dotted",
                         "line",
-                        "thin"
+                        "dotted"
                      ],
                      row,2, width=550,height=400 )
     row += 2
