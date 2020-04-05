@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    26.03.20   <--  Date of Last Modification.
+ *    04.04.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -285,6 +285,7 @@ function TaskMolrep()  {
                        label    : '<h3>Change default behaviour for</h3>',
                        position : [0,0,1,4]
                      },
+               /*
                SEQ_CBX  : {
                        type     : 'checkbox',
                        label    : 'Use sequence for model correction',
@@ -294,18 +295,19 @@ function TaskMolrep()  {
                        position : [1,0,1,1],
                        showon   : {'model.sequnk':[0,-1]}
                      },
+               */
                SURF_CBX  : {
                        type     : 'checkbox',
                        label    : 'Additional model modification',
                        tooltip  : 'Modification of search model (B-factors ' +
                                   'or using polyalanine model)',
                        value    : false,
-                       position : [2,0,1,1]
+                       position : [1,0,1,1]
                      },
                SEP3 : { type    : 'label',  // just a separator
                        label    : '&nbsp;',
                        lwidth   : 30,       // 'lwidth' is label width in px
-                       position : [2,1,1,1]
+                       position : [1,1,1,1]
                      },
                SURF : { type    : 'combobox',
                        keyword  : 'SURF',
@@ -320,14 +322,14 @@ function TaskMolrep()  {
                                    'A|Use polyalanine model'
                                   ],
                        value    : 'Y',
-                       position : [2,2,1,1],
+                       position : [1,2,1,1],
                        showon   : {'SURF_CBX':[true]}
                      },
                SURF_OLBL : {
                        type     : 'label',  // just a separator
                        label    : 'and',
                        align    : 'right',
-                       position : [3,0,1,1],
+                       position : [2,0,1,1],
                        showon   : {'SURF_CBX':[true],'SURF':['O']}
                      },
                SURF_PFCBX  : {
@@ -336,7 +338,7 @@ function TaskMolrep()  {
                        tooltip  : 'Modify search model with increasing B-factors ' +
                                   'on surface for Packing Function calculations',
                        value    : true,
-                       position : [3,2,1,1],
+                       position : [2,2,1,1],
                        showon   : {'SURF_CBX':[true],'SURF':['O']}
                      },
                NMR_CBX : {
@@ -345,7 +347,7 @@ function TaskMolrep()  {
                        tooltip  : 'Handling input PDB containing an ensemble ' +
                                   'or NMR model',
                        value    : false,
-                       position : [4,0,1,1]
+                       position : [3,0,1,1]
                      },
                NMR : { type     : 'checkbox',
                        label    : 'average intensities for RF',
@@ -353,7 +355,7 @@ function TaskMolrep()  {
                        tooltip  : 'Average intensities for Rotation Function',
                        value    : true,
                        translate: ['0','1'],  // [false,true]
-                       position : [4,2,1,1],
+                       position : [3,2,1,1],
                        showon   : {'NMR_CBX':[true]}
                      }
              }

@@ -103,6 +103,7 @@ var fe_reqtype = {
   updateUData_admin : '-updateUData_admin', // request to update user data by admin
   deleteUser        : '-deleteUser',        // request to delete user account and data
   deleteUser_admin  : '-deleteUser_admin',  // request to delete user account and data by admin
+  resetUser_admin   : '-resetUser_admin',   // request to reset user password by admin
   updateAndRestart  : '-updateAndRestart',  // request to update and restart all servers
   getUserRation     : '-getUserRation',     // request to retrieve current user ration
   getProjectList    : '-getProjectList',    // request for projects list

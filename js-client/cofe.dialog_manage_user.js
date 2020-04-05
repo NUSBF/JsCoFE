@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.04.20   <--  Date of Last Modification.
+ *    04.04.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -53,7 +53,6 @@ function ManageUserDialog ( userData,onExit_func )  {
           text : "Update",
           click: function() {
 
-//            dlg.userData.admin   = (dlg.profile.getValue()==1);
             dlg.userData.role    = [role_code.user,role_code.admin,
                                     role_code.developer][dlg.profile.getValue()];
             dlg.userData.licence = ['academic','commercial'][dlg.licence.getValue()];
@@ -81,6 +80,37 @@ function ManageUserDialog ( userData,onExit_func )  {
             },null,'persist' );
 
           }
+
+        }, {
+          id   : "resetpwd_btn",
+          text : "Reset password",
+          click: function() {
+
+            new QuestionBox ( 'Reset User Password',
+                '<h2>Reset User Password</h2>' +
+                'Password of <i>' + dlg.userData.name +
+                '</i> will be replaced with a randomly<br>generated one, ' +
+                'and sent to the user via e-mail.' +
+                '<p>Are you sure?',
+                'Yes, reset',function(){
+                  serverRequest ( fe_reqtype.resetUser_admin,dlg.userData,
+                                  'Reset User Password', function(response){
+                    if (response)
+                      new MessageBoxW ( 'Reset User Password',response,0.5 );
+                    else
+                      new MessageBox ( 'Rest User Password',
+                        'Password of <i>' + dlg.userData.name +
+                        '</i> has been successfully reset, and ' +
+                        'notification<br>sent to e-mail address:<p><b><i>' +
+                        dlg.userData.email + '</i></b>.' );
+                    onExit_func();
+                    $(dlg.element).dialog("close");
+                  },null,'persist' );
+                },
+                'Cancel',function(){});
+
+          }
+
         }, {
           id   : "delete_btn",
           text : "Delete User",
@@ -111,12 +141,15 @@ function ManageUserDialog ( userData,onExit_func )  {
                 'Cancel',function(){});
 
           }
+
         }, {
+
           id   : "cancel_btn",
           text : "Cancel",
           click: function() {
             $(dlg.element).dialog("close");
           }
+
         }
       ]
     });

@@ -82,12 +82,12 @@ function LoginPage ( sceneId )  {
   pwd_inp  .setFontSize         ( '112%' );
   pwd_inp  .setStyle            ( 'password','','Your CCP4 password','' );
   pwd_inp  .setFontItalic       ( true   );
-  login_inp.setWidth            ( '99%'  );
+  login_inp.setWidth            ( '95%'  );
   pwd_inp  .setWidth            ( '95%'  );
 
   var row = 0;
   panel.setLabel ( appName() + ' Login', row,0,1,2 )
-       .setFont  ( 'times','300%',true,true ).setNoWrap();
+       .setFont  ( 'times','40px',true,true ).setNoWrap();
   panel.setHorizontalAlignment  ( row++ ,0,'center' );
   panel.setWidget               ( this.makeSetupNamePanel(), row++,0,1,2 );
   /*
@@ -115,7 +115,7 @@ function LoginPage ( sceneId )  {
   panel.setWidget               ( pwd_lbl  ,row+1,0,1,1 );
   panel.setVerticalAlignment    ( row  ,0,'middle' );
   panel.setVerticalAlignment    ( row+1,0,'middle' );
-  panel.setWidget               ( login_inp,row++,1,1,2 );
+  panel.setWidget               ( login_inp,row++,1,1,1 );
   panel.setWidget               ( pwd_inp  ,row  ,1,1,1 );
   panel.setWidget               ( vis_btn  ,row  ,2,1,1 );
   panel.setVerticalAlignment    ( row++,2,'middle' );

@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    09.02.20   <--  Date of Last Modification.
+#    04.04.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -64,25 +64,22 @@ class Molrep(basic.TaskDriver):
                                   # to input databox by TaskMolrep.makeInputData(),
                                   # therefore, hkl=self.input_data.data.hkl[0]
                                   # would also work
-        seq      = None
-        #if hasattr(self.input_data.data,"seq"):  # optional data parameter
-        #    seq = self.input_data.data.seq[0]    # given explicitly, will be used
-        #elif model.sequence:
-        if model.sequence:
-            seq = self.makeClass ( model.sequence )  # may work for DataEnsemble
-            if (not seq.getSeqFileName()) or (model.nModels>1) or \
-               (self.getParameter(self.task.parameters.sec3.contains.SEQ_CBX)!="True"):
-                seq = None
+        #seq      = None
+        #if model.sequence:
+        #    seq = self.makeClass ( model.sequence )  # may work for DataEnsemble
+        #    if (not seq.getSeqFileName()) or (model.nModels>1) or \
+        #       (self.getParameter(self.task.parameters.sec3.contains.SEQ_CBX)!="True"):
+        #        seq = None
 
         self.open_stdin()
         self.write_stdin (
             "file_m "  + model.getXYZFilePath(self.inputDir()) + "\n"
         )
 
-        if seq:
-            self.write_stdin (
-                "file_s "  + seq.getSeqFilePath(self.inputDir()) + "\n"
-            )
+        #if seq:
+        #    self.write_stdin (
+        #        "file_s "  + seq.getSeqFilePath(self.inputDir()) + "\n"
+        #    )
 
         model_2 = None
         #if revision.hasSubtype(dtype_template.subtypeXYZ()):  # optional data parameter
@@ -163,8 +160,11 @@ class Molrep(basic.TaskDriver):
         have_results = False
 
         self.putMessage ( '&nbsp;' );
+        #structure = self.finaliseStructure ( self.molrep_pdb(),self.outputFName,
+        #                        hkl,None,[seq],0,leadKey=1,openState_bool=False,
+        #                        title="Positioned Structure" )
         structure = self.finaliseStructure ( self.molrep_pdb(),self.outputFName,
-                                hkl,None,[seq],0,leadKey=1,openState_bool=False,
+                                hkl,None,[],0,leadKey=1,openState_bool=False,
                                 title="Positioned Structure" )
 
         if structure:

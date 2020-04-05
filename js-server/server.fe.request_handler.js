@@ -67,6 +67,10 @@ var response = null;
           response = user.deleteUser_admin ( loginData,data );
         break;
 
+    case cmd.fe_reqtype.resetUser_admin :
+          response = user.resetUser_admin ( loginData,data );
+        break;
+
     case cmd.fe_reqtype.updateAndRestart :
           response = adm.updateAndRestart ( loginData,data );
         break;
