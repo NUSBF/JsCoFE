@@ -111,7 +111,12 @@ class DocDev(basic.TaskDriver):
             shutil.move ( srcdir,os.path.join(self.reportDir(),docdir) )
             self.putTitle ( "Generated documents" )
             htmlDir = os.path.join ( self.reportDir(),docdir )
-            files = [f for f in os.listdir(htmlDir) if f.lower().endswith(".html")]
+            files   = [f for f in os.listdir(htmlDir) if f.lower().endswith(".html")]
+            files   = sorted(files)
+            pos = files.index("index.html")
+            if pos>0:
+                files.remove("index.html")
+                files = ["index.html"] + files
             for f in files:
                 url = docdir + "/" + f
                 self.putMessage (
@@ -121,6 +126,8 @@ class DocDev(basic.TaskDriver):
                         ",\"report/" + url + "\"),null,0); return false;'>" + f +\
                     "</a>"
                 )
+                if f=="index.html":
+                    self.putMessage ( "_"*60 )
 
 #getJobFileURL ( jobId,filePath )
 
