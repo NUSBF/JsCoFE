@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    14.01.20   <--  Date of Last Modification.
+ *    05.04.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -126,7 +126,7 @@ BasePage.prototype.makeLogoPanel = function ( row,col,colSpan )  {
     logoPanel.setLabel ( '',0,c++,1,1 ).setWidth ( '30px' );
     logoPanel.setImage ( image_path('logo-mrc'),'','28px'  ,0,c++,1,1 );
   }
-  logoPanel.setLabel ( appName() + ' v.' + appVersion(),0,c,1,1 )
+  logoPanel.setLabel ( appName() + ' v.' + appVersion() + '&nbsp;&nbsp;&nbsp;&nbsp;',0,c,1,1 )
                      .setFontSize ( '75%' ).setNoWrap()
                      .setVerticalAlignment('bottom');
   logoPanel.setVerticalAlignment   ( 0,0,'bottom'  );
@@ -247,6 +247,8 @@ BasePage.prototype.makeHeader = function ( colSpan,on_logout_function )  {
   this.headerPanel.setVerticalAlignment   ( 0,21,'top'   );
   this.headerPanel.setCellSize ( '32px','32px',0,21 );
   this.logout_btn .setTooltip  ( 'Logout' );
+
+  this.headerPanel.setLabel( '&nbsp;',0,22,1,1 ).setWidth('10px');
 
   (function(page){
     page.logout_btn.addOnClickListener ( function(){

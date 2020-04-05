@@ -64,7 +64,7 @@ function LoginPage ( sceneId )  {
   var pwd_lbl     = new Label     ( 'Password:'   );
   var login_inp   = new InputText ( '' );
   var pwd_inp     = new InputText ( '' );
-  var vis_btn     = new ImageButton ( image_path('pwd_hidden'),'38px','14px' );
+  var vis_btn     = new ImageButton ( image_path('pwd_hidden'),'32px','14px' );
   login_lbl.setNoWrap();
   login_lbl.setFontSize         ( '125%' );
   pwd_lbl  .setFontSize         ( '125%' );
