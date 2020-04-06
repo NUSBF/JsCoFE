@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    03.04.20   <--  Date of Last Modification.
+ *    06.04.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -265,7 +265,8 @@ var sender_cfg = conf.getServerConfig();
 
     packDir ( dirPath, fileSelection, null, function(code){
 
-      if (code==0)  {
+//      if (code==0)  {
+      if (!code)  {
 
         // 2. Send jobball to server
 
@@ -480,7 +481,8 @@ function receiveDir ( jobDir,tmpDir,server_request,onFinish_func )  {
             unpackDir ( jobDir,tmpDir, function(code){
               if (onFinish_func)
                 onFinish_func ( code,errs,upload_meta );  //  integer code : unpacking was run
-              if (code==0)
+              //if (code==0)
+              if (!code)
                 log.detailed ( 6,'directory contents has been received in ' + jobDir );
               else  {
                 log.standard ( 6,'directory contents has been received in ' + jobDir + ' with errors: ' + code );
