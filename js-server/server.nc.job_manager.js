@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.04.20   <--  Date of Last Modification.
+ *    06.04.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -561,7 +561,8 @@ function ncJobFinished ( job_token,code )  {
     log.debug2 ( 101,'put status' );
 
     // task instance is Ok, put status code in
-    if (code==0)  {
+    //if (code==0)  {
+    if (!code)  {
       log.debug2 ( 102,'status finished' );
       if (task.state!=task_t.job_code.remdoc)
         task.state = task_t.job_code.finished;
@@ -752,7 +753,8 @@ function ncRunJob ( job_token,meta )  {
                       // crashed) and then resumed.
                       job.on ( 'close',function(code){
 
-                        if (code!=0)
+//                        if (code!=0)
+                        if (code)
                           log.debug ( 103,'[' + comut.padDigits(task.id,4) +
                                           '] code=' + code );
                         if (stdout)
@@ -763,7 +765,8 @@ function ncRunJob ( job_token,meta )  {
                                           '] stderr=' + stderr );
 
                         if (jobEntry.jobStatus!=task_t.job_code.stopped)  {
-                          if ((code!=0) && (code!=203) && (code!=204))
+//                          if ((code!=0) && (code!=203) && (code!=204))
+                          if (code && (code!=203) && (code!=204))
                             writeJobDriverFailureMessage ( code,stdout,stderr,jobDir );
                           ncJobFinished ( job_token,code );
                         }
@@ -919,7 +922,8 @@ function ncMakeJob ( server_request,server_response )  {
 
   send_dir.receiveDir ( jobDir,conf.getNCTmpDir(),server_request,
     function(code,errs,meta){
-      if (code==0)  {
+      //if (code==0)  {
+      if (!code)  {
         ncRunJob ( job_token,meta );
         cmd.sendResponse ( server_response, cmd.nc_retcode.ok,
                            '[00104] Job started', {
@@ -1234,7 +1238,8 @@ function ncRunClientJob ( post_data_obj,callback_func )  {
       // successful download, unpack and start the job
 
       send_dir.unpackDir ( jobDir,null, function(code){
-        if (code==0)  {
+        //if (code==0)  {
+        if (!code)  {
           ncRunJob ( job_token,{
             'sender'   : post_data_obj.feURL,
             'setup_id' : '',

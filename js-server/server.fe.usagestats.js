@@ -2,11 +2,11 @@
 /*
  *  =================================================================
  *
- *    04.04.20   <--  Date of Last Modification.
+ *    06.04.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
- *  **** Module  :  js-server/server.fe.user.js
+ *  **** Module  :  js-server/server.fe.usagestats.js
  *       ~~~~~~~~~
  *  **** Project :  jsCoFE - javascript-based Cloud Front End
  *       ~~~~~~~~~
@@ -228,7 +228,8 @@ var generate_report = false;
       stderr += buf;
     });
     job.on ( 'close',function(code){
-      if (code!=0)  {
+//      if (code!=0)  {
+      if (code)  {
         log.standard ( 3,'failed to generate usage report, code=' + code +
                          '\n    stdout=\n' + stdout );
         log.error    ( 3,'failed to generate usage report, code=' + code +

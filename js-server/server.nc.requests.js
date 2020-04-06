@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    21.11.19   <--  Date of Last Modification.
+ *    06.04.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Number Cruncher Server -- Requests Module
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2019
+ *  (C) E. Krissinel, A. Lebedev 2016-2020
  *
  *  =================================================================
  *
@@ -56,7 +56,8 @@ function ncSelectDir ( post_data_obj,callback_func )  {
 
   job.on('close',function(code){
 
-    if (code==0)
+    //if (code==0)
+    if (!code)
       callback_func ( new cmd.Response ( cmd.nc_retcode.ok,'',
                                      {'directory':stdout.replace('\n','')} ) );
     else
@@ -91,7 +92,8 @@ function ncSelectFile ( post_data_obj,callback_func )  {
 
   job.on('close',function(code){
 
-    if (code==0)
+//    if (code==0)
+    if (!code)
       callback_func ( new cmd.Response ( cmd.nc_retcode.ok,'',
                                          {'file':stdout.replace('\n','')} ) );
     else
@@ -125,7 +127,8 @@ function ncSelectImageDir ( post_data_obj,callback_func )  {
 
   job.on('close',function(code){
 
-    if (code==0)  {
+//    if (code==0)  {
+    if (!code)  {
       callback_func ( new cmd.Response ( cmd.nc_retcode.ok,'',JSON.parse(stdout) ) );
       /*
       var meta    = JSON.parse ( stdout );

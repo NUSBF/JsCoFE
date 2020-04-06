@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    20.03.20   <--  Date of Last Modification.
+ *    06.04.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -363,7 +363,8 @@ function runJob ( loginData,data, callback_func )  {
 
     send_dir.packDir ( jobDir,'*',null, function(code){
 
-      if (code==0)  {
+      //if (code==0)  {
+      if (!code)  {
 
         utils.writeJobReportMessage ( jobDir,'<h1>Running on client ...</h1>' +
                     'Job is running on client machine. Full report will ' +
@@ -558,7 +559,8 @@ function replayJob ( loginData,data, callback_func )  {
 
       send_dir.packDir ( jobDir,'*',null, function(code){
 
-        if (code==0)  {
+//        if (code==0)  {
+        if (!code)  {
 
           utils.writeJobReportMessage ( jobDir,'<h1>Running on client ...</h1>' +
                       'Job is running on client machine. Full report will ' +
@@ -694,8 +696,8 @@ var response = null;
     if (!jobData)
       jobData = task;
 
-    if (code==0)  jobData.state = task_t.job_code.finished;
-            else  jobData.state = task_t.job_code.failed;
+    if (!code)  jobData.state = task_t.job_code.finished;
+          else  jobData.state = task_t.job_code.failed;
 
     utils.writeObject ( jobDataPath,jobData );
 
@@ -798,7 +800,8 @@ function getJobResults ( job_token,server_request,server_response )  {
 
     send_dir.receiveDir ( jobDir,conf.getFETmpDir(),server_request,
       function(code,errs,meta){
-        if (code==0)  {
+//        if (code==0)  {
+        if (!code)  {
           // print usage stats and update the user ration state
           var jobClass = writeJobStats ( jobEntry );
           ustats.registerJob ( jobClass );
