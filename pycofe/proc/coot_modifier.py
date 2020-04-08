@@ -108,8 +108,10 @@ if (have_coot_python):
             gtk.STOCK_QUIT
         )
 
-        info_dialog ( "In order to save the edited structure in your Project,\n" +\
+    info_dialog ( "In order to save the edited structure in your Project,\n" +\
               "use \"Save coordinates\" from Main Menu/Files\n" +\
               "before closing Coot, without changing file name\n" +\
               "and directory offered by default, and only then\n" +\
               "end Coot session as usual." )
+
+    #get_monomer("NUE")
