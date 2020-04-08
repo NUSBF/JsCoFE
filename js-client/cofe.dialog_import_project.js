@@ -61,8 +61,12 @@ function ImportProjectDialog ( onSuccess_func )  {
       var progressBar = new ProgressBar ( 0 );
       grid.setWidget ( progressBar, 3,0,1,3 );
 
+      upload.__keep_polling = true;
+
       function checkReady() {
 console.log ( ' >>>>>> checkReady' );
+        if (!upload.__keep_polling)
+          return;
         serverRequest ( fe_reqtype.checkPrjImport,0,'Project Import',function(data){
 console.log ( ' >>>>>> data.signal=' + data.signal );
           if (!data.signal)
@@ -121,6 +125,7 @@ console.log ( ' >>>>>> err' );
     $(dlg.element).on( "dialogclose",function(event,ui){
       serverRequest ( fe_reqtype.finishPrjImport,0,'Finish Project Import',
                       null,function(){
+        upload.__keep_polling = false;
         window.setTimeout ( function(){
           $(dlg.element).dialog( "destroy" );
           dlg.delete();

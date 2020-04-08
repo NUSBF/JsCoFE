@@ -929,6 +929,7 @@ function _import_project ( loginData,tempdir )  {
   */
 
 //console.log ( JSON.stringify(prj_meta,2) );
+console.log ( ' >>>>>> == tempdir=' + tempdir );
 
   // validate metadata and read project name
   var projectDesc = new pd.ProjectDesc();
@@ -961,6 +962,7 @@ function _import_project ( loginData,tempdir )  {
   }
 
   var signal_path = path.join ( tempdir,'signal' );
+console.log ( ' >>>>>> == signal_path=' + signal_path );
 
   if (!prj_meta)  {
 
@@ -1184,6 +1186,9 @@ function startSharedImport ( loginData,meta )  {
 function checkProjectImport ( loginData,data )  {
   var signal_path = path.join ( conf.getFETmpDir1(loginData),
                                 loginData.login+'_project_import','signal' );
+
+console.log ( ' >>>>>> *** signal_path=' + signal_path );
+
   var rdata  = {};
   var signal = utils.readString ( signal_path );
   if (signal)  {
