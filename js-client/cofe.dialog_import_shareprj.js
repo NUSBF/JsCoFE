@@ -99,8 +99,8 @@ ImportSharedProjectDialog.prototype.makeProjectSelectPage = function ( pShare,on
     var msg_lbl   = this.grid.setLabel ( 'Select a project to import:',
                                     1,0,1,3 );
     var share_ddn = new Dropdown();
-    share_ddn.setTooltip ( 'Choose a project to import' )
-             .setWidth ( '500pt' );
+    share_ddn.setTooltip ( 'Choose a project to import' );
+//             .setWidth ( '500pt' );
     for (var i=0;i<shared_projects.length;i++)  {
       var keeper = '';
       if (('keeper' in shared_projects[i].owner) &&
