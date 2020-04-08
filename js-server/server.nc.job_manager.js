@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    06.04.20   <--  Date of Last Modification.
+ *    08.04.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -684,8 +684,8 @@ function ncRunJob ( job_token,meta )  {
 
   // put a new message in the report page indicating that the job is already
   // on number cruncher and is going to start; this write is synchronous
-  utils.writeJobReportMessage ( jobEntry.jobDir,'<h1>Starting on &lt;' +
-                                ncConfig.name + '&gt; ...</h1>',true );
+  utils.writeJobReportMessage ( jobEntry.jobDir,'<h2>Starting on &lt;' +
+                                ncConfig.name + '&gt; ...</h2>',true );
 
   // Now start the job.
   // Firstly, acquire the corresponding task class.
@@ -865,7 +865,7 @@ function ncRunJob ( job_token,meta )  {
 
     log.error ( 7,'no task received when expected' );
     utils.writeJobReportMessage ( jobDir,
-                   '<h1>[00102] Error: cannot find task metadata</h1>',false );
+                   '<h2>[00102] Error: cannot find task metadata</h2>',false );
 
   }
 
