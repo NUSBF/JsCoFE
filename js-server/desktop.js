@@ -134,6 +134,8 @@ if (forceStart)  {
 if (feProxyConfig)  {
   feProxyConfig.killPrevious();
   startFEProxy = (feProxyConfig.host=='localhost');
+  if (!startFEProxy)
+    feProxyConfig = null;
 }
 
 // ==========================================================================
@@ -266,9 +268,11 @@ conf.assignPorts ( function(){
       var cfg = conf.getFEConfig();
       cfg.externalURL = cfg.url();
 
-      var cfg = conf.getFEProxyConfig();
-      if (cfg)
-        cfg.externalURL = cfg.url();
+      if (startFEProxy)  {
+        var cfg = conf.getFEProxyConfig();
+        if (cfg)
+          cfg.externalURL = cfg.url();
+      }
 
       for (var i=0;i<ncConfigs.length;i++)  {
         cfg = conf.getNCConfig(i);

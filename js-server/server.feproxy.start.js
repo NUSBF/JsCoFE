@@ -57,14 +57,15 @@ function start ( callback_func )  {
   //var options_proxy = { proxyTimeout : 100, timeout : 0 };
   //var options_web   = { target  : fe_url, timeout : 0 };
   var options_proxy = {
-    target : fe_url
+    target       : fe_url,
+    changeOrigin : true
   };
   //var options_web = {
   //  target : fe_url
   //};
   if (fe_config.protocol=='https')  {
     options_proxy.secure = true;
-    options_proxy.changeOrigin = true;
+    //options_proxy.changeOrigin = true;
     //options_web  .changeOrigin = true;
     //options_proxy.target = {
     //  protocol : 'https:',
@@ -79,6 +80,8 @@ function start ( callback_func )  {
   } else  {
     //options_proxy.agent = new http.Agent ({ keepAlive: true, maxSockets: 10000 });
     //options_web  .agent = new http.Agent ({ keepAlive: true, maxSockets: 10000 });
+    options_proxy.secure = false;
+    //options_proxy.changeOrigin = true;
     options_proxy.agent = new http.Agent ({ keepAlive: true });
     //options_web  .agent = new http.Agent ({ keepAlive: true });
   }
@@ -153,7 +156,6 @@ function start ( callback_func )  {
 //    try {
 
       var command = url.parse(server_request.url).pathname.substr(1);
-//console.log ( 'proxy ' + command );
 
       switch (command.toLowerCase())  {
 
