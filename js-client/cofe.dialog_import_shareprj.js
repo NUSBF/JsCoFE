@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    30.03.20   <--  Date of Last Modification.
+ *    08.04.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -92,15 +92,15 @@ ImportSharedProjectDialog.prototype.makeProjectSelectPage = function ( pShare,on
   if (shared_projects.length<=0)  {
 
     this.grid.setLabel ( 'You do not have projects shared with ' +
-                    'you by other users.', 1,0,1,3 );
+                    'you by other users.', 1,0,1,1 );
 
   } else  {
 
     var msg_lbl   = this.grid.setLabel ( 'Select a project to import:',
-                                    1,0,1,3 );
+                                    1,0,1,1 );
     var share_ddn = new Dropdown();
-    share_ddn.setTooltip ( 'Choose a project to import' );
-//             .setWidth ( '500pt' );
+    share_ddn.setTooltip ( 'Choose a project to import' )
+             .setWidth ( '600px' );
     for (var i=0;i<shared_projects.length;i++)  {
       var keeper = '';
       if (('keeper' in shared_projects[i].owner) &&
@@ -113,13 +113,11 @@ ImportSharedProjectDialog.prototype.makeProjectSelectPage = function ( pShare,on
             shared_projects[i].title + '"','',i,i==0 );
     }
     share_ddn.make();
-    this.grid.setWidget   ( share_ddn,2,0,1,3 );
-    this.grid.setLabel    ( '&nbsp;', 3,0,1,3 );
+    this.grid.setWidget   ( share_ddn,2,0,1,1 );
+    this.grid.setLabel    ( '&nbsp;', 3,0,1,1 );
     var import_btn = this.grid.setButton ( 'Import',
-          image_path('share'),4,1,1,1 ).setWidth_px ( 120 );
-    this.grid.setCellSize ( '45%' ,'',4,0 );
-    this.grid.setCellSize ( 'auto','',4,1 );
-    this.grid.setCellSize ( '45%' ,'',4,2 );
+          image_path('share'),4,0,1,1 ).setWidth_px ( 120 );
+    this.grid.setHorizontalAlignment ( 4,0,'center' );
 
     (function(dlg){
       import_btn.addOnClickListener ( function(){
@@ -129,7 +127,7 @@ ImportSharedProjectDialog.prototype.makeProjectSelectPage = function ( pShare,on
         share_ddn .hide();
         import_btn.hide();
         var progressBar = new ProgressBar ( 0 );
-        dlg.grid.setWidget ( progressBar, 3,0,1,3 );
+        dlg.grid.setWidget ( progressBar, 3,0,1,1 );
 
         serverRequest ( fe_reqtype.startSharedImport,pDesc,'Import Shared Project',
           function(data){
