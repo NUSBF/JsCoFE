@@ -807,8 +807,8 @@ function ncRunJob ( job_token,meta )  {
 
                       // indicate queuing to please the user
                       utils.writeJobReportMessage ( jobDir,
-                                '<h1>Queuing up on &lt;' + ncConfig.name +
-                                '&gt;, please wait ...</h1>', true );
+                                '<h2>Queuing up on &lt;' + ncConfig.name +
+                                '&gt;, please wait ...</h2>', true );
 
                   break;
 
@@ -851,8 +851,8 @@ function ncRunJob ( job_token,meta )  {
 
                       // indicate queuing to please the user
                       utils.writeJobReportMessage ( jobDir,
-                                '<h1>Queuing up on &lt;' + ncConfig.name +
-                                '&gt;, please wait ...</h1>', true );
+                                '<h2>Queuing up on &lt;' + ncConfig.name +
+                                '&gt;, please wait ...</h2>', true );
 
     }
 
