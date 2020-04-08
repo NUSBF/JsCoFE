@@ -313,12 +313,12 @@ function TaskMolrep()  {
                        keyword  : 'SURF',
                        label    : '',
                        lwidth   : 0,
-                       iwidth   : 200,      // width of input field in px
+                       iwidth   : 300,      // width of input field in px
                        tooltip  : 'Modification of search model (B-factors ' +
                                   'or using polyalanine model)',
-                       range    : ['Y|Increase Bs on surface',
-                                   '2|Set all Bs equal',
-                                   'O|Use Bs from file',
+                       range    : ['Y|Increase B-factors on surface',
+                                   '2|Set all B-factors equal',
+                                   'O|Use B-factors from file',
                                    'A|Use polyalanine model'
                                   ],
                        value    : 'Y',
@@ -334,7 +334,7 @@ function TaskMolrep()  {
                      },
                SURF_PFCBX  : {
                        type     : 'checkbox',
-                       label    : 'Increase Bs on surface for Packing Function',
+                       label    : 'Increase B-factors on surface for Packing Function',
                        tooltip  : 'Modify search model with increasing B-factors ' +
                                   'on surface for Packing Function calculations',
                        value    : true,
