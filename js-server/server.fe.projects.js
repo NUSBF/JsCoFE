@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    31.03.20   <--  Date of Last Modification.
+ *    08.04.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -919,17 +919,6 @@ function _import_project ( loginData,tempdir )  {
   // read project meta to make sure it was a project tarball
   var prj_meta_path = path.join ( tempdir,projectDataFName );
   var prj_meta = utils.readObject ( prj_meta_path );
-  /*
-  try {
-    if (('owner' in prj_meta.desc) && prj_meta.desc.owner.share)  {
-      prj_meta.desc.owner.share = '';
-      utils.writeObject ( prj_meta_path,prj_meta );
-    }
-  } catch (err) {}
-  */
-
-//console.log ( JSON.stringify(prj_meta,2) );
-console.log ( ' >>>>>> == tempdir=' + tempdir );
 
   // validate metadata and read project name
   var projectDesc = new pd.ProjectDesc();
@@ -962,10 +951,6 @@ console.log ( ' >>>>>> == tempdir=' + tempdir );
   }
 
   var signal_path = path.join ( tempdir,'signal' );
-console.log ( ' >>>>>> == signal_path=' + signal_path );
-
-  //var signal_path = path.join ( conf.getFETmpDir1(loginData),
-  //                              loginData.login+'_project_import','signal' );
 
   if (!prj_meta)  {
 
@@ -1020,7 +1005,7 @@ console.log ( ' >>>>>> == signal_path=' + signal_path );
 
 
 function getProjectTmpDir ( loginData,make_clean )  {
-var tempdir = conf.getFETmpDir1(loginData);
+  var tempdir = conf.getFETmpDir1(loginData);
 
   if (make_clean)  {
     if (!utils.fileExists(tempdir))  {
@@ -1051,14 +1036,6 @@ function importProject ( loginData,upload_meta )  {
   // directory name is derived from user login in order to check on
   // import outcome in subsequent 'checkPrjImport' requests
 
-
-  /*
-  var tempdir = path.join ( tmpDir,loginData.login+'_project_import' );
-  utils.removePath ( tempdir );  // just in case
-
-  if (utils.mkDir(tempdir))  {
-  */
-
   var tempdir = getProjectTmpDir ( loginData,true );
   if (tempdir)  {
 
@@ -1070,23 +1047,14 @@ function importProject ( loginData,upload_meta )  {
       // rename file with '__' prefix in order to use the standard
       // unpack directory function
       //if (utils.moveFile(key,path.join(tempdir,'__dir.tar.gz')))  {
-console.log ( ' >>> key=' + key );
-console.log ( ' >>> tempdir=' + tempdir );
       if (utils.moveFile(key,path.join(tempdir,'__dir.zip')))  {
-console.log ( ' >>> moved ok' );
 
         // unpack project tarball
         send_dir.unpackDir ( tempdir,null,function(){
-console.log ( ' >>> unpacked ok' );
-
           _import_project ( loginData,tempdir );
-console.log ( ' >>> import quit' );
-
         });
 
-
       } else  {
-console.log ( ' >>> moving failed' );
         errs = 'file move error';
       }
 
@@ -1111,30 +1079,10 @@ console.log ( ' >>> moving failed' );
 
 
 function startDemoImport ( loginData,meta )  {
-
-  // store all uploads in the /uploads directory
-  /*
-  var tmpDir = conf.getFETmpDir1 ( loginData );
-
-  if (!utils.fileExists(tmpDir))  {
-    if (!utils.mkDir(tmpDir))  {
-      cmd.sendResponse ( server_response, cmd.fe_retcode.mkDirError,
-                         'Cannot make temporary directory for demo import','' );
-      return;
-    }
-  }
-  */
-
-  var rc     = cmd.fe_retcode.ok;
-  var rc_msg = 'success';
-
-  /*
-  var tempdir = path.join ( tmpDir,loginData.login+'_project_import' );
-  utils.removePath ( tempdir );  // just in case
-
-  if (utils.mkDir(tempdir))  {
-  */
+  var rc      = cmd.fe_retcode.ok;
+  var rc_msg  = 'success';
   var tempdir = getProjectTmpDir ( loginData,true );
+
   if (tempdir)  {
 
     var cloudMounts = fcl.getUserCloudMounts ( loginData );
@@ -1171,30 +1119,10 @@ function startDemoImport ( loginData,meta )  {
 
 
 function startSharedImport ( loginData,meta )  {
-
-  // store all uploads in the /uploads directory
-  /*
-  var tmpDir = conf.getFETmpDir1 ( loginData );
-
-  if (!utils.fileExists(tmpDir))  {
-    if (!utils.mkDir(tmpDir))  {
-      cmd.sendResponse ( server_response, cmd.fe_retcode.mkDirError,
-                         'Cannot make temporary directory for demo import','' );
-      return;
-    }
-  }
-  */
-
-  var rc     = cmd.fe_retcode.ok;
-  var rc_msg = 'success';
-
-  /*
-  var tempdir = path.join ( tmpDir,loginData.login+'_project_import' );
-  utils.removePath ( tempdir );  // just in case
-  if (utils.mkDir(tempdir))  {
-  */
-
+  var rc      = cmd.fe_retcode.ok;
+  var rc_msg  = 'success';
   var tempdir = getProjectTmpDir ( loginData,true );
+
   if (tempdir)  {
 
     var project_keeper = meta.owner.login;
@@ -1232,12 +1160,7 @@ function startSharedImport ( loginData,meta )  {
 
 
 function checkProjectImport ( loginData,data )  {
-//  var signal_path = path.join ( conf.getFETmpDir1(loginData),
-//                                loginData.login+'_project_import','signal' );
   var signal_path = path.join ( getProjectTmpDir(loginData,false),'signal' );
-
-console.log ( ' >>>>>> *** signal_path=' + signal_path );
-
   var rdata  = {};
   var signal = utils.readString ( signal_path );
   if (signal)  {
@@ -1253,8 +1176,6 @@ console.log ( ' >>>>>> *** signal_path=' + signal_path );
 
 
 function finishProjectImport ( loginData,data )  {
-  //var tempdir = path.join ( conf.getFETmpDir1(loginData),
-  //                          loginData.login+'_project_import' );
   var tempdir = getProjectTmpDir(loginData,false);
   utils.removePath ( tempdir );
   return new cmd.Response ( cmd.fe_retcode.ok,'success','' );

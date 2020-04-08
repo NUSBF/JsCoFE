@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    05.04.20   <--  Date of Last Modification.
+ *    08.04.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -1383,7 +1383,6 @@ function authResponse ( server_request,server_response )  {
   };
 
   var pstr  = server_request.url;
-//console.log ( ' >>>>>>> 1 ' + pstr );
   var plist = [];
   if (pstr.length>0)  {
     if (pstr.startsWith('/?'))     pstr = pstr.substr(2);
@@ -1394,8 +1393,6 @@ function authResponse ( server_request,server_response )  {
       params[pair[0]] = pair[1];
     }
   }
-
-//console.log ( ' >>>>>>> 2 ' + JSON.stringify(params) );
 
   var auth_result  = 'ok';
   var software_key = '';
@@ -1413,7 +1410,6 @@ function authResponse ( server_request,server_response )  {
     var rlist = params.reqid.split('-');
     if (rlist.length>2)  {
       params.reqid  = [rlist[0],rlist.slice(1,rlist.length-1).join('-'),rlist[rlist.length-1]];
-//console.log ( ' >>>>>>> 3 ' + params.reqid );
       software_key  = params.reqid[1];
       var loginData = __userLoginHash.getLoginData ( params.reqid[2] );
       if (loginData.login.length>0)  {

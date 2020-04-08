@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    03.04.20   <--  Date of Last Modification.
+ *    08.04.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -64,11 +64,9 @@ function ImportProjectDialog ( onSuccess_func )  {
       upload.__keep_polling = true;
 
       function checkReady() {
-console.log ( ' >>>>>> checkReady' );
         if (!upload.__keep_polling)
           return;
         serverRequest ( fe_reqtype.checkPrjImport,0,'Project Import',function(data){
-console.log ( ' >>>>>> data.signal=' + data.signal );
           if (!data.signal)
             window.setTimeout ( checkReady,1000 );
           else {
@@ -85,7 +83,6 @@ console.log ( ' >>>>>> data.signal=' + data.signal );
                                  '</i></b>.' );
           }
         },null,function(){
-console.log ( ' >>>>>> err' );
           window.setTimeout ( checkReady,1000 );  // depress error messages
         });
       }

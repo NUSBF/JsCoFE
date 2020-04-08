@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    21.02.20   <--  Date of Last Modification.
+ *    08.04.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -127,7 +127,6 @@ AuthorisationDialog.prototype.updateOnTimer = function()  {
                   auth_msg   = '<b><i>authorised since ' + adate + '</i></b>';
                   auth_color = 'green';
                 }
-//console.log ( ' >>>>>>>>>>> 0 ' + key );
                 self.auth_dic[key].auth_lbl.setText(auth_msg)
                                            .setFontColor(auth_color).setNoWrap();
               }
