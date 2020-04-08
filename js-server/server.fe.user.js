@@ -72,7 +72,7 @@ var fe_server = conf.getFEConfig();
 
   log.standard ( 1,'making new user, login: ' + userData.login );
   log.standard ( 1,'    temporary password: ' + pwd );
-  userData.pwd = hashPassword ( pwd );
+  userData.pwd    = hashPassword ( pwd );
   userData.action = ud.userdata_action.chpwd;
 
   userData.helpTopics = [];

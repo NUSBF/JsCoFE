@@ -112,8 +112,8 @@ class Coot(basic.TaskDriver):
         if libnew:
             args += ["--dictionary",libnew]
 
-        if ligand:
-            args += ["--python","-c","get_monomer('" + ligand.code + "')"]
+        #if ligand:
+        #    args += ["--python","-c","get_monomer('" + ligand.code + "')"]
 
         #coot_scr = "coot_jscofe.py"
         #coot_scr = os.path.join ( os.path.dirname ( os.path.abspath(__file__)),"..","proc",coot_scr )
@@ -136,6 +136,8 @@ class Coot(basic.TaskDriver):
             #        "end Coot session as usual.\"" +\
             #    " )"
             #)
+            if ligand:
+                f.write ( "\n    get_monomer(\"" + ligand.code + "\")\n" )
             f.close()
         else:
             coot_scr = coot_mod
