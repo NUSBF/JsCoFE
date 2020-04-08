@@ -1032,18 +1032,25 @@ function importProject ( loginData,upload_meta,tmpDir )  {
       // rename file with '__' prefix in order to use the standard
       // unpack directory function
       //if (utils.moveFile(key,path.join(tempdir,'__dir.tar.gz')))  {
+console.log ( ' >>> key=' + key );
+console.log ( ' >>> tempdir=' + tempdir );
       if (utils.moveFile(key,path.join(tempdir,'__dir.zip')))  {
+console.log ( ' >>> moved ok' );
 
         // unpack project tarball
         send_dir.unpackDir ( tempdir,null,function(){
+console.log ( ' >>> unpacked ok' );
 
           _import_project ( loginData,tempdir );
+console.log ( ' >>> import quit' );
 
         });
 
 
-      } else
+      } else  {
+console.log ( ' >>> moving failed' );
         errs = 'file move error';
+      }
 
       break;  // only one file to be processed
 
