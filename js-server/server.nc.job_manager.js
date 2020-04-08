@@ -1210,8 +1210,8 @@ function ncRunClientJob ( post_data_obj,callback_func )  {
   var dnlURL = post_data_obj.feURL + post_data_obj.dnlURL;
 
   var get_options = { url: dnlURL };
-  if (conf.getServerConfig().useRootCA)
-    get_options.ca = fs.readFileSync ( path.join('certificates','rootCA.pem') );
+  //if (conf.getServerConfig().useRootCA)
+  //  get_options.ca = fs.readFileSync ( path.join('certificates','rootCA.pem') );
 
   request  // issue the download request
     .get ( get_options )

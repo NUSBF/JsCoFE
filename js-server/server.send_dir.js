@@ -202,13 +202,15 @@ var sender_cfg = conf.getServerConfig();
       url      : serverURL + '/' + command,
       formData : formData
     };
-    if (serverURL.startsWith('https:'))  {
-      post_options.agentOptions = {};
-      post_options.agentOptions.key  = fs.readFileSync ( path.join('certificates','key.pem'   ) );
-      post_options.agentOptions.cert = fs.readFileSync ( path.join('certificates','cert.pem'  ) );
-      if (sender_cfg.useRootCA)
-        post_options.agentOptions.ca = fs.readFileSync ( path.join('certificates','rootCA.pem') );
-    }
+    /*
+    //if (serverURL.startsWith('https:'))  {
+    //  post_options.agentOptions = {};
+    //  post_options.agentOptions.key  = fs.readFileSync ( path.join('certificates','key.pem'   ) );
+    //  post_options.agentOptions.cert = fs.readFileSync ( path.join('certificates','cert.pem'  ) );
+    //  if (sender_cfg.useRootCA)
+    //    post_options.agentOptions.ca = fs.readFileSync ( path.join('certificates','rootCA.pem') );
+    //}
+    */
 
     request.post ( post_options,
       /*
