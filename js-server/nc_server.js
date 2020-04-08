@@ -136,11 +136,14 @@ function start()  {
   } else  {
     var https = require('https');
     var fs    = require('fs');
-    var options = {
-      key : fs.readFileSync ( path.join('certificates','key.pem'   ) ),
-      cert: fs.readFileSync ( path.join('certificates','cert.pem'  ) )
-    };
-    server = https.createServer ( options );
+    options   = {};
+    /*
+    //var options = {
+    //  key : fs.readFileSync ( path.join('certificates','key.pem'   ) ),
+    //  cert: fs.readFileSync ( path.join('certificates','cert.pem'  ) )
+    //};
+    */
+    server  = https.createServer ( options );
   }
 
   //  make request listener

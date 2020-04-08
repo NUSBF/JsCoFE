@@ -46,6 +46,27 @@ class Coot(basic.TaskDriver):
 
     # ------------------------------------------------------------------------
 
+    def addLigandToLibrary ( self,libPath,ligCode,ligPath,ligList ):
+        # returns path to ligand library whith new ligand included
+
+        if not libPath:        return ligPath  # nowhere to include
+        if not ligPath:        return libPath  # nothing to include
+        if ligCode in ligList: return libPath  # no need to include
+
+        self.open_stdin()
+        self.write_stdin (
+            "_Y"          +\
+            "\n_FILE_L  " + libPath +\
+            "\n_FILE_L2 " + ligPath +\
+            "\n_FILE_O  " + self.outputFName +\
+            "\n_END\n" )
+        self.close_stdin()
+
+        self.runApp ( "libcheck",[],logType="Service" )
+
+        return self.outputFName + ".lib"
+
+
     def run(self):
 
         # Prepare coot job
@@ -65,15 +86,22 @@ class Coot(basic.TaskDriver):
         lead_key = istruct.leadKey
 
         ligand  = None
-        liblig  = None
+        ligCode = None
+        ligPath = None
         if hasattr(self.input_data.data,"ligand"):
-            ligand = self.makeClass ( self.input_data.data.ligand[0] )
-            liblig = ligand.getLibFilePath ( self.inputDir() )
+            ligand  = self.makeClass ( self.input_data.data.ligand[0] )
+            ligCode = ligand.code
+            ligPath = ligand.getLibFilePath ( self.inputDir() )
 
+        libPath = self.addLigandToLibrary (
+                                    istruct.getLibFilePath(self.inputDir()),
+                                    ligCode,ligPath,istruct.ligands )
+
+        """
         # prepare dictionary file for input structure
-        libnew = liblig
-        libin  = istruct.getLibFilePath ( self.inputDir() ) # local ligand library
-        if libin:
+        libnew  = ligPath
+        libPath = istruct.getLibFilePath ( self.inputDir() ) # local ligand library
+        if libPath:
             # there are other ligands in the structure, needs to be preserved
             if ligand and (not ligand.code in istruct.ligands):
                 # new ligand is not the list of existing ligands, so append it
@@ -85,8 +113,8 @@ class Coot(basic.TaskDriver):
                 self.open_stdin()
                 self.write_stdin (
                     "_Y"          +\
-                    "\n_FILE_L  " + libin  +\
-                    "\n_FILE_L2 " + liblig +\
+                    "\n_FILE_L  " + libPath  +\
+                    "\n_FILE_L2 " + ligPath +\
                     "\n_FILE_O  " + libnew +\
                     "\n_END\n" )
                 self.close_stdin()
@@ -97,7 +125,9 @@ class Coot(basic.TaskDriver):
 
             else:
                 # all ligands should be taken from local ligand library
-                libnew = libin
+                libnew = libPath
+        libPath = libnew
+        """
 
         # make command line arguments
         args = []
@@ -109,8 +139,8 @@ class Coot(basic.TaskDriver):
                     args += ["--pdb",s.getSubFilePath(self.inputDir())]
                 args += ["--auto",s.getMTZFilePath(self.inputDir())]
 
-        if libnew:
-            args += ["--dictionary",libnew]
+        if libPath:
+            args += ["--dictionary",libPath]
 
         #if ligand:
         #    args += ["--python","-c","get_monomer('" + ligand.code + "')"]
@@ -203,7 +233,7 @@ class Coot(basic.TaskDriver):
             try:
                 exe_obj = self, [], dict(logType='Service')
                 links = LinkLists(coot_xyz)
-                links.add_coot_links(exe_obj, '.', libnew, coot_xyz, libout, pdbout, using_libcheck=True)
+                links.add_coot_links(exe_obj, '.', libPath, coot_xyz, libout, pdbout, using_libcheck=True)
                 links.prn(self.file_stdout)
             except:
                 if os.path.isfile(pdbout):
@@ -216,18 +246,18 @@ class Coot(basic.TaskDriver):
                         os.remove(coot_xyz)
                     os.rename(pdbout, coot_xyz)
                 if os.path.isfile(libout):
-                    if not libnew:
-                        libnew = self.outputFName + ".lib"
-                    if os.path.isfile(libnew):    # fix for windows
-                        os.remove(libnew)
-                    os.rename(libout, libnew)
+                    if not libPath:
+                        libPath = self.outputFName + ".lib"
+                    if os.path.isfile(libPath):    # fix for windows
+                        os.remove(libPath)
+                    os.rename(libout, libPath)
 
             # register output data from temporary location (files will be moved
             # to output directory by the registration procedure)
 
             struct = self.registerStructure ( coot_xyz,None,coot_mtz,
-                                              None,None,libnew,
-                                              #fnames[0],fnames[1],libnew,  -- not needed for new UglyMol
+                                              None,None,libPath,
+                                              #fnames[0],fnames[1],libPath,  -- not needed for new UglyMol
                                               leadKey=lead_key )
 
             #                                  istruct.getLibFilePath(self.inputDir()) )
