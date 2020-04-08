@@ -150,22 +150,14 @@ class Coot(basic.TaskDriver):
         coot_mod = os.path.join ( os.path.dirname(os.path.abspath(__file__)),
                                   "..","proc","coot_modifier.py" )
         coot_scr = istruct.getCootFilePath ( self.inputDir() )
-        if coot_scr:
+        if coot_scr or ligand:
             f = open ( coot_mod,"r" )
             coot_mod_content = f.read()
             f.close()
+            if not coot_scr:
+                coot_scr = "__coot_script.py"
             f = open ( coot_scr,"a" )
             f.write  ( coot_mod_content )
-            #f.write (
-            #    "\n\n" +\
-            #    "info_dialog ( \"" +\
-            #        "In order to save the edited structure in your Project,\\n" +\
-            #        "use 'Save coordinates' from Main Menu/Files\\n" +\
-            #        "before closing Coot, without changing file name\\n" +\
-            #        "and directory offered by default, and only then\\n" +\
-            #        "end Coot session as usual.\"" +\
-            #    " )"
-            #)
             if ligand:
                 f.write ( "\n    get_monomer(\"" + ligand.code + "\")\n" )
             f.close()
