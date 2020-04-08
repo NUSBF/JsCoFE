@@ -174,7 +174,7 @@ var upload_meta = {};
 
           } else  {  // upload from project import
 
-            var response = prj.importProject ( loginData,upload_meta,tmpDir );
+            var response = prj.importProject ( loginData,upload_meta );
             response.send ( server_response );
 
           }
