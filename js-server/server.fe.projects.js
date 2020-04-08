@@ -964,6 +964,9 @@ console.log ( ' >>>>>> == tempdir=' + tempdir );
   var signal_path = path.join ( tempdir,'signal' );
 console.log ( ' >>>>>> == signal_path=' + signal_path );
 
+  //var signal_path = path.join ( conf.getFETmpDir1(loginData),
+  //                              loginData.login+'_project_import','signal' );
+
   if (!prj_meta)  {
 
     utils.writeString ( signal_path,'Invalid or corrupt project data\n' +
@@ -1015,16 +1018,49 @@ console.log ( ' >>>>>> == signal_path=' + signal_path );
 
 }
 
-function importProject ( loginData,upload_meta,tmpDir )  {
+
+function getProjectTmpDir ( loginData,make_clean )  {
+var tempdir = conf.getFETmpDir1(loginData);
+
+  if (make_clean)  {
+    if (!utils.fileExists(tempdir))  {
+      if (!utils.mkDir(tempdir))  {
+        log.error ( 40,'cannot create temporary directory at ' + tempdir );
+        return null;
+      }
+    }
+  }
+
+  tempdir = path.join ( tempdir,loginData.login+'_project_import' );
+  if (make_clean)  {
+    utils.removePath ( tempdir );  // just in case
+    if (!utils.mkDir(tempdir))  {
+      log.error ( 41,'cannot create temporary directory at ' + tempdir );
+      tempdir = null;
+    }
+  }
+
+  return tempdir;
+
+}
+
+
+function importProject ( loginData,upload_meta )  {
 
   // create temporary directory, where all project tarball will unpack;
   // directory name is derived from user login in order to check on
   // import outcome in subsequent 'checkPrjImport' requests
 
+
+  /*
   var tempdir = path.join ( tmpDir,loginData.login+'_project_import' );
   utils.removePath ( tempdir );  // just in case
 
   if (utils.mkDir(tempdir))  {
+  */
+
+  var tempdir = getProjectTmpDir ( loginData,true );
+  if (tempdir)  {
 
     var errs = '';
 
@@ -1077,6 +1113,7 @@ console.log ( ' >>> moving failed' );
 function startDemoImport ( loginData,meta )  {
 
   // store all uploads in the /uploads directory
+  /*
   var tmpDir = conf.getFETmpDir1 ( loginData );
 
   if (!utils.fileExists(tmpDir))  {
@@ -1086,14 +1123,19 @@ function startDemoImport ( loginData,meta )  {
       return;
     }
   }
+  */
 
   var rc     = cmd.fe_retcode.ok;
   var rc_msg = 'success';
 
+  /*
   var tempdir = path.join ( tmpDir,loginData.login+'_project_import' );
   utils.removePath ( tempdir );  // just in case
 
   if (utils.mkDir(tempdir))  {
+  */
+  var tempdir = getProjectTmpDir ( loginData,true );
+  if (tempdir)  {
 
     var cloudMounts = fcl.getUserCloudMounts ( loginData );
     var demoProjectPath = null;
@@ -1131,6 +1173,7 @@ function startDemoImport ( loginData,meta )  {
 function startSharedImport ( loginData,meta )  {
 
   // store all uploads in the /uploads directory
+  /*
   var tmpDir = conf.getFETmpDir1 ( loginData );
 
   if (!utils.fileExists(tmpDir))  {
@@ -1140,14 +1183,19 @@ function startSharedImport ( loginData,meta )  {
       return;
     }
   }
+  */
 
   var rc     = cmd.fe_retcode.ok;
   var rc_msg = 'success';
 
+  /*
   var tempdir = path.join ( tmpDir,loginData.login+'_project_import' );
   utils.removePath ( tempdir );  // just in case
-
   if (utils.mkDir(tempdir))  {
+  */
+
+  var tempdir = getProjectTmpDir ( loginData,true );
+  if (tempdir)  {
 
     var project_keeper = meta.owner.login;
     if (('keeper' in meta.owner) && meta.owner.keeper)
@@ -1184,8 +1232,9 @@ function startSharedImport ( loginData,meta )  {
 
 
 function checkProjectImport ( loginData,data )  {
-  var signal_path = path.join ( conf.getFETmpDir1(loginData),
-                                loginData.login+'_project_import','signal' );
+//  var signal_path = path.join ( conf.getFETmpDir1(loginData),
+//                                loginData.login+'_project_import','signal' );
+  var signal_path = path.join ( getProjectTmpDir(loginData,false),'signal' );
 
 console.log ( ' >>>>>> *** signal_path=' + signal_path );
 
@@ -1204,8 +1253,9 @@ console.log ( ' >>>>>> *** signal_path=' + signal_path );
 
 
 function finishProjectImport ( loginData,data )  {
-  var tempdir = path.join ( conf.getFETmpDir1(loginData),
-                            loginData.login+'_project_import' );
+  //var tempdir = path.join ( conf.getFETmpDir1(loginData),
+  //                          loginData.login+'_project_import' );
+  var tempdir = getProjectTmpDir(loginData,false);
   utils.removePath ( tempdir );
   return new cmd.Response ( cmd.fe_retcode.ok,'success','' );
 }
