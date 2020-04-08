@@ -62,7 +62,9 @@ function ImportProjectDialog ( onSuccess_func )  {
       grid.setWidget ( progressBar, 3,0,1,3 );
 
       function checkReady() {
+console.log ( ' >>>>>> checkReady' );
         serverRequest ( fe_reqtype.checkPrjImport,0,'Project Import',function(data){
+console.log ( ' >>>>>> data.signal=' + data.signal );
           if (!data.signal)
             window.setTimeout ( checkReady,1000 );
           else {
@@ -79,6 +81,7 @@ function ImportProjectDialog ( onSuccess_func )  {
                                  '</i></b>.' );
           }
         },null,function(){
+console.log ( ' >>>>>> err' );
           window.setTimeout ( checkReady,1000 );  // depress error messages
         });
       }
