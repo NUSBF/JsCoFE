@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    24.03.20   <--  Date of Last Modification.
+ *    09.04.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -413,19 +413,14 @@ function killProcess ( pid )  {
 function writeJobReportMessage ( jobDirPath, message, updating_bool )  {
 var fpath = path.join ( jobDirPath,task_t.jobReportDirName,
                                    task_t.jobReportHTMLName );
-  if (updating_bool)  {
-    writeString ( fpath,'<html><script>' +
-      '  setTimeout(function(){window.location=window.location;},1000);' +
-      '</script><body class="main-page">' + message + '</body></html>' );
-  } else  {
-    writeString ( fpath,'<html><body class="main-page">' + message +
-                        '</body></html>' );
-  }
-  /*
-  fpath = path.join ( jobDirPath,task_t.jobReportDirName,
-                                     task_t.jobReportTaskName );
-  appendString ( fpath,'RELOAD;;;\n' );
-  */
+var html  = '<html><link rel="stylesheet" type="text/css" ' +
+                        'href="jsrview/css/jsrview.css">';
+
+  if (updating_bool)
+    html += '<script>setTimeout(function(){window.location=window.location;},1000);' +
+            '</script>';
+
+  writeString ( fpath,html + '<body class="main-page">' + message + '</body></html>' );
 
 }
 

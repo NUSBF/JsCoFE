@@ -356,7 +356,7 @@ function runJob ( loginData,data, callback_func )  {
     log.standard ( 5,'sending job ' + task.id + ' to client service, job token ' +
                      job_token );
 
-    utils.writeJobReportMessage ( jobDir,'<h2>Preparing ...</h2>',true );
+    utils.writeJobReportMessage ( jobDir,'<h1>Preparing ...</h1>',true );
 
     // prepare input data
     task.makeInputData ( loginData,jobDir );
@@ -366,7 +366,7 @@ function runJob ( loginData,data, callback_func )  {
       //if (code==0)  {
       if (!code)  {
 
-        utils.writeJobReportMessage ( jobDir,'<h2>Running on client ...</h2>' +
+        utils.writeJobReportMessage ( jobDir,'<h1>Running on client ...</h1>' +
                     'Job is running on client machine. Full report will ' +
                     'become available after job finishes.',true );
 
@@ -401,7 +401,7 @@ function runJob ( loginData,data, callback_func )  {
 
       if (nc_number<0)  {
 
-        var msg = '<h2>Task cannot be proccessed</h2>';
+        var msg = '<h1>Task cannot be proccessed</h1>';
 
         if (nc_number==-101)  {
           msg += 'Configuration data cannot be obtained. This is internal '   +
@@ -427,7 +427,7 @@ function runJob ( loginData,data, callback_func )  {
                          conf.getNCConfig(nc_number).name + ', job token ' +
                          job_token );
 
-        utils.writeJobReportMessage ( jobDir,'<h2>Preparing ...</h2>',true );
+        utils.writeJobReportMessage ( jobDir,'<h1>Preparing ...</h1>',true );
 
         // prepare input data
         task.makeInputData ( loginData,jobDir );
@@ -468,12 +468,12 @@ function runJob ( loginData,data, callback_func )  {
             switch (stageNo)  {
 
               case 1: utils.writeJobReportMessage ( jobDir,
-                      '<h2>[00002] Failed: data preparation error (' + code + ').</h2>',
+                      '<h1>[00002] Failed: data preparation error (' + code + ').</h1>',
                       false );
                     break;
 
               case 2: utils.writeJobReportMessage ( jobDir,
-                      '<h2>[00003] Failed: data transmission errors.</h2>' +
+                      '<h1>[00003] Failed: data transmission errors.</h1>' +
                       '<p><i>Return: ' + code + '</i>',false );
                       log.error ( 6,'[00003] Cannot send data to NC at ' + nc_url + ' please try again' );
                       emailer.send ( conf.getEmailerConfig().maintainerEmail,
@@ -483,7 +483,7 @@ function runJob ( loginData,data, callback_func )  {
                     break;
 
               default: utils.writeJobReportMessage ( jobDir,
-                       '<h2>[00004] Failed: number cruncher errors, please try again.</h2>' +
+                       '<h1>[00004] Failed: number cruncher errors, please try again.</h1>' +
                        '<p><i>Return: ' + code.message + '</i>',false );
 
             }
@@ -533,7 +533,7 @@ function replayJob ( loginData,data, callback_func )  {
 
       if (nc_number<0)  {
         utils.writeJobReportMessage ( jobDir,
-          '<h2>The task cannot be proccessed</h2>' +
+          '<h1>The task cannot be proccessed</h1>' +
           'No computational server has agreed to accept the task. This may ' +
           'be due to the lack of available servers for given task type, or ' +
           'because of the high number of tasks queued. Please try submitting ' +
@@ -549,7 +549,7 @@ function replayJob ( loginData,data, callback_func )  {
     } else
       log.standard ( 8,'sending job ' + task.id + ' to client service' );
 
-    utils.writeJobReportMessage ( jobDir,'<h2>Preparing ...</h2>',true );
+    utils.writeJobReportMessage ( jobDir,'<h1>Preparing ...</h1>',true );
 
     // prepare input data
     task.makeInputData ( loginData,jobDir );
@@ -562,7 +562,7 @@ function replayJob ( loginData,data, callback_func )  {
 //        if (code==0)  {
         if (!code)  {
 
-          utils.writeJobReportMessage ( jobDir,'<h2>Running on client ...</h2>' +
+          utils.writeJobReportMessage ( jobDir,'<h1>Running on client ...</h1>' +
                       'Job is running on client machine. Full report will ' +
                       'become available after job finishes.',true );
 
@@ -615,18 +615,18 @@ function replayJob ( loginData,data, callback_func )  {
           switch (stageNo)  {
 
             case 1: utils.writeJobReportMessage ( jobDir,
-                    '<h2>[00007] Failed: data preparation error (' + code + ').</h2>',
+                    '<h1>[00007] Failed: data preparation error (' + code + ').</h1>',
                     false );
                   break;
 
             case 2: utils.writeJobReportMessage ( jobDir,
-                    '<h2>[00008] Failed: data transmission errors.</h2>' +
+                    '<h1>[00008] Failed: data transmission errors.</h1>' +
                     '<p><i>Return: ' + code + '</i>',false );
                     log.error ( 8,'[00008] Cannot send data to NC at ' + nc_url );
                   break;
 
             default: utils.writeJobReportMessage ( jobDir,
-                     '<h2>[00009] Failed: number cruncher errors.</h2>' +
+                     '<h1>[00009] Failed: number cruncher errors.</h1>' +
                      '<p><i>Return: ' + code.message + '</i>',false );
 
           }

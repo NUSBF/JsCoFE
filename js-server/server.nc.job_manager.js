@@ -218,7 +218,7 @@ function removeJobDelayed ( job_token,jobStatus )  {
 
 function writeJobDriverFailureMessage ( code,stdout,stderr,jobDir )  {
 
-var msg = '<h2><i>Job Driver Failure</i></h2>' + 'Failure code: ' + code;
+var msg = '<h1><i>Job Driver Failure</i></h1>' + 'Failure code: ' + code;
 
   if (stdout)
     msg += '<p>Catched stdout:<pre>' + stdout + '</pre>';
@@ -574,7 +574,7 @@ function ncJobFinished ( job_token,code )  {
       task.state = task_t.job_code.failed;
       if (code==200)
         utils.writeJobReportMessage ( jobEntry.jobDir,
-                                  '<h2>Python import(s) failure</h2>',false );
+                                  '<h1>Python import(s) failure</h1>',false );
       copyToSafe ( task,jobEntry );
     }
 
@@ -684,8 +684,8 @@ function ncRunJob ( job_token,meta )  {
 
   // put a new message in the report page indicating that the job is already
   // on number cruncher and is going to start; this write is synchronous
-  utils.writeJobReportMessage ( jobEntry.jobDir,'<h2>Starting on &lt;' +
-                                ncConfig.name + '&gt; ...</h2>',true );
+  utils.writeJobReportMessage ( jobEntry.jobDir,'<h1>Starting on &lt;' +
+                                ncConfig.name + '&gt; ...</h1>',true );
 
   // Now start the job.
   // Firstly, acquire the corresponding task class.
@@ -807,8 +807,8 @@ function ncRunJob ( job_token,meta )  {
 
                       // indicate queuing to please the user
                       utils.writeJobReportMessage ( jobDir,
-                                '<h2>Queuing up on &lt;' + ncConfig.name +
-                                '&gt;, please wait ...</h2>', true );
+                                '<h1>Queuing up on &lt;' + ncConfig.name +
+                                '&gt;, please wait ...</h1>', true );
 
                   break;
 
@@ -851,8 +851,8 @@ function ncRunJob ( job_token,meta )  {
 
                       // indicate queuing to please the user
                       utils.writeJobReportMessage ( jobDir,
-                                '<h2>Queuing up on &lt;' + ncConfig.name +
-                                '&gt;, please wait ...</h2>', true );
+                                '<h1>Queuing up on &lt;' + ncConfig.name +
+                                '&gt;, please wait ...</h1>', true );
 
     }
 
@@ -865,7 +865,7 @@ function ncRunJob ( job_token,meta )  {
 
     log.error ( 7,'no task received when expected' );
     utils.writeJobReportMessage ( jobDir,
-                   '<h2>[00102] Error: cannot find task metadata</h2>',false );
+                   '<h1>[00102] Error: cannot find task metadata</h1>',false );
 
   }
 

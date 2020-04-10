@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    21.03.20   <--  Date of Last Modification.
+ *    10.04.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -151,7 +151,7 @@ if (!__template)  {
     if (this.files.hasOwnProperty(file_key.lib))
       dsp.makeRow ( 'Restraints file',this.files[file_key.lib],'Name of file with crystallogtaphic restraints' );
     if (this.ligands.length>0)
-      dsp.makeRow ( 'Ligands fitted',this.ligands.join(', '),'Codes for fitted ligands' );
+      dsp.makeRow ( 'Ligand descriptions',this.ligands.join(', '),'Codes of ligands found in ligand library' );
     if (this.refmacLinks.length>0)
       dsp.makeRow ( 'Links with description',this.refmacLinks.join(', '),
         'Formulas (Residue1.Atom1-Atom2.Residue2) for covalent links with descripton (LINKR)' );
