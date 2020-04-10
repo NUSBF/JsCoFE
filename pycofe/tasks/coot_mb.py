@@ -46,6 +46,30 @@ class Coot(basic.TaskDriver):
 
     # ------------------------------------------------------------------------
 
+    def get_ligand_code ( self,exclude_list ):
+        alphabet = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+        for L1 in alphabet:
+            dirpath = os.path.join ( os.environ["CCP4"],"lib","data","monomers",L1.lower() )
+            dirSet  = set ( os.listdir(dirpath) )
+            for L2 in alphabet:
+                for L3 in alphabet:
+                    code = L1 + L2 + L3
+                    if code+".cif" not in dirSet and code not in exclude_list:
+                        return code
+        return None
+
+    def replace_ligand_code ( self,fpath,oldCode,newCode ):
+        f    = open(fpath,"r")
+        data = f.read()
+        f.close()
+        f    = open(fpath,"w")
+        f.write ( data.replace(oldCode,newCode) )
+        f.close()
+        return
+
+
+    # ------------------------------------------------------------------------
+
     def addLigandToLibrary ( self,libPath,ligCode,ligPath,ligList ):
         # returns path to ligand library whith new ligand included
 
@@ -71,6 +95,7 @@ class Coot(basic.TaskDriver):
 
         return (self.outputFName+".lib",ligList+[ligCode])
 
+    # ------------------------------------------------------------------------
 
     def run(self):
 
@@ -101,8 +126,6 @@ class Coot(basic.TaskDriver):
         libPath, ligList = self.addLigandToLibrary (
                                     istruct.getLibFilePath(self.inputDir()),
                                     ligCode,ligPath,istruct.ligands )
-        self.stdoutln ( " ------------- " + str(ligList) )
-
 
         """
         # prepare dictionary file for input structure
@@ -195,11 +218,46 @@ class Coot(basic.TaskDriver):
         files = os.listdir ( "./" )
         mtime = 0
         fname = None
+        newLigCode  = None
+        ligand_coot = None
+
         for f in files:
-            self.stdoutln ( ' ---- f=' + f )
-            if f=="acedrg-LIG.cif":
-                libPath, ligList = self.addLigandToLibrary ( libPath,"LIG",f,ligList )
-                self.finaliseLigand ( "LIG","acedrg-LIG.pdb",f )
+            if f.startswith("acedrg-LIG"):
+                if f.endswith(".cif"):
+                    newLigCode = self.get_ligand_code ( ligList )
+                    if newLigCode:
+                        self.putMessage (
+                            "<b>New ligand was generated with generic " +\
+                            "name \"LIG\", which was renamed as \"" +\
+                            newLigCode + "\"</b><ul><li>" +\
+                            "<span style=\"font-size:85%;\">" +\
+                            "<i>The new name is not found in Monomer Library and " +\
+                            "is not used in current structure revision.<br>" +\
+                            "</i></span></li></ul>"
+                        )
+                        self.replace_ligand_code ( f,"LIG",newLigCode )
+                        self.replace_ligand_code ( "acedrg-LIG.pdb","LIG",newLigCode )
+                        libPath, ligList = self.addLigandToLibrary (
+                                                    libPath,newLigCode,f,ligList )
+                        if libPath==f:
+                            shutil.copy2 ( libPath,"ligands.lib" )
+                            libPath = "ligands.lib"
+                        ligand_coot = self.finaliseLigand ( newLigCode,"acedrg-LIG.pdb",f )
+                    else:
+                        self.putMessage (
+                            "<b>New ligand was generated with generic " +\
+                            "name \"LIG\", but replace name was not found</b><ul><li>" +\
+                            "<span style=\"font-size:85%;color:maroon;\">" +\
+                            "<i>Using generic ligand name will likely cause " +\
+                            "problems at repeat use in Coot.</i></span></li></ul>"
+                        )
+                        libPath, ligList = self.addLigandToLibrary (
+                                                    libPath,"LIG",f,ligList )
+                        if libPath==f:
+                            shutil.copy2 ( libPath,"ligands.lib" )
+                            libPath = "ligands.lib"
+                        ligand_coot = self.finaliseLigand ( "LIG","acedrg-LIG.pdb",f )
+
             elif f.lower().endswith(".pdb") or f.lower().endswith(".cif"):
                 mt = os.path.getmtime(f)
                 if mt > mtime:
@@ -210,6 +268,9 @@ class Coot(basic.TaskDriver):
         summary_line = "model not saved"
 
         if fname:
+
+            if newLigCode:
+                self.replace_ligand_code ( fname,"LIG",newLigCode )
 
             f = istruct.getXYZFileName()
             if not f:
@@ -231,6 +292,7 @@ class Coot(basic.TaskDriver):
             #fnames = self.calcCCP4Maps ( coot_mtz,fn )
 
             # add covalent links from coot to restraint dictionary, modify output pdb-file
+            links  = None
             libout = "links.lib"
             pdbout = "links.pdb"
             try:
@@ -260,8 +322,7 @@ class Coot(basic.TaskDriver):
             # to output directory by the registration procedure)
 
             struct = self.registerStructure ( coot_xyz,None,coot_mtz,
-                                              None,None,libPath,
-                                              #fnames[0],fnames[1],libPath,  -- not needed for new UglyMol
+                                              None,None,libPath=libPath,
                                               leadKey=lead_key )
 
             #                                  istruct.getLibFilePath(self.inputDir()) )
@@ -274,12 +335,12 @@ class Coot(basic.TaskDriver):
                 struct.copyLigands      ( istruct )
                 #if ligand:
                 #    struct.addLigand ( ligand.code )
-                self.stdoutln ( " ********** " + str(ligList) )
                 struct.setLigands       ( ligList )
 
                 # add link formulas and counts to struct metadata
-                struct.links = links.count_links(['LINK', 'SYMLINK'])
-                struct.refmacLinks = links.count_links(['LINKR'])
+                if links:
+                    struct.links = links.count_links(['LINK', 'SYMLINK'])
+                    struct.refmacLinks = links.count_links(['LINKR'])
 
                 # create output data widget in the report page
                 self.putTitle ( "Output Structure" )
@@ -287,6 +348,10 @@ class Coot(basic.TaskDriver):
                 # update structure revision
                 revision = self.makeClass ( self.input_data.data.revision[0] )
                 revision.setStructureData ( struct   )
+                if ligand:
+                    revision.addLigandData ( ligand      )
+                if ligand_coot:
+                    revision.addLigandData ( ligand_coot )
                 self.registerRevision     ( revision )
                 have_results = True
                 summary_line = "model saved"

@@ -7,11 +7,7 @@
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
-#  GENERATE USAGE STATS REPORT
-#
-#  Command line:
-#
-#  ccp4-python -m pycofe.proc.usagestats projectDataPath userDataPath statsFile.json reportDir
+#  GENERATE STRUCTURE QUALITY REPORT
 #
 #  Copyright (C) Eugene Krissinel, Andrey Lebedev 2020
 #

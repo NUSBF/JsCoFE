@@ -71,7 +71,7 @@ function TaskMakeLigand()  {
           tooltip   : '3-letter ligand code for identification',
           default   : 'NUE',
           iwidth    : 40,
-          value     : 'NUE',
+          value     : 'NEW',
           maxlength : 3,       // maximum input length
           position  : [2,2,1,3],
           showon    : {SOURCE_SEL:['S']}
