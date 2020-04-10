@@ -806,7 +806,7 @@ function saveProjectData ( loginData,data )  {
 
           // write out the self-updating html starting page, which will last
           // only until it gets replaced by real report's bootstrap
-          utils.writeJobReportMessage ( jobDirPath,'<h2>Idle</h2>',true );
+          utils.writeJobReportMessage ( jobDirPath,'<h1>Idle</h1>',true );
 
         } else  {
           response = new cmd.Response ( cmd.fe_retcode.mkDirError,

@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    08.04.20   <--  Date of Last Modification.
+#    10.04.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -49,9 +49,14 @@ class Coot(basic.TaskDriver):
     def addLigandToLibrary ( self,libPath,ligCode,ligPath,ligList ):
         # returns path to ligand library whith new ligand included
 
-        if not libPath:        return ligPath  # nowhere to include
-        if not ligPath:        return libPath  # nothing to include
-        if ligCode in ligList: return libPath  # no need to include
+        if not ligPath:  # nothing to include
+            return (libPath,ligList)
+
+        if not libPath:  # nowhere to include
+            return (ligPath,ligList+[ligCode])
+
+        if ligCode in ligList:  # no need to include
+            return (libPath,ligList)
 
         self.open_stdin()
         self.write_stdin (
@@ -64,7 +69,7 @@ class Coot(basic.TaskDriver):
 
         self.runApp ( "libcheck",[],logType="Service" )
 
-        return self.outputFName + ".lib"
+        return (self.outputFName+".lib",ligList+[ligCode])
 
 
     def run(self):
@@ -93,9 +98,11 @@ class Coot(basic.TaskDriver):
             ligCode = ligand.code
             ligPath = ligand.getLibFilePath ( self.inputDir() )
 
-        libPath = self.addLigandToLibrary (
+        libPath, ligList = self.addLigandToLibrary (
                                     istruct.getLibFilePath(self.inputDir()),
                                     ligCode,ligPath,istruct.ligands )
+        self.stdoutln ( " ------------- " + str(ligList) )
+
 
         """
         # prepare dictionary file for input structure
@@ -189,7 +196,11 @@ class Coot(basic.TaskDriver):
         mtime = 0
         fname = None
         for f in files:
-            if f.lower().endswith(".pdb") or f.lower().endswith(".cif"):
+            self.stdoutln ( ' ---- f=' + f )
+            if f=="acedrg-LIG.cif":
+                libPath, ligList = self.addLigandToLibrary ( libPath,"LIG",f,ligList )
+                self.finaliseLigand ( "LIG","acedrg-LIG.pdb",f )
+            elif f.lower().endswith(".pdb") or f.lower().endswith(".cif"):
                 mt = os.path.getmtime(f)
                 if mt > mtime:
                     mtime = mt
@@ -225,7 +236,8 @@ class Coot(basic.TaskDriver):
             try:
                 exe_obj = self, [], dict(logType='Service')
                 links = LinkLists(coot_xyz)
-                links.add_coot_links(exe_obj, '.', libPath, coot_xyz, libout, pdbout, using_libcheck=True)
+                links.add_coot_links ( exe_obj, '.', libPath, coot_xyz, libout,
+                                       pdbout, using_libcheck=True )
                 links.prn(self.file_stdout)
             except:
                 if os.path.isfile(pdbout):
@@ -242,7 +254,7 @@ class Coot(basic.TaskDriver):
                         libPath = self.outputFName + ".lib"
                     if os.path.isfile(libPath):    # fix for windows
                         os.remove(libPath)
-                    os.rename(libout, libPath)
+                    os.rename ( libout,libPath )
 
             # register output data from temporary location (files will be moved
             # to output directory by the registration procedure)
@@ -260,8 +272,10 @@ class Coot(basic.TaskDriver):
                 struct.makeXYZSubtype   ()
                 struct.copyLabels       ( istruct )
                 struct.copyLigands      ( istruct )
-                if ligand:
-                    struct.addLigand ( ligand.code )
+                #if ligand:
+                #    struct.addLigand ( ligand.code )
+                self.stdoutln ( " ********** " + str(ligList) )
+                struct.setLigands       ( ligList )
 
                 # add link formulas and counts to struct metadata
                 struct.links = links.count_links(['LINK', 'SYMLINK'])

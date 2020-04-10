@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    26.03.20   <--  Date of Last Modification.
+ *    10.04.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -25,6 +25,12 @@ if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
   __template = require ( './common.tasks.template' );
 
 // ===========================================================================
+
+
+var __coot_reserved_codes = [
+  "XXX","LIG","DRG","INH","LG0","LG1","LG2","LG3","LG4","LG5","LG6",
+  "LG7","LG8","LG9"
+];
 
 function TaskMakeLigand()  {
 
@@ -63,9 +69,9 @@ function TaskMakeLigand()  {
           keyword   : 'code',
           label     : '<i>Ligand Code</i>',
           tooltip   : '3-letter ligand code for identification',
-          default   : 'DRG',
+          default   : 'NUE',
           iwidth    : 40,
-          value     : 'DRG',
+          value     : 'NUE',
           maxlength : 3,       // maximum input length
           position  : [2,2,1,3],
           showon    : {SOURCE_SEL:['S']}
@@ -86,12 +92,22 @@ function TaskMakeLigand()  {
     FORCE_ACEDRG_CBX  : {
           type      : 'checkbox',
           label     : 'Recalculate with AceDrg',
+          align     : 'left',
           tooltip   : 'Check for recalculating ligand data using AceDrg. If ' +
                       'unchecked, both restraints and atomic coordinates ' +
                       'will be merely copied from CCP4 Monomer Library.',
           value     : false,
-          position  : [3,7,1,2],
+          iwidth    : 200,
+          position  : [3,7,1,1],
           showon    : {SOURCE_SEL:['M']}
+        },
+    INFO_LBL : {
+          type     : 'label',
+          label    : '&nbsp;<br><span style="font-size:85%;color:maroon;"><i>Codes ' +
+                       __coot_reserved_codes.join(', ') +
+                     '<br>are reserved by Coot for own purposes and cannot' +
+                     ' be used here.</i></span>',
+          position : [4,4,1,5]
         }
 
   };
@@ -118,7 +134,26 @@ TaskMakeLigand.prototype.currentVersion = function()  {
 }
 
 
-if (__template)  {
+if (!__template)  {
+  // client side
+
+  TaskMakeLigand.prototype.collectInput = function ( inputPanel )  {
+
+    var msg = TaskTemplate.prototype.collectInput.call ( this,inputPanel );
+
+    var ligCode = this.parameters.CODE.value;
+    if (this.parameters.SOURCE_SEL.value=='M')
+      ligCode = this.parameters.CODE3.value;
+
+    if (__coot_reserved_codes.indexOf(ligCode)>=0)
+      msg += '<b>ligand code ' + ligCode + ' is reserved by Coot for own ' +
+             'purposes and cannot be used</b>';
+
+    return msg;
+
+  }
+
+} else  {
   //  for server side
 
   var conf = require('../../js-server/server.configuration');

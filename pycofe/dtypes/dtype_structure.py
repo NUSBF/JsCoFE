@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    21.03.20   <--  Date of Last Modification.
+#    10.04.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -350,6 +350,10 @@ class DType(dtype_xyz.DType):
         self.addSubtype ( dtype_template.subtypeLigands() )
         return
 
+    def removeLigandSubtype ( self ):
+        self.removeSubtype ( dtype_template.subtypeLigands() )
+        return
+
     def hasLigandSubtype ( self ):
         return dtype_template.subtypeLigands() in self.subtype
 
@@ -540,7 +544,10 @@ class DType(dtype_xyz.DType):
 
     def setLigands ( self,ligCodes ):
         self.ligands = ligCodes
-        self.addLigandSubtype()
+        if len(ligCodes)>0:
+            self.addLigandSubtype()
+        else:
+            self.removeLigandSubtype()
         return
 
     def adjust_dname ( self ):
