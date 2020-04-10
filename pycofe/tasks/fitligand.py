@@ -120,8 +120,8 @@ class FitLigand(basic.TaskDriver):
                 libadd += ".lib"
 
             pdbout = self.outputFName + ".pdb"
-            self.stdoutln ( "pdbin="+str(pdbin) )
-            self.stdoutln ( "ligands="+str(ligands) )
+            #self.stdoutln ( "pdbin="+str(pdbin) )
+            #self.stdoutln ( "ligands="+str(ligands) )
             #import shutil
             #shutil.copyfile ( pdbin,"pdbin.xxx" )
             #shutil.copyfile ( ligands[0],"ligandin.yyy" )
@@ -135,7 +135,7 @@ class FitLigand(basic.TaskDriver):
                 structure.copySubtype      ( istruct )
                 structure.copyLabels       ( istruct )
                 structure.copyLigands      ( istruct )
-                structure.addLigand       ( ligand.code )
+                structure.addLigand        ( ligand.code )
                 self.putTitle ( "Results" )
                 self.putMessage ( "<b>Total " + str(nligs) + " '" + ligand.code +\
                                   "' ligands were fitted</b><br>&nbsp;" )
