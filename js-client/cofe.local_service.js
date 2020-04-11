@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    28.02.20   <--  Date of Last Modification.
+ *    11.04.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -179,7 +179,7 @@ function ls_RVAPIAppButtonClicked ( base_url,command,data )  {
   } else if (command=='{viewhkl}')  {
     var pos = base_url.indexOf ( __special_url_tag );
     window.setTimeout ( function(){
-      startViewHKL ( '--',base_url.substr(pos)+'/'+data,window );      
+      startViewHKL ( data.split('/').pop(),base_url.substr(pos)+'/'+data,window );
     },10);
   }
 
