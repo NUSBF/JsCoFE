@@ -24,7 +24,7 @@
 // login page class
 
 function _privacyStatement()  {
-  new HelpBox ( '','./html/jscofe_privacy_statement.html',null );
+  new HelpBox ( 'Privacy Statement','./html/privacy_statement.html',null );
 }
 
 function _ccp4_download()  {

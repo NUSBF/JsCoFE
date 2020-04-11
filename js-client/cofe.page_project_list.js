@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    31.03.20   <--  Date of Last Modification.
+ *    11.04.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -227,23 +227,12 @@ function ProjectListPage ( sceneId )  {
                        '-- nothing to export.' );
   }
 
-  /*
-  var importSharedProject = function() {
-    if (self.tablesort_tbl.selectedRow)  {
-      projectList.current = currentProjectName();
-      new ShareProjectsDialog ( projectList );
-    } else
-      new MessageBox ( 'No project selected',
-                       'No project is currently selected<br>' +
-                       '-- nothing to share.' );
-  }
-  */
-
   // function to create project list table and fill it with data
   function makeProjectListTable()  {
 
     if (self.tablesort_tbl)
-      projectList.sortList = self.tablesort_tbl.getSortList();
+          projectList.sortList = self.tablesort_tbl.getSortList();
+    else  projectList.sortList = [[5,1]];
 
     self.tablesort_tbl = new TableSort();
     self.tablesort_tbl.setHeaders ([
@@ -261,12 +250,7 @@ function ProjectListPage ( sceneId )  {
     self.tablesort_tbl.setHeaderColWidth ( 4,'5%'  );
     self.tablesort_tbl.setHeaderColWidth ( 5,'5%'  );
 
-//    self.table_div = new Widget ( 'div' );
-//    self.table_div.element.setAttribute ( 'class','tree-content' );
-
-//    self.table_div.addWidget ( self.tablesort_tbl );
     panel.setWidget ( self.tablesort_tbl,table_row,0,1,nCols );
-//    panel.setWidget ( self.table_div,table_row,0,1,nCols );
     var message = '&nbsp;<p>&nbsp;<p><h2>' +
                   'Your List of Projects is currently empty.<br>' +
                   'Press "Add" button to create a new Project<br>' +
