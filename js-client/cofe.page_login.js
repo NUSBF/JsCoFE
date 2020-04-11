@@ -28,7 +28,7 @@ function _privacyStatement()  {
 }
 
 function _ccp4_download()  {
-  new HelpBox ( 'CCP4 Download','http://www.ccp4.ac.uk/downloads',null );
+  new HelpBox ( 'CCP4 Download','./html/link_to_ccp4.html',null );
 }
 
 function LoginPage ( sceneId )  {
@@ -144,15 +144,21 @@ function LoginPage ( sceneId )  {
   panel.setWidget               ( pwd_btn  ,row++,0,1,3 );
   panel.setWidget               ( reg_btn  ,row++,0,1,3 );
 
-  if (!__local_service)
+//  if (!__local_service)
     panel.setLabel              ( '&nbsp;<br><center><i>For best experience, access ' +
-                                  'this web site via CCP4 Cloud Client,<br>' +
-                                  'which can be obtained by installing the ' +
+                                  'this web site via<br>CCP4 Cloud Client, ' +
+                                  'which can be obtained by installing<br>' +
                                   '<a href="javascript:_ccp4_download()"> ' +
-                                  'CCP4 Software Suite version 7.1 or higher</a>' +
+                                  'the CCP4 Software Suite version 7.1 or higher</a>' +
                                   '<br>(look for icon with wireless sign after ' +
                                   'installation)</i></center>',
-                                  row++,0,1,3 );
+                                  row++,0,1,3 )
+          .setTooltip           ( 'CCP4 Cloud Client is necessary for running ' +
+                                  'interactive graphical software, such as image ' +
+                                  'processing (DUI, Mosflm, XDSGUI), Coot and ' +
+                                  'few others.'
+                                )
+          .setNoWrap();
     /*
     panel.setLabel              ( '&nbsp;<br><center><i>For best experience, access ' +
                                   'this web site via<br>' +
