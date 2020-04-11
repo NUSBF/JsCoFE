@@ -178,7 +178,9 @@ function ls_RVAPIAppButtonClicked ( base_url,command,data )  {
 
   } else if (command=='{viewhkl}')  {
     var pos = base_url.indexOf ( __special_url_tag );
-    startViewHKL ( '--',base_url.substr(pos)+'/'+data,window );
+    window.setTimeout ( function(){
+      startViewHKL ( '--',base_url.substr(pos)+'/'+data,window );      
+    },10);
   }
 
 }
