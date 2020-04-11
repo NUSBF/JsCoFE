@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    04.04.20   <--  Date of Last Modification.
+ *    11.04.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -25,6 +25,10 @@
 
 function _privacyStatement()  {
   new HelpBox ( '','./html/jscofe_privacy_statement.html',null );
+}
+
+function _ccp4_download()  {
+  new HelpBox ( 'CCP4 Download','http://www.ccp4.ac.uk/downloads',null );
 }
 
 function LoginPage ( sceneId )  {
@@ -142,10 +146,21 @@ function LoginPage ( sceneId )  {
 
   if (!__local_service)
     panel.setLabel              ( '&nbsp;<br><center><i>For best experience, access ' +
+                                  'this web site via CCP4 Cloud Client,<br>' +
+                                  'which can be obtained by installing the ' +
+                                  '<a href="javascript:_ccp4_download()"> ' +
+                                  'CCP4 Software Suite version 7.1 or higher</a>' +
+                                  '<br>(look for icon with wireless sign after ' +
+                                  'installation)</i></center>',
+                                  row++,0,1,3 );
+    /*
+    panel.setLabel              ( '&nbsp;<br><center><i>For best experience, access ' +
                                   'this web site via<br>' +
                                   '<a href="manual/html/index.html">' + appName() + ' Client</a>.' +
                                   '</i></center>',
                                   row++,0,1,3 );
+    */
+
   panel.setLabel                ( '&nbsp;<br><center><i>' +
                                   '<a href="javascript:_privacyStatement()">' +
                                   'Privacy Statement<a></i></center>',
