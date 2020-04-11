@@ -127,38 +127,6 @@ class Coot(basic.TaskDriver):
                                     istruct.getLibFilePath(self.inputDir()),
                                     ligCode,ligPath,istruct.ligands )
 
-        """
-        # prepare dictionary file for input structure
-        libnew  = ligPath
-        libPath = istruct.getLibFilePath ( self.inputDir() ) # local ligand library
-        if libPath:
-            # there are other ligands in the structure, needs to be preserved
-            if ligand and (not ligand.code in istruct.ligands):
-                # new ligand is not the list of existing ligands, so append it
-                # to local ligand library with libcheck
-
-                # libnew = self.outputFName + ".dict.cif"
-                libnew = self.outputFName
-
-                self.open_stdin()
-                self.write_stdin (
-                    "_Y"          +\
-                    "\n_FILE_L  " + libPath  +\
-                    "\n_FILE_L2 " + ligPath +\
-                    "\n_FILE_O  " + libnew +\
-                    "\n_END\n" )
-                self.close_stdin()
-
-                self.runApp ( "libcheck",[],logType="Service" )
-
-                libnew += ".lib"
-
-            else:
-                # all ligands should be taken from local ligand library
-                libnew = libPath
-        libPath = libnew
-        """
-
         # make command line arguments
         args = []
         for s in data_list:
@@ -175,8 +143,6 @@ class Coot(basic.TaskDriver):
         #if ligand:
         #    args += ["--python","-c","get_monomer('" + ligand.code + "')"]
 
-        #coot_scr = "coot_jscofe.py"
-        #coot_scr = os.path.join ( os.path.dirname ( os.path.abspath(__file__)),"..","proc",coot_scr )
         coot_mod = os.path.join ( os.path.dirname(os.path.abspath(__file__)),
                                   "..","proc","coot_modifier.py" )
         coot_scr = istruct.getCootFilePath ( self.inputDir() )
@@ -281,8 +247,6 @@ class Coot(basic.TaskDriver):
                 fn,fext = os.path.splitext ( fname[fname.find("_")+1:] )
             else:
                 fn,fext = os.path.splitext ( f )
-            #coot_xyz = fn + "_xyz" + fext
-            #coot_mtz = fn + "_map.mtz"
             coot_xyz = self.getOFName ( fext )
             coot_mtz = istruct.getMTZFileName()
             shutil.copy2 ( fname  ,coot_xyz )
