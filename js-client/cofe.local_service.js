@@ -33,9 +33,9 @@ var __check_session_period = 2000;  // in ms
 
 function setLocalService ( local_service )  {
   __local_service = local_service;
-  if ((!local_service) && (window.hasOwnProperty('__rvapi_local_service')))
+  if ((!local_service) && (window.hasOwnProperty('__rvapi_local_service')))  {
     delete window.__rvapi_local_service;
-  else
+  } else
     __rvapi_local_service = local_service;
 }
 
@@ -176,6 +176,9 @@ function ls_RVAPIAppButtonClicked ( base_url,command,data )  {
         return true;
       });
 
+  } else if (command=='{viewhkl}')  {
+    var pos = base_url.indexOf ( __special_url_tag );
+    startViewHKL ( '--',base_url.substr(pos)+'/'+data );
   }
 
 }
