@@ -417,26 +417,30 @@ var html   =
 }
 
 
-function startViewHKL ( title,mtz_uri )  {
+function startViewHKL ( title,mtz_uri,window_instance )  {
 
   // take structure file basename as title
   var dlg_title = title;
   if (!dlg_title)
     dlg_title = mtz_uri.split(/[\\/]/).pop();
 
-  var doc = window.parent.document;
-  var jq  = window.parent.$;
+  //var doc = window.parent.document;
+  //var jq  = window.parent.$;
+  var doc = window_instance.document;
+  var jq  = window_instance.$;
 
   var dialog = doc.createElement ( 'div' );
-  $(dialog).css({'box-shadow' : '8px 8px 16px 16px rgba(0,0,0,0.2)',
-                 'overflow'   : 'hidden'
+  $(dialog).css({
+    'box-shadow' : '8px 8px 16px 16px rgba(0,0,0,0.2)',
+    'overflow'   : 'hidden'
   });
   doc.body.appendChild ( dialog );
   //doc.body.style.fontSize = '16px';
 
   var iframe = doc.createElement ( 'iframe' );
-  jq(iframe).css ( {'border'   : 'none',
-                    'overflow' : 'hidden'
+  jq(iframe).css ({
+    'border'   : 'none',
+    'overflow' : 'hidden'
   });
 
   var size;

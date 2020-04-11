@@ -256,7 +256,7 @@ function buttonClicked ( command,data )  {
                 base_url.substring(0,base_url.lastIndexOf('/')),command,
                 data_item );
     } else if (command=="{viewhkl}")  {
-      startViewHKL ( "",data_item );
+      startViewHKL ( "",data_item,window );
     }
   }
 
