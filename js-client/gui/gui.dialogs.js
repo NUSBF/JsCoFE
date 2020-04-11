@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    27.03.20   <--  Date of Last Modification.
+ *    11.04.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -158,7 +158,8 @@ function HelpBox ( title,helpURL,onDoNotShowAgain_func )  {
 
   Widget.call ( this,'div' );
   if (title.length>0)
-        this.element.setAttribute ( 'title','Online Help -- ' + title );
+        this.element.setAttribute ( 'title',title );
+//        this.element.setAttribute ( 'title','Online Help -- ' + title );
   else  this.element.setAttribute ( 'title','Online Help' );
   this.display = new IFrame ( '' );  // always initially empty
   $(this.display.element).css({'overflow':'hidden'});
