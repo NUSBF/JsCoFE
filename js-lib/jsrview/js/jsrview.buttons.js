@@ -45,9 +45,7 @@ function addButtonGrid ( btnId,title,command,data,rvOnly,holderId,
   if (command=='{coot}')
     return;
 
-//  if ((command=='{ccp4mg}') && (!window.parent.__rvapi_local_service))
-  if (window.parent.__rvapi_local_service)  alert ( 'ppp4');
-  if (command=='{ccp4mg}')
+  if ((command=='{ccp4mg}') && (!window.parent.__rvapi_local_service))
     return;
 
   if (document.getElementById(btnId))
@@ -91,9 +89,7 @@ function addButton ( btnId,title,command,data,rvOnly,holderId )  {
   if (command=='{coot}')
     return;
 
-//  if ((command=='{ccp4mg}') && (!window.parent.__rvapi_local_service))
-if (window.parent.__rvapi_local_service)  alert ( 'ppp1');
-  if (command=='{ccp4mg}')
+  if ((command=='{ccp4mg}') && (!window.parent.__rvapi_local_service))
     return;
 
   if (document.getElementById(btnId))
@@ -124,9 +120,7 @@ function addIconButtonGrid ( btnId,button_class,tooltip,command,data,
   if (command=='{coot}')
     return;
 
-//  if ((command=='{ccp4mg}') && (!window.parent.__rvapi_local_service))
-if (window.parent.__rvapi_local_service)  alert ( 'ppp2');
-  if (command=='{ccp4mg}')
+  if ((command=='{ccp4mg}') && (!window.parent.__rvapi_local_service))
     return;
 
   if (document.getElementById(btnId))
@@ -166,9 +160,7 @@ function addIconButton ( btnId,button_class,tooltip,command,data,rvOnly,
   if (command=='{coot}')
     return;
 
-//  if ((command=='{ccp4mg}') && (!window.parent.__rvapi_local_service))
-if (window.parent.__rvapi_local_service)  alert ( 'ppp3');
-  if (command=='{ccp4mg}')
+  if ((command=='{ccp4mg}') && (!window.parent.__rvapi_local_service))
     return;
 
   if (document.getElementById(btnId))
