@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    21.03.20   <--  Date of Last Modification.
+#    11.04.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -98,9 +98,20 @@ class DType(dtype_template.DType):
 
         files = [ "0-coot-history.py","0-coot-history.scm",
                   "0-coot.state.py","0-coot.state.scm" ]
-        for f in files:
-            if os.path.isfile(f):
-                coot_meta["files"].append(f)
+        for fname in files:
+            if os.path.isfile(fname):
+                if fname.startswith("0-coot.state."):
+                    f = open ( fname,"r" )
+                    flines = f.readlines()
+                    f.close()
+                    os.remove ( fname )
+                    f = open ( fname,"w" )
+                    for line in flines:
+                        if "read_cif_dictionary" not in line and \
+                           "read-cif-dictionary" not in line:
+                            f.write ( line )
+                    f.close()
+                coot_meta["files"].append(fname)
 
         if os.path.isdir("coot-backup"):
             bfiles = os.listdir("coot-backup")

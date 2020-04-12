@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    04.04.20   <--  Date of Last Modification.
+#    11.04.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -1117,6 +1117,25 @@ class TaskDriver(object):
                             logType="Service" )
 
         return
+
+
+    # ------------------------------------------------------------------------
+
+    def get_ligand_code ( self,exclude_list ):
+        alphabet  = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+        excl_list = exclude_list + [
+            "XXX","LIG","DRG","INH","LG0","LG1","LG2","LG3","LG4","LG5","LG6",
+            "LG7","LG8","LG9"
+        ]
+        for L1 in alphabet:
+            dirpath = os.path.join ( os.environ["CCP4"],"lib","data","monomers",L1.lower() )
+            dirSet  = set ( os.listdir(dirpath) )
+            for L2 in alphabet:
+                for L3 in alphabet:
+                    code = L1 + L2 + L3
+                    if code+".cif" not in dirSet and code not in excl_list:
+                        return code
+        return None
 
 
     # ----------------------------------------------------------------------
