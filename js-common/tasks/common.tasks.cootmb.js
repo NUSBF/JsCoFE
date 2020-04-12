@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    26.03.20   <--  Date of Last Modification.
+ *    12.04.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -59,6 +59,14 @@ function TaskCootMB()  {
       inputId   : 'ligand',      // input Id for referencing input fields
       min       : 0,             // minimum acceptable number of data instances
       max       : 1              // maximum acceptable number of data instances
+    },{    // input data for making new ligand names
+      data_type : {'DataLigand':[]}, // any revision will be passed
+      label     : '',        // no label for void data entry
+      inputId   : 'void1',   // prefix 'void' will hide entry in import dialog
+      version   : 0,         // minimum data version allowed
+      force     : 1000,      // "show" all revisions available
+      min       : 0,         // minimum acceptable number of data instances
+      max       : 1000       // maximum acceptable number of data instances
     }
   ];
 

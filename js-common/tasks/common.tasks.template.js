@@ -1495,7 +1495,6 @@ if (!dbx)  {
           inpParamRef.parameters[key].label2.setWidth ( item.lwidth2 );
           grid.setCellSize ( item.lwidth2,'',row,col+4 );
         }
-
       }
       grid.setVerticalAlignment ( row,col+4,'middle' );
       if (item.hasOwnProperty('align2'))  {

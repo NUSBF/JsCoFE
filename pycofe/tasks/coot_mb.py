@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    10.04.20   <--  Date of Last Modification.
+#    12.04.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -46,26 +46,35 @@ class Coot(basic.TaskDriver):
 
     # ------------------------------------------------------------------------
 
-    def get_ligand_code ( self,exclude_list ):
-        alphabet = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-        for L1 in alphabet:
-            dirpath = os.path.join ( os.environ["CCP4"],"lib","data","monomers",L1.lower() )
-            dirSet  = set ( os.listdir(dirpath) )
-            for L2 in alphabet:
-                for L3 in alphabet:
-                    code = L1 + L2 + L3
-                    if code+".cif" not in dirSet and code not in exclude_list:
-                        return code
-        return None
+    #def get_ligand_code ( self,exclude_list ):
+    #    alphabet = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    #    for L1 in alphabet:
+    #        dirpath = os.path.join ( os.environ["CCP4"],"lib","data","monomers",L1.lower() )
+    #        dirSet  = set ( os.listdir(dirpath) )
+    #        for L2 in alphabet:
+    #            for L3 in alphabet:
+    #                code = L1 + L2 + L3
+    #                if code+".cif" not in dirSet and code not in exclude_list:
+    #                    return code
+    #    return None
 
-    def replace_ligand_code ( self,fpath,oldCode,newCode ):
-        f    = open(fpath,"r")
+    def replace_ligand_code ( self,fpath,oldCode,newCode,rename=False ):
+        f = open(fpath,"r")
         data = f.read()
         f.close()
-        f    = open(fpath,"w")
+        os.remove ( fpath )
+        if rename:
+            if oldCode in fpath:
+                fwpath   = fpath.replace ( oldCode,newCode )
+            else:
+                fn, fext = os.path.splitext ( fpath )
+                fwpath   = fn + "-" + newCode + fext
+        else:
+            fwpath = fpath
+        f = open(fwpath,"w")
         f.write ( data.replace(oldCode,newCode) )
         f.close()
-        return
+        return fwpath
 
 
     # ------------------------------------------------------------------------
@@ -181,34 +190,45 @@ class Coot(basic.TaskDriver):
 
         # Check for PDB files left by Coot and convert them to type structure
 
-        files = os.listdir ( "./" )
-        mtime = 0
-        fname = None
-        newLigCode  = None
-        ligand_coot = None
+        files        = os.listdir ( "./" )
+        mtime        = 0
+        fname        = None
+        newLigCode   = None
+        ligand_coot  = None
 
         for f in files:
             if f.startswith("acedrg-LIG"):
+
                 if f.endswith(".cif"):
-                    newLigCode = self.get_ligand_code ( ligList )
+
+                    exclude_list = []
+                    if hasattr(self.input_data.data,"void1"):
+                        ligands = self.input_data.data.void1
+                        for i in range(len(ligands)):
+                            exclude_list.append ( ligands[i].code )
+
+                    newLigCode = self.get_ligand_code ( ligList+exclude_list )
                     if newLigCode:
                         self.putMessage (
                             "<b>New ligand was generated with generic " +\
-                            "name \"LIG\", which was renamed as \"" +\
+                            "name \"LIG\", and subsequently renamed as \"" +\
                             newLigCode + "\"</b><ul><li>" +\
                             "<span style=\"font-size:85%;\">" +\
                             "<i>The new name is not found in Monomer Library and " +\
                             "is not used in current structure revision.<br>" +\
                             "</i></span></li></ul>"
                         )
-                        self.replace_ligand_code ( f,"LIG",newLigCode )
-                        self.replace_ligand_code ( "acedrg-LIG.pdb","LIG",newLigCode )
+                        ligCIF = self.replace_ligand_code (
+                                            f,"LIG",newLigCode,rename=True )
+                        ligPDB = self.replace_ligand_code (
+                                            "acedrg-LIG.pdb","LIG",newLigCode,
+                                            rename=True )
                         libPath, ligList = self.addLigandToLibrary (
-                                                    libPath,newLigCode,f,ligList )
-                        if libPath==f:
+                                            libPath,newLigCode,ligCIF,ligList )
+                        if libPath==ligCIF:
                             shutil.copy2 ( libPath,"ligands.lib" )
                             libPath = "ligands.lib"
-                        ligand_coot = self.finaliseLigand ( newLigCode,"acedrg-LIG.pdb",f )
+                        ligand_coot = self.finaliseLigand ( newLigCode,ligPDB,ligCIF )
                     else:
                         self.putMessage (
                             "<b>New ligand was generated with generic " +\
@@ -230,13 +250,13 @@ class Coot(basic.TaskDriver):
                     mtime = mt
                     fname = f
 
-        have_results = False
         summary_line = "model not saved"
+        have_results = ligand_coot is not None
 
         if fname:
 
             if newLigCode:
-                self.replace_ligand_code ( fname,"LIG",newLigCode )
+                self.replace_ligand_code ( fname,"LIG",newLigCode,rename=False )
 
             f = istruct.getXYZFileName()
             if not f:
@@ -327,6 +347,9 @@ class Coot(basic.TaskDriver):
         # ============================================================================
         # close execution logs and quit
 
+        if ligand_coot:
+            summary_line = "ligand \"" + ligand_coot.code + "\" built, " + summary_line
+
         self.generic_parser_summary["coot"] = {
             "summary_line" : summary_line
         }
@@ -342,6 +365,9 @@ class Coot(basic.TaskDriver):
                   "<p>This may indicate a problem with software setup." )
 
             raise signal.JobFailure ( rc.msg )
+
+        return
+
 
 # ============================================================================
 

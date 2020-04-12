@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    10.02.20   <--  Date of Last Modification.
+#    11.04.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -59,17 +59,30 @@ class MakeLigand(basic.TaskDriver):
 
         if sourceKey == "S":
             smiles  = self.getParameter ( self.task.parameters.SMILES )
-            code    = self.getParameter ( self.task.parameters.CODE   ).upper()
-            xyzPath = code + ".pdb"
-            cifPath = code + ".cif"
+            code    = self.getParameter ( self.task.parameters.CODE ).strip().upper()
 
-            f = open ( self.smiles_file_path(),'w' )
-            f.write  ( smiles + '\n' )
-            f.close  ()
+            if not code:
+                exclude_list = []
+                if hasattr(self.input_data.data,"void1"):
+                    ligands = self.input_data.data.void1
+                    for i in range(len(ligands)):
+                        exclude_list.append ( ligands[i].code )
+                code = self.get_ligand_code ( exclude_list )
 
-            # make command-line parameters
-            cmd = [ "-i",self.smiles_file_path(),
-                    "-r",code,"-o",code ]
+            if code:
+                xyzPath = code + ".pdb"
+                cifPath = code + ".cif"
+
+                f = open ( self.smiles_file_path(),'w' )
+                f.write  ( smiles + '\n' )
+                f.close  ()
+
+                # make command-line parameters
+                cmd = [ "-i",self.smiles_file_path(),
+                        "-r",code,"-o",code ]
+
+            else:
+                self.putMessage ( "<h3>Failed to generate ligand code.</h3>" )
 
         else:
             code     = self.getParameter ( self.task.parameters.CODE3 ).upper()
@@ -93,7 +106,6 @@ class MakeLigand(basic.TaskDriver):
                         cmd = []  # do not use AceDrg
             else:
                 self.putMessage ( "<h3>Ligand \"" + code + "\" is not found in CCP4 Monomer Library.</h3>" )
-                self.putTitle ( "No Ligand Structure Created" )
                 code = None  # signal not to continue with making ligand
 
         if code:  # can continue
@@ -112,6 +124,14 @@ class MakeLigand(basic.TaskDriver):
                 shutil.copyfile ( lig_path,cifPath )
 
             self.finaliseLigand ( code,xyzPath,cifPath )
+
+            self.generic_parser_summary["makeligand"] = {
+                "summary_line" : "ligand \"" + code + "\" prepared"
+            }
+
+        else:
+            self.putTitle ( "No Ligand Structure Created" )
+
 
         # close execution logs and quit
         self.success ( code is not None )
