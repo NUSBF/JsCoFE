@@ -60,7 +60,9 @@ function TaskCootMB()  {
       min       : 0,             // minimum acceptable number of data instances
       max       : 1              // maximum acceptable number of data instances
     },{    // input data for making new ligand names
-      data_type : {'DataLigand':[]}, // any revision will be passed
+      data_type : {'DataLigand':[]}, // this item is only for having list of
+                                     // all ligands imported or generated
+                                     // (not only those in revision)
       label     : '',        // no label for void data entry
       inputId   : 'void1',   // prefix 'void' will hide entry in import dialog
       version   : 0,         // minimum data version allowed
