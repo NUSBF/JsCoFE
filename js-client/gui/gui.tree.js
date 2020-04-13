@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    20.12.19   <--  Date of Last Modification.
+ *    13.04.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Generic tree class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2019
+ *  (C) E. Krissinel, A. Lebedev 2016-2020
  *
  *  ==========================================================================
  *
@@ -108,6 +108,8 @@ function TreeNode ( text,icon_uri,treeNodeCustomIcon )  {
   this.id             = 'treenode_' + padDigits(__id_cnt++,5);  // node element id (unstable)
   this.parentId       = null;           // parent node element id (unstable)
   this.text           = text;           // node text
+  this.text0          = text;
+  this.highlightId    = 0;
   this.icon           = icon_uri;       // string for custom icon
   this.data           = treeNodeCustomIcon;
   if (!this.data)
@@ -131,6 +133,10 @@ TreeNode.prototype.setSelected = function()  {
 
 TreeNode.prototype.copy = function ( node )  {
   this.text            = node.text;
+  if ('text0' in node)  this.text0 = node.text0;
+                  else  this.text0 = node.text;
+  if ('highlightId' in node)  this.highlightId = node.hightlightId;
+                        else  this.highlightId = 0;
   this.icon            = node.icon;
   this.state           = node.state;
   this.dataId          = node.dataId;
@@ -231,7 +237,6 @@ function Tree ( rootName )  {
 
 Tree.prototype = Object.create ( Widget.prototype );
 Tree.prototype.constructor = Tree;
-
 
 Tree.prototype.addRootNode = function ( text,icon_uri,treeNodeCustomIcon )  {
 var node = new TreeNode ( text,icon_uri,treeNodeCustomIcon );
@@ -429,122 +434,6 @@ Tree.prototype.moveNodeUp = function ( node )  {
 }
 
 
-/*  ------  working version 09.03.2018
-Tree.prototype.moveNodeUp = function ( node )  {
-
-  if (node.parentId)  {
-
-    var parent_node = this.node_map[node.parentId];
-
-    if (parent_node.parentId)  {  // do not move above the root
-
-      var grandpa_node      = this.node_map[parent_node.parentId];
-      var node_children     = node.children;
-      var parent_children   = parent_node.children;
-      var grandpa_children  = grandpa_node.children;
-      node.children         = [];
-      parent_node.children  = [];
-      grandpa_node.children = [];
-
-      // node moves up and becomes child of grand_parent_node
-      // parent_node becomes child of node and receives all its children
-      if (this.created)  {
-        $(this.root.element).jstree(true).move_node(parent_node,node,'last',false,false);
-        $(this.root.element).jstree(true).move_node(node,grandpa_node,'last',false,false);
-        $(this.root.element).jstree(true).move_node(node_children,parent_node,'last',false,false);
-      }
-
-      for (var i=0;i<parent_children.length;i++)
-        if (parent_children[i].id!=node.id)
-          parent_node.children.push ( parent_children[i] );
-      parent_node.children = parent_node.children.concat ( node_children );
-      for (var i=0;i<parent_node.children.length;i++)
-        parent_node.children[i].parentId = parent_node.id;
-
-      node.children = [parent_node];
-      parent_node.parentId = node.id;
-
-      // grand parent node loses parent_node as a child but gets node instead
-      for (var i=0;i<grandpa_children.length;i++)
-        if (grandpa_children[i].id!=parent_node.id)
-          grandpa_node.children.push ( grandpa_children[i] );
-      grandpa_node.children.push ( node );
-      node.parentId = grandpa_node.id;
-
-      // force selection and refresh the tree
-      if (this.created)  {
-        this.selectSingle ( node );  // force selection of the node if tree is displayed
-        $(this.root.element).jstree().refresh();
-        this.confirmCustomIconsVisibility();
-      }
-
-    }
-  }
-}
-*/
-
-
-/*
-Tree.prototype.moveNodeUp = function ( node )  {
-
-  if (node.parentId)  {
-
-    var parent_node = this.node_map[node.parentId];
-
-    if (parent_node.parentId)  {  // do not move above the root
-
-      var grandpa_node      = this.node_map[parent_node.parentId];
-      var node_children     = node.children;
-      var parent_children   = parent_node.children;
-      var grandpa_children  = grandpa_node.children;
-      node.children         = [];
-      parent_node.children  = [];
-      grandpa_node.children = [];
-
-      // node moves up and becomes child of grand_parent_node
-      // parent_node becomes child of node and receives all its children
-      // node receives all children of the grand_parent_nodex
-      if (this.created)  {
-        //$(this.root.element).jstree(true).move_node(parent_node,node,'last',false,false);
-        $(this.root.element).jstree(true).move_node(grandpa_children,node,'last',false,false);
-        $(this.root.element).jstree(true).move_node(node,grandpa_node,'last',false,false);
-        $(this.root.element).jstree(true).move_node(node_children,parent_node,'last',false,false);
-      }
-
-      for (var i=0;i<parent_children.length;i++)
-        if (parent_children[i].id!=node.id)
-          parent_node.children.push ( parent_children[i] );
-      parent_node.children = parent_node.children.concat ( node_children );
-      for (var i=0;i<parent_node.children.length;i++)
-        parent_node.children[i].parentId = parent_node.id;
-
-      //node.children = [parent_node];
-      //parent_node.parentId = node.id;
-      node.children = grandpa_children;
-      for (var i=0;i<node.children.length;i++)
-        node.children[i].parentId = node.id;
-
-      // grand parent node loses all children but gets node instead
-      //for (var i=0;i<grandpa_children.length;i++)
-      //  if (grandpa_children[i].id!=parent_node.id)
-      //    grandpa_node.children.push ( grandpa_children[i] );
-      //grandpa_node.children.push ( node );
-      grandpa_node.children = [node];
-      node.parentId = grandpa_node.id;
-
-      // force selection and refresh the tree
-      if (this.created)  {
-        this.selectSingle ( node );  // force selection of the node if tree is displayed
-        $(this.root.element).jstree().refresh();
-        this.confirmCustomIconsVisibility();
-      }
-
-    }
-  }
-}
-*/
-
-
 Tree.prototype.setNodes = function ( nodes )  {
 // Recreation from stringifying this.root_nodes, should be applied only to new
 // tree. The argument is array of root nodes JSON.parsed from storage string.
@@ -569,16 +458,6 @@ var count = 0;
   return count;
 }
 
-/*
-var ref_treeview = $("#treeView").jstree(true);
-sel = ref_treeview.get_selected();
-if (!sel.length) {
-    return false;
-}
-sel = sel[0];
-sel = ref_treeview.create_node(sel, "childNode", "last", CreateNode,true);
-*/
-
 
 Tree.prototype.selectNode = function ( node,single_bool )  {
 // This function will select given node and deselect all others
@@ -601,20 +480,6 @@ Tree.prototype.selectNode = function ( node,single_bool )  {
 Tree.prototype.selectSingle = function ( node )  {
 // This function will select given node and deselect all others
   this.selectNode ( node,true );
-
-/*
-  if (this.selected_node_id in this.node_map)
-    this.node_map[this.selected_node_id].state.selected = false;
-
-  if (this.created)  {
-    $(this.root.element).jstree('deselect_all');
-    $(this.root.element).jstree(true).select_node('#'+node.id);
-  }
-
-  node.state.selected   = true;
-  this.selected_node_id = node.id;
-*/
-
 }
 
 
@@ -701,7 +566,7 @@ Tree.prototype.setStyle = function ( treeNode,style_str,propagate_int )  {
     }
 
     if (propagate_int<0)
-      this.setStyle ( treeNode.parentId,style_str,propagate_int );
+      this.setStyle ( this.node_map[treeNode.parentId],style_str,propagate_int );
     else if (propagate_int>0)  {
       for (var i=0;i<treeNode.children.length;i++)
         this.setStyle ( treeNode.children[i],style_str,propagate_int );
@@ -742,13 +607,9 @@ Tree.prototype.deleteNode = function ( node )  {
   if (!node)
     return;
 
-  if (!node.parentId)
-    return;
-
-  if (!(node.id in this.node_map))
-    return;
-
-  if (!(node.parentId in this.node_map))
+  if ((!node.parentId)              ||
+      (!(node.id in this.node_map)) ||
+      (!(node.parentId in this.node_map)))
     return;
 
   //  remove node from children list of its parent
@@ -788,86 +649,6 @@ Tree.prototype.deleteNode = function ( node )  {
     else  this.selectSingle ( pnode );
   }
 
-  /*
-  // find sibling position of given node
-  var pos = -1;
-  for (var i=0;(i<parent_children.length) && (pos<0);i++)
-    if (parent_children[i].id==node.id)
-      pos = i;
-
-  if (pos>0)  {
-    // given node is not leading sibling; push it up with all its children
-
-    if (this.created)
-      $(this.root.element).jstree(true).move_node(node,parent_node,pos-1,false,false);
-
-    // reflect changes in internal list of children
-    var snode = parent_children[pos-1];
-    parent_children[pos-1] = parent_children[pos];
-    parent_children[pos]   = snode;
-
-  } else if (parent_children.length>1) {
-    // given node is the leading sibling; convert other siblings to its children
-
-    var siblings = [];
-    for (var i=0;i<parent_children.length;i++)
-      if (parent_children[i].id!=node.id)
-        siblings.push ( parent_children[i] );
-
-    if (this.created)
-      $(this.root.element).jstree(true).move_node(siblings,node,'last',false,false);
-
-    // reflect changes in internal list of children
-    for (var i=0;i<siblings.length;i++)
-      siblings[i].parentId = node.id;
-    node.children = node.children.concat ( siblings );
-    parent_node.children = [node];
-
-  } else  {
-    // given node is the only child of its parent; make it parent's parent
-
-    var grandpa_node      = this.node_map[parent_node.parentId];
-    var node_children     = node.children;
-    var grandpa_children  = grandpa_node.children;
-    node.children         = [];
-    parent_node.children  = [];
-    grandpa_node.children = [];
-
-    // node moves up and becomes child of grand_parent_node
-    // parent_node becomes child of node and receives all its children
-    if (this.created)  {
-      $(this.root.element).jstree(true).move_node(parent_node,node,'last',false,false);
-      $(this.root.element).jstree(true).move_node(node,grandpa_node,'last',false,false);
-      $(this.root.element).jstree(true).move_node(node_children,parent_node,'last',false,false);
-    }
-
-    for (var i=0;i<parent_children.length;i++)
-      if (parent_children[i].id!=node.id)
-        parent_node.children.push ( parent_children[i] );
-    parent_node.children = parent_node.children.concat ( node_children );
-    for (var i=0;i<parent_node.children.length;i++)
-      parent_node.children[i].parentId = parent_node.id;
-
-    node.children = [parent_node];
-    parent_node.parentId = node.id;
-
-    // grand parent node loses parent_node as a child but gets node instead
-    for (var i=0;i<grandpa_children.length;i++)
-      if (grandpa_children[i].id!=parent_node.id)
-        grandpa_node.children.push ( grandpa_children[i] );
-    grandpa_node.children.push ( node );
-    node.parentId = grandpa_node.id;
-
-  }
-
-  // force selection and refresh the tree
-  if (this.created)  {
-    this.selectSingle ( node );  // force selection of the node if tree is displayed
-    $(this.root.element).jstree().refresh();
-    this.confirmCustomIconsVisibility();
-  }
-  */
-
 }
 
 
@@ -877,13 +658,9 @@ Tree.prototype.deleteBranch = function ( node )  {
   if (!node)
     return;
 
-  if (!node.parentId)
-    return;
-
-  if (!(node.id in this.node_map))
-    return;
-
-  if (!(node.parentId in this.node_map))
+  if ((!node.parentId)              ||
+      (!(node.id in this.node_map)) ||
+      (!(node.parentId in this.node_map)))
     return;
 
   this.deleteChildren ( node );

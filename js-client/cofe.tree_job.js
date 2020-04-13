@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    28.02.20   <--  Date of Last Modification.
+ *    13.04.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -148,8 +148,12 @@ var nodeId = null;
 }
 
 
-var __notViewedStyle = 'color:#00A000;';
-var __remarkStyle    = 'color:#A00000;font-style:italic;';
+var __deleteStyle     = 'color:#FF0000;text-decoration:line-through;';
+var __notViewedStyle  = 'color:#00A000;';
+var __remarkStyle     = 'color:#A00000;font-style:italic;';
+var __highlightStyle  = 'background-color:yellow;padding:4px 16px 4px 2px;';
+var __highlightStyleL = 'background-color:lime;padding:4px 16px 4px 2px;';
+
 
 JobTree.prototype.readProjectData = function ( page_title,
                                                onLoaded_func,
@@ -508,22 +512,6 @@ JobTree.prototype._add_job = function ( insert_bool,task,dataBox,
     if (onAdd_func)
       onAdd_func();
 
-    /*
-    (function(tree){
-      tree.saveProjectData ( [task],[],function(){
-        window.setTimeout ( function(){
-        if (insert_bool)
-          window.setTimeout ( function(){
-            for (var key in tree.node_map)  {
-              var node = tree.node_map[key];
-              if (node)
-                tree.resetNodeName ( node.id );
-            }
-          },100 );
-      });
-    }(this))
-    */
-
     this.openJob ( dataBox,parent_page );
     this.saveProjectData ( [task],[],null );
 
@@ -621,6 +609,55 @@ JobTree.prototype.startChainTask = function ( task,nodeId )  {
 }
 
 
+JobTree.prototype.clearHighlights = function()  {
+  for (var nid in this.node_map)  {
+    var node = this.node_map[nid];
+    if (node.highlightId)  {
+      if ((nid in this.task_map) && (!this.task_map[nid].job_dialog_data.viewed))
+            this.setStyle ( node,__notViewedStyle,0 );
+      else  this.setStyle ( node,'',0 );
+      node.highlightId = 0;
+    }
+  }
+}
+
+
+Tree.prototype.getLastNode = function ( node )  {
+  if (node.children.length<=0)
+    return node;
+  var node0  = node;
+  var taskNo = -1;
+  if (node.id in this.task_map)
+    taskNo = this.task_map[node.id].id;
+  for (var i=0;i<node.children.length;i++)  {
+    var nodei = this.getLastNode ( node.children[i] );
+    if ((nodei.id in this.task_map) && (this.task_map[nodei.id].id>=taskNo))  {
+      taskNo = this.task_map[nodei.id].id;
+      node0  = nodei;
+    }
+  }
+  return nodei;
+}
+
+
+JobTree.prototype.toggleBranchHighlight = function()  {
+  // remove all highlights first
+  var node = this.getSelectedNode();
+  if (!node.highlightId)  {
+    this.clearHighlights();
+    node = this.getLastNode ( node );
+    this.setStyle ( node,__highlightStyleL,0 );
+    node.highlightId = 1;
+    while (node.parentId)  {
+      node = this.node_map[node.parentId];
+      this.setStyle ( node,__highlightStyle,0 );
+      node.highlightId = 1;
+    }
+  } else
+    this.clearHighlights();
+}
+
+
 JobTree.prototype.moveJobUp = function()  {
   if (this.selected_node_id)  {
     this.moveSelectedNodeUp();
@@ -671,19 +708,6 @@ JobTree.prototype.deleteJob = function ( onDelete_func ) {
         }
       } while (len0<delNodeId.length);
 
-      /*
-      // add all harvested links
-      for (var i=0;i<delNodeId.length;i++)  {
-        var task = tree.task_map[delNodeId[i]];
-        if (task)
-          for (var j=0;j<task.harvestLinks.length;j++)  {
-            var nodeId = tree.getTaskNodeId ( task.harvestLinks[j] );
-            if (nodeId && (delNodeId.indexOf(nodeId)<0))
-              delNodeId.push ( nodeId );
-          }
-      }
-      */
-
       // sort node ids in descending order in order to avoid clashes in case
       // of nodes selected in same branch
       delNodeId.sort ( function(a,b){return b-a;} );
@@ -697,8 +721,7 @@ JobTree.prototype.deleteJob = function ( onDelete_func ) {
         var propagate = 1;
         if (task && task.isRemark())
           propagate = 0;
-        tree.setStyle ( tree.node_map[delNodeId[i]],
-                        'color:#FF0000;text-decoration:line-through;',propagate );
+        tree.setStyle ( tree.node_map[delNodeId[i]],__deleteStyle,propagate );
         nDel++;
         if (propagate)  {
           if (tree.hasRunningJobs(delNodeId[i]))
