@@ -144,7 +144,7 @@ function LoginPage ( sceneId )  {
   panel.setWidget               ( pwd_btn  ,row++,0,1,3 );
   panel.setWidget               ( reg_btn  ,row++,0,1,3 );
 
-//  if (!__local_service)
+  if (!__local_service)
     panel.setLabel              ( '&nbsp;<br><center><i>For best experience, access ' +
                                   'this web site via<br>CCP4 Cloud Client, ' +
                                   'which can be obtained by installing<br>' +
