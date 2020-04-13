@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    02.04.20   <--  Date of Last Modification.
+ *    13.04.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -41,6 +41,7 @@ function ProjectPage ( sceneId )  {
   var replayJobTree  = null;  // == this.replay_job_tree, for internal references
   var add_btn        = null;
   var add_rem_btn    = null;
+  var thlight_btn    = null;
   //var insert_btn    = null;
   var moveup_btn     = null;
   var del_btn        = null;
@@ -90,6 +91,10 @@ function ProjectPage ( sceneId )  {
                                 function(){ del_btn.setDisabled ( false ); } );
   }
 
+  function toggleBranchHighlight()  {
+    jobTree.toggleBranchHighlight ();
+  }
+
   function moveJobUp()  {
     jobTree.moveJobUp ( true,setButtonState );
   }
@@ -132,21 +137,10 @@ function ProjectPage ( sceneId )  {
         var tparent = jobTree.getNonRemarkParent ( task );
         if (tparent)
           add_enabled = (tparent.state==job_code.finished);
-          /*
-          add_enabled = ((tparent.state==job_code.finished)  ||
-                         (tparent.state==job_code.noresults) ||
-                         (tparent.state==job_code.failed)    ||
-                         (tparent.state==job_code.stopped));
-          */
       }
       add_btn.setEnabled ( (!__dormant) &&
                            ((task.state==job_code.finished)  ||
-                            //(task.state==job_code.noresults) ||
-                            //(task.state==job_code.failed)    ||
-                            //(task.state==job_code.stopped)   ||
                             (is_remark && add_enabled)) );
-      //insert_btn.setEnabled ( add_btn.isEnabled() );
-      //clone_btn  .setEnabled ( dsel && (task.state!=job_code.remark) );
       clone_btn  .setEnabled ( (!__dormant) && dsel && task.canClone(node,jobTree) );
       moveup_btn .setEnabled ( (!__dormant) && task.canMove(node,jobTree) );
       stop_btn   .setEnabled ( dsel && (task.state==job_code.running) );
@@ -156,12 +150,12 @@ function ProjectPage ( sceneId )  {
       else  del_btn.setTooltip ( 'Delete job' );
     } else  {  // root
       add_btn   .setEnabled ( !__dormant );
-      //insert_btn.setEnabled ( true  );
       clone_btn .setEnabled ( false );  // dsel ???
       moveup_btn.setEnabled ( false );
       stop_btn  .setEnabled ( false );
       add_rem_btn.setEnabled ( (!__dormant) && (!has_remark) );
     }
+    thlight_btn.setEnabled ( true );
 
     if (replay_btn)  {
       replay_btn.setVisible ( replay_mode );
@@ -191,8 +185,6 @@ function ProjectPage ( sceneId )  {
       inputBox .addWidget     ( ibx_grid );
       inputBox.launch ( 'Apply',function(){
         var logins = share_inp.getValue();
-        //alert ( logins );
-        //a.split(",").map(function(item){ return item.trim(); });
         var share0 = jobTree.projectData.desc.owner.share;
         jobTree.projectData.desc.owner.share = logins;
         serverRequest ( fe_reqtype.shareProject,{
@@ -294,21 +286,18 @@ function ProjectPage ( sceneId )  {
       };
     }
 
+    items.addHighlightBranchItem = { // The "highlight" menu item
+      label : "Toggle branch highlighting",
+      icon  : image_path('highlight_branch'),
+      action: toggleBranchHighlight
+    };
+
     return items;
 
   }
 
   function onTreeLoaded() {
 
-//alert ( 'on tree');
-
-    /*
-    add_btn    .setDisabled ( __dormant );
-    //insert_btn .setDisabled ( false );
-    moveup_btn .setDisabled ( __dormant );
-    clone_btn  .setDisabled ( __dormant );
-    add_rem_btn.setDisabled ( __dormant );
-    */
     refresh_btn.setDisabled ( false );
 
     if (split_btn)
@@ -318,13 +307,13 @@ function ProjectPage ( sceneId )  {
 
     // add button listeners
     add_btn    .addOnClickListener ( addJob    );
-    //insert_btn.addOnClickListener ( insertJob );
     moveup_btn .addOnClickListener ( moveJobUp );
     del_btn    .addOnClickListener ( deleteJob );
     open_btn   .addOnClickListener ( openJob   );
     stop_btn   .addOnClickListener ( stopJob   );
     clone_btn  .addOnClickListener ( cloneJob  );
     add_rem_btn.addOnClickListener ( addRemark );
+    thlight_btn.addOnClickListener ( toggleBranchHighlight );
     title_lbl  .setText ( jobTree.projectData.desc.title );
 
     __current_project = jobTree.projectData.desc.name;
@@ -335,8 +324,6 @@ function ProjectPage ( sceneId )  {
     jobTree.addSignalHandler ( cofe_signals.treeUpdated,function(data){
       setButtonState();
     });
-
-//    window.setTimeout ( function(){ alert('p1'); setButtonState(); },1000 );
 
     if ((jobTree.root_nodes.length==1) &&
         (jobTree.root_nodes[0].children.length<=0))
@@ -370,7 +357,6 @@ function ProjectPage ( sceneId )  {
     this.addMenuItem ( 'My Account','settings',function(){
       jobTree.saveProjectData ( [],[],function(){ makeAccountPage(sceneId); });
     });
-//    if (__admin)
     if (__user_role==role_code.admin)
       this.addMenuItem ( 'Admin Page',role_code.admin,function(){
         jobTree.saveProjectData ( [],[],function(){ makeAdminPage(sceneId); } );
@@ -401,7 +387,6 @@ function ProjectPage ( sceneId )  {
   this.toolbar_div.addWidget ( toolbar );
   this.grid.setWidget ( this.toolbar_div, 1,0,1,1 );
 
-  //var toolbar = this.grid.setGrid ( '',1,0,1,1 );
   var panel = this.grid.setGrid ( '',1,1,1,1 );
   // center panel horizontally and make left- and right-most columns page margins
   // note that actual panel size is set in function resizeTreePanel() below
@@ -411,27 +396,27 @@ function ProjectPage ( sceneId )  {
   this.grid.setCellSize ( '40px',''    ,1,2,1,1 );
 
   // make the toolbar
-  add_btn     = toolbar.setButton ( '',image_path('add')     , 1,0,1,1 );
-  moveup_btn  = toolbar.setButton ( '',image_path('moveup')  , 2,0,1,1 );
-  clone_btn   = toolbar.setButton ( '',image_path('clonejob'), 3,0,1,1 );
-  del_btn     = toolbar.setButton ( '',image_path('remove')  , 4,0,1,1 );
-  add_rem_btn = toolbar.setButton ( '',image_path('task_remark'), 5,0,1,1 );
-  toolbar.setLabel ( '<hr style="border:1px dotted;"/>'       , 6,0,1,1 );
-  open_btn    = toolbar.setButton ( '',image_path('openjob')  , 7,0,1,1 );
-  stop_btn    = toolbar.setButton ( '',image_path('stopjob')  , 8,0,1,1 );
-  toolbar.setLabel ( '<hr style="border:1px dotted;"/>'       , 9,0,1,1 );
-  refresh_btn = toolbar.setButton ( '',image_path('refresh')  ,10,0,1,1 );
-  help_btn    = toolbar.setButton ( '',image_path('help')     ,11,0,1,1 );
+  var cnt = 0;
+  add_btn     = toolbar.setButton ( '',image_path('add')      ,cnt++,0,1,1 );
+  moveup_btn  = toolbar.setButton ( '',image_path('moveup')   ,cnt++,0,1,1 );
+  clone_btn   = toolbar.setButton ( '',image_path('clonejob') ,cnt++,0,1,1 );
+  del_btn     = toolbar.setButton ( '',image_path('remove')   ,cnt++,0,1,1 );
+  toolbar.setLabel ( '<hr style="border:1px dotted;"/>'       ,cnt++,0,1,1 );
+  add_rem_btn = toolbar.setButton ( '',image_path('task_remark'), cnt++,0,1,1 );
+  thlight_btn = toolbar.setButton ( '',image_path('highlight_branch'),cnt++,0,1,1 );
+  toolbar.setLabel ( '<hr style="border:1px dotted;"/>'       ,cnt++,0,1,1 );
+  open_btn    = toolbar.setButton ( '',image_path('openjob')  ,cnt++,0,1,1 );
+  stop_btn    = toolbar.setButton ( '',image_path('stopjob')  ,cnt++,0,1,1 );
+  toolbar.setLabel ( '<hr style="border:1px dotted;"/>'       ,cnt++,0,1,1 );
+  refresh_btn = toolbar.setButton ( '',image_path('refresh')  ,cnt++,0,1,1 );
+  help_btn    = toolbar.setButton ( '',image_path('help')     ,cnt++,0,1,1 );
 
-//  if (__admin || (__login_user=='Developer'))  {
   if ((__user_role==role_code.admin) || (__user_role==role_code.developer))  {
     toolbar.setLabel ( '<hr style="border:1px dotted;"/>' ,12,0,1,1 );
     split_btn = toolbar.setButton ( '',image_path('split_page'),13,0,1,1 );
   }
 
   add_btn    .setSize('40px','40px').setTooltip('Add job'   ).setDisabled(true);
-  //insert_btn.setSize('40px','40px').setTooltip('Insert job after selected')
-  //                                                          .setDisabled(true);
   moveup_btn .setSize('40px','40px').setTooltip(
                   'Move job one position up the tree branch').setDisabled(true);
   del_btn    .setSize('40px','40px').setTooltip('Delete job').setDisabled(true);
@@ -439,9 +424,20 @@ function ProjectPage ( sceneId )  {
   stop_btn   .setSize('40px','40px').setTooltip('Stop job'  ).setDisabled(true);
   clone_btn  .setSize('40px','40px').setTooltip('Clone job' ).setDisabled(true);
   add_rem_btn.setSize('40px','40px').setTooltip('Add remark' ).setDisabled(true);
+  thlight_btn.setSize('40px','40px').setTooltip('Toggle branch highlight' )
+                                                             .setDisabled(true);
   refresh_btn.setSize('40px','40px').setTooltip('Refresh');
   help_btn   .setSize('40px','40px').setTooltip('Documentation');
 
+  for (var i=0;i<cnt;i++)
+    toolbar.setCellSize ( '','12px',i,0 );
+
+  if (split_btn)  {
+    split_btn.setSize('40px','40px').setTooltip('Show replay project');
+    split_btn.setDisabled ( true );
+  }
+
+  /*
   toolbar.setCellSize ( '' ,'42px',1 ,0 );
   toolbar.setCellSize ( '' ,'42px',2 ,0 );
   toolbar.setCellSize ( '' ,'42px',3 ,0 );
@@ -459,12 +455,13 @@ function ProjectPage ( sceneId )  {
     split_btn.setSize('40px','40px').setTooltip('Show replay project');
     split_btn.setDisabled ( true );
   }
+  */
 
   add_btn    .setDisabled ( true );
-  //insert_btn .setDisabled ( true );
   moveup_btn .setDisabled ( true );
   clone_btn  .setDisabled ( true );
   add_rem_btn.setDisabled ( true );
+  thlight_btn.setDisabled ( true );
   refresh_btn.setDisabled ( true );
 
   help_btn.addOnClickListener ( function(){
@@ -630,5 +627,4 @@ ProjectPage.prototype.getJobTree = function()  {
 function makeProjectPage ( sceneId )  {
   makePage ( new ProjectPage(sceneId) );
   setHistoryState ( 'ProjectPage' );
-  //__current_project
 }
