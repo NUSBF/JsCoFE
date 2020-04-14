@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.04.20   <--  Date of Last Modification.
+ *    14.04.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -315,7 +315,8 @@ if (!dbx)  {
                 'your device.'];
       }
 
-      if (!this.checkEnvironment(__environ_client))
+      if (((this.nc_type=='client') || (!__cloud_storage)) &&
+          (!this.checkEnvironment(__environ_client)))
         return ['environment-client',
                 'task software is not installed on your device',
                 '<h3>Task software is not installed on your device</h3>' +
