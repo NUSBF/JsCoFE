@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    10.02.20   <--  Date of Last Modification.
+#    15.04.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -55,9 +55,11 @@ class EnsemblePrepSeq(basic.TaskDriver):
     def run(self):
 
         # Check avalability of PDB archive
-        pdbLocal = ""
+        pdbLocal  = ""
+        checkLine = "CHECK True\n"
         if "PDB_DIR" in os.environ:
-            pdbLocal = "PDBLOCAL " + os.environ["PDB_DIR"] + "\n"
+            pdbLocal  = "PDBLOCAL " + os.environ["PDB_DIR"] + "\n"
+            checkLine = "CHECK False\n"
         elif not self.have_internet():
             self.fail ( "<h3>No internet connection.</h3>" +\
                     "This task requires access to PDB archive, which is not " +\
@@ -81,7 +83,7 @@ class EnsemblePrepSeq(basic.TaskDriver):
             "MDLP False\n" + \
             "MDLM False\n" + \
             "MDLU False\n" + \
-            "CHECK True\n" + \
+            checkLine + \
             "UPDATE False\n" + \
             "PICKLE False\n" + \
             "MRNUM " + str(self.getParameter(self.task.parameters.sec1.contains.MRNUM,False)) + "\n" + \
@@ -224,8 +226,9 @@ class EnsemblePrepSeq(basic.TaskDriver):
                     domainNo += 1
                     dirName   = "domain_" + str(domainNo)
 
-            os.rename ( seq.getSeqFilePath(self.inputDir()),
-                        seq.getSeqFilePath(self.outputDir()) )
+
+            #os.rename ( seq.getSeqFilePath(self.inputDir()),
+            #            seq.getSeqFilePath(self.outputDir()) )
 
             # ----------------------------------------------------------------
             if not ensembles_found:

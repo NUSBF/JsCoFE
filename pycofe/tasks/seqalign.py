@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    06.03.20   <--  Date of Last Modification.
+#    15.04.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -128,7 +128,7 @@ class SeqAlign(basic.TaskDriver):
             self.putMessage ( "Number of sequences is less than 2" )
         elif seqtype=="" or seqtype=="x":
             self.putTitle   ( "Input Error" )
-            self.putMessage ( "Inconsistent sequence types (mixed protein, dna and rna)" )
+            self.putMessage ( "Inconsistent sequence types (mixed protein, ligand, dna and rna?)" )
         else:
 
             if seqtype!="protein":

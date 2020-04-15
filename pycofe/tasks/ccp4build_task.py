@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    26.03.20   <--  Date of Last Modification.
+#    15.04.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -397,7 +397,12 @@ class CCP4Build(basic.TaskDriver):
                     rev.register ( self.outputDataBox )
                     have_results = True
 
-                    qualrep.quality_report ( self,rev )
+                    rvrow0 = self.rvrow
+                    try:
+                        qualrep.quality_report ( self,revision )
+                    except:
+                        self.stderr ( " *** molprobity failure" )
+                        self.rvrow = rvrow0
 
                 else:
                     self.putMessage ( "<i>Cannot make structure for " +\

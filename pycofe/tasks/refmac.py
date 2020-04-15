@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    09.02.20   <--  Date of Last Modification.
+#    15.04.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -328,7 +328,12 @@ class Refmac(basic.TaskDriver):
                 self.registerRevision     ( revision  )
                 have_results = True
 
-                qualrep.quality_report ( self,revision )
+                rvrow0 = self.rvrow
+                try:
+                    qualrep.quality_report ( self,revision )
+                except:
+                    self.stderr ( " *** molprobity failure" )
+                    self.rvrow = rvrow0
 
         else:
             self.putTitle ( "No Output Generated" )

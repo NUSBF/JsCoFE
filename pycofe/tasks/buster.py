@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    15.03.20   <--  Date of Last Modification.
+#    15.04.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -244,7 +244,12 @@ class Buster(basic.TaskDriver):
                 self.registerRevision     ( revision  )
                 have_results = True
 
-                qualrep.quality_report ( self,revision )
+                rvrow0 = self.rvrow
+                try:
+                    qualrep.quality_report ( self,revision )
+                except:
+                    self.stderr ( " *** molprobity failure" )
+                    self.rvrow = rvrow0
 
         # remove this because it contains soft links not good for copying
         #shutil.rmtree ( self.buster_dir() )

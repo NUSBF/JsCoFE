@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    13.02.20   <--  Date of Last Modification.
+#    15.04.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -53,9 +53,11 @@ class MrBump(basic.TaskDriver):
     def run(self):
 
         # Check the existence of PDB archive
-        pdbLine = ""
+        pdbLine   = ""
+        checkLine = "CHECK True\n"
         if self.checkPDB(False):
-            pdbLine = "PDBLOCAL " + os.environ["PDB_DIR"] + "\n"
+            pdbLine   = "PDBLOCAL " + os.environ["PDB_DIR"] + "\n"
+            checkLine = "CHECK False\n"
         elif not self.have_internet():
             self.fail ( "<h3>No internet connection.</h3>" +\
                     "This task requires access to PDB archive, which is not " +\
@@ -114,7 +116,7 @@ class MrBump(basic.TaskDriver):
                     "BUCC True\n" + \
                     "BCYC 5\n" + \
                     "ARPW False\n" + \
-                    "CHECK True\n" + \
+                    checkLine + \
                     "UPDATE False\n" + \
                     "PICKLE False\n" + \
                     "MRNUM 10\n" + \
@@ -142,7 +144,7 @@ class MrBump(basic.TaskDriver):
                 "MDLP False\n" + \
                 "MDLM False\n" + \
                 "MDLU False\n" + \
-                "CHECK True\n" + \
+                checkLine + \
                 "UPDATE False\n" + \
                 "PICKLE False\n" + \
                 "MRNUM 5\n" + \
