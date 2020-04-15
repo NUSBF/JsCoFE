@@ -216,6 +216,10 @@ if (!dbx)  {
   }
 
   TaskTemplate.prototype.compareEnvironment = function ( reqEnv,env )  {
+    if (this._type=="TaskAmple")  {
+      console.log ( "reqEnv=" + JSON.stringify(reqEnv) );
+      console.log ( "env=" + JSON.stringify(env) );
+    }
     var ok = true;
     for (var i=0;(i<reqEnv.length) && ok;i++)
       if (reqEnv[i].constructor === Array)  {
@@ -229,19 +233,6 @@ if (!dbx)  {
 
   TaskTemplate.prototype.checkEnvironment = function ( env )  {
     return this.compareEnvironment ( this.requiredEnvironment(),env );
-    /*
-    var reqEnv = this.requiredEnvironment();
-    var ok = true;
-    for (var i=0;(i<reqEnv.length) && ok;i++)
-      if (reqEnv[i].constructor === Array)  {
-        ok = false;
-        for (var j=0;(j<reqEnv[i].length) && (!ok);j++)
-          ok = (env.indexOf(reqEnv[i][j])>=0);
-      } else
-        ok = (env.indexOf(reqEnv[i])>=0);
-  //console.log ( ' ' + env + ' <-> ' + reqEnv + ' = ' + ok );
-    return ok;
-    */
   }
 
   TaskTemplate.prototype.isTaskAvailable = function()  {

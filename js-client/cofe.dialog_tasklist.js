@@ -92,65 +92,6 @@ function TaskListDialog ( dataBox,branch_task_list,onSelect_func )  {
 TaskListDialog.prototype = Object.create ( Widget.prototype );
 TaskListDialog.prototype.constructor = TaskListDialog;
 
-/*
-function checkEnvironment ( task_obj,env )  {
-  var reqEnv = task_obj.requiredEnvironment();
-  var ok = true;
-  for (var i=0;(i<reqEnv.length) && ok;i++)
-    if (reqEnv[i].constructor === Array)  {
-      ok = false;
-      for (var j=0;(j<reqEnv[i].length) && (!ok);j++)
-        ok = (env.indexOf(reqEnv[i][j])>=0);
-    } else
-      ok = (env.indexOf(reqEnv[i])>=0);
-//console.log ( ' ' + env + ' <-> ' + reqEnv + ' = ' + ok );
-  return ok;
-}
-
-TaskListDialog.prototype.isTaskAvailable = function ( task_obj )  {
-
-  if (__exclude_tasks.indexOf(task_obj._type)>=0)
-    return 'server-excluded';  // task excluded in server configuration
-
-  if ((__exclude_tasks.indexOf('unix-only')>=0) &&
-      (task_obj.platforms().indexOf('W')<0))
-    return 'windows-excluded';  // task not supported on Windows
-
-  if ((task_obj.nc_type=='client') && (!__local_service))
-    return 'client';   // client task while there is no client running
-
-  if ((task_obj.nc_type=='client-storage') &&
-      (!__local_service) && (!__cloud_storage))
-    return 'client-storage';  // task require either client or cloud storage
-                              // but neither is given
-
-  if (startsWith(task_obj.nc_type,'client'))  {
-    if (__local_service &&
-        (compareVersions(__client_version,task_obj.lowestClientVersion())<0))
-      return 'client-version';   // task requires client of higher version
-    if (!checkEnvironment(task_obj,__environ_client))
-      return 'environment-client';
-  } else  {
-    var authID = task_obj.authorisationID();
-    if (authID && __auth_software && (authID in __auth_software) &&
-        ((!(authID in __user_authorisation)) ||
-         (!__user_authorisation[authID].auth_date)))
-      return 'authorisation';
-  }
-
-  if ((task_obj.nc_type!='client') && (!checkEnvironment(task_obj,__environ_server)))
-    return 'environment-server';
-
-  //if ((__exclude_tasks.indexOf(task_obj._type)>=0) ||
-  //    ((__exclude_tasks.indexOf('unix-only')>=0) &&
-  //     (task_obj.platforms().indexOf('W')<0)))
-  //  return false;
-
-  return 'ok';
-
-}
-*/
-
 TaskListDialog.prototype.setTask = function ( task_obj,grid,row,setall )  {
 
   //if ((!__local_service) && (task_obj.nc_type=='client'))
@@ -176,7 +117,7 @@ TaskListDialog.prototype.setTask = function ( task_obj,grid,row,setall )  {
   grid.setLabel             ( ' ', row,1,1,1 );
   var title = task_obj.title;
   if (avail_key[0]!='ok')
-    title += '<span style="font-size:14px;"><br><i>** ' + avail_key[1] + '</i></span>';
+    title += '<br><i><span style="font-size:14px;">** ' + avail_key[1] + '</i></span>';
     //title += '<br><i><font size="-1">** ' + avail_key[1] + '</font></i>';
   var lbl = grid.setLabel   ( title,row,2,1,1 );
   grid.setNoWrap            ( row,2 );
