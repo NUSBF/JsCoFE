@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    18.10.19   <--  Date of Last Modification.
+ *    15.04.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Local (on-desktop) jsCoFE launcher
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2019
+ *  (C) E. Krissinel, A. Lebedev 2016-2020
  *
  *  =================================================================
  *
@@ -247,62 +247,87 @@ function configFileName(callback) {
 // ==========================================================================
 // Assign available port numbers to zero ports and start servers
 
-conf.assignPorts ( function(){
+function launch()  {
 
-  // Port numbers are assigned and stored in current configuration. Write
-  // it to a temporary file for starting servers.
+  conf.assignPorts ( function(){
 
-  configFileName(function(err,cfgpath) {
+    // Port numbers are assigned and stored in current configuration. Write
+    // it to a temporary file for starting servers.
 
-    if (err) {  // error; not much to do, just write into log and exit
+    configFileName(function(err,cfgpath) {
 
-      log.error ( 6,'cannot create temporary storage for file ' +
-                    'request redirection' );
-      process.exit();
+      if (err) {  // error; not much to do, just write into log and exit
 
-    } else  {  // temporary name given
+        log.error ( 6,'cannot create temporary storage for file ' +
+                      'request redirection' );
+        process.exit();
+
+      } else  {  // temporary name given
 
 
-      log.debug2 ( 7,'tmp file ' + cfgpath );
+        log.debug2 ( 7,'tmp file ' + cfgpath );
 
-      var cfg = conf.getFEConfig();
-      cfg.externalURL = cfg.url();
-
-      if (startFEProxy)  {
-        var cfg = conf.getFEProxyConfig();
-        if (cfg)
-          cfg.externalURL = cfg.url();
-      }
-
-      for (var i=0;i<ncConfigs.length;i++)  {
-        cfg = conf.getNCConfig(i);
+        var cfg = conf.getFEConfig();
         cfg.externalURL = cfg.url();
-      }
 
-      // write configuration into temporary file
-      conf.writeConfiguration ( cfgpath );
+        if (startFEProxy)  {
+          var cfg = conf.getFEProxyConfig();
+          if (cfg)
+            cfg.externalURL = cfg.url();
+        }
 
-      // start number crunchers identified previously
-      for (var i=0;i<ncConfigs.length;i++)
-        if (startNC[i])
-          startNCServer ( i,cfgpath );
+        for (var i=0;i<ncConfigs.length;i++)  {
+          cfg = conf.getNCConfig(i);
+          cfg.externalURL = cfg.url();
+        }
 
-      // if necessary, start Front End
-      if (startFE)  {
-        fe_start.start ( function(){
+        // write configuration into temporary file
+        conf.writeConfiguration ( cfgpath );
+
+        // start number crunchers identified previously
+        for (var i=0;i<ncConfigs.length;i++)
+          if (startNC[i])
+            startNCServer ( i,cfgpath );
+
+        // if necessary, start Front End
+        if (startFE)  {
+          fe_start.start ( function(){
+            startClientApplication();
+          });
+        } else  {
+          // working with Front End managed externally (such as on a remote server);
+          // in this case, simply start client application (e.g., a browser).
           startClientApplication();
-        });
-      } else  {
-        // working with Front End managed externally (such as on a remote server);
-        // in this case, simply start client application (e.g., a browser).
-        startClientApplication();
-      }
+        }
 
-    }
+      }
+    });
+
+
   });
 
+}
 
-});
+/*
+if (!startFE)  {
+  // just poll the server
+  var request = require('request');
+  var url = feConfig.externalURL;
+  if (url[url.length-1]!='/')  url += '/';
+  request ( url+'whoareyou', { json: true },function(err,res,body){
+    if (err) {
+      console.log ( ' *** probe connection to ' + feConfig.externalURL + ' failed' );
+      return console.log(err);
+    }
+    console.log ( ' ... Front-End at ' + feConfig.externalURL + ' replied: ' + body );
+    launch();
+  });
+} else
+  launch();
+*/
+
+launch();
+
 
 process.on ( 'SIGINT',function() {
   log.standard ( 7,'terminated from console by user' );

@@ -15,7 +15,7 @@
     "protocol"         : "http",
     "host"             : "ccp4serv6.rc-harwell.ac.uk/jscofe/",
     "port"             : 0,
-    "externalURL"      : "ccp4serv6.rc-harwell.ac.uk/jscofe/",
+    "externalURL"      : "http://ccp4serv6.rc-harwell.ac.uk/jscofe/",
     "exclusive"        : true,
     "stoppable"        : false,
     "fsmount"          : null,
