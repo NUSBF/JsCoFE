@@ -216,10 +216,10 @@ if (!dbx)  {
   }
 
   TaskTemplate.prototype.compareEnvironment = function ( reqEnv,env )  {
-    if (this._type=="TaskAmple")  {
-      console.log ( "reqEnv=" + JSON.stringify(reqEnv) );
-      console.log ( "env=" + JSON.stringify(env) );
-    }
+if (this._type=="TaskAmple")  {
+  console.log ( "reqEnv=" + JSON.stringify(reqEnv) );
+  console.log ( "env=" + JSON.stringify(env) );
+}
     var ok = true;
     for (var i=0;(i<reqEnv.length) && ok;i++)
       if (reqEnv[i].constructor === Array)  {

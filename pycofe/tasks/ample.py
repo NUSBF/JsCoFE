@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    09.02.20   <--  Date of Last Modification.
+#    15.04.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -77,6 +77,12 @@ class Ample(basic.TaskDriver):
                 "-fasta",seq.getSeqFilePath(self.inputDir()),
                 "-rosetta_dir", os.environ["ROSETTA_DIR"],
                 "-rvapi_document",self.reportDocumentName() ]
+
+        self.putMessage (
+            "<h3>The job is likely to take very long time</h3>" +\
+            "<i>You may close this window and check later. Logout and " +\
+            "subsequent login will not affect the job running." )
+        self.rvrow -= 1
 
         # pass rvapi document with metadata
         """
