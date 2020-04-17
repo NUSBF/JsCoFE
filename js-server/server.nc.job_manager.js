@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    08.04.20   <--  Date of Last Modification.
+ *    17.04.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -61,6 +61,9 @@ function NCJobRegister()  {
   this.launch_count = 0;
   this.job_map      = {};
   this.timer        = null; // job check timer
+  this.logflow      = {};
+  this.logflow.logno = 0;
+  this.logflow.njob0 = 0;
 }
 
 
@@ -623,6 +626,19 @@ function ncJobFinished ( job_token,code )  {
 
         // just remove the job; do it in a separate thread and delayed,
         // which is useful for debugging etc.
+
+        if (!('logflow' in ncJobRegister))  {
+          ncJobRegister.logflow = {};
+          ncJobRegister.logflow.logno = 0;
+          ncJobRegister.logflow.njob0 = 0;
+        }
+
+        if (conf.getServerConfig().checkLogChunks(
+            ncJobRegister.launch_count-ncJobRegister.logflow.njob0,
+            ncJobRegister.logflow.logno))  {
+          ncJobRegister.logflow.logno++;
+          ncJobRegister.logflow.njob0 = ncJobRegister.launch_count;
+        }
 
         log.standard ( 103,'task ' + task.id + ' sent back to FE, job token ' +
                            job_token );

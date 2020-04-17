@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    28.02.20   <--  Date of Last Modification.
+ *    17.04.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -27,8 +27,9 @@ var crypto  = require('crypto');
 var request = require('request');
 
 //  load application modules
-var utils   = require('./server.utils');
-var cmd     = require('../js-common/common.commands');
+var utils     = require('./server.utils');
+var cmd       = require('../js-common/common.commands');
+var com_utils = require('../js-common/common.utils');
 
 //  prepare log
 var log    = require('./server.log').newLog(3);
@@ -77,6 +78,9 @@ function ServerConfig ( type )  {
   this.storage       = null;
   this.update_rcode  = 0;    // can be bde detected by launcher script to do the needful
   this.startDate     = new Date(Date.now()).toUTCString();
+  this.logflow       = {};
+  this.logflow.chunk_length = 10000; // number of jobs to advance log file counters
+  this.logflow.log_file     = '';    // full path less of '.log' and '.err' extensions
 }
 
 ServerConfig.prototype.url = function()  {
@@ -270,6 +274,24 @@ ServerConfig.prototype._checkLocalStatus = function()  {
   }
 }
 
+ServerConfig.prototype.checkLogChunks = function ( nNewJobs,logNo )  {
+  if (nNewJobs>this.logflow.chunk_length)  {
+    if (this.logflow.log_file)  {
+      var logfpath = this.logflow.log_file + '.log';
+      if (utils.fileExists(logfpath))  {
+        var errfpath = this.logflow.log_file + '.err';
+        var mod = '.' + com_utils.padDigits(logNo+1,3)
+        utils.moveFile ( logfpath,logfpath + mod + '.log' );
+        utils.moveFile ( errfpath,logfpath + mod + '.err' );
+        utils.writeString ( logfpath,'' );
+        utils.writeString ( errfpath,'' );
+      }
+    }
+    return true;
+  }
+  return false;
+}
+
 
 // ===========================================================================
 // Config service functions
@@ -406,6 +428,10 @@ var version = '';
       "CCP4 examples"  : "$CCP4/share/ccp4i2/demo_data",
       "Demo projects"  : "./demo-projects",
       "My files"       : "./$LOGIN/files"
+    },
+    "logflow" : {   // optional item
+      "chunk_length" : 10000,     // number of jobs to advance log file counters
+      "log_file" : "/path/to/node_fe"    // full path less of '.log' and '.err' extensions
     }
   },
 
@@ -453,7 +479,11 @@ var version = '';
       "maxSendTrials"    : 10,
       "jobRemoveTimeout" : 10000,
       "maxRestarts"      : 100,
-      "fileCapSize"      : 500000
+      "fileCapSize"      : 500000,
+      "logflow" : {   // optional item
+        "chunk_length" : 10000,     // number of jobs to advance log file counters
+        "log_file" : "/path/to/node_fe"    // full path less of '.log' and '.err' extensions
+      }
     },
     {
       "serNo"            : 1,
@@ -479,7 +509,11 @@ var version = '';
       "maxSendTrials"    : 10,
       "jobRemoveTimeout" : 10000,
       "maxRestarts"      : 100,
-      "fileCapSize"      : 500000
+      "fileCapSize"      : 500000,
+      "logflow" : {   // optional item
+        "chunk_length" : 10000,     // number of jobs to advance log file counters
+        "log_file" : "/path/to/node_fe"    // full path less of '.log' and '.err' extensions
+      }
     }
   ],
 
