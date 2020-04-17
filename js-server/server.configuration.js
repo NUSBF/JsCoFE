@@ -281,8 +281,8 @@ ServerConfig.prototype.checkLogChunks = function ( nNewJobs,logNo )  {
       if (utils.fileExists(logfpath))  {
         var errfpath = this.logflow.log_file + '.err';
         var mod = '.' + com_utils.padDigits(logNo+1,3)
-        utils.moveFile ( logfpath,logfpath + mod + '.log' );
-        utils.moveFile ( errfpath,logfpath + mod + '.err' );
+        utils.moveFile ( logfpath,this.logflow.log_file + mod + '.log' );
+        utils.moveFile ( errfpath,this.logflow.log_file + mod + '.err' );
         utils.writeString ( logfpath,'' );
         utils.writeString ( errfpath,'' );
       }

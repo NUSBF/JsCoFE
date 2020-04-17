@@ -545,6 +545,20 @@ function ncJobFinished ( job_token,code )  {
   jobEntry.jobStatus = task_t.job_code.exiting;  // this works when ncJobFinished()
                                                  // is called directly from
                                                  // job listener in SHELL mode
+
+  if (!('logflow' in ncJobRegister))  {
+   ncJobRegister.logflow = {};
+   ncJobRegister.logflow.logno = 0;
+   ncJobRegister.logflow.njob0 = 0;
+  }
+
+  if (conf.getServerConfig().checkLogChunks(
+     ncJobRegister.launch_count-ncJobRegister.logflow.njob0,
+     ncJobRegister.logflow.logno))  {
+   ncJobRegister.logflow.logno++;
+   ncJobRegister.logflow.njob0 = ncJobRegister.launch_count;
+  }
+
   writeNCJobRegister();  // this is redundant at repeat sends, but harmless
 
   var taskDataPath = path.join ( jobEntry.jobDir,task_t.jobDataFName );
@@ -626,19 +640,6 @@ function ncJobFinished ( job_token,code )  {
 
         // just remove the job; do it in a separate thread and delayed,
         // which is useful for debugging etc.
-
-        if (!('logflow' in ncJobRegister))  {
-          ncJobRegister.logflow = {};
-          ncJobRegister.logflow.logno = 0;
-          ncJobRegister.logflow.njob0 = 0;
-        }
-
-        if (conf.getServerConfig().checkLogChunks(
-            ncJobRegister.launch_count-ncJobRegister.logflow.njob0,
-            ncJobRegister.logflow.logno))  {
-          ncJobRegister.logflow.logno++;
-          ncJobRegister.logflow.njob0 = ncJobRegister.launch_count;
-        }
 
         log.standard ( 103,'task ' + task.id + ' sent back to FE, job token ' +
                            job_token );
