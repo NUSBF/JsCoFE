@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    08.04.20   <--  Date of Last Modification.
+ *    17.04.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -47,13 +47,16 @@ var log = require('./server.log').newLog(8);
 
 // ===========================================================================
 
-var feJobStatFile     = 'fe_job_stats.log';
+var feJobStatFile     = 'fe_job_stats';
 var feJobRegisterFile = 'fe_job_register.meta';
 
 function FEJobRegister()  {
   this.job_map   = {};
   this.token_map = {};
   this.n_jobs    = 0;   // serial counter for total number of jobs
+  this.logflow   = {};
+  this.logflow.logno = 0;
+  this.logflow.njob0 = 0;
 }
 
 FEJobRegister.prototype.addJob = function ( job_token,nc_number,loginData,
@@ -131,8 +134,11 @@ function getJobRegisterPath()  {
   return path.join ( conf.getFEConfig().storage,feJobRegisterFile );
 }
 
-function getJobStatPath()  {
-  return path.join ( conf.getFEConfig().storage,feJobStatFile );
+function getJobStatPath ( logNo )  {
+  if (logNo<=0)
+        return path.join ( conf.getFEConfig().storage,feJobStatFile + '.log' );
+  else  return path.join ( conf.getFEConfig().storage,feJobStatFile + '.' +
+                           com_utils.padDigits(logNo,3) + '.log' );
 }
 
 function readFEJobRegister()  {
@@ -736,9 +742,25 @@ function writeJobStats ( jobEntry )  {
     var userRation = ration.updateUserRation_bookJob ( jobEntry.loginData,jobClass );
 
     var S     = '';
-    var fpath = getJobStatPath();
+    var fpath = getJobStatPath(0);
+
     if ((Math.trunc(feJobRegister.n_jobs/20)*20==feJobRegister.n_jobs) ||
-        (!utils.fileExists(fpath)))
+        (!utils.fileExists(fpath)))  {
+
+      if (!('logflow' in feJobRegister))  {
+        feJobRegister.logflow = {};
+        feJobRegister.logflow.logno = 0;
+        feJobRegister.logflow.njob0 = 0;
+      }
+
+      if (conf.getFEConfig().checkLogChunks(
+          feJobRegister.n_jobs-feJobRegister.logflow.njob0,
+          feJobRegister.logflow.logno))  {
+        feJobRegister.logflow.logno++;
+        feJobRegister.logflow.njob0 = feJobRegister.n_jobs;
+        utils.moveFile ( fpath,getJobStatPath(feJobRegister.logflow.logno) );
+      }
+
       S = '------------------------------------------------------------------' +
           '------------------------------------------------------------------' +
           '--------------------------------\n' +
@@ -748,6 +770,7 @@ function writeJobStats ( jobEntry )  {
           '------------------------------------------------------------------' +
           '------------------------------------------------------------------' +
           '--------------------------------\n';
+    }
 
     S += com_utils.padDigits ( feJobRegister.n_jobs+1,6 ) + ' ' +
 
@@ -780,7 +803,7 @@ function writeJobStats ( jobEntry )  {
 }
 
 function readJobStats()  {
-  var stats = utils.readString ( getJobStatPath() );
+  var stats = utils.readString ( getJobStatPath(0) );
   if (!stats)
     stats = 'Job stats are not available.';
   return stats;
