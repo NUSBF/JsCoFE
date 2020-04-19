@@ -3,13 +3,13 @@
 #
 # ============================================================================
 #
-#    23.06.18   <--  Date of Last Modification.
+#    19.04.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  CCP4EZ Combined Auto-Solver Dimple module
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2018
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2020
 #
 # ============================================================================
 #
@@ -244,19 +244,18 @@ class PrepareASU(ccp4go_mtz.PrepareMTZ):
                     fitMessage = ""
                     if nc0==1 and sol0>35.0:
                         fitMessage = "<h3 class='header-green'>The suggested " +\
-                                     "composition of ASU appears to be the optimal " +\
-                                     "one.</h3>"
+                                     "composition of ASU appears suitable</h3>"
                     elif nc0 > 1:
                         fitMessage = "<h3 class='header-red'>WARNING: the suggested " +\
                                      "composition of ASU has higher, than usual, " +\
                                      "solvent fraction.<br>" +\
-                                     "Try to increase the scattering mass by a " +\
+                                     "Try to increase the number of copies by a " +\
                                      "factor of " + str(nc0) + "</h3>"
                     elif nc0 > 0:
                         fitMessage = "<h3 class='header-red'>WARNING: the suggested " +\
                                      "composition of ASU has lower, than usual, " +\
                                      "solvent fraction.<br>" +\
-                                     "Try to decrease the scattering mass by a " +\
+                                     "Try to decrease the number of copies by a " +\
                                      "factor of " + str(math.ceil(350.0/sol0)/10.0) +\
                                      "</h3>"
                     if fitMessage:

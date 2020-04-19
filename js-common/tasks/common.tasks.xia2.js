@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    01.04.20   <--  Date of Last Modification.
+ *    18.04.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -694,7 +694,8 @@ if (!__template)  {
       var env = __environ_server;
       if (this.file_system=='local')
         env = __environ_client;
-      if (!this.compareEnvironment(['CCP4','XDS_home','XDSGUI_home'],env))
+//      if (!this.compareEnvironment(['CCP4','XDS_home','XDSGUI_home'],env))
+      if (!this.compareEnvironment(['CCP4','XDS_home'],env))
         msg += '<b><i>Chosen pipeline protocol requires XDS Software,<br>' +
                'however, it was not found installed</i></b>';
     }

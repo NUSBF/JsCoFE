@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    10.01.20   <--  Date of Last Modification.
+#    19.04.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -214,6 +214,14 @@ class DType(dtype_template.DType):
         self.ASU.prob_matth = prb1    # Matthews probability for 1 copy in ASU
         return
 
+    def getNofASUMonomers ( self ):
+        n = 0
+        if self.ASU:
+            for i in range(len(self.ASU.seq)):
+                n += self.ASU.seq[i].ncopies
+            n = max(1,n)
+        return n
+
     def setStructureData ( self,structure ):
         if structure.hasSubSubtype():
             self.Substructure = structure
@@ -234,6 +242,12 @@ class DType(dtype_template.DType):
             delattr ( self,"phaser_meta" )
         self.leadKey = structure.leadKey
         return
+
+    def getNofPolymers ( self ):
+        if self.Structure:
+            return self.Structure.getNofPolymers()
+        return 0
+
 
     def addLigandData ( self,ligand ):
         self.Ligands.append ( ligand )

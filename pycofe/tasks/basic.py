@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    11.04.20   <--  Date of Last Modification.
+#    17.04.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -952,6 +952,40 @@ class TaskDriver(object):
 
     # ============================================================================
 
+    def putVerdict ( self, score,message ):
+        gridId = self.putVerdict1 ( self.report_page_id(),code,message,self.rvrow,col=0 )
+        self.rvrow += 1
+        return gridId
+
+    def putVerdict1 ( self, pageId,score,message,row,col=0 ):
+        gridId = self.getWidgetId ( "verdict" )
+        self.putGrid1 ( gridId,pageId,False,row,col=col,rowSpan=1,colSpan=1 )
+        #pyrvapi.rvapi_set_cell_stretch ( gridId,30,-30,0,1 )
+
+        #colors = ["crimson","darkorange","forestgreen"]
+        #self.putMessage1 ( gridId,"<div style=\"background-color:" +\
+        #                          colors[int(score*len(colors))/101] +\
+        #                          ";width:30px;height:92%;\">&nbsp;</div>",0,
+        #                          col=0,rowSpan=1 )
+
+        #gauges = ["gauge_red.png","gauge_amber.png","gauge_green.png"]
+        #self.putMessage1 ( gridId,
+        #    "<img style='vertical-align:top;' src='xxJsCoFExx-fe/images_png/" +\
+        #    gauges[int(score*len(gauges))/101] + "' width='86px' height='44px'/>",
+        #    0,col=0 )
+
+        gaugeId = self.getWidgetId ( "gauge" )
+        self.putMessage1 ( gridId,
+            "<div id='" + gaugeId + "'></div><script>" +\
+            "GaugeWidget('" + gaugeId + "','140px'," + str(score) +\
+            ",100,'scheme-3');</script>",0,col=0 )
+
+        self.putMessage1 ( gridId,"<div>" + message + "</div>",0,col=1 )
+        return gridId
+
+
+    # ============================================================================
+
     def stampFileName ( self,serNo,fileName ):
         return dtype_template.makeFileName ( self.job_id,serNo,fileName )
 
@@ -1144,7 +1178,8 @@ class TaskDriver(object):
                                  structureType,leadKey=1,openState_bool=False,
                                  title="Output Structure",
                                  inpDir=None,
-                                 stitle="Structure and electron density" ):
+                                 stitle="Structure and electron density",
+                                 reserveRows=0 ):
         #  structureType = 0: macromolecular coordinates at xyzPath
         #                = 1: heavy atom substructure at xyzPath
 
@@ -1165,6 +1200,8 @@ class TaskDriver(object):
                                          hide_refs=True )
 
             fnames = self.calcEDMap ( xyzPath,hkl,libPath,name_pattern,inpDir )
+
+            self.rvrow += reserveRows
 
             # Register output data. This moves needful files into output directory
             # and puts the corresponding metadata into output databox

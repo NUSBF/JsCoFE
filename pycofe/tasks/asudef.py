@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    04.04.20   <--  Date of Last Modification.
+#    17.04.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -31,7 +31,7 @@ import json
 import math
 
 #  ccp4-python imports
-import pyrvapi
+#import pyrvapi
 
 #  application imports
 from   pycofe.tasks  import basic
@@ -46,19 +46,18 @@ from   pycofe.varut  import rvapi_utils
 def makeAsuFitMessage ( base,nc0,sol0 ):
     if nc0==1 and sol0>35.0:
         base.putMessage ( "<h3 class='header-green'>The suggested " +\
-                          "composition of ASU appears to be the optimal " +\
-                          "one.</h3>" )
+                          "composition of ASU appears suitable</h3>" )
     elif nc0 > 1:
         base.putMessage ( "<h3 class='header-red'>WARNING: the suggested " +\
                           "composition of ASU has higher, than usual, " +\
                           "solvent fraction.<br>" +\
-                          "Try to increase the scattering mass by a " +\
+                          "Try to increase the number of copies by a " +\
                           "factor of " + str(nc0) + "</h3>"  )
     elif nc0 > 0:
         base.putMessage ( "<h3 class='header-red'>WARNING: the suggested " +\
                           "composition of ASU has lower, than usual, " +\
                           "solvent fraction.<br>" +\
-                          "Try to decrease the scattering mass by a " +\
+                          "Try to decrease the number of copies by a " +\
                           "factor of " + str(math.ceil(350.0/sol0)/10.0) +\
                           "</h3>" )
     return
@@ -490,6 +489,8 @@ class ASUDef(basic.TaskDriver):
         seq  = []
         if hasattr(self.input_data.data,"seq"):  # optional data parameter
             seq = self.input_data.data.seq
+
+        #self.putVerdict ( 50,"message" )
 
         revision = makeRevision ( self,hkl,seq,
                                   self.getParameter(sec1.COMPOSITION_SEL),

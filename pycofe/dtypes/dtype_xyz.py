@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    11.04.20   <--  Date of Last Modification.
+#    19.04.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -69,6 +69,24 @@ class DType(dtype_template.DType):
                      self.xyzmeta.cryst.gamma
                     ]
         return [0.0,0.0,0.0,0.0,0.0,0.0]
+
+
+    def getNofPolymers ( self ):
+        n = 0
+        chains = None
+        if type(self.xyzmeta) == dict:
+            if "xyz" in self.xyzmeta:
+                chains = self.xyzmeta["xyz"][0]["chains"]
+                for i in range(len(chains)):
+                    if chains[i]["seq"]:
+                        n += 1
+        elif hasattr(self.xyzmeta,"xyz"):
+            chains = self.xyzmeta.xyz[0].chains
+            for i in range(len(chains)):
+                if chains[i].seq:
+                    n += 1
+        return n
+
 
     def setXYZFile ( self,fname ):
         self.setFile ( fname,dtype_template.file_key["xyz"] )
