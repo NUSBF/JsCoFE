@@ -439,7 +439,7 @@ class PhaserMR(basic.TaskDriver):
         structure = self.finaliseStructure ( self.outputFName+".1.pdb",
                                     self.outputFName,sol_hkl,None,seq,0,
                                     leadKey=1,openState_bool=False,
-                                    reserveRows=2 )
+                                    reserveRows=3 )
         if structure:
             self.stderrln ( str(structure.xyzmeta) )
             # update structure revision
@@ -486,10 +486,12 @@ class PhaserMR(basic.TaskDriver):
                           }
             }, 1 )
 
-            self.putTitle1 ( self.report_page_id(),"Verdict",row0 )
+            self.putMessage1 ( self.report_page_id(),"&nbsp;" ,row0 )
+            row0 += 1
+            self.putTitle1   ( self.report_page_id(),"Verdict",row0 )
 
             tdict = {
-                "title": "Summary scores",
+                "title": "Phasing summary",
                 "state": 0, "class": "table-blue", "css": "text-align:right;",
                 "rows" : [
                     { "header": { "label": "LLG", "tooltip": "Log-Likelihood Gain score"},
@@ -513,9 +515,10 @@ class PhaserMR(basic.TaskDriver):
             if verdict_score>=67:
                 verdict_message += "The structure is likely to be solved."
             elif verdict_score>=34:
-                verdict_message += "There are chances that structure is solved, " +\
-                                   "however, this is not certain. This case may " +\
-                                   "be difficult."
+                verdict_message += "The structure may be solved, however, " +\
+                                   "this is less certain."
+                if verdict_score<50.0:
+                    verdict_message += " This case may be difficult."
             else:
                 verdict_message += "It is unlikely that the structure is solved."
             verdict_message += "</b>"
@@ -548,7 +551,7 @@ class PhaserMR(basic.TaskDriver):
             bottomline = "&nbsp;<br>"
             if nfitted<nasu:
                 if verdict_score<66.0:
-                    bottomline += "Please consider that solution scores are lower " +\
+                    bottomline += "Please consider that phasing scores are lower " +\
                                   "if, as in this case, not all copies of " +\
                                   "monomeric units are found. "
                 else:
@@ -566,7 +569,7 @@ class PhaserMR(basic.TaskDriver):
                 "judged only by the ability to (auto-)build in the " +\
                 "resulting electron density. As a practical hint, " +\
                 "<i>R<sub>free</sub></i> should decrease in subsequent " +\
-                "refinement.</i>",row0+2 )
+                "refinement.</i><br>&nbsp;",row0+2 )
 
         # close execution logs and quit
         self.success ( have_results )
