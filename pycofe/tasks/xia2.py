@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    04.04.20   <--  Date of Last Modification.
+#    19.04.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -66,7 +66,8 @@ class Xia2(basic.TaskDriver):
             if len(sys.argv)>=5:
                 nSubJobs = sys.argv[-1]
 
-        have_xds = ("XDS_home" in os.environ) and ("XDSGUI_home" in os.environ)
+        #have_xds = ("XDS_home" in os.environ) and ("XDSGUI_home" in os.environ)
+        have_xds = ("XDS_home" in os.environ)
 
         # fetch input data
 
