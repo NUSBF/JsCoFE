@@ -557,10 +557,10 @@ class PhaserMR(basic.TaskDriver):
                 if nfitted>nfitted0:
                     bottomline += "Try to fit the remaining copies in subsequent " +\
                                   "phasing attempts.<p>"
-                else:
-                    bottomline += "<i>No new copies were found in this run, " +\
-                                  "therefore, you may need to proceed to model " +\
-                                  "building.</i><p>"
+            if nfitted==nfitted0:
+                bottomline += "<i>No new copies were found in this run, " +\
+                              "therefore, you may need to proceed to model " +\
+                              "building.</i><p>"
             self.putMessage1 ( self.report_page_id(), bottomline +\
                 "Correctness of phasing solution may be ultimately " +\
                 "judged only by the ability to (auto-)build in the " +\
