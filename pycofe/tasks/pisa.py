@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    09.02.20   <--  Date of Last Modification.
+#    20.02.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -74,7 +74,8 @@ class PISA(basic.TaskDriver):
             cmd.append ( "--lig-exclude='" + ",".join(xyz.exclLigs) + "'" )
 
         cmd += [ "--lig=" + self.getParameter(self.task.parameters.sec1.contains.LIGANDKEY_SEL),
-                os.environ["JSPISA_CFG"] ]
+                 os.path.join(os.environ["CCP4"],"share","pisa","jspisa.cfg") ]
+        #        os.environ["JSPISA_CFG"] ]
 
         self.storeReportDocument ( self.outputDir() )
 
