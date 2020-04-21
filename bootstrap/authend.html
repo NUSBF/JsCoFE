@@ -5,7 +5,7 @@
  *
  *  =================================================================
  *
- *    02.04.20   <..  Date of Last Modification.
+ *    21.04.20   <..  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  =================================================================
  *
@@ -64,16 +64,27 @@
 <body class="main-page">
 
   <div id='scene' class="main-page"></div>
+
   <script>
+
+    document.body.style.fontSize = '16px';   // this is necessary for jquery
+                                             // dialogs to have correct layout
+                                             // despite explicit sizing set in
+                                             // main-page CSS class; it is
+                                             // unclear why
+    document.body.style.overflow = 'hidden'; // this is because of buggy Chrome
+
     var __setup_desc = {
       'name' : '$setup_name',
       'icon' : '$setup_icon'
     }
     var software_key = '$software_key';
     var auth_result  = '$auth_result';
+
     $(window).on( 'load', function(){
       new AuthEndPage ( 'scene',software_key,auth_result );
     });
+
   </script>
 
 </body>
