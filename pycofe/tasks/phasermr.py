@@ -441,7 +441,6 @@ class PhaserMR(basic.TaskDriver):
                                     leadKey=1,openState_bool=False,
                                     reserveRows=3 )
         if structure:
-            self.stderrln ( str(structure.xyzmeta) )
             # update structure revision
             revision.setStructureData ( structure )
             self.registerRevision     ( revision  )

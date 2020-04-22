@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    19.04.20   <--  Date of Last Modification.
+#    22.04.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -79,6 +79,9 @@ class DType(dtype_xyz.DType):
             self.mapLabels      = None;  # used in UglyMol widgets
 
         return
+
+    def ensembleName ( self ):  # for using in phaser interface
+        return "ensemble_" + self.dataId
 
     def setLeadXYZ ( self ):
         self.leadKey = 1
