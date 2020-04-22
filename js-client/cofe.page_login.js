@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    13.04.20   <--  Date of Last Modification.
+ *    22.04.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -28,7 +28,10 @@ function _privacyStatement()  {
 }
 
 function _ccp4_download()  {
-  new HelpBox ( 'CCP4 Download','./html/link_to_ccp4.html',null );
+  // because CCP4 is on http an does not mix with https, open this in new
+  // tab/window just for now
+  window.open ( "http://www.ccp4.ac.uk/download" );
+  //new HelpBox ( 'CCP4 Download','./html/link_to_ccp4.html',null );
 }
 
 function LoginPage ( sceneId )  {
