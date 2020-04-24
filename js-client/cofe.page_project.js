@@ -412,8 +412,8 @@ function ProjectPage ( sceneId )  {
   help_btn    = toolbar.setButton ( '',image_path('help')     ,cnt++,0,1,1 );
 
   if ((__user_role==role_code.admin) || (__user_role==role_code.developer))  {
-    toolbar.setLabel ( '<hr style="border:1px dotted;"/>' ,12,0,1,1 );
-    split_btn = toolbar.setButton ( '',image_path('split_page'),13,0,1,1 );
+    toolbar.setLabel ( '<hr style="border:1px dotted;"/>' ,cnt++,0,1,1 );
+    split_btn = toolbar.setButton ( '',image_path('split_page'),cnt++,0,1,1 );
   }
 
   add_btn    .setSize('40px','40px').setTooltip('Add job'   ).setDisabled(true);

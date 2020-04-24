@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    13.04.20   <--  Date of Last Modification.
+#    24.04.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -188,13 +188,21 @@ class Coot(basic.TaskDriver):
             self.task.task_chain = file.read().strip().split(",")
             file.close()
 
+        #   Remove Coot backup directory only because it uses file naming that
+        # is not cross-platform compatible (includes colons on Linux which are
+        # illegal in Windows)
+        #   This also prevents creating 'backup_dir' item in coot_meta dictionary
+        # below in putCootMeta call. Note that backup_dir if functonally disabled
+        # in TaskCootMB.makeInputData().
+        shutil.rmtree ( "coot-backup", ignore_errors=True, onerror=None )
+
         # Check for PDB files left by Coot and convert them to type structure
 
-        files        = os.listdir ( "./" )
-        mtime        = 0
-        fname        = None
-        newLigCode   = None
-        ligand_coot  = None
+        files       = os.listdir ( "./" )
+        mtime       = 0
+        fname       = None
+        newLigCode  = None
+        ligand_coot = None
 
         for f in files:
             if f.startswith("acedrg-LIG"):
