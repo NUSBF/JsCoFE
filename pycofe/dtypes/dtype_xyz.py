@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    19.04.20   <--  Date of Last Modification.
+#    24.04.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -110,8 +110,8 @@ class DType(dtype_template.DType):
         coot_meta = {
             "jobId"        : job_id,
             "files"        : [],
-            "backup_dir"   : "",
-            "backup_files" : []
+            "backup_dir"   : "",   # may need to be removed
+            "backup_files" : []    # may need to be removed
         }
 
         files = [ "0-coot-history.py","0-coot-history.scm",
@@ -131,6 +131,8 @@ class DType(dtype_template.DType):
                     f.close()
                 coot_meta["files"].append(fname)
 
+        # currently dysfunctinoal and does not work because Coot uses
+        # platform-incompatible file naming in backup directory
         if os.path.isdir("coot-backup"):
             bfiles = os.listdir("coot-backup")
             if len(bfiles)>0:

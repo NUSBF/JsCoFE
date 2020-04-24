@@ -143,9 +143,11 @@ if (!__template)  {
       for (var fname of coot_meta.files)
         utils.copyFile ( path.join(srcJobDir,fname),
                          path.join(jobDir,fname) );
-      if (coot_meta.backup_dir)
-        utils.copyFile ( path.join(srcJobDir,coot_meta.backup_dir),
-                         path.join(jobDir,coot_meta.backup_dir) );
+      //  This is commented out because Coot creates platform-incompatible file
+      //  names in backup directory
+      //if (coot_meta.backup_dir)
+      //  utils.copyFile ( path.join(srcJobDir,coot_meta.backup_dir),
+      //                   path.join(jobDir,coot_meta.backup_dir) );
     }
 
   }
