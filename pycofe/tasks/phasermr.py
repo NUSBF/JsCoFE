@@ -512,14 +512,26 @@ class PhaserMR(basic.TaskDriver):
 
             verdict_message = "<b style='font-size:18px;'>"
             if verdict_score>=67:
-                verdict_message += "The structure is likely to be solved."
+                if nfitted==nasu:
+                    verdict_message += "The structure is likely to be solved."
+                else:
+                    verdict_message += "Monomeric unit(s) are likely to have " +\
+                                       "been placed sucessfully."
             elif verdict_score>=34:
-                verdict_message += "The structure may be solved, however, " +\
-                                   "this is less certain."
+                if nfitted==nasu:
+                    verdict_message += "The structure may be solved, however, " +\
+                                       "this is less certain."
+                else:
+                    verdict_message += "Monomeric unit(s) were placed, however " +\
+                                       "this is less certain."
                 if verdict_score<50.0:
                     verdict_message += " This case may be difficult."
             else:
-                verdict_message += "It is unlikely that the structure is solved."
+                if nfitted==nasu:
+                    verdict_message += "It is unlikely that the structure is solved."
+                else:
+                    verdict_message += "It is unlikely that monomeric unit(s) " +\
+                                       "were placed correctly."
             verdict_message += "</b>"
 
             notes = []
@@ -559,18 +571,19 @@ class PhaserMR(basic.TaskDriver):
                 if nfitted>nfitted0:
                     bottomline += "Try to fit the remaining copies in subsequent " +\
                                   "phasing attempts.<p>"
+            if nfitted==nfitted0:
+                bottomline += "<i>No new copies were found in this run, " +\
+                              "therefore, you may need to proceed to model " +\
+                              "building.</i><p>"
             elif nfitted==nasu:
-                bottomline += "Assumed total number of monomeric units in ASU " +\
+                bottomline += "<i>Assumed total number of monomeric units in ASU " +\
                               "has been reached, you may need to proceed to  " +\
                               "model building."
                 if verdict_score<34.0:
                     bottomline += " Bear in mind that phasing quality look " +\
                                   "doubtful. Model building may be difficult or " +\
                                   "not successful at all."
-            if nfitted==nfitted0:
-                bottomline += "<i>No new copies were found in this run, " +\
-                              "therefore, you may need to proceed to model " +\
-                              "building.</i><p>"
+                bottomline += "</i><p>"
             self.putMessage1 ( self.report_page_id(), bottomline +\
                 "In general, correctness of phasing solution may be ultimately " +\
                 "judged only by the ability to (auto-)build in the resulting " +\
