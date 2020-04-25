@@ -473,7 +473,7 @@ class PhaserMR(basic.TaskDriver):
                             "good"   : [8.0,10.0,12.0,50.0],
                             "bad"    : [8.0,7.0,6.0,0.0]
                           },
-                "LLG" :   {   "value"  : fllg,
+                "LLG" :   { "value"  : fllg,
                             "weight" : 2.0,
                             "good"   : [90.0,120.0,240.0,5000.0],
                             "bad"    : [90.0,60.0,40.0,0.0]
@@ -559,16 +559,23 @@ class PhaserMR(basic.TaskDriver):
                 if nfitted>nfitted0:
                     bottomline += "Try to fit the remaining copies in subsequent " +\
                                   "phasing attempts.<p>"
+            elif nfitted==nasu:
+                bottomline += "Assumed total number of monomeric units in ASU " +\
+                              "has been reached, you may need to proceed to  " +\
+                              "model building."
+                if verdict_score<34.0:
+                    bottomline += " Bear in mind that phasing quality look " +\
+                                  "doubtful. Model building may be difficult or " +\
+                                  "not successful at all."
             if nfitted==nfitted0:
                 bottomline += "<i>No new copies were found in this run, " +\
                               "therefore, you may need to proceed to model " +\
                               "building.</i><p>"
             self.putMessage1 ( self.report_page_id(), bottomline +\
-                "Correctness of phasing solution may be ultimately " +\
-                "judged only by the ability to (auto-)build in the " +\
-                "resulting electron density. As a practical hint, " +\
-                "<i>R<sub>free</sub></i> should decrease in subsequent " +\
-                "refinement.</i><br>&nbsp;",row0+2 )
+                "In general, correctness of phasing solution may be ultimately " +\
+                "judged only by the ability to (auto-)build in the resulting " +\
+                "electron density. As a practical hint, <i>R<sub>free</sub></i> " +\
+                "should decrease in subsequent refinement.</i><br>&nbsp;",row0+2 )
 
         # close execution logs and quit
         self.success ( have_results )
