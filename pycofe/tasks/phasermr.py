@@ -519,11 +519,11 @@ class PhaserMR(basic.TaskDriver):
                                        "been placed sucessfully."
             elif verdict_score>=34:
                 if nfitted==nasu:
-                    verdict_message += "The structure may be solved, however, " +\
-                                       "this is less certain."
+                    verdict_message += "The structure may be solved, yet with " +\
+                                       "a chance for wrong solution."
                 else:
-                    verdict_message += "Monomeric unit(s) were placed, however " +\
-                                       "this is less certain."
+                    verdict_message += "Monomeric unit(s) were placed, with a " +\
+                                       "a chance for wrong solution."
                 if verdict_score<50.0:
                     verdict_message += " This case may be difficult."
             else:
