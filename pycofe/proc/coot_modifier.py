@@ -71,7 +71,7 @@ if (have_coot_python):
         # add as many as you like
         remove_list = [
             #"Save Coordinates...",
-            "Save Symmetry Coordinates...",
+            #"Save Symmetry Coordinates...",
             "Save State...",
             "Exit"
         ]

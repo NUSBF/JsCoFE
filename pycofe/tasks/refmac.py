@@ -282,6 +282,7 @@ class Refmac(basic.TaskDriver):
 
         # Start refmac
         self.runApp ( "refmac5",cmd,logType="Main" )
+        self.unsetLogParser()
 
         #if not xyzin.lower().endswith(".pdb"):
         #    xyzout1 = xyzout
@@ -292,8 +293,8 @@ class Refmac(basic.TaskDriver):
         have_results = False
         if os.path.isfile(xyzout):
 
-            self.putTitle ( "Refmac Output" )
-            self.unsetLogParser()
+            self.putTitle ( "Output Structure" +\
+                    self.hotHelpLink ( "Structure","jscofe_qna.structure") )
 
             # calculate maps for UglyMol using final mtz from temporary location
             #fnames = self.calcCCP4Maps ( self.getMTZOFName(),self.outputFName )

@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    19.04.20   <--  Date of Last Modification.
+#    25.04.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -28,7 +28,6 @@
 import os
 import sys
 import shutil
-import math
 
 #  ccp4-python imports
 import pyrvapi
@@ -37,7 +36,7 @@ import pyrvapi
 import basic
 #from   pycofe.proc import import_merged
 from   pycofe.dtypes import dtype_template
-from   pycofe.varut  import rvapi_utils
+from   pycofe.proc   import verdict
 
 # ============================================================================
 # Make PhaserMR driver
@@ -59,53 +58,87 @@ class PhaserMR(basic.TaskDriver):
 
     # ------------------------------------------------------------------------
 
-    def calcVerdictScore ( self,data,score_type ):
-
-        def score_direct ( x,d ):
-            n = len(d)-1
-            for j in range(n):
-                if d[j]<=x and x<=d[j+1]:
-                    return (j+(x-d[j])/(d[j+1]-d[j]))/n
-            return 1.0
-
-        def score_reverse ( x,d ):
-            n = len(d)-1
-            for j in range(n):
-                if d[j+1]<=x and x<=d[j]:
-                    return (j+(x-d[j])/(d[j+1]-d[j]))/n
-            return 1.0
-
-        score  = 0.0
-        weight = 0.0
-        for key in data:
-            v  = data[key]["value"]
-            g  = data[key]["good"]
-            b  = data[key]["bad"]
-            w  = data[key]["weight"]
-            ds = -1.0
-            if g[-1]>b[-1]:  # direct order
-                if v>=g[0]:
-                    ds = 1.0 + score_direct(v,g)
-                else:
-                    ds = 1.0 - score_reverse(v,b)
-            else:   # reverese order
-                if v<=g[0]:
-                    ds = 1.0 + score_reverse(v,g)
-                else:
-                    ds = 1.0 - score_direct(v,b)
-
-            if score_type==1:
-                if ds<1.0e-12:
-                    return 0.0
-                score += w*math.log(ds/2.0)
+    def makeVerdictMessage ( self,options ):
+        verdict_message = "<b style='font-size:18px;'>"
+        if options["score"]>=67:
+            if options["nfitted"]==options["nasu"]:
+                verdict_message += "The structure is likely to be solved."
             else:
-                score += w*ds
-            weight += w
-
-        if score_type==1:
-            return 100.0*math.exp ( score/weight )
+                verdict_message += "Monomeric unit(s) are likely to have " +\
+                                   "been placed successfully."
+        elif options["score"]>=34:
+            if options["nfitted"]==options["nasu"]:
+                verdict_message += "The structure may be solved, yet with " +\
+                                   "a chance for wrong solution."
+            else:
+                verdict_message += "Monomeric unit(s) were   placed, with " +\
+                                   "a chance for wrong solution."
+            if options["score"]<50.0:
+                verdict_message += " This case may be difficult."
         else:
-            return 50.0*score/weight
+            if options["nfitted"]==options["nasu"]:
+                verdict_message += "It is unlikely that the structure is solved."
+            else:
+                verdict_message += "It is unlikely that monomeric unit(s) " +\
+                                   "were placed correctly."
+        verdict_message += "</b>"
+
+        notes = []
+        if options["fllg"]<60.0:
+            notes.append ( "<i>LLG</i> is critically low" )
+        elif options["fllg"]<120.0:
+            notes.append ( "<i>LLG</i> is lower than optimal" )
+        if options["ftfz"]<8.0:
+            notes.append ( "<i>TFZ</i> is critically low" )
+        elif options["ftfz"]<9.0:
+            notes.append ( "<i>TFZ</i> is lower than optimal" )
+        if options["rfree"]>0.48:
+            notes.append ( "<i>R<sub>free</sub></i> is higher than optimal" )
+        elif options["rfree"]>0.55:
+            notes.append ( "<i>R<sub>free</sub></i> is critically high" )
+
+        if len(notes)<=0:
+            notes.append ( "all scores are optimal" )
+
+        if len(notes)>0:
+            verdict_message += "<ul><li>" + "</li><li>".join(notes) +\
+                               ".</li></ul>"
+
+        return verdict_message
+
+
+    def makeVerdictBottomLine ( self,options ):
+        bottomline = "&nbsp;<br>"
+        if options["nfitted"]<options["nasu"]:
+            if options["score"]<66.0:
+                bottomline += "Please consider that phasing scores are lower " +\
+                              "if, as in this case, not all copies of " +\
+                              "monomeric units are found. "
+            else:
+                bottomline += "Scores look good, however not all copies of " +\
+                              "monomeric units are found. "
+            if options["nfitted"]>options["nfitted0"]:
+                bottomline += "Try to fit the remaining copies in subsequent " +\
+                              "phasing attempts.<p>"
+        if options["nfitted"]==options["nfitted0"]:
+            bottomline += "<i>No new copies could be found in this run, " +\
+                          "therefore, you may need to proceed to model " +\
+                          "building.</i><p>"
+        elif options["nfitted"]==options["nasu"]:
+            bottomline += "<i>Assumed total number of monomeric units in ASU " +\
+                          "has been reached, you may need to proceed to  " +\
+                          "model building."
+            if options["score"]<34.0:
+                bottomline += " Bear in mind that phasing quality look " +\
+                              "doubtful. Model building may be difficult or " +\
+                              "not successful at all."
+            bottomline += "</i><p>"
+
+        return  bottomline +\
+            "In general, correctness of phasing solution may be ultimately " +\
+            "judged only by the ability to (auto-)build in the resulting " +\
+            "electron density. As a practical hint, <i>R<sub>free</sub></i> " +\
+            "should decrease in subsequent refinement.</i><br>&nbsp;"
 
 
     # ------------------------------------------------------------------------
@@ -460,34 +493,38 @@ class PhaserMR(basic.TaskDriver):
 
             # Verdict section
 
-            fllg  = float ( llg )
-            ftfz  = float ( tfz )
-            rfree = float ( self.generic_parser_summary["refmac"]["R_free"] )
+            fllg    = float ( llg )
+            ftfz    = float ( tfz )
+            rfree   = float ( self.generic_parser_summary["refmac"]["R_free"] )
 
             nfitted = structure.getNofPolymers()
             nasu    = revision.getNofASUMonomers()
 
-            verdict_score = self.calcVerdictScore ({
-                "TFZ" :   { "value"  : ftfz,
-                            "weight" : 2.0,
-                            "good"   : [8.0,10.0,12.0,50.0],
-                            "bad"    : [8.0,7.0,6.0,0.0]
-                          },
-                "LLG" :   { "value"  : fllg,
-                            "weight" : 2.0,
-                            "good"   : [90.0,120.0,240.0,5000.0],
-                            "bad"    : [90.0,60.0,40.0,0.0]
-                          },
-                "Rfree" : { "value"  : rfree,
-                            "weight" : 1.0,
-                            "good"   : [0.5,0.46,0.4,0.1],
-                            "bad"    : [0.5,0.54,0.56,0.66]
-                          }
-            }, 1 )
-
-            self.putMessage1 ( self.report_page_id(),"&nbsp;" ,row0 )
-            row0 += 1
-            self.putTitle1   ( self.report_page_id(),"Verdict",row0 )
+            options = {
+                "score"    : verdict.calcVerdictScore ({
+                                "TFZ" :   { "value"  : ftfz,
+                                            "weight" : 2.0,
+                                            "good"   : [8.0,10.0,12.0,50.0],
+                                            "bad"    : [8.0,7.0,6.0,0.0]
+                                          },
+                                "LLG" :   { "value"  : fllg,
+                                            "weight" : 2.0,
+                                            "good"   : [90.0,120.0,240.0,5000.0],
+                                            "bad"    : [90.0,60.0,40.0,0.0]
+                                          },
+                                "Rfree" : { "value"  : rfree,
+                                            "weight" : 1.0,
+                                            "good"   : [0.5,0.46,0.4,0.1],
+                                            "bad"    : [0.5,0.54,0.56,0.66]
+                                          }
+                             }, 1 ),
+                "nfitted0" : nfitted0,
+                "nfitted"  : nfitted,
+                "nasu"     : nasu,
+                "fllg"     : fllg,
+                "ftfz"     : ftfz,
+                "rfree"    : rfree
+            }
 
             tdict = {
                 "title": "Phasing summary",
@@ -505,90 +542,14 @@ class PhaserMR(basic.TaskDriver):
                 ]
             }
 
-            gridId = self.getWidgetId ( "verdict_grid" )
-            self.putGrid1 ( gridId,self.report_page_id(),False,row0+1 )
-            rvapi_utils.makeTable ( tdict, self.getWidgetId("summary_table"),
-                                    gridId,0,0,2,1 )
+            self.putMessage1 ( self.report_page_id(),"&nbsp;" ,row0 )
+            row0 += 1
 
-            verdict_message = "<b style='font-size:18px;'>"
-            if verdict_score>=67:
-                if nfitted==nasu:
-                    verdict_message += "The structure is likely to be solved."
-                else:
-                    verdict_message += "Monomeric unit(s) are likely to have " +\
-                                       "been placed successfully."
-            elif verdict_score>=34:
-                if nfitted==nasu:
-                    verdict_message += "The structure may be solved, yet with " +\
-                                       "a chance for wrong solution."
-                else:
-                    verdict_message += "Monomeric unit(s) were placed, with " +\
-                                       "a chance for wrong solution."
-                if verdict_score<50.0:
-                    verdict_message += " This case may be difficult."
-            else:
-                if nfitted==nasu:
-                    verdict_message += "It is unlikely that the structure is solved."
-                else:
-                    verdict_message += "It is unlikely that monomeric unit(s) " +\
-                                       "were placed correctly."
-            verdict_message += "</b>"
+            verdict.makeVerdictSection ( self,tdict,options["score"],
+                                         self.makeVerdictMessage    ( options ),
+                                         self.makeVerdictBottomLine ( options ),
+                                         row=row0 )
 
-            notes = []
-            if fllg<60.0:
-                notes.append ( "<i>LLG</i> is critically low" )
-            elif fllg<120.0:
-                notes.append ( "<i>LLG</i> is lower than optimal" )
-            if ftfz<8.0:
-                notes.append ( "<i>TFZ</i> is critically low" )
-            elif ftfz<9.0:
-                notes.append ( "<i>TFZ</i> is lower than optimal" )
-            if rfree>0.48:
-                notes.append ( "<i>R<sub>free</sub></i> is higher than optimal" )
-            elif rfree>0.55:
-                notes.append ( "<i>R<sub>free</sub></i> is critically high" )
-
-            if len(notes)<=0:
-                notes.append ( "all scores are optimal" )
-
-            if len(notes)>0:
-                verdict_message += "<ul><li>" + "</li><li>".join(notes) +\
-                                   ".</li></ul>"
-
-            self.putMessage1 ( gridId,"&nbsp;&nbsp;&nbsp;",1,1 )
-            self.putMessage1 ( gridId,"<span style='font-size:10px;'>&nbsp;</span>",0,2 )
-            self.putVerdict1 ( gridId,verdict_score,verdict_message,1,col=2 )
-
-            bottomline = "&nbsp;<br>"
-            if nfitted<nasu:
-                if verdict_score<66.0:
-                    bottomline += "Please consider that phasing scores are lower " +\
-                                  "if, as in this case, not all copies of " +\
-                                  "monomeric units are found. "
-                else:
-                    bottomline += "Scores look good, however not all copies of " +\
-                                  "monomeric units are found. "
-                if nfitted>nfitted0:
-                    bottomline += "Try to fit the remaining copies in subsequent " +\
-                                  "phasing attempts.<p>"
-            if nfitted==nfitted0:
-                bottomline += "<i>No new copies were found in this run, " +\
-                              "therefore, you may need to proceed to model " +\
-                              "building.</i><p>"
-            elif nfitted==nasu:
-                bottomline += "<i>Assumed total number of monomeric units in ASU " +\
-                              "has been reached, you may need to proceed to  " +\
-                              "model building."
-                if verdict_score<34.0:
-                    bottomline += " Bear in mind that phasing quality look " +\
-                                  "doubtful. Model building may be difficult or " +\
-                                  "not successful at all."
-                bottomline += "</i><p>"
-            self.putMessage1 ( self.report_page_id(), bottomline +\
-                "In general, correctness of phasing solution may be ultimately " +\
-                "judged only by the ability to (auto-)build in the resulting " +\
-                "electron density. As a practical hint, <i>R<sub>free</sub></i> " +\
-                "should decrease in subsequent refinement.</i><br>&nbsp;",row0+2 )
 
         # close execution logs and quit
         self.success ( have_results )

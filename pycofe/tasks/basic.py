@@ -1391,6 +1391,15 @@ class TaskDriver(object):
                                  revision.dname + "\"</span>", gridId, row,2,1,1 )
         return
 
+    def hotHelpLink ( self,title,helpFName,tooltip="what is this?" ):
+        hothelp = "<sup><img src=\"xxJsCoFExx-fe/images_png/help.png\" "      +\
+                          "title=\"" + tooltip + "\" "                        +\
+                          "style=\"width:14px;height:14px;cursor:pointer;\" " +\
+                        "onclick=\"javascript:window.parent.launchHelpBox('"  +\
+                             title + "','manuals/html-userguide/" + helpFName +\
+                             ".html',null,10)\"/>"                            +\
+                  "</sup>"
+        return hothelp
 
     def registerRevision ( self,revision,serialNo=1,title="Structure Revision",
                            message="<b><i>New structure revision name:</i></b>",
@@ -1402,7 +1411,9 @@ class TaskDriver(object):
         revision.makeRevDName ( self.job_id,serialNo,revName )
         revision.register     ( self.outputDataBox )
         if title:
-            self.putTitle ( title )
+            self.putTitle ( title +\
+                self.hotHelpLink ( "Structure Revision",
+                                   "jscofe_qna.structure_revision") )
 
         grid_id = gridId
         if len(gridId)<=0:
