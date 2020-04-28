@@ -319,8 +319,8 @@ if (this._type=="TaskAmple")  {
 
       var authID = this.authorisationID();
       if (authID && __auth_software && (authID in __auth_software) &&
-          ((!(authID in __user_authorisation)) ||
-           (!__user_authorisation[authID].auth_date))) {
+          (!__local_user) && ((!(authID in __user_authorisation)) ||
+                              (!__user_authorisation[authID].auth_date)))  {
         return ['authorisation',
                 'task requires authorisation from ' +
                 __auth_software[this.authorisationID()].desc_provider +
