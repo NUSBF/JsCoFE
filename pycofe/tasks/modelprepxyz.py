@@ -200,7 +200,8 @@ class ModelPrepXYZ(basic.TaskDriver):
 
         for i in range(len(xyz)):
             fpath_in = self.fetch_chain ( xyz[i].chainSel,
-                                            xyz[i].getXYZFilePath(self.inputDir()) )
+                                          xyz[i].getXYZFilePath(self.inputDir()) )
+
             if hasattr(xyz[i],"fpath_algn"):
                 fpath_algn = xyz[i].fpath_algn
                 sid        = str(xyz[i].seqid_algn)
@@ -217,6 +218,10 @@ class ModelPrepXYZ(basic.TaskDriver):
                 fname, fext = os.path.splitext(fpath_out)
                 if not fname.endswith("_"+xyz[i].chainSel):
                     fpath_out   = fname + "_" + xyz[i].chainSel + fext
+            #elif modSel=="S":
+            #    fpath_tmp = "__input_sculptor_clipped.pdb"
+            #    self.prepare_clip ( fpath_in,fpath_tmp )
+            #    fpath_in  = fpath_tmp
 
             if modSel=="U":
                 shutil.copyfile ( fpath_in,fpath_out )
