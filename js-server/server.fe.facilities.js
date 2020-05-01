@@ -431,7 +431,7 @@ function initFacilities ( facilityListPath )  {
   var success = false;
 
   var fclList = new fcl.FacilityList();
-  fclList.addFacility ( fcl.facility_names.icat,'iCAT (Diamond Ltd.)' );
+  fclList.addFacility ( fcl.facility_names.icat,'iCAT (STFC/Diamond Ltd.)' );
 
   var fclListPath = facilityListPath;
   if (!fclListPath)

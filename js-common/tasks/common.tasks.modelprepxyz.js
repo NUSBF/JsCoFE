@@ -60,7 +60,7 @@ function TaskModelPrepXYZ()  {
                      'DataXYZ':[]},  // data type(s) and subtype(s)
       label       : 'Coordinates',   // label for input dialog
       tooltip     : 'Specify coordinate data set(s) to be prepared as ' +
-                    'ensemble(s) for Molecular Replacement. The ensemble(s) ' +
+                    'model(s) for Molecular Replacement. The model(s) ' +
                     'will be named after the corresponding coordinate data ' +
                     'set(s).',
       inputId     : 'xyz',       // input Id for referencing input fields
@@ -233,8 +233,7 @@ if (!__template)  {
       }
 
       if (nLigs>0) {
-        msg = '<b>Component type LIG (ligands) cannot be used for making an ensemble.</b><p>' +
-              'Make sure that all components of ensemble have the same polymeric type.';
+        msg = '<b>Component type LIG (ligands) cannot be used for making MR models.</b>.';
       } else if ((isProtein && (nDNAs+nRNAs>0)) ||
                  (isDNA && (nProteins+nRNAs>0)) ||
                  (isRNA && (nDNAs+nProteins>0))) {

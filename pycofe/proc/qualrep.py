@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    20.02.20   <--  Date of Last Modification.
+#    29.02.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -80,10 +80,10 @@ def put_molprobity_section ( body,revision ):
     xyzpath = revision.Structure.getXYZFilePath ( body.outputDir() )
 
     if sys.platform.startswith("win"):
-        body.runApp ( "molprobity.molprobity.bat",[xyzpath],logType="Main"    )
+        body.runApp ( "molprobity.molprobity.bat",[xyzpath,"percentile=True"],logType="Main"    )
         body.runApp ( "molprobity.clashscore.bat",[xyzpath],logType="Service" )
     else:
-        body.runApp ( "molprobity.molprobity",[xyzpath],logType="Main"    )
+        body.runApp ( "molprobity.molprobity",[xyzpath,"percentile=True"],logType="Main"    )
         body.runApp ( "molprobity.clashscore",[xyzpath],logType="Service" )
 
     body.flush()

@@ -223,12 +223,13 @@ var visit = null;
 
 FacilityUser.prototype.addVisits = function ( vnames,vids,vdates )  {
 var visits = [];
-  for (var i=0;i<vnames.length;i++)  {
-    var visit = this.getVisit ( vids[i] );
-    if (!visit)
-      visit = new FacilityVisit ( vnames[i],vids[i],vdates[i] );
-    visits.push ( visit );
-  }
+  if (vnames)
+    for (var i=0;i<vnames.length;i++)  {
+      var visit = this.getVisit ( vids[i] );
+      if (!visit)
+        visit = new FacilityVisit ( vnames[i],vids[i],vdates[i] );
+      visits.push ( visit );
+    }
   this.visits = visits;
 }
 

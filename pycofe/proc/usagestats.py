@@ -105,7 +105,7 @@ def getDiskUsage ( path ):
 def main():
 
     if len(sys.argv)<3:
-        print "Wrong number of arguments"
+        print ( "Wrong number of arguments" )
         return
 
     statsFile = sys.argv[1]
