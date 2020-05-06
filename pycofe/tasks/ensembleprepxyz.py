@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    10.02.20   <--  Date of Last Modification.
+#    04.05.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -35,7 +35,7 @@ import pyrvapi
 import gemmi
 
 #  application imports
-import basic
+from . import basic
 from   pycofe.proc   import analyse_ensemble, coor
 from   pycofe.dtypes import dtype_template, dtype_sequence
 

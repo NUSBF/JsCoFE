@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    15.04.20   <--  Date of Last Modification.
+#    04.05.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -24,6 +24,8 @@
 # ============================================================================
 #
 
+# python 3 ready
+
 #  python native imports
 import os
 import sys
@@ -31,7 +33,7 @@ import uuid
 #import shutil
 
 #  application imports
-import basic
+from . import basic
 from   pycofe.dtypes import dtype_template
 from   pycofe.proc   import qualrep
 
@@ -49,8 +51,8 @@ class Refmac(basic.TaskDriver):
 
         # Just in case (of repeated run) remove the output xyz file. When refmac
         # succeeds, this file is created.
-        if os.path.isfile(self.getXYZOFName()):
-            os.remove(self.getXYZOFName())
+        if os.path.isfile(self.getXYZOFName() ):
+            os.remove(self.getXYZOFName() )
 
         # Prepare refmac input
         # fetch input data
@@ -60,7 +62,7 @@ class Refmac(basic.TaskDriver):
         hmodel  = None;
         if hasattr(self.input_data.data,"hmodel"):
             hmodel  = self.input_data.data.hmodel
-            for i in range(len(hmodel)):
+            for i in range(len(hmodel) ):
                 hmodel[i] = self.makeClass ( hmodel[i] )
 
         #  protein:  hmodel[i].hasSubtype ( dtype_template.subtypeProtein() )
@@ -73,190 +75,144 @@ class Refmac(basic.TaskDriver):
            homolog_dnarna_fpaths = []
            use_protein = False
            use_dnarna = False
-           for i in range(len(hmodel)):
+           for i in range(len(hmodel) ):
               if hmodel[i].hasSubtype ( dtype_template.subtypeProtein() ):
                  use_protein = True
-                 homolog_protein_fpaths.append ( hmodel[i].getXYZFilePath(self.inputDir()) )
+                 homolog_protein_fpaths.append ( hmodel[i].getXYZFilePath(self.inputDir() ) )
               if hmodel[i].hasSubtype ( dtype_template.subtypeDNA() ) or hmodel[i].hasSubtype ( dtype_template.subtypeRNA() ):
                  use_dnarna = True
-                 homolog_dnarna_fpaths.append ( hmodel[i].getXYZFilePath(self.inputDir()) )
+                 homolog_dnarna_fpaths.append ( hmodel[i].getXYZFilePath(self.inputDir() ) )
 
            if use_protein:
-              prosmart_cmd = [ "-quick", "-o", "ProSMART_Output_protein", "-p1", istruct.getXYZFilePath(self.inputDir()), "-p2" ] + homolog_protein_fpaths
+              prosmart_cmd = [ "-quick", "-o", "ProSMART_Output_protein", "-p1", istruct.getXYZFilePath(self.inputDir() ), "-p2" ] + homolog_protein_fpaths
               self.putMessage('Running ProSMART to generate external restraints for protein macromolecules')
               self.runApp ( "prosmart",prosmart_cmd,logType="Main" )
-              external_restraint_files.append(os.path.join('ProSMART_Output_protein',os.path.splitext(istruct.getXYZFileName())[0]+'.txt'))
+              external_restraint_files.append(os.path.join('ProSMART_Output_protein',os.path.splitext(istruct.getXYZFileName() )[0]+'.txt') )
 
            if use_dnarna:
-              prosmart_cmd = [ "-quick", "-dna_rna", "-o", "ProSMART_Output_dnarna", "-p1" ,istruct.getXYZFilePath(self.inputDir()), "-p2" ] + homolog_dnarna_fpaths
+              prosmart_cmd = [ "-quick", "-dna_rna", "-o", "ProSMART_Output_dnarna", "-p1" ,istruct.getXYZFilePath(self.inputDir() ), "-p2" ] + homolog_dnarna_fpaths
               self.putMessage('Running ProSMART to generate external restraints for nucleic acid macromolecules')
               self.runApp ( "prosmart",prosmart_cmd,logType="Main" )
-              external_restraint_files.append(os.path.join('ProSMART_Output_dnarna',os.path.splitext(istruct.getXYZFileName())[0]+'.txt'))
+              external_restraint_files.append(os.path.join('ProSMART_Output_dnarna',os.path.splitext(istruct.getXYZFileName() )[0]+'.txt') )
 
         if str(self.task.parameters.sec3.contains.HBOND_RESTR.value) == 'yes':
-           prosmart_cmd = [ "-quick", "-o", "ProSMART_Output_hbond", "-p1", istruct.getXYZFilePath(self.inputDir())]
+           prosmart_cmd = [ "-quick", "-o", "ProSMART_Output_hbond", "-p1", istruct.getXYZFilePath(self.inputDir() )]
            self.runApp ( "prosmart",prosmart_cmd,logType="Main" )
-           external_restraint_files.append(os.path.join('ProSMART_Output_hbond',os.path.splitext(istruct.getXYZFileName())[0]+'.txt'))
+           external_restraint_files.append(os.path.join('ProSMART_Output_hbond',os.path.splitext(istruct.getXYZFileName() )[0]+'.txt') )
 
 
-        with open(self.file_stdin_path(),'w') as scr_file:
+        # Input
 
-            # Input
+        if (str(hkl.useHKLSet) == 'F') or (str(hkl.useHKLSet) == 'TF'):
+            hkl_labels = ( hkl.dataset.Fmean.value, hkl.dataset.Fmean.sigma )
+            hkl_labin  =  "LABIN FP=" + hkl_labels[0] + " SIGFP=" + hkl_labels[1]
+        elif str(hkl.useHKLSet) == 'Fpm':
+            hkl_labels = ( hkl.dataset.Fpm.plus.value, hkl.dataset.Fpm.plus.sigma,
+                           hkl.dataset.Fpm.minus.value, hkl.dataset.Fpm.minus.sigma )
+            hkl_labin  =  "LABIN F+=" + hkl_labels[0] + " SIGF+=" + hkl_labels[1] +\
+                          " F-=" + hkl_labels[2] + " SIGF-=" + hkl_labels[3]
+        else: # if str(hkl.useHKLSet) == 'TI':
+            hkl_labels = ( hkl.dataset.Imean.value, hkl.dataset.Imean.sigma )
+            hkl_labin  =  "LABIN IP=" + hkl_labels[0] + " SIGIP=" + hkl_labels[1]
 
-            """
-            use_anom = False
-            if str(hkl.useHKLSet) == 'Fpm':
-               hkl_labels = ( hkl.dataset.Fpm.plus.value, hkl.dataset.Fpm.plus.sigma,
-                              hkl.dataset.Fpm.minus.value, hkl.dataset.Fpm.minus.sigma )
-               hkl_labin  =  "LABIN F+=" + hkl_labels[0] + " SIGF+=" + hkl_labels[1] +\
-                                  " F-=" + hkl_labels[2] + " SIGF-=" + hkl_labels[3]
-               use_anom = True
-            elif str(hkl.useHKLSet) == 'I':
-               if str(self.task.parameters.sec1.contains.TWIN.value) == 'no':
-                  self.fail('Error - intensities can only be used for twin refinement (at present)<ol><li>If data are twinned, select for twin refinement to be performed.<li>If data are not twinned, provide structure factor amplitudes instead of intensities.</ol>','')
-                  raise
-               hkl_labels = ( hkl.dataset.Imean.value, hkl.dataset.Imean.sigma )
-               hkl_labin  =  "LABIN IP=" + hkl_labels[0] + " SIGIP=" + hkl_labels[1]
-            elif str(hkl.useHKLSet) == 'F':
-               hkl_labels = ( hkl.dataset.Fmean.value, hkl.dataset.Fmean.sigma )
-               hkl_labin  =  "LABIN FP=" + hkl_labels[0] + " SIGFP=" + hkl_labels[1]
-            else: #  automatic choice
-               try:
-                  if str(self.task.parameters.sec1.contains.TWIN.value) == 'no':
-                     # Do not throw error message, as intensities have not been specifically selected.
-                     raise
-                  hkl_labels = ( hkl.dataset.Imean.value, hkl.dataset.Imean.sigma )
-                  hkl_labin  =  "LABIN IP=" + hkl_labels[0] + " SIGIP=" + hkl_labels[1]
-               except:
-                  try:
-                     hkl_labels = ( hkl.dataset.Fpm.plus.value, hkl.dataset.Fpm.plus.sigma,
-                                    hkl.dataset.Fpm.minus.value, hkl.dataset.Fpm.minus.sigma )
-                     hkl_labin  =  "LABIN F+=" + hkl_labels[0] + " SIGF+=" + hkl_labels[1] +\
-                                        " F-=" + hkl_labels[2] + " SIGF-=" + hkl_labels[3]
-                     use_anom = True
-                  except:
-                     hkl_labels = ( hkl.dataset.Fmean.value, hkl.dataset.Fmean.sigma )
-                     hkl_labin  =  "LABIN FP=" + hkl_labels[0] + " SIGFP=" + hkl_labels[1]
-            """
+        stdin = [ hkl_labin + " FREE=" + hkl.dataset.FREE ]
+        if str(hkl.useHKLSet) == 'Fpm':
+            stdin.append ( 'ANOM MAPONLY' )
 
-            if (str(hkl.useHKLSet) == 'F') or (str(hkl.useHKLSet) == 'TF'):
-                hkl_labels = ( hkl.dataset.Fmean.value, hkl.dataset.Fmean.sigma )
-                hkl_labin  =  "LABIN FP=" + hkl_labels[0] + " SIGFP=" + hkl_labels[1]
-            elif str(hkl.useHKLSet) == 'Fpm':
-                hkl_labels = ( hkl.dataset.Fpm.plus.value, hkl.dataset.Fpm.plus.sigma,
-                               hkl.dataset.Fpm.minus.value, hkl.dataset.Fpm.minus.sigma )
-                hkl_labin  =  "LABIN F+=" + hkl_labels[0] + " SIGF+=" + hkl_labels[1] +\
-                              " F-=" + hkl_labels[2] + " SIGF-=" + hkl_labels[3]
-            else: # if str(hkl.useHKLSet) == 'TI':
-               hkl_labels = ( hkl.dataset.Imean.value, hkl.dataset.Imean.sigma )
-               hkl_labin  =  "LABIN IP=" + hkl_labels[0] + " SIGIP=" + hkl_labels[1]
+        # Basic options
+        stdin.append ( 'NCYC ' + str(self.task.parameters.sec1.contains.NCYC.value) )
 
-
-            #self.putTitle('html')
-            #self.putMessage('html')
-            #self.fail('','')
-
-            print >>scr_file, hkl_labin + " FREE=" + hkl.dataset.FREE
-            if str(hkl.useHKLSet) == 'Fpm':
-               print >>scr_file, 'ANOM MAPONLY'
-
-            # Basic options
-            print >>scr_file, 'NCYC', str(self.task.parameters.sec1.contains.NCYC.value)
-
-            if str(self.task.parameters.sec1.contains.WAUTO_YES.value) == 'yes':
-               if str(self.task.parameters.sec1.contains.WAUTO_VAL_AUTO.value) == '':
-                  print >>scr_file, 'WEIGHT AUTO'
-               else:
-                  print >>scr_file, 'WEIGHT AUTO', str(self.task.parameters.sec1.contains.WAUTO_VAL_AUTO.value)
+        if str(self.task.parameters.sec1.contains.WAUTO_YES.value) == 'yes':
+            if str(self.task.parameters.sec1.contains.WAUTO_VAL_AUTO.value) == '':
+               stdin.append ( 'WEIGHT AUTO' )
             else:
-               print >>scr_file, 'WEIGHT MATRIX', self.task.parameters.sec1.contains.WAUTO_VAL.value
+               stdin.append ( 'WEIGHT AUTO ' + str(self.task.parameters.sec1.contains.WAUTO_VAL_AUTO.value) )
+        else:
+            stdin.append ( 'WEIGHT MATRIX ' + self.task.parameters.sec1.contains.WAUTO_VAL.value )
 
-            print >>scr_file, 'MAKE HYDR', str(self.task.parameters.sec1.contains.MKHYDR.value)
+        stdin.append ( 'MAKE HYDR ' + str(self.task.parameters.sec1.contains.MKHYDR.value) )
 
-            #if str(self.task.parameters.sec1.contains.TWIN.value) == 'yes':
-            #   print >>scr_file, 'TWIN'
+        #if str(self.task.parameters.sec1.contains.TWIN.value) == 'yes':
+        #   print >>scr_file, 'TWIN'
 
-            if (str(hkl.useHKLSet) == 'TI') or (str(hkl.useHKLSet) == 'TF'):
-                print >>scr_file, 'TWIN'
+        if (str(hkl.useHKLSet) == 'TI') or (str(hkl.useHKLSet) == 'TF'):
+            stdin.append ( 'TWIN' )
 
-            # Parameters
-            print >>scr_file, 'REFI BREF', str(self.task.parameters.sec2.contains.BFAC.value)
+        # Parameters
+        stdin.append ( 'REFI BREF ' + str(self.task.parameters.sec2.contains.BFAC.value) )
 
-            if str(self.task.parameters.sec2.contains.TLS.value) != 'none':
-                print >>scr_file, 'REFI TLSC', str(self.task.parameters.sec2.contains.TLS_CYCLES.value)
-                if str(self.task.parameters.sec2.contains.RESET_B.value) == 'yes':
-                   print >>scr_file, 'BFAC SET', str(self.task.parameters.sec2.contains.RESET_B_VAL.value)
-                if str(self.task.parameters.sec2.contains.TLSOUT_ADDU.value) == 'yes':
-                   print >>scr_file, 'TLSOUT ADDU'
+        if str(self.task.parameters.sec2.contains.TLS.value) != 'none':
+            stdin.append ( 'REFI TLSC ' + str(self.task.parameters.sec2.contains.TLS_CYCLES.value) )
+            if str(self.task.parameters.sec2.contains.RESET_B.value) == 'yes':
+                stdin.append ( 'BFAC SET' + str(self.task.parameters.sec2.contains.RESET_B_VAL.value) )
+            if str(self.task.parameters.sec2.contains.TLSOUT_ADDU.value) == 'yes':
+               stdin.append ( 'TLSOUT ADDU' )
 
-            print >>scr_file, 'SCALE TYPE', str(self.task.parameters.sec2.contains.SCALING.value)
-            if str(self.task.parameters.sec2.contains.SCALING.value) == 'no':
-               print >>scr_file, 'SOLVENT NO'
-            else:
-               print >>scr_file, 'SOLVENT YES'
-               if str(self.task.parameters.sec2.contains.SOLVENT_CUSTOM.value) == 'yes':
-                  print >>scr_file, 'SOLVENT VDWProb', str(self.task.parameters.sec2.contains.SOLVENT_CUSTOM_VDW.value)
-                  print >>scr_file, 'SOLVENT IONProb', str(self.task.parameters.sec2.contains.SOLVENT_CUSTOM_ION.value)
-                  print >>scr_file, 'SOLVENT RSHRink', str(self.task.parameters.sec2.contains.SOLVENT_CUSTOM_SHRINK.value)
+        stdin.append ('SCALE TYPE ' + str(self.task.parameters.sec2.contains.SCALING.value) )
+        if str(self.task.parameters.sec2.contains.SCALING.value) == 'no':
+            stdin.append ( 'SOLVENT NO' )
+        else:
+            stdin.append ( 'SOLVENT YES' )
+            if str(self.task.parameters.sec2.contains.SOLVENT_CUSTOM.value) == 'yes':
+                stdin += [
+                    'SOLVENT VDWProb ' + str(self.task.parameters.sec2.contains.SOLVENT_CUSTOM_VDW.value),
+                    'SOLVENT IONProb ' + str(self.task.parameters.sec2.contains.SOLVENT_CUSTOM_ION.value),
+                    'SOLVENT RSHRink ' + str(self.task.parameters.sec2.contains.SOLVENT_CUSTOM_SHRINK.value)
+                ]
 
-            # Restraints
-            #ncsrv = str(self.task.parameters.sec3.contains.NCSR.value)
-            #if ncsrv in ('local', 'global'):
-            #print >>scr_file, 'ncsr', ncsrv
-            if str(self.task.parameters.sec3.contains.NCSR.value) == 'yes':
-               print >>scr_file, 'NCSR', str(self.task.parameters.sec3.contains.NCSR_TYPE.value)
+        # Restraints
+        #ncsrv = str(self.task.parameters.sec3.contains.NCSR.value)
+        #if ncsrv in ('local', 'global'):
+        #print >>scr_file, 'ncsr', ncsrv
+        if str(self.task.parameters.sec3.contains.NCSR.value) == 'yes':
+            stdin.append ('NCSR ' + str(self.task.parameters.sec3.contains.NCSR_TYPE.value) )
 
-            if str(self.task.parameters.sec3.contains.JELLY.value) == 'yes':
-               print >>scr_file, 'RIDG DIST SIGM', self.task.parameters.sec3.contains.JELLY_SIGMA.value
-               print >>scr_file, 'RIDG DIST DMAX', self.task.parameters.sec3.contains.JELLY_DMAX.value
+        if str(self.task.parameters.sec3.contains.JELLY.value) == 'yes':
+            stdin += [ 'RIDG DIST SIGM ' + self.task.parameters.sec3.contains.JELLY_SIGMA.value,
+                       'RIDG DIST DMAX ' + self.task.parameters.sec3.contains.JELLY_DMAX.value ]
 
+        if len(external_restraint_files) > 0:
+            stdin += [
+                'EXTE WEIGHT SCALE ' + str(self.task.parameters.sec3.contains.EXTE_WEIGHT.value),
+                'EXTE WEIGHT GMWT '  + str(self.task.parameters.sec3.contains.EXTE_GMWT.value),
+                'EXTE DMAX '         + str(self.task.parameters.sec3.contains.EXTE_MAXD.value)
+            ]
+            for i in range(len(external_restraint_files) ):
+                stdin.append ( '@' + external_restraint_files[i] )
 
-            if len(external_restraint_files) > 0:
-               print >>scr_file, 'EXTE WEIGHT SCALE', str(self.task.parameters.sec3.contains.EXTE_WEIGHT.value)
-               print >>scr_file, 'EXTE WEIGHT GMWT', str(self.task.parameters.sec3.contains.EXTE_GMWT.value)
-               print >>scr_file, 'EXTE DMAX', str(self.task.parameters.sec3.contains.EXTE_MAXD.value)
-               for i in range(len(external_restraint_files)):
-                  print >>scr_file, '@'+external_restraint_files[i]
+        # Output
+        if str(self.task.parameters.sec4.contains.RIDING_HYDROGENS.value) != 'DEFAULT':
+           stdin.append ( 'MAKE HOUT ' + str(self.task.parameters.sec4.contains.RIDING_HYDROGENS.value) )
 
-            # Output
-            if str(self.task.parameters.sec4.contains.RIDING_HYDROGENS.value) != 'DEFAULT':
-               print >>scr_file, 'MAKE HOUT', str(self.task.parameters.sec4.contains.RIDING_HYDROGENS.value)
+        if str(self.task.parameters.sec4.contains.MAP_SHARPEN.value) == 'yes':
+           if str(self.task.parameters.sec4.contains.MAP_SHARPEN_B.value) == 'default':
+              stdin.append ( 'MAPC SHAR' )
+           else:
+              stdin.append ( 'MAPC SHAR ' + self.task.parameters.sec4.contains.MAP_SHARPEN_B.value )
 
-            if str(self.task.parameters.sec4.contains.MAP_SHARPEN.value) == 'yes':
-               if str(self.task.parameters.sec4.contains.MAP_SHARPEN_B.value) == 'default':
-                  print >>scr_file, 'MAPC SHAR'
-               else:
-                  print >>scr_file, 'MAPC SHAR', self.task.parameters.sec4.contains.MAP_SHARPEN_B.value
+        # Advanced
+        if str(self.task.parameters.sec5.contains.EXPERIMENT.value) == 'electron':
+           if str(self.task.parameters.sec5.contains.FORM_FACTOR.value) == 'mb':
+              stdin.append ( 'SOURCE ELECTRON MB' )
+           else:
+              stdin.append ( 'SOURCE ELECTRON' )
 
-            # Advanced
-            if str(self.task.parameters.sec5.contains.EXPERIMENT.value) == 'electron':
-               if str(self.task.parameters.sec5.contains.FORM_FACTOR.value) == 'mb':
-                  print >>scr_file, 'SOURCE ELECTRON MB'
-               else:
-                  print >>scr_file, 'SOURCE ELECTRON'
+        stdin.append ( 'REFI RESO ' + str(hkl.res_low) + ' ' + str(hkl.res_high) )
 
-            """
-            if str(self.task.parameters.sec5.contains.RES_LIMIT_MIN.value) == 'custom':
-               if str(self.task.parameters.sec5.contains.RES_LIMIT_MAX.value) == 'custom':
-                  print >>scr_file, 'REFI RESO', self.task.parameters.sec5.contains.RES_LIMIT_MIN.value, self.task.parameters.sec5.contains.RES_LIMIT_MAX.value
-               else:
-                  print >>scr_file, 'REFI RESO 0', self.task.parameters.sec5.contains.RES_LIMIT_MIN.value
-            else:
-               if str(self.task.parameters.sec5.contains.RES_LIMIT_MAX.value) == 'custom':
-                  print >>scr_file, 'REFI RESO', self.task.parameters.sec5.contains.RES_LIMIT_MAX.value, '999'
-            """
-            print >>scr_file, 'REFI RESO', hkl.res_low, hkl.res_high
+        # Other keywords
+        stdin.append ( 'MAKE NEWLIGAND EXIT' )
+        if str(self.task.parameters.sec5.contains.KEYWORDS.value) != '':
+           stdin.append ( self.task.parameters.sec5.contains.KEYWORDS.value )
 
-            # Other keywords
-            print >>scr_file, 'MAKE NEWLIGAND EXIT'
-            if str(self.task.parameters.sec5.contains.KEYWORDS.value) != '':
-               print >>scr_file, self.task.parameters.sec5.contains.KEYWORDS.value
-
-            print >>scr_file, 'END'
+        stdin.append ( 'END' )
 
         #self.file_stdout.write ( "keywords=" + self.task.parameters.sec1.contains.KEYWORDS.value )
 
-        self.file_stdin = 1 # a trick necessary because of using 'print' above
+        self.open_stdin  ()
+        self.write_stdin ( stdin )
+        self.close_stdin ()
+
+        #self.file_stdin = 1 # a trick necessary because of using 'print' above
 
         # make command-line parameters for bare morda run on a SHELL-type node
         xyzin  = istruct.getXYZFilePath ( self.inputDir() )

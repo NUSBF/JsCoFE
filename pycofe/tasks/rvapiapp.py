@@ -77,7 +77,7 @@ file_stderr = open ( file_stderr_path,'w' )
 
 task = jsonut.readjObject ( 'job.meta' )
 if task is None:
-    print " task read failed in 'pycofe.tasks.rvapiapp'"
+    print(" task read failed in 'pycofe.tasks.rvapiapp'")
     file_stdout.write ( " task read failed in 'pycofe.tasks.rvapiapp'" )
     signal.TaskReadFailure().quitApp()
 
@@ -107,7 +107,7 @@ else:
         args = task.rvapi_args
 
 if app is None:
-    print " wrong command specification 'pycofe.tasks.rvapiapp' (" + task.rvapi_command + ")"
+    print(" wrong command specification 'pycofe.tasks.rvapiapp' (" + task.rvapi_command + ")")
     file_stdout.write ( " wrong command specification 'pycofe.tasks.rvapiapp' (" + task.rvapi_command + ")" )
     signal.TaskReadFailure().quitApp()
 

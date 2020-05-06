@@ -151,8 +151,8 @@ var nodeId = null;
 var __deleteStyle     = 'color:#FF0000;text-decoration:line-through;';
 var __notViewedStyle  = 'color:#00A000;';
 var __remarkStyle     = 'color:#A00000;font-style:italic;';
-var __highlightStyle  = 'background-color:yellow;padding:4px 16px 4px 2px;';
-var __highlightStyleL = 'background-color:lime;padding:4px 16px 4px 2px;';
+var __highlightStyle  = 'background-color:yellow;padding:4px 16px 4px 0px;';
+var __highlightStyleL = 'background-color:lime;padding:4px 16px 4px 0px;';
 
 
 JobTree.prototype.readProjectData = function ( page_title,

@@ -113,11 +113,11 @@ def InstallSaveToCloudMenuItem(workDirectory):
                   continuous = False
                   if pm is not None:
                     continuous = pm.getparams()["colouring_mode"]
-                  print "Got continuous",continuous
+                  print("Got continuous",continuous)
                     
                   for seq in self.sequence_displays:
                         seq.isAligned = False
-                        if self.mappings.has_key(seq.name+"_"+seq.chain):
+                        if seq.name+"_"+seq.chain in self.mappings:
                               mapping = self.mappings[seq.name+"_"+seq.chain]
                         else:
                               mapping = []
@@ -166,7 +166,7 @@ def InstallSaveToCloudMenuItem(workDirectory):
                         if not mappedNew[key]:
                               mapping = []
                               if acv is None:
-                                print "acv is None"
+                                print("acv is None")
                                 nposs_nuc = val.count("A") + val.count("G") + val.count("C") + val.count("T") + val.count("U") + val.count("N");
                                 if float(nposs_nuc)/len(val)<0.9:
                                   colourTable = GetColourByAtomTable()
@@ -177,11 +177,11 @@ def InstallSaveToCloudMenuItem(workDirectory):
  
                                 acv = []
                                 for seqi in val:
-                                  if colourTable.has_key(seqi):
+                                  if seqi in colourTable:
                                     acv.append(colourTable[seqi])
                                   else:
                                     acv.append(QtGui.QColor(128,128,128));
-                              print "acv is ...",acv
+                              print("acv is ...",acv)
                               sd = SequenceViewer.SequenceDisplay(sequence=val,name=key,chain='',atomColourVector=acv,isMolData=False)
                               self.sequence_displays.append(sd)
                               self.mappings[val] = mapping
@@ -204,7 +204,7 @@ def InstallSaveToCloudMenuItem(workDirectory):
   def getGuiDef(self,name='row',pickevent=None):
     target = get_dispobj(name=self.objectName())
     if not target:
-      print 'Can not find GMolDisp target',self
+      print('Can not find GMolDisp target',self)
       return []
   
     if name == "icon":
@@ -232,7 +232,7 @@ def InstallSaveToCloudMenuItem(workDirectory):
     target = get_dispobj(name=self.objectName())
 
     if not target:
-      print "No target!!!!"
+      print("No target!!!!")
       return
 
     rv = target.parent.list_data_file(target.name)
@@ -248,7 +248,7 @@ def InstallSaveToCloudMenuItem(workDirectory):
      fname = os.path.join(dropDir,'output'+str(maxIndx+1)+'.pdb')
      shutil.copy2(dlfname,fname)
     else:
-      print "Some failure!!!!"
+      print("Some failure!!!!")
   
   displayTableObjects.GMolDisp._getGuiDef = displayTableObjects.GMolDisp.getGuiDef
   displayTableObjects.GMolDisp._getActionDef = displayTableObjects.GMolDisp.getActionDef
@@ -276,7 +276,7 @@ def SetupSequenceLoadingFromCommandLine():
       SequenceViewer_initialized = 1
   
     from PyQt4 import QtCore
-    print "Treat",args,"as sequence"
+    print("Treat",args,"as sequence")
     global_definitions.MAINWINDOW().sequence_dialog.loadExternalAlignment(QtCore.QString(args))
   
   def initSequenceViewer():
@@ -305,10 +305,10 @@ def saveEnsembleToI2(workDirectory):
       try:
         import mmdb2 as mmdb
       except:
-        print "Failed to import mmdb"
+        print("Failed to import mmdb")
         exc_type, exc_value,exc_tb = sys.exc_info()[:3]
-        print exc_type
-        print exc_value
+        print(exc_type)
+        print(exc_value)
       import mmut
       import pygl_coord
       newManager = mmdb.Manager()
@@ -336,7 +336,7 @@ def saveEnsembleToI2(workDirectory):
            #selindexp = pygl_coord.intp()
            #SelAtoms = mmut.GetAtomSelIndex(obj.molHnd,selHnd,selindexp)
            #print "Selected",selindexp.value(),"atoms in total",obj.name
-           print "There are",nChains.value(),"chains"
+           print("There are",nChains.value(),"chains")
            newchid = 65
            for i in range(nChains.value()):
               selHndCh = obj.molHnd.NewSelection()
@@ -345,16 +345,16 @@ def saveEnsembleToI2(workDirectory):
               obj.molHnd.Select(selHndCh,mmdb.STYPE_ATOM,selHnd,mmdb.SKEY_AND )
               selindexp = pygl_coord.intp()
               SelAtoms = mmut.GetAtomSelIndex(obj.molHnd,selHndCh,selindexp)
-              print "Selected",selindexp.value(),"atoms from",obj.name,chid
+              print("Selected",selindexp.value(),"atoms from",obj.name,chid)
               if selindexp.value()>0:
-                print "Creating chain",chr(newchid)
+                print("Creating chain",chr(newchid))
                 model = mmdb.Model()
                 model.thisown = 0
                 newManager.AddModel(model)
                 iModel += 1
                 newChain = model.GetChainCreate(chr(newchid),True);
                 ncopied = obj.molHnd.CopySelectedAtomsToChain(selHndCh,newChain)
-                print "Copied",ncopied,"to new chain"
+                print("Copied",ncopied,"to new chain")
                 udd_rmsd_model=obj.molHnd.GetUDDHandle(mmdb.UDR_HIERARCHY,"mrbump_gesamt_multi_rmsd")
                 if udd_rmsd_model>0:
                    udd_rmsd = mmdb.doublep()
@@ -364,7 +364,7 @@ def saveEnsembleToI2(workDirectory):
                    preamble1 += "REMARK PHASER ENSEMBLE MODEL "+str(iModel)+" RMS "+str(rmsdval) + "\n"
                    preamble2 += "REMARK MODEL "+str(iModel)+": "+os.path.basename(shortName)+", MODEL '', CHAIN "+chid + "\n"
                 else:
-                   print "Clearing preambles"
+                   print("Clearing preambles")
                    preamble1 = None
                    preamble2 = None
                    
@@ -469,9 +469,9 @@ if __name__ == "__main__" or __name__ == "__builtin__":
   except:
      lvl = 95
      pmr = 20
-  print saveDir
+  print(saveDir)
   InstallSaveToCloudMenuItem(saveDir)
   InstallSaveEnsembleToCloudMenuItem(saveDir)
   SetupSequenceLoadingFromCommandLine()
   mrbump_dir = RunMrBump(0,lvl,pmr,mrnum,jobid,workdir,use_hhpred,pdb_local)
-  print "MRBUMP_DIRECTORY",mrbump_dir
+  print("MRBUMP_DIRECTORY",mrbump_dir)

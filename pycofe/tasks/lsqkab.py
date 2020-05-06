@@ -33,7 +33,7 @@ import pyrvapi
 import gemmi
 
 #  application imports
-import basic
+from . import basic
 #from   pycofe.varut  import jsonut
 from   pycofe.dtypes import dtype_template
 

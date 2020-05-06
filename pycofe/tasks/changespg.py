@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    04.04.20   <--  Date of Last Modification.
+#    04.05.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -24,11 +24,14 @@
 # ============================================================================
 #
 
+# not needed
+#from future import *
+
 #  python native imports
 import os
 
 #  application imports
-import basic
+from . import basic
 from   pycofe.dtypes import dtype_template
 from   pycofe.proc   import datred_utils, import_filetype, import_merged
 

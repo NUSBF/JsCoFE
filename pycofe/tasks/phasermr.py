@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    25.04.20   <--  Date of Last Modification.
+#    01.05.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -24,6 +24,8 @@
 # ============================================================================
 #
 
+from future import *
+
 #  python native imports
 import os
 import sys
@@ -33,7 +35,7 @@ import shutil
 import pyrvapi
 
 #  application imports
-import basic
+from . import basic
 #from   pycofe.proc import import_merged
 from   pycofe.dtypes import dtype_template
 from   pycofe.proc   import verdict

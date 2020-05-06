@@ -52,12 +52,12 @@ def write_html(i2htmlbase, i2xml_dict, i2xml_tmp, i2html):
 
   xmlstr = ET.tostring(root)
   with open(i2xml_tmp, 'w') as ostream:
-    print >>ostream, xmlstr
+    print(xmlstr, file=ostream)
 
   report = aimless_pipe_report(xmlFile=i2xml_tmp, jobStatus='Finished')
   htmlstr = report.as_html(htmlBase=i2htmlbase)
   htmlstr = re.sub('<object .*?</object>', '', htmlstr, flags=re.S)
   htmlstr = htmlstr.replace('><', '>\n<')
   with open(i2html, 'w') as ostream:
-    print >>ostream, htmlstr,
+    print(htmlstr, end=' ', file=ostream)
 

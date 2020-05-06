@@ -34,7 +34,7 @@ import gemmi
 from   gemmi   import  cif
 
 #  application imports
-import basic
+from . import basic
 
 
 # ============================================================================

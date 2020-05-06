@@ -30,7 +30,7 @@ import sys
 import shutil
 
 #  application imports
-import basic
+from . import basic
 from   pycofe.dtypes  import  dtype_xyz, dtype_ensemble
 from   pycofe.varut   import  signal
 try:

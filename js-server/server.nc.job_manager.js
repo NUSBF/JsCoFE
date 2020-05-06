@@ -946,16 +946,6 @@ function ncMakeJob ( server_request,server_response )  {
                            '[00104] Job started', {
                              job_token     : job_token
                            });
-        /*
-        var absent_tokens = [];
-        if ('check_tokens' in meta)
-          absent_tokens = ncJobRegister.checkJobTokens ( meta.check_tokens.split(',') );
-        cmd.sendResponse ( server_response, cmd.nc_retcode.ok,
-                           '[00104] Job started', {
-                             job_token     : job_token,
-                             absent_tokens : absent_tokens
-                           });
-        */
       } else if (code=='err_rename')  { // file renaming errors
         sendErrResponse ( cmd.nc_retcode.fileErrors,
                           '[00105] File rename errors' );

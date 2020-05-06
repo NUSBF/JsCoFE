@@ -3,16 +3,18 @@
 #
 # ============================================================================
 #
-#    05.07.17   <--  Date of Last Modification.
+#    01.05.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  MTZ HANDLING UTILS
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2020
 #
 # ============================================================================
 #
+
+from future import *
 
 import os, sys, re
 import struct
@@ -78,7 +80,7 @@ class mtz_dataset(object):
     MTZ = PROJECT = CRYSTAL = DATASET = DCELL = DWAVEL = None
     RESO = None
     PhiFOM = ABCD = FwPhi = None
-    
+
 
     def __init__(self, clist, header, isunmerged=False, vstream=None):
         self.MTZ  = header.MTZ
@@ -95,12 +97,12 @@ class mtz_dataset(object):
         fwtphi_list = extract_blocks(label_list, ctype_list, 'FP')
         phifom_list = extract_blocks(label_list, ctype_list, 'PW')
         fomphi_list = extract_blocks(label_list, ctype_list, 'WP')
-        phifom_list.extend(zip(*reversed(zip(*fomphi_list))))
-        clist = zip(ctype_list, label_list)
+        phifom_list.extend(list(zip(*reversed(list(zip(*fomphi_list))))))
+        clist = list(zip(ctype_list, label_list))
 
         # print [block_name(b) for b in phifom_list]
         # print [block_name(b, merge=True) for b in abcd_list]
-        
+
         self.ABCD = tuple(abcd_list)
         self.FwPhi = tuple(fwtphi_list)
 
@@ -114,7 +116,8 @@ class mtz_dataset(object):
             labs.append(label)
 
         if vstream:
-            print >>vstream, columns
+            #print(columns, file=vstream)
+            vstream.write ( columns )
 
         phi_list = columns.get('P')
         fom_list = columns.get('W')
@@ -180,58 +183,58 @@ class mtz_dataset(object):
                     setattr(self, tag, measured(vlab, slab))
 
     def prn(self):
-        print 'MTZ =', self.MTZ
-        print 'PROJECT/CRYSTAL/DATASET = %s/%s/%s' %(self.PROJECT, self.CRYSTAL, self.DATASET)
-        print 'HM =', self.HM
-        print 'RESO =', self.RESO
-        print 'DCELL =', self.DCELL
-        print 'DWAVEL =', self.DWAVEL
-        print 'H =', self.H
-        print 'K =', self.K
-        print 'L =', self.L
-        print 'FREE =', self.FREE
+        print('MTZ =', self.MTZ)
+        print('PROJECT/CRYSTAL/DATASET = %s/%s/%s' %(self.PROJECT, self.CRYSTAL, self.DATASET))
+        print('HM =', self.HM)
+        print('RESO =', self.RESO)
+        print('DCELL =', self.DCELL)
+        print('DWAVEL =', self.DWAVEL)
+        print('H =', self.H)
+        print('K =', self.K)
+        print('L =', self.L)
+        print('FREE =', self.FREE)
         if self.Ipm is None:
-            print 'Ipm =', self.Ipm
+            print('Ipm =', self.Ipm)
 
         else:
-            print 'Ipm.plus.value =', self.Ipm.plus.value
-            print 'Ipm.plus.sigma =', self.Ipm.plus.sigma
-            print 'Ipm.minus.value =', self.Ipm.minus.value
-            print 'Ipm.minus.sigma =', self.Ipm.minus.sigma
+            print('Ipm.plus.value =', self.Ipm.plus.value)
+            print('Ipm.plus.sigma =', self.Ipm.plus.sigma)
+            print('Ipm.minus.value =', self.Ipm.minus.value)
+            print('Ipm.minus.sigma =', self.Ipm.minus.sigma)
 
         if self.Fpm is None:
-            print 'Fpm =', self.Fpm
+            print('Fpm =', self.Fpm)
 
         else:
-            print 'Fpm.plus.value =', self.Fpm.plus.value
-            print 'Fpm.plus.sigma =', self.Fpm.plus.sigma
-            print 'Fpm.minus.value =', self.Fpm.minus.value
-            print 'Fpm.minus.sigma =', self.Fpm.minus.sigma
+            print('Fpm.plus.value =', self.Fpm.plus.value)
+            print('Fpm.plus.sigma =', self.Fpm.plus.sigma)
+            print('Fpm.minus.value =', self.Fpm.minus.value)
+            print('Fpm.minus.sigma =', self.Fpm.minus.sigma)
 
         if self.Imean is None:
-            print 'Imean =', self.Imean
+            print('Imean =', self.Imean)
 
         else:
-            print 'Imean.value =', self.Imean.value
-            print 'Imean.sigma =', self.Imean.sigma
+            print('Imean.value =', self.Imean.value)
+            print('Imean.sigma =', self.Imean.sigma)
 
         if self.Fmean is None:
-            print 'Fmean =', self.Fmean
+            print('Fmean =', self.Fmean)
 
         else:
-            print 'Fmean.value =', self.Fmean.value
-            print 'Fmean.sigma =', self.Fmean.sigma
+            print('Fmean.value =', self.Fmean.value)
+            print('Fmean.sigma =', self.Fmean.sigma)
 
         if self.PhiFOM:
-            print 'Ph =', self.PhiFOM
+            print('Ph =', self.PhiFOM)
 
         if self.ABCD:
-            print 'ABCD =', self.ABCD
+            print('ABCD =', self.ABCD)
 
         if self.FwPhi:
-            print 'FwPhi =', self.FwPhi
+            print('FwPhi =', self.FwPhi)
 
-        print
+        print()
 
 class mtz_dataset_list(list):
     H = K = L = FREE = HM = CELL = RESO = MTZ = BRNG = None
@@ -303,7 +306,7 @@ class mtz_dataset_list(list):
             raise Exception()
 
         ds_dict = dict()
-        for index, clist in columns_dict.items():
+        for index, clist in list(columns_dict.items()):
             ds_dict[index] = mtz_dataset(clist, self, bool(self.BRNG), vstream)
 
         for key in 'PROJECT', 'CRYSTAL', 'DATASET', 'DCELL', 'DWAVEL':
@@ -346,16 +349,16 @@ class mtz_dataset_list(list):
                     ds.DCELL = self.CELL
 
     def prn(self):
-        print
-        print 'H =', self.H
-        print 'K =', self.K
-        print 'L =', self.L
-        print 'FREE =', self.FREE
-        print 'HM =', self.HM
-        print 'CELL =', self.CELL
-        print 'RESO =', self.RESO
-        print 'BRNG =', self.BRNG
-        print
+        print()
+        print('H =', self.H)
+        print('K =', self.K)
+        print('L =', self.L)
+        print('FREE =', self.FREE)
+        print('HM =', self.HM)
+        print('CELL =', self.CELL)
+        print('RESO =', self.RESO)
+        print('BRNG =', self.BRNG)
+        print()
         for ds in self:
             ds.prn()
 
@@ -370,14 +373,15 @@ def mtz_file(fname, vstream=None):
             istream.seek(4)
             n = struct.unpack(fmt, istream.read(4))[0]
             istream.seek(4* n - 4)
-            h = istream.read(80)
+            h = istream.read(80).decode()
             if h.startswith('VERS'):
                 line = h
                 break
 
         while line and not line.startswith('MTZBATS'):
             if vstream:
-                print >>vstream, line
+                #print(line, file=vstream)
+                vstream.write ( line )
 
             key, sep, data = line.partition(' ')
             data_list = header_dict.get(key, None)
@@ -386,7 +390,7 @@ def mtz_file(fname, vstream=None):
                 header_dict[key] = data_list
 
             data_list.append(data)
-            line = istream.read(80)
+            line = istream.read(80).decode()
 
     if header_dict:
         return mtz_dataset_list(fname, header_dict, vstream)
@@ -400,19 +404,18 @@ def hkl_format(path, vstream=None):
     with open(path, 'rb') as istream:
         for fmt in ('<I', '>I'):
             istream.seek(4)
-            n = struct.unpack(fmt, istream.read(4))[0]
+            n = struct.unpack(fmt,istream.read(4))[0]
             istream.seek(4* n - 4)
-            line = istream.read(80)
+            line = istream.read(80).decode()
             if line.startswith('VERS'):
                 while line:
-                    line = istream.read(80)
+                    line = istream.read(80).decode()
                     if line.startswith('MTZBATS'):
                         return 'mtz_integrated'
-
                 return 'mtz_merged'
 
         istream.seek(0)
-        rec_data = rec_xds.search(istream.read(256))
+        rec_data = rec_xds.search ( istream.read(256) )
         if rec_data:
             merge = rec_data.group(1)
             if merge == 'TRUE':
@@ -433,13 +436,13 @@ def test_dir(dirpath, vstream=None):
             if os.path.splitext(file)[1].lower() in ('.mtz', '.hkl'):
                 path = os.path.join(root, file)
                 format = hkl_format(path, vstream)
-                print '---------------------'
-                print path
-                print format
+                print('---------------------')
+                print(path)
+                print(format)
                 if format in ('mtz_integrated', 'mtz_merged'):
                     mf = mtz_file(path, vstream)
                     mf.prn()
-                    print mf.is_merged()
+                    print(mf.is_merged())
 
 def test_default(vstream=None):
     ccp4 = os.environ['CCP4']
@@ -466,7 +469,7 @@ def test_default(vstream=None):
 def test_file(filepath, vstream=None):
     mf = mtz_file(filepath, vstream)
     mf.prn()
-    print mf.is_merged()
+    print(mf.is_merged())
 
 def main():
     if len(sys.argv) > 1:

@@ -36,7 +36,7 @@ import json
 import pyrvapi
 
 #  application imports
-import basic
+from . import basic
 from   pycofe.proc  import xyzmeta
 
 

@@ -32,7 +32,7 @@ import sys
 import pyrvapi
 
 #  application imports
-import basic
+from . import basic
 
 
 # ============================================================================

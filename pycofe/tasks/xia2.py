@@ -36,7 +36,7 @@ import math
 import pyrvapi
 
 #  application imports
-import basic
+from . import basic
 from pycofe.varut  import signal
 from pycofe.dtypes import dtype_template
 from pycofe.proc   import import_filetype, import_merged, import_unmerged

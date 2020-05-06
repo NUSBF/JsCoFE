@@ -20,7 +20,7 @@ import sys
 #  ccp4-python imports
 #import pyrvapi
 
-import ccp4go_simbad12
+from . import ccp4go_simbad12
 
 
 # ============================================================================

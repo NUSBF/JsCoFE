@@ -33,7 +33,7 @@ import shutil
 import gemmi
 
 #  application imports
-import basic
+from . import basic
 from   pycofe.proc   import analyse_ensemble
 from   pycofe.proc   import make_ensemble
 

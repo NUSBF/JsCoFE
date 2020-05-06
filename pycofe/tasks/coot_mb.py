@@ -30,7 +30,7 @@ import sys
 import shutil
 
 #  application imports
-import basic
+from . import basic
 from   pycofe.varut   import  signal
 try:
     from pycofe.varut import messagebox

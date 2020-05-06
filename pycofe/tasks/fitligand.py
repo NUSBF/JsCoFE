@@ -29,7 +29,7 @@ import os
 import sys
 
 #  application imports
-import basic
+from . import basic
 from   proc  import coor
 
 

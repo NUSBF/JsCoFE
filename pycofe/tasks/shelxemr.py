@@ -33,7 +33,7 @@ import shutil
 import pyrvapi
 
 #  application imports
-import basic
+from . import basic
 from   pycofe.dtypes import dtype_sequence, dtype_template
 
 

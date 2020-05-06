@@ -64,6 +64,7 @@ def call ( executable,command_line,job_dir,stdin_fname,file_stdout,
           "\n" + "="*80 + "\n" +\
           "## EXECUTING COMMAND:\n\n" +\
           " " + executable + " \\\n"
+
     file_stdout.write ( msg )
     if file_stdout_alt:
         file_stdout_alt.write ( msg )
@@ -115,6 +116,7 @@ def call ( executable,command_line,job_dir,stdin_fname,file_stdout,
                           stdin=file_stdin,
                           stdout=subprocess.PIPE if log_parser else file_stdout,
                           stderr=file_stderr,env=environ,cwd=work_dir )
+
         if log_parser:
             log_parser.parse_stream ( p.stdout,file_stdout )
 
@@ -123,7 +125,7 @@ def call ( executable,command_line,job_dir,stdin_fname,file_stdout,
         else:
             rc = comrc ( os.wait4(p.pid,0) )
 
-    except Exception, e:
+    except Exception as e:
         rc.msg = str(e)
 
     if file_stdin:

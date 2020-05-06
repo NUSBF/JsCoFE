@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    09.02.20   <--  Date of Last Modification.
+#    01.05.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -29,7 +29,7 @@ import os
 import shutil
 
 #  application imports
-import basic
+from . import basic
 
 
 # ============================================================================
@@ -55,11 +55,11 @@ class Balbes(basic.TaskDriver):
         hkl = self.makeClass ( self.input_data.data.hkl[0] )
         seq = self.input_data.data.seq
 
-        with open(self.balbes_seq(),'wb') as newf:
+        with open(self.balbes_seq(),'w') as newf:
             if len(seq)>0:
                 for s in seq:
                     s1 = self.makeClass ( s )
-                    with open(s1.getSeqFilePath(self.inputDir()),'rb') as hf:
+                    with open(s1.getSeqFilePath(self.inputDir()),'r') as hf:
                         newf.write(hf.read())
                     newf.write ( '\n' );
 

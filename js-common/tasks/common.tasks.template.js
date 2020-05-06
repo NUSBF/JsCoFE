@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    14.04.20   <--  Date of Last Modification.
+ *    06.05.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -216,10 +216,6 @@ if (!dbx)  {
   }
 
   TaskTemplate.prototype.compareEnvironment = function ( reqEnv,env )  {
-if (this._type=="TaskAmple")  {
-  console.log ( "reqEnv=" + JSON.stringify(reqEnv) );
-  console.log ( "env=" + JSON.stringify(env) );
-}
     var ok = true;
     for (var i=0;(i<reqEnv.length) && ok;i++)
       if (reqEnv[i].constructor === Array)  {
@@ -237,7 +233,7 @@ if (this._type=="TaskAmple")  {
 
   TaskTemplate.prototype.isTaskAvailable = function()  {
 
-    if (__exclude_tasks.indexOf(this._type)>=0)  {
+    if ((this.nc_type!='client') && (__exclude_tasks.indexOf(this._type)>=0))  {
       // task excluded in server configuration
       return ['server-excluded',
               'task is not available on ' + appName() + ' server',

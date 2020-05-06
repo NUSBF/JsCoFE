@@ -18,7 +18,7 @@
 import os
 import sys
 
-import command
+from . import command
 
 # ============================================================================
 

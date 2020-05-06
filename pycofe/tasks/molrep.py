@@ -29,7 +29,7 @@ import os
 import uuid
 
 #  application imports
-import basic
+from . import basic
 from   pycofe.dtypes import dtype_template
 
 

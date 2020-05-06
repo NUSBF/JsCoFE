@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    15.04.20   <--  Date of Last Modification.
+#    01.05.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -35,7 +35,7 @@ import shutil
 import pyrvapi
 
 #  application imports
-import basic
+from . import basic
 from   pycofe.dtypes import dtype_template, dtype_revision
 from   pycofe.proc   import qualrep
 
@@ -76,11 +76,11 @@ class CCP4Build(basic.TaskDriver):
         mtzPhases = istruct.getMTZFilePath ( self.inputDir() )
 
         # Prepare combined sequence file for cbuccaneer
-        with open(self.ccp4build_seq(),'wb') as newf:
+        with open(self.ccp4build_seq(),'w') as newf:
             if len(seq)>0:
                 for s in seq:
                     s1 = self.makeClass ( s )
-                    with open(s1.getSeqFilePath(self.inputDir()),'rb') as hf:
+                    with open(s1.getSeqFilePath(self.inputDir()),'r') as hf:
                         newf.write(hf.read())
                     newf.write ( '\n' );
             else:

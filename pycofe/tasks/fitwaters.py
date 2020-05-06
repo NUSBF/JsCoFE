@@ -29,7 +29,7 @@ import os
 import sys
 
 #  application imports
-import basic
+from . import basic
 from   pycofe.proc   import coor
 from   pycofe.dtypes import dtype_revision
 

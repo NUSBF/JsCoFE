@@ -151,7 +151,7 @@ def main():
     row = 1
 
     ndays = len(usageStats["njobs"])
-    days  = range(ndays)
+    days  = list(range(ndays))
 
     njobs_total = [usageStats["njobs"][0]]
     for i in range(1,ndays):

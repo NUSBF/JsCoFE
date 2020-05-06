@@ -1,4 +1,11 @@
 
+"""
+==================================================================================
+THIS FILE IS USED ONLY WITH PYTHON 2.7.X AND MUST NOT BE CONVERTED TO PYTHON 3.X.X
+================================================================================== 
+"""
+
+
 import struct, os, time, sys, shutil
 import binascii, cStringIO, stat
 import io

@@ -21,8 +21,8 @@ import shutil
 #  ccp4-python imports
 #import pyrvapi
 
-import edmap
-import ccp4go_morda
+from . import edmap
+from . import ccp4go_morda
 
 
 # ============================================================================

@@ -151,8 +151,7 @@ def run ( body,sectionTitle="Macromolecular sequences" ):  # body is reference t
 
         seq.makeUniqueFNames ( body.outputDir() )
 
-        lines = filter ( None,
-            (line.rstrip() for line in open(seq.getSeqFilePath(body.outputDir()),"r")))
+        lines = [_f for _f in (line.rstrip() for line in open(seq.getSeqFilePath(body.outputDir()),"r")) if _f]
 
         htmlLine = "<pre>"
         body.file_stdout.write ( "\n" )

@@ -43,7 +43,7 @@ from  adding_stats_to_mmcif import run_process
 
 
 #  application imports
-import basic
+from . import basic
 from   pycofe.dtypes import dtype_template, dtype_sequence
 from   pycofe.proc   import valrep
 from   pycofe.etc    import citations
@@ -114,7 +114,7 @@ class Deposition(basic.TaskDriver):
                                "end\n" )
             self.close_stdin()
 
-            # make command-line parameters for bare morda run on a SHELL-type node
+            # make command-line parameters for refmac
             xyzin  = istruct.getXYZFilePath ( self.inputDir() )
             xyzout = self.getXYZOFName()   # refmac output cif (refmac wants ".pdb" anyway)
             mtzout = self.getMTZOFName()   # refmac output mtz (used only for map visualisation)

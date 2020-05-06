@@ -30,7 +30,7 @@ import sys
 import shutil
 
 #  application imports
-import crank2
+from . import crank2
 
 
 # ============================================================================

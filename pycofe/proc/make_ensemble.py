@@ -55,7 +55,7 @@ def run ( body, panelId, models,fpath_out, # body is reference to the basic clas
 
     if nmodels==1:
 
-        if isinstance(models[0],basestring):
+        if isinstance(models[0],str):
             shutil.copyfile ( models[0],fpath_out )
         else:
             shutil.copyfile ( models[0][0],fpath_out )
@@ -66,7 +66,7 @@ def run ( body, panelId, models,fpath_out, # body is reference to the basic clas
 
         cmd = []
         for i in range(nmodels):
-            if isinstance(models[i],basestring):
+            if isinstance(models[i],str):
                 cmd += [models[i]]
             else:
                 cmd += [models[i][0],"-s",models[i][1]]

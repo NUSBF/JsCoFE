@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    08.03.20   <--  Date of Last Modification.
+#    01.05.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -33,7 +33,7 @@ def run ( body,seqdata,fpath_align ):
 
     rc      = { "code" : -1,
                 "msg"  : "Not calculated" }
-    seqfile = open ( file_seq_path(),'wb' ) # receives all sequences to align
+    seqfile = open ( file_seq_path(),'w' ) # receives all sequences to align
     nseq    = 0   # number of sequences
     smap    = {}  # map of sequence names
     seqtype = ""  # for checking sequence types

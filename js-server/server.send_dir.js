@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    06.04.20   <--  Date of Last Modification.
+ *    02.05.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -146,6 +146,12 @@ function getJobballPath ( dirPath )  {
   return path.join ( dirPath,jobballName );
 }
 
+function zipfile()  {
+  if (conf.pythonVersion().startsWith('3.'))
+    return 'zipfile';
+  return 'pycofe.varut.zipfile';
+}
+
 function packDir ( dirPath, fileSelection, dest_path, onReady_func )  {
 // Pack files, assume zip
 
@@ -158,15 +164,8 @@ function packDir ( dirPath, fileSelection, dest_path, onReady_func )  {
 
   tmpFile = path.resolve ( tmpFile + '.zip' );
 
-  /*
-  var zip = utils.spawn ( conf.pythonName(),['-m','zip_file','-c',tmpFile,'.'],{
-    cwd   : dirPath,
-    stdio : ['ignore']
-  });
-  */
-
-  var zip = utils.spawn ( conf.pythonName(),['-m','pycofe.varut.zipfile','-c',tmpFile,
-                                             path.join(dirPath,path.sep)],{
+  var zip = utils.spawn ( conf.pythonName(),['-m',zipfile(),'-c',tmpFile,
+                                              dirPath + path.sep + '.'],{
     stdio : ['ignore']
   });
 
@@ -317,7 +316,7 @@ function unpackDir1 ( dirPath,jobballPath,cleanTmpDir,remove_jobball_bool,onRead
   }
 
   var errs = '';
-  var zip = utils.spawn ( conf.pythonName(),['-m','pycofe.varut.zipfile','-e',jobballPath,unpack_dir],{
+  var zip = utils.spawn ( conf.pythonName(),['-m',zipfile(),'-e',jobballPath,unpack_dir],{
     stdio : ['ignore']
   });
 

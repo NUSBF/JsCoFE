@@ -154,7 +154,7 @@ def getDatasets ( fdata,wdsl ):
                     file = {}
                     file["id"]   = str(datafileIDs  [k])
                     file["name"] = str(datafileNames[k])
-                    file["size"] = long(datafileSizes[k])
+                    file["size"] = int(datafileSizes[k])
                     file["date"] = str(datafileDates[k])
                     files.append ( file )
                 dataset["files"] = files
@@ -278,7 +278,6 @@ def fetchDataFromICAT ( idsBaseURL,wdsl, fdata, outputDirectory, cacheDir ):
                         getDataResp = requests.get ( getDataURL, params=getDataParams, stream=True )
                         with open(fname,'wb') as ff:
                             shutil.copyfileobj ( getDataResp.raw,ff )
-                        writeLog ( " -- p3  \n" )
                         cacheCheckin ( f,cacheDir,fname )
 
                 result["flist"].append ( os.path.join(f["dirpath"],fbase) )

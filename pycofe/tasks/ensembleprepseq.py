@@ -33,7 +33,7 @@ import time
 import pyrvapi
 
 #  application imports
-import basic
+from . import basic
 from   pycofe.proc   import analyse_ensemble
 
 
