@@ -559,6 +559,7 @@ Tree.prototype.setStyle = function ( treeNode,style_str,propagate_int )  {
       if (!('text0' in treeNode))
         treeNode.text0 = treeNode.text;
       treeNode.text = '<span style="' + style_str + '">' + treeNode.text0 + '</span>';
+      //treeNode.text = '<span style="' + style_str + '">' + treeNode.text0.replace(' ','</span> ');
       $(this.root.element).jstree(true).rename_node('#'+treeNode.id,treeNode.text );
     } else if ('text0' in treeNode)  {  // empty string removes any custom style
       treeNode.text = treeNode.text0;

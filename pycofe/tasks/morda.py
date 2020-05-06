@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    09.02.20   <--  Date of Last Modification.
+#    01.05.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -43,7 +43,7 @@ import sys
 import shutil
 
 #  application imports
-import basic
+from . import basic
 from   pycofe.proc    import xyzmeta
 
 
@@ -101,11 +101,11 @@ class Morda(basic.TaskDriver):
         hkl = self.makeClass ( self.input_data.data.hkl[0] )
         seq = self.input_data.data.seq
 
-        with open(self.morda_seq(),'wb') as newf:
+        with open(self.morda_seq(),'w') as newf:
             if len(seq)>0:
                 for s in seq:
                     s1 = self.makeClass ( s )
-                    with open(s1.getSeqFilePath(self.inputDir()),'rb') as hf:
+                    with open(s1.getSeqFilePath(self.inputDir()),'r') as hf:
                         newf.write(hf.read())
                     newf.write ( '\n' );
 

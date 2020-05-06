@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    04.04.20   <--  Date of Last Modification.
+#    04.05.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -24,6 +24,8 @@
 # ============================================================================
 #
 
+# python 3 ready
+
 #  python native imports
 import os
 import sys
@@ -33,7 +35,7 @@ import shutil
 import pyrvapi
 
 #  application imports
-import basic
+from . import basic
 from  pycofe.dtypes    import  dtype_template
 from  pycofe.proc      import  datred_utils, import_filetype, import_merged
 # does not works after update 7.0.052
@@ -247,55 +249,21 @@ class Aimless(basic.TaskDriver):
                 hkl[i].aimless_meta = aimless_meta
                 res_high = min ( res_high,float(hkl[i].getHighResolution()) )
                 res_low  = max ( res_low ,float(hkl[i].getLowResolution ()) )
-            self.generic_parser_summary["aimless"]["res_high"] = res_high
-            self.generic_parser_summary["aimless"]["res_low"]  = res_low
-
-        """
-        #
-        #  DOES NOT WORK. Throws errors from i2 jscripts, which are absorbed on
-        #  localhost but not when served remotely. Possible reason in different
-        #  jquery versions between jCoFE and i2, this was not fully investigated.
-        #
-        # i2 html report
-        #
-        # (1) copy directory $CCP4/share/ccp4i2/docs/report_files/ to
-        #     'js-lib/ccp4i2_support/'
-        # (2) remove the next line of code and uncomment the second next line of code
-        # (3) html-report relative path: report/aimless_pipe.html
-        #
-        #i2htmlbase = os.path.join('file://' + i2report.i2top, 'docs', 'report_files')
-        i2htmlbase = 'ccp4i2_support'
-        i2xml_dict = dict()
-        i2xml_dict['pointless'] = 'pointless.xml'
-        i2xml_dict['aimless'] = 'aimless.xml'
-        i2xml_dict['ctruncate'] = glob.glob('ctruncate*.xml')
-        i2xml_tmp = 'aimless_pipe.xml'
-        i2html = os.path.join ( 'report','aimless_pipe.html' )
-        try:
-            i2report.write_html ( i2htmlbase, i2xml_dict, i2xml_tmp, i2html )
-
-            pyrvapi.rvapi_insert_tab ( self.ccp4i2_report_id(),"CCP4i2 Report",
-                                       self.log_page_id(),False )
-            pyrvapi.rvapi_set_text   ( "<object data='aimless_pipe.html' " +
-                    "style='border:none;width:1000px;height:30000px;' " +
-                    "></object>",
-                                       self.ccp4i2_report_id(),0,0,1,1 )
-
-        except Exception, e:
-            self.file_stdout.write('i2 report has not been generated')
-            self.file_stderr.write('i2 report has not been generated')
-        """
+            if "aimless" in self.generic_parser_summary:
+                self.generic_parser_summary["aimless"]["res_high"] = res_high
+                self.generic_parser_summary["aimless"]["res_low"]  = res_low
 
         # close execution logs and quit
 
         if output_ok:
-            dsum = self.generic_parser_summary["aimless"]
-            dsum["summary_line"] = "Compl="                 + str(dsum["Completeness"]) + "%" +\
-                                   " CC<sub>1/2</sub>="     + str(dsum["Half_set_CC"])  +\
-                                   " R<sub>meas_all</sub>=" + str(dsum["R_meas_all"])   +\
-                                   " R<sub>meas_ano</sub>=" + str(dsum["R_meas_ano"])   +\
-                                   " Res=" + str(dsum["res_high"])  + "-" + str(dsum["res_low"]) +\
-                                   " SpG=" + dsum["Space_group"] ;
+            if "aimless" in self.generic_parser_summary:
+                dsum = self.generic_parser_summary["aimless"]
+                dsum["summary_line"] = "Compl="                 + str(dsum["Completeness"]) + "%" +\
+                                       " CC<sub>1/2</sub>="     + str(dsum["Half_set_CC"])  +\
+                                       " R<sub>meas_all</sub>=" + str(dsum["R_meas_all"])   +\
+                                       " R<sub>meas_ano</sub>=" + str(dsum["R_meas_ano"])   +\
+                                       " Res=" + str(dsum["res_high"])  + "-" + str(dsum["res_low"]) +\
+                                       " SpG=" + dsum["Space_group"] ;
             self.success ( True )
         else:
             self.file_stdout.write ( "Aimless failed, see above." )

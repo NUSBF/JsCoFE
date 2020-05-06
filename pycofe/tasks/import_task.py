@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    04.04.20   <--  Date of Last Modification.
+#    04.05.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -25,6 +25,8 @@
 # ============================================================================
 #
 
+# python 3 ready
+
 #  python native imports
 import os
 
@@ -32,7 +34,7 @@ import os
 import pyrvapi
 
 #  application imports
-import basic
+from . import basic
 from proc import (import_xrayimages, import_unmerged, import_merged,
                   import_xyz, import_ligand, import_sequence, import_doc,
                   import_alignment)

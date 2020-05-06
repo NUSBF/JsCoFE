@@ -38,7 +38,7 @@ import pyrvapi
 import gemmi
 
 #  application imports
-import basic
+from . import basic
 from   pycofe.dtypes  import dtype_template
 
 
@@ -289,7 +289,7 @@ class PhaserEP(basic.TaskDriver):
                 self.write_stdin ( "\nLLGCOMPLETE SCATTERER RX" )
             if self.getParameter(sec1.LLG_ANOM_CBX)=="True":
                 self.write_stdin ( "\nLLGCOMPLETE SCATTERER AX" )
-            alist = filter ( None,self.getParameter(sec1.LLG_ATYPE).split(",") )
+            alist = [_f for _f in self.getParameter(sec1.LLG_ATYPE).split(",") if _f]
             for a in alist:
                 self.write_stdin ( "\nLLGCOMPLETE SCATTERER " + a )
         else:

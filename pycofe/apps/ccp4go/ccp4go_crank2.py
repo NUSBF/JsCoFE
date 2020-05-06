@@ -21,7 +21,7 @@ import json
 #  ccp4-python imports
 #import pyrvapi
 
-import ccp4go_mrbump
+from . import ccp4go_mrbump
 
 # ============================================================================
 

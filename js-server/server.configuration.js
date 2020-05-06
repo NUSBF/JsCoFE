@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    17.04.20   <--  Date of Last Modification.
+ *    02.05.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -25,6 +25,7 @@ var path    = require('path');
 var http    = require('http');
 var crypto  = require('crypto');
 var request = require('request');
+var child   = require('child_process');
 
 //  load application modules
 var utils     = require('./server.utils');
@@ -52,7 +53,6 @@ var windows_drives = [];   // list of Windows drives
 
 function listWindowsDrives ( callback_func )  {
   if (isWindows())  {
-    var child = require('child_process');
     child.exec('wmic logicaldisk get name', (error, stdout) => {
       windows_drives = stdout.split('\r\r\n')
               .filter(value => /[A-Za-z]:/.test(value))
@@ -857,6 +857,22 @@ function pythonName()  {
   return _python_name;
 }
 
+var _python_ver = '0.0.0';
+function pythonVersion()  {
+  return _python_ver;
+}
+
+function checkPythonVersion()  {
+  child.exec ( pythonName() + ' -V',function(err, stdout, stderr) {
+    if (stdout)
+      _python_ver = stdout.split(' ').slice(-1)[0].trim();
+    else if (stderr)
+      _python_ver = stderr.split(' ').slice(-1)[0].trim();
+    log.standard ( 5,'python version: ' + pythonVersion() );
+  });
+}
+
+checkPythonVersion();
 
 function isSharedFileSystem()  {
 // Returns true in case of shared file system setup, i.e. when access to data
@@ -1024,6 +1040,7 @@ module.exports.setServerConfig    = setServerConfig;
 module.exports.assignPorts        = assignPorts;
 module.exports.writeConfiguration = writeConfiguration;
 module.exports.pythonName         = pythonName;
+module.exports.pythonVersion      = pythonVersion;
 module.exports.isSharedFileSystem = isSharedFileSystem;
 module.exports.isLocalSetup       = isLocalSetup;
 module.exports.getClientInfo      = getClientInfo;

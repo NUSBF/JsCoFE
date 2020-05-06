@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    15.04.20   <--  Date of Last Modification.
+#    01.05.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -36,7 +36,7 @@ import shutil
 #import pyrvapi
 
 #  application imports
-import basic
+from . import basic
 from   pycofe.dtypes  import dtype_template
 from   pycofe.proc    import qualrep
 
@@ -154,11 +154,11 @@ class ArpWarp(basic.TaskDriver):
         # prepare sequence file
         #  how to prepare for hererogenic multimeric ASU?
         nres = 0
-        with open(self.arpwarp_seq(),'wb') as newf:
+        with open(self.arpwarp_seq(),'w') as newf:
             if len(seq)>0:
                 for s in seq:
                     s1 = self.makeClass ( s )
-                    with open(s1.getSeqFilePath(self.inputDir()),'rb') as hf:
+                    with open(s1.getSeqFilePath(self.inputDir()),'r') as hf:
                         nres += s1.size
                         newf.write(hf.read())
                     newf.write ( '\n' );

@@ -40,7 +40,7 @@ if (have_coot_python):
                 img.set_from_stock(stock_id, gtk.ICON_SIZE_MENU)
             else:
                 if not (len(stock_id) == 2):
-                    print "BL ERROR:: need to pass a list with 2 item, stock_is and filename"
+                    print("BL ERROR:: need to pass a list with 2 item, stock_is and filename")
                 else:
                     stock_id_mod, filename = stock_id
                     if os.path.isfile(filename):

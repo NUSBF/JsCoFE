@@ -18,7 +18,7 @@ import math
 
 from ccp4mg import mmdb2
 from Bio    import pairwise2
-import  datred_utils
+from . import  datred_utils
 
 
 # ============================================================================
@@ -162,7 +162,7 @@ def suggestASUComp1 ( hkl,seqFilePath,stoichiometry=False ):
     if seqFilePath:
         with open(seqFilePath,'r') as f:
             content = f.read()
-        clist = filter ( None,content.split('>') )
+        clist = [_f for _f in content.split('>') if _f]
         for i in range(len(clist)):
             seqdata = clist[i].splitlines()
             seq = ""
@@ -423,7 +423,7 @@ def getASUComp1 ( coorFilePath,seqFilePath,clustThresh=0.9 ):
     if seqFilePath:
         with open(seqFilePath,'r') as f:
             content = f.read()
-        clist = filter ( None,content.split('>') )
+        clist = [_f for _f in content.split('>') if _f]
         for i in range(len(clist)):
             seqdata = clist[i].splitlines()
             seq     = ""
@@ -438,9 +438,9 @@ def main():
     import json
 
     result = getASUComp ( "1e94.pdb",[] )
-    print json.dumps(result,indent=2)
+    print(json.dumps(result,indent=2))
 
-    print " ================================================================\n"
+    print(" ================================================================\n")
 
     result = getASUComp ( "1e94.pdb",[
       [ "seq1",
@@ -457,9 +457,9 @@ def main():
         "ELSAREIAEKALDIAGDICIYTNHFHTIEELSYK"
       ]
     ])
-    print json.dumps(result,indent=2)
+    print(json.dumps(result,indent=2))
 
-    print " ================================================================\n"
+    print(" ================================================================\n")
 
     result = getASUComp ( "1e94.pdb",[
       [ "seq2",
@@ -476,12 +476,12 @@ def main():
         "VNESTENIGARRLHTVLERLMEEISYDASDLSGQNITIDADYVSKHLDALVADEDLSRFIL"
       ]
     ])
-    print json.dumps(result,indent=2)
+    print(json.dumps(result,indent=2))
 
-    print " ================================================================"
-    print " SEQUENCE TAKEN FROM FILE:\n"
+    print(" ================================================================")
+    print(" SEQUENCE TAKEN FROM FILE:\n")
     result = getASUComp1 ( "1e94.pdb","1e94.fasta" )
-    print json.dumps(result,indent=2)
+    print(json.dumps(result,indent=2))
 
     return
 

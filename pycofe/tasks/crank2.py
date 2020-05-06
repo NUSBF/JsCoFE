@@ -37,7 +37,7 @@ import json
 import pyrvapi
 
 #  application imports
-import basic
+from . import basic
 from   pycofe.proc   import edmap, xyzmeta
 from   pycofe.dtypes import dtype_template, dtype_revision, dtype_sequence
 

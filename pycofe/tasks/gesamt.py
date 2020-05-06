@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    10.02.20   <--  Date of Last Modification.
+#    05.05.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -24,15 +24,18 @@
 # ============================================================================
 #
 
+# python 3 ready
+
 #  python native imports
 import os
 import sys
+import json
 
 #  ccp4-python imports
 import pyrvapi
 
 #  application imports
-import basic
+from . import basic
 from   pycofe.varut  import jsonut
 from   pycofe.dtypes import dtype_template
 
@@ -220,6 +223,11 @@ class Gesamt(basic.TaskDriver):
                         "window.parent.downloadJobFile(" + self.job_id + ",'hits.txt')",
                         False,self.hits_table_sec_id(), 1,0,1,1 )
 
+                    self.generic_parser_summary["gesamt"] = {
+                        "summary_line" : str(nHits) + " structure hits found"
+                    }
+
+
                     if nHits > 1:
 
                         self.putSection ( self.hits_graph_sec_id(),"Score Plots",False )
@@ -299,15 +307,29 @@ class Gesamt(basic.TaskDriver):
 
             else:
                 self.putTitle ( "No PDB matches found" )
+                self.generic_parser_summary["gesamt"] = {
+                    "summary_line" : "no structure hits found"
+                }
 
 
         else: # pairwise or multiple alignment
 
             self.rvrow += 1
+            meta = json.loads ( self.restoreReportDocument().replace("'",'"') )
+            self.generic_parser_summary["gesamt"] = {
+                "summary_line" : "Q=" + str(round(meta["qscore"],2)) +\
+                                 ", r.m.s.d.=" + str(round(meta["rmsd"],3)) + "&Aring;" +\
+                                 ", N<sub>align</sub>=" + str(meta["nalign"])
+            }
             if nXYZ==2:
-                outFiles = self.restoreReportDocument().split("\n")
+                self.generic_parser_summary["gesamt"]["summary_line"] += \
+                                ", seqId=" + str(int(meta["seqid"]*100)) + "%"
+                outFiles = sorted([f for f in os.listdir(".") if f.endswith(".pdb")])
+                outFiles.insert ( 0,outFiles.pop() )
             elif nXYZ>2:
                 outFiles = [self.gesamt_xyz()]
+
+            #self.stderrln ( "outFiles=" + str(outFiles))
 
             if len(outFiles)>0 and os.path.isfile(outFiles[0]):
 
@@ -315,21 +337,21 @@ class Gesamt(basic.TaskDriver):
 
                 # register output data from temporary location (files will be moved
                 # to output directory by the registration procedure)
-                self.putMessage ( outFiles[0] )
                 ensemble = self.registerEnsemble ( dtype_template.subtypeProtein(),
                                                    outFiles[0] )
                 if ensemble:
+                    self.putMessage ( "<h3>Overall Alignment</h3>" )
                     self.putEnsembleWidget ( self.getWidgetId("ensemble_btn"),
                                              "Superposed ensemble&nbsp;&nbsp;",
                                              ensemble,-1 )
                     have_results = True
 
-                for i in range(1,len(outFiles)-1):
-                    self.putMessage ( outFiles[i] )
+                for i in range(1,len(outFiles)):
                     ensemble = self.registerEnsemble ( dtype_template.subtypeProtein(),
                                                        outFiles[i] )
                     if ensemble:
                         self.putMessage ( "&nbsp;" )
+                        self.putMessage ( "<h3>Domain #" + str(i) + " Alignment</h3>" )
                         self.putEnsembleWidget ( self.getWidgetId("ensemble_"+str(i)+"_btn"),
                                                  "Superposed domain #" + str(i),
                                                  ensemble,-1 )
@@ -337,6 +359,10 @@ class Gesamt(basic.TaskDriver):
 
             else:
                 self.putTitle ( "Structures are too dissimilar and can not be aligned" )
+                self.generic_parser_summary["gesamt"] = {
+                    "summary_line" : "structures are dissimilar"
+                }
+
 
         # close execution logs and quit
         self.success ( have_results )

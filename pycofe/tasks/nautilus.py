@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    09.02.20   <--  Date of Last Modification.
+#    01.05.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -30,7 +30,7 @@ import sys
 import shutil
 
 #  application imports
-import basic
+from . import basic
 from   pycofe.dtypes  import dtype_template
 from   varut          import signal
 
@@ -105,11 +105,11 @@ class Nautilus(basic.TaskDriver):
                 istruct.getMTZFilePath(self.inputDir()),labin_ph,
                 input_mtz )
 
-        with open(self.nautilus_seq(),'wb') as newf:
+        with open(self.nautilus_seq(),'w') as newf:
             if len(seq)>0:
                 for s in seq:
                     s1 = self.makeClass ( s )
-                    with open(s1.getSeqFilePath(self.inputDir()),'rb') as hf:
+                    with open(s1.getSeqFilePath(self.inputDir()),'r') as hf:
                         newf.write(hf.read())
                     newf.write ( '\n' );
             else:

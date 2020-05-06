@@ -25,7 +25,7 @@
 # ============================================================================
 #
 
-from __future__ import division, print_function
+
 
 import math
 import os
@@ -77,9 +77,9 @@ def _cache_RAMA_PREF_VALUES():
     #f_path = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
     f_path = os.path.realpath ( os.path.dirname ( __file__ ) )
     RAMA_PREF_VALUES = {}
-    for key, val in RAMA_PREFERENCES.items():
+    for key, val in list(RAMA_PREFERENCES.items()):
         #RAMA_PREF_VALUES[key] = np.full((360, 360), 0, dtype=np.float64)
-        RAMA_PREF_VALUES[key] = [ [0.0]*360 for _ in xrange(360) ]
+        RAMA_PREF_VALUES[key] = [ [0.0]*360 for _ in range(360) ]
         with open(os.path.join(f_path, val["file"])) as fn:
             for line in fn:
                 if line.startswith("#"):
@@ -113,7 +113,7 @@ def calc_ramachandran ( file_name_list ):
     reslist  = { "normals" : [], "outliers" : [] }
     normals  = {}
     outliers = {}
-    for key, val in RAMA_PREFERENCES.items():
+    for key, val in list(RAMA_PREFERENCES.items()):
         normals [key] = {"x": [], "y": [] }
         outliers[key] = {"x": [], "y": [] }
 
@@ -214,7 +214,7 @@ def plot_ramachandran ( normals,outliers ):
     if RAMA_PREF_VALUES is None:
         RAMA_PREF_VALUES = _cache_RAMA_PREF_VALUES()
 
-    for idx, (key, val) in enumerate(sorted(RAMA_PREFERENCES.items(), key=lambda x: x[0].lower())):
+    for idx, (key, val) in enumerate(sorted(list(RAMA_PREFERENCES.items()), key=lambda x: x[0].lower())):
         plt.subplot(2, 2, idx + 1)
         plt.title(key)
         plt.imshow(RAMA_PREF_VALUES[key], cmap=RAMA_PREFERENCES[key]["cmap"],

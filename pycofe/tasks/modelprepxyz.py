@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    22.03.20   <--  Date of Last Modification.
+#    04.05.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -24,6 +24,8 @@
 # ============================================================================
 #
 
+# python 3 ready
+
 #  python native imports
 import os
 import sys
@@ -33,7 +35,7 @@ import shutil
 import gemmi
 
 #  application imports
-import basic
+from . import basic
 from   pycofe.proc   import seqal
 
 # ============================================================================

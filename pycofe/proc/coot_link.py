@@ -158,7 +158,7 @@ class LinkLists(object):
             with open(file_ins) as istr:
               ins_str = istr.read()
 
-            keys1, keys2, values = zip(*sorted(rec_ins.findall(ins_str)))
+            keys1, keys2, values = list(zip(*sorted(rec_ins.findall(ins_str))))
             if ' '.join(keys1 + keys2) == 'ATOM ATOM RES RES 1 2 1 2':
               a1, a2, r1, r2 = values
               if r1 + '-' + r2 == r1r2:
@@ -317,7 +317,7 @@ class LinkLists(object):
         formula = atom1[2] + '.' + atom1[0] + '-' + atom2[0] + '.' + atom2[2]
         formula_dict[formula] = formula_dict.get(formula, 0) + 1
 
-    return sorted(['%s(%d)' %(k.replace(' ', ''), v) for k, v in formula_dict.items()])
+    return sorted(['%s(%d)' %(k.replace(' ', ''), v) for k, v in list(formula_dict.items())])
 
 
 if __name__ == '__main__':

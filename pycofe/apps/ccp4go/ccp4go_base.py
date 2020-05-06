@@ -61,7 +61,7 @@ import sys
 import json
 import shutil
 try:
-    import httplib
+    import http.client
 except:
     import http.client as httplib
 
@@ -69,11 +69,11 @@ except:
 import pyrvapi
 import pyrvapi_ext.parsers
 
-import command
+from . import command
 try:
     from pycofe.etc import citations
 except:
-    import citations
+    from . import citations
 
 
 # ============================================================================
@@ -269,7 +269,7 @@ class Base(object):
                 self.ha_type = s.replace("HATOMS","",1).strip()
                 self.stdout ( "\n HATOMS " + self.ha_type )
             elif s.startswith("LIGAND"):
-                lst = filter ( None,s.replace("LIGAND","",1).split(" ") )
+                lst = [_f for _f in s.replace("LIGAND","",1).split(" ") if _f]
                 self.ligands.append ( lst )
                 self.stdout ( "\n LIGAND " + lst[0] )
                 if len(lst)>1:
@@ -511,7 +511,7 @@ class Base(object):
     def have_internet ( self,url_list=["www.pdb.org","www.google.com","pdbj.org","www.ebi.ac.uk"],time_out=5 ):
         haveit = False
         for url in  url_list:
-            conn = httplib.HTTPConnection(url,timeout=time_out)
+            conn = http.client.HTTPConnection(url,timeout=time_out)
             try:
                 conn.request("HEAD", "/")
                 conn.close()

@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    09.02.20   <--  Date of Last Modification.
+#    01.05.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -32,7 +32,7 @@ import uuid
 import pyrvapi
 
 #  application imports
-import basic
+from . import basic
 
 
 # ============================================================================
@@ -120,8 +120,8 @@ class SRF(basic.TaskDriver):
                 os.rename ( "molrep_rf.pdf",os.path.join(self.reportDir(),pdfpath) )
 
                 docpath = "molrep.doc"
-                with open(os.path.join(self.reportDir(),docpath),'wb') as outf:
-                    with open(docpath,'rb') as inf:
+                with open(os.path.join(self.reportDir(),docpath),'w') as outf:
+                    with open(docpath,'r') as inf:
                         outf.write ( "<span style='font-size:1.125em'><pre>" + inf.read() + "</pre></span>" )
 
                 docsecId = self.getWidgetId ( "molrep_doc" )

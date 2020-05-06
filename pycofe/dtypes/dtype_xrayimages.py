@@ -18,7 +18,7 @@
 #import sys
 
 #  application imports
-import dtype_template
+from . import dtype_template
 
 # ============================================================================
 

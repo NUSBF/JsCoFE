@@ -18,7 +18,7 @@
 import os
 
 #  application imports
-import dtype_template
+from . import dtype_template
 
 # ============================================================================
 
@@ -33,7 +33,7 @@ def parseHHRFile ( fpath,parse_alignments=False ):
 
     # read non-empty lines
     with open(fpath,"r") as file:
-        lines = filter(None, (line.rstrip() for line in file))
+        lines = [_f for _f in (line.rstrip() for line in file) if _f]
 
     if len(lines)<10:
         align_meta["msg"] = "File does not have content"

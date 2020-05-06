@@ -31,7 +31,7 @@ import stat
 import shutil
 
 #  application imports
-import basic
+from . import basic
 
 
 # ============================================================================

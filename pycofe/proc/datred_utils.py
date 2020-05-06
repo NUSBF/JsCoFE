@@ -2,16 +2,18 @@
 #
 # ============================================================================
 #
-#    05.07.17   <--  Date of Last Modification.
+#    01.05.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  DATA REDUCTION UTILS
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2020
 #
 # ============================================================================
 #
+
+from future import *
 
 import os, sys, re
 from pyrvapi import *
@@ -72,7 +74,7 @@ class opmat(tuple):
     prod = [[0, 0, 0], [0, 0, 0], [0, 0, 0]]
     for i in 0, 1, 2:
       for j in 0, 1, 2:
-        fv = sum([self[i][k]* other[k][j] for k in 0, 1, 2])
+        fv = sum([self[i][k]* other[k][j] for k in (0, 1, 2)])
         iv = int(fv)
         prod[i][j] = iv if iv == fv else fv
 
@@ -82,16 +84,16 @@ class opmat(tuple):
   def test():
     op = '1/2h-1/2k+l,l,-1/2k+1/2h'
     op33 = opmat(op)
-    print repr(op33)
-    print op
-    print op33
+    print(repr(op33))
+    print(op)
+    print(op33)
 
     op = 'h,k,-h-l'
     op33 = opmat(op)
-    print repr(op33)
-    print op
-    print op33
-    print op33* op33
+    print(repr(op33))
+    print(op)
+    print(op33)
+    print(op33* op33)
 
 sg_dict = {
   'P m -3 m': ('P 4 3 2', 'P 41 3 2', 'P 42 3 2', 'P 43 3 2',),
@@ -198,7 +200,7 @@ class spacegroup(object):
 
   @classmethod
   def get_alt(cls):
-    return zip(*cls._alt_list)[:2]
+    return list(zip(*cls._alt_list))[:2]
 
   _alt_dict = {
     'P 2 21 21': ('P 21 21 2', 'k,l,h',),
@@ -321,8 +323,10 @@ def point_symm_selector(e0):
           sgobj_list.append(sgobj)
           if sgobj.op != op:
             msg = 'Input XML-file is assumed to have been generated with SETTING LATTICE'
-            print >>sys.stderr, msg
-            print >>sys.stderr, sgobj.op, '?=?', op
+            #print(msg, file=sys.stderr)
+            #print(sgobj.op, '?=?', op, file=sys.stderr)
+            sys.stderr.write ( msg )
+            sys.stderr.write ( sgobj.op + '?=?' + op )
 
     for sg in sg_list:
       sgobj_list.append(spacegroup(sgin, sg, op))
@@ -441,7 +445,7 @@ def point_symm_datasets(xml_path, format='unknown'):
 def combine_runs(dset_runs, runs):
     initial = set()
     for run in dset_runs:
-      initial.update(range(int(run[1]), int(run[2]) + 1))
+      initial.update(list(range(int(run[1]), int(run[2]) + 1)))
 
     selected_runs = ''.join(runs.split()).replace(',',' ').split()
     if selected_runs:
@@ -455,7 +459,7 @@ def combine_runs(dset_runs, runs):
           if tlast:
             first = max(ifirst, int(tfirst))
             last = min(ilast, int(tlast))
-            selected.update(range(first, last + 1))
+            selected.update(list(range(first, last + 1)))
 
           else:
             selected.add(int(tfirst))
@@ -574,7 +578,7 @@ def test_ranges(runs):
       range_list.insert(0, ' %d- %d' %(0, i1 + 999))
 
     else:
-      for k0, k1 in zip(range(i0, i1, id), range(i0 + id, i1 + id, id)):
+      for k0, k1 in zip(list(range(i0, i1, id)), list(range(i0 + id, i1 + id, id))):
         range_list.insert(0, ' %d- %d' %(k0 + 4, k1 + 2))
 
   return ','.join(range_list)
@@ -690,7 +694,7 @@ def test():
   xmlout = sys.argv[1]
   if len(sys.argv) == 2:
     tab_list = parse_xmlout(xmlout)
-    print json.dumps(tabs_as_dict(tab_list), **dump_keyargs)
+    print(json.dumps(tabs_as_dict(tab_list), **dump_keyargs))
     jslib = os.path.join(os.environ['CCP4'], 'share', 'jsrview')
     jsdir = 'report'
     if not os.path.isdir(jsdir):
@@ -705,10 +709,11 @@ def test():
   dset_list = point_symm_datasets(xmlout)
   symm = dset_list[0]['symm']
   if len(sys.argv) == 3:
-    print
+    print()
     json_out = sys.argv[2]
     with open(json_out, 'w') as ostream:
-      print >>ostream, json.dumps(symm, **dump_keyargs)
+        #print(json.dumps(symm, **dump_keyargs), file=ostream)
+        ostream.write ( json.dumps(symm, **dump_keyargs) )
 
   else:
     mode = sys.argv[2]
@@ -738,8 +743,8 @@ def test():
 
     args = symm_select, mtzref, plist, 'merged.mtz', 'pointless.xml', mode == 'separate'
     for script in get_point_script(*args):
-      print script
-      print
+      print(script)
+      print()
 
 if __name__ == '__main__':
   test()

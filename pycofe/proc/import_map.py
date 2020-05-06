@@ -24,7 +24,7 @@ import pyrvapi
 try:
     import mrcfile
 except:
-    print "mrcfile not found in: " + sys.path
+    print("mrcfile not found in: " + sys.path)
     raise
 
 #  application imports

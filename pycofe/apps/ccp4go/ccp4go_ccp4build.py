@@ -22,9 +22,9 @@ import shutil
 #  ccp4-python imports
 #import pyrvapi
 
-import edmap
+from . import edmap
 
-import ccp4go_buccaneer
+from . import ccp4go_buccaneer
 
 # ============================================================================
 

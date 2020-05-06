@@ -20,8 +20,8 @@ import sys
 #  ccp4-python imports
 #import pyrvapi
 
-import edmap
-import ccp4go_ccp4build
+from . import edmap
+from . import ccp4go_ccp4build
 
 # ============================================================================
 
@@ -117,10 +117,10 @@ class Lorestr(ccp4go_ccp4build.CCP4Build):
             with open(os.path.join(resultdir,self.file_stdout_path()),'r') as logf:
                 for line in logf:
                     if line.find(rfree_pattern)>=0:
-                        list    = filter ( None,line.split() )
+                        list    = [_f for _f in line.split() if _f]
                         rfree   = float(list[len(list)-1])
                     elif line.find(rfactor_pattern)>=0:
-                        list    = filter ( None,line.split() )
+                        list    = [_f for _f in line.split() if _f]
                         rfactor = float(list[len(list)-1])
 
             self.putMessage ( "<h2><i>Refined solution</i></h2>" )

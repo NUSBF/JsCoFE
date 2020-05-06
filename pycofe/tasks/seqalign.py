@@ -32,7 +32,7 @@ import sys
 import pyrvapi
 
 #  application imports
-import basic
+from . import basic
 
 
 # ============================================================================
@@ -74,7 +74,7 @@ class SeqAlign(basic.TaskDriver):
         # fetch input data
         seq     = self.input_data.data.seq
 
-        seqfile = open ( self.file_seq_path(),'wb' )
+        seqfile = open ( self.file_seq_path(),'w' )
         nseq    = 0   # number of sequences
         smap    = {}  # map of sequence names
         seqtype = ""  # for checking sequence types

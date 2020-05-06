@@ -29,7 +29,7 @@ import os
 import shutil
 
 #  application imports
-import basic
+from . import basic
 from   pycofe.proc   import qualrep
 
 

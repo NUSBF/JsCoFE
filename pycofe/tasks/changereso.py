@@ -28,7 +28,7 @@
 import os
 
 #  application imports
-import basic
+from . import basic
 from   pycofe.dtypes import dtype_template
 from   pycofe.proc   import datred_utils, import_filetype, import_merged
 

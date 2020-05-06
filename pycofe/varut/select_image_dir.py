@@ -55,7 +55,7 @@ def dirpath2sectors(dirpath, sectors, file_list):
             fk_o.append((f, 'dat'))
 
         else:
-            l_c, r_c = zip(*rec_img.findall(f))
+            l_c, r_c = list(zip(*rec_img.findall(f)))
             if not r_c[0]:
                 fk_o.append((f, 'unk'))
 
@@ -82,8 +82,8 @@ def dirpath2sectors(dirpath, sectors, file_list):
     for q in range(len(t_q)):
         l_c = l_cq[q]
         r_ci = r_ciq[q]
-        r_ic = zip(*r_ci)
-        c_c = range(len(r_ic))
+        r_ic = list(zip(*r_ci))
+        c_c = list(range(len(r_ic)))
         u_max = 0
         for r_i, c in zip(r_ic, c_c):
           u = len(set(r_i))
@@ -190,4 +190,4 @@ if __name__ == '__main__':
         title = sys.argv[1]
     else:
         title = 'Select Image Directory'
-    print json.dumps ( select(title) )
+    print(json.dumps ( select(title) ))

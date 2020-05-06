@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    17.04.20   <--  Date of Last Modification.
+#    04.05.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -35,6 +35,8 @@
 #      importDir         ()
 #      import_summary_id ()
 
+# not needed
+#from future import *
 
 #  python native imports
 import os
@@ -42,7 +44,7 @@ import sys
 import shutil
 import traceback
 try:
-    import httplib
+    import http.client
 except:
     import http.client as httplib
 
@@ -231,7 +233,7 @@ class TaskDriver(object):
             self.file_stdout .write ( "\n\n *** task read failed in '" + module_name + "'\n\n" )
             self.file_stdout1.write ( "\n\n *** task read failed in '" + module_name + "'\n\n" )
             self.file_stderr .write ( "\n\n *** task read failed in '" + module_name + "'\n\n" )
-            print " task read failed in '" + module_name + "'"
+            print(" task read failed in '" + module_name + "'")
             raise signal.TaskReadFailure()
 
         self.input_data = databox.readDataBox ( self.inputDir() )
@@ -414,7 +416,7 @@ class TaskDriver(object):
     def have_internet ( self,url_list=["www.pdb.org","www.google.com","pdbj.org","www.ebi.ac.uk"],time_out=5 ):
         haveit = False
         for url in  url_list:
-            conn = httplib.HTTPConnection(url,timeout=time_out)
+            conn = http.client.HTTPConnection(url,timeout=time_out)
             try:
                 conn.request("HEAD", "/")
                 conn.close()
@@ -844,6 +846,7 @@ class TaskDriver(object):
 
     def setGenericLogParser ( self,panel_id,split_sections_bool,
                               graphTables=False,makePanel=True ):
+        #return
         if makePanel:
             self.putPanel ( panel_id )
         self.log_parser = pyrvapi_ext.parsers.generic_parser (
@@ -856,6 +859,7 @@ class TaskDriver(object):
         return
 
     def setMolrepLogParser ( self,panel_id ):
+        #return
         self.putPanel ( panel_id )
         self.log_parser = pyrvapi_ext.parsers.molrep_parser ( panel_id )
         self.flush()
@@ -864,6 +868,7 @@ class TaskDriver(object):
 
 
     def setArpWarpLogParser ( self,panel_id,job_params,wares_file ):
+        #return
         self.putPanel ( panel_id )
         self.log_parser = pyrvapi_ext.parsers.arpwarp_parser ( panel_id,
                                     job_params=job_params,resfile=wares_file )
@@ -1934,16 +1939,16 @@ class TaskDriver(object):
         try:
             self.run()
 
-        except signal.Success, s:
+        except signal.Success as s:
             signal_obj = s
 
-        except signal.NoResults, s:
+        except signal.NoResults as s:
             signal_obj = s
 
-        except signal.JobFailure, s:
+        except signal.JobFailure as s:
             signal_obj = s
 
-        except signal.CofeSignal, s:
+        except signal.CofeSignal as s:
             self.python_fail_tab()
             signal_obj = s
 

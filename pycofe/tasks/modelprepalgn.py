@@ -31,7 +31,7 @@ import os
 import gemmi
 
 #  application imports
-import modelprepxyz
+from . import modelprepxyz
 from   pycofe.dtypes import dtype_xyz, dtype_alignment
 from   pycofe.proc   import import_pdb
 

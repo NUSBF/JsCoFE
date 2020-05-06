@@ -28,7 +28,7 @@
 import os
 
 #  application imports
-import basic
+from . import basic
 from   pycofe.proc   import coor, import_filetype, import_merged
 from   pycofe.dtypes import dtype_revision
 

@@ -31,7 +31,7 @@ import uuid
 import shutil
 
 #  application imports
-import basic
+from . import basic
 
 
 # ============================================================================

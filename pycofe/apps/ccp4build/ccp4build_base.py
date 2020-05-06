@@ -377,7 +377,7 @@ class Base(object):
                 elif self.keyword_list[i].startswith("["):
                     keyon = False
                 elif keyon:
-                    lst = filter(None,self.keyword_list[i].split())
+                    lst = [_f for _f in self.keyword_list[i].split() if _f]
                     if len(lst)>0:
                         option = lst[0]
                         if option in options:

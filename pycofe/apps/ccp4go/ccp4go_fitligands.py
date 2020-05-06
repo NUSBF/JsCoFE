@@ -21,10 +21,10 @@ import sys
 #  ccp4-python imports
 #import pyrvapi
 
-import edmap
-import coor
+from . import edmap
+from . import coor
 
-import ccp4go_acedrg
+from . import ccp4go_acedrg
 
 # ============================================================================
 
@@ -170,14 +170,6 @@ class FitLigands(ccp4go_acedrg.AceDrg):
                 shutil.copy2 ( os.path.join(dimpledir,"final.pdb"),xyzPath )
                 shutil.copy2 ( os.path.join(dimpledir,"final.mtz"),mtzPath )
 
-                """
-                with open('newfile.txt','wb') as newf:
-                    for filename in list_of_files:
-                        with open(filename,'rb') as hf:
-                            newf.write(hf.read())
-                            # newf.write('\n\n\n')   if you want to introduce
-                """
-
                 dstdout = self.stdout_path
                 dstderr = self.stdout_path
                 self.mk_std_streams ( None )  # reset log files
@@ -208,7 +200,7 @@ class FitLigands(ccp4go_acedrg.AceDrg):
             with open(dstdout,'r') as logf:
                 for line in logf:
                     if line.find(refmac_pattern)>=0:
-                        list    = filter ( None,line.replace("/"," ").split(" ") )
+                        list    = [_f for _f in line.replace("/"," ").split(" ") if _f]
                         rfree   = float(list[len(list)-1])
                         rfactor = float(list[len(list)-2])
             self.mk_std_streams ( resultdir,"a+" )  # reopen output streams

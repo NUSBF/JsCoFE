@@ -23,7 +23,7 @@ class __jobj__(object):
 
     def parse_json ( self,d ):
         if d:
-            for a, b in d.items():
+            for a, b in list(d.items()):
                 if isinstance(b, (list, tuple)):
                    setattr(self, a, [__jobj__(x) if isinstance(x, dict) else x for x in b])
                 else:
@@ -78,14 +78,14 @@ if __name__ == "__main__":
 
     json_str = A.to_JSON()
 
-    print json_str
-    print "----------------------------------------------------------"
+    print(json_str)
+    print("----------------------------------------------------------")
 
     B = jObject(json_str);
 #    B = jObject("klklkl");
-    print B.name
-    print B.age
-    print B.dog.name
-    print B.array2[1]
+    print(B.name)
+    print(B.age)
+    print(B.dog.name)
+    print(B.array2[1])
 
     sys.exit(0)

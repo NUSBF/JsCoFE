@@ -30,7 +30,7 @@ import sys
 import shutil
 
 #  application imports
-import basic
+from . import basic
 
 
 # ============================================================================

@@ -33,7 +33,7 @@ import math
 import gemmi
 
 #  application imports
-import basic
+from . import basic
 from   pycofe.etc   import pyrama
 from   pycofe.proc  import qualrep
 
@@ -117,7 +117,7 @@ class CombStructure(basic.TaskDriver):
         work_mtz = params["mtzin"]
         table_id = None
 
-        for passNo in xrange(params["npasses"]):
+        for passNo in range(params["npasses"]):
 
             passId = combId + "_" + str(passNo+1).zfill(2)
 

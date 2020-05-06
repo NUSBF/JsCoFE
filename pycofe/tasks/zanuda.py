@@ -30,7 +30,7 @@ import sys
 import uuid
 
 #  application imports
-import basic
+from . import basic
 from   pycofe.proc   import xyzmeta
 
 

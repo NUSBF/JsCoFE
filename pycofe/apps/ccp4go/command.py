@@ -24,7 +24,7 @@ import platform
 try:
     from pycofe.etc import citations
 except:
-    import citations
+    from . import citations
 
 class comrc():
     def __init__(self,retcode=None,utime=None):
@@ -113,7 +113,7 @@ def call ( executable,command_line,job_dir,stdin_fname,file_stdout,
         else:
             rc = comrc ( os.wait4(p.pid,0) )
 
-    except Exception, e:
+    except Exception as e:
         rc.msg = str(e)
 
     if file_stdin:
