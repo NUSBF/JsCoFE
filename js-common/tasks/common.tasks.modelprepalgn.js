@@ -45,7 +45,7 @@ function TaskModelPrepAlgn()  {
                   'further use in Molecular Replacement. Usually you will ' +
                   'choose homologous single chains of approximately equal ' +
                   'length. The resulting ensemble will be named after the ' +
-                  'leading coordinat set.',
+                  'leading coordinate set.',
     inputId     : 'alignment', // input Id for referencing input fields
     customInput : 'align-sel', // lay custom fields next to the selection
     min         : 1,           // minimum acceptable number of data instances
