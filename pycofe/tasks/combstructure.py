@@ -1,9 +1,11 @@
 ##!/usr/bin/python
 
+# python-3 ready
+
 #
 # ============================================================================
 #
-#    15.04.20   <--  Date of Last Modification.
+#    07.05.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -201,7 +203,7 @@ class CombStructure(basic.TaskDriver):
                 hkl_labin = "LABIN IP=" + hkl_labels[0] + " SIGIP=" + hkl_labels[1]
             """
 
-            if int(params["ncycles"])>0:
+            if params["ncycles"]>0:
 
                 hkl_labels = hkl.getMeanF()
                 hkl_labin  = "LABIN FP=" + hkl_labels[0] + " SIGFP=" + hkl_labels[1]
@@ -210,7 +212,7 @@ class CombStructure(basic.TaskDriver):
                 self.open_stdin()
                 self.write_stdin ([
                     hkl_labin,
-                    "NCYC " + params["ncycles"],
+                    "NCYC " + str(params["ncycles"]),
                     "WEIGHT AUTO",
                     "MAKE HYDR NO",
                     "REFI BREF ISOT",
@@ -353,14 +355,14 @@ class CombStructure(basic.TaskDriver):
                 self.putSection ( secId,self.pass_meta[code]["title"] )
                 npasses = 1
                 if code!="FR":
-                    npasses = self.getParameter ( getattr(sec1,combN+"NPASS") )
-                ncycles = self.getParameter ( getattr(sec1,combN+"NCYC" ) )
+                    npasses = int(self.getParameter(getattr(sec1,combN+"NPASS")))
+                ncycles = int(self.getParameter(getattr(sec1,combN+"NCYC")))
                 mtzxyz  = self.comb_structure ( secId,code,hkl,{
                   "libin"    : libin,
                   "mtzin"    : mtzxyz[0],
                   "xyzin"    : mtzxyz[1],
                   "labin_fc" : labin_fc,
-                  "npasses"  : int(npasses),
+                  "npasses"  : npasses,
                   "ncycles"  : ncycles,
                   "function" : self.pass_meta[code]["script"]
                 })

@@ -21,10 +21,10 @@ import sys
 #  ccp4-python imports
 #import pyrvapi
 
-from . import edmap
-from . import coor
+import edmap
+import coor
 
-from . import ccp4go_acedrg
+import ccp4go_acedrg
 
 # ============================================================================
 

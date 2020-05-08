@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.05.20   <--  Date of Last Modification.
+ *    07.05.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -20,14 +20,17 @@
  */
 
 //  load system modules
-var request       = require('request'   );
-var formidable    = require('formidable');
-//var child_process = require('child_process');
-//var archiver      = require('archiver'  );
-//var unzipper      = require('unzipper'  );
-var path          = require('path'      );
-var fs            = require('fs-extra'  );
-var crypto        = require('crypto'    );
+
+var __use_ziplib = true;
+
+var request    = require('request'   );
+var formidable = require('formidable');
+var path       = require('path'      );
+var fs         = require('fs-extra'  );
+var crypto     = require('crypto'    );
+
+if (__use_ziplib)
+  var zl = require('zip-lib'   );
 
 //  load application modules
 var conf  = require('./server.configuration'      );
@@ -43,104 +46,6 @@ var log = require('./server.log').newLog(13);
 var jobballName = '__dir.zip';
 
 // ==========================================================================
-
-/*  --- old tar version 23.07.2018
-function packDir ( dirPath, fileSelection,dest_path, onReady_func )  {
-// Pack files, assume tar
-
-  utils.removeFile ( jobballName );
-
-  var tar = child_process.spawn ( '/bin/sh',['-c','tar -czf ' +
-                                  jobballName + ' ' + fileSelection],{
-    cwd   : dirPath,
-    stdio : ['ignore']
-  });
-
-  tar.stderr.on ( 'data',function(data){
-    log.error ( 10,'tar errors: "' + data + '"; encountered in ' + dirPath );
-  });
-
-  tar.on ( 'close', function(code){
-    onReady_func(code);
-    if (code!=0)  {
-      log.error ( 11,'tar packing code: ' + code + ', encountered in ' + dirPath );
-      utils.removeFile ( path.join(dirPath,jobballName) );
-    }
-  });
-
-}
-*/
-
-/*  ---  node-based zip version (inefficient) 25.07.2018
-function packDir ( dirPath, fileSelection,dest_path, onReady_func )  {
-// Pack files, use zip
-
-  //utils.removeFile ( jobballName );
-
-  var jobballPath = path.join ( dirPath,jobballName );
-  utils.removeFile ( jobballPath );
-
-  var output  = fs.createWriteStream ( jobballPath );
-  var archive = archiver ( 'zip', {
-    zlib: { level: 3 }  // Sets the compression level.
-  });
-
-  // listen for all archive data to be written
-  errors = "";
-
-  // This event is fired when the data source is drained no matter what was the data source.
-  // It is not part of this library but rather from the NodeJS Stream API.
-  // @see: https://nodejs.org/api/stream.html#stream_event_end
-  //output.on ( 'end',function(){
-  //  console.log('Data has been drained');
-  //});
-
-  // good practice to catch warnings (ie stat failures and other non-blocking errors)
-  archive.on ( 'warning',function(err){
-    if (err.code === 'ENOENT') {
-      //console.log ( 'ENOENT error' );
-      errors += 'ENOENT packing error ';
-      // log warning
-    } else {
-      errors += 'packing warnings ';
-      //console.log ( 'errors 1' );
-      // throw error
-      //throw err;
-    }
-    log.error ( 10,'zip warnings encountered in ' + dirPath );
-  });
-
-  // good practice to catch this error explicitly
-  archive.on ( 'error', function(err) {
-    errors += 'packing errors ';
-    log.error ( 10,'zip errors encountered in ' + dirPath );
-    //console.log ( 'errors 2' );
-    //throw err;
-  });
-
-  // pipe archive data to the file
-  archive.pipe ( output );
-
-  // append files from a sub-directory, putting its contents at the root of archive
-  archive.directory ( dirPath,false );
-  //archive.glob ( path.join(dirPath,fileSelection) );
-
-  // 'close' event is fired only when a file descriptor is involved
-  output.on ( 'close',function(){
-    if (errors)  {
-      onReady_func(-1);
-      log.error ( 11,'zip errors: ' + errors + ', encountered in ' + dirPath );
-      utils.removeFile ( jobballPath );
-    } else
-      onReady_func(0);
-  });
-
-  // finalize the archive (ie we are done appending files but streams have to finish yet)
-  // 'close', 'end' or 'finish' may be fired right after calling this method so register to them beforehand
-  archive.finalize();
-
-}
-*/
 
 function getJobballPath ( dirPath )  {
   return path.join ( dirPath,jobballName );
@@ -164,27 +69,45 @@ function packDir ( dirPath, fileSelection, dest_path, onReady_func )  {
 
   tmpFile = path.resolve ( tmpFile + '.zip' );
 
-  var zip = utils.spawn ( conf.pythonName(),['-m',zipfile(),'-c',tmpFile,
-                                              dirPath + path.sep + '.'],{
-    stdio : ['ignore']
-  });
+  if (__use_ziplib)  {
 
-  zip.stderr.on ( 'data',function(data){
-    log.error ( 10,'zip errors: "' + data + '"; encountered in ' + dirPath );
-  });
+    zl.archiveFolder ( dirPath,tmpFile )
+      .then(function() {
+        if (dest_path)
+              utils.moveFile ( tmpFile,dest_path );
+        else  utils.moveFile ( tmpFile,getJobballPath(dirPath) );
+        onReady_func ( 0 );
+      }, function(err) {
+        log.error ( 11,'zip packing error: ' + err + ', encountered in ' + dirPath );
+        utils.removeFile ( tmpFile );
+        onReady_func ( err );
+      });
 
-  zip.on ( 'close', function(code){
-    //if (code!=0)  {
-    if (code)  {
-      log.error ( 11,'zip packing code: ' + code + ', encountered in ' + dirPath );
-      utils.removeFile ( tmpFile );
-    } else  if (dest_path) {
-      utils.moveFile ( tmpFile,dest_path );
-    } else  {
-      utils.moveFile ( tmpFile,getJobballPath(dirPath) );
-    }
-    onReady_func(code);
-  });
+  } else  {
+
+    var zip = utils.spawn ( conf.pythonName(),['-m',zipfile(),'-c',tmpFile,
+                                                dirPath + path.sep + '.'],{
+      stdio : ['ignore']
+    });
+
+    zip.stderr.on ( 'data',function(data){
+      log.error ( 10,'zip errors: "' + data + '"; encountered in ' + dirPath );
+    });
+
+    zip.on ( 'close', function(code){
+      //if (code!=0)  {
+      if (code)  {
+        log.error ( 11,'zip packing code: ' + code + ', encountered in ' + dirPath );
+        utils.removeFile ( tmpFile );
+      } else  if (dest_path) {
+        utils.moveFile ( tmpFile,dest_path );
+      } else  {
+        utils.moveFile ( tmpFile,getJobballPath(dirPath) );
+      }
+      onReady_func(code);
+    });
+
+  }
 
 }
 
@@ -301,6 +224,23 @@ var sender_cfg = conf.getServerConfig();
 
 // ==========================================================================
 
+function __after_unzip ( unpack_dir,dirPath,tmpDir,jobballPath,
+                         cleanTmpDir,remove_jobball_bool,err )  {
+  if (remove_jobball_bool)
+    utils.removeFile ( jobballPath )
+  if (cleanTmpDir)  {
+     // replace destination with temporary directory used for unpacking;
+     // as all directories are on the same device (see above), the
+     // replace should be done within this thread and, therefore, safe
+     // for concurrent access from client
+     utils.moveFile ( dirPath   ,tmpDir  );
+     utils.moveFile ( unpack_dir,dirPath );
+     setTimeout ( function(){  // postpone for speed
+       utils.removePath ( tmpDir );
+     },0 );
+  }
+}
+
 function unpackDir1 ( dirPath,jobballPath,cleanTmpDir,remove_jobball_bool,onReady_func )  {
 // unpack all service jobballs (their names start with double underscore)
 // and clean them out if remove_jobball_bool is true
@@ -315,36 +255,57 @@ function unpackDir1 ( dirPath,jobballPath,cleanTmpDir,remove_jobball_bool,onRead
     tmpDir = unpack_dir + '_JOBDIRCOPY';
   }
 
-  var errs = '';
-  var zip = utils.spawn ( conf.pythonName(),['-m',zipfile(),'-e',jobballPath,unpack_dir],{
-    stdio : ['ignore']
-  });
+  if (__use_ziplib)  {
 
-  zip.stderr.on ( 'data',function(data){
-    log.error ( 15,'zip/unpackDir errors: "' + data + '"; encountered in ' + dirPath );
-    errs = 'data_unpacking_errors';
-  });
+    zl.extract ( jobballPath,unpack_dir )
+      .then(function() {
+        __after_unzip ( unpack_dir,dirPath,tmpDir,jobballPath,
+                        cleanTmpDir,remove_jobball_bool );
+        onReady_func ( 0 );
+      }, function (err) {
+        __after_unzip ( unpack_dir,dirPath,tmpDir,jobballPath,
+                        cleanTmpDir,remove_jobball_bool );
+        onReady_func ( err );
+      });
 
-  zip.on('close', function(code){
-    if (remove_jobball_bool)
-      utils.removeFile ( jobballPath )
-//console.log ( ' ================== jobballPath=' + jobballPath );
-    if (cleanTmpDir)  {
-       // replace destination with temporary directory used for unpacking;
-       // as all directories are on the same device (see above), the
-       // replace should be done within this thread and, therefore, safe
-       // for concurrent access from client
-       utils.moveFile ( dirPath   ,tmpDir  );
-       utils.moveFile ( unpack_dir,dirPath );
-       setTimeout ( function(){  // postpone for speed
-         utils.removePath ( tmpDir );
-       },0 );
-    }
-    if (errs)
-      onReady_func ( errs );
-    else
-      onReady_func ( code );
-  });
+  } else  {
+
+    var errs = '';
+    var zip = utils.spawn ( conf.pythonName(),['-m',zipfile(),'-e',jobballPath,unpack_dir],{
+      stdio : ['ignore']
+    });
+
+    zip.stderr.on ( 'data',function(data){
+      log.error ( 15,'zip/unpackDir errors: "' + data + '"; encountered in ' + dirPath );
+      errs = 'data_unpacking_errors';
+    });
+
+    zip.on('close', function(code){
+      /*
+      if (remove_jobball_bool)
+        utils.removeFile ( jobballPath )
+  //console.log ( ' ================== jobballPath=' + jobballPath );
+      if (cleanTmpDir)  {
+         // replace destination with temporary directory used for unpacking;
+         // as all directories are on the same device (see above), the
+         // replace should be done within this thread and, therefore, safe
+         // for concurrent access from client
+         utils.moveFile ( dirPath   ,tmpDir  );
+         utils.moveFile ( unpack_dir,dirPath );
+         setTimeout ( function(){  // postpone for speed
+           utils.removePath ( tmpDir );
+         },0 );
+      }
+      */
+      __after_unzip ( unpack_dir,dirPath,tmpDir,jobballPath,
+                      cleanTmpDir,remove_jobball_bool );
+      if (errs)
+        onReady_func ( errs );
+      else
+        onReady_func ( code );
+    });
+
+  }
 
 }
 
@@ -354,47 +315,6 @@ function unpackDir ( dirPath,cleanTmpDir, onReady_func )  {
 // and clean them out
   var jobballPath = getJobballPath ( dirPath );
   unpackDir1 ( dirPath,jobballPath,cleanTmpDir,true,onReady_func );
-
-  /*
-  var unpack_dir = dirPath;
-  var tmpDir     = '';
-  if (cleanTmpDir)  {
-    do {
-      unpack_dir = path.join ( cleanTmpDir,'tmp_'+crypto.randomBytes(20).toString('hex') );
-    } while (utils.fileExists(unpack_dir));
-    utils.mkDir ( unpack_dir );
-    tmpDir = unpack_dir + '_JOBDIRCOPY';
-  }
-
-  var errs = '';
-  var zip = utils.spawn ( conf.pythonName(),['-m','pycofe.varut.zipfile','-e',jobballPath,unpack_dir],{
-    stdio : ['ignore']
-  });
-
-  zip.stderr.on ( 'data',function(data){
-    log.error ( 15,'zip/unpackDir errors: "' + data + '"; encountered in ' + dirPath );
-    errs = 'data_unpacking_errors';
-  });
-
-  zip.on('close', function(code){
-    utils.removeFile ( jobballPath )
-    if (cleanTmpDir)  {
-       // replace destination with temporary directory used for unpacking;
-       // as all directories are on the same device (see above), the
-       // replace should be done within this thread and, therefore, safe
-       // for concurrent access from client
-       utils.moveFile ( dirPath   ,tmpDir  );
-       utils.moveFile ( unpack_dir,dirPath );
-       setTimeout ( function(){  // postpone for speed
-         utils.removePath ( tmpDir );
-       },0 );
-    }
-    if (errs)
-      onReady_func ( errs );
-    else
-      onReady_func ( code );
-  });
-  */
 
 }
 

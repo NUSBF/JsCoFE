@@ -69,11 +69,11 @@ except:
 import pyrvapi
 import pyrvapi_ext.parsers
 
-from . import command
+import command
 try:
     from pycofe.etc import citations
 except:
-    from . import citations
+    import citations
 
 
 # ============================================================================

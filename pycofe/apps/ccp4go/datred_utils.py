@@ -14,11 +14,11 @@
 #
 
 import os, sys, re
-from pyrvapi import *
+from   pyrvapi import *
 import xml.etree.ElementTree as ET
 import json
 import subprocess as SP
-from fractions import Fraction
+from   fractions import Fraction
 
 showall = False
 showall = True

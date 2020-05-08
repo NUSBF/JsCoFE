@@ -24,7 +24,7 @@ import platform
 try:
     from pycofe.etc import citations
 except:
-    from . import citations
+    import citations
 
 class comrc():
     def __init__(self,retcode=None,utime=None):

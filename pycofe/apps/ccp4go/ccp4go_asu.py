@@ -21,10 +21,10 @@ import math
 #  ccp4-python imports
 #import pyrvapi
 
-from . import asucomp
-from . import rvapi_utils
+import asucomp
+import rvapi_utils
 
-from . import ccp4go_mtz
+import ccp4go_mtz
 
 # ============================================================================
 

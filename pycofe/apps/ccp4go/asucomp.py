@@ -18,7 +18,8 @@ import math
 
 from ccp4mg import mmdb2
 from Bio    import pairwise2
-from . import  datred_utils
+
+import  datred_utils
 
 
 # ============================================================================

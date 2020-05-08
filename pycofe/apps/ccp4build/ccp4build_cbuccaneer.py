@@ -1,15 +1,17 @@
 ##!/usr/bin/python
 
+# python-3 ready
+
 #
 # ============================================================================
 #
-#    09.03.19   <--  Date of Last Modification.
+#    07.05.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  CCP4build CBuccaneer class
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2019
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2019-2020
 #
 # ============================================================================
 #
