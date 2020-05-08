@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    26.03.20   <--  Date of Last Modification.
+ *    08.05.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -219,6 +219,11 @@ TaskDimple.prototype.currentVersion = function()  {
 
 if (!__template)  {
   //  for client side
+
+  // hotButtons return list of buttons added in JobDialog's toolBar.
+  TaskDimple.prototype.hotButtons = function() {
+    return [CootMBHotButton()];
+  }
 
   TaskDimple.prototype.collectInput = function ( inputPanel )  {
     var input_msg = TaskTemplate.prototype.collectInput.call ( this,inputPanel );

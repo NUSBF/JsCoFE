@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    04.05.20   <--  Date of Last Modification.
+#    08.05.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -306,8 +306,24 @@ class ModelPrepXYZ(basic.TaskDriver):
 
         # this will go in the project tree job's line
         if ensNo>0:
+
+            protocol = "(unmodified)"
+            if modSel=="D":
+                protocol = "(clipped)"
+            elif modSel=="M":
+                protocol = "(molrep protocol)"
+            elif modSel=="S":
+                protocol = "(sculptor protocol #" + sclpSel + ")"
+            elif modSel=="C":
+                protocol = "(chainsaw "
+                if   csMode=="MIXS":  protocol += "to gamma atoms)"
+                elif csMode=="MIXA":  protocol += "to beta atoms)"
+                elif csMode=="MAXI":  protocol += "to last common atoms)"
+            elif modSel=="P":
+                protocol = "(reduced to polyalanine)"
+
             self.generic_parser_summary["modelprepxyz"] = {
-              "summary_line" : str(ensNo) + " model(s) generated"
+              "summary_line" : str(ensNo) + " model(s) generated " + protocol
             }
 
         self.success ( (ensNo>0) )

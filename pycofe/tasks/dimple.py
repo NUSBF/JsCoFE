@@ -1,9 +1,11 @@
 ##!/usr/bin/python
 
+# python-3 ready
+
 #
 # ============================================================================
 #
-#    09.02.20   <--  Date of Last Modification.
+#    08.05.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -31,7 +33,8 @@ import uuid
 
 #  application imports
 from . import basic
-from   pycofe.dtypes import dtype_template,dtype_structure
+from   pycofe.dtypes import dtype_structure
+from   pycofe.proc   import qualrep
 
 
 # ============================================================================
@@ -157,6 +160,13 @@ class Dimple(basic.TaskDriver):
             revision.setStructureData  ( structure )
             self.registerRevision      ( revision  )
             have_results = True
+
+            rvrow0 = self.rvrow
+            try:
+                qualrep.quality_report ( self,revision )
+            except:
+                self.stderr ( " *** molprobity failure" )
+                self.rvrow = rvrow0
 
         # close execution logs and quit
         self.success ( have_results )

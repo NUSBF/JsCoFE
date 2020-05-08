@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    07.05.20   <--  Date of Last Modification.
+#    08.05.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -63,18 +63,18 @@ class CombStructure(basic.TaskDriver):
             "modlist"   : []
         }
         nrmsd = 0
-        for mno in range(len(st1)):
+        for mno in range(min(len(st1),len(st2))):
             model1 = st1[mno]
             model2 = st2[mno]
-            for cno in range(len(model1)):
+            for cno in range(min(len(model1),len(model2))):
                 chain1 = model1[cno]
                 chain2 = model2[cno]
-                for rno in range(len(chain1)):
+                for rno in range(min(len(chain1),len(chain2))):
                     res1 = chain1[rno]
                     res2 = chain2[rno]
                     if len(res1)!=len(res2):
                         result["nmodified"] += 1
-                    for ano in range(len(res1)):
+                    for ano in range(min(len(res1),len(res2))):
                         pos1 = res1[ano].pos
                         pos2 = res2[ano].pos
                         dx = pos1[0] - pos2[0]
