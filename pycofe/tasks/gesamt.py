@@ -24,7 +24,7 @@
 # ============================================================================
 #
 
-# python 3 ready
+# python-3 ready
 
 #  python native imports
 import os

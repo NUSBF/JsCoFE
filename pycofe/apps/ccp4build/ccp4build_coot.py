@@ -3,17 +3,19 @@
 #
 # ============================================================================
 #
-#    22.03.19   <--  Date of Last Modification.
+#    07.05.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  CCP4build Coot class
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2019
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2019-2020
 #
 # ============================================================================
 #
 #
+
+# python-3 ready
 
 import os
 import sys

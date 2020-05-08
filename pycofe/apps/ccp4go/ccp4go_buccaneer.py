@@ -20,9 +20,9 @@ import sys
 #  ccp4-python imports
 #import pyrvapi
 
-from . import edmap
+import edmap
 
-from . import ccp4go_crank2
+import ccp4go_crank2
 
 # ============================================================================
 

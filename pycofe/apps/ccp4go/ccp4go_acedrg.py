@@ -23,9 +23,8 @@ import shutil
 import gemmi
 from   gemmi   import  cif
 
-from . import edmap
-
-from . import ccp4go_lorestr
+import edmap
+import ccp4go_lorestr
 
 # ============================================================================
 

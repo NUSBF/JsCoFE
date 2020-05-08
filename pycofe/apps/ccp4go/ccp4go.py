@@ -55,7 +55,8 @@
 
 import sys
 
-from . import ccp4go_fitligands
+#from . import ccp4go_fitligands
+import ccp4go_fitligands
 
 # ============================================================================
 

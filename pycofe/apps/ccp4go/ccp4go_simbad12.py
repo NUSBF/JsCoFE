@@ -21,8 +21,8 @@ import json
 #  ccp4-python imports
 #import pyrvapi
 
-from . import ccp4go_dimple
-from . import asucomp
+import ccp4go_dimple
+import asucomp
 
 # ============================================================================
 

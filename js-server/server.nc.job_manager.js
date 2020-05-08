@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    17.04.20   <--  Date of Last Modification.
+ *    07.05.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -1262,7 +1262,9 @@ function ncRunClientJob ( post_data_obj,callback_func )  {
           ncJobRegister.removeJob ( job_token );
           writeNCJobRegister      ();
           callback_func ( new cmd.Response ( cmd.nc_retcode.unpackErrors,
-                                             '[00119] Unpack errors',{} ) );
+                                             '[00119] Unpack errors (code=' + code + ')',
+                                             {} ) );
+          log.error ( 24,'unpack errors, code=' + code );
         }
       });
 

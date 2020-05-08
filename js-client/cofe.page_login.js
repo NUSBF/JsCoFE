@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    22.04.20   <--  Date of Last Modification.
+ *    07.05.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -147,7 +147,22 @@ function LoginPage ( sceneId )  {
   panel.setWidget               ( pwd_btn  ,row++,0,1,3 );
   panel.setWidget               ( reg_btn  ,row++,0,1,3 );
 
-  if (!__local_service)
+  if (__any_mobile_device)
+    panel.setLabel              ( '&nbsp;<br><center><i>Please note that some ' +
+                                  'tasks, such as interactive<br>model building ' +
+                                  'with Coot, interactive image<br>processing and ' +
+                                  'some others, are not available<br>when CCP4 ' +
+                                  'Cloud is accessed from mobile<br>devices ' +
+                                  '(tablets, ipads and smartphones)</i></center>',
+                                  row++,0,1,3 )
+          .setTooltip           ( 'For best expereince, access this web-site from ' +
+                                  'MS Windows, Linux or Mac OSX device  with ' +
+                                  'CCP4 Software Suite version 7.1 or higher ' +
+                                  'installed.'
+                                )
+          .setNoWrap();
+
+  else if (!__local_service)
     panel.setLabel              ( '&nbsp;<br><center><i>For best experience, access ' +
                                   'this web site via<br>CCP4 Cloud Client, ' +
                                   'which can be obtained by installing<br>' +
@@ -159,7 +174,7 @@ function LoginPage ( sceneId )  {
           .setTooltip           ( 'CCP4 Cloud Client is necessary for running ' +
                                   'interactive graphical software, such as image ' +
                                   'processing (DUI, Mosflm, XDSGUI), Coot and ' +
-                                  'few others.'
+                                  'some others.'
                                 )
           .setNoWrap();
     /*

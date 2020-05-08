@@ -22,10 +22,10 @@ import pyrvapi_ext.parsers
 #from   ccp4mg import mmdb2
 import gemmi
 
-from . import mtz
-from . import datred_utils
+import mtz
+import datred_utils
 
-from . import ccp4go_base
+import ccp4go_base
 
 # ============================================================================
 

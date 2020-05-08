@@ -20,8 +20,8 @@ import sys
 #  ccp4-python imports
 #import pyrvapi
 
-from . import edmap
-from . import ccp4go_ccp4build
+import edmap
+import ccp4go_ccp4build
 
 # ============================================================================
 
