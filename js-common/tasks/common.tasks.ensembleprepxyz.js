@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    26.03.20   <--  Date of Last Modification.
+ *    10.05.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -19,14 +19,19 @@
  *
  */
 
-/*
- * jsCoFE: Javascript-powered Cloud Front End
- *
- *  Client and Server-side code:  Ensemble from Coordinates Interface.
- *
- *  Copyright (C)  Eugene Krissinel 2017
- *
- */
+//
+//  10.05.2020
+//
+//  THE POSSIBILITY OF CREATING ENESEMBLE WITHOUT SEQUENCE IS ELIMINATED.
+//  IF SUCH POSSIBILITY IS NOT REQUESTED, REMOVE EXTRA '_NOSEQ_' ITEMS IN
+//  THE PARAMETER SECTION, AND MAKE CORRESPONDING CHANGES IN THE REST OF THIS
+//  FILE AND IN THE CORRESPONDING PYTHIN DRIVER.
+//
+//  WHEN SEQUENCE IS "UNKNOWN", A SUITABLE ONE MAY BE SUGGESTED BY THE
+//  COORDINATE DATA USED IN THIS TASK. ** ADD SEQUENCE-FETCHING FUNCTION IN
+//  COORDINATE UTILITIES TASK FOR THIS **
+
+
 
 var __template = null;
 
@@ -48,15 +53,19 @@ function TaskEnsemblePrepXYZ()  {
   //this.helpURL = './html/jscofe_task_ensembleprepxyz.html';
 
   this.input_dtypes = [{  // input data types
-      data_type   : {'DataSequence':[]}, // data type(s) and subtype(s)
+      data_type   : {'DataSequence':['protein']}, // data type(s) and subtype(s)
       label       : 'Sequence',          // label for input dialog
+      /*
       tooltip     : 'Specify optional sequence to associate the resulting ' +
                     'model with. If no sequence is given, a void one will be ' +
                     'created for reference using the name of leading coordinate ' +
                     'set.',
+      */
+      tooltip     : 'Specify macromolecular sequence to be associated with the ' +
+                    'resulting ensemble.',
       inputId     : 'seq',      // input Id for referencing input fields
       force       : 1,          // show no sequence by default if zero
-      min         : 0,          // minimum acceptable number of data instances
+      min         : 1,          // minimum acceptable number of data instances
       max         : 1           // maximum acceptable number of data instances
     },{
       data_type   : {'DataStructure':['~substructure','~substructure-am','!xyz'],
@@ -68,7 +77,9 @@ function TaskEnsemblePrepXYZ()  {
                     'length. The resulting ensemble will be named after the ' +
                     'leading coordinat set.',
       inputId     : 'xyz',       // input Id for referencing input fields
-      customInput : 'chain-sel', // lay custom fields next to the selection
+      customInput : 'chain-sel-protein', // lay custom fields next to the selection
+                                 // enforce protein chains because of using MrBump
+                                 // for this task
       min         : 1,           // minimum acceptable number of data instances
       max         : 1000         // maximum acceptable number of data instances
     }
@@ -251,12 +262,15 @@ if (!__template)  {
       var isProtein = false;
       var isDNA     = false;
       var isRNA     = false;
+      var modSel = null;
 
       if (seq && (seq.length>0))  {
         isProtein = (seq[0].subtype.indexOf('protein')>=0);
         isDNA     = (seq[0].subtype.indexOf('dna')>=0);
         isRNA     = (seq[0].subtype.indexOf('rna')>=0);
-      }
+        modSel = this.parameters.sec1.contains.MODIFICATION_SEQ_SEL.value;
+      } else
+        modSel = this.parameters.sec1.contains.MODIFICATION_NOSEQ_SEL.value;
 
       for (var i=0;i<xyz.length;i++)  {
         if (xyz[i].subtype.indexOf('protein')>=0)  nProteins++;
@@ -264,15 +278,35 @@ if (!__template)  {
         if (xyz[i].subtype.indexOf('rna')>=0)      nRNAs++;
       }
 
+      msg_list = [];
+
+      if ((['U','D'].indexOf(modSel)<0) && ((nDNAs+nRNAs>0) || isDNA || isRNA))
+        msg_list.push ( this.invalidParamMessage (
+                  'incompatible modification protocol',
+                  'making nucleic acid MR ensembles is possible only for ' +
+                  '"Unmodified" and<br>"PDB Clip" modification protocols' ) );
+
       if ((isProtein && (nDNAs+nRNAs>0)) ||
           (isDNA && (nProteins+nRNAs>0)) ||
-          (isRNA && (nDNAs+nProteins>0)))
-        msg = '<b>Component types (protein,dna,rna) are not compatible.</b><p>' +
-              'Make sure that all components of ensemble have the same type.';
+          (isRNA && (nDNAs+nProteins>0)) ||
+          ((!isProtein) && (!isDNA) && (!isRNA) &&
+           ((nProteins*nRNAs>0) || (nProteins*nDNAs>0) || (nDNAs*nRNAs>0)))
+         )
+        //msg = '<b>Component types (protein,dna,rna) are not compatible.</b><p>' +
+        //      'Make sure that all components of ensemble have the same type.';
+        msg_list.push ( this.invalidParamMessage (
+            'component types (protein,dna,rna) are not compatible.',
+            'Make sure that all components of ensemble have the same type.' ) );
       else if ((nDNAs>1) || (nRNAs>1))
-        msg = '<b>Nucleic acid ensembles with more than one molecule are not ' +
-              'supported.</b><p> Please leave only one nucleic acid polymer in ' +
-              'the list.';
+        //msg = '<b>Nucleic acid ensembles with more than one molecule are not ' +
+        //      'supported.</b><p> Please leave only one nucleic acid polymer in ' +
+        //      'the list.';
+        msg_list.push ( this.invalidParamMessage (
+           'nucleic acid ensembles with more than one molecule are not supported.',
+           'Please leave only one nucleic acid polymer in the list.' ) );
+
+      if (msg_list.length>0)
+        msg = msg_list.join('<br>');
 
     }
 

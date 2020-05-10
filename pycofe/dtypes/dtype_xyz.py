@@ -1,9 +1,11 @@
 ##!/usr/bin/python
 
+# python-3 ready
+
 #
 # ============================================================================
 #
-#    24.04.20   <--  Date of Last Modification.
+#    09.05.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -36,7 +38,8 @@ class DType(dtype_template.DType):
             self.dname        = "xyz"
             self.xyzmeta      = {}
             self.exclLigs     = ["(agents)"]  # list of excluded ligands for PISA
-            self.selChain     = "(all)"       # selected chains for comparison
+            #self.selChain     = "(all)"       # selected chains for comparison
+            self.chainSel     = ""            # selected chains for comparison
             self.chainSelType = ""
             self.coot_meta    = None
             self.version     += 0             # versioning increments from parent to children

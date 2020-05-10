@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    26.03.20   <--  Date of Last Modification.
+ *    10.05.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -16,15 +16,6 @@
  *  (C) E. Krissinel, A. Lebedev 2016-2020
  *
  *  =================================================================
- *
- */
-
-/*
- * jsCoFE: Javascript-powered Cloud Front End
- *
- *  Client and Server-side code:  MR Model from Coordinates Interface.
- *
- *  Copyright (C)  Eugene Krissinel 2017
  *
  */
 
@@ -51,7 +42,7 @@ function TaskModelPrepXYZ()  {
       data_type   : {'DataSequence':[]}, // data type(s) and subtype(s)
       label       : 'Sequence',          // label for input dialog
       tooltip     : 'Specify macromolecular sequence to be associated with the ' +
-                    'resulting ensembles.',
+                    'resulting models.',
       inputId     : 'seq',      // input Id for referencing input fields
       min         : 1,          // minimum acceptable number of data instances
       max         : 1           // maximum acceptable number of data instances
@@ -64,7 +55,7 @@ function TaskModelPrepXYZ()  {
                     'will be named after the corresponding coordinate data ' +
                     'set(s).',
       inputId     : 'xyz',       // input Id for referencing input fields
-      customInput : 'chain-sel', // lay custom fields next to the selection
+      customInput : 'chain-sel-poly', // lay custom fields next to the selection
       min         : 1,           // minimum acceptable number of data instances
       max         : 1000         // maximum acceptable number of data instances
     }
@@ -204,45 +195,62 @@ if (!__template)  {
     var msg = TaskTemplate.prototype.collectInput.call ( this,inputPanel );
 
     if (msg.length<=0)  {
-      var seq       = this.input_data.getData ( 'seq' );
-      var xyz       = this.input_data.getData ( 'xyz' );
-      var nProteins = 0;
-      var nDNAs     = 0;
-      var nRNAs     = 0;
-      var nLigs     = 0;
-      var isProtein = false;
-      var isDNA     = false;
-      var isRNA     = false;
+      var seq = this.input_data.getData ( 'seq' );
+      var xyz = this.input_data.getData ( 'xyz' );
+      var msg_list = [];
 
+      var typeMask  = 0x00;
       if (seq && (seq.length>0))  {
-        isProtein = (seq[0].subtype.indexOf('protein')>=0);
-        isDNA     = (seq[0].subtype.indexOf('dna')>=0);
-        isRNA     = (seq[0].subtype.indexOf('rna')>=0);
+        if (seq[0].subtype.indexOf('protein')>=0)  typeMask += 0x01;
+        if (seq[0].subtype.indexOf('dna')>=0)      typeMask += 0x02;
+        if (seq[0].subtype.indexOf('rna')>=0)      typeMask += 0x04;
       }
 
-      for (var i=0;i<xyz.length;i++)  {
-        if (xyz[i].chainSelType=='protein')  nProteins++;
-        else if (xyz[i].chainSelType=='dna') nDNAs++;
-        else if (xyz[i].chainSelType=='rna') nRNAs++;
-        else if (xyz[i].chainSelType=='lig') nLigs++;
-        else  {
-          if (xyz[i].subtype.indexOf('protein')>=0)  nProteins++;
-          if (xyz[i].subtype.indexOf('dna')>=0)      nDNAs++;
-          if (xyz[i].subtype.indexOf('rna')>=0)      nRNAs++;
+      var modSel = this.parameters.sec1.contains.MODIFICATION_SEL.value;
+      if (((typeMask & 0x01)==0x00) && (['U','D'].indexOf(modSel)<0))
+        msg_list.push ( this.invalidParamMessage (
+                    'incompatible modification protocol',
+                    'making nucleic acid MR models is possible only for ' +
+                    '"Unmodified" and<br>"PDB Clip" modification protocols' ) );
+      else
+        for (var i=0;i<xyz.length;i++)  {
+          var tMask  = 0x00;
+          if (xyz[i].chainSel=='(none)')  {
+            msg_list.push ( this.invalidParamMessage (
+                    'no suitable chain selected in ' + xyz[i].dname,
+                    'no chains suitable for making MR model with chosen ' +
+                    'target sequence<br>are found in coordinate data' ) );
+          } else if (xyz[i].chainSel=='(all)')  {
+            if (['U','D'].indexOf(modSel)>=0)  {
+              // just check that there are no incompatible chains
+              if (xyz[i].subtype.indexOf('protein')>=0)  tMask += 0x01;
+              if (xyz[i].subtype.indexOf('dna')>=0)      tMask += 0x02;
+              if (xyz[i].subtype.indexOf('rna')>=0)      tMask += 0x04;
+            } else
+              msg_list.push ( this.invalidParamMessage (
+                    'chain is not selected in ' + xyz[i].dname,
+                    'selecting all chains is possible only for "Unmodified" ' +
+                    'and "PDB Clip"<br>modification protocols' ) );
+          } else  {
+            // check chain type for the selected chain
+            if (xyz[i].chainSelType=='protein')  tMask = 0x01;
+            else if (xyz[i].chainSelType=='dna') tMask = 0x02;
+            else if (xyz[i].chainSelType=='rna') tMask = 0x04;
+            else if (xyz[i].chainSelType=='na')  tMask = 0x06;
+            else if (xyz[i].chainSelType=='lig')
+              msg_list.push ( this.invalidParamMessage (
+                    'not allowed chain type in ' + xyz[i].dname,
+                    'ligands cannot be used as MR search models' ) );
+          }
+          if ((tMask & typeMask)==0x00)
+            msg_list.push ( this.invalidParamMessage (
+                    'incompatible chain type in ' + xyz[i].dname,
+                    'the type of MR model chain must coincide with ' +
+                    'the type of target sequence' ) );
         }
-      }
 
-      if (nLigs>0) {
-        msg = '<b>Component type LIG (ligands) cannot be used for making MR models.</b>.';
-      } else if ((isProtein && (nDNAs+nRNAs>0)) ||
-                 (isDNA && (nProteins+nRNAs>0)) ||
-                 (isRNA && (nDNAs+nProteins>0))) {
-        msg = '<b>Component types (protein,dna,rna) are not compatible.</b><p>' +
-              'Make sure that all components of ensemble have the same type.';
-      } else if ((nDNAs>1) || (nRNAs>1))
-        msg = '<b>Nucleic acid ensembles with more than one molecule are not ' +
-              'supported.</b><p> Please leave only one nucleic acid polymer in ' +
-              'the list.';
+      if (msg_list.length>0)
+        msg = msg_list.join('<br>');
 
     }
 

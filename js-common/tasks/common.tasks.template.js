@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    06.05.20   <--  Date of Last Modification.
+ *    10.05.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -1906,6 +1906,11 @@ if (!dbx)  {
 
   }
 
+
+  TaskTemplate.prototype.invalidParamMessage = function ( message,explanation ) {
+    return '<b>' + message + '</b><br><i style="font-size:14px;">' +
+                   explanation + '</i>';
+  }
 
   TaskTemplate.prototype.collectParameterValues = function ( widget ) {
 

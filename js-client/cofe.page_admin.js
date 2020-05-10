@@ -123,9 +123,9 @@ function AdminPage ( sceneId )  {
   this.naPanel.setCellSize ( '95%','32px',0,0 );
 
   col = 1;
-  var update_btn  = this.naPanel.setButton ( '',image_path('update'),0,col++,1,1 )
-                                .setSize('30px','30px')
-                                .setTooltip('Update and restart');
+  var update_btn = this.naPanel.setButton ( '',image_path('update'),0,col++,1,1 )
+                               .setSize('30px','30px')
+                               .setTooltip('Update and restart');
   for (var i=1;i<col;i++)
     this.naPanel.setCellSize ( 'auto','32px',0,i );
 
@@ -150,7 +150,7 @@ function AdminPage ( sceneId )  {
       serverRequest ( fe_reqtype.updateAndRestart,'','Admin Page',
                       function(data){
         window.setTimeout ( function(){
-          window.location=window.location; // reload
+          window.location = window.location; // reload
         },60000 );
         logout ( self.element.id,10 );
       },null,function(){} );
