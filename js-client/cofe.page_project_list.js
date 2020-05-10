@@ -405,7 +405,7 @@ function ProjectListPage ( sceneId )  {
 
   //alert ( window.screen.width );
 
-  if (window.screen.width<720)  {  // 720 pt to px
+  if (window.screen.width*window.devicePixelRatio<720*3/4)  {  // 720 pt to px
     // tight screen (smartphone)
 
     left_margin  = '2pt';
