@@ -407,7 +407,7 @@ function ProjectListPage ( sceneId )  {
     // tight screen (smartphone)
 
     left_margin  = '2pt';
-    right_margin = '20pt';
+    right_margin = '22pt';
 
     open_btn     = new Button ( '',image_path('go')     );
     add_btn      = new Button ( '',image_path('add')    );
