@@ -403,9 +403,9 @@ function ProjectListPage ( sceneId )  {
   var left_margin  = '18pt';
   var right_margin = '28pt';
 
-  //alert ( window.screen.width );
+  //alert ( window.screen.width + '  ' + window.devicePixelRatio );
 
-  if (window.screen.width/window.devicePixelRatio<720*3/4)  {  // 720 pt to px
+  if (Math.max(window.screen.width,window.screen.height)<720*4/3)  {  // 720 pt to px
     // tight screen (smartphone)
 
     left_margin  = '2pt';
