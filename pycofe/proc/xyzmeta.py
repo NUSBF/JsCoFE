@@ -117,8 +117,14 @@ def getXYZMeta ( fpath,file_stdout,file_stderr,log_parser=None ):
             t = polymer.check_polymer_type()
             if t in (gemmi.PolymerType.PeptideL, gemmi.PolymerType.PeptideD):
                 abbr = 'Protein'
-            elif t in (gemmi.PolymerType.Dna, gemmi.PolymerType.Rna,
-                       gemmi.PolymerType.DnaRnaHybrid):
+            #elif t in (gemmi.PolymerType.Dna, gemmi.PolymerType.Rna,
+            #           gemmi.PolymerType.DnaRnaHybrid):
+            #    abbr = 'NA'
+            elif t==gemmi.PolymerType.Dna:
+                abbr = 'DNA'
+            elif t==gemmi.PolymerType.Rna:
+                abbr = 'RNA'
+            elif t==gemmi.PolymerType.DnaRnaHybrid:
                 abbr = 'NA'
             else:
                 abbr = 'LIG'

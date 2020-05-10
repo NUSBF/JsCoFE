@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.03.20   <--  Date of Last Modification.
+ *    10.05.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -38,7 +38,8 @@ function DataXYZ()  {
   this._type        = 'DataXYZ';
   this.xyzmeta      = {};
   this.exclLigs     = ['(agents)'];  // list of excluded ligands for PISA
-  this.selChain     = '(all)';       // selected chains for comparison
+  //this.selChain     = '(all)';       // selected chains for comparison
+  this.chainSel     = '';
   this.chainSelType = '';
   this.coot_meta    = null;
 
@@ -117,7 +118,7 @@ if (!__template)  {
     //    xyz: [
     //      { 'model':1,
     //        'chains': [
-    //          { 'id': 'A', 'file': 'fname_A.pdb', 'type': 'AA',  'size': 100 }, // aminoacids
+    //          { 'id': 'A', 'file': 'fname_A.pdb', 'type': 'Protein','size': 100 }, // aminoacids
     //          { 'id': 'B', 'file': 'fname_B.pdb', 'type': 'DNA', 'size': 50 },  // DNA
     //          { 'id': 'C', 'file': 'fname_C.pdb', 'type': 'RNA', 'size': 50 }   // RNA
     //                  ]
@@ -299,20 +300,39 @@ if (!__template)  {
       customGrid.chainSel = new Dropdown();
       //customGrid.chainSel.setWidth ( '120%' );
       customGrid.chainSel.setWidth ( '160px' );
-      customGrid.chainSel.addItem ( 'All','','(all)',this.chainSel=='(all)' );
-      var xyz = this.xyzmeta.xyz;
+      //customGrid.chainSel.addItem ( 'All','','(all)',this.chainSel=='(all)' );
+      var xyz    = this.xyzmeta.xyz;
+      var labels = [];
+      var ids    = [];
       if (xyz)
         for (var i=0;i<xyz.length;i++)  {
           var chains = xyz[i].chains;
           for (var j=0;j<chains.length;j++)
-            if ((chains[j].type=='Protein') || (dropdown.layCustom=='chain-sel')) {
+            if ((dropdown.layCustom=='chain-sel') ||
+                ((dropdown.layCustom=='chain-sel-protein') &&
+                 (chains[j].type=='Protein'))     ||
+                ((dropdown.layCustom=='chain-sel-poly') &&
+                 (['Protein','DNA','RNA','NA'].indexOf(chains[j].type)>=0)))  {
               var id = chains[j].id;
               if (xyz.length>1)
                 id = '/' + xyz[i].model + '/' + id;
-              customGrid.chainSel.addItem ( id + ' (' + chains[j].type.toLowerCase() + ')',
-                                            '',id,this.chainSel==id );
+              labels.push ( id + ' (' + chains[j].type.toLowerCase() + ')' );
+              ids   .push ( id );
+              if (!this.chainSel)
+                this.chainSel = id;
+              //customGrid.chainSel.addItem ( id + ' (' + chains[j].type.toLowerCase() + ')',
+              //                              '',id,this.chainSel==id );
             }
         }
+      if (labels.length<1)  {
+        labels.unshift ( 'No suitable chains found' );
+        ids   .unshift ( '(none)' );
+      } else if (labels.length>1)  {
+        labels.unshift ( 'All'   );
+        ids   .unshift ( '(all)' );
+      }
+      for (var j=0;j<labels.length;j++)
+        customGrid.chainSel.addItem ( labels[j],'',ids[j],this.chainSel==ids[j] );
       customGrid.setWidget ( customGrid.chainSel, 0,1,1,2 );
       //customGrid.setCellSize ( '160px','',0,1 );
       customGrid.chainSel.make();
@@ -359,6 +379,8 @@ if (!__template)  {
       case 'protein' : return 'protein chain(s)';
       case 'rna'     : return 'RNA chain(s)';
       case 'dna'     : return 'DNA chain(s)';
+      case 'na'      : return 'DNA/RNA chain(s)';
+      case 'lig'     : return 'Ligand chain(s)';
       default : ;
     }
     return DataTemplate.prototype.subtypeDescription.call ( this,subtype );

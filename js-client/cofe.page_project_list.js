@@ -413,26 +413,62 @@ function ProjectListPage ( sceneId )  {
   //var title_lbl = new Label ( 'My Projects'  );
   //title_lbl.setFont         ( 'times','200%',true,true );
 
-  open_btn     = new Button ( 'Open'  ,image_path('go') );
-  add_btn      = new Button ( 'Add'   ,image_path('add') );
-  rename_btn   = new Button ( 'Rename',image_path('rename') );
-  del_btn      = new Button ( 'Delete',image_path('remove') );
-  export_btn   = new Button ( 'Export',image_path('export') );
-  import_btn   = new Button ( 'Import',image_path('import') );
-  impshare_btn = new Button ( 'Shared',image_path('share') );
-  if (__demo_projects)  {
-    demoprj_btn = new Button ( 'Demo projects',image_path('demoprj') );
-    demoprj_btn.setWidth     ( '120pt' ).setNoWrap();
+
+  var btn_width  = '30pt';
+  var btn_height = '26pt';
+
+  if (window.screen.width<720/3*4)  {  // 720 pt to px
+
+    open_btn     = new Button ( '',image_path('go')     );
+    add_btn      = new Button ( '',image_path('add')    );
+    rename_btn   = new Button ( '',image_path('rename') );
+    del_btn      = new Button ( '',image_path('remove') );
+    export_btn   = new Button ( '',image_path('export') );
+    import_btn   = new Button ( '',image_path('import') );
+    impshare_btn = new Button ( '',image_path('share')  );
+    if (__demo_projects)  {
+      demoprj_btn = new Button ( '',image_path('demoprj') );
+      demoprj_btn .setWidth ( btn_width ).setHeight ( btn_height );
+    }
+    help_btn     = new Button ( '',image_path('help') ); //.setTooltip('Documentation' );
+
+  } else  {
+
+    open_btn     = new Button ( 'Open'  ,image_path('go') );
+    add_btn      = new Button ( 'Add'   ,image_path('add') );
+    rename_btn   = new Button ( 'Rename',image_path('rename') );
+    del_btn      = new Button ( 'Delete',image_path('remove') );
+    export_btn   = new Button ( 'Export',image_path('export') );
+    import_btn   = new Button ( 'Import',image_path('import') );
+    impshare_btn = new Button ( 'Shared',image_path('share') );
+    if (__demo_projects)  {
+      demoprj_btn = new Button ( 'Demo projects',image_path('demoprj') );
+      demoprj_btn.setWidth ('115pt').setHeight(btn_height).setNoWrap();
+    }
+    help_btn   = new Button ( 'Help',image_path('help') ); //.setTooltip('Documentation' );
+
+    btn_width = '80pt';
+    /*
+    open_btn    .setWidth ( '80pt' );
+    add_btn     .setWidth ( '80pt' );
+    rename_btn  .setWidth ( '80pt' );
+    del_btn     .setWidth ( '80pt' );
+    export_btn  .setWidth ( '80pt' );
+    import_btn  .setWidth ( '80pt' );
+    impshare_btn.setWidth ( '80pt' );
+    help_btn    .setWidth ( '60pt' );
+    */
+
   }
-  help_btn   = new Button ( 'Help',image_path('help') ); //.setTooltip('Documentation' );
-  open_btn    .setWidth     ( '80pt'  );
-  add_btn     .setWidth     ( '80pt'  );
-  rename_btn  .setWidth     ( '80pt'  );
-  del_btn     .setWidth     ( '80pt'  );
-  export_btn  .setWidth     ( '80pt'  );
-  import_btn  .setWidth     ( '80pt'  );
-  impshare_btn.setWidth     ( '80pt' );
-  help_btn    .setWidth     ( '80pt'  );
+
+  open_btn    .setWidth ( btn_width ).setHeight ( btn_height );
+  add_btn     .setWidth ( btn_width ).setHeight ( btn_height );
+  rename_btn  .setWidth ( btn_width ).setHeight ( btn_height );
+  del_btn     .setWidth ( btn_width ).setHeight ( btn_height );
+  export_btn  .setWidth ( btn_width ).setHeight ( btn_height );
+  import_btn  .setWidth ( btn_width ).setHeight ( btn_height );
+  impshare_btn.setWidth ( btn_width ).setHeight ( btn_height );
+  help_btn    .setWidth ( btn_width ).setHeight ( btn_height );
 
   var row = 0;
   panel.setHorizontalAlignment ( row,0,'center'    );
@@ -451,7 +487,8 @@ function ProjectListPage ( sceneId )  {
   //panel.setWidget              ( title_lbl, row-2,0,1,nCols  );
 
   for (var i=0;i<nCols-1;i++)
-    panel.setCellSize ( '2%' ,'',row,i );
+    panel.setCellSize ( btn_width,'',row,i );
+    //panel.setCellSize ( '2%' ,'',row,i );
   panel.setCellSize            ( 'auto','',row++,nCols-1 );
   /*
   panel.setCellSize            ( '2%' ,'',row,0     );

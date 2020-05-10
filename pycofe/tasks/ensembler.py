@@ -1,5 +1,7 @@
 ##!/usr/bin/python
 
+# not python-3 ready
+
 #
 # ============================================================================
 #
@@ -37,8 +39,6 @@ from . import basic
 from   pycofe.proc   import analyse_ensemble
 from   pycofe.proc   import make_ensemble
 
-#from   pycofe.dtypes import dtype_template, dtype_sequence
-
 
 # ============================================================================
 # Make Ensembler driver
@@ -52,7 +52,6 @@ class Ensembler(basic.TaskDriver):
 
     def run(self):
 
-        # Prepare ensembler input
         # fetch input data
 
         models = self.input_data.data.models
