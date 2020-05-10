@@ -398,26 +398,16 @@ function ProjectListPage ( sceneId )  {
     saveProjectList ( function(data){ logout(sceneId,0); } );
   });
 
-  // make panel
-  panel = new Grid('');
-  // center panel horizontally and make left- and right-most columns page margins
-  this.grid.setCellSize ( '40pt',''    ,1,0,1,1 );
-  this.grid.setWidget   ( panel        ,1,1,1,1 );
-  this.grid.setCellSize ( '40pt','100%',1,2,1,1 );
-
-//  panel.setVerticalAlignment ( 1,0,'top' );
-  panel.setVerticalAlignment ( 1,1,'middle' );
-
-  this.makeLogoPanel ( 2,0,3 );
-
-  //var title_lbl = new Label ( 'My Projects'  );
-  //title_lbl.setFont         ( 'times','200%',true,true );
-
-
-  var btn_width  = '30pt';
-  var btn_height = '26pt';
+  var btn_width    = '30pt';
+  var btn_height   = '26pt';
+  var left_margin  = '18pt';
+  var right_margin = '28pt';
 
   if (window.screen.width<720/3*4)  {  // 720 pt to px
+    // tight screen (smartphone)
+
+    left_margin  = '2pt';
+    right_margin = '14pt';
 
     open_btn     = new Button ( '',image_path('go')     );
     add_btn      = new Button ( '',image_path('add')    );
@@ -469,6 +459,21 @@ function ProjectListPage ( sceneId )  {
   import_btn  .setWidth ( btn_width ).setHeight ( btn_height );
   impshare_btn.setWidth ( btn_width ).setHeight ( btn_height );
   help_btn    .setWidth ( btn_width ).setHeight ( btn_height );
+
+  // make panel
+  panel = new Grid('');
+  // center panel horizontally and make left- and right-most columns page margins
+  this.grid.setCellSize ( left_margin ,''    ,1,0,1,1 );
+  this.grid.setWidget   ( panel              ,1,1,1,1 );
+  this.grid.setCellSize ( right_margin,'100%',1,2,1,1 );
+
+//  panel.setVerticalAlignment ( 1,0,'top' );
+  panel.setVerticalAlignment ( 1,1,'middle' );
+
+  this.makeLogoPanel ( 2,0,3 );
+
+  //var title_lbl = new Label ( 'My Projects'  );
+  //title_lbl.setFont         ( 'times','200%',true,true );
 
   var row = 0;
   panel.setHorizontalAlignment ( row,0,'center'    );
