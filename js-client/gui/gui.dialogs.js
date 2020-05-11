@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    11.04.20   <--  Date of Last Modification.
+ *    11.05.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -169,15 +169,13 @@ function HelpBox ( title,helpURL,onDoNotShowAgain_func )  {
   document.body.appendChild ( this.element );
 //  document.body.style.fontSize = '16px';
 
-  var w0,h0;
+  var w0 = 1000;
+  var h0 = 600;
   if (__any_mobile_device)  {
-    w0 = $(window).width () - 8;
-    h0 = $(window).height() - 118;
+    w0 = $(window).width () - 24;
+    h0 = $(window).height() - 158;
     if (__mobile_device)
-      h += 24;
-  } else  {
-    w0 = 1000;
-    h0 = 600;
+      h0 += 24;
   }
 
   this.resizeDisplay = function ( w,h )  {
