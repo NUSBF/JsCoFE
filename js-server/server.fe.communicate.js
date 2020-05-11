@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    26.03.20   <--  Date of Last Modification.
+ *    11.05.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -270,7 +270,7 @@ Communicate.prototype.sendFile = function ( server_response )  {
   } else if (this.filePath)  {
 
     var fpath = this.filePath;
-    if (fpath=='favicon.ico')  {
+    if (fpath.endsWith('favicon.ico'))  {
       if (conf.isLocalSetup())  fpath = 'favicon-desktop.ico';
                           else  fpath = 'favicon-remote.ico';
       fpath = path.join ( 'images_com',fpath );
