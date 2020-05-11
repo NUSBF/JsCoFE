@@ -69,29 +69,6 @@ function JobDialog ( params,          // data and task projections up the tree b
   this.run_image   = null;
   this.ind_timer   = null;
 
-  /*
-  var w0 = $(window).width ();
-  var h0 = $(window).height();
-
-  var w = 2*w0;
-  if (this.task.job_dialog_data.width>0)
-    w = this.task.job_dialog_data.width;
-
-  this.initialHeight = 2*h0;
-  if (this.task.job_dialog_data.height>0)
-    this.initialHeight = this.task.job_dialog_data.height;
-
-  if ((w>=w0) || (this.initialHeight>=h0))  {
-    w = 3*w0/4;
-    this.initialHeight = 3*h0/4;
-    this.task.job_dialog_data.position = { my : 'center top',   // job dialog position reference
-                                           at : 'center top+5%' }; // job dialog offset in the screen
-    this.task.job_dialog_data.width  = 0;
-    this.task.job_dialog_data.height = 0;
-  }
-  w += 'px';
-  */
-
   var size = calcDialogSize ( 0.75,0.75, 1,1, this.task.job_dialog_data );
   this.initialWidth  = size[0];
   this.initialHeight = size[1];
