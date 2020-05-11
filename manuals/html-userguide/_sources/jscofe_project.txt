@@ -1,0 +1,82 @@
+==================
+Project Management
+==================
+
+----------------
+Basic principles
+----------------
+
+Projects in CCP4 Cloud are designed to keep the track of structure solution process in such a way that it may be reviewed at any time later.
+
+Apart from straightforward cases, structure solution involves repeats of certain actions and branching due to decision making or exploration of range of parameters. Correspondingly, **project structure in CCP4 Cloud is a tree**, rather than a linear (chronological) list of jobs.
+
+Projects (or job trees) are built with just 5 basic operations, associated with first five buttons in the vertical toolbar on the left-hand side of the screen (also available from dropdown menu displayed by right-clicking on a job line in the tree):
+
+.. |addjob| image:: images/add.png
+    :width: 18
+    :height: 18   
+    
+|addjob| **Add a job**. The new job will be added as a child to one currently selected in the tree. When this button is pressed, the new job is chosen from the list of tasks, which opens automatically. Repeat addition of jobs to the same node will result in job tree branching.
+
+
+.. |moveup| image:: images/moveup.png
+    :width: 18
+    :height: 18
+    
+|moveup| **Move job up the tree**. The currently selected job will move one position up the job tree. This is only possible if all job's input data is generated above the new job position. If this is not the case, the job cannot be moved and the move button is greyed. Moving jobs may be useful for restructuring of the job tree in order to make job results visible in other tree branches (for which the job should be moved to above the branching point).
+ 
+ 
+.. |clonejob| image:: images/clonejob.png
+    :width: 18
+    :height: 18
+    
+|clonejob| **Clone job**. The new job will be added as a sibling to one currently selected in the tree, initialised with the same data and input parameters. Job dialog for the cloned job will be opened automatically, and you can change the input before running the job.
+ 
+ 
+.. |delete| image:: images/delete.png
+    :width: 18
+    :height: 18
+
+|delete| **Delete job**. The currently selected job and all jobs found in the tree branch descending from it will be deleted after confirmation. 
+
+.. Warning::
+        Once deleted, jobs cannot be restored.
+ 
+-------------------------
+Additional job operations
+-------------------------
+ 
+The following buttons in the toolbar **do not change the job tree**:
+ 
+.. |openjob| image:: images/openjob.png
+    :width: 18
+    :height: 18
+    
+|openjob| **Open Job** dialog for the currently selected job. Alternatively, double click the corresponding line in the job tree. Job dialogs are used for setting job's input data and parameters, and for starting jobs.
+ 
+.. |stop| image:: images/stop.png
+    :width: 18
+    :height: 18
+    
+|stop| **Stop** the currently selected job. This button is active only when job is running. **Once stopped, jobs cannot be resumed or restarted. However, you can clone job that was stopped and run the clone**.
+    
+--------    
+Refresh
+--------
+
+Nobody and nothing are perfect, and sometimes the Project Page may stop working for you due to intermittent connection errors or a hidden bug. Should this unlikely event happen, |refresh| refresh the Project Page. |refresh| simply reloads project data and re-initialises internal page functions. 
+
+.. Note::
+    this action is different from that of the browser's Refresh button; the latter will log you out.
+ 
+.. |refresh| image:: images/refresh.png
+    :width: 16
+    :height: 16
+    
+
+You can start building your first Project right after creating it, starting with task from the "Data Import" folder at the root of the job tree, and then adding computational jobs as appropriate.
+
+*You can create and run any number of jobs simultaneously, however, a child job cannot use its parent's job output until the parent job is completed.*
+ 
+CCP4 Cloud is not prescriptive about how you should grow and branch your job tree. **It is highly advisable, though, to understand the principles of data management in CCP4 Cloud in order to avoid most common mistakes and confusions.**
+**Please read the corresponding documentation.**

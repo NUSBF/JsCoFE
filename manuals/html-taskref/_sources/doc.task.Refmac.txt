@@ -1,0 +1,202 @@
+=======
+REFMAC5
+=======
+
+`REFMAC5 <https://journals.iucr.org/d/issues/2011/04/00/ba5152/index.html>`_ is a program designed for REFinement of MACromolecular structures. It’s final step in the process of solving a macromolecular crystal (MX) structure, refinement is carried out to maximize the agreement between the model and the X-ray data. Model parameters that are optimized in the refinement process include atomic coordinates, atomic displacement parameters (ADPs), scale factors and, in the presence of twinning, twin fraction(s).  It uses Maximum likelihood and some elements of Bayesian Statististics.
+
+*Although refinement procedures are typically designed for the final stages of MX analysis, they are also often used to improve partial models and to calculate the `best' electron-density maps for further model (re)building.*
+
+
+------------------------------
+Basic principles of refinement
+------------------------------
+refinement is a process of fitting the atomic model into observed X-ray crystallographic data. Allows the atomic model to be visualized, criticized and analyzed direct relation between model quality and phase quality. We need to Iteratively improve the model to optimize the agreement between **F** :subscript:`obs` and **F** :subscript:`calc`
+
+We work with two types of maps:
+
+
+• **2F** :subscript:`obs` **- F** :subscript:`calc` : “standard” electron density - represents crystal contents
+
+• **F** :subscript:`obs` **- F** :subscript:`calc` : difference density - represents differences
+    
+ ``Data of different quality shall be described differently (the difference in quality tells us about how many statistics we have for the atom, that why different number parameters of the model could be estimated given particular data).``
+
+ ``The model is defined not only about the PDB file, but also should consider the parameters of the refinement program.``
+
+*Before applying bulk solvent scaling and including all low resolution data, check your distribution of <F> looks sensible. This is the raw material for all overall scaling algorithms. A good way to check this is to look at a <Fsq> plot against resolution.*
+
+
+------------------------
+Stages of model building
+------------------------
+
+**Early stages (e.g. straight after MR)**
+
+• Run many cycles (up to 200 with jelly body restraints) of refinement
+
+**Medium stages – during model building**
+
+• 10-20 cycles
+• Optimise additional parameters like NCS, TLS, etc
+• Once your Rfree is lower than 40%, turn on twinning if twinned
+
+.. warning::
+            **DON’T USE TWIN REFINEMENT IF YOUR Rfree IS HIGHER THAN 40%!**
+            
+• Play with geometry weight parameter
+
+**Final stages of refinement**
+
+• Use optimal additional parameters
+
+• If geometrical quality of the model is not optimal, further play with parameters like geometry weight.
+
+----------------------
+Model Parameterisation
+----------------------
+
++++++++++
+B-factors
++++++++++
+
+ **describe relative positional uncertainty**
+
+Atomic B-factors can be modelled in a different way according to the quality of the data: **anisotropic** (6 parameters per atom, for better than 1.5 Å resolution), **isotropic** (1 parameter per atom), **TLS** (20 parameters per group of atoms)
+
+*B-factors are sometimes also referred to as atomic displacement parameters (ADPs) or thermal/temperature factors*
+
+    ``Should not compare atomic B-factors between different models``
+
+++++++++++
+TLS Groups
+++++++++++
+ 
+ **describe anisotropic motion**
+
+`TLS Motion Determination (TLSMD) <http://skuld.bmsc.washington.edu/~tlsmd/>`_ analyzes a macromolecular crystal structure for evidence of flexibility, e.g. local or inter-domain motions. It does this by partitioning individual chains into multiple segments that are modeled as rigid bodies undergoing TLS (Translation/Libration/Screw) vibrational (anisotropic) motion. It generates all possible partitions up to a maximum number of segments. Each trial partition is scored by how well it explains the observed atomic displacement parameters (**B values**) that came out of crystallographic refinement.
+
+Suitable for medium resolution, when full anisotropy is impossible
+Per group (20 parameters):
+
+• **Translation** – 6 parameters
+
+• **Libration** – 6 parameters
+
+• **Screw rotation** – 8 parameters
+
+    ``TLS refinement is often useful when there is NCS. It is often the case that different copies of a molecule in the asymmetric unit have different overall displacements. These can be accounted for by refining TLS parameters for each molecule. The residual atomic displacement parameters (B factors) should then be similar between molecules, and NCS restraints can be applied between them.``
+
+*TLS rigid body model is highly dependent on the quality of the crystal lattice, and conformational flexibility unique to the protein.*
+ 
+ .. toggle-header::
+        :header:  **more**
+        
+                 TLS (Translation/Libration/Screw) is a mathematical model that predicts the local positional displacement of atoms in a crystal structure based on an underlying assumption that each atom acts as a member of a rigid body that is displaced normally about a mean position. This displacement is seen crystallographically as non-spherical electron density at the atomic positions. The net displacement results both from actual vibration of the molecule in the crystal and from the static disorder within the crystal lattice that results from trapping different microconformers of the molecule in different unit cells making up the crystal lattice. The TLS formalism was originally developed to confirm rigid body displacement for small molecule crystallography, which yields high resolution data and precise anisotropic thermal parameters. Its success in predicting the thermal parameters for small molecules makes it tempting for use in macromolecular crystallography where it could potentially be used to find domain and loop flexibility in proteins; however, the challenges in applying the TLS model to macromolecular structures are different than those encountered with small molecules. Most macromolecular structures do not diffract to a high enough resolution to solve for individual atomic anisotropic thermal parameters (six per atom), so isotropic thermal parameters (one per atom) are used instead.
+
++++++++++++++
+Solvent model
++++++++++++++
+
+    **estimation of the bulk solvent contribution to the diffraction**
+
+Typically, a significant part of a macromolecular crystal is occupied by disordered (bulk) solvent, whose contribution to low resolution reflections is quite significant. An atomic model of a macromolecule without the contribution of the bulk solvent cannot describe these low resolution diffraction data correctly.
+
+*low resolution reflections being less sensitive to model imperfection (including the errors in its orientation) are extremely useful for the solution of the translation problem.*
+
+Two types solvent parameters are present:
+
+• **Simple** - Mask-based bulk solvent correction (default)
+
+    *The contribution of bulk solvent to structure factors is strongest at low resolution, although its effect at high resolution is still non-negligible.*
+
+    Mask-based bulk solvent correction
+
+    • Protein region is masked out
+
+    • Solvent region is flattened (set to constant)
+
+    • Structure factors for solvent are calculated: Fsolvent
+    
+
+    .. image:: images/doc.task.refmac5.solvent_model.png
+        :scale: 90 %
+
+    *Mask based bulk solvent is a standard in all refinement programs. In refmac it is default.*
+
+• **Bulk** - Babinet’s bulk solvent correction `[Tronrud 1997] <https://doi.org/10.1016/S0076-6879(97)77017-4>`_
+
+    • At low resolution electron density is flat
+    
+    • Solvent and protein regions differ only by density height
+    
+    .. image:: images/doc.task.refmac5.Bulk_solventpng.png
+        :scale: 60 %
+        
+----------
+Restraints
+----------
+Standard restraints (used by default) include:
+
+• Bond lengths
+
+• Angles
+
+• Chirals
+
+• Planes
+
+• Some torsion angles
+
+• B-values
+
+• VDW repulsions
+
+These help to ensure that the model is chemically sensible
+
+ *we generally deal with restraints, not constraints.*
+
+
+++++++++++++++++++++++++++++++++++++++++++++++
+NCS (Non-Crystallographic Symmetry Restraints)
+++++++++++++++++++++++++++++++++++++++++++++++
+
+*Used if there are two copies of the same molecule present.*
+
+
+• **Local NCS restraints**
+
+    **making the list of corresponding interatomic distances (removing bond and angle related atom pairs)** 
+
+    • Molecules are assumed to be locally similar
+    
+    • However, they may adopt (slightly) different global conformations
+    
+    • Restrain differences between local interatomic distances
+
+• **Global NCS restraints** (i.e. restraints based on RMS between atoms of aligned chains) 
+    
+    **identifying domains**
+
+    • Molecules are superimposed
+    
+    • Difference between atoms are minimized
+
++++++++++++++++++++++
+Jelly-body restraints
++++++++++++++++++++++
+
+The effect of "jelly-body" restraints is the implicit parameterization between the rigid body and individual atoms.
+
+.. tip::  
+        ``Run many cycles (up to 200 with jelly body restraints) on the early stage of refinement (e.g. straight after MR)``
+
+
+• Does not change likelihood function.
+
+• Does change 2 :superscript:`nd` derivative - curvature, thus changing the search direction.
+
+
+**ACKNOWLEDGEMENTS**
+
+This article uses materials kindly provided by Dr. Robert Nicholls and Dr. Garib Murshudov,
+whose help is greatly appreciated.

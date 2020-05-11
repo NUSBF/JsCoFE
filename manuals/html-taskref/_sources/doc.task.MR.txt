@@ -1,0 +1,13 @@
+=====================
+Molecular Replacement
+=====================
+
+Molecular Replacement is based on the assumption that target structure has a highly similar structural homologue, which may be found by, e.g. matching target's sequence to sequences of known PDB structures. If found, the homologue may be positioned such as to optimally reproduce the structure factors amplitudes and, using this position, calculate approximate structure factors phases. Then, electron density map is calculated from structure factors using the inverse Fourier transform, which may be used for building the target structure.
+CCP4 Cloud offers several approaches to Molecular Replacement:
+
+•	**SIMBAD** pipeline should be used when both sequence and structural model are not available, or if the presence of common contaminants is suspected
+
+•	**Automated MR** methods are efficient if good structural homologues may be found by sequence matching
+
+•	**Elementary MR** is practiced in difficult cases, when both SIMBAD and automated MR fail.
+

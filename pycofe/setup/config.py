@@ -49,7 +49,7 @@ def main():
       json_proxy['port'] = 0
 
     for json_nc in json_obj['NumberCrunchers']:
-      json_nc['jobRemoveTimeout'] = 3600000
+      #json_nc['jobRemoveTimeout'] = 3600000
       json_nc['externalURL'] = ''
       json_nc['stoppable'] = True
       json_nc['port'] = 0

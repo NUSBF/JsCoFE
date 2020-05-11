@@ -1,0 +1,95 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>4. Automated Molecular Replacement &#8212; CCP4 Cloud 1.6 documentation</title>
+    
+    <link rel="stylesheet" href="_static/haiku.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/contentui.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.6',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/contentui.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="top" title="CCP4 Cloud 1.6 documentation" href="index.html" />
+    <link rel="next" title="4.1. Morda" href="doc.task.Morda.html" />
+    <link rel="prev" title="3.2.5. Edit Revision: Substructure" href="doc.task.EditRevisionSubstr.html" /> 
+  </head>
+  <body role="document">
+      <div class="header" role="banner"><h1 class="heading"><a href="index.html">
+          <span>CCP4 Cloud 1.6 documentation</span></a></h1>
+        <h2 class="heading"><span>4. Automated Molecular Replacement</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        «&#160;&#160;<a href="doc.task.EditRevisionSubstr.html">3.2.5. Edit Revision: Substructure</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="doc.task.Morda.html">4.1. Morda</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content">
+        
+        
+  <div class="section" id="automated-molecular-replacement">
+<h1>4. Automated Molecular Replacement<a class="headerlink" href="#automated-molecular-replacement" title="Permalink to this headline">¶</a></h1>
+<blockquote>
+<div><strong>are efficient if good structural homologues may be found by sequence matching</strong></div></blockquote>
+<p>electron density in a crystal can be obtained by calculating the Fourier summation:</p>
+<a class="reference internal image-reference" href="_images/Fourier_transform.PNG"><img alt="_images/Fourier_transform.PNG" class="align-center" src="_images/Fourier_transform.PNG" style="width: 625.5px; height: 69.0px;" /></a>
+<p>in which <strong>|F(h k l)|</strong> is the structure factor amplitude of reflection (h k l), including the temperature factor, and <strong>α(h k l)</strong> is the phase angle. <strong>x</strong>, <strong>y</strong>, and <strong>z</strong> are coordinates in the unit cell.</p>
+<p>From the diffraction pattern, the values of <strong>I (h k l)</strong> are obtained after applying the some correction factors. Because I(h k l) =|F(h k l)| <sup>2</sup>, then amplitudes <strong>|F(h k l)|</strong> can be found.</p>
+<p><strong>We can’t measure the phases X-ray detectors</strong>. We can measure only the intensity of the X-rays (which is the amplitude squared). It&#8217;s create a phase problem, and by solving this problem we can solved the crystal structure.</p>
+<p>You can find <a class="reference external" href="http://www.ysbl.york.ac.uk/~cowtan/fourier/magic.html">here</a> how important the phase infomation is.</p>
+<p><strong>Molecular replacement</strong> is the process of solving the phase problem for an unknown structure by placing the atomic model known structure in the unit cell of the unknown structure by trying all possible orientations and positions and picking the one which gives the best fit to the observed data. Once we do so we can calculate approximate structure factors phases which, in combination with the observed structure factors for the unknown structure, allow the model to be rebuilt and refined.</p>
+<p>In case you have <strong>NOT</strong> a homologous protein structure you can use: automated molecular replacement pipelines in CCP4:</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="doc.task.Morda.html">4.1. Morda</a></li>
+<li class="toctree-l1"><a class="reference internal" href="doc.task.MrBump.html">4.2. MrBump</a></li>
+<li class="toctree-l1"><a class="reference internal" href="doc.task.Balbes.html">4.3. Balbes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="doc.task.Simbad.html">4.4. Simbad</a></li>
+<li class="toctree-l1"><a class="reference internal" href="doc.task.Ample.html">4.5. Ample</a></li>
+</ul>
+</div>
+</div>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        «&#160;&#160;<a href="doc.task.EditRevisionSubstr.html">3.2.5. Edit Revision: Substructure</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="doc.task.Morda.html">4.1. Morda</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.8.
+    </div>
+  </body>
+</html>

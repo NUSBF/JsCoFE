@@ -1,0 +1,413 @@
+========================
+CCP4 Cloud Configuration
+========================
+
+----------------------------
+Configuration file structure
+----------------------------
+
+CCP4 Cloud Configuration File is a json document with the following components: ::
+
+  {
+    "FrontEnd" : { ........... },
+    "FEProxy"  : { ........... },
+    "NumberCrunchers" : [
+        { .............. },
+        { .............. },
+        .....
+        { .............. }
+    ],
+    "Emailer" : { ............ }
+  }
+
+Not all components are required for all severs.
+
+*Front End Server*  requires ``"FrontEnd"``, all ``"NumberCrunchers"`` and
+``"Emailer"``.
+
+*Front End Proxy Server* requires ``"FrontEnd"``, ``"FEProxy"`` and one item
+of ``"NumberCrunchers"`` list, which relates to (optional) client server.
+
+*Number Cruncher Server* requires only one item of ```"NumberCrunchers"``
+list, which relates to that server.
+
+A single configuration file with description of all Cloud components, may be
+used for all servers in the setup. However, maintenance of individual number
+crunchers (in particular, client-side servers, or *CCP4 Cloud Clients*) may be
+more convenient if their configuration files do not contain items related to
+other components.
+
+
+-------------------------------------
+Configuration of the Front End Server
+-------------------------------------
+
+Front End Server configuration has the following structure: ::
+
+  "FrontEnd" : {
+    "description"      : {
+      "id"   : "ccp4",
+      "name" : "CCP4-Harwell",
+      "icon" : "images_com/ccp4-harwell.png"
+    },
+    "protocol"         : "http",
+    "host"             : "localhost",
+    "port"             : 8081,
+    "externalURL"      : "http://localhost:8081",
+    "reportURL"        : "https://cloud.ccp4.ac.uk",  // used only for reporting
+    "exclusive"        : true,
+    "stoppable"        : false,
+    "exclude_tasks"    : [],
+    "fsmount"          : "/",
+    "localSetup"       : true,  // optional, overrides automatic definition
+    "update_rcode"     : 212, // optional
+    "userDataPath"     : "./cofe-users",
+    "storage"          : "./cofe-projects",  // for logs, stats, pids, tmp etc.
+    "projectsPath"     : "./cofe-projects",  // old version; in this case, "storage" may be omitted
+    "projectsPath"     : {   // new version; in this case, "storage" must be given
+        "***"   : { "path" : "./cofe-projects", // equivalent to "projectPath"
+                    "type" : "volume",          //    given by single string
+                        // type "volume" means an ordinary file system
+                        // type "home" places projects in path/login/[dirName]
+                        //      if path/login already exists and is writable
+                    "diskReserve" : 10000,  // new user will not be registered if disk
+                                            // has space less than 'diskReserve' (in MB)
+                                            // less of already committed space for user
+                                            // accounts
+                    "dirName" : "ccp4cloud_projects"  // used only for "home" volumes
+                  },
+        "nameN" : { "path" : "pathN",   // any number of any names and any paths
+                    "type" : "typeN",
+                    "diskReserve" : 10000
+                  }
+    },
+    "jobs_safe" : {  // should point on jobs_safe directory as in NCs
+        "path"     : "./cofe-nc-storage/jobs_safe",
+        "capacity" : 10
+    },
+    "facilitiesPath"   : "./cofe-facilities",
+    "ICAT_wdsl"        : "https://icat02.diamond.ac.uk/ICATService/ICAT?wsdl",
+    "ICAT_ids"         : "https://ids01.diamond.ac.uk/ids",
+    "auth_software"    : {  // optional item, may be null or missing
+      "arpwarp" : {
+        "desc_software" : "Arp/wArp Model Building Software from EMBL-Hamburg",
+        "icon_software" : "task_arpwarp",
+        "desc_provider" : "EMBL Outstation in Hamburg",
+        "icon_provider" : "org_emblhamburg",
+        "auth_url"      : "https://arpwarp.embl-hamburg.de/api/maketoken/?reqid=$reqid&addr=1.2.3.4&cburl=$cburl",
+      },
+      "gphl-buster"  : {
+        "desc_software" : "Global Phasing Limited Software Suite",
+        "icon_software" : "task_buster",
+        "desc_provider" : "Global Phasing Limited",
+        "icon_provider" : "org_gphl",
+        "auth_url"      : "https://arpwarp.embl-hamburg.de/api/maketoken/?reqid=$reqid&addr=1.2.3.4&cburl=$cburl",
+      }
+    },
+    "bootstrapHTML"    : "jscofe.html",
+    "maxRestarts"      : 100,
+    "fileCapSize"      : 500000,
+    "regMode"          : "admin",  // if 'email':  registration by user;
+                                   // 'admin': all users are registration by admin
+    "sessionCheckPeriod" : 2000,
+    "ration"           : {
+        "storage"   : 3000,
+        "cpu_day"   : 24,
+        "cpu_month" : 240
+    },
+    "cloud_mounts"     : {  // optional item
+      "My Computer"    : "/",
+      "Home"           : ["$HOME","$USERPROFILE"],
+      "CCP4 examples"  : "$CCP4/share/ccp4i2/demo_data",
+      "Demo projects"  : "./demo-projects",
+      "My files"       : "./$LOGIN/files"
+    }
+  }
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+FE Server Configuration Items
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+**"description"**
+
+    This is an optional object with the following items: ::
+    
+        "description" : {
+            "id"   : "ccp4",
+            "name" : "CCP4-Harwell",
+            "icon" : "images_com/ccp4-harwell.png"
+        }
+    
+    which gives global identification to a particular CCP4 Cloud setup (instance).
+    Parameters:
+    
+        *"id"*
+           Unix-type id, which must be globally unique. This id allows for
+           discrimination between CCP4 Cloud setups in different geographic locations.
+           The id is used internally and is not exposed to end user.
+        
+        *"name"*
+           Arbitrary name of CCP4 Cloud instance, which is used for reporting
+           to end users. The name may contain HTML formatting
+        
+        *"icon"*
+           Path to icon associated with CCP4 Cloud instance. Both absolute
+           and relative paths may be used. Relative path originates from ``jscofe``
+           directory (the current directory for setver's *node* process).
+
+
+**"protocol", "host", "port"**
+
+    These are mandatory items. Typically, all CCP4 Cloud Servers listen to
+    localhost ports, which may receive
+    external requests through redirection from Apache or any other web-server
+    of choice. Therefore values other than
+    
+        *"protocol" : "http"*
+    
+        *"host"     : "localhost"*
+        
+    should not be used other than for development purposes.
+    
+        *"port" : 8081*
+          should be chosen separately for each configured server from the
+          appropriate range of available port numbers
+      
+
+**"externalURL"**
+
+    This is the URL, under which the server is visible to the outside world.
+    If left blank, its value will be calculated as
+    ``protocol://host:port``. However, when chosen port receives redirection
+    from Apache, *"externalURL"* should be set to address used for redirection, e.g.,
+    
+        *"externalURL" : "https://my.web.server.com/ccp4cloud"*
+
+
+**"reportURL"**
+
+    This optional item specifies server's URL for reporting to end user in the login
+    page and a few other places. The purpose of this item is to indicate real Front 
+    End URL to user when FE Server is accessed via Front End Proxy (FE Proxy runs 
+    on local host, therefore, web-address in user's browser will be always
+    ``"http://localhost:port"`` even if data is sent over to remote server. In such
+    situations, specification of *"reportURL"* allows to inform the user of the actual 
+    connection address.
+    
+        *"reportURL" : "https://my.web.server.com/ccp4cloud"*
+
+
+**"exclusive"**
+
+    Specifies whether *"port"* is exclusively allocated to the server or not. There
+    are little reasons to use value other than
+    
+        *"exclusive" : true*
+
+
+**"stoppable"**
+
+    Specifies whether the server may be stopped by user by executing server's URL
+    with */stop* appended to it, in browser. This is a developer's option, and 
+    there is no reason to use value other than
+    
+        *"stoppable" : false*
+        
+    in production systems.
+
+
+**"exclude_tasks"**
+
+    Optional list of tasks that can be excluded from the list of available tasks.
+    The tasks are specified by the names of the corresponding Javascript task
+    classes, for example,
+    
+        *"exclude_tasks" : ["TaskAmple","TaskBalbes"]*
+    
+    Task classes are collected in js-common/tasks source code directory.
+
+
+**"fsmount"**
+
+    File system mount common for communicating servers (Front End and Number 
+    Cruncher). Configuration 
+    
+        *"fsmount" : null*
+        
+    causes all data to be transmitted solely via http(s), even within localhost.
+    If a common file mount is specified, e.g.,
+    
+        *"fsmount" : "/"*
+        
+    then data are transmitted using direct file copy, and only metadata is 
+    exchanged via http(s).
+
+
+**"localSetup"**
+
+    This optional configuration overrides automatic identification of local and 
+    remote setups. Local setup is one with all servers running on the same 
+    hardware host, which is identified by using localhosts for communication. 
+    In few particular cases, such identification may fail, which may be 
+    corrected by using
+    
+        *"localSetup" : false*
+        
+
+**"update_rcode"**
+
+    Optional code (1-255) which is returned when administrators requests update 
+    of servers by pressing *"Update"* button in *Administrator Page*, tab *Nodes*.
+    See launcher script for further details. Example:
+    
+        *"update_rcode" : 212*
+        
+
+**"userDataPath"**
+
+    Path to directory, which will keep user metadata. Usually, no more than a
+    few KBytes of data per user should be stored. Both absolute and relative 
+    paths can be used. Relative path is calculated from directory containing 
+    *jscofe* codes: *js-client*, *js-common*, *js-server*, *pycofe* and others.
+    The directory must exist before starting server for first time, or server
+    will not start.
+    
+
+**"storage"**
+
+    Path to directory to keep various data files such as logs, usage stats etc.
+    The directory must exist before starting server for first time, or server
+    will not start.
+    
+
+**"projectsPath"**
+
+    Description of file system area allocated for users' projects and data.
+    In simplest case, it may be just a path to a directory on a file system 
+    with sufficient disk space (extimated as number of users times user's 
+    disk quota, see *"ration"* configuration below). Also in this case,
+    *"storage"* configuration may be omitted. However, this type of
+    description is deprecated and should not be used.
+    
+    In all new setups, *"projectsPath"* should be configured as the following 
+    object: ::
+    
+        "projectsPath" : {
+            "fs01" : { "path"        : "/path01",
+                       "type"        : "volume",
+                       "diskReserve" : 10000,
+                       "dirName"     : "ccp4cloud_projects"
+                     },
+            "fs02" : { "path"        : "/path02",
+                       "type"        : "volume",
+                       "diskReserve" : 10000,
+                       "dirName"     : "ccp4cloud_projects"
+                     },
+            . . . . . . . . 
+            "fsNN" : { "path"        : "/pathNN",
+                       "type"        : "volume",
+                       "diskReserve" : 10000,
+                       "dirName"     : "ccp4cloud_projects"
+                     }
+        }
+    
+    This configuration allows to place user projects on several file systems
+    (disks), which is useful if users' data does not fit single file system.
+    
+    Here,
+    
+        **"fsXX"** is an arbitrary chosen identifier for file system; at least 
+        one file system should be configured in the object.
+        
+        **"path"** is path to projects directory on related file system
+    
+        **"type"** is file system type. Two options are available:
+    
+            *"volume"* : means ordinary system, projects will be placed in path given
+    
+            *"home"* : indicates that projects are placed in user's home directories;
+            in this, case, the actual directory path is calculated as 
+            ``/path/login/dirName`` (must exist) where ``login`` is user's loginname,
+            and ``dirName`` is given below
+    
+        **"diskReserve"** (MBytes) specifies free disk space threshold; if
+        free disk space falls below this value, new user projects will not be
+        allocated on teh related file system
+    
+        **"dirName"** specifies custom directory name for *"home"* type of 
+        file systems (ignored for *"volume"* type)
+
+    
+**"jobs_safe"**
+
+Description of a safe for failed jobs. Users may choose a type of feedback
+agreement, including retention of failed jobs, alnog with input data, in
+CP4 Cloud safe for further investigation by developers. The safe is a directory
+in file system shared between the Front End and *all* Number Crunchers. Safe 
+description is the following object: ::
+
+    "jobs_safe" : { "path" : "/path/to/jobs/safe",
+                    "capacity" : 10
+                  }
+
+Here,
+
+    **"path"** should point to safe directory as it is seen on the Front End 
+    server
+    
+    **"capacity"** is the maximum number of failed jobs of particular type
+    that is retained in the safe (so that only last ``capacity`` jobs will be
+    available for investigation)
+
+
+
+"facilitiesPath"   : "./cofe-facilities",
+
+"ICAT_wdsl"        : "https://icat02.diamond.ac.uk/ICATService/ICAT?wsdl",
+
+"ICAT_ids"         : "https://ids01.diamond.ac.uk/ids",
+
+"auth_software"    : {  // optional item, may be null or missing
+    "arpwarp" : {
+        "desc_software" : "Arp/wArp Model Building Software from EMBL-Hamburg",
+        "icon_software" : "task_arpwarp",
+        "desc_provider" : "EMBL Outstation in Hamburg",
+        "icon_provider" : "org_emblhamburg",
+        "auth_url"      : "https://arpwarp.embl-hamburg.de/api/maketoken/?reqid=$reqid&addr=1.2.3.4&cburl=$cburl",
+      },
+      "gphl-buster"  : {
+        "desc_software" : "Global Phasing Limited Software Suite",
+        "icon_software" : "task_buster",
+        "desc_provider" : "Global Phasing Limited",
+        "icon_provider" : "org_gphl",
+        "auth_url"      : "https://arpwarp.embl-hamburg.de/api/maketoken/?reqid=$reqid&addr=1.2.3.4&cburl=$cburl",
+      }
+    },
+  
+ "bootstrapHTML"    : "jscofe.html",
+ 
+ "maxRestarts"      : 100,
+ 
+ "fileCapSize"      : 500000,
+ 
+ "regMode"          : "admin",  // if 'email':  registration by user;
+                                   // 'admin': all users are registration by admin
+ 
+ "sessionCheckPeriod" : 2000,
+ 
+ "ration"           : {
+        "storage"   : 3000,
+        "cpu_day"   : 24,
+        "cpu_month" : 240
+    },
+ 
+ "cloud_mounts"     : {  // optional item
+      "My Computer"    : "/",
+      "Home"           : ["$HOME","$USERPROFILE"],
+      "CCP4 examples"  : "$CCP4/share/ccp4i2/demo_data",
+      "Demo projects"  : "./demo-projects",
+      "My files"       : "./$LOGIN/files"
+    }
+
+
+

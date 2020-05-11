@@ -1,0 +1,245 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>8.1. REFMAC5 &#8212; CCP4 Cloud 1.6 documentation</title>
+    
+    <link rel="stylesheet" href="_static/haiku.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/contentui.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.6',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/contentui.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="top" title="CCP4 Cloud 1.6 documentation" href="index.html" />
+    <link rel="up" title="8. Refinement and Model Building" href="Refinement_and_Model_Building.html" />
+    <link rel="next" title="8.2. Low-Resolution Refinement with Lorestr" href="doc.task.Lorestr.html" />
+    <link rel="prev" title="8. Refinement and Model Building" href="Refinement_and_Model_Building.html" /> 
+  </head>
+  <body role="document">
+      <div class="header" role="banner"><h1 class="heading"><a href="index.html">
+          <span>CCP4 Cloud 1.6 documentation</span></a></h1>
+        <h2 class="heading"><span>8.1. REFMAC5</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        «&#160;&#160;<a href="Refinement_and_Model_Building.html">8. Refinement and Model Building</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="doc.task.Lorestr.html">8.2. Low-Resolution Refinement with Lorestr</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content">
+        
+        
+  <div class="section" id="refmac5">
+<h1>8.1. REFMAC5<a class="headerlink" href="#refmac5" title="Permalink to this headline">¶</a></h1>
+<p><a class="reference external" href="https://journals.iucr.org/d/issues/2011/04/00/ba5152/index.html">REFMAC5</a> is a program designed for REFinement of MACromolecular structures. It’s final step in the process of solving a macromolecular crystal (MX) structure, refinement is carried out to maximize the agreement between the model and the X-ray data. Model parameters that are optimized in the refinement process include atomic coordinates, atomic displacement parameters (ADPs), scale factors and, in the presence of twinning, twin fraction(s).  It uses Maximum likelihood and some elements of Bayesian Statististics.</p>
+<p><em>Although refinement procedures are typically designed for the final stages of MX analysis, they are also often used to improve partial models and to calculate the `best&#8217; electron-density maps for further model (re)building.</em></p>
+<div class="section" id="basic-principles-of-refinement">
+<h2>8.1.1. Basic principles of refinement<a class="headerlink" href="#basic-principles-of-refinement" title="Permalink to this headline">¶</a></h2>
+<p>refinement is a process of fitting the atomic model into observed X-ray crystallographic data. Allows the atomic model to be visualized, criticized and analyzed direct relation between model quality and phase quality. We need to Iteratively improve the model to optimize the agreement between <strong>F</strong> <sub>obs</sub> and <strong>F</strong> <sub>calc</sub></p>
+<p>We work with two types of maps:</p>
+<ul class="simple">
+<li><strong>2F</strong> <sub>obs</sub> <strong>- F</strong> <sub>calc</sub> : “standard” electron density - represents crystal contents</li>
+<li><strong>F</strong> <sub>obs</sub> <strong>- F</strong> <sub>calc</sub> : difference density - represents differences</li>
+</ul>
+<blockquote>
+<div><p><code class="docutils literal"><span class="pre">Data</span> <span class="pre">of</span> <span class="pre">different</span> <span class="pre">quality</span> <span class="pre">shall</span> <span class="pre">be</span> <span class="pre">described</span> <span class="pre">differently</span> <span class="pre">(the</span> <span class="pre">difference</span> <span class="pre">in</span> <span class="pre">quality</span> <span class="pre">tells</span> <span class="pre">us</span> <span class="pre">about</span> <span class="pre">how</span> <span class="pre">many</span> <span class="pre">statistics</span> <span class="pre">we</span> <span class="pre">have</span> <span class="pre">for</span> <span class="pre">the</span> <span class="pre">atom,</span> <span class="pre">that</span> <span class="pre">why</span> <span class="pre">different</span> <span class="pre">number</span> <span class="pre">parameters</span> <span class="pre">of</span> <span class="pre">the</span> <span class="pre">model</span> <span class="pre">could</span> <span class="pre">be</span> <span class="pre">estimated</span> <span class="pre">given</span> <span class="pre">particular</span> <span class="pre">data).</span></code></p>
+<p><code class="docutils literal"><span class="pre">The</span> <span class="pre">model</span> <span class="pre">is</span> <span class="pre">defined</span> <span class="pre">not</span> <span class="pre">only</span> <span class="pre">about</span> <span class="pre">the</span> <span class="pre">PDB</span> <span class="pre">file,</span> <span class="pre">but</span> <span class="pre">also</span> <span class="pre">should</span> <span class="pre">consider</span> <span class="pre">the</span> <span class="pre">parameters</span> <span class="pre">of</span> <span class="pre">the</span> <span class="pre">refinement</span> <span class="pre">program.</span></code></p>
+</div></blockquote>
+<p><em>Before applying bulk solvent scaling and including all low resolution data, check your distribution of &lt;F&gt; looks sensible. This is the raw material for all overall scaling algorithms. A good way to check this is to look at a &lt;Fsq&gt; plot against resolution.</em></p>
+</div>
+<div class="section" id="stages-of-model-building">
+<h2>8.1.2. Stages of model building<a class="headerlink" href="#stages-of-model-building" title="Permalink to this headline">¶</a></h2>
+<p><strong>Early stages (e.g. straight after MR)</strong></p>
+<ul class="simple">
+<li>Run many cycles (up to 200 with jelly body restraints) of refinement</li>
+</ul>
+<p><strong>Medium stages – during model building</strong></p>
+<ul class="simple">
+<li>10-20 cycles</li>
+<li>Optimise additional parameters like NCS, TLS, etc</li>
+<li>Once your Rfree is lower than 40%, turn on twinning if twinned</li>
+</ul>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last"><strong>DON’T USE TWIN REFINEMENT IF YOUR Rfree IS HIGHER THAN 40%!</strong></p>
+</div>
+<ul class="simple">
+<li>Play with geometry weight parameter</li>
+</ul>
+<p><strong>Final stages of refinement</strong></p>
+<ul class="simple">
+<li>Use optimal additional parameters</li>
+<li>If geometrical quality of the model is not optimal, further play with parameters like geometry weight.</li>
+</ul>
+</div>
+<div class="section" id="model-parameterisation">
+<h2>8.1.3. Model Parameterisation<a class="headerlink" href="#model-parameterisation" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="b-factors">
+<h3>8.1.3.1. B-factors<a class="headerlink" href="#b-factors" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><strong>describe relative positional uncertainty</strong></div></blockquote>
+<p>Atomic B-factors can be modelled in a different way according to the quality of the data: <strong>anisotropic</strong> (6 parameters per atom, for better than 1.5 Å resolution), <strong>isotropic</strong> (1 parameter per atom), <strong>TLS</strong> (20 parameters per group of atoms)</p>
+<p><em>B-factors are sometimes also referred to as atomic displacement parameters (ADPs) or thermal/temperature factors</em></p>
+<blockquote>
+<div><code class="docutils literal"><span class="pre">Should</span> <span class="pre">not</span> <span class="pre">compare</span> <span class="pre">atomic</span> <span class="pre">B-factors</span> <span class="pre">between</span> <span class="pre">different</span> <span class="pre">models</span></code></div></blockquote>
+</div>
+<div class="section" id="tls-groups">
+<h3>8.1.3.2. TLS Groups<a class="headerlink" href="#tls-groups" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><strong>describe anisotropic motion</strong></div></blockquote>
+<p><a class="reference external" href="http://skuld.bmsc.washington.edu/~tlsmd/">TLS Motion Determination (TLSMD)</a> analyzes a macromolecular crystal structure for evidence of flexibility, e.g. local or inter-domain motions. It does this by partitioning individual chains into multiple segments that are modeled as rigid bodies undergoing TLS (Translation/Libration/Screw) vibrational (anisotropic) motion. It generates all possible partitions up to a maximum number of segments. Each trial partition is scored by how well it explains the observed atomic displacement parameters (<strong>B values</strong>) that came out of crystallographic refinement.</p>
+<p>Suitable for medium resolution, when full anisotropy is impossible
+Per group (20 parameters):</p>
+<ul>
+<li><p class="first"><strong>Translation</strong> – 6 parameters</p>
+</li>
+<li><p class="first"><strong>Libration</strong> – 6 parameters</p>
+</li>
+<li><p class="first"><strong>Screw rotation</strong> – 8 parameters</p>
+<blockquote>
+<div><p><code class="docutils literal"><span class="pre">TLS</span> <span class="pre">refinement</span> <span class="pre">is</span> <span class="pre">often</span> <span class="pre">useful</span> <span class="pre">when</span> <span class="pre">there</span> <span class="pre">is</span> <span class="pre">NCS.</span> <span class="pre">It</span> <span class="pre">is</span> <span class="pre">often</span> <span class="pre">the</span> <span class="pre">case</span> <span class="pre">that</span> <span class="pre">different</span> <span class="pre">copies</span> <span class="pre">of</span> <span class="pre">a</span> <span class="pre">molecule</span> <span class="pre">in</span> <span class="pre">the</span> <span class="pre">asymmetric</span> <span class="pre">unit</span> <span class="pre">have</span> <span class="pre">different</span> <span class="pre">overall</span> <span class="pre">displacements.</span> <span class="pre">These</span> <span class="pre">can</span> <span class="pre">be</span> <span class="pre">accounted</span> <span class="pre">for</span> <span class="pre">by</span> <span class="pre">refining</span> <span class="pre">TLS</span> <span class="pre">parameters</span> <span class="pre">for</span> <span class="pre">each</span> <span class="pre">molecule.</span> <span class="pre">The</span> <span class="pre">residual</span> <span class="pre">atomic</span> <span class="pre">displacement</span> <span class="pre">parameters</span> <span class="pre">(B</span> <span class="pre">factors)</span> <span class="pre">should</span> <span class="pre">then</span> <span class="pre">be</span> <span class="pre">similar</span> <span class="pre">between</span> <span class="pre">molecules,</span> <span class="pre">and</span> <span class="pre">NCS</span> <span class="pre">restraints</span> <span class="pre">can</span> <span class="pre">be</span> <span class="pre">applied</span> <span class="pre">between</span> <span class="pre">them.</span></code></p>
+</div></blockquote>
+</li>
+</ul>
+<p><em>TLS rigid body model is highly dependent on the quality of the crystal lattice, and conformational flexibility unique to the protein.</em></p>
+<blockquote>
+<div><p class="toggle-header"><strong>more</strong></p>
+<div class="toggle-content container">
+<blockquote>
+<div>TLS (Translation/Libration/Screw) is a mathematical model that predicts the local positional displacement of atoms in a crystal structure based on an underlying assumption that each atom acts as a member of a rigid body that is displaced normally about a mean position. This displacement is seen crystallographically as non-spherical electron density at the atomic positions. The net displacement results both from actual vibration of the molecule in the crystal and from the static disorder within the crystal lattice that results from trapping different microconformers of the molecule in different unit cells making up the crystal lattice. The TLS formalism was originally developed to confirm rigid body displacement for small molecule crystallography, which yields high resolution data and precise anisotropic thermal parameters. Its success in predicting the thermal parameters for small molecules makes it tempting for use in macromolecular crystallography where it could potentially be used to find domain and loop flexibility in proteins; however, the challenges in applying the TLS model to macromolecular structures are different than those encountered with small molecules. Most macromolecular structures do not diffract to a high enough resolution to solve for individual atomic anisotropic thermal parameters (six per atom), so isotropic thermal parameters (one per atom) are used instead.</div></blockquote>
+</div>
+</div></blockquote>
+</div>
+<div class="section" id="solvent-model">
+<h3>8.1.3.3. Solvent model<a class="headerlink" href="#solvent-model" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><strong>estimation of the bulk solvent contribution to the diffraction</strong></div></blockquote>
+<p>Typically, a significant part of a macromolecular crystal is occupied by disordered (bulk) solvent, whose contribution to low resolution reflections is quite significant. An atomic model of a macromolecule without the contribution of the bulk solvent cannot describe these low resolution diffraction data correctly.</p>
+<p><em>low resolution reflections being less sensitive to model imperfection (including the errors in its orientation) are extremely useful for the solution of the translation problem.</em></p>
+<p>Two types solvent parameters are present:</p>
+<ul>
+<li><p class="first"><strong>Simple</strong> - Mask-based bulk solvent correction (default)</p>
+<blockquote>
+<div><p><em>The contribution of bulk solvent to structure factors is strongest at low resolution, although its effect at high resolution is still non-negligible.</em></p>
+<p>Mask-based bulk solvent correction</p>
+<ul class="simple">
+<li>Protein region is masked out</li>
+<li>Solvent region is flattened (set to constant)</li>
+<li>Structure factors for solvent are calculated: Fsolvent</li>
+</ul>
+<a class="reference internal image-reference" href="_images/doc.task.refmac5.solvent_model.png"><img alt="_images/doc.task.refmac5.solvent_model.png" src="_images/doc.task.refmac5.solvent_model.png" style="width: 576.9px; height: 239.4px;" /></a>
+<p><em>Mask based bulk solvent is a standard in all refinement programs. In refmac it is default.</em></p>
+</div></blockquote>
+</li>
+<li><p class="first"><strong>Bulk</strong> - Babinet’s bulk solvent correction <a class="reference external" href="https://doi.org/10.1016/S0076-6879(97)77017-4">[Tronrud 1997]</a></p>
+<blockquote>
+<div><ul class="simple">
+<li>At low resolution electron density is flat</li>
+<li>Solvent and protein regions differ only by density height</li>
+</ul>
+<a class="reference internal image-reference" href="_images/doc.task.refmac5.Bulk_solventpng.png"><img alt="_images/doc.task.refmac5.Bulk_solventpng.png" src="_images/doc.task.refmac5.Bulk_solventpng.png" style="width: 558.0px; height: 302.4px;" /></a>
+</div></blockquote>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="restraints">
+<h2>8.1.4. Restraints<a class="headerlink" href="#restraints" title="Permalink to this headline">¶</a></h2>
+<p>Standard restraints (used by default) include:</p>
+<ul class="simple">
+<li>Bond lengths</li>
+<li>Angles</li>
+<li>Chirals</li>
+<li>Planes</li>
+<li>Some torsion angles</li>
+<li>B-values</li>
+<li>VDW repulsions</li>
+</ul>
+<p>These help to ensure that the model is chemically sensible</p>
+<blockquote>
+<div><em>we generally deal with restraints, not constraints.</em></div></blockquote>
+<div class="section" id="ncs-non-crystallographic-symmetry-restraints">
+<h3>8.1.4.1. NCS (Non-Crystallographic Symmetry Restraints)<a class="headerlink" href="#ncs-non-crystallographic-symmetry-restraints" title="Permalink to this headline">¶</a></h3>
+<p><em>Used if there are two copies of the same molecule present.</em></p>
+<ul>
+<li><p class="first"><strong>Local NCS restraints</strong></p>
+<blockquote>
+<div><p><strong>making the list of corresponding interatomic distances (removing bond and angle related atom pairs)</strong></p>
+<ul class="simple">
+<li>Molecules are assumed to be locally similar</li>
+<li>However, they may adopt (slightly) different global conformations</li>
+<li>Restrain differences between local interatomic distances</li>
+</ul>
+</div></blockquote>
+</li>
+<li><p class="first"><strong>Global NCS restraints</strong> (i.e. restraints based on RMS between atoms of aligned chains)</p>
+<blockquote>
+<div><p><strong>identifying domains</strong></p>
+<ul class="simple">
+<li>Molecules are superimposed</li>
+<li>Difference between atoms are minimized</li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+</div>
+<div class="section" id="jelly-body-restraints">
+<h3>8.1.4.2. Jelly-body restraints<a class="headerlink" href="#jelly-body-restraints" title="Permalink to this headline">¶</a></h3>
+<p>The effect of &#8220;jelly-body&#8221; restraints is the implicit parameterization between the rigid body and individual atoms.</p>
+<div class="admonition tip">
+<p class="first admonition-title">Tip</p>
+<p class="last"><code class="docutils literal"><span class="pre">Run</span> <span class="pre">many</span> <span class="pre">cycles</span> <span class="pre">(up</span> <span class="pre">to</span> <span class="pre">200</span> <span class="pre">with</span> <span class="pre">jelly</span> <span class="pre">body</span> <span class="pre">restraints)</span> <span class="pre">on</span> <span class="pre">the</span> <span class="pre">early</span> <span class="pre">stage</span> <span class="pre">of</span> <span class="pre">refinement</span> <span class="pre">(e.g.</span> <span class="pre">straight</span> <span class="pre">after</span> <span class="pre">MR)</span></code></p>
+</div>
+<ul class="simple">
+<li>Does not change likelihood function.</li>
+<li>Does change 2 <sup>nd</sup> derivative - curvature, thus changing the search direction.</li>
+</ul>
+<p><strong>ACKNOWLEDGEMENTS</strong></p>
+<p>This article uses materials kindly provided by Dr. Robert Nicholls and Dr. Garib Murshudov,
+whose help is greatly appreciated.</p>
+</div>
+</div>
+</div>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        «&#160;&#160;<a href="Refinement_and_Model_Building.html">8. Refinement and Model Building</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="doc.task.Lorestr.html">8.2. Low-Resolution Refinement with Lorestr</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.8.
+    </div>
+  </body>
+</html>

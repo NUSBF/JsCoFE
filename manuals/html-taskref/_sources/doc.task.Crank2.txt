@@ -1,0 +1,94 @@
+=======
+Crank-2
+=======
+
+
+`CRANK2 <http://journals.iucr.org/m/issues/2018/02/00/jt5023/>`_ is a program designed for automatic X-ray structure solution of proteins using experimental phasing. 
+Currently, CCP4 Cloud provides a CRANK2 interface for structure solution using SAD, SIRAS, MAD and MR-SAD.  
+
+
+------------------------------
+The basics - input and output
+------------------------------
+To run CRANK2, it is necessary to input at least one X-ray dataset with anomalous diffraction (single anomalous diffraction - **SAD**).  
+If an initial partial model is available (e.g. from molecular replacement - MR; or from a previous CRANK2 job etc) then it can be input together with the anomalous data for **MR-SAD** model rebuilding.
+Multiple anomalous diffraction (**MAD**) requires an input of multiple datasets from the same crystal (or from an isomorphic crystal) collected at different wavelengths.
+Finally, if the anomalous scattering required incorporation of heavy atoms into the crystal ('derivative' crystal), then besides the anomalous data from 
+the derivative, X-ray data from the 'native' crystal (i.e. without the heavy atoms and typically without anomalous scattering) can be inputted for  
+**SIRAS**.
+
+Besides the X-ray datasets, the minimal CRANK2 input requires specification of the atom type that provides the anomalous scattering (e.g. Se, S, I, Fe, Zn etc).  
+The anomalous scattering coefficients can be either calculated automatically from the wavelength(s), or, ideally, their value can be provided by the user based on a fluorescence scan.
+Furthermore, it is recommended to input the sequence of the protein.
+
+If CRANK2 was able to solve the structure from the input provided then the main output is a refined protein model along the with electron density map.  
+If CRANK2 could not solve the structure then the report providing information about the structure solution process can be used to assess the reasons of the failure.
+
+
+-----------------------------------------
+Stages of structure solution using CRANK2
+-----------------------------------------
+
+Different experiments and pipelines consist of different steps.  For a SAD, SIRAS or MAD experiment, the structure solution process consists of two major steps: 
+1) determination of the anomalous scatterers (anomalous substructure), 2) phasing and model building of the protein.  For the MR-SAD rebuilding, the anomalous
+substructure can be typically taken from the inputted initial model and improved, followed by the phased model rebuilding of the protein.  Below, the typical stages 
+of structure solution are described in the order they usually take place for the SAD, SIRAS or MAD experiments.
+
+**FA estimation**
+
+The FA values are estimates of the structure factor amplitudes of the anomalously scattering substructure.  They are used as input to the substructure determination process. 
+Their simplest estimate for SAD data is the absolute value of Friedel pair differences |F+ - F-|, used by the program SHELXC.  You have the option to switch to,
+currently experimental, maximum likelihood estimation of FA by AFRO.
+
+**Substructure determination**
+
+The determination of the anomalous substructure is a critical step of the protein structure solution from experimental phases.  The SHELXD program uses a 
+traditional approach of direct methods combined with space recycling while the PRASA program uses a phase retrieval approach.  If you suspect your previous runs 
+of CRANK2 did not lead to a solution due to substructure determination failure then the first things to try are increasing the number of trials or changing the 
+high resolution cutoff limits.
+
+**Substructure refinement and phasing**
+
+The substructure determined in the previous step is refined using the multivariate SAD function implemented in REFMAC5 (or SIRAS, MAD functions for those experiments).
+The procedure also provides initial phases for the protein model building.  The average FOM (figures of merit) from phasing provides a very rough initial indication of the 
+quality of the phases:  values above 0.3 indicate a good quality and values below 0.15 a poor quality of the phases.  
+
+**Density modification**
+
+The initial phases from the previous steps are improved using prior information about protein electron density maps.  Thanks to a bias correction, the
+average FOM (figures of merit) from density modification in CRANK2 provides another rough indication of the  quality of the phases:  values above 0.5 
+indicate a good quality and values below 0.35 a poor quality of the phases.  
+
+**Hand determination**
+
+Since any given substructure of atoms and its inverse provide identical X-ray diffraction pattern, we do not know whether the hand of the current substructure 
+is correct or needs to be inverted.  Both hands are scored using a few statistics from phasing and density modification.  If the discrimination in scores 
+of the hands is large, the hand with the larger score is selected for model building, otherwise both hands are attempted. 
+
+**Model building**
+
+In case of SAD data, the `combined model building <https://www.nature.com/articles/ncomms3777>`_ is used for phased model building and refinement starting from the electron density map
+from density modification.  For SIRAS and MAD datasets, an MLHL based reiteration of model building and refinement is used.
+
+------------------------
+Was my structure solved?
+------------------------
+
+The report from the CRANK2 job indicates whether the structure was solved.  If it was not, it is worthwhile to analyze the information from the steps
+of the structure solution as provided by the report.  
+
+If you see no distinct clusters on the plot from substucture determination, low values of FOM from 
+phasing and density modification and a bad discrimination between the hands then it is likely that the substructure determination was not successful:  
+please follow the tips on substructure determination parameters changes in the Substructure determination section.  
+
+If it seems that the substructure was determined but still no or bad protein model was built, it may help to rerun the Crank2 job with differing 
+solvent content parameter (its estimation may be wrong).  If a partial model was built then it is suggested to input it to another CRANK2 job for model rebuilding.
+
+----------------------------------------------------------------------------------
+
+**Documentation written by:**
+
+**Pavol Skubak**, Leiden University Medical Centre, Leiden, The Nethrelands
+
+Developer of Crank-2
+

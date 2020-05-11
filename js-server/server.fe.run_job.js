@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    17.04.20   <--  Date of Last Modification.
+ *    11.05.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -345,6 +345,7 @@ function runJob ( loginData,data, callback_func )  {
   var job_token   = crypto.randomBytes(20).toString('hex');
   if (task.nc_type=='client')
     task.job_dialog_data.job_token = job_token;
+  task.start_time = Date.now();
 
   // write task data because it may have latest changes
   if (!utils.writeObject(jobDataPath,task))  {
@@ -791,6 +792,10 @@ function writeJobStats ( jobEntry )  {
                     ' ' + jobClass.title + '\n';
 
     utils.appendString ( fpath,S );
+
+    jobClass.end_time = Date.now();
+    utils.writeObject ( jobDataPath,jobClass );
+
 
   } else  {
 

@@ -1,0 +1,137 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>4. Job Dialog &#8212; CCP4 Cloud 1.6 documentation</title>
+    
+    <link rel="stylesheet" href="_static/haiku.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/contentui.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.6',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/contentui.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="top" title="CCP4 Cloud 1.6 documentation" href="index.html" />
+    <link rel="next" title="5. Questions and Answers" href="jscofe_QnA.html" />
+    <link rel="prev" title="3. Task List" href="jscofe_tasklist.html" /> 
+  </head>
+  <body role="document">
+      <div class="header" role="banner"><h1 class="heading"><a href="index.html">
+          <span>CCP4 Cloud 1.6 documentation</span></a></h1>
+        <h2 class="heading"><span>4. Job Dialog</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        «&#160;&#160;<a href="jscofe_tasklist.html">3. Task List</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="jscofe_QnA.html">5. Questions and Answers</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content">
+        
+        
+  <div class="section" id="job-dialog">
+<h1>4. Job Dialog<a class="headerlink" href="#job-dialog" title="Permalink to this headline">¶</a></h1>
+<p>Job Dialog is one of most central to CCP4 Cloud functionality. It is used for
+forming a job (choosing/setting input data and parameters), running it and inspecting
+the results. The Dialog opens automatically upon selecting a task in the <strong>Task List</strong> or p
+ressing the <a class="reference internal" href="_images/openjob.png"><img alt="openjob" src="_images/openjob.png" style="width: 16px; height: 16px;" /></a>  button
+in the <strong>Project Page toolbar</strong> (also available through right-click on the Job&#8217;s line of the Job Tree).</p>
+<div class="section" id="general-layout">
+<h2>4.1. General Layout<a class="headerlink" href="#general-layout" title="Permalink to this headline">¶</a></h2>
+<p>The dialog has two pages: Input and Output, and a toolbar in the upper part of the dialog:</p>
+<a class="reference internal image-reference" href="_images/job_dialog_toolbar.png"><img alt="_images/job_dialog_toolbar.png" class="align-center" src="_images/job_dialog_toolbar.png" style="width: 711.0px; height: 63.0px;" /></a>
+<p>The radiobuttons in the left-hand-side of the toolbar switch between the <strong>Input</strong> and <strong>Output</strong> pages (the buttons are disabled if Output page is not formed yet). Central part of the toolbar may show either the <strong>Run button</strong> for starting the job, or show a &#8220;busy&#8221; indicator and <strong>Stop button</strong> while the job is running, or the final <strong>job status</strong> (&#8220;completed&#8221;, &#8220;failed&#8221;, &#8220;terminated&#8221;) if job is finished. The <strong>Ref. button</strong> displays reference documentation on the task currently represented by the Dialog, while <strong>Help button</strong> provides the Dialog&#8217;s manual you are currently reading. The Close button in the right-hand-side of the toolbar closes the Dialog without running the job.</p>
+</div>
+<div class="section" id="input-page">
+<h2>4.2. Input Page<a class="headerlink" href="#input-page" title="Permalink to this headline">¶</a></h2>
+<p>The <strong>Input</strong> page has three parts: the <em>Header, Data Section and Parameters Section</em>.</p>
+<div class="section" id="the-header">
+<h3>4.2.1. The Header<a class="headerlink" href="#the-header" title="Permalink to this headline">¶</a></h3>
+<p>The Header displays the Job Title and two input fields: job description and ouput id:</p>
+<a class="reference internal image-reference" href="_images/job_dialog_toolbar.png"><img alt="_images/job_dialog_toolbar.png" class="align-center" src="_images/job_dialog_toolbar.png" style="width: 711.0px; height: 63.0px;" /></a>
+<p>Both fields always have default parameters, which may be found suitable in many cases. However, sometimes you will want to adjust them.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="5%" />
+<col width="95%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td>job description</td>
+<td>Provides a brief job description for displaying in the Job Tree. This field may be used to annotate your project, for example &#8220;2nd molecular replacement attempt using sequence correction of the model&#8221;. The field may be changed both before and after running the job.</td>
+</tr>
+<tr class="row-even"><td>output id</td>
+<td>Provides a template name output data. Please see the &#8220;Naming&#8221; section in Data Management. Using this field will help to obtain and download output files with more meaningful names.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="data-section">
+<h3>4.2.2. Data Section<a class="headerlink" href="#data-section" title="Permalink to this headline">¶</a></h3>
+<p>Data Section contains selection widgets (comboboxes) for data objects needed by given job. Typically, a job takes several types of data, each of which will be represented by own combobox. Some jobs may accept several data objects of a particular type, in which case the comboboxes are repeated. In the following example:</p>
+<a class="reference internal image-reference" href="_images/job_dialog_data_section_1.png"><img alt="_images/job_dialog_data_section_1.png" class="align-center" src="_images/job_dialog_data_section_1.png" style="width: 577.6px; height: 220.8px;" /></a>
+<p>the job takes one Structure Revision, one or more anomalous HKL Datasets, and one native HKL Dataset. Correspondingly, the Data Section presents one combobox for structure revision, one for native dataset, and a variable number of comboboxes for anomalous reflection datasets. Initial selections in all comboboxes are chosen according to intrinsic task and project&#8217;s logics and should be suitable in most cases; however, this must be checked in each and every case.</p>
+<p>In the above example, second combobox for anomalous dataset shows [do not use]. This means that only one anomalous HKL dataset, selected in first combobox, will be passed on to the job. If a user selects a dataset in second combobox as well, it will be passed as second anomalous dataset to the job, and another combobox with title <em>&#8220;Anomalous reflection data (3)&#8221;</em> and initial value [do not use] will be displayed, thus suggesting that yet another dataset may be passed on to the job, if needed and available.</p>
+<p>The comboboxes may be accompanied by additional input widgets, related to particular data object. In the above example, each anomalous dataset chosen must be annotated by wavelength as <em>&#8220;low-remote&#8221;</em>, <em>&#8220;peak&#8221;</em>, <em>&#8220;inflection&#8221;</em> or <em>&#8220;high-remote&#8221;</em>, which is done using additional comboboxes displayed right below the relevant input. Similarly, the input of native dataset is accompanied by a checkbox for specifying whether this dataset shoud be used for phasing in addition to model building and refinement.</p>
+<p>Finally, there is an inspection button on the left from all comboboxes with a data object selected. Pressing this button will launch a data inspector window, containing many useful details related to the object selected, such as space group, cell parameters, descriptions of macromolaular chains and many others.</p>
+<p>Note that input widgets for optional data input will not be displayed if the corresponding data is not found in the Project. For example, second widget for anomalous reflection dataset in the above example would not appear if there were only one such dataset imported or generated.</p>
+</div>
+<div class="section" id="parameters-section">
+<h3>4.2.3. Parameters Section<a class="headerlink" href="#parameters-section" title="Permalink to this headline">¶</a></h3>
+<p>Parameters Section contains various parameters of the task given. They are usually arranged in one or more collapsable sections, like in the example below:</p>
+<a class="reference internal image-reference" href="_images/job_dialog_parameters_section__1_.png"><img alt="_images/job_dialog_parameters_section__1_.png" class="align-center" src="_images/job_dialog_parameters_section__1_.png" style="width: 588.8px; height: 217.6px;" /></a>
+<p>Individual parameters may be hidden depending on choices made by user in both Data Section and Parameters Section, if such choices make the parameter not applicable.</p>
+</div>
+<div class="section" id="output-page">
+<h3>4.2.4. Output Page<a class="headerlink" href="#output-page" title="Permalink to this headline">¶</a></h3>
+<p>Output Page uses tabbed layout to present job results. Common tabs include <strong>&#8220;Report&#8221;</strong>, <strong>&#8220;Log file&#8221;</strong> and <strong>&#8220;Errors&#8221;</strong>, some tasks may introduce additional tabs for better structuring the output. The output is dynamic, i.e. it progresses in real time as the corresponding job progresses, and may be viewed at any stage.</p>
+<p>Tabs <strong>&#8220;Log file&#8221;</strong> and <strong>&#8220;Errors&#8221;</strong> display the standard output and standard error streams from the running job. Usually, a job involves execution of several programs one after another, in which case their standard outputs are concatenated. Before each program&#8217;s output, <strong>&#8220;Log file&#8221;</strong> displays the command line, used to invoke the program, and the the corresponding standard input stream, which contain data and parameters read from the <strong>Input Page</strong>.</p>
+<p>The <strong>&#8220;Report&#8221;</strong> tab&#8217;s content and structure may vary, but you may expect it to present the job title, report body and summary of generated data, which may be used in subsequent tasks. A typical example of report is shown below:</p>
+<a class="reference internal image-reference" href="_images/job_dialog_output_page.png"><img alt="_images/job_dialog_output_page.png" class="align-center" src="_images/job_dialog_output_page.png" style="width: 690.4px; height: 478.4px;" /></a>
+<p>In this Example, the report body is given by the set of sections, which are initially folded for the brevity of presentation. Unfolding the sections reveals fine report details, including tables, graphs and intermediate results, which may be inspected using built-in viewers.</p>
+<p>After the report body, there is a summary of Structure Revisions and Structure Data generated by the job. These data objects are available for all tasks descending from the given one, and will appear in Data Sections of their Job Dialogs.</p>
+<p>All generated data object references are accompanied with either inspector buttons (as in case of Structure Revisions) or corresponding viewers (in case of Structure Data). Thus, <strong>&#8220;Coot&#8221;</strong>, <strong>&#8220;ccp4mg&#8221;</strong> and <strong>&#8220;UglyMol&#8221;</strong> buttons will launch <code class="docutils literal"><span class="pre">Coot</span></code>, <code class="docutils literal"><span class="pre">CCP4mg</span></code> or <code class="docutils literal"><span class="pre">UglyMol</span></code> viewers with XYZ coordinates and density map loaded (&#8220;Coot&#8221; and &#8220;ccp4mg&#8221; buttons will appear only if your client machine has CCP4 Suite installed and a dedicated CCP4 Cloud client server running). <strong>&#8220;ViewHKL&#8221;</strong> will laucnch a utility for the inspection of MTZ file content. <strong>&#8220;Display&#8221;</strong> launches a viewer for the inspection of XYZ file (typically in PDB format).</p>
+</div>
+</div>
+</div>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        «&#160;&#160;<a href="jscofe_tasklist.html">3. Task List</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="jscofe_QnA.html">5. Questions and Answers</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.8.
+    </div>
+  </body>
+</html>

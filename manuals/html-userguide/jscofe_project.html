@@ -1,0 +1,108 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>2. Project Management &#8212; CCP4 Cloud 1.6 documentation</title>
+    
+    <link rel="stylesheet" href="_static/haiku.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/contentui.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.6',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/contentui.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="top" title="CCP4 Cloud 1.6 documentation" href="index.html" />
+    <link rel="next" title="3. Task List" href="jscofe_tasklist.html" />
+    <link rel="prev" title="1. My Projects" href="jscofe_myprojects.html" /> 
+  </head>
+  <body role="document">
+      <div class="header" role="banner"><h1 class="heading"><a href="index.html">
+          <span>CCP4 Cloud 1.6 documentation</span></a></h1>
+        <h2 class="heading"><span>2. Project Management</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        «&#160;&#160;<a href="jscofe_myprojects.html">1. My Projects</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="jscofe_tasklist.html">3. Task List</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content">
+        
+        
+  <div class="section" id="project-management">
+<h1>2. Project Management<a class="headerlink" href="#project-management" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="basic-principles">
+<h2>2.1. Basic principles<a class="headerlink" href="#basic-principles" title="Permalink to this headline">¶</a></h2>
+<p>Projects in CCP4 Cloud are designed to keep the track of structure solution process in such a way that it may be reviewed at any time later.</p>
+<p>Apart from straightforward cases, structure solution involves repeats of certain actions and branching due to decision making or exploration of range of parameters. Correspondingly, <strong>project structure in CCP4 Cloud is a tree</strong>, rather than a linear (chronological) list of jobs.</p>
+<p>Projects (or job trees) are built with just 5 basic operations, associated with first five buttons in the vertical toolbar on the left-hand side of the screen (also available from dropdown menu displayed by right-clicking on a job line in the tree):</p>
+<p><a class="reference internal" href="_images/add.png"><img alt="addjob" src="_images/add.png" style="width: 18px; height: 18px;" /></a> <strong>Add a job</strong>. The new job will be added as a child to one currently selected in the tree. When this button is pressed, the new job is chosen from the list of tasks, which opens automatically. Repeat addition of jobs to the same node will result in job tree branching.</p>
+<p><a class="reference internal" href="_images/moveup.png"><img alt="moveup" src="_images/moveup.png" style="width: 18px; height: 18px;" /></a> <strong>Move job up the tree</strong>. The currently selected job will move one position up the job tree. This is only possible if all job&#8217;s input data is generated above the new job position. If this is not the case, the job cannot be moved and the move button is greyed. Moving jobs may be useful for restructuring of the job tree in order to make job results visible in other tree branches (for which the job should be moved to above the branching point).</p>
+<p><a class="reference internal" href="_images/clonejob.png"><img alt="clonejob" src="_images/clonejob.png" style="width: 18px; height: 18px;" /></a> <strong>Clone job</strong>. The new job will be added as a sibling to one currently selected in the tree, initialised with the same data and input parameters. Job dialog for the cloned job will be opened automatically, and you can change the input before running the job.</p>
+<p><a class="reference internal" href="_images/delete.png"><img alt="delete" src="_images/delete.png" style="width: 18px; height: 18px;" /></a> <strong>Delete job</strong>. The currently selected job and all jobs found in the tree branch descending from it will be deleted after confirmation.</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">Once deleted, jobs cannot be restored.</p>
+</div>
+</div>
+<div class="section" id="additional-job-operations">
+<h2>2.2. Additional job operations<a class="headerlink" href="#additional-job-operations" title="Permalink to this headline">¶</a></h2>
+<p>The following buttons in the toolbar <strong>do not change the job tree</strong>:</p>
+<p><a class="reference internal" href="_images/openjob.png"><img alt="openjob" src="_images/openjob.png" style="width: 18px; height: 18px;" /></a> <strong>Open Job</strong> dialog for the currently selected job. Alternatively, double click the corresponding line in the job tree. Job dialogs are used for setting job&#8217;s input data and parameters, and for starting jobs.</p>
+<p><a class="reference internal" href="_images/stop.png"><img alt="stop" src="_images/stop.png" style="width: 18px; height: 18px;" /></a> <strong>Stop</strong> the currently selected job. This button is active only when job is running. <strong>Once stopped, jobs cannot be resumed or restarted. However, you can clone job that was stopped and run the clone</strong>.</p>
+</div>
+<div class="section" id="refresh">
+<h2>2.3. Refresh<a class="headerlink" href="#refresh" title="Permalink to this headline">¶</a></h2>
+<p>Nobody and nothing are perfect, and sometimes the Project Page may stop working for you due to intermittent connection errors or a hidden bug. Should this unlikely event happen, <a class="reference internal" href="_images/refresh.png"><img alt="refresh" src="_images/refresh.png" style="width: 16px; height: 16px;" /></a> refresh the Project Page. <a class="reference internal" href="_images/refresh.png"><img alt="refresh" src="_images/refresh.png" style="width: 16px; height: 16px;" /></a> simply reloads project data and re-initialises internal page functions.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">this action is different from that of the browser&#8217;s Refresh button; the latter will log you out.</p>
+</div>
+<p>You can start building your first Project right after creating it, starting with task from the &#8220;Data Import&#8221; folder at the root of the job tree, and then adding computational jobs as appropriate.</p>
+<p><em>You can create and run any number of jobs simultaneously, however, a child job cannot use its parent&#8217;s job output until the parent job is completed.</em></p>
+<p>CCP4 Cloud is not prescriptive about how you should grow and branch your job tree. <strong>It is highly advisable, though, to understand the principles of data management in CCP4 Cloud in order to avoid most common mistakes and confusions.</strong>
+<strong>Please read the corresponding documentation.</strong></p>
+</div>
+</div>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        «&#160;&#160;<a href="jscofe_myprojects.html">1. My Projects</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="jscofe_tasklist.html">3. Task List</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.8.
+    </div>
+  </body>
+</html>

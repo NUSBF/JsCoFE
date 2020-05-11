@@ -1,0 +1,165 @@
+=======================
+CCP4 Cloud Client Setup
+=======================
+
+----------
+MS Windows
+----------
+
+**Installation**
+
+Installation should be performed in account with administrative privileges.
+
+#. If you do not have CCP4 Software Series 7.0 installed on your machine,
+   download CCP4 Windows installer from http://www.ccp4.ac.uk/download and
+   run it. Make sure to agree to all applicable licenses.
+#. Download `ccp4cloud_win64.exe <http://ccp4serv7.rc-harwell.ac.uk/jscofe-alpha/downloads/ccp4cloud_win64.exe>`_
+   and run it. The installer has sensible defaults for the setup directory and
+   various settings, you should not need to change them.
+
+
+**Desktop shortcuts**
+
+After successful installation, *local* (marked with airplane sign),
+*remote* (marked with WiFi sign) and *configuration* (bearing gears sign)
+|jsCoFE| icons should appear on your desktop. You are ready to use
+|jsCoFE| -- simply double-click on the *remote* or *local* icon.
+
+The *configuration* icon starts a configuration editor that allows you
+to change web-browser, switch to different |jsCoFE| server (e.g. the one that
+might have been installed in your lab) and apply updates.
+
+
+----------
+Linux
+----------
+
+**Installation**
+
+#. Download `ccp4-7.0-setup-linux.tar.gz <http://ccp4serv7.rc-harwell.ac.uk/jscofe-alpha/downloads/ccp4-7.0-setup-linux.tar.gz>`_.
+#. Unpack the archive and launch ccp4-7.0-setup-linux.
+#. When CCP4 Setup Manager starts, click the "Next" button at the bottom
+   of the window.
+#. In the next page, choose whether to install CCP4 Software anew or just to modify
+   the existing installation. In the latter case, navigate to the directory
+   ``ccp4-7.0`` of the existing installation using the "Browse" button.
+   Press the "Next" button.
+#. In the next page, choose CCP4 components to install. For new installation,
+   the required minimum is all apart from the "Balbes database" and
+   "Local fold libraries". If you are modifying an existing installation, the
+   already installed components will be shown as selected and you will have to
+   select only those you want to add, including "CCP4 Cloud". Press the "Next"
+   button to continue.
+#. Next several pages present licences for CCP4 components. Read and agree to
+   the licences. Keep pressing the "Next" button until you arrive at the
+   directory selection page.
+#. There are three ways how the directory page may be presented.
+   This depends on previous choices. In case of new CCP4 setup,
+   the directory page will contain an input field for installation directory.
+   In case of installation of additional components, the installation directory
+   is shown but is not editable. If CCP4 Cloud is the only component to be added,
+   it can be installed in a different location than all other CCP4 components.
+   In this case an additional input field is presented for that location.
+   In all three modes the input filed is presented for temporary directory,
+   which is used for downloads. The temporary directory must be writable.
+#. After setting all required paths in the directory selection page, press the
+   "Next" button and wait until all downloads finish, then press the "Next"
+   button again.
+#. When you see a window with black field in it, press "Install" button.
+#. When installation finishes, press "Finish" button.
+
+**Desktop shortcuts**
+
+On successful installation, the installer should expose *local* (marked with
+airplane sign), *remote* (marked with with WiFi sign) and *configuration*
+(bearing the gears sign) |jsCoFE| icons. The *local* and *remote* icons start
+|jsCoFE| in the corresponding mode, while the *configuration* icon starts
+a configuration editor. The editor allows you to change the web-browser used,
+switch to a different |jsCoFE| server (e.g. the one that might have been
+installed in your lab) and apply updates.
+
+In a modern Linux, you will find |jsCoFE| launchers in the "Activities" menu.
+In order to find them, examine the full list of applications (the dock button
+with vertical lines) or type CCP4 in the search text box. Then drug all three
+|jsCoFE| launchers to the Dock or choose the "Add to Favourites" option of
+their context menus. In case of older Linux versions, the launchers will
+be placed on the Desktop.
+
+In some cases you may find that provided launchers do not work. In this happens,
+|jsCoFE| can be launched from terminal with one of the following commands: ::
+
+  $ /path/to/ccp4cloud/bin/ccp4cloud-desktop.sh
+  $ /path/to/ccp4cloud/bin/ccp4cloud-remote.sh
+
+
+----------
+Mac OSX
+----------
+
+**Installation**
+
+#. Download `ccp4-7.0-setup.dmg <http://ccp4serv7.rc-harwell.ac.uk/jscofe-alpha/downloads/ccp4-7.0-setup.dmg>`_.
+#. Double-click on the file downloaded -- this will open a Finder window with
+   CCP4 Setup icon.
+#. Hold Ctrl and click on CCP4 Setup Manager icon. Ignore security warnings and
+   proceed by clicking the "Open" button.
+#. When CCP4 Setup Manager starts, click the "Next" button at the bottom
+   of the window.
+#. In the next page, choose whether to install CCP4 Software anew or just to modify
+   the existing installation. In the latter case, navigate to the directory
+   ``ccp4-7.0`` of the existing installation using the "Browse" button.
+   Press the "Next" button.
+#. In the next page, choose CCP4 components to install. For new installation,
+   the required minimum is all apart from the "Balbes database" and
+   "Local fold libraries". If you are modifying an existing installation, the
+   already installed components will be shown as selected and you will have to
+   select only those you want to add, including "CCP4 Cloud". Press the "Next"
+   button to continue.
+#. Next several pages present licences for CCP4 components. Read and agree to
+   the licences. Keep pressing the "Next" button until you arrive at the
+   directory selection page.
+#. There are three ways how the directory page may be presented.
+   This depends on previous choices. In case of new CCP4 setup,
+   the directory page will contain an input field for installation directory.
+   In case of installation of additional components, the installation directory
+   is shown but is not editable. If CCP4 Cloud is the only component to be added,
+   it can be installed in a different location than all other CCP4 components.
+   In this case an additional input field is presented for that location.
+   In all three modes the input filed is presented for temporary directory,
+   which is used for downloads. The temporary directory must be writable.
+#. After setting all required paths in the directory selection page, press the
+   "Next" button and wait until all downloads finish, then press the "Next"
+   button again.
+#. When you see a window with black field in it, press "Install" button.
+#. When installation finishes, press "Finish" button.
+
+
+**Desktop shortcuts**
+
+On successful installation, the installer will place *local* (marked with
+airplane sign), *remote* (marked with with WiFi sign) and *configuration*
+(bearing the gears sign) |jsCoFE| icons inside ``ccp4cloud`` folder found
+in |jsCoFE| destination directory. The *local* and *remote* icons start
+|jsCoFE| in the corresponding mode, while the *configuration* icon starts
+a configuration editor. The editor allows you to change the web-browser used,
+switch to a different |jsCoFE| server (e.g. the one that might have been
+installed in your lab) and apply updates. Depending on the security settings
+in your machine, a few more steps may be required before you can use the icons.
+
+#. Open Finder and navigate to ``ccp4cloud`` directory, found in |jsCoFE|
+   destination directory. The directory should contain application launchers
+   ``ccp4cloud-remote.app``, ``ccp4cloud-desktop.app`` and ``ccp4cloud-config.app``.
+   You can drag them to the location of your choice, for example, Desktop or Dock.
+#. Double-click on any of the icon. If the corresponding |jsCoFE| component does
+   not start, it may be that the launchers are disabled by OSX security.
+   In order to enable them, go to System Preferences, then to Security and Privacy,
+   and then select "Anywhere" checkbox found in in section "Allow apps downloaded from".
+   After that, right-click on each |jsCoFE| icon and choose "Open" from the context
+   menu. This will start |jsCoFE| components for first time, after which deselect
+   checkbox "Anywhere" in the "Allow apps downloaded from" section of System
+   Preferences.
+#. If "Allow apps downloaded from" does not have option "Anywhere", open Terminal
+   and execute command ``sudo spctl --master-disable``, then perform actions
+   from p.2, and execute command ``sudo spctl --master-enable`` (details may read
+   `here <http://osxdaily.com/2016/09/27/allow-apps-from-anywhere-macos-gatekeeper/>`_).
+
