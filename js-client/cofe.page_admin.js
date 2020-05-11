@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.04.20   <--  Date of Last Modification.
+ *    11.05.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -374,12 +374,6 @@ AdminPage.prototype.makeNodesInfoTab = function ( ndata )  {
 
   var row = 1;
 
-  /*
-  var FEname = appName();
-  if (__setup_desc)        FEname += ' (' + __setup_desc.name + ')';
-  else if (__local_setup)  FEname += ' (Home setup)';
-                     else  FEname += ' (Unnamed setup)';
-  */
   var FEname;
   if (__setup_desc)        FEname = __setup_desc.name;
   else if (__local_setup)  FEname = 'Home setup';
@@ -441,7 +435,7 @@ AdminPage.prototype.makeNodesInfoTab = function ( ndata )  {
       var nc_name = 'NC-' + nci.config.exeType;
       if (nci.config.jobManager!=nci.config.exeType)
         nc_name += '(' + nci.config.jobManager + ')';
-      if ('jscofe_version' in nci)  app_version = ndata.jscofe_version;
+      if ('jscofe_version' in nci)  app_version = nci.jscofe_version;
                               else  app_version = 'unspecified';
       this.nodeListTable.setRow ( 'NC-' + ncn,'Number Cruncher #' + ncn,
         [nci.config.name,nci.config.externalURL,nc_name,
