@@ -172,7 +172,9 @@ function HelpBox ( title,helpURL,onDoNotShowAgain_func )  {
   var w0,h0;
   if (__any_mobile_device)  {
     w0 = $(window).width () - 8;
-    h0 = $(window).height();
+    h0 = $(window).height() - 118;
+    if (__mobile_device)
+      h += 24;
   } else  {
     w0 = 1000;
     h0 = 600;
