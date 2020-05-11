@@ -1,0 +1,158 @@
+=========================
+CCP4 Cloud Launch Scripts
+=========================
+
+----------------------------------
+Launch script for Front-End Server
+----------------------------------
+
+Generic script (``start-fe.sh``) for launching Front-End Server is as follows: ::
+
+    #!/bin/bash
+    
+    jscofe_dir=/path/to/jscofe
+    ccp4_dir=/path/tp/ccp4
+    server_dir=/path/to/server_dir_with_config_launcher_etc
+
+    source $ccp4_dir/bin/ccp4.setup-sh
+
+    export PDB_DIR=/path/to/vanilla/pdb
+    export GESAMT_ARCHIVE=/path/to/gesamt_archive
+    export JSPISA_CFG=$CCP4/share/pisa/jspisa.cfg
+    
+    # comment the following 2 lines if XDS is not installed
+    export XDS_home=/path/to/xds_dir
+    export XDSGUI_home=/path/to/xdsgui_dir
+
+    export DOCREPO=/path/to/documentation_repository/trunk
+    
+    # comment out if buster is not installed
+    source /path/to/buster/setup.sh
+
+    export SSL_CERT_FILE=$CCP4/lib/python2.7/site-packages/pip/_vendor/requests/cacert.pem
+    
+    cd $jscofe_dir
+    
+    function start_fe() {
+      node ./js-server/fe_server.js $server_dir/config.json >> $server_dir/node_fe.log 2>> $server_dir/node_fe.err
+      #  code 212 is chosen in config.json
+      if [ $? -eq 212 ]
+      then
+        $server_dir/update-script.sh >> $server_dir/node_fe.log
+      fi
+    }
+    
+    start_fe &
+
+
+
+---------------------------------
+Launch script for Number Cruncher
+---------------------------------
+
+Generic script (``start-nc.sh``) for launching Number Cruncher Server is as follows: ::
+
+    #!/bin/bash
+
+    jscofe_dir=/path/to/jscofe
+    ccp4_dir=/path/tp/ccp4
+    server_dir=/path/to/server_dir_with_config_launcher_etc
+    
+    source $ccp4_dir/bin/ccp4.setup-sh
+
+    export PDB_DIR=/path/to/vanilla/pdb
+    export GESAMT_ARCHIVE=/path/to/gesamt_archive
+    export JSPISA_CFG=$CCP4/share/pisa/jspisa.cfg
+
+    export BALBES_ROOT=/path/to/BALBES-database
+    export SIMBAD_DB=/path/to/simbad-database
+
+    export SSL_CERT_FILE=$CCP4/lib/python2.7/site-packages/pip/_vendor/requests/cacert.pem
+    export OMP_NUM_THREADS=1
+    
+    cd $jscofe_dir
+    
+    node ./js-server/nc_server.js $server_dir/config.json 0 >> $server_dir/node_nc.log 2>> $server_dir/node_nc.err &
+
+
+
+-------------
+Update script
+-------------
+
+The update script ``update-script.sh``, used in the launcher script for the
+Front-End Server, should replace jscofe code from repository
+and restart all servers. Possible solution is as follows: ::
+
+    #!/bin/bash
+    
+    jscofe_dir=/path/to/jscofe
+    repo=/path/to/jscofe-git-repository/trunk
+    server_dir=/path/to/server_dir_with_config_launcher_etc
+    
+    fe_server=jscofe@ccp4serv8
+    nc1=jscofe@ccp4serv9
+    nc2=jscofe@ccp4serv10
+    nc3=jscofe@ccp4serv11
+    nc4=jscofe@ccp4serv12
+    nc5=jscofe@ccp4hpc01
+    
+    echo 'update source repository'
+
+    cd ${repo}
+    git pull origin master
+
+    cd ${jscofe_dir}
+    
+    rm -rf bootstrap
+    rm -rf css
+    rm -rf html
+    rm -rf images_com
+    rm -rf images_png
+    rm -rf images_svg
+    rm -rf js-client
+    rm -rf js-common
+    rm -rf js-lib
+    rm -rf js-server
+    rm -rf pycofe
+    rm -rf manual
+    rm -f  *.js
+    rm -f  *.html
+    
+    cp -r ${repo}/bootstrap .
+    cp -r ${repo}/css .
+    cp -r ${repo}/html .
+    cp -r ${repo}/images_com .
+    cp -r ${repo}/images_png .
+    cp -r ${repo}/images_svg .
+    cp -r ${repo}/js-client .
+    cp -r ${repo}/js-common .
+    cp -r ${repo}/js-lib .
+    cp -r ${repo}/js-server .
+    cp -r ${repo}/pycofe .
+    cp -r ${repo}/manual .
+    cp -r ${repo}/message_templates .
+    cp -r ${repo}/package.json .
+
+
+    echo 'restart front-end'
+    $server_dir/start-fe.sh
+    
+    echo 'restart nc1'
+    ssh $nc1 '/bin/bash /path/to/server-dir/start-nc.sh'
+    
+    #echo 'restart nc1'
+    #~/jscofe/start-nc.sh
+    
+    echo 'restart nc2'
+    ssh $nc2 '/bin/bash /path/to/server-dir/start-nc.sh'
+    
+    echo 'restart nc3'
+    ssh $nc3 '/bin/bash /path/to/server-dir/start-nc.sh'
+    
+    echo 'restart nc4'
+    ssh $nc4 '/bin/bash /path/to/server-dir/start-nc.sh'
+    
+    echo 'restart nc5'
+    ssh $nc5 '/bin/bash /path/to/server-dir/start-nc.sh'
+

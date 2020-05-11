@@ -1,0 +1,34 @@
+===============================
+Automated Molecular Replacement
+===============================
+
+    **are efficient if good structural homologues may be found by sequence matching**
+
+electron density in a crystal can be obtained by calculating the Fourier summation:
+
+.. image:: images/Fourier_transform.PNG
+         :scale: 50 %
+         :align: center
+
+in which **|F(h k l)|** is the structure factor amplitude of reflection (h k l), including the temperature factor, and **α(h k l)** is the phase angle. **x**, **y**, and **z** are coordinates in the unit cell. 
+
+From the diffraction pattern, the values of **I (h k l)** are obtained after applying the some correction factors. Because I(h k l) =|F(h k l)| :superscript:`2`, then amplitudes **|F(h k l)|** can be found. 
+
+**We can’t measure the phases X-ray detectors**. We can measure only the intensity of the X-rays (which is the amplitude squared). It's create a phase problem, and by solving this problem we can solved the crystal structure.
+
+You can find `here <http://www.ysbl.york.ac.uk/~cowtan/fourier/magic.html>`_ how important the phase infomation is.
+
+**Molecular replacement** is the process of solving the phase problem for an unknown structure by placing the atomic model known structure in the unit cell of the unknown structure by trying all possible orientations and positions and picking the one which gives the best fit to the observed data. Once we do so we can calculate approximate structure factors phases which, in combination with the observed structure factors for the unknown structure, allow the model to be rebuilt and refined.
+
+
+In case you have **NOT** a homologous protein structure you can use: automated molecular replacement pipelines in CCP4:
+
+.. toctree::
+    :maxdepth: 2
+    
+    doc.task.Morda
+    doc.task.MrBump
+    doc.task.Balbes
+    doc.task.Simbad
+    doc.task.Ample
+    

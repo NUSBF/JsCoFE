@@ -1,0 +1,451 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>2. CCP4 Cloud Configuration &#8212; CCP4 Cloud 1.6 documentation</title>
+    
+    <link rel="stylesheet" href="_static/haiku.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/contentui.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.6',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/contentui.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="top" title="CCP4 Cloud 1.6 documentation" href="index.html" />
+    <link rel="prev" title="1. CCP4 Cloud Launch Scripts" href="launchers.html" /> 
+  </head>
+  <body role="document">
+      <div class="header" role="banner"><h1 class="heading"><a href="index.html">
+          <span>CCP4 Cloud 1.6 documentation</span></a></h1>
+        <h2 class="heading"><span>2. CCP4 Cloud Configuration</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        «&#160;&#160;<a href="launchers.html">1. CCP4 Cloud Launch Scripts</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="index.html">Contents</a>
+        </p>
+
+      </div>
+      <div class="content">
+        
+        
+  <div class="section" id="ccp4-cloud-configuration">
+<h1>2. CCP4 Cloud Configuration<a class="headerlink" href="#ccp4-cloud-configuration" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="configuration-file-structure">
+<h2>2.1. Configuration file structure<a class="headerlink" href="#configuration-file-structure" title="Permalink to this headline">¶</a></h2>
+<p>CCP4 Cloud Configuration File is a json document with the following components:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="s2">&quot;FrontEnd&quot;</span> <span class="p">:</span> <span class="p">{</span> <span class="o">...........</span> <span class="p">},</span>
+  <span class="s2">&quot;FEProxy&quot;</span>  <span class="p">:</span> <span class="p">{</span> <span class="o">...........</span> <span class="p">},</span>
+  <span class="s2">&quot;NumberCrunchers&quot;</span> <span class="p">:</span> <span class="p">[</span>
+      <span class="p">{</span> <span class="o">..............</span> <span class="p">},</span>
+      <span class="p">{</span> <span class="o">..............</span> <span class="p">},</span>
+      <span class="o">.....</span>
+      <span class="p">{</span> <span class="o">..............</span> <span class="p">}</span>
+  <span class="p">],</span>
+  <span class="s2">&quot;Emailer&quot;</span> <span class="p">:</span> <span class="p">{</span> <span class="o">............</span> <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Not all components are required for all severs.</p>
+<p><em>Front End Server</em>  requires <code class="docutils literal"><span class="pre">&quot;FrontEnd&quot;</span></code>, all <code class="docutils literal"><span class="pre">&quot;NumberCrunchers&quot;</span></code> and
+<code class="docutils literal"><span class="pre">&quot;Emailer&quot;</span></code>.</p>
+<p><em>Front End Proxy Server</em> requires <code class="docutils literal"><span class="pre">&quot;FrontEnd&quot;</span></code>, <code class="docutils literal"><span class="pre">&quot;FEProxy&quot;</span></code> and one item
+of <code class="docutils literal"><span class="pre">&quot;NumberCrunchers&quot;</span></code> list, which relates to (optional) client server.</p>
+<p><em>Number Cruncher Server</em> requires only one item of <code class="docutils literal"><span class="pre">`&quot;NumberCrunchers&quot;</span></code>
+list, which relates to that server.</p>
+<p>A single configuration file with description of all Cloud components, may be
+used for all servers in the setup. However, maintenance of individual number
+crunchers (in particular, client-side servers, or <em>CCP4 Cloud Clients</em>) may be
+more convenient if their configuration files do not contain items related to
+other components.</p>
+</div>
+<div class="section" id="configuration-of-the-front-end-server">
+<h2>2.2. Configuration of the Front End Server<a class="headerlink" href="#configuration-of-the-front-end-server" title="Permalink to this headline">¶</a></h2>
+<p>Front End Server configuration has the following structure:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="s2">&quot;FrontEnd&quot;</span> <span class="p">:</span> <span class="p">{</span>
+  <span class="s2">&quot;description&quot;</span>      <span class="p">:</span> <span class="p">{</span>
+    <span class="s2">&quot;id&quot;</span>   <span class="p">:</span> <span class="s2">&quot;ccp4&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;name&quot;</span> <span class="p">:</span> <span class="s2">&quot;CCP4-Harwell&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;icon&quot;</span> <span class="p">:</span> <span class="s2">&quot;images_com/ccp4-harwell.png&quot;</span>
+  <span class="p">},</span>
+  <span class="s2">&quot;protocol&quot;</span>         <span class="p">:</span> <span class="s2">&quot;http&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;host&quot;</span>             <span class="p">:</span> <span class="s2">&quot;localhost&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;port&quot;</span>             <span class="p">:</span> <span class="mi">8081</span><span class="p">,</span>
+  <span class="s2">&quot;externalURL&quot;</span>      <span class="p">:</span> <span class="s2">&quot;http://localhost:8081&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;reportURL&quot;</span>        <span class="p">:</span> <span class="s2">&quot;https://cloud.ccp4.ac.uk&quot;</span><span class="p">,</span>  <span class="o">//</span> <span class="n">used</span> <span class="n">only</span> <span class="k">for</span> <span class="n">reporting</span>
+  <span class="s2">&quot;exclusive&quot;</span>        <span class="p">:</span> <span class="n">true</span><span class="p">,</span>
+  <span class="s2">&quot;stoppable&quot;</span>        <span class="p">:</span> <span class="n">false</span><span class="p">,</span>
+  <span class="s2">&quot;exclude_tasks&quot;</span>    <span class="p">:</span> <span class="p">[],</span>
+  <span class="s2">&quot;fsmount&quot;</span>          <span class="p">:</span> <span class="s2">&quot;/&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;localSetup&quot;</span>       <span class="p">:</span> <span class="n">true</span><span class="p">,</span>  <span class="o">//</span> <span class="n">optional</span><span class="p">,</span> <span class="n">overrides</span> <span class="n">automatic</span> <span class="n">definition</span>
+  <span class="s2">&quot;update_rcode&quot;</span>     <span class="p">:</span> <span class="mi">212</span><span class="p">,</span> <span class="o">//</span> <span class="n">optional</span>
+  <span class="s2">&quot;userDataPath&quot;</span>     <span class="p">:</span> <span class="s2">&quot;./cofe-users&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;storage&quot;</span>          <span class="p">:</span> <span class="s2">&quot;./cofe-projects&quot;</span><span class="p">,</span>  <span class="o">//</span> <span class="k">for</span> <span class="n">logs</span><span class="p">,</span> <span class="n">stats</span><span class="p">,</span> <span class="n">pids</span><span class="p">,</span> <span class="n">tmp</span> <span class="n">etc</span><span class="o">.</span>
+  <span class="s2">&quot;projectsPath&quot;</span>     <span class="p">:</span> <span class="s2">&quot;./cofe-projects&quot;</span><span class="p">,</span>  <span class="o">//</span> <span class="n">old</span> <span class="n">version</span><span class="p">;</span> <span class="ow">in</span> <span class="n">this</span> <span class="n">case</span><span class="p">,</span> <span class="s2">&quot;storage&quot;</span> <span class="n">may</span> <span class="n">be</span> <span class="n">omitted</span>
+  <span class="s2">&quot;projectsPath&quot;</span>     <span class="p">:</span> <span class="p">{</span>   <span class="o">//</span> <span class="n">new</span> <span class="n">version</span><span class="p">;</span> <span class="ow">in</span> <span class="n">this</span> <span class="n">case</span><span class="p">,</span> <span class="s2">&quot;storage&quot;</span> <span class="n">must</span> <span class="n">be</span> <span class="n">given</span>
+      <span class="s2">&quot;***&quot;</span>   <span class="p">:</span> <span class="p">{</span> <span class="s2">&quot;path&quot;</span> <span class="p">:</span> <span class="s2">&quot;./cofe-projects&quot;</span><span class="p">,</span> <span class="o">//</span> <span class="n">equivalent</span> <span class="n">to</span> <span class="s2">&quot;projectPath&quot;</span>
+                  <span class="s2">&quot;type&quot;</span> <span class="p">:</span> <span class="s2">&quot;volume&quot;</span><span class="p">,</span>          <span class="o">//</span>    <span class="n">given</span> <span class="n">by</span> <span class="n">single</span> <span class="n">string</span>
+                      <span class="o">//</span> <span class="nb">type</span> <span class="s2">&quot;volume&quot;</span> <span class="n">means</span> <span class="n">an</span> <span class="n">ordinary</span> <span class="n">file</span> <span class="n">system</span>
+                      <span class="o">//</span> <span class="nb">type</span> <span class="s2">&quot;home&quot;</span> <span class="n">places</span> <span class="n">projects</span> <span class="ow">in</span> <span class="n">path</span><span class="o">/</span><span class="n">login</span><span class="o">/</span><span class="p">[</span><span class="n">dirName</span><span class="p">]</span>
+                      <span class="o">//</span>      <span class="k">if</span> <span class="n">path</span><span class="o">/</span><span class="n">login</span> <span class="n">already</span> <span class="n">exists</span> <span class="ow">and</span> <span class="ow">is</span> <span class="n">writable</span>
+                  <span class="s2">&quot;diskReserve&quot;</span> <span class="p">:</span> <span class="mi">10000</span><span class="p">,</span>  <span class="o">//</span> <span class="n">new</span> <span class="n">user</span> <span class="n">will</span> <span class="ow">not</span> <span class="n">be</span> <span class="n">registered</span> <span class="k">if</span> <span class="n">disk</span>
+                                          <span class="o">//</span> <span class="n">has</span> <span class="n">space</span> <span class="n">less</span> <span class="n">than</span> <span class="s1">&#39;diskReserve&#39;</span> <span class="p">(</span><span class="ow">in</span> <span class="n">MB</span><span class="p">)</span>
+                                          <span class="o">//</span> <span class="n">less</span> <span class="n">of</span> <span class="n">already</span> <span class="n">committed</span> <span class="n">space</span> <span class="k">for</span> <span class="n">user</span>
+                                          <span class="o">//</span> <span class="n">accounts</span>
+                  <span class="s2">&quot;dirName&quot;</span> <span class="p">:</span> <span class="s2">&quot;ccp4cloud_projects&quot;</span>  <span class="o">//</span> <span class="n">used</span> <span class="n">only</span> <span class="k">for</span> <span class="s2">&quot;home&quot;</span> <span class="n">volumes</span>
+                <span class="p">},</span>
+      <span class="s2">&quot;nameN&quot;</span> <span class="p">:</span> <span class="p">{</span> <span class="s2">&quot;path&quot;</span> <span class="p">:</span> <span class="s2">&quot;pathN&quot;</span><span class="p">,</span>   <span class="o">//</span> <span class="nb">any</span> <span class="n">number</span> <span class="n">of</span> <span class="nb">any</span> <span class="n">names</span> <span class="ow">and</span> <span class="nb">any</span> <span class="n">paths</span>
+                  <span class="s2">&quot;type&quot;</span> <span class="p">:</span> <span class="s2">&quot;typeN&quot;</span><span class="p">,</span>
+                  <span class="s2">&quot;diskReserve&quot;</span> <span class="p">:</span> <span class="mi">10000</span>
+                <span class="p">}</span>
+  <span class="p">},</span>
+  <span class="s2">&quot;jobs_safe&quot;</span> <span class="p">:</span> <span class="p">{</span>  <span class="o">//</span> <span class="n">should</span> <span class="n">point</span> <span class="n">on</span> <span class="n">jobs_safe</span> <span class="n">directory</span> <span class="k">as</span> <span class="ow">in</span> <span class="n">NCs</span>
+      <span class="s2">&quot;path&quot;</span>     <span class="p">:</span> <span class="s2">&quot;./cofe-nc-storage/jobs_safe&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;capacity&quot;</span> <span class="p">:</span> <span class="mi">10</span>
+  <span class="p">},</span>
+  <span class="s2">&quot;facilitiesPath&quot;</span>   <span class="p">:</span> <span class="s2">&quot;./cofe-facilities&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;ICAT_wdsl&quot;</span>        <span class="p">:</span> <span class="s2">&quot;https://icat02.diamond.ac.uk/ICATService/ICAT?wsdl&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;ICAT_ids&quot;</span>         <span class="p">:</span> <span class="s2">&quot;https://ids01.diamond.ac.uk/ids&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;auth_software&quot;</span>    <span class="p">:</span> <span class="p">{</span>  <span class="o">//</span> <span class="n">optional</span> <span class="n">item</span><span class="p">,</span> <span class="n">may</span> <span class="n">be</span> <span class="n">null</span> <span class="ow">or</span> <span class="n">missing</span>
+    <span class="s2">&quot;arpwarp&quot;</span> <span class="p">:</span> <span class="p">{</span>
+      <span class="s2">&quot;desc_software&quot;</span> <span class="p">:</span> <span class="s2">&quot;Arp/wArp Model Building Software from EMBL-Hamburg&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;icon_software&quot;</span> <span class="p">:</span> <span class="s2">&quot;task_arpwarp&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;desc_provider&quot;</span> <span class="p">:</span> <span class="s2">&quot;EMBL Outstation in Hamburg&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;icon_provider&quot;</span> <span class="p">:</span> <span class="s2">&quot;org_emblhamburg&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;auth_url&quot;</span>      <span class="p">:</span> <span class="s2">&quot;https://arpwarp.embl-hamburg.de/api/maketoken/?reqid=$reqid&amp;addr=1.2.3.4&amp;cburl=$cburl&quot;</span><span class="p">,</span>
+    <span class="p">},</span>
+    <span class="s2">&quot;gphl-buster&quot;</span>  <span class="p">:</span> <span class="p">{</span>
+      <span class="s2">&quot;desc_software&quot;</span> <span class="p">:</span> <span class="s2">&quot;Global Phasing Limited Software Suite&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;icon_software&quot;</span> <span class="p">:</span> <span class="s2">&quot;task_buster&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;desc_provider&quot;</span> <span class="p">:</span> <span class="s2">&quot;Global Phasing Limited&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;icon_provider&quot;</span> <span class="p">:</span> <span class="s2">&quot;org_gphl&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;auth_url&quot;</span>      <span class="p">:</span> <span class="s2">&quot;https://arpwarp.embl-hamburg.de/api/maketoken/?reqid=$reqid&amp;addr=1.2.3.4&amp;cburl=$cburl&quot;</span><span class="p">,</span>
+    <span class="p">}</span>
+  <span class="p">},</span>
+  <span class="s2">&quot;bootstrapHTML&quot;</span>    <span class="p">:</span> <span class="s2">&quot;jscofe.html&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;maxRestarts&quot;</span>      <span class="p">:</span> <span class="mi">100</span><span class="p">,</span>
+  <span class="s2">&quot;fileCapSize&quot;</span>      <span class="p">:</span> <span class="mi">500000</span><span class="p">,</span>
+  <span class="s2">&quot;regMode&quot;</span>          <span class="p">:</span> <span class="s2">&quot;admin&quot;</span><span class="p">,</span>  <span class="o">//</span> <span class="k">if</span> <span class="s1">&#39;email&#39;</span><span class="p">:</span>  <span class="n">registration</span> <span class="n">by</span> <span class="n">user</span><span class="p">;</span>
+                                 <span class="o">//</span> <span class="s1">&#39;admin&#39;</span><span class="p">:</span> <span class="nb">all</span> <span class="n">users</span> <span class="n">are</span> <span class="n">registration</span> <span class="n">by</span> <span class="n">admin</span>
+  <span class="s2">&quot;sessionCheckPeriod&quot;</span> <span class="p">:</span> <span class="mi">2000</span><span class="p">,</span>
+  <span class="s2">&quot;ration&quot;</span>           <span class="p">:</span> <span class="p">{</span>
+      <span class="s2">&quot;storage&quot;</span>   <span class="p">:</span> <span class="mi">3000</span><span class="p">,</span>
+      <span class="s2">&quot;cpu_day&quot;</span>   <span class="p">:</span> <span class="mi">24</span><span class="p">,</span>
+      <span class="s2">&quot;cpu_month&quot;</span> <span class="p">:</span> <span class="mi">240</span>
+  <span class="p">},</span>
+  <span class="s2">&quot;cloud_mounts&quot;</span>     <span class="p">:</span> <span class="p">{</span>  <span class="o">//</span> <span class="n">optional</span> <span class="n">item</span>
+    <span class="s2">&quot;My Computer&quot;</span>    <span class="p">:</span> <span class="s2">&quot;/&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Home&quot;</span>           <span class="p">:</span> <span class="p">[</span><span class="s2">&quot;$HOME&quot;</span><span class="p">,</span><span class="s2">&quot;$USERPROFILE&quot;</span><span class="p">],</span>
+    <span class="s2">&quot;CCP4 examples&quot;</span>  <span class="p">:</span> <span class="s2">&quot;$CCP4/share/ccp4i2/demo_data&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Demo projects&quot;</span>  <span class="p">:</span> <span class="s2">&quot;./demo-projects&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;My files&quot;</span>       <span class="p">:</span> <span class="s2">&quot;./$LOGIN/files&quot;</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<div class="section" id="fe-server-configuration-items">
+<h3>2.2.1. FE Server Configuration Items<a class="headerlink" href="#fe-server-configuration-items" title="Permalink to this headline">¶</a></h3>
+<p><strong>&#8220;description&#8221;</strong></p>
+<blockquote>
+<div><p>This is an optional object with the following items:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="s2">&quot;description&quot;</span> <span class="p">:</span> <span class="p">{</span>
+    <span class="s2">&quot;id&quot;</span>   <span class="p">:</span> <span class="s2">&quot;ccp4&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;name&quot;</span> <span class="p">:</span> <span class="s2">&quot;CCP4-Harwell&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;icon&quot;</span> <span class="p">:</span> <span class="s2">&quot;images_com/ccp4-harwell.png&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>which gives global identification to a particular CCP4 Cloud setup (instance).
+Parameters:</p>
+<blockquote>
+<div><dl class="docutils">
+<dt><em>&#8220;id&#8221;</em></dt>
+<dd>Unix-type id, which must be globally unique. This id allows for
+discrimination between CCP4 Cloud setups in different geographic locations.
+The id is used internally and is not exposed to end user.</dd>
+<dt><em>&#8220;name&#8221;</em></dt>
+<dd>Arbitrary name of CCP4 Cloud instance, which is used for reporting
+to end users. The name may contain HTML formatting</dd>
+<dt><em>&#8220;icon&#8221;</em></dt>
+<dd>Path to icon associated with CCP4 Cloud instance. Both absolute
+and relative paths may be used. Relative path originates from <code class="docutils literal"><span class="pre">jscofe</span></code>
+directory (the current directory for setver&#8217;s <em>node</em> process).</dd>
+</dl>
+</div></blockquote>
+</div></blockquote>
+<p><strong>&#8220;protocol&#8221;, &#8220;host&#8221;, &#8220;port&#8221;</strong></p>
+<blockquote>
+<div><p>These are mandatory items. Typically, all CCP4 Cloud Servers listen to
+localhost ports, which may receive
+external requests through redirection from Apache or any other web-server
+of choice. Therefore values other than</p>
+<blockquote>
+<div><p><em>&#8220;protocol&#8221; : &#8220;http&#8221;</em></p>
+<p><em>&#8220;host&#8221;     : &#8220;localhost&#8221;</em></p>
+</div></blockquote>
+<p>should not be used other than for development purposes.</p>
+<blockquote>
+<div><dl class="docutils">
+<dt><em>&#8220;port&#8221; : 8081</em></dt>
+<dd>should be chosen separately for each configured server from the
+appropriate range of available port numbers</dd>
+</dl>
+</div></blockquote>
+</div></blockquote>
+<p><strong>&#8220;externalURL&#8221;</strong></p>
+<blockquote>
+<div><p>This is the URL, under which the server is visible to the outside world.
+If left blank, its value will be calculated as
+<code class="docutils literal"><span class="pre">protocol://host:port</span></code>. However, when chosen port receives redirection
+from Apache, <em>&#8220;externalURL&#8221;</em> should be set to address used for redirection, e.g.,</p>
+<blockquote>
+<div><em>&#8220;externalURL&#8221; : &#8220;https://my.web.server.com/ccp4cloud&#8221;</em></div></blockquote>
+</div></blockquote>
+<p><strong>&#8220;reportURL&#8221;</strong></p>
+<blockquote>
+<div><p>This optional item specifies server&#8217;s URL for reporting to end user in the login
+page and a few other places. The purpose of this item is to indicate real Front
+End URL to user when FE Server is accessed via Front End Proxy (FE Proxy runs
+on local host, therefore, web-address in user&#8217;s browser will be always
+<code class="docutils literal"><span class="pre">&quot;http://localhost:port&quot;</span></code> even if data is sent over to remote server. In such
+situations, specification of <em>&#8220;reportURL&#8221;</em> allows to inform the user of the actual
+connection address.</p>
+<blockquote>
+<div><em>&#8220;reportURL&#8221; : &#8220;https://my.web.server.com/ccp4cloud&#8221;</em></div></blockquote>
+</div></blockquote>
+<p><strong>&#8220;exclusive&#8221;</strong></p>
+<blockquote>
+<div><p>Specifies whether <em>&#8220;port&#8221;</em> is exclusively allocated to the server or not. There
+are little reasons to use value other than</p>
+<blockquote>
+<div><em>&#8220;exclusive&#8221; : true</em></div></blockquote>
+</div></blockquote>
+<p><strong>&#8220;stoppable&#8221;</strong></p>
+<blockquote>
+<div><p>Specifies whether the server may be stopped by user by executing server&#8217;s URL
+with <em>/stop</em> appended to it, in browser. This is a developer&#8217;s option, and
+there is no reason to use value other than</p>
+<blockquote>
+<div><em>&#8220;stoppable&#8221; : false</em></div></blockquote>
+<p>in production systems.</p>
+</div></blockquote>
+<p><strong>&#8220;exclude_tasks&#8221;</strong></p>
+<blockquote>
+<div><p>Optional list of tasks that can be excluded from the list of available tasks.
+The tasks are specified by the names of the corresponding Javascript task
+classes, for example,</p>
+<blockquote>
+<div><em>&#8220;exclude_tasks&#8221; : [&#8220;TaskAmple&#8221;,&#8221;TaskBalbes&#8221;]</em></div></blockquote>
+<p>Task classes are collected in js-common/tasks source code directory.</p>
+</div></blockquote>
+<p><strong>&#8220;fsmount&#8221;</strong></p>
+<blockquote>
+<div><p>File system mount common for communicating servers (Front End and Number
+Cruncher). Configuration</p>
+<blockquote>
+<div><em>&#8220;fsmount&#8221; : null</em></div></blockquote>
+<p>causes all data to be transmitted solely via http(s), even within localhost.
+If a common file mount is specified, e.g.,</p>
+<blockquote>
+<div><em>&#8220;fsmount&#8221; : &#8220;/&#8221;</em></div></blockquote>
+<p>then data are transmitted using direct file copy, and only metadata is
+exchanged via http(s).</p>
+</div></blockquote>
+<p><strong>&#8220;localSetup&#8221;</strong></p>
+<blockquote>
+<div><p>This optional configuration overrides automatic identification of local and
+remote setups. Local setup is one with all servers running on the same
+hardware host, which is identified by using localhosts for communication.
+In few particular cases, such identification may fail, which may be
+corrected by using</p>
+<blockquote>
+<div><em>&#8220;localSetup&#8221; : false</em></div></blockquote>
+</div></blockquote>
+<p><strong>&#8220;update_rcode&#8221;</strong></p>
+<blockquote>
+<div><p>Optional code (1-255) which is returned when administrators requests update
+of servers by pressing <em>&#8220;Update&#8221;</em> button in <em>Administrator Page</em>, tab <em>Nodes</em>.
+See launcher script for further details. Example:</p>
+<blockquote>
+<div><em>&#8220;update_rcode&#8221; : 212</em></div></blockquote>
+</div></blockquote>
+<p><strong>&#8220;userDataPath&#8221;</strong></p>
+<blockquote>
+<div>Path to directory, which will keep user metadata. Usually, no more than a
+few KBytes of data per user should be stored. Both absolute and relative
+paths can be used. Relative path is calculated from directory containing
+<em>jscofe</em> codes: <em>js-client</em>, <em>js-common</em>, <em>js-server</em>, <em>pycofe</em> and others.
+The directory must exist before starting server for first time, or server
+will not start.</div></blockquote>
+<p><strong>&#8220;storage&#8221;</strong></p>
+<blockquote>
+<div>Path to directory to keep various data files such as logs, usage stats etc.
+The directory must exist before starting server for first time, or server
+will not start.</div></blockquote>
+<p><strong>&#8220;projectsPath&#8221;</strong></p>
+<blockquote>
+<div><p>Description of file system area allocated for users&#8217; projects and data.
+In simplest case, it may be just a path to a directory on a file system
+with sufficient disk space (extimated as number of users times user&#8217;s
+disk quota, see <em>&#8220;ration&#8221;</em> configuration below). Also in this case,
+<em>&#8220;storage&#8221;</em> configuration may be omitted. However, this type of
+description is deprecated and should not be used.</p>
+<p>In all new setups, <em>&#8220;projectsPath&#8221;</em> should be configured as the following
+object:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="s2">&quot;projectsPath&quot;</span> <span class="p">:</span> <span class="p">{</span>
+    <span class="s2">&quot;fs01&quot;</span> <span class="p">:</span> <span class="p">{</span> <span class="s2">&quot;path&quot;</span>        <span class="p">:</span> <span class="s2">&quot;/path01&quot;</span><span class="p">,</span>
+               <span class="s2">&quot;type&quot;</span>        <span class="p">:</span> <span class="s2">&quot;volume&quot;</span><span class="p">,</span>
+               <span class="s2">&quot;diskReserve&quot;</span> <span class="p">:</span> <span class="mi">10000</span><span class="p">,</span>
+               <span class="s2">&quot;dirName&quot;</span>     <span class="p">:</span> <span class="s2">&quot;ccp4cloud_projects&quot;</span>
+             <span class="p">},</span>
+    <span class="s2">&quot;fs02&quot;</span> <span class="p">:</span> <span class="p">{</span> <span class="s2">&quot;path&quot;</span>        <span class="p">:</span> <span class="s2">&quot;/path02&quot;</span><span class="p">,</span>
+               <span class="s2">&quot;type&quot;</span>        <span class="p">:</span> <span class="s2">&quot;volume&quot;</span><span class="p">,</span>
+               <span class="s2">&quot;diskReserve&quot;</span> <span class="p">:</span> <span class="mi">10000</span><span class="p">,</span>
+               <span class="s2">&quot;dirName&quot;</span>     <span class="p">:</span> <span class="s2">&quot;ccp4cloud_projects&quot;</span>
+             <span class="p">},</span>
+    <span class="o">.</span> <span class="o">.</span> <span class="o">.</span> <span class="o">.</span> <span class="o">.</span> <span class="o">.</span> <span class="o">.</span> <span class="o">.</span>
+    <span class="s2">&quot;fsNN&quot;</span> <span class="p">:</span> <span class="p">{</span> <span class="s2">&quot;path&quot;</span>        <span class="p">:</span> <span class="s2">&quot;/pathNN&quot;</span><span class="p">,</span>
+               <span class="s2">&quot;type&quot;</span>        <span class="p">:</span> <span class="s2">&quot;volume&quot;</span><span class="p">,</span>
+               <span class="s2">&quot;diskReserve&quot;</span> <span class="p">:</span> <span class="mi">10000</span><span class="p">,</span>
+               <span class="s2">&quot;dirName&quot;</span>     <span class="p">:</span> <span class="s2">&quot;ccp4cloud_projects&quot;</span>
+             <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>This configuration allows to place user projects on several file systems
+(disks), which is useful if users&#8217; data does not fit single file system.</p>
+<p>Here,</p>
+<blockquote>
+<div><p><strong>&#8220;fsXX&#8221;</strong> is an arbitrary chosen identifier for file system; at least
+one file system should be configured in the object.</p>
+<p><strong>&#8220;path&#8221;</strong> is path to projects directory on related file system</p>
+<p><strong>&#8220;type&#8221;</strong> is file system type. Two options are available:</p>
+<blockquote>
+<div><p><em>&#8220;volume&#8221;</em> : means ordinary system, projects will be placed in path given</p>
+<p><em>&#8220;home&#8221;</em> : indicates that projects are placed in user&#8217;s home directories;
+in this, case, the actual directory path is calculated as
+<code class="docutils literal"><span class="pre">/path/login/dirName</span></code> (must exist) where <code class="docutils literal"><span class="pre">login</span></code> is user&#8217;s loginname,
+and <code class="docutils literal"><span class="pre">dirName</span></code> is given below</p>
+</div></blockquote>
+<p><strong>&#8220;diskReserve&#8221;</strong> (MBytes) specifies free disk space threshold; if
+free disk space falls below this value, new user projects will not be
+allocated on teh related file system</p>
+<p><strong>&#8220;dirName&#8221;</strong> specifies custom directory name for <em>&#8220;home&#8221;</em> type of
+file systems (ignored for <em>&#8220;volume&#8221;</em> type)</p>
+</div></blockquote>
+</div></blockquote>
+<p><strong>&#8220;jobs_safe&#8221;</strong></p>
+<p>Description of a safe for failed jobs. Users may choose a type of feedback
+agreement, including retention of failed jobs, alnog with input data, in
+CP4 Cloud safe for further investigation by developers. The safe is a directory
+in file system shared between the Front End and <em>all</em> Number Crunchers. Safe
+description is the following object:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="s2">&quot;jobs_safe&quot;</span> <span class="p">:</span> <span class="p">{</span> <span class="s2">&quot;path&quot;</span> <span class="p">:</span> <span class="s2">&quot;/path/to/jobs/safe&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;capacity&quot;</span> <span class="p">:</span> <span class="mi">10</span>
+              <span class="p">}</span>
+</pre></div>
+</div>
+<p>Here,</p>
+<blockquote>
+<div><p><strong>&#8220;path&#8221;</strong> should point to safe directory as it is seen on the Front End
+server</p>
+<p><strong>&#8220;capacity&#8221;</strong> is the maximum number of failed jobs of particular type
+that is retained in the safe (so that only last <code class="docutils literal"><span class="pre">capacity</span></code> jobs will be
+available for investigation)</p>
+</div></blockquote>
+<p>&#8220;facilitiesPath&#8221;   : &#8221;./cofe-facilities&#8221;,</p>
+<p>&#8220;ICAT_wdsl&#8221;        : &#8220;<a class="reference external" href="https://icat02.diamond.ac.uk/ICATService/ICAT?wsdl">https://icat02.diamond.ac.uk/ICATService/ICAT?wsdl</a>&#8221;,</p>
+<p>&#8220;ICAT_ids&#8221;         : &#8220;<a class="reference external" href="https://ids01.diamond.ac.uk/ids">https://ids01.diamond.ac.uk/ids</a>&#8221;,</p>
+<dl class="docutils">
+<dt>&#8220;auth_software&#8221;</dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">{  // optional item, may be null or missing</span><dd><blockquote class="first">
+<div><dl class="docutils">
+<dt>&#8220;arpwarp&#8221;</dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">{</span><dd><blockquote class="first">
+<div>&#8220;desc_software&#8221; : &#8220;Arp/wArp Model Building Software from EMBL-Hamburg&#8221;,
+&#8220;icon_software&#8221; : &#8220;task_arpwarp&#8221;,
+&#8220;desc_provider&#8221; : &#8220;EMBL Outstation in Hamburg&#8221;,
+&#8220;icon_provider&#8221; : &#8220;org_emblhamburg&#8221;,
+&#8220;auth_url&#8221;      : &#8220;<a class="reference external" href="https://arpwarp.embl-hamburg.de/api/maketoken/?reqid=$reqid&amp;addr=1.2.3.4&amp;cburl=$cburl">https://arpwarp.embl-hamburg.de/api/maketoken/?reqid=$reqid&amp;addr=1.2.3.4&amp;cburl=$cburl</a>&#8221;,</div></blockquote>
+<p>},
+&#8220;gphl-buster&#8221;  : {</p>
+<blockquote>
+<div>&#8220;desc_software&#8221; : &#8220;Global Phasing Limited Software Suite&#8221;,
+&#8220;icon_software&#8221; : &#8220;task_buster&#8221;,
+&#8220;desc_provider&#8221; : &#8220;Global Phasing Limited&#8221;,
+&#8220;icon_provider&#8221; : &#8220;org_gphl&#8221;,
+&#8220;auth_url&#8221;      : &#8220;<a class="reference external" href="https://arpwarp.embl-hamburg.de/api/maketoken/?reqid=$reqid&amp;addr=1.2.3.4&amp;cburl=$cburl">https://arpwarp.embl-hamburg.de/api/maketoken/?reqid=$reqid&amp;addr=1.2.3.4&amp;cburl=$cburl</a>&#8221;,</div></blockquote>
+<p class="last">}</p>
+</dd>
+</dl>
+<p>},</p>
+</div></blockquote>
+<p>&#8220;bootstrapHTML&#8221;    : &#8220;jscofe.html&#8221;,</p>
+<p>&#8220;maxRestarts&#8221;      : 100,</p>
+<p>&#8220;fileCapSize&#8221;      : 500000,</p>
+<dl class="docutils">
+<dt>&#8220;regMode&#8221;</dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">&#8220;admin&#8221;,  // if &#8216;email&#8217;:  registration by user;</span><dd>// &#8216;admin&#8217;: all users are registration by admin</dd>
+</dl>
+<p>&#8220;sessionCheckPeriod&#8221; : 2000,</p>
+<dl class="last docutils">
+<dt>&#8220;ration&#8221;</dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">{</span><dd><blockquote class="first">
+<div>&#8220;storage&#8221;   : 3000,
+&#8220;cpu_day&#8221;   : 24,
+&#8220;cpu_month&#8221; : 240</div></blockquote>
+<p class="last">},</p>
+</dd>
+<dt>&#8220;cloud_mounts&#8221;</dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">{  // optional item</span><dd><blockquote class="first">
+<div>&#8220;My Computer&#8221;    : &#8220;/&#8221;,
+&#8220;Home&#8221;           : [&#8220;$HOME&#8221;,&#8221;$USERPROFILE&#8221;],
+&#8220;CCP4 examples&#8221;  : &#8220;$CCP4/share/ccp4i2/demo_data&#8221;,
+&#8220;Demo projects&#8221;  : &#8221;./demo-projects&#8221;,
+&#8220;My files&#8221;       : &#8221;./$LOGIN/files&#8221;</div></blockquote>
+<p class="last">}</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        «&#160;&#160;<a href="launchers.html">1. CCP4 Cloud Launch Scripts</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="index.html">Contents</a>
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.8.
+    </div>
+  </body>
+</html>

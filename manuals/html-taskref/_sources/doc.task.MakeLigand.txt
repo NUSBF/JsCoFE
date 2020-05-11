@@ -1,0 +1,68 @@
+=======================	
+Make Ligand with Acedrg
+=======================
+
+The `AceDRG <http://scripts.iucr.org/cgi-bin/paper?S2059798317000067>`_ is designed
+for the derivation of stereo-chemical information about monomers/ligands (or small
+molecules). It uses atom typing based on local chemical and topological environment
+to organise bond lengths and angles from a small molecule database i.e.
+the **Crystallography Open Database (COD)**. Information about hybridisation states
+of atoms, small ring belongingness (up to seven membered rings), ring aromaticity
+and nearest-neighbour information is encoded in the atom types. All atoms from COD
+have been classified according to the generated atom types. All bonds and angles
+have also been classified according to the atom types, and, in a certain sense,
+bond types.
+
+Using the tables containing those bonds and angles, **AceDRG can derive ideal bond
+lengths, angles for an unknown monomer/ligand. It also generates information on
+planar groups and stereo-chemical properties in the monomer/ligand**. 
+
+-------------------------
+What the task is used for
+-------------------------
+
+The **Make Ligand** task creates ligand description with AceDrg, using either a
+`SMILE <https://en.wikipedia.org/wiki/Simplified_molecular-input_line-entry_system>`_
+string or the `standard 3-letter code <https://www.rcsb.org/pdb/staticHelp.do?p=help/advancedsearch/chemicalID.html>`_
+for the ligand.
+
+Ligand descriptions are essential for fitting ligands in electron density
+maps, and are required for runnung the ligand-fitting tasks (**Model Building
+with Coot** or **Fit Ligand with Coot**). After successful ligand fit, these
+tasks place the ligand description in the output Structure Revision.
+
+----------------------------------
+Ligand descriptions and refinement
+----------------------------------
+
+Ligand descriptions are also essential for structure refinement with either
+**Refmac** or **Buster**, if macromolecular model contains ligand coordinates. Both
+**Refmac** and **Buster** tasks receive ligand descriptions as part of input
+Structure Revision, usually after ligand fitting.
+
+--------------------------------------------------------------------------
+What if ligands in structural model were not obtained with ligand fitting?
+--------------------------------------------------------------------------
+
+Indeed, structural model with ligand coordinates may be imported or obtained
+from the PDB, in which case the corresponding ligand descriptions will be absent 
+in Structure Revision, causing a failure in the refinement tasks. In this case:
+
+    #. Import the corresponding ligand descriptions as ``*.cif`` files, or 
+       generated them with the **Make Ligand** task
+       
+    #. Put them in Structure Revision using task **Edit Revision: Structure** 
+    
+
+
+**References**
+
+
+`Fei Long, Robert A Nicholls, Paul Emsley, Saulius GraZulis, Andrius Merkys,
+Antanas Vaitkus and Garib N Murshudov "ACEDRG: A stereo-chemical description
+generator for ligands" Acta Cryst. (2017), D73, 112-122. <https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5297914/>`_
+
+`Fei Long, Robert A Nicholls, Paul Emsley, Saulius GraZulis, Andrius Merkys,
+Antanas Vaitkus and Garib N Murshudov "Validation and extraction of
+stereochemical information fromsmall molecular databases" Acta Cryst. (2017),
+D73, 103-111. <https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5297913/>`_

@@ -40,7 +40,7 @@ import pyrvapi
 
 #  application imports
 from . import basic
-from   pycofe.proc   import edmap, xyzmeta
+from   pycofe.proc   import edmap, xyzmeta, verdict
 from   pycofe.dtypes import dtype_template, dtype_revision, dtype_sequence
 
 
@@ -436,6 +436,10 @@ class Crank2(basic.TaskDriver):
 
         if os.path.isfile(self.xyzout_fpath):
 
+            vrow = self.rvrow
+
+            self.rvrow += 4
+
             # get xyz metadata for checking on changed space group below
             meta = xyzmeta.getXYZMeta ( self.xyzout_fpath,self.file_stdout,
                                         self.file_stderr )
@@ -504,10 +508,11 @@ class Crank2(basic.TaskDriver):
                         else:
                             self.putTitle ( "No heavy atom substructure found" )
 
-                if len(hkl_all)==1:
-                    self.putTitle ( "Structure Revision" )
-                else:
-                    self.putTitle ( "Structure Revisions" )
+                title = "Structure Revision"
+                if len(hkl_all)>1:
+                    title += "s"
+                self.putTitle ( title + self.hotHelpLink ( "Structure Revision",
+                                                    "jscofe_qna.structure_revision") )
 
                 # fetch r-factors for display in job tree
                 refdir = [f for f in os.listdir(self.reportDir()) if f.endswith("-ref")]
@@ -524,11 +529,36 @@ class Crank2(basic.TaskDriver):
                                     rfree   = float(line.replace(rfree_pattern,""))
                                 if line.startswith(rfactor_pattern):
                                     rfactor = float(line.replace(rfactor_pattern,""))
+                    tdict = None
                     if rfree>0.0 and rfactor>0.0:
                         self.generic_parser_summary["refmac"] = {
                             'R_factor' : rfactor,
                             'R_free'   : rfree
                         }
+                        tdict = {
+                            "title": "Summary",
+                            "state": 0, "class": "table-blue", "css": "text-align:right;",
+                            "rows" : [
+                                { "header": { "label": "R-factor", "tooltip": "Work R-factor"},
+                                  "data"  : [ str(rfactor) ]},
+                                { "header": { "label": "R<sub>free</sub>", "tooltip": "Free R-factor"},
+                                  "data"  : [ str(rfree) ]}
+                            ]
+                        }
+
+                    try:
+                        with open(os.path.join(self.reportDir(),"verdict1"),"r") as f:
+                            vscore   = int(100.0*float(f.read()))
+                        with open(os.path.join(self.reportDir(),"verdict2"),"r") as f:
+                            vmessage = f.read()
+                        with open(os.path.join(self.reportDir(),"verdict3"),"r") as f:
+                            vbottomline = f.read()
+                        self.putMessage1 ( self.report_page_id(),"&nbsp;",vrow )
+                        verdict.makeVerdictSection ( self,tdict,vscore,vmessage,
+                                                     vbottomline,row=vrow+1 )
+                    except:
+                        pass
+
 
                 # check if space group has changed
                 hkl_sol = None

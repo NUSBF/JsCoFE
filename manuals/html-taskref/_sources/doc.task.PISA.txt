@@ -1,0 +1,68 @@
+===================================================
+Surface, Interfaces and Assembly Analysis with PISA
+===================================================
+
+PISA (Protein Interfaces, Surfaces and Assemblies) performs the calculation of
+macromolecular surfaces and interfaces and their various properties, and
+predicts probable macromolecular assemblies (complexes).
+
+PISA delivers the following data:
+
+    * crystallised entities (monomers, chains) and their contacts (interfaces)
+    * surface and interface areas, residues and atoms
+    * hydrogen bonds, salt bridges and disulphide bonds in macromolecular interfaces
+    * free energy of protein folding
+    * energy of hydrophobic interaction between macromolecules and hydrophobic effect of individual residues
+    * multiparametric assessment of macromolecular affinity (interaction radar)
+    * probable macromolecular assemblies, their surface and buried areas, free energy of dissociation, dissociation patterns, ralation to crystal interfaces and assemblage details
+    * concentration profiles of assembly stock with stoichiometry defined by crystal content
+
+On input, PISA requires only atomic coordinates of sufficiently well refined
+structures. Do not use PISA if your structure is not yet complete and ready for PDB
+deposition, because even a small imperfectness in crystal contacts may make 
+the difference between estimating a particuar interface as binding or not.
+
+PISA does not have any input parameters that should be manipulated by user.
+
+**Basic principles**
+
+PISA calculates macromolecular interfaces (crystal contacts) as surface patches
+that have lost contact with the solvent upon crystallisation. For each 
+interface, PISA calculates the binding energy as a sum of contributions from 
+the solvation energy, hydrogen bonds, salt bridges and entropy of immobilised 
+structural features (such as side chains) on macromolecular surface.
+
+The calculate interface binding energies are used for the calculation of 
+free Gibbs energy of dissociation of all macromolacular assemblies that can
+exist in given crystal packing. Assemblies with positive free Gibbs energy have 
+chances to exist in solution, and, therefore, are reported as probable
+oligomeric states (complexes). A stable oligomeric state has chances to be
+the Biological Unit, responsible for certain biochemical functions.
+
+The stability of predicted oligomeric states is assessed on concentration 
+scale (*Stock analysis*), which may be useful for identifying bogus and promising 
+Biological Units.
+
+
+**Further reading**
+
+Full details of PISA method and important hints for the interpretation of
+PISA results are given in 
+`[Krissinel and Henrick, 2007] <https://doi.org/10.1016/j.jmb.2007.05.022>`_.
+Stock analysis, which is important for the assessment of macromolecular
+complexes, predicted by PISA, is described in
+`[Krissinel 2015] <https://doi.org/10.1093/nar/gkv314>`_. The agreement between
+oligomeric states inferred from crystal packings and observed in solutions is
+investigated in 
+`[Krissinel 2010] <https://doi.org/10.1002/jcc.21303>`_.
+
+
+**References**
+
+E. Krissinel (2015) Stock-based detection of protein oligomeric states in jsPISA, Nucl. Acids Res., https://doi.org/10.1093/nar/gkv314
+
+E. Krissinel and K. Henrick (2007) Inference of macromolecular assemblies from crystalline state, J. Mol. Biol. 372, 774-797, https://doi.org/10.1016/j.jmb.2007.05.022
+
+E. Krissinel (2010) Crystal contacts as nature's docking solutions, J. Comput. Chem. 31(1), 133-143; https://doi.org/10.1002/jcc.21303
+
+
