@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    04.05.20   <--  Date of Last Modification.
+#    12.05.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -95,7 +95,7 @@ class Refmac(basic.TaskDriver):
               self.runApp ( "prosmart",prosmart_cmd,logType="Main" )
               external_restraint_files.append(os.path.join('ProSMART_Output_dnarna',os.path.splitext(istruct.getXYZFileName() )[0]+'.txt') )
 
-        if str(self.task.parameters.sec3.contains.HBOND_RESTR.value) == 'yes':
+        if str(sec3.HBOND_RESTR.value) == 'yes':
            prosmart_cmd = [ "-quick", "-o", "ProSMART_Output_hbond", "-p1", istruct.getXYZFilePath(self.inputDir() )]
            self.runApp ( "prosmart",prosmart_cmd,logType="Main" )
            external_restraint_files.append(os.path.join('ProSMART_Output_hbond',os.path.splitext(istruct.getXYZFileName() )[0]+'.txt') )
@@ -120,17 +120,24 @@ class Refmac(basic.TaskDriver):
             stdin.append ( 'ANOM MAPONLY' )
 
         # Basic options
-        stdin.append ( 'NCYC ' + str(self.task.parameters.sec1.contains.NCYC.value) )
 
-        if str(self.task.parameters.sec1.contains.WAUTO_YES.value) == 'yes':
-            if str(self.task.parameters.sec1.contains.WAUTO_VAL_AUTO.value) == '':
+        sec1 = self.task.parameters.sec1.contains
+        sec2 = self.task.parameters.sec2.contains
+        sec3 = self.task.parameters.sec3.contains
+        sec4 = self.task.parameters.sec4.contains
+        sec5 = self.task.parameters.sec5.contains
+
+        stdin.append ( 'NCYC ' + str(sec1.NCYC.value) )
+
+        if str(sec1.WAUTO_YES.value) == 'yes':
+            if str(sec1.WAUTO_VAL_AUTO.value) == '':
                stdin.append ( 'WEIGHT AUTO' )
             else:
-               stdin.append ( 'WEIGHT AUTO ' + str(self.task.parameters.sec1.contains.WAUTO_VAL_AUTO.value) )
+               stdin.append ( 'WEIGHT AUTO ' + str(sec1.WAUTO_VAL_AUTO.value) )
         else:
-            stdin.append ( 'WEIGHT MATRIX ' + self.task.parameters.sec1.contains.WAUTO_VAL.value )
+            stdin.append ( 'WEIGHT MATRIX ' + str(sec1.WAUTO_VAL.value) )
 
-        stdin.append ( 'MAKE HYDR ' + str(self.task.parameters.sec1.contains.MKHYDR.value) )
+        stdin.append ( 'MAKE HYDR ' + str(sec1.MKHYDR.value) )
 
         #if str(self.task.parameters.sec1.contains.TWIN.value) == 'yes':
         #   print >>scr_file, 'TWIN'
@@ -139,60 +146,60 @@ class Refmac(basic.TaskDriver):
             stdin.append ( 'TWIN' )
 
         # Parameters
-        stdin.append ( 'REFI BREF ' + str(self.task.parameters.sec2.contains.BFAC.value) )
+        stdin.append ( 'REFI BREF ' + str(sec2.BFAC.value) )
 
-        if str(self.task.parameters.sec2.contains.TLS.value) != 'none':
-            stdin.append ( 'REFI TLSC ' + str(self.task.parameters.sec2.contains.TLS_CYCLES.value) )
-            if str(self.task.parameters.sec2.contains.RESET_B.value) == 'yes':
-                stdin.append ( 'BFAC SET' + str(self.task.parameters.sec2.contains.RESET_B_VAL.value) )
-            if str(self.task.parameters.sec2.contains.TLSOUT_ADDU.value) == 'yes':
+        if str(sec2.TLS.value) != 'none':
+            stdin.append ( 'REFI TLSC ' + str(sec2.TLS_CYCLES.value) )
+            if str(sec2.RESET_B.value) == 'yes':
+                stdin.append ( 'BFAC SET' + str(sec2.RESET_B_VAL.value) )
+            if str(sec2.TLSOUT_ADDU.value) == 'yes':
                stdin.append ( 'TLSOUT ADDU' )
 
-        stdin.append ('SCALE TYPE ' + str(self.task.parameters.sec2.contains.SCALING.value) )
-        if str(self.task.parameters.sec2.contains.SCALING.value) == 'no':
+        stdin.append ('SCALE TYPE ' + str(sec2.SCALING.value) )
+        if str(sec2.SCALING.value) == 'no':
             stdin.append ( 'SOLVENT NO' )
         else:
             stdin.append ( 'SOLVENT YES' )
-            if str(self.task.parameters.sec2.contains.SOLVENT_CUSTOM.value) == 'yes':
+            if str(sec2.SOLVENT_CUSTOM.value) == 'yes':
                 stdin += [
-                    'SOLVENT VDWProb ' + str(self.task.parameters.sec2.contains.SOLVENT_CUSTOM_VDW.value),
-                    'SOLVENT IONProb ' + str(self.task.parameters.sec2.contains.SOLVENT_CUSTOM_ION.value),
-                    'SOLVENT RSHRink ' + str(self.task.parameters.sec2.contains.SOLVENT_CUSTOM_SHRINK.value)
+                    'SOLVENT VDWProb ' + str(sec2.SOLVENT_CUSTOM_VDW.value),
+                    'SOLVENT IONProb ' + str(sec2.SOLVENT_CUSTOM_ION.value),
+                    'SOLVENT RSHRink ' + str(sec2.SOLVENT_CUSTOM_SHRINK.value)
                 ]
 
         # Restraints
         #ncsrv = str(self.task.parameters.sec3.contains.NCSR.value)
         #if ncsrv in ('local', 'global'):
         #print >>scr_file, 'ncsr', ncsrv
-        if str(self.task.parameters.sec3.contains.NCSR.value) == 'yes':
-            stdin.append ('NCSR ' + str(self.task.parameters.sec3.contains.NCSR_TYPE.value) )
+        if str(sec3.NCSR.value) == 'yes':
+            stdin.append ('NCSR ' + str(sec3.NCSR_TYPE.value) )
 
-        if str(self.task.parameters.sec3.contains.JELLY.value) == 'yes':
-            stdin += [ 'RIDG DIST SIGM ' + self.task.parameters.sec3.contains.JELLY_SIGMA.value,
-                       'RIDG DIST DMAX ' + self.task.parameters.sec3.contains.JELLY_DMAX.value ]
+        if str(sec3.JELLY.value) == 'yes':
+            stdin += [ 'RIDG DIST SIGM ' + str(sec3.JELLY_SIGMA.value),
+                       'RIDG DIST DMAX ' + str(sec3.JELLY_DMAX.value) ]
 
         if len(external_restraint_files) > 0:
             stdin += [
-                'EXTE WEIGHT SCALE ' + str(self.task.parameters.sec3.contains.EXTE_WEIGHT.value),
-                'EXTE WEIGHT GMWT '  + str(self.task.parameters.sec3.contains.EXTE_GMWT.value),
-                'EXTE DMAX '         + str(self.task.parameters.sec3.contains.EXTE_MAXD.value)
+                'EXTE WEIGHT SCALE ' + str(sec3.EXTE_WEIGHT.value),
+                'EXTE WEIGHT GMWT '  + str(sec3.EXTE_GMWT.value),
+                'EXTE DMAX '         + str(sec3.EXTE_MAXD.value)
             ]
             for i in range(len(external_restraint_files) ):
                 stdin.append ( '@' + external_restraint_files[i] )
 
         # Output
-        if str(self.task.parameters.sec4.contains.RIDING_HYDROGENS.value) != 'DEFAULT':
-           stdin.append ( 'MAKE HOUT ' + str(self.task.parameters.sec4.contains.RIDING_HYDROGENS.value) )
+        if str(sec4.RIDING_HYDROGENS.value) != 'DEFAULT':
+           stdin.append ( 'MAKE HOUT ' + str(sec4.RIDING_HYDROGENS.value) )
 
-        if str(self.task.parameters.sec4.contains.MAP_SHARPEN.value) == 'yes':
-           if str(self.task.parameters.sec4.contains.MAP_SHARPEN_B.value) == 'default':
+        if str(sec4.MAP_SHARPEN.value) == 'yes':
+           if str(sec4.MAP_SHARPEN_B.value) == 'default':
               stdin.append ( 'MAPC SHAR' )
            else:
-              stdin.append ( 'MAPC SHAR ' + self.task.parameters.sec4.contains.MAP_SHARPEN_B.value )
+              stdin.append ( 'MAPC SHAR ' + str(sec4.MAP_SHARPEN_B.value) )
 
         # Advanced
-        if str(self.task.parameters.sec5.contains.EXPERIMENT.value) == 'electron':
-           if str(self.task.parameters.sec5.contains.FORM_FACTOR.value) == 'mb':
+        if str(sec5.EXPERIMENT.value) == 'electron':
+           if str(sec5.FORM_FACTOR.value) == 'mb':
               stdin.append ( 'SOURCE ELECTRON MB' )
            else:
               stdin.append ( 'SOURCE ELECTRON' )
@@ -201,8 +208,8 @@ class Refmac(basic.TaskDriver):
 
         # Other keywords
         stdin.append ( 'MAKE NEWLIGAND EXIT' )
-        if str(self.task.parameters.sec5.contains.KEYWORDS.value) != '':
-           stdin.append ( self.task.parameters.sec5.contains.KEYWORDS.value )
+        if str(sec5.KEYWORDS.value) != '':
+           stdin.append ( str(sec5.KEYWORDS.value) )
 
         stdin.append ( 'END' )
 
@@ -227,10 +234,10 @@ class Refmac(basic.TaskDriver):
         if libin:
             cmd += ["libin",libin]
 
-        if str(self.task.parameters.sec5.contains.EXPERIMENT.value) == 'electron':
-           if str(self.task.parameters.sec5.contains.FORM_FACTOR.value) == 'gaussian':
+        if str(sec5.EXPERIMENT.value) == 'electron':
+           if str(sec5.FORM_FACTOR.value) == 'gaussian':
               cmd += ["libin",os.path.join(os.environ["CCP4"], 'lib', 'data', 'atomsf_electron.lib')]
-        elif str(self.task.parameters.sec5.contains.EXPERIMENT.value) == 'neutron':
+        elif str(sec5.EXPERIMENT.value) == 'neutron':
            cmd += ["libin",os.path.join(os.environ["CCP4"], 'lib', 'data', 'atomsf_neutron.lib')]
 
         # Prepare report parser
