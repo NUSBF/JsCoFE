@@ -65,6 +65,12 @@ class Refmac(basic.TaskDriver):
             for i in range(len(hmodel) ):
                 hmodel[i] = self.makeClass ( hmodel[i] )
 
+        sec1 = self.task.parameters.sec1.contains
+        sec2 = self.task.parameters.sec2.contains
+        sec3 = self.task.parameters.sec3.contains
+        sec4 = self.task.parameters.sec4.contains
+        sec5 = self.task.parameters.sec5.contains
+
         #  protein:  hmodel[i].hasSubtype ( dtype_template.subtypeProtein() )
         #  dna:  hmodel[i].hasSubtype ( dtype_template.subtypeDNA() )
         #  rna:  hmodel[i].hasSubtype ( dtype_template.subtypeRNA() )
@@ -120,12 +126,6 @@ class Refmac(basic.TaskDriver):
             stdin.append ( 'ANOM MAPONLY' )
 
         # Basic options
-
-        sec1 = self.task.parameters.sec1.contains
-        sec2 = self.task.parameters.sec2.contains
-        sec3 = self.task.parameters.sec3.contains
-        sec4 = self.task.parameters.sec4.contains
-        sec5 = self.task.parameters.sec5.contains
 
         stdin.append ( 'NCYC ' + str(sec1.NCYC.value) )
 
