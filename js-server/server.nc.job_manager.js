@@ -1180,7 +1180,7 @@ function ncRunRVAPIApp ( post_data_obj,callback_func )  {
 
 // ===========================================================================
 
-function ncRunClientJob ( post_data_obj,callback_func )  {
+function ncRunClientJob1 ( post_data_obj,callback_func,attemptNo )  {
 // This function creates a new job and job directory, receives jobball from FE,
 // unpacks it and starts the job. Although the jobball is received in
 // asynchronous mode, we DO NOT suspend the job checking loop here, because
@@ -1223,23 +1223,33 @@ function ncRunClientJob ( post_data_obj,callback_func )  {
   request  // issue the download request
     .get ( get_options )
     .on('error', function(err) {
-      log.error ( 20,'Download errors from ' + dnlURL );
+      log.error ( 20,'Download errors from ' + dnlURL + ', attempt #' + attemptNo );
       log.error ( 20,'Error: ' + err );
       // remove job
       ncJobRegister.removeJob ( job_token );
       writeNCJobRegister      ();
-      callback_func ( new cmd.Response ( cmd.nc_retcode.downloadErrors,
-                             '[00117] Download errors: ' + err,{} ) );
+      if (attemptNo>0)  {
+        setTimeout ( function(){
+          ncRunClientJob1 ( post_data_obj,callback_func,attemptNo-1 );
+        },10);
+      } else
+        callback_func ( new cmd.Response ( cmd.nc_retcode.downloadErrors,
+                                      '[00117] Download errors: ' + err,{} ) );
     })
     .pipe(fs.createWriteStream(path.join(jobDir,send_dir.jobballName)))
     .on('error', function(err) {
-      log.error ( 23,'Download errors from ' + dnlURL );
+      log.error ( 23,'Download errors from ' + dnlURL + ', attempt #' + attemptNo );
       log.error ( 23,'Error: ' + err );
       // remove job
       ncJobRegister.removeJob ( job_token );
       writeNCJobRegister      ();
-      callback_func ( new cmd.Response ( cmd.nc_retcode.downloadErrors,
-                             '[00121] Download errors: ' + err,{} ) );
+      if (attemptNo>0)  {
+        setTimeout ( function(){
+          ncRunClientJob1 ( post_data_obj,callback_func,attemptNo-1 );
+        },10);
+      } else
+        callback_func ( new cmd.Response ( cmd.nc_retcode.downloadErrors,
+                                      '[00121] Download errors: ' + err,{} ) );
     })
     .on('close',function(){   // finish,end,
       // successful download, unpack and start the job
@@ -1259,12 +1269,16 @@ function ncRunClientJob ( post_data_obj,callback_func )  {
           log.detailed ( 21,'directory contents has been received in ' + jobDir );
         } else  {
           // unpacking errors, remove job
+          log.error ( 24,'unpack errors, attempt #' + attemptNo + ', code=' + code );
           ncJobRegister.removeJob ( job_token );
           writeNCJobRegister      ();
-          callback_func ( new cmd.Response ( cmd.nc_retcode.unpackErrors,
-                                             '[00119] Unpack errors (code=' + code + ')',
-                                             {} ) );
-          log.error ( 24,'unpack errors, code=' + code );
+          if (attemptNo>0)  {
+            setTimeout ( function(){
+              ncRunClientJob1 ( post_data_obj,callback_func,attemptNo-1 );
+            },10);
+          } else
+            callback_func ( new cmd.Response ( cmd.nc_retcode.unpackErrors,
+                             '[00119] Unpack errors (code=' + code + ')',{} ) );
         }
       });
 
@@ -1272,6 +1286,9 @@ function ncRunClientJob ( post_data_obj,callback_func )  {
 
 }
 
+function ncRunClientJob ( post_data_obj,callback_func )  {
+  ncRunClientJob1 ( post_data_obj,callback_func,10 );  // give 10 attempts
+}
 
 // ==========================================================================
 // export for use in node
