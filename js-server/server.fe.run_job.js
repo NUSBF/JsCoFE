@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    11.05.20   <--  Date of Last Modification.
+ *    13.05.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -368,7 +368,7 @@ function runJob ( loginData,data, callback_func )  {
     // prepare input data
     task.makeInputData ( loginData,jobDir );
 
-    send_dir.packDir ( jobDir,'*',null, function(code){
+    send_dir.packDir ( jobDir,'*',null, function(code,jobballSize){
 
       //if (code==0)  {
       if (!code)  {
@@ -390,6 +390,7 @@ function runJob ( loginData,data, callback_func )  {
         rdata.jobballName  = send_dir.jobballName;
 //        rdata.check_tokens = feJobRegister.getListOfTokens ( -1 );
         callback_func ( new cmd.Response(cmd.fe_retcode.ok,{},rdata) );
+        log.standard ( 11,'created jobball for client, dir=' + jobDir + ', size=' + jobballSize );
 
       } else  {
         callback_func ( new cmd.Response(cmd.fe_retcode.jobballError,
@@ -458,7 +459,7 @@ function runJob ( loginData,data, callback_func )  {
 
         send_dir.sendDir ( jobDir,'*',nc_url,cmd.nc_command.runJob,meta,
 
-          function ( rdata ){  // send successful
+          function ( rdata,jobballSize ){  // send successful
 
             // The number cruncher will start dealing with the job automatically.
             // On FE end, register job as engaged for further communication with
@@ -564,7 +565,7 @@ function replayJob ( loginData,data, callback_func )  {
     if (task.nc_type=='client')  {
       // job for client NC, just pack the job directory and inform client
 
-      send_dir.packDir ( jobDir,'*',null, function(code){
+      send_dir.packDir ( jobDir,'*',null, function(code,jobballSize){
 
 //        if (code==0)  {
         if (!code)  {
@@ -586,6 +587,7 @@ function replayJob ( loginData,data, callback_func )  {
           rdata.job_token   = job_token;
           rdata.jobballName = send_dir.jobballName;
           callback_func ( new cmd.Response(cmd.fe_retcode.ok,{},rdata) );
+          log.standard ( 12,'created jobball for client, dir=' + jobDir + ', size=' + jobballSize );
 
         } else  {
           callback_func ( new cmd.Response(cmd.fe_retcode.jobballError,
@@ -605,7 +607,7 @@ function replayJob ( loginData,data, callback_func )  {
       meta.user_id  = loginData.login;
       send_dir.sendDir ( jobDir,'*',nc_url,cmd.nc_command.runJob,meta,
 
-        function ( rdata ){  // send successful
+        function ( rdata,jobballSize ){  // send successful
 
           // The number cruncher will start dealing with the job automatically.
           // On FE end, register job as engaged for further communication with
