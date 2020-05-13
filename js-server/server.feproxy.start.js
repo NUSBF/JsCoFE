@@ -87,6 +87,11 @@ function start ( callback_func )  {
   }
 
 /*
+  proxyTimeout: timeout (in millis) for outgoing proxy requests
+  timeout: timeout (in millis) for incoming requests
+*/
+
+/*
   httpProxy.createProxyServer({
     target: {
       protocol: 'https:',
