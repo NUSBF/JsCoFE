@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    07.05.20   <--  Date of Last Modification.
+ *    13.05.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -1254,7 +1254,7 @@ function ncRunClientJob1 ( post_data_obj,callback_func,attemptNo )  {
     .on('close',function(){   // finish,end,
       // successful download, unpack and start the job
 
-      send_dir.unpackDir ( jobDir,null, function(code){
+      send_dir.unpackDir ( jobDir,null, function(code,jobballSize){
         //if (code==0)  {
         if (!code)  {
           ncRunJob ( job_token,{
@@ -1269,7 +1269,8 @@ function ncRunClientJob1 ( post_data_obj,callback_func,attemptNo )  {
           log.detailed ( 21,'directory contents has been received in ' + jobDir );
         } else  {
           // unpacking errors, remove job
-          log.error ( 24,'unpack errors, attempt #' + attemptNo + ', code=' + code );
+          log.error ( 24,'unpack errors, attempt #' + attemptNo +
+                         ', code=' + code + ', filesize=' + jobballSize );
           ncJobRegister.removeJob ( job_token );
           writeNCJobRegister      ();
           if (attemptNo>0)  {

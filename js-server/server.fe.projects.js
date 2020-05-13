@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    08.04.20   <--  Date of Last Modification.
+ *    13.05.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -471,7 +471,7 @@ function prepareProjectExport ( loginData,projectList )  {
                                    projectList.current + cmd.projectFileExt );
   utils.removeFile ( archivePath );  // just in case
 
-  send_dir.packDir ( projectDirPath,'*',null,function(code){
+  send_dir.packDir ( projectDirPath,'*',null,function(code,jobballSize){
     var jobballPath = send_dir.getJobballPath ( projectDirPath );
     if (code)  {
       log.error ( 10,'errors at packing ' + projectDirPath + ' for export' );
@@ -528,7 +528,7 @@ function prepareJobExport ( loginData,task )  {
   var archivePath = exp_names[2];
   utils.removeFile ( archivePath );  // just in case
 
-  send_dir.packDir ( jobDirPath,'*',null,function(code){
+  send_dir.packDir ( jobDirPath,'*',null,function(code,jobballSize){
     var jobballPath = send_dir.getJobballPath ( jobDirPath );
     if (code)  {
       log.error ( 20,'errors at packing ' + jobDirPath + ' for export' );
@@ -590,7 +590,7 @@ function prepareFailedJobExport ( loginData,fjdata )  {
   var archivePath = exp_names[2];
   utils.removeFile ( archivePath );  // just in case
 
-  send_dir.packDir ( jobDirPath,'*',archivePath,function(code){
+  send_dir.packDir ( jobDirPath,'*',archivePath,function(code,jobballSize){
     if (code)  {
       log.error ( 20,'errors at packing ' + jobDirPath + ' for export' );
       utils.removeFile ( archivePath );  // export will never get ready!
@@ -1050,7 +1050,9 @@ function importProject ( loginData,upload_meta )  {
       if (utils.moveFile(key,path.join(tempdir,'__dir.zip')))  {
 
         // unpack project tarball
-        send_dir.unpackDir ( tempdir,null,function(){
+        send_dir.unpackDir ( tempdir,null,function(code,jobballSize){
+          if (code)
+            log.error ( 50,'unpack errors, code=' + code + ', filesize=' + jobballSize );
           _import_project ( loginData,tempdir );
         });
 
@@ -1096,9 +1098,12 @@ function startDemoImport ( loginData,meta )  {
 
     if (demoProjectPath)  {
       if (utils.fileExists(demoProjectPath))  {
-        send_dir.unpackDir1 ( tempdir,demoProjectPath,null,false,function(){
-          _import_project ( loginData,tempdir );
-        });
+        send_dir.unpackDir1 ( tempdir,demoProjectPath,null,false,
+          function(code,jobballSize){
+            if (code)
+              log.error ( 55,'unpack errors, code=' + code + ', filesize=' + jobballSize );
+            _import_project ( loginData,tempdir );
+          });
       } else  {
         rc     = cmd.fe_retcode.fileNotFound;
         rc_msg = 'Demo project ' + meta.demoprj.name + ' does not exist';

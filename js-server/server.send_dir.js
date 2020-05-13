@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    07.05.20   <--  Date of Last Modification.
+ *    13.05.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -63,24 +63,25 @@ function packDir ( dirPath, fileSelection, dest_path, onReady_func )  {
   var tmpFile = conf.getTmpFile();
   if (!tmpFile)  {
     log.error ( 11,'temporary directory not found, encountered at zipping ' + dirPath );
-    onReady_func ( -2 );
+    onReady_func ( -2,-1 );
     return;
   }
 
   tmpFile = path.resolve ( tmpFile + '.zip' );
+  var jobballPath = getJobballPath ( dirPath );
 
   if (__use_ziplib)  {
 
     zl.archiveFolder ( dirPath,tmpFile )
       .then(function() {
         if (dest_path)
-              utils.moveFile ( tmpFile,dest_path );
-        else  utils.moveFile ( tmpFile,getJobballPath(dirPath) );
-        onReady_func ( 0 );
+              utils.moveFile ( tmpFile,dest_path   );
+        else  utils.moveFile ( tmpFile,jobballPath );
+        onReady_func ( 0,utils.fileSize(jobballPath) );
       }, function(err) {
         log.error ( 11,'zip packing error: ' + err + ', encountered in ' + dirPath );
         utils.removeFile ( tmpFile );
-        onReady_func ( err );
+        onReady_func ( err,0 );
       });
 
   } else  {
@@ -96,15 +97,17 @@ function packDir ( dirPath, fileSelection, dest_path, onReady_func )  {
 
     zip.on ( 'close', function(code){
       //if (code!=0)  {
+      var jobballSize = -1;
       if (code)  {
         log.error ( 11,'zip packing code: ' + code + ', encountered in ' + dirPath );
         utils.removeFile ( tmpFile );
       } else  if (dest_path) {
         utils.moveFile ( tmpFile,dest_path );
       } else  {
-        utils.moveFile ( tmpFile,getJobballPath(dirPath) );
+        utils.moveFile ( tmpFile,jobballPath );
+        jobballSize = utils.fileSize ( jobballPath );
       }
-      onReady_func(code);
+      onReady_func ( code,jobballSize );
     });
 
   }
@@ -157,7 +160,7 @@ var sender_cfg = conf.getServerConfig();
           var resp = JSON.parse ( response );
           if (resp.status==cmd.fe_retcode.ok)  {
             if (onReady_func)
-              onReady_func ( resp.data );
+              onReady_func ( resp.data,utils.fileSize(jobballPath) );
             log.detailed ( 1,'directory ' + dirPath +
                              ' has been received at ' + serverURL );
           } else if (onErr_func)
@@ -255,17 +258,19 @@ function unpackDir1 ( dirPath,jobballPath,cleanTmpDir,remove_jobball_bool,onRead
     tmpDir = unpack_dir + '_JOBDIRCOPY';
   }
 
+  var jobballSize = utils.fileSize ( jobballPath );
+
   if (__use_ziplib)  {
 
     zl.extract ( jobballPath,unpack_dir )
       .then(function() {
         __after_unzip ( unpack_dir,dirPath,tmpDir,jobballPath,
                         cleanTmpDir,remove_jobball_bool );
-        onReady_func ( 0 );
+        onReady_func ( 0,jobballSize );
       }, function (err) {
         __after_unzip ( unpack_dir,dirPath,tmpDir,jobballPath,
                         cleanTmpDir,remove_jobball_bool );
-        onReady_func ( err );
+        onReady_func ( err,jobballSize );
       });
 
   } else  {
@@ -281,28 +286,12 @@ function unpackDir1 ( dirPath,jobballPath,cleanTmpDir,remove_jobball_bool,onRead
     });
 
     zip.on('close', function(code){
-      /*
-      if (remove_jobball_bool)
-        utils.removeFile ( jobballPath )
-  //console.log ( ' ================== jobballPath=' + jobballPath );
-      if (cleanTmpDir)  {
-         // replace destination with temporary directory used for unpacking;
-         // as all directories are on the same device (see above), the
-         // replace should be done within this thread and, therefore, safe
-         // for concurrent access from client
-         utils.moveFile ( dirPath   ,tmpDir  );
-         utils.moveFile ( unpack_dir,dirPath );
-         setTimeout ( function(){  // postpone for speed
-           utils.removePath ( tmpDir );
-         },0 );
-      }
-      */
       __after_unzip ( unpack_dir,dirPath,tmpDir,jobballPath,
                       cleanTmpDir,remove_jobball_bool );
       if (errs)
-        onReady_func ( errs );
+        onReady_func ( errs,jobballSize );
       else
-        onReady_func ( code );
+        onReady_func ( code,jobballSize );
     });
 
   }
@@ -399,15 +388,19 @@ function receiveDir ( jobDir,tmpDir,server_request,onFinish_func )  {
             // unpack all service jobballs (their names start with double underscore)
             // and clean them out
 
-            unpackDir ( jobDir,tmpDir, function(code){
+            unpackDir ( jobDir,tmpDir, function(code,jobballSize){
               if (onFinish_func)
                 onFinish_func ( code,errs,upload_meta );  //  integer code : unpacking was run
               //if (code==0)
               if (!code)
                 log.detailed ( 6,'directory contents has been received in ' + jobDir );
               else  {
-                log.standard ( 6,'directory contents has been received in ' + jobDir + ' with errors: ' + code );
-                log.error    ( 6,'directory contents has been received in ' + jobDir + ' with errors: ' + code );
+                log.standard ( 6,'directory contents has been received in ' + jobDir +
+                                 ' with errors: ' + code +
+                                 ', filesize=' + jobballSize );
+                log.error    ( 6,'directory contents has been received in ' + jobDir +
+                                 ' with errors: ' + code +
+                                 ', filesize=' + jobballSize );
               }
             });
 
