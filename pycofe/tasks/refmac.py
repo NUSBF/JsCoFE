@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    12.05.20   <--  Date of Last Modification.
+#    14.05.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -34,8 +34,9 @@ import uuid
 
 #  application imports
 from . import basic
-from   pycofe.dtypes import dtype_template
-from   pycofe.proc   import qualrep
+from   pycofe.dtypes    import dtype_template
+from   pycofe.proc      import qualrep, verdict
+from   pycofe.verdicts  import verdict_refmac
 
 # ============================================================================
 # Make Refmac driver
@@ -139,10 +140,9 @@ class Refmac(basic.TaskDriver):
 
         stdin.append ( 'MAKE HYDR ' + str(sec1.MKHYDR.value) )
 
-        #if str(self.task.parameters.sec1.contains.TWIN.value) == 'yes':
-        #   print >>scr_file, 'TWIN'
-
+        isTwinning = False
         if (str(hkl.useHKLSet) == 'TI') or (str(hkl.useHKLSet) == 'TF'):
+            isTwinning = True
             stdin.append ( 'TWIN' )
 
         # Parameters
@@ -168,9 +168,7 @@ class Refmac(basic.TaskDriver):
                 ]
 
         # Restraints
-        #ncsrv = str(self.task.parameters.sec3.contains.NCSR.value)
-        #if ncsrv in ('local', 'global'):
-        #print >>scr_file, 'ncsr', ncsrv
+
         if str(sec3.NCSR.value) == 'yes':
             stdin.append ('NCSR ' + str(sec3.NCSR_TYPE.value) )
 
@@ -247,17 +245,36 @@ class Refmac(basic.TaskDriver):
         self.runApp ( "refmac5",cmd,logType="Main" )
         self.unsetLogParser()
 
-        #if not xyzin.lower().endswith(".pdb"):
-        #    xyzout1 = xyzout
-        #    xyzout  = os.path.splitext(xyzout1)[0] + ".cif"
-        #    shutil.copy2 ( xyzout1,xyzout )
-
         # check solution and register data
         have_results = False
         if os.path.isfile(xyzout):
 
+            verdict_meta = {
+                "data" : { "resolution" : hkl.getHighResolution(raw=True) },
+                "params" : {
+                    "refmac" : {
+                        "ncycles"    : sec1.NCYC.value,
+                        "twinning"   : isTwinning,
+                        "jellyBody"  : str(sec3.JELLY.value) == 'yes',
+                        "ncsRestr"   : str(sec3.NCSR.value) == 'yes',
+                        "tls"        : str(sec2.TLS.value) != 'none',
+                        "anisoBfact" : str(sec2.BFAC.value) == "ANIS",
+                        "hydrogens"  : str(sec1.MKHYDR.value) == "YES"
+                    }
+                }
+            }
+
+            self.flush()
+            self.file_stdout.close()
+            verdict_meta["refmac"] = verdict_refmac.parseRefmacLog ( self.file_stdout_path() )
+            # continue writing to stdout
+            self.file_stdout = open ( self.file_stdout_path(),"a" )
+
+            verdict_row = self.rvrow
+            self.rvrow += 4
+
             self.putTitle ( "Output Structure" +\
-                    self.hotHelpLink ( "Structure","jscofe_qna.structure") )
+                        self.hotHelpLink ( "Structure","jscofe_qna.structure") )
 
             # calculate maps for UglyMol using final mtz from temporary location
             #fnames = self.calcCCP4Maps ( self.getMTZOFName(),self.outputFName )
@@ -294,7 +311,34 @@ class Refmac(basic.TaskDriver):
 
                 rvrow0 = self.rvrow
                 try:
-                    qualrep.quality_report ( self,revision )
+                    meta = qualrep.quality_report ( self,revision )
+                    if meta:
+                        verdict_meta["molprobity"] = meta
+                        verdict_score, verdict_message, bottomline =\
+                                            verdict_refmac.calculate ( verdict_meta )
+                        self.putMessage1 ( self.report_page_id(),"&nbsp;",verdict_row )
+                        verdict.makeVerdictSection ( self,{
+                            "title": "Phasing summary",
+                            "state": 0, "class": "table-blue", "css": "text-align:right;",
+                            "rows" : [
+                                { "header": { "label"  : "R-factor",
+                                              "tooltip": "R-factor for working set"},
+                                  "data"   : [ str(verdict_meta["refmac"]["rfactor"][1]) ]
+                                },
+                                { "header": { "label"  : "R<sub>free</sub>",
+                                              "tooltip": "Free R-factor"},
+                                  "data"  : [ str(verdict_meta["refmac"]["rfree"][1]) ]
+                                },
+                                { "header": { "label"  : "Bond length rms",
+                                              "tooltip": "Bond length r.m.s.d."},
+                                  "data"  : [ str(verdict_meta["refmac"]["bond_length"][1]) ]
+                                },
+                                { "header": { "label"  : "Clash score",
+                                              "tooltip": "Molprobity clash score" },
+                                  "data"  : [ str(verdict_meta["molprobity"]["clashscore"]) ]
+                                }
+                            ]
+                        },verdict_score,verdict_message,bottomline,row=verdict_row+1 )
                 except:
                     self.stderr ( " *** molprobity failure" )
                     self.rvrow = rvrow0

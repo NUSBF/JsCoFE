@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    29.02.20   <--  Date of Last Modification.
+#    14.05.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -81,6 +81,16 @@ def put_molprobity_section ( body,revision ):
 
     xyzpath = revision.Structure.getXYZFilePath ( body.outputDir() )
 
+    body.flush()
+
+    fstdout  = body.file_stdout
+    fstdout1 = body.file_stdout1
+
+    molprobity_log = "_molprobity.log"
+    clashscore_log = "_clashscore.log"
+    body.file_stdout  = open ( molprobity_log,"w" )
+    body.file_stdout1 = open ( clashscore_log,"w" )
+
     if sys.platform.startswith("win"):
         body.runApp ( "molprobity.molprobity.bat",[xyzpath,"percentile=True"],logType="Main"    )
         body.runApp ( "molprobity.clashscore.bat",[xyzpath],logType="Service" )
@@ -88,14 +98,58 @@ def put_molprobity_section ( body,revision ):
         body.runApp ( "molprobity.molprobity",[xyzpath,"percentile=True"],logType="Main"    )
         body.runApp ( "molprobity.clashscore",[xyzpath],logType="Service" )
 
-    body.flush()
+    body.file_stdout .close()
     body.file_stdout1.close()
+
+    body.file_stdout  = fstdout
+    body.file_stdout1 = fstdout1
+
+    key  = 0
+    meta = {
+        "rama_outliers"    : 0.0,
+        "rama_favored"     : 0.0,
+        "rota_outliers"    : 0.0,
+        "cbeta_deviations" : 0.0,
+        "clashscore"       : 0.0,
+        "rms_bonds"        : 0.0,
+        "rms_angles"       : 0.0,
+        "molp_score"       : 0.0
+    }
+    with (open(molprobity_log,"r")) as fstd:
+        for line in fstd:
+            body.file_stdout.write ( line )
+            if key==1:
+                lst = line.split()
+                if len(lst)>2:
+                    if lst[0]=="Ramachandran":
+                        meta["rama_outliers"] = float(lst[-2])
+                    elif lst[0]=="favored":
+                        meta["rama_favored"] = float(lst[-2])
+                    elif lst[0]=="Rotamer":
+                        meta["rota_outliers"] = float(lst[-2])
+                    elif lst[0]=="C-beta":
+                        meta["cbeta_deviations"] = float(lst[-1])
+                    elif lst[0]=="Clashscore":
+                        meta["clashscore"] = float(lst[2])
+                    elif lst[0]=="RMS(bonds)":
+                        meta["rms_bonds"] = float(lst[-1])
+                    elif lst[0]=="RMS(angles)":
+                        meta["rms_angles"] = float(lst[-1])
+                    elif lst[0]=="MolProbity":
+                        meta["molp_score"] = float(lst[3])
+            elif "================ Summary =====================" in line:
+                key = 1
+
+    #body.flush()
+    #body.file_stdout1.close()
 
     grid_row = 0
     tableId  = None
     nclash   = 0
-    with (open(body.file_stdout1_path(),'r')) as fstd:
+
+    with (open(clashscore_log,"r")) as fstd:
         for line in fstd:
+            body.file_stdout1.write ( line )
             if "Bad Clashes" in line:
                 tableId = body.getWidgetId ( "clashes" )
                 body.putTable ( tableId,"Bad Clashes",grid_id,grid_row,col=0,mode=0 )
@@ -109,9 +163,7 @@ def put_molprobity_section ( body,revision ):
                 break
             elif tableId:
                 body.setTableVertHeader ( tableId,nclash,str(nclash+1),"" )
-                body.stdoutln ( "line=" + line )
                 lsplit = line.split(":")
-                body.stdoutln ( "lsplit=" + str(lsplit) )
                 aid1   = lsplit[0][:18]
                 aid2   = lsplit[0][18:]
                 body.putTableString ( tableId,aid1,"",nclash,0 )
@@ -119,7 +171,7 @@ def put_molprobity_section ( body,revision ):
                 body.putTableString ( tableId,lsplit[1],"",nclash,2 )
                 nclash += 1
 
-    body.file_stdout1 = open ( body.file_stdout1_path(),'a' )
+    #body.file_stdout1 = open ( body.file_stdout1_path(),'a' )
 
     body.putMessage1 ( grid_id,"&nbsp;<p><h3>Molprobity report</h3>",grid_row,col=0 )
     grid_row += 1
@@ -147,16 +199,17 @@ def put_molprobity_section ( body,revision ):
         revision.Structure.setMolProbityFile ( molp_spath )
         revision.Structure.setCootFile ( coot_spath )
 
-    return
+    return meta
 
 
 def quality_report ( body,revision ):
 
+    meta = None
     if revision.Structure and revision.Structure.hasXYZSubtype():
 
         body.putTitle ( "Quality Assessment" )
 
-        put_molprobity_section ( body,revision )
+        meta = put_molprobity_section ( body,revision )
         put_ramaplot_section   ( body,revision.Structure )
 
-    return
+    return meta
