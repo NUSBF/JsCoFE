@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    21.11.19   <--  Date of Last Modification.
+ *    16.05.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Number Cruncher Server
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2019
+ *  (C) E. Krissinel, A. Lebedev 2016-2020
  *
  *  =================================================================
  *
@@ -81,6 +81,8 @@ if ((nc_number<0) || (nc_number>=conf.getNumberOfNCs()))
 // --------------------------------------------------------------------------
 
 conf.setServerConfig ( conf.getNCConfig(nc_number) );
+conf.cleanNCTmpDir();
+
 var srvConfig = conf.getServerConfig();
 srvConfig.killPrevious();
 srvConfig.savePID();

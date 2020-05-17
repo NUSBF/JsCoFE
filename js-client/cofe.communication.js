@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    17.02.20   <--  Date of Last Modification.
+ *    17.05.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -113,27 +113,49 @@ function makeCommErrorMessage ( title,response )  {
 function checkVersionMatch ( response,localServer_bool )  {
 
   var v0 = appVersion().split(' ')[0];
-  var v1 = response.version.split(' ')[0];
+  var rs = response.version.split(' ');
+  var v1 = rs[0];
 
   if (localServer_bool)
     return true;  // may need a better solution
 
-  if ((response.version!='*') && (v0<v1))  {
-    // this works if server is updated in the midst of user's session
-    new MessageBoxF ( appName() + ' update',
-        '<center>' + appName() + ' has advanced to version' +
-        '<br><center><sup>&nbsp;</sup><b><i>' +
-        response.version + '</i></b><sub>&nbsp;</sub></center>' +
-        'which is incompatible with version<br><center><sup>&nbsp;</sup><b><i>'
-        + appVersion() + '</b></i><sub>&nbsp;</sub></center>you are currently using.' +
-        '<hr/>' + appName() + ' will now update in your browser, which will ' +
-        'end the current login<br>' +
-        'session. Please login again after update; your projects and data should<br>' +
-        'be safe, however, you may find that you cannot clone some old tasks.<hr/></center>',
-        'Update',function(){
-          location.reload();
-        },true );
-    return false;
+  if (response.version!='*')  {  // else ignore (useful for debugging)
+    if ((v0==v1) && (rs[rs.length-1]=='client'))  {
+      // this works when client version is different from server version
+      if (v0.split('.')[1]!=v1.split('.')[1])  { // check 2nd version digit
+        var whattodo = '';
+        if (v1<v0)
+              whattodo = 'Please update CCP4 setup on your computer';
+        else  whattodo = 'The maintainer of your ' + appName() + ' setup should ' +
+                         'update the setup<br>to the latest version';
+        new MessageBox ( 'Incompatible Client Version',
+            '<h2>Incompatible Client Version</h2>' +
+            'Your device runs ' + appName() + ' Client version <b>' + rs[0] +
+            ' ' + rs[1] + '</b>,<br>which is not compatible with version <b>' +
+            appVersion() + '</b>, running<br>on the server.<p>' + whattodo +
+            '.<p>You may use ' + appName() + ' by using the direct web-link, ' +
+            'however,<br><i>Coot</i> and other graphical applications will ' +
+            'not be available.'
+        );
+        return false;
+      }
+    } else if (v0<v1)  {
+      // this works if server is updated in the midst of user's session
+      new MessageBoxF ( appName() + ' update',
+          '<center>' + appName() + ' has advanced to version' +
+          '<br><center><sup>&nbsp;</sup><b><i>' +
+          response.version + '</i></b><sub>&nbsp;</sub></center>' +
+          'which is incompatible with version<br><center><sup>&nbsp;</sup><b><i>'
+          + appVersion() + '</b></i><sub>&nbsp;</sub></center>you are currently using.' +
+          '<hr/>' + appName() + ' will now update in your browser, which will ' +
+          'end the current login<br>' +
+          'session. Please login again after update; your projects and data should<br>' +
+          'be safe, however, you may find that you cannot clone some old tasks.<hr/></center>',
+          'Update',function(){
+            location.reload();
+          },true );
+      return false;
+    }
   }
 
   return true;

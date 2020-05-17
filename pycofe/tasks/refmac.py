@@ -318,7 +318,7 @@ class Refmac(basic.TaskDriver):
                                             verdict_refmac.calculate ( verdict_meta )
                         self.putMessage1 ( self.report_page_id(),"&nbsp;",verdict_row )
                         verdict.makeVerdictSection ( self,{
-                            "title": "Phasing summary",
+                            "title": "Refinement summary",
                             "state": 0, "class": "table-blue", "css": "text-align:right;",
                             "rows" : [
                                 { "header": { "label"  : "R-factor",
