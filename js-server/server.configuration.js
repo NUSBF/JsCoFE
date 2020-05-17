@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.05.20   <--  Date of Last Modification.
+ *    16.05.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -956,9 +956,16 @@ function getFETmpDir()  {
   return path.join ( getFEConfig().storage,'tmp' );
 }
 
+function cleanFETmpDir()  {
+  utils.cleanDir ( getFETmpDir() );
+}
 
 function getFETmpDir1 ( loginData )  {
   return path.join ( getFEConfig().getVolumeDir(loginData),'tmp' );
+}
+
+function cleanFETmpDir1 ( loginData )  {
+  utils.cleanDir ( getFETmpDir1(loginData) );
 }
 
 function getSetupID()  {
@@ -971,6 +978,10 @@ function getSetupID()  {
 
 function getNCTmpDir()  {
   return path.join ( getServerConfig().storage,'tmp' );
+}
+
+function cleanNCTmpDir()  {
+  utils.cleanDir ( getNCTmpDir() );
 }
 
 function getTmpDir()  {
@@ -1053,6 +1064,9 @@ module.exports.getFETmpDir1       = getFETmpDir1;
 module.exports.getNCTmpDir        = getNCTmpDir;
 module.exports.getTmpDir          = getTmpDir;
 module.exports.getTmpFile         = getTmpFile;
+module.exports.cleanFETmpDir      = cleanFETmpDir;
+module.exports.cleanFETmpDir1     = cleanFETmpDir1;
+module.exports.cleanNCTmpDir      = cleanNCTmpDir;
 module.exports.CCP4Version        = CCP4Version;
 module.exports.isWindows          = isWindows;
 module.exports.windows_drives     = windows_drives;

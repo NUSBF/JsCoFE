@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    09.04.20   <--  Date of Last Modification.
+ *    16.05.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -322,7 +322,7 @@ function removePath ( dir_path ) {
         try {
           fs.unlinkSync ( curPath );
         } catch (e)  {
-          log.error ( 8,'cannot remove file ' + curPath );
+          log.error ( 82,'cannot remove file ' + curPath );
           rc = false;
         }
       }
@@ -337,6 +337,28 @@ function removePath ( dir_path ) {
 
   return rc;  // false if there were errors
 
+}
+
+
+function cleanDir ( dir_path ) {
+  // removes everything in the directory, but doe not remove it
+  var rc = true;
+  if (fileExists(dir_path))  {
+    fs.readdirSync(dir_path).forEach(function(file,index){
+      var curPath = path.join ( dir_path,file );
+      if (fs.lstatSync(curPath).isDirectory()) { // recurse
+        removePath ( curPath );
+      } else { // delete file
+        try {
+          fs.unlinkSync ( curPath );
+        } catch (e)  {
+          log.error ( 81,'cannot remove file ' + curPath );
+          rc = false;
+        }
+      }
+    });
+  }
+  return rc;  // false if there were errors
 }
 
 
@@ -710,6 +732,7 @@ module.exports.moveFile              = moveFile;
 module.exports.moveDir               = moveDir;
 module.exports.mkDir                 = mkDir;
 module.exports.mkDir_anchor          = mkDir_anchor;
+module.exports.cleanDir              = cleanDir;
 module.exports.removePath            = removePath;
 module.exports.getDirectorySize      = getDirectorySize;
 module.exports.removeFiles           = removeFiles;

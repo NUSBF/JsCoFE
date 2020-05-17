@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    30.09.17   <--  Date of Last Modification.
+ *    16.05.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Front End Server
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2017
+ *  (C) E. Krissinel, A. Lebedev 2016-2020
  *
  *  =================================================================
  *
@@ -62,5 +62,6 @@ if (msg)  {
 }
 
 conf.setServerConfig ( conf.getFEConfig() );
+conf.cleanFETmpDir();
 
 fe_start.start ( null );
