@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    26.03.20   <--  Date of Last Modification.
+ *    18.05.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -68,6 +68,9 @@ TaskShelxAuto.prototype.currentVersion = function()  {
   else  return  version + TaskCrank2.prototype.currentVersion.call ( this );
 }
 
+TaskShelxAuto.prototype.getHelpURL = function()  {
+  return __task_reference_base_url + 'doc.task.SHELX.html';
+}
 
 if (__template)  {
   //  for server side

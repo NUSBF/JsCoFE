@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    14.05.20   <--  Date of Last Modification.
+#    18.05.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -499,6 +499,46 @@ def calculate (  meta ) :
                           "Try building more residues/ligands/waters/metals. Check your data for twinning."
 
     return (verdict_score,verdict_message,bottomline)
+
+
+def putVerdictWidget ( body,verdict_meta,verdict_row ):
+
+    body.flush()
+    body.file_stdout.close()
+    verdict_meta["refmac"] = parseRefmacLog ( body.file_stdout_path() )
+    # continue writing to stdout
+    body.file_stdout = open ( body.file_stdout_path(),"a" )
+
+
+    verdict_score, verdict_message, bottomline = calculate ( verdict_meta )
+
+    body.putMessage1 ( body.report_page_id(),"&nbsp;",verdict_row )  # just a spacer
+
+    verdict.makeVerdictSection ( body,{
+        "title": "Refinement summary",
+        "state": 0, "class": "table-blue", "css": "text-align:right;",
+        "rows" : [
+            { "header": { "label"  : "R-factor",
+                          "tooltip": "R-factor for working set"},
+              "data"   : [ str(verdict_meta["refmac"]["rfactor"][1]) ]
+            },
+            { "header": { "label"  : "R<sub>free</sub>",
+                          "tooltip": "Free R-factor"},
+              "data"  : [ str(verdict_meta["refmac"]["rfree"][1]) ]
+            },
+            { "header": { "label"  : "Bond length rms",
+                          "tooltip": "Bond length r.m.s.d."},
+              "data"  : [ str(verdict_meta["refmac"]["bond_length"][1]) ]
+            },
+            { "header": { "label"  : "Clash score",
+                          "tooltip": "Molprobity clash score" },
+              "data"  : [ str(verdict_meta["molprobity"]["clashscore"]) ]
+            }
+        ]
+    },verdict_score,verdict_message,bottomline,row=verdict_row+1 )
+
+    return
+
 
 
 def main():

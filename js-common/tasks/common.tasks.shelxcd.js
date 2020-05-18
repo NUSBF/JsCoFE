@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    26.03.20   <--  Date of Last Modification.
+ *    18.05.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -302,6 +302,10 @@ TaskShelxCD.prototype.currentVersion = function()  {
 
 if (!__template)  {
   // for client side
+
+  TaskShelxCD.prototype.getHelpURL = function()  {
+    return __task_reference_base_url + 'doc.task.SHELX.html';
+  }
 
   // hotButtons return list of buttons added in JobDialog's toolBar.
   TaskShelxCD.prototype.hotButtons = function() {
