@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    15.12.19   <--  Date of Last Modification.
+ *    18.05.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Common Utils
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2019
+ *  (C) E. Krissinel, A. Lebedev 2016-2020
  *
  *  =================================================================
  *
@@ -31,7 +31,7 @@ function mapExcludeKey ( map,exclKey )  {
 function mapMaskIn ( map,mask_map )  {
   var m = {};
   for (var key in map)
-    if (key in mask_maps)
+    if (key in mask_map)
       m[key] = map[key];
   return m;
 }

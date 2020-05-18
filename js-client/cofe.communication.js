@@ -120,7 +120,7 @@ function checkVersionMatch ( response,localServer_bool )  {
     return true;  // may need a better solution
 
   if (response.version!='*')  {  // else ignore (useful for debugging)
-    if ((v0==v1) && (rs[rs.length-1]=='client'))  {
+    if ((v0!=v1) && (rs[rs.length-1]=='client'))  {
       // this works when client version is different from server version
       if (v0.split('.')[1]!=v1.split('.')[1])  { // check 2nd version digit
         var whattodo = '';

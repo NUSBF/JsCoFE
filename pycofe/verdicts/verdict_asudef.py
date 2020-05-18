@@ -22,6 +22,8 @@ import math
 from pycofe.proc import verdict
 
 
+# ------------------------------------------------------------------------
+
 def makeVerdict ( verdict_meta ):
 
     ncopies1   = verdict_meta["ncopies"]
@@ -109,6 +111,8 @@ def makeVerdict ( verdict_meta ):
                 bottom_line # + "<p>  " + str(verdict_scor)+ "  " + str(verdict_score) + " " + str(ncopies1)
             )
 
+
+# ------------------------------------------------------------------------
 
 def putVerdictWidget ( base,verdict_meta ):
 
