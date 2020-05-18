@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    01.05.20   <--  Date of Last Modification.
+#    18.05.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -30,17 +30,11 @@ from future import *
 
 #  python native imports
 import os
-import sys
-import shutil
-
-#  ccp4-python imports
-import pyrvapi
 
 #  application imports
 from . import basic
-#from   pycofe.proc import import_merged
-from   pycofe.dtypes import dtype_template
-from   pycofe.proc   import verdict
+from   pycofe.dtypes   import dtype_template
+from   pycofe.verdicts import verdict_phasermr
 
 # ============================================================================
 # Make PhaserMR driver
@@ -58,92 +52,6 @@ class PhaserMR(basic.TaskDriver):
     def import_summary_id(self):  return None   # don't make import summary table
 
     def cad_mtz(self): return "cad.mtz"
-
-
-    # ------------------------------------------------------------------------
-
-    def makeVerdictMessage ( self,options ):
-        verdict_message = "<b style='font-size:18px;'>"
-        if options["score"]>=67:
-            if options["nfitted"]==options["nasu"]:
-                verdict_message += "The structure is likely to be solved."
-            else:
-                verdict_message += "Monomeric unit(s) are likely to have " +\
-                                   "been placed successfully."
-        elif options["score"]>=34:
-            if options["nfitted"]==options["nasu"]:
-                verdict_message += "The structure may be solved, yet with " +\
-                                   "a chance for wrong solution."
-            else:
-                verdict_message += "Monomeric unit(s) were   placed, with " +\
-                                   "a chance for wrong solution."
-            if options["score"]<50.0:
-                verdict_message += " This case may be difficult."
-        else:
-            if options["nfitted"]==options["nasu"]:
-                verdict_message += "It is unlikely that the structure is solved."
-            else:
-                verdict_message += "It is unlikely that monomeric unit(s) " +\
-                                   "were placed correctly."
-        verdict_message += "</b>"
-
-        notes = []
-        if options["fllg"]<60.0:
-            notes.append ( "<i>LLG</i> is critically low" )
-        elif options["fllg"]<120.0:
-            notes.append ( "<i>LLG</i> is lower than optimal" )
-        if options["ftfz"]<8.0:
-            notes.append ( "<i>TFZ</i> is critically low" )
-        elif options["ftfz"]<9.0:
-            notes.append ( "<i>TFZ</i> is lower than optimal" )
-        if options["rfree"]>0.48:
-            notes.append ( "<i>R<sub>free</sub></i> is higher than optimal" )
-        elif options["rfree"]>0.55:
-            notes.append ( "<i>R<sub>free</sub></i> is critically high" )
-
-        if len(notes)<=0:
-            notes.append ( "all scores are optimal" )
-
-        if len(notes)>0:
-            verdict_message += "<ul><li>" + "</li><li>".join(notes) +\
-                               ".</li></ul>"
-
-        return verdict_message
-
-
-    def makeVerdictBottomLine ( self,options ):
-        bottomline = "&nbsp;<br>"
-        if options["nfitted"]<options["nasu"]:
-            if options["score"]<66.0:
-                bottomline += "Please consider that phasing scores are lower " +\
-                              "if, as in this case, not all copies of " +\
-                              "monomeric units are found. "
-            else:
-                bottomline += "Scores look good, however not all copies of " +\
-                              "monomeric units are found. "
-            if options["nfitted"]>options["nfitted0"]:
-                bottomline += "Try to fit the remaining copies in subsequent " +\
-                              "phasing attempts.<p>"
-        if options["nfitted"]==options["nfitted0"]:
-            bottomline += "<i>No new copies could be found in this run, " +\
-                          "therefore, you may need to proceed to model " +\
-                          "building.</i><p>"
-        elif options["nfitted"]==options["nasu"]:
-            bottomline += "<i>Assumed total number of monomeric units in ASU " +\
-                          "has been reached, you may need to proceed to  " +\
-                          "model building."
-            if options["score"]<34.0:
-                bottomline += " Bear in mind that phasing quality look " +\
-                              "doubtful. Model building may be difficult or " +\
-                              "not successful at all."
-            bottomline += "</i><p>"
-
-        return  bottomline +\
-            "In general, correctness of phasing solution may be ultimately " +\
-            "judged only by the ability to (auto-)build in the resulting " +\
-            "electron density. As a practical hint, <i>R<sub>free</sub></i> " +\
-            "should decrease in subsequent refinement.</i><br>&nbsp;"
-
 
     # ------------------------------------------------------------------------
 
@@ -176,9 +84,6 @@ class PhaserMR(basic.TaskDriver):
                     ens_dict[ensname].data = self.makeClass ( ens_dict[ensname].data )
                     ens0.append ( ens_dict[ensname].data )
 
-        #for x in os.listdir(self.inputDir()):
-        #    self.file_stdout.write(x + '\n')
-
         phases = None
         if hasattr(self.input_data.data,"phases"):
             phases = self.makeClass ( self.input_data.data.phases[0] )
@@ -201,16 +106,6 @@ class PhaserMR(basic.TaskDriver):
         if phases:
             phases_mtz = phases.getMTZFilePath(self.inputDir())
             phases_labels = ( phases.FWT, phases.PHWT )
-            """
-            self.open_stdin()
-            self.write_stdin ( "LABIN FILE 1 E1=%s E2=%s\n" %hkl_labels     )
-            self.write_stdin ( "LABIN FILE 2 E1=%s E2=%s\n" %phases_labels )
-            self.write_stdin ( "END\n" )
-            self.close_stdin()
-            cmd = [ "HKLIN1", hklfile,
-                    "HKLIN2", phases.getMTZFilePath(self.inputDir()),
-                    "HKLOUT", self.cad_mtz() ]
-            """
             self.open_stdin()
             self.write_stdin ( "LABIN FILE 1 E1=%s E2=%s\n" %phases_labels )
             self.write_stdin ( "END\n" )
@@ -497,62 +392,15 @@ class PhaserMR(basic.TaskDriver):
 
             # Verdict section
 
-            fllg    = float ( llg )
-            ftfz    = float ( tfz )
-            rfree   = float ( self.generic_parser_summary["refmac"]["R_free"] )
-
-            nfitted = structure.getNofPolymers()
-            nasu    = revision.getNofASUMonomers()
-
-            options = {
-                "score"    : verdict.calcVerdictScore ({
-                                "TFZ" :   { "value"  : ftfz,
-                                            "weight" : 2.0,
-                                            "good"   : [8.0,10.0,12.0,50.0],
-                                            "bad"    : [8.0,7.0,6.0,0.0]
-                                          },
-                                "LLG" :   { "value"  : fllg,
-                                            "weight" : 2.0,
-                                            "good"   : [90.0,120.0,240.0,5000.0],
-                                            "bad"    : [90.0,60.0,40.0,0.0]
-                                          },
-                                "Rfree" : { "value"  : rfree,
-                                            "weight" : 1.0,
-                                            "good"   : [0.5,0.46,0.4,0.1],
-                                            "bad"    : [0.5,0.54,0.56,0.66]
-                                          }
-                             }, 1 ),
+            verdict_meta = {
                 "nfitted0" : nfitted0,
-                "nfitted"  : nfitted,
-                "nasu"     : nasu,
-                "fllg"     : fllg,
-                "ftfz"     : ftfz,
-                "rfree"    : rfree
+                "nfitted"  : structure.getNofPolymers(),
+                "nasu"     : revision.getNofASUMonomers(),
+                "fllg"     : float ( llg ),
+                "ftfz"     : float ( tfz ),
+                "rfree"    : float ( self.generic_parser_summary["refmac"]["R_free"] )
             }
-
-            tdict = {
-                "title": "Phasing summary",
-                "state": 0, "class": "table-blue", "css": "text-align:right;",
-                "rows" : [
-                    { "header": { "label": "LLG", "tooltip": "Log-Likelihood Gain score"},
-                      "data"  : [ llg ]},
-                    { "header": { "label": "TFZ", "tooltip": "Translation Function Z-score"},
-                      "data"  : [ tfz ]},
-                    { "header": { "label": "R<sub>free</sub>", "tooltip": "Free R-factor"},
-                      "data"  : [ self.generic_parser_summary["refmac"]["R_free"] ]},
-                    { "header": { "label"  : "Found copies",
-                                  "tooltip": "Number of found copies / total copies in ASU" },
-                      "data"  : [ str(nfitted) + "/" + str(nasu) ]},
-                ]
-            }
-
-            self.putMessage1 ( self.report_page_id(),"&nbsp;" ,row0 )
-            row0 += 1
-
-            verdict.makeVerdictSection ( self,tdict,options["score"],
-                                         self.makeVerdictMessage    ( options ),
-                                         self.makeVerdictBottomLine ( options ),
-                                         row=row0 )
+            verdict_phasermr.putVerdictWidget ( self,verdict_meta,row0 )
 
 
         # close execution logs and quit
