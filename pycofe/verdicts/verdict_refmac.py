@@ -501,20 +501,19 @@ def calculate (  meta ) :
     return (verdict_score,verdict_message,bottomline)
 
 
-def putVerdictWidget ( body,verdict_meta,verdict_row ):
+def putVerdictWidget ( base,verdict_meta,verdict_row ):
 
-    body.flush()
-    body.file_stdout.close()
-    verdict_meta["refmac"] = parseRefmacLog ( body.file_stdout_path() )
+    base.flush()
+    base.file_stdout.close()
+    verdict_meta["refmac"] = parseRefmacLog ( base.file_stdout_path() )
     # continue writing to stdout
-    body.file_stdout = open ( body.file_stdout_path(),"a" )
-
+    base.file_stdout = open ( base.file_stdout_path(),"a" )
 
     verdict_score, verdict_message, bottomline = calculate ( verdict_meta )
 
-    body.putMessage1 ( body.report_page_id(),"&nbsp;",verdict_row )  # just a spacer
+    base.putMessage1 ( base.report_page_id(),"&nbsp;",verdict_row )  # just a spacer
 
-    verdict.makeVerdictSection ( body,{
+    verdict.makeVerdictSection ( base,{
         "title": "Refinement summary",
         "state": 0, "class": "table-blue", "css": "text-align:right;",
         "rows" : [

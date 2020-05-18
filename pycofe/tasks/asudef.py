@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    04.05.20   <--  Date of Last Modification.
+#    18.05.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -36,16 +36,17 @@ import math
 #import pyrvapi
 
 #  application imports
-from   pycofe.tasks  import basic
-from   pycofe.dtypes import dtype_revision, dtype_sequence
-from   pycofe.proc   import import_filetype, import_sequence, asucomp
-from   pycofe.varut  import rvapi_utils
-from   pycofe.proc   import verdict
+from   pycofe.tasks    import basic
+from   pycofe.dtypes   import dtype_revision, dtype_sequence
+from   pycofe.proc     import import_filetype, import_sequence, asucomp
+from   pycofe.varut    import rvapi_utils
+from   pycofe.verdicts import verdict_asudef
 
 
 # ============================================================================
 # Revision-making function
 
+"""
 def makeAsuFitMessage ( base,nc0,sol0 ):
     if nc0==1 and sol0>35.0:
         base.putMessage ( "<h3 class='header-green'>The suggested " +\
@@ -64,89 +65,7 @@ def makeAsuFitMessage ( base,nc0,sol0 ):
                           "factor of " + str(math.ceil(350.0/sol0)/10.0) +\
                           "</h3>" )
     return
-
-
-def makeVerdict ( ncopies1,nc0,sol,resolution ):
-
-    verdict_message = "<b style='font-size:18px;'>"
-    bottom_line     = ""
-
-    res = resolution
-    if not res:
-        res = 2.2
-    center = 29.0 + 10.0*res
-    verdict_scor = verdict.calcVerdictScore ({
-                        "SOL1" :  { "value"  : sol,
-                                    "weight" : 1.0,
-                                    "center" : center,
-                                    "bwidth" : 2.2  + 3.0*res
-                                  }
-                    },0 )
-    verdict_score = verdict.calcVerdictScore ({
-                        "SOL1" :  { "value"  : verdict_scor,
-                                    "weight" : 1.0,
-                                    "good"   : [30.0,50.0,75.0,100.0],
-                                    "bad"    : [30.0,20.0,10.0,0.0]
-                                  }
-                    },0 )
-
-    if verdict_score>66.0:
-        verdict_message += "The estimated solvent fraction is within"
-        bottom_line      = "The suggested composition of ASU corresponds to " +\
-                           "usual values of solvent fraction and, therefore, " +\
-                           "<b><i>represents an acceptable assumption</i></b>."
-    else:
-        solest = "above"
-        if sol<center:
-            solest = "below"
-        if nc0==1 and verdict_score>50.0:
-            verdict_message += "The estimated solvent fraction is "
-            bottom_line      = "Although the suggested composition of ASU " +\
-                               "corresponds to an unusual value of solvent " +\
-                               "fraction, it " +\
-                               "<b><i>may</i></b> be an acceptable assumption."
-        elif verdict_score>33.0:
-            verdict_message += "The estimated solvent fraction is noticeably "
-            bottom_line      = "The suggested composition of ASU corresponds to " +\
-                               "rather unusual value of solvent fraction. Yet, " +\
-                               "it <b><i>could</i></b> be an acceptable " +\
-                               "assumption</i></b>."
-        else:
-            verdict_message += "The estimated solvent fraction is substantially "
-            if nc0 > 1:
-                bottom_line  = "The suggested composition of ASU corresponds to " +\
-                               "a rather unusual solvent fraction, and unlikely " +\
-                               "to be correct. <i>Try to increase the number of " +\
-                               "copies by a factor of " + str(nc0) + " (" +\
-                               str(int(ncopies1*nc0)) + " in total)</i>."
-            else:
-                ratio    = math.ceil ( math.sqrt(abs(sol-50.0))/0.35 ) / 10.0
-                ncopies2 = int ( round ( ncopies1/ratio ) )
-                if ncopies2<ncopies1 and ncopies1>1:
-                    bottom_line = "The suggested composition of ASU corresponds to " +\
-                                  "a rather unusual solvent fraction, and unlikely " +\
-                                  "to be correct. <i>Try to decrease the number of " +\
-                                  "copies by a factor of " + str(ratio) + " (" +\
-                                  str(ncopies2) + " in total)</i>."
-                else:
-                    bottom_line = "The suggested composition of ASU corresponds to " +\
-                                  "a rather unusual solvent fraction. However, in " +\
-                                  "this particular case, it " +\
-                                  "<b><i>could</i></b> be an acceptable assumption."
-        verdict_message += solest
-
-    bottom_line += "<p>In general, composition of ASU remains a hypothesis until " +\
-                   "structure is solved. The solvent content is more a guidance, " +\
-                   "rather than a definite indicator, of the correctness of the " +\
-                   "choice. Inaccurate estimations of solvent content may have " +\
-                   "a negative impact on phasing and density modification procedures, " +\
-                   "especially in difficult cases."
-
-    return  (   verdict_score,
-                verdict_message + " the usual range for<br>macromolecular " +\
-                                  "crystals, diffracting at similar resolution</b>",
-                bottom_line # + "<p>  " + str(verdict_scor)+ "  " + str(verdict_score) + " " + str(ncopies1)
-            )
+"""
 
 
 def makeRevision ( base,hkl,seq,composition,altEstimateKey,altNRes,
@@ -424,15 +343,13 @@ def makeRevision ( base,hkl,seq,composition,altEstimateKey,altNRes,
         revision.setASUData ( seq,nRes,molWeight,dataKey,mc1,sol1,prb1 )
 
         #makeAsuFitMessage ( base,nc0,sol0 )
-        base.putMessage ( "&nbsp;" )
 
-        verdict_score, verdict_message, bottom_line = \
-                        makeVerdict ( ncopies1,nc0,sol1,
-                                      hkl.getHighResolution(raw=True) )
-
-        verdict.makeVerdictSection ( base,None,verdict_score,
-                                     verdict_message,bottom_line )
-        base.rvrow += 3
+        verdict_asudef.putVerdictWidget ( base,{
+            "ncopies"    : ncopies1,
+            "nc"         : nc0,
+            "sol"        : sol1,
+            "resolution" : hkl.getHighResolution(raw=True)
+        })
 
         if revision:
             base.generic_parser_summary["z02"] = {
