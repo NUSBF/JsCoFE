@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    15.05.20   <--  Date of Last Modification.
+ *    18.05.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -985,15 +985,7 @@ JobTree.prototype.openJob = function ( dataBox,parent_page )  {
                 case job_dialog_reason.run_job :
                           var dataBox          = tree.harvestTaskData ( 1,[] );
                           var branch_task_list = tree.getAllAncestors ( tree.getSelectedTask() );
-                          tree._copy_task_parameters ( options.parameters,branch_task_list );
-                          /*
-                          var reftask          = null;
-                          for (var i=0;(i<branch_task_list.length) && (!reftask);i++)
-                            if (options._type==branch_task_list[i]._type)
-                              reftask = branch_task_list[i];
-                          if (reftask)
-                            options.parameters = jQuery.extend ( true,{},reftask.parameters );
-                          */
+                          tree._copy_task_parameters ( options,branch_task_list );
                           var dataSummary = dataBox.getDataSummary ( options );
                           if ((dataSummary.status==2) ||
                               (('DataRevision' in dataBox.data) &&

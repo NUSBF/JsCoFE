@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    26.03.20   <--  Date of Last Modification.
+ *    18.05.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -76,6 +76,11 @@ if (!__template)  {
   TaskShelxSubstr.prototype.hotButtons = function() {
     return [PhaserEPHotButton()];
   }
+
+  TaskShelxSubstr.prototype.getHelpURL = function()  {
+    return __task_reference_base_url + 'doc.task.SHELX.html';
+  }
+
 
 } else  {
   //  for server side

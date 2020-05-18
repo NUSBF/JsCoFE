@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    26.03.20   <--  Date of Last Modification.
+ *    18.05.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -240,12 +240,17 @@ TaskShelxEMR.prototype.currentVersion = function()  {
 if (!__template)  {
   //  for client side
 
+
   // hotButtons return list of buttons added in JobDialog's toolBar.
   function ShelxEMRHotButton()  {
     return {
       'task'    : 'TaskShelxEMR',
       'tooltip' : 'Density Modificaton and C&alpha;-tracing with ShelxE'
     };
+  }
+
+  TaskShelxEMR.prototype.getHelpURL = function()  {
+    return __task_reference_base_url + 'doc.task.SHELX.html#id1';
   }
 
   TaskShelxEMR.prototype.inputChanged = function ( inpParamRef,emitterId,emitterValue )  {

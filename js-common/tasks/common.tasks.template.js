@@ -143,12 +143,6 @@ TaskTemplate.prototype.doPackSuffixes      = function() { return ['']; }
 
 TaskTemplate.prototype.getHelpURL = function()  {
   return __task_reference_base_url + 'doc.task.' + this._type.substr(4) + '.html';
-  /*
-  if (this.helpURL)
-    return __task_reference_base_url + 'doc.task.' + this._type.substr(4) + '.html' +
-           '?' + this.helpURL;
-  return this.helpURL;
-  */
 }
 
 // cloneItems return list of files and directories in job directory which need

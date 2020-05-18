@@ -50,14 +50,14 @@ high resolution cutoff limits.
 **Substructure refinement and phasing**
 
 The substructure determined in the previous step is refined using the multivariate SAD function implemented in REFMAC5 (or SIRAS, MAD functions for those experiments).
-The procedure also provides initial phases for the protein model building.  The average FOM (figures of merit) from phasing provides a very rough initial indication of the 
-quality of the phases:  values above 0.3 indicate a good quality and values below 0.15 a poor quality of the phases.  
+The procedure also provides initial phases for the protein model building.  The average **FOM** (figures of merit) from phasing provides a very rough initial indication of the 
+quality of the phases:  **values above 0.3 indicate a good quality and values below 0.15 a poor quality of the phases.**  
 
 **Density modification**
 
 The initial phases from the previous steps are improved using prior information about protein electron density maps.  Thanks to a bias correction, the
-average FOM (figures of merit) from density modification in CRANK2 provides another rough indication of the  quality of the phases:  values above 0.5 
-indicate a good quality and values below 0.35 a poor quality of the phases.  
+average **FOM** (figures of merit) from density modification in CRANK2 provides another rough indication of the  quality of the phases:  **values above 0.5 
+indicate a good quality and values below 0.35 a poor quality of the phases.**  
 
 **Hand determination**
 
@@ -77,9 +77,9 @@ Was my structure solved?
 The report from the CRANK2 job indicates whether the structure was solved.  If it was not, it is worthwhile to analyze the information from the steps
 of the structure solution as provided by the report.  
 
-If you see no distinct clusters on the plot from substucture determination, low values of FOM from 
+If you see **no** distinct clusters on the plot from substucture determination, low values of FOM from 
 phasing and density modification and a bad discrimination between the hands then it is likely that the substructure determination was not successful:  
-please follow the tips on substructure determination parameters changes in the Substructure determination section.  
+``please follow the tips on substructure determination parameters changes in the Substructure determination section.``  
 
 If it seems that the substructure was determined but still no or bad protein model was built, it may help to rerun the Crank2 job with differing 
 solvent content parameter (its estimation may be wrong).  If a partial model was built then it is suggested to input it to another CRANK2 job for model rebuilding.
