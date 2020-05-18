@@ -401,10 +401,25 @@ class CCP4Build(basic.TaskDriver):
 
                     rvrow0 = self.rvrow
                     try:
-                        qualrep.quality_report ( self,revision )
+                        meta = qualrep.quality_report ( self,revision )
                     except:
+                        meta = None
                         self.stderr ( " *** molprobity failure" )
                         self.rvrow = rvrow0
+
+                    """
+                    verdict_meta = {
+                        "nresbuilt"  : 100,  # number of residues built
+                        "nresasu"    : 700,  # number of residues in ASU
+                        "nfragments" : 5,    # number of fragments
+                        "nasu"       : 6,    # number of chains in ASU
+                        "edcorr"     : 0.8,  # ED correlation coefficient
+                        "rfactor"    : 0.3,  # Rwork
+                        "rfree"      : 0.35, # Rfree
+                        "molprobity" : meta
+                    }
+                    """
+
 
                 else:
                     self.putMessage ( "<i>Cannot make structure for " +\

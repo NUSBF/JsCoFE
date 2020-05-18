@@ -72,6 +72,8 @@ def makeVerdictMessage ( options ):
     return verdict_message
 
 
+# ------------------------------------------------------------------------
+
 def makeVerdictBottomLine ( options ):
     bottomline = "&nbsp;<br>"
     if options["nfitted"]<options["nasu"]:
@@ -105,6 +107,8 @@ def makeVerdictBottomLine ( options ):
         "electron density. As a practical hint, <i>R<sub>free</sub></i> " +\
         "should decrease in subsequent refinement.</i><br>&nbsp;"
 
+
+# ------------------------------------------------------------------------
 
 def putVerdictWidget ( base,verdict_meta,verdict_row ):
 
