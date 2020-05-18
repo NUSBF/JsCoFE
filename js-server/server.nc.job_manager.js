@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    13.05.20   <--  Date of Last Modification.
+ *    17.05.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -214,6 +214,68 @@ function removeJobDelayed ( job_token,jobStatus )  {
       conf.getServerConfig().jobCheckPeriod );
     }
   }
+}
+
+
+function cleanNC()  {
+
+  readNCJobRegister ( 1 );
+  stopJobCheckTimer ();
+
+  // 1. Check for and remove runaway registry entries
+
+  var mask = {};
+  var n    = 0;
+  for (var job_token in ncJobRegister.job_map)
+    if (utils.dirExists(ncJobRegister.job_map[job_token].jobDir))
+      mask[job_token] = true;
+    else  {
+      n++;
+      log.standard ( 30,'removed unassigned job token: ' + job_token );
+    }
+  ncJobRegister.job_map = comut.mapMaskIn ( ncJobRegister.job_map,mask );
+  log.standard ( 31,'total unassigned job tokens removed: ' + n );
+
+  // 2. Check for and remove runaway job directories
+
+  var jobsDir = ncGetJobsDir();
+  n = 0;
+  fs.readdirSync(jobsDir).forEach(function(file,index){
+    var curPath = path.join ( jobsDir,file );
+    var lstat   = fs.lstatSync(curPath);
+    if (lstat.isDirectory()) {
+      var dir_found = false;
+      for (var job_token in ncJobRegister.job_map)
+        if (ncJobRegister.job_map[job_token].jobDir==curPath)
+          dir_found = true;
+      if (!dir_found)  {
+        utils.removePath ( curPath );
+        n++;
+        log.standard ( 32,'removed abandoned job directory: ' + file );
+      }
+    }
+  });
+  log.standard ( 33,'total abandoned job directories removed: ' + n );
+
+  // 3. Check for and remove directories and registry entries for dead jobs
+
+  var n = 0;
+  for (var job_token in ncJobRegister.job_map)  {
+    var jobEntry = ncJobRegister.job_map[job_token];
+    try {
+      process.kill ( jobEntry.pid,0 );
+    } catch (e) {
+      // process not found, schedule job for deletion
+      log.standard ( 34,'dead job scheduled for deletion, job token: ' + job_token );
+      _stop_job ( jobEntry );
+    }
+  }
+  log.standard ( 31,'total dead jobs scheduled for deletion: ' + n );
+
+  // start job check loop
+
+  startJobCheckTimer();
+
 }
 
 
@@ -969,6 +1031,63 @@ function ncMakeJob ( server_request,server_response )  {
 
 // ===========================================================================
 
+function _stop_job ( jobEntry )  {
+
+  // write the respective signal in job directory
+
+  if (!utils.jobSignalExists(jobEntry.jobDir))
+    utils.writeJobSignal ( jobEntry.jobDir,'terminated_job','',1001 );
+
+  // now this signal should be picked by checkJobs() at some point _after_
+  // the current function quits.
+
+  // put 'stopped' code in job registry, this prevents job's on-close
+  // listener to call ncJobFinished(); instead, ncJobFinished() will be
+  // invoked by checkJobsOnTimer(), which is universal for all exeTypes.
+  jobEntry.jobStatus = task_t.job_code.stopped;
+
+  // now kill the job itself; different approaches are taken for Unix
+  // and Windows platforms, as well as for SHELL and SGE execution types
+  switch (jobEntry.exeType)  {
+
+    default       :
+    case 'CLIENT' :
+    case 'SHELL'  : //var isWindows = /^win/.test(process.platform);
+                    if(!conf.isWindows()) {
+                      psTree ( jobEntry.pid, function (err,children){
+                        var pids = ['-9',jobEntry.pid].concat (
+                                children.map(function(p){ return p.PID; }));
+                        child_process.spawn ( 'kill',pids );
+                      });
+                    } else {
+                      child_process.exec ( 'taskkill /PID ' + jobEntry.pid +
+                                  ' /T /F',function(error,stdout,stderr){});
+                    }
+              break;
+
+    case 'SGE'    : var pids = [jobEntry.pid];
+                    var subjobs = utils.readString (
+                                    path.join(jobEntry.jobDir,'subjobs'));
+                    if (subjobs)
+                      pids = pids.concat ( subjobs
+                                     .replace(/(\r\n|\n|\r)/gm,' ')
+                                     .replace(/\s\s+/g,' ').split(' ') );
+                    utils.spawn ( 'qdel',pids,{} );
+              break;
+
+    case 'SCRIPT' : var pids = ['kill',jobEntry.pid];
+                    var subjobs = utils.readString (
+                                    path.join(jobEntry.jobDir,'subjobs'));
+                    if (subjobs)
+                      pids = pids.concat ( subjobs
+                                     .replace(/(\r\n|\n|\r)/gm,' ')
+                                     .replace(/\s\s+/g,' ').split(' ') );
+                    utils.spawn ( conf.getServerConfig().exeData,pids,{} );
+
+  }
+
+}
+
 function ncStopJob ( post_data_obj,callback_func )  {
 
   log.detailed ( 10,'stop object ' + JSON.stringify(post_data_obj) );
@@ -982,6 +1101,10 @@ function ncStopJob ( post_data_obj,callback_func )  {
       if (jobEntry.pid>0)  {
 
         log.detailed ( 11,'attempt to kill pid=' + jobEntry.pid );
+
+        _stop_job ( jobEntry );
+
+        /*
 
         // write the respective signal in job directory
 
@@ -1035,6 +1158,8 @@ function ncStopJob ( post_data_obj,callback_func )  {
                           utils.spawn ( conf.getServerConfig().exeData,pids,{} );
 
         }
+
+        */
 
         response = new cmd.Response ( cmd.nc_retcode.ok,
                                       '[00109] Job scheduled for deletion',{} );
@@ -1291,8 +1416,11 @@ function ncRunClientJob ( post_data_obj,callback_func )  {
   ncRunClientJob1 ( post_data_obj,callback_func,10 );  // give 10 attempts
 }
 
+
 // ==========================================================================
 // export for use in node
+
+module.exports.cleanNC            = cleanNC;
 module.exports.ncSendFile         = ncSendFile;
 module.exports.ncMakeJob          = ncMakeJob;
 module.exports.ncStopJob          = ncStopJob;

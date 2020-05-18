@@ -127,6 +127,7 @@ function start()  {
   // resume job management
 
   jm.readNCJobRegister ( 0 );
+  jm.cleanNC();
 
   // --------------------------------------------------------------------------
 
