@@ -38,6 +38,29 @@ def loginToCloud(driver, cloudLogin, cloudPassword):
 
     return ()
 
+def removeProject(driver, testName):
+    print('Deleting previous test project if exists')
+
+    textEls = driver.find_elements_by_xpath("//*[normalize-space()='%s']" % testName)
+    if len(textEls) > 0:
+        try:
+            clickByXpath(driver, "//*[normalize-space()='%s']" % testName)
+            time.sleep(1)
+
+            clickByXpath(driver, "//*[normalize-space()='%s']" % 'Delete')
+            time.sleep(1)
+
+            textEls = driver.find_elements_by_xpath("//button[normalize-space()='%s']" % 'Delete')
+            textEls[-1].click()
+            time.sleep(1)
+
+        except:
+            return ()
+
+
+    return ()
+
+
 def makeTestProject(driver, testProjectID, testProjectName):
     print ('Making test project. ID: %s, Name: %s' % (testProjectID, testProjectName))
 
@@ -266,8 +289,8 @@ def molrepAfterMRmodel(driver, waitLong):
     return ()
 
 
-def removeProject(driver):
-    print('Deleting succesfull test project')
+def renameProject(driver, testName):
+    print('Renaming succesfull test project')
     menuButton = driver.find_element(By.XPATH, "//div[contains(@style, 'images_png/menu.png')]")
     menuButton.click()
     time.sleep(1)
@@ -275,17 +298,27 @@ def removeProject(driver):
     clickByXpath(driver, "//*[normalize-space()='%s']" % 'My Projects')
     time.sleep(1)
 
-    clickByXpath(driver, "//*[normalize-space()='%s']" % 'Delete')
+    clickByXpath(driver, "//*[normalize-space()='%s']" % testName)
     time.sleep(1)
 
-    textEls = driver.find_elements_by_xpath("//button[normalize-space()='%s']" % 'Delete')
+    clickByXpath(driver, "//*[normalize-space()='%s']" % 'Rename')
+    time.sleep(1)
+
+    # Shall return list of two elements for project creation
+    projectInput = driver.find_element_by_xpath("//input[@value='%s']" % testName)
+    projectInput.click()
+    projectInput.clear()
+    projectInput.send_keys('Successfull - %s' % testName)
+
+
+    textEls = driver.find_elements_by_xpath("//button[normalize-space()='%s']" % 'Rename')
     textEls[-1].click()
     time.sleep(1)
 
     return ()
 
-def runAllTests(browser = 'Chrome', # or 'Firefox' (or 'Safari' that is not currently supported)
-                cloudURL = "https://cloud.ccp4.ac.uk",
+def runAllTests(browser = 'Firefox', # or 'Firefox' (or 'Safari' that is not currently supported)
+                cloudURL = "http://ccp4serv6.rc-harwell.ac.uk/jscofe-dev/",
                 needToLogin = True, # False for Cloud Desktop (no login page), True for remote server that requires login.
                 cloudLogin = 'setests', # Used to login into remote Cloud
                 cloudPassword = 'cloud8testS',  # Used to login into remote Cloud
@@ -313,13 +346,16 @@ def runAllTests(browser = 'Chrome', # or 'Firefox' (or 'Safari' that is not curr
         if needToLogin:
             loginToCloud(driver, cloudLogin, cloudPassword)
 
-        makeTestProject(driver, 'molrepTest', 'Molrep Test')
-        enterProject(driver, 'molrepTest')
+        testName = 'molrepTest'
+
+        removeProject(driver, testName)
+        makeTestProject(driver, testName, testName)
+        enterProject(driver, testName)
         importFromCloudWithTaskListOnScreen(driver, waitShort)
         asymmetricUnitContentsAfterCloudImport(driver, waitShort)
         prepareMRmodelAfterASU(driver, waitShort)
         molrepAfterMRmodel(driver, waitLong)
-        removeProject(driver)
+        renameProject(driver, testName)
 
         driver.close()
 
