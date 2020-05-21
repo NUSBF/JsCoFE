@@ -9,10 +9,12 @@ import refmacTest
 
 
 def test_Molrep():
-    molrepTest.runAllTests(browser='Firefox')
+    molrepTest.runAllTests(browser='Firefox',
+                           cloudURL = "https://cloud.ccp4.ac.uk/")
 
 def test_Refmac():
-    refmacTest.runAllTests(browser='Firefox')
+    refmacTest.runAllTests(browser='Firefox',
+                           cloudURL = "https://cloud.ccp4.ac.uk/")
 
 
 
