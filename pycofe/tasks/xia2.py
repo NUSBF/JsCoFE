@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    19.04.20   <--  Date of Last Modification.
+#    23.05.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -69,7 +69,8 @@ class Xia2(basic.TaskDriver):
                 nSubJobs = sys.argv[-1]
 
         #have_xds = ("XDS_home" in os.environ) and ("XDSGUI_home" in os.environ)
-        have_xds = ("XDS_home" in os.environ)
+        have_xds   = ("XDS_home"   in os.environ)
+        have_durin = ("Xia2_durin" in os.environ)
 
         # fetch input data
 
@@ -118,6 +119,10 @@ class Xia2(basic.TaskDriver):
             cmd.append ( "nproc=1" )
         else:
             cmd.append ( "nproc=" + nSubJobs )
+
+        if have_durin:
+            if self.getParameter(sec2.PLUGIN)!="none":
+                cmd.append ( "plugin=" + os.environ["Xia2_durin"] )
 
         if hatom      :  cmd.append ( "atom="          + hatom   )
         if space_group:  cmd.append ( "space_group=\"" + space_group + "\"" )

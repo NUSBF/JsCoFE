@@ -328,12 +328,12 @@ class ShelxCD(basic.TaskDriver):
                     if len(hkl_all)==1:
                         ri.makeRevDName  ( self.job_id,i+1,self.outputFName )
                         self.putRevisionWidget ( gridId,i,
-                            "<b><i>New structure revision name:</i></b>",ri )
+                            "New structure revision name:",ri )
                     else:
                         ri.makeRevDName ( self.job_id,i+1,
                             self.outputFName + " (" + hkl_all[i].wtype + ")" )
-                        self.putRevisionWidget ( gridId,i,"<b><i>" +\
-                            hkl_all[i].wtype + " dataset:</i></b>",ri )
+                        self.putRevisionWidget ( gridId,i,hkl_all[i].wtype +\
+                            " dataset:",ri )
 
                     ri.register ( self.outputDataBox )
                     have_results = True

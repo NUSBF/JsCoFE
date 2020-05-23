@@ -202,12 +202,13 @@ def put_molprobity_section ( body,revision ):
     return meta
 
 
-def quality_report ( body,revision ):
+def quality_report ( body,revision,title="Quality Assessment" ):
 
     meta = None
     if revision.Structure and revision.Structure.hasXYZSubtype():
 
-        body.putTitle ( "Quality Assessment" )
+        if title:
+            body.putTitle ( title )
 
         meta = put_molprobity_section ( body,revision )
         put_ramaplot_section   ( body,revision.Structure )

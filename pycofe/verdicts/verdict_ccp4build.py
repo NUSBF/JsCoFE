@@ -24,10 +24,14 @@ from pycofe.proc import verdict
 
 # ------------------------------------------------------------------------
 
-def makeVerdict ( verdict_meta ):
+def makeVerdict ( task_meta,build_no ):
+
     verdict_score   = 0
     verdict_message = ""
     bottom_line     = ""
+
+    metrics = task_meta["metrics"]["build_no"]
+
     return (verdict_score, verdict_message, bottom_line)
 
 

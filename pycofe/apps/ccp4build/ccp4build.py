@@ -3,13 +3,13 @@
 #
 # ============================================================================
 #
-#    28.04.19   <--  Date of Last Modification.
+#    19.05.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  CCP4build Base class
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2019
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2019-2020
 #
 # ============================================================================
 #
@@ -293,13 +293,19 @@ class Build(ccp4build_report.Report):
             self.printMetrics  ( i,meta_rf )
             self.rvapiDrawGraph()
             self.drawEDStats   ( meta_ed["edstats"]["reslist"],i+1 )
-            self.rvapiMakeResultTable ( "res_rfree","Solution with lowest R<sub>free</sub>",
+
+            if self.rvrow_results<=0:
+                self.putMessage ( "&nbsp;" )
+                self.rvrow_results = self.rvrow
+                self.rvrow += 4
+
+            self.rvapiMakeResultTable ( "res_rfree","Solution with the lowest R<sub>free</sub>",
                                         self.output_name_rfree,self.best_rfree_build_no )
-            self.rvapiMakeResultTable ( "res_edcc","Solution with highest ED Correlation",
+            self.rvapiMakeResultTable ( "res_edcc","&nbsp;<br>Solution with the highest ED Correlation",
                                         self.output_name_edcc,self.best_edcc_build_no )
-            self.rvapiMakeResultTable ( "res_nbuilt","Solution with highest number of residues built",
+            self.rvapiMakeResultTable ( "res_nbuilt","&nbsp;<br>Solution with the highest number of residues built",
                                         self.output_name_nbuilt,self.best_nbuilt_build_no )
-            self.rvapiMakeResultTable ( "res_nfrag" ,"Solution with least number of fragments",
+            self.rvapiMakeResultTable ( "res_nfrag" ,"&nbsp;<br>Solution with the least number of fragments",
                                         self.output_name_nfrag,self.best_nfrag_build_no )
 
             last_best = max ( self.best_rfree_build_no,
@@ -463,13 +469,19 @@ class Build(ccp4build_report.Report):
             self.printMetrics  ( i,meta_rf )
             self.rvapiDrawGraph()
             self.drawEDStats   ( meta_ed["edstats"]["reslist"],i+1 )
-            self.rvapiMakeResultTable ( "res_rfree","Solution with lowest R<sub>free</sub>",
+
+            if self.rvrow_results<=0:
+                self.putMessage ( "&nbsp;" )
+                self.rvrow_results = self.rvrow
+                self.rvrow += 4
+
+            self.rvapiMakeResultTable ( "res_rfree","Solution with the lowest R<sub>free</sub>",
                                         self.output_name_rfree,self.best_rfree_build_no )
-            self.rvapiMakeResultTable ( "res_edcc","Solution with highest ED Correlation",
+            self.rvapiMakeResultTable ( "res_edcc","&nbsp;<br>Solution with the highest ED Correlation",
                                         self.output_name_edcc,self.best_edcc_build_no )
-            self.rvapiMakeResultTable ( "res_nbuilt","Solution with highest number of residues built",
+            self.rvapiMakeResultTable ( "res_nbuilt","&nbsp;<br>Solution with the highest number of residues built",
                                         self.output_name_nbuilt,self.best_nbuilt_build_no )
-            self.rvapiMakeResultTable ( "res_nfrag" ,"Solution with least number of fragments",
+            self.rvapiMakeResultTable ( "res_nfrag" ,"&nbsp;<br>Solution with the least number of fragments",
                                         self.output_name_nfrag,self.best_nfrag_build_no )
             self.flush()
 
@@ -512,6 +524,9 @@ class Build(ccp4build_report.Report):
         else:
             self.ccp4build_ep()
 
+        self.writeBestMetrics ( os.path.join (
+                self.outputdir,self.input_data["nameout"] + "_metrics.json" ) )
+
         self.storeReportDocument()
 
         if os.path.isdir("coot-backup"):
@@ -520,7 +535,6 @@ class Build(ccp4build_report.Report):
             shutil.rmtree ( "coot-download" )
 
         return
-
 
 
 def run():
