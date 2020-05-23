@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    07.05.20   <--  Date of Last Modification.
+#    20.05.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -132,6 +132,12 @@ class Base(object):
     output_name_edcc     = None
     output_name_nbuilt   = None
     output_name_nfrag    = None
+
+    rvrow_results = 0  # rvapi report row number for results section
+    rvrow_rfree   = 0  # rvapi report row number for rfree output
+    rvrow_edcc    = 0  # rvapi report row number for rfree output
+    rvrow_nbuilt  = 0  # rvapi report row number for rfree output
+    rvrow_nfrag   = 0  # rvapi report row number for rfree output
 
     resTableId = {}
 
@@ -286,75 +292,78 @@ class Base(object):
             ]
 
             meta["titles"] = [
-                "best R<sub>free</sub>",
-                "best EDCC",
+                "min R<sub>free</sub>",
+                "max EDCC",
                 "max N<sub>res</sub>",
-                "least fragmented"
+                "min N<sub>frag</sub>"
+            ]
+
+            meta["build_no"] = [
+                self.best_rfree_build_no,
+                self.best_edcc_build_no,
+                self.best_nbuilt_build_no,
+                self.best_nfrag_build_no
+            ]
+
+            meta["page"] = [
+                self.rvrow_rfree,   # rvapi report row number for rfree output
+                self.rvrow_edcc,    # rvapi report row number for rfree output
+                self.rvrow_nbuilt,  # rvapi report row number for rfree output
+                self.rvrow_nfrag,   # rvapi report row number for rfree output
+                self.rvrow_results  # rvapi report row number for results section
             ]
 
             if len(self.build_meta)>0:
 
-                meta["refmac"] = {
-                    'R_factor' : self.build_meta[self.best_rfree_build_no]["refmac"]["rfactor"][1],
-                    'R_free'   : self.build_meta[self.best_rfree_build_no]["refmac"]["rfree"][1]
-                }
-                meta["refmac_edcc"] = {
-                    'R_factor' : self.build_meta[self.best_edcc_build_no]["refmac"]["rfactor"][1],
-                    'R_free'   : self.build_meta[self.best_edcc_build_no]["refmac"]["rfree"][1]
-                }
-                meta["refmac_nbuilt"] = {
-                    'R_factor' : self.build_meta[self.best_nbuilt_build_no]["refmac"]["rfactor"][1],
-                    'R_free'   : self.build_meta[self.best_nbuilt_build_no]["refmac"]["rfree"][1]
-                }
-                meta["refmac_nfrag"] = {
-                    'R_factor' : self.build_meta[self.best_nfrag_build_no]["refmac"]["rfactor"][1],
-                    'R_free'   : self.build_meta[self.best_nfrag_build_no]["refmac"]["rfree"][1]
-                }
-
-                meta["cbuccaneer"] = {
-                    'percentage' : self.build_meta[self.best_rfree_build_no]["cbuccaneer"]["res_complete"],
-                }
-                meta["cbuccaneer_edcc"] = {
-                    'percentage' : self.build_meta[self.best_edcc_build_no]["cbuccaneer"]["res_complete"],
-                }
-                meta["cbuccaneer_nbuilt"] = {
-                    'percentage' : self.build_meta[self.best_nbuilt_build_no]["cbuccaneer"]["res_complete"],
-                }
-                meta["cbuccaneer_nfrag"] = {
-                    'percentage' : self.build_meta[self.best_nfrag_build_no]["cbuccaneer"]["res_complete"],
-                }
+                meta["metrics"] = [
+                    {
+                      "R_factor"    : self.build_meta[self.best_rfree_build_no]["refmac"]["rfactor"][1],
+                      "R_free"      : self.build_meta[self.best_rfree_build_no]["refmac"]["rfree"][1],
+                      "res_compl"   : self.build_meta[self.best_rfree_build_no]["cbuccaneer"]["res_complete"],
+                      "chain_compl" : self.build_meta[self.best_rfree_build_no]["cbuccaneer"]["chain_complete"],
+                      "EDCC"        : self.build_meta[self.best_rfree_build_no]["edstats"]["EDCC"]
+                    },{
+                      "R_factor"    : self.build_meta[self.best_edcc_build_no]["refmac"]["rfactor"][1],
+                      "R_free"      : self.build_meta[self.best_edcc_build_no]["refmac"]["rfree"][1],
+                      "res_compl"   : self.build_meta[self.best_edcc_build_no]["cbuccaneer"]["res_complete"],
+                      "chain_compl" : self.build_meta[self.best_edcc_build_no]["cbuccaneer"]["chain_complete"],
+                      "EDCC"        : self.build_meta[self.best_edcc_build_no]["edstats"]["EDCC"]
+                    },{
+                      "R_factor"    : self.build_meta[self.best_nbuilt_build_no]["refmac"]["rfactor"][1],
+                      "R_free"      : self.build_meta[self.best_nbuilt_build_no]["refmac"]["rfree"][1],
+                      "res_compl"   : self.build_meta[self.best_nbuilt_build_no]["cbuccaneer"]["res_complete"],
+                      "chain_compl" : self.build_meta[self.best_nbuilt_build_no]["cbuccaneer"]["chain_complete"],
+                      "EDCC"        : self.build_meta[self.best_nbuilt_build_no]["edstats"]["EDCC"]
+                    },{
+                      "R_factor"    : self.build_meta[self.best_nfrag_build_no]["refmac"]["rfactor"][1],
+                      "R_free"      : self.build_meta[self.best_nfrag_build_no]["refmac"]["rfree"][1],
+                      "res_compl"   : self.build_meta[self.best_nfrag_build_no]["cbuccaneer"]["res_complete"],
+                      "chain_compl" : self.build_meta[self.best_nfrag_build_no]["cbuccaneer"]["chain_complete"],
+                      "EDCC"        : self.build_meta[self.best_nfrag_build_no]["edstats"]["EDCC"]
+                    }
+                ]
 
             else:
 
-                meta["refmac"] = {
-                    'R_factor' : 0.0,
-                    'R_free'   : 0.0
-                }
-                meta["refmac_edcc"] = {
-                    'R_factor' : 0.0,
-                    'R_free'   : 0.0
-                }
-                meta["refmac_nbuilt"] = {
-                    'R_factor' : 0.0,
-                    'R_free'   : 0.0
-                }
-                meta["refmac_nfrag"] = {
-                    'R_factor' : 0.0,
-                    'R_free'   : 0.0
-                }
-
-                meta["cbuccaneer"] = {
-                    'percentage' : 0.0
-                }
-                meta["cbuccaneer_edcc"] = {
-                    'percentage' : 0.0
-                }
-                meta["cbuccaneer_nbuilt"] = {
-                    'percentage' : 0.0
-                }
-                meta["cbuccaneer_nfrag"] = {
-                    'percentage' : 0.0
-                }
+                meta["metrics"] = [
+                    {
+                      "R_factor"   : 0.0,
+                      "R_free"     : 0.0,
+                      "res_complete" : 0.0
+                    },{
+                      "R_factor"   : 0.0,
+                      "R_free"     : 0.0,
+                      "res_complete" : 0.0
+                    },{
+                      "R_factor"   : 0.0,
+                      "R_free"     : 0.0,
+                      "res_complete" : 0.0
+                    },{
+                      "R_factor"   : 0.0,
+                      "R_free"     : 0.0,
+                      "res_complete" : 0.0
+                    }
+                ]
 
             meta["programs_used"] = citations.citation_list
 

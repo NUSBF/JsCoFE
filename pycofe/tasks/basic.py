@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    04.05.20   <--  Date of Last Modification.
+#    18.05.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -49,6 +49,7 @@ try:
     import http.client
 except:
     import http.client as httplib
+import datetime
 
 #  ccp4-python imports
 import pyrvapi
@@ -151,13 +152,16 @@ class TaskDriver(object):
     citation_list = []
 
     # data import fields
-    files_all     = [] # list of files to import
-    file_type     = {} # optional file type specificator
-    summary_row   = 0  # current row in import summary table
-    summary_row_0 = 0  # reference row in import summary table
+    files_all     = []   # list of files to import
+    file_type     = {}   # optional file type specificator
+    summary_row   = 0    # current row in import summary table
+    summary_row_0 = 0    # reference row in import summary table
 
-    widget_no     = 0  # widget Id unificator
-    navTreeId     = "" # navigation tree Id
+    widget_no     = 0    # widget Id unificator
+    navTreeId     = ""   # navigation tree Id
+    title_grid_id = None #  id of title grid
+    start_date    = ""
+    end_date      = ""
 
     # ========================================================================
     # cofe config
@@ -315,11 +319,19 @@ class TaskDriver(object):
 
         self.rvrow = 0;
         focus      = True
+
         if getOption("report_page","show",True):
             pyrvapi.rvapi_add_tab ( self.report_page_id(),
                                     getOption("report_page","name","Report"),focus )
+            self.title_grid_id = self.getWidgetId("title_grid")
+            self.start_date    = datetime.datetime.today().strftime('%Y-%m-%d %H:%M:%S')
+            self.putGrid ( self.title_grid_id,filling_bool=True )
             if tstr and getOption("report_page","showTitle",True):
-                self.putTitle ( tstr )
+                self.putTitle1 ( self.title_grid_id,tstr,0,col=0 )
+                #self.putTitle ( tstr )
+            self.putMessage1 ( self.title_grid_id,
+                "<div style=\"text-align:right;font-size:12px;\">Started: " +\
+                self.start_date + "</div>",0,col=1 )
             focus = False
         if getOption("log_page","show",True):
             if self.navTreeId:
@@ -469,8 +481,21 @@ class TaskDriver(object):
         if self.rvrow>0:
             pyrvapi.rvapi_set_text ( "&nbsp;",self.report_page_id(),self.rvrow,0,1,1 )
             self.rvrow += 1
-        self.putTitle1 ( self.report_page_id(),title_str,self.rvrow,1 )
+        self.putTitle1 ( self.report_page_id(),title_str,self.rvrow,colSpan=1 )
         self.rvrow += 1
+        return
+
+    def putSpacer ( self,height_px ):
+        self.putSpacer1 ( self.report_page_id(),height_px,self.rvrow )
+        self.rvrow += 1
+        return
+
+    def putSpacer1 ( self,pageId,height_px,row ):
+        h = str(height_px) + "px;"
+        pyrvapi.rvapi_set_text (
+                "<div style='font-size:" + h + "height:" + h + "'></div>",
+                pageId,row,0,1,1 )
+        pyrvapi.rvapi_set_cell_stretch ( pageId,10,height_px,row,0 )
         return
 
     def insertTab ( self,tabId,tabName,content,focus=False ):
@@ -514,10 +539,10 @@ class TaskDriver(object):
         self.file_stderr .flush()
         return
 
-    def putTitle1 ( self,pageId,title_str,row,colSpan=1 ):
+    def putTitle1 ( self,pageId,title_str,row,colSpan=1,col=0 ):
         pyrvapi.rvapi_set_text (
                         "<h2>[" + self.job_id.zfill(4) + "] " + title_str + "</h2>",
-                        pageId,row,0,1,colSpan )
+                        pageId,row,col,1,colSpan )
         return
 
     def putHR ( self ):
@@ -1229,7 +1254,8 @@ class TaskDriver(object):
                         structure.addDataAssociation ( associated_data_list[i].dataId )
                 structure.addPhasesSubtype()
                 if title:
-                    self.putTitle ( title )
+                    self.putTitle ( title +\
+                        self.hotHelpLink ( "Structure","jscofe_qna.structure" ) )
                 else:
                     self.putMessage ( "&nbsp;" )
                 self.putStructureWidget ( self.getWidgetId("structure_btn_"),
@@ -1392,18 +1418,18 @@ class TaskDriver(object):
                             "window.parent.rvapi_inspectData(" + self.job_id +\
                             ",'DataRevision','" + revision.dataId + "')",
                             False,gridId, row,0,1,1 )
-        pyrvapi.rvapi_set_text ( "<span style='vertical-align:sub;nowrap;'>" +\
-                                 message + "</span>",gridId, row,1,1,1 )
-        pyrvapi.rvapi_set_text ( "<span style='vertical-align:sub;font-size:110%;nowrap;'>\"" +\
-                                 revision.dname + "\"</span>", gridId, row,2,1,1 )
+        pyrvapi.rvapi_set_text ( "<div style='vertical-align:sub;font-size:16px;white-space:nowrap;'><b><i>" +\
+                                 message + "</i></b></div>",gridId, row,1,1,1 )
+        pyrvapi.rvapi_set_text ( "<div style='vertical-align:sub;font-size:16px;white-space:nowrap;'>\"" +\
+                                 revision.dname + "\"</div>", gridId, row,2,1,1 )
         return
 
-    def hotHelpLink ( self,title,helpFName,tooltip="what is this?" ):
+    def hotHelpLink ( self,title,helpFName,tooltip="what is this?",chapter="html-userguide" ):
         hothelp = "<sup><img src=\"xxJsCoFExx-fe/images_png/help.png\" "      +\
                           "title=\"" + tooltip + "\" "                        +\
                           "style=\"width:14px;height:14px;cursor:pointer;\" " +\
                         "onclick=\"javascript:window.parent.launchHelpBox('"  +\
-                             title + "','manuals/html-userguide/" + helpFName +\
+                             title + "','manuals/" + chapter + "/" + helpFName +\
                              ".html',null,10)\"/>"                            +\
                   "</sup>"
         return hothelp
@@ -1963,5 +1989,25 @@ class TaskDriver(object):
 
         finally:
             pass
+
+        self.end_date = datetime.datetime.today().strftime('%Y-%m-%d %H:%M:%S')
+        cpu_time = ""
+        if self.task and hasattr(self.task,"cpu_time"):
+            cpu_time = "<br>CPU (sec): " + "{:.3f}".format(self.task.cpu_time*3600)
+            #hours = int(self.task.cpu_time)
+            #mins  = int((self.task.cpu_time-hours)*60)
+            #secs  = int(((self.task.cpu_time-hours)*60-mins)*60)
+            #msecs = int((((self.task.cpu_time-hours)*60-mins)*60-secs)*1000)
+            #cpu_time = "<br>CPU (sec): " + "{:02d}".format(hours) + ":" +\
+            #                         "{:02d}".format(mins)  + ":" +\
+            #                         "{:02d}".format(secs)  + "." +\
+            #                         "{:03d}".format(msecs)
+        self.putMessage1 ( self.title_grid_id,
+                "<div style=\"text-align:right;font-size:12px;white-space:nowrap;\">" +\
+                "Started: " + self.start_date +\
+                "<br>Finished: " + self.end_date + cpu_time +\
+                "</div>",
+                0,col=1 )
+        self.flush()
 
         signal_obj.quitApp()

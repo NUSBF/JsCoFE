@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    22.03.20   <--  Date of Last Modification.
+#    19.05.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -45,6 +45,7 @@
 import os
 import sys
 import shutil
+import json
 
 import pyrvapi
 
@@ -350,9 +351,16 @@ class Report(ccp4build_edstats.EDStats):
     def rvapiMakeResultTable ( self,tableId,title,output_name,build_no ):
 
         if output_name not in self.resTableId:
-            self.putMessage ( "&nbsp;" )
+
+            if    "rfree" in tableId :  self.rvrow_rfree  = self.rvrow
+            elif   "edcc" in tableId :  self.rvrow_edcc   = self.rvrow
+            elif "nbuilt" in tableId :  self.rvrow_nbuilt = self.rvrow
+            elif  "nfrag" in tableId :  self.rvrow_nfrag  = self.rvrow
+
+            #self.putMessage ( "&nbsp;" )
+            self.putMessage ( "<h3>" + title + "</h3>" )
             self.resTableId[output_name] = self.getWidgetId ( tableId )
-            pyrvapi.rvapi_add_table ( self.resTableId[output_name],title,
+            pyrvapi.rvapi_add_table ( self.resTableId[output_name],"",
                                       self.report_page_id,
                                       self.rvrow,0,1,1, 0 )
             self.putHorzHeaders ( self.resTableId[output_name],[
@@ -368,17 +376,18 @@ class Report(ccp4build_edstats.EDStats):
                 [ "R<sub>free</sub>"  ,"R-free"                     ],
                 [ "EDCC"              ,"ED Correlation Coefficient" ]
             ])
-            self.rvrow += 1
+            self.rvrow += 5
 
             #self.putMessage ( "&nbsp;" )
 
             map_path = os.path.join ( os.path.relpath(self.outputdir,self.reportdir),
                                       output_name ).replace("\\","/")
-            self.putStructureWidget ( "Structure and density map",[
+            self.putStructureWidget ( "Built model and density map",[
                                         map_path + ".pdb",
                                         map_path + ".mtz",
-                                        map_path + edmap.file_map(),
-                                        map_path + edmap.file_dmap()
+                                        None,None
+                                        #map_path + edmap.file_map(),
+                                        #map_path + edmap.file_dmap()
                                       ],-1 )
 
         bmeta = self.build_meta[build_no]["cbuccaneer"]
@@ -571,4 +580,38 @@ class Report(ccp4build_edstats.EDStats):
             tmeta["nmodified"]   , emeta["nmodified"]
         ))
 
+        return
+
+
+    def writeBestMetrics ( self,filePath ):
+        with open(filePath,"w") as file:
+            if len(self.build_meta)>0:
+                d = { "rfree" :  { "serNo" : self.best_rfree_build_no,
+                                   "meta"  : self.build_meta[self.best_rfree_build_no]
+                                 },
+                      "edcc" :   { "serNo" : self.best_edcc_build_no,
+                                   "meta"  : self.build_meta[self.best_edcc_build_no]
+                                 },
+                      "nbuilt" : { "serNo" : self.best_nbuilt_build_no,
+                                   "meta"  : self.build_meta[self.best_nbuilt_build_no]
+                                 },
+                      "nfrag" :  { "serNo" : self.best_nfrag_build_no,
+                                   "meta"  : self.build_meta[self.best_nfrag_build_no]
+                                 }
+                    }
+            else:
+                d = { "rfree" :  { "serNo" : -1,
+                                   "meta"  : None
+                                 },
+                      "edcc" :   { "serNo" : -1,
+                                   "meta"  : None
+                                 },
+                      "nbuilt" : { "serNo" : -1,
+                                   "meta"  : None
+                                 },
+                      "nfrag" :  { "serNo" : -1,
+                                   "meta"  : None
+                                 }
+                    }
+            file.write ( json.dumps(d,indent=4,sort_keys=True) )
         return

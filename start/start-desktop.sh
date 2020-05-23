@@ -19,6 +19,9 @@ export XDS_home=$xds_dir
 export XDSGUI_home=$xdsgui_dir
 export DOCREPO=/Users/eugene/Projects/jsCoFE/trunk-doc
 
+# custom plugin for Xia-2
+export Xia2_durin=/path/to/durin-plugin.so
+
 # comment out if buster is not installed
 source /Applications/GPhL/buster/setup.sh
 
@@ -29,7 +32,9 @@ echo $PYTHONPATH
 which ccp4-python
 echo $XDS_home
 echo $XDSGUI_home
-echo $DOCREPO_URL
+echo $DOCREPO
+echo $Xia2_durin
+echo ""
 
 #killall node
 

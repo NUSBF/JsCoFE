@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    18.04.20   <--  Date of Last Modification.
+ *    23.05.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -102,17 +102,28 @@ function TaskXia2()  {
               position : [1,0,1,8],
               contains : {
                 PIPELINE : {
-                        type     : 'combobox',
-                        keyword  : 'pipeline',
-                        label    : 'Processing pipeline',
-                        tooltip  : 'Choose the image processing pipeline',
-                        range    : ['2d|MOSFLM & Aimless (2d)',
-                                    '3d|XDS & XSCALE (3d)',
-                                    '3dii|XDS & XSCALE (3d) with indexing using peaks found from all images',
-                                    'dials|DIALS & Aimless (3d)'
-                                   ],
-                        value    : 'dials',
-                        position : [0,0,1,5]
+                        type      : 'combobox',
+                        keyword   : 'pipeline',
+                        label     : 'Processing pipeline',
+                        tooltip   : 'Choose the image processing pipeline',
+                        range     : ['2d|MOSFLM & Aimless (2d)',
+                                     '3d|XDS & XSCALE (3d)',
+                                     '3dii|XDS & XSCALE (3d) with indexing using peaks found from all images',
+                                     'dials|DIALS & Aimless (3d)'
+                                    ],
+                        value     : 'dials',
+                        position  : [0,0,1,5]
+                      },
+                PLUGIN : {
+                        type      : 'combobox',
+                        keyword   : 'plugin',
+                        label     : 'Custom plugin',
+                        tooltip   : 'Choose the custom Xia-2 plugin to use',
+                        range     : ['none|None',
+                                     'durin|Durin'
+                                    ],
+                        value     : 'none',
+                        position  : [1,0,1,5]
                       },
                 SMALL_MOLECULE : {
                         type      : 'checkbox',
@@ -121,7 +132,7 @@ function TaskXia2()  {
                                     'suited to small molecule data.',
                         //iwidth    : 400,
                         value     : false,
-                        position  : [1,0,1,3]
+                        position  : [2,0,1,3]
                       },
                 SPACE_GROUP : {
                         type      : 'string_',   // empty string allowed
@@ -131,7 +142,7 @@ function TaskXia2()  {
                         iwidth    : 80,
                         value     : '',
                         maxlength : 7,       // maximum input length
-                        position  : [2,0,1,1]
+                        position  : [3,0,1,1]
                       },
                 UNIT_CELL : {
                         type      : 'string_',   // empty string allowed
@@ -141,79 +152,85 @@ function TaskXia2()  {
                                     'parameters given as a,b,c,&alpha;,&beta;,&gamma;',
                         iwidth    : 400,
                         value     : '',
-                        position  : [2,4,1,1]
+                        position  : [3,4,1,1]
                       },
                 TITLE1 : {
                         type      : 'label',  // just a separator
                         label     : '<h3>Resolution limits</h3>',
-                        position  : [3,0,1,4]
+                        position  : [4,0,1,4]
                       },
                 D_MIN : {
-                      type      : 'real_', // blank value is allowed
-                      keyword   : 'd_min',  // the real keyword for job input stream
-                      label     : 'High resolution cut-off (&Aring;)',
-                      tooltip   : 'High resolution cut-off for scaling and merging',
-                      range     : [0.001,'*'], // may be absent (no limits) or must
-                                               // be one of the following:
-                                               //   ['*',max]  : limited from top
-                                               //   [min,'*']  : limited from bottom
-                                               //   [min,max]  : limited from top and bottom
-                      value     : '',          // value to be paired with the keyword
-                      position  : [4,0,1,1]    // [row,col,rowSpan,colSpan]
-                    },
+                        type      : 'real_', // blank value is allowed
+                        keyword   : 'd_min',  // the real keyword for job input stream
+                        label     : 'High resolution cut-off (&Aring;)',
+                        tooltip   : 'High resolution cut-off for scaling and merging',
+                        range     : [0.001,'*'], // may be absent (no limits) or must
+                                                 // be one of the following:
+                                                 //   ['*',max]  : limited from top
+                                                 //   [min,'*']  : limited from bottom
+                                                 //   [min,max]  : limited from top and bottom
+                        value     : '',          // value to be paired with the keyword
+                        position  : [5,0,1,1]    // [row,col,rowSpan,colSpan]
+                      },
                 CC_HALF : {
-                      type      : 'real_', // blank value is allowed
-                      keyword   : 'cc_half',  // the real keyword for job input stream
-                      label     : 'Minimum <i>CC<sub>1/2</sub></i>',
-                      tooltip   : 'If given, the resolution cut-off will be ' +
-                                  'chosen such as to keep <i>CC<sub>1/2</sub></i> ' +
-                                  'above the specified value',
-                      range     : [0.001,'*'], // may be absent (no limits) or must
-                                               // be one of the following:
-                                               //   ['*',max]  : limited from top
-                                               //   [min,'*']  : limited from bottom
-                                               //   [min,max]  : limited from top and bottom
-                      value     : '',          // value to be paired with the keyword
-                      //default   : 0.5,
-                      position  : [5,0,1,1]    // [row,col,rowSpan,colSpan]
-                    },
+                        type      : 'real_', // blank value is allowed
+                        keyword   : 'cc_half',  // the real keyword for job input stream
+                        label     : 'Minimum <i>CC<sub>1/2</sub></i>',
+                        tooltip   : 'If given, the resolution cut-off will be ' +
+                                    'chosen such as to keep <i>CC<sub>1/2</sub></i> ' +
+                                    'above the specified value',
+                        range     : [0.001,'*'], // may be absent (no limits) or must
+                                                 // be one of the following:
+                                                 //   ['*',max]  : limited from top
+                                                 //   [min,'*']  : limited from bottom
+                                                 //   [min,max]  : limited from top and bottom
+                        value     : '',          // value to be paired with the keyword
+                        //default   : 0.5,
+                        position  : [6,0,1,1]    // [row,col,rowSpan,colSpan]
+                      },
                 MISIGMA : {
-                      type      : 'real_', // blank value is allowed
-                      keyword   : 'misigma',  // the real keyword for job input stream
-                      label     : 'Minimum merged <i>I/&sigma;<sub>I</sub></i>',
-                      tooltip   : 'If given, the resolution cut-off will be ' +
-                                  'chosen such as to keep merged ' +
-                                  '<i>I/&sigma;<sub>I</sub></i> above the ' +
-                                  'specified value',
-                      range     : [0.001,'*'], // may be absent (no limits) or must
-                                               // be one of the following:
-                                               //   ['*',max]  : limited from top
-                                               //   [min,'*']  : limited from bottom
-                                               //   [min,max]  : limited from top and bottom
-                      value     : '',          // value to be paired with the keyword
-                      //default   : 1.0,
-                      position  : [6,0,1,1]    // [row,col,rowSpan,colSpan]
-                    },
+                        type      : 'real_', // blank value is allowed
+                        keyword   : 'misigma',  // the real keyword for job input stream
+                        label     : 'Minimum merged <i>I/&sigma;<sub>I</sub></i>',
+                        tooltip   : 'If given, the resolution cut-off will be ' +
+                                    'chosen such as to keep merged ' +
+                                    '<i>I/&sigma;<sub>I</sub></i> above the ' +
+                                    'specified value',
+                        range     : [0.001,'*'], // may be absent (no limits) or must
+                                                 // be one of the following:
+                                                 //   ['*',max]  : limited from top
+                                                 //   [min,'*']  : limited from bottom
+                                                 //   [min,max]  : limited from top and bottom
+                        value     : '',          // value to be paired with the keyword
+                        //default   : 1.0,
+                        position  : [7,0,1,1]    // [row,col,rowSpan,colSpan]
+                      },
                 ISIGMA : {
-                      type      : 'real_', // blank value is allowed
-                      keyword   : 'isigma',  // the real keyword for job input stream
-                      label     : 'Minimum unmerged <i>I/&sigma;<sub>I</sub></i>',
-                      tooltip   : 'If given, the resolution cut-off will be ' +
-                                  'chosen such as to keep unmerged ' +
-                                  '<i>I/&sigma;<sub>I</sub></i> above the ' +
-                                  'specified value',
-                      range     : [0.001,'*'], // may be absent (no limits) or must
-                                               // be one of the following:
-                                               //   ['*',max]  : limited from top
-                                               //   [min,'*']  : limited from bottom
-                                               //   [min,max]  : limited from top and bottom
-                      value     : '',          // value to be paired with the keyword
-                      //default   : 0.25,
-                      position  : [7,0,1,1]    // [row,col,rowSpan,colSpan]
-                    }
+                        type      : 'real_', // blank value is allowed
+                        keyword   : 'isigma',  // the real keyword for job input stream
+                        label     : 'Minimum unmerged <i>I/&sigma;<sub>I</sub></i>',
+                        tooltip   : 'If given, the resolution cut-off will be ' +
+                                    'chosen such as to keep unmerged ' +
+                                    '<i>I/&sigma;<sub>I</sub></i> above the ' +
+                                    'specified value',
+                        range     : [0.001,'*'], // may be absent (no limits) or must
+                                                 // be one of the following:
+                                                 //   ['*',max]  : limited from top
+                                                 //   [min,'*']  : limited from bottom
+                                                 //   [min,max]  : limited from top and bottom
+                        value     : '',          // value to be paired with the keyword
+                        //default   : 0.25,
+                        position  : [8,0,1,1]    // [row,col,rowSpan,colSpan]
+                      }
               }
             }
   };
+
+  if (!__template)  {
+    console.log ( __environ_server );
+    if (__environ_server.indexOf('Xia2_durin')<0)
+      delete this.parameters.sec2.contains.PLUGIN;
+  }
 
 }
 

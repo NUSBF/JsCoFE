@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    01.05.20   <--  Date of Last Modification.
+#    19.05.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -333,7 +333,7 @@ class CCP4Build(basic.TaskDriver):
 
         have_results = False
 
-        meta = None
+        meta     = None
         meta_str = self.restoreReportDocument()
         if not meta_str:
             self.file_stderr.write ( "\n\n ***** ccp4build returned no meta\n\n" )
@@ -351,87 +351,152 @@ class CCP4Build(basic.TaskDriver):
 
         if meta:
 
-            self.putTitle   ( "Structure Revisions" )
-            self.putMessage ( "<b><i>New structure revision name for:<br>&nbsp;</i></b>" )
+            self.stderrln ( str(meta) )
 
+            self.putMessage1 ( self.report_page_id(),"&nbsp;" ,meta["page"][4] )
+            self.putTitle1   ( self.report_page_id(),"Results",meta["page"][4]+1 )
+
+            outnames = meta["outnames"]
+            titles   = meta["titles"  ]
+            build_no = meta["build_no"]
+
+            # mark redundant solutions
+            tnames  = [
+                "the lowest R<sub>free</sub>",
+                "the highest EDCC",
+                "the highest N<sub>res</sub>",
+                "the lowest N<sub>frag</sub>"
+            ]
+            revname = []
+            for i in range(len(build_no)):
+                r = titles[i]
+                if build_no[i]>=0:
+                    secname = tnames[i]
+                    for j in range(i+1,len(build_no)):
+                        if build_no[j]==build_no[i]:
+                            build_no[j] = -(i+1)
+                            secname += ", " + tnames[j]
+                            r       += ", " + titles[j]
+                            for k in range(7):
+                                self.putSpacer1 ( self.report_page_id(),1,meta["page"][j]+k )
+                    secname = "Solution with " + " and".join( secname.rsplit(",",1) )
+                    self.putMessage1 ( self.report_page_id(),
+                            "<h3>" + secname + "</h3>",meta["page"][i] )
+                elif build_no[i-1]>=0:
+                    self.rvrow = meta["page"][i]
+                revname.append ( r )
+
+            self.flush()
+
+            structures = []
+            revisions  = []
+            for i in range(len(outnames)):
+
+                fname = outnames[i]
+                rev   = None
+                if build_no[i]>=0:
+                    structure = self.registerStructure1 (
+                                    os.path.join(self.outputDir(),fname + ".pdb"),
+                                    None,
+                                    os.path.join(self.outputDir(),fname + ".mtz"),
+                                    None, #os.path.join(self.outputDir(),fname + ".map"),
+                                    None, #os.path.join(self.outputDir(),fname + ".diff.map"),
+                                    None,
+                                    self.outputFName,leadKey=istruct.leadKey,
+                                    copy_files=False )
+
+                    if structure:
+
+                        if istruct:
+                            structure.copyAssociations ( istruct )
+                            structure.copySubtype      ( istruct )
+                            structure.copyLabels       ( istruct )
+                            structure.copyLigands      ( istruct )
+                        structure.removeSubtype   ( dtype_template.subtypeSubstructure() )
+                        structure.setXYZSubtype   ()
+                        structure.setRefmacLabels ( None )
+                        structure.FP         = istruct.FP
+                        structure.SigFP      = istruct.SigFP
+                        structure.FreeR_flag = istruct.FreeR_flag
+
+                        # make structure revision
+                        rev = dtype_revision.DType ( -1 )
+                        rev.copy ( revision )
+                        rev.removeSubtype     ( dtype_template.subtypeSubstructure() )
+                        rev.setReflectionData ( hkl )
+                        rev.setStructureData  ( structure )
+                        #rev.makeRevDName ( self.job_id,i+1, self.outputFName + " (" + titles[i] + ")" )
+                        #self.putRevisionWidget ( gridId,i,"<b><i>" + titles[i] + " build:</i></b>",rev )
+                        #rev.register ( self.outputDataBox )
+                        #revisions.append ( rev )
+                        have_results = True
+
+                        rvrow0 = self.rvrow
+                        try:
+                            self.rvrow = meta["page"][i] + 2
+                            self.putSpacer ( 6 )
+                            qrmeta = qualrep.quality_report ( self,rev,title=None )
+                            self.putMessage ( "<b>Assigned structure" +\
+                                self.hotHelpLink("Structure","jscofe_qna.structure") +\
+                                " name:</b>&nbsp;" + structure.dname +\
+                                "<font size='+2'><sub>&nbsp;</sub></font>" )
+                            #self.putSpacer ( 3 )
+                            meta["metrics"][i]["clashscore"] = qrmeta["clashscore"]
+                        except:
+                            qrmeta = None
+                            self.stderr ( " *** molprobity failure" )
+                        self.rvrow = rvrow0
+
+                    else:
+                        self.putMessage ( "<i>Cannot make structure for " +\
+                                os.path.join(self.outputDir(),fname+".pdb") + "</i>" )
+                        #revisions.append ( None )
+                    self.flush()
+
+                else:
+                    structure = structures[-(build_no[i]+1)]
+
+                structures.append ( structure )
+                revisions .append ( rev )
+
+
+            # put revision widgets in report
+
+            self.putTitle ( "Structure Revisions" +\
+                        self.hotHelpLink ( "Structure Revision",
+                                           "jscofe_qna.structure_revision") )
+            #self.putMessage  ( "<b><i>New structure revision name for:<br>&nbsp;</i></b>" )
             gridId = self.getWidgetId ( "revisions" )
             pyrvapi.rvapi_add_grid ( gridId,False,self.report_page_id(),self.rvrow,0,1,1 )
             self.rvrow += 1
 
-            outnames = meta["outnames"]
-            titles   = meta["titles"]
+            self.stderrln ( str(build_no) )
 
+            serNo = 0
             for i in range(len(outnames)):
+                if build_no[i]>=0 and revisions[i]:
+                    revisions[i].makeRevDName ( self.job_id,serNo+1,
+                                    self.outputFName + " (" + revname[i] + ")" )
+                    self.putRevisionWidget ( gridId,serNo,
+                                "build with " + revname[i] + " :",
+                                revisions[i] )
+                    revisions[i].register ( self.outputDataBox )
+                    serNo += 1
 
-                fname = outnames[i]
-                structure = self.registerStructure1 (
-                                os.path.join(self.outputDir(),fname + ".pdb"),
-                                None,
-                                os.path.join(self.outputDir(),fname + ".mtz"),
-                                None, #os.path.join(self.outputDir(),fname + ".map"),
-                                None, #os.path.join(self.outputDir(),fname + ".diff.map"),
-                                None,
-                                self.outputFName,leadKey=istruct.leadKey,
-                                copy_files=False )
-
-                if structure:
-
-                    if istruct:
-                        structure.copyAssociations ( istruct )
-                        structure.copySubtype      ( istruct )
-                        structure.copyLabels       ( istruct )
-                        structure.copyLigands      ( istruct )
-                    structure.removeSubtype   ( dtype_template.subtypeSubstructure() )
-                    structure.setXYZSubtype   ()
-                    structure.setRefmacLabels ( None )
-                    structure.FP         = istruct.FP
-                    structure.SigFP      = istruct.SigFP
-                    structure.FreeR_flag = istruct.FreeR_flag
-
-                    # make structure revision
-                    rev = dtype_revision.DType ( -1 )
-                    rev.copy ( revision )
-                    rev.removeSubtype     ( dtype_template.subtypeSubstructure() )
-                    rev.setReflectionData ( hkl )
-                    rev.setStructureData  ( structure )
-                    rev.makeRevDName ( self.job_id,i+1, self.outputFName + " (" + titles[i] + ")" )
-                    self.putRevisionWidget ( gridId,i,"<b><i>" + titles[i] + " build:</i></b>",rev )
-                    rev.register ( self.outputDataBox )
-                    have_results = True
-
-                    rvrow0 = self.rvrow
-                    try:
-                        meta = qualrep.quality_report ( self,revision )
-                    except:
-                        meta = None
-                        self.stderr ( " *** molprobity failure" )
-                        self.rvrow = rvrow0
-
-                    """
-                    verdict_meta = {
-                        "nresbuilt"  : 100,  # number of residues built
-                        "nresasu"    : 700,  # number of residues in ASU
-                        "nfragments" : 5,    # number of fragments
-                        "nasu"       : 6,    # number of chains in ASU
-                        "edcorr"     : 0.8,  # ED correlation coefficient
-                        "rfactor"    : 0.3,  # Rwork
-                        "rfree"      : 0.35, # Rfree
-                        "molprobity" : meta
-                    }
-                    """
-
-
-                else:
-                    self.putMessage ( "<i>Cannot make structure for " +\
-                            os.path.join(self.outputDir(),fname+".pdb") + "</i>" )
+            self.flush()
 
             try:
                 # this is only for displayig stats in job tree
-                self.generic_parser_summary["refmac"]     = meta["refmac"]
-                self.generic_parser_summary["cbuccaneer"] = meta["cbuccaneer"]
+                m0 = meta["metrics"][0]
+                self.generic_parser_summary["ccp4build"] = {
+                  "summary_line" : "Compl=" + str(m0["res_compl"]) +\
+                                   "% R="   + str(m0["R_factor"])  +\
+                                   " R<sub>free</sub>=" + str(m0["R_free"])
+                }
+                #self.generic_parser_summary["refmac"]     = meta["refmac"]
+                #self.generic_parser_summary["cbuccaneer"] = meta["cbuccaneer"]
             except:
                 pass
-
 
         shutil.rmtree ( self.workdir() )
 

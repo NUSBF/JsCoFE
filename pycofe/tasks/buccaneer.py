@@ -263,7 +263,8 @@ class Buccaneer(basic.TaskDriver):
             shutil.copyfile ( os.path.join(self.buccaneer_tmp(),"refine.mtz"),
                                            self.buccaneer_mtz() )
 
-            self.putTitle ( "Buccaneer Output" )
+            self.putTitle ( "Built Structure" +\
+                        self.hotHelpLink ( "Structure","jscofe_qna.structure" ) )
             self.unsetLogParser()
 
             # calculate maps for UglyMol using final mtz from temporary location

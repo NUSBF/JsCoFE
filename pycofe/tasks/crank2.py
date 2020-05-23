@@ -590,12 +590,12 @@ class Crank2(basic.TaskDriver):
                     if len(hkl_all)==1:
                         revision.makeRevDName  ( self.job_id,i+1,self.outputFName )
                         self.putRevisionWidget ( gridId,i,
-                            "<b><i>New structure revision name:</i></b>",revision )
+                            "New structure revision name:",revision )
                     else:
                         revision.makeRevDName ( self.job_id,i+1,
                             self.outputFName + " (" + hkl_all[i].wtype + ")" )
-                        self.putRevisionWidget ( gridId,i,"<b><i>" +\
-                            hkl_all[i].wtype + " dataset:</i></b>",revision )
+                        self.putRevisionWidget ( gridId,i,hkl_all[i].wtype +\
+                            " dataset:",revision )
 
                     revision.register ( self.outputDataBox )
                     revisions.append ( revision )
@@ -672,7 +672,12 @@ class Crank2(basic.TaskDriver):
         # Prepare output page
 
         self.flush()
-        self.storeReportDocument ( "" )
+        crank2_meta = {
+            "help_btn_template" : self.hotHelpLink ( "Crank-2 Glossary",
+                        "jscofe_qna.crank2_glossary",tooltip="what is this?",
+                        chapter="html-taskref" )
+        }
+        self.storeReportDocument ( json.dumps(crank2_meta) )
 
         self.xyzout_fpath = os.path.join ( os.getcwd(),self.outputDir(),self.stampFileName(1,self.getXYZOFName()) )
         self.subout_fpath = os.path.join ( os.getcwd(),self.outputDir(),self.stampFileName(1,self.getSubOFName()) )

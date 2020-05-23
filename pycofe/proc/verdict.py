@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    07.05.20   <--  Date of Last Modification.
+#    23.05.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -26,7 +26,25 @@ from   pycofe.varut  import rvapi_utils
 def calcVerdictScore ( data,score_type ):
 
     #
-    # data for monotonic isomorphic scores:
+    # data for monotonic isomorphic scores (1):
+    #
+    #    {   "KEY1" : {  "value"  : score,
+    #                    "weight" : 2.0,
+    #                    "map"    : [(s0,0),(s20,20),...(s100,100)]
+    #                 },
+    #        "KEY2" : ......
+    #    }
+    #    weight  - relative weight of given parameter
+    #    map     - the mapping function:
+    #                 scores < =s0    are mapped on 0
+    #                 scores >= s100  are mapped on 100
+    #                 other scores are linearly interpolated such that score
+    #                 sN is mapped on N
+    #              Conditions: a) map[i][1]<map[i+1][1]
+    #                          b) map[i][0] is monotonic (increasing or decreasing)
+
+    #
+    # data for monotonic isomorphic scores (2):
     #
     #    {   "KEY1" : {  "value"  : score,
     #                    "weight" : 2.0,
@@ -42,9 +60,9 @@ def calcVerdictScore ( data,score_type ):
     #    bad     - list of monotonic scores which are equidistantly mapped on
     #              interval 0 - 50
     #    if 'good' goes up, 'bad' goes down and the other way round.
-    #    good[0] = bad[0]
+    #    good[0] == bad[0]
     #
-    #    Example: give score equals to g0,g1,g2,g3,g4, or g5, then it is
+    #    Example: if given score equals to g0,g1,g2,g3,g4, or g5, then it is
     #             transformed as g0->50, g1->60, g2->70, g3->80, g4->90, g5->100
     #             Other scores will be linearly interpolated in the corresponding
     #             sections. The same work for scores falling in 'bad' region.
@@ -70,6 +88,31 @@ def calcVerdictScore ( data,score_type ):
     #
     #    either gwidth or bwidth should be given, but not both
     #
+
+    #
+    #    score_type = 0   : arithmetic average
+    #               = 1   : geometric average
+    #
+
+    def score_map ( x,map ):
+        n = len(map)-1
+        if map[0][0]<map[n][0]:
+            if x<=map[0][0]:
+                return map[0][1]
+            elif x>=map[n][0]:
+                return map[n][1]
+            for j in range(n):
+                if map[j][0]<=x and x<=map[j+1][0]:
+                    return map[j][1] + (map[j+1][1])-map[j][1])*(x-map[j][0])/(map[j+1][0]-map[j][0])
+        else:
+            if x>=map[0][0]:
+                return map[0][1]
+            elif x<=map[n][0]:
+                return map[n][1]
+            for j in range(n):
+                if map[j][0]>=x and x>=map[j+1][0]:
+                    return map[j][1] + (map[j+1][1])-map[j][1])*(x-map[j][0])/(map[j+1][0]-map[j][0])
+        return 0.0  #  should never happen
 
     def score_direct ( x,d ):
         n = len(d)-1
@@ -103,6 +146,8 @@ def calcVerdictScore ( data,score_type ):
             ds = score_gaussian ( v,data[key]["center"],data[key]["gwidth"] )
         elif "bwidth" in data[key]:
             ds = score_bell ( v,data[key]["center"],data[key]["bwidth"] )
+        elif "map" in data[key]:
+            ds = score_map ( v,data["map"] ) / 100.0
         else:
             g  = data[key]["good"]
             b  = data[key]["bad"]
