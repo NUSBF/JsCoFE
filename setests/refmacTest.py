@@ -107,12 +107,12 @@ def makeTestProject(driver, testProjectID, testProjectName):
     projectInputs = driver.find_elements_by_xpath("//input[contains(@id,'input')]")
 
     # Project id
-    projectInputs[0].click()
+#    projectInputs[0].click()
     projectInputs[0].clear()
     projectInputs[0].send_keys(testProjectID)
 
     # Project name
-    projectInputs[1].click()
+#    projectInputs[1].click()
     projectInputs[1].clear()
     projectInputs[1].send_keys(testProjectName)
 
@@ -358,24 +358,34 @@ def renameProject(driver, testName):
     return ()
 
 
-def runAllTests(browser = 'Firefox', # or 'Firefox' (or 'Safari' that is not currently supported)
-                cloudURL = "http://ccp4serv6.rc-harwell.ac.uk/jscofe-dev/",
-                needToLogin = True, # False for Cloud Desktop (no login page), True for remote server that requires login.
-                cloudLogin = 'setests', # Used to login into remote Cloud
-                cloudPassword = 'cloud8testS',  # Used to login into remote Cloud
-                waitShort = 60,  # seconds for quick tasks
-                waitLong = 180 # seconds for longer tasks
+def runAllTests(browser='Firefox',  # or 'Chrome'
+                cloudURL="http://ccp4serv6.rc-harwell.ac.uk/jscofe-dev/",
+                needToLogin=True, # False for Cloud Desktop (no login page), True for remote server that requires login.
+                cloudLogin='setests',  # Used to login into remote Cloud
+                cloudPassword='cloud8testS',  # Used to login into remote Cloud
+                waitShort=60,  # seconds for quick tasks
+                waitLong=180,  # seconds for longer tasks
+                remote=False, # run tests on Selenium Server hub
+                remoteURL='http://130.246.213.187:4444/wd/hub' # Selenium Server hub
                 ):
-
-    if browser == 'Chrome':
-        driver = webdriver.Chrome()
-    elif browser == 'Firefox':
-        driver = webdriver.Firefox()
-    elif browser == 'Safari':
-        driver = webdriver.Safari()
-    else:
-        print('Browser "%s" is not recognised; shall be Chrome, Firefox or Safari.' % browser)
-        sys.exit(1)
+    if remote: # Running on Selenium Server hub
+        if browser == 'Chrome':
+            options = webdriver.ChromeOptions()
+            driver = webdriver.Remote(command_executor=remoteURL, options=options)
+        elif browser == 'Firefox':
+            options = webdriver.FirefoxOptions()
+            driver = webdriver.Remote(command_executor=remoteURL, options=options)
+        else:
+            print('Browser "%s" is not recognised; shall be Chrome or Firefox.' % browser)
+            sys.exit(1)
+    else: # Running locally
+        if browser == 'Chrome':
+            driver = webdriver.Chrome()
+        elif browser == 'Firefox':
+            driver = webdriver.Firefox()
+        else:
+            print('Browser "%s" is not recognised; shall be Chrome or Firefox.' % browser)
+            sys.exit(1)
 
     driver.implicitly_wait(10)  # wait for up to 10 seconds for required HTML element to appear
 
