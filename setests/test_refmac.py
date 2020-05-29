@@ -358,27 +358,32 @@ def renameProject(driver, testName):
     return ()
 
 
-def runAllTests(browser='Firefox',  # or 'Chrome'
-                cloudURL="http://ccp4serv6.rc-harwell.ac.uk/jscofe-dev/",
-                needToLogin=True, # False for Cloud Desktop (no login page), True for remote server that requires login.
-                cloudLogin='setests',  # Used to login into remote Cloud
-                cloudPassword='cloud8testS',  # Used to login into remote Cloud
-                waitShort=60,  # seconds for quick tasks
-                waitLong=180,  # seconds for longer tasks
-                remote=False, # run tests on Selenium Server hub
-                remoteURL='http://130.246.213.187:4444/wd/hub' # Selenium Server hub
+def test_RefmacBasic(browser,
+                cloud,
+                nologin,
+                login,
+                password,
+                remote
                 ):
-    if remote: # Running on Selenium Server hub
+
+
+    if len(remote) > 1:  # Running on Selenium Server hub
+        waitShort = 60  # seconds for quick tasks
+        waitLong = 180  # seconds for longer tasks
+
         if browser == 'Chrome':
             options = webdriver.ChromeOptions()
-            driver = webdriver.Remote(command_executor=remoteURL, options=options)
+            driver = webdriver.Remote(command_executor=remote, options=options)
         elif browser == 'Firefox':
             options = webdriver.FirefoxOptions()
-            driver = webdriver.Remote(command_executor=remoteURL, options=options)
+            driver = webdriver.Remote(command_executor=remote, options=options)
         else:
             print('Browser "%s" is not recognised; shall be Chrome or Firefox.' % browser)
             sys.exit(1)
-    else: # Running locally
+    else:  # Running locally
+        waitShort = 15  # seconds for quick tasks
+        waitLong = 120  # seconds for longer tasks
+
         if browser == 'Chrome':
             driver = webdriver.Chrome()
         elif browser == 'Firefox':
@@ -390,12 +395,12 @@ def runAllTests(browser='Firefox',  # or 'Chrome'
     driver.implicitly_wait(10)  # wait for up to 10 seconds for required HTML element to appear
 
     try:
-        print('Opening URL: %s' % cloudURL)
-        driver.get(cloudURL)
+        print('Opening URL: %s' % cloud)
+        driver.get(cloud)
         assert "CCP4 Cloud" in driver.title
 
-        if needToLogin:
-            loginToCloud(driver, cloudLogin, cloudPassword)
+        if not nologin:
+            loginToCloud(driver, login, password)
 
         testName = 'refmacTest'
 
@@ -409,10 +414,29 @@ def runAllTests(browser='Firefox',  # or 'Chrome'
         renameProject(driver, testName)
 
         driver.close()
+
     except:
         driver.close()
         raise
 
 
 if __name__ == "__main__":
-    runAllTests()
+    import argparse
+    parser = argparse.ArgumentParser(add_help=False)
+    parser.set_defaults(auto=False)
+    parser.add_argument('--remote', action='store', dest='remote', help=argparse.SUPPRESS, default='') # run tests on Selenium Server hub. Contains hub URL
+    parser.add_argument('--browser', action='store', dest='browser', help=argparse.SUPPRESS, default='Firefox') # Firefox or Chrome
+    parser.add_argument('--cloud', action='store', dest='cloud', help=argparse.SUPPRESS, default='http://ccp4serv6.rc-harwell.ac.uk/jscofe-dev/') # Cloud URL
+    parser.add_argument('--login', action='store', dest='login', help=argparse.SUPPRESS, default='setests') # Login
+    parser.add_argument('--password', action='store', dest='password', help=argparse.SUPPRESS, default='cloud8testS') # password
+    parser.add_argument('--nologin', action='store', dest='nologin', help=argparse.SUPPRESS, default=False) # login into Cloud or not
+
+    parameters = parser.parse_args(sys.argv[1:])
+
+    test_RefmacBasic(browser=parameters.browser,  # or 'Chrome'
+               cloud=parameters.cloud,
+               nologin=parameters.nologin,  # True for Cloud Desktop (no login page), False for remote server that requires login.
+               login=parameters.login,  # Used to login into remote Cloud
+               password=parameters.password,  # Used to login into remote Cloud
+               remote=parameters.remote  # 'http://130.246.213.187:4444/wd/hub' for Selenium Server hub
+               )
