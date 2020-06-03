@@ -84,7 +84,7 @@ class Build(ccp4build_report.Report):
         rfree2 = meta2["refmac"]["rfree"][1]
         if rfree1<rfree2-self.input_data["rfree_threshold"]:
             #  roll back to check point
-            self.workflow += "-"
+            self.workflow += "-" * len(workflow_ind)
             return meta1
         elif rfree1<=rfree2+self.input_data["rfree_threshold"]:
             rfactor1 = meta1["refmac"]["rfactor"][1]
@@ -92,7 +92,7 @@ class Build(ccp4build_report.Report):
             #if rfactor1<rfactor2:
             if abs(rfree1-rfactor1)<abs(rfree2-rfactor2):
                 #  roll back to check point
-                self.workflow += "-"
+                self.workflow += "-" * len(workflow_ind)
                 return meta1
         #  in case of no roll-back, accept trial
         self.workflow += workflow_ind
@@ -182,8 +182,12 @@ class Build(ccp4build_report.Report):
 
         for i in range(cycles_max):
 
+            #meta0 = meta
+
             self.workflow = ""  # will keep track of workflow for reporting
             prefix = str(i+1).zfill(2) + "_"
+
+            #self.input_data["mode"] = "MR"  # resume "MR" mode
 
             #  remove waters from current model
             meta["xyzpath_mr"] = self.remove_waters ( meta["xyzpath_mr"] )
@@ -214,6 +218,7 @@ class Build(ccp4build_report.Report):
                         )
                     elif n2>0:
                         self.workflow += "M"
+                        #self.input_data["mode"] = "EP"  # switch to EP mode until next iteration
                         meta_mb = self.refmac(meta_mb2,ncycles=refcyc["inter"],nameout=prefix+"03-2.refmac")
                     elif n1>0:
                         self.workflow += "-"
@@ -235,8 +240,35 @@ class Build(ccp4build_report.Report):
                                   ncycles=refcyc["inter"],nameout=prefix+"05.refmac" )
             meta1["trim"] = meta1["edstats"]
 
+            coot_script   = []
+            coot_workflow = ["-","-","-"]
             if fill_mode in ["auto","always"]:
-                meta2 = self.refmac ( self.coot(meta1,script="fill_partial_residues",
+                coot_script.append ( "fill_partial_residues" )
+                coot_workflow[0] = "E"
+            if fit_mode in ["auto","always"]:
+                coot_script.append ( "fit_protein" )
+                coot_workflow[1] = "F"
+            if rsr_mode in ["auto","always"]:
+                coot_script.append ( "stepped_refine_protein" )
+                coot_workflow[2] = "R"
+            coot_ind = "".join(coot_workflow)
+
+            if len(coot_script)>0:
+                meta4 = self.refmac ( self.coot(meta1,coot_script,
+                                                nameout=prefix+"06.coot" ),
+                                      ncycles=refcyc["inter"],nameout=prefix+"07.refmac" )
+                if fill_mode=="auto" or fit_mode=="auto" or rsr_mode=="auto":
+                    meta4 = self.choose_solution ( coot_ind,meta1,meta4 )
+                else:
+                    self.workflow += coot_ind
+            else:
+                self.workflow += coot_ind
+                meta4 = meta1
+
+
+            """
+            if fill_mode in ["auto","always"]:
+                meta2 = self.refmac ( self.coot(meta1,["fill_partial_residues"],
                                                 nameout=prefix+"06.coot_fill" ),
                                       ncycles=refcyc["inter"],nameout=prefix+"07.refmac" )
                 if fill_mode=="auto":
@@ -248,7 +280,7 @@ class Build(ccp4build_report.Report):
                 meta2 = meta1
 
             if fit_mode in ["auto","always"]:
-                meta3 = self.refmac ( self.coot(meta2,script="fit_protein",
+                meta3 = self.refmac ( self.coot(meta2,["fit_protein"],
                                                 nameout=prefix+"08.coot_fit" ),
                                       ncycles=refcyc["inter"],nameout=prefix+"09.refmac" )
                 if fit_mode=="auto":
@@ -260,7 +292,7 @@ class Build(ccp4build_report.Report):
                 meta3 = meta2
 
             if rsr_mode in ["auto","always"]:
-                meta4 = self.refmac ( self.coot(meta3,script="stepped_refine_protein",
+                meta4 = self.refmac ( self.coot(meta3,["stepped_refine_protein"],
                                                 nameout=prefix+"10.coot_refine" ),
                                       ncycles=refcyc["inter"],nameout=prefix+"11.refmac" )
                 if rsr_mode=="auto":
@@ -270,6 +302,7 @@ class Build(ccp4build_report.Report):
             else:
                 self.workflow += "-"
                 meta4 = meta3
+            """
 
             if trim_waters:
                 if meta4["refmac"]["rfree"][1]<=float(self.input_data["trim_wat_rfree"]):
@@ -299,20 +332,22 @@ class Build(ccp4build_report.Report):
                 self.rvrow_results = self.rvrow
                 self.rvrow += 4
 
-            self.rvapiMakeResultTable ( "res_rfree","Solution with the lowest R<sub>free</sub>",
+            self.rvapiMakeResultTable ( "res_rfree","Build with the lowest R<sub>free</sub>",
                                         self.output_name_rfree,self.best_rfree_build_no )
-            self.rvapiMakeResultTable ( "res_edcc","&nbsp;<br>Solution with the highest ED Correlation",
+            self.rvapiMakeResultTable ( "res_edcc","&nbsp;<br>Build with the highest ED Correlation",
                                         self.output_name_edcc,self.best_edcc_build_no )
-            self.rvapiMakeResultTable ( "res_nbuilt","&nbsp;<br>Solution with the highest number of residues built",
+            self.rvapiMakeResultTable ( "res_nbuilt","&nbsp;<br>Build with the highest number of residues built",
                                         self.output_name_nbuilt,self.best_nbuilt_build_no )
-            self.rvapiMakeResultTable ( "res_nfrag" ,"&nbsp;<br>Solution with the least number of fragments",
+            self.rvapiMakeResultTable ( "res_nfrag" ,"&nbsp;<br>Build with the least number of fragments",
                                         self.output_name_nfrag,self.best_nfrag_build_no )
 
             last_best = max ( self.best_rfree_build_no,
                               max ( self.best_edcc_build_no,
                                     self.best_nbuilt_build_no ) )
             if len(self.build_meta)-last_best > noimprove_cycles:
-                break;
+                break
+            #elif i>2:
+            #    meta = meta0  # revert
             elif i<cycles_max-1:
                 meta = self.refmac ( dict(meta_ed,labin_hl=None),ncycles=refcyc["final"],
                                      nameout=prefix+"15.refmac" )
@@ -409,7 +444,7 @@ class Build(ccp4build_report.Report):
             #meta1["trim"] = meta1["edstats"]
 
             if fill_mode in ["auto","always"]:
-                meta2 = self.refmac ( self.coot(meta1,script="fill_partial_residues",
+                meta2 = self.refmac ( self.coot(meta1,["fill_partial_residues"],
                                                 nameout=prefix+"06.coot_fill" ),
                                       ncycles=refcyc["inter"],nameout=prefix+"07.refmac" )
                 if fill_mode=="auto":
@@ -421,7 +456,7 @@ class Build(ccp4build_report.Report):
                 meta2 = meta1
 
             if fit_mode in ["auto","always"]:
-                meta3 = self.refmac ( self.coot(meta2,script="fit_protein",
+                meta3 = self.refmac ( self.coot(meta2,["fit_protein"],
                                                 nameout=prefix+"08.coot_fit" ),
                                       ncycles=refcyc["inter"],nameout=prefix+"09.refmac" )
                 if fit_mode=="auto":
@@ -433,7 +468,7 @@ class Build(ccp4build_report.Report):
                 meta3 = meta2
 
             if rsr_mode in ["auto","always"]:
-                meta4 = self.refmac ( self.coot(meta3,script="stepped_refine_protein",
+                meta4 = self.refmac ( self.coot(meta3,["stepped_refine_protein"],
                                                 nameout=prefix+"10.coot_refine" ),
                                       ncycles=refcyc["inter"],nameout=prefix+"11.refmac" )
                 if rsr_mode=="auto":
@@ -475,13 +510,13 @@ class Build(ccp4build_report.Report):
                 self.rvrow_results = self.rvrow
                 self.rvrow += 4
 
-            self.rvapiMakeResultTable ( "res_rfree","Solution with the lowest R<sub>free</sub>",
+            self.rvapiMakeResultTable ( "res_rfree","Build with the lowest R<sub>free</sub>",
                                         self.output_name_rfree,self.best_rfree_build_no )
-            self.rvapiMakeResultTable ( "res_edcc","&nbsp;<br>Solution with the highest ED Correlation",
+            self.rvapiMakeResultTable ( "res_edcc","&nbsp;<br>Build with the highest ED Correlation",
                                         self.output_name_edcc,self.best_edcc_build_no )
-            self.rvapiMakeResultTable ( "res_nbuilt","&nbsp;<br>Solution with the highest number of residues built",
+            self.rvapiMakeResultTable ( "res_nbuilt","&nbsp;<br>Build with the highest number of residues built",
                                         self.output_name_nbuilt,self.best_nbuilt_build_no )
-            self.rvapiMakeResultTable ( "res_nfrag" ,"&nbsp;<br>Solution with the least number of fragments",
+            self.rvapiMakeResultTable ( "res_nfrag" ,"&nbsp;<br>Build with the least number of fragments",
                                         self.output_name_nfrag,self.best_nfrag_build_no )
             self.flush()
 

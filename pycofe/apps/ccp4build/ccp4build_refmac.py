@@ -70,7 +70,7 @@ class Refmac(ccp4build_cbuccaneer.CBuccaneer):
         #NCYCLES 10
         "weight"            : "AUTO",
         "make+check"        : "NONE",
-        "make+hydr"         : "NO",
+        "make+hydr"         : "YES",
         "refi"              : "BREF ISOT",
         "MAKE+NEWLIGAND"    : "NOEXIT",
         "SCALE+TYPE"        : "SIMPLE",
@@ -81,7 +81,7 @@ class Refmac(ccp4build_cbuccaneer.CBuccaneer):
     refmac_options_jelly = {
         #"NCYC"           : 50,
         "WEIGHT"         : "AUTO",
-        "MAKE+HYDR"      : "NO",
+        "MAKE+HYDR"      : "YES",
         "REFI"           : "BREF ISOT",
         "SCALE+TYPE"     : "SIMPLE",
         "SOLVENT"        : "YES",
@@ -98,7 +98,7 @@ class Refmac(ccp4build_cbuccaneer.CBuccaneer):
         #LABIN FP=F SIGFP=SIGF FREE=FREE
         #NCYC 10
         "WEIGHT"         : "AUTO",
-        "MAKE+HYDR"      : "NO",
+        "MAKE+HYDR"      : "YES",
         "REFI+BREF"      : "ISOT",
         "SCALE+TYPE"     : "SIMPLE",
         "SOLVENT"        : "YES",

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    26.03.20   <--  Date of Last Modification.
+ *    02.06.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -38,54 +38,287 @@ function TaskCrosSec()  {
   //this.helpURL = './html/jscofe_task_crossec.html';
 
   this.parameters = { // input parameters
+
+    UNITS_SEL : {
+          type     : 'combobox',
+          keyword  : 'UNITS',
+          label    : '<b>Work units:</b>',
+          tooltip  : 'Choose work units',
+          range    : ['E|Photon energy (KeV)',
+                      'W|Wavelength (&Aring;)'
+                     ],
+          value    : 'E',
+          position : [0,0,1,4]
+        },
+
     ATOM : {
           type      : 'string',   // empty string not allowed
           keyword   : 'ATOM',
-          label     : '<b>For atom type</b>',
+          label     : '<b>Atom type:</b>',
           tooltip   : 'Chemical element symbol, e.g., Se',
           default   : 'Se',
           iwidth    : 40,
           value     : 'Se',
           emitting  : true,
           maxlength : 2,       // maximum input length
-          position  : [0,0,1,1]
+          position  : [1,0,1,1]
         },
-    WLENGTH_N : {
+
+    _label_P : {
+          type      : 'label',
+          label     : '&nbsp;<br><h3>A) Make scattering factors plot</h3>',
+          position  : [2,0,1,5]
+        },
+
+    //WLENGTH_N : {
+    NPOINTS_W : {
           type      : 'integer',   // empty string not allowed
-          label     : '<b>compute</b>',
+          label     : '<i>using</i>',
           align     : 'right',
-          tooltip   : 'Number of wavelength points',
+          tooltip   : 'Number of wavelength energy points',
           default   : '50',
           iwidth    : 40,
           value     : '50',
-          //label2    : 'wavelength points,&nbsp;',
-          position  : [1,0,1,1]
+          position  : [3,0,1,1],
+          showon    : {UNITS_SEL:['W']}
         },
     WLENGTH_MIN : {
           type      : 'real',   // empty string not allowed
-          label     : '<i>wavelength points</i>,&nbsp;&nbsp;&nbsp;&nbsp;<b>starting from</b>',
+          label     : '<i>wavelength points,&nbsp;&nbsp;&nbsp;&nbsp;starting from</i>',
           tooltip   : 'Minimal wavelength in angstrom',
           default   : '0.5',
           iwidth    : 40,
           value     : '0.5',
-          //label2    : '&Aring;,&nbsp;',
-          position  : [1,3,1,1]
+          position  : [3,4,1,1],
+          showon    : {UNITS_SEL:['W']}
         },
-    WLENGTH_STEP : {
+    WLENGTH_MAX : {
           type      : 'real',   // empty string not allowed
-          label     : '<i>&Aring;</i>,&nbsp;&nbsp;&nbsp;&nbsp;<b>with step</b>',
-          tooltip   : 'Wavelength step in angstrom',
-          default   : '0.01',
+          label     : '<i>&Aring;</i>,&nbsp;&nbsp;&nbsp;&nbsp;<i>to</i>',
+          tooltip   : 'Maximal wavelength in angstrom',
+          default   : '1.5',
           iwidth    : 40,
-          value     : '0.02',
-          //label2    : '<i>&Aring;</i>',
-          position  : [1,6,1,1]
+          value     : '1.5',
+          position  : [3,7,1,1],
+          showon    : {UNITS_SEL:['W']}
         },
-    _label : {
+    _label_W : {
           type      : 'label',
           label     : '<i>&Aring;</i>',
-          position  : [1,9,1,1]
+          position  : [3,10,1,1],
+          showon    : {UNITS_SEL:['W']}
+        },
+
+    NPOINTS_E : {
+          type      : 'integer',   // empty string not allowed
+          label     : '<i>using</i>',
+          align     : 'right',
+          tooltip   : 'Number of photon energy points',
+          default   : '50',
+          iwidth    : 40,
+          value     : '50',
+          position  : [3,0,1,1],
+          showon    : {UNITS_SEL:['E']}
+        },
+    ENERGY_MIN : {
+          type      : 'real',   // empty string not allowed
+          label     : '<i>photon energy points,&nbsp;&nbsp;&nbsp;&nbsp;starting from</i>',
+          tooltip   : 'Minimal photon energy in KeV',
+          default   : '8.0',
+          iwidth    : 40,
+          value     : '8.0',
+          position  : [3,4,1,1],
+          showon    : {UNITS_SEL:['E']}
+        },
+    ENERGY_MAX : {
+          type      : 'real',   // empty string not allowed
+          label     : '<i>KeV<i>,&nbsp;&nbsp;&nbsp;&nbsp;<i>to</i>',
+          tooltip   : 'Maximal photon energy in KeV',
+          default   : '25.0',
+          iwidth    : 40,
+          value     : '25.0',
+          position  : [3,7,1,1],
+          showon    : {UNITS_SEL:['E']}
+        },
+    _label_E : {
+          type      : 'label',
+          label     : '<i>KeV</i>',
+          position  : [3,10,1,1],
+          showon    : {UNITS_SEL:['E']}
+        },
+
+    _label_PW : {
+          type      : 'label',
+          label     : '&nbsp;<br><h3>B) Compute scattering factors for the ' +
+                      'following selected wavelengths:</h3>',
+          position  : [4,0,1,15],
+          showon    : {UNITS_SEL:['W']}
+        },
+    WAVELENGTH_01 : {
+          type      : 'real_',   // empty string is allowed
+          label     : '<i>W<sub>1</sub>:</i>',
+          align     : 'right',
+          tooltip   : 'Wavelength in angstrom',
+          default   : '',
+          iwidth    : 40,
+          value     : '',
+          label2    : '<i>&Aring;</i>',
+          align2    : 'left',
+          position  : [5,0,1,1],
+          showon    : {UNITS_SEL:['W']}
+        },
+    WAVELENGTH_02 : {
+          type      : 'real_',   // empty string is allowed
+          label     : '<i>W<sub>2</sub>:</i>',
+          align     : 'right',
+          tooltip   : 'Wavelength in angstrom',
+          default   : '',
+          iwidth    : 40,
+          value     : '',
+          label2    : '<i>&Aring;</i>',
+          align2    : 'left',
+          position  : [6,0,1,1],
+          showon    : {UNITS_SEL:['W']}
+        },
+    WAVELENGTH_03 : {
+          type      : 'real_',   // empty string is allowed
+          label     : '<i>W<sub>3</sub>:</i>',
+          align     : 'right',
+          tooltip   : 'Wavelength in angstrom',
+          default   : '',
+          iwidth    : 40,
+          value     : '',
+          label2    : '<i>&Aring;</i>',
+          align2    : 'left',
+          position  : [7,0,1,1],
+          showon    : {UNITS_SEL:['W']}
+        },
+    WAVELENGTH_04 : {
+          type      : 'real_',   // empty string is allowed
+          label     : '<i>W<sub>4</sub>:</i>',
+          align     : 'right',
+          tooltip   : 'Wavelength in angstrom',
+          default   : '',
+          iwidth    : 40,
+          value     : '',
+          label2    : '<i>&Aring;</i>',
+          align2    : 'left',
+          position  : [8,0,1,1],
+          showon    : {UNITS_SEL:['W']}
+        },
+    WAVELENGTH_05 : {
+          type      : 'real_',   // empty string is allowed
+          label     : '<i>W<sub>5</sub>:</i>',
+          align     : 'right',
+          tooltip   : 'Wavelength in angstrom',
+          default   : '',
+          iwidth    : 40,
+          value     : '',
+          label2    : '<i>&Aring;</i>',
+          align2    : 'left',
+          position  : [9,0,1,1],
+          showon    : {UNITS_SEL:['W']}
+        },
+    WAVELENGTH_06 : {
+          type      : 'real_',   // empty string is allowed
+          label     : '<i>W<sub>6</sub>:</i>',
+          align     : 'right',
+          tooltip   : 'Wavelength in angstrom',
+          default   : '',
+          iwidth    : 40,
+          value     : '',
+          label2    : '<i>&Aring;</i>',
+          align2    : 'left',
+          position  : [10,0,1,1],
+          showon    : {UNITS_SEL:['W']}
+        },
+
+    _label_PE : {
+          type      : 'label',
+          label     : '&nbsp;<br><h3>B) Compute scattering factors for the ' +
+                      'following selected photon energies:</h3>',
+          position  : [4,0,1,15],
+          showon    : {UNITS_SEL:['E']}
+        },
+    ENERGY_01 : {
+          type      : 'real_',   // empty string is allowed
+          label     : '<i>E<sub>1</sub>:</i>',
+          align     : 'right',
+          tooltip   : 'Photon energy in KeV',
+          default   : '',
+          iwidth    : 40,
+          value     : '',
+          label2    : '<i>KeV</i>',
+          align2    : 'left',
+          position  : [5,0,1,1],
+          showon    : {UNITS_SEL:['E']}
+        },
+    ENERGY_02 : {
+          type      : 'real_',   // empty string is allowed
+          label     : '<i>E<sub>2</sub>:</i>',
+          align     : 'right',
+          tooltip   : 'Photon energy in KeV',
+          default   : '',
+          iwidth    : 40,
+          value     : '',
+          label2    : '<i>KeV</i>',
+          align2    : 'left',
+          position  : [6,0,1,1],
+          showon    : {UNITS_SEL:['E']}
+        },
+    ENERGY_03 : {
+          type      : 'real_',   // empty string is allowed
+          label     : '<i>E<sub>3</sub>:</i>',
+          align     : 'right',
+          tooltip   : 'Photon energy in KeV',
+          default   : '',
+          iwidth    : 40,
+          value     : '',
+          label2    : '<i>KeV</i>',
+          align2    : 'left',
+          position  : [7,0,1,1],
+          showon    : {UNITS_SEL:['E']}
+        },
+    ENERGY_04 : {
+          type      : 'real_',   // empty string is allowed
+          label     : '<i>E<sub>4</sub>:</i>',
+          align     : 'right',
+          tooltip   : 'Photon energy in KeV',
+          default   : '',
+          iwidth    : 40,
+          value     : '',
+          label2    : '<i>KeV</i>',
+          align2    : 'left',
+          position  : [8,0,1,1],
+          showon    : {UNITS_SEL:['E']}
+        },
+    ENERGY_05 : {
+          type      : 'real_',   // empty string is allowed
+          label     : '<i>E<sub>5</sub>:</i>',
+          align     : 'right',
+          tooltip   : 'Photon energy in KeV',
+          default   : '',
+          iwidth    : 40,
+          value     : '',
+          label2    : '<i>KeV</i>',
+          align2    : 'left',
+          position  : [9,0,1,1],
+          showon    : {UNITS_SEL:['E']}
+        },
+    ENERGY_06 : {
+          type      : 'real_',   // empty string is allowed
+          label     : '<i>E<sub>6</sub>:</i>',
+          align     : 'right',
+          tooltip   : 'Photon energy in KeV',
+          default   : '',
+          iwidth    : 40,
+          value     : '',
+          label2    : '<i>KeV</i>',
+          align2    : 'left',
+          position  : [10,0,1,1],
+          showon    : {UNITS_SEL:['E']}
         }
+
   };
 
 }
@@ -103,7 +336,7 @@ TaskCrosSec.prototype.constructor = TaskCrosSec;
 TaskCrosSec.prototype.icon = function()  { return 'task_crossec'; }
 
 TaskCrosSec.prototype.currentVersion = function()  {
-  var version = 0;
+  var version = 1;
   if (__template)
         return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );

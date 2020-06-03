@@ -24,6 +24,7 @@ from pycofe.proc import verdict
 # ------------------------------------------------------------------------
 
 def makeVerdictMessage ( options ):
+
     verdict_message = "<b style='font-size:18px;'>"
     if options["score"]>=67:
         if options["nfitted"]==options["nasu"]:
@@ -65,9 +66,7 @@ def makeVerdictMessage ( options ):
     if len(notes)<=0:
         notes.append ( "all scores are optimal" )
 
-    if len(notes)>0:
-        verdict_message += "<ul><li>" + "</li><li>".join(notes) +\
-                           ".</li></ul>"
+    verdict_message += "<ul><li>" + "</li><li>".join(notes) + ".</li></ul>"
 
     return verdict_message
 

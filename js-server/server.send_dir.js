@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    13.05.20   <--  Date of Last Modification.
+ *    29.05.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -236,10 +236,11 @@ function __after_unzip ( unpack_dir,dirPath,tmpDir,jobballPath,
      // as all directories are on the same device (see above), the
      // replace should be done within this thread and, therefore, safe
      // for concurrent access from client
-     utils.moveFile ( dirPath   ,tmpDir  );
-     utils.moveFile ( unpack_dir,dirPath );
+     utils.moveDir ( dirPath   ,tmpDir+'_1', true );
+     utils.moveDir ( unpack_dir,dirPath    , true );
      setTimeout ( function(){  // postpone for speed
-       utils.removePath ( tmpDir );
+       utils.removePath ( tmpDir+'_1' );
+       utils.removePath ( tmpDir      );
      },0 );
   }
 }
@@ -264,13 +265,17 @@ function unpackDir1 ( dirPath,jobballPath,cleanTmpDir,remove_jobball_bool,onRead
 
     zl.extract ( jobballPath,unpack_dir )
       .then(function() {
-        __after_unzip ( unpack_dir,dirPath,tmpDir,jobballPath,
-                        cleanTmpDir,remove_jobball_bool );
-        onReady_func ( 0,jobballSize );
+        setTimeout ( function(){  // dedicated thread required on Windows
+          __after_unzip ( unpack_dir,dirPath,tmpDir,jobballPath,
+                          cleanTmpDir,remove_jobball_bool );
+          onReady_func ( 0,jobballSize );
+        },0 );
       }, function (err) {
-        __after_unzip ( unpack_dir,dirPath,tmpDir,jobballPath,
-                        cleanTmpDir,remove_jobball_bool );
-        onReady_func ( err,jobballSize );
+        setTimeout ( function(){  // dedicated thread required on Windows
+          __after_unzip ( unpack_dir,dirPath,tmpDir,jobballPath,
+                          cleanTmpDir,remove_jobball_bool );
+          onReady_func ( err,jobballSize );
+        },0 );
       });
 
   } else  {
@@ -286,12 +291,14 @@ function unpackDir1 ( dirPath,jobballPath,cleanTmpDir,remove_jobball_bool,onRead
     });
 
     zip.on('close', function(code){
-      __after_unzip ( unpack_dir,dirPath,tmpDir,jobballPath,
-                      cleanTmpDir,remove_jobball_bool );
-      if (errs)
-        onReady_func ( errs,jobballSize );
-      else
-        onReady_func ( code,jobballSize );
+      setTimeout ( function(){  // dedicated thread required on Windows
+        __after_unzip ( unpack_dir,dirPath,tmpDir,jobballPath,
+                        cleanTmpDir,remove_jobball_bool );
+        if (errs)
+          onReady_func ( errs,jobballSize );
+        else
+          onReady_func ( code,jobballSize );
+      },0 );
     });
 
   }
