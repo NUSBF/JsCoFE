@@ -6,7 +6,7 @@
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
- *  **** Module  :  js-common/cofe.tasks.xia2.js
+ *  **** Module  :  js-common/tasks/common.tasks.xia2.js
  *       ~~~~~~~~~
  *  **** Project :  jsCoFE - javascript-based Cloud Front End
  *       ~~~~~~~~~
@@ -227,7 +227,7 @@ function TaskXia2()  {
   };
 
   if (!__template)  {
-    console.log ( __environ_server );
+    //console.log ( __environ_server );
     if (__environ_server.indexOf('Xia2_durin')<0)
       delete this.parameters.sec2.contains.PLUGIN;
   }
@@ -247,7 +247,7 @@ TaskXia2.prototype.icon = function()  { return 'task_xia2'; }
 TaskXia2.prototype.lowestClientVersion = function() { return '1.6.001 [01.01.2019]'; }
 
 TaskXia2.prototype.currentVersion = function()  {
-  var version = 1;
+  var version = 2;
   if (__template)
         return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );

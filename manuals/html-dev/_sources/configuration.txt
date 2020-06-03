@@ -94,14 +94,14 @@ Front End Server configuration has the following structure: ::
         "icon_software" : "task_arpwarp",
         "desc_provider" : "EMBL Outstation in Hamburg",
         "icon_provider" : "org_emblhamburg",
-        "auth_url"      : "https://arpwarp.embl-hamburg.de/api/maketoken/?reqid=$reqid&addr=1.2.3.4&cburl=$cburl",
+        "auth_url"      : "https://arpwarp.embl-hamburg.de/api/maketoken/?reqid=$reqid&addr=1.2.3.4&cburl=$cburl"
       },
       "gphl-buster"  : {
         "desc_software" : "Global Phasing Limited Software Suite",
         "icon_software" : "task_buster",
         "desc_provider" : "Global Phasing Limited",
         "icon_provider" : "org_gphl",
-        "auth_url"      : "https://arpwarp.embl-hamburg.de/api/maketoken/?reqid=$reqid&addr=1.2.3.4&cburl=$cburl",
+        "auth_url"      : "https://arpwarp.embl-hamburg.de/api/maketoken/?reqid=$reqid&addr=1.2.3.4&cburl=$cburl"
       }
     },
     "bootstrapHTML"    : "jscofe.html",
@@ -121,6 +121,10 @@ Front End Server configuration has the following structure: ::
       "CCP4 examples"  : "$CCP4/share/ccp4i2/demo_data",
       "Demo projects"  : "./demo-projects",
       "My files"       : "./$LOGIN/files"
+    },
+    "logflow" : {   // optional item
+      "chunk_length" : 10000,     // number of jobs to advance log file counters
+      "log_file" : "/path/to/node_fe"    // full path less of '.log' and '.err' extensions
     }
   }
 
@@ -360,48 +364,119 @@ Here,
     available for investigation)
 
 
+**"facilitiesPath"**
 
-"facilitiesPath"   : "./cofe-facilities",
+    Path to directory to keep cache of files obtained from facilities like 
+    external file servers, synchrotrons and similar. The directory must exist
+    before starting server for first time, or server will not start.
 
-"ICAT_wdsl"        : "https://icat02.diamond.ac.uk/ICATService/ICAT?wsdl",
 
-"ICAT_ids"         : "https://ids01.diamond.ac.uk/ids",
+**"ICAT_wdsl"**
 
-"auth_software"    : {  // optional item, may be null or missing
-    "arpwarp" : {
-        "desc_software" : "Arp/wArp Model Building Software from EMBL-Hamburg",
-        "icon_software" : "task_arpwarp",
-        "desc_provider" : "EMBL Outstation in Hamburg",
-        "icon_provider" : "org_emblhamburg",
-        "auth_url"      : "https://arpwarp.embl-hamburg.de/api/maketoken/?reqid=$reqid&addr=1.2.3.4&cburl=$cburl",
-      },
-      "gphl-buster"  : {
-        "desc_software" : "Global Phasing Limited Software Suite",
-        "icon_software" : "task_buster",
-        "desc_provider" : "Global Phasing Limited",
-        "icon_provider" : "org_gphl",
-        "auth_url"      : "https://arpwarp.embl-hamburg.de/api/maketoken/?reqid=$reqid&addr=1.2.3.4&cburl=$cburl",
-      }
-    },
-  
- "bootstrapHTML"    : "jscofe.html",
+    URL of the WDSL service of STFC/SCD iCAT facility: :: 
+
+        "https://icat02.diamond.ac.uk/ICATService/ICAT?wsdl"
+
+
+**"ICAT_ids"**
+
+    URL of the IDS service of STFC/SCD iCAT facility: :: 
+
+        "https://ids01.diamond.ac.uk/ids"
+
+
+**"auth_software"**
+
+    This is an optional item, which may be null or missing if not used.
+    Otherwise, the item provides description of 3rd-party software, use of 
+    which requires user authorisation. The item represents an object with
+    the following structure: ::
+
+        "auth_software"    : {
+            "arpwarp" : {
+                "desc_software" : "Arp/wArp Model Building Software from EMBL-Hamburg",
+                "icon_software" : "task_arpwarp",
+                "desc_provider" : "EMBL Outstation in Hamburg",
+                "icon_provider" : "org_emblhamburg",
+                "auth_url"      : "https://arpwarp.embl-hamburg.de/api/maketoken/?reqid=$reqid&addr=1.2.3.4&cburl=$cburl"
+            },
+            "gphl-buster"  : {
+                "desc_software" : "Global Phasing Limited Software Suite",
+                "icon_software" : "task_buster",
+                "desc_provider" : "Global Phasing Limited",
+                "icon_provider" : "org_gphl",
+                "auth_url"      : "https://arpwarp.embl-hamburg.de/api/maketoken/?reqid=$reqid&addr=1.2.3.4&cburl=$cburl"
+            }
+        }
+        
+    In the above example, keys "arpwarp" and "gphl-buster" are authorisation
+    Ids, defined in the corresponding task classes. "auth_url" are URLs of
+    authorisation servers. Parameter part of these URLs, which follows after
+    question mark, are chosen on agreement with developers of respective 
+    authorisation servers.
+    
+    Configuration of authorisation software results in the appearance of the
+    corresponding entry in user account settings, available in "My Account" 
+    page. In that section, a user can request authorisation to use software 
+    from the software provider. Upon request, user is redirected to the
+    authorisation server web-page with license agreement and other
+    information, collected by the provider. After completion of the
+    authorisation request, user is redirected back to CCP4 Cloud, and the
+    corresponding authorisation record is added in user's account
+    automatically. This record enables task, which use authorised software,
+    for the user.
+        
+
+**"bootstrapHTML"**
  
- "maxRestarts"      : 100,
+    Path (relative or absolute) to HTML bootrstrap file: ::
+    
+        "bootstrap/jscofe.html"
+    
+    Alernative bootstrap files can be used for debug pyrposes or quick change 
+    of source code directories.
  
- "fileCapSize"      : 500000,
  
- "regMode"          : "admin",  // if 'email':  registration by user;
-                                   // 'admin': all users are registration by admin
+**"maxRestarts"**
  
- "sessionCheckPeriod" : 2000,
+    CCP4 Cloud Front End can automatically restart after certain type of 
+    errors. This parameter limits the maximal number of restarts in order 
+    to avoid infinite restart loops.
  
- "ration"           : {
+ 
+**"fileCapSize"**
+ 
+    Limit size of log file of *running* jobs delivered to client device, in
+    bytes. If log file exceed this limit, extra content is removed from the 
+    middle of the file. Log files of *finished* jobs are delivered to client
+    device full, without modifications, irrespective of their size.
+ 
+ 
+**"regMode"**
+ 
+    User registration mode. Configuration ::
+    
+        "regMode" : "admin"
+        
+    specifies administrative registration mode, when a new user can be registared
+    only by server admin (a user with administrative privileges).
+    Configuration ::
+    
+        "regMode" : "email"
+        
+    allows users to register themselves, in addition to registration by admin.
+    In all cases, users are sent temporary password by e-mail.
+
+
+"sessionCheckPeriod" : 2000,
+ 
+"ration"           : {
         "storage"   : 3000,
         "cpu_day"   : 24,
         "cpu_month" : 240
     },
  
- "cloud_mounts"     : {  // optional item
+"cloud_mounts"     : {  // optional item
       "My Computer"    : "/",
       "Home"           : ["$HOME","$USERPROFILE"],
       "CCP4 examples"  : "$CCP4/share/ccp4i2/demo_data",
@@ -409,5 +484,9 @@ Here,
       "My files"       : "./$LOGIN/files"
     }
 
+"logflow" : {   // optional item
+      "chunk_length" : 10000,     // number of jobs to advance log file counters
+      "log_file" : "/path/to/node_fe"    // full path less of '.log' and '.err' extensions
+    }
 
 

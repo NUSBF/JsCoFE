@@ -132,14 +132,14 @@ other components.</p>
       <span class="s2">&quot;icon_software&quot;</span> <span class="p">:</span> <span class="s2">&quot;task_arpwarp&quot;</span><span class="p">,</span>
       <span class="s2">&quot;desc_provider&quot;</span> <span class="p">:</span> <span class="s2">&quot;EMBL Outstation in Hamburg&quot;</span><span class="p">,</span>
       <span class="s2">&quot;icon_provider&quot;</span> <span class="p">:</span> <span class="s2">&quot;org_emblhamburg&quot;</span><span class="p">,</span>
-      <span class="s2">&quot;auth_url&quot;</span>      <span class="p">:</span> <span class="s2">&quot;https://arpwarp.embl-hamburg.de/api/maketoken/?reqid=$reqid&amp;addr=1.2.3.4&amp;cburl=$cburl&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;auth_url&quot;</span>      <span class="p">:</span> <span class="s2">&quot;https://arpwarp.embl-hamburg.de/api/maketoken/?reqid=$reqid&amp;addr=1.2.3.4&amp;cburl=$cburl&quot;</span>
     <span class="p">},</span>
     <span class="s2">&quot;gphl-buster&quot;</span>  <span class="p">:</span> <span class="p">{</span>
       <span class="s2">&quot;desc_software&quot;</span> <span class="p">:</span> <span class="s2">&quot;Global Phasing Limited Software Suite&quot;</span><span class="p">,</span>
       <span class="s2">&quot;icon_software&quot;</span> <span class="p">:</span> <span class="s2">&quot;task_buster&quot;</span><span class="p">,</span>
       <span class="s2">&quot;desc_provider&quot;</span> <span class="p">:</span> <span class="s2">&quot;Global Phasing Limited&quot;</span><span class="p">,</span>
       <span class="s2">&quot;icon_provider&quot;</span> <span class="p">:</span> <span class="s2">&quot;org_gphl&quot;</span><span class="p">,</span>
-      <span class="s2">&quot;auth_url&quot;</span>      <span class="p">:</span> <span class="s2">&quot;https://arpwarp.embl-hamburg.de/api/maketoken/?reqid=$reqid&amp;addr=1.2.3.4&amp;cburl=$cburl&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;auth_url&quot;</span>      <span class="p">:</span> <span class="s2">&quot;https://arpwarp.embl-hamburg.de/api/maketoken/?reqid=$reqid&amp;addr=1.2.3.4&amp;cburl=$cburl&quot;</span>
     <span class="p">}</span>
   <span class="p">},</span>
   <span class="s2">&quot;bootstrapHTML&quot;</span>    <span class="p">:</span> <span class="s2">&quot;jscofe.html&quot;</span><span class="p">,</span>
@@ -159,6 +159,10 @@ other components.</p>
     <span class="s2">&quot;CCP4 examples&quot;</span>  <span class="p">:</span> <span class="s2">&quot;$CCP4/share/ccp4i2/demo_data&quot;</span><span class="p">,</span>
     <span class="s2">&quot;Demo projects&quot;</span>  <span class="p">:</span> <span class="s2">&quot;./demo-projects&quot;</span><span class="p">,</span>
     <span class="s2">&quot;My files&quot;</span>       <span class="p">:</span> <span class="s2">&quot;./$LOGIN/files&quot;</span>
+  <span class="p">},</span>
+  <span class="s2">&quot;logflow&quot;</span> <span class="p">:</span> <span class="p">{</span>   <span class="o">//</span> <span class="n">optional</span> <span class="n">item</span>
+    <span class="s2">&quot;chunk_length&quot;</span> <span class="p">:</span> <span class="mi">10000</span><span class="p">,</span>     <span class="o">//</span> <span class="n">number</span> <span class="n">of</span> <span class="n">jobs</span> <span class="n">to</span> <span class="n">advance</span> <span class="n">log</span> <span class="n">file</span> <span class="n">counters</span>
+    <span class="s2">&quot;log_file&quot;</span> <span class="p">:</span> <span class="s2">&quot;/path/to/node_fe&quot;</span>    <span class="o">//</span> <span class="n">full</span> <span class="n">path</span> <span class="n">less</span> <span class="n">of</span> <span class="s1">&#39;.log&#39;</span> <span class="ow">and</span> <span class="s1">&#39;.err&#39;</span> <span class="n">extensions</span>
   <span class="p">}</span>
 <span class="p">}</span>
 </pre></div>
@@ -373,42 +377,102 @@ server</p>
 that is retained in the safe (so that only last <code class="docutils literal"><span class="pre">capacity</span></code> jobs will be
 available for investigation)</p>
 </div></blockquote>
-<p>&#8220;facilitiesPath&#8221;   : &#8221;./cofe-facilities&#8221;,</p>
-<p>&#8220;ICAT_wdsl&#8221;        : &#8220;<a class="reference external" href="https://icat02.diamond.ac.uk/ICATService/ICAT?wsdl">https://icat02.diamond.ac.uk/ICATService/ICAT?wsdl</a>&#8221;,</p>
-<p>&#8220;ICAT_ids&#8221;         : &#8220;<a class="reference external" href="https://ids01.diamond.ac.uk/ids">https://ids01.diamond.ac.uk/ids</a>&#8221;,</p>
-<dl class="docutils">
-<dt>&#8220;auth_software&#8221;</dt>
- <span class="classifier-delimiter">:</span> <span class="classifier">{  // optional item, may be null or missing</span><dd><blockquote class="first">
-<div><dl class="docutils">
-<dt>&#8220;arpwarp&#8221;</dt>
- <span class="classifier-delimiter">:</span> <span class="classifier">{</span><dd><blockquote class="first">
-<div>&#8220;desc_software&#8221; : &#8220;Arp/wArp Model Building Software from EMBL-Hamburg&#8221;,
-&#8220;icon_software&#8221; : &#8220;task_arpwarp&#8221;,
-&#8220;desc_provider&#8221; : &#8220;EMBL Outstation in Hamburg&#8221;,
-&#8220;icon_provider&#8221; : &#8220;org_emblhamburg&#8221;,
-&#8220;auth_url&#8221;      : &#8220;<a class="reference external" href="https://arpwarp.embl-hamburg.de/api/maketoken/?reqid=$reqid&amp;addr=1.2.3.4&amp;cburl=$cburl">https://arpwarp.embl-hamburg.de/api/maketoken/?reqid=$reqid&amp;addr=1.2.3.4&amp;cburl=$cburl</a>&#8221;,</div></blockquote>
-<p>},
-&#8220;gphl-buster&#8221;  : {</p>
+<p><strong>&#8220;facilitiesPath&#8221;</strong></p>
 <blockquote>
-<div>&#8220;desc_software&#8221; : &#8220;Global Phasing Limited Software Suite&#8221;,
-&#8220;icon_software&#8221; : &#8220;task_buster&#8221;,
-&#8220;desc_provider&#8221; : &#8220;Global Phasing Limited&#8221;,
-&#8220;icon_provider&#8221; : &#8220;org_gphl&#8221;,
-&#8220;auth_url&#8221;      : &#8220;<a class="reference external" href="https://arpwarp.embl-hamburg.de/api/maketoken/?reqid=$reqid&amp;addr=1.2.3.4&amp;cburl=$cburl">https://arpwarp.embl-hamburg.de/api/maketoken/?reqid=$reqid&amp;addr=1.2.3.4&amp;cburl=$cburl</a>&#8221;,</div></blockquote>
-<p class="last">}</p>
-</dd>
-</dl>
-<p>},</p>
+<div>Path to directory to keep cache of files obtained from facilities like
+external file servers, synchrotrons and similar. The directory must exist
+before starting server for first time, or server will not start.</div></blockquote>
+<p><strong>&#8220;ICAT_wdsl&#8221;</strong></p>
+<blockquote>
+<div><p>URL of the WDSL service of STFC/SCD iCAT facility:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="s2">&quot;https://icat02.diamond.ac.uk/ICATService/ICAT?wsdl&quot;</span>
+</pre></div>
+</div>
 </div></blockquote>
-<p>&#8220;bootstrapHTML&#8221;    : &#8220;jscofe.html&#8221;,</p>
-<p>&#8220;maxRestarts&#8221;      : 100,</p>
-<p>&#8220;fileCapSize&#8221;      : 500000,</p>
-<dl class="docutils">
-<dt>&#8220;regMode&#8221;</dt>
- <span class="classifier-delimiter">:</span> <span class="classifier">&#8220;admin&#8221;,  // if &#8216;email&#8217;:  registration by user;</span><dd>// &#8216;admin&#8217;: all users are registration by admin</dd>
-</dl>
+<p><strong>&#8220;ICAT_ids&#8221;</strong></p>
+<blockquote>
+<div><p>URL of the IDS service of STFC/SCD iCAT facility:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="s2">&quot;https://ids01.diamond.ac.uk/ids&quot;</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p><strong>&#8220;auth_software&#8221;</strong></p>
+<blockquote>
+<div><p>This is an optional item, which may be null or missing if not used.
+Otherwise, the item provides description of 3rd-party software, use of
+which requires user authorisation. The item represents an object with
+the following structure:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="s2">&quot;auth_software&quot;</span>    <span class="p">:</span> <span class="p">{</span>
+    <span class="s2">&quot;arpwarp&quot;</span> <span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;desc_software&quot;</span> <span class="p">:</span> <span class="s2">&quot;Arp/wArp Model Building Software from EMBL-Hamburg&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;icon_software&quot;</span> <span class="p">:</span> <span class="s2">&quot;task_arpwarp&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;desc_provider&quot;</span> <span class="p">:</span> <span class="s2">&quot;EMBL Outstation in Hamburg&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;icon_provider&quot;</span> <span class="p">:</span> <span class="s2">&quot;org_emblhamburg&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;auth_url&quot;</span>      <span class="p">:</span> <span class="s2">&quot;https://arpwarp.embl-hamburg.de/api/maketoken/?reqid=$reqid&amp;addr=1.2.3.4&amp;cburl=$cburl&quot;</span>
+    <span class="p">},</span>
+    <span class="s2">&quot;gphl-buster&quot;</span>  <span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;desc_software&quot;</span> <span class="p">:</span> <span class="s2">&quot;Global Phasing Limited Software Suite&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;icon_software&quot;</span> <span class="p">:</span> <span class="s2">&quot;task_buster&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;desc_provider&quot;</span> <span class="p">:</span> <span class="s2">&quot;Global Phasing Limited&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;icon_provider&quot;</span> <span class="p">:</span> <span class="s2">&quot;org_gphl&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;auth_url&quot;</span>      <span class="p">:</span> <span class="s2">&quot;https://arpwarp.embl-hamburg.de/api/maketoken/?reqid=$reqid&amp;addr=1.2.3.4&amp;cburl=$cburl&quot;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>In the above example, keys &#8220;arpwarp&#8221; and &#8220;gphl-buster&#8221; are authorisation
+Ids, defined in the corresponding task classes. &#8220;auth_url&#8221; are URLs of
+authorisation servers. Parameter part of these URLs, which follows after
+question mark, are chosen on agreement with developers of respective
+authorisation servers.</p>
+<p>Configuration of authorisation software results in the appearance of the
+corresponding entry in user account settings, available in &#8220;My Account&#8221;
+page. In that section, a user can request authorisation to use software
+from the software provider. Upon request, user is redirected to the
+authorisation server web-page with license agreement and other
+information, collected by the provider. After completion of the
+authorisation request, user is redirected back to CCP4 Cloud, and the
+corresponding authorisation record is added in user&#8217;s account
+automatically. This record enables task, which use authorised software,
+for the user.</p>
+</div></blockquote>
+<p><strong>&#8220;bootstrapHTML&#8221;</strong></p>
+<blockquote>
+<div><p>Path (relative or absolute) to HTML bootrstrap file:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="s2">&quot;bootstrap/jscofe.html&quot;</span>
+</pre></div>
+</div>
+<p>Alernative bootstrap files can be used for debug pyrposes or quick change
+of source code directories.</p>
+</div></blockquote>
+<p><strong>&#8220;maxRestarts&#8221;</strong></p>
+<blockquote>
+<div>CCP4 Cloud Front End can automatically restart after certain type of
+errors. This parameter limits the maximal number of restarts in order
+to avoid infinite restart loops.</div></blockquote>
+<p><strong>&#8220;fileCapSize&#8221;</strong></p>
+<blockquote>
+<div>Limit size of log file of <em>running</em> jobs delivered to client device, in
+bytes. If log file exceed this limit, extra content is removed from the
+middle of the file. Log files of <em>finished</em> jobs are delivered to client
+device full, without modifications, irrespective of their size.</div></blockquote>
+<p><strong>&#8220;regMode&#8221;</strong></p>
+<blockquote>
+<div><p>User registration mode. Configuration</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="s2">&quot;regMode&quot;</span> <span class="p">:</span> <span class="s2">&quot;admin&quot;</span>
+</pre></div>
+</div>
+<p>specifies administrative registration mode, when a new user can be registared
+only by server admin (a user with administrative privileges).
+Configuration</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="s2">&quot;regMode&quot;</span> <span class="p">:</span> <span class="s2">&quot;email&quot;</span>
+</pre></div>
+</div>
+<p>allows users to register themselves, in addition to registration by admin.
+In all cases, users are sent temporary password by e-mail.</p>
+</div></blockquote>
 <p>&#8220;sessionCheckPeriod&#8221; : 2000,</p>
-<dl class="last docutils">
+<dl class="docutils">
 <dt>&#8220;ration&#8221;</dt>
  <span class="classifier-delimiter">:</span> <span class="classifier">{</span><dd><blockquote class="first">
 <div>&#8220;storage&#8221;   : 3000,
@@ -425,7 +489,11 @@ available for investigation)</p>
 &#8220;My files&#8221;       : &#8221;./$LOGIN/files&#8221;</div></blockquote>
 <p class="last">}</p>
 </dd>
-</dl>
+<dt>&#8220;logflow&#8221;</dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">{   // optional item</span><dd><blockquote class="first">
+<div>&#8220;chunk_length&#8221; : 10000,     // number of jobs to advance log file counters
+&#8220;log_file&#8221; : &#8220;/path/to/node_fe&#8221;    // full path less of &#8216;.log&#8217; and &#8216;.err&#8217; extensions</div></blockquote>
+<p class="last">}</p>
 </dd>
 </dl>
 </div>

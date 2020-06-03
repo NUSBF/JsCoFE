@@ -103,7 +103,7 @@ def calcVerdictScore ( data,score_type ):
                 return map[n][1]
             for j in range(n):
                 if map[j][0]<=x and x<=map[j+1][0]:
-                    return map[j][1] + (map[j+1][1])-map[j][1])*(x-map[j][0])/(map[j+1][0]-map[j][0])
+                    return map[j][1] + (map[j+1][1]-map[j][1])*(x-map[j][0])/(map[j+1][0]-map[j][0])
         else:
             if x>=map[0][0]:
                 return map[0][1]
@@ -111,7 +111,7 @@ def calcVerdictScore ( data,score_type ):
                 return map[n][1]
             for j in range(n):
                 if map[j][0]>=x and x>=map[j+1][0]:
-                    return map[j][1] + (map[j+1][1])-map[j][1])*(x-map[j][0])/(map[j+1][0]-map[j][0])
+                    return map[j][1] + (map[j+1][1]-map[j][1])*(x-map[j][0])/(map[j+1][0]-map[j][0])
         return 0.0  #  should never happen
 
     def score_direct ( x,d ):
@@ -147,7 +147,7 @@ def calcVerdictScore ( data,score_type ):
         elif "bwidth" in data[key]:
             ds = score_bell ( v,data[key]["center"],data[key]["bwidth"] )
         elif "map" in data[key]:
-            ds = score_map ( v,data["map"] ) / 100.0
+            ds = score_map ( v,data[key]["map"] ) / 100.0
         else:
             g  = data[key]["good"]
             b  = data[key]["bad"]

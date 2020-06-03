@@ -64,15 +64,23 @@ server_dir=/path/to/server_dir_with_config_launcher_etc
 
 source $ccp4_dir/bin/ccp4.setup-sh
 
+# if PDB_DIR is not given, CCP4 Cloud tasks will be fetching PDB files remotely
+# from the PDB, which is much slower
 export PDB_DIR=/path/to/vanilla/pdb
+
+# if GESAMT_ARCHIVE is not given, Gesamt will not make structural searches
+# in the PDB
 export GESAMT_ARCHIVE=/path/to/gesamt_archive
-export JSPISA_CFG=$CCP4/share/pisa/jspisa.cfg
 
 # comment the following 2 lines if XDS is not installed
 export XDS_home=/path/to/xds_dir
 export XDSGUI_home=/path/to/xdsgui_dir
 
-export DOCREPO=/path/to/documentation_repository/trunk
+# custom plugin for Xia-2, comment out if plugin is not installed
+export Xia2_durin=/path/to/durin-plugin.so
+
+# if commented out, documentation task will not be available
+export DOCREPO=/path/to/documentation_gitlab_repository/trunk
 
 # comment out if buster is not installed
 source /path/to/buster/setup.sh
@@ -105,12 +113,21 @@ server_dir=/path/to/server_dir_with_config_launcher_etc
 
 source $ccp4_dir/bin/ccp4.setup-sh
 
+# if PDB_DIR is not given, CCP4 Cloud tasks will be fetching PDB files remotely
+# from the PDB, which is much slower
 export PDB_DIR=/path/to/vanilla/pdb
-export GESAMT_ARCHIVE=/path/to/gesamt_archive
-export JSPISA_CFG=$CCP4/share/pisa/jspisa.cfg
 
-export BALBES_ROOT=/path/to/BALBES-database
+# if GESAMT_ARCHIVE is not given, Gesamt will not make structural searches
+# in the PDB
+export GESAMT_ARCHIVE=/path/to/gesamt_archive
+
+#   BALBES_ROOT is not needed for CCP4 7.1 and higher
+#export BALBES_ROOT=/path/to/BALBES-database
+
 export SIMBAD_DB=/path/to/simbad-database
+
+# custom plugin for Xia-2, comment out if plugin is not installed
+export Xia2_durin=/path/to/durin-plugin.so
 
 export SSL_CERT_FILE=$CCP4/lib/python2.7/site-packages/pip/_vendor/requests/cacert.pem
 export OMP_NUM_THREADS=1

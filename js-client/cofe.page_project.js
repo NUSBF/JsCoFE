@@ -228,11 +228,13 @@ function ProjectPage ( sceneId )  {
         icon  : image_path('add'),
         action: addJob
       };
-      items.addJobRepeatItem = { // The "Add job" menu item
-        label : "Add job with last used parameters",
-        icon  : image_path('add_repeat'),
-        action: addJobRepeat
-      };
+      var node = jobTree.getSelectedNode();
+      if (node.parentId)
+        items.addJobRepeatItem = { // The "Add job" menu item
+          label : "Add job with last used parameters",
+          icon  : image_path('add_repeat'),
+          action: addJobRepeat
+        };
     }
 
     if (!$(moveup_btn.element).button('option','disabled'))  {

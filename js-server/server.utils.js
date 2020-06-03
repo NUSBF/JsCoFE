@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    16.05.20   <--  Date of Last Modification.
+ *    29.05.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -254,16 +254,25 @@ function moveFile ( old_path,new_path )  {
   // must be limited only when source and destination are known to be in
   // the same partition
   try {
-    if (_is_windows)
+    if (_is_windows && fileExists(new_path))
       fs.unlinkSync ( new_path );
-  } catch (e) {}
+  } catch (e) {
+    log.error ( 40,'cannot remove file ' + new_path );
+    log.error ( 40,'error: ' + JSON.stringify(e) );
+    console.error(e);
+  }
   try {
     fs.moveSync ( old_path,new_path,{'overwrite':true} );
 //    fs.renameSync ( old_path,new_path );
     return true;
   } catch (e)  {
-    log.error ( 4,'cannot move file ' + old_path + ' to ' + new_path );
-    console.error(e);
+    var old_exist = '(non-existing)';
+    var new_exist = '(non-existing)';
+    if (fileExists(old_path))  old_exist = '(existing)';
+    if (fileExists(new_path))  new_exist = '(existing)';
+    log.error ( 41,'cannot move ' + old_exist + ' file ' + old_path +
+                   ' to ' + new_exist + ' ' + new_path );
+    log.error ( 41,'error: ' + JSON.stringify(e) );
     return false;
   }
 }
@@ -273,11 +282,25 @@ function moveDir ( old_path,new_path,overwrite_bool )  {
   // uses sync mode, which is Ok for source/destinations being on the same
   // file systems; use not-synced version when moving across devices
   try {
+    if (_is_windows && overwrite_bool && fileExists(new_path))
+      fs.removePath ( new_path );
+  } catch (e) {
+    log.error ( 50,'cannot remove directory ' + new_path );
+    log.error ( 50,'error: ' + JSON.stringify(e) );
+    console.error(e);
+  }
+  try {
     fs.moveSync ( old_path,new_path,{'overwrite':overwrite_bool} );
     return true;
   } catch (e)  {
-    log.error ( 5,'cannot move directory ' + old_path + ' to ' + new_path +
-                  ' ' + JSON.stringify(e) );
+    var old_exist = '(non-existing)';
+    var new_exist = '(non-existing)';
+    if (fileExists(old_path))  old_exist = '(existing)';
+    if (fileExists(new_path))  new_exist = '(existing)';
+    log.error ( 51,'cannot move ' + old_exist + ' directory ' + old_path +
+                   ' to ' + new_exist + ' ' + new_path );
+    log.error ( 51,'error: ' + JSON.stringify(e) );
+    console.error(e);
     return false;
   }
 }

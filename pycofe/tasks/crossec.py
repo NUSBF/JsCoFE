@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    09.02.20   <--  Date of Last Modification.
+#    03.06.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -34,6 +34,7 @@ import pyrvapi
 
 #  application imports
 from . import basic
+from   pycofe.varut  import rvapi_utils
 
 
 # ============================================================================
@@ -50,19 +51,64 @@ class CrosSec(basic.TaskDriver):
 
     # ------------------------------------------------------------------------
 
+    def KeV2A ( self,kev ):
+        if kev:
+            return 12.39841662513396/float(kev)
+        return kev
+
+    def A2KeV ( self,A ):
+        if A:
+            return 12.39841662513396/float(A)
+        return A
+
+    # ------------------------------------------------------------------------
+
     def run(self):
 
         # Prepare crossec input
         # fetch input data
 
+        units     = self.getParameter ( self.task.parameters.UNITS_SEL )
         atom_type = self.getParameter ( self.task.parameters.ATOM )
-        wlen_n    = int   ( self.getParameter ( self.task.parameters.WLENGTH_N    ) )
-        wlen_min  = float ( self.getParameter ( self.task.parameters.WLENGTH_MIN  ) )
-        wlen_step = float ( self.getParameter ( self.task.parameters.WLENGTH_STEP ) )
 
+        if units=="W":
+            wlen_n   = int   ( self.getParameter ( self.task.parameters.NPOINTS_W   ) )
+            wlen_min = float ( self.getParameter ( self.task.parameters.WLENGTH_MIN ) )
+            wlen_max = float ( self.getParameter ( self.task.parameters.WLENGTH_MAX ) )
+            wlens    = [
+                self.getParameter ( self.task.parameters.WAVELENGTH_01 ),
+                self.getParameter ( self.task.parameters.WAVELENGTH_02 ),
+                self.getParameter ( self.task.parameters.WAVELENGTH_03 ),
+                self.getParameter ( self.task.parameters.WAVELENGTH_04 ),
+                self.getParameter ( self.task.parameters.WAVELENGTH_05 ),
+                self.getParameter ( self.task.parameters.WAVELENGTH_06 )
+            ]
+            unit_name = "Wavelength, Angstrom"
+        else:
+            wlen_n     = int ( self.getParameter ( self.task.parameters.NPOINTS_E ) )
+            energy_min = self.getParameter ( self.task.parameters.ENERGY_MIN )
+            energy_max = self.getParameter ( self.task.parameters.ENERGY_MAX )
+            energies   = [
+                self.getParameter ( self.task.parameters.ENERGY_01 ),
+                self.getParameter ( self.task.parameters.ENERGY_02 ),
+                self.getParameter ( self.task.parameters.ENERGY_03 ),
+                self.getParameter ( self.task.parameters.ENERGY_04 ),
+                self.getParameter ( self.task.parameters.ENERGY_05 ),
+                self.getParameter ( self.task.parameters.ENERGY_06 )
+            ]
+            wlen_min = self.KeV2A ( energy_min )
+            wlen_max = self.KeV2A ( energy_max )
+            wlens = []
+            for i in range(len(energies)):
+                wlens.append ( self.KeV2A(energies[i]) )
+            unit_name = "Photon energy, KeV"
+
+        #  PART A
+
+        wlen_cntr = (wlen_min + wlen_max)/2
         wlen_n    = int(wlen_n/2)
-        wlen_cntr = wlen_min + wlen_n*wlen_step
         wlen_n    = 2*wlen_n+1
+        wlen_step = (wlen_max-wlen_min)/(wlen_n-1)
 
         self.open_stdin()
         self.write_stdin ([
@@ -78,14 +124,15 @@ class CrosSec(basic.TaskDriver):
         self.runApp ( "crossec",[],logType="Main" )
         #self.unsetLogParser()
 
-        pyrvapi.rvapi_set_text  ( "<h3>Anomalous scattering factors for atom type " + atom_type + "</h3>",
+        ds_name = unit_name.lower().replace(" ","_")
+        pyrvapi.rvapi_set_text  ( "<h3>A. Anomalous scattering factors plot for atom type " + atom_type + "</h3>",
                                   self.report_page_id(),self.rvrow,0,1,1 )
         pyrvapi.rvapi_add_graph ( self.crossec_graph_id(),self.report_page_id(),
                                   self.rvrow+1,0,1,1 )
         pyrvapi.rvapi_set_graph_size ( self.crossec_graph_id(),700,400 )
         pyrvapi.rvapi_add_graph_data ( "data",self.crossec_graph_id(),"Factors" )
-        pyrvapi.rvapi_add_graph_dataset ( "wavelength","data",self.crossec_graph_id(),
-                                          "Wavelength","Wavelength" )
+        pyrvapi.rvapi_add_graph_dataset ( ds_name.lower(),"data",self.crossec_graph_id(),
+                                          unit_name,unit_name )
         pyrvapi.rvapi_add_graph_dataset ( "fp","data",self.crossec_graph_id(),
                                           "Dispersive term (f')","Dispersive term (f')" )
         pyrvapi.rvapi_add_graph_dataset ( "fpp","data",self.crossec_graph_id(),
@@ -93,33 +140,99 @@ class CrosSec(basic.TaskDriver):
 
         self.file_stdout.close()
         pattern = atom_type.upper() + "         "
+        nla     = 0
+        data    = []
         with open(self.file_stdout_path(),'r') as f:
             for line in f:
+                nla += 1
                 if line.startswith(pattern):
                     lst = line.split()
-                    pyrvapi.rvapi_add_graph_real ( "wavelength","data",
-                                    self.crossec_graph_id(),float(lst[1]),"%g" )
-                    pyrvapi.rvapi_add_graph_real ( "fp","data",
-                                    self.crossec_graph_id(),float(lst[2]),"%g" )
-                    pyrvapi.rvapi_add_graph_real ( "fpp","data",
-                                    self.crossec_graph_id(),float(lst[3]),"%g" )
+                    val = float(lst[1])
+                    if units=="E":
+                        val = self.A2KeV ( val )
+                    data.append ( [val,float(lst[2]),float(lst[3])] )
+        self.file_stdout = open ( self.file_stdout_path(),'a' )
+
+        for i in range(len(data)):
+            pyrvapi.rvapi_add_graph_real ( ds_name,"data",
+                            self.crossec_graph_id(),data[i][0],"%g" )
+            pyrvapi.rvapi_add_graph_real ( "fp","data",
+                            self.crossec_graph_id(),data[i][1],"%g" )
+            pyrvapi.rvapi_add_graph_real ( "fpp","data",
+                            self.crossec_graph_id(),data[i][2],"%g" )
 
         pyrvapi.rvapi_add_graph_plot   ( "plot",self.crossec_graph_id(),
-                                         "Anomalous factors","Wavelength",
+                                         "Anomalous factors",unit_name,
                                          "Anomalous Scattering Factors" )
         pyrvapi.rvapi_add_plot_line    ( "plot","data",self.crossec_graph_id(),
-                                         "wavelength","fp" )
+                                         ds_name,"fp" )
         pyrvapi.rvapi_set_line_options ( "fp","plot","data",self.crossec_graph_id(),
                                          "#00008B","solid","off",2.5,True )
         pyrvapi.rvapi_add_plot_line    ( "plot","data",self.crossec_graph_id(),
-                                         "wavelength","fpp" )
+                                         ds_name,"fpp" )
         pyrvapi.rvapi_set_line_options ( "fpp","plot","data",self.crossec_graph_id(),
                                          "#8B8B00","solid","off",2.5,True )
         pyrvapi.rvapi_set_plot_legend  ( "plot",self.crossec_graph_id(),"sw","" )
 
         self.rvrow += 2
 
-        self.file_stdout = open ( self.file_stdout_path(),'a' )
+
+        #  PART B
+
+        nwav = []
+        for i in range(len(wlens)):
+            if wlens[i]:
+                nwav.append ( str(wlens[i]) )
+
+        self.stderrln ( str(nwav) )
+
+        if len(nwav)>0:
+
+            self.open_stdin()
+            self.write_stdin ([
+                "ATOM " + atom_type,
+                "NWAV " + str(len(nwav)) + " " + " ".join(nwav),
+                "VERB ",
+                "END"
+            ])
+            self.close_stdin()
+
+            self.runApp ( "crossec",[],logType="Main" )
+
+            self.file_stdout.close()
+
+            tdict = {
+                #"title": "Scattering Factors",
+                "state": 0, "class": "table-blue", "css": "text-align:right;",
+                "horzHeaders" :  [
+                    { "label": "Photon Energy (KeV)" , "tooltip": "Photon Energy"   },
+                    { "label": "Wavelength (&Aring;)", "tooltip": "Wavelength"      },
+                    { "label": "Dispersive term (f')", "tooltip": "Dispersive term" },
+                    { "label": "Anomalous term (f'')", "tooltip": "Anomalous term"  }
+                ],
+                "rows" : []
+            }
+
+            nlb = 0
+            with open(self.file_stdout_path(),'r') as f:
+                for line in f:
+                    nlb += 1
+                    if nlb>nla and line.startswith(pattern):
+                        lst = line.split()
+                        tdict["rows"].append ({
+                            "data" : [str(round(self.A2KeV(lst[1]),4)),lst[1],lst[2],lst[3]]
+                        })
+            self.file_stdout = open ( self.file_stdout_path(),'a' )
+
+            pyrvapi.rvapi_set_text (
+                "&nbsp;<p><h3>B. Selected anomalous scattering factors for atom type " +\
+                atom_type + "</h3>",
+                self.report_page_id(),self.rvrow+1,0,1,1 )
+
+            rvapi_utils.makeTable ( tdict,self.getWidgetId("scatf_table"),
+                                    self.report_page_id(),self.rvrow+2,0,1,1 )
+            self.rvrow += 3
+
 
         # close execution logs and quit
         self.success ( False )

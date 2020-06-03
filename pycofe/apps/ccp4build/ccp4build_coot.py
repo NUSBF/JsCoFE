@@ -37,8 +37,8 @@ class Coot(ccp4build_refmac.Refmac):
 
     def coot (  self,
                 meta,   # meta dictionary
-                script       = "stepped_refine_protein",
-                nameout      = "coot"
+                script_lst,
+                nameout = "coot"
               ):
 
         self.open_script ( "coot" )
@@ -49,16 +49,22 @@ class Coot(ccp4build_refmac.Refmac):
         lab_phi = self.getLabel ( meta["labin_fc"],1 )
         xyzout  = os.path.join  ( self.workdir,nameout+".pdb" )
 
-        self.write_script ([
+        script = [
             "make_and_draw_map('" + meta["mtzpath"]  +\
                                     "', '" + lab_f   +\
                                     "', '" + lab_phi +\
-                                    "', '', 0, 0)",
-            script + "(0)",
+                                    "', '', 0, 0)"
+        ]
+
+        for i in range(len(script_lst)):
+            script.append ( script_lst[i] + "(0)" )
+
+        script = script + [
             "write_pdb_file(0,'" + self._escape_path(xyzout) + "')",
             "coot_real_exit(0)"
-        ])
+        ]
 
+        self.write_script ( script )
         self.close_script()
 
         script_path = self.script_path + ".py"

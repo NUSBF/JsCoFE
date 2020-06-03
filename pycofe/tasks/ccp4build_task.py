@@ -38,8 +38,9 @@ import pyrvapi
 
 #  application imports
 from . import basic
-from   pycofe.dtypes import dtype_template, dtype_revision
-from   pycofe.proc   import qualrep
+from   pycofe.dtypes   import dtype_template, dtype_revision
+from   pycofe.proc     import qualrep
+from   pycofe.verdicts import verdict_ccp4build
 
 
 # ============================================================================
@@ -379,7 +380,7 @@ class CCP4Build(basic.TaskDriver):
                             r       += ", " + titles[j]
                             for k in range(7):
                                 self.putSpacer1 ( self.report_page_id(),1,meta["page"][j]+k )
-                    secname = "Solution with " + " and".join( secname.rsplit(",",1) )
+                    secname = "Build with " + " and".join( secname.rsplit(",",1) )
                     self.putMessage1 ( self.report_page_id(),
                             "<h3>" + secname + "</h3>",meta["page"][i] )
                 elif build_no[i-1]>=0:
@@ -460,7 +461,18 @@ class CCP4Build(basic.TaskDriver):
                 revisions .append ( rev )
 
 
+            verdict_ccp4build.putVerdictWidget ( self,meta )
+
             # put revision widgets in report
+            index = [i for i in range(len(meta["scores"]))]
+
+            for i in range(len(meta["scores"])):
+                for j in range(i+1,len(meta["scores"])):
+                    if meta["scores"][index[j]]>meta["scores"][index[i]]:
+                        x = index[i]
+                        index[i] = index[j]
+                        index[j] = x
+
 
             self.putTitle ( "Structure Revisions" +\
                         self.hotHelpLink ( "Structure Revision",
@@ -474,12 +486,13 @@ class CCP4Build(basic.TaskDriver):
 
             serNo = 0
             for i in range(len(outnames)):
-                if build_no[i]>=0 and revisions[i]:
-                    revisions[i].makeRevDName ( self.job_id,serNo+1,
-                                    self.outputFName + " (" + revname[i] + ")" )
+                ii = index[i]
+                if build_no[ii]>=0 and revisions[ii]:
+                    revisions[ii].makeRevDName ( self.job_id,serNo+1,
+                                    self.outputFName + " (" + revname[ii] + ")" )
                     self.putRevisionWidget ( gridId,serNo,
-                                "build with " + revname[i] + " :",
-                                revisions[i] )
+                                "build with " + revname[ii] + " :",
+                                revisions[ii] )
                     revisions[i].register ( self.outputDataBox )
                     serNo += 1
 
@@ -487,7 +500,7 @@ class CCP4Build(basic.TaskDriver):
 
             try:
                 # this is only for displayig stats in job tree
-                m0 = meta["metrics"][0]
+                m0 = meta["metrics"][index[0]]
                 self.generic_parser_summary["ccp4build"] = {
                   "summary_line" : "Compl=" + str(m0["res_compl"]) +\
                                    "% R="   + str(m0["R_factor"])  +\
@@ -498,7 +511,7 @@ class CCP4Build(basic.TaskDriver):
             except:
                 pass
 
-        shutil.rmtree ( self.workdir() )
+        #shutil.rmtree ( self.workdir() )
 
         # close execution logs and quit
         self.success ( have_results )

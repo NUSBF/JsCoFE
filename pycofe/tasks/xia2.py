@@ -12,7 +12,7 @@
 #  XIA2 EXECUTABLE MODULE (OPTIONAL CLIENT-SIDE TASK)
 #
 #  Command-line:
-#     ccp4-python python.tasks.xia2.py jobManager jobDir jobId
+#     ccp4-python pycofe.tasks.xia2.py jobManager jobDir jobId
 #
 #  where:
 #    jobManager  is either SHELL or SGE
@@ -120,7 +120,7 @@ class Xia2(basic.TaskDriver):
         else:
             cmd.append ( "nproc=" + nSubJobs )
 
-        if have_durin:
+        if have_durin and hasattr(sec2,"PLUGIN"):
             if self.getParameter(sec2.PLUGIN)!="none":
                 cmd.append ( "plugin=" + os.environ["Xia2_durin"] )
 
