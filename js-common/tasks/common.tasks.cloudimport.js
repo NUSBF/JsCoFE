@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    26.03.20   <--  Date of Last Modification.
+ *    09.06.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -87,10 +87,10 @@ if (!__template)  {
   // This function is called at cloning jobs and should do copying of all
   // custom class fields not found in the Template class
   TaskCloudImport.prototype.customDataClone = function ( task )  {
-    this.uname        = '';
+    this.uname            = '';
     this.currentCloudPath = task.currentCloudPath;
-    this.selected_items = [];
-    this.file_mod     = {'rename':{},'annotation':[]}; // file modification and annotation
+    this.selected_items   = [];
+    this.file_mod         = {'rename':{},'annotation':[]}; // file modification and annotation
     return;
   }
 
@@ -151,7 +151,8 @@ if (!__template)  {
     if (this.selected_items.length>0)
       div.select_btn.setText ( 'Select more files' );
 
-    (function(task){
+    var task = this;
+    //(function(task){
       div.select_btn.addOnClickListener ( function(){
         new CloudFileBrowser ( div,task,4,function(items){
           task.setSelectedCloudFiles ( div,items,function(new_items){
@@ -172,7 +173,7 @@ if (!__template)  {
           return 1;  // do not close browser window
         },null );
       });
-    }(this))
+    //}(this))
 
     return div;
 
