@@ -3,6 +3,7 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
+==========
 User Guide
 ==========
 
@@ -14,14 +15,17 @@ User Guide
    jscofe_project
    jscofe_tasklist
    jscofe_jobdialog
+   jscofe_CloudED.rst
    jscofe_QnA
+   jscofe_version_log.rst
 
-
+======
 Search
 ======
 
 * :ref:`search`
 
+========================
 Authors and Contributors
 ========================
 

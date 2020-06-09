@@ -1,6 +1,12 @@
 =====================
 Questions and Answers
 =====================
+Do not hesitate to ask your question
+
+ .. image:: images/Reception_.png
+         :scale: 70 %
+         :align: center
+         
 
 .. toctree::
     :maxdepth: 2

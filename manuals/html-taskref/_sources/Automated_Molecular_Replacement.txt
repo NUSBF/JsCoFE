@@ -20,6 +20,7 @@ You can find `here <http://www.ysbl.york.ac.uk/~cowtan/fourier/magic.html>`_ how
 
 **Molecular replacement** is the process of solving the phase problem for an unknown structure by placing the atomic model known structure in the unit cell of the unknown structure by trying all possible orientations and positions and picking the one which gives the best fit to the observed data. Once we do so we can calculate approximate structure factors phases which, in combination with the observed structure factors for the unknown structure, allow the model to be rebuilt and refined.
 
+The automatic molecular replacement structure solution involves the search for the homologous chains and domains in the database, further modification of domain and chain models in accordance with the target sequence, constructing oligomeric models if possible.
 
 In case you have **NOT** a homologous protein structure you can use: automated molecular replacement pipelines in CCP4:
 

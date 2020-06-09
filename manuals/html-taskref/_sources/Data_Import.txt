@@ -6,4 +6,5 @@ Data Import
     :maxdepth: 2
 
     doc.task.import
+    doc.task.ImportSeqCP
    

@@ -1,7 +1,7 @@
 /*
  *  ========================================================================
  *
- *    13.03.20   <--  Date of Last Modification.
+ *    08.06.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  ------------------------------------------------------------------------
  *
@@ -37,25 +37,26 @@ var _taskIndex = {
   // suggest CCP4go only after Root
   'A'  : { type: 'TaskCCP4go'          , after: ['0'] },
 
-  'B'  : { type: 'TaskImport'          , after: ['0','B','C','D','E','m'] },
-  'C'  : { type: 'TaskEnsemblePrepSeq' , after: ['B','D','m'] },
-  'D'  : { type: 'TaskEnsemblePrepXYZ' , after: ['B','C','D','m'] },
-  'D1' : { type: 'TaskModelPrepXYZ'    , after: ['B','C','D','m'] },
-  'D2' : { type: 'TaskModelPrepAlgn'   , after: ['B','C','D','m'] },
+  'B'  : { type: 'TaskImport'          , after: ['0','B','B1','C','D','E','m'] },
+  'B1' : { type: 'TaskImportSeqCP'     , after: ['0','B','B1','C','D','E','m'] },
+  'C'  : { type: 'TaskEnsemblePrepSeq' , after: ['B','B1','D','m'] },
+  'D'  : { type: 'TaskEnsemblePrepXYZ' , after: ['B','B1','C','D','m'] },
+  'D1' : { type: 'TaskModelPrepXYZ'    , after: ['B','B1','C','D','m'] },
+  'D2' : { type: 'TaskModelPrepAlgn'   , after: ['B','B1','C','D','m'] },
   'D3' : { type: 'TaskEnsembler'       , after: ['D1','D2'] },
 
   // suggest Make Ligand after Import and Model Preparation
-  'E'  : { type: 'TaskMakeLigand'      , after: ['B','C','D','E','m'] },
+  'E'  : { type: 'TaskMakeLigand'      , after: ['B','B1','C','D','E','m'] },
 
   // suggest Aimless, Simbad and ASUDef after Import or Model Preparation in
   // the specified order; do not suggest them after themselves (user should
   // branch/clone instead)
-  'F'  : { type: 'TaskAimless'         , after: ['B','C','D','E',    'h','m','t','u'] },
-  'G'  : { type: 'TaskSimbad'          , after: ['B','C','D','E','F','h','m','t','u'] },
-  'H'  : { type: 'TaskASUDef'          , after: ['B','C','D','E','F','h','m','t','u'] },
+  'F'  : { type: 'TaskAimless'         , after: ['B','B1','C','D','E',    'h','m','t','u'] },
+  'G'  : { type: 'TaskSimbad'          , after: ['B','B1','C','D','E','F','h','m','t','u'] },
+  'H'  : { type: 'TaskASUDef'          , after: ['B','B1','C','D','E','F','h','m','t','u'] },
 
   // suggest Xyz2Revision after Import, Models and Ligands
-  'I'  : { type: 'TaskXyz2Revision'    , after: ['B','C','D','E','F','h','m','t','u'] },
+  'I'  : { type: 'TaskXyz2Revision'    , after: ['B','B1','C','D','E','F','h','m','t','u'] },
 
   // suggest Morda, MrBump, and Balbes after ASUDef; do not suggest them after
   // themselves (user should branch/clone instead)
@@ -132,7 +133,7 @@ var _taskIndex = {
   'e'  : { type: 'TaskASUDefStruct'      , after: ['A'] },
 
   // suggest SeqAlign after Import
-  'f'  : { type: 'TaskSeqAlign'        , after: ['B','m'] },
+  'f'  : { type: 'TaskSeqAlign'        , after: ['B','B1','m'] },
 
   // do not suggest FacilityImport
   'g'  : { type: 'TaskFacilityImport'  , after: [] },
@@ -159,7 +160,7 @@ var _taskIndex = {
   'l1'  : { type: 'TaskXyzUtils'       , after: [] },
 
   // suggest CloudImport alike plain Import
-  'm'  : { type: 'TaskCloudImport'     , after: ['0','B','C','D','E','m'] },
+  'm'  : { type: 'TaskCloudImport'     , after: ['0','B','B1','C','D','E','m'] },
 
   // suggest Acorn after both MR and Phaser-EP; do not suggest it after itself
   'n'  : { type: 'TaskAcorn'           , after: ['J','K','L','M','N','O','R','S'] },
@@ -186,10 +187,10 @@ var _taskIndex = {
   'u'  : { type: 'TaskIMosflm'         , after: ['0'] },
 
   // suggest PDBImport alike plain Import
-  'v'  : { type: 'TaskImportPDB'       , after: ['0','B','C','D','E','m'] },
+  'v'  : { type: 'TaskImportPDB'       , after: ['0','B','B1','C','D','E','m'] },
 
   // suggest EnsemblePrepMG alike TaskEnsemblePrepSeq
-  'w'  : { type: 'TaskEnsemblePrepMG'  , after: ['B','D','m'] },
+  'w'  : { type: 'TaskEnsemblePrepMG'  , after: ['B','B1','D','m'] },
 
   // suggest XDSGUI after root
   'x'  : { type: 'TaskXDSGUI'          , after: ['0'] }

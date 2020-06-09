@@ -1,0 +1,34 @@
+======================
+CCP4 Cloud Version Log
+======================
+
+
+**Version 1.6.012**
+
+    *Released with CCP4 7.1.002*
+
+    **Changes and new features**
+
+    #. CROSSEC task (anomalous scattering factors calculations) now operates with
+       both wavelengths and photon energies. In addition to the general plot,
+       anomalous scattering factors may be calculated also for up to 6 selected
+       wavelengths or photon energies
+       
+    #. Fixed a bug in the import procedure for HHPRED alignments, related to
+       mispositioning of residue numbers under certain circumstances
+       
+    #. CCP4BUILD modified with the purpose to improve convergence and 
+       reproduceability of results at repeat runs.
+       
+    #. Fixed a bug in the import procedure for merged MTZ files, related to 
+       python2 / python3 code compatibility
+       
+    #. Added new task for importing sequences by copy-pasting (Task List
+       Section *Data Import*)
+
+
+
+**Version 1.6.011**
+
+    *Released with CCP4 7.1.001*
+    

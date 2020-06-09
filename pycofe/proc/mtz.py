@@ -3,11 +3,16 @@
 #
 # ============================================================================
 #
-#    01.05.20   <--  Date of Last Modification.
+#    08.06.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
-#  MTZ HANDLING UTILS
+#  **** Module  :  pycofe/proc/mtz.py
+#      ~~~~~~~~~
+#  **** Project :  jsCoFE - javascript-based Cloud Front End
+#      ~~~~~~~~~
+#  **** Content :  MTZ HANDLING UTILS
+#      ~~~~~~~~~
 #
 #  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2020
 #
@@ -373,7 +378,13 @@ def mtz_file(fname, vstream=None):
             istream.seek(4)
             n = struct.unpack(fmt, istream.read(4))[0]
             istream.seek(4* n - 4)
-            h = istream.read(80).decode()
+
+            if sys.version_info[0]>=3:
+                h = istream.read(80).decode()
+            else:
+                h = istream.read(80)
+            #h = istream.read(80).decode ( "utf-8" )
+
             if h.startswith('VERS'):
                 line = h
                 break
@@ -390,7 +401,11 @@ def mtz_file(fname, vstream=None):
                 header_dict[key] = data_list
 
             data_list.append(data)
-            line = istream.read(80).decode()
+            if sys.version_info[0]>=3:
+                line = istream.read(80).decode()
+            else:
+                line = istream.read(80)
+            #line = istream.read(80).decode ( "utf-8" )
 
     if header_dict:
         return mtz_dataset_list(fname, header_dict, vstream)
@@ -406,10 +421,18 @@ def hkl_format(path, vstream=None):
             istream.seek(4)
             n = struct.unpack(fmt,istream.read(4))[0]
             istream.seek(4* n - 4)
-            line = istream.read(80).decode()
+            if sys.version_info[0]>=3:
+                line = istream.read(80).decode()
+            else:
+                line = istream.read(80)
+            #line = istream.read(80).decode ( "utf-8" )
             if line.startswith('VERS'):
                 while line:
-                    line = istream.read(80).decode()
+                    if sys.version_info[0]>=3:
+                        line = istream.read(80).decode()
+                    else:
+                        line = istream.read(80)
+                    #line = istream.read(80).decode ( "utf-8" )
                     if line.startswith('MTZBATS'):
                         return 'mtz_integrated'
                 return 'mtz_merged'

@@ -165,17 +165,17 @@ FE Server Configuration Items
     These are mandatory items. Typically, all CCP4 Cloud Servers listen to
     localhost ports, which may receive
     external requests through redirection from Apache or any other web-server
-    of choice. Therefore values other than
+    of choice. Therefore values other than: ::
     
-        *"protocol" : "http"*
-    
-        *"host"     : "localhost"*
+        "protocol" : "http"
+        "host"     : "localhost"
         
-    should not be used other than for development purposes.
+    should not be used other than for development purposes. ::
     
-        *"port" : 8081*
-          should be chosen separately for each configured server from the
-          appropriate range of available port numbers
+        "port" : 8081
+    
+    should be chosen separately for each configured server from the
+    appropriate range of available port numbers
       
 
 **"externalURL"**
@@ -183,9 +183,10 @@ FE Server Configuration Items
     This is the URL, under which the server is visible to the outside world.
     If left blank, its value will be calculated as
     ``protocol://host:port``. However, when chosen port receives redirection
-    from Apache, *"externalURL"* should be set to address used for redirection, e.g.,
+    from Apache, *"externalURL"* should be set to address used for redirection,
+    e.g., ::
     
-        *"externalURL" : "https://my.web.server.com/ccp4cloud"*
+        "externalURL" : "https://my.web.server.com/ccp4cloud"
 
 
 **"reportURL"**
@@ -196,26 +197,26 @@ FE Server Configuration Items
     on local host, therefore, web-address in user's browser will be always
     ``"http://localhost:port"`` even if data is sent over to remote server. In such
     situations, specification of *"reportURL"* allows to inform the user of the actual 
-    connection address.
+    connection address: ::
     
-        *"reportURL" : "https://my.web.server.com/ccp4cloud"*
+        "reportURL" : "https://my.web.server.com/ccp4cloud"
 
 
 **"exclusive"**
 
     Specifies whether *"port"* is exclusively allocated to the server or not. There
-    are little reasons to use value other than
+    are few reasons to use value other than ::
     
-        *"exclusive" : true*
+        "exclusive" : true
 
 
 **"stoppable"**
 
     Specifies whether the server may be stopped by user by executing server's URL
     with */stop* appended to it, in browser. This is a developer's option, and 
-    there is no reason to use value other than
+    there is no reason to use value other than ::
     
-        *"stoppable" : false*
+        "stoppable" : false
         
     in production systems.
 
@@ -224,9 +225,9 @@ FE Server Configuration Items
 
     Optional list of tasks that can be excluded from the list of available tasks.
     The tasks are specified by the names of the corresponding Javascript task
-    classes, for example,
+    classes, for example, ::
     
-        *"exclude_tasks" : ["TaskAmple","TaskBalbes"]*
+        "exclude_tasks" : ["TaskAmple","TaskBalbes"]
     
     Task classes are collected in js-common/tasks source code directory.
 
@@ -234,14 +235,14 @@ FE Server Configuration Items
 **"fsmount"**
 
     File system mount common for communicating servers (Front End and Number 
-    Cruncher). Configuration 
+    Cruncher). Configuration: :: 
     
-        *"fsmount" : null*
+        "fsmount" : null
         
     causes all data to be transmitted solely via http(s), even within localhost.
-    If a common file mount is specified, e.g.,
+    If a common file mount is specified, e.g., ::
     
-        *"fsmount" : "/"*
+        "fsmount" : "/"
         
     then data are transmitted using direct file copy, and only metadata is 
     exchanged via http(s).
@@ -253,18 +254,18 @@ FE Server Configuration Items
     remote setups. Local setup is one with all servers running on the same 
     hardware host, which is identified by using localhosts for communication. 
     In few particular cases, such identification may fail, which may be 
-    corrected by using
+    corrected by using ::
     
-        *"localSetup" : false*
+        "localSetup" : false
         
 
 **"update_rcode"**
 
     Optional code (1-255) which is returned when administrators requests update 
     of servers by pressing *"Update"* button in *Administrator Page*, tab *Nodes*.
-    See launcher script for further details. Example:
+    See launcher script for further details. Example: ::
     
-        *"update_rcode" : 212*
+        "update_rcode" : 212
         
 
 **"userDataPath"**
@@ -320,26 +321,31 @@ FE Server Configuration Items
     
     Here,
     
-        **"fsXX"** is an arbitrary chosen identifier for file system; at least 
-        one file system should be configured in the object.
+        *"fsXX"*
+            is an arbitrary chosen identifier for file system; at least 
+            one file system should be configured in the object.
         
-        **"path"** is path to projects directory on related file system
+        *"path"*
+            is path to projects directory on related file system
     
-        **"type"** is file system type. Two options are available:
+        *"type"*
+            is file system type. Two options are available:
     
-            *"volume"* : means ordinary system, projects will be placed in path given
+                *"volume"* : means ordinary system, projects will be placed in path given
     
-            *"home"* : indicates that projects are placed in user's home directories;
-            in this, case, the actual directory path is calculated as 
-            ``/path/login/dirName`` (must exist) where ``login`` is user's loginname,
-            and ``dirName`` is given below
+                *"home"* : indicates that projects are placed in user's home directories;
+                in this, case, the actual directory path is calculated as 
+                ``/path/login/dirName`` (must exist) where ``login`` is user's loginname,
+                and ``dirName`` is given below
     
-        **"diskReserve"** (MBytes) specifies free disk space threshold; if
-        free disk space falls below this value, new user projects will not be
-        allocated on teh related file system
+        *"diskReserve"*
+            (MBytes) specifies free disk space threshold; if free disk space
+            falls below this value, new user projects will not be allocated on
+            the related file system
     
-        **"dirName"** specifies custom directory name for *"home"* type of 
-        file systems (ignored for *"volume"* type)
+        *"dirName"*
+            specifies custom directory name for *"home"* type of 
+            file systems (ignored for *"volume"* type)
 
     
 **"jobs_safe"**
@@ -350,18 +356,20 @@ CP4 Cloud safe for further investigation by developers. The safe is a directory
 in file system shared between the Front End and *all* Number Crunchers. Safe 
 description is the following object: ::
 
-    "jobs_safe" : { "path" : "/path/to/jobs/safe",
-                    "capacity" : 10
-                  }
+    "jobs_safe" : {
+        "path" : "/path/to/jobs/safe",
+        "capacity" : 10
+    }
 
 Here,
 
-    **"path"** should point to safe directory as it is seen on the Front End 
-    server
+    *"path"*
+        should point to safe directory as it is seen on the Front End server
     
-    **"capacity"** is the maximum number of failed jobs of particular type
-    that is retained in the safe (so that only last ``capacity`` jobs will be
-    available for investigation)
+    *"capacity"*
+        is the maximum number of failed jobs of particular type that is retained
+        in the safe (so that only last ``capacity`` jobs will be available for
+        investigation)
 
 
 **"facilitiesPath"**
@@ -468,25 +476,195 @@ Here,
     In all cases, users are sent temporary password by e-mail.
 
 
-"sessionCheckPeriod" : 2000,
+**"sessionCheckPeriod"**
+
+    Time period, in milliseconds, for checking session status and connection
+    between user device and the Front-End server. This period should be
+    reasonably short such that duplicate sessions are forced to close before
+    a user performs any action (CCP4 Cloud does not support multiple logins);
+    2000 ms is a reasonable value.
+
+
+**"ration"**
+
+    This configuration object sets default quotas for new users: ::
+
+        "ration" : {
+            "storage"   : 10000,
+            "cpu_day"   : 24,
+            "cpu_month" : 240
+        }
+        
+    where 
+
+        *"storage"*
+            is disk quota, in MBytes
+        
+        *"cpu_day"*
+            is CPU quota per day, in hours 
+
+        *"cpu_month"*
+            is CPU quota per month, in hours
+        
+    A user is able to submit new jobs if their projects occupy not more than 
+    given *storage* quota, provided that the have not spent more than 
+    given *cpu_day* CPU-hours in last 24-hour time period and not more than
+    given *cpu_month* CPU-hours in last 30-day time period.
+    
+    User quotas may be adjusted individually by users with administrative 
+    privileges via CCP4 Cloud Administration Facility.
+
+
+**"cloud_mounts"**
+
+    This optional configuration object specify directories on Front End server,
+    available to users for reading, for example: ::
  
-"ration"           : {
-        "storage"   : 3000,
-        "cpu_day"   : 24,
-        "cpu_month" : 240
-    },
- 
-"cloud_mounts"     : {  // optional item
-      "My Computer"    : "/",
-      "Home"           : ["$HOME","$USERPROFILE"],
-      "CCP4 examples"  : "$CCP4/share/ccp4i2/demo_data",
-      "Demo projects"  : "./demo-projects",
-      "My files"       : "./$LOGIN/files"
-    }
+        "cloud_mounts" : {
+            "My Computer"    : "/",
+            "Home"           : ["$HOME","$USERPROFILE"],
+            "CCP4 examples"  : "$CCP4/share/ccp4i2/demo_data",
+            "Demo projects"  : "./demo-projects",
+            "My files"       : "./$LOGIN/files"
+        }
+        
+    Mount *"Demo projects"* is reserved for keeping CCP4 Cloud Demo Projects, 
+    which can be imported by using the *Demo projects* button found above
+    user's List of Projects. Other mounts can be used in dedicated import 
+    task (*Cloud Import*) and in few tasks that use direct access to local and 
+    Cloud-based dircetories (e.g. *Xia-2* may process images from a directory 
+    mounted in this way). Cloud mount names may be chosen arbitrarily; the
+    appearance of words *"My"*, *"Home"*, *"CCP4"* in mount name will
+    decorate the mount with the corresponding icon in Cloud File Browser.
+    
+    Directory paths may be both absolute and relative, and they may contain 
+    environmental variables as in the above example. Variable ``$LOGIN`` will 
+    be replaced with user's Cloud login name, which may be used for
+    cloud storage mapping on per-user basis. When a list of paths is given
+    (*cf.* above example), the first existing path from the list will be 
+    mounted.
 
-"logflow" : {   // optional item
-      "chunk_length" : 10000,     // number of jobs to advance log file counters
-      "log_file" : "/path/to/node_fe"    // full path less of '.log' and '.err' extensions
-    }
+
+**"logflow"**
+
+    This is optional item, which control automatic renumbering of FE log
+    files. FE server writes ``stderr`` and ``stdout`` log files, with names 
+    given in FE launch script. This files may grow uncompfortably large, and,
+    ideally, should be split in manageable chunks for long-term bookkeeping.
+    This may be achieved using the following configuration object: ::
+
+        "logflow" : {
+            "chunk_length" : 10000,
+            "log_file"     : "/path/to/node_fe"
+        }
+        
+    where
+
+        *"log_file"*
+            is template path to log files. For example, tempate ``/path/to/npde_fe``
+            means that launch script defines log files with paths 
+            ``/path/to/node_fe.log`` and ``/path/to/node_fe.err``
+    
+        *"chunk_lenhgth"*
+            is the number of job launch records in a chunk. When specified number
+            of jobs is launched, current log files are renamed as
+            ``/path/to/node_fe.NN.log`` and ``/path/to/node_fe.NN.err``, where
+            ``NN`` is chunk number, and new log files with tempate names are
+            initialised
+        
+
+----------------------------------------
+Configuration of the Client Proxy Server
+----------------------------------------
 
 
+Client Proxy Server configuration has the following structure: ::
+
+
+  "FEProxy" : {  // optional proxy configuration
+    "protocol"         : "http",
+    "host"             : "localhost",
+    "port"             : 8082,
+    "externalURL"      : "http://localhost:8082",
+    "exclusive"        : true,
+    "stoppable"        : false,
+    "localisation"     : 1  // 0: all files are taken from remote server
+                            // 1: images are taken from local setup
+                            // 2: images and js libraries are taken from local setup
+                            // 3: images and all js codes are taken from local setup
+  }
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Client Proxy Server Configuration Items
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+**"protocol", "host", "port"**
+
+    These are mandatory items. Client Proxy server always runs on localhost,
+    therefore, values other than: ::
+    
+        "protocol" : "http"
+        "host"     : "localhost"
+        
+    should not be used other than for development purposes. ::
+    
+        "port" : 8082
+    
+    should be chosen separately from the appropriate range of available port
+    numbers
+      
+
+**"externalURL"**
+
+    This is the URL, under which the Client Proxy server is visible to the
+    browser and Client Server (local Number Cruncher). If left blank, its
+    value will be calculated as ``protocol://host:port``. Values other than
+    this should not be used other than for development purposes::
+    
+        "externalURL" : "http://localhost:8082"
+        
+
+**"exclusive"**
+
+    Specifies whether *"port"* is exclusively allocated to the server or not.
+    There are few reasons to use value other than ::
+    
+        "exclusive" : true
+
+
+**"stoppable"**
+
+    Specifies whether the server may be stopped by user by executing server's URL
+    with */stop* appended to it, in browser. This is a developer's option, and 
+    there is no reason to use value other than ::
+    
+        "stoppable" : false
+        
+    in production systems.
+
+
+**"localisation"**
+
+    Client Proxy Server may be configured to read certain CCP4 Cloud source
+    files from local CCP4 setup, rather than load them from remote server.
+    This makes the system more responsive, but could potentially lead to
+    visualisation defects in case of version mismatch between local and 
+    remote CCP4 setups.
+    
+        *"localisation" : 0*
+            all source files are obtained from remote server
+    
+        *"localisation" : 1*
+            image files, icons and documentation, are
+            obtained from local CCP4 setup. This is the recommended option
+    
+        *"localisation" : 2*
+            image files, icons, documentation, and standard javascript
+            librarries are obtained from local CCP4 setup
+    
+        *"localisation" : 3*
+            all CCP4 Cloud source files are obtained from local CCP4 setup
+        
+
+    

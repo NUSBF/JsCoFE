@@ -38,7 +38,7 @@ from . import basic
 from proc import (import_xrayimages, import_unmerged, import_merged,
                   import_xyz, import_ligand, import_sequence, import_doc,
                   import_alignment)
-from proc import import_pdb
+from proc import import_pdb, import_seqcp
 
 importers = [import_xrayimages, import_unmerged, import_merged,
              import_xyz, import_ligand, import_sequence, import_doc,
@@ -131,6 +131,18 @@ class Import(basic.TaskDriver):
                                   import_revisions   = pdb_make_revisions
                             )
         #self.file_stdout.write ( str(pdb_list) + "\n" )
+
+        # ============================================================================
+        # do sequence copy-paste imports
+
+        # save unrecognised file list
+        unrecognised_files = self.files_all
+
+        if hasattr(self.task.parameters,"SEQUENCE_TA"):
+            import_seqcp.run ( self,
+                self.getParameter(self.task.parameters.SEQTYPE_SEL),
+                self.outputFName,
+                self.getParameter(self.task.parameters.SEQUENCE_TA) )
 
 
         # ============================================================================

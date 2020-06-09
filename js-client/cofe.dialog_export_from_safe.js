@@ -167,8 +167,7 @@ function ExportFailedJobDialog ( safeDirPath )  {
             msgLabel.setText ( 'Failed Job "' + exportName + '" is prepared ' +
                                'for download. The total download<br>size is ' +
                                round(data.size/1000000,3) + ' MB. Push the ' +
-                               '<i>Download</i> button to begin<br>the job ' +
-                               'export. ' +
+                               '<i>Download</i> button to export the job.' +
                                '<p><b><i>Do not close this dialog until the ' +
                                'download has finished.</i></b>' );
             $('#download_btn').show();
