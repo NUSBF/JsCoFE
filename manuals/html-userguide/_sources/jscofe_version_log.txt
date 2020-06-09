@@ -25,6 +25,9 @@ CCP4 Cloud Version Log
        
     #. Added new task for importing sequences by copy-pasting (Task List
        Section *Data Import*)
+       
+    #. Cloud path, used in tasks importing data from Cloud storage, is passed as 
+       current path to task clones and descendants
 
 
 

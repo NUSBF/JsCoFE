@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    23.05.20   <--  Date of Last Modification.
+ *    09.06.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -256,7 +256,6 @@ TaskXia2.prototype.currentVersion = function()  {
 // default post-job cleanup to save disk space
 TaskXia2.prototype.cleanJobDir = function ( jobDir )  {}
 
-
 // export such that it could be used in both node and a browser
 if (!__template)  {
   // for client side
@@ -389,12 +388,13 @@ if (!__template)  {
     inputPanel.grid1.truncateRows ( row );
 
     inputPanel.dir_input = [];
+    var task = this;
 
     for (var i=0;i<ndirs;i++)  {
 
       inputPanel.dir_input.push ( this.layDirLine(inputPanel,i,row) );
 
-      (function(dirNo,task){
+      (function(dirNo){
 
         var dinput = inputPanel.dir_input[dirNo];
 
@@ -511,7 +511,7 @@ if (!__template)  {
 
         });
 
-      }(i,this))
+      }(i))
 
       row += 2;
 
@@ -724,7 +724,8 @@ if (!__template)  {
   // This function is called at cloning jobs and should do copying of all
   // custom class fields not found in the Template class
   TaskXia2.prototype.customDataClone = function ( task )  {
-    this.imageDirMeta = [];       // paths, ranges and sectors
+    this.currentCloudPath = task.currentCloudPath;
+    this.imageDirMeta     = [];       // paths, ranges and sectors
     for (var i=0;i<task.imageDirMeta.length;i++)
       this.imageDirMeta.push ( $.extend(true,{},task.imageDirMeta[i]) );
     this.file_system  = task.file_system;  //  local/cloud

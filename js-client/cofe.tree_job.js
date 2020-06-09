@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    18.05.20   <--  Date of Last Modification.
+ *    09.06.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -542,23 +542,26 @@ JobTree.prototype._copy_task_parameters = function ( task,branch_task_list )  {
 }
 
 
+JobTree.prototype._copy_task_cloud_path = function ( task,branch_task_list )  {
+  if ('currentCloudPath' in task)  {
+    var reftask = null;
+    for (var i=0;(i<branch_task_list.length) && (!reftask);i++)
+      if ('currentCloudPath' in branch_task_list[i])
+        reftask = branch_task_list[i];
+    if (reftask)
+      task.currentCloudPath = reftask.currentCloudPath;
+  }
+}
+
+
 JobTree.prototype.addJob = function ( insert_bool,copy_params,parent_page,onAdd_func )  {
   (function(tree){
     var dataBox = tree.harvestTaskData ( 1,[] );
     var branch_task_list = tree.getAllAncestors ( tree.getSelectedTask() );
     new TaskListDialog ( dataBox,branch_task_list,function(task){
-      /*
-      if (copy_params)  {
-        var reftask = null;
-        for (var i=0;(i<branch_task_list.length) && (!reftask);i++)
-          if (task._type==branch_task_list[i]._type)
-            reftask = branch_task_list[i];
-        if (reftask)
-          task.parameters = jQuery.extend ( true,{},reftask.parameters );
-      }
-      */
       if (copy_params)
         tree._copy_task_parameters ( task,branch_task_list );
+      tree._copy_task_cloud_path ( task,branch_task_list );
       tree._add_job ( insert_bool,task,dataBox, parent_page,onAdd_func );
     });
   }(this));
@@ -985,6 +988,7 @@ JobTree.prototype.openJob = function ( dataBox,parent_page )  {
                 case job_dialog_reason.run_job :
                           var dataBox          = tree.harvestTaskData ( 1,[] );
                           var branch_task_list = tree.getAllAncestors ( tree.getSelectedTask() );
+                          tree._copy_task_cloud_path ( options,branch_task_list );
                           tree._copy_task_parameters ( options,branch_task_list );
                           var dataSummary = dataBox.getDataSummary ( options );
                           if ((dataSummary.status==2) ||
