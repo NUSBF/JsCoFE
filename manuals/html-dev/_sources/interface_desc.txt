@@ -1,0 +1,121 @@
+==========================
+Task Interface Description
+==========================
+
+
+---------------------
+Parameter Description
+---------------------
+
+~~~~~~~~~~~~~~~~~~~~~~~~
+Common description items
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+**keyword**
+    optional field, which may pass program's keyword, corresponding to the
+    parameter, to python layer, e.g., ::
+    
+        keyword : 'NCYCLES'
+
+**tooltip**
+    mandatory field, specifying tooltip that pops up at mouse hovering over
+    the parameter widget. For example: ::
+    
+        tooltip : 'Number of cycles'
+        
+**label** 
+    label preceding the input field, e.g., ::
+    
+        label : 'N<sub>cycles</sub>'
+        
+**align**
+    optional hprizontal alignment of item's label: ::
+    
+        align    : 'right'  // or 'left', or 'center'
+
+**label2** 
+    optional label, following the input field
+    
+**align2**
+    optional horizontal alignment for ``label2``
+    
+**reportas**
+    optional proxy name for input parameter to be used in messages from input
+    validator. By default, invalid input parameter is referenced by ``label``.
+    Example: ::
+    
+        reportas : 'Number of cycles'
+    
+**iwidth**
+    optional width of input element of the parameter widget, in pixels or
+    percents: ::
+    
+        iwidth : 240
+        iwidth : '50%'
+    
+**value**
+    mandatory (where used), initial value of the parameter, given as string
+    
+**placeholder**
+    optional prompt displayed in grey, when parameter value is not given
+    
+**position**
+    mandatory, parameter's grid position: ::
+    
+        position : [row,col,rowSpan,colSpan]
+    
+    interpreted as in HTML tags
+
+
+
+~~~~~~~~
+Combobox
+~~~~~~~~
+
+Combobox (selector) provides a choice of one of encoded options. ::
+
+    KEY_SEL : {
+        type     : 'combobox',
+        keyword  : 'keyword',
+        label    : 'Sequence type:',
+        align    : 'left',              // optional
+        reportas : 'Type of sequence',  // optional
+        tooltip  : 'Choose an option',
+        range    : ['none|Select one',
+                    'protein|Protein',
+                    'dna|DNA',
+                    'rna|RNA'
+                   ],
+        value    : 'none',
+        iwidth   : 160,                        // optional
+        label2   : '<i>(must be chosen)</i>',  // optional
+        align2   : 'left',                     // optional
+        position : [0,0,1,4]
+    }
+
+The range list is composed of strings like ::
+
+    'value|Text'
+    
+where ``value`` is the value returned by widget if user selects the corresponding 
+item, and ``Text`` is displayed in the combobox.
+
+
+
+~~~~~~~~~
+Text Area
+~~~~~~~~~
+
+Text Area provides an input of multi-line textual information. ::
+
+    KEY_TA: {
+        type        : 'textarea',
+        keyword     : 'keyword', 
+        tooltip     : 'Advanced keywords',
+        placeholder : 'Type additional keywords here',
+        nrows       : 5,         // optional
+        ncols       : 90,        // optional
+        iwidth      : 500,       // optional
+        value       : '',
+        position    : [2,0,1,6]
+    }

@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    11.03.20   <--  Date of Last Modification.
+#    05.06.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -66,8 +66,8 @@ def parseHHRFile ( fpath,parse_alignments=False ):
         evalue      = lines[i][41:48].strip()
         pvalue      = lines[i][49:56].strip()
         score       = lines[i][56:63].strip()
-        query_range = lines[i][74:82].split("-")
-        temp_range  = lines[i][82:93].split("-")
+        query_range = lines[i][74:84].split("-")
+        temp_range  = lines[i][85:94].split("-")
         query_range[0] = int(query_range[0])
         query_range[1] = int(query_range[1])
         temp_range [0] = int(temp_range [0])

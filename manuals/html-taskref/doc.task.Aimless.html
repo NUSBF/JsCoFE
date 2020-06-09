@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>2.3. Data Reduction with Aimless &#8212; CCP4 Cloud 1.6 documentation</title>
+    <title>2.4. Data Reduction with Aimless &#8212; CCP4 Cloud 1.6 documentation</title>
     
     <link rel="stylesheet" href="_static/haiku.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -31,17 +31,17 @@
     <link rel="top" title="CCP4 Cloud 1.6 documentation" href="index.html" />
     <link rel="up" title="2. Data Processing" href="Data_Processing.html" />
     <link rel="next" title="3. Asymmetric Unit and Structure Revision" href="Asymmetric_Unit_and_Structure_Revision.html" />
-    <link rel="prev" title="2.2. Interactive Image Processing with iMosflm" href="doc.task.iMosflm.html" /> 
+    <link rel="prev" title="2.3. Interactive Image Processing with iMosflm" href="doc.task.iMosflm.html" /> 
   </head>
   <body role="document">
       <div class="header" role="banner"><h1 class="heading"><a href="index.html">
           <span>CCP4 Cloud 1.6 documentation</span></a></h1>
-        <h2 class="heading"><span>2.3. Data Reduction with Aimless</span></h2>
+        <h2 class="heading"><span>2.4. Data Reduction with Aimless</span></h2>
       </div>
       <div class="topnav" role="navigation" aria-label="top navigation">
       
         <p>
-        «&#160;&#160;<a href="doc.task.iMosflm.html">2.2. Interactive Image Processing with iMosflm</a>
+        «&#160;&#160;<a href="doc.task.iMosflm.html">2.3. Interactive Image Processing with iMosflm</a>
         &#160;&#160;::&#160;&#160;
         <a class="uplink" href="index.html">Contents</a>
         &#160;&#160;::&#160;&#160;
@@ -53,14 +53,14 @@
         
         
   <div class="section" id="data-reduction-with-aimless">
-<h1>2.3. Data Reduction with Aimless<a class="headerlink" href="#data-reduction-with-aimless" title="Permalink to this headline">¶</a></h1>
+<h1>2.4. Data Reduction with Aimless<a class="headerlink" href="#data-reduction-with-aimless" title="Permalink to this headline">¶</a></h1>
 <p><a class="reference external" href="http://journals.iucr.org/d/issues/2013/07/00/ba5190/index.html">Aimless</a> is a scaling program. It puts all the measurements on a common scale, averages measurements of symmetry-related reflections (using the symmetry determined previously) and produces many statistics that provide the first important measures of data quality.</p>
 <p><strong>Data reduction</strong> represent as series of operations are performed on the data.</p>
 <p><a class="reference external" href="http://journals.iucr.org/d/issues/2013/07/00/ba5190/index.html">Aimless</a>  is used immediately after the program POINTLESS <a class="reference external" href="https://doi.org/10.1107/S0907444905036693">[Evans 2006]</a> and  <a class="reference external" href="https://doi.org/10.1107/S090744491003982X">[Evans_2011]</a> , which determines the likely point group and possible space group, as well as optionally combining data from multiple files each containing a &#8220;sweep&#8221; of data and putting them on a common indexing system if necessary.</p>
 <div class="section" id="basic-options">
-<h2>2.3.1. Basic Options<a class="headerlink" href="#basic-options" title="Permalink to this headline">¶</a></h2>
+<h2>2.4.1. Basic Options<a class="headerlink" href="#basic-options" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="scaling">
-<h3>2.3.1.1. Scaling<a class="headerlink" href="#scaling" title="Permalink to this headline">¶</a></h3>
+<h3>2.4.1.1. Scaling<a class="headerlink" href="#scaling" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><strong>determine scale factors for the reflections, so that symmetry equivalent reflections have the best agreement - least deviation from a weighted average for the group.</strong></div></blockquote>
 <p>Scaling tries to make symmetry-related and duplicate measurements of a reflection equal, by modelling the diffraction experiment, principally as a function of the incident and diffracted beam directions in the crystal. This makes the data internally consistent (not necessarily correct). <strong>The scale model should reflect the data collection strategy</strong>.</p>
@@ -80,18 +80,18 @@
 <p><strong>Ideally have constant scaling factor **(Mn(k) &amp; 0k (theta=0) v. batch)</strong> of 1; except if crystals have an irregular shape.**</p>
 </div>
 <div class="section" id="merging">
-<h3>2.3.1.2. Merging<a class="headerlink" href="#merging" title="Permalink to this headline">¶</a></h3>
+<h3>2.4.1.2. Merging<a class="headerlink" href="#merging" title="Permalink to this headline">¶</a></h3>
 <p>One way of improving weak or incomplete data is to merge data from different crystals, provided that they are isomorphous. Model quality depends on data quality and merging many data sets usually improves the signal-to-noise ratio in the data. However, it is not clear how to merge data when there is severe non-isomorphism or radiation damage. Blindly merging data may do more harm than good. It is necessary to analyse the joint distribution of all data sets and to merge using this distribution.</p>
 </div>
 </div>
 <div class="section" id="symmetry-analysis">
-<h2>2.3.2. Symmetry Analysis<a class="headerlink" href="#symmetry-analysis" title="Permalink to this headline">¶</a></h2>
+<h2>2.4.2. Symmetry Analysis<a class="headerlink" href="#symmetry-analysis" title="Permalink to this headline">¶</a></h2>
 <p>The maximum lattice symmetry (diffraction pattern symmetry) consistent with the unit cell dimensions  is determined, within an angular tolerance of 2 degrees  (by default) or that given on the <strong>Tolerance for comparing lattices</strong> collum.</p>
 <p>Half-dataset correlation coefficient: <strong>CC1/2</strong> represents split observations for each reflection randomly into 2 halves, and calculate the correlation coefficient between them (or equivalent calculation). Not dependent on σ(I). <strong>CC1/2</strong> = 1 is perfect, <strong>CC1/2</strong> = 0 is no correlation. <code class="docutils literal"><span class="pre">Common</span> <span class="pre">value</span> <span class="pre">for</span> <span class="pre">cutoff</span> <span class="pre">is</span> <span class="pre">0.3</span> <span class="pre">or</span> <span class="pre">0.5.</span></code></p>
 <p>Signal/noise estimates: <strong>I/sig(I)</strong>  it relies on σ(I), which is not entirely reliable. Cut resolution at &lt;I/σ(I)&gt; after averaging Mn(I/sd) = 1 – 2</p>
 </div>
 <div class="section" id="observations-used">
-<h2>2.3.3. Observations Used<a class="headerlink" href="#observations-used" title="Permalink to this headline">¶</a></h2>
+<h2>2.4.3. Observations Used<a class="headerlink" href="#observations-used" title="Permalink to this headline">¶</a></h2>
 <p>If both summation and profile-fitted intensities are avalable, you can use:</p>
 <ol class="arabic simple">
 <li><strong>Combined intensives</strong> (Default). Use weighted mean of profile-fitted &amp; integrated intensity, profile-fitted for weak data, summation integration value for strong.</li>
@@ -101,23 +101,23 @@
 <p>If you integrate to the corners of the detector, you may have low completeness at high resolution.</p>
 </div>
 <div class="section" id="sd-correction">
-<h2>2.3.4. SD Correction<a class="headerlink" href="#sd-correction" title="Permalink to this headline">¶</a></h2>
+<h2>2.4.4. SD Correction<a class="headerlink" href="#sd-correction" title="Permalink to this headline">¶</a></h2>
 <p><strong>sdB parameter</strong> has no obvious physical meaning and ideally should be close to 0. So <strong>tie to zero</strong> restrain SdB to target value 0. <strong>fix to zero</strong> command fixes sdB parameter in the refinement (but it seems best to let it <strong>refine</strong>).</p>
 </div>
 <div class="section" id="outlier-rejection">
-<h2>2.3.5. Outlier Rejection<a class="headerlink" href="#outlier-rejection" title="Permalink to this headline">¶</a></h2>
+<h2>2.4.5. Outlier Rejection<a class="headerlink" href="#outlier-rejection" title="Permalink to this headline">¶</a></h2>
 <p>The merging algorithm analyses the data for outliers, and gives detailed analyses. It generates a weighted mean of the observations of the same reflection, after rejecting the outliers.</p>
 <p>If you get too many E ( normalised | F | ) rejects, you can switch the test off by set limit to 0.</p>
 </div>
 <div class="section" id="scaling-protocols">
-<h2>2.3.6. Scaling Protocols<a class="headerlink" href="#scaling-protocols" title="Permalink to this headline">¶</a></h2>
+<h2>2.4.6. Scaling Protocols<a class="headerlink" href="#scaling-protocols" title="Permalink to this headline">¶</a></h2>
 <p><strong>Scales on rotation axis</strong> are used by default.</p>
 <p>Only use the <strong>Scale by batch</strong> option <strong>if every image is different from every other one</strong> , i.e. off-line detectors (including film), or rapidly or discontinuously changing incident beam flux. <strong>This is rarely the case for synchrotron data</strong>, but is <strong>appropriate for serial data</strong> (eg XFEL). This mode may be VERY slow if there are many batches.</p>
 <p>The <strong>relative B-factor is a correction</strong> for radiation damage (hence it is a function of time), but it also includes some other corrections eg absorption. Do <strong>NOT</strong> use <strong>B-factor correction</strong> if you have very <strong>low-resolution</strong> data.</p>
 <p>The <strong>secondary beam correction</strong> is recommended and is the default: this provides a correction for absorption. It should always be restrained with a <strong>Tile scaling for CCD detectors</strong> command (this is the default).</p>
 </div>
 <div class="section" id="output">
-<h2>2.3.7. Output<a class="headerlink" href="#output" title="Permalink to this headline">¶</a></h2>
+<h2>2.4.7. Output<a class="headerlink" href="#output" title="Permalink to this headline">¶</a></h2>
 <ul>
 <li><p class="first"><strong>CC1/2</strong> Clear interpretation of values &amp; known statistical properties. Not dependent on σ(I). Common value for cutoff is 0.3 or 0.5.</p>
 </li>
@@ -154,7 +154,7 @@
       <div class="bottomnav" role="navigation" aria-label="bottom navigation">
       
         <p>
-        «&#160;&#160;<a href="doc.task.iMosflm.html">2.2. Interactive Image Processing with iMosflm</a>
+        «&#160;&#160;<a href="doc.task.iMosflm.html">2.3. Interactive Image Processing with iMosflm</a>
         &#160;&#160;::&#160;&#160;
         <a class="uplink" href="index.html">Contents</a>
         &#160;&#160;::&#160;&#160;

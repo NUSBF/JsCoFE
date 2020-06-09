@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.04.20   <--  Date of Last Modification.
+ *    08.06.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -252,14 +252,25 @@ var row      = 0;
   if (__user_role==role_code.developer)
     this.makeSection ( 'Tasks in Development',[
       new TaskDocDev       (),
-      //new TaskBuster       (),
       new TaskMergeData    (),
       new TaskHelloWorld   ()
     ]);
 
-  if (__cloud_storage)  {
+  var data_import_tasks = [
+    new TaskImport        (),
+    new TaskImportSeqCP   (),
+    new TaskImportPDB     (),
+    new TaskFacilityImport()
+  ];
+
+  if (__cloud_storage)
+    data_import_tasks.splice ( 3,0,new TaskCloudImport() );
+
+  /*
+  if (__cloud_storage)
     var data_import_tasks = [
       new TaskImport        (),
+      new TaskImportSeqCP   (),
       new TaskImportPDB     (),
       new TaskCloudImport   (),
       new TaskFacilityImport()
@@ -267,10 +278,12 @@ var row      = 0;
   } else  {
     var data_import_tasks = [
       new TaskImport        (),
+      new TaskImportSeqCP   (),
       new TaskImportPDB     (),
       new TaskFacilityImport()
     ];
   }
+  */
 
   this.makeSection ( 'Data Import',data_import_tasks );
   /*

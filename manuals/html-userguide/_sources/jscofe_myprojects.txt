@@ -10,7 +10,34 @@ This is the page you find yourself in immediately after login. If you read this 
 .. |menu| image:: images/menu.png
         :width: 16
         :height: 16
+        
 
+.. tip::
+        Please read another CCP4 Cloud user guide documentation by pressing on **Contents** on your upright engle of window.
+        
+    .. image:: images/Contents.jpg
+         :scale: 50 %
+         :align: center
+
+-----------------------
+Software Authorisations
+-----------------------
+
+CCP4 Cloud provides access to 3rd party software, not covered by CCP4 license. In order to use this software, a user needs to be authorised by the corresponding software provider. You can do that at **"My Account"** page. 
+   
+    .. image:: images/My_account_Authorizations.png
+            :scale: 70 %
+            :align: center
+
+
+Clik on |authorisation| manage button and you will redirect to the authorization page. This page gives a summary of your authorisations and allows you to send authorisation requests.
+
+.. Note::
+    Authorisation request will redirect you to the provider's web-site. Any data requested by software provider will be processed at provider's end and will not be stored in CCP4 Cloud.
+
+.. |authorisation| image:: images/authorisation.png 
+        :width: 16
+        :height: 16
 --------
 Projects
 --------
@@ -89,3 +116,4 @@ Do not worry about jobs still running: they will not be terminated if you quit y
 
 .. Note::
     CCP4 Cloud does not support multiple logins of the same user. Each login will forcefully terminate any other session of the same user still open.
+    

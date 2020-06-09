@@ -91,11 +91,12 @@ def put_molprobity_section ( body,revision ):
     body.file_stdout  = open ( molprobity_log,"w" )
     body.file_stdout1 = open ( clashscore_log,"w" )
 
+    cmd_molp = [xyzpath,"percentile=True","allow_polymer_cross_special_position=True"]
     if sys.platform.startswith("win"):
-        body.runApp ( "molprobity.molprobity.bat",[xyzpath,"percentile=True"],logType="Main"    )
+        body.runApp ( "molprobity.molprobity.bat",cmd_molp,logType="Main"    )
         body.runApp ( "molprobity.clashscore.bat",[xyzpath],logType="Service" )
     else:
-        body.runApp ( "molprobity.molprobity",[xyzpath,"percentile=True"],logType="Main"    )
+        body.runApp ( "molprobity.molprobity",cmd_molp,logType="Main"    )
         body.runApp ( "molprobity.clashscore",[xyzpath],logType="Service" )
 
     body.file_stdout .close()
