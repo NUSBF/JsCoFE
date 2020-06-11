@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    08.06.20   <--  Date of Last Modification.
+ *    11.06.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -251,6 +251,7 @@ var row      = 0;
 
   if (__user_role==role_code.developer)
     this.makeSection ( 'Tasks in Development',[
+      new TaskFragon       (),
       new TaskDocDev       (),
       new TaskMergeData    (),
       new TaskHelloWorld   ()
