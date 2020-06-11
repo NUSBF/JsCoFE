@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    13.03.20   <--  Date of Last Modification.
+ *    11.06.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -866,6 +866,10 @@ TaskPhaserMR.prototype.currentVersion = function()  {
 
 
 if (!__template)  {
+
+  TaskPhaserMR.prototype.getHelpURL = function()  {
+    return __task_reference_base_url + 'doc.task.Phaser.html';
+  }
 
   // hotButtons return list of buttons added in JobDialog's toolBar.
   TaskPhaserMR.prototype.hotButtons = function() {
