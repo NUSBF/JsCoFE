@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    15.02.20   <--  Date of Last Modification.
+ *    11.06.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -296,6 +296,10 @@ TaskPhaserEP.prototype.currentVersion = function()  {
 
 if (!__template)  {
   //  for client side
+
+  TaskPhaserEP.prototype.getHelpURL = function()  {
+    return __task_reference_base_url + 'doc.task.Phaser.html';
+  }
 
   // hotButtons return list of buttons added in JobDialog's toolBar.
   function PhaserEPHotButton()  {

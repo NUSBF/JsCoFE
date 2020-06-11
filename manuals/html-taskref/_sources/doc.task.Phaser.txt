@@ -2,10 +2,17 @@
 Phaser
 ======
 
-`Phaser <https://journals.iucr.org/j/issues/2007/04/00/he5368/index.html>`_ is a program for phasing macromolecular crystal structures by both molecular replacement and experimental phasing methods.
+`Phaser <https://journals.iucr.org/j/issues/2007/04/00/he5368/index.html>`_ is a program
+for phasing macromolecular crystal structures by both molecular replacement
+and experimental phasing methods.
 
-Find out more about **Molecular Replacement with Phaser** you can `here <https://www.phaser.cimr.cam.ac.uk/index.php/Molecular_Replacement>`_ and about **Experimental Phasing with Phaser** by clicking `here <https://www.phaser.cimr.cam.ac.uk/index.php/Experimental_Phasing>`_
+You can find more about **Molecular Replacement with Phaser** 
+`here <https://www.phaser.cimr.cam.ac.uk/index.php/Molecular_Replacement>`_.
 
-`Here <https://www.phaser.cimr.cam.ac.uk/index.php/Top_Ten_Tips>`_ ten tips in for phasing in Phaser
+**Experimental Phasing with Phaser** is described in
+`this document <https://www.phaser.cimr.cam.ac.uk/index.php/Experimental_Phasing>`_.
 
-For more visit `PhaserWiki <https://www.phaser.cimr.cam.ac.uk/index.php/Phaser_Crystallographic_Software>`_
+Check top ten tips for phasing with Phaser `here <https://www.phaser.cimr.cam.ac.uk/index.php/Top_Ten_Tips>`_.
+
+For more information, visit
+`PhaserWiki <https://www.phaser.cimr.cam.ac.uk/index.php/Phaser_Crystallographic_Software>`_.
