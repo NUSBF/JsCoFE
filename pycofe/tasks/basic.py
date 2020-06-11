@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    18.05.20   <--  Date of Last Modification.
+#    11.06.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -54,7 +54,7 @@ import datetime
 #  ccp4-python imports
 import pyrvapi
 import pyrvapi_ext.parsers
-from . import refmac_parser
+from pycofe.parsers import refmac_parser
 
 # pycofe imports
 from pycofe.dtypes import dtype_template, dtype_xyz,   dtype_structure, databox
