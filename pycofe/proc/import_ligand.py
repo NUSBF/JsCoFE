@@ -3,13 +3,13 @@
 #
 # ============================================================================
 #
-#    08.04.19   <--  Date of Last Modification.
+#    11.06.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  LIGAND DATA IMPORT FUNCTION
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2018-19
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2018-2020
 #
 # ============================================================================
 #
@@ -57,19 +57,24 @@ def run ( body ):  # body is reference to the main Import class
     k        = 0
     for f in files_lig:
 
-        fin  = os.path.join ( body.importDir(),f )
-        doc  = cif.read ( fin )
-        comp = doc[0].find_values ( "_chem_comp.id" )
-        if len(doc)<2 or not comp:
+        fin       = os.path.join ( body.importDir(),f )
+        doc       = cif.read ( fin )
+        comp_list = doc["comp_list"]
+        comp_id   = None
+        if comp_list:
+            comp_id = comp_list.find_values ( "_chem_comp.id" )
+        if not comp_id or len(doc)<len(comp_id)+1:
             body.putSummaryLine_red ( f,"UNKNOWN","Not a ligand library file" )
             body.stdout ( "\n ***** file " + f +\
                 " does not contain _chem_comp loop or data_comp_list data block or both.\n\n"  )
 
-        elif len(doc)==2:
+        elif len(comp_id)==1:
             # single ligand entry, import as a ligand object
 
-            block = doc[1]
-            col   = block.find_values("_chem_comp_atom.comp_id")
+            block = doc["comp_"+comp_id[0]]
+            col   = None
+            if block:
+                col = block.find_values("_chem_comp_atom.comp_id")
 
             if col:
                 code    = col[0]
@@ -113,15 +118,6 @@ def run ( body ):  # body is reference to the main Import class
                             ligSecId = body.getWidgetId ( "_lig_sec_" )
                             pyrvapi.rvapi_add_section ( ligSecId,"Ligands",body.report_page_id(),
                                                         body.rvrow,0,1,1,False )
-                        """
-                        if len(files_lig)>1:
-                            if not subSecId:
-                                subSecId = ligSecId + str(k)
-                                pyrvapi.rvapi_add_section ( subSecId,"Import "+f,ligSecId,
-                                                                             k,0,1,1,False )
-                        else:
-                            subSecId = ligSecId
-                        """
 
                         subSecId = ligSecId
                         if ligrow:

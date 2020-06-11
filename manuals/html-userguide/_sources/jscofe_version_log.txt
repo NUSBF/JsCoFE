@@ -5,7 +5,7 @@ CCP4 Cloud Version Log
 
 **Version 1.6.012**
 
-    *Released with CCP4 7.1.002*
+    *Released on --.--.2020 with CCP4 7.1.002*
 
     **Changes and new features**
 
@@ -28,10 +28,13 @@ CCP4 Cloud Version Log
        
     #. Cloud path, used in tasks importing data from Cloud storage, is passed as 
        current path to task clones and descendants
+       
+    #. Fixed a bug, preventing import of certain types of ligand description 
+       files and ligand dictionaries
 
 
 
 **Version 1.6.011**
 
-    *Released with CCP4 7.1.001*
+    *Released on 02.06.2020 with CCP4 7.1.001*
     
