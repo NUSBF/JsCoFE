@@ -54,6 +54,7 @@ import datetime
 #  ccp4-python imports
 import pyrvapi
 import pyrvapi_ext.parsers
+from . import refmac_parser
 
 # pycofe imports
 from pycofe.dtypes import dtype_template, dtype_xyz,   dtype_structure, databox
@@ -877,6 +878,20 @@ class TaskDriver(object):
         if makePanel:
             self.putPanel ( panel_id )
         self.log_parser = pyrvapi_ext.parsers.generic_parser (
+                                         panel_id,split_sections_bool,
+                                         summary=self.generic_parser_summary,
+                                         graph_tables=graphTables,
+                                         hide_refs=True )
+        self.flush()
+        #pyrvapi.rvapi_flush()
+        return
+
+    def setRefmacLogParser ( self,panel_id,split_sections_bool,
+                              graphTables=False,makePanel=True ):
+        #return
+        if makePanel:
+            self.putPanel ( panel_id )
+        self.log_parser = refmac_parser.refmac_parser (
                                          panel_id,split_sections_bool,
                                          summary=self.generic_parser_summary,
                                          graph_tables=graphTables,

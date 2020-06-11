@@ -239,7 +239,7 @@ class Refmac(basic.TaskDriver):
            cmd += ["libin",os.path.join(os.environ["CCP4"], 'lib', 'data', 'atomsf_neutron.lib')]
 
         # Prepare report parser
-        self.setGenericLogParser ( self.refmac_report(),False )
+        self.setRefmacLogParser ( self.refmac_report(),False )
 
         # Start refmac
         self.runApp ( "refmac5",cmd,logType="Main" )
