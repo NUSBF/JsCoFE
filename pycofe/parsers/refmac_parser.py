@@ -1,10 +1,14 @@
+#
+# This is generic pyrvpai_ext parser (pyrvapi_ext.parsers.generic - developed by Andrey Lebedev),
+# customised for REFMAC5 (dynamic live plots added, etc.) by Oleg Kovalevskiy.
+# Copyright (c) 2020 CCP4
+
 
 import re
 import pyrvapi_ext as API
 from pyrvapi_ext.parsers import regex_tree as RT
 import time, sys
 import math
-import pyrvapi
 
 class refmac_parser(object):
 
@@ -53,6 +57,7 @@ class refmac_parser(object):
     rFactLine = r'^Overall R factor\s*=\s*(\S*)'
     rFreeLine = r'^Free R factor\s*=\s*(\S*)'
     rmsBondLine = r'^Bond distances: refined atoms\s*\S*\s*(\S*)\s*\S*'
+    rmsAnglesLine = r'^Bond angles  : refined atoms\s*\S*\s*(\S*)\s*\S*'
     ncycLine = r'.*Data line---\sNCYC\s(\d*)'
 
     ignored_1 = RT.LogDataLine(skip_1)                              # logs from i1
@@ -81,17 +86,19 @@ class refmac_parser(object):
     item_rFact = RT.LogDataLine(rFactLine)
     item_rFree = RT.LogDataLine(rFreeLine)
     item_rmsBond = RT.LogDataLine(rmsBondLine)
+    item_rmsAngle = RT.LogDataLine(rmsAnglesLine)
     item_ncyc = RT.LogDataLine(ncycLine)
 
 
-    ignored_1.add_next(item_weight, item_rFact, item_rFree, item_rmsBond, item_ncyc, ignored_1, ignored, item_started, banner_f1) # logs from i1
+    ignored_1.add_next(item_rmsBond, item_rmsAngle, item_weight, item_rFact, item_rFree, item_ncyc, ignored_1, ignored, item_started, banner_f1) # logs from i1
 #   ignored.add_next(ignored, item_started, banner_f1)              # refmac bug
-    ignored.add_next(item_weight, item_rFact, item_rFree, item_rmsBond, item_ncyc, ignored, item_started, banner_f1, ignored_dd)  # refmac bug
+    ignored.add_next(item_rmsBond, item_rmsAngle, item_weight, item_rFact, item_rFree, item_ncyc, ignored, item_started, banner_f1, ignored_dd)  # refmac bug
 
     item_weight.add_next(ignored, ignored_1)
     item_rFact.add_next(item_rFree, ignored, ignored_1)
     item_rFree.add_next(ignored, ignored_1)
-    item_rmsBond.add_next(ignored, ignored_1)
+    item_rmsBond.add_next(item_rmsAngle, ignored, ignored_1)
+    item_rmsAngle.add_next(ignored, ignored_1)
     item_ncyc.add_next(ignored, ignored_1)
 
     ignored_dd.add_next(ignored, item_started)                      # refmac bug
@@ -137,26 +144,36 @@ class refmac_parser(object):
 
     self.table_weight_panel = None
     self.table_weight = None
-    self.liveGraph = None
-    self.liveColumnRfact = None
-    self.liveColumnRfactN = None
-    self.liveColumnRfree = None
     self.liveN = 0
-    self.livePLT = None
-    self.liveLine = None
     self.liveYmax = None
     self.liveYmin = None
     self.ncyc = 0
 
     # we want to guarantee creation of widgets before log file is actually parsed, so before .add_action
     self.widget = API.loggraph(self.sect, 1, 0, 1, 1)
-    self.liveGraph = API.graph_data(self.widget, 'R-factors per cycle')
+    self.liveGraph = API.graph_data(self.widget, 'Statistics per cycle')
+
     self.liveColumnRfact = API.graph_dataset(self.liveGraph, 'R-factor', '', False)
     self.liveColumnRfree = API.graph_dataset(self.liveGraph, 'R-free', '', False)
     self.liveColumnRfactN = API.graph_dataset(self.liveGraph, 'Cycles', '', True)
+
+    self.liveRMSbonds = API.graph_dataset(self.liveGraph, 'RMS Bond Length', '', False)
+    self.liveRMSbondsN = API.graph_dataset(self.liveGraph, 'Cycles', '', True)
+
+    self.liveRMSangles = API.graph_dataset(self.liveGraph, 'RMS Bond Angle', '', False)
+    self.liveRMSanglesN = API.graph_dataset(self.liveGraph, 'Cycles', '', True)
+
     self.livePLT = API.graph_plot(self.widget, 'R-factors per cycle', 'Cycle number', '')
-    self.liveLine = API.plot_line(self.livePLT, self.liveGraph, self.liveColumnRfactN, self.liveColumnRfact)
-    self.liveLine = API.plot_line(self.livePLT, self.liveGraph, self.liveColumnRfactN, self.liveColumnRfree)
+    self.liveLineRfact = API.plot_line(self.livePLT, self.liveGraph, self.liveColumnRfactN, self.liveColumnRfact)
+    self.liveLineRfree = API.plot_line(self.livePLT, self.liveGraph, self.liveColumnRfactN, self.liveColumnRfree)
+
+    self.livePLT2 = API.graph_plot(self.widget, 'RMS Bond Length per cycle', 'Cycle number', '')
+    self.liveLine2 = API.plot_line(self.livePLT2, self.liveGraph, self.liveRMSbondsN, self.liveRMSbonds)
+
+    self.livePLT3 = API.graph_plot(self.widget, 'RMS Bond Angle per cycle', 'Cycle number', '')
+    self.liveLine3 = API.plot_line(self.livePLT3, self.liveGraph, self.liveRMSanglesN, self.liveRMSangles)
+
+
 
     self.flush()
 
@@ -174,6 +191,8 @@ class refmac_parser(object):
     item_weight.add_action(self.displayWeight)
     item_rFact.add_action(self.displayLiveGraphRfact)
     item_rFree.add_action(self.displayLiveGraphRfree)
+    item_rmsBond.add_action(self.displayLiveGraphRMSbond)
+    item_rmsAngle.add_action(self.displayLiveGraphRMSangle)
     item_ncyc.add_action(self.setNcyc)
     #item_rmsBond.add_action(self.displayLiveGraph)
 
@@ -234,10 +253,39 @@ class refmac_parser(object):
     if self.ncyc == 0:
       self.ncyc = int(groups[0])
       self.livePLT.set_xrange(1, self.ncyc)
+      self.livePLT2.set_xrange(1, self.ncyc)
+      self.livePLT3.set_xrange(1, self.ncyc)
+
+
+  def displayLiveGraphRMSbond(self, groups):
+    self.liveN += 1
+    rmsBonds = float(groups[0])
+    if self.liveN <= self.ncyc:
+#      if self.liveYmin is None or self.liveYmax is None:
+#        self.liveYmin = rFree
+#        self.liveYmax = rFree
+#      if (rFree > self.liveYmax) and (rFree > self.liveYmin):
+#        self.liveYmax = rFree
+      self.liveRMSbonds.add_datum(rmsBonds)
+      self.liveRMSbondsN.add_datum(self.liveN)
+  #      self.livePLT.set_yrange(self.liveYmin - 0.02, self.liveYmax + 0.02)
+
+  def displayLiveGraphRMSangle(self, groups):
+    rmsAngles = float(groups[0])
+    if self.liveN <= self.ncyc:
+      #      if self.liveYmin is None or self.liveYmax is None:
+      #        self.liveYmin = rFree
+      #        self.liveYmax = rFree
+      #      if (rFree > self.liveYmax) and (rFree > self.liveYmin):
+      #        self.liveYmax = rFree
+      self.liveRMSangles.add_datum(rmsAngles)
+      self.liveRMSanglesN.add_datum(self.liveN)
+
+
+  #      self.livePLT.set_yrange(self.liveYmin - 0.02, self.liveYmax + 0.02)
 
   def displayLiveGraphRfact(self, groups):
     rFact = float(groups[0])
-    self.liveN += 1
     if self.liveN <= self.ncyc:
       self.liveColumnRfact.add_datum(rFact)
       self.liveColumnRfactN.add_datum(self.liveN)
@@ -299,6 +347,10 @@ class refmac_parser(object):
   def show_table(self, title, graphs, msg, header, body):
     title_line = title.split(':')[1].strip()
     assert len(title_line) < 100
+
+    if title_line == 'Rfactor analysis, stats vs cycle':
+      return
+
     column_nick_list = []
     for column_nick in msg.split():
       column_nick = column_nick.replace('<', '&lt;').replace('>', '&gt;')
