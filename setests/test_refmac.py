@@ -413,10 +413,10 @@ def test_RefmacBasic(browser,
         refmacAfterRevision(driver, waitLong)
         renameProject(driver, testName)
 
-        driver.close()
+        driver.quit()
 
     except:
-        driver.close()
+        driver.quit()
         raise
 
 
