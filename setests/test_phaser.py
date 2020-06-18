@@ -390,10 +390,10 @@ def test_PhaserBasic(browser,
         phaserAfterMRmodel(driver, waitLong)
         renameProject(driver, testName)
 
-        driver.close()
+        driver.quit()
 
     except:
-        driver.close()
+        driver.quit()
         raise
 
 

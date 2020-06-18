@@ -18,6 +18,7 @@ def clickByXpath(driver, xpath):
             ActionChains(driver).move_to_element(textEl).click(textEl).perform()
             break
 
+
 def loginToCloud(driver, cloudLogin, cloudPassword):
     # Shall return list of two elements for login and password
     loginInputs = driver.find_elements_by_xpath("//input[contains(@id,'input')]")
@@ -37,6 +38,7 @@ def loginToCloud(driver, cloudLogin, cloudPassword):
     loginButton.click()
 
     return ()
+
 
 def removeProject(driver, testName):
     print('Deleting previous test project if exists')
@@ -58,6 +60,39 @@ def removeProject(driver, testName):
             return ()
 
 
+    return ()
+
+
+def areWeAtProjectList(driver):
+    textEls = driver.find_elements_by_xpath("//div[normalize-space()='My Projects']")
+
+    while len(textEls) < 1: # we are not at the project list
+        try:
+            menuButton = driver.find_element(By.XPATH, "//div[contains(@style, 'images_png/menu.png')]")
+            menuButton.click()
+            time.sleep(1)
+
+            clickByXpath(driver, "//*[normalize-space()='%s']" % 'My Projects')
+            time.sleep(1)
+        except:
+            try:
+                cancelButtons = driver.find_elements(By.XPATH, "//button[normalize-space()='Cancel']")
+                for cancelButton in cancelButtons:
+                    if cancelButton.is_displayed():
+                        cancelButton.click()
+
+                closeButtons = driver.find_elements(By.XPATH, "//button[normalize-space()='Close']")
+                for closeButton in closeButtons:
+                    if closeButton.is_displayed():
+                        closeButton.click()
+
+            except:
+                pass
+
+
+        textEls = driver.find_elements_by_xpath("//div[normalize-space()='My Projects']")
+
+    textEls[-1].click()
     return ()
 
 
@@ -98,47 +133,48 @@ def enterProject(driver, projectId):
     return()
 
 
-def importFromCloudWithTaskListOnScreen(driver, waitShort):
-    print ('Importing "rnase" project from the Cloud Import')
+def importFromPDB(driver, waitShort):
+    print ('Importing 2fx0 from the PDB')
 
-    # Clicking "Cloud Import"
-    textEl = driver.find_element_by_xpath("//*[normalize-space()='%s']" % 'Cloud Import')
-    ActionChains(driver).double_click(textEl).perform()
+    clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list')
     time.sleep(1)
 
-    textEl2 = driver.find_elements_by_xpath("//a[normalize-space()='%s']" % 'ccp4-examples')
-    if len(textEl2) < 1:
-        textEl2 = driver.find_elements_by_xpath("//a[normalize-space()='%s']" % 'CCP4 examples')
-    if len(textEl2) < 1:
-        print('Cant locate neither "CCP4 examples" nor "ccp4-examples"; terminating.')
-        sys.exit(1)
-    ActionChains(driver).move_to_element(textEl2[-1]).double_click(textEl2[-1]).perform()
+    clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Data Import')
     time.sleep(1)
 
-    listOfTextsToDoubleClick = [('a','rnase'),
-                                ('a','rnase_model.pdb'),
-                                ('button','Select more files'),
-                                ('a','rnase18_Nat_Complexes.mtz'),
-                                ('button','Select more files'),
-                                ('a','rnase.fasta'),
-                                ('button','Apply & Upload'),
-                                ('button','Finish import')]
+    clickByXpath(driver, "//div[normalize-space()='%s']" % 'Import from PDB')
+    time.sleep(1)
 
-    for textToDoubleClick in listOfTextsToDoubleClick:
-        textElements = driver.find_elements_by_xpath("//%s[normalize-space()='%s']" % (textToDoubleClick[0], textToDoubleClick[1]))
-        # It finds several elements with the same file name -> last one is the one we need
-        driver.execute_script("arguments[0].scrollIntoView();", textElements[-1])
-        ActionChains(driver).move_to_element(textElements[-1]).double_click(textElements[-1]).perform()
-        time.sleep(1)
+    # 2FX0
+    time.sleep(2)
+    inputPDB = driver.find_element_by_xpath("//input[@title='Comma-separated list of PDB codes to import data from']")
+    inputPDB.clear()
+    inputPDB.send_keys('2fx0')
+    time.sleep(2)
 
-#    taskWindowTitle = driver.find_element(By.XPATH,"//*[@class='ui-dialog-title' and contains(text(), '[0001]')]")
+    clickByXpath(driver, "//*[normalize-space()='%s']" % 'reflection data')
+    time.sleep(2)
+
+    clickByXpath(driver, "//*[normalize-space()='%s']" % 'sequences')
+    time.sleep(2)
+
+    clickByXpath(driver, "//*[normalize-space()='%s']" % 'structure revision')
+    time.sleep(1)
+
+    # There are several forms - active and inactive. We need one displayed.
+    buttonsRun = driver.find_elements_by_xpath("//button[contains(@style, 'images_png/runjob.png')]" )
+    for buttonRun in buttonsRun:
+        if buttonRun.is_displayed():
+            buttonRun.click()
+            break
+
     try:
-        wait = WebDriverWait(driver, waitShort)
-        # Waiting for the text 'completed' in the ui-dialog-title of the task [0001]
+        wait = WebDriverWait(driver, waitShort) # allowing 15 seconds to the task to finish
+        # Waiting for the text 'completed' in the ui-dialog-title of the task [0003]
         wait.until(EC.presence_of_element_located
                    ((By.XPATH,"//*[@class='ui-dialog-title' and contains(text(), 'completed') and contains(text(), '[0001]')]")))
     except:
-        print('Apparently tha task importFromCloudWithTaskListOnScreen has not been completed in time; terminating')
+        print('Apparently tha task importFromPDB has not been completed in time; terminating')
         sys.exit(1)
 
     # presing Close button
@@ -149,23 +185,28 @@ def importFromCloudWithTaskListOnScreen(driver, waitShort):
     return ()
 
 
-def asymmetricUnitContentsAfterCloudImport(driver, waitShort):
-    print ('Making Asymmetric Unit Contents after Cloud Import')
+def asymmetricUnitContentsAfterPDBImport(driver, waitShort):
+    print ('Making Asymmetric Unit Contents after PDB Import')
 
     # presing Add button
     addButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/add.png')]")
     addButton.click()
     time.sleep(1)
 
-    # There are several forms - active and inactive. We need one displayed.
-    clickByXpath(driver, "//div[normalize-space()='%s']" % 'Asymmetric Unit Contents') # looking by text
+    clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Full list')
     time.sleep(1)
 
-    # 2 molecules in the ASU
-    inputASU = driver.find_element_by_xpath("//*[@title='Specify stoichiometric coefficent for given sequence in the crystal']")
-    inputASU.click()
-    inputASU.clear()
-    inputASU.send_keys('2')
+    clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Asymmetric Unit and Structure Revision')
+    time.sleep(1)
+
+    clickByXpath(driver, "//*[normalize-space()='%s']" % 'Asymmetric Unit Contents') # looking by text
+    time.sleep(1)
+
+    # Se is main scatterer
+    inputScaterer = driver.find_element_by_xpath("//input[@title='Specify atom type of dominant anomalous scatterer (e.g., S, SE etc.), or leave blank if uncertain.']")
+    inputScaterer.click()
+    inputScaterer.clear()
+    inputScaterer.send_keys('Se')
     time.sleep(1)
 
     # There are several forms - active and inactive. We need one displayed.
@@ -181,7 +222,7 @@ def asymmetricUnitContentsAfterCloudImport(driver, waitShort):
         wait.until(EC.presence_of_element_located
                    ((By.XPATH,"//*[@class='ui-dialog-title' and contains(text(), 'completed') and contains(text(), '[0002]')]")))
     except:
-        print('Apparently tha task asymmetricUnitContentsAfterCloudImport has not been completed in time; terminating')
+        print('Apparently tha task asymmetricUnitContentsAfterPDBImport has not been completed in time; terminating')
         sys.exit(1)
 
     # presing Close button
@@ -192,22 +233,36 @@ def asymmetricUnitContentsAfterCloudImport(driver, waitShort):
     return()
 
 
-def prepareMRmodelAfterASU(driver, waitShort):
-    print('Preparing MR model')
+def startCrank2(driver):
+    print('Starting CRANK2 for experimental phasing')
 
     # Add button
     addButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/add.png')]")
     addButton.click()
     time.sleep(1)
 
-    clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list')
+    clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Crank-2 Automated Experimental Phasing')
     time.sleep(1)
 
-    clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Molecular Replacement')
+
+    clickByXpath(driver, "//span[normalize-space()='%s']" % '[must be chosen]')
     time.sleep(1)
 
-    clickByXpath(driver, "//div[normalize-space()='%s']" % 'Prepare MR Model(s) from Coordinate data')
+    clickByXpath(driver, "//div[contains(text(), '%s')]" % 'peak')
     time.sleep(1)
+
+    # 3 Se atoms
+    inputNatoms = driver.find_element_by_xpath("//input[@title='Optional number of substructure atoms in asymmetric unit. Leave blank for automatic choice.']")
+    inputNatoms.clear()
+    inputNatoms.send_keys('3')
+    time.sleep(1)
+
+    # Solvent content is 0.71
+    inputSolvent = driver.find_element_by_xpath("//input[@title='Solvent content to be used in calculations (must be between 0.01 and 0.99). If left blank, solvent fraction from asymmetric unit definition will be used.']")
+    inputSolvent.clear()
+    inputSolvent.send_keys('0.71')
+    time.sleep(1)
+
 
     # There are several forms - active and inactive. We need one displayed.
     buttonsRun = driver.find_elements_by_xpath("//button[contains(@style, 'images_png/runjob.png')]" )
@@ -215,76 +270,36 @@ def prepareMRmodelAfterASU(driver, waitShort):
         if buttonRun.is_displayed():
             buttonRun.click()
             break
+    time.sleep(2)
 
-    try:
-        wait = WebDriverWait(driver, waitShort) # allowing 15 seconds to the task to finish
-        # Waiting for the text 'completed' in the ui-dialog-title of the task [0003]
-        wait.until(EC.presence_of_element_located
-                   ((By.XPATH,"//*[@class='ui-dialog-title' and contains(text(), 'completed') and contains(text(), '[0003]')]")))
-    except:
-        print('Apparently tha task premareMRmodelAfterASU has not been completed in time; terminating')
-        sys.exit(1)
-
-    # presing Close button
-    closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
-    closeButton.click()
-    time.sleep(1)
-
-    return ()
-
-
-def molrepAfterMRmodel(driver, waitLong):
-    print('Running MOLREP')
-
-    addButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/add.png')]")
-    addButton.click()
-    time.sleep(1)
-
-    clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list')
-    time.sleep(1)
-
-    clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Molecular Replacement')
-    time.sleep(1)
-
-    clickByXpath(driver, "//div[normalize-space()='%s']" % 'Molecular Replacement with Molrep')
-    time.sleep(1)
-
-    # There are several forms - active and inactive. We need one displayed.
-    buttonsRun = driver.find_elements_by_xpath("//button[contains(@style, 'images_png/runjob.png')]" )
-    for buttonRun in buttonsRun:
-        if buttonRun.is_displayed():
-            buttonRun.click()
+    # Logging out
+    buttonsLogout = driver.find_elements_by_xpath("//img[contains(@src, 'images_png/logout.png')]" )
+    for buttonLogout in buttonsLogout:
+        if buttonLogout.is_displayed():
+            buttonLogout.click()
             break
+    time.sleep(2)
 
-    try:
-        wait = WebDriverWait(driver, waitLong) # allowing 60 seconds to the task to finish
-        # Waiting for the text 'completed' in the ui-dialog-title of the task [0004]
-        wait.until(EC.presence_of_element_located
-                   ((By.XPATH,"//*[@class='ui-dialog-title' and contains(text(), 'completed') and contains(text(), '[0004]')]")))
-    except:
-        print('Apparently tha task molrepAfterMRmodel has not been completed in time; terminating')
-        sys.exit(1)
+    return()
 
-    # pressing Close button
-    closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
-    closeButton.click()
-    time.sleep(1)
+
+def validateCrank2run(driver):
 
     rWork = 1.0
     rFree = 1.0
     tasksText = driver.find_elements(By.XPATH, "//a[contains(@id,'treenode') and contains(@class, 'jstree-anchor')]")
     for taskText in tasksText:
-        match = re.search('\[0004\] molrep -- R=(0\.\d*) Rfree=(0\.\d*)', taskText.text)
+        match = re.search(r'^\[0003\] EP with Crank2 \(SAD\) -- R=(0\.\d*) Rfree=(0\.\d*)', taskText.text)
         if match:
             rWork = float(match.group(1))
             rFree = float(match.group(2))
             break
     if (rWork == 1.0) or (rFree == 1.0):
-        print('*** Verification: could not find Rwork or Rfree value after MOLREP run')
+        print('*** Verification: could not find Rwork or Rfree value after Crank2 run')
     else:
-        print('*** Verification: MOLREP Rwork is %0.4f (expecting <0.4), Rfree is %0.4f (expecing <0.42)' % (rWork, rFree))
-    assert rWork < 0.4
-    assert rFree < 0.42
+        print('*** Verification: Crank2 Rwork is %0.4f (expecting <0.33), Rfree is %0.4f (expecting <0.38)' % (rWork, rFree))
+    assert rWork < 0.33
+    assert rFree < 0.38
 
     return ()
 
@@ -318,15 +333,7 @@ def renameProject(driver, testName):
     return ()
 
 
-def test_MolrepBasic(browser,
-                cloud,
-                nologin,
-                login,
-                password,
-                remote
-                ):
-
-
+def startBrowser(remote, browser):
     if len(remote) > 1:  # Running on Selenium Server hub
         waitShort = 60  # seconds for quick tasks
         waitLong = 180  # seconds for longer tasks
@@ -354,6 +361,19 @@ def test_MolrepBasic(browser,
 
     driver.implicitly_wait(10)  # wait for up to 10 seconds for required HTML element to appear
 
+    return (driver, waitLong, waitShort)
+
+
+def test_Crank2Basic(browser,
+                cloud,
+                nologin,
+                login,
+                password,
+                remote
+                ):
+
+    (driver, waitLong, waitShort) = startBrowser(remote, browser)
+
     try:
         print('Opening URL: %s' % cloud)
         driver.get(cloud)
@@ -362,15 +382,31 @@ def test_MolrepBasic(browser,
         if not nologin:
             loginToCloud(driver, login, password)
 
-        testName = 'molrepTest'
+        testName = 'crank2Test'
 
         removeProject(driver, testName)
         makeTestProject(driver, testName, testName)
         enterProject(driver, testName)
-        importFromCloudWithTaskListOnScreen(driver, waitShort)
-        asymmetricUnitContentsAfterCloudImport(driver, waitShort)
-        prepareMRmodelAfterASU(driver, waitShort)
-        molrepAfterMRmodel(driver, waitLong)
+        importFromPDB(driver, waitShort)
+        asymmetricUnitContentsAfterPDBImport(driver, waitShort)
+        startCrank2(driver)
+
+        # Logging off as Selenium become unstable with long connections
+        driver.quit()
+        print('Waiting for 1 hour 10 minutes until Crank2 is ready (shall finish in about 1 hour)...')
+        time.sleep(4200) # Crank2 run takes around 1 hour and let's give it more time
+
+        # Connecting again to check results
+        (driver, waitLong, waitShort) = startBrowser(remote, browser)
+        print('Opening URL: %s' % cloud)
+        driver.get(cloud)
+        assert "CCP4 Cloud" in driver.title
+
+        if not nologin:
+            loginToCloud(driver, login, password)
+
+        enterProject(driver, testName)
+        validateCrank2run(driver)
         renameProject(driver, testName)
 
         driver.quit()
@@ -378,6 +414,7 @@ def test_MolrepBasic(browser,
     except:
         driver.quit()
         raise
+
 
 
 if __name__ == "__main__":
@@ -393,7 +430,7 @@ if __name__ == "__main__":
 
     parameters = parser.parse_args(sys.argv[1:])
 
-    test_MolrepBasic(browser=parameters.browser,  # or 'Chrome'
+    test_Crank2Basic(browser=parameters.browser,  # or 'Chrome'
                cloud=parameters.cloud,
                nologin=parameters.nologin,  # True for Cloud Desktop (no login page), False for remote server that requires login.
                login=parameters.login,  # Used to login into remote Cloud
