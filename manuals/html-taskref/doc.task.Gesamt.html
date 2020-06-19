@@ -1,0 +1,93 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>11.1. Pairwise Structural Alignment with GESAMT &#8212; CCP4 Cloud 1.6 documentation</title>
+    
+    <link rel="stylesheet" href="_static/haiku.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/contentui.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.6',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/contentui.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="top" title="CCP4 Cloud 1.6 documentation" href="index.html" />
+    <link rel="up" title="11. Toolbox" href="Toolbox.html" />
+    <link rel="prev" title="11. Toolbox" href="Toolbox.html" /> 
+  </head>
+  <body role="document">
+      <div class="header" role="banner"><h1 class="heading"><a href="index.html">
+          <span>CCP4 Cloud 1.6 documentation</span></a></h1>
+        <h2 class="heading"><span>11.1. Pairwise Structural Alignment with GESAMT</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        «&#160;&#160;<a href="Toolbox.html">11. Toolbox</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="index.html">Contents</a>
+        </p>
+
+      </div>
+      <div class="content">
+        
+        
+  <div class="section" id="pairwise-structural-alignment-with-gesamt">
+<h1>11.1. Pairwise Structural Alignment with GESAMT<a class="headerlink" href="#pairwise-structural-alignment-with-gesamt" title="Permalink to this headline">¶</a></h1>
+<p><a class="reference external" href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3599502/">GESAMT</a> (General Efficient Structural Alignment of Macromolecular Targets) is an algorithm for the structural alignment of polypeptide chains. Structural alignment attempts to establish geometrically equivalents between two polymer structures based on their shape and three-dimensional conformation. Alignment results include the list of matched residues, superposition matrices and a set of scores which indicate the quality of alignment. The higher the alignment score, the higher structural similarity.</p>
+<p>GESAMT employs the idea of deriving the global structure similarity from a promising set of locally similar short fragments. The GESAMT algorithm performs a fully automatic calculation of the correspondence between two ordered sets of 3D coordinates using SSM’s <strong>Q-score</strong> (geometrical measure of structural similarity). <strong>Q-score</strong> is a more objective indicator of the quality of alignment than RMSD and N <sub>align</sub> alone <a class="reference external" href="https://journals.iucr.org/d/issues/2004/12/01/ba5056/index.html">[Krissinel &amp; Henrick 2004]</a>. <code class="docutils literal"><span class="pre">The</span> <span class="pre">Q-score</span> <span class="pre">varies</span> <span class="pre">between</span> <span class="pre">0</span> <span class="pre">(for</span> <span class="pre">completely</span> <span class="pre">dissimilar</span> <span class="pre">structures)</span> <span class="pre">and</span> <span class="pre">1</span> <span class="pre">(identical</span> <span class="pre">structures).</span> <span class="pre">A</span> <span class="pre">reasonable</span> <span class="pre">level</span> <span class="pre">of</span> <span class="pre">structural</span> <span class="pre">similarity</span> <span class="pre">is</span> <span class="pre">usually</span> <span class="pre">indicated</span> <span class="pre">by</span> <span class="pre">Q-score</span> <span class="pre">&gt;</span> <span class="pre">0.1.</span></code></p>
+<p>The GESAMT algorithm is applicable to chains with undefined secondary structure, as well as incomplete and fragmented (broken) chains. This makes GESAMT a more convenient algorithm than SSM for the intermediate stages of the structure solution process when, e.g., only an outline of a protein backbone is known and allows GESAMT finds longer alignments at lower rmsd in comparison with SSM`s.</p>
+<blockquote>
+<div><p>Schematic of the structure alignment process in GESAMT is represented on the figure below</p>
+<blockquote>
+<div><a class="reference internal image-reference" href="_images/GESAMT.png"><img alt="_images/GESAMT.png" class="align-center" src="_images/GESAMT.png" style="width: 560.0px; height: 303.1px;" /></a>
+</div></blockquote>
+</div></blockquote>
+<p>The left part of figure represents the fragment similarity matrix for the given chains A and B. Every short section in the matrix represents an short fragment superpositions (SFS). SFSs with similar transformation matrices are collected into clusters, which after further refinement are brought to the common superposition matrix T <sub>0</sub>. <a class="reference external" href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3599502/">[Krissinel 2012]</a></p>
+<p>GESAMT has two alignment mode: <em>balance between quality and efficiency</em> (<em>normal mode</em>) and <em>prefer higher alignment quality</em> (<em>high mode</em>). In the majority of cases GESAMT is faster than SSM in <em>normal mode</em> and slower in <em>high mode</em>. There is marginal quality decrease (in less than 5% of cases) in the <em>normal mode</em> is accompanied by a 10-fold gain in speed. These figures justify the choice of internal parameters configured to the <em>normal mode</em> and leave the use of the <em>high mode</em> to special (doubtful and difficult) cases.</p>
+<div class="section" id="alignment-results">
+<h2>11.1.1. Alignment results<a class="headerlink" href="#alignment-results" title="Permalink to this headline">¶</a></h2>
+<p><strong>Structure Summary</strong> table gives a short summary of aligned structures: source (name of file), chain selection, size (in number of residues) and title (where it can be read from the source).</p>
+<p><strong>Alignment Summary</strong> table gives information about Q-score, RMSD (Å), the number of residues was aligned (Aligned residues) and sequence identity calculated from structure alignment (Sequence Id)</p>
+<p>In <strong>Residue alignment</strong> window you can find <strong>Rigid-body residue alignment</strong> and <strong>Per-domain residue alignment</strong> tables which present pairs of aligned residues. This table contains the index of peptide chain, the name of residue and its sequence number. <code class="docutils literal"><span class="pre">Helix-forming</span> <span class="pre">residues</span></code> are indicated by <code class="docutils literal"><span class="pre">&quot;H&quot;</span></code> and <code class="docutils literal"><span class="pre">beta-sheet</span> <span class="pre">forming</span> <span class="pre">residues</span></code> are indicated by <code class="docutils literal"><span class="pre">&quot;S&quot;</span></code>. <code class="docutils literal"><span class="pre">Hydrophilic</span> <span class="pre">residues</span></code> indicated by <code class="docutils literal"><span class="pre">&quot;+&quot;</span></code>, <code class="docutils literal"><span class="pre">hydrophobic</span> <span class="pre">residues</span></code> indicated by <code class="docutils literal"><span class="pre">&quot;-&quot;</span></code>, and <code class="docutils literal"><span class="pre">residues</span> <span class="pre">with</span> <span class="pre">weak</span> <span class="pre">hydropathy</span></code> are indicated by <code class="docutils literal"><span class="pre">&quot;.&quot;</span></code> in second position. Rows with <em>aligned residues</em> contain the <em>distance between their C-alpha atoms</em> at best structure superposition, in angstroms.</p>
+<p>Structural similarity may be assessed visually by inspecting superposed structures with UglyMol or by running COOT as the next step.</p>
+<p><strong>References</strong></p>
+<p><a class="reference external" href="https://journals.iucr.org/d/issues/2004/12/01/ba5056/index.html">Krissinel E, Henrick K. Secondary-structure matching (SSM), a new tool for fast protein structure alignment in three dimensions. Acta Crystallogr. 2004;D60:2256–2268.</a></p>
+<p><a class="reference external" href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3599502/">Krissinel, E. (2012) Enhanced fold recognition using efficient short fragment clustering. J. Mol. Biochem. 1(2): 76-85; PMCID: PMC5117261</a></p>
+</div>
+</div>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        «&#160;&#160;<a href="Toolbox.html">11. Toolbox</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="index.html">Contents</a>
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.8.
+    </div>
+  </body>
+</html>

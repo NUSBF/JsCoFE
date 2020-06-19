@@ -153,7 +153,8 @@ class Build(ccp4build_report.Report):
             meta["labin_phifom"] = None
             meta["labin_fc"]     = None
             self.log ( "\nInitial refinement:\n" )
-            self.setGenericLogParser ( True )
+            self.setRefmacLogParser ( True )
+            #self.setGenericLogParser ( True )
             meta  = self.refmac ( meta,mode="jelly",ncycles=refcyc["initial"],nameout="00-1.refmac" )
             self.unsetLogParser()
             rmeta = meta["refmac"]

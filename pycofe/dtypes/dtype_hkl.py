@@ -180,6 +180,12 @@ class DType(dtype_template.DType):
         return [None,None,"X"]
 
 
+    def getMeanI ( self ):
+        if hasattr(self.dataset,"Imean"):
+            if self.dataset.Imean is not None:
+                return [self.dataset.Imean.value,self.dataset.Imean.sigma,"I"]
+        return [None,None,"X"]
+
     def getMeanF ( self ):
         if hasattr(self.dataset,"Fmean"):
             if self.dataset.Fmean is not None:

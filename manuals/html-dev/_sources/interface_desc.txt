@@ -59,6 +59,11 @@ Common description items
 **placeholder**
     optional prompt displayed in grey, when parameter value is not given
     
+**default**
+    optional default value which will be used instead of **value** if user
+    gave no input. In difference of *placeholder*, default value is copied
+    to *value* field if the latter is left empty
+    
 **position**
     mandatory, parameter's grid position: ::
     
@@ -100,6 +105,38 @@ The range list is composed of strings like ::
 where ``value`` is the value returned by widget if user selects the corresponding 
 item, and ``Text`` is displayed in the combobox.
 
+
+~~~~~~~~~~~~~
+Integer Input
+~~~~~~~~~~~~~
+
+Integer Input field is described as follows: ::
+
+    KEY : {
+            type     : 'integer', // '_' suffix means blank value is allowed
+            keyword  : 'helix',   // may be the "real" keyword for job input stream
+            label    : 'Number of copies to find',
+            align    : 'left',              // optional
+            reportas : 'Type of sequence',  // optional
+            tooltip  : 'Choose a value between 1 and 200, or leave ' +
+                        'blank for automatic choice',
+            range    : [1,200],  // may be absent (no limits) or must
+                                 // be one of the following:
+                                 //   ['*',max]  : limited from top
+                                 //   [min,'*']  : limited from bottom
+                                 //   [min,max]  : limited from top and bottom
+            value    : 10,       // value to be paired with the keyword
+            placeholder : 'auto',         // optional
+            default  : 10,                // optional
+            iwidth   : 40,                // optional
+            label2   : '<i>(copies)</i>', // optional
+            align2   : 'left',            // optional
+            position : [4,0,1,1] // [row,col,rowSpan,colSpan]
+          }
+
+**type**
+    may be *integer* or *integer_*, the latter will pass input validator if
+    user gave no value and left the field blank
 
 
 ~~~~~~~~~

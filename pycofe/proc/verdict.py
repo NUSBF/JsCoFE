@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    23.05.20   <--  Date of Last Modification.
+#    16.06.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -179,7 +179,7 @@ def calcVerdictScore ( data,score_type ):
 
 
 def makeVerdictSection ( body,table_dict,score,message,bottomline,
-                         title="Verdict",row=-1,pageId=None ):
+                         title="Verdict",row=-1,pageId=None,secId="" ):
 
     row0 = row
     if row<0:
@@ -199,9 +199,9 @@ def makeVerdictSection ( body,table_dict,score,message,bottomline,
 
         body.putMessage1 ( grid_id,"&nbsp;&nbsp;&nbsp;",1,1 )
         body.putMessage1 ( grid_id,"<span style='font-size:10px;'>&nbsp;</span>",0,2 )
-        body.putVerdict1 ( grid_id,score,message,1,col=2 )
+        body.putVerdict1 ( grid_id,score,message,1,col=2,secId=secId )
     else:
-        body.putVerdict1 ( page_id,score,message,row0+1,col=0 )
+        body.putVerdict1 ( page_id,score,message,row0+1,col=0,secId=secId )
 
     body.putMessage1 ( page_id,bottomline,row0+2 )
 

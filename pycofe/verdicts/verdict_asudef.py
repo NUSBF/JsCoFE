@@ -114,14 +114,15 @@ def makeVerdict ( verdict_meta ):
 
 # ------------------------------------------------------------------------
 
-def putVerdictWidget ( base,verdict_meta ):
+def putVerdictWidget ( base,verdict_meta,pageId=None,secId="" ):
 
     base.putMessage ( "&nbsp;" )
 
     verdict_score, verdict_message, bottom_line = makeVerdict ( verdict_meta )
 
     verdict.makeVerdictSection ( base,None,verdict_score,
-                                 verdict_message,bottom_line )
+                                 verdict_message,bottom_line,
+                                 pageId=pageId,secId=secId )
     base.rvrow += 3
 
     return

@@ -105,6 +105,10 @@ percents:</p>
 <dd>mandatory (where used), initial value of the parameter, given as string</dd>
 <dt><strong>placeholder</strong></dt>
 <dd>optional prompt displayed in grey, when parameter value is not given</dd>
+<dt><strong>default</strong></dt>
+<dd>optional default value which will be used instead of <strong>value</strong> if user
+gave no input. In difference of <em>placeholder</em>, default value is copied
+to <em>value</em> field if the latter is left empty</dd>
 <dt><strong>position</strong></dt>
 <dd><p class="first">mandatory, parameter&#8217;s grid position:</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">position</span> <span class="p">:</span> <span class="p">[</span><span class="n">row</span><span class="p">,</span><span class="n">col</span><span class="p">,</span><span class="n">rowSpan</span><span class="p">,</span><span class="n">colSpan</span><span class="p">]</span>
@@ -144,8 +148,40 @@ percents:</p>
 <p>where <code class="docutils literal"><span class="pre">value</span></code> is the value returned by widget if user selects the corresponding
 item, and <code class="docutils literal"><span class="pre">Text</span></code> is displayed in the combobox.</p>
 </div>
+<div class="section" id="integer-input">
+<h3>3.1.3. Integer Input<a class="headerlink" href="#integer-input" title="Permalink to this headline">¶</a></h3>
+<p>Integer Input field is described as follows:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">KEY</span> <span class="p">:</span> <span class="p">{</span>
+        <span class="nb">type</span>     <span class="p">:</span> <span class="s1">&#39;integer&#39;</span><span class="p">,</span> <span class="o">//</span> <span class="s1">&#39;_&#39;</span> <span class="n">suffix</span> <span class="n">means</span> <span class="n">blank</span> <span class="n">value</span> <span class="ow">is</span> <span class="n">allowed</span>
+        <span class="n">keyword</span>  <span class="p">:</span> <span class="s1">&#39;helix&#39;</span><span class="p">,</span>   <span class="o">//</span> <span class="n">may</span> <span class="n">be</span> <span class="n">the</span> <span class="s2">&quot;real&quot;</span> <span class="n">keyword</span> <span class="k">for</span> <span class="n">job</span> <span class="nb">input</span> <span class="n">stream</span>
+        <span class="n">label</span>    <span class="p">:</span> <span class="s1">&#39;Number of copies to find&#39;</span><span class="p">,</span>
+        <span class="n">align</span>    <span class="p">:</span> <span class="s1">&#39;left&#39;</span><span class="p">,</span>              <span class="o">//</span> <span class="n">optional</span>
+        <span class="n">reportas</span> <span class="p">:</span> <span class="s1">&#39;Type of sequence&#39;</span><span class="p">,</span>  <span class="o">//</span> <span class="n">optional</span>
+        <span class="n">tooltip</span>  <span class="p">:</span> <span class="s1">&#39;Choose a value between 1 and 200, or leave &#39;</span> <span class="o">+</span>
+                    <span class="s1">&#39;blank for automatic choice&#39;</span><span class="p">,</span>
+        <span class="nb">range</span>    <span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">200</span><span class="p">],</span>  <span class="o">//</span> <span class="n">may</span> <span class="n">be</span> <span class="n">absent</span> <span class="p">(</span><span class="n">no</span> <span class="n">limits</span><span class="p">)</span> <span class="ow">or</span> <span class="n">must</span>
+                             <span class="o">//</span> <span class="n">be</span> <span class="n">one</span> <span class="n">of</span> <span class="n">the</span> <span class="n">following</span><span class="p">:</span>
+                             <span class="o">//</span>   <span class="p">[</span><span class="s1">&#39;*&#39;</span><span class="p">,</span><span class="nb">max</span><span class="p">]</span>  <span class="p">:</span> <span class="n">limited</span> <span class="kn">from</span> <span class="nn">top</span>
+                             <span class="o">//</span>   <span class="p">[</span><span class="nb">min</span><span class="p">,</span><span class="s1">&#39;*&#39;</span><span class="p">]</span>  <span class="p">:</span> <span class="n">limited</span> <span class="kn">from</span> <span class="nn">bottom</span>
+                             <span class="o">//</span>   <span class="p">[</span><span class="nb">min</span><span class="p">,</span><span class="nb">max</span><span class="p">]</span>  <span class="p">:</span> <span class="n">limited</span> <span class="kn">from</span> <span class="nn">top</span> <span class="ow">and</span> <span class="n">bottom</span>
+        <span class="n">value</span>    <span class="p">:</span> <span class="mi">10</span><span class="p">,</span>       <span class="o">//</span> <span class="n">value</span> <span class="n">to</span> <span class="n">be</span> <span class="n">paired</span> <span class="k">with</span> <span class="n">the</span> <span class="n">keyword</span>
+        <span class="n">placeholder</span> <span class="p">:</span> <span class="s1">&#39;auto&#39;</span><span class="p">,</span>         <span class="o">//</span> <span class="n">optional</span>
+        <span class="n">default</span>  <span class="p">:</span> <span class="mi">10</span><span class="p">,</span>                <span class="o">//</span> <span class="n">optional</span>
+        <span class="n">iwidth</span>   <span class="p">:</span> <span class="mi">40</span><span class="p">,</span>                <span class="o">//</span> <span class="n">optional</span>
+        <span class="n">label2</span>   <span class="p">:</span> <span class="s1">&#39;&lt;i&gt;(copies)&lt;/i&gt;&#39;</span><span class="p">,</span> <span class="o">//</span> <span class="n">optional</span>
+        <span class="n">align2</span>   <span class="p">:</span> <span class="s1">&#39;left&#39;</span><span class="p">,</span>            <span class="o">//</span> <span class="n">optional</span>
+        <span class="n">position</span> <span class="p">:</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="o">//</span> <span class="p">[</span><span class="n">row</span><span class="p">,</span><span class="n">col</span><span class="p">,</span><span class="n">rowSpan</span><span class="p">,</span><span class="n">colSpan</span><span class="p">]</span>
+      <span class="p">}</span>
+</pre></div>
+</div>
+<dl class="docutils">
+<dt><strong>type</strong></dt>
+<dd>may be <em>integer</em> or <em>integer_</em>, the latter will pass input validator if
+user gave no value and left the field blank</dd>
+</dl>
+</div>
 <div class="section" id="text-area">
-<h3>3.1.3. Text Area<a class="headerlink" href="#text-area" title="Permalink to this headline">¶</a></h3>
+<h3>3.1.4. Text Area<a class="headerlink" href="#text-area" title="Permalink to this headline">¶</a></h3>
 <p>Text Area provides an input of multi-line textual information.</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">KEY_TA</span><span class="p">:</span> <span class="p">{</span>
     <span class="nb">type</span>        <span class="p">:</span> <span class="s1">&#39;textarea&#39;</span><span class="p">,</span>

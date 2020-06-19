@@ -440,6 +440,11 @@ Widget.prototype.addSignalHandler = function ( signal,onReceive )  {
   this.element.addEventListener ( signal,function(e){
     onReceive ( e.detail );
   },false );
+  // false: use the Bubbling mode
+  // true:  use Capturing mode
+  // The difference is in response to nested widgets: Bubbling mode gives
+  // priority to event handlers associated with the innermost widget, while
+  // Capturing mode gives priority to the outmost one.
 }
 
 Widget.prototype.click = function()  {
