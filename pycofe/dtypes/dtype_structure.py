@@ -278,6 +278,19 @@ class DType(dtype_xyz.DType):
         self.HLD     = ""
         return
 
+    def setFragonLabels ( self ):
+        self.FWT     = "FWT"
+        self.PHWT    = "PHIC"
+        self.PHI     = "PHIC"
+        self.FOM     = "FOM"
+        self.DELFWT  = ""
+        self.PHDELWT = ""
+        self.HLA     = ""
+        self.HLB     = ""
+        self.HLC     = ""
+        self.HLD     = ""
+        return
+
     def setCrank2Labels ( self,hkl_class ):
         self.FP      = "REFM_F"
         self.SigFP   = "REFM_SIGF"

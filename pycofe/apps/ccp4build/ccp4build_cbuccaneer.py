@@ -209,6 +209,8 @@ class CBuccaneer(ccp4build_parrot.Parrot):
     def getCBuccaneerMetrics ( self,stdout_fpath,nbad ):
 
         meta = self.getCBuccaneerMeta0()
+        #n_res_built = meta["n_res_built"]
+
         """
         meta["n_res_built"]      = 0
         meta["n_fragments"]      = 0
@@ -243,6 +245,8 @@ class CBuccaneer(ccp4build_parrot.Parrot):
                         break;
                 elif "$TEXT:Result: $$ $$" in line:
                     key = 1
+
+        #meta["n_res_built"] = max ( n_res_built,meta["n_res_built"] )
 
         if nbad>0:
             meta["n_res_built"]     -= nbad

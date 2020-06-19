@@ -2,7 +2,7 @@
 /*
 *  ==========================================================================
  *
- *    23.05.20   <--  Date of Last Modification.
+ *    12.06.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -------------------------------------------------------------------------
  *
@@ -1422,7 +1422,7 @@ if (!dbx)  {
   }
 
 
-  function _make_label ( inpParamRef,key,item,grid,row,col,rowSpan )  {
+  function _make_label ( inpParamRef,key,item,grid,row,col,rowSpan,colSpan )  {
   // made as a global function in order to optimise recursive _lay_parameters
 
     inpParamRef.parameters[key]     = {};
@@ -1436,7 +1436,7 @@ if (!dbx)  {
     }
 
     inpParamRef.parameters[key].label =
-                           grid.addLabel ( item.label,row,col,rowSpan,1 )
+                           grid.addLabel ( item.label,row,col,rowSpan,colSpan )
                                .setNoWrap();
     if (item.hasOwnProperty('tooltip'))
       inpParamRef.parameters[key].label.setTooltip ( item.tooltip );
@@ -1590,12 +1590,12 @@ if (!dbx)  {
                               }
                           break;
 
-            case 'label'    : _make_label  ( inpParamRef,key,item,grid,r,c,rs );
-                              grid.setSpan ( r,c,rs,cs );
+            case 'label'    : _make_label  ( inpParamRef,key,item,grid,r,c,rs,cs );
+                              //grid.setSpan ( r,c,rs,cs );
                           break;
 
             case 'integer'  :
-            case 'integer_' : c = _make_label ( inpParamRef,key,item,grid,r,c,rs );
+            case 'integer_' : c = _make_label ( inpParamRef,key,item,grid,r,c,rs,1 );
                               if (item.hasOwnProperty('iwidth'))
                                     iwidth = item.iwidth;
                               else  iwidth = 80;
@@ -1611,7 +1611,7 @@ if (!dbx)  {
                           break;
 
             case 'real'     :
-            case 'real_'    : c = _make_label ( inpParamRef,key,item,grid,r,c,rs );
+            case 'real_'    : c = _make_label ( inpParamRef,key,item,grid,r,c,rs,1 );
                               if (item.hasOwnProperty('iwidth'))
                                     iwidth = item.iwidth;
                               else  iwidth = 80;
@@ -1627,7 +1627,7 @@ if (!dbx)  {
                           break;
 
             case 'string'   :
-            case 'string_'  : c = _make_label ( inpParamRef,key,item,grid,r,c,rs );
+            case 'string_'  : c = _make_label ( inpParamRef,key,item,grid,r,c,rs,1 );
                               if (item.hasOwnProperty('iwidth'))
                                     iwidth = item.iwidth;
                               else  iwidth = 80;
@@ -1645,7 +1645,7 @@ if (!dbx)  {
                               grid.setVerticalAlignment ( r,c,'middle' );
                           break;
 
-            case 'combobox' : c = _make_label ( inpParamRef,key,item,grid,r,c,rs );
+            case 'combobox' : c = _make_label ( inpParamRef,key,item,grid,r,c,rs,1 );
                               var dropdown = new Dropdown();
                               for (var i=0;i<item.range.length;i++)  {
                                 var choice = item.range[i].split('|');

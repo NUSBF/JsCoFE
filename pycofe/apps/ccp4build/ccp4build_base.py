@@ -32,6 +32,7 @@ import json
 
 import pyrvapi
 import pyrvapi_ext.parsers
+import refmac_parser
 
 import mtz
 import command
@@ -628,6 +629,20 @@ class Base(object):
         panel_id = self.getWidgetId ( "genlogparser" )
         self.putPanel ( panel_id )
         self.generic_parser_summary = {}
+        self.log_parser = pyrvapi_ext.parsers.generic_parser (
+                                         panel_id,split_sections_bool,
+                                         summary=self.generic_parser_summary,
+                                         graph_tables=graphTables,
+                                         hide_refs=True )
+        pyrvapi.rvapi_flush()
+        return panel_id
+
+    def setRefmacLogParser ( self,split_sections_bool,graphTables=False ):
+        self.unsetLogParser()
+        panel_id = self.getWidgetId ( "refmaclogparser" )
+        self.putPanel ( panel_id )
+        self.generic_parser_summary = {}
+        #self.log_parser = refmac_parser.refmac_parser (
         self.log_parser = pyrvapi_ext.parsers.generic_parser (
                                          panel_id,split_sections_bool,
                                          summary=self.generic_parser_summary,

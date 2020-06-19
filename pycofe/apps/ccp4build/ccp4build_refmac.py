@@ -219,7 +219,6 @@ class Refmac(ccp4build_cbuccaneer.CBuccaneer):
         stderr_fpath = self.getStdErrPath ( nameout )
         self.runApp ( "refmac5",cmd,
                       fpath_stdout=stdout_fpath,fpath_stderr=stderr_fpath )
-
         self.unsetLogParser()
 
         f = open ( refmac_xyzout,"r" )

@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    18.05.20   <--  Date of Last Modification.
+#    16.06.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -70,7 +70,7 @@ def makeAsuFitMessage ( base,nc0,sol0 ):
 
 def makeRevision ( base,hkl,seq,composition,altEstimateKey,altNRes,
                         altMolWeight,resLimit,
-                        revision0=None,resultTitle="Results" ):
+                        revision0=None,resultTitle="Results",secId="" ):
 
     revision   = None
 
@@ -349,7 +349,7 @@ def makeRevision ( base,hkl,seq,composition,altEstimateKey,altNRes,
             "nc"         : nc0,
             "sol"        : sol1,
             "resolution" : hkl.getHighResolution(raw=True)
-        })
+        },secId=secId )
 
         if revision:
             base.generic_parser_summary["z02"] = {

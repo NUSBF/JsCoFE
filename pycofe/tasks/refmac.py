@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    11.06.20   <--  Date of Last Modification.
+#    15.06.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -21,7 +21,8 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev, Robert Nicholls 2017-2020
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev, Robert Nicholls,
+#                Oleg Kovalevskyi 2017-2020
 #
 # ============================================================================
 #

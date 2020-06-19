@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    11.06.20   <--  Date of Last Modification.
+#    16.06.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -999,34 +999,20 @@ class TaskDriver(object):
 
     # ============================================================================
 
-    def putVerdict ( self, score,message ):
-        gridId = self.putVerdict1 ( self.report_page_id(),code,message,self.rvrow,col=0 )
+    def putVerdict ( self, score,message,secId="" ):
+        gridId = self.putVerdict1 ( self.report_page_id(),code,message,self.rvrow,
+                                    col=0,secId=secId )
         self.rvrow += 1
         return gridId
 
-    def putVerdict1 ( self, pageId,score,message,row,col=0 ):
+    def putVerdict1 ( self, pageId,score,message,row,col=0,secId="" ):
         gridId = self.getWidgetId ( "verdict" )
         self.putGrid1 ( gridId,pageId,False,row,col=col,rowSpan=1,colSpan=1 )
-        #pyrvapi.rvapi_set_cell_stretch ( gridId,30,-30,0,1 )
-
-        #colors = ["crimson","darkorange","forestgreen"]
-        #self.putMessage1 ( gridId,"<div style=\"background-color:" +\
-        #                          colors[int(score*len(colors))/101] +\
-        #                          ";width:30px;height:92%;\">&nbsp;</div>",0,
-        #                          col=0,rowSpan=1 )
-
-        #gauges = ["gauge_red.png","gauge_amber.png","gauge_green.png"]
-        #self.putMessage1 ( gridId,
-        #    "<img style='vertical-align:top;' src='xxJsCoFExx-fe/images_png/" +\
-        #    gauges[int(score*len(gauges))/101] + "' width='86px' height='44px'/>",
-        #    0,col=0 )
-
         gaugeId = self.getWidgetId ( "gauge" )
         self.putMessage1 ( gridId,
             "<div id='" + gaugeId + "'></div><script>" +\
-            "GaugeWidget('" + gaugeId + "','140px'," + str(score) +\
-            ",100,'scheme-3');</script>",0,col=0 )
-
+            "GaugeWidget('" + gaugeId + "','" + secId + "','140px'," +\
+                              str(score) + ",100,'scheme-3');</script>",0,col=0 )
         self.putMessage1 ( gridId,"<div>" + message + "</div>",0,col=1 )
         return gridId
 
@@ -1240,11 +1226,14 @@ class TaskDriver(object):
 
             panel_id = self.getWidgetId ( self.refmac_report() )
             pyrvapi.rvapi_add_panel ( panel_id,sec_id,0,0,1,1 )
-            self.log_parser = pyrvapi_ext.parsers.generic_parser (
-                                         panel_id,False,
-                                         summary=self.generic_parser_summary,
-                                         graph_tables=False,
-                                         hide_refs=True )
+            #self.log_parser = pyrvapi_ext.parsers.generic_parser (
+            #                             panel_id,False,
+            #                             summary=self.generic_parser_summary,
+            #                             graph_tables=False,
+            #                             hide_refs=True )
+
+            self.setRefmacLogParser ( panel_id,False,
+                                      graphTables=False,makePanel=False )
 
             fnames = self.calcEDMap ( xyzPath,hkl,libPath,name_pattern,inpDir )
 
@@ -1271,7 +1260,7 @@ class TaskDriver(object):
                 if title:
                     self.putTitle ( title +\
                         self.hotHelpLink ( "Structure","jscofe_qna.structure" ) )
-                else:
+                elif title is not None:
                     self.putMessage ( "&nbsp;" )
                 self.putStructureWidget ( self.getWidgetId("structure_btn_"),
                                           "Structure and electron density",
@@ -1314,12 +1303,13 @@ class TaskDriver(object):
 
         panel_id = self.refmac_report() + "_" + str(self.widget_no)
         pyrvapi.rvapi_add_panel ( panel_id,sec_id,0,0,1,1 )
-        #self.log_parser = pyrvapi_ext.parsers.generic_parser ( panel_id,False )
-        self.log_parser = pyrvapi_ext.parsers.generic_parser (
-                                         panel_id,False,
-                                         summary=self.generic_parser_summary,
-                                         graph_tables=False,
-                                         hide_refs=True )
+        #self.log_parser = pyrvapi_ext.parsers.generic_parser (
+        #                                 panel_id,False,
+        #                                 summary=self.generic_parser_summary,
+        #                                 graph_tables=False,
+        #                                 hide_refs=True )
+
+        self.setRefmacLogParser ( panel_id,False,graphTables=False,makePanel=False )
 
         fnames = self.calcAnomEDMap ( xyzPath,hkl,anom_form,name_pattern )
 
@@ -1590,16 +1580,18 @@ class TaskDriver(object):
         self.addCitation ( "viewhkl" )
         return row + 2
 
-    def putStructureWidget ( self,widgetId,title_str,structure,openState=-1 ):
+    def putStructureWidget ( self,widgetId,title_str,structure,openState=-1,
+                                  legend="Assigned name" ):
         self.putStructureWidget1 ( self.report_page_id(),
                                    self.getWidgetId(widgetId),title_str,
-                                   structure,openState,self.rvrow,1 )
+                                   structure,openState,self.rvrow,1,legend=legend )
         self.rvrow += 2
         return
 
 
-    def putStructureWidget1 ( self,pageId,widgetId,title_str,structure,openState,row,colSpan ):
-        self.putMessage1 ( pageId,"<b>Assigned name:</b>&nbsp;" +
+    def putStructureWidget1 ( self,pageId,widgetId,title_str,structure,openState,
+                                  row,colSpan,legend="Assigned name" ):
+        self.putMessage1 ( pageId,"<b>" + legend + ":</b>&nbsp;" +
                                   structure.dname +
                                   "<font size='+2'><sub>&nbsp;</sub></font>",row )
         wId     = self.getWidgetId ( widgetId )

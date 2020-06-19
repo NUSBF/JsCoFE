@@ -142,7 +142,7 @@ def run ( body,pdb_list,
 
             subSecId = body.getWidgetId ( "_pdb_sec_"+code )
             body.putSection ( subSecId,"PDB Entry " + ucode,False )
-            body.setReportWidget ( subSecId )
+            body.setReportWidget ( subSecId )  # retain section id for signalling to gauge widget here
 
             xyz = import_xyz     .run ( body )
             seq = import_sequence.run ( body )
@@ -162,8 +162,8 @@ def run ( body,pdb_list,
                     if nAA<=0:  composition = "D"  # NA only
                     if nNA<=0:  composition = "P"  # AA only
                     revision = asudef.makeRevision ( body,hkl[0],seq,
-                                        composition,"MW",0,0.0,None,
-                                        None,None )
+                                                     composition,"MW",0,0.0,None,
+                                                     None,None,secId=subSecId )
 
                 if len(xyz)>0:
                     body.putMessage ( "<h3>" + ucode + " Structure</h3>" )

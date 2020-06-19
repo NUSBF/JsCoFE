@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    26.03.20   <--  Date of Last Modification.
+ *    15.06.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -159,7 +159,15 @@ TaskFitWaters.prototype.currentVersion = function()  {
 }
 
 
-if (__template)  {
+if (!__template)  {
+  // for client side
+
+  // hotButtons return list of buttons added in JobDialog's toolBar.
+  TaskFitWaters.prototype.hotButtons = function() {
+    return [RefmacHotButton()];
+  }
+
+} else  {
   //  for server side
 
   var conf = require('../../js-server/server.configuration');

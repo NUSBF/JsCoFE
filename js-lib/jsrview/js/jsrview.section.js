@@ -1,7 +1,7 @@
 //
 //  =================================================================
 //
-//    10.05.16   <--  Date of Last Modification.
+//    16.06.16   <--  Date of Last Modification.
 //                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  -----------------------------------------------------------------
 //
@@ -36,6 +36,7 @@ function addSection ( secId,secTitle,holderId,row,col,rowSpan,colSpan,
       collapsible : true,
       heightStyle : "content",
       activate    : function (event,ui)  {
+        div.dispatchEvent ( new CustomEvent ( 'activate',{} ) );
         drawHiddenGraphs ( ui.newPanel );
       }
     });
@@ -45,6 +46,7 @@ function addSection ( secId,secTitle,holderId,row,col,rowSpan,colSpan,
       collapsible : true,
       heightStyle : "content",
       activate    : function (event,ui)  {
+        div.dispatchEvent ( new CustomEvent ( 'activate',{} ) );
         drawHiddenGraphs ( ui.newPanel );
       }
     });

@@ -1,0 +1,43 @@
+=========================================
+Pairwise Structural Alignment with GESAMT
+=========================================
+
+
+`GESAMT <https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3599502/>`_ (General Efficient Structural Alignment of Macromolecular Targets) is an algorithm for the structural alignment of polypeptide chains. Structural alignment attempts to establish geometrically equivalents between two polymer structures based on their shape and three-dimensional conformation. Alignment results include the list of matched residues, superposition matrices and a set of scores which indicate the quality of alignment. The higher the alignment score, the higher structural similarity.
+
+GESAMT employs the idea of deriving the global structure similarity from a promising set of locally similar short fragments. The GESAMT algorithm performs a fully automatic calculation of the correspondence between two ordered sets of 3D coordinates using SSM’s **Q-score** (geometrical measure of structural similarity). **Q-score** is a more objective indicator of the quality of alignment than RMSD and N :subscript:`align` alone `[Krissinel & Henrick 2004] <https://journals.iucr.org/d/issues/2004/12/01/ba5056/index.html>`_. ``The Q-score varies between 0 (for completely dissimilar structures) and 1 (identical structures). A reasonable level of structural similarity is usually indicated by Q-score > 0.1.``
+ 
+The GESAMT algorithm is applicable to chains with undefined secondary structure, as well as incomplete and fragmented (broken) chains. This makes GESAMT a more convenient algorithm than SSM for the intermediate stages of the structure solution process when, e.g., only an outline of a protein backbone is known and allows GESAMT finds longer alignments at lower rmsd in comparison with SSM`s.
+ 
+  Schematic of the structure alignment process in GESAMT is represented on the figure below
+  
+     .. image:: images/GESAMT.png
+         :scale: 70 %
+         :align: center 
+         
+
+The left part of figure represents the fragment similarity matrix for the given chains A and B. Every short section in the matrix represents an short fragment superpositions (SFS). SFSs with similar transformation matrices are collected into clusters, which after further refinement are brought to the common superposition matrix T :subscript:`0`. `[Krissinel 2012] <https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3599502/>`_
+
+GESAMT has two alignment mode: *balance between quality and efficiency* (*normal mode*) and *prefer higher alignment quality* (*high mode*). In the majority of cases GESAMT is faster than SSM in *normal mode* and slower in *high mode*. There is marginal quality decrease (in less than 5% of cases) in the *normal mode* is accompanied by a 10-fold gain in speed. These figures justify the choice of internal parameters configured to the *normal mode* and leave the use of the *high mode* to special (doubtful and difficult) cases.
+
+-----------------
+Alignment results
+-----------------
+
+**Structure Summary** table gives a short summary of aligned structures: source (name of file), chain selection, size (in number of residues) and title (where it can be read from the source).
+
+**Alignment Summary** table gives information about Q-score, RMSD (Å), the number of residues was aligned (Aligned residues) and sequence identity calculated from structure alignment (Sequence Id)
+
+In **Residue alignment** window you can find **Rigid-body residue alignment** and **Per-domain residue alignment** tables which present pairs of aligned residues. This table contains the index of peptide chain, the name of residue and its sequence number. ``Helix-forming residues`` are indicated by ``"H"`` and ``beta-sheet forming residues`` are indicated by ``"S"``. ``Hydrophilic residues`` indicated by ``"+"``, ``hydrophobic residues`` indicated by ``"-"``, and ``residues with weak hydropathy`` are indicated by ``"."`` in second position. Rows with *aligned residues* contain the *distance between their C-alpha atoms* at best structure superposition, in angstroms.
+
+Structural similarity may be assessed visually by inspecting superposed structures with UglyMol or by running COOT as the next step.
+
+
+**References**
+
+`Krissinel E, Henrick K. Secondary-structure matching (SSM), a new tool for fast protein structure alignment in three dimensions. Acta Crystallogr. 2004;D60:2256–2268. <https://journals.iucr.org/d/issues/2004/12/01/ba5056/index.html>`_
+
+`Krissinel, E. (2012) Enhanced fold recognition using efficient short fragment clustering. J. Mol. Biochem. 1(2): 76-85; PMCID: PMC5117261 <https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3599502/>`_
+
+
+

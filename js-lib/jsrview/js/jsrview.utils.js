@@ -1,7 +1,7 @@
 //
 //  =================================================================
 //
-//    18.04.20   <--  Date of Last Modification.
+//    16.06.20   <--  Date of Last Modification.
 //                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  -----------------------------------------------------------------
 //
@@ -1159,15 +1159,27 @@ function normalize_path ( path )  {
 //# sourceMappingURL=gauge.js.map
 
 
-function GaugeWidget ( holderId,width,value,maxValue,options )  {
+function GaugeWidget ( holderId,sectionId,width,value,maxValue,options )  {
+
+  if (sectionId)  {
+    // this code works if initial drawing is prohibited by closed section
+    var section = document.getElementById(sectionId+'-accordion');
+    if (section)
+      section.addEventListener( 'activate',function(e){
+        GaugeWidget ( holderId,'',width,value,maxValue,options );
+      },false );
+  }
 
   //<canvas id="demo" style="width:100px;"></canvas>
 
-  var canvas = document.createElement ( 'canvas' );
-  canvas.id  = holderId + '_gauge';
+  var holder    = document.getElementById ( holderId );
+  var canvas_id = holderId + '_gauge';
+  var canvas    = document.getElementById ( canvas_id );
+  if (canvas)
+    holder.removeChild ( canvas );
+  canvas    = document.createElement ( 'canvas' );
+  canvas.id = canvas_id;
   canvas.style.width = width;
-
-  var holder = document.getElementById ( holderId );
   holder.appendChild ( canvas );
 
   var opts = options;
@@ -1239,6 +1251,6 @@ function GaugeWidget ( holderId,width,value,maxValue,options )  {
   gauge.maxValue = maxValue;
   gauge.setMinValue(0);
   gauge.set(value);
-  gauge.animationSpeed = 32
+  gauge.animationSpeed = 32;
 
 }

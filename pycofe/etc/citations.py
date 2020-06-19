@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    19.02.20   <--  Date of Last Modification.
+#    15.06.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -805,10 +805,17 @@ citations = {
                   }]
                 },
 
-
     'acorn' :   { 'name'   : 'ACORN',
                   'category' : 'primary',
                   'refs'     : [{
+                            'authors' : 'Yao, J.X., Woolfson, M.M., Wilson, K.S., and Dodson E.J.',
+                            'title'   : 'A modified ACORN to solve protein structures at resolutions of 1.7 A or better',
+                            'journal' : 'Acta Cryst.',
+                            'volume'  : 'D61',
+                            'year'    : '2005',
+                            'pages'   : '1465-1475',
+                            'doi'     : '10.1107/S090744490502576X'
+                          },{
                             'authors' : 'Yao, J.X., Dodson, E.J., Wilson, K.S., Woolfson, M.M.',
                             'title'   : 'ACORN: a review',
                             'journal' : 'Acta Cryst.',
@@ -914,6 +921,19 @@ citations = {
                             'year'    : '1976',
                             'pages'   : '922-923',
                             'doi'     : '10.1107/S0567739476001873'
+                  }]
+                },
+
+    'fragon'  : { 'name'     : 'Fragon',
+                  'category' : 'primary',
+                  'refs'     : [{
+                            'authors' : 'Jenkins, H.T.',
+                            'title'   : 'Fragon: rapid high-resolution structure determination from ideal protein fragments',
+                            'journal' : 'Acta Cryst.',
+                            'volume'  : 'D74',
+                            'year'    : '2018',
+                            'pages'   : '205-214',
+                            'doi'     : '10.1107/S2059798318002292'
                   }]
                 },
 
