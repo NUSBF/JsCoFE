@@ -287,13 +287,28 @@ def validateCrank2run(driver):
 
     rWork = 1.0
     rFree = 1.0
-    tasksText = driver.find_elements(By.XPATH, "//a[contains(@id,'treenode') and contains(@class, 'jstree-anchor')]")
-    for taskText in tasksText:
-        match = re.search(r'^\[0003\] EP with Crank2 \(SAD\) -- R=(0\.\d*) Rfree=(0\.\d*)', taskText.text)
-        if match:
-            rWork = float(match.group(1))
-            rFree = float(match.group(2))
+    found = False
+
+    # For some reason it can't simply find element and on line [0003] generates StaleElementReferenceException
+    # This is code for several attempts to overcome it. Also, looks like just time.sleep() fixes it.
+    for attempts in range (5):
+        if found:
             break
+        time.sleep(2) # just in case
+        try:
+            tasksText = driver.find_elements(By.XPATH, "//a[contains(@id,'treenode') and contains(@class, 'jstree-anchor')]")
+            for taskText in tasksText:
+                print(taskText.text)
+                match = re.search(r'^\[0003\] EP with Crank2 \(SAD\) -- R=(0\.\d*) Rfree=(0\.\d*)', taskText.text)
+                if match:
+                    rWork = float(match.group(1))
+                    rFree = float(match.group(2))
+                    found = True
+                    break
+        except:
+            print('Exception on attempt %d' % attempts + 1)
+            pass
+
     if (rWork == 1.0) or (rFree == 1.0):
         print('*** Verification: could not find Rwork or Rfree value after Crank2 run')
     else:
