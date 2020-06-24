@@ -104,7 +104,7 @@ def parseRefmacLog ( logpath ):
                         meta["bond_angle"]  = [float(lst[2]),float(lst[3])]
                     elif "Rms ChirVolume" in line:
                         meta["chir_volume"] = [float(lst[2]),float(lst[3])]
-                        break;
+                        break
                 elif line.startswith("Free R factor                        ="):
                     lst = line.split()
                     meta["rfree_cycles"].append ( float(lst[-1]) )
@@ -117,7 +117,29 @@ def parseRefmacLog ( logpath ):
 #  2. Verdict message generation (not framed as a function, but ideally
 #     it should be, feel free to suggest)
 
-def calculate (  meta ) :
+def calculate ( meta ) :
+
+    # calculating sequence identity
+    def sequenceIdentity(sequence1, sequence2):
+        from mmtbx.alignment import align
+        align_obj = align(seq_a=sequence1, seq_b=sequence2)
+        alignment = align_obj.extract_alignment()
+        numberOfIdenticalResidues = len(''.join(alignment.matches().split()))
+        seqIdentity = float(numberOfIdenticalResidues) / float(max([len(sequence1), len(sequence2)]))
+        return seqIdentity
+
+    def isNCSpresentInChains(chains):
+        MinimalSequenceIdentityForNCS = 0.8
+        i = 0
+        for chain1 in chains:
+            i += 1
+            if chain1['type'] == 'Protein':
+                for chain2 in chains[i:]:
+                    if chain2['type'] == 'Protein':
+                        if sequenceIdentity(chain1['seq'], chain2['seq']) > MinimalSequenceIdentityForNCS:
+                            return True
+        return False
+
 
     # function to assign resolution bin basing on the bins available in the statistics table
     def assignResolutionBin(res, statInResolutionBins):
@@ -220,29 +242,6 @@ def calculate (  meta ) :
     # Initialisation of all values used in verdict
     #
 
-    """
-    # Values from the data
-    res = 2.284  # Resolution
-
-    # Values from current refinement run
-    rFree = 0.25  # Rfree after refinement
-    rWork = 0.15  # Rwork after refinement
-    rFreeBefore = 0.3  #  Rfree before refinement (starting value)
-    rWorkBefore = 0.25  # Rwork before refinement (starting value)
-    clashScore = 10.0  # clash score from MolProbity report after refinement
-    rmsBondDistance = 0.02  # rms Bond Distance (length) from Refmac, after refinement
-    allCyclesRfree = (0.4, 0.3, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2)  # List of Rfree values after each cycle of refinement (length chould be equal to ncyc)
-
-    # Input values for this refinement run
-    ncyc = 10 # number of cycles in this refinement run
-    twinning = False # I don't see twinning parameter in the Cloud REFMAC interface at the moment (15% of low resolution structures are twins)
-    jellyBody = False # whether jelly-body was used or not
-    ncsRestraints = False # whether NCS restraints were used or not
-    tls = False # whether TLS refinement was used or not
-    anisotropicBfact = False # Whether anisotropic B-factors were used
-    hydrogens = False # Whether hydrogens were used for refinement
-    """
-
     res              = meta["data"]["resolution"] # Resolution
 
     # ------- Values from current refinement run
@@ -269,6 +268,18 @@ def calculate (  meta ) :
     #
     # End of initialisation. Below operating with these values only
 
+    # Some analysis for smart decision making
+    listOfModels = meta['xyzmeta']['xyz']
+    allChains = []
+    for model in listOfModels:
+        allChains += model['chains']
+    isNCSpresent = isNCSpresentInChains(allChains)
+    ramaOutliers = float(meta['molprobity']['rama_outliers'])
+
+    # End of analysis
+
+
+    # Figuring out statistical values for evaluation of the current case
     resBin = assignResolutionBin ( res,statInResolutionBins )
     if resBin is None:
         return ( -1.0,"resolution bin calculation failed, resolution=" + str(res),"" )
@@ -308,7 +319,7 @@ def calculate (  meta ) :
         verdict_message += "Fair enough. Overall quality of the structure could be better, "+\
                             "some bits are probably missing"
     else:
-        verdict_message += "Not acceptable. Overall quality of the structure is critically low, " \
+        verdict_message += "Not good enough. Overall quality of the structure is low, " \
                            "most likely significant parts of the structure are missing"
     verdict_message += "</b>"
 
@@ -325,9 +336,9 @@ def calculate (  meta ) :
     elif clashScore >= (medianClash + 5.0):
         notes.append ( "<i>ClashScore</i> is high; model contains some clashes" )
     if rmsBondDistance >= 0.02:
-        notes.append ( "<i>RMS Bond Length</i> is high; consider decreasing geometry weight to tighten geometry" )
+        notes.append ( "<i>RMS Bond Length</i> is high" )
     if rmsBondDistance <= 0.01:
-        notes.append ( "<i>RMS Bond Length</i> is low; consider increasing geometry weight to loose geometry" )
+        notes.append ( "<i>RMS Bond Length</i> is low" )
 
     if len(notes)<=0:
         notes.append ( "all scores are fairly reasonable" )
@@ -384,21 +395,30 @@ def calculate (  meta ) :
 
     # 5. High clash score. Normally resolved by increasing weight of VDW repulsion and adding hydrogens
     if clashScore > (medianClash + 5.0):
-        bottomline += "MolProbity clash score for the structure seems high. You can try to switch on option for" +\
+        bottomline += "MolProbity clash score of %0.1f for the structure seems high " % clashScore +\
+                      "(median clash score for your resolution is %0.1f). "  % medianClash +\
+                      "You can try to switch on option for" +\
                       "generation of hydrogen atoms during refinement. Also, you can try to increase weight for VDW " +\
                       "repulsion by putting following command into 'Additional keywords' of the " +\
                       "'Advaced' parameters section: <i>vdwrestraints 2.0</i> . Value for restraints weight" +\
                       "is subject to optimisation.<p>"
 
     # 6. Bond lengths (distances) deviation (regardless of resolution)
-    if rmsBondDistance >= 0.02:
-        bottomline += "RMS deviation of bond lengths for the structure is too high. We recommend to tighten up " +\
+    if rmsBondDistance > 0.02:
+        bottomline += "RMS deviation of bond lengths for the structure is too high " +\
+                      "(%0.4f while optimal range is between 0.01 and 0.02). We recommend to tighten up " % rmsBondDistance +\
                       "geometry by reducing 'Overall data-geometry weight' parameter.<p>"
-    if rmsBondDistance <= 0.01:
-        bottomline += "RMS deviation of bond lengths for the structure is too low. We recommend to loose " +\
+    if rmsBondDistance < 0.01:
+        bottomline += "RMS deviation of bond lengths for the structure is too low " \
+                      "(%0.4f while optimal range is between 0.01 and 0.02). We recommend to loose " % rmsBondDistance +\
                       "geometry by increasing 'Overall data-geometry weight' parameter.<p>"
 
-    # 7. Overfitting detection.
+    # 7. Ramachandran and other geometry
+    if ramaOutliers > 0.0:
+        bottomline += "According to MolProbity analysis, the structure seems to have Ramachandran outliers (%0.1f %%); " % ramaOutliers +\
+                      "please examine those carefully.<p>"
+
+    # 8. Overfitting detection.
     # Ask Garib about possible effects of TLS, NCS and B-factors modelling on overfitting (I am not sure)
     rDiff = rFree - rWork
     rDiffBefore = rFreeBefore - rWorkBefore
@@ -408,11 +428,12 @@ def calculate (  meta ) :
                       "something is really wrong with assignment of the free R set.<p>"
     elif rDiff <= (meanRdiff - 0.01):
         bottomline += "The difference between <i>R<sub>free</sub></i> and <i>R<sub>work</sub></i> " +\
-                      "is smaller than expected. " +\
+                      "is smaller than expected (%0.3f, while mean value fot this resolution is %0.3f). " % (rDiff, meanRdiff) +\
                       "Something is wrong with assignment of free R set or try to run more refinement cycles.<p>"
     elif (rDiff > (meanRdiff + 0.01)) and (rDiffBefore < rDiff):
         bottomline += "The difference between <i>R<sub>free</sub></i> and <i>R<sub>work</sub></i> " +\
-                      "is larger than expected indicating overfitting. "
+                      "is larger than expected (%0.3f, while mean value fot this resolution is %0.3f), " % (rDiff, meanRdiff) +\
+                      "indicating overfitting. "
         if res >= 3.0:
             bottomline += "Please consider jelly-body refinement (Restraints -> Use jelly-body restraints). " +\
                            "You can also reduce overfitting by tightening up " +\
@@ -421,13 +442,15 @@ def calculate (  meta ) :
             bottomline += "You can reduce overfitting by tightening up " +\
                       "geometry via decreasing 'Overall data-geometry weight' parameter.<p>"
 
-    # 8. Problems specific to low resolution. Advices for higher Rfree.
+    # 9. Problems specific to low resolution. Advices for higher Rfree.
     if res >= 3.0:
         if (rFree > meanRfree) and (rFree < (meanRfree + (2.0*sigRfree))):
-            bottomline += "Your <i>R<sub>free</sub></i> is a bit higher than expected. " +\
+            bottomline += "Your <i>R<sub>free</sub></i> is a bit higher than expected" +\
+                          " (%0.3f, while mean value fot this resolution is %0.3f). " % (rFree, meanRfree) +\
                           "Try building more residues/ligands. "
             if not ncsRestraints:
-                bottomline += "Try introducing NCS restraints if you have several identical subunits in the asymmetric" +\
+                if isNCSpresent:
+                    bottomline += "Try introducing NCS restraints if you have several identical subunits in the asymmetric" +\
                           "unt. " # It is better to check number of subunits in ASU before this advice
             else:
                 bottomline += "Try changing type of NCS restraints (between local and global). "
@@ -436,10 +459,12 @@ def calculate (  meta ) :
             # Apparently scaling parameters are not available in Cloud interface now
             bottomline += "Try optimising solvent and scaling parameters. <p>"
         elif (rFree >= (meanRfree + (2.0*sigRfree))) and (rFree <= 0.4):
-            bottomline += "Your <i>R<sub>free</sub></i> is substantially higher than expected. " +\
+            bottomline += "Your <i>R<sub>free</sub></i> is substantially higher than expected " +\
+                          "(%0.3f, while mean value fot this resolution is %0.3f). " % (rFree, meanRfree) +\
                           "Try building more residues/ligands. Check your data for twinning. "
             if not ncsRestraints:
-                bottomline += "Try introducing NCS restraints if you have several identical subunits in the asymmetric" +\
+                if isNCSpresent:
+                    bottomline += "Try introducing NCS restraints if you have several identical subunits in the asymmetric" +\
                           "unt. " # It is better to check number of subunits in ASU before this advice
             else:
                 bottomline += "Try changing type of NCS restraints (between local and global). "
@@ -448,13 +473,15 @@ def calculate (  meta ) :
             bottomline += "Try LORESTR for automated refinement with restraints from homologous structures. <p>"
 
 
-    # 9. Problems specific to medium resolution. Advices for higher Rfree
+    # 10. Problems specific to medium resolution. Advices for higher Rfree
     elif res >= 2.0:
         if (rFree > meanRfree) and (rFree < (meanRfree + (2.0*sigRfree))):
-            bottomline += "Your <i>R<sub>free</sub></i> is a bit higher than expected. " +\
+            bottomline += "Your <i>R<sub>free</sub></i> is a bit higher than expected " +\
+                          "(%0.3f, while mean value fot this resolution is %0.3f). " % (rFree, meanRfree) +\
                           "Try building more residues/ligands/waters/metals. "
             if not ncsRestraints:
-                bottomline += "Try introducing local NCS restraints if you have several identical subunits in " \
+                if isNCSpresent:
+                    bottomline += "Try introducing local NCS restraints if you have several identical subunits in " \
                               "the asymmetric unit. "  # It is better to check number of subunits in ASU before this advice
             else:
                 bottomline += "If NCS restraints don't positively contribute to your refinement, try switching them off. "
@@ -464,29 +491,34 @@ def calculate (  meta ) :
             # Apparently scaling parameters are not available in Cloud interface now
             bottomline += "Try optimising solvent and scaling parameters. <p>"
         elif (rFree >= (meanRfree + (2.0*sigRfree))) and (rFree <= 0.4):
-            bottomline += "Your <i>R<sub>free</sub></i> is substantially higher than expected. " +\
+            bottomline += "Your <i>R<sub>free</sub></i> is substantially higher than expected " +\
+                          "(%0.3f, while mean value fot this resolution is %0.3f). " % (rFree, meanRfree) +\
                           "Try building more residues/ligands/waters/metals. Check your data for twinning."
             if not ncsRestraints:
-                bottomline += "Try introducing local NCS restraints if you have several identical subunits in the asymmetric" +\
+                if isNCSpresent:
+                    bottomline += "Try introducing local NCS restraints if you have several identical subunits in the asymmetric" +\
                           "unt. " # It is better to check number of subunits in ASU before this advice
 
-    # 10. Problems specific to higher resolution. Advices for higher Rfree
+    # 11. Problems specific to higher resolution. Advices for higher Rfree
     elif res >= 1.6:
         if (rFree > meanRfree) and (rFree < (meanRfree + (2.0*sigRfree))):
-            bottomline += "Your <i>R<sub>free</sub></i> is a bit higher than expected. " +\
+            bottomline += "Your <i>R<sub>free</sub></i> is a bit higher than expected " +\
+                          "(%0.3f, while mean value fot this resolution is %0.3f). " % (rFree, meanRfree) +\
                           "Try building more residues/ligands/waters/metals. "
             if not tls:
                 bottomline += "Try TLS refinement. "
             # Apparently scaling parameters are not available in Cloud interface now
             bottomline += "Try optimising solvent and scaling parameters. <p>"
         elif (rFree >= (meanRfree + (2.0*sigRfree))) and (rFree <= 0.4):
-            bottomline += "Your <i>R<sub>free</sub></i> is substantially higher than expected. " +\
+            bottomline += "Your <i>R<sub>free</sub></i> is substantially higher than expected " +\
+                          "(%0.3f, while mean value fot this resolution is %0.3f). " % (rFree, meanRfree) +\
                           "Try building more residues/ligands/waters/metals. Check your data for twinning."
 
     # 12. Problems specific to subatomic and atomic resolution. Advices for higher Rfree
     else:
         if (rFree > meanRfree) and (rFree < (meanRfree + (2.0*sigRfree))):
-            bottomline += "Your <i>R<sub>free</sub></i> is a bit higher than expected. " +\
+            bottomline += "Your <i>R<sub>free</sub></i> is a bit higher than expected " +\
+                          "(%0.3f, while mean value fot this resolution is %0.3f). " % (rFree, meanRfree) +\
                           "Try building more residues/ligands/waters/metals/alternative conformations. "
             if not anisotropicBfact:
                 bottomline += "Try anisotropic B-factors. "
@@ -495,7 +527,8 @@ def calculate (  meta ) :
             # Apparently scaling parameters are not available in Cloud interface now
             bottomline += "Try optimising solvent and scaling parameters. <p>"
         elif (rFree >= (meanRfree + (2.0*sigRfree))) and (rFree <= 0.4):
-            bottomline += "Your <i>R<sub>free</sub></i> is substantially higher than expected. " +\
+            bottomline += "Your <i>R<sub>free</sub></i> is substantially higher than expected " +\
+                          "(%0.3f, while mean value fot this resolution is %0.3f). " % (rFree, meanRfree) +\
                           "Try building more residues/ligands/waters/metals. Check your data for twinning."
 
     return (verdict_score,verdict_message,bottomline)
