@@ -311,7 +311,8 @@ class Refmac(basic.TaskDriver):
                                 "hydrogens"  : str(sec1.MKHYDR.value) == "YES"
                             }
                         },
-                        "molprobity" : meta
+                        "molprobity" : meta,
+                        "xyzmeta" : structure.xyzmeta
                     }
                     verdict_refmac.putVerdictWidget ( self,verdict_meta,verdict_row )
 
