@@ -18,6 +18,7 @@ def clickByXpath(driver, xpath):
             ActionChains(driver).move_to_element(textEl).click(textEl).perform()
             break
 
+
 def loginToCloud(driver, cloudLogin, cloudPassword):
     # Shall return list of two elements for login and password
     loginInputs = driver.find_elements_by_xpath("//input[contains(@id,'input')]")
@@ -37,6 +38,7 @@ def loginToCloud(driver, cloudLogin, cloudPassword):
     loginButton.click()
 
     return ()
+
 
 def removeProject(driver, testName):
     print('Deleting previous test project if exists')
@@ -190,8 +192,8 @@ def asymmetricUnitContentsAfterCloudImport(driver, waitShort):
     return()
 
 
-def balbesAfterASU(driver, waitLong):
-    print('Running BALBES')
+def mrbumpAfterASU(driver, waitLong):
+    print('Running MrBUMP')
 
     addButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/add.png')]")
     addButton.click()
@@ -203,7 +205,7 @@ def balbesAfterASU(driver, waitLong):
     clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Automated Molecular Replacement')
     time.sleep(1)
 
-    clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Balbes: Model Search & Preparation')
+    clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'MrBump: Model Search & Preparation')
     time.sleep(1)
 
     # There are several forms - active and inactive. We need one displayed.
@@ -214,12 +216,12 @@ def balbesAfterASU(driver, waitLong):
             break
 
     try:
-        wait = WebDriverWait(driver, 500) # allowing 8 minutes to the task to finish
+        wait = WebDriverWait(driver, 600) # allowing 10 minutes to the task to finish
         # Waiting for the text 'completed' in the ui-dialog-title of the task [0003]
         wait.until(EC.presence_of_element_located
                    ((By.XPATH,"//*[@class='ui-dialog-title' and contains(text(), 'completed') and contains(text(), '[0003]')]")))
     except:
-        print('Apparently the task balbesAfterASU has not been completed in time; terminating')
+        print('Apparently the task mrbumpAfterASU has not been completed in time; terminating')
         sys.exit(1)
 
     # pressing Close button
@@ -229,21 +231,24 @@ def balbesAfterASU(driver, waitLong):
 
     rWork = 1.0
     rFree = 1.0
+    compl = 0.0
     tasksText = driver.find_elements(By.XPATH, "//a[contains(@id,'treenode') and contains(@class, 'jstree-anchor')]")
     for taskText in tasksText:
-        match = re.search('\[0003\] balbes -- R=(0\.\d*) Rfree=(0\.\d*)', taskText.text)
+        match = re.search('\[0003\] mrbump -- Compl=(.*)\% R=(0\.\d*) Rfree=(0\.\d*)', taskText.text)
         if match:
-            rWork = float(match.group(1))
-            rFree = float(match.group(2))
+            compl = float(match.group(1))
+            rWork = float(match.group(2))
+            rFree = float(match.group(3))
             break
-    if (rWork == 1.0) or (rFree == 1.0):
-        print('*** Verification: could not find Rwork or Rfree value after BALBES run')
+    if (rWork == 1.0) or (rFree == 1.0) or (compl == 0.0):
+        print('*** Verification: could not find compl or Rwork or Rfree value after MrBUMP run')
     else:
-        print('*** Verification: BALBES ' \
-              'Rwork is %0.4f (expecting <0.25), ' \
-              'Rfree is %0.4f (expecing <0.25)' % (rWork, rFree))
-    assert rWork < 0.25
-    assert rFree < 0.25
+        print('*** Verification: MrBUMP ' \
+              'Compl is %0.1f %%(expecting >90.0), ' \
+              'Rwork is %0.4f (expecting <0.28), ' \
+              'Rfree is %0.4f (expecing <0.31)' % (compl, rWork, rFree))
+    assert rWork < 0.28
+    assert rFree < 0.31
 
     return ()
 
@@ -277,7 +282,7 @@ def renameProject(driver, testName):
     return ()
 
 
-def test_BalbesBasic(browser,
+def test_mrbumpBasic(browser,
                      cloud,
                      nologin,
                      login,
@@ -321,14 +326,14 @@ def test_BalbesBasic(browser,
         if not nologin:
             loginToCloud(driver, login, password)
 
-        testName = 'balbesTest'
+        testName = 'mrbumpTest'
 
         removeProject(driver, testName)
         makeTestProject(driver, testName, testName)
         enterProject(driver, testName)
         importFromCloudWithTaskListOnScreen(driver, waitShort)
         asymmetricUnitContentsAfterCloudImport(driver, waitShort)
-        balbesAfterASU(driver, waitLong)
+        mrbumpAfterASU(driver, waitLong)
         renameProject(driver, testName)
 
         driver.quit()
@@ -351,7 +356,7 @@ if __name__ == "__main__":
 
     parameters = parser.parse_args(sys.argv[1:])
 
-    test_BalbesBasic(browser=parameters.browser,  # or 'Chrome'
+    test_mrbumpBasic(browser=parameters.browser,  # or 'Chrome'
                      cloud=parameters.cloud,
                      nologin=parameters.nologin,  # True for Cloud Desktop (no login page), False for remote server that requires login.
                      login=parameters.login,  # Used to login into remote Cloud

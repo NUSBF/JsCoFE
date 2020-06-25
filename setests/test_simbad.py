@@ -149,51 +149,8 @@ def importFromCloudWithTaskListOnScreen(driver, waitShort):
     return ()
 
 
-def asymmetricUnitContentsAfterCloudImport(driver, waitShort):
-    print ('Making Asymmetric Unit Contents after Cloud Import')
-
-    # presing Add button
-    addButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/add.png')]")
-    addButton.click()
-    time.sleep(1)
-
-    # There are several forms - active and inactive. We need one displayed.
-    clickByXpath(driver, "//div[normalize-space()='%s']" % 'Asymmetric Unit Contents') # looking by text
-    time.sleep(1)
-
-    # 2 molecules in the ASU
-    inputASU = driver.find_element_by_xpath("//*[@title='Specify stoichiometric coefficent for given sequence in the crystal']")
-    inputASU.click()
-    inputASU.clear()
-    inputASU.send_keys('2')
-    time.sleep(1)
-
-    # There are several forms - active and inactive. We need one displayed.
-    buttonsRun = driver.find_elements_by_xpath("//button[contains(@style, 'images_png/runjob.png')]" )
-    for buttonRun in buttonsRun:
-        if buttonRun.is_displayed():
-            buttonRun.click()
-            break
-
-    try:
-        wait = WebDriverWait(driver, waitShort) # allowing 15 seconds to the task to finish
-        # Waiting for the text 'completed' in the ui-dialog-title of the task [0002]
-        wait.until(EC.presence_of_element_located
-                   ((By.XPATH,"//*[@class='ui-dialog-title' and contains(text(), 'completed') and contains(text(), '[0002]')]")))
-    except:
-        print('Apparently tha task asymmetricUnitContentsAfterCloudImport has not been completed in time; terminating')
-        sys.exit(1)
-
-    # presing Close button
-    closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
-    closeButton.click()
-    time.sleep(1)
-
-    return()
-
-
-def mrbumpAfterASU(driver, waitLong):
-    print('Running MrBUMP')
+def simbadAfterImport(driver, waitLong):
+    print('Running SIMBAD')
 
     addButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/add.png')]")
     addButton.click()
@@ -205,7 +162,7 @@ def mrbumpAfterASU(driver, waitLong):
     clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Automated Molecular Replacement')
     time.sleep(1)
 
-    clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'MrBump: Model Search & Preparation')
+    clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Lattice and Contaminants Search with Simbad')
     time.sleep(1)
 
     # There are several forms - active and inactive. We need one displayed.
@@ -216,12 +173,12 @@ def mrbumpAfterASU(driver, waitLong):
             break
 
     try:
-        wait = WebDriverWait(driver, 600) # allowing 10 minutes to the task to finish
+        wait = WebDriverWait(driver, waitLong) # allowing 10 minutes to the task to finish
         # Waiting for the text 'completed' in the ui-dialog-title of the task [0003]
         wait.until(EC.presence_of_element_located
-                   ((By.XPATH,"//*[@class='ui-dialog-title' and contains(text(), 'completed') and contains(text(), '[0003]')]")))
+                   ((By.XPATH,"//*[@class='ui-dialog-title' and contains(text(), 'completed') and contains(text(), '[0002]')]")))
     except:
-        print('Apparently the task mrbumpAfterASU has not been completed in time; terminating')
+        print('Apparently the task simbadAfterImport has not been completed in time; terminating')
         sys.exit(1)
 
     # pressing Close button
@@ -229,26 +186,20 @@ def mrbumpAfterASU(driver, waitLong):
     closeButton.click()
     time.sleep(1)
 
-    rWork = 1.0
-    rFree = 1.0
-    compl = 0.0
+    solv = 0.0
     tasksText = driver.find_elements(By.XPATH, "//a[contains(@id,'treenode') and contains(@class, 'jstree-anchor')]")
     for taskText in tasksText:
-        match = re.search('\[0003\] mrbump -- Compl=(.*)\% R=(0\.\d*) Rfree=(0\.\d*)', taskText.text)
+        match = re.search('\[0002\] simbad -- Solv=(.*)\%', taskText.text)
         if match:
-            compl = float(match.group(1))
-            rWork = float(match.group(2))
-            rFree = float(match.group(3))
+            solv = float(match.group(1))
             break
-    if (rWork == 1.0) or (rFree == 1.0) or (compl == 0.0):
-        print('*** Verification: could not find compl or Rwork or Rfree value after MrBUMP run')
+    if (solv == 0.0):
+        print('*** Verification: could not find Solv value after SIMBAD run')
     else:
-        print('*** Verification: MrBUMP ' \
-              'Compl is %0.1f %%(expecting >90.0), ' \
-              'Rwork is %0.4f (expecting <0.28), ' \
-              'Rfree is %0.4f (expecing <0.31)' % (compl, rWork, rFree))
-    assert rWork < 0.28
-    assert rFree < 0.31
+        print('*** Verification: SIMBAD ' \
+              'Solv is %0.1f %%(expecting >45.0 and <50.0), '  % (solv))
+    assert solv < 50.0
+    assert solv > 45.0
 
     return ()
 
@@ -282,7 +233,7 @@ def renameProject(driver, testName):
     return ()
 
 
-def test_mrbumpBasic(browser,
+def test_simbadBasic(browser,
                      cloud,
                      nologin,
                      login,
@@ -326,14 +277,13 @@ def test_mrbumpBasic(browser,
         if not nologin:
             loginToCloud(driver, login, password)
 
-        testName = 'mrbumpTest'
+        testName = 'simbadTest'
 
         removeProject(driver, testName)
         makeTestProject(driver, testName, testName)
         enterProject(driver, testName)
         importFromCloudWithTaskListOnScreen(driver, waitShort)
-        asymmetricUnitContentsAfterCloudImport(driver, waitShort)
-        mrbumpAfterASU(driver, waitLong)
+        simbadAfterImport(driver, waitLong)
         renameProject(driver, testName)
 
         driver.quit()
@@ -356,7 +306,7 @@ if __name__ == "__main__":
 
     parameters = parser.parse_args(sys.argv[1:])
 
-    test_mrbumpBasic(browser=parameters.browser,  # or 'Chrome'
+    test_simbadBasic(browser=parameters.browser,  # or 'Chrome'
                      cloud=parameters.cloud,
                      nologin=parameters.nologin,  # True for Cloud Desktop (no login page), False for remote server that requires login.
                      login=parameters.login,  # Used to login into remote Cloud
