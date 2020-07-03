@@ -1,0 +1,366 @@
+
+from selenium import webdriver
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.common.action_chains import ActionChains
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.by import By
+
+import time, sys, os, re
+
+
+def clickByXpath(driver, xpath):
+    textEls = driver.find_elements_by_xpath(xpath)
+    for textEl in textEls:
+#        parentEl = textEl.find_element_by_xpath("..")
+        if textEl.is_displayed():
+            driver.execute_script("arguments[0].scrollIntoView();", textEl)
+            ActionChains(driver).move_to_element(textEl).click(textEl).perform()
+            break
+
+def doubleClickByXpath(driver, xpath):
+    textEls = driver.find_elements_by_xpath(xpath)
+    for textEl in textEls:
+#        parentEl = textEl.find_element_by_xpath("..")
+        if textEl.is_displayed():
+            driver.execute_script("arguments[0].scrollIntoView();", textEl)
+            ActionChains(driver).move_to_element(textEl).double_click(textEl).perform()
+            break
+
+
+def loginToCloud(driver, cloudLogin, cloudPassword):
+    # Shall return list of two elements for login and password
+    loginInputs = driver.find_elements_by_xpath("//input[contains(@id,'input')]")
+
+    # First element in the list is login
+    loginInputs[0].click()
+    loginInputs[0].clear()
+    loginInputs[0].send_keys(cloudLogin)
+
+    # Second is password
+    loginInputs[1].click()
+    loginInputs[1].clear()
+    loginInputs[1].send_keys(cloudPassword)
+
+    # Login button
+    loginButton = driver.find_element_by_xpath("//button[normalize-space()='Login']")
+    loginButton.click()
+
+    return ()
+
+
+def removeProject(driver, testName):
+    print('Deleting previous test project if exists')
+
+    textEls = driver.find_elements_by_xpath("//*[normalize-space()='%s']" % testName)
+    if len(textEls) > 0:
+        try:
+            clickByXpath(driver, "//*[normalize-space()='%s']" % testName)
+            time.sleep(1)
+
+            clickByXpath(driver, "//*[normalize-space()='%s']" % 'Delete')
+            time.sleep(1)
+
+            textEls = driver.find_elements_by_xpath("//button[normalize-space()='%s']" % 'Delete')
+            textEls[-1].click()
+            time.sleep(1)
+
+        except:
+            return ()
+
+
+    return ()
+
+
+def makeTestProject(driver, testProjectID, testProjectName):
+    print ('Making test project. ID: %s, Name: %s' % (testProjectID, testProjectName))
+
+    # click add button
+    addButton = driver.find_element_by_xpath("//button[normalize-space()='Add']")
+    ActionChains(driver).move_to_element(addButton).click(addButton).perform()
+    time.sleep(1)
+
+    # Shall return list of two elements for project creation
+    projectInputs = driver.find_elements_by_xpath("//input[contains(@id,'input')]")
+
+    # Project id
+#    projectInputs[0].click()
+    projectInputs[0].clear()
+    projectInputs[0].send_keys(testProjectID)
+
+    # Project name
+#    projectInputs[1].click()
+    projectInputs[1].clear()
+    projectInputs[1].send_keys(testProjectName)
+
+    time.sleep(1)
+    # Now there are two 'Add' buttons and we want to click second one
+    addButtons = driver.find_elements_by_xpath("//button[normalize-space()='Add']")
+    addButtons[1].click()
+
+    return()
+
+
+def enterProject(driver, projectId):
+    print ('Entering test project. ID: %s' % projectId)
+    time.sleep(1)
+    projectCell = driver.find_element_by_xpath("//*[normalize-space()='%s']" % projectId )
+    ActionChains(driver).double_click(projectCell).perform()
+    return()
+
+
+def xia2Processing(driver, waitLong):
+    print('Running XIA-2 for Hg dataset')
+
+    clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list')
+    time.sleep(1)
+
+    clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Data Processing')
+    time.sleep(1)
+
+    clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Automatic Image Processing with Xia-2')
+    time.sleep(1)
+
+    clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Browse')
+    time.sleep(1)
+
+    doubleClickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'tutorial-data')
+    time.sleep(1)
+
+    doubleClickByXpath(driver, "//*[starts-with(text(), '%s')]" % '1_from_images')
+    time.sleep(1)
+
+    doubleClickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'hg')
+    time.sleep(1)
+
+    doubleClickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'images')
+    time.sleep(1)
+
+    doubleClickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'hg_001.mar1600')
+    time.sleep(1)
+
+
+    # There are several forms - active and inactive. We need one displayed.
+    buttonsRun = driver.find_elements_by_xpath("//button[contains(@style, 'images_png/runjob.png')]" )
+    for buttonRun in buttonsRun:
+        if buttonRun.is_displayed():
+            buttonRun.click()
+            break
+
+    try:
+        wait = WebDriverWait(driver, 240) # allowing 4 minutes to the task to finish, normally takes 3 minutes
+        # Waiting for the text 'completed' in the ui-dialog-title of the task [0001]
+        wait.until(EC.presence_of_element_located
+                   ((By.XPATH,"//*[@class='ui-dialog-title' and contains(text(), 'completed') and contains(text(), '[0001]')]")))
+    except:
+        print('Apparently the task xia2Processing has not been completed in time; terminating')
+        sys.exit(1)
+
+    # pressing Close button
+    closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
+    closeButton.click()
+    time.sleep(1)
+
+    found = False
+    tasksText = driver.find_elements(By.XPATH, "//a[contains(@id,'treenode') and contains(@class, 'jstree-anchor')]")
+    for taskText in tasksText:
+        match = re.search('\[0001\] created datasets: Unmerged \(2\) HKL \(1\) -- completed', taskText.text)
+        if match:
+            found = True
+            break
+    if not found:
+        print('*** Verification: could not find message about created datasets after xia-2 run')
+    else:
+        print('*** Verification: datasets created by XIA-2')
+    assert found
+
+    return ()
+
+
+def aimlessAfterXia2(driver, waitLong):
+    print('Running Aimless after Xia-2')
+
+    addButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/add.png')]")
+    addButton.click()
+    time.sleep(1)
+
+    clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list')
+    time.sleep(1)
+
+    clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Data Processing')
+    time.sleep(1)
+
+    clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Data Reduction with Aimless')
+    time.sleep(1)
+
+    # There are several forms - active and inactive. We need one displayed.
+    buttonsRun = driver.find_elements_by_xpath("//button[contains(@style, 'images_png/runjob.png')]" )
+    for buttonRun in buttonsRun:
+        if buttonRun.is_displayed():
+            buttonRun.click()
+            break
+
+    try:
+        wait = WebDriverWait(driver, waitLong)
+        # Waiting for the text 'completed' in the ui-dialog-title of the task [0001]
+        wait.until(EC.presence_of_element_located
+                   ((By.XPATH,"//*[@class='ui-dialog-title' and contains(text(), 'completed') and contains(text(), '[0002]')]")))
+    except:
+        print('Apparently the task xia2Processing has not been completed in time; terminating')
+        sys.exit(1)
+
+    # pressing Close button
+    closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
+    closeButton.click()
+    time.sleep(1)
+
+    compl = 0.0
+    cc12 = 0.0
+    rAll = 1.0
+    rAno = 1.0
+    res1 = 50.0
+    res2 = 1.0
+    sg = ''
+    tasksText = driver.find_elements(By.XPATH, "//a[contains(@id,'treenode') and contains(@class, 'jstree-anchor')]")
+    for taskText in tasksText:
+        match = re.search('\[0002\] aimless -- Compl=(.*)\% CC1\/2=(.*) Rmeas_all=(.*) Rmeas_ano=(.*) Res=(.*)-(.*) SpG=(.*)', taskText.text)
+        if match:
+            compl = float(match.group(1))
+            cc12 = float(match.group(2))
+            rAll = float(match.group(3))
+            rAno = float(match.group(4))
+            res1 = float(match.group(5))
+            res2 = float(match.group(6))
+            sg = str(match.group(7))
+            break
+    if (compl == 0.0) or (cc12 == 0.0) or (sg == ''):
+        print('*** Verification: could not find output values for Aimless run')
+    else:
+        print('*** Verification: Aimless ' \
+              'Compl is %0.1f %%(expecting >90.0), ' \
+              'cc1/2 is %0.3f (expecting >0.9), ' \
+              'rAll is %0.3f (expecing <0.1), ' \
+              'rAno is %0.3f (expecing <0.07), ' \
+              'resHigh is %0.2f (expecing <2.5), ' \
+              'resLow is %0.2f (expecing >35.0), ' \
+              'SG is %s (expecting "H 3 2")'   % (compl, cc12, rAll, rAno, res1, res2, sg))
+    assert compl > 90.0
+    assert cc12 > 0.9
+    assert rAll < 0.1
+    assert rAno < 0.07
+    assert res1 < 2.5
+    assert res2 > 35.0
+    assert sg == 'H 3 2'
+
+    return ()
+
+
+def renameProject(driver, testName):
+    print('Renaming succesfull test project')
+    menuButton = driver.find_element(By.XPATH, "//div[contains(@style, 'images_png/menu.png')]")
+    menuButton.click()
+    time.sleep(1)
+
+    clickByXpath(driver, "//*[normalize-space()='%s']" % 'My Projects')
+    time.sleep(1)
+
+    clickByXpath(driver, "//*[normalize-space()='%s']" % testName)
+    time.sleep(1)
+
+    clickByXpath(driver, "//*[normalize-space()='%s']" % 'Rename')
+    time.sleep(1)
+
+    # Shall return list of two elements for project creation
+    projectInput = driver.find_element_by_xpath("//input[@value='%s']" % testName)
+    projectInput.click()
+    projectInput.clear()
+    projectInput.send_keys('Successfull - %s' % testName)
+
+
+    textEls = driver.find_elements_by_xpath("//button[normalize-space()='%s']" % 'Rename')
+    textEls[-1].click()
+    time.sleep(1)
+
+    return ()
+
+
+def test_xia2_aimless(browser,
+                      cloud,
+                      nologin,
+                      login,
+                      password,
+                      remote
+                      ):
+
+
+    if len(remote) > 1:  # Running on Selenium Server hub
+        waitShort = 60  # seconds for quick tasks
+        waitLong = 180  # seconds for longer tasks
+
+        if browser == 'Chrome':
+            options = webdriver.ChromeOptions()
+            driver = webdriver.Remote(command_executor=remote, options=options)
+        elif browser == 'Firefox':
+            options = webdriver.FirefoxOptions()
+            driver = webdriver.Remote(command_executor=remote, options=options)
+        else:
+            print('Browser "%s" is not recognised; shall be Chrome or Firefox.' % browser)
+            sys.exit(1)
+    else:  # Running locally
+        waitShort = 15  # seconds for quick tasks
+        waitLong = 120  # seconds for longer tasks
+
+        if browser == 'Chrome':
+            driver = webdriver.Chrome()
+        elif browser == 'Firefox':
+            driver = webdriver.Firefox()
+        else:
+            print('Browser "%s" is not recognised; shall be Chrome or Firefox.' % browser)
+            sys.exit(1)
+
+    driver.implicitly_wait(10)  # wait for up to 10 seconds for required HTML element to appear
+
+    try:
+        print('Opening URL: %s' % cloud)
+        driver.get(cloud)
+        assert "CCP4 Cloud" in driver.title
+
+        if not nologin:
+            loginToCloud(driver, login, password)
+
+        testName = 'xia2AimlessTest'
+
+        removeProject(driver, testName)
+        makeTestProject(driver, testName, testName)
+        enterProject(driver, testName)
+        xia2Processing(driver, waitLong)
+        aimlessAfterXia2(driver, waitLong)
+        renameProject(driver, testName)
+
+        driver.quit()
+
+    except:
+        driver.quit()
+        raise
+
+
+if __name__ == "__main__":
+    import argparse
+    parser = argparse.ArgumentParser(add_help=False)
+    parser.set_defaults(auto=False)
+    parser.add_argument('--remote', action='store', dest='remote', help=argparse.SUPPRESS, default='') # run tests on Selenium Server hub. Contains hub URL
+    parser.add_argument('--browser', action='store', dest='browser', help=argparse.SUPPRESS, default='Firefox') # Firefox or Chrome
+    parser.add_argument('--cloud', action='store', dest='cloud', help=argparse.SUPPRESS, default='http://ccp4serv6.rc-harwell.ac.uk/jscofe-dev/') # Cloud URL
+    parser.add_argument('--login', action='store', dest='login', help=argparse.SUPPRESS, default='setests') # Login
+    parser.add_argument('--password', action='store', dest='password', help=argparse.SUPPRESS, default='cloud8testS') # password
+    parser.add_argument('--nologin', action='store', dest='nologin', help=argparse.SUPPRESS, default=False) # login into Cloud or not
+
+    parameters = parser.parse_args(sys.argv[1:])
+
+    test_xia2_aimless(browser=parameters.browser,  # or 'Chrome'
+                      cloud=parameters.cloud,
+                      nologin=parameters.nologin,  # True for Cloud Desktop (no login page), False for remote server that requires login.
+                      login=parameters.login,  # Used to login into remote Cloud
+                      password=parameters.password,  # Used to login into remote Cloud
+                      remote=parameters.remote  # 'http://130.246.213.187:4444/wd/hub' for Selenium Server hub
+                      )
