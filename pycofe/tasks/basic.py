@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    16.06.20   <--  Date of Last Modification.
+#    26.06.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -283,11 +283,12 @@ class TaskDriver(object):
         # pyrvapi.rvapi_store_document2(..)
 
         # Make a tree or tab layout
+        winTitle = self.task.project + ":[" + str(self.task.id).zfill(4) + "] " + tstr
         if "nav_tree" in options:
             pyrvapi.rvapi_init_document (
                     "jscofe_report",  # document Id
                     os.path.join(os.getcwd(),self.reportDir()),  # report directory (reserved)
-                    "Title",   # title (immaterial)
+                    winTitle,  # title
                     1,         # HTML report to be produced
                     0,         # Report will have tabs
                     "jsrview", # where to look for js support (reserved)
@@ -310,7 +311,7 @@ class TaskDriver(object):
             pyrvapi.rvapi_init_document (
                     "jscofe_report",  # document Id
                     os.path.join(os.getcwd(),self.reportDir()),  # report directory (reserved)
-                    "Title",   # title (immaterial)
+                    winTitle,  # title
                     1,         # HTML report to be produced
                     4,         # Report will have tabs
                     "jsrview", # where to look for js support (reserved)
@@ -1371,9 +1372,11 @@ class TaskDriver(object):
         #self.widget_no += 1
         buttonId = self.getWidgetId ( "inspect_data" )
         pyrvapi.rvapi_add_button ( buttonId,title,"{function}",
-                    "window.parent.rvapi_inspectData(" + self.job_id +\
-                    ",'" + dataObject._type + "','" + dataObject.dataId + "')",
-                    False,gridId, row,col,1,1 )
+                "if (window.parent.rvapi_inspectData) " +\
+                "window.parent.rvapi_inspectData(" + self.job_id + ",'" +\
+                dataObject._type + "','" + dataObject.dataId + "'); else " +\
+                "alert('This function is not supported in detached reports');",
+                False,gridId, row,col,1,1 )
         return
 
 
@@ -1420,9 +1423,11 @@ class TaskDriver(object):
         buttonId = "inspect_" + str(self.widget_no)
         self.widget_no += 1
         pyrvapi.rvapi_add_button ( buttonId,"Inspect","{function}",
-                            "window.parent.rvapi_inspectData(" + self.job_id +\
-                            ",'DataRevision','" + revision.dataId + "')",
-                            False,gridId, row,0,1,1 )
+                "if (window.parent.rvapi_inspectData) " +\
+                "window.parent.rvapi_inspectData(" + self.job_id +\
+                ",'DataRevision','" + revision.dataId + "'); else " +\
+                "alert('This function is not supported in detached reports');",
+                False,gridId, row,0,1,1 )
         pyrvapi.rvapi_set_text ( "<div style='vertical-align:sub;font-size:16px;white-space:nowrap;'><b><i>" +\
                                  message + "</i></b></div>",gridId, row,1,1,1 )
         pyrvapi.rvapi_set_text ( "<div style='vertical-align:sub;font-size:16px;white-space:nowrap;'>\"" +\

@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    13.05.20   <--  Date of Last Modification.
+ *    01.07.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -60,7 +60,7 @@ function FEJobRegister()  {
 }
 
 FEJobRegister.prototype.addJob = function ( job_token,nc_number,loginData,
-                                            project,jobId )  {
+                                            project,jobId,shared_logins )  {
   this.job_map[job_token] = {
     nc_number  : nc_number,
     nc_type    : 'ordinary',
@@ -68,10 +68,15 @@ FEJobRegister.prototype.addJob = function ( job_token,nc_number,loginData,
     loginData  : loginData,
     project    : project,
     jobId      : jobId,
+    is_shared  : (shared_logins.length>0),
     start_time : Date.now()
   };
   var index = loginData.login + ':' + project + ':' + jobId;
   this.token_map[index] = job_token;
+  for (var i=0;i<shared_logins.length;i++)  {
+    index = shared_logins[i] + ':' + project + ':' + jobId;
+    this.token_map[index] = job_token;
+  }
 }
 
 FEJobRegister.prototype.getJobEntry = function ( loginData,project,jobId )  {
@@ -100,6 +105,14 @@ FEJobRegister.prototype.removeJob = function ( job_token )  {
     //this.job_map   = com_utils.mapExcludeKey ( this.job_map  ,job_token );
     if (index in this.token_map)
       delete this.token_map[index];
+    if (this.job_map[job_token].is_shared)  {
+      index_list = [];
+      for (var indx in this.token_map)
+        if (this.token_map[indx]==job_token)
+          index_list.push ( indx );
+      for (var i=0;i<index_list.length;i++)
+        delete this.token_map[index_list[i]];
+    }
     delete this.job_map[job_token];
   }
 }
@@ -340,6 +353,26 @@ function runJob ( loginData,data, callback_func )  {
 
   // run job
 
+  //var projectDataPath = prj.getProjectDataPath ( loginData,task.project );
+  //var projectData     = utils.readObject ( projectDataPath );
+  var shared_logins  = [];
+  var projectData    = prj.readProjectData ( loginData,task.project );
+  var ownerLoginData = loginData;
+  if (projectData)  {
+    if (projectData.desc.owner.share)
+      shared_logins = projectData.desc.owner.share.split(',')
+                                 .map(function(item){ return item.trim(); });
+//    if (projectData.desc.owner.login!=loginData.login)
+//      shared_logins.push ( projectData.desc.owner.login );
+    if (projectData.desc.owner.login!=loginData.login)
+      ownerLoginData = user.getUserLoginData ( projectData.desc.owner.login );
+    if (shared_logins.length>0)  // update the timestamp
+      prj.writeProjectData ( loginData,projectData,true );
+  }
+
+  var rdata = {};  // response data structure
+  rdata.timestamp = projectData.desc.timestamp;
+
   var jobDataPath = prj.getJobDataPath ( loginData,task.project,task.id );
   task.state      = task_t.job_code.running;
   var job_token   = crypto.randomBytes(20).toString('hex');
@@ -350,7 +383,7 @@ function runJob ( loginData,data, callback_func )  {
   // write task data because it may have latest changes
   if (!utils.writeObject(jobDataPath,task))  {
     callback_func ( new cmd.Response ( cmd.fe_retcode.writeError,
-                              '[00005] Job metadata cannot be written.',{} ) );
+                              '[00005] Job metadata cannot be written.',rdata ) );
     return;
   }
 
@@ -377,24 +410,24 @@ function runJob ( loginData,data, callback_func )  {
                     'Job is running on client machine. Full report will ' +
                     'become available after job finishes.',true );
 
-        feJobRegister.addJob ( job_token,-1,loginData,  // -1 is nc number
-                               task.project,task.id );
+        feJobRegister.addJob ( job_token,-1,ownerLoginData,  // -1 is nc number
+                               task.project,task.id,shared_logins );
         feJobRegister.getJobEntryByToken(job_token).nc_type = task.nc_type;
         writeFEJobRegister();
 
         // update the user ration state
-        ration.updateUserRation_bookJob ( loginData,task );
+        ration.updateUserRation_bookJob ( ownerLoginData,task );
 
-        rdata = {};
-        rdata.job_token    = job_token;
-        rdata.jobballName  = send_dir.jobballName;
+        rdata.job_token   = job_token;
+        rdata.jobballName = send_dir.jobballName;
+
 //        rdata.check_tokens = feJobRegister.getListOfTokens ( -1 );
-        callback_func ( new cmd.Response(cmd.fe_retcode.ok,{},rdata) );
+        callback_func ( new cmd.Response(cmd.fe_retcode.ok,'',rdata) );
         log.standard ( 11,'created jobball for client, dir=' + jobDir + ', size=' + jobballSize );
 
       } else  {
         callback_func ( new cmd.Response(cmd.fe_retcode.jobballError,
-                        '[00001] Jobball creation errors',{}) );
+                        '[00001] Jobball creation errors',rdata) );
       }
 
     });
@@ -464,12 +497,12 @@ function runJob ( loginData,data, callback_func )  {
             // The number cruncher will start dealing with the job automatically.
             // On FE end, register job as engaged for further communication with
             // NC and client.
-            feJobRegister.addJob ( rdata.job_token,nc_number,loginData,
-                                   task.project,task.id );
+            feJobRegister.addJob ( rdata.job_token,nc_number,ownerLoginData,
+                                   task.project,task.id,shared_logins );
             writeFEJobRegister();
 
             // update the user ration state
-            ration.updateUserRation_bookJob ( loginData,task );
+            ration.updateUserRation_bookJob ( ownerLoginData,task );
 
           },function(stageNo,code){  // send failed
 
@@ -503,7 +536,7 @@ function runJob ( loginData,data, callback_func )  {
 
       }
 
-      callback_func ( new cmd.Response(cmd.fe_retcode.ok,'',{}) );
+      callback_func ( new cmd.Response(cmd.fe_retcode.ok,'',rdata) );
 
     });
 
@@ -576,7 +609,7 @@ function replayJob ( loginData,data, callback_func )  {
 
           var job_token = crypto.randomBytes(20).toString('hex');
           feJobRegister.addJob ( job_token,nc_number,loginData,
-                                 task.project,task.id );
+                                 task.project,task.id,[] );
           feJobRegister.getJobEntryByToken(job_token).nc_type = task.nc_type;
           writeFEJobRegister();
 
@@ -613,7 +646,7 @@ function replayJob ( loginData,data, callback_func )  {
           // On FE end, register job as engaged for further communication with
           // NC and client.
           feJobRegister.addJob ( rdata.job_token,nc_number,loginData,
-                                 task.project,task.id );
+                                 task.project,task.id,[] );
           writeFEJobRegister();
 
           // update the user ration state
@@ -736,12 +769,13 @@ function writeJobStats ( jobEntry )  {
   var dm = Math.trunc(dt/_min);   dt -= dm*_min;
   var ds = Math.trunc(dt/_sec);
 
-  var jobDataPath = prj  .getJobDataPath ( jobEntry.loginData,jobEntry.project,
-                                           jobEntry.jobId );
-  var jobClass    = utils.readClass      ( jobDataPath );
+  var jobDataPath = prj.getJobDataPath ( jobEntry.loginData,jobEntry.project,
+                                         jobEntry.jobId );
+  var jobClass    = utils.readClass    ( jobDataPath );
 
   if (jobClass)  {
 
+    // jobEntry.loginData corresponds to the project owner account
     var userRation = ration.updateUserRation_bookJob ( jobEntry.loginData,jobClass );
 
     var S     = '';
@@ -902,12 +936,25 @@ function checkJobs ( loginData,data )  {
 
   var rdata = {};
   rdata.completed_map = completed_map;
+  rdata.reload        = 0;
 
-  if (!empty)  {  // save on reading files if nothing changes
-    rdata.ration = ration.getUserRation(loginData).clearJobs();
-    var p = utils.readObject ( prj.getProjectDataPath(loginData,projectName) );
-    if (p)
-      rdata.pdesc = p.desc;
+//  if (!empty)  // save on reading files if nothing changes
+//    rdata.ration = ration.getUserRation(loginData).clearJobs();
+
+  if ((!empty) || data.shared)  {
+    var pDesc = prj.readProjectDesc ( loginData,projectName );
+    if (pDesc)  {
+      if ((!empty) && (pDesc.owner.login==loginData.login))  {
+        // save on reading files if nothing changes
+        rdata.ration = ration.getUserRation(loginData).clearJobs();
+      }
+      rdata.pdesc = pDesc;
+      if (pDesc.timestamp>data.timestamp)  {
+        if (pDesc.project_version>data.project_version)
+              rdata.reload = 2;  // project changed considerably, reload client
+        else  rdata.reload = 1;  // on-client data should be safe
+      }
+    }
   }
 
   return  new cmd.Response ( cmd.fe_retcode.ok,'',rdata );

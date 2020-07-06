@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    07.01.20   <--  Date of Last Modification.
+ *    24.06.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -169,6 +169,15 @@ function MessageProxyError ( title )  {
     '<b>Proxy server error.</b>' +
     '<p>Usually, this means that connection with ' + appName() +
     ' is lost.<br>Please check your internet connection. ' +
+    '<p>If problem persists, please report to ccp4@stfc.ac.uk.' );
+}
+
+function MessageProjectAccess ( title )  {
+  new MessageBox ( title,
+    '<h2>Project Access Denied</h2>' +
+    '<p>The Project is no longer available to you. Most probably, it was<br>' +
+    'unshared with you by the project owner. You may delete this<br>' +
+    'project from your <i>Project List</i> now.' +
     '<p>If problem persists, please report to ccp4@stfc.ac.uk.' );
 }
 

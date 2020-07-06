@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    13.04.20   <--  Date of Last Modification.
+ *    01.07.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -41,25 +41,42 @@ function ProjectListPage ( sceneId )  {
     return;
   }
 
-  var projectList   = new ProjectList();  // project list data
+  var projectList = new ProjectList();  // project list data
   this.tablesort_tbl = null;               // project list table
-  var open_btn      = null;
-  var add_btn       = null;
-  var rename_btn    = null;
-  var del_btn       = null;
-  var export_btn    = null;
-  var import_btn    = null;
-  var demoprj_btn   = null;
-  var impshare_btn  = null;
-  var help_btn      = null;
-  var panel         = null;
-  var welcome_lbl   = null;
-  var nCols         = 0;                  // column span of project table
-  var table_row     = 0;                  // project list position in panel
-  var self          = this;               // for reference to Base class
+  var open_btn    = null;
+  var add_btn     = null;
+  var rename_btn  = null;
+  var del_btn     = null;
+  var export_btn  = null;
+  var import_btn  = null;
+  var demoprj_btn = null;
+  var join_btn    = null;
+  var help_btn    = null;
+  var panel       = null;
+  var welcome_lbl = null;
+  var nCols       = 0;                  // column span of project table
+  var table_row   = 0;                  // project list position in panel
+  var self        = this;               // for reference to Base class
 
   function currentProjectName()  {
-    return self.tablesort_tbl.selectedRow.child[0].text.split(']:').pop();
+    return self.tablesort_tbl.selectedRow.child[0].text.split(':</b>').pop();
+  }
+
+  function getCurrentProjectDesc()  {
+    var pname = currentProjectName();
+    var pdesc = null;
+    for (var i=0;(i<projectList.projects.length) && (!pdesc);i++)
+      if (projectList.projects[i].name==pname)
+        pdesc = projectList.projects[i];
+    return pdesc;
+  }
+
+  function isCurrentProjectShared()  {
+    var pdesc = getCurrentProjectDesc();
+    if (pdesc)
+      return (pdesc.owner.share.length>0);
+    return false;
+//    return (self.tablesort_tbl.selectedRow.child[0].text.indexOf(']:</b>')>=0);
   }
 
   // function to save Project List
@@ -156,58 +173,86 @@ function ProjectListPage ( sceneId )  {
 
   // function to rename selected Project
   var renameProject = function() {
-    var inputBox  = new InputBox ( 'Rename Project' );
-    var prjName   = currentProjectName();
-    var ibx_grid  = new Grid      ( '' );
-    var title_inp = new InputText ( self.tablesort_tbl.selectedRow.child[1].text );
-    title_inp.setStyle   ( 'text','','Example project',
-                           'Project title is used to give a short description ' +
-                           'to aid identification' );
-    title_inp.setFontItalic        ( true    );
-    title_inp.setWidth             ( '400pt' );
-    ibx_grid .setLabel             ( 'Project ID:'  ,0,0,1,1 );
-    ibx_grid .setLabel             ( prjName        ,0,1,1,1 ).setFontItalic(true);
-    ibx_grid .setLabel             ( 'Project Name:',1,0,1,1 );
-    ibx_grid .setNoWrap            ( 0,0 );
-    ibx_grid .setNoWrap            ( 1,0 );
-    ibx_grid .setWidget            ( title_inp,1,1,1,1 );
-    inputBox .addWidget            ( ibx_grid     );
-    ibx_grid .setVerticalAlignment ( 0,0,'middle' );
-    ibx_grid .setVerticalAlignment ( 1,0,'middle' );
 
-    inputBox.launch ( 'Rename',function(){
-      if (title_inp.getValue().length<=0)  {
-        new MessageBox ( 'No Project Name',
-                 '<b>Project Name is not given</b>.<p>' +
-                 'Project cannot be renamed with empty name.' );
-        return false;
-      }
-      var pDesc = projectList.renameProject ( prjName,title_inp.getValue(),getDateString() );
-      if (pDesc)  {
-        projectList.current = prjName;
-        serverRequest ( fe_reqtype.renameProject,pDesc,'Rename Project',
-          function(data){
-            saveProjectList ( function(data){ makeProjectListTable(); });
-          },null,'persist' );
-        return true;  // close dialog
-      } else  {
-        new MessageBox ( 'Project ID not found',
-            'The Project ID <b>'+prjName+'</b> is not found in the list.<p>' +
-            'This is program error, please report as a bug.' );
-        return false;
-      }
-    });
+    if (isCurrentProjectShared())  {
+
+      new MessageBox ( 'Insufficient privileges',
+          '<h2>Insufficient privileges</h2>' +
+          'You cannot rename this project because it was shared with you.' +
+          '<p>Projects can be renamed only by their owners.'
+      );
+
+    } else  {
+
+      var inputBox  = new InputBox ( 'Rename Project' );
+      var prjName   = currentProjectName();
+      var ibx_grid  = new Grid      ( '' );
+      var title_inp = new InputText ( self.tablesort_tbl.selectedRow.child[1].text );
+      title_inp.setStyle   ( 'text','','Example project',
+                             'Project title is used to give a short description ' +
+                             'to aid identification' );
+      title_inp.setFontItalic        ( true    );
+      title_inp.setWidth             ( '400pt' );
+      ibx_grid .setLabel             ( 'Project ID:'  ,0,0,1,1 );
+      ibx_grid .setLabel             ( prjName        ,0,1,1,1 ).setFontItalic(true);
+      ibx_grid .setLabel             ( 'Project Name:',1,0,1,1 );
+      ibx_grid .setNoWrap            ( 0,0 );
+      ibx_grid .setNoWrap            ( 1,0 );
+      ibx_grid .setWidget            ( title_inp,1,1,1,1 );
+      inputBox .addWidget            ( ibx_grid     );
+      ibx_grid .setVerticalAlignment ( 0,0,'middle' );
+      ibx_grid .setVerticalAlignment ( 1,0,'middle' );
+
+      inputBox.launch ( 'Rename',function(){
+        if (title_inp.getValue().length<=0)  {
+          new MessageBox ( 'No Project Name',
+                   '<b>Project Name is not given</b>.<p>' +
+                   'Project cannot be renamed with empty name.' );
+          return false;
+        }
+        var pDesc = projectList.renameProject ( prjName,title_inp.getValue(),getDateString() );
+        if (pDesc)  {
+          projectList.current = prjName;
+          serverRequest ( fe_reqtype.renameProject,pDesc,'Rename Project',
+            function(data){
+              saveProjectList ( function(data){ makeProjectListTable(); });
+            },null,'persist' );
+          return true;  // close dialog
+        } else  {
+          new MessageBox ( 'Project ID not found',
+              'The Project ID <b>'+prjName+'</b> is not found in the list.<p>' +
+              'This is program error, please report as a bug.' );
+          return false;
+        }
+      });
+
+    }
 
   }
 
   var deleteProject = function() {
-    var inputBox = new InputBox ( 'Delete Project' );
-    var delName  = currentProjectName();
-    inputBox.setText ( 'Project:<br><b><center>' + delName +
-                       '</center></b><p>will be deleted. All project ' +
-                       'structure and data will be lost.' +
-                       '<br>Please confirm your choice.' );
-    inputBox.launch ( 'Delete',function(){
+    var delName    = currentProjectName();
+    var delMessage = '';
+    var btnName    = 'Delete';
+    var dlgTitle   = 'Delete Project';
+    if (isCurrentProjectShared())  {
+      delMessage = '<h2>Unjoin Project</h2>' +
+                   'Project, shared with you: <b>' + delName +
+                   '</b><p>will be unjoined, and you will be no ' +
+                   'longer able to access it<br>until joined again.' +
+                   '<p>Please confirm your choice.';
+      btnName    = 'Unjoin';
+      dlgTitle   = 'Unjoin Project';
+    } else  {
+      delMessage = '<h2>Delete Project</h2>' +
+                   'Project: <b>' + delName +
+                   '</b><p>will be deleted. All project ' +
+                   'structure and data will be lost.' +
+                   '<p>Please confirm your choice.';
+    }
+    var inputBox   = new InputBox ( 'Delete Project' );
+    inputBox.setText ( delMessage );
+    inputBox.launch ( btnName,function(){
       projectList.deleteProject ( delName );
       saveProjectList ( function(data){
         makeProjectListTable   ();
@@ -276,13 +321,13 @@ function ProjectListPage ( sceneId )  {
       trow.addCell ( '' );
       trow.addCell ( '' );
       self.tablesort_tbl.createTable();
-      open_btn    .setDisabled ( true  );
-      add_btn     .setDisabled ( (__dormant!=0) ); // for strange reason Firefox wants this!
-      rename_btn  .setDisabled ( true  );
-      del_btn     .setDisabled ( true  );
-      import_btn  .setDisabled ( (__dormant!=0) ); // for strange reason Firefox wants this!
-      export_btn  .setDisabled ( true  );
-      impshare_btn.setDisabled ( (__dormant!=0) );
+      open_btn  .setDisabled ( true  );
+      add_btn   .setDisabled ( (__dormant!=0) ); // for strange reason Firefox wants this!
+      rename_btn.setDisabled ( true  );
+      del_btn   .setDisabled ( true  );
+      import_btn.setDisabled ( (__dormant!=0) ); // for strange reason Firefox wants this!
+      export_btn.setDisabled ( true  );
+      join_btn  .setDisabled ( (__dormant!=0) );
 
     } else  {
 
@@ -302,8 +347,15 @@ function ProjectListPage ( sceneId )  {
 
         var pDesc = projectList.projects[i];
         var pName = pDesc.name;
-        if (('owner' in pDesc) && pDesc.owner.is_shared)
-          pName = '[<b><i>' + pDesc.owner.login + '</i></b>]:' + pName;
+
+        // when list of projects is served from FE, shared record is removed
+        // in case of owner's login
+        if ('owner' in pDesc)  {
+          if (pDesc.owner.share.length>0)
+            pName = '<b>[<i>' + pDesc.owner.login + '</i>]:</b>' + pName;
+          else if (('author' in pDesc.owner) && (pDesc.owner.author))
+            pName = '<b>(<i>' + pDesc.owner.author + '</i>):</b>' + pName;
+        }
         trow.addCell ( pName  ).setNoWrap();
         trow.addCell ( pDesc.title ).insertWidget ( contextMenu,0 );
         if (pDesc.hasOwnProperty('disk_space'))
@@ -326,13 +378,13 @@ function ProjectListPage ( sceneId )  {
           self.tablesort_tbl.applySortList ( projectList.sortList );
         },10 );
       self.tablesort_tbl.selectRow ( selectedRow );
-      open_btn    .setDisabled ( false );
-      add_btn     .setDisabled ( (__dormant!=0) ); // for strange reason Firefox wants this!
-      rename_btn  .setDisabled ( false );
-      del_btn     .setDisabled ( false );
-      import_btn  .setDisabled ( (__dormant!=0) ); // for strange reason Firefox wants this!
-      export_btn  .setDisabled ( false );
-      impshare_btn.setDisabled ( (__dormant!=0) );
+      open_btn  .setDisabled ( false );
+      add_btn   .setDisabled ( (__dormant!=0) ); // for strange reason Firefox wants this!
+      rename_btn.setDisabled ( false );
+      del_btn   .setDisabled ( false );
+      import_btn.setDisabled ( (__dormant!=0) ); // for strange reason Firefox wants this!
+      export_btn.setDisabled ( false );
+      join_btn  .setDisabled ( (__dormant!=0) );
 
       welcome_lbl.hide();
 
@@ -411,13 +463,13 @@ function ProjectListPage ( sceneId )  {
     left_margin  = '2pt';
     right_margin = '22pt';
 
-    open_btn     = new Button ( '',image_path('go')     );
-    add_btn      = new Button ( '',image_path('add')    );
-    rename_btn   = new Button ( '',image_path('rename') );
-    del_btn      = new Button ( '',image_path('remove') );
-    export_btn   = new Button ( '',image_path('export') );
-    import_btn   = new Button ( '',image_path('import') );
-    impshare_btn = new Button ( '',image_path('share')  );
+    open_btn   = new Button ( '',image_path('go')     );
+    add_btn    = new Button ( '',image_path('add')    );
+    rename_btn = new Button ( '',image_path('rename') );
+    del_btn    = new Button ( '',image_path('remove') );
+    export_btn = new Button ( '',image_path('export') );
+    import_btn = new Button ( '',image_path('import') );
+    join_btn   = new Button ( '',image_path('join')  );
     if (__demo_projects)  {
       demoprj_btn = new Button ( '',image_path('demoprj') );
       demoprj_btn .setWidth ( btn_width ).setHeight ( btn_height );
@@ -426,13 +478,13 @@ function ProjectListPage ( sceneId )  {
 
   } else  {
 
-    open_btn     = new Button ( 'Open'  ,image_path('go') );
-    add_btn      = new Button ( 'Add'   ,image_path('add') );
-    rename_btn   = new Button ( 'Rename',image_path('rename') );
-    del_btn      = new Button ( 'Delete',image_path('remove') );
-    export_btn   = new Button ( 'Export',image_path('export') );
-    import_btn   = new Button ( 'Import',image_path('import') );
-    impshare_btn = new Button ( 'Shared',image_path('share') );
+    open_btn   = new Button ( 'Open'  ,image_path('go') );
+    add_btn    = new Button ( 'Add'   ,image_path('add') );
+    rename_btn = new Button ( 'Rename',image_path('rename') );
+    del_btn    = new Button ( 'Delete',image_path('remove') );
+    export_btn = new Button ( 'Export',image_path('export') );
+    import_btn = new Button ( 'Import',image_path('import') );
+    join_btn   = new Button ( 'Join'  ,image_path('join') );
     if (__demo_projects)  {
       demoprj_btn = new Button ( 'Demo projects',image_path('demoprj') );
       demoprj_btn.setWidth ('115pt').setHeight(btn_height).setNoWrap();
@@ -447,20 +499,20 @@ function ProjectListPage ( sceneId )  {
     del_btn     .setWidth ( '80pt' );
     export_btn  .setWidth ( '80pt' );
     import_btn  .setWidth ( '80pt' );
-    impshare_btn.setWidth ( '80pt' );
+    join_btn.setWidth ( '80pt' );
     help_btn    .setWidth ( '60pt' );
     */
 
   }
 
-  open_btn    .setWidth ( btn_width ).setHeight ( btn_height );
-  add_btn     .setWidth ( btn_width ).setHeight ( btn_height );
-  rename_btn  .setWidth ( btn_width ).setHeight ( btn_height );
-  del_btn     .setWidth ( btn_width ).setHeight ( btn_height );
-  export_btn  .setWidth ( btn_width ).setHeight ( btn_height );
-  import_btn  .setWidth ( btn_width ).setHeight ( btn_height );
-  impshare_btn.setWidth ( btn_width ).setHeight ( btn_height );
-  help_btn    .setWidth ( btn_width ).setHeight ( btn_height );
+  open_btn  .setWidth ( btn_width ).setHeight ( btn_height );
+  add_btn   .setWidth ( btn_width ).setHeight ( btn_height );
+  rename_btn.setWidth ( btn_width ).setHeight ( btn_height );
+  del_btn   .setWidth ( btn_width ).setHeight ( btn_height );
+  export_btn.setWidth ( btn_width ).setHeight ( btn_height );
+  import_btn.setWidth ( btn_width ).setHeight ( btn_height );
+  join_btn  .setWidth ( btn_width ).setHeight ( btn_height );
+  help_btn  .setWidth ( btn_width ).setHeight ( btn_height );
 
   // make panel
   panel = new Grid('');
@@ -479,18 +531,18 @@ function ProjectListPage ( sceneId )  {
 
   var row = 0;
   panel.setHorizontalAlignment ( row,0,'center'    );
-  panel.setCellSize            ( '','10pt',row++,0    );
+  panel.setCellSize            ( '','10pt' ,row++,0    );
   nCols = 0;
-  panel.setWidget              ( open_btn    ,row,nCols++,1,1 );
-  panel.setWidget              ( add_btn     ,row,nCols++,1,1 );
-  panel.setWidget              ( rename_btn  ,row,nCols++,1,1 );
-  panel.setWidget              ( del_btn     ,row,nCols++,1,1 );
-  panel.setWidget              ( export_btn  ,row,nCols++,1,1 );
-  panel.setWidget              ( import_btn  ,row,nCols++,1,1 );
-  panel.setWidget              ( impshare_btn,row,nCols++,1,1 );
+  panel.setWidget              ( open_btn  ,row,nCols++,1,1 );
+  panel.setWidget              ( add_btn   ,row,nCols++,1,1 );
+  panel.setWidget              ( rename_btn,row,nCols++,1,1 );
+  panel.setWidget              ( del_btn   ,row,nCols++,1,1 );
+  panel.setWidget              ( export_btn,row,nCols++,1,1 );
+  panel.setWidget              ( import_btn,row,nCols++,1,1 );
+  panel.setWidget              ( join_btn  ,row,nCols++,1,1 );
   if (demoprj_btn)
-    panel.setWidget            ( demoprj_btn ,row,nCols++,1,1 );
-  panel.setWidget              ( help_btn    ,row,nCols++,1,1  );
+    panel.setWidget            ( demoprj_btn,row,nCols++,1,1 );
+  panel.setWidget              ( help_btn  ,row,nCols++,1,1  );
   //panel.setWidget              ( title_lbl, row-2,0,1,nCols  );
 
   for (var i=0;i<nCols-1;i++)
@@ -514,12 +566,12 @@ function ProjectListPage ( sceneId )  {
   table_row = row;  // note the project list table position here
 
   // add a listeners to toolbar buttons
-  open_btn    .addOnClickListener ( openProject   );
-  add_btn     .addOnClickListener ( addProject    );
-  rename_btn  .addOnClickListener ( renameProject );
-  del_btn     .addOnClickListener ( deleteProject );
-  export_btn  .addOnClickListener ( exportProject );
-  //impshare_btn.addOnClickListener ( importSharedProject  );
+  open_btn  .addOnClickListener ( openProject   );
+  add_btn   .addOnClickListener ( addProject    );
+  rename_btn.addOnClickListener ( renameProject );
+  del_btn   .addOnClickListener ( deleteProject );
+  export_btn.addOnClickListener ( exportProject );
+  //join_btn.addOnClickListener ( importSharedProject  );
 
   // add a listener to 'import' button
   import_btn.addOnClickListener ( function(){
@@ -527,7 +579,7 @@ function ProjectListPage ( sceneId )  {
   });
 
   // add a listener to 'import' button
-  impshare_btn.addOnClickListener ( function(){
+  join_btn.addOnClickListener ( function(){
     new ImportSharedProjectDialog ( loadProjectList1 );
   });
 

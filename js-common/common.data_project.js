@@ -2,7 +2,7 @@
 /*
 *  ==========================================================================
  *
- *    30.03.20   <--  Date of Last Modification.
+ *    24.06.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -------------------------------------------------------------------------
  *
@@ -27,18 +27,28 @@ function ProjectDesc()  {
   this.name         = '';
   this.title        = '';
   this.owner        = {
-    login     : '',   // login where project was created
-    name      : '',
-    email     : '',
-    keeper    : '',   // login of current project keeper
-    share     : '',   // comma-separated list of login names
-    is_shared : false
+    login  : '',   // login where project was created
+    name   : '',
+    email  : '',
+    share  : '',   // comma-separated list of login names
   };
+  this.jobCount     = 0;    // job count
+  this.timestamp    = 0;    // Date.now();
+  this.project_version = 0;
   this.disk_space   = 0.0;  // in MBs, corresponds to current project state
   this.cpu_time     = 0.0;  // in hours, accumulated over all project history
   this.njobs        = 0;    // over all project history
   this.dateCreated  = '';   // year/mm/dd
   this.dateLastUsed = '';   // year/mm/dd
+}
+
+function isProjectAccessible ( login,projectDesc )  {
+  if (!('owner' in projectDesc))        return true;
+  if (!('login' in projectDesc.owner))  return true;
+  if (!projectDesc.owner.login)         return true;
+  if (projectDesc.owner.login==login)   return true;
+  return (projectDesc.owner.share &&
+         (projectDesc.owner.share.split(',').indexOf(login)>=0));
 }
 
 
@@ -121,15 +131,15 @@ var new_projects = [];
 // ===========================================================================
 
 function ProjectData()  {
-  this._type    = 'ProjectData';
-  this.desc     = new ProjectDesc();  // project description
-  this.jobCount = 0;                  // job count
-  this.tree     = [];                 // project tree
-  this.settings = {};
+  this._type     = 'ProjectData';
+  this.desc      = new ProjectDesc();  // project description
+  this.tree      = [];                 // project tree
+  this.settings  = {};
   this.settings.prefix_key = 0;
   this.settings.prefix     = '';
 }
 
+/*
 function checkProjectData ( pData )  {
   if (!pData.settings)
     pData.settings = {};
@@ -138,6 +148,21 @@ function checkProjectData ( pData )  {
     pData.settings.prefix     = '';  // custom
   }
 }
+*/
+
+// ===========================================================================
+
+/*
+function ProjectAuxData ( projectData )  {
+  this._type     = 'ProjectAuxData';
+  this.desc      = projectData.desc;       // project description
+  this.jobCount  = projectData.jobCount;   // job count
+  this.timestamp = projectData.timestamp;  // Date.now();
+}
+
+//ProjectAuxData.prototype.constructor = ProjectAuxData;
+*/
+
 
 // ===========================================================================
 
@@ -169,8 +194,10 @@ ProjectShare.prototype.addShare = function ( pDesc )  {
 
 // export such that it could be used in both node and a browser
 if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
-  module.exports.ProjectDesc  = ProjectDesc;
-  module.exports.ProjectList  = ProjectList;
-  module.exports.ProjectData  = ProjectData;
-  module.exports.ProjectShare = ProjectShare;
+  module.exports.ProjectDesc    = ProjectDesc;
+  module.exports.ProjectList    = ProjectList;
+  module.exports.ProjectData    = ProjectData;
+  //module.exports.ProjectAuxData = ProjectAuxData;
+  module.exports.ProjectShare   = ProjectShare;
+  module.exports.isProjectAccessible = isProjectAccessible;
 }

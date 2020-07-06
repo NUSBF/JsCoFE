@@ -2,4 +2,20 @@
 Simbad
 ======
 
-to be written...
+`SIMBAD <https://doi.org/10.1107/S2059798318005752>`_ (Sequence-Independent Molecular replacement Based on Available Databases) is used for both contaminant and brute-force approaches for molecular replacement. It designed to check for the presence of a contaminant. Pipeline is also useful in cases of the misidentification of a crystal and can also be useful in scenarios where no obvious homologue is available as a search model or the most suitable search model is not among those most highly ranked by sequence comparisons. 
+
+SIMBAD contains three major steps: 
+
+* a lattice-parameter search against the entire Protein Data Bank, rapidly determining whether or not a homologue exists in the same crystal form.
+
+* a contaminant search, a not uncommon occurrence in macromolecular crystallography. To catch for this eventuality, SIMBAD rapidly screens the data against a database of known contaminant structures. This database is compiled to include entries from `ContaBase <https://strube.cbrc.kaust.edu.sa/contaminer/contabase>`_ and `Dimple <http://ccp4.github.io/dimple/>`_.
+
+* the non redundant PDB MoRDa database search (referred as structural database search). SIMBAD performs the rotation search ∼90000 times using Phaser likelihood-enhanced fast rotation function `[Simpkin et al. 2020] <https://doi.org/10.1107/S2059798319015031>`_. The models are used as they are defined in the MoRDa database with no additional modifications. Each is then ranked by Z-score and the top 200 solutions are passed on to MOLREP followed by REFMAC5 to perform full MR and refinement.
+
+**References**
+
+`Simpkin, A. J., Simkovic, F., Thomas, J. M. H., Savko, M., Lebedev, A., Uski, V., Ballard, C., Wojdyr, M., Wu, R., Sanishvili, R., Xu, Y., Lisa, M.-N., Buschiazzo, A., Shepard, W., Rigden, D. J. & Keegan, R. M. (2018). Acta Cryst. D74, 595–605. <https://doi.org/10.1107/S2059798318005752>`_ 
+
+`Simpkin, A. J., Simkovic, F., Thomas, J. M. H., Savko, M., Lebedev, A., Uski, V., Ballard, C. C., Wojdyr, M., Shepard, W., Rigden, D. J., & Keegan, R. M. (2020). Using Phaser and ensembles to improve the performance of SIMBAD. Acta Crystallographica. Section D, Structural Biology, 76(Pt 1), 1–8 <https://doi.org/10.1107/S2059798319015031>`_
+
+ The official software page you can find `here <https://simbad.readthedocs.io/en/0.1.12/index.html#>`_

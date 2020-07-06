@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    13.04.20   <--  Date of Last Modification.
+ *    05.07.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -180,36 +180,58 @@ function ProjectPage ( sceneId )  {
       share_inp.setFontItalic ( true    );
       ibx_grid .setWidget     ( share_inp,2,0,1,1 );
       share_inp.setWidth      ( '300pt' );
-      ibx_grid.setLabel       ( '&nbsp;<br>can copy this project in their accounts.',
+      ibx_grid .setLabel      ( '&nbsp;<br>can copy this project in their accounts.',
                                 3,0,1,1  );
       inputBox .addWidget     ( ibx_grid );
-      inputBox.launch ( 'Apply',function(){
-        var logins = share_inp.getValue();
-        var share0 = jobTree.projectData.desc.owner.share;
-        jobTree.projectData.desc.owner.share = logins;
+      inputBox .launch ( 'Apply',function(){
+        var logins     = share_inp.getValue();
+        var share0     = jobTree.projectData.desc.owner.share;
+        var logins_lst = logins.split(',')
+                               .map(function(item){
+                                 return item.trim();
+                                })
+                               .filter(function(item,pos,self){
+                                  return self.indexOf(item)==pos;
+                                });
+        jobTree.projectData.desc.owner.share = '';
+        for (var i=0;i<logins_lst.length;i++)
+          if (logins_lst[i]!=jobTree.projectData.desc.owner.login)  {
+            if (jobTree.projectData.desc.owner.share.length>0)
+              jobTree.projectData.desc.owner.share += ',';
+            jobTree.projectData.desc.owner.share += logins_lst[i];
+          }
         serverRequest ( fe_reqtype.shareProject,{
                           desc   : jobTree.projectData.desc,
                           share0 : share0
                         },'Share Project',function(data){
-                          jobTree.projectData.desc = data.desc;
-                          jobTree.saveProjectData ( [],[],null );
-                          var msg = '<h2>Project\'s Share Status</h2>' +
-                                    '<b>Shared with:</b>&nbsp;<i>';
-                          if (data.desc.owner.share.length<=0)
-                                msg += 'nobody';
-                          else  msg += data.desc.owner.share +
-                                '<br><font size="-1">(these users can import ' +
-                                'the project in their accounts)</font>';
-                          msg += '</i>';
-                          if (data.unshared.length>0)
-                            msg += '<p><b>Unshared with:</b>&nbsp;<i>' +
-                                   data.unshared.join(',') + '</i>';
-                          if (data.unknown.length>0)
-                            msg += '<p><b>Unknown users:</b>&nbsp;<i>' +
-                                   data.unknown.join(',') +
-                                   '<br><font size="-1">(sharing request was not ' +
-                                   'fulfilled for these users)</font></i>';
-                          new MessageBox ( 'Share Project [' + data.desc.name + ']',msg );
+                          if (data.desc)  {
+                            jobTree.projectData.desc = data.desc;
+                            jobTree.saveProjectData ( [],[],function(){
+                              var msg = '<h2>Project\'s Share Status</h2>' +
+                                        '<b>Shared with:</b>&nbsp;<i>';
+                              if (data.desc.owner.share.length<=0)
+                                    msg += 'nobody';
+                              else  msg += data.desc.owner.share +
+                                    '<br><font size="-1">(these users can import ' +
+                                    'the project in their accounts)</font>';
+                              msg += '</i>';
+                              if (data.unshared.length>0)
+                                msg += '<p><b>Unshared with:</b>&nbsp;<i>' +
+                                       data.unshared.join(',') + '</i>';
+                              if (data.unknown.length>0)
+                                msg += '<p><b>Unknown users:</b>&nbsp;<i>' +
+                                       data.unknown.join(',') +
+                                       '<br><font size="-1">(sharing request was not ' +
+                                       'fulfilled for these users)</font></i>';
+                              new MessageBox ( 'Share Project [' + data.desc.name + ']',msg );
+                            });
+                            if (jobTree.projectData.desc.owner.share.length>0)
+                              jobTree.startTaskLoop();
+                          } else  {
+                            new MessageBox ( 'Share Project [' + data.desc.name + ']',
+                                  '<h2>Sharing request denied</h2>' +
+                                  '<i>Only project owner can change sharing.</i>' );
+                          }
                         },null,null );
         return true;
       });
@@ -300,6 +322,11 @@ function ProjectPage ( sceneId )  {
 
   function onTreeLoaded() {
 
+    if ((!jobTree) || (!jobTree.projectData))  {
+      makeProjectListPage ( sceneId );
+      return;
+    }
+
     refresh_btn.setDisabled ( false );
 
     if (split_btn)
@@ -326,6 +353,9 @@ function ProjectPage ( sceneId )  {
     jobTree.addSignalHandler ( cofe_signals.treeUpdated,function(data){
       setButtonState();
     });
+    jobTree.addSignalHandler ( cofe_signals.reloadTree,function(rdata){
+      reloadTree ( false );
+    });
 
     if ((jobTree.root_nodes.length==1) &&
         (jobTree.root_nodes[0].children.length<=0))
@@ -337,10 +367,36 @@ function ProjectPage ( sceneId )  {
     setButtonState();
   }
 
+  function reloadTree ( blink )  {
+    var scrollPos = jobTree.parent.getScrollPosition();
+    var job_tree  = jobTree;
+    jobTree.stopTaskLoop();
+    var dlg_task_parameters = jobTree.getJobDialogTaskParameters();
+    jobTree = self.makeJobTree();
+    if (blink)  {
+      job_tree.closeAllJobDialogs();
+      job_tree.delete();
+    } else
+      jobTree.hide();
+    job_tree.parent.addWidget ( jobTree );
+    jobTree.readProjectData ( 'Project',function(){
+      onTreeLoaded();
+      jobTree.parent.setScrollPosition ( scrollPos );
+      if (!blink)  {
+        job_tree.hide();
+        jobTree .show();
+        job_tree.closeAllJobDialogs();
+        job_tree.delete();
+      }
+      jobTree.openJobs ( dlg_task_parameters,self );
+    },onTreeContextMenu,openJob,onTreeItemSelect );
+  }
+
   function onLogout ( logout_func )  {
     jobTree.stopTaskLoop    ();
-    jobTree.saveProjectData ( [],[], function(data){ logout_func(); } );
+    jobTree.saveProjectData ( [],[], function(rdata){ logout_func(); } );
   }
+
 
   this.makeHeader ( 3,onLogout );
   title_lbl = this.headerPanel.setLabel ( '',0,2,1,1 );
@@ -352,23 +408,38 @@ function ProjectPage ( sceneId )  {
   // Make Main Menu
 
   this.addMenuItem ( 'My Projects','list',function(){
-    jobTree.saveProjectData ( [],[],function(){ makeProjectListPage(sceneId); });
+    if (jobTree && jobTree.projectData)
+      jobTree.saveProjectData ( [],[],function(rdata){
+        makeProjectListPage ( sceneId );
+      });
+    else
+      makeProjectListPage ( sceneId );
   });
 
   if (!__local_user)  {
     this.addMenuItem ( 'My Account','settings',function(){
-      jobTree.saveProjectData ( [],[],function(){ makeAccountPage(sceneId); });
+      if (jobTree && jobTree.projectData)
+        jobTree.saveProjectData ( [],[],function(rdata){
+          makeAccountPage ( sceneId );
+        });
+      else
+        makeAccountPage ( sceneId );
     });
     if (__user_role==role_code.admin)
       this.addMenuItem ( 'Admin Page',role_code.admin,function(){
-        jobTree.saveProjectData ( [],[],function(){ makeAdminPage(sceneId); } );
+        if (jobTree && jobTree.projectData)
+          jobTree.saveProjectData ( [],[],function(rdata){
+            makeAdminPage ( sceneId );
+          });
+        else
+          makeAdminPage ( sceneId );
       });
   }
 
   this.addMenuSeparator();
 
   this.addMenuItem ( 'Project settings','project_settings',function(){
-    if (jobTree)
+    if (jobTree && jobTree.projectData)
           new ProjectSettingsDialog ( jobTree,function(){
             jobTree.saveProjectData ( [],[],null );
           });
@@ -378,7 +449,12 @@ function ProjectPage ( sceneId )  {
   this.addMenuItem ( 'Share Project','share',shareProject );
 
   this.addLogoutToMenu ( function(){
-    jobTree.saveProjectData ( [],[],function(){ logout(sceneId,0); } );
+    if (jobTree && jobTree.projectData)
+      jobTree.saveProjectData ( [],[],function(rdata){
+        logout ( sceneId,0 );
+      });
+    else
+      logout ( sceneId,0 );
   });
 
 
@@ -529,21 +605,9 @@ function ProjectPage ( sceneId )  {
 
   }
 
-  (function(tree){
-    refresh_btn.addOnClickListener ( function(){
-      var scrollPos = jobTree.parent.getScrollPosition();
-      jobTree.closeAllJobDialogs();
-      jobTree.stopTaskLoop();
-      jobTree.delete();
-      jobTree = tree.makeJobTree();
-      jobTree.readProjectData ( 'Project',function(){
-         onTreeLoaded();
-         jobTree.parent.setScrollPosition ( scrollPos );
-         //tree.tree_div.setScrollPosition ( scrollPos );
-       },onTreeContextMenu,openJob,onTreeItemSelect );
-      tree.tree_div.addWidget ( jobTree );
-    });
-  }(this))
+  refresh_btn.addOnClickListener ( function(){
+    reloadTree ( true );
+  });
 
   this.makeLogoPanel ( 2,0,3 );
 

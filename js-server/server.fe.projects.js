@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    13.05.20   <--  Date of Last Modification.
+ *    04.07.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -49,6 +49,7 @@ var projectListFName   = 'projects.list';
 var projectShareFName  = 'projects.share';
 var userKnowledgeFName = 'knowledge.meta';
 var projectDataFName   = 'project.meta';
+var projectDescFName   = 'project.desc';
 var jobDirPrefix       = 'job_';
 var replayDir          = 'replay';
 
@@ -103,6 +104,12 @@ function getProjectDataPath ( loginData,projectName )  {
 // path to JSON file containing metadata (see class ProjectData) of
 // project 'projectName' of user with given login name
   return path.join ( getProjectDirPath(loginData,projectName),projectDataFName );
+}
+
+function getProjectDescPath ( loginData,projectName )  {
+// path to JSON file containing metadata (see class ProjectData) of
+// project 'projectName' of user with given login name
+  return path.join ( getProjectDirPath(loginData,projectName),projectDescFName );
 }
 
 function getJobDirPath ( loginData,projectName,jobId )  {
@@ -171,6 +178,127 @@ function getJobDataPath ( loginData,projectName,jobId )  {
 
 // ===========================================================================
 
+function writeProjectData ( loginData,projectData,putTimeStamp )  {
+  if (putTimeStamp)
+    projectData.desc.timestamp = Date.now();
+  utils.writeObject ( getProjectDescPath(loginData,projectData.desc.name),
+                      projectData.desc );
+  return utils.writeObject ( getProjectDataPath(loginData,projectData.desc.name),
+                             projectData );
+}
+
+function checkProjectDescData ( projectDesc,loginData )  {
+  var update = false;
+  if ((!('owner' in projectDesc)) || (!projectDesc.owner.login))  {
+    // backward compatibility on 11.01.2020
+    var uData = user.readUserData ( loginData );
+    projectDesc.owner = {
+      login : loginData.login,
+      name  : uData.name,
+      email : uData.email,
+      share : '',
+    };
+    update = true;  // update project metadata
+  }
+  if ((!('timestamp' in projectDesc)) || (!projectDesc.timestamp))  {
+    projectDesc.timestamp = Date.now();
+    update = true;
+  }
+  if (!('share' in projectDesc))  {
+    projectDesc.share = '';
+    update = true;
+  }
+  if ('keeper' in projectDesc.owner)  {
+    delete projectDesc.owner.keeper;
+    update = true;
+  }
+  if ('is_shared' in projectDesc.owner)  {
+    delete projectDesc.owner.is_shared;
+    update = true;
+  }
+  return update;  // no changes
+}
+
+
+function checkProjectData ( projectData,loginData )  {
+  var update = false;
+  if ('jobCount' in projectData)  {
+    projectData.desc.jobCount = projectData.jobCount;
+    delete projectData.jobCount;
+    update = true;
+  }
+  if ('timestamp' in projectData)  {
+    delete projectData.timestamp;
+    update = true;
+  }
+  if (!projectData.settings)  {
+    projectData.settings = {};
+    update = true;
+  }
+  if (!projectData.settings.hasOwnProperty('prefix_key'))  {
+    projectData.settings.prefix_key = 0;   // 0: default; 1: custom
+    projectData.settings.prefix     = '';  // custom
+    update = true;
+  }
+  if (checkProjectDescData(projectData.desc,loginData))
+    update = true;
+  return update;  // no changes
+}
+
+
+function readProjectData ( loginData,projectName )  {
+  var projectDataPath = getProjectDataPath ( loginData,projectName );
+  var projectData     = utils.readObject ( projectDataPath );
+  if (projectData)  {
+    if (checkProjectData(projectData,loginData))
+      writeProjectData ( loginData,projectData,true );
+  }
+  return projectData;
+}
+
+function readProjectDesc ( loginData,projectName )  {
+  var projectDescPath = getProjectDescPath ( loginData,projectName );
+  var projectDesc     = utils.readObject ( projectDescPath );
+  if (!projectDesc)  {
+    var projectData = readProjectData ( loginData,projectName );
+    if (projectData)  {
+      projectDesc = projectData.desc;
+      utils.writeObject ( projectDescPath,projectDesc );
+    }
+  }
+  return projectDesc;  // may be null
+}
+
+
+function readProjectList ( loginData )  {
+  var userProjectsListPath = getUserProjectListPath ( loginData );
+  var pList = utils.readObject ( userProjectsListPath );
+  if (pList)  {
+    var pdescs = pList.projects;
+    pList.projects = [];
+    for (var i=0;i<pdescs.length;i++)  {
+      var pdesc = pdescs[i];
+      checkProjectDescData ( pdesc,loginData );
+      if (pdesc.owner.share.length>0)  // the project could have been changed
+        pdesc = readProjectDesc ( loginData,pdescs[i].name );
+      if (pdesc && (pdesc.owner.login!=loginData.login) &&
+                   (!pd.isProjectAccessible(loginData.login,pdesc)))
+        pdesc = null;
+      if (pdesc)
+        pList.projects.push ( pdesc );
+    }
+  }
+  return pList;
+}
+
+function writeProjectList ( loginData,projectList )  {
+  var userProjectsListPath = getUserProjectListPath ( loginData );
+  return utils.writeObject ( userProjectsListPath,projectList );
+}
+
+
+// ===========================================================================
+
 function makeNewUserProjectsDir ( loginData )  {
 var response = null;  // must become a cmd.Response object to return
 
@@ -211,14 +339,35 @@ var response = null;  // must become a cmd.Response object to return
 
 function getProjectList ( loginData )  {
 var response = null;  // must become a cmd.Response object to return
-
   log.detailed ( 3,'get project list, login ' + loginData.login );
+  var pList = readProjectList ( loginData );
+  if (pList)
+        response = new cmd.Response ( cmd.fe_retcode.ok,'',pList );
+  else  response = new cmd.Response ( cmd.fe_retcode.readError,
+                                      '[00015] Project list cannot be read.','' );
+  return response;
 
+  /*
   // Get users' projects list file name
   var userProjectsListPath = getUserProjectListPath ( loginData );
 
   if (utils.fileExists(userProjectsListPath))  {
-    var pList = utils.readObject ( userProjectsListPath );
+    var pList  = utils.readObject ( userProjectsListPath );
+    var pdescs = pList.projects;
+    pList.projects = [];
+    for (var i=0;i<pdescs.length;i++)  {
+      checkProjectDescData ( pdescs[i],loginData );
+      if (pdescs[i].owner.login!=loginData.login)  {
+        // check whether the project is still shared with the requester
+        var pdesc = readProjectDesc ( loginData,pdescs[i].name );
+        if (!pdesc)
+          pdescs[i] = null;
+        else if (!pd.isProjectAccessible(loginData.login,pdesc))
+          pdescs[i] = null;
+      }
+      if (pdescs[i])
+        pList.projects.push ( pdescs[i] );
+    }
     if (pList)  {
       response = new cmd.Response ( cmd.fe_retcode.ok,'',pList );
     } else  {
@@ -231,6 +380,7 @@ var response = null;  // must become a cmd.Response object to return
   }
 
   return response;
+  */
 
 }
 
@@ -238,9 +388,11 @@ var response = null;  // must become a cmd.Response object to return
 // ===========================================================================
 
 function _make_unique_list ( line )  {
-  return line.split(',')
+  if (line)
+    return line.split(',')
              .map(function(item){ return item.trim(); })
              .filter(function(item,pos,self){ return self.indexOf(item)==pos; });
+  return '';
 }
 
 function readProjectShare ( loginData )  {
@@ -305,15 +457,12 @@ var response = null;  // must become a cmd.Response object to return
 
     var projectData  = new pd.ProjectData();
     projectData.desc = projectDesc;
-    if (utils.writeObject(getProjectDataPath(loginData,projectDesc.name),
-                                             projectData)) {
+    if (writeProjectData(loginData,projectData,true))  {
       if (utils.mkDir(path.join(projectDirPath,replayDir))) {
         var pname = projectData.desc.name;
         projectData.desc.name = projectData.desc.name + ':' + replayDir;
-        if (utils.writeObject(getProjectDataPath(loginData,projectDesc.name),
-                                                 projectData)) {
+        if (writeProjectData(loginData,projectData,true))
           response = new cmd.Response ( cmd.fe_retcode.ok,'','' );
-        }
         projectData.desc.name = pname;
       }
     }
@@ -346,23 +495,19 @@ var response = null;  // must become a cmd.Response object to return
   log.standard ( 7,'delete project ' + projectName + ', login ' + loginData.login );
 
   // maintain share lists
-  var projectDataPath = getProjectDataPath ( loginData,projectName );
-  if (utils.fileExists(projectDataPath))  {
-    var pData = utils.readObject ( projectDataPath );
-    if (pData)  {
-      if (!checkProjectOwner(pData.desc,loginData))
-        utils.writeObject ( projectDataPath,pData );
-      var share = _make_unique_list ( pData.desc.owner.share );
-      for (var i=0;i<share.length;i++)
-        if (share[i])  {
-          var uLoginData = user.getUserLoginData ( share[i] );
-          if (uLoginData)  {
-            var pShare = readProjectShare ( uLoginData );
-            pShare.removeShare ( pData.desc );
-            writeProjectShare  ( uLoginData,pShare );
-          }
+  var pData = readProjectData ( loginData,projectName );
+  if (pData && (pData.desc.owner.login==loginData.login))  {
+    // project is deleted by owner -- remove it from all shares
+    var share = _make_unique_list ( pData.desc.owner.share );
+    for (var i=0;i<share.length;i++)
+      if (share[i])  {
+        var uLoginData = user.getUserLoginData ( share[i] );
+        if (uLoginData)  {
+          var pShare = readProjectShare ( uLoginData );
+          pShare.removeShare ( pData.desc );
+          writeProjectShare  ( uLoginData,pShare );
         }
-    }
+      }
   }
 
   // Get users' projects directory name
@@ -393,35 +538,57 @@ var response = null;  // must become a cmd.Response object to return
   log.detailed ( 8,'save project list, login ' + loginData.login );
 
   // Get users' projects list file name
-  var userProjectsListPath = getUserProjectListPath ( loginData );
+  //var userProjectsListPath = getUserProjectListPath ( loginData );
 
-  if (utils.fileExists(userProjectsListPath))  {
-    var pList = utils.readObject ( userProjectsListPath );
-    if (pList)  {
+//  if (utils.fileExists(userProjectsListPath))  {
+//    var pList = utils.readObject ( userProjectsListPath );
 
-      // delete missed projects
-      var disk_space_change = 0.0;
-      for (var i=0;i<pList.projects.length;i++)  {
-        var found = false;
-        var pName = pList.projects[i].name;
-        for (var j=0;(j<newProjectList.projects.length) && (!found);j++)
-          found = (pName==newProjectList.projects[j].name);
-        if (!found)  {
-          var rsp = deleteProject ( loginData,pName );
-          if (rsp.status!=cmd.fe_retcode.ok)
-            response = rsp;
-          else  {
-            if ('disk_space' in pList.projects[i])  // backward compatibility 05.06.2018
-              disk_space_change -= pList.projects[i].disk_space;
-          }
-        }
+  var pList = readProjectList ( loginData );
+  if (pList)  {
+
+    // delete missing projects
+    var disk_space_change = 0.0;
+    var del_lst = [];
+    for (var i=0;i<pList.projects.length;i++)  {
+      var pDesc  = pList.projects[i];
+      var pName  = pDesc.name;
+      var jfound = -1;
+      for (var j=0;(j<newProjectList.projects.length) && (jfound<0);j++)
+        if (pName==newProjectList.projects[j].name)
+          jfound = j;
+      if (jfound<0)
+        del_lst.push ( [pName,pDesc] );
+      else  {
+        if (pDesc.owner.login==loginData.login)
+          pDesc.title = newProjectList.projects[jfound].title; // if it was renamed
+        newProjectList.projects[jfound] = pDesc;
       }
+    }
 
-      if (disk_space_change!=0.0)
-        ration.changeProjectDiskSpace ( loginData,null,disk_space_change,false );
+    for (var i=0;i<del_lst.length;i++)  {
+      var pName = del_lst[i][0];
+      var pDesc = del_lst[i][1];
+      var rsp   = deleteProject ( loginData,pName );
+      if (rsp.status!=cmd.fe_retcode.ok)
+        response = rsp;
+      else if (('owner' in pDesc) && (pDesc.owner.login==loginData.login))  {
+        // monitor disk space only if own projects are deleted; deleting
+        // a shared project is a logical, rather than physical, operation,
+        // which does not release disk space
+        if ('disk_space' in pList.projects[i])  // backward compatibility 05.06.2018
+          disk_space_change -= pList.projects[i].disk_space;
+      }
+    }
 
-      // create new projects
-      for (var i=0;i<newProjectList.projects.length;i++)  {
+    if (disk_space_change!=0.0)  {
+      // works only if own project(s) were deleted, therefor, use provided
+      // loginData
+      ration.changeProjectDiskSpace ( loginData,null,disk_space_change,false );
+    }
+
+    // create new projects
+    for (var i=0;i<newProjectList.projects.length;i++)
+      if (newProjectList.projects[i].owner.login=='')  {
         var found = false;
         var pName = newProjectList.projects[i].name;
         for (var j=0;(j<pList.projects.length) && (!found);j++)
@@ -433,26 +600,33 @@ var response = null;  // must become a cmd.Response object to return
         }
       }
 
-      if (!response)  {
-        if (utils.writeObject ( userProjectsListPath,newProjectList ))  {
-          var rdata = {};
-          if (disk_space_change!=0.0)  {  // save on reading files ration does not change
-            rdata.ration = ration.getUserRation(loginData).clearJobs();
-          }
-          response = new cmd.Response ( cmd.fe_retcode.ok,'',rdata );
-        } else
-          response = new cmd.Response ( cmd.fe_retcode.writeError,
-                                '[00019] Project list cannot be written.','' );
-      }
-
-    } else  {
-      response = new cmd.Response ( cmd.fe_retcode.readError,
-                                   '[00019] Project list cannot be read.','' );
+    if (!response)  {
+      //var userProjectsListPath = getUserProjectListPath ( loginData );
+      //if (utils.writeObject ( userProjectsListPath,newProjectList ))  {
+      if (writeProjectList(loginData,newProjectList))  {
+        var rdata = {};
+        if (disk_space_change!=0.0)  {
+          // save on reading files if ration does not change; see related
+          // comments above
+          rdata.ration = ration.getUserRation(loginData).clearJobs();
+        }
+        response = new cmd.Response ( cmd.fe_retcode.ok,'',rdata );
+      } else
+        response = new cmd.Response ( cmd.fe_retcode.writeError,
+                              '[00020] Project list cannot be written.','' );
     }
+
+  } else  {
+    response = new cmd.Response ( cmd.fe_retcode.readError,
+                                 '[00019] Project list cannot be read.','' );
+  }
+
+  /*
   } else  {
     response  = new cmd.Response ( cmd.fe_retcode.readError,
                                    '[00020] Project list does not exist.','' );
   }
+  */
 
   return response;
 
@@ -569,12 +743,6 @@ function getFailedJobExportNames ( fjdata )  {
   var jobDirPath  = conf.getFEConfig().getJobsSafePath();
   for (var i=1;i<path_list.length;i++)
     jobDirPath  = path.join ( jobDirPath,path_list[i] );
-  /*
-  var archivePath = path.join ( jobDirPath,exportName );
-  var url         = cmd.__special_fjsafe_tag     + '/' +
-                    path_list.slice(1).join('/') + '/' +
-                    exportName;
-  */
   var archivePath = path.join ( conf.getFEConfig().getJobsSafePath(),exportName );
   var url         = cmd.__special_fjsafe_tag + '/' + exportName;
   return [ exportName,jobDirPath,archivePath,url ];
@@ -595,16 +763,6 @@ function prepareFailedJobExport ( loginData,fjdata )  {
       log.error ( 20,'errors at packing ' + jobDirPath + ' for export' );
       utils.removeFile ( archivePath );  // export will never get ready!
     }
-    /*
-    var jobballPath = send_dir.getJobballPath ( jobDirPath );
-    if (code)  {
-      log.error ( 20,'errors at packing ' + jobDirPath + ' for export' );
-      utils.removeFile ( jobballPath );  // export will never get ready!
-    } else  {
-      log.standard ( 20,'packed' );
-      utils.moveFile   ( jobballPath,archivePath );
-    }
-    */
   });
 
   return new cmd.Response ( cmd.fe_retcode.ok,'',exp_names[3] );
@@ -629,27 +787,6 @@ function finishFailedJobExport ( loginData,fjdata )  {
 
 // ===========================================================================
 
-function checkProjectOwner ( projectDesc,loginData )  {
-  if ((!('owner' in projectDesc)) || (!projectDesc.owner.login))  {
-    // backward compatibility on 11.01.2020
-    var uData = user.readUserData ( loginData );
-    projectDesc.owner = {
-      login     : loginData.login,
-      name      : uData.name,
-      email     : uData.email,
-      keeper    : loginData.login,
-      share     : '',
-      is_shared : false
-    };
-    return false;  // update project metadata
-  } else if (!('keeper' in projectDesc.owner))  {
-    // backward compatibility on 30.03.2020
-    projectDesc.owner.keeper = loginData.login;
-    return false;  // update project metadata
-  }
-  return true;  // no changes
-}
-
 function getProjectData ( loginData,data )  {
 
   var response = getProjectList ( loginData );
@@ -660,41 +797,52 @@ function getProjectData ( loginData,data )  {
                     '), login ' + loginData.login );
 
   // Get users' projects list file name
-  var projectName = response.data.current;
+  var projectList = response.data;
+  var projectName = projectList.current;
+
+  // check that current project exists
+  var pdesc = null;
+  for (var i=0;(i<projectList.projects.length) && (!pdesc);i++)
+    if (projectList.projects[i].name==projectName)
+      pdesc = projectList.projects[i];
+  if (!pdesc)
+    return new cmd.Response ( cmd.fe_retcode.ok,'','missing' );
+
   if (data.mode=='replay')
     projectName += ':' + replayDir;
-  var projectDataPath = getProjectDataPath ( loginData,projectName );
 
-  if (utils.fileExists(projectDataPath))  {
-    var pData = utils.readObject ( projectDataPath );
-    if (pData)  {
-      if (!checkProjectOwner(pData.desc,loginData))
-        utils.writeObject ( projectDataPath,pData );
-      var d = {};
-      d.meta      = pData;
-      d.tasks_add = [];
-      d.tasks_del = [];
-      var projectDirPath = getProjectDirPath ( loginData,projectName );
-      response = new cmd.Response ( cmd.fe_retcode.ok,'',d );
-      fs.readdirSync(projectDirPath).forEach(function(file,index){
-        if (file.startsWith(jobDirPrefix)) {
-          var jobPath = path.join ( projectDirPath,file,task_t.jobDataFName );
-          var task    = utils.readObject ( jobPath );
-          if (task)  {
-            d.tasks_add.push ( task );
-          } else  {
-            d.message = '[00021] Job metadata cannot be read.';
-            utils.removePath ( path.join ( projectDirPath,file ) );
-          }
+  var pData = readProjectData ( loginData,projectName );
+  if (pData)  {
+    if (!pd.isProjectAccessible(loginData.login,pData.desc))
+      return new cmd.Response ( cmd.fe_retcode.projectAccess,
+                                 '[00033] Project access denied.','' );
+    var d = {};
+    d.meta      = pData;
+    d.tasks_add = [];
+    d.tasks_del = [];
+    var projectDirPath = getProjectDirPath ( loginData,projectName );
+    response = new cmd.Response ( cmd.fe_retcode.ok,'',d );
+    fs.readdirSync(projectDirPath).forEach(function(file,index){
+      if (file.startsWith(jobDirPrefix)) {
+        var jobPath = path.join ( projectDirPath,file,task_t.jobDataFName );
+        var task    = utils.readObject ( jobPath );
+        if (task)  {
+          d.tasks_add.push ( task );
+        } else  {
+          d.message = '[00021] Job metadata cannot be read.';
+          utils.removePath ( path.join ( projectDirPath,file ) );
         }
-      });
+      }
+    });
+  } else  {
+    var projectDataPath = getProjectDataPath ( loginData,projectName );
+    if (utils.fileExists(projectDataPath))  {
+      response = new cmd.Response ( cmd.fe_retcode.readError,
+                                 '[00022] Project metadata cannot be read.','' );
     } else  {
       response = new cmd.Response ( cmd.fe_retcode.readError,
-                               '[00022] Project metadata cannot be read.','' );
+                            '[00023] Project metadata file does not exist.','' );
     }
-  } else  {
-    response  = new cmd.Response ( cmd.fe_retcode.readError,
-                               '[00023] Project metadata does not exist.','' );
   }
 
   return response;
@@ -704,12 +852,60 @@ function getProjectData ( loginData,data )  {
 
 // ===========================================================================
 
+function checkTimestamps ( loginData,projectDesc )  {
+// 'projectDesc' comes from the client. Client does not change timestamps,
+// therefore, timestamp on server side may be either equal or ahead of
+// timestamp in 'projectDesc'.
+  var rdata    = {};  // response data object
+  rdata.pdesc  = projectDesc;
+  rdata.reload = 0;  // project reload codes for client:
+                     //  0: no reload is needed
+                     //  1: reload is needed but current operation may continue
+                     //  2: reload is mandatory, current operation must terminate
+  rdata.pdesc  = null;
+  if (projectDesc.owner.share.length>0)  {  // the project is shared
+    rdata.pdesc = readProjectDesc ( loginData,projectDesc.name );
+    if (rdata.pdesc)  {
+      if (rdata.pdesc.timestamp>projectDesc.timestamp)  {
+        // client timestamp is behind server project timestamp; request
+        // update on client side
+        if (rdata.pdesc.project_version>projectDesc.project_version)
+              rdata.reload = 2;  // project changed considerably, reload client
+        else  rdata.reload = 1;  // on-client data should be safe
+      }
+    }
+  }
+  return rdata;
+}
+
+
+function advanceJobCounter ( loginData,data )  {
+  var response    = null;
+  var projectDesc = data.meta;
+  var rdata       = checkTimestamps ( loginData,projectDesc );
+  if (!rdata.reload)  {
+    var projectData = readProjectData ( loginData,projectDesc.name );
+    projectData.desc.jobCount++;
+    writeProjectData ( loginData,projectData,false );  // do not change the timestamp
+    rdata.pdesc = projectData.desc;
+  }
+  return new cmd.Response ( cmd.fe_retcode.ok,'',rdata );
+}
+
+
 function saveProjectData ( loginData,data )  {
   var response = null;
 
-  var projectName = data.meta.desc.name;
+  var projectData = data.meta;
+  var projectName = projectData.desc.name;
 //  console.log ( ' ... write current project data (' + projectName +
 //                '), login ' + login );
+
+  // Check timestamps for shared projects
+  var rdata = checkTimestamps ( loginData,projectData.desc );
+
+  if (rdata.reload>0)
+    return new cmd.Response ( cmd.fe_retcode.ok,'',rdata );
 
   // Get users' projects list file name
   var projectDataPath = getProjectDataPath ( loginData,projectName );
@@ -717,43 +913,33 @@ function saveProjectData ( loginData,data )  {
   if (utils.fileExists(projectDataPath))  {
 
     var disk_space_change = 0.0;
-    if ('disk_space' in data.meta.desc)  {  // backward compatibility on 05.06.2018
+    if ('disk_space' in projectData.desc)  {  // backward compatibility on 05.06.2018
       for (var i=0;i<data.tasks_del.length;i++)
         disk_space_change -= data.tasks_del[i][1]
-      data.meta.desc.disk_space += disk_space_change;
-      data.meta.desc.disk_space  = Math.max ( 0,data.meta.desc.disk_space );
+      projectData.desc.disk_space += disk_space_change;
+      projectData.desc.disk_space  = Math.max ( 0,projectData.desc.disk_space );
     } else  {
-      data.meta.desc.disk_space  = 0.0;   // should be eventually removed
-      data.meta.desc.cpu_time    = 0.0;   // should be eventually removed
+      projectData.desc.disk_space  = 0.0;   // should be eventually removed
+      projectData.desc.cpu_time    = 0.0;   // should be eventually removed
     }
 
-    checkProjectOwner ( data.meta.desc,loginData );
+    checkProjectData ( projectData,loginData );
 
-    /*
-    if (!('owner' in data.meta.desc))  {  // backward compatibility on 11.01.2020
-      var uData = user.readUserData ( loginData );
-      data.meta.desc.owner = {
-        login : loginData.login,
-        name  : uData.name,
-        email : uData.email,
-        share : []
-      };
-    }
-    */
-
+    // disk space change is booked to project owner inside this function
     ration.changeProjectDiskSpace ( loginData,projectName,disk_space_change,false );
 
-    if (utils.writeObject(projectDataPath,data.meta))  {
+    var update_time_stamp = (data.tasks_del.length>0) || (data.tasks_add.length>0);
 
-      var rdata = {};
-      if (data.tasks_del.length>0)  {  // save on reading files ration does not change
+    if (writeProjectData(loginData,projectData,update_time_stamp))  {
+
+      if (data.tasks_del.length>0)  // save on reading files ration does not change
         rdata.ration = ration.getUserRation(loginData).clearJobs();
-        rdata.pdesc  = data.meta.desc;
-      }
+      rdata.pdesc = projectData.desc;
 
       response = new cmd.Response ( cmd.fe_retcode.ok,'',rdata );
 
       // remove job directories from the 'delete' list
+      var ndel_own = 0;
       for (var i=0;i<data.tasks_del.length;i++)
         utils.removePath ( getJobDirPath(loginData,projectName,data.tasks_del[i][0]) );
 
@@ -845,6 +1031,13 @@ var shared   = [];
 var unshared = [];
 var unknown  = [];
 
+  if (loginData.login!=pDesc.owner.login)
+    return new cmd.Response ( cmd.fe_retcode.ok,'',{
+      desc     : null,      // signal that only owner can change sharing
+      unshared : unshared,
+      unknown  : unknown
+    });
+
   // unshare by comparison of share0 and share
   for (var i=0;i<share0.length;i++)
     if (share0[i] && (share.indexOf(share0[i])<0))  {
@@ -871,6 +1064,11 @@ var unknown  = [];
     }
 
   pDesc.owner.share = shared.join(',');
+  var pData = readProjectData ( loginData,pDesc.name );
+  if (pData)  {
+    pData.desc.owner.share = pDesc.owner.share;
+    writeProjectData ( loginData,pData,true );
+  }
 
   return new cmd.Response ( cmd.fe_retcode.ok,'',{
     desc     : pDesc,
@@ -914,10 +1112,15 @@ var projectDataPath = getProjectDataPath ( loginData,projectName );
 
 // ===========================================================================
 
-function _import_project ( loginData,tempdir )  {
+function _import_project ( loginData,tempdir,prjDir )  {
+// 'tempdir' may contain unpacked project directory, in which case 'prjDir'
+// shuld be null. Alternatively, 'prjDir' gives project directory to be
+// symlinked, in which case 'tempdir' should be supplied as well
 
   // read project meta to make sure it was a project tarball
-  var prj_meta_path = path.join ( tempdir,projectDataFName );
+  var prj_meta_path = '';
+  if (prjDir)  prj_meta_path = path.join ( prjDir ,projectDataFName );
+         else  prj_meta_path = path.join ( tempdir,projectDataFName );
   var prj_meta = utils.readObject ( prj_meta_path );
 
   // validate metadata and read project name
@@ -934,14 +1137,19 @@ function _import_project ( loginData,tempdir )  {
       if ('owner' in prj_meta.desc)  {
         //if (prj_meta.desc.owner.share)
         //  prj_meta.desc.owner.share = '';
-        projectDesc.owner = prj_meta.desc.owner;
+        projectDesc.owner        = prj_meta.desc.owner;
+        if (!prjDir)  {  // this means that the project is imported, not shared
+          projectDesc.owner.author = prj_meta.desc.owner.login;
+          projectDesc.owner.login  = loginData.login;
+          projectDesc.owner.share  = '';
+        }
       }
-      projectDesc.owner.share = '';
+//      projectDesc.owner.share = '';
       if (!projectDesc.owner.login)
         projectDesc.owner.login = loginData.login;
-      else if (projectDesc.owner.login!=loginData.login)
-        projectDesc.owner.is_shared = true;
-      projectDesc.owner.keeper = loginData.login;
+//      else if (projectDesc.owner.login!=loginData.login)
+//        projectDesc.owner.is_shared = true;
+//      projectDesc.owner.keeper = loginData.login;
       prj_meta.desc.owner = projectDesc.owner;
       utils.writeObject ( prj_meta_path,prj_meta );
     } else
@@ -960,42 +1168,73 @@ function _import_project ( loginData,tempdir )  {
   } else  {
 
     var projectDir = getProjectDirPath ( loginData,projectDesc.name );
-    if (utils.fileExists(projectDir))  {
+
+    if (utils.fileExists(projectDir) && (!utils.isSymbolicLink(projectDir)))  {
 
       utils.writeString ( signal_path,'Project "' + projectDesc.name +
                                       '" already exists.\n' +
                                       projectDesc.name );
 
-    } else if (utils.moveFile(tempdir,projectDir))  {
+    //} else if (utils.moveFile(tempdir,projectDir))  {
       // the above relies on tmp and project directories to be
       // on the same file system
 
-      utils.mkDir ( tempdir );  // because it was moved
+    } else  {
 
-      // the project's content was moved to user's area, now
-      // make the corresponding entry in project list
+      var placed = true;
+      if (prjDir)  {
+        utils.removeFile ( projectDir );  // in case it exists
+        placed = utils.makeSymLink ( projectDir,path.resolve(prjDir) );
+      } else if (utils.moveDir(tempdir,projectDir,true))  {
+        utils.mkDir ( tempdir );  // because it was moved
+      } else {
+        utils.writeString ( signal_path,'Cannot copy to project ' +
+                                        'directory (disk full?)\n' +
+                                        projectDesc.name );
+        placed = false;
+      }
 
-      // Get users' projects list file name
-      var userProjectsListPath = getUserProjectListPath ( loginData );
-      var pList = null;
-      if (utils.fileExists(userProjectsListPath))
-            pList = utils.readObject ( userProjectsListPath );
-      else  pList = new pd.ProjectList();
+      if (placed)  {
+        // the project's content was moved to user's area, now
+        // make the corresponding entry in project list
 
-      pList.projects.unshift ( projectDesc );  // put it first
-      pList.current = projectDesc.name;        // make it current
-      if (utils.writeObject(userProjectsListPath,pList))
-            utils.writeString ( signal_path,'Success\n' + projectDesc.name );
-      else  utils.writeString ( signal_path,'Cannot write project list\n' +
-                                            projectDesc.name );
+        // Get users' projects list file name
+        /*
+        var userProjectsListPath = getUserProjectListPath ( loginData );
+        var pList = null;
+        if (utils.fileExists(userProjectsListPath))
+              pList = utils.readObject ( userProjectsListPath );
+        else  pList = new pd.ProjectList();
+        */
 
-      ration.changeUserDiskSpace ( loginData,projectDesc.disk_space );
+        var pList = readProjectList ( loginData );
+        if (!pList)
+          pList = new pd.ProjectList();  // *** should throw error instead
 
-    } else {
+        var projects = pList.projects;
+        pList.projects = [projectDesc];
+        for (var i=0;i<projects.length;i++)
+          if (projects[i].name!=projectDesc.name)
+            pList.projects.push ( projects[i] );
 
-      utils.writeString ( signal_path,'Cannot copy to project ' +
-                                      'directory (disk full?)\n' +
-                                      projectDesc.name );
+        //pList.projects.unshift ( projectDesc );  // put it first
+        pList.current = projectDesc.name;        // make it current
+        //if (utils.writeObject(userProjectsListPath,pList))
+        if (writeProjectList(loginData,pList))
+              utils.writeString ( signal_path,'Success\n' + projectDesc.name );
+        else  utils.writeString ( signal_path,'Cannot write project list\n' +
+                                              projectDesc.name );
+
+        if (loginData.login==projectDesc.owner.login)
+          ration.changeUserDiskSpace ( loginData,projectDesc.disk_space );
+
+      } else  {
+
+        utils.writeString ( signal_path,'Project "' + projectDesc.name +
+                                        '" cannot be allocated (disk full?)\n' +
+                                        projectDesc.name );
+
+      }
 
     }
 
@@ -1053,7 +1292,7 @@ function importProject ( loginData,upload_meta )  {
         send_dir.unpackDir ( tempdir,null,function(code,jobballSize){
           if (code)
             log.error ( 50,'unpack errors, code=' + code + ', filesize=' + jobballSize );
-          _import_project ( loginData,tempdir );
+          _import_project ( loginData,tempdir,null );
         });
 
       } else  {
@@ -1102,7 +1341,7 @@ function startDemoImport ( loginData,meta )  {
           function(code,jobballSize){
             if (code)
               log.error ( 55,'unpack errors, code=' + code + ', filesize=' + jobballSize );
-            _import_project ( loginData,tempdir );
+            _import_project ( loginData,tempdir,null );
           });
       } else  {
         rc     = cmd.fe_retcode.fileNotFound;
@@ -1128,30 +1367,38 @@ function startSharedImport ( loginData,meta )  {
   var rc_msg  = 'success';
   var tempdir = getProjectTmpDir ( loginData,true );
 
+  var import_as_link = true;  // development switch
+
   if (tempdir)  {
 
-    var project_keeper = meta.owner.login;
-    if (('keeper' in meta.owner) && meta.owner.keeper)
-      project_keeper = meta.owner.keeper;
-    var uLoginData = user.getUserLoginData ( project_keeper );
+//    var project_keeper = meta.owner.login;
+//    if (('keeper' in meta.owner) && meta.owner.keeper)
+//      project_keeper = meta.owner.keeper;
+//    var uLoginData = user.getUserLoginData ( project_keeper );
+    var uLoginData = user.getUserLoginData ( meta.owner.login );
     if (uLoginData)  {
       var sProjectDirPath = getProjectDirPath ( uLoginData,meta.name );
       if (utils.fileExists(sProjectDirPath))  {
-        fs.copy ( sProjectDirPath,tempdir,function(err){
-          if (err)
-            utils.writeString ( path.join(tempdir,'signal'),
-                                'Errors during data copy\n' +
-                                projectDesc.name );
-          else
-            _import_project ( loginData,tempdir );
-        });
+        if (import_as_link)  {
+          _import_project ( loginData,tempdir,sProjectDirPath );
+        } else  {
+          fs.copy ( sProjectDirPath,tempdir,function(err){
+            if (err)
+              utils.writeString ( path.join(tempdir,'signal'),
+                                  'Errors during data copy\n' +
+                                  projectDesc.name );
+            else
+              _import_project ( loginData,tempdir,null );
+          });
+        }
       } else  {
         rc     = cmd.fe_retcode.fileNotFound;
         rc_msg = 'Shared project ' + meta.name + ' does not exist';
       }
     } else  {
       rc     = cmd.fe_retcode.fileNotFound;
-      rc_msg = 'User data for ' + project_keeper + ' not found';
+//      rc_msg = 'User data for ' + project_keeper + ' not found';
+      rc_msg = 'User data for ' + meta.owner.login + ' not found';
     }
 
   } else {
@@ -1244,8 +1491,14 @@ module.exports.makeNewUserProjectsDir = makeNewUserProjectsDir;
 module.exports.getProjectList         = getProjectList;
 module.exports.getSharedPrjList       = getSharedPrjList;
 module.exports.getProjectDataPath     = getProjectDataPath;
+module.exports.getProjectDescPath     = getProjectDescPath;
 module.exports.getUserKnowledgePath   = getUserKnowledgePath;
 module.exports.getUserKnowledgeData   = getUserKnowledgeData;
+module.exports.readProjectData        = readProjectData;
+module.exports.writeProjectData       = writeProjectData;
+module.exports.readProjectDesc        = readProjectDesc;
+module.exports.readProjectList        = readProjectList;
+module.exports.writeProjectList       = writeProjectList;
 module.exports.saveProjectList        = saveProjectList;
 module.exports.prepareProjectExport   = prepareProjectExport;
 module.exports.checkProjectExport     = checkProjectExport;
@@ -1259,6 +1512,7 @@ module.exports.prepareFailedJobExport = prepareFailedJobExport;
 module.exports.checkFailedJobExport   = checkFailedJobExport;
 module.exports.finishFailedJobExport  = finishFailedJobExport;
 module.exports.getProjectData         = getProjectData;
+module.exports.advanceJobCounter      = advanceJobCounter;
 module.exports.saveProjectData        = saveProjectData;
 module.exports.shareProject           = shareProject;
 module.exports.renameProject          = renameProject;

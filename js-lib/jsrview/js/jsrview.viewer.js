@@ -1,7 +1,7 @@
 //
 //  ==========================================================================
 //
-//    11.04.20   <--  Date of Last Modification.
+//    26.06.20   <--  Date of Last Modification.
 //                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  --------------------------------------------------------------------------
 //
@@ -192,6 +192,11 @@ function startUglyMol ( title,xyz_uri,mtz_uri,map_uri,diffmap_uri,mapLabels )  {
   var doc = window.parent.document;
   var jq  = window.parent.$;
 
+  if (!jq)  {
+    doc = window.document;
+    jq  = window.$;
+  }
+
   //var doc = window.document;
   //var jq  = window.$;
 
@@ -202,8 +207,6 @@ function startUglyMol ( title,xyz_uri,mtz_uri,map_uri,diffmap_uri,mapLabels )  {
     'box-shadow' : '8px 8px 16px 16px rgba(0,0,0,0.2)',
     'overflow'   : 'hidden'
   });
-//  doc.getElementById ( 'scene').appendChild ( dialog );
-//  document.getElementById("scene").appendChild ( dialog );
   doc.body.appendChild ( dialog );
   //doc.body.style.fontSize = '16px';
 

@@ -2,7 +2,7 @@
 /*
  *  ===========================================================================
  *
- *    11.06.20   <--  Date of Last Modification.
+ *    05.07.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  ---------------------------------------------------------------------------
  *
@@ -25,7 +25,7 @@
 
 function appName()  { return 'CCP4 Cloud' }  // application name for reporting
 
-var jsCoFE_version = '1.6.012 [11.06.2020]';
+var jsCoFE_version = '1.6.013 [05.07.2020]';
 
 function appVersion()  {
   return jsCoFE_version;
@@ -110,6 +110,7 @@ var fe_reqtype = {
   getSharedPrjList  : '-getSharedPrjList',  // request for shared projects list
   saveProjectList   : '-saveProjectList',   // request to save project list
   getProjectData    : '-getProjectData',    // request for project data
+  advanceJobCounter : '-advanceJobCounter', // request to advance job counter
   saveProjectData   : '-saveProjectData',   // request to save project data
   preparePrjExport  : '-preparePrjExport',  // request to prepare project for export
   checkPrjExport    : '-checkPrjExport',    // request to check project export state
@@ -175,7 +176,8 @@ var fe_retcode = {
   askPassword    : 'askPassword',    // request password
   regFailed      : 'regFailed',      // user registration failed
   wrongJobToken  : 'wrongJobToken',  // unrecognised job token received
-  proxyError     : 'proxyError'      // fe-proxy error
+  proxyError     : 'proxyError',     // fe-proxy error
+  projectAccess  : 'projectAccess'   // project access denied
 }
 
 

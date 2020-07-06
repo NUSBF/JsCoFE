@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    10.10.19   <--  Date of Last Modification.
+ *    01.07.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Front End Server -- Projects Handler Functions
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2019
+ *  (C) E. Krissinel, A. Lebedev 2016-2020
  *
  *  ==========================================================================
  *
@@ -81,49 +81,57 @@ function updateResourceStats ( loginData,job_class,add_resource )  {
   var disk_space = 0.0;
   var cpu_time   = 0.0;
 
-  var userProjectsListPath = prj.getUserProjectListPath ( loginData );
-  if (utils.fileExists(userProjectsListPath))  {
-    var pList = utils.readObject ( userProjectsListPath );
-    if (pList)  {
-      for (var i=0;i<pList.projects.length;i++)  {
-        var pdesc = pList.projects[i];
-        if (pdesc.name==job_class.project)  {
-          if (pdesc.hasOwnProperty('disk_space'))  {
-            disk_space = pdesc.disk_space;
-            cpu_time   = pdesc.cpu_time;
-          }
-          if (add_resource)  {
-            pdesc.disk_space = disk_space + job_class.disk_space;
-            pdesc.cpu_time   = cpu_time   + job_class.cpu_time;
-          } else  {
-            pdesc.disk_space = Math.max(0.0,disk_space-job_class.disk_space);
-            // do not change the total project's CPU time used when deleting a job
-          }
+//  var userProjectsListPath = prj.getUserProjectListPath ( loginData );
+//  if (utils.fileExists(userProjectsListPath))  {
+//    var pList = utils.readObject ( userProjectsListPath );
+  var pList = prj.readProjectList ( loginData );
+  if (pList)  {
+    for (var i=0;i<pList.projects.length;i++)  {
+      var pdesc = pList.projects[i];
+      if (pdesc.name==job_class.project)  {
+        if (pdesc.hasOwnProperty('disk_space'))  {
           disk_space = pdesc.disk_space;
           cpu_time   = pdesc.cpu_time;
-          pdesc.njobs++;
-          break;
         }
+        if (add_resource)  {
+          pdesc.disk_space = disk_space + job_class.disk_space;
+          pdesc.cpu_time   = cpu_time   + job_class.cpu_time;
+        } else  {
+          pdesc.disk_space = Math.max(0.0,disk_space-job_class.disk_space);
+          // do not change the total project's CPU time used when deleting a job
+        }
+        disk_space = pdesc.disk_space;
+        cpu_time   = pdesc.cpu_time;
+        pdesc.njobs++;
+        break;
       }
-      utils.writeObject ( userProjectsListPath,pList );
-    } else
-      log.error ( 1,'cannot read project list at ' + userProjectsListPath );
+    }
+    prj.writeProjectList ( loginData,pList );
+//    utils.writeObject ( userProjectsListPath,pList );
   } else
-    log.error ( 2,'cannot find project list at ' + userProjectsListPath );
+    log.error ( 1,'cannot read project list at ' +
+                  prj.getUserProjectListPath(loginData) ); // userProjectsListPath );
+
+//  } else
+//    log.error ( 2,'cannot find project list at ' + userProjectsListPath );
 
   if ((disk_space>0.0) || (cpu_time>0.0))  {
-    var projectDataPath = prj.getProjectDataPath ( loginData,job_class.project );
-    if (utils.fileExists(projectDataPath))  {
-      var pData = utils.readObject ( projectDataPath );
-      if (pData)  {
-        pData.desc.disk_space = disk_space;
-        pData.desc.cpu_time   = cpu_time;
-        pData.desc.njobs++;
-        utils.writeObject ( projectDataPath,pData );
-      } else
-        log.error ( 3,'cannot read project data at ' + projectDataPath );
+//    var projectDataPath = prj.getProjectDataPath ( loginData,job_class.project );
+//    if (utils.fileExists(projectDataPath))  {
+//      var pData = utils.readObject ( projectDataPath );
+    var pData = prj.readProjectData ( loginData,job_class.project );
+    if (pData)  {
+      pData.desc.disk_space = disk_space;
+      pData.desc.cpu_time   = cpu_time;
+      pData.desc.njobs++;
+      //utils.writeObject ( projectDataPath,pData );
+      prj.writeProjectData ( loginData,pData,false );
     } else
-      log.error ( 4,'cannot find project data at ' + projectDataPath );
+      log.error ( 3,'cannot read project data at ' +
+                    prj.getProjectDataPath(loginData,job_class.project) );
+    //  log.error ( 3,'cannot read project data at ' + projectDataPath );
+    //} else
+    //  log.error ( 4,'cannot find project data at ' + projectDataPath );
   }
 
 }
@@ -143,43 +151,49 @@ function changeProjectDiskSpace ( loginData,projectName,disk_space_change,
 
   if (disk_space_change!=0.0)  {
 
+    var pdesc0 = null;
     if (projectName)  {
-      var userProjectsListPath = prj.getUserProjectListPath ( loginData );
-      if (utils.fileExists(userProjectsListPath))  {
-        var pList = utils.readObject ( userProjectsListPath );
-        if (pList)  {
-          for (var i=0;i<pList.projects.length;i++)  {
-            var pdesc = pList.projects[i];
-            if (pdesc.name==projectName)  {
-              if ('disk_space' in pdesc)  // backward compatibility on 05.06.2018
-                pdesc.disk_space += disk_space_change;
-              else if (disk_space_change>0.0)
-                pdesc.disk_space  = disk_space_change;
-              break;
-            }
+//      var userProjectsListPath = prj.getUserProjectListPath ( loginData );
+//      if (utils.fileExists(userProjectsListPath))  {
+//        var pList = utils.readObject ( userProjectsListPath );
+      var pList = prj.readProjectList ( loginData );
+      if (pList)  {
+        for (var i=0;i<pList.projects.length;i++)  {
+          var pdesc = pList.projects[i];
+          if (pdesc.name==projectName)   {
+            if ('disk_space' in pdesc)  // backward compatibility on 05.06.2018
+              pdesc.disk_space += disk_space_change;
+            else if (disk_space_change>0.0)
+              pdesc.disk_space  = disk_space_change;
+            pdesc0 = pdesc;
+            break;
           }
-          utils.writeObject ( userProjectsListPath,pList );
-        } else
-          log.error ( 5,'cannot read project list at ' + userProjectsListPath );
+        }
+//        utils.writeObject ( userProjectsListPath,pList );
+        prj.writeProjectList ( loginData,pList );
       } else
-        log.error ( 6,'cannot find project list at ' + userProjectsListPath );
+        log.error ( 5,'cannot read project list at ' +
+                      prj.getUserProjectListPath(loginData) ); // userProjectsListPath );
+//      } else
+//        log.error ( 6,'cannot find project list at ' + userProjectsListPath );
 
       if (updateProjectData_bool)  {
-        var projectDataPath = prj.getProjectDataPath ( loginData,projectName );
-        if (utils.fileExists(projectDataPath))  {
-          var pData = utils.readObject ( projectDataPath );
-          if (pData)  {
-            pData.desc.disk_space += disk_space_change;
-            utils.writeObject ( projectDataPath,pData );
-          } else
-            log.error ( 7,'cannot read project data at ' + projectDataPath );
+        var pData = prj.readProjectData ( loginData,projectName );
+        if (pData)  {
+          pData.desc.disk_space += disk_space_change;
+          prj.writeProjectData ( loginData,projectName,true );
+          pdesc0 = pData.desc;
         } else
-          log.error ( 8,'cannot find project data at ' + projectDataPath );
+          log.error ( 7,'cannot read project data at ' +
+                        prj.getProjectDataPath(loginData,projectName) );
       }
 
     }
 
-    changeUserDiskSpace ( loginData,disk_space_change );
+    var ownerLoginData = loginData;
+    if (pdesc0 && (pdesc0.owner.login!=loginData.login))
+      ownerLoginData = user.getUserLoginData ( pdesc0.owner.login );
+    changeUserDiskSpace ( ownerLoginData,disk_space_change );
 
   }
 

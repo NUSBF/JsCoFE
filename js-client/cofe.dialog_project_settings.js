@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.10.19   <--  Date of Last Modification.
+ *    22.06.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Task Data Dialog (shows data availability for given task)
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2019
+ *  (C) E. Krissinel, A. Lebedev 2019-2020
  *
  *  =================================================================
  *
@@ -32,7 +32,7 @@ function ProjectSettingsDialog ( jobTree,callback_func )  {
   this.element.setAttribute ( 'title','Project Settings' );
   document.body.appendChild ( this.element );
 
-  checkProjectData ( jobTree.projectData );
+  //checkProjectData ( jobTree.projectData );
   var settings = jobTree.projectData.settings;
 
   this.grid = new Grid('');

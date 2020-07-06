@@ -54,7 +54,58 @@
         
   <div class="section" id="mrbump">
 <h1>4.2. MrBump<a class="headerlink" href="#mrbump" title="Permalink to this headline">¶</a></h1>
-<p>to be written...</p>
+<p><a class="reference external" href="https://doi.org/10.1107/S0907444907002661">Mr Bump</a> is an automated Molecular Replacement pipeline. MrBump Covers all stages from data examination through to initial model building. By using a target sequence and experimental structure factors, it will <strong>search</strong> for homologous structures, <strong>create a set of suitable search models</strong> from the template structures, do <strong>molecular replacement</strong>, and test the solutions with some rounds of restrained <strong>refinement</strong>.</p>
+<p>For routine molecular replacement problems, the MrBump automates what a crystallographer might do and its value is simply one of convenience. For more difficult cases, the pipeline aims to discover the particular template structure and model edits required to produce a viable search model and may succeed in finding an efficacious combination that would be missed otherwise.</p>
+<div class="section" id="mrbump-stages">
+<h2>4.2.1. MrBUMP stages<a class="headerlink" href="#mrbump-stages" title="Permalink to this headline">¶</a></h2>
+<p>The program is running in a fully automated way from model search through to model rebuilding.</p>
+<blockquote>
+<div><a class="reference internal image-reference" href="_images/MrBUMP.png"><img alt="_images/MrBUMP.png" class="align-center" src="_images/MrBUMP.png" style="width: 500.0px; height: 500.0px;" /></a>
+</div></blockquote>
+<p>The stages of MR solution using MrBUMP is described in the table below.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="21%" />
+<col width="79%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td>Model search</td>
+<td>Sequence-based search, domain identification and alignment generation (phmmer, HHpred)</td>
+</tr>
+<tr class="row-even"><td>Search-model preparation</td>
+<td><p class="first">Graphical search-model interaction (CCP4mg)</p>
+<p>Generation of mixed models based on sequence alignment (Sculptor, CHAINSAW, MOLREP)</p>
+<p class="last">Multiple truncated ensembles (using GESAMT or AMPLE)</p>
+</td>
+</tr>
+<tr class="row-odd"><td>Molecular replacement</td>
+<td>Phaser, MOLREP</td>
+</tr>
+<tr class="row-even"><td>Refinement</td>
+<td>100 cycles of restrained refinement with jelly-body restraints (REFMAC)</td>
+</tr>
+<tr class="row-odd"><td>Density modification</td>
+<td>Phase improvement for target data better than 2.4 Å (SHELXE) or 1.7 Å (ACORN) resolution</td>
+</tr>
+<tr class="row-even"><td>Model building</td>
+<td>Polyalanine main-chain tracing (SHELXE)</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="indicators-of-successful-mr-solution">
+<h2>4.2.2. Indicators of successful MR solution<a class="headerlink" href="#indicators-of-successful-mr-solution" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>A search model placed in the target unit cell such that it will provide us with sufficiently accurate phase estimates for the target</li>
+<li>Enables us to complete the model through model building and refinement</li>
+<li>Decreasing R-factors during refinement steps (R <sub>free</sub> below 0.5)</li>
+</ul>
+<p><strong>References</strong></p>
+<p><a class="reference external" href="https://doi.org/10.1107/S0907444907002661">Keegan, R. M. &amp; Winn, M. D. (2007). Acta Cryst. D63, 447–457.</a></p>
+<p><a class="reference external" href="https://doi.org/10.1107/S0907444907037195">Keegan, R. M. &amp; Winn, M. D. (2008). Acta Cryst. D64, 119–124.</a></p>
+<p><a class="reference external" href="https://doi.org/10.1107/S0907444911007530">Keegan, R. M., Long, F., Fazio, V. J., Winn, M. D., Murshudov, G. N. &amp; Vagin, A. A. (2011). Acta Cryst. D67, 313–323.</a></p>
+<p><a class="reference external" href="https://doi.org/10.1107/S2059798318003455">Keegan, R.M., McNicholas, S.J., Thomas, J.M.H., Simpkin, A.J., Simkovic, F., Uski, V., Ballard, C.C., Winn, M.D., Wilson, K.S., Rigden, D.J. (2018) Recent developments in MrBUMP: better search-model preparation, graphical interaction with search models, and solution improvement and assessment. Acta Cryst. D74: 167-182</a></p>
+</div>
 </div>
 
 

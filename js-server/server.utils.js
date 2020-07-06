@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    29.05.20   <--  Date of Last Modification.
+ *    26.06.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -36,12 +36,22 @@ var _is_windows = /^win/.test(process.platform);
 
 function fileExists ( path )  {
   try {
-    return fs.statSync(path);
+    return fs.lstatSync(path); // || fs.lstatSync(path);
   } catch (e)  {
     return null;
   }
 }
 
+function isSymbolicLink ( path )  {
+  try {
+    var stat = fs.lstatSync(path); // || fs.lstatSync(path);
+    if (stat && stat.isSymbolicLink())
+      return stat;
+    return null;
+  } catch (e)  {
+    return null;
+  }
+}
 
 function dirExists ( path )  {
   try {
@@ -80,6 +90,16 @@ function readString ( path )  {
   } catch (e)  {
     return null;
   }
+}
+
+
+function makeSymLink ( pathToLink,pathToLinked )  {
+  try {
+    fs.symlinkSync ( pathToLinked,pathToLink );
+  } catch (e)  {
+    return null;
+  }
+  return true;
 }
 
 
@@ -334,9 +354,12 @@ function mkDir_anchor ( dirPath )  {
 
 
 function removePath ( dir_path ) {
-  var rc = true;
+  var rc   = true;
+  var stat = fileExists(dir_path);
 
-  if (fileExists(dir_path))  {
+  if (stat && stat.isSymbolicLink())  {
+    fs.unlinkSync ( dir_path );
+  } else if (stat)  {
     fs.readdirSync(dir_path).forEach(function(file,index){
       var curPath = path.join ( dir_path,file );
       if (fs.lstatSync(curPath).isDirectory()) { // recurse
@@ -741,9 +764,11 @@ function padDigits ( number,digits ) {
 // ==========================================================================
 // export for use in node
 module.exports.fileExists            = fileExists;
+module.exports.isSymbolicLink        = isSymbolicLink;
 module.exports.dirExists             = dirExists;
 module.exports.fileSize              = fileSize;
 module.exports.removeFile            = removeFile;
+module.exports.makeSymLink           = makeSymLink;
 module.exports.readString            = readString;
 module.exports.readObject            = readObject;
 module.exports.readClass             = readClass;
