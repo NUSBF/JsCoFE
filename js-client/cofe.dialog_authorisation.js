@@ -62,7 +62,7 @@ function AuthorisationDialog ( callback_func )  {
         w = 3*$(window).width()/5 + 'px';
 
         $(self.element).dialog({
-          resizable : false,
+          resizable : true,
           height    : 'auto',
           maxHeight : 500,
           width     : w,

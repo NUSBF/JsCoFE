@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    27.01.20   <--  Date of Last Modification.
+ *    26.06.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -51,9 +51,9 @@ function UserData()  {
   this.licence       = '';
   this.feedback      = '';
   this.pwd           = '';
-  this.nJobs         = 0;
-  this.usedSpace     = 0;  // in MB
-  this.usedCPU       = 0;  // in hours
+//  this.nJobs         = 0;
+//  this.usedSpace     = 0;  // in MB
+//  this.usedCPU       = 0;  // in hours
   this.knownSince    = ''; // date
   this.lastSeen      = ''; // date
 //  this.admin         = false;

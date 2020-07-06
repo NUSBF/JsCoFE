@@ -286,22 +286,12 @@ AdminPage.prototype.makeUsersInfoTab = function ( udata )  {
         break;
       }
     trow.addCell ( online ).setNoWrap().setHorizontalAlignment('center');
-    /*
-    var role = 'user';
-    if (uDesc.login=='devel')  role = 'developer';
-    else if (uDesc.admin)      role = 'admin';
-    trow.addCell ( role ).setNoWrap();
-    */
     trow.addCell ( uDesc.role ).setNoWrap();
     if (uDesc.dormant)
           trow.addCell ( new Date(uDesc.dormant).toISOString().slice(0,10) ).setNoWrap();
     else  trow.addCell ( 'active' ).setNoWrap();
     trow.addCell ( uDesc.email     ).setNoWrap();
     trow.addCell ( uDesc.licence   ).setNoWrap();
-    /*
-    trow.addCell ( uDesc.nJobs     ).setNoWrap().setHorizontalAlignment('right');
-    trow.addCell ( uDesc.usedSpace ).setNoWrap().setHorizontalAlignment('right');
-    */
     trow.addCell ( uDesc.ration.jobs_total  ).setNoWrap().setHorizontalAlignment('right');
     trow.addCell ( round(uDesc.ration.storage_used,1) )
                                     .setNoWrap().setHorizontalAlignment('right');
@@ -316,7 +306,6 @@ AdminPage.prototype.makeUsersInfoTab = function ( udata )  {
     }
     trow.addCell ( lastSeen ).setNoWrap().setHorizontalAlignment('right');
     trow.uDesc = uDesc;
-    //this.userListTable.addRow ( trow );
   }
 
   (function(self){

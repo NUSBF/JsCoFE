@@ -2,4 +2,56 @@
 MrBump
 ======
 
-to be written...
+`Mr Bump <https://doi.org/10.1107/S0907444907002661>`_ is an automated Molecular Replacement pipeline. MrBump Covers all stages from data examination through to initial model building. By using a target sequence and experimental structure factors, it will **search** for homologous structures, **create a set of suitable search models** from the template structures, do **molecular replacement**, and test the solutions with some rounds of restrained **refinement**.
+
+For routine molecular replacement problems, the MrBump automates what a crystallographer might do and its value is simply one of convenience. For more difficult cases, the pipeline aims to discover the particular template structure and model edits required to produce a viable search model and may succeed in finding an efficacious combination that would be missed otherwise.
+
+-------------
+MrBUMP stages
+-------------
+
+The program is running in a fully automated way from model search through to model rebuilding. 
+
+ .. image:: images/MrBUMP.png
+        :scale: 20 %
+        :align: center
+
+
+The stages of MR solution using MrBUMP is described in the table below.
+
+.. table:: 
+
+    ========================        =======================================================================================
+    Model search                    Sequence-based search, domain identification and alignment generation (phmmer, HHpred)
+    Search-model preparation        Graphical search-model interaction (CCP4mg)
+    
+                                    Generation of mixed models based on sequence alignment (Sculptor, CHAINSAW, MOLREP)
+                                    
+                                    Multiple truncated ensembles (using GESAMT or AMPLE)
+    Molecular replacement           Phaser, MOLREP
+    Refinement                      100 cycles of restrained refinement with jelly-body restraints (REFMAC)
+    Density modification            Phase improvement for target data better than 2.4 Å (SHELXE) or 1.7 Å (ACORN) resolution
+    Model building                  Polyalanine main-chain tracing (SHELXE)
+    ========================        =======================================================================================
+
+------------------------------------
+Indicators of successful MR solution
+------------------------------------
+
+• A search model placed in the target unit cell such that it will provide us with sufficiently accurate phase estimates for the target
+
+• Enables us to complete the model through model building and refinement
+
+• Decreasing R-factors during refinement steps (R :subscript:`free` below 0.5)
+
+
+
+**References**
+
+`Keegan, R. M. & Winn, M. D. (2007). Acta Cryst. D63, 447–457. <https://doi.org/10.1107/S0907444907002661>`_
+
+`Keegan, R. M. & Winn, M. D. (2008). Acta Cryst. D64, 119–124. <https://doi.org/10.1107/S0907444907037195>`_
+
+`Keegan, R. M., Long, F., Fazio, V. J., Winn, M. D., Murshudov, G. N. & Vagin, A. A. (2011). Acta Cryst. D67, 313–323. <https://doi.org/10.1107/S0907444911007530>`_
+
+`Keegan, R.M., McNicholas, S.J., Thomas, J.M.H., Simpkin, A.J., Simkovic, F., Uski, V., Ballard, C.C., Winn, M.D., Wilson, K.S., Rigden, D.J. (2018) Recent developments in MrBUMP: better search-model preparation, graphical interaction with search models, and solution improvement and assessment. Acta Cryst. D74: 167-182 <https://doi.org/10.1107/S2059798318003455>`_

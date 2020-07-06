@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    08.04.20   <--  Date of Last Modification.
+ *    05.07.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -29,15 +29,15 @@
 function ImportSharedProjectDialog ( onSuccess_func )  {
 // XXX:
   Widget.call ( this,'div' );
-  this.element.setAttribute ( 'title','Import Shared Project' );
+  this.element.setAttribute ( 'title','Join Shared Project' );
   document.body.appendChild ( this.element );
 
   this.grid = new Grid('');
   this.addWidget ( this.grid );
-  this.grid.setLabel ( '<h3>Import Shared Project</h3>',0,0,1,3 );
+  this.grid.setLabel ( '<h2>Join Shared Project</h2>',0,0,1,3 );
 
   (function(dlg){
-    serverRequest ( fe_reqtype.getSharedPrjList,null,'Import Shared Project',
+    serverRequest ( fe_reqtype.getSharedPrjList,null,'Join Shared Project',
       function(data){ dlg.makeProjectSelectPage ( data,onSuccess_func ); },
       null,'persist' );
   }(this))
@@ -68,7 +68,7 @@ function ImportSharedProjectDialog ( onSuccess_func )  {
   (function(dlg){
 
     $(dlg.element).on( "dialogclose",function(event,ui){
-      serverRequest ( fe_reqtype.finishPrjImport,0,'Finish Project Import',
+      serverRequest ( fe_reqtype.finishPrjImport,0,'Finish Joining Project',
                       null,function(){
         window.setTimeout ( function(){
           $(dlg.element).dialog( "destroy" );
@@ -85,37 +85,44 @@ ImportSharedProjectDialog.prototype = Object.create ( Widget.prototype );
 ImportSharedProjectDialog.prototype.constructor = ImportSharedProjectDialog;
 
 
-ImportSharedProjectDialog.prototype.makeProjectSelectPage = function ( pShare,onSuccess_func ) {
+ImportSharedProjectDialog.prototype.makeProjectSelectPage = function (
+                                                      pShare,onSuccess_func ) {
 
   var shared_projects = pShare.shared_projects;
 
   if (shared_projects.length<=0)  {
 
     this.grid.setLabel ( 'You do not have projects shared with ' +
-                    'you by other users.', 1,0,1,1 );
+                         'you by other users.', 1,0,1,1 );
 
   } else  {
 
-    var msg_lbl   = this.grid.setLabel ( 'Select a project to import:',
-                                    1,0,1,1 );
+    var msg_lbl   = this.grid.setLabel ( 'Select a project to join:', 1,0,1,1 );
     var share_ddn = new Dropdown();
-    share_ddn.setTooltip ( 'Choose a project to import' )
+    share_ddn.setTooltip ( 'Choose a project to join' )
              .setWidth ( '600px' );
-    for (var i=0;i<shared_projects.length;i++)  {
-      var keeper = '';
-      if (('keeper' in shared_projects[i].owner) &&
-          (shared_projects[i].owner.login!=shared_projects[i].owner.keeper))
-        keeper = shared_projects[i].owner.keeper + ':';
+    for (var i=0;i<shared_projects.length;i++)
       share_ddn.addItem (
-            keeper +
-            shared_projects[i].owner.login + ':[' +
-            shared_projects[i].name  + '] "' +
-            shared_projects[i].title + '"','',i,i==0 );
-    }
+           shared_projects[i].owner.login + ':[' +
+           shared_projects[i].name  + '] "' +
+           shared_projects[i].title + '"','',i,i==0 );
+
+//    for (var i=0;i<shared_projects.length;i++)  {
+//      var keeper = '';
+//      if (('keeper' in shared_projects[i].owner) &&
+//          (shared_projects[i].owner.login!=shared_projects[i].owner.keeper))
+//        keeper = shared_projects[i].owner.keeper + ':';
+//      share_ddn.addItem (
+//            keeper +
+//            shared_projects[i].owner.login + ':[' +
+//            shared_projects[i].name  + '] "' +
+//            shared_projects[i].title + '"','',i,i==0 );
+//    }
+
     share_ddn.make();
     this.grid.setWidget   ( share_ddn,2,0,1,1 );
     this.grid.setLabel    ( '&nbsp;', 3,0,1,1 );
-    var import_btn = this.grid.setButton ( 'Import',
+    var import_btn = this.grid.setButton ( 'Join',
           image_path('share'),4,0,1,1 ).setWidth_px ( 120 );
     this.grid.setHorizontalAlignment ( 4,0,'center' );
 
@@ -123,17 +130,17 @@ ImportSharedProjectDialog.prototype.makeProjectSelectPage = function ( pShare,on
       import_btn.addOnClickListener ( function(){
 
         var pDesc = shared_projects[share_ddn.getValue()];
-        msg_lbl.setText ( 'The project is being imported, please wait ... ' );
+        msg_lbl.setText ( 'The project is being joined, please wait ... ' );
         share_ddn .hide();
         import_btn.hide();
         var progressBar = new ProgressBar ( 0 );
         dlg.grid.setWidget ( progressBar, 3,0,1,1 );
 
-        serverRequest ( fe_reqtype.startSharedImport,pDesc,'Import Shared Project',
+        serverRequest ( fe_reqtype.startSharedImport,pDesc,'Join Shared Project',
           function(data){
 
             function checkReady() {
-              serverRequest ( fe_reqtype.checkPrjImport,0,'Shared Project Import',
+              serverRequest ( fe_reqtype.checkPrjImport,0,'Join Shared Project',
                 function(data){
                   if (!data.signal)
                     window.setTimeout ( checkReady,1000 );
@@ -141,14 +148,20 @@ ImportSharedProjectDialog.prototype.makeProjectSelectPage = function ( pShare,on
                     progressBar.hide();
                     $( "#cancel_btn" ).button ( "option","label","Close" );
                     if (data.signal=='Success')  {
-                      msg_lbl.setText ( 'Shared Project "' + data.name + '" is imported, ' +
-                                        'you may close this dialog now.' );
+                      dlg.grid.setLabel ( '<h2>Project Joined Successfully</h2>',0,0,1,3 );
+                      msg_lbl.setText ( 'Project "' + data.name + '" is now joined, ' +
+                                        'and you may work on it<br>simultaneously with ' +
+                                        'project owner and other users,<br>with whom the ' +
+                                        'project may have been also shared.' +
+                                        '<p>This dialog may be closed now.' );
                       if (onSuccess_func)
                         onSuccess_func();
-                    } else
-                      msg_lbl.setText ( 'Shared Project "' + data.name + '" failed to import, ' +
-                                        'the reason being:<p><b><i>' + data.signal +
-                                        '</i></b>.' );
+                    } else  {
+                      dlg.grid.setLabel ( '<h2>Join Shared Project Failed</h2>',0,0,1,3 );
+                      msg_lbl.setText ( 'Project "' + data.name + '" was not joined, ' +
+                                        'the reason being:<p><b>*** <i>' + data.signal +
+                                        '</i></b>' );
+                    }
                   }
                 },null,function(){
                   window.setTimeout ( checkReady,1000 );  // depress error messages

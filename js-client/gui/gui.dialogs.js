@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    11.05.20   <--  Date of Last Modification.
+ *    05.07.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -12,6 +12,19 @@
  *       ~~~~~~~~~
  *  **** Content :  Various dialog templates
  *       ~~~~~~~~~
+ *
+ *           function Dialog        ( title )
+ *           function MessageBox    ( title,message )
+ *           function MessageBoxW   ( title,message,width_ratio )
+ *           function MessageBoxF   ( title,message,btn_name,onClick_func,
+ *                                          uncloseable_bool )
+ *           function HelpBox       ( title,helpURL,onDoNotShowAgain_func )
+ *           function launchHelpBox ( title,helpURL,onDoNotShowAgain_func,
+ *                                          delay_msec )
+ *           function WaitDialog    ( title,message,process_wait )
+ *           function QuestionBox   ( title,message,btn1_name,onButton1_func,
+ *                                          btn2_name,onButton2_func )
+ *           function InputBox      ( title )
  *
  *  (C) E. Krissinel, A. Lebedev 2016-2020
  *

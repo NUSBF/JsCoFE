@@ -26,6 +26,7 @@ var cofe_signals = {
   taskReady     : 'task_ready',      // fired by Job Dialog's input panels
   jobStarted    : 'job_started',     // fired by JobTree
   treeUpdated   : 'tree_updated',    // fired by JobTree
+  reloadTree    : 'reload_tree',     // fired by JobTree
   rationUpdated : 'ration_updated',  // fired by JobTree
   jobDlgSignal  : 'job_dlg_signal',
   uploadEvent   : 'uploadEvent'      // fired by Upload module
@@ -99,6 +100,10 @@ function makeCommErrorMessage ( title,response )  {
 
     case fe_retcode.proxyError:
         MessageProxyError ( title );
+      break;
+
+    case fe_retcode.projectAccess:
+        MessageProjectAccess ( title );
       break;
 
     default:

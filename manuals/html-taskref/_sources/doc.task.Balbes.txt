@@ -2,4 +2,40 @@
 Balbes
 ======
 
-to be written...
+`BALBES <https://doi.org/10.1107/S0907444907050172>`_, a system for fully automating molecular replacement  which automates the process of identifying the best possible search model from its own customized version of the PDB database, prepares it and puts it through molecular replacement. The system is automated so that a user needs only to provide a sequence file and a X-ray data file. After that BALBES will perform jobs such as data checking, homologous searching using its internal database to generate a variety of template models, and selecting different algorithms to do MR and refinement on those models and their combinations.
+
+All	models	are	corrected  *by sequence alignment* and  *by accessible	surface	area*. If an input file contains more than one sequence then the system assumes that it is a complex of proteins (heteromultimeric models will be generated if possible).
+
+.. note::  
+        If the system cannot find a good solution from protein assembly then it tries to solve using individual models and combine them. Individual models may come from different proteins. 
+
+----------------
+ BALBES workflow
+----------------
+ 
+The first job in automated molecular replacement is to find the template structures by searching the internal database. When this process has finished, users are provided with a group of template structures.
+ 
+In the beginning, the input structure-factor is analyzed using SFCHECK and all necessary information is extracted (such as the unit-cell parameters, space group, data completeness, optimal resolution, the pseudo-translation vector if it exists, twin operators and estimates of the twin fractions).
+ 
+Then BALBES begins to analyse the sequence, unit-cell parameters and space group. If the space group is the same as one of the entries and the unit-cell parameters are very similar (the maximum difference in unit-cell lengths and angles between the target and search crystals is less than 0.5%), then the system tries to use this PDB entry for refinement. This is performed to account for potential mistakes that may arise during expression and crystallization. If the differences in the unit-cell parameters are within 5% (the corresponding maximum difference is less than 5%) and the sequence identity is greater than 90%, then the system again tries to use this PDB entry for refinement. If refinement does not produce a desirable R/Rfree, the system then starts the automated molecular-replacement runs. A desirable R/Rfree in the current version is determined according to the following procedure.
+ 
+ΔRfree = (Rfree − Rfree_init)/Rfree.
+
+* If Rfree ≤ 0.35 then the structure is considered ``solved`` regardless of the value of ΔRfree.
+
+* If 0.35 < Rfree ≤ 0.45 then the structure is marked as ``solved`` if ΔRfree < 0.0001, which means that Rfree could slightly increase.
+
+* If 0.45 < Rfree ≤ 0.50 then ΔRfree must be less than −0.05 for the structure to be considered as ``solved``, which means that Rfree should decrease.
+
+* If Rfree > 0.50 and ΔRfree > 0.03, then the structure is considered to be ``not solved``.
+
+* All other cases are considered as potential solutions.
+
+**References**
+
+`F. Long, A. Vagin, P. Young and G.N. Murshudov "BALBES: a Molecular Replacement Pipeline " Acta Cryst. D64 125-132(2008) <https://doi.org/10.1107/S0907444907050172>`_
+
+`R. Keegan, F. Long, V. Fazio, M. Winn,G.N.Murshudovb and A. Vaginb "Evaluating the solution from MrBUMP and BALBES" Acta Cryst. D67 313-323(2011) <https://doi.org/10.1107/S0907444911007530>`_
+
+The official software page you can find `here <https://www2.mrc-lmb.cam.ac.uk/groups/murshudov/content/balbes/balbes_layout.html>`_
+

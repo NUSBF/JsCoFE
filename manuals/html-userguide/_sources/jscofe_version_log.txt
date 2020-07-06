@@ -3,9 +3,26 @@ CCP4 Cloud Version Log
 ======================
 
 
+**Version 1.6.013**
+
+    *Released on --.--.2020 with CCP4 7.1.003*
+
+    **Changes and new features**
+
+    #. Shared Projects are now joined, rather than imported. This means that
+       all users, who share a project, are working on the same copy of it. 
+       Simultaneous work of several users on shared projects is supported.
+       Only project owner can share, delete or rename project, other users can
+       only join or unjoin it in their Project Lists.
+       
+    #. Documentation updated (``DIMPLE``, Automatic Image Processing with ``Xia-2``, Structure Superposition with ``LsqKab``)
+
+
+
+
 **Version 1.6.012**
 
-    *Released on --.--.2020 with CCP4 7.1.002*
+    *Released on 03.07.2020 with CCP4 7.1.002*
 
     **Changes and new features**
 
@@ -13,6 +30,11 @@ CCP4 Cloud Version Log
        both wavelengths and photon energies. In addition to the general plot,
        anomalous scattering factors may be calculated also for up to 6 selected
        wavelengths or photon energies
+       
+    #. User guidance sections (Verdicts) are added to ASU, Phaser, CCP4Build and
+       Refmac task reports
+       
+    #. Documentation updated
        
     #. Fixed a bug in the import procedure for HHPRED alignments, related to
        mispositioning of residue numbers under certain circumstances

@@ -630,7 +630,8 @@ function readUsersData()  {
             'volume' : ''
           };
           udata.ration = ration.getUserRation ( loginData );
-          if (udata.ration.jobs_total<udata.nJobs)  {  // backward compatibility 07.06.2018
+          if (('nJobs' in udata) && (udata.ration.jobs_total<udata.nJobs))  {
+            // backward compatibility 07.06.2018
             udata.ration.jobs_total = udata.nJobs;
             ration.saveUserRation ( loginData,udata.ration );
           }

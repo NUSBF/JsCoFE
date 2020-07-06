@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.04.20   <--  Date of Last Modification.
+ *    25.06.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -515,19 +515,7 @@ JobDialog.prototype.makeToolBar = function()  {
   this.toolBar.setLabel  ( '&nbsp;&nbsp;', 0,this.col, 1,1 ).setNoWrap();
   this.toolBar.setCellSize ( '45%','',0,this.col++ );
 
-  /*
-  this.export_btn = this.toolBar.setButton ( 'Export',image_path('export'), 0,col++, 1,1 )
-                                .setTooltip('Export job directory' );
-
-  if (this.task.helpURL)
-    this.ref_btn  = this.toolBar.setButton ( 'Ref.',image_path('reference'), 0,col++, 1,1 )
-                                .setTooltip('Task Documentation' );
-  this.help_btn   = this.toolBar.setButton ( 'Help',image_path('help'), 0,col++, 1,1 )
-                                .setTooltip('Dialog Help' );
-  this.close_btn  = this.toolBar.setButton ( 'Close',image_path('close'), 0,col, 1,1 )
-                                .setTooltip('Close Job Dialog' );
-  */
-
+  this.newtab_btn = this.addToolBarButton  ( false,'new_tab' ,'Open in new tab or window' );
   this.export_btn = this.addToolBarButton  ( false,'export'  ,'Export job directory' );
   if (this.task.getHelpURL())
     this.ref_btn  = this.addToolBarButton  ( true,'reference','Task Documentation'   );
@@ -631,6 +619,7 @@ JobDialog.prototype.makeLayout = function ( onRun_func )  {
     this.run_image  = null;
     this.stop_btn   = null;
     //this.status_lbl = null;
+    this.newtab_btn = null;
     this.export_btn = null;
     this.ref_btn    = null;
     this.help_btn   = null;
@@ -835,6 +824,30 @@ JobDialog.prototype.makeLayout = function ( onRun_func )  {
     if (dlg.stop_btn)
       dlg.stop_btn.addOnClickListener ( function(){
         dlg.onDlgSignal_func ( dlg.task.id,job_dialog_reason.stop_job,null );
+      });
+
+    if (dlg.newtab_btn)
+      dlg.newtab_btn.addOnClickListener ( function(){
+        //if (dlg.outputPanel)
+        //  window.open ( dlg.outputPanel.getURL(),'_blank',
+        //                'location=no,menubar=no,titlebar=no,toolbar=no' );
+        if (dlg.outputPanel)  {
+          var iframe =
+            '<html><head>' +
+            '<style>body, html {' +
+                   'width: 100%; height: 100%; margin: 0; padding: 0}' +
+            '</style>' +
+            '<title>'  + dlg.task.project + ':[' + padDigits(dlg.task.id,4) +
+                         '] ' + dlg.task.title +
+            '</title>' +
+            '</head><body>' +
+            '<iframe src="' + dlg.outputPanel.getURL() +
+                '" style="height:calc(100% - 4px);width:calc(100% - 4px)">' +
+            '</iframe></body></html>';
+          var win = window.open ( "",'' );
+//                            "toolbar=no,menubar=no,resizable=yes,location=no" );
+          win.document.write ( iframe );
+        }
       });
 
     if (dlg.export_btn)

@@ -70,10 +70,10 @@ var k = -1;
 
 
 UserRation.prototype.maskProject = function ( projectName )  {
-// When a project is deleted, its jobs should not be removed from index because
-// they are used for calculating current quotas. However, they should be masked
-// such that they are ignored if user immediately re-creates project with same
-// name
+// When a project is deleted, its jobs should not be removed from the ration
+// index because they are still used for calculating current quotas. However,
+// they should be masked such that they are ignored if user immediately
+// re-creates project with same name
   for (var i=0;(i<this.jobs.length);i++)
     if (this.jobs[i].project==projectName)
       this.jobs[i].project = '""" ' + projectName + ' """';  // impossible project name
