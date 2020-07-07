@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    01.07.20   <--  Date of Last Modification.
+ *    07.07.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -74,7 +74,7 @@ FEJobRegister.prototype.addJob = function ( job_token,nc_number,loginData,
   var index = loginData.login + ':' + project + ':' + jobId;
   this.token_map[index] = job_token;
   for (var i=0;i<shared_logins.length;i++)  {
-    index = shared_logins[i] + ':' + project + ':' + jobId;
+    index = shared_logins[i].login + ':' + project + ':' + jobId;
     this.token_map[index] = job_token;
   }
 }
@@ -353,17 +353,11 @@ function runJob ( loginData,data, callback_func )  {
 
   // run job
 
-  //var projectDataPath = prj.getProjectDataPath ( loginData,task.project );
-  //var projectData     = utils.readObject ( projectDataPath );
   var shared_logins  = [];
   var projectData    = prj.readProjectData ( loginData,task.project );
   var ownerLoginData = loginData;
   if (projectData)  {
-    if (projectData.desc.owner.share)
-      shared_logins = projectData.desc.owner.share.split(',')
-                                 .map(function(item){ return item.trim(); });
-//    if (projectData.desc.owner.login!=loginData.login)
-//      shared_logins.push ( projectData.desc.owner.login );
+    shared_logins = projectData.desc.owner.share;
     if (projectData.desc.owner.login!=loginData.login)
       ownerLoginData = user.getUserLoginData ( projectData.desc.owner.login );
     if (shared_logins.length>0)  // update the timestamp

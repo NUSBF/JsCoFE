@@ -2,7 +2,7 @@
 /*
 *  ==========================================================================
  *
- *    24.06.20   <--  Date of Last Modification.
+ *    07.07.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -------------------------------------------------------------------------
  *
@@ -30,7 +30,7 @@ function ProjectDesc()  {
     login  : '',   // login where project was created
     name   : '',
     email  : '',
-    share  : '',   // comma-separated list of login names
+    share  : []    // list of login share objects
   };
   this.jobCount     = 0;    // job count
   this.timestamp    = 0;    // Date.now();
@@ -47,8 +47,10 @@ function isProjectAccessible ( login,projectDesc )  {
   if (!('login' in projectDesc.owner))  return true;
   if (!projectDesc.owner.login)         return true;
   if (projectDesc.owner.login==login)   return true;
-  return (projectDesc.owner.share &&
-         (projectDesc.owner.share.split(',').indexOf(login)>=0));
+  var found = false;
+  for (var i=0;(i<projectDesc.owner.share.length) && (!found);i++)
+    found = (projectDesc.owner.share[i].login==login);
+  return found;
 }
 
 
