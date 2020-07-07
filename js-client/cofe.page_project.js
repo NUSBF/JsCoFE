@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    05.07.20   <--  Date of Last Modification.
+ *    07.07.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -171,7 +171,13 @@ function ProjectPage ( sceneId )  {
       var ibx_grid  = new Grid     ( '' );
       ibx_grid.setLabel ( '<h2>Share Project</h2>',0,0,1,1 );
       ibx_grid.setLabel ( 'The following users:<br>&nbsp;',1,0,1,1 );
-      var share_inp = new InputText ( jobTree.projectData.desc.owner.share );
+      var share_list = '';
+      if (jobTree.projectData.desc.owner.share.length>0)  {
+        share_list = jobTree.projectData.desc.owner.share[0].login;
+        for (var i=1;i<jobTree.projectData.desc.owner.share.length;i++)
+          share_list += ',' + jobTree.projectData.desc.owner.share[i].login;
+      }
+      var share_inp = new InputText ( share_list );
       share_inp.setStyle   ( 'text','','login1,login2,...',
                              'Give a comma-separated list of login names of ' +
                              'users who will be allowed to copy this project ' +
@@ -180,7 +186,8 @@ function ProjectPage ( sceneId )  {
       share_inp.setFontItalic ( true    );
       ibx_grid .setWidget     ( share_inp,2,0,1,1 );
       share_inp.setWidth      ( '300pt' );
-      ibx_grid .setLabel      ( '&nbsp;<br>can copy this project in their accounts.',
+      ibx_grid .setLabel      ( '&nbsp;<br>can join this project and work on ' +
+                                'it simultaneously with you.',
                                 3,0,1,1  );
       inputBox .addWidget     ( ibx_grid );
       inputBox .launch ( 'Apply',function(){
@@ -193,12 +200,13 @@ function ProjectPage ( sceneId )  {
                                .filter(function(item,pos,self){
                                   return self.indexOf(item)==pos;
                                 });
-        jobTree.projectData.desc.owner.share = '';
+        jobTree.projectData.desc.owner.share = [];
         for (var i=0;i<logins_lst.length;i++)
           if (logins_lst[i]!=jobTree.projectData.desc.owner.login)  {
-            if (jobTree.projectData.desc.owner.share.length>0)
-              jobTree.projectData.desc.owner.share += ',';
-            jobTree.projectData.desc.owner.share += logins_lst[i];
+            jobTree.projectData.desc.owner.share.push({
+              'login'       : logins_lst[i],
+              'permissions' : 'rw'
+            });
           }
         serverRequest ( fe_reqtype.shareProject,{
                           desc   : jobTree.projectData.desc,
@@ -210,19 +218,31 @@ function ProjectPage ( sceneId )  {
                               var msg = '<h2>Project\'s Share Status</h2>' +
                                         '<b>Shared with:</b>&nbsp;<i>';
                               if (data.desc.owner.share.length<=0)
-                                    msg += 'nobody';
-                              else  msg += data.desc.owner.share +
-                                    '<br><font size="-1">(these users can import ' +
-                                    'the project in their accounts)</font>';
+                                msg += 'nobody';
+                              else  {
+                                msg += data.desc.owner.share[0].login;
+                                for (var i=1;i<data.desc.owner.share.length;i++)
+                                  msg += ', ' + data.desc.owner.share[i].login;
+                                msg += '<br><font size="-1">(these users can join ' +
+                                       'this project and work on it simultaneously ' +
+                                       'with you)</font>';
+                              }
                               msg += '</i>';
-                              if (data.unshared.length>0)
+                              if (data.unshared.length>0)  {
                                 msg += '<p><b>Unshared with:</b>&nbsp;<i>' +
-                                       data.unshared.join(',') + '</i>';
-                              if (data.unknown.length>0)
+                                       data.unshared[0].login;
+                                for (var i=1;i<data.unshared.length;i++)
+                                  msg += ', ' + data.unshared[i].login;
+                                msg += '</i>';
+                              }
+                              if (data.unknown.length>0)  {
                                 msg += '<p><b>Unknown users:</b>&nbsp;<i>' +
-                                       data.unknown.join(',') +
-                                       '<br><font size="-1">(sharing request was not ' +
+                                       data.unknown[0].login;
+                                for (var i=1;i<data.unknown.length;i++)
+                                  msg += ', ' + data.unknown[i].login;
+                                msg += '<br><font size="-1">(sharing request was not ' +
                                        'fulfilled for these users)</font></i>';
+                              }
                               new MessageBox ( 'Share Project [' + data.desc.name + ']',msg );
                             });
                             if (jobTree.projectData.desc.owner.share.length>0)

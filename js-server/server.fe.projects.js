@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    04.07.20   <--  Date of Last Modification.
+ *    07.07.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -196,7 +196,7 @@ function checkProjectDescData ( projectDesc,loginData )  {
       login : loginData.login,
       name  : uData.name,
       email : uData.email,
-      share : '',
+      share : []
     };
     update = true;  // update project metadata
   }
@@ -204,8 +204,23 @@ function checkProjectDescData ( projectDesc,loginData )  {
     projectDesc.timestamp = Date.now();
     update = true;
   }
-  if (!('share' in projectDesc))  {
-    projectDesc.share = '';
+  if (!('share' in projectDesc.owner))  {
+    projectDesc.owner.share = [];
+    update = true;
+  } else if (projectDesc.owner.share.constructor.name!='Array')  {
+    var lst = projectDesc.owner.share.split(',');
+    projectDesc.owner.share = [];
+    for (var i=0;i<lst.length;i++)
+      if (lst[i])
+        projectDesc.owner.share.push ({
+          'login'       : lst[i],
+          'permissions' : 'rw'  // not used, reserved for future
+        });
+    update = true;
+  } else if ((projectDesc.owner.share.length==1) &&
+             (projectDesc.owner.share[0].login==''))  {
+    // introduced only because of dev error, may be removed painlessly
+    projectDesc.owner.share = [];
     update = true;
   }
   if ('keeper' in projectDesc.owner)  {
@@ -270,15 +285,25 @@ function readProjectDesc ( loginData,projectName )  {
 }
 
 
+function writeProjectList ( loginData,projectList )  {
+  var userProjectsListPath = getUserProjectListPath ( loginData );
+  return utils.writeObject ( userProjectsListPath,projectList );
+}
+
 function readProjectList ( loginData )  {
   var userProjectsListPath = getUserProjectListPath ( loginData );
   var pList = utils.readObject ( userProjectsListPath );
   if (pList)  {
     var pdescs = pList.projects;
     pList.projects = [];
+    var update = false;
     for (var i=0;i<pdescs.length;i++)  {
       var pdesc = pdescs[i];
-      checkProjectDescData ( pdesc,loginData );
+      if (checkProjectDescData(pdesc,loginData))  {
+        update = true;
+        var pData = readProjectData ( loginData,pdesc.name );
+        writeProjectData ( loginData,pData,true );
+      }
       if (pdesc.owner.share.length>0)  // the project could have been changed
         pdesc = readProjectDesc ( loginData,pdescs[i].name );
       if (pdesc && (pdesc.owner.login!=loginData.login) &&
@@ -287,13 +312,10 @@ function readProjectList ( loginData )  {
       if (pdesc)
         pList.projects.push ( pdesc );
     }
+    if (update)
+      writeProjectList ( loginData,pList );
   }
   return pList;
-}
-
-function writeProjectList ( loginData,projectList )  {
-  var userProjectsListPath = getUserProjectListPath ( loginData );
-  return utils.writeObject ( userProjectsListPath,projectList );
 }
 
 
@@ -498,6 +520,7 @@ var response = null;  // must become a cmd.Response object to return
   var pData = readProjectData ( loginData,projectName );
   if (pData && (pData.desc.owner.login==loginData.login))  {
     // project is deleted by owner -- remove it from all shares
+    /*
     var share = _make_unique_list ( pData.desc.owner.share );
     for (var i=0;i<share.length;i++)
       if (share[i])  {
@@ -508,6 +531,16 @@ var response = null;  // must become a cmd.Response object to return
           writeProjectShare  ( uLoginData,pShare );
         }
       }
+    */
+    var share = pData.desc.owner.share;
+    for (var i=0;i<share.length;i++)  {
+      var uLoginData = user.getUserLoginData ( share[i].login );
+      if (uLoginData)  {
+        var pShare = readProjectShare ( uLoginData );
+        pShare.removeShare ( pData.desc );
+        writeProjectShare  ( uLoginData,pShare );
+      }
+    }
   }
 
   // Get users' projects directory name
@@ -1025,8 +1058,8 @@ function saveProjectData ( loginData,data )  {
 
 function shareProject ( loginData,data )  {  // data must contain new title
 var pDesc    = data.desc;
-var share    = _make_unique_list ( pDesc.owner.share );
-var share0   = _make_unique_list ( data.share0 );
+var share    = pDesc.owner.share;
+var share0   = data.share0;
 var shared   = [];
 var unshared = [];
 var unknown  = [];
@@ -1040,20 +1073,25 @@ var unknown  = [];
 
   // unshare by comparison of share0 and share
   for (var i=0;i<share0.length;i++)
-    if (share0[i] && (share.indexOf(share0[i])<0))  {
-      var uLoginData = user.getUserLoginData ( share0[i] );
-      if (uLoginData)  {
-        var pShare = readProjectShare ( uLoginData );
-        pShare.removeShare ( pDesc );
-        writeProjectShare  ( uLoginData,pShare );
+    if (share0[i].login)  {
+      var found = false;
+      for (var j=0;(j<share.length) && (!found);j++)
+        found = (share0[i].login==share[i].login);
+      if (!found)  {
+        var uLoginData = user.getUserLoginData ( share0[i].login );
+        if (uLoginData)  {
+          var pShare = readProjectShare ( uLoginData );
+          pShare.removeShare ( pDesc );
+          writeProjectShare  ( uLoginData,pShare );
+        }
+        unshared.push ( share0[i] );
       }
-      unshared.push ( share0[i] );
     }
 
   // share with users given by share
   for (var i=0;i<share.length;i++)
-    if (share[i])  {
-      var uLoginData = user.getUserLoginData ( share[i] );
+    if (share[i].login)  {
+      var uLoginData = user.getUserLoginData ( share[i].login );
       if (uLoginData)  {
         var pShare = readProjectShare ( uLoginData );
         pShare.addShare ( pDesc );
@@ -1063,7 +1101,7 @@ var unknown  = [];
         unknown.push ( share[i] );
     }
 
-  pDesc.owner.share = shared.join(',');
+  pDesc.owner.share = shared;
   var pData = readProjectData ( loginData,pDesc.name );
   if (pData)  {
     pData.desc.owner.share = pDesc.owner.share;
@@ -1135,21 +1173,15 @@ function _import_project ( loginData,tempdir,prjDir )  {
       projectDesc.dateCreated  = prj_meta.desc.dateCreated;
       projectDesc.dateLastUsed = prj_meta.desc.dateLastUsed;
       if ('owner' in prj_meta.desc)  {
-        //if (prj_meta.desc.owner.share)
-        //  prj_meta.desc.owner.share = '';
         projectDesc.owner        = prj_meta.desc.owner;
         if (!prjDir)  {  // this means that the project is imported, not shared
           projectDesc.owner.author = prj_meta.desc.owner.login;
           projectDesc.owner.login  = loginData.login;
-          projectDesc.owner.share  = '';
+          projectDesc.owner.share  = [];
         }
       }
-//      projectDesc.owner.share = '';
       if (!projectDesc.owner.login)
         projectDesc.owner.login = loginData.login;
-//      else if (projectDesc.owner.login!=loginData.login)
-//        projectDesc.owner.is_shared = true;
-//      projectDesc.owner.keeper = loginData.login;
       prj_meta.desc.owner = projectDesc.owner;
       utils.writeObject ( prj_meta_path,prj_meta );
     } else
