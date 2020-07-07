@@ -214,7 +214,7 @@ function ProjectPage ( sceneId )  {
                         },'Share Project',function(data){
                           if (data.desc)  {
                             jobTree.projectData.desc = data.desc;
-                            jobTree.saveProjectData ( [],[],function(){
+                            jobTree.saveProjectData ( [],[],false,function(){
                               var msg = '<h2>Project\'s Share Status</h2>' +
                                         '<b>Shared with:</b>&nbsp;<i>';
                               if (data.desc.owner.share.length<=0)
@@ -414,7 +414,7 @@ function ProjectPage ( sceneId )  {
 
   function onLogout ( logout_func )  {
     jobTree.stopTaskLoop    ();
-    jobTree.saveProjectData ( [],[], function(rdata){ logout_func(); } );
+    jobTree.saveProjectData ( [],[],false, function(rdata){ logout_func(); } );
   }
 
 
@@ -429,7 +429,7 @@ function ProjectPage ( sceneId )  {
 
   this.addMenuItem ( 'My Projects','list',function(){
     if (jobTree && jobTree.projectData)
-      jobTree.saveProjectData ( [],[],function(rdata){
+      jobTree.saveProjectData ( [],[],false, function(rdata){
         makeProjectListPage ( sceneId );
       });
     else
@@ -439,7 +439,7 @@ function ProjectPage ( sceneId )  {
   if (!__local_user)  {
     this.addMenuItem ( 'My Account','settings',function(){
       if (jobTree && jobTree.projectData)
-        jobTree.saveProjectData ( [],[],function(rdata){
+        jobTree.saveProjectData ( [],[],false, function(rdata){
           makeAccountPage ( sceneId );
         });
       else
@@ -448,7 +448,7 @@ function ProjectPage ( sceneId )  {
     if (__user_role==role_code.admin)
       this.addMenuItem ( 'Admin Page',role_code.admin,function(){
         if (jobTree && jobTree.projectData)
-          jobTree.saveProjectData ( [],[],function(rdata){
+          jobTree.saveProjectData ( [],[],false, function(rdata){
             makeAdminPage ( sceneId );
           });
         else
@@ -461,7 +461,7 @@ function ProjectPage ( sceneId )  {
   this.addMenuItem ( 'Project settings','project_settings',function(){
     if (jobTree && jobTree.projectData)
           new ProjectSettingsDialog ( jobTree,function(){
-            jobTree.saveProjectData ( [],[],null );
+            jobTree.saveProjectData ( [],[],true, null );
           });
     else  new MessageBox ( 'No Project','No Project loaded' );
   });
@@ -470,7 +470,7 @@ function ProjectPage ( sceneId )  {
 
   this.addLogoutToMenu ( function(){
     if (jobTree && jobTree.projectData)
-      jobTree.saveProjectData ( [],[],function(rdata){
+      jobTree.saveProjectData ( [],[],false, function(rdata){
         logout ( sceneId,0 );
       });
     else
