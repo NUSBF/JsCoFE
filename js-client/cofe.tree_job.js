@@ -301,7 +301,7 @@ JobTree.prototype.setNodeName = function ( nodeId,save_bool )  {
     if (task.isRemark())
       this.setStyle ( node,__remarkStyle,0 );
     if (save_bool)
-      this.saveProjectData ( [],[], null );
+      this.saveProjectData ( [],[],true, null );
 //  }
 }
 
@@ -311,7 +311,7 @@ JobTree.prototype.setNodeIcon = function ( nodeId,save_bool )  {
   var node = this.node_map[nodeId];
   this.setIcon ( node,image_path(task.icon()) );
   if (save_bool)
-    this.saveProjectData ( [],[], null );
+    this.saveProjectData ( [],[],true, null );
 }
 
 
@@ -390,7 +390,7 @@ JobTree.prototype.__checkTaskLoop = function()  {
             if (completed_list.length>0)  {
               tree.updateRation ( data );
               tree.emitSignal ( cofe_signals.treeUpdated,{} );
-              tree.saveProjectData ( [],[], null );
+              tree.saveProjectData ( [],[],false, null );
             }
 
           }
@@ -501,15 +501,16 @@ JobTree.prototype.advanceJobCounter = function ( onDone_func )  {
 }
 
 
-JobTree.prototype.saveProjectData = function ( tasks_add,tasks_del,
+JobTree.prototype.saveProjectData = function ( tasks_add,tasks_del,update_bool,
                                                callback_func )  {
   if (this.projectData)  {
     this.projectData.desc.dateLastUsed = getDateString();
     this.projectData.tree = this.root_nodes;
     var data       = {};
     data.meta      = this.projectData;
-    data.tasks_add = tasks_add;  // array
-    data.tasks_del = tasks_del;  // array
+    data.tasks_add = tasks_add;   // array
+    data.tasks_del = tasks_del;   // array
+    data.update    = update_bool; // forces update of shared projects
     (function(tree){
       serverRequest ( fe_reqtype.saveProjectData,data,'Project',
         function(rdata){
@@ -600,7 +601,7 @@ JobTree.prototype._add_job_0 = function ( insert_bool,task,dataBox,
         },100 );
     }
 
-    tree.saveProjectData ( [task],[],function(rdata){
+    tree.saveProjectData ( [task],[],true, function(rdata){
       if (shared && tree.checkReload(tree,rdata,'add the job'))
         complete();
     });
@@ -763,7 +764,7 @@ JobTree.prototype.toggleBranchHighlight = function()  {
 JobTree.prototype.moveJobUp = function()  {
   if (this.selected_node_id)  {
     this.moveSelectedNodeUp();
-    this.saveProjectData ( [],[], null );
+    this.saveProjectData ( [],[],true, null );
   } else
     alert ( ' no selection in the tree! ' );
 }
@@ -900,7 +901,7 @@ JobTree.prototype.deleteJob = function ( onDelete_func ) {
             run_map[key] = tree.run_map[key];
         tree.run_map = run_map;
 
-        tree.saveProjectData ( [],tasks_del,function(rdata){
+        tree.saveProjectData ( [],tasks_del,true, function(rdata){
           if (tree.checkReload(tree,rdata,'delete the job(s)<br>'))  {
             if (onDelete_func)
               onDelete_func();
@@ -1230,7 +1231,7 @@ JobTree.prototype._clone_job = function ( parent_page,onAdd_func )  {
           tree.setStyle ( node,__remarkStyle,0 );
       }
 
-      tree.saveProjectData ( [task],[],function(rdata){
+      tree.saveProjectData ( [task],[],true, function(rdata){
         if (shared && tree.checkReload(tree,rdata,'clone the job'))
           complete();
       });
@@ -1548,7 +1549,7 @@ JobTree.prototype.addReplayTasks = function ( replay_node_list,ref_node_list )  
         //if (onAdd_func)
         //  onAdd_func();
 
-        this.saveProjectData ( [replay_task],[],function(rdata){
+        this.saveProjectData ( [replay_task],[],true, function(rdata){
           if (rdata.reload<=0)  {
             replay_task.state = job_code.running;
             var data  = {};
@@ -1592,7 +1593,7 @@ JobTree.prototype.replayTree = function ( ref_tree )  {
   this.clear();  // this removes also all root nodes
   this.projectData.desc.jobCount = 0;
   (function(tree){
-    tree.saveProjectData ( [],task_del_list,function(rdata){
+    tree.saveProjectData ( [],task_del_list,true, function(rdata){
       if (rdata.reload<=0)  {
         var replay_node_list = [];
         for (var i=0;i<ref_tree.root_nodes.length;i++)  {

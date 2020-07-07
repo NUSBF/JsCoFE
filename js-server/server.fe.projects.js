@@ -961,7 +961,10 @@ function saveProjectData ( loginData,data )  {
     // disk space change is booked to project owner inside this function
     ration.changeProjectDiskSpace ( loginData,projectName,disk_space_change,false );
 
-    var update_time_stamp = (data.tasks_del.length>0) || (data.tasks_add.length>0);
+    var update_time_stamp = data.update || (data.tasks_del.length>0) ||
+                                           (data.tasks_add.length>0);
+
+//console.log ( ' >>>> update_time_stamp='+ update_time_stamp );
 
     if (writeProjectData(loginData,projectData,update_time_stamp))  {
 
