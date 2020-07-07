@@ -2,7 +2,7 @@
 /*
 *  ==========================================================================
  *
- *    05.07.20   <--  Date of Last Modification.
+ *    07.07.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -------------------------------------------------------------------------
  *
@@ -198,10 +198,12 @@ if (!dbx)  {
       if (__current_page && (__current_page._type=='ProjectPage'))  {
         var pData = __current_page.job_tree.projectData;
 //        checkProjectData ( pData );
-        if (pData && __user_settings.hasOwnProperty('project_prefix') &&
-            __user_settings.project_prefix && (pData.settings.prefix_key==0))
-              this.oname = pData.desc.name;
-        else  this.oname = pData.settings.prefix;
+        if (pData)  {
+          if (__user_settings.hasOwnProperty('project_prefix') &&
+              __user_settings.project_prefix && (pData.settings.prefix_key==0))
+                this.oname = pData.desc.name;
+          else  this.oname = pData.settings.prefix;
+        }
       }
       if (this.oname)
         this.oname += '_';
