@@ -301,7 +301,7 @@ JobTree.prototype.setNodeName = function ( nodeId,save_bool )  {
     if (task.isRemark())
       this.setStyle ( node,__remarkStyle,0 );
     if (save_bool)
-      this.saveProjectData ( [],[],true, null );
+      this.saveProjectData ( [],[],false, null );
 //  }
 }
 
@@ -311,7 +311,7 @@ JobTree.prototype.setNodeIcon = function ( nodeId,save_bool )  {
   var node = this.node_map[nodeId];
   this.setIcon ( node,image_path(task.icon()) );
   if (save_bool)
-    this.saveProjectData ( [],[],true, null );
+    this.saveProjectData ( [],[],false, null );
 }
 
 
@@ -504,7 +504,6 @@ JobTree.prototype.advanceJobCounter = function ( onDone_func )  {
 JobTree.prototype.saveProjectData = function ( tasks_add,tasks_del,update_bool,
                                                callback_func )  {
   if (this.projectData)  {
-    this.stopTaskLoop();
     this.projectData.desc.dateLastUsed = getDateString();
     this.projectData.tree = this.root_nodes;
     var data       = {};
@@ -525,9 +524,7 @@ JobTree.prototype.saveProjectData = function ( tasks_add,tasks_del,update_bool,
             if (callback_func)
               callback_func ( rdata );
           }
-        },function(){
-          tree.stopTaskLoop();
-        },'persist' );
+        },null,'persist' );
     }(this))
   }
 }
