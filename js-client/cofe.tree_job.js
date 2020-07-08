@@ -301,7 +301,7 @@ JobTree.prototype.setNodeName = function ( nodeId,save_bool )  {
     if (task.isRemark())
       this.setStyle ( node,__remarkStyle,0 );
     if (save_bool)
-      this.saveProjectData ( [],[],true, null );
+      this.saveProjectData ( [],[],true, function(){} );
 //  }
 }
 
@@ -311,7 +311,7 @@ JobTree.prototype.setNodeIcon = function ( nodeId,save_bool )  {
   var node = this.node_map[nodeId];
   this.setIcon ( node,image_path(task.icon()) );
   if (save_bool)
-    this.saveProjectData ( [],[],true, null );
+    this.saveProjectData ( [],[],true, function(){} );
 }
 
 
@@ -515,13 +515,14 @@ JobTree.prototype.saveProjectData = function ( tasks_add,tasks_del,update_bool,
       serverRequest ( fe_reqtype.saveProjectData,data,'Project',
         function(rdata){
           tree.projectData.desc.timestamp = rdata.pdesc.timestamp;
+//alert ( ' >>>>>>>>>> ' + tree.projectData.desc.timestamp );
           if (rdata.reload>0)  {
             if (callback_func)
                   callback_func ( rdata );
             else  tree.emitSignal ( cofe_signals.reloadTree,rdata );
           } else  {
             tree.updateRation ( rdata );
-            tree.projectData.desc.timestamp = rdata.pdesc.timestamp;
+//            tree.projectData.desc.timestamp = rdata.pdesc.timestamp;
             if (callback_func)
               callback_func ( rdata );
           }
