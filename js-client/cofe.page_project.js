@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    07.07.20   <--  Date of Last Modification.
+ *    08.07.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -127,8 +127,8 @@ function ProjectPage ( sceneId )  {
 
     if (node)
       dsel = (node.parentId!=null);
-    open_btn .setEnabled ( dsel );
-    del_btn  .setEnabled ( dsel );
+    open_btn.setEnabled ( dsel );
+    del_btn .setEnabled ( dsel );
 
     if (task)  {
       var is_remark   = task.isRemark();
@@ -138,9 +138,9 @@ function ProjectPage ( sceneId )  {
         if (tparent)
           add_enabled = (tparent.state==job_code.finished);
       }
-      add_btn.setEnabled ( (!__dormant) &&
-                           ((task.state==job_code.finished)  ||
-                            (is_remark && add_enabled)) );
+      add_btn    .setEnabled ( (!__dormant) &&
+                               ((task.state==job_code.finished)  ||
+                               (is_remark && add_enabled)) );
       clone_btn  .setEnabled ( (!__dormant) && dsel && task.canClone(node,jobTree) );
       moveup_btn .setEnabled ( (!__dormant) && task.canMove(node,jobTree) );
       stop_btn   .setEnabled ( dsel && (task.state==job_code.running) );
@@ -534,26 +534,6 @@ function ProjectPage ( sceneId )  {
     split_btn.setSize('40px','40px').setTooltip('Show replay project');
     split_btn.setDisabled ( true );
   }
-
-  /*
-  toolbar.setCellSize ( '' ,'42px',1 ,0 );
-  toolbar.setCellSize ( '' ,'42px',2 ,0 );
-  toolbar.setCellSize ( '' ,'42px',3 ,0 );
-  toolbar.setCellSize ( '' ,'42px',4 ,0 );
-  toolbar.setCellSize ( '' ,'42px',5 ,0 );
-  toolbar.setCellSize ( '' ,'12px',6 ,0 );
-  toolbar.setCellSize ( '' ,'42px',7 ,0 );
-  toolbar.setCellSize ( '' ,'42px',8 ,0 );
-  toolbar.setCellSize ( '' ,'12px',9 ,0 );
-  toolbar.setCellSize ( '' ,'42px',10,0 );
-  toolbar.setCellSize ( '' ,'42px',11,0 );
-  if (split_btn)  {
-    toolbar.setCellSize ( '' ,'12px',12,0 );
-    toolbar.setCellSize ( '' ,'42px',13,0 );
-    split_btn.setSize('40px','40px').setTooltip('Show replay project');
-    split_btn.setDisabled ( true );
-  }
-  */
 
   add_btn    .setDisabled ( true );
   moveup_btn .setDisabled ( true );
