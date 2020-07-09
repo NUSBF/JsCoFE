@@ -214,7 +214,7 @@ function ProjectPage ( sceneId )  {
                         },'Share Project',function(data){
                           if (data.desc)  {
                             jobTree.projectData.desc = data.desc;
-                            jobTree.saveProjectData ( [],[],false,function(){
+                            jobTree.saveProjectData ( [],[],false,function(rdata){
                               var msg = '<h2>Project\'s Share Status</h2>' +
                                         '<b>Shared with:</b>&nbsp;<i>';
                               if (data.desc.owner.share.length<=0)
