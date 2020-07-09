@@ -295,14 +295,14 @@ JobTree.prototype.setNodeName = function ( nodeId,save_bool )  {
   var task = this.task_map[nodeId];
   var node = this.node_map[nodeId];
   var newName = this.makeNodeName ( task );
-//  if (newName!=node.text)  {  // to enforce managing custom icon visibility
+  if (newName!=node.text)  {  // to enforce managing custom icon visibility
     this.setText ( node,newName );
     this.confirmCustomIconsVisibility();
     if (task.isRemark())
       this.setStyle ( node,__remarkStyle,0 );
     if (save_bool)
       this.saveProjectData ( [],[],true, function(rdata){} );
-//  }
+  }
 }
 
 
