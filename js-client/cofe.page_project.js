@@ -388,6 +388,7 @@ function ProjectPage ( sceneId )  {
   }
 
   function reloadTree ( blink )  {
+    // blink==true will force page blinking, for purely aesthatic reasons 
     var scrollPos = jobTree.parent.getScrollPosition();
     var job_tree  = jobTree;
     jobTree.stopTaskLoop();

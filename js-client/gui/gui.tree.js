@@ -150,6 +150,19 @@ TreeNode.prototype.copy = function ( node )  {
 }
 
 
+TreeNode.prototype.compare = function ( node )  {
+  return ((this.text            == node.text           ) &&
+          (this.text0           == node.text0          ) &&
+          (this.highlightId     == node.hightlightId   ) &&
+          (this.icon            == node.icon           ) &&
+          (this.state           == node.state          ) &&
+          (this.dataId          == node.dataId         ) &&
+          (this.data.customIcon == node.data.customIcon) &&
+          (this.data.ci_state   == node.data.ci_state  )
+        );
+}
+
+
 TreeNode.prototype.setCustomIconVisible = function ( visible_bool )  {
   if (visible_bool)  this.data.ci_state = 'visible';
                else  this.data.ci_state = 'hidden';
