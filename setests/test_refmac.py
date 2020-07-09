@@ -20,6 +20,7 @@ def clickByXpath(driver, xpath):
 
 def loginToCloud(driver, cloudLogin, cloudPassword):
     # Shall return list of two elements for login and password
+    print('Logging into cloud with username %s' % cloudLogin)
     loginInputs = driver.find_elements_by_xpath("//input[contains(@id,'input')]")
 
     # First element in the list is login
@@ -39,28 +40,37 @@ def loginToCloud(driver, cloudLogin, cloudPassword):
     return ()
 
 
+def logoutToRelogin(driver):
+    print ('Logging out.')
+    logoutImg = driver.find_element_by_xpath("//img[contains(@src,'images_png/logout.png')]")
+    logoutImg.click()
+    time.sleep(2)
+
+    clickByXpath(driver, "//div[normalize-space()='%s']" % 'Back to User Login')
+    time.sleep(2)
+
+    return ()
+
+
 def removeProject(driver, testName):
     print('Deleting previous test project if exists')
 
     textEls = driver.find_elements_by_xpath("//*[normalize-space()='%s']" % testName)
+
     if len(textEls) > 0:
-        try:
-            clickByXpath(driver, "//*[normalize-space()='%s']" % testName)
-            time.sleep(1)
+        clickByXpath(driver, "//*[normalize-space()='%s']" % testName)
+        time.sleep(1)
 
-            clickByXpath(driver, "//*[normalize-space()='%s']" % 'Delete')
-            time.sleep(1)
+        clickByXpath(driver, "//*[normalize-space()='%s']" % 'Delete')
+        time.sleep(1)
 
-            textEls = driver.find_elements_by_xpath("//button[normalize-space()='%s']" % 'Delete')
-            textEls[-1].click()
-            time.sleep(1)
+        textEls = driver.find_elements_by_xpath("//button[normalize-space()='%s']" % 'Delete')
+        textEls[-1].click()
+        time.sleep(1)
 
-        except:
-            return ()
 
 
     return ()
-
 
 
 def areWeAtProjectList(driver):
@@ -95,6 +105,7 @@ def areWeAtProjectList(driver):
     textEls[-1].click()
     return ()
 
+
 def makeTestProject(driver, testProjectID, testProjectName):
     print ('Making test project. ID: %s, Name: %s' % (testProjectID, testProjectName))
 
@@ -126,8 +137,8 @@ def makeTestProject(driver, testProjectID, testProjectName):
 
 def enterProject(driver, projectId):
     print ('Entering test project. ID: %s' % projectId)
-    time.sleep(1)
-    projectCell = driver.find_element_by_xpath("//*[normalize-space()='%s']" % projectId )
+    time.sleep(2)
+    projectCell = driver.find_element_by_xpath("//*[contains(text(),'%s')]" % projectId )
     ActionChains(driver).double_click(projectCell).perform()
     return()
 
@@ -172,8 +183,9 @@ def importFromCloudWithTaskListOnScreen(driver, waitShort):
         wait.until(EC.presence_of_element_located
                    ((By.XPATH,"//*[@class='ui-dialog-title' and contains(text(), 'completed') and contains(text(), '[0001]')]")))
     except:
-        print('Apparently tha task importFromCloudWithTaskListOnScreen has not been completed in time; terminating')
+        print('Apparently the task importFromCloudWithTaskListOnScreen has not been completed in time; terminating')
         sys.exit(1)
+    time.sleep(1)
 
     # presing Close button
     closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
@@ -217,10 +229,10 @@ def asymmetricUnitContentsAfterCloudImport(driver, waitShort):
     except:
         print('Apparently tha task asymmetricUnitContentsAfterCloudImport has not been completed in time; terminating')
         sys.exit(1)
+    time.sleep(1)
 
     # presing Close button
-    closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
-    closeButton.click()
+    clickByXpath(driver, "//button[contains(@style, 'images_png/close.png')]")
     time.sleep(1)
 
     return()
@@ -264,10 +276,10 @@ def editRevisionStructure(driver, waitShort):
     except:
         print('Apparently tha task editRevisionStructure has not been completed in time; terminating')
         sys.exit(1)
+    time.sleep(1)
 
     # presing Close button
-    closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
-    closeButton.click()
+    clickByXpath(driver, "//button[contains(@style, 'images_png/close.png')]")
     time.sleep(1)
 
     return ()
@@ -304,6 +316,7 @@ def refmacAfterRevision(driver, waitLong):
     except:
         print('Apparently tha task refmacAfterRevision has not been completed in time; terminating')
         sys.exit(1)
+    time.sleep(1)
 
     # presing Close button
     closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
@@ -358,6 +371,56 @@ def renameProject(driver, testName):
     return ()
 
 
+def shareProject(driver, login):
+    print('Sharing test project')
+    menuButton = driver.find_element(By.XPATH, "//div[contains(@style, 'images_png/menu.png')]")
+    menuButton.click()
+    time.sleep(1)
+
+    clickByXpath(driver, "//*[normalize-space()='%s']" % 'Share Project')
+    time.sleep(1)
+
+    projectSharing = driver.find_element_by_xpath("//input[@placeholder='%s']" % 'login1,login2,...')
+    projectSharing.click()
+    projectSharing.clear()
+    projectSharing.send_keys(login)
+    time.sleep(1)
+
+    clickByXpath(driver, "//button[contains(text(), '%s')]" % 'Share Project')
+    time.sleep(1)
+
+
+    clickByXpath(driver, "//button[normalize-space()='%s']" % 'Apply')
+    time.sleep(1)
+
+    clickByXpath(driver, "//button[normalize-space()='%s']" % 'Ok')
+    time.sleep(1)
+
+
+    return ()
+
+
+def joinSharedProject(driver, testName):
+    print('Getting shared project')
+    clickByXpath(driver, "//div[normalize-space()='%s']" % 'Join')
+    time.sleep(1)
+
+    clickByXpath(driver, "//span[@class='ui-selectmenu-icon ui-icon ui-icon-triangle-1-s']")
+    time.sleep(1)
+
+    clickByXpath(driver, "//*[contains(text(), '%s')]" % testName)
+    time.sleep(1)
+
+    clickByXpath(driver, "//button[contains(@style, 'images_png/share.png')]")
+    time.sleep(10)
+
+    clickByXpath(driver, "//button[normalize-space()='%s']" % 'Close')
+    time.sleep(1)
+
+
+    return ()
+
+
 def test_RefmacBasic(browser,
                 cloud,
                 nologin,
@@ -374,33 +437,44 @@ def test_RefmacBasic(browser,
         if browser == 'Chrome':
             options = webdriver.ChromeOptions()
             driver = webdriver.Remote(command_executor=remote, options=options)
+            driver2 = webdriver.Remote(command_executor=remote, options=options)
         elif browser == 'Firefox':
             options = webdriver.FirefoxOptions()
             driver = webdriver.Remote(command_executor=remote, options=options)
+            driver2 = webdriver.Remote(command_executor=remote, options=options)
         else:
             print('Browser "%s" is not recognised; shall be Chrome or Firefox.' % browser)
             sys.exit(1)
     else:  # Running locally
-        waitShort = 15  # seconds for quick tasks
-        waitLong = 120  # seconds for longer tasks
+        waitShort = 60  # seconds for quick tasks
+        waitLong = 180  # seconds for longer tasks
 
         if browser == 'Chrome':
             driver = webdriver.Chrome()
+            driver2 = webdriver.Chrome()
         elif browser == 'Firefox':
             driver = webdriver.Firefox()
+            driver2 = webdriver.Firefox()
         else:
             print('Browser "%s" is not recognised; shall be Chrome or Firefox.' % browser)
             sys.exit(1)
 
     driver.implicitly_wait(10)  # wait for up to 10 seconds for required HTML element to appear
+    driver2.implicitly_wait(10)  # wait for up to 10 seconds for required HTML element to appear
 
     try:
-        print('Opening URL: %s' % cloud)
+        print('Opening URL driver 1: %s' % cloud)
         driver.get(cloud)
         assert "CCP4 Cloud" in driver.title
-
         if not nologin:
             loginToCloud(driver, login, password)
+
+
+        print('Opening URL driver 2: %s' % cloud)
+        driver2.get(cloud)
+        assert "CCP4 Cloud" in driver2.title
+        if not nologin:
+            loginToCloud(driver2, login+'2', password)
 
         testName = 'refmacTest'
 
@@ -408,15 +482,23 @@ def test_RefmacBasic(browser,
         makeTestProject(driver, testName, testName)
         enterProject(driver, testName)
         importFromCloudWithTaskListOnScreen(driver, waitShort)
-        asymmetricUnitContentsAfterCloudImport(driver, waitShort)
+
+        shareProject(driver, login+'2')
+        joinSharedProject(driver2, testName)
+        enterProject(driver2, testName)
+        time.sleep(2)
+
+        asymmetricUnitContentsAfterCloudImport(driver2, waitShort)
         editRevisionStructure(driver, waitShort)
-        refmacAfterRevision(driver, waitLong)
+        refmacAfterRevision(driver2, waitLong)
         renameProject(driver, testName)
 
         driver.quit()
+        driver2.quit()
 
     except:
         driver.quit()
+        driver2.quit()
         raise
 
 
