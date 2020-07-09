@@ -771,7 +771,7 @@ JobTree.prototype.moveJobUp = function()  {
         if (onDone_func)
           onDone_func(tree,rdata);
       }
-    );
+    });
   } else
     alert ( ' no selection in the tree! ' );
 }
