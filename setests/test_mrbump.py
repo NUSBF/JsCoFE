@@ -249,6 +249,7 @@ def mrbumpAfterASU(driver, waitLong):
               'Rfree is %0.4f (expecing <0.31)' % (compl, rWork, rFree))
     assert rWork < 0.28
     assert rFree < 0.31
+    assert compl > 90.0
 
     return ()
 
