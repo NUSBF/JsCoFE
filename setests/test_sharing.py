@@ -528,10 +528,23 @@ def verifySimbad(driver, waitLong):
 def clickTaskInTaskTree(driver, taskName):
     tasksText = driver.find_elements(By.XPATH,
                                      "//a[contains(@id,'treenode') and contains(@class, 'jstree-anchor')]")
+    fullText = ''
     for taskText in tasksText:
         match = re.search(taskName, taskText.text)
         if match:
-            taskText.click()
+            print ('Clicking task "%s" in the task tree' % taskText.text)
+            fullText = taskText.text
+            break
+
+    taskElement = driver.find_element(By.XPATH,
+                                     "//a[contains(@id,'treenode') and contains(@class, 'jstree-anchor') and normalize-space()='%s']" % fullText)
+    driver.execute_script("arguments[0].scrollIntoView();", taskElement)
+    taskElement = driver.find_element(By.XPATH,
+                                     "//a[contains(@id,'treenode') and contains(@class, 'jstree-anchor') and normalize-space()='%s']" % fullText)
+    ActionChains(driver).move_to_element(taskElement).perform() #click(taskElement).perform()
+    taskElement = driver.find_element(By.XPATH,
+                                     "//a[contains(@id,'treenode') and contains(@class, 'jstree-anchor') and normalize-space()='%s']" % fullText)
+    taskElement.click()
 
     return ()
 
