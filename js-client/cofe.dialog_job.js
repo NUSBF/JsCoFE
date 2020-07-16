@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    25.06.20   <--  Date of Last Modification.
+ *    16.07.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -45,10 +45,13 @@ function JobDialog ( params,          // data and task projections up the tree b
                      onDlgSignal_func // function(taskId,reason) called on custom events
                    ) {
 
+  this.tree        = params.tree;
+  this.nodeId      = params.nodeId;
   this.task        = params.ancestors[0];
   this.dataBox     = params.dataBox;
   this.ancestors   = params.ancestors;
   this.parent_page = parent_page;
+  this.job_edited  = false;
 
   Widget.call ( this,'div' );
 
@@ -93,7 +96,8 @@ function JobDialog ( params,          // data and task projections up the tree b
       },
       focus     : function() {
                     if (onDlgSignal_func)
-                      onDlgSignal_func ( taskId,job_dialog_reason.select_node,null );
+                      onDlgSignal_func ( dlg,job_dialog_reason.select_node,null );
+                      //onDlgSignal_func ( taskId,job_dialog_reason.select_node,null );
                   }
     };
   }(this))
@@ -114,6 +118,7 @@ function JobDialog ( params,          // data and task projections up the tree b
   this.setDlgSize ();
 
   (function(dlg){
+
     $(dlg.element).on( "dialogclose",function(event,ui){
       if (dlg.close_btn && (!dlg.task.job_dialog_data.viewed))
         dlg.close_btn.click();
@@ -125,16 +130,27 @@ function JobDialog ( params,          // data and task projections up the tree b
           dlg.delete();
         },10 );
       }
-      onClose_func ( dlg.task.id );
+      //onClose_func ( dlg.task.id );
+      onClose_func ( dlg );
     });
+
+    // Listen for input event, emitted when input data changes
+    if ((dlg.task.state!=job_code.running) && dlg.inputPanel)  {
+      dlg.inputPanel.element.addEventListener(cofe_signals.jobDlgSignal,function(e){
+        onDlgSignal_func ( dlg,e.detail,null );
+      },false );
+    }
+
   }(this))
 
+  /*
   // Listen for input event, emitted when input data changes
   if ((this.task.state!=job_code.running) && this.inputPanel)  {
     this.inputPanel.element.addEventListener(cofe_signals.jobDlgSignal,function(e){
       onDlgSignal_func ( taskId,e.detail,null );
     },false );
   }
+  */
 
   this.onDlgSignal_func = onDlgSignal_func;
 
@@ -312,7 +328,7 @@ JobDialog.prototype.onDlgResize = function ()  {
   }
 
   if (this.inputPanel)  {
-    this.inputPanel .setSize_px ( panelWidth,panelHeight );
+    this.inputPanel.setSize_px ( panelWidth,panelHeight );
     if (this.inputPanel.hasOwnProperty('panel'))  {
       if (this.inputPanel.hasOwnProperty('header'))
         panelHeight -= this.inputPanel.header.height_px();
@@ -367,6 +383,8 @@ JobDialog.prototype.collectTaskData = function ( ignore_bool )  {
       input_msg = '';
     else if (input_msg.length>0)
       this.displayInputErrors ( input_msg );
+    if ((this.task.state==job_code.new) && (input_msg.length>0))
+      this.job_edited = true;
   }
   return (input_msg.length<=0);
 }
@@ -376,10 +394,13 @@ JobDialog.prototype.requestServer = function ( request,callback_ok )  {
   var data  = {};
   data.meta = this.task;
   data.ancestors = [];
+  data.update_tree = this.job_edited &&
+              (this.parent_page.job_tree.projectData.desc.owner.share.length>0);
   for (var i=1;i<this.ancestors.length;i++)
     data.ancestors.push ( this.ancestors[i]._type );
   if (!this.task.job_dialog_data.viewed)  {
-    this.onDlgSignal_func ( this.task.id,job_dialog_reason.reset_node,null );
+    //this.onDlgSignal_func ( this.task.id,job_dialog_reason.reset_node,null );
+    this.onDlgSignal_func ( this,job_dialog_reason.reset_node,null );
     this.task.job_dialog_data.viewed = true;
   }
   serverRequest ( request,data,this.task.title,callback_ok,null,null );
@@ -473,8 +494,8 @@ JobDialog.prototype.makeToolBar = function()  {
 //                                });
           var hbtn = dlg.addToolBarButton ( gap,task_obj.icon(),hot_list[i].tooltip )
                         .addOnClickListener ( function(){
-                          dlg.onDlgSignal_func ( dlg.task.id,
-                                                 job_dialog_reason.run_job,
+                          //dlg.onDlgSignal_func ( dlg.task.id,
+                          dlg.onDlgSignal_func ( dlg,job_dialog_reason.run_job,
                                                  task );
                         });
           gap = true;
@@ -499,15 +520,15 @@ JobDialog.prototype.makeToolBar = function()  {
     */
     dlg.addjob_btn = dlg.addToolBarButton ( gap,'add','Add next job' )
                         .addOnClickListener ( function(){
-                          dlg.onDlgSignal_func ( dlg.task.id,
-                                                 job_dialog_reason.add_job,
+                          //dlg.onDlgSignal_func ( dlg.task.id,
+                          dlg.onDlgSignal_func ( dlg,job_dialog_reason.add_job,
                                                  null );
                         });
     gap = true;
     dlg.clone_btn  = dlg.addToolBarButton ( gap,'clonejob','Clone job' )
                         .addOnClickListener ( function(){
-                          dlg.onDlgSignal_func ( dlg.task.id,
-                                                 job_dialog_reason.clone_job,
+                          //dlg.onDlgSignal_func ( dlg.task.id,
+                          dlg.onDlgSignal_func ( dlg,job_dialog_reason.clone_job,
                                                  null );
                         });
   }(this))
@@ -526,6 +547,7 @@ JobDialog.prototype.makeToolBar = function()  {
                                 .setTooltip('Close Job Dialog' );
 
 }
+
 
 JobDialog.prototype.makeLayout = function ( onRun_func )  {
 
@@ -805,7 +827,8 @@ JobDialog.prototype.makeLayout = function ( onRun_func )  {
                       dlg.radioSet.selectButton ( 'output' );
                     }
 
-                    onRun_func ( dlg.task.id );
+                    //onRun_func ( dlg.task.id );
+                    onRun_func ( dlg );
 
                   });
 
@@ -823,7 +846,8 @@ JobDialog.prototype.makeLayout = function ( onRun_func )  {
 
     if (dlg.stop_btn)
       dlg.stop_btn.addOnClickListener ( function(){
-        dlg.onDlgSignal_func ( dlg.task.id,job_dialog_reason.stop_job,null );
+        //dlg.onDlgSignal_func ( dlg.task.id,job_dialog_reason.stop_job,null );
+        dlg.onDlgSignal_func ( dlg,job_dialog_reason.stop_job,null );
       });
 
     if (dlg.newtab_btn)

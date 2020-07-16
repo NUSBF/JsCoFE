@@ -388,7 +388,7 @@ function ProjectPage ( sceneId )  {
   }
 
   function reloadTree ( blink )  {
-    // blink==true will force page blinking, for purely aesthatic reasons 
+    // blink==true will force page blinking, for purely aesthatic reasons
     var scrollPos = jobTree.parent.getScrollPosition();
     var job_tree  = jobTree;
     jobTree.stopTaskLoop();
@@ -404,12 +404,14 @@ function ProjectPage ( sceneId )  {
       onTreeLoaded();
       jobTree.parent.setScrollPosition ( scrollPos );
       if (!blink)  {
-        job_tree.hide();
-        jobTree .show();
-        job_tree.closeAllJobDialogs();
+        jobTree .relinkJobDialogs ( job_tree.dlg_map,self );
+        job_tree.hide  ();
+        jobTree .show  ();
         job_tree.delete();
+      } else  {
+        job_tree.closeAllJobDialogs();
+        jobTree .openJobs ( dlg_task_parameters,self );
       }
-      jobTree.openJobs ( dlg_task_parameters,self );
     },onTreeContextMenu,openJob,onTreeItemSelect );
   }
 
@@ -608,6 +610,7 @@ function ProjectPage ( sceneId )  {
 
   refresh_btn.addOnClickListener ( function(){
     reloadTree ( true );
+//    reloadTree ( false );
   });
 
   this.makeLogoPanel ( 2,0,3 );

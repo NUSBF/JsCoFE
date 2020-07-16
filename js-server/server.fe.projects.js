@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    07.07.20   <--  Date of Last Modification.
+ *    11.07.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -931,8 +931,8 @@ function saveProjectData ( loginData,data )  {
 
   var projectData = data.meta;
   var projectName = projectData.desc.name;
-//  console.log ( ' ... write current project data (' + projectName +
-//                '), login ' + login );
+//  console.log ( ' >>>>>>>>>> write current project data (' + projectName +
+//                '), login ' + loginData.login + ' timestamp ' + projectData.desc.timestamp );
 
   // Check timestamps for shared projects
   var rdata = checkTimestamps ( loginData,projectData.desc );
@@ -967,6 +967,8 @@ function saveProjectData ( loginData,data )  {
 //console.log ( ' >>>> update_time_stamp='+ update_time_stamp );
 
     if (writeProjectData(loginData,projectData,update_time_stamp))  {
+
+//console.log ( ' >>>> timestamp='+ projectData.desc.timestamp );
 
       if (data.tasks_del.length>0)  // save on reading files ration does not change
         rdata.ration = ration.getUserRation(loginData).clearJobs();
@@ -1476,6 +1478,12 @@ function saveJobData ( loginData,data )  {
 
   var projectName = data.meta.project;
   var jobId       = data.meta.id;
+
+  if (data.update_tree)  {
+    var pData = readProjectData ( loginData,projectName );
+    if (pData)
+      writeProjectData ( loginData,pData,true );
+  }
 
   var jobDataPath = getJobDataPath ( loginData,projectName,jobId );
 

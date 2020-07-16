@@ -13,11 +13,16 @@
   },
 
   "FrontEnd" : {
+    "description"      : {
+      "id"   : "ccp4",
+      "name" : "CCP4-Harwell",
+      "icon" : "images_com/setup-harwell.png"
+    },
     "protocol"         : "http",
     "host"             : "localhost",
     "port"             : 8081,
     "externalURL"      : "http://localhost:8081",
-    "exclusive"        : true,
+    "localSetup"       : false,
     "stoppable"        : false,
     "exclude_tasks"    : ["TaskAmple"],
     "fsmount"          : "/",

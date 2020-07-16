@@ -948,6 +948,9 @@ function checkJobs ( loginData,data )  {
               rdata.reload = 2;  // project changed considerably, reload client
         else  rdata.reload = 1;  // on-client data should be safe
       }
+//console.log ( ' >>>>>>>> ' + loginData.login + '    ' +
+//                             pDesc.timestamp + ' : ' + data.timestamp + ' -- ' +
+//                             rdata.reload );
     }
   }
 
