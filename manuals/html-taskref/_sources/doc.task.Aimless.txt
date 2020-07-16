@@ -29,7 +29,7 @@ Scaling tries to make symmetry-related and duplicate measurements of a reflectio
 • Absorption correction (relative)
     Correct for relative variations in absorption in different directions in space - based on incoming and outgoing scattering vectors. Typically small for MX (~1%), unless at long wavelength/absorption edge.
     
-**Ideally have constant scaling factor **(Mn(k) & 0k (theta=0) v. batch)** of 1; except if crystals have an irregular shape.**
+Ideally have constant scaling factor **(Mn(k) & 0k (theta=0) v. batch)** of 1; except if crystals have an irregular shape.
 
 +++++++
 Merging

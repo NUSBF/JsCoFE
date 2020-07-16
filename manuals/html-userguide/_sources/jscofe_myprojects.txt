@@ -13,7 +13,7 @@ This is the page you find yourself in immediately after login. If you read this 
         
 
 .. tip::
-        Please read another CCP4 Cloud user guide documentation by pressing on **Contents** on your upright engle of window.
+        Please read another CCP4 Cloud user guide documentation by pressing on **Contents** on your upright corner of the window.
         
     .. image:: images/Contents.jpg
          :scale: 50 %

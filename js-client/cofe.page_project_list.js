@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    07.07.20   <--  Date of Last Modification.
+ *    15.07.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -442,7 +442,7 @@ function ProjectListPage ( sceneId )  {
         new ExportFromSafeDialog ( function(){} );
       });
     this.addMenuItem ( 'Developer\'s Documentation','development',function(){
-      new HelpBox ( '','./manuals/html-dev/index.html',null )
+      new HelpBox ( '',__dev_reference_base_url + 'index.html',null )
     });
   }
 

@@ -162,6 +162,7 @@ var __suggested_task_nmin  = 3;     // minimum 3 tasks to suggest
 
 var __task_reference_base_url = './manuals/html-taskref/';
 var __user_guide_base_url     = './manuals/html-userguide/';
+var __dev_reference_base_url  = './manuals/html-dev/';
 
 //var __rvapi_config_coot_btn = true;  // switch Coot button off (when undefined) in RVAPI
 

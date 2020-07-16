@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    19.01.20   <--  Date of Last Modification.
+ *    15.07.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -813,7 +813,8 @@ if (!__template)  {
                  'anomalous signal.';
       hints += ' See full description <a href="javascript:' +
                       'launchHelpBox(\'Structure Revision\',' +
-                                    '\'./html/jscofe_data.html\',' +
+                                    '\'' + __user_guide_base_url +
+                                      '/jscofe_qna.structure_revision.html\',' +
                                     'null,10)"><i>' +
                   String('here').fontcolor('blue') + '</i></a>.';
     }

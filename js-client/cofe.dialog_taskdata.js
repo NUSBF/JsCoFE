@@ -189,7 +189,8 @@ function TaskDataDialog ( dataSummary,task,avail_key )  {
                              'Check data types and respective job summary ' +
                              '<a href="javascript:' +
                                 'launchHelpBox(\'Data Management\',' +
-                                '\'./html/jscofe_data.html#summary\',null,10)"><i>' +
+                                '\'' + __task_reference_base_url +
+                                  'doc.task.import.html#ccp4-cloud-data-managment\',null,10)"><i>' +
                                 String('here').fontcolor('blue') + '</i></a>.',
                              drow++,0, 1,2 );
       } else

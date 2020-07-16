@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    07.07.20   <--  Date of Last Modification.
+ *    16.07.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -155,6 +155,44 @@ var __highlightStyle  = 'background-color:yellow;padding:4px 16px 4px 0px;';
 var __highlightStyleL = 'background-color:lime;padding:4px 16px 4px 0px;';
 
 
+JobTree.prototype.__compare_node = function ( node0,node1 )  {
+  if ((node1.dataId!=node2.dataId) ||
+      (node1.children.length!=node2.children.length))
+    return null;
+  var diff = [];
+  if (!this.compare(node2))
+    diff = [node2.dataId];
+  for (var i=0;(i<node1.length) && diff;i++)  {
+    var df = this.__compare_node ( node1.children[i],node2.children[i] );
+    if (df)  diff = diff.concat ( df );
+       else  diff = null;
+  }
+  return diff;
+}
+
+JobTree.prototype.compare = function ( job_tree )  {
+// Compares 'this' tree and job_tree. Returns null if trees are structurally
+// different. If trees compare, the function returns list of job_tree's nodes
+// which have different parameters comparing to their matches in 'this' tree,
+// such as different node title, colors, icons etc.
+var tree0 = this.tree;
+var tree1 = job_tree.tree;
+
+  if (tree0.length!=tree1.length)
+    return null;
+
+  var diff  = [];
+
+  for (var i=0;(i<tree0.length) && diff;i++)  {
+    var df = this.__compare_node ( tree0[i],tree1[i] );
+    if (df)  diff = diff.concat ( df );
+       else  diff = null;
+  }
+
+  return diff;
+
+}
+
 JobTree.prototype.readProjectData = function ( page_title,
                                                onLoaded_func,
                                                onRightClick_func,
@@ -179,7 +217,7 @@ JobTree.prototype.readProjectData = function ( page_title,
         new MessageBox ( 'Missing Project',
           '<h2>Missing Project</h2>' +
           'The project does not exist. If it was shared with you,<br>' +
-          'then it was probably deleted by owner.'
+          'then it could be deleted by owner.'
         );
 
       } else if ('message' in data)  {
@@ -370,7 +408,7 @@ JobTree.prototype.__checkTaskLoop = function()  {
                       tree.setStyle ( tree.node_map[nodeId],__remarkStyle,0 );
                 else  tree.setStyle ( tree.node_map[nodeId],__notViewedStyle,0 );
                 tree.node_map[nodeId].setCustomIconVisible ( false );
-                tree.setNodeIcon    ( nodeId,true );
+                tree.setNodeIcon    ( nodeId,false );
                 completed_list.push ( task );
               }
 
@@ -969,6 +1007,34 @@ JobTree.prototype.openJobs = function ( taskParameters,parent_page )  {
   }
 }
 
+JobTree.prototype.relinkJobDialogs = function ( dlg_map,parent_page )  {
+  var crSel = this.getSelectedNodeId();
+  for (var taskId in dlg_map)  {
+    var nodeId = this.getTaskNodeId ( taskId );
+    var dlg    = dlg_map[taskId];
+    if (nodeId)  {  // task found
+      if (this.task_map[nodeId].state!=dlg.task.state)  {
+        // task state changed, reload the dialog
+        this.selectSingleById ( nodeId );
+        dlg.close();
+        this.task_map[nodeId].job_dialog_data = dlg.task.job_dialog_data;
+        this.openJob ( null,parent_page );
+      } else  {
+        // simply relink the dialog to 'this' tree
+        dlg.tree              = this;
+        dlg.nodeId            = nodeId;
+        this.task_map[nodeId] = dlg.task;
+        dlg.parent_page       = parent_page;
+        this.dlg_map[taskId]  = dlg;
+      }
+    } else  {
+      // task not found -- close the dialog
+      dlg.close();
+    }
+  }
+  this.selectSingleById ( crSel );
+}
+
 
 /*
 JobTree.prototype.detachJobDialogs = function()  {
@@ -1058,7 +1124,7 @@ JobTree.prototype.stopJob = function ( nodeId )  {
 
 }
 
-
+/*
 JobTree.prototype.openJob = function ( dataBox,parent_page )  {
 
   if (this.selected_node_id)  {
@@ -1101,7 +1167,7 @@ JobTree.prototype.openJob = function ( dataBox,parent_page )  {
 
               tree.run_map [task_id] = nodeId;
               tree.node_map[nodeId ].setCustomIconVisible ( true );
-              tree.setNodeName ( nodeId,true );
+              tree.setNodeName ( nodeId,false );
               tree.emitSignal ( cofe_signals.jobStarted,{
                 'nodeId' : nodeId,
                 'taskId' : task_id
@@ -1109,7 +1175,8 @@ JobTree.prototype.openJob = function ( dataBox,parent_page )  {
               tree.startTaskLoop();
 
             },function(task_id){
-              // trigerred when job dialog is closed
+              // trigerred when job dialog is closed; remove dialog from the
+              // hash of opened job dialogs
 
               tree.dlg_map = mapExcludeKey ( tree.dlg_map,task_id );
 
@@ -1118,10 +1185,12 @@ JobTree.prototype.openJob = function ( dataBox,parent_page )  {
 
               switch (reason)  {
                 case job_dialog_reason.rename_node :
-                          tree.setNodeName ( nodeId,true );
+                          dlg.job_edited = true;
+                          tree.setNodeName ( nodeId,false );
                         break;
                 case job_dialog_reason.set_node_icon :
-                          tree.setNodeIcon ( nodeId,true );
+                          dlg.job_edited = true;
+                          tree.setNodeIcon ( nodeId,false );
                         break;
                 case job_dialog_reason.reset_node :
                           tree.node_map[nodeId].setCustomIconVisible ( false );
@@ -1170,6 +1239,7 @@ JobTree.prototype.openJob = function ( dataBox,parent_page )  {
 
             });
 
+          // put dialog reference in the hash of opened job dialogs
           tree.dlg_map[dlg.task.id] = dlg;
 
         }
@@ -1183,6 +1253,133 @@ JobTree.prototype.openJob = function ( dataBox,parent_page )  {
   }
 
 }
+*/
+
+JobTree.prototype.openJob = function ( dataBox,parent_page )  {
+
+  if (this.selected_node_id)  {
+
+    this.forceSingleSelection();
+
+    if (this.selected_node_id in this.task_map)  {
+
+      var nodeId = this.selected_node_id;
+      var task   = this.task_map[nodeId];
+
+      if (task.id in this.dlg_map)  {
+
+        $(this.dlg_map[task.id].element).dialog('open');
+
+      } else  {
+
+        var dBox = dataBox;
+        if (!dBox)  {
+          if (task.isComplete())  {
+            // for completed task, compose dataBox from task's own fields,
+            // because tasks may be moved up the tree, in which case
+            // the composition of dataBox may also change
+            dBox = this.getTaskDataBox ( task );
+          } else
+            dBox = this.harvestTaskData ( 2,task.harvestedTaskIds );
+        }
+
+        var params       = {};
+        params.tree      = this;
+        params.nodeId    = nodeId;
+        params.dataBox   = dBox;
+        params.ancestors = this.getAllAncestors ( task );
+
+        // save dialog reference in the hash of opened job dialogs
+        this.dlg_map[task.id] = new JobDialog ( params,parent_page,
+
+          function(dlg){
+            // trigerred when job is launched
+
+            dlg.tree.run_map [dlg.task.id] = dlg.nodeId;
+            dlg.tree.node_map[dlg.nodeId ].setCustomIconVisible ( true );
+            dlg.tree.setNodeName ( dlg.nodeId,false );
+            dlg.tree.emitSignal ( cofe_signals.jobStarted,{
+              'nodeId' : dlg.nodeId,
+              'taskId' : dlg.task.id
+            });
+            dlg.tree.startTaskLoop();
+
+          },function(dlg){
+            // trigerred when job dialog is closed; remove dialog from the
+            // hash of opened job dialogs
+
+            dlg.tree.dlg_map = mapExcludeKey ( dlg.tree.dlg_map,dlg.task.id );
+
+          },function(dlg,reason,options){
+            // trigerred on custom events
+
+            switch (reason)  {
+              case job_dialog_reason.rename_node :
+                        dlg.job_edited = true;
+                        dlg.tree.setNodeName ( dlg.nodeId,false );
+                      break;
+              case job_dialog_reason.set_node_icon :
+                        dlg.job_edited = true;
+                        dlg.tree.setNodeIcon ( dlg.nodeId,false );
+                      break;
+              case job_dialog_reason.reset_node :
+                        dlg.tree.node_map[dlg.nodeId].setCustomIconVisible ( false );
+                        dlg.tree.resetNodeName ( dlg.nodeId );
+                      break;
+              case job_dialog_reason.select_node :
+                        dlg.tree.selectSingle ( dlg.tree.node_map[dlg.nodeId] );
+                      break;
+              case job_dialog_reason.stop_job :
+                        dlg.tree.stopJob ( dlg.nodeId );
+                      break;
+              case job_dialog_reason.tree_updated :
+                        dlg.tree.emitSignal ( cofe_signals.treeUpdated,{} );
+                      break;
+              case job_dialog_reason.add_job :
+                        dlg.tree.addJob ( false,false,dlg.parent_page,function(){
+                          dlg.close();
+                        });
+                      break;
+              case job_dialog_reason.clone_job :
+                        dlg.tree.cloneJob ( dlg.parent_page,function(){
+                          dlg.close();
+                        });
+                      break;
+              case job_dialog_reason.run_job :
+                        var dataBox          = dlg.tree.harvestTaskData ( 1,[] );
+                        var branch_task_list = dlg.tree.getAllAncestors ( dlg.tree.getSelectedTask() );
+                        dlg.tree._copy_task_cloud_path ( options,branch_task_list );
+                        dlg.tree._copy_task_parameters ( options,branch_task_list );
+                        var dataSummary = dataBox.getDataSummary ( options );
+                        if ((dataSummary.status==2) ||
+                            (('DataRevision' in dataBox.data) &&
+                             (dataBox.data.DataRevision.length==1))) {
+                          // unambiguous data -- just start the job
+                          options.onJobDialogStart = function ( job_dialog )  {
+                            job_dialog.run_btn.click();  // start automatically
+                          };
+                        }
+                        dlg.tree._add_job ( false,options,dataBox,dlg.parent_page,function(){
+                          dlg.close();
+                          //tree.dlg_map[options.id].run_btn.click();
+                        });
+                      break;
+              default : ;
+            }
+
+          });
+
+      }
+
+    }
+
+  } else {
+    alert ( ' no selection in the tree! ' );
+  }
+
+}
+
+
 
 
 
