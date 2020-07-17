@@ -54,10 +54,10 @@ def logoutToRelogin(driver):
     print ('Logging out.')
     logoutImg = driver.find_element_by_xpath("//img[contains(@src,'images_png/logout.png')]")
     logoutImg.click()
-    time.sleep(2)
+    time.sleep(0.25)
 
     clickByXpath(driver, "//div[normalize-space()='%s']" % 'Back to User Login')
-    time.sleep(2)
+    time.sleep(0.25)
 
     return ()
 
@@ -69,14 +69,14 @@ def removeProject(driver, testName):
 
     if len(textEls) > 0:
         clickByXpath(driver, "//*[normalize-space()='%s']" % testName)
-        time.sleep(2)
+        time.sleep(0.25)
 
         clickByXpath(driver, "//*[normalize-space()='%s']" % 'Delete')
-        time.sleep(2)
+        time.sleep(0.25)
 
         textEls = driver.find_elements_by_xpath("//button[normalize-space()='%s']" % 'Delete')
         textEls[-1].click()
-        time.sleep(2)
+        time.sleep(0.25)
 
     return ()
 
@@ -88,14 +88,14 @@ def unjoinProject(driver, testName):
 
     if len(textEls) > 0:
         clickByXpath(driver, "//*[normalize-space()='%s']" % testName)
-        time.sleep(2)
+        time.sleep(0.25)
 
         clickByXpath(driver, "//*[normalize-space()='%s']" % 'Delete')
-        time.sleep(2)
+        time.sleep(0.25)
 
         textEls = driver.find_elements_by_xpath("//button[normalize-space()='%s']" % 'Unjoin')
         textEls[0].click()
-        time.sleep(2)
+        time.sleep(0.25)
 
     return ()
 
@@ -107,10 +107,10 @@ def areWeAtProjectList(driver):
         try:
             menuButton = driver.find_element(By.XPATH, "//div[contains(@style, 'images_png/menu.png')]")
             menuButton.click()
-            time.sleep(2)
+            time.sleep(0.25)
 
             clickByXpath(driver, "//*[normalize-space()='%s']" % 'My Projects')
-            time.sleep(2)
+            time.sleep(0.25)
         except:
             try:
                 cancelButtons = driver.find_elements(By.XPATH, "//button[normalize-space()='Cancel']")
@@ -139,7 +139,7 @@ def makeTestProject(driver, testProjectID, testProjectName):
     # click add button
     addButton = driver.find_element_by_xpath("//button[normalize-space()='Add']")
     ActionChains(driver).move_to_element(addButton).click(addButton).perform()
-    time.sleep(2)
+    time.sleep(0.25)
 
     # Shall return list of two elements for project creation
     projectInputs = driver.find_elements_by_xpath("//input[contains(@id,'input')]")
@@ -154,7 +154,7 @@ def makeTestProject(driver, testProjectID, testProjectName):
     projectInputs[1].clear()
     projectInputs[1].send_keys(testProjectName)
 
-    time.sleep(2)
+    time.sleep(0.25)
     # Now there are two 'Add' buttons and we want to click second one
     addButtons = driver.find_elements_by_xpath("//button[normalize-space()='Add']")
     addButtons[1].click()
@@ -164,7 +164,7 @@ def makeTestProject(driver, testProjectID, testProjectName):
 
 def enterProject(driver, projectId):
     print ('Entering test project. ID: %s' % projectId)
-    time.sleep(2)
+    time.sleep(0.25)
     projectCell = driver.find_element_by_xpath("//*[contains(text(),'%s')]" % projectId )
     ActionChains(driver).double_click(projectCell).perform()
     return()
@@ -176,7 +176,7 @@ def importFromCloudWithTaskListOnScreen(driver, waitShort):
     # Clicking "Cloud Import"
     textEl = driver.find_element_by_xpath("//*[normalize-space()='%s']" % 'Cloud Import')
     ActionChains(driver).double_click(textEl).perform()
-    time.sleep(2)
+    time.sleep(0.25)
 
     textEl2 = driver.find_elements_by_xpath("//a[normalize-space()='%s']" % 'ccp4-examples')
     if len(textEl2) < 1:
@@ -185,7 +185,7 @@ def importFromCloudWithTaskListOnScreen(driver, waitShort):
         print('Cant locate neither "CCP4 examples" nor "ccp4-examples"; terminating.')
         sys.exit(1)
     ActionChains(driver).move_to_element(textEl2[-1]).double_click(textEl2[-1]).perform()
-    time.sleep(2)
+    time.sleep(0.25)
 
     listOfTextsToDoubleClick = [('a','rnase'),
                                 ('a','rnase_model.pdb'),
@@ -201,7 +201,7 @@ def importFromCloudWithTaskListOnScreen(driver, waitShort):
         # It finds several elements with the same file name -> last one is the one we need
         driver.execute_script("arguments[0].scrollIntoView();", textElements[-1])
         ActionChains(driver).move_to_element(textElements[-1]).double_click(textElements[-1]).perform()
-        time.sleep(2)
+        time.sleep(0.25)
 
 #    taskWindowTitle = driver.find_element(By.XPATH,"//*[@class='ui-dialog-title' and contains(text(), '[0001]')]")
     try:
@@ -212,12 +212,12 @@ def importFromCloudWithTaskListOnScreen(driver, waitShort):
     except:
         print('Apparently the task importFromCloudWithTaskListOnScreen has not been completed in time; terminating')
         sys.exit(1)
-    time.sleep(2)
+    time.sleep(0.25)
 
     # presing Close button
     closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
     closeButton.click()
-    time.sleep(2)
+    time.sleep(0.25)
 
     return ()
 
@@ -228,18 +228,18 @@ def asymmetricUnitContentsAfterCloudImport(driver, waitShort):
     # presing Add button
     addButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/add.png')]")
     addButton.click()
-    time.sleep(2)
+    time.sleep(1)
 
     # There are several forms - active and inactive. We need one displayed.
     clickByXpath(driver, "//div[normalize-space()='%s']" % 'Asymmetric Unit Contents') # looking by text
-    time.sleep(2)
+    time.sleep(1)
 
     # 2 molecules in the ASU
     inputASU = driver.find_element_by_xpath("//*[@title='Specify stoichiometric coefficent for given sequence in the crystal']")
     inputASU.click()
     inputASU.clear()
     inputASU.send_keys('2')
-    time.sleep(2)
+    time.sleep(1)
 
     # There are several forms - active and inactive. We need one displayed.
     buttonsRun = driver.find_elements_by_xpath("//button[contains(@style, 'images_png/runjob.png')]" )
@@ -256,11 +256,11 @@ def asymmetricUnitContentsAfterCloudImport(driver, waitShort):
     except:
         print('Apparently tha task asymmetricUnitContentsAfterCloudImport has not been completed in time; terminating')
         sys.exit(1)
-    time.sleep(2)
+    time.sleep(1)
 
     # presing Close button
     clickByXpath(driver, "//button[contains(@style, 'images_png/close.png')]")
-    time.sleep(2)
+    time.sleep(1)
 
     return()
 
@@ -271,22 +271,22 @@ def editRevisionStructure(driver, waitShort):
     # Add button
     addButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/add.png')]")
     addButton.click()
-    time.sleep(2)
+    time.sleep(0.25)
 
     clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list')
-    time.sleep(2)
+    time.sleep(0.25)
 
     clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Asymmetric Unit and Structure Revision')
-    time.sleep(2)
+    time.sleep(0.25)
 
     clickByXpath(driver, "//div[normalize-space()='%s']" % 'Edit Revision: Structure')
-    time.sleep(2)
+    time.sleep(0.25)
 
     clickByXpath(driver, "//span[normalize-space()='%s']" % '[do not change]')
-    time.sleep(2)
+    time.sleep(0.25)
 
     clickByXpath(driver, "//div[contains(text(), '%s')]" % 'rnase_model /xyz/')
-    time.sleep(2)
+    time.sleep(0.25)
 
     # There are several forms - active and inactive. We need one displayed.
     buttonsRun = driver.find_elements_by_xpath("//button[contains(@style, 'images_png/runjob.png')]" )
@@ -303,11 +303,11 @@ def editRevisionStructure(driver, waitShort):
     except:
         print('Apparently tha task editRevisionStructure has not been completed in time; terminating')
         sys.exit(1)
-    time.sleep(2)
+    time.sleep(0.25)
 
     # presing Close button
     clickByXpath(driver, "//button[contains(@style, 'images_png/close.png')]")
-    time.sleep(2)
+    time.sleep(0.25)
 
     return ()
 
@@ -317,16 +317,16 @@ def startRefmac(driver, waitLong):
 
     addButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/add.png')]")
     addButton.click()
-    time.sleep(2)
+    time.sleep(0.25)
 
     clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list')
-    time.sleep(2)
+    time.sleep(0.25)
 
     clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Refinement and Model Building')
-    time.sleep(2)
+    time.sleep(0.25)
 
     clickByXpath(driver, "//div[normalize-space()='%s']" % 'Refinement with Refmac')
-    time.sleep(2)
+    time.sleep(0.25)
 
     # There are several forms - active and inactive. We need one displayed.
     buttonsRun = driver.find_elements_by_xpath("//button[contains(@style, 'images_png/runjob.png')]" )
@@ -334,12 +334,12 @@ def startRefmac(driver, waitLong):
         if buttonRun.is_displayed():
             buttonRun.click()
             break
-    time.sleep(2)
+    time.sleep(1)
 
     # pressing Close button
 #    closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
 #    closeButton.click()
-#    time.sleep(2)
+#    time.sleep(1)
 
     return ()
 
@@ -349,7 +349,7 @@ def verifyRefmac(driver, waitLong, jobNumber, targetRwork, targetRfree):
         rFree = 1.0
         print('REFMAC5 verification, job ' + jobNumber)
 
-        time.sleep(2)
+        time.sleep(0.25)
         startTime = time.time()
 
         while (True):
@@ -384,16 +384,16 @@ def renameProject(driver, testName):
     print('Renaming succesfull test project')
     menuButton = driver.find_element(By.XPATH, "//div[contains(@style, 'images_png/menu.png')]")
     menuButton.click()
-    time.sleep(2)
+    time.sleep(0.25)
 
     clickByXpath(driver, "//*[normalize-space()='%s']" % 'My Projects')
-    time.sleep(2)
+    time.sleep(0.25)
 
     clickByXpath(driver, "//*[normalize-space()='%s']" % testName)
-    time.sleep(2)
+    time.sleep(0.25)
 
     clickByXpath(driver, "//*[normalize-space()='%s']" % 'Rename')
-    time.sleep(2)
+    time.sleep(0.25)
 
     # Shall return list of two elements for project creation
     projectInput = driver.find_element_by_xpath("//input[@value='%s']" % testName)
@@ -404,7 +404,7 @@ def renameProject(driver, testName):
 
     textEls = driver.find_elements_by_xpath("//button[normalize-space()='%s']" % 'Rename')
     textEls[-1].click()
-    time.sleep(2)
+    time.sleep(0.25)
 
     return ()
 
@@ -413,26 +413,26 @@ def shareProject(driver, login):
     print('Sharing test project')
     menuButton = driver.find_element(By.XPATH, "//div[contains(@style, 'images_png/menu.png')]")
     menuButton.click()
-    time.sleep(2)
+    time.sleep(0.25)
 
     clickByXpath(driver, "//*[normalize-space()='%s']" % 'Share Project')
-    time.sleep(2)
+    time.sleep(0.25)
 
     projectSharing = driver.find_element_by_xpath("//input[@placeholder='%s']" % 'login1,login2,...')
     projectSharing.click()
     projectSharing.clear()
     projectSharing.send_keys(login)
-    time.sleep(2)
+    time.sleep(0.25)
 
     clickByXpath(driver, "//button[contains(text(), '%s')]" % 'Share Project')
-    time.sleep(2)
+    time.sleep(0.25)
 
 
     clickByXpath(driver, "//button[normalize-space()='%s']" % 'Apply')
-    time.sleep(2)
+    time.sleep(0.25)
 
     clickByXpath(driver, "//button[normalize-space()='%s']" % 'Ok')
-    time.sleep(2)
+    time.sleep(0.25)
 
 
     return ()
@@ -441,19 +441,19 @@ def shareProject(driver, login):
 def joinSharedProject(driver, testName):
     print('Getting shared project')
     clickByXpath(driver, "//div[normalize-space()='%s']" % 'Join')
-    time.sleep(2)
+    time.sleep(0.25)
 
     clickByXpath(driver, "//span[@class='ui-selectmenu-icon ui-icon ui-icon-triangle-1-s']")
-    time.sleep(2)
+    time.sleep(0.25)
 
     clickByXpath(driver, "//*[contains(text(), '%s')]" % testName)
-    time.sleep(2)
+    time.sleep(0.25)
 
     clickByXpath(driver, "//button[contains(@style, 'images_png/share.png')]")
     time.sleep(10)
 
     clickByXpath(driver, "//button[normalize-space()='%s']" % 'Close')
-    time.sleep(2)
+    time.sleep(0.25)
 
     return ()
 
@@ -463,16 +463,16 @@ def startSimbad(driver):
 
     addButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/add.png') and @class='ui-button ui-corner-all ui-widget']")
     addButton.click()
-    time.sleep(2)
+    time.sleep(1)
 
     clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list')
-    time.sleep(2)
+    time.sleep(1)
 
     clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Automated Molecular Replacement')
-    time.sleep(2)
+    time.sleep(1)
 
     clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Lattice and Contaminants Search with Simbad')
-    time.sleep(2)
+    time.sleep(1)
 
     # There are several forms - active and inactive. We need one displayed.
     buttonsRun = driver.find_elements_by_xpath("//button[contains(@style, 'images_png/runjob.png')]" )
@@ -481,12 +481,12 @@ def startSimbad(driver):
             buttonRun.click()
             break
 
-    time.sleep(2)
+    time.sleep(1)
 
     # pressing Close button
     closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
     closeButton.click()
-    time.sleep(2)
+    time.sleep(1)
 
     return ()
 
@@ -495,7 +495,7 @@ def verifySimbad(driver, waitLong):
     solv = 0.0
     print('SIMBAD verification')
 
-    time.sleep(2)
+    time.sleep(0.25)
     startTime = time.time()
 
     while (True):
@@ -526,6 +526,7 @@ def verifySimbad(driver, waitLong):
 
 
 def clickTaskInTaskTree(driver, taskName):
+    time.sleep(1)
     tasksText = driver.find_elements(By.XPATH,
                                      "//a[contains(@id,'treenode') and contains(@class, 'jstree-anchor')]")
     fullText = ''
@@ -554,16 +555,16 @@ def startMrbump(driver):
 
     addButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/add.png') and @class='ui-button ui-corner-all ui-widget']")
     addButton.click()
-    time.sleep(2)
+    time.sleep(0.25)
 
     clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list')
-    time.sleep(2)
+    time.sleep(0.25)
 
     clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Automated Molecular Replacement')
-    time.sleep(2)
+    time.sleep(0.25)
 
     clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'MrBump: Model Search & Preparation')
-    time.sleep(2)
+    time.sleep(0.25)
 
     # There are several forms - active and inactive. We need one displayed.
     buttonsRun = driver.find_elements_by_xpath("//button[contains(@style, 'images_png/runjob.png')]")
@@ -572,12 +573,12 @@ def startMrbump(driver):
             buttonRun.click()
             break
 
-    time.sleep(2)
+    time.sleep(0.25)
 
     # pressing Close button
     closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
     closeButton.click()
-    time.sleep(2)
+    time.sleep(0.25)
 
     return ()
 
@@ -589,7 +590,7 @@ def verifyMrBump(driver):
     compl = 0.0
     print('MRBUMP verification')
 
-    time.sleep(2)
+    time.sleep(0.25)
     startTime = time.time()
 
     while (True):
@@ -650,8 +651,8 @@ def test_sharingBasic(browser,
             print('Browser "%s" is not recognised; shall be Chrome or Firefox.' % browser)
             sys.exit(1)
     else:  # Running locally
-        waitShort = 60  # seconds for quick tasks
-        waitLong = 180  # seconds for longer tasks
+        waitShort = 90  # seconds for quick tasks
+        waitLong = 240  # seconds for longer tasks
 
         if browser == 'Chrome':
             driver = webdriver.Chrome()
@@ -692,22 +693,22 @@ def test_sharingBasic(browser,
         shareProject(driver, login+'2')
         joinSharedProject(driver2, testName)
         enterProject(driver2, testName)
-        time.sleep(2)
+        time.sleep(1)
 
         asymmetricUnitContentsAfterCloudImport(driver2, waitShort)
         editRevisionStructure(driver, waitShort)
         startRefmac(driver2, waitLong)
 
         clickTaskInTaskTree(driver, '\[0002\] asymmetric unit contents')
-        time.sleep(2)
+        time.sleep(2) # sensitive
         startSimbad(driver)
 
         # pressing Close button for REFMAC window
         closeButton = driver2.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
         closeButton.click()
-        time.sleep(2)
+        time.sleep(0.25)
         clickTaskInTaskTree(driver2, '\[0002\] asymmetric unit contents')
-        time.sleep(2)
+        time.sleep(0.25)
         startMrbump(driver2)
 
         verifySimbad(driver2, waitLong)
