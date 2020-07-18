@@ -2,7 +2,7 @@
 /*
  *  ===========================================================================
  *
- *    16.07.20   <--  Date of Last Modification.
+ *    18.07.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  ---------------------------------------------------------------------------
  *
@@ -25,7 +25,7 @@
 
 function appName()  { return 'CCP4 Cloud' }  // application name for reporting
 
-var jsCoFE_version = '1.6.013 [16.07.2020]';
+var jsCoFE_version = '1.6.013 [18.07.2020]';
 
 function appVersion()  {
   return jsCoFE_version;
@@ -150,6 +150,7 @@ var fe_reqtype = {
 var fe_retcode = {
   ok             : 'ok',             // everything's good
   largeData      : 'largeData',      // data sent to server is too large
+  noProjectData  : 'noProjectData',  // project metadata not found on server
   writeError     : 'writeError',     // data cannot be written on server side
   mkDirError     : 'mkDirError',     // directory cannot be created on server
   readError      : 'readError',      // data cannot be read on server side

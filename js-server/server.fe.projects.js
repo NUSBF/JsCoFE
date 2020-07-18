@@ -916,11 +916,15 @@ function advanceJobCounter ( loginData,data )  {
   var response    = null;
   var projectDesc = data.meta;
   var rdata       = checkTimestamps ( loginData,projectDesc );
+  rdata.project_missing = false;
   if (!rdata.reload)  {
     var projectData = readProjectData ( loginData,projectDesc.name );
-    projectData.desc.jobCount++;
-    writeProjectData ( loginData,projectData,false );  // do not change the timestamp
-    rdata.pdesc = projectData.desc;
+    if (projectData)  {
+      projectData.desc.jobCount++;
+      writeProjectData ( loginData,projectData,false );  // do not change the timestamp
+      rdata.pdesc = projectData.desc;
+    } else if (projectDesc.owner.share.length>0)
+      rdata.project_missing = true;
   }
   return new cmd.Response ( cmd.fe_retcode.ok,'',rdata );
 }
@@ -1049,8 +1053,12 @@ function saveProjectData ( loginData,data )  {
                             '[00026] Project metadata cannot be written.','' );
     }
 
+  } else if (projectData.desc.owner.share.length>0)  {
+    rdata.reload = -11111;
+    response = new cmd.Response ( cmd.fe_retcode.ok,
+                               '[00027] Project metadata does not exist.',rdata );
   } else  {
-    response  = new cmd.Response ( cmd.fe_retcode.writeError,
+    response = new cmd.Response ( cmd.fe_retcode.noProjectData,
                                '[00027] Project metadata does not exist.','' );
   }
 
@@ -1487,11 +1495,17 @@ function saveJobData ( loginData,data )  {
 
   var jobDataPath = getJobDataPath ( loginData,projectName,jobId );
 
-  if (utils.writeObject(jobDataPath,data.meta))  {
-    response = new cmd.Response ( cmd.fe_retcode.ok,'','' );
+  if (utils.fileExists(jobDataPath) && utils.writeObject(jobDataPath,data.meta))  {
+    response = new cmd.Response ( cmd.fe_retcode.ok,'',{ 'project_missing':false } );
   } else  {
-    response = new cmd.Response ( cmd.fe_retcode.writeError,
-                               '[00028] Job metadata cannot be written.','' );
+    if (data.is_shared &&
+        (!utils.fileExists(getProjectDataPath(loginData,projectName))))
+      response = new cmd.Response ( cmd.fe_retcode.ok,'project_missing',
+                                    { 'project_missing':true } );
+    if (!response)
+      response = new cmd.Response ( cmd.fe_retcode.writeError,
+                                    '[00028] Job metadata cannot be written.',
+                                    { 'project_missing':null } );
   }
 
   return response;

@@ -38,8 +38,6 @@ import pyrvapi
 from . import basic
 from  pycofe.dtypes    import  dtype_template
 from  pycofe.proc      import  datred_utils, import_filetype, import_merged
-# does not works after update 7.0.052
-# from  pycofe.i2reports import aimless_pipe as i2report
 
 # ============================================================================
 # Make Aimless driver
@@ -62,8 +60,6 @@ class Aimless(basic.TaskDriver):
     # the following will provide for import of generated HKL dataset(s)
     def importDir        (self):  return "./"   # import from working directory
     def import_summary_id(self):  return None   # don't make summary table
-
-    #def ccp4i2_report_id (self):  return "ccp4i2_report"
 
     # ------------------------------------------------------------------------
 

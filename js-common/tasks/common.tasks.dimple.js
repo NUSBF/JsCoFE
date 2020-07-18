@@ -216,6 +216,7 @@ TaskDimple.prototype.currentVersion = function()  {
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
 }
 
+//TaskDimple.prototype.cleanJobDir = function ( jobDir )  {}
 
 if (!__template)  {
   //  for client side

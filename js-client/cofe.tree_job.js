@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    16.07.20   <--  Date of Last Modification.
+ *    17.07.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -519,6 +519,16 @@ JobTree.prototype.checkReload = function ( self,rdata,details )  {
   return true;  // proceed
 }
 
+JobTree.prototype.missingProject = function()  {
+  new MessageBox ( 'Project not found',
+      '<h3>Project "' + this.projectData.desc.name +
+         '" is not found on server</h3>' +
+      'Project "' + this.projectData.desc.name +
+         '" was shared with you, please check<br>' +
+      'whether it was deleted by project owner.'
+  );
+  this.emitSignal ( cofe_signals.makeProjectList,{} );
+}
 
 JobTree.prototype.advanceJobCounter = function ( onDone_func )  {
   if (this.projectData)  {
@@ -527,7 +537,9 @@ JobTree.prototype.advanceJobCounter = function ( onDone_func )  {
     (function(tree){
       serverRequest ( fe_reqtype.advanceJobCounter,data,'Project',
         function(rdata){
-          if (tree.checkReload(tree,rdata,'add the job'))  {
+          if (rdata.project_missing)  {
+            tree.missingProject();
+          } else if (tree.checkReload(tree,rdata,'add the job'))  {
             tree.projectData.desc.timestamp = rdata.pdesc.timestamp;
             tree.projectData.desc.jobCount  = rdata.pdesc.jobCount;
             if (onDone_func)
@@ -552,7 +564,9 @@ JobTree.prototype.saveProjectData = function ( tasks_add,tasks_del,update_bool,
     (function(tree){
       serverRequest ( fe_reqtype.saveProjectData,data,'Project',
         function(rdata){
-          if (rdata.reload>0)  {
+          if (rdata.reload==-11111)  {
+            tree.missingProject();
+          } else if (rdata.reload>0)  {
             if (callback_func)
                   callback_func ( rdata );
             else  tree.emitSignal ( cofe_signals.reloadTree,rdata );
@@ -1320,7 +1334,7 @@ JobTree.prototype.openJob = function ( dataBox,parent_page )  {
                       break;
               case job_dialog_reason.set_node_icon :
                         dlg.job_edited = true;
-                        dlg.tree.setNodeIcon ( dlg.nodeId,false );
+                        dlg.tree.setNodeIcon ( dlg.nodeId,true );
                       break;
               case job_dialog_reason.reset_node :
                         dlg.tree.node_map[dlg.nodeId].setCustomIconVisible ( false );
