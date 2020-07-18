@@ -105,10 +105,19 @@ function MessageAJAXFailure ( title,jqXHR,exception )  {
 }
 
 
-function MessageDataWriteError ( title,message )  {
-var msg = '<b>General failure: data cannot be written.</b>';
+function MessageNoProjectDataError ( title,message )  {
+var msg = '<h3>General failure: project metadata not found on server</h3>';
   if (message.length>0)
-    msg += '<p>Server replied: <i>' + message + '</i>';
+    msg += 'Server replied: <i>' + message + '</i>';
+  new MessageBox ( title,msg +
+    '<p>This is an internal error, and the respective maintener ' +
+    'has been informed.<p>Sorry and please come back later!' );
+}
+
+function MessageDataWriteError ( title,message )  {
+var msg = '<h3>General failure: data cannot be written</h3>';
+  if (message.length>0)
+    msg += 'Server replied: <i>' + message + '</i>';
   new MessageBox ( title,msg +
     '<p>This is an internal error, and the respective maintener ' +
     'has been informed.<p>Sorry and please come back later!' );

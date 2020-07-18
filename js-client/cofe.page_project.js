@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    08.07.20   <--  Date of Last Modification.
+ *    17.07.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -344,7 +344,7 @@ function ProjectPage ( sceneId )  {
 
     if ((!jobTree) || (!jobTree.projectData))  {
       makeProjectListPage ( sceneId );
-      return;
+      return false;
     }
 
     refresh_btn.setDisabled ( false );
@@ -376,10 +376,15 @@ function ProjectPage ( sceneId )  {
     jobTree.addSignalHandler ( cofe_signals.reloadTree,function(rdata){
       reloadTree ( false );
     });
+    jobTree.addSignalHandler ( cofe_signals.makeProjectList,function(rdata){
+      makeProjectListPage ( sceneId );
+    });
 
     if ((jobTree.root_nodes.length==1) &&
         (jobTree.root_nodes[0].children.length<=0))
       addJob();
+
+    return true;
 
   }
 
@@ -401,16 +406,17 @@ function ProjectPage ( sceneId )  {
       jobTree.hide();
     job_tree.parent.addWidget ( jobTree );
     jobTree.readProjectData ( 'Project',function(){
-      onTreeLoaded();
-      jobTree.parent.setScrollPosition ( scrollPos );
-      if (!blink)  {
-        jobTree .relinkJobDialogs ( job_tree.dlg_map,self );
-        job_tree.hide  ();
-        jobTree .show  ();
-        job_tree.delete();
-      } else  {
-        job_tree.closeAllJobDialogs();
-        jobTree .openJobs ( dlg_task_parameters,self );
+      if (onTreeLoaded())  {
+        jobTree.parent.setScrollPosition ( scrollPos );
+        if (!blink)  {
+          jobTree .relinkJobDialogs ( job_tree.dlg_map,self );
+          job_tree.hide  ();
+          jobTree .show  ();
+          job_tree.delete();
+        } else  {
+          job_tree.closeAllJobDialogs();
+          jobTree .openJobs ( dlg_task_parameters,self );
+        }
       }
     },onTreeContextMenu,openJob,onTreeItemSelect );
   }

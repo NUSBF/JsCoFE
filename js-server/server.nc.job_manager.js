@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    17.05.20   <--  Date of Last Modification.
+ *    17.07.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -625,6 +625,14 @@ function ncJobFinished ( job_token,code )  {
 
   var taskDataPath = path.join ( jobEntry.jobDir,task_t.jobDataFName );
   var task         = utils.readClass ( taskDataPath );
+
+  if (!task)  {
+    log.error ( 52,'cannot read job metadata at ' + taskDataPath );
+    ncJobRegister.removeJob ( job_token );
+    writeNCJobRegister      ();
+    return;  // recovery not possible
+  }
+
   task.job_dialog_data.viewed = false;
 
   if (!task.informFE)  {
@@ -635,7 +643,7 @@ function ncJobFinished ( job_token,code )  {
     return;
   }
 
-  if (task && (jobEntry.sendTrials==conf.getServerConfig().maxSendTrials)) {
+  if (jobEntry.sendTrials==conf.getServerConfig().maxSendTrials) {
 
     log.debug2 ( 101,'put status' );
 

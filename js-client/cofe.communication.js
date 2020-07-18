@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    17.05.20   <--  Date of Last Modification.
+ *    17.07.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -23,13 +23,14 @@
 
 
 var cofe_signals = {
-  taskReady     : 'task_ready',      // fired by Job Dialog's input panels
-  jobStarted    : 'job_started',     // fired by JobTree
-  treeUpdated   : 'tree_updated',    // fired by JobTree
-  reloadTree    : 'reload_tree',     // fired by JobTree
-  rationUpdated : 'ration_updated',  // fired by JobTree
-  jobDlgSignal  : 'job_dlg_signal',
-  uploadEvent   : 'uploadEvent'      // fired by Upload module
+  taskReady       : 'task_ready',         // fired by Job Dialog's input panels
+  jobStarted      : 'job_started',        // fired by JobTree
+  treeUpdated     : 'tree_updated',       // fired by JobTree
+  reloadTree      : 'reload_tree',        // fired by JobTree
+  makeProjectList : 'make_project_list',  // fired by JobTree
+  rationUpdated   : 'ration_updated',     // fired by JobTree
+  jobDlgSignal    : 'job_dlg_signal',
+  uploadEvent     : 'uploadEvent'         // fired by Upload module
 }
 
 
@@ -74,6 +75,10 @@ function makeCommErrorMessage ( title,response )  {
 
     case fe_retcode.jobballError:
         MessageDataReadError ( title,response.message );
+      break;
+
+    case fe_retcode.noProjectData:
+        MessageNoProjectDataError ( title,response.message );
       break;
 
     case fe_retcode.writeError:
@@ -241,7 +246,7 @@ if ((typeof function_fail === 'string' || function_fail instanceof String) &&
         // we put this function here and in fail section because we do not want to
         // have it executed multiple times due to multiple retries
         if (function_always)
-          function_always(0);
+          function_always(0,response.data);
       }
 
     })
@@ -366,9 +371,11 @@ function downloadJobFile ( jobId,filePath )  {
   downloadFile ( getJobFileURL(jobId,filePath) );
 }
 
+/*  commented on 17.07.2020
 window.onbeforeunload = function(e)  {
   serverCommand ( fe_command.stop,{},'stopping',null,null,function(){} );
 }
+*/
 
 
 /*

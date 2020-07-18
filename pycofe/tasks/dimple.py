@@ -5,11 +5,11 @@
 #
 # ============================================================================
 #
-#    08.05.20   <--  Date of Last Modification.
+#    17.07.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
-#  MOLREP-REFMAC EXECUTABLE MODULE
+#  DIMPLE EXECUTABLE MODULE
 #
 #  Command-line:
 #     ccp4-python -m pycofe.tasks.dimple jobManager jobDir jobId
@@ -30,6 +30,7 @@
 import os
 import sys
 import uuid
+import io
 
 #  application imports
 from . import basic
@@ -82,6 +83,7 @@ class Dimple(basic.TaskDriver):
         ]
 
         #  make this check because function can be used also with DataXYZ
+        libin = None
         if istruct._type==dtype_structure.dtype():
             libin = istruct.getLibFilePath ( self.inputDir() )
             if libin:
@@ -133,9 +135,38 @@ class Dimple(basic.TaskDriver):
         # ================================================================
         # make output structure and register it
 
-        return self.finaliseStructure ( self.getXYZOFName(),self.outputFName,
-                                             hkl,None,[],0,leadKey=1,
-                                             openState_bool=False )
+        if os.path.isfile(self.getXYZOFName()) and os.path.isfile(self.getMTZOFName()):
+
+            files = [f for f in os.listdir(".") if f.lower().endswith("refmac5_restr.log")]
+            if len(files)>0:
+                panel_id = self.getWidgetId ( self.refmac_report() )
+                self.setGenericLogParser ( panel_id,False,
+                                           graphTables=False,makePanel=True )
+                file_refmaclog = open ( files[0],"r" )
+                self.log_parser.parse_stream ( file_refmaclog )
+                file_refmaclog.close()
+
+            # Register output data. This moves needful files into output directory
+            # and puts the corresponding metadata into output databox
+
+            structure = self.registerStructure ( self.getXYZOFName(),None,
+                                                 self.getMTZOFName(),None,
+                                                 None,libin, leadKey=1 )
+
+            if structure:
+                structure.addDataAssociation ( hkl.dataId )
+                structure.setRefmacLabels    ( hkl )
+                structure.addPhasesSubtype   ()
+                self.putTitle ( "Output Structure" +\
+                        self.hotHelpLink ( "Structure","jscofe_qna.structure" ) )
+                self.putStructureWidget ( self.getWidgetId("structure_btn_"),
+                                          "Structure and electron density",
+                                          structure )
+            return structure
+
+        else:
+            self.putTitle ( "No Solution Found" )
+            return None
 
 
     def run(self):

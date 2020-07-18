@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    16.07.20   <--  Date of Last Modification.
+ *    17.07.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -394,15 +394,16 @@ JobDialog.prototype.requestServer = function ( request,callback_ok )  {
   var data  = {};
   data.meta = this.task;
   data.ancestors = [];
-  data.update_tree = this.job_edited &&
-              (this.parent_page.job_tree.projectData.desc.owner.share.length>0);
+  data.is_shared = (this.parent_page.job_tree.projectData.desc.owner.share.length>0);
   for (var i=1;i<this.ancestors.length;i++)
     data.ancestors.push ( this.ancestors[i]._type );
   if (!this.task.job_dialog_data.viewed)  {
     //this.onDlgSignal_func ( this.task.id,job_dialog_reason.reset_node,null );
     this.onDlgSignal_func ( this,job_dialog_reason.reset_node,null );
     this.task.job_dialog_data.viewed = true;
+    this.job_edited = true;
   }
+  data.update_tree = this.job_edited && data.is_shared;
   serverRequest ( request,data,this.task.title,callback_ok,null,null );
 }
 
@@ -570,66 +571,6 @@ JobDialog.prototype.makeLayout = function ( onRun_func )  {
     this.addWidget ( this.inputPanel  );
     this.addWidget ( this.outputPanel );
 
-    /*
-    this.toolBar = new Grid('');
-    this.addWidget ( this.toolBar );
-    this.toolBarSep = new HLine('2px');
-    this.addWidget ( this.toolBarSep  );
-    this.addWidget ( this.inputPanel  );
-    this.addWidget ( this.outputPanel );
-
-    if (this.task.runButtonName())  {
-      this.radioSet = this.toolBar.setRadioSet(0,0,1,1)
-              .addButton('Input' ,'input' ,'',this.task.job_dialog_data.panel=='input' )
-              .addButton('Output','output','',this.task.job_dialog_data.panel=='output');
-      (function(dlg){
-        $(dlg.outputPanel.element).on ( 'load',function(){
-          dlg.onDlgResize();
-          //dlg.outputPanel.getDocument().__url_path_prefix = dlg.task.getURL('');
-        });
-        dlg.radioSet.make ( function(btnId){
-          dlg.inputPanel .setVisible ( (btnId=='input' ) );
-          dlg.outputPanel.setVisible ( (btnId=='output') );
-          dlg.task.job_dialog_data.panel = btnId;
-          dlg.onDlgResize();  // this is needed for getting all elements in
-                              // inputPanel available by scrolling, in case
-                              // when dialog first opens for 'output'
-          // if dialog was created in input mode, check whether report
-          // page should be loaded at first switch to output mode
-          if (dlg.outputPanel.element.src.length<=0)
-            dlg.loadReport();
-        });
-      }(this));
-      this.radioSet.setSize ( '220px','' );
-
-      if (!this.inputPanel.fullVersionMismatch)
-        this.run_btn  = this.toolBar.setButton ( this.task.runButtonName(),
-                                                 image_path('runjob'), 0,2, 1,1 )
-                                    .setTooltip  ( 'Start job' )
-                                    .setDisabled ( __dormant   );
-    }
-    this.toolBar.setCellSize ( '40%','',0,1 );
-
-    this.run_image  = this.toolBar.setImage  ( './images_com/activity.gif',
-                                               '36px','36px', 0,3, 1,1 );
-    this.stop_btn   = this.toolBar.setButton ( 'Stop',image_path('stopjob'), 0,4, 1,1 )
-                                  .setTooltip('Stop job' );
-    this.status_lbl = this.toolBar.setLabel  ( '', 0,5, 1,1 ).setNoWrap();
-
-    this.export_btn = this.toolBar.setButton ( 'Export',image_path('export'), 0,7, 1,1 )
-                                  .setTooltip('Export job directory' );
-
-    if (this.task.helpURL)
-      this.ref_btn  = this.toolBar.setButton ( 'Ref.',image_path('reference'), 0,8, 1,1 )
-                                  .setTooltip('Task Documentation' );
-    this.help_btn   = this.toolBar.setButton ( 'Help',image_path('help'), 0,9, 1,1 )
-                                  .setTooltip('Dialog Help' );
-    this.close_btn  = this.toolBar.setButton ( 'Close',image_path('close'), 0,10, 1,1 )
-                                  .setTooltip('Close Job Dialog' );
-    this.toolBar.setVerticalAlignment ( 0,5,'middle' );
-    this.toolBar.setCellSize ( '40%','',0,6 );
-    */
-
   } else  {
     this.outputPanel.setFramePosition ( '16px','8px','100%','100%' );
 
@@ -699,34 +640,6 @@ JobDialog.prototype.makeLayout = function ( onRun_func )  {
     if (dlg.run_btn)  {
 
       dlg.run_btn.addOnClickListener ( function(){
-
-        /*
-        var stopmsg = null;
-        if (dlg.task.nc_type=='client')  {
-          if (!__local_service)  {
-            stopmsg = ['CCP4 Cloud Client not found',
-                       '<h3>CCP4 Cloud Client is required</h3>'];
-            if (__any_mobile_device)
-              stopmsg[1] += 'This task cannot be run when working with ' + appName() +
-                            ' from mobile devices.<br>In order to use the task, ' +
-                            'access ' + appName() + ' via the CCP4 Cloud Client,<br>' +
-                            'found in CCP4 Software Suite.';
-            else
-              stopmsg[1] += 'This task can be run only if ' + appName() +
-                            ' was accessed via the CCP4 Cloud Client,<br>found in ' +
-                            'CCP4 Software Suite.';
-          } else if (compareVersions(__client_version,dlg.task.lowestClientVersion())<0){
-            stopmsg = ['CCP4 Cloud Client needs updating',
-                       '<h3>Too low version of CCP4 Cloud Client</h3>' +
-                       'This task requires a higher version of the CCP4 Cloud Client' +
-                       '<br>(update CCP4 Software Suite on your device).'];
-          }
-        }
-
-        if (stopmsg)  {
-
-          new MessageBox ( stopmsg[0],stopmsg[1] );
-        */
 
         var avail_key = dlg.task.isTaskAvailable();
         if (avail_key[0]!='ok')  {
@@ -894,7 +807,18 @@ JobDialog.prototype.makeLayout = function ( onRun_func )  {
         if ((dlg.task.state!=job_code.running) &&
             (dlg.task.state!=job_code.exiting))  {
           dlg.collectTaskData ( true );
-          dlg.requestServer   ( fe_reqtype.saveJobData,null );
+          dlg.requestServer   ( fe_reqtype.saveJobData,function(rdata){
+            if (rdata.project_missing)  {
+              new MessageBox ( 'Project not found',
+                  '<h3>Project "' + dlg.tree.projectData.desc.name +
+                     '" is not found on server</h3>' +
+                  'Project "' + dlg.tree.projectData.desc.name +
+                     '" was shared with you, please check<br>' +
+                  'whether it was deleted by project owner.'
+              );
+              dlg.tree.emitSignal ( cofe_signals.makeProjectList,rdata );
+            }
+          });
         }
         dlg.task.onJobDialogClose(dlg,function(close_bool){
           if (close_bool)
