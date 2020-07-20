@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    04.04.20   <--  Date of Last Modification.
+#    20.07.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -38,7 +38,10 @@ from pycofe.proc   import import_xyz, import_sequence, import_merged
 def get_pdb_file_url ( ucode ):
     return "https://files.rcsb.org/download/" + ucode + ".pdb"
 
-def download_file ( url,fpath ):
+def get_seq_file_url ( ucode ):
+    return "https://www.rcsb.org/fasta/entry/" + ucode
+
+def download_file ( url,fpath,body=None ):
     rc = 0  # return code
     try:
         r = requests.get ( url,stream=True )
@@ -49,13 +52,17 @@ def download_file ( url,fpath ):
         with open(fpath,'r') as f:
             line = f.readline()
             while line:
+                if body:
+                    body.stdout ( line )
                 l = line.strip()
                 if len(l)>0:
                     if l.startswith("<!DOCTYPE"):
                         rc = -1
-                    break;
+                        break;
                 line = f.readline()
     except:
+        if body:
+            body.stdoutln ( " *** failed to get " + url )
         rc = -2
     return rc
 
@@ -78,6 +85,7 @@ def run ( body,pdb_list,
         lcode     = code.lower()
         ucode     = code.upper()
         fname_xyz = lcode + ".pdb"
+        fname_seq = "rcsb_pdb_" + ucode + ".fasta"
         fname_seq = lcode + ".fasta"
         fname_sf  = lcode + "-sf.cif"
         fpath_xyz = os.path.join ( body.importDir(),fname_xyz )
@@ -85,14 +93,18 @@ def run ( body,pdb_list,
         rc_xyz    = -1
         rc_seq    = -1
         rc_sf     = -1
-        if import_coordinates:
+        if import_coordinates or import_sequences:
+            # coordiinates are used for sequence annotation
             rc_xyz = download_file ( get_pdb_file_url(ucode),fpath_xyz )
             #rc_xyz = download_file ( "https://files.rcsb.org/download/" + ucode + ".pdb",
             #                         fpath_xyz )
         if import_sequences:
-            rc_seq = download_file ( "https://www.rcsb.org/pdb/download/downloadFastaFiles.do?structureIdList=" +
-                                    ucode + "&compressionType=uncompressed",
-                                    fpath_seq )
+            # these will be the "expected" sequences
+            rc_seq = download_file ( get_seq_file_url(ucode),fpath_seq,body=None )
+            #rc_seq = download_file ( "https://www.rcsb.org/pdb/download/downloadFastaFiles.do?structureIdList=" +
+            #                        ucode + "&compressionType=uncompressed",
+            #                        fpath_seq )
+
         if import_reflections:
             rc_sf  = download_file ( "https://files.rcsb.org/download/" + ucode + "-sf.cif",
                                     os.path.join(body.importDir(),fname_sf) )
@@ -105,16 +117,20 @@ def run ( body,pdb_list,
 
         if not rc_xyz:
 
-            body.addFileImport ( fname_xyz,import_filetype.ftype_XYZ() )
+            if import_coordinates:
+                body.addFileImport ( fname_xyz,import_filetype.ftype_XYZ() )
 
-            if not rc_seq and import_sequences:
+            if import_sequences:
 
                 # infer non-redundant sequence composition of ASU
-                asuComp = asucomp.getASUComp1 ( fpath_xyz,fpath_seq,0.9999 )
+                asuComp = asucomp.getASUComp1 ( fpath_xyz,fpath_seq,0.9999,body=None )
 
                 #  prepare separate sequence files annotation json for sequence import
+
                 annotation = {"rename":{}, "annotation":[] }
+
                 seqdesc = asuComp["asucomp"]
+                #body.stdoutln ( str(seqdesc) )
                 for i in range(len(seqdesc)):
                     fname = lcode + "_" + seqdesc[i]["chain_id"] + ".fasta"
                     dtype_sequence.writeSeqFile ( os.path.join(body.importDir(),fname),
@@ -130,6 +146,35 @@ def run ( body,pdb_list,
                     if seqdesc[i]["type"]=="protein":  nAA += 1
                     if seqdesc[i]["type"]=="dna"    :  nNA += 1
 
+                seqlist = asuComp["seqlist"]  # sequences from PDB header
+                #body.stdoutln ( str(seqdesc) )
+                for i in range(len(seqlist)):
+                    name  = str(i+1)
+                    stype = "protein"  # ugly fallback
+                    lst   = seqlist[i][0].split("|")
+                    if len(lst)>1:
+                        if lst[1].startswith("Chain"):
+                            chains = lst[1].split(" ")[1].split(",")
+                            name   = "_".join(chains)
+                            for j in range(len(seqdesc)):
+                                if chains[0]==seqdesc[j]["chain_id"]:
+                                    stype = seqdesc[j]["type"]
+                                    break
+                    fname = lcode + "_expected_" + name + ".fasta"
+                    dtype_sequence.writeSeqFile ( os.path.join(body.importDir(),fname),
+                                                  seqlist[i][0],seqlist[i][1] )
+                    body.addFileImport ( fname,import_filetype.ftype_Sequence() )
+                    annot = { "file":fname, "rename":fname, "items":[
+                      { "rename"   : fname,
+                        "contents" : seqlist[i][0] + "\n" + seqlist[i][1],
+                        "type"     : stype
+                      }
+                    ]}
+                    annotation["annotation"].append ( annot )
+                    if seqdesc[i]["type"]=="protein":  nAA += 1
+                    if seqdesc[i]["type"]=="dna"    :  nNA += 1
+
+                body.stdoutln ( str(annotation) )
                 f = open ( "annotation.json","w" )
                 f.write ( json.dumps(annotation) )
                 f.close ()
@@ -150,18 +195,22 @@ def run ( body,pdb_list,
 
             if len(hkl)>0 and import_revisions:  # compose structure and revision
 
-                seqdesc = asuComp["asucomp"]
-                if len(seq)>0 and len(seq)==len(seqdesc):
+                revision = [None]  # for formal logic below
+                seqdesc  = asuComp["asucomp"]
+                seqlist  = asuComp["seqlist"]  # sequences from PDB header
+                if len(seqdesc)>0 and len(seq)==len(seqdesc)+len(seqlist): # import ok
 
                     body.putMessage ( "<h3>" + ucode + " Unit Cell</h3>" )
 
-                    for i in range(len(seq)):
+                    seq_coor = []
+                    for i in range(len(seqdesc)):
                         seq[i].ncopies      = seqdesc[i]["n"]
                         seq[i].ncopies_auto = False  # do not adjust
+                        seq_coor.append ( seq[i] )
                     composition = "D"  # AA-NA comples
                     if nAA<=0:  composition = "D"  # NA only
                     if nNA<=0:  composition = "P"  # AA only
-                    revision = asudef.makeRevision ( body,hkl[0],seq,
+                    revision = asudef.makeRevision ( body,hkl[0],seq_coor,
                                                      composition,"MW",0,0.0,None,
                                                      None,None,secId=subSecId )
 
@@ -182,7 +231,6 @@ def run ( body,pdb_list,
                         "<b><i>" + ucode + " structure revision name:</i></b>","" )
                     revisionNo += 1
                     body.outputFName = "*"
-
 
             body.resetReportPage()
 

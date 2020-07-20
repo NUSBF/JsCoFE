@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    16.07.19   <--  Date of Last Modification.
+#    20.07.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -16,83 +16,11 @@
 
 import math
 
-from ccp4mg import mmdb2
-from Bio    import pairwise2
-from . import  datred_utils
+import gemmi
 
-
-# ============================================================================
-
-resCodes = {
-    "ALA":"A",  # Alanine
-    "ARG":"R",  # Arginine
-    "ASN":"N",  # Asparagine
-    "ASP":"D",  # Aspartic acid (Aspartate)
-    "CYS":"C",  # Cysteine
-    "GLN":"Q",  # Glutamine
-    "GLU":"E",  # Glutamic acid (Glutamate)
-    "GLY":"G",  # Glycine
-    "HIS":"H",  # Histidine
-    "ILE":"I",  # Isoleucine
-    "LEU":"L",  # Leucine
-    "LYS":"K",  # Lysine
-    "MET":"M",  # Methionine
-    "PHE":"F",  # Phenylalanine
-    "PRO":"P",  # Proline
-    "SER":"S",  # Serine
-    "THR":"T",  # Threonine
-    "TRP":"W",  # Tryptophan
-    "TYR":"Y",  # Tyrosine
-    "VAL":"V",  # Valine
-    "ASX":"B",  # Aspartic acid or Asparagine
-    "GLX":"Z",  # Glutamine or Glutamic acid.
-    #  ???     X       Any amino acid.
-
-    # other
-
-    "1PA":"A",   "1PI":"A",   "2AS":"D",   "2ML":"L",   "2MR":"R",   "3GA":"A",
-    "5HP":"E",   "ACB":"D",   "ACL":"R",   "AGM":"R",   "AHB":"D",   "ALM":"A",
-    "ALN":"A",   "ALO":"T",   "ALT":"A",   "ALY":"K",   "APH":"A",   "APM":"A",
-    "AR2":"R",   "ARM":"R",   "ARO":"R",   "ASA":"D",   "ASB":"D",   "ASI":"D",
-    "ASK":"D",   "ASL":"D",   "ASQ":"D",   "AYA":"A",   "B1F":"A",   "B2A":"A",
-    "B2F":"A",   "B2I":"I",   "B2V":"V",   "BAL":"A",   "BCS":"C",   "BFD":"D",
-    "BHD":"D",   "BLE":"L",   "BLY":"K",   "BNN":"F",   "BNO":"L",   "BTA":"L",
-    "BTC":"C",   "BTR":"W",   "BUC":"C",   "BUG":"L",   "C5C":"C",   "C6C":"C",
-    "CAF":"C",   "CAS":"C",   "CAY":"C",   "CCS":"C",   "CEA":"C",   "CGU":"E",
-    "CHG":"G",   "CHP":"G",   "CLB":"A",   "CLD":"A",   "CLE":"L",   "CME":"C",
-    "CMT":"C",   "CSB":"C",   "CSD":"A",   "CSE":"C",   "CSO":"C",   "CSP":"C",
-    "CSR":"C",   "CSS":"C",   "CSW":"C",   "CSX":"C",   "CSY":"C",   "CSZ":"C",
-    "CTH":"T",   "CXM":"M",   "CY1":"C",   "CYM":"C",   "CZZ":"C",   "DAH":"F",
-    "DAL":"A",   "DAM":"A",   "DAR":"R",   "DAS":"D",   "DBY":"Y",   "DCY":"C",
-    "DGL":"E",   "DGN":"Q",   "DHI":"H",   "DHN":"V",   "DIL":"I",   "DIV":"V",
-    "DLE":"L",   "DLY":"K",   "DNP":"A",   "DOH":"D",   "DPH":"F",   "DPN":"F",
-    "DPR":"P",   "DSE":"S",   "DSN":"S",   "DSP":"D",   "DTH":"T",   "DTR":"W",
-    "DTY":"Y",   "DVA":"V",   "EFC":"C",   "EHP":"F",   "EYS":"C",   "FLA":"A",
-    "FLE":"L",   "FME":"M",   "FTY":"Y",   "GGL":"E",   "GHP":"G",   "GSC":"G",
-    "GT9":"C",   "H5M":"P",   "HAC":"A",   "HAR":"R",   "HIC":"H",   "HIP":"H",
-    "HMR":"R",   "HPH":"F",   "HPQ":"F",   "HTR":"W",   "HV5":"A",   "HYP":"P",
-    "IAS":"N",   "IIL":"I",   "ILG":"Q",   "IML":"I",   "IN2":"K",   "ISO":"A",
-    "IVA":"V",   "IYR":"Y",   "KCX":"K",   "KPH":"K",   "LLY":"K",   "LOL":"L",
-    "LPL":"L",   "LTR":"W",   "LYM":"K",   "LYZ":"K",   "M3L":"K",   "MAA":"A",
-    "MAI":"R",   "MEN":"N",   "MGN":"Q",   "MGY":"G",   "MHL":"L",   "MHO":"M",
-    "MHS":"H",   "MIS":"S",   "MLE":"L",   "MLY":"K",   "MLZ":"K",   "MME":"M",
-    "MNL":"L",   "MNV":"V",   "MPQ":"G",   "MSE":"M",   "MSO":"M",   "MTY":"Y",
-    "MVA":"V",   "NAL":"A",   "NAM":"A",   "NCY":"C",   "NEM":"H",   "NEP":"H",
-    "NFA":"F",   "NIT":"A",   "NLE":"L",   "NLN":"L",   "NNH":"R",   "NPH":"C",
-    "NVA":"V",   "OAS":"S",   "OCS":"C",   "OCY":"C",   "OMT":"M",   "OPR":"R",
-    "PAQ":"F",   "PBB":"C",   "PCA":"E",   "PEC":"C",   "PGY":"G",   "PHA":"F",
-    "PHD":"N",   "PHI":"F",   "PHL":"F",   "PHM":"F",   "PLE":"L",   "POM":"P",
-    "PPH":"F",   "PPN":"F",   "PR3":"C",   "PRR":"A",   "PRS":"P",   "PTH":"Y",
-    "PTR":"Y",   "PYA":"A",   "RON":"V",   "S1H":"S",   "SAC":"S",   "SAH":"C",
-    "SAM":"M",   "SBD":"A",   "SBL":"A",   "SCH":"C",   "SCS":"C",   "SCY":"C",
-    "SEB":"S",   "SEG":"A",   "SEP":"S",   "SET":"S",   "SHC":"C",   "SHP":"G",
-    "SLZ":"K",   "SMC":"C",   "SME":"M",   "SNC":"C",   "SOC":"C",   "STY":"Y",
-    "SVA":"S",   "TBG":"G",   "TCR":"W",   "THC":"T",   "THO":"T",   "TIH":"A",
-    "TNB":"C",   "TPL":"W",   "TPO":"T",   "TPQ":"F",   "TRF":"W",   "TRG":"K",
-    "TRN":"W",   "TRO":"W",   "TYB":"Y",   "TYI":"Y",   "TYN":"Y",   "TYQ":"Y",
-    "TYS":"Y",   "TYY":"A",   "VAD":"V",   "VAF":"V",   "YOF":"Y"
-
-}
+#from ccp4mg import  mmdb2
+from Bio    import  pairwise2
+from .      import  datred_utils
 
 
 # ============================================================================
@@ -153,8 +81,6 @@ resCodes = {
 #     +'(density of solvent = 1.0, density of protein/dna = 1.35/2.0',
 #     +    '(density of solvent = 1.0, density of protein = 1.35)',
 #
-
-
 
 def suggestASUComp1 ( hkl,seqFilePath,stoichiometry=False ):
 # version with all template sequences taken from file
@@ -308,63 +234,55 @@ def suggestASUComp ( hkl,asu ):
 def getASUComp ( coorFilePath,sequenceList,clustThresh=0.9 ):
     #  sequenceList has the following format:
     #    [[name1,seq1],[name2,seq2]...[nameN,seqN]]
-    #   nameX : seqeunce name for identification
+    #   nameX : sequence name for identification
     #   seqX  : sequence
 
     #  1. Get all sequences from coordinate file
 
-    mm  = mmdb2.Manager()
-    mm.ReadCoorFile ( str(coorFilePath) )
-    model   = mm.GetFirstDefinedModel()
-    nchains = model.GetNumberOfChains()
-    seqlist = []
-    seqtype = []
-    for i in range(nchains):
-        chain = model.GetChain ( i )
-        seq   = ""
-        nres  = chain.GetNumberOfResidues()
-        nAA   = 0
-        nNA   = 0
-        stype = "protein"
-        for j in range(nres):
-            res = chain.GetResidue(j)
-            if res.isAminoacid() or res.isNucleotide():
-                if res.isAminoacid():
-                    nAA += 1
-                else:
-                    nNA += 1
-                if res.name in resCodes:
-                    seq += resCodes[res.name]
-        if nAA >= nNA:
-            if len(seq) <= 20:  # threshold for protein chains
-                seq = None
-        else:
-            stype = "dna"
-            if len(seq) <= 6:  # threshold for DNA/RNA chains
-                seq = None
-        if seq:
-            seqlist.append ( seq   )
-            seqtype.append ( [stype,chain.GetChainID()] )
+    seqlist = []  # [[coordinate sequence,sequence type,chainId]]
+    st      = gemmi.read_structure(coorFilePath)
+    if len(st)>0:
+        model  = st[0]
+        chains = []
+        for chain in model:
+            polymer = chain.get_polymer()
+            t       = polymer.check_polymer_type()
+            stype   = None
+            if t in (gemmi.PolymerType.PeptideL, gemmi.PolymerType.PeptideD):
+                stype = "protein"
+            elif t==gemmi.PolymerType.Dna:
+                stype = "dna"
+            elif t==gemmi.PolymerType.Rna:
+                stype = "rna"
+            elif t==gemmi.PolymerType.DnaRnaHybrid:
+                stype = "na"
+            # disqualify too short protein and na chains
+            if ((stype=="protein") and (len(polymer)<=20)) or (len(polymer)<=6):
+                stype = None
+            if stype:
+                seqlist.append ([
+                    str(polymer.make_one_letter_sequence()),
+                    stype,
+                    chain.name
+                ])
 
-
-    # 2. Cluster chains and match them onto template ones
+    # 2. Cluster chains and match them to the template ones
 
     asuComp = []
     for i in range(len(seqlist)):
-        if seqlist[i]:
-            asuentry = { "seq":seqlist[i], "n":1, "type":seqtype[i][0],
-                         "chain_id":seqtype[i][1], "name":str(i) }
+        if seqlist[i][0]:
+            asuentry = { "seq":seqlist[i][0], "n":1, "type":seqlist[i][1],
+                         "chain_id":seqlist[i][2], "name":str(i) }
             for j in range(i+1,len(seqlist)):
-                if seqlist[j]:
-                    align = pairwise2.align.globalxx ( seqlist[i],seqlist[j] )
-                    seqid = 2.0*align[0][2]/(len(seqlist[i])+len(seqlist[j]))
+                if seqlist[j][0]:
+                    align = pairwise2.align.globalxx ( seqlist[i][0],seqlist[j][0] )
+                    seqid = 2.0*align[0][2]/(len(seqlist[i][0])+len(seqlist[j][0]))
                     if seqid>=clustThresh:
                         asuentry["n"] += 1
-                        seqlist[j]     = None  # exclude from further processing
+                        seqlist[j][0]  = None  # exclude from further processing
             asuComp.append ( asuentry )
 
-
-    # 3. Infer on the correspondence of template and from-coordinates sequences
+    # 3. Infer on the correspondence between template and from-coordinates sequences
 
     nmatches = 0
     seqid0   = 0.0
@@ -383,14 +301,14 @@ def getASUComp ( coorFilePath,sequenceList,clustThresh=0.9 ):
         #print str(msorted)
         gmatched = []
         for i in range(len(msorted)):
-            coorseq  = msorted[i]["coorseq"]
+            coorseq  = msorted[i]["coorseq" ]
             givenseq = msorted[i]["givenseq"]
             if i==0:
                 seqid0 = msorted[i]["seqid"]
             if not "match" in asuComp[coorseq] and not givenseq in gmatched:
                 asuComp[coorseq]["match"] = givenseq
                 asuComp[coorseq]["seqid"] = msorted[i]["seqid"]
-                asuComp[coorseq]["name"]  = sequenceList[givenseq][0]
+                asuComp[coorseq]["name" ] = sequenceList[givenseq][0]
                 nmatches += 1
                 gmatched.append ( givenseq )
                 seqid1 = msorted[i]["seqid"]
@@ -398,7 +316,8 @@ def getASUComp ( coorFilePath,sequenceList,clustThresh=0.9 ):
                     break
 
     result = {}
-    result["asucomp"]  = asuComp
+    result["asucomp" ] = asuComp
+    result["seqlist" ] = sequenceList
     result["maxseqid"] = seqid0
     result["minseqid"] = seqid1
     if nmatches<len(asuComp):
@@ -417,19 +336,23 @@ def getASUComp ( coorFilePath,sequenceList,clustThresh=0.9 ):
 
 # ============================================================================
 
-def getASUComp1 ( coorFilePath,seqFilePath,clustThresh=0.9 ):
+def getASUComp1 ( coorFilePath,seqFilePath,clustThresh=0.9,body=None ):
 # version with all template sequences taken from file
     seqlist = []
     if seqFilePath:
         with open(seqFilePath,'r') as f:
             content = f.read()
+        if body:
+            body.stdout ( "content = \n" + str(content) + "\n-------------\n" )
         clist = [_f for _f in content.split('>') if _f]
-        for i in range(len(clist)):
+        for i in range(len(clist)):  # loop over all sequences in the file
             seqdata = clist[i].splitlines()
             seq     = ""
             for j in range(1,len(seqdata)):
                 seq += seqdata[j].strip()
-            seqlist.append ( [seqdata[0],seq] )
+            seqlist.append ( [seqdata[0],seq] ) # [title,sequence]
+    if body:
+        body.stdout ( "seqlist = \n" + str(seqlist) + "\n-------------\n" )
     return getASUComp ( coorFilePath,seqlist,clustThresh )
 
 
