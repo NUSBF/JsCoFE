@@ -17,6 +17,8 @@ CCP4 Cloud Version Log
        
     #. Documentation updated (``DIMPLE``, Automatic Image Processing with ``Xia-2``, Structure Superposition with ``LsqKab``)
 
+    #. Dimple task optimised by eliminating the trailing zero-cycle run of Refmac
+
 
 
 

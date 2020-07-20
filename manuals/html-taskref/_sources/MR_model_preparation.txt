@@ -1,0 +1,10 @@
+=======================
+MR Models and Ensembles
+=======================
+
+MR Search Models are structural templates prepared for use by molecular replacement programs (Phaser and Molrep). MR model may coincide with the homologous structure, however, in many cases it is represented by a selected part of it, which is expected to be most close to target molecule.
+
+MR Ensembles are superposed sets of sufficiently similar MR models, which often lead to higher success rate when used in Phaser or Molrep instead of single models.
+
+
+
