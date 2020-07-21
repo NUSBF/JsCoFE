@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    15.06.20   <--  Date of Last Modification.
+#    20.07.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -210,6 +210,7 @@ class Refmac(basic.TaskDriver):
         if str(sec5.KEYWORDS.value) != '':
            stdin.append ( str(sec5.KEYWORDS.value) )
 
+        #stdin.append ( 'Pdbout keep true' )
         stdin.append ( 'END' )
 
         #self.file_stdout.write ( "keywords=" + self.task.parameters.sec1.contains.KEYWORDS.value )

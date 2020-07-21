@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    26.03.20   <--  Date of Last Modification.
+ *    20.07.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -55,6 +55,19 @@ function TaskXyzUtils()  {
               open     : true,  // true for the section to be initially open
               position : [0,0,1,5],
               contains : {
+                ACTION_SEL : {
+                        type     : 'combobox',
+                        label    : 'Perform operation:',
+                        tooltip  : '',
+                        range    : ['T|Transform structure',
+                                    'S|Split structure in chains',
+                                    'E|Extract sequences'
+                                   ],
+                        value    : 'T',
+                        iwidth   : 260,
+                        position : [0,0,1,1]
+                      },
+
                 SOLLIG_SEL : {
                         type     : 'combobox',
                         label    : 'Solvent and ligands:',
@@ -65,7 +78,7 @@ function TaskXyzUtils()  {
                                    ],
                         value    : 'U',
                         iwidth   : 260,
-                        position : [0,0,1,1]
+                        position : [1,0,1,1]
                       },
                 CHAINS_SEL : {
                         type     : 'combobox',
@@ -78,7 +91,7 @@ function TaskXyzUtils()  {
                                    ],
                         value    : 'U',
                         iwidth   : 260,
-                        position : [1,0,1,1]
+                        position : [2,0,1,1]
                       },
                 CHAIN_LIST : {
                         type      : 'string',
@@ -87,24 +100,38 @@ function TaskXyzUtils()  {
                         iwidth    : '200',
                         value     : '',
                         placeholder : 'A,B,...',
-                        position  : [1,4,1,1],
+                        position  : [2,4,1,1],
                         showon    : {CHAINS_SEL:['S']}
                       },
+                /*
                 SEP_LBL : {
-                      type      : 'label',  // just a separator
-                      label     : '&nbsp;',
-                      position  : [2,0,1,4]
-                    },
+                        type      : 'label',  // just a separator
+                        label     : '&nbsp;',
+                        position  : [3,0,1,4]
+                      },
                 SPLITTOCHAINS_CBX : {
                         type     : 'checkbox',
                         keyword  : 'splittochains',
                         label    : 'Split to chains',
                         tooltip  : 'Check in order to split structure into ' +
                                    'separate chains',
-                        iwidth   : 140,
+                        iwidth   : 180,
                         value    : false,
-                        position : [3,0,1,3]
+                        position : [4,0,1,4]
                       }
+                */
+                /*
+                EXTRACTSEQ_CBX : {
+                        type     : 'checkbox',
+                        keyword  : 'extractsequences',
+                        label    : 'Extract sequences',
+                        tooltip  : 'Check in order to extract sequences from ' +
+                                   'atomic coordinates',
+                        iwidth   : 180,
+                        value    : false,
+                        position : [4,0,1,4]
+                      }
+                */
                 /*
                 RMSOLVENT_CBX : {
                         type      : 'checkbox',
@@ -192,8 +219,8 @@ if (!__template)  {
 
     if ((this.parameters.sec1.contains.SOLLIG_SEL.value=='U') &&
         (this.parameters.sec1.contains.CHAINS_SEL.value=='U') &&
-        (!this.parameters.sec1.contains.SPLITTOCHAINS_CBX.value))
-      msg += '<b>at least one action must be specified</b>';
+        (this.parameters.sec1.contains.ACTION_SEL.value=='T'))
+      msg += '<b>at least one transformation must be specified</b>';
 
     return msg;
 
