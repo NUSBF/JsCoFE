@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    09.02.20   <--  Date of Last Modification.
+#    20.07.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -28,6 +28,7 @@
 
 #  python native imports
 import os
+import json
 
 import gemmi
 
@@ -35,11 +36,15 @@ import gemmi
 from  pycofe.tasks  import basic
 from  pycofe.dtypes import dtype_template,dtype_xyz,dtype_ensemble
 from  pycofe.dtypes import dtype_structure,dtype_revision
+from  pycofe.dtypes import dtype_sequence
+from  pycofe.proc   import import_sequence,import_filetype
 
 # ============================================================================
 # Make XUZ Utilities driver
 
 class XyzUtils(basic.TaskDriver):
+
+    def importDir(self): return "." # in current directory ( job_dir )
 
     # ------------------------------------------------------------------------
 
@@ -73,6 +78,7 @@ class XyzUtils(basic.TaskDriver):
         st = gemmi.read_structure ( xyzpath )
 
         log = []
+        action_sel = self.getParameter ( sec1.ACTION_SEL )
         sollig_sel = self.getParameter ( sec1.SOLLIG_SEL )
         chains_sel = self.getParameter ( sec1.CHAINS_SEL )
 
@@ -143,7 +149,9 @@ class XyzUtils(basic.TaskDriver):
 
         xyzout = ixyz.lessDataId ( ixyz.getXYZFileName() )
         self.outputFName = os.path.splitext(xyzout)[0]
-        if self.getParameter(sec1.SPLITTOCHAINS_CBX)=="True":
+
+        #if self.getParameter(sec1.SPLITTOCHAINS_CBX)=="True":
+        if action_sel=="S":
             log.append ( "split in chains" )
             self.putMessage ( "<b>Data object <i>" + ixyz.dname +\
                               "</i> transformed:</b><ul><li>" +\
@@ -183,90 +191,148 @@ class XyzUtils(basic.TaskDriver):
                             self.fail ( "<h3>XYZ Data was not formed (error)</h3>",
                                         "XYZ Data was not formed" )
 
-        elif len(log)>0:
-
-            st.write_pdb ( xyzout )
-
+        if action_sel=="E":
+            log.append ( "extract sequences" )
             self.putMessage ( "<b>Data object <i>" + ixyz.dname +\
                               "</i> transformed:</b><ul><li>" +\
                               "</li><li>".join(log) +\
                               "</li></ul>" )
-
             if nchains<=0 and istruct._type!=dtype_revision.dtype():
-
                 self.putMessage ( "<b>All data removed -- no output produced</b>" )
                 log = ["all coordinates removed"]
+            else:
+                self.putTitle ( "Results" )
+                annotation = { "rename":{}, "annotation":[] }
+                for model in st:
+                    for chain in model:
+                        polymer = chain.get_polymer()
+                        t       = polymer.check_polymer_type()
+                        stype   = None
+                        if t in (gemmi.PolymerType.PeptideL, gemmi.PolymerType.PeptideD):
+                            stype = "protein"
+                        elif t==gemmi.PolymerType.Dna:
+                            stype = "dna"
+                        elif t==gemmi.PolymerType.Rna:
+                            stype = "rna"
+                        elif t==gemmi.PolymerType.DnaRnaHybrid:
+                            stype = "na"
+                        # disqualify too short protein and na chains
+                        if ((stype=="protein") and (len(polymer)<=20)) or (len(polymer)<=6):
+                            stype = None
+
+                        if stype:
+                            if len(st)>1:
+                                seqname = self.getOFName ( "_" + model.name + "." + chain.name )
+                            else:
+                                seqname = self.getOFName ( "_" + chain.name )
+                            seqout  = seqname + ".fasta"
+                            seqline = str(polymer.make_one_letter_sequence())
+                            dtype_sequence.writeSeqFile ( os.path.join(self.importDir(),seqout),
+                                                          seqname,seqline )
+                            self.addFileImport ( seqout,import_filetype.ftype_Sequence() )
+                            annotation["annotation"].append ({
+                                "file"   : seqout,
+                                "rename" : seqout,
+                                "items"  : [
+                                    { "rename"   : seqout,
+                                      "contents" : seqname + "\n" + seqline,
+                                      "type"     : stype
+                                    }
+                                ]
+                            })
+                            have_results = True
+
+                f = open ( "annotation.json","w" )
+                f.write ( json.dumps(annotation) )
+                f.close ()
+                import_sequence.run ( self )
+                self.addCitation ( "default" )
+
+        elif action_sel=="T":
+
+            if len(log)>0:
+
+                st.write_pdb ( xyzout )
+
+                self.putMessage ( "<b>Data object <i>" + ixyz.dname +\
+                                  "</i> transformed:</b><ul><li>" +\
+                                  "</li><li>".join(log) +\
+                                  "</li></ul>" )
+
+                if nchains<=0 and istruct._type!=dtype_revision.dtype():
+
+                    self.putMessage ( "<b>All data removed -- no output produced</b>" )
+                    log = ["all coordinates removed"]
+
+                else:
+
+                    self.putTitle ( "Results" )
+
+                    if istruct._type==dtype_xyz.dtype():
+                        oxyz = self.registerXYZ ( xyzout,checkout=True )
+                        if oxyz:
+                            oxyz.putXYZMeta  ( self.outputDir(),self.file_stdout,self.file_stderr,None )
+                            self.putMessage (
+                                "<b>Assigned name&nbsp;&nbsp;&nbsp;:</b>&nbsp;&nbsp;&nbsp;" +
+                                oxyz.dname )
+                            self.putXYZWidget ( "xyz_btn","Edited coordinates",oxyz,-1 )
+                            have_results = True
+                        else:
+                            # close execution logs and quit
+                            self.fail ( "<h3>XYZ Data was not formed (error)</h3>",
+                                        "XYZ Data was not formed" )
+
+                    elif istruct._type==dtype_ensemble.dtype():
+                        seq  = None
+                        if ixyz.sequence:
+                            seq = self.makeClass ( ixyz.sequence )
+                        oxyz = self.registerEnsemble ( seq,xyzout,checkout=True )
+                        if oxyz:
+                            self.putEnsembleWidget ( "ensemble_btn","Coordinates",oxyz )
+                            have_results = True
+                        else:
+                            # close execution logs and quit
+                            self.fail ( "<h3>Ensemble was not formed (error)</h3>",
+                                        "Ensemble was not formed" )
+
+                    elif istruct._type==dtype_revision.dtype():
+                        if nchains<=0:
+                            xyzout = None
+                            log    = ["all coordinates removed"]
+                        oxyz = self.registerStructure ( xyzout,
+                                             ixyz.getSubFilePath(self.inputDir()),
+                                             ixyz.getMTZFilePath(self.inputDir()),
+                                             ixyz.getMapFilePath(self.inputDir()),
+                                             ixyz.getDMapFilePath(self.inputDir()),
+                                             libPath=ixyz.getLibFilePath(self.inputDir()),
+                                             leadKey=ixyz.leadKey,copy_files=False,
+                                             map_labels=ixyz.mapLabels )
+                        if oxyz:
+                            oxyz.copyAssociations   ( ixyz )
+                            oxyz.addDataAssociation ( ixyz.dataId )  # ???
+                            oxyz.copySubtype        ( ixyz )
+                            oxyz.copyLigands        ( ixyz )
+                            if not xyzout:
+                                oxyz.removeSubtype ( dtype_template.subtypeXYZ() )
+                            #self.putMessage (
+                            #    "<b>Assigned name&nbsp;&nbsp;&nbsp;:</b>&nbsp;&nbsp;&nbsp;" +
+                            #    oxyz.dname )
+                            self.putStructureWidget ( "structure_btn",
+                                                      "Structure and electron density",
+                                                      oxyz )
+                            # update structure revision
+                            revision = self.makeClass ( istruct  )
+                            revision.setStructureData ( oxyz     )
+                            self.registerRevision     ( revision )
+                            have_results = True
+                        else:
+                            # close execution logs and quit
+                            self.fail ( "<h3>Structure was not formed (error)</h3>",
+                                        "Structure was not formed" )
 
             else:
-
-                self.putTitle ( "Results" )
-
-                if istruct._type==dtype_xyz.dtype():
-                    oxyz = self.registerXYZ ( xyzout,checkout=True )
-                    if oxyz:
-                        oxyz.putXYZMeta  ( self.outputDir(),self.file_stdout,self.file_stderr,None )
-                        self.putMessage (
-                            "<b>Assigned name&nbsp;&nbsp;&nbsp;:</b>&nbsp;&nbsp;&nbsp;" +
-                            oxyz.dname )
-                        self.putXYZWidget ( "xyz_btn","Edited coordinates",oxyz,-1 )
-                        have_results = True
-                    else:
-                        # close execution logs and quit
-                        self.fail ( "<h3>XYZ Data was not formed (error)</h3>",
-                                    "XYZ Data was not formed" )
-
-                elif istruct._type==dtype_ensemble.dtype():
-                    seq  = None
-                    if ixyz.sequence:
-                        seq = self.makeClass ( ixyz.sequence )
-                    oxyz = self.registerEnsemble ( seq,xyzout,checkout=True )
-                    if oxyz:
-                        self.putEnsembleWidget ( "ensemble_btn","Coordinates",oxyz )
-                        have_results = True
-                    else:
-                        # close execution logs and quit
-                        self.fail ( "<h3>Ensemble was not formed (error)</h3>",
-                                    "Ensemble was not formed" )
-
-                elif istruct._type==dtype_revision.dtype():
-                    if nchains<=0:
-                        xyzout = None
-                        log    = ["all coordinates removed"]
-                    oxyz = self.registerStructure ( xyzout,
-                                         ixyz.getSubFilePath(self.inputDir()),
-                                         ixyz.getMTZFilePath(self.inputDir()),
-                                         ixyz.getMapFilePath(self.inputDir()),
-                                         ixyz.getDMapFilePath(self.inputDir()),
-                                         libPath=ixyz.getLibFilePath(self.inputDir()),
-                                         leadKey=ixyz.leadKey,copy_files=False,
-                                         map_labels=ixyz.mapLabels )
-                    if oxyz:
-                        oxyz.copyAssociations   ( ixyz )
-                        oxyz.addDataAssociation ( ixyz.dataId )  # ???
-                        oxyz.copySubtype        ( ixyz )
-                        oxyz.copyLigands        ( ixyz )
-                        if not xyzout:
-                            oxyz.removeSubtype ( dtype_template.subtypeXYZ() )
-                        #self.putMessage (
-                        #    "<b>Assigned name&nbsp;&nbsp;&nbsp;:</b>&nbsp;&nbsp;&nbsp;" +
-                        #    oxyz.dname )
-                        self.putStructureWidget ( "structure_btn",
-                                                  "Structure and electron density",
-                                                  oxyz )
-                        # update structure revision
-                        revision = self.makeClass ( istruct  )
-                        revision.setStructureData ( oxyz     )
-                        self.registerRevision     ( revision )
-                        have_results = True
-                    else:
-                        # close execution logs and quit
-                        self.fail ( "<h3>Structure was not formed (error)</h3>",
-                                    "Structure was not formed" )
-
-        else:
-            self.putMessage ( "&nbsp;<br><b>Data object <i>" + ixyz.dname +\
-                              "</i> was not modified -- no output produced</b>" )
-
+                self.putMessage ( "&nbsp;<br><b>Data object <i>" + ixyz.dname +\
+                                  "</i> was not modified -- no output produced</b>" )
 
         # this will go in the project tree line
         if len(log)>0:

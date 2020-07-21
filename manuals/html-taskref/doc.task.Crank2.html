@@ -78,7 +78,7 @@ substructure can be typically taken from the inputted initial model and improved
 of structure solution are described in the order they usually take place for the SAD, SIRAS or MAD experiments.</p>
 <p><strong>FA estimation</strong></p>
 <p>The FA values are estimates of the structure factor amplitudes of the anomalously scattering substructure.  They are used as input to the substructure determination process.
-Their simplest estimate for SAD data is the absolute value of Friedel pair differences <a href="#id1"><span class="problematic" id="id2">|F+ - F-|</span></a>, used by the program SHELXC.  You have the option to switch to,
+Their simplest estimate for SAD data is the absolute value of Friedel pair differences |F+ - F-|, used by the program SHELXC.  You have the option to switch to,
 currently experimental, maximum likelihood estimation of FA by AFRO.</p>
 <p><strong>Substructure determination</strong></p>
 <p>The determination of the anomalous substructure is a critical step of the protein structure solution from experimental phases.  The SHELXD program uses a
@@ -110,6 +110,46 @@ phasing and density modification and a bad discrimination between the hands then
 <code class="docutils literal"><span class="pre">please</span> <span class="pre">follow</span> <span class="pre">the</span> <span class="pre">tips</span> <span class="pre">on</span> <span class="pre">substructure</span> <span class="pre">determination</span> <span class="pre">parameters</span> <span class="pre">changes</span> <span class="pre">in</span> <span class="pre">the</span> <span class="pre">Substructure</span> <span class="pre">determination</span> <span class="pre">section.</span></code></p>
 <p>If it seems that the substructure was determined but still no or bad protein model was built, it may help to rerun the Crank2 job with differing
 solvent content parameter (its estimation may be wrong).  If a partial model was built then it is suggested to input it to another CRANK2 job for model rebuilding.</p>
+</div>
+<div class="section" id="crank-2-glossary">
+<h2>6.1.4. Crank-2 Glossary<a class="headerlink" href="#crank-2-glossary" title="Permalink to this headline">¶</a></h2>
+<dl class="glossary docutils">
+<dt id="term-what-is-cfom-in-the-shelxd-output">What is CFOM in the SHELXD output?</dt>
+<dd>CFOM reported by SHELXD is sum of two correlation coefficients: CC+CCweak where CC is correlation coefficient between
+the observed ΔF&#8217;s and the F&#8217;s calculated from the determined substructure model and CCweek is CC of the weaker
+reflections only. Please consult the SHELXD webpage for more information.</dd>
+<dt id="term-what-is-ccrange-in-the-prasa-output">What is CC<sub>range</sub> in the PRASA output?</dt>
+<dd>CC<sub>range</sub> reported by PRASA is an average of adjusted correlation coefficients between the observed ΔF&#8217;s and
+the F&#8217;s calculated from the determined substructure model at various resolution cutoffs. The correlation coefficients
+at different cutoffs are not directly comparable but CC<sub>range</sub> allows for a rough comparison of solutions obtained
+at different resolution cutoffs.</dd>
+<dt id="term-what-does-the-threshold-in-substructure-determination-mean">What does the threshold in substructure determination mean?</dt>
+<dd>Substructure determination stops either by finishing the specified number of iterations or by reaching the specified
+score threshold (CFOM). The score threshold is automatically set rather conservatively to make sure that the procedure
+only stops preliminary if the score is quite convincing that the solution was found.</dd>
+<dt id="term-what-is-fom">What is FOM?</dt>
+<dd><p class="first">Figure of merit (FOM) is an estimator of quality of the phases. In CRANK2, it is calculated as mean value of cosine of
+difference from the estimated phase &lt;cos(ΔΦ)&gt; by integrating the likelihood probability distribution over the entire
+range &lt;0,2pi π&gt;. Generally, the values of FOM close to 0 mean that the phases are close to random and values close
+to 1 mean a high confidence with the phases. The average FOM of reflections should improve during the structure
+solution and its value in earlier stages depend on the strength of the anomalous signal.</p>
+<p class="last">For a SAD experiment, if the initial FOM right after substructure determination is larger than 0.3 then the phases
+are likely good while less than 0.15 indicates weak phases or an incorrect substructure. After CRANK2 performs the
+density modification with bias reduction, good phases are indicated by values of above 0.5 while very weak or wrong
+phases by values below 0.35. After model building and refinement, the FOM of a reasonable model should be above 0.6.</p>
+</dd>
+<dt id="term-what-is-the-parameter-in-density-modification">What is the β parameter in density modification?</dt>
+<dd>Density modification is known to lead to highly biased (overstimated) figures of merit. CRANK2 implements a bias
+reduction method to suppres the bias and keep the figures of merit a sensible measure of quality of the phases
+(the procedure often helps to slightly improve the quality of the maps from density modification as well).
+The β parameter is an estimator of the bias: values close to 1 estimate there is (almost) no bias and values below
+0.5 mean a very large bias. The β parameter is applied to the covariance matrix of the likelihood function that
+CRANK2 uses for phase combination in density modification. Please consult this paper for more information.</dd>
+<dt id="term-what-is-the-cld-value-reported-in-hand-determination">What is the CLD value reported in hand determination?</dt>
+<dd>The CLD stands for correlation with local deviation and it is a statistical measure closely related to the skewness
+of the map before density modification. A larger value of CLD (around and above 2) for one hand and a value close
+to 0 (or negative) for the other hand is a good sign indicating that there is a discrimination between the hands.</dd>
+</dl>
 <hr class="docutils" />
 <p><strong>Documentation written by:</strong></p>
 <p><strong>Pavol Skubak</strong>, Leiden University Medical Centre, Leiden, The Nethrelands</p>

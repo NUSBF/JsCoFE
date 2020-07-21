@@ -1,0 +1,39 @@
+==========================================
+Molecular Replacement Models and Ensembles
+==========================================
+
+**MR Search Models** are structural templates prepared for the use by molecular replacement programs (Phaser and Molrep). MR model may coincide with the homologous structure, however, in many cases it is represented by a selected part of it, which is expected to be most close to target molecule.
+
+**MR Ensembles** are superposed sets of sufficiently similar MR models, the use of which often leads to a higher success rate comparing to the use of MR Search Models.
+
+MR Search Model(s) and/or MR Ensemble(s) must be prepared before molecular replacement with either Phaser or Molrep. CCP4 Cloud contains several tasks for this purpose.
+
+.. _model-coordinates:
+--------------------------------------------
+MR Model preparation from atomic coordinates
+--------------------------------------------
+
+.. _model-hhpred:
+------------------------------------------
+MR Model preparation from HHPRED alignment
+------------------------------------------
+
+.. _ensemble-models:
+-----------------------------------------------
+MR Ensemble preparation from a set of MR Models
+-----------------------------------------------
+
+.. _ensemble-coordinates:
+--------------------------------------------------------
+MR Ensemble preparation from a set of atomic coordinates
+--------------------------------------------------------
+
+.. _ensemble-ccp4mg:
+------------------------------------------------
+Interactive MR Ensemble preparation with CCP4 MG
+------------------------------------------------
+
+
+
+
+

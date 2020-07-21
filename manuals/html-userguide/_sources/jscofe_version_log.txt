@@ -15,11 +15,18 @@ CCP4 Cloud Version Log
        Only project owner can share, delete or rename project, other users can
        only join or unjoin it in their Project Lists.
        
-    #. Documentation updated (``DIMPLE``, Automatic Image Processing with ``Xia-2``, Structure Superposition with ``LsqKab``)
+    #. Documentation updated (``DIMPLE``, Automatic Image Processing with ``Xia-2``)
 
-    #. Dimple task optimised by eliminating the trailing zero-cycle run of Refmac
+    #. ``DIMPLE`` task optimised by eliminating the trailing zero-cycle run of
+       ``Refmac``.
 
+    #. Import of sequences from the PDB now produces sequences from both atomic
+       coordinates (may be used for automatic construction of the corresponding
+       structure revision) and from header annotation (more suitable for making 
+       MR search models).
 
+    #. ``XYZ Utils`` can now import sequences from atomic coordinates, task
+       interface changed
 
 
 **Version 1.6.012**

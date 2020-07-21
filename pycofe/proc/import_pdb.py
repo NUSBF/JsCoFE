@@ -174,7 +174,7 @@ def run ( body,pdb_list,
                     if seqdesc[i]["type"]=="protein":  nAA += 1
                     if seqdesc[i]["type"]=="dna"    :  nNA += 1
 
-                body.stdoutln ( str(annotation) )
+                #body.stdoutln ( str(annotation) )
                 f = open ( "annotation.json","w" )
                 f.write ( json.dumps(annotation) )
                 f.close ()
