@@ -58,7 +58,7 @@ class refmac_parser(object):
     rFreeLine = r'^Free R factor\s*=\s*(\S*)'
     rmsBondLine = r'^Bond distances: refined atoms\s*\S*\s*(\S*)\s*\S*'
     rmsAnglesLine = r'^Bond angles  : refined atoms\s*\S*\s*(\S*)\s*\S*'
-    ncycLine = r'.*Data line---\sNCYC\s(\d*)'
+    ncycLine = r'.*Refinement cycles\s*:\s*(\d*)'
 
     ignored_1 = RT.LogDataLine(skip_1)                              # logs from i1
     ignored = RT.LogDataLine(skip)
@@ -172,8 +172,6 @@ class refmac_parser(object):
 
     self.livePLT3 = API.graph_plot(self.widget, 'RMS Bond Angle per cycle', 'Cycle number', '')
     self.liveLine3 = API.plot_line(self.livePLT3, self.liveGraph, self.liveRMSanglesN, self.liveRMSangles)
-
-
 
     self.flush()
 
