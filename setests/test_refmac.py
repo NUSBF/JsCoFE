@@ -328,6 +328,58 @@ def refmacAfterRevision(driver, waitLong):
 
     return ()
 
+def depositionAfterRefmac(driver):
+    print('Running Deposition task')
+
+    addButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/add.png')]")
+    addButton.click()
+    time.sleep(1)
+
+    clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list')
+    time.sleep(1)
+
+    clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Validation, Analysis and Deposition')
+    time.sleep(1)
+
+    clickByXpath(driver, "//div[normalize-space()='%s']" % 'Prepare data for deposition')
+    time.sleep(1)
+
+    # There are several forms - active and inactive. We need one displayed.
+    buttonsRun = driver.find_elements_by_xpath("//button[contains(@style, 'images_png/runjob.png')]" )
+    for buttonRun in buttonsRun:
+        if buttonRun.is_displayed():
+            buttonRun.click()
+            break
+
+    try:
+        wait = WebDriverWait(driver, 300) # normally takes around 3 minutes  giving 5
+        # Waiting for the text 'completed' in the ui-dialog-title of the task [0005]
+        wait.until(EC.presence_of_element_located
+                   ((By.XPATH,"//*[@class='ui-dialog-title' and contains(text(), 'finished') and contains(text(), '[0005]')]")))
+    except:
+        print('Apparently the task depositionAfterRefmac has not been completed in time; terminating')
+        sys.exit(1)
+
+    # presing Close button
+    closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
+    closeButton.click()
+    time.sleep(1)
+
+    taskText = ''
+    tasksText = driver.find_elements(By.XPATH, "//a[contains(@id,'treenode') and contains(@class, 'jstree-anchor')]")
+    for taskText in tasksText:
+        match = re.search('\[0005\] deposition -- (.*)', taskText.text)
+        if match:
+            taskText = match.group(1)
+            break
+    if taskText == '':
+        print('*** Verification: could not find text result value after deposition run')
+    else:
+        print('*** Verification: deposition result is "%s" (expecting "package prepared, pdb report obtained")' % taskText)
+    assert taskText == 'package prepared, pdb report obtained'
+
+    return ()
+
 
 def renameProject(driver, testName):
     print('Renaming succesfull test project')
@@ -411,6 +463,7 @@ def test_RefmacBasic(browser,
         asymmetricUnitContentsAfterCloudImport(driver, waitShort)
         editRevisionStructure(driver, waitShort)
         refmacAfterRevision(driver, waitLong)
+        depositionAfterRefmac(driver)
         renameProject(driver, testName)
 
         driver.quit()
