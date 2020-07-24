@@ -352,7 +352,7 @@ def depositionAfterRefmac(driver):
             break
 
     try:
-        wait = WebDriverWait(driver, 300) # normally takes around 3 minutes  giving 5
+        wait = WebDriverWait(driver, 450) # normally takes around 5 minutes giving 7
         # Waiting for the text 'completed' in the ui-dialog-title of the task [0005]
         wait.until(EC.presence_of_element_located
                    ((By.XPATH,"//*[@class='ui-dialog-title' and contains(text(), 'finished') and contains(text(), '[0005]')]")))
