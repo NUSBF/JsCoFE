@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    17.07.20   <--  Date of Last Modification.
+#    23.07.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -34,8 +34,9 @@ import io
 
 #  application imports
 from . import basic
-from   pycofe.dtypes import dtype_structure
-from   pycofe.proc   import qualrep
+from   pycofe.dtypes    import dtype_structure
+from   pycofe.proc      import qualrep
+from   pycofe.verdicts  import verdict_refmac
 
 
 # ============================================================================
@@ -140,11 +141,16 @@ class Dimple(basic.TaskDriver):
             files = [f for f in os.listdir(".") if f.lower().endswith("refmac5_restr.log")]
             if len(files)>0:
                 panel_id = self.getWidgetId ( self.refmac_report() )
-                self.setGenericLogParser ( panel_id,False,
-                                           graphTables=False,makePanel=True )
-                file_refmaclog = open ( files[0],"r" )
+                self.setRefmacLogParser ( panel_id,False,
+                                          graphTables=False,makePanel=True )
+                file_refmaclog  = open ( files[0],"r" )
                 self.log_parser.parse_stream ( file_refmaclog )
                 file_refmaclog.close()
+
+                #  data for verdict
+                self.refmac_log = files[0]
+                self.verdict_row = self.rvrow
+                self.rvrow += 4
 
             # Register output data. This moves needful files into output directory
             # and puts the corresponding metadata into output databox
@@ -180,6 +186,8 @@ class Dimple(basic.TaskDriver):
                                   # therefore, hkl=self.input_data.data.hkl[0]
                                   # would also work
 
+        self.refmac_log = None  # calculated in runDimple()
+
         structure = self.runDimple ( hkl,istruct )
 
         have_results = False
@@ -194,10 +202,21 @@ class Dimple(basic.TaskDriver):
 
             rvrow0 = self.rvrow
             try:
-                qualrep.quality_report ( self,revision )
+                meta = qualrep.quality_report ( self,revision )
             except:
+                meta = None
                 self.stderr ( " *** molprobity failure" )
                 self.rvrow = rvrow0
+
+            if meta:
+                verdict_meta = {
+                    "data"       : { "resolution" : hkl.getHighResolution(raw=True) },
+                    "params"     : None, # will be read from log file
+                    "molprobity" : meta,
+                    "xyzmeta"    : structure.xyzmeta
+                }
+                verdict_refmac.putVerdictWidget ( self,verdict_meta,self.verdict_row,
+                                                  refmac_log=self.refmac_log )
 
         # close execution logs and quit
         self.success ( have_results )

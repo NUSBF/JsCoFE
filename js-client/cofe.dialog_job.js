@@ -394,7 +394,9 @@ JobDialog.prototype.requestServer = function ( request,callback_ok )  {
   var data  = {};
   data.meta = this.task;
   data.ancestors = [];
-  data.is_shared = (this.parent_page.job_tree.projectData.desc.owner.share.length>0);
+  if (this.parent_page.job_tree.projectData)
+        data.is_shared = (this.parent_page.job_tree.projectData.desc.owner.share.length>0);
+  else  data.is_shared = false;
   for (var i=1;i<this.ancestors.length;i++)
     data.ancestors.push ( this.ancestors[i]._type );
   if (!this.task.job_dialog_data.viewed)  {
