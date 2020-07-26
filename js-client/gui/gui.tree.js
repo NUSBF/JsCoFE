@@ -437,8 +437,6 @@ Tree.prototype.moveNodeUp = function ( node )  {
     if (this.created)  {
       this.selectSingle ( node );  // force selection of the node if tree is displayed
       this.refresh();
-      //$(this.root.element).jstree().refresh(function(){}); // empty function is
-      //                                  // required for making changes smoothly
       this.confirmCustomIconsVisibility();
     }
 

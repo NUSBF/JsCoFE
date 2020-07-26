@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    09.02.20   <--  Date of Last Modification.
+#    23.07.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -105,14 +105,15 @@ class Deposition(basic.TaskDriver):
             self.putMessage ( "<h3><i>1. Prepare Deposition Files</i></h3>" )
 
             self.open_stdin()
-            self.write_stdin ( "pdbout format mmcif\n" +
-                               "make hydrogen YES hout YES\n" +
-                               "ncyc 0\n"   +
-                               "labin  FP=" + hkl.dataset.Fmean.value +
-                               " SIGFP="    + hkl.dataset.Fmean.sigma +
-                               " FREE="     + hkl.dataset.FREE + "\n" +
-                               "PNAME Deposition\n" +
-                               "DNAME\n" +
+            self.write_stdin ( "pdbout format mmcif\n" +\
+                               "make hydrogen YES hout YES\n" +\
+                               "ncyc 0\n"   +\
+                               "labin  FP=" + hkl.dataset.Fmean.value +\
+                               " SIGFP="    + hkl.dataset.Fmean.sigma +\
+                               " FREE="     + hkl.dataset.FREE + "\n" +\
+                               "PNAME Deposition\n" +\
+                               "DNAME\n"            +\
+                               "Pdbout keep true\n" +\
                                "end\n" )
             self.close_stdin()
 

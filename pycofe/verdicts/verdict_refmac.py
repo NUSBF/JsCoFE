@@ -84,7 +84,18 @@ def parseRefmacLog ( logpath ):
         "bond_length"  : [0.0,0.0],
         "bond_angle"   : [0.0,0.0],
         "chir_volume"  : [0.0,0.0],
-        "rfree_cycles" : []
+        "rfree_cycles" : [],
+        "params" : {
+            "refmac" : {
+                "ncycles"    : 10,
+                "twinning"   : False,
+                "jellyBody"  : False,
+                "ncsRestr"   : False,
+                "tls"        : False,
+                "anisoBfact" : False,
+                "hydrogens"  : False
+            }
+        }
     }
 
     if os.path.isfile(logpath):
@@ -105,11 +116,55 @@ def parseRefmacLog ( logpath ):
                     elif "Rms ChirVolume" in line:
                         meta["chir_volume"] = [float(lst[2]),float(lst[3])]
                         break
+                elif "Data line---" in line:
+                    uline = line.upper()
+                    lst   = uline.split()
+                    if "NCYC" in uline:
+                        meta["params"]["refmac"]["ncycles"] = int(lst[-1])
+                    elif "TWIN" in uline:
+                        meta["params"]["refmac"]["twinning"] = True
+                    elif "RIDG" in uline:
+                        meta["params"]["refmac"]["jellyBody"] = True
+                    elif "NCSR" in uline:
+                        meta["params"]["refmac"]["ncsRestr"] = True
+                    elif "TLSC" in uline:
+                        meta["params"]["refmac"]["tls"] = True
+                    elif "BREF" in uline:
+                        meta["params"]["refmac"]["anisoBfact"] = (lst[-1]=="ANIS")
+                    elif "HYDR" in uline:
+                        meta["params"]["refmac"]["hydrogens"] = (lst[-1]=="YES")
                 elif line.startswith("Free R factor                        ="):
                     lst = line.split()
                     meta["rfree_cycles"].append ( float(lst[-1]) )
                 elif "$TEXT:Result: $$ Final results $$" in line:
                     key = 1
+
+                """
+
+                "twinning"   : False,
+                "jellyBody"  : False,
+                "ncsRestr"   : False,
+                "tls"        : False,
+
+                "anisoBfact" : False,
+                "hydrogens"  : False
+
+                Data line--- LABIN FP=F SIGFP=SIGF FREE=FreeR_flag
+                  Data line--- NCYC 40
+                  Data line--- WEIGHT AUTO
+                  Data line--- MAKE HYDR NO
+                  Data line--- REFI BREF ISOT
+                  Data line--- SCALE TYPE SIMPLE
+                  Data line--- SOLVENT YES
+                  Data line--- NCSR LOCAL
+                  Data line--- REFI RESO 61.93 1.25
+                  Data line--- MAKE NEWLIGAND EXIT
+                  Data line--- Pdbout keep true
+                  Data line--- END
+                """
+
+
+
 
     return meta
 
@@ -535,13 +590,19 @@ def calculate ( meta ) :
     return (verdict_score,verdict_message,bottomline)
 
 
-def putVerdictWidget ( base,verdict_meta,verdict_row ):
+def putVerdictWidget ( base,verdict_meta,verdict_row,refmac_log=None ):
 
-    base.flush()
-    base.file_stdout.close()
-    verdict_meta["refmac"] = parseRefmacLog ( base.file_stdout_path() )
-    # continue writing to stdout
-    base.file_stdout = open ( base.file_stdout_path(),"a" )
+    if refmac_log:
+        verdict_meta["refmac"] = parseRefmacLog ( refmac_log )
+    else:
+        base.flush()
+        base.file_stdout.close()
+        verdict_meta["refmac"] = parseRefmacLog ( base.file_stdout_path() )
+        # continue writing to stdout
+        base.file_stdout = open ( base.file_stdout_path(),"a" )
+
+    if not verdict_meta["params"]:
+        verdict_meta["params"] = verdict_meta["refmac"]["params"]
 
     verdict_score, verdict_message, bottomline = calculate ( verdict_meta )
 

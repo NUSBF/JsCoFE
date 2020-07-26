@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    11.04.20   <--  Date of Last Modification.
+ *    24.07.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -43,6 +43,7 @@ function TaskMakeLigand()  {
   this.title   = 'Make Ligand with Acedrg';
   //this.helpURL = './html/jscofe_task_makeligand.html';
 
+  /*
   this.input_dtypes = [{       // input data types
       data_type   : {'DataLigand':[]}, // any revision will be passed
       label       : '',        // no label for void data entry
@@ -53,6 +54,7 @@ function TaskMakeLigand()  {
       max         : 1000       // maximum acceptable number of data instances
     }
   ];
+  */
 
   this.parameters = { // input parameters
     SOURCE_SEL : {
@@ -151,6 +153,10 @@ TaskMakeLigand.prototype.currentVersion = function()  {
 
 if (!__template)  {
   // client side
+
+  //TaskMakeLigand.prototype.canMove = function ( node,jobTree )  {
+  //  return (node.parentId!=null);
+  //}
 
   TaskMakeLigand.prototype.collectInput = function ( inputPanel )  {
 

@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    17.07.20   <--  Date of Last Modification.
+ *    26.07.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -778,20 +778,63 @@ JobTree.prototype.clearHighlights = function()  {
 
 
 Tree.prototype.getLastNode = function ( node )  {
-  if (node.children.length<=0)
-    return node;
-  var node0  = node;
-  var taskNo = -1;
+// Returns last node in the branch with maximum task Id descending from given node
+  var node0   = node;
+  var taskNo0 = -1;
   if (node.id in this.task_map)
-    taskNo = this.task_map[node.id].id;
+    taskNo0 = this.task_map[node.id].id;
+  var taskNo = -1;
   for (var i=0;i<node.children.length;i++)  {
-    var nodei = this.getLastNode ( node.children[i] );
-    if ((nodei.id in this.task_map) && (this.task_map[nodei.id].id>=taskNo))  {
-      taskNo = this.task_map[nodei.id].id;
-      node0  = nodei;
+    var ln = this.getLastNode ( node.children[i] );
+    if ((ln[0].id in this.task_map) && (ln[1]>=taskNo))  {
+      taskNo = ln[1];
+      node0  = ln[0];
     }
   }
-  return node0;
+  return [node0,Math.max(taskNo,taskNo0)];
+}
+
+
+Tree.prototype.getLastHighlightedNode = function()  {
+// Returns last highleghted (green) node in the tree, or null
+var node = null;
+  for (var nid in this.node_map)
+    if (this.node_map[nid].highlightId==2)  {
+      node = this.node_map[nid];
+      break;
+    }
+  return node;
+}
+
+
+JobTree.prototype._highlight_to_root = function ( node,final_bool )  {
+  if (final_bool)  {
+    this.setStyle ( node,__highlightStyleL,0 );
+    node.highlightId = 2;
+  } else  {
+    this.setStyle ( node,__highlightStyle,0 );
+    node.highlightId = 1;
+  }
+  var harvestedTaskIds = [];
+  var task = this.task_map[node.id];
+  if (task)
+    for (var i=0;i<task.harvestedTaskIds.length;i++)
+      harvestedTaskIds.push ( task.harvestedTaskIds[i] );
+  while (node.parentId)  {
+    node = this.node_map[node.parentId];
+    this.setStyle ( node,__highlightStyle,0 );
+    node.highlightId = 1;
+    task = this.task_map[node.id];
+    if (task)
+      for (var i=0;i<task.harvestedTaskIds.length;i++)
+        if (harvestedTaskIds.indexOf(task.harvestedTaskIds[i])<0)
+          harvestedTaskIds.push ( task.harvestedTaskIds[i] );
+  }
+  for (var i=0;i<harvestedTaskIds.length;i++)  {
+    var nid = this.getTaskNodeId ( harvestedTaskIds[i] );
+    if (nid in this.node_map)
+      this._highlight_to_root ( this.node_map[nid],false );
+  }
 }
 
 
@@ -800,14 +843,7 @@ JobTree.prototype.toggleBranchHighlight = function()  {
   var node = this.getSelectedNode();
   if (!node.highlightId)  {
     this.clearHighlights();
-    node = this.getLastNode ( node );
-    this.setStyle ( node,__highlightStyleL,0 );
-    node.highlightId = 1;
-    while (node.parentId)  {
-      node = this.node_map[node.parentId];
-      this.setStyle ( node,__highlightStyle,0 );
-      node.highlightId = 1;
-    }
+    this._highlight_to_root ( this.getLastNode(node)[0],true );
   } else
     this.clearHighlights();
 }
@@ -816,14 +852,18 @@ JobTree.prototype.toggleBranchHighlight = function()  {
 JobTree.prototype.moveJobUp = function()  {
   if (this.selected_node_id)  {
     this.moveSelectedNodeUp();
-    this.saveProjectData ( [],[],true, function(rdata){
-      if (tree.checkReload(tree,rdata,'move the job up'))  {
-        tree.projectData.desc.timestamp = rdata.pdesc.timestamp;
-        tree.projectData.desc.jobCount  = rdata.pdesc.jobCount;
-        if (onDone_func)
-          onDone_func(tree,rdata);
-      }
-    });
+    (function(tree,node0){
+      tree.saveProjectData ( [],[],true, function(rdata){
+        if (tree.checkReload(tree,rdata,'move the job up'))  {
+          tree.projectData.desc.timestamp = rdata.pdesc.timestamp;
+          tree.projectData.desc.jobCount  = rdata.pdesc.jobCount;
+          if (node0)
+            window.setTimeout ( function(){
+              tree._highlight_to_root ( node0,true );
+            },100);
+        }
+      });
+    }(this,this.getLastHighlightedNode()))
   } else
     alert ( ' no selection in the tree! ' );
 }
