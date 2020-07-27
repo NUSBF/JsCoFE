@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    15.04.20   <--  Date of Last Modification.
+#    27.07.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -82,6 +82,9 @@ class Lorestr(basic.TaskDriver):
                            " FREE="  + hkl.dataset.FREE
                  #"-rvapi" ,self.reportDir()
                 ]
+        libin = istruct.getLibFilePath ( self.inputDir() )
+        if libin:
+            cmd += ["-libin",libin]
 
         if self.getParameter(self.task.parameters.sec1.contains.PDB_CBX)=="True":
             cmd += [ "-auto" ]
