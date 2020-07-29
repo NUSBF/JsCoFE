@@ -29,6 +29,7 @@
 #  python native imports
 import os
 import sys
+import shutil
 
 #  ccp4-python imports
 import pyrvapi
@@ -322,6 +323,8 @@ class MrBump(basic.TaskDriver):
 
         else:
             self.putTitle ( "No resuts produced" )
+
+        shutil.rmtree ( search_dir )
 
         # close execution logs and quit
         self.success ( (self.outputDataBox.nDTypes()>0) )

@@ -33,6 +33,7 @@ class CofeSignal( Exception ):
         message = self.signal_prefix + self.msg + '\n' + str( self.returncode )
         with open ( self.signal_file_name, 'w' ) as f:
             f.write ( message )
+        return
 
     def quitApp( self ):
         self.send_signal()
