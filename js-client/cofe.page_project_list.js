@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    15.07.20   <--  Date of Last Modification.
+ *    29.07.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -353,7 +353,7 @@ function ProjectListPage ( sceneId )  {
         if ('owner' in pDesc)  {
           if (pDesc.owner.share.length>0)
             pName = '<b>[<i>' + pDesc.owner.login + '</i>]:</b>' + pName;
-          else if (('author' in pDesc.owner) && (pDesc.owner.author))
+          else if (('author' in pDesc.owner) && (pDesc.owner.author!=pDesc.owner.login))
             pName = '<b>(<i>' + pDesc.owner.author + '</i>):</b>' + pName;
         }
         trow.addCell ( pName  ).setNoWrap();

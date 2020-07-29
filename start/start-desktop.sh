@@ -38,7 +38,7 @@ echo ""
 
 #killall node
 
-node ./js-server/desktop.js ./config/conf.desktop-tutorials.json
+node ./js-server/desktop.js ./config/conf.desktop.json
 #while [ $? -eq 212 ]
 #do
 #    node ./js-server/desktop.js ./config/conf.desktop.json

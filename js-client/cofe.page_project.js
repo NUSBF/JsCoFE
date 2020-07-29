@@ -297,7 +297,7 @@ function ProjectPage ( sceneId )  {
 
     if (!$(del_btn.element).button('option','disabled'))  {
       items.delJobItem = { // The "Delete job" menu item
-        label : 'Delete job with ancestors',
+        label : 'Delete job with descendants',
         icon  : image_path('remove'),
         action: deleteJob
       };
