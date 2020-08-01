@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    11.04.20   <--  Date of Last Modification.
+ *    01.08.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -20,23 +20,27 @@
  */
 
 // local service url (used also as indicator of presentce in RVAPI)
-var __local_service  = null;     // full URL when defined
-var __rvapi_local_service = null;    // no var! used as flag in rvapi
-var __client_version = null;     // will be a version string if client is running
-var __local_user     = false;    // true if running as a desktop
-var __shared_fs      = false;    // shared file system setup when true
-var __regMode        = 'email';  // 'email' (by user) or 'admin' (by admin)
-var __exclude_tasks  = [];
-var __setup_desc     = null;     // setup description
-var __check_session_period = 2000;  // in ms
+var __local_service        = null;    // full URL when defined
+var __rvapi_local_service  = null;    // no var! used as flag in rvapi
+var __via_proxy            = false;   // true if local proxy server is used
+var __client_version       = null;    // will be a version string if client is running
+var __local_user           = false;   // true if running as a desktop
+var __shared_fs            = false;   // shared file system setup when true
+var __regMode              = 'email'; // 'email' (by user) or 'admin' (by admin)
+var __exclude_tasks        = [];
+var __setup_desc           = null;    // setup description
+var __check_session_period = 2000;    // in ms
 
 
 function setLocalService ( local_service )  {
   __local_service = local_service;
   if ((!local_service) && (window.hasOwnProperty('__rvapi_local_service')))  {
     delete window.__rvapi_local_service;
-  } else
+  } else  {
+    if (__via_proxy)
+      __local_service = __special_client_tag;
     __rvapi_local_service = local_service;
+  }
 }
 
 
@@ -108,6 +112,7 @@ function checkLocalService ( callback_func )  {
           serverCommand ( fe_command.getClientInfo,{},'getClientInfo',
                           function(rsp){
             if (rsp.status==fe_retcode.ok)  {
+              __via_proxy = rsp.data.via_proxy;
               setLocalService ( rsp.data.local_service );
               if (rsp.data.fe_url)
                 __fe_url = rsp.data.fe_url;

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    16.05.20   <--  Date of Last Modification.
+ *    01.08.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -810,6 +810,7 @@ var response = null;  // must become a cmd.Response object to return
                   else rData.local_service = null;
     if (fe_server && (inData==null)) rData.fe_url = fe_server.url();
                                 else rData.fe_url = null;
+    rData.via_proxy = false;  // will be changed by porxy if necessary
     response = new cmd.Response ( cmd.fe_retcode.ok,'',rData );
   } else  {
     response = new cmd.Response ( cmd.fe_retcode.unconfigured,'','' );
@@ -825,6 +826,7 @@ var response = null;  // must become a cmd.Response object to return
     rData.fe_config      = fe_server;
     rData.ccp4_version   = CCP4Version();
     rData.jscofe_version = cmd.appVersion();
+    rData.via_proxy      = false;  // will be changed by porxy if necessary
     response = new cmd.Response ( cmd.fe_retcode.ok,'',rData );
   } else  {
     response = new cmd.Response ( cmd.fe_retcode.unconfigured,'','' );

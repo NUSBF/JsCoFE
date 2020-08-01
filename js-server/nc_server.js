@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    16.05.20   <--  Date of Last Modification.
+ *    01.08.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -160,9 +160,13 @@ function start()  {
       // Parse the server request command
       var url_parse = url.parse(server_request.url);
       var url_path  = url_parse.pathname;
-      if (url_path.length>0)  // remove leading slash
-            command = url_path.substr(1);
-      else  command = url_path;
+      if (url_path.length>0)  {
+        // remove leading slash and proxy forward-to-client tag
+        command = url_path.substr(1);
+        if (command.startsWith(cmd.__special_client_tag))
+          command = command.substr(cmd.__special_client_tag.length+1);
+      } else
+        command = url_path;
 
       //console.log ( ' url=' + server_request.url );
       //console.log ( ' command=' + command );

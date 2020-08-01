@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    26.03.20   <--  Date of Last Modification.
+ *    01.08.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -46,8 +46,9 @@ function start ( callback_func )  {
 
   var proxy_config  = conf.getFEProxyConfig ();
   var fe_config     = conf.getFEConfig      ();
-  //var client_config = conf.getClientNCConfig();
+  var client_config = conf.getClientNCConfig();
   var fe_url        = fe_config.url();
+  var client_url    = null;
 
   log.standard ( 1,'setting up proxy for ' + fe_url + ' ' + fe_config.host );
 
@@ -139,16 +140,6 @@ function start ( callback_func )  {
     //log.warning ( 3,'             error ' + err );
     log.warning ( 3,err + ' fetching ' + url.parse(server_request.url).pathname.substr(1) );
     proxy.web ( server_request,server_response ); //, options_web );
-/*  -- losing internet symptoms:
-    [2019-10-29T02:42:46.962Z] 22-003 +++ Error: socket hang up fetching =check_session
-    [2019-10-29T02:43:14.071Z] 22-003 +++ Error: read ECONNRESET fetching =check_session
-    [2019-10-29T02:43:14.166Z] 22-003 +++ Error: read ECONNRESET fetching xxJsCoFExx/usage_stats/task.tsk
-    [2019-10-29T02:43:35.116Z] 22-003 +++ Error: connect ETIMEDOUT 130.246.93.68:443 fetching =check_session
-    [2019-10-29T02:43:35.120Z] 22-003 +++ Error: getaddrinfo ENOTFOUND cloud.ccp4.ac.uk cloud.ccp4.ac.uk:443 fetching =check_session
-    [2019-10-29T02:43:35.120Z] 22-003 +++ Error: getaddrinfo ENOTFOUND cloud.ccp4.ac.uk cloud.ccp4.ac.uk:443 fetching =check_session
-    [2019-10-29T02:43:35.124Z] 22-003 +++ Error: getaddrinfo ENOTFOUND cloud.ccp4.ac.uk cloud.ccp4.ac.uk:443 fetching =check_session
-    [
-*/
   });
 
   // Listen to the `upgrade` event in order to proxy the WebSocket requests as well.
@@ -156,86 +147,85 @@ function start ( callback_func )  {
     proxy.ws(req, socket, head);
   });
 
+
+  // -----------------------------------------------------------
+  // Set proxy for client server
+
+  var proxy_client = null;
+  var options_proxy_client = null;
+
+  if (client_config)  {
+
+    client_url = client_config.url();
+    log.standard ( 2,'setting up proxy for ' + client_url + ' ' + client_config.host );
+    var options_proxy_client = {
+      target       : client_url,
+      changeOrigin : true,
+      secure       : false,
+      agent        : new http.Agent({ keepAlive: true })
+    };
+
+    proxy_client = httpProxy.createProxyServer ( options_proxy_client );
+
+    proxy_client.on ( 'error', function(err,server_request,server_response){
+      log.warning ( 4,err + ' fetching ' + url.parse(server_request.url).pathname.substr(1) );
+      proxy_client.web ( server_request,server_response ); //, options_web );
+    });
+
+    // Listen to the `upgrade` event in order to proxy the WebSocket requests as well.
+    proxy_client.on ( 'upgrade', function(req,socket,head){
+      proxy_client.ws ( req, socket, head );
+    });
+
+  }
+
+
   var server = http.createServer ( function(server_request,server_response){
 
-//    try {
+    var command = url.parse(server_request.url).pathname.substr(1);
 
-      var command = url.parse(server_request.url).pathname.substr(1);
+    switch (command.toLowerCase())  {
 
-      switch (command.toLowerCase())  {
+      case cmd.fe_command.getClientInfo :
+            conf.getClientInfo ( null,function(response){
+              response.version  += ' client';
+              response.data.via_proxy = true;
+              response.send(server_response);
+            });
+          break;
 
-        case cmd.fe_command.getClientInfo :
-              conf.getClientInfo ( null,function(response){
-                response.version += ' client';
-                response.send(server_response);
-              });
-            break;
+      case cmd.fe_command.getFEProxyInfo :
+            conf.getFEProxyInfo ( {},function(response){
+              response.version  += ' client';
+              response.data.via_proxy = true;
+              response.send(server_response);
+            });
+          break;
 
-        case cmd.fe_command.getFEProxyInfo :
-              conf.getFEProxyInfo ( {},function(response){
-                response.version += ' client';
-                response.send(server_response);
-              });
-            break;
-
-        default :
-              var n = -1;
-              for (var i=0;(i<local_prefixes.length) && (n<0);i++)
-                n = command.lastIndexOf ( local_prefixes[i] );
-              if (n>=0)  {
-                var fpath;
-                if (local_prefixes[i]=='/jsrview/')
-                      fpath = path.join ( 'js-lib',command.slice(n+1) );
-                else  fpath = command.slice(n);
-                utils.send_file ( fpath,server_response,utils.getMIMEType(fpath),
-                                  false,0,0,
-                                  function(filepath,mimeType,deleteOnDone,capSize){
-                  proxy.web ( server_request,server_response ); //, options_web );
-                  return false;  // no standard processing
-                });
-              } else
+      default :
+            var n = -1;
+            for (var i=0;(i<local_prefixes.length) && (n<0);i++)
+              n = command.lastIndexOf ( local_prefixes[i] );
+            if (n>=0)  {
+              var fpath;
+              if (local_prefixes[i]=='/jsrview/')
+                    fpath = path.join ( 'js-lib',command.slice(n+1) );
+              else  fpath = command.slice(n);
+              utils.send_file ( fpath,server_response,utils.getMIMEType(fpath),
+                                false,0,0,
+                                function(filepath,mimeType,deleteOnDone,capSize){
                 proxy.web ( server_request,server_response ); //, options_web );
+                return false;  // no standard processing
+              });
+            } else if (proxy_client && command.startsWith(cmd.__special_client_tag)) {
+              //console.log ( ' >>>>1 ' + command );
+              proxy_client.web ( server_request,server_response ); //, options_web );
+            } else
+              proxy.web ( server_request,server_response ); //, options_web );
 
-              /*
-              var fpath     = '';
-              var responded = false;
-              for (var i=0;(i<local_prefixes.length) && (!responded);i++)  {
-                var n = command.lastIndexOf ( local_prefixes[i] );
-                if (n>=0)  {
-                  responded = true;
-                  if (local_prefixes[i]=='/jsrview/')
-                        fpath = path.join ( 'js-lib',command.slice(n+1) );
-                  else  fpath = command.slice(n);
-                  utils.send_file ( fpath,server_response,utils.getMIMEType(fpath),
-                                    false,0,0,function(filepath,mimeType,deleteOnDone,capSize){
-                    proxy.web ( server_request,server_response ); //, options_web );
-                    return false;  // no standard processing
-                  });
-                }
-              }
-              if (!responded)  {
-                proxy.web ( server_request,server_response ); //, options_web );
-              }
-              */
-
-      }
-
-//    } catch (e)  {
-//
-//      log.error ( 1,'fe-proxy failure on ' + command );
-//      cmd.sendResponse ( server_response, cmd.fe_retcode.proxyError,'Proxy error #1',{} );
-//
-//    }
+    }
 
   });
-
-  /*
-  server.on('connection', function (socket) {
-      'use strict';
-      //console.log('server.on.connection - setNoDelay');
-      socket.setNoDelay(true);
-  });
-  */
 
   server.listen({
     host      : proxy_config.host,
@@ -244,10 +234,10 @@ function start ( callback_func )  {
   },function(){
 
     if (proxy_config.exclusive)
-      log.standard ( 2,'front-end proxy started, listening to ' +
+      log.standard ( 3,'front-end proxy started, listening to ' +
                        proxy_config.url() + ' (exclusive)' );
     else
-      log.standard ( 2,'front-end proxy started, listening to ' +
+      log.standard ( 3,'front-end proxy started, listening to ' +
                        proxy_config.url() + ' (non-exclusive)' );
 
     if (callback_func)
