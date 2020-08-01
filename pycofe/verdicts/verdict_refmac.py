@@ -366,16 +366,16 @@ def calculate ( meta ) :
     verdict_message = "<b style='font-size:18px;'>"
     if verdict_score>=83:
         verdict_message += "Well done! Overall quality of the structure is comparable " +\
-                           "to the quality of structures deposited to the PDB at this resolution"
+                           "to the quality of structures deposited to the PDB at given resolution"
     elif verdict_score>=67:
-        verdict_message += "Good job! Overall quality of the structure is very reasonable " +\
-                           "and could be further improved"
+        verdict_message += "Good job! Overall quality of the structure is rather reasonable " +\
+                           "but could be further improved"
     elif verdict_score>=34:
         verdict_message += "Fair enough. Overall quality of the structure could be better, "+\
-                            "some bits are probably missing"
+                           "some bits are probably missing"
     else:
-        verdict_message += "Not good enough. Overall quality of the structure is low, " \
-                           "most likely significant parts of the structure are missing"
+        verdict_message += "Not good enough. Overall quality of the structure is low. " \
+                           "Most likely, significant parts of the structure are missing"
     verdict_message += "</b>"
 
 
@@ -387,9 +387,9 @@ def calculate ( meta ) :
     elif rFree > (meanRfree + (0.5 * sigRfree)):
         notes.append("<i>Rfree</i> is a bit higher than optimal")
     if clashScore >= (medianClash + 10.0):
-        notes.append ( "<i>ClashScore</i> is critically high; model contains severe clashes" )
+        notes.append ( "<i>Clash Score</i> is critically high; model contains severe clashes" )
     elif clashScore >= (medianClash + 5.0):
-        notes.append ( "<i>ClashScore</i> is high; model contains some clashes" )
+        notes.append ( "<i>Clash Score</i> is high; model contains some clashes" )
     if rmsBondDistance >= 0.02:
         notes.append ( "<i>RMS Bond Length</i> is high" )
     if rmsBondDistance <= 0.01:
@@ -413,10 +413,12 @@ def calculate ( meta ) :
     # 1. Checking for number of cycles. If structure is not ideal, suggest running at least 10 cycles
     if verdict_score < 83.0: # on the latest stages of refinement we allow 1-2 cycles to recalculate map
         if ncyc < 10:
-            bottomline += "While overall quality of the structure is below deposition quality, " +\
-                            "we recommend running at least 10 refinement cycles"
+            bottomline += "While` the overall quality of the structure is below " +\
+                          "deposition standards, " +\
+                          "we recommend running at least 10 refinement cycles"
             if res >= 3.0:
-                bottomline += ". At low resolution: up to 20 cycles; if you are using restraints from homologues, " +\
+                bottomline += " at moderate and high resolution (higher than 3&Aring). " +\
+                              "At lower resolution: up to 20 cycles; if you are using restraints from homologues, " +\
                               "up to 40 cycles"
             bottomline += ".<p>"
 

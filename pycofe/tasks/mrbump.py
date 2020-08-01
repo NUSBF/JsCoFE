@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    15.04.20   <--  Date of Last Modification.
+#    29.07.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -324,6 +324,8 @@ class MrBump(basic.TaskDriver):
         else:
             self.putTitle ( "No resuts produced" )
 
+        # unless deleted, symbolic links inside this directory will not let
+        # it to be sent back to FE.
         shutil.rmtree ( search_dir )
 
         # close execution logs and quit

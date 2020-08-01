@@ -363,10 +363,10 @@ JobDialog.prototype.loadReport = function()  {
   var reportURL;
   if ((this.task.nc_type=='client') && (this.task.state==job_code.running) &&
       __local_service && this.task.job_dialog_data.job_token)  {
-        reportURL = __special_url_tag + '/' +
-                    this.task.job_dialog_data.job_token + '/' +
-                    this.task.getLocalReportPath();
-        reportURL = __local_service + '/' + reportURL;
+    reportURL = __special_url_tag + '/' +
+                this.task.job_dialog_data.job_token + '/' +
+                this.task.getLocalReportPath();
+    reportURL = __local_service + '/' + reportURL;
   } else
     reportURL = this.task.getReportURL();
   this.outputPanel.loadPage ( reportURL );

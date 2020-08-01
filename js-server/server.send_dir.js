@@ -72,7 +72,7 @@ function packDir ( dirPath, fileSelection, dest_path, onReady_func )  {
 
   if (__use_ziplib)  {
 
-    zl.archiveFolder ( dirPath,tmpFile )
+    zl.archiveFolder ( dirPath,tmpFile,{ followSymlinks : true } )
       .then(function() {
         if (dest_path)
               utils.moveFile ( tmpFile,dest_path   );

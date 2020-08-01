@@ -1,7 +1,7 @@
 //
 //  =================================================================
 //
-//    11.04.20   <--  Date of Last Modification.
+//    31.07.20   <--  Date of Last Modification.
 //                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  -----------------------------------------------------------------
 //
@@ -42,10 +42,14 @@ function addSubmitButton ( inpId,title,formAction,formId,
 function addButtonGrid ( btnId,title,command,data,rvOnly,holderId,
                          row,col,rowSpan,colSpan )  {
 
+  var __rvapi_local_service = is_rvapi_local_service();
+  //if (__rvapi_local_service==2)
+  //  return;
+
   if (command=='{coot}')
     return;
 
-  if ((command=='{ccp4mg}') && (!window.parent.__rvapi_local_service))
+  if ((command=='{ccp4mg}') && (__rvapi_local_service!=1))
     return;
 
   if (document.getElementById(btnId))
@@ -54,7 +58,7 @@ function addButtonGrid ( btnId,title,command,data,rvOnly,holderId,
   if (window.rvGate && (command=="{uglymol}"))
     return;
 
-  if ((window.rvGate || ('__rvapi_local_service' in window.parent) || (!rvOnly)) &&
+  if ((window.rvGate || __rvapi_local_service || (!rvOnly)) &&
       document.getElementById(holderId+"-grid"))  {
     var cell = getGridCell ( holderId,row,col );
     if (cell)  {
@@ -77,6 +81,14 @@ function addButtonGrid ( btnId,title,command,data,rvOnly,holderId,
         btn.setAttribute ( "onclick","buttonClicked('" + command +
                                                  "','" + data + "')" );
       }
+      if (__rvapi_local_service==2)  {
+        if (!btn)
+          btn = document.getElementById ( btnId );
+        if (btn)  {
+          btn.disabled = true;
+          btn.style.opacity = 0.6;
+        }
+      }
     }
     return cell;
   }
@@ -86,10 +98,14 @@ function addButtonGrid ( btnId,title,command,data,rvOnly,holderId,
 
 function addButton ( btnId,title,command,data,rvOnly,holderId )  {
 
+  var __rvapi_local_service = is_rvapi_local_service();
+//  if (__rvapi_local_service==2)
+//    return;
+
   if (command=='{coot}')
     return;
 
-  if ((command=='{ccp4mg}') && (!window.parent.__rvapi_local_service))
+  if ((command=='{ccp4mg}') && (__rvapi_local_service!=1))
     return;
 
   if (document.getElementById(btnId))
@@ -98,7 +114,7 @@ function addButton ( btnId,title,command,data,rvOnly,holderId )  {
   if (window.rvGate && (command=="{uglymol}"))
     return;
 
-  if ((window.rvGate || ('__rvapi_local_service' in window.parent) || (!rvOnly)) &&
+  if ((window.rvGate || __rvapi_local_service || (!rvOnly)) &&
       document.getElementById(holderId))  {
     if (command=="{function}")  {
       $("<button id=\""+btnId+"\" onclick=\"" + data +
@@ -109,6 +125,13 @@ function addButton ( btnId,title,command,data,rvOnly,holderId )  {
         "','" + data + "')\" class='button-common'>" + title + "</button>")
        .appendTo ( $("#"+holderId) );
     }
+    if (__rvapi_local_service==2)  {
+      var btn = document.getElementById ( btnId );
+      if (btn)  {
+        btn.disabled = true;
+        btn.style.opacity = 0.6;
+      }
+    }
   }
 
 }
@@ -117,10 +140,14 @@ function addButton ( btnId,title,command,data,rvOnly,holderId )  {
 function addIconButtonGrid ( btnId,button_class,tooltip,command,data,
                              rvOnly,holderId,row,col,rowSpan,colSpan )  {
 
+  var __rvapi_local_service = is_rvapi_local_service();
+//  if (__rvapi_local_service==2)
+//    return;
+
   if (command=='{coot}')
     return;
 
-  if ((command=='{ccp4mg}') && (!window.parent.__rvapi_local_service))
+  if ((command=='{ccp4mg}') && (__rvapi_local_service!=1))
     return;
 
   if (document.getElementById(btnId))
@@ -129,7 +156,7 @@ function addIconButtonGrid ( btnId,button_class,tooltip,command,data,
   if (window.rvGate && (command=="{uglymol}"))
     return;
 
-  if ((window.rvGate || ('__rvapi_local_service' in window.parent) || (!rvOnly)) &&
+  if ((window.rvGate || __rvapi_local_service || (!rvOnly)) &&
       document.getElementById(holderId+"-grid"))  {
     var cell = getGridCell ( holderId,row,col );
     if (cell)  {
@@ -147,6 +174,13 @@ function addIconButtonGrid ( btnId,button_class,tooltip,command,data,
             "'></div>")
          .appendTo(cell);
       }
+      if (__rvapi_local_service==2)  {
+        var btn = document.getElementById ( btnId );
+        if (btn)  {
+          btn.disabled = true;
+          btn.style.opacity = 0.6;
+        }
+      }
     }
     return cell;
   }
@@ -157,10 +191,14 @@ function addIconButtonGrid ( btnId,button_class,tooltip,command,data,
 function addIconButton ( btnId,button_class,tooltip,command,data,rvOnly,
                          holderId )  {
 
+  var __rvapi_local_service = is_rvapi_local_service();
+//  if (__rvapi_local_service==2)
+//    return;
+
   if (command=='{coot}')
     return;
 
-  if ((command=='{ccp4mg}') && (!window.parent.__rvapi_local_service))
+  if ((command=='{ccp4mg}') && (__rvapi_local_service!=1))
     return;
 
   if (document.getElementById(btnId))
@@ -169,7 +207,7 @@ function addIconButton ( btnId,button_class,tooltip,command,data,rvOnly,
   if (window.rvGate && (command=="{uglymol}"))
     return;
 
-  if ((window.rvGate || ('__rvapi_local_service' in window.parent) || (!rvOnly)) &&
+  if ((window.rvGate || __rvapi_local_service || (!rvOnly)) &&
       document.getElementById(holderId))  {
     if (command=="{function}")  {
       $("<div id=\""+btnId+"\" title=\"" + tooltip +
@@ -182,6 +220,13 @@ function addIconButton ( btnId,button_class,tooltip,command,data,rvOnly,
           "','" + data + "')\" class='"  + button_class +
           "'></div>")
        .appendTo ( $("#"+holderId) );
+    }
+    if (__rvapi_local_service==2)  {
+      var btn = document.getElementById ( btnId );
+      if (btn)  {
+        btn.disabled = true;
+        btn.style.opacity = 0.6;
+      }
     }
   }
 
@@ -250,11 +295,11 @@ function buttonClicked ( command,data )  {
   } else if (command!="{void}")  {
     if (window.rvGate)
       window.rvGate.buttonClicked ( command,data_item );
-    else if ('__rvapi_local_service' in window.parent)  {
+    else if (is_rvapi_local_service()==1)  {
       var base_url = window.location.href;
       window.parent.ls_RVAPIAppButtonClicked (
-                base_url.substring(0,base_url.lastIndexOf('/')),command,
-                data_item );
+                  base_url.substring(0,base_url.lastIndexOf('/')),command,
+                  data_item );
     } else if (command=="{viewhkl}")  {
       startViewHKL ( "",data_item,window );
     }

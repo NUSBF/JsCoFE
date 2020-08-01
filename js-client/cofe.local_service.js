@@ -21,7 +21,7 @@
 
 // local service url (used also as indicator of presentce in RVAPI)
 var __local_service  = null;     // full URL when defined
-__rvapi_local_service = null;    // no var! used as flag in rvapi
+var __rvapi_local_service = null;    // no var! used as flag in rvapi
 var __client_version = null;     // will be a version string if client is running
 var __local_user     = false;    // true if running as a desktop
 var __shared_fs      = false;    // shared file system setup when true
@@ -38,6 +38,7 @@ function setLocalService ( local_service )  {
   } else
     __rvapi_local_service = local_service;
 }
+
 
 // ---------------------------------------------------------------------------
 

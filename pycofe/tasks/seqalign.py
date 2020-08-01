@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    15.04.20   <--  Date of Last Modification.
+#    30.07.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -49,7 +49,7 @@ class SeqAlign(basic.TaskDriver):
     # ------------------------------------------------------------------------
 
     def seqHTML ( self,seqLine,align ):
-        S = "<div style=\"margin:0;padding:0;white-space:nowrap;\">"
+        S = "<div style=\"font-family:monospace;margin:0;padding:0;white-space:nowrap;\">"
         i = 0
         while i<len(seqLine):
             while i<len(seqLine) and align[i]==" ":

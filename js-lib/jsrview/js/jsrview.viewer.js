@@ -189,6 +189,12 @@ function startUglyMol ( title,xyz_uri,mtz_uri,map_uri,diffmap_uri,mapLabels )  {
   //console.log ( 'map_uri=' + map_uri );
   //console.log ( 'diffmap_uri=' + diffmap_uri );
 
+  if (is_rvapi_local_service()==2)  {
+    new MessageBox ( 'Operation cannot be performed',
+                     'Structure visualisation is not<br>possible at this moment' );
+    return;
+  }
+
   var doc = window.parent.document;
   var jq  = window.parent.$;
 
@@ -197,26 +203,18 @@ function startUglyMol ( title,xyz_uri,mtz_uri,map_uri,diffmap_uri,mapLabels )  {
     jq  = window.$;
   }
 
-  //var doc = window.document;
-  //var jq  = window.$;
-
-//alert ( window.parent.location + '\n' + window.location );
-
   var dialog = doc.createElement ( 'div' );
   jq(dialog).css({
     'box-shadow' : '8px 8px 16px 16px rgba(0,0,0,0.2)',
     'overflow'   : 'hidden'
   });
   doc.body.appendChild ( dialog );
-  //doc.body.style.fontSize = '16px';
 
   var iframe = doc.createElement ( 'iframe' );
   jq(iframe).css({
     'border'   : 'none',
     'overflow' : 'hidden'
   });
-
-  //alert ( typeof window.parent.__touch_device + ' : ' + ((typeof window.parent.__touch_device) === 'undefined') );
 
   var size;
   if (window.parent.__any_mobile_device)

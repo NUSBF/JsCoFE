@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    18.05.20   <--  Date of Last Modification.
+#    30.07.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -27,8 +27,8 @@ from pycofe.proc import verdict
 def makeVerdict ( task_meta,sol_no ):
 
     verdict_score   = 0
-    verdict_message = "message"
-    bottom_line     = "bottom line"
+    verdict_message = " "
+    bottom_line     = " "
 
     metrics = task_meta["metrics"][sol_no]
 

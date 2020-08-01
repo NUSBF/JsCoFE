@@ -407,42 +407,55 @@ var cap   = false;
     fname = path.join ( 'js-lib',url.substr(ix) );
 
   } else  {
-//console.log ( ' NC: url=' + url );
-    var plist    = url.split('/');
-    var jobEntry = ncJobRegister.getJobEntry( plist[1] );
 
-    if (jobEntry)  {  // job token is valid
+    var rtag = cmd.__special_url_tag + '-fe/';
+    ix = url.lastIndexOf(rtag);
+    if (ix>=0)  {
 
-      // calculate path within job directory
-      fname = jobEntry.jobDir;
-      for (var i=2;i<plist.length;i++)
-        fname = path.join ( fname,plist[i] );
-
-//console.log ( ' jobEntry found, fname=' + fname );
+      fname = url.substr(ix+rtag.length);
+      log.debug2 ( 4,"calculated path " + fname );
+      log.standard ( 4,"calculated path " + fname );
 
     } else  {
 
-//console.log ( ' jobEntry NOT found, url=' + url );
+  //console.log ( ' NC: url=' + url );
+      var plist    = url.split('/');
+      var jobEntry = ncJobRegister.getJobEntry( plist[1] );
 
-      log.error ( 2,'Unrecognised job token in url ' + url );
-      if (url.endsWith('.html'))  {
-        // assume that this is due to a delay in job launching
-        server_response.writeHead ( 200,
-                                    {'Content-Type': 'text/html;charset=UTF-8'} );
-        server_response.end (
-          '<html><head>' +
-            '<title>Job is not prepared yet</title>' +
-            '<meta http-equiv="refresh" content="2" />' +
-          '</head><body class="main-page">' +
-            '<h2>Waiting for Job to start ....</h2><i>Issuing job token ...</i>' +
-          '</body></html>'
-        );
+      if (jobEntry)  {  // job token is valid
+
+        // calculate path within job directory
+        fname = jobEntry.jobDir;
+        for (var i=2;i<plist.length;i++)
+          fname = path.join ( fname,plist[i] );
+
+  //console.log ( ' jobEntry found, fname=' + fname );
+
       } else  {
-        server_response.writeHead ( 404,
-                                    {'Content-Type': 'text/html;charset=UTF-8'} );
-        server_response.end ( '<p><b>UNRECOGNISED JOB TOKEN</b></p>' );
+
+  //console.log ( ' jobEntry NOT found, url=' + url );
+
+        log.error ( 2,'Unrecognised job token in url ' + url );
+        if (url.endsWith('.html'))  {
+          // assume that this is due to a delay in job launching
+          server_response.writeHead ( 200,
+                                      {'Content-Type': 'text/html;charset=UTF-8'} );
+          server_response.end (
+            '<html><head>' +
+              '<title>Job is not prepared yet</title>' +
+              '<meta http-equiv="refresh" content="2" />' +
+            '</head><body class="main-page">' +
+              '<h2>Waiting for Job to start ....</h2><i>Issuing job token ...</i>' +
+            '</body></html>'
+          );
+        } else  {
+          server_response.writeHead ( 404,
+                                      {'Content-Type': 'text/html;charset=UTF-8'} );
+          server_response.end ( '<p><b>UNRECOGNISED JOB TOKEN</b></p>' );
+        }
+        return;
+
       }
-      return;
 
     }
 
