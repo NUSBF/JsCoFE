@@ -36,6 +36,7 @@ function TaskRefmac()  {
   this.setOName ( 'refmac' );  // default output file name template
   this.title   = 'Refinement with Refmac';
   //this.helpURL = './html/jscofe_task_refmac.html';
+  //this.nc_type = 'client';    // job may be run only on client NC
 
   this.input_dtypes = [{  // input data types
       data_type   : {'DataRevision':['!xyz']}, // data type(s) and subtype(s)

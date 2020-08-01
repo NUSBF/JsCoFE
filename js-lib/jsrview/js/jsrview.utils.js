@@ -1,7 +1,7 @@
 //
 //  =================================================================
 //
-//    16.06.20   <--  Date of Last Modification.
+//    31.07.20   <--  Date of Last Modification.
 //                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  -----------------------------------------------------------------
 //
@@ -157,6 +157,49 @@ function normalize_path ( path )  {
   }
   function n(s){return s.replace(/\/+/g,'/').replace(/\w+\/+\.\./g,'')}
   return path.replace(/^\//,'').replace(/\/$/,'');
+}
+
+function is_rvapi_local_service()  {
+  var found = 0;
+  try {
+    if ('__rvapi_local_service' in window.parent)
+      found = 1;
+  } catch(e)  {
+    // this corresponds to the very special case, when rvapi is runnning as
+    // a part of local service in CCP4 Cloud, but experiences a cross-origin
+    // mismatch with the outer window/frame
+    found = 2;
+  }
+  return found;
+}
+
+// =========================  GAUGE  ===================================
+
+
+var __id_cnt = 0;  // counter used to autogenerate html ids
+
+function MessageBox ( title,message )  {
+
+  this.id      = 'div_' + __id_cnt++;
+  this.element = document.createElement ( 'div' );
+  this.element.setAttribute ( 'id',this.id );
+  this.element.style.fontSize = '16px';
+  this.element.setAttribute ( 'title',title );
+  this.element.innerHTML = message;
+  document.body.appendChild ( this.element );
+
+  $(this.element).dialog({
+    resizable : false,
+    height    : 'auto',
+    width     : 'auto',
+    modal     : true,
+    buttons   : {
+      "Ok": function() {
+        $( this ).dialog( "close" );
+      }
+    }
+  });
+
 }
 
 
