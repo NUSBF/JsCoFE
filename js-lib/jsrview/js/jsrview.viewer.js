@@ -1,7 +1,7 @@
 //
 //  ==========================================================================
 //
-//    26.06.20   <--  Date of Last Modification.
+//    01.08.20   <--  Date of Last Modification.
 //                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  --------------------------------------------------------------------------
 //
@@ -191,7 +191,7 @@ function startUglyMol ( title,xyz_uri,mtz_uri,map_uri,diffmap_uri,mapLabels )  {
 
   if (is_rvapi_local_service()==2)  {
     new MessageBox ( 'Operation cannot be performed',
-                     'Structure visualisation is not<br>possible at this moment' );
+                     'Structure visualisation cannot be started<br>at this moment' );
     return;
   }
 
@@ -565,6 +565,12 @@ var html   =
 
 
 function startRSViewer ( title,json_uri,map_uri )  {
+
+  if (is_rvapi_local_service()==2)  {
+    new MessageBox ( 'Operation cannot be performed',
+                     'Reciprocal Space Viewer cannot be launched<br>at this moment' );
+    return;
+  }
 
   var doc = window.parent.document;
   var jq  = window.parent.$;

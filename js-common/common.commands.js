@@ -2,7 +2,7 @@
 /*
  *  ===========================================================================
  *
- *    31.07.20   <--  Date of Last Modification.
+ *    01.08.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  ---------------------------------------------------------------------------
  *
@@ -25,7 +25,7 @@
 
 function appName()  { return 'CCP4 Cloud' }  // application name for reporting
 
-var jsCoFE_version = '1.6.013 [31.07.2020]';
+var jsCoFE_version = '1.6.013 [01.08.2020]';
 
 function appVersion()  {
   return jsCoFE_version;
@@ -233,6 +233,7 @@ function image_path ( image_basename )  {
 
 var __special_url_tag    = 'xxJsCoFExx';
 var __special_fjsafe_tag = 'xxFJSafexx';
+var __special_client_tag = 'xxClientxx';
 
 function Response ( status,message,data )  {
   this._type   = 'Response';
@@ -283,6 +284,7 @@ if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
   module.exports.nc_retcode           = nc_retcode;
   module.exports.__special_url_tag    = __special_url_tag;
   module.exports.__special_fjsafe_tag = __special_fjsafe_tag;
+  module.exports.__special_client_tag = __special_client_tag;
   module.exports.projectFileExt       = projectFileExt;
   module.exports.Response             = Response;
   module.exports.sendResponse         = sendResponse;
