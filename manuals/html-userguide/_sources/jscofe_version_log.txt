@@ -3,6 +3,21 @@ CCP4 Cloud Version Log
 ======================
 
 
+**Version 1.6.014**
+
+    *Released on --.--.2020 with CCP4 7.1.004*
+
+    **Changes and new features**
+
+    #. ``Lorestr`` can now work with partially fragmented models (*e.g.,* after automatic model building)
+
+    #. Fixed a bug in ``MrBump``, which was causing report page corruption
+
+    #. Resolved the cross-origin conflict with local client, causing corruption in report pages of tasks
+       running on user devices, such as ``Arp/wArp``
+
+
+
 **Version 1.6.013**
 
     *Released on --.--.2020 with CCP4 7.1.003*
@@ -12,10 +27,10 @@ CCP4 Cloud Version Log
     #. Shared Projects are now joined, rather than imported. This means that
        all users, who share a project, are working on the same copy of it. 
        Simultaneous work of several users on shared projects is supported.
-       Only project owner can share, delete or rename project, other users can
-       only join or unjoin it in their Project Lists.
+       Only project owners can share, delete or rename their project, other users can
+       join or unjoin them in their *Project Lists*.
        
-    #. Documentation updated (``DIMPLE``, Automatic Image Processing with ``Xia-2``)
+    #. Documentation updated (``DIMPLE``, Automatic Image Processing with ``Xia-2``, Structure Superposition with ``LsqKab``)
 
     #. ``DIMPLE`` task optimised by eliminating the trailing zero-cycle run of
        ``Refmac``.
@@ -27,6 +42,8 @@ CCP4 Cloud Version Log
 
     #. ``XYZ Utils`` can now import sequences from atomic coordinates, task
        interface changed
+
+    #. ``Lorestr`` can now work on structures with ligand molecules
 
 
 **Version 1.6.012**
