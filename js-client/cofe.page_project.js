@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    29.07.20   <--  Date of Last Modification.
+ *    03.08.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -394,6 +394,7 @@ function ProjectPage ( sceneId )  {
 
   function reloadTree ( blink )  {
     // blink==true will force page blinking, for purely aesthatic reasons
+    var selTask   = jobTree.getSelectedTask();
     var scrollPos = jobTree.parent.getScrollPosition();
     var job_tree  = jobTree;
     jobTree.stopTaskLoop();
@@ -417,6 +418,7 @@ function ProjectPage ( sceneId )  {
           job_tree.closeAllJobDialogs();
           jobTree .openJobs ( dlg_task_parameters,self );
         }
+        jobTree.selectTask ( selTask );
       }
     },onTreeContextMenu,openJob,onTreeItemSelect );
   }

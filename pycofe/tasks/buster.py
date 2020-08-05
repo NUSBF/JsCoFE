@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    15.04.20   <--  Date of Last Modification.
+#    05.08.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -28,7 +28,7 @@
 
 #  python native imports
 import os
-import shutil
+#import shutil
 
 #  application imports
 from . import basic
@@ -190,31 +190,32 @@ class Buster(basic.TaskDriver):
                         "y"      : [{ "name":"rmsBOND" , "values": [] },
                                     { "name":"rmsANGLE", "values": [] }]
                     }
-                elif plot_ref and line.strip()=="":
-                    graphData[0]["plots"].append ( plot_ref )
-                    graphData[1]["plots"].append ( plot_llg )
-                    graphData[2]["plots"].append ( plot_rms )
-                    plot_ref = None
-                    plot_llg = None
-                    plot_rms = None
+                elif plot_ref:
+                    vals = line.split()
+                    if len(vals)<10:
+                        graphData[0]["plots"].append ( plot_ref )
+                        graphData[1]["plots"].append ( plot_llg )
+                        graphData[2]["plots"].append ( plot_rms )
+                        plot_ref = None
+                        plot_llg = None
+                        plot_rms = None
+                    else:
+                        plot_ref["x"]   ["values"].append ( float(vals[0]) )
+                        plot_ref["y"][0]["values"].append ( float(vals[3]) )
+                        plot_ref["y"][1]["values"].append ( float(vals[4]) )
+                        if vals[0]!="0":
+                            plot_llg["x"]   ["values"].append ( float(vals[0]) )
+                            plot_llg["y"][0]["values"].append ( float(vals[5]) )
+                            plot_llg["y"][1]["values"].append ( float(vals[6]) )
+                        plot_rms["x"]   ["values"].append ( float(vals[0]) )
+                        plot_rms["y"][0]["values"].append ( float(vals[8]) )
+                        plot_rms["y"][1]["values"].append ( float(vals[9]) )
                 elif "best refinement in BUSTER reached for" in line:
                     vals = line.split()[-1].split("/")
                     self.generic_parser_summary["buster"] = {
                         "R_factor" : vals[0],
                         "R_free"   : vals[1]
                     }
-                elif plot_ref:
-                    vals = line.split()
-                    plot_ref["x"]   ["values"].append ( float(vals[0]) )
-                    plot_ref["y"][0]["values"].append ( float(vals[3]) )
-                    plot_ref["y"][1]["values"].append ( float(vals[4]) )
-                    if vals[0]!="0":
-                        plot_llg["x"]   ["values"].append ( float(vals[0]) )
-                        plot_llg["y"][0]["values"].append ( float(vals[5]) )
-                        plot_llg["y"][1]["values"].append ( float(vals[6]) )
-                    plot_rms["x"]   ["values"].append ( float(vals[0]) )
-                    plot_rms["y"][0]["values"].append ( float(vals[8]) )
-                    plot_rms["y"][1]["values"].append ( float(vals[9]) )
             f.close()
 
             # continue writing to stdout
