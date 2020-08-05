@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    15.06.20   <--  Date of Last Modification.
+ *    01.08.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -164,7 +164,7 @@ if (!__template)  {
 
   // hotButtons return list of buttons added in JobDialog's toolBar.
   TaskFitWaters.prototype.hotButtons = function() {
-    return [RefmacHotButton()];
+    return [RefmacHotButton(),CootMBHotButton()];
   }
 
 } else  {

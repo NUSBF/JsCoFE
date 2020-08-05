@@ -494,6 +494,13 @@ JobTree.prototype.getSelectedTask = function()  {
 }
 
 
+JobTree.prototype.selectTask = function ( task )  {
+var nodeId = this.getTaskNodeId ( task.id );
+  if (nodeId)
+    this.selectSingleById ( nodeId );
+}
+
+
 JobTree.prototype.updateRation = function ( data )  {
   if ('pdesc' in data)  {
     this.projectData.desc.disk_space = data.pdesc.disk_space;
