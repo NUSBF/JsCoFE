@@ -34,6 +34,7 @@ import json
 #  application imports
 from . import basic
 from   pycofe.proc   import qualrep
+from   pycofe.verdicts  import verdict_lorestr
 
 
 # ============================================================================
@@ -91,7 +92,7 @@ class Lorestr(basic.TaskDriver):
 
         minres = self.getParameter(self.task.parameters.sec1.contains.MINRES)
         if minres:
-            cmd += [ "-minres",minres ]
+            cmd += [ "-minres", minres ]
 
         if self.getParameter(self.task.parameters.sec1.contains.DNA_CBX)=="True":
             cmd += [ "-dna" ]
@@ -123,6 +124,9 @@ class Lorestr(basic.TaskDriver):
         # check solution and register data
         have_results = False
         if os.path.isfile(self.getXYZOFName()):
+
+            verdict_row = self.rvrow
+            self.rvrow += 4
 
             self.putTitle ( "Lorestr Output" )
             self.unsetLogParser()
@@ -156,10 +160,21 @@ class Lorestr(basic.TaskDriver):
 
                 rvrow0 = self.rvrow
                 try:
-                    qualrep.quality_report ( self,revision )
+                    meta = qualrep.quality_report ( self,revision )
                 except:
+                    meta = None
                     self.stderr ( " *** molprobity failure" )
                     self.rvrow = rvrow0
+
+                if meta:
+                    verdict_meta = {
+                        "data"   : { "resolution" : hkl.getHighResolution(raw=True) },
+                        "params" : { "homologs"   : self.getParameter(self.task.parameters.sec1.contains.PDB_CBX),
+                                     "mr"         : self.getParameter(self.task.parameters.sec1.contains.MR_CBX) },
+                        "xyzmeta" : structure.xyzmeta
+                    }
+                    verdict_lorestr.putVerdictWidget ( self,verdict_meta,verdict_row )
+
 
         else:
             self.putTitle ( "No Output Generated" )
