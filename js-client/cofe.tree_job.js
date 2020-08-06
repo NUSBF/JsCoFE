@@ -417,6 +417,8 @@ JobTree.prototype.__checkTaskLoop = function()  {
                 tree.dlg_map[key].setDlgState();
                 if (task.state==job_code.failed)
                   tree.dlg_map[key].outputPanel.reload();
+                else if (task.nc_type=='client')
+                  tree.dlg_map[key].loadReport();
               }
 
               tree.startChainTask ( task,nodeId );
