@@ -54,6 +54,7 @@ class EnsemblePrepMG(basic.TaskDriver):
 
     def run(self):
 
+        rvrow0 = self.rvrow
         self.putMessage ( "<h3>This task will launch CCP4 MG now</h3>" +\
                           "Make sure that you save each ensemble prepared in CCP4 MG " +\
                           "using menu item \"<i>File / Save all visible to CCP4 Cloud</i>\"" )
@@ -109,18 +110,20 @@ class EnsemblePrepMG(basic.TaskDriver):
 
         # Pick ensembles produced
 
-        ensembleSerNo   = 0
+        ensembleSerNo = 0
         filelist = [fn for fn in os.listdir(".")
                        if any(fn.endswith(ext) for ext in [".pdb"]) and
                           any(fn.startswith(pref) for pref in ["output"]) ]
 
         have_results = False
 
+        self.rvrow = rvrow0
         if len(filelist)<=0:
             self.putTitle ( "No ensembles were created" )
         else:
             self.putTitle ( "Created ensembles" )
             for filename in sorted(filelist):
+                self.stdoutln  (  " >>>>>> 02" + filename )
                 ensembleSerNo += 1
                 fout_name = self.outputFName + "_" + str(ensembleSerNo) + ".pdb"
                 os.rename ( filename,fout_name )
@@ -149,6 +152,7 @@ class EnsemblePrepMG(basic.TaskDriver):
                             str(ensemble.xyzmeta["xyz"][0]["chains"][0]["size"]) +\
                             " residues)" )
 
+                    self.rvrow += 20
                     ensemble.addDataAssociation ( seq.dataId )
                     self.putMessage ( "&nbsp;<br><b>Associated with sequence:</b>&nbsp;" +\
                                                       seq.dname + "<br>&nbsp;" )

@@ -37,6 +37,7 @@ class CofeSignal( Exception ):
 
     def quitApp( self ):
         self.send_signal()
+        #sys.exit()
         sys.exit(self.returncode)
 
 
