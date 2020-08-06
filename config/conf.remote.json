@@ -13,9 +13,9 @@
 
   "FrontEnd" : {
     "protocol"         : "http",
-    "host"             : "ccp4serv6.rc-harwell.ac.uk/jscofe/",
+    "host"             : "ccp4serv6.rc-harwell.ac.uk/jscofe-dev/",
     "port"             : 0,
-    "externalURL"      : "http://ccp4serv6.rc-harwell.ac.uk/jscofe/",
+    "externalURL"      : "http://ccp4serv6.rc-harwell.ac.uk/jscofe-dev/",
     "exclusive"        : true,
     "stoppable"        : false,
     "fsmount"          : null,
@@ -43,7 +43,8 @@
     "port"             : 8082,
     "externalURL"      : "http://localhost:8082",
     "exclusive"        : true,
-    "stoppable"        : false
+    "stoppable"        : false,
+    "localisation"     : 0
   },
 
   "NumberCrunchers" : [
@@ -57,7 +58,7 @@
       "externalURL"      : "http://localhost:8084",
       "exclusive"        : true,
       "stoppable"        : false,
-      "fsmount"          : "/",
+      "fsmount"          : null,
       "capacity"         : 4,
       "exclude_tasks"    : [],
       "fasttrack"        : 1,
