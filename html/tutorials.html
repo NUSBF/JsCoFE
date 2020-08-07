@@ -89,7 +89,7 @@
 
     function putHLink ( url_path )  {
       document.write (
-        '<a target="_blank" href="https://cloud.ccp4.ac.uk/manuals/' + url_path +
+        '<a target="_blank" href="../manuals/' + url_path +
         '"><img src="../images_png/help.png" style="vertical-align:middle;height:16px;"></a> '
       );
     }
@@ -121,24 +121,28 @@
 <table class="main-table">
 
   <tr>
-    <td>&nbsp;</td>
-    <td colspan=5>
-      <h1 style="text-align:center;font-size:48px;padding-top:12px;text-shadow: 1px 1px #AAAAAA;">
+    <td colspan=6>
+      <h1 style="text-align:center;font-size:48px;padding-top:12px;margin-bottom:6px;text-shadow: 1px 1px #AAAAAA;">
         CCP4 Cloud Roadmap
-      </h1>
+      </h1><center><i>
+      CCP4 Cloud is a system for remote computations in macromolecular crystallography,<br>
+      based on the <a href="https://www.ccp4.ac.uk">CCP4 Software Suite</b>.
+      </i></center>
     </td>
   </tr>
 
   <tr>
     <td colspan=6>
       <table><tr><td colspan=3>
-        <b><i>Linked with:</i></b>
+        <b><i>Road signs:</i></b>
       </td></tr><tr><td>&nbsp;&nbsp;</td><td>
         <script>
           putHLink('html-taskref/index.html');
         </script>
       </td><td>
-        <i>&nbsp; CCP4 Cloud documentation articles</i>
+        <i>&nbsp; links to
+           <a target="_blank" href="../manuals/html-taskref/index.html">CCP4 Cloud documentation</a>
+           articles</i>
       <!--
       </td></tr><tr><td>&nbsp;&nbsp;</td><td>
         <script>
@@ -152,22 +156,26 @@
           putVLink('https://www.youtube.com/channel/UCMfGZOImz7Fn_Q4I4Wm0yew');
         </script>
       </td><td>
-        <i>&nbsp; video tutorials from CCP4 Channel on Youtube</i>
-      </td></tr>
-      <tr><td colspan=3>
-        &nbsp;<br><b><i>Minimalistic routes (given sequence and merged reflection dataset):</i></b>
+        <i>&nbsp; links to video tutorials from
+           <a target="_blank" href="https://www.youtube.com/channel/UCMfGZOImz7Fn_Q4I4Wm0yew">CCP4 Channel</a>
+           on Youtube</i>
       </td></tr><tr><td>&nbsp;&nbsp;</td><td>
         <script>
           markRouteMR();
         </script>
       </td><td>
-        <i>&nbsp; Molecular Replacement</i>
+        <i>&nbsp; minimalistic* route for Molecular Replacement</i>
       </td></tr><tr><td>&nbsp;&nbsp;</td><td>
         <script>
           markRouteEP();
         </script>
       </td><td>
-        <i>&nbsp; Experimental Phasing</i>
+        <i>&nbsp; minimalistic* route for Experimental Phasing</i>
+      </td></tr><tr><td>&nbsp;&nbsp;</td><td></td><td colspan=1><hr/>
+        <i style="font-size:85%;">&nbsp;  * minimalistic routes start from merged reflection datasets and
+           protein sequences; they may work in typical cases without complications<br>
+           ** see full example videos in the end of the page
+        </i>
       </td></tr></table>
     </td>
   </tr>
@@ -500,12 +508,14 @@
         </script>
       </td><td>
         <i>&nbsp; MDM2 Protein linked to Nutlin molecule. Part 2: Ligand fitting and deposition</i>
+      <!--
       </td></tr><tr><td>&nbsp;&nbsp;</td><td>
         <script>
           putVLink('');
         </script>
       </td><td>
         <i>&nbsp; Insulin structure solved by Experimental Phasing</i>
+      -->
       </td></tr></table>
     </td>
   </tr>
