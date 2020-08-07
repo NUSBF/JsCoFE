@@ -168,6 +168,8 @@ class EnsemblePrepMG(basic.TaskDriver):
                     self.putMessage ( "<h3>Error</h3><i>Ensemble object could not be formed</i><p>" +\
                                       "Please report this to server maintainer." )
 
+        shutil.rmtree ( self.mrbump_dir() )
+
         self.removeCitation ( "ccp4mg" )
 
         # close execution logs and quit
