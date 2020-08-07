@@ -44,9 +44,9 @@ def parseLORESTRLog (logpath):
                     lst = line.split()
                     if line[0] == ' ':
                         meta["bestProtocol"] = line
-                    elif "Rfact" in line:
+                    elif "Rfact (before/after)" in line:
                         meta["rfact"]   = [float(lst[2]),float(lst[4])]
-                    elif "Rfree" in line:
+                    elif "Rfree (before/after)" in line:
                         meta["rfree"]   = [float(lst[2]),float(lst[4])]
 
                     elif "Ramachandran outliers" in line:
