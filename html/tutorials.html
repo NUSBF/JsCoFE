@@ -101,7 +101,7 @@
       );
     }
 
-    function putVLink ( url )  {
+    function putYLink ( url )  {
       document.write (
         '<a target="_blank" href="' + url +
         '"><img src="../images_png/video.png" style="vertical-align:middle;height:16px;"></a>'
@@ -109,9 +109,25 @@
 //      var w = window.open("url");
 //      w.document.write ( "xxxxxxxx");
 //      <iframe width="966" height="543" src="https://www.youtube.com/embed/oZeaD54oovs" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-
-
     }
+
+    function openVLink ( url )  {
+      var w = window.open ( "../tutorials/clips/" + url );
+      /*
+      w.document.write (
+        '<video width="966" controls><source src="../tutorials/clips/' + url + '" type="video/mp4"></video>'
+      );
+      */
+    }
+
+    function putVLink ( url )  {
+      document.write (
+        '<a href="javascript:openVLink(\'' + url + '\');">' +
+        '<img src="../images_png/video.png" style="vertical-align:middle;height:16px;"></a>'
+      );
+    }
+
+
   </script>
 
 </head>
@@ -153,7 +169,7 @@
       -->
       </td></tr><tr><td>&nbsp;&nbsp;</td><td>
         <script>
-          putVLink('https://www.youtube.com/channel/UCMfGZOImz7Fn_Q4I4Wm0yew');
+          putYLink('https://www.youtube.com/channel/UCMfGZOImz7Fn_Q4I4Wm0yew');
         </script>
       </td><td>
         <i>&nbsp; links to video tutorials from
@@ -189,13 +205,11 @@
     <td class="panel-gray-center" colspan=3>
       <span class="panel-title">
         CCP4 Cloud Introduction
-        <script>
-          putVLink('https://www.youtube.com/embed/oZeaD54oovs');
-        </script>
       </span>
       Make CCP4 Cloud account
         <script>
           putHLink('html-userguide/jscofe_myprojects.html');
+          putYLink('https://www.youtube.com/embed/oZeaD54oovs');
         </script>
       <br>CCP4 Cloud projects
         <script>
@@ -220,7 +234,7 @@
       <br>Image processing with iMosflm
         <script>
           putHLink('html-taskref/doc.task.iMosflm.html');
-          putVLink('https://www.youtube.com/embed/8IUMM58gMuo');
+          putYLink('https://www.youtube.com/embed/8IUMM58gMuo');
         </script>
     </td>
     <td>&nbsp;</td>
@@ -256,7 +270,7 @@
       <br>Image processing with iMosflm
         <script>
           putHLink('html-taskref/doc.task.iMosflm.html');
-          putVLink('https://www.youtube.com/embed/8IUMM58gMuo');
+          putYLink('https://www.youtube.com/embed/8IUMM58gMuo');
         </script>
     </td>
     <td style="width:2px;"></td>
@@ -319,7 +333,7 @@
         <script>
           markRouteMR();
           putHLink('html-taskref/Automated_Molecular_Replacement.html');
-          putVLink('https://www.youtube.com/embed/SNdMCLhK8zQ');
+          putYLink('https://www.youtube.com/embed/SNdMCLhK8zQ');
         </script>
       <br>MR with models from atomic coordinates
       <br>MR with models from HHPRED alignments
@@ -460,6 +474,7 @@
       <br>PISA
         <script>
           putHLink('html-taskref/doc.task.PISA.html');
+          putVLink('pisa.mp4');
         </script>
       <br>Deposition
         <script>
@@ -498,20 +513,20 @@
         <h2>Example projects:</h2>
       </td></tr><tr><td>&nbsp;&nbsp;</td><td>
         <script>
-          putVLink('https://www.youtube.com/embed/YLu5oqDis2E');
+          putYLink('https://www.youtube.com/embed/YLu5oqDis2E');
         </script>
       </td><td>
         <i>&nbsp; MDM2 Protein linked to Nutlin molecule. Part 1: Molecular Replacement</i>
       </td></tr><tr><td>&nbsp;&nbsp;</td><td>
         <script>
-          putVLink('https://www.youtube.com/embed/kgsBfMLCI5A');
+          putYLink('https://www.youtube.com/embed/kgsBfMLCI5A');
         </script>
       </td><td>
         <i>&nbsp; MDM2 Protein linked to Nutlin molecule. Part 2: Ligand fitting and deposition</i>
       <!--
       </td></tr><tr><td>&nbsp;&nbsp;</td><td>
         <script>
-          putVLink('');
+          putYLink('');
         </script>
       </td><td>
         <i>&nbsp; Insulin structure solved by Experimental Phasing</i>
