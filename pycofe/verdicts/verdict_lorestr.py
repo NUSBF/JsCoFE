@@ -185,7 +185,7 @@ def calculate ( meta ) :
         if molprob > molprobBefore:
             bottomline += "Nevertheless overall geometrical quality of the structure was improved. "
         if not homologsUsed:
-            bottomline += "Please re-run LORESTR with <i>Add structural homologues from the PDB</i> option activated"
+            bottomline += "Please re-run LORESTR with <i>Add structural homologues from the PDB</i> option activated."
         else:
             bottomline +=  "Please use manual refinement via REFMAC."
         bottomline += "<p>"
