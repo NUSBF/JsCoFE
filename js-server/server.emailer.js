@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    01.12.19   <--  Date of Last Modification.
+ *    20.08.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -153,6 +153,7 @@ var message = utils.readString ( path.join('message_templates',template_name+'.h
       'appName'         : cmd.appName(),
       'appURL'          : '<a href="' + conf.getFEConfig().reportURL + '">' +
                           conf.getFEConfig().reportURL + '</a>',
+      'appURL_txt'      : conf.getFEConfig().reportURL,
       'maintainerEmail' : conf.getEmailerConfig().maintainerEmail
     };
     for (var key in user_dict)
