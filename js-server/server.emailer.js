@@ -153,7 +153,7 @@ var message = utils.readString ( path.join('message_templates',template_name+'.h
       'appName'         : cmd.appName(),
       'appURL'          : '<a href="' + conf.getFEConfig().reportURL + '">' +
                           conf.getFEConfig().reportURL + '</a>',
-      'appURL_txt'      : conf.getFEConfig().reportURL,
+      'app_url'         : conf.getFEConfig().reportURL,
       'maintainerEmail' : conf.getEmailerConfig().maintainerEmail
     };
     for (var key in user_dict)
