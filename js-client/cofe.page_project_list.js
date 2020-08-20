@@ -607,8 +607,10 @@ ProjectListPage.prototype.constructor = ProjectListPage;
 ProjectListPage.prototype.onResize = function ( width,height )  {
 //  var h = (height - 164) + 'px';
 //  this.tablesort_tbl.table_div.element.style.height = h;
-  this.tablesort_tbl.fixHeader();
-  this.tablesort_tbl.setTableHeight ( height-84 );
+  if (this.tablesort_tbl)  {
+    this.tablesort_tbl.fixHeader();
+    this.tablesort_tbl.setTableHeight ( height-84 );
+  }
 }
 
 
