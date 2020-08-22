@@ -698,6 +698,12 @@ function assignPorts ( assigned_callback )  {
     servers.push ( server );
     var port    = config.port;
     config.port = 0;
+    server.on('error',function(e){
+      if (e.code=='EADDRINUSE') {
+        log.standard ( 6,'port ' + port + ' is busy; another port will be used' );
+        callback();
+      }
+    });
     server.listen({
       host      : config.host,
       port      : port,
