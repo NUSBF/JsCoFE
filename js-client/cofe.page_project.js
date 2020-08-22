@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    03.08.20   <--  Date of Last Modification.
+ *    22.08.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -50,6 +50,7 @@ function ProjectPage ( sceneId )  {
   var clone_btn      = null;
   var refresh_btn    = null;
   var help_btn       = null;
+  var roadmap_btn    = null;
   var split_btn      = null;
   var replay_btn     = null;
   var replay_mode    = false;
@@ -519,6 +520,7 @@ function ProjectPage ( sceneId )  {
   toolbar.setLabel ( '<hr style="border:1px dotted;"/>'       ,cnt++,0,1,1 );
   refresh_btn = toolbar.setButton ( '',image_path('refresh')  ,cnt++,0,1,1 );
   help_btn    = toolbar.setButton ( '',image_path('help')     ,cnt++,0,1,1 );
+  roadmap_btn = toolbar.setButton ( '',image_path('roadmap')  ,cnt++,0,1,1 );
 
   if ((__user_role==role_code.admin) || (__user_role==role_code.developer))  {
     toolbar.setLabel ( '<hr style="border:1px dotted;"/>' ,cnt++,0,1,1 );
@@ -537,6 +539,7 @@ function ProjectPage ( sceneId )  {
                                                              .setDisabled(true);
   refresh_btn.setSize('40px','40px').setTooltip('Refresh');
   help_btn   .setSize('40px','40px').setTooltip('Documentation');
+  roadmap_btn.setSize('40px','40px').setTooltip(appName() + ' roadmap');
 
   for (var i=0;i<cnt;i++)
     toolbar.setCellSize ( '','12px',i,0 );
@@ -556,6 +559,11 @@ function ProjectPage ( sceneId )  {
   help_btn.addOnClickListener ( function(){
     new HelpBox ( '',__user_guide_base_url + 'jscofe_project.html',null );
   });
+
+  roadmap_btn.addOnClickListener ( function(){
+    window.open ( 'html/tutorials.html' );
+  });
+
   //launchHelpBox ( '','./html/jscofe_project.html',doNotShowAgain,1000 );
 
   this.tree_div = new Widget ( 'div' );
