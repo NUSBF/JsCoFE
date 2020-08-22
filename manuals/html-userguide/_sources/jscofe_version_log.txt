@@ -11,16 +11,24 @@ CCP4 Cloud Version Log
 
     #. ``Lorestr`` can now work with partially fragmented models (*e.g.,* after automatic model building)
 
+    #. Verdict sections aded to ``Lorestr`` and ``Dimple`` reports
+
     #. Fixed a bug in ``MrBump``, which was causing report page corruption
+
+    #. Fixed a bug in ``CCP4Build`` causing stop at mtz files with rare format features
 
     #. Resolved the cross-origin conflict with local client, causing corruption in report pages of tasks
        running on user devices, such as ``Arp/wArp``
+
+    #. Fixed a bug in ``Buster`` task, which caused task failures under specific conditions
+
+    #. Video tutorials added in Documentation
 
 
 
 **Version 1.6.013**
 
-    *Released on --.--.2020 with CCP4 7.1.003*
+    *Released on 11.08.2020 with CCP4 7.1.003*
 
     **Changes and new features**
 
@@ -30,7 +38,8 @@ CCP4 Cloud Version Log
        Only project owners can share, delete or rename their project, other users can
        join or unjoin them in their *Project Lists*.
        
-    #. Documentation updated (``DIMPLE``, Automatic Image Processing with ``Xia-2``, Structure Superposition with ``LsqKab``)
+    #. Documentation updated (``DIMPLE``, Automatic Image Processing with ``Xia-2``,
+       Structure Superposition with ``LsqKab``)
 
     #. ``DIMPLE`` task optimised by eliminating the trailing zero-cycle run of
        ``Refmac``.
