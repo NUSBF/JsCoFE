@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    07.05.20   <--  Date of Last Modification.
+ *    20.08.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -94,29 +94,11 @@ function LoginPage ( sceneId )  {
 
   var row = 0;
   panel.setLabel ( appName() + ' Login', row,0,1,2 )
-       .setFont  ( 'times','40px',true,true ).setNoWrap();
+       .setFont  ( 'times','40px',true,true )
+       .setNoWrap();
   panel.setHorizontalAlignment  ( row++ ,0,'center' );
   panel.setWidget               ( this.makeSetupNamePanel(), row++,0,1,2 );
-  /*
-  if (__fe_url != document.location.protocol + '//' +
-                  document.location.host     +
-                  document.location.pathname)  {
-    panel.setLabel ( __fe_url, row,0,1,2 )
-         .setFontSize ( '125%' ).setFontItalic(true).setNoWrap();
-    panel.setCellSize ( '','24pt',row,0 );
-    panel.setVerticalAlignment   ( row   ,0,'bottom' );
-    panel.setHorizontalAlignment ( row++ ,0,'center' );
-  }
-  */
-  panel.setCellSize ( '','20pt',row++,0 );
-
-  /*
-  if (connected_lbl)  {
-    panel.setWidget   ( connected_lbl,row,0,1,1 );
-    panel.setCellSize ( '','24pt'    ,row++,0 );
-    panel.setWidget   ( host_lbl     ,row,1,1,1 );
-  }
-  */
+  panel.setCellSize             ( '','20pt',row++,0 );
 
   panel.setWidget               ( login_lbl,row  ,0,1,1 );
   panel.setWidget               ( pwd_lbl  ,row+1,0,1,1 );
@@ -135,10 +117,6 @@ function LoginPage ( sceneId )  {
   var pwd_btn   = new Button    ( 'Forgotten password',image_path('reminder') );
   var reg_btn   = new Button    ( 'Registration',image_path('new_file') );
 
-//  login_btn.setFontSize         ( '100%' );
-//  pwd_btn  .setFontSize         ( '100%' );
-//  reg_btn  .setFontSize         ( '100%' );
-
   login_btn.setWidth            ( '100%' );
   pwd_btn  .setWidth            ( '100%' );
   reg_btn  .setWidth            ( '100%' );
@@ -155,36 +133,34 @@ function LoginPage ( sceneId )  {
                                   'Cloud is accessed from mobile<br>devices ' +
                                   '(tablets, ipads and smartphones)</i></center>',
                                   row++,0,1,3 )
-          .setTooltip           ( 'For best expereince, access this web-site from ' +
+         .setTooltip            ( 'For best expereince, access this web-site from ' +
                                   'MS Windows, Linux or Mac OSX device  with ' +
                                   'CCP4 Software Suite version 7.1 or higher ' +
                                   'installed.'
                                 )
-          .setNoWrap();
+         .setNoWrap();
 
   else if (!__local_service)
     panel.setLabel              ( '&nbsp;<br><center><i>For best experience, access ' +
-                                  'this web site via<br>CCP4 Cloud Client, ' +
+                                  'this web site via<br>' + appName() + ' Client, ' +
                                   'which can be obtained by installing<br>' +
                                   '<a href="javascript:_ccp4_download()"> ' +
                                   'the CCP4 Software Suite version 7.1 or higher</a>' +
                                   '<br>(look for icon with wireless sign after ' +
                                   'installation)</i></center>',
                                   row++,0,1,3 )
-          .setTooltip           ( 'CCP4 Cloud Client is necessary for running ' +
+          .setTooltip           ( appName() + ' Client is necessary for running ' +
                                   'interactive graphical software, such as image ' +
                                   'processing (DUI, Mosflm, XDSGUI), Coot and ' +
                                   'some others.'
                                 )
           .setNoWrap();
-    /*
-    panel.setLabel              ( '&nbsp;<br><center><i>For best experience, access ' +
-                                  'this web site via<br>' +
-                                  '<a href="manual/html/index.html">' + appName() + ' Client</a>.' +
-                                  '</i></center>',
-                                  row++,0,1,3 );
-    */
 
+  panel.setLabel                ( '&nbsp;<br><center><i>' +
+                                  appName() +
+                                  ' <a target="_blank" href="html/tutorials.html">' +
+                                  'roadmap<a></i> for new users</center>',
+                                  row++,0,1,3 );
   panel.setLabel                ( '&nbsp;<br><center><i>' +
                                   '<a href="javascript:_privacyStatement()">' +
                                   'Privacy Statement<a></i></center>',
