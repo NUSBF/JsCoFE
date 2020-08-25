@@ -1,7 +1,7 @@
 //
 //  ==========================================================================
 //
-//    01.08.20   <--  Date of Last Modification.
+//    25.08.20   <--  Date of Last Modification.
 //                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  --------------------------------------------------------------------------
 //
@@ -19,6 +19,21 @@
 
 var _jsrview_uri = "";
 //var __base_url = 'xxJsCoFExx/' + __login_token + '/rnase/1/';
+
+
+function is_rvapi_local_service()  {
+  var found = 0;
+  try {
+    if ('__rvapi_local_service' in window.parent)
+      found = 1;
+  } catch(e)  {
+    // this corresponds to the very special case, when rvapi is runnning as
+    // a part of local service in CCP4 Cloud, but experiences a cross-origin
+    // mismatch with the outer window/frame
+    found = 2;
+  }
+  return found;
+}
 
 
 // ===========================================================================
