@@ -71,7 +71,7 @@ class XyzUtils(basic.TaskDriver):
         xyzpath = ixyz.getXYZFilePath ( self.inputDir() )
         sec1    = self.task.parameters.sec1.contains
 
-        self.stdoutln ( ixyz.to_JSON() )
+        #self.stdoutln ( ixyz.to_JSON() )
 
         # --------------------------------------------------------------------
 
@@ -139,6 +139,8 @@ class XyzUtils(basic.TaskDriver):
             if len(clist)>0:
                 log.append ( "chain(s) " + ",".join(clist) + " removed" )
 
+        if action_sel=="E":
+            st.remove_ligands_and_waters()
         st.remove_empty_chains()
 
         nchains = 0
@@ -203,10 +205,12 @@ class XyzUtils(basic.TaskDriver):
             else:
                 self.putTitle ( "Results" )
                 annotation = { "rename":{}, "annotation":[] }
+                st.setup_entities()
                 for model in st:
                     for chain in model:
                         polymer = chain.get_polymer()
                         t       = polymer.check_polymer_type()
+                        seqline = str(polymer.make_one_letter_sequence())
                         stype   = None
                         if t in (gemmi.PolymerType.PeptideL, gemmi.PolymerType.PeptideD):
                             stype = "protein"
@@ -226,7 +230,6 @@ class XyzUtils(basic.TaskDriver):
                             else:
                                 seqname = self.getOFName ( "_" + chain.name )
                             seqout  = seqname + ".fasta"
-                            seqline = str(polymer.make_one_letter_sequence())
                             dtype_sequence.writeSeqFile ( os.path.join(self.importDir(),seqout),
                                                           seqname,seqline )
                             self.addFileImport ( seqout,import_filetype.ftype_Sequence() )
@@ -245,6 +248,9 @@ class XyzUtils(basic.TaskDriver):
                 f = open ( "annotation.json","w" )
                 f.write ( json.dumps(annotation) )
                 f.close ()
+
+                self.stdoutln ( " annotation=" + str(annotation) )
+
                 import_sequence.run ( self )
                 self.addCitation ( "default" )
 
