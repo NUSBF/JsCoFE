@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    09.02.20   <--  Date of Last Modification.
+#    26.08.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -52,14 +52,15 @@ class EditRevisionSubstr(basic.TaskDriver):
         if hasattr(self.input_data.data,"substr0"):  # optional data parameter
             substr0 = self.makeClass ( self.input_data.data.substr0[0] )
 
-        sub = substr0  # this is current Substructure or None
+        #sub = substr0  # this is current Substructure or None
+        sub = None  # this is current Substructure or None
         if hasattr(self.input_data.data,"sub"):  # optional data parameter
             #  note this may be only Substructure
             sub = self.makeClass ( self.input_data.data.sub[0] )
 
         phases = substr0  # ground default
-        if sub._type==dtype_structure.dtype():
-            phases = sub  # need to be in sync with sub by default
+        #if sub._type==dtype_structure.dtype():
+        #    phases = sub  # need to be in sync with sub by default
         if hasattr(self.input_data.data,"phases"):  # optional data parameter
             #  note this may be either Structure or Substructure, but not XYZ
             phases = self.makeClass ( self.input_data.data.phases[0] )
@@ -75,10 +76,15 @@ class EditRevisionSubstr(basic.TaskDriver):
         map_fpath  = None
         dmap_fpath = None
         lib_fpath  = None  #  will stay None as we edit only Substructure in this task
-        summary    = []
+        replaced   = []
+        deleted    = []
+
         if sub:
             sub_fpath = sub.getSubFilePath ( self.inputDir() )
-            summary.append ( "substructure" )
+            if not substr0 or sub.dataId!=substr0.dataId:
+                replaced.append ( "substructure" )
+        else:
+            deleted.append ( "substructure" )
 
         if phases:
             mtz_fpath  = phases.getMTZFilePath ( self.inputDir() )
@@ -95,7 +101,8 @@ class EditRevisionSubstr(basic.TaskDriver):
                 )
                 mtz_fpath = mtz_fname
                 substr_labels = meanF_labels + phases_labels
-            summary.append ( "phases" )
+            if not substr0 or phases.dataId!=substr0.dataId:
+                replaced.append ( "phases" )
             # else phases are taken from leading Structure/Substructure
 
         if sub:
@@ -115,13 +122,18 @@ class EditRevisionSubstr(basic.TaskDriver):
                         leadKey=2,
                         copy_files=False )
         if substructure:
-            # in case there was no substructure coordinates
-            substructure.addSubtype ( dtype_template.subtypeSubstructure )
             if phases:
                 substructure.addSubtypes ( phases.getSubtypes() )
                 substructure.copyLabels  ( phases )
                 if phases is not substr0:
                     substructure.setHKLLabels ( hkl0 )
+            if not sub_fpath:
+                if phases:
+                    substructure.copyCrystData ( phases )
+                # in case there was no substructure coordinates
+                substructure.addSubtype ( dtype_template.subtypeSubstructure() )
+                substructure.adjust_dname()
+
             self.putMessage  ( "<h2>New Substructure Composed</h2>" )
             self.putStructureWidget ( self.getWidgetId("substructure_btn_"),
                                       "Substructure and electron density",
@@ -130,9 +142,17 @@ class EditRevisionSubstr(basic.TaskDriver):
             #revision.addSubtypes  ( revision0.getSubtypes() )
             self.registerRevision ( revision0 )
 
+
             # this will go in the project tree line
+            summary_line = ""
+            if len(replaced)>0:
+                summary_line = ", ".join(replaced) + " replaced"
+            if len(deleted)>0:
+                if summary_line:
+                    summary_line += "; "
+                summary_line += ", ".join(deleted) + " deleted"
             self.generic_parser_summary["editrevision_substr"] = {
-              "summary_line" : ", ".join(summary) + " replaced"
+              "summary_line" : summary_line
             }
 
             # close execution logs and quit
@@ -141,8 +161,8 @@ class EditRevisionSubstr(basic.TaskDriver):
         else:
             #self.putMessage  ( "<b><i>Structure was not replaced (error)</i></b>" )
             # close execution logs and quit
-            self.fail ( "<h3>Structure was not replaced (error)</h3>",
-                        "Structure was not replaced" )
+            self.fail ( "<h3>Substructure was not replaced (error)</h3>",
+                        "Substructure was not replaced" )
 
         return
 

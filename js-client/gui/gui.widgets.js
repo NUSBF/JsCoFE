@@ -371,23 +371,22 @@ Widget.prototype.isDisabled = function()  {
 }
 
 Widget.prototype.setDisabledAll = function ( disabled_bool )  {
+  $(this.element).find(':input').prop('disabled',disabled_bool);
   (function(w){
     window.setTimeout ( function(){
       $(w.element).find(':input').prop('disabled',disabled_bool);
     },0 );
   }(this))
-  $(this.element).find(':input').prop('disabled',disabled_bool);
   return this;
-
 }
 
 Widget.prototype.setEnabledAll = function ( enabled_bool )  {
+  $(this.element).find(':input').prop('disabled',!enabled_bool);
   (function(w){
     window.setTimeout ( function(){
       $(w.element).find(':input').prop('disabled',!enabled_bool);
     },0 );
   }(this))
-  $(this.element).find(':input').prop('disabled',!enabled_bool);
   return this;
 }
 

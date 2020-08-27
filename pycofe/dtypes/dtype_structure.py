@@ -569,7 +569,7 @@ class DType(dtype_xyz.DType):
         return
 
     def adjust_dname ( self ):
-        if not self.getXYZFileName() and self.getSubFileName():
+        if not self.getXYZFileName() and self.getSubFileName() or self.hasSubSubtype():
             self.dname = self.dname.replace ( "/structure/","/substructure/" )
         return
 

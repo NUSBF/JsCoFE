@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    09.05.20   <--  Date of Last Modification.
+#    26.08.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -52,6 +52,17 @@ class DType(dtype_template.DType):
         elif hasattr(self.xyzmeta,"cryst"):
             return self.xyzmeta.cryst.spaceGroup
         return None
+
+    def copyCrystData ( self,xyz ):
+        cryst = None
+        if type(xyz.xyzmeta) == dict:
+            cryst = xyz.xyzmeta["cryst"]
+        else:
+            cryst = xyz.xyzmeta.cryst
+        if type(self.xyzmeta) == dict:
+            self.xyzmeta["cryst"] = cryst
+        else:
+            self.xyzmeta.cryst = cryst
 
     def getCellParameters ( self ):
         if type(self.xyzmeta) == dict:

@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    09.12.20   <--  Date of Last Modification.
+#    27.08.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -30,7 +30,7 @@
 import os
 
 #  application imports
-from  pycofe.dtypes  import dtype_structure
+from  pycofe.dtypes  import dtype_template, dtype_structure
 from  pycofe.tasks   import basic
 from  pycofe.proc    import makelib
 
@@ -52,14 +52,15 @@ class EditRevisionStruct(basic.TaskDriver):
         if hasattr(self.input_data.data,"struct0"):  # optional data parameter
             struct0 = self.makeClass ( self.input_data.data.struct0 [0] )
 
-        xyz = struct0  # this is current Structure or None
+        #xyz = struct0  # this is current Structure or None
+        xyz = None  # this is current Structure or None
         if hasattr(self.input_data.data,"xyz"):  # optional data parameter
             #  note this may be XYZ or Structure
             xyz = self.makeClass ( self.input_data.data.xyz[0] )
 
         phases = struct0  # ground default
-        if xyz._type==dtype_structure.dtype():
-            phases = xyz  # need to be in sync with xyz by default
+        #if xyz._type==dtype_structure.dtype():
+        #    phases = xyz  # need to be in sync with xyz by default
         if hasattr(self.input_data.data,"phases"):  # optional data parameter
             #  note this may be either Structure or Substructure, but not XYZ
             phases = self.makeClass ( self.input_data.data.phases[0] )
@@ -81,12 +82,16 @@ class EditRevisionStruct(basic.TaskDriver):
         dmap_fpath = None
         lib_fpath  = None
         lig_codes  = None
-        summary    = []
+        replaced   = []
+        deleted    = []
         if xyz:
             xyz_fpath = xyz.getXYZFilePath ( self.inputDir() )
             if xyz._type==dtype_structure.dtype():
                 lib_fpath = xyz.getLibFilePath ( self.inputDir() )
-            summary.append ( "xyz" )
+            if not struct0 or xyz.dataId!=struct0.dataId:
+                replaced.append ( "xyz" )
+        else:
+            deleted.append ( "xyz" )
 
         if phases:
             mtz_fpath  = phases.getMTZFilePath ( self.inputDir() )
@@ -103,7 +108,8 @@ class EditRevisionStruct(basic.TaskDriver):
                 )
                 mtz_fpath = mtz_fname
                 struct_labels = meanF_labels + phases_labels
-            summary.append ( "phases" )
+            if not struct0 or phases.dataId!=struct0.dataId:
+                replaced.append ( "phases" )
             # else phases are taken from leading Structure/Substructure
 
         if len(ligands)>0:
@@ -117,13 +123,13 @@ class EditRevisionStruct(basic.TaskDriver):
                     lig_codes = [ligands[0].code]
                 else:
                     lig_codes = ligands[0].codes
-            summary.append ( "ligands" )
-
+            replaced.append ( "ligands" )
 
         if xyz:
             self.putMessage ( "<b>Macromolecular model to be taken from:&nbsp;</b> " + xyz.dname )
         if lig_codes:
-            self.putMessage ( "<b>Ligands replaced:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b> " + str(lig_codes) )
+            self.putMessage ( "<b>Ligands replaced:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b> " +
+                              ", ".join(lig_codes) )
         elif lib_fpath:
             self.putMessage ( "<b>Ligands to be taken from:&nbsp;&nbsp;&nbsp;&nbsp;</b> " + xyz.dname )
         if phases:
@@ -142,13 +148,17 @@ class EditRevisionStruct(basic.TaskDriver):
         if structure:
             if lig_codes:
                 structure.setLigands  ( lig_codes )
-            if xyz:
+            if xyz_fpath:
                 structure.addSubtypes ( xyz.getSubtypes() )
             if phases:
                 structure.addSubtypes ( phases.getSubtypes() )
                 structure.copyLabels  ( phases )
                 if phases is not struct0:
                     structure.setHKLLabels ( hkl0 )
+            if not xyz_fpath:
+                structure.removeSubtype ( dtype_template.subtypeXYZ() )
+                if phases:
+                    structure.copyCrystData ( phases )
             self.putMessage  ( "<h2>New Structure Composed</h2>" )
             self.putStructureWidget ( self.getWidgetId("structure_btn_"),
                                       "Structure and electron density",
@@ -158,8 +168,15 @@ class EditRevisionStruct(basic.TaskDriver):
             self.registerRevision ( revision0 )
 
             # this will go in the project tree line
+            summary_line = ""
+            if len(replaced)>0:
+                summary_line = ", ".join(replaced) + " replaced"
+            if len(deleted)>0:
+                if summary_line:
+                    summary_line += "; "
+                summary_line += ", ".join(deleted) + " deleted"
             self.generic_parser_summary["editrevision_struct"] = {
-              "summary_line" : ", ".join(summary) + " replaced"
+              "summary_line" : summary_line
             }
 
             # close execution logs and quit

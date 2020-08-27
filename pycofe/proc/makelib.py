@@ -3,13 +3,13 @@
 #
 # ============================================================================
 #
-#    08.08.19   <--  Date of Last Modification.
+#    27.08.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  MakeLib (Ligand Library Maker)
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2019
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2019-2020
 #
 # ============================================================================
 #
@@ -50,7 +50,7 @@ def makeLibrary ( body,ligands,library_path ):
                     "\n_END\n" )
                 body.close_stdin()
                 body.runApp ( "libcheck",[],logType="Service" )
-                shutil.copy2 ( lib_path,library_path )
+                shutil.copy2 ( lib_path + ".lib", library_path )
             else:
                 shutil.copy2 ( ligpath,library_path )
             if ligand._type=="DataLigand":
