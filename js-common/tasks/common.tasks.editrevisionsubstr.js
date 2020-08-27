@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    26.03.20   <--  Date of Last Modification.
+ *    27.08.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -41,7 +41,7 @@ function TaskEditRevisionSubstr()  {
   this.fasttrack = true;  // enforces immediate execution
 
   this.input_dtypes = [{   // input data types
-      data_type   : {'DataRevision':[]},   // data type(s) and subtype(s)
+      data_type   : {'DataRevision':['!substructure']}, // data type(s) and subtype(s)
       label       : 'Structure revision',  // label for input dialog
       tooltip     : 'Structure revision, in which the Heavy-Atom Substructure ' +
                     'needs to be modified',
@@ -55,25 +55,26 @@ function TaskEditRevisionSubstr()  {
       data_type   : {'DataStructure':['!substructure']},  // data type(s) and subtype(s)
       label       : 'Heavy-atom substructure', // label for input dialog
       cast        : 'sub',
-      unchosen_label : '[do not change]',
-      tooltip     : 'Atomic model of the heavy-atom substructure. If no changes are ' +
-                    'required, choose [do not change].',
+      unchosen_label : '[remove]',
+      tooltip     : 'Atomic coordinates of the heavy-atom substructure. In order to ' +
+                    'remove existing coordinates, choose [remove].',
       inputId     : 'sub',          // input Id for referencing input fields
       customInput : 'cell-info',    // lay custom fields next to the selection
       version     : 0,              // minimum data version allowed
+      force       : 1,
       min         : 0,              // minimum acceptable number of data instances
       max         : 1               // maximum acceptable number of data instances
     },{
       data_type   : {'DataStructure':['!phases']},  // data type(s) and subtype(s)
       label       : 'Phases',       // label for input dialog
       cast        : 'phases',
-      unchosen_label : '[do not change]',
+      //unchosen_label : '[do not change]',
       tooltip     : 'Phases to replace or set in heavy-atom substructure. If no ' +
                     'changes are required, choose [do not change].',
       inputId     : 'phases',       // input Id for referencing input fields
       customInput : 'cell-info',    // lay custom fields next to the selection
       version     : 0,              // minimum data version allowed
-      min         : 0,              // minimum acceptable number of data instances
+      min         : 1,              // minimum acceptable number of data instances
       max         : 1               // maximum acceptable number of data instances
     }
   ];
@@ -105,12 +106,13 @@ if (!__template)  {
 
   TaskEditRevisionSubstr.prototype.inputChanged = function ( inpParamRef,emitterId,emitterValue )  {
     TaskTemplate.prototype.inputChanged.call ( this,inpParamRef,emitterId,emitterValue );
+    /*
     var signal = '';
     if (!this.checkObjects(inpParamRef,emitterId,['revision','sub','phases'],['sub','phases']))
       signal = 'hide_run_button';
     this.sendTaskStateSignal ( inpParamRef.grid.inputPanel,signal );
+    */
   }
-
 
 
 } else  {
@@ -133,6 +135,15 @@ if (!__template)  {
 
     __template0.TaskTemplate.prototype.makeInputData.call ( this,loginData,jobDir );
 
+  }
+
+  TaskEditRevisionSubstr.prototype.makeOutputData = function ( jobDir )  {
+  // We modify this function such that this.input_data contains template data
+  // instances for substructure and phases data when [remove] and [do not change]
+  // are chosen. This will keep the corresponding controls in input panel after
+  // job completion.
+    __template0.TaskTemplate.prototype.makeOutputData.call ( this,jobDir );
+    this.input_data.addData ( this.input_data.data['revision'][0].Substructure );
   }
 
   TaskEditRevisionSubstr.prototype.getCommandLine = function ( jobManager,jobDir )  {

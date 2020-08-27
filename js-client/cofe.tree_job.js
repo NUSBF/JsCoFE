@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    26.07.20   <--  Date of Last Modification.
+ *    26.08.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -1338,9 +1338,10 @@ JobTree.prototype.openJob = function ( dataBox,parent_page )  {
         var dBox = dataBox;
         if (!dBox)  {
           if (task.isComplete())  {
-            // for completed task, compose dataBox from task's own fields,
+            // For completed task, compose dataBox from task's own fields,
             // because tasks may be moved up the tree, in which case
-            // the composition of dataBox may also change
+            // the composition of dataBox may also change.
+            // This also removes the [do not use] items.
             dBox = this.getTaskDataBox ( task );
           } else
             dBox = this.harvestTaskData ( 2,task.harvestedTaskIds );

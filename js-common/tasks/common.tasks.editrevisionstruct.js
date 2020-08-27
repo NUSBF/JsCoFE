@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    26.03.20   <--  Date of Last Modification.
+ *    27.08.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -41,7 +41,7 @@ function TaskEditRevisionStruct()  {
   this.fasttrack = true;  // enforces immediate execution
 
   this.input_dtypes = [{   // input data types
-      data_type   : {'DataRevision':[]},   // data type(s) and subtype(s)
+      data_type   : {'DataRevision':['~substructure']},   // data type(s) and subtype(s)
       label       : 'Structure revision',  // label for input dialog
       tooltip     : 'Structure revision, in which the Macromolecular Structure ' +
                     'needs to be modified',
@@ -53,13 +53,14 @@ function TaskEditRevisionStruct()  {
       max         : 1               // maximum acceptable number of data instances
     },{
       data_type   : {'DataStructure':['!xyz'],'DataXYZ':[]},  // data type(s) and subtype(s)
-      label       : 'Macromolecular structure', // label for input dialog
+      label       : 'Atomic coordinates', // label for input dialog
       cast        : 'xyz',
-      unchosen_label : '[do not change]',
-      tooltip     : 'Atomic model of macromolecule(s). If no changes are ' +
-                    'required, choose [do not change].',
+      unchosen_label : '[remove]',
+      tooltip     : 'Atomic model coordinates. In order to remove existing ' +
+                    'coordinates, choose [remove].',
       inputId     : 'xyz',          // input Id for referencing input fields
       customInput : 'cell-info',    // lay custom fields next to the selection
+      force       : 1,
       version     : 0,              // minimum data version allowed
       min         : 0,              // minimum acceptable number of data instances
       max         : 1               // maximum acceptable number of data instances
@@ -67,13 +68,14 @@ function TaskEditRevisionStruct()  {
       data_type   : {'DataStructure':['!phases']},  // data type(s) and subtype(s)
       label       : 'Phases',       // label for input dialog
       cast        : 'phases',
-      unchosen_label : '[do not change]',
-      tooltip     : 'Phases to replace or set in macromolcular structure. If no ' +
-                    'changes are required, choose [do not change].',
+      //unchosen_label : '[do not change]',
+      tooltip     : 'Phases to replace or set in structure revision, the top item ' +
+                    'corresponds to current phases. Phases cannot be removed, only ' +
+                    'replaced or left as is.',
       inputId     : 'phases',       // input Id for referencing input fields
       customInput : 'cell-info',    // lay custom fields next to the selection
-      version     : 0,              // minimum data version allowed
-      min         : 0,              // minimum acceptable number of data instances
+      version     : 0,              // minimum data version allowede
+      min         : 1,              // minimum acceptable number of data instances
       max         : 1               // maximum acceptable number of data instances
     },{
       data_type   : {'DataLigand':[],'DataLibrary':[]},  // data type(s) and subtype(s)
@@ -141,6 +143,15 @@ if (!__template)  {
 
     __template0.TaskTemplate.prototype.makeInputData.call ( this,loginData,jobDir );
 
+  }
+
+  TaskEditRevisionStruct.prototype.makeOutputData = function ( jobDir )  {
+  // We modify this function such that this.input_data contains template data
+  // instances for substructure and phases data when [remove] and [do not change]
+  // are chosen. This will keep the corresponding controls in input panel after
+  // job completion.
+    __template0.TaskTemplate.prototype.makeOutputData.call ( this,jobDir );
+    this.input_data.addData ( this.input_data.data['revision'][0].Structure );
   }
 
   TaskEditRevisionStruct.prototype.getCommandLine = function ( jobManager,jobDir )  {
