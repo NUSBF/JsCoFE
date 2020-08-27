@@ -46,6 +46,13 @@ class Buster(basic.TaskDriver):
     def buster_dir (self):  return "buster_dir"
     def buster_seq (self):  return "buster.seq"
 
+    def get_floats ( self,s1,s2,s3 ):
+        try:
+            return [float(s1),float(s2),float(s3)]
+        except:
+            return None
+
+
     # ------------------------------------------------------------------------
 
     def run(self):
@@ -163,6 +170,7 @@ class Buster(basic.TaskDriver):
             self.flush()
             self.file_stdout.close()
             f = open ( self.file_stdout_path(),"r" )
+            #f = open ( "/Users/eugene/Downloads/job_1598535717656/_stdout.log","r" )
             for line in f:
                 if "Ncyc       Total        Grms       Rfact       Rfree         LLG     LLGfree  Geom_Funct     rmsBOND    rmsANGLE" in line:
                     iter = "Iteration #" + str(len(graphData[0]["plots"])+1) + ": "
@@ -200,16 +208,35 @@ class Buster(basic.TaskDriver):
                         plot_llg = None
                         plot_rms = None
                     else:
-                        plot_ref["x"]   ["values"].append ( float(vals[0]) )
-                        plot_ref["y"][0]["values"].append ( float(vals[3]) )
-                        plot_ref["y"][1]["values"].append ( float(vals[4]) )
+                        vref = self.get_floats ( vals[0],vals[3],vals[4] )
+                        vllg = self.get_floats ( vals[0],vals[5],vals[6] )
+                        vrms = self.get_floats ( vals[0],vals[8],vals[9] )
+                        if vref:
+                            plot_ref["x"]   ["values"].append ( vref[0] )
+                            plot_ref["y"][0]["values"].append ( vref[1] )
+                            plot_ref["y"][1]["values"].append ( vref[2] )
+                        if vllg:
+                            plot_llg["x"]   ["values"].append ( vllg[0] )
+                            plot_llg["y"][0]["values"].append ( vllg[1] )
+                            plot_llg["y"][1]["values"].append ( vllg[2] )
+                        if vrms:
+                            plot_rms["x"]   ["values"].append ( vrms[0] )
+                            plot_rms["y"][0]["values"].append ( vrms[1] )
+                            plot_rms["y"][1]["values"].append ( vrms[2] )
+
+                        """
+                        x = float ( vals[0] )
+                        plot_ref["x"]   ["values"].append ( x )
+                        plot_ref["y"][0]["values"].append ( self.get_float(vals[3]) )
+                        plot_ref["y"][1]["values"].append ( self.get_float(vals[4]) )
                         if vals[0]!="0":
-                            plot_llg["x"]   ["values"].append ( float(vals[0]) )
-                            plot_llg["y"][0]["values"].append ( float(vals[5]) )
-                            plot_llg["y"][1]["values"].append ( float(vals[6]) )
-                        plot_rms["x"]   ["values"].append ( float(vals[0]) )
-                        plot_rms["y"][0]["values"].append ( float(vals[8]) )
-                        plot_rms["y"][1]["values"].append ( float(vals[9]) )
+                            plot_llg["x"]   ["values"].append ( x )
+                            plot_llg["y"][0]["values"].append ( self.get_float(vals[5]) )
+                            plot_llg["y"][1]["values"].append ( self.get_float(vals[6]) )
+                        plot_rms["x"]   ["values"].append ( x )
+                        plot_rms["y"][0]["values"].append ( self.get_float(vals[8]) )
+                        plot_rms["y"][1]["values"].append ( self.get_float(vals[9]) )
+                        """
                 elif "best refinement in BUSTER reached for" in line:
                     vals = line.split()[-1].split("/")
                     self.generic_parser_summary["buster"] = {
