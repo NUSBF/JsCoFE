@@ -32,6 +32,10 @@
         "***"   : { "path" : "./cofe-projects",
                     "type" : "volume",
                     "diskReserve" : 1000
+                  },
+        "disk1" : { "path" : "./cofe-projects-1",
+                    "type" : "volume",
+                    "diskReserve" : 1000
                   }
     },
     "jobs_safe"        : {

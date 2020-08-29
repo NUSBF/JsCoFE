@@ -2,7 +2,7 @@
 /*
  *  ===========================================================================
  *
- *    27.08.20   <--  Date of Last Modification.
+ *    29.08.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  ---------------------------------------------------------------------------
  *
@@ -25,7 +25,7 @@
 
 function appName()  { return 'CCP4 Cloud' }  // application name for reporting
 
-var jsCoFE_version = '1.6.014 [27.08.2020]';
+var jsCoFE_version = '1.6.014 [29.08.2020]';
 
 function appVersion()  {
   return jsCoFE_version;
@@ -161,6 +161,7 @@ var fe_retcode = {
   userNotDeleted : 'userNotDeleted', // delete user request failed
   corruptJobMeta : 'corruptJobMeta', // corrupt job metadata
   wrongLogin     : 'wrongLogin',     // wrong login data supplied
+  suspendedLogin : 'suspendedLogin',     // wrong login data supplied
   unconfigured   : 'unconfigured',   // server not configured
   wrongPassword  : 'wrongPassword',  // wrong password given
   notLoggedIn    : 'notLoggedIn',    // request without loggin in

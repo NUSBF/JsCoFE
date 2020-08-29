@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    26.06.20   <--  Date of Last Modification.
+ *    29.08.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -323,6 +323,13 @@ function moveDir ( old_path,new_path,overwrite_bool )  {
     console.error(e);
     return false;
   }
+}
+
+function copyDirAsync ( old_path,new_path,overwrite_bool,callback_func )  {
+  fs.copy ( old_path,new_path,{
+    'overwrite'          : overwrite_bool,
+    'preserveTimestamps' : true
+  }, callback_func );
 }
 
 
@@ -778,6 +785,7 @@ module.exports.writeObject           = writeObject;
 module.exports.copyFile              = copyFile;
 module.exports.moveFile              = moveFile;
 module.exports.moveDir               = moveDir;
+module.exports.copyDirAsync          = copyDirAsync;
 module.exports.mkDir                 = mkDir;
 module.exports.mkDir_anchor          = mkDir_anchor;
 module.exports.cleanDir              = cleanDir;

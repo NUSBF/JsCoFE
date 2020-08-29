@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    04.04.20   <--  Date of Last Modification.
+ *    29.08.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -26,7 +26,7 @@
 // -------------------------------------------------------------------------
 // Manage User dialog class
 
-function ManageUserDialog ( userData,onExit_func )  {
+function ManageUserDialog ( userData,FEconfig,onExit_func )  {
 
   Widget.call ( this,'div' );
   this.element.setAttribute ( 'title','Manage User ' + userData.login );
@@ -35,6 +35,14 @@ function ManageUserDialog ( userData,onExit_func )  {
   this.grid = new Grid('');
   this.addWidget  ( this.grid );
   this.userData = userData;
+
+  this.diskNames = [];
+  if (isObject(FEconfig.projectsPath))
+    for (var diskName in FEconfig.projectsPath)
+      this.diskNames.push ( diskName );
+  if (this.diskNames.indexOf(userData.volume)<0)
+    this.diskNames.push ( userData.volume );
+
   this.makeLayout ();
 
   //w = 3*$(window).width()/5 + 'px';
@@ -61,24 +69,55 @@ function ManageUserDialog ( userData,onExit_func )  {
                 dlg.userData.dormant = Date.now();
             } else
               dlg.userData.dormant = 0;
+            var volume  = dlg.diskNames[dlg.volume.getValue()];
             dlg.userData.ration.storage   = dlg.storage.getValue();
             dlg.userData.ration.cpu_day   = dlg.cpu_day.getValue();
             dlg.userData.ration.cpu_month = dlg.cpu_month.getValue();
 
-            serverRequest ( fe_reqtype.updateUData_admin,dlg.userData,
-                            'Manage User Data', function(response){
-              if (response)
-                new MessageBoxW ( 'Manage User Data',response,0.5 );
-              else
-                new MessageBox ( 'Manage User Data',
-                  'Account of <i>' + dlg.userData.name +
-                  '</i> has been successfully updated, and ' +
-                  'notification<br>sent to e-mail address:<p><b><i>' +
-                  dlg.userData.email + '</i></b>.' );
-              onExit_func();
-              $(dlg.element).dialog("close");
-            },null,'persist' );
+            var msgv = '';
+            if (volume!=dlg.userData.volume)
+              msgv =
+                '<p><b>NOTE:</b> storage disk for user\'s projects ' +
+                'will be changed. This is a potentially dangerous ' +
+                'procedure, which, if unsuccessful, can result in ' +
+                'loss of some or all user data. Therefore, consider ' +
+                'preliminary backup or export of user\'s projects.<p>' +
+                '<i><u>Please make sure that:</u></i><ul>' +
+                '<li>the destination volume has enough of space to ' +
+                'accept user\'s data</li>' +
+                '<li>no user\'s jobs are running or are queuing on any ' +
+                'number cruncher during the change</li>' +
+                '<li>that the system is not shut down or restarted before ' +
+                'the change is complete</li>' +
+                '</li></ul>' +
+                'The user will be forcibly logged out and their account ' +
+                'suspended until the change is complete. After that, the ' +
+                'account will be released automatically.<p>' +
+                '<i><u>This operation can take considerable time</u></i>.';
 
+            new QuestionBox ( 'Modify User Account',
+                '<div style="width:600px;"><h2>Modify User Account</h2>' +
+                'Current account settings of user "<i>' + dlg.userData.name +
+                '</i>" will be replaced with ones shown in the dialog, ' +
+                'and the user will be informed of the change via e-mail. ' +
+                msgv + '<p>Please confirm this action.</div>',
+                'Yes, modify',function(){
+                  dlg.userData.volume = volume;
+                  serverRequest ( fe_reqtype.updateUData_admin,dlg.userData,
+                                  'Manage User Data', function(response){
+                    if (response)
+                      new MessageBoxW ( 'Manage User Data',response,0.5 );
+                    else
+                      new MessageBox ( 'Manage User Data',
+                        'Account of <i>' + dlg.userData.name +
+                        '</i> has been successfully updated, and ' +
+                        'notification<br>sent to e-mail address:<p><b><i>' +
+                        dlg.userData.email + '</i></b>.' );
+                    onExit_func();
+                    $(dlg.element).dialog("close");
+                  },null,'persist' );
+                },
+                'Cancel',function(){});
           }
 
         }, {
@@ -108,7 +147,6 @@ function ManageUserDialog ( userData,onExit_func )  {
                   },null,'persist' );
                 },
                 'Cancel',function(){});
-
           }
 
         }, {
@@ -139,7 +177,6 @@ function ManageUserDialog ( userData,onExit_func )  {
                   },null,'persist' );
                 },
                 'Cancel',function(){});
-
           }
 
         }, {
@@ -280,7 +317,11 @@ ManageUserDialog.prototype.makeLayout = function()  {
         this.putLine ( 'Last seen:',this.userData.lastSeen,0,row++,3 );
   else  this.putLine ( 'Last seen:','unknown',0,row++,0 );
 
-  this.putLine ( 'Storage disk:',this.userData.volume,0,row++,0 );
+  //this.putLine ( 'Storage disk:',this.userData.volume,0,row++,0 );
+  this.volume = this.putLine ( 'Storage disk:',
+                               this.diskNames.concat(this.userData.volume),
+                               0,row++,2 );
+
   this.storage = this.putLine ( 'Storage used (MB):',
                                 round(this.userData.ration.storage_used,1),
                                 this.userData.ration.storage,row++,4 );

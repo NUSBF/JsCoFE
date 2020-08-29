@@ -324,12 +324,13 @@ function checkJobsOnTimer()  {
 
     var jobEntry = ncJobRegister.job_map[job_token];
 
-    // look only at jobs that are marked as 'running'. Others are either in
-    // the queue or in process of being sent to FE
+    // look only at jobs that are marked as 'running' or 'stopped'. Others are
+    // either in the queue or in process of being sent to FE.
 
     if ([task_t.job_code.running,task_t.job_code.stopped]
                                            .indexOf(jobEntry.jobStatus)>=0)  {
 
+      // check that signal file exists: it may be put in by task or job manager
       var is_signal = utils.jobSignalExists ( jobEntry.jobDir );
 
       if ((!is_signal) && (jobEntry.exeType=='SGE'))  {
@@ -346,7 +347,7 @@ function checkJobsOnTimer()  {
       }
 
       if (is_signal)  {
-        // the signal was thrown
+        // the signal was thrown one way or another
         jobEntry.jobStatus = task_t.job_code.exiting;
         // we do not save changed registry here -- this will be done in
         // ncJobFinished() before asynchronous send to FE
@@ -1124,63 +1125,6 @@ function ncStopJob ( post_data_obj,callback_func )  {
         log.detailed ( 11,'attempt to kill pid=' + jobEntry.pid );
 
         _stop_job ( jobEntry );
-
-        /*
-
-        // write the respective signal in job directory
-
-        if (!utils.jobSignalExists(jobEntry.jobDir))
-          utils.writeJobSignal ( jobEntry.jobDir,'terminated_job','',1001 );
-
-        // now this sgnal should be picked by checkJobs() at some point _after_
-        // the current function quits.
-
-        // put 'stopped' code in job registry, this prevents job's on-close
-        // listener to call ncJobFinished(); instead, ncJobFinished() will be
-        // invoked by checkJobsOnTimer(), which is universal for all exeTypes.
-        jobEntry.jobStatus = task_t.job_code.stopped;
-
-        // now kill the job itself; different approaches are taken for Unix
-        // and Windows platforms, as well as for SHELL and SGE execution types
-        switch (jobEntry.exeType)  {
-
-          default       :
-          case 'CLIENT' :
-          case 'SHELL'  : //var isWindows = /^win/.test(process.platform);
-                          if(!conf.isWindows()) {
-                            psTree ( jobEntry.pid, function (err,children){
-                              var pids = ['-9',jobEntry.pid].concat (
-                                      children.map(function(p){ return p.PID; }));
-                              child_process.spawn ( 'kill',pids );
-                            });
-                          } else {
-                            child_process.exec ( 'taskkill /PID ' + jobEntry.pid +
-                                        ' /T /F',function(error,stdout,stderr){});
-                          }
-                    break;
-
-          case 'SGE'    : var pids = [jobEntry.pid];
-                          var subjobs = utils.readString (
-                                          path.join(jobEntry.jobDir,'subjobs'));
-                          if (subjobs)
-                            pids = pids.concat ( subjobs
-                                           .replace(/(\r\n|\n|\r)/gm,' ')
-                                           .replace(/\s\s+/g,' ').split(' ') );
-                          utils.spawn ( 'qdel',pids,{} );
-                    break;
-
-          case 'SCRIPT' : var pids = ['kill',jobEntry.pid];
-                          var subjobs = utils.readString (
-                                          path.join(jobEntry.jobDir,'subjobs'));
-                          if (subjobs)
-                            pids = pids.concat ( subjobs
-                                           .replace(/(\r\n|\n|\r)/gm,' ')
-                                           .replace(/\s\s+/g,' ').split(' ') );
-                          utils.spawn ( conf.getServerConfig().exeData,pids,{} );
-
-        }
-
-        */
 
         response = new cmd.Response ( cmd.nc_retcode.ok,
                                       '[00109] Job scheduled for deletion',{} );
