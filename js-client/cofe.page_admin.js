@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    11.05.20   <--  Date of Last Modification.
+ *    29.08.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -198,7 +198,7 @@ AdminPage.prototype.refresh = function()  {
         self.usageStats._url    = data.usageReportURL;
         self.usageStats._loaded = false;
         self.loadUsageStats();
-        self.makeUsersInfoTab ( data.usersInfo );
+        self.makeUsersInfoTab ( data.usersInfo,data.nodesInfo.FEconfig );
         serverCommand ( fe_command.getFEProxyInfo,{},'FE Proxy Info Request',
           function(rsp){
             if (rsp)  {
@@ -209,9 +209,9 @@ AdminPage.prototype.refresh = function()  {
                   'Unknown error: <b>' + rsp.status + '</b><p>' +
                   'when trying to fetch FE Proxy data.' );
             }
-            if (!__local_service)
+            if (!__local_service)  {
               self.makeNodesInfoTab ( data.nodesInfo );
-            else  {
+            } else  {
               localCommand ( nc_command.getNCInfo,{},'NC Info Request',
                 function(response){
                   if (response)  {
@@ -242,7 +242,7 @@ AdminPage.prototype.onResize = function ( width,height )  {
 }
 
 
-AdminPage.prototype.makeUsersInfoTab = function ( udata )  {
+AdminPage.prototype.makeUsersInfoTab = function ( udata,FEconfig )  {
   // function to create user info tables and fill them with data
 
   this.usersTitle.setText('Users').setFontSize('1.5em').setFontBold(true);
@@ -311,7 +311,7 @@ AdminPage.prototype.makeUsersInfoTab = function ( udata )  {
   (function(self){
     self.userListTable.addSignalHandler ( 'row_dblclick',function(trow){
       //alert ( 'trow='+JSON.stringify(trow.uDesc) );
-      new ManageUserDialog ( trow.uDesc,function(){ self.refresh(); } );
+      new ManageUserDialog ( trow.uDesc,FEconfig,function(){ self.refresh(); } );
     });
   }(this))
 

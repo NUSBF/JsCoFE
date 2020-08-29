@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    08.04.20   <--  Date of Last Modification.
+ *    29.08.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -480,6 +480,8 @@ function getLoginData ( token )  {
 
 // ===========================================================================
 
+var __suspend_prefix = '**suspended**';
+
 function userLogin ( userData,callback_func )  {  // gets UserData object
 var response  = null;  // must become a cmd.Response object to return
 var fe_server = conf.getFEConfig();
@@ -507,11 +509,17 @@ var fe_server = conf.getFEConfig();
   if (utils.fileExists(userFilePath))  {
 
     var uData = utils.readObject ( userFilePath );
+
     if (uData)  {
 
       ud.checkUserData ( uData );
 
-      if ((uData.login==ulogin) && (uData.pwd==pwd))  {
+      if (uData.login.startsWith(__suspend_prefix))  {
+        // for example, user's data is being moved to different disk
+
+        response  = new cmd.Response ( cmd.fe_retcode.suspendedLogin,'','' );
+
+      } else if ((uData.login==ulogin) && (uData.pwd==pwd))  {
 
         uData.lastSeen = Date.now();
         utils.writeObject ( userFilePath,uData );
@@ -769,8 +777,8 @@ function updateUserData_admin ( loginData,userData )  {
 var response     = null;  // must become a cmd.Response object to return
 var userFilePath = getUserDataFName ( loginData );
 
-  log.standard ( 9,'update user\'s ' + userData.login +
-                   ' data by admin, login: ' + loginData.login );
+  log.standard ( 9,'update ' + userData.login +
+                   '\' account settings by admin, login: ' + loginData.login );
 
   if (utils.fileExists(userFilePath))  {
 
@@ -778,7 +786,8 @@ var userFilePath = getUserDataFName ( loginData );
 
     if (uData)  {
 
-//      if (uData.admin)  {
+      ud.checkUserData ( uData );
+
       if (uData.role==ud.role_code.admin)  {
 
         userFilePath = getUserDataFName ( userData );
@@ -787,41 +796,87 @@ var userFilePath = getUserDataFName ( loginData );
 
         if (uData && uRation)  {
 
-          uRation.storage   = Number(userData.ration.storage);
-          uRation.cpu_day   = Number(userData.ration.cpu_day);
-          uRation.cpu_month = Number(userData.ration.cpu_month);
-          ration.saveUserRation ( userData,uRation );
+          var storage   = Number(userData.ration.storage);
+          var cpu_day   = Number(userData.ration.cpu_day);
+          var cpu_month = Number(userData.ration.cpu_month);
 
-//          uData.admin   = userData.admin;
-          uData.role    = userData.role;
-          uData.licence = userData.licence;
+          var feedback  = '';
           if (userData.hasOwnProperty('feedback'))
-                uData.feedback = userData.feedback;
-          else  uData.feedback = '';
-          uData.dormant = userData.dormant;
+              feedback = userData.feedback;
 
-          if (utils.writeObject(userFilePath,uData))  {
+          if ((uRation.storage   != storage  ) ||
+              (uRation.cpu_day   != cpu_day  ) ||
+              (uRation.cpu_month != cpu_month) ||
+              (uData.role        != userData.role   ) ||
+              (uData.licence     != userData.licence) ||
+              (uData.dormant     != userData.dormant) ||
+              (uData.feedback    != feedback ))  {
 
-//            var role = 'user';
-//            if (uData.admin)
-//              role = 'admin';
+            uRation.storage   = storage;
+            uRation.cpu_day   = cpu_day;
+            uRation.cpu_month = cpu_month;
 
-            response = new cmd.Response ( cmd.fe_retcode.ok,'',
-              emailer.sendTemplateMessage ( userData,
-                        cmd.appName() + ' Account Update',
-                        'account_updated_admin',{
-                          'userProfile'  : uData.role,
-                          'userStorage'  : uRation.storage,
-                          'userCPUDay'   : uRation.cpu_day,
-                          'userCPUMonth' : uRation.cpu_month
-                        })
-            );
+            ration.saveUserRation ( userData,uRation );
 
-          } else  {
-            log.error ( 91,'User file: ' + userFilePath + ' cannot be written.' );
-            response = new cmd.Response ( cmd.fe_retcode.writeError,
-                                          'User file cannot be written.','' );
+            uData.role     = userData.role;
+            uData.licence  = userData.licence;
+            uData.feedback = feedback;
+            uData.dormant  = userData.dormant;
+
+            if (utils.writeObject(userFilePath,uData))  {
+              response = new cmd.Response ( cmd.fe_retcode.ok,'',
+                emailer.sendTemplateMessage ( userData,
+                          cmd.appName() + ' Account Update',
+                          'account_updated_admin',{
+                            'userProfile'  : uData.role,
+                            'userStorage'  : uRation.storage,
+                            'userCPUDay'   : uRation.cpu_day,
+                            'userCPUMonth' : uRation.cpu_month
+                          })
+              );
+            } else  {
+              log.error ( 91,'User file: ' + userFilePath + ' cannot be written.' );
+              response = new cmd.Response ( cmd.fe_retcode.writeError,
+                                            'User file cannot be written.','' );
+            }
+
           }
+
+          if (userData.volume!=uData.volume)  {
+            // change of volume; do this in the background
+
+            // a) calculate project directory paths
+            var old_path = prj.getUserProjectsDirPath ( uData );
+            var new_path = prj.getUserProjectsDirPath ( userData );
+
+            // b) log user out and suspend their account
+            __userLoginHash.removeUser ( uData.login );     // logout
+            uData.login = __suspend_prefix + uData.login;   // suspend
+            utils.writeObject ( userFilePath,uData );       // commit
+
+            // c) copy user's projects to new volume
+            utils.copyDirAsync ( old_path,new_path,true,function(err){
+              if (err)  {
+                log.error ( 96,'moving user projects failed:' );
+                log.error ( 96,'  from: ' + old_path );
+                log.error ( 96,'    to: ' + new_path );
+                console.error ( err );
+              } else  {
+                log.standard ( 91,'user ' + userData.login +
+                                  ' is relocated to disk ' + userData.volume +
+                                  ' by admin, login: ' + loginData.login );
+                uData.volume = userData.volume;
+                utils.removePath ( old_path );
+              }
+              if (uData.login.startsWith(__suspend_prefix))   // release
+                uData.login = uData.login.substring(__suspend_prefix.length);
+              utils.writeObject ( userFilePath,uData );       // commit
+            });
+
+          }
+
+          if (!response)
+            response = new cmd.Response ( cmd.fe_retcode.ok,'','' );
 
         } else  {
           log.error ( 92,'User file: ' + userFilePath + ' cannot be read.' );
