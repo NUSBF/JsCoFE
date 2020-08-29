@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    18.12.19   <--  Date of Last Modification.
+ *    29.08.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Common Client/Server Modules -- Data Box
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2019
+ *  (C) E. Krissinel, A. Lebedev 2016-2020
  *
  *  =================================================================
  *
@@ -183,12 +183,12 @@ DataBox.prototype.addTaskInputData = function ( task,addall_bool )  {
 
 
 DataBox.prototype.addData = function ( data )  {
-
-  var dtype = data._type;
-  if (!(dtype in this.data))
-    this.data[dtype] = [];
-  this.data[dtype].push ( data );
-
+  if (data)  {
+    var dtype = data._type;
+    if (!(dtype in this.data))
+      this.data[dtype] = [];
+    this.data[dtype].push ( data );
+  }
 }
 
 /*
