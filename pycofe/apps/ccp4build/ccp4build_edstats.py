@@ -469,3 +469,9 @@ class EDStats(ccp4build_findwaters.FindWaters):
                            max(float(self.input_data["trimmin_zds"]),y0) )
 
         return (n0,x0,y0,cos0)
+
+
+    def zd_cutoff1 ( self,x,y,chain_type ):
+        # calculate boundary between high and low changes in y
+        n0 = 0
+        return (n0,x[n0],y[n0],0.0)

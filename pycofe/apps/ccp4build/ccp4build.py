@@ -444,6 +444,32 @@ class Build(ccp4build_report.Report):
                                   ncycles=refcyc["inter"],nameout=prefix+"05.refmac" )
             #meta1["trim"] = meta1["edstats"]
 
+            coot_script   = []
+            coot_workflow = ["-","-","-"]
+            if fill_mode in ["auto","always"]:
+                coot_script.append ( "fill_partial_residues" )
+                coot_workflow[0] = "E"
+            if fit_mode in ["auto","always"]:
+                coot_script.append ( "fit_protein" )
+                coot_workflow[1] = "F"
+            if rsr_mode in ["auto","always"]:
+                coot_script.append ( "stepped_refine_protein" )
+                coot_workflow[2] = "R"
+            coot_ind = "".join(coot_workflow)
+
+            if len(coot_script)>0:
+                meta4 = self.refmac ( self.coot(meta1,coot_script,
+                                                nameout=prefix+"06.coot" ),
+                                      ncycles=refcyc["inter"],nameout=prefix+"07.refmac" )
+                if fill_mode=="auto" or fit_mode=="auto" or rsr_mode=="auto":
+                    meta4 = self.choose_solution ( coot_ind,meta1,meta4 )
+                else:
+                    self.workflow += coot_ind
+            else:
+                self.workflow += coot_ind
+                meta4 = meta1
+
+            """
             if fill_mode in ["auto","always"]:
                 meta2 = self.refmac ( self.coot(meta1,["fill_partial_residues"],
                                                 nameout=prefix+"06.coot_fill" ),
@@ -479,6 +505,7 @@ class Build(ccp4build_report.Report):
             else:
                 self.workflow += "-"
                 meta4 = meta3
+            """
 
             if trim_waters:
                 if meta4["refmac"]["rfree"][1]<=float(self.input_data["trim_wat_rfree"]):
