@@ -3,13 +3,13 @@
 #
 # ============================================================================
 #
-#    22.03.19   <--  Date of Last Modification.
+#    01.09.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  CCP4build EDStats class
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2019
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2019-2020
 #
 # ============================================================================
 #
@@ -65,7 +65,8 @@ class EDStats(ccp4build_findwaters.FindWaters):
     def edstats (  self,
                    meta,   # meta dictionary
                    trim   ="sidechains",  # "all" for trimming all "bad" fits
-                   nameout="edstats"
+                   nameout="edstats",
+                   collectStats=False
                 ):
 
         stdout_prep_fpath = self.getStdOutPath ( nameout+"_prep" )
@@ -153,7 +154,7 @@ class EDStats(ccp4build_findwaters.FindWaters):
                             "OUT"   ,edstats_out
                       ],fpath_stdout=stdout_fpath,fpath_stderr=stderr_fpath )
 
-        reslist = self.getResidueLists ( edstats_out )
+        reslist = self.getResidueLists ( edstats_out,collectStats )
 
         #  remove unsequenced residues and residues with badly fit mainchain
 
@@ -219,7 +220,7 @@ class EDStats(ccp4build_findwaters.FindWaters):
         return out_meta
 
 
-    def getResidueLists ( self,edstats_out ):
+    def getResidueLists ( self,edstats_out,collectStats ):
 
         mainchain = []
         sidechain = []
@@ -301,23 +302,50 @@ class EDStats(ccp4build_findwaters.FindWaters):
                 xw.append ( len(xw)+1.0   )
                 yw.append ( solvent[i][0] )
 
-        self.zd_cutoff_m.append ( self.zd_cutoff ( xm,ym,"main" )    )
-        self.zd_cutoff_s.append ( self.zd_cutoff ( xs,ys,"side" )    )
-        self.zd_cutoff_w.append ( self.zd_cutoff ( xw,yw,"solvent" ) )
+        """
+        zd_m = self.zd_cutoff ( xm,ym,"main" )
+        zd_s = self.zd_cutoff ( xs,ys,"side" )
+        zd_w = self.zd_cutoff ( xw,yw,"solvent" )
+        zdm  = zd_m[2]
 
-        zd_m = [ self.zd_cutoff_m[-1][0],self.zd_cutoff_m[-1][1],
-                 self.zd_cutoff_m[-1][2],self.zd_cutoff_m[-1][3] ]
-        zd_s = [ self.zd_cutoff_s[-1][0],self.zd_cutoff_s[-1][1],
-                 self.zd_cutoff_s[-1][2],self.zd_cutoff_s[-1][3] ]
-        zd_w = [ self.zd_cutoff_w[-1][0],self.zd_cutoff_w[-1][1],
-                 self.zd_cutoff_w[-1][2],self.zd_cutoff_w[-1][3] ]
-        for i in range(len(self.zd_cutoff_m)-1):
-            zd_m[2] += self.zd_cutoff_m[i][2]
-            zd_s[2] += self.zd_cutoff_s[i][2]
-            zd_w[2] += self.zd_cutoff_w[i][2]
-        zd_m[2] /= len(self.zd_cutoff_m)
-        zd_s[2] /= len(self.zd_cutoff_m)
-        zd_w[2] /= len(self.zd_cutoff_m)
+        if collectStats and self.zd_cutoff_m is not None:
+            zdm = (zd_m[2]+self.zd_cutoff_m)/2.0
+            zds = (zd_s[2]+self.zd_cutoff_s)/2.0
+            zdw = (zd_w[2]+self.zd_cutoff_w)/2.0
+        self.zd_cutoff_m = zd_m[2]
+        self.zd_cutoff_s = zd_s[2]
+        self.zd_cutoff_w = zd_w[2]
+            zd_m[2] = zdm
+            zd_s[2] = zds
+            zd_w[2] = zdw
+        """
+
+        zd_m = self.zd_cutoff ( xm,ym,"main" )
+        zd_s = self.zd_cutoff ( xs,ys,"side" )
+        zd_w = self.zd_cutoff ( xw,yw,"solvent" )
+
+        if collectStats:
+
+            self.zd_cutoff_m.append ( zd_m[2] )
+            self.zd_cutoff_s.append ( zd_s[2] )
+            self.zd_cutoff_w.append ( zd_w[2] )
+
+            zdm = 0.0
+            zds = 0.0
+            zdw = 0.0
+            weight = 0.0
+            for i in range(len(self.zd_cutoff_m)):
+                w  = 1.0
+                w /= len(self.zd_cutoff_m) - i  # focus on the latest
+                #w  = math.sqrt(math.sqrt(w))
+                zdm += w*self.zd_cutoff_m[i]
+                zds += w*self.zd_cutoff_s[i]
+                zdw += w*self.zd_cutoff_w[i]
+                weight += w
+
+            zd_m[2] = zdm/weight
+            zd_s[2] = zds/weight
+            zd_w[2] = zdw/weight
 
         return  { "mainchain"   : mainchain, "sidechain" : sidechain,
                   "mean_m"      : mean_m   , "mean_s"    : mean_s,
@@ -492,7 +520,7 @@ class EDStats(ccp4build_findwaters.FindWaters):
                 y0 = min ( float(self.input_data["trimmax_zds"]),
                            max(float(self.input_data["trimmin_zds"]),y0) )
 
-        return (n0,x0,y0,cos0)
+        return [n0,x0,y0,cos0]
 
 
     def zd_cutoff ( self,x,y,chain_type ):
@@ -557,4 +585,4 @@ class EDStats(ccp4build_findwaters.FindWaters):
                 y0 = min ( float(self.input_data["trimmax_zds"]),
                            max(float(self.input_data["trimmin_zds"]),y0) )
 
-        return (n0,x0,y0,1.0)
+        return [n0,x0,y0,1.0]

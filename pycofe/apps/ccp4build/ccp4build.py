@@ -163,7 +163,11 @@ class Build(ccp4build_report.Report):
                 "R-free:   {0:7.3} -> {1:5.3}".format(rmeta["rfree"][0],rmeta["rfree"][1])
             ])
 
-        self.putMessage ( "<h3>Performing build in Molecular Replacement Phases</h3>" )
+        #self.putMessage ( "<h3>Performing build in Molecular Replacement Phases</h3>" )
+        self.putMessage ( "<table style=\"width:100%;   \"><tr><td>" +\
+                          "<h3>Performing build in Molecular Replacement Phases</h3></td>" +\
+                          "<td><div style=\"font-size:85%;width:100%;text-align:right\">" +\
+                          "<i>CCP4Build v."+self.appVersion+"</i></div></td></tr></table>" )
 
         self.printMetrics ( -1,None )
         self.prepareGraph()
@@ -177,7 +181,8 @@ class Build(ccp4build_report.Report):
         fit_mode    = self.input_data["fit_mode" ]
         rsr_mode    = self.input_data["rsr_mode" ]
 
-        trim_waters = self.input_data["trim_waters"] and float(self.input_data["res_high"])<=float(self.input_data["trim_wat_resol"])
+        trim_waters = self.input_data["trim_waters"] and \
+            float(self.input_data["res_high"])<=float(self.input_data["trim_wat_resol"])
 
         meta["xyzpath_mr"] = meta["xyzpath"]  #  to be used in first buccaneer
 
@@ -237,7 +242,9 @@ class Build(ccp4build_report.Report):
             if meta_mb["cbuccaneer"]["n_res_built"]<=0:
                 break
 
-            meta1 = self.refmac ( self.edstats(meta_mb,trim="all",nameout=prefix+"04.edstats"),
+            meta1 = self.refmac ( self.edstats(meta_mb,trim="all",
+                                               nameout=prefix+"04.edstats",
+                                               collectStats=False),
                                   ncycles=refcyc["inter"],nameout=prefix+"05.refmac" )
             meta1["trim"] = meta1["edstats"]
 
@@ -320,7 +327,7 @@ class Build(ccp4build_report.Report):
                 meta_rf = meta4
 
             meta_ed = self.edstats ( dict(meta_rf,cbuccaneer=meta_mb["cbuccaneer"]),
-                                     nameout=prefix+"14.edstats" )
+                                     nameout=prefix+"14.edstats",collectStats=True )
 
             meta_rf["edstats"] = meta_ed["edstats"]
             self.stock_result  ( meta_rf )
@@ -366,7 +373,15 @@ class Build(ccp4build_report.Report):
 
         refcyc = self.ref_cycles[min(3,max(0,int(self.input_data["ref_level"])-1))]
 
-        self.putMessage ( "<h3>Performing build in Experimental Phases</h3>" )
+        #self.putMessage ( "<h3>Performing build in Experimental Phases</h3>" )
+
+        #self.putMessage ( "<div style=\"font-size:85%;width:100%;text-align:right\">CCP4Build v." +\
+        #                  self.appVersion + "</div>" );
+        self.putMessage ( "<table style=\"width:100%;   \"><tr><td>" +\
+                          "<h3>Performing build in Experimental Phases</h3></td>" +\
+                          "<td><div style=\"font-size:85%;width:100%;text-align:right\">" +\
+                          "<i>CCP4Build v."+self.appVersion+"</i></div></td></tr></table>" )
+
 
         meta = self.input_data.copy()
         #meta["xyzpath_ha"] = meta["xyzpath"]
@@ -440,7 +455,9 @@ class Build(ccp4build_report.Report):
                 break
 
 
-            meta1 = self.refmac ( self.edstats(meta_mb,trim="all",nameout=prefix+"04.edstats"),
+            meta1 = self.refmac ( self.edstats(meta_mb,trim="all",
+                                               nameout=prefix+"04.edstats",
+                                               collectStats=False),
                                   ncycles=refcyc["inter"],nameout=prefix+"05.refmac" )
             #meta1["trim"] = meta1["edstats"]
 
@@ -523,7 +540,7 @@ class Build(ccp4build_report.Report):
             meta_rf = self.refmac  ( dict(self.input_data,xyzpath=meta5["xyzpath"],
                                           cbuccaneer=meta_mb["cbuccaneer"]),
                                      ncycles=refcyc["inter"],nameout=prefix+"14.refmac" )
-            meta_ed = self.edstats ( meta_rf,nameout=prefix+"15.edstats" )
+            meta_ed = self.edstats ( meta_rf,nameout=prefix+"15.edstats",collectStats=True )
 
             #meta_rf["cbuccaneer"] = meta_mb["cbuccaneer"]
             meta_rf["edstats"] = meta_ed["edstats"]
@@ -584,8 +601,8 @@ class Build(ccp4build_report.Report):
             "---------------------------------------------------------------------------"
         ])
 
-        self.putMessage ( "<div style=\"font-size:85%;width:100%;text-align:right\">CCP4Build v." +\
-                          self.appVersion + "</div>" );
+        #self.putMessage ( "<div style=\"font-size:85%;width:100%;text-align:right\">CCP4Build v." +\
+        #                  self.appVersion + "</div>" );
 
         if self.input_data["mode"]=="MR":
             self.ccp4build_mr()
