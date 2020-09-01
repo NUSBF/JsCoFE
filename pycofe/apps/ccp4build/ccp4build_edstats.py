@@ -29,6 +29,10 @@ import ccp4build_findwaters
 class EDStats(ccp4build_findwaters.FindWaters):
 
 
+    zd_cutoff_m = []
+    zd_cutoff_s = []
+    zd_cutoff_w = []
+
     def trim_chain (  self,model,clist,zd_cutoff,trim_type,modlist,cname,logf ):
         if len(clist)>0:
             logf.write ( "\n " + cname + " zd_cutoff: (" + str(zd_cutoff[0]) + ":" +\
@@ -297,14 +301,34 @@ class EDStats(ccp4build_findwaters.FindWaters):
                 xw.append ( len(xw)+1.0   )
                 yw.append ( solvent[i][0] )
 
+        self.zd_cutoff_m.append ( self.zd_cutoff ( xm,ym,"main" )    )
+        self.zd_cutoff_s.append ( self.zd_cutoff ( xs,ys,"side" )    )
+        self.zd_cutoff_w.append ( self.zd_cutoff ( xw,yw,"solvent" ) )
+
+        zd_m = [ self.zd_cutoff_m[-1][0],self.zd_cutoff_m[-1][1],
+                 self.zd_cutoff_m[-1][2],self.zd_cutoff_m[-1][3] ]
+        zd_s = [ self.zd_cutoff_s[-1][0],self.zd_cutoff_s[-1][1],
+                 self.zd_cutoff_s[-1][2],self.zd_cutoff_s[-1][3] ]
+        zd_w = [ self.zd_cutoff_w[-1][0],self.zd_cutoff_w[-1][1],
+                 self.zd_cutoff_w[-1][2],self.zd_cutoff_w[-1][3] ]
+        for i in range(len(self.zd_cutoff_m)-1):
+            zd_m[2] += self.zd_cutoff_m[i][2]
+            zd_s[2] += self.zd_cutoff_s[i][2]
+            zd_w[2] += self.zd_cutoff_w[i][2]
+        zd_m[2] /= len(self.zd_cutoff_m)
+        zd_s[2] /= len(self.zd_cutoff_m)
+        zd_w[2] /= len(self.zd_cutoff_m)
 
         return  { "mainchain"   : mainchain, "sidechain" : sidechain,
                   "mean_m"      : mean_m   , "mean_s"    : mean_s,
                   "sigma_m"     : sigma_m  , "sigma_s"   : sigma_s,
                   "solvent"     : solvent  ,
-                  "zd_cutoff_m" : self.zd_cutoff ( xm,ym,"main" ),
-                  "zd_cutoff_s" : self.zd_cutoff ( xs,ys,"side" ),
-                  "zd_cutoff_w" : self.zd_cutoff ( xw,yw,"solvent" )
+                  "zd_cutoff_m" : zd_m,
+                  "zd_cutoff_s" : zd_s,
+                  "zd_cutoff_w" : zd_w
+                  #"zd_cutoff_m" : self.zd_cutoff ( xm,ym,"main" ),
+                  #"zd_cutoff_s" : self.zd_cutoff ( xs,ys,"side" ),
+                  #"zd_cutoff_w" : self.zd_cutoff ( xw,yw,"solvent" )
                 }
 
 
@@ -398,7 +422,7 @@ class EDStats(ccp4build_findwaters.FindWaters):
         return (n0,x0,y0)
     """
 
-    def zd_cutoff ( self,x,y,chain_type ):
+    def zd_cutoff_1 ( self,x,y,chain_type ):
         #  y(x) is assumed to be a bi-linear function, such that it can be
         #  approximated by y=a1+b1*x up until x0, and y=a2+b2*x beyond that.
         #  This function returns index of "optimal" values (x0,y0)
@@ -471,7 +495,66 @@ class EDStats(ccp4build_findwaters.FindWaters):
         return (n0,x0,y0,cos0)
 
 
-    def zd_cutoff1 ( self,x,y,chain_type ):
+    def zd_cutoff ( self,x,y,chain_type ):
         # calculate boundary between high and low changes in y
+
+        if chain_type=="solvent":
+            if self.input_data["trim_mode_w"]=="fixed":
+                return (0,0.0,float(self.input_data["trim_zdw"]),1.0)
+        elif self.input_data["trim_mode"]=="fixed":
+            if chain_type=="main":
+                return (0,0.0,float(self.input_data["trim_zdm"]),1.0)
+            else:
+                return (0,0.0,float(self.input_data["trim_zds"]),1.0)
+
+        n  = len(x)
         n0 = 0
-        return (n0,x[n0],y[n0],0.0)
+        x0 = 0.0
+        y0 = 1.0
+
+        if n>2:
+            dy  = []
+            dy2 = []
+            for i in range(1,n):
+                d = y[i-1] - y[i]  # always positive
+                dy .append ( d )
+                dy2.append ( d*d )
+            nmax = int(n/4)
+            kmax = 0
+            for i in range(1,nmax):
+                dym = 0.0
+                dys = 0.0
+                for j in range(i,len(dy)):
+                    dym += dy[j]
+                    dys += dy2[j]
+                dym /= (n-i)
+                dys /= (n-i)
+                dys  = math.sqrt ( dys - dym*dym )
+                dy0  = dym + 3.0*dys  # threshold value
+                k    = 0
+                for j in range(i):
+                    if dy[j]>dy0:
+                        k += 1
+                if k>kmax:
+                    kmax = k
+                    n0   = i
+        if n>0:
+            x0 = x[n0]
+            y0 = y[n0]
+            if n0>0:
+                x0 = (x0+x[n0-1])/2.0
+                y0 = (y0+y[n0-1])/2.0
+
+        if chain_type=="solvent":
+            if self.input_data["trim_mode_w"]=="restricted":
+                y0 = min ( float(self.input_data["trimmax_zdw"]),
+                           max(float(self.input_data["trimmin_zdw"]),y0) )
+        elif self.input_data["trim_mode"]=="restricted":
+            if chain_type=="main":
+                y0 = min ( float(self.input_data["trimmax_zdm"]),
+                           max(float(self.input_data["trimmin_zdm"]),y0) )
+            else:
+                y0 = min ( float(self.input_data["trimmax_zds"]),
+                           max(float(self.input_data["trimmin_zds"]),y0) )
+
+        return (n0,x0,y0,1.0)
