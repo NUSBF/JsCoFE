@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    19.05.20   <--  Date of Last Modification.
+#    31.08.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -569,6 +569,8 @@ class Build(ccp4build_report.Report):
 
         self.log ([
             " ",
+            " CCP4Build v." + self.appVersion,
+            " ",
             " INPUT DATA:",
             "---------------------------------------------------------------------------"
         ])
@@ -581,6 +583,9 @@ class Build(ccp4build_report.Report):
             " ",
             "---------------------------------------------------------------------------"
         ])
+
+        self.putMessage ( "<div style=\"font-size:85%;width:100%;text-align:right\">CCP4Build v." +\
+                          self.appVersion + "</div>" );
 
         if self.input_data["mode"]=="MR":
             self.ccp4build_mr()
