@@ -1,7 +1,7 @@
 //
 //  =================================================================
 //
-//    30.08.16   <--  Date of Last Modification.
+//    01.09.20   <--  Date of Last Modification.
 //                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  -----------------------------------------------------------------
 //
@@ -12,7 +12,7 @@
 //  **** Content :  RVAPI javascript layer's graph module
 //       ~~~~~~~~~
 //
-//  (C) E. Krissinel 2013-2016
+//  (C) E. Krissinel 2013-2020
 //
 //  =================================================================
 //
@@ -696,11 +696,13 @@ var slider = document.getElementById ( gwdId+sliderSuffix );
 function zoomHandler() {
   if (this.plugins.cursor._zoom.zooming)  {
     var gwdId       = this.options.graphId;
-    var plotOptions = graphDataHash[gwdId]['plotOptions'];
-    plotOptions.axes.xaxis.smin = this.axes.xaxis.smin;
-    plotOptions.axes.xaxis.smax = this.axes.xaxis.smax;
-    plotOptions.axes.yaxis.smin = this.axes.yaxis.smin;
-    plotOptions.axes.yaxis.smax = this.axes.yaxis.smax;
+    if (gwdId in graphDataHash)  {
+      var plotOptions = graphDataHash[gwdId]['plotOptions'];
+      plotOptions.axes.xaxis.smin = this.axes.xaxis.smin;
+      plotOptions.axes.xaxis.smax = this.axes.xaxis.smax;
+      plotOptions.axes.yaxis.smin = this.axes.yaxis.smin;
+      plotOptions.axes.yaxis.smax = this.axes.yaxis.smax;
+    }
     setSlider ( gwdId,this,this.axes.xaxis,"-hslider" );
     setSlider ( gwdId,this,this.axes.yaxis,"-vslider" );
   }
