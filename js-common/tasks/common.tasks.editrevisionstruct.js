@@ -68,14 +68,15 @@ function TaskEditRevisionStruct()  {
       data_type   : {'DataStructure':['!phases']},  // data type(s) and subtype(s)
       label       : 'Phases',       // label for input dialog
       cast        : 'phases',
-      //unchosen_label : '[do not change]',
+      unchosen_label : '[do not change]',
       tooltip     : 'Phases to replace or set in structure revision, the top item ' +
                     'corresponds to current phases. Phases cannot be removed, only ' +
                     'replaced or left as is.',
       inputId     : 'phases',       // input Id for referencing input fields
       customInput : 'cell-info',    // lay custom fields next to the selection
+      force       : 1,
       version     : 0,              // minimum data version allowede
-      min         : 1,              // minimum acceptable number of data instances
+      min         : 0,              // minimum acceptable number of data instances
       max         : 1               // maximum acceptable number of data instances
     },{
       data_type   : {'DataLigand':[],'DataLibrary':[]},  // data type(s) and subtype(s)
