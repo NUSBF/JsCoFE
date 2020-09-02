@@ -454,6 +454,14 @@ def calculate ( meta ) :
     if clashScore > (medianClash + 5.0):
         bottomline += "MolProbity clash score of %0.1f for the structure seems high " % clashScore +\
                       "(median clash score for your resolution is %0.1f). "  % medianClash +\
+                      "We recommend to switch on option for " +\
+                      "generation of hydrogen atoms during refinement. Also, please increase weight for VDW " +\
+                      "repulsion by putting following command into 'Additional keywords' of the " +\
+                      "'Advaced' parameters section: <i>vdwrestraints 2.0</i>. Value for restraints weight " +\
+                      "is subject to optimisation.<p>"
+    elif clashScore > medianClash:
+        bottomline += "MolProbity clash score of %0.1f for the structure seems a bit higher than optimal " % clashScore +\
+                      "(median clash score for your resolution is %0.1f). "  % medianClash +\
                       "You can try to switch on option for " +\
                       "generation of hydrogen atoms during refinement. Also, you can try to increase weight for VDW " +\
                       "repulsion by putting following command into 'Additional keywords' of the " +\
