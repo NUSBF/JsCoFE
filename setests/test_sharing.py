@@ -529,10 +529,8 @@ def clickTaskInTaskTree(driver, taskName):
     time.sleep(1)
     tasksText = driver.find_elements(By.XPATH,
                                      "//a[contains(@id,'treenode') and contains(@class, 'jstree-ancho')]")
-    print len(tasksText)
     fullText = ''
     for taskText in tasksText:
-        print (taskText.text)
         match = re.search(taskName, taskText.text)
         if match:
             print ('Clicking task "%s" in the task tree' % taskText.text)
@@ -703,7 +701,7 @@ def test_sharingBasic(browser,
         time.sleep(1)
         editRevisionStructure(driver, waitShort)
         time.sleep(1)
-        
+
         clickTaskInTaskTree(driver2, '\[0003\] edit revision structure')
         time.sleep(1)
         startRefmac(driver2, waitLong)
