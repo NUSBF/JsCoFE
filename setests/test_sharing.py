@@ -499,20 +499,32 @@ def verifySimbad(driver, waitLong):
     startTime = time.time()
 
     while (True):
-        tasksText = driver.find_elements(By.XPATH,
-                                         "//a[contains(@id,'treenode') and contains(@class, 'jstree-anchor')]")
-        for taskText in tasksText:
-            match = re.search('\[0005\] simbad -- Solv=(.*)\%', taskText.text)
-            if match:
-                solv = float(match.group(1))
-                break
+        try:
+            tasksText = driver.find_elements(By.XPATH,
+                                             "//a[contains(@id,'treenode') and contains(@class, 'jstree-anchor')]")
+            for taskText in tasksText:
+                match = re.search('\[0005\] simbad -- Solv=(.*)\%', taskText.text)
+                if match:
+                    solv = float(match.group(1))
+                    break
+# ugly hack with try/except to make second attempt in the case page was 'refreshed' - test fail with this nonsense regularly
+        except:
+            tasksText = driver.find_elements(By.XPATH,
+                                             "//a[contains(@id,'treenode') and contains(@class, 'jstree-anchor')]")
+            for taskText in tasksText:
+                match = re.search('\[0005\] simbad -- Solv=(.*)\%', taskText.text)
+                if match:
+                    solv = float(match.group(1))
+                    break
+
+
         if (solv != 0.0):
             break
         curTime = time.time()
         if curTime > startTime + float(waitLong):
             print('*** Timeout for SIMBAD results! Waited for %d seconds.' % waitLong)
             break
-        time.sleep(10)
+        time.sleep(20)
 
     if (solv == 0.0):
         print('*** Verification: could not find Solv value after SIMBAD run')
