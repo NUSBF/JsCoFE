@@ -1,5 +1,7 @@
 ##!/usr/bin/python
 
+# LEGACY CODE, ONLY USED IN OLD PROJECTS   05.09.20  v.1.4.014
+
 # not python-3 ready
 
 #

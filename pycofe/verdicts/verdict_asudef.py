@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    18.05.20   <--  Date of Last Modification.
+#    06.09.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -114,7 +114,7 @@ def makeVerdict ( verdict_meta ):
 
 # ------------------------------------------------------------------------
 
-def putVerdictWidget ( base,verdict_meta,pageId=None,secId="" ):
+def putVerdictWidget ( base,verdict_meta,pageId=None,secId="",title="Verdict" ):
 
     base.putMessage ( "&nbsp;" )
 
@@ -122,7 +122,8 @@ def putVerdictWidget ( base,verdict_meta,pageId=None,secId="" ):
 
     verdict.makeVerdictSection ( base,None,verdict_score,
                                  verdict_message,bottom_line,
-                                 pageId=pageId,secId=secId )
+                                 pageId=pageId,secId=secId,
+                                 title=title )
     base.rvrow += 3
 
     return

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    11.06.20   <--  Date of Last Modification.
+ *    06.09.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -311,9 +311,10 @@ var row      = 0;
     new TaskChangeSpGASU      (),
     //new TaskASUDefStruct(),
     //new TaskASUMod      ()
-    new TaskEditRevisionASU   (),
-    new TaskEditRevisionStruct(),
-    new TaskEditRevisionSubstr()
+    new TaskEditRevision      (),
+    //new TaskEditRevisionASU   (),
+    //new TaskEditRevisionStruct(),
+    //new TaskEditRevisionSubstr()
   ]);
 
   this.makeSection ( 'Automated Molecular Replacement',[

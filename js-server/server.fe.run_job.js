@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    07.07.20   <--  Date of Last Modification.
+ *    04.09.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -768,6 +768,12 @@ function writeJobStats ( jobEntry )  {
   var jobClass    = utils.readClass    ( jobDataPath );
 
   if (jobClass)  {
+
+
+    // note residual disk space (in MB)
+    var jobDir = prj.getJobDirPath ( jobEntry.loginData,jobEntry.project,
+                                     jobEntry.jobId );
+    jobClass.disk_space = utils.getDirectorySize ( jobDir ) / 1024.0 / 1024.0;
 
     // jobEntry.loginData corresponds to the project owner account
     var userRation = ration.updateUserRation_bookJob ( jobEntry.loginData,jobClass );

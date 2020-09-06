@@ -2,7 +2,7 @@
 /*
 *  ==========================================================================
  *
- *    07.07.20   <--  Date of Last Modification.
+ *    05.09.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -------------------------------------------------------------------------
  *
@@ -560,6 +560,8 @@ if (!dbx)  {
   // returns widget (e.g. div) with input data and parameters, which
   // is inserted in Job Dialog
 
+    dataBox.data['DataRemove'] = [new DataRemove()];
+
     var div = this.makeInputLayout();
 
     // will lay widget on invisible grid in order to avoid transient visual
@@ -879,7 +881,7 @@ if (!dbx)  {
           for (var j=0;j<dn.length;j++)  {
             var k = dn[j];
             var data_title = dt[k].dname;
-            if ('cast' in inp_item)  {
+            if (('cast' in inp_item) && (!dt[k].hasSubtype('proxy')))  {
               var cast1  = '/' + inp_item.cast + '/';
               var p = data_title.indexOf ( '/xyz/' );
               if (p<0)  p = data_title.indexOf ( '/hkl/' );
@@ -921,7 +923,8 @@ if (!dbx)  {
           ddn.dt   = dt;
           (function(dd,m){
             dd[m].addSignalHandler ( 'state_changed',function(data){
-              dd[m].inspect_btn.setVisible ( data.item!=-1 );
+              var visible = (data.item>=0) && (!dd[m].dt[data.item].hasSubtype('proxy'));
+              dd[m].inspect_btn.setVisible ( visible );
               if (dd[m].layCustom)  {
                 for (var j=0;j<dd.length;j++)
                   if ((j!=m) && (dd[j].getValue()>=0))
@@ -933,7 +936,7 @@ if (!dbx)  {
                   dd[m].customGrid.clear();
                   dd[m].dt[data.item].layCustomDropdownInput ( dd[m] );
                 }
-                dd[m].customGrid.setVisible ( data.item!=-1 );
+                dd[m].customGrid.setVisible ( visible );
               }
             });
           }(dropdown[i],n));

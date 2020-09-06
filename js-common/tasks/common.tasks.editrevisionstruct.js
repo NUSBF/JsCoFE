@@ -1,3 +1,4 @@
+// LEGACY CODE, ONLY USED IN OLD PROJECTS   05.09.20  v.1.4.014
 
 /*
  *  =================================================================
@@ -106,7 +107,7 @@ TaskEditRevisionStruct.prototype.constructor = TaskEditRevisionStruct;
 TaskEditRevisionStruct.prototype.icon = function()  { return 'task_editrevision_struct'; }
 
 TaskEditRevisionStruct.prototype.currentVersion = function()  {
-  var version = 1;
+  var version = 2;
   if (__template)
         return  version + __template.TaskEditRevisionASU.prototype.currentVersion.call ( this );
   else  return  version + TaskEditRevisionASU.prototype.currentVersion.call ( this );

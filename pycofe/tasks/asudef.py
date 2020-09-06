@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    16.06.20   <--  Date of Last Modification.
+#    06.09.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -344,12 +344,15 @@ def makeRevision ( base,hkl,seq,composition,altEstimateKey,altNRes,
 
         #makeAsuFitMessage ( base,nc0,sol0 )
 
+        title = "Verdict"
+        if not resultTitle:
+            title = "*Verdict"
         verdict_asudef.putVerdictWidget ( base,{
             "ncopies"    : ncopies1,
             "nc"         : nc0,
             "sol"        : sol1,
             "resolution" : hkl.getHighResolution(raw=True)
-        },secId=secId )
+        },secId=secId,title=title )
 
         if revision:
             base.generic_parser_summary["z02"] = {
