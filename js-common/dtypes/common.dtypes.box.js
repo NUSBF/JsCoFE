@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    29.08.20   <--  Date of Last Modification.
+ *    06.09.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -52,7 +52,8 @@ DataBox.prototype.isEmpty = function()  {
 var empty = true;
 
   for (var dtype in this.data)
-    if (this.data[dtype].length>0)  {
+    if ((dtype=='___') ||
+        ((this.data[dtype].length>0) && (!this.data[dtype][0].hasSubtype('proxy'))))  {
       empty = false;
       break;
     }

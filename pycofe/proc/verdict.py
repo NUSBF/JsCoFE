@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    16.06.20   <--  Date of Last Modification.
+#    06.09.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -189,7 +189,10 @@ def makeVerdictSection ( body,table_dict,score,message,bottomline,
     if not pageId:
         page_id = body.report_page_id()
 
-    body.putTitle1 ( page_id,title,row0 )
+    if title.startswith("*"):
+        body.putMessage1 ( page_id,"<h2>"+title[1:]+"</h2>",row0 )
+    else:
+        body.putTitle1 ( page_id,title,row0 )
 
     if table_dict:
         grid_id = body.getWidgetId ( "verdict_grid" )

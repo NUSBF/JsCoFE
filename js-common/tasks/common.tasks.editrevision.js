@@ -1,10 +1,9 @@
-// LEGACY CODE, ONLY USED IN OLD PROJECTS   19.11.19  v.1.4.003
 
 
 /*
  *  =================================================================
  *
- *    26.03.20   <--  Date of Last Modification.
+ *    06.09.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -77,7 +76,10 @@ function TaskEditRevision()  {
       min         : 0,              // minimum acceptable number of data instances
       max         : 10              // maximum acceptable number of data instances
     },{
-      data_type   : {'DataStructure':['xyz','substructure'],'DataXYZ':[]},  // data type(s) and subtype(s)
+      data_type   : { 'DataStructure' : ['xyz','substructure'],
+                      'DataXYZ'       : [],  // data type(s) and subtype(s)
+                      'DataRemove'    : []   // just the menu item
+                    },
       label       : 'Macromolecular model<br>or substructure', // label for input dialog
       cast        : 'xyz',
       unchosen_label : '[do not change]',
@@ -89,7 +91,9 @@ function TaskEditRevision()  {
       min         : 0,              // minimum acceptable number of data instances
       max         : 1               // maximum acceptable number of data instances
     },{
-      data_type   : {'DataStructure':['!phases']},  // data type(s) and subtype(s)
+      data_type   : { 'DataStructure' : ['!phases'], // data type(s) and subtype(s)
+                      'DataRemove'    : []           // just the menu item
+                    },
       label       : 'Phases',       // label for input dialog
       cast        : 'phases',
       unchosen_label : '[do not change]',
@@ -128,7 +132,7 @@ TaskEditRevision.prototype.constructor = TaskEditRevision;
 TaskEditRevision.prototype.icon = function()  { return 'task_editrevision'; }
 
 TaskEditRevision.prototype.currentVersion = function()  {
-  var version = 2;
+  var version = 3;
   if (__template)
         return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
@@ -152,17 +156,19 @@ if (!__template)  {
         var ddnNo = ddn.getValue();
         if (ddnNo>=0)  {
           var obj = inpDataRef.input[n].dt[ddnNo];
-          var spg = obj.getSpaceGroup();
-          if (spg=='Unspecified')  return 'No space group';
-          if (spg!=spg0)    return 'Unmatched space group';
-          var cell = obj.getCellParameters();
-          if (cell[0]<2.0)  return 'No cell parameters';
-          var ok = true;
-          for (var i=0;(i<3) && ok;i++)
-            if ((Math.abs(cell[i]-cell0[i])/(cell[i]+cell0[i])>0.005) ||
-                (Math.abs(cell[i+3]-cell0[i+3])>2.0))
-              ok = false;
-          if (!ok)  return 'Too distant cell parameters';
+          if (!obj.hasSubtype('proxy'))  {
+            var spg = obj.getSpaceGroup();
+            if (spg=='Unspecified')  return 'No space group';
+            if (spg!=spg0)    return 'Unmatched space group';
+            var cell = obj.getCellParameters();
+            if (cell[0]<2.0)  return 'No cell parameters';
+            var ok = true;
+            for (var i=0;(i<3) && ok;i++)
+              if ((Math.abs(cell[i]-cell0[i])/(cell[i]+cell0[i])>0.005) ||
+                  (Math.abs(cell[i+3]-cell0[i+3])>2.0))
+                ok = false;
+            if (!ok)  return 'Too distant cell parameters';
+          }
         }
         return '';
       }
@@ -244,6 +250,28 @@ if (!__template)  {
     __template.TaskTemplate.prototype.makeInputData.call ( this,loginData,jobDir );
 
   }
+
+
+  TaskEditRevision.prototype.makeOutputData = function ( jobDir )  {
+  // We modify this function such that this.input_data contains template data
+  // instances for substructure and phases data when [remove] and [do not change]
+  // are chosen. This will keep the corresponding controls in input panel after
+  // job completion.
+
+    __template.TaskTemplate.prototype.makeOutputData.call ( this,jobDir );
+
+    var revision = this.input_data.data['revision'][0];
+
+    this.input_data.addData ( revision.HKL );
+    if (revision.ASU.seq.length>0)
+      this.input_data.addData ( revision.ASU.seq[0] );
+    if (revision.Structure)
+      this.input_data.addData ( revision.Structure );
+    if (revision.Substructure)
+      this.input_data.addData ( revision.Substructure );
+
+  }
+
 
   TaskEditRevision.prototype.getCommandLine = function ( jobManager,jobDir )  {
     return [conf.pythonName(), '-m', 'pycofe.tasks.editrevision', jobManager, jobDir, this.id];

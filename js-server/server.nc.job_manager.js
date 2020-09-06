@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    17.07.20   <--  Date of Last Modification.
+ *    04.09.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -686,7 +686,8 @@ function ncJobFinished ( job_token,code )  {
     task.cleanJobDir ( jobEntry.jobDir );
 
     // note residual disk space (in MB)
-    task.disk_space = utils.getDirectorySize ( jobEntry.jobDir ) / 1024.0 / 1024.0;
+    // *** now done on FE after unpacking ***
+    //task.disk_space = utils.getDirectorySize ( jobEntry.jobDir ) / 1024.0 / 1024.0;
 
     // write job metadata back to job directory
     utils.writeObject ( taskDataPath,task );

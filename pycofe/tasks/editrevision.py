@@ -1,11 +1,9 @@
 ##!/usr/bin/python
 
-#  LEGACY CODE TO BE REMOVED.  20.11.19  v.1.4.003
-
 #
 # ============================================================================
 #
-#    09.02.20   <--  Date of Last Modification.
+#    05.09.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -30,7 +28,7 @@
 import os
 
 #  application imports
-from  pycofe.dtypes  import dtype_structure
+from  pycofe.dtypes  import dtype_structure, dtype_template
 from  pycofe.tasks   import asudef
 from  pycofe.proc    import makelib
 
@@ -41,6 +39,12 @@ from  pycofe.proc    import makelib
 class EditRevision(asudef.ASUDef):
 
     # ------------------------------------------------------------------------
+
+    def add_change ( self,trow,tableId,item_name,action,description ):
+        self.putTableString ( tableId,item_name  ,"",trow,0 )
+        self.putTableString ( tableId,action     ,"",trow,1 )
+        self.putTableString ( tableId,description,"",trow,2 )
+        return trow+1
 
     def run(self):
 
@@ -54,14 +58,15 @@ class EditRevision(asudef.ASUDef):
         if hasattr(self.input_data.data,"struct0"):  # optional data parameter
             struct0 = self.makeClass ( self.input_data.data.struct0 [0] )
 
-        associated_data_list = []
+        #associated_data_list = []
         change_list          = []  # receives a list of changes required
+        remove_list          = []  # receives a list of removals required
 
         hkl = None
         if hasattr(self.input_data.data,"hkl"):  # optional data parameter
             hkl = self.makeClass ( self.input_data.data.hkl[0] )
-            associated_data_list.append ( hkl )
-            change_list.append ( 'hkl' )
+            #associated_data_list.append ( hkl )
+            change_list.append ( "hkl" )
         else:
             hkl = self.makeClass ( self.input_data.data.hkl0[0] )
 
@@ -69,8 +74,8 @@ class EditRevision(asudef.ASUDef):
         if hasattr(self.input_data.data,"seq"):  # optional data parameter
             for s in self.input_data.data.seq:
                 seq.append ( self.makeClass(s) )
-                associated_data_list.append ( seq[-1] )
-            change_list.append ( 'seq' )
+                #associated_data_list.append ( seq[-1] )
+            change_list.append ( "seq" )
         else:
             for s in self.input_data.data.seq0:
                 seq.append ( self.makeClass(s) )
@@ -79,35 +84,123 @@ class EditRevision(asudef.ASUDef):
         if hasattr(self.input_data.data,"xyz"):  # optional data parameter
             xyz = self.makeClass ( self.input_data.data.xyz[0] )
             #  note this may be XYZ, Structure or Substructure
-            associated_data_list.append ( xyz )
-            change_list.append ( 'xyz' )
+            #associated_data_list.append ( xyz )
+            if xyz._type=="DataRemove":
+                remove_list.append ( "xyz" )
+                xyz = None
+            else:
+                change_list.append ( "xyz" )
 
         phases = struct0  # ground default
-        if xyz._type==dtype_structure.dtype():
-            phases = xyz  # need to be in sync with xyz by default
+        #if xyz._type==dtype_structure.dtype():
+        #    phases = xyz  # need to be in sync with xyz by default
         if hasattr(self.input_data.data,"phases"):  # optional data parameter
             phases = self.makeClass ( self.input_data.data.phases[0] )
             #  note this may be either Structure or Substructure, but not XYZ
-            associated_data_list.append ( phases )
-            change_list.append ( 'phases' )
+            #associated_data_list.append ( phases )
+            if phases._type=="DataRemove":
+                remove_list.append ( "phases" )
+                phases = None
+            else:
+                change_list.append ( "phases" )
 
         ligands = []
         if hasattr(self.input_data.data,"ligand"):  # optional data parameter
             for lig in self.input_data.data.ligand:
                 ligands.append ( self.makeClass(lig) )
-                associated_data_list.append ( ligands[-1] )
-            change_list.append ( 'lig' )
+                #associated_data_list.append ( ligands[-1] )
+            change_list.append ( "lig" )
+
+        # --------------------------------------------------------------------
+
+        xyz_fpath  = None
+        sub_fpath  = None
+        mtz_fpath  = None
+        map_fpath  = None
+        dmap_fpath = None
+        lib_fpath  = None
+        lig_codes  = None
+
+        if xyz:
+            xyz_fpath = xyz.getXYZFilePath ( self.inputDir() )
+            if xyz._type==dtype_structure.dtype():
+                sub_fpath = xyz.getSubFilePath ( self.inputDir() )
+                lib_fpath = xyz.getLibFilePath ( self.inputDir() )
+            # Either xyz_path or sub_path get defined here, which will
+            # replace Structure or Substructure, respectively
+
+        if phases:
+            mtz_fpath  = phases.getMTZFilePath ( self.inputDir() )
+            map_fpath  = phases.getMapFilePath ( self.inputDir() )
+            dmap_fpath = phases.getDMapFilePath( self.inputDir() )
+            if 'phases' in change_list:
+                meanF_labels    = hkl.getMeanF()
+                meanF_labels[2] = hkl.getFreeRColumn()
+                phases_labels   = phases.getPhaseLabels()
+                mtz_fname       = phases.lessDataId ( phases.getMTZFileName() )
+                self.makePhasesMTZ (
+                    hkl.getHKLFilePath(self.inputDir()),meanF_labels,
+                    mtz_fpath,phases_labels,mtz_fname )
+                mtz_fpath = mtz_fname
+                struct_labels = meanF_labels + phases_labels
+            # else phases are taken from leading Structure/Substructure
+
+        if len(ligands)>0:
+            if len(ligands)>1:
+                lib_fpath = self.stampFileName ( self.dataSerialNo,self.getOFName(".dict.cif") )
+                self.dataSerialNo += 1
+                lig_codes = makelib.makeLibrary ( self,ligands,lib_fpath )
+            else:
+                lib_fpath = ligands[0].getLibFilePath ( self.inputDir() )
+                if ligands[0]._type=="DataLigand":
+                    lig_codes = [ligands[0].code]
+                else:
+                    lig_codes = ligands[0].codes
+
+
+        tableId = self.getWidgetId('list_of_changes')
+        self.putTable ( tableId,"<span style='font-size:1em'>" +
+                                "List of changes</span>",
+                                self.report_page_id(),self.rvrow,mode=0 )
+        self.setTableHorzHeaders ( tableId,["Item","Action","Description"],["","",""] )
+        self.rvrow += 1
+
+        trow = 0
+        if hasattr(self.input_data.data,"hkl"):  # optional data parameter
+            trow = self.add_change ( trow,tableId,"Reflection dataset","replace",hkl.dname )
+
+        if hasattr(self.input_data.data,"seq"):  # optional data parameter
+            desc = []
+            for i in range(len(seq)):
+                desc.append ( seq[i].dname )
+            trow = self.add_change ( trow,tableId,"sequences","replace","<br>".join(desc) )
+
+        if "xyz" in change_list:
+            trow = self.add_change ( trow,tableId,"Atomic coordinates","replace",xyz.dname )
+        elif "xyz" in remove_list:
+            trow = self.add_change ( trow,tableId,"Atomic coordinates","remove","N/A" )
+
+        if lig_codes:
+            lig_list = lig_codes
+            if type(lig_codes)==list:
+                lig_list = ", ".join(lig_codes)
+            trow = self.add_change ( trow,tableId,"Ligand definitions","replace",lig_list )
+
+        if "phases" in change_list:
+            trow = self.add_change ( trow,tableId,"Phases","replace",phases.dname )
+        elif "phases" in remove_list:
+            trow = self.add_change ( trow,tableId,"Phases","remove","N/A" )
 
 
         # --------------------------------------------------------------------
 
         revision = None
 
-        if 'hkl' in change_list or 'seq' in change_list:
+        if "hkl" in change_list or "seq" in change_list:
             #  redefine HKL and ASU
-            self.putMessage  ( "<h2>Compose new Asummetric Unit</h2>" )
+            self.putTitle ( "New Asummetric Unit Composition" )
             rev = asudef.makeRevision ( self,hkl,seq, "P","NR",1,1.0,"",
-                                        revision0=revision0 )
+                                        revision0=revision0,resultTitle="" )
             if rev:
                 revision = rev[0]
         else:
@@ -117,51 +210,14 @@ class EditRevision(asudef.ASUDef):
 
         if revision:  # should be always True
 
-            if 'xyz' in change_list or 'phases' in change_list or 'lig' in change_list:
+            edit_list = change_list + remove_list
+            if "xyz" in edit_list or "phases" in edit_list or "lig" in edit_list:
                 # redefine structure
-                self.putMessage  ( "<h2>Compose new Structure</h2>" )
-                xyz_fpath  = None
-                sub_fpath  = None
-                mtz_fpath  = None
-                map_fpath  = None
-                dmap_fpath = None
-                lib_fpath  = None
-                lig_codes  = None
-                if xyz:
-                    xyz_fpath = xyz.getXYZFilePath ( self.inputDir() )
-                    if xyz._type==dtype_structure.dtype():
-                        sub_fpath = xyz.getSubFilePath ( self.inputDir() )
-                        lib_fpath = xyz.getLibFilePath ( self.inputDir() )
-                    # Either xyz_path or sub_path get defined here, which will
-                    # replace Structure or Substructure, respectively
+                self.putTitle  ( "New Structure" )
 
-                if phases:
-                    mtz_fpath  = phases.getMTZFilePath ( self.inputDir() )
-                    map_fpath  = phases.getMapFilePath ( self.inputDir() )
-                    dmap_fpath = phases.getDMapFilePath( self.inputDir() )
-                    if 'phases' in change_list:
-                        meanF_labels    = hkl.getMeanF()
-                        meanF_labels[2] = hkl.getFreeRColumn()
-                        phases_labels   = phases.getPhaseLabels()
-                        mtz_fname       = phases.lessDataId ( phases.getMTZFileName() )
-                        self.makePhasesMTZ (
-                            hkl.getHKLFilePath(self.inputDir()),meanF_labels,
-                            mtz_fpath,phases_labels,mtz_fname )
-                        mtz_fpath = mtz_fname
-                        struct_labels = meanF_labels + phases_labels
-                    # else phases are taken from leading Structure/Substructure
-
-                if len(ligands)>0:
-                    if len(ligands)>1:
-                        lib_fpath = self.stampFileName ( self.dataSerialNo,self.getOFName(".dict.cif") )
-                        self.dataSerialNo += 1
-                        lig_codes = makelib.makeLibrary ( self,ligands,lib_fpath )
-                    else:
-                        lib_fpath = ligands[0].getLibFilePath ( self.inputDir() )
-                        if ligands[0]._type=="DataLigand":
-                            lig_codes = [ligands[0].code]
-                        else:
-                            lig_codes = ligands[0].codes
+                lead_key = 1   #  XYZ lead (MR phases)
+                if ("phases" in change_list) or (phases and not struct0.getXYZFileName()):
+                    lead_key = 2  #  Phase lead (EP phases)
 
                 structure = self.registerStructure1 (
                                 xyz_fpath ,
@@ -171,18 +227,40 @@ class EditRevision(asudef.ASUDef):
                                 dmap_fpath,
                                 lib_fpath ,
                                 self.outputFName,
-                                leadKey=2 if 'phases' in change_list else 1,
+                                leadKey=lead_key,
+                                #leadKey=2 if "phases" in change_list else 1,
                                 copy_files=False )
                 if structure:
                     if lig_codes:
                         structure.setLigands  ( lig_codes )
-                    if xyz:
+                    if xyz_fpath or sub_fpath:
                         structure.addSubtypes ( xyz.getSubtypes() )
+                    else:
+                        if revision0.Structure:
+                            structure.addSubtypes ( revision0.Structure.subtype )
+                        elif revision0.Substructure:
+                            structure.addSubtypes ( revision0.Substructure.subtype )
+                            structure.adjust_dname()
+                        if phases:
+                            structure.copyCrystData ( phases )
+                            #if not revision0.Structure and not revision0.Substructure:
+                            #    structure.addSubtype ( dtype_template.subtypeSubstructure() )
+                            #    structure.adjust_dname()
                     if phases:
                         structure.addSubtypes ( phases.getSubtypes() )
                         structure.copyLabels  ( phases )
                         if 'phases' in change_list:
                             structure.setHKLLabels ( hkl )
+                    if not xyz_fpath:
+                        structure.removeSubtype ( dtype_template.subtypeXYZ() )
+                    if not sub_fpath:
+                        structure.removeSubtype ( dtype_template.subtypeSubstructure() )
+
+                    #if not sub_fpath:
+                    #    # in case there was no substructure coordinates
+                    #    structure.addSubtype ( dtype_template.subtypeSubstructure() )
+                    #    structure.adjust_dname()
+
                     self.putStructureWidget ( self.getWidgetId("structure_btn_"),
                                               "Structure and electron density",
                                               structure )
@@ -193,6 +271,20 @@ class EditRevision(asudef.ASUDef):
             revision.addSubtypes  ( revision0.getSubtypes() )
             self.registerRevision ( revision  )
             have_results = True
+
+            # this will go in the project tree line
+            summary_line = ""
+            if len(change_list)>0:
+                summary_line = ", ".join(change_list) + " replaced"
+            if len(remove_list)>0:
+                if summary_line:
+                    summary_line += "; "
+                summary_line += ", ".join(remove_list) + " removed"
+            if "hkl" in change_list or "seq" in change_list:
+                summary_line += "; asu recalculated:"
+            self.generic_parser_summary["editrevision_struct"] = {
+              "summary_line" : summary_line
+            }
 
         else:
             self.putTitle   ( "Revision was not produced" )

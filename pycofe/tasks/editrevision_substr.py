@@ -1,5 +1,7 @@
 ##!/usr/bin/python
 
+# LEGACY CODE, ONLY USED IN OLD PROJECTS   05.09.20  v.1.4.014
+
 # not python-3 ready
 
 #
@@ -110,7 +112,6 @@ class EditRevisionSubstr(basic.TaskDriver):
         if phases:
             self.putMessage ( "<b>Phases to be taken from:&nbsp;&nbsp;&nbsp;&nbsp;</b> " + phases.dname  )
 
-        lead_key = str
         substructure = self.registerStructure1 (
                         xyz_fpath ,
                         sub_fpath ,
