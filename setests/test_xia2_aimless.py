@@ -8,135 +8,40 @@ from selenium.webdriver.common.by import By
 
 import time, sys, os, re
 
-
-def clickByXpath(driver, xpath):
-    textEls = driver.find_elements_by_xpath(xpath)
-    for textEl in textEls:
-#        parentEl = textEl.find_element_by_xpath("..")
-        if textEl.is_displayed():
-            driver.execute_script("arguments[0].scrollIntoView();", textEl)
-            ActionChains(driver).move_to_element(textEl).click(textEl).perform()
-            break
-
-def doubleClickByXpath(driver, xpath):
-    textEls = driver.find_elements_by_xpath(xpath)
-    for textEl in textEls:
-#        parentEl = textEl.find_element_by_xpath("..")
-        if textEl.is_displayed():
-            driver.execute_script("arguments[0].scrollIntoView();", textEl)
-            ActionChains(driver).move_to_element(textEl).double_click(textEl).perform()
-            break
-
-
-def loginToCloud(driver, cloudLogin, cloudPassword):
-    # Shall return list of two elements for login and password
-    loginInputs = driver.find_elements_by_xpath("//input[contains(@id,'input')]")
-
-    # First element in the list is login
-    loginInputs[0].click()
-    loginInputs[0].clear()
-    loginInputs[0].send_keys(cloudLogin)
-
-    # Second is password
-    loginInputs[1].click()
-    loginInputs[1].clear()
-    loginInputs[1].send_keys(cloudPassword)
-
-    # Login button
-    loginButton = driver.find_element_by_xpath("//button[normalize-space()='Login']")
-    loginButton.click()
-
-    return ()
-
-
-def removeProject(driver, testName):
-    print('Deleting previous test project if exists')
-
-    textEls = driver.find_elements_by_xpath("//*[normalize-space()='%s']" % testName)
-    if len(textEls) > 0:
-        try:
-            clickByXpath(driver, "//*[normalize-space()='%s']" % testName)
-            time.sleep(1)
-
-            clickByXpath(driver, "//*[normalize-space()='%s']" % 'Delete')
-            time.sleep(1)
-
-            textEls = driver.find_elements_by_xpath("//button[normalize-space()='%s']" % 'Delete')
-            textEls[-1].click()
-            time.sleep(1)
-
-        except:
-            return ()
-
-
-    return ()
-
-
-def makeTestProject(driver, testProjectID, testProjectName):
-    print ('Making test project. ID: %s, Name: %s' % (testProjectID, testProjectName))
-
-    # click add button
-    addButton = driver.find_element_by_xpath("//button[normalize-space()='Add']")
-    ActionChains(driver).move_to_element(addButton).click(addButton).perform()
-    time.sleep(1)
-
-    # Shall return list of two elements for project creation
-    projectInputs = driver.find_elements_by_xpath("//input[contains(@id,'input')]")
-
-    # Project id
-#    projectInputs[0].click()
-    projectInputs[0].clear()
-    projectInputs[0].send_keys(testProjectID)
-
-    # Project name
-#    projectInputs[1].click()
-    projectInputs[1].clear()
-    projectInputs[1].send_keys(testProjectName)
-
-    time.sleep(1)
-    # Now there are two 'Add' buttons and we want to click second one
-    addButtons = driver.find_elements_by_xpath("//button[normalize-space()='Add']")
-    addButtons[1].click()
-
-    return()
-
-
-def enterProject(driver, projectId):
-    print ('Entering test project. ID: %s' % projectId)
-    time.sleep(1)
-    projectCell = driver.find_element_by_xpath("//*[normalize-space()='%s']" % projectId )
-    ActionChains(driver).double_click(projectCell).perform()
-    return()
+curPath = os.path.dirname(os.path.abspath(__file__))
+if curPath not in sys.path:
+    sys.path.insert(0, curPath)
+import setests_func as sf
 
 
 def xia2Processing(driver, waitLong):
     print('Running XIA-2 for Hg dataset')
 
-    clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list')
+    sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list')
     time.sleep(1)
 
-    clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Data Processing')
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Data Processing')
     time.sleep(1)
 
-    clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Automatic Image Processing with Xia-2')
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Automatic Image Processing with Xia-2')
     time.sleep(1)
 
-    clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Browse')
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Browse')
     time.sleep(1)
 
-    doubleClickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'tutorial-data')
+    sf.doubleClickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'tutorial-data')
     time.sleep(1)
 
-    doubleClickByXpath(driver, "//*[starts-with(text(), '%s')]" % '1_from_images')
+    sf.doubleClickByXpath(driver, "//*[starts-with(text(), '%s')]" % '1_from_images')
     time.sleep(1)
 
-    doubleClickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'hg')
+    sf.doubleClickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'hg')
     time.sleep(1)
 
-    doubleClickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'images')
+    sf.doubleClickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'images')
     time.sleep(1)
 
-    doubleClickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'hg_001.mar1600')
+    sf.doubleClickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'hg_001.mar1600')
     time.sleep(1)
 
 
@@ -184,13 +89,13 @@ def aimlessAfterXia2(driver, waitLong):
     addButton.click()
     time.sleep(1)
 
-    clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list')
+    sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list')
     time.sleep(1)
 
-    clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Data Processing')
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Data Processing')
     time.sleep(1)
 
-    clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Data Reduction with Aimless')
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Data Reduction with Aimless')
     time.sleep(1)
 
     # There are several forms - active and inactive. We need one displayed.
@@ -255,34 +160,6 @@ def aimlessAfterXia2(driver, waitLong):
     return ()
 
 
-def renameProject(driver, testName):
-    print('Renaming succesfull test project')
-    menuButton = driver.find_element(By.XPATH, "//div[contains(@style, 'images_png/menu.png')]")
-    menuButton.click()
-    time.sleep(1)
-
-    clickByXpath(driver, "//*[normalize-space()='%s']" % 'My Projects')
-    time.sleep(1)
-
-    clickByXpath(driver, "//*[normalize-space()='%s']" % testName)
-    time.sleep(1)
-
-    clickByXpath(driver, "//*[normalize-space()='%s']" % 'Rename')
-    time.sleep(1)
-
-    # Shall return list of two elements for project creation
-    projectInput = driver.find_element_by_xpath("//input[@value='%s']" % testName)
-    projectInput.click()
-    projectInput.clear()
-    projectInput.send_keys('Successfull - %s' % testName)
-
-
-    textEls = driver.find_elements_by_xpath("//button[normalize-space()='%s']" % 'Rename')
-    textEls[-1].click()
-    time.sleep(1)
-
-    return ()
-
 
 def test_xia2_aimless(browser,
                       cloud,
@@ -326,16 +203,16 @@ def test_xia2_aimless(browser,
         assert "CCP4 Cloud" in driver.title
 
         if not nologin:
-            loginToCloud(driver, login, password)
+            sf.loginToCloud(driver, login, password)
 
         testName = 'xia2AimlessTest'
 
-        removeProject(driver, testName)
-        makeTestProject(driver, testName, testName)
-        enterProject(driver, testName)
+        sf.removeProject(driver, testName)
+        sf.makeTestProject(driver, testName, testName)
+        sf.enterProject(driver, testName)
         xia2Processing(driver, waitLong)
         aimlessAfterXia2(driver, waitLong)
-        renameProject(driver, testName)
+        sf.renameProject(driver, testName)
 
         driver.quit()
 
