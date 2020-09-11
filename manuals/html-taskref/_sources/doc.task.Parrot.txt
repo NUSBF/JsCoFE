@@ -1,5 +1,111 @@
 ================================
 Density Modification with Parrot
 ================================
+    
+`Parrot <https://doi.org/10.1107/S090744490903947X>`_ is the Density modification software is used to improve initial phase estimates to produce a more interpretable electron density map. The minimum required inputs are the protein sequence, a set of observations, and a set of phases. Density modification can be incorporated in model building and refinement, leading to many more models automatically built.
+    
+    **apply prior information about protein electron density maps to the experimental map**
 
-to be written...
+        * Solvent flatness prior: the density in solvent regions is close to constant
+
+        * Histogram similarity prior: the histograms of protein density maps are similar
+
+        * NCS prior: the density in NCS related regions should be very similar
+
+-----------------------------------
+The principal differences of Parrot
+-----------------------------------
+
+* **Problem-specific histogram simulation using a known structure.**
+
+* **Use of prior phase information in the calculation of figures of merit and map coefficients.**
+
+* **Application of anisotropy correction to the data.**
+
+* **Pairwise weighted noncrystallographic symmetry averaging.**
+    `weighted NCS averaging <https://doi.org/10.1107/S0907444995008754>`_ deal with a case in which different parts of the structure obeyed the NCS relationships to different degrees. Instead of having values of 0 (for unrelated regions of the map) or 1 (for NCS-related regions of the map), this mask could take values in a continuous range between 0 and 1 representing different levels of agreement. In regions where the mask value was less than 1, the weight of the NCS-related density would be less than the weight of the original density at that position in the map. Introduction of multiple masks allows for the case where some pairs of molecules may be more similar than others.
+
+
+-------------
+Parrot stages
+-------------
+
+The calculation involves the following steps:
+
+* Perform an anisotropy correction on the input structure factors.
+
+* (Optional) Estimate the solvent content from the sequence.
+
+* (Optional) Calculate NCS operators from heavy-atom coordinates or from an atomic model.
+
+* Cycle over the following steps a specified number of times.
+
+ .. toggle-header::
+        :header:  **detailed**
+        
+                 * Simulate electron-density histograms for the ordered region of the asymmetric unit using a known structure.                
+                 
+                 * Calculate an electron-density map using centroid phases and weights based on the current phase probability distributions.
+                 
+                 * Calculate a solvent mask covering the required volume of the unit cell.
+                 
+                 * (Optional) Prepare an NCS map consisting of the contributions from other NCS copies to each position in the asymmetric unit. 
+                 
+                 * Prepare a perturbed map from the initial map by adding a small random signal.
+                        the perturbation calculation is performed in real rather than reciprocal space 
+                 
+                 * Density-modify the initial map by applying the NCS contributions, **solvent flattening** and **histogram matching**.
+        
+                 * Density-modify the perturbed map by applying the NCS contributions, **solvent flattening** and **histogram matching**.
+        
+                 * Compare the two modified maps to estimate the gamma correction required.
+        
+                 * Apply the gamma correction to the modified unperturbed map.
+        
+                 * Back-transform to obtain a set of modified magnitudes and phases.
+        
+                 * Calculate an error model by optimizing the likelihood of the observed data given the calculated data and error model parameters (i.e. a σA-type calculation).
+        
+                 * Use the error model to calculate updated `Hendrickson–Lattman coefficients <http://www.ysbl.york.ac.uk/~cowtan/ccp4wiki/wiki32.html#:~:text=Since%20Hendrickson%2DLattman%20coefficients%20can,description%20of%20such%20a%20distribution.&text=The%20A%20and%20B%20coefficients,atan(B%2FA).>`_ and 2mFo − DFc-type map coefficients.
+ 
+
+**Histogram matching**:
+    *depended on the use of a standard library of protein histograms calculated from known structures*
+
+* The structure factors and phases from the refined model for the reference structure are read into the program, along with the structure factors for the unsolved work structure.
+
+* The resolution of the reference structure is truncated to match the work structure.
+
+* The reference-structure data are rescaled with a resolution-dependent scale function (using a smooth-spline scaling following the method of [Cowtan, 2002] ) to match the scale of the work structure data; this resolution-dependent scaling effectively matches the Wilson B factors. 
+  
+The effect of the resolution-dependence of the figures of merit is also simulated by creating synthetic figures of merit for the rescaled reference structure factors, matching the resolution distribution for the work structure factors. These synthetic figures of merit are used as weights in the calculation of the electron-density map for the reference structure.
+
+The known atomic model for the reference structure is then used to calculate a solvent mask and electron-density histograms from the protein region of the simulated map. The resulting histogram may then be used as a target histogram for histogram matching the work map.
+
+**Solvent flattening**:
+
+    * The likely solvent regions in the map are identified by looking at local variance map
+
+    * The density in these regions is flattened
+
+    * If a solvent region was identified correctly, its flattening should remove noise from the map, improving the phases
+
+After the application of techniques such as solvent flattening and histogram matching to the electron density, an inverse Fourier transform is used to obtain a new set of magnitudes and phases. These are then used to update the phase probability distributions arising from the original experimental phasing calculation. An estimate of the reliability of the modified phases is made on the basis of the agreement between the modified magnitudes and the ob­served structure factors. The reasoning behind this approach comes from analogy with the problem of calculating map coefficients using a partial structure including both errors and missing atoms and is based on the fact that the size of the discrepancy in the structure-factor magnitudes is a good indicator of the error in the phases. Once an estimate of the error in the phases has been obtained, a phase probability distribution is constructed from the modified phase and estimated error. This phase probability distribution is multiplied by the experimental phase probability distribution to provide an updated distribution.
+
+-------------
+Basic options
+-------------
+
+The most important option is the number of cycles of density modification to perform. ``By default``, a conservative value of ``3 cycles`` is chosen to limit the bias which is introduced by running too many cycles.
+
+
+Parrot can optionally perform non-crystallographic symmetry (**NCS**) averaging. The **NCS rotations and translations** are be determined from a set of atomic coordinates. These may be from the coordinates of the anomalous scatters or heavy atoms in the case of experimental phasing, or from an initial molecular replacement model or incomplete partial model in the case of either molecular replacement or experimental phasing. To use **NCS averaging**, select ``Model for NCS detection`` => ``Macromolecular model``. When **NCS** is being used (or occasionally when the solvent content is very high) bias is less of a problem and **more cycles may be performed**.
+
+
+**References**
+
+`Cowtan, K. (2002). J. Appl. Cryst. 35, 655-663. <https://doi.org/10.1107/S0021889802013420>`_
+
+`Abrahams, J. P. & Leslie, A. G. W. (1996). Acta Cryst. D52, 30–42. <https://doi.org/10.1107/S0907444995008754>`_
+
+`Cowtan, K. (2010) Recent developments in classical density modification. Acta Cryst. D66: 470-478. <https://doi.org/10.1107/S090744490903947X>`_

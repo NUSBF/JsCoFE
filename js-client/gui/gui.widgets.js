@@ -942,6 +942,44 @@ InputText.prototype.setOnEnterListener = function ( socket_function )  {
 }
 
 
+// -------------------------------------------------------------------------
+// ACEditor class
+
+/*
+
+function ACEditor ( text,width,height )  {
+  Widget.call ( this,'div' );
+  this.element.setAttribute ( 'rows',nrows );
+  this.element.setAttribute ( 'cols',ncols );
+  this.element.setAttribute ( 'placeholder',placeholder );
+  this.element.value = text;
+}
+
+ACEditor.prototype = Object.create ( Widget.prototype );
+TextArea.prototype.constructor = TextArea;
+
+ACEditor.prototype.getValue = function()  {
+  return this.element.value;
+}
+
+
+<div style="position:relative;width:400px;height:300px;">
+<div id="editor" style="position:absolute;top:0;right:0;bottom:0;left:0;">
+function foo(items) {
+    var x = "All this is syntax highlighted";
+    return x;
+}
+</div>
+</div>
+
+<script src="jslib2/ace.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    var editor = ace.edit("editor");
+    editor.setTheme("ace/theme/chrome");
+    editor.session.setMode("ace/mode/python");
+</script>
+*/
+
 
 // -------------------------------------------------------------------------
 // TextArea class
