@@ -20,9 +20,15 @@ CCP4 Cloud Version Log
     #. Resolved the cross-origin conflict with local client, causing corruption in report pages of tasks
        running on user devices, such as ``Arp/wArp``
 
-    #. Fixed a bug in ``Buster`` task, which caused task failures under specific conditions
+    #. Fixed bugs in ``Buster`` task, which caused task failures under specific conditions
+
+    #. Option for removing coordinates added to edit revision tasks
 
     #. Video tutorials added in Documentation
+
+    #. Port numbers for CCP4 Cloud Client made stable, which allows password management in users browsers
+
+    #. Documentation updated ( Density modification, DM with ``Parrot``)
 
 
 

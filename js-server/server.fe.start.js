@@ -163,7 +163,8 @@ function start ( callback_func )  {
 
         case cmd.fe_command.whoareyou :
             cmd.sendResponseMessage ( server_response,
-                            cmd.appName() + ' FE ' + cmd.appVersion(),
+                            cmd.appName() + ' FE ' + cmd.appVersion() +
+                            ' CCP4-' + conf.CCP4Version(),
                             'text/plain' );
           break;
 
