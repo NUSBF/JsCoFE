@@ -10,7 +10,7 @@
  *       ~~~~~~~~~
  *  **** Project :  jsCoFE - javascript-based Cloud Front End
  *       ~~~~~~~~~
- *  **** Content :  RefMac Task Class
+ *  **** Content :  Remark Task Class
  *       ~~~~~~~~~
  *
  *  (C) E. Krissinel, A. Lebedev 2016-2020

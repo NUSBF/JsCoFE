@@ -2,7 +2,7 @@
 /*
 *  ==========================================================================
  *
- *    05.09.20   <--  Date of Last Modification.
+ *    13.09.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -------------------------------------------------------------------------
  *
@@ -1732,6 +1732,34 @@ if (!dbx)  {
                               }(inpParamRef,key,textarea,this));
                           break;
 
+            case 'aceditor_':
+            case 'aceditor' : inpParamRef.parameters[key]     = {};
+                              inpParamRef.parameters[key].ref = item;
+                              inpParamRef.parameters[key].ref.visible  = true;
+                              inpParamRef.parameters[key].ref._visible = true;
+                              var iwidth  = 800;
+                              var iheight = 320;
+                              if (item.hasOwnProperty('iwidth'))
+                                iwidth = item.iwidth;
+                              if (item.hasOwnProperty('iheight'))
+                                iheight = item.iheight;
+                              var aceditor = new ACEditor ( iwidth,iheight,{
+                                'box-shadow' : '6px 6px lightgray',
+                                'theme'      : 'chrome',
+                                'mode'       : 'python'
+                              });
+                              grid.setWidget ( aceditor,r,c,rs,cs );
+                              aceditor.setTooltip ( item.tooltip );
+                              //$(aceditor.element).css ( {'resize':'none'} );
+                              inpParamRef.parameters[key].input = aceditor;
+                              (function(acedt,text){
+                                window.setTimeout ( function(){
+                                  acedt.init ( text );
+                                },0);
+                              }(aceditor,item.value));
+                          break;
+
+
             default : break;
 
           }
@@ -2019,6 +2047,19 @@ if (!dbx)  {
             case 'textarea' : var text = param.input.getValue();
                               if (text.length<=0)  {
                                 if (item.type=='textarea_')  {
+                                  if ('default' in item)
+                                        item.value = item.default;
+                                  else  item.value = '';
+                                } else
+                                  addMessage ( item,key,'no value given' );
+                              } else
+                                item.value = text;
+                          break;
+
+            case 'aceditor_':
+            case 'aceditor' : var text = param.input.getText();
+                              if (text.length<=0)  {
+                                if (item.type=='aceditor_')  {
                                   if ('default' in item)
                                         item.value = item.default;
                                   else  item.value = '';

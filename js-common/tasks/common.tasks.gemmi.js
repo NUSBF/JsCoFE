@@ -1,0 +1,137 @@
+
+/*
+ *  =================================================================
+ *
+ *    13.09.20   <--  Date of Last Modification.
+ *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ *  -----------------------------------------------------------------
+ *
+ *  **** Module  :  js-common/tasks/common.tasks.gemmi.js
+ *       ~~~~~~~~~
+ *  **** Project :  jsCoFE - javascript-based Cloud Front End
+ *       ~~~~~~~~~
+ *  **** Content :  Gemmi Task Class
+ *       ~~~~~~~~~
+ *
+ *  (C) E. Krissinel, A. Lebedev 2016-2020
+ *
+ *  =================================================================
+ *
+ */
+
+var __template = null;
+
+if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
+  __template = require ( './common.tasks.template' );
+
+// ===========================================================================
+
+function TaskGemmi()  {
+
+  if (__template)  __template.TaskTemplate.call ( this );
+             else  TaskTemplate.call ( this );
+
+  this._type = 'TaskGemmi';
+  this.name  = 'gemmi tools';
+  this.oname = 'gemmi';   // asterisk here means do not use
+  this.title = 'Gemmi terminal';
+
+  this.input_dtypes = [{  // input data types
+      data_type   : {'DataRevision'  : ['xyz','substructure'],
+                     'DataEnsemble'  : [],
+                     'DataModel'     : [],
+                     'DataXYZ'       : []
+                    }, // data type(s) and subtype(s)
+      label       : 'Structure data',     // label for input dialog
+      inputId     : 'istruct', // input Id for referencing input fields
+      version     : 1,          // minimum data version allowed
+      min         : 1,          // minimum acceptable number of data instances
+      max         : 20          // maximum acceptable number of data instances
+    }
+  ];
+
+  this.parameters = {
+    TITLE : {
+        type     : 'label',
+        keyword  : 'none',
+        label    : '<hr><b style="font-size:1.125em;">Gemmi script</b>',
+        position : [0,0,1,1]
+    },
+    SCRIPT : {
+        type        : 'aceditor_',  // can be also 'textarea'
+        keyword     : 'none',       // optional
+        tooltip     : '',           // mandatory
+        iwidth      : 800,          // optional
+        iheight     : 320,          // optional
+        value       :  // mandatory
+          '"""\n' +
+          ' Place an ordinary python script here, assuming that:\n' +
+          '  - modules gemmigemmi and math are imported\n' +
+          '  - structure data number N is read in gemmi documents "stN"\n' +
+          '  - document "st1" will be saved automatically as the corresponding input\n' +
+          '    data object (structure revision, structure, ensemble, model or xyz)\n\n' +
+          ' For example, removal of all ligands, waters and empty chains requires just\n' +
+          ' the following 2 lines:\n\n' +
+          'st1.remove_ligands_and_waters()\n' +
+          'st1.remove_empty_chains()\n' +
+          '"""\n',
+        position    : [1,0,1,5]     // mandatory
+    }
+  };
+
+}
+
+
+if (__template)
+      TaskGemmi.prototype = Object.create ( __template.TaskTemplate.prototype );
+else  TaskGemmi.prototype = Object.create ( TaskTemplate.prototype );
+TaskGemmi.prototype.constructor = TaskGemmi;
+
+
+// ===========================================================================
+// export such that it could be used in both node and a browser
+
+TaskGemmi.prototype.currentVersion = function()  {
+  var version = 0;
+  if (__template)
+        return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );
+  else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
+}
+
+TaskGemmi.prototype.icon = function()  { return 'task_gemmi'; }
+
+if (__template)  {
+  //  for server side
+
+  var conf = require('../../js-server/server.configuration');
+
+  TaskGemmi.prototype.makeInputData = function ( loginData,jobDir )  {
+
+    // put hkl and structure data in input databox for copying their files in
+    // job's 'input' directory
+
+    var istruct = this.input_data.data['istruct'];
+    this.input_data.data['hkl'] = [];
+    this.input_data.data['ist']  = [];
+    for (var i=0;i<istruct.length;i++)
+      if (istruct[i]._type=='DataRevision')  {
+        this.input_data.data['hkl'].push ( istruct[i].HKL );
+        if (istruct[i].Structure)
+          this.input_data.data['ist'].push ( istruct[i].Structure );
+        if (istruct[i].Substructure)
+          this.input_data.data['ist'].push ( istruct[i].Substructure );
+      }
+
+    __template.TaskTemplate.prototype.makeInputData.call ( this,loginData,jobDir );
+
+  }
+
+  TaskGemmi.prototype.getCommandLine = function ( jobManager,jobDir )  {
+    return [conf.pythonName(), '-m', 'pycofe.tasks.gemmi_task', jobManager, jobDir, this.id];
+  }
+
+  // -------------------------------------------------------------------------
+
+  module.exports.TaskGemmi = TaskGemmi;
+
+}
