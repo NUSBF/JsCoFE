@@ -236,9 +236,10 @@ class Gemmi(basic.TaskDriver):
 
 
         # this will go in the project tree line
-        #self.generic_parser_summary["gemmi"] = {
-        #    "summary_line" : ", ".join(log)
-        #}
+        if have_results:
+            self.generic_parser_summary["gemmi"] = {
+                "summary_line" : "results saved"
+            }
 
         # close execution logs and quit
         self.success ( have_results )
