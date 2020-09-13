@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    06.09.20   <--  Date of Last Modification.
+ *    13.09.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -390,6 +390,7 @@ var row      = 0;
     'Coordinate data tools',
     new TaskXyzUtils(),
     new TaskCootCE  (),
+    new TaskGemmi   (),
     'Alignment and comparison tools',
     new TaskGesamt  (),
     new TaskLsqKab  (),

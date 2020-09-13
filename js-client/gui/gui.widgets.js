@@ -945,40 +945,83 @@ InputText.prototype.setOnEnterListener = function ( socket_function )  {
 // -------------------------------------------------------------------------
 // ACEditor class
 
-/*
+function ACEditor ( width,height,options )  {
+// all optional options:
+//  options = {
+//    'border'     : '1px solid black',
+//    'box-shadow' : '6px 6px lightgray',
+//    'font-size'  : '12px',
+//    'theme'      : 'chrome',
+//    'mode'       : 'python'
+//  }
+//
 
-function ACEditor ( text,width,height )  {
   Widget.call ( this,'div' );
-  this.element.setAttribute ( 'rows',nrows );
-  this.element.setAttribute ( 'cols',ncols );
-  this.element.setAttribute ( 'placeholder',placeholder );
-  this.element.value = text;
+
+  var css1 = {
+    'position' : 'relative',
+    'width'    : width,
+    'height'   : height,
+    'border'   : '1px solid gray'
+  };
+  if ('border' in options)
+    css1.border = options.border;
+  if ('box-shadow' in options)
+    css1['box-shadow'] = options['box-shadow'];
+
+  $(this.element).css ( css1 );
+
+  this.panel = new Widget ( 'div' );
+  this.element.appendChild ( this.panel.element );
+
+  var css2 = {
+    'position'  : 'absolute',
+    'top'       : 0,
+    'right'     : 0,
+    'bottom'    : 0,
+    'left'      : 0,
+    'width'     : '100%',
+    'font-size' : '14px'
+  };
+  if ('font-size' in options)
+    css2['font-size'] = options['font-size'];
+
+  $(this.panel.element).css ( css2 );
+
+  this.editor_theme = 'chrome';
+  this.editor_mode  = 'python';
+  if ('theme' in options)
+    this.editor_theme = options.theme;
+  if ('mode' in options)
+    this.editor_mode  = options.mode;
+  this.editor = null;
+
 }
 
 ACEditor.prototype = Object.create ( Widget.prototype );
-TextArea.prototype.constructor = TextArea;
+ACEditor.prototype.constructor = ACEditor;
 
-ACEditor.prototype.getValue = function()  {
-  return this.element.value;
+ACEditor.prototype.init = function ( text )  {
+  if (!this.editor)  {
+    this.editor = ace.edit ( this.panel.element.id );
+    this.editor.setTheme ( 'ace/theme/' + this.editor_theme );
+    this.editor.session.setMode ( 'ace/mode/' + this.editor_mode );
+    if (text)
+      this.setText ( text );
+  }
 }
 
-
-<div style="position:relative;width:400px;height:300px;">
-<div id="editor" style="position:absolute;top:0;right:0;bottom:0;left:0;">
-function foo(items) {
-    var x = "All this is syntax highlighted";
-    return x;
+ACEditor.prototype.setText = function ( text )  {
+  if (this.editor)  {
+    this.editor.setValue ( text );
+    this.editor.clearSelection();
+  }
 }
-</div>
-</div>
 
-<script src="jslib2/ace.js" type="text/javascript" charset="utf-8"></script>
-<script>
-    var editor = ace.edit("editor");
-    editor.setTheme("ace/theme/chrome");
-    editor.session.setMode("ace/mode/python");
-</script>
-*/
+ACEditor.prototype.getText = function()  {
+  if (this.editor)  return this.editor.getValue();
+              else  return '';
+}
 
 
 // -------------------------------------------------------------------------

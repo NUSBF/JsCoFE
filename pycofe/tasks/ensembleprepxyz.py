@@ -1,4 +1,4 @@
-##!/usr/bin/python
+#!/usr/bin/python
 
 # not python-3 ready
 
@@ -29,7 +29,6 @@
 #  python native imports
 import os
 import sys
-import shutil
 import time
 
 #  ccp4-python imports
@@ -37,8 +36,8 @@ import pyrvapi
 import gemmi
 
 #  application imports
-from . import basic
-from   pycofe.proc   import analyse_ensemble, coor
+import basic
+from   pycofe.proc   import analyse_ensemble
 from   pycofe.dtypes import dtype_template, dtype_sequence
 
 """
@@ -88,17 +87,6 @@ LOCALFILE /Users/eugene/Projects/jsCoFE/data/4GOS/1py9_homolog_025.pdb CHAIN A
 END
 """
 
-
-def remove_ligands_and_waters ( modSel,fpath_in,fpath_out ):
-    st = gemmi.read_structure ( fpath_in )
-    if modSel=="U":
-        st.remove_waters()
-    else:
-        st.remove_ligands_and_waters()
-    st.remove_empty_chains()
-    st.write_pdb ( fpath_out )
-    return
-
 # ============================================================================
 # Make Ensembler driver
 
@@ -114,10 +102,24 @@ class EnsemblePrepXYZ(basic.TaskDriver):
 
     # ------------------------------------------------------------------------
 
+    def delete_ligands_and_waters ( self,modSel,fpath_in,fpath_out ):
+        self.stdoutln ( str(dir(gemmi)) )
+        st = gemmi.read_structure ( fpath_in )
+        if modSel=="U":
+            st.remove_waters()
+        else:
+            st.remove_ligands_and_waters()
+        st.remove_empty_chains()
+        st.write_pdb ( fpath_out )
+        return
+
+
     def run(self):
 
         # Prepare ensembler input
         # fetch input data
+
+        self.stdoutln ( " ***** " + str(dir(gemmi)) )
 
         seq = None
         if hasattr(self.input_data.data,"seq"):  # optional data parameter
@@ -261,7 +263,8 @@ class EnsemblePrepXYZ(basic.TaskDriver):
             else:
 
                 outputFile = self.getXYZOFName()
-                remove_ligands_and_waters ( modSel,os.path.join(models_dir,model_xyz[0]),outputFile )
+                self.delete_ligands_and_waters ( modSel,
+                            os.path.join(models_dir,model_xyz[0]),outputFile )
 
                 if not os.path.isfile(outputFile):
                     self.putTitle ( "No output files found" )
@@ -372,7 +375,8 @@ class EnsemblePrepXYZ(basic.TaskDriver):
                         else:
                             fout_name = self.outputFName + "_" + fo + ".pdb"
 
-                        remove_ligands_and_waters ( modSel,os.path.join(models_dir,filename),fout_name )
+                        self.delete_ligands_and_waters ( modSel,
+                                    os.path.join(models_dir,filename),fout_name )
 
                         align_meta = analyse_ensemble.align_seq_xyz ( self,
                                             seqPath,fout_name,seqtype="protein" )
