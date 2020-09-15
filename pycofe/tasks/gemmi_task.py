@@ -99,7 +99,7 @@ class Gemmi(basic.TaskDriver):
         removed = []
         for i in range(len(script)):
             words = script[i].split()
-            if len(words)<=0 or words[0]!="import":
+            if "import" not in words:
                 plines.append ( script[i] )
             else:
                 removed.append ( script[i] )
