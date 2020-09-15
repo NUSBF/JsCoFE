@@ -55,7 +55,17 @@ function TaskGemmi()  {
         type     : 'label',
         keyword  : 'none',
         label    : '<hr><b style="font-size:1.125em;">Gemmi script</b>',
-        position : [0,0,1,1]
+        position : [0,0,1,3]
+    },
+    MANUAL : {
+      type     : 'label',
+      keyword  : 'none',
+//      align    : 'right',
+//      lwidth   : 500,
+      label    : '&nbsp;<br><div style="font-size:14px;">' +
+                 '<a href="https://gemmi.readthedocs.io/en/latest/" target="_blank">' +
+                 '<i>gemmi reference</i></a> (opens in new window)</div>',
+      position : [0,1,1,1]
     },
     SCRIPT : {
         type        : 'aceditor_',  // can be also 'textarea'
@@ -65,8 +75,8 @@ function TaskGemmi()  {
         iheight     : 320,          // optional
         value       :  // mandatory
           '"""\n' +
-          ' Place an ordinary python script here, assuming that:\n' +
-          '  - modules gemmigemmi and math are imported\n' +
+          ' Place a python script here, assuming that:\n' +
+          '  - modules gemmi and math are imported\n' +
           '  - structure data number N is read in gemmi documents "stN"\n' +
           '  - document "st1" will be saved automatically as the corresponding input\n' +
           '    data object (structure revision, structure, ensemble, model or xyz)\n\n' +
