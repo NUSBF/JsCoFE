@@ -3,9 +3,25 @@ CCP4 Cloud Version Log
 ======================
 
 
+**Version 1.6.015**
+
+    *Released on --.--.2020 with CCP4 7.1.005*
+
+    **Changes and new features**
+
+    #. ``Gemmi`` task added for custom manipulation with atomic coordinates
+
+    #. ``Refmac`` verdict section updated
+
+    #. ED fit analysis improvements in ``CCP4Build``, leading to more stable convergence
+
+    #. Documentation updates
+
+
+
 **Version 1.6.014**
 
-    *Released on --.--.2020 with CCP4 7.1.004*
+    *Released on 14.09.2020 with CCP4 7.1.004*
 
     **Changes and new features**
 

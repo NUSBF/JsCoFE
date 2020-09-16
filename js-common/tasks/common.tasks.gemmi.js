@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    13.09.20   <--  Date of Last Modification.
+ *    16.09.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -31,13 +31,15 @@ function TaskGemmi()  {
   if (__template)  __template.TaskTemplate.call ( this );
              else  TaskTemplate.call ( this );
 
-  this._type = 'TaskGemmi';
-  this.name  = 'gemmi tools';
-  this.oname = 'gemmi';   // asterisk here means do not use
-  this.title = 'Gemmi terminal';
+  this._type   = 'TaskGemmi';
+  this.name    = 'gemmi tools';
+  this.oname   = 'gemmi';   // asterisk here means do not use
+  this.title   = 'Gemmi terminal';
+  this.nc_type = 'client';    // job may be run only on client NC
 
   this.input_dtypes = [{  // input data types
       data_type   : {'DataRevision'  : ['xyz','substructure'],
+                     'DataStructure' : ['xyz','substructure'],
                      'DataEnsemble'  : [],
                      'DataModel'     : [],
                      'DataXYZ'       : []
