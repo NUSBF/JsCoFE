@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    01.05.20   <--  Date of Last Modification.
+#    16.09.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -75,24 +75,20 @@ class Morda(basic.TaskDriver):
 
         # get "extra" command line arguments
 
-        # currently args 4 and 5 are missing
-
-        '''
-        queueName = sys.argv[4]
-        nSubJobs = sys.argv[5]
-        '''
-
         # temporary fix:
 
-        queueName = "";
-        if len(sys.argv)>4:
-            if sys.argv[4]!="-":
-                queueName = sys.argv[4]
+        queueName = self.getCommandLineParameter ( "queue" )
+        #queueName = "";
+        #if len(sys.argv)>4:
+        #    if sys.argv[4]!="-":
+        #        queueName = sys.argv[4]
 
         if self.jobManager == "SGE":
-            nSubJobs = "0";
-            if len(sys.argv)>5:
-                nSubJobs = sys.argv[5]
+            nSubJobs = self.getCommandLineParameter ( "nproc" )
+            if not nSubJobs:
+                nSubJobs = "0"
+            #if len(sys.argv)>5:
+            #    nSubJobs = sys.argv[5]
         else:
             nSubJobs = "4"
 

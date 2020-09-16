@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    03.04.20   <--  Date of Last Modification.
+#    16.09.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -67,12 +67,14 @@ class Simbad(asudef.ASUDef):
 
         qtype = []
         if self.jobManager in ["SGE","SLURM"]:
-            nSubJobs = "0";
-            if len(sys.argv)>5:
-                nSubJobs = sys.argv[5]
+            nSubJobs = self.getCommandLineParameter ( "nproc" )
+            if not nSubJobs:
+                nSubJobs = "0"
+            #if len(sys.argv)>5:
+            #    nSubJobs = sys.argv[5]
             #qtype = ["-submit_qtype",self.jobManager.lower()]
         else:
-            nSubJobs = "4";
+            nSubJobs = "4"
 
         # fetch input data
         hkl = None

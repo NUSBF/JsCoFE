@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    04.04.20   <--  Date of Last Modification.
+#    16.09.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -487,15 +487,17 @@ class CCP4go(import_task.Import):
             self.write_stdin ( "\n" )
             self.close_stdin()
 
-            queueName = "";
-            if len(sys.argv)>4:
-                if sys.argv[4]!="-":
-                    queueName = sys.argv[4]
+            queueName = self.getCommandLineParameter("queue")
+            #if len(sys.argv)>4:
+            #    if sys.argv[4]!="-":
+            #        queueName = sys.argv[4]
 
             if self.jobManager == "SGE":
-                nSubJobs = "0";
-                if len(sys.argv)>5:
-                    nSubJobs = sys.argv[5]
+                nSubJobs = self.getCommandLineParameter("nproc");
+                if not nSubJobs:
+                    nSubJobs = "0"
+                #if len(sys.argv)>5:
+                #    nSubJobs = sys.argv[5]
             else:
                 nSubJobs = "4";
 
