@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    23.05.20   <--  Date of Last Modification.
+#    16.09.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -62,11 +62,13 @@ class Xia2(basic.TaskDriver):
     def run(self):
         # Prepare xia2 job
 
-        nSubJobs = "4";
+        nSubJobs = "4"
         if self.jobManager in ["SGE","SCRIPT"]:
-            nSubJobs = "1";
-            if len(sys.argv)>=5:
-                nSubJobs = sys.argv[-1]
+            nSubJobs = self.getCommandLineParameter ( "nproc" )
+            if not nSubJobs:
+                nSubJobs = "1"
+            #if len(sys.argv)>=5:
+            #    nSubJobs = sys.argv[-1]
 
         #have_xds = ("XDS_home" in os.environ) and ("XDSGUI_home" in os.environ)
         have_xds   = ("XDS_home"   in os.environ)

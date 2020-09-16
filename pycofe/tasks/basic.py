@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    26.06.20   <--  Date of Last Modification.
+#    16.09.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -160,7 +160,9 @@ class TaskDriver(object):
 
     widget_no     = 0    # widget Id unificator
     navTreeId     = ""   # navigation tree Id
-    title_grid_id = None #  id of title grid
+    title_grid_id = None # id of title grid
+
+    appVersion    = ""   # jsCoFE version for reporting
     start_date    = ""
     end_date      = ""
 
@@ -173,6 +175,13 @@ class TaskDriver(object):
 
     # ========================================================================
     # initiaisation
+
+    def getCommandLineParameter ( self,name ):
+        for i in range(len(sys.argv)):
+            if sys.argv[i].startswith(name+"="):
+                return sys.argv[i].split("=")[1]
+        return ""
+
 
     def __init__ ( self,title_str,module_name,options={}, args=None ):
         #
@@ -208,6 +217,7 @@ class TaskDriver(object):
         self.job_dir    = args[1]
         self.job_id     = args[2]
         self.jscofe_dir = sys.argv[0][0:sys.argv[0].rfind("pycofe")]
+        self.appVersion = self.getCommandLineParameter("jscofe_version")
 
         temp = None
         for tmp in 'CCP4_SCR', 'TMPDIR', 'TEMP', 'TMP':
@@ -413,6 +423,19 @@ class TaskDriver(object):
         widgetId = wid + "_" + str(self.widget_no)
         self.widget_no += 1
         return widgetId
+
+    # ============================================================================
+
+    def getCCP4Version(self):
+        version = ""
+        if "CCP4" in os.environ:
+            try:
+                f = open ( os.path.join(os.environ["CCP4"],"lib","ccp4","MAJOR_MINOR"), "r" )
+                version = f.read().strip()
+                f.close()
+            except:
+                version = "x.x.xxx"
+        return version
 
     # ============================================================================
 
@@ -2016,7 +2039,9 @@ class TaskDriver(object):
             #                         "{:03d}".format(msecs)
         self.putMessage1 ( self.title_grid_id,
                 "<div style=\"text-align:right;font-size:12px;white-space:nowrap;\">" +\
-                "Started: " + self.start_date +\
+                "CCP4 v." + self.getCCP4Version() + "; " +\
+                self.appName() + " v." + self.appVersion.split()[0] +\
+                "<br>Started: "  + self.start_date +\
                 "<br>Finished: " + self.end_date + cpu_time +\
                 "</div>",
                 0,col=1 )

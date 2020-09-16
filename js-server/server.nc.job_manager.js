@@ -821,15 +821,16 @@ function ncRunJob ( job_token,meta )  {
     if (task.fasttrack)
       jobEntry.exeType = 'SHELL';
 
-    var cmd = task.getCommandLine ( ncConfig.jobManager,jobDir );
+    var command = task.getCommandLine ( ncConfig.jobManager,jobDir );
+    command.push ( 'jscofe_version=' + cmd.appVersion() );
 
     switch (jobEntry.exeType)  {
 
       default      :
       case 'CLIENT':
       case 'SHELL' :  log.standard ( 5,'starting... ' );
-                      cmd.push ( nproc.toString() );
-                      var job = utils.spawn ( cmd[0],cmd.slice(1),{} );
+                      command.push ( 'nproc=' + nproc.toString() );
+                      var job = utils.spawn ( command[0],command.slice(1),{} );
                       jobEntry.pid = job.pid;
 
                       log.standard ( 5,'task ' + task.id + ' started, pid=' +
@@ -876,16 +877,16 @@ function ncRunJob ( job_token,meta )  {
                       });
                   break;
 
-      case 'SGE'   :  cmd.push ( ncConfig.getQueueName() );
-                      //cmd.push ( Math.max(1,Math.floor(ncConfig.capacity/4)).toString() );
-                      cmd.push ( nproc.toString() );
+      case 'SGE'   :  command.push ( 'queue=' + ncConfig.getQueueName() );
+                      //command.push ( Math.max(1,Math.floor(ncConfig.capacity/4)).toString() );
+                      command.push ( 'nproc=' + nproc.toString() );
                       var jname = getJobName();
                       var qsub_params = ncConfig.exeData.concat ([
                         '-o',path.join(jobDir,'_job.stdo'),  // qsub stdout
                         '-e',path.join(jobDir,'_job.stde'),  // qsub stderr
                         '-N',jname
                       ]);
-                      var job = utils.spawn ( 'qsub',qsub_params.concat(cmd),{} );
+                      var job = utils.spawn ( 'qsub',qsub_params.concat(command),{} );
                       // in this mode, we DO NOT put job listener on the spawn
                       // process, because it is just SGE job scheduler, which
                       // quits nearly immediately; however, we use listeners to
@@ -914,9 +915,9 @@ function ncRunJob ( job_token,meta )  {
 
                   break;
 
-      case 'SCRIPT' : cmd.push ( ncConfig.getQueueName() );
-                      //cmd.push ( Math.max(1,Math.floor(ncConfig.capacity/4)).toString() );
-                      cmd.push ( nproc.toString() );
+      case 'SCRIPT' : command.push ( 'queue=' + ncConfig.getQueueName() );
+                      //command.push ( Math.max(1,Math.floor(ncConfig.capacity/4)).toString() );
+                      command.push ( 'nproc=' + nproc.toString() );
                       var jname = getJobName();
                       var script_params = [
                         'start',
@@ -925,7 +926,7 @@ function ncRunJob ( job_token,meta )  {
                         jname,
                         ncores
                       ];
-                      var job = utils.spawn ( ncConfig.exeData,script_params.concat(cmd),{} );
+                      var job = utils.spawn ( ncConfig.exeData,script_params.concat(command),{} );
                       // in this mode, we DO NOT put job listener on the spawn
                       // process, because it is just the launcher script, which
                       // quits nearly immediately; however, we use listeners to
