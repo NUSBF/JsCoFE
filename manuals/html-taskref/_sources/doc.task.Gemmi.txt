@@ -17,3 +17,5 @@ After execution, the task will produce a copy of input object, where all solvent
 
 Principles of Gemmi library and the list of available functions can be found `here <https://gemmi.readthedocs.io/en/latest/>`_.
 
+Due to security implications, this task can be run only on user's machine via CCP4 Cloud Client.
+

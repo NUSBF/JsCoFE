@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    13.09.20   <--  Date of Last Modification.
+#    16.09.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -77,6 +77,8 @@ class Gemmi(basic.TaskDriver):
                     xyzpath = st.Substructure.getSubFilePath ( self.inputDir() )
             else:
                 xyzpath = st.getXYZFilePath ( self.inputDir() )
+                if not xyzpath and st._type=="DataStructure":
+                    xyzpath = st.getSubFilePath ( self.inputDir() )
             if xyzpath:
                 plines.append (
                     "st" + str(i+1) + " = gemmi.read_structure ( \"" +\
@@ -161,10 +163,10 @@ class Gemmi(basic.TaskDriver):
                                      leadKey=st0.leadKey,copy_files=True,
                                      map_labels=st0.mapLabels )
                 if xyz:
-                    xyz.copyAssociations   ( xyz )
-                    xyz.addDataAssociation ( xyz.dataId )  # ???
-                    xyz.copySubtype        ( xyz )
-                    xyz.copyLigands        ( xyz )
+                    xyz.copyAssociations   ( st0 )
+                    xyz.addDataAssociation ( st0.dataId )  # ???
+                    xyz.copySubtype        ( st0 )
+                    xyz.copyLigands        ( st0 )
                     if not xyzfname:
                         xyz.removeSubtype ( dtype_template.subtypeXYZ() )
                     self.putStructureWidget ( "structure_btn",
@@ -174,6 +176,35 @@ class Gemmi(basic.TaskDriver):
                     revision = self.makeClass ( struct0  )
                     revision.setStructureData ( xyz      )
                     self.registerRevision     ( revision )
+                    have_results = True
+                else:
+                    # close execution logs and quit
+                    self.fail ( "<h3>Structure was not formed (error)</h3>",
+                                "Structure was not formed" )
+
+            elif struct0._type=="DataStructure":
+                xyzfname = None
+                subfname = outfname
+                if struct0.hasSubtype(dtype_template.subtypeXYZ()):
+                    xyzfname = outfname
+                    subfname = None
+                xyz = self.registerStructure ( xyzfname,subfname,
+                                     struct0.getMTZFilePath(self.inputDir()),
+                                     struct0.getMapFilePath(self.inputDir()),
+                                     struct0.getDMapFilePath(self.inputDir()),
+                                     libPath=struct0.getLibFilePath(self.inputDir()),
+                                     leadKey=struct0.leadKey,copy_files=True,
+                                     map_labels=struct0.mapLabels )
+                if xyz:
+                    xyz.copyAssociations   ( struct0 )
+                    xyz.addDataAssociation ( struct0.dataId )  # ???
+                    xyz.copySubtype        ( struct0 )
+                    xyz.copyLigands        ( struct0 )
+                    if not xyzfname:
+                        xyz.removeSubtype ( dtype_template.subtypeXYZ() )
+                    self.putStructureWidget ( "structure_btn",
+                                              "Structure and electron density",
+                                              xyz )
                     have_results = True
                 else:
                     # close execution logs and quit
