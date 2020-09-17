@@ -730,14 +730,14 @@ function ncJobFinished ( job_token,code )  {
                            job_token );
         removeJobDelayed ( job_token,task_t.job_code.finished );
 
-      },function(stageNo,code){  // send failed
+      },function(stageNo,errcode){  // send failed
 
         if (stageNo==2)  {
 
           // do not countdown trials here
           log.warning ( 3,'repeat sending task ' + task.id +
                           ' back to FE due to send errors [' +
-                           JSON.stringify(code) + ']' );
+                           JSON.stringify(errcode) + ']' );
           setTimeout ( function(){ ncJobFinished(job_token,code); },
                        conf.getServerConfig().sendDataWaitTime );
 
@@ -746,7 +746,7 @@ function ncJobFinished ( job_token,code )  {
           jobEntry.sendTrials--;
           log.warning ( 4,'repeat sending task ' + task.id +
                           ' back to FE due to FE errors (stage' +
-                          stageNo + ', code [' + JSON.stringify(code) + '])' );
+                          stageNo + ', code [' + JSON.stringify(errcode) + '])' );
           setTimeout ( function(){ ncJobFinished(job_token,code); },
                        conf.getServerConfig().sendDataWaitTime );
 

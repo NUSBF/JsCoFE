@@ -1185,8 +1185,6 @@ function MessageBox ( title,message )  {
 
 }).call(this);
 
-//# sourceMappingURL=gauge.js.map
-
 
 function GaugeWidget ( holderId,sectionId,width,value,maxValue,options )  {
 
