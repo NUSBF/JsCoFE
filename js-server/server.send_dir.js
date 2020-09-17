@@ -72,17 +72,21 @@ function packDir ( dirPath, fileSelection, dest_path, onReady_func )  {
 
   if (__use_ziplib)  {
 
-    zl.archiveFolder ( dirPath,tmpFile,{ followSymlinks : true } )
-      .then(function() {
-        if (dest_path)
-              utils.moveFile ( tmpFile,dest_path   );
-        else  utils.moveFile ( tmpFile,jobballPath );
-        onReady_func ( 0,utils.fileSize(jobballPath) );
-      }, function(err) {
-        log.error ( 11,'zip packing error: ' + err + ', encountered in ' + dirPath );
-        utils.removeFile ( tmpFile );
-        onReady_func ( err,0 );
-      });
+    try {
+      zl.archiveFolder ( dirPath,tmpFile,{ followSymlinks : true } )
+        .then(function() {
+          if (dest_path)
+                utils.moveFile ( tmpFile,dest_path   );
+          else  utils.moveFile ( tmpFile,jobballPath );
+          onReady_func ( 0,utils.fileSize(jobballPath) );
+        }, function(err) {
+          log.error ( 11,'zip packing error: ' + err + ', encountered in ' + dirPath );
+          utils.removeFile ( tmpFile );
+          onReady_func ( err,0 );
+        });
+    } catch(error)  {
+      log.error ( 11,'zlib catched error: ' + error );
+    }
 
   } else  {
 
@@ -192,7 +196,6 @@ var sender_cfg = conf.getServerConfig();
 
     packDir ( dirPath, fileSelection, null, function(code){
 
-//      if (code==0)  {
       if (!code)  {
 
         // 2. Send jobball to server
