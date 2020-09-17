@@ -72,21 +72,17 @@ function packDir ( dirPath, fileSelection, dest_path, onReady_func )  {
 
   if (__use_ziplib)  {
 
-    try {
-      zl.archiveFolder ( dirPath,tmpFile,{ followSymlinks : true } )
-        .then(function() {
-          if (dest_path)
-                utils.moveFile ( tmpFile,dest_path   );
-          else  utils.moveFile ( tmpFile,jobballPath );
-          onReady_func ( 0,utils.fileSize(jobballPath) );
-        }, function(err) {
-          log.error ( 11,'zip packing error: ' + err + ', encountered in ' + dirPath );
-          utils.removeFile ( tmpFile );
-          onReady_func ( err,0 );
-        });
-    } catch(error)  {
-      log.error ( 11,'zlib catched error: ' + error );
-    }
+    zl.archiveFolder ( dirPath,tmpFile,{ followSymlinks : true } )
+      .then(function() {
+        if (dest_path)
+              utils.moveFile ( tmpFile,dest_path   );
+        else  utils.moveFile ( tmpFile,jobballPath );
+        onReady_func ( 0,utils.fileSize(jobballPath) );
+      }, function(err) {
+        log.error ( 11,'zip packing error: ' + err + ', encountered in ' + dirPath );
+        utils.removeFile ( tmpFile );
+        onReady_func ( err,0 );
+      });
 
   } else  {
 
@@ -194,7 +190,7 @@ var sender_cfg = conf.getServerConfig();
 
     // 1. Pack files, assume tar
 
-    packDir ( dirPath, fileSelection, null, function(code){
+    packDir ( dirPath, fileSelection, null, function(code,jobballSize){
 
       if (!code)  {
 
