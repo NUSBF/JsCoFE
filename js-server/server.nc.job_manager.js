@@ -732,20 +732,11 @@ function ncJobFinished ( job_token,code )  {
 
       },function(stageNo,errcode){  // send failed
 
-        if (stageNo==2)  {
-
-          // do not countdown trials here
-          log.warning ( 3,'repeat sending task ' + task.id +
-                          ' back to FE due to send errors [' +
-                           JSON.stringify(errcode) + ']' );
-          setTimeout ( function(){ ncJobFinished(job_token,code); },
-                       conf.getServerConfig().sendDataWaitTime );
-
-        } else if (jobEntry.sendTrials>0)  {  // try to send again
+        if ((stageNo>=2) && (jobEntry.sendTrials>0))  {  // try to send again
 
           jobEntry.sendTrials--;
-          log.warning ( 4,'repeat sending task ' + task.id +
-                          ' back to FE due to FE errors (stage' +
+          log.warning ( 4,'repeat (' + jobEntry.sendTrials + ') sending task ' +
+                          task.id + ' back to FE due to FE/transmission errors (stage' +
                           stageNo + ', code [' + JSON.stringify(errcode) + '])' );
           setTimeout ( function(){ ncJobFinished(job_token,code); },
                        conf.getServerConfig().sendDataWaitTime );
