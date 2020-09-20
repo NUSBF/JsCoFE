@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.04.20   <--  Date of Last Modification.
+ *    19.09.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -140,9 +140,14 @@ if (!__template)  {
     if (istruct && ('coot_meta' in istruct) && istruct.coot_meta)  {
       var coot_meta = istruct.coot_meta;
       var srcJobDir = prj.getSiblingJobDirPath ( jobDir,coot_meta.jobId );
+      /*
       for (var fname of coot_meta.files)
         utils.copyFile ( path.join(srcJobDir,fname),
                          path.join(jobDir,fname) );
+      */
+      for (var i=0;i<coot_meta.files.length;i++)
+        utils.copyFile ( path.join(srcJobDir,coot_meta.files[i]),
+                         path.join(jobDir,coot_meta.files[i]) );
       //  This is commented out because Coot creates platform-incompatible file
       //  names in backup directory
       //if (coot_meta.backup_dir)

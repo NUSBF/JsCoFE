@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    26.03.20   <--  Date of Last Modification.
+ *    19.09.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -237,12 +237,14 @@ TaskLsqKab.prototype.makeFitParamRow = function ( rowNo )  {
       position : [rno,0,1,1]
     };
 
-  var hide_on = { [fitKey] : ['NO'] };
+  var hide_on = {};
+  hide_on[fitKey] = ['NO'];
   if (rowNo>1)  {
     hide_on['_'] = '||';
     var refHide  = 'FIT_' + (rowNo-1) + '_SEL';
     hide_on[refHide] = ['NO'];
-    this.parameters.sec1.contains[fitKey].hideon = { [refHide]:['NO'] };
+    this.parameters.sec1.contains[fitKey].hideon = {};
+    this.parameters.sec1.contains[fitKey].hideon[refHide] = ['NO'];
   }
 
   this.parameters.sec1.contains['FITFROM'+rowNo] = {

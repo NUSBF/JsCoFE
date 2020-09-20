@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    05.07.20   <--  Date of Last Modification.
+ *    19.09.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -129,6 +129,7 @@ function MessageBoxF ( title,message,btn_name,onClick_func,uncloseable_bool )  {
   Dialog.call ( this,title );
   this.element.innerHTML = message;
 
+  /*
   this._options = {
     resizable : false,
     height    : 'auto',
@@ -141,6 +142,21 @@ function MessageBoxF ( title,message,btn_name,onClick_func,uncloseable_bool )  {
           window.setTimeout ( onClick_func,0 );
       }
     }
+  }
+  */
+
+  this._options = {
+    resizable : false,
+    height    : 'auto',
+    width     : 'auto',
+    modal     : true,
+    buttons   : {}
+  }
+
+  this._options.buttons[btn_name] = function() {
+    $( this ).dialog( "close" );
+    if (onClick_func)
+      window.setTimeout ( onClick_func,0 );
   }
 
   if (uncloseable_bool)  {
@@ -322,6 +338,7 @@ function QuestionBox ( title,message,btn1_name,onButton1_func,
   this.element.innerHTML = message;
   document.body.appendChild ( this.element );
 
+  /*
   $(this.element).dialog({
     resizable : false,
     height    : 'auto',
@@ -340,6 +357,29 @@ function QuestionBox ( title,message,btn1_name,onButton1_func,
       }
     }
   });
+  */
+
+  this.options = {
+    resizable : false,
+    height    : 'auto',
+    width     : 'auto',
+    modal     : true,
+    buttons   : {}
+  };
+
+  this.options.buttons[btn1_name] = function() {
+    if (onButton1_func)
+      onButton1_func();
+    $( this ).dialog( "close" );
+  }
+
+  this.options.buttons[btn2_name] = function() {
+    if (onButton2_func)
+      onButton2_func();
+    $( this ).dialog( "close" );
+  }
+
+  $(this.element).dialog ( this.options );
 
 }
 
@@ -365,6 +405,26 @@ InputBox.prototype.setText = function ( text )  {
 
 InputBox.prototype.launch = function ( name_btn,add_func )  {
 
+  this.options = {
+    resizable : false,
+    height    : 'auto',
+    width     : 'auto',
+    modal     : true,
+    buttons   : {}
+  };
+
+  this.options.buttons[name_btn] = function() {
+    if (add_func())
+      $(this).dialog( "close" );
+  }
+
+  this.options.buttons['Cancel'] = function() {
+    $(this).dialog( "close" );
+  }
+
+  $(this.element).dialog ( this.options );
+
+  /*
   $(this.element).dialog({
     resizable : false,
     height    : 'auto',
@@ -380,5 +440,6 @@ InputBox.prototype.launch = function ( name_btn,add_func )  {
       }
     }
   });
+  */
 
 }

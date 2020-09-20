@@ -1,6 +1,6 @@
 {
     "name": "CCP4_Cloud",
-    "version": "1.6.005",
+    "version": "1.6.015",
     "dependencies": {
         "check-disk-space": "*",
         "child_process": "*",
@@ -8,14 +8,16 @@
         "formidable": "^1.2.2",
         "fs-extra": "^8.1.0",
         "http": "*",
-        "http-proxy": "^1.18.0",
+        "http-proxy": "^1.18.1",
         "https": "*",
         "nodemailer": "^6.4.4",
         "ps-tree": "^1.2.0",
         "request": "^2.88.2",
         "tmp": "*",
+        "uglify-js": "*",
         "url": "*",
+        "util": "^0.12.2",
         "zip-lib": "*",
-        "util": "^0.12.2"
+        "csso": "*"
     }
 }
