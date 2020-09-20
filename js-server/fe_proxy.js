@@ -32,7 +32,7 @@ var conf          = require('./server.configuration');
 var feproxy_start = require('./server.feproxy.start');
 
 //  prepare log
-var log = require('./server.log').newLog(23);
+var log = require('./server.log').newLog(24);
 
 
 // ==========================================================================

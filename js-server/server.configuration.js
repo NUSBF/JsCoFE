@@ -875,7 +875,7 @@ function checkPythonVersion()  {
     if (stdout)
       _python_ver = stdout.split(' ').slice(-1)[0].trim();
     else if (stderr)
-      _python_ver = stderr.split(' ').slice(-1)[0].trim();
+      _python_ver = pythonName() + ' not found';
     log.standard ( 5,'python version: ' + pythonVersion() );
   });
 }
