@@ -386,7 +386,7 @@ def test_sharingBasic(browser,
         shareProject(driver, login+'2')
         joinSharedProject(driver2, testName)
         sf.enterProject(driver2, testName)
-        time.sleep(1)
+        time.sleep(2)
         sf.asymmetricUnitContentsAfterCloudImport(driver2, waitShort)
         time.sleep(1)
 
