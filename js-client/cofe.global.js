@@ -60,6 +60,11 @@ var __iOS_device    = (/iPad|iPhone|iPod/.test(navigator.userAgent) && !window.M
 var __any_mobile_device = __mobile_device || __iOS_device;
 //var iOS = !!navigator.platform && /iPad|iPhone|iPod/.test(navigator.platform);
 
+if ((navigator.userAgent.indexOf('Version/14')>=0) &&
+    (navigator.userAgent.indexOf('Safari')>=0))
+  alert ( 'You are using Mac OSX Safari Version 14, which is known not to work ' +
+          'well with ' + appName() + '. Please use another browser, such as ' +
+          'Opera, Chrome, Firefox.' );
 
 // ===========================================================================
 

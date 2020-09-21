@@ -279,13 +279,15 @@ BasePage.prototype.addFullscreenToMenu = function()  {
     this.headerPanel.menu.addSeparator();
   this.headerPanel.menu.addItem('Toggle fullscreen',image_path('fullscreen'))
                        .addOnClickListener ( toggleFullScreen );
+  return this;
 }
+
 
 BasePage.prototype.addLogoutToMenu = function ( logout_func )  {
   this.addFullscreenToMenu();
-  //this.headerPanel.menu.addSeparator();
   this.headerPanel.menu.addItem('Log out',image_path('logout'))
                        .addOnClickListener ( logout_func );
+  return this;
 }
 
 
