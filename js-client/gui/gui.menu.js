@@ -27,7 +27,6 @@
 
 function MenuItem ( text,icon_uri )  {
   Widget.call ( this,'a' );
-//  this.element.setAttribute ( 'href','#menuitem_'+this.element.id );
   this.setNoWrap();
   if (icon_uri.length>0)  {
     $(this.element).css(
@@ -90,25 +89,24 @@ document.onclick = function(event)  {
 
 function Menu ( text,icon_uri )  {
   Widget.call ( this,'div' );
-  this.element.setAttribute ( 'class','menu-dropdown' );
+  this.addClass ( 'menu-dropdown' );
   this.disabled = false;
   if ((text!='') || (icon_uri!=''))  {
     this.button = new IconLabel ( text,icon_uri );
     this.button.setNoWrap();
-    this.button.element.setAttribute ( 'class','menu-dropbtn' );
+    //this.button.element.setAttribute ( 'class','menu-dropbtn' );
+    this.button.addClass ( 'menu-dropbtn' );
     if ((text=='') && (icon_uri!=''))  {
       $(this.button.element).css ({'background-color':'transparent',
                                    'background-size' :'28px'});
     }
-    this.addWidget ( this.button   );
+    this.addWidget ( this.button );
     (function(menu){
       menu.button.addOnClickListener ( function(){
-        //if (!menu.disabled)
-        //  menu.dropdown.element.classList.toggle ( 'menu-show' );
         __close_all_menus();
         if (!menu.disabled)  {
           __onclick_ignore_counter++;
-          menu.dropdown.element.classList.toggle ( 'menu-show' );
+          menu.dropdown.toggleClass ( 'menu-show' );
         }
       });
     }(this));
@@ -116,7 +114,7 @@ function Menu ( text,icon_uri )  {
     this.button = null;
   }
   this.dropdown = new Widget ( 'div' );
-  this.dropdown.element.setAttribute ( 'class','menu-dropdown-content' );
+  this.dropdown.addClass ( 'menu-dropdown-content' );
   this.addWidget ( this.dropdown );
   this.n_items = 0;
 }
@@ -125,7 +123,8 @@ Menu.prototype = Object.create ( Widget.prototype );
 Menu.prototype.constructor = Menu;
 
 Menu.prototype.setMenuIcon = function ( icon_uri )  {
-  this.button.setBackground ( icon_uri );
+  if (this.button)
+    this.button.setBackground ( icon_uri );
 }
 
 Menu.prototype.addItem = function ( text,icon_uri )  {
@@ -136,23 +135,18 @@ var mi = new MenuItem ( text,icon_uri );
 }
 
 Menu.prototype.addSeparator = function ()  {
-  menuItem = new MenuItem ( '<hr/>','' );
-  this.dropdown.addWidget ( menuItem   );
+var mi = new MenuItem ( '<hr/>','' );
+  this.dropdown.addWidget ( mi   );
   this.n_items++;
+  return mi;
 }
 
 Menu.prototype.setDisabled = function ( disabled_bool )  {
   this.disabled = disabled_bool;
-//  this.button  .setDisabled ( disabled_bool );
-//  this.dropdown.setDisabled ( disabled_bool );
-//  Widget.prototype.setDisabled.call ( this,disabled_bool );
 }
 
 Menu.prototype.setEnabled = function ( enabled_bool )  {
   this.disabled = !enabled_bool;
-//  this.button  .setEnabled ( enabled_bool );
-//  this.dropdown.setEnabled ( enabled_bool );
-//  Widget.prototype.setEnabled.call ( this,enabled_bool );
 }
 
 Menu.prototype.setZIndex = function ( zindex )  {
@@ -179,27 +173,6 @@ Menu.prototype.setHeight_px = function ( height_int )  {
   $(this.dropdown.element).css ( 'max-height', height_int + 'px' );
 }
 
-/*
-document.onclick = function(event)  {
-  if (__onclick_ignore_counter>0)
-    __onclick_ignore_counter--;
-  else if (event.target!==undefined)  {
-    //console.log ( event.target );
-    try {
-      if (!event.target.matches('.menu-dropbtn'))  {
-        var dropdowns = document.getElementsByClassName("menu-dropdown-content");
-        for (var i=0;i<dropdowns.length;i++) {
-          var openDropdown = dropdowns[i];
-          if (openDropdown.classList.contains('menu-show')) {
-            openDropdown.classList.remove('menu-show');
-          }
-        }
-      }
-    } catch (e) {}
-  }
-}
-*/
-
 // -------------------------------------------------------------------------
 // ContextMenu class
 
@@ -209,13 +182,11 @@ function ContextMenu ( widget )  {
   $(this.element).height ( 1 );
   (function(menu){
     widget.addOnRightClickListener ( function(){
-      //if (!menu.disabled)  {
-        __close_all_menus();
-        if (!menu.disabled)  {
-          __onclick_ignore_counter++;
-          menu.dropdown.element.classList.toggle ( 'menu-show' );
-        }
-      //}
+      __close_all_menus();
+      if (!menu.disabled)  {
+        __onclick_ignore_counter++;
+        menu.dropdown.element.classList.toggle ( 'menu-show' );
+      }
     });
   }(this));
 }
@@ -270,7 +241,6 @@ Dropdown.prototype.constructor = Dropdown;
 
 Dropdown.prototype.reset = function()  {
   $(this.select.element).selectmenu('destroy');
-  //this.select.innerHTML = '';
   this.removeChild ( this.select );
   this.select = new Widget ( 'select' );
   this.addWidget ( this.select );
@@ -280,7 +250,6 @@ Dropdown.prototype.addItem = function ( text,icon_uri,itemId,selected_bool )  {
 var item = new Widget ( 'option' );
   item.element.setAttribute ( 'value',itemId );
   item.value = itemId;
-  //item.element.setAttribute ( 'disabled','disabled' );
   if (selected_bool)  {
     item.element.setAttribute ( 'selected','selected' );
     this.selected_value = itemId;
@@ -557,8 +526,6 @@ Dropdown.prototype.setEnabled = function ( enable_bool )  {
 
 Dropdown.prototype.deleteItem = function ( itemId )  {
 
-//  $("#" + this.select.element.id + " option[value='" + itemId + "']").remove();
-
   var n       = -1;
   var selItem = null;
   function delItem ( ddn,widget )  {
@@ -759,298 +726,3 @@ ComboDropdown.prototype.getValues = function()  {
     else  values.push ( "" );
   return values;
 }
-
-
-/*
-// -------------------------------------------------------------------------
-// MenuItem class
-
-function MenuItem ( text,icon_uri )  {
-  Widget.call ( this,'li' );
-//  this.element.setAttribute ( 'href','#menuitem_'+this.element.id );
-  this.setNoWrap();
-  if (icon_uri.length>0)  {
-    $(this.element).css(
-      {'background-image'   :'url("'+icon_uri+'")',
-       'background-repeat'  :'no-repeat',
-       'background-size'    :'1.25em',
-       'background-position':'0.25em center'});
-  }
-  if (text.length>0)  {
-    this.text_div = new Widget ( 'div' );
-    this.text_div.element.innerHTML = text;
-    $(this.text_div.element).css({'text-align' :'left',
-                                  'white-space':'nowrap'});
-    if (icon_uri.length>0)
-      $(this.text_div.element).css({'margin-left':'1.5em'});
-    this.addWidget ( this.text_div );
-  } else
-    this.text_div = null;
-  this.menu = 0;
-}
-
-MenuItem.prototype = Object.create ( Widget.prototype );
-MenuItem.prototype.constructor = MenuItem;
-
-
-MenuItem.prototype.addMenu = function ( menu )  {
-  this.addWidget ( menu );
-  this.menu = menu;
-}
-
-MenuItem.prototype.setFontItalic = function ( italic )  {
-  if (this.text_div)
-    this.text_div.setFontItalic ( italic );
-  return this;
-}
-
-
-
-// -------------------------------------------------------------------------
-// Menu class
-
-function Menu ( text,icon_uri )  {
-  Widget.call ( this,'div' );
-  this.element.setAttribute ( 'class','menu-dropdown' );
-  this.disabled = false;
-  this.button = new IconLabel ( text,icon_uri );
-  this.button.setNoWrap();
-  this.button.element.setAttribute ( 'class','menu-dropbtn' );
-  if ((text=='') && (icon_uri!=''))  {
-    $(this.button.element).css( {'background-color':'transparent',
-                                 'background-size' :'28px'} );
-  }
-  this.dropdown = new Widget ( 'ul' );
-//  this.dropdown.element.setAttribute ( 'class','menu-dropdown-content' );
-  this.addWidget ( this.button   );
-  this.addWidget ( this.dropdown );
-  (function(menu){
-    menu.button.addOnClickListener ( function(){
-      if (!menu.disabled)
-        menu.dropdown.toggle();
-//        menu.dropdown.element.classList.toggle ( 'menu-show' );
-    });
-  }(this));
-
-$(this.dropdown.element).menu();
-
-}
-
-Menu.prototype = Object.create ( Widget.prototype );
-Menu.prototype.constructor = Menu;
-
-Menu.prototype.addItem = function ( text,icon_uri )  {
-var mi = new MenuItem ( text,icon_uri );
-  this.dropdown.addWidget ( mi );
-  return mi;
-}
-
-Menu.prototype.addSeparator = function ()  {
-  menuItem = new MenuItem ( '<hr/>','' );
-  this.dropdown.addWidget ( menuItem   );
-}
-
-Menu.prototype.setDisabled = function ( disabled_bool )  {
-  this.disabled = disabled_bool;
-}
-
-Menu.prototype.setEnabled = function ( enabled_bool )  {
-  this.disabled = !enabled_bool;
-}
-
-Menu.prototype.setZIndex = function ( zindex )  {
-  $(this.element).css({'z-index':zindex});
-}
-
-Menu.prototype.setWidth = function ( width )  {
-  this.element.style.width  = width;
-  this.button .setWidth ( width );
-  for (var i=0;i<this.child.length;i++)
-    this.child[i].setWidth ( width );
-}
-
-Menu.prototype.setWidth_px = function ( width_int )  {
-  $(this.element).width ( width_int );
-  this.button .setWidth_px ( width_int );
-  for (var i=0;i<this.child.length;i++)
-    this.child[i].setWidth_px ( width_int );
-}
-
-Menu.prototype.setHeight_px = function ( height_int )  {
-  $(this.dropdown.element).css ( 'max-height', height_int + 'px' );
-}
-*/
-
-
-/*
-// -------------------------------------------------------------------------
-// Dropdown class -- self made
-
-function Dropdown()  {
-  Menu.call ( this,'','' );
-  this.selected_text = '';  // will receive text of the selected item
-  this.selected_item = '';  // will receive itemID of the selected item
-  $(this.element).css({'padding':'2px'});
-  $(this.button.element).css({'padding'   :'4px',
-                              'text-align':'left'});
-  this.setHeight_px ( 160 );
-}
-
-Dropdown.prototype = Object.create ( Menu.prototype );
-Dropdown.prototype.constructor = Dropdown;
-
-Dropdown.prototype.addItem = function ( text,icon_uri,itemId,selected_bool )  {
-var mi = new MenuItem ( text,icon_uri );
-  mi.text     = text;
-  mi.icon_uri = icon_uri;
-  mi.itemId   = itemId;
-  $(mi.element).css({'padding':'2px'});
-  this.dropdown.addWidget ( mi );
-  if (selected_bool)  {
-    this.selected_text = text;
-    this.selected_item = itemId;
-    this.button.setIconLabel ( text,icon_uri );
-  }
-  (function(dropdown){
-    mi.addOnClickListener ( function(){
-      dropdown.selected_text = text;
-      dropdown.selected_item = itemId;
-      dropdown.button.setIconLabel ( text,icon_uri );
-      var event = new CustomEvent ( 'state_changed',{
-        'detail' : {
-          'text' : dropdown.selected_text,
-          'item' : dropdown.selected_item
-        }
-      });
-      dropdown.element.dispatchEvent(event);
-    });
-  }(this));
-  return mi;
-}
-
-Dropdown.prototype.make = function() {}
-
-Dropdown.prototype.click = function()  {
-  (function(dropdown){
-    var event = new CustomEvent ( 'state_changed',{
-      'detail' : {
-        'text' : dropdown.selected_text,
-        'item' : dropdown.selected_item
-      }
-    });
-    dropdown.element.dispatchEvent(event);
-  }(this));
-}
-
-Dropdown.prototype.selectItem = function ( itemId )  {
-
-  for (var i=0;i<this.dropdown.child.length;i++)  {
-    var mi = this.dropdown.child[i];
-    if (mi.itemId==itemId)  {
-      this.selected_text = mi.text;
-      this.selected_item = mi.itemId;
-      this.button.setIconLabel ( mi.text,mi.icon_uri );
-      break;
-    }
-  }
-
-  return this.selected_item;
-
-}
-
-Dropdown.prototype.getValue = function()  {
-  return this.selected_item;
-}
-
-Dropdown.prototype.getText = function()  {
-  return this.selected_text;
-}
-*/
-
-
-
-/*
-<!DOCTYPE html>
-<html>
-<head>
-<style>
-
-.dropbtn {
-    background-color: #4CAF50;
-    color: white;
-    padding: 16px;
-    font-size: 16px;
-    border: none;
-    cursor: pointer;
-}
-
-.dropbtn:hover, .dropbtn:focus {
-    background-color: #3e8e41;
-}
-
-.dropdown {
-    position: relative;
-    display: inline-block;
-}
-
-.dropdown-content {
-    display: none;
-    position: absolute;
-    background-color: #f9f9f9;
-    min-width: 160px;
-    overflow: auto;
-    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-}
-
-.dropdown-content a {
-    color: black;
-    padding: 12px 16px;
-    text-decoration: none;
-    display: block;
-}
-
-.dropdown a:hover {background-color: #f1f1f1}
-
-.show {display:block;}
-</style>
-</head>
-<body>
-
-<h2>Clickable Dropdown</h2>
-<p>Click on the button to open the dropdown menu.</p>
-
-<div class="dropdown">
-<button onclick="myFunction()" class="dropbtn">Dropdown</button>
-  <div id="myDropdown" class="dropdown-content">
-    <a href="#home" onclick='alert("p1");'>Home</a>
-    <a href="#about">About</a>
-    <a href="#contact">Contact</a>
-  </div>
-</div>
-
-<script>
-// When the user clicks on the button,
-//toggle between hiding and showing the dropdown content
-function myFunction() {
-    document.getElementById("myDropdown").classList.toggle("show");
-}
-
-// Close the dropdown if the user clicks outside of it
-window.onclick = function(event) {
-  if (!event.target.matches('.dropbtn')) {
-
-    var dropdowns = document.getElementsByClassName("dropdown-content");
-    var i;
-    for (i = 0; i < dropdowns.length; i++) {
-      var openDropdown = dropdowns[i];
-      if (openDropdown.classList.contains('show')) {
-        openDropdown.classList.remove('show');
-      }
-    }
-  }
-}
-</script>
-
-</body>
-</html>
-*/

@@ -79,6 +79,21 @@ Widget.prototype.removeAttribute = function ( attr )  {
   return this;
 }
 
+Widget.prototype.addClass = function ( class_name )  {
+  this.element.classList.add(class_name);
+  return this;
+}
+
+Widget.prototype.removeClass = function ( class_name )  {
+  this.element.classList.remove(class_name);
+  return this;
+}
+
+Widget.prototype.toggleClass = function ( class_name )  {
+  this.element.classList.toggle(class_name);
+  return this;
+}
+
 Widget.prototype.setTooltip = function ( text )  {
   this.element.setAttribute ( 'title',text );
   var delay    = 1500;
@@ -1189,17 +1204,19 @@ ImageButton.prototype.setImage = function ( icon_uri )  {
 
 function setDefaultButton ( button,context_widget )  {
   button.element.style.fontWeight = 'bold';
-  jQuery(context_widget.element).keydown ( function(e){
+  $(context_widget.element).keydown ( function(e){
     if (e.keyCode == 13) {
+    //if (e.which == 13) {
       // handle click logic here
       button.element.click();
+      //e.preventDefault();
     }
   });
 }
 
 function unsetDefaultButton ( button,context_widget )  {
   button.element.style.fontWeight = 'normal';
-  jQuery(context_widget.element).keydown();
+  $(context_widget.element).keydown();
 }
 
 
