@@ -149,11 +149,38 @@ def makeTestProject(driver, testProjectID, testProjectName):
     return()
 
 
+def importLocalProject(driver, testProjectName):
+    print ('Importing local project. file name: %s' % (testProjectName))
+
+    # click add button
+    addButton = driver.find_element_by_xpath("//button[normalize-space()='Import']")
+    ActionChains(driver).move_to_element(addButton).click(addButton).perform()
+    time.sleep(1)
+
+#    addButton = driver.find_element_by_xpath("//button[normalize-space()='Select project archive(s)']")
+#    ActionChains(driver).move_to_element(addButton).click(addButton).perform()
+#    time.sleep(1)
+
+
+    # Shall return list of two elements for project creation
+    projectInputs = driver.find_elements_by_xpath("//input[contains(@id,'input') and @type='file' and contains(@name,'uploads')]")
+
+    projectInputs[0].send_keys(testProjectName)
+    time.sleep(90)
+
+    clickByXpath(driver, "//button[normalize-space()='Close']")
+    #clickByXpath(driver, "//button[contains(@style, 'images_png/close.png')]")
+    time.sleep(1)
+
+    return()
+
+
 def enterProject(driver, projectId):
     print ('Entering test project. ID: %s' % projectId)
     time.sleep(1)
     projectCell = driver.find_element_by_xpath("//*[contains(text(),'%s')]" % projectId )
     ActionChains(driver).double_click(projectCell).perform()
+    time.sleep(1)
     return()
 
 
@@ -243,6 +270,7 @@ def asymmetricUnitContentsAfterCloudImport(driver, waitShort):
         print('Apparently tha task asymmetricUnitContentsAfterCloudImport has not been completed in time; terminating')
         sys.exit(1)
 
+    time.sleep(1)
     # presing Close button
     clickByXpath(driver, "//button[contains(@style, 'images_png/close.png')]")
     time.sleep(1)
@@ -313,7 +341,7 @@ def renameProject(driver, testName):
     time.sleep(1)
 
     # Shall return list of two elements for project creation
-    projectInput = driver.find_element_by_xpath("//input[@value='%s']" % testName)
+    projectInput = driver.find_element_by_xpath("//input[contains(@value,'%s')]" % testName)
     projectInput.click()
     projectInput.clear()
     projectInput.send_keys('Successfull - %s' % testName)
@@ -350,4 +378,8 @@ def clickTaskInTaskTree(driver, taskName):
 
     return ()
 
+
+class driverHandler:
+    driver = None
+    name = ''
 
