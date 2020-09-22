@@ -18,10 +18,10 @@ def logoutToRelogin(driver):
     print ('Logging out.')
     logoutImg = driver.find_element_by_xpath("//img[contains(@src,'images_png/logout.png')]")
     logoutImg.click()
-    time.sleep(0.25)
+    time.sleep(1.05)
 
     sf.clickByXpath(driver, "//div[normalize-space()='%s']" % 'Back to User Login')
-    time.sleep(0.25)
+    time.sleep(1.05)
 
     return ()
 
@@ -33,14 +33,14 @@ def unjoinProject(driver, testName):
 
     if len(textEls) > 0:
         sf.clickByXpath(driver, "//*[normalize-space()='%s']" % testName)
-        time.sleep(0.25)
+        time.sleep(1.05)
 
         sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Delete')
-        time.sleep(0.25)
+        time.sleep(1.05)
 
         textEls = driver.find_elements_by_xpath("//button[normalize-space()='%s']" % 'Unjoin')
         textEls[0].click()
-        time.sleep(0.25)
+        time.sleep(1.05)
 
     return ()
 
@@ -50,16 +50,16 @@ def startRefmac(driver, waitLong):
 
     addButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/add.png')]")
     addButton.click()
-    time.sleep(0.25)
+    time.sleep(1.05)
 
     sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list')
-    time.sleep(0.25)
+    time.sleep(1.05)
 
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Refinement and Model Building')
-    time.sleep(0.25)
+    time.sleep(1.05)
 
     sf.clickByXpath(driver, "//div[normalize-space()='%s']" % 'Refinement with Refmac')
-    time.sleep(0.25)
+    time.sleep(1.05)
 
     # There are several forms - active and inactive. We need one displayed.
     buttonsRun = driver.find_elements_by_xpath("//button[contains(@style, 'images_png/runjob.png')]" )
@@ -82,7 +82,7 @@ def verifyRefmac(driver, waitLong, jobNumber, targetRwork, targetRfree):
         rFree = 1.0
         print('REFMAC5 verification, job ' + jobNumber)
 
-        time.sleep(0.25)
+        time.sleep(1.05)
         startTime = time.time()
 
         while (True):
@@ -117,26 +117,26 @@ def shareProject(driver, login):
     print('Sharing test project')
     menuButton = driver.find_element(By.XPATH, "//div[contains(@style, 'images_png/menu.png')]")
     menuButton.click()
-    time.sleep(0.25)
+    time.sleep(1.05)
 
     sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Share Project')
-    time.sleep(0.25)
+    time.sleep(1.05)
 
     projectSharing = driver.find_element_by_xpath("//input[@placeholder='%s']" % 'login1,login2,...')
     projectSharing.click()
     projectSharing.clear()
     projectSharing.send_keys(login)
-    time.sleep(0.25)
+    time.sleep(1.05)
 
     sf.clickByXpath(driver, "//button[contains(text(), '%s')]" % 'Share Project')
-    time.sleep(0.25)
+    time.sleep(1.05)
 
 
     sf.clickByXpath(driver, "//button[normalize-space()='%s']" % 'Apply')
-    time.sleep(0.25)
+    time.sleep(1.05)
 
     sf.clickByXpath(driver, "//button[normalize-space()='%s']" % 'Ok')
-    time.sleep(0.25)
+    time.sleep(1.05)
 
 
     return ()
@@ -145,19 +145,19 @@ def shareProject(driver, login):
 def joinSharedProject(driver, testName):
     print('Getting shared project')
     sf.clickByXpath(driver, "//div[normalize-space()='%s']" % 'Join')
-    time.sleep(0.25)
+    time.sleep(1.05)
 
     sf.clickByXpath(driver, "//span[@class='ui-selectmenu-icon ui-icon ui-icon-triangle-1-s']")
-    time.sleep(0.25)
+    time.sleep(1.05)
 
     sf.clickByXpath(driver, "//*[contains(text(), '%s')]" % testName)
-    time.sleep(0.25)
+    time.sleep(1.05)
 
     sf.clickByXpath(driver, "//button[contains(@style, 'images_png/share.png')]")
     time.sleep(10)
 
     sf.clickByXpath(driver, "//button[normalize-space()='%s']" % 'Close')
-    time.sleep(0.25)
+    time.sleep(1.05)
 
     return ()
 
@@ -199,7 +199,7 @@ def verifySimbad(driver, waitLong):
     solv = 0.0
     print('SIMBAD verification')
 
-    time.sleep(0.25)
+    time.sleep(1.05)
     startTime = time.time()
 
     while (True):
@@ -248,16 +248,16 @@ def startMrbump(driver):
 
     addButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/add.png') and @class='ui-button ui-corner-all ui-widget']")
     addButton.click()
-    time.sleep(0.25)
+    time.sleep(1.05)
 
     sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list')
-    time.sleep(0.25)
+    time.sleep(1.05)
 
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Automated Molecular Replacement')
-    time.sleep(0.25)
+    time.sleep(1.05)
 
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'MrBump: Model Search & Preparation')
-    time.sleep(0.25)
+    time.sleep(1.05)
 
     # There are several forms - active and inactive. We need one displayed.
     buttonsRun = driver.find_elements_by_xpath("//button[contains(@style, 'images_png/runjob.png')]")
@@ -266,12 +266,12 @@ def startMrbump(driver):
             buttonRun.click()
             break
 
-    time.sleep(0.25)
+    time.sleep(1.05)
 
     # pressing Close button
     closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
     closeButton.click()
-    time.sleep(0.25)
+    time.sleep(1.05)
 
     return ()
 
@@ -283,7 +283,7 @@ def verifyMrBump(driver):
     compl = 0.0
     print('MRBUMP verification')
 
-    time.sleep(0.25)
+    time.sleep(1.05)
     startTime = time.time()
 
     while (True):
@@ -386,7 +386,7 @@ def test_sharingBasic(browser,
         shareProject(driver, login+'2')
         joinSharedProject(driver2, testName)
         sf.enterProject(driver2, testName)
-        time.sleep(2)
+        time.sleep(1)
         sf.asymmetricUnitContentsAfterCloudImport(driver2, waitShort)
         time.sleep(1)
 
