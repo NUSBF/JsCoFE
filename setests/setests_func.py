@@ -166,7 +166,7 @@ def importLocalProject(driver, testProjectName):
     projectInputs = driver.find_elements_by_xpath("//input[contains(@id,'input') and @type='file' and contains(@name,'uploads')]")
 
     projectInputs[0].send_keys(testProjectName)
-    time.sleep(90)
+    time.sleep(120)
 
     clickByXpath(driver, "//button[normalize-space()='Close']")
     #clickByXpath(driver, "//button[contains(@style, 'images_png/close.png')]")
