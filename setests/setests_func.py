@@ -381,7 +381,49 @@ def clickTaskInTaskTree(driver, taskName):
     return ()
 
 
+def startBrowser(remote, browser):
+    if len(remote) > 1:  # Running on Selenium Server hub
+        waitShort = 90  # seconds for quick tasks
+        waitLong = 240  # seconds for longer tasks
+
+        if browser == 'Chrome':
+            options = webdriver.ChromeOptions()
+            driver = webdriver.Remote(command_executor=remote, options=options)
+        elif browser == 'Firefox':
+            options = webdriver.FirefoxOptions()
+            driver = webdriver.Remote(command_executor=remote, options=options)
+        else:
+            print('Browser "%s" is not recognised; shall be Chrome or Firefox.' % browser)
+            sys.exit(1)
+    else:  # Running locally
+        waitShort = 30  # seconds for quick tasks
+        waitLong = 180  # seconds for longer tasks
+
+        if browser == 'Chrome':
+            driver = webdriver.Chrome()
+        elif browser == 'Firefox':
+            driver = webdriver.Firefox()
+        else:
+            print('Browser "%s" is not recognised; shall be Chrome or Firefox.' % browser)
+            sys.exit(1)
+
+    driver.implicitly_wait(10)  # wait for up to 10 seconds for required HTML element to appear
+
+    return (driver, waitLong, waitShort)
+
+
+
 class driverHandler:
     driver = None
-    name = ''
+    testName = ''
+
+    browser = ''
+    cloud = ''
+    nologin = None
+    login = ''
+    password = ''
+    remote = ''
+
+    waitShort = 0
+    waitLong = 0
 

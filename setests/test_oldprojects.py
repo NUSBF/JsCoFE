@@ -202,9 +202,6 @@ def test_oldProjects(browser,
     '[0020] R-factors may be still too high; unmodelled blobs remain']
 
 
-
-
-
     d = sf.driverHandler()
 
     if len(remote) > 1:  # Running on Selenium Server hub
@@ -235,7 +232,7 @@ def test_oldProjects(browser,
     d.driver.implicitly_wait(10)  # wait for up to 10 seconds for required HTML element to appear
 
     try:
-        print('Opening URL driver 1: %s' % cloud)
+        print('Opening URL: %s' % cloud)
         d.driver.get(cloud)
         assert "CCP4 Cloud" in d.driver.title
         if not nologin:

@@ -13,6 +13,7 @@ if curPath not in sys.path:
     sys.path.insert(0, curPath)
 import setests_func as sf
 
+d = sf.driverHandler()
 
 def importFromPDB(driver, waitShort):
     print ('Importing 2fx0 from the PDB')
@@ -200,39 +201,7 @@ def validateCrank2run(driver):
     return ()
 
 
-
-def startBrowser(remote, browser):
-    if len(remote) > 1:  # Running on Selenium Server hub
-        waitShort = 60  # seconds for quick tasks
-        waitLong = 180  # seconds for longer tasks
-
-        if browser == 'Chrome':
-            options = webdriver.ChromeOptions()
-            driver = webdriver.Remote(command_executor=remote, options=options)
-        elif browser == 'Firefox':
-            options = webdriver.FirefoxOptions()
-            driver = webdriver.Remote(command_executor=remote, options=options)
-        else:
-            print('Browser "%s" is not recognised; shall be Chrome or Firefox.' % browser)
-            sys.exit(1)
-    else:  # Running locally
-        waitShort = 15  # seconds for quick tasks
-        waitLong = 120  # seconds for longer tasks
-
-        if browser == 'Chrome':
-            driver = webdriver.Chrome()
-        elif browser == 'Firefox':
-            driver = webdriver.Firefox()
-        else:
-            print('Browser "%s" is not recognised; shall be Chrome or Firefox.' % browser)
-            sys.exit(1)
-
-    driver.implicitly_wait(10)  # wait for up to 10 seconds for required HTML element to appear
-
-    return (driver, waitLong, waitShort)
-
-
-def test_Crank2Basic(browser,
+def test_1Crank2start(browser,
                 cloud,
                 nologin,
                 login,
@@ -240,49 +209,66 @@ def test_Crank2Basic(browser,
                 remote
                 ):
 
-    (driver, waitLong, waitShort) = startBrowser(remote, browser)
+    #d = sf.driverHandler() # MOVE TO THE BEGINNING OF THE FILE!!!
+    (d.driver, d.waitLong, d.waitShort) = sf.startBrowser(remote, browser)
+    d.browser = browser
+    d.cloud = cloud
+    d.nologin = nologin
+    d.password = password
+    d.remote = remote
+    d.login = login
+
+    d.testName = 'crank2Test'
 
     try:
         print('Opening URL: %s' % cloud)
-        driver.get(cloud)
-        assert "CCP4 Cloud" in driver.title
+        d.driver.get(cloud)
+        assert "CCP4 Cloud" in d.driver.title
 
         if not nologin:
-            sf.loginToCloud(driver, login, password)
+            sf.loginToCloud(d.driver, d.login, d.password)
 
-        testName = 'crank2Test'
 
-        sf.removeProject(driver, testName)
-        sf.makeTestProject(driver, testName, testName)
-        sf.enterProject(driver, testName)
-        importFromPDB(driver, waitShort)
-        asymmetricUnitContentsAfterPDBImport(driver, waitShort)
-        startCrank2(driver)
+
+        sf.removeProject(d.driver, d.testName)
+        sf.makeTestProject(d.driver, d.testName, d.testName)
+        sf.enterProject(d.driver, d.testName)
+        importFromPDB(d.driver, d.waitShort)
+        asymmetricUnitContentsAfterPDBImport(d.driver, d.waitShort)
+        startCrank2(d.driver)
 
         # Logging off as Selenium become unstable with long connections
-        driver.quit()
-        print('Waiting for 1 hour 10 minutes until Crank2 is ready (shall finish in about 1 hour)...')
-        time.sleep(4200) # Crank2 run takes around 1 hour and let's give it more time
-
-        # Connecting again to check results
-        (driver, waitLong, waitShort) = startBrowser(remote, browser)
-        print('Opening URL: %s' % cloud)
-        driver.get(cloud)
-        assert "CCP4 Cloud" in driver.title
-
-        if not nologin:
-            sf.loginToCloud(driver, login, password)
-
-        sf.enterProject(driver, testName)
-        validateCrank2run(driver)
-        sf.renameProject(driver, testName)
-
-        driver.quit()
+        d.driver.quit()
 
     except:
-        driver.quit()
+        d.driver.quit()
         raise
 
+
+def test_2Crank2veification():
+
+    print('Waiting for 1 hour 10 minutes until Crank2 is ready (shall finish in about 1 hour)...')
+    time.sleep(4200)  # Crank2 run takes around 1 hour and let's give it more time
+    # Connecting again to check results
+    (d.driver, waitLong, waitShort) = sf.startBrowser(d.remote, d.browser)
+
+    try:
+        print('Opening URL: %s' % d.cloud)
+        d.driver.get(d.cloud)
+        assert "CCP4 Cloud" in d.driver.title
+
+        if not d.nologin:
+            sf.loginToCloud(d.driver, d.login, d.password)
+
+        sf.enterProject(d.driver, d.testName)
+        validateCrank2run(d.driver)
+        sf.renameProject(d.driver, d.testName)
+
+        d.driver.quit()
+
+    except:
+        d.driver.quit()
+        raise
 
 
 if __name__ == "__main__":
@@ -298,10 +284,11 @@ if __name__ == "__main__":
 
     parameters = parser.parse_args(sys.argv[1:])
 
-    test_Crank2Basic(browser=parameters.browser,  # or 'Chrome'
+    test_1Crank2start(browser=parameters.browser,  # or 'Chrome'
                cloud=parameters.cloud,
                nologin=parameters.nologin,  # True for Cloud Desktop (no login page), False for remote server that requires login.
                login=parameters.login,  # Used to login into remote Cloud
                password=parameters.password,  # Used to login into remote Cloud
                remote=parameters.remote  # 'http://130.246.213.187:4444/wd/hub' for Selenium Server hub
                )
+    test_2Crank2veification()

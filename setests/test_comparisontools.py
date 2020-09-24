@@ -13,6 +13,7 @@ if curPath not in sys.path:
     sys.path.insert(0, curPath)
 import setests_func as sf
 
+d = sf.driverHandler()
 
 
 def gesamtAfterRevision(driver, waitLong):
@@ -270,7 +271,7 @@ def symmatch(driver, waitLong):
     return ()
 
 
-def test_comparisontools(browser,
+def test_1comparisontoolsGesamt(browser,
                          cloud,
                          nologin,
                          login,
@@ -278,67 +279,70 @@ def test_comparisontools(browser,
                          remote
                          ):
 
+    (d.driver, d.waitLong, d.waitShort) = sf.startBrowser(remote, browser)
+    d.browser = browser
+    d.cloud = cloud
+    d.nologin = nologin
+    d.password = password
+    d.remote = remote
+    d.login = login
 
-    if len(remote) > 1:  # Running on Selenium Server hub
-        waitShort = 60  # seconds for quick tasks
-        waitLong = 180  # seconds for longer tasks
-
-        if browser == 'Chrome':
-            options = webdriver.ChromeOptions()
-            driver = webdriver.Remote(command_executor=remote, options=options)
-        elif browser == 'Firefox':
-            options = webdriver.FirefoxOptions()
-            driver = webdriver.Remote(command_executor=remote, options=options)
-        else:
-            print('Browser "%s" is not recognised; shall be Chrome or Firefox.' % browser)
-            sys.exit(1)
-    else:  # Running locally
-        waitShort = 15  # seconds for quick tasks
-        waitLong = 120  # seconds for longer tasks
-
-        if browser == 'Chrome':
-            driver = webdriver.Chrome()
-        elif browser == 'Firefox':
-            driver = webdriver.Firefox()
-        else:
-            print('Browser "%s" is not recognised; shall be Chrome or Firefox.' % browser)
-            sys.exit(1)
-
-    driver.implicitly_wait(10)  # wait for up to 10 seconds for required HTML element to appear
+    d.testName = 'alignmentToolsTest'
 
     try:
-        print('Opening URL: %s' % cloud)
-        driver.get(cloud)
-        assert "CCP4 Cloud" in driver.title
+        print('Opening URL: %s' % d.cloud)
+        d.driver.get(d.cloud)
+        assert "CCP4 Cloud" in d.driver.title
 
         if not nologin:
-            sf.loginToCloud(driver, login, password)
+            sf.loginToCloud(d.driver, login, password)
 
-        testName = 'alignmentToolsTest'
-
-        sf.removeProject(driver, testName)
-        sf.makeTestProject(driver, testName, testName)
-        sf.enterProject(driver, testName)
-        sf.importFromCloud_rnase(driver, waitShort)
-        sf.asymmetricUnitContentsAfterCloudImport(driver, waitShort)
-        sf.editRevisionStructure_rnase(driver, waitShort)
-        gesamtAfterRevision(driver, waitShort)
-
-        sf.clickTaskInTaskTree(driver, '\[0003\] edit structure revision ')
-        lsqkabAfterGesamt(driver, waitShort)
-
-        sf.clickTaskInTaskTree(driver, '\[0003\] edit structure revision')
-        sequenceAlignment(driver, waitShort)
-
-        sf.clickTaskInTaskTree(driver, '\[0003\] edit structure revision')
-        symmatch(driver, waitShort)
-
-        sf.renameProject(driver, testName)
-
-        driver.quit()
+        sf.removeProject(d.driver, d.testName)
+        sf.makeTestProject(d.driver, d.testName, d.testName)
+        sf.enterProject(d.driver, d.testName)
+        sf.importFromCloud_rnase(d.driver, d.waitShort)
+        sf.asymmetricUnitContentsAfterCloudImport(d.driver, d.waitShort)
+        sf.editRevisionStructure_rnase(d.driver, d.waitShort)
+        gesamtAfterRevision(d.driver, d.waitShort)
 
     except:
-        driver.quit()
+        d.driver.quit()
+        raise
+
+
+def test_2comparisontoolsLSQkab():
+    try:
+        sf.clickTaskInTaskTree(d.driver, '\[0003\] edit structure revision ')
+        lsqkabAfterGesamt(d.driver, d.waitShort)
+    except:
+        d.driver.quit()
+        raise
+
+
+def test_3comparisontoolsSeqAlign():
+
+    try:
+
+        sf.clickTaskInTaskTree(d.driver, '\[0003\] edit structure revision')
+        sequenceAlignment(d.driver, d.waitShort)
+
+    except:
+        d.driver.quit()
+        raise
+
+
+def test_4comparisontoolsSymmatch():
+    try:
+
+        sf.clickTaskInTaskTree(d.driver, '\[0003\] edit structure revision')
+        symmatch(d.driver, d.waitShort)
+
+        sf.renameProject(d.driver, d.testName)
+
+        d.driver.quit()
+
+    except:
+        d.driver.quit()
         raise
 
 
@@ -355,10 +359,13 @@ if __name__ == "__main__":
 
     parameters = parser.parse_args(sys.argv[1:])
 
-    test_comparisontools(browser=parameters.browser,  # or 'Chrome'
+    test_1comparisontoolsGesamt (browser=parameters.browser,  # or 'Chrome'
                          cloud=parameters.cloud,
                          nologin=parameters.nologin,  # True for Cloud Desktop (no login page), False for remote server that requires login.
                          login=parameters.login,  # Used to login into remote Cloud
                          password=parameters.password,  # Used to login into remote Cloud
                          remote=parameters.remote  # 'http://130.246.213.187:4444/wd/hub' for Selenium Server hub
                          )
+    test_2comparisontoolsLSQkab()
+    test_3comparisontoolsSeqAlign()
+    test_4comparisontoolsSymmatch()
