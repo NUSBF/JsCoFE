@@ -13,10 +13,11 @@ if curPath not in sys.path:
     sys.path.insert(0, curPath)
 import setests_func as sf
 
+d = sf.driverHandler()
+
 # !!!
 # PLEASE NOTE : IGNORING CLOUD PARAMETER AND ALWAYS TESTING MAIN CLOUD!!!
 # !!!
-
 
 def startRefmac(driver, waitLong):
     print('Running REFMAC5')
@@ -224,102 +225,83 @@ def test_mainCloud(browser,
 # !!!
 # PLEASE NOTE : IGNORING CLOUD PARAMETER AND ALWAYS TESTING MAIN CLOUD!!!
 # !!!
-    if len(remote) > 1:  # Running on Selenium Server hub
-        waitShort = 90  # seconds for quick tasks
-        waitLong = 240  # seconds for longer tasks
 
-        if browser == 'Chrome':
-            options = webdriver.ChromeOptions()
-            driver = webdriver.Remote(command_executor=remote, options=options)
-        elif browser == 'Firefox':
-            options = webdriver.FirefoxOptions()
-            driver = webdriver.Remote(command_executor=remote, options=options)
-        else:
-            print('Browser "%s" is not recognised; shall be Chrome or Firefox.' % browser)
-            sys.exit(1)
-    else:  # Running locally
-        waitShort = 90  # seconds for quick tasks
-        waitLong = 240  # seconds for longer tasks
+    (d.driver, d.waitLong, d.waitShort) = sf.startBrowser(remote, browser)
+    d.browser = browser
+    d.cloud = cloud
+    d.nologin = nologin
+    d.password = password
+    d.remote = remote
+    d.login = login
 
-        if browser == 'Chrome':
-            driver = webdriver.Chrome()
-        elif browser == 'Firefox':
-            driver = webdriver.Firefox()
-        else:
-            print('Browser "%s" is not recognised; shall be Chrome or Firefox.' % browser)
-            sys.exit(1)
-
-    driver.implicitly_wait(10)  # wait for up to 10 seconds for required HTML element to appear
+    d.testName = 'mainCloudTest'
 
     try:
         # !!!
         # PLEASE NOTE : IGNORING CLOUD PARAMETER AND ALWAYS TESTING MAIN CLOUD!!!
         # !!!
         print('Opening URL: %s' % 'https://cloud.ccp4.ac.uk/')
-        driver.get('https://cloud.ccp4.ac.uk/')
-        assert "CCP4 Cloud" in driver.title
+        d.driver.get('https://cloud.ccp4.ac.uk/')
+        assert "CCP4 Cloud" in d.driver.title
         if not nologin:
-            sf.loginToCloud(driver, login, password)
+            sf.loginToCloud(d.driver, login, password)
 
-
-        testName = 'mainCloudTest'
-
-        sf.removeProject(driver, testName)
-        sf.makeTestProject(driver, testName, testName)
-        sf.enterProject(driver, testName)
-        sf.importFromCloud_rnase(driver, waitShort)
-        sf.asymmetricUnitContentsAfterCloudImport(driver, waitShort)
+        sf.removeProject(d.driver, d.testName)
+        sf.makeTestProject(d.driver, d.testName, d.testName)
+        sf.enterProject(d.driver, d.testName)
+        sf.importFromCloud_rnase(d.driver, d.waitShort)
+        sf.asymmetricUnitContentsAfterCloudImport(d.driver, d.waitShort)
         time.sleep(1)
 
         # Old one on main Cloud
-        editRevisionStructure_rnase(driver, waitShort)
+        editRevisionStructure_rnase(d.driver, d.waitShort)
         time.sleep(1)
 
         # Starting three REFMACs in parallel to make sure different number crunchers are employed
-        startRefmac(driver, waitLong)
+        startRefmac(d.driver, d.waitLong)
         time.sleep(1)
         # pressing Close button for REFMAC window
-        closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
+        closeButton = d.driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
         closeButton.click()
         time.sleep(1)
 
-        sf.clickTaskInTaskTree(driver, '\[0003\] edit revision structure')
+        sf.clickTaskInTaskTree(d.driver, '\[0003\] edit revision structure')
         time.sleep(1)
-        startRefmac(driver, waitLong)
+        startRefmac(d.driver, d.waitLong)
         time.sleep(1)
         # pressing Close button for REFMAC window
-        closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
+        closeButton = d.driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
         closeButton.click()
         time.sleep(1)
 
-        sf.clickTaskInTaskTree(driver, '\[0003\] edit revision structure')
+        sf.clickTaskInTaskTree(d.driver, '\[0003\] edit revision structure')
         time.sleep(1)
-        startRefmac(driver, waitLong)
+        startRefmac(d.driver, d.waitLong)
         time.sleep(1)
         # pressing Close button for REFMAC window
-        closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
+        closeButton = d.driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
         closeButton.click()
         time.sleep(1)
 
 
-        sf.clickTaskInTaskTree(driver, '\[0002\] asymmetric unit contents')
+        sf.clickTaskInTaskTree(d.driver, '\[0002\] asymmetric unit contents')
         time.sleep(2) # sensitive
-        startSimbad(driver)
+        startSimbad(d.driver)
         time.sleep(1)
 
-        verifyRefmac(driver, waitLong, '0004', 0.17, 0.2)
-        verifyRefmac(driver, waitLong, '0005', 0.17, 0.2)
-        verifyRefmac(driver, waitLong, '0006', 0.17, 0.2)
+        verifyRefmac(d.driver, d.waitLong, '0004', 0.17, 0.2)
+        verifyRefmac(d.driver, d.waitLong, '0005', 0.17, 0.2)
+        verifyRefmac(d.driver, d.waitLong, '0006', 0.17, 0.2)
 
-        verifySimbad(driver, waitLong)
+        verifySimbad(d.driver, d.waitLong)
 
-        sf.renameProject(driver, testName)
+        sf.renameProject(d.driver, d.testName)
 
-        driver.quit()
+        d.driver.quit()
 
 
     except:
-        driver.quit()
+        d.driver.quit()
         raise
 
 # !!!

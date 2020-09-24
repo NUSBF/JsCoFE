@@ -13,11 +13,10 @@ if curPath not in sys.path:
     sys.path.insert(0, curPath)
 import setests_func as sf
 
+d = sf.driverHandler()
 
 
-
-
-def zanudaAfterRevision(driver, waitLong):
+def zanudaAfterRevision(driver):
     print('Running Zanuda')
 
     addButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/add.png')]")
@@ -82,57 +81,37 @@ def test_zanudaBasic(browser,
                    remote
                    ):
 
+    (d.driver, d.waitLong, d.waitShort) = sf.startBrowser(remote, browser)
+    d.browser = browser
+    d.cloud = cloud
+    d.nologin = nologin
+    d.password = password
+    d.remote = remote
+    d.login = login
 
-    if len(remote) > 1:  # Running on Selenium Server hub
-        waitShort = 60  # seconds for quick tasks
-        waitLong = 180  # seconds for longer tasks
-
-        if browser == 'Chrome':
-            options = webdriver.ChromeOptions()
-            driver = webdriver.Remote(command_executor=remote, options=options)
-        elif browser == 'Firefox':
-            options = webdriver.FirefoxOptions()
-            driver = webdriver.Remote(command_executor=remote, options=options)
-        else:
-            print('Browser "%s" is not recognised; shall be Chrome or Firefox.' % browser)
-            sys.exit(1)
-    else:  # Running locally
-        waitShort = 15  # seconds for quick tasks
-        waitLong = 120  # seconds for longer tasks
-
-        if browser == 'Chrome':
-            driver = webdriver.Chrome()
-        elif browser == 'Firefox':
-            driver = webdriver.Firefox()
-        else:
-            print('Browser "%s" is not recognised; shall be Chrome or Firefox.' % browser)
-            sys.exit(1)
-
-    driver.implicitly_wait(10)  # wait for up to 10 seconds for required HTML element to appear
+    d.testName = 'zanudaTest'
 
     try:
         print('Opening URL: %s' % cloud)
-        driver.get(cloud)
-        assert "CCP4 Cloud" in driver.title
+        d.driver.get(cloud)
+        assert "CCP4 Cloud" in d.driver.title
 
         if not nologin:
-            sf.loginToCloud(driver, login, password)
+            sf.loginToCloud(d.driver, login, password)
 
-        testName = 'zanudaTest'
+        sf.removeProject(d.driver, d.testName)
+        sf.makeTestProject(d.driver, d.testName, d.testName)
+        sf.enterProject(d.driver, d.testName)
+        sf.importFromCloud_rnase(d.driver, d.waitShort)
+        sf.asymmetricUnitContentsAfterCloudImport(d.driver, d.waitShort)
+        sf.editRevisionStructure_rnase(d.driver, d.waitShort)
+        zanudaAfterRevision(d.driver)
+        sf.renameProject(d.driver, d.testName)
 
-        sf.removeProject(driver, testName)
-        sf.makeTestProject(driver, testName, testName)
-        sf.enterProject(driver, testName)
-        sf.importFromCloud_rnase(driver, waitShort)
-        sf.asymmetricUnitContentsAfterCloudImport(driver, waitShort)
-        sf.editRevisionStructure_rnase(driver, waitShort)
-        zanudaAfterRevision(driver, waitLong)
-        sf.renameProject(driver, testName)
-
-        driver.quit()
+        d.driver.quit()
 
     except:
-        driver.quit()
+        d.driver.quit()
         raise
 
 

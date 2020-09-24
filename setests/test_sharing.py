@@ -13,6 +13,9 @@ if curPath not in sys.path:
     sys.path.insert(0, curPath)
 import setests_func as sf
 
+d = sf.driverHandler()
+d2 = sf.driverHandler()
+
 
 def logoutToRelogin(driver):
     print ('Logging out.')
@@ -194,6 +197,7 @@ def startSimbad(driver):
 
     return ()
 
+
 def verifySimbad(driver, waitLong):
 
     solv = 0.0
@@ -239,7 +243,6 @@ def verifySimbad(driver, waitLong):
     assert solv > 45.0
 
     return ()
-
 
 
 def startMrbump(driver):
@@ -327,107 +330,91 @@ def test_sharingBasic(browser,
                       remote
                       ):
 
+    (d.driver, d.waitLong, d.waitShort) = sf.startBrowser(remote, browser)
+    d.browser = browser
+    d.cloud = cloud
+    d.nologin = nologin
+    d.password = password
+    d.remote = remote
+    d.login = login
 
-    if len(remote) > 1:  # Running on Selenium Server hub
-        waitShort = 90  # seconds for quick tasks
-        waitLong = 240  # seconds for longer tasks
+    (d2.driver, d2.waitLong, d2.waitShort) = sf.startBrowser(remote, browser)
+    d2.browser = browser
+    d2.cloud = cloud
+    d2.nologin = nologin
+    d2.password = password
+    d2.remote = remote
+    d2.login = login
 
-        if browser == 'Chrome':
-            options = webdriver.ChromeOptions()
-            driver = webdriver.Remote(command_executor=remote, options=options)
-            driver2 = webdriver.Remote(command_executor=remote, options=options)
-        elif browser == 'Firefox':
-            options = webdriver.FirefoxOptions()
-            driver = webdriver.Remote(command_executor=remote, options=options)
-            driver2 = webdriver.Remote(command_executor=remote, options=options)
-        else:
-            print('Browser "%s" is not recognised; shall be Chrome or Firefox.' % browser)
-            sys.exit(1)
-    else:  # Running locally
-        waitShort = 90  # seconds for quick tasks
-        waitLong = 240  # seconds for longer tasks
-
-        if browser == 'Chrome':
-            driver = webdriver.Chrome()
-            driver2 = webdriver.Chrome()
-        elif browser == 'Firefox':
-            driver = webdriver.Firefox()
-            driver2 = webdriver.Firefox()
-        else:
-            print('Browser "%s" is not recognised; shall be Chrome or Firefox.' % browser)
-            sys.exit(1)
-
-    driver.implicitly_wait(10)  # wait for up to 10 seconds for required HTML element to appear
-    driver2.implicitly_wait(10)  # wait for up to 10 seconds for required HTML element to appear
+    d.testName = 'sharingTest'
+    d2.testName = 'sharingTest'
 
     try:
-        print('Opening URL driver 1: %s' % cloud)
-        driver.get(cloud)
-        assert "CCP4 Cloud" in driver.title
+        print('Opening URL d.driver 1: %s' % cloud)
+        d.driver.get(cloud)
+        assert "CCP4 Cloud" in d.driver.title
         if not nologin:
-            sf.loginToCloud(driver, login, password)
+            sf.loginToCloud(d.driver, login, password)
 
 
-        print('Opening URL driver 2: %s' % cloud)
-        driver2.get(cloud)
-        assert "CCP4 Cloud" in driver2.title
+        print('Opening URL d.driver 2: %s' % cloud)
+        d2.driver.get(cloud)
+        assert "CCP4 Cloud" in d2.driver.title
         if not nologin:
-            sf.loginToCloud(driver2, login+'2', password)
+            sf.loginToCloud(d2.driver, login+'2', password)
 
-        testName = 'sharingTest'
+        sf.removeProject(d.driver, d.testName)
+        unjoinProject(d2.driver, '[' + login + ']:' + d.testName)
 
-        sf.removeProject(driver, testName)
-        unjoinProject(driver2, '[' + login + ']:' + testName)
+        sf.makeTestProject(d.driver, d.testName, d.testName)
+        sf.enterProject(d.driver, d.testName)
+        sf.importFromCloud_rnase(d.driver, d.waitShort)
 
-        sf.makeTestProject(driver, testName, testName)
-        sf.enterProject(driver, testName)
-        sf.importFromCloud_rnase(driver, waitShort)
-
-        shareProject(driver, login+'2')
-        joinSharedProject(driver2, testName)
-        sf.enterProject(driver2, testName)
+        shareProject(d.driver, login+'2')
+        joinSharedProject(d2.driver, d.testName)
+        sf.enterProject(d2.driver, d.testName)
         time.sleep(1)
-        sf.asymmetricUnitContentsAfterCloudImport(driver2, waitShort)
+        sf.asymmetricUnitContentsAfterCloudImport(d2.driver, d.waitShort)
         time.sleep(1)
 
-        sf.clickTaskInTaskTree(driver, '\[0002\] asymmetric unit contents')
+        sf.clickTaskInTaskTree(d.driver, '\[0002\] asymmetric unit contents')
         time.sleep(1)
-        sf.editRevisionStructure_rnase(driver, waitShort)
+        sf.editRevisionStructure_rnase(d.driver, d.waitShort)
         time.sleep(1)
 
-        sf.clickTaskInTaskTree(driver2, '\[0003\] edit structure revision')
+        sf.clickTaskInTaskTree(d2.driver, '\[0003\] edit structure revision')
         time.sleep(1)
-        startRefmac(driver2, waitLong)
+        startRefmac(d2.driver, d.waitLong)
         time.sleep(1)
-        sf.clickTaskInTaskTree(driver, '\[0002\] asymmetric unit contents')
+        sf.clickTaskInTaskTree(d.driver, '\[0002\] asymmetric unit contents')
         time.sleep(2) # sensitive
-        startSimbad(driver)
+        startSimbad(d.driver)
 
         # pressing Close button for REFMAC window
-        closeButton = driver2.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
+        closeButton = d2.driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
         closeButton.click()
         time.sleep(1)
-        sf.clickTaskInTaskTree(driver2, '\[0002\] asymmetric unit contents')
+        sf.clickTaskInTaskTree(d2.driver, '\[0002\] asymmetric unit contents')
         time.sleep(1)
-        startMrbump(driver2)
+        startMrbump(d2.driver)
 
-        verifySimbad(driver2, waitLong)
-        sf.clickTaskInTaskTree(driver, '\[0005\] simbad')
-        startRefmac(driver, waitLong)
+        verifySimbad(d2.driver, d.waitLong)
+        sf.clickTaskInTaskTree(d.driver, '\[0005\] simbad')
+        startRefmac(d.driver, d.waitLong)
 
-        verifyRefmac(driver, waitLong, '0004', 0.17, 0.2)
-        verifyRefmac(driver2, waitLong, '0007', 0.24, 0.27)
+        verifyRefmac(d.driver, d.waitLong, '0004', 0.17, 0.2)
+        verifyRefmac(d2.driver, d.waitLong, '0007', 0.24, 0.27)
 
-        verifyMrBump(driver)
+        verifyMrBump(d.driver)
 
-        sf.renameProject(driver, testName)
+        sf.renameProject(d.driver, d.testName)
 
-        driver.quit()
-        driver2.quit()
+        d.driver.quit()
+        d2.driver.quit()
 
     except:
-        driver.quit()
-        driver2.quit()
+        d.driver.quit()
+        d2.driver.quit()
         raise
 
 
