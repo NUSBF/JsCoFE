@@ -13,6 +13,7 @@ if curPath not in sys.path:
     sys.path.insert(0, curPath)
 import setests_func as sf
 
+d = sf.driverHandler()
 
 
 def startRefmac(driver, waitLong):
@@ -53,16 +54,7 @@ def startRefmacCloning(driver, waitLong):
     #Cloning job - cloning button
     addButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/clonejob.png')]")
     addButton.click()
-    time.sleep(0.25)
-
-    sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list')
-    time.sleep(0.25)
-
-    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Refinement and Model Building')
-    time.sleep(0.25)
-
-    sf.clickByXpath(driver, "//div[normalize-space()='%s']" % 'Refinement with Refmac')
-    time.sleep(0.25)
+    time.sleep(1)
 
     # There are several forms - active and inactive. We need one displayed.
     buttonsRun = driver.find_elements_by_xpath("//button[contains(@style, 'images_png/runjob.png')]" )
@@ -176,7 +168,7 @@ def verifyMorda(driver, waitLong, jobNumber, targetRwork, targetRfree):
     assert rFree < targetRfree
 
 
-def test_oldProjects(browser,
+def test_1oldProjectsMR(browser,
                       cloud,
                       nologin,
                       login,
@@ -202,34 +194,16 @@ def test_oldProjects(browser,
     '[0020] R-factors may be still too high; unmodelled blobs remain']
 
 
-    d = sf.driverHandler()
+    (d.driver, d.waitLong, d.waitShort) = sf.startBrowser(remote, browser)
+    d.browser = browser
+    d.cloud = cloud
+    d.nologin = nologin
+    d.password = password
+    d.remote = remote
+    d.login = login
 
-    if len(remote) > 1:  # Running on Selenium Server hub
-        waitShort = 90  # seconds for quick tasks
-        waitLong = 240  # seconds for longer tasks
+    d.testName = '01.auto-mr'
 
-        if browser == 'Chrome':
-            options = webdriver.ChromeOptions()
-            d.driver = webdriver.Remote(command_executor=remote, options=options)
-        elif browser == 'Firefox':
-            options = webdriver.FirefoxOptions()
-            d.driver = webdriver.Remote(command_executor=remote, options=options)
-        else:
-            print('Browser "%s" is not recognised; shall be Chrome or Firefox.' % browser)
-            sys.exit(1)
-    else:  # Running locally
-        waitShort = 90  # seconds for quick tasks
-        waitLong = 240  # seconds for longer tasks
-
-        if browser == 'Chrome':
-            d.driver = webdriver.Chrome()
-        elif browser == 'Firefox':
-            d.driver = webdriver.Firefox()
-        else:
-            print('Browser "%s" is not recognised; shall be Chrome or Firefox.' % browser)
-            sys.exit(1)
-
-    d.driver.implicitly_wait(10)  # wait for up to 10 seconds for required HTML element to appear
 
     try:
         print('Opening URL: %s' % cloud)
@@ -238,14 +212,12 @@ def test_oldProjects(browser,
         if not nologin:
             sf.loginToCloud(d.driver, login, password)
 
-        d.name = '01.auto-mr'
-
-        sf.removeProject(d.driver, d.name)
+        sf.removeProject(d.driver, d.testName)
 
         sf.importLocalProject(d.driver, '~/old_cloud/01.ccp4cloud')
         time.sleep(1)
 
-        sf.enterProject(d.driver, d.name)
+        sf.enterProject(d.driver, d.testName)
 
         time.sleep(5)
         listOfActualTasks = []
@@ -260,26 +232,41 @@ def test_oldProjects(browser,
         assert listOfActualTasks == listOfExpectedTasks
 
         sf.clickTaskInTaskTree(d.driver, '\[0006\] morda')
-        startMordaCloning(d.driver, waitLong)
+        startMordaCloning(d.driver, d.waitLong)
         time.sleep(1)
 
         sf.clickTaskInTaskTree(d.driver, '\[0011\] dimple')
         time.sleep(1)
-        startRefmac(d.driver, waitLong)
+        startRefmac(d.driver, d.waitLong)
         time.sleep(1)
 
         sf.clickTaskInTaskTree(d.driver, '\[0017\] refine with anisotropic')
         time.sleep(1)
-        startRefmacCloning(d.driver, waitLong)
+        startRefmacCloning(d.driver, d.waitLong)
         time.sleep(1)
 
-        verifyRefmac(d.driver, waitLong, '0022', 0.2, 0.22)
-        verifyRefmac(d.driver, waitLong, '0023', 0.16, 0.20)
+    except:
+        d.driver.quit()
+        raise
 
+def test_2oldProjectsMR_verifyNewRefmac():
+    try:
+        verifyRefmac(d.driver, d.waitLong, '0022', 0.2, 0.22)
+    except:
+        d.driver.quit()
+        raise
+
+def test_3oldProjectsMR_verifyCloneRefmac():
+    try:
+        verifyRefmac(d.driver, d.waitLong, '0023', 0.16, 0.20)
+    except:
+        d.driver.quit()
+        raise
+
+def test_4oldProjectsMR_verifyCloneMorda():
+    try:
         verifyMorda(d.driver, 1200, '0021', 0.26, 0.28) # 1200 seconds to wait (20 minutes, takes ~15 on average)
-
         sf.renameProject(d.driver, 'Simple Auto-MR with MoRDa')
-
         d.driver.quit()
 
     except:
@@ -300,10 +287,13 @@ if __name__ == "__main__":
 
     parameters = parser.parse_args(sys.argv[1:])
 
-    test_oldProjects(browser=parameters.browser,  # or 'Chrome'
+    test_1oldProjectsMR(browser=parameters.browser,  # or 'Chrome'
                       cloud=parameters.cloud,
                       nologin=parameters.nologin,  # True for Cloud Desktop (no login page), False for remote server that requires login.
                       login=parameters.login,  # Used to login into remote Cloud
                       password=parameters.password,  # Used to login into remote Cloud
                       remote=parameters.remote  # 'http://130.246.213.187:4444/wd/hub' for Selenium Server hub
                       )
+    test_2oldProjectsMR_verifyNewRefmac()
+    test_3oldProjectsMR_verifyCloneRefmac()
+    test_4oldProjectsMR_verifyCloneMorda()
