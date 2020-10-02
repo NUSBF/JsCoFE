@@ -72,6 +72,39 @@ def refmacAfterRevision(driver, waitLong):
 
     return ()
 
+
+def sendEmail(deposLog):
+    import smtplib
+
+    message = """
+Dear Sirs, 
+
+During testing of the Deposition task in CCP4Cloud, attempt to raise preliminary validation report via OneDep API have failed.
+Please find extract from the log file below:
+    
+    """
+    message += '\n'.join(deposLog)
+    message += '\n\nThis is automatically generated message from CCP4Cloud test system.'
+
+    toaddr = 'pdbdep@ebi.ac.uk'
+    cc = ['oleg.kovalevskiy@stfc.ac.uk', 'eugene.krissinel@stfc.ac.uk']
+    fromaddr = 'oleg.kovalevskiy@stfc.ac.uk'
+    message_subject = "OneDep API has failed - automated report from CCP4Cloud"
+
+    print(message)
+
+    messageToSend = "From: %s\r\n" % fromaddr
+    messageToSend += "To: %s\r\n" % toaddr
+    messageToSend += "CC: %s\r\n" % ",".join(cc)
+    messageToSend += "Subject: %s\r\n" % message_subject
+    messageToSend += "\r\n"
+    messageToSend += message
+    toaddrs = [toaddr] + cc
+    server = smtplib.SMTP('lists.fg.oisin.rc-harwell.ac.uk')
+    server.sendmail(fromaddr, toaddrs, messageToSend)
+    server.quit()
+
+
 def depositionAfterRefmac(driver):
     print('Running Deposition task')
 
@@ -96,13 +129,12 @@ def depositionAfterRefmac(driver):
             break
 
     try:
-        wait = WebDriverWait(driver, 450) # normally takes around 5 minutes giving 7
+        wait = WebDriverWait(driver, 900) # normally takes around 5 minutes giving 15 - takes longer to run recently
         # Waiting for the text 'completed' in the ui-dialog-title of the task [0005]
         wait.until(EC.presence_of_element_located
                    ((By.XPATH,"//*[@class='ui-dialog-title' and contains(text(), 'finished') and contains(text(), '[0005]')]")))
     except:
-        print('Apparently the task depositionAfterRefmac has not been completed in time; terminating')
-        sys.exit(1)
+        print('Apparently the task depositionAfterRefmac has not been completed in time!')
 
     # presing Close button
     closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
@@ -120,6 +152,31 @@ def depositionAfterRefmac(driver):
         print('*** Verification: could not find text result value after deposition run')
     else:
         print('*** Verification: deposition result is "%s" (expecting "package prepared, pdb report obtained")' % taskText)
+
+    if not taskText == 'package prepared, pdb report obtained':
+        print('!!! Verification not passed!')
+        print('Sending emails to OK, EK and pdbdep@ebi.ac.uk')
+        time.sleep(1)
+        sf.doubleClickTaskInTaskTree(driver, '\[0005\] deposition')
+        time.sleep(2)
+        driver.switch_to.frame(driver.find_element_by_xpath("//iframe[contains(@src, 'report/index.html')]"))
+        sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Main Log')
+        time.sleep(2)
+        mainLog = driver.find_element(By.XPATH, "//pre[@id='log_page-0-0-pre']")
+        logText = mainLog.text
+        driver.switch_to.default_content()
+
+        logStrings = logText.split('\n')
+        isDeposLog = False
+        deposLog = []
+        for s in logStrings:
+            if s.decode('utf-8').strip() == 'RUNNING DATA PREPARATION SCRIPT FROM EBI':
+                isDeposLog = True
+            if isDeposLog:
+                deposLog.append(s.decode('utf-8'))
+        print(deposLog)
+        sendEmail(deposLog)
+
     assert taskText == 'package prepared, pdb report obtained'
 
     return ()
