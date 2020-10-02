@@ -866,13 +866,14 @@ IconLabel.prototype.constructor = IconLabel;
 IconLabel.prototype.setIconLabel = function ( text,icon_uri )  {
   this.element.innerHTML = text;
   if (icon_uri.length>0)  {
-    $(this.element).css(
-      {'text-align':'center',
+    $(this.element).css({
+      'text-align':'center',
 //       'margin-left':'1.2em',
-       'background-image'   :'url("'+icon_uri+'")',
-       'background-repeat'  :'no-repeat',
-       'background-size'    :'22px',
-       'background-position':'0.5em center'});
+      'background-image'   :'url("' + icon_uri + '")',
+      'background-repeat'  :'no-repeat',
+      'background-size'    :'22px',
+      'background-position':'0.5em center'
+    });
   }
 }
 
@@ -1208,8 +1209,9 @@ function setDefaultButton ( button,context_widget )  {
     if (e.keyCode == 13) {
     //if (e.which == 13) {
       // handle click logic here
-      button.element.click();
+      button.click();        
       //e.preventDefault();
+      //return true;
     }
   });
 }

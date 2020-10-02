@@ -26,7 +26,7 @@
     .main-table {
       border-spacing: 18px;
       border-radius: 25px;
-      width: 1000px;
+      width: 1000px !important;
       margin-top: 24px;
       margin-left:auto;
       margin-right:auto;
@@ -36,6 +36,12 @@
       background-color: white;
       box-shadow: 12px 12px #444444;
     }
+    .serial-no {
+      width: 50px !important;
+    }
+    .stretch {
+      width: 180px !important;
+    }
     .panel-gray-center {
       border-radius: 25px;
       background: #DDDDDD;
@@ -43,7 +49,7 @@
       padding-bottom: 12px;
       padding-left: 24px;
       padding-right: 24px;
-      width: 360px;
+      width: 360px !important;
       text-align: center;
       vertical-align: top;
       /* height: 150px; */
@@ -56,7 +62,7 @@
       padding-bottom: 12px;
       padding-left: 24px;
       padding-right: 24px;
-      width: 220px;
+      width: 360px !important;
       text-align: center;
       vertical-align: top;
       /* height: 150px; */
@@ -206,9 +212,9 @@
   </tr>
 
   <tr>
-    <td><h2>1.</h2></td>
-    <td>&nbsp;</td>
-    <td class="panel-gray-center" colspan=3>
+    <td class="serial-no"><h2>1.</h2></td>
+    <td class="stretch">&nbsp;</td>
+    <td colspan=3><div class="panel-gray-center">
       <span class="panel-title">
         CCP4 Cloud Introduction
       </span>
@@ -222,14 +228,14 @@
           markRouteMR(); markRouteEP();
           putHLink('html-userguide/jscofe_myprojects.html#projects');
         </script>
-    </td>
-    <td>&nbsp;</td>
+    </div></td>
+    <td class="stretch">&nbsp;</td>
   </tr>
 
   <tr>
-    <td><h2>2.</h2></td>
-    <td>&nbsp;</td>
-    <td class="panel-gray-center" colspan=3>
+    <td class="serial-no"><h2>2.</h2></td>
+    <td class="stretch">&nbsp;</td>
+    <td colspan=3><div class="panel-gray-center">
       <span class="panel-title">Image processing</span>
       Auto-processing with Xia-2
       <script>
@@ -245,14 +251,14 @@
           putHLink('html-taskref/doc.task.iMosflm.html');
           putYLink('https://www.youtube.com/embed/8IUMM58gMuo');
         </script>
-    </td>
-    <td>&nbsp;</td>
+    </div></td>
+    <td class="stretch">&nbsp;</td>
   </tr>
 
   <tr>
-    <td><h2>3.</h2></td>
-    <td>&nbsp;</td>
-    <td class="panel-gray-center" colspan=3>
+    <td class="serial-no"><h2>3.</h2></td>
+    <td class="stretch">&nbsp;</td>
+    <td colspan=3><div class="panel-gray-center">
       <span class="panel-title">Data import</span>
       Import local files
         <script>
@@ -261,8 +267,8 @@
         </script>
       <br>Import PDB entries
       <br>Import data from Cloud
-    </td>
-    <td>&nbsp;</td>
+    </div></td>
+    <td class="stretch">&nbsp;</td>
   </tr>
 
 <!--
@@ -297,22 +303,22 @@
 -->
 
   <tr>
-    <td><h2>4.</h2></td>
-    <td>&nbsp;</td>
-    <td class="panel-gray-center" colspan=3>
+    <td class="serial-no"><h2>4.</h2></td>
+    <td class="stretch">&nbsp;</td>
+    <td colspan=3><div class="panel-gray-center">
       <span class="panel-title">Data scaling and merging</span>
       Data scaling and merging with Aimless
        <script>
          putHLink('html-taskref/doc.task.Aimless.html');
        </script>
-    </td>
-    <td>&nbsp;</td>
+    </div></td>
+    <td class="stretch">&nbsp;</td>
   </tr>
 
   <tr>
-    <td><h2>5.</h2></td>
-    <td>&nbsp;</td>
-    <td class="panel-gray-center" colspan=3>
+    <td class="serial-no"><h2>5.</h2></td>
+    <td class="stretch">&nbsp;</td>
+    <td colspan=3><div class="panel-gray-center">
       <span class="panel-title">Asymmetric Unit and Structure Revision</span>
       ASU Content definition
         <script>
@@ -330,13 +336,13 @@
         </script>
       <br>Edit Structure Revision
       <br>Continue projects started elsewhere
-    </td>
-    <td>&nbsp;</td>
+    </div></td>
+    <td class="stretch">&nbsp;</td>
   </tr>
 
   <tr>
     <td><h2>6.</h2></td>
-    <td class="panel-gray-side" colspan=2>
+    <td colspan=2><div class="panel-gray-side">
       <span class="panel-title">Molecular Replacement</span>
       Auto-MR
         <script>
@@ -358,9 +364,9 @@
         <script>
           putHLink('html-taskref/doc.task.Simbad.html');
         </script>
-    </td>
-    <td style="width:2px;"></td>
-    <td class="panel-gray-side" colspan=2>
+    </div></td>
+    <td style="width:2px;">&nbsp;</td>
+    <td colspan=2><div class="panel-gray-side">
       <span class="panel-title">Experimental Phasing</span>
       Auto-EP with Crank-2: SAD
         <script>
@@ -391,13 +397,15 @@
         <script>
           putHLink('html-taskref/doc.task.Phaser.html');
         </script>
-    </td>
+      <br>&nbsp;
+      <br>&nbsp;
+    </div></td>
   </tr>
 
   <tr>
-    <td><h2>7.</h2></td>
-    <td>&nbsp;</td>
-    <td class="panel-gray-center" colspan=3>
+    <td class="serial-no"><h2>7.</h2></td>
+    <td class="stretch">&nbsp;</td>
+    <td colspan=3><div class="panel-gray-center">
       <span class="panel-title">Density modification</span>
       DM with Parrot
         <script>
@@ -411,14 +419,14 @@
         <script>
           putHLink('html-taskref/doc.task.SHELX.html#id1');
         </script>
-    </td>
-    <td>&nbsp;</td>
+    </div></td>
+    <td class="stretch">&nbsp;</td>
   </tr>
 
   <tr>
-    <td><h2>8.</h2></td>
-    <td>&nbsp;</td>
-    <td class="panel-gray-center" colspan=3>
+    <td class="serial-no"><h2>8.</h2></td>
+    <td class="stretch">&nbsp;</td>
+    <td colspan=3><div class="panel-gray-center">
       <span class="panel-title">Model Building and Refinement</span>
       Auto-MB with Buccaneer
         <script>
@@ -448,14 +456,14 @@
           putHLink('html-taskref/doc.task.Dimple.html');
         </script>
       <br>Buster
-    </td>
-    <td>&nbsp;</td>
+    </div></td>
+    <td class="stretch">&nbsp;</td>
   </tr>
 
   <tr>
-    <td><h2>9.</h2></td>
-    <td>&nbsp;</td>
-    <td class="panel-gray-center" colspan=3>
+    <td class="serial-no"><h2>9.</h2></td>
+    <td class="stretch">&nbsp;</td>
+    <td colspan=3><div class="panel-gray-center">
       <span class="panel-title">Ligands</span>
       Prepare ligand structures with AceDrg
         <script>
@@ -467,14 +475,14 @@
         <script>
           markRouteMR(); markRouteEP();
         </script>
-    </td>
-    <td>&nbsp;</td>
+    </div></td>
+    <td class="stretch">&nbsp;</td>
   </tr>
 
   <tr>
-    <td><h2>10.</h2></td>
-    <td>&nbsp;</td>
-    <td class="panel-gray-center" colspan=3>
+    <td class="serial-no"><h2>10.</h2></td>
+    <td class="stretch">&nbsp;</td>
+    <td colspan=3><div class="panel-gray-center">
       <span class="panel-title">Validation and deposition</span>
       Zanuda
         <script>
@@ -490,14 +498,14 @@
         <script>
           markRouteMR(); markRouteEP();
         </script>
-    </td>
-    <td>&nbsp;</td>
+    </div></td>
+    <td class="stretch">&nbsp;</td>
   </tr>
 
   <tr>
-    <td><h2>11.</h2></td>
-    <td>&nbsp;</td>
-    <td class="panel-gray-center" colspan=3>
+    <td class="serial-no"><h2>11.</h2></td>
+    <td class="stretch">&nbsp;</td>
+    <td colspan=3><div class="panel-gray-center">
       <span class="panel-title">CCP4 Cloud Toolbox</span>
       Sequence alignment
       <br>Structure alignment
@@ -510,8 +518,8 @@
       <br>Reflection Data diagnostics with Auspex
       <br>Self-Rotation Function Analysis
       <br>Coordinate editing with Coot
-    </td>
-    <td>&nbsp;</td>
+    </div></td>
+    <td class="stretch">&nbsp;</td>
   </tr>
 
   <tr>

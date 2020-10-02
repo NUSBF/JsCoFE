@@ -62,6 +62,11 @@ class FitWaters(basic.TaskDriver):
                 "--phi"         ,istruct.PHDELWT,
                 "--sigma"       ,self.getParameter(sec1.SIGMA)
               ]
+
+        #    self.PHI      = ""
+        #    self.FOM      = ""
+
+
         if self.getParameter(sec1.FLOOD_CBX)=="True":
             cmd += [ "--flood","--flood-atom-radius",
                      self.getParameter(sec1.FLOOD_RADIUS) ]

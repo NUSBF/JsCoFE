@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    23.07.20   <--  Date of Last Modification.
+#    01.10.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -138,6 +138,10 @@ class Refmac(basic.TaskDriver):
                stdin.append ( 'WEIGHT AUTO ' + str(sec1.WAUTO_VAL_AUTO.value) )
         else:
             stdin.append ( 'WEIGHT MATRIX ' + str(sec1.WAUTO_VAL.value) )
+
+        vdwrestraints = self.getParameter(sec1.VDW_VAL)
+        if vdwrestraints:
+           stdin.append ( 'VDWRESTRAINTS ' + vdwrestraints )
 
         stdin.append ( 'MAKE HYDR ' + str(sec1.MKHYDR.value) )
 

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    26.03.20   <--  Date of Last Modification.
+ *    28.09.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -203,7 +203,7 @@ TaskASUDef.prototype.constructor = TaskASUDef;
 TaskASUDef.prototype.icon = function()  { return 'task_asudef'; }
 
 TaskASUDef.prototype.currentVersion = function()  {
-  var version = 0;
+  var version = 1;
   if (__template)
         return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
