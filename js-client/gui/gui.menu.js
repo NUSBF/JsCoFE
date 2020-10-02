@@ -29,23 +29,28 @@ function MenuItem ( text,icon_uri )  {
   Widget.call ( this,'a' );
   this.setNoWrap();
   if (icon_uri.length>0)  {
-    $(this.element).css(
-      {'background-image'   :'url("'+icon_uri+'")',
-       'background-repeat'  :'no-repeat',
-       'background-size'    :'1.5em',
-       'background-position':'0.25em center'});
+    $(this.element).css({
+      'background-image'    : 'url("' + icon_uri + '")',
+      'background-repeat'   : 'no-repeat',
+      'background-size'     : '1.5em',
+      'background-position' : '0.25em center'
+    });
   }
   if (text.length>0)  {
     this.text_div = new Widget ( 'div' );
     this.text_div.element.innerHTML = text;
-    $(this.text_div.element).css({'text-align' :'left',
-                                  'white-space':'nowrap'});
+    $(this.text_div.element).css({
+      'text-align'  : 'left',
+      'white-space' : 'nowrap'
+    });
     if (icon_uri.length>0)
-      $(this.text_div.element).css({'margin-left':'1.5em'});
+      $(this.text_div.element).css({
+        'margin-left' : '1.5em'
+      });
     this.addWidget ( this.text_div );
   } else
     this.text_div = null;
-  this.menu = 0;
+  this.menu = null;
 }
 
 MenuItem.prototype.addMenu = function ( menu )  {
@@ -82,7 +87,9 @@ var __onclick_ignore_counter = 0;
 document.onclick = function(event)  {
   if (__onclick_ignore_counter>0)  __onclick_ignore_counter--;
                              else  __close_all_menus();
+  return true;
 }
+
 
 // -------------------------------------------------------------------------
 // Menu class
@@ -96,13 +103,17 @@ function Menu ( text,icon_uri )  {
     this.button.setNoWrap();
     //this.button.element.setAttribute ( 'class','menu-dropbtn' );
     this.button.addClass ( 'menu-dropbtn' );
+    //this.button.setSize ( '32px','32px' );
     if ((text=='') && (icon_uri!=''))  {
-      $(this.button.element).css ({'background-color':'transparent',
-                                   'background-size' :'28px'});
+      $(this.button.element).css({
+        'background-color' : 'transparent',
+        'background-size'  : '28px'
+      });
     }
     this.addWidget ( this.button );
     (function(menu){
       menu.button.addOnClickListener ( function(){
+      //menu.addOnClickListener ( function(){
         __close_all_menus();
         if (!menu.disabled)  {
           __onclick_ignore_counter++;
@@ -170,8 +181,11 @@ Menu.prototype.setWidth_px = function ( width_int )  {
 }
 
 Menu.prototype.setHeight_px = function ( height_int )  {
-  $(this.dropdown.element).css ( 'max-height', height_int + 'px' );
+  $(this.dropdown.element).css({
+    'max-height' : height_int + 'px'
+  });
 }
+
 
 // -------------------------------------------------------------------------
 // ContextMenu class

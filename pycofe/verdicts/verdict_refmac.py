@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    18.05.20   <--  Date of Last Modification.
+#    02.10.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -455,32 +455,35 @@ def calculate ( meta ) :
         bottomline += "MolProbity clash score of %0.1f for the structure seems quite high " % clashScore +\
                       "(median clash score for your resolution is %0.1f). "  % medianClash +\
                       "We recommend to switch on option for " +\
-                      "generation of hydrogen atoms during refinement. Also, please increase weight for VDW " +\
-                      "repulsion by putting following command into 'Additional keywords' of the " +\
-                      "'Advaced' parameters section: <i>vdwrestraints 2.0</i>. Value for restraints weight " +\
-                      "is subject to optimisation.<p>"
+                      "generation of hydrogen atoms during refinement. Also, please increase " +\
+                      "the weight for the VDW repulsion by setting up 2.0 for the " +\
+                      "'VDW repulsion weight' parameter. Value for the " +\
+                      "restraints weight is subject to optimisation.<p>"
     elif clashScore > (medianClash + (medianClash * 0.25)):
         bottomline += "MolProbity clash score of %0.1f for the structure seems a bit higher than optimal " % clashScore +\
                       "(median clash score for your resolution is %0.1f). "  % medianClash +\
                       "You can try to switch on option for " +\
-                      "generation of hydrogen atoms during refinement. Also, you can try to increase weight for VDW " +\
-                      "repulsion by putting following command into 'Additional keywords' of the " +\
-                      "'Advaced' parameters section: <i>vdwrestraints 2.0</i>. Value for restraints weight " +\
-                      "is subject to optimisation.<p>"
+                      "generation of hydrogen atoms during refinement. Also, you can try to " +\
+                      "increase the weight for the VDW repulsion by setting up 2.0 " +\
+                      "for the 'VDW repulsion weight' parameter. Value for the " +\
+                      "restraints weight is subject to optimisation.<p>"
 
     # 6. Bond lengths (distances) deviation (regardless of resolution)
     if rmsBondDistance > 0.02:
         bottomline += "RMS deviation of bond lengths for the structure is too high " +\
-                      "(%0.4f, while optimal range is between 0.01 and 0.02). We recommend to tighten up " % rmsBondDistance +\
-                      "geometry by reducing 'Overall data-geometry weight' parameter.<p>"
+                      "(%0.4f, while optimal range is between 0.01 and 0.02). " % rmsBondDistance +\
+                      "We recommend to tighten up the geometry by reducing the " +\
+                      "'Overall data-geometry weight' parameter.<p>"
     if rmsBondDistance < 0.01:
-        bottomline += "RMS deviation of bond lengths for the structure is too low " \
-                      "(%0.4f, while optimal range is between 0.01 and 0.02). We recommend to loose " % rmsBondDistance +\
-                      "geometry by increasing 'Overall data-geometry weight' parameter.<p>"
+        bottomline += "RMS deviation of bond lengths for the structure is too low " +\
+                      "(%0.4f, while optimal range is between 0.01 and 0.02). " % rmsBondDistance +\
+                      "We recommend to loose the geometry by increasing the " +\
+                      "'Overall data-geometry weight' parameter.<p>"
 
     # 7. Ramachandran and other geometry
     if ramaOutliers > 0.0:
-        bottomline += "According to MolProbity analysis, the structure seems to have Ramachandran outliers (%0.1f %%); " % ramaOutliers +\
+        bottomline += "According to MolProbity analysis, the structure seems to have " +\
+                      "Ramachandran outliers (%0.1f %%); " % ramaOutliers +\
                       "please examine those carefully.<p>"
 
     # 8. Overfitting detection.
@@ -597,7 +600,7 @@ def calculate ( meta ) :
                           "(%0.3f, while mean value for this resolution is %0.3f). " % (rFree, meanRfree) +\
                           "Try building more residues/ligands/waters/metals. Check your data for twinning. <p>"
 
-    return (verdict_score,verdict_message,bottomline)
+    return (verdict_score,verdict_message,bottomline,meanRfree,medianClash,ramaOutliers)
 
 
 def putVerdictWidget ( base,verdict_meta,verdict_row,refmac_log=None ):
@@ -614,29 +617,53 @@ def putVerdictWidget ( base,verdict_meta,verdict_row,refmac_log=None ):
     if not verdict_meta["params"]:
         verdict_meta["params"] = verdict_meta["refmac"]["params"]
 
-    verdict_score, verdict_message, bottomline = calculate ( verdict_meta )
+    verdict_score, verdict_message, bottomline, meanRfree, medianClash, ramaOutliers = calculate ( verdict_meta )
 
     base.putMessage1 ( base.report_page_id(),"&nbsp;",verdict_row )  # just a spacer
+
+    rfree_str = str(verdict_meta["refmac"]["rfree"][1])
+    if verdict_meta["refmac"]["rfree"][1] > meanRfree:
+        rfree_str = "<b>" + rfree_str + "</b>"
+
+    rms_str = str(verdict_meta["refmac"]["bond_length"][1])
+    if verdict_meta["refmac"]["bond_length"][1] < 0.01 or verdict_meta["refmac"]["bond_length"][1] > 0.02:
+        rms_str = "<b>" + rms_str + "</b>"
+
+    clash_str = str(verdict_meta["molprobity"]["clashscore"])
+    if verdict_meta["molprobity"]["clashscore"] > medianClash:
+        clash_str = "<b>" + clash_str + "</b>"
 
     verdict.makeVerdictSection ( base,{
         "title": "Refinement summary",
         "state": 0, "class": "table-blue", "css": "text-align:right;",
+        "horzHeaders" :  [
+            { "label"   : "Achieved",
+              "tooltip" : "Achieved in this job"
+            },{
+              "label"   : "Expected",
+              "tooltip" : "Expected from PDB statistics"
+            }
+        ],
         "rows" : [
             { "header": { "label"  : "R-factor",
                           "tooltip": "R-factor for working set"},
-              "data"   : [ str(verdict_meta["refmac"]["rfactor"][1]) ]
+              "data"   : [ str(verdict_meta["refmac"]["rfactor"][1]),"" ]
             },
             { "header": { "label"  : "R<sub>free</sub>",
                           "tooltip": "Free R-factor"},
-              "data"  : [ str(verdict_meta["refmac"]["rfree"][1]) ]
+              "data"  : [ rfree_str,"%0.3f" % meanRfree ]
             },
             { "header": { "label"  : "Bond length rms",
                           "tooltip": "Bond length r.m.s.d."},
-              "data"  : [ str(verdict_meta["refmac"]["bond_length"][1]) ]
+              "data"  : [ rms_str,"<span style=\"white-space:nowrap;\">0.01-0.02</span>" ]
             },
             { "header": { "label"  : "Clash score",
                           "tooltip": "Molprobity clash score" },
-              "data"  : [ str(verdict_meta["molprobity"]["clashscore"]) ]
+              "data"  : [ clash_str,"%0.1f" % medianClash ]
+            },
+            { "header": { "label"  : "Ramachandran<br>outliers",
+                          "tooltip": "Ramachandran outliers" },
+              "data"  : [ str(int(ramaOutliers)),"" ]
             }
         ]
     },verdict_score,verdict_message,bottomline,row=verdict_row+1 )

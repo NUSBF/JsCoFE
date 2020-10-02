@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    29.08.20   <--  Date of Last Modification.
+ *    30.09.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -189,12 +189,18 @@ AdminPage.prototype.refresh = function()  {
   (function(self){
     serverRequest ( fe_reqtype.getAdminData,0,'Admin Page',function(data){
       if (!data.served)  {
-        self.jobsTitle .setText  ( data.jobsStat );
-        self.usersTitle.setText  ( data.jobsStat );
-        self.nodesTitle.setText  ( data.jobsStat );
+        self.jobsTitle .setText ( data.jobsStat );
+        self.usersTitle.setText ( data.jobsStat );
+        self.nodesTitle.setText ( data.jobsStat );
       } else  {
-        self.jobsTitle .setText  ( '<h2>Jobs Log</h2>' );
-        self.jobStats  .setText  ( '<pre>' + data.jobsStat + '</pre>' );
+        self.jobsTitle .setText ( '<h2>Jobs Log</h2>' );
+        self.jobStats  .setText ( '<hr style="height:2px;"/><pre>' +
+            data.jobsStat.split(/\r\n|\r|\n/).reverse().join('\n') + '</pre>' );
+        /*
+        window.setTimeout ( function(){
+          $(self.jobsTab.element).scrollTop($(self.jobsTab.element).height()
+        },3000);
+        */
         self.usageStats._url    = data.usageReportURL;
         self.usageStats._loaded = false;
         self.loadUsageStats();
@@ -435,8 +441,10 @@ AdminPage.prototype.makeNodesInfoTab = function ( ndata )  {
     }
   }
 
-  this.nodeListTable.setAllColumnCSS (
-    {'vertical-align':'middle','white-space':'nowrap' },1,1 );
+  this.nodeListTable.setAllColumnCSS ({
+    'vertical-align' : 'middle',
+    'white-space'    : 'nowrap'
+  },1,1 );
 
 }
 

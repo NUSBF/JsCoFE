@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    09.02.20   <--  Date of Last Modification.
+ *    01.10.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -35,8 +35,6 @@ function TaskRefmac()  {
   this.name    = 'refmac5';
   this.setOName ( 'refmac' );  // default output file name template
   this.title   = 'Refinement with Refmac';
-  //this.helpURL = './html/jscofe_task_refmac.html';
-  //this.nc_type = 'client';    // job may be run only on client NC
 
   this.input_dtypes = [{  // input data types
       data_type   : {'DataRevision':['!xyz']}, // data type(s) and subtype(s)
@@ -97,13 +95,21 @@ function TaskRefmac()  {
                    showon   : {'WAUTO_YES':['yes']},
                    position : [1,3,1,1]
                 },
+                VDW_VAL : { type : 'real_',
+                   keyword  : 'none',
+                   label    : 'VDW repulsion weight',
+                   tooltip  : 'Weight factor for the VDW repulsion (leave blank for default value)',
+                   range    : [0,'*'],
+                   value    : '',
+                   position : [2,0,1,1]
+                },
                 MKHYDR : { type : 'combobox',
                        keyword  : 'none',
                        label    : 'Generate H-atoms for refinement',
                        tooltip  : 'Select how to represent hydrogen atoms in refinement',
                        range    : ['NO|No','YES|Yes if in input file','ALL|Yes'],
                        value    : 'NO',
-                       position : [2,0,1,1]
+                       position : [3,0,1,3]
                 }  /*,
                 TWIN : { type : 'combobox',
                    keyword  : 'none',
@@ -429,7 +435,7 @@ TaskRefmac.prototype.constructor = TaskRefmac;
 TaskRefmac.prototype.icon = function()  { return 'task_refmac'; }
 
 TaskRefmac.prototype.currentVersion = function()  {
-  var version = 1;
+  var version = 2;
   if (__template)
         return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
