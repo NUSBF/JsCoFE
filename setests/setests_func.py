@@ -381,6 +381,31 @@ def clickTaskInTaskTree(driver, taskName):
     return ()
 
 
+def doubleClickTaskInTaskTree(driver, taskName):
+    time.sleep(1)
+    tasksText = driver.find_elements(By.XPATH,
+                                     "//a[contains(@id,'treenode') and contains(@class, 'jstree-ancho')]")
+    fullText = ''
+    for taskText in tasksText:
+        match = re.search(taskName, taskText.text)
+        if match:
+            print ('Double clicking task "%s" in the task tree' % taskText.text)
+            fullText = taskText.text
+            break
+
+    taskElement = driver.find_element(By.XPATH,
+                                     "//a[contains(@id,'treenode') and contains(@class, 'jstree-anchor') and normalize-space()='%s']" % fullText)
+    driver.execute_script("arguments[0].scrollIntoView();", taskElement)
+    taskElement = driver.find_element(By.XPATH,
+                                     "//a[contains(@id,'treenode') and contains(@class, 'jstree-anchor') and normalize-space()='%s']" % fullText)
+    ActionChains(driver).move_to_element(taskElement).perform()
+    taskElement = driver.find_element(By.XPATH,
+                                     "//a[contains(@id,'treenode') and contains(@class, 'jstree-anchor') and normalize-space()='%s']" % fullText)
+    ActionChains(driver).double_click(taskElement).perform()
+    return ()
+
+
+
 def startBrowser(remote, browser):
     if len(remote) > 1:  # Running on Selenium Server hub
         waitShort = 90  # seconds for quick tasks
