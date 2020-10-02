@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    15.06.20   <--  Date of Last Modification.
+#    02.10.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -58,11 +58,20 @@ class FitLigand(basic.TaskDriver):
         cmd = [ "--pdbin"       ,pdbin,
                 "--hklin"       ,mtzin,
                 "--dictionary"  ,libin,
-                "--f"           ,istruct.DELFWT,
-                "--phi"         ,istruct.PHDELWT,
                 "--clusters"    ,self.getParameter(sec1.NCLUST),
                 "--fit-fraction",self.getParameter(sec1.FIT_FRACTION)
               ]
+
+        if istruct.mapSel=="diffmap":
+            cmd += [
+                "--f"     ,istruct.DELFWT,
+                "--phi"   ,istruct.PHDELWT,
+            ]
+        else:
+            cmd += [
+                "--f"     ,istruct.FWT,
+                "--phi"   ,istruct.PHI,
+            ]
 
         if self.getParameter(sec1.LEVEL_SEL)=="sigma":
             cmd +=["--sigma",self.getParameter(sec1.SIGMA)]

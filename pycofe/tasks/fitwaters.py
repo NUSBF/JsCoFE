@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    09.02.20   <--  Date of Last Modification.
+#    02.10.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -55,13 +55,22 @@ class FitWaters(basic.TaskDriver):
         pdbin   = istruct.getXYZFilePath ( self.inputDir() )
         mtzin   = istruct.getMTZFilePath ( self.inputDir() )
         watout  = "waters.pdb"
-        cmd = [ "--pdbin"       ,pdbin,
-                "--hklin"       ,mtzin,
-                "--pdbout"      ,watout,
-                "--f"           ,istruct.DELFWT,
-                "--phi"         ,istruct.PHDELWT,
-                "--sigma"       ,self.getParameter(sec1.SIGMA)
+        cmd = [ "--pdbin" ,pdbin,
+                "--hklin" ,mtzin,
+                "--pdbout",watout,
+                "--sigma" ,self.getParameter(sec1.SIGMA)
               ]
+
+        if istruct.mapSel=="diffmap":
+            cmd += [
+                "--f"     ,istruct.DELFWT,
+                "--phi"   ,istruct.PHDELWT,
+            ]
+        else:
+            cmd += [
+                "--f"     ,istruct.FWT,
+                "--phi"   ,istruct.PHI,
+            ]
 
         #    self.PHI      = ""
         #    self.FOM      = ""
