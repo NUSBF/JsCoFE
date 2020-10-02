@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    22.04.20   <--  Date of Last Modification.
+#    02.10.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -40,7 +40,7 @@ class DType(dtype_xyz.DType):
 
             self._type    = dtype()
             self.dname    = "structure"
-            self.version += 2   # versioning increments from parent to children
+            self.version += 3   # versioning increments from parent to children
 
             #  Refmac labels
             self.FP       = ""  # used in Buccaneer-MR and Parrot-MR
@@ -72,8 +72,9 @@ class DType(dtype_xyz.DType):
             self.useModelSel    = "N"    # for use in Buccaneer
             self.BFthresh       = 3.0
             self.phaseBlur      = 1.0    # used in arpwarp
-            self.chains         = []
+            self.mapSel         = "diffmap" # map selection ('diffmap','directmap') for coot tasks
 
+            self.chains         = []
             self.ligands        = []     # list of ligands fitted
             self.refmacLinks    = []     # List of links with description
             self.links          = []     # List of links without description

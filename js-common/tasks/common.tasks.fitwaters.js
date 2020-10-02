@@ -41,6 +41,7 @@ function TaskFitWaters()  {
       data_type : {'DataRevision':['phases']}, // data type(s) and subtype(s)
       label     : 'Structure revision',     // label for input dialog
       inputId   : 'revision', // input Id for referencing input fields
+      customInput : 'map-sel', // lay custom fields below the dropdown
       version   : 4,          // minimum data version allowed
       min       : 1,          // minimum acceptable number of data instances
       max       : 1           // maximum acceptable number of data instances

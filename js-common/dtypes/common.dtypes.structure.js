@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    10.04.20   <--  Date of Last Modification.
+ *    02.10.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -75,6 +75,7 @@ function DataStructure()  {
   this.initPhaseSel   = structure_subtype.XYZ;  // for use in Acorn and ArpWarp
   this.BFthresh       = 3.0;
   this.phaseBlur      = 1.0;   // used in arpwarp
+  this.mapSel         = 'diffmap'; // map selection ('diffmap','directmap') for coot tasks
 
   this.ligands        = [];    // list of ligand codes fitted
   this.refmacLinks    = [];    // list of LINKR records
@@ -98,7 +99,7 @@ DataStructure.prototype.icon  = function()  { return 'data';           }
 // when data class version is changed here, change it also in python
 // constructors
 DataStructure.prototype.currentVersion = function()  {
-  var version = 2;  // advanced on Crank-2
+  var version = 3;  // advanced on FitWaters/FitLigands
   if (__template)
         return  version + __template.DataXYZ.prototype.currentVersion.call ( this );
   else  return  version + DataXYZ.prototype.currentVersion.call ( this );
@@ -292,6 +293,22 @@ if (!__template)  {
 
       DataXYZ.prototype.layCustomDropdownInput.call ( this,dropdown );
 
+    } else if (startsWith(dropdown.layCustom,'map-sel'))  {
+      if (!(this.hasOwnProperty('mapSel')))
+        this.mapSel = 'diffmap';
+      setLabel ( 'Use map:',row,0 );
+      customGrid.mapSel = new Dropdown();
+      //customGrid.mapSel.setWidth ( '240px' );
+      if (((!this.DELFWT) || (!this.PHDELWT)) && (this.leadKey==2))
+        customGrid.mapSel.addItem ( "experimental",'',"directmap",true );
+      else  {
+        if (this.FWT && this.PHI)
+          customGrid.mapSel.addItem ( "2Fo-Fc",'',"directmap",this.mapSel=='directmap' );
+        if (this.DELFWT && this.PHDELWT)
+          customGrid.mapSel.addItem ( "Fo-Fc",'',"diffmap",this.mapSel=='diffmap' );
+      }
+      customGrid.setWidget ( customGrid.mapSel,row,1,1,4 );
+      customGrid.mapSel.make();
     }
 
   }
@@ -332,6 +349,8 @@ if (!__template)  {
         this.initPhaseSel = '';
     } else if (startsWith(dropdown.layCustom,'chain-sel'))  {
       DataXYZ.prototype.collectCustomDropdownInput.call ( this,dropdown );
+    } else if (startsWith(dropdown.layCustom,'map-sel'))  {
+      this.mapSel = customGrid.mapSel.getValue();
     }
 
     return msg;

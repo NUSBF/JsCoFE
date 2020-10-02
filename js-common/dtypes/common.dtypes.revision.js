@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    15.07.20   <--  Date of Last Modification.
+ *    02.10.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -667,6 +667,12 @@ if (!__template)  {
       case 'shelx-substr'  :
             this._layCDI_Crank2 ( dropdown,'shelx-substr' );
           break;
+      case 'map-sel'    :
+            if (this.Structure)
+              this.Structure.layCustomDropdownInput ( dropdown );
+            else if (this.Substructure)
+                this.Substructure.layCustomDropdownInput ( dropdown );
+          break;
       default : ;
     }
 
@@ -784,6 +790,13 @@ if (!__template)  {
       case 'shelx-auto'   :
       case 'shelx-substr' :
           msg = this._collectCDI_Crank2 ( dropdown );
+        break;
+
+      case 'map-sel' :
+          if (this.Structure)
+            this.Structure.collectCustomDropdownInput ( dropdown );
+          else if (this.Substructure)
+            this.Substructure.collectCustomDropdownInput ( dropdown );
         break;
 
       case 'cell-info' :
