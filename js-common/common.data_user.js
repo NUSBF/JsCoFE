@@ -51,12 +51,8 @@ function UserData()  {
   this.licence       = '';
   this.feedback      = '';
   this.pwd           = '';
-//  this.nJobs         = 0;
-//  this.usedSpace     = 0;  // in MB
-//  this.usedCPU       = 0;  // in hours
-  this.knownSince    = ''; // date
-  this.lastSeen      = ''; // date
-//  this.admin         = false;
+  this.knownSince    = '';  // date
+  this.lastSeen      = '';  // date
   this.role          = role_code.user;
   this.dormant       = 0;
   this.volume        = '***';  // where users projects are kept
@@ -64,16 +60,10 @@ function UserData()  {
   this.authorisation = {};
   this.settings      = {
     onlogin        : 'project_list',  // 'project_list', 'last_project'
-    viewers_size   : [0.97,1.40],
-    jobdlg_size    : [0.85,1.25],
+    viewers_size   : [1.40,0.97],     // width, height
+    jobdlg_size    : [1.25,0.85],     // width, height
     project_prefix : false
   };
-  /*
-  this.settings.onlogin = 'project_list';  // 'project_list', 'last_project'
-  this.settings.viewers_size   = [0.75.0.875];
-  this.settings.jobdlg_size    = [0.75.0.75];
-  this.settings.project_prefix = false;
-  */
   this.action        = userdata_action.none;
 }
 
@@ -96,11 +86,11 @@ function checkUserData ( uData )  {
     uData.settings = { project_prefix : false };
   if (!uData.settings.hasOwnProperty('onlogin'))  {
     uData.settings.onlogin      = 'project_list';  // 'project_list', 'last_project'
-    uData.settings.viewers_size = [0.97,1.40];
-    uData.settings.jobdlg_size  = [0.85,1.25];
+    uData.settings.viewers_size = [1.40,0.97];     // width, height
+    uData.settings.jobdlg_size  = [1.25,0.85];     // width, height
   }
-  if (!uData.hasOwnProperty('volume'))         uData.volume        = '***';
-  if (!uData.hasOwnProperty('dormant'))        uData.dormant       = 0;
+  if (!uData.hasOwnProperty('volume'))   uData.volume  = '***';
+  if (!uData.hasOwnProperty('dormant'))  uData.dormant = 0;
   if (uData.hasOwnProperty('admin'))  {
     if (!uData.hasOwnProperty('role'))  {
       if (uData.admin)  uData.role = role_code.admin;
