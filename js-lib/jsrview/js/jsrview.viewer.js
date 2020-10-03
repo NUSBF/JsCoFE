@@ -1,7 +1,7 @@
 //
 //  ==========================================================================
 //
-//    25.08.20   <--  Date of Last Modification.
+//    03.10.20   <--  Date of Last Modification.
 //                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  --------------------------------------------------------------------------
 //
@@ -173,24 +173,18 @@ function calcViewerSize ( widthF,heightF )  {
   //var w  = jq(window.parent).width () - 40;
   //var h  = jq(window.parent).height() - 64;
 
-  var w = window.parent.innerWidth;
-  var h = window.parent.innerHeight;
+  var w0 = window.parent.innerWidth;
+  var h0 = window.parent.innerHeight;
+  var w  = w0 - 40;
+  var h  = h0 - 56;
 
-  if (window.parent.__any_mobile_device)  {
-
-    w -= 40;
-    h -= 56;
-
-  } else  {
-
-    w -= 40;
-    h -= 64;
-
-    if ((typeof window.parent.__touch_device === 'undefined') || (!window.parent.__touch_device))  {
-      w = widthF*w;
-      h = heightF*h;
+  if (!window.parent.__any_mobile_device)  {
+    h -= 8;
+    if ((typeof window.parent.__touch_device === 'undefined') ||
+        (!window.parent.__touch_device))  {
+      if (widthF>0.0)  w = widthF*Math.min(w0,h);
+      if (heightF>0.0) h = heightF*Math.min(w0,h);
     }
-
   }
 
   return [w,h];
@@ -234,7 +228,11 @@ function startUglyMol ( title,xyz_uri,mtz_uri,map_uri,diffmap_uri,mapLabels )  {
   var size;
   if (window.parent.__any_mobile_device)
         size = calcViewerSize ( 1.0,1.0    );
+  else if (window.parent.__user_settings && window.parent.__user_settings.viewers_size)
+        size = calcViewerSize ( window.parent.__user_settings.viewers_size[0],
+                                window.parent.__user_settings.viewers_size[1] );
   else  size = calcViewerSize ( 0.75,0.875 );
+
   jq(iframe).width  ( size[0] );
   jq(iframe).height ( size[1] );
   dialog.appendChild ( iframe );
@@ -460,9 +458,13 @@ function startViewHKL ( title,mtz_uri,window_instance )  {
   });
 
   var size;
-  if (window.parent.__mobile_device)
-        size = calcViewerSize (  1.0,1.0    );
-  else  size = calcViewerSize (  0.75,0.875 );
+  if (window.parent.__any_mobile_device)
+        size = calcViewerSize ( 1.0,1.0    );
+  else if (window.parent.__user_settings && window.parent.__user_settings.viewers_size)
+        size = calcViewerSize ( window.parent.__user_settings.viewers_size[0],
+                                window.parent.__user_settings.viewers_size[1] );
+  else  size = calcViewerSize ( 0.75,0.875 );
+
   jq(iframe).width  ( size[0] );
   jq(iframe).height ( size[1] );
   dialog.appendChild ( iframe );
@@ -602,7 +604,14 @@ function startRSViewer ( title,json_uri,map_uri )  {
                     'overflow' : 'hidden'
   });
 
-  var size = calcViewerSize (  0.75,0.875 );
+  var size;
+  if (window.parent.__any_mobile_device)
+        size = calcViewerSize ( 1.0,1.0    );
+  else if (window.parent.__user_settings && window.parent.__user_settings.viewers_size)
+        size = calcViewerSize ( window.parent.__user_settings.viewers_size[0],
+                                window.parent.__user_settings.viewers_size[1] );
+  else  size = calcViewerSize ( 0.75,0.875 );
+
   jq(iframe).width  ( size[0] );
   jq(iframe).height ( size[1] );
   dialog.appendChild ( iframe );

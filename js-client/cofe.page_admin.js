@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    30.09.20   <--  Date of Last Modification.
+ *    02.10.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -194,8 +194,19 @@ AdminPage.prototype.refresh = function()  {
         self.nodesTitle.setText ( data.jobsStat );
       } else  {
         self.jobsTitle .setText ( '<h2>Jobs Log</h2>' );
-        self.jobStats  .setText ( '<hr style="height:2px;"/><pre>' +
-            data.jobsStat.split(/\r\n|\r|\n/).reverse().join('\n') + '</pre>' );
+        var lines = data.jobsStat.split(/\r\n|\r|\n/);
+        if ((lines.length>0) && startsWith(lines[0],'--------'))  {
+          lines[0] = lines[0].replace ( /-/g,'=' );
+          lines[2] = lines[2].replace ( /-/g,'=' );
+          if (!lines[lines.length-1])
+            lines.pop();
+          lines.push ( lines.shift() );
+          lines.push ( lines.shift() );
+          lines.push ( lines.shift() );
+        }
+        //self.jobStats  .setText ( '<hr style="height:2px;"/><pre>' +
+        //    data.jobsStat.split(/\r\n|\r|\n/).reverse().join('\n') + '</pre>' );
+        self.jobStats  .setText ( '<pre>' + lines.reverse().join('\n') + '</pre>' );
         /*
         window.setTimeout ( function(){
           $(self.jobsTab.element).scrollTop($(self.jobsTab.element).height()

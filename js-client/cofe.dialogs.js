@@ -40,8 +40,8 @@ function calcDialogSize ( defW,defH, defWT,defHT, job_dialog_data )  {
 
     w = defWT*$(window).width () - 8;
     h = defHT*$(window).height() - 40;// - 46;
-    if (__mobile_device)
-      h += 24;
+    if (__iOS_device)          h += 36;
+    else if (__mobile_device)  h += 24;
 
   } else  {
 
@@ -54,11 +54,15 @@ function calcDialogSize ( defW,defH, defWT,defHT, job_dialog_data )  {
     }
 
     if ((w>=w0) || (h>=h0))  {
-      w = defW*w0;
-      h = defH*h0;
+      w0 -= 8;
+      h0 -= 42;
+      if (defW>0.0)  w = Math.min ( defW*Math.min(w0,h0), w0 );
+      if (defH>0.0)  h = Math.min ( defH*Math.min(w0,h0), h0 );
       if (job_dialog_data)  {
-        job_dialog_data.position = { my : 'center top',   // job dialog position reference
-                                     at : 'center top+5%' }; // job dialog offset in the screen
+        job_dialog_data.position = {
+          my : 'center top',               // job dialog position reference
+          at : 'center top+'+(h0-h)/2+'px' // job dialog offset in the screen
+        };
         job_dialog_data.width  = 0;
         job_dialog_data.height = 0;
       }

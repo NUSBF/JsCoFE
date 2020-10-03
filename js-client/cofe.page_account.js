@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    01.04.20   <--  Date of Last Modification.
+ *    03.10.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -152,14 +152,65 @@ function AccountPage ( sceneId )  {
   var spanel = new Grid('');
   spanel.setWidth ( '300pt' );
   panel.setLabel ( '&nbsp;',row,2,1,1 ).setWidth ( '80px' );
-  panel.setWidget ( spanel ,row,3,6,1 );
+  panel.setWidget ( spanel ,row,3,12,3 );
 
   panel.setLabel ( 'Preferences<sup>*</sup>',row-1,5,1,1 )
        .setFont ( 'times','150%',true,true );
   //spanel.setCellSize ( '','10pt',1,0   );
 
+  var prfrow = 0;
+
+  spanel.setLabel ( '<hr/>&nbsp;',prfrow++,0,1,2 );
+  spanel.setLabel ( 'On login, go to: ',prfrow,0,1,1 );
+  spanel.setVerticalAlignment ( prfrow,0,'middle' );
+  spanel.setCellSize  ( '120px','',prfrow,0   );
+  var onlogin_sel = new Dropdown();
+  onlogin_sel.addItem ( 'list of projects','','project_list',
+                        __user_settings.onlogin =='project_list' );
+  onlogin_sel.addItem ( 'last project','','last_project',
+                        __user_settings.onlogin =='last_project' );
+  spanel.setWidget ( onlogin_sel, prfrow++,1,1,1 );
+  onlogin_sel.make();
+
+  var dgrid = spanel.setGrid ( '-compact', prfrow++,0,1,2 );
+  dgrid.setLabel ( '&nbsp;',0,0,1,3 ).setFontSize('50%');
+  dgrid.setLabel ( 'Initial size (% of browser window):',1,0,1,3 )
+       .setNoWrap();
+  dgrid.setLabel ( 'width' ,2,1,1,1 ).setFontItalic(true);
+  dgrid.setLabel ( 'height',2,2,1,1 ).setFontItalic(true);
+  dgrid.setLabel ( '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Job dialogs:',3,0,1,1 )
+       .setFontItalic(true);
+  dgrid.setLabel ( '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Viewers:',4,0,1,1 )
+       .setFontItalic(true);
+  var expl = ' (in percents of browser window width or height, whichever ' +
+             'is less; set negative in order to use full window size)';
+  var defsize = [
+    [
+     'job dialogs width',
+      dgrid.setInputText ( 100*__user_settings.jobdlg_size[0],3,1,1,1 )
+           .setStyle ( 'text','real','','Initial width'+expl )
+           .setWidth_px(40)
+    ],[
+      'job dialogs height',
+      dgrid.setInputText ( 100*__user_settings.jobdlg_size[1],3,2,1,1 )
+           .setStyle ( 'text','real','','Initial height'+expl )
+           .setWidth_px(40)
+    ],[
+      'viewers width',
+      dgrid.setInputText ( 100*__user_settings.viewers_size[0],4,1,1,1 )
+           .setStyle ( 'text','real','','Initial width'+expl )
+           .setWidth_px(40)
+    ],[
+      'viewers height',
+      dgrid.setInputText ( 100*__user_settings.viewers_size[1],4,2,1,1 )
+           .setStyle ( 'text','real','','Initial height'+expl )
+           .setWidth_px(40)
+    ]
+  ];
+  dgrid.setLabel ( '&nbsp;',5,0,1,3 ).setFontSize('50%');
+
   var fprefix_cbx = spanel.setCheckbox ( 'Use project name as default file prefix',
-                                         false, 0,0,1,1 )
+                                         false, prfrow++,0,1,2 )
                           .setTooltip  ( 'If selected, all generated file names ' +
                                          'will be prefixed with project name '    +
                                          'unless another prefix is specified in ' +
@@ -168,8 +219,8 @@ function AccountPage ( sceneId )  {
   if (__user_settings.hasOwnProperty('project_prefix'))
     fprefix_cbx.setValue ( __user_settings.project_prefix );
 
-  spanel.setLabel ( '&nbsp;<p><sup>*</sup> Save changes for Preferences to ' +
-                    'take an effect',5,0,1,1 )
+  spanel.setLabel ( '&nbsp;<br><hr/><sup>*</sup> Save changes for Preferences to ' +
+                    'take an effect',prfrow+4,0,1,2 )
         .setFontSize ( '90%' ).setFontItalic(true);
 
 
@@ -255,6 +306,17 @@ function AccountPage ( sceneId )  {
         .indexOf(feedback_btn.getText())<0)
       msg += '<b>Feedback agreement</b> must be chosen.<p>';
 
+    for (var i=0;i<defsize.length;i++)  {
+      var text = defsize[i][1].getValue().trim();
+      if (text.length<=0)
+        msg += '<b>Value for ' + defsize[i][0] + '</b> must be given.<p>';
+      else if (!isFloat(text))
+        msg += '<b>Value for ' + defsize[i][0] + '</b> is misformatted.<p>';
+      else
+        defsize[i].push ( parseFloat(text)/100.0 );
+    }
+
+
     if (msg)  {
 
       new MessageBox ( 'My Account Update',
@@ -271,6 +333,9 @@ function AccountPage ( sceneId )  {
       userData.feedback = feedback_btn.getText ();
       userData.action   = userdata_action.none;
 
+      __user_settings.onlogin        = onlogin_sel.getValue();
+      __user_settings.jobdlg_size    = [ defsize[0][2],defsize[1][2] ];
+      __user_settings.viewers_size   = [ defsize[2][2],defsize[3][2] ];
       __user_settings.project_prefix = fprefix_cbx.getValue();
       userData.settings = __user_settings;
 

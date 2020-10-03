@@ -149,7 +149,8 @@
   ],
 
   "Emailer" : {
-    "type"               : "nodemailer",
+    "type"               : "desktop",
+    "_type"               : "nodemailer",
     "emailFrom"          : "CCP4 Cloud <ccp4.cofe@gmail.com>",
     "maintainerEmail"    : "ccp4.cofe@gmail.com",
     "host"               : "smtp.gmail.com",
