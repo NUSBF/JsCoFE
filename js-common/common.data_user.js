@@ -96,8 +96,8 @@ function checkUserData ( uData )  {
     uData.settings = { project_prefix : false };
   if (!uData.settings.hasOwnProperty('onlogin'))  {
     uData.settings.onlogin      = 'project_list';  // 'project_list', 'last_project'
-    uData.settings.viewers_size = [0.75,0.875];
-    uData.settings.jobdlg_size  = [0.75,0.75];
+    uData.settings.viewers_size = [0.97,1.40];
+    uData.settings.jobdlg_size  = [0.85,1.25];
   }
   if (!uData.hasOwnProperty('volume'))         uData.volume        = '***';
   if (!uData.hasOwnProperty('dormant'))        uData.dormant       = 0;
