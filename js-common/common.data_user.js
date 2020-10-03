@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    26.06.20   <--  Date of Last Modification.
+ *    03.10.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -62,8 +62,18 @@ function UserData()  {
   this.volume        = '***';  // where users projects are kept
   this.helpTopics    = [];
   this.authorisation = {};
-  this.settings      = {};
+  this.settings      = {
+    onlogin        : 'project_list',  // 'project_list', 'last_project'
+    viewers_size   : [0.97,1.40],
+    jobdlg_size    : [0.85,1.25],
+    project_prefix : false
+  };
+  /*
+  this.settings.onlogin = 'project_list';  // 'project_list', 'last_project'
+  this.settings.viewers_size   = [0.75.0.875];
+  this.settings.jobdlg_size    = [0.75.0.75];
   this.settings.project_prefix = false;
+  */
   this.action        = userdata_action.none;
 }
 
@@ -82,7 +92,13 @@ function checkUserData ( uData )  {
       msg = '<li>confirm your account details</li>';
   }
   if (!uData.hasOwnProperty('authorisation'))  uData.authorisation = {};
-  if (!uData.hasOwnProperty('settings'))       uData.settings      = {};
+  if (!uData.hasOwnProperty('settings'))
+    uData.settings = { project_prefix : false };
+  if (!uData.settings.hasOwnProperty('onlogin'))  {
+    uData.settings.onlogin      = 'project_list';  // 'project_list', 'last_project'
+    uData.settings.viewers_size = [0.75,0.875];
+    uData.settings.jobdlg_size  = [0.75,0.75];
+  }
   if (!uData.hasOwnProperty('volume'))         uData.volume        = '***';
   if (!uData.hasOwnProperty('dormant'))        uData.dormant       = 0;
   if (uData.hasOwnProperty('admin'))  {

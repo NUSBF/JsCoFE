@@ -166,7 +166,15 @@ function login ( user_login_name,user_password,sceneId,page_switch )  {
                          else if ((!__local_setup) && (userData.action!=userdata_action.none))
                          //else if (userData.action!=userdata_action.none)
                                makeAccountPage     ( sceneId );
-                         else  makeProjectListPage ( sceneId );
+                         else if (__user_settings.onlogin=='last_project')  {
+                           serverRequest ( fe_reqtype.getProjectList,0,'Project List',function(data){
+                             var found = false;
+                             for (var i=0;(i<data.projects.length) && (!found);i++)
+                               found = (data.projects[i].name==data.current);
+                             if (found)  makeProjectPage     ( sceneId );
+                                   else  makeProjectListPage ( sceneId );
+                           },null,'persist');
+                         } else  makeProjectListPage ( sceneId );
                       break;
 
                 case 1 : makeProjectListPage ( sceneId );  break;

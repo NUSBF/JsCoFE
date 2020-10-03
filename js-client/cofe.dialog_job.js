@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    01.08.20   <--  Date of Last Modification.
+ *    03.10.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -72,7 +72,10 @@ function JobDialog ( params,          // data and task projections up the tree b
   this.run_image   = null;
   this.ind_timer   = null;
 
-  var size = calcDialogSize ( 0.75,0.75, 1,1, this.task.job_dialog_data );
+  var size = calcDialogSize (
+    __user_settings.jobdlg_size[0],__user_settings.jobdlg_size[1],
+    1,1, this.task.job_dialog_data
+  );
   this.initialWidth  = size[0];
   this.initialHeight = size[1];
 

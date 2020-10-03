@@ -659,9 +659,11 @@ function readConfiguration ( confFilePath,serverType )  {
       if (emailer.auth.hasOwnProperty('file'))  {
         var auth = utils.readString ( emailer.auth.file );
         if (auth)  {
-          var up = auth.split(' ').filter(function(i){return i});
+          var up = auth.split(/\r?\n/)[0].split(' ').filter(function(i){return i});
           emailer.auth.user = up[0].trim();
           emailer.auth.pass = up[1].trim();
+          //console.log ( '"' + emailer.auth.user + '"' );
+          //console.log ( '"' + emailer.auth.pass + '"' );
         } else  {
           emailer.auth.user = 'xxx';  // will fail
           emailer.auth.pass = 'xxx';  // will fail

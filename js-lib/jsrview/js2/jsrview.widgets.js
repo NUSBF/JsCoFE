@@ -274,7 +274,7 @@ RVAPIReportWidgets.prototype.buttonClicked = function ( command,data )  {
           window.rvGate.buttonClicked ( command,data );
     else  this.downloadUri ( data );
   } else if (command=="{uglymol}")  {
-    this._startUglyMol ( data );  //### not in the scope
+    this._startUglyMol ( data,'' );  //### not in the scope
   } else if (command=="{display}")  {
     this.displayData ( data );    //### not in the scope
   } else if (command=="{popup}")  {
@@ -289,7 +289,7 @@ RVAPIReportWidgets.prototype.buttonClicked = function ( command,data )  {
       window.parent.ls_RVAPIAppButtonClicked (
                 base_url.substring(0,base_url.lastIndexOf('/')),command,data )  ;
     } else if (command=="{viewhkl}")  {
-      this.startViewHKL ( "",data );  //### not in the scope
+      this.startViewHKL ( "",data,window );  //### not in the scope
     }
   }
 

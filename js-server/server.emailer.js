@@ -128,6 +128,7 @@ function send ( to,subject,message )  {
     } else if (emailer_type=='telnet')  {
       send_telnet ( to,subject,message );
     } else if (emailer_type=='desktop')  {
+      //log.standard ( 1,'send e-mail in desktop mode:\n' + message );
       return message;
     }
   } else
@@ -161,7 +162,7 @@ var message = utils.readString ( path.join('message_templates',template_name+'.h
     for (var key in subs_dict)
       message = com_utils.replaceAll ( message,'$'+key,subs_dict[key] );
   }
-  send ( userData.email,subject,message );
+  return send ( userData.email,subject,message );
 }
 
 
