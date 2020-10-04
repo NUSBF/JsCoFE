@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    14.01.20   <--  Date of Last Modification.
+#    04.10.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -198,7 +198,7 @@ def run ( body,sectionTitle="Macromolecular sequences" ):  # body is reference t
             body.putTableLine ( seqTableId,"Length  ","Sequence length" ,str(seq.size),4 )
             body.putTableLine ( seqTableId,"Weight  ","Molecular weight",str(seq.weight),5 )
 
-            body.putSummaryLine ( f,"SEQ",seq.dname )
+            body.putSummaryLine ( body.get_cloud_path(f),"SEQ",seq.dname )
 
         else:
             body.putMessage1 ( subSecId,
@@ -211,9 +211,10 @@ def run ( body,sectionTitle="Macromolecular sequences" ):  # body is reference t
                 "RNHISNAMQKLGVKGRSQAVVELLRMGELELEFQSKPLLTKREREVFELLVQDKTTKEIASELFISEKTV\n" +\
                 "</pre>Your file reads:" + htmlLine + ""
                 ,0 )
-            body.putSummaryLine_red ( f,"SEQ","UNUSABLE: no sequence found (file format wrong?)" )
+            body.putSummaryLine_red ( body.get_cloud_path(f),"SEQ",
+                                      "UNUSABLE: no sequence found (file format wrong?)" )
 
-        body.file_stdout.write ( "\n... processed: " + f + "\n    " )
+        body.file_stdout.write ( "\n... processed: " + body.get_cloud_path(f) + "\n    " )
         k += 1
 
     body.rvrow += 1

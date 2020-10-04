@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    11.06.20   <--  Date of Last Modification.
+#    04.10.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -64,7 +64,8 @@ def run ( body ):  # body is reference to the main Import class
         if comp_list:
             comp_id = comp_list.find_values ( "_chem_comp.id" )
         if not comp_id or len(doc)<len(comp_id)+1:
-            body.putSummaryLine_red ( f,"UNKNOWN","Not a ligand library file" )
+            body.putSummaryLine_red ( body.get_cloud_path(f),"UNKNOWN",
+                                      "Not a ligand library file" )
             body.stdout ( "\n ***** file " + f +\
                 " does not contain _chem_comp loop or data_comp_list data block or both.\n\n"  )
 
@@ -103,7 +104,8 @@ def run ( body ):  # body is reference to the main Import class
                     shutil.copyfile ( ftmp,fileCIF )  # use ORIGINAL restraints
 
                 if not os.path.isfile(fileXYZ) or not os.path.isfile(fileCIF):
-                    body.putSummaryLine_red ( f,"UNKNOWN","Failed to recognise, ignored" )
+                    body.putSummaryLine_red ( body.get_cloud_path(f),"UNKNOWN",
+                                              "Failed to recognise, ignored" )
                 else:
                     # Register output data. This moves needful files into output directory
                     # and puts the corresponding metadata into output databox
@@ -125,14 +127,16 @@ def run ( body ):  # body is reference to the main Import class
                             ligrow += 1
                         body.putLigandWidget1 ( subSecId,"ligand_btn_","Ligand structure",
                                                 ligand,-1,ligrow,1 )
-                        body.putSummaryLine ( f,"LIGAND",ligand.dname )
+                        body.putSummaryLine ( body.get_cloud_path(f),"LIGAND",ligand.dname )
                         ligrow += 2
 
                     else:
-                        body.putSummaryLine_red ( f,"UNKNOWN","Failed to form ligand data" )
+                        body.putSummaryLine_red ( body.get_cloud_path(f),"UNKNOWN",
+                                                  "Failed to form ligand data" )
 
             else:
-                body.putSummaryLine_red ( f,"UNKNOWN","Failed to recognise data content" )
+                body.putSummaryLine_red ( body.get_cloud_path(f),"UNKNOWN",
+                                          "Failed to recognise data content" )
 
         else:
             #  multi-entry file, import as a library object
@@ -150,13 +154,14 @@ def run ( body ):  # body is reference to the main Import class
                     body.putHR1 ( subSecId,librow )
                     librow += 1
                 body.putLibraryWidget1 ( subSecId,"Ligand library",library,librow,1 )
-                body.putSummaryLine ( f,"LIBRARY",library.dname )
+                body.putSummaryLine ( body.get_cloud_path(f),"LIBRARY",library.dname )
                 librow += 2
             else:
-                body.putSummaryLine_red ( f,"UNKNOWN","Failed to form library data" )
+                body.putSummaryLine_red ( body.get_cloud_path(f),"UNKNOWN",
+                                          "Failed to form library data" )
 
 
-        body.file_stdout.write ( "... processed: " + f + "\n" )
+        body.file_stdout.write ( "... processed: " + body.get_cloud_path(f) + "\n" )
         k += 1
 
     body.rvrow += 1

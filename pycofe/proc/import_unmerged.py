@@ -5,13 +5,13 @@
 #
 # ============================================================================
 #
-#    13.10.19   <--  Date of Last Modification.
+#    04.10.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  UNMERGED DATA IMPORT CLASS
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2019
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2020
 #
 # ============================================================================
 #
@@ -209,7 +209,8 @@ def run ( body,        # body is reference to the main Import class
                       " cannot be processed.\n\n"
                 body.file_stdout.write ( msg )
                 body.file_stderr.write ( msg )
-                body.putSummaryLine_red ( f_orig,"UNMERGED","Failed to process/import, ignored" )
+                body.putSummaryLine_red ( body.get_cloud_path(f_orig),"UNMERGED",
+                                          "Failed to process/import, ignored" )
 
             else:
                 mf = mtz.mtz_file ( p_mtzin )
@@ -251,8 +252,8 @@ def run ( body,        # body is reference to the main Import class
                               " cannot be processed.\n\n"
                         body.file_stdout.write ( msg )
                         body.file_stderr.write ( msg )
-                        body.putSummaryLine_red ( outFileName,"UNMERGED",
-                                        "Failed to process/import, ignored" )
+                        body.putSummaryLine_red ( body.get_cloud_path(outFileName),
+                                "UNMERGED","Failed to process/import, ignored" )
 
                     else:
                         unmerged.setUnmergedFileName ( outFileName )
@@ -286,7 +287,8 @@ def run ( body,        # body is reference to the main Import class
                         frow += 2
 
                         if body.summary_row_0<0:
-                            body.putSummaryLine ( f_orig,"UNMERGED",unmerged.dname )
+                            body.putSummaryLine ( body.get_cloud_path(f_orig),
+                                                  "UNMERGED",unmerged.dname )
                         else:
                             body.addSummaryLine ( "UNMERGED",unmerged.dname )
                         k += 1
