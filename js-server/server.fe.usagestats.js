@@ -204,14 +204,14 @@ var generate_report = false;
              if (userData)
                emailer.sendTemplateMessage ( userData,
                      cmd.appName() + ': New CCP4 Series','ccp4_release',{} );
-           } else if ((0<code) && (code<254))  {
+           } else if ((0<=code) && (code<254))  {
              log.standard ( 21,code + ' CCP4 updates available, please update' );
              if (userData)
                emailer.sendTemplateMessage ( userData,
                      cmd.appName() + ': CCP4 Update','ccp4_update',{
                        'nupdates' : code
                      } );
-           } else if (code==0)  {
+           } else if (code)  {
              log.error ( 22,'checking for CCP4 updates failed, code='+code );
              if (userData)
                emailer.sendTemplateMessage ( userData,
