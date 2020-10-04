@@ -32,6 +32,7 @@ var user    = require('./server.fe.user');
 var emailer = require('./server.emailer');
 var utils   = require('./server.utils');
 var task_t  = require('../js-common/tasks/common.tasks.template');
+var ud      = require('../js-common/common.data_user');
 
 //  prepare log
 var log = require('./server.log').newLog(20);
@@ -193,7 +194,7 @@ var generate_report = false;
          .on('exit', function(code){
            var userData = null;
            if (emailer.hasOwnProperty('maintainerEmail'))  {
-             userData = new UserData();
+             userData = new ud.UserData();
              userData.name  = cmd.appName() + ' Mainteiner';
              userData.email = emailer.maintainerEmail;
            }
