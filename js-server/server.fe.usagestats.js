@@ -199,18 +199,23 @@ var generate_report = false;
              userData.name  = cmd.appName() + ' Mainteiner';
              userData.email = emailer_conf.maintainerEmail;
            }
+           code = 2;
            if (code==254)  {
              log.standard ( 20,'New CCP4 series released, please upgrade' );
              if (userData)
                emailer.sendTemplateMessage ( userData,
                      cmd.appName() + ': New CCP4 Series','ccp4_release',{} );
-           } else if ((0<=code) && (code<254))  {
-             log.standard ( 21,code + ' CCP4 updates available, please update' );
-             if (userData)
+           } else if ((0<code) && (code<254))  {
+             log.standard ( 21,code + ' CCP4 updates available, please apply' );
+             if (userData)  {
+               var txt = 'CCP4 Update is ';
+               if (code>1)
+                 txt = code + ' CCP4 Updates are '
                emailer.sendTemplateMessage ( userData,
                      cmd.appName() + ': CCP4 Update','ccp4_update',{
-                       'nupdates' : code
+                       'text' : txt
                      } );
+             }
            } else if (code)  {
              log.error ( 22,'checking for CCP4 updates failed, code='+code );
              if (userData)
