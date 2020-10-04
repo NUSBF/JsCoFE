@@ -199,7 +199,7 @@ var generate_report = false;
              userData.name  = cmd.appName() + ' Mainteiner';
              userData.email = emailer_conf.maintainerEmail;
            }
-           code = 2;
+           code = 254;
            if (code==254)  {
              log.standard ( 20,'New CCP4 series released, please upgrade' );
              if (userData)
