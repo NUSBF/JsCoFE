@@ -223,20 +223,20 @@ var generate_report = false;
 
   if (generate_report)  {
     log.standard ( 2,'generate usage stats report ...' );
-    var cmd = [ '-m', 'pycofe.proc.usagestats',
-                statsFilePath,
-                statsDirPath,
-                'user_data', fe_config.userDataPath,
-                'storage',   fe_config.storage
-              ];
+    var cmd_params = [ '-m', 'pycofe.proc.usagestats',
+                       statsFilePath,
+                       statsDirPath,
+                       'user_data', fe_config.userDataPath,
+                       'storage',   fe_config.storage
+                     ];
     for (var fsname in fe_config.projectsPath)  {
-      cmd.push ( fsname );
-      cmd.push ( fe_config.projectsPath[fsname].path );
+      cmd_params.push ( fsname );
+      cmd_params.push ( fe_config.projectsPath[fsname].path );
     }
 
-    //console.log ( conf.pythonName() + ' ' + cmd.join(' ') );
+    //console.log ( conf.pythonName() + ' ' + cmd_params.join(' ') );
 
-    var job = utils.spawn ( conf.pythonName(),cmd,{} );
+    var job = utils.spawn ( conf.pythonName(),cmd_params,{} );
     // make stdout and stderr catchers for debugging purposes
     var stdout = '';
     var stderr = '';
