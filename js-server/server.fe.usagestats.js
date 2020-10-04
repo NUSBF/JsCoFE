@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    07.07.20   <--  Date of Last Modification.
+ *    04.10.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -25,12 +25,13 @@ var child_process = require('child_process');
 //var diskusage     = require('diskusage');
 
 //  load application modules
-var cmd    = require('../js-common/common.commands');
-var cutils = require('../js-common/common.utils');
-var conf   = require('./server.configuration');
-var user   = require('./server.fe.user');
-var utils  = require('./server.utils');
-var task_t = require('../js-common/tasks/common.tasks.template');
+var cmd     = require('../js-common/common.commands');
+var cutils  = require('../js-common/common.utils');
+var conf    = require('./server.configuration');
+var user    = require('./server.fe.user');
+var emailer = require('./server.emailer');
+var utils   = require('./server.utils');
+var task_t  = require('../js-common/tasks/common.tasks.template');
 
 //  prepare log
 var log = require('./server.log').newLog(20);
@@ -52,12 +53,6 @@ function UsageStats()  {
   this.currentDate = this.startDate;  // current date
   this.njobs       = [0];  // njobs[n] is number of jobs passed in nth day since start
   this.cpu         = [0];  // cpu[n] is number of cpu hours booked in nth day since start
-  /*
-  this.disk_free_projects  = [0.0];
-  this.disk_free_users     = [0.0];
-  this.disk_total_projects = 0.0;
-  this.disk_total_users    = 0.0;
-  */
   this.volumes     = {};
   this.tasks       = {};   // task[TaskTitle].icon       is path to task's icon
                            // task[TaskTitle]._type      is task's type
@@ -101,8 +96,6 @@ UsageStats.prototype.registerJob = function ( job_class )  {
       this.volumes[vname].free.push ( this.volumes[vname].free[n0-1] );
       this.volumes[vname].committed.push ( this.volumes[vname].committed[n0-1] );
     }
-    //this.disk_free_projects.push ( this.disk_free_projects[n0-1] );
-    //this.disk_free_users   .push ( this.disk_free_users   [n0-1] );
   }
   var n1 = this.njobs.length-1;
   this.njobs[n1]++;
@@ -194,16 +187,40 @@ var generate_report = false;
 
   utils.writeObject ( statsFilePath,usageStats );
 
+  if (process.env.hasOwnProperty('CCP4'))  {
+    utils.spawn ( path.join(process.env.CCP4,'libexec','ccp4um-bin'),
+                  ['-check-silent'] )
+         .on('exit', function(code){
+           var userData = null;
+           if (emailer.hasOwnProperty('maintainerEmail'))  {
+             userData = new UserData();
+             userData.name  = cmd.appName() + ' Mainteiner';
+             userData.email = emailer.maintainerEmail;
+           }
+           if (code==254)  {
+             log.standard ( 20,'New CCP4 series released, please upgrade' );
+             if (userData)
+               emailer.sendTemplateMessage ( userData,
+                     cmd.appName() + ': New CCP4 Series','ccp4_release',{} );
+           } else if ((0<code) && (code<254))  {
+             log.standard ( 21,code + ' CCP4 updates available, please update' );
+             if (userData)
+               emailer.sendTemplateMessage ( userData,
+                     cmd.appName() + ': CCP4 Update','ccp4_update',{
+                       'nupdates' : code
+                     } );
+           } else if (code==0)  {
+             log.error ( 22,'checking for CCP4 updates failed, code='+code );
+             if (userData)
+               emailer.sendTemplateMessage ( userData,
+                     cmd.appName() + ': Update Check Errors','ccp4_check_errors',{} );
+           }
+         });
+  } else
+    log.standard ( 23,'cannot check CCP4 updates, no CCP4 path in the environment' );
+
   if (generate_report)  {
     log.standard ( 2,'generate usage stats report ...' );
-    /*
-    var cmd = [ '-m', 'pycofe.proc.usagestats',
-                fe_config.storage,
-                fe_config.userDataPath,
-                statsFilePath,
-                statsDirPath
-              ];
-    */
     var cmd = [ '-m', 'pycofe.proc.usagestats',
                 statsFilePath,
                 statsDirPath,
