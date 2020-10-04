@@ -37,7 +37,6 @@ function TaskCloudImport()  {
   this.name        = 'cloud import';
   this.oname       = '*';   // asterisk here means do not use
   this.title       = 'Cloud Import';
-  //this.helpURL     = './html/jscofe_task_cimport.html';
   this.currentCloudPath = '';
   this.file_mod    = {'rename':{},'annotation':[]}; // file modification and annotation
   this.fasttrack   = true;  // enforces immediate execution
@@ -179,18 +178,6 @@ if (!__template)  {
 
   }
 
-/*
-  TaskCloudImport.prototype.setSelectedCloudFiles1 = function (
-                                  inputPanel,file_list,callback_func )  {
-    var file_items = [];
-    for (var i=0;i<file_list.length;i++)  {
-      var ffile  = new FacilityFile();
-      ffile.name = file_list[i];
-      file_items.push ( ffile );
-    }
-    this.setSelectedCloudFiles ( inputPanel,file_items,callback_func );
-  }
-*/
 
   TaskCloudImport.prototype._display_selected_files = function ( inputPanel )  {
     if ('fileListPanel' in inputPanel)  {

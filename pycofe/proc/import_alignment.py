@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    12.03.20   <--  Date of Last Modification.
+#    04.10.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -90,7 +90,7 @@ def run ( body,sectionTitle="Alignment data" ):  # body is reference to the main
             body.putTableLine ( algnTableId,"N<sub>hits</sub>","Number of hits",
                                             str(len(align_meta["hits"])),3 )
 
-            body.putSummaryLine ( f,"ALIGNMENT",algn.dname )
+            body.putSummaryLine ( body.get_cloud_path(f),"ALIGNMENT",algn.dname )
 
             body.putMessage1 ( subSecId,"&nbsp;<p><h3>Alignment file content</h3>",1 )
 
@@ -111,7 +111,8 @@ def run ( body,sectionTitle="Alignment data" ):  # body is reference to the main
             body.putMessage1 ( subSecId,
                 "<h3>Alignment file was not parsed successfully</h3>" +\
                 "<i>" + align_meta["msg"] + "</i>",0 )
-            body.putSummaryLine_red ( f,"ALIGNMENT","UNUSABLE: parse errors" )
+            body.putSummaryLine_red ( body.get_cloud_path(f),"ALIGNMENT",
+                                      "UNUSABLE: parse errors" )
 
 
         """

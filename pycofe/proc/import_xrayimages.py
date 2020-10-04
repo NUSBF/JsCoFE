@@ -3,13 +3,13 @@
 #
 # ============================================================================
 #
-#    05.07.17   <--  Date of Last Modification.
+#    04.10.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  X-RAY IMAGES DATA IMPORT FUNCTION
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2020
 #
 # ============================================================================
 #
@@ -87,13 +87,14 @@ def run ( body ):  # body is reference to the main Import class
 
             os.rename ( fpath,os.path.join(body.outputDir(),f) )
 
-            body.putSummaryLine ( fname,"X-Ray Images",xray.dname )
+            body.putSummaryLine ( body.get_cloud_path(fname),"X-Ray Images",xray.dname )
             k += 1
 
         else:
-            body.putSummaryLine_red ( fname,"X-Ray Images","Directory not found -- ignored" )
+            body.putSummaryLine_red ( body.get_cloud_path(fname),"X-Ray Images",
+                                      "Directory not found -- ignored" )
 
-        body.file_stdout.write ( "... processed: " + fname + "\n" )
+        body.file_stdout.write ( "... processed: " + body.get_cloud_path(fname) + "\n" )
 
     body.rvrow += 1
     pyrvapi.rvapi_flush()

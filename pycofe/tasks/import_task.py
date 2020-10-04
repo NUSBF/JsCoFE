@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    04.05.20   <--  Date of Last Modification.
+#    04.10.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -98,7 +98,6 @@ class Import(basic.TaskDriver):
         for importer in importers:
             importer.run(self)
 
-
         # ============================================================================
         # do PDB imports
 
@@ -156,12 +155,23 @@ class Import(basic.TaskDriver):
             self.file_stdout.write ( "\n" )
 
             for f in unrecognised_files:
-                self.putSummaryLine_red ( f,"UNKNOWN","Failed to recognise, ignored" )
+                self.putSummaryLine_red ( self.get_cloud_path(f),"UNKNOWN",
+                                          "Failed to recognise, ignored" )
 
         return
 
+    def get_cloud_path ( self,fname ):
+        if fname in self.cloud_path:
+            return self.cloud_path[fname]
+        return fname
 
     def run(self):
+
+        self.cloud_path = {}
+        if hasattr(self.task,"selected_items"):
+            for i in range(len(self.task.selected_items)):
+                cpath = self.task.selected_items[i].name
+                self.cloud_path[cpath.split('/')[-1]] = cpath
 
         # copy pre-existing revisions into output first
         nrevisions0 = 0
