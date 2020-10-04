@@ -192,14 +192,13 @@ var generate_report = false;
     utils.spawn ( path.join(process.env.CCP4,'libexec','ccp4um-bin'),
                   ['-check-silent'] )
          .on('exit', function(code){
+           var emailer_conf = conf.getEmailerConfig();
            var userData = null;
-           if (emailer.hasOwnProperty('maintainerEmail'))  {
+           if (emailer_conf.type!='desktop')  {
              userData = new ud.UserData();
              userData.name  = cmd.appName() + ' Mainteiner';
-             userData.email = emailer.maintainerEmail;
-             console.log ( 'email: ' + userData.email );
-           } else
-             console.log ( JSON.stringify(emailer) );
+             userData.email = emailer_conf.maintainerEmail;
+           }
            if (code==254)  {
              log.standard ( 20,'New CCP4 series released, please upgrade' );
              if (userData)
