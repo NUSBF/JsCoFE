@@ -22,7 +22,6 @@
 //  load system modules
 var path          = require('path');
 var child_process = require('child_process');
-//var diskusage     = require('diskusage');
 
 //  load application modules
 var cmd     = require('../js-common/common.commands');
@@ -188,45 +187,49 @@ var generate_report = false;
 
   utils.writeObject ( statsFilePath,usageStats );
 
-  if (process.env.hasOwnProperty('CCP4'))  {
-    utils.spawn ( path.join(process.env.CCP4,'libexec','ccp4um-bin'),
-                  ['-check-silent'] )
-         .on('exit', function(code){
-           var emailer_conf = conf.getEmailerConfig();
-           var userData = null;
-           if (emailer_conf.type!='desktop')  {
-             userData = new ud.UserData();
-             userData.name  = cmd.appName() + ' Mainteiner';
-             userData.email = emailer_conf.maintainerEmail;
-           }
-           code = 254;
-           if (code==254)  {
-             log.standard ( 20,'New CCP4 series released, please upgrade' );
-             if (userData)
-               emailer.sendTemplateMessage ( userData,
-                     cmd.appName() + ': New CCP4 Series','ccp4_release',{} );
-           } else if ((0<code) && (code<254))  {
-             log.standard ( 21,code + ' CCP4 updates available, please apply' );
-             if (userData)  {
-               var txt = 'CCP4 Update is ';
-               if (code>1)
-                 txt = code + ' CCP4 Updates are '
-               emailer.sendTemplateMessage ( userData,
-                     cmd.appName() + ': CCP4 Update','ccp4_update',{
-                       'text' : txt
-                     } );
-             }
-           } else if (code)  {
-             log.error ( 22,'checking for CCP4 updates failed, code='+code );
-             if (userData)
-               emailer.sendTemplateMessage ( userData,
-                     cmd.appName() + ': Update Check Errors','ccp4_check_errors',{} );
-           }
-         });
-  } else
-    log.standard ( 23,'cannot check CCP4 updates, no CCP4 path in the environment' );
-
   if (generate_report)  {
+
+    //  check for ccp4 updates once in 24 hours
+
+    if (process.env.hasOwnProperty('CCP4'))  {
+      utils.spawn ( path.join(process.env.CCP4,'libexec','ccp4um-bin'),
+                    ['-check-silent'] )
+           .on('exit', function(code){
+             var emailer_conf = conf.getEmailerConfig();
+             var userData = null;
+             if (emailer_conf.type!='desktop')  {
+               userData = new ud.UserData();
+               userData.name  = cmd.appName() + ' Mainteiner';
+               userData.email = emailer_conf.maintainerEmail;
+             }
+             if (code==254)  {
+               log.standard ( 20,'New CCP4 series released, please upgrade' );
+               if (userData)
+                 emailer.sendTemplateMessage ( userData,
+                       cmd.appName() + ': New CCP4 Series','ccp4_release',{} );
+             } else if ((0<code) && (code<254))  {
+               log.standard ( 21,code + ' CCP4 updates available, please apply' );
+               if (userData)  {
+                 var txt = 'CCP4 Update is ';
+                 if (code>1)
+                   txt = code + ' CCP4 Updates are '
+                 emailer.sendTemplateMessage ( userData,
+                       cmd.appName() + ': CCP4 Update','ccp4_update',{
+                         'text' : txt
+                       } );
+               }
+             } else if (code)  {
+               log.error ( 22,'checking for CCP4 updates failed, code='+code );
+               if (userData)
+                 emailer.sendTemplateMessage ( userData,
+                       cmd.appName() + ': Update Check Errors','ccp4_check_errors',{} );
+             }
+           });
+    } else
+      log.standard ( 23,'cannot check CCP4 updates, no CCP4 path in the environment' );
+
+    // generate usage report once in 24 hours
+
     log.standard ( 2,'generate usage stats report ...' );
     var cmd_params = [ '-m', 'pycofe.proc.usagestats',
                        statsFilePath,
@@ -252,7 +255,6 @@ var generate_report = false;
       stderr += buf;
     });
     job.on ( 'close',function(code){
-//      if (code!=0)  {
       if (code)  {
         log.standard ( 3,'failed to generate usage report, code=' + code +
                          '\n    stdout=\n' + stdout );
@@ -261,6 +263,7 @@ var generate_report = false;
       } else
         usageStats = utils.readClass ( statsFilePath );
     });
+
   }
 
 }
