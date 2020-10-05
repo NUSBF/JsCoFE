@@ -641,7 +641,7 @@ def putVerdictWidget ( base,verdict_meta,verdict_row,refmac_log=None ):
               "tooltip" : "Achieved in this job"
             },{
               "label"   : "Expected",
-              "tooltip" : "Expected from PDB statistics"
+              "tooltip" : "Expected mean value for this resolution from PDB statistics"
             }
         ],
         "rows" : [
@@ -651,7 +651,7 @@ def putVerdictWidget ( base,verdict_meta,verdict_row,refmac_log=None ):
             },
             { "header": { "label"  : "R<sub>free</sub>",
                           "tooltip": "Free R-factor"},
-              "data"  : [ rfree_str,"%0.3f" % meanRfree ]
+              "data"  : [ rfree_str,"< %0.3f" % meanRfree ]
             },
             { "header": { "label"  : "Bond length rms",
                           "tooltip": "Bond length r.m.s.d."},
@@ -659,7 +659,7 @@ def putVerdictWidget ( base,verdict_meta,verdict_row,refmac_log=None ):
             },
             { "header": { "label"  : "Clash score",
                           "tooltip": "Molprobity clash score" },
-              "data"  : [ clash_str,"%0.1f" % medianClash ]
+              "data"  : [ clash_str,"< %0.1f" % medianClash ]
             },
             { "header": { "label"  : "Ramachandran<br>outliers",
                           "tooltip": "Ramachandran outliers" },
