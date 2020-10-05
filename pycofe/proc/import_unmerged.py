@@ -209,7 +209,7 @@ def run ( body,        # body is reference to the main Import class
                       " cannot be processed.\n\n"
                 body.file_stdout.write ( msg )
                 body.file_stderr.write ( msg )
-                body.putSummaryLine_red ( body.get_cloud_path(f_orig),"UNMERGED",
+                body.putSummaryLine_red ( body.get_cloud_import_path(f_orig),"UNMERGED",
                                           "Failed to process/import, ignored" )
 
             else:
@@ -252,7 +252,7 @@ def run ( body,        # body is reference to the main Import class
                               " cannot be processed.\n\n"
                         body.file_stdout.write ( msg )
                         body.file_stderr.write ( msg )
-                        body.putSummaryLine_red ( body.get_cloud_path(outFileName),
+                        body.putSummaryLine_red ( body.get_cloud_import_path(outFileName),
                                 "UNMERGED","Failed to process/import, ignored" )
 
                     else:
@@ -287,7 +287,7 @@ def run ( body,        # body is reference to the main Import class
                         frow += 2
 
                         if body.summary_row_0<0:
-                            body.putSummaryLine ( body.get_cloud_path(f_orig),
+                            body.putSummaryLine ( body.get_cloud_import_path(f_orig),
                                                   "UNMERGED",unmerged.dname )
                         else:
                             body.addSummaryLine ( "UNMERGED",unmerged.dname )

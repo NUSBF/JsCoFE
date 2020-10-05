@@ -783,6 +783,8 @@ JobDialog.prototype.makeLayout = function ( onRun_func )  {
             '<title>'  + dlg.task.project + ':[' + padDigits(dlg.task.id,4) +
                          '] ' + dlg.task.title +
             '</title>' +
+            '<script>var __user_settings=' + JSON.stringify(__user_settings) +
+            ';</script>' +
             '</head><body>' +
             '<iframe src="' + dlg.outputPanel.getURL() +
                 '" style="height:calc(100% - 4px);width:calc(100% - 4px)">' +

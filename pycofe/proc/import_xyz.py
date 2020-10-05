@@ -83,7 +83,8 @@ def run ( body ):  # body is reference to the main Import class
 
         if len(xyzMeta["xyz"])<=0:
 
-            body.putSummaryLine_red ( body.get_cloud_path(f),"XYZ","Empty file -- ignored" )
+            body.putSummaryLine_red ( body.get_cloud_import_path(f),"XYZ",
+                                      "Empty file -- ignored" )
 
         else:
 
@@ -146,7 +147,7 @@ def run ( body ):  # body is reference to the main Import class
                                      "xyz",subSecId,1,0,1,1,-1 )
             body.addCitations ( ['uglymol','ccp4mg'] )
 
-            body.putSummaryLine ( body.get_cloud_path(f),"XYZ",xyz.dname )
+            body.putSummaryLine ( body.get_cloud_import_path(f),"XYZ",xyz.dname )
 
 
         """
@@ -246,7 +247,7 @@ def run ( body ):  # body is reference to the main Import class
 
         """
 
-        body.file_stdout.write ( "... processed: " + body.get_cloud_path(f) + "\n" )
+        body.file_stdout.write ( "... processed: " + body.get_cloud_import_path(f) + "\n" )
         k += 1
 
     body.rvrow += 1

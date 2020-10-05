@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    16.09.20   <--  Date of Last Modification.
+#    05.10.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -118,7 +118,6 @@ class TaskDriver(object):
 
     def importDir         (self): return "uploads" # in current directory ( job_dir )
     def import_summary_id (self): return "import_summary_id"  # summary table id
-
 
     # ========================================================================
     # class variables
@@ -643,7 +642,6 @@ class TaskDriver(object):
             self.summary_row += 1
         return
 
-
     def putTable ( self,tableId,title_str,holderId,row,
                         col=0,rowSpan=1,colSpan=1,mode=100 ):
         pyrvapi.rvapi_add_table ( tableId,title_str,holderId,row,col,
@@ -717,6 +715,13 @@ class TaskDriver(object):
 
 
     # ============================================================================
+
+    # for use in import reports
+    cloud_import_path = {}
+    def get_cloud_import_path ( self,fname ):
+        if fname in self.cloud_import_path:
+            return self.cloud_import_path[fname]
+        return fname
 
     def resetFileImport ( self ):
         self.files_all = []
