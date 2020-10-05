@@ -87,14 +87,14 @@ def run ( body ):  # body is reference to the main Import class
 
             os.rename ( fpath,os.path.join(body.outputDir(),f) )
 
-            body.putSummaryLine ( body.get_cloud_path(fname),"X-Ray Images",xray.dname )
+            body.putSummaryLine ( body.get_cloud_import_path(fname),"X-Ray Images",xray.dname )
             k += 1
 
         else:
-            body.putSummaryLine_red ( body.get_cloud_path(fname),"X-Ray Images",
+            body.putSummaryLine_red ( body.get_cloud_import_path(fname),"X-Ray Images",
                                       "Directory not found -- ignored" )
 
-        body.file_stdout.write ( "... processed: " + body.get_cloud_path(fname) + "\n" )
+        body.file_stdout.write ( "... processed: " + body.get_cloud_import_path(fname) + "\n" )
 
     body.rvrow += 1
     pyrvapi.rvapi_flush()

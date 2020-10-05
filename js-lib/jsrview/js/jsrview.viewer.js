@@ -1,7 +1,7 @@
 //
 //  ==========================================================================
 //
-//    03.10.20   <--  Date of Last Modification.
+//    05.10.20   <--  Date of Last Modification.
 //                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  --------------------------------------------------------------------------
 //
@@ -231,7 +231,7 @@ function startUglyMol ( title,xyz_uri,mtz_uri,map_uri,diffmap_uri,mapLabels )  {
   else if (window.parent.__user_settings && window.parent.__user_settings.viewers_size)
         size = calcViewerSize ( window.parent.__user_settings.viewers_size[0],
                                 window.parent.__user_settings.viewers_size[1] );
-  else  size = calcViewerSize ( 0.75,0.875 );
+  else  size = calcViewerSize ( 1.25,0.85 );
 
   jq(iframe).width  ( size[0] );
   jq(iframe).height ( size[1] );
@@ -463,7 +463,7 @@ function startViewHKL ( title,mtz_uri,window_instance )  {
   else if (window.parent.__user_settings && window.parent.__user_settings.viewers_size)
         size = calcViewerSize ( window.parent.__user_settings.viewers_size[0],
                                 window.parent.__user_settings.viewers_size[1] );
-  else  size = calcViewerSize ( 0.75,0.875 );
+  else  size = calcViewerSize ( 1.25,0.85 );
 
   jq(iframe).width  ( size[0] );
   jq(iframe).height ( size[1] );
@@ -610,7 +610,7 @@ function startRSViewer ( title,json_uri,map_uri )  {
   else if (window.parent.__user_settings && window.parent.__user_settings.viewers_size)
         size = calcViewerSize ( window.parent.__user_settings.viewers_size[0],
                                 window.parent.__user_settings.viewers_size[1] );
-  else  size = calcViewerSize ( 0.75,0.875 );
+  else  size = calcViewerSize ( 1.25,0.85 );
 
   jq(iframe).width  ( size[0] );
   jq(iframe).height ( size[1] );

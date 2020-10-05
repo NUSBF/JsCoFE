@@ -165,7 +165,7 @@ def run ( body,   # body is reference to the main Import class
             rc = body.runApp ( "cif2mtz",["HKLIN",p_orig,"HKLOUT",p_mtzin],
                                quitOnError=False )
             if rc.msg or not os.path.isfile(p_mtzin):
-                body.putSummaryLine_red ( body.get_cloud_path(f_orig),"CIF",
+                body.putSummaryLine_red ( body.get_cloud_import_path(f_orig),"CIF",
                                           "Failed to convert, ignored" )
                 p_mtzin = None
             body.unsetLogParser()
@@ -178,7 +178,7 @@ def run ( body,   # body is reference to the main Import class
             sp.stdin.write('XDSIN ' + p_orig + '\nHKLOUT ' + p_mtzin + '\nCOPY\n')
             sp.stdin.close()
             if sp.wait():
-                body.putSummaryLine_red ( body.get_cloud_path(f_orig),"XDS",
+                body.putSummaryLine_red ( body.get_cloud_import_path(f_orig),"XDS",
                                           "Failed to convert, ignored" )
                 p_mtzin = None
 
@@ -261,7 +261,7 @@ def run ( body,   # body is reference to the main Import class
                       " cannot be processed.\n\n"
                 body.file_stdout.write ( msg )
                 body.file_stderr.write ( msg )
-                body.putSummaryLine_red ( body.get_cloud_path(f_orig),"MTZ",
+                body.putSummaryLine_red ( body.get_cloud_import_path(f_orig),"MTZ",
                                           "Failed to process/import, ignored" )
 
             else:
@@ -442,7 +442,7 @@ def run ( body,   # body is reference to the main Import class
                             body.addCitation ( 'viewhkl' )
 
                     if body.summary_row_0<0:
-                        body.putSummaryLine ( body.get_cloud_path(f_orig),"HKL",datasetName )
+                        body.putSummaryLine ( body.get_cloud_import_path(f_orig),"HKL",datasetName )
                     else:
                         body.addSummaryLine ( "HKL",datasetName )
                     k += 1
@@ -553,7 +553,7 @@ def run ( body,   # body is reference to the main Import class
                             pyrvapi.rvapi_flush()
 
                 if len(mf)<=0:
-                    body.putSummaryLine_red ( body.get_cloud_path(f_orig),"UNKNOWN",
+                    body.putSummaryLine_red ( body.get_cloud_import_path(f_orig),"UNKNOWN",
                                               "-- ignored" )
 
             body.file_stdout.write ( "... processed: " + f_orig + "\n    " )
