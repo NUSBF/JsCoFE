@@ -21,16 +21,16 @@ def startRefmac(driver, waitLong):
 
     addButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/add.png')]")
     addButton.click()
-    time.sleep(0.25)
+    time.sleep(1.25)
 
     sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list')
-    time.sleep(0.25)
+    time.sleep(1.25)
 
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Refinement and Model Building')
-    time.sleep(0.25)
+    time.sleep(1.25)
 
     sf.clickByXpath(driver, "//div[normalize-space()='%s']" % 'Refinement with Refmac')
-    time.sleep(0.25)
+    time.sleep(1.25)
 
     # There are several forms - active and inactive. We need one displayed.
     buttonsRun = driver.find_elements_by_xpath("//button[contains(@style, 'images_png/runjob.png')]" )
@@ -48,13 +48,34 @@ def startRefmac(driver, waitLong):
     return ()
 
 
-def startRefmacCloning(driver, waitLong):
-    print('Running REFMAC5 by cloning of 17-Refine anisotropic')
+def startRefmacAniso(driver, waitLong):
+    print('Running REFMAC5 by adding to 13-coot anisotropic')
 
-    #Cloning job - cloning button
-    addButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/clonejob.png')]")
+    addButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/add.png')]")
     addButton.click()
     time.sleep(1)
+
+    sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list')
+    time.sleep(1.25)
+
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Refinement and Model Building')
+    time.sleep(1.25)
+
+    sf.clickByXpath(driver, "//div[normalize-space()='%s']" % 'Refinement with Refmac')
+    time.sleep(2)
+
+    sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Basic options')
+    time.sleep(1.25)
+
+    sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Model Parameterisation')
+    time.sleep(1.25)
+
+    sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Isotropic')
+    time.sleep(1.25)
+
+    sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Anisotropic')
+    time.sleep(1.25)
+
 
     # There are several forms - active and inactive. We need one displayed.
     buttonsRun = driver.find_elements_by_xpath("//button[contains(@style, 'images_png/runjob.png')]" )
@@ -240,9 +261,9 @@ def test_1oldProjectsMR(browser,
         startRefmac(d.driver, d.waitLong)
         time.sleep(1)
 
-        sf.clickTaskInTaskTree(d.driver, '\[0017\] refine with anisotropic')
+        sf.clickTaskInTaskTree(d.driver, '\[0013\] structure')
         time.sleep(1)
-        startRefmacCloning(d.driver, d.waitLong)
+        startRefmacAniso(d.driver, d.waitLong)
         time.sleep(1)
 
     except:
