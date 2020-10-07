@@ -331,9 +331,9 @@ def test_1oldProjectsEP(browser,
         assert listOfActualTasks == listOfExpectedTasks
 
         sf.clickTaskInTaskTree(d.driver, '\[0009\] shelx')
-        time.sleep(1)
+        time.sleep(2)
         runShelxCloning(d.driver, d.waitLong)
-        time.sleep(1)
+        time.sleep(2)
 
     except:
         d.driver.quit()
@@ -343,14 +343,14 @@ def test_1oldProjectsEP(browser,
 def test_2oldProjectsEP_PhaserEPandBuccaneer():
     try:
         sf.clickTaskInTaskTree(d.driver, '\[0010\] phaser EP')
-        time.sleep(1)
+        time.sleep(2)
         runPhaserCloning(d.driver, d.waitLong)
-        time.sleep(1)
+        time.sleep(2)
 
         sf.clickTaskInTaskTree(d.driver, '\[0027\] buccaneer')
-        time.sleep(1)
+        time.sleep(2)
         startBuccaneerCloning(d.driver)
-        time.sleep(1)
+        time.sleep(2)
 
     except:
         d.driver.quit()
@@ -361,14 +361,14 @@ def test_3oldProjectsEP_ParrotAndBuccaneer():
     try:
 
         sf.clickTaskInTaskTree(d.driver, '\[0040\] phaser EP')
-        time.sleep(1)
+        time.sleep(2)
         runParrot(d.driver, d.waitLong)
-        time.sleep(1)
+        time.sleep(2)
 
         sf.clickTaskInTaskTree(d.driver, '\[0042\] parrot DM')
-        time.sleep(1)
+        time.sleep(2)
         startBuccaneer(d.driver)
-        time.sleep(1)
+        time.sleep(2)
 
     except:
         d.driver.quit()
