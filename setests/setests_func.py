@@ -11,7 +11,8 @@ import time, sys, os, re
 
 def clickByXpath(driver, xpath):
     textEls = driver.find_elements_by_xpath(xpath)
-    for textEl in textEls:
+    #print('clckByXpath - "%s", %d elements' % (xpath, len(textEls)))
+    for textEl in reversed(textEls):
 #        parentEl = textEl.find_element_by_xpath("..")
         if textEl.is_displayed():
             driver.execute_script("arguments[0].scrollIntoView();", textEl)
