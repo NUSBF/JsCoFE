@@ -136,16 +136,16 @@ def runParrot(driver, waitLong):
 
     addButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/add.png')]")
     addButton.click()
-    time.sleep(1)
+    time.sleep(2)
 
     sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list')
-    time.sleep(1)
+    time.sleep(2)
 
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Density Modification')
-    time.sleep(1)
+    time.sleep(2)
 
     sf.clickByXpath(driver, "//div[normalize-space()='%s']" % 'Density Modification with Parrot')
-    time.sleep(1)
+    time.sleep(2)
 
     # There are several forms - active and inactive. We need one displayed.
     buttonsRun = driver.find_elements_by_xpath("//button[contains(@style, 'images_png/runjob.png')]" )
@@ -155,7 +155,7 @@ def runParrot(driver, waitLong):
             break
 
     try:
-        wait = WebDriverWait(driver, waitLong)
+        wait = WebDriverWait(driver, 300) # giving 5 minutes
         wait.until(EC.presence_of_element_located
                    ((By.XPATH,"//*[@class='ui-dialog-title' and contains(text(), 'completed') and contains(text(), '[0042]')]")))
     except:
@@ -233,11 +233,27 @@ def verifyBuccaneer(driver, waitLong, jobNumber, targetRwork, targetRfree):
         startTime = time.time()
 
         while (True):
-            tasksText = driver.find_elements(By.XPATH,
+            tasksArray = []
+            tasks = driver.find_elements(By.XPATH,
                                              "//a[contains(@id,'treenode') and contains(@class, 'jstree-anchor')]")
-            for taskText in tasksText:
+            # ugly hack for second attempt - Selenium regularly fail with stalled element while iterating through the list
+            try:
+                for taskText in tasks:
+                    tasksArray.append(taskText.text)
+            except:
+                try:
+                    tasksArray = []
+                    tasks = driver.find_elements(By.XPATH,
+                                                     "//a[contains(@id,'treenode') and contains(@class, 'jstree-anchor')]")
+                    for taskText in tasks:
+                        tasksArray.append(taskText.text)
+                except:
+                    raise
+
+
+            for taskText in tasksArray:
                 # Job number as string
-                match = re.search('\[' + jobNumber +'\].*R=(0\.\d*) Rfree=(0\.\d*)', taskText.text)
+                match = re.search('\[' + jobNumber +'\].*R=(0\.\d*) Rfree=(0\.\d*)', taskText)
                 if match:
                     rWork = float(match.group(1))
                     rFree = float(match.group(2))
