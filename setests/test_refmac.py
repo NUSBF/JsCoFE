@@ -142,9 +142,9 @@ def depositionAfterRefmac(driver):
     time.sleep(1)
 
     taskText = ''
-    tasksText = driver.find_elements(By.XPATH, "//a[contains(@id,'treenode') and contains(@class, 'jstree-anchor')]")
-    for taskText in tasksText:
-        match = re.search('\[0005\] deposition -- (.*)', taskText.text)
+    tasks = driver.find_elements(By.XPATH, "//a[contains(@id,'treenode') and contains(@class, 'jstree-anchor')]")
+    for task in tasks:
+        match = re.search('\[0005\] deposition -- (.*)', task.text)
         if match:
             taskText = match.group(1)
             break
