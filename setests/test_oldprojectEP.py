@@ -393,8 +393,8 @@ def test_3oldProjectsEP_ParrotAndBuccaneer():
 
 def test_4oldProjectsEP_Buccaneer():
     try:
-        verifyBuccaneer(d.driver, 600, '0041', 0.26, 0.28) # run takes 6 minutes, giving 10
-        verifyBuccaneer(d.driver, 600, '0043', 0.26, 0.28) # run takes 6 minutes, giving 10
+        verifyBuccaneer(d.driver, 600, '0041', 0.27, 0.28) # run takes 6 minutes, giving 10
+        verifyBuccaneer(d.driver, 600, '0043', 0.27, 0.28) # run takes 6 minutes, giving 10
 
         sf.renameProject(d.driver, 'Staged solution of Insulin structure with EP on sulphur atoms')
         d.driver.quit()
