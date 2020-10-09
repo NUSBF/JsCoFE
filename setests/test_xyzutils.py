@@ -62,7 +62,7 @@ def xyzutilsAfterImport(driver, waitLong):
     driver.switch_to.frame(driver.find_element_by_xpath("//iframe[contains(@src, 'report/index.html')]"))
     sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Macromolecular sequences')
     time.sleep(2)
-    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Import rnase')
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Import rnase_model_A.fasta')
     time.sleep(2)
 
     tasksText = driver.find_elements(By.XPATH, "//td[@class='table-blue-td']")
