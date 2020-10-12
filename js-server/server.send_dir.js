@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    17.09.20   <--  Date of Last Modification.
+ *    11.10.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -154,7 +154,7 @@ var sender_cfg = conf.getServerConfig();
       if (err) {
         if (onErr_func)
           onErr_func ( 2,err );  // '2' means an error from upload stage
-        log.error ( 3,'upload failed:', err );
+        log.error ( 3,'upload failed: ' + err );
       } else  {
         try {
           var resp = JSON.parse ( response );
@@ -310,7 +310,6 @@ function unpackDir ( dirPath,cleanTmpDir, onReady_func )  {
 // and clean them out
   var jobballPath = getJobballPath ( dirPath );
   unpackDir1 ( dirPath,jobballPath,cleanTmpDir,true,onReady_func );
-
 }
 
 
@@ -397,7 +396,6 @@ function receiveDir ( jobDir,tmpDir,server_request,onFinish_func )  {
             unpackDir ( jobDir,tmpDir, function(code,jobballSize){
               if (onFinish_func)
                 onFinish_func ( code,errs,upload_meta );  //  integer code : unpacking was run
-              //if (code==0)
               if (!code)
                 log.detailed ( 6,'directory contents has been received in ' + jobDir );
               else  {

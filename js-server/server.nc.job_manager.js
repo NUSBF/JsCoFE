@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    17.09.20   <--  Date of Last Modification.
+ *    11.10.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -42,6 +42,11 @@ var log = require('./server.log').newLog(11);
 
 // ===========================================================================
 
+// for debugging
+//var __use_fake_fe_url = false;
+
+// ===========================================================================
+
 var jobsDir       = 'jobs';  // area in nc-storage to host all job directories
 var registerFName = 'job_register.meta';  // file name to keep job register
 
@@ -75,6 +80,7 @@ var maxSendTrials = conf.getServerConfig().maxSendTrials;
     jobDir     : jobDir,
     jobStatus  : task_t.job_code.new,
     sendTrials : maxSendTrials,
+    endTime    : null,
     exeType    : '',    // SHELL, SGE or SCRIPT
     pid        : 0      // job pid is added separately
   };
@@ -89,6 +95,7 @@ var maxSendTrials = conf.getServerConfig().maxSendTrials;
     jobDir     : jobDir,
     jobStatus  : task_t.job_code.new,
     sendTrials : maxSendTrials,
+    endTime    : null,
     exeType    : '',    // SHELL or SGE
     pid        : 0      // job pid is added separately
   };
@@ -102,6 +109,18 @@ NCJobRegister.prototype.getJobEntry = function ( job_token )  {
   else  return null;
 }
 
+NCJobRegister.prototype.wakeZombi = function ( job_token )  {
+  if (job_token in this.job_map)  {
+    var jobEntry = this.job_map[job_token];
+    if (jobEntry && (jobEntry.jobStatus==task_t.job_code.exiting) &&
+        (jobEntry.sendTrials<=0))  {
+      jobEntry.jobStatus  = task_t.job_code.running;
+      jobEntry.sendTrials = conf.getServerConfig().maxSendTrials;
+      return true;
+    }
+  }
+  return false;
+}
 
 NCJobRegister.prototype.removeJob = function ( job_token )  {
   if (job_token in this.job_map)  {
@@ -156,6 +175,7 @@ function readNCJobRegister ( readKey )  {
         ncJobRegister[key] = obj[key];
 
       if (readKey==0)  {
+        // set all finished but not sent jobs for sending
         var maxSendTrials = conf.getServerConfig().maxSendTrials;
         for (var job_token in ncJobRegister.job_map)
           if (ncJobRegister.job_map.hasOwnProperty(job_token))  {
@@ -164,6 +184,8 @@ function readNCJobRegister ( readKey )  {
               ncJobRegister.job_map[job_token].sendTrials = maxSendTrials;
               var saveRegister = true;
             }
+            if (!ncJobRegister.job_map[job_token].hasOwnProperty('endTime'))
+              ncJobRegister.job_map[job_token].endTime = null;
           }
       }
 
@@ -217,7 +239,7 @@ function removeJobDelayed ( job_token,jobStatus )  {
 }
 
 
-function cleanNC()  {
+function cleanNC ( cleanDeadJobs_bool )  {
 
   readNCJobRegister ( 1 );
   stopJobCheckTimer ();
@@ -227,12 +249,14 @@ function cleanNC()  {
   var mask = {};
   var n    = 0;
   for (var job_token in ncJobRegister.job_map)
-    if (utils.dirExists(ncJobRegister.job_map[job_token].jobDir))
+    if (utils.dirExists(ncJobRegister.job_map[job_token].jobDir))  {
+      // job directory exists; mask token against deletion
       mask[job_token] = true;
-    else  {
+    } else  {
       n++;
       log.standard ( 30,'removed unassigned job token: ' + job_token );
     }
+  // delete job registry entries with tokens that were not masked
   ncJobRegister.job_map = comut.mapMaskIn ( ncJobRegister.job_map,mask );
   log.standard ( 31,'total unassigned job tokens removed: ' + n );
 
@@ -244,11 +268,13 @@ function cleanNC()  {
     var curPath = path.join ( jobsDir,file );
     var lstat   = fs.lstatSync(curPath);
     if (lstat.isDirectory()) {
+      // check if the directory is found in job registry
       var dir_found = false;
       for (var job_token in ncJobRegister.job_map)
         if (ncJobRegister.job_map[job_token].jobDir==curPath)
           dir_found = true;
       if (!dir_found)  {
+        // job registry does not contain references to the directory, so delete it
         utils.removePath ( curPath );
         n++;
         log.standard ( 32,'removed abandoned job directory: ' + file );
@@ -259,18 +285,20 @@ function cleanNC()  {
 
   // 3. Check for and remove directories and registry entries for dead jobs
 
-  var n = 0;
-  for (var job_token in ncJobRegister.job_map)  {
-    var jobEntry = ncJobRegister.job_map[job_token];
-    try {
-      process.kill ( jobEntry.pid,0 );
-    } catch (e) {
-      // process not found, schedule job for deletion
-      log.standard ( 34,'dead job scheduled for deletion, job token: ' + job_token );
-      _stop_job ( jobEntry );
+  if (cleanDeadJobs_bool)  {
+    var n = 0;
+    for (var job_token in ncJobRegister.job_map)  {
+      var jobEntry = ncJobRegister.job_map[job_token];
+      try {
+        process.kill ( jobEntry.pid,0 );
+      } catch (e) {
+        // process not found, schedule job for deletion
+        log.standard ( 34,'dead job scheduled for deletion, job token: ' + job_token );
+        _stop_job ( jobEntry );
+      }
     }
+    log.standard ( 31,'total dead jobs scheduled for deletion: ' + n );
   }
-  log.standard ( 31,'total dead jobs scheduled for deletion: ' + n );
 
   // start job check loop
 
@@ -318,17 +346,25 @@ function checkJobsOnTimer()  {
 
   ncJobRegister.timer = null;  // indicate that job check loop is suspended
                                // (this is paranoid)
+  var crTime = Date.now();
+  var zombiExpireTimeout = conf.getServerConfig().zombiExpireTimeout;
 
   // loop over all entries in job registry
   for (var job_token in ncJobRegister.job_map)  {
 
     var jobEntry = ncJobRegister.job_map[job_token];
 
-    // look only at jobs that are marked as 'running' or 'stopped'. Others are
-    // either in the queue or in process of being sent to FE.
+    if (jobEntry.endTime && (crTime-jobEntry.endTime>zombiExpireTimeout))  {
+      // job was not sent to FE for long time -- delete it now
 
-    if ([task_t.job_code.running,task_t.job_code.stopped]
+      removeJobDelayed ( job_token,task_t.job_code.finished );
+      log.error ( 4,'zombi job deleted, job token ' + job_token );
+
+    } else if ([task_t.job_code.running,task_t.job_code.stopped]
                                            .indexOf(jobEntry.jobStatus)>=0)  {
+      // Here, look only at jobs that are marked as 'running' or 'stopped'.
+      // Other job markings mean that the job is either in the queue or in
+      // process of being sent to FE.
 
       // check that signal file exists: it may be put in by task or job manager
       var is_signal = utils.jobSignalExists ( jobEntry.jobDir );
@@ -348,9 +384,13 @@ function checkJobsOnTimer()  {
 
       if (is_signal)  {
         // the signal was thrown one way or another
+        /*
         jobEntry.jobStatus = task_t.job_code.exiting;
+        if (!jobEntry.endTime)
+          jobEntry.endTime = crTime;
         // we do not save changed registry here -- this will be done in
         // ncJobFinished() before asynchronous send to FE
+        */
         var code = utils.getJobSignalCode ( jobEntry.jobDir );
         // whichever the code is, wrap-up the job
         ncJobFinished ( job_token,code );
@@ -415,7 +455,7 @@ var cap   = false;
 
       fname = url.substr(ix+rtag.length);
       log.debug2 ( 4,"calculated path " + fname );
-      log.standard ( 4,"calculated path " + fname );
+      //log.standard ( 4,"calculated path " + fname );
 
     } else  {
 
@@ -621,18 +661,22 @@ function ncJobFinished ( job_token,code )  {
   jobEntry.jobStatus = task_t.job_code.exiting;  // this works when ncJobFinished()
                                                  // is called directly from
                                                  // job listener in SHELL mode
+// *** for debugging
+//if (!jobEntry.endTime)  __use_fake_fe_url = true;
+  if (!jobEntry.endTime)
+    jobEntry.endTime = Date.now();
 
   if (!('logflow' in ncJobRegister))  {
-   ncJobRegister.logflow = {};
-   ncJobRegister.logflow.logno = 0;
-   ncJobRegister.logflow.njob0 = 0;
+    ncJobRegister.logflow = {};
+    ncJobRegister.logflow.logno = 0;
+    ncJobRegister.logflow.njob0 = 0;
   }
 
   if (conf.getServerConfig().checkLogChunks(
      ncJobRegister.launch_count-ncJobRegister.logflow.njob0,
      ncJobRegister.logflow.logno))  {
-   ncJobRegister.logflow.logno++;
-   ncJobRegister.logflow.njob0 = ncJobRegister.launch_count;
+    ncJobRegister.logflow.logno++;
+    ncJobRegister.logflow.njob0 = ncJobRegister.launch_count;
   }
 
   writeNCJobRegister();  // this is redundant at repeat sends, but harmless
@@ -714,6 +758,9 @@ function ncJobFinished ( job_token,code )  {
     if (feURL.endsWith('/'))
       feURL = feURL.substr(0,feURL.length-1);
 
+// *** for debugging
+//if (__use_fake_fe_url) feURL = 'http://localhost:54321';
+
     send_dir.sendDir ( jobEntry.jobDir,'*',
                        feURL,
                        cmd.fe_command.jobFinished + job_token, {
@@ -741,12 +788,16 @@ function ncJobFinished ( job_token,code )  {
           setTimeout ( function(){ ncJobFinished(job_token,code); },
                        conf.getServerConfig().sendDataWaitTime );
 
-        } else  { // what to do??? clean NC storage, the job was a waste.
+        } else  {
 
-          removeJobDelayed ( job_token,task_t.job_code.finished );
+          // **** what to do??? clean NC storage, the job was a waste.
+          //removeJobDelayed ( job_token,task_t.job_code.finished );
+          //log.error ( 4,'cannot send task ' + task.id +
+          //              ' back to FE. TASK DELETED.' );
+          // ****
 
-          log.error ( 4,'cannot send task ' + task.id +
-                        ' back to FE. TASK DELETED.' );
+          log.error ( 5,'job ' + task.id + ' is put in zombi state, job token ' +
+                         job_token );
 
         }
 
@@ -1146,6 +1197,29 @@ function ncStopJob ( post_data_obj,callback_func )  {
 
 }
 
+function ncWakeZombiJobs ( post_data_obj,callback_func )  {
+  var job_tokens = post_data_obj.job_tokens;
+
+// *** for debugging
+//__use_fake_fe_url = false;
+
+  var nzombies = 0;
+  if (job_tokens[0]=='*')  {  // take all
+    for (var token in ncJobRegister.job_map)
+      if (ncJobRegister.wakeZombi(token))
+        nzombies++;
+  } else  {  // take from the list given
+    for (var i=0;i<job_tokens.length;i++)
+      if (ncJobRegister.wakeZombi(job_tokens[i]))
+        nzombies++;
+  }
+  log.standard ( 30,nzombies + ' zombi job(s) awaken on request' );
+  if (nzombies>0)
+    startJobCheckTimer();
+  callback_func ( new cmd.Response ( cmd.nc_retcode.ok,
+                           '[00130] ' + nzombies + ' zombi job(s) awaken',
+                           {nzombies:nzombies} ) );
+}
 
 // ===========================================================================
 
@@ -1337,8 +1411,8 @@ function ncRunClientJob1 ( post_data_obj,callback_func,attemptNo )  {
     .on('close',function(){   // finish,end,
       // successful download, unpack and start the job
 
+      //function unpackDir ( dirPath,cleanTmpDir, onReady_func )  {
       send_dir.unpackDir ( jobDir,null, function(code,jobballSize){
-        //if (code==0)  {
         if (!code)  {
           ncRunJob ( job_token,{
             'sender'   : post_data_obj.feURL,
@@ -1382,6 +1456,7 @@ module.exports.cleanNC            = cleanNC;
 module.exports.ncSendFile         = ncSendFile;
 module.exports.ncMakeJob          = ncMakeJob;
 module.exports.ncStopJob          = ncStopJob;
+module.exports.ncWakeZombiJobs    = ncWakeZombiJobs;
 module.exports.ncRunRVAPIApp      = ncRunRVAPIApp;
 module.exports.ncRunClientJob     = ncRunClientJob;
 module.exports.ncGetJobsDir       = ncGetJobsDir;

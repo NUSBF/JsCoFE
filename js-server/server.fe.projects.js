@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    11.07.20   <--  Date of Last Modification.
+ *    11.10.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -1331,7 +1331,7 @@ function importProject ( loginData,upload_meta )  {
       // rename file with '__' prefix in order to use the standard
       // unpack directory function
       //if (utils.moveFile(key,path.join(tempdir,'__dir.tar.gz')))  {
-      if (utils.moveFile(key,path.join(tempdir,'__dir.zip')))  {
+      if (utils.moveFile(key,path.join(tempdir,send_dir.jobballName)))  {
 
         // unpack project tarball
         send_dir.unpackDir ( tempdir,null,function(code,jobballSize){

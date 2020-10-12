@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    23.06.20   <--  Date of Last Modification.
+ *    10.10.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -193,6 +193,10 @@ var response = null;
 
     case cmd.fe_reqtype.checkJobs :
           response = rj.checkJobs ( loginData,data );
+       break;
+
+    case cmd.fe_reqtype.wakeZombiJobs :
+          response = rj.wakeZombiJobs ( loginData,data );
        break;
 
     case cmd.fe_reqtype.stopJob :
