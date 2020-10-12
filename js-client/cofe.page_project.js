@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    22.08.20   <--  Date of Last Modification.
+ *    11.10.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -424,6 +424,15 @@ function ProjectPage ( sceneId )  {
     },onTreeContextMenu,openJob,onTreeItemSelect );
   }
 
+  function wakeZombiJobs()  {
+    var request_data = {};
+    request_data.project = jobTree.projectData.desc.name;
+    serverRequest ( fe_reqtype.wakeZombiJobs,request_data,'Project Page',
+                    function(data){},function(key,data){},function(){} );
+    localCommand  ( nc_command.wakeZombiJobs,{job_tokens:['*']},
+                    'Wake Zombi Jobs',function(response){ return true; } );
+  }
+
   function onLogout ( logout_func )  {
     jobTree.stopTaskLoop    ();
     jobTree.saveProjectData ( [],[],false, function(rdata){ logout_func(); } );
@@ -537,7 +546,7 @@ function ProjectPage ( sceneId )  {
   add_rem_btn.setSize('40px','40px').setTooltip('Add remark' ).setDisabled(true);
   thlight_btn.setSize('40px','40px').setTooltip('Toggle branch highlight' )
                                                              .setDisabled(true);
-  refresh_btn.setSize('40px','40px').setTooltip('Refresh');
+  refresh_btn.setSize('40px','40px').setTooltip('Refresh and push stalled jobs');
   help_btn   .setSize('40px','40px').setTooltip('Documentation');
   roadmap_btn.setSize('40px','40px').setTooltip(appName() + ' roadmap');
 
@@ -625,6 +634,7 @@ function ProjectPage ( sceneId )  {
   }
 
   refresh_btn.addOnClickListener ( function(){
+    wakeZombiJobs();  // must go before reloadTree
     reloadTree ( true );
 //    reloadTree ( false );
   });

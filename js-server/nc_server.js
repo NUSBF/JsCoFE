@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    01.08.20   <--  Date of Last Modification.
+ *    11.10.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -127,7 +127,7 @@ function start()  {
   // resume job management
 
   jm.readNCJobRegister ( 0 );
-  jm.cleanNC();
+  jm.cleanNC ( false );
 
   // --------------------------------------------------------------------------
 
@@ -217,6 +217,10 @@ function start()  {
 
           case cmd.nc_command.stopJob :
               pp.processPOSTData ( server_request,server_response,jm.ncStopJob );
+            break;
+
+          case cmd.nc_command.wakeZombiJobs :
+              pp.processPOSTData ( server_request,server_response,jm.ncWakeZombiJobs );
             break;
 
           case cmd.nc_command.selectDir :

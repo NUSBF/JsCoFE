@@ -272,7 +272,7 @@ if ((typeof function_fail === 'string' || function_fail instanceof String) &&
       // we put this function here and in done section because we do not
       // want to have it executed multiple times due to multiple retries
       if (function_always)
-        function_always(1);
+        function_always ( 1,{} );
 
     });
 

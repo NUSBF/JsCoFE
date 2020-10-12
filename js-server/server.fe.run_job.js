@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    04.09.20   <--  Date of Last Modification.
+ *    11.10.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -864,9 +864,17 @@ function getJobResults ( job_token,server_request,server_response )  {
 
     send_dir.receiveDir ( jobDir,conf.getFETmpDir(),server_request,
       function(code,errs,meta){
-//        if (code==0)  {
-        if (!code)  {
+
+        // In case of client job, original jobball remains in job directory
+        // (because client fetches it by pulling). Delete it now.
+
+        var jobball_path = send_dir.getJobballPath ( jobDir );
+        if (utils.fileExists(jobball_path))
+          utils.removeFile ( jobball_path );
+
+        if (!code)  {  // success
           // print usage stats and update the user ration state
+
           var jobClass = writeJobStats ( jobEntry );
           ustats.registerJob ( jobClass );
           if ('tokens' in meta)
@@ -875,6 +883,7 @@ function getJobResults ( job_token,server_request,server_response )  {
           feJobRegister.n_jobs++;
           writeFEJobRegister();
           cmd.sendResponse ( server_response, cmd.nc_retcode.ok,'','' );
+
         } else if (code=='err_rename')  { // file renaming errors
           log.error ( 10,'cannot accept job from NC due to file rename errors' );
           cmd.sendResponse ( server_response, cmd.nc_retcode.fileErrors,
@@ -965,6 +974,46 @@ function checkJobs ( loginData,data )  {
 }
 
 
+function wakeZombiJobs ( loginData,data )  {
+var nc_servers = conf.getNCConfigs();
+
+  var projectName = data.project;
+  var tokens = [];
+  for (var token in feJobRegister.job_map)  {
+    var jobEntry = feJobRegister.job_map[token];
+    // here to check for job expiration date (to be defined for FE)
+    if ((jobEntry.loginData.login==loginData.login) &&
+        (jobEntry.project==projectName))
+      tokens.push ( token );
+  }
+
+  // we send all tokens to all ordinary (non-client NCs, because their
+  // numeration can change if cloud was reconfigured after job was run;
+  // zombi jobs on client NCs are awakened directly from browsers
+
+  if (tokens.length>0)  {
+
+    for (var i=0;i<nc_servers.length;i++)
+      if (nc_servers[i].exeType!='CLIENT')  {
+        request ({
+          uri     : cmd.nc_command.wakeZombiJobs,
+          baseUrl : nc_servers[i].externalURL,
+          method  : 'POST',
+          body    : {job_tokens:tokens},
+          json    : true
+        },function(error,response,body){
+            if (error)
+              log.error ( 10,'errors communicating with NC' + i + ': ' + error );
+        });
+     }
+
+  }
+
+  return  new cmd.Response ( cmd.fe_retcode.ok,'',{} );
+
+}
+
+
 // ==========================================================================
 // export for use in node
 module.exports.readFEJobRegister  = readFEJobRegister;
@@ -976,3 +1025,4 @@ module.exports.readJobStats       = readJobStats;
 module.exports.stopJob            = stopJob;
 module.exports.getJobResults      = getJobResults;
 module.exports.checkJobs          = checkJobs;
+module.exports.wakeZombiJobs      = wakeZombiJobs;

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    01.08.20   <--  Date of Last Modification.
+ *    10.10.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -471,15 +471,16 @@ var version = '';
           "path"     : "./cofe-nc-storage/jobs_safe",
           "capacity" : 10
       },
-      "exeType"          : "SHELL",
-      "jobManager"       : "SLURM",
-      "exeData"          : "",
-      "jobCheckPeriod"   : 2000,
-      "sendDataWaitTime" : 1000,
-      "maxSendTrials"    : 10,
-      "jobRemoveTimeout" : 10000,
-      "maxRestarts"      : 100,
-      "fileCapSize"      : 500000,
+      "exeType"            : "SHELL",
+      "jobManager"         : "SLURM",
+      "exeData"            : "",
+      "jobCheckPeriod"     : 2000,
+      "sendDataWaitTime"   : 1000,
+      "maxSendTrials"      : 10,
+      "jobRemoveTimeout"   : 10000,  // milliseconds
+      "zombiExpireTimeout" : 30,     // days
+      "maxRestarts"        : 100,
+      "fileCapSize"        : 500000,
       "logflow" : {   // optional item
         "chunk_length" : 10000,     // number of jobs to advance log file counters
         "log_file" : "/path/to/node_fe"    // full path less of '.log' and '.err' extensions
@@ -647,6 +648,9 @@ function readConfiguration ( confFilePath,serverType )  {
       }
       if (!nc_server.hasOwnProperty('jobManager'))
         nc_server.jobManager = nc_server.exeType;
+      if (!nc_server.hasOwnProperty('zombiExpireTimeout'))
+        nc_server.zombiExpireTimeout = 30;  // days
+      nc_server.zombiExpireTimeout *= 86400000;  // in milliseconds
     }
   } else
     return 'number cruncher(s) configuration is missing in file ' + confFilePath;

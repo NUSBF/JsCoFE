@@ -2,7 +2,7 @@
 /*
  *  ===========================================================================
  *
- *    05.10.20   <--  Date of Last Modification.
+ *    11.10.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  ---------------------------------------------------------------------------
  *
@@ -25,7 +25,7 @@
 
 function appName()  { return 'CCP4 Cloud' }  // application name for reporting
 
-var jsCoFE_version = '1.6.015 [05.10.2020]';
+var jsCoFE_version = '1.6.015 [11.10.2020]';
 
 function appVersion()  {
   return jsCoFE_version;
@@ -133,6 +133,7 @@ var fe_reqtype = {
   replayJob         : '-replayJob',         // request to replay job
   stopJob           : '-stopJob',           // request to stop job
   checkJobs         : '-checkJobs',         // request to check on jobs' state
+  wakeZombiJobs     : '-wakeZombiJobs',     // request to send zombi jobs to FE
   getJobFile        : '-getJobFile',        // request to download a job's file
   getAdminData      : '-getAdminData',      // request to serve data for admin page
   sendAnnouncement  : '-sendAnnouncement',  // request to send announcement to users
@@ -191,6 +192,7 @@ var nc_command = {
   countBrowser   : '-countBrowser',   // request to advance browser start counter
   runJob         : '-runJob',         // request to upload job data and run the job
   stopJob        : '-stopJob',        // request to stop a running job
+  wakeZombiJobs  : '-wakeZombiJobs',  // request to send zombi jobs to FE
   selectDir      : '-selectDir',      // request to select directory (local service)
   selectFile     : '-selectFile',     // request to select file (local service)
   selectImageDir : '-selectImageDir', // request to select image directory (local service)
