@@ -24,7 +24,6 @@ def clickByXpathMultiple(driver, xpath, n):
     textEls = driver.find_elements_by_xpath(xpath)
     i = 1
     for textEl in textEls:
-#        parentEl = textEl.find_element_by_xpath("..")
         if textEl.is_displayed():
             if i == n: # I have no idea why it finds two times more elements, but multiplying by 2 works!
                 driver.execute_script("arguments[0].scrollIntoView();", textEl)
