@@ -2,23 +2,25 @@
 #
 # ============================================================================
 #
-#    05.07.17   <--  Date of Last Modification.
+#    01.05.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  DATA REDUCTION UTILS
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2020
 #
 # ============================================================================
 #
 
+from future import *
+
 import os, sys, re
-from   pyrvapi import *
+from pyrvapi import *
 import xml.etree.ElementTree as ET
 import json
 import subprocess as SP
-from   fractions import Fraction
+from fractions import Fraction
 
 showall = False
 showall = True
@@ -198,7 +200,7 @@ class spacegroup(object):
 
   @classmethod
   def get_alt(cls):
-    return zip(*cls._alt_list)[:2]
+    return list(zip(*cls._alt_list))[:2]
 
   _alt_dict = {
     'P 2 21 21': ('P 21 21 2', 'k,l,h',),
@@ -321,8 +323,10 @@ def point_symm_selector(e0):
           sgobj_list.append(sgobj)
           if sgobj.op != op:
             msg = 'Input XML-file is assumed to have been generated with SETTING LATTICE'
-            print(msg, file=sys.stderr)
-            print(sgobj.op, '?=?', op, file=sys.stderr)
+            #print(msg, file=sys.stderr)
+            #print(sgobj.op, '?=?', op, file=sys.stderr)
+            sys.stderr.write ( msg )
+            sys.stderr.write ( sgobj.op + '?=?' + op )
 
     for sg in sg_list:
       sgobj_list.append(spacegroup(sgin, sg, op))
@@ -405,7 +409,7 @@ def point_symm_selector(e0):
   l1.insert(0, dict(label='Auto', value='no', next=w2))
   w1 = dict(show=True, select=0, title=t1[0], tooltip=t1[1], items=l1)
   assert not good_sgobj_list
-  assert sgin.input_sg_defined
+# assert sgin.input_sg_defined # pointless forget the input sg if tests higher pg
   return w1
 
 def point_symm_datasets(xml_path, format='unknown'):
@@ -708,7 +712,8 @@ def test():
     print()
     json_out = sys.argv[2]
     with open(json_out, 'w') as ostream:
-      print(json.dumps(symm, **dump_keyargs), file=ostream)
+        #print(json.dumps(symm, **dump_keyargs), file=ostream)
+        ostream.write ( json.dumps(symm, **dump_keyargs) )
 
   else:
     mode = sys.argv[2]
