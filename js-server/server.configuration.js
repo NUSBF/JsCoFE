@@ -650,7 +650,6 @@ function readConfiguration ( confFilePath,serverType )  {
         nc_server.jobManager = nc_server.exeType;
       if (!nc_server.hasOwnProperty('zombiExpireTimeout'))
         nc_server.zombiExpireTimeout = 30;  // days
-      nc_server.zombiExpireTimeout *= 86400000;  // in milliseconds
     }
   } else
     return 'number cruncher(s) configuration is missing in file ' + confFilePath;

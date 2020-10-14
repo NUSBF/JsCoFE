@@ -5,21 +5,22 @@
 #
 # ============================================================================
 #
-#    07.05.20   <--  Date of Last Modification.
+#    14.10.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  COOT MODEL BUILDING EXECUTABLE MODULE (CLIENT-SIDE TASK)
 #
 #  Command-line:
-#     ccp4-python python.tasks.coot_mb.py jobManager jobDir jobId
+#     ccp4-python python.tasks.coot_mb.py jobManager jobDir jobId expire=timeout_in_days
 #
 #  where:
 #    jobManager  is either SHELL or SGE
-#    jobDir   is path to job directory, having:
+#    jobDir      is path to job directory, having:
 #      jobDir/output  : directory receiving output files with metadata of
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
+#    expire      is timeout for removing coot backup directories
 #
 #  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2020
 #
@@ -32,7 +33,8 @@ import sys
 import shutil
 
 #  application imports
-from . import basic
+#from . import basic
+import coot_ce
 from   pycofe.varut   import  signal
 try:
     from pycofe.varut import messagebox
@@ -44,7 +46,7 @@ from pycofe.proc.coot_link import LinkLists
 # ============================================================================
 # Make Coot driver
 
-class Coot(basic.TaskDriver):
+class Coot(coot_ce.CootCE):
 
     # ------------------------------------------------------------------------
 
@@ -114,7 +116,9 @@ class Coot(basic.TaskDriver):
 
         #self.putMessage ( "<h3><i>Make sure that you save your work from Coot " +\
         #                  "<u>without changing directory and file name offered</u></i></h3>" )
-        #self.flush()
+        #self.flush
+
+        coot_backup_dir = self.makeBackupDirectory()
 
         # fetch input data
         data_list = [self.input_data.data.istruct[0]]
@@ -196,7 +200,7 @@ class Coot(basic.TaskDriver):
         #   This also prevents creating 'backup_dir' item in coot_meta dictionary
         # below in putCootMeta call. Note that backup_dir if functonally disabled
         # in TaskCootMB.makeInputData().
-        shutil.rmtree ( "coot-backup", ignore_errors=True, onerror=None )
+        #shutil.rmtree ( "coot-backup", ignore_errors=True, onerror=None )
 
         # Check for PDB files left by Coot and convert them to type structure
 
@@ -262,6 +266,11 @@ class Coot(basic.TaskDriver):
 
         summary_line = "model not saved"
         have_results = ligand_coot is not None
+
+        restored = False
+        if not fname:  # try to get the latest backup file
+            fname = self.getLastBackupFile ( coot_backup_dir )
+            restored = fname is not None
 
         if fname:
 
@@ -349,6 +358,8 @@ class Coot(basic.TaskDriver):
                 self.registerRevision     ( revision )
                 have_results = True
                 summary_line = "model saved"
+                if restored:
+                    summary_line += " from backup copy"
 
         else:
             self.putTitle ( "No Output Structure Generated" )

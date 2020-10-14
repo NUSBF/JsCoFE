@@ -30,9 +30,11 @@
 import os
 import sys
 import shutil
+import gzip
+import time
 
 #  application imports
-from . import basic
+import basic
 from   pycofe.dtypes  import  dtype_xyz, dtype_ensemble
 from   pycofe.varut   import  signal
 try:
@@ -44,7 +46,70 @@ except:
 # ============================================================================
 # Make Coot driver
 
-class Coot(basic.TaskDriver):
+class CootCE(basic.TaskDriver):
+
+    # ------------------------------------------------------------------------
+
+    def makeBackupDirectory ( self ):
+
+        #  remove expired backup directories
+
+        coot_backups_dir = os.path.join ( "..","..","backups" )
+        if os.path.exists(coot_backups_dir):
+            expire = self.getCommandLineParameter ( "expire" )
+            if not expire:
+                expire = "30"  # days
+            expire = 86400*int(expire)  # in seconds
+            files = os.listdir ( coot_backups_dir )
+            mtime = time.time()
+            for f in files:
+                fp = os.path.join ( coot_backups_dir,f )
+                mt = os.path.getmtime(fp)
+                if mtime-mt > -100: # expire:
+                    if os.path.isfile(fp):
+                        os.remove ( fp )
+                    else:
+                        shutil.rmtree ( fp, ignore_errors=True, onerror=None )
+
+        #  make new backup directory
+
+        coot_backup_dir = os.path.join ( "..","..","backups",
+                                  self.task.project + "_" + str(self.task.id) )
+        if not os.path.exists(coot_backup_dir):
+            os.makedirs ( coot_backup_dir )
+        os.environ["COOT_BACKUP_DIR"] = coot_backup_dir
+
+        return coot_backup_dir
+
+
+    # ------------------------------------------------------------------------
+
+    def getLastBackupFile ( self,backup_dir ):
+        files = os.listdir ( backup_dir )
+        mtime = 0
+        fpath = None
+        fname = None
+        for f in files:
+            if f.lower().endswith(".pdb.gz"):
+                fp = os.path.join ( backup_dir,f )
+                mt = os.path.getmtime(fp)
+                if mt > mtime:
+                    mtime = mt
+                    fpath = fp
+        if fpath:
+            fname = "__backup_restore.pdb"
+            with open(fname,'wb') as f_out, gzip.open(fpath,'rb') as f_in:
+                shutil.copyfileobj ( f_in,f_out )
+            self.putMessage (
+                "<span style=\"font-size:112%;color:maroon;\"><b>" +\
+                "Coordinates are restored from last Coot backup.</b></span>" +\
+                "<span style=\"font-size:100%;color:maroon;\"><p>" +\
+                "Next time, save coordinates before ending Coot session, " +\
+                "using Coot's <i>\"File/Save coordinates ...\"</i> menu " +\
+                "item, without changing the file name and output directory " +
+                "offered.</span>"
+            )
+        return fname
 
     # ------------------------------------------------------------------------
 
@@ -57,20 +122,8 @@ class Coot(basic.TaskDriver):
         #self.flush()
 
         # fetch input data
-        """
-        data_list = [self.input_data.data.ixyz[0]]
-        if hasattr(self.input_data.data,"aux_struct"):
-            data_list += self.input_data.data.aux_struct
-        for i in range(len(data_list)):
-            data_list[i] = self.makeClass ( data_list[i] )
-        ixyz = data_list[0]
 
-        # make command line arguments
-        args = []
-        for s in data_list:
-            if s.getXYZFileName():
-                args += ["--pdb",s.getXYZFilePath(self.inputDir())]
-        """
+        coot_backup_dir = self.makeBackupDirectory()
 
         # make command line arguments
         args = []
@@ -105,6 +158,15 @@ class Coot(basic.TaskDriver):
 
         have_results = False
 
+        restored = False
+        if len(mlist)<=0:  # try to get the latest backup file
+            fname = self.getLastBackupFile ( coot_backup_dir )
+            if fname:
+                restored = True
+                mt       = os.path.getmtime(fname)
+                fdic[mt] = fname
+                mlist.append ( mt )
+
         if len(mlist)>0:
 
             self.putTitle ( "Output coordinate data" )
@@ -118,24 +180,6 @@ class Coot(basic.TaskDriver):
             for i in range(len(mlist)):
 
                 fname = fdic[mlist[i]]
-                """
-                fcnt  = str(i+1)
-                if len(mlist)<=1:
-                    fcnt = ""
-                elif len(mlist)<9:
-                    fcnt = "_" + fcnt
-                elif len(mlist)<99:
-                    fcnt = "_" + fcnt.zfill(2)
-                elif len(mlist)<999:
-                    fcnt = "_" + fcnt.zfill(3)
-
-                if fname.startswith(fnprefix):
-                    fn,fext = os.path.splitext ( fname[fname.find("_")+1:] )
-                else:
-                    fn,fext = os.path.splitext ( f )
-
-                coot_xyz = fn + fcnt + "_xyz" + fext;
-                """
 
                 # register output data from temporary location (files will be moved
                 # to output directory by the registration procedure)
@@ -154,42 +198,6 @@ class Coot(basic.TaskDriver):
 
         else:
             self.putTitle ( "No output data produced" )
-
-        """
-        files = os.listdir ( "./" )
-        mtime = 0;
-        fname = None
-        for f in files:
-            if f.lower().endswith(".pdb") or f.lower().endswith(".cif"):
-                mt = os.path.getmtime(f)
-                if mt > mtime:
-                    mtime = mt
-                    fname = f
-
-        if fname:
-
-            f = ixyz.getXYZFileName()
-            if not f:
-                f = istruct.getSubFileName()
-            fnprefix = f[:f.find("_")]
-
-            if fname.startswith(fnprefix):
-                fn,fext = os.path.splitext ( fname[fname.find("_")+1:] )
-            else:
-                fn,fext = os.path.splitext ( f )
-
-            coot_xyz = fn + "_xyz" + fext;
-            shutil.copy2 ( fname,coot_xyz )
-
-            # register output data from temporary location (files will be moved
-            # to output directory by the registration procedure)
-
-            xyz = self.registerXYZ ( coot_xyz )
-            if xyz:
-                xyz.putXYZMeta ( self.outputDir(),self.file_stdout,self.file_stderr,None )
-                self.putXYZWidget ( "xyz_btn","Edited coordinates",xyz,-1 )
-
-        """
 
         # ============================================================================
         # close execution logs and quit
@@ -210,5 +218,5 @@ class Coot(basic.TaskDriver):
 
 if __name__ == "__main__":
 
-    drv = Coot ( "",os.path.basename(__file__) )
+    drv = CootCE ( "",os.path.basename(__file__) )
     drv.start()

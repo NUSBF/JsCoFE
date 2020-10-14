@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    19.09.20   <--  Date of Last Modification.
+ *    13.10.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -158,7 +158,8 @@ if (!__template)  {
   }
 
   TaskCootMB.prototype.getCommandLine = function ( jobManager,jobDir )  {
-    return [conf.pythonName(), '-m', 'pycofe.tasks.coot_mb', jobManager, jobDir, this.id];
+    return [conf.pythonName(), '-m', 'pycofe.tasks.coot_mb', jobManager, jobDir,
+            this.id, 'expire='+conf.getClientNCConfig().zombiExpireTimeout ];
   }
 
   // -------------------------------------------------------------------------
