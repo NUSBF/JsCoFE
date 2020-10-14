@@ -347,7 +347,7 @@ function checkJobsOnTimer()  {
   ncJobRegister.timer = null;  // indicate that job check loop is suspended
                                // (this is paranoid)
   var crTime = Date.now();
-  var zombiExpireTimeout = conf.getServerConfig().zombiExpireTimeout;
+  var zombiExpireTimeout = 86400000*conf.getServerConfig().zombiExpireTimeout;
 
   // loop over all entries in job registry
   for (var job_token in ncJobRegister.job_map)  {
