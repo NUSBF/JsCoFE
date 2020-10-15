@@ -1,7 +1,6 @@
 
-
 #
-# from Bernhard Lohkamp for Eugene
+# first version of script and idea from Bernhard Lohkamp for Eugene
 # run: --script coot_jscofe.py
 #
 #  23.03.2020
@@ -13,12 +12,19 @@
 #              "and directory offered by default, and only then\n" +\
 #              "end Coot session as usual." )
 
+select_file_dialog = "$selfile.py"
+cloud_backup_dir   = "$backup_dir"
 
 if (have_coot_python):
 
+    import subprocess
+
     set_run_state_file_status ( 2 )
+    set_nomenclature_errors_on_read ( "ignore" )
 
     if coot_python.main_menubar():
+
+        #menu = coot_menubar_menu ( "CCP4 Cloud" )
 
         def add_simple_coot_menu_menuitem_with_icon ( menu,
                                                       menu_item_label,
@@ -55,7 +61,6 @@ if (have_coot_python):
 
             return
 
-
         def exit_and_signal ( signal ):
             if signal:
                 f = open ( "task_chain.cmd","w" )
@@ -63,6 +68,22 @@ if (have_coot_python):
                 f.close()
             coot_checked_exit(0)
             #coot_real_exit(0)
+            return
+
+        def load_backup_copy():
+            process = subprocess.Popen ([
+                    "ccp4-python",
+                    select_file_dialog,
+                    "Select Coot backup file",
+                    "Coot backup files (*.pdb.gz)",
+                    "--start-dir",cloud_backup_dir,
+                    "--no-settings"
+                ], stdout=subprocess.PIPE
+            )
+            (output, err) = process.communicate()
+            exit_code = process.wait()
+            if output:
+                handle_read_draw_molecule ( output.strip() )
             return
 
 
@@ -83,6 +104,15 @@ if (have_coot_python):
                 label = menu_child.get_label()
                 if label in remove_list:
                     menu.remove(menu_child)
+
+        if not select_file_dialog.startswith("$") and not cloud_backup_dir.startswith("$"):
+            add_simple_coot_menu_menuitem_with_icon (
+                menu,
+                "Load CCP4 Cloud backup copy",
+                lambda func:
+                load_backup_copy(),
+                gtk.STOCK_FILE
+            )
 
         add_simple_coot_menu_menuitem_with_icon (
             menu,

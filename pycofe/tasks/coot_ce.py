@@ -65,7 +65,7 @@ class CootCE(basic.TaskDriver):
             for f in files:
                 fp = os.path.join ( coot_backups_dir,f )
                 mt = os.path.getmtime(fp)
-                if mtime-mt > -100: # expire:
+                if mtime-mt > expire:
                     if os.path.isfile(fp):
                         os.remove ( fp )
                     else:
