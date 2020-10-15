@@ -253,8 +253,7 @@ def test_mainCloud(browser,
         sf.asymmetricUnitContentsAfterCloudImport(d.driver, d.waitShort)
         time.sleep(1)
 
-        # Old one on main Cloud
-        editRevisionStructure_rnase(d.driver, d.waitShort)
+        sf.editRevisionStructure_rnase(d.driver, d.waitShort)
         time.sleep(1)
 
         # Starting three REFMACs in parallel to make sure different number crunchers are employed
@@ -265,7 +264,7 @@ def test_mainCloud(browser,
         closeButton.click()
         time.sleep(1)
 
-        sf.clickTaskInTaskTree(d.driver, '\[0003\] edit revision structure')
+        sf.clickTaskInTaskTree(d.driver, '\[0003\]')
         time.sleep(1)
         startRefmac(d.driver, d.waitLong)
         time.sleep(1)
@@ -274,7 +273,7 @@ def test_mainCloud(browser,
         closeButton.click()
         time.sleep(1)
 
-        sf.clickTaskInTaskTree(d.driver, '\[0003\] edit revision structure')
+        sf.clickTaskInTaskTree(d.driver, '\[0003\]')
         time.sleep(1)
         startRefmac(d.driver, d.waitLong)
         time.sleep(1)
@@ -284,7 +283,7 @@ def test_mainCloud(browser,
         time.sleep(1)
 
 
-        sf.clickTaskInTaskTree(d.driver, '\[0002\] asymmetric unit contents')
+        sf.clickTaskInTaskTree(d.driver, '\[0002\]')
         time.sleep(2) # sensitive
         startSimbad(d.driver)
         time.sleep(1)
