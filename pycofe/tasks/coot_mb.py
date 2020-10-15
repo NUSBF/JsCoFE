@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    14.10.20   <--  Date of Last Modification.
+#    15.10.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -161,6 +161,7 @@ class Coot(coot_ce.CootCE):
         coot_mod = os.path.join ( os.path.dirname(os.path.abspath(__file__)),
                                   "..","proc","coot_modifier.py" )
         coot_scr = istruct.getCootFilePath ( self.inputDir() )
+        """
         if coot_scr or ligand:
             f = open ( coot_mod,"r" )
             coot_mod_content = f.read()
@@ -169,11 +170,30 @@ class Coot(coot_ce.CootCE):
                 coot_scr = "__coot_script.py"
             f = open ( coot_scr,"a" )
             f.write  ( coot_mod_content )
+            #f.write  ( "\n    set_nomenclature_errors_on_read(\"ignore\")\n" )
             if ligand:
                 f.write ( "\n    get_monomer(\"" + ligand.code + "\")\n" )
             f.close()
         else:
             coot_scr = coot_mod
+        """
+
+        f = open ( coot_mod,"r" )
+        coot_mod_content = f.read() \
+            .replace ( "$selfile.py",os.path.join (
+                            os.path.dirname(os.path.abspath(__file__)),
+                            "..","varut","selectfile.py"
+                       )
+                     ) \
+            .replace ( "$backup_dir",os.path.join(coot_backup_dir,"..") )
+        f.close()
+        if not coot_scr:
+            coot_scr = "__coot_script.py"
+        f = open ( coot_scr,"a" )
+        f.write  ( coot_mod_content )
+        if ligand:
+            f.write ( "\n    get_monomer(\"" + ligand.code + "\")\n" )
+        f.close()
 
         molp_path = istruct.getMolProbityFilePath ( self.inputDir() )
         if molp_path:
