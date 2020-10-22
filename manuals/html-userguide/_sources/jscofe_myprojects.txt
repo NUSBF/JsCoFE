@@ -16,17 +16,21 @@ This is the page you find yourself in immediately after login. If you read this 
         Please read another CCP4 Cloud user guide documentation by pressing on **Contents** on your upright corner of the window.
         
     .. image:: images/Contents.jpg
-         :scale: 50 %
+         :scale: 30 %
          :align: center
 
+.. _software-authorisation:
+
 -----------------------
-Software Authorisations
+Software Authorisation
 -----------------------
+
+.. _myprojects:
 
 CCP4 Cloud provides access to 3rd party software, not covered by CCP4 license. In order to use this software, a user needs to be authorised by the corresponding software provider. You can do that at **"My Account"** page. 
    
     .. image:: images/My_account_Authorizations.png
-            :scale: 70 %
+            :scale: 40 %
             :align: center
 
 

@@ -1,0 +1,76 @@
+===============
+Troubleshooting
+===============
+
+
+.. contents::
+   :depth: 2
+
+-------------------------------------------------
+Some tasks cannot be created or added to job tree
+-------------------------------------------------
+
+If a task cannot be created and added to the :ref:`Job Tree <job-tree>`, its icon in the :ref:`task-list` is shown in red frame and the corresponding list entry is grayed. Clicking on red-framed icon does not start :ref:`job-dialog` for the task; instead, an explanation of why the task cannot be run, is given. It will be one of the following:
+
+* **not all input data, needed for the task, is available**
+    Tasks see data produced by its ancestors in the :ref:`Job Tree <job-tree>`. Quite possibly, you need to import missing data, or run another task to create the data needed. For example, ``Phaser`` and ``Molrep`` require molecular replacement model(s) or ensembles of models, which need to be prepared from atomic coordinates or sequences with appropriate model preparation tasks. If the data required is found in other branches of the :ref:`Job Tree <job-tree>`, you may access them by selecting jobs with needful data before adding the new one. For that, make multiple selection in :ref:`Job Tree <job-tree>` (hold "*Ctrl*" (Windows, Linux) or "*Apple*" (Mac OSX) button pressed and click on the respective jobs), select the parent for the next job in the end, and right-click on it for makin the new task.
+
+* **one or more data objects, needed for the task, is outdated**
+    This is due to the same reason as :ref:`impossibility to clone(1)<cant-clone-1>`, please read there.
+
+.. _task-availability:
+
+* **the task requires CCP4 Cloud Client**
+    This happens when you connect to CCP4 Cloud via direct web-link, such as `https://cloud.ccp4.ac.uk`. Some tasks may run only on your own computer, which is possible only if you connect to CCP4 Cloud by clicking on CCP4 Cloud icon in your local CCP4 Setup. This icon starts CCP4 Cloud Client, which will run interactive tasks, such as ``Coot``, on your computer. 
+
+* **the task is not available for operating system used (typically MS Windows)**
+    Use Operating System (Linux or Mac OSX) in which the task is available. 
+
+* **software component, needed for the task, is missing**
+    Ask CCP4 Cloud maintainer to install the software needed.
+
+* **the task requires** :ref:`software-authorisation` **from software provider**
+    Some software components are provided on 3-rd party licences, which require a user to register with the software provider. Proceed to your account settings by choosing “**My Account**” item of the menu in the top-left corner of CCP4 Cloud page and click on button with the fingerprint icon, then follow instructions in the screen (cf. :ref:`software-authorisation`). 
+
+
+-------------------------
+Job seems to never finish
+-------------------------
+
+Occasionally, this may happen due to 4 reasons:
+
+* **job takes considerable time and only seems to be stalled**
+    Some jobs, typically automatic structure solvers, can take weeks time, depending on input data and parameters chosen. Inspect the output log in the "**Main Log**" tab of the :ref:`job-dialog`. If the log does not advance during really long time, you may consider the job as stalled and check the points below. If the log advances but shows signs of infinite looping, the job's run away (see the next point). Otherwise, the job is running. If you wish you may :ref:`stop it<stop-job>`.
+
+* **job has run away**
+    The computational process has entered an infinite loop, either because of program bug or because of alforithmic features. If you suspect that this is the situation, :ref:`stop job<stop-job>`. 
+
+* **communication errors**
+    After job is finished, the results are send back to your project. Occassionally, this process may fail because of connection issues despite of many attempts performed. In this situation, job results are retained for many days (1 month unless configured otherwise), and may be retrieved by pushing the :ref:`Refresh<refresh-project>` button in the **Project Page**. If connection issues were resolved, this action should bring job results to your project and finish the job properly.
+
+* **technical fault**
+    If a runaway job cannot be stopped or apparently finished job cannot be retrieved by repeat pushing the :ref:`Refresh<refresh-project>` button for several time (allow generous periods before refreshes), the situation should be identified as *technical fault* and reported to CCP4 Cloud maintainer. Usually, the job will be lost, and this may be purely random act of system malfunction. However, if technical faults are frequent, this may indocative of a bug, poor connection or other problems, which should be addressed by the maintainer.
+
+.. _stop-job:
+
+**Stoping a job**
+
+If you wish to stop a job, just press the "**Stop**" button in its :ref:`job-dialog`. The job should stop within several minutes, and normally much faster. Avoid deleting jobs that are shown as running, because this only removes job from the project but *does not actually delete or stop it*.
+
+
+.. _cant-clone:
+
+----------------------------------------------
+CCP4 Cloud says that the task cannot be cloned
+----------------------------------------------
+
+This happens when:
+
+.. _cant-clone-1:
+
+* **new developments in task module make it not backward-compatible**
+    The only way around it is to create the task anew from the parent mode, rather than to clone. When doing this, you may discover that this does not work as well because of incompatibility in data objects produced by the parent or one of higher ancestors. If this happens, you may need to repeat parents and even grand-parent tasks in the :ref:`Job Tree <job-tree>`, depending on the situation.
+
+* **the clone attempt is done in different setup where cloned task is not available**
+    This is the same as :ref:`impossibility to create a new task because it is not available<task-availability>`, please read there.
+

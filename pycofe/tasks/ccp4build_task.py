@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    15.06.20   <--  Date of Last Modification.
+#    21.10.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -414,7 +414,8 @@ class CCP4Build(basic.TaskDriver):
 
                             if istruct:
                                 structure.copyAssociations ( istruct )
-                                structure.copySubtype      ( istruct )
+                                #structure.copySubtype      ( istruct )
+                                structure.addSubtypes      ( istruct.subtype )
                                 structure.copyLabels       ( istruct )
                                 structure.copyLigands      ( istruct )
                             structure.removeSubtype   ( dtype_template.subtypeSubstructure() )

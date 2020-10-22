@@ -173,9 +173,9 @@ def suggestASUComp1 ( hkl,seqFilePath,stoichiometry=False ):
             for j in range(1,len(seqdata)):
                 seq += seqdata[j].strip()
             if stoichiometry:
-                asu.append ( [seq,0.0,'protein',1] )  # only protein seq for now -- to be changed
+                asu.append ( [seq,0.0,"protein",1] )  # only protein seq for now -- to be changed
             else:
-                asu.append ( [seq,0.0,'protein',0] )  # only protein seq for now -- to be changed
+                asu.append ( [seq,0.0,"protein",0] )  # only protein seq for now -- to be changed
     return suggestASUComp ( hkl,asu )
 
 
@@ -184,7 +184,7 @@ def suggestASUComp ( hkl,asu ):
     #   asu = [[seq1,weight1,type1,nocc1,name1],[seq2,weight2,type2,nocc2,name2],....],  where
     #        seqN    : Nth sequence -- must be given if weightN<=0.0
     #        weightN : weight of Nth sequence -- must be given if seqN==""
-    #        typeN   : Nth sequence type: 'protein' or 'dna'
+    #        typeN   : Nth sequence type: "protein" or 'dna'
     #        noccN   : on input: <= 0 choose automatically
     #                  on output: the number of Nth sequence in ASU (on return)
     #        nameN   : sequence name for identification
@@ -193,7 +193,7 @@ def suggestASUComp ( hkl,asu ):
     ndna   = 0
     nseq   = len(asu)
     for i in range(nseq):
-        if asu[i][2]=='protein':
+        if asu[i][2]=="protein":
             if asu[i][1]<=0.0:
                 asu[i][1] = 112.5*len(asu[i][0])
             nprot += 1
