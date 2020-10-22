@@ -3,13 +3,13 @@
 #
 # ============================================================================
 #
-#    29.04.19   <--  Date of Last Modification.
+#    22.10.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  CCP4EZ Combined Auto-Solver CCP4Build module
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2019
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2020
 #
 # ============================================================================
 #
@@ -164,8 +164,10 @@ class CCP4Build(ccp4go_buccaneer.Buccaneer):
                 #            "./",self.file_stdout,self.file_stderr,"refmac",None )
 
                 nResults = 1
-                rfree    = float(meta["refmac_edcc"]["R_free"])
-                rfactor  = float(meta["refmac_edcc"]["R_factor"])
+                #rfree    = float(meta["refmac_edcc"]["R_free"])
+                #rfactor  = float(meta["refmac_edcc"]["R_factor"])
+                rfree    = float(meta["metrics"][1]["R_free"])
+                rfactor  = float(meta["metrics"][1]["R_factor"])
 
                 self.putMessage ( "<h2><i>Structure built with <i>R<sub>free</sub>=" +
                                   str(rfree) +"</i></h2>" )
