@@ -132,7 +132,6 @@ Crank-2 Glossary
       of the map before density modification. A larger value of CLD (around and above 2) for one hand and a value close
       to 0 (or negative) for the other hand is a good sign indicating that there is a discrimination between the hands.
 
-
 ----------------------------------------------------------------------------------
 
 **Documentation written by:**

@@ -52,11 +52,11 @@
         
         
   <div class="section" id="project-management">
-<h1>2. Project Management<a class="headerlink" href="#project-management" title="Permalink to this headline">¶</a></h1>
+<span id="id1"></span><h1>2. Project Management<a class="headerlink" href="#project-management" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="basic-principles">
 <h2>2.1. Basic principles<a class="headerlink" href="#basic-principles" title="Permalink to this headline">¶</a></h2>
 <p>Projects in CCP4 Cloud are designed to keep the track of structure solution process in such a way that it may be reviewed at any time later.</p>
-<p>Apart from straightforward cases, structure solution involves repeats of certain actions and branching due to decision making or exploration of range of parameters. Correspondingly, <strong>project structure in CCP4 Cloud is a tree</strong>, rather than a linear (chronological) list of jobs.</p>
+<p id="job-tree">Apart from straightforward cases, structure solution involves repeats of certain actions and branching due to decision making or exploration of range of parameters. Correspondingly, <strong>project structure in CCP4 Cloud is a tree</strong>, rather than a linear (chronological) list of jobs.</p>
 <p>Projects (or job trees) are built with just 5 basic operations, associated with first five buttons in the vertical toolbar on the left-hand side of the screen (also available from dropdown menu displayed by right-clicking on a job line in the tree):</p>
 <p><a class="reference internal" href="_images/add.png"><img alt="addjob" src="_images/add.png" style="width: 18px; height: 18px;" /></a> <strong>Add a job</strong>. The new job will be added as a child to one currently selected in the tree. When this button is pressed, the new job is chosen from the list of tasks, which opens automatically. Repeat addition of jobs to the same node will result in job tree branching.</p>
 <p><a class="reference internal" href="_images/moveup.png"><img alt="moveup" src="_images/moveup.png" style="width: 18px; height: 18px;" /></a> <strong>Move job up the tree</strong>. The currently selected job will move one position up the job tree. This is only possible if all job&#8217;s input data is generated above the new job position. If this is not the case, the job cannot be moved and the move button is greyed. Moving jobs may be useful for restructuring of the job tree in order to make job results visible in other tree branches (for which the job should be moved to above the branching point).</p>
@@ -74,7 +74,7 @@
 <p><a class="reference internal" href="_images/stop.png"><img alt="stop" src="_images/stop.png" style="width: 18px; height: 18px;" /></a> <strong>Stop</strong> the currently selected job. This button is active only when job is running. <strong>Once stopped, jobs cannot be resumed or restarted. However, you can clone job that was stopped and run the clone</strong>.</p>
 </div>
 <div class="section" id="refresh">
-<h2>2.3. Refresh<a class="headerlink" href="#refresh" title="Permalink to this headline">¶</a></h2>
+<span id="refresh-project"></span><h2>2.3. Refresh<a class="headerlink" href="#refresh" title="Permalink to this headline">¶</a></h2>
 <p>Nobody and nothing are perfect, and sometimes the Project Page may stop working for you due to intermittent connection errors or a hidden bug. Should this unlikely event happen, <a class="reference internal" href="_images/refresh.png"><img alt="refresh" src="_images/refresh.png" style="width: 16px; height: 16px;" /></a> refresh the Project Page. <a class="reference internal" href="_images/refresh.png"><img alt="refresh" src="_images/refresh.png" style="width: 16px; height: 16px;" /></a> simply reloads project data and re-initialises internal page functions.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>

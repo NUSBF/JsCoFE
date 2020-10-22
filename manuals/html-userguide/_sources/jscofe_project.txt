@@ -1,3 +1,5 @@
+.. _project-management:
+
 ==================
 Project Management
 ==================
@@ -7,6 +9,8 @@ Basic principles
 ----------------
 
 Projects in CCP4 Cloud are designed to keep the track of structure solution process in such a way that it may be reviewed at any time later.
+
+.. _job-tree:
 
 Apart from straightforward cases, structure solution involves repeats of certain actions and branching due to decision making or exploration of range of parameters. Correspondingly, **project structure in CCP4 Cloud is a tree**, rather than a linear (chronological) list of jobs.
 
@@ -59,7 +63,9 @@ The following buttons in the toolbar **do not change the job tree**:
     :height: 18
     
 |stop| **Stop** the currently selected job. This button is active only when job is running. **Once stopped, jobs cannot be resumed or restarted. However, you can clone job that was stopped and run the clone**.
-    
+
+.. _refresh-project:
+
 --------    
 Refresh
 --------

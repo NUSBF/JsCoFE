@@ -315,7 +315,8 @@ if (!__template)  {
 
       setLabel ( 'Try Space Group(s):&nbsp;',++r,0 );
       customGrid.spaceGroup = new Dropdown();
-      customGrid.spaceGroup.setWidth ( '125%' );
+      //customGrid.spaceGroup.setWidth ( '125%' );
+      customGrid.spaceGroup.setWidth ( '300px' );
 
       var sg0         = this.getSpaceGroup();
       var sg_enant    = getEnantiomorphSpG ( sg0 );

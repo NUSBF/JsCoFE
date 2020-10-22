@@ -17,6 +17,7 @@ User Guide
    jscofe_jobdialog
    jscofe_CloudED.rst
    jscofe_QnA
+   jscofe_troubleshooting
    jscofe_version_log.rst
 
 ======

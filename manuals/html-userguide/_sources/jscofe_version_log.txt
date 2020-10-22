@@ -3,9 +3,31 @@ CCP4 Cloud Version Log
 ======================
 
 
+**Version 1.6.016**
+
+    *Released on --.--.2020 with CCP4 7.1.006*
+
+    **Changes and new features**
+
+    #. VDW repulsion weight parameter added in ``Refmac`` task
+
+    #. ``Refmac`` verdict section updated
+
+    #. Map selection added in ``FitLigand`` and ``FitWaters`` tasks
+
+    #. New user preferences: login into last project, default window sizes for job dialogs and viewers 
+
+    #. Stalled jobs can be now pushed with button *Refresh* in the project page toolbar
+
+    #. ``Coot`` task uses the last backup copy if user forgets to save coordinates
+
+    #. New menu item: Load from Cloud backup, introduced in ``Coot``, which allows a user to restore from backup copy if previous Coot Cloud task finished unsuccessfully
+
+
+
 **Version 1.6.015**
 
-    *Released on --.--.2020 with CCP4 7.1.005*
+    *Released on 14.10.2020 with CCP4 7.1.005*
 
     **Changes and new features**
 
@@ -15,7 +37,9 @@ CCP4 Cloud Version Log
 
     #. ED fit analysis improvements in ``CCP4Build``, leading to more stable convergence
 
-    #. Documentation updates
+    #. Documentation updates (DM with ``Acorn``)
+
+    #. Crank-2 report updated and documented
 
 
 
