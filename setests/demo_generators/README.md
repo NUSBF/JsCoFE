@@ -1,4 +1,4 @@
-# Automated generators for CPP4Cloud demo projects
+# Automated generators for CCP4Cloud demo projects
 
 
 **To be run manually**

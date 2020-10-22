@@ -89,11 +89,23 @@ def verifyRefmac(driver, waitLong, jobNumber, targetRwork, targetRfree):
         startTime = time.time()
 
         while (True):
+            realTexts = []
             tasksText = driver.find_elements(By.XPATH,
                                              "//a[contains(@id,'treenode') and contains(@class, 'jstree-anchor')]")
-            for taskText in tasksText:
+            try:
+                for t in tasksText:
+                    realTexts.append(t.text)
+            # ugly hack with try/except to make second attempt in the case page was 'refreshed' - test fail with this nonsense regularly
+            except:
+                realTexts = []
+                tasksText = driver.find_elements(By.XPATH,
+                                                 "//a[contains(@id,'treenode') and contains(@class, 'jstree-anchor')]")
+                for t in tasksText:
+                    realTexts.append(t.text)
+
+            for taskText in realTexts:
                 # Job number as string
-                match = re.search('\[' + jobNumber +'\] refmac5 -- R=(0\.\d*) Rfree=(0\.\d*)', taskText.text)
+                match = re.search('\[' + jobNumber +'\] refmac5 -- R=(0\.\d*) Rfree=(0\.\d*)', taskText)
                 if match:
                     rWork = float(match.group(1))
                     rFree = float(match.group(2))
@@ -290,10 +302,22 @@ def verifyMrBump(driver):
     startTime = time.time()
 
     while (True):
+        realTexts = []
         tasksText = driver.find_elements(By.XPATH,
                                          "//a[contains(@id,'treenode') and contains(@class, 'jstree-anchor')]")
-        for taskText in tasksText:
-            match = re.search('\[0006\] mrbump -- Compl=(.*)\% R=(0\.\d*) Rfree=(0\.\d*)', taskText.text)
+        try:
+            for t in tasksText:
+                realTexts.append(t.text)
+        # ugly hack with try/except to make second attempt in the case page was 'refreshed' - test fail with this nonsense regularly
+        except:
+            realTexts = []
+            tasksText = driver.find_elements(By.XPATH,
+                                             "//a[contains(@id,'treenode') and contains(@class, 'jstree-anchor')]")
+            for t in tasksText:
+                realTexts.append(t.text)
+
+        for taskText in realTexts:
+            match = re.search('\[0006\] mrbump -- Compl=(.*)\% R=(0\.\d*) Rfree=(0\.\d*)', taskText)
             if match:
                 compl = float(match.group(1))
                 rWork = float(match.group(2))
