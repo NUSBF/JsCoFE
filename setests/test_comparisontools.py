@@ -64,9 +64,9 @@ def gesamtAfterRevision(driver, waitLong):
     rmsd = 1.0
     nalign = 0
     seqid = 0
-    tasksText = driver.find_elements(By.XPATH, "//a[contains(@id,'treenode') and contains(@class, 'jstree-anchor')]")
-    for taskText in tasksText:
-        match = re.search('\[0004\] gesamt \(pairwise\) -- Q=(0\.\d*), r\.m\.s\.d\.=(0\.\d*)., Nalign=(\d*), seqId=(\d*)%', taskText.text)
+    ttts = sf.tasksTreeTexts(driver)
+    for taskText in ttts:
+        match = re.search('\[0004\] gesamt \(pairwise\) -- Q=(0\.\d*), r\.m\.s\.d\.=(0\.\d*)., Nalign=(\d*), seqId=(\d*)%', taskText)
         if match:
             q = float(match.group(1))
             rmsd = float(match.group(2))
@@ -147,9 +147,9 @@ def lsqkabAfterGesamt(driver, wait):
     time.sleep(1)
 
     taskRes = ''
-    tasksText = driver.find_elements(By.XPATH, "//a[contains(@id,'treenode') and contains(@class, 'jstree-anchor')]")
-    for taskText in tasksText:
-        match = re.search('\[0005\] lsqkab -- (.*)', taskText.text)
+    ttts = sf.tasksTreeTexts(driver)
+    for taskText in ttts:
+        match = re.search('\[0005\] lsqkab -- (.*)', taskText)
         if match:
             taskRes = match.group(1)
             break
@@ -200,9 +200,9 @@ def sequenceAlignment(driver, wait):
     time.sleep(1)
 
     seqid = 0
-    tasksText = driver.find_elements(By.XPATH, "//a[contains(@id,'treenode') and contains(@class, 'jstree-anchor')]")
-    for taskText in tasksText:
-        match = re.search('\[0006\] seqalign -- Seq\.Id=(\d*)\.\d%', taskText.text)
+    ttts = sf.tasksTreeTexts(driver)
+    for taskText in ttts:
+        match = re.search('\[0006\] seqalign -- Seq\.Id=(\d*)\.\d%', taskText)
         if match:
             seqid = int(match.group(1))
             break
@@ -254,9 +254,9 @@ def symmatch(driver, waitLong):
 
     rwork = 1.0
     rfree = 1.0
-    tasksText = driver.find_elements(By.XPATH, "//a[contains(@id,'treenode') and contains(@class, 'jstree-anchor')]")
-    for taskText in tasksText:
-        match = re.search('\[0007\] symmatch -- R=(0\.\d*) Rfree=(0\.\d*)', taskText.text)
+    ttts = sf.tasksTreeTexts(driver)
+    for taskText in ttts:
+        match = re.search('\[0007\] symmatch -- R=(0\.\d*) Rfree=(0\.\d*)', taskText)
         if match:
             rwork = float(match.group(1))
             rfree = float(match.group(2))

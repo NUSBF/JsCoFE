@@ -89,21 +89,8 @@ def verifyRefmac(driver, waitLong, jobNumber, targetRwork, targetRfree):
         startTime = time.time()
 
         while (True):
-            realTexts = []
-            tasksText = driver.find_elements(By.XPATH,
-                                             "//a[contains(@id,'treenode') and contains(@class, 'jstree-anchor')]")
-            try:
-                for t in tasksText:
-                    realTexts.append(t.text)
-            # ugly hack with try/except to make second attempt in the case page was 'refreshed' - test fail with this nonsense regularly
-            except:
-                realTexts = []
-                tasksText = driver.find_elements(By.XPATH,
-                                                 "//a[contains(@id,'treenode') and contains(@class, 'jstree-anchor')]")
-                for t in tasksText:
-                    realTexts.append(t.text)
-
-            for taskText in realTexts:
+            ttts = sf.tasksTreeTexts(driver)
+            for taskText in ttts:
                 # Job number as string
                 match = re.search('\[' + jobNumber +'\] refmac5 -- R=(0\.\d*) Rfree=(0\.\d*)', taskText)
                 if match:
@@ -116,7 +103,7 @@ def verifyRefmac(driver, waitLong, jobNumber, targetRwork, targetRfree):
             if curTime > startTime + float(waitLong):
                 print('*** Timeout for REFMAC5 results! Waited for %d seconds.' % waitLong)
                 break
-            time.sleep(10)
+            time.sleep(20)
 
 
         if (rWork == 1.0) or (rFree == 1.0):
@@ -219,24 +206,12 @@ def verifySimbad(driver, waitLong):
     startTime = time.time()
 
     while (True):
-        try:
-            tasksText = driver.find_elements(By.XPATH,
-                                             "//a[contains(@id,'treenode') and contains(@class, 'jstree-anchor')]")
-            for taskText in tasksText:
-                match = re.search('\[0005\] simbad -- Solv=(.*)\%', taskText.text)
-                if match:
-                    solv = float(match.group(1))
-                    break
-# ugly hack with try/except to make second attempt in the case page was 'refreshed' - test fail with this nonsense regularly
-        except:
-            tasksText = driver.find_elements(By.XPATH,
-                                             "//a[contains(@id,'treenode') and contains(@class, 'jstree-anchor')]")
-            for taskText in tasksText:
-                match = re.search('\[0005\] simbad -- Solv=(.*)\%', taskText.text)
-                if match:
-                    solv = float(match.group(1))
-                    break
-
+        ttts = sf.tasksTreeTexts(driver)
+        for taskText in ttts:
+            match = re.search('\[0005\] simbad -- Solv=(.*)\%', taskText)
+            if match:
+                solv = float(match.group(1))
+                break
 
         if (solv != 0.0):
             break
@@ -302,21 +277,8 @@ def verifyMrBump(driver):
     startTime = time.time()
 
     while (True):
-        realTexts = []
-        tasksText = driver.find_elements(By.XPATH,
-                                         "//a[contains(@id,'treenode') and contains(@class, 'jstree-anchor')]")
-        try:
-            for t in tasksText:
-                realTexts.append(t.text)
-        # ugly hack with try/except to make second attempt in the case page was 'refreshed' - test fail with this nonsense regularly
-        except:
-            realTexts = []
-            tasksText = driver.find_elements(By.XPATH,
-                                             "//a[contains(@id,'treenode') and contains(@class, 'jstree-anchor')]")
-            for t in tasksText:
-                realTexts.append(t.text)
-
-        for taskText in realTexts:
+        ttts = sf.tasksTreeTexts(driver)
+        for taskText in ttts:
             match = re.search('\[0006\] mrbump -- Compl=(.*)\% R=(0\.\d*) Rfree=(0\.\d*)', taskText)
             if match:
                 compl = float(match.group(1))
@@ -326,10 +288,10 @@ def verifyMrBump(driver):
         if (rWork != 1.0):
             break
         curTime = time.time()
-        if curTime > startTime + 600.0:
-            print('*** Timeout for MRBUMP results! Waited for %d seconds.' % 600)
+        if curTime > startTime + 900.0:
+            print('*** Timeout for MRBUMP results! Waited for %d seconds.' % 900)
             break
-        time.sleep(10)
+        time.sleep(30)
 
     if (rWork == 1.0) or (rFree == 1.0) or (compl == 0.0):
         print('*** Verification: could not find compl or Rwork or Rfree value after MrBUMP run')

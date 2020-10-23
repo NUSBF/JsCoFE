@@ -54,9 +54,9 @@ def simbadAfterImport(driver, waitLong):
     time.sleep(1)
 
     solv = 0.0
-    tasksText = driver.find_elements(By.XPATH, "//a[contains(@id,'treenode') and contains(@class, 'jstree-anchor')]")
-    for taskText in tasksText:
-        match = re.search('\[0002\] simbad -- Solv=(.*)\%', taskText.text)
+    ttts = sf.tasksTreeTexts(driver)
+    for taskText in ttts:
+        match = re.search('\[0002\] simbad -- Solv=(.*)\%', taskText)
         if match:
             solv = float(match.group(1))
             break

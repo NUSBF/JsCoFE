@@ -358,14 +358,13 @@ def renameProject(driver, testName):
 
 def clickTaskInTaskTree(driver, taskName):
     time.sleep(1)
-    tasksText = driver.find_elements(By.XPATH,
-                                     "//a[contains(@id,'treenode') and contains(@class, 'jstree-ancho')]")
     fullText = ''
-    for taskText in tasksText:
-        match = re.search(taskName, taskText.text)
+    ttts = tasksTreeTexts(driver)
+    for taskText in ttts:
+        match = re.search(taskName, taskText)
         if match:
-            print ('Clicking task "%s" in the task tree' % taskText.text)
-            fullText = taskText.text
+            print ('Clicking task "%s" in the task tree' % taskText)
+            fullText = taskText
             break
 
     taskElement = driver.find_element(By.XPATH,
@@ -383,14 +382,13 @@ def clickTaskInTaskTree(driver, taskName):
 
 def doubleClickTaskInTaskTree(driver, taskName):
     time.sleep(1)
-    tasksText = driver.find_elements(By.XPATH,
-                                     "//a[contains(@id,'treenode') and contains(@class, 'jstree-ancho')]")
     fullText = ''
-    for taskText in tasksText:
-        match = re.search(taskName, taskText.text)
+    ttts = tasksTreeTexts(driver)
+    for taskText in ttts:
+        match = re.search(taskName, taskText)
         if match:
-            print ('Double clicking task "%s" in the task tree' % taskText.text)
-            fullText = taskText.text
+            print ('Double clicking task "%s" in the task tree' % taskText)
+            fullText = taskText
             break
 
     taskElement = driver.find_element(By.XPATH,
@@ -404,6 +402,23 @@ def doubleClickTaskInTaskTree(driver, taskName):
     ActionChains(driver).double_click(taskElement).perform()
     return ()
 
+
+def tasksTreeTexts(driver):
+    realTexts = []
+    tasksText = driver.find_elements(By.XPATH,
+                                     "//a[contains(@id,'treenode') and contains(@class, 'jstree-anchor')]")
+    try:
+        for t in tasksText:
+            realTexts.append(t.text)
+    # ugly hack with try/except to make second attempt in the case page was 'refreshed' - test fail with this nonsense regularly
+    except:
+        realTexts = []
+        tasksText = driver.find_elements(By.XPATH,
+                                         "//a[contains(@id,'treenode') and contains(@class, 'jstree-anchor')]")
+        for t in tasksText:
+            realTexts.append(t.text)
+
+    return realTexts
 
 
 def startBrowser(remote, browser):

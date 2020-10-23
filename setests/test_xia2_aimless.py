@@ -69,9 +69,9 @@ def xia2Processing(driver, waitLong):
     time.sleep(1)
 
     found = False
-    tasksText = driver.find_elements(By.XPATH, "//a[contains(@id,'treenode') and contains(@class, 'jstree-anchor')]")
-    for taskText in tasksText:
-        match = re.search('\[0001\] created datasets: Unmerged \(2\) HKL \(1\) -- completed', taskText.text)
+    ttts = sf.tasksTreeTexts(driver)
+    for taskText in ttts:
+        match = re.search('\[0001\] created datasets: Unmerged \(2\) HKL \(1\) -- completed', taskText)
         if match:
             found = True
             break
@@ -128,9 +128,9 @@ def aimlessAfterXia2(driver, waitLong):
     res1 = 50.0
     res2 = 1.0
     sg = ''
-    tasksText = driver.find_elements(By.XPATH, "//a[contains(@id,'treenode') and contains(@class, 'jstree-anchor')]")
-    for taskText in tasksText:
-        match = re.search('\[0002\] aimless -- Compl=(.*)\% CC1\/2=(.*) Rmeas_all=(.*) Rmeas_ano=(.*) Res=(.*)-(.*) SpG=(.*)', taskText.text)
+    ttts = sf.tasksTreeTexts(driver)
+    for taskText in ttts:
+        match = re.search('\[0002\] aimless -- Compl=(.*)\% CC1\/2=(.*) Rmeas_all=(.*) Rmeas_ano=(.*) Res=(.*)-(.*) SpG=(.*)', taskText)
         if match:
             compl = float(match.group(1))
             cc12 = float(match.group(2))
