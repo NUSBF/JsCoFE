@@ -158,9 +158,9 @@ def refmac_0004(driver):
 
     rWork = 1.0
     rFree = 1.0
-    tasksText = driver.find_elements(By.XPATH, "//a[contains(@id,'treenode') and contains(@class, 'jstree-anchor')]")
-    for taskText in tasksText:
-        match = re.search('\[0004\] refmac5 -- R=(0\.\d*) Rfree=(0\.\d*)', taskText.text)
+    ttts = sf.tasksTreeTexts(driver)
+    for taskText in ttts:
+        match = re.search('\[0004\] refmac5 -- R=(0\.\d*) Rfree=(0\.\d*)', taskText)
         if match:
             rWork = float(match.group(1))
             rFree = float(match.group(2))
@@ -272,9 +272,9 @@ def fitLigand(driver, wait):
     time.sleep(1)
 
     nlig = 0
-    tasksText = driver.find_elements(By.XPATH, "//a[contains(@id,'treenode') and contains(@class, 'jstree-anchor')]")
-    for taskText in tasksText:
-        match = re.search('\[0006\] fit ligand -- Nfitted=(\d*)', taskText.text)
+    ttts = sf.tasksTreeTexts(driver)
+    for taskText in ttts:
+        match = re.search('\[0006\] fit ligand -- Nfitted=(\d*)', taskText)
         if match:
             nlig = int(match.group(1))
             break
@@ -332,9 +332,9 @@ def refmac_0007(driver):
 
     rWork = 1.0
     rFree = 1.0
-    tasksText = driver.find_elements(By.XPATH, "//a[contains(@id,'treenode') and contains(@class, 'jstree-anchor')]")
-    for taskText in tasksText:
-        match = re.search('\[0007\] refmac5 -- R=(0\.\d*) Rfree=(0\.\d*)', taskText.text)
+    ttts = sf.tasksTreeTexts(driver)
+    for taskText in ttts:
+        match = re.search('\[0007\] refmac5 -- R=(0\.\d*) Rfree=(0\.\d*)', taskText)
         if match:
             rWork = float(match.group(1))
             rFree = float(match.group(2))
@@ -387,9 +387,9 @@ def fitWaters(driver, wait):
     time.sleep(1)
 
     nwat = 0
-    tasksText = driver.find_elements(By.XPATH, "//a[contains(@id,'treenode') and contains(@class, 'jstree-anchor')]")
-    for taskText in tasksText:
-        match = re.search('\[0008\] fit waters -- Nwaters=(\d*)', taskText.text)
+    ttts = sf.tasksTreeTexts(driver)
+    for taskText in ttts:
+        match = re.search('\[0008\] fit waters -- Nwaters=(\d*)', taskText)
         if match:
             nwat = int(match.group(1))
             break
@@ -447,9 +447,9 @@ def refmac_0009(driver):
 
     rWork = 1.0
     rFree = 1.0
-    tasksText = driver.find_elements(By.XPATH, "//a[contains(@id,'treenode') and contains(@class, 'jstree-anchor')]")
-    for taskText in tasksText:
-        match = re.search('\[0009\] refmac5 -- R=(0\.\d*) Rfree=(0\.\d*)', taskText.text)
+    ttts = sf.tasksTreeTexts(driver)
+    for taskText in ttts:
+        match = re.search('\[0009\] refmac5 -- R=(0\.\d*) Rfree=(0\.\d*)', taskText)
         if match:
             rWork = float(match.group(1))
             rFree = float(match.group(2))

@@ -180,9 +180,9 @@ def aimless_0004(driver, waitLong):
     res1 = 50.0
     res2 = 1.0
     sg = ''
-    tasksText = driver.find_elements(By.XPATH, "//a[contains(@id,'treenode') and contains(@class, 'jstree-anchor')]")
-    for taskText in tasksText:
-        match = re.search('\[0004\] aimless -- Compl=(.*)\% CC1\/2=(.*) Rmeas_all=(.*) Rmeas_ano=(.*) Res=(.*)-(.*) SpG=(.*)', taskText.text)
+    ttts = sf.tasksTreeTexts(driver)
+    for taskText in ttts:
+        match = re.search('\[0004\] aimless -- Compl=(.*)\% CC1\/2=(.*) Rmeas_all=(.*) Rmeas_ano=(.*) Res=(.*)-(.*) SpG=(.*)', taskText)
         if match:
             compl = float(match.group(1))
             cc12 = float(match.group(2))
@@ -280,9 +280,9 @@ def aimless_0006(driver, waitLong):
     res1 = 50.0
     res2 = 1.0
     sg = ''
-    tasksText = driver.find_elements(By.XPATH, "//a[contains(@id,'treenode') and contains(@class, 'jstree-anchor')]")
-    for taskText in tasksText:
-        match = re.search('\[0006\] aimless -- Compl=(.*)\% CC1\/2=(.*) Rmeas_all=(.*) Rmeas_ano=(.*) Res=(.*)-(.*) SpG=(.*)', taskText.text)
+    ttts = sf.tasksTreeTexts(driver)
+    for taskText in ttts:
+        match = re.search('\[0006\] aimless -- Compl=(.*)\% CC1\/2=(.*) Rmeas_all=(.*) Rmeas_ano=(.*) Res=(.*)-(.*) SpG=(.*)', taskText)
         if match:
             compl = float(match.group(1))
             cc12 = float(match.group(2))
@@ -494,9 +494,9 @@ def molrep_0011(driver, waitLong):
 
     rWork = 1.0
     rFree = 1.0
-    tasksText = driver.find_elements(By.XPATH, "//a[contains(@id,'treenode') and contains(@class, 'jstree-anchor')]")
-    for taskText in tasksText:
-        match = re.search('\[0011\] molrep -- R=(0\.\d*) Rfree=(0\.\d*)', taskText.text)
+    ttts = sf.tasksTreeTexts(driver)
+    for taskText in ttts:
+        match = re.search('\[0011\] molrep -- R=(0\.\d*) Rfree=(0\.\d*)', taskText)
         if match:
             rWork = float(match.group(1))
             rFree = float(match.group(2))
@@ -556,9 +556,9 @@ def refmac_0012(driver):
 
     rWork = 1.0
     rFree = 1.0
-    tasksText = driver.find_elements(By.XPATH, "//a[contains(@id,'treenode') and contains(@class, 'jstree-anchor')]")
-    for taskText in tasksText:
-        match = re.search('\[0012\] refmac5 -- R=(0\.\d*) Rfree=(0\.\d*)', taskText.text)
+    ttts = sf.tasksTreeTexts(driver)
+    for taskText in ttts:
+        match = re.search('\[0012\] refmac5 -- R=(0\.\d*) Rfree=(0\.\d*)', taskText)
         if match:
             rWork = float(match.group(1))
             rFree = float(match.group(2))
@@ -654,9 +654,9 @@ def molrep_0016(driver, waitLong):
 
     rWork = 1.0
     rFree = 1.0
-    tasksText = driver.find_elements(By.XPATH, "//a[contains(@id,'treenode') and contains(@class, 'jstree-anchor')]")
-    for taskText in tasksText:
-        match = re.search('\[0016\] molrep -- R=(0\.\d*) Rfree=(0\.\d*)', taskText.text)
+    ttts = sf.tasksTreeTexts(driver)
+    for taskText in ttts:
+        match = re.search('\[0016\] molrep -- R=(0\.\d*) Rfree=(0\.\d*)', taskText)
         if match:
             rWork = float(match.group(1))
             rFree = float(match.group(2))
@@ -716,9 +716,9 @@ def refmac_0017(driver):
 
     rWork = 1.0
     rFree = 1.0
-    tasksText = driver.find_elements(By.XPATH, "//a[contains(@id,'treenode') and contains(@class, 'jstree-anchor')]")
-    for taskText in tasksText:
-        match = re.search('\[0017\] refmac5 -- R=(0\.\d*) Rfree=(0\.\d*)', taskText.text)
+    ttts = sf.tasksTreeTexts(driver)
+    for taskText in ttts:
+        match = re.search('\[0017\] refmac5 -- R=(0\.\d*) Rfree=(0\.\d*)', taskText)
         if match:
             rWork = float(match.group(1))
             rFree = float(match.group(2))
@@ -778,9 +778,9 @@ def sequenceAlignment_0020(driver, wait):
     time.sleep(1)
 
     seqid = 0
-    tasksText = driver.find_elements(By.XPATH, "//a[contains(@id,'treenode') and contains(@class, 'jstree-anchor')]")
-    for taskText in tasksText:
-        match = re.search('\[0020\] seqalign -- Seq\.Id=(\d*)\.\d%', taskText.text)
+    ttts = sf.tasksTreeTexts(driver)
+    for taskText in ttts:
+        match = re.search('\[0020\] seqalign -- Seq\.Id=(\d*)\.\d%', taskText)
         if match:
             seqid = int(match.group(1))
             break
@@ -837,11 +837,10 @@ def verifyCCP4Build(driver, waitLong, jobNumber, targetRwork, targetRfree):
     startTime = time.time()
 
     while (True):
-        tasksText = driver.find_elements(By.XPATH,
-                                         "//a[contains(@id,'treenode') and contains(@class, 'jstree-anchor')]")
-        for taskText in tasksText:
+        ttts = sf.tasksTreeTexts(driver)
+        for taskText in ttts:
             # Job number as string
-            match = re.search('\[' + jobNumber + '\] ccp4build -- Compl=(.*)% R=(0\.\d*) Rfree=(0\.\d*)', taskText.text)
+            match = re.search('\[' + jobNumber + '\] ccp4build -- Compl=(.*)% R=(0\.\d*) Rfree=(0\.\d*)', taskText)
             if match:
                 compl = float(match.group(1))
                 rWork = float(match.group(2))
@@ -902,9 +901,9 @@ def fitLigand_0023(driver, wait):
     time.sleep(1)
 
     nlig = 0
-    tasksText = driver.find_elements(By.XPATH, "//a[contains(@id,'treenode') and contains(@class, 'jstree-anchor')]")
-    for taskText in tasksText:
-        match = re.search('\[0023\] fit ligand -- Nfitted=(\d*)', taskText.text)
+    ttts = sf.tasksTreeTexts(driver)
+    for taskText in ttts:
+        match = re.search('\[0023\] fit ligand -- Nfitted=(\d*)', taskText)
         if match:
             nlig = int(match.group(1))
             break
@@ -962,9 +961,9 @@ def refmac_0024(driver):
 
     rWork = 1.0
     rFree = 1.0
-    tasksText = driver.find_elements(By.XPATH, "//a[contains(@id,'treenode') and contains(@class, 'jstree-anchor')]")
-    for taskText in tasksText:
-        match = re.search('\[0024\] refmac5 -- R=(0\.\d*) Rfree=(0\.\d*)', taskText.text)
+    ttts = sf.tasksTreeTexts(driver)
+    for taskText in ttts:
+        match = re.search('\[0024\] refmac5 -- R=(0\.\d*) Rfree=(0\.\d*)', taskText)
         if match:
             rWork = float(match.group(1))
             rFree = float(match.group(2))
@@ -1017,9 +1016,9 @@ def fitWaters_0025(driver, wait):
     time.sleep(1)
 
     nwat = 0
-    tasksText = driver.find_elements(By.XPATH, "//a[contains(@id,'treenode') and contains(@class, 'jstree-anchor')]")
-    for taskText in tasksText:
-        match = re.search('\[0025\] fit waters -- Nwaters=(\d*)', taskText.text)
+    ttts = sf.tasksTreeTexts(driver)
+    for taskText in ttts:
+        match = re.search('\[0025\] fit waters -- Nwaters=(\d*)', taskText)
         if match:
             nwat = int(match.group(1))
             break
@@ -1092,9 +1091,9 @@ def refmac_0026(driver):
 
     rWork = 1.0
     rFree = 1.0
-    tasksText = driver.find_elements(By.XPATH, "//a[contains(@id,'treenode') and contains(@class, 'jstree-anchor')]")
-    for taskText in tasksText:
-        match = re.search('\[0026\] refmac5 -- R=(0\.\d*) Rfree=(0\.\d*)', taskText.text)
+    ttts = sf.tasksTreeTexts(driver)
+    for taskText in ttts:
+        match = re.search('\[0026\] refmac5 -- R=(0\.\d*) Rfree=(0\.\d*)', taskText)
         if match:
             rWork = float(match.group(1))
             rFree = float(match.group(2))

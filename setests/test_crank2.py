@@ -178,10 +178,9 @@ def validateCrank2run(driver):
             break
         time.sleep(2) # just in case
         try:
-            tasksText = driver.find_elements(By.XPATH, "//a[contains(@id,'treenode') and contains(@class, 'jstree-anchor')]")
-            for taskText in tasksText:
-                print(taskText.text)
-                match = re.search(r'^\[0003\] EP with Crank2 \(SAD\) -- R=(0\.\d*) Rfree=(0\.\d*)', taskText.text)
+            ttts = sf.tasksTreeTexts(driver)
+            for taskText in ttts:
+                match = re.search(r'^\[0003\] EP with Crank2 \(SAD\) -- R=(0\.\d*) Rfree=(0\.\d*)', taskText)
                 if match:
                     rWork = float(match.group(1))
                     rFree = float(match.group(2))

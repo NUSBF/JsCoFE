@@ -411,11 +411,10 @@ def verifyCrank2(driver, waitLong, jobNumber, targetRwork, targetRfree):
     startTime = time.time()
 
     while (True):
-        tasksText = driver.find_elements(By.XPATH,
-                                         "//a[contains(@id,'treenode') and contains(@class, 'jstree-anchor')]")
-        for taskText in tasksText:
+        ttts = sf.tasksTreeTexts(driver)
+        for taskText in ttts:
             # Job number as string
-            match = re.search('\[' + jobNumber + '\] EP with Crank2 \(...\) -- R=(0\.\d*) Rfree=(0\.\d*)', taskText.text)
+            match = re.search('\[' + jobNumber + '\] EP with Crank2 \(...\) -- R=(0\.\d*) Rfree=(0\.\d*)', taskText)
             if match:
                 rWork = float(match.group(1))
                 rFree = float(match.group(2))
@@ -537,9 +536,9 @@ def fitWaters(driver, wait):
     time.sleep(1)
 
     nwat = 0
-    tasksText = driver.find_elements(By.XPATH, "//a[contains(@id,'treenode') and contains(@class, 'jstree-anchor')]")
-    for taskText in tasksText:
-        match = re.search('\[0013\] fit waters -- Nwaters=(\d*)', taskText.text)
+    ttts = sf.tasksTreeTexts(driver)
+    for taskText in ttts:
+        match = re.search('\[0013\] fit waters -- Nwaters=(\d*)', taskText)
         if match:
             nwat = int(match.group(1))
             break
@@ -591,9 +590,9 @@ def refmac_14(driver, waitLong):
 
     rWork = 1.0
     rFree = 1.0
-    tasksText = driver.find_elements(By.XPATH, "//a[contains(@id,'treenode') and contains(@class, 'jstree-anchor')]")
-    for taskText in tasksText:
-        match = re.search('\[0014\] refmac5 -- R=(0\.\d*) Rfree=(0\.\d*)', taskText.text)
+    ttts = sf.tasksTreeTexts(driver)
+    for taskText in ttts:
+        match = re.search('\[0014\] refmac5 -- R=(0\.\d*) Rfree=(0\.\d*)', taskText)
         if match:
             rWork = float(match.group(1))
             rFree = float(match.group(2))

@@ -127,11 +127,10 @@ def verifyRefmac(driver, waitLong, jobNumber, targetRwork, targetRfree):
         startTime = time.time()
 
         while (True):
-            tasksText = driver.find_elements(By.XPATH,
-                                             "//a[contains(@id,'treenode') and contains(@class, 'jstree-anchor')]")
-            for taskText in tasksText:
+            ttts = sf.tasksTreeTexts(driver)
+            for taskText in ttts:
                 # Job number as string
-                match = re.search('\[' + jobNumber +'\].*-- R=(0\.\d*) Rfree=(0\.\d*)', taskText.text)
+                match = re.search('\[' + jobNumber +'\].*-- R=(0\.\d*) Rfree=(0\.\d*)', taskText)
                 if match:
                     rWork = float(match.group(1))
                     rFree = float(match.group(2))
@@ -163,11 +162,10 @@ def verifyMorda(driver, waitLong, jobNumber, targetRwork, targetRfree):
     startTime = time.time()
 
     while (True):
-        tasksText = driver.find_elements(By.XPATH,
-                                         "//a[contains(@id,'treenode') and contains(@class, 'jstree-anchor')]")
-        for taskText in tasksText:
+        ttts = sf.tasksTreeTexts(driver)
+        for taskText in ttts:
             # Job number as string
-            match = re.search('\[' + jobNumber + '\].*-- R=(0\.\d*) Rfree=(0\.\d*)', taskText.text)
+            match = re.search('\[' + jobNumber + '\].*-- R=(0\.\d*) Rfree=(0\.\d*)', taskText)
             if match:
                 rWork = float(match.group(1))
                 rFree = float(match.group(2))

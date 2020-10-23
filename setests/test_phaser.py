@@ -105,9 +105,9 @@ def phaserAfterMRmodel(driver, waitLong):
     rFree = 1.0
     llg = 0
     tfz = 0.0
-    tasksText = driver.find_elements(By.XPATH, "//a[contains(@id,'treenode') and contains(@class, 'jstree-anchor')]")
-    for taskText in tasksText:
-        match = re.search('\[0004\] phaser MR -- Nsol=1 LLG=(\d*) TFZ=(\d*\.\d*) R=(0\.\d*) Rfree=(0\.\d*)', taskText.text)
+    ttts = sf.tasksTreeTexts(driver)
+    for taskText in ttts:
+        match = re.search('\[0004\] phaser MR -- Nsol=1 LLG=(\d*) TFZ=(\d*\.\d*) R=(0\.\d*) Rfree=(0\.\d*)', taskText)
         if match:
             llg = float(match.group(1))
             tfz = float(match.group(2))
