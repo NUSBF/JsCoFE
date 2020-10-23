@@ -1,9 +1,8 @@
 
-
 /*
  *  =================================================================
  *
- *    06.09.20   <--  Date of Last Modification.
+ *    23.10.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -111,7 +110,7 @@ function TaskEditRevision()  {
       tooltip     : 'Ligand(s). If no changes are required, choose [do not change]. ' +
                     'Note that if ligand structures are given, they will replace ' +
                     'any pre-existing ligands in structure revision.',
-      inputId     : 'ligand',       // input Id for referencing input fields
+      inputId     : 'ligands',      // input Id for referencing input fields
       min         : 0,              // minimum acceptable number of data instances
       max         : 20              // maximum acceptable number of data instances
     }
@@ -146,7 +145,7 @@ if (!__template)  {
 
     TaskTemplate.prototype.inputChanged.call ( this,inpParamRef,emitterId,emitterValue );
 
-    if (['revision','hkl','seq','xyz','phases'].indexOf(emitterId)>=0)  {
+    if (['revision','hkl','seq','xyz','phases','ligands'].indexOf(emitterId)>=0)  {
       var inpDataRef = inpParamRef.grid.inpDataRef;
       var hkl0  = inpDataRef.input[0].dt[inpDataRef.input[0].dropdown[0].getValue()].HKL;
       var spg0  = hkl0.getSpaceGroup();
@@ -195,6 +194,7 @@ if (!__template)  {
         }
       }
 
+      //  check symmetry compatibility
       check_object ( 'hkl'    );
       check_object ( 'xyz'    );
       check_object ( 'phases' );

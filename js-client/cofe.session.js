@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    29.08.20   <--  Date of Last Modification.
+ *    23.10.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -124,7 +124,6 @@ function login ( user_login_name,user_password,sceneId,page_switch )  {
               __environ_server     = response.data.environ_server;
               __login_user         = userData.name;
               __user_settings      = userData.settings;
-//              __admin              = userData.admin;
               __user_role          = userData.role;
               __dormant            = userData.dormant;
               __user_authorisation = userData.authorisation;

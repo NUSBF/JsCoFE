@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    21.10.20   <--  Date of Last Modification.
+#    23.10.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -280,7 +280,7 @@ class Buccaneer(basic.TaskDriver):
                                     leadKey=1 )
             if structure:
                 structure.copyAssociations ( istruct )
-                structure.addSubtype       ( istruct )
+                structure.addSubtypes      ( istruct.subtype )
                 structure.removeSubtype    ( dtype_template.subtypeSubstructure() )
                 structure.setXYZSubtype    ()
                 structure.copyLabels       ( istruct )

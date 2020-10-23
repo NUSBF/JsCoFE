@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    24.07.20   <--  Date of Last Modification.
+ *    23.10.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -55,6 +55,17 @@ function TaskMakeLigand()  {
     }
   ];
   */
+
+  this.input_dtypes = [{       // input data types
+      data_type   : {'DataRevision':[]}, // any revision will be passed
+      label       : '',        // no label for void data entry
+      inputId     : 'void1',   // prefix 'void' will hide entry in import dialog
+      version     : 0,         // minimum data version allowed
+      force       : 100000000, // "show" all revisions available
+      min         : 0,         // minimum acceptable number of data instances
+      max         : 100000000  // maximum acceptable number of data instances
+    }
+  ];
 
   this.parameters = { // input parameters
     SOURCE_SEL : {

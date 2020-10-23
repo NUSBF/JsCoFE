@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    05.09.20   <--  Date of Last Modification.
+#    23.10.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -105,8 +105,8 @@ class EditRevision(asudef.ASUDef):
                 change_list.append ( "phases" )
 
         ligands = []
-        if hasattr(self.input_data.data,"ligand"):  # optional data parameter
-            for lig in self.input_data.data.ligand:
+        if hasattr(self.input_data.data,"ligands"):  # optional data parameter
+            for lig in self.input_data.data.ligands:
                 ligands.append ( self.makeClass(lig) )
                 #associated_data_list.append ( ligands[-1] )
             change_list.append ( "lig" )
