@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    29.08.20   <--  Date of Last Modification.
+ *    23.10.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -77,7 +77,6 @@ var fe_server = conf.getFEConfig();
 
   userData.helpTopics = [];
 
-//  userData.admin      = (userData.login=='admin');
   if (userData.login=='admin')  userData.role = ud.role_code.admin;
                           else  userData.role = ud.role_code.user;
   userData.knownSince = Date.now();
@@ -444,7 +443,6 @@ var updateHash = false;
     userData.login   = 'devel';
     userData.pwd     = 'devel';
     userData.licence = 'academic';
-    //userData.admin   = false;
     userData.role    = ud.role_code.user;
     makeNewUser ( userData,function(response){} );
     updateHash = true;
@@ -457,7 +455,6 @@ var updateHash = false;
     userData.login   = 'localuser';
     userData.pwd     = 'localuser';
     userData.licence = 'academic';
-    //userData.admin   = false;
     userData.role    = ud.role_code.user;
     makeNewUser ( userData,function(response){} );
     __userLoginHash.addUser ( 'e58e28a556d2b4884cb16ba8a37775f0',{
@@ -984,7 +981,6 @@ var userFilePath = getUserDataFName ( loginData );
 
       ud.checkUserData ( uData );
 
-//      if (uData.admin)  {
       if (uData.role==ud.role_code.admin)  {
 
         userFilePath = getUserDataFName ( userData );
@@ -1221,7 +1217,6 @@ function sendAnnouncement ( loginData,message )  {
 
       ud.checkUserData ( uData );
 
-//      if (uData.admin)  {
       if (uData.role==ud.role_code.admin)  {
 
         var usersData = readUsersData();
@@ -1264,7 +1259,6 @@ var ddata = { 'status' : 'ok' };
 
       ud.checkUserData ( uData );
 
-//      if (uData.admin)  {
       if (uData.role==ud.role_code.admin)  {
 
         var usersData = readUsersData();

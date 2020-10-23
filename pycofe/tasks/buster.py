@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    27.08.20   <--  Date of Last Modification.
+#    23.10.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -255,8 +255,9 @@ class Buster(basic.TaskDriver):
             self.putMessage ( "&nbsp;" )
 
             structure = self.registerStructure ( xyzout,None,mtzout,
-                                None,None,None,leadKey=1,
+                                None,None,libin,leadKey=1,
                                 map_labels="2FOFCWT,PH2FOFCWT,FOFCWT,PHFOFCWT" )
+
             if structure:
                 structure.copyAssociations   ( istruct )
                 structure.addDataAssociation ( hkl.dataId     )

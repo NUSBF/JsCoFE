@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    11.04.20   <--  Date of Last Modification.
+#    23.10.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -49,6 +49,15 @@ class MakeLigand(basic.TaskDriver):
     # ------------------------------------------------------------------------
 
     def run(self):
+
+        # copy pre-existing revisions into output first
+        nrevisions0 = 0
+        if hasattr(self.input_data.data,"void1"):
+            revision    = self.input_data.data.void1
+            nrevisions0 = len(revision)
+            for i in range(len(revision)):
+                revision[i] = self.makeClass ( revision[i] )
+                revision[i].register ( self.outputDataBox )
 
         # Prepare makeligand input
         # fetch input data
