@@ -36,7 +36,7 @@ function TaskDocDev()  {
   this.setOName ( '*' );  // default output file name template
   this.title   = 'Documentation Development with Sphinx';
   //this.helpURL = './html/jscofe_task_docdev.html';
-  this.nc_number = 0;  // forces to use specific number cruncher
+  //this.nc_number = 0;  // forces to use specific number cruncher
 
   this.input_dtypes = [];   // no input data for this task
 
