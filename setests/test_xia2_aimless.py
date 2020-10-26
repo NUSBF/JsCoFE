@@ -31,21 +31,14 @@ def xia2Processing(driver, waitLong):
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Browse')
     time.sleep(1)
 
-    sf.doubleClickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'tutorial-data')
+    sf.doubleClickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'test-data')
     time.sleep(1)
 
-    sf.doubleClickByXpath(driver, "//*[starts-with(text(), '%s')]" % '1_from_images')
-    time.sleep(1)
-
-    sf.doubleClickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'hg')
-    time.sleep(1)
-
-    sf.doubleClickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'images')
+    sf.doubleClickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'hypF_images')
     time.sleep(1)
 
     sf.doubleClickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'hg_001.mar1600')
     time.sleep(1)
-
 
     # There are several forms - active and inactive. We need one displayed.
     buttonsRun = driver.find_elements_by_xpath("//button[contains(@style, 'images_png/runjob.png')]" )

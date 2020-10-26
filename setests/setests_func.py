@@ -194,23 +194,38 @@ def importFromCloud_rnase(driver, waitShort):
     ActionChains(driver).double_click(textEl).perform()
     time.sleep(1)
 
-    textEl2 = driver.find_elements_by_xpath("//a[normalize-space()='%s']" % 'ccp4-examples')
+    textEl2 = driver.find_elements_by_xpath("//a[normalize-space()='%s']" % 'test-data')
+    namesTestData = True
+    if len(textEl2) < 1:
+        textEl2 = driver.find_elements_by_xpath("//a[normalize-space()='%s']" % 'ccp4-examples')
+        namesTestData = False
     if len(textEl2) < 1:
         textEl2 = driver.find_elements_by_xpath("//a[normalize-space()='%s']" % 'CCP4 examples')
+        namesTestData = False
     if len(textEl2) < 1:
-        print('Cant locate neither "CCP4 examples" nor "ccp4-examples"; terminating.')
+        print('Cant locate neither "test-data", nor "CCP4 examples" nor "ccp4-examples"; terminating.')
         sys.exit(1)
     ActionChains(driver).move_to_element(textEl2[-1]).double_click(textEl2[-1]).perform()
     time.sleep(1)
 
-    listOfTextsToDoubleClick = [('a','rnase'),
-                                ('a','rnase_model.pdb'),
+    if namesTestData:
+        listOfTextsToDoubleClick = [('a','rnase_test'),
+                                ('a','rnase.pdb'),
                                 ('button','Select more files'),
-                                ('a','rnase18_Nat_Complexes.mtz'),
+                                ('a','rnase18.mtz'),
                                 ('button','Select more files'),
-                                ('a','rnase.fasta'),
+                                ('a','rnase.seq'),
                                 ('button','Apply & Upload'),
                                 ('button','Finish import')]
+    else:
+        listOfTextsToDoubleClick = [('a', 'rnase'),
+                                    ('a', 'rnase_model.pdb'),
+                                    ('button', 'Select more files'),
+                                    ('a', 'rnase18_Nat_Complexes.mtz'),
+                                    ('button', 'Select more files'),
+                                    ('a', 'rnase.fasta'),
+                                    ('button', 'Apply & Upload'),
+                                    ('button', 'Finish import')]
 
     for textToDoubleClick in listOfTextsToDoubleClick:
         textElements = driver.find_elements_by_xpath("//%s[normalize-space()='%s']" % (textToDoubleClick[0], textToDoubleClick[1]))
@@ -300,7 +315,7 @@ def editRevisionStructure_rnase(driver, waitShort):
     clickByXpathMultiple(driver, "//span[normalize-space()='%s']" % '[do not change]', 6) # 6 = 3*2, I have no idea why there are two times more elements
     time.sleep(1)
 
-    clickByXpath(driver, "//div[contains(text(), '%s') and contains(text(), '%s')]" % ('rnase_model', 'xyz'))
+    clickByXpath(driver, "//div[contains(text(), '%s') and contains(text(), '%s')]" % ('rnase', 'xyz'))
     time.sleep(1)
 
     # There are several forms - active and inactive. We need one displayed.

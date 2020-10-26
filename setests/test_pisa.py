@@ -59,15 +59,15 @@ def pisaAfterRevision(driver, waitLong):
 
     print('*** Verification: PISA monomer is  %s (expecting A), ' \
           'class is %s (expecting Protein), ' \
-          'area is %0.1f (expecting >5580 and <5600), ' \
-          'dG is %0.1f (expecting <-65 and >-75)' % (tasksText[13].text, tasksText[14].text, float(tasksText[19].text), float(tasksText[20].text)) )
+          'area is %0.1f (expecting >5500 and <5700), ' \
+          'dG is %0.1f (expecting <-50 and >-90)' % (tasksText[13].text, tasksText[14].text, float(tasksText[19].text), float(tasksText[20].text)) )
 
     assert tasksText[13].text == 'A'
     assert tasksText[14].text == 'Protein'
-    assert float(tasksText[19].text) > 5580.0
-    assert float(tasksText[19].text) < 5600.0
-    assert float(tasksText[20].text) < -65.0
-    assert float(tasksText[20].text) > -75.0
+    assert float(tasksText[19].text) > 5500.0
+    assert float(tasksText[19].text) < 5700.0
+    assert float(tasksText[20].text) < -50.0
+    assert float(tasksText[20].text) > -90.0
 
     # SWITCHING FRAME BACK!
     driver.switch_to.default_content()
