@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    29.08.20   <--  Date of Last Modification.
+ *    26.10.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -610,6 +610,8 @@ function send_file ( fpath,server_response,mimeType,deleteOnDone,capSize,
         var rc = true;
         if (nofile_callback)
           rc = nofile_callback ( fpath,mimeType,deleteOnDone,capSize );
+        else if (deleteOnDone)
+          removeFile ( fpath );
         if (rc)  {
           log.error ( 12,'Read file errors, file = ' + fpath );
           log.error ( 12,'Error: ' + err );
@@ -636,14 +638,17 @@ function send_file ( fpath,server_response,mimeType,deleteOnDone,capSize,
           removeFile ( fpath );
       });
 
+      fReadStream.on ( 'error',function(e){
+        log.error ( 13,'Read file errors, file = ' + fpath );
+        console.error ( e.stack || e );
+        server_response.writeHead ( 404, {'Content-Type':'text/html;charset=UTF-8'} );
+        server_response.end ( '<p><b>[05-0007] FILE READ ERRORS</b></p>' );
+        if (deleteOnDone)
+          removeFile ( fpath );
+      });
+
       if ((capSize<=0) || (stats.size<=capSize))  {  // send whole file
 
-        fReadStream.on ( 'error',function(e){
-          log.error ( 13,'Read file errors, file = ' + fpath );
-          console.error ( e.stack || e );
-          server_response.writeHead ( 404, {'Content-Type':'text/html;charset=UTF-8'} );
-          server_response.end ( '<p><b>[05-0007] FILE READ ERRORS</b></p>' );
-        });
         fReadStream.pipe ( server_response );
 
       } else  {  // send capped file
@@ -704,40 +709,6 @@ function send_file ( fpath,server_response,mimeType,deleteOnDone,capSize,
         });
 
       }
-
-              /*
-            } else  {
-              fs.readFile ( fpath, function(err,data) {
-                if (err)  {
-                  log.error ( 8,'Read file errors, file = ' + fpath );
-                  log.error ( 8,'Error: ' + err );
-                  server_response.writeHead ( 404, {'Content-Type':'text/html;charset=UTF-8'} );
-                  server_response.end ( '<p><b>[05-0008] FILE NOT FOUND OR FILE READ ERRORS</b></p>' );
-                } else  {
-      //console.log ( "one-off " + stats.size + ' : ' + data.length );
-                  server_response.writeHeader ( 200, {'Content-Type':mtype,'Content-Length':stats.size} );
-                  server_response.end ( data );
-                  if (deleteOnDone)
-                    removeFile ( fpath );
-                }
-              });
-            }
-
-      /*
-      fs.readFile ( fpath, function(err,data) {
-        if (err)  {
-          log.error ( 9,'Read file errors, file = ' + fpath );
-          log.error ( 9,'Error: ' + err );
-          server_response.writeHead ( 404, {'Content-Type':'text/html;charset=UTF-8'} );
-          server_response.end ( '<p><b>[05-0008] FILE NOT FOUND OR FILE READ ERRORS</b></p>' );
-        } else  {
-          server_response.writeHeader ( 200, {'Content-Type' : mimeType });
-          server_response.end ( capData(data,capSize) );
-          if (deleteOnDone)
-            removeFile ( fpath );
-        }
-      });
-      */
 
     }
 

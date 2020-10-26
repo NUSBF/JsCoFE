@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    11.05.20   <--  Date of Last Modification.
+ *    26.10.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -261,7 +261,7 @@ Communicate.prototype.sendFile = function ( server_response )  {
               utils.removeFile ( fpath );
             })
             .on('close',function(){   // finish,end,
-              utils.send_file ( fpath,server_response,mimeType,false,0,0,null );
+              utils.send_file ( fpath,server_response,mimeType,true,0,0,null );
             });
         }
       });
