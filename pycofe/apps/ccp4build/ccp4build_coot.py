@@ -84,7 +84,15 @@ class Coot(ccp4build_refmac.Refmac):
             self.runApp ( "coot",cmd,
                           fpath_stdout=stdout_fpath,fpath_stderr=stderr_fpath )
 
+        if rc.msg:
+            self.file_stdout.write (
+                "\n\n *** error running coot:\n" +\
+                    "    " +  rc.msg +\
+                  "\n    check that all libraries are installed\n\n"
+            )
+            xyzout = None
+
         out_meta = meta.copy()
-        out_meta["xyzpath"  ] = xyzout
+        out_meta["xyzpath"] = xyzout
 
         return out_meta
