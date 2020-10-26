@@ -150,6 +150,15 @@ class CCP4Build(ccp4go_buccaneer.Buccaneer):
         rfree         = 1.0
         rfactor       = 1.0
 
+        self.stdout ( "meta=" + str(meta) )
+
+        #meta={u'programs_used': [u'refmac5', u'cad', u'cbuccaneer', u'cparrot', u'fft', u'edstats', u'coot', u'uglymol', u'ccp4mg', u'viewhkl'],
+        #      u'build_no': [2, 0, 3, 2],
+        #      u'metrics': [{u'EDCC': 0.913, u'R_factor': 0.3227, u'R_free': 0.341, u'chain_compl': 96.9, u'res_compl': 100.0}, {u'EDCC': 0.916, u'R_factor': 0.3342, u'R_free': 0.3542, u'chain_compl': 86.6, u'res_compl': 92.3}, {u'EDCC': 0.899, u'R_factor': 0.3137, u'R_free': 0.3407, u'chain_compl': 97.9, u'res_compl': 94.1}, {u'EDCC': 0.913, u'R_factor': 0.3227, u'R_free': 0.341, u'chain_compl': 96.9, u'res_compl': 100.0}],
+        #      u'titles': [u'min R<sub>free</sub>', u'max EDCC', u'max N<sub>res</sub>', u'min N<sub>frag</sub>'],
+        #      u'outnames': [u'ccp4build_rfree', u'ccp4build_edcc', u'ccp4build_nbuilt', u'ccp4build_nfrag'],
+        #      u'page': [8, 15, 22, 29, 4]}
+
         if meta:  # check for solution
 
             fname = meta["outnames"][1]  # best edcc
