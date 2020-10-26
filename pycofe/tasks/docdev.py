@@ -67,6 +67,8 @@ class DocDev(basic.TaskDriver):
         #self.putMessage ( os.path.realpath ( os.path.dirname ( __file__ ) ) )
         #self.putMessage ( self.jscofe_dir )
 
+        self.stdoutln ( "PYTHONPATH="+os.environ["PYTHONPATH"] )
+
         theme = self.getParameter ( self.task.parameters.THEME_SEL )
 
         script = "#!/bin/bash" +\
