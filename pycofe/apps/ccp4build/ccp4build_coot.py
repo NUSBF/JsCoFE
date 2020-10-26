@@ -78,10 +78,10 @@ class Coot(ccp4build_refmac.Refmac):
         stderr_fpath = self.getStdErrPath ( nameout )
         if sys.platform.startswith("win"):
             coot_bat = os.path.join(os.environ["CCP4"], "libexec", "coot.bat")
-            self.runApp ( coot_bat,cmd,
+            rc = self.runApp ( coot_bat,cmd,
                           fpath_stdout=stdout_fpath,fpath_stderr=stderr_fpath )
         else:
-            self.runApp ( "coot",cmd,
+            rc = self.runApp ( "coot",cmd,
                           fpath_stdout=stdout_fpath,fpath_stderr=stderr_fpath )
 
         if rc.msg:
