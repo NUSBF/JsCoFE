@@ -233,7 +233,11 @@ def test_1oldProjectsMR(browser,
 
         sf.removeProject(d.driver, d.testName)
 
-        sf.importLocalProject(d.driver, '~/old_cloud/01.ccp4cloud')
+        if sys.platform.startswith("win"):
+            sf.importLocalProject(d.driver, '%userprofile%\old_cloud\01.ccp4cloud')
+        else:
+            sf.importLocalProject(d.driver, '~/old_cloud/01.ccp4cloud')
+
         time.sleep(1)
 
         sf.enterProject(d.driver, d.testName)
