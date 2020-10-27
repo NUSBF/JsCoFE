@@ -195,7 +195,6 @@ def importFromCloud_rnase(driver, waitShort):
     time.sleep(1)
 
     textEl2 = driver.find_elements_by_xpath("//a[normalize-space()='%s']" % 'test-data')
-    namesTestData = True
     if len(textEl2) < 1:
         textEl2 = driver.find_elements_by_xpath("//a[normalize-space()='%s']" % 'ccp4-examples')
         namesTestData = False
@@ -208,24 +207,14 @@ def importFromCloud_rnase(driver, waitShort):
     ActionChains(driver).move_to_element(textEl2[-1]).double_click(textEl2[-1]).perform()
     time.sleep(1)
 
-    if namesTestData:
-        listOfTextsToDoubleClick = [('a','rnase_test'),
-                                ('a','rnase.pdb'),
-                                ('button','Select more files'),
-                                ('a','rnase18.mtz'),
-                                ('button','Select more files'),
-                                ('a','rnase.seq'),
-                                ('button','Apply & Upload'),
-                                ('button','Finish import')]
-    else:
-        listOfTextsToDoubleClick = [('a', 'rnase'),
-                                    ('a', 'rnase_model.pdb'),
-                                    ('button', 'Select more files'),
-                                    ('a', 'rnase18_Nat_Complexes.mtz'),
-                                    ('button', 'Select more files'),
-                                    ('a', 'rnase.fasta'),
-                                    ('button', 'Apply & Upload'),
-                                    ('button', 'Finish import')]
+    listOfTextsToDoubleClick = [('a', 'rnase'),
+                                ('a', 'rnase_model.pdb'),
+                                ('button', 'Select more files'),
+                                ('a', 'rnase18_Nat_Complexes.mtz'),
+                                ('button', 'Select more files'),
+                                ('a', 'rnase.fasta'),
+                                ('button', 'Apply & Upload'),
+                                ('button', 'Finish import')]
 
     for textToDoubleClick in listOfTextsToDoubleClick:
         textElements = driver.find_elements_by_xpath("//%s[normalize-space()='%s']" % (textToDoubleClick[0], textToDoubleClick[1]))
