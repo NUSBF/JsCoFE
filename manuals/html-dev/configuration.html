@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>2. CCP4 Cloud Configuration &#8212; CCP4 Cloud 1.6 documentation</title>
+    <title>3. CCP4 Cloud Configuration &#8212; CCP4 Cloud 1.6 documentation</title>
     
     <link rel="stylesheet" href="_static/haiku.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -29,22 +29,22 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="top" title="CCP4 Cloud 1.6 documentation" href="index.html" />
-    <link rel="next" title="3. Task Interface Description" href="interface_desc.html" />
-    <link rel="prev" title="1. CCP4 Cloud Launch Scripts" href="launchers.html" /> 
+    <link rel="next" title="4. Task Interface Description" href="interface_desc.html" />
+    <link rel="prev" title="2. CCP4 Cloud Launch Scripts" href="launchers.html" /> 
   </head>
   <body role="document">
       <div class="header" role="banner"><h1 class="heading"><a href="index.html">
           <span>CCP4 Cloud 1.6 documentation</span></a></h1>
-        <h2 class="heading"><span>2. CCP4 Cloud Configuration</span></h2>
+        <h2 class="heading"><span>3. CCP4 Cloud Configuration</span></h2>
       </div>
       <div class="topnav" role="navigation" aria-label="top navigation">
       
         <p>
-        «&#160;&#160;<a href="launchers.html">1. CCP4 Cloud Launch Scripts</a>
+        «&#160;&#160;<a href="launchers.html">2. CCP4 Cloud Launch Scripts</a>
         &#160;&#160;::&#160;&#160;
         <a class="uplink" href="index.html">Contents</a>
         &#160;&#160;::&#160;&#160;
-        <a href="interface_desc.html">3. Task Interface Description</a>&#160;&#160;»
+        <a href="interface_desc.html">4. Task Interface Description</a>&#160;&#160;»
         </p>
 
       </div>
@@ -52,9 +52,9 @@
         
         
   <div class="section" id="ccp4-cloud-configuration">
-<h1>2. CCP4 Cloud Configuration<a class="headerlink" href="#ccp4-cloud-configuration" title="Permalink to this headline">¶</a></h1>
+<span id="id1"></span><h1>3. CCP4 Cloud Configuration<a class="headerlink" href="#ccp4-cloud-configuration" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="configuration-file-structure">
-<h2>2.1. Configuration file structure<a class="headerlink" href="#configuration-file-structure" title="Permalink to this headline">¶</a></h2>
+<h2>3.1. Configuration file structure<a class="headerlink" href="#configuration-file-structure" title="Permalink to this headline">¶</a></h2>
 <p>CCP4 Cloud Configuration File is a json document with the following components:</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="s2">&quot;FrontEnd&quot;</span> <span class="p">:</span> <span class="p">{</span> <span class="o">...........</span> <span class="p">},</span>
@@ -83,7 +83,7 @@ more convenient if their configuration files do not contain items related to
 other components.</p>
 </div>
 <div class="section" id="configuration-of-the-front-end-server">
-<h2>2.2. Configuration of the Front End Server<a class="headerlink" href="#configuration-of-the-front-end-server" title="Permalink to this headline">¶</a></h2>
+<h2>3.2. Configuration of the Front End Server<a class="headerlink" href="#configuration-of-the-front-end-server" title="Permalink to this headline">¶</a></h2>
 <p>Front End Server configuration has the following structure:</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="s2">&quot;FrontEnd&quot;</span> <span class="p">:</span> <span class="p">{</span>
   <span class="s2">&quot;description&quot;</span>      <span class="p">:</span> <span class="p">{</span>
@@ -171,7 +171,7 @@ other components.</p>
 </pre></div>
 </div>
 <div class="section" id="fe-server-configuration-items">
-<h3>2.2.1. FE Server Configuration Items<a class="headerlink" href="#fe-server-configuration-items" title="Permalink to this headline">¶</a></h3>
+<h3>3.2.1. FE Server Configuration Items<a class="headerlink" href="#fe-server-configuration-items" title="Permalink to this headline">¶</a></h3>
 <p><strong>&#8220;description&#8221;</strong></p>
 <blockquote>
 <div><p>This is an optional object with the following items:</p>
@@ -589,7 +589,7 @@ initialised</dd>
 </div>
 </div>
 <div class="section" id="configuration-of-the-client-proxy-server">
-<h2>2.3. Configuration of the Client Proxy Server<a class="headerlink" href="#configuration-of-the-client-proxy-server" title="Permalink to this headline">¶</a></h2>
+<h2>3.3. Configuration of the Client Proxy Server<a class="headerlink" href="#configuration-of-the-client-proxy-server" title="Permalink to this headline">¶</a></h2>
 <p>Client Proxy Server configuration has the following structure:</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="s2">&quot;FEProxy&quot;</span> <span class="p">:</span> <span class="p">{</span>  <span class="o">//</span> <span class="n">optional</span> <span class="n">proxy</span> <span class="n">configuration</span>
   <span class="s2">&quot;protocol&quot;</span>         <span class="p">:</span> <span class="s2">&quot;http&quot;</span><span class="p">,</span>
@@ -606,7 +606,7 @@ initialised</dd>
 </pre></div>
 </div>
 <div class="section" id="client-proxy-server-configuration-items">
-<h3>2.3.1. Client Proxy Server Configuration Items<a class="headerlink" href="#client-proxy-server-configuration-items" title="Permalink to this headline">¶</a></h3>
+<h3>3.3.1. Client Proxy Server Configuration Items<a class="headerlink" href="#client-proxy-server-configuration-items" title="Permalink to this headline">¶</a></h3>
 <p><strong>&#8220;protocol&#8221;, &#8220;host&#8221;, &#8220;port&#8221;</strong></p>
 <blockquote>
 <div><p>These are mandatory items. Client Proxy server always runs on localhost,
@@ -681,11 +681,11 @@ librarries are obtained from local CCP4 setup</dd>
       <div class="bottomnav" role="navigation" aria-label="bottom navigation">
       
         <p>
-        «&#160;&#160;<a href="launchers.html">1. CCP4 Cloud Launch Scripts</a>
+        «&#160;&#160;<a href="launchers.html">2. CCP4 Cloud Launch Scripts</a>
         &#160;&#160;::&#160;&#160;
         <a class="uplink" href="index.html">Contents</a>
         &#160;&#160;::&#160;&#160;
-        <a href="interface_desc.html">3. Task Interface Description</a>&#160;&#160;»
+        <a href="interface_desc.html">4. Task Interface Description</a>&#160;&#160;»
         </p>
 
       </div>

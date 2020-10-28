@@ -185,6 +185,30 @@ var fpath = getJobRegisterPath();
 
 }
 
+function cleanFEJobRegister()  {
+
+  if (!feJobRegister)
+    readFEJobRegister();
+
+  var dead_tokens = [];
+  for (var job_token in feJobRegister.job_map)  {
+    var jobEntry   = feJobRegister.job_map[job_token];
+    var jobDirPath = prj.getJobDirPath ( jobEntry.loginData,jobEntry.project,
+                                         jobEntry.jobId );
+    if (!utils.dirExists())
+      dead_tokens.push ( job_token );
+  }
+
+  if (dead_tokens.length>0)  {
+    for (var i=0;i<dead_tokens.length;i++)
+      feJobRegister.removeJob ( dead_tokens[i] );
+    writeFEJobRegister();
+  }
+
+  log.standard ( 50,dead_tokens.length + ' dead entries in FE job registry removed' );
+
+}
+
 function getEFJobEntry ( loginData,project,jobId )  {
   return feJobRegister.getJobEntry ( loginData,project,jobId );
 }
@@ -1018,6 +1042,7 @@ var nc_servers = conf.getNCConfigs();
 // export for use in node
 module.exports.readFEJobRegister  = readFEJobRegister;
 module.exports.writeFEJobRegister = writeFEJobRegister;
+module.exports.cleanFEJobRegister = cleanFEJobRegister;
 module.exports.getEFJobEntry      = getEFJobEntry;
 module.exports.runJob             = runJob;
 module.exports.replayJob          = replayJob;

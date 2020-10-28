@@ -1,3 +1,6 @@
+
+.. _ccp4-cloud-configuration:
+
 ========================
 CCP4 Cloud Configuration
 ========================
