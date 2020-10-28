@@ -73,7 +73,8 @@ function start ( callback_func )  {
   user.readUserLoginHash();
 
   // read job register
-  rj.readFEJobRegister();
+  rj.readFEJobRegister ();
+  rj.cleanFEJobRegister();
 
   //  instantiate the server
   var server = http.createServer();

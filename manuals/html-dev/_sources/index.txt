@@ -10,6 +10,7 @@ Developer's Reference
    :numbered:
    :maxdepth: 3
 
+   setup
    launchers
    configuration
    interface_desc

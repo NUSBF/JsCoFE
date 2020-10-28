@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    10.10.20   <--  Date of Last Modification.
+ *    28.10.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -878,9 +878,12 @@ function pythonVersion()  {
 function checkPythonVersion()  {
   child.exec ( pythonName() + ' -V',function(err, stdout, stderr) {
     if (stdout)
-      _python_ver = stdout.split(' ').slice(-1)[0].trim();
-    else if (stderr)
-      _python_ver = pythonName() + ' not found';
+      _python_ver = stdout.trim().split(' ').slice(-1)[0].trim();
+    else if (stderr)  {  // this works weirdly for Mac OSX
+      if (stderr.startsWith('Python'))
+            _python_ver = stderr.trim().split(' ').slice(-1)[0].trim();
+      else  _python_ver = pythonName() + ' not found (' + stderr + ')';
+    }
     log.standard ( 5,'python version: ' + pythonVersion() );
   });
 }

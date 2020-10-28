@@ -1,0 +1,428 @@
+=====
+Setup
+=====
+
+In this Section, we describe the most popular CCP4 Cloud setup, comprising one Front-End Server (**FE**) and one or more Number Crunchers (NCs).
+
+-------------------------------
+Prerequisites and general notes
+-------------------------------
+
+The Setup is described in terms of servers and file systems, rather than machines (hardware hosts). Allocation of servers to hosts, virtual or real, should be done in respect to your requirements and resources. In simplest case, all servers can be placed on the same host. A few points should be taken into account:
+
+* **FE** does not perform computations, but should be efficient for file operations and network communication.
+* **NC(s)** must be able to submit jobs to your computational infrastructure (**Queue(s)**), but they do not require a particular CPU power by themselves 
+* we recommend having at least 2 **NCs** in CCP4 Cloud, such that jobs can be launched even if one **NC** is temporarily down. **NCs** can work with the same **Queue**, or have own **Queues** depending on your situation.
+
+**For setting up CCP4 Cloud, you will require:**
+
+1. Computational infrastructure (**Queue(s)**), such as SGE or SLURM cluster
+
+2. CCP4 Setup version 7.1 or higher (download link). All **FE** , **NC(s)** and **Queue(s)** must have access to CCP4 Setup. For convenience, we will assume that CCP4 is installed in the following location, visible from all servers and **Queue(s)** (here and below, ``/path/to/`` means any path of your choice, specific to the case): ::
+
+    /path/to/ccp4-7.1
+
+  .. note:: having different CCP4 Setups for different servers is possible but inconvenient from the maintenance point of view.
+
+3. Directories for **FE** and **NC(s)** in respective hardware hosts: ::
+
+    /path/to/FE 
+    /path/to/NC1 
+    /path/to/NC2
+
+4. Disk area(s) for keeping user data and projects. They need to be visible only for **FE** : ::
+
+    /path/to/disk1
+    /path/to/disk2
+
+5. (All optional) disk area(s) for keeping X-ray diffraction images, other data, tutorials and safe for failed jobs: ::
+
+    /path/to/images
+    /path/to/pdb
+    /path/to/job_safe
+    /path/to/data
+    /path/to/tutorials
+
+  .. note:: ``images``, ``pdb`` (read-only) and ``job safe`` (read/write) areas must be accessible from all **FE** , **NC(s)** and **Queue(s)** . Other areas need a read-only access only from **FE** .
+
+6. Apache servers running *on each host* in the setup (excluding **Queue(s)** ).
+
+7. CCP4 Cloud accounts in *in each host* . These accounts do not need elevated priviliges, but they must have access to disk areas as described above.
+
+---------------
+Setup procedure
+---------------
+
+All actions, except 1 and 9, should be done in the dedicated CCP4 Cloud account on respective hosts.
+
+1. Install CCP4 (http link). 
+
+2. Download and unpack the CCP4 Cloud setup tarball (choose convenient disk area visible from all servers, or repeat the following command on every host): ::
+
+    mkdir -p /path/to/setup-tmp
+    cd /path/to/setup-tmp
+    curl ......... 
+    tar -xvzf ccp4cloud-setup.tar.gz
+
+3. Create server directories and copy content of prototype contents from the CCP4 Cloud setup tarball (commands to be executed in respective hosts): ::
+
+    mkdir -p /path/to/FE
+    cp -r /path/to/setup-tmp/FE/* /path/to/FE/
+    mkdir -p /path/to/NC1
+    cp -r /path/to/setup-tmp/NC/* /path/to/NC1/
+    mkdir -p /path/to/NC2
+    cp -r /path/to/setup-tmp/NC/* /path/to/NC2/
+
+4. Create directories for user projects and miscellaneous items: ::
+
+    mkdir -p /path/to/disk1/users
+    mkdir -p /path/to/disk1/projects 
+    mkdir -p /path/to/disk1/facilities 
+    mkdir -p /path/to/disk1/storage
+    mkdir -p /path/to/disk2/projects
+
+At list one disk must be allocated for user and project data. Additional disks (``disk2`` in this example) may be added later.
+
+4. Make necessary changes in **NC** configuration files (see details in :ref:`Appendix A <appendix-a>`): :: 
+
+    vi /path/to/NC1/config.json
+    vi /path/to/NC2/config.json
+
+5. Make necessary changes in **FE** configuration file (see details in :ref:`Appendix B <appendix-b>`): ::
+
+    vi /path/to/FE/config.json
+
+  .. note:: this step uses data from **NC** configuration files.
+
+7. Make necessary changes in **NC(s)** start script(s) (see details in :ref:`Appendix C <appendix-c>`): ::
+
+    vi /path/to/NC1/start-nc.sh 
+    vi /path/to/NC2/start-nc.sh
+
+8. Make necessary changes in **FE** start script (see details in :ref:`Appendix D <appendix-d>`): ::
+
+    vi /path/to/FE/start-fe.sh 
+
+9. Modify Apache configuration *on every host* (see details in :ref:`Appendix E <appendix-e>`)
+
+10. Start CCP4 Cloud servers: ::
+
+    /path/to/NC1/start-nc.sh 
+    /path/to/NC2/start-nc.sh 
+    /path/to/FE/start-fe.sh
+
+11. Perform checks and tests (see details in :ref:`Appendix F <appendix-f>`).
+
+12. Create CCP4 Cloud user with administrative privileges (see details in :ref:`Appendix G <appendix-g>`)
+
+13. Delete temporary setup directory (optional): ::
+
+    rm -rf /path/to/setup-tmp
+
+**The End.**
+
+
+-----------------------
+Maintenance and Updates
+-----------------------
+
+CCP4 Cloud can be started and restarted as below: ::
+
+    /path/to/NC1/start-nc.sh 
+    /path/to/NC2/start-nc.sh 
+    /path/to/FE/start-fe.sh
+
+You may find it more convenient to write a single script for (re)starting CCP4 Cloud, possibly using ssh access to all hosts involved.
+
+CCP4 Software is regularly updated (once in 2-4 weeks). CCP4 Cloud maintainer will be informed by e-mail when a new update is issued; in addtion, CCP4 Cloud users may see notification of new updates when working via CCP4 Cloud Client. Updates may be applied with the following commands, which can be, again, put into a single convenience script): ::
+
+    /path/to/ccp4-7.1/bin/ccp4um -auto
+    /path/to/NC1/start-nc.sh 
+    /path/to/NC2/start-nc.sh 
+    /path/to/FE/start-fe.sh
+
+.. note:: CCP4 must be updated in the account used for its installation, and CCP4 Cloud servers must be restarted in CCP4 Cloud accounts in respective hosts
+
+.. _appendix-a:
+
+--------------------------------------------------------------------
+Appendix A. Adjusting configuration file for Number Cruncher Servers
+--------------------------------------------------------------------
+
+Below is an *excerpt* of **NC** configuration settings that must be revised. Other settings are for fine tuning and development, and can be left as is in most cases. Please refer to :ref:`CCP4 Cloud configuration reference <ccp4-cloud-configuration>` for more details : ::
+
+    {
+
+    "NumberCrunchers" : [
+        {
+            "name"             : "server-name",
+            "port"             : 8086,
+            "externalURL"      : "https://www.mysite.com/ccp4cloud-nc-01",
+            "capacity"         : 16,
+            "max_nproc"        : 4,
+            "storage"          : "/path/to/NC/nc-storage",
+            "jobs_safe"        : {
+                "path"     : "/path/to/job_safe",
+            },
+            "exeType"          : "SGE",
+            "exeData"          : ["-cwd","-V","-b","y","-q","all.q","-notify"],
+            "logflow" : {
+                "log_file"     : "/path/to/NC/logs/node_nc"
+            }
+        }
+    ],
+
+    "Emailer" : {
+            "type"            : "telnet",
+            "emailFrom"       : "name@mysite.com",
+            "maintainerEmail" : "name@mysite.com",
+            "host"            : "mail.server.at.mysite.com",
+            "port"            : 25,
+            "headerFrom"      : "CCP4 Cloud <name@mysite.com>"
+        }
+
+    }
+
+
+**name**
+    **NC** name, which is used exclusively in report and log pages for **NC** identification
+
+**port**
+    port number on *localhost*. The port should be used exclusively for the given **NC**
+
+**externalURL**
+    this is a DNS-resolved URL for accessing **NC** from other hosts. If **NC** shares host with **FE**, put blank line ``""``
+
+**capacity**
+    this is an estimate for the number of *jobs* that given **NC** can run simultaneously
+
+**max_nproc**
+    this is the number of cores that a *job* can use on given **NC**
+
+**storage**
+    path to disk area, used for making job's working directories. The area is self-cleaning; working diretories are deleted when job is finished and sent back to **FE** . Do not mistake this area with temporary disk space on individual cluster nodes. In general, this area can be located anywhere, the template distribution tarball assumes that it is within the **NC** directory. E.g., for 1st **NC**, put ::
+
+    /path/to/NC1/nc-storage
+
+**jobs_safe**
+    this is disk area for retaining working directories for failed jobs; only a limited number of latest failed jobs is captured. In general, this area can be located anywhere, however, it is convenient to have it on file system that is shared between **FE** and **NC(s)** . If such file system is not available, a directory within **NC's** directory can be used, for example, ::
+
+    /path/to/NC1/job_safe
+
+In any case, this directory must exist before starting CCP4 Cloud.
+
+**exeType**
+    this is type of used **Queue**, which may be one of the following:  ``SHELL``, ``SGE``, ``SLURM`` or ``SCRIPT`` . The template provided assumes Sungrid Engine (``SGE``). Change it for ``SHELL`` to run jobs on **NC** without any queue management (recommended only at relatively low number of jobs passing).
+
+**exeData**
+    configuration options for **Queue**. The template shows some keywords for the Sungrid Engine (``SGE`` type). For ``SHELL`` execution type, put empty line ``""``.
+
+**log_file**
+    this is optional but useful configuration, which is used to split excessively long log files in chunks.
+
+.. _ccp4-cloud-emailer:
+
+**Emailer**
+    **NC** may send e-mail messages to the maintainer in case of malfunction. This may be configured in several ways. The template shows e-mailer configuration for the ``telnet`` type of the e-mailer. Other possible configurations include ``nodemailer`` (GMail-based example): ::
+
+        "Emailer" : {
+            "type"               : "nodemailer",
+            "emailFrom"          : "CCP4 Cloud <name@gmail.com>",
+            "maintainerEmail"    : "name@gmail.com",
+            "host"               : "smtp.gmail.com",
+            "port"               : 465,
+            "secure"             : true,
+            "auth"               : {
+                "user" : "name@gmail.com",
+                "pass" : "insecure-passowrd"
+                "file" : "path-to-file-with-userId-and-password-space-separated"
+            }
+        }
+
+    where **auth** should contain either **user** and **pass** or **file** but not both.
+
+    Configuratuion ::
+
+        "Emailer" : { "type" : "desktop" } 
+
+    will put content of e-mails in **NC's** log files and display in user's browser (when appropriate). Configuration ::
+
+        "Emailer" : { "type" : "none" }
+
+    will switch the e-mailer off.
+
+
+
+ 
+.. _appendix-b:
+
+-----------------------------------------------------------------
+Appendix B. Adjusting configuration file for the Front-End Server
+-----------------------------------------------------------------
+
+Below is an *excerpt* of **FE** configuration settings that must be revised. Other settings are for fine tuning and development, and can be left as is in most cases. Please refer to :ref:`CCP4 Cloud configuration reference <ccp4-cloud-configuration>` for more details : ::
+
+    {
+
+        "FrontEnd" : {
+            "description"      : {
+                "id"   : "ccp4-cloud-instance-id",
+                "name" : "CCP4 Cloud at my site",
+                "icon" : "images_com/setup-harwell.png"
+            },
+            "port"             : 8085,
+            "externalURL"      : "https://www.mysite.com/ccp4cloud",
+            "reportURL"        : "https://www.mysite.com/ccp4cloud/",
+            "userDataPath"     : "/path/to/disk1/users",
+            "storage"          : "/path/to/disk1/storage",
+            "projectsPath"     : {
+                "disk1" : { "path"        : "/path/to/disk1/projects",
+                          },
+                "disk2" : { "path"        : "/path/to/disk2/projects",
+                          }
+            },
+            "jobs_safe"        : {
+                "path"     : "/path/to/job_safe",
+            },
+            "facilitiesPath"   : "/path/to/disk1/facilities",
+            "regMode"          : "admin",
+            "cloud_mounts"     : {
+                "xtal-data"      : "/path/to/data",
+                "tutorial-data"  : "/path/to/tutorials"
+            },
+            "logflow" : {
+                "log_file"     : "/path/to/FE/logs/node_fe"
+            }
+        },
+
+        "NumberCrunchers" : [
+            {
+                "serNo"            : 0,
+            },
+            {
+                "serNo"            : 1,
+            }
+        ],
+
+        "Emailer" : {
+            "type"            : "telnet",
+            "emailFrom"       : "name@mysite.com",
+            "maintainerEmail" : "name@mysite.com",
+            "host"            : "mail.server.at.mysite.com",
+            "port"            : 25,
+            "headerFrom"      : "CCP4 Cloud <name@mysite.com>"
+        }
+
+    }
+
+
+.. note:: have all **NC(s)** configured first and copy-paste their configurations in the **NumberCrunchers** list (*cf.* template provided), then only change **serNo** fields as shown above
+
+
+**description**
+    this serves your CCP4 Cloud instance identification. **id** is reserved for possible use in future, just put something unique, **name** is used to decorate some output pages, **icon** can specify path to custom setup icon. The path provided in template can also be used.
+
+**port**
+    port number on *localhost*. The port should be used exclusively for the **FE**
+
+**externalURL**
+    this is a DNS-resolved URL for accessing **FE** by users and **NC(s)**
+
+**reportURL**
+    in most cases, this should coincide with **externalURL** (however note the trailing slash). Different **reportURL** is used in rare instances when CCP4 Cloud servers are accessed through layers of proxies and redirections
+
+**userDataPath**
+    path to directory for user data (in this document referenced as ``/path/to/disk1/users``)
+    
+**storage**
+    path to directory for miscellaneous items (in this document referenced as ``/path/to/disk1/storage``)
+
+**projectsPath**
+    at least one disk for user projects must be configured: ::
+
+        "projectsPath" : {
+            "disk1" : { "path"        : "/path/to/disk1/projects",
+                        "type"        : "volume",
+                        "diskReserve" : 10000
+                    }
+        }
+
+    Here, ``"disk1"`` is the logical disk name, which can be used arbitrarily. However, it cannot be changed once user accounts are created
+
+**jobs_safe**
+    this is disk area for retaining working directories for failed jobs. In **FE** configuration, it should be given only if **NC** configurations place it in a shared file system
+
+**facilitiesPath**
+    this item is rudimental item but still needed. Put this directory on ``"disk1"``: ::
+
+        "facilitiesPath"   : "/path/to/disk1/facilities"
+
+**regMode**
+    can be either ``"admin"`` or ``"email"``. In ``"admin"`` mode, new users can be registered only by CCP4 Cloud administrator. In ``"email"`` mode, new users can register by themselves using their e-mail for verification.
+
+**cloud_mounts**
+    this optional configuration sets logical names for directories with read-only data for user projects. In the following example: ::
+
+        "cloud_mounts" : {
+            "xtal-data"  : "/path/to/data"
+        }
+
+    users will see files in ``/path/to/data`` as ``/xtal-data`` . Configuration may be made user-specific. For example, in case ::
+
+        "cloud_mounts" : {
+            "xtal-data"  : "/path/to/$LOGIN/data"
+        }
+
+    user with login ``ccp4cat`` will see directory ``/path/to/ccp4cat/data`` as ``/xtal-data``.
+    
+**log_file**
+    this is optional but useful configuration, which is used to split excessively long log files in chunks.
+
+**Emailer**
+    this configuration is the same as in :ref:`case of NC <ccp4-cloud-emailer>`.
+
+
+.. _appendix-c:
+
+--------------------------------------------------------------
+Appendix C. Adjusting start script for Number Cruncher Servers
+--------------------------------------------------------------
+
+Replace paths in the following lines of the provided **NC** start script (``/path/to/NC/start-nc.sh``): ::
+
+    ccp4_dir=/path/to/ccp4-7.1
+    nc_dir=/path/to/NC
+    export PDB_DIR=/path/to/pdb
+
+
+.. _appendix-d:
+
+-----------------------------------------------------------
+Appendix D. Adjusting start script for the Front-End Server
+-----------------------------------------------------------
+
+Replace paths in the following lines of the provided **FE** start script (``/path/to/FE/start-fe.sh``): ::
+
+    ccp4_dir=/path/to/ccp4-7.1
+    fe_dir=/path/to/
+    export PDB_DIR=/path/to/pdb
+
+
+.. _appendix-e:
+
+-----------------------------------------------------------
+Appendix E. Adjusting Apache configuration on host machines
+-----------------------------------------------------------
+
+.. _appendix-f:
+
+----------------------------
+Appendix F. Tests and checks
+----------------------------
+
+.. _appendix-g:
+
+------------------------------------------------------------
+Appendix G. Creating 1st user with administrative privileges
+------------------------------------------------------------
+
