@@ -27,7 +27,9 @@ def importFromCloud_mdm2(driver, waitShort):
 
     textEl2 = driver.find_elements_by_xpath("//a[normalize-space()='%s']" % 'test-data')
     if len(textEl2) < 1:
-        print('Cant locate neither "test-data"; terminating.')
+        textEl2 = driver.find_elements_by_xpath("//a[normalize-space()='%s']" % 'CCP4 examples')
+    if len(textEl2) < 1:
+        print('Cant locate neither "test-data" nor "CCP4 examples"; terminating.')
         sys.exit(1)
     ActionChains(driver).move_to_element(textEl2[-1]).double_click(textEl2[-1]).perform()
     time.sleep(1)

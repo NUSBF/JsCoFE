@@ -16,7 +16,7 @@ import setests_func as sf
 d = sf.driverHandler()
 
 
-def xia2Processing(driver, waitLong):
+def xia2Processing(driver, isLocal):
     print('Running XIA-2 for Hg dataset')
 
     sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list')
@@ -28,17 +28,38 @@ def xia2Processing(driver, waitLong):
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Automatic Image Processing with Xia-2')
     time.sleep(1)
 
-    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Browse')
-    time.sleep(1)
+    if isLocal:
+        sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'local file system')
+        time.sleep(1)
 
-    sf.doubleClickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'test-data')
-    time.sleep(1)
+        sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'cloud storage')
+        time.sleep(1)
 
-    sf.doubleClickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'hypF_images')
-    time.sleep(1)
+        sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Browse')
+        time.sleep(1)
 
-    sf.doubleClickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'hg_001.mar1600')
-    time.sleep(1)
+
+        sf.doubleClickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'CCP4 examples')
+        time.sleep(1)
+
+        sf.doubleClickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'hypF_images')
+        time.sleep(1)
+
+        sf.doubleClickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'hg_001.mar1600')
+        time.sleep(1)
+
+    else:
+        sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Browse')
+        time.sleep(1)
+
+        sf.doubleClickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'test-data')
+        time.sleep(1)
+
+        sf.doubleClickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'hypF_images')
+        time.sleep(1)
+
+        sf.doubleClickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'hg_001.mar1600')
+        time.sleep(1)
 
     # There are several forms - active and inactive. We need one displayed.
     buttonsRun = driver.find_elements_by_xpath("//button[contains(@style, 'images_png/runjob.png')]" )
@@ -48,7 +69,7 @@ def xia2Processing(driver, waitLong):
             break
 
     try:
-        wait = WebDriverWait(driver, 240) # allowing 4 minutes to the task to finish, normally takes 3 minutes
+        wait = WebDriverWait(driver, 420) # allowing 7 minutes to the task to finish, normally takes 3 minutes, but 6 minutes locally
         # Waiting for the text 'completed' in the ui-dialog-title of the task [0001]
         wait.until(EC.presence_of_element_located
                    ((By.XPATH,"//*[@class='ui-dialog-title' and contains(text(), 'completed') and contains(text(), '[0001]')]")))
@@ -174,6 +195,9 @@ def test_1xia2(browser,
 
     d.testName = 'xia2AimlessTest'
 
+    isLocal = False
+    if 'localhost' in d.cloud:
+        isLocal = True
 
     try:
         print('Opening URL: %s' % cloud)
@@ -186,7 +210,7 @@ def test_1xia2(browser,
         sf.removeProject(d.driver, d.testName)
         sf.makeTestProject(d.driver, d.testName, d.testName)
         sf.enterProject(d.driver, d.testName)
-        xia2Processing(d.driver, d.waitLong)
+        xia2Processing(d.driver, isLocal)
 
     except:
         d.driver.quit()
