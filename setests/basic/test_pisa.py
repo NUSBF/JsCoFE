@@ -8,7 +8,7 @@ from selenium.webdriver.common.by import By
 
 import time, sys, os, re
 
-curPath = os.path.dirname(os.path.abspath(__file__))
+curPath = os.path.abspath(os.path.join(os.path.dirname( __file__ ), '..'))
 if curPath not in sys.path:
     sys.path.insert(0, curPath)
 import setests_func as sf
@@ -16,8 +16,8 @@ import setests_func as sf
 d = sf.driverHandler()
 
 
-def mordaAfterASU(driver, waitLong):
-    print('Running MORDA')
+def pisaAfterRevision(driver, waitLong):
+    print('Running PISA')
 
     addButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/add.png')]")
     addButton.click()
@@ -26,10 +26,10 @@ def mordaAfterASU(driver, waitLong):
     sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list')
     time.sleep(1)
 
-    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Automated Molecular Replacement')
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Validation, Analysis and Deposition')
     time.sleep(1)
 
-    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Morda: Model Search & Preparation + MR')
+    sf.clickByXpath(driver, "//div[normalize-space()='%s']" % 'Surface, Interfaces and Assembly Analysis with PISA')
     time.sleep(1)
 
     # There are several forms - active and inactive. We need one displayed.
@@ -40,47 +40,55 @@ def mordaAfterASU(driver, waitLong):
             break
 
     try:
-        wait = WebDriverWait(driver, 1200) # allowing 20 minutes to the task to finish, normally takes 10 minutes
-        # Waiting for the text 'completed' in the ui-dialog-title of the task [0003]
+        wait = WebDriverWait(driver, waitLong)
+        # Waiting for the text 'completed' in the ui-dialog-title of the task [0005]
         wait.until(EC.presence_of_element_located
-                   ((By.XPATH,"//*[@class='ui-dialog-title' and contains(text(), 'completed') and contains(text(), '[0003]')]")))
+                   ((By.XPATH,"//*[@class='ui-dialog-title' and contains(text(), 'finished') and contains(text(), '[0004]')]")))
     except:
-        print('Apparently the task mordaAfterASU has not been completed in time; terminating')
+        print('Apparently tha task pisaAfterRevision has not been completed in time; terminating')
         sys.exit(1)
 
-    # pressing Close button
+    #  CHANGING iframe!!! As it is separate HTML file with separate search!
+    time.sleep(2)
+    driver.switch_to.frame(driver.find_element_by_xpath("//iframe[contains(@src, 'report/index.html')]"))
+    sf.clickByXpath(driver, "//a[@href='#jscofe_report-monomers_tab']" )
+    time.sleep(1)
+
+    tasksText = driver.find_elements(By.XPATH, "//td[@class='table-blue-td']")
+
+
+    print('*** Verification: PISA monomer is  %s (expecting A), ' \
+          'class is %s (expecting Protein), ' \
+          'area is %0.1f (expecting >5500 and <5700), ' \
+          'dG is %0.1f (expecting <-50 and >-90)' % (tasksText[13].text, tasksText[14].text, float(tasksText[19].text), float(tasksText[20].text)) )
+
+    assert tasksText[13].text == 'A'
+    assert tasksText[14].text == 'Protein'
+    assert float(tasksText[19].text) > 5500.0
+    assert float(tasksText[19].text) < 5700.0
+    assert float(tasksText[20].text) < -50.0
+    assert float(tasksText[20].text) > -90.0
+
+    # SWITCHING FRAME BACK!
+    driver.switch_to.default_content()
+
+    # presing Close button
     closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
     closeButton.click()
     time.sleep(1)
 
-    rWork = 1.0
-    rFree = 1.0
-    ttts = sf.tasksTreeTexts(driver)
-    for taskText in ttts:
-        match = re.search('\[0003\] morda -- R=(0\.\d*) Rfree=(0\.\d*)', taskText)
-        if match:
-            rWork = float(match.group(1))
-            rFree = float(match.group(2))
-            break
-    if (rWork == 1.0) or (rFree == 1.0):
-        print('*** Verification: could not find compl or Rwork or Rfree value after MORDA run')
-    else:
-        print('*** Verification: MORDA ' \
-              'Rwork is %0.4f (expecting <0.24), ' \
-              'Rfree is %0.4f (expecting <0.27)' % (rWork, rFree))
-    assert rWork < 0.24
-    assert rFree < 0.27
 
     return ()
 
 
-def test_mordaBasic(browser,
-                    cloud,
-                    nologin,
-                    login,
-                    password,
-                    remote
-                    ):
+def test_PisaBasic(browser,
+                   cloud,
+                   nologin,
+                   login,
+                   password,
+                   remote
+                   ):
+
 
     (d.driver, d.waitLong, d.waitShort) = sf.startBrowser(remote, browser)
     d.browser = browser
@@ -90,7 +98,7 @@ def test_mordaBasic(browser,
     d.remote = remote
     d.login = login
 
-    d.testName = 'mordaTest'
+    d.testName = 'pisaTest'
 
     try:
         print('Opening URL: %s' % cloud)
@@ -100,13 +108,13 @@ def test_mordaBasic(browser,
         if not nologin:
             sf.loginToCloud(d.driver, login, password)
 
-
         sf.removeProject(d.driver, d.testName)
         sf.makeTestProject(d.driver, d.testName, d.testName)
         sf.enterProject(d.driver, d.testName)
         sf.importFromCloud_rnase(d.driver, d.waitShort)
         sf.asymmetricUnitContentsAfterCloudImport(d.driver, d.waitShort)
-        mordaAfterASU(d.driver, d.waitLong)
+        sf.editRevisionStructure_rnase(d.driver, d.waitShort)
+        pisaAfterRevision(d.driver, d.waitLong)
         sf.renameProject(d.driver, d.testName)
 
         d.driver.quit()
@@ -129,10 +137,10 @@ if __name__ == "__main__":
 
     parameters = parser.parse_args(sys.argv[1:])
 
-    test_mordaBasic(browser=parameters.browser,  # or 'Chrome'
-                    cloud=parameters.cloud,
-                    nologin=parameters.nologin,  # True for Cloud Desktop (no login page), False for remote server that requires login.
-                    login=parameters.login,  # Used to login into remote Cloud
-                    password=parameters.password,  # Used to login into remote Cloud
-                    remote=parameters.remote  # 'http://130.246.213.187:4444/wd/hub' for Selenium Server hub
-                    )
+    test_PisaBasic(browser=parameters.browser,  # or 'Chrome'
+                   cloud=parameters.cloud,
+                   nologin=parameters.nologin,  # True for Cloud Desktop (no login page), False for remote server that requires login.
+                   login=parameters.login,  # Used to login into remote Cloud
+                   password=parameters.password,  # Used to login into remote Cloud
+                   remote=parameters.remote  # 'http://130.246.213.187:4444/wd/hub' for Selenium Server hub
+                   )

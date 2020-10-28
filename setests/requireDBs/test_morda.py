@@ -8,7 +8,7 @@ from selenium.webdriver.common.by import By
 
 import time, sys, os, re
 
-curPath = os.path.dirname(os.path.abspath(__file__))
+curPath = os.path.abspath(os.path.join(os.path.dirname( __file__ ), '..'))
 if curPath not in sys.path:
     sys.path.insert(0, curPath)
 import setests_func as sf
@@ -16,8 +16,8 @@ import setests_func as sf
 d = sf.driverHandler()
 
 
-def mrbumpAfterASU(driver, waitLong):
-    print('Running MrBUMP')
+def mordaAfterASU(driver, waitLong):
+    print('Running MORDA')
 
     addButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/add.png')]")
     addButton.click()
@@ -29,7 +29,7 @@ def mrbumpAfterASU(driver, waitLong):
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Automated Molecular Replacement')
     time.sleep(1)
 
-    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'MrBump: Model Search & Preparation')
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Morda: Model Search & Preparation + MR')
     time.sleep(1)
 
     # There are several forms - active and inactive. We need one displayed.
@@ -40,12 +40,12 @@ def mrbumpAfterASU(driver, waitLong):
             break
 
     try:
-        wait = WebDriverWait(driver, 600) # allowing 10 minutes to the task to finish
+        wait = WebDriverWait(driver, 1200) # allowing 20 minutes to the task to finish, normally takes 10 minutes
         # Waiting for the text 'completed' in the ui-dialog-title of the task [0003]
         wait.until(EC.presence_of_element_located
                    ((By.XPATH,"//*[@class='ui-dialog-title' and contains(text(), 'completed') and contains(text(), '[0003]')]")))
     except:
-        print('Apparently the task mrbumpAfterASU has not been completed in time; terminating')
+        print('Apparently the task mordaAfterASU has not been completed in time; terminating')
         sys.exit(1)
 
     # pressing Close button
@@ -55,36 +55,32 @@ def mrbumpAfterASU(driver, waitLong):
 
     rWork = 1.0
     rFree = 1.0
-    compl = 0.0
     ttts = sf.tasksTreeTexts(driver)
     for taskText in ttts:
-        match = re.search('\[0003\] mrbump -- Compl=(.*)\% R=(0\.\d*) Rfree=(0\.\d*)', taskText)
+        match = re.search('\[0003\] morda -- R=(0\.\d*) Rfree=(0\.\d*)', taskText)
         if match:
-            compl = float(match.group(1))
-            rWork = float(match.group(2))
-            rFree = float(match.group(3))
+            rWork = float(match.group(1))
+            rFree = float(match.group(2))
             break
-    if (rWork == 1.0) or (rFree == 1.0) or (compl == 0.0):
-        print('*** Verification: could not find compl or Rwork or Rfree value after MrBUMP run')
+    if (rWork == 1.0) or (rFree == 1.0):
+        print('*** Verification: could not find compl or Rwork or Rfree value after MORDA run')
     else:
-        print('*** Verification: MrBUMP ' \
-              'Compl is %0.1f %%(expecting >90.0), ' \
-              'Rwork is %0.4f (expecting <0.28), ' \
-              'Rfree is %0.4f (expecing <0.31)' % (compl, rWork, rFree))
-    assert rWork < 0.28
-    assert rFree < 0.31
-    assert compl > 90.0
+        print('*** Verification: MORDA ' \
+              'Rwork is %0.4f (expecting <0.24), ' \
+              'Rfree is %0.4f (expecting <0.27)' % (rWork, rFree))
+    assert rWork < 0.24
+    assert rFree < 0.27
 
     return ()
 
 
-def test_mrbumpBasic(browser,
-                     cloud,
-                     nologin,
-                     login,
-                     password,
-                     remote
-                     ):
+def test_mordaBasic(browser,
+                    cloud,
+                    nologin,
+                    login,
+                    password,
+                    remote
+                    ):
 
     (d.driver, d.waitLong, d.waitShort) = sf.startBrowser(remote, browser)
     d.browser = browser
@@ -94,8 +90,7 @@ def test_mrbumpBasic(browser,
     d.remote = remote
     d.login = login
 
-    d.testName = 'mrbumpTest'
-
+    d.testName = 'mordaTest'
 
     try:
         print('Opening URL: %s' % cloud)
@@ -105,12 +100,13 @@ def test_mrbumpBasic(browser,
         if not nologin:
             sf.loginToCloud(d.driver, login, password)
 
+
         sf.removeProject(d.driver, d.testName)
         sf.makeTestProject(d.driver, d.testName, d.testName)
         sf.enterProject(d.driver, d.testName)
         sf.importFromCloud_rnase(d.driver, d.waitShort)
         sf.asymmetricUnitContentsAfterCloudImport(d.driver, d.waitShort)
-        mrbumpAfterASU(d.driver, d.waitLong)
+        mordaAfterASU(d.driver, d.waitLong)
         sf.renameProject(d.driver, d.testName)
 
         d.driver.quit()
@@ -133,10 +129,10 @@ if __name__ == "__main__":
 
     parameters = parser.parse_args(sys.argv[1:])
 
-    test_mrbumpBasic(browser=parameters.browser,  # or 'Chrome'
-                     cloud=parameters.cloud,
-                     nologin=parameters.nologin,  # True for Cloud Desktop (no login page), False for remote server that requires login.
-                     login=parameters.login,  # Used to login into remote Cloud
-                     password=parameters.password,  # Used to login into remote Cloud
-                     remote=parameters.remote  # 'http://130.246.213.187:4444/wd/hub' for Selenium Server hub
-                     )
+    test_mordaBasic(browser=parameters.browser,  # or 'Chrome'
+                    cloud=parameters.cloud,
+                    nologin=parameters.nologin,  # True for Cloud Desktop (no login page), False for remote server that requires login.
+                    login=parameters.login,  # Used to login into remote Cloud
+                    password=parameters.password,  # Used to login into remote Cloud
+                    remote=parameters.remote  # 'http://130.246.213.187:4444/wd/hub' for Selenium Server hub
+                    )

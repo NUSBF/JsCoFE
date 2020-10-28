@@ -8,7 +8,7 @@ from selenium.webdriver.common.by import By
 
 import time, sys, os, re
 
-curPath = os.path.dirname(os.path.abspath(__file__))
+curPath = os.path.abspath(os.path.join(os.path.dirname( __file__ ), '..'))
 if curPath not in sys.path:
     sys.path.insert(0, curPath)
 import setests_func as sf
@@ -16,8 +16,8 @@ import setests_func as sf
 d = sf.driverHandler()
 
 
-def zanudaAfterRevision(driver):
-    print('Running Zanuda')
+def xyzutilsAfterImport(driver, waitLong):
+    print('Running XYZutils sequence extract')
 
     addButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/add.png')]")
     addButton.click()
@@ -26,11 +26,20 @@ def zanudaAfterRevision(driver):
     sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list')
     time.sleep(1)
 
-    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Validation, Analysis and Deposition')
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Toolbox')
     time.sleep(1)
 
-    sf.clickByXpath(driver, "//div[normalize-space()='%s']" % 'Space Group Validation with Zanuda')
+    sf.clickByXpath(driver, "//div[normalize-space()='%s']" % 'Coordinate Utilities')
     time.sleep(1)
+
+
+    sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Transform structure')
+    time.sleep(1)
+
+
+    sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Extract sequences')
+    time.sleep(1)
+
 
     # There are several forms - active and inactive. We need one displayed.
     buttonsRun = driver.find_elements_by_xpath("//button[contains(@style, 'images_png/runjob.png')]" )
@@ -40,26 +49,35 @@ def zanudaAfterRevision(driver):
             break
 
     try:
-        wait = WebDriverWait(driver, 600) # normally 5 minutes
+        wait = WebDriverWait(driver, waitLong)
         # Waiting for the text 'completed' in the ui-dialog-title of the task [0005]
         wait.until(EC.presence_of_element_located
-                   ((By.XPATH,"//*[@class='ui-dialog-title' and contains(text(), 'completed') and contains(text(), '[0004]')]")))
+                   ((By.XPATH,"//*[@class='ui-dialog-title' and contains(text(), 'completed') and contains(text(), '[0002]')]")))
     except:
-        print('Apparently tha task zanudaAfterRevision has not been completed in time; terminating')
+        print('Apparently tha task xyzutilsAfterImport has not been completed in time; terminating')
         sys.exit(1)
 
     #  CHANGING iframe!!! As it is separate HTML file with separate search!
     time.sleep(2)
     driver.switch_to.frame(driver.find_element_by_xpath("//iframe[contains(@src, 'report/index.html')]"))
+    sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Macromolecular sequences')
+    time.sleep(2)
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Import rnase_model_A.fasta')
+    time.sleep(2)
 
-    tasksText = driver.find_elements(By.XPATH, "//b[starts-with(text(), '%s')]" % 'Space Group')
-    if len(tasksText) < 1:
-        print('Cant find Zanuda report message')
-    assert len(tasksText) > 0
+    tasksText = driver.find_elements(By.XPATH, "//td[@class='table-blue-td']")
 
-    print('*** Verification: Zanuda message is "%s" (expecting "Space Group confirmed as P 21 21 21")' % tasksText[0].text )
+    print('*** Verification: type is  %s (expecting protein), ' \
+          'length is %s (expecting 96), ' \
+          'sequence is %s (>rnase_model_A DVSGTVCLSALPPEATDTLNLIASDGPFPYSQDGVVFQNRESVLPTQSYGYYHEYTVITPGARTRGTRRIICGEATQEDYYTGDHYATFSLIDQTC), '
+           % (tasksText[2].text, tasksText[4].text, tasksText[3].text) )
 
-    assert tasksText[0].text == 'Space Group confirmed as P 21 21 21'
+    assert tasksText[2].text == 'protein'
+    assert int(tasksText[4].text) == 96
+    assert tasksText[3].text == """>rnase_model_A
+DVSGTVCLSALPPEATDTLNLIASDGPFPYSQDGVVFQNRESVLPTQSYGYYHEYTVITP
+GARTRGTRRIICGEATQEDYYTGDHYATFSLIDQTC"""
+
 
     # SWITCHING FRAME BACK!
     driver.switch_to.default_content()
@@ -73,13 +91,14 @@ def zanudaAfterRevision(driver):
     return ()
 
 
-def test_zanudaBasic(browser,
-                   cloud,
-                   nologin,
-                   login,
-                   password,
-                   remote
-                   ):
+
+def test_xyzutilsBasic(browser,
+                       cloud,
+                       nologin,
+                       login,
+                       password,
+                       remote
+                       ):
 
     (d.driver, d.waitLong, d.waitShort) = sf.startBrowser(remote, browser)
     d.browser = browser
@@ -89,7 +108,7 @@ def test_zanudaBasic(browser,
     d.remote = remote
     d.login = login
 
-    d.testName = 'zanudaTest'
+    d.testName = 'xyzutilsTest'
 
     try:
         print('Opening URL: %s' % cloud)
@@ -103,9 +122,7 @@ def test_zanudaBasic(browser,
         sf.makeTestProject(d.driver, d.testName, d.testName)
         sf.enterProject(d.driver, d.testName)
         sf.importFromCloud_rnase(d.driver, d.waitShort)
-        sf.asymmetricUnitContentsAfterCloudImport(d.driver, d.waitShort)
-        sf.editRevisionStructure_rnase(d.driver, d.waitShort)
-        zanudaAfterRevision(d.driver)
+        xyzutilsAfterImport(d.driver, d.waitShort)
         sf.renameProject(d.driver, d.testName)
 
         d.driver.quit()
@@ -128,10 +145,10 @@ if __name__ == "__main__":
 
     parameters = parser.parse_args(sys.argv[1:])
 
-    test_zanudaBasic(browser=parameters.browser,  # or 'Chrome'
-                   cloud=parameters.cloud,
-                   nologin=parameters.nologin,  # True for Cloud Desktop (no login page), False for remote server that requires login.
-                   login=parameters.login,  # Used to login into remote Cloud
-                   password=parameters.password,  # Used to login into remote Cloud
-                   remote=parameters.remote  # 'http://130.246.213.187:4444/wd/hub' for Selenium Server hub
-                   )
+    test_xyzutilsBasic(browser=parameters.browser,  # or 'Chrome'
+                       cloud=parameters.cloud,
+                       nologin=parameters.nologin,  # True for Cloud Desktop (no login page), False for remote server that requires login.
+                       login=parameters.login,  # Used to login into remote Cloud
+                       password=parameters.password,  # Used to login into remote Cloud
+                       remote=parameters.remote  # 'http://130.246.213.187:4444/wd/hub' for Selenium Server hub
+                       )
