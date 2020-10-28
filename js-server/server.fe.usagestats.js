@@ -54,13 +54,15 @@ function UsageStats()  {
   this.njobs       = [0];  // njobs[n] is number of jobs passed in nth day since start
   this.cpu         = [0];  // cpu[n] is number of cpu hours booked in nth day since start
   this.volumes     = {};
-  this.tasks       = {};   // task[TaskTitle].icon       is path to task's icon
-                           // task[TaskTitle]._type      is task's type
-                           // task[TaskTitle].nuses      is number of uses since start
-                           // task[TaskTitle].nfails     is number of failures since start
-                           // task[TaskTitle].nterms     is number of terminations since start
-                           // task[TaskTitle].cpu_time   is average cpu consumption since start
-                           // task[TaskTitle].disk_space is average disk space consumption since start
+  this.tasks       = {};   // task[TaskTitle].icon        is path to task's icon
+                           // task[TaskTitle]._type       is task's type
+                           // task[TaskTitle].nuses       is number of uses since start
+                           // task[TaskTitle].nfails      is number of failures since start
+                           // task[TaskTitle].nterms      is number of terminations since start
+                           // task[TaskTitle].cpu_time    is average cpu consumption since start
+                           // task[TaskTitle].disk_space  is average disk space consumption since start
+                           // task[TaskTitle].last_used   time of last use
+                           // task[TaskTitle].last_failed time of last fail
 }
 
 UsageStats.prototype.registerJob = function ( job_class )  {
@@ -106,18 +108,24 @@ UsageStats.prototype.registerJob = function ( job_class )  {
 
     if (!this.tasks.hasOwnProperty(job_class.title))
       this.tasks[job_class.title] = {
-        'icon'       : cmd.image_path(job_class.icon()),
-        '_type'      : job_class._type, //title.split('(')[0],
-        'nuses'      : 0,
-        'nfails'     : 0,
-        'nterms'     : 0,
-        'cpu_time'   : 0,
-        'disk_space' : 0
+        'icon'        : cmd.image_path(job_class.icon()),
+        '_type'       : job_class._type, //title.split('(')[0],
+        'nuses'       : 0,
+        'nfails'      : 0,
+        'nterms'      : 0,
+        'cpu_time'    : 0,
+        'disk_space'  : 0,
+        'last_used'   : 0,
+        'last_failed' : 0
       };
     var ts = this.tasks[job_class.title];
     ts.nuses++;
-    if (job_class.state==task_t.job_code.failed)
+    var today = new Date();
+    ts.last_used = today.toLocaleDateString();
+    if (job_class.state==task_t.job_code.failed)  {
       ts.nfails++;
+      ts.last_failed = ts.last_used;
+    }
     if (job_class.state==task_t.job_code.stopped)
       ts.nterms++;
 

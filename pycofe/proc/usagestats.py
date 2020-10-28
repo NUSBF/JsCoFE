@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    05.04.20   <--  Date of Last Modification.
+#    28.10.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -298,22 +298,40 @@ def main():
                                      "Number of times the task was used",1 )
     pyrvapi.rvapi_put_horz_theader ( tableId,"N<sub>fails</sub>",
                                      "Number of times the task failed"  ,2 )
+    pyrvapi.rvapi_put_horz_theader ( tableId,"F<sub>fails</sub>",
+                                     "Fail frequency",3 )
     pyrvapi.rvapi_put_horz_theader ( tableId,"N<sub>terms</sub>",
                                      "Number of times the task was terminated by user",
-                                     3 )
+                                     4 )
+    pyrvapi.rvapi_put_horz_theader ( tableId,"Last Used",
+                                     "Date when task was used last time",5 )
+    pyrvapi.rvapi_put_horz_theader ( tableId,"Last Failed",
+                                     "Date when task failed last time"  ,6 )
     pyrvapi.rvapi_put_horz_theader ( tableId,"CPU hours",
-                                     "Average CPU hours taken by task"  ,4 )
+                                     "Average CPU hours taken by task"  ,7 )
     pyrvapi.rvapi_put_horz_theader ( tableId,"Disk (MB)",
-                                     "Average Disk space taken by task" ,5 )
+                                     "Average Disk space taken by task" ,8 )
     for i in range(len(tasks)):
         pyrvapi.rvapi_put_table_string ( tableId,
             "<img style='vertical-align:middle;' src='xxJsCoFExx-fe/" + tasks[i]["icon"] +\
             "' width='26px' height='26px'/>&nbsp;&nbsp;" + tasks[i]["title"],i,0 )
         pyrvapi.rvapi_put_table_int  ( tableId,tasks[i]["nuses"] ,i,1 )
         pyrvapi.rvapi_put_table_int  ( tableId,tasks[i]["nfails"],i,2 )
-        pyrvapi.rvapi_put_table_int  ( tableId,tasks[i]["nterms"],i,3 )
-        pyrvapi.rvapi_put_table_real ( tableId,tasks[i]["cpu_time"]  ,"%9.4f",i,4 )
-        pyrvapi.rvapi_put_table_real ( tableId,tasks[i]["disk_space"],"%9.3f",i,5 )
+        ffail = float(tasks[i]["nuses"])
+        if ffail>0.0:
+            ffail = float(tasks[i]["nfails"])/ffail
+        pyrvapi.rvapi_put_table_real ( tableId,ffail,"%9.4f",i,3 )
+        pyrvapi.rvapi_put_table_int  ( tableId,tasks[i]["nterms"],i,4 )
+        if "last_used" in tasks[i]:
+            pyrvapi.rvapi_put_table_string ( tableId,tasks[i]["last_used"  ],i,5 )
+        else:
+            pyrvapi.rvapi_put_table_string ( tableId,"   ---    ",i,5 )
+        if "last_failed" in tasks[i]:
+            pyrvapi.rvapi_put_table_string ( tableId,tasks[i]["last_failed"],i,6 )
+        else:
+            pyrvapi.rvapi_put_table_string ( tableId,"   ---    ",i,6 )
+        pyrvapi.rvapi_put_table_real ( tableId,tasks[i]["cpu_time"]  ,"%9.4f",i,7 )
+        pyrvapi.rvapi_put_table_real ( tableId,tasks[i]["disk_space"],"%9.3f",i,8 )
         pyrvapi.rvapi_shape_table_cell ( tableId,i,0,"", "text-align:left;" +\
             "font-family:\"Trebuchet MS\",\"Helvetica\",\"Arial\"," +\
             "\"Verdana\",\"sans-serif\";","",1,1 )

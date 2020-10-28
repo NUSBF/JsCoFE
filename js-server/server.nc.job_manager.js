@@ -584,10 +584,10 @@ function copyToSafe ( task,jobEntry )  {
       if (!utils.fileExists(safeDirPath))  {
 
         if (!utils.mkDir(safeDirPath))  {
-          log.error ( 40,'cannot create safe job area at ' + safeDirPath );
+          log.error ( 40,'cannot create jobs safe area at ' + safeDirPath );
           return;
         }
-        log.standard ( 40,'created safe job area at ' + safeDirPath );
+        log.standard ( 40,'created jobs safe area at ' + safeDirPath );
 
       } else  {
         // check that the safe is not full
