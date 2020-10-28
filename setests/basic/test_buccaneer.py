@@ -233,7 +233,7 @@ def test_1RefmacBasic(browser,
     d.remote = remote
     d.login = login
 
-    d.testName = 'refmacTest'
+    d.testName = 'buccaneerTest'
 
 
     try:
