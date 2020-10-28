@@ -8,18 +8,16 @@ from selenium.webdriver.common.by import By
 
 import time, sys, os, re
 
-curPath = os.path.dirname(os.path.abspath(__file__))
+curPath = os.path.abspath(os.path.join(os.path.dirname( __file__ ), '..'))
 if curPath not in sys.path:
     sys.path.insert(0, curPath)
 import setests_func as sf
 
 d = sf.driverHandler()
 
+def balbesAfterASU(driver, waitLong):
+    print('Running BALBES')
 
-def prepareMRmodelAfterASU(driver, waitShort):
-    print('Preparing MR model')
-
-    # Add button
     addButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/add.png')]")
     addButton.click()
     time.sleep(1)
@@ -27,10 +25,10 @@ def prepareMRmodelAfterASU(driver, waitShort):
     sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list')
     time.sleep(1)
 
-    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Molecular Replacement')
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Automated Molecular Replacement')
     time.sleep(1)
 
-    sf.clickByXpath(driver, "//div[normalize-space()='%s']" % 'Prepare MR Model(s) from Coordinate data')
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Balbes: Model Search & Preparation')
     time.sleep(1)
 
     # There are several forms - active and inactive. We need one displayed.
@@ -41,52 +39,12 @@ def prepareMRmodelAfterASU(driver, waitShort):
             break
 
     try:
-        wait = WebDriverWait(driver, waitShort) # allowing 15 seconds to the task to finish
+        wait = WebDriverWait(driver, 600) # allowing 10 minutes to the task to finish
         # Waiting for the text 'completed' in the ui-dialog-title of the task [0003]
         wait.until(EC.presence_of_element_located
                    ((By.XPATH,"//*[@class='ui-dialog-title' and contains(text(), 'completed') and contains(text(), '[0003]')]")))
     except:
-        print('Apparently tha task premareMRmodelAfterASU has not been completed in time; terminating')
-        sys.exit(1)
-
-    # presing Close button
-    closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
-    closeButton.click()
-    time.sleep(1)
-
-    return ()
-
-
-def molrepAfterMRmodel(driver, waitLong):
-    print('Running MOLREP')
-
-    addButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/add.png')]")
-    addButton.click()
-    time.sleep(1)
-
-    sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list')
-    time.sleep(1)
-
-    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Molecular Replacement')
-    time.sleep(1)
-
-    sf.clickByXpath(driver, "//div[normalize-space()='%s']" % 'Molecular Replacement with Molrep')
-    time.sleep(1)
-
-    # There are several forms - active and inactive. We need one displayed.
-    buttonsRun = driver.find_elements_by_xpath("//button[contains(@style, 'images_png/runjob.png')]" )
-    for buttonRun in buttonsRun:
-        if buttonRun.is_displayed():
-            buttonRun.click()
-            break
-
-    try:
-        wait = WebDriverWait(driver, waitLong) # allowing 60 seconds to the task to finish
-        # Waiting for the text 'completed' in the ui-dialog-title of the task [0004]
-        wait.until(EC.presence_of_element_located
-                   ((By.XPATH,"//*[@class='ui-dialog-title' and contains(text(), 'completed') and contains(text(), '[0004]')]")))
-    except:
-        print('Apparently tha task molrepAfterMRmodel has not been completed in time; terminating')
+        print('Apparently the task balbesAfterASU has not been completed in time; terminating')
         sys.exit(1)
 
     # pressing Close button
@@ -98,28 +56,30 @@ def molrepAfterMRmodel(driver, waitLong):
     rFree = 1.0
     ttts = sf.tasksTreeTexts(driver)
     for taskText in ttts:
-        match = re.search('\[0004\] molrep -- R=(0\.\d*) Rfree=(0\.\d*)', taskText)
+        match = re.search('\[0003\] balbes -- R=(0\.\d*) Rfree=(0\.\d*)', taskText)
         if match:
             rWork = float(match.group(1))
             rFree = float(match.group(2))
             break
     if (rWork == 1.0) or (rFree == 1.0):
-        print('*** Verification: could not find Rwork or Rfree value after MOLREP run')
+        print('*** Verification: could not find Rwork or Rfree value after BALBES run')
     else:
-        print('*** Verification: MOLREP Rwork is %0.4f (expecting <0.4), Rfree is %0.4f (expecing <0.42)' % (rWork, rFree))
-    assert rWork < 0.4
-    assert rFree < 0.42
+        print('*** Verification: BALBES ' \
+              'Rwork is %0.4f (expecting <0.25), ' \
+              'Rfree is %0.4f (expecing <0.25)' % (rWork, rFree))
+    assert rWork < 0.25
+    assert rFree < 0.25
 
     return ()
 
 
-def test_MolrepBasic(browser,
-                cloud,
-                nologin,
-                login,
-                password,
-                remote
-                ):
+def test_BalbesBasic(browser,
+                     cloud,
+                     nologin,
+                     login,
+                     password,
+                     remote
+                     ):
 
     (d.driver, d.waitLong, d.waitShort) = sf.startBrowser(remote, browser)
     d.browser = browser
@@ -129,24 +89,22 @@ def test_MolrepBasic(browser,
     d.remote = remote
     d.login = login
 
-    d.testName = 'molrepTest'
-
+    d.testName = 'balbesTest'
 
     try:
-        print('Opening URL: %s' % cloud)
-        d.driver.get(cloud)
+        print('Opening URL: %s' % d.cloud)
+        d.driver.get(d.cloud)
         assert "CCP4 Cloud" in d.driver.title
 
         if not nologin:
-            sf.loginToCloud(d.driver, login, password)
+            sf.loginToCloud(d.driver, d.login, d.password)
 
         sf.removeProject(d.driver, d.testName)
         sf.makeTestProject(d.driver, d.testName, d.testName)
         sf.enterProject(d.driver, d.testName)
         sf.importFromCloud_rnase(d.driver, d.waitShort)
         sf.asymmetricUnitContentsAfterCloudImport(d.driver, d.waitShort)
-        prepareMRmodelAfterASU(d.driver, d.waitShort)
-        molrepAfterMRmodel(d.driver, d.waitLong)
+        balbesAfterASU(d.driver, d.waitLong)
         sf.renameProject(d.driver, d.testName)
 
         d.driver.quit()
@@ -169,10 +127,10 @@ if __name__ == "__main__":
 
     parameters = parser.parse_args(sys.argv[1:])
 
-    test_MolrepBasic(browser=parameters.browser,  # or 'Chrome'
-               cloud=parameters.cloud,
-               nologin=parameters.nologin,  # True for Cloud Desktop (no login page), False for remote server that requires login.
-               login=parameters.login,  # Used to login into remote Cloud
-               password=parameters.password,  # Used to login into remote Cloud
-               remote=parameters.remote  # 'http://130.246.213.187:4444/wd/hub' for Selenium Server hub
-               )
+    test_BalbesBasic(browser=parameters.browser,  # or 'Chrome'
+                     cloud=parameters.cloud,
+                     nologin=parameters.nologin,  # True for Cloud Desktop (no login page), False for remote server that requires login.
+                     login=parameters.login,  # Used to login into remote Cloud
+                     password=parameters.password,  # Used to login into remote Cloud
+                     remote=parameters.remote  # 'http://130.246.213.187:4444/wd/hub' for Selenium Server hub
+                     )

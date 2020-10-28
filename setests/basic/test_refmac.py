@@ -9,7 +9,7 @@ from selenium.webdriver.common.by import By
 
 import time, sys, os, re
 
-curPath = os.path.dirname(os.path.abspath(__file__))
+curPath = os.path.abspath(os.path.join(os.path.dirname( __file__ ), '..'))
 if curPath not in sys.path:
     sys.path.insert(0, curPath)
 import setests_func as sf

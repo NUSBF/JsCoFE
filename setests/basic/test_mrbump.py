@@ -8,7 +8,7 @@ from selenium.webdriver.common.by import By
 
 import time, sys, os, re
 
-curPath = os.path.dirname(os.path.abspath(__file__))
+curPath = os.path.abspath(os.path.join(os.path.dirname( __file__ ), '..'))
 if curPath not in sys.path:
     sys.path.insert(0, curPath)
 import setests_func as sf
@@ -16,8 +16,8 @@ import setests_func as sf
 d = sf.driverHandler()
 
 
-def pisaAfterRevision(driver, waitLong):
-    print('Running PISA')
+def mrbumpAfterASU(driver, waitLong):
+    print('Running MrBUMP')
 
     addButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/add.png')]")
     addButton.click()
@@ -26,10 +26,10 @@ def pisaAfterRevision(driver, waitLong):
     sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list')
     time.sleep(1)
 
-    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Validation, Analysis and Deposition')
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Automated Molecular Replacement')
     time.sleep(1)
 
-    sf.clickByXpath(driver, "//div[normalize-space()='%s']" % 'Surface, Interfaces and Assembly Analysis with PISA')
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'MrBump: Model Search & Preparation')
     time.sleep(1)
 
     # There are several forms - active and inactive. We need one displayed.
@@ -40,55 +40,51 @@ def pisaAfterRevision(driver, waitLong):
             break
 
     try:
-        wait = WebDriverWait(driver, waitLong)
-        # Waiting for the text 'completed' in the ui-dialog-title of the task [0005]
+        wait = WebDriverWait(driver, 600) # allowing 10 minutes to the task to finish
+        # Waiting for the text 'completed' in the ui-dialog-title of the task [0003]
         wait.until(EC.presence_of_element_located
-                   ((By.XPATH,"//*[@class='ui-dialog-title' and contains(text(), 'finished') and contains(text(), '[0004]')]")))
+                   ((By.XPATH,"//*[@class='ui-dialog-title' and contains(text(), 'completed') and contains(text(), '[0003]')]")))
     except:
-        print('Apparently tha task pisaAfterRevision has not been completed in time; terminating')
+        print('Apparently the task mrbumpAfterASU has not been completed in time; terminating')
         sys.exit(1)
 
-    #  CHANGING iframe!!! As it is separate HTML file with separate search!
-    time.sleep(2)
-    driver.switch_to.frame(driver.find_element_by_xpath("//iframe[contains(@src, 'report/index.html')]"))
-    sf.clickByXpath(driver, "//a[@href='#jscofe_report-monomers_tab']" )
-    time.sleep(1)
-
-    tasksText = driver.find_elements(By.XPATH, "//td[@class='table-blue-td']")
-
-
-    print('*** Verification: PISA monomer is  %s (expecting A), ' \
-          'class is %s (expecting Protein), ' \
-          'area is %0.1f (expecting >5500 and <5700), ' \
-          'dG is %0.1f (expecting <-50 and >-90)' % (tasksText[13].text, tasksText[14].text, float(tasksText[19].text), float(tasksText[20].text)) )
-
-    assert tasksText[13].text == 'A'
-    assert tasksText[14].text == 'Protein'
-    assert float(tasksText[19].text) > 5500.0
-    assert float(tasksText[19].text) < 5700.0
-    assert float(tasksText[20].text) < -50.0
-    assert float(tasksText[20].text) > -90.0
-
-    # SWITCHING FRAME BACK!
-    driver.switch_to.default_content()
-
-    # presing Close button
+    # pressing Close button
     closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
     closeButton.click()
     time.sleep(1)
 
+    rWork = 1.0
+    rFree = 1.0
+    compl = 0.0
+    ttts = sf.tasksTreeTexts(driver)
+    for taskText in ttts:
+        match = re.search('\[0003\] mrbump -- Compl=(.*)\% R=(0\.\d*) Rfree=(0\.\d*)', taskText)
+        if match:
+            compl = float(match.group(1))
+            rWork = float(match.group(2))
+            rFree = float(match.group(3))
+            break
+    if (rWork == 1.0) or (rFree == 1.0) or (compl == 0.0):
+        print('*** Verification: could not find compl or Rwork or Rfree value after MrBUMP run')
+    else:
+        print('*** Verification: MrBUMP ' \
+              'Compl is %0.1f %%(expecting >90.0), ' \
+              'Rwork is %0.4f (expecting <0.28), ' \
+              'Rfree is %0.4f (expecing <0.31)' % (compl, rWork, rFree))
+    assert rWork < 0.28
+    assert rFree < 0.31
+    assert compl > 90.0
 
     return ()
 
 
-def test_PisaBasic(browser,
-                   cloud,
-                   nologin,
-                   login,
-                   password,
-                   remote
-                   ):
-
+def test_mrbumpBasic(browser,
+                     cloud,
+                     nologin,
+                     login,
+                     password,
+                     remote
+                     ):
 
     (d.driver, d.waitLong, d.waitShort) = sf.startBrowser(remote, browser)
     d.browser = browser
@@ -98,7 +94,8 @@ def test_PisaBasic(browser,
     d.remote = remote
     d.login = login
 
-    d.testName = 'pisaTest'
+    d.testName = 'mrbumpTest'
+
 
     try:
         print('Opening URL: %s' % cloud)
@@ -113,8 +110,7 @@ def test_PisaBasic(browser,
         sf.enterProject(d.driver, d.testName)
         sf.importFromCloud_rnase(d.driver, d.waitShort)
         sf.asymmetricUnitContentsAfterCloudImport(d.driver, d.waitShort)
-        sf.editRevisionStructure_rnase(d.driver, d.waitShort)
-        pisaAfterRevision(d.driver, d.waitLong)
+        mrbumpAfterASU(d.driver, d.waitLong)
         sf.renameProject(d.driver, d.testName)
 
         d.driver.quit()
@@ -137,10 +133,10 @@ if __name__ == "__main__":
 
     parameters = parser.parse_args(sys.argv[1:])
 
-    test_PisaBasic(browser=parameters.browser,  # or 'Chrome'
-                   cloud=parameters.cloud,
-                   nologin=parameters.nologin,  # True for Cloud Desktop (no login page), False for remote server that requires login.
-                   login=parameters.login,  # Used to login into remote Cloud
-                   password=parameters.password,  # Used to login into remote Cloud
-                   remote=parameters.remote  # 'http://130.246.213.187:4444/wd/hub' for Selenium Server hub
-                   )
+    test_mrbumpBasic(browser=parameters.browser,  # or 'Chrome'
+                     cloud=parameters.cloud,
+                     nologin=parameters.nologin,  # True for Cloud Desktop (no login page), False for remote server that requires login.
+                     login=parameters.login,  # Used to login into remote Cloud
+                     password=parameters.password,  # Used to login into remote Cloud
+                     remote=parameters.remote  # 'http://130.246.213.187:4444/wd/hub' for Selenium Server hub
+                     )
