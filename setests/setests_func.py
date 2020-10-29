@@ -324,7 +324,7 @@ def editRevisionStructure_rnase(driver, waitShort):
         sys.exit(1)
 
     # presing Close button
-    time.sleep(1)
+    time.sleep(2)
     clickByXpath(driver, "//button[contains(@style, 'images_png/close.png')]")
     time.sleep(1)
 
