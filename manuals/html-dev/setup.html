@@ -53,21 +53,25 @@
         
   <div class="section" id="setup">
 <h1>1. Setup<a class="headerlink" href="#setup" title="Permalink to this headline">¶</a></h1>
-<p>In this Section, we describe the most popular CCP4 Cloud setup, comprising one Front-End Server (<strong>FE</strong>) and one or more Number Crunchers (NCs).</p>
+<p>In this Section, we describe the most popular CCP4 Cloud setup, comprising one Front-End Server (<strong>FE</strong>) and one or more Number Crunchers (<strong>NCs</strong>).</p>
 <div class="section" id="prerequisites-and-general-notes">
 <h2>1.1. Prerequisites and general notes<a class="headerlink" href="#prerequisites-and-general-notes" title="Permalink to this headline">¶</a></h2>
-<p>The Setup is described in terms of servers and file systems, rather than machines (hardware hosts). Allocation of servers to hosts, virtual or real, should be done in respect to your requirements and resources. In simplest case, all servers can be placed on the same host. A few points should be taken into account:</p>
+<p>The Setup procedure is described in terms of servers and file systems, rather than machines (hardware hosts). Allocation of servers to hosts, virtual or real, should be done in respect to your requirements and resources. In simplest case, all servers can be placed on the same host. A few points should be taken into account:</p>
 <ul class="simple">
 <li><strong>FE</strong> does not perform computations, but should be efficient for file operations and network communication.</li>
-<li><strong>NC(s)</strong> must be able to submit jobs to your computational infrastructure (<strong>Queue(s)</strong>), but they do not require a particular CPU power by themselves</li>
-<li>we recommend having at least 2 <strong>NCs</strong> in CCP4 Cloud, such that jobs can be launched even if one <strong>NC</strong> is temporarily down. <strong>NCs</strong> can work with the same <strong>Queue</strong>, or have own <strong>Queues</strong> depending on your situation.</li>
+<li><strong>NC(s)</strong> must be able to submit jobs to your computational infrastructure (<strong>Queue(s)</strong>), but they do not require a particular CPU power by themselves. However, if <strong>Queue</strong> represents a queue-less shell (<em>cf.</em> below), jobs will be run on the <strong>NC&#8217;s</strong> host machine, in which case a more powerful machine will be needed</li>
+<li>we recommend having at least 2 <strong>NCs</strong> in CCP4 Cloud, such that jobs can be run even if one <strong>NC</strong> is temporarily down. Duplicate <strong>NCs</strong> can be placed on the same host machine and work with the same <strong>Queue</strong>.</li>
 </ul>
 <p><strong>For setting up CCP4 Cloud, you will require:</strong></p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">in what follows, <code class="docutils literal"><span class="pre">/path/to/</span></code> does not stand for any particular path. Rather, it means any path of your choice, specific to the context including the host machine. Therefore, assume using <code class="docutils literal"><span class="pre">ssh</span> <span class="pre">login&#64;host</span></code> or <code class="docutils literal"><span class="pre">scp</span></code> instead of <code class="docutils literal"><span class="pre">cp</span></code> where necessary.</p>
+</div>
 <ol class="arabic">
-<li><p class="first">Computational infrastructure (<strong>Queue(s)</strong>), such as SGE or SLURM cluster</p>
+<li><p class="first">Computational infrastructure (<strong>Queue(s)</strong>), such as SGE or SLURM cluster. If clusters are not available, jobs can run in Linux shell on <strong>NC&#8217;s</strong> host machine.</p>
 </li>
-<li><p class="first">CCP4 Setup version 7.1 or higher (download link). All <strong>FE</strong> , <strong>NC(s)</strong> and <strong>Queue(s)</strong> must have access to CCP4 Setup. For convenience, we will assume that CCP4 is installed in the following location, visible from all servers and <strong>Queue(s)</strong> (here and below, <code class="docutils literal"><span class="pre">/path/to/</span></code> means any path of your choice, specific to the case):</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">ccp4</span><span class="o">-</span><span class="mf">7.1</span>
+<li><p class="first">CCP4 Setup version 7.1 or higher (download link). All <strong>FE</strong> , <strong>NC(s)</strong> and <strong>Queue(s)</strong> must have access to CCP4 Setup. For convenience, we assume that CCP4 will be installed in the following location, visible from all servers and <strong>Queue(s)</strong> :</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">CCP4</span><span class="o">/</span><span class="n">ccp4</span><span class="o">-</span><span class="mf">7.1</span>
 </pre></div>
 </div>
 </li>
@@ -75,11 +79,11 @@
 <blockquote>
 <div><div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">having different CCP4 Setups for different servers is possible but inconvenient from the maintenance point of view.</p>
+<p class="last">having different CCP4 Setups for different servers or hosts is possible but inconvenient from the maintenance point of view.</p>
 </div>
 </div></blockquote>
 <ol class="arabic" start="3">
-<li><p class="first">Directories for <strong>FE</strong> and <strong>NC(s)</strong> in respective hardware hosts:</p>
+<li><p class="first">Directories for <strong>FE</strong> and <strong>NC(s)</strong> <em>in respective hardware hosts</em>:</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">FE</span>
 <span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">NC1</span>
 <span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">NC2</span>
@@ -105,35 +109,39 @@
 <blockquote>
 <div><div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last"><code class="docutils literal"><span class="pre">images</span></code>, <code class="docutils literal"><span class="pre">pdb</span></code> (read-only) and <code class="docutils literal"><span class="pre">job</span> <span class="pre">safe</span></code> (read/write) areas must be accessible from all <strong>FE</strong> , <strong>NC(s)</strong> and <strong>Queue(s)</strong> . Other areas need a read-only access only from <strong>FE</strong> .</p>
+<p class="last"><code class="docutils literal"><span class="pre">images</span></code>, <code class="docutils literal"><span class="pre">pdb</span></code> (read-only) and <code class="docutils literal"><span class="pre">job</span> <span class="pre">safe</span></code> (read/write) areas must be accessible from all <strong>FE</strong> , <strong>NC(s)</strong> and <strong>Queue(s)</strong> . Other areas need a read-only access from <strong>FE</strong> only.</p>
 </div>
 </div></blockquote>
 <ol class="arabic simple" start="6">
-<li>Apache servers running <em>on each host</em> in the setup (excluding <strong>Queue(s)</strong> ).</li>
-<li>CCP4 Cloud accounts in <em>in each host</em> . These accounts do not need elevated priviliges, but they must have access to disk areas as described above.</li>
+<li>Apache servers running <em>on each host machine</em> in the setup (excluding <strong>Queue(s)</strong> ).</li>
+<li>CCP4 Cloud account <em>in each host machine</em>. This account does not need elevated priviliges, but it must have access to disk areas as described above.</li>
 </ol>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last"><strong>FE</strong>, <strong>NC(s)</strong> and computational jobs will run in the CCP4 Cloud account. For security reasons, do not use a personal account for running CCP4 Cloud and restrict the designated account such that no changes or unauthorised access can be made in sensitive parts of your system and personal disk areas.</p>
+</div>
 </div>
 <div class="section" id="setup-procedure">
 <h2>1.2. Setup procedure<a class="headerlink" href="#setup-procedure" title="Permalink to this headline">¶</a></h2>
-<p>All actions, except 1 and 9, should be done in the dedicated CCP4 Cloud account on respective hosts.</p>
+<p>All actions, except 1 and 9, should be done in the designated CCP4 Cloud account on respective hosts (excluding <a class="reference internal" href="#appendix-f"><span class="std std-ref">Apache configuration</span></a>).</p>
 <ol class="arabic">
-<li><p class="first">Install CCP4 (http link).</p>
+<li><p class="first">Install CCP4 (see details in <a class="reference internal" href="#appendix-a"><span class="std std-ref">Appendix A</span></a>).</p>
 </li>
 <li><p class="first">Download and unpack the CCP4 Cloud setup tarball (choose convenient disk area visible from all servers, or repeat the following command on every host):</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">mkdir</span> <span class="o">-</span><span class="n">p</span> <span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">setup</span><span class="o">-</span><span class="n">tmp</span>
 <span class="n">cd</span> <span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">setup</span><span class="o">-</span><span class="n">tmp</span>
-<span class="n">curl</span> <span class="o">.........</span>
+<span class="n">curl</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">ccp4serv6</span><span class="o">.</span><span class="n">rc</span><span class="o">-</span><span class="n">harwell</span><span class="o">.</span><span class="n">ac</span><span class="o">.</span><span class="n">uk</span><span class="o">/</span><span class="n">jscofe</span><span class="o">-</span><span class="n">dev</span><span class="o">/</span><span class="n">ccp4cloud</span><span class="o">-</span><span class="n">setup</span><span class="o">.</span><span class="n">tar</span><span class="o">.</span><span class="n">gz</span> <span class="o">&gt;</span> <span class="n">ccp4cloud</span><span class="o">-</span><span class="n">setup</span><span class="o">.</span><span class="n">tar</span><span class="o">.</span><span class="n">gz</span>
 <span class="n">tar</span> <span class="o">-</span><span class="n">xvzf</span> <span class="n">ccp4cloud</span><span class="o">-</span><span class="n">setup</span><span class="o">.</span><span class="n">tar</span><span class="o">.</span><span class="n">gz</span>
 </pre></div>
 </div>
 </li>
 <li><p class="first">Create server directories and copy content of prototype contents from the CCP4 Cloud setup tarball (commands to be executed in respective hosts):</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">mkdir</span> <span class="o">-</span><span class="n">p</span> <span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">FE</span>
-<span class="n">cp</span> <span class="o">-</span><span class="n">r</span> <span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">setup</span><span class="o">-</span><span class="n">tmp</span><span class="o">/</span><span class="n">FE</span><span class="o">/*</span> <span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">FE</span><span class="o">/</span>
+<span class="n">cp</span> <span class="o">-</span><span class="n">r</span> <span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">setup</span><span class="o">-</span><span class="n">tmp</span><span class="o">/</span><span class="n">ccp4cloud</span><span class="o">-</span><span class="n">setup</span><span class="o">/</span><span class="n">FE</span><span class="o">/*</span> <span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">FE</span><span class="o">/</span>
 <span class="n">mkdir</span> <span class="o">-</span><span class="n">p</span> <span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">NC1</span>
-<span class="n">cp</span> <span class="o">-</span><span class="n">r</span> <span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">setup</span><span class="o">-</span><span class="n">tmp</span><span class="o">/</span><span class="n">NC</span><span class="o">/*</span> <span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">NC1</span><span class="o">/</span>
+<span class="n">cp</span> <span class="o">-</span><span class="n">r</span> <span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">setup</span><span class="o">-</span><span class="n">tmp</span><span class="o">/</span><span class="n">ccp4cloud</span><span class="o">-</span><span class="n">setup</span><span class="o">/</span><span class="n">NC</span><span class="o">/*</span> <span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">NC1</span><span class="o">/</span>
 <span class="n">mkdir</span> <span class="o">-</span><span class="n">p</span> <span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">NC2</span>
-<span class="n">cp</span> <span class="o">-</span><span class="n">r</span> <span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">setup</span><span class="o">-</span><span class="n">tmp</span><span class="o">/</span><span class="n">NC</span><span class="o">/*</span> <span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">NC2</span><span class="o">/</span>
+<span class="n">cp</span> <span class="o">-</span><span class="n">r</span> <span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">setup</span><span class="o">-</span><span class="n">tmp</span><span class="o">/</span><span class="n">ccp4cloud</span><span class="o">-</span><span class="n">setup</span><span class="o">/</span><span class="n">NC</span><span class="o">/*</span> <span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">NC2</span><span class="o">/</span>
 </pre></div>
 </div>
 </li>
@@ -141,21 +149,20 @@
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">mkdir</span> <span class="o">-</span><span class="n">p</span> <span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">disk1</span><span class="o">/</span><span class="n">users</span>
 <span class="n">mkdir</span> <span class="o">-</span><span class="n">p</span> <span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">disk1</span><span class="o">/</span><span class="n">projects</span>
 <span class="n">mkdir</span> <span class="o">-</span><span class="n">p</span> <span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">disk1</span><span class="o">/</span><span class="n">facilities</span>
-<span class="n">mkdir</span> <span class="o">-</span><span class="n">p</span> <span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">disk1</span><span class="o">/</span><span class="n">storage</span>
 <span class="n">mkdir</span> <span class="o">-</span><span class="n">p</span> <span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">disk2</span><span class="o">/</span><span class="n">projects</span>
 </pre></div>
 </div>
 </li>
 </ol>
 <p>At list one disk must be allocated for user and project data. Additional disks (<code class="docutils literal"><span class="pre">disk2</span></code> in this example) may be added later.</p>
-<ol class="arabic" start="4">
-<li><p class="first">Make necessary changes in <strong>NC</strong> configuration files (see details in <a class="reference internal" href="#appendix-a"><span class="std std-ref">Appendix A</span></a>):</p>
+<ol class="arabic" start="5">
+<li><p class="first">Make necessary changes in <strong>NC</strong> configuration files (see details in <a class="reference internal" href="#appendix-b"><span class="std std-ref">Appendix B</span></a>):</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">vi</span> <span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">NC1</span><span class="o">/</span><span class="n">config</span><span class="o">.</span><span class="n">json</span>
 <span class="n">vi</span> <span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">NC2</span><span class="o">/</span><span class="n">config</span><span class="o">.</span><span class="n">json</span>
 </pre></div>
 </div>
 </li>
-<li><p class="first">Make necessary changes in <strong>FE</strong> configuration file (see details in <a class="reference internal" href="#appendix-b"><span class="std std-ref">Appendix B</span></a>):</p>
+<li><p class="first">Make necessary changes in <strong>FE</strong> configuration file (see details in <a class="reference internal" href="#appendix-c"><span class="std std-ref">Appendix C</span></a>):</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">vi</span> <span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">FE</span><span class="o">/</span><span class="n">config</span><span class="o">.</span><span class="n">json</span>
 </pre></div>
 </div>
@@ -168,18 +175,18 @@
 </div>
 </div></blockquote>
 <ol class="arabic" start="7">
-<li><p class="first">Make necessary changes in <strong>NC(s)</strong> start script(s) (see details in <a class="reference internal" href="#appendix-c"><span class="std std-ref">Appendix C</span></a>):</p>
+<li><p class="first">Make necessary changes in <strong>NC(s)</strong> start script(s) (see details in <a class="reference internal" href="#appendix-d"><span class="std std-ref">Appendix D</span></a>):</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">vi</span> <span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">NC1</span><span class="o">/</span><span class="n">start</span><span class="o">-</span><span class="n">nc</span><span class="o">.</span><span class="n">sh</span>
 <span class="n">vi</span> <span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">NC2</span><span class="o">/</span><span class="n">start</span><span class="o">-</span><span class="n">nc</span><span class="o">.</span><span class="n">sh</span>
 </pre></div>
 </div>
 </li>
-<li><p class="first">Make necessary changes in <strong>FE</strong> start script (see details in <a class="reference internal" href="#appendix-d"><span class="std std-ref">Appendix D</span></a>):</p>
+<li><p class="first">Make necessary changes in <strong>FE</strong> start script (see details in <a class="reference internal" href="#appendix-e"><span class="std std-ref">Appendix E</span></a>):</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">vi</span> <span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">FE</span><span class="o">/</span><span class="n">start</span><span class="o">-</span><span class="n">fe</span><span class="o">.</span><span class="n">sh</span>
 </pre></div>
 </div>
 </li>
-<li><p class="first">Modify Apache configuration <em>on every host</em> (see details in <a class="reference internal" href="#appendix-e"><span class="std std-ref">Appendix E</span></a>)</p>
+<li><p class="first">Modify Apache configuration <em>on every host</em> (see details in <a class="reference internal" href="#appendix-f"><span class="std std-ref">Appendix F</span></a>)</p>
 </li>
 <li><p class="first">Start CCP4 Cloud servers:</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">NC1</span><span class="o">/</span><span class="n">start</span><span class="o">-</span><span class="n">nc</span><span class="o">.</span><span class="n">sh</span>
@@ -188,18 +195,41 @@
 </pre></div>
 </div>
 </li>
-<li><p class="first">Perform checks and tests (see details in <a class="reference internal" href="#appendix-f"><span class="std std-ref">Appendix F</span></a>).</p>
+</ol>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">you may receive a confusing message <em>&#8216;&#8217;configuration file not found&#8217;&#8216;</em> here. This may be indeed due to a typo in configuration file paths within the scripts, but also because of misformatted configuration file(s). Typically, extra commas between JSON items are introduced or get omitted at manual editing.</p>
+</div>
+<ol class="arabic" start="11">
+<li><p class="first">Perform checks and tests (see details in <a class="reference internal" href="#appendix-g"><span class="std std-ref">Appendix G</span></a>).</p>
 </li>
-<li><p class="first">Create CCP4 Cloud user with administrative privileges (see details in <a class="reference internal" href="#appendix-g"><span class="std std-ref">Appendix G</span></a>)</p>
+<li><p class="first">Create CCP4 Cloud user with administrative privileges (see details in <a class="reference internal" href="#appendix-h"><span class="std std-ref">Appendix H</span></a>)</p>
 </li>
-<li><p class="first">Delete temporary setup directory (optional):</p>
-<p>rm -rf /path/to/setup-tmp</p>
+<li><p class="first">Delete the temporary setup directory (optional)</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">rm</span> <span class="o">-</span><span class="n">rf</span> <span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">setup</span><span class="o">-</span><span class="n">tmp</span>
+</pre></div>
+</div>
 </li>
 </ol>
 <p><strong>The End.</strong></p>
 </div>
+<div class="section" id="configuration-of-ccp4-cloud-clients">
+<h2>1.3. Configuration of CCP4 Cloud Clients<a class="headerlink" href="#configuration-of-ccp4-cloud-clients" title="Permalink to this headline">¶</a></h2>
+<p>It is recommended that users access CCP4 Cloud via CCP4 Cloud Client, rather than direct web-link in browser. Using CCP4 Cloud Client allows to use interactive graphical software, such as <code class="docutils literal"><span class="pre">Coot</span></code>, with the remote CCP4 Cloud instance.</p>
+<p>CCP4 Cloud Client is launched by clicking on icon with CCP4 Diamond, cloud and Wi-Fi sign, found in CCP4 Setup 7.1 on user machines. By default, it connects to CCP4 Cloud run by CCP4 at Harwell, and should be re-configured for using your own CCP4 Cloud instance. For that, launch CCP4 Cloud Client Configurator by clicking on icon with CCP4 Diamond, cloud and gear sign, and change the URL in the field provided. In terms, used in this document, the URL will be</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">www</span><span class="o">.</span><span class="n">mysite</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">ccp4cloud</span><span class="o">/</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<ul class="last simple">
+<li>the trailing slash is significant</li>
+<li>this operation needs to be performed only once by every user of your new CCP4 Cloud instance</li>
+</ul>
+</div>
+</div>
 <div class="section" id="maintenance-and-updates">
-<h2>1.3. Maintenance and Updates<a class="headerlink" href="#maintenance-and-updates" title="Permalink to this headline">¶</a></h2>
+<h2>1.4. Maintenance and Updates<a class="headerlink" href="#maintenance-and-updates" title="Permalink to this headline">¶</a></h2>
 <p>CCP4 Cloud can be started and restarted as below:</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">NC1</span><span class="o">/</span><span class="n">start</span><span class="o">-</span><span class="n">nc</span><span class="o">.</span><span class="n">sh</span>
 <span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">NC2</span><span class="o">/</span><span class="n">start</span><span class="o">-</span><span class="n">nc</span><span class="o">.</span><span class="n">sh</span>
@@ -208,7 +238,7 @@
 </div>
 <p>You may find it more convenient to write a single script for (re)starting CCP4 Cloud, possibly using ssh access to all hosts involved.</p>
 <p>CCP4 Software is regularly updated (once in 2-4 weeks). CCP4 Cloud maintainer will be informed by e-mail when a new update is issued; in addtion, CCP4 Cloud users may see notification of new updates when working via CCP4 Cloud Client. Updates may be applied with the following commands, which can be, again, put into a single convenience script):</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">ccp4</span><span class="o">-</span><span class="mf">7.1</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">ccp4um</span> <span class="o">-</span><span class="n">auto</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">CCP4</span><span class="o">/</span><span class="n">ccp4</span><span class="o">-</span><span class="mf">7.1</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">ccp4um</span> <span class="o">-</span><span class="n">auto</span>
 <span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">NC1</span><span class="o">/</span><span class="n">start</span><span class="o">-</span><span class="n">nc</span><span class="o">.</span><span class="n">sh</span>
 <span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">NC2</span><span class="o">/</span><span class="n">start</span><span class="o">-</span><span class="n">nc</span><span class="o">.</span><span class="n">sh</span>
 <span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">FE</span><span class="o">/</span><span class="n">start</span><span class="o">-</span><span class="n">fe</span><span class="o">.</span><span class="n">sh</span>
@@ -219,8 +249,31 @@
 <p class="last">CCP4 must be updated in the account used for its installation, and CCP4 Cloud servers must be restarted in CCP4 Cloud accounts in respective hosts</p>
 </div>
 </div>
-<div class="section" id="appendix-a-adjusting-configuration-file-for-number-cruncher-servers">
-<span id="appendix-a"></span><h2>1.4. Appendix A. Adjusting configuration file for Number Cruncher Servers<a class="headerlink" href="#appendix-a-adjusting-configuration-file-for-number-cruncher-servers" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="contact">
+<h2>1.5. Contact<a class="headerlink" href="#contact" title="Permalink to this headline">¶</a></h2>
+<p>In case of problems with CCP4 Cloud setup or questions on further customisation of your CCP4 Cloud instance, do not hesitate to contact CCP4 at <a class="reference external" href="mailto:ccp4&#37;&#52;&#48;ccp4&#46;ac&#46;uk">ccp4<span>&#64;</span>ccp4<span>&#46;</span>ac<span>&#46;</span>uk</a> .</p>
+</div>
+<div class="section" id="appendix-a-installation-of-ccp4">
+<span id="appendix-a"></span><h2>1.6. Appendix A. Installation of CCP4<a class="headerlink" href="#appendix-a-installation-of-ccp4" title="Permalink to this headline">¶</a></h2>
+<p>The latest CCP4 can be conveniently installed with the following script:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span># Installing the latest CCP4 version series 7.1 for Linux (minimal configuration)
+cd /path/to/CCP4
+h=http://series-71.fg.oisin.rc-harwell.ac.uk/downloads/packages_others
+x=$(curl -s ${h}/md5sums.txt | grep linux64)
+x=${x/* }
+echo ${x} # on 26 Oct 2020 prints ccp4-7.1.006-linux64.tar.gz
+curl -O ${h}/${x}
+tar -zxf ${x}
+rm ${x}
+cd ccp4-7.1
+./BINARY.setup
+bin/ccp4um -m 99 # tells that ccp4 is up to date; can be used for updating later on
+exit
+</pre></div>
+</div>
+</div>
+<div class="section" id="appendix-b-adjusting-configuration-file-for-number-cruncher-servers">
+<span id="appendix-b"></span><h2>1.7. Appendix B. Adjusting configuration file for Number Cruncher Servers<a class="headerlink" href="#appendix-b-adjusting-configuration-file-for-number-cruncher-servers" title="Permalink to this headline">¶</a></h2>
 <p>Below is an <em>excerpt</em> of <strong>NC</strong> configuration settings that must be revised. Other settings are for fine tuning and development, and can be left as is in most cases. Please refer to <a class="reference internal" href="configuration.html#ccp4-cloud-configuration"><span class="std std-ref">CCP4 Cloud configuration reference</span></a> for more details :</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="p">{</span>
 
@@ -319,8 +372,8 @@
 </dd>
 </dl>
 </div>
-<div class="section" id="appendix-b-adjusting-configuration-file-for-the-front-end-server">
-<span id="appendix-b"></span><h2>1.5. Appendix B. Adjusting configuration file for the Front-End Server<a class="headerlink" href="#appendix-b-adjusting-configuration-file-for-the-front-end-server" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="appendix-c-adjusting-configuration-file-for-the-front-end-server">
+<span id="appendix-c"></span><h2>1.8. Appendix C. Adjusting configuration file for the Front-End Server<a class="headerlink" href="#appendix-c-adjusting-configuration-file-for-the-front-end-server" title="Permalink to this headline">¶</a></h2>
 <p>Below is an <em>excerpt</em> of <strong>FE</strong> configuration settings that must be revised. Other settings are for fine tuning and development, and can be left as is in most cases. Please refer to <a class="reference internal" href="configuration.html#ccp4-cloud-configuration"><span class="std std-ref">CCP4 Cloud configuration reference</span></a> for more details :</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="p">{</span>
 
@@ -334,7 +387,7 @@
         <span class="s2">&quot;externalURL&quot;</span>      <span class="p">:</span> <span class="s2">&quot;https://www.mysite.com/ccp4cloud&quot;</span><span class="p">,</span>
         <span class="s2">&quot;reportURL&quot;</span>        <span class="p">:</span> <span class="s2">&quot;https://www.mysite.com/ccp4cloud/&quot;</span><span class="p">,</span>
         <span class="s2">&quot;userDataPath&quot;</span>     <span class="p">:</span> <span class="s2">&quot;/path/to/disk1/users&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;storage&quot;</span>          <span class="p">:</span> <span class="s2">&quot;/path/to/disk1/storage&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;storage&quot;</span>          <span class="p">:</span> <span class="s2">&quot;/path/to/disk1/projects&quot;</span><span class="p">,</span>
         <span class="s2">&quot;projectsPath&quot;</span>     <span class="p">:</span> <span class="p">{</span>
             <span class="s2">&quot;disk1&quot;</span> <span class="p">:</span> <span class="p">{</span> <span class="s2">&quot;path&quot;</span>        <span class="p">:</span> <span class="s2">&quot;/path/to/disk1/projects&quot;</span><span class="p">,</span>
                       <span class="p">},</span>
@@ -392,7 +445,7 @@
 <dt><strong>userDataPath</strong></dt>
 <dd>path to directory for user data (in this document referenced as <code class="docutils literal"><span class="pre">/path/to/disk1/users</span></code>)</dd>
 <dt><strong>storage</strong></dt>
-<dd>path to directory for miscellaneous items (in this document referenced as <code class="docutils literal"><span class="pre">/path/to/disk1/storage</span></code>)</dd>
+<dd>path to directory for miscellaneous items, which must coincide with <code class="docutils literal"><span class="pre">projects</span></code> directory on one of disks (<code class="docutils literal"><span class="pre">/path/to/disk1/projects</span></code>)</dd>
 <dt><strong>projectsPath</strong></dt>
 <dd><p class="first">at least one disk for user projects must be configured:</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="s2">&quot;projectsPath&quot;</span> <span class="p">:</span> <span class="p">{</span>
@@ -436,32 +489,193 @@
 <dd>this configuration is the same as in <a class="reference internal" href="#ccp4-cloud-emailer"><span class="std std-ref">case of NC</span></a>.</dd>
 </dl>
 </div>
-<div class="section" id="appendix-c-adjusting-start-script-for-number-cruncher-servers">
-<span id="appendix-c"></span><h2>1.6. Appendix C. Adjusting start script for Number Cruncher Servers<a class="headerlink" href="#appendix-c-adjusting-start-script-for-number-cruncher-servers" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="appendix-d-adjusting-start-script-for-number-cruncher-servers">
+<span id="appendix-d"></span><h2>1.9. Appendix D. Adjusting start script for Number Cruncher Servers<a class="headerlink" href="#appendix-d-adjusting-start-script-for-number-cruncher-servers" title="Permalink to this headline">¶</a></h2>
 <p>Replace paths in the following lines of the provided <strong>NC</strong> start script (<code class="docutils literal"><span class="pre">/path/to/NC/start-nc.sh</span></code>):</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">ccp4_dir</span><span class="o">=/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">ccp4</span><span class="o">-</span><span class="mf">7.1</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">ccp4_dir</span><span class="o">=/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">CCP4</span><span class="o">/</span><span class="n">ccp4</span><span class="o">-</span><span class="mf">7.1</span>
 <span class="n">nc_dir</span><span class="o">=/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">NC</span>
 <span class="n">export</span> <span class="n">PDB_DIR</span><span class="o">=/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">pdb</span>
 </pre></div>
 </div>
 </div>
-<div class="section" id="appendix-d-adjusting-start-script-for-the-front-end-server">
-<span id="appendix-d"></span><h2>1.7. Appendix D. Adjusting start script for the Front-End Server<a class="headerlink" href="#appendix-d-adjusting-start-script-for-the-front-end-server" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="appendix-e-adjusting-start-script-for-the-front-end-server">
+<span id="appendix-e"></span><h2>1.10. Appendix E. Adjusting start script for the Front-End Server<a class="headerlink" href="#appendix-e-adjusting-start-script-for-the-front-end-server" title="Permalink to this headline">¶</a></h2>
 <p>Replace paths in the following lines of the provided <strong>FE</strong> start script (<code class="docutils literal"><span class="pre">/path/to/FE/start-fe.sh</span></code>):</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">ccp4_dir</span><span class="o">=/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">ccp4</span><span class="o">-</span><span class="mf">7.1</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">ccp4_dir</span><span class="o">=/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">CCP4</span><span class="o">/</span><span class="n">ccp4</span><span class="o">-</span><span class="mf">7.1</span>
 <span class="n">fe_dir</span><span class="o">=/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span>
 <span class="n">export</span> <span class="n">PDB_DIR</span><span class="o">=/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">pdb</span>
 </pre></div>
 </div>
 </div>
-<div class="section" id="appendix-e-adjusting-apache-configuration-on-host-machines">
-<span id="appendix-e"></span><h2>1.8. Appendix E. Adjusting Apache configuration on host machines<a class="headerlink" href="#appendix-e-adjusting-apache-configuration-on-host-machines" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="appendix-f-adjusting-apache-configuration-on-host-machines">
+<span id="appendix-f"></span><h2>1.11. Appendix F. Adjusting Apache configuration on host machines<a class="headerlink" href="#appendix-f-adjusting-apache-configuration-on-host-machines" title="Permalink to this headline">¶</a></h2>
+<p>CCP4 Cloud&#8217;s Front-End Server listens to the specified port of the <em>localhost</em> service running on their host machines. External requests from users must be redirected to that port. In order to do that:</p>
+<ol class="arabic">
+<li><p class="first">Note the port number and <code class="docutils literal"><span class="pre">externalURL's</span></code> path in <strong>FE</strong> <a class="reference internal" href="#appendix-c"><span class="std std-ref">configuration</span></a>. In this document, the suggested values are <code class="docutils literal"><span class="pre">8085</span></code> and <code class="docutils literal"><span class="pre">&lt;path&gt;=ccp4cloud</span></code>, respectively.</p>
+</li>
+<li><p class="first">Identify site directory of your Apache setup. In Debian-based systems, this is typically <code class="docutils literal"><span class="pre">apache_site_dir=/etc/apache2/sites-enabled</span></code>, and in Redhat-based systems <code class="docutils literal"><span class="pre">apache_site_dir=/etc/httpd/conf.d</span></code></p>
+</li>
+<li><p class="first">Edit and install the provided template configuration module for Apache:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">cp</span> <span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">setup</span><span class="o">-</span><span class="n">tmp</span><span class="o">/</span><span class="n">ccp4cloud</span><span class="o">-</span><span class="n">setup</span><span class="o">/</span><span class="n">apache</span><span class="o">.</span><span class="n">conf</span> <span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">setup</span><span class="o">-</span><span class="n">tmp</span><span class="o">/&lt;</span><span class="n">path</span><span class="o">&gt;.</span><span class="n">conf</span>
+<span class="c1"># in &lt;path&gt;.conf, replace all occurences of:</span>
+<span class="c1">#      &#39;0000&#39;  for the selected port number</span>
+<span class="c1">#      &#39;path&#39;  for the chosen URL path (&#39;&lt;path&gt;&#39;)</span>
+<span class="n">vi</span> <span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">setup</span><span class="o">-</span><span class="n">tmp</span><span class="o">/&lt;</span><span class="n">path</span><span class="o">&gt;.</span><span class="n">conf</span>
+<span class="n">sudo</span> <span class="n">cp</span> <span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">setup</span><span class="o">-</span><span class="n">tmp</span><span class="o">/&lt;</span><span class="n">path</span><span class="o">&gt;.</span><span class="n">conf</span> <span class="n">apache_site_dir</span><span class="o">/</span>
+</pre></div>
 </div>
-<div class="section" id="appendix-f-tests-and-checks">
-<span id="appendix-f"></span><h2>1.9. Appendix F. Tests and checks<a class="headerlink" href="#appendix-f-tests-and-checks" title="Permalink to this headline">¶</a></h2>
+</li>
+</ol>
+<p>For example, for port number and <strong>FE</strong> URL path used in this document, <code class="docutils literal"><span class="pre">apache_site_dir</span></code> should receive file <code class="docutils literal"><span class="pre">ccp4cloud.conf</span></code> with the following content:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">Proxy</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="mf">127.0</span><span class="o">.</span><span class="mf">0.1</span><span class="p">:</span><span class="mi">8085</span><span class="o">/*&gt;</span>
+  <span class="n">Allow</span> <span class="kn">from</span> <span class="nn">all</span>
+<span class="o">&lt;/</span><span class="n">Proxy</span><span class="o">&gt;</span>
+
+<span class="n">ProxyRequests</span> <span class="n">Off</span>
+<span class="n">ProxyPass</span> <span class="o">/</span><span class="n">ccp4cloud</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">localhost</span><span class="p">:</span><span class="mi">8085</span>
+<span class="n">SetOutputFilter</span> <span class="n">INFLATE</span><span class="p">;</span><span class="n">proxy</span><span class="o">-</span><span class="n">html</span><span class="p">;</span><span class="n">DEFLATE</span>
+<span class="n">ProxyHTMLURLMap</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">localhost</span><span class="p">:</span><span class="mi">8085</span> <span class="o">/</span><span class="n">ccp4cloud</span>
+<span class="n">LogLevel</span> <span class="n">Info</span>
+<span class="n">ProxyPassReverse</span> <span class="o">/</span><span class="n">ccp4cloud</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">localhost</span><span class="p">:</span><span class="mi">8085</span>
+</pre></div>
 </div>
-<div class="section" id="appendix-g-creating-1st-user-with-administrative-privileges">
-<span id="appendix-g"></span><h2>1.10. Appendix G. Creating 1st user with administrative privileges<a class="headerlink" href="#appendix-g-creating-1st-user-with-administrative-privileges" title="Permalink to this headline">¶</a></h2>
+<ol class="arabic" start="4">
+<li><p class="first">Restart Apache:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">apachectl</span> <span class="n">stop</span>
+<span class="n">sudo</span> <span class="n">apachectl</span> <span class="n">start</span>
+</pre></div>
+</div>
+</li>
+</ol>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">at this point, Apache may refuse to start if modules, required for the redirection, were not installed. Should this happen, inspect the error message and install the missing modules. Typically, <code class="docutils literal"><span class="pre">mod_proxy</span></code> and <code class="docutils literal"><span class="pre">mod_proxy_http</span></code> are missing.</p>
+</div>
+<p><strong>Apache configuration for Number Cruncher Server</strong></p>
+<p>If <strong>NC</strong> is placed on a host machine, different from <strong>FE&#8217;s</strong> host, then DNS-resolved <code class="docutils literal"><span class="pre">externalURL</span></code> should be specified in its configuration, and the corresponding redirection module provided for it, in exactly the same fashion as above.</p>
+</div>
+<div class="section" id="appendix-g-tests-and-checks">
+<span id="appendix-g"></span><h2>1.12. Appendix G. Tests and checks<a class="headerlink" href="#appendix-g-tests-and-checks" title="Permalink to this headline">¶</a></h2>
+<p>After starting CCP4 Cloud and Apache servers:</p>
+<ol class="arabic">
+<li><p class="first">Check <strong>FE</strong> and <strong>NC&#8217;s</strong> log files:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">cat</span> <span class="o">/</span><span class="n">path</span><span class="o">.</span><span class="n">to</span><span class="o">/</span><span class="n">FE</span><span class="o">/</span><span class="n">logs</span><span class="o">/</span><span class="n">node_fe</span><span class="o">.</span><span class="n">err</span>
+<span class="n">cat</span> <span class="o">/</span><span class="n">path</span><span class="o">.</span><span class="n">to</span><span class="o">/</span><span class="n">FE</span><span class="o">/</span><span class="n">logs</span><span class="o">/</span><span class="n">node_fe</span><span class="o">.</span><span class="n">log</span>
+<span class="n">cat</span> <span class="o">/</span><span class="n">path</span><span class="o">.</span><span class="n">to</span><span class="o">/</span><span class="n">NC1</span><span class="o">/</span><span class="n">logs</span><span class="o">/</span><span class="n">node_nc</span><span class="o">.</span><span class="n">err</span>
+<span class="n">cat</span> <span class="o">/</span><span class="n">path</span><span class="o">.</span><span class="n">to</span><span class="o">/</span><span class="n">NC1</span><span class="o">/</span><span class="n">logs</span><span class="o">/</span><span class="n">node_nc</span><span class="o">.</span><span class="n">log</span>
+<span class="n">cat</span> <span class="o">/</span><span class="n">path</span><span class="o">.</span><span class="n">to</span><span class="o">/</span><span class="n">NC2</span><span class="o">/</span><span class="n">logs</span><span class="o">/</span><span class="n">node_nc</span><span class="o">.</span><span class="n">err</span>
+<span class="n">cat</span> <span class="o">/</span><span class="n">path</span><span class="o">.</span><span class="n">to</span><span class="o">/</span><span class="n">NC2</span><span class="o">/</span><span class="n">logs</span><span class="o">/</span><span class="n">node_nc</span><span class="o">.</span><span class="n">log</span>
+</pre></div>
+</div>
+</li>
+</ol>
+<p>Normal content of <code class="docutils literal"><span class="pre">*.err</span></code> logs may contain</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">sh</span><span class="p">:</span> <span class="mi">1</span><span class="p">:</span> <span class="n">kill</span><span class="p">:</span> <span class="n">No</span> <span class="n">such</span> <span class="n">processError</span><span class="p">:</span>
+</pre></div>
+</div>
+<p>anything else indicates a problem. A message similar to</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">Error</span><span class="p">:</span> <span class="n">listen</span> <span class="n">EADDRINUSE</span> <span class="mf">127.0</span><span class="o">.</span><span class="mf">0.1</span><span class="p">:</span><span class="mi">8085</span>
+</pre></div>
+</div>
+<p>may mean that the selected <em>localhost</em> port is used by another process running on the host machine. Messages similar to</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">Error</span><span class="p">:</span> <span class="n">EBUSY</span><span class="p">:</span> <span class="n">resource</span> <span class="n">busy</span> <span class="ow">or</span> <span class="n">locked</span>
+<span class="n">Error</span><span class="p">:</span> <span class="n">ENOENT</span><span class="p">:</span> <span class="n">no</span> <span class="n">such</span> <span class="n">file</span> <span class="ow">or</span> <span class="n">directory</span>
+</pre></div>
+</div>
+<p>indicate problems with file systems or with directory specifications in CCP4 Cloud&#8217;s configuration files and/or start scripts. Errors are complemented with code trace, which may help a developer to identify the exact problem. Therefore, please inculde code traces in the respective communications.</p>
+<p>If <strong>FE</strong> server starts normally, its <code class="docutils literal"><span class="pre">*.log</span></code> file should start with messages similar to the following</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">sh</span><span class="p">:</span> <span class="n">line</span> <span class="mi">0</span><span class="p">:</span> <span class="n">kill</span><span class="p">:</span> <span class="p">(</span><span class="mi">2982</span><span class="p">)</span> <span class="o">-</span> <span class="n">No</span> <span class="n">such</span> <span class="n">process</span>
+<span class="p">[</span><span class="mi">2020</span><span class="o">-</span><span class="mi">10</span><span class="o">-</span><span class="mi">28</span><span class="n">T12</span><span class="p">:</span><span class="mi">17</span><span class="p">:</span><span class="mf">30.226</span><span class="n">Z</span><span class="p">]</span> <span class="mi">14</span><span class="o">-</span><span class="mi">001</span> <span class="o">+++</span> <span class="n">cannot</span> <span class="n">kill</span> <span class="n">process</span> <span class="n">pid</span><span class="o">=</span><span class="mi">2982</span>
+<span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">sh</span><span class="p">:</span> <span class="n">line</span> <span class="mi">0</span><span class="p">:</span> <span class="n">kill</span><span class="p">:</span> <span class="p">(</span><span class="mi">2994</span><span class="p">)</span> <span class="o">-</span> <span class="n">No</span> <span class="n">such</span> <span class="n">process</span>
+<span class="p">[</span><span class="mi">2020</span><span class="o">-</span><span class="mi">10</span><span class="o">-</span><span class="mi">28</span><span class="n">T12</span><span class="p">:</span><span class="mi">17</span><span class="p">:</span><span class="mf">30.232</span><span class="n">Z</span><span class="p">]</span> <span class="mi">14</span><span class="o">-</span><span class="mi">001</span> <span class="o">+++</span> <span class="n">cannot</span> <span class="n">kill</span> <span class="n">process</span> <span class="n">pid</span><span class="o">=</span><span class="mi">2994</span>
+<span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">sh</span><span class="p">:</span> <span class="n">line</span> <span class="mi">0</span><span class="p">:</span> <span class="n">kill</span><span class="p">:</span> <span class="p">(</span><span class="mi">2995</span><span class="p">)</span> <span class="o">-</span> <span class="n">No</span> <span class="n">such</span> <span class="n">process</span>
+<span class="p">[</span><span class="mi">2020</span><span class="o">-</span><span class="mi">10</span><span class="o">-</span><span class="mi">28</span><span class="n">T12</span><span class="p">:</span><span class="mi">17</span><span class="p">:</span><span class="mf">30.237</span><span class="n">Z</span><span class="p">]</span> <span class="mi">14</span><span class="o">-</span><span class="mi">001</span> <span class="o">+++</span> <span class="n">cannot</span> <span class="n">kill</span> <span class="n">process</span> <span class="n">pid</span><span class="o">=</span><span class="mi">2995</span>
+<span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">sh</span><span class="p">:</span> <span class="n">line</span> <span class="mi">0</span><span class="p">:</span> <span class="n">kill</span><span class="p">:</span> <span class="p">(</span><span class="mi">2982</span><span class="p">)</span> <span class="o">-</span> <span class="n">No</span> <span class="n">such</span> <span class="n">process</span>
+<span class="p">[</span><span class="mi">2020</span><span class="o">-</span><span class="mi">10</span><span class="o">-</span><span class="mi">28</span><span class="n">T12</span><span class="p">:</span><span class="mi">17</span><span class="p">:</span><span class="mf">30.241</span><span class="n">Z</span><span class="p">]</span> <span class="mi">14</span><span class="o">-</span><span class="mi">001</span> <span class="o">+++</span> <span class="n">cannot</span> <span class="n">kill</span> <span class="n">process</span> <span class="n">pid</span><span class="o">=</span><span class="mi">2982</span>
+<span class="p">[</span><span class="mi">2020</span><span class="o">-</span><span class="mi">10</span><span class="o">-</span><span class="mi">28</span><span class="n">T12</span><span class="p">:</span><span class="mi">17</span><span class="p">:</span><span class="mf">30.250</span><span class="n">Z</span><span class="p">]</span> <span class="mi">03</span><span class="o">-</span><span class="mi">005</span> <span class="o">...</span> <span class="n">python</span> <span class="n">version</span><span class="p">:</span> <span class="n">ccp4</span><span class="o">-</span><span class="n">python</span> <span class="ow">not</span> <span class="n">found</span>
+<span class="p">[</span><span class="mi">2020</span><span class="o">-</span><span class="mi">10</span><span class="o">-</span><span class="mi">28</span><span class="n">T12</span><span class="p">:</span><span class="mi">17</span><span class="p">:</span><span class="mf">30.295</span><span class="n">Z</span><span class="p">]</span> <span class="mi">03</span><span class="o">-</span><span class="mi">001</span> <span class="o">...</span> <span class="n">FE</span><span class="p">:</span> <span class="n">url</span><span class="o">=</span><span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">localhost</span><span class="p">:</span><span class="mi">8081</span>
+<span class="p">[</span><span class="mi">2020</span><span class="o">-</span><span class="mi">10</span><span class="o">-</span><span class="mi">28</span><span class="n">T12</span><span class="p">:</span><span class="mi">17</span><span class="p">:</span><span class="mf">30.296</span><span class="n">Z</span><span class="p">]</span> <span class="mi">03</span><span class="o">-</span><span class="mi">001</span> <span class="o">...</span> <span class="n">FE</span><span class="o">-</span><span class="n">Proxy</span><span class="p">:</span> <span class="n">url</span><span class="o">=</span><span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">localhost</span><span class="p">:</span><span class="mi">8085</span>
+<span class="p">[</span><span class="mi">2020</span><span class="o">-</span><span class="mi">10</span><span class="o">-</span><span class="mi">28</span><span class="n">T12</span><span class="p">:</span><span class="mi">17</span><span class="p">:</span><span class="mf">30.296</span><span class="n">Z</span><span class="p">]</span> <span class="mi">03</span><span class="o">-</span><span class="mi">002</span> <span class="o">...</span> <span class="n">NC</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span> <span class="n">name</span><span class="o">=</span><span class="n">local</span><span class="o">-</span><span class="n">nc</span> <span class="nb">type</span><span class="o">=</span><span class="n">SHELL</span> <span class="n">url</span><span class="o">=</span><span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">localhost</span><span class="p">:</span><span class="mi">8083</span>
+<span class="p">[</span><span class="mi">2020</span><span class="o">-</span><span class="mi">10</span><span class="o">-</span><span class="mi">28</span><span class="n">T12</span><span class="p">:</span><span class="mi">17</span><span class="p">:</span><span class="mf">30.296</span><span class="n">Z</span><span class="p">]</span> <span class="mi">03</span><span class="o">-</span><span class="mi">002</span> <span class="o">...</span> <span class="n">NC</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span> <span class="n">name</span><span class="o">=</span><span class="n">client</span> <span class="nb">type</span><span class="o">=</span><span class="n">CLIENT</span> <span class="n">url</span><span class="o">=</span><span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">localhost</span><span class="p">:</span><span class="mi">8084</span>
+<span class="p">[</span><span class="mi">2020</span><span class="o">-</span><span class="mi">10</span><span class="o">-</span><span class="mi">28</span><span class="n">T12</span><span class="p">:</span><span class="mi">17</span><span class="p">:</span><span class="mf">30.299</span><span class="n">Z</span><span class="p">]</span> <span class="mi">03</span><span class="o">-</span><span class="mi">003</span> <span class="o">...</span> <span class="n">configuration</span> <span class="n">written</span> <span class="n">to</span> <span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">folders</span><span class="o">/</span><span class="n">zf</span><span class="o">/</span><span class="mi">9</span><span class="n">_j6y85s4l743fzs2py3gztc0000gn</span><span class="o">/</span><span class="n">T</span><span class="o">/</span><span class="n">tmp</span><span class="o">-</span><span class="mi">8053</span><span class="n">T07Ej39eTIQ7</span>
+<span class="p">[</span><span class="mi">2020</span><span class="o">-</span><span class="mi">10</span><span class="o">-</span><span class="mi">28</span><span class="n">T12</span><span class="p">:</span><span class="mi">17</span><span class="p">:</span><span class="mf">30.302</span><span class="n">Z</span><span class="p">]</span> <span class="mi">23</span><span class="o">-</span><span class="mi">003</span> <span class="o">...</span> <span class="n">server</span> <span class="n">local</span><span class="o">-</span><span class="n">nc</span> <span class="n">started</span><span class="p">,</span> <span class="n">pid</span><span class="o">=</span><span class="mi">8063</span>
+<span class="p">[</span><span class="mi">2020</span><span class="o">-</span><span class="mi">10</span><span class="o">-</span><span class="mi">28</span><span class="n">T12</span><span class="p">:</span><span class="mi">17</span><span class="p">:</span><span class="mf">30.303</span><span class="n">Z</span><span class="p">]</span> <span class="mi">23</span><span class="o">-</span><span class="mi">003</span> <span class="o">...</span> <span class="n">server</span> <span class="n">client</span> <span class="n">started</span><span class="p">,</span> <span class="n">pid</span><span class="o">=</span><span class="mi">8064</span>
+<span class="p">[</span><span class="mi">2020</span><span class="o">-</span><span class="mi">10</span><span class="o">-</span><span class="mi">28</span><span class="n">T12</span><span class="p">:</span><span class="mi">17</span><span class="p">:</span><span class="mf">30.304</span><span class="n">Z</span><span class="p">]</span> <span class="mi">00</span><span class="o">-</span><span class="mi">001</span> <span class="o">...</span> <span class="n">FE</span><span class="p">:</span> <span class="n">url</span><span class="o">=</span><span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">localhost</span><span class="p">:</span><span class="mi">8081</span>
+<span class="p">[</span><span class="mi">2020</span><span class="o">-</span><span class="mi">10</span><span class="o">-</span><span class="mi">28</span><span class="n">T12</span><span class="p">:</span><span class="mi">17</span><span class="p">:</span><span class="mf">30.304</span><span class="n">Z</span><span class="p">]</span> <span class="mi">00</span><span class="o">-</span><span class="mi">002</span> <span class="o">...</span> <span class="n">NC</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span> <span class="nb">type</span><span class="o">=</span><span class="n">SHELL</span> <span class="n">url</span><span class="o">=</span><span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">localhost</span><span class="p">:</span><span class="mi">8083</span>
+<span class="p">[</span><span class="mi">2020</span><span class="o">-</span><span class="mi">10</span><span class="o">-</span><span class="mi">28</span><span class="n">T12</span><span class="p">:</span><span class="mi">17</span><span class="p">:</span><span class="mf">30.304</span><span class="n">Z</span><span class="p">]</span> <span class="mi">00</span><span class="o">-</span><span class="mi">002</span> <span class="o">...</span> <span class="n">NC</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span> <span class="nb">type</span><span class="o">=</span><span class="n">CLIENT</span> <span class="n">url</span><span class="o">=</span><span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">localhost</span><span class="p">:</span><span class="mi">8084</span>
+<span class="p">[</span><span class="mi">2020</span><span class="o">-</span><span class="mi">10</span><span class="o">-</span><span class="mi">28</span><span class="n">T12</span><span class="p">:</span><span class="mi">17</span><span class="p">:</span><span class="mf">30.304</span><span class="n">Z</span><span class="p">]</span> <span class="mi">00</span><span class="o">-</span><span class="mi">003</span> <span class="o">...</span> <span class="n">Emailer</span><span class="p">:</span> <span class="n">desktop</span>
+<span class="p">[</span><span class="mi">2020</span><span class="o">-</span><span class="mi">10</span><span class="o">-</span><span class="mi">28</span><span class="n">T12</span><span class="p">:</span><span class="mi">17</span><span class="p">:</span><span class="mf">30.307</span><span class="n">Z</span><span class="p">]</span> <span class="mi">00</span><span class="o">-</span><span class="mi">005</span> <span class="o">...</span> <span class="n">front</span><span class="o">-</span><span class="n">end</span> <span class="n">started</span><span class="p">,</span> <span class="n">listening</span> <span class="n">to</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">localhost</span><span class="p">:</span><span class="mi">8081</span> <span class="p">(</span><span class="n">non</span><span class="o">-</span><span class="n">exclusive</span><span class="p">)</span>
+<span class="p">[</span><span class="mi">2020</span><span class="o">-</span><span class="mi">10</span><span class="o">-</span><span class="mi">28</span><span class="n">T12</span><span class="p">:</span><span class="mi">17</span><span class="p">:</span><span class="mf">30.307</span><span class="n">Z</span><span class="p">]</span> <span class="mi">22</span><span class="o">-</span><span class="mi">001</span> <span class="o">...</span> <span class="n">setting</span> <span class="n">up</span> <span class="n">proxy</span> <span class="k">for</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">localhost</span><span class="p">:</span><span class="mi">8081</span> <span class="n">localhost</span>
+<span class="p">[</span><span class="mi">2020</span><span class="o">-</span><span class="mi">10</span><span class="o">-</span><span class="mi">28</span><span class="n">T12</span><span class="p">:</span><span class="mi">17</span><span class="p">:</span><span class="mf">30.308</span><span class="n">Z</span><span class="p">]</span> <span class="mi">22</span><span class="o">-</span><span class="mi">002</span> <span class="o">...</span> <span class="n">setting</span> <span class="n">up</span> <span class="n">proxy</span> <span class="k">for</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">localhost</span><span class="p">:</span><span class="mi">8084</span> <span class="n">localhost</span>
+<span class="p">[</span><span class="mi">2020</span><span class="o">-</span><span class="mi">10</span><span class="o">-</span><span class="mi">28</span><span class="n">T12</span><span class="p">:</span><span class="mi">17</span><span class="p">:</span><span class="mf">30.308</span><span class="n">Z</span><span class="p">]</span> <span class="mi">22</span><span class="o">-</span><span class="mi">003</span> <span class="o">...</span> <span class="n">front</span><span class="o">-</span><span class="n">end</span> <span class="n">proxy</span> <span class="n">started</span><span class="p">,</span> <span class="n">listening</span> <span class="n">to</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">localhost</span><span class="p">:</span><span class="mi">8085</span> <span class="p">(</span><span class="n">exclusive</span><span class="p">)</span>
+<span class="p">[</span><span class="mi">2020</span><span class="o">-</span><span class="mi">10</span><span class="o">-</span><span class="mi">28</span><span class="n">T12</span><span class="p">:</span><span class="mi">17</span><span class="p">:</span><span class="mf">30.310</span><span class="n">Z</span><span class="p">]</span> <span class="mi">23</span><span class="o">-</span><span class="mi">005</span> <span class="o">...</span> <span class="n">client</span> <span class="n">application</span> <span class="s2">&quot;/bin/bash -c &#39;open -a Opera http://localhost:8085&#39;&quot;</span> <span class="n">started</span><span class="p">,</span> <span class="n">pid</span><span class="o">=</span><span class="mi">8065</span>
+<span class="p">[</span><span class="mi">2020</span><span class="o">-</span><span class="mi">10</span><span class="o">-</span><span class="mi">28</span><span class="n">T12</span><span class="p">:</span><span class="mi">17</span><span class="p">:</span><span class="mf">30.425</span><span class="n">Z</span><span class="p">]</span> <span class="mi">23</span><span class="o">-</span><span class="mi">006</span> <span class="o">...</span> <span class="n">client</span> <span class="n">application</span> <span class="s2">&quot;/bin/bash -c &#39;open -a Opera http://localhost:8085&#39;&quot;</span> <span class="n">quit</span> <span class="k">with</span> <span class="n">code</span> <span class="mi">0</span>
+</pre></div>
+</div>
+<p>and a normal <strong>NC</strong> log starts with</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="p">[</span><span class="mi">2020</span><span class="o">-</span><span class="mi">10</span><span class="o">-</span><span class="mi">28</span><span class="n">T12</span><span class="p">:</span><span class="mi">17</span><span class="p">:</span><span class="mf">30.722</span><span class="n">Z</span><span class="p">]</span> <span class="mi">01</span><span class="o">-</span><span class="mi">001</span> <span class="o">...</span> <span class="n">NC</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span> <span class="nb">type</span><span class="o">=</span><span class="n">SHELL</span> <span class="n">url</span><span class="o">=</span><span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">localhost</span><span class="p">:</span><span class="mi">8083</span>
+<span class="p">[</span><span class="mi">2020</span><span class="o">-</span><span class="mi">10</span><span class="o">-</span><span class="mi">28</span><span class="n">T12</span><span class="p">:</span><span class="mi">17</span><span class="p">:</span><span class="mf">30.724</span><span class="n">Z</span><span class="p">]</span> <span class="mi">01</span><span class="o">-</span><span class="mi">002</span> <span class="o">...</span> <span class="n">Emailer</span><span class="p">:</span> <span class="n">desktop</span>
+<span class="p">[</span><span class="mi">2020</span><span class="o">-</span><span class="mi">10</span><span class="o">-</span><span class="mi">28</span><span class="n">T12</span><span class="p">:</span><span class="mi">17</span><span class="p">:</span><span class="mf">30.726</span><span class="n">Z</span><span class="p">]</span> <span class="mi">11</span><span class="o">-</span><span class="mi">031</span> <span class="o">...</span> <span class="n">total</span> <span class="n">unassigned</span> <span class="n">job</span> <span class="n">tokens</span> <span class="n">removed</span><span class="p">:</span> <span class="mi">0</span>
+<span class="p">[</span><span class="mi">2020</span><span class="o">-</span><span class="mi">10</span><span class="o">-</span><span class="mi">28</span><span class="n">T12</span><span class="p">:</span><span class="mi">17</span><span class="p">:</span><span class="mf">30.727</span><span class="n">Z</span><span class="p">]</span> <span class="mi">11</span><span class="o">-</span><span class="mi">033</span> <span class="o">...</span> <span class="n">total</span> <span class="n">abandoned</span> <span class="n">job</span> <span class="n">directories</span> <span class="n">removed</span><span class="p">:</span> <span class="mi">0</span>
+<span class="p">[</span><span class="mi">2020</span><span class="o">-</span><span class="mi">10</span><span class="o">-</span><span class="mi">28</span><span class="n">T12</span><span class="p">:</span><span class="mi">17</span><span class="p">:</span><span class="mf">30.743</span><span class="n">Z</span><span class="p">]</span> <span class="mi">01</span><span class="o">-</span><span class="mi">007</span> <span class="o">...</span> <span class="n">number</span> <span class="n">cruncher</span> <span class="c1">#0 started, listening to http://localhost:8083 (exclusive)</span>
+<span class="p">[</span><span class="mi">2020</span><span class="o">-</span><span class="mi">10</span><span class="o">-</span><span class="mi">28</span><span class="n">T12</span><span class="p">:</span><span class="mi">17</span><span class="p">:</span><span class="mf">30.743</span><span class="n">Z</span><span class="p">]</span> <span class="mi">03</span><span class="o">-</span><span class="mi">005</span> <span class="o">...</span> <span class="n">python</span> <span class="n">version</span><span class="p">:</span> <span class="n">ccp4</span><span class="o">-</span><span class="n">python</span> <span class="ow">not</span> <span class="n">found</span>
+</pre></div>
+</div>
+<p>In these logs, triple dots <code class="docutils literal"><span class="pre">...</span></code> denote messages that are merely informative, triple stars <code class="docutils literal"><span class="pre">***</span></code> highlight warnings and triple pluses <code class="docutils literal"><span class="pre">+++</span></code> indicate errors (which are not fatal in most cases; fatal errors are usually found in <code class="docutils literal"><span class="pre">*.err</span></code> logs). The above logs are copied from a perfectly functional system, despite confusing errors on the very top and unspecified python versions.</p>
+<ol class="arabic" start="2">
+<li><p class="first">Poll all <em>localhost</em> ports from their host machines, for example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">curl</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">localhost</span><span class="p">:</span><span class="mi">8085</span><span class="o">/</span><span class="n">whoareyou</span>
+</pre></div>
+</div>
+</li>
+</ol>
+<p>For the Front-End, the answer should be something like</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">CCP4</span> <span class="n">Cloud</span> <span class="n">FE</span> <span class="mf">1.6</span><span class="o">.</span><span class="mi">016</span> <span class="p">[</span><span class="mf">26.10</span><span class="o">.</span><span class="mi">2020</span><span class="p">]</span> <span class="n">CCP4</span><span class="o">-</span><span class="mf">7.1</span><span class="o">.</span><span class="mi">006</span>
+</pre></div>
+</div>
+<p>and Number Crunchers should reply</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">CCP4</span> <span class="n">Cloud</span> <span class="n">NC</span><span class="o">-</span><span class="mi">0</span> <span class="p">(</span><span class="n">local</span><span class="o">-</span><span class="n">nc</span><span class="p">)</span> <span class="mf">1.6</span><span class="o">.</span><span class="mi">016</span> <span class="p">[</span><span class="mf">26.10</span><span class="o">.</span><span class="mi">2020</span><span class="p">]</span> <span class="mi">0</span>
+</pre></div>
+</div>
+<ol class="arabic" start="3">
+<li><p class="first">If <em>localhost</em> ports reply as above, repeat the same requests using respective <code class="docutils literal"><span class="pre">externalURLs</span></code> from configuration files, e.g.,</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">curl</span> <span class="n">https</span><span class="o">//</span><span class="n">www</span><span class="o">.</span><span class="n">mysite</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">ccp4cloud</span><span class="o">/</span><span class="n">whoareyou</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">If all replies are sensible, start CCP4 Cloud login page in browser, using <code class="docutils literal"><span class="pre">reportURL</span></code> from <strong>FE</strong> configuration, e.g.,</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">firefox</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">www</span><span class="o">.</span><span class="n">mysite</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">ccp4cloud</span><span class="o">/</span>
+</pre></div>
+</div>
+</li>
+</ol>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">trailing slash is significant</p>
+</div>
+<ol class="arabic simple" start="5">
+<li>Use login name <code class="docutils literal"><span class="pre">devel</span></code> and password <code class="docutils literal"><span class="pre">devel</span></code> for the first login. You should land in empty project list, where you can create first project and run a few jobs (e.g., <em>Data Import</em>) in it.</li>
+</ol>
+</div>
+<div class="section" id="appendix-h-creating-1st-user-with-administrative-privileges">
+<span id="appendix-h"></span><h2>1.13. Appendix H. Creating 1st user with administrative privileges<a class="headerlink" href="#appendix-h-creating-1st-user-with-administrative-privileges" title="Permalink to this headline">¶</a></h2>
+<p>Admin user account is essential for CCP4 Cloud maintenance. By default, CCP4 Cloud is installed with <code class="docutils literal"><span class="pre">devel</span></code> user, which cannot be removed. Admin users can grant admin privileges to any other user, but 1st Admin must be created manually:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">cp</span> <span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">disk1</span><span class="o">/</span><span class="n">users</span><span class="o">/</span><span class="n">devel</span><span class="o">.</span><span class="n">user</span> <span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">disk1</span><span class="o">/</span><span class="n">users</span><span class="o">/</span><span class="n">admin</span><span class="o">.</span><span class="n">user</span>
+<span class="n">cp</span> <span class="o">-</span><span class="n">r</span> <span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">disk1</span><span class="o">/</span><span class="n">projects</span><span class="o">/</span><span class="n">devel</span><span class="o">.</span><span class="n">projects</span> <span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">disk1</span><span class="o">/</span><span class="n">projects</span><span class="o">/</span><span class="n">admin</span><span class="o">.</span><span class="n">projects</span>
+
+<span class="c1"># in /path/to/disk1/users/admin.user, edit:</span>
+<span class="c1">#        &quot;name&quot;  : &quot;Admin&quot;</span>
+<span class="c1">#        &quot;email&quot; : &quot;your@email&quot;</span>
+<span class="c1">#        &quot;login&quot; : &quot;admin&quot;</span>
+<span class="c1">#        &quot;role&quot;  : &quot;admin&quot;</span>
+<span class="n">vi</span> <span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">disk1</span><span class="o">/</span><span class="n">users</span><span class="o">/</span><span class="n">admin</span><span class="o">.</span><span class="n">user</span>
+</pre></div>
+</div>
+<p>After this, go to CCP4 Cloud login page, and login as <code class="docutils literal"><span class="pre">admin</span></code> with password <code class="docutils literal"><span class="pre">devel</span></code>. After login, proceed to <em>My Account</em> and change password to your liking.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">you cannot remove user <code class="docutils literal"><span class="pre">devel</span></code>, but it is advisable to change its password promptly.</p>
+</div>
 </div>
 </div>
 

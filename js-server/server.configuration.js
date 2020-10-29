@@ -355,7 +355,14 @@ var version = '';
     "description"      : {
       "id"   : "ccp4",
       "name" : "CCP4-Harwell",
-      "icon" : "images_com/ccp4-harwell.png"
+      "icon" : "images_com/ccp4-harwell.png",
+      "partners" : [  // custom logos only
+        { "iris"        : "IRIS",
+          "logo"        : "./images_png/logo-iris.png",
+          "description" : "Digital Research Infrastructure STFC UK",
+          "url"         : "https://www.iris.ac.uk"
+        }
+      ]
     },
     "protocol"         : "http",
     "host"             : "localhost",
@@ -554,20 +561,36 @@ function readConfiguration ( confFilePath,serverType )  {
     // assign default values
     fe_server.sessionCheckPeriod = 2000;  // ms
     fe_server.auth_software      = null;
-    /*
-    if (!fe_server.hasOwnProperty("description"))
-      fe_server.description = {
-        "id"   : "ccp4",
-        "name" : "CCP4-Harwell",
-        "icon" : "images_com/ccp4-harwell.png"
-      };
-    */
 
     // read configuration file
     for (var key in confObj.FrontEnd)
       fe_server[key] = confObj.FrontEnd[key];
 
     // complete configuration
+
+    if (!fe_server.hasOwnProperty('description'))
+      fe_server.description = {
+        "id"   : "",  // this is not a typo
+        "name" : "CCP4-Harwell",
+        "icon" : "images_com/ccp4-harwell.png"
+      };
+
+    if (!fe_server.description.hasOwnProperty('partners'))
+      fe_server.description.partners = [];
+
+    fe_server.description.partners.unshift (
+      { "name"        : "CCP4",
+        "logo"        : "images_png/logo-ccp4_online.png",
+        "description" : "Collaborative Computational Project Number 4 (CCP4) UK",
+        "url"         : "https://www.ccp4.ac.uk"
+      },{
+        "name"        : "UKRI",
+        "logo"        : "images_png/logo-ukri.png",
+        "description" : "UK Research and Innovations",
+        "url"         : "https://www.ukri.org"
+      }
+    );
+
     if (!fe_server.externalURL)
       fe_server.externalURL = fe_server.url();
     fe_server.userDataPath = _make_path ( fe_server.userDataPath,null );
@@ -985,7 +1008,7 @@ function cleanFETmpDir1 ( loginData )  {
 }
 
 function getSetupID()  {
-  if (fe_server.hasOwnProperty('description'))
+  if ((fe_server.hasOwnProperty('description')) && fe_server.description.id)
     return fe_server.description.id;
   if (isLocalFE())
     return '<client-side setup>';

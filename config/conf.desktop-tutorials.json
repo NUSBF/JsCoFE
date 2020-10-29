@@ -18,7 +18,14 @@
     "description"      : {
       "id"   : "ccp4",
       "name" : "CCP4-Harwell",
-      "icon" : "images_com/setup-harwell.png"
+      "icon" : "images_com/setup-harwell.png",
+      "partners" : [
+        { "iris"        : "IRIS",
+          "logo"        : "./images_png/logo-iris.png",
+          "description" : "Digital Research Infrastructure STFC UK",
+          "url"         : "https://www.iris.ac.uk"
+        }
+      ]
     },
     "protocol"         : "http",
     "host"             : "localhost",

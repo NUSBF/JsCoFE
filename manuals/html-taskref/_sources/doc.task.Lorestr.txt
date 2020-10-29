@@ -2,7 +2,9 @@
 Low-Resolution Refinement with Lorestr
 ======================================
 
-`LORESTR <https://doi.org/10.1107/S2059798316014534>`_ an automated pipeline for structure refnement at low resolution (lower than around 3 Å). Poor diffraction quality of macromolecular crystals is a common problem: various types of disorder result in the weakening of high-resolution observations, anisotropic diffraction and other problems. Such datasets have low information content; hence the ratio of the number of observations to adjustable model parameters is small. To achieve accurate models using only low-resolution data it is necessary to use as much available information about macromolecules as possible. The information used must complement the data. Note that X-ray crystallographic data provide information about long-range interactions within and between molecules. At very low resolution, only information pertaining to shape and crystal packing is present. Basic chemical information, such as “ideal” bond lengths and angles, is usually employed at all resolutions. As resolution decreases, the use of information about torsion angles, secondary structures, domains, and intra-domain interactions might be required. If there are multiple copies of a molecule in the asymmetric unit then non-crystallographic restraints can be used to decrease the effective number of adjustable parameters.
+`LORESTR <https://doi.org/10.1107/S2059798316014534>`_ an automated pipeline for structure refnement at low resolution (lower than around 3 Å). Such datasets have low information content; hence the ratio of the number of observations to adjustable model parameters is small. To achieve accurate models using only low-resolution data it is necessary to use as much available information about macromolecules as possible. The information used must complement the data. 
+
+X-ray crystallographic data provide information about long-range interactions within and between molecules. At very low resolution, only information pertaining to shape and crystal packing is present. Basic chemical information, such as “ideal” bond lengths and angles, is usually employed at all resolutions. As resolution decreases, the use of information about torsion angles, secondary structures, domains, and intra-domain interactions might be required. If there are multiple copies of a molecule in the asymmetric unit then non-crystallographic restraints can be used to decrease the effective number of adjustable parameters.
 
 There are many factors that can reduce the information content of MX data thus reducing the effective resolution. These include crystal growth peculiarities such as twinning and order-disorder. In such cases, although the nominal resolution may be high, not all of the observations are independent. For example, **in the case of perfect hemihedral twinning, the number of independent observations is decreased by a factor of two**, corresponding to a resolution reduction by a factor of 21/3 ≈ 1.26. Therefore, in the limit, the quality of the electron density map in the presence of perfect hemihedral twinning at 2 Å would correspond to that of a 2.52 Å single crystal case. 
 
@@ -10,7 +12,9 @@ LORESTR facilitates the fully automated selection of optimal external restraints
 
 There are many problems that need to be tackled in order to make low-resolution structure analysis routine:
 
-    * The use of chemical and structural information as restraints to increase consistency between available prior knowledge and derived atomic models. The use of chemical information in the form of bond lengths, bond angles, and torsion angles has always been routine. 
+    * The use of chemical and structural information as restraints to increase consistency between available prior knowledge and derived atomic models. 
+    
+    * The use of chemical information in the form of bond lengths, bond angles, and torsion angles has always been routine. 
 
     * Building an accurate likelihood function that reﬂects noise in the data as well as imperfections in the model. Low-resolution MX data are usually very noisy.
         
@@ -24,19 +28,20 @@ There are many problems that need to be tackled in order to make low-resolution 
 
                 *Noise in the map will have two major components: noise due to observational errors, and noise due to errors in the model.*
 
-    * Calculation of electron density maps to aid the reduction of errors introduced during manual and automatic model building. Data from  low-resolution crystals usually exhibit high isotropic and anisotropic B-values. This contributes to observingsmeared regions of electron density, with vanishing side chains, secondary structure elements, and even domains. Were this effect removed, the electron density map might reveal more features. Current approaches use only one B-value for map sharpening.
+    * Calculation of electron density maps to aid the reduction of errors introduced during manual and automatic model building. Data from  low-resolution crystals usually exhibit high isotropic and anisotropic B-values. This contributes to observing smeared regions of electron density, with vanishing side chains, secondary structure elements, and even domains. Were this effect removed, the electron density map might reveal more features. Current approaches use only one B-value for map sharpening.
 
 One of the problems encountered during low-resolution refnement and model building is that the maps are usually blurred, obscuring any fner details of the structure. In general, the overall B-values of crystallographic data can be considered arbitrary, depending on data scaling. It is tempting to remove the B-values altogether, thus making the power spectrum of the Fourier coeffcients ﬂat over all resolution ranges. This can be achieved if one uses normalized structure factors. 
 
-One must remember that removing B-values is the same as applying an `inverse flter <http://www.owlnet.rice.edu/~elec539/Projects99/BACH/proj2/inverse.html>`_ to the map. It is well known that, despite increasing structural details, `inverse flters <http://www.owlnet.rice.edu/~elec539/Projects99/BACH/proj2/inverse.html>`_ will also increase the noise level.
+**Removing B-values is the same as applying an** `inverse flter <http://www.owlnet.rice.edu/~elec539/Projects99/BACH/proj2/inverse.html>`_ **to the map.** Despite increasing structural details, `inverse flters <http://www.owlnet.rice.edu/~elec539/Projects99/BACH/proj2/inverse.html>`_ will also increase the noise level.
 
 ----------
 Validation
 ----------
+At low resolution, all indicators, as well as the predictive power of the model, must be checked.
 
 Further to looking at global measures of quality/validation— refnement and geometry statistics it is important to investigate how well localized regions of the model agree with the electron density. Such manual inspection may reveal parts of the model that:
 
-    ● Can be easily fxed by manual model building and refnement in real space, e.g., side chain ﬂips.
+    ● Can be easily fixed by manual model building and refnement in real space, e.g., side chain ﬂips.
 
     ● Are spurious, perhaps incorrectly modeled or disordered, which require careful consideration.
 
@@ -47,13 +52,15 @@ Further to looking at global measures of quality/validation— refnement and geo
     ● Have been pulled out of a sensible conformation into an incorrect one by the external restraints, in which case the external restraints should be regenerated excluding these identifed regions, and the refnement repeated. 
     
 .. Note:: 
-            since external restraints may have a positive effect on some regions of a structure and a negative effect on other regions, overall global statistics may be misleading. 
+            Since external restraints may have a positive effect on some regions of a structure and a negative effect on other regions, overall global statistics may be misleading. 
 
         **Whenever new maps are calculated, one always must manually inspect the regions that do not have corresponding atoms built; omit maps or something similar must be used.**
 
 At low resolution, bias toward errors in the map is a real problem. Usual statistics such as R-factors are not good indicators of model quality. 
 
-Good agreement with the prior knowledge does not also mean that the derived model corresponds well to the true crystal structure; rather, it only means that the model agrees with our prior knowledge (i.e., that the model is chemically/structurally sensible). At low resolution, all indicators, as well as the predictive power of the model, must be checked. When maps are displayed/used as evidence, that part of the atomic model (corresponding to the relevant map region) should not be used during the map calculation procedure; omit maps must be used.
+Good agreement with the prior knowledge does not also mean that the derived model corresponds well to the true crystal structure; rather, it only means that the model agrees with our prior knowledge (i.e., that the model is chemically/structurally sensible). 
+
+When maps are displayed/used as evidence, that part of the atomic model (corresponding to the relevant map region) should not be used during the map calculation procedure.
 
 The degree of model quality required depends on the questions asked: if questions relate to domain organization, or to mutual orientation of protein molecules in a complex, then probably low-resolution (3–5 Å) data might give suffcient evidence. However, if more specifc questions are asked that require a higher degree of model accuracy (e.g., related to specifc interatomic distances) then perhaps higher resolution data are needed.
 

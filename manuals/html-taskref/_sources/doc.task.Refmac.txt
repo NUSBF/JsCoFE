@@ -207,24 +207,36 @@ Jelly-body restraints
 
 The effect of "jelly-body" restraints is the implicit parameterization between the rigid body and individual atoms.
 
+Jelly-body restraints
+    • Does not change likelihood function.
+
+    • Does change 2 :superscript:`nd` derivative - curvature, thus changing the search direction.
+
 .. image:: images/jelly-body_restraints.png
         :scale: 30 % 
 
-where class is a restraint class (bonds, angles, torsion angles, etc.); list is the list of all restraints in the given class; t :subscript:`m` denotes the current value calculated from the current model; t :subscript:`i` denotes the ideal/target value (either tabulated in a dictionary or calculated from reference homologous structures); and w(t :subscript:`m` ,t :subscript:`i`) is an additional weighting factor that may depend on the current value calculated from the model. Usually, w(t :subscript:`m` ,t :subscript:`i`) = 1 except when robust estimators are used, as well as for non-bonding interactions. For non-bonding interactions, w(t :subscript:`m` ,t :subscript:`i` ) = 1
-when t :subscript:`m` < t :subscript:`i` and 0 otherwise. σ represents target uncertainty (standard deviation), and is usually listed alongside the “ideal” values in the `pre-tabulated dictionary <https://doi.org/10.1107/S0907444904023510>`_.
-d :subscript:`m` and d :subscript:`c` denote the current and ideal values of interatomic distances in the model. At every cycle of refnement d
-c = d :subscript:`m`, i.e., the current values of the interatomic distances are always taken as the ideal values.
+t :subscript:`m` denotes the current value calculated from the current model;
+
+t :subscript:`i` denotes the ideal/target value (either tabulated in a dictionary or calculated from reference homologous structures);
+
+w(t :subscript:`m` ,t :subscript:`i`) is an additional weighting factor that may depend on the current value calculated from the model. 
+
+    Usually, w(t :subscript:`m` ,t :subscript:`i`) = 1 except when robust estimators are used, as well as for non-bonding interactions. For non-bonding interactions, w(t :subscript:`m` ,t :subscript:`i` ) = 1 when t :subscript:`m` < t :subscript:`i` and 0 otherwise. 
+
+σ represents target uncertainty (standard deviation), and is usually listed alongside the “ideal” values in the `pre-tabulated dictionary <https://doi.org/10.1107/S0907444904023510>`_.
+
+d :subscript:`m` and d :subscript:`c` denote the current and ideal values of interatomic distances in the model. 
+
+    At every cycle of refnement d :subscript:`c` = d :subscript:`m`, i.e., the current values of the interatomic distances are always taken as the ideal values.
 
 The purpose of this term is to keep the local conformation of the molecule intact, while allowing groups of atoms (e.g., secondary structures,
-domains) to move in a concerted fashion. This helps to avoid local minima, increasing the radius of convergence of refnement. Were all pairs of distances restrained with large weights, then the only allowed movement would be a rigid-body movement with six parameters for each domain, i.e., refnement would be reduced to rigid-body ftting. In practice, restraining interatomic distances up  to 4.2 Å with σ = 0.01 or 0.02 Å works suffciently well for a large class of problems.
+domains) to move in a concerted fashion. This helps to avoid local minima, increasing the radius of convergence of refnement. Were all pairs of distances restrained with large weights, then the only allowed movement would be a rigid-body movement with six parameters for each domain, i.e., refnement would be reduced to rigid-body ftting. In practice, restraining interatomic distances up to 4.2 Å with σ = 0.01 or 0.02 Å works suffciently well for a large class of problems.
 
 .. tip::  
         ``Run many cycles (up to 200 with jelly body restraints) on the early stage of refinement (e.g. straight after MR)``
 
 
-• Does not change likelihood function.
 
-• Does change 2 :superscript:`nd` derivative - curvature, thus changing the search direction.
 
 +++++++++++++++++++++++++++++++
 Fourier Shell Correlation (FSC)
@@ -242,18 +254,21 @@ The main idea:
 
 For “good” maps the FSC would be higher. If we had two maps, and could calculate the FSC between these maps and the “true” maps, then we would prefer the one that had the higher FSC.
 
-**Phases are random, and amplitudes are exact**: In this case, it is clear that the **FSC will be 0**.
+If **phases are random, and amplitudes are exact**, **FSC will be 0**.
 
-**Phases are exact, and amplitudes are random**. In this case we assume that the amplitudes are random but come from a Wilson distribution. **We assume that the amplitudes correspond to a crystal containing atoms, but are not related to the structure at hand.**
+In case **phases are exact, and amplitudes are random**, we assume that the amplitudes are random but come from a Wilson distribution. We assume that the amplitudes correspond to a crystal containing atoms, but are not related to the structure at hand.
 
 With random amplitudes but exact phases, the correlation between the current and “true” maps will be ~78.5%. When phases are random then the FSC will be 0, irrespective of the accuracy of the amplitudes. 
 
-For FSC value is greater than 0.785, if we know that the structure factors have no information about the crystal we are analysing, then it might be better to replace the observations with the expected value of the amplitudes. 
+``For FSC value is greater than 0.785, if we know that the structure factors have no information about the crystal we are analysing, then it might be better to replace the observations with the expected value of the amplitudes.`` 
 
 .. Note::  
-         using anything other than the expected amplitude will cause sudden jumps in the power spectrum of the Fourier series, resulting in ripples in the map. If absent reﬂections are to be replaced by a constant value then the value must be equal to the expected amplitude (for that resolution).
+         Using anything other than the expected amplitude will cause sudden jumps in the power spectrum of the Fourier series, resulting in ripples in the map. If absent reﬂections are to be replaced by a constant value then the value must be equal to the expected amplitude (for that resolution).
 
-**Exact phases and nonrandom amplitudes**:  if the correlation between the E-values of the current and “true” structure factors is larger than 47% then it makes sense to use these data, otherwise, it is better to replace the observed amplitudes with 〈|FC|〉 for map calculation. It must be stressed that this 47% threshold is a theoretical value, calculated under the assumption that phases are exact, and amplitudes correspond to a crystal. It is also interesting to note that this result indicates that if the isomorphism between two crystals is 47% then it is possible to use data from one of the crystals to restore missing data from the other.
+We may have **exact phases and nonrandom amplitudes**:  if the correlation between the E-values of the current and “true” structure factors is larger than 47% then it makes sense to use these data, otherwise, it is better to replace the observed amplitudes with 〈|FC|〉 for map calculation. 
+
+.. Note::  
+        This 47% threshold is a theoretical value, calculated under the assumption that phases are exact, and amplitudes correspond to a crystal. It is also interesting to note that this result indicates that if the isomorphism between two crystals is 47% then it is possible to use data from one of the crystals to restore missing data from the other.
 
 
 **ACKNOWLEDGEMENTS**
