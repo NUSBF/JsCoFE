@@ -6,9 +6,9 @@ Troubleshooting
 .. contents::
    :depth: 2
 
--------------------------------------------------
-Some tasks cannot be created or added to job tree
--------------------------------------------------
+-----------------------------------------------------
+Some tasks cannot be created or added to the job tree
+-----------------------------------------------------
 
 If a task cannot be created and added to the :ref:`Job Tree <job-tree>`, its icon in the :ref:`task-list` is shown in red frame and the corresponding list entry is grayed. Clicking on red-framed icon does not start :ref:`job-dialog` for the task; instead, an explanation of why the task cannot be run, is given. It will be one of the following:
 
@@ -16,7 +16,7 @@ If a task cannot be created and added to the :ref:`Job Tree <job-tree>`, its ico
     Tasks see data produced by its ancestors in the :ref:`Job Tree <job-tree>`. Quite possibly, you need to import missing data, or run another task to create the data needed. For example, ``Phaser`` and ``Molrep`` require molecular replacement model(s) or ensembles of models, which need to be prepared from atomic coordinates or sequences with appropriate model preparation tasks. If the data required is found in other branches of the :ref:`Job Tree <job-tree>`, you may access them by selecting jobs with needful data before adding the new one. For that, make multiple selection in :ref:`Job Tree <job-tree>` (hold "*Ctrl*" (Windows, Linux) or "*Apple*" (Mac OSX) button pressed and click on the respective jobs), select the parent for the next job in the end, and right-click on it for makin the new task.
 
 * **one or more data objects, needed for the task, is outdated**
-    This is due to the same reason as :ref:`impossibility to clone(1)<cant-clone-1>`, please read there.
+    This is due to the same reason as :ref:`impossibility to clone due to incompatibility<cant-clone-1>`, please read there.
 
 .. _task-availability:
 
@@ -72,5 +72,5 @@ This happens when:
     The only way around it is to create the task anew from the parent mode, rather than to clone. When doing this, you may discover that this does not work as well because of incompatibility in data objects produced by the parent or one of higher ancestors. If this happens, you may need to repeat parents and even grand-parent tasks in the :ref:`Job Tree <job-tree>`, depending on the situation.
 
 * **the clone attempt is done in different setup where cloned task is not available**
-    This is the same as :ref:`impossibility to create a new task because it is not available<task-availability>`, please read there.
+    This is due to the same as :ref:`impossibility to create a new task because it is not available<task-availability>`, please read there.
 

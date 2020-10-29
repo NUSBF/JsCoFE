@@ -98,18 +98,41 @@ BasePage.prototype.makeSetupNamePanel = function()  {
 }
 
 
-var __ccp4online_logo = new ImageButton ( image_path('logo-ccp4_online'),'','28px' );
+//var __ccp4online_logo = new ImageButton ( image_path('logo-ccp4_online'),'','28px' );
 //var __stfc_logo       = new ImageButton ( image_path('logo-stfc')       ,'','28px' );
 //var __bbsrc_logo      = new ImageButton ( image_path('logo-bbsrc')      ,'','28px' );
-var __ukri_logo       = new ImageButton ( image_path('logo-ukri')       ,'','28px' );
+//var __ukri_logo       = new ImageButton ( image_path('logo-ukri')       ,'','28px' );
 
 BasePage.prototype.makeLogoPanel = function ( row,col,colSpan )  {
+
+  if (!__setup_desc)  return;
+
+  if (!__setup_desc.partners[0].hasOwnProperty('icon'))
+    for (var i=0;i<__setup_desc.partners.length;i++)  {
+      __setup_desc.partners[i].icon = new ImageButton (
+                                      __setup_desc.partners[i].logo,'','28px' );
+      (function(partner){
+        partner.icon.setTooltip ( partner.description )
+                    .setCursor  ( 'pointer' )
+                    .addOnClickListener ( function(){
+          window.open ( partner.url,'_blank' );
+        });
+      }(__setup_desc.partners[i]))
+    }
+
   var logoPanel = this.grid.setGrid ( '',row,col,1,colSpan );
   var c = 0;
   logoPanel.setLabel ( 'Powered by CCP4 v.' + __ccp4_version,0,c,1,1 )
                      .setFontSize ( '75%' ).setNoWrap()
                      .setVerticalAlignment('bottom');
   logoPanel.setCellSize ( '50%','', 0,c++ );
+  var spacer = Math.max ( 20,40-5*(__setup_desc.partners.length-2) ) + 'px';
+  for (var i=0;i<__setup_desc.partners.length;i++)  {
+    logoPanel.setWidget ( __setup_desc.partners[i].icon, 0,c++,1,1 );
+    if (i<__setup_desc.partners.length-1)
+      logoPanel.setLabel  ( '',0,c++,1,1 ).setWidth ( spacer );
+  }
+  /*
   if (getClientCode()==client_code.ccp4)  {
     logoPanel.setWidget ( __ccp4online_logo, 0,c++,1,1 );
     logoPanel.setLabel  ( '',0,c++,1,1 ).setWidth ( '40px' );
@@ -126,6 +149,7 @@ BasePage.prototype.makeLogoPanel = function ( row,col,colSpan )  {
     logoPanel.setLabel ( '',0,c++,1,1 ).setWidth ( '30px' );
     logoPanel.setImage ( image_path('logo-mrc'),'','28px'  ,0,c++,1,1 );
   }
+  */
   logoPanel.setLabel ( appName() + ' v.' + appVersion() + '&nbsp;&nbsp;&nbsp;&nbsp;',0,c,1,1 )
                      .setFontSize ( '75%' ).setNoWrap()
                      .setVerticalAlignment('bottom');

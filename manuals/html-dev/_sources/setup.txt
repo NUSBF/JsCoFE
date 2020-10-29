@@ -2,29 +2,33 @@
 Setup
 =====
 
-In this Section, we describe the most popular CCP4 Cloud setup, comprising one Front-End Server (**FE**) and one or more Number Crunchers (NCs).
+In this Section, we describe the most popular CCP4 Cloud setup, comprising one Front-End Server (**FE**) and one or more Number Crunchers (**NCs**).
 
 -------------------------------
 Prerequisites and general notes
 -------------------------------
 
-The Setup is described in terms of servers and file systems, rather than machines (hardware hosts). Allocation of servers to hosts, virtual or real, should be done in respect to your requirements and resources. In simplest case, all servers can be placed on the same host. A few points should be taken into account:
+The Setup procedure is described in terms of servers and file systems, rather than machines (hardware hosts). Allocation of servers to hosts, virtual or real, should be done in respect to your requirements and resources. In simplest case, all servers can be placed on the same host. A few points should be taken into account:
 
 * **FE** does not perform computations, but should be efficient for file operations and network communication.
-* **NC(s)** must be able to submit jobs to your computational infrastructure (**Queue(s)**), but they do not require a particular CPU power by themselves 
-* we recommend having at least 2 **NCs** in CCP4 Cloud, such that jobs can be launched even if one **NC** is temporarily down. **NCs** can work with the same **Queue**, or have own **Queues** depending on your situation.
+
+* **NC(s)** must be able to submit jobs to your computational infrastructure (**Queue(s)**), but they do not require a particular CPU power by themselves. However, if **Queue** represents a queue-less shell (*cf.* below), jobs will be run on the **NC's** host machine, in which case a more powerful machine will be needed
+
+* we recommend having at least 2 **NCs** in CCP4 Cloud, such that jobs can be run even if one **NC** is temporarily down. Duplicate **NCs** can be placed on the same host machine and work with the same **Queue**.
 
 **For setting up CCP4 Cloud, you will require:**
 
-1. Computational infrastructure (**Queue(s)**), such as SGE or SLURM cluster
+.. note:: in what follows, ``/path/to/`` does not stand for any particular path. Rather, it means any path of your choice, specific to the context including the host machine. Therefore, assume using ``ssh login@host`` or ``scp`` instead of ``cp`` where necessary.
 
-2. CCP4 Setup version 7.1 or higher (download link). All **FE** , **NC(s)** and **Queue(s)** must have access to CCP4 Setup. For convenience, we will assume that CCP4 is installed in the following location, visible from all servers and **Queue(s)** (here and below, ``/path/to/`` means any path of your choice, specific to the case): ::
+1. Computational infrastructure (**Queue(s)**), such as SGE or SLURM cluster. If clusters are not available, jobs can run in Linux shell on **NC's** host machine.
 
-    /path/to/ccp4-7.1
+2. CCP4 Setup version 7.1 or higher (download link). All **FE** , **NC(s)** and **Queue(s)** must have access to CCP4 Setup. For convenience, we assume that CCP4 will be installed in the following location, visible from all servers and **Queue(s)** : ::
 
-  .. note:: having different CCP4 Setups for different servers is possible but inconvenient from the maintenance point of view.
+    /path/to/CCP4/ccp4-7.1
 
-3. Directories for **FE** and **NC(s)** in respective hardware hosts: ::
+  .. note:: having different CCP4 Setups for different servers or hosts is possible but inconvenient from the maintenance point of view.
+
+3. Directories for **FE** and **NC(s)** *in respective hardware hosts*: ::
 
     /path/to/FE 
     /path/to/NC1 
@@ -43,67 +47,68 @@ The Setup is described in terms of servers and file systems, rather than machine
     /path/to/data
     /path/to/tutorials
 
-  .. note:: ``images``, ``pdb`` (read-only) and ``job safe`` (read/write) areas must be accessible from all **FE** , **NC(s)** and **Queue(s)** . Other areas need a read-only access only from **FE** .
+  .. note:: ``images``, ``pdb`` (read-only) and ``job safe`` (read/write) areas must be accessible from all **FE** , **NC(s)** and **Queue(s)** . Other areas need a read-only access from **FE** only.
 
-6. Apache servers running *on each host* in the setup (excluding **Queue(s)** ).
+6. Apache servers running *on each host machine* in the setup (excluding **Queue(s)** ).
 
-7. CCP4 Cloud accounts in *in each host* . These accounts do not need elevated priviliges, but they must have access to disk areas as described above.
+7. CCP4 Cloud account *in each host machine*. This account does not need elevated priviliges, but it must have access to disk areas as described above.
+
+.. note:: **FE**, **NC(s)** and computational jobs will run in the CCP4 Cloud account. For security reasons, do not use a personal account for running CCP4 Cloud and restrict the designated account such that no changes or unauthorised access can be made in sensitive parts of your system and personal disk areas.
 
 ---------------
 Setup procedure
 ---------------
 
-All actions, except 1 and 9, should be done in the dedicated CCP4 Cloud account on respective hosts.
+All actions, except 1 and 9, should be done in the designated CCP4 Cloud account on respective hosts (excluding :ref:`Apache configuration <appendix-f>`).
 
-1. Install CCP4 (http link). 
-
+1. Install CCP4 (see details in :ref:`Appendix A <appendix-a>`). 
+ 
 2. Download and unpack the CCP4 Cloud setup tarball (choose convenient disk area visible from all servers, or repeat the following command on every host): ::
 
     mkdir -p /path/to/setup-tmp
     cd /path/to/setup-tmp
-    curl ......... 
+    curl http://ccp4serv6.rc-harwell.ac.uk/jscofe-dev/ccp4cloud-setup.tar.gz > ccp4cloud-setup.tar.gz
     tar -xvzf ccp4cloud-setup.tar.gz
 
 3. Create server directories and copy content of prototype contents from the CCP4 Cloud setup tarball (commands to be executed in respective hosts): ::
 
     mkdir -p /path/to/FE
-    cp -r /path/to/setup-tmp/FE/* /path/to/FE/
+    cp -r /path/to/setup-tmp/ccp4cloud-setup/FE/* /path/to/FE/
     mkdir -p /path/to/NC1
-    cp -r /path/to/setup-tmp/NC/* /path/to/NC1/
+    cp -r /path/to/setup-tmp/ccp4cloud-setup/NC/* /path/to/NC1/
     mkdir -p /path/to/NC2
-    cp -r /path/to/setup-tmp/NC/* /path/to/NC2/
+    cp -r /path/to/setup-tmp/ccp4cloud-setup/NC/* /path/to/NC2/
 
 4. Create directories for user projects and miscellaneous items: ::
 
     mkdir -p /path/to/disk1/users
     mkdir -p /path/to/disk1/projects 
     mkdir -p /path/to/disk1/facilities 
-    mkdir -p /path/to/disk1/storage
     mkdir -p /path/to/disk2/projects
 
 At list one disk must be allocated for user and project data. Additional disks (``disk2`` in this example) may be added later.
 
-4. Make necessary changes in **NC** configuration files (see details in :ref:`Appendix A <appendix-a>`): :: 
+5. Make necessary changes in **NC** configuration files (see details in :ref:`Appendix B <appendix-b>`): :: 
 
     vi /path/to/NC1/config.json
     vi /path/to/NC2/config.json
 
-5. Make necessary changes in **FE** configuration file (see details in :ref:`Appendix B <appendix-b>`): ::
+6. Make necessary changes in **FE** configuration file (see details in :ref:`Appendix C <appendix-c>`): ::
 
     vi /path/to/FE/config.json
 
   .. note:: this step uses data from **NC** configuration files.
 
-7. Make necessary changes in **NC(s)** start script(s) (see details in :ref:`Appendix C <appendix-c>`): ::
+7. Make necessary changes in **NC(s)** start script(s) (see details in :ref:`Appendix D <appendix-d>`): ::
 
     vi /path/to/NC1/start-nc.sh 
     vi /path/to/NC2/start-nc.sh
 
-8. Make necessary changes in **FE** start script (see details in :ref:`Appendix D <appendix-d>`): ::
+8. Make necessary changes in **FE** start script (see details in :ref:`Appendix E <appendix-e>`): ::
 
     vi /path/to/FE/start-fe.sh 
 
-9. Modify Apache configuration *on every host* (see details in :ref:`Appendix E <appendix-e>`)
+9. Modify Apache configuration *on every host* (see details in :ref:`Appendix F <appendix-f>`)
 
 10. Start CCP4 Cloud servers: ::
 
@@ -111,15 +116,33 @@ At list one disk must be allocated for user and project data. Additional disks (
     /path/to/NC2/start-nc.sh 
     /path/to/FE/start-fe.sh
 
-11. Perform checks and tests (see details in :ref:`Appendix F <appendix-f>`).
+.. note:: you may receive a confusing message *''configuration file not found''* here. This may be indeed due to a typo in configuration file paths within the scripts, but also because of misformatted configuration file(s). Typically, extra commas between JSON items are introduced or get omitted at manual editing.
 
-12. Create CCP4 Cloud user with administrative privileges (see details in :ref:`Appendix G <appendix-g>`)
+11. Perform checks and tests (see details in :ref:`Appendix G <appendix-g>`).
 
-13. Delete temporary setup directory (optional): ::
+12. Create CCP4 Cloud user with administrative privileges (see details in :ref:`Appendix H <appendix-h>`)
 
-    rm -rf /path/to/setup-tmp
+13. Delete the temporary setup directory (optional) ::
+
+     rm -rf /path/to/setup-tmp
+
 
 **The End.**
+
+
+-----------------------------------
+Configuration of CCP4 Cloud Clients
+-----------------------------------
+
+It is recommended that users access CCP4 Cloud via CCP4 Cloud Client, rather than direct web-link in browser. Using CCP4 Cloud Client allows to use interactive graphical software, such as ``Coot``, with the remote CCP4 Cloud instance.
+
+CCP4 Cloud Client is launched by clicking on icon with CCP4 Diamond, cloud and Wi-Fi sign, found in CCP4 Setup 7.1 on user machines. By default, it connects to CCP4 Cloud run by CCP4 at Harwell, and should be re-configured for using your own CCP4 Cloud instance. For that, launch CCP4 Cloud Client Configurator by clicking on icon with CCP4 Diamond, cloud and gear sign, and change the URL in the field provided. In terms, used in this document, the URL will be ::
+
+    https://www.mysite.com/ccp4cloud/ 
+
+.. note::
+    * the trailing slash is significant
+    * this operation needs to be performed only once by every user of your new CCP4 Cloud instance
 
 
 -----------------------
@@ -136,17 +159,48 @@ You may find it more convenient to write a single script for (re)starting CCP4 C
 
 CCP4 Software is regularly updated (once in 2-4 weeks). CCP4 Cloud maintainer will be informed by e-mail when a new update is issued; in addtion, CCP4 Cloud users may see notification of new updates when working via CCP4 Cloud Client. Updates may be applied with the following commands, which can be, again, put into a single convenience script): ::
 
-    /path/to/ccp4-7.1/bin/ccp4um -auto
+    /path/to/CCP4/ccp4-7.1/bin/ccp4um -auto
     /path/to/NC1/start-nc.sh 
     /path/to/NC2/start-nc.sh 
     /path/to/FE/start-fe.sh
 
 .. note:: CCP4 must be updated in the account used for its installation, and CCP4 Cloud servers must be restarted in CCP4 Cloud accounts in respective hosts
 
+
+-------
+Contact
+-------
+
+In case of problems with CCP4 Cloud setup or questions on further customisation of your CCP4 Cloud instance, do not hesitate to contact CCP4 at ccp4@ccp4.ac.uk .
+
+
 .. _appendix-a:
 
+--------------------------------
+Appendix A. Installation of CCP4
+--------------------------------
+
+The latest CCP4 can be conveniently installed with the following script: ::
+
+    # Installing the latest CCP4 version series 7.1 for Linux (minimal configuration)
+    cd /path/to/CCP4
+    h=http://series-71.fg.oisin.rc-harwell.ac.uk/downloads/packages_others
+    x=$(curl -s ${h}/md5sums.txt | grep linux64)
+    x=${x/* }
+    echo ${x} # on 26 Oct 2020 prints ccp4-7.1.006-linux64.tar.gz
+    curl -O ${h}/${x}
+    tar -zxf ${x}
+    rm ${x}
+    cd ccp4-7.1
+    ./BINARY.setup
+    bin/ccp4um -m 99 # tells that ccp4 is up to date; can be used for updating later on
+    exit
+
+
+.. _appendix-b:
+
 --------------------------------------------------------------------
-Appendix A. Adjusting configuration file for Number Cruncher Servers
+Appendix B. Adjusting configuration file for Number Cruncher Servers
 --------------------------------------------------------------------
 
 Below is an *excerpt* of **NC** configuration settings that must be revised. Other settings are for fine tuning and development, and can be left as is in most cases. Please refer to :ref:`CCP4 Cloud configuration reference <ccp4-cloud-configuration>` for more details : ::
@@ -254,10 +308,10 @@ In any case, this directory must exist before starting CCP4 Cloud.
 
 
  
-.. _appendix-b:
+.. _appendix-c:
 
 -----------------------------------------------------------------
-Appendix B. Adjusting configuration file for the Front-End Server
+Appendix C. Adjusting configuration file for the Front-End Server
 -----------------------------------------------------------------
 
 Below is an *excerpt* of **FE** configuration settings that must be revised. Other settings are for fine tuning and development, and can be left as is in most cases. Please refer to :ref:`CCP4 Cloud configuration reference <ccp4-cloud-configuration>` for more details : ::
@@ -274,7 +328,7 @@ Below is an *excerpt* of **FE** configuration settings that must be revised. Oth
             "externalURL"      : "https://www.mysite.com/ccp4cloud",
             "reportURL"        : "https://www.mysite.com/ccp4cloud/",
             "userDataPath"     : "/path/to/disk1/users",
-            "storage"          : "/path/to/disk1/storage",
+            "storage"          : "/path/to/disk1/projects",
             "projectsPath"     : {
                 "disk1" : { "path"        : "/path/to/disk1/projects",
                           },
@@ -335,7 +389,7 @@ Below is an *excerpt* of **FE** configuration settings that must be revised. Oth
     path to directory for user data (in this document referenced as ``/path/to/disk1/users``)
     
 **storage**
-    path to directory for miscellaneous items (in this document referenced as ``/path/to/disk1/storage``)
+    path to directory for miscellaneous items, which must coincide with ``projects`` directory on one of disks (``/path/to/disk1/projects``)
 
 **projectsPath**
     at least one disk for user projects must be configured: ::
@@ -382,47 +436,198 @@ Below is an *excerpt* of **FE** configuration settings that must be revised. Oth
     this configuration is the same as in :ref:`case of NC <ccp4-cloud-emailer>`.
 
 
-.. _appendix-c:
+.. _appendix-d:
 
 --------------------------------------------------------------
-Appendix C. Adjusting start script for Number Cruncher Servers
+Appendix D. Adjusting start script for Number Cruncher Servers
 --------------------------------------------------------------
 
 Replace paths in the following lines of the provided **NC** start script (``/path/to/NC/start-nc.sh``): ::
 
-    ccp4_dir=/path/to/ccp4-7.1
+    ccp4_dir=/path/to/CCP4/ccp4-7.1
     nc_dir=/path/to/NC
-    export PDB_DIR=/path/to/pdb
-
-
-.. _appendix-d:
-
------------------------------------------------------------
-Appendix D. Adjusting start script for the Front-End Server
------------------------------------------------------------
-
-Replace paths in the following lines of the provided **FE** start script (``/path/to/FE/start-fe.sh``): ::
-
-    ccp4_dir=/path/to/ccp4-7.1
-    fe_dir=/path/to/
     export PDB_DIR=/path/to/pdb
 
 
 .. _appendix-e:
 
 -----------------------------------------------------------
-Appendix E. Adjusting Apache configuration on host machines
+Appendix E. Adjusting start script for the Front-End Server
 -----------------------------------------------------------
+
+Replace paths in the following lines of the provided **FE** start script (``/path/to/FE/start-fe.sh``): ::
+
+    ccp4_dir=/path/to/CCP4/ccp4-7.1
+    fe_dir=/path/to/
+    export PDB_DIR=/path/to/pdb
+
 
 .. _appendix-f:
 
-----------------------------
-Appendix F. Tests and checks
-----------------------------
+-----------------------------------------------------------
+Appendix F. Adjusting Apache configuration on host machines
+-----------------------------------------------------------
+
+CCP4 Cloud's Front-End Server listens to the specified port of the *localhost* service running on their host machines. External requests from users must be redirected to that port. In order to do that:
+
+1. Note the port number and ``externalURL's`` path in **FE** :ref:`configuration <appendix-c>`. In this document, the suggested values are ``8085`` and ``<path>=ccp4cloud``, respectively.
+
+2. Identify site directory of your Apache setup. In Debian-based systems, this is typically ``apache_site_dir=/etc/apache2/sites-enabled``, and in Redhat-based systems ``apache_site_dir=/etc/httpd/conf.d``
+
+3. Edit and install the provided template configuration module for Apache: ::
+
+    cp /path/to/setup-tmp/ccp4cloud-setup/apache.conf /path/to/setup-tmp/<path>.conf
+    # in <path>.conf, replace all occurences of:
+    #      '0000'  for the selected port number
+    #      'path'  for the chosen URL path ('<path>')
+    vi /path/to/setup-tmp/<path>.conf
+    sudo cp /path/to/setup-tmp/<path>.conf apache_site_dir/
+
+For example, for port number and **FE** URL path used in this document, ``apache_site_dir`` should receive file ``ccp4cloud.conf`` with the following content: ::
+
+    <Proxy http://127.0.0.1:8085/*>
+      Allow from all
+    </Proxy>
+
+    ProxyRequests Off
+    ProxyPass /ccp4cloud http://localhost:8085
+    SetOutputFilter INFLATE;proxy-html;DEFLATE
+    ProxyHTMLURLMap http://localhost:8085 /ccp4cloud
+    LogLevel Info
+    ProxyPassReverse /ccp4cloud http://localhost:8085
+
+4. Restart Apache: ::
+
+    sudo apachectl stop 
+    sudo apachectl start 
+
+.. note:: at this point, Apache may refuse to start if modules, required for the redirection, were not installed. Should this happen, inspect the error message and install the missing modules. Typically, ``mod_proxy`` and ``mod_proxy_http`` are missing.
+    
+
+**Apache configuration for Number Cruncher Server**
+
+If **NC** is placed on a host machine, different from **FE's** host, then DNS-resolved ``externalURL`` should be specified in its configuration, and the corresponding redirection module provided for it, in exactly the same fashion as above.
+
 
 .. _appendix-g:
 
+----------------------------
+Appendix G. Tests and checks
+----------------------------
+
+After starting CCP4 Cloud and Apache servers:
+
+1. Check **FE** and **NC's** log files: ::
+
+    cat /path.to/FE/logs/node_fe.err
+    cat /path.to/FE/logs/node_fe.log
+    cat /path.to/NC1/logs/node_nc.err
+    cat /path.to/NC1/logs/node_nc.log
+    cat /path.to/NC2/logs/node_nc.err
+    cat /path.to/NC2/logs/node_nc.log
+
+Normal content of ``*.err`` logs may contain ::
+
+    /bin/sh: 1: kill: No such processError:
+
+anything else indicates a problem. A message similar to ::
+
+    Error: listen EADDRINUSE 127.0.0.1:8085 
+
+may mean that the selected *localhost* port is used by another process running on the host machine. Messages similar to ::
+
+    Error: EBUSY: resource busy or locked
+    Error: ENOENT: no such file or directory
+
+indicate problems with file systems or with directory specifications in CCP4 Cloud's configuration files and/or start scripts. Errors are complemented with code trace, which may help a developer to identify the exact problem. Therefore, please inculde code traces in the respective communications.
+
+If **FE** server starts normally, its ``*.log`` file should start with messages similar to the following ::
+
+    /bin/sh: line 0: kill: (2982) - No such process
+    [2020-10-28T12:17:30.226Z] 14-001 +++ cannot kill process pid=2982
+    /bin/sh: line 0: kill: (2994) - No such process
+    [2020-10-28T12:17:30.232Z] 14-001 +++ cannot kill process pid=2994
+    /bin/sh: line 0: kill: (2995) - No such process
+    [2020-10-28T12:17:30.237Z] 14-001 +++ cannot kill process pid=2995
+    /bin/sh: line 0: kill: (2982) - No such process
+    [2020-10-28T12:17:30.241Z] 14-001 +++ cannot kill process pid=2982
+    [2020-10-28T12:17:30.250Z] 03-005 ... python version: ccp4-python not found
+    [2020-10-28T12:17:30.295Z] 03-001 ... FE: url=http://localhost:8081
+    [2020-10-28T12:17:30.296Z] 03-001 ... FE-Proxy: url=http://localhost:8085
+    [2020-10-28T12:17:30.296Z] 03-002 ... NC[0]: name=local-nc type=SHELL url=http://localhost:8083
+    [2020-10-28T12:17:30.296Z] 03-002 ... NC[1]: name=client type=CLIENT url=http://localhost:8084
+    [2020-10-28T12:17:30.299Z] 03-003 ... configuration written to /var/folders/zf/9_j6y85s4l743fzs2py3gztc0000gn/T/tmp-8053T07Ej39eTIQ7
+    [2020-10-28T12:17:30.302Z] 23-003 ... server local-nc started, pid=8063
+    [2020-10-28T12:17:30.303Z] 23-003 ... server client started, pid=8064
+    [2020-10-28T12:17:30.304Z] 00-001 ... FE: url=http://localhost:8081
+    [2020-10-28T12:17:30.304Z] 00-002 ... NC[0]: type=SHELL url=http://localhost:8083
+    [2020-10-28T12:17:30.304Z] 00-002 ... NC[1]: type=CLIENT url=http://localhost:8084
+    [2020-10-28T12:17:30.304Z] 00-003 ... Emailer: desktop
+    [2020-10-28T12:17:30.307Z] 00-005 ... front-end started, listening to http://localhost:8081 (non-exclusive)
+    [2020-10-28T12:17:30.307Z] 22-001 ... setting up proxy for http://localhost:8081 localhost
+    [2020-10-28T12:17:30.308Z] 22-002 ... setting up proxy for http://localhost:8084 localhost
+    [2020-10-28T12:17:30.308Z] 22-003 ... front-end proxy started, listening to http://localhost:8085 (exclusive)
+    [2020-10-28T12:17:30.310Z] 23-005 ... client application "/bin/bash -c 'open -a Opera http://localhost:8085'" started, pid=8065
+    [2020-10-28T12:17:30.425Z] 23-006 ... client application "/bin/bash -c 'open -a Opera http://localhost:8085'" quit with code 0
+
+and a normal **NC** log starts with ::
+
+    [2020-10-28T12:17:30.722Z] 01-001 ... NC[0]: type=SHELL url=http://localhost:8083
+    [2020-10-28T12:17:30.724Z] 01-002 ... Emailer: desktop
+    [2020-10-28T12:17:30.726Z] 11-031 ... total unassigned job tokens removed: 0
+    [2020-10-28T12:17:30.727Z] 11-033 ... total abandoned job directories removed: 0
+    [2020-10-28T12:17:30.743Z] 01-007 ... number cruncher #0 started, listening to http://localhost:8083 (exclusive)
+    [2020-10-28T12:17:30.743Z] 03-005 ... python version: ccp4-python not found
+
+In these logs, triple dots ``...`` denote messages that are merely informative, triple stars ``***`` highlight warnings and triple pluses ``+++`` indicate errors (which are not fatal in most cases; fatal errors are usually found in ``*.err`` logs). The above logs are copied from a perfectly functional system, despite confusing errors on the very top and unspecified python versions.
+
+
+2. Poll all *localhost* ports from their host machines, for example: ::
+
+    curl http://localhost:8085/whoareyou
+
+For the Front-End, the answer should be something like ::
+
+    CCP4 Cloud FE 1.6.016 [26.10.2020] CCP4-7.1.006
+
+and Number Crunchers should reply ::
+
+    CCP4 Cloud NC-0 (local-nc) 1.6.016 [26.10.2020] 0
+
+3. If *localhost* ports reply as above, repeat the same requests using respective ``externalURLs`` from configuration files, e.g., ::
+
+    curl https//www.mysite.com/ccp4cloud/whoareyou
+
+4. If all replies are sensible, start CCP4 Cloud login page in browser, using ``reportURL`` from **FE** configuration, e.g., ::
+
+    firefox https://www.mysite.com/ccp4cloud/
+
+.. note:: trailing slash is significant
+
+5. Use login name ``devel`` and password ``devel`` for the first login. You should land in empty project list, where you can create first project and run a few jobs (e.g., *Data Import*) in it.
+
+
+.. _appendix-h:
+
 ------------------------------------------------------------
-Appendix G. Creating 1st user with administrative privileges
+Appendix H. Creating 1st user with administrative privileges
 ------------------------------------------------------------
+
+Admin user account is essential for CCP4 Cloud maintenance. By default, CCP4 Cloud is installed with ``devel`` user, which cannot be removed. Admin users can grant admin privileges to any other user, but 1st Admin must be created manually: ::
+
+    cp /path/to/disk1/users/devel.user /path/to/disk1/users/admin.user 
+    cp -r /path/to/disk1/projects/devel.projects /path/to/disk1/projects/admin.projects
+
+    # in /path/to/disk1/users/admin.user, edit:
+    #        "name"  : "Admin"
+    #        "email" : "your@email"
+    #        "login" : "admin"
+    #        "role"  : "admin"
+    vi /path/to/disk1/users/admin.user 
+
+After this, go to CCP4 Cloud login page, and login as ``admin`` with password ``devel``. After login, proceed to *My Account* and change password to your liking.
+
+.. note:: you cannot remove user ``devel``, but it is advisable to change its password promptly.
+ 
+
 

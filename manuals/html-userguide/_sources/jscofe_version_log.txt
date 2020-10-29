@@ -5,7 +5,7 @@ CCP4 Cloud Version Log
 
 **Version 1.6.016**
 
-    *Released on --.--.2020 with CCP4 7.1.006*
+    *Released on --.--.2020 with CCP4 7.1.008*
 
     **Changes and new features**
 
@@ -22,6 +22,14 @@ CCP4 Cloud Version Log
     #. ``Coot`` task uses the last backup copy if user forgets to save coordinates
 
     #. New menu item: Load from Cloud backup, introduced in ``Coot``, which allows a user to restore from backup copy if previous Coot Cloud task finished unsuccessfully
+
+    #. Fixed bug in ``Buster``, because of which the task did not pass ligand information on descendants
+
+    #. Small bug fixes in ``Edit Revision``
+
+    #. Automatic clean-up of Front-End's Job Register added
+
+    #. ``CCP4go`` task is back to functional state, a set of bugs fixed
 
 
 

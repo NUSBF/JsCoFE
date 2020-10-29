@@ -94,6 +94,12 @@ Widget.prototype.toggleClass = function ( class_name )  {
   return this;
 }
 
+Widget.prototype.setCursor = function ( cursor )  {
+// e.g., cursor='pointer'
+  $(this.element).css ( 'cursor',cursor );
+  return this;
+}
+
 Widget.prototype.setTooltip = function ( text )  {
   this.element.setAttribute ( 'title',text );
   var delay    = 1500;
@@ -1209,7 +1215,7 @@ function setDefaultButton ( button,context_widget )  {
     if (e.keyCode == 13) {
     //if (e.which == 13) {
       // handle click logic here
-      button.click();        
+      button.click();
       //e.preventDefault();
       //return true;
     }
