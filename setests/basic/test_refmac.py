@@ -80,18 +80,17 @@ def sendEmail(deposLog):
 Dear Sirs, 
 
 During testing of the Deposition task in CCP4Cloud, attempt to raise preliminary validation report via OneDep API have failed.
-Please find extract from the log file below:
+Please see extract from the log file below:
+
     
     """
     message += '\n'.join(deposLog)
     message += '\n\nThis is automatically generated message from CCP4Cloud test system.'
 
     toaddr = 'pdbdep@ebi.ac.uk'
-    cc = ['oleg.kovalevskiy@stfc.ac.uk', 'eugene.krissinel@stfc.ac.uk']
+    cc = ['oleg.kovalevskiy@stfc.ac.uk', 'eugene.krissinel@stfc.ac.uk', 'deposit-help@mail.wwpdb.org']
     fromaddr = 'oleg.kovalevskiy@stfc.ac.uk'
     message_subject = "OneDep API has failed - automated report from CCP4Cloud"
-
-    print(message)
 
     messageToSend = "From: %s\r\n" % fromaddr
     messageToSend += "To: %s\r\n" % toaddr
@@ -103,6 +102,8 @@ Please find extract from the log file below:
     server = smtplib.SMTP('lists.fg.oisin.rc-harwell.ac.uk')
     server.sendmail(fromaddr, toaddrs, messageToSend)
     server.quit()
+
+    return()
 
 
 def depositionAfterRefmac(driver):
@@ -155,27 +156,29 @@ def depositionAfterRefmac(driver):
 
     if not taskText == 'package prepared, pdb report obtained':
         print('!!! Verification not passed!')
-        print('Sending emails to OK, EK and pdbdep@ebi.ac.uk')
-        time.sleep(1)
-        sf.doubleClickTaskInTaskTree(driver, '\[0005\] deposition')
-        time.sleep(2)
-        driver.switch_to.frame(driver.find_element_by_xpath("//iframe[contains(@src, 'report/index.html')]"))
-        sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Main Log')
-        time.sleep(2)
-        mainLog = driver.find_element(By.XPATH, "//pre[@id='log_page-0-0-pre']")
-        logText = mainLog.text
-        driver.switch_to.default_content()
 
-        logStrings = logText.split('\n')
-        isDeposLog = False
-        deposLog = []
-        for s in logStrings:
-            if s.decode('utf-8').strip() == 'RUNNING DATA PREPARATION SCRIPT FROM EBI':
-                isDeposLog = True
-            if isDeposLog:
-                deposLog.append(s.decode('utf-8'))
-        print(deposLog)
-        sendEmail(deposLog)
+        if not os.path.exists('~/.setest_no_email'):
+            print('Sending emails to OK, EK and pdbdep@ebi.ac.uk')
+            time.sleep(1)
+            sf.doubleClickTaskInTaskTree(driver, '\[0005\] deposition')
+            time.sleep(2)
+            driver.switch_to.frame(driver.find_element_by_xpath("//iframe[contains(@src, 'report/index.html')]"))
+            sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Main Log')
+            time.sleep(2)
+            mainLog = driver.find_element(By.XPATH, "//pre[@id='log_page-0-0-pre']")
+            logText = mainLog.text
+            driver.switch_to.default_content()
+
+            logStrings = logText.split('\n')
+            isDeposLog = False
+            deposLog = []
+            for s in logStrings:
+                if s.decode('utf-8').strip() == 'RUNNING DATA PREPARATION SCRIPT FROM EBI':
+                    isDeposLog = True
+                if isDeposLog:
+                    deposLog.append(s.decode('utf-8'))
+            if len(deposLog) > 1:
+                sendEmail(deposLog)
 
     assert taskText == 'package prepared, pdb report obtained'
 
