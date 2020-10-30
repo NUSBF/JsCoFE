@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    28.10.20   <--  Date of Last Modification.
+ *    29.10.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -360,6 +360,7 @@ var version = '';
         { "iris"        : "IRIS",
           "logo"        : "./images_png/logo-iris.png",
           "description" : "Digital Research Infrastructure STFC UK",
+          "thanks"      : "Computing infrastructure",
           "url"         : "https://www.iris.ac.uk"
         }
       ]
@@ -582,11 +583,13 @@ function readConfiguration ( confFilePath,serverType )  {
       { "name"        : "CCP4",
         "logo"        : "images_png/logo-ccp4_online.png",
         "description" : "Collaborative Computational Project Number 4 (CCP4) UK",
+        "thanks"      : "Funding and computing",
         "url"         : "https://www.ccp4.ac.uk"
       },{
         "name"        : "UKRI",
         "logo"        : "images_png/logo-ukri.png",
         "description" : "UK Research and Innovations",
+        "thanks"      : "Funding and hosting",
         "url"         : "https://www.ukri.org"
       }
     );

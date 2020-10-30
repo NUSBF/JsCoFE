@@ -241,6 +241,8 @@ var row      = 0;
 
 
   var ccp4go_task = new TaskCCP4go();
+  if (this.dataBox.isEmpty())
+    ccp4go_task.input_dtypes = [1]; // force 'at root mode' for the task
   if (ccp4go_task.isTaskAvailable()[0]=='ok')
     this.makeSection ( 'Combined Automated Solver <i>"CCP4 Go"</i>',[
       'Recommended as first attempt or in easy cases',
@@ -248,11 +250,11 @@ var row      = 0;
     ]);
   var section1 = section0;
 
-
   if (__user_role==role_code.developer)
     this.makeSection ( 'Tasks in Development',[
-      new TaskFragon       (),
       new TaskDocDev       (),
+      new TaskJLigand      (),
+      new TaskFragon       (),
       new TaskMergeData    (),
       new TaskHelloWorld   ()
     ]);

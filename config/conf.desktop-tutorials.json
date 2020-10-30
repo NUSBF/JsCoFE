@@ -23,6 +23,7 @@
         { "iris"        : "IRIS",
           "logo"        : "./images_png/logo-iris.png",
           "description" : "Digital Research Infrastructure STFC UK",
+          "thanks"      : "Computing infrastructure",
           "url"         : "https://www.iris.ac.uk"
         }
       ]

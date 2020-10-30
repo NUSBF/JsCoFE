@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    05.04.20   <--  Date of Last Modification.
+ *    29.10.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -112,8 +112,7 @@ BasePage.prototype.makeLogoPanel = function ( row,col,colSpan )  {
       __setup_desc.partners[i].icon = new ImageButton (
                                       __setup_desc.partners[i].logo,'','28px' );
       (function(partner){
-        partner.icon.setTooltip ( partner.description )
-                    .setCursor  ( 'pointer' )
+        partner.icon.setCursor  ( 'pointer' )
                     .addOnClickListener ( function(){
           window.open ( partner.url,'_blank' );
         });
