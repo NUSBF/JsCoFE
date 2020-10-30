@@ -61,9 +61,9 @@ function TaskMakeLigand()  {
       label       : '',        // no label for void data entry
       inputId     : 'void1',   // prefix 'void' will hide entry in import dialog
       version     : 0,         // minimum data version allowed
-      force       : 100000000, // "show" all revisions available
+      force       : 100,       // "show" all revisions available
       min         : 0,         // minimum acceptable number of data instances
-      max         : 100000000  // maximum acceptable number of data instances
+      max         : 100        // maximum acceptable number of data instances
     }
   ];
 

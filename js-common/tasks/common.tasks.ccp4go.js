@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    26.03.20   <--  Date of Last Modification.
+ *    29.10.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -40,18 +40,82 @@ function TaskCCP4go()  {
   //this.helpURL = './html/jscofe_task_ccp4go.html';
 
   this.files   = ['','',''];
-  this.ha_type = '';
+  //this.ha_type = '';
   this.ligands = [];
   for (var i=0;i<10;i++)
     this.ligands.push ( { 'source':'none', 'smiles':'', 'code':'' } );
 
-  this.input_dtypes = [1];  // input data types
+//  this.input_dtypes = [1];  // settings for "on project top only", managed in TaskList
+
+  this.input_dtypes = [{    // input data types
+      data_type   : {'DataUnmerged':[],'DataHKL':[]}, // data type(s) and subtype(s)
+      label       : 'Reflection Data', // label for input dialog
+      inputId     : 'hkldata',  // input Id for referencing input fields
+      version     : 0,          // minimum data version allowed
+      min         : 1,          // minimum acceptable number of data instances
+      max         : 1           // maximum acceptable number of data instances
+    },{
+      data_type   : {'DataSequence':[]}, // data type(s) and subtype(s)
+      label       : 'Sequence',    // label for input dialog
+      //unchosen_label : 'sequence unknown',
+      tooltip     : '(Optional) Macromolecular sequence(s) expected in ASU.',
+      inputId     : 'seq',         // input Id for referencing input fields
+      customInput : 'stoichiometry-wauto', // lay custom fields below the dropdown
+      version     : 0,             // minimum data version allowed
+      force       : 1,             // meaning choose, by default, 1 sequence if
+                                   // available; otherwise, 0 (== do not use) will
+                                   // be selected
+      min         : 0,             // minimum acceptable number of data instances
+      max         : 10             // maximum acceptable number of data instances
+    },{
+      data_type   : {'DataModel':[],'DataXYZ':[]},  // data type(s) and subtype(s)
+      label       : 'Structure homologue',   // label for input dialog
+      tooltip     : '(Optional) Specify coordinate data set(s) to be used as ' +
+                    'model(s) for Molecular Replacement.',
+      inputId     : 'xyz',       // input Id for referencing input fields
+      //customInput : 'chain-sel-poly', // lay custom fields next to the selection
+      min         : 0,           // minimum acceptable number of data instances
+      max         : 1            // maximum acceptable number of data instances
+    },{
+      data_type   : {'DataLigand':[]},  // data type(s) and subtype(s)
+      label       : 'Ligand data', // label for input dialog
+      tooltip     : '(Optional) Specify ligands to be fit in electron density.',
+      inputId     : 'ligand',      // input Id for referencing input fields
+      min         : 0,             // minimum acceptable number of data instances
+      max         : 5              // maximum acceptable number of data instances
+    },{
+      // require brunching from data import, so no revision must be there
+      data_type   : {'DataRevision':[]}, // data type(s) and subtype(s)
+      label       : 'Structure revision', // label for input dialog
+      inputId     : 'revision', // input Id for referencing input fields
+      version     : 0,          // minimum data version allowed
+      min         : 0,          // minimum acceptable number of data instances
+      max         : 0           // maximum acceptable number of data instances
+    }
+  ];
 
   this.parameters = { // input parameters
+    HATOM : { type      : 'string_',   // empty string allowed
+              keyword   : 'atomtype=',
+              label     : '<b><i>Main anomalous<br>scatterer</i></b>',
+              tooltip   : 'Specify atom type of dominant anomalous scatterer ' +
+                          '(e.g., S, SE etc.), or leave blank if uncertain.',
+              iwidth    : 40,
+              value     : '',
+              //emitting  : true,    // will emit 'onchange' signal
+              maxlength : 2,       // maximum input length
+              position  : [0,0,1,1]
+              //showon    : {'hkl.subtype:anomalous':[1]}
+            },
+    SPACER1 : {
+            type      : 'label',  // just a separator
+            label     : '&nbsp;',
+            position  : [1,0,1,1],
+          },
     sec1  : { type     : 'section',
               title    : 'Components control (advanced)',
               open     : false,  // true for the section to be initially open
-              position : [0,0,1,8],
+              position : [2,0,1,8],
               contains : {
                 /*
                 DATASET_SEL : {
@@ -172,6 +236,25 @@ if (!__template)  {
 
   // reserved function name
   TaskCCP4go.prototype.makeInputPanel = function ( dataBox )  {
+    if (this.input_dtypes==1)  // make data upload interface
+      return this._makeInputPanel ( dataBox );
+    return  TaskTemplate.prototype.makeInputPanel.call ( this,dataBox );
+  }
+
+  TaskCCP4go.prototype.collectInput = function ( inputPanel )  {
+    if (this.input_dtypes==1)  // upload interface mode
+      return this._collectInput ( inputPanel );
+    return  TaskTemplate.prototype.collectInput.call ( this,inputPanel );
+  }
+
+  TaskCCP4go.prototype.doRun = function ( inputPanel,run_func )  {
+    if (this.input_dtypes==1)  // upload interface mode
+      return this._doRun ( inputPanel,run_func );
+    return  TaskTemplate.prototype.doRun.call ( this,inputPanel,run_func );
+  }
+
+
+  TaskCCP4go.prototype._makeInputPanel = function ( dataBox )  {
   // makes input panel for Import task; dataBox is not used as import task
   // does not have any input data from the project
   var nSeqInputs = 1;
@@ -371,11 +454,13 @@ if (!__template)  {
     var row0 = row;
     div.grid.setLabel ( '',row++,0,1,1 ).setHeight_px(8);
 
+    /*
     setLabel ( row,'Heavy atom type','[Optional] Provide chemical element of ' +
                    'anomalous scatterers if anomalous signal is observed, ' +
                    'and leave blank otherwise.' );
     div.ha_type = div.grid.setInputText ( this.ha_type, row++,2,1,1 )
                           .setMaxInputLength ( 2 ).setWidth_px ( 40 );
+    */
 
     div.grid.setLabel ( '&nbsp;',row++,0,1,1 ).setHeight_px(8);
 
@@ -474,12 +559,12 @@ if (!__template)  {
 
 
   // reserved function name
-  TaskCCP4go.prototype.collectInput = function ( inputPanel )  {
+  TaskCCP4go.prototype._collectInput = function ( inputPanel )  {
     // collects data from input widgets, created in makeInputPanel() and
     // stores it in internal fields
     var msg   = '';  // Ok if stays empty
     var files = inputPanel.mtz_select['fsel'].getFiles();
-    this.ha_type = inputPanel.ha_type.getValue();
+    //this.ha_type = inputPanel.ha_type.getValue();
     for (var i=0;i<this.ligands.length;i++)  {
       this.ligands[i].source = inputPanel.ligands[i].selection.getValue();
       this.ligands[i].smiles = inputPanel.ligands[i].smiles.getValue();
@@ -513,7 +598,7 @@ if (!__template)  {
   //  This function is called when task is finally sent to FE to run. Should
   // execute function given as argument, or issue an error message if run
   // should not be done.
-  TaskCCP4go.prototype.doRun = function ( inputPanel,run_func )  {
+  TaskCCP4go.prototype._doRun = function ( inputPanel,run_func )  {
   var files  = [inputPanel.mtz_select  ['fsel'].getFiles()];
   var sfiles = inputPanel.seq_select[0]['fsel'].getFiles();
   var cfiles = inputPanel.coor_select  ['fsel'].getFiles();
@@ -550,7 +635,7 @@ if (!__template)  {
   // This function is called at cloning jobs and should do copying of all
   // custom class fields not found in the Template class
   TaskCCP4go.prototype.customDataClone = function ( task )  {
-    this.ha_type = task.ha_type;
+    //this.ha_type = task.ha_type;
     this.ligands = [];
     for (var i=0;i<task.ligands.length;i++)
       this.ligands.push ( { 'source' : task.ligands[i].source,

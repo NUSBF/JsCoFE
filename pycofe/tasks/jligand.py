@@ -1,0 +1,103 @@
+#!/usr/bin/python
+
+# python-3 ready
+
+#
+# ============================================================================
+#
+#    30.10.20   <--  Date of Last Modification.
+#                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# ----------------------------------------------------------------------------
+#
+#  JLIGAND EXECUTABLE MODULE (CLIENT-SIDE TASK)
+#
+#  Command-line:
+#     ccp4-python python.tasks.coot_mb.py jobManager jobDir jobId expire=timeout_in_days
+#
+#  where:
+#    jobManager  is either SHELL or SGE
+#    jobDir      is path to job directory, having:
+#      jobDir/output  : directory receiving output files with metadata of
+#                       all successful imports
+#      jobDir/report  : directory receiving HTML report
+#    expire      is timeout for removing coot backup directories
+#
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2020
+#
+# ============================================================================
+#
+
+#  python native imports
+import os
+import sys
+import shutil
+
+#  application imports
+import basic
+from   pycofe.varut   import  signal
+try:
+    from pycofe.varut import messagebox
+except:
+    messagebox = None
+
+#from pycofe.proc.coot_link import LinkLists
+
+# ============================================================================
+# Make Coot driver
+
+class JLigand(basic.TaskDriver):
+
+    # ------------------------------------------------------------------------
+
+    def run(self):
+
+        # Prepare coot job
+
+        #self.putMessage ( "<h3><i>Make sure that you save your work from Coot " +\
+        #                  "<u>without changing directory and file name offered</u></i></h3>" )
+        #self.flush
+
+        # fetch input data
+        revision = None
+        istruct  = None
+        libin    = None
+        if hasattr(self.input_data.data,"aux_struct"):
+            revision = self.makeClass ( self.input_data.data.revision[0] )
+            if revision.Structure:
+                istruct = self.makeClass ( revision.Structure )
+                libin   = istruct.getLibFilePath ( self.inputDir() )
+
+        # make command line arguments
+        args = []
+
+
+        have_results = False
+        rc = self.runApp ( "jligand",args,logType="Main",quitOnError=False )
+
+        summary_line = " this goes on task line in project tree"
+
+        self.generic_parser_summary["jligand"] = {
+            "summary_line" : summary_line
+        }
+
+        if rc.msg == "":
+            self.success ( have_results )
+        else:
+            self.file_stdout.close()
+            self.file_stderr.close()
+            if messagebox:
+                messagebox.displayMessage ( "Failed to launch",
+                  "<b>Failed to launch jLigand: <i>" + rc.msg + "</i></b>"
+                  "<p>This may indicate a problem with software setup." )
+
+            raise signal.JobFailure ( rc.msg )
+
+        return
+
+
+# ============================================================================
+
+if __name__ == "__main__":
+
+    drv = JLigand ( "",os.path.basename(__file__) )
+    drv.start()

@@ -80,6 +80,7 @@ class CCP4go(import_task.Import):
     # ------------------------------------------------------------------------
 
     def importData(self):
+        #  works with uploaded data from the top of the project
 
         self.putWaitMessageLF ( "<b>1. Input Data Import</b>" )
         #self.rvrow -= 1
@@ -128,6 +129,7 @@ class CCP4go(import_task.Import):
         self.seq     = None   # list of sequence objects
         self.xyz     = None   # coordinates (model/apo)
         self.hkl_alt = {}     # alternative-space group merged datasets
+        self.ha_type = self.getParameter ( self.task.parameters.HATOM )
 
         if "DataUnmerged" in self.outputDataBox.data:
             self.unm = self.outputDataBox.data["DataUnmerged"][0]
@@ -181,11 +183,18 @@ class CCP4go(import_task.Import):
                     addDataLine ( "Sequence #"+str(i+1),"Sequence data",self.seq[i],nrow )
         addDataLine ( "Structure"           ,"Homologue structure",self.xyz,nrow )
 
-        if self.task.ha_type:
+        #if self.task.ha_type:
+        #    self.putTableLine ( tableId,"Anomalous scatterers",
+        #        "Chemical type of anomalous scatterers",self.task.ha_type,
+        #        nrow[0] )
+        #    nrow[0] += 1
+
+        if self.ha_type:
             self.putTableLine ( tableId,"Anomalous scatterers",
-                "Chemical type of anomalous scatterers",self.task.ha_type,
+                "Chemical type of anomalous scatterers",self.ha_type,
                 nrow[0] )
             nrow[0] += 1
+
 
         for i in range(len(self.task.ligands)):
             ligand = self.task.ligands[i]
@@ -207,6 +216,33 @@ class CCP4go(import_task.Import):
 
     #def revisionFromMeta ( self,asuComp,hkl,structure,name ):
     #    return
+
+    def prepareData(self):
+        #  works with imported data from the project
+
+        self.unm     = None   # unmerged dataset
+        self.hkl     = None   # selected merged dataset
+        self.seq     = None   # list of sequence objects
+        self.xyz     = None   # coordinates (model/apo)
+        self.hkl_alt = {}     # alternative-space group merged datasets
+        self.ha_type = self.getParameter ( self.task.parameters.HATOM )
+
+        hkldata = self.makeClass ( self.input_data.data.hkldata[0] )
+        if hkldata._type=="DataUnmerged":
+            self.unm = hkldata
+        else:
+            self.hkl = hkldata
+
+        if hasattr(self.input_data.data,"seq"):  # optional data parameter
+            self.seq = []
+            for i in range(len(self.input_data.data.seq)):
+                self.seq.append ( self.makeClass(self.input_data.data.seq[i]) )
+
+        if hasattr(self.input_data.data,"xyz"):  # optional data parameter
+            self.xyz = self.makeClass ( self.input_data.data.xyz[0] )
+
+        return
+
 
     # ------------------------------------------------------------------------
 
@@ -455,7 +491,12 @@ class CCP4go(import_task.Import):
 
     def run(self):
 
-        self.importData()
+        fileDir = self.outputDir()
+        if hasattr(self.input_data.data,"hkldata"):
+            fileDir = self.inputDir()
+            self.prepareData()  #  pre-imported data provided
+        else:
+            self.importData()   #  data was uploaded
         #self.putMessage ( "&nbsp;" )
         self.flush()
 
@@ -468,17 +509,18 @@ class CCP4go(import_task.Import):
             # write input file
             self.open_stdin()
             if self.unm:
-                self.write_stdin ( "HKLIN " + self.unm.getFilePath(self.outputDir(),dtype_template.file_key["mtz"]) )
+                self.write_stdin ( "HKLIN " + self.unm.getUnmergedFilePath(fileDir) )
             elif self.hkl:
-                self.write_stdin ( "HKLIN " + self.hkl.getFilePath(self.outputDir(),dtype_template.file_key["mtz"]) )
+                self.write_stdin ( "HKLIN " + self.hkl.getHKLFilePath(fileDir) )
             if self.seq:  # takes just a single sequence for now -- to be changed
-                dtype_sequence.writeMultiSeqFile1 ( self.file_seq_path(),self.seq,self.outputDir() )
-                #self.write_stdin ( "\nSEQIN " + self.seq[0].getFilePath(self.outputDir(),dtype_template.file_key["seq"]) )
+                dtype_sequence.writeMultiSeqFile1 ( self.file_seq_path(),self.seq,fileDir )
                 self.write_stdin ( "\nSEQIN " + self.file_seq_path() )
             if self.xyz:
-                self.write_stdin ( "\nXYZIN " + self.xyz.getFilePath(self.outputDir(),dtype_template.file_key["xyz"]) )
-            if self.task.ha_type:
-                self.write_stdin ( "\nHATOMS " + self.task.ha_type )
+                self.write_stdin ( "\nXYZIN " + self.xyz.getXYZFilePath(fileDir) )
+            #if self.task.ha_type:
+            #    self.write_stdin ( "\nHATOMS " + self.task.ha_type )
+            if self.ha_type:
+                self.write_stdin ( "\nHATOMS " + self.ha_type )
             for i in range(len(self.task.ligands)):
                 if self.task.ligands[i].source!='none':
                     self.write_stdin ( "\nLIGAND " + self.task.ligands[i].code )

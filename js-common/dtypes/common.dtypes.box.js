@@ -282,7 +282,9 @@ var nt = task_subtypes.length;
 
 DataBox.prototype.getDataSummary = function ( task )  {
 
-  var summary = { status : 2 };
+  var summary = { status : 2 };   //  2: green, all data is just right
+                                  //  1: amber, ambiguous data, needs choice
+                                  //  0: some or all data missing
 
   if ((task.input_dtypes.length==1) && (task.input_dtypes[0]==1))  {
     var ndata = 0;
