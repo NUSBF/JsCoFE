@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    29.10.20   <--  Date of Last Modification.
+ *    30.10.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -60,7 +60,7 @@ function TaskCCP4go()  {
       //unchosen_label : 'sequence unknown',
       tooltip     : '(Optional) Macromolecular sequence(s) expected in ASU.',
       inputId     : 'seq',         // input Id for referencing input fields
-      customInput : 'stoichiometry-wauto', // lay custom fields below the dropdown
+      //customInput : 'stoichiometry-wauto', // lay custom fields below the dropdown
       version     : 0,             // minimum data version allowed
       force       : 1,             // meaning choose, by default, 1 sequence if
                                    // available; otherwise, 0 (== do not use) will

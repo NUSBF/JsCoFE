@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    16.09.20   <--  Date of Last Modification.
+#    30.10.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -128,6 +128,7 @@ class CCP4go(import_task.Import):
         self.hkl     = None   # selected merged dataset
         self.seq     = None   # list of sequence objects
         self.xyz     = None   # coordinates (model/apo)
+        self.ligands = []     # not used in this function but must be initialised
         self.hkl_alt = {}     # alternative-space group merged datasets
         self.ha_type = self.getParameter ( self.task.parameters.HATOM )
 
@@ -224,6 +225,7 @@ class CCP4go(import_task.Import):
         self.hkl     = None   # selected merged dataset
         self.seq     = None   # list of sequence objects
         self.xyz     = None   # coordinates (model/apo)
+        self.ligands = []     # list of ligands
         self.hkl_alt = {}     # alternative-space group merged datasets
         self.ha_type = self.getParameter ( self.task.parameters.HATOM )
 
@@ -240,6 +242,10 @@ class CCP4go(import_task.Import):
 
         if hasattr(self.input_data.data,"xyz"):  # optional data parameter
             self.xyz = self.makeClass ( self.input_data.data.xyz[0] )
+
+        if hasattr(self.input_data.data,"ligand"):  # optional data parameter
+            for i in range(len(self.input_data.data.ligand)):
+                self.ligands.append ( self.makeClass(self.input_data.data.ligand[i]) )
 
         return
 
@@ -492,8 +498,10 @@ class CCP4go(import_task.Import):
     def run(self):
 
         fileDir = self.outputDir()
+        stageNo = 1
         if hasattr(self.input_data.data,"hkldata"):
             fileDir = self.inputDir()
+            stageNo = 0
             self.prepareData()  #  pre-imported data provided
         else:
             self.importData()   #  data was uploaded
@@ -526,6 +534,11 @@ class CCP4go(import_task.Import):
                     self.write_stdin ( "\nLIGAND " + self.task.ligands[i].code )
                     if self.task.ligands[i].source=='smiles':
                         self.write_stdin ( " " + self.task.ligands[i].smiles )
+            for i in range(len(self.ligands)):
+                self.write_stdin ( "\nLIGIN " + self.ligands[i].code + ";" +\
+                                   self.ligands[i].getLibFilePath(fileDir) + ";" +\
+                                   self.ligands[i].getXYZFilePath(fileDir) )
+
             self.write_stdin ( "\n" )
             self.close_stdin()
 
@@ -545,7 +558,7 @@ class CCP4go(import_task.Import):
 
             meta = {}
             meta["jobId"]         = self.job_id
-            meta["stageNo"]       = 1
+            meta["stageNo"]       = stageNo
             meta["sge_q"]         = queueName
             meta["sge_tc"]        = nSubJobs
             meta["summaryTabId"]  = self.report_page_id()
