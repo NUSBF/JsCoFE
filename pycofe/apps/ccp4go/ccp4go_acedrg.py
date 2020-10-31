@@ -3,13 +3,13 @@
 #
 # ============================================================================
 #
-#    09.04.19   <--  Date of Last Modification.
+#    30.10.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  CCP4EZ Combined Auto-Solver AceDrg module
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2019
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2020
 #
 # ============================================================================
 #
@@ -56,59 +56,72 @@ class AceDrg(ccp4go_lorestr.Lorestr):
         cmd          = []
         for i in range(len(self.ligands)):
 
-            ldata   = self.ligands[i]
-            code    = ldata[0].upper()
-            xyzPath = code + ".pdb"
-            cifPath = code + ".cif"
-
-            if len(ldata)>1:
-                fname = os.path.join ( resultdir,"smiles_"+code )
-                f = open ( fname,'w' )
-                f.write  ( ldata[1] + '\n' )
-                f.close  ()
-                # make command-line parameters
-                cmd = [ "-i",fname,"-r",code,"-o",code ]
-            else:
-                ligpath = os.path.join(os.environ["CCP4"],"lib","data",
-                                       "monomers",code[0].lower(),code + ".cif")
-                if os.path.isfile(ligpath):
-                    block = cif.read(ligpath)[-1]
-                    if block.find_values('_chem_comp_atom.x'):
-                        # XYZ coordinates are found in dictionary, just copy
-                        # them over
-                        st = gemmi.make_structure_from_chemcomp_block ( block )
-                        st.write_pdb ( xyzPath )
-                        # complement with cif dictionary
-                        shutil.copy2 ( ligpath,cifPath  )
-                        cmd = []  # do not use AceDrg
-                    else:
-                        cmd = [ "-c",ligpath,"-r",code,"-o",code ] # run AceDrg
-
-            # start acedrg
-            if len(cmd)>0:
-                if sys.platform.startswith("win"):
-                    self.runApp ( "acedrg.bat",cmd )
-                else:
-                    self.runApp ( "acedrg",cmd )
-
-            if os.path.isfile(xyzPath):
-                xyzPath1 = os.path.join ( resultdir,xyzPath  )
-                cifPath1 = os.path.join ( resultdir,cifPath  )
-                xyzPath2 = os.path.join ( self.outputdir,xyzPath1 )
-                cifPath2 = os.path.join ( self.outputdir,cifPath1 )
-                shutil.copy2 ( xyzPath,xyzPath2  )
-                shutil.copy2 ( cifPath,cifPath2  )
-                os.rename ( xyzPath,xyzPath1 )
-                os.rename ( cifPath,cifPath1 )
+            ldata = self.ligands[i]
+            if ldata[0]=="LIGIN":
+                code = ldata[1].upper()
                 meta[code] = {}
-                meta[code]["xyz"] = xyzPath1
-                meta[code]["cif"] = cifPath1
+                meta[code]["cif"] = ldata[2]
+                if len(ldata)>3:
+                    meta[code]["xyz"] = ldata[3]
                 nResults += 1
                 quit_message += code + " "
                 if nResults==1:
                     self.putMessage ( "<h2><i>Results</i></h2>" )
-                self.putStructureWidget ( code + " structure",
-                                          [ os.path.join("..",xyzPath2) ],-1 )
+                self.putMessage ( "<b>Ligand</b> " + code + " -- prepared" )
+
+            else:
+                code = ldata[0].upper()
+                xyzPath = code + ".pdb"
+                cifPath = code + ".cif"
+
+                if len(ldata)>1:
+                    fname = os.path.join ( resultdir,"smiles_"+code )
+                    f = open ( fname,'w' )
+                    f.write  ( ldata[1] + '\n' )
+                    f.close  ()
+                    # make command-line parameters
+                    cmd = [ "-i",fname,"-r",code,"-o",code ]
+                else:
+                    ligpath = os.path.join(os.environ["CCP4"],"lib","data",
+                                           "monomers",code[0].lower(),code + ".cif")
+                    if os.path.isfile(ligpath):
+                        block = cif.read(ligpath)[-1]
+                        if block.find_values('_chem_comp_atom.x'):
+                            # XYZ coordinates are found in dictionary, just copy
+                            # them over
+                            st = gemmi.make_structure_from_chemcomp_block ( block )
+                            st.write_pdb ( xyzPath )
+                            # complement with cif dictionary
+                            shutil.copy2 ( ligpath,cifPath  )
+                            cmd = []  # do not use AceDrg
+                        else:
+                            cmd = [ "-c",ligpath,"-r",code,"-o",code ] # run AceDrg
+
+                # start acedrg
+                if len(cmd)>0:
+                    if sys.platform.startswith("win"):
+                        self.runApp ( "acedrg.bat",cmd )
+                    else:
+                        self.runApp ( "acedrg",cmd )
+
+                if os.path.isfile(xyzPath):
+                    xyzPath1 = os.path.join ( resultdir,xyzPath  )
+                    cifPath1 = os.path.join ( resultdir,cifPath  )
+                    xyzPath2 = os.path.join ( self.outputdir,xyzPath1 )
+                    cifPath2 = os.path.join ( self.outputdir,cifPath1 )
+                    shutil.copy2 ( xyzPath,xyzPath2  )
+                    shutil.copy2 ( cifPath,cifPath2  )
+                    os.rename ( xyzPath,xyzPath1 )
+                    os.rename ( cifPath,cifPath1 )
+                    meta[code] = {}
+                    meta[code]["xyz"] = xyzPath1
+                    meta[code]["cif"] = cifPath1
+                    nResults += 1
+                    quit_message += code + " "
+                    if nResults==1:
+                        self.putMessage ( "<h2><i>Results</i></h2>" )
+                    self.putStructureWidget ( code + " structure",
+                                              [ os.path.join("..",xyzPath2) ],-1 )
 
         self.output_meta["results"][resultdir] = {}
         self.output_meta["results"][resultdir]["ligands"]  = meta

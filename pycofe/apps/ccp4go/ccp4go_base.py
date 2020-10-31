@@ -3,13 +3,13 @@
 #
 # ============================================================================
 #
-#    08.11.19   <--  Date of Last Modification.
+#    30.10.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  CCP4EZ Combined Auto-Solver Base class
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2019
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2020
 #
 # ============================================================================
 #
@@ -38,6 +38,7 @@
 #  HATOMS type [number]
 #  LIGAND code [smiles]
 #  LIGAND code [smiles]
+#  LIGIN  code;path.cif;path.xyz
 #  .......
 #
 #  Metadata in rvapi document (will be overwritten by equivalent command-line
@@ -274,7 +275,15 @@ class Base(object):
                 self.stdout ( "\n LIGAND " + lst[0] )
                 if len(lst)>1:
                     self.stdout ( " " + lst[1] )
-            elif s:
+            elif s.startswith("LIGIN"):
+                lst = [_f.strip() for _f in s.replace("LIGIN","",1).split(";") if _f]
+                if len(lst)>=2:
+                    self.ligands.append ( ["LIGIN"] + lst )
+                    self.stdout ( "\n " + s )
+                else:
+                    self.output_meta["retcode"] = "[01-003] unrecognised input line"
+                    self.stderr ( " *** unrecognised input line " + s + "\n" )
+            else:
                 self.output_meta["retcode"] = "[01-002] unrecognised input line"
                 self.stderr ( " *** unrecognised input line " + s + "\n" )
         self.stdout ( "\n -----------------------------------------------\n" )

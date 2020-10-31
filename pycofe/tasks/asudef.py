@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    06.09.20   <--  Date of Last Modification.
+#    30.10.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -158,17 +158,24 @@ def makeRevision ( base,hkl,seq,composition,altEstimateKey,altNRes,
             "title": "Suggested ASU contents",
             "state": 0, "class": "table-blue", "css": "text-align:right;",
             "horzHeaders" :  [
-                { "label": "Structural unit components", "tooltip": "Sequence data" },
-                { "label": "Type"  , "tooltip": "Sequence type" },
-                { "label": "Size"  , "tooltip": "Number of residues" },
-                { "label": "Weight", "tooltip": "Weight in Daltons" }
+                { "label"  : "N<sub>copies</sub>",
+                  "tooltip": "Number of copies"},
+                { "label"  : "Structural unit components",
+                  "tooltip": "Sequence reference" },
+                { "label"  : "Type"  ,
+                  "tooltip": "Sequence type" },
+                { "label"  : "Size"  ,
+                  "tooltip": "Number of residues" },
+                { "label"  : "Weight",
+                  "tooltip": "Weight in Daltons" }
             ],
             "rows" : []
         }
 
         for i in range(len(seq)):
             trow = { "header":{ "label": str(i+1), "tooltip": ""}, "data": [
-                    str(seq[i].ncopies) + "x&nbsp;" + seq[i].dname + "&nbsp;",
+                    str(seq[i].ncopies),
+                    seq[i].dname + "&nbsp;",
                     seq[i].subtype[0].upper() + "&nbsp;",
                     str(seq[i].size) + "&nbsp;",
                     str(seq[i].weight) + "&nbsp;"
@@ -176,7 +183,7 @@ def makeRevision ( base,hkl,seq,composition,altEstimateKey,altNRes,
             tdict1["rows"].append ( trow )
 
         tdict1["rows"].append ({
-          "data" : ["<i><b>Total residues/weight:</b></i>","",
+          "data" : [" ","<i><b>Total residues/weight:</b></i>","",
                     "<i><b>" + str(nRes) + "</b></i>&nbsp;",
                     "<i><b>" + str(molWeight) + "</b></i>&nbsp;"]
         })
@@ -288,11 +295,14 @@ def makeRevision ( base,hkl,seq,composition,altEstimateKey,altNRes,
             "horzHeaders" :  [
                 #{ "label": "N<sub>units</sub>"   , "tooltip":
                 #   "Number of given content units placed in asymmetric unit" },
-                { "label": "N<sub>asu</sub>"   , "tooltip":
-                   "Number of suggested ASUs placed in asymmetric unit for trial" },
-                { "label": "Matthews"            , "tooltip": "Matthews coefficient" },
-                { "label": "% solvent"           , "tooltip": "Solvent percent" },
-                { "label": "P<sub>matthews</sub>", "tooltip": "Probability" }
+                { "label"  : "N<sub>trial</sub>"   ,
+                  "tooltip": "Trial number of asymmetric units" },
+                { "label"  : "Matthews"            ,
+                  "tooltip": "Matthews coefficient" },
+                { "label"  : "% solvent"           ,
+                  "tooltip": "Solvent percent" },
+                { "label"  : "P<sub>matthews</sub>",
+                  "tooltip": "Probability" }
             ],
             "rows" : []
         }
