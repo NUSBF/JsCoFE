@@ -5,7 +5,7 @@
  *
  *  =================================================================
  *
- *    30.10.20   <..  Date of Last Modification.
+ *    31.10.20   <..  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  =================================================================
  *
@@ -226,7 +226,8 @@
                                              // main-page CSS class; it is
                                              // unclear why
     document.body.style.overflow = 'hidden'; // this is because of buggy Chrome
-    $(window).on ( 'load', function(){
+    //$(window).on ( 'load', function(){
+    $(document).ready ( function(){
       //console.log ( '   ready=' + document.readyState );
       var dev_switch = 0; //3;
       startSession ( 'scene',dev_switch );

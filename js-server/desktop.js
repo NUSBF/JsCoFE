@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    15.04.20   <--  Date of Last Modification.
+ *    31.10.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -290,15 +290,17 @@ function launch()  {
             startNCServer ( i,cfgpath );
 
         // if necessary, start Front End
-        if (startFE)  {
-          fe_start.start ( function(){
+        setTimeout ( function(){
+          if (startFE)  {
+            fe_start.start ( function(){
+              startClientApplication();
+            });
+          } else  {
+            // working with Front End managed externally (such as on a remote server);
+            // in this case, simply start client application (e.g., a browser).
             startClientApplication();
-          });
-        } else  {
-          // working with Front End managed externally (such as on a remote server);
-          // in this case, simply start client application (e.g., a browser).
-          startClientApplication();
-        }
+          }
+        },100);
 
       }
     });

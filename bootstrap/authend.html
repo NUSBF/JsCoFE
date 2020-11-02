@@ -81,7 +81,8 @@
     var software_key = '$software_key';
     var auth_result  = '$auth_result';
 
-    $(window).on( 'load', function(){
+    //$(window).on ( 'load', function(){
+    $(document).ready ( function(){
       new AuthEndPage ( 'scene',software_key,auth_result );
     });
 

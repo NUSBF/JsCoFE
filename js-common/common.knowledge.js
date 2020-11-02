@@ -1,7 +1,7 @@
 /*
  *  ========================================================================
  *
- *    08.06.20   <--  Date of Last Modification.
+ *    02.11.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  ------------------------------------------------------------------------
  *
@@ -47,16 +47,19 @@ var _taskIndex = {
 
   // suggest Make Ligand after Import and Model Preparation
   'E'  : { type: 'TaskMakeLigand'      , after: ['B','B1','C','D','E','m'] },
+  'E1' : { type: 'TaskCrosSec'         , after: ['B','m'] },
 
   // suggest Aimless, Simbad and ASUDef after Import or Model Preparation in
   // the specified order; do not suggest them after themselves (user should
   // branch/clone instead)
-  'F'  : { type: 'TaskAimless'         , after: ['B','B1','C','D','E',    'h','m','t','u'] },
+  'F'  : { type: 'TaskAimless'         , after: ['B','F'] },
+  'F1' : { type: 'TaskAuspex'          , after: ['B','F','v','m'] },
+  'F2' : { type: 'TaskSRF'             , after: [] },
   'G'  : { type: 'TaskSimbad'          , after: ['B','B1','C','D','E','F','h','m','t','u'] },
-  'H'  : { type: 'TaskASUDef'          , after: ['B','B1','C','D','E','F','h','m','t','u'] },
+  'H'  : { type: 'TaskASUDef'          , after: ['B','B1','C','D','D1','D2','D3','E','F','h','m','t','u'] },
 
   // suggest Xyz2Revision after Import, Models and Ligands
-  'I'  : { type: 'TaskXyz2Revision'    , after: ['B','B1','C','D','E','F','h','m','t','u'] },
+  //'I'  : { type: 'TaskXyz2Revision'    , after: ['B','B1','C','D','E','F','h','m','t','u'] },
 
   // suggest Morda, MrBump, and Balbes after ASUDef; do not suggest them after
   // themselves (user should branch/clone instead)
@@ -126,10 +129,14 @@ var _taskIndex = {
   // suggest ChangeReso after dataprocessing tasks
   'c1' : { type: 'TaskChangeReso'      , after: ['h','t','u'] },
 
+  // do not suggest FreeRflag
+  'c2' : { type: 'TaskFreeRFlag'       , after: [] },
+
   // do not suggest ASUMod
   //'d' : { type: 'TaskASUMod'         , after: [] },
   'd'  : { type: 'TaskEditRevisionASU'   , after: [] },
-  'd1' : { type: 'TaskEditRevisionStruct', after: [] },
+  //'d1' : { type: 'TaskEditRevisionStruct', after: [] },
+  //'d2' : { type: 'TaskEditRevision'      , after: [] },
   'e'  : { type: 'TaskASUDefStruct'      , after: ['A'] },
 
   // suggest SeqAlign after Import
@@ -151,10 +158,11 @@ var _taskIndex = {
   'j1' : { type: 'TaskCombStructure'   , after: ['V','W','i','U','r'] },
 
   // suggest PDB Deposition after Refmac
-  'k'  : { type: 'TaskDeposition'      , after: ['V'] },
+  'k'  : { type: 'TaskDeposition'      , after: ['V','V1'] },
 
   // do not suggest Coot Cooridinate Editing
   'l'  : { type: 'TaskCootCE'          , after: [] },
+  'l1' : { type: 'TaskGemmi'           , after: [] },
 
   // do not suggest XYZ Utils
   'l1'  : { type: 'TaskXyzUtils'       , after: [] },

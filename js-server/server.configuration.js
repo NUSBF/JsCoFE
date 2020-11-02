@@ -355,7 +355,7 @@ var version = '';
     "description"      : {
       "id"   : "ccp4",
       "name" : "CCP4-Harwell",
-      "icon" : "images_com/ccp4-harwell.png",
+      "icon" : "images_com/setup-harwell.png",
       "partners" : [  // custom logos only
         { "iris"        : "IRIS",
           "logo"        : "./images_png/logo-iris.png",
@@ -573,7 +573,7 @@ function readConfiguration ( confFilePath,serverType )  {
       fe_server.description = {
         "id"   : "",  // this is not a typo
         "name" : "CCP4-Harwell",
-        "icon" : "images_com/ccp4-harwell.png"
+        "icon" : "images_com/setup-harwell.png"
       };
 
     if (!fe_server.description.hasOwnProperty('partners'))

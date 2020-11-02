@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    28.10.20   <--  Date of Last Modification.
+#    01.11.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -323,11 +323,11 @@ def main():
         pyrvapi.rvapi_put_table_real ( tableId,ffail,"%9.4f",i,3 )
         pyrvapi.rvapi_put_table_int  ( tableId,tasks[i]["nterms"],i,4 )
         if "last_used" in tasks[i]:
-            pyrvapi.rvapi_put_table_string ( tableId,tasks[i]["last_used"  ],i,5 )
+            pyrvapi.rvapi_put_table_string ( tableId,str(tasks[i]["last_used"]),i,5 )
         else:
             pyrvapi.rvapi_put_table_string ( tableId,"   ---    ",i,5 )
         if "last_failed" in tasks[i]:
-            pyrvapi.rvapi_put_table_string ( tableId,tasks[i]["last_failed"],i,6 )
+            pyrvapi.rvapi_put_table_string ( tableId,str(tasks[i]["last_failed"]),i,6 )
         else:
             pyrvapi.rvapi_put_table_string ( tableId,"   ---    ",i,6 )
         pyrvapi.rvapi_put_table_real ( tableId,tasks[i]["cpu_time"]  ,"%9.4f",i,7 )
