@@ -92,8 +92,8 @@ def startCCP4go(driver):
 
 
     projectInputs = driver.find_elements_by_xpath("//input[contains(@id,'input') and @type='file' and contains(@name,'uploads')]")
-    projectInputs[0].send_keys('/Applications/ccp4-7.1//share/ccp4i2/demo_data/mdm2/mdm2_unmerged.mtz')
-    projectInputs[1].send_keys('/Applications/ccp4-7.1//share/ccp4i2/demo_data/mdm2/4hg7.seq')
+    projectInputs[0].send_keys('/Applications/ccp4-7.1/share/ccp4i2/demo_data/mdm2/mdm2_unmerged.mtz')
+    projectInputs[1].send_keys('/Applications/ccp4-7.1/share/ccp4i2/demo_data/mdm2/4hg7.seq')
     time.sleep(1)
 
     sf.clickByXpath(driver, "//button[normalize-space()='%s']" % 'Apply & Upload')
@@ -129,253 +129,37 @@ def startCCP4go(driver):
     return()
 
 
-def addRemark(driver, title, detail, colour=None):
-    print('Adding remark: %s' % title)
+def verifyCCP4go(driver, waitLong, jobNumber):
+    compl = ''
+    print('CCP4go verification, job ' + jobNumber)
 
-    addButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/task_remark.png')]")
-    addButton.click()
-    time.sleep(1)
+    time.sleep(1.05)
+    startTime = time.time()
 
-    inputTitle = driver.find_element_by_xpath("//input[@title='A single-line description of the job, which will appear in the Project Tree. The description can be changed before or after running the job.']")
-    inputTitle.clear()
-    inputTitle.send_keys(title)
-    time.sleep(1)
-
-    inputDetail = driver.find_element_by_xpath("//textarea[@placeholder='Optional detail description may be placed here']")
-    inputDetail.clear()
-    inputDetail.send_keys(detail)
-    time.sleep(1)
-
-    if colour is not None:
-        colourButton = driver.find_element(By.XPATH, "//div[@class='menu-dropbtn' and contains(@style, 'images_png/task_remark_s.png')]")
-        colourButton.click()
-        time.sleep(1)
-
-        sf.clickByXpath(driver, "//*[normalize-space()='%s']" % colour)
-        time.sleep(1)
-
-    # pressing Close button
-    closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
-    closeButton.click()
-    time.sleep(1)
-
-
-def sequenceAlignment(driver, wait):
-    print('Running sequence alignment with ClustalW')
-
-    addButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/add.png')]")
-    addButton.click()
-    time.sleep(1)
-
-    sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list')
-    time.sleep(1)
-
-    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Toolbox')
-    time.sleep(1)
-
-    sf.clickByXpath(driver, "//div[normalize-space()='%s']" % 'Sequence Alignment with ClustalW')
-    time.sleep(1)
-
-    # There are several forms - active and inactive. We need one displayed.
-    buttonsRun = driver.find_elements_by_xpath("//button[contains(@style, 'images_png/runjob.png')]" )
-    for buttonRun in buttonsRun:
-        if buttonRun.is_displayed():
-            buttonRun.click()
+    while (True):
+        ttts = sf.tasksTreeTexts(driver)
+        for taskText in ttts:
+            # Job number as string
+            match = re.search('\[' + jobNumber + '\] ccp4go -- (.*)', taskText)
+            if match:
+                compl = match.group(1)
+                break
+        if compl != 'completed.':
             break
-
-    try:
-        wait = WebDriverWait(driver, wait) # normally takes around 5 minutes giving 7
-        # Waiting for the text 'completed' in the ui-dialog-title of the task [0006]
-        wait.until(EC.presence_of_element_located
-                   ((By.XPATH,"//*[@class='ui-dialog-title' and contains(text(), 'finished') and contains(text(), '[0006]')]")))
-    except:
-        print('Apparently the task ClustalW has not been completed in time; terminating')
-        sys.exit(1)
-
-    # presing Close button
-    closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
-    closeButton.click()
-    time.sleep(1)
-
-    seqid = 0
-    ttts = sf.tasksTreeTexts(driver)
-    for taskText in ttts:
-        match = re.search('\[0006\] seqalign -- Seq\.Id=(\d*)\.\d%', taskText)
-        if match:
-            seqid = int(match.group(1))
+        curTime = time.time()
+        if curTime > startTime + float(waitLong):
+            print('*** Timeout for CCP4Build results! Waited for %d seconds.' % waitLong)
             break
-    if seqid == 0:
-        print('*** Verification: could not find SeqId result value after ClustalW run')
-    else:
-        print('*** Verification: sequence identity is %d %% (expecting > 99 %%)' % seqid)
-    assert seqid > 99
+        time.sleep(300)
+
+    print('*** Verification: CCP4go completetion statement is %s (expecting "completed.")' % compl)
+
+    assert compl == 'completed.'
 
     return ()
 
 
-def fitWaters(driver, wait):
-    print('Fitting waters')
-
-    addButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/add.png')]")
-    addButton.click()
-    time.sleep(1)
-
-    sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list')
-    time.sleep(1)
-
-    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Ligands')
-    time.sleep(1)
-
-    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Find and Fit Waters')
-    time.sleep(1)
-
-    # There are several forms - active and inactive. We need one displayed.
-    buttonsRun = driver.find_elements_by_xpath("//button[contains(@style, 'images_png/runjob.png')]" )
-    for buttonRun in buttonsRun:
-        if buttonRun.is_displayed():
-            buttonRun.click()
-            break
-
-    try:
-        wait = WebDriverWait(driver, wait) # normally takes around 5 minutes giving 7
-        # Waiting for the text 'completed' in the ui-dialog-title of the task [0006]
-        wait.until(EC.presence_of_element_located
-                   ((By.XPATH,"//*[@class='ui-dialog-title' and contains(text(), 'completed') and contains(text(), '[0008]')]")))
-    except:
-        print('Apparently the task FitWaters has not been completed in time; terminating')
-        sys.exit(1)
-
-    # presing Close button
-    closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
-    closeButton.click()
-    time.sleep(1)
-
-    nwat = 0
-    ttts = sf.tasksTreeTexts(driver)
-    for taskText in ttts:
-        match = re.search('\[0008\] fit waters -- Nwaters=(\d*)', taskText)
-        if match:
-            nwat = int(match.group(1))
-            break
-    if nwat == 0:
-        print('*** Verification: could not find Nwaters result value after FitWaters run')
-    else:
-        print('*** Verification: Nwaters is %d %% (expecting > 250 %%)' % nwat)
-    assert nwat > 250
-
-    return ()
-
-
-def refmac_09(driver, waitLong):
-    print('Running REFMAC5 0009')
-
-    addButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/add.png')]")
-    addButton.click()
-    time.sleep(1)
-
-    sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list')
-    time.sleep(1)
-
-    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Refinement and Model Building')
-    time.sleep(1)
-
-    sf.clickByXpath(driver, "//div[normalize-space()='%s']" % 'Refinement with Refmac')
-    time.sleep(1)
-
-    # There are several forms - active and inactive. We need one displayed.
-    buttonsRun = driver.find_elements_by_xpath("//button[contains(@style, 'images_png/runjob.png')]" )
-    for buttonRun in buttonsRun:
-        if buttonRun.is_displayed():
-            buttonRun.click()
-            break
-
-    try:
-        wait = WebDriverWait(driver, waitLong)
-        # Waiting for the text 'completed' in the ui-dialog-title of the task [0005]
-        wait.until(EC.presence_of_element_located
-                   ((By.XPATH,"//*[@class='ui-dialog-title' and contains(text(), 'completed') and contains(text(), '[0009]')]")))
-    except:
-        print('Apparently tha task refmacAfterRevision has not been completed in time; terminating')
-        sys.exit(1)
-
-    # presing Close button
-    closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
-    closeButton.click()
-    time.sleep(1)
-
-    rWork = 1.0
-    rFree = 1.0
-    ttts = sf.tasksTreeTexts(driver)
-    for taskText in ttts:
-        match = re.search('\[0009\] refmac5 -- R=(0\.\d*) Rfree=(0\.\d*)', taskText)
-        if match:
-            rWork = float(match.group(1))
-            rFree = float(match.group(2))
-            break
-    if (rWork == 1.0) or (rFree == 1.0):
-        print('*** Verification: could not find Rwork or Rfree value after REFMAC5 run')
-    else:
-        print('*** Verification: REFMAC5 Rwork is %0.4f (expecting <0.17), Rfree is %0.4f (expecing <0.22)' % (rWork, rFree))
-    assert rWork < 0.17
-    assert rFree < 0.22
-
-    return ()
-
-
-def depositionAfterRefmac_10(driver):
-    print('Running Deposition task 10')
-
-    addButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/add.png')]")
-    addButton.click()
-    time.sleep(1)
-
-    sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list')
-    time.sleep(1)
-
-    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Validation, Analysis and Deposition')
-    time.sleep(1)
-
-    sf.clickByXpath(driver, "//div[normalize-space()='%s']" % 'Prepare data for deposition')
-    time.sleep(1)
-
-    # There are several forms - active and inactive. We need one displayed.
-    buttonsRun = driver.find_elements_by_xpath("//button[contains(@style, 'images_png/runjob.png')]" )
-    for buttonRun in buttonsRun:
-        if buttonRun.is_displayed():
-            buttonRun.click()
-            break
-
-    try:
-        wait = WebDriverWait(driver, 900) # normally takes around 5 minutes giving 15 - takes longer to run recently
-        # Waiting for the text 'completed' in the ui-dialog-title of the task [0005]
-        wait.until(EC.presence_of_element_located
-                   ((By.XPATH,"//*[@class='ui-dialog-title' and contains(text(), 'finished') and contains(text(), '[0010]')]")))
-    except:
-        print('Apparently the task depositionAfterRefmac has not been completed in time!')
-
-    # presing Close button
-    closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
-    closeButton.click()
-    time.sleep(1)
-
-    taskText = ''
-    ttts = sf.tasksTreeTexts(driver)
-    for task in ttts:
-        match = re.search('\[0010\] deposition -- (.*)', task)
-        if match:
-            taskText = match.group(1)
-            break
-    if taskText == '':
-        print('*** Verification: could not find text result value after deposition run')
-    else:
-        print('*** Verification: deposition result is "%s" (expecting "package prepared, pdb report obtained")' % taskText)
-
-    assert taskText == 'package prepared, pdb report obtained'
-
-    return ()
-
-
-def comb_12(driver):
+def comb_05(driver):
     print('Running comb')
 
     addButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/add.png')]")
@@ -420,7 +204,7 @@ def comb_12(driver):
         wait = WebDriverWait(driver, 900)
         # Waiting for the text 'completed' in the ui-dialog-title of the task [0005]
         wait.until(EC.presence_of_element_located
-                   ((By.XPATH,"//*[@class='ui-dialog-title' and contains(text(), 'completed') and contains(text(), '[0012]')]")))
+                   ((By.XPATH,"//*[@class='ui-dialog-title' and contains(text(), 'completed') and contains(text(), '[0005]')]")))
     except:
         print('Apparently the task comb has not been completed in time; terminating')
         sys.exit(1)
@@ -430,27 +214,64 @@ def comb_12(driver):
     closeButton.click()
     time.sleep(1)
 
-    rWork = 1.0
-    rFree = 1.0
+    return ()
+
+
+def fitWaters_06(driver, wait):
+    print('Fitting waters')
+
+    addButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/add.png')]")
+    addButton.click()
+    time.sleep(1)
+
+    sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list')
+    time.sleep(1)
+
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Ligands')
+    time.sleep(1)
+
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Find and Fit Waters')
+    time.sleep(1)
+
+    # There are several forms - active and inactive. We need one displayed.
+    buttonsRun = driver.find_elements_by_xpath("//button[contains(@style, 'images_png/runjob.png')]" )
+    for buttonRun in buttonsRun:
+        if buttonRun.is_displayed():
+            buttonRun.click()
+            break
+
+    try:
+        wait = WebDriverWait(driver, wait) # normally takes around 5 minutes giving 7
+        # Waiting for the text 'completed' in the ui-dialog-title of the task [0006]
+        wait.until(EC.presence_of_element_located
+                   ((By.XPATH,"//*[@class='ui-dialog-title' and contains(text(), 'completed') and contains(text(), '[0006]')]")))
+    except:
+        print('Apparently the task FitWaters has not been completed in time; terminating')
+        sys.exit(1)
+
+    # presing Close button
+    closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
+    closeButton.click()
+    time.sleep(1)
+
+    nwat = 0
     ttts = sf.tasksTreeTexts(driver)
     for taskText in ttts:
-        match = re.search('\[0012\] comb structure -- R=(0\.\d*) Rfree=(0\.\d*)', taskText)
+        match = re.search('\[0006\] fit waters -- Nwaters=(\d*)', taskText)
         if match:
-            rWork = float(match.group(1))
-            rFree = float(match.group(2))
+            nwat = int(match.group(1))
             break
-    if (rWork == 1.0) or (rFree == 1.0):
-        print('*** Verification: could not find Rwork or Rfree value after REFMAC5 run')
+    if nwat == 0:
+        print('*** Verification: could not find Nwaters result value after FitWaters run')
     else:
-        print('*** Verification: REFMAC5 Rwork is %0.4f (expecting <0.18), Rfree is %0.4f (expecing <0.22)' % (rWork, rFree))
-    assert rWork < 0.18
-    assert rFree < 0.22
+        print('*** Verification: Nwaters is %d %% (expecting > 50 %%)' % nwat)
+    assert nwat > 50
 
     return ()
 
 
-def refmac_14(driver, waitLong):
-    print('Running REFMAC5 0014')
+def refmac_07(driver, waitLong):
+    print('Running REFMAC5 0007')
 
     addButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/add.png')]")
     addButton.click()
@@ -463,28 +284,7 @@ def refmac_14(driver, waitLong):
     time.sleep(1)
 
     sf.clickByXpath(driver, "//div[normalize-space()='%s']" % 'Refinement with Refmac')
-    time.sleep(3)
-
-
-    inputTitle = driver.find_elements_by_xpath("//input[@placeholder='refmac5']")
-    inputTitle[-1].clear()
-    inputTitle[-1].send_keys('Refinement with parameters to reduce clash score')
     time.sleep(1)
-
-    sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'No')
-    time.sleep(1)
-
-    sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Yes')
-    time.sleep(1)
-
-    sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Advanced')
-    time.sleep(1)
-
-    inputTitle = driver.find_element_by_xpath("//textarea[@title='Advanced keywords']")
-    inputTitle.clear()
-    inputTitle.send_keys('vdwrestr 2.0')
-    time.sleep(1)
-
 
     # There are several forms - active and inactive. We need one displayed.
     buttonsRun = driver.find_elements_by_xpath("//button[contains(@style, 'images_png/runjob.png')]" )
@@ -497,7 +297,7 @@ def refmac_14(driver, waitLong):
         wait = WebDriverWait(driver, waitLong)
         # Waiting for the text 'completed' in the ui-dialog-title of the task [0005]
         wait.until(EC.presence_of_element_located
-                   ((By.XPATH,"//*[@class='ui-dialog-title' and contains(text(), 'completed') and contains(text(), '[0014]')]")))
+                   ((By.XPATH,"//*[@class='ui-dialog-title' and contains(text(), 'completed') and contains(text(), '[0007]')]")))
     except:
         print('Apparently tha task refmacAfterRevision has not been completed in time; terminating')
         sys.exit(1)
@@ -511,7 +311,7 @@ def refmac_14(driver, waitLong):
     rFree = 1.0
     ttts = sf.tasksTreeTexts(driver)
     for taskText in ttts:
-        match = re.search('\[0014\] Refinement with parameters to reduce clash score -- R=(0\.\d*) Rfree=(0\.\d*)', taskText)
+        match = re.search('\[0007\] refmac5 -- R=(0\.\d*) Rfree=(0\.\d*)', taskText)
         if match:
             rWork = float(match.group(1))
             rFree = float(match.group(2))
@@ -519,11 +319,42 @@ def refmac_14(driver, waitLong):
     if (rWork == 1.0) or (rFree == 1.0):
         print('*** Verification: could not find Rwork or Rfree value after REFMAC5 run')
     else:
-        print('*** Verification: REFMAC5 Rwork is %0.4f (expecting <0.18), Rfree is %0.4f (expecing <0.22)' % (rWork, rFree))
-    assert rWork < 0.18
-    assert rFree < 0.22
+        print('*** Verification: REFMAC5 Rwork is %0.4f (expecting <0.25), Rfree is %0.4f (expecing <0.30)' % (rWork, rFree))
+    assert rWork < 0.25
+    assert rFree < 0.30
 
     return ()
+
+
+def addRemark(driver, title, detail, colour=None):
+    print('Adding remark: %s' % title)
+
+    addButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/task_remark.png')]")
+    addButton.click()
+    time.sleep(1)
+
+    inputTitle = driver.find_element_by_xpath("//input[@title='A single-line description of the job, which will appear in the Project Tree. The description can be changed before or after running the job.']")
+    inputTitle.clear()
+    inputTitle.send_keys(title)
+    time.sleep(1)
+
+    inputDetail = driver.find_element_by_xpath("//textarea[@placeholder='Optional detail description may be placed here']")
+    inputDetail.clear()
+    inputDetail.send_keys(detail)
+    time.sleep(1)
+
+    if colour is not None:
+        colourButton = driver.find_element(By.XPATH, "//div[@class='menu-dropbtn' and contains(@style, 'images_png/task_remark_s.png')]")
+        colourButton.click()
+        time.sleep(1)
+
+        sf.clickByXpath(driver, "//*[normalize-space()='%s']" % colour)
+        time.sleep(1)
+
+    # pressing Close button
+    closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
+    closeButton.click()
+    time.sleep(1)
 
 
 def depositionAfterRefmac_15(driver):
@@ -614,64 +445,17 @@ def generate_03(browser,
         sf.clickByXpath(d.driver, "//button[normalize-space()='%s']" % 'Cancel')
         time.sleep(1)
 
-        addRemark(d.driver, remarkTitle1, remarkDetail1)
-        importREADME(d.driver, d.waitShort)
+        addRemark(d.driver, remarkTitle1, remarkDetail1) # 1
+        importREADME(d.driver, d.waitShort) # 2
         sf.clickTaskInTaskTree(d.driver, '\[0001\]')
-        startCCP4go(d.driver)
+        startCCP4go(d.driver) # 3
+        verifyCCP4go(d.driver, 18000, '0003') # 4 hours run, giving 5 hours which is 5*60*60 = 18 000 seconds
 
-        sys.exit(0)
-
-
-
-
-
-        time.sleep(3)
-        d.driver.quit()
-        time.sleep(3)
-        (d.driver, d.waitLong, d.waitShort) = sf.startBrowser(d.remote, d.browser)
-        print('Opening URL: %s' % d.cloud)
-        d.driver.get(d.cloud)
-        assert "CCP4 Cloud" in d.driver.title
-        if not d.nologin:
-            sf.loginToCloud(d.driver, d.login, d.password)
-        sf.enterProject(d.driver, d.testName)
-        time.sleep(3)
-        sf.clickTaskInTaskTree(d.driver, '\[0004\] morda')
-        time.sleep(1)
-
-        addRemark(d.driver, 'Check sequence similarity of found solution and target protein', '')
-        sequenceAlignment(d.driver, d.waitLong)
-        addRemark(d.driver, 'Found solution does not need rebuilding. Add water, refine and deposit', '')
-
-        sf.clickTaskInTaskTree(d.driver, '\[0004\] morda')
-        time.sleep(1)
-        fitWaters(d.driver, d.waitLong)
-        refmac_09(d.driver, d.waitLong)
-        depositionAfterRefmac_10(d.driver)
-        addRemark(d.driver, 'Clash score and side chains outliers are a bit too high for given resolution', '', colour='Red')
-
-
-        time.sleep(3)
-        d.driver.quit()
-        time.sleep(3)
-        (d.driver, d.waitLong, d.waitShort) = sf.startBrowser(d.remote, d.browser)
-        print('Opening URL: %s' % d.cloud)
-        d.driver.get(d.cloud)
-        assert "CCP4 Cloud" in d.driver.title
-        if not d.nologin:
-            sf.loginToCloud(d.driver, d.login, d.password)
-        sf.enterProject(d.driver, d.testName)
-        time.sleep(3)
-
-        sf.clickTaskInTaskTree(d.driver, '\[0008\] fit waters')
-        time.sleep(1)
-        comb_12(d.driver)
-        addRemark(d.driver, 'Combing of the structure shall improve side chains', '')
-
-        time.sleep(1)
-        refmac_14(d.driver, d.waitLong)
-        depositionAfterRefmac_15(d.driver)
-        addRemark(d.driver, 'Excellent overall statistics for deposition, although unmodelled blobs remain and few side chains are misplaced', '', colour='Green')
+        addRemark(d.driver, 'Let us do some automated combing of the structure and add waters', '') # 4
+        comb_05(d.driver) # 5
+        fitWaters_06(d.driver, d.waitLong) # 6
+        refmac_07(d.driver, d.waitLong) # 7
+        addRemark(d.driver, 'Further manual building is required to fix ligand, for instance', '',colour='Red')  # 8
 
         d.driver.quit()
 
