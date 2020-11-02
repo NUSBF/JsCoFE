@@ -128,7 +128,7 @@ if __name__ == "__main__":
     parser.add_argument('--browser', action='store', dest='browser', help=argparse.SUPPRESS, default='Firefox') # Firefox or Chrome
     parser.add_argument('--cloud', action='store', dest='cloud', help=argparse.SUPPRESS, default='http://ccp4serv6.rc-harwell.ac.uk/jscofe-dev/') # Cloud URL
     parser.add_argument('--login', action='store', dest='login', help=argparse.SUPPRESS, default='setests') # Login
-    parser.add_argument('--password', action='store', dest='password', help=argparse.SUPPRESS, default='cloud8testS') # password
+    parser.add_argument('--password', action='store', dest='password', help=argparse.SUPPRESS, default='') # password
     parser.add_argument('--nologin', action='store', dest='nologin', help=argparse.SUPPRESS, default=False) # login into Cloud or not
 
     parameters = parser.parse_args(sys.argv[1:])

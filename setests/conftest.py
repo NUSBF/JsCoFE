@@ -5,7 +5,7 @@ def pytest_addoption(parser):
     parser.addoption("--browser", action="store", default="Firefox") # Firefox or Chrome
     parser.addoption("--cloud", action="store", default="http://ccp4serv6.rc-harwell.ac.uk/jscofe-dev/")  # Cloud URL
     parser.addoption("--login", action="store", default="setests") # Login
-    parser.addoption("--password", action="store", default="cloud8testS")  # password
+    parser.addoption("--password", action="store", default="")  # password
     parser.addoption("--nologin", action="store", default=False)  # login into Cloud or not
 
 
@@ -18,6 +18,23 @@ def pytest_generate_tests(metafunc):
     login = metafunc.config.option.login
     password = metafunc.config.option.password
     nologin = metafunc.config.option.nologin
+
+    if password == '':
+        try:
+            import os, sys, base64
+
+            if sys.platform.startswith("win"):
+                fileName = '%userprofile%\setest_pwd'
+            else:
+                fileName = os.path.expanduser('~/.setest_pwd')
+
+            if os.path.exists(fileName):
+                f = open(fileName, 'r')
+                password = base64.b64decode(f.readline().decode('utf-8').strip() + '=')
+                f.close()
+        except:
+            print('Something happend during attempt to read password from the pwd file')
+            raise
 
     if 'remote' in metafunc.fixturenames and remote is not None:
         metafunc.parametrize("remote", [remote])
