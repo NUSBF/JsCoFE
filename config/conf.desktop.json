@@ -3,7 +3,8 @@
   "_comment"  : [
     "====================================================================================",
     "                    jsCoFE Configuration for desktop setup mode                     ",
-    "===================================================================================="
+    "====================================================================================",
+    "   31.10.2020 "
   ],
 
   "Desktop"  : {
@@ -53,7 +54,7 @@
         "__auth_url"    : "https://arpwarp.embl-hamburg.de/api/maketoken/?reqid=$reqid&addr=1.2.3.4&cburl=$cburl"
       }
     },
-    "bootstrapHTML"    : "./bootstrap/jscofe.html",
+    "bootstrapHTML"    : "./bootstrap/jscofe.min.html",
     "maxRestarts"      : 100,
     "fileCapSize"      : 500000,
     "regMode"          : "email",
