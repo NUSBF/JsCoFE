@@ -29,7 +29,10 @@ CCP4 Cloud Version Log
 
     #. Automatic clean-up of Front-End's Job Register added
 
-    #. ``CCP4go`` task is back to functional state, a set of bugs fixed
+    #. ``CCP4go`` task is back to functional state, a set of bugs fixed; the task can now use pre-imported data
+
+    #. Documentation updates ( Low-Resolution Refinement with ``Lorestr``, ``REFMAC5``)
+
 
 
 

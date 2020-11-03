@@ -249,9 +249,9 @@ class DType(jsonut.jObject):
     def getFileName ( self,fileKey ):
         if isinstance(self.files,dict):
             if fileKey in self.files:
-                return self.files[fileKey]
+                return str ( self.files[fileKey] )
         elif hasattr(self.files,fileKey):
-            return getattr ( self.files,fileKey )
+            return str ( getattr ( self.files,fileKey ) )
         return None
 
     def getFilePath ( self,dirPath,fileKey ):
@@ -259,7 +259,7 @@ class DType(jsonut.jObject):
             return self.getFileName ( fileKey )
         if isinstance(self.files,dict):
             if fileKey in self.files:
-                return os.path.join ( dirPath,self.files[fileKey] )
+                return str ( os.path.join ( dirPath,self.files[fileKey] ) )
         elif hasattr(self.files,fileKey):
-            return os.path.join ( dirPath,getattr(self.files,fileKey) )
+            return str ( os.path.join ( dirPath,getattr(self.files,fileKey) ) )
         return None
