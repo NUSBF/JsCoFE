@@ -157,7 +157,7 @@ def depositionAfterRefmac(driver):
     if not taskText == 'package prepared, pdb report obtained':
         print('!!! Verification not passed!')
 
-        if not os.path.exists('~/.setest_no_email'):
+        if not os.path.exists(os.path.expanduser('~/.setest_no_email')):
             print('Sending emails to OK, EK and pdbdep@ebi.ac.uk')
             time.sleep(1)
             sf.doubleClickTaskInTaskTree(driver, '\[0005\] deposition')
