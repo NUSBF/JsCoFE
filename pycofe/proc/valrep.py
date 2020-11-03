@@ -29,7 +29,7 @@ def getValidationReport ( modelFilePath,sfFilePath,repFilePath,logfile ):
 
         logfile.write (
             "\n =================================================================="
-            "\n OBTAIN VALIDATION REPORT FROM RCSB"
+            "\n OBTAIN VALIDATION REPORT FROM WWPDB"
             "\n =================================================================="
             "\n"
             "\n Session ID        : " + str(rD['session_id']) +
