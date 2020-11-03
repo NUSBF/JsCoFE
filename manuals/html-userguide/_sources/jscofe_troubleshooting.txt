@@ -21,7 +21,7 @@ If a task cannot be created and added to the :ref:`Job Tree <job-tree>`, its ico
 .. _task-availability:
 
 * **the task requires CCP4 Cloud Client**
-    This happens when you connect to CCP4 Cloud via direct web-link, such as `https://cloud.ccp4.ac.uk`. Some tasks may run only on your own computer, which is possible only if you connect to CCP4 Cloud by clicking on CCP4 Cloud icon in your local CCP4 Setup. This icon starts CCP4 Cloud Client, which will run interactive tasks, such as ``Coot``, on your computer. 
+    This happens when you connect to CCP4 Cloud via direct web-link, such as `https://cloud.ccp4.ac.uk <https://cloud.ccp4.ac.uk>`_. Some tasks may run only on your own computer, which is possible only if you connect to CCP4 Cloud by clicking on CCP4 Cloud icon in your local CCP4 Setup. This icon starts CCP4 Cloud Client, which will run interactive tasks, such as ``Coot``, on your computer. 
 
 * **the task is not available for operating system used (typically MS Windows)**
     Use Operating System (Linux or Mac OSX) in which the task is available. 

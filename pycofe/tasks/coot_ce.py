@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    09.02.20   <--  Date of Last Modification.
+#    02.11.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -77,7 +77,7 @@ class CootCE(basic.TaskDriver):
                                   self.task.project + "_" + str(self.task.id) )
         if not os.path.exists(coot_backup_dir):
             os.makedirs ( coot_backup_dir )
-        os.environ["COOT_BACKUP_DIR"] = coot_backup_dir
+        os.environ["COOT_BACKUP_DIR"] = str(coot_backup_dir)
 
         return coot_backup_dir
 
