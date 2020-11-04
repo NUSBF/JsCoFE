@@ -36,6 +36,7 @@ function TaskXyz2Revision()  {
   this.oname   = '*'; // asterisk means do not use (XYZ name will be used)
   this.title   = 'Link Coordinates and Reflections';
   //this.helpURL = './html/jscofe_task_xyz2revision.html';
+  this.state   = job_code.retired;  // do not include in task lists
 
   this.input_dtypes = [{  // input data types
       data_type   : {'DataHKL':[]}, // data type(s) and subtype(s)

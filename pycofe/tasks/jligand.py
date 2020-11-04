@@ -5,14 +5,14 @@
 #
 # ============================================================================
 #
-#    30.10.20   <--  Date of Last Modification.
+#    03.11.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  JLIGAND EXECUTABLE MODULE (CLIENT-SIDE TASK)
 #
 #  Command-line:
-#     ccp4-python python.tasks.coot_mb.py jobManager jobDir jobId expire=timeout_in_days
+#     ccp4-python python.tasks.jligand.py jobManager jobDir jobId expire=timeout_in_days
 #
 #  where:
 #    jobManager  is either SHELL or SGE
@@ -58,18 +58,18 @@ class JLigand(basic.TaskDriver):
         #self.flush
 
         # fetch input data
-        revision = None
-        istruct  = None
         libin    = None
-        if hasattr(self.input_data.data,"aux_struct"):
-            revision = self.makeClass ( self.input_data.data.revision[0] )
-            if revision.Structure:
-                istruct = self.makeClass ( revision.Structure )
-                libin   = istruct.getLibFilePath ( self.inputDir() )
+        revision = self.makeClass ( self.input_data.data.revision[0] )
+        if revision.Structure:
+            istruct = self.makeClass ( revision.Structure )
+            libin   = istruct.getLibFilePath ( self.inputDir() )
+
+        cifout = "jligand.cif"
 
         # make command line arguments
-        args = []
-
+        args = ["-out",cifout]
+        if libin:
+            args.append ( libin )
 
         have_results = False
         rc = self.runApp ( "jligand",args,logType="Main",quitOnError=False )

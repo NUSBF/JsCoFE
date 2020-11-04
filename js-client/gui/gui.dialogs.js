@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    19.09.20   <--  Date of Last Modification.
+ *    04.11.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -230,14 +230,14 @@ function HelpBox ( title,helpURL,onDoNotShowAgain_func )  {
     this.options.buttons = this.options.buttons.concat ([
       { text : "Do not show again",
         click: function() {
-          onDoNotShowAgain_func ( 1,helpURL );
           $( this ).dialog( "close" );
+          onDoNotShowAgain_func ( 1,helpURL );
         }
       },
       { text : "Ok",
         click: function() {
-          onDoNotShowAgain_func ( 2,helpURL );
           $( this ).dialog( "close" );
+          onDoNotShowAgain_func ( 2,helpURL );
         }
       }
     ]);
@@ -368,15 +368,15 @@ function QuestionBox ( title,message,btn1_name,onButton1_func,
   };
 
   this.options.buttons[btn1_name] = function() {
-    if (onButton1_func)
-      onButton1_func();
     $( this ).dialog( "close" );
+    if (onButton1_func)
+      window.setTimeout ( onButton1_func,0);
   }
 
   this.options.buttons[btn2_name] = function() {
-    if (onButton2_func)
-      onButton2_func();
     $( this ).dialog( "close" );
+    if (onButton2_func)
+      window.setTimeout ( onButton2_func,0);
   }
 
   $(this.element).dialog ( this.options );

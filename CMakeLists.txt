@@ -15,9 +15,10 @@ endif()
 add_custom_target(NODE_MODULES ALL ${NPM} install WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 
 find_program(PYTHON NAMES ccp4-python HINTS ${CMAKE_INSTALL_PREFIX}/bin NO_DEFAULT_PATH)
-add_custom_target(CONFIG_DIR ALL ${PYTHON} w_config.py WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_custom_target(CONFIG_DIR ALL ${PYTHON} pycofe/setup/config.py WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 
 install(DIRECTORY
+    bootstrap
     css
     html
     images_com
@@ -26,7 +27,9 @@ install(DIRECTORY
     js-common
     js-lib
     js-server
-    manual
+    js-utils
+    manuals
+    message_templates
     node_modules
     pycofe
   DESTINATION
@@ -36,14 +39,9 @@ install(DIRECTORY
 
 install(
   FILES
-    fe_server.js
-    jscofe.html
-    nc_server.js
-    package-lock.json
-    package.json
-    w_desktop.js
     w_conf.desktop.json
     w_conf.remote.json
+    package.json
   DESTINATION
     share/jscofe
 )
@@ -85,4 +83,3 @@ if(APPLE)
   add_subdirectory(macosx/remote)
   add_subdirectory(macosx/config)
 endif()
-

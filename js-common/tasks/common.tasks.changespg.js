@@ -43,6 +43,7 @@ function TaskChangeSpG()  {
   this.title     = 'Change Space Group';  // full title
   //this.helpURL   = './html/jscofe_task_changespg.html';
   this.fasttrack = true;  // enforces immediate execution
+  this.state     = job_code.retired;  // do not include in task lists
 
   this.input_dtypes = [{    // input data types
       data_type   : {'DataRevision':['~xyz','~substructure','~phases'],

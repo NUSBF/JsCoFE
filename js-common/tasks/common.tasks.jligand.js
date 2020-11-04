@@ -78,6 +78,20 @@ if (__template)  {
 
   var conf = require('../../js-server/server.configuration');
 
+  TaskJLigand.prototype.makeInputData = function ( loginData,jobDir )  {
+
+    // put structure data in input databox for copying their files in
+    // job's 'input' directory
+
+    if ('revision' in this.input_data.data)  {
+      var revision = this.input_data.data['revision'][0];
+      this.input_data.data['istruct'] = [revision.Structure];
+    }
+
+    __template.TaskTemplate.prototype.makeInputData.call ( this,loginData,jobDir );
+
+  }
+
   TaskJLigand.prototype.getCommandLine = function ( jobManager,jobDir )  {
     return [conf.pythonName(), '-m', 'pycofe.tasks.jligand', jobManager, jobDir, this.id];
   }
