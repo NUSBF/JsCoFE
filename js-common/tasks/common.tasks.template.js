@@ -2,7 +2,7 @@
 /*
 *  ==========================================================================
  *
- *    13.09.20   <--  Date of Last Modification.
+ *    04.11.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -------------------------------------------------------------------------
  *
@@ -35,7 +35,8 @@ var job_code = {
   stopped   : 'stopped',   // job stopped (terminated by user)
   remark    : 'remark',    // remark node
   remdet    : 'remdet',    // detached remark node
-  remdoc    : 'remdoc'     // remark node converted from documentation import
+  remdoc    : 'remdoc',    // remark node converted from documentation import
+  retired   : 'retired'    // indicates that the task should not appear in task list
 }
 
 // ---------------------------------------------------------------------------

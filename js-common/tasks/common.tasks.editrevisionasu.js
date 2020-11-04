@@ -40,6 +40,7 @@ function TaskEditRevisionASU()  {
   this.title     = 'Edit Revision: Asymmetric Unit';
   //this.helpURL   = './html/jscofe_task_editrevision_asu.html';
   this.fasttrack = true;  // enforces immediate execution
+  this.state     = job_code.retired;  // do not include in task lists
 
   this.input_dtypes = [{   // input data types
       data_type   : {'DataRevision':[]},   // data type(s) and subtype(s)

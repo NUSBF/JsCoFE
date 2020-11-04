@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    13.09.20   <--  Date of Last Modification.
+ *    04.11.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -34,11 +34,6 @@ function TaskListDialog ( dataBox,branch_task_list,onSelect_func )  {
 
   this.branch_tasks  = [];
   for (var i=0;i<branch_task_list.length;i++)
-    /*
-    if ((branch_task_list[i].state!=job_code.remark) &&
-        (branch_task_list[i].state!=job_code.remdet) &&
-        (branch_task_list[i].state!=job_code.remdoc))
-    */
     if (!branch_task_list[i].isRemark())
       this.branch_tasks.push ( branch_task_list[i] );
 
@@ -96,6 +91,9 @@ TaskListDialog.prototype.setTask = function ( task_obj,grid,row,setall )  {
 
   //if ((!__local_service) && (task_obj.nc_type=='client'))
   //  return null;
+
+  if (task_obj.state==job_code.retired)
+    return null;
 
   var avail_key = task_obj.isTaskAvailable();
 

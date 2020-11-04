@@ -1,7 +1,7 @@
 /*
  *  ========================================================================
  *
- *    02.11.20   <--  Date of Last Modification.
+ *    04.11.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  ------------------------------------------------------------------------
  *
@@ -59,7 +59,7 @@ var _taskIndex = {
   'H'  : { type: 'TaskASUDef'          , after: ['B','B1','C','D','D1','D2','D3','E','F','h','m','t','u'] },
 
   // suggest Xyz2Revision after Import, Models and Ligands
-  //'I'  : { type: 'TaskXyz2Revision'    , after: ['B','B1','C','D','E','F','h','m','t','u'] },
+  'I'  : { type: 'TaskXyz2Revision'    , after: ['B','B1','C','D','E','F','h','m','t','u'] },
 
   // suggest Morda, MrBump, and Balbes after ASUDef; do not suggest them after
   // themselves (user should branch/clone instead)
@@ -135,8 +135,8 @@ var _taskIndex = {
   // do not suggest ASUMod
   //'d' : { type: 'TaskASUMod'         , after: [] },
   'd'  : { type: 'TaskEditRevisionASU'   , after: [] },
-  //'d1' : { type: 'TaskEditRevisionStruct', after: [] },
-  //'d2' : { type: 'TaskEditRevision'      , after: [] },
+  'd1' : { type: 'TaskEditRevisionStruct', after: [] },
+  'd2' : { type: 'TaskEditRevision'      , after: [] },
   'e'  : { type: 'TaskASUDefStruct'      , after: ['A'] },
 
   // suggest SeqAlign after Import
@@ -317,14 +317,16 @@ if ((typeof module === 'undefined') || (typeof module.exports === 'undefined')) 
     if (wfkey in _wfKnowledge)  {
       var w = _wfKnowledge[wfkey];
       for (var taskkey in w) {
-        var t = _taskIndex[taskkey].type;
-        if (t!='Root')  {
-          var k = knowledge.tasks.indexOf ( t );
-          if (k>=0)
-            knowledge.counts[k] += w[taskkey];
-          else  {
-            knowledge.tasks .push ( t );
-            knowledge.counts.push ( w[taskkey] );
+        if (taskkey in _taskIndex)  {
+          var t = _taskIndex[taskkey].type;
+          if (t!='Root')  {
+            var k = knowledge.tasks.indexOf ( t );
+            if (k>=0)
+              knowledge.counts[k] += w[taskkey];
+            else  {
+              knowledge.tasks .push ( t );
+              knowledge.counts.push ( w[taskkey] );
+            }
           }
         }
       }

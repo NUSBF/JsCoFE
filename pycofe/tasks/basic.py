@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    05.10.20   <--  Date of Last Modification.
+#    04.11.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -161,7 +161,7 @@ class TaskDriver(object):
     navTreeId     = ""   # navigation tree Id
     title_grid_id = None # id of title grid
 
-    appVersion    = ""   # jsCoFE version for reporting
+    appVersion    = "unknown"   # jsCoFE version for reporting
     start_date    = ""
     end_date      = ""
 
@@ -217,6 +217,8 @@ class TaskDriver(object):
         self.job_id     = args[2]
         self.jscofe_dir = sys.argv[0][0:sys.argv[0].rfind("pycofe")]
         self.appVersion = self.getCommandLineParameter("jscofe_version")
+        if not self.appVersion:
+            self.appVersion = "unknown"
 
         temp = None
         for tmp in 'CCP4_SCR', 'TMPDIR', 'TEMP', 'TMP':

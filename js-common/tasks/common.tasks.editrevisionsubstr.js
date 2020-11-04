@@ -40,6 +40,7 @@ function TaskEditRevisionSubstr()  {
   this.title     = 'Edit Revision: Substructure';
   //this.helpURL   = './html/jscofe_task_editrevision_substr.html';
   this.fasttrack = true;  // enforces immediate execution
+  this.state     = job_code.retired;  // do not include in task lists
 
   this.input_dtypes = [{   // input data types
       data_type   : {'DataRevision':['!substructure']}, // data type(s) and subtype(s)
