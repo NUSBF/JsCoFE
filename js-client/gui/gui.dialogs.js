@@ -129,22 +129,6 @@ function MessageBoxF ( title,message,btn_name,onClick_func,uncloseable_bool )  {
   Dialog.call ( this,title );
   this.element.innerHTML = message;
 
-  /*
-  this._options = {
-    resizable : false,
-    height    : 'auto',
-    width     : 'auto',
-    modal     : true,
-    buttons   : {
-      [btn_name] : function() {
-        $( this ).dialog( "close" );
-        if (onClick_func)
-          window.setTimeout ( onClick_func,0 );
-      }
-    }
-  }
-  */
-
   this._options = {
     resizable : false,
     height    : 'auto',
@@ -337,27 +321,6 @@ function QuestionBox ( title,message,btn1_name,onButton1_func,
   this.element.setAttribute ( 'title',title );
   this.element.innerHTML = message;
   document.body.appendChild ( this.element );
-
-  /*
-  $(this.element).dialog({
-    resizable : false,
-    height    : 'auto',
-    width     : 'auto',
-    modal     : true,
-    buttons   : {
-      [btn1_name] : function() {
-        if (onButton1_func)
-          onButton1_func();
-        $( this ).dialog( "close" );
-      },
-      [btn2_name] : function() {
-        if (onButton2_func)
-          onButton2_func();
-        $( this ).dialog( "close" );
-      }
-    }
-  });
-  */
 
   this.options = {
     resizable : false,
