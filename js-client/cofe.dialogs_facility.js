@@ -2,7 +2,7 @@
 /*
  *  ===========================================================================
  *
- *    20.03.20   <--  Date of Last Modification.
+ *    04.11.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  ---------------------------------------------------------------------------
  *
@@ -638,10 +638,12 @@ CloudFileBrowser.prototype.openItem = function()  {
       // item is not a directory
       if (this.onSelect_func)
         this.onSelect_func ( this.storageTree.storageList );
-      $(this.element).dialog( "close" );
+      //$(this.element).dialog( "close" );
+      $(this.element).dialog( "destroy" );
     } else if (this.onSelect_func)  {
       if (this.onSelect_func(items)==1)
-        $(this.element).dialog( "close" );
+        $(this.element).dialog( "destroy" );
+        //$(this.element).dialog( "close" );
     }
   }
 
@@ -687,20 +689,22 @@ CloudFileBrowser.prototype.selectItem = function()  {
       if (this.onSelect_func) {
         if (items[0].name=='..')  {
           this.onSelect_func ( this.storageTree.storageList );
-          $(this.element).dialog( "close" );
+          //$(this.element).dialog( "close" );
+          $(this.element).dialog( "destroy" );
         } else  {
           (function(browser){
             browser.getStorageList ( browser.task.currentCloudPath+'/'+items[0].name,
                                      function(storageList){
-              browser.onSelect_func ( storageList );
               $(browser.element).dialog( "close" );
+              browser.onSelect_func ( storageList );
             });
           }(this))
         }
       }
     } else if (this.onSelect_func)  {
       if (this.onSelect_func(items)==1)
-        $(this.element).dialog( "close" );
+        $(this.element).dialog( "destroy" );
+        //$(this.element).dialog( "close" );
     }
   }
 }

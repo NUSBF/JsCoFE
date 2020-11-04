@@ -105,8 +105,8 @@ if (!__template)  {
                         'is not finished yet: the files need to be processed<br>' +
                         'before they can be used in subsequent tasks.',
                         'Finish now',function(){
-                          job_dialog.run_btn.click();
                           callback_func ( false );
+                          job_dialog.run_btn.click();
                         },
                         'Finish later',function(){
                           callback_func ( true );
@@ -169,7 +169,7 @@ if (!__template)  {
                                 });
             }
           });
-          return 1;  // do not close browser window
+          return 1;  // close browser window
         },null );
       });
     //}(this))
@@ -245,20 +245,6 @@ if (!__template)  {
           }
 
           task._display_selected_files ( inputPanel );
-
-          /*
-          if ('fileListPanel' in inputPanel)  {
-            inputPanel.fileListTitle.setVisible ( task.selected_items.length>0 );
-            if (task.selected_items.length>0)  {
-              var txt = '';
-              for (var i=0;i<task.selected_items.length;i++)  {
-                if (i>0)  txt += '<br>';
-                txt += task.selected_items[i].name;
-              }
-              inputPanel.fileListPanel.setText(txt).show();
-            }
-          }
-          */
 
           if (callback_func)
             callback_func ( new_items );
