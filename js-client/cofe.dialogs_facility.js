@@ -509,10 +509,14 @@ function CloudFileBrowser ( inputPanel,task,fileKey,onSelect_func,onClose_func )
 
   $(this.element).dialog ( dlg_options );
 
-  if (onClose_func)
-    $(this.element).on( "dialogclose",function(event,ui){
-      onClose_func();
+  (function(dlg){
+    $(dlg.element).on( "dialogclose",function(event,ui){
+      $(dlg.element).dialog( "destroy" );
+      if (onClose_func)
+        onClose_func();
+      dlg.delete();
     });
+  }(this))
 
 }
 
@@ -638,12 +642,12 @@ CloudFileBrowser.prototype.openItem = function()  {
       // item is not a directory
       if (this.onSelect_func)
         this.onSelect_func ( this.storageTree.storageList );
-      //$(this.element).dialog( "close" );
-      $(this.element).dialog( "destroy" );
+      $(this.element).dialog( "close" );
+      //$(this.element).dialog( "destroy" );
     } else if (this.onSelect_func)  {
       if (this.onSelect_func(items)==1)
-        $(this.element).dialog( "destroy" );
-        //$(this.element).dialog( "close" );
+        //$(this.element).dialog( "destroy" );
+        $(this.element).dialog( "close" );
     }
   }
 
@@ -689,8 +693,8 @@ CloudFileBrowser.prototype.selectItem = function()  {
       if (this.onSelect_func) {
         if (items[0].name=='..')  {
           this.onSelect_func ( this.storageTree.storageList );
-          //$(this.element).dialog( "close" );
-          $(this.element).dialog( "destroy" );
+          $(this.element).dialog( "close" );
+          //$(this.element).dialog( "destroy" );
         } else  {
           (function(browser){
             browser.getStorageList ( browser.task.currentCloudPath+'/'+items[0].name,
@@ -703,8 +707,8 @@ CloudFileBrowser.prototype.selectItem = function()  {
       }
     } else if (this.onSelect_func)  {
       if (this.onSelect_func(items)==1)
-        $(this.element).dialog( "destroy" );
-        //$(this.element).dialog( "close" );
+        //$(this.element).dialog( "destroy" );
+        $(this.element).dialog( "close" );
     }
   }
 }
