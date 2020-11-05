@@ -265,7 +265,14 @@ function HelpBox ( title,helpURL,onDoNotShowAgain_func )  {
 
     });
 
+    $(dlg.element).on( "dialogclose",function(event,ui){
+      $(dlg.element).dialog( "destroy" );
+      dlg.delete();
+    });
+
   }(this))
+
+
 
   this.display.loadPage ( helpURL );
 
@@ -386,23 +393,5 @@ InputBox.prototype.launch = function ( name_btn,add_func )  {
   }
 
   $(this.element).dialog ( this.options );
-
-  /*
-  $(this.element).dialog({
-    resizable : false,
-    height    : 'auto',
-    width     : 'auto',
-    modal     : true,
-    buttons   : {
-      [name_btn] : function() {
-        if (add_func())
-          $(this).dialog( "close" );
-      },
-      "Cancel": function() {
-        $(this).dialog( "close" );
-      }
-    }
-  });
-  */
 
 }
