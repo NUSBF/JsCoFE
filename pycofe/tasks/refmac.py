@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    01.10.20   <--  Date of Last Modification.
+#    06.11.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -300,7 +300,7 @@ class Refmac(basic.TaskDriver):
                 except:
                     meta = None
                     self.stderr ( " *** molprobity failure" )
-                    self.rvrow = rvrow0
+                    self.rvrow = rvrow0 + 4
 
                 if meta:
                     verdict_meta = {
