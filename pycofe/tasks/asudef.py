@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    30.10.20   <--  Date of Last Modification.
+#    06.11.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -178,14 +178,14 @@ def makeRevision ( base,hkl,seq,composition,altEstimateKey,altNRes,
                     seq[i].dname + "&nbsp;",
                     seq[i].subtype[0].upper() + "&nbsp;",
                     str(seq[i].size) + "&nbsp;",
-                    str(seq[i].weight) + "&nbsp;"
+                    ("%.1f" % seq[i].weight) + "&nbsp;"
             ]}
             tdict1["rows"].append ( trow )
 
         tdict1["rows"].append ({
           "data" : [" ","<i><b>Total residues/weight:</b></i>","",
                     "<i><b>" + str(nRes) + "</b></i>&nbsp;",
-                    "<i><b>" + str(molWeight) + "</b></i>&nbsp;"]
+                    "<i><b>" + ("%.1f" % molWeight) + "</b></i>&nbsp;"]
         })
 
         rvapi_utils.makeTable ( tdict1, base.getWidgetId("seq_table"),
