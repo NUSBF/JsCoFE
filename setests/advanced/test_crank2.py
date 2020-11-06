@@ -165,37 +165,42 @@ def startCrank2(driver):
     return()
 
 
-def validateCrank2run(driver):
+def validateCrank2run(driver, waitLong):
 
     rWork = 1.0
     rFree = 1.0
-    found = False
+    targetRwork = 0.33
+    targetRfree = 0.38
 
-    # For some reason it can't simply find element and on line [0003] generates StaleElementReferenceException
-    # This is code for several attempts to overcome it. Also, looks like just time.sleep() fixes it.
-    for attempts in range (5):
-        if found:
+    print ('CRANK2 verification - starting pulling job every minute')
+
+    time.sleep(1)
+    startTime = time.time()
+
+    while (True):
+        ttts = sf.tasksTreeTexts(driver)
+        for taskText in ttts:
+            # Job number as string
+            match = re.search(r'^\[0003\] EP with Crank2 \(SAD\) -- R=(0\.\d*) Rfree=(0\.\d*)', taskText)
+            if match:
+                rWork = float(match.group(1))
+                rFree = float(match.group(2))
+                break
+        if (rWork != 1.0) or (rFree != 1.0):
             break
-        time.sleep(2) # just in case
-        try:
-            ttts = sf.tasksTreeTexts(driver)
-            for taskText in ttts:
-                match = re.search(r'^\[0003\] EP with Crank2 \(SAD\) -- R=(0\.\d*) Rfree=(0\.\d*)', taskText)
-                if match:
-                    rWork = float(match.group(1))
-                    rFree = float(match.group(2))
-                    found = True
-                    break
-        except:
-            print('Exception on attempt %d' % attempts + 1)
-            pass
+        curTime = time.time()
+        if curTime > startTime + float(waitLong):
+            print('*** Timeout for CRANK2 results! Waited for 50 minutes plus %d seconds.' % waitLong)
+            break
+        time.sleep(60)
 
     if (rWork == 1.0) or (rFree == 1.0):
-        print('*** Verification: could not find Rwork or Rfree value after Crank2 run')
+        print('*** Verification: could not find Rwork or Rfree value after CRANK2 run')
     else:
-        print('*** Verification: Crank2 Rwork is %0.4f (expecting <0.33), Rfree is %0.4f (expecting <0.38)' % (rWork, rFree))
-    assert rWork < 0.33
-    assert rFree < 0.38
+        print('*** Verification: CRANK2 Rwork is %0.4f (expecting <%0.2f), Rfree is %0.4f (expecting <%0.2f)' % (
+            rWork, targetRwork, rFree, targetRfree))
+    assert rWork < targetRwork
+    assert rFree < targetRfree
 
     return ()
 
@@ -246,8 +251,8 @@ def test_1Crank2start(browser,
 
 def test_2Crank2veification():
 
-    print('Waiting for 1 hour 10 minutes until Crank2 is ready (shall finish in about 1 hour)...')
-    time.sleep(4200)  # Crank2 run takes around 1 hour and let's give it more time
+    print('Waiting for 50 minutes until Crank2 is ready (shall finish in about 1 hour)...')
+    time.sleep(3000)  # Crank2 run takes around 1 hour
     # Connecting again to check results
     (d.driver, waitLong, waitShort) = sf.startBrowser(d.remote, d.browser)
 
@@ -260,7 +265,7 @@ def test_2Crank2veification():
             sf.loginToCloud(d.driver, d.login, d.password)
 
         sf.enterProject(d.driver, d.testName)
-        validateCrank2run(d.driver)
+        validateCrank2run(d.driver, 1500)
         sf.renameProject(d.driver, d.testName)
 
         d.driver.quit()
