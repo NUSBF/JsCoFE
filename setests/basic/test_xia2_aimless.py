@@ -176,6 +176,116 @@ def aimlessAfterXia2(driver, waitLong):
     return ()
 
 
+def simbad_03(driver, waitLong):
+    print('Running SIMBAD')
+
+    addButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/add.png')]")
+    addButton.click()
+    time.sleep(1)
+
+    sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list')
+    time.sleep(1)
+
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Automated Molecular Replacement')
+    time.sleep(1)
+
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Lattice and Contaminants Search with Simbad')
+    time.sleep(1)
+
+    # There are several forms - active and inactive. We need one displayed.
+    buttonsRun = driver.find_elements_by_xpath("//button[contains(@style, 'images_png/runjob.png')]" )
+    for buttonRun in buttonsRun:
+        if buttonRun.is_displayed():
+            buttonRun.click()
+            break
+
+    try:
+        wait = WebDriverWait(driver, waitLong) # allowing 10 minutes to the task to finish
+        # Waiting for the text 'completed' in the ui-dialog-title of the task [0003]
+        wait.until(EC.presence_of_element_located
+                   ((By.XPATH,"//*[@class='ui-dialog-title' and contains(text(), 'completed') and contains(text(), '[0003]')]")))
+    except:
+        print('Apparently the task simbadAfterImport has not been completed in time; terminating')
+        sys.exit(1)
+
+    # pressing Close button
+    closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
+    closeButton.click()
+    time.sleep(1)
+
+    solv = 0.0
+    ttts = sf.tasksTreeTexts(driver)
+    for taskText in ttts:
+        match = re.search('\[0003\] simbad -- Solv=(.*)\%', taskText)
+        if match:
+            solv = float(match.group(1))
+            break
+    if (solv == 0.0):
+        print('*** Verification: could not find Solv value after SIMBAD run')
+    else:
+        print('*** Verification: SIMBAD ' \
+              'Solv is %0.1f %%(expecting >45.0 and <60.0), '  % (solv))
+    assert solv < 60.0
+    assert solv > 45.0
+
+    return ()
+
+
+def dimple_04(driver, waitLong):
+    print('Running Dimple')
+
+    addButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/add.png')]")
+    addButton.click()
+    time.sleep(1)
+
+    sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list')
+    time.sleep(1)
+
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Refinement and Model Building')
+    time.sleep(1)
+
+    sf.clickByXpath(driver, "//div[normalize-space()='%s']" % 'Dimple refinement')
+    time.sleep(1)
+
+    # There are several forms - active and inactive. We need one displayed.
+    buttonsRun = driver.find_elements_by_xpath("//button[contains(@style, 'images_png/runjob.png')]" )
+    for buttonRun in buttonsRun:
+        if buttonRun.is_displayed():
+            buttonRun.click()
+            break
+
+    try:
+        wait = WebDriverWait(driver, waitLong)
+        # Waiting for the text 'completed' in the ui-dialog-title of the task [0005]
+        wait.until(EC.presence_of_element_located
+                   ((By.XPATH,"//*[@class='ui-dialog-title' and contains(text(), 'completed') and contains(text(), '[0004]')]")))
+    except:
+        print('Apparently tha task dimple has not been completed in time; terminating')
+        sys.exit(1)
+
+    # presing Close button
+    closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
+    closeButton.click()
+    time.sleep(1)
+
+    rWork = 1.0
+    rFree = 1.0
+    ttts = sf.tasksTreeTexts(driver)
+    for taskText in ttts:
+        match = re.search('\[0004\] dimple -- R=(0\.\d*) Rfree=(0\.\d*)', taskText)
+        if match:
+            rWork = float(match.group(1))
+            rFree = float(match.group(2))
+            break
+    if (rWork == 1.0) or (rFree == 1.0):
+        print('*** Verification: could not find Rwork or Rfree value after Dimple run')
+    else:
+        print('*** Verification: Dimple Rwork is %0.4f (expecting <0.35), Rfree is %0.4f (expecing <0.42)' % (rWork, rFree))
+    assert rWork < 0.35
+    assert rFree < 0.42
+
+    return ()
+
 
 def test_1xia2(browser,
                       cloud,
@@ -219,14 +329,25 @@ def test_1xia2(browser,
 
 def test_2aimless():
     try:
-        aimlessAfterXia2(d.driver, d.waitLong)
-        sf.renameProject(d.driver, d.testName)
+        aimlessAfterXia2(d.driver, d.waitLong) # 02
+    except:
+        d.driver.quit()
+        raise
 
+
+def test_3simbadDimple():
+    try:
+        simbad_03(d.driver, 600) # 03
+        dimple_04(d.driver, 300) # 04
+
+        sf.renameProject(d.driver, d.testName)
         d.driver.quit()
 
     except:
         d.driver.quit()
         raise
+
+
 
 
 if __name__ == "__main__":
@@ -250,3 +371,4 @@ if __name__ == "__main__":
                       remote=parameters.remote  # 'http://130.246.213.187:4444/wd/hub' for Selenium Server hub
                       )
     test_2aimless()
+    test_3simbadDimple()

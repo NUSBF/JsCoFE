@@ -102,6 +102,9 @@ def verifyRefmac(driver, waitLong, jobNumber, targetRwork, targetRfree):
             curTime = time.time()
             if curTime > startTime + float(waitLong):
                 print('*** Timeout for REFMAC5 results! Waited for %d seconds.' % waitLong)
+                print ('\n')
+                print (ttts)
+                print ('\n')
                 break
             time.sleep(20)
 
@@ -389,7 +392,7 @@ def test_sharingBasic(browser,
         startRefmac(d.driver, d.waitLong)
 
         verifyRefmac(d.driver, d.waitLong, '0004', 0.17, 0.2)
-        verifyRefmac(d2.driver, d.waitLong, '0007', 0.24, 0.27)
+        verifyRefmac(d2.driver, 300, '0007', 0.24, 0.27)
 
         verifyMrBump(d.driver)
 
