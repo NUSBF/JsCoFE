@@ -1,6 +1,6 @@
 {
     "name": "CCP4_Cloud",
-    "version": "1.6.015",
+    "version": "1.6.016",
     "dependencies": {
         "check-disk-space": "*",
         "child_process": "*",
@@ -18,6 +18,7 @@
         "url": "*",
         "util": "^0.12.2",
         "zip-lib": "*",
-        "csso": "*"
+        "csso": "*",
+        "prompt": "*"
     }
 }

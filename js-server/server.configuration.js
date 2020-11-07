@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    29.10.20   <--  Date of Last Modification.
+ *    07.11.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -544,8 +544,46 @@ var version = '';
 
 --------------------------------------------------------------------------  */
 
+// --------------------------------------------------------------------------
+
+var _python_name = 'ccp4-python';
+function pythonName()  {
+  return _python_name;
+}
+
+var _python_ver = '0.0.0';
+function pythonVersion()  {
+  return _python_ver;
+}
+
+function checkPythonVersion()  {
+  child.exec ( pythonName() + ' -V',function(err, stdout, stderr) {
+    if (stdout)
+      _python_ver = stdout.trim().split(' ').slice(-1)[0].trim();
+    else if (stderr)  {  // this works weirdly for Mac OSX
+      if (stderr.startsWith('Python'))
+            _python_ver = stderr.trim().split(' ').slice(-1)[0].trim();
+      else  _python_ver = pythonName() + ' not found (' + stderr + ')';
+    }
+    log.standard ( 5,'python version: ' + pythonVersion() );
+  });
+}
+
+function set_python_check ( check_bool )  {
+  if (check_bool)  _python_ver = '0.0.0';
+             else  _python_ver = 'x.x.x';
+}
+
+//checkPythonVersion();
+
+
+// --------------------------------------------------------------------------
+
 
 function readConfiguration ( confFilePath,serverType )  {
+
+  if (_python_ver=='0.0.0')
+    checkPythonVersion();
 
   var confObj = utils.readObject ( confFilePath );
 
@@ -891,31 +929,6 @@ function writeConfiguration ( fpath )  {
 }
 
 
-var _python_name = 'ccp4-python';
-function pythonName()  {
-  return _python_name;
-}
-
-var _python_ver = '0.0.0';
-function pythonVersion()  {
-  return _python_ver;
-}
-
-function checkPythonVersion()  {
-  child.exec ( pythonName() + ' -V',function(err, stdout, stderr) {
-    if (stdout)
-      _python_ver = stdout.trim().split(' ').slice(-1)[0].trim();
-    else if (stderr)  {  // this works weirdly for Mac OSX
-      if (stderr.startsWith('Python'))
-            _python_ver = stderr.trim().split(' ').slice(-1)[0].trim();
-      else  _python_ver = pythonName() + ' not found (' + stderr + ')';
-    }
-    log.standard ( 5,'python version: ' + pythonVersion() );
-  });
-}
-
-checkPythonVersion();
-
 function isSharedFileSystem()  {
 // Returns true in case of shared file system setup, i.e. when access to data
 // on client and at least one NC is possible via the file system mount.
@@ -1112,4 +1125,5 @@ module.exports.cleanNCTmpDir      = cleanNCTmpDir;
 module.exports.CCP4Version        = CCP4Version;
 module.exports.isWindows          = isWindows;
 module.exports.windows_drives     = windows_drives;
+module.exports.set_python_check   = set_python_check;
 module.exports.getExcludedTasks   = getExcludedTasks;
