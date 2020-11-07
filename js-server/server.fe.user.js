@@ -77,8 +77,8 @@ var fe_server = conf.getFEConfig();
 
   userData.helpTopics = [];
 
-  if (userData.login=='admin')  userData.role = ud.role_code.admin;
-                          else  userData.role = ud.role_code.user;
+  if (userData.login=='admin') userData.role = ud.role_code.admin;
+                         else  userData.role = ud.role_code.user;
   userData.knownSince = Date.now();
   userData.lastSeen   = Date.now();
 
