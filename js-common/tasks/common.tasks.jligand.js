@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    29.10.20   <--  Date of Last Modification.
+ *    07.11.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -33,9 +33,9 @@ function TaskJLigand()  {
 
   this._type   = 'TaskJLigand';
   this.name    = 'jligand (ligands and links)';
-  this.oname   = '';  // output file name template (this or ligand name if empty)
+  this.oname   = 'jligand';  // output file name template (this or ligand name if empty)
   this.title   = 'Make Ligand and Covalent Links with jLigand';
-  this.nc_type = 'client';    // job may be run only on client NC
+  this.nc_type = 'client';   // the job may be run only on client NC
 
   this.input_dtypes = [{  // input data types
       data_type   : {'DataRevision':[]}, // any revision will be passed

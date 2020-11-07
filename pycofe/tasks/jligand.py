@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    03.11.20   <--  Date of Last Modification.
+#    07.11.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -59,22 +59,53 @@ class JLigand(basic.TaskDriver):
 
         # fetch input data
         libin    = None
+        istruct  = None
         revision = self.makeClass ( self.input_data.data.revision[0] )
         if revision.Structure:
             istruct = self.makeClass ( revision.Structure )
             libin   = istruct.getLibFilePath ( self.inputDir() )
 
-        cifout = "jligand.cif"
+        cifout = self.getCIFOFName()
 
         # make command line arguments
         args = ["-out",cifout]
         if libin:
             args.append ( libin )
 
-        have_results = False
         rc = self.runApp ( "jligand",args,logType="Main",quitOnError=False )
 
         summary_line = " this goes on task line in project tree"
+        have_results = False
+
+        if os.path.isfile(cifout):
+
+            if istruct:
+                struct = self.registerStructure (
+                            istruct.getXYZFilePath(self.inputDir()),
+                            istruct.getSubFilePath(self.inputDir()),
+                            istruct.getMTZFilePath(self.inputDir()),
+                            None,None,libPath=cifout,leadKey=istruct.leadKey )
+
+            if struct:
+                struct.copyAssociations ( istruct )
+                struct.copySubtype      ( istruct )
+                struct.copyLabels       ( istruct )
+                #struct.copyLigands      ( istruct )
+                #struct.setLigands       ( ligList )
+
+                # create output data widget in the report page
+                self.putTitle ( "Output Structure" )
+                self.putStructureWidget ( "structure_btn","Output Structure",struct )
+
+                # update structure revision
+                revision.setStructureData ( struct )
+                #if ligand:
+                #    revision.addLigandData ( ligand      )
+                #if ligand_coot:
+                #    revision.addLigandData ( ligand_coot )
+                self.registerRevision ( revision )
+                have_results = True
+                summary_line = "ligands generated"
 
         self.generic_parser_summary["jligand"] = {
             "summary_line" : summary_line
@@ -87,8 +118,8 @@ class JLigand(basic.TaskDriver):
             self.file_stderr.close()
             if messagebox:
                 messagebox.displayMessage ( "Failed to launch",
-                  "<b>Failed to launch jLigand: <i>" + rc.msg + "</i></b>"
-                  "<p>This may indicate a problem with software setup." )
+                    "<b>Failed to launch jLigand: <i>" + rc.msg + "</i></b>"
+                    "<p>This may indicate a problem with software setup." )
 
             raise signal.JobFailure ( rc.msg )
 
