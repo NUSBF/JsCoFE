@@ -189,9 +189,13 @@ def enterProject(driver, projectId):
 def importFromCloud_rnase(driver, waitShort):
     print ('Importing "rnase" project from the Cloud Import')
 
-    # Clicking "Cloud Import"
-    textEl = driver.find_element_by_xpath("//*[normalize-space()='%s']" % 'Cloud Import')
-    ActionChains(driver).double_click(textEl).perform()
+    clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list')
+    time.sleep(1)
+
+    clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Data Import')
+    time.sleep(1)
+
+    clickByXpath(driver, "//*[normalize-space()='%s']" % 'Cloud Import')
     time.sleep(1)
 
     textEl2 = driver.find_elements_by_xpath("//a[normalize-space()='%s']" % 'test-data')
@@ -249,7 +253,12 @@ def asymmetricUnitContentsAfterCloudImport(driver, waitShort):
     addButton.click()
     time.sleep(1)
 
-    # There are several forms - active and inactive. We need one displayed.
+    clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list')
+    time.sleep(1)
+
+    clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Asymmetric Unit and Structure Revision')
+    time.sleep(1)
+
     clickByXpath(driver, "//div[normalize-space()='%s']" % 'Asymmetric Unit Contents') # looking by text
     time.sleep(1)
 
@@ -416,6 +425,7 @@ def tasksTreeTexts(driver):
             realTexts.append(t.text)
     # ugly hack with try/except to make second attempt in the case page was 'refreshed' - test fail with this nonsense regularly
     except:
+        time.sleep(1.7)
         realTexts = []
         tasksText = driver.find_elements(By.XPATH,
                                          "//a[contains(@id,'treenode') and contains(@class, 'jstree-anchor')]")
