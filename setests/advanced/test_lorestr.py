@@ -53,6 +53,78 @@ def startLORESTRAfterRevision(driver):
     return ()
 
 
+def verifyLORESTR(driver):
+    compl = ''
+    print('LORESTR verification')
+
+    time.sleep(1.05)
+    startTime = time.time()
+
+    while (True):
+        ttts = sf.tasksTreeTexts(driver)
+        for taskText in ttts:
+            # Job number as string
+            match = re.search('\[0004\] lorestr -- (.*)', taskText)
+            if match:
+                compl = match.group(1)
+                break
+        if (compl != ''):
+            break
+        curTime = time.time()
+        if curTime > startTime + float(2700): # 45 minutes, normally shall finish in 35
+            print('*** Timeout for LORESTR results! Waited for %d seconds.' % 2700)
+            break
+        time.sleep(60)
+
+    if (compl == ''):
+        print('*** Verification: could not find completion statement after LORESTR run')
+    else:
+        print('*** Verification: LORESTR completion statement is "%s" (expecting "completed.") ' % compl)
+    assert compl == 'completed.'
+
+    sf.doubleClickTaskInTaskTree(driver, '\[0004\]')
+    #  CHANGING iframe!!! As it is separate HTML file with separate search!
+    time.sleep(2)
+    driver.switch_to.frame(driver.find_element_by_xpath("//iframe[contains(@src, 'report/index.html')]"))
+
+    results = []
+
+    #ugly hack for the second attempt to fight unexpected refresh
+    try:
+        tasksText = driver.find_elements(By.XPATH, "//td[@class='table-blue-td']")
+        for t in tasksText:
+            if len(t.text.strip()) > 0:
+                results.append(t.text)
+    except:
+        results = []
+        time.sleep(1.7)
+        tasksText = driver.find_elements(By.XPATH, "//td[@class='table-blue-td']")
+        for t in tasksText:
+            if len(t.text.strip()) > 0:
+                results.append(t.text)
+
+    print('*** Verification: LORESTR Rfree before  %s (<0.31), ' \
+          'Rfree after %s (expecting <0.21), ' \
+          'Rama favoured before %s (>84.0), ' \
+          'Rama favoured after %s (>95.0)' % (results[5], results[12], results[7], results[14]) )
+
+    assert float(results[4]) < 0.31
+    assert float(results[5]) < 0.31
+    assert float(results[6]) < 4.0
+    assert float(results[7]) > 84.0
+
+    assert float(results[11]) < 0.18
+    assert float(results[12]) < 0.21
+    assert float(results[13]) < 0.5
+    assert float(results[14]) > 95.0
+
+    # SWITCHING FRAME BACK!
+    driver.switch_to.default_content()
+
+    return ()
+
+
+
 
 def test_1LORESTRBasic(browser,
                        cloud,
@@ -88,7 +160,8 @@ def test_1LORESTRBasic(browser,
         sf.asymmetricUnitContentsAfterCloudImport(d.driver, d.waitShort)
         sf.editRevisionStructure_rnase(d.driver, d.waitShort)
         startLORESTRAfterRevision(d.driver)
-        #sf.renameProject(d.driver, d.testName)
+        verifyLORESTR(d.driver)
+        sf.renameProject(d.driver, d.testName)
 
         d.driver.quit()
 
