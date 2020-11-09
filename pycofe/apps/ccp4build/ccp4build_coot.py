@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    07.05.20   <--  Date of Last Modification.
+#    09.11.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -34,9 +34,12 @@ class Coot(ccp4build_refmac.Refmac):
 
     def checkCoot ( self ):
         if sys.platform.startswith("win"):
-            is_coot = os.path.isfile ( os.path.join(os.environ["CCP4"],"libexec","coot.bat") )
-        is_coot = os.path.isfile ( os.path.join(os.environ["CCP4"],"libexec","coot-bin") )
-        return is_coot
+            self.is_coot = os.path.isfile (
+                        os.path.join(os.environ["CCP4"],"libexec","coot.bat") )
+        else:
+            self.is_coot = os.path.isfile (
+                        os.path.join(os.environ["CCP4"],"libexec","coot-bin") )
+        return self.is_coot
 
     def _escape_path ( self,path ):
         if sys.platform.startswith("win"):
