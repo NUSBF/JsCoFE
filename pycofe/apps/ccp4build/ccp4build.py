@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    31.08.20   <--  Date of Last Modification.
+#    09.11.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -140,6 +140,13 @@ class Build(ccp4build_report.Report):
         { "initial":50, "inter":10, "final":20 },
     ]
 
+    def warning_nocoot ( self ):
+        self.putMessage (
+            "<span style=\"font-size:85%;color:maroon;\"><b>WARNING: " +\
+            "<i>Coot is not found, real space refinement and water " +\
+            "modelling will not be used</i></b></span>"
+        )
+        return
 
     def ccp4build_mr ( self ):
 
@@ -164,10 +171,13 @@ class Build(ccp4build_report.Report):
             ])
 
         #self.putMessage ( "<h3>Performing build in Molecular Replacement Phases</h3>" )
-        self.putMessage ( "<table style=\"width:100%;   \"><tr><td>" +\
+        self.putMessage ( "<table style=\"width:100%;\"><tr><td>" +\
                           "<h3>Performing build in Molecular Replacement Phases</h3></td>" +\
                           "<td><div style=\"font-size:85%;width:100%;text-align:right\">" +\
                           "<i>CCP4Build v."+self.appVersion+"</i></div></td></tr></table>" )
+
+        if not self.is_coot:
+            self.warning_nocoot()
 
         self.printMetrics ( -1,None )
         self.prepareGraph()
@@ -261,14 +271,19 @@ class Build(ccp4build_report.Report):
                 coot_workflow[2] = "R"
             coot_ind = "".join(coot_workflow)
 
-            if len(coot_script)>0:
-                meta4 = self.refmac ( self.coot(meta1,coot_script,
-                                                nameout=prefix+"06.coot" ),
-                                      ncycles=refcyc["inter"],nameout=prefix+"07.refmac" )
-                if fill_mode=="auto" or fit_mode=="auto" or rsr_mode=="auto":
-                    meta4 = self.choose_solution ( coot_ind,meta1,meta4 )
+            if (len(coot_script)>0) and self.is_coot:
+                meta2 = self.coot ( meta1,coot_script,nameout=prefix+"06.coot" )
+                if self.is_coot:
+                    meta4 = self.refmac ( meta2,ncycles=refcyc["inter"],
+                                                nameout=prefix+"07.refmac" )
+                    if fill_mode=="auto" or fit_mode=="auto" or rsr_mode=="auto":
+                        meta4 = self.choose_solution ( coot_ind,meta1,meta4 )
+                    else:
+                        self.workflow += coot_ind
                 else:
                     self.workflow += coot_ind
+                    meta4 = meta1
+                    self.warning_nocoot()
             else:
                 self.workflow += coot_ind
                 meta4 = meta1
@@ -312,7 +327,7 @@ class Build(ccp4build_report.Report):
                 meta4 = meta3
             """
 
-            if trim_waters:
+            if trim_waters and self.is_coot:
                 if meta4["refmac"]["rfree"][1]<=float(self.input_data["trim_wat_rfree"]):
                     meta_rf = self.choose_solution ( "W",meta4,
                                 self.refmac (
@@ -382,6 +397,8 @@ class Build(ccp4build_report.Report):
                           "<td><div style=\"font-size:85%;width:100%;text-align:right\">" +\
                           "<i>CCP4Build v."+self.appVersion+"</i></div></td></tr></table>" )
 
+        if not self.is_coot:
+            self.warning_nocoot()
 
         meta = self.input_data.copy()
         #meta["xyzpath_ha"] = meta["xyzpath"]
@@ -474,14 +491,19 @@ class Build(ccp4build_report.Report):
                 coot_workflow[2] = "R"
             coot_ind = "".join(coot_workflow)
 
-            if len(coot_script)>0:
-                meta4 = self.refmac ( self.coot(meta1,coot_script,
-                                                nameout=prefix+"06.coot" ),
-                                      ncycles=refcyc["inter"],nameout=prefix+"07.refmac" )
-                if fill_mode=="auto" or fit_mode=="auto" or rsr_mode=="auto":
-                    meta4 = self.choose_solution ( coot_ind,meta1,meta4 )
+            if (len(coot_script)>0) and self.is_coot:
+                meta2 = self.coot ( meta1,coot_script,nameout=prefix+"06.coot" )
+                if self.is_coot:
+                    meta4 = self.refmac ( meta2,ncycles=refcyc["inter"],
+                                                nameout=prefix+"07.refmac" )
+                    if fill_mode=="auto" or fit_mode=="auto" or rsr_mode=="auto":
+                        meta4 = self.choose_solution ( coot_ind,meta1,meta4 )
+                    else:
+                        self.workflow += coot_ind
                 else:
                     self.workflow += coot_ind
+                    meta4 = meta1
+                    self.warning_nocoot()
             else:
                 self.workflow += coot_ind
                 meta4 = meta1
@@ -524,7 +546,7 @@ class Build(ccp4build_report.Report):
                 meta4 = meta3
             """
 
-            if trim_waters:
+            if trim_waters and self.is_coot:
                 if meta4["refmac"]["rfree"][1]<=float(self.input_data["trim_wat_rfree"]):
                     meta5 = self.choose_solution ( "W",meta4,
                                 self.refmac (
@@ -583,6 +605,8 @@ class Build(ccp4build_report.Report):
 
 
     def run ( self ):
+
+        self.checkCoot()
 
         self.log ([
             " ",

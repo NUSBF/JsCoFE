@@ -28,12 +28,22 @@ import ccp4build_refmac
 
 class Coot(ccp4build_refmac.Refmac):
 
+    is_coot = True
+
     # ----------------------------------------------------------------------
+
+    def checkCoot ( self ):
+        if sys.platform.startswith("win"):
+            is_coot = os.path.isfile ( os.path.join(os.environ["CCP4"],"libexec","coot.bat") )
+        is_coot = os.path.isfile ( os.path.join(os.environ["CCP4"],"libexec","coot-bin") )
+        return is_coot
 
     def _escape_path ( self,path ):
         if sys.platform.startswith("win"):
             return path.replace ( "\\","\\\\" )
         return path
+
+    # ----------------------------------------------------------------------
 
     def coot (  self,
                 meta,   # meta dictionary
@@ -84,15 +94,15 @@ class Coot(ccp4build_refmac.Refmac):
             rc = self.runApp ( "coot",cmd,
                           fpath_stdout=stdout_fpath,fpath_stderr=stderr_fpath )
 
+        out_meta = meta.copy()
         if rc.msg:
             self.file_stdout.write (
                 "\n\n *** error running coot:\n" +\
                     "    " +  rc.msg +\
                   "\n    check that all libraries are installed\n\n"
             )
-            xyzout = None
-
-        out_meta = meta.copy()
-        out_meta["xyzpath"] = xyzout
+            self.is_coot = False
+        else:
+            out_meta["xyzpath"] = xyzout
 
         return out_meta
