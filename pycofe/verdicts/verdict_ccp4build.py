@@ -154,6 +154,37 @@ def putVerdictWidget ( base,task_meta ):
         verdict_message = "<b style='font-size:18px;'>Highest-scored build No. " +\
                           str(bno+1) + "</b><br>" + verdict_message
 
+    tdata = {
+        "title": "Build summary",
+        "state": 0, "class": "table-blue", "css": "text-align:right;",
+        "rows" : [
+            { "header": { "label"  : "R-factor",
+                          "tooltip": "R-factor for working set"},
+              "data"   : [ str(metrics["R_factor"]) ]
+            },
+            { "header": { "label"  : "R<sub>free</sub>",
+                          "tooltip": "Free R-factor"},
+              "data"  : [ str(metrics["R_free"]) ]
+            },
+            { "header": { "label"  : "Completeness",
+                          "tooltip": "Fraction of residues built"},
+              "data"  : [ str(metrics["chain_compl"])+"%" ]
+            },
+            { "header": { "label"  : "EDCC",
+                          "tooltip": "Electron Density Correlation Coefficient"},
+              "data"  : [ str(metrics["EDCC"]) ]
+            }
+        ]
+    }
+
+    if "clashscore" in metrics:
+        tdata["rows"].append ({
+            "header": { "label"  : "Clash score",
+                        "tooltip": "Molprobity clash score" },
+            "data"  : [ str(metrics["clashscore"]) ]
+        })
+
+    """
     verdict.makeVerdictSection ( base,{
         "title": "Build summary",
         "state": 0, "class": "table-blue", "css": "text-align:right;",
@@ -182,7 +213,10 @@ def putVerdictWidget ( base,task_meta ):
     },verdict_score,
       verdict_message,
       bottom_line )
+    """
 
+    verdict.makeVerdictSection ( base,tdata,verdict_score,verdict_message,
+                                 bottom_line )
     base.rvrow += 3
 
     return

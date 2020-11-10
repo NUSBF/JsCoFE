@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    09.11.20   <--  Date of Last Modification.
+#    10.11.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -247,7 +247,10 @@ class Build(ccp4build_report.Report):
                     meta_mb = meta_mb2
             else:
                 self.workflow += "-"
-                meta_mb = meta_mb1
+                if meta_mb1["cbuccaneer"]["n_res_built"]>0:
+                    meta_mb = self.refmac(meta_mb1,ncycles=refcyc["inter"],nameout=prefix+"03-1.refmac")
+                else:
+                    meta_mb = meta_mb1
 
             if meta_mb["cbuccaneer"]["n_res_built"]<=0:
                 break
@@ -466,7 +469,10 @@ class Build(ccp4build_report.Report):
                     meta_mb = meta_mb2
             else:
                 self.workflow += "-"
-                meta_mb = meta_mb1
+                if meta_mb1["cbuccaneer"]["n_res_built"]>0:
+                    meta_mb = self.refmac(meta_mb1,ncycles=refcyc["inter"],nameout=prefix+"03-1.refmac")
+                else:
+                    meta_mb = meta_mb1
 
             if meta_mb["cbuccaneer"]["n_res_built"]<=0:
                 break
