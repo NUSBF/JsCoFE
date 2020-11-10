@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    30.07.20   <--  Date of Last Modification.
+#    10.11.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -32,6 +32,31 @@ def makeVerdict ( task_meta,sol_no ):
 
     metrics = task_meta["metrics"][sol_no]
 
+    vdata = {
+        "Rfree" :  { "value"  : metrics["R_free"],
+                     "weight" : 1.0,
+                     "map"    : [(0.65,0),(0.45,33),(0.37,67),(0.2,100)]
+                   },
+        "Compl" :  { "value"  : metrics["chain_compl"],
+                     "weight" : 1.0,
+                     "map"    : [(0.0,0),(0.60,33),(0.85,67),(100.0,100)]
+                   },
+        "EDCC"  :  { "value"  : metrics["EDCC"],
+                     "weight" : 2.0,
+                     "map"    : [(0.0,0),(0.6,33),(0.75,67),(0.9,100)]
+                   }
+    }
+
+    if "clashscore" in metrics:
+        vdata["Clash"] = {
+            "value"  : metrics["clashscore"],
+            "weight" : 1.0,
+            "map"    : [(40.0,0),(20.0,33),(10.0,67),(2.0,100)]
+        }
+
+    verdict_score = verdict.calcVerdictScore ( vdata, 1 )
+
+    """
     verdict_score = verdict.calcVerdictScore ({
         "Rfree" :  { "value"  : metrics["R_free"],
                      "weight" : 1.0,
@@ -50,6 +75,7 @@ def makeVerdict ( task_meta,sol_no ):
                      "map"    : [(40.0,0),(20.0,33),(10.0,67),(2.0,100)]
                    }
     }, 1 )
+    """
 
     verdict_message = "<b style='font-size:18px;'>"
     if verdict_score<33.0:
