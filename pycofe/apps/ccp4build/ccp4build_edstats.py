@@ -343,9 +343,10 @@ class EDStats(ccp4build_findwaters.FindWaters):
                 zdw += w*self.zd_cutoff_w[i]
                 weight += w
 
-            zd_m[2] = zdm/weight
-            zd_s[2] = zds/weight
-            zd_w[2] = zdw/weight
+            if weight>0.0:
+                zd_m[2] = zdm/weight
+                zd_s[2] = zds/weight
+                zd_w[2] = zdw/weight
 
         return  { "mainchain"   : mainchain, "sidechain" : sidechain,
                   "mean_m"      : mean_m   , "mean_s"    : mean_s,
@@ -528,12 +529,12 @@ class EDStats(ccp4build_findwaters.FindWaters):
 
         if chain_type=="solvent":
             if self.input_data["trim_mode_w"]=="fixed":
-                return (0,0.0,float(self.input_data["trim_zdw"]),1.0)
+                return [0,0.0,float(self.input_data["trim_zdw"]),1.0]
         elif self.input_data["trim_mode"]=="fixed":
             if chain_type=="main":
-                return (0,0.0,float(self.input_data["trim_zdm"]),1.0)
+                return [0,0.0,float(self.input_data["trim_zdm"]),1.0]
             else:
-                return (0,0.0,float(self.input_data["trim_zds"]),1.0)
+                return [0,0.0,float(self.input_data["trim_zds"]),1.0]
 
         n  = len(x)
         n0 = 0
