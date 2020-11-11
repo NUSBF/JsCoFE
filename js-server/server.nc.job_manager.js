@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    11.10.20   <--  Date of Last Modification.
+ *    11.11.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -782,11 +782,18 @@ function ncJobFinished ( job_token,code )  {
         if ((stageNo>=2) && (jobEntry.sendTrials>0))  {  // try to send again
 
           jobEntry.sendTrials--;
-          log.warning ( 4,'repeat (' + jobEntry.sendTrials + ') sending task ' +
-                          task.id + ' back to FE due to FE/transmission errors (stage' +
+          log.warning ( 4,'repeat (' + jobEntry.sendTrials + ') sending job ' +
+                          job_token + ' back to FE due to FE/transmission errors (stage' +
                           stageNo + ', code [' + JSON.stringify(errcode) + '])' );
           setTimeout ( function(){ ncJobFinished(job_token,code); },
                        conf.getServerConfig().sendDataWaitTime );
+
+        } else if (comut.isObject(errcode) &&
+                   (errcode.status==cmd.fe_retcode.wrongJobToken))  {
+          // the job cannot be retrieved to FE, task was deleted by user.
+
+          removeJobDelayed ( job_token,task_t.job_code.finished );
+          log.error ( 4,'cannot send job ' + job_token + ' back to FE. TASK DELETED.' );
 
         } else  {
 
