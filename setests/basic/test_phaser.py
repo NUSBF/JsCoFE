@@ -20,9 +20,15 @@ def importFromCloud_rnaseHHPRED(driver, waitShort):
     print ('Importing "rnase" project from the Cloud Import')
 
     # Clicking "Cloud Import"
-    textEl = driver.find_element_by_xpath("//*[normalize-space()='%s']" % 'Cloud Import')
-    ActionChains(driver).double_click(textEl).perform()
+    sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list')
     time.sleep(1)
+
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Data Import')
+    time.sleep(1)
+
+    sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Cloud Import')
+    time.sleep(1)
+
 
     textEl2 = driver.find_elements_by_xpath("//a[normalize-space()='%s']" % 'test-data')
     if len(textEl2) < 1:
@@ -392,6 +398,7 @@ def test_1MRModelCOORDPhaserStart(browser,
         sf.removeProject(d.driver, d.testName)
         sf.makeTestProject(d.driver, d.testName, d.testName)
         sf.enterProject(d.driver, d.testName)
+        time.sleep(2)
         importFromCloud_rnaseHHPRED(d.driver, d.waitShort) # 01
         sf.asymmetricUnitContentsAfterCloudImport(d.driver, d.waitShort) # 02
 

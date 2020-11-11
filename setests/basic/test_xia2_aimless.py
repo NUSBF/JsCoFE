@@ -89,6 +89,11 @@ def xia2Processing(driver, isLocal):
         if match:
             found = True
             break
+        match = re.search('\[0001\] created datasets: HKL \(1\) Unmerged \(2\) -- completed', taskText)
+        if match:
+            found = True
+            break
+
     if not found:
         print('*** Verification: could not find message about created datasets after xia-2 run')
     else:
