@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    23.10.20   <--  Date of Last Modification.
+ *    11.11.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -1205,6 +1205,27 @@ var fe_server = conf.getFEConfig();
 
 // ===========================================================================
 
+function _send_announcement ( subject,message,user_list,count )  {
+  if (count<user_list.length)  {
+
+    //if (user_list[count].email!='eugene.krissinel@stfc.ac.uk')  {
+    //  setTimeout ( function(){
+    //    _send_announcement ( subject,message,user_list,count+1 );
+    //  },1);
+    //  return;
+    //}
+
+    emailer.send ( user_list[count].email,subject,
+                   message.replace('&lt;User Name&gt;',user_list[count].name) );
+    log.standard ( 12,'Announcement sent to ' + user_list[count].name + ' at ' +
+                     user_list[count].email );
+    if (count<user_list.length-1)
+      setTimeout ( function(){
+        _send_announcement ( subject,message,user_list,count+1 );
+      },2000);
+  }
+}
+
 function sendAnnouncement ( loginData,message )  {
 
   // Check that we're having a new login name
@@ -1221,12 +1242,13 @@ function sendAnnouncement ( loginData,message )  {
 
         var usersData = readUsersData();
         var users     = usersData.userList;
-        for (var i=0;i<users.length;i++)  {
-          emailer.send ( users[i].email,cmd.appName() + ' Announcement',
-                         message.replace( '&lt;User Name&gt;',users[i].name ) );
-          log.standard ( 12,'Announcement sent to ' + users[i].name + ' at ' +
-                           users[i].email );
-        }
+        //for (var i=0;i<users.length;i++)  {
+        //  emailer.send ( users[i].email,cmd.appName() + ' Announcement',
+        //                 message.replace( '&lt;User Name&gt;',users[i].name ) );
+        //  log.standard ( 12,'Announcement sent to ' + users[i].name + ' at ' +
+        //                   users[i].email );
+        //}
+        _send_announcement ( cmd.appName() + ' Announcement',message,users,0 );
 
       } else
         log.error ( 121,'Attempt to broadcast from a non-admin login -- stop.' );

@@ -194,11 +194,16 @@ class Build(ccp4build_report.Report):
         trim_waters = self.input_data["trim_waters"] and \
             float(self.input_data["res_high"])<=float(self.input_data["trim_wat_resol"])
 
-        meta["xyzpath_mr"] = meta["xyzpath"]  #  to be used in first buccaneer
+        #meta["xyzpath_mr"] = meta["xyzpath"]  #  to be used in first buccaneer
+        meta["xyzpath_mr"] = self.remove_waters ( meta["xyzpath"] )  #  FIXED
+        meta["labin_hl"]   = None  # enforce using PHIFOM for 1st iteration
+        meta["labin_fc"]   = None  # not to be used by cbuccaneer at 1st iteration
 
         for i in range(cycles_max):
 
             #meta0 = meta
+
+            meta["iteration"] = i
 
             self.workflow = ""  # will keep track of workflow for reporting
             prefix = str(i+1).zfill(2) + "_"
@@ -206,7 +211,7 @@ class Build(ccp4build_report.Report):
             #self.input_data["mode"] = "MR"  # resume "MR" mode
 
             #  remove waters from current model
-            meta["xyzpath_mr"] = self.remove_waters ( meta["xyzpath_mr"] )
+            #meta["xyzpath_mr"] = self.remove_waters ( meta["xyzpath_mr"] )
             meta["xyzpath"]    = self.remove_waters ( meta["xyzpath"]    )
 
             #meta["labin_hl"]   = None  # enforce using PHIFOM at all times
@@ -215,14 +220,12 @@ class Build(ccp4build_report.Report):
 
             if dm_mode in ["auto","never"]:
                 #  first attempt: build without DM
-                meta_mb1 = self.cbuccaneer ( dict(meta,xyzpath=None,labin_fc=None),
-                                             nameout=prefix+"01-1.cbuccaneer" )
+                meta_mb1 = self.cbuccaneer ( meta,nameout=prefix+"01-1.cbuccaneer" )
 
             if dm_mode in ["auto","always"]:
                 #  second attempt: build after DM
                 meta_dm  = self.parrot      ( meta,nameout=prefix+"01-2.parrot" )
-                meta_mb2 = self.cbuccaneer  ( dict(meta_dm,xyzpath=None,labin_fc=None),
-                                              nameout=prefix+"01-2.cbuccaneer" )
+                meta_mb2 = self.cbuccaneer  ( meta_dm,nameout=prefix+"01-2.cbuccaneer" )
 
                 if dm_mode=="auto":
                     n1 = meta_mb1["cbuccaneer"]["n_res_built"]
@@ -377,7 +380,7 @@ class Build(ccp4build_report.Report):
             elif i<cycles_max-1:
                 meta = self.refmac ( dict(meta_ed,labin_hl=None),ncycles=refcyc["final"],
                                      nameout=prefix+"15.refmac" )
-                meta["xyzpath_mr"] = meta   ["xyzpath"]  #  for next buccaneer
+                #meta["xyzpath_mr"] = meta   ["xyzpath"]  #  for next buccaneer
                 meta["xyzpath"]    = meta_rf["xyzpath"]  #  for next parrot
 
             self.flush()
@@ -423,11 +426,14 @@ class Build(ccp4build_report.Report):
 
         for i in range(cycles_max):
 
+            meta["iteration"] = i
+
             self.workflow = ""  # will keep track of workflow for reporting
             prefix = str(i+1).zfill(2) + "_"
 
             #  remove waters from current model
-            meta["xyzpath_mr"] = self.remove_waters ( meta["xyzpath_mr"] )
+            #meta["xyzpath_mr"] = self.remove_waters ( meta["xyzpath_mr"] )
+            meta["xyzpath_mr"] = None
             meta["xyzpath"]    = self.remove_waters ( meta["xyzpath"]    )
 
             #  modify density
@@ -601,7 +607,7 @@ class Build(ccp4build_report.Report):
             elif i<cycles_max-1:
                 meta = self.refmac ( dict(self.input_data,xyzpath=meta_ed["xyzpath"]),
                                      ncycles=refcyc["final"],nameout=prefix+"16.refmac" )
-                meta["xyzpath_mr"] = meta   ["xyzpath"]  #  for next buccaneer
+                #meta["xyzpath_mr"] = meta   ["xyzpath"]  #  for next buccaneer
                 meta["xyzpath"]    = meta_rf["xyzpath"]  #  for next parrot
                 #meta["labin_hl"]   = None  # enforce using PHIFOM at all iterations but 1st one
 

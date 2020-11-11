@@ -123,17 +123,16 @@ function JobDialog ( params,          // data and task projections up the tree b
   (function(dlg){
 
     $(dlg.element).on( "dialogclose",function(event,ui){
-      if (dlg.close_btn && (!dlg.task.job_dialog_data.viewed))
-        dlg.close_btn.click();
-      else  {
+      //if (dlg.close_btn && (!dlg.task.job_dialog_data.viewed))
+      //  dlg.close_btn.click();
+      //else  {
         dlg.outputPanel.clear();
         //onClose_func(dlg.task.id);
         window.setTimeout ( function(){
           $(dlg.element).dialog( "destroy" );
           dlg.delete();
         },10 );
-      }
-      //onClose_func ( dlg.task.id );
+      //}
       onClose_func ( dlg );
     });
 

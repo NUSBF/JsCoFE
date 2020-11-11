@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    26.10.20   <--  Date of Last Modification.
+#    11.11.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -43,7 +43,7 @@ import citations
 
 class Base(object):
 
-    appVersion     = "1.0.2 [26.10.20]"
+    appVersion     = "1.0.3 [11.11.20]"
 
     stdout_path    = None  #  main log
     stderr_path    = None  #  error log

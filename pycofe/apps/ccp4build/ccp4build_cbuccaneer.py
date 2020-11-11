@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    07.05.20   <--  Date of Last Modification.
+#    11.11.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -77,6 +77,10 @@ class CBuccaneer(ccp4build_parrot.Parrot):
 
         self.write_script ([
             "title "      + self.job_title + "_cbuccaneer"
+            "pdbin-ref "  + self.getRefPDB(),
+            "mtzin-ref "  + self.getRefMTZ(),
+            "colin-ref-fo FP.F_sigF.F,FP.F_sigF.sigF",
+            "colin-ref-hl FC.ABCD.A,FC.ABCD.B,FC.ABCD.C,FC.ABCD.D",
         ])
 
         #if meta["mode"]=="EP":
@@ -108,12 +112,14 @@ class CBuccaneer(ccp4build_parrot.Parrot):
         if meta["labin_fc"]:
             self.write_script ([ "colin-fc " + meta["labin_fc"] ])
 
-        #if meta["mode"]=="MR":
         if meta["xyzpath_mr"]:
             self.write_script ([ "pdbin-mr " + meta["xyzpath_mr"] ])
 
-        #if meta["xyzpath"]:
-        #    self.write_script ([ "pdbin " + meta["xyzpath"] ])
+        if meta["xyzpath"]:
+            self.write_script ([ "pdbin " + meta["xyzpath"] ])
+
+        if meta["iteration"]>0:
+            self.write_script ([ "correlation-mode" ])
 
         for opt in self.cbuccaneer_options:
             value = str(self.cbuccaneer_options[opt])
