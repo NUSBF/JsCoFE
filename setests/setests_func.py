@@ -188,6 +188,7 @@ def enterProject(driver, projectId):
 
 def importFromCloud_rnase(driver, waitShort):
     print ('Importing "rnase" project from the Cloud Import')
+    time.sleep(1)
 
     clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list')
     time.sleep(1)

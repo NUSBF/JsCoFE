@@ -156,6 +156,7 @@ def test_1LORESTRBasic(browser,
         sf.removeProject(d.driver, d.testName)
         sf.makeTestProject(d.driver, d.testName, d.testName)
         sf.enterProject(d.driver, d.testName)
+        time.sleep(2)
         sf.importFromCloud_rnase(d.driver, d.waitShort)
         sf.asymmetricUnitContentsAfterCloudImport(d.driver, d.waitShort)
         sf.editRevisionStructure_rnase(d.driver, d.waitShort)
