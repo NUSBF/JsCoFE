@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    06.09.20   <--  Date of Last Modification.
+ *    11.11.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -51,12 +51,28 @@ DataBox.prototype.markNotEmpty = function()  {
 DataBox.prototype.isEmpty = function()  {
 var empty = true;
 
-  for (var dtype in this.data)
+  for (var dtype in this.data)  {
+    if (dtype=='___')
+      empty = false;
+    else if (this.data[dtype].length>0)  {
+      var item = this.data[dtype][0];
+      if (isObject(item))  {
+        if (!item.hasSubtype('proxy'))
+          empty = false;
+      } else
+        empty = false;
+    }
+    if (!empty)
+      break;
+  }
+  /*
     if ((dtype=='___') ||
-        ((this.data[dtype].length>0) && (!this.data[dtype][0].hasSubtype('proxy'))))  {
+        ((this.data[dtype].length>0) && isObject(this.data[dtype][0]) &&
+         (!this.data[dtype][0].hasSubtype('proxy'))))  {
       empty = false;
       break;
     }
+  */
 
   return empty;
 

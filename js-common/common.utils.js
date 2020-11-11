@@ -133,6 +133,7 @@ if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
   module.exports.padStringLeft  = padStringLeft;
   module.exports.padStringRight = padStringRight;
   module.exports.isInteger      = isInteger;
+  module.exports.isObject       = isObject;
   module.exports.isFloat        = isFloat;
   module.exports.replaceAll     = replaceAll;
   module.exports.startsWith     = startsWith;
