@@ -8,7 +8,11 @@ The **asymmetric unit** or **ASU** is the smallest part of a crystal structure t
         :scale: 50 %
         :align: center
         
-The **ASU** contains the unique part of a crystal structure.The **ASU** is what is contained in the model that crystallographers publish in the **Protein Data Bank (PDB)**. ``ASU is not to be confused with the Biologically Functional Unit, which may be the same, but also smaller, or larger than the ASU`` .
+The **ASU** contains the unique part of a crystal structure.The **ASU** is what is contained in the model that crystallographers publish in the **Protein Data Bank (PDB)**. 
+
+.. Note::
+        
+        ASU is not to be confused with the Biologically Functional Unit, which may be the same, but also smaller, or larger than the ASU.
 
 A crystal asymmetric unit may contain:
 
