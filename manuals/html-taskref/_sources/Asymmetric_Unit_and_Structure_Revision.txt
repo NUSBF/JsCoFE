@@ -14,7 +14,11 @@ The **unit cell** is the part of a crystal that, when duplicated *and translated
 
 The **symmetry operations** that are common for biological molecules are **rotation, translation, and screw operations** (which combine rotation and translation). Mirror symmetry planes occur rarely in crystals of biological molecules due to the presence of chiral centers, e.g. L or D amino acids.
 
-The **ASU** is what is contained in the model that crystallographers publish in the **Protein Data Bank (PDB)**. ``ASU is not to be confused with the Biologically Functional Unit, which may be the same, but also smaller, or larger than the ASU`` .
+The **ASU** is what is contained in the model that crystallographers publish in the **Protein Data Bank (PDB)**. 
+
+.. Note::
+        
+        ASU is not to be confused with the Biologically Functional Unit, which may be the same, but also smaller, or larger than the ASU.
 
 The definition of ASU is, therefore, as fundamental to structure solution as  the definition of Space Group and Unit Cell parameters, and must be done before on early stages of structure solution Project, before the *Phasing* stage.
 

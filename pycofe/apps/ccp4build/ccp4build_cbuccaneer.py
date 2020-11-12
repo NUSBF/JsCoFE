@@ -30,19 +30,19 @@ class CBuccaneer(ccp4build_parrot.Parrot):
 
     # parrot options
     cbuccaneer_options = {
-        "cycles"                : 3,
+        #"cycles"                : 3,
         "anisotropy-correction" : True,
         "build-semet"           : False,
         "fast"                  : True,
-        "resolution"            : 2.0,
+        #"resolution"            : 2.0,
         "correlation-mode"      : False,
         "new-residue-name"      : "UNK",
-        #"sequence-reliability"  : 0.95,  #  0.99, 0.95, 0.80
-        "model-filter"          : True,
-        "model-filter-sigma"    : 1.0,
+        "sequence-reliability"  : 0.95,  #  0.99, 0.95, 0.80
+        #"model-filter"          : True,
+        #"model-filter-sigma"    : 1.0,
         "mr-model-filter-sigma" : 3.0,
-        "mr-model-seed"         : True,
-        "mr-model-filter"       : True,
+        #"mr-model-seed"         : True,
+        #"mr-model-filter"       : True,
         "jobs"                  : 2
     }
 
@@ -119,7 +119,12 @@ class CBuccaneer(ccp4build_parrot.Parrot):
             self.write_script ([ "pdbin " + meta["xyzpath"] ])
 
         if meta["iteration"]>0:
-            self.write_script ([ "correlation-mode" ])
+            self.write_script ([
+                "cycles 2",
+                "correlation-mode"
+            ])
+        else:
+            self.write_script ([ "cycles 3" ])
 
         for opt in self.cbuccaneer_options:
             value = str(self.cbuccaneer_options[opt])
