@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    11.11.20   <--  Date of Last Modification.
+#    13.11.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -34,7 +34,7 @@ class CBuccaneer(ccp4build_parrot.Parrot):
         "anisotropy-correction" : True,
         "build-semet"           : False,
         "fast"                  : True,
-        #"resolution"            : 2.0,
+        "resolution"            : 2.0,
         "correlation-mode"      : False,
         "new-residue-name"      : "UNK",
         "sequence-reliability"  : 0.95,  #  0.99, 0.95, 0.80
@@ -68,15 +68,16 @@ class CBuccaneer(ccp4build_parrot.Parrot):
 
     def cbuccaneer (  self,
                       meta,      # meta dictionary
+                      firstrun,  # True or False
                       nameout = "cbuccaneer"
-                ):
+                   ):
 
         self.open_script ( "cbuccaneer" )
 
         cbuccaneer_pdbout = os.path.join ( self.workdir,nameout+".pdb" )
 
         self.write_script ([
-            "title "      + self.job_title + "_cbuccaneer"
+            "title "      + self.job_title + "_cbuccaneer",
             "pdbin-ref "  + self.getRefPDB(),
             "mtzin-ref "  + self.getRefMTZ(),
             "colin-ref-fo 	[/*/*/FP.F_sigF.F,/*/*/FP.F_sigF.sigF]",
@@ -111,8 +112,8 @@ class CBuccaneer(ccp4build_parrot.Parrot):
                 "colin-phifom "   + meta["labin_phifom"]
             ])
 
-        if meta["labin_fc"]:
-            self.write_script ([ "colin-fc " + meta["labin_fc"] ])
+        #if meta["labin_fc"]:
+        #    self.write_script ([ "colin-fc " + meta["labin_fc"] ])
 
         if meta["xyzpath_mr"]:
             self.write_script ([ "pdbin-mr " + meta["xyzpath_mr"] ])
@@ -120,16 +121,34 @@ class CBuccaneer(ccp4build_parrot.Parrot):
         if meta["xyzpath"]:
             self.write_script ([ "pdbin " + meta["xyzpath"] ])
 
-        if meta["iteration"]>0:
-            self.write_script ([
-                "cycles 2",
-                "correlation-mode"
-            ])
-        else:
+        if firstrun:
             self.write_script ([ "cycles 3" ])
+        else:
+            if meta["labin_fc"]:
+                self.write_script ([ "colin-fc " + meta["labin_fc"] ])
+            self.write_script ([ "cycles 2" ])
+            if meta["mode"]=="MR":
+                self.write_script ([ "correlation-mode" ])
+
+        #if meta["iteration"]>0:
+        #    self.write_script ([
+        #        "cycles 2",
+        #        "correlation-mode"
+        #    ])
+        #else:
+        #    self.write_script ([ "cycles 3" ])
 
         if meta["mode"]=="MR":
-            self.write_script ([ "mr-model-filter-sigma  3" ])
+            self.write_script ([
+                "mr-model-filter",
+                "mr-model-filter-sigma  3",
+                "mr-model-seed"
+            ])
+        else:
+            self.write_script ([
+                "model-filter",
+                "model-filter-sigma  1"
+            ])
 
         for opt in self.cbuccaneer_options:
             value = str(self.cbuccaneer_options[opt])

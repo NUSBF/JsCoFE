@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    11.11.20   <--  Date of Last Modification.
+#    13.11.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -43,7 +43,7 @@ import citations
 
 class Base(object):
 
-    appVersion     = "1.0.3 [11.11.20]"
+    appVersion     = "1.0.3 [13.11.20]"
 
     stdout_path    = None  #  main log
     stderr_path    = None  #  error log
@@ -263,6 +263,7 @@ class Base(object):
             if meta:
                 d = json.loads(meta)
                 self.report_page_id = d["page_id"]
+                self.rvrow          = d["rvrow"]
                 self.input_data["nameout"] = d["nameout"]
 
                 if d["prefix_rfree" ]:

@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    09.03.19   <--  Date of Last Modification.
+#    13.11.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -29,7 +29,7 @@ class Parrot(ccp4build_base.Base):
         "solvent-flatten"        : True,
         "histogram-match"        : True,
         "anisotropy-correction"  : True,
-        "cycles"                 : 3,
+        #"cycles"                 : 3,
         "resolution"             : False,  # 1.0,
         "solvent-content"        : False,  # 0.5
         "ncs-mask-filter-radius" : 6.0
@@ -45,12 +45,13 @@ class Parrot(ccp4build_base.Base):
 
     def parrot (  self,
                   meta,   # meta dictionary
+                  firstrun,  # True or False
                   nameout = "parrot",
                   colout  = "parrot",
                 ):
 
-        if int(self.parrot_options["cycles"])<=0:
-            return meta.copy()
+        #if int(self.parrot_options["cycles"])<=0:
+        #    return meta.copy()
 
         self.open_script ( "parrot" )
 
@@ -62,6 +63,10 @@ class Parrot(ccp4build_base.Base):
             #"mtzin-ref " + self.getRefMTZ(),
             #"colin-ref-fo FP.F_sigF.F,FP.F_sigF.sigF",
             #"colin-ref-hl FC.ABCD.A,FC.ABCD.B,FC.ABCD.C,FC.ABCD.D",
+            "pdbin-ref "  + self.getRefPDB(),
+            "mtzin-ref "  + self.getRefMTZ(),
+            "colin-ref-fo 	[/*/*/FP.F_sigF.F,/*/*/FP.F_sigF.sigF]",
+            "colin-ref-hl 	[/*/*/FC.ABCD.A,/*/*/FC.ABCD.B,/*/*/FC.ABCD.C,/*/*/FC.ABCD.D]"
             "seqin "      + self.input_data["seqpath"],
             "mtzin "      + meta["mtzpath"],
             "mtzout "     + parrot_mtzout,
@@ -94,10 +99,17 @@ class Parrot(ccp4build_base.Base):
         #        "colin-hl " + meta["labin_hl"],
         #    ])
 
+        cycles = 3
         if meta["xyzpath"]:
             self.write_script ([ "pdbin-mr " + meta["xyzpath"] ])
+            if firstrun:
+                cycles = 5
         elif meta["xyzpath_ha"]:
             self.write_script ([ "pdbin-ha " + meta["xyzpath_ha"] ])
+            if firstrun:
+                cycles = 5
+
+        self.write_script ([ "cycles " + str(cycles) ])
 
         self.write_script ( self.parrot_options )
         self.close_script()
