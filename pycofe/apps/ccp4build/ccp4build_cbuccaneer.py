@@ -40,7 +40,7 @@ class CBuccaneer(ccp4build_parrot.Parrot):
         "sequence-reliability"  : 0.95,  #  0.99, 0.95, 0.80
         #"model-filter"          : True,
         #"model-filter-sigma"    : 1.0,
-        "mr-model-filter-sigma" : 3.0,
+        #"mr-model-filter-sigma" : 3.0,
         #"mr-model-seed"         : True,
         #"mr-model-filter"       : True,
         "jobs"                  : 2
@@ -79,8 +79,10 @@ class CBuccaneer(ccp4build_parrot.Parrot):
             "title "      + self.job_title + "_cbuccaneer"
             "pdbin-ref "  + self.getRefPDB(),
             "mtzin-ref "  + self.getRefMTZ(),
-            "colin-ref-fo FP.F_sigF.F,FP.F_sigF.sigF",
-            "colin-ref-hl FC.ABCD.A,FC.ABCD.B,FC.ABCD.C,FC.ABCD.D",
+            "colin-ref-fo 	[/*/*/FP.F_sigF.F,/*/*/FP.F_sigF.sigF]",
+            "colin-ref-hl 	[/*/*/FC.ABCD.A,/*/*/FC.ABCD.B,/*/*/FC.ABCD.C,/*/*/FC.ABCD.D]"
+            #"colin-ref-fo FP.F_sigF.F,FP.F_sigF.sigF",
+            #"colin-ref-hl FC.ABCD.A,FC.ABCD.B,FC.ABCD.C,FC.ABCD.D",
         ])
 
         #if meta["mode"]=="EP":
@@ -125,6 +127,9 @@ class CBuccaneer(ccp4build_parrot.Parrot):
             ])
         else:
             self.write_script ([ "cycles 3" ])
+
+        if meta["mode"]=="MR":
+            self.write_script ([ "mr-model-filter-sigma  3" ])
 
         for opt in self.cbuccaneer_options:
             value = str(self.cbuccaneer_options[opt])
