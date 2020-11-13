@@ -70,12 +70,18 @@ class Refmac(ccp4build_cbuccaneer.CBuccaneer):
         #NCYCLES 10
         "weight"            : "AUTO",
         "make+check"        : "NONE",
-        "make+hydr"         : "YES",
-        "refi"              : "BREF ISOT",
-        "MAKE+NEWLIGAND"    : "NOEXIT",
-        "SCALE+TYPE"        : "SIMPLE",
-        "SOLVENT"           : "YES",
-        "PHOUT"             : True
+        #"make+hydr"         : "YES",
+        "make+hydrogen"     : "NO hout NO peptide NO cispeptide YES ssbridge YES symmetry YES sugar YES connectivity NO link NO",
+        #"refi"              : "BREF ISOT",
+        "refi+type"         : "REST PHASE resi MLKF meth CGMAT bref ISOT",
+        #"MAKE+NEWLIGAND"    : "NOEXIT",
+        #"SCALE+TYPE"        : "SIMPLE",
+        "scal+type"         : "SIMP LSSC ANISO EXPE",
+        #"SOLVENT"           : "YES",
+        "solvent"           : "YES VDWProb 1.4 IONProb 0.8 RSHRink 0.8",
+        "PHOUT"             : True,
+        "PNAME"             : "buccaneer",
+        "DNAME"             : "buccaneer"
     }
 
     refmac_options_jelly = {
