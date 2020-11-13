@@ -155,7 +155,7 @@ class Parrot(basic.TaskDriver):
                 ncs_kwd = "pdbin-wrk-mr"
             ncycles = "10"
         if ncs_kwd:
-            self.write_stdin( "\n" + ncs_kwd + " " + ncs_xyz )
+            self.write_stdin ( "\n" + ncs_kwd + " " + ncs_xyz )
         if sec1.NCYCLES.value:
             ncycles = str(sec1.NCYCLES.value)
 

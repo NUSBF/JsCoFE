@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    21.10.20   <--  Date of Last Modification.
+#    13.11.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -285,7 +285,7 @@ class CCP4Build(basic.TaskDriver):
             "[parrot]",
             "anisotropy-correction " + aniso,
             "solvent-content  "      + str(solcont),
-            "cycles           3",
+            #"cycles           3",
             " ",
             "[cbuccaneer]",
             "anisotropy-correction " + aniso,
@@ -304,6 +304,7 @@ class CCP4Build(basic.TaskDriver):
                                 "../apps/ccp4build/ccp4build.py" ) )
         meta = {}
         meta["page_id"]       = self.report_page_id()
+        meta["rvrow"]         = self.rvrow
         meta["jobId"]         = self.job_id
         meta["nameout" ]      = self.outputFName
         meta["prefix_rfree" ] = dtype_template.makeDataId ( self.job_id,1 )
