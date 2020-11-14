@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    01.09.20   <--  Date of Last Modification.
+#    14.11.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -34,7 +34,7 @@ class EDStats(ccp4build_findwaters.FindWaters):
     zd_cutoff_w = []
 
     def trim_chain (  self,model,clist,zd_cutoff,trim_type,modlist,cname,logf ):
-        if len(clist)>0:
+        if len(clist)>0 and zd_cutoff[2]>0.0:
             logf.write ( "\n " + cname + " zd_cutoff: (" + str(zd_cutoff[0]) + ":" +\
                                                            str(zd_cutoff[1]) + "," +\
                                                            str(zd_cutoff[2]) +\
@@ -302,24 +302,6 @@ class EDStats(ccp4build_findwaters.FindWaters):
                 xw.append ( len(xw)+1.0   )
                 yw.append ( solvent[i][0] )
 
-        """
-        zd_m = self.zd_cutoff ( xm,ym,"main" )
-        zd_s = self.zd_cutoff ( xs,ys,"side" )
-        zd_w = self.zd_cutoff ( xw,yw,"solvent" )
-        zdm  = zd_m[2]
-
-        if collectStats and self.zd_cutoff_m is not None:
-            zdm = (zd_m[2]+self.zd_cutoff_m)/2.0
-            zds = (zd_s[2]+self.zd_cutoff_s)/2.0
-            zdw = (zd_w[2]+self.zd_cutoff_w)/2.0
-        self.zd_cutoff_m = zd_m[2]
-        self.zd_cutoff_s = zd_s[2]
-        self.zd_cutoff_w = zd_w[2]
-            zd_m[2] = zdm
-            zd_s[2] = zds
-            zd_w[2] = zdw
-        """
-
         zd_m = self.zd_cutoff ( xm,ym,"main" )
         zd_s = self.zd_cutoff ( xs,ys,"side" )
         zd_w = self.zd_cutoff ( xw,yw,"solvent" )
@@ -355,9 +337,6 @@ class EDStats(ccp4build_findwaters.FindWaters):
                   "zd_cutoff_m" : zd_m,
                   "zd_cutoff_s" : zd_s,
                   "zd_cutoff_w" : zd_w
-                  #"zd_cutoff_m" : self.zd_cutoff ( xm,ym,"main" ),
-                  #"zd_cutoff_s" : self.zd_cutoff ( xs,ys,"side" ),
-                  #"zd_cutoff_w" : self.zd_cutoff ( xw,yw,"solvent" )
                 }
 
 
@@ -530,11 +509,18 @@ class EDStats(ccp4build_findwaters.FindWaters):
         if chain_type=="solvent":
             if self.input_data["trim_mode_w"]=="fixed":
                 return [0,0.0,float(self.input_data["trim_zdw"]),1.0]
+            elif self.input_data["trim_mode_w"]=="never":
+                return [0,0.0,-1.0,1.0]
         elif self.input_data["trim_mode"]=="fixed":
             if chain_type=="main":
                 return [0,0.0,float(self.input_data["trim_zdm"]),1.0]
             else:
                 return [0,0.0,float(self.input_data["trim_zds"]),1.0]
+        elif self.input_data["trim_mode"]=="never":
+            if chain_type=="main":
+                return [0,0.0,-1.0,1.0]
+            else:
+                return [0,0.0,-1.0,1.0]
 
         n  = len(x)
         n0 = 0

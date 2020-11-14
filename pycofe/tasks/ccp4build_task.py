@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    13.11.20   <--  Date of Last Modification.
+#    14.11.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -239,7 +239,7 @@ class CCP4Build(basic.TaskDriver):
 
         if self.getParameter(sec1.WATER_CBX)=="True":
             self.write_stdin ([
-                "trim_waters      1",
+                "model_waters     1",
                 "trim_wat_rfree   " + self.getParameter(sec1.TRIM_WAT_RFREE),
             ])
             trim_mode = self.getParameter(sec2.TRIMMODE_W_SEL)
