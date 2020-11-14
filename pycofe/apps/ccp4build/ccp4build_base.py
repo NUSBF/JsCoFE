@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    13.11.20   <--  Date of Last Modification.
+#    14.11.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -90,13 +90,13 @@ class Base(object):
         "res_low"          : None, # low resolution limit (None for auto)
         "res_high"         : None, # high resolution limit (None for auto)
         "ref_level"        : 2,    # refinement level 1-2-3
-        "dm_mode"          : "auto",  # "auto", "skip", "force"
-        "fill_mode"        : "auto",  # "auto", "skip", "force"
-        "fit_mode"         : "auto",  # "auto", "skip", "force"
-        "rsr_mode"         : "auto",  # "auto", "skip", "force"
-        "trim_mode"        : "auto",  # for mainchains/sidechains; "auto", "restricted", "fixed"
-        "trim_waters"      : False, # whether to trim waters or not
-        "trim_mode_w"      : "restricted", # for waters; "auto", "restricted", "fixed"
+        "dm_mode"          : "auto",  # [auto|always|never]
+        "fill_mode"        : "never", # [auto|always|never]
+        "fit_mode"         : "auto",  # [auto|always|never]
+        "rsr_mode"         : "never", # [auto|always|never]
+        "trim_mode"        : "never", # for mainchains/sidechains; [never|auto|restricted|fixed]
+        "model_waters"     : False, # whether to trim waters or not
+        "trim_mode_w"      : "restricted", # for waters; [never|auto|restricted|fixed]
         "trim_wat_resol"   : 2.5,   # maximal resolution for trimming waters
         "trim_wat_rfree"   : 0.33,  # maximal Rfree for trimming waters
         "trimmin_zdm"      : 1.8,   # minimum restricted ZD for trimming mainchains

@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    19.05.20   <--  Date of Last Modification.
+#    14.11.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -202,65 +202,73 @@ class Report(ccp4build_edstats.EDStats):
         pyrvapi.rvapi_add_graph_dataset ( zedccs_id,"edstats_id",self.graphId,
                                               "ZEDCC sidechain","ZEDCC sidechain" )
 
-        zedccm0_id = "zedccm0_id_" + str(iter_no)
-        pyrvapi.rvapi_add_graph_dataset ( zedccm0_id,"edstats_id",self.graphId,
-                                              "ZEDCC mainchain cut-off",
-                                              "ZEDCC mainchain cut-off" )
-        zedccs0_id = "zedccs0_id_" + str(iter_no)
-        pyrvapi.rvapi_add_graph_dataset ( zedccs0_id,"edstats_id",self.graphId,
-                                              "ZEDCC sidechain cut-off",
-                                              "ZEDCC sidechain cut-off" )
-
         pyrvapi.rvapi_add_plot_line ( plot_id,"edstats_id",self.graphId,
                                              nres_id,zedccm_id )
         pyrvapi.rvapi_add_plot_line ( plot_id,"edstats_id",self.graphId,
                                              nres_id,zedccs_id )
-        pyrvapi.rvapi_add_plot_line ( plot_id,"edstats_id",self.graphId,
-                                             ninfl_id,zedccm0_id )
-        pyrvapi.rvapi_add_plot_line ( plot_id,"edstats_id",self.graphId,
-                                             ninfl_id,zedccs0_id )
-
 
         pyrvapi.rvapi_set_line_options ( zedccm_id,plot_id,"edstats_id",
                                          self.graphId,"darkcyan","solid","filledCircle",
                                          1.5,True )
-        pyrvapi.rvapi_set_line_options ( zedccm0_id,plot_id,"edstats_id",
-                                         self.graphId,"darkcyan","solid","off",
-                                         0.75,True )
-
         pyrvapi.rvapi_set_line_options ( zedccs_id,plot_id,"edstats_id",
                                          self.graphId,"salmon","solid","filledCircle",
                                          1.5,True )
 
-        pyrvapi.rvapi_set_line_options ( zedccs0_id,plot_id,"edstats_id",
-                                         self.graphId,"salmon","solid","off",
-                                         0.75,True )
+        zedccm0_id = None
+        if zedcc0_m>0.0:
+            zedccm0_id = "zedccm0_id_" + str(iter_no)
+            pyrvapi.rvapi_add_graph_dataset ( zedccm0_id,"edstats_id",self.graphId,
+                                                  "ZEDCC mainchain cut-off",
+                                                  "ZEDCC mainchain cut-off" )
+            pyrvapi.rvapi_add_plot_line     ( plot_id,"edstats_id",self.graphId,
+                                              ninfl_id,zedccm0_id )
+            pyrvapi.rvapi_set_line_options  ( zedccm0_id,plot_id,"edstats_id",
+                                              self.graphId,"darkcyan","solid","off",
+                                              0.75,True )
+
+        zedccs0_id = None
+        if zedcc0_s>0.0:
+            zedccs0_id = "zedccs0_id_" + str(iter_no)
+            pyrvapi.rvapi_add_graph_dataset ( zedccs0_id,"edstats_id",self.graphId,
+                                                  "ZEDCC sidechain cut-off",
+                                                  "ZEDCC sidechain cut-off" )
+            pyrvapi.rvapi_add_plot_line     ( plot_id,"edstats_id",self.graphId,
+                                              ninfl_id,zedccs0_id )
+            pyrvapi.rvapi_set_line_options  ( zedccs0_id,plot_id,"edstats_id",
+                                              self.graphId,"salmon","solid","off",
+                                              0.75,True )
 
         ninfl = [1,2]
         if len(mclist)>2:
             ninfl.append(len(mclist))
         if len(sclist)>0 and len(sclist) not in ninfl:
             ninfl.append(len(sclist))
+
+        zedccw0_id = None
         if len(wclist)>0:
+
             if len(wclist) not in ninfl:
                 ninfl.append ( len(wclist) )
+
             zedccw_id  = "zedccw_id_"  + str(iter_no)
-            zedccw0_id = "zedccw0_id_" + str(iter_no)
             pyrvapi.rvapi_add_graph_dataset ( zedccw_id,"edstats_id",self.graphId,
                                               "ZEDCC solvent","ZEDCC solvent" )
-            pyrvapi.rvapi_add_graph_dataset ( zedccw0_id,"edstats_id",self.graphId,
-                                              "ZEDCC solvent cut-off",
-                                              "ZEDCC solvent cut-off" )
             pyrvapi.rvapi_add_plot_line     ( plot_id,"edstats_id",self.graphId,
                                               nres_id,zedccw_id )
-            pyrvapi.rvapi_add_plot_line     ( plot_id,"edstats_id",self.graphId,
-                                              ninfl_id,zedccw0_id )
             pyrvapi.rvapi_set_line_options  ( zedccw_id,plot_id,"edstats_id",
                                               self.graphId,"blue","solid","filledCircle",
                                               1.5,True )
-            pyrvapi.rvapi_set_line_options  ( zedccw0_id,plot_id,"edstats_id",
-                                              self.graphId,"blue","solid","off",
-                                              0.75,True )
+
+            if zedcc0_w>0.0:
+                zedccw0_id = "zedccw0_id_" + str(iter_no)
+                pyrvapi.rvapi_add_graph_dataset ( zedccw0_id,"edstats_id",self.graphId,
+                                                  "ZEDCC solvent cut-off",
+                                                  "ZEDCC solvent cut-off" )
+                pyrvapi.rvapi_add_plot_line     ( plot_id,"edstats_id",self.graphId,
+                                                  ninfl_id,zedccw0_id )
+                pyrvapi.rvapi_set_line_options  ( zedccw0_id,plot_id,"edstats_id",
+                                                  self.graphId,"blue","solid","off",
+                                                  0.75,True )
 
         for i in range(len(ninfl)):
             for j in range(i+1,len(ninfl)):
@@ -281,14 +289,15 @@ class Report(ccp4build_edstats.EDStats):
                 pyrvapi.rvapi_add_graph_real ( zedccw_id,"edstats_id",self.graphId,
                                                wclist[i][0],"%g" )
 
-        for i in range(len(ninfl)):
-            pyrvapi.rvapi_add_graph_int  ( ninfl_id,"edstats_id",self.graphId,ninfl[i] )
-            if ninfl[i]<=len(mclist):
-                pyrvapi.rvapi_add_graph_real ( zedccm0_id,"edstats_id",self.graphId,zedcc0_m,"%g" )
-            if ninfl[i]<=len(sclist):
-                pyrvapi.rvapi_add_graph_real ( zedccs0_id,"edstats_id",self.graphId,zedcc0_s,"%g" )
-            if ninfl[i]<=len(wclist):
-                pyrvapi.rvapi_add_graph_real ( zedccw0_id,"edstats_id",self.graphId,zedcc0_w,"%g" )
+        if zedccm0_id or zedccs0_id or zedccw0_id:
+            for i in range(len(ninfl)):
+                pyrvapi.rvapi_add_graph_int  ( ninfl_id,"edstats_id",self.graphId,ninfl[i] )
+                if ninfl[i]<=len(mclist) and zedccm0_id:
+                    pyrvapi.rvapi_add_graph_real ( zedccm0_id,"edstats_id",self.graphId,zedcc0_m,"%g" )
+                if ninfl[i]<=len(sclist) and zedccs0_id:
+                    pyrvapi.rvapi_add_graph_real ( zedccs0_id,"edstats_id",self.graphId,zedcc0_s,"%g" )
+                if ninfl[i]<=len(wclist) and zedccw0_id:
+                    pyrvapi.rvapi_add_graph_real ( zedccw0_id,"edstats_id",self.graphId,zedcc0_w,"%g" )
 
         return
 

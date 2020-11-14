@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    26.03.20   <--  Date of Last Modification.
+ *    14.11.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -167,7 +167,7 @@ function TaskCCP4Build()  {
                                   'always|always',
                                   'never|never'
                                   ],
-                      value    : 'auto',
+                      value    : 'never',
                       position : [2,0,1,10]
                     },
 
@@ -193,20 +193,21 @@ function TaskCCP4Build()  {
                                   'always|always',
                                   'never|never'
                                   ],
-                      value    : 'auto',
+                      value    : 'never',
                       position : [4,0,1,10]
                     },
 
                 TRIMMODE_SEL : {
                       type     : 'combobox',
                       keyword  : 'trimmode',
-                      label    : 'Choose ZEDCC for trimming models: ',
-                      tooltip  : 'Trimming mode',
-                      range    : ['auto|automatically',
+                      label    : 'Trim built models: ',
+                      tooltip  : 'Protein trimming mode',
+                      range    : ['never|never',
+                                  'auto|automatically',
                                   'restricted|within restrictions',
                                   'fixed|fixed cut-offs'
                                   ],
-                      value    : 'auto',
+                      value    : 'never',
                       position : [5,0,1,10]
                     },
 
@@ -292,9 +293,10 @@ function TaskCCP4Build()  {
                 TRIMMODE_W_SEL : {
                       type     : 'combobox',
                       keyword  : 'trimmode_w',
-                      label    : 'Choose ZEDCC for trimming waters: ',
-                      tooltip  : 'Trimming mode',
-                      range    : ['auto|automatically',
+                      label    : 'Trim placed waters: ',
+                      tooltip  : 'Water trimming mode',
+                      range    : ['never|never',
+                                  'auto|automatically',
                                   'restricted|within restrictions',
                                   'fixed|fixed cut-offs'
                                   ],
@@ -333,7 +335,7 @@ function TaskCCP4Build()  {
                       keyword  : 'trim_zdw',
                       label    : 'ZEDCC cut-off for trimming waters',
                       tooltip  : 'Electron Density Z-score cut-off for ' +
-                                 '1trimming waters.',
+                                 'trimming waters.',
                       range    : [0.0,'*'],
                       value    : '11.8',
                       placeholder : '1.8',
@@ -395,7 +397,7 @@ TaskCCP4Build.prototype.constructor = TaskCCP4Build;
 TaskCCP4Build.prototype.icon = function()  { return 'task_ccp4build'; }
 
 TaskCCP4Build.prototype.currentVersion = function()  {
-  var version = 5;
+  var version = 6;
   if (__template)
         return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );

@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    13.11.19   <--  Date of Last Modification.
+#    14.11.19   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -102,11 +102,11 @@ class Parrot(ccp4build_base.Base):
         cycles = 3
         if meta["xyzpath"]:
             self.write_script ([ "pdbin-mr " + meta["xyzpath"] ])
-            if firstrun:
+            if firstrun and self.input_data["mode"]=="EP":
                 cycles = 5
         elif meta["xyzpath_ha"]:
             self.write_script ([ "pdbin-ha " + meta["xyzpath_ha"] ])
-            if firstrun:
+            if firstrun and self.input_data["mode"]=="EP":
                 cycles = 5
 
         self.write_script ([ "cycles " + str(cycles) ])
