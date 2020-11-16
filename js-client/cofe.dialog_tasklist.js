@@ -251,7 +251,7 @@ var row      = 0;
   if (__user_role==role_code.developer)
     this.makeSection ( 'Tasks in Development',[
       new TaskDocDev       (),
-      new TaskSheetbend    (),
+      //new TaskSheetbend    (),  // excluded also from the bootstrap html
       new TaskJLigand      (),
       new TaskFragon       (),
       new TaskMergeData    (),

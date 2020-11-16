@@ -29,15 +29,9 @@
 
 #  python native imports
 import os
-#import sys
-#import uuid
-#import shutil
 
 #  application imports
 from . import basic
-#from   pycofe.dtypes    import dtype_template
-#from   pycofe.proc      import qualrep
-#from   pycofe.verdicts  import verdict_sheetbend
 
 # ============================================================================
 # Make Sheetbend driver
@@ -74,8 +68,10 @@ class Sheetbend(basic.TaskDriver):
             "coord",
             "cycles " + str(sec1.NCYCLES.value),
             "refine-regularize-cycles 1",
-            "resolution-by-cycle 6.0, 6.0, 3.0",
-            "radius-scale 4.0"
+            #"resolution-by-cycle 6.0, 6.0, 3.0",
+            "resolution-by-cycle 3.0, 2.5, 2.0",
+            #"radius-scale 4.0"
+            "radius-scale 2.5"
         ])
         self.close_stdin ()
 
@@ -127,35 +123,6 @@ class Sheetbend(basic.TaskDriver):
                 revision.setStructureData ( structure )
                 self.registerRevision     ( revision  )
                 have_results = True
-
-                """
-                rvrow0 = self.rvrow
-                try:
-                    meta = qualrep.quality_report ( self,revision )
-                except:
-                    meta = None
-                    self.stderr ( " *** molprobity failure" )
-                    self.rvrow = rvrow0 + 4
-
-                if meta:
-                    verdict_meta = {
-                        "data"   : { "resolution" : hkl.getHighResolution(raw=True) },
-                        "params" : {
-                            "sheetbend" : {
-                                "ncycles"    : sec1.NCYC.value,
-                                "twinning"   : isTwinning,
-                                "jellyBody"  : str(sec3.JELLY.value) == 'yes',
-                                "ncsRestr"   : str(sec3.NCSR.value) == 'yes',
-                                "tls"        : str(sec2.TLS.value) != 'none',
-                                "anisoBfact" : str(sec2.BFAC.value) == "ANIS",
-                                "hydrogens"  : str(sec1.MKHYDR.value) == "YES"
-                            }
-                        },
-                        "molprobity" : meta,
-                        "xyzmeta" : structure.xyzmeta
-                    }
-                    verdict_sheetbend.putVerdictWidget ( self,verdict_meta,verdict_row )
-                """
 
         else:
             self.putTitle ( "No Output Generated" )
