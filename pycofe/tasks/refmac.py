@@ -29,7 +29,7 @@
 
 #  python native imports
 import os
-import sys
+#import sys
 import uuid
 #import shutil
 
@@ -228,7 +228,7 @@ class Refmac(basic.TaskDriver):
         # make command-line parameters for bare morda run on a SHELL-type node
         xyzin  = istruct.getXYZFilePath ( self.inputDir() )
         xyzout = self.getXYZOFName()
-        cmd = [ "hklin" ,hkl.getFilePath(self.inputDir(),dtype_template.file_key["mtz"]),
+        cmd = [ "hklin" ,hkl.getHKLFilePath(self.inputDir()),
                 "xyzin" ,xyzin,
                 "hklout",self.getMTZOFName(),
                 "xyzout",xyzout,

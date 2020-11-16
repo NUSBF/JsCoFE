@@ -103,11 +103,11 @@ class Parrot(ccp4build_base.Base):
         if meta["xyzpath"]:
             self.write_script ([ "pdbin-mr " + meta["xyzpath"] ])
             if firstrun and self.input_data["mode"]=="EP":
-                cycles = 8
+                cycles = 5
         elif meta["xyzpath_ha"]:
             self.write_script ([ "pdbin-ha " + meta["xyzpath_ha"] ])
             if firstrun and self.input_data["mode"]=="EP":
-                cycles = 8
+                cycles = 5
 
         self.write_script ([ "cycles " + str(cycles) ])
 

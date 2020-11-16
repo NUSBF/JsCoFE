@@ -43,7 +43,7 @@ import citations
 
 class Base(object):
 
-    appVersion     = "1.0.3 [13.11.20]"
+    appVersion     = "1.0.3 [14.11.20]"
 
     stdout_path    = None  #  main log
     stderr_path    = None  #  error log
