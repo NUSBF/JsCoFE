@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    04.04.20   <--  Date of Last Modification.
+#    16.11.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -120,8 +120,8 @@ class ChangeReso(basic.TaskDriver):
                 new_hkl.aimless_meta = hkl.aimless_meta
                 revision.setReflectionData ( new_hkl  )
                 self.registerRevision      ( revision )
-                have_results = True
 
+            have_results = True
             summary_line = "new resolution limits: Res=" + res_high +\
                            "&mdash;" + res_low + " &Aring;"
         else:

@@ -2,18 +2,18 @@
 /*
  *  =================================================================
  *
- *    13.02.20   <--  Date of Last Modification.
+ *    14.11.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
- *  **** Module  :  js-common/tasks/common.tasks.parrot.js
+ *  **** Module  :  js-common/tasks/common.tasks.sheetbend.js
  *       ~~~~~~~~~
  *  **** Project :  jsCoFE - javascript-based Cloud Front End
  *       ~~~~~~~~~
- *  **** Content :  Parrot Task Class
+ *  **** Content :  Sheetbend Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2020
+ *  (C) E. Krissinel, A. Lebedev 2020
  *
  *  =================================================================
  *
@@ -26,67 +26,27 @@ if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
 
 // ===========================================================================
 
-function TaskParrot()  {
+function TaskSheetbend()  {
 
   if (__template)  __template.TaskTemplate.call ( this );
              else  TaskTemplate.call ( this );
 
-  this._type   = 'TaskParrot';
-  this.name    = 'parrot DM';
-  this.setOName ( 'parrot' );  // default output file name template
-  this.title   = 'Density Modification with Parrot';
+  this._type   = 'TaskSheetbend';
+  this.name    = 'sheetbend';
+  this.setOName ( 'sheetbend' );  // default output file name template
+  this.title   = 'Post-MR model correction with Sheetbend';
   //this.helpURL = './html/jscofe_task_parrot.html';
 
   this.input_dtypes = [  // input data types
     {
-      data_type   : {'DataRevision':['phases']}, // data type(s) and subtype(s)
+      data_type   : {'DataRevision':['!xyz','!phases']}, // data type(s) and subtype(s)
       label       : 'Structure revision',        // label for input dialog
       inputId     : 'revision', // input Id for referencing input fields
-      customInput : 'parrot',   // lay custom fields below the dropdown
-      version     : 7,          // minimum data version allowed
+      //customInput : 'parrot',   // lay custom fields below the dropdown
+      version     : 0,          // minimum data version allowed
       min         : 1,          // minimum acceptable number of data instances
       max         : 1           // maximum acceptable number of data instances
-    /*
-    },{
-      data_type   : {'DataStructure':['xyz','substructure']},  // data type(s) and subtype(s)
-      label       : 'Model for NCS<br>detection', // label for input dialog
-      inputId     : 'ncs_struct', // input Id for referencing input fields
-      force       : 1,            // will display tree-closest item by default
-      min         : 0,            // minimum acceptable number of data instances
-      max         : 1             // maximum acceptable number of data instances
-    */
     }
-      /*
-    {
-      data_type   : {'DataStructure':['~substructure-am']},  // data type(s) and subtype(s)
-      label       : 'Structure', // label for input dialog
-      inputId     : 'istruct',   // input Id for referencing input fields
-      customInput : 'parrot',    // lay custom fields below the dropdown
-      min         : 1,           // minimum acceptable number of data instances
-      max         : 1            // maximum acceptable number of data instances
-    },{
-      data_type   : {'DataSequence':[]}, // data type(s) and subtype(s)
-      label       : 'Sequence',    // label for input dialog
-      inputId     : 'seq',         // input Id for referencing input fields
-      customInput : 'asu-content', // lay custom fields below the dropdown
-      min         : 0,             // minimum acceptable number of data instances
-      max         : 100000         // maximum acceptable number of data instances
-      */
-      /*
-    },{
-      data_type   : {'DataStructure':['~substructure','~substructure-am']},  // data type(s) and subtype(s)
-      label       : 'Model for NCS<br>detection', // label for input dialog
-      inputId     : 'ncs_struct', // input Id for referencing input fields
-      min         : 0,            // minimum acceptable number of data instances
-      max         : 1             // maximum acceptable number of data instances
-    },{
-      data_type   : {'DataStructure':['substructure']},  // data type(s) and subtype(s)
-      label       : 'Model for NCS<br>detection', // label for input dialog
-      inputId     : 'ncs_substr', // input Id for referencing input fields
-      min         : 0,            // minimum acceptable number of data instances
-      max         : 1             // maximum acceptable number of data instances
-    }
-    */
   ];
 
   this.parameters = { // input parameters
@@ -95,19 +55,27 @@ function TaskParrot()  {
              open     : true,  // true for the section to be initially open
              position : [0,0,1,5],
              contains : {
-               /*
-                SOLVCONT : {
-                        type      : 'real',
-                        keyword   : 'solvent-content',
-                        label     : 'Solvent content as a fraction of unit cell',
-                        tooltip   : 'This parameter must be given if sequence(s) ' +
-                                    'are not specified',
-                        range     : [0.0,1.0],
-                        value     : '0.0',
-                        position  : [0,0,1,1],
-                        showon    : {'seq':[0]}
-                     },
-                */
+                NCYCLES : {
+                        type        : 'integer',
+                        keyword     : 'cycles',
+                        label       : 'Number of cycles',
+                        tooltip     : 'Choose a value between 1 and 50',
+                        range       : [1,50],
+                        value       : '10',
+                        position    : [0,0,1,1]
+                      }
+             }
+           }
+  };
+
+
+/*
+  this.parameters = { // input parameters
+    sec1 : { type     : 'section',
+             title    : 'Parameters',
+             open     : true,  // true for the section to be initially open
+             position : [0,0,1,5],
+             contains : {
                 NCYCLES : {
                         type        : 'integer_',
                         keyword     : 'cycles',
@@ -118,15 +86,6 @@ function TaskParrot()  {
                         placeholder : 'auto',
                         position    : [1,0,1,1]
                       },
-                /*
-                NCS_CBX : {
-                        type      : 'checkbox',
-                        label     : 'Detect NCS',
-                        tooltip   : 'Check to automatically detect NCS',
-                        value     : true,
-                        position  : [2,0,1,2]
-                      },
-                */
                 SOLVENT_CBX : {
                         type      : 'checkbox',
                         keyword   : 'solvent-flatten',
@@ -143,16 +102,6 @@ function TaskParrot()  {
                         value     : true,
                         position  : [4,0,1,2]
                       },
-                /*
-                NCSAVER_CBX : {
-                        type      : 'checkbox',
-                        keyword   : 'ncs-average',
-                        label     : 'NCS averaging',
-                        tooltip   : 'Check to use NCS averaging',
-                        value     : true,
-                        position  : [5,0,1,2]
-                      },
-                */
                 ANISO_CBX : {
                         type      : 'checkbox',
                         keyword   : 'anisotropy-correction',
@@ -196,34 +145,23 @@ function TaskParrot()  {
              }
            }
   };
-
-  /*
-  this.doPackSuffixes = [ '.mtz_diff.map', // when comes from shelx-substructure
-                          '.diff.map'      // when comes from MR
-                        ];
-  */
+*/
 
 }
 
 
 if (__template)
-      TaskParrot.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskParrot.prototype = Object.create ( TaskTemplate.prototype );
-TaskParrot.prototype.constructor = TaskParrot;
+      TaskSheetbend.prototype = Object.create ( __template.TaskTemplate.prototype );
+else  TaskSheetbend.prototype = Object.create ( TaskTemplate.prototype );
+TaskSheetbend.prototype.constructor = TaskSheetbend;
 
 
 // ===========================================================================
 // export such that it could be used in both node and a browser
 
-TaskParrot.prototype.icon = function()  { return 'task_parrot'; }
+TaskSheetbend.prototype.icon = function()  { return 'task_sheetbend_1'; }
 
-TaskParrot.prototype.doPackSuffixes = function()  {
-  return [ '.mtz_diff.map', // when comes from shelx-substructure
-           '.diff.map'      // when comes from MR
-         ];
-}
-
-TaskParrot.prototype.currentVersion = function()  {
+TaskSheetbend.prototype.currentVersion = function()  {
   var version = 0;
   if (__template)
         return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );
@@ -235,20 +173,20 @@ if (!__template)  {
   //  for client side
 
   // hotButtons return list of buttons added in JobDialog's toolBar.
-  function ParrotHotButton()  {
+  function SheetbendHotButton()  {
     return {
-      'task'    : 'TaskParrot',
-      'tooltip' : 'Density Modification with Parrot'
+      'task'    : 'TaskSheetbend',
+      'tooltip' : 'Post-MR model correction with Sheetbend'
     };
   }
 
   // hotButtons return list of buttons added in JobDialog's toolBar.
-  TaskParrot.prototype.hotButtons = function() {
+  TaskSheetbend.prototype.hotButtons = function() {
     return [BuccaneerHotButton(),ArpWarpHotButton()];
   }
 
 /*
-  TaskParrot.prototype.inputChanged = function ( inpParamRef,emitterId,emitterValue )  {
+  TaskSheetbend.prototype.inputChanged = function ( inpParamRef,emitterId,emitterValue )  {
 
     if (emitterId=='istruct')  {
       var inpDataRef = inpParamRef.grid.inpDataRef;
@@ -275,38 +213,27 @@ if (!__template)  {
 
   var conf = require('../../js-server/server.configuration');
 
-  TaskParrot.prototype.makeInputData = function ( loginData,jobDir )  {
+  TaskSheetbend.prototype.makeInputData = function ( loginData,jobDir )  {
 
     // put hkl and structure data in input databox for copying their files in
     // job's 'input' directory
 
     if ('revision' in this.input_data.data)  {
       var revision = this.input_data.data['revision'][0];
-      if (revision.Options.leading_structure=='substructure')
-            this.input_data.data['istruct'] = [revision.Substructure];
-      else  this.input_data.data['istruct'] = [revision.Structure];
-      this.input_data.data['seq'] = revision.ASU.seq;
-      switch (revision.Options.ncsmodel_sel)  {
-        case 'substructure':
-                  this.input_data.data['ncs_struct'] = [revision.Substructure];
-                break;
-        case 'model'       :
-                  this.input_data.data['ncs_struct'] = [revision.Structure];
-                break;
-        default : ;
-      }
+      this.input_data.data['hkl']     = [revision.HKL];
+      this.input_data.data['istruct'] = [revision.Structure];
     }
 
     __template.TaskTemplate.prototype.makeInputData.call ( this,loginData,jobDir );
 
   }
 
-  TaskParrot.prototype.getCommandLine = function ( jobManager,jobDir )  {
-    return [conf.pythonName(), '-m', 'pycofe.tasks.parrot', jobManager, jobDir, this.id];
+  TaskSheetbend.prototype.getCommandLine = function ( jobManager,jobDir )  {
+    return [conf.pythonName(), '-m', 'pycofe.tasks.sheetbend', jobManager, jobDir, this.id];
   }
 
   // -------------------------------------------------------------------------
 
-  module.exports.TaskParrot = TaskParrot;
+  module.exports.TaskSheetbend = TaskSheetbend;
 
 }
