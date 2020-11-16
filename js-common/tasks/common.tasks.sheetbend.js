@@ -1,4 +1,6 @@
 
+// NOT INCLUDED IN TASK LIST
+
 /*
  *  =================================================================
  *
@@ -35,7 +37,6 @@ function TaskSheetbend()  {
   this.name    = 'sheetbend';
   this.setOName ( 'sheetbend' );  // default output file name template
   this.title   = 'Post-MR model correction with Sheetbend';
-  //this.helpURL = './html/jscofe_task_parrot.html';
 
   this.input_dtypes = [  // input data types
     {
@@ -68,85 +69,6 @@ function TaskSheetbend()  {
            }
   };
 
-
-/*
-  this.parameters = { // input parameters
-    sec1 : { type     : 'section',
-             title    : 'Parameters',
-             open     : true,  // true for the section to be initially open
-             position : [0,0,1,5],
-             contains : {
-                NCYCLES : {
-                        type        : 'integer_',
-                        keyword     : 'cycles',
-                        label       : 'Number of cycles of phase improvement',
-                        tooltip     : 'Choose a value between 1 and 50',
-                        range       : [1,50],
-                        value       : '',
-                        placeholder : 'auto',
-                        position    : [1,0,1,1]
-                      },
-                SOLVENT_CBX : {
-                        type      : 'checkbox',
-                        keyword   : 'solvent-flatten',
-                        label     : 'Solvent flattening',
-                        tooltip   : 'Check to use solvent flattening',
-                        value     : true,
-                        position  : [3,0,1,2]
-                      },
-                HISTOGRAM_CBX : {
-                        type      : 'checkbox',
-                        keyword   : 'histogram-match',
-                        label     : 'Histogram matching',
-                        tooltip   : 'Check to use histogram matching',
-                        value     : true,
-                        position  : [4,0,1,2]
-                      },
-                ANISO_CBX : {
-                        type      : 'checkbox',
-                        keyword   : 'anisotropy-correction',
-                        label     : 'Anisotropy correction',
-                        tooltip   : 'Check to apply anisotropy correction',
-                        value     : true,
-                        position  : [6,0,1,2]
-                      },
-                RESMIN : {
-                        type      : 'real',
-                        keyword   : 'resolution',
-                        label     : 'Truncate data beyond resolution limit [&Aring;]',
-                        tooltip   : 'Truncate resolution limit, in angstroms',
-                        range     : [0.1,'*'],
-                        value     : '1.0',
-                        position  : [7,0,1,1]
-                      },
-                NCSRAD : {
-                        type      : 'real',
-                        keyword   : 'ncs-mask-filter-radius',
-                        label     : 'Radius for NCS mask determination [&Aring;]',
-                        tooltip   : 'Radius for NCS mask determination, in angstroms',
-                        range     : [0.1,'*'],
-                        value     : '6.0',
-                        position  : [8,0,1,1]
-                      },
-                TITLE1 : {
-                        type      : 'label',  // just a separator
-                        label     : '<h3><i>Reference structure data</i></h3>',
-                        position  : [9,0,1,4]
-                      },
-                REFMDL_SEL : {
-                        type      : 'combobox',
-                        keyword   : 'REFMDL',
-                        label     : 'Library reference structure to use:',
-                        tooltip   : 'Choose library reference structure',
-                        range     : ['1tqw|1tqw','1ajr|1ajr'],
-                        value     : '1tqw',
-                        position  : [10,0,1,1]
-                     }
-             }
-           }
-  };
-*/
-
 }
 
 
@@ -159,7 +81,7 @@ TaskSheetbend.prototype.constructor = TaskSheetbend;
 // ===========================================================================
 // export such that it could be used in both node and a browser
 
-TaskSheetbend.prototype.icon = function()  { return 'task_sheetbend_1'; }
+TaskSheetbend.prototype.icon = function()  { return 'task_sheetbend'; }
 
 TaskSheetbend.prototype.currentVersion = function()  {
   var version = 0;
