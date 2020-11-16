@@ -178,10 +178,7 @@ def importLocalProject(driver, testProjectName):
 def enterProject(driver, projectId):
     print ('Entering test project. ID: %s' % projectId)
     time.sleep(1)
-    projectCell = driver.find_element_by_xpath("//*[contains(text(),'%s')]" % projectId )
-    driver.execute_script("arguments[0].scrollIntoView();", projectCell)
-    ActionChains(driver).move_to_element(projectCell).double_click(projectCell).perform()
-
+    doubleClickByXpath(driver, "//*[contains(text(),'%s')]" % projectId )
     time.sleep(1)
     return()
 
