@@ -17,7 +17,7 @@ import setests_func as sf
 d = sf.driverHandler()
 
 def importFromPDB(driver, waitShort):
-    print ('Importing 3dhs (RNA-only structure) from the PDB')
+    print ('Importing 4p5j (RNA-only structure) from the PDB')
 
     sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list')
     time.sleep(1)
@@ -31,7 +31,7 @@ def importFromPDB(driver, waitShort):
     time.sleep(2)
     inputPDB = driver.find_element_by_xpath("//input[@title='Comma-separated list of PDB codes to import data from']")
     inputPDB.clear()
-    inputPDB.send_keys('3dhs')
+    inputPDB.send_keys('4p5j')
     time.sleep(2)
 
     sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'reflection data')
@@ -87,7 +87,7 @@ def editRevisionStructure(driver, waitShort):
     sf.clickByXpathMultiple(driver, "//span[normalize-space()='%s']" % '[do not change]', 6) # 6 = 3*2, I have no idea why there are two times more elements
     time.sleep(1)
 
-    sf.clickByXpath(driver, "//div[contains(text(), '%s') and contains(text(), '%s')]" % ('3dhs', 'xyz'))
+    sf.clickByXpath(driver, "//div[contains(text(), '%s') and contains(text(), '%s')]" % ('4p5j', 'xyz'))
     time.sleep(1)
 
     # There are several forms - active and inactive. We need one displayed.
@@ -163,9 +163,9 @@ def refmacAfterRevision(driver, waitLong):
     if (rWork == 1.0) or (rFree == 1.0):
         print('*** Verification: could not find Rwork or Rfree value after REFMAC5 run')
     else:
-        print('*** Verification: REFMAC5 Rwork is %0.4f (expecting <0.16), Rfree is %0.4f (expecing <0.19)' % (rWork, rFree))
-    assert rWork < 0.28
-    assert rFree < 0.33
+        print('*** Verification: REFMAC5 Rwork is %0.4f (expecting <0.23), Rfree is %0.4f (expecting <0.27)' % (rWork, rFree))
+    assert rWork < 0.23
+    assert rFree < 0.27
 
     return ()
 
@@ -225,7 +225,7 @@ def verifyNautilus(driver, waitLong, jobNumber, targetRwork, targetRfree):
         if curTime > startTime + float(waitLong):
             print('*** Timeout for Nautilus results! Waited for %d seconds.' % waitLong)
             break
-        time.sleep(10)
+        time.sleep(30)
 
     if (rWork == 1.0) or (rFree == 1.0):
         print('*** Verification: could not find Rwork or Rfree value after Nautilus run')
@@ -273,7 +273,7 @@ def test_1Nautilus(browser,
         editRevisionStructure(d.driver, d.waitShort) # 3
         refmacAfterRevision(d.driver, d.waitLong) # 4
         startNautilus(d.driver) # 5
-        verifyNautilus(d.driver, 600, '0005', 0.5, 0.54) # run takes 5 minutes, giving 10
+        verifyNautilus(d.driver, 600, '0005', 0.46, 0.50) # run takes 5 minutes, giving 10
         sf.renameProject(d.driver, d.testName)
         d.driver.quit()
     except:

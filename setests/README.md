@@ -1,6 +1,5 @@
 # Selenium tests for the CCP4Cloud
 
-
 0. **Before running the tests**
    - Tests require Selenium and PyTest installed. Before running the tests, please do:
 ```

@@ -246,7 +246,7 @@ def importFromCloud_rnase(driver, waitShort):
     return ()
 
 
-def asymmetricUnitContentsAfterCloudImport(driver, waitShort):
+def asymmetricUnitContentsAfterCloudImport(driver, waitShort, task='0002'):
     print ('Making Asymmetric Unit Contents after Cloud Import')
 
     # presing Add button
@@ -281,7 +281,7 @@ def asymmetricUnitContentsAfterCloudImport(driver, waitShort):
         wait = WebDriverWait(driver, waitShort) # allowing 15 seconds to the task to finish
         # Waiting for the text 'completed' in the ui-dialog-title of the task [0002]
         wait.until(EC.presence_of_element_located
-                   ((By.XPATH,"//*[@class='ui-dialog-title' and contains(text(), 'completed') and contains(text(), '[0002]')]")))
+                   ((By.XPATH,"//*[@class='ui-dialog-title' and contains(text(), 'completed') and contains(text(), '[%s]')]" % task)))
     except:
         print('Apparently tha task asymmetricUnitContentsAfterCloudImport has not been completed in time; terminating')
         sys.exit(1)
@@ -466,6 +466,71 @@ def startBrowser(remote, browser):
 
     return (driver, waitLong, waitShort)
 
+
+def startRefmac(driver, waitLong):
+    print('Running REFMAC5')
+
+    addButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/add.png')]")
+    addButton.click()
+    time.sleep(1.05)
+
+    clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list')
+    time.sleep(1.05)
+
+    clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Refinement and Model Building')
+    time.sleep(1.05)
+
+    clickByXpath(driver, "//div[normalize-space()='%s']" % 'Refinement with Refmac')
+    time.sleep(1.05)
+
+    # There are several forms - active and inactive. We need one displayed.
+    buttonsRun = driver.find_elements_by_xpath("//button[contains(@style, 'images_png/runjob.png')]" )
+    for buttonRun in buttonsRun:
+        if buttonRun.is_displayed():
+            buttonRun.click()
+            break
+    time.sleep(1)
+
+    # pressing Close button
+    closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
+    closeButton.click()
+    time.sleep(1)
+
+    return ()
+
+
+def verifyRefmac(driver, waitLong, jobNumber, targetRwork, targetRfree):
+    rWork = 1.0
+    rFree = 1.0
+    print('REFMAC5 verification, job ' + jobNumber)
+
+    time.sleep(1.05)
+    startTime = time.time()
+
+    while (True):
+        ttts = tasksTreeTexts(driver)
+        for taskText in ttts:
+            # Job number as string
+            match = re.search('\[' + jobNumber + '\] refmac5 -- R=(0\.\d*) Rfree=(0\.\d*)', taskText)
+            if match:
+                rWork = float(match.group(1))
+                rFree = float(match.group(2))
+                break
+        if (rWork != 1.0) or (rFree != 1.0):
+            break
+        curTime = time.time()
+        if curTime > startTime + float(waitLong):
+            print('*** Timeout for REFMAC5 results! Waited for %d seconds.' % waitLong)
+            break
+        time.sleep(10)
+
+    if (rWork == 1.0) or (rFree == 1.0):
+        print('*** Verification: could not find Rwork or Rfree value after REFMAC5 run')
+    else:
+        print('*** Verification: REFMAC5 Rwork is %0.4f (expecting <%0.2f), Rfree is %0.4f (expecing <%0.2f)' % (
+            rWork, targetRwork, rFree, targetRfree))
+    assert rWork < targetRwork
+    assert rFree < targetRfree
 
 
 class driverHandler:

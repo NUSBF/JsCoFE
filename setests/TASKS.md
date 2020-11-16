@@ -1,10 +1,10 @@
 # Full list of CCP4Cloud tasks and tests
 
 1. **Data Import**
-   - TaskImport        
-   - TaskImportSeqCP   
+   - TaskImport _- N/A_
+   - TaskImportSeqCP
    - TaskImportPDB **<span style="color:green">- done</span>**
-   - TaskFacilityImport
+   - TaskFacilityImport  _- N/A_
    - TaskCloudImport **<span style="color:green">- done</span>**
 
 
@@ -14,14 +14,14 @@
    - TaskDUI _- N/A_
    - TaskIMosflm _- N/A_
    - TaskAimless **<span style="color:green">- done</span>**
-   - TaskChangeSpGHKL
+   - TaskChangeSpGHKL **<span style="color:green">- done</span>**
    - TaskChangeReso  
    - TaskFreeRFlag   
 
 
-3. **Asymmetric Unit and Structure Revision**
+3. **Asymmetric Unit and Structure Revision <span style="color:green">- whole section done</span>**
    - TaskASUDef **<span style="color:green">- done</span>**
-   - TaskChangeSpGASU      
+   - TaskChangeSpGASU  **<span style="color:green">- done</span>**
    - TaskEditRevision **<span style="color:green">- done</span>**
 
 
