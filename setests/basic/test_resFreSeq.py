@@ -319,7 +319,7 @@ def changeReso(driver, waitShort):
         print('*** Verification: resolution is %0.1f - %0.1f (expecting 3.0 - 40.0)' % (hiRes, lowRes))
     assert hiRes  == 3.0
     assert lowRes == 40.0
-    
+
     return ()
 
 
@@ -498,7 +498,7 @@ def test_2resolution():
         aimless(d.driver, d.waitLong) # 3
         changeASUsg(d.driver, d.waitLong) # 4
         time.sleep(1)
-        changeReso(d.driver, d.waitShort) # 5
+        changeReso(d.driver, d.waitLong) # 5
     except:
         d.driver.quit()
         raise
@@ -506,7 +506,7 @@ def test_2resolution():
 
 def test_3freeRflag():
     try:
-        freeRflag(d.driver, d.waitShort) # 6
+        freeRflag(d.driver, d.waitLong) # 6
         sf.asymmetricUnitContentsAfterCloudImport(d.driver, d.waitShort, task='0007')  # 7
         editRevisionStructure_08(d.driver, d.waitShort)  # 08
         sf.startRefmac(d.driver, d.waitLong) # 09
