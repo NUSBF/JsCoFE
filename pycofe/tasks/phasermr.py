@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    18.05.20   <--  Date of Last Modification.
+#    17.11.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -347,10 +347,13 @@ class PhaserMR(basic.TaskDriver):
                     nsol += 1
                     pos   = line.rfind("LLG=")
                     if pos>=0 and not llg:
-                        llg = line[pos:].split()[0][4:]
-                    pos = line.rfind("TFZ==")
+                        llg = line[pos:].split()[0].split("=")[-1]
+                    pos = line.rfind("TFZ=")
                     if pos>=0 and not tfz:
-                        tfz = line[pos:].split()[0][5:]
+                        tfz = line[pos:].split()[0].split("=")[-1]
+
+            if not llg: llg = "0"
+            if not tfz: tfz = "0"
 
             mtzfile = self.outputFName + ".1.mtz"
 
