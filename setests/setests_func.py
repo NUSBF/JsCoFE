@@ -177,8 +177,14 @@ def importLocalProject(driver, testProjectName):
 
 def enterProject(driver, projectId):
     print ('Entering test project. ID: %s' % projectId)
-    time.sleep(1)
-    doubleClickByXpath(driver, "//*[contains(text(),'%s')]" % projectId )
+# ugly hack with try/except to make second attempt - there are regular problems with stale element or rect undefined due to refresh
+    try:
+        time.sleep(1)
+        doubleClickByXpath(driver, "//*[contains(text(),'%s')]" % projectId )
+    except:
+        time.sleep(1.7)
+        doubleClickByXpath(driver, "//*[contains(text(),'%s')]" % projectId)
+
     time.sleep(1)
     return()
 
@@ -486,7 +492,7 @@ def startRefmac(driver, waitLong):
         if buttonRun.is_displayed():
             buttonRun.click()
             break
-    time.sleep(1)
+    time.sleep(3)
 
     # pressing Close button
     closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")

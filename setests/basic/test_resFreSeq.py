@@ -304,19 +304,22 @@ def changeReso(driver, waitShort):
     sf.clickByXpath(driver, "//button[contains(@style, 'images_png/close.png')]")
     time.sleep(1)
 
-    newRes = ''
+    hiRes = 0.0
+    lowRes = 0.0
     ttts = sf.tasksTreeTexts(driver)
     for taskText in ttts:
-        match = re.search('\[0005\] change dataset resolution -- new resolution limits: Res=(.*)..', taskText)
+        match = re.search('\[0005\] change dataset resolution -- new resolution limits: Res=(\d*\.\d*).(\d*\.\d*)..', taskText)
         if match:
-            newRes = match.group(1)
+            hiRes  = float(match.group(1))
+            lowRes = float(match.group(2))
             break
-    if newRes == '':
+    if (hiRes == 0.0) or (lowRes == 0.0):
         print('*** Verification: could not find resolution value after  run')
     else:
-        print(u'*** Verification: resolution is %s (expecing "3.0—40.0")' % (newRes))
-    assert newRes == u'3.0—40.0'
-
+        print('*** Verification: resolution is %0.1f - %0.1f (expecting 3.0 - 40.0)' % (hiRes, lowRes))
+    assert hiRes  == 3.0
+    assert lowRes == 40.0
+    
     return ()
 
 
@@ -447,7 +450,7 @@ def verifyRefmac(driver, waitLong, jobNumber, targetRwork, targetRfree):
             rWork, targetRwork, rFree, targetRfree))
     assert rWork < targetRwork
     assert rFree < targetRfree
-    assert (rFree - rWork) > 0.06 # specific effect of Rfree change
+    assert (rFree - rWork) > 0.05 # specific effect of Rfree change
 
 
 def test_1seqcopy(browser,
