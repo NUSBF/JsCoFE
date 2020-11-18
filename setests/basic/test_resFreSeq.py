@@ -294,7 +294,7 @@ def changeReso(driver, waitShort):
         wait = WebDriverWait(driver, waitShort) # allowing 15 seconds to the task to finish
         # Waiting for the text 'completed' in the ui-dialog-title of the task [0003]
         wait.until(EC.presence_of_element_located
-                   ((By.XPATH,"//*[@class='ui-dialog-title' and contains(text(), 'completed') and contains(text(), '[0005]')]")))
+                   ((By.XPATH,"//*[(@class='ui-dialog-title' and contains(text(), 'completed') and contains(text(), '[0005]')) or (@class='ui-dialog-title' and contains(text(), 'finished') and contains(text(), '[0005]'))]")))
     except:
         print('Apparently tha task changeReso has not been completed in time; terminating')
         sys.exit(1)
@@ -506,6 +506,7 @@ def test_2resolution():
 
 def test_3freeRflag():
     try:
+        time.sleep(1)
         freeRflag(d.driver, d.waitLong) # 6
         sf.asymmetricUnitContentsAfterCloudImport(d.driver, d.waitShort, task='0007')  # 7
         editRevisionStructure_08(d.driver, d.waitShort)  # 08
