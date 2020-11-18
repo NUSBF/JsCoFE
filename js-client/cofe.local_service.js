@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    01.08.20   <--  Date of Last Modification.
+ *    18.11.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -21,7 +21,7 @@
 
 // local service url (used also as indicator of presentce in RVAPI)
 var __local_service        = null;    // full URL when defined
-var __rvapi_local_service  = null;    // no var! used as flag in rvapi
+//var __rvapi_local_service  = null;    // no var! used as flag in rvapi
 var __via_proxy            = false;   // true if local proxy server is used
 var __client_version       = null;    // will be a version string if client is running
 var __local_user           = false;   // true if running as a desktop
@@ -33,6 +33,10 @@ var __check_session_period = 2000;    // in ms
 
 
 function setLocalService ( local_service )  {
+  if (local_service && __via_proxy)
+        __local_service = __special_client_tag;
+  else  __local_service = local_service;
+  /*
   __local_service = local_service;
   if ((!local_service) && (window.hasOwnProperty('__rvapi_local_service')))  {
     delete window.__rvapi_local_service;
@@ -41,6 +45,7 @@ function setLocalService ( local_service )  {
       __local_service = __special_client_tag;
     __rvapi_local_service = local_service;
   }
+  */
 }
 
 
@@ -187,6 +192,17 @@ function ls_RVAPIAppButtonClicked ( base_url,command,data )  {
     window.setTimeout ( function(){
       startViewHKL ( data.split('/').pop(),base_url.substr(pos)+'/'+data,window );
     },10);
+  } else if (command=='{ccp4mg}')  {
+    new MessageBox ( 'Local application',
+        '<div style="width:400px"><h3>Client-side application</h3>' +
+        '<b>CCP4mg</b> can be used only if <i>' + appName() +
+        '</i> is accessed from a ' +
+        '<a href="https://www.ccp4.ac.uk" target="_blank">CCP4 Setup</a> ' +
+        'on your computer (look out for <i>' + appName() +
+        '</i> icon in CCP4 directory).<p>' +
+        'It looks like you have accessed <i>' + appName() + '</i> using the ' +
+        'direct web-link, in which mode the client-side applications, such as ' +
+        'CCP4mg and Coot, cannot be used.</div>' );
   }
 
 }

@@ -1,7 +1,7 @@
 //
 //  =================================================================
 //
-//    31.07.20   <--  Date of Last Modification.
+//    18.11.20   <--  Date of Last Modification.
 //                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  -----------------------------------------------------------------
 //
@@ -42,7 +42,7 @@ function addSubmitButton ( inpId,title,formAction,formId,
 function addButtonGrid ( btnId,title,command,data,rvOnly,holderId,
                          row,col,rowSpan,colSpan )  {
 
-  var __rvapi_local_service = is_rvapi_local_service();
+//  var __rvapi_local_service = is_rvapi_local_service();
   //if (__rvapi_local_service==2)
   //  return;
 
@@ -98,7 +98,7 @@ function addButtonGrid ( btnId,title,command,data,rvOnly,holderId,
 
 function addButton ( btnId,title,command,data,rvOnly,holderId )  {
 
-  var __rvapi_local_service = is_rvapi_local_service();
+//  var __rvapi_local_service = is_rvapi_local_service();
 //  if (__rvapi_local_service==2)
 //    return;
 
@@ -140,7 +140,7 @@ function addButton ( btnId,title,command,data,rvOnly,holderId )  {
 function addIconButtonGrid ( btnId,button_class,tooltip,command,data,
                              rvOnly,holderId,row,col,rowSpan,colSpan )  {
 
-  var __rvapi_local_service = is_rvapi_local_service();
+//  var __rvapi_local_service = is_rvapi_local_service();
 //  if (__rvapi_local_service==2)
 //    return;
 
@@ -191,7 +191,7 @@ function addIconButtonGrid ( btnId,button_class,tooltip,command,data,
 function addIconButton ( btnId,button_class,tooltip,command,data,rvOnly,
                          holderId )  {
 
-  var __rvapi_local_service = is_rvapi_local_service();
+//  var __rvapi_local_service = is_rvapi_local_service();
 //  if (__rvapi_local_service==2)
 //    return;
 

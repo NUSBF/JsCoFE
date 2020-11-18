@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    03.10.20   <--  Date of Last Modification.
+ *    18.11.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -372,6 +372,8 @@ JobDialog.prototype.loadReport = function()  {
     //reportURL = __special_client_tag + '/' + reportURL;
   } else
     reportURL = this.task.getReportURL();
+  if (__local_service)
+    reportURL += '?local_service';
   this.outputPanel.loadPage ( reportURL );
 }
 

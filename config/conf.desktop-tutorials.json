@@ -147,6 +147,7 @@
       "fasttrack"        : 1,
       "storage"          : "./cofe-client-storage",
       "exeType"          : "CLIENT",
+      "_exeType"          : "SHELL",
       "exeData"          : "",
       "jobCheckPeriod"   : 2000,
       "sendDataWaitTime" : 1000,
