@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    19.03.20   <--  Date of Last Modification.
+#    17.11.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -49,7 +49,6 @@ class ModelPrepAlgn(modelprepxyz.ModelPrepXYZ):
         align_meta = dtype_alignment.parseHHRFile (
             alignment.getHHRFilePath(self.inputDir()),parse_alignments=True )
 
-        ftmp = "__tmp.pdb"
         xyz  = []
         for i in range(len(alignment.align_meta.hits)):
 
@@ -68,8 +67,13 @@ class ModelPrepAlgn(modelprepxyz.ModelPrepXYZ):
                 file.write ( "\n".join([aline[0+k:70+k] for k in range(0,len(aline),70)]) + "\n" )
                 file.close()
 
+                ftmp = "__tmp.pdb"
                 rc = import_pdb.download_file (
                                     import_pdb.get_pdb_file_url(ucode),ftmp )
+                if rc:
+                    ftmp = "__tmp.cif"
+                    rc = import_pdb.download_file (
+                                    import_pdb.get_cif_file_url(ucode),ftmp )
                 if not rc:
                     fpath  = self.fetch_chain ( chId,ftmp,
                                                 alignment.align_meta.hits[i][7] )
