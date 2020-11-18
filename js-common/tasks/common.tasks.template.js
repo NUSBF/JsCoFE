@@ -2336,7 +2336,8 @@ if (!dbx)  {
     utils.writeString  ( dboxPath,dbox );
     utils.removeFiles  ( jobDir,['.mtz','.map','.pdb','.seq','.fasta','.pir',
                                  '.seq.txt','.fasta.txt','.pir.txt',
-                                 '.cif','.mmcif','.ent','.pdbx'] );
+                                 '.cif','.mmcif','.ent','.pdbx',
+                                 'rvapi_document'] );
   }
 
 
