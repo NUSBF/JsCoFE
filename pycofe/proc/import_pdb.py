@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    20.07.20   <--  Date of Last Modification.
+#    17.11.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -18,7 +18,6 @@
 
 #  python native imports
 import os
-#import sys
 import json
 import requests
 
@@ -35,8 +34,20 @@ from pycofe.proc   import import_xyz, import_sequence, import_merged
 # ============================================================================
 # import pdb files function
 
+
+#https://files.rcsb.org/download/4GOS.pdb
+#https://files.rcsb.org/download/4GOS.cif
+#https://files.rcsb.org/download/4GOS-sf.cif
+#https://www.rcsb.org/fasta/entry/4GOS
+
 def get_pdb_file_url ( ucode ):
     return "https://files.rcsb.org/download/" + ucode + ".pdb"
+
+def get_cif_file_url ( ucode ):
+    return "https://files.rcsb.org/download/" + ucode + ".cif"
+
+def get_hkl_file_url ( ucode ):
+    return "https://files.rcsb.org/download/" + ucode + "-sf.cif"
 
 def get_seq_file_url ( ucode ):
     return "https://www.rcsb.org/fasta/entry/" + ucode
@@ -96,14 +107,14 @@ def run ( body,pdb_list,
         if import_coordinates or import_sequences:
             # coordiinates are used for sequence annotation
             rc_xyz = download_file ( get_pdb_file_url(ucode),fpath_xyz )
-            #rc_xyz = download_file ( "https://files.rcsb.org/download/" + ucode + ".pdb",
-            #                         fpath_xyz )
+            if rc_xyz:
+                fname_xyz = lcode + ".cif"
+                fpath_xyz = os.path.join ( body.importDir(),fname_xyz )
+                rc_xyz = download_file ( get_cif_file_url(ucode),fpath_xyz )
+
         if import_sequences:
             # these will be the "expected" sequences
             rc_seq = download_file ( get_seq_file_url(ucode),fpath_seq,body=None )
-            #rc_seq = download_file ( "https://www.rcsb.org/pdb/download/downloadFastaFiles.do?structureIdList=" +
-            #                        ucode + "&compressionType=uncompressed",
-            #                        fpath_seq )
 
         if import_reflections:
             rc_sf  = download_file ( "https://files.rcsb.org/download/" + ucode + "-sf.cif",
