@@ -111,7 +111,7 @@ class TaskDriver(object):
     def outputDir         (self): return "output"  # in current directory ( job_dir )
     def inputDir          (self): return "input"   # in current directory ( job_dir )
 
-    def reportDocumentName(self): return "rvapi_document"
+    def reportDocumentName(self): return "rvapi_document"  # used also in js layer
 
     def refmac_section    (self): return "refmac_section"
     def refmac_report     (self): return "refmac_report"
