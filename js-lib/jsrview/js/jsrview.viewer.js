@@ -1,7 +1,7 @@
 //
 //  ==========================================================================
 //
-//    05.10.20   <--  Date of Last Modification.
+//    18.11.20   <--  Date of Last Modification.
 //                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  --------------------------------------------------------------------------
 //
@@ -20,8 +20,12 @@
 var _jsrview_uri = "";
 //var __base_url = 'xxJsCoFExx/' + __login_token + '/rnase/1/';
 
+var __rvapi_local_service = is_rvapi_local_service();
 
 function is_rvapi_local_service()  {
+  if (window.location.search=='?local_service')  return 1;
+  return 0;
+  /*
   var found = 0;
   try {
     if ('__rvapi_local_service' in window.parent)
@@ -33,6 +37,7 @@ function is_rvapi_local_service()  {
     found = 2;
   }
   return found;
+  */
 }
 
 
