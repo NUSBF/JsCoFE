@@ -33,7 +33,7 @@
    - No-sequence methods
       * TaskSimbad **<span style="color:green">- done</span>**
    - No-model methods
-      * TaskAmple
+      * **_TaskAmple_**
 
 
 5. **Molecular Replacement <span style="color:green">- whole section done</span>**
@@ -90,11 +90,11 @@
    - TaskDeposition **<span style="color:green">- done</span>**
 
 
-11. **Toolbox**
+11. **Toolbox <span style="color:green">- whole section done</span>**
    - Reflection data tools
-      * TaskAuspex  
-      * TaskSRF     
-      * TaskCrosSec 
+      * TaskAuspex **<span style="color:green">- done</span>**
+      * TaskSRF **<span style="color:green">- done</span>**
+      * TaskCrosSec **<span style="color:green">- done</span>**
    - Coordinate data tools
       * TaskXyzUtils **<span style="color:green">- done</span>**
       * TaskCootCE _- N/A_
