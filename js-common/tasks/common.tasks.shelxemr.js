@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    18.05.20   <--  Date of Last Modification.
+ *    19.11.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -34,7 +34,7 @@ function TaskShelxEMR()  {
   this._type   = 'TaskShelxEMR';
   this.name    = 'shelxe';
   this.setOName ( 'shelxe' );  // default output file name template
-  this.title   = 'Density Modificaton and C&alpha;-tracing with ShelxE';
+  this.title   = 'Density Modification and C&alpha;-tracing with ShelxE';
   //this.helpURL = './html/jscofe_task_shelxemr.html';
 
   this.input_dtypes = [{  // input data types
@@ -66,14 +66,14 @@ function TaskShelxEMR()  {
                     label    : 'Number of density modification cycles',
                     align    : 'left',
                     iwidth   : 50,
-                    default  : '20',      // to be displayed in grey
-                    tooltip  : 'The total number of global autotracing cycles',
+                    default  : '25',      // to be displayed in grey
+                    tooltip  : 'The total number of density modification cycles',
                     range    : [1,'*'],   // may be absent (no limits) or must
                                           // be one of the following:
                                           //   ['*',max]  : limited from top
                                           //   [min,'*']  : limited from bottom
                                           //   [min,max]  : limited from top and bottom
-                    value    : '20',      // value to be paired with the keyword
+                    value    : '25',      // value to be paired with the keyword
                     position : [0,0,1,1]  // [row,col,rowSpan,colSpan]
                   },
               SOLVENT_CONTENT: {
