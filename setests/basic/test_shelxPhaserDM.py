@@ -585,12 +585,13 @@ if __name__ == "__main__":
 
     parameters = parser.parse_args(sys.argv[1:])
 
-    test_1RefmacBasic(browser=parameters.browser,  # or 'Chrome'
+    test_1shelx_phaser(browser=parameters.browser,  # or 'Chrome'
                cloud=parameters.cloud,
                nologin=parameters.nologin,  # True for Cloud Desktop (no login page), False for remote server that requires login.
                login=parameters.login,  # Used to login into remote Cloud
                password=parameters.password,  # Used to login into remote Cloud
                remote=parameters.remote  # 'http://130.246.213.187:4444/wd/hub' for Selenium Server hub
                )
-    test_2buccaneer()
-    test_3ccp4build()
+    test_2ShelxE_DM()
+    test_3parrot()
+    test_4acorn()
