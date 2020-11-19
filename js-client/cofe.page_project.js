@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    11.10.20   <--  Date of Last Modification.
+ *    19.11.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -109,7 +109,7 @@ function ProjectPage ( sceneId )  {
   }
 
   function stopJob() {
-    jobTree.stopJob ( '' );
+    jobTree.stopJob ( '',false,null );  // 'false' means immediate termination
   }
 
   function cloneJob() {
@@ -144,7 +144,8 @@ function ProjectPage ( sceneId )  {
                                (is_remark && add_enabled)) );
       clone_btn  .setEnabled ( (!__dormant) && dsel && task.canClone(node,jobTree) );
       moveup_btn .setEnabled ( (!__dormant) && task.canMove(node,jobTree) );
-      stop_btn   .setEnabled ( dsel && (task.state==job_code.running) );
+      stop_btn   .setEnabled ( dsel && ((task.state==job_code.running) ||
+                                        (task.state==job_code.ending)) );
       add_rem_btn.setEnabled ( (!__dormant) && (!has_remark) && (!is_remark) );
       if (is_remark)
             del_btn.setTooltip ( 'Delete remark' );

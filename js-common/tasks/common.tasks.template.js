@@ -2,7 +2,7 @@
 /*
 *  ==========================================================================
  *
- *    18.11.20   <--  Date of Last Modification.
+ *    19.11.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -------------------------------------------------------------------------
  *
@@ -28,6 +28,7 @@
 var job_code = {
   new       : 'new',       // new job_code
   running   : 'running',   // job is running
+  ending    : 'ending',    // job is in gracefull ending phase
   exiting   : 'exiting',   // job is in post-run processing
   finished  : 'finished',  // job finished normally (nothing to do with the results)
   noresults : 'noresults', // job finished normally but no results produced
@@ -141,7 +142,9 @@ TaskTemplate.prototype.authorisationID     = function() { return '';       }
 TaskTemplate.prototype.requiredEnvironment = function() { return ['CCP4']; }
 
 TaskTemplate.prototype.doNotPackSuffixes   = function() { return ['.map']; }
-TaskTemplate.prototype.doPackSuffixes      = function() { return ['']; }
+TaskTemplate.prototype.doPackSuffixes      = function() { return [''];     }
+
+TaskTemplate.prototype.canEndGracefully    = function() { return false;    }
 
 TaskTemplate.prototype.getHelpURL = function()  {
   return __task_reference_base_url + 'doc.task.' + this._type.substr(4) + '.html';
@@ -173,7 +176,7 @@ TaskTemplate.prototype.isRunning = function()  {
 
 TaskTemplate.prototype.isComplete = function()  {
   return ((this.state!=job_code.new) && (this.state!=job_code.running) &&
-          (this.state!=job_code.exiting));
+          (this.state!=job_code.ending) &&(this.state!=job_code.exiting));
 }
 
 // estimated cpu cost of the job, in hours

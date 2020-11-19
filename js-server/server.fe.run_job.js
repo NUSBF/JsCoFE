@@ -730,7 +730,8 @@ var response = null;
       uri     : cmd.nc_command.stopJob,
       baseUrl : nc_url,
       method  : 'POST',
-      body    : {job_token:jobEntry.job_token},
+      body    : { job_token  : jobEntry.job_token,
+                  gracefully : data.gracefully },
       json    : true
     },function(error,response,body){
         if (!error && (response.statusCode==200)) {
@@ -960,6 +961,7 @@ function checkJobs ( loginData,data )  {
     var jobData     = utils.readObject   ( jobDataPath );
     if (jobData)  {
       if ((jobData.state!=task_t.job_code.running) &&
+          (jobData.state!=task_t.job_code.ending)  &&
           (jobData.state!=task_t.job_code.exiting))  {
         completed_map[key] = jobData;
         empty = false;

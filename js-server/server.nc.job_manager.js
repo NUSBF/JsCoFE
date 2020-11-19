@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    11.11.20   <--  Date of Last Modification.
+ *    19.11.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -872,6 +872,7 @@ function ncRunJob ( job_token,meta )  {
 
     var command = task.getCommandLine ( ncConfig.jobManager,jobDir );
     command.push ( 'jscofe_version=' + cmd.appVersion() );
+    command.push ( 'end_signal=' + cmd.endJobFName );
 
     switch (jobEntry.exeType)  {
 
@@ -1161,9 +1162,13 @@ function _stop_job ( jobEntry )  {
 
 }
 
+
 function ncStopJob ( post_data_obj,callback_func )  {
+var response = null;
 
   log.detailed ( 10,'stop object ' + JSON.stringify(post_data_obj) );
+
+  console.log ( ' ################# ' + JSON.stringify(post_data_obj) );
 
   if (post_data_obj.hasOwnProperty('job_token'))  {
 
@@ -1171,33 +1176,46 @@ function ncStopJob ( post_data_obj,callback_func )  {
 
     if (jobEntry)  {
 
-      if (jobEntry.pid>0)  {
+      if (post_data_obj.gracefully)  {
 
-        log.detailed ( 11,'attempt to kill pid=' + jobEntry.pid );
-
-        _stop_job ( jobEntry );
-
+        log.standard ( 60,'attempt to gracefully end the job ' +
+                          post_data_obj.job_token + ' pid=' + jobEntry.pid );
+        utils.writeString (  path.join(jobEntry.jobDir,cmd.endJobFName),'end' );
         response = new cmd.Response ( cmd.nc_retcode.ok,
-                                      '[00109] Job scheduled for deletion',{} );
+                                      '[00109] Job scheduled for graceful stop',{} );
 
       } else  {
-        log.detailed ( 12,'attempt to kill a process without a pid' );
-        response = new cmd.Response ( cmd.nc_retcode.pidNotFound,
-                              '[00110] Job\'s PID not found; just stopped?',{} );
+
+        if (jobEntry.pid>0)  {
+          //log.detailed ( 11,'attempt to kill pid=' + jobEntry.pid );
+
+          log.standard ( 62,'attempt to terminate the job ' +
+                            post_data_obj.job_token + ' pid=' + jobEntry.pid );
+          _stop_job ( jobEntry );
+
+          response = new cmd.Response ( cmd.nc_retcode.ok,
+                                        '[00110] Job scheduled for stopping',{} );
+
+        } else  {
+          log.detailed ( 12,'attempt to kill a process without a pid' );
+          response = new cmd.Response ( cmd.nc_retcode.pidNotFound,
+                                '[00111] Job\'s PID not found; just stopped?',{} );
+        }
+
       }
 
     } else  {
-      log.error ( 13,'attempt to kill failed no token found: ' +
+      log.error ( 13,'attempt to kill/end failed no token found: ' +
                      post_data_obj.job_token );
       response = new cmd.Response ( cmd.nc_retcode.jobNotFound,
-                                    '[00111] Job not found; just stopped?',{} );
+                                    '[00112] Job not found; just stopped?',{} );
     }
 
   } else  {
-    log.error ( 14,'wrong request to kill post_data="' +
+    log.error ( 14,'wrong request to kill/end post_data="' +
                          JSON.stringify(post_data_obj) + '"' );
     response = new cmd.Response ( cmd.nc_retcode.wrongRequest,
-                                  '[00112] Wrong request data',{} );
+                                  '[00113] Wrong request data',{} );
   }
 
   callback_func ( response );
@@ -1249,7 +1267,7 @@ function ncRunRVAPIApp ( post_data_obj,callback_func )  {
     ncJobRegister.removeJob ( job_token );
     writeNCJobRegister      ();
     callback_func ( new cmd.Response ( cmd.nc_retcode.mkDirError,
-                    '[00113] Cannot create job directory on NC-CLIENT server #' +
+                    '[00115] Cannot create job directory on NC-CLIENT server #' +
                     conf.getServerConfig().serNo,{} ) );
     return;
   }
@@ -1287,7 +1305,7 @@ function ncRunRVAPIApp ( post_data_obj,callback_func )  {
               ncJobRegister.removeJob ( job_token );
               writeNCJobRegister      ();
               callback_func ( new cmd.Response ( cmd.nc_retcode.downloadErrors,
-                                     '[00114] Download errors: ' + err,{} ) );
+                                     '[00115] Download errors: ' + err,{} ) );
             })
             .pipe(fs.createWriteStream(path.join(jobDir,fpath)))
             .on('error', function(err) {

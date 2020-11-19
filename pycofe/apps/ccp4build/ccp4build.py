@@ -287,8 +287,12 @@ class Build(ccp4build_report.Report):
                               max ( self.best_edcc_build_no,
                                     self.best_nbuilt_build_no ) )
             if len(self.build_meta)-last_best > noimprove_cycles:
+                self.log (["\n *** stoppping because of no improvement ...\n"])
                 break
-            elif i<cycles_max-1:
+            if self.input_data["stop_file"] and os.path.isfile(self.input_data["stop_file"]):
+                self.log (["\n *** stoppping gracefully ...\n"])
+                break
+            if i<cycles_max-1:
                 meta = self.refmac ( dict(meta_ed,labin_hl=None),ncycles=refcyc["final"],
                                      nameout=prefix+"15.refmac" )
                 meta["xyzpath"] = meta_rf["xyzpath"]  #  for next parrot
@@ -471,8 +475,12 @@ class Build(ccp4build_report.Report):
                               max ( self.best_edcc_build_no,
                                     self.best_nbuilt_build_no ) )
             if len(self.build_meta)-last_best > noimprove_cycles:
-                break;
-            elif i<cycles_max-1:
+                self.log (["\n *** stopping because of no improvement ...\n"])
+                break
+            if self.input_data["stop_file"] and os.path.isfile(self.input_data["stop_file"]):
+                self.log (["\n *** stopping gracefully ...\n"])
+                break
+            if i<cycles_max-1:
                 meta = self.refmac ( dict(self.input_data,xyzpath=meta_ed["xyzpath"]),
                                      ncycles=refcyc["final"],nameout=prefix+"16.refmac" )
                 #meta["xyzpath_mr"] = meta   ["xyzpath"]  #  for next buccaneer
@@ -522,6 +530,9 @@ class Build(ccp4build_report.Report):
             shutil.rmtree ( "coot-backup" )
         if os.path.isdir("coot-download"):
             shutil.rmtree ( "coot-download" )
+
+        if os.path.isdir(self.workdir):
+            shutil.rmtree ( self.workdir )
 
         return
 

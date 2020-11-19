@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    14.11.20   <--  Date of Last Modification.
+ *    19.11.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -394,7 +394,9 @@ TaskCCP4Build.prototype.constructor = TaskCCP4Build;
 // ===========================================================================
 // export such that it could be used in both node and a browser
 
-TaskCCP4Build.prototype.icon = function()  { return 'task_ccp4build'; }
+TaskCCP4Build.prototype.icon = function() { return 'task_ccp4build'; }
+
+TaskCCP4Build.prototype.canEndGracefully = function() { return true; }
 
 TaskCCP4Build.prototype.currentVersion = function()  {
   var version = 6;
