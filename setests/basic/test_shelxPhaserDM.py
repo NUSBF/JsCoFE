@@ -363,16 +363,18 @@ def startShelxDM(driver):
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Density Modification')
     time.sleep(2)
 
-    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Density Modificaton and')
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Density Modification and')
     time.sleep(2)
 
+    inputScaterer = driver.find_elements_by_xpath("//input[@title='The total number of density modification cycles']")
+    inputScaterer[-1].click()
+    inputScaterer[-1].clear()
+    inputScaterer[-1].send_keys('10')
+
     inputScaterer = driver.find_elements_by_xpath("//input[@title='The total number of global autotracing cycles']")
-    inputScaterer[0].click()
-    inputScaterer[0].clear()
-    inputScaterer[0].send_keys('10')
-    inputScaterer[1].click()
-    inputScaterer[1].clear()
-    inputScaterer[1].send_keys('5')
+    inputScaterer[-1].click()
+    inputScaterer[-1].clear()
+    inputScaterer[-1].send_keys('5')
 
     time.sleep(1)
 
