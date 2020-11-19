@@ -49,20 +49,20 @@
       * TaskMolrep **<span style="color:green">- done</span>**
 
 
-6. **Experimental Phasing**
+6. **Experimental Phasing <span style="color:green">- whole section done</span>**
    - Automated EP
       * TaskCrank2 **<span style="color:green">- done</span>**
-      * TaskShelxAuto  
+      * TaskShelxAuto **<span style="color:green">- done</span>**
    - Fundamental EP
       * TaskShelxSubstr **<span style="color:green">- done</span>**
-      * TaskShelxCD    
+      * TaskShelxCD **<span style="color:green">- done</span>**
       * TaskPhaserEP **<span style="color:green">- done</span>**
 
 
-7. **Density Modification**
+7. **Density Modification <span style="color:green">- whole section done</span>**
    - TaskParrot **<span style="color:green">- done</span>**
-   - TaskAcorn 
-   - TaskShelxEMR
+   - TaskAcorn **<span style="color:green">- done</span>**
+   - TaskShelxEMR **<span style="color:green">- done</span>**
 
 
 8. **Refinement and Model Building <span style="color:green">- whole section done</span>**
