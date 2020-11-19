@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    14.11.20   <--  Date of Last Modification.
+#    19.11.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -211,7 +211,8 @@ class CCP4Build(basic.TaskDriver):
         self.write_stdin ([
             "cycles_min       " + self.getParameter(sec1.NCYCLES_MIN),
             "cycles_max       " + self.getParameter(sec1.NCYCLES_MAX),
-            "noimprove_cycles " + self.getParameter(sec1.NOIMPROVE_CYCLES)
+            "noimprove_cycles " + self.getParameter(sec1.NOIMPROVE_CYCLES),
+            "stop_file        " + self.jobEndFName
         ])
 
         trim_mode = self.getParameter(sec2.TRIMMODE_SEL)

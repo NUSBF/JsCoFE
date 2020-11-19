@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    14.11.20   <--  Date of Last Modification.
+#    19.11.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -43,7 +43,7 @@ import citations
 
 class Base(object):
 
-    appVersion     = "1.0.3 [14.11.20]"
+    appVersion     = "1.0.3 [19.11.20]"
 
     stdout_path    = None  #  main log
     stderr_path    = None  #  error log
@@ -113,6 +113,7 @@ class Base(object):
         "cycles_max"       : 20,    # maximal number of outer cycles to do
         "noimprove_cycles" : 15,    # stop if results do not improve after set
                                     #   number of consequitive cycles
+        "stop_file"        : None,  # signal file to end gracefully
         "rfree_threshold"  : 0.000, # threshold for rfree comparisons in workflow
         "experiment_type"  : "xray",
         "form_factor"      : "default"

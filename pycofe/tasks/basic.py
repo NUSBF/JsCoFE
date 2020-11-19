@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    04.11.20   <--  Date of Last Modification.
+#    19.11.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -161,9 +161,11 @@ class TaskDriver(object):
     navTreeId     = ""   # navigation tree Id
     title_grid_id = None # id of title grid
 
-    appVersion    = "unknown"   # jsCoFE version for reporting
+    appVersion    = "unknown"     # jsCoFE version for reporting
     start_date    = ""
     end_date      = ""
+
+    jobEndFName   = "__end_job"   # signal file name to end job gracefully
 
     # ========================================================================
     # cofe config
@@ -212,11 +214,12 @@ class TaskDriver(object):
 
         if args is None:
             args = sys.argv[1:]
-        self.jobManager = args[0]
-        self.job_dir    = args[1]
-        self.job_id     = args[2]
-        self.jscofe_dir = sys.argv[0][0:sys.argv[0].rfind("pycofe")]
-        self.appVersion = self.getCommandLineParameter("jscofe_version")
+        self.jobManager  = args[0]
+        self.job_dir     = args[1]
+        self.job_id      = args[2]
+        self.jscofe_dir  = sys.argv[0][0:sys.argv[0].rfind("pycofe")]
+        self.appVersion  = self.getCommandLineParameter("jscofe_version")
+        self.jobEndFName = self.getCommandLineParameter("end_signal")
         if not self.appVersion:
             self.appVersion = "unknown"
 

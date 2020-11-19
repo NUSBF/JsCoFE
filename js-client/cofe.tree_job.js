@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    26.08.20   <--  Date of Last Modification.
+ *    19.11.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -51,7 +51,7 @@
  *      function moveJobUp       ();
  *      function deleteJob       ( onDelete_func );
  *      function closeAllJobDialogs();
- *      function stopJob         ( nodeId );
+ *      function stopJob         ( nodeId,gracefully_bool );
  *      function openJob         ( dataBox,parent_page );
  *      function cloneJob        ( parent_page,onAdd_func );
  *      function getTaskDataBox  ( task );
@@ -254,6 +254,7 @@ JobTree.prototype.readProjectData = function ( page_title,
               tree.task_map[key].treeItemId = key;
               tree.task_map[key].project    = tree.projectData.desc.name;
               if ((tree.task_map[key].state==job_code.running) ||
+                  (tree.task_map[key].state==job_code.ending)  ||
                   (tree.task_map[key].state==job_code.exiting))  {
                 tree.run_map [dataId] = key;
                 tree.node_map[key].setCustomIconVisible ( true );
@@ -1124,7 +1125,7 @@ JobTree.prototype.attachJobDialogs = function ( dlg_map,parent_page )  {
 }
 */
 
-JobTree.prototype.stopJob = function ( nodeId )  {
+JobTree.prototype.stopJob = function ( nodeId,gracefully_bool,callback_func )  {
 
   this.forceSingleSelection();
 
@@ -1141,40 +1142,69 @@ JobTree.prototype.stopJob = function ( nodeId )  {
     node_id = this.selected_node_id;
     word    = 'selected';
   }
-  data.meta = this.task_map[node_id];
-  data.job_token = data.meta.job_dialog_data.job_token;
+  data.meta       = this.task_map[node_id];
+  data.job_token  = data.meta.job_dialog_data.job_token;
+  data.gracefully = gracefully_bool;
 
-  if (data.meta.state==job_code.running)  {
+  var msg = [];
+  if (gracefully_bool)
+    msg = [ 'End Job',
+            'End ' + word + ' job ' + jobId +
+            '? Ending job may take long time, but obtained results<br>' +
+            '(if any) will be made available for subsequent jobs.<br>' +
+            'Once a job is ended, it cannot be resumed.',
+            'End',
+            'Job ' + jobId + ' is being ended' ];
+  else
+    msg = [ 'Stop Job',
+            'Stop ' + word + ' job ' + jobId +
+            '? Once a job is stopped, it cannot be resumed,<br>' +
+            'and no output data (even already obtained) can be<br>' +
+            'passed on subsequent jobs.',
+            'Stop',
+            'Job ' + jobId + ' is being stopped' ];
 
-    new QuestionBox ( 'Stop Job','Stop ' + word +
-                      ' job ' + jobId + '? Once a job is stopped, it ' +
-                      'cannot be resumed,<br>and no output data (even ' +
-                      'partially produced) can be<br>passed on ' +
-                      'subsequent jobs.','Stop',function(){
+  if ((data.meta.state==job_code.running) ||
+      ((data.meta.state==job_code.ending) && (!gracefully_bool)))  {
+
+    new QuestionBox ( msg[0],msg[1],msg[2],function(){
 
       // Raise the exiting state here, which will prevent requesting FE with
       // task update if the job dialog is currently opened and gets closed
       // before job actually terminates (see the close_btn listener in JobDialog).
       // This is necessary to enoforce, or this request may overwrite data
       // FE receives back from NC upon job termination.
-      data.meta.state = job_code.exiting;
+
+      if (gracefully_bool)  data.meta.state = job_code.ending;
+                      else  data.meta.state = job_code.exiting;
 
       if (data.meta.nc_type=='client')
            localCommand  ( nc_command.stopJob,data,data.meta.title,null );
       else serverRequest ( fe_reqtype.stopJob,data,data.meta.title,null,null,null );
 
       setTimeout ( function(){
-        new MessageBox ( 'Job ' + jobId + ' is being stopped',
-                         'Job ' + jobId + ' is being stopped, ' +
-                         'please wait a while.' );
+        new MessageBox ( msg[3],msg[3] + ', please wait a while.' );
       },100 );
+
+      if (callback_func)
+        callback_func ( 1 );
 
     },'Cancel',null );
 
+    if (callback_func)
+      callback_func ( 0 );
+
   } else  {
 
-    new MessageBox ( 'Stop Job','The job ' + jobId +
-                     ' is not running -- nothing to do.' );
+    if (data.meta.state==job_code.exiting)
+      new MessageBox ( msg[0],'The job ' + jobId +
+                              ' is in exit state -- please wait.' );
+    else if (data.meta.state==job_code.ending)
+      new MessageBox ( msg[0],'The job ' + jobId +
+                              ' is ending -- please wait.' );
+    else
+      new MessageBox ( msg[0],'The job ' + jobId +
+                       ' is not running -- nothing to do.' );
 
     if (node_id in this.node_map)
       this.node_map[node_id].setCustomIconVisible ( false );
@@ -1183,140 +1213,13 @@ JobTree.prototype.stopJob = function ( nodeId )  {
          localCommand  ( nc_command.stopJob,data,data.meta.title,null );
     else serverRequest ( fe_reqtype.stopJob,data,data.meta.title,null,null,null );
 
+    if (callback_func)
+      callback_func ( 2 );
+
   }
 
 }
 
-/*
-JobTree.prototype.openJob = function ( dataBox,parent_page )  {
-
-  if (this.selected_node_id)  {
-
-    this.forceSingleSelection();
-
-    if (this.selected_node_id in this.task_map)  {
-      (function(tree){
-
-        var nodeId = tree.selected_node_id;
-        var task   = tree.task_map[nodeId];
-        //var taskId = task.id;
-
-        if (task.id in tree.dlg_map)  {
-
-          $(tree.dlg_map[task.id].element).dialog('open');
-
-        } else  {
-
-          var dBox = dataBox;
-          if (!dBox)  {
-            if (task.isComplete())  {
-              // for completed task, compose dataBox from task's own fields,
-              // because tasks may be moved up the tree, in which case
-              // the composition of dataBox may also change
-              dBox = tree.getTaskDataBox ( task );
-            } else
-              dBox = tree.harvestTaskData ( 2,task.harvestedTaskIds );
-          }
-
-          var params       = {};
-          params.dataBox   = dBox;
-          //params.ancestors = tree.getAllAncestors ( tree.task_map[nodeId] );
-          params.ancestors = tree.getAllAncestors ( task );
-
-          var dlg = new JobDialog ( params,parent_page,
-
-            function(task_id){
-              // trigerred when job is launched
-
-              tree.run_map [task_id] = nodeId;
-              tree.node_map[nodeId ].setCustomIconVisible ( true );
-              tree.setNodeName ( nodeId,false );
-              tree.emitSignal ( cofe_signals.jobStarted,{
-                'nodeId' : nodeId,
-                'taskId' : task_id
-              });
-              tree.startTaskLoop();
-
-            },function(task_id){
-              // trigerred when job dialog is closed; remove dialog from the
-              // hash of opened job dialogs
-
-              tree.dlg_map = mapExcludeKey ( tree.dlg_map,task_id );
-
-            },function(task_id,reason,options){
-              // trigerred on custom events
-
-              switch (reason)  {
-                case job_dialog_reason.rename_node :
-                          dlg.job_edited = true;
-                          tree.setNodeName ( nodeId,false );
-                        break;
-                case job_dialog_reason.set_node_icon :
-                          dlg.job_edited = true;
-                          tree.setNodeIcon ( nodeId,false );
-                        break;
-                case job_dialog_reason.reset_node :
-                          tree.node_map[nodeId].setCustomIconVisible ( false );
-                          tree.resetNodeName ( nodeId );
-                        break;
-                case job_dialog_reason.select_node :
-                          tree.selectSingle ( tree.node_map[nodeId] );
-                        break;
-                case job_dialog_reason.stop_job :
-                          tree.stopJob ( nodeId );
-                        break;
-                case job_dialog_reason.tree_updated :
-                          tree.emitSignal ( cofe_signals.treeUpdated,{} );
-                        break;
-                case job_dialog_reason.add_job :
-                          tree.addJob ( false,false,dlg.parent_page,function(){
-                            dlg.close();
-                          });
-                        break;
-                case job_dialog_reason.clone_job :
-                          tree.cloneJob ( dlg.parent_page,function(){
-                            dlg.close();
-                          });
-                        break;
-                case job_dialog_reason.run_job :
-                          var dataBox          = tree.harvestTaskData ( 1,[] );
-                          var branch_task_list = tree.getAllAncestors ( tree.getSelectedTask() );
-                          tree._copy_task_cloud_path ( options,branch_task_list );
-                          tree._copy_task_parameters ( options,branch_task_list );
-                          var dataSummary = dataBox.getDataSummary ( options );
-                          if ((dataSummary.status==2) ||
-                              (('DataRevision' in dataBox.data) &&
-                               (dataBox.data.DataRevision.length==1))) {
-                            // unambiguous data -- just start the job
-                            options.onJobDialogStart = function ( job_dialog )  {
-                              job_dialog.run_btn.click();  // start automatically
-                            };
-                          }
-                          tree._add_job ( false,options,dataBox,dlg.parent_page,function(){
-                            dlg.close();
-                            //tree.dlg_map[options.id].run_btn.click();
-                          });
-                        break;
-                default : ;
-              }
-
-            });
-
-          // put dialog reference in the hash of opened job dialogs
-          tree.dlg_map[dlg.task.id] = dlg;
-
-        }
-
-      }(this));
-
-    }
-
-  } else {
-    alert ( ' no selection in the tree! ' );
-  }
-
-}
-*/
 
 JobTree.prototype.openJob = function ( dataBox,parent_page )  {
 
@@ -1394,7 +1297,19 @@ JobTree.prototype.openJob = function ( dataBox,parent_page )  {
                         dlg.tree.selectSingle ( dlg.tree.node_map[dlg.nodeId] );
                       break;
               case job_dialog_reason.stop_job :
-                        dlg.tree.stopJob ( dlg.nodeId );
+                        dlg.tree.stopJob ( dlg.nodeId,false,function(key){
+                          if (key)  {
+                            if (dlg.end_btn)
+                              dlg.end_btn.setDisabled ( true );
+                            dlg.stop_btn.setDisabled ( true );
+                          }
+                        });
+                      break;
+              case job_dialog_reason.end_job :
+                        dlg.tree.stopJob ( dlg.nodeId,true,function(key){
+                          if (key)
+                            dlg.end_btn.setDisabled ( true );
+                        });
                       break;
               case job_dialog_reason.tree_updated :
                         dlg.tree.emitSignal ( cofe_signals.treeUpdated,{} );

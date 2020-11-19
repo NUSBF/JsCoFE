@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    18.11.20   <--  Date of Last Modification.
+ *    19.11.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -32,6 +32,7 @@ var job_dialog_reason = {
   reset_node    : 'reset_node',     // reset  job node label
   select_node   : 'select_node',    // select job node
   stop_job      : 'stop_job',       // stop job
+  end_job       : 'end_job',        // end job gracefully
   tree_updated  : 'tree_updated',   // job tree should be updated
   add_job       : 'add_job',        // add job from task list
   clone_job     : 'clone_job',      // clone job
@@ -210,7 +211,8 @@ JobDialog.prototype.setDlgState = function()  {
   var isNew     = (this.task.state==job_code.new)    ||
                   (this.task.state==job_code.remark) ||
                   (this.task.state==job_code.remdet);
-  var isRunning = (this.task.state==job_code.running);
+  var isRunning = (this.task.state==job_code.running) ||
+                  (this.task.state==job_code.ending);
 
   if (this.inputPanel)  {
     this.inputPanel.setDisabledAll ( !isNew );
@@ -231,30 +233,14 @@ JobDialog.prototype.setDlgState = function()  {
       dlg.ind_timer = window.setTimeout ( function(){
         if (dlg.run_image) dlg.run_image.setVisible ( true );
         if (dlg.stop_btn)  dlg.stop_btn .setVisible ( true );
+        if (dlg.end_btn)   dlg.end_btn  .setVisible ( true );
       },1000 );
     }(this));
   } else  {
     if (this.run_image) this.run_image.setVisible ( isRunning );
     if (this.stop_btn)  this.stop_btn .setVisible ( isRunning );
+    if (this.end_btn)   this.end_btn  .setVisible ( isRunning );
   }
-
-  //if (this.status_lbl)
-  //  this.status_lbl.setVisible  ( (!isNew) && (!isRunning) );
-  /*
-  var msg = '';
-  switch (this.task.state)  {
-//    case job_code.finished :  msg = 'Job completed';          break;
-    case job_code.finished  :
-    case job_code.noresults :  msg = '&nbsp;';                 break;
-//    case job_code.noresults :  msg = 'Job completed';          break;
-    case job_code.failed    :  msg = 'Job failed';             break;
-    case job_code.stopped   :  msg = 'Job terminated by user'; break;
-    //case job_code.remdoc   :  this.toolBar   .setVisible ( false );
-    //                          this.toolBarSep.setVisible ( false );
-    //                      break;
-    default : ;
-  }
-  */
 
   var title = '';
   if (this.task.uname.length>0)  title += this.task.uname;
@@ -466,22 +452,21 @@ JobDialog.prototype.makeToolBar = function()  {
   this.col = 3;
   this.run_image  = this.toolBar.setImage  ( './images_com/activity.gif',
                                              '36px','36px', 0,this.col++, 1,1 );
-  //this.stop_btn   = this.addToolBarButton  ( false,'stopjob','Stop job' );
-  this.stop_btn   = this.toolBar.setButton ( 'Stop',image_path('stopjob'),
-                                             0,this.col++, 1,1 )
-                                .setTooltip('Stop job' );
-
-  //this.status_lbl = this.toolBar.setLabel  ( '', 0,col, 1,1 ).setNoWrap();
-  //this.toolBar.setVerticalAlignment ( 0,col++,'middle' );
-
-  //this.done_sign  = this.toolBar.setImage (
-  //                        image_path('job_done'),'34px','34px',0,col++,1,1
-  //                  ).setTooltip('Job completed');
-  //this.nores_sign = this.toolBar.setImage (
-  //                        image_path('job_noresults'),'34px','34px',0,col++,1,1
-  //                  ).setTooltip('Job completed with no results ' +
-  //                               'that can be passed to subsequent jobs');
-  //this.toolBar.setLabel   ( '&nbsp;&nbsp;', 0,col++, 1,1 ).setNoWrap();
+  if (this.task.canEndGracefully())
+    this.end_btn = this.toolBar.setButton ( 'End',image_path('endjob'),
+                                           0,this.col++, 1,1 )
+                               .setTooltip('End the job gracefully. This may take a ' +
+                                           'long time, but will make obtaned ' +
+                                           'results available for subsequent ' +
+                                           'jobs. Once stopped, a job cannot ' +
+                                           'be resumed' );
+  else
+    this.end_btn = null;
+  this.stop_btn = this.toolBar.setButton ( 'Stop',image_path('stopjob'),
+                                           0,this.col++, 1,1 )
+                              .setTooltip('Stop the job immediately. Obtained ' +
+                                          'results will be kept for inspection ' +
+                                          'but unavailable for subsequent jobs.');
 
   (function(dlg){
     dlg.hot_btn  = [];
@@ -492,14 +477,6 @@ JobDialog.prototype.makeToolBar = function()  {
       var avail_key = task_obj.isTaskAvailable();
       if (avail_key[0]=='ok')
         (function(task){
-//          var hbtn = dlg.toolBar.setButton ( '',image_path(task_obj.icon()),
-//                                            0,col++, 1,1 )
-//                                .setSize('34px','34px').setTooltip(hot_list[i].tooltip)
-//                                .addOnClickListener ( function(){
-//                                  dlg.onDlgSignal_func ( dlg.task.id,
-//                                                         job_dialog_reason.run_job,
-//                                                         task );
-//                                });
           var hbtn = dlg.addToolBarButton ( gap,task_obj.icon(),hot_list[i].tooltip )
                         .addOnClickListener ( function(){
                           //dlg.onDlgSignal_func ( dlg.task.id,
@@ -510,22 +487,6 @@ JobDialog.prototype.makeToolBar = function()  {
           dlg.hot_btn.push ( hbtn );
         }(task_obj))
     }
-    /*
-    dlg.addjob_btn = dlg.toolBar.setButton ( '',image_path('add'), 0,col++, 1,1 )
-                                .setSize('34px','34px').setTooltip('Add next job')
-                                .addOnClickListener ( function(){
-                                  dlg.onDlgSignal_func ( dlg.task.id,
-                                                         job_dialog_reason.add_job,
-                                                         null );
-                                });
-    dlg.clone_btn  = dlg.toolBar.setButton ( '',image_path('clonejob'), 0,col++, 1,1 )
-                                .setSize('34px','34px').setTooltip('Clone job')
-                                .addOnClickListener ( function(){
-                                  dlg.onDlgSignal_func ( dlg.task.id,
-                                                         job_dialog_reason.clone_job,
-                                                         null );
-                                });
-    */
     dlg.addjob_btn = dlg.addToolBarButton ( gap,'add','Add next job' )
                         .addOnClickListener ( function(){
                           //dlg.onDlgSignal_func ( dlg.task.id,
@@ -588,6 +549,7 @@ JobDialog.prototype.makeLayout = function ( onRun_func )  {
     this.run_btn    = null;
     this.run_image  = null;
     this.stop_btn   = null;
+    this.end_btn    = null;
     //this.status_lbl = null;
     this.newtab_btn = null;
     this.export_btn = null;
@@ -766,8 +728,12 @@ JobDialog.prototype.makeLayout = function ( onRun_func )  {
 
     if (dlg.stop_btn)
       dlg.stop_btn.addOnClickListener ( function(){
-        //dlg.onDlgSignal_func ( dlg.task.id,job_dialog_reason.stop_job,null );
         dlg.onDlgSignal_func ( dlg,job_dialog_reason.stop_job,null );
+      });
+
+    if (dlg.end_btn)
+      dlg.end_btn.addOnClickListener ( function(){
+        dlg.onDlgSignal_func ( dlg,job_dialog_reason.end_job,null );
       });
 
     if (dlg.newtab_btn)
@@ -814,6 +780,7 @@ JobDialog.prototype.makeLayout = function ( onRun_func )  {
     if (dlg.close_btn)
       dlg.close_btn.addOnClickListener ( function(){
         if ((dlg.task.state!=job_code.running) &&
+            (dlg.task.state!=job_code.ending)  &&
             (dlg.task.state!=job_code.exiting))  {
           dlg.collectTaskData ( true );
           dlg.requestServer   ( fe_reqtype.saveJobData,function(rdata){
