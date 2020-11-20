@@ -181,11 +181,11 @@ def srf(driver):
     ratio1 = size1['width'] / size1['height']
 
     print('*** Verification: Figure1 size is %0.1f x %0.1f (expecting >50, >100), ' \
-          'ratio is %0.2f (expecting >0.55, <0.7)' % (size1['width'], size1['height'], ratio1))
+          'ratio is %0.2f (expecting >0.4, <0.7)' % (size1['width'], size1['height'], ratio1))
 
     assert size1['width'] > 50
     assert size1['height'] > 100
-    assert ratio1 > 0.55
+    assert ratio1 > 0.4
     assert ratio1 < 0.7
 
     # SWITCHING FRAME BACK!
