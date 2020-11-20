@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    19.11.20   <--  Date of Last Modification.
+ *    20.11.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -302,6 +302,7 @@ function cleanNC ( cleanDeadJobs_bool )  {
 
   // start job check loop
 
+  writeNCJobRegister();
   startJobCheckTimer();
 
 }
@@ -1239,8 +1240,10 @@ function ncWakeZombiJobs ( post_data_obj,callback_func )  {
         nzombies++;
   }
   log.standard ( 30,nzombies + ' zombi job(s) awaken on request' );
-  if (nzombies>0)
+  if (nzombies>0)  {
+    writeNCJobRegister();
     startJobCheckTimer();
+  }
   callback_func ( new cmd.Response ( cmd.nc_retcode.ok,
                            '[00130] ' + nzombies + ' zombi job(s) awaken',
                            {nzombies:nzombies} ) );

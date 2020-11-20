@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    11.10.20   <--  Date of Last Modification.
+ *    20.11.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -421,7 +421,6 @@ function runJob ( loginData,data, callback_func )  {
 
     send_dir.packDir ( jobDir,'*',null, function(code,jobballSize){
 
-      //if (code==0)  {
       if (!code)  {
 
         utils.writeJobReportMessage ( jobDir,'<h1>Running on client ...</h1>' +

@@ -3,9 +3,32 @@ CCP4 Cloud Version Log
 ======================
 
 
+
+**Version 1.6.017**
+
+    *Released on --.--.2020 with CCP4 7.1.009*
+
+    **Changes and new features**
+
+    #. Fixed a bug blocking addition of new tasks after placing ``Remark`` at project's top
+
+    #. ``Change Resolution`` task fixed to allow the subsequent job tree development
+
+    #. Fixed a bug in ``Phaser-MR`` task, causing the task to fail under certain circumstances
+
+    #. ``Import from PDB`` and ``Model Preparation from Alignment Data`` tasks will now switch to downloading CIF-formatted files from the PDB if PDB format for the requested PDB entry is not available (typical for large structures with 2-character chain IDs)
+
+    #. CCP4mg buttons in task reports are now hidden when no CCP4 Cloud Client is running
+
+    #. ``CCP4Build`` task can be stopped gracefully, without losing already calculated results
+
+    #. Documentation updates
+
+
+
 **Version 1.6.016**
 
-    *Released on --.--.2020 with CCP4 7.1.008*
+    *Released on 12.11.2020 with CCP4 7.1.008*
 
     **Changes and new features**
 
