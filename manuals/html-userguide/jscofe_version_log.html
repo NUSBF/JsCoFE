@@ -50,9 +50,23 @@
         
   <div class="section" id="ccp4-cloud-version-log">
 <h1>8. CCP4 Cloud Version Log<a class="headerlink" href="#ccp4-cloud-version-log" title="Permalink to this headline">¶</a></h1>
+<p><strong>Version 1.6.017</strong></p>
+<blockquote>
+<div><p><em>Released on &#8211;.&#8211;.2020 with CCP4 7.1.009</em></p>
+<p><strong>Changes and new features</strong></p>
+<ol class="arabic simple">
+<li>Fixed a bug blocking addition of new tasks after placing <code class="docutils literal"><span class="pre">Remark</span></code> at project&#8217;s top</li>
+<li><code class="docutils literal"><span class="pre">Change</span> <span class="pre">Resolution</span></code> task fixed to allow the subsequent job tree development</li>
+<li>Fixed a bug in <code class="docutils literal"><span class="pre">Phaser-MR</span></code> task, causing the task to fail under certain circumstances</li>
+<li><code class="docutils literal"><span class="pre">Import</span> <span class="pre">from</span> <span class="pre">PDB</span></code> and <code class="docutils literal"><span class="pre">Model</span> <span class="pre">Preparation</span> <span class="pre">from</span> <span class="pre">Alignment</span> <span class="pre">Data</span></code> tasks will now switch to downloading CIF-formatted files from the PDB if PDB format for the requested PDB entry is not available (typical for large structures with 2-character chain IDs)</li>
+<li>CCP4mg buttons in task reports are now hidden when no CCP4 Cloud Client is running</li>
+<li><code class="docutils literal"><span class="pre">CCP4Build</span></code> task can be stopped gracefully, without losing already calculated results</li>
+<li>Documentation updates</li>
+</ol>
+</div></blockquote>
 <p><strong>Version 1.6.016</strong></p>
 <blockquote>
-<div><p><em>Released on &#8211;.&#8211;.2020 with CCP4 7.1.008</em></p>
+<div><p><em>Released on 12.11.2020 with CCP4 7.1.008</em></p>
 <p><strong>Changes and new features</strong></p>
 <ol class="arabic simple">
 <li>VDW repulsion weight parameter added in <code class="docutils literal"><span class="pre">Refmac</span></code> task</li>
