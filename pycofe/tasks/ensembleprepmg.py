@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    09.02.20   <--  Date of Last Modification.
+#    24.11.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -116,6 +116,7 @@ class EnsemblePrepMG(basic.TaskDriver):
                           any(fn.startswith(pref) for pref in ["output"]) ]
 
         have_results = False
+        ensNo        = 0
 
         self.rvrow = rvrow0
         if len(filelist)<=0:
@@ -163,6 +164,7 @@ class EnsemblePrepMG(basic.TaskDriver):
                     self.putEnsembleWidget ( self.getWidgetId("ensemble"),"Coordinates",
                                              ensemble,openState=-1 )
                     have_results = True
+                    ensNo += 1
 
                 else:
                     self.putMessage ( "<h3>Error</h3><i>Ensemble object could not be formed</i><p>" +\
@@ -171,6 +173,12 @@ class EnsemblePrepMG(basic.TaskDriver):
         shutil.rmtree ( self.mrbump_dir() )
 
         self.removeCitation ( "ccp4mg" )
+
+        # this will go in the project tree job's line
+        if ensNo>0:
+            self.generic_parser_summary["ensembleprepmg"] = {
+              "summary_line" : str(ensNo) + " ensemble(s) generated "
+            }
 
         # close execution logs and quit
         self.success ( have_results )

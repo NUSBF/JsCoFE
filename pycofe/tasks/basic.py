@@ -1983,9 +1983,6 @@ class TaskDriver(object):
         self.file_stdout .write ( msg + "\n" )
         self.file_stdout1.write ( msg + "\n" )
         self.file_stderr .write ( msg + "\n" )
-        self.file_stdout .close ()
-        self.file_stdout1.close ()
-        self.file_stderr .close ()
         raise signal.JobFailure ( signalMessage )
 
     def python_fail_tab ( self ):

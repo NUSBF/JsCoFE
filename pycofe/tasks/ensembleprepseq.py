@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    15.04.20   <--  Date of Last Modification.
+#    24.11.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -29,6 +29,7 @@
 #  python native imports
 import os
 import sys
+import json
 import time
 
 #  ccp4-python imports
@@ -133,7 +134,12 @@ class EnsemblePrepSeq(basic.TaskDriver):
         time.sleep(1)
 
         search_dir   = "search_" + self.outdir_name()
+
+        with open(os.path.join(search_dir,"logs","programs.json")) as json_file:
+            self.addCitations ( json.loads(json_file.read()) )
+
         have_results = False
+        ensNo        = 0
 
         if os.path.isdir(search_dir):
 
@@ -218,6 +224,7 @@ class EnsemblePrepSeq(basic.TaskDriver):
                                                 "ensemble_"  + str(ensembleSerNo) + "_btn",
                                                 "Coordinates",ensemble,-1,secrow+5,1 )
                                             have_results = True
+                                            ensNo += 1
 
                                         else:
                                             self.putMessage1 ( secId,
@@ -237,6 +244,12 @@ class EnsemblePrepSeq(basic.TaskDriver):
                 self.putTitle ( "No models found" )
 
         time.sleep(1)
+
+        # this will go in the project tree job's line
+        if ensNo>0:
+            self.generic_parser_summary["ensembleprepseq"] = {
+              "summary_line" : str(ensNo) + " ensemble(s) generated"
+             }
 
         # close execution logs and quit
         self.success ( have_results )

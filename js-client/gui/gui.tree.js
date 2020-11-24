@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    13.04.20   <--  Date of Last Modification.
+ *    24.11.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -64,15 +64,15 @@
  *      function deselectNode     ( node );
  *      function deselectNodeById ( nodeId );
  *      function selectSingleById ( nodeId );
- *      function forceSingleSelection();
- *      function setText          ( node,text );
- *      function setIcon          ( node,icon_uri );
- *      function setStyle         ( treeNode,style_str,propagate_int );
+ *      function forceSingleSelection ();
+ *      function setText              ( node,text );
+ *      function setIcon              ( node,icon_uri );
+ *      function setStyle             ( treeNode,style_str,propagate_int );
  *      function confirmCustomIconsVisibility();
- *      function deleteNode       ( node );
- *      function deleteBranch     ( node );
- *      function createTree       ( onReady_func   ,onContextMenu_func,
- *                                  onDblClick_func,onSelect_func );
+ *      function deleteNode           ( node );
+ *      function deleteBranch         ( node );
+ *      function createTree           ( onReady_func   ,onContextMenu_func,
+ *                                      onDblClick_func,onSelect_func );
  *      function refresh              ();
  *      function calcSelectedNodeId   ();
  *      function getSelectedNodeId    ();
@@ -84,6 +84,9 @@
  *      function deleteSelectedNode   ();
  *      function moveSelectedNodeUp   ();
  *      function deleteSelectedNodes  ();
+ *      function canMakeFolder        ();
+ *      function makeFolder           ( text,icon_uri ); // works on current selection
+ *      function unfoldFolder         ();                // works on current selection
  *
  *   }
  *
@@ -104,9 +107,15 @@ function TreeNodeCustomIcon ( uri,width,height,state )  {
 // ===========================================================================
 // TreeNode class
 
+function __get_tree_node_id()  {
+  return 'treenode_' + padDigits(__id_cnt++,5);  // node element id (unstable)
+}
+
 function TreeNode ( text,icon_uri,treeNodeCustomIcon )  {
-  this.id             = 'treenode_' + padDigits(__id_cnt++,5);  // node element id (unstable)
+  this.id             = __get_tree_node_id();  // node element id (unstable)
   this.parentId       = null;           // parent node element id (unstable)
+  this.folderId       = null;           // encapsulating folder Id
+  this.fchildren      = [];             // folder's children
   this.text           = text;           // node text
   this.text0          = text;
   this.highlightId    = 0;
@@ -209,6 +218,7 @@ function Tree ( rootName )  {
   this.addWidget ( this.root );
   this.root_nodes = [];       //
   this.node_map   = {};       // node_map[nodeId] == TreeNode
+  this.folder_map = {};       // folder_map[nodeId] == [TreeNodes] (nodes in folder)
   this.created    = false;    // true if tree was instantiated
 //  this.multiple   = false;    // single node selection
   this.selected_node_id = '';
@@ -216,6 +226,9 @@ function Tree ( rootName )  {
   this.deleteChildren = function ( node )  {  // private
 
     for (var i=0;i<node.children.length;i++)  {
+      for (var j=0;j<node.children[i].fchildren.length;j++)
+        this.node_map[node.children[i].fchildren[j].id] = null;
+      node.children[i].fchildren = [];
       this.deleteChildren ( node.children[i] );
       this.node_map[node.children[i].id] = null;
     }
@@ -224,13 +237,26 @@ function Tree ( rootName )  {
 
   }
 
-
+  /*
   this.mapNodes = function ( node )  {  // private
     this.node_map[node.id] = node;
     for (var i=0;i<node.children.length;i++)
       this.mapNodes ( node.children[i] );
   }
+  */
 
+  this.__set_fchildren = function ( node,fchildren )  {
+    for (var i=0;i<fchildren.length;i++)  {
+      var fnode = new TreeNode ( '','',null );
+      if (fchildren[i].fchildren.length>0)
+        this.__set_fchildren ( fnode,fchildren[i].fchildren );
+      else  {
+        fnode.copy ( fchildren[i] );
+        node.fchildren.push ( fnode );
+        this.node_map[fnode.id] = fnode;
+      }
+    }
+  }
 
   this.setNode = function ( parent_node, node_obj )  {
     var node = new TreeNode ( '','',null );
@@ -238,6 +264,15 @@ function Tree ( rootName )  {
     node.parentId  = parent_node.id;
     parent_node.children.push ( node );
     this.node_map[node.id] = node;
+    if ('fchildren' in node_obj)  {
+      for (var i=0;i<node_obj.fchildren.length;i++)  {
+        var fnode = new TreeNode ( '','',null );
+        fnode.copy ( node_obj.fchildren[i] );
+        node.fchildren.push ( fnode );
+        this.node_map[fnode.id] = fnode;
+      }
+    }
+    //  this.setNode ( node,node_obj.fchildren[i] );
     for (var i=0;i<node_obj.children.length;i++)
       this.setNode ( node,node_obj.children[i] );
     if (node.state.selected)  {
@@ -298,9 +333,11 @@ Tree.prototype.insertNode = function ( parent_node,text,icon_uri,treeNodeCustomI
       children[i].parentId = node.id;
     this.node_map[node.id] = node;
     if (this.created)  {
+      var node_data = node.data;
       $(this.root.element).jstree(true).create_node('#'+parent_node.id,node,'last',false,false);
       $(this.root.element).jstree(true).move_node(children,node,'last',false,false);
-      node.data = treeNodeCustomIcon;  // this gets lost, duplicate, jstree bug
+      //node.data = treeNodeCustomIcon;  // this gets lost, duplicate, jstree bug
+      node.data     = node_data;   // this gets lost, duplicate, jstree bug
       node.children = children;
       //this.refresh();
       //$(this.root.element).jstree().refresh(function(){});
@@ -448,6 +485,9 @@ Tree.prototype.moveNodeUp = function ( node )  {
 Tree.prototype.setNodes = function ( nodes )  {
 // Recreation from stringifying this.root_nodes, should be applied only to new
 // tree. The argument is array of root nodes JSON.parsed from storage string.
+
+  this.root_nodes = [];       //
+  this.node_map   = {};       // node_map[nodeId] == TreeNode
 
   for (var i=0;i<nodes.length;i++)  {
     var node = new TreeNode ( '','',null );
@@ -603,7 +643,8 @@ Tree.prototype.clear = function()  {
 
   for (var i=0;i<this.root_nodes.length;i++)  {
     this.deleteChildren ( this.root_nodes[i] );
-    $(this.root.element).jstree(true).delete_node('#'+this.root_nodes[i].id);
+//    $(this.root.element).jstree(true).delete_node('#'+this.root_nodes[i].id);
+    $(this.root.element).jstree(true).delete_node([this.root_nodes[i]]);
   }
 
   this.root_nodes = [];       //
@@ -654,7 +695,8 @@ Tree.prototype.deleteNode = function ( node )  {
 //    $(this.root.element).jstree(true).move_node(node.children,pnode,'last',false,false);
     $(this.root.element).jstree(true).move_node(node.children,pnode,selNo,false,false);
     // remove node from tree
-    $(this.root.element).jstree(true).delete_node('#'+node.id);
+    //$(this.root.element).jstree(true).delete_node('#'+node.id);
+    $(this.root.element).jstree(true).delete_node([node]);
     this.confirmCustomIconsVisibility();
     if (pnode.children.length>0)
           this.selectSingle ( pnode.children[0] );
@@ -706,7 +748,8 @@ Tree.prototype.deleteBranch = function ( node )  {
     }
   }
 
-  $(this.root.element).jstree(true).delete_node('#'+node.id);
+  //$(this.root.element).jstree(true).delete_node('#'+node.id);
+  $(this.root.element).jstree(true).delete_node([node.id]);
 
   this.confirmCustomIconsVisibility();
 
@@ -738,6 +781,7 @@ $.jstree.plugins.addHTML = function ( options,parent ) {
     return obj;
   };
 };
+
 
 $.jstree.defaults.addHTML = {};
 
@@ -948,5 +992,118 @@ var selId = this.calcSelectedNodeId();
     var snode = this.node_map[selId[i]];
     if (snode)
       this.deleteBranch ( snode );
+  }
+}
+
+
+Tree.prototype.canMakeFolder = function()  {
+  return this.canMakeFolder1 ( this.calcSelectedNodeId() );
+}
+
+Tree.prototype.canMakeFolder1 = function ( sel_lst )  {
+// returns true if more than one job is selected on a linear branch
+  if (sel_lst.length>1)  {
+    sel_lst.sort();
+    if (this.node_map[sel_lst[0]].parentId)  {
+      sel_lst.reverse();
+      var can_make = true;
+      for (var i=1;(i<sel_lst.length) && can_make;i++)  {
+        var node = this.node_map[sel_lst[i-1]];
+        can_make = (node.children.length==1) && (node.parentId==sel_lst[i]);
+      }
+      return can_make && (this.node_map[sel_lst[sel_lst.length-1]].children.length==1);
+    }
+  }
+  return false;
+}
+
+
+Tree.prototype.makeFolder = function ( text,icon_uri )  {
+  this.makeFolder1 ( this.calcSelectedNodeId(),text,icon_uri );
+}
+
+
+Tree.prototype.makeFolder1 = function ( sel_list,text,icon_uri )  {
+// make a folder node and places currently selected nodes in it; current selction
+// must be validated with canMakeFolder() before using this function
+  $(this.root.element).jstree('deselect_all');
+  sel_list.sort();
+  // make sure that there are no repeat ids!
+  var sel_lst = [sel_list[0]];
+  for (var i=1;i<sel_list.length;i++)
+    if (sel_list[i]!=sel_list[i-1])
+      sel_lst.push ( sel_list[i] );
+  var node = this.node_map[sel_lst[0]];
+  var name = text;
+  if (name)
+    name += ' ';
+  name += sel_lst.length + ' jobs archived';
+  var folder_node = new TreeNode ( name,icon_uri,null );
+  var pnode = this.node_map[node.parentId];
+  for (var i=0;i<pnode.children.length;i++)
+    if (pnode.children[i].id==node.id)  {
+      pnode.children[i] = folder_node;
+      break;
+    }
+  folder_node.parentId = pnode.id;
+  for (var i=0;i<sel_lst.length;i++)  {
+    node = this.node_map[sel_lst[i]];
+    node.folderId = folder_node.id;
+    node.state.selected = false;
+    folder_node.fchildren.push ( node );
+    $(this.root.element).jstree(true).delete_node([node]);
+  }
+  this.node_map[folder_node.id] = folder_node;
+  node = this.node_map[sel_lst[sel_lst.length-1]].children[0];
+  folder_node.children = [node];
+  node.parentId = folder_node.id;
+  this.confirmCustomIconsVisibility();
+  this.refresh();
+  (function(tree,fnode){
+    window.setTimeout ( function(){
+      tree.selectSingle ( fnode );
+      tree.refresh();
+    },0);
+  }(this,folder_node));
+}
+
+Tree.prototype.unfoldFolder = function()  {
+var snode = this.getSelectedNode();
+  var fchildren = snode.fchildren;
+  if (fchildren.length>0)  {
+    $(this.root.element).jstree('deselect_all');
+    var pnode = this.node_map[snode.parentId];
+    var cnode = snode.children[0];
+    for (var i=0;i<fchildren.length;i++)  {
+      var node = new TreeNode ( '','',null );
+      node.copy ( fchildren[i] );
+      node.id = fchildren[i].id;
+      node.parentId  = pnode.id;
+      node.folderId  = null;
+      node.state.selected = false;
+      this.node_map[node.id] = node;  // because new node instance was obtained
+      if (i>0)
+        pnode.children = [node];
+      else  {
+        for (var j=0;j<pnode.children.length;j++)
+          if (pnode.children[j].id==snode.id)  {
+            pnode.children[j] = node;
+            break;
+          }
+      }
+      pnode = node;
+    }
+    cnode.parentId = pnode.id;
+    pnode.children = [cnode];
+    $(this.root.element).jstree(true).delete_node([snode]);
+    this.confirmCustomIconsVisibility();
+    this.refresh();
+    (function(tree,fch){
+      window.setTimeout ( function(){
+        for (var i=0;i<fch.length;i++)
+          tree.selectNode ( tree.node_map[fch[i].id],(i<=0) );
+        tree.refresh();
+      },0);
+    }(this,fchildren));
   }
 }

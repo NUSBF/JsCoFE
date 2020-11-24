@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    07.11.20   <--  Date of Last Modification.
+ *    21.11.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -87,10 +87,12 @@ function AccountPage ( sceneId )  {
   var pwd1_inp     = new InputText ( '' );
 
   //user_inp    .setStyle   ( 'text',"^[A-Za-z\\-\\.\\s]+$",'John Smith',
-  user_inp    .setStyle   ( 'text',"^[\w'\-,.][^0-9_!¡?÷?¿/\\+=@#$%ˆ&*(){}|~<>;:[\]]{2,}$",
-                            'John Smith',
-                            'User name should only contain latin ' +
-                            'letters, numbers,\n dots, dashes and spaces' );
+  //user_inp    .setStyle   ( 'text',"^[\w'\-,.][^0-9_!¡?÷?¿/\\+=@#$%ˆ&*(){}|~<>;:[\]]{2,}$",
+  //                          'User name should only contain latin ' +
+  //                          'letters, numbers,\n dots, dashes and spaces' );
+  user_inp    .setStyle   ( 'text','','John Smith',
+                            'This name will be used for addressing to you in\n' +
+                            'web-pages and e-mails' );
   email_inp   .setStyle   ( 'email','','john.smith@university.ac.uk',
                             'Should be a valid e-mail address, at which ' +
                             'your\n new password will be sent' );
