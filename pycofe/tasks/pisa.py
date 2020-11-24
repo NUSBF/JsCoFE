@@ -68,8 +68,6 @@ class PISA(basic.TaskDriver):
         reportDir = os.path.join ( os.getcwd(),self.reportDir() )
         shutil.copy ( xyzPath,reportDir )
 
-
-        # make command-line parameters for bare morda run on a SHELL-type node
         cmd = [ "-process-all",xyzPath,reportDir,
                 "--rvapi-doc",self.reportDocumentName() ]
         if len(xyz.exclLigs)>0:

@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    12.02.20   <--  Date of Last Modification.
+#    24.11.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -326,7 +326,7 @@ class PhaserEP(basic.TaskDriver):
         # prepare report parser
         self.setGenericLogParser ( self.phaser_report(),True )
 
-        # Start mrbump
+        # Start phaser
         self.runApp ( "phaser",cmd,logType="Main" )
         self.unsetLogParser()
 

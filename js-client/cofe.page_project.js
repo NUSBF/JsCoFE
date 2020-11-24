@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    19.11.20   <--  Date of Last Modification.
+ *    23.11.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -45,6 +45,7 @@ function ProjectPage ( sceneId )  {
   //var insert_btn    = null;
   var moveup_btn     = null;
   var del_btn        = null;
+  var archive_btn     = null;
   var open_btn       = null;
   var stop_btn       = null;
   var clone_btn      = null;
@@ -104,6 +105,63 @@ function ProjectPage ( sceneId )  {
     jobTree.deleteJob ( setButtonState );
   }
 
+  function archiveJobs() {
+    var adata = jobTree.selectArchiveJobs();
+    var save  = false;
+    if (adata[0]==1)  {
+      if (adata[1].length<=0)  {
+        jobTree.makeFolder1 ( adata[2],'',image_path('folder_jobtree') );
+        save = true;
+      } else if (adata[2].length<=0)  {
+        jobTree.makeFolder1 ( adata[1],'',image_path('folder_jobtree') );
+        save = true;
+      } else  {
+        var qdlg = new Dialog('Archive direction');
+        var grid = new Grid('');
+        qdlg.addWidget ( grid );
+        grid.setLabel ( '<h2>Archive direction</h2>' +
+                        'You can choose to archive suitable jobs which are<br>' +
+                        '(selected job included):<br>&nbsp;',0,0,1,3 );
+        var above_cbx = grid.setCheckbox ( 'above currently selected',false,1,1,1,1 );
+        var below_cbx = grid.setCheckbox ( 'below currently selected',true, 2,1,1,1 );
+        grid.setLabel ( '&nbsp;<br>Make your choice and click <b><i>Archive</i></b> ' +
+                        'button.',3,0,1,3 );
+        qdlg._options.buttons = {
+          "Archive" : function() {
+                        var nodelist = [];
+                        if (above_cbx.getValue())
+                          nodelist = adata[1];
+                        if (below_cbx.getValue())  {
+                          nodelist = nodelist.concat ( adata[2] );
+                        }
+                        if (nodelist.length<=0)
+                          new MessageBox (
+                              'Empty selection',
+                              '<h2>Empty selection</h2>' +
+                              'At least one checkbox must be checked<br>' +
+                              'for acrhiving.'
+                          );
+                        else  {
+                          $( this ).dialog( 'close' );
+                          jobTree.makeFolder1 ( nodelist,'',
+                                                image_path('folder_jobtree') );
+                          jobTree.saveProjectData ( [],[],true, null );
+                        }
+                      },
+          "Cancel"  : function() {
+                        $( this ).dialog( "close" );
+                      }
+        };
+        qdlg.launch();
+      }
+    } else if (adata[0]==2)  {
+      jobTree.unfoldFolder();
+      save = true;
+    }
+    if (save)
+      jobTree.saveProjectData ( [],[],true, null );
+  }
+
   function openJob() {
     jobTree.openJob ( null,self );
   }
@@ -128,8 +186,9 @@ function ProjectPage ( sceneId )  {
 
     if (node)
       dsel = (node.parentId!=null);
-    open_btn.setEnabled ( dsel );
-    del_btn .setEnabled ( dsel );
+    open_btn   .setEnabled ( dsel );
+    del_btn    .setEnabled ( dsel );
+    archive_btn.setEnabled ( (jobTree.selectArchiveJobs()[0]>0) );
 
     if (task)  {
       var is_remark   = task.isRemark();
@@ -151,10 +210,10 @@ function ProjectPage ( sceneId )  {
             del_btn.setTooltip ( 'Delete remark' );
       else  del_btn.setTooltip ( 'Delete job' );
     } else  {  // root
-      add_btn   .setEnabled ( !__dormant );
-      clone_btn .setEnabled ( false );  // dsel ???
-      moveup_btn.setEnabled ( false );
-      stop_btn  .setEnabled ( false );
+      add_btn    .setEnabled ( !__dormant );
+      clone_btn  .setEnabled ( false );  // dsel ???
+      moveup_btn .setEnabled ( false );
+      stop_btn   .setEnabled ( false );
       add_rem_btn.setEnabled ( (!__dormant) && (!has_remark) );
     }
     thlight_btn.setEnabled ( true );
@@ -261,10 +320,22 @@ function ProjectPage ( sceneId )  {
       new MessageBox ( 'No Project','No Project loaded' );
   }
 
+  /*
+  function makeFolder() {
+    jobTree.makeFolder ( '',image_path('folder_jobtree') );
+    jobTree.saveProjectData ( [],[],true, null );
+  }
+
+  function unfoldFolder() {
+    jobTree.unfoldFolder();
+    jobTree.saveProjectData ( [],[],true, null );
+  }
+  */
+
   function onTreeContextMenu(node) {
     // The default set of all items
-
-    var items  = {};
+    var items = {};
+    var node  = jobTree.getSelectedNode();
 
     if (!$(add_btn.element).button('option','disabled'))  {
       items.addJobItem = { // The "Add job" menu item
@@ -272,7 +343,6 @@ function ProjectPage ( sceneId )  {
         icon  : image_path('add'),
         action: addJob
       };
-      var node = jobTree.getSelectedNode();
       if (node.parentId)
         items.addJobRepeatItem = { // The "Add job" menu item
           label : "Add job with last used parameters",
@@ -338,6 +408,39 @@ function ProjectPage ( sceneId )  {
       action: toggleBranchHighlight
     };
 
+    /*
+    if ((__user_role==role_code.admin) || (__user_role==role_code.developer))  {
+      if (jobTree.canMakeFolder())  {
+        items.addMakeFolderItem = { // The "Add remark" menu item
+          label : "Make folder",
+          icon  : image_path('folder_jobtree'),
+          action: makeFolder
+        };
+      }
+      if (jobTree.node_map[node.id].fchildren.length>0)  {
+        items.addMakeFolderItem = { // The "Add remark" menu item
+          label : "Unfold folder",
+          icon  : image_path('folder_jobtree'),
+          action: unfoldFolder
+        };
+      }
+    }
+    */
+    var adata = jobTree.selectArchiveJobs();
+    if (adata[0]==1)  {
+      items.addArchiveItem = {
+        label : "Archive jobs",
+        icon  : image_path('folder_jobtree'),
+        action: archiveJobs
+      };
+    } else if (adata[0]==2)  {
+      items.addUnarchiveItem = {
+        label : "Unarchive jobs",
+        icon  : image_path('folder_jobtree'),
+        action: archiveJobs
+      };
+    }
+
     return items;
 
   }
@@ -357,13 +460,14 @@ function ProjectPage ( sceneId )  {
     setButtonState();
 
     // add button listeners
-    add_btn    .addOnClickListener ( addJob    );
-    moveup_btn .addOnClickListener ( moveJobUp );
-    del_btn    .addOnClickListener ( deleteJob );
-    open_btn   .addOnClickListener ( openJob   );
-    stop_btn   .addOnClickListener ( stopJob   );
-    clone_btn  .addOnClickListener ( cloneJob  );
-    add_rem_btn.addOnClickListener ( addRemark );
+    add_btn    .addOnClickListener ( addJob      );
+    moveup_btn .addOnClickListener ( moveJobUp   );
+    del_btn    .addOnClickListener ( deleteJob   );
+    archive_btn.addOnClickListener ( archiveJobs );
+    open_btn   .addOnClickListener ( openJob     );
+    stop_btn   .addOnClickListener ( stopJob     );
+    clone_btn  .addOnClickListener ( cloneJob    );
+    add_rem_btn.addOnClickListener ( addRemark   );
     thlight_btn.addOnClickListener ( toggleBranchHighlight );
     title_lbl  .setText ( jobTree.projectData.desc.title );
 
@@ -521,6 +625,7 @@ function ProjectPage ( sceneId )  {
   moveup_btn  = toolbar.setButton ( '',image_path('moveup')   ,cnt++,0,1,1 );
   clone_btn   = toolbar.setButton ( '',image_path('clonejob') ,cnt++,0,1,1 );
   del_btn     = toolbar.setButton ( '',image_path('remove')   ,cnt++,0,1,1 );
+  archive_btn  = toolbar.setButton ( '',image_path('folder_jobtree'),cnt++,0,1,1 );
   toolbar.setLabel ( '<hr style="border:1px dotted;"/>'       ,cnt++,0,1,1 );
   add_rem_btn = toolbar.setButton ( '',image_path('task_remark'), cnt++,0,1,1 );
   thlight_btn = toolbar.setButton ( '',image_path('highlight_branch'),cnt++,0,1,1 );
@@ -541,10 +646,12 @@ function ProjectPage ( sceneId )  {
   moveup_btn .setSize('40px','40px').setTooltip(
                   'Move job one position up the tree branch').setDisabled(true);
   del_btn    .setSize('40px','40px').setTooltip('Delete job').setDisabled(true);
+  archive_btn.setSize('40px','40px').setTooltip(
+                                    'Archive/Unarchive jobs').setDisabled(true);
   open_btn   .setSize('40px','40px').setTooltip('Open job'  ).setDisabled(true);
   stop_btn   .setSize('40px','40px').setTooltip('Stop job'  ).setDisabled(true);
   clone_btn  .setSize('40px','40px').setTooltip('Clone job' ).setDisabled(true);
-  add_rem_btn.setSize('40px','40px').setTooltip('Add remark' ).setDisabled(true);
+  add_rem_btn.setSize('40px','40px').setTooltip('Add remark').setDisabled(true);
   thlight_btn.setSize('40px','40px').setTooltip('Toggle branch highlight' )
                                                              .setDisabled(true);
   refresh_btn.setSize('40px','40px').setTooltip('Refresh and push stalled jobs');

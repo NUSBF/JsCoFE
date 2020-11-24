@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    19.11.20   <--  Date of Last Modification.
+ *    22.11.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -47,6 +47,7 @@
  *      function getSelectedTask ();
  *      function saveProjectData ( tasks_add,tasks_del,onDone_func );
  *      function hasRunningJobs  ( nodeId );
+ *      function canArchiveJobs  ();
  *      function addJob          ( insert_bool,parent_page,onAdd_func );
  *      function moveJobUp       ();
  *      function deleteJob       ( onDelete_func );
@@ -610,6 +611,58 @@ JobTree.prototype.hasRunningJobs = function ( nodeId )  {
 }
 
 
+//JobTree.prototype.canArchiveJobs = function()  {
+//  return this.canMakeFolder();
+//}
+
+
+JobTree.prototype.selectArchiveJobs = function()  {
+// return:
+//   [0,[],[]]       - no jobs can be archived or unarchived
+//   [1,[...],[...]] - only jobs with given node ids in two alternative lists
+//                     (archive up or down) can be archived; any of the lists
+//                     can be empty
+//   [2,[.][]]       - selected job is archive (node id returned in 1st list),
+//                     which can be unarchived
+var sel_lst = this.calcSelectedNodeId();
+  if (sel_lst.length>1)  {  // multiple selection
+    if (this.canMakeFolder1(sel_lst))
+      return [1,sel_lst,[]];
+  } else if (this.node_map[sel_lst[0]].fchildren.length>0) { // selected archive
+    return [2,sel_lst,[]];
+  } else  {  // check if archive may be made up or/and down the branch
+    var lst1   = [];
+    var lst2   = [];
+    var nodeId = sel_lst[0];
+    while (nodeId)  {
+      var node = this.node_map[nodeId];
+      if (node.parentId && (node.fchildren.length==0) && (node.children.length==1))  {
+        lst1.push ( nodeId );
+        nodeId = node.parentId;
+      } else  {
+        if ((lst1.length>0) && (!node.parentId))
+          lst1.pop();
+        nodeId = null;
+      }
+    }
+    var nodeId = sel_lst[0];
+    while (nodeId)  {
+      var node = this.node_map[nodeId];
+      if (node.parentId && (node.fchildren.length==0) && (node.children.length==1))  {
+        lst2.push ( nodeId );
+        nodeId = node.children[0].id;
+      } else
+        nodeId = null;
+    }
+    if (lst1.length<2)  lst1 = [];
+    if (lst2.length<2)  lst2 = [];
+    if ((lst1.length>1) || (lst2.length>1))
+      return [1,lst1,lst2];
+  }
+  return [0,[],[]];
+}
+
+
 JobTree.prototype._add_job_0 = function ( insert_bool,task,dataBox,
                                         parent_page,onAdd_func )  {
 
@@ -1037,7 +1090,6 @@ JobTree.prototype.deleteJob = function ( onDelete_func ) {
 
 }
 
-
 JobTree.prototype.closeAllJobDialogs = function()  {
   for (var delId in this.dlg_map)
     this.dlg_map[delId].close();
@@ -1460,7 +1512,6 @@ JobTree.prototype.harvestTaskData = function ( includeSelected_key,
 //  == 1:  include output data from currently selected task
 //  == 2:  include full input data from currently selected task
 
-
   var dataBox = new DataBox();
 
   dataBox.inp_assoc = {};  // created for future use in
@@ -1520,6 +1571,35 @@ JobTree.prototype.harvestTaskData = function ( includeSelected_key,
         default: ;
       }
 
+      var fstack = [];  // folder stack
+      while (nodeId)  {
+        var cnode = this.node_map[nodeId];
+        if (cnode.fchildren.length>0)  {
+          fstack.push ( [cnode,cnode.fchildren.length] )
+        } else if (nodeId in this.task_map)  {
+          dataBox.addTaskData ( this.task_map[nodeId],
+                      (nodeId!=refNodeId) || (includeSelected_key>0) );
+          if (!('data_n0' in dataBox))  {
+            dataBox.data_n0 = {};
+            for (var dt in dataBox.data)
+              dataBox.data_n0[dt] = dataBox.data[dt].length;
+          }
+        }
+        var n = fstack.length-1;
+        if (n<0)
+          nodeId = cnode.parentId;
+        else {
+          fstack[n][1]--;
+          if (fstack[n][1]>=0)
+            nodeId = fstack[n][0].fchildren[fstack[n][1]].id;
+          else  {
+            nodeId = fstack[n][0].parentId;
+            fstack.pop();
+          }
+        }
+      }
+
+      /*
       while (nodeId)  {
         if (nodeId in this.task_map)  {
           dataBox.addTaskData ( this.task_map[nodeId],
@@ -1532,6 +1612,7 @@ JobTree.prototype.harvestTaskData = function ( includeSelected_key,
         }
         nodeId = this.node_map[nodeId].parentId;
       }
+      */
 
       if (dBox)  {
         dBox.merge ( dataBox );

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    17.07.20   <--  Date of Last Modification.
+ *    21.11.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -41,9 +41,11 @@ var msg = '';
 
   if (user_inp.getValue().length<=0)
     msg += '<b>User name</b> must be provided.<p>';
+  /*
   else if (user_inp.element.validity.patternMismatch)
     msg += '<b>User name</b> should only contain latin letters, dots,<br>' +
            'dashes and spaces.<p>';
+  */
 
   if (email_inp.getValue().length<=0)
     msg += '<b>E-mail address</b> must be provided.<p>';

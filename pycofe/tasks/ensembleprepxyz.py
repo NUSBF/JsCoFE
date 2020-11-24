@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    04.05.20   <--  Date of Last Modification.
+#    24.11.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -29,11 +29,13 @@
 #  python native imports
 import os
 import sys
+import json
 import time
 
 #  ccp4-python imports
 import pyrvapi
 import gemmi
+#from   mrbump.output import modelout
 
 #  application imports
 import basic
@@ -113,6 +115,24 @@ class EnsemblePrepXYZ(basic.TaskDriver):
         st.write_pdb ( fpath_out )
         return
 
+    """
+    def read_models ( self ):
+        mjson            = modelout.Json()
+        modelsJsonFile   = os.path.join("search_" + self.outdir_name(), "logs", "models.json")
+        model_dictionary = mjson.readJson(modelsJsonFile)
+        models           = []
+        for model in model_dictionary.keys():
+            models.append ( model_dictionary[model] )
+        return models
+    """
+
+    def read_models ( self ):
+        model_xyz = []
+        with open(os.path.join("search_"+self.outdir_name(),"logs","models.json")) as json_file:
+            model_dictionary = json.load ( json_file )
+            for model in model_dictionary.keys():
+                model_xyz.append ( model_dictionary[model][15] )
+        return model_xyz
 
     def run(self):
 
@@ -239,21 +259,29 @@ class EnsemblePrepXYZ(basic.TaskDriver):
         # check solution and register data
         self.unsetLogParser()
 
-        if modSel=="M": self.addCitations ( ['molrep'] )
-        if modSel=="C": self.addCitations ( ['chainsaw'] )
-        if modSel=="S": self.addCitations ( ['sculptor'] )
-        if modSel=="P": self.addCitations ( ['chainsaw'] )
+        #if modSel=="M": self.addCitations ( ['molrep'] )
+        #if modSel=="C": self.addCitations ( ['chainsaw'] )
+        #if modSel=="S": self.addCitations ( ['sculptor'] )
+        #if modSel=="P": self.addCitations ( ['chainsaw'] )
+
+        with open(os.path.join("search_"+self.outdir_name(),"logs","programs.json")) as json_file:
+            self.addCitations ( json.loads(json_file.read()) )
 
         have_results = False
+        ensNo        = 0
 
         if len(xyz)<=1:
             #  single file output
 
+            """
             model_xyz  = []
             models_dir = os.path.join ( "search_" + self.outdir_name(),"models","domain_1" )
             if os.path.isdir(models_dir):
                 model_xyz = [fn for fn in os.listdir(models_dir)
                              if any(fn.endswith(ext) for ext in [".pdb"])]
+            """
+
+            model_xyz = self.read_models()
 
             if len(model_xyz)<=0:
                 self.putTitle ( "No output files created" )
@@ -263,8 +291,9 @@ class EnsemblePrepXYZ(basic.TaskDriver):
             else:
 
                 outputFile = self.getXYZOFName()
-                self.delete_ligands_and_waters ( modSel,
-                            os.path.join(models_dir,model_xyz[0]),outputFile )
+                #self.delete_ligands_and_waters ( modSel,
+                #            os.path.join(models_dir,model_xyz[0]),outputFile )
+                self.delete_ligands_and_waters ( modSel,model_xyz[0],outputFile )
 
                 if not os.path.isfile(outputFile):
                     self.putTitle ( "No output files found" )
@@ -340,6 +369,7 @@ class EnsemblePrepXYZ(basic.TaskDriver):
                         else:
                             ensemble.setSubtype ( "sequnk" )
                         have_results = True
+                        ensNo += 1
 
         else:
             #  ensemble output
@@ -407,6 +437,7 @@ class EnsemblePrepXYZ(basic.TaskDriver):
                                 self.putEnsembleWidget ( "ensemble_"  + str(ensembleSerNo) + "_btn",
                                                          "Coordinates",ensemble )
                                 have_results = True
+                                ensNo += 1
 
                             else:
                                 self.putMessage1 ( alignSecId,
@@ -420,6 +451,28 @@ class EnsemblePrepXYZ(basic.TaskDriver):
         # is not seen until the whole page is reloaded.
         #  is there a way to flush generic parser at some moment?
         time.sleep(1)
+
+        # this will go in the project tree job's line
+        if ensNo>0:
+
+            protocol = "(unmodified)"
+            if modSel=="D":
+                protocol = "(clipped)"
+            elif modSel=="M":
+                protocol = "(molrep protocol)"
+            elif modSel=="S":
+                protocol = "(sculptor protocol #" + sclpSel + ")"
+            elif modSel=="C":
+                protocol = "(chainsaw "
+                if   csMode=="MIXS":  protocol += "to gamma atoms)"
+                elif csMode=="MIXA":  protocol += "to beta atoms)"
+                elif csMode=="MAXI":  protocol += "to last common atoms)"
+            elif modSel=="P":
+                protocol = "(reduced to polyalanine)"
+
+            self.generic_parser_summary["ensembleprepxyz"] = {
+              "summary_line" : str(ensNo) + " ensemble(s) generated " + protocol
+            }
 
         self.success ( have_results )
         return

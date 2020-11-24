@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    29.07.20   <--  Date of Last Modification.
+#    24.11.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -29,6 +29,7 @@
 #  python native imports
 import os
 import sys
+import json
 import shutil
 
 #  ccp4-python imports
@@ -127,7 +128,7 @@ class MrBump(basic.TaskDriver):
                     "SCOP False\n" + \
                     "DEBUG True\n" + \
                     "RLEVEL 100\n" + \
-                    "GESE False\n" + \
+                    "GESE True\n" + \
                     "GEST False\n" + \
                     "AMPT False\n" + \
                     pdbLine + \
@@ -186,6 +187,11 @@ class MrBump(basic.TaskDriver):
         # check solution and register data
 
         search_dir = "search_" + self.outdir_name()
+
+        with open(os.path.join(search_dir,"logs","programs.json")) as json_file:
+            #self.stdoutln ( " >>>>>>>>>>>>>>> " + json_file.read() )
+            #self.stdoutln ( " >>>>>>>>>>>>>>> " + str(json.loads(json_file.read())) )
+            self.addCitations ( json.loads(json_file.read()) )
 
         if os.path.isdir(search_dir):
 
