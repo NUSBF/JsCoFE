@@ -2,10 +2,10 @@
 Asymmetric Unit Contents
 ========================
 
-The **asymmetric unit** or **ASU** is the smallest part of a crystal structure to which symmetry operations can be applied in order to generate the complete unit cell (the crystal repeating unit). The symmetry operations that are common for biological molecules are rotation, translation, and screw operations (which combine rotation and translation). It is important to note that molecules related by crystallographic symmetry are identical and have identical crystallographic environments. 
+The **asymmetric unit** or **ASU** is the smallest part of a crystal structure to which symmetry operations can be applied in order to generate the complete unit cell (the crystal repeating unit). The symmetry operations that are common for biological molecules are rotation, translation, and screw operations (which combine rotation and translation). It is important to note that molecules related by crystallographic symmetry are identical and have identical crystallographic environments.
 
 .. image:: images/asymmetric_unit.png
-        :scale: 50 %
+        :scale: 30 %
         :align: center
         
 The **ASU** contains the unique part of a crystal structure.The **ASU** is what is contained in the model that crystallographers publish in the **Protein Data Bank (PDB)**. 
