@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    23.11.20   <--  Date of Last Modification.
+ *    25.11.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -34,7 +34,10 @@ function ProjectPage ( sceneId )  {
   }
 
   this.job_tree        = null;  // for external references
-  this.replay_job_tree = null;  // for external references
+
+  // ***** development code, dormant
+  //this.replay_job_tree = null;  // for external references
+  // *******************************
 
   var title_lbl      = null;
   var jobTree        = null;  // == this.job_tree, for internal references
@@ -52,11 +55,14 @@ function ProjectPage ( sceneId )  {
   var refresh_btn    = null;
   var help_btn       = null;
   var roadmap_btn    = null;
-  var split_btn      = null;
-  var replay_btn     = null;
-  var replay_mode    = false;
-  var self           = this;  // for referencing class's properties
 
+  // ***** development code, dormant
+  //var split_btn      = null;
+  //var replay_btn     = null;
+  //var replay_mode    = false;
+  // *******************************
+
+  var self           = this;  // for referencing class's properties
 
   function selectRemark()  {
     var node        = jobTree.getSelectedNode();
@@ -218,10 +224,12 @@ function ProjectPage ( sceneId )  {
     }
     thlight_btn.setEnabled ( true );
 
-    if (replay_btn)  {
-      replay_btn.setVisible ( replay_mode );
-      self.replay_div.setVisible ( replay_mode );
-    }
+    // ***** development code, dormant
+    //if (replay_btn)  {
+    //  replay_btn.setVisible ( replay_mode );
+    //  self.replay_div.setVisible ( replay_mode );
+    //}
+    // *******************************
 
   }
 
@@ -454,8 +462,10 @@ function ProjectPage ( sceneId )  {
 
     refresh_btn.setDisabled ( false );
 
-    if (split_btn)
-      split_btn.setEnabled ( true );
+    // ***** development code, dormant
+    //if (split_btn)
+    //  split_btn.setEnabled ( true );
+    // *******************************
 
     setButtonState();
 
@@ -637,10 +647,12 @@ function ProjectPage ( sceneId )  {
   help_btn    = toolbar.setButton ( '',image_path('help')     ,cnt++,0,1,1 );
   roadmap_btn = toolbar.setButton ( '',image_path('roadmap')  ,cnt++,0,1,1 );
 
-  if ((__user_role==role_code.admin) || (__user_role==role_code.developer))  {
-    toolbar.setLabel ( '<hr style="border:1px dotted;"/>' ,cnt++,0,1,1 );
-    split_btn = toolbar.setButton ( '',image_path('split_page'),cnt++,0,1,1 );
-  }
+  // ***** development code, dormant
+  //if ((__user_role==role_code.admin) || (__user_role==role_code.developer))  {
+  //  toolbar.setLabel ( '<hr style="border:1px dotted;"/>' ,cnt++,0,1,1 );
+  //  split_btn = toolbar.setButton ( '',image_path('split_page'),cnt++,0,1,1 );
+  //}
+  // *******************************
 
   add_btn    .setSize('40px','40px').setTooltip('Add job'   ).setDisabled(true);
   moveup_btn .setSize('40px','40px').setTooltip(
@@ -661,10 +673,12 @@ function ProjectPage ( sceneId )  {
   for (var i=0;i<cnt;i++)
     toolbar.setCellSize ( '','12px',i,0 );
 
-  if (split_btn)  {
-    split_btn.setSize('40px','40px').setTooltip('Show replay project');
-    split_btn.setDisabled ( true );
-  }
+  // ***** development code, dormant
+  //if (split_btn)  {
+  //  split_btn.setSize('40px','40px').setTooltip('Show replay project');
+  //  split_btn.setDisabled ( true );
+  //}
+  // *******************************
 
   add_btn    .setDisabled ( true );
   moveup_btn .setDisabled ( true );
@@ -689,57 +703,59 @@ function ProjectPage ( sceneId )  {
   this.tree_div.addWidget ( jobTree );
   panel.setWidget ( this.tree_div, 0,0,1,1 );
 
-  this.replay_div = null;
-  if (split_btn)  {
-
-    replay_btn = panel.setButton ( '',image_path('run_project'),0,1,1,1 );
-    replay_btn.setSize('40px','40px').setTooltip('Replay');
-    panel.setCellSize ( '' ,'42px',0,1 );
-
-    this.replay_div = new Widget ( 'div' );
-    this.replay_div.element.setAttribute ( 'class','tree-content' );
-    panel.setWidget ( this.replay_div, 0,2,1,1 );
-    replay_btn.setVisible ( replay_mode );
-    this.replay_div.setVisible ( replay_mode );
-
-    split_btn.addOnClickListener ( function(){
-      replay_mode = !replay_mode;
-      if (replayJobTree)  {
-        replayJobTree.closeAllJobDialogs();
-        replayJobTree.stopTaskLoop();
-        replayJobTree.delete();
-        replayJobTree = null;
-      }
-      setButtonState();
-      self.onResize ( window.innerWidth,window.innerHeight );
-      var icon = image_path('split_page');
-      var ttip = 'Show replay project';
-      if (replay_mode)  {
-        icon = image_path('single_page');
-        ttip = 'Hide replay project';
-        replayJobTree = self.makeReplayJobTree();
-        replayJobTree.readProjectData ( 'Replay Project',
-                                        function(){  // onTreeLoaded
-                                          self.replay_job_tree = replayJobTree;
-                                        },
-                                        function(node){},  // onTreeContextMenu
-                                        function(){},      // openJob,
-                                        function(){}       // onTreeItemSelect
-                                      );
-        self.replay_div.addWidget ( replayJobTree );
-      }
-      split_btn.setButton('',icon).setSize('40px','40px').setTooltip(ttip);
-    });
-
-    replay_btn.addOnClickListener ( function(){
-      alert ( 'Feature is not functional' );
-      /*
-      if (replay_mode && self.replay_job_tree && jobTree)
-        self.replay_job_tree.replayTree ( jobTree );
-      */
-    });
-
-  }
+  // ***** development code, dormant
+  //this.replay_div = null;
+  //if (split_btn)  {
+  //
+  //  replay_btn = panel.setButton ( '',image_path('run_project'),0,1,1,1 );
+  //  replay_btn.setSize('40px','40px').setTooltip('Replay');
+  //  panel.setCellSize ( '' ,'42px',0,1 );
+  //
+  //  this.replay_div = new Widget ( 'div' );
+  //  this.replay_div.element.setAttribute ( 'class','tree-content' );
+  //  panel.setWidget ( this.replay_div, 0,2,1,1 );
+  //  replay_btn.setVisible ( replay_mode );
+  //  this.replay_div.setVisible ( replay_mode );
+  //
+  //  split_btn.addOnClickListener ( function(){
+  //    replay_mode = !replay_mode;
+  //    if (replayJobTree)  {
+  //      replayJobTree.closeAllJobDialogs();
+  //      replayJobTree.stopTaskLoop();
+  //      replayJobTree.delete();
+  //      replayJobTree = null;
+  //    }
+  //    setButtonState();
+  //    self.onResize ( window.innerWidth,window.innerHeight );
+  //    var icon = image_path('split_page');
+  //    var ttip = 'Show replay project';
+  //    if (replay_mode)  {
+  //      icon = image_path('single_page');
+  //      ttip = 'Hide replay project';
+  //      replayJobTree = self.makeReplayJobTree();
+  //      replayJobTree.readProjectData ( 'Replay Project',
+  //                                      function(){  // onTreeLoaded
+  //                                        self.replay_job_tree = replayJobTree;
+  //                                      },
+  //                                      function(node){},  // onTreeContextMenu
+  //                                      function(){},      // openJob,
+  //                                      function(){}       // onTreeItemSelect
+  //                                    );
+  //      self.replay_div.addWidget ( replayJobTree );
+  //    }
+  //    split_btn.setButton('',icon).setSize('40px','40px').setTooltip(ttip);
+  //  });
+  //
+  //  replay_btn.addOnClickListener ( function(){
+  //    alert ( 'Feature is not functional' );
+  //    /*
+  //    if (replay_mode && self.replay_job_tree && jobTree)
+  //      self.replay_job_tree.replayTree ( jobTree );
+  //    */
+  //  });
+  //
+  //}
+  // *******************************
 
   refresh_btn.addOnClickListener ( function(){
     wakeZombiJobs();  // must go before reloadTree
@@ -766,10 +782,12 @@ ProjectPage.prototype.destructor = function ( function_ready )  {
     this.job_tree.stopTaskLoop();
     this.job_tree.closeAllJobDialogs();
   }
-  if (this.replay_job_tree)  {
-    this.replay_job_tree.stopTaskLoop();
-    this.replay_job_tree.closeAllJobDialogs();
-  }
+  // ***** development code, dormant
+  //if (this.replay_job_tree)  {
+  //  this.replay_job_tree.stopTaskLoop();
+  //  this.replay_job_tree.closeAllJobDialogs();
+  //}
+  // *******************************
   BasePage.prototype.destructor.call ( this,function_ready );
 }
 
@@ -797,8 +815,10 @@ ProjectPage.prototype.makeReplayJobTree = function()  {
   jobTree.element.style.paddingTop    = '0px';
   jobTree.element.style.paddingBottom = '25px';
   jobTree.element.style.paddingRight  = '40px';
-  this.replay_job_tree = null;  // for internal and external references,
-                                // lock before tree is loaded
+  // ***** development code, dormant
+  //this.replay_job_tree = null;  // for internal and external references,
+                                  // lock before tree is loaded
+  // *******************************
   (function(self){
     jobTree.addSignalHandler ( cofe_signals.rationUpdated,function(data){
       self.updateUserRation ( data );
@@ -813,15 +833,18 @@ ProjectPage.prototype.onResize = function ( width,height )  {
   var w = (width  - 110) + 'px';
   this.toolbar_div.element.style.height = h;
   this.tree_div.element.style.height    = h;
-  if (this.replay_div)  {
-    if (this.replay_div.isVisible())  {
-      var hw = (round(width/2,0)-75) + 'px';
-      this.tree_div  .element.style.width = hw;
-      this.replay_div.element.style.width = hw;
-    } else
-      this.tree_div.element.style.width = w;
-  } else
-    this.tree_div.element.style.width = w;
+  // ***** development code, dormant
+  //if (this.replay_div)  {
+  //  if (this.replay_div.isVisible())  {
+  //    var hw = (round(width/2,0)-75) + 'px';
+  //    this.tree_div  .element.style.width = hw;
+  //    this.replay_div.element.style.width = hw;
+  //  } else
+  //    this.tree_div.element.style.width = w;
+  //} else
+  //  this.tree_div.element.style.width = w;
+  // *******************************
+  this.tree_div.element.style.width = w;
 }
 
 ProjectPage.prototype.getJobTree = function()  {

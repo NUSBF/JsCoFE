@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    22.11.20   <--  Date of Last Modification.
+ *    25.11.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -47,7 +47,7 @@
  *      function getSelectedTask ();
  *      function saveProjectData ( tasks_add,tasks_del,onDone_func );
  *      function hasRunningJobs  ( nodeId );
- *      function canArchiveJobs  ();
+ *      function selectArchiveJobs();
  *      function addJob          ( insert_bool,parent_page,onAdd_func );
  *      function moveJobUp       ();
  *      function deleteJob       ( onDelete_func );
@@ -313,8 +313,8 @@ JobTree.prototype.makeNodeName = function ( task )  {
     for (var i=0;i<task.harvestedTaskIds.length;i++)
       if (anc_ids.indexOf(task.harvestedTaskIds[i])<0)
         id_list.push ( padDigits(task.harvestedTaskIds[i],4) );
-    if (id_list.length>0)
-      node_name += ' <font style="font-size:80%"><b><i>+(' + id_list.join(',') + ')</i></b></font> ';
+    if (id_list.length>0) // below, 'cross-branch' is significant
+      node_name += ' <font style="font-size:80%" cross-branch="1"><b><i>+(' + id_list.join(',') + ')</i></b></font> ';
   }
 
   if (task.uname.length>0)
@@ -611,11 +611,6 @@ JobTree.prototype.hasRunningJobs = function ( nodeId )  {
 }
 
 
-//JobTree.prototype.canArchiveJobs = function()  {
-//  return this.canMakeFolder();
-//}
-
-
 JobTree.prototype.selectArchiveJobs = function()  {
 // return:
 //   [0,[],[]]       - no jobs can be archived or unarchived
@@ -626,8 +621,13 @@ JobTree.prototype.selectArchiveJobs = function()  {
 //                     which can be unarchived
 var sel_lst = this.calcSelectedNodeId();
   if (sel_lst.length>1)  {  // multiple selection
-    if (this.canMakeFolder1(sel_lst))
-      return [1,sel_lst,[]];
+    if (this.canMakeFolder1(sel_lst))  {
+      var ok = true;
+      for (var i=0;(i<sel_lst.length) && ok;i++)
+        ok = (this.node_map[sel_lst[i]].text.indexOf('cross-branch="1"')<0);
+      if (ok)
+        return [1,sel_lst,[]];
+    }
   } else if (this.node_map[sel_lst[0]].fchildren.length>0) { // selected archive
     return [2,sel_lst,[]];
   } else  {  // check if archive may be made up or/and down the branch
@@ -636,7 +636,9 @@ var sel_lst = this.calcSelectedNodeId();
     var nodeId = sel_lst[0];
     while (nodeId)  {
       var node = this.node_map[nodeId];
-      if (node.parentId && (node.fchildren.length==0) && (node.children.length==1))  {
+      if (node.parentId && (node.fchildren.length==0) &&
+                           (node.children.length==1)  &&
+                           (node.text.indexOf('cross-branch="1"')<0))  {
         lst1.push ( nodeId );
         nodeId = node.parentId;
       } else  {
@@ -648,7 +650,9 @@ var sel_lst = this.calcSelectedNodeId();
     var nodeId = sel_lst[0];
     while (nodeId)  {
       var node = this.node_map[nodeId];
-      if (node.parentId && (node.fchildren.length==0) && (node.children.length==1))  {
+      if (node.parentId && (node.fchildren.length==0) &&
+                           (node.children.length==1) &&
+                           (node.text.indexOf('cross-branch="1"')<0))  {
         lst2.push ( nodeId );
         nodeId = node.children[0].id;
       } else

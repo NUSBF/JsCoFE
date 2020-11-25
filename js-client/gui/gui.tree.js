@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    24.11.20   <--  Date of Last Modification.
+ *    25.11.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -1059,19 +1059,24 @@ Tree.prototype.makeFolder1 = function ( sel_list,text,icon_uri )  {
   node.parentId = folder_node.id;
   this.confirmCustomIconsVisibility();
   this.refresh();
+  for (var key in this.node_map)
+    this.node_map[key].state.selected = false;
+  this.selectSingle ( folder_node );
+  this.refresh();
+  /*
   (function(tree,fnode){
     window.setTimeout ( function(){
       tree.selectSingle ( fnode );
       tree.refresh();
     },0);
   }(this,folder_node));
+  */
 }
 
 Tree.prototype.unfoldFolder = function()  {
 var snode = this.getSelectedNode();
   var fchildren = snode.fchildren;
   if (fchildren.length>0)  {
-    $(this.root.element).jstree('deselect_all');
     var pnode = this.node_map[snode.parentId];
     var cnode = snode.children[0];
     for (var i=0;i<fchildren.length;i++)  {
@@ -1098,12 +1103,21 @@ var snode = this.getSelectedNode();
     $(this.root.element).jstree(true).delete_node([snode]);
     this.confirmCustomIconsVisibility();
     this.refresh();
+    for (var key in this.node_map)
+      this.node_map[key].state.selected = false;
+    for (var i=0;i<fchildren.length;i++)
+      this.selectNode ( this.node_map[fchildren[i].id],(i<=0) );
+    this.refresh();
+    /*
     (function(tree,fch){
       window.setTimeout ( function(){
+        for (var key in tree.node_map)
+          tree.node_map[key].state.selected = false;
         for (var i=0;i<fch.length;i++)
           tree.selectNode ( tree.node_map[fch[i].id],(i<=0) );
         tree.refresh();
       },0);
     }(this,fchildren));
+    */
   }
 }
