@@ -1000,77 +1000,130 @@ Tree.prototype.canMakeFolder = function()  {
   return this.canMakeFolder1 ( this.calcSelectedNodeId() );
 }
 
-Tree.prototype.canMakeFolder1 = function ( sel_lst )  {
+
+Tree.prototype.__connectivity_sort = function ( sel_list )  {
+  var parentId = [];
+  for (var i=0;i<sel_list.length;i++)
+    parentId.push ( this.node_map[sel_list[i]].parentId );
+  // find head node, whose parent is not in the list
+  var index = [];
+  for (var i=0;i<sel_list.length;i++)
+    if (sel_list.indexOf(parentId[i])<0)  {
+      index       = [i];
+      parentId[i] = '-'+i;  // knock out for further searches
+      break;
+    }
+  // find all the chain by parentIds
+  for (var i=1;i<sel_list.length;i++)  {
+    var j = parentId.indexOf ( sel_list[index[i-1]] );
+    if (j>=0)  {
+      index.push ( j );
+      parentId[j] = '-'+j;  // knock out for further searches
+    } else  {
+      index = [];
+      break;
+    }
+  }
+  var sel_lst = [];
+  for (var i=0;i<index.length;i++)
+    sel_lst.push ( sel_list[index[i]] );
+  return sel_lst;
+}
+
+
+Tree.prototype.canMakeFolder1 = function ( sel_list )  {
 // returns true if more than one job is selected on a linear branch
+  var sel_lst = this.__connectivity_sort ( sel_list );
   if (sel_lst.length>1)  {
-    sel_lst.sort();
+    //sel_lst.sort();
     if (this.node_map[sel_lst[0]].parentId)  {
       sel_lst.reverse();
       var can_make = true;
+      for (var i=0;(i<sel_lst.length) && can_make;i++)
+        can_make = (this.node_map[sel_lst[i]].children.length==1);
+      if (!can_make)
+        sel_lst = [];
+      /*
       for (var i=1;(i<sel_lst.length) && can_make;i++)  {
         var node = this.node_map[sel_lst[i-1]];
         can_make = (node.children.length==1) && (node.parentId==sel_lst[i]);
       }
       return can_make && (this.node_map[sel_lst[sel_lst.length-1]].children.length==1);
+      */
     }
   }
-  return false;
+  return sel_lst;
 }
 
 
 Tree.prototype.makeFolder = function ( text,icon_uri )  {
-  this.makeFolder1 ( this.calcSelectedNodeId(),text,icon_uri );
+  return this.makeFolder1 ( this.calcSelectedNodeId(),text,icon_uri );
 }
 
 
-Tree.prototype.makeFolder1 = function ( sel_list,text,icon_uri )  {
+Tree.prototype.makeFolder1 = function ( sel_node_list,text,icon_uri )  {
 // make a folder node and places currently selected nodes in it; current selction
 // must be validated with canMakeFolder() before using this function
-  $(this.root.element).jstree('deselect_all');
-  sel_list.sort();
-  // make sure that there are no repeat ids!
-  var sel_lst = [sel_list[0]];
-  for (var i=1;i<sel_list.length;i++)
-    if (sel_list[i]!=sel_list[i-1])
-      sel_lst.push ( sel_list[i] );
-  var node = this.node_map[sel_lst[0]];
-  var name = text;
-  if (name)
-    name += ' ';
-  name += sel_lst.length + ' jobs archived';
-  var folder_node = new TreeNode ( name,icon_uri,null );
-  var pnode = this.node_map[node.parentId];
-  for (var i=0;i<pnode.children.length;i++)
-    if (pnode.children[i].id==node.id)  {
-      pnode.children[i] = folder_node;
-      break;
+  var sel_list = this.__connectivity_sort ( sel_node_list );
+  if (sel_list.length>1)  {
+    //$(this.root.element).jstree('deselect_all');
+    //sel_list.sort();
+    // make sure that there are no repeat ids!
+    var sel_lst = [sel_list[0]];
+    var njobs   = Math.max ( 1,this.node_map[sel_lst[0]].fchildren.length );
+    for (var i=1;i<sel_list.length;i++)
+      if (sel_list[i]!=sel_list[i-1])  {
+        sel_lst.push ( sel_list[i] );
+        njobs += Math.max ( 1,this.node_map[sel_lst[i]].fchildren.length );
+      }
+    var node = this.node_map[sel_lst[0]];
+    var name = text;
+    if (name)
+      name += ' ';
+    name += njobs + ' jobs archived';
+    var folder_node = new TreeNode ( name,icon_uri,null );
+    var pnode = this.node_map[node.parentId];
+    for (var i=0;i<pnode.children.length;i++)
+      if (pnode.children[i].id==node.id)  {
+        pnode.children[i] = folder_node;
+        break;
+      }
+    folder_node.parentId = pnode.id;
+    for (var i=0;i<sel_lst.length;i++)  {
+      node = this.node_map[sel_lst[i]];
+      if (node.fchildren.length>0)  {  // NO ENCLOSED FOLDERS ASSUMED HERE!!!
+        for (var j=0;j<node.fchildren.length;j++)  {
+          node.fchildren[j].folderId = folder_node.id;
+          node.fchildren[j].state.selected = false;
+          folder_node.fchildren.push ( node.fchildren[j] );
+        }
+        node.fchildren = [];
+      } else  {
+        node.folderId = folder_node.id;
+        node.state.selected = false;
+        folder_node.fchildren.push ( node );
+      }
+      $(this.root.element).jstree(true).delete_node([node]);
     }
-  folder_node.parentId = pnode.id;
-  for (var i=0;i<sel_lst.length;i++)  {
-    node = this.node_map[sel_lst[i]];
-    node.folderId = folder_node.id;
-    node.state.selected = false;
-    folder_node.fchildren.push ( node );
-    $(this.root.element).jstree(true).delete_node([node]);
+    this.node_map[folder_node.id] = folder_node;
+    node = this.node_map[sel_lst[sel_lst.length-1]].children[0];
+    folder_node.children = [node];
+    node.parentId = folder_node.id;
+    this.confirmCustomIconsVisibility();
+    this.refresh();
+    for (var key in this.node_map)
+      this.node_map[key].state.selected = false;
+    this.selectSingle ( folder_node );
+    this.refresh();
+    /*
+    (function(tree,fnode){
+      window.setTimeout ( function(){
+        tree.selectSingle ( fnode );
+        tree.refresh();
+      },0);
+    }(this,folder_node));
+    */
   }
-  this.node_map[folder_node.id] = folder_node;
-  node = this.node_map[sel_lst[sel_lst.length-1]].children[0];
-  folder_node.children = [node];
-  node.parentId = folder_node.id;
-  this.confirmCustomIconsVisibility();
-  this.refresh();
-  for (var key in this.node_map)
-    this.node_map[key].state.selected = false;
-  this.selectSingle ( folder_node );
-  this.refresh();
-  /*
-  (function(tree,fnode){
-    window.setTimeout ( function(){
-      tree.selectSingle ( fnode );
-      tree.refresh();
-    },0);
-  }(this,folder_node));
-  */
 }
 
 Tree.prototype.unfoldFolder = function()  {

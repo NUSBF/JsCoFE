@@ -610,7 +610,6 @@ JobTree.prototype.hasRunningJobs = function ( nodeId )  {
 
 }
 
-
 JobTree.prototype.selectArchiveJobs = function()  {
 // return:
 //   [0,[],[]]       - no jobs can be archived or unarchived
@@ -621,21 +620,23 @@ JobTree.prototype.selectArchiveJobs = function()  {
 //                     which can be unarchived
 var sel_lst = this.calcSelectedNodeId();
   if (sel_lst.length>1)  {  // multiple selection
-    if (this.canMakeFolder1(sel_lst))  {
-      var ok = true;
-      for (var i=0;(i<sel_lst.length) && ok;i++)
-        ok = (this.node_map[sel_lst[i]].text.indexOf('cross-branch="1"')<0);
-      if (ok)
-        return [1,sel_lst,[]];
-    }
+    var ok = true;
+    for (var i=0;(i<sel_lst.length) && ok;i++)
+      ok = (this.node_map[sel_lst[i]].text.indexOf('cross-branch="1"')<0);
+    if (ok)
+      return [1,this.canMakeFolder1(sel_lst),[]];
   } else if (this.node_map[sel_lst[0]].fchildren.length>0) { // selected archive
     return [2,sel_lst,[]];
   } else  {  // check if archive may be made up or/and down the branch
     var lst1   = [];
     var lst2   = [];
     var nodeId = sel_lst[0];
+    var node = this.node_map[nodeId];
+    if ((node.children.length==1) &&
+        this.task_map[node.children[0].id].isRemark())
+      nodeId = node.parentId;
     while (nodeId)  {
-      var node = this.node_map[nodeId];
+      node = this.node_map[nodeId];
       if (node.parentId && (node.fchildren.length==0) &&
                            (node.children.length==1)  &&
                            (node.text.indexOf('cross-branch="1"')<0))  {
@@ -649,14 +650,17 @@ var sel_lst = this.calcSelectedNodeId();
     }
     var nodeId = sel_lst[0];
     while (nodeId)  {
-      var node = this.node_map[nodeId];
+      node = this.node_map[nodeId];
       if (node.parentId && (node.fchildren.length==0) &&
                            (node.children.length==1) &&
                            (node.text.indexOf('cross-branch="1"')<0))  {
         lst2.push ( nodeId );
         nodeId = node.children[0].id;
-      } else
+      } else  {
+        if (this.task_map[nodeId].isRemark() && (lst2.length>0))
+          lst2.pop();
         nodeId = null;
+      }
     }
     if (lst1.length<2)  lst1 = [];
     if (lst2.length<2)  lst2 = [];
