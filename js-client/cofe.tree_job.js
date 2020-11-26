@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    25.11.20   <--  Date of Last Modification.
+ *    26.11.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -657,7 +657,8 @@ var sel_lst = this.calcSelectedNodeId();
         lst2.push ( nodeId );
         nodeId = node.children[0].id;
       } else  {
-        if (this.task_map[nodeId].isRemark() && (lst2.length>0))
+        var task = this.task_map[nodeId];
+        if ((lst2.length>0) && task && this.task_map[nodeId].isRemark())
           lst2.pop();
         nodeId = null;
       }
