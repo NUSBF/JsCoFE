@@ -328,18 +328,6 @@ function ProjectPage ( sceneId )  {
       new MessageBox ( 'No Project','No Project loaded' );
   }
 
-  /*
-  function makeFolder() {
-    jobTree.makeFolder ( '',image_path('folder_jobtree') );
-    jobTree.saveProjectData ( [],[],true, null );
-  }
-
-  function unfoldFolder() {
-    jobTree.unfoldFolder();
-    jobTree.saveProjectData ( [],[],true, null );
-  }
-  */
-
   function onTreeContextMenu(node) {
     // The default set of all items
     var items = {};
@@ -416,24 +404,6 @@ function ProjectPage ( sceneId )  {
       action: toggleBranchHighlight
     };
 
-    /*
-    if ((__user_role==role_code.admin) || (__user_role==role_code.developer))  {
-      if (jobTree.canMakeFolder())  {
-        items.addMakeFolderItem = { // The "Add remark" menu item
-          label : "Make folder",
-          icon  : image_path('folder_jobtree'),
-          action: makeFolder
-        };
-      }
-      if (jobTree.node_map[node.id].fchildren.length>0)  {
-        items.addMakeFolderItem = { // The "Add remark" menu item
-          label : "Unfold folder",
-          icon  : image_path('folder_jobtree'),
-          action: unfoldFolder
-        };
-      }
-    }
-    */
     var adata = jobTree.selectArchiveJobs();
     if (adata[0]==1)  {
       items.addArchiveItem = {
