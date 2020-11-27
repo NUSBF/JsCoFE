@@ -22,6 +22,8 @@ CCP4 Cloud Version Log
 
     #. ``CCP4Build`` task can be stopped gracefully, without losing already calculated results
 
+    #. Excessively long branches may be archived as folders for convenience
+
     #. Documentation updates
 
 
