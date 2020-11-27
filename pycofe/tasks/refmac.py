@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    06.11.20   <--  Date of Last Modification.
+#    27.11.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -61,7 +61,7 @@ class Refmac(basic.TaskDriver):
         hkl     = self.makeClass ( self.input_data.data.hkl    [0] )
         istruct = self.makeClass ( self.input_data.data.istruct[0] )
 
-        hmodel  = None;
+        hmodel  = None
         if hasattr(self.input_data.data,"hmodel"):
             hmodel  = self.input_data.data.hmodel
             for i in range(len(hmodel) ):
@@ -139,9 +139,11 @@ class Refmac(basic.TaskDriver):
         else:
             stdin.append ( 'WEIGHT MATRIX ' + str(sec1.WAUTO_VAL.value) )
 
-        vdwrestraints = self.getParameter(sec1.VDW_VAL)
-        if vdwrestraints:
-           stdin.append ( 'VDWRESTRAINTS ' + vdwrestraints )
+
+        if hasattr(sec1,"VDW_VAL"):
+            vdwrestraints = self.getParameter(sec1.VDW_VAL)
+            if vdwrestraints:
+               stdin.append ( 'VDWRESTRAINTS ' + vdwrestraints )
 
         stdin.append ( 'MAKE HYDR ' + str(sec1.MKHYDR.value) )
 
