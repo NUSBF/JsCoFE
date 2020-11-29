@@ -196,7 +196,8 @@ TaskSRF.prototype.constructor = TaskSRF;
 // ===========================================================================
 // export such that it could be used in both node and a browser
 
-TaskSRF.prototype.icon = function()  { return 'task_srf'; }
+TaskSRF.prototype.icon      = function()  { return 'task_srf'; }
+TaskSRF.prototype.platforms = function()  { return 'LMU'; }  // UNIX only
 
 TaskSRF.prototype.currentVersion = function()  {
   var version = 0;
