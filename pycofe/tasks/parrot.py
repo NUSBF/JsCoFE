@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    01.05.20   <--  Date of Last Modification.
+#    29.11.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -205,6 +205,8 @@ class Parrot(basic.TaskDriver):
                 "-colout"  ,"parrot"
             ],logType="Service" )
 
+            if os.path.isfile(output_file):
+                os.remove ( output_file )
             os.rename ( "__tmp.mtz",output_file )
 
             self.putTitle ( "Results" )

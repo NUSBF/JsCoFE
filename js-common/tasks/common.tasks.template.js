@@ -308,7 +308,7 @@ if (!dbx)  {
         return ['environment-client',
                 'task software is not installed on your device',
                 '<h3>Task software is not installed on your device</h3>' +
-                'The task is run on your device, but needful software is ' +
+                'The task is to run on your device, but needful software is ' +
                 'not installed on it.<br>Consult software documentation ' +
                 'for further details.'];
 
