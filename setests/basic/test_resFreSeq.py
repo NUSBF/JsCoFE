@@ -450,7 +450,6 @@ def verifyRefmac(driver, waitLong, jobNumber, targetRwork, targetRfree):
             rWork, targetRwork, rFree, targetRfree))
     assert rWork < targetRwork
     assert rFree < targetRfree
-    assert (rFree - rWork) > 0.05 # specific effect of Rfree change
 
 
 def test_1seqcopy(browser,

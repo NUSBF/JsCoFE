@@ -18,10 +18,9 @@ d = sf.driverHandler()
 
 
 remarkTitle1 = 'Based on CCP4 MDM2 example, including ligand fitting. Open this remark for input data location'
-remarkDetail1 = """This tutorial uses automatic solver CCP4go. This task differs from ll others in 2 points:
-
-a) it can be run only at root of CCP4 Cloud projects
-b) it has its own import, and currently limited to only uploading files from user's machine
+remarkDetail1 = """This tutorial uses automatic solver CCP4go. 
+This task can be run at root of CCP4 Cloud projects, then it will have its own import. It is currently limited to only uploading files from user's machine.
+Alternatively, it can be run after import (and ligand preparation, if applicable) task(s) (at least diffraction data from MTZ file and sequence should be imported).
 
 For this tutorial, input data is:
 
@@ -79,6 +78,118 @@ def importREADME(driver, waitShort):
     return ()
 
 
+def importFromCloud_mdm2(driver, waitShort):
+    print ('Importing mdm2 from the Cloud Import')
+
+    # presing Add button
+    addButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/add.png')]")
+    addButton.click()
+    time.sleep(1)
+
+    # Clicking "Cloud Import"
+    sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Cloud Import')
+    time.sleep(1)
+
+    textEl2 = driver.find_elements_by_xpath("//a[normalize-space()='%s']" % 'test-data')
+    if len(textEl2) < 1:
+        textEl2 = driver.find_elements_by_xpath("//a[normalize-space()='%s']" % 'CCP4 examples')
+    if len(textEl2) < 1:
+        print('Cant locate neither "test-data" nor "CCP4 examples"; terminating.')
+        sys.exit(1)
+    ActionChains(driver).move_to_element(textEl2[-1]).double_click(textEl2[-1]).perform()
+    time.sleep(1)
+
+    listOfTextsToDoubleClick = [('a','mdm2_nolig'),
+                                ('a','mdm2_unmerged.mtz'),
+                                ('button','Select more files'),
+                                ('a', '4hg7.fasta'),
+                                ('button', 'Apply & Upload'),
+                                ('button', 'Finish import')]
+
+    for textToDoubleClick in listOfTextsToDoubleClick:
+        textElements = driver.find_elements_by_xpath("//%s[normalize-space()='%s']" % (textToDoubleClick[0], textToDoubleClick[1]))
+        # It finds several elements with the same file name -> last one is the one we need
+        driver.execute_script("arguments[0].scrollIntoView();", textElements[-1])
+        ActionChains(driver).move_to_element(textElements[-1]).double_click(textElements[-1]).perform()
+        time.sleep(1)
+
+#    taskWindowTitle = driver.find_element(By.XPATH,"//*[@class='ui-dialog-title' and contains(text(), '[0001]')]")
+    try:
+        wait = WebDriverWait(driver, waitShort)
+        # Waiting for the text 'completed' in the ui-dialog-title of the task [0001]
+        wait.until(EC.presence_of_element_located
+                   ((By.XPATH,"//*[@class='ui-dialog-title' and contains(text(), 'completed') and contains(text(), '[0003]')]")))
+    except:
+        print('Apparently tha task import gere SAD has not been completed in time; terminating')
+        sys.exit(1)
+
+    # presing Close button
+    closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
+    closeButton.click()
+    time.sleep(1)
+
+    return ()
+
+
+def makingLigand(driver, waitLong):
+    print ('Making Ligand')
+
+    # presing Add button
+    addButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/add.png')]")
+    addButton.click()
+    time.sleep(1)
+
+    sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list')
+    time.sleep(1)
+
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Ligands')
+    time.sleep(1)
+
+    sf.clickByXpath(driver, "//div[normalize-space()='%s']" % 'Make Ligand with Acedrg')
+    time.sleep(1)
+
+    sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'SMILES string')
+    time.sleep(1)
+
+    sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'SMILES string')
+    time.sleep(3)
+
+    inputASU = driver.find_element_by_xpath("//input[@title='SMILES string to define ligand structure']")
+    inputASU.click()
+    inputASU.clear()
+    inputASU.send_keys('COc1ccc(c(OC(C)C)c1)C2=N[C@H]([C@H](N2C(=O)N3CCNC(=O)C3)c4ccc(Cl)cc4)c5ccc(Cl)cc5')
+    time.sleep(1)
+
+    inputASU = driver.find_element_by_xpath("//input[@title='3-letter ligand code for identification']")
+    inputASU.click()
+    inputASU.clear()
+    inputASU.send_keys('NUT')
+    time.sleep(1)
+
+# There are several forms - active and inactive. We need one displayed.
+    buttonsRun = driver.find_elements_by_xpath("//button[contains(@style, 'images_png/runjob.png')]" )
+    for buttonRun in buttonsRun:
+        if buttonRun.is_displayed():
+            buttonRun.click()
+            break
+
+    try:
+        wait = WebDriverWait(driver, waitLong) # allowing 15 seconds to the task to finish
+        # Waiting for the text 'completed' in the ui-dialog-title of the task [0002]
+        wait.until(EC.presence_of_element_located
+                   ((By.XPATH,"//*[@class='ui-dialog-title' and contains(text(), 'completed') and contains(text(), '[0004]')]")))
+    except:
+        print('Apparently tha task makingLigand_0004 has not been completed in time; terminating')
+        sys.exit(1)
+
+    time.sleep(1)
+    # presing Close button
+    sf.clickByXpath(driver, "//button[contains(@style, 'images_png/close.png')]")
+    time.sleep(1)
+
+    return()
+
+
 def startCCP4go(driver):
     print('Starting CCP4go')
 
@@ -87,31 +198,16 @@ def startCCP4go(driver):
     addButton.click()
     time.sleep(1)
 
+    sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list')
+    time.sleep(1)
+
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'CCP4go auto-solver')
     time.sleep(1)
 
-
-    projectInputs = driver.find_elements_by_xpath("//input[contains(@id,'input') and @type='file' and contains(@name,'uploads')]")
-    projectInputs[0].send_keys('/Applications/ccp4-7.1/share/ccp4i2/demo_data/mdm2/mdm2_unmerged.mtz')
-    projectInputs[1].send_keys('/Applications/ccp4-7.1/share/ccp4i2/demo_data/mdm2/4hg7.seq')
+    sf.clickByXpath(driver, "//*[normalize-space()='%s']" % '[do not use]')
     time.sleep(1)
 
-    sf.clickByXpath(driver, "//button[normalize-space()='%s']" % 'Apply & Upload')
-    time.sleep(1)
-
-
-    sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'None')
-    time.sleep(1)
-
-    sf.clickByXpath(driver, "//div[contains(text(), '%s')]" % 'SMILES')
-    time.sleep(1)
-
-    drg = driver.find_elements_by_xpath("//input[contains(@id,'input') and @type='text' and @maxlength='3']")
-    drg[0].send_keys('DRG')
-    time.sleep(1)
-
-    smiles = driver.find_elements_by_xpath("//input[contains(@id,'input') and @type='text' and @style='font-size: 16px; width: 600px; white-space: nowrap;']")
-    smiles[0].send_keys('COc1ccc(c(OC(C)C)c1)C2=N[C@H]([C@H](N2C(=O)N3CCNC(=O)C3)c4ccc(Cl)cc4)c5ccc(Cl)cc5')
+    sf.clickByXpath(driver, "//div[contains(text(), '%s')]" % '-01] NUT')
     time.sleep(1)
 
     # There are several forms - active and inactive. We need one displayed.
@@ -127,203 +223,6 @@ def startCCP4go(driver):
     time.sleep(1)
 
     return()
-
-
-def verifyCCP4go(driver, waitLong, jobNumber):
-    compl = ''
-    print('CCP4go verification, job ' + jobNumber)
-
-    time.sleep(1.05)
-    startTime = time.time()
-
-    while (True):
-        ttts = sf.tasksTreeTexts(driver)
-        for taskText in ttts:
-            # Job number as string
-            match = re.search('\[' + jobNumber + '\] ccp4go -- (.*)', taskText)
-            if match:
-                compl = match.group(1)
-                break
-        if compl != 'completed.':
-            break
-        curTime = time.time()
-        if curTime > startTime + float(waitLong):
-            print('*** Timeout for CCP4Build results! Waited for %d seconds.' % waitLong)
-            break
-        time.sleep(300)
-
-    print('*** Verification: CCP4go completetion statement is %s (expecting "completed.")' % compl)
-
-    assert compl == 'completed.'
-
-    return ()
-
-
-def comb_05(driver):
-    print('Running comb')
-
-    addButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/add.png')]")
-    addButton.click()
-    time.sleep(1)
-
-    sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list')
-    time.sleep(1)
-
-    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Refinement and Model Building')
-    time.sleep(1)
-
-    sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Comb Structure with Coot')
-    time.sleep(2)
-
-
-    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Ramachandran Plot')
-    time.sleep(1)
-
-    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'None')
-    time.sleep(1)
-
-    inputTitle = driver.find_element_by_xpath("//input[@title='Number of 2nd comb passes']")
-    inputTitle.clear()
-    inputTitle.send_keys('1')
-    time.sleep(1)
-
-    inputTitle = driver.find_element_by_xpath("//input[@title='Number of 3rd comb passes']")
-    inputTitle.clear()
-    inputTitle.send_keys('1')
-    time.sleep(1)
-
-
-    # There are several forms - active and inactive. We need one displayed.
-    buttonsRun = driver.find_elements_by_xpath("//button[contains(@style, 'images_png/runjob.png')]" )
-    for buttonRun in buttonsRun:
-        if buttonRun.is_displayed():
-            buttonRun.click()
-            break
-
-    try:
-        wait = WebDriverWait(driver, 900)
-        # Waiting for the text 'completed' in the ui-dialog-title of the task [0005]
-        wait.until(EC.presence_of_element_located
-                   ((By.XPATH,"//*[@class='ui-dialog-title' and contains(text(), 'completed') and contains(text(), '[0005]')]")))
-    except:
-        print('Apparently the task comb has not been completed in time; terminating')
-        sys.exit(1)
-
-    # presing Close button
-    closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
-    closeButton.click()
-    time.sleep(1)
-
-    return ()
-
-
-def fitWaters_06(driver, wait):
-    print('Fitting waters')
-
-    addButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/add.png')]")
-    addButton.click()
-    time.sleep(1)
-
-    sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list')
-    time.sleep(1)
-
-    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Ligands')
-    time.sleep(1)
-
-    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Find and Fit Waters')
-    time.sleep(1)
-
-    # There are several forms - active and inactive. We need one displayed.
-    buttonsRun = driver.find_elements_by_xpath("//button[contains(@style, 'images_png/runjob.png')]" )
-    for buttonRun in buttonsRun:
-        if buttonRun.is_displayed():
-            buttonRun.click()
-            break
-
-    try:
-        wait = WebDriverWait(driver, wait) # normally takes around 5 minutes giving 7
-        # Waiting for the text 'completed' in the ui-dialog-title of the task [0006]
-        wait.until(EC.presence_of_element_located
-                   ((By.XPATH,"//*[@class='ui-dialog-title' and contains(text(), 'completed') and contains(text(), '[0006]')]")))
-    except:
-        print('Apparently the task FitWaters has not been completed in time; terminating')
-        sys.exit(1)
-
-    # presing Close button
-    closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
-    closeButton.click()
-    time.sleep(1)
-
-    nwat = 0
-    ttts = sf.tasksTreeTexts(driver)
-    for taskText in ttts:
-        match = re.search('\[0006\] fit waters -- Nwaters=(\d*)', taskText)
-        if match:
-            nwat = int(match.group(1))
-            break
-    if nwat == 0:
-        print('*** Verification: could not find Nwaters result value after FitWaters run')
-    else:
-        print('*** Verification: Nwaters is %d %% (expecting > 50 %%)' % nwat)
-    assert nwat > 50
-
-    return ()
-
-
-def refmac_07(driver, waitLong):
-    print('Running REFMAC5 0007')
-
-    addButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/add.png')]")
-    addButton.click()
-    time.sleep(1)
-
-    sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list')
-    time.sleep(1)
-
-    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Refinement and Model Building')
-    time.sleep(1)
-
-    sf.clickByXpath(driver, "//div[normalize-space()='%s']" % 'Refinement with Refmac')
-    time.sleep(1)
-
-    # There are several forms - active and inactive. We need one displayed.
-    buttonsRun = driver.find_elements_by_xpath("//button[contains(@style, 'images_png/runjob.png')]" )
-    for buttonRun in buttonsRun:
-        if buttonRun.is_displayed():
-            buttonRun.click()
-            break
-
-    try:
-        wait = WebDriverWait(driver, waitLong)
-        # Waiting for the text 'completed' in the ui-dialog-title of the task [0005]
-        wait.until(EC.presence_of_element_located
-                   ((By.XPATH,"//*[@class='ui-dialog-title' and contains(text(), 'completed') and contains(text(), '[0007]')]")))
-    except:
-        print('Apparently tha task refmacAfterRevision has not been completed in time; terminating')
-        sys.exit(1)
-
-    # presing Close button
-    closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
-    closeButton.click()
-    time.sleep(1)
-
-    rWork = 1.0
-    rFree = 1.0
-    ttts = sf.tasksTreeTexts(driver)
-    for taskText in ttts:
-        match = re.search('\[0007\] refmac5 -- R=(0\.\d*) Rfree=(0\.\d*)', taskText)
-        if match:
-            rWork = float(match.group(1))
-            rFree = float(match.group(2))
-            break
-    if (rWork == 1.0) or (rFree == 1.0):
-        print('*** Verification: could not find Rwork or Rfree value after REFMAC5 run')
-    else:
-        print('*** Verification: REFMAC5 Rwork is %0.4f (expecting <0.25), Rfree is %0.4f (expecing <0.30)' % (rWork, rFree))
-    assert rWork < 0.25
-    assert rFree < 0.30
-
-    return ()
 
 
 def addRemark(driver, title, detail, colour=None):
@@ -355,59 +254,6 @@ def addRemark(driver, title, detail, colour=None):
     closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
     closeButton.click()
     time.sleep(1)
-
-
-def depositionAfterRefmac_15(driver):
-    print('Running Deposition task 15')
-
-    addButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/add.png')]")
-    addButton.click()
-    time.sleep(1)
-
-    sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list')
-    time.sleep(1)
-
-    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Validation, Analysis and Deposition')
-    time.sleep(1)
-
-    sf.clickByXpath(driver, "//div[normalize-space()='%s']" % 'Prepare data for deposition')
-    time.sleep(1)
-
-    # There are several forms - active and inactive. We need one displayed.
-    buttonsRun = driver.find_elements_by_xpath("//button[contains(@style, 'images_png/runjob.png')]" )
-    for buttonRun in buttonsRun:
-        if buttonRun.is_displayed():
-            buttonRun.click()
-            break
-
-    try:
-        wait = WebDriverWait(driver, 900) # normally takes around 5 minutes giving 15 - takes longer to run recently
-        # Waiting for the text 'completed' in the ui-dialog-title of the task [0005]
-        wait.until(EC.presence_of_element_located
-                   ((By.XPATH,"//*[@class='ui-dialog-title' and contains(text(), 'finished') and contains(text(), '[0015]')]")))
-    except:
-        print('Apparently the task depositionAfterRefmac has not been completed in time!')
-
-    # presing Close button
-    closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
-    closeButton.click()
-    time.sleep(1)
-
-    taskText = ''
-    ttts = sf.tasksTreeTexts(driver)
-    for task in ttts:
-        match = re.search('\[0015\] deposition -- (.*)', task)
-        if match:
-            taskText = match.group(1)
-            break
-    if taskText == '':
-        print('*** Verification: could not find text result value after deposition run')
-    else:
-        print('*** Verification: deposition result is "%s" (expecting "package prepared, pdb report obtained")' % taskText)
-
-    assert taskText == 'package prepared, pdb report obtained'
-
-    return ()
 
 
 def generate_03(browser,
@@ -448,14 +294,10 @@ def generate_03(browser,
         addRemark(d.driver, remarkTitle1, remarkDetail1) # 1
         importREADME(d.driver, d.waitShort) # 2
         sf.clickTaskInTaskTree(d.driver, '\[0001\]')
-        startCCP4go(d.driver) # 3
-        verifyCCP4go(d.driver, 18000, '0003') # 4 hours run, giving 5 hours which is 5*60*60 = 18 000 seconds
-
-        addRemark(d.driver, 'Let us do some automated combing of the structure and add waters', '') # 4
-        comb_05(d.driver) # 5
-        fitWaters_06(d.driver, d.waitLong) # 6
-        refmac_07(d.driver, d.waitLong) # 7
-        addRemark(d.driver, 'Further manual building is required to fix ligand, for instance', '',colour='Red')  # 8
+        importFromCloud_mdm2(d.driver, d.waitShort) # 3
+        makingLigand(d.driver, d.waitLong) # 4
+        startCCP4go(d.driver) # 5
+        time.sleep(5)
 
         d.driver.quit()
 
@@ -470,17 +312,35 @@ if __name__ == "__main__":
     parser.set_defaults(auto=False)
     parser.add_argument('--remote', action='store', dest='remote', help=argparse.SUPPRESS, default='') # run tests on Selenium Server hub. Contains hub URL
     parser.add_argument('--browser', action='store', dest='browser', help=argparse.SUPPRESS, default='Firefox') # Firefox or Chrome
-    parser.add_argument('--cloud', action='store', dest='cloud', help=argparse.SUPPRESS, default='https://cloud.ccp4.ac.uk/') # Cloud URL
-    parser.add_argument('--login', action='store', dest='login', help=argparse.SUPPRESS, default='setests') # Login
-    parser.add_argument('--password', action='store', dest='password', help=argparse.SUPPRESS, default='cloud8testS') # password
+    parser.add_argument('--cloud', action='store', dest='cloud', help=argparse.SUPPRESS, default='http://ccp4serv6.rc-harwell.ac.uk/jscofe-dev/') # Cloud URL
+    parser.add_argument('--login', action='store', dest='login', help=argparse.SUPPRESS, default='setests2') # Login
+    parser.add_argument('--password', action='store', dest='password', help=argparse.SUPPRESS, default='') # password
     parser.add_argument('--nologin', action='store', dest='nologin', help=argparse.SUPPRESS, default=False) # login into Cloud or not
 
     parameters = parser.parse_args(sys.argv[1:])
+
+    password = parameters.password
+    if password == '':
+        try:
+            import os, sys, base64
+
+            if sys.platform.startswith("win"):
+                fileName = os.path.expanduser('%userprofile%\setest_pwd')
+            else:
+                fileName = os.path.expanduser('~/.setest_pwd')
+
+            if os.path.exists(fileName):
+                f = open(fileName, 'r')
+                password = base64.b64decode(f.readline().decode('utf-8').strip() + '=')
+                f.close()
+        except:
+            print('Something happend during attempt to read password from the pwd file')
+            raise
 
     generate_03(browser=parameters.browser,  # or 'Chrome'
                 cloud=parameters.cloud,
                 nologin=parameters.nologin,  # True for Cloud Desktop (no login page), False for remote server that requires login.
                 login=parameters.login,  # Used to login into remote Cloud
-                password=parameters.password,  # Used to login into remote Cloud
+                password=password,  # Used to login into remote Cloud
                 remote=parameters.remote  # 'http://130.246.213.187:4444/wd/hub' for Selenium Server hub
                 )

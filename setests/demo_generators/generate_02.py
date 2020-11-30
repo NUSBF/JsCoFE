@@ -690,17 +690,35 @@ if __name__ == "__main__":
     parser.set_defaults(auto=False)
     parser.add_argument('--remote', action='store', dest='remote', help=argparse.SUPPRESS, default='') # run tests on Selenium Server hub. Contains hub URL
     parser.add_argument('--browser', action='store', dest='browser', help=argparse.SUPPRESS, default='Firefox') # Firefox or Chrome
-    parser.add_argument('--cloud', action='store', dest='cloud', help=argparse.SUPPRESS, default='https://cloud.ccp4.ac.uk/') # Cloud URL
-    parser.add_argument('--login', action='store', dest='login', help=argparse.SUPPRESS, default='setests') # Login
-    parser.add_argument('--password', action='store', dest='password', help=argparse.SUPPRESS, default='cloud8testS') # password
+    parser.add_argument('--cloud', action='store', dest='cloud', help=argparse.SUPPRESS, default='http://ccp4serv6.rc-harwell.ac.uk/jscofe-dev/') # Cloud URL
+    parser.add_argument('--login', action='store', dest='login', help=argparse.SUPPRESS, default='setests2') # Login
+    parser.add_argument('--password', action='store', dest='password', help=argparse.SUPPRESS, default='') # password
     parser.add_argument('--nologin', action='store', dest='nologin', help=argparse.SUPPRESS, default=False) # login into Cloud or not
 
     parameters = parser.parse_args(sys.argv[1:])
+
+    password = parameters.password
+    if password == '':
+        try:
+            import os, sys, base64
+
+            if sys.platform.startswith("win"):
+                fileName = os.path.expanduser('%userprofile%\setest_pwd')
+            else:
+                fileName = os.path.expanduser('~/.setest_pwd')
+
+            if os.path.exists(fileName):
+                f = open(fileName, 'r')
+                password = base64.b64decode(f.readline().decode('utf-8').strip() + '=')
+                f.close()
+        except:
+            print('Something happend during attempt to read password from the pwd file')
+            raise
 
     generate_02(browser=parameters.browser,  # or 'Chrome'
                 cloud=parameters.cloud,
                 nologin=parameters.nologin,  # True for Cloud Desktop (no login page), False for remote server that requires login.
                 login=parameters.login,  # Used to login into remote Cloud
-                password=parameters.password,  # Used to login into remote Cloud
+                password=password,  # Used to login into remote Cloud
                 remote=parameters.remote  # 'http://130.246.213.187:4444/wd/hub' for Selenium Server hub
                 )
