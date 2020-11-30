@@ -19,6 +19,11 @@ d = sf.driverHandler()
 def xia2Processing(driver, isLocal):
     print('Running XIA-2 for Hg dataset')
 
+    # presing Add button
+    addButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/add.png')]")
+    addButton.click()
+    time.sleep(1)
+
     sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list')
     time.sleep(1)
 
@@ -72,7 +77,7 @@ def xia2Processing(driver, isLocal):
         wait = WebDriverWait(driver, 420) # allowing 7 minutes to the task to finish, normally takes 3 minutes, but 6 minutes locally
         # Waiting for the text 'completed' in the ui-dialog-title of the task [0001]
         wait.until(EC.presence_of_element_located
-                   ((By.XPATH,"//*[@class='ui-dialog-title' and contains(text(), 'completed') and contains(text(), '[0001]')]")))
+                   ((By.XPATH,"//*[@class='ui-dialog-title' and contains(text(), 'completed') and contains(text(), '[0002]')]")))
     except:
         print('Apparently the task xia2Processing has not been completed in time; terminating')
         sys.exit(1)
@@ -85,11 +90,11 @@ def xia2Processing(driver, isLocal):
     found = False
     ttts = sf.tasksTreeTexts(driver)
     for taskText in ttts:
-        match = re.search('\[0001\] created datasets: Unmerged \(2\) HKL \(1\) -- completed', taskText)
+        match = re.search('\[0002\] created datasets: Unmerged \(2\) HKL \(1\) -- completed', taskText)
         if match:
             found = True
             break
-        match = re.search('\[0001\] created datasets: HKL \(1\) Unmerged \(2\) -- completed', taskText)
+        match = re.search('\[0002\] created datasets: HKL \(1\) Unmerged \(2\) -- completed', taskText)
         if match:
             found = True
             break
@@ -130,7 +135,7 @@ def aimlessAfterXia2(driver, waitLong):
         wait = WebDriverWait(driver, waitLong)
         # Waiting for the text 'completed' in the ui-dialog-title of the task [0001]
         wait.until(EC.presence_of_element_located
-                   ((By.XPATH,"//*[@class='ui-dialog-title' and contains(text(), 'completed') and contains(text(), '[0002]')]")))
+                   ((By.XPATH,"//*[@class='ui-dialog-title' and contains(text(), 'completed') and contains(text(), '[0003]')]")))
     except:
         print('Apparently the task xia2Processing has not been completed in time; terminating')
         sys.exit(1)
@@ -149,7 +154,7 @@ def aimlessAfterXia2(driver, waitLong):
     sg = ''
     ttts = sf.tasksTreeTexts(driver)
     for taskText in ttts:
-        match = re.search('\[0002\] aimless -- Compl=(.*)\% CC1\/2=(.*) Rmeas_all=(.*) Rmeas_ano=(.*) Res=(.*)-(.*) SpG=(.*)', taskText)
+        match = re.search('\[0003\] aimless -- Compl=(.*)\% CC1\/2=(.*) Rmeas_all=(.*) Rmeas_ano=(.*) Res=(.*)-(.*) SpG=(.*)', taskText)
         if match:
             compl = float(match.group(1))
             cc12 = float(match.group(2))
@@ -181,7 +186,7 @@ def aimlessAfterXia2(driver, waitLong):
     return ()
 
 
-def simbad_03(driver, waitLong):
+def simbad_05(driver, waitLong):
     print('Running SIMBAD')
 
     addButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/add.png')]")
@@ -208,7 +213,7 @@ def simbad_03(driver, waitLong):
         wait = WebDriverWait(driver, waitLong) # allowing 10 minutes to the task to finish
         # Waiting for the text 'completed' in the ui-dialog-title of the task [0003]
         wait.until(EC.presence_of_element_located
-                   ((By.XPATH,"//*[@class='ui-dialog-title' and contains(text(), 'completed') and contains(text(), '[0003]')]")))
+                   ((By.XPATH,"//*[@class='ui-dialog-title' and contains(text(), 'completed') and contains(text(), '[0005]')]")))
     except:
         print('Apparently the task simbadAfterImport has not been completed in time; terminating')
         sys.exit(1)
@@ -221,7 +226,7 @@ def simbad_03(driver, waitLong):
     solv = 0.0
     ttts = sf.tasksTreeTexts(driver)
     for taskText in ttts:
-        match = re.search('\[0003\] simbad -- Solv=(.*)\%', taskText)
+        match = re.search('\[0005\] simbad -- Solv=(.*)\%', taskText)
         if match:
             solv = float(match.group(1))
             break
@@ -236,7 +241,7 @@ def simbad_03(driver, waitLong):
     return ()
 
 
-def dimple_04(driver, waitLong):
+def dimple_06(driver, waitLong):
     print('Running Dimple')
 
     addButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/add.png')]")
@@ -263,7 +268,7 @@ def dimple_04(driver, waitLong):
         wait = WebDriverWait(driver, waitLong)
         # Waiting for the text 'completed' in the ui-dialog-title of the task [0005]
         wait.until(EC.presence_of_element_located
-                   ((By.XPATH,"//*[@class='ui-dialog-title' and contains(text(), 'completed') and contains(text(), '[0004]')]")))
+                   ((By.XPATH,"//*[@class='ui-dialog-title' and contains(text(), 'completed') and contains(text(), '[0006]')]")))
     except:
         print('Apparently tha task dimple has not been completed in time; terminating')
         sys.exit(1)
@@ -277,7 +282,7 @@ def dimple_04(driver, waitLong):
     rFree = 1.0
     ttts = sf.tasksTreeTexts(driver)
     for taskText in ttts:
-        match = re.search('\[0004\] dimple -- R=(0\.\d*) Rfree=(0\.\d*)', taskText)
+        match = re.search('\[0006\] dimple -- R=(0\.\d*) Rfree=(0\.\d*)', taskText)
         if match:
             rWork = float(match.group(1))
             rFree = float(match.group(2))
@@ -290,6 +295,37 @@ def dimple_04(driver, waitLong):
     assert rFree < 0.42
 
     return ()
+
+
+def addRemark(driver, title, detail, colour=None):
+    print('Adding remark: %s' % title)
+
+    addButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/task_remark.png')]")
+    addButton.click()
+    time.sleep(1)
+
+    inputTitle = driver.find_element_by_xpath("//input[@title='A single-line description of the job, which will appear in the Project Tree. The description can be changed before or after running the job.']")
+    inputTitle.clear()
+    inputTitle.send_keys(title)
+    time.sleep(1)
+
+    inputDetail = driver.find_element_by_xpath("//textarea[@placeholder='Optional detail description may be placed here']")
+    inputDetail.clear()
+    inputDetail.send_keys(detail)
+    time.sleep(1)
+
+    if colour is not None:
+        colourButton = driver.find_element(By.XPATH, "//div[@class='menu-dropbtn' and contains(@style, 'images_png/task_remark_s.png')]")
+        colourButton.click()
+        time.sleep(1)
+
+        sf.clickByXpath(driver, "//*[normalize-space()='%s']" % colour)
+        time.sleep(1)
+
+    # pressing Close button
+    closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
+    closeButton.click()
+    time.sleep(1)
 
 
 def test_1xia2(browser,
@@ -325,7 +361,13 @@ def test_1xia2(browser,
         sf.removeProject(d.driver, d.testName)
         sf.makeTestProject(d.driver, d.testName, d.testName)
         sf.enterProject(d.driver, d.testName)
-        xia2Processing(d.driver, isLocal)
+
+        sf.clickByXpath(d.driver, "//button[normalize-space()='%s']" % 'Cancel')
+        time.sleep(1)
+
+        addRemark(d.driver, 'Test1 remark as first task', 'test1 details') # 1
+
+        xia2Processing(d.driver, isLocal) #2
 
     except:
         d.driver.quit()
@@ -334,7 +376,8 @@ def test_1xia2(browser,
 
 def test_2aimless():
     try:
-        aimlessAfterXia2(d.driver, d.waitLong) # 02
+        aimlessAfterXia2(d.driver, d.waitLong) # 03
+        addRemark(d.driver, 'Test2 remark in the middle', 'test2 details') # 4
     except:
         d.driver.quit()
         raise
@@ -342,8 +385,8 @@ def test_2aimless():
 
 def test_3simbadDimple():
     try:
-        simbad_03(d.driver, 600) # 03
-        dimple_04(d.driver, 300) # 04
+        simbad_05(d.driver, 600) # 05
+        dimple_06(d.driver, 300) # 06
 
         sf.renameProject(d.driver, d.testName)
         d.driver.quit()
