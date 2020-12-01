@@ -1,7 +1,7 @@
 //
 //  =================================================================
 //
-//    25.08.20   <--  Date of Last Modification.
+//    01.12.20   <--  Date of Last Modification.
 //                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  -----------------------------------------------------------------
 //
@@ -1188,30 +1188,30 @@ function MessageBox ( title,message )  {
 
 function GaugeWidget ( holderId,sectionId,width,value,maxValue,options )  {
 
-
   if (sectionId)  {
 
-    window.setTimeout ( function(){
-      alert ( ' secId=' + sectionId );
-      GaugeWidget ( holderId,'',width,value,maxValue,options );
-    },2000);
-    return;
-
+    // this code works if initial drawing is prohibited by initially inactive tab
+    if (sectionId.length==1)  {  // sectionId must be a number 0-9 in this case
+      // makes the Gauge to appear on the selection of tab #(sectionId)
+      $("#"+mainTabBarId).tabs({
+        activate: function(event,ui){
+                    //alert ( ui.newTab.index() );
+                    if (ui.newTab.index()==sectionId)
+                      GaugeWidget ( holderId,'',width,value,maxValue,options );
+                  }
+      });
+      return;
+    }
 
     // this code works if initial drawing is prohibited by closed section
     var section = document.getElementById(sectionId+'-accordion');
-    if (section)
+    if (section)  {
       section.addEventListener( 'activate',function(e){
         GaugeWidget ( holderId,'',width,value,maxValue,options );
       },false );
-    /*
-    else  { // can be a tab
-      section = document.getElementById('report_page');
-      $( ".selector" ).tabs({
-  activate: function( event, ui ) {}
-});
+      return;
     }
-    */
+
   }
 
   //<canvas id="demo" style="width:100px;"></canvas>
