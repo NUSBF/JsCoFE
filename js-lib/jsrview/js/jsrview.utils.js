@@ -1188,15 +1188,30 @@ function MessageBox ( title,message )  {
 
 function GaugeWidget ( holderId,sectionId,width,value,maxValue,options )  {
 
+
   if (sectionId)  {
+
+    window.setTimeout ( function(){
+      alert ( ' secId=' + sectionId );
+      GaugeWidget ( holderId,'',width,value,maxValue,options );
+    },2000);
+    return;
+
+
     // this code works if initial drawing is prohibited by closed section
     var section = document.getElementById(sectionId+'-accordion');
-    if (!section)  // can be a tab
-      section = document.getElementById(sectionId);
     if (section)
       section.addEventListener( 'activate',function(e){
         GaugeWidget ( holderId,'',width,value,maxValue,options );
       },false );
+    /*
+    else  { // can be a tab
+      section = document.getElementById('report_page');
+      $( ".selector" ).tabs({
+  activate: function( event, ui ) {}
+});
+    }
+    */
   }
 
   //<canvas id="demo" style="width:100px;"></canvas>
