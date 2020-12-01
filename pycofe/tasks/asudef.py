@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    06.11.20   <--  Date of Last Modification.
+#    01.12.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -375,7 +375,7 @@ def makeRevision ( base,hkl,seq,composition,altEstimateKey,altNRes,
 # ------------------------------------------------------------------------
 
 def revisionFromStructure ( base,hkl,structure,name,useSequences=None,
-                                 make_revision=True ):
+                                 make_revision=True,secId="" ):
 
     chains  = structure.xyzmeta["xyz"][0]["chains"]
     seq     = []
@@ -475,7 +475,7 @@ def revisionFromStructure ( base,hkl,structure,name,useSequences=None,
         #                                                    "",None,"" )
 
         revision = makeRevision ( base,hkl,seqs,composition,"NR","1","1",
-                                  "",revision0=None,resultTitle="",secId="" )
+                                  "",revision0=None,resultTitle="",secId=secId )
 
         if revision[0]:
             revision[0].setStructureData ( structure   )

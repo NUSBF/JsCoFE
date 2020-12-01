@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    16.09.20   <--  Date of Last Modification.
+#    01.12.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -251,7 +251,10 @@ class Simbad(asudef.ASUDef):
                           result0["name"] + " structure and electron density",
                           structure )
 
-                asudef.revisionFromStructure ( self,hkl,structure,result0["name"] )
+                # secId="0" activates drawing of the GaugeWidget on the
+                # activation of 0th (the leftmost) tab
+                asudef.revisionFromStructure ( self,hkl,structure,result0["name"],
+                                               secId="0" )
                 have_results = True
 
             else:
