@@ -56,7 +56,10 @@ class DUI(basic.TaskDriver):
 
     def run(self):
 
-        self.putMessage ( "<h3><i>DUI is starting on your device, please wait ...</h3>" )
+        self.putMessage (
+            "<h3><i>DUI is starting on your device, please wait ...</h3>"+\
+            "<i>if you do not see it for a long time, check behind this window...</i>"
+        )
         self.rvrow -= 1
         self.flush()
 

@@ -1191,6 +1191,8 @@ function GaugeWidget ( holderId,sectionId,width,value,maxValue,options )  {
   if (sectionId)  {
     // this code works if initial drawing is prohibited by closed section
     var section = document.getElementById(sectionId+'-accordion');
+    if (!section)  // can be a tab
+      section = document.getElementById(sectionId);
     if (section)
       section.addEventListener( 'activate',function(e){
         GaugeWidget ( holderId,'',width,value,maxValue,options );

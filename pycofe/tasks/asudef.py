@@ -471,8 +471,12 @@ def revisionFromStructure ( base,hkl,structure,name,useSequences=None,
 
         base.putMessage ( "&nbsp;<br><h3>Asymmetric Unit Analysis</h3>" )
 
+        #revision = makeRevision ( base,hkl,seqs,composition,"NR","1","1",
+        #                                                    "",None,"" )
+
         revision = makeRevision ( base,hkl,seqs,composition,"NR","1","1",
-                                                            "",None,"" )
+                                  "",revision0=None,resultTitle="",secId="" )
+
         if revision[0]:
             revision[0].setStructureData ( structure   )
             base.registerRevision        ( revision[0] )
