@@ -475,7 +475,8 @@ def revisionFromStructure ( base,hkl,structure,name,useSequences=None,
         #                                                    "",None,"" )
 
         revision = makeRevision ( base,hkl,seqs,composition,"NR","1","1",
-                                  "",revision0=None,resultTitle="",secId=secId )
+                                  "",revision0=None,resultTitle="",
+                                  secId=secId )
 
         if revision[0]:
             revision[0].setStructureData ( structure   )

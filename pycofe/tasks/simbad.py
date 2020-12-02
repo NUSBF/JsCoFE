@@ -223,11 +223,37 @@ class Simbad(asudef.ASUDef):
             simbad_meta = {}
             simbad_meta["nResults"] = 0
 
+        self.stdoutln ( str(simbad_meta) )
         have_results = False
 
         if simbad_meta["nResults"]>0:
 
             result0 = simbad_meta["results"][0]
+
+            self.flush()
+            self.file_stdout.close()
+            f = open ( self.file_stdout_path(),"r" )
+            key     = -1
+            LLG     = ""
+            TFZ     = ""
+            Rfactor = ""
+            Rfree   = ""
+            for line in f:
+                if key==0:
+                    words = line.split()
+                    if len(words)>5 and words[0]==result0["name"]:
+                        TFZ     = words[1]
+                        LLG     = words[2]
+                        Rfree   = words[-1]
+                        Rfactor = words[-2]
+                        break
+                elif "phaser_tfz" in line:
+                    key = 1
+                else:
+                    key -= 1
+            f.close()
+            # continue writing to stdout
+            self.file_stdout = open ( self.file_stdout_path(),"a" )
 
             self.putMessage ( "<h3>Best model found: " + result0["name"] + "</h3>" )
 
@@ -256,6 +282,13 @@ class Simbad(asudef.ASUDef):
                 asudef.revisionFromStructure ( self,hkl,structure,result0["name"],
                                                secId="0" )
                 have_results = True
+
+                if Rfree:
+                    self.generic_parser_summary["simbad"] = {
+                        "summary_line" : "LLG=" + LLG + " TFZ=" + TFZ +\
+                                         " R=" + Rfactor +\
+                                         " R<sub>free</sub>=" + Rfree
+                    }
 
             else:
                 self.putMessage ( "Structure Data cannot be formed (probably a bug)" )
