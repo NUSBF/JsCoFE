@@ -41,7 +41,8 @@ import gemmi
 
 #  application imports
 from . import basic
-from   pycofe.dtypes  import dtype_template
+from   pycofe.dtypes   import dtype_template
+from   pycofe.verdicts import verdict_phaserep
 
 
 # ============================================================================
@@ -360,7 +361,17 @@ class PhaserEP(basic.TaskDriver):
         if not self.xmodel:
             sol = self.process_solution ( ".1.hand","<h3><i>Inverted Hand</i></h3>",hkl,seq,2 )
             have_results = have_results or (sol[2] is not None)
-            self.putMessage       ( "&nbsp;<p>" )
+            self.putMessage ( "&nbsp;<p>" )
+
+        if have_results:
+            # Verdict section
+            verdict_meta = {
+                "fllg" : LLG,
+                "ffom" : FOM
+            }
+            verdict_phaserep.putVerdictWidget ( self,verdict_meta,self.rvrow-1 )
+            self.rvrow += 3
+
 
         if have_results and FOM>=0.0:
             self.generic_parser_summary["phasewr-ep"] = {

@@ -59,7 +59,7 @@ def calcVerdictScore ( data,score_type ):
     #              interval 50 - 100
     #    bad     - list of monotonic scores which are equidistantly mapped on
     #              interval 0 - 50
-    #    if 'good' goes up, 'bad' goes down and the other way round.
+    #    if 'good' goes up, 'bad' must go down and the other way round.
     #    good[0] == bad[0]
     #
     #    Example: if given score equals to g0,g1,g2,g3,g4, or g5, then it is

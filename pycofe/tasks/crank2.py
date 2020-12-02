@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    05.03.20   <--  Date of Last Modification.
+#    02.12.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -674,7 +674,7 @@ class Crank2(basic.TaskDriver):
         self.flush()
         crank2_meta = {
             "help_btn_template" : self.hotHelpLink ( "Crank-2 Glossary",
-                        "jscofe_qna.crank2_glossary",tooltip="what is this?",
+                        "doc.task.Crank2",tooltip="what is this?",
                         chapter="html-taskref" )
         }
         self.storeReportDocument ( json.dumps(crank2_meta) )
