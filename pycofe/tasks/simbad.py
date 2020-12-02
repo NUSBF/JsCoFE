@@ -223,7 +223,6 @@ class Simbad(asudef.ASUDef):
             simbad_meta = {}
             simbad_meta["nResults"] = 0
 
-        self.stdoutln ( str(simbad_meta) )
         have_results = False
 
         if simbad_meta["nResults"]>0:
@@ -244,8 +243,8 @@ class Simbad(asudef.ASUDef):
                     if len(words)>5 and words[0]==result0["name"]:
                         TFZ     = words[1]
                         LLG     = words[2]
-                        Rfree   = words[-1]
-                        Rfactor = words[-2]
+                        Rfactor = words[4]
+                        Rfree   = words[5]
                         break
                 elif "phaser_tfz" in line:
                     key = 1
