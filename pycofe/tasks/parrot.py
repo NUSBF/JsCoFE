@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    29.11.20   <--  Date of Last Modification.
+#    02.12.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -38,8 +38,32 @@ from   pycofe.dtypes import dtype_sequence
 
 
 # ============================================================================
-# Make Molrep driver
 
+def getParrorScores ( logfpath ):
+
+    f = open ( logfpath,"r" )
+    FOM   = ""
+    Fcorr = ""
+    key   = -1
+    for line in f:
+        if key==0:
+            words = line.split()
+            if words[0]=="$$":
+                key = -1
+                break
+            if len(words)>=4:
+                FOM   = words[1]
+                Fcorr = words[2]
+        elif "Cycle   FOM     Fcorrel(work)   Fcorrel(free)" in line:
+            key = 1
+        else:
+            key -= 1
+    f.close()
+
+    return (FOM,Fcorr)
+
+
+# Make Parror driver
 class Parrot(basic.TaskDriver):
 
     # redefine name of input script file
@@ -198,6 +222,12 @@ class Parrot(basic.TaskDriver):
         have_results = False
         if os.path.isfile(output_file):
 
+            self.flush()
+            self.file_stdout.close()
+            FOM, Fcorr = getParrorScores ( self.file_stdout_path() )
+            # continue writing to stdout
+            self.file_stdout = open ( self.file_stdout_path(),"a" )
+
             self.runApp ( "chltofom",[
                 "-mtzin" ,output_file,
                 "-mtzout","__tmp.mtz",
@@ -248,6 +278,11 @@ class Parrot(basic.TaskDriver):
                 revision.setStructureData  ( structure )
                 self.registerRevision      ( revision  )
                 have_results = True
+
+                if FOM:
+                    self.generic_parser_summary["parrot"] = {
+                        "summary_line" : "FOM=" + FOM + " F<sub>corr</sub>=" + Fcorr
+                    }
 
         else:
             self.putTitle ( "No Output Generated" )
