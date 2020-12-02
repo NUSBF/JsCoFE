@@ -112,7 +112,6 @@ class Dimple(basic.TaskDriver):
         if mrnum:
             cmd += [ "--mr-num",mrnum ]
 
-
         # run dimple
         if sys.platform.startswith("win"):
             self.runApp ( "dimple.bat",cmd,logType="Main" )
