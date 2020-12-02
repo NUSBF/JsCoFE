@@ -1468,12 +1468,17 @@ class TaskDriver(object):
         return
 
     def hotHelpLink ( self,title,helpFName,tooltip="what is this?",chapter="html-userguide" ):
-        hothelp = "<sup><img src=\"xxJsCoFExx-fe/images_png/help.png\" "      +\
-                          "title=\"" + tooltip + "\" "                        +\
-                          "style=\"width:14px;height:14px;cursor:pointer;\" " +\
-                        "onclick=\"javascript:window.parent.launchHelpBox('"  +\
-                             title + "','manuals/" + chapter + "/" + helpFName +\
-                             ".html',null,10)\"/>"                            +\
+        hflist  = helpFName.split("#")
+        if len(hflist)==2:
+            hflist[1] = "#" + hflist[1]
+        else:
+            hflist.append ( "" )
+        hothelp = "<sup><img src=\"xxJsCoFExx-fe/images_png/help.png\" "       +\
+                          "title=\"" + tooltip + "\" "                         +\
+                          "style=\"width:14px;height:14px;cursor:pointer;\" "  +\
+                        "onclick=\"javascript:window.parent.launchHelpBox('"   +\
+                             title + "','manuals/" + chapter + "/" + hflist[0] +\
+                             ".html" + hflist[1] + "',null,10)\"/>"            +\
                   "</sup>"
         return hothelp
 
