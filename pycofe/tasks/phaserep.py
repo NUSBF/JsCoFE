@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    24.11.20   <--  Date of Last Modification.
+#    02.12.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -332,14 +332,40 @@ class PhaserEP(basic.TaskDriver):
 
         # check solution and register data
 
-        self.putTitle         ( "Results" )
+        FOM = -1.0
+        LLG = -1.0
+        self.flush()
+        self.file_stdout.close()
+        f   = open ( self.file_stdout_path(),"r" )
+        key = 1
+        for line in f:
+            if key==0:
+                words = line.split()
+                if len(words)>5 and words[0]=="#":
+                    try:
+                        LLG = max ( LLG,float(words[-3]) )
+                        FOM = max ( FOM,float(words[-4]) )
+                    except:
+                        pass
+            elif "SAD Refinement Table" in line:
+                key = 0
+        f.close()
+        # continue writing to stdout
+        self.file_stdout = open ( self.file_stdout_path(),"a" )
+
+        self.putTitle ( "Results" )
         sol = self.process_solution ( ".1","<h3><i>Original Hand</i></h3>",hkl,seq,1 )
         have_results = sol[2] is not None
-        self.putMessage       ( "&nbsp;"  )
+        self.putMessage ( "&nbsp;"  )
         if not self.xmodel:
             sol = self.process_solution ( ".1.hand","<h3><i>Inverted Hand</i></h3>",hkl,seq,2 )
             have_results = have_results or (sol[2] is not None)
             self.putMessage       ( "&nbsp;<p>" )
+
+        if have_results and FOM>=0.0:
+            self.generic_parser_summary["phasewr-ep"] = {
+                "summary_line" : "LLG=" + str(LLG) + " FOM=" + str(FOM)
+            }
 
         # close execution logs and quit
         self.success ( have_results )
