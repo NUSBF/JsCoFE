@@ -70,7 +70,8 @@ def makeAsuFitMessage ( base,nc0,sol0 ):
 
 def makeRevision ( base,hkl,seq,composition,altEstimateKey,altNRes,
                         altMolWeight,resLimit,
-                        revision0=None,resultTitle="Results",secId="" ):
+                        revision0=None,resultTitle="Results",secId="",
+                        make_verdict=True ):
 
     revision   = None
 
@@ -354,15 +355,18 @@ def makeRevision ( base,hkl,seq,composition,altEstimateKey,altNRes,
 
         #makeAsuFitMessage ( base,nc0,sol0 )
 
-        title = "Verdict"
-        if not resultTitle:
-            title = "*Verdict"
-        verdict_asudef.putVerdictWidget ( base,{
-            "ncopies"    : ncopies1,
-            "nc"         : nc0,
-            "sol"        : sol1,
-            "resolution" : hkl.getHighResolution(raw=True)
-        },secId=secId,title=title )
+        if make_verdict:
+            title = "Verdict"
+            if not resultTitle:
+                title = "*Verdict"
+            verdict_asudef.putVerdictWidget ( base,{
+                "ncopies"    : ncopies1,
+                "nc"         : nc0,
+                "sol"        : sol1,
+                "resolution" : hkl.getHighResolution(raw=True)
+            },secId=secId,title=title )
+        else:
+            base.rvrow += 4
 
         if revision:
             base.generic_parser_summary["z02"] = {
@@ -375,7 +379,7 @@ def makeRevision ( base,hkl,seq,composition,altEstimateKey,altNRes,
 # ------------------------------------------------------------------------
 
 def revisionFromStructure ( base,hkl,structure,name,useSequences=None,
-                                 make_revision=True,secId="" ):
+                                 make_revision=True,secId="",make_verdict=True ):
 
     chains  = structure.xyzmeta["xyz"][0]["chains"]
     seq     = []
@@ -476,7 +480,7 @@ def revisionFromStructure ( base,hkl,structure,name,useSequences=None,
 
         revision = makeRevision ( base,hkl,seqs,composition,"NR","1","1",
                                   "",revision0=None,resultTitle="",
-                                  secId=secId )
+                                  secId=secId,make_verdict=make_verdict )
 
         if revision[0]:
             revision[0].setStructureData ( structure   )

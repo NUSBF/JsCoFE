@@ -138,6 +138,7 @@ function ProjectPage ( sceneId )  {
                         if (above_cbx.getValue())
                           nodelist = adata[1];
                         if (below_cbx.getValue())  {
+                          nodelist.shift();  // avoid duplicate nodes in the list
                           nodelist = nodelist.concat ( adata[2] );
                         }
                         if (nodelist.length<=0)

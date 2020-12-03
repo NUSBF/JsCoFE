@@ -405,7 +405,6 @@ class PhaserMR(basic.TaskDriver):
             }
             verdict_phasermr.putVerdictWidget ( self,verdict_meta,row0 )
 
-
         # close execution logs and quit
         self.success ( have_results )
         return
