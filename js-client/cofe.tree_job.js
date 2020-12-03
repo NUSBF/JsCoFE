@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    26.11.20   <--  Date of Last Modification.
+ *    03.12.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -102,6 +102,12 @@ JobTree.prototype.setSelectMode = function()  {
 
 JobTree.prototype.isProjectMode = function()  {
   return (this.mode=='project');
+}
+
+JobTree.prototype.isRemark = function ( nodeId )  {
+  if (nodeId in this.task_map)
+    return this.task_map[nodeId].isRemark();
+  return false;
 }
 
 JobTree.prototype.isReplayMode = function()  {
@@ -332,16 +338,18 @@ JobTree.prototype.makeNodeName = function ( task )  {
 
 
 JobTree.prototype.setNodeName = function ( nodeId,save_bool )  {
-  var task = this.task_map[nodeId];
-  var node = this.node_map[nodeId];
-  var newName = this.makeNodeName ( task );
-  if (newName!=node.text)  {  // to enforce managing custom icon visibility
-    this.setText ( node,newName );
-    this.confirmCustomIconsVisibility();
-    if (task.isRemark())
-      this.setStyle ( node,__remarkStyle,0 );
-    if (save_bool)
-      this.saveProjectData ( [],[],true, function(rdata){} );
+  if (nodeId in this.task_map)  {
+    var task = this.task_map[nodeId];
+    var node = this.node_map[nodeId];
+    var newName = this.makeNodeName ( task );
+    if (newName!=node.text)  {  // to enforce managing custom icon visibility
+      this.setText ( node,newName );
+      this.confirmCustomIconsVisibility();
+      if (task.isRemark())
+        this.setStyle ( node,__remarkStyle,0 );
+      if (save_bool)
+        this.saveProjectData ( [],[],true, function(rdata){} );
+    }
   }
 }
 
@@ -356,14 +364,16 @@ JobTree.prototype.setNodeIcon = function ( nodeId,save_bool )  {
 
 
 JobTree.prototype.resetNodeName = function ( nodeId )  {
-  var task = this.task_map[nodeId];
-  if (task)  {
-    var node = this.node_map[nodeId];
-    this.setText ( node,this.makeNodeName(task) );
-    if (task.isRemark())
-      this.setStyle ( node,__remarkStyle,0 );
+  if (nodeId in this.task_map)  {
+    var task = this.task_map[nodeId];
+    if (task)  {
+      var node = this.node_map[nodeId];
+      this.setText ( node,this.makeNodeName(task) );
+      if (task.isRemark())
+        this.setStyle ( node,__remarkStyle,0 );
+    }
+    this.confirmCustomIconsVisibility();
   }
-  this.confirmCustomIconsVisibility();
 }
 
 
@@ -623,8 +633,11 @@ var sel_lst = this.calcSelectedNodeId();
     var ok = true;
     for (var i=0;(i<sel_lst.length) && ok;i++)
       ok = (this.node_map[sel_lst[i]].text.indexOf('cross-branch="1"')<0);
-    if (ok)
-      return [1,this.canMakeFolder1(sel_lst),[]];
+    if (ok)  {
+      sel_lst = this.canMakeFolder1 ( sel_lst );
+      if (sel_lst.length>1)
+      return [1,sel_lst,[]];
+    }
   } else if (this.node_map[sel_lst[0]].fchildren.length>0) { // selected archive
     return [2,sel_lst,[]];
   } else  {  // check if archive may be made up or/and down the branch
@@ -632,8 +645,9 @@ var sel_lst = this.calcSelectedNodeId();
     var lst2   = [];
     var nodeId = sel_lst[0];
     var node = this.node_map[nodeId];
-    if ((node.children.length==1) &&
-        this.task_map[node.children[0].id].isRemark())
+//    if ((node.children.length==1) &&
+//        this.task_map[node.children[0].id].isRemark())
+    if ((node.children.length==1) && this.isRemark(node.children[0].id))
       nodeId = node.parentId;
     while (nodeId)  {
       node = this.node_map[nodeId];
@@ -657,8 +671,12 @@ var sel_lst = this.calcSelectedNodeId();
         lst2.push ( nodeId );
         nodeId = node.children[0].id;
       } else  {
+        /*
         var task = this.task_map[nodeId];
         if ((lst2.length>0) && task && this.task_map[nodeId].isRemark())
+          lst2.pop();
+        */
+        if ((lst2.length>0) && this.isRemark(nodeId))
           lst2.pop();
         nodeId = null;
       }
@@ -1085,7 +1103,8 @@ JobTree.prototype.deleteJob = function ( onDelete_func ) {
           //if ((tree.task_map[delNodeId[i]].state==job_code.remark) ||
           //    (tree.task_map[delNodeId[i]].state==job_code.remdet) ||
           //    (tree.task_map[delNodeId[i]].state==job_code.remdoc))
-          if (tree.task_map[delNodeId[i]].isRemark())
+          //if ((delNodeId[i].fchildren.length<=0) && tree.task_map[delNodeId[i]].isRemark())
+          if (tree.isRemark(delNodeId[i]))
                 tree.setStyle ( tree.node_map[delNodeId[i]],__remarkStyle,0 );
           else  tree.setStyle ( tree.node_map[delNodeId[i]],'',1 );
 

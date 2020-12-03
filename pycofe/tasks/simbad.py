@@ -46,8 +46,9 @@ import json
 import pyrvapi
 
 #  application imports
-from   pycofe.tasks  import asudef
-from   pycofe.dtypes import dtype_revision, dtype_sequence
+from   pycofe.tasks    import asudef
+from   pycofe.dtypes   import dtype_revision, dtype_sequence
+from   pycofe.verdicts import verdict_simbad
 
 
 # ============================================================================
@@ -278,16 +279,34 @@ class Simbad(asudef.ASUDef):
 
                 # secId="0" activates drawing of the GaugeWidget on the
                 # activation of 0th (the leftmost) tab
-                asudef.revisionFromStructure ( self,hkl,structure,result0["name"],
-                                               secId="0" )
-                have_results = True
+                revision = asudef.revisionFromStructure ( self,hkl,structure,
+                                                          result0["name"],secId="0",
+                                                          make_verdict=False )
+                if revision:
 
-                if Rfree:
-                    self.generic_parser_summary["simbad"] = {
-                        "summary_line" : "LLG=" + LLG + " TFZ=" + TFZ +\
-                                         " R=" + Rfactor +\
-                                         " R<sub>free</sub>=" + Rfree
+                    have_results = True
+
+                    # Verdict section
+
+                    verdict_meta = {
+                        "sol"        : revision.ASU.solvent,
+                        "resolution" : revision.HKL.getHighResolution(raw=True),
+                        "nasu"       : revision.getNofASUMonomers(),
+                        "fllg"       : float ( LLG   ),
+                        "ftfz"       : float ( TFZ   ),
+                        "rfree"      : float ( Rfree )
                     }
+                    verdict_simbad.putVerdictWidget ( self,verdict_meta,self.rvrow-6,secId="0" )
+
+                    if Rfree:
+                        self.generic_parser_summary["simbad"] = {
+                            "summary_line" : "LLG=" + LLG + " TFZ=" + TFZ +\
+                                             " R=" + Rfactor +\
+                                             " R<sub>free</sub>=" + Rfree
+                        }
+
+                else:
+                    self.putMessage ( "Structure Revision cannot be formed (probably a bug)" )
 
             else:
                 self.putMessage ( "Structure Data cannot be formed (probably a bug)" )
