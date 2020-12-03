@@ -225,17 +225,31 @@ def phaserEP(driver):
     time.sleep(2)
 
     completed = ''
+    fom = 0.0
+    llg = 0.0
     ttts = sf.tasksTreeTexts(driver)
     for taskText in ttts:
         match = re.search('\[0004\] phaser EP \(SAD\) -- (.*)', taskText)
         if match:
             completed = match.group(1)
+            match2 = re.search('LLG=(.*)\sFOM=(.*)', match.group(1))
+            if match2:
+                llg = float(match2.group(1))
+                fom = float(match2.group(2))
             break
     if completed == '':
         print('*** Verification: could not find completed value after Phaser EP run')
+        assert completed == 'completed.'
     else:
-        print('*** Verification: Phaser EP completion message in %s (expecting "completed.")' % (completed))
-    assert completed == 'completed.'
+        if (fom == 0.0) and (llg == 0.0):
+            print('*** Verification: Phaser EP completion message in %s (expecting "completed.")' % (completed))
+            assert completed == 'completed.'
+        else:
+            print('*** Verification: Phaser EP LLG is %0.1f, FOM is %0.3f (expecting >1000, >0.45)' % (llg, fom))
+            assert llg > 1000.0
+            assert  fom > 0.45
+
+
 
     return()
 
@@ -277,17 +291,29 @@ def runParrot(driver):
     time.sleep(2)
 
     completed = ''
+    fom = 0.0
+    fcorr = 0.0
     ttts = sf.tasksTreeTexts(driver)
     for taskText in ttts:
         match = re.search('\[0005\] parrot DM --\s(.*)', taskText)
         if match:
             completed = match.group(1)
+            match2 = re.search('FOM=(.*)\sFcorr=(.*)', match.group(1))
+            if match2:
+                fom = float(match2.group(1))
+                fcorr = float(match2.group(2))
             break
     if completed == '':
         print('*** Verification: could not find completed value after Parrot run')
+        assert completed == 'completed.'
     else:
-        print('*** Verification: Parrot completion message in %s (expecting "completed.")' % (completed))
-    assert completed == 'completed.'
+        if (fom == 0.0) and (fcorr == 0.0):
+            print('*** Verification: Parrot completion message in %s (expecting "completed.")' % (completed))
+            assert completed == 'completed.'
+        else:
+            print('*** Verification: Parrot Fcorr is %0.3f, FOM is %0.3f (expecting >0.8, >0.8)' % (fcorr, fom))
+            assert fcorr > 0.8
+            assert  fom > 0.8
 
     return ()
 
