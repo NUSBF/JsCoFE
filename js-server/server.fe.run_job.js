@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    20.11.20   <--  Date of Last Modification.
+ *    04.12.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -195,7 +195,7 @@ function cleanFEJobRegister()  {
     var jobEntry   = feJobRegister.job_map[job_token];
     var jobDirPath = prj.getJobDirPath ( jobEntry.loginData,jobEntry.project,
                                          jobEntry.jobId );
-    if (!utils.dirExists())
+    if (!utils.dirExists(jobDirPath))
       dead_tokens.push ( job_token );
   }
 
