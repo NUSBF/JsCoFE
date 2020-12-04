@@ -165,46 +165,6 @@ def startCrank2(driver):
     return()
 
 
-def validateCrank2run(driver, waitLong):
-
-    rWork = 1.0
-    rFree = 1.0
-    targetRwork = 0.33
-    targetRfree = 0.38
-
-    print ('CRANK2 verification - starting pulling job every minute')
-
-    time.sleep(1)
-    startTime = time.time()
-
-    while (True):
-        ttts = sf.tasksTreeTexts(driver)
-        for taskText in ttts:
-            # Job number as string
-            match = re.search(r'^\[0003\] EP with Crank2 \(SAD\) -- R=(0\.\d*) Rfree=(0\.\d*)', taskText)
-            if match:
-                rWork = float(match.group(1))
-                rFree = float(match.group(2))
-                break
-        if (rWork != 1.0) or (rFree != 1.0):
-            break
-        curTime = time.time()
-        if curTime > startTime + float(waitLong):
-            print('*** Timeout for CRANK2 results! Waited for 50 minutes plus %d seconds.' % waitLong)
-            break
-        time.sleep(60)
-
-    if (rWork == 1.0) or (rFree == 1.0):
-        print('*** Verification: could not find Rwork or Rfree value after CRANK2 run')
-    else:
-        print('*** Verification: CRANK2 Rwork is %0.4f (expecting <%0.2f), Rfree is %0.4f (expecting <%0.2f)' % (
-            rWork, targetRwork, rFree, targetRfree))
-    assert rWork < targetRwork
-    assert rFree < targetRfree
-
-    return ()
-
-
 def test_1Crank2start(browser,
                 cloud,
                 nologin,
@@ -213,7 +173,6 @@ def test_1Crank2start(browser,
                 remote
                 ):
 
-    #d = sf.driverHandler() # MOVE TO THE BEGINNING OF THE FILE!!!
     (d.driver, d.waitLong, d.waitShort) = sf.startBrowser(remote, browser)
     d.browser = browser
     d.cloud = cloud
@@ -248,32 +207,7 @@ def test_1Crank2start(browser,
         d.driver.quit()
         raise
 
-
-def test_2Crank2veification():
-
-    print('Waiting for 50 minutes until Crank2 is ready (shall finish in about 1 hour)...')
-    time.sleep(3000)  # Crank2 run takes around 1 hour
-    # Connecting again to check results
-    (d.driver, waitLong, waitShort) = sf.startBrowser(d.remote, d.browser)
-
-    try:
-        print('Opening URL: %s' % d.cloud)
-        d.driver.get(d.cloud)
-        assert "CCP4 Cloud" in d.driver.title
-
-        if not d.nologin:
-            sf.loginToCloud(d.driver, d.login, d.password)
-
-        sf.enterProject(d.driver, d.testName)
-        validateCrank2run(d.driver, 1500)
-        sf.renameProject(d.driver, d.testName)
-
-        d.driver.quit()
-
-    except:
-        d.driver.quit()
-        raise
-
+    return ()
 
 if __name__ == "__main__":
     import argparse
@@ -295,4 +229,3 @@ if __name__ == "__main__":
                password=parameters.password,  # Used to login into remote Cloud
                remote=parameters.remote  # 'http://130.246.213.187:4444/wd/hub' for Selenium Server hub
                )
-    test_2Crank2veification()
