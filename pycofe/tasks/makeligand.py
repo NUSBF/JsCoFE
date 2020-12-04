@@ -52,6 +52,7 @@ class MakeLigand(basic.TaskDriver):
 
         # copy pre-existing revisions into output first
         nrevisions0 = 0
+        revision    = []
         if hasattr(self.input_data.data,"void1"):
             revision    = self.input_data.data.void1
             nrevisions0 = len(revision)
@@ -74,10 +75,10 @@ class MakeLigand(basic.TaskDriver):
 
             if not code:
                 exclude_list = []
-                if hasattr(self.input_data.data,"void1"):
-                    ligands = self.input_data.data.void1
-                    for i in range(len(ligands)):
-                        exclude_list.append ( ligands[i].code )
+                for i in range(len(revision)):
+                    ligands = revision[i].Ligands
+                    for j in range(len(ligands)):
+                        exclude_list.append ( ligands[i]["code"] )
                 code = self.get_ligand_code ( exclude_list )
 
             if code:

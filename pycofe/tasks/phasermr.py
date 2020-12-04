@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    17.11.20   <--  Date of Last Modification.
+#    04.12.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -341,16 +341,18 @@ class PhaserMR(basic.TaskDriver):
                                 ens_meta[ensname]["ncopies"] += 1
                             else:
                                 ens_meta[ensname] = { "ncopies" : 1 }
-                elif line.startswith("SOLU SPAC "):
+                elif line.startswith("SOLU SPAC ") and not sol_spg:
                     sol_spg = line.replace("SOLU SPAC ","").strip()
                 elif line.startswith("SOLU SET "):
                     nsol += 1
-                    pos   = line.rfind("LLG=")
-                    if pos>=0 and not llg:
-                        llg = line[pos:].split()[0].split("=")[-1]
-                    pos = line.rfind("TFZ=")
-                    if pos>=0 and not tfz:
-                        tfz = line[pos:].split()[0].split("=")[-1]
+                    if not llg:
+                        pos = line.rfind("LLG=")
+                        if pos>=0:
+                            llg = line[pos:].split()[0].split("=")[-1]
+                    if not tfz:
+                        pos = line.rfind("TFZ=")
+                        if pos>=0:
+                            tfz = line[pos:].split()[0].split("=")[-1]
 
             if not llg: llg = "0"
             if not tfz: tfz = "0"
