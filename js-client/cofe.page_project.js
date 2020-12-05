@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    25.11.20   <--  Date of Last Modification.
+ *    05.12.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -55,6 +55,7 @@ function ProjectPage ( sceneId )  {
   var refresh_btn    = null;
   var help_btn       = null;
   var roadmap_btn    = null;
+  var selmode_btn    = null;
 
   // ***** development code, dormant
   //var split_btn      = null;
@@ -71,7 +72,7 @@ function ProjectPage ( sceneId )  {
       var task = jobTree.getTaskByNodeId ( child_nodes[0].id );
       if (task)  {
         if (task.state==job_code.remark)  {
-          if (jobTree.calcSelectedNodeId().length<=1)
+          if (jobTree.calcSelectedNodeIds().length<=1)
                 jobTree.selectSingle   ( child_nodes[0] );
           else  jobTree.selectMultiple ( child_nodes[0] );
         }
@@ -165,12 +166,15 @@ function ProjectPage ( sceneId )  {
       jobTree.unfoldFolder();
       save = true;
     }
-    if (save)
+    if (save)  {
       jobTree.saveProjectData ( [],[],true, null );
+      setSelMode ( 1 );
+    }
   }
 
   function openJob() {
     jobTree.openJob ( null,self );
+    //setSelMode ( 1 );
   }
 
   function stopJob() {
@@ -180,6 +184,15 @@ function ProjectPage ( sceneId )  {
   function cloneJob() {
     jobTree.cloneJob ( self,function(){ del_btn.setDisabled ( false ); });
   }
+
+  function setSelMode ( mode )  {
+    // mode = 0:  toggle
+    //        1:  single
+    //        2:  multiple
+    if ((mode==0) || ((mode==1) && jobTree.multiple) ||
+                     ((mode==2) && (!jobTree.multiple)))
+      reloadTree ( false,!jobTree.multiple );
+  };
 
   function setButtonState() {
     var dsel = false;
@@ -432,6 +445,10 @@ function ProjectPage ( sceneId )  {
     }
 
     refresh_btn.setDisabled ( false );
+    selmode_btn.setDisabled ( false );
+    if (jobTree.multiple)
+          selmode_btn.setIcon ( image_path('selmode_multi') );
+    else  selmode_btn.setIcon ( image_path('selmode_single') );
 
     // ***** development code, dormant
     //if (split_btn)
@@ -454,6 +471,9 @@ function ProjectPage ( sceneId )  {
 
     __current_project = jobTree.projectData.desc.name;
 
+    jobTree.addSignalHandler ( cofe_signals.jobDialogOpened,function(data){
+      setSelMode ( 1 );
+    });
     jobTree.addSignalHandler ( cofe_signals.jobStarted,function(data){
       setButtonState();
     });
@@ -461,7 +481,7 @@ function ProjectPage ( sceneId )  {
       setButtonState();
     });
     jobTree.addSignalHandler ( cofe_signals.reloadTree,function(rdata){
-      reloadTree ( false );
+      reloadTree ( false,false );
     });
     jobTree.addSignalHandler ( cofe_signals.makeProjectList,function(rdata){
       makeProjectListPage ( sceneId );
@@ -479,7 +499,7 @@ function ProjectPage ( sceneId )  {
     setButtonState();
   }
 
-  function reloadTree ( blink )  {
+  function reloadTree ( blink,multisel )  {
     // blink==true will force page blinking, for purely aesthatic reasons
     var selTask   = jobTree.getSelectedTask();
     var scrollPos = jobTree.parent.getScrollPosition();
@@ -487,6 +507,7 @@ function ProjectPage ( sceneId )  {
     jobTree.stopTaskLoop();
     var dlg_task_parameters = jobTree.getJobDialogTaskParameters();
     jobTree = self.makeJobTree();
+    jobTree.multiple = multisel;
     if (blink)  {
       job_tree.closeAllJobDialogs();
       job_tree.delete();
@@ -608,8 +629,9 @@ function ProjectPage ( sceneId )  {
   del_btn     = toolbar.setButton ( '',image_path('remove')   ,cnt++,0,1,1 );
   archive_btn  = toolbar.setButton ( '',image_path('folder_jobtree'),cnt++,0,1,1 );
   toolbar.setLabel ( '<hr style="border:1px dotted;"/>'       ,cnt++,0,1,1 );
-  add_rem_btn = toolbar.setButton ( '',image_path('task_remark'), cnt++,0,1,1 );
+  add_rem_btn = toolbar.setButton ( '',image_path('task_remark'     ),cnt++,0,1,1 );
   thlight_btn = toolbar.setButton ( '',image_path('highlight_branch'),cnt++,0,1,1 );
+  selmode_btn = toolbar.setButton ( '',image_path('selmode_single'  ),cnt++,0,1,1 );
   toolbar.setLabel ( '<hr style="border:1px dotted;"/>'       ,cnt++,0,1,1 );
   open_btn    = toolbar.setButton ( '',image_path('openjob')  ,cnt++,0,1,1 );
   stop_btn    = toolbar.setButton ( '',image_path('stopjob')  ,cnt++,0,1,1 );
@@ -634,8 +656,11 @@ function ProjectPage ( sceneId )  {
   open_btn   .setSize('40px','40px').setTooltip('Open job'  ).setDisabled(true);
   stop_btn   .setSize('40px','40px').setTooltip('Stop job'  ).setDisabled(true);
   clone_btn  .setSize('40px','40px').setTooltip('Clone job' ).setDisabled(true);
+
   add_rem_btn.setSize('40px','40px').setTooltip('Add remark').setDisabled(true);
   thlight_btn.setSize('40px','40px').setTooltip('Toggle branch highlight' )
+                                                             .setDisabled(true);
+  selmode_btn.setSize('40px','40px').setTooltip('Single/multiple selection mode')
                                                              .setDisabled(true);
   refresh_btn.setSize('40px','40px').setTooltip('Refresh and push stalled jobs');
   help_btn   .setSize('40px','40px').setTooltip('Documentation');
@@ -664,6 +689,10 @@ function ProjectPage ( sceneId )  {
 
   roadmap_btn.addOnClickListener ( function(){
     window.open ( 'html/tutorials.html' );
+  });
+
+  selmode_btn.addOnClickListener ( function(){
+    setSelMode ( 0 );  // toggle
   });
 
   //launchHelpBox ( '','./html/jscofe_project.html',doNotShowAgain,1000 );
@@ -730,7 +759,7 @@ function ProjectPage ( sceneId )  {
 
   refresh_btn.addOnClickListener ( function(){
     wakeZombiJobs();  // must go before reloadTree
-    reloadTree ( true );
+    reloadTree ( true,false );
 //    reloadTree ( false );
   });
 

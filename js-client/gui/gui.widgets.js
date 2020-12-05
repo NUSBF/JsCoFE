@@ -1139,6 +1139,10 @@ Button.prototype.setText = function ( text )  {
   return this;
 }
 
+Button.prototype.setIcon = function ( icon_uri )  {
+  $(this.element).css({'background-image' :'url("' + icon_uri + '")'});
+}
+
 Button.prototype.setDisabled = function ( disabled_bool )  {
   $(this.element).button ( "option", "disabled", disabled_bool );
   return this;
@@ -1158,7 +1162,7 @@ Button.prototype.setSize = function ( width,height )  {
   var h = parseInt(height);
   var icon_size = Math.min ( w,h );
   var margin    = Math.max ( 1,Math.floor(icon_size/8) );
-  icon_size -= 2*margin;
+  icon_size    -= 2*margin;
   var lm = (w-icon_size)/2.25;
   if (this.div.innerHTML.length>0)
     lm = Math.min ( (h-icon_size)/2,lm );

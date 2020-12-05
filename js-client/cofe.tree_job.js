@@ -628,7 +628,7 @@ JobTree.prototype.selectArchiveJobs = function()  {
 //                     can be empty
 //   [2,[.][]]       - selected job is archive (node id returned in 1st list),
 //                     which can be unarchived
-var sel_lst = this.calcSelectedNodeId();
+var sel_lst = this.calcSelectedNodeIds();
   if (sel_lst.length>1)  {  // multiple selection
     var ok = true;
     for (var i=0;(i<sel_lst.length) && ok;i++)
@@ -968,7 +968,7 @@ JobTree.prototype.deleteJob = function ( onDelete_func ) {
     (function(tree){
 
       // calculate lead nodes of branches to delete
-      var delNodeId = tree.calcSelectedNodeId();
+      var delNodeId = tree.calcSelectedNodeIds();
       if (delNodeId.length<=0)
         delNodeId.push ( tree.getSelectedNodeId() );
       var delTaskId = [];
@@ -1428,6 +1428,11 @@ JobTree.prototype.openJob = function ( dataBox,parent_page )  {
 
           });
 
+        this.emitSignal ( cofe_signals.jobDialogOpened,{
+          'nodeId' : nodeId,
+          'taskId' : task.id
+        });
+
       }
 
     }
@@ -1553,7 +1558,7 @@ JobTree.prototype.harvestTaskData = function ( includeSelected_key,
 
     var dBox = null;
     if (includeSelected_key==2)  {
-      var selId = this.calcSelectedNodeId();
+      var selId = this.calcSelectedNodeIds();
       if (selId.length<=1)  {
         dBox = new DataBox();
         dBox.addTaskInputData ( this.task_map[this.selected_node_id],true );
@@ -1582,7 +1587,7 @@ JobTree.prototype.harvestTaskData = function ( includeSelected_key,
   } else  {
     // harvest data from task(s) currently selected in the tree
 
-    var selId = this.calcSelectedNodeId();
+    var selId = this.calcSelectedNodeIds();
 
     if (selId.length<=1)  {
       // single node selected -- collect data all up the tree branch

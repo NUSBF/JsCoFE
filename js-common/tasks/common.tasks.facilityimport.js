@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    26.03.20   <--  Date of Last Modification.
+ *    05.12.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -40,6 +40,7 @@ function TaskFacilityImport()  {
   //this.helpURL    = './html/jscofe_task_fimport.html';
   this.fasttrack  = true;  // enforces immediate execution
   this.inprogress = 0;     // indicates whether facility request is in progress
+  this.state      = job_code.retired;  // do not include in task lists
 
   this.upload_files = [];  // list of uploaded files
 

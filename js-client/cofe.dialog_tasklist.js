@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    14.11.20   <--  Date of Last Modification.
+ *    05.12.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -261,8 +261,8 @@ var row      = 0;
   var data_import_tasks = [
     new TaskImport        (),
     new TaskImportSeqCP   (),
-    new TaskImportPDB     (),
-    new TaskFacilityImport()
+    new TaskImportPDB     ()
+    //new TaskFacilityImport()
   ];
 
   if (__cloud_storage)
