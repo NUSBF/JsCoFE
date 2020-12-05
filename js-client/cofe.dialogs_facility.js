@@ -304,7 +304,7 @@ FacilityBrowser.prototype.openItem = function()  {
 
 FacilityBrowser.prototype.onTreeItemSelect = function()  {
 var selItem  = this.facilityTree.getSelectedItem();
-var nodeList = this.facilityTree.calcSelectedNodeId();
+var nodeList = this.facilityTree.calcSelectedNodeIds();
 
   if (this.task.inprogress)  {
     this.disableButton ( 0,true );
@@ -318,7 +318,7 @@ var nodeList = this.facilityTree.calcSelectedNodeId();
               (['FacilityDataset','FacilityDir'].indexOf(selItem._type)>=0) );
     this.disableButton ( 1,true  );
   } else  {  // FacilityFile is selected
-    var nodeList = this.facilityTree.calcSelectedNodeId();
+    var nodeList = this.facilityTree.calcSelectedNodeIds();
     if (nodeList.length>1)  {
       var uid = this.facilityTree.getUserID();
       for (var i=1;i<nodeList.length;i++)  {
@@ -426,7 +426,7 @@ FacilityBrowser.prototype.updateItem = function ( askpwd )  {
                            // without password in case file is already in cache
       // add all selected file entries in the request meta
       meta.selFiles = [];  // selected files to fetch and import
-      var nodeList  = browser.facilityTree.calcSelectedNodeId();
+      var nodeList  = browser.facilityTree.calcSelectedNodeIds();
       for (var i=0;i<nodeList.length;i++)  {
         var nid  = nodeList[i];
         var item = browser.facilityTree.item_map[nid];

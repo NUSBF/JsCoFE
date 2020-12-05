@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    21.11.20   <--  Date of Last Modification.
+ *    05.12.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -28,6 +28,7 @@ var cofe_signals = {
   treeUpdated     : 'tree_updated',       // fired by JobTree
   reloadTree      : 'reload_tree',        // fired by JobTree
   makeProjectList : 'make_project_list',  // fired by JobTree
+  jobDialogOpened : 'job_dialog_opened',  // fired by JobTree
   rationUpdated   : 'ration_updated',     // fired by JobTree
   jobDlgSignal    : 'job_dlg_signal',
   uploadEvent     : 'uploadEvent'         // fired by Upload module

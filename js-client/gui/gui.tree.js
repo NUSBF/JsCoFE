@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    25.11.20   <--  Date of Last Modification.
+ *    05.12.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -74,7 +74,7 @@
  *      function createTree           ( onReady_func   ,onContextMenu_func,
  *                                      onDblClick_func,onSelect_func );
  *      function refresh              ();
- *      function calcSelectedNodeId   ();
+ *      function calcSelectedNodeIds   ();
  *      function getSelectedNodeId    ();
  *      function calcSelectedNode     ();
  *      function getSelectedNode      ();
@@ -220,7 +220,7 @@ function Tree ( rootName )  {
   this.node_map   = {};       // node_map[nodeId] == TreeNode
   this.folder_map = {};       // folder_map[nodeId] == [TreeNodes] (nodes in folder)
   this.created    = false;    // true if tree was instantiated
-//  this.multiple   = false;    // single node selection
+  this.multiple   = false;    // single node selection
   this.selected_node_id = '';
 
   this.deleteChildren = function ( node )  {  // private
@@ -275,9 +275,8 @@ function Tree ( rootName )  {
     //  this.setNode ( node,node_obj.fchildren[i] );
     for (var i=0;i<node_obj.children.length;i++)
       this.setNode ( node,node_obj.children[i] );
-    if (node.state.selected)  {
+    if (node.state.selected)
       this.selected_node_id = node.id;
-    }
   }
 
 }
@@ -797,7 +796,7 @@ Tree.prototype.createTree = function ( onReady_func,
 
       tree.created = true;
 
-      var selId = tree.calcSelectedNodeId();
+      var selId = tree.calcSelectedNodeIds();
       if ((selId.length<=0) && (tree.root_nodes.length>0))  {
         // situation abnormal, force initial selection
         tree.selectSingle ( tree.root_nodes[0] );
@@ -829,7 +828,7 @@ Tree.prototype.createTree = function ( onReady_func,
 //          "rtl": true,
 //          "animation": 0,
           data           : tree.root_nodes,
-          themes: {
+          themes  : {
               responsive : false,
           }
       },
@@ -838,11 +837,19 @@ Tree.prototype.createTree = function ( onReady_func,
 
     if (onContextMenu_func)  {
       options['plugins'].push('contextmenu');
-      options['contextmenu'] = {'items':onContextMenu_func};
+      options['contextmenu'] = { items : onContextMenu_func };
     }
 
     if (onDblClick_func)
       options['core']['dblclick_toggle'] = false;
+
+    if (tree.multiple)  {
+      options['plugins'].push('checkbox');
+      options['checkbox'] = {
+         three_state : false,
+         visible     : false
+      };
+    }
 
     $(tree.root.element).jstree(options);
 
@@ -878,7 +885,8 @@ Tree.prototype.createTree = function ( onReady_func,
           tree.node_map[tree.selected_node_id].state.selected = true;
           if (onSelect_func)
             onSelect_func();
-        }
+        } else
+          tree.selectSingleById ( tree.selected_node_id );
       });
 
     $(tree.root.element).on('open_node.jstree',function(evt,data){
@@ -904,8 +912,35 @@ Tree.prototype.refresh = function()  {
   $(this.root.element).jstree().refresh(function(){});
 }
 
+/*
+Tree.prototype.setSingleSelection = function ( single_bool )  {
+  if (single_bool)  {
 
-Tree.prototype.calcSelectedNodeId = function()  {
+    $(this.root.element).jstree({
+      plugins  : ['addHTML'],
+      checkbox : {
+         three_state : false,
+         visible     : false
+      }
+    }).refresh(function(){});
+
+  } else  {
+
+console.log ( '  multi');
+    $(this.root.element).jstree({
+      plugins  : ['addHTML','checkbox'],
+      checkbox : {
+         three_state : false,
+         visible     : false
+      }
+    }).refresh(function(){});
+
+  }
+}
+*/
+
+
+Tree.prototype.calcSelectedNodeIds = function()  {
 // returns empty list if no node is selected
   var node_lst = $(this.root.element).jstree('get_selected');
   var sel_lst  = [];  // sort reversely so that last selected is first
@@ -921,7 +956,7 @@ Tree.prototype.getSelectedNodeId = function()  {
 
 
 Tree.prototype.calcSelectedNode = function()  {
-var selId = this.calcSelectedNodeId();
+var selId = this.calcSelectedNodeIds();
   if (selId.length>0)  {
     return this.node_map[selId[0]];
   } else  {
@@ -987,7 +1022,7 @@ var snode = this.getSelectedNode();
 
 
 Tree.prototype.deleteSelectedNodes = function()  {
-var selId = this.calcSelectedNodeId();
+var selId = this.calcSelectedNodeIds();
   for (var i=0;i<selId.length;i++)  {
     var snode = this.node_map[selId[i]];
     if (snode)
@@ -997,7 +1032,7 @@ var selId = this.calcSelectedNodeId();
 
 
 Tree.prototype.canMakeFolder = function()  {
-  return this.canMakeFolder1 ( this.calcSelectedNodeId() );
+  return this.canMakeFolder1 ( this.calcSelectedNodeIds() );
 }
 
 
@@ -1057,7 +1092,7 @@ Tree.prototype.canMakeFolder1 = function ( sel_list )  {
 
 
 Tree.prototype.makeFolder = function ( text,icon_uri )  {
-  return this.makeFolder1 ( this.calcSelectedNodeId(),text,icon_uri );
+  return this.makeFolder1 ( this.calcSelectedNodeIds(),text,icon_uri );
 }
 
 

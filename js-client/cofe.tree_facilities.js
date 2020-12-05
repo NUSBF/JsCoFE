@@ -446,7 +446,7 @@ StorageTree.prototype.readStorageData = function ( page_title,
 
 
 StorageTree.prototype.getSelectedItems = function()  {
-  var selNodeId = this.calcSelectedNodeId();
+  var selNodeId = this.calcSelectedNodeIds();
   var items = [];
   for (var i=0;i<selNodeId.length;i++)
     if (selNodeId[i] in this.item_map)  {
