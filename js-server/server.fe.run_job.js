@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    04.12.20   <--  Date of Last Modification.
+ *    06.12.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -792,7 +792,6 @@ function writeJobStats ( jobEntry )  {
   var jobClass    = utils.readClass    ( jobDataPath );
 
   if (jobClass)  {
-
 
     // note residual disk space (in MB)
     var jobDir = prj.getJobDirPath ( jobEntry.loginData,jobEntry.project,

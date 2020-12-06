@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    23.10.20   <--  Date of Last Modification.
+ *    06.12.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -118,6 +118,9 @@ function login ( user_login_name,user_password,sceneId,page_switch )  {
       case fe_retcode.ok:
               var userData         = response.data.userData;
               __login_token        = response.message;
+              if (user_login_name=='**localuser**')
+                    __login_id     = 'myself';
+              else  __login_id     = user_login_name;
               __cloud_storage      = response.data.cloud_storage;
               __jobs_safe          = response.data.jobs_safe;
               __demo_projects      = response.data.demo_projects;

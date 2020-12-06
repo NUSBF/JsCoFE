@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    02.04.20   <--  Date of Last Modification.
+ *    06.12.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -29,6 +29,7 @@ var __maintainerEmail = 'ccp4@ccp4.ac.uk';
 // session identification
 
 var __login_token     = '';
+var __login_id        = '';
 var __login_user      = '';
 var __user_settings   = {};
 var __user_role       = role_code.user;
