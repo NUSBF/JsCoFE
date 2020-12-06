@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    03.12.20   <--  Date of Last Modification.
+ *    06.12.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -308,7 +308,15 @@ JobTree.prototype.makeNodeName = function ( task )  {
 
   if (!task)  return 'no task!';
 
-  var node_name = this.makeNodeId(task.id) + ' ';
+  var node_name = '';
+  if (('submitter' in task) && task.submitter)  {
+    var author = this.projectData.desc.owner.login;
+    if ('author' in this.projectData.desc.owner)
+      author = this.projectData.desc.owner.author;
+    if (task.submitter!=author)
+      node_name = '<b>' + task.submitter + ':</b>';
+  }
+  node_name += this.makeNodeId(task.id) + ' ';
 
   if (task.harvestedTaskIds.length>0)  {
     var ancestors = this.getAllAncestors ( task );
@@ -320,7 +328,8 @@ JobTree.prototype.makeNodeName = function ( task )  {
       if (anc_ids.indexOf(task.harvestedTaskIds[i])<0)
         id_list.push ( padDigits(task.harvestedTaskIds[i],4) );
     if (id_list.length>0) // below, 'cross-branch' is significant
-      node_name += ' <font style="font-size:80%" cross-branch="1"><b><i>+(' + id_list.join(',') + ')</i></b></font> ';
+      node_name += ' <font style="font-size:80%" cross-branch="1"><b><i>+(' +
+                   id_list.join(',') + ')</i></b></font> ';
   }
 
   if (task.uname.length>0)
@@ -691,7 +700,7 @@ var sel_lst = this.calcSelectedNodeIds();
 
 
 JobTree.prototype._add_job_0 = function ( insert_bool,task,dataBox,
-                                        parent_page,onAdd_func )  {
+                                          parent_page,onAdd_func )  {
 
   task.project          = this.projectData.desc.name;
   task.id               = this.projectData.desc.jobCount;
@@ -736,9 +745,9 @@ JobTree.prototype._add_job_0 = function ( insert_bool,task,dataBox,
       if (insert_bool)
         window.setTimeout ( function(){
           for (var key in tree.node_map)  {
-            var node = tree.node_map[key];
-            if (node)
-              tree.resetNodeName ( node.id );
+            var tnode = tree.node_map[key];
+            if (tnode)
+              tree.resetNodeName ( tnode.id );
           }
         },100 );
     }
