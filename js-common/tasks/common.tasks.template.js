@@ -90,11 +90,9 @@ function TaskTemplate()  {
   if (dbx)  {
     this.input_data  = new dbx.DataBox(); // actual input data, represented by DataBox
     this.output_data = new dbx.DataBox(); // actual output data, represented by DataBox
-    this.submitter   = '';
   } else  {
     this.input_data  = new DataBox(); // actual input data, represented by DataBox
     this.output_data = new DataBox(); // actual output data, represented by DataBox
-    this.submitter   = __login_id;
   }
 
   this.parameters      = {};  // input parameters
