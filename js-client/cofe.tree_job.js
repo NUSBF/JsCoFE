@@ -236,18 +236,23 @@ JobTree.prototype.readProjectData = function ( page_title,
         tree.projectData = jQuery.extend ( true, new ProjectData(),data.meta );
         tree.projectData.desc.dateLastUsed = getDateString();
 
+        var author = tree.projectData.desc.owner.login;
+        if ('author' in tree.projectData.desc.owner)
+          author = tree.projectData.desc.owner.author;
+        if (author==__login_id)  author  = '';
+                           else  author += ':';
+        var root_title =
+                '<b>' + author + '[' + tree.projectData.desc.name  + ']</b> ' +
+                '<i>' + tree.projectData.desc.title + '</i>'
+
         if (tree.projectData.tree.length<=0)  {
 
-          tree.addRootNode ( '<b>[' + tree.projectData.desc.name  + ']</b> ' +
-                             '<i>'  + tree.projectData.desc.title + '</i>',
-                             image_path('project'),tree.customIcon() );
+          tree.addRootNode ( root_title,image_path('project'),tree.customIcon() );
 
         } else  {
 
           // enforce title of root node just in case it was renamed
-          tree.projectData.tree[0].text =
-                             '<b>[' + tree.projectData.desc.name  + ']</b> ' +
-                             '<i>'  + tree.projectData.desc.title + '</i>';
+          tree.projectData.tree[0].text = root_title;
 
           tree.setNodes ( tree.projectData.tree );
           var t_map = {};
@@ -705,6 +710,7 @@ JobTree.prototype._add_job_0 = function ( insert_bool,task,dataBox,
   task.project          = this.projectData.desc.name;
   task.id               = this.projectData.desc.jobCount;
   task.harvestedTaskIds = dataBox.harvestedTaskIds;
+  task.submitter        = __login_id;
 
   var node;
   // do not give node name at this stage, because, in case of data merging
@@ -1486,8 +1492,9 @@ JobTree.prototype._clone_job = function ( parent_page,onAdd_func )  {
         task.harvestedTaskIds.push ( task1.harvestedTaskIds[i] );
 
       task.customDataClone ( task1 );
-      task.project = tree.projectData.desc.name;
-      task.id      = tree.projectData.desc.jobCount;
+      task.project    = tree.projectData.desc.name;
+      task.id         = tree.projectData.desc.jobCount;
+      task.submitter  = __login_id;
 
       var node = tree.addSiblingToSelected ( '',image_path(task.icon()),
                                                 tree.customIcon() );
