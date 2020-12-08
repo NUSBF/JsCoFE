@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    04.12.20   <--  Date of Last Modification.
+#    07.12.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -213,6 +213,7 @@ class ModelPrepXYZ(basic.TaskDriver):
             else:
                 fpath_algn = "__align_" + str(i) + ".fasta"
                 rc         = seqal.run ( self,[seq,xyz[i]],fpath_algn )
+                self.stdoutln ( str(rc) )
                 if rc["code"]==0:
                     sid = str(round(100.0*rc["stat"]["seq_id"],1))
                 else:

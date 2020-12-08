@@ -98,8 +98,10 @@ class CCP4Build(ccp4go_buccaneer.Buccaneer):
 
         self.flush()
         self.storeReportDocument (
-            '{ "jobId"         : "' + self.jobId              + '",' +\
-            '  "page_id"       : "' + branch_data["pageId"]   + '",' +\
+            '{ "jobId"         : "' + self.jobId               + '",' +\
+            #'  "page_id"       : "' + branch_data["pageId"]    + '",' +\
+            '  "page_id"       : "' + branch_data["cursor1"][0]      + '",' +\
+            '  "rvrow"         : '  + str(branch_data["cursor1"][1]) + ','  +\
             '  "nameout"       : "ccp4build",' +\
             '  "prefix_rfree"  : "",' +\
             '  "prefix_edcc"   : "",' +\
@@ -210,6 +212,7 @@ class CCP4Build(ccp4go_buccaneer.Buccaneer):
                            "Automated Model Building (CCP4Build): " + quit_message )
 
         # cleanup
-        shutil.rmtree ( workdir )
+        if os.path.isdir(workdir):
+            shutil.rmtree ( workdir )
 
         return  branch_data["pageId"]

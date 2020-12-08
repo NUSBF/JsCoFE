@@ -236,8 +236,10 @@ if (!__template)  {
 
   // reserved function name
   TaskCCP4go.prototype.makeInputPanel = function ( dataBox )  {
-    if (this.input_dtypes==1)  // make data upload interface
+    if (dataBox.isEmpty())  {
+      this.input_dtypes = [1];  // indicates the data upload interface
       return this._makeInputPanel ( dataBox );
+    }
     return  TaskTemplate.prototype.makeInputPanel.call ( this,dataBox );
   }
 
