@@ -48,9 +48,13 @@ def run ( body,seqdata,fpath_align ):
             seqfile.write ( "\n>" + seqname  +
                             "\n"  + s.getSequence(body.inputDir()) + "\n" )
             stype = s.getType()
+            body.stdoutln ( " stype=" + str(stype) + ",  seqtype=" + str(seqtype) )
             if not seqtype:
                 seqtype = stype
-            elif seqtype!=stype:
+            #elif seqtype!=stype:
+            elif (seqtype!=stype) and \
+                  ((stype   not in ["na","dna","rna"]) or \
+                   (seqtype not in ["na","dna","rna"])):
                 seqtype = "x"
         else:
             nmodels = len(s.xyzmeta.xyz)
@@ -73,9 +77,12 @@ def run ( body,seqdata,fpath_align ):
                         seqfile.write ( "\n>" + seqname +\
                                         "\n"  + c.seq   + "\n" )
                         stype = c.type.lower()
+                        body.stdoutln ( " 2. stype=" + str(stype) + ",  seqtype=" + str(seqtype) )
                         if not seqtype:
                             seqtype = stype
-                        elif seqtype!=stype:
+                        elif (seqtype!=stype) and \
+                              ((stype   not in ["na","dna","rna"]) or \
+                               (seqtype not in ["na","dna","rna"])):
                             seqtype = "x"
     seqfile.close()
 

@@ -409,7 +409,7 @@ class Base(object):
         if self.layout == 0:
             pyrvapi.rvapi_set_tab_proxy ( self.navTreeId,branch_id )
 
-        # cursor0 remembers point og output in parent page
+        # cursor0 remembers point of output in parent page
         cursor0 = self.addTab ( tree_header_id,
                                 str(self.stage_no) + ". " + branch_title,False )
         if page_title:

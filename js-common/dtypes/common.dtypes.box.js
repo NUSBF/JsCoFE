@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    11.11.20   <--  Date of Last Modification.
+ *    07.12.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -54,7 +54,8 @@ var empty = true;
   for (var dtype in this.data)  {
     if (dtype=='___')
       empty = false;
-    else if (this.data[dtype].length>0)  {
+    //else if (this.data[dtype].length>0)  {
+    else if ((this.data[dtype]!='undefined') && (this.data[dtype].length>0))  {
       var item = this.data[dtype][0];
       if (isObject(item))  {
         if (!item.hasSubtype('proxy'))
@@ -178,18 +179,20 @@ DataBox.prototype.addTaskInputData = function ( task,addall_bool )  {
   for (var inpId in input_data_data)
     if (!startsWith(inpId,'void'))  {
       for (var i=0;i<input_data_data[inpId].length;i++)  {
-        var dt    = input_data_data[inpId][i];
-        var dtype = dt._type;
-        if (!(dtype in this.data))
-          this.data[dtype] = [dt];
-        else if (addall_bool)
-          this.data[dtype].push ( dt );
-        else if (dt.backtrace)  {
-          var found = false;
-          for (var j=0;(j<this.data[dtype].length) && (!found);j++)
-            found = (this.data[dtype][j].dataId==dt.dataId);
-          if (!found)
+        var dt = input_data_data[inpId][i];
+        if ((dt!==null) && (typeof dt === 'object'))  {
+          var dtype = dt._type;
+          if (!(dtype in this.data))
+            this.data[dtype] = [dt];
+          else if (addall_bool)
             this.data[dtype].push ( dt );
+          else if (dt.backtrace)  {
+            var found = false;
+            for (var j=0;(j<this.data[dtype].length) && (!found);j++)
+              found = (this.data[dtype][j].dataId==dt.dataId);
+            if (!found)
+              this.data[dtype].push ( dt );
+          }
         }
       }
     }

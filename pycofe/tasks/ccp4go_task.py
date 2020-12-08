@@ -499,6 +499,10 @@ class CCP4go(import_task.Import):
 
         fileDir = self.outputDir()
         stageNo = 1
+        #self.stdoutln ( str(self.task.input_dtypes) )
+        #if len(self.task.input_dtypes)>1:
+        if hasattr(self.input_data.data,"hkldata"):
+            self.stdoutln ( " hkldata found" )
         if hasattr(self.input_data.data,"hkldata"):
             fileDir = self.inputDir()
             stageNo = 0
