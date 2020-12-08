@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    29.10.20   <--  Date of Last Modification.
+ *    08.12.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -106,13 +106,15 @@ BasePage.prototype.makeSetupNamePanel = function()  {
 BasePage.prototype.makeLogoPanel = function ( row,col,colSpan )  {
 
   if (!__setup_desc)  return;
+  if (!('partners' in __setup_desc))    return;
+  if (__setup_desc.partners.length<=0)  return;
 
   if (!__setup_desc.partners[0].hasOwnProperty('icon'))
     for (var i=0;i<__setup_desc.partners.length;i++)  {
       __setup_desc.partners[i].icon = new ImageButton (
                                       __setup_desc.partners[i].logo,'','28px' );
       (function(partner){
-        partner.icon.setCursor  ( 'pointer' )
+        partner.icon.setCursor ( 'pointer' )
                     .addOnClickListener ( function(){
           window.open ( partner.url,'_blank' );
         });
