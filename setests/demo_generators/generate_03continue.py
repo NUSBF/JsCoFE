@@ -89,7 +89,7 @@ def comb_07(driver):
             break
 
     try:
-        wait = WebDriverWait(driver, 900)
+        wait = WebDriverWait(driver, 1200)
         # Waiting for the text 'completed' in the ui-dialog-title of the task [0005]
         wait.until(EC.presence_of_element_located
                    ((By.XPATH,"//*[@class='ui-dialog-title' and contains(text(), 'completed') and contains(text(), '[0007]')]")))
@@ -336,8 +336,7 @@ def generate_03continue(browser,
         fitWaters_08(d.driver, d.waitLong) # 8
         refmac_09(d.driver, d.waitLong) # 9
         depositionAfterRefmac_10(d.driver) # 10
-
-#        addRemark(d.driver, 'Further manual building is required to fix ligand, for instance', '',colour='Red')  # 8
+        addRemark(d.driver, 'Further manual building is required to fix ligand, for instance', '',colour='Red')  # 11
 
         d.driver.quit()
 
