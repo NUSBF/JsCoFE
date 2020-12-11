@@ -77,13 +77,11 @@ var fpath = getUserRationFPath ( loginData );
 
 
 function updateResourceStats ( loginData,job_class,add_resource )  {
+// this functino is called once a job finishes in order to update user rations
 
   var disk_space = 0.0;
   var cpu_time   = 0.0;
 
-//  var userProjectsListPath = prj.getUserProjectListPath ( loginData );
-//  if (utils.fileExists(userProjectsListPath))  {
-//    var pList = utils.readObject ( userProjectsListPath );
   var pList = prj.readProjectList ( loginData );
   if (pList)  {
     for (var i=0;i<pList.projects.length;i++)  {
@@ -102,36 +100,42 @@ function updateResourceStats ( loginData,job_class,add_resource )  {
         }
         disk_space = pdesc.disk_space;
         cpu_time   = pdesc.cpu_time;
-        pdesc.njobs++;
+        pdesc.njobs++;  // count the job in
+        utils.appendString ( 'ration.log',
+          '\nproject list update: login=' + loginData.login +
+          ' add_resource='      + add_resource +
+          ' disk_space_change=' + job_class.disk_space   +
+          ' project='           + pdesc.name             +
+          ' p.disk_space='      + pdesc.disk_space       +
+          ' p.cpu_time='        + pdesc.cpu_time         +
+          ' p.njobs='           + pdesc.njobs
+        );
         break;
       }
     }
     prj.writeProjectList ( loginData,pList );
-//    utils.writeObject ( userProjectsListPath,pList );
   } else
     log.error ( 1,'cannot read project list at ' +
                   prj.getUserProjectListPath(loginData) ); // userProjectsListPath );
 
-//  } else
-//    log.error ( 2,'cannot find project list at ' + userProjectsListPath );
 
   if ((disk_space>0.0) || (cpu_time>0.0))  {
-//    var projectDataPath = prj.getProjectDataPath ( loginData,job_class.project );
-//    if (utils.fileExists(projectDataPath))  {
-//      var pData = utils.readObject ( projectDataPath );
     var pData = prj.readProjectData ( loginData,job_class.project );
     if (pData)  {
       pData.desc.disk_space = disk_space;
       pData.desc.cpu_time   = cpu_time;
       pData.desc.njobs++;
-      //utils.writeObject ( projectDataPath,pData );
       prj.writeProjectData ( loginData,pData,false );
+      utils.appendString ( 'ration.log',
+        '\nproject meta update: login=' + loginData.login +
+        ' project='           + pData.desc.name       +
+        ' p.disk_space='      + pData.desc.disk_space +
+        ' p.cpu_time='        + pData.desc.cpu_time   +
+        ' p.njobs='           + pData.desc.njobs
+      );
     } else
       log.error ( 3,'cannot read project data at ' +
                     prj.getProjectDataPath(loginData,job_class.project) );
-    //  log.error ( 3,'cannot read project data at ' + projectDataPath );
-    //} else
-    //  log.error ( 4,'cannot find project data at ' + projectDataPath );
   }
 
 }
@@ -141,6 +145,11 @@ function changeUserDiskSpace ( loginData,disk_space_change )  {
 var r      = getUserRation      ( loginData );
 var rfpath = getUserRationFPath ( loginData );
   r.storage_used = Math.max ( 0,r.storage_used+disk_space_change );
+  utils.appendString ( 'ration.log',
+    '\nchange user disk space: login=' + loginData.login +
+    ' disk_space_change=' + disk_space_change +
+    ' r.storage_used='    + r.storage_used
+  );
   if (!utils.writeObject(rfpath,r))
     log.error ( 9,'cannot write ration file at ' + rfpath );
 }
@@ -153,9 +162,6 @@ function changeProjectDiskSpace ( loginData,projectName,disk_space_change,
 
     var pdesc0 = null;
     if (projectName)  {
-//      var userProjectsListPath = prj.getUserProjectListPath ( loginData );
-//      if (utils.fileExists(userProjectsListPath))  {
-//        var pList = utils.readObject ( userProjectsListPath );
       var pList = prj.readProjectList ( loginData );
       if (pList)  {
         for (var i=0;i<pList.projects.length;i++)  {
@@ -166,16 +172,19 @@ function changeProjectDiskSpace ( loginData,projectName,disk_space_change,
             else if (disk_space_change>0.0)
               pdesc.disk_space  = disk_space_change;
             pdesc0 = pdesc;
+            utils.appendString ( 'ration.log',
+              '\n(*) project list update: login=' + loginData.login +
+              ' disk_space_change=' + disk_space_change +
+              ' project='           + pdesc.name        +
+              ' p.disk_space='      + pdesc.disk_space
+            );
             break;
           }
         }
-//        utils.writeObject ( userProjectsListPath,pList );
         prj.writeProjectList ( loginData,pList );
       } else
         log.error ( 5,'cannot read project list at ' +
                       prj.getUserProjectListPath(loginData) ); // userProjectsListPath );
-//      } else
-//        log.error ( 6,'cannot find project list at ' + userProjectsListPath );
 
       if (updateProjectData_bool)  {
         var pData = prj.readProjectData ( loginData,projectName );
@@ -183,6 +192,12 @@ function changeProjectDiskSpace ( loginData,projectName,disk_space_change,
           pData.desc.disk_space += disk_space_change;
           prj.writeProjectData ( loginData,projectName,true );
           pdesc0 = pData.desc;
+          utils.appendString ( 'ration.log',
+            '\n(*) project meta update: login=' + loginData.login +
+            ' disk_space_change=' + disk_space_change +
+            ' project='           + pdesc0.name       +
+            ' p.disk_space='      + pdesc0.disk_space
+          );
         } else
           log.error ( 7,'cannot read project data at ' +
                         prj.getProjectDataPath(loginData,projectName) );
@@ -203,12 +218,21 @@ function changeProjectDiskSpace ( loginData,projectName,disk_space_change,
 function updateUserRation_bookJob ( loginData,job_class )  {
 var r = getUserRation ( loginData );
   if (job_class)  {
+    utils.appendString ( 'ration.log',
+      '\n **** login='  + loginData.login +
+      ' job_state='     + job_class.state +
+      ' job_type='      + job_class._type +
+      '\nstorage_used=' + r.storage_used
+    );
     r.bookJob ( job_class );
     var rfpath = getUserRationFPath ( loginData );
     if (!utils.writeObject(rfpath,r))
       log.error ( 10,'cannot write ration file at ' + rfpath );
     if (job_class.isComplete())
       updateResourceStats ( loginData,job_class,true );
+    utils.appendString ( 'ration.log',
+      '\nstorage_used=' + r.storage_used +
+      '\n---------------------------------------------------------------------' );
   }
   return r;
 }

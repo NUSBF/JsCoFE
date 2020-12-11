@@ -19,6 +19,11 @@
  *
  */
 
+var utils = null;
+if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
+  utils = require('../js-server/server.utils');
+
+
 function RationJobDesc ( job_meta )  {
   this.project    = job_meta.project;
   this.jobId      = job_meta.id;
@@ -27,6 +32,17 @@ function RationJobDesc ( job_meta )  {
   this.cpu_hours  = 0.0;  // cpu hours to be booked
   this.status     = 0;    // processing status
 }
+
+RationJobDesc_toString = function ( ration_job_desc )  {
+  return 'prj='         + ration_job_desc.project    +
+         ' jobId='      + ration_job_desc.jobId      +
+         ' nc_type='    + ration_job_desc.nc_type    +
+         ' chargeTime=' + ration_job_desc.chargeTime +
+         ' cpu_hours='  + ration_job_desc.cpu_hours  +
+         ' status='     + ration_job_desc.status;
+}
+
+
 
 function UserRation ( cfg_ration )  {
 
@@ -104,6 +120,12 @@ var t     = new Date().getTime()/3600000.0;  // hours from beginning
     this.storage_used = Math.max ( 0,this.storage_used+job_class.disk_space );
     this.jobs_total++;
     this.jobs[index].status     = 2;   // prevents of multiple counts
+    if (utils)
+      utils.appendString ( 'ration.log',
+        '\ncomplete ' + RationJobDesc_toString(this.jobs[index]) +
+        ' jobs_total='   + this.jobs_total   +
+        ' storage_used=' + this.storage_used
+      );
   } else if (this.jobs[index].status==0)  {  // running jobs not to be processed twice
     // pre-book job stats
     var charge = job_class.cpu_credit();
@@ -113,6 +135,9 @@ var t     = new Date().getTime()/3600000.0;  // hours from beginning
     this.cpu_total_used        += charge;
     this.jobs[index].chargeTime = t;  // record the moment of pre-booking
     this.jobs[index].status     = 1;  // to prevent of multiple counting
+    if (utils)
+      utils.appendString ( 'ration.log',
+        '\nrunning  ' + RationJobDesc_toString(this.jobs[index]) );
   }
 
   this.calculateTimeRation();

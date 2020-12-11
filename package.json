@@ -5,20 +5,20 @@
         "check-disk-space": "*",
         "child_process": "*",
         "crypto": "^1.0.1",
+        "csso": "*",
         "formidable": "^1.2.2",
         "fs-extra": "^8.1.0",
         "http": "*",
         "http-proxy": "^1.18.1",
         "https": "*",
         "nodemailer": "^6.4.4",
+        "prompt": "*",
         "ps-tree": "^1.2.0",
         "request": "^2.88.2",
         "tmp": "*",
         "uglify-js": "*",
         "url": "*",
         "util": "^0.12.2",
-        "zip-lib": "*",
-        "csso": "*",
-        "prompt": "*"
+        "zip-lib": "*"
     }
 }

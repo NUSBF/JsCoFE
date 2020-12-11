@@ -652,53 +652,48 @@ var sel_lst = this.calcSelectedNodeIds();
       if (sel_lst.length>1)
       return [1,sel_lst,[]];
     }
-  } else if (this.node_map[sel_lst[0]].fchildren.length>0) { // selected archive
-    return [2,sel_lst,[]];
-  } else  {  // check if archive may be made up or/and down the branch
-    var lst1   = [];
-    var lst2   = [];
-    var nodeId = sel_lst[0];
-    var node = this.node_map[nodeId];
-//    if ((node.children.length==1) &&
-//        this.task_map[node.children[0].id].isRemark())
-    if ((node.children.length==1) && this.isRemark(node.children[0].id))
-      nodeId = node.parentId;
-    while (nodeId)  {
-      node = this.node_map[nodeId];
-      if (node.parentId && (node.fchildren.length==0) &&
-                           (node.children.length==1)  &&
-                           (node.text.indexOf('cross-branch="1"')<0))  {
-        lst1.push ( nodeId );
+  } else if ((sel_lst.length>0) && (sel_lst[0] in this.node_map))  {
+    if (this.node_map[sel_lst[0]].fchildren.length>0)  { // selected archive
+      return [2,sel_lst,[]];
+    } else  {  // check if archive may be made up or/and down the branch
+      var lst1   = [];
+      var lst2   = [];
+      var nodeId = sel_lst[0];
+      var node = this.node_map[nodeId];
+      if ((node.children.length==1) && this.isRemark(node.children[0].id))
         nodeId = node.parentId;
-      } else  {
-        if ((lst1.length>0) && (!node.parentId))
-          lst1.pop();
-        nodeId = null;
+      while (nodeId)  {
+        node = this.node_map[nodeId];
+        if (node.parentId && (node.fchildren.length==0) &&
+                             (node.children.length==1)  &&
+                             (node.text.indexOf('cross-branch="1"')<0))  {
+          lst1.push ( nodeId );
+          nodeId = node.parentId;
+        } else  {
+          if ((lst1.length>0) && (!node.parentId))
+            lst1.pop();
+          nodeId = null;
+        }
       }
-    }
-    var nodeId = sel_lst[0];
-    while (nodeId)  {
-      node = this.node_map[nodeId];
-      if (node.parentId && (node.fchildren.length==0) &&
-                           (node.children.length==1) &&
-                           (node.text.indexOf('cross-branch="1"')<0))  {
-        lst2.push ( nodeId );
-        nodeId = node.children[0].id;
-      } else  {
-        /*
-        var task = this.task_map[nodeId];
-        if ((lst2.length>0) && task && this.task_map[nodeId].isRemark())
-          lst2.pop();
-        */
-        if ((lst2.length>0) && this.isRemark(nodeId))
-          lst2.pop();
-        nodeId = null;
+      var nodeId = sel_lst[0];
+      while (nodeId)  {
+        node = this.node_map[nodeId];
+        if (node.parentId && (node.fchildren.length==0) &&
+                             (node.children.length==1) &&
+                             (node.text.indexOf('cross-branch="1"')<0))  {
+          lst2.push ( nodeId );
+          nodeId = node.children[0].id;
+        } else  {
+          if ((lst2.length>0) && this.isRemark(nodeId))
+            lst2.pop();
+          nodeId = null;
+        }
       }
+      if (lst1.length<2)  lst1 = [];
+      if (lst2.length<2)  lst2 = [];
+      if ((lst1.length>1) || (lst2.length>1))
+        return [1,lst1,lst2];
     }
-    if (lst1.length<2)  lst1 = [];
-    if (lst2.length<2)  lst2 = [];
-    if ((lst1.length>1) || (lst2.length>1))
-      return [1,lst1,lst2];
   }
   return [0,[],[]];
 }

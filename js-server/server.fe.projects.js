@@ -614,7 +614,7 @@ var response = null;  // must become a cmd.Response object to return
     }
 
     if (disk_space_change!=0.0)  {
-      // works only if own project(s) were deleted, therefor, use provided
+      // works only if own project(s) were deleted, therefore, use provided
       // loginData
       ration.changeProjectDiskSpace ( loginData,null,disk_space_change,false );
     }
@@ -1089,7 +1089,7 @@ var unknown  = [];
     if (share0[i].login)  {
       var found = false;
       for (var j=0;(j<share.length) && (!found);j++)
-        found = (share0[i].login==share[i].login);
+        found = (share0[i].login==share[j].login);
       if (!found)  {
         var uLoginData = user.getUserLoginData ( share0[i].login );
         if (uLoginData)  {
