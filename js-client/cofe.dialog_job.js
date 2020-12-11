@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    06.12.20   <--  Date of Last Modification.
+ *    11.12.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -72,6 +72,7 @@ function JobDialog ( params,          // data and task projections up the tree b
   this.run_btn     = null;
   this.run_image   = null;
   this.ind_timer   = null;
+  this.hot_btn     = [];
 
   var size = calcDialogSize (
     __user_settings.jobdlg_size[0],__user_settings.jobdlg_size[1],
@@ -469,7 +470,6 @@ JobDialog.prototype.makeToolBar = function()  {
                                           'but unavailable for subsequent jobs.');
 
   (function(dlg){
-    dlg.hot_btn  = [];
     var hot_list = dlg.task.hotButtons();
     var gap      = false;
     for (var i=0;i<hot_list.length;i++)  {
