@@ -87,8 +87,8 @@ var k = -1;
 
 UserRation.prototype.maskProject = function ( projectName )  {
 // When a project is deleted, its jobs should not be removed from the ration
-// index because they are still used for calculating current quotas. However,
-// they should be masked such that they are ignored if user immediately
+// index because they are still used for calculating current time quotas.
+// However, they should be masked such that they are ignored if user immediately
 // re-creates project with same name
   for (var i=0;(i<this.jobs.length);i++)
     if (this.jobs[i].project==projectName)
@@ -96,6 +96,7 @@ UserRation.prototype.maskProject = function ( projectName )  {
 }
 
 
+/*
 UserRation.prototype.bookJob = function ( job_class )  {
 var index = this.jobIndex ( job_class );
 var t     = new Date().getTime()/3600000.0;  // hours from beginning
@@ -143,6 +144,7 @@ var t     = new Date().getTime()/3600000.0;  // hours from beginning
   this.calculateTimeRation();
 
 }
+*/
 
 
 UserRation.prototype.calculateTimeRation = function()  {
@@ -169,9 +171,39 @@ var njobs          = this.jobs.length;
 
   this.jobs = jobs1;  // leave only month-old jobs in the list
 
+  // returns true if UserRation structure was changed
   return (cpu_day_used  !=this.cpu_day_used)   ||
          (cpu_month_used!=this.cpu_month_used) ||
          (njobs         !=this.jobs.length);
+
+}
+
+
+UserRation.prototype.bookJob = function ( job_class )  {
+
+  if (!job_class)
+    return false;  //  ration book has not changed
+
+  if (this.jobIndex(job_class)>=0)  // the job was already booked to the ration
+    return false;
+
+  var t = new Date().getTime()/3600000.0;  // hours from beginning
+  // One day (24 hours) is 86400000 milliseconds.
+  // One hour is 3600000 milliseconds
+
+  var rjdesc = new RationJobDesc(job_class)
+  rjdesc.cpu_hours  = job_class.cpu_time;  // put the actual reading
+  rjdesc.chargeTime = t;   // record the moment of reading
+  this.jobs.push ( rjdesc );
+
+  this.storage_used   += job_class.disk_space;
+  this.cpu_total_used += job_class.cpu_time;
+
+  this.jobs_total++;
+
+  this.calculateTimeRation();
+
+  return true;
 
 }
 

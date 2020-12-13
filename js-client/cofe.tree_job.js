@@ -454,9 +454,9 @@ JobTree.prototype.__checkTaskLoop = function()  {
             tree.run_map = mapMaskOut ( tree.run_map,completedJobs );
 
             if (completed_list.length>0)  {
-              tree.updateRation ( data );
               tree.emitSignal ( cofe_signals.treeUpdated,{} );
-              tree.saveProjectData ( [],[],false, function(rdata){} );
+              tree.updateRation ( data );
+              tree.saveProjectData ( [],[],false, function(rdata){});
             }
 
           }

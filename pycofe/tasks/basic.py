@@ -2040,7 +2040,7 @@ class TaskDriver(object):
         self.end_date = datetime.datetime.today().strftime('%Y-%m-%d %H:%M:%S')
         cpu_time = ""
         if self.task and hasattr(self.task,"cpu_time"):
-            cpu_time = "<br>CPU (sec): " + "{:.3f}".format(self.task.cpu_time*3600)
+            cpu_time = "<br>CPU: " + "{:.3f}s".format(self.task.cpu_time*3600)
             #hours = int(self.task.cpu_time)
             #mins  = int((self.task.cpu_time-hours)*60)
             #secs  = int(((self.task.cpu_time-hours)*60-mins)*60)

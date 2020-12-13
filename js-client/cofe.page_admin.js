@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.10.20   <--  Date of Last Modification.
+ *    13.12.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -272,20 +272,6 @@ AdminPage.prototype.makeUsersInfoTab = function ( udata,FEconfig )  {
                                    'Licence','N<sub>jobs</sub>',
                                    'Space<br>(MB)','CPU<br>(hours)',
                                    'Known<br>since','Last<br>seen'] );
-  this.userListTable.setHeaderNoWrap   ( -1       );
-  this.userListTable.setHeaderColWidth ( 0 ,'3%'   );  // Number
-  this.userListTable.setHeaderColWidth ( 1 ,'auto' );  // Name
-  this.userListTable.setHeaderColWidth ( 2 ,'4%'   );  // Login
-  this.userListTable.setHeaderColWidth ( 3 ,'3%'   );  // Online
-  this.userListTable.setHeaderColWidth ( 4 ,'3%'   );  // Profile
-  this.userListTable.setHeaderColWidth ( 5 ,'4%'   );  // Dormancy date
-  this.userListTable.setHeaderColWidth ( 6 ,'auto' );  // E-mail
-  this.userListTable.setHeaderColWidth ( 7 ,'4%'   );  // Licence
-  this.userListTable.setHeaderColWidth ( 8 ,'3%'   );  // Jobs run
-  this.userListTable.setHeaderColWidth ( 9 ,'3%'   );  // Space used
-  this.userListTable.setHeaderColWidth ( 10,'3%'   );  // CPU used
-  this.userListTable.setHeaderColWidth ( 11,'4%'   );  // Known since
-  this.userListTable.setHeaderColWidth ( 12,'4%'   );  // Last seen
 
   var loggedUsers;
   if ('loggedUsers' in udata)  loggedUsers = udata.loggedUsers;
@@ -332,8 +318,24 @@ AdminPage.prototype.makeUsersInfoTab = function ( udata,FEconfig )  {
     });
   }(this))
 
-  this.userListTable.setHeaderFontSize ( '100%' );
   this.userListTable.createTable();
+
+  this.userListTable.setHeaderNoWrap   ( -1       );
+  this.userListTable.setHeaderColWidth ( 0 ,'3%'   );  // Number
+  this.userListTable.setHeaderColWidth ( 1 ,'auto' );  // Name
+  this.userListTable.setHeaderColWidth ( 2 ,'4%'   );  // Login
+  this.userListTable.setHeaderColWidth ( 3 ,'3%'   );  // Online
+  this.userListTable.setHeaderColWidth ( 4 ,'3%'   );  // Profile
+  this.userListTable.setHeaderColWidth ( 5 ,'4%'   );  // Dormancy date
+  this.userListTable.setHeaderColWidth ( 6 ,'auto' );  // E-mail
+  this.userListTable.setHeaderColWidth ( 7 ,'4%'   );  // Licence
+  this.userListTable.setHeaderColWidth ( 8 ,'3%'   );  // Jobs run
+  this.userListTable.setHeaderColWidth ( 9 ,'3%'   );  // Space used
+  this.userListTable.setHeaderColWidth ( 10,'3%'   );  // CPU used
+  this.userListTable.setHeaderColWidth ( 11,'4%'   );  // Known since
+  this.userListTable.setHeaderColWidth ( 12,'4%'   );  // Last seen
+
+  this.userListTable.setHeaderFontSize ( '100%' );
 
 }
 

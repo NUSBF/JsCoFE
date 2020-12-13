@@ -191,7 +191,7 @@ function ProjectPage ( sceneId )  {
     //        2:  multiple
     if ((mode==0) || ((mode==1) && jobTree.multiple) ||
                      ((mode==2) && (!jobTree.multiple)))
-      reloadTree ( false,!jobTree.multiple );
+      reloadTree ( false,!jobTree.multiple,null );
   };
 
   function setButtonState() {
@@ -478,10 +478,11 @@ function ProjectPage ( sceneId )  {
       setButtonState();
     });
     jobTree.addSignalHandler ( cofe_signals.treeUpdated,function(data){
+      self.updateUserRationDisplay ( jobTree.projectData.desc );
       setButtonState();
     });
     jobTree.addSignalHandler ( cofe_signals.reloadTree,function(rdata){
-      reloadTree ( false,false );
+      reloadTree ( false,false,rdata );
     });
     jobTree.addSignalHandler ( cofe_signals.makeProjectList,function(rdata){
       makeProjectListPage ( sceneId );
@@ -491,6 +492,8 @@ function ProjectPage ( sceneId )  {
         (jobTree.root_nodes[0].children.length<=0))
       addJob();
 
+    self.updateUserRationDisplay ( jobTree.projectData.desc );
+
     return true;
 
   }
@@ -499,7 +502,7 @@ function ProjectPage ( sceneId )  {
     setButtonState();
   }
 
-  function reloadTree ( blink,multisel )  {
+  function reloadTree ( blink,multisel,rdata )  {
     // blink==true will force page blinking, for purely aesthatic reasons
     var selTask   = jobTree.getSelectedTask();
     var scrollPos = jobTree.parent.getScrollPosition();
@@ -527,6 +530,8 @@ function ProjectPage ( sceneId )  {
           jobTree .openJobs ( dlg_task_parameters,self );
         }
         jobTree.selectTask ( selTask );
+        if (rdata)
+          self.updateUserRationDisplay ( rdata );
       }
     },onTreeContextMenu,openJob,onTreeItemSelect );
   }
@@ -759,8 +764,7 @@ function ProjectPage ( sceneId )  {
 
   refresh_btn.addOnClickListener ( function(){
     wakeZombiJobs();  // must go before reloadTree
-    reloadTree ( true,false );
-//    reloadTree ( false );
+    reloadTree ( true,false,null );
   });
 
   this.makeLogoPanel ( 2,0,3 );
@@ -801,7 +805,9 @@ ProjectPage.prototype.makeJobTree = function()  {
   this.job_tree = jobTree;  // for external references
   (function(self){
     jobTree.addSignalHandler ( cofe_signals.rationUpdated,function(data){
-      self.updateUserRation ( data );
+      //alert ( 'ration updated ' + JSON.stringify(data));
+      self.updateUserRationDisplay ( data );
+      //self.getUserRation();
     });
   }(this))
   return jobTree;
@@ -821,7 +827,7 @@ ProjectPage.prototype.makeReplayJobTree = function()  {
   // *******************************
   (function(self){
     jobTree.addSignalHandler ( cofe_signals.rationUpdated,function(data){
-      self.updateUserRation ( data );
+      self.updateUserRationDisplay ( data );
     });
   }(this))
   return jobTree;

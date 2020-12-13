@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    07.07.20   <--  Date of Last Modification.
+ *    13.12.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -77,7 +77,7 @@ var fpath = getUserRationFPath ( loginData );
 
 
 function updateResourceStats ( loginData,job_class,add_resource )  {
-// this functino is called once a job finishes in order to update user rations
+// this function is called once a job finishes in order to update user rations
 
   var disk_space = 0.0;
   var cpu_time   = 0.0;
@@ -140,7 +140,7 @@ function updateResourceStats ( loginData,job_class,add_resource )  {
 
 }
 
-
+/*
 function changeUserDiskSpace ( loginData,disk_space_change )  {
 var r      = getUserRation      ( loginData );
 var rfpath = getUserRationFPath ( loginData );
@@ -153,8 +153,10 @@ var rfpath = getUserRationFPath ( loginData );
   if (!utils.writeObject(rfpath,r))
     log.error ( 9,'cannot write ration file at ' + rfpath );
 }
+*/
 
-
+/* obsolete */
+/*
 function changeProjectDiskSpace ( loginData,projectName,disk_space_change,
                                   updateProjectData_bool )  {
 
@@ -213,8 +215,92 @@ function changeProjectDiskSpace ( loginData,projectName,disk_space_change,
   }
 
 }
+*/
+
+function bookJob ( loginData,job_class )  {
+// this function is called when job has landed in FE
+var r = getUserRation ( loginData );
+  if (r && r.bookJob(job_class))  {
+    var rfpath = getUserRationFPath ( loginData );
+    if (!utils.writeObject(rfpath,r))
+      log.error ( 10,'cannot write ration file at ' + rfpath );
+  }
+  return r;
+}
 
 
+function updateProjectStats ( loginData,projectName,cpu_change,
+                              disk_space_change,njobs_change,
+                              update_ration_bool )  {
+// loginData.login is project's owner
+  if ((disk_space_change!=0.0) && projectName)  {
+    var pData = prj.readProjectData ( loginData,projectName );
+    if (pData)  {
+      pData.desc.cpu_time   += cpu_change;
+      pData.desc.disk_space += disk_space_change;
+      pData.desc.njobs      += njobs_change;
+      prj.writeProjectData ( loginData,pData,true );
+      var pList = prj.readProjectList ( loginData );
+      if (pList)  {
+        var cpu_total_used   = 0.0;
+        var disk_space_total = 0.0;
+        for (var i=0;i<pList.projects.length;i++)  {
+          var pdesc = pList.projects[i];
+          if (pdesc.name==projectName)  {
+            pdesc.cpu_time   = pData.desc.cpu_time;
+            pdesc.disk_space = pData.desc.disk_space;
+          }
+          if (pdesc.owner.login==loginData.login)  {
+            cpu_total_used   += pdesc.cpu_time;
+            disk_space_total += pdesc.disk_space;
+          }
+        }
+        prj.writeProjectList ( loginData,pList );
+        if (update_ration_bool)  {
+          var rfpath = getUserRationFPath ( loginData );
+          var r      = getUserRation      ( loginData );
+          if (r)  {
+            r.cpu_total_used = cpu_total_used;
+            r.storage_used   = disk_space_total;
+            if (!utils.writeObject(rfpath,r))
+              log.error ( 5,'cannot save user ration at ' + rfpath );
+          } else
+            log.error ( 6,'cannot read user ration at ' + rfpath );
+        }
+      } else
+        log.error ( 7,'cannot read project list at ' +
+                      prj.getUserProjectListPath(loginData) );
+    } else
+      log.error ( 8,'cannot read project data at ' +
+                    prj.getProjectDataPath(loginData,projectName) );
+  }
+}
+
+
+function calculateUserDiskSpace ( loginData )  {
+  var pList  = prj.readProjectList ( loginData );
+  var rfpath = getUserRationFPath ( loginData );
+  var r      = getUserRation      ( loginData );
+  if (r && pList)  {
+    var disk_space_total = 0.0;
+    for (var i=0;i<pList.projects.length;i++)  {
+      var pdesc = pList.projects[i];
+      if (pdesc.owner.login==loginData.login)
+        disk_space_total += pdesc.disk_space;
+    }
+    r.storage_used = disk_space_total;
+    if (!utils.writeObject(rfpath,r))
+      log.error ( 9,'cannot save user ration at ' + rfpath );
+  } else if (!r)
+    log.error ( 10,'cannot read user ration at ' + rfpath );
+  else
+    log.error ( 11,'cannot read project list at ' +
+                   prj.getUserProjectListPath(loginData) );
+  return r;
+}
+
+
+/*
 function updateUserRation_bookJob ( loginData,job_class )  {
 var r = getUserRation ( loginData );
   if (job_class)  {
@@ -236,6 +322,7 @@ var r = getUserRation ( loginData );
   }
   return r;
 }
+*/
 
 
 function maskProject ( loginData,projectName )  {
@@ -253,7 +340,12 @@ var r = getUserRation ( loginData );
 module.exports.getUserRationFPath       = getUserRationFPath;
 module.exports.getUserRation            = getUserRation;
 module.exports.saveUserRation           = saveUserRation;
-module.exports.updateUserRation_bookJob = updateUserRation_bookJob;
-module.exports.changeUserDiskSpace      = changeUserDiskSpace;
-module.exports.changeProjectDiskSpace   = changeProjectDiskSpace;
+//module.exports.updateUserRation_bookJob = updateUserRation_bookJob;
+//module.exports.changeUserDiskSpace      = changeUserDiskSpace;
+//module.exports.changeProjectDiskSpace   = changeProjectDiskSpace;
+
+
+module.exports.bookJob                  = bookJob;
+module.exports.updateProjectStats       = updateProjectStats;
+module.exports.calculateUserDiskSpace   = calculateUserDiskSpace;
 module.exports.maskProject              = maskProject;
