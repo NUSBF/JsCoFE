@@ -409,13 +409,17 @@ BasePage.prototype.displayUserRation = function ( pdesc )  {
 }
 
 
-BasePage.prototype.updateUserRation = function ( rdata )  {
+BasePage.prototype.updateUserRationDisplay = function ( rdata )  {
   if ('ration' in rdata)
     this.ration = rdata.ration;
   if ('pdesc' in rdata)
     this.displayUserRation ( rdata.pdesc );
+  else if (('_type' in rdata) && (rdata._type=='ProjectDesc'))
+    this.displayUserRation ( rdata );
   else if ('ration' in rdata)
     this.displayUserRation ( null );
+  else
+    this.getUserRation();
 }
 
 

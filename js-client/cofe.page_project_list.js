@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    29.07.20   <--  Date of Last Modification.
+ *    13.12.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -98,7 +98,7 @@ function ProjectListPage ( sceneId )  {
       function(data){
         if (onDone_func)
           onDone_func ( data );
-        self.updateUserRation ( data );
+        self.updateUserRationDisplay ( data );
       },null,'persist' );
   }
 
@@ -257,6 +257,7 @@ function ProjectListPage ( sceneId )  {
       saveProjectList ( function(data){
         makeProjectListTable   ();
         welcome_lbl.setVisible ( (projectList.projects.length<1) );
+        self.getUserRation();
       });
       return true;  // close dialog
     });
@@ -287,6 +288,7 @@ function ProjectListPage ( sceneId )  {
         '<center>Date<br>Created</center>',
         '<center>Last<br>Opened</center>'
     ]);
+    /*
     self.tablesort_tbl.setHeaderNoWrap   ( -1      );
     self.tablesort_tbl.setHeaderColWidth ( 0,'5%'  );
     self.tablesort_tbl.setHeaderColWidth ( 1,'75%' );
@@ -294,13 +296,14 @@ function ProjectListPage ( sceneId )  {
     self.tablesort_tbl.setHeaderColWidth ( 3,'5%'  );
     self.tablesort_tbl.setHeaderColWidth ( 4,'5%'  );
     self.tablesort_tbl.setHeaderColWidth ( 5,'5%'  );
+    */
 
     panel.setWidget ( self.tablesort_tbl,table_row,0,1,nCols );
     var message = '&nbsp;<p>&nbsp;<p><h2>' +
-                  'Your List of Projects is currently empty.<br>' +
+                  'Your List of Projects is currently empty.<br>'  +
                   'Press "Add" button to create a new Project<br>' +
                   'and then "Open" to open it.<p>' +
-                  'You may also import an old project (using<br>' +
+                  'You may also import an old project (using<br>'  +
                   'the "Import" button) if one was previously<br>' +
                   'exported from ' + appName() + '.</h2>';
     welcome_lbl = panel.setLabel ( message.fontcolor('darkgrey'),
@@ -350,20 +353,22 @@ function ProjectListPage ( sceneId )  {
 
         // when list of projects is served from FE, shared record is removed
         // in case of owner's login
+        var joined = ['',''];
         if ('owner' in pDesc)  {
-          if (pDesc.owner.share.length>0)
-            pName = '<b>[<i>' + pDesc.owner.login + '</i>]:</b>' + pName;
-          else if (('author' in pDesc.owner) && (pDesc.owner.author!=pDesc.owner.login))
-            pName = '<b>(<i>' + pDesc.owner.author + '</i>):</b>' + pName;
+          if (pDesc.owner.share.length>0)  {
+            joined = ['<i>','</i>'];
+            pName  = '<b>[<i>' + pDesc.owner.login  + '</i>]:</b>' + pName;
+          } else if (('author' in pDesc.owner) && (pDesc.owner.author!=pDesc.owner.login))
+            pName  = '<b>(<i>' + pDesc.owner.author + '</i>):</b>' + pName;
         }
         trow.addCell ( pName  ).setNoWrap();
         trow.addCell ( pDesc.title ).insertWidget ( contextMenu,0 );
         if (pDesc.hasOwnProperty('disk_space'))
-              trow.addCell ( round(pDesc.disk_space,1) ).setNoWrap();
-        else  trow.addCell ( '-:-' ).setNoWrap();
+              trow.addCell ( joined[0]+round(pDesc.disk_space,1)+joined[1] ).setNoWrap();
+        else  trow.addCell ( joined[0]+'-:-'+joined[1] ).setNoWrap();
         if (pDesc.hasOwnProperty('cpu_time'))
-              trow.addCell ( round(pDesc.cpu_time,4) ).setNoWrap();
-        else  trow.addCell ( '-:-' ).setNoWrap();
+              trow.addCell ( joined[0]+round(pDesc.cpu_time,4)+joined[1] ).setNoWrap();
+        else  trow.addCell ( joined[0]+'-:-'+joined[1] ).setNoWrap();
         trow.addCell ( pDesc.dateCreated ).setNoWrap().setHorizontalAlignment('center');
         trow.addCell ( pDesc.dateLastUsed).setNoWrap().setHorizontalAlignment('center');
         //tablesort_tbl.addRow ( trow );
@@ -389,6 +394,14 @@ function ProjectListPage ( sceneId )  {
       welcome_lbl.hide();
 
     }
+
+    self.tablesort_tbl.setHeaderNoWrap   ( -1      );
+    self.tablesort_tbl.setHeaderColWidth ( 0,'5%'  );
+    self.tablesort_tbl.setHeaderColWidth ( 1,'75%' );
+    self.tablesort_tbl.setHeaderColWidth ( 2,'5%'  );
+    self.tablesort_tbl.setHeaderColWidth ( 3,'5%'  );
+    self.tablesort_tbl.setHeaderColWidth ( 4,'5%'  );
+    self.tablesort_tbl.setHeaderColWidth ( 5,'5%'  );
 
     self.tablesort_tbl.setHeaderFontSize ( '100%' );
     self.onResize ( window.innerWidth,window.innerHeight );

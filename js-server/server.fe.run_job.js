@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    06.12.20   <--  Date of Last Modification.
+ *    13.12.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -433,7 +433,7 @@ function runJob ( loginData,data, callback_func )  {
         writeFEJobRegister();
 
         // update the user ration state
-        ration.updateUserRation_bookJob ( ownerLoginData,task );
+        //ration.updateUserRation_bookJob ( ownerLoginData,task );
 
         rdata.job_token   = job_token;
         rdata.jobballName = send_dir.jobballName;
@@ -519,7 +519,7 @@ function runJob ( loginData,data, callback_func )  {
             writeFEJobRegister();
 
             // update the user ration state
-            ration.updateUserRation_bookJob ( ownerLoginData,task );
+            //ration.updateUserRation_bookJob ( ownerLoginData,task );
 
           },function(stageNo,code){  // send failed
 
@@ -631,7 +631,7 @@ function replayJob ( loginData,data, callback_func )  {
           writeFEJobRegister();
 
           // update the user ration state
-          ration.updateUserRation_bookJob ( loginData,task );
+          //ration.updateUserRation_bookJob ( loginData,task );
 
           rdata = {};
           rdata.job_token   = job_token;
@@ -667,7 +667,7 @@ function replayJob ( loginData,data, callback_func )  {
           writeFEJobRegister();
 
           // update the user ration state
-          ration.updateUserRation_bookJob ( loginData,task );
+          //ration.updateUserRation_bookJob ( loginData,task );
 
         },function(stageNo,code){  // send failed
 
@@ -796,10 +796,34 @@ function writeJobStats ( jobEntry )  {
     // note residual disk space (in MB)
     var jobDir = prj.getJobDirPath ( jobEntry.loginData,jobEntry.project,
                                      jobEntry.jobId );
+
+    // make user ration bookkeeping
+
+    // calculate the size of job directory as is on FE
     jobClass.disk_space = utils.getDirectorySize ( jobDir ) / 1024.0 / 1024.0;
 
+    var report_task_fpath = path.join (
+      prj.getJobReportDirPath(jobEntry.loginData,jobEntry.project,jobEntry.jobId),
+      'task.tsk' );
+    var report_tsk = utils.readString ( report_task_fpath );
+    if (report_tsk)  {
+      var report_tsk_list = report_tsk.split(';;;');
+      for (var i=0;i<report_tsk_list.length;i++)
+        if (report_tsk_list[i].includes('<br>Started:')   &&
+            report_tsk_list[i].includes('<br>Finished:')  &&
+            report_tsk_list[i].includes('<br>CPU:'))
+          report_tsk_list[i] = report_tsk_list[i].replace ( '</div>',
+                ', Disk: ' + jobClass.disk_space.toFixed(2) + 'M</div>' );
+      utils.writeString ( report_task_fpath,report_tsk_list.join(';;;') );
+    }
+
+    // update records in user's ration book
     // jobEntry.loginData corresponds to the project owner account
-    var userRation = ration.updateUserRation_bookJob ( jobEntry.loginData,jobClass );
+    //var userRation = ration.updateUserRation_bookJob ( jobEntry.loginData,jobClass );
+    var userRation = ration.bookJob ( jobEntry.loginData,jobClass );
+
+    ration.updateProjectStats ( jobEntry.loginData,jobClass.project,
+                                jobClass.cpu_time,jobClass.disk_space,1,false );
 
     var S     = '';
     var fpath = getJobStatPath(0);
@@ -977,15 +1001,16 @@ function checkJobs ( loginData,data )  {
   if ((!empty) || data.shared)  {
     var pDesc = prj.readProjectDesc ( loginData,projectName );
     if (pDesc)  {
-      if ((!empty) && (pDesc.owner.login==loginData.login))  {
-        // save on reading files if nothing changes
-        rdata.ration = ration.getUserRation(loginData).clearJobs();
-      }
       rdata.pdesc = pDesc;
-      if (pDesc.timestamp>data.timestamp)  {
+      if ((data.shared) && (pDesc.timestamp>data.timestamp))  {
+//      if (pDesc.timestamp>data.timestamp)  {
         if (pDesc.project_version>data.project_version)
               rdata.reload = 2;  // project changed considerably, reload client
         else  rdata.reload = 1;  // on-client data should be safe
+      }
+      if (((!empty) && (pDesc.owner.login==loginData.login)) || (rdata.reload>0))  {
+        // save on reading files if nothing changes
+        rdata.ration = ration.getUserRation(loginData).clearJobs();
       }
 //console.log ( ' >>>>>>>> ' + loginData.login + '    ' +
 //                             pDesc.timestamp + ' : ' + data.timestamp + ' -- ' +

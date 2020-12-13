@@ -513,25 +513,17 @@ var response = null;  // must become a cmd.Response object to return
 
 function deleteProject ( loginData,projectName )  {
 var response = null;  // must become a cmd.Response object to return
+var erc = '';
 
   log.standard ( 7,'delete project ' + projectName + ', login ' + loginData.login );
 
   // maintain share lists
   var pData = readProjectData ( loginData,projectName );
   if (pData && (pData.desc.owner.login==loginData.login))  {
-    // project is deleted by owner -- remove it from all shares
-    /*
-    var share = _make_unique_list ( pData.desc.owner.share );
-    for (var i=0;i<share.length;i++)
-      if (share[i])  {
-        var uLoginData = user.getUserLoginData ( share[i] );
-        if (uLoginData)  {
-          var pShare = readProjectShare ( uLoginData );
-          pShare.removeShare ( pData.desc );
-          writeProjectShare  ( uLoginData,pShare );
-        }
-      }
-    */
+    // project can be deleted only by owner; shared projects cam be only
+    // unjoined
+
+    // remove it from all shares
     var share = pData.desc.owner.share;
     for (var i=0;i<share.length;i++)  {
       var uLoginData = user.getUserLoginData ( share[i].login );
@@ -541,23 +533,39 @@ var response = null;  // must become a cmd.Response object to return
         writeProjectShare  ( uLoginData,pShare );
       }
     }
+
+    // subtract project disck space from user's ration
+    ration.updateProjectStats ( loginData,projectName,0.0,
+                                -pData.desc.disk_space,0,true );
+
+    // Get users' projects directory name
+    var projectDirPath = getProjectDirPath ( loginData,projectName );
+
+    utils.removePath ( projectDirPath );
+
+    ration.maskProject ( loginData,projectName );
+
+    if (utils.fileExists(projectDirPath))
+      erc = emailer.send ( conf.getEmailerConfig().maintainerEmail,
+                'CCP4 Remove Project Directory Fails',
+                'Detected removePath failure at deleting project directory, ' +
+                'please investigate.' );
+
+  } else if (pData && (pData.desc.owner.login!=loginData.login))  {
+    log.error ( 60,'attempt to delete project ' + pData.desc.owner.login +
+                   ':' + projectName + ' by non-owner ' + loginData.login );
+    response = new cmd.Response ( cmd.fe_retcode.projectAccess,
+                        'Attempt to delete project without ownership',erc );
+  } else  {
+    log.error ( 61,'project ' + loginData.login + ':' + projectName +
+                   ' attempted for deletion, but was not found' );
+    response = new cmd.Response ( cmd.fe_retcode.noProjectData,
+                                  'Project not found',erc );
   }
 
-  // Get users' projects directory name
-  var projectDirPath = getProjectDirPath ( loginData,projectName );
+  if (!response)
+    response = new cmd.Response ( cmd.fe_retcode.ok,'',erc );
 
-  utils.removePath ( projectDirPath );
-
-  ration.maskProject ( loginData,projectName );
-
-  var erc = '';
-  if (utils.fileExists(projectDirPath))
-    erc = emailer.send ( conf.getEmailerConfig().maintainerEmail,
-              'CCP4 Remove Project Directory Fails',
-              'Detected removePath failure at deleting project directory, ' +
-              'please investigate.' );
-
-  response = new cmd.Response ( cmd.fe_retcode.ok,'',erc );
   return response;
 
 }
@@ -613,12 +621,6 @@ var response = null;  // must become a cmd.Response object to return
       }
     }
 
-    if (disk_space_change!=0.0)  {
-      // works only if own project(s) were deleted, therefore, use provided
-      // loginData
-      ration.changeProjectDiskSpace ( loginData,null,disk_space_change,false );
-    }
-
     // create new projects
     for (var i=0;i<newProjectList.projects.length;i++)
       if (newProjectList.projects[i].owner.login=='')  {
@@ -641,7 +643,9 @@ var response = null;  // must become a cmd.Response object to return
         if (disk_space_change!=0.0)  {
           // save on reading files if ration does not change; see related
           // comments above
-          rdata.ration = ration.getUserRation(loginData).clearJobs();
+          rdata.ration = ration.calculateUserDiskSpace(loginData).clearJobs();
+          // clearJobs() only to decrease the amount of transmitted data
+          //rdata.ration = ration.getUserRation(loginData).clearJobs();
         }
         response = new cmd.Response ( cmd.fe_retcode.ok,'',rdata );
       } else
@@ -934,7 +938,8 @@ function saveProjectData ( loginData,data )  {
   var response = null;
 
   var projectData = data.meta;
-  var projectName = projectData.desc.name;
+  var projectDesc = projectData.desc;
+  var projectName = projectDesc.name;
 //  console.log ( ' >>>>>>>>>> write current project data (' + projectName +
 //                '), login ' + loginData.login + ' timestamp ' + projectData.desc.timestamp );
 
@@ -950,20 +955,27 @@ function saveProjectData ( loginData,data )  {
   if (utils.fileExists(projectDataPath))  {
 
     var disk_space_change = 0.0;
-    if ('disk_space' in projectData.desc)  {  // backward compatibility on 05.06.2018
+    if ('disk_space' in projectDesc)  {  // backward compatibility on 05.06.2018
       for (var i=0;i<data.tasks_del.length;i++)
         disk_space_change -= data.tasks_del[i][1]
-      projectData.desc.disk_space += disk_space_change;
-      projectData.desc.disk_space  = Math.max ( 0,projectData.desc.disk_space );
+      projectDesc.disk_space += disk_space_change;
+      projectDesc.disk_space  = Math.max ( 0,projectDesc.disk_space );
     } else  {
-      projectData.desc.disk_space  = 0.0;   // should be eventually removed
-      projectData.desc.cpu_time    = 0.0;   // should be eventually removed
+      projectDesc.disk_space  = 0.0;   // should be eventually removed
+      projectDesc.cpu_time    = 0.0;   // should be eventually removed
     }
 
     checkProjectData ( projectData,loginData );
 
-    // disk space change is booked to project owner inside this function
-    ration.changeProjectDiskSpace ( loginData,projectName,disk_space_change,false );
+    if (disk_space_change!=0.0)  {
+      // disk space change is booked to project owner inside this function
+      //ration.changeProjectDiskSpace ( loginData,projectName,disk_space_change,false );
+      var ownerLoginData = loginData;
+      if (loginData.login!=projectDesc.owner.login)
+        ownerLoginData = user.getUserLoginData ( projectDesc.owner.login );
+      ration.updateProjectStats ( ownerLoginData,projectName,
+                                  0.0,disk_space_change,0,true );
+    }
 
     var update_time_stamp = data.update || (data.tasks_del.length>0) ||
                                            (data.tasks_add.length>0);
@@ -1270,8 +1282,9 @@ function _import_project ( loginData,tempdir,prjDir )  {
         else  utils.writeString ( signal_path,'Cannot write project list\n' +
                                               projectDesc.name );
 
-        if (loginData.login==projectDesc.owner.login)
-          ration.changeUserDiskSpace ( loginData,projectDesc.disk_space );
+        //if (loginData.login==projectDesc.owner.login)
+        //  ration.changeUserDiskSpace ( loginData,projectDesc.disk_space );
+        ration.calculateUserDiskSpace ( loginData );
 
       } else  {
 

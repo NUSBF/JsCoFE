@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.10.19   <--  Date of Last Modification.
+ *    13.12.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -14,7 +14,7 @@
  *       ~~~~~~~~~  TableScroll  - table with scrollable body
  *                  TableSort    - table with sortable columns
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2017
+ *  (C) E. Krissinel, A. Lebedev 2016-2020
  *
  *  =================================================================
  *
@@ -368,10 +368,19 @@ var trow = this.head.child[0];
 }
 
 TableSort.prototype.setHeaderColWidth = function ( col,width )  {
-  var trow = this.head.child[0];
+var trow = this.head.child[0];
   trow.child[col].element.style.width = width;
+  //if (this.body.child.length>0)
+  //  this.body.child[col].element.style.width = width;
+  if (this.body.child.length>0)  {
+    trow = this.body.child[0];
+    trow.child[col].element.style.width = width;
+  }
+  /*
+  $(trow.child[col].element).css('width',width);
   if (this.body.child.length>0)
-    this.body.child[col].element.style.width = width;
+    $(this.body.child[col].element).css('width',width);
+  */
 }
 
 TableSort.prototype.selectRow = function ( trow )  {
