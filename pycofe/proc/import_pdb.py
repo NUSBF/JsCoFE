@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    17.11.20   <--  Date of Last Modification.
+#    18.12.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -202,7 +202,7 @@ def run ( body,pdb_list,
 
             xyz = import_xyz     .run ( body )
             seq = import_sequence.run ( body )
-            hkl = import_merged  .run ( body,importPhases=False )
+            hkl = import_merged  .run ( body,importPhases="" )
 
             if len(hkl)>0 and import_revisions:  # compose structure and revision
 

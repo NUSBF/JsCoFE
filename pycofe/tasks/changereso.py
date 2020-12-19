@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    16.11.20   <--  Date of Last Modification.
+#    18.12.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -110,7 +110,7 @@ class ChangeReso(basic.TaskDriver):
             self.resetFileImport()
             self.addFileImport ( outputMTZFName,import_filetype.ftype_MTZMerged() )
             #self.files_all = [ outputMTZFName ]
-            import_merged.run ( self,"Reflection dataset",importPhases=False )
+            import_merged.run ( self,"Reflection dataset",importPhases="" )
 
             # update structure revision
             if revision:

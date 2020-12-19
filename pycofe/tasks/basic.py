@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    19.11.20   <--  Date of Last Modification.
+#    18.12.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -1870,7 +1870,7 @@ class TaskDriver(object):
             os.rename ( mtzfilepath,newHKLFPath )
             self.resetFileImport()
             self.addFileImport ( newHKLFPath,import_filetype.ftype_MTZMerged() )
-            import_merged.run ( self,"New reflection dataset details",importPhases=False )
+            import_merged.run ( self,"New reflection dataset details",importPhases="" )
 
             if dtype_hkl.dtype() in self.outputDataBox.data:
                 sol_hkl = self.outputDataBox.data[dtype_hkl.dtype()][0]
@@ -1944,7 +1944,7 @@ class TaskDriver(object):
                 else:
                     self.putMessage ( "Error: cannot reindex " + hkl_list[i].dname )
 
-            hkls = import_merged.run ( self,"New reflection datasets",importPhases=False )
+            hkls = import_merged.run ( self,"New reflection datasets",importPhases="" )
             for i in range(len(index)):
                 hkls[i].aimless_meta = hkl_list[index[i]].aimless_meta
 

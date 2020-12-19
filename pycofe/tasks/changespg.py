@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    04.05.20   <--  Date of Last Modification.
+#    18.12.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -96,7 +96,7 @@ class ChangeSpG(basic.TaskDriver):
             # make list of files to import
             self.resetFileImport()
             self.addFileImport ( outputMTZFName,import_filetype.ftype_MTZMerged() )
-            import_merged.run ( self,"Reflection dataset",importPhases=False )
+            import_merged.run ( self,"Reflection dataset",importPhases="" )
             have_results = True
 
             # update structure revision

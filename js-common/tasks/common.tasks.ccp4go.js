@@ -37,7 +37,6 @@ function TaskCCP4go()  {
   this.name    = 'ccp4go';
   this.setOName ( 'ccp4go' );  // default output file name template
   this.title   = 'CCP4go auto-solver (experimental)';
-  //this.helpURL = './html/jscofe_task_ccp4go.html';
 
   this.files   = ['','',''];
   //this.ha_type = '';

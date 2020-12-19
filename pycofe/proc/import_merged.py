@@ -122,9 +122,9 @@ def makeHKLTable ( body,tableId,holderId,original_data,new_data,
 
 def run ( body,   # body is reference to the main Import class
           sectionTitle="Reflection datasets created",
-          sectionOpen=False,  # to keep result section closed if several datasets
-          importPhases=True,  # will create structure for set of phases
-          freeRflag=True      # will be run if necessary
+          sectionOpen=False,   # to keep result section closed if several datasets
+          importPhases="exp",  # "exp,ref,no-hkl", all optional
+          freeRflag=True       # will be run if necessary
         ):
 
     hkl_imported = []
@@ -448,21 +448,47 @@ def run ( body,   # body is reference to the main Import class
                     k += 1
                     pyrvapi.rvapi_flush()
 
-                    if importPhases and last_imported:
+                    if (("exp" in importPhases) or ("ref" in importPhases)) and last_imported:
                         cou0 = 7
                         dset = last_imported.dataset
                         mtzin = os.path.join(body.outputDir(),dset.MTZ)
                         f_sigf = dset.Fmean.value, dset.Fmean.sigma
                         phaseBlocks = []
+                        cou = cou0
                         if ds.PhiFOM:
                             phaseBlocks.extend(ds.PhiFOM)
                         if ds.ABCD:
                             phaseBlocks.extend(ds.ABCD)
-                        cou = cou0
+                        if ("ref" in importPhases) and ds.FwPhi:
+                            #phaseBlocks.extend(ds.FwPhi)
+                            # simply make structure with all relevant labels
+                            if (("FWT","PHWT") in ds.FwPhi):
+                                structure = body.registerStructure1 ( None,None,
+                                            p_mtzout,None,None,None,
+                                            os.path.splitext(f_orig)[0] + "-maps",
+                                            leadKey=1 )
+                                if structure:
+                                    structure.addPhasesSubtype ()
+                                    structure.addDataAssociation( last_imported.dataId )
+                                    structure.setImportMergedData ( ds )
+                                    pyrvapi.rvapi_set_text (
+                                        "<h2>Associated ED Maps</h2>",
+                                        subSecId,cou,0,1,1 )
+                                    cou += 2
+                                    body.putStructureWidget1 ( subSecId,
+                                        body.getWidgetId("ph_data_"+str(body.dataSerialNo)),
+                                        "Electron density", structure,
+                                        -1, cou, 1 )
+                                    if body.summary_row_0<0:
+                                        body.putSummaryLine ( body.get_cloud_import_path(f_orig),
+                                                              "MAPS",structure.dname )
+                                    else:
+                                        body.addSummaryLine ( "MAPS",structure.dname )
+
                         for phBlock in phaseBlocks:
+                            body.stdoutln ( "  phase block " + str(phBlock) )
                             assert len(phBlock) in (2,4)
                             blockname = os.path.splitext(f_orig)[0] + '-' + mtz.block_name(phBlock)
-
                             mtztmp = blockname + '_tmp.mtz'
                             args = []
                             args += ["HKLIN1",mtzin]
@@ -501,13 +527,13 @@ def run ( body,   # body is reference to the main Import class
                                 file_stdout_alt=body.file_stdout
                             )
                             if rc.msg:
-                                body.file_stdout1.write ( "Error calling cfft: " + rc.msg + "\n" )
-                                body.file_stderr.write ( "Error calling cfft: " + rc.msg + "\n" )
+                                body.file_stdout1.write ( "Error calling chltofom: " + rc.msg + "\n" )
+                                body.file_stderr.write ( "Error calling chltofom: " + rc.msg + "\n" )
 
                             phlist = mtz.mtz_file ( mtzout )
                             assert len(phlist) == 1
                             phset = phlist[0]
-                            assert len(phset.ABCD) == 1 and len(phset.PhiFOM) == 1 and len(phset.FwPhi) == 1
+#                           assert len(phset.ABCD) == 1 and len(phset.PhiFOM) == 1 and len(phset.FwPhi) == 1
                             if len(phBlock) == 4:
                                 phset.PhiFOM = None
                             elif len(phBlock) == 2:

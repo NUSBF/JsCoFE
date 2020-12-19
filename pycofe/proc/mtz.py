@@ -19,6 +19,7 @@
 # ============================================================================
 #
 
+from __future__ import print_function
 from future import *
 
 import os, sys, re
@@ -121,8 +122,7 @@ class mtz_dataset(object):
             labs.append(label)
 
         if vstream:
-            #print(columns, file=vstream)
-            vstream.write ( columns )
+            print(columns, file=vstream)
 
         phi_list = columns.get('P')
         fom_list = columns.get('W')
@@ -391,8 +391,7 @@ def mtz_file(fname, vstream=None):
 
         while line and not line.startswith('MTZBATS'):
             if vstream:
-                #print(line, file=vstream)
-                vstream.write ( line )
+                print(line, file=vstream)
 
             key, sep, data = line.partition(' ')
             data_list = header_dict.get(key, None)
