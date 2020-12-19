@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    04.05.20   <--  Date of Last Modification.
+#    18.12.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -219,13 +219,13 @@ class Aimless(basic.TaskDriver):
                     break
 
             if output_ok:
-                hkl = import_merged.run ( self,importPhases=False )
+                hkl = import_merged.run ( self,importPhases="" )
 
         else:
             file_i = self.getMTZOFName()
             if os.path.isfile(file_i):
                 self.addFileImport ( file_i,import_filetype.ftype_MTZMerged() )
-                hkl = import_merged.run ( self,"Reflection dataset",importPhases=False )
+                hkl = import_merged.run ( self,"Reflection dataset",importPhases="" )
             else:
                 output_ok = False
 

@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    04.04.20   <--  Date of Last Modification.
+#    18.12.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -222,10 +222,10 @@ class FreeRFlag(basic.TaskDriver):
                 self.putTitle ( "Output Data" )
                 if len(self.files_all) > 1:
                     import_merged.run ( self,"Reflection datasets created",
-                                             sectionOpen=True,importPhases=False,
+                                             sectionOpen=True,importPhases="",
                                              freeRflag=True )
                 else:
-                    import_merged.run ( self,"",sectionOpen=False,importPhases=False,
+                    import_merged.run ( self,"",sectionOpen=False,importPhases="",
                                              freeRflag=True  )
 
                 outhkl = self.outputDataBox.data[hkl[0]._type]

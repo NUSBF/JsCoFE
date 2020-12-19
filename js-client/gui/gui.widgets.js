@@ -101,24 +101,25 @@ Widget.prototype.setCursor = function ( cursor )  {
 }
 
 Widget.prototype.setTooltip = function ( text )  {
-  this.element.setAttribute ( 'title',text );
-  var delay    = 1500;
-  var duration = Math.sqrt(text.split(' ').length)*1500; // dynamic duration
-  if (duration>0)  {
-    $(this.element).tooltip({
-        show  : { effect : 'slideDown', delay: delay },
-        track : true,
-        content: function (callback) {
-            callback($(this).prop('title'));
-        },
-        open  : function (event, ui) {
-            setTimeout(function() {
-                $(ui.tooltip).hide('explode');
-            },delay+duration);
-        }
-    });
+  if (text)  {
+    this.element.setAttribute ( 'title',text );
+    var delay    = 1500;
+    var duration = Math.sqrt(text.split(' ').length)*1500; // dynamic duration
+    if (duration>0)  {
+      $(this.element).tooltip({
+          show  : { effect : 'slideDown', delay: delay },
+          track : true,
+          content: function (callback) {
+              callback($(this).prop('title'));
+          },
+          open  : function (event, ui) {
+              setTimeout(function() {
+                  $(ui.tooltip).hide('explode');
+              },delay+duration);
+          }
+      });
+    }
   }
-
   /*
   $(this.element).tooltip({
       content : text,
@@ -131,7 +132,6 @@ Widget.prototype.setTooltip = function ( text )  {
       }
   });
   */
-
   return this;
 }
 

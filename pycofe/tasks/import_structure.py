@@ -5,14 +5,14 @@
 #
 # ============================================================================
 #
-#    18.12.20   <--  Date of Last Modification.
+#    17.12.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
-#  CCP4go EXECUTABLE MODULE
+#  IMPORT STUCTURE TASK EXECUTABLE MODULE
 #
 #  Command-line:
-#     ccp4-python -m pycofe.tasks.ccp4go jobManager jobDir jobId
+#     ccp4-python -m pycofe.tasks.import_structure jobManager jobDir jobId
 #
 #  where:
 #    jobManager  is either SHELL, SGE or SCRIPT
@@ -21,13 +21,22 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2020
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2020
 #
 # ============================================================================
 #
 
 #  python native imports
 import os
+
+#  ccp4-python imports
+import pyrvapi
+
+#  application imports
+from   pycofe.tasks  import import_task
+from   proc          import import_merged, import_xyz, import_ligand
+
+"""
 import sys
 import json
 import shutil
@@ -42,14 +51,262 @@ from   pycofe.tasks  import asudef, import_task
 from   pycofe.proc   import import_filetype, import_merged
 from   pycofe.varut  import rvapi_utils
 from   pycofe.etc    import citations
+"""
 
 # ============================================================================
-# Make CCP4go driver
+# Make ImportStructure driver
 
-#class CCP4go(asudef.ASUDef):
+class ImportStructure(import_task.Import):
 
-class CCP4go(import_task.Import):
+    # ------------------------------------------------------------------------
 
+    import_dir      = "uploads"
+    #import_table_id = "import_summary_id"
+    #id_modifier     = 1
+
+    def importDir        (self):  return self.import_dir       # import directory
+    #def import_summary_id(self):  return self.import_table_id  # import summary table id
+
+    # ------------------------------------------------------------------------
+
+    def run_importers ( self ):
+        import_merged.run ( self,importPhases="ref" )
+        import_xyz   .run ( self )
+        import_ligand.run ( self )
+        return
+
+    # ------------------------------------------------------------------------
+
+    def importData(self):
+
+        # -------------------------------------------------------------------
+        # import uploaded data
+
+        super ( ImportStructure,self ).import_all()
+
+        # -------------------------------------------------------------------
+        # fetch data for ImportStructure pipeline
+
+        self.hkl = None   # merged reflections dataset
+        self.map = None   # alternative reflectins and maps/phases
+        self.xyz = None   # coordinates
+        self.lib = None   # ligand descriptions
+
+        if "DataHKL" in self.outputDataBox.data:
+            maxres = 10000.0
+            for i in range(len(self.outputDataBox.data["DataHKL"])):
+                res = self.outputDataBox.data["DataHKL"][i].getHighResolution(True)
+                if res<maxres:
+                    maxres   = res
+                    self.hkl = self.outputDataBox.data["DataHKL"][i]
+
+        if "DataStructure" in self.outputDataBox.data:
+            self.map = self.outputDataBox.data["DataStructure"][0]
+
+        if "DataXYZ" in self.outputDataBox.data:
+            self.xyz = self.outputDataBox.data["DataXYZ"][0]
+
+        if "DataLibrary" in self.outputDataBox.data:
+            self.lib = self.outputDataBox.data["DataLibrary"]
+        elif "DataLigand" in self.outputDataBox.data:
+            self.lib = self.outputDataBox.data["DataLigand"]
+
+        if self.hkl:
+            self.putMessage ( "HKL found" )
+        if self.map:
+            self.putMessage ( "MAP found" )
+        if self.xyz:
+            self.putMessage ( "XYZ found" )
+
+        # -------------------------------------------------------------------
+        # make data summary table
+
+        """
+        panelId = "summary_section"
+        pyrvapi.rvapi_set_text ( "",self.report_page_id(),self.rvrow,0,1,1 )
+        self.putSection ( panelId,"<b>1. Input summary</b>" )
+
+        tableId = "ccp4go_summary_table"
+        self.putTable ( tableId,"Input data",panelId,0,mode=0 )
+        self.setTableHorzHeaders ( tableId,["Assigned Name","View"],
+                ["Name of the assocuated data object","Data view and export"] )
+
+        def addDataLine ( name,tooltip,object,nrow ):
+            if object:
+                self.putTableLine ( tableId,name,tooltip,object.dname,nrow[0] )
+                self.putInspectButton ( object,"View",tableId,nrow[0]+1,2 )
+                nrow[0] +=1
+            return
+
+        nrow = [0]
+        if self.hkl:
+            addDataLine ( "Merged Reflections","Reflection data",self.hkl,nrow )
+        if self.xyz:
+            addDataLine ( "Atomic Coordinates","Coordinate",self.xyz,nrow )
+        if self.lib:
+            addDataLine ( "Ligand description(s)","Ligand(s)",self.lib,nrow )
+        """
+
+        return
+
+    # ------------------------------------------------------------------------
+
+    def run(self):
+
+        have_results = False
+        self.importData()
+        self.flush()
+
+        # close execution logs and quit
+        self.success ( have_results )
+        return
+
+        """
+        fileDir = self.outputDir()
+        stageNo = 1
+        #self.stdoutln ( str(self.task.input_dtypes) )
+        #if len(self.task.input_dtypes)>1:
+        if hasattr(self.input_data.data,"hkldata"):
+            self.stdoutln ( " hkldata found" )
+        if hasattr(self.input_data.data,"hkldata"):
+            fileDir = self.inputDir()
+            stageNo = 0
+            self.prepareData()  #  pre-imported data provided
+        else:
+            self.importData()   #  data was uploaded
+        #self.putMessage ( "&nbsp;" )
+        self.flush()
+
+        # run ccp4go pipeline
+
+        have_results = False
+
+        if self.unm or self.hkl:
+
+            # write input file
+            self.open_stdin()
+            if self.unm:
+                self.write_stdin ( "HKLIN " + self.unm.getUnmergedFilePath(fileDir) )
+            elif self.hkl:
+                self.write_stdin ( "HKLIN " + self.hkl.getHKLFilePath(fileDir) )
+            if self.seq:  # takes just a single sequence for now -- to be changed
+                dtype_sequence.writeMultiSeqFile1 ( self.file_seq_path(),self.seq,fileDir )
+                self.write_stdin ( "\nSEQIN " + self.file_seq_path() )
+            if self.xyz:
+                self.write_stdin ( "\nXYZIN " + self.xyz.getXYZFilePath(fileDir) )
+            #if self.task.ha_type:
+            #    self.write_stdin ( "\nHATOMS " + self.task.ha_type )
+            if self.ha_type:
+                self.write_stdin ( "\nHATOMS " + self.ha_type )
+            for i in range(len(self.task.ligands)):
+                if self.task.ligands[i].source!='none':
+                    self.write_stdin ( "\nLIGAND " + self.task.ligands[i].code )
+                    if self.task.ligands[i].source=='smiles':
+                        self.write_stdin ( " " + self.task.ligands[i].smiles )
+            for i in range(len(self.ligands)):
+                self.write_stdin ( "\nLIGIN " + self.ligands[i].code + ";" +\
+                                   self.ligands[i].getLibFilePath(fileDir) + ";" +\
+                                   self.ligands[i].getXYZFilePath(fileDir) )
+
+            self.write_stdin ( "\n" )
+            self.close_stdin()
+
+            queueName = self.getCommandLineParameter("queue")
+            #if len(sys.argv)>4:
+            #    if sys.argv[4]!="-":
+            #        queueName = sys.argv[4]
+
+            if self.jobManager == "SGE":
+                nSubJobs = self.getCommandLineParameter("nproc");
+                if not nSubJobs:
+                    nSubJobs = "0"
+                #if len(sys.argv)>5:
+                #    nSubJobs = sys.argv[5]
+            else:
+                nSubJobs = "4";
+
+            meta = {}
+            meta["jobId"]         = self.job_id
+            meta["stageNo"]       = stageNo
+            meta["sge_q"]         = queueName
+            meta["sge_tc"]        = nSubJobs
+            meta["summaryTabId"]  = self.report_page_id()
+            meta["summaryTabRow"] = self.rvrow
+            meta["navTreeId"]     = self.navTreeId
+            meta["outputDir"]     = self.outputDir()
+            meta["outputName"]    = "ccp4go"
+
+            self.storeReportDocument ( json.dumps(meta) )
+
+            ccp4go_path = os.path.normpath ( os.path.join (
+                                os.path.dirname(os.path.abspath(__file__)),
+                                "../apps/ccp4go/ccp4go.py" ) )
+            cmd = [ ccp4go_path,
+                    "--job-manager"   ,self.jobManager,
+                    "--rdir","report" ,
+                    "--rvapi-document",self.reportDocumentName()
+                  ]
+
+            sec1 = self.task.parameters.sec1.contains
+            if self.getParameter(sec1.SIMBAD12_CBX)=="False":
+                cmd += ["--no-simbad12"]
+            if self.getParameter(sec1.MORDA_CBX)=="False":
+                cmd += ["--no-morda"]
+            if self.getParameter(sec1.CRANK2_CBX)=="False":
+                cmd += ["--no-crank2"]
+            if self.getParameter(sec1.FITLIGANDS_CBX)=="False":
+                cmd += ["--no-fitligands"]
+
+            pyrvapi.rvapi_keep_polling ( True )
+            if sys.platform.startswith("win"):
+                self.runApp ( "ccp4-python.bat",cmd,logType="Main" )
+            else:
+                self.runApp ( "ccp4-python",cmd,logType="Main" )
+            pyrvapi.rvapi_keep_polling ( False )
+            self.restoreReportDocument()
+            self.addCitations ( ['ccp4go'] )
+            self.rvrow += 100
+
+            # check on resulting metadata file
+            ccp4go_meta_file = "ccp4go.meta.json"
+            ccp4go_meta = None
+            try:
+                with open(ccp4go_meta_file) as json_data:
+                    ccp4go_meta = json.load(json_data)
+            except:
+                pass
+
+            if ccp4go_meta:
+
+                self.rvrow = ccp4go_meta["report_row"]
+
+                resorder   = ccp4go_meta["resorder"]
+                results    = ccp4go_meta["results"]
+                for i in range(len(resorder)):
+                    d = resorder[i]  # stage's result directory
+                    if d in results:
+                        self.makeOutputData ( d,results[d] )
+                        have_results = True
+                        self.flush()
+
+                #self.putMessage ( "<hr/><i><b>Note:</b> In order to further " +
+                #            "process the results, define ASU Content using " +
+                #            "structures generated by ImportStructure." )
+
+                if "programs_used" in ccp4go_meta:
+                    self.addCitations ( ccp4go_meta["programs_used"] )
+
+            else:
+                self.putTitle ( "Results not found (structure not solved)" )
+
+
+        # close execution logs and quit
+        self.success ( have_results )
+        return
+        """
+
+
+    """
     def import_page_id    (self):  return "ccp4go_import_page_id"
     def import_log_page_id(self):  return "ccp4go_import_log_page_id"
     def import_err_page_id(self):  return "ccp4go_import_err_page_id"
@@ -109,8 +366,8 @@ class CCP4go(import_task.Import):
                     "/".join(["..",self.import_stderr_path()+"?capsize"]),
                                                 True,self.import_err_page_id() )
 
-        self.putTitle ( "CCP4go Automated Structure Solver: Data Import" )
-        super ( CCP4go,self ).import_all()
+        self.putTitle ( "ImportStructure Automated Structure Solver: Data Import" )
+        super ( ImportStructure,self ).import_all()
 
         # redirect everything back to report page and original standard streams
         self.file_stdout.close()
@@ -122,7 +379,7 @@ class CCP4go(import_task.Import):
             pyrvapi.rvapi_set_tab_proxy ( self.navTreeId,"" )
 
         # -------------------------------------------------------------------
-        # fetch data for CCP4go pipeline
+        # fetch data for ImportStructure pipeline
 
         self.unm     = None   # unmerged dataset
         self.hkl     = None   # selected merged dataset
@@ -283,7 +540,7 @@ class CCP4go(import_task.Import):
             self.resetFileImport()
             self.addFileImport ( meta["mtz"],import_filetype.ftype_MTZMerged() )
             #self.files_all = [meta["mtz"]]
-            import_merged.run ( self,"Import merged HKL",importPhases="" )
+            import_merged.run ( self,"Import merged HKL",importPhases=False )
             # get reference to imported structure
             self.hkl = self.outputDataBox.data["DataHKL"][0]
 
@@ -380,7 +637,7 @@ class CCP4go(import_task.Import):
                         self.addFileImport ( meta["hkl"],import_filetype.ftype_MTZMerged() )
                         #self.files_all = [meta["hkl"]]
                         import_merged.run ( self,"Import merged HKL reindexed in " +
-                                                 meta["spg"],importPhases="" )
+                                                 meta["spg"],importPhases=False )
                         self.rvrow += 10
                         # get reference to imported structure
                         hkl0 = self.outputDataBox.data["DataHKL"]
@@ -417,19 +674,6 @@ class CCP4go(import_task.Import):
                               meta["name"] + " structure and electron density",
                               structure )
 
-                    """
-                    if resdir.lower().startswith("simbad"):
-                        self.import_dir      = resdir
-                        self.import_table_id = None
-                        asudef.revisionFromStructure ( self,hkl_sol,structure,
-                                    "simbad_"+meta["pdbcode"],useSequences=self.seq,
-                                    make_revision=(self.seq==None) )
-                        self.id_modifier += 1
-                        if not self.seq:  # sequence was imported in asudef
-                            self.seq = self.outputDataBox.data["DataSequence"]
-
-                    else:
-                    """
                     outFName = self.outputFName
                     if resdir == "dimple_mr":
                         self.outputFName += "-dimple-MR"
@@ -450,16 +694,14 @@ class CCP4go(import_task.Import):
                     self.revisionSerialNo += 1
 
 
-                    """
-                    self.import_dir      = resdir
-                    self.import_table_id = None
-                    asudef.revisionFromStructure ( self,hkl_sol,structure,
-                                "dimple",useSequences=self.seq,
-                                make_revision=(self.seq==None) )
-                    self.id_modifier += 1
-                    if not self.seq:  # sequence was imported in asudef
-                        self.seq = self.outputDataBox.data["DataSequence"]
-                    """
+                    #self.import_dir      = resdir
+                    #self.import_table_id = None
+                    #asudef.revisionFromStructure ( self,hkl_sol,structure,
+                    #            "dimple",useSequences=self.seq,
+                    #            make_revision=(self.seq==None) )
+                    #self.id_modifier += 1
+                    #if not self.seq:  # sequence was imported in asudef
+                    #    self.seq = self.outputDataBox.data["DataSequence"]
 
                 else:
                     self.putMessage ( "Structure Data cannot be formed " +
@@ -469,184 +711,21 @@ class CCP4go(import_task.Import):
 
         self.putMessage ( "&nbsp;" ) # just vertical spacer
 
-        """
-        {"results":
-           { "simbad12_results":
-              {"mtz": "output/simbad12_results/simbad.mtz",
-               "map": "output/simbad12_results/simbad.map",
-               "name": "Simbad-LC",
-               "nResults": 1,
-               "rfree": 0.347,
-               "dmap": "output/simbad12_results/simbad_dmap.map",
-               "rfactor": 0.3792,
-               "pdb": "output/simbad12_results/simbad.pdb",
-               "columns": {"PHI": "PHIC_ALL_LS", "SIGF": "SIGF", "DELFWT": "DELFWT", "F": "F", "FREE": "FreeR_flag", "FOM": "FOM", "PHDELWT": "PHDELWT"}, "row": 5}, "buccaneer": {"mtz": "output/buccaneer/buccaneer.mtz", "map": "output/buccaneer/buccaneer.map", "name": "Buccanneer", "nResults": 1, "rfree": 0.3671, "dmap": "output/buccaneer/buccaneer_dmap.map", "rfactor": 0.3151, "pdb": "output/buccaneer/buccaneer.pdb", "columns": {"PHI": "PHIC_ALL_LS", "SIGF": "SIGF", "DELFWT": "DELFWT", "F": "F", "FREE": "FreeR_flag", "FOM": "FOM", "PHDELWT": "PHDELWT"},
-               "row": 8
-              }
-            },
-          "retcode": "solved",
-          "report_row": 9
-        }
-        """
-
         self.resetReportPage()
         return
 
-
-    # ------------------------------------------------------------------------
-
-    def run(self):
-
-        fileDir = self.outputDir()
-        stageNo = 1
-        #self.stdoutln ( str(self.task.input_dtypes) )
-        #if len(self.task.input_dtypes)>1:
-        if hasattr(self.input_data.data,"hkldata"):
-            self.stdoutln ( " hkldata found" )
-        if hasattr(self.input_data.data,"hkldata"):
-            fileDir = self.inputDir()
-            stageNo = 0
-            self.prepareData()  #  pre-imported data provided
-        else:
-            self.importData()   #  data was uploaded
-        #self.putMessage ( "&nbsp;" )
-        self.flush()
-
-        # run ccp4go pipeline
-
-        have_results = False
-
-        if self.unm or self.hkl:
-
-            # write input file
-            self.open_stdin()
-            if self.unm:
-                self.write_stdin ( "HKLIN " + self.unm.getUnmergedFilePath(fileDir) )
-            elif self.hkl:
-                self.write_stdin ( "HKLIN " + self.hkl.getHKLFilePath(fileDir) )
-            if self.seq:  # takes just a single sequence for now -- to be changed
-                dtype_sequence.writeMultiSeqFile1 ( self.file_seq_path(),self.seq,fileDir )
-                self.write_stdin ( "\nSEQIN " + self.file_seq_path() )
-            if self.xyz:
-                self.write_stdin ( "\nXYZIN " + self.xyz.getXYZFilePath(fileDir) )
-            #if self.task.ha_type:
-            #    self.write_stdin ( "\nHATOMS " + self.task.ha_type )
-            if self.ha_type:
-                self.write_stdin ( "\nHATOMS " + self.ha_type )
-            for i in range(len(self.task.ligands)):
-                if self.task.ligands[i].source!='none':
-                    self.write_stdin ( "\nLIGAND " + self.task.ligands[i].code )
-                    if self.task.ligands[i].source=='smiles':
-                        self.write_stdin ( " " + self.task.ligands[i].smiles )
-            for i in range(len(self.ligands)):
-                self.write_stdin ( "\nLIGIN " + self.ligands[i].code + ";" +\
-                                   self.ligands[i].getLibFilePath(fileDir) + ";" +\
-                                   self.ligands[i].getXYZFilePath(fileDir) )
-
-            self.write_stdin ( "\n" )
-            self.close_stdin()
-
-            queueName = self.getCommandLineParameter("queue")
-            #if len(sys.argv)>4:
-            #    if sys.argv[4]!="-":
-            #        queueName = sys.argv[4]
-
-            if self.jobManager == "SGE":
-                nSubJobs = self.getCommandLineParameter("nproc");
-                if not nSubJobs:
-                    nSubJobs = "0"
-                #if len(sys.argv)>5:
-                #    nSubJobs = sys.argv[5]
-            else:
-                nSubJobs = "4";
-
-            meta = {}
-            meta["jobId"]         = self.job_id
-            meta["stageNo"]       = stageNo
-            meta["sge_q"]         = queueName
-            meta["sge_tc"]        = nSubJobs
-            meta["summaryTabId"]  = self.report_page_id()
-            meta["summaryTabRow"] = self.rvrow
-            meta["navTreeId"]     = self.navTreeId
-            meta["outputDir"]     = self.outputDir()
-            meta["outputName"]    = "ccp4go"
-
-            self.storeReportDocument ( json.dumps(meta) )
-
-            ccp4go_path = os.path.normpath ( os.path.join (
-                                os.path.dirname(os.path.abspath(__file__)),
-                                "../apps/ccp4go/ccp4go.py" ) )
-            cmd = [ ccp4go_path,
-                    "--job-manager"   ,self.jobManager,
-                    "--rdir","report" ,
-                    "--rvapi-document",self.reportDocumentName()
-                  ]
-
-            sec1 = self.task.parameters.sec1.contains
-            if self.getParameter(sec1.SIMBAD12_CBX)=="False":
-                cmd += ["--no-simbad12"]
-            if self.getParameter(sec1.MORDA_CBX)=="False":
-                cmd += ["--no-morda"]
-            if self.getParameter(sec1.CRANK2_CBX)=="False":
-                cmd += ["--no-crank2"]
-            if self.getParameter(sec1.FITLIGANDS_CBX)=="False":
-                cmd += ["--no-fitligands"]
-
-            pyrvapi.rvapi_keep_polling ( True )
-            if sys.platform.startswith("win"):
-                self.runApp ( "ccp4-python.bat",cmd,logType="Main" )
-            else:
-                self.runApp ( "ccp4-python",cmd,logType="Main" )
-            pyrvapi.rvapi_keep_polling ( False )
-            self.restoreReportDocument()
-            self.addCitations ( ['ccp4go'] )
-            self.rvrow += 100
-
-            # check on resulting metadata file
-            ccp4go_meta_file = "ccp4go.meta.json"
-            ccp4go_meta = None
-            try:
-                with open(ccp4go_meta_file) as json_data:
-                    ccp4go_meta = json.load(json_data)
-            except:
-                pass
-
-            if ccp4go_meta:
-
-                self.rvrow = ccp4go_meta["report_row"]
-
-                resorder   = ccp4go_meta["resorder"]
-                results    = ccp4go_meta["results"]
-                for i in range(len(resorder)):
-                    d = resorder[i]  # stage's result directory
-                    if d in results:
-                        self.makeOutputData ( d,results[d] )
-                        have_results = True
-                        self.flush()
-
-                #self.putMessage ( "<hr/><i><b>Note:</b> In order to further " +
-                #            "process the results, define ASU Content using " +
-                #            "structures generated by CCP4go." )
-
-                if "programs_used" in ccp4go_meta:
-                    self.addCitations ( ccp4go_meta["programs_used"] )
-
-            else:
-                self.putTitle ( "Results not found (structure not solved)" )
-
-
-        # close execution logs and quit
-        self.success ( have_results )
-        return
+    """
 
 
 # ============================================================================
 
 if __name__ == "__main__":
 
-    drv = CCP4go ( "CCP4go Automated Structure Solver",os.path.basename(__file__),
-                  { "report_page" : { "show" : True, "name" : "Report" },
-                    "nav_tree"    : { "id"   : "nav_tree_id", "name" : "Workflow" }
-                  })
+    drv = ImportStructure ( "",os.path.basename(__file__) )
+
+    #drv = ImportStructure ( "ImportStructure Automated Structure Solver",os.path.basename(__file__),
+    #              { "report_page" : { "show" : True, "name" : "Report" },
+    #                "nav_tree"    : { "id"   : "nav_tree_id", "name" : "Workflow" }
+    #              })
 
     drv.start()

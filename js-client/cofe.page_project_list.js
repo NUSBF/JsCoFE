@@ -112,6 +112,7 @@ function ProjectListPage ( sceneId )  {
     var ibx_grid  = new Grid      ( '' );
     var name_inp  = new InputText ( '' );
     var title_inp = new InputText ( '' );
+    /*
     name_inp. setStyle ( 'text',"^[A-Za-z0-9\\-\\._]+$",'project_001',
                          'Project ID should contain only latin ' +
                          'letters, numbers, undescores, dashes ' +
@@ -119,6 +120,9 @@ function ProjectListPage ( sceneId )  {
     title_inp.setStyle ( 'text','','Example project',
                          'Project Name is used to give a short description ' +
                          'to aid identification of the project' );
+    */
+    name_inp. setStyle ( 'text',"^[A-Za-z0-9\\-\\._]+$",'e.g., project_001','' );
+    title_inp.setStyle ( 'text','','Put a descriptive title here','' );
     name_inp .setFontItalic        ( true    );
     title_inp.setFontItalic        ( true    );
     name_inp .setWidth             ( '400pt' );
@@ -134,21 +138,25 @@ function ProjectListPage ( sceneId )  {
     ibx_grid .setVerticalAlignment ( 1,0,'middle' );
 
     inputBox.launch ( 'Add',function(){
-      var msg = '';
+      var msg = [];
 
       if (name_inp.getValue().length<=0)
-        msg += '<b>Project ID</b> must be provided.';
+        msg.push ( '<b>Project ID</b> must be provided.' );
       else if (name_inp.element.validity.patternMismatch)
-        msg += 'Project ID should contain only latin letters, numbers,\n ' +
-               'undescores, dashes and dots, and must start with a letter.';
+        msg.push ( '<b>Project ID</b> should contain only latin letters, ' +
+                   'numbers, undescores,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' +
+                   '&nbsp;&nbsp;&nbsp;&nbsp;dashes and dots, and must start ' +
+                   'with a letter.' );
 
       if (title_inp.getValue().length<=0)
-        msg += '<b>Project Name</b> must be provided.<p>';
+        msg.push ( '<b>Project Name</b> must be provided.<p>' );
 
-      if (msg)  {
+      if (msg.length>0)  {
         new MessageBox ( 'Incomplete data',
                  'New project cannot be created due to the following:<p>' +
-                  msg + '<p>Please provide all needful data and try again' );
+                  msg.join('<br>') +
+                  '<p>Please provide all needful data in correct format<br>' +
+                  'and try again' );
         return false;
       }
 
@@ -353,10 +361,10 @@ function ProjectListPage ( sceneId )  {
 
         // when list of projects is served from FE, shared record is removed
         // in case of owner's login
-        var joined = ['',''];
+        var joined = ['','',''];
         if ('owner' in pDesc)  {
           if (pDesc.owner.share.length>0)  {
-            joined = ['<i>','</i>'];
+            joined = ['<i>','</i>',"is not included in user\'s quota"];
             pName  = '<b>[<i>' + pDesc.owner.login  + '</i>]:</b>' + pName;
           } else if (('author' in pDesc.owner) && (pDesc.owner.author!=pDesc.owner.login))
             pName  = '<b>(<i>' + pDesc.owner.author + '</i>):</b>' + pName;
@@ -364,11 +372,15 @@ function ProjectListPage ( sceneId )  {
         trow.addCell ( pName  ).setNoWrap();
         trow.addCell ( pDesc.title ).insertWidget ( contextMenu,0 );
         if (pDesc.hasOwnProperty('disk_space'))
-              trow.addCell ( joined[0]+round(pDesc.disk_space,1)+joined[1] ).setNoWrap();
-        else  trow.addCell ( joined[0]+'-:-'+joined[1] ).setNoWrap();
+              trow.addCell ( joined[0]+round(pDesc.disk_space,1)+joined[1] )
+                  .setNoWrap().setTooltip(joined[2]);
+        else  trow.addCell ( joined[0]+'-:-'+joined[1] )
+                  .setNoWrap().setTooltip(joined[2]);
         if (pDesc.hasOwnProperty('cpu_time'))
-              trow.addCell ( joined[0]+round(pDesc.cpu_time,4)+joined[1] ).setNoWrap();
-        else  trow.addCell ( joined[0]+'-:-'+joined[1] ).setNoWrap();
+              trow.addCell ( joined[0]+round(pDesc.cpu_time,4)+joined[1] )
+                  .setNoWrap().setTooltip(joined[2]);
+        else  trow.addCell ( joined[0]+'-:-'+joined[1] )
+                  .setNoWrap().setTooltip(joined[2]);
         trow.addCell ( pDesc.dateCreated ).setNoWrap().setHorizontalAlignment('center');
         trow.addCell ( pDesc.dateLastUsed).setNoWrap().setHorizontalAlignment('center');
         //tablesort_tbl.addRow ( trow );

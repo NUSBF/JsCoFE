@@ -57,18 +57,24 @@ except Exception:
 
 class Import(basic.TaskDriver):
 
-    # ============================================================================
+    # ========================================================================
     # import driver
 
     # definition used in import_pdb
-    def getXMLFName  (self):  return "matthews.xml"
+    def getXMLFName (self):  return "matthews.xml"
 
-    def import_all(self):
+    def run_importers ( self ):
+        for importer in importers:
+            importer.run ( self )
+        return
 
-        # ============================================================================
+    def import_all ( self,summaryTitle="Import Summary" ):
+
+        # ====================================================================
         # start page construction: summary table
 
-        pyrvapi.rvapi_add_table ( self.import_summary_id(),"<font size='+1'>Import Summary</font>",
+        pyrvapi.rvapi_add_table ( self.import_summary_id(),
+                                  "<font size='+1'>" + summaryTitle + "</font>",
                                   self.report_page_id(),self.rvrow+1,0,1,1, 0 )
         pyrvapi.rvapi_set_table_style ( self.import_summary_id(),"table-blue","text-align:left;" )
         pyrvapi.rvapi_set_text ( "&nbsp;",self.report_page_id(),self.rvrow+2,0,1,1 )
@@ -80,7 +86,7 @@ class Import(basic.TaskDriver):
         pyrvapi.rvapi_put_horz_theader ( self.import_summary_id(),"Generated dataset(s)",
                                                           "List of generated datasets",2 )
 
-        # ============================================================================
+        # ====================================================================
         # get list of uploaded files
 
         #self.files_all = [f for f in os.listdir(self.importDir()) if os.path.isfile(os.path.join(self.importDir(),f))]
@@ -91,14 +97,19 @@ class Import(basic.TaskDriver):
             for fname in fileList:
                 self.addFileImport ( os.path.join(dName,fname),baseDirPath=self.importDir() )
 
-        # ============================================================================
+        # ====================================================================
         # do individual data type imports
 
         self.nImportedDocs = 0
-        for importer in importers:
-            importer.run(self)
+        self.run_importers()
 
-        # ============================================================================
+        #for importer in importers:
+        #    if importer is import_merged:
+        #        importer.run ( self,importPhases=importPhases )
+        #    else:
+        #        importer.run ( self )
+
+        # ====================================================================
         # do PDB imports
 
         # save unrecognised file list
@@ -131,7 +142,7 @@ class Import(basic.TaskDriver):
                            )
         #self.file_stdout.write ( str(pdb_list) + "\n" )
 
-        # ============================================================================
+        # ====================================================================
         # do sequence copy-paste imports
 
         # save unrecognised file list
@@ -144,7 +155,7 @@ class Import(basic.TaskDriver):
                 self.getParameter(self.task.parameters.SEQUENCE_TA) )
 
 
-        # ============================================================================
+        # ====================================================================
         # finish import
 
         if len(unrecognised_files)>0:

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    04.10.20   <--  Date of Last Modification.
+ *    17.12.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -121,7 +121,7 @@ UsageStats.prototype.registerJob = function ( job_class )  {
     var ts = this.tasks[job_class.title];
     ts.nuses++;
     var today = new Date();
-    ts.last_used = today.toLocaleDateString();
+    ts.last_used = today.toISOString().slice(0,10);
     if (job_class.state==task_t.job_code.failed)  {
       ts.nfails++;
       ts.last_failed = ts.last_used;

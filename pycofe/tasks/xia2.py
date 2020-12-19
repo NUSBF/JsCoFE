@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    16.09.20   <--  Date of Last Modification.
+#    18.12.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -192,7 +192,8 @@ class Xia2(basic.TaskDriver):
             os.rename ( os.path.join(resDir,mtzMergedName),newHKLFPath )
             self.addFileImport ( newHKLFPath,import_filetype.ftype_MTZMerged() )
             #self.files_all = [ newHKLFPath ]
-            hkl_imported = import_merged.run ( self,"Merged Reflection Dataset",importPhases=False )
+            hkl_imported = import_merged.run ( self,"Merged Reflection Dataset",
+                                                    importPhases="" )
 
             scaleDir = os.path.join(crystalName,"scale")
             aimless_xml_names = [fn for fn in os.listdir(scaleDir)
