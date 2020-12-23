@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    09.06.20   <--  Date of Last Modification.
+ *    22.12.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -543,10 +543,14 @@ if (!__template)  {
       return div;
     }
 
+    /*
     if ((this.state==job_code.new) || (this.state==job_code.running)) {
       div.header.setLabel ( ' ',2,0,1,1 );
       div.header.setLabel ( ' ',2,1,1,1 );
     } else
+      div.header.uname_inp.setValue ( this.uname.replace(/<(?:.|\n)*?>/gm, '') );
+    */
+    if ((this.state!=job_code.new) && (this.state!=job_code.running))
       div.header.uname_inp.setValue ( this.uname.replace(/<(?:.|\n)*?>/gm, '') );
 
     div.grid.setLabel ( '<h2>Input Data</h2>',0,0,1,4 ).setFontItalic(true).setNoWrap();

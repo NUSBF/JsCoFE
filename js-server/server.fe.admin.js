@@ -57,33 +57,50 @@ function getNCData ( ncInfo,callback_func )  {
   } else if (cfg.in_use)  {
 
     var nc_url = cfg.externalURL;
-    request({
-      uri     : cmd.nc_command.getNCInfo,
-      baseUrl : nc_url,
-      method  : 'POST',
-      body    : '',
-      json    : true
-    },function(error,response,body){
 
-      //console.log ( error );
-      //console.log ( response.statusCode );
-      //console.log ( JSON.stringify(response) );
-      //console.log ( JSON.stringify(body) );
+    try {  // request may crash at timeouts!
 
-      if ((!error) && (response.statusCode==200))  {
-        ncInfo.push ( body.data );
-      } else  {
-        var nci = {
-          'config'         : cfg,
-          'jobRegister'    : null,
-          'ccp4_version'   : 'unknown',
-          'jscofe_version' : cmd.appVersion()
-        };
-        ncInfo.push ( nci );
-      }
+      request({
+        uri     : cmd.nc_command.getNCInfo,
+        baseUrl : nc_url,
+        method  : 'POST',
+        body    : '',
+        json    : true,
+        timeout : 1000
+      },function(error,response,body){
+
+        //console.log ( error );
+        //console.log ( response.statusCode );
+        //console.log ( JSON.stringify(response) );
+        //console.log ( JSON.stringify(body) );
+
+        if ((!error) && (response.statusCode==200))  {
+          ncInfo.push ( body.data );
+        } else  {
+          var nci = {
+            'config'         : cfg,
+            'jobRegister'    : null,
+            'ccp4_version'   : 'unknown',
+            'jscofe_version' : cmd.appVersion()
+          };
+          ncInfo.push ( nci );
+        }
+        startNext();
+
+      });
+
+    } catch(err)  {
+
+      var nci = {
+        'config'         : cfg,
+        'jobRegister'    : null,
+        'ccp4_version'   : 'unknown',
+        'jscofe_version' : cmd.appVersion()
+      };
+      ncInfo.push ( nci );
       startNext();
 
-    });
+    }
 
   } else  {
 

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    26.03.20   <--  Date of Last Modification.
+ *    23.12.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -38,7 +38,7 @@ function TaskDeposition()  {
   //this.helpURL = './html/jscofe_task_deposition.html';
 
   this.input_dtypes = [{  // input data types
-      data_type : {'DataRevision':['xyz']}, // data type(s) and subtype(s)
+      data_type : {'DataRevision':['!xyz','!seq']}, // data type(s) and subtype(s)
       label     : 'Structure revision',     // label for input dialog
       inputId   : 'revision', // input Id for referencing input fields
       version   : 4,          // minimum data version allowed

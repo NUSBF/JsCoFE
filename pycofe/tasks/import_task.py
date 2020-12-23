@@ -68,11 +68,7 @@ class Import(basic.TaskDriver):
             importer.run ( self )
         return
 
-    def import_all ( self,summaryTitle="Import Summary" ):
-
-        # ====================================================================
-        # start page construction: summary table
-
+    def make_summary_table ( self,summaryTitle ):
         pyrvapi.rvapi_add_table ( self.import_summary_id(),
                                   "<font size='+1'>" + summaryTitle + "</font>",
                                   self.report_page_id(),self.rvrow+1,0,1,1, 0 )
@@ -85,6 +81,30 @@ class Import(basic.TaskDriver):
         pyrvapi.rvapi_put_horz_theader ( self.import_summary_id(),"Type","Dataset type",1 )
         pyrvapi.rvapi_put_horz_theader ( self.import_summary_id(),"Generated dataset(s)",
                                                           "List of generated datasets",2 )
+        return
+
+
+    def import_all ( self,summaryTitle="Import Summary" ):
+
+        # ====================================================================
+        # start page construction: summary table
+
+        self.make_summary_table ( summaryTitle )
+
+        """
+        pyrvapi.rvapi_add_table ( self.import_summary_id(),
+                                  "<font size='+1'>" + summaryTitle + "</font>",
+                                  self.report_page_id(),self.rvrow+1,0,1,1, 0 )
+        pyrvapi.rvapi_set_table_style ( self.import_summary_id(),"table-blue","text-align:left;" )
+        pyrvapi.rvapi_set_text ( "&nbsp;",self.report_page_id(),self.rvrow+2,0,1,1 )
+        self.rvrow += 3
+
+        pyrvapi.rvapi_put_horz_theader ( self.import_summary_id(),"Imported file",
+                                                          "Name of imported file",0 )
+        pyrvapi.rvapi_put_horz_theader ( self.import_summary_id(),"Type","Dataset type",1 )
+        pyrvapi.rvapi_put_horz_theader ( self.import_summary_id(),"Generated dataset(s)",
+                                                          "List of generated datasets",2 )
+        """
 
         # ====================================================================
         # get list of uploaded files

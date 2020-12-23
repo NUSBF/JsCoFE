@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    04.10.20   <--  Date of Last Modification.
+#    23.12.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -122,9 +122,9 @@ def makeHKLTable ( body,tableId,holderId,original_data,new_data,
 
 def run ( body,   # body is reference to the main Import class
           sectionTitle="Reflection datasets created",
-          sectionOpen=False,   # to keep result section closed if several datasets
-          importPhases="exp",  # "exp,ref,no-hkl", all optional
-          freeRflag=True       # will be run if necessary
+          sectionOpen=False,        # to keep result section closed if several datasets
+          importPhases="phases-ds", # "","phases-ds","phases-split" all optional
+          freeRflag=True            # will be run if necessary
         ):
 
     hkl_imported = []
@@ -448,42 +448,49 @@ def run ( body,   # body is reference to the main Import class
                     k += 1
                     pyrvapi.rvapi_flush()
 
-                    if (("exp" in importPhases) or ("ref" in importPhases)) and last_imported:
+                    if importPhases and last_imported and (ds.PhiFOM or ds.ABCD or ds.FwPhi):
                         cou0 = 7
                         dset = last_imported.dataset
                         mtzin = os.path.join(body.outputDir(),dset.MTZ)
                         f_sigf = dset.Fmean.value, dset.Fmean.sigma
                         phaseBlocks = []
                         cou = cou0
-                        if ds.PhiFOM:
-                            phaseBlocks.extend(ds.PhiFOM)
-                        if ds.ABCD:
-                            phaseBlocks.extend(ds.ABCD)
-                        if ("ref" in importPhases) and ds.FwPhi:
-                            #phaseBlocks.extend(ds.FwPhi)
+                        if importPhases=="phases-ds":
                             # simply make structure with all relevant labels
-                            if (("FWT","PHWT") in ds.FwPhi):
-                                structure = body.registerStructure1 ( None,None,
-                                            p_mtzout,None,None,None,
-                                            os.path.splitext(f_orig)[0] + "-maps",
-                                            leadKey=1 )
-                                if structure:
-                                    structure.addPhasesSubtype ()
-                                    structure.addDataAssociation( last_imported.dataId )
-                                    structure.setImportMergedData ( ds )
-                                    pyrvapi.rvapi_set_text (
-                                        "<h2>Associated ED Maps</h2>",
-                                        subSecId,cou,0,1,1 )
-                                    cou += 2
-                                    body.putStructureWidget1 ( subSecId,
-                                        body.getWidgetId("ph_data_"+str(body.dataSerialNo)),
-                                        "Electron density", structure,
-                                        -1, cou, 1 )
-                                    if body.summary_row_0<0:
-                                        body.putSummaryLine ( body.get_cloud_import_path(f_orig),
-                                                              "MAPS",structure.dname )
-                                    else:
-                                        body.addSummaryLine ( "MAPS",structure.dname )
+                            body.stdoutln ( " *** ABCD   " + str(ds.ABCD)   )
+                            body.stdoutln ( " *** PhiFOM " + str(ds.PhiFOM) )
+                            body.stdoutln ( " *** FwPhi  " + str(ds.FwPhi)  )
+                            leadKey = 2
+                            if ds.FwPhi and (("FWT","PHWT") in ds.FwPhi):
+                                leadKey = 1
+                            structure = body.registerStructure1 ( None,None,
+                                        p_mtzout,None,None,None,
+                                        os.path.splitext(f_orig)[0] + "-maps",
+                                        leadKey=leadKey )
+                            if structure:
+                                structure.addPhasesSubtype ()
+                                structure.addDataAssociation ( last_imported.dataId )
+                                structure.setImportMergedData ( ds )
+                                pyrvapi.rvapi_set_text (
+                                    "<h2>Associated ED Maps</h2>",
+                                    subSecId,cou,0,1,1 )
+                                cou += 2
+                                body.putStructureWidget1 ( subSecId,
+                                    body.getWidgetId("ph_data_"+str(body.dataSerialNo)),
+                                    "Electron density", structure,
+                                    -1, cou, 1 )
+                                if body.summary_row_0<0:
+                                    body.putSummaryLine ( body.get_cloud_import_path(f_orig),
+                                                          "MAPS",structure.dname )
+                                else:
+                                    body.addSummaryLine ( "MAPS",structure.dname )
+                        elif importPhases=="phases-split":
+                            if ds.PhiFOM:
+                                phaseBlocks.extend(ds.PhiFOM)
+                            if ds.ABCD:
+                                phaseBlocks.extend(ds.ABCD)
+                            if ds.FwPhi:
+                                phaseBlocks.extend(ds.FwPhi)
 
                         for phBlock in phaseBlocks:
                             body.stdoutln ( "  phase block " + str(phBlock) )

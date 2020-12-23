@@ -50,6 +50,7 @@ def run ( body ):  # body is reference to the main Import class
     body.file_stdout.write ( "%%%%%  IMPORT OF LIGAND COORDINATES AND RESTRAINTS\n" )
     body.file_stdout.write ( "%"*80 + "\n" )
 
+    lib_imported = []
     ligSecId = None
     libSecId = None
     ligrow   = 0
@@ -128,6 +129,7 @@ def run ( body ):  # body is reference to the main Import class
                         body.putLigandWidget1 ( subSecId,"ligand_btn_","Ligand structure",
                                                 ligand,-1,ligrow,1 )
                         body.putSummaryLine ( body.get_cloud_import_path(f),"LIGAND",ligand.dname )
+                        lib_imported.append ( ligand )
                         ligrow += 2
 
                     else:
@@ -155,6 +157,7 @@ def run ( body ):  # body is reference to the main Import class
                     librow += 1
                 body.putLibraryWidget1 ( subSecId,"Ligand library",library,librow,1 )
                 body.putSummaryLine ( body.get_cloud_import_path(f),"LIBRARY",library.dname )
+                lib_imported.append ( library )
                 librow += 2
             else:
                 body.putSummaryLine_red ( body.get_cloud_import_path(f),"UNKNOWN",
@@ -167,4 +170,4 @@ def run ( body ):  # body is reference to the main Import class
     body.rvrow += 1
     pyrvapi.rvapi_flush()
 
-    return
+    return lib_imported
