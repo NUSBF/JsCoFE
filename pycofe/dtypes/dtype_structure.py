@@ -107,11 +107,11 @@ class DType(dtype_xyz.DType):
         #if dataset.FREE:
         #    self.FreeR_flag = dataset.FREE
 
-        if dataset.PhiFOM and len(dataset.PhiFOM) == 1:
-            self.PHI, self.FOM = dataset.PhiFOM[0]
+        if dataset.PhiFOM and len(dataset.PhiFOM) > 0:
+            self.PHI, self.FOM = dataset.PhiFOM[-1]
 
-        if dataset.ABCD and len(dataset.ABCD) == 1:
-            self.HLA, self.HLB, self.HLC, self.HLD = dataset.ABCD[0]
+        if dataset.ABCD and len(dataset.ABCD) > 0:
+            self.HLA, self.HLB, self.HLC, self.HLD = dataset.ABCD[-1]
 
         if dataset.FwPhi and len(dataset.FwPhi) == 1:
           self.FWT, self.PHWT = dataset.FwPhi[0]

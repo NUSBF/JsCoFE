@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    19.11.20   <--  Date of Last Modification.
+ *    23.12.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -40,7 +40,7 @@ function TaskCCP4Build()  {
   //this.helpURL = './html/jscofe_task_ccp4build.html';
 
   this.input_dtypes = [{      // input data types
-      data_type   : {'DataRevision':['!protein','!asu','!phases']}, // data type(s) and subtype(s)
+      data_type   : {'DataRevision':['!protein','!seq','!phases']}, // data type(s) and subtype(s)
       label       : 'Structure revision',   // label for input dialog
       inputId     : 'revision',   // input Id for referencing input fields
       customInput : 'ccp4build',  // lay custom fields below the dropdown

@@ -175,7 +175,6 @@ class Lorestr(basic.TaskDriver):
                     }
                     verdict_lorestr.putVerdictWidget ( self,verdict_meta,verdict_row )
 
-
         else:
             self.putTitle ( "No Output Generated" )
 

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    16.12.20   <--  Date of Last Modification.
+ *    22.12.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -21,52 +21,60 @@
 
 
 var __template = null;
+var __cmd      = null;
 
-if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
+if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
   __template = require ( './common.tasks.template' );
+  __cmd      = require ( '../common.commands' );
+}
 
 
 // ===========================================================================
 
-function TaskImportStructure()  {
+function TaskMigrate()  {
 
-  if (__template)  __template.TaskTemplate.call ( this );
-             else  TaskTemplate.call ( this );
+  if (__template)  {
+    __template.TaskTemplate.call ( this );
+    this.name  = 'migrate to ' + __cmd.appName().toLowerCase();
+    this.title = 'Migrate to ' + __cmd.appName();
+  } else  {
+    TaskTemplate.call ( this );
+    this.name  = 'migrate to ' + appName().toLowerCase();
+    this.title = 'Migrate to ' + appName();
+  }
 
-  this._type     = 'TaskImportStructure';
-  this.name      = 'import structure';
-  this.setOName ( 'import_structure' );  // default output file name template
-  this.title     = 'Import Structure';
+  this._type = 'TaskMigrate';
+  this.setOName ( 'migrated' );  // default output file name template
+  //this.oname     = '*';   // asterisk here means do not use
   this.fasttrack = true;  // enforces immediate execution
 
   this.file_hkl  = ''; // name of merged mtz file with reflection dataset
   this.file_mtz  = ''; // name of "refmac" mtz with reflections and density maps
   this.file_xyz  = ''; // name of file with atomic coordinates
   this.file_lib  = ''; // name of file with ligand descriptions
-  //this.file_mod     = {'rename':{},'annotation':[]}; // file modification and annotation
 
   this.upload_files = [];
 
 }
 
 if (__template)
-      TaskImportStructure.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskImportStructure.prototype = Object.create ( TaskTemplate.prototype );
-TaskImportStructure.prototype.constructor = TaskImportStructure;
+      TaskMigrate.prototype = Object.create ( __template.TaskTemplate.prototype );
+else  TaskMigrate.prototype = Object.create ( TaskTemplate.prototype );
+TaskMigrate.prototype.constructor = TaskMigrate;
 
 
 // ===========================================================================
 
-TaskImportStructure.prototype.icon = function()  { return 'task_importstructure'; }
+TaskMigrate.prototype.icon = function()  { return 'task_migrate'; }
 
 // task.platforms() identifies suitable platforms:
 //   'W"  : Windows
 //   'L'  : Linux
 //   'M'  : Mac
 //   'U'  : Unix ( = Linux + Mac)
-//TaskImportStructure.prototype.platforms = function()  { return 'LMU'; }  // UNIX only
+//TaskMigrate.prototype.platforms = function()  { return 'LMU'; }  // UNIX only
 
-TaskImportStructure.prototype.currentVersion = function()  {
+TaskMigrate.prototype.currentVersion = function()  {
   var version = 0;
   if (__template)
         return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );
@@ -78,12 +86,12 @@ if (!__template)  {
   // for client side
 
   // hotButtons return list of buttons added in JobDialog's toolBar.
-  TaskImportStructure.prototype.hotButtons = function() {
+  TaskMigrate.prototype.hotButtons = function() {
     return [CootMBHotButton(),RefmacHotButton()];
   }
 
 
-  TaskImportStructure.prototype.makeInputPanel = function ( dataBox )  {
+  TaskMigrate.prototype.makeInputPanel = function ( dataBox )  {
   // makes input panel for Import task; dataBox is not used as import task
   // does not have any input data from the project
   var nSeqInputs = 1;
@@ -92,10 +100,14 @@ if (!__template)  {
 
     this.setInputDataFields ( div.grid,0,dataBox,this );
 
+    /*
     if ((this.state==job_code.new) || (this.state==job_code.running)) {
       div.header.setLabel ( ' ',2,0,1,1 );
       div.header.setLabel ( ' ',2,1,1,1 );
     } else
+      div.header.uname_inp.setValue ( this.uname.replace(/<(?:.|\n)*?>/gm, '') );
+    */
+    if ((this.state!=job_code.new) && (this.state!=job_code.running))
       div.header.uname_inp.setValue ( this.uname.replace(/<(?:.|\n)*?>/gm, '') );
 
     div.customData = {};
@@ -186,7 +198,7 @@ if (!__template)  {
   }
 
   /*
-  TaskImportStructure.prototype.disableInputWidgets = function ( widget,disable_bool ) {
+  TaskMigrate.prototype.disableInputWidgets = function ( widget,disable_bool ) {
     TaskTemplate.prototype.disableInputWidgets.call ( this,widget,disable_bool );
     if (widget.hasOwnProperty('upload'))  {
       widget.upload.button.setDisabled ( disable_bool );
@@ -197,7 +209,7 @@ if (!__template)  {
   */
 
   // reserved function name
-  TaskImportStructure.prototype.collectInput = function ( inputPanel )  {
+  TaskMigrate.prototype.collectInput = function ( inputPanel )  {
     // collects data from input widgets, created in makeInputPanel() and
     // stores it in internal fields
     var msg = '';  // Ok if stays empty
@@ -219,7 +231,7 @@ if (!__template)  {
   //  This function is called when task is finally sent to FE to run. Should
   // execute function given as argument, or issue an error message if run
   // should not be done.
-  TaskImportStructure.prototype.doRun = function ( inputPanel,run_func )  {
+  TaskMigrate.prototype.doRun = function ( inputPanel,run_func )  {
   var files = [];
   var file_hkl = inputPanel.select_hkl['fsel'].getFiles();
   var file_mtz = inputPanel.select_mtz['fsel'].getFiles();
@@ -262,7 +274,7 @@ if (!__template)  {
   /*
   // This function is called at cloning jobs and should do copying of all
   // custom class fields not found in the Template class
-  TaskImportStructure.prototype.customDataClone = function ( task )  {
+  TaskMigrate.prototype.customDataClone = function ( task )  {
     //this.ha_type = task.ha_type;
     this.ligands = [];
     for (var i=0;i<task.ligands.length;i++)
@@ -273,17 +285,17 @@ if (!__template)  {
   */
 
   // reserved function name
-  TaskImportStructure.prototype.runButtonName = function()  { return 'Import'; }
+  TaskMigrate.prototype.runButtonName = function()  { return 'Import'; }
 
 } else  {
   // for server side
 
   var conf = require('../../js-server/server.configuration');
 
-  TaskImportStructure.prototype.getCommandLine = function ( jobManager,jobDir )  {
-    return [conf.pythonName(), '-m', 'pycofe.tasks.import_structure', jobManager, jobDir, this.id];
+  TaskMigrate.prototype.getCommandLine = function ( jobManager,jobDir )  {
+    return [conf.pythonName(), '-m', 'pycofe.tasks.migrate', jobManager, jobDir, this.id];
   }
 
-  module.exports.TaskImportStructure = TaskImportStructure;
+  module.exports.TaskMigrate = TaskMigrate;
 
 }

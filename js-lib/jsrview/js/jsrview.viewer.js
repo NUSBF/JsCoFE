@@ -445,8 +445,16 @@ function startViewHKL ( title,mtz_uri,window_instance )  {
 
   //var doc = window.parent.document;
   //var jq  = window.parent.$;
-  var doc = window_instance.document;
-  var jq  = window_instance.$;
+  //var doc = window_instance.document;
+  //var jq  = window_instance.$;
+
+  var doc = window.parent.document;
+  var jq  = window.parent.$;
+
+  if (!jq)  {
+    doc = window.document;
+    jq  = window.$;
+  }
 
   var dialog = doc.createElement ( 'div' );
   $(dialog).css({

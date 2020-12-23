@@ -24,7 +24,6 @@ import sys
 from  pycofe.dtypes  import dtype_template
 from  pycofe.proc    import xyzmeta
 
-
 # ============================================================================
 
 def dtype(): return "DataXYZ"  # must coincide with data definitions in JS

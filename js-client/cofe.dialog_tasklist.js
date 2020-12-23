@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    16.12.20   <--  Date of Last Modification.
+ *    20.12.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -250,7 +250,6 @@ var row      = 0;
 
   if (__user_role==role_code.developer)
     this.makeSection ( 'Tasks in Development',[
-      new TaskImportStructure(),
       new TaskDocDev       (),
       //new TaskSheetbend    (),  // excluded also from the bootstrap html
       new TaskJLigand      (),
@@ -262,7 +261,8 @@ var row      = 0;
   var data_import_tasks = [
     new TaskImport        (),
     new TaskImportSeqCP   (),
-    new TaskImportPDB     ()
+    new TaskImportPDB     (),
+    new TaskMigrate       ()
     //new TaskFacilityImport()
   ];
 

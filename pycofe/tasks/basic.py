@@ -1462,9 +1462,9 @@ class TaskDriver(object):
                 "alert('This function is not supported in detached reports');",
                 False,gridId, row,0,1,1 )
         pyrvapi.rvapi_set_text ( "<div style='vertical-align:sub;font-size:16px;white-space:nowrap;'><b><i>" +\
-                                 message + "</i></b></div>",gridId, row,1,1,1 )
+                                 message + "</i></b><sup>&nbsp;</sup></div>",gridId, row,1,1,1 )
         pyrvapi.rvapi_set_text ( "<div style='vertical-align:sub;font-size:16px;white-space:nowrap;'>\"" +\
-                                 revision.dname + "\"</div>", gridId, row,2,1,1 )
+                                 revision.dname + "\"<sup>&nbsp;</sup></div>", gridId, row,2,1,1 )
         return
 
     def hotHelpLink ( self,title,helpFName,tooltip="what is this?",chapter="html-userguide" ):

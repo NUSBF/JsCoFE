@@ -175,6 +175,7 @@ if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
       case 'rna'          : return 'RNA sequence(s)';
       case 'dna'          : return 'DNA sequence(s)';
       case 'xyz'          : return 'macromolecular model(s)';
+      case 'seq'          : return 'macromolecular sequence(s)';
       case 'substructure' : return 'heavy atom substructure';
       case 'phases'       : return 'phases';
       default : ;

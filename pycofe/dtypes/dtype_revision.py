@@ -200,10 +200,10 @@ class DType(dtype_template.DType):
         return
 
     def setASUData ( self,seq,nRes,molWeight,dataKey,mc1,sol1,prb1 ):
-        self.ASU.seq        = seq     # list of sequences, may be empty []?
+        self.ASU.seq = seq     # list of sequences, may be empty []?
         self.addSubtype ( dtype_template.subtypeASU() )
         if len(seq)>0:
-            self.addSubtype ( dtype_template.subtypeSequence() )
+                self.addSubtype ( dtype_template.subtypeSequence() )
         for i in range(len(self.ASU.seq)):
             self.ASU.seq[i].nfind = self.ASU.seq[i].ncopies
             self.addSubtypes ( seq[i].subtype )
