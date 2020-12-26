@@ -489,8 +489,23 @@ function ProjectPage ( sceneId )  {
     });
 
     if ((jobTree.root_nodes.length==1) &&
-        (jobTree.root_nodes[0].children.length<=0))
-      addJob();
+        (jobTree.root_nodes[0].children.length<=0))  {
+      // enter empty project: first task to run or choose
+      switch (jobTree.projectData.desc.startmode)  {
+        case start_mode.auto    :
+                jobTree.addTask ( new TaskCCP4go(),false,false,self,function(){
+                   del_btn.setDisabled ( false );
+                });
+              break;
+        case start_mode.migrate :
+                jobTree.addTask ( new TaskMigrate(),false,false,self,function(){
+                   del_btn.setDisabled ( false );
+                });
+              break;
+        case start_mode.expert  :
+        default : addJob();
+      }
+    }
 
     self.updateUserRationDisplay ( jobTree.projectData.desc );
 

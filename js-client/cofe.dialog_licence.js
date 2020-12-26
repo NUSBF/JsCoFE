@@ -86,7 +86,7 @@ function LicenceDialog ( current_licence,onclose_fnc )  {
 
   grid.setCellSize ( '100%','',2,2 );
 
-  w = 3*$(window).width()/5 + 'px';
+  var w = 3*$(window).width()/5 + 'px';
 
   $(this.element).dialog({
     resizable : false,

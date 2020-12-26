@@ -59,7 +59,7 @@ function AuthorisationDialog ( callback_func )  {
 
         self.layAuthorisationEntries();
 
-        w = 3*$(window).width()/5 + 'px';
+        var w = 3*$(window).width()/5 + 'px';
 
         $(self.element).dialog({
           resizable : true,
