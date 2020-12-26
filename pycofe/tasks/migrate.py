@@ -81,9 +81,9 @@ class Migrate(import_task.Import):
         # together with maps and phases, importe them separately
 
         self.resetFileImport()
-        if self.task.file_hkl:
+        if self.task.file_hkl and (self.task.file_hkl!=self.task.file_mtz):
             self.addFileImport ( self.task.file_hkl,baseDirPath=self.importDir() )
-        self.hkl_imported = import_merged.run ( self )
+        self.hkl_imported = import_merged.run ( self,importPhases="" )
 
         self.resetFileImport()
         if self.task.file_mtz:
