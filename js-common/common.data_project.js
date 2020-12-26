@@ -2,7 +2,7 @@
 /*
 *  ==========================================================================
  *
- *    07.07.20   <--  Date of Last Modification.
+ *    25.12.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -------------------------------------------------------------------------
  *
@@ -22,6 +22,12 @@
 
 // ===========================================================================
 
+var start_mode = {
+  auto    : 'auto',
+  expert  : 'expert',
+  migrate : 'migrate',
+}
+
 function ProjectDesc()  {
   this._type        = 'ProjectDesc';
   this.name         = '';
@@ -34,6 +40,8 @@ function ProjectDesc()  {
   };
   this.jobCount     = 0;    // job count
   this.timestamp    = 0;    // Date.now();
+  this.startmode    = start_mode.expert;  // will be overwritten when
+                                          // project is created
   this.project_version = 0;
   this.disk_space   = 0.0;  // in MBs, corresponds to current project state
   this.cpu_time     = 0.0;  // in hours, accumulated over all project history
@@ -57,10 +65,11 @@ function isProjectAccessible ( login,projectDesc )  {
 // ===========================================================================
 
 function ProjectList()  {
-  this._type    = 'ProjectList';
-  this.projects = [];     // will contain ProjectDesc
-  this.current  = '';     // current project name
-  this.sortList = null;   // sort options
+  this._type     = 'ProjectList';
+  this.projects  = [];     // will contain ProjectDesc
+  this.current   = '';     // current project name
+  this.startmode = start_mode.auto; // 'auto', 'expert', 'migrate'
+  this.sortList  = null;   // sort options
 }
 
 ProjectList.prototype.isProject = function ( name_str )  {
@@ -87,15 +96,18 @@ ProjectList.prototype.getProject = function ( name_str )  {
 }
 
 
-ProjectList.prototype.addProject = function ( name_str,title_str,time_str )  {
+ProjectList.prototype.addProject = function ( name_str,title_str,
+                                              startmode,time_str )  {
   if (!this.isProject(name_str))  {
     var pDesc          = new ProjectDesc();
     pDesc.name         = name_str;
     pDesc.title        = title_str;
     pDesc.dateCreated  = time_str;
     pDesc.dateLastUsed = time_str;
+    pDesc.startmode    = startmode;
     this.projects.unshift ( pDesc );  // put new project at beginning
     this.current       = name_str;
+    this.startmode     = startmode;
     this.sortList      = null;
     return true;
   } else
@@ -196,10 +208,10 @@ ProjectShare.prototype.addShare = function ( pDesc )  {
 
 // export such that it could be used in both node and a browser
 if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
+  module.exports.start_mode     = start_mode;
   module.exports.ProjectDesc    = ProjectDesc;
   module.exports.ProjectList    = ProjectList;
   module.exports.ProjectData    = ProjectData;
-  //module.exports.ProjectAuxData = ProjectAuxData;
   module.exports.ProjectShare   = ProjectShare;
   module.exports.isProjectAccessible = isProjectAccessible;
 }

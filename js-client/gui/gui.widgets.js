@@ -79,6 +79,11 @@ Widget.prototype.removeAttribute = function ( attr )  {
   return this;
 }
 
+Widget.prototype.setText = function ( text )  {
+  this.element.innerHTML = text;
+  return this;
+}
+
 Widget.prototype.addClass = function ( class_name )  {
   this.element.classList.add(class_name);
   return this;

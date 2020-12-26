@@ -42,7 +42,7 @@ function ProjectListPage ( sceneId )  {
   }
 
   var projectList = new ProjectList();  // project list data
-  this.tablesort_tbl = null;               // project list table
+  this.tablesort_tbl = null;            // project list table
   var open_btn    = null;
   var add_btn     = null;
   var rename_btn  = null;
@@ -108,19 +108,45 @@ function ProjectListPage ( sceneId )  {
   }
 
   var addProject = function() {
+    new AddProjectDialog ( projectList,function(pspecs){
+      if (pspecs)  {
+        if (projectList.addProject(pspecs.id,pspecs.title,
+                                   pspecs.startmode,getDateString()))  {
+          projectList.current   = pspecs.id;
+          projectList.startmode = pspecs.startmode;
+          makeProjectListTable();
+          openProject();
+          /* -- this part for not opening the project automatically
+          saveProjectList ( function(data){
+            projectList.current = pspecs.id;
+            makeProjectListTable   ();
+            welcome_lbl.setVisible ( (projectList.projects.length<1) );
+          });
+          */
+          return true;  // close dialog
+        } else  {
+          new MessageBox ( 'Duplicate Project ID',
+              'The Project ID chosen (<b>' + pspecs.id + '</b>)<br>' +
+              'is already in the list. Please choose a different Project ID.' );
+          return false;  // keep dialog
+        }
+      }
+    });
+  }
+
+  /*
+  var addProject = function() {
     var inputBox  = new InputBox  ( 'Add New Project' );
     var ibx_grid  = new Grid      ( '' );
     var name_inp  = new InputText ( '' );
     var title_inp = new InputText ( '' );
-    /*
-    name_inp. setStyle ( 'text',"^[A-Za-z0-9\\-\\._]+$",'project_001',
-                         'Project ID should contain only latin ' +
-                         'letters, numbers, undescores, dashes ' +
-                         'and dots, and must start with a letter' );
-    title_inp.setStyle ( 'text','','Example project',
-                         'Project Name is used to give a short description ' +
-                         'to aid identification of the project' );
-    */
+    //name_inp. setStyle ( 'text',"^[A-Za-z0-9\\-\\._]+$",'project_001',
+    //                     'Project ID should contain only latin ' +
+    //                     'letters, numbers, undescores, dashes ' +
+    //                     'and dots, and must start with a letter' );
+    //title_inp.setStyle ( 'text','','Example project',
+    //                     'Project Name is used to give a short description ' +
+    //                     'to aid identification of the project' );
     name_inp. setStyle ( 'text',"^[A-Za-z0-9\\-\\._]+$",'e.g., project_001','' );
     title_inp.setStyle ( 'text','','Put a descriptive title here','' );
     name_inp .setFontItalic        ( true    );
@@ -178,6 +204,7 @@ function ProjectListPage ( sceneId )  {
 
     });
   }
+  */
 
   // function to rename selected Project
   var renameProject = function() {

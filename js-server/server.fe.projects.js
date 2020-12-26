@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    06.12.20   <--  Date of Last Modification.
+ *    25.12.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -231,6 +231,8 @@ function checkProjectDescData ( projectDesc,loginData )  {
     delete projectDesc.owner.is_shared;
     update = true;
   }
+  if (!projectDesc.hasOwnProperty('startmode'))
+    projectDesc.startmode = pd.start_mode.expert; // too petty to save/update
   return update;  // no changes
 }
 
@@ -296,6 +298,8 @@ function readProjectList ( loginData )  {
   if (pList)  {
     var pdescs = pList.projects;
     pList.projects = [];
+    if (!('startmode' in pList))
+      pList.startmode = pd.start_mode.auto;
     var update = false;
     for (var i=0;i<pdescs.length;i++)  {
       var pdesc = pdescs[i];
