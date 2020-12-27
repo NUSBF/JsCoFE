@@ -3,10 +3,28 @@ CCP4 Cloud Version Log
 ======================
 
 
+**Version 1.6.018**
+
+    *Released on --.--.--- with CCP4 7.1.010*
+
+    **Changes and new features**
+
+    #. Verdict section added to ``Simbad`` task
+
+    #. Fixed a bug causing loss of running jobs at server restart
+
+    #. Added a toolbar button for switching between single and multiple selection in project tree
+
+    #. Fixed a bug in ``Phaser-MR`` task, causing incorrect specification of Space Group in report pages
+
+    #. Fixed a bug in ``Make Ligand`` task, causing failure if structure revision is produced in the task-contained branch
+
+    #. Fixed a bug in ``Prepare MR Model from XYZ`` task, causing incorrect identification of sequence identity for nucleic acid models
+
 
 **Version 1.6.017**
 
-    *Released on --.--.2020 with CCP4 7.1.009*
+    *Released on 08.12.2020 with CCP4 7.1.009*
 
     **Changes and new features**
 

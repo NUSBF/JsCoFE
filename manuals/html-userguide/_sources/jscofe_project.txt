@@ -68,7 +68,7 @@ Archiving can be done in two ways:
     unless selected jobs represent a continuos linear section of the project branch, the |archive| button is disabled
 
 .. Note::
-    it is possible to include previously archived folde in the selection, in which case it will be merged with the new one
+    it is possible to include previously archived folder in the selection, in which case it will be merged with the new one
 
 2. Select a job in a *linear section* of the project branch and click the |archive| button. The GUI will automatically identify boundaries of the *linear section*, and make lists of jobs, suitable for archiving, that are ancestors or descendants of the selected one. If one of the lists is empty, the other one is used for archiving. If both lists are not empty, the user is asked which one, or both, should be used.
 
