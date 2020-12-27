@@ -24,7 +24,7 @@
 
 
 // -------------------------------------------------------------------------
-// TaskListDialog class
+// ProjectSettingsDialog class
 
 function ProjectSettingsDialog ( jobTree,callback_func )  {
 

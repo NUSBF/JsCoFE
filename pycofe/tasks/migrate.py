@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    20.12.20   <--  Date of Last Modification.
+#    26.12.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -37,22 +37,6 @@ from   pycofe.dtypes import dtype_template, dtype_revision
 from   pycofe.tasks  import import_task
 from   proc          import import_merged, import_xyz, import_ligand
 
-"""
-import sys
-import json
-import shutil
-
-#  ccp4-python imports
-import pyrvapi
-import pyrvapi_ext.parsers
-
-#  application imports
-from   pycofe.dtypes import dtype_revision, dtype_sequence, dtype_template
-from   pycofe.tasks  import asudef, import_task
-from   pycofe.proc   import import_filetype, import_merged
-from   pycofe.varut  import rvapi_utils
-from   pycofe.etc    import citations
-"""
 
 # ============================================================================
 # Make Migrate driver
@@ -61,12 +45,8 @@ class Migrate(import_task.Import):
 
     # ------------------------------------------------------------------------
 
-    import_dir      = "uploads"
-    #import_table_id = "import_summary_id"
-    #id_modifier     = 1
-
-    def importDir        (self):  return self.import_dir       # import directory
-    #def import_summary_id(self):  return self.import_table_id  # import summary table id
+    import_dir = "uploads"
+    def importDir(self):  return self.import_dir       # import directory
 
     # ------------------------------------------------------------------------
 
@@ -144,6 +124,9 @@ class Migrate(import_task.Import):
                 msg.join("</li><li>")   + "</li></ul>"
             )
             # close execution logs and quit
+            self.generic_parser_summary["migrate"] = {
+                "summary_line" : "insufficient data"
+            }
             self.success ( have_results )
             return
 
@@ -156,26 +139,30 @@ class Migrate(import_task.Import):
             )
             hkls = self.hkl
 
-        compatible = True
+        #  check cell compatibility
 
-        """
-                hklp = hkl.getCellParameters();
-                xyzp = xyz.getCellParameters();
-                if (xyzp[0]<2.0)  {
-                  message = 'No cell parameters -- Dimple will be forced';
-                } else if ((Math.abs(hklp[3]-xyzp[3])>2.0) ||
-                           (Math.abs(hklp[4]-xyzp[4])>2.0) ||
-                           (Math.abs(hklp[5]-xyzp[5])>2.0))  {
-                  message = 'Too distant cell parameters -- Dimple will be forced';
-                } else  {
-                  var ok = true;
-                  for (var i=0;i<3;i++)
-                    if (Math.abs(hklp[i]-xyzp[i])/hklp[i]>0.01)
-                      ok = false;
-                  if (!ok)
-                    message = 'Too distant cell parameters -- Dimple will be forced';
-                }
-        """
+        compatible = True
+        sp0  = self.hkl[0].getCellParameters()  #  reference cell parameters
+        cset = self.hkl + self.map
+        if self.xyz:
+            cset += [self.xyz]
+        for i in range(1,len(cset)):
+            spi = cset[i].getCellParameters()
+            for j in range(3):
+                if (abs(sp0[j]-spi[j])/sp0[j]>0.01) or (abs(sp0[j+3]-spi[j+3])>2.0):
+                    compatible = False
+                    break
+            if not compatible:
+                break
+        if not compatible:
+            self.putTitle ( "Migration to " + self.appName() + " not possible" )
+            self.putMessage ( "Too distant cell parameters found." )
+            # close execution logs and quit
+            self.generic_parser_summary["migrate"] = {
+                "summary_line" : "too distant cell parameters"
+            }
+            self.success ( have_results )
+            return
 
         # -------------------------------------------------------------------
         # form output data
@@ -310,5 +297,4 @@ class Migrate(import_task.Import):
 if __name__ == "__main__":
 
     drv = Migrate ( "",os.path.basename(__file__) )
-
     drv.start()

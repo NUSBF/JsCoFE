@@ -113,6 +113,11 @@ body {
 
 .combobox-overflow { height: 100px; }
 
+/*
+.ui-selectmenu-button {
+    vertical-align : middle;
+}
+*/
 
 .ui-dialog .ui-dialog-titlebar {
   height: 16px; /* height of title bar */

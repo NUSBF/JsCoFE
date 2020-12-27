@@ -293,6 +293,7 @@ Dropdown.prototype.addItemGroup = function ( dropdownItemGroup )  {
 
 Dropdown.prototype.setWidth = function ( w )  {
   this.width = w;
+  return this;
 }
 
 
