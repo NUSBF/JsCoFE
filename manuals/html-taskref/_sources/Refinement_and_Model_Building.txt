@@ -6,6 +6,7 @@ Refinement and Model Building
     :maxdepth: 2
 
     doc.task.Refmac
+    doc.task.Buster.rst
     doc.task.Lorestr
     doc.task.CCP4Build
     doc.task.Buccaneer

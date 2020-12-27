@@ -1,0 +1,35 @@
+=================
+Buster Refinement
+=================
+
+BUSTER structure refinement package was provided by `Global Phasing Limited (GPhL) <https://www.globalphasing.com/>`_
+
+For more information, please visit `BUSTER Documentation <http://www.globalphasing.com/buster/manual/autobuster/manual/index.html>`_ and `BUSTER wiki <https://www.globalphasing.com/buster/wiki/>`_ pages.
+
+
+    * `R-factor definitions in BUSTER <https://www.globalphasing.com/buster/wiki/plugin/attachments/BusterRvalues/R-factor_definitions_in_BUSTER.pdf>`_
+
+    * `Geometry restraints in BUSTER <https://www.globalphasing.com/buster/wiki/index.cgi?BusterLigandRestraints>`_
+
+    * `Direct use of weighted Force Field or Quantum Chemical Energy for ligands in BUSTER <https://www.globalphasing.com/buster/wiki/index.cgi?AutobusterLigandQM>`_
+
+    * `Rhofit - automated ligand fitter <https://www.globalphasing.com/buster/wiki/index.cgi?RhofitMainPage>`_
+
+    * `buster-report - analytical report generation <https://www.globalphasing.com/buster/wiki/index.cgi?BusterReport>`_
+
+    * `Pipedream - automated pipeline package <https://www.globalphasing.com/buster/wiki/index.cgi?PipedreamMainpage>`_
+
+    * `mmCIF generation - for deposition <https://www.globalphasing.com/buster/wiki/index.cgi?DepositionMmCif>`_
+
+BUSTER reference card you cand find `here <https://www.globalphasing.com/buster/manual/autobuster/buster_reference_card.pdf>`_
+
+
+**References**
+
+Bricogne G., Blanc E., Brandl M., Flensburg C., Keller P., Paciorek W., Roversi P, Sharff A., Smart O.S., Vonrhein C., Womack T.O. (2017). BUSTER version X.Y.Z. Cambridge, United Kingdom: Global Phasing Ltd.
+
+`Smart, O. S., Womack, T. O., Flensburg, C., Keller, P., Paciorek, W., Sharff, A., Vonrhein, C. & Bricogne, G. (2012). Exploiting structure similarity in refinement: automated NCS and target- structure restraints in BUSTER. Acta Cryst. D68, 368-380. <http://dx.doi.org/10.1107/S0907444911056058>`_
+
+`Smart, O. S., Brandl, M., Flensburg, C., Keller, P., Paciorek, W., Vonrhein, C., Womack, T. O. & Bricogne, G. (2008). Refinement with Local Structure Similarity Restraints (LSSR) Enables Exploitation of Information from Related Structures and Facilitates use of NCS. Abstr. Annu. Meet. Am. Crystallogr. Assoc., Abstract TP139, p. 117. <http://www.globalphasing.com/buster/manual/gelly/manual/aca_abstract.pdf>`_
+
+*Any questions regarding BUSTER software should be directed to* **buster-develop@globalphasing.com**
