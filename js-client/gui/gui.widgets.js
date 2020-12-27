@@ -1543,6 +1543,8 @@ function Combobox()  {
   // then call make()
   this.selected_value = null;
   this.selected_text  = null;
+  this.onchange       = null;
+  this.width          = 'auto';
 }
 
 Combobox.prototype = Object.create ( Widget.prototype );
@@ -1562,15 +1564,23 @@ Combobox.prototype.addItem = function ( text,itemId,selected_bool )  {
   return this;  // for chaining
 }
 
+Combobox.prototype.setWidth = function ( w )  {
+  this.width = w;
+  return this;
+}
+
+
 Combobox.prototype.make = function()  {
 
-  $(this.element).selectmenu();
+  $(this.element).selectmenu ({ width:this.width });
   //.addClass( "combobox-overflow" );
   (function(combobox){
-    $(combobox.element).on('change', function(){
+    $(combobox.element).on('selectmenuchange', function(){
       combobox.selected_value = combobox.element.value;
       combobox.selected_text  =
                 combobox.element.options[combobox.element.selectedIndex].text;
+      if (combobox.onchange)
+        combobox.onchange ( combobox.selected_value,combobox.selected_text );
     });
   }(this));
 
@@ -1578,6 +1588,19 @@ Combobox.prototype.make = function()  {
 
 }
 
+Combobox.prototype.addOnChangeListener = function ( listener_func )  {
+  this.onchange = listener_func;
+  return this;
+}
+
+
+Combobox.prototype.getValue = function()  {
+  return this.selected_value;
+}
+
+Combobox.prototype.getText = function()  {
+  return this.selected_text;
+}
 
 
 // -------------------------------------------------------------------------

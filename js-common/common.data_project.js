@@ -25,8 +25,13 @@
 var start_mode = {
   auto    : 'auto',
   expert  : 'expert',
-  migrate : 'migrate',
-}
+  migrate : 'migrate'
+};
+
+var tasklist_mode = {
+  basic : 'basic',
+  full  : 'full'
+};
 
 function ProjectDesc()  {
   this._type        = 'ProjectDesc';
@@ -42,6 +47,7 @@ function ProjectDesc()  {
   this.timestamp    = 0;    // Date.now();
   this.startmode    = start_mode.expert;  // will be overwritten when
                                           // project is created
+  this.tasklistmode = tasklist_mode.full;
   this.project_version = 0;
   this.disk_space   = 0.0;  // in MBs, corresponds to current project state
   this.cpu_time     = 0.0;  // in hours, accumulated over all project history
@@ -153,16 +159,6 @@ function ProjectData()  {
   this.settings.prefix     = '';
 }
 
-/*
-function checkProjectData ( pData )  {
-  if (!pData.settings)
-    pData.settings = {};
-  if (!pData.settings.hasOwnProperty('prefix_key'))  {
-    pData.settings.prefix_key = 0;   // 0: default; 1: custom
-    pData.settings.prefix     = '';  // custom
-  }
-}
-*/
 
 // ===========================================================================
 
@@ -209,6 +205,7 @@ ProjectShare.prototype.addShare = function ( pDesc )  {
 // export such that it could be used in both node and a browser
 if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
   module.exports.start_mode     = start_mode;
+  module.exports.tasklist_mode  = tasklist_mode;
   module.exports.ProjectDesc    = ProjectDesc;
   module.exports.ProjectList    = ProjectList;
   module.exports.ProjectData    = ProjectData;

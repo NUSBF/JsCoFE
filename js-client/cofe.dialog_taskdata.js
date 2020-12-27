@@ -24,7 +24,7 @@
 
 
 // -------------------------------------------------------------------------
-// TaskListDialog class
+// TaskDataDialog class
 
 function TaskDataDialog ( dataSummary,task,avail_key )  {
 

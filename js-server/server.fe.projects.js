@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    25.12.20   <--  Date of Last Modification.
+ *    27.12.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -233,6 +233,8 @@ function checkProjectDescData ( projectDesc,loginData )  {
   }
   if (!projectDesc.hasOwnProperty('startmode'))
     projectDesc.startmode = pd.start_mode.expert; // too petty to save/update
+  if (!projectDesc.hasOwnProperty('tasklistmode'))
+    projectDesc.tasklistmode = pd.tasklist_mode.full; // too petty to save/update
   return update;  // no changes
 }
 

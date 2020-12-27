@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    20.12.20   <--  Date of Last Modification.
+ *    27.12.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -26,7 +26,7 @@
 // -------------------------------------------------------------------------
 // TaskListDialog class
 
-function TaskListDialog ( dataBox,branch_task_list,onSelect_func )  {
+function TaskListDialog ( dataBox,branch_task_list,projectDesc,onSelect_func ) {
 
   Widget.call ( this,'div' );
   this.element.setAttribute ( 'title','Task List' );
@@ -44,36 +44,77 @@ function TaskListDialog ( dataBox,branch_task_list,onSelect_func )  {
 
   this.makeLayout();
 
+  this.combobox = null;
+  if (projectDesc.startmode!=start_mode.expert)  {
+    this.combobox = new Combobox();
+    this.combobox
+        .addItem  ( 'Basic set','basic',projectDesc.tasklistmode==tasklist_mode.basic )
+        .addItem  ( 'Full set','full',projectDesc.tasklistmode==tasklist_mode.full  )
+        .setWidth ( '140px' );
+    this.page_basic.setVisible ( projectDesc.tasklistmode==tasklist_mode.basic );
+    this.tabs.setVisible ( projectDesc.tasklistmode==tasklist_mode.full );
+  }
+
   var w = window.innerWidth;
   var w = Math.min ( Math.max(700,4*w/9),6*w/8 );
   var h = 6*window.innerHeight/8;
 
-  $(this.element).dialog({
-    resizable : true,
-    height    : h,
-    width     : w,
-    maxHeight : $(window).height()-20,
-    modal     : true,
-    buttons   : [
-      { text  : 'Help',
-        click : function() {
-          new HelpBox ( '',__user_guide_base_url + 'jscofe_tasklist.html',null );
-        }
-      },
-      { text  : 'Cancel',
-        click : function() {
-          $( this ).dialog( "close" );
-        }
-      }
-    ]
-  });
-
   (function(self){
+
+    $(self.element).dialog({
+      resizable : true,
+      height    : h,
+      width     : w,
+      maxHeight : $(window).height()-20,
+      modal     : true,
+      create    : function (e, ui) {
+                    if (self.combobox)  {
+                      var pane = $(this).dialog("widget")
+                                        .find(".ui-dialog-buttonpane");
+                      var span = new Widget ( 'span' );
+                      $(span.element).prependTo(pane);
+                      span.addWidget ( self.combobox );
+                      self.combobox.make ();
+                      $(span.element).css({
+                        'position' : 'relative',
+                        'left'     : '10px',
+                        'top'      : '8px'
+                      });
+                    }
+                  },
+      buttons   : [
+        { text  : 'Help',
+          click : function() {
+            new HelpBox ( '',__user_guide_base_url + 'jscofe_tasklist.html',null );
+          }
+        },
+        { text  : 'Cancel',
+          click : function() {
+            if (self.combobox)
+                  self.onSelect_func ( null,self.combobox.getValue() );
+            else  self.onSelect_func ( null,null );
+            $( this ).dialog( "close" );
+          }
+        }
+      ]
+    });
+
+
     $(self.element).on( "dialogresize", function(event,ui){
       //self.onResize();
       $(self.tabs.element).height ( self.element.innerHeight-16 );
       self.tabs.refresh();
     });
+
+    if (self.combobox)  {
+      self.combobox.addOnChangeListener ( function(value,text){
+        self.page_basic.setVisible ( value==tasklist_mode.basic );
+        self.tabs.setVisible ( value==tasklist_mode.full );
+        if (value=='full')
+          self.tabs.refresh();
+      });
+    }
+
   }(this));
 
   //$(this.element).css ( 'width:100%' );
@@ -137,7 +178,9 @@ TaskListDialog.prototype.setTask = function ( task_obj,grid,row,setall )  {
     function taskClicked() {
       if (btn.dataSummary.status>0)  {
         dlg.selected_task = task_obj;
-        dlg.onSelect_func ( task_obj );
+        if (dlg.combobox)
+              dlg.onSelect_func ( task_obj,dlg.combobox.getValue() );
+        else  dlg.onSelect_func ( task_obj,null );
         $(dlg.element).dialog ( 'close' );
       } else  {
         // insufficient data
@@ -157,6 +200,11 @@ TaskListDialog.prototype.setTask = function ( task_obj,grid,row,setall )  {
 
 TaskListDialog.prototype.makeLayout = function()  {
 
+  this.page_basic = new Grid('-compact');
+  this.addWidget ( this.page_basic );
+  this.makeBasicList ( this.page_basic );
+  this.page_basic.hide();
+
   this.tabs = new Tabs();
   this.addWidget ( this.tabs );
 
@@ -165,8 +213,62 @@ TaskListDialog.prototype.makeLayout = function()  {
   this.makeSuggestedList ( tab_suggested.grid );
   this.makeFullList      ( tab_fulllist .grid );
 
+
 }
 
+
+TaskListDialog.prototype.makeBasicList = function ( grid )  {
+var r = 0;  // grid row
+
+  grid.setLabel ( '<h2>Basic tasks</h2>',r++,0,1,3 );
+  //grid.setLabel ( 'Switch to full set for more tasks',r++,0,1,3 )
+  //    .setFontItalic(true).setFontSize('85%');
+
+  var task_list = [
+
+    "Refinement",
+    new TaskRefmac (),
+    new TaskBuster (),
+    new TaskCootMB (),
+    new TaskLorestr(),
+
+    "Ligands",
+    new TaskMakeLigand(),
+    new TaskFitLigand (),
+    new TaskFitWaters (),
+
+    "Import Additional Data",
+    new TaskImport     (),
+    new TaskImportSeqCP(),
+
+    "Model Building",
+    new TaskParrot   (),
+    new TaskCCP4Build(),
+    new TaskBuccaneer(),
+    new TaskArpWarp  (),
+    new TaskNautilus (),
+
+    "Deposition",
+    new TaskDeposition()
+
+  ];
+
+  for (var i=0;i<task_list.length;i++)
+    if (typeof task_list[i] === 'string' || task_list[i] instanceof String) {
+      grid.setLabel ( '&nbsp;',r++,0,1,3 ).setHeight_px(4);
+      grid.setLabel ( '<hr/>',r,0,1,1 );
+      var grid1 = grid.setGrid ( '',r++,1,1,2 );
+      grid1.setLabel ( '&nbsp;' + task_list[i] + '&nbsp;',0,0,1,1 )
+           .setFontItalic(true).setFontBold(true).setNoWrap();
+      grid1.setLabel ( '<hr/>',0,1,1,1 );
+      grid1.setCellSize ( '10%','8px',0,0 );
+      grid1.setCellSize ( '90%','8px',0,1 );
+    } else if (this.setTask(task_list[i],grid,r,true))
+      r++;
+
+  return r;  // indicates whether the tab is empty or not
+
+}
 
 TaskListDialog.prototype.makeSuggestedList = function ( grid )  {
 var knowledge = getWfKnowledge ( this.branch_tasks[2],this.branch_tasks[1],

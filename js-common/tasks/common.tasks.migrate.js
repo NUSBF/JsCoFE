@@ -48,6 +48,8 @@ function TaskMigrate()  {
   //this.oname     = '*';   // asterisk here means do not use
   this.fasttrack = true;  // enforces immediate execution
 
+  this.input_dtypes = [1];  // settings for "on project top only", managed in TaskList
+
   this.file_hkl  = ''; // name of merged mtz file with reflection dataset
   this.file_mtz  = ''; // name of "refmac" mtz with reflections and density maps
   this.file_xyz  = ''; // name of file with atomic coordinates
