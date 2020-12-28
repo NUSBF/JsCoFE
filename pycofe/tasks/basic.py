@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    18.12.20   <--  Date of Last Modification.
+#    28.12.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -741,8 +741,19 @@ class TaskDriver(object):
         #    fpath = fname
 
         fpath = filePath
-        if fpath.endswith(".gz"):   # ungzip files as necessary
+        if fpath.lower().endswith(".gz"):   # ungzip files as necessary
             fpath = zutils.gunzip ( filePath,baseDirPath=baseDirPath )
+
+        if fpath.lower().endswith(".sca"):  # convert to mtz
+            fpath1 = os.path.splitext(fpath)[0] + ".mtz"
+            self.open_stdin()
+            self.write_stdin ( "WAVE 1\nEND\n" )
+            self.close_stdin()
+            self.runApp ( "scalepack2mtz",[
+                    "HKLIN" ,os.path.join(baseDirPath,fpath),
+                    "HKLOUT",os.path.join(baseDirPath,fpath1)
+                ],logType="Service" )
+            fpath = fpath1
 
         self.files_all.append ( fpath )
         if ftype:
