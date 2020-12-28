@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    11.12.20   <--  Date of Last Modification.
+ *    28.12.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -459,7 +459,7 @@ JobDialog.prototype.makeToolBar = function()  {
                                .setTooltip('End the job gracefully. This may take a ' +
                                            'long time, but will make obtaned ' +
                                            'results available for subsequent ' +
-                                           'jobs. Once stopped, a job cannot ' +
+                                           'jobs. Once ended, a job cannot ' +
                                            'be resumed' );
   else
     this.end_btn = null;
