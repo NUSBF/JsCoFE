@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    15.06.20   <--  Date of Last Modification.
+#    28.12.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -58,6 +58,7 @@ citations = {
     'chltofom'        : { 'name' : 'CHLtoFOM'     , 'category' : 'service', 'refs' : [] },
     'ccp4go'          : { 'name' : 'CCP4go'       , 'category' : 'primary', 'refs' : [] },
     'ccp4build'       : { 'name' : 'CCP4Build'    , 'category' : 'primary', 'refs' : [] },
+    'scalepack2mtz'   : { 'name' : 'Scalepack2MTZ', 'category' : 'service', 'refs' : [] },
 
     'ps2pdf'          : { 'name' : '', 'category' : 'system' , 'refs' : [] },  # empty name means "Ignore"
     'ccp4-python'     : { 'name' : '', 'category' : 'system' , 'refs' : [] },
