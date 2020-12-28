@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    30.10.20   <--  Date of Last Modification.
+ *    28.12.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -310,7 +310,7 @@ if (!__template)  {
     function setMTZFileSelect ( rowNo,fname )  {
       var wset = setFileSelect ( rowNo,'Reflection data',
              '[Mandatory] Provide a path to MTZ file with merged or unmerged ' +
-             'reflections.','.mtz',fname );
+             'reflections.','.mtz,.sca',fname );
       wset['fsel'].addOnChangeListener ( function(){
         var files = wset['fsel'].getFiles();
         if (files.length>0)

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    22.12.20   <--  Date of Last Modification.
+ *    28.12.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -160,7 +160,7 @@ if (!__template)  {
     div.select_hkl = setFileSelect ( row++,
       'Reflection data',
       'Navigate to MTZ file with merged reflections',
-      '.mtz',
+      '.mtz,.sca',
       this.file_hkl
     );
 

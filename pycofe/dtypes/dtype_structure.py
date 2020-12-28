@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    02.10.20   <--  Date of Last Modification.
+#    28.12.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -113,8 +113,10 @@ class DType(dtype_xyz.DType):
         if dataset.ABCD and len(dataset.ABCD) > 0:
             self.HLA, self.HLB, self.HLC, self.HLD = dataset.ABCD[-1]
 
-        if dataset.FwPhi and len(dataset.FwPhi) == 1:
-          self.FWT, self.PHWT = dataset.FwPhi[0]
+        if dataset.FwPhi and len(dataset.FwPhi) > 0:
+            self.FWT, self.PHWT = dataset.FwPhi[-1]
+            if len(dataset.FwPhi) > 1:
+                self.DELFWT, self.PHDELWT = dataset.FwPhi[-2]
 
         a, b, c, al, be, ga = dataset.DCELL
         self.xyzmeta = dict(
