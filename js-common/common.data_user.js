@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    03.10.20   <--  Date of Last Modification.
+ *    28.12.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -62,7 +62,8 @@ function UserData()  {
     onlogin        : 'project_list',  // 'project_list', 'last_project'
     viewers_size   : [1.40,0.97],     // width, height
     jobdlg_size    : [1.25,0.85],     // width, height
-    project_prefix : false
+    project_prefix : false,
+    guided_import  : true
   };
   this.action        = userdata_action.none;
 }
@@ -89,6 +90,8 @@ function checkUserData ( uData )  {
     uData.settings.viewers_size = [1.40,0.97];     // width, height
     uData.settings.jobdlg_size  = [1.25,0.85];     // width, height
   }
+  if (!uData.settings.hasOwnProperty('guided_import'))
+    uData.settings.guided_import = true;
   if (!uData.hasOwnProperty('volume'))   uData.volume  = '***';
   if (!uData.hasOwnProperty('dormant'))  uData.dormant = 0;
   if (uData.hasOwnProperty('admin'))  {

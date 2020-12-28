@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    21.11.20   <--  Date of Last Modification.
+ *    28.12.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -214,14 +214,27 @@ function AccountPage ( sceneId )  {
   dgrid.setLabel ( '&nbsp;',5,0,1,3 ).setFontSize('50%');
 
   var fprefix_cbx = spanel.setCheckbox ( 'Use project name as default file prefix',
-                                         false, prfrow++,0,1,2 )
+                                         __user_settings.project_prefix,
+                                         prfrow++,0,1,2 )
+                          .setWidth    ( '300px' )
                           .setTooltip  ( 'If selected, all generated file names ' +
                                          'will be prefixed with project name '    +
                                          'unless another prefix is specified in ' +
                                          'project settings'
                                        );
-  if (__user_settings.hasOwnProperty('project_prefix'))
-    fprefix_cbx.setValue ( __user_settings.project_prefix );
+  //if (__user_settings.hasOwnProperty('project_prefix'))
+  //  fprefix_cbx.setValue ( __user_settings.project_prefix );
+
+
+  var gimport_cbx = spanel.setCheckbox ( 'Guide through data import',
+                                         __user_settings.guided_import,
+                                         prfrow++,0,1,2 )
+                          .setWidth    ( '300px' )
+                          .setTooltip  ( 'If selected, extra guidance through ' +
+                                         'data import procedure will be given.'
+                                       );
+  //if (__user_settings.hasOwnProperty('guided_import'))
+  //  gimport_cbx.setValue ( __user_settings.guided_import );
 
   spanel.setLabel ( '&nbsp;<br><hr/><sup>*</sup> Save changes for Preferences to ' +
                     'take an effect',prfrow+4,0,1,2 )
@@ -341,6 +354,7 @@ function AccountPage ( sceneId )  {
       __user_settings.jobdlg_size    = [ defsize[0][2],defsize[1][2] ];
       __user_settings.viewers_size   = [ defsize[2][2],defsize[3][2] ];
       __user_settings.project_prefix = fprefix_cbx.getValue();
+      __user_settings.guided_import  = gimport_cbx.getValue();
       userData.settings = __user_settings;
 
       serverRequest ( fe_reqtype.updateUserData,userData,'My Account',
