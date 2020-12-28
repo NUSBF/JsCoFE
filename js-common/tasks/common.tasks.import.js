@@ -176,7 +176,9 @@ if (!__template)  {
         function(returnCode){
           if (!returnCode)
             task.sendInputStateEvent ( panel );
-          if (panel.upload.new_files.length>0)  {
+          /* ------ */
+          if ((panel.upload.new_files.length>0) &&
+              (__user_settings.guided_import))  {
             panel.upload.button.setText ( 'Upload more files' );
             var files_ignored = '';
             if (panel.upload.ignored_list.length>0)
@@ -194,6 +196,7 @@ if (!__template)  {
                                 panel.job_dialog.run_btn.click();
                               });
           }
+          /* ------ */
         });
 
       panel.upload.addSignalHandler ( cofe_signals.uploadEvent, function(detail){
