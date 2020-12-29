@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    27.12.20   <--  Date of Last Modification.
+ *    29.12.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -759,6 +759,7 @@ function prepareJobExport ( loginData,task )  {
   return new cmd.Response ( cmd.fe_retcode.ok,'','' );
 
 }
+
 
 function checkJobExport ( loginData,task )  {
   var archivePath = getJobExportNames(loginData,task)[2];

@@ -506,7 +506,7 @@ JobDialog.prototype.makeToolBar = function()  {
   this.toolBar.setCellSize ( '45%','',0,this.col++ );
 
   this.newtab_btn = this.addToolBarButton  ( false,'new_tab' ,'Open in new tab or window' );
-  this.export_btn = this.addToolBarButton  ( false,'export'  ,'Export job directory' );
+  this.export_btn = this.addToolBarButton  ( false,'export'  ,'Download job data' );
   if (this.task.getHelpURL())
     this.ref_btn  = this.addToolBarButton  ( true,'reference','Task Documentation'   );
   this.help_btn   = this.addToolBarButton  ( true,'help'     ,'Dialog Help'          );
