@@ -190,7 +190,7 @@ function ls_RVAPIAppButtonClicked ( base_url,command,data )  {
   } else if (command=='{viewhkl}')  {
     var pos = base_url.indexOf ( __special_url_tag );
     window.setTimeout ( function(){
-      startViewHKL ( data.split('/').pop(),base_url.substr(pos)+'/'+data,window );
+      startViewHKL ( data.split('/').pop(),base_url.substr(pos)+'/'+data,window.parent );
     },10);
   } else if (command=='{ccp4mg}')  {
     new MessageBox ( 'Local application',
