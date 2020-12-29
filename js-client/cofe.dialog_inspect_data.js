@@ -136,8 +136,7 @@ DataSummaryPage.prototype.addViewHKLButton = function ( task )  {
 
     (function(t){
       viewhkl_btn.addOnClickListener ( function(){
-        startViewHKL ( t.data.dname,t._getPath(task,t.data,file_key.mtz),
-                       window.parent );
+        startViewHKL ( t.data.dname,t._getPath(task,t.data,file_key.mtz),window );
       });
     }(this))
 
