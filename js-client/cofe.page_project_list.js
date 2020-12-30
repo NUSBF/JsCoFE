@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    13.12.20   <--  Date of Last Modification.
+ *    29.12.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -71,12 +71,32 @@ function ProjectListPage ( sceneId )  {
     return pdesc;
   }
 
+  function getCurrentProjectNo()  {
+    var pname = currentProjectName();
+    var pno = -1;
+    for (var i=0;(i<projectList.projects.length) && (pno<0);i++)
+      if (projectList.projects[i].name==pname)
+        pno = i;
+    return pno;
+  }
+
   function isCurrentProjectShared()  {
     var pdesc = getCurrentProjectDesc();
     if (pdesc)
       return (pdesc.owner.share.length>0);
     return false;
 //    return (self.tablesort_tbl.selectedRow.child[0].text.indexOf(']:</b>')>=0);
+  }
+
+  function isCurrentProjectOwned()  {
+    var pdesc = getCurrentProjectDesc();
+    if (pdesc)  {
+      var author = pdesc.owner.login;
+      if ('author' in pdesc.owner)
+        author = pdesc.owner.author;
+      return (author==__login_id);
+    }
+    return false;
   }
 
   // function to save Project List
@@ -208,14 +228,23 @@ function ProjectListPage ( sceneId )  {
 
   // function to rename selected Project
   var renameProject = function() {
+    panel.click();  // get rid of context menu
 
     if (isCurrentProjectShared())  {
 
-      new MessageBox ( 'Insufficient privileges',
-          '<h2>Insufficient privileges</h2>' +
-          'You cannot rename this project because it was shared with you.' +
-          '<p>Projects can be renamed only by their owners.'
-      );
+      if (isCurrentProjectOwned())  {
+        new MessageBox ( 'Rename Project',
+            '<h2>Rename Project</h2>' +
+            'You cannot rename this project because it was shared with other ' +
+            'users.'
+        );
+      } else  {
+        new MessageBox ( 'Insufficient privileges',
+            '<h2>Insufficient privileges</h2>' +
+            'You cannot rename this project because it was shared with you.' +
+            '<p>Projects can be renamed only by their owners.'
+        );
+      }
 
     } else  {
 
@@ -265,7 +294,8 @@ function ProjectListPage ( sceneId )  {
 
   }
 
-  var deleteProject = function() {
+  var deleteProject = function()  {
+    panel.click();  // get rid of context menu
     var delName    = currentProjectName();
     var delMessage = '';
     var btnName    = 'Delete';
@@ -299,6 +329,7 @@ function ProjectListPage ( sceneId )  {
   }
 
   var exportProject = function() {
+    panel.click();  // get rid of context menu
     if (self.tablesort_tbl.selectedRow)  {
       projectList.current = currentProjectName();
       new ExportProjectDialog ( projectList );
@@ -306,6 +337,20 @@ function ProjectListPage ( sceneId )  {
       new MessageBox ( 'No project selected',
                        'No project is currently selected<br>' +
                        '-- nothing to export.' );
+  }
+
+  var sharePrj = function() {
+    panel.click();  // get rid of context menu
+    var pno = getCurrentProjectNo();
+    if (pno>=0)  {
+      shareProject ( projectList.projects[pno],function(desc){
+        if (desc)  {
+          projectList.projects[pno] = desc;
+          saveProjectList ( function(data){} );
+        }
+      });
+    } else
+      new MessageBox ( 'No Project','No Project selected' );
   }
 
   // function to create project list table and fill it with data
@@ -378,6 +423,7 @@ function ProjectListPage ( sceneId )  {
         contextMenu.addItem('Rename',image_path('rename')).addOnClickListener(renameProject);
         contextMenu.addItem('Delete',image_path('remove')).addOnClickListener(deleteProject);
         contextMenu.addItem('Export',image_path('export')).addOnClickListener(exportProject);
+        contextMenu.addItem('Share' ,image_path('share') ).addOnClickListener(sharePrj     );
 
         //contextMenu.setWidth ( '10px' );
         //contextMenu.setHeight_px ( 400 );
@@ -391,9 +437,13 @@ function ProjectListPage ( sceneId )  {
         var joined = ['','',''];
         if ('owner' in pDesc)  {
           if (pDesc.owner.share.length>0)  {
-            joined = ['<i>','</i>',"is not included in user\'s quota"];
-            pName  = '<b>[<i>' + pDesc.owner.login  + '</i>]:</b>' + pName;
-          } else if (('author' in pDesc.owner) && (pDesc.owner.author!=pDesc.owner.login))
+            if (pDesc.owner.login!=__login_id)  {
+              joined = ['<i>','</i>',"is not included in user\'s quota"];
+              pName  = '<b>[<i>' + pDesc.owner.login  + '</i>]:</b>' + pName;
+            }
+          } else if (('author' in pDesc.owner) &&
+                     (pDesc.owner.author!=pDesc.owner.login) &&
+                     (pDesc.owner.author!=__login_id))
             pName  = '<b>(<i>' + pDesc.owner.author + '</i>):</b>' + pName;
         }
         trow.addCell ( pName  ).setNoWrap();

@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    06.12.20   <--  Date of Last Modification.
+ *    29.12.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -247,6 +247,21 @@ function ProjectPage ( sceneId )  {
 
   }
 
+  function share_project()  {
+    if (jobTree)  {
+      shareProject ( jobTree.projectData.desc,function(desc){
+        if (desc)  {
+          jobTree.projectData.desc = desc;
+          jobTree.saveProjectData ( [],[],false,function(rdata){} );
+          if (jobTree.projectData.desc.owner.share.length>0)
+            jobTree.startTaskLoop();
+        }
+      });
+    } else
+      new MessageBox ( 'No Project','No Project loaded' );
+  }
+
+/*
   function shareProject()  {
     if (jobTree)  {
       var inputBox  = new InputBox ( 'Share Project [' +
@@ -341,6 +356,7 @@ function ProjectPage ( sceneId )  {
     } else
       new MessageBox ( 'No Project','No Project loaded' );
   }
+  */
 
   function onTreeContextMenu(node) {
     // The default set of all items
@@ -614,7 +630,8 @@ function ProjectPage ( sceneId )  {
     else  new MessageBox ( 'No Project','No Project loaded' );
   });
 
-  this.addMenuItem ( 'Share Project','share',shareProject );
+  //this.addMenuItem ( 'Share Project','share',shareProject );
+  this.addMenuItem ( 'Share Project','share',share_project );
 
   this.addLogoutToMenu ( function(){
     if (jobTree && jobTree.projectData)

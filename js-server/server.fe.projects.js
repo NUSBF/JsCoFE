@@ -1140,6 +1140,19 @@ var unknown  = [];
     writeProjectData ( loginData,pData,true );
   }
 
+  // modify project entry in project list
+  var pList = readProjectList ( loginData );
+  if (pList)  {
+    var pno = -1;
+    for (var i=0;(i<pList.projects.length) && (pno<0);i++)
+      if (pList.projects[i].name==pDesc.name)
+        pno = i;
+    if (pno>=0)  {
+      pList.projects[pno] = pDesc;
+      writeProjectList ( loginData,pList );
+    }
+  }
+
   return new cmd.Response ( cmd.fe_retcode.ok,'',{
     desc     : pDesc,
     unshared : unshared,
