@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    27.11.20   <--  Date of Last Modification.
+#    30.12.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -46,6 +46,26 @@ class Refmac(basic.TaskDriver):
 
     # redefine name of input script file
     def file_stdin_path(self):  return "refmac.script"
+
+    # ------------------------------------------------------------------------
+
+    def formStructure ( self,xyzout,libin,hkl,istruct,maplabels,copyfiles ):
+        structure = self.registerStructure ( xyzout,None,self.getMTZOFName(),
+                                             None,None,libin,leadKey=1,
+                                             map_labels=maplabels,
+                                             copy_files=copyfiles )
+        if structure:
+            mmcifout = self.getMMCIFOFName()
+            if os.path.isfile(mmcifout):
+                structure.add_file ( mmcifout,self.outputDir(),"mmcif",copy_bool=False )
+            structure.copyAssociations   ( istruct )
+            structure.addDataAssociation ( hkl.dataId     )
+            structure.addDataAssociation ( istruct.dataId )  # ???
+            structure.setRefmacLabels    ( None if str(hkl.useHKLSet) in ["Fpm","TI"] else hkl )
+            structure.copySubtype        ( istruct )
+            structure.copyLigands        ( istruct )
+            structure.addPhasesSubtype   ()
+        return structure
 
     # ------------------------------------------------------------------------
 
@@ -111,21 +131,28 @@ class Refmac(basic.TaskDriver):
 
         # Input
 
+        stdin = []
+
         if (str(hkl.useHKLSet) == 'F') or (str(hkl.useHKLSet) == 'TF'):
             hkl_labels = ( hkl.dataset.Fmean.value, hkl.dataset.Fmean.sigma )
             hkl_labin  =  "LABIN FP=" + hkl_labels[0] + " SIGFP=" + hkl_labels[1]
+            if hkl.isAnomalous():
+                hkl_labin += " F+="    + hkl.dataset.Fpm.plus.value  +\
+                             " SIGF+=" + hkl.dataset.Fpm.plus.sigma  +\
+                             " F-="    + hkl.dataset.Fpm.minus.value +\
+                             " SIGF-=" + hkl.dataset.Fpm.minus.sigma
+                stdin.append ( "ANOM MAPONLY" )
         elif str(hkl.useHKLSet) == 'Fpm':
             hkl_labels = ( hkl.dataset.Fpm.plus.value, hkl.dataset.Fpm.plus.sigma,
                            hkl.dataset.Fpm.minus.value, hkl.dataset.Fpm.minus.sigma )
             hkl_labin  =  "LABIN F+=" + hkl_labels[0] + " SIGF+=" + hkl_labels[1] +\
                           " F-=" + hkl_labels[2] + " SIGF-=" + hkl_labels[3]
+            stdin.append ( "ANOM MAPONLY" )
         else: # if str(hkl.useHKLSet) == 'TI':
             hkl_labels = ( hkl.dataset.Imean.value, hkl.dataset.Imean.sigma )
             hkl_labin  =  "LABIN IP=" + hkl_labels[0] + " SIGIP=" + hkl_labels[1]
 
-        stdin = [ hkl_labin + " FREE=" + hkl.dataset.FREE ]
-        if str(hkl.useHKLSet) == 'Fpm':
-            stdin.append ( 'ANOM MAPONLY' )
+        stdin.append ( hkl_labin + " FREE=" + hkl.dataset.FREE )
 
         # Basic options
 
@@ -269,6 +296,7 @@ class Refmac(basic.TaskDriver):
             # register output data from temporary location (files will be moved
             # to output directory by the registration procedure)
 
+            """
             structure = self.registerStructure ( xyzout,None,
                                                  self.getMTZOFName(),
                                                  None,None,libin,
@@ -290,6 +318,31 @@ class Refmac(basic.TaskDriver):
                 self.putStructureWidget      ( "structure_btn",
                                                "Structure and electron density",
                                                structure )
+            """
+
+            structure = self.formStructure ( xyzout,libin,hkl,istruct,
+                                             "FWT,PHWT,DELFWT,PHDELWT",True )
+            if structure:
+                self.putStructureWidget ( "structure_btn",
+                                          "Structure and electron density",
+                                          structure )
+
+                # make anomolous ED map widget
+                if hkl.isAnomalous() and str(hkl.useHKLSet)!="TI":
+                    self.putMessage ( "<h3>Structure with anomolous maps</h3>")
+                    struct_ano = self.formStructure ( xyzout,libin,hkl,istruct,
+                                                      "FAN,PHAN,DELFAN,PHDELAN",
+                                                      False )
+                    if struct_ano:
+                        nlst = struct_ano.dname.split ( " /" )
+                        nlst[0] += " (anom maps)"
+                        struct_ano.dname = " /".join(nlst)
+                        self.putStructureWidget ( "struct_ano_btn",
+                                    "Structure and anomalous maps",struct_ano )
+                    else:
+                        self.putMessage ( "<i>Structure with anomalous maps " +\
+                                          "could not be formed (possible bug)</i>" )
+
                 # update structure revision
                 revision = self.makeClass ( self.input_data.data.revision[0] )
                 revision.setStructureData ( structure )

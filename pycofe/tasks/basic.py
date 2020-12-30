@@ -1494,7 +1494,7 @@ class TaskDriver(object):
         return hothelp
 
     def registerRevision ( self,revision,serialNo=1,title="Structure Revision",
-                           message="<b><i>New structure revision name:</i></b>",
+                           message="<b><i>Name:</i></b>",
                            gridId = "", revisionName=None ):
 
         revName = revisionName
