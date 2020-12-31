@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    29.12.20   <--  Date of Last Modification.
+ *    31.12.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -56,6 +56,7 @@ function ProjectPage ( sceneId )  {
   var help_btn       = null;
   var roadmap_btn    = null;
   var selmode_btn    = null;
+  var dock_btn       = null;
 
   // ***** development code, dormant
   //var split_btn      = null;
@@ -588,6 +589,17 @@ function ProjectPage ( sceneId )  {
            .setNoWrap()
            .setHorizontalAlignment ( 'left' );
   this.headerPanel.setVerticalAlignment ( 0,2,'middle' );
+  dock_btn = this.toolPanel
+                 .setImageButton ( image_path('dock'),'20px','20px',0,0,1,1 )
+                 .setTooltip1    ( 'Toggle task dock','show',true,1000 )
+                 .setFontSize    ( '90%' )
+                 .setVerticalAlignment ( 'middle' );
+  var dock = new Dock ( this );
+  dock.toggle();  // hide 
+  dock_btn.addOnClickListener ( function(){
+    dock.toggle();
+  });
+
 
   // Make Main Menu
 
