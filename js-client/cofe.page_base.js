@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    08.12.20   <--  Date of Last Modification.
+ *    31.12.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -47,6 +47,8 @@ function BasePage ( sceneId,gridStyle,pageType )  {
 
   this.ration      = null;
   this.rationPanel = null;
+
+  this.toolPanel   = null;
 
   // make master grid
   this.grid = new Grid ( gridStyle );
@@ -252,28 +254,30 @@ BasePage.prototype.makeHeader = function ( colSpan,on_logout_function )  {
     this.headerPanel.setCellSize ( '99%','',0,14 );
     this._setModeIcon ( 15 );
     this.rationPanel = new Grid('');
-    this.headerPanel.setWidget   ( this.rationPanel,0,18,1,1 );
-    this.headerPanel.setLabel( '&nbsp;',0,19,1,1 ).setWidth('40px');
+    this.headerPanel.setWidget ( this.rationPanel,0,18,1,1 );
+    this.toolPanel = new Grid('');
+    this.headerPanel.setWidget ( this.toolPanel,0,19,1,1 );
+    this.headerPanel.setLabel  ( '&nbsp;',0,20,1,1 ).setWidth('40px');
     //var user_lbl = new Label ( '<i>' + __login_user.getValue() + '</i>' );
     var user_lbl = new Label ( '<i>' + __login_user + '</i>' );
-    this.headerPanel.setWidget      ( user_lbl,0,20,1,1 );
+    this.headerPanel.setWidget      ( user_lbl,0,21,1,1 );
     user_lbl.setHorizontalAlignment ( 'right' );
     user_lbl.setNoWrap();
 //    this.headerPanel.setNoWrap   ( 0,20 );
   } else {
     this.rationPanel = null;
-    this.headerPanel.setCellSize ( '99%','',0,16 );
-    this._setModeIcon ( 17 );
+    this.headerPanel.setCellSize ( '99%','',0,17 );
+    this._setModeIcon ( 18 );
   }
 
   this.logout_btn = new ImageButton ( image_path('logout'),'24px','24px' );
-  this.headerPanel.setWidget ( this.logout_btn,0,21,1,1 );
-  this.headerPanel.setHorizontalAlignment ( 0,21,'right' );
-  this.headerPanel.setVerticalAlignment   ( 0,21,'top'   );
-  this.headerPanel.setCellSize ( '32px','32px',0,21 );
+  this.headerPanel.setWidget ( this.logout_btn,0,22,1,1 );
+  this.headerPanel.setHorizontalAlignment ( 0,22,'right' );
+  this.headerPanel.setVerticalAlignment   ( 0,22,'top'   );
+  this.headerPanel.setCellSize ( '32px','32px',0,22 );
   this.logout_btn .setTooltip  ( 'Logout' );
 
-  this.headerPanel.setLabel( '&nbsp;',0,22,1,1 ).setWidth('10px');
+  this.headerPanel.setLabel( '&nbsp;',0,23,1,1 ).setWidth('10px');
 
   (function(page){
     page.logout_btn.addOnClickListener ( function(){
