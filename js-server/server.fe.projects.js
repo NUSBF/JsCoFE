@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    29.12.20   <--  Date of Last Modification.
+ *    02.01.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Front End Server -- Projects Handler Functions
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2020
+ *  (C) E. Krissinel, A. Lebedev 2016-2021
  *
  *  =================================================================
  *
@@ -47,6 +47,7 @@ var projectExt         = '.prj';
 var userProjectsExt    = '.projects';
 var projectListFName   = 'projects.list';
 var projectShareFName  = 'projects.share';
+var dockDataFName      = 'dock.meta';
 var userKnowledgeFName = 'knowledge.meta';
 var projectDataFName   = 'project.meta';
 var projectDescFName   = 'project.desc';
@@ -68,6 +69,12 @@ function getUserProjectListPath ( loginData )  {
 // given login data
   return path.join ( conf.getFEConfig().getVolumeDir(loginData),
                      loginData.login + userProjectsExt,projectListFName );
+}
+
+function getUserDockDataPath ( loginData )  {
+// path to JSON file containing dock content of user with given login data
+  return path.join ( conf.getFEConfig().getVolumeDir(loginData),
+                     loginData.login + userProjectsExt,dockDataFName );
 }
 
 function getUserProjectSharePath ( loginData )  {
@@ -325,6 +332,28 @@ function readProjectList ( loginData )  {
 }
 
 
+function writeDockData ( loginData,dockData )  {
+  var userDockDataPath = getUserDockDataPath ( loginData );
+  return utils.writeObject ( userDockDataPath,dockData );
+}
+
+
+function readDockData ( loginData )  {
+  var userDockDataPath = getUserDockDataPath ( loginData );
+  var dockData = utils.readObject ( userDockDataPath );
+  if (!dockData)  {
+    dockData = new pd.DockData();
+    dockData.tasks = [
+      { task:'TaskRefmac', title:'Refinement with Refmac',   icon:'task_refmac' },
+      { task:'TaskCootMB', title:'Model Building with Coot', icon:'task_coot'   }
+    ];
+    utils.writeObject ( userDockDataPath,dockData );
+  }
+  return dockData;
+}
+
+
+
 // ===========================================================================
 
 function makeNewUserProjectsDir ( loginData )  {
@@ -375,41 +404,20 @@ var response = null;  // must become a cmd.Response object to return
                                       '[00015] Project list cannot be read.','' );
   return response;
 
-  /*
-  // Get users' projects list file name
-  var userProjectsListPath = getUserProjectListPath ( loginData );
+}
 
-  if (utils.fileExists(userProjectsListPath))  {
-    var pList  = utils.readObject ( userProjectsListPath );
-    var pdescs = pList.projects;
-    pList.projects = [];
-    for (var i=0;i<pdescs.length;i++)  {
-      checkProjectDescData ( pdescs[i],loginData );
-      if (pdescs[i].owner.login!=loginData.login)  {
-        // check whether the project is still shared with the requester
-        var pdesc = readProjectDesc ( loginData,pdescs[i].name );
-        if (!pdesc)
-          pdescs[i] = null;
-        else if (!pd.isProjectAccessible(loginData.login,pdesc))
-          pdescs[i] = null;
-      }
-      if (pdescs[i])
-        pList.projects.push ( pdescs[i] );
-    }
-    if (pList)  {
-      response = new cmd.Response ( cmd.fe_retcode.ok,'',pList );
-    } else  {
-      response = new cmd.Response ( cmd.fe_retcode.readError,
-                                    '[00015] Project list cannot be read.','' );
-    }
-  } else  {
-    response  = new cmd.Response ( cmd.fe_retcode.readError,
-                                   '[00016] Project list does not exist.','' );
-  }
 
+// ===========================================================================
+
+function getDockData ( loginData )  {
+var response = null;  // must become a cmd.Response object to return
+  log.detailed ( 3,'get dock data, login ' + loginData.login );
+  var dockData = readDockData ( loginData );
+  if (dockData)
+        response = new cmd.Response ( cmd.fe_retcode.ok,'',dockData );
+  else  response = new cmd.Response ( cmd.fe_retcode.readError,
+                                      '[00151] Dock data cannot be read.','' );
   return response;
-  */
-
 }
 
 
@@ -672,6 +680,20 @@ var response = null;  // must become a cmd.Response object to return
   */
 
   return response;
+
+}
+
+// ===========================================================================
+
+function saveDockData ( loginData,newDockData )  {
+var response = null;  // must become a cmd.Response object to return
+
+  log.detailed ( 81,'save dock data, login ' + loginData.login );
+
+  if (writeDockData(loginData,newDockData))
+        response = new cmd.Response ( cmd.fe_retcode.ok,'','' );
+  else  response = new cmd.Response ( cmd.fe_retcode.writeError,
+                          '[00201] Dock data cannot be written.','' );
 
 }
 
@@ -1579,6 +1601,7 @@ function getJobFile ( loginData,data )  {
 module.exports.jobDirPrefix           = jobDirPrefix;
 module.exports.makeNewUserProjectsDir = makeNewUserProjectsDir;
 module.exports.getProjectList         = getProjectList;
+module.exports.getDockData            = getDockData;
 module.exports.getSharedPrjList       = getSharedPrjList;
 module.exports.getProjectDataPath     = getProjectDataPath;
 module.exports.getProjectDescPath     = getProjectDescPath;
@@ -1590,6 +1613,7 @@ module.exports.readProjectDesc        = readProjectDesc;
 module.exports.readProjectList        = readProjectList;
 module.exports.writeProjectList       = writeProjectList;
 module.exports.saveProjectList        = saveProjectList;
+module.exports.saveDockData           = saveDockData;
 module.exports.prepareProjectExport   = prepareProjectExport;
 module.exports.checkProjectExport     = checkProjectExport;
 module.exports.finishProjectExport    = finishProjectExport;

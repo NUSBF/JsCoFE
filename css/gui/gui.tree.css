@@ -37,9 +37,21 @@
 
 .vakata-context { z-index: 200; }  /* this is for context menu to be "always" on top */
 
-.vakata-context > li > a > i {
-    background-size: 24px 24px !important;
+.vakata-context > li > a {
+  height : 30px;
+  padding-bottom: 4px;
 }
+
+.vakata-context > li > a > i {
+  background-size: 24px 24px !important;
+}
+
+/* .context-menu-item{font-family:Times New Roman;line-height:12px;}
+
+.tree-default-context {
+    line-height:16px;
+}
+*/
 
 /*
 .vakata-context-hover > a > i {

@@ -1,10 +1,10 @@
 
 /*
- *  =================================================================
+*  ========================================================================
  *
- *    29.10.20   <--  Date of Last Modification.
+ *    01.01.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- *  -----------------------------------------------------------------
+ *  -----------------------------------------------------------------------
  *
  *  **** Module  :  js-client/gui/gui.widgets.js
  *       ~~~~~~~~~
@@ -13,9 +13,9 @@
  *  **** Content :  Common GUI widgets
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2020
+ *  (C) E. Krissinel, A. Lebedev 2016-2021
  *
- *  =================================================================
+ *  ========================================================================
  *
  *  Requires: 	jquery.js
  *
@@ -417,19 +417,25 @@ Widget.prototype.setEnabledAll = function ( enabled_bool )  {
 }
 
 Widget.prototype.addOnClickListener = function ( listener_func )  {
-  this.element.addEventListener('click',listener_func );
+  this.element.addEventListener('click',function(e){
+    e.preventDefault();
+    listener_func(e);
+  });
   return this;
 }
 
 Widget.prototype.addOnDblClickListener = function ( listener_func )  {
-  this.element.addEventListener('dblclick',listener_func );
+  this.element.addEventListener('dblclick',function(e){
+    e.preventDefault();
+    listener_func(e);
+  });
   return this;
 }
 
 Widget.prototype.addOnRightClickListener = function ( listener_func )  {
   this.element.addEventListener ( 'contextmenu',function(e){
     e.preventDefault();
-    listener_func();
+    listener_func(e);
     return false;
   },false );
   return this;

@@ -1,8 +1,8 @@
 
 /*
-*  ==========================================================================
+ *  ==========================================================================
  *
- *    25.12.20   <--  Date of Last Modification.
+ *    02.01.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -------------------------------------------------------------------------
  *
@@ -11,9 +11,13 @@
  *  **** Project :  jsCoFE - javascript-based Cloud Front End
  *       ~~~~~~~~~
  *  **** Content :  Project Data Classes
- *       ~~~~~~~~~
+ *       ~~~~~~~~~  ProjectDesc
+ *                  ProjectList
+ *                  ProjectData
+ *                  ProjectShare
+ *                  DockData
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2020
+ *  (C) E. Krissinel, A. Lebedev 2016-2021
  *
  *  ==========================================================================
  *
@@ -32,6 +36,8 @@ var tasklist_mode = {
   basic : 'basic',
   full  : 'full'
 };
+
+// ===========================================================================
 
 function ProjectDesc()  {
   this._type        = 'ProjectDesc';
@@ -200,15 +206,26 @@ ProjectShare.prototype.addShare = function ( pDesc )  {
   return (!found);
 }
 
+
+// ===========================================================================
+
+function DockData()  {
+  this._type  = 'DockData';
+  this.opened = false;  // closed by default
+  this.tasks  = []; // [{ task:'TaskRefmac', title:'Refmac', icon:'task_refmac'}]
+}
+
+
 // ===========================================================================
 
 // export such that it could be used in both node and a browser
 if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
-  module.exports.start_mode     = start_mode;
-  module.exports.tasklist_mode  = tasklist_mode;
-  module.exports.ProjectDesc    = ProjectDesc;
-  module.exports.ProjectList    = ProjectList;
-  module.exports.ProjectData    = ProjectData;
-  module.exports.ProjectShare   = ProjectShare;
+  module.exports.start_mode    = start_mode;
+  module.exports.tasklist_mode = tasklist_mode;
+  module.exports.ProjectDesc   = ProjectDesc;
+  module.exports.ProjectList   = ProjectList;
+  module.exports.ProjectData   = ProjectData;
+  module.exports.ProjectShare  = ProjectShare;
+  module.exports.DockData      = DockData;
   module.exports.isProjectAccessible = isProjectAccessible;
 }
