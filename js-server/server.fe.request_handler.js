@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    10.10.20   <--  Date of Last Modification.
+ *    02.01.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Front End Server -- Request Handler
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2020
+ *  (C) E. Krissinel, A. Lebedev 2016-2021
  *
  *  =================================================================
  *
@@ -91,6 +91,10 @@ var response = null;
           response = prj.getProjectList ( loginData );
        break;
 
+    case cmd.fe_reqtype.getDockData :
+          response = prj.getDockData ( loginData );
+       break;
+
     case cmd.fe_reqtype.getSharedPrjList :
           response = prj.getSharedPrjList ( loginData );
        break;
@@ -101,6 +105,10 @@ var response = null;
 
     case cmd.fe_reqtype.saveProjectList :
           response = prj.saveProjectList ( loginData,data );
+       break;
+
+    case cmd.fe_reqtype.saveDockData :
+          response = prj.saveDockData ( loginData,data );
        break;
 
     case cmd.fe_reqtype.getProjectData :  // returns _current_ project data

@@ -2,7 +2,7 @@
 /*
  *  ===========================================================================
  *
- *    31.12.20   <--  Date of Last Modification.
+ *    03.01.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  ---------------------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Server Command Definitions
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2020
+ *  (C) E. Krissinel, A. Lebedev 2016-2021
  *
  *  ===========================================================================
  *
@@ -25,7 +25,7 @@
 
 function appName()  { return 'CCP4 Cloud' }  // application name for reporting
 
-var jsCoFE_version = '1.6.018 [31.12.2020]';
+var jsCoFE_version = '1.6.018 [03.01.2020]';
 
 function appVersion()  {
   return jsCoFE_version;
@@ -108,8 +108,10 @@ var fe_reqtype = {
   updateAndRestart  : '-updateAndRestart',  // request to update and restart all servers
   getUserRation     : '-getUserRation',     // request to retrieve current user ration
   getProjectList    : '-getProjectList',    // request for projects list
+  getDockData       : '-getDockData',       // request for dock data
   getSharedPrjList  : '-getSharedPrjList',  // request for shared projects list
   saveProjectList   : '-saveProjectList',   // request to save project list
+  saveDockData      : '-saveDockData',      // request to save dock data
   getProjectData    : '-getProjectData',    // request for project data
   advanceJobCounter : '-advanceJobCounter', // request to advance job counter
   saveProjectData   : '-saveProjectData',   // request to save project data

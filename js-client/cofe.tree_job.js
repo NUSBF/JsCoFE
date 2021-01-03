@@ -826,12 +826,25 @@ JobTree.prototype.addJob = function ( insert_bool,copy_params,parent_page,onAdd_
 
 
 JobTree.prototype.addTask = function ( task,insert_bool,copy_params,parent_page,onAdd_func )  {
-  var dataBox = this.harvestTaskData ( 1,[] );
-  if (copy_params)  {
+var dataBox     = this.harvestTaskData ( 1,[] );
+var avail_key   = task.isTaskAvailable();
+var dataSummary = dataBox.getDataSummary ( task );
+
+  if (task.state==job_code.retired)
+    dataSummary.status = -2;
+  else if (avail_key[0]!='ok')
+    dataSummary.status = -1;
+
+  if (dataSummary.status>0)  {
     var branch_task_list = this.getAllAncestors ( this.getSelectedTask() );
-    this._copy_task_parameters ( task,branch_task_list );
+    if (copy_params)
+      this._copy_task_parameters ( task,branch_task_list );
+    this._copy_task_cloud_path ( task,branch_task_list );
+    this._add_job ( insert_bool,task,dataBox, parent_page,onAdd_func );
   }
-  this._add_job ( insert_bool,task,dataBox, parent_page,onAdd_func );
+
+  return [avail_key,dataSummary];
+
 }
 
 
