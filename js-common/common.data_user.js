@@ -1,10 +1,10 @@
 
 /*
- *  =================================================================
+ *  ==========================================================================
  *
- *    28.12.20   <--  Date of Last Modification.
+ *    04.01.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- *  -----------------------------------------------------------------
+ *  --------------------------------------------------------------------------
  *
  *  **** Module  :  js-common/common.data_user.js
  *       ~~~~~~~~~
@@ -13,12 +13,14 @@
  *  **** Content :  User Data Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2020
+ *  (C) E. Krissinel, A. Lebedev 2016-2021
  *
- *  =================================================================
+ *  ==========================================================================
  *
  */
 
+
+// ===========================================================================
 
 var licence_code = {
   academic   : 'academic',
@@ -42,6 +44,10 @@ var role_code = {
   admin     : 'admin',
   developer : 'developer'
 }
+
+var __local_user_id = 'localuser';  // local user name
+
+// ---------------------------------------------------------------------------
 
 function UserData()  {
   this._type         = 'UserData';  // do not change
@@ -113,6 +119,7 @@ if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
   module.exports.feedback_code   = feedback_code;
   module.exports.userdata_action = userdata_action;
   module.exports.role_code       = role_code;
+  module.exports.__local_user_id = __local_user_id;
   module.exports.UserData        = UserData;
   module.exports.checkUserData   = checkUserData;
 }

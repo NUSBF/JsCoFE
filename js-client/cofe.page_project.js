@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    03.01.20   <--  Date of Last Modification.
+ *    04.01.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -204,6 +204,7 @@ function ProjectPage ( sceneId )  {
 
   function addToDock() {
     self.dock.addTaskClass ( jobTree.getSelectedTask() );
+    self.dock.show();
   }
 
   function setButtonState() {
