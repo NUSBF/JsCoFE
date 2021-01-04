@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    03.01.21   <--  Date of Last Modification.
+ *    04.01.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -156,4 +156,9 @@ Dock.prototype.toggle = function()  {
   this.dock.setVisible ( this.opened );
 //  this.dock.toggle();
   this.saveDockData();
+}
+
+Dock.prototype.show = function()  {
+  if (!this.opened)
+    this.toggle();
 }

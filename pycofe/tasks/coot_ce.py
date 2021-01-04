@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    02.11.20   <--  Date of Last Modification.
+#    04.01.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -21,7 +21,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2018-2020
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2018-2021
 #
 # ============================================================================
 #
@@ -131,7 +131,9 @@ class CootCE(basic.TaskDriver):
         for i in range(len(ixyz)):
             ixyz[i] = self.makeClass ( ixyz[i] )
             if ixyz[i].getXYZFileName():
-                args += ["--pdb",ixyz[i].getXYZFilePath(self.inputDir())]
+                pdbpath = ixyz[i].getXYZFilePath(self.inputDir())
+                if pdbpath not in args:
+                    args += ["--pdb",pdbpath]
 
         coot_scr = "coot_jscofe.py"
         coot_scr = os.path.join ( os.path.dirname ( os.path.abspath(__file__)),"..","proc",coot_scr )

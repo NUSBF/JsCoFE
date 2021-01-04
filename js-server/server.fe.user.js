@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    11.11.20   <--  Date of Last Modification.
+ *    04.01.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Front End Server -- User Support Module
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2020
+ *  (C) E. Krissinel, A. Lebedev 2016-2021
  *
  *  =================================================================
  *
@@ -63,8 +63,8 @@ var fe_server = conf.getFEConfig();
   var pwd = '';
   if (userData.login=='devel')
     pwd = 'devel';
-  else if (('localuser' in fe_server) && (userData.login=='localuser'))
-    pwd = 'localuser';
+  else if (('localuser' in fe_server) && (userData.login==ud.__local_user_id))
+    pwd = ud.__local_user_id;
   else if (userData.pwd.length>0)
     pwd = userData.pwd;
   else
@@ -264,8 +264,8 @@ var fe_server = conf.getFEConfig();
           // reset password
           if (uData.login=='devel')
                 pwds[n] = 'devel';
-          else if (('localuser' in fe_server) && (uData.login=='localuser'))
-                pwds[n] = 'localuser';
+          else if (('localuser' in fe_server) && (uData.login==ud.__local_user_id))
+                pwds[n] = ud.__local_user_id;
           else  pwds[n] = crypto.randomBytes(3).toString('hex');
           uData.pwd = hashPassword ( pwds[n] );
           // save file
@@ -448,17 +448,18 @@ var updateHash = false;
     updateHash = true;
   }
 
-  if (('localuser' in fe_server) && (!__userLoginHash.getToken('localuser')))  {
+  if (('localuser' in fe_server) &&
+      (!__userLoginHash.getToken(ud.__local_user_id)))  {
     userData = new ud.UserData();
     userData.name    = fe_server.localuser;
     userData.email   = conf.getEmailerConfig().maintainerEmail;
-    userData.login   = 'localuser';
-    userData.pwd     = 'localuser';
+    userData.login   = ud.__local_user_id;
+    userData.pwd     = ud.__local_user_id;
     userData.licence = 'academic';
     userData.role    = ud.role_code.user;
     makeNewUser ( userData,function(response){} );
     __userLoginHash.addUser ( 'e58e28a556d2b4884cb16ba8a37775f0',{
-                                'login'  : 'localuser',
+                                'login'  : ud.__local_user_id,
                                 'volume' : '*storage*'
                             });
     updateHash = false;
@@ -486,18 +487,12 @@ var fe_server = conf.getFEConfig();
   // Get user data object and generate a temporary password
 //  var userData = JSON.parse ( user_data_json );
   var pwd = hashPassword ( userData.pwd );
-  if (userData.login=='**localuser**')  {
-    userData.login = 'localuser';
+  if (userData.login=='**' + ud.__local_user_id + '**')  {
+    userData.login = ud.__local_user_id;
     userData.pwd   = 'e58e28a556d2b4884cb16ba8a37775f0';
     pwd = userData.pwd;
   }
   var ulogin = userData.login;
-  /*
-  if (ulogin=='**localuser**')  {
-    ulogin = 'localuser';
-    pwd    = 'e58e28a556d2b4884cb16ba8a37775f0';
-  }
-  */
   log.standard ( 5,'user login ' + ulogin );
 
   // Check that we're having a new login name
@@ -523,8 +518,6 @@ var fe_server = conf.getFEConfig();
 
         if (uData.login=='devel')  {
           token = '340cef239bd34b777f3ece094ffb1ec5';
-        //} else if (('localuser' in fe_server) && (uData.login=='localuser'))  {
-        //  token = 'e58e28a556d2b4884cb16ba8a37775f0';
         } else  {
           token = crypto.randomBytes(20).toString('hex');
           __userLoginHash.addUser ( token,{
@@ -726,7 +719,7 @@ function userLogout ( loginData )  {
 
   log.standard ( 7,'user logout ' + loginData.login );
 
-  if (['devel','localuser'].indexOf(loginData.login)<0)
+  if (['devel',ud.__local_user_id].indexOf(loginData.login)<0)
     __userLoginHash.removeUser ( loginData.login );
 
   return new cmd.Response ( cmd.fe_retcode.ok,'','' );
@@ -1059,8 +1052,8 @@ var userFilePath = getUserDataFName ( loginData );
           var pwd = '';
           if (uData.login=='devel')
                 pwd = 'devel';
-          else if (('localuser' in fe_server) && (uData.login=='localuser'))
-                pwd = 'localuser';
+          else if (('localuser' in fe_server) && (uData.login==ud.__local_user_id))
+                pwd = ud.__local_user_id;
           else  pwd = crypto.randomBytes(3).toString('hex');
           uData.pwd    = hashPassword ( pwd );
           uData.action = ud.userdata_action.chpwd;
@@ -1112,93 +1105,6 @@ var userFilePath = getUserDataFName ( loginData );
   }
 
   return response;
-
-
-
-
-/*
-var response  = null;  // must become a cmd.Response object to return
-var fe_server = conf.getFEConfig();
-
-    // Get user data object and generate a temporary password
-
-    log.standard ( 4,'recover user login for ' + userData.email + ' at ' +
-                     fe_server.userDataPath );
-
-    files = fs.readdirSync ( fe_server.userDataPath );
-
-    var userName = '???';
-    var logins   = [];
-    var pwds     = [];
-    var n = 0;
-    for (var i=0;i<files.length;i++)
-      if (files[i].endsWith(__userDataExt))  {
-        var userFilePath = path.join ( fe_server.userDataPath,files[i] );
-        var uData = utils.readObject ( userFilePath );
-        if (uData)  {
-          if (uData.email==userData.email)  {
-            userName  = uData.name;
-            logins[n] = uData.login;
-            // reset password
-            if (uData.login=='devel')
-                  pwds[n] = 'devel';
-            else if (('localuser' in fe_server) && (uData.login=='localuser'))
-                  pwds[n] = 'localuser';
-            else  pwds[n] = crypto.randomBytes(3).toString('hex');
-            uData.pwd = hashPassword ( pwds[n] );
-            // save file
-            if (!utils.writeObject(userFilePath,uData))  {
-              response = new cmd.Response ( cmd.fe_retcode.writeError,
-                        'User file cannot be written.',
-                        emailer.send ( conf.getEmailerConfig().maintainerEmail,
-                          'CCP4 Login Recovery Write Fails',
-                          'Detected file write failure at user login recovery, ' +
-                          'please investigate.' )
-                    );
-            }
-            n++;
-          }
-        } else  {
-          response = new cmd.Response ( cmd.fe_retcode.readError,
-                        'User file cannot be read.',
-                        emailer.send ( conf.getEmailerConfig().maintainerEmail,
-                          'CCP4 Login Recovery Read Fails',
-                          'Detected file read failure at user login recovery, ' +
-                          'please investigate.' )
-                    );
-        }
-      }
-
-    if (!response)  {
-
-      if (logins.length<=0)  {
-
-        response = new cmd.Response ( cmd.fe_retcode.userNotFound,'','' );
-
-      } else  {
-
-        var msg = 'The following account(s) have been identified as ' +
-                  'registered with your e-mail address, and their passwords ' +
-                  'are now reset as below:<p>';
-        for (var i=0;i<logins.length;i++)
-          msg += 'Login: <b>' + logins[i] +
-                 '</b>, new password: <b>' + pwds[i] + '</b><br>';
-        msg += '&nbsp;<br>';
-
-        response = new cmd.Response ( cmd.fe_retcode.ok,userName,
-          emailer.sendTemplateMessage ( userData,
-                    cmd.appName() + ' Login Recovery',
-                    'login_recovery',{ 'text1' : msg } )
-        );
-
-      }
-
-    }
-
-    callback_func ( response );
-*/
-
-
 
 }
 
@@ -1401,7 +1307,7 @@ var fe_server = conf.getFEConfig();
     rData.auth_software = fe_server.auth_software;
     if ('localuser' in fe_server)  {
       rData.localuser  = fe_server.localuser;
-      rData.logintoken = __userLoginHash.getToken ( 'localuser' );
+      rData.logintoken = __userLoginHash.getToken ( ud.__local_user_id );
       var loginData    = __userLoginHash.getLoginData ( rData.logintoken );
       if (loginData.login)  {
         var userFilePath = getUserDataFName ( loginData );

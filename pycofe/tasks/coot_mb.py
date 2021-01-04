@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    15.10.20   <--  Date of Last Modification.
+#    04.01.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -22,7 +22,7 @@
 #      jobDir/report  : directory receiving HTML report
 #    expire      is timeout for removing coot backup directories
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2020
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2021
 #
 # ============================================================================
 #
@@ -146,11 +146,18 @@ class Coot(coot_ce.CootCE):
         args = []
         for s in data_list:
             if s.getXYZFileName():
-                args += ["--pdb",s.getXYZFilePath(self.inputDir())]
+                pdbpath = s.getXYZFilePath(self.inputDir())
+                if pdbpath not in args:
+                    args += ["--pdb",pdbpath]
             if s._type=="DataStructure":
                 if s.getSubFileName():
-                    args += ["--pdb",s.getSubFilePath(self.inputDir())]
-                args += ["--auto",s.getMTZFilePath(self.inputDir())]
+                    pdbpath = s.getSubFilePath(self.inputDir())
+                    if pdbpath not in args:
+                        args += ["--pdb",pdbpath]
+                mtzpath = s.getMTZFilePath(self.inputDir())
+                if mtzpath not in args:
+                    args += ["--auto",mtzpath]
+
 
         if libPath:
             args += ["--dictionary",libPath]

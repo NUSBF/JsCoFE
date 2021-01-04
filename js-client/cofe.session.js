@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    06.12.20   <--  Date of Last Modification.
+ *    04.01.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  User session management
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2020
+ *  (C) E. Krissinel, A. Lebedev 2020-2021
  *
  *  =================================================================
  *
@@ -34,7 +34,7 @@ function startSession ( sceneId,dev_switch )  {
       if (__local_user)  {
         //__login_token = 'e58e28a556d2b4884cb16ba8a37775f0';
         //__login_user  = 'Local user';
-        login ( '**localuser**','',sceneId,0 );
+        login ( '**' + __local_user_id + '**','',sceneId,0 );
         //loadKnowledge ( 'Login' )
         //makeProjectListPage(sceneId);
       } else  {
@@ -118,8 +118,8 @@ function login ( user_login_name,user_password,sceneId,page_switch )  {
       case fe_retcode.ok:
               var userData         = response.data.userData;
               __login_token        = response.message;
-              if (user_login_name=='**localuser**')
-                    __login_id     = 'myself';
+              if (user_login_name=='**' + __local_user_id + '**')
+                    __login_id     = __local_user_id;
               else  __login_id     = user_login_name;
               __cloud_storage      = response.data.cloud_storage;
               __jobs_safe          = response.data.jobs_safe;

@@ -21,6 +21,12 @@ CCP4 Cloud Version Log
 
     #. Fixed a bug in ``Prepare MR Model from XYZ`` task, causing incorrect identification of sequence identity for nucleic acid models
 
+    #. Added import Scalepack files (.sca)
+
+    #. Fixed a bug in preparing DNA/RNA MR models, affecting sequence identity calculations
+
+    #. Guided data import made optional, may be switched on/off in the *Preferences* section of the *My Account* page
+
 
 **Version 1.6.017**
 
