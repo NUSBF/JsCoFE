@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    04.01.20   <--  Date of Last Modification.
+ *    05.01.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -231,9 +231,10 @@ function ProjectPage ( sceneId )  {
         if (tparent)
           add_enabled = (tparent.state==job_code.finished);
       }
-      self.add_btn.setEnabled ( (!__dormant) &&
-                               ((task.state==job_code.finished)  ||
-                               (is_remark && add_enabled)) );
+      var can_add = (!__dormant) && ((task.state==job_code.finished)  ||
+                                     (is_remark && add_enabled));
+      self.add_btn.setEnabled ( can_add );
+      self.dock  .setEnabled  ( can_add );
       clone_btn  .setEnabled ( (!__dormant) && dsel && task.canClone(node,jobTree) );
       moveup_btn .setEnabled ( (!__dormant) && task.canMove(node,jobTree) );
       stop_btn   .setEnabled ( dsel && ((task.state==job_code.running) ||
@@ -244,6 +245,7 @@ function ProjectPage ( sceneId )  {
       else  self.del_btn.setTooltip ( 'Delete job' );
     } else  {  // root
       self.add_btn.setEnabled ( !__dormant );
+      self.dock   .setEnabled ( !__dormant );
       clone_btn   .setEnabled ( false );  // dsel ???
       moveup_btn  .setEnabled ( false );
       stop_btn    .setEnabled ( false );
@@ -372,7 +374,6 @@ function ProjectPage ( sceneId )  {
         action: addToDock
       };
 
-
     return items;
 
   }
@@ -433,7 +434,9 @@ function ProjectPage ( sceneId )  {
       // enter empty project: first task to run or choose
       switch (jobTree.projectData.desc.startmode)  {
         case start_mode.auto    :
-                jobTree.addTask ( new TaskCCP4go(),false,false,self,function(){
+                var ccp4go = new TaskCCP4go();
+                ccp4go.input_dtypes = [1];  // force "at root" mode
+                jobTree.addTask ( ccp4go,false,false,self,function(){
                    self.del_btn.setDisabled ( false );
                 });
               break;
@@ -611,6 +614,7 @@ function ProjectPage ( sceneId )  {
   // *******************************
 
   this.add_btn.setSize('40px','40px').setTooltip('Add job'   ).setDisabled(true);
+  this.dock   .setDisabled ( true );
   moveup_btn  .setSize('40px','40px').setTooltip(
                    'Move job one position up the tree branch').setDisabled(true);
   this.del_btn.setSize('40px','40px').setTooltip('Delete job').setDisabled(true);
@@ -639,12 +643,15 @@ function ProjectPage ( sceneId )  {
   //}
   // *******************************
 
+  /*
   this.add_btn.setDisabled ( true );
+  this.dock   .setDisabled ( true );
   moveup_btn  .setDisabled ( true );
   clone_btn   .setDisabled ( true );
   add_rem_btn .setDisabled ( true );
   thlight_btn .setDisabled ( true );
   refresh_btn .setDisabled ( true );
+  */
 
   help_btn.addOnClickListener ( function(){
     new HelpBox ( '',__user_guide_base_url + 'jscofe_project.html',null );
