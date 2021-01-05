@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    07.11.20   <--  Date of Last Modification.
+ *    05.12.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Configuration Module
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2020
+ *  (C) E. Krissinel, A. Lebedev 2016-2021
  *
  *  =================================================================
  *
@@ -598,8 +598,10 @@ function readConfiguration ( confFilePath,serverType )  {
     fe_server = new ServerConfig('FE');
 
     // assign default values
-    fe_server.sessionCheckPeriod = 2000;  // ms
-    fe_server.auth_software      = null;
+    fe_server.sessionCheckPeriod     = 2000;  // ms
+    fe_server.auth_software          = null;
+    fe_server.malicious_attempts_max = -1;  // around 100; <0 means do not use
+
 
     // read configuration file
     for (var key in confObj.FrontEnd)

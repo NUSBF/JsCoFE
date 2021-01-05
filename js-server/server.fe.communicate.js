@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    26.10.20   <--  Date of Last Modification.
+ *    05.01.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Front End Server -- Communication Module
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2020
+ *  (C) E. Krissinel, A. Lebedev 2016-2021
  *
  *  ==========================================================================
  *
@@ -53,6 +53,7 @@ var __malicious_ext = [
 ];
 */
 
+/*
 var __malicious_ip_register  = {};
 var __malicious_attempts_max = 100;
 
@@ -65,12 +66,15 @@ function __count_malicious_ip ( ip,count )  {
   } else
     __malicious_ip_register[ip] = count;
 }
+*/
 
+var __malicious_ip_register  = {};
 
 function Communicate ( server_request )  {
 
-  this.ncURL    = '';
-  this.filePath = '';
+  this.ncURL     = '';
+  this.filePath  = '';
+  this.fe_server = conf.getFEConfig();
 
   this.requester_ip =
         (server_request.headers['x-forwarded-for'] || '').split(',').pop() ||
@@ -78,8 +82,10 @@ function Communicate ( server_request )  {
         server_request.socket.remoteAddress     ||
         server_request.connection.socket.remoteAddress;
 
-  if ((this.requester_ip in __malicious_ip_register) &&
-      (__malicious_ip_register[this.requester_ip]>__malicious_attempts_max)) {
+  if ((this.fe_server.malicious_attempts_max>0) &&
+      (this.requester_ip in __malicious_ip_register) &&
+      (__malicious_ip_register[this.requester_ip] >
+        this.fe_server.malicious_attempts_max)) {
     this.command = cmd.ignore;
     return;
   }
@@ -93,16 +99,15 @@ function Communicate ( server_request )  {
 */
 
   // Parse the server request command
-  var url_parse = url.parse(server_request.url);
-  var url_path  = url_parse.pathname.substr(1);
-  this.command  = url_path.toLowerCase();
-  this.search   = url_parse.search;
-  var fe_server = conf.getFEConfig();
+  var url_parse  = url.parse(server_request.url);
+  var url_path   = url_parse.pathname.substr(1);
+  this.command   = url_path.toLowerCase();
+  this.search    = url_parse.search;
 //console.log ( "requested " + server_request.url );
 //console.log ( "parsed    " + JSON.stringify(url_parse) );
 
   if ((this.command=='') || (this.command==cmd.fe_command.cofe))
-        this.filePath = fe_server.bootstrapHTML;
+        this.filePath = this.fe_server.bootstrapHTML;
   else  this.filePath = url_path;
 //console.log ( "filePath " + this.filePath );
 
@@ -142,7 +147,7 @@ function Communicate ( server_request )  {
   if (ix<0) {
     ix = this.filePath.lastIndexOf(cmd.__special_fjsafe_tag);
     if (ix>=0)  {
-      this.filePath = fe_server.getJobsSafePath() + '/' +
+      this.filePath = this.fe_server.getJobsSafePath() + '/' +
                       this.filePath.substr(ix+cmd.__special_fjsafe_tag.length);
       //console.log ( ' fpath=' + this.filePath );
       log.debug2 ( 3,"calculated path " + this.filePath);
@@ -229,6 +234,27 @@ function Communicate ( server_request )  {
 }
 
 
+
+/*
+var __malicious_ext = [
+  '.exe', '.php', '.cgi', '.jsp', '.asp', '.pl'
+];
+*/
+
+
+Communicate.prototype.__count_malicious_ip = function ( ip,count )  {
+  if (this.fe_server.malicious_attempts_max>0)  {
+    if ((ip in __malicious_ip_register) ||
+        (__malicious_ip_register[ip]>-this.fe_server.malicious_attempts_max)) {
+      __malicious_ip_register[ip] += count;
+      if (__malicious_ip_register[ip]>this.fe_server.malicious_attempts_max)
+        log.standard ( 1,'ip address ' + ip + ' is deemed as malicious and will be ignored' );
+    } else
+      __malicious_ip_register[ip] = count;
+  }
+}
+
+
 Communicate.prototype.sendFile = function ( server_response )  {
 
   //var mtype = this.mimeType;
@@ -276,24 +302,24 @@ Communicate.prototype.sendFile = function ( server_response )  {
       fpath = path.join ( 'images_com',fpath );
     }
 
-    __count_malicious_ip ( this.requester_ip,-1 );
+    this.__count_malicious_ip ( this.requester_ip,-1 );
 
     (function(self){
       if (!self.search)
         utils.send_file ( fpath,server_response,self.mimeType,false,0,0,
                           function(){
-                            __count_malicious_ip(self.requester_ip,2);
+                            self.__count_malicious_ip ( self.requester_ip,2 );
                             return true;
                           });
       else if (self.search.indexOf('?capsize')>=0)
         utils.send_file ( fpath,server_response,self.mimeType,false,
                           conf.getFEConfig().fileCapSize,0,function(){
-                            __count_malicious_ip(self.requester_ip,2);
+                            self.__count_malicious_ip ( self.requester_ip,2 );
                             return true;
                           });
       else
         utils.send_file ( fpath,server_response,self.mimeType,false,0,0,function(){
-                            __count_malicious_ip(self.requester_ip,2);
+                            self.__count_malicious_ip ( self.requester_ip,2 );
                             return true;
                           });
     }(this))
