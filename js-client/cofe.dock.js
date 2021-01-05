@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    04.01.21   <--  Date of Last Modification.
+ *    05.01.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -161,4 +161,14 @@ Dock.prototype.toggle = function()  {
 Dock.prototype.show = function()  {
   if (!this.opened)
     this.toggle();
+}
+
+Dock.prototype.setDisabled = function ( disable_bool )  {
+  if (disable_bool)  $(this.sortable.element).css ({opacity:0.5});
+               else  $(this.sortable.element).css ({opacity:1.0});
+  this.dock.setDisabled ( disable_bool );
+}
+
+Dock.prototype.setEnabled = function ( enable_bool )  {
+  this.setDisabled ( !enable_bool );
 }
