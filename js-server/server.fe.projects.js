@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.01.21   <--  Date of Last Modification.
+ *    06.01.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -534,7 +534,7 @@ var erc = '';
   // maintain share lists
   var pData = readProjectData ( loginData,projectName );
   if (pData && (pData.desc.owner.login==loginData.login))  {
-    // project can be deleted only by owner; shared projects cam be only
+    // project can be deleted only by owner or keeper; shared projects can be only
     // unjoined
 
     // remove it from all shares
@@ -620,6 +620,7 @@ var response = null;  // must become a cmd.Response object to return
       }
     }
 
+    /*
     for (var i=0;i<del_lst.length;i++)  {
       var pName = del_lst[i][0];
       var pDesc = del_lst[i][1];
@@ -632,6 +633,23 @@ var response = null;  // must become a cmd.Response object to return
         // which does not release disk space
         if ('disk_space' in pList.projects[i])  // backward compatibility 05.06.2018
           disk_space_change -= pList.projects[i].disk_space;
+      }
+    }
+    */
+
+    for (var i=0;i<del_lst.length;i++)  {
+      var pName = del_lst[i][0];
+      var pDesc = del_lst[i][1];
+      if (('owner' in pDesc) && (pDesc.owner.login!=loginData.login))  {
+        // monitor disk space only if own projects are deleted; deleting
+        // a shared project is a logical, rather than physical, operation,
+        // which does not release disk space
+        if ('disk_space' in pList.projects[i])  // backward compatibility 05.06.2018
+          disk_space_change -= pList.projects[i].disk_space;
+      } else  {
+        var rsp = deleteProject ( loginData,pName );
+        if (rsp.status!=cmd.fe_retcode.ok)
+          response = rsp;
       }
     }
 
