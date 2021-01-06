@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    29.12.20   <--  Date of Last Modification.
+ *    06.01.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Project list page
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2020
+ *  (C) E. Krissinel, A. Lebedev 2016-2021
  *
  *  =================================================================
  *
@@ -88,13 +88,13 @@ function ProjectListPage ( sceneId )  {
 //    return (self.tablesort_tbl.selectedRow.child[0].text.indexOf(']:</b>')>=0);
   }
 
-  function isCurrentProjectOwned()  {
+  function isCurrentProjectOwned ( check_author )  {
     var pdesc = getCurrentProjectDesc();
     if (pdesc)  {
-      var author = pdesc.owner.login;
-      if ('author' in pdesc.owner)
-        author = pdesc.owner.author;
-      return (author==__login_id);
+      var owner = pdesc.owner.login;
+      if (check_author && ('author' in pdesc.owner))
+        owner = pdesc.owner.author;
+      return (owner==__login_id);
     }
     return false;
   }
@@ -232,7 +232,7 @@ function ProjectListPage ( sceneId )  {
 
     if (isCurrentProjectShared())  {
 
-      if (isCurrentProjectOwned())  {
+      if (isCurrentProjectOwned(true))  {
         new MessageBox ( 'Rename Project',
             '<h2>Rename Project</h2>' +
             'You cannot rename this project because it was shared with other ' +
@@ -300,6 +300,22 @@ function ProjectListPage ( sceneId )  {
     var delMessage = '';
     var btnName    = 'Delete';
     var dlgTitle   = 'Delete Project';
+    if (isCurrentProjectOwned(false))  {
+      delMessage = '<h2>Delete Project</h2>' +
+                   'Project: <b>' + delName +
+                   '</b><p>will be deleted. All project ' +
+                   'structure and data will be lost.' +
+                   '<p>Please confirm your choice.';
+    } else  {
+      delMessage = '<h2>Unjoin Project</h2>' +
+                   'Project, shared with you: <b>' + delName +
+                   '</b><p>will be unjoined, and you will be no ' +
+                   'longer able to access it<br>until joined again.' +
+                   '<p>Please confirm your choice.';
+      btnName    = 'Unjoin';
+      dlgTitle   = 'Unjoin Project';
+    }
+    /*
     if (isCurrentProjectShared())  {
       delMessage = '<h2>Unjoin Project</h2>' +
                    'Project, shared with you: <b>' + delName +
@@ -315,7 +331,8 @@ function ProjectListPage ( sceneId )  {
                    'structure and data will be lost.' +
                    '<p>Please confirm your choice.';
     }
-    var inputBox   = new InputBox ( 'Delete Project' );
+    */
+    var inputBox   = new InputBox ( dlgTitle );
     inputBox.setText ( delMessage );
     inputBox.launch ( btnName,function(){
       projectList.deleteProject ( delName );
