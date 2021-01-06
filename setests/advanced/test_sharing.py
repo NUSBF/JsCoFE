@@ -363,8 +363,8 @@ def test_sharingBasic(browser,
         if not nologin:
             sf.loginToCloud(d2.driver, login+'2', password)
 
-        sf.removeProject(d.driver, d.testName)
         unjoinProject(d2.driver, '[' + login + ']:' + d.testName)
+        sf.removeProject(d.driver, d.testName)
 
         sf.makeTestProject(d.driver, d.testName, d.testName)
         sf.enterProject(d.driver, d.testName)
@@ -407,7 +407,8 @@ def test_sharingBasic(browser,
 
         verifyMrBump(d.driver)
 
-        sf.renameProject(d.driver, d.testName)
+        #cant rename shared projects anymore
+        #sf.renameProject(d.driver, d.testName)
 
         d.driver.quit()
         d2.driver.quit()
