@@ -142,7 +142,7 @@ if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
 
   DataTemplate.prototype.inspectData = function ( task ) {
     var dlg = new DataInspectDialog ( this.makeDataSummaryPage(task),
-                                      this.dname,800,700 );
+                                      this.dname,'800px','700px' );
     dlg.launch();
     //new MessageBox ( "Not implemented","Data Viewer not Implemented.");
   }

@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    23.10.20   <--  Date of Last Modification.
+#    08.01.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -21,7 +21,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2020
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2020-2021
 #
 # ============================================================================
 #
@@ -29,6 +29,8 @@
 #  python native imports
 import os
 #import shutil
+
+import gemmi
 
 #  application imports
 from . import basic
@@ -46,12 +48,29 @@ class Buster(basic.TaskDriver):
     def buster_dir (self):  return "buster_dir"
     def buster_seq (self):  return "buster.seq"
 
+    # ------------------------------------------------------------------------
+
     def get_floats ( self,s1,s2,s3 ):
         try:
             return [float(s1),float(s2),float(s3)]
         except:
             return None
 
+    def merge_sites ( self,xyzpath,hapath,hatype,outpath ):
+        ha_type = hatype.upper()
+        st_xyz  = gemmi.read_structure ( xyzpath )
+        st_ha   = gemmi.read_structure ( hapath  )
+        for chain in st_ha[0]:
+            chain.name = "Z"
+            for res in chain:
+                #res.name     = ha_type
+                res.het_flag = "H"
+                for atom in res:
+                    atom.name    = ha_type
+                    atom.element = gemmi.Element ( ha_type )
+            st_xyz[0].add_chain ( chain )
+        st_xyz.write_pdb ( outpath )
+        return
 
     # ------------------------------------------------------------------------
 
@@ -65,8 +84,9 @@ class Buster(basic.TaskDriver):
         # Prepare buster job
 
         # fetch input data
-        hkl     = self.makeClass ( self.input_data.data.hkl    [0] )
-        istruct = self.makeClass ( self.input_data.data.istruct[0] )
+        irevision = self.makeClass ( self.input_data.data.revision[0] )
+        hkl       = self.makeClass ( self.input_data.data.hkl     [0] )
+        istruct   = self.makeClass ( self.input_data.data.istruct [0] )
 
         cmd     = [ "-m",hkl.getHKLFilePath(self.inputDir()),
                     "-p",istruct.getXYZFilePath(self.inputDir()),
@@ -254,9 +274,13 @@ class Buster(basic.TaskDriver):
 
             self.putMessage ( "&nbsp;" )
 
+            self.putTitle ( "Output Structure" +\
+                        self.hotHelpLink ( "Structure","jscofe_qna.structure") )
+
             structure = self.registerStructure ( xyzout,None,mtzout,
                                 None,None,libin,leadKey=1,
-                                map_labels="2FOFCWT,PH2FOFCWT,FOFCWT,PHFOFCWT" )
+                                map_labels="2FOFCWT,PH2FOFCWT,FOFCWT,PHFOFCWT",
+                                copy_files=True )
 
             if structure:
                 structure.copyAssociations   ( istruct )
@@ -266,9 +290,77 @@ class Buster(basic.TaskDriver):
                 structure.copySubtype        ( istruct )
                 structure.copyLigands        ( istruct )
                 structure.addPhasesSubtype   ()
+
                 self.putStructureWidget      ( "structure_btn",
                                                "Structure and electron density",
                                                structure )
+
+                # make anomolous ED map widget
+                if hkl.isAnomalous():
+
+                    anodir = "anofft"
+                    if not os.path.isdir(anodir):
+                        os.mkdir ( anodir )
+                    self.runApp ( "diff_fourier",[
+                        "-m"  ,mtzout,
+                        "-p"  ,mtzout,
+                        "-P"  ,"PH2FOFCWT","FOM",
+                        "-o"  ,os.path.join(anodir,"ano"),
+                        "-pdb",xyzout,
+                        "-keepmap"
+                    ],logType="Service" )
+
+                    mapfile = os.path.join ( anodir,"ano.ANO.map" )
+                    if os.path.exists(mapfile):
+                        anomtz = "anomtz.mtz"
+                        self.open_stdin()
+                        self.write_stdin ([
+                            "mode sfcalc mapin",
+                            "labout FC=FAN PHIC=PHAN",
+                            "end"
+                        ])
+                        self.close_stdin()
+                        self.runApp ( "sfall",[
+                            "mapin" ,mapfile,
+                            "hklout",anomtz
+                        ],logType="Service" )
+                        os.remove ( mapfile )
+
+                        xyz_merged = "refine_merged.pdb"
+                        hatype     = irevision.ASU.ha_type
+                        if not hatype:
+                            hatype = "AX"
+                        self.merge_sites (
+                            xyzout, os.path.join(anodir,"ano.ANO.pdb"),hatype,
+                            xyz_merged )
+
+                        self.putMessage ( "<h3>Structure with anomolous maps</h3>")
+                        struct_ano = self.registerStructure ( xyz_merged,None,anomtz,
+                                    None,None,libin,leadKey=1,
+                                    map_labels="FAN,PHAN",
+                                    copy_files=False )
+                        if struct_ano:
+                            struct_ano.copyAssociations   ( istruct )
+                            struct_ano.addDataAssociation ( hkl.dataId     )
+                            struct_ano.addDataAssociation ( istruct.dataId )  # ???
+                            struct_ano.setBusterLabels    ( hkl )
+                            struct_ano.copySubtype        ( istruct )
+                            struct_ano.copyLigands        ( istruct )
+                            struct_ano.addPhasesSubtype   ()
+
+                            nlst = struct_ano.dname.split ( " /" )
+                            nlst[0] += " (anom maps)"
+                            struct_ano.dname = " /".join(nlst)
+                            self.putStructureWidget ( "struct_ano_btn",
+                                        "Structure and anomalous maps",struct_ano )
+
+                        else:
+                            self.putMessage ( "<i>Structure with anomalous map " +\
+                                              "could not be formed (possible bug)</i>" )
+                    else:
+                        self.putMessage ( "<i>Anomalous map was not calculated " +\
+                                          "could not be formed (possible bug)</i>" )
+
                 # update structure revision
                 revision = self.makeClass ( self.input_data.data.revision[0] )
                 revision.setStructureData ( structure )

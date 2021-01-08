@@ -218,7 +218,7 @@ if (!__template)  {
 
   DataRevision.prototype.inspectData = function ( task ) {
     var dsp = this.makeDataSummaryPage ( task );
-    var dlg = new DataInspectDialog ( dsp,this.dname,800,700 );
+    var dlg = new DataInspectDialog ( dsp,this.dname,'800px','700px' );
 
     function dsp_resize()  {
       dsp.setHeight_px ( $(dlg.element).dialog( "option", "height" )-128 );
