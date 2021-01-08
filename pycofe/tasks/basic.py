@@ -1658,16 +1658,19 @@ class TaskDriver(object):
         created = False
         for i in range(len(type)):
             fname = structure.getFileName ( type[i][0] )
+            #self.stderrln ( "  >>>>>> " + str(fname) )
             if fname:
                 if type[i][0]=="mtz" and structure.mapLabels:
                     fname += "{{meta " + structure.mapLabels + "}}"
                 if not created:
+                    #self.stderrln ( "  +++++++ " + str(fname) + " " + str(type[i]) )
                     pyrvapi.rvapi_add_data ( wId,title_str,
                             # always relative to job_dir from job_dir/html
                             "/".join(["..",self.outputDir(),fname]),
                             type[i][1],pageId,row+1,0,1,colSpan,openState )
                     created = True
                 else:
+                    #self.stderrln ( "  ....... " + str(fname) + " " + str(type[i]) )
                     pyrvapi.rvapi_append_to_data ( wId,
                             # always relative to job_dir from job_dir/html
                             "/".join(["..",self.outputDir(),fname]),

@@ -27,6 +27,14 @@ CCP4 Cloud Version Log
 
     #. Guided data import made optional, may be switched on/off in the *Preferences* section of the *My Account* page
 
+    #. Fixed bug in unjoining shared projects
+
+    #. Fixed bug causing duplication of imput data supplied to Coot in certain circumstances
+
+    #. Introduced configurable task dock for favourite tasks
+
+    #. Add project function complemented with the choice of project type: autosolve, expert, or migration from elsewhere
+
 
 **Version 1.6.017**
 

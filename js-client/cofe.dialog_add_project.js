@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    25.12.20   <--  Date of Last Modification.
+ *    06.01.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Add Project Dialog
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2020
+ *  (C) E. Krissinel, A. Lebedev 2020-2021
  *
  *  =================================================================
  *
@@ -38,7 +38,7 @@ function AddProjectDialog ( projectList,onclose_fnc )  {
   //grid.setLabel ( '<h3>Project data</h3>',row++,0,1,2 );
 
   grid.setLabel ( 'ID'  ,row  ,0,1,1 ).setWidth('120px').setFontBold(true);
-  grid.setLabel ( 'Name',row++,1,1,1 ).setWidth('500px').setFontBold(true);
+  grid.setLabel ( 'Name',row++,1,1,1 ).setWidth('550px').setFontBold(true);
 
   var name_inp = grid.setInputText ( '',row,0,1,1 )
         .setStyle      ( 'text',"^[A-Za-z0-9\\-\\._]+$",'e.g., project-1','' )
@@ -65,6 +65,7 @@ function AddProjectDialog ( projectList,onclose_fnc )  {
   grid.setWidget ( autosolve_rbt,row++,0,1,2 );
   grid.setWidget ( autosolve_rbt,row,0,1,1 );
   grid.setLabel  (
+    '<u>Currently experimental</u>. ' +
     'Simple start in standard cases using automated phasing (MR and EP/SAD), ' +
     'model building and optional ligand fitting. Results can be further ' +
     'refined with Refmac and Coot, and few other pre-selected tools. You ' +
@@ -92,7 +93,7 @@ function AddProjectDialog ( projectList,onclose_fnc )  {
     resizable : false,
     height    : 'auto',
     maxHeight : 500,
-    width     : 700,
+    width     : 750,
     modal     : true,
     buttons: [
       {
