@@ -5,13 +5,13 @@
 #
 # ============================================================================
 #
-#    19.04.20   <--  Date of Last Modification.
+#    09.01.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  REVISION DATA TYPE
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2020
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2021
 #
 # ============================================================================
 #
@@ -225,24 +225,25 @@ class DType(dtype_template.DType):
         return n
 
     def setStructureData ( self,structure ):
-        if structure.hasSubSubtype():
-            self.Substructure = structure
-            self.Options.leading_structure = "substructure"
-        else:
-            self.Structure = structure
-            self.Options.leading_structure = "structure"
-        self.removeSubtypes ([
-            dtype_template.subtypeXYZ(),
-            dtype_template.subtypeSubstructure(),
-            dtype_template.subtypePhases()
-        ])
-        if self.Structure:
-            self.addSubtypes ( self.Structure.subtype )
-        if self.Substructure:
-            self.addSubtypes ( self.Substructure.subtype )
-        if hasattr(self,"phaser_meta"):
-            delattr ( self,"phaser_meta" )
-        self.leadKey = structure.leadKey
+        if structure:
+            if structure.hasSubSubtype():
+                self.Substructure = structure
+                self.Options.leading_structure = "substructure"
+            else:
+                self.Structure = structure
+                self.Options.leading_structure = "structure"
+            self.removeSubtypes ([
+                dtype_template.subtypeXYZ(),
+                dtype_template.subtypeSubstructure(),
+                dtype_template.subtypePhases()
+            ])
+            if self.Structure:
+                self.addSubtypes ( self.Structure.subtype )
+            if self.Substructure:
+                self.addSubtypes ( self.Substructure.subtype )
+            if hasattr(self,"phaser_meta"):
+                delattr ( self,"phaser_meta" )
+            self.leadKey = structure.leadKey
         return
 
     def getNofPolymers ( self ):

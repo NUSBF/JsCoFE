@@ -213,8 +213,7 @@ TaskBuster.prototype.currentVersion = function()  {
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
 }
 
-TaskBuster.prototype.cleanJobDir = function ( jobDir )  {}
-
+//TaskBuster.prototype.cleanJobDir = function ( jobDir )  {}
 
 if (__template)  {
   //  for server side

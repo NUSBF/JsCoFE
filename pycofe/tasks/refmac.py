@@ -1,4 +1,4 @@
-##!/usr/bin/python
+##!/usr/bin/python#
 
 # python-3 ready
 
@@ -33,6 +33,8 @@ import os
 import uuid
 #import shutil
 
+import gemmi
+
 #  application imports
 from . import basic
 from   pycofe.dtypes    import dtype_template
@@ -45,27 +47,49 @@ from   pycofe.verdicts  import verdict_refmac
 class Refmac(basic.TaskDriver):
 
     # redefine name of input script file
-    def file_stdin_path(self):  return "refmac.script"
+    #def file_stdin_path(self):  return "refmac.script"
 
     # ------------------------------------------------------------------------
 
-    def formStructure ( self,xyzout,libin,hkl,istruct,maplabels,copyfiles ):
-        structure = self.registerStructure ( xyzout,None,self.getMTZOFName(),
+    def formStructure ( self,xyzout,subfile,mtzout,libin,hkl,istruct,maplabels,copyfiles ):
+        structure = self.registerStructure ( xyzout,subfile,mtzout,
                                              None,None,libin,leadKey=1,
                                              map_labels=maplabels,
                                              copy_files=copyfiles )
         if structure:
-            mmcifout = self.getMMCIFOFName()
-            if os.path.isfile(mmcifout):
-                structure.add_file ( mmcifout,self.outputDir(),"mmcif",copy_bool=False )
             structure.copyAssociations   ( istruct )
             structure.addDataAssociation ( hkl.dataId     )
             structure.addDataAssociation ( istruct.dataId )  # ???
             structure.setRefmacLabels    ( None if str(hkl.useHKLSet) in ["Fpm","TI"] else hkl )
-            structure.copySubtype        ( istruct )
-            structure.copyLigands        ( istruct )
+            if not subfile:
+                mmcifout = self.getMMCIFOFName()
+                if os.path.isfile(mmcifout):
+                    structure.add_file ( mmcifout,self.outputDir(),"mmcif",copy_bool=False )
+                structure.copySubtype        ( istruct )
+                structure.copyLigands        ( istruct )
             structure.addPhasesSubtype   ()
         return structure
+
+
+    def merge_sites ( self,xyzpath,hapath,hatype,outpath ):
+        ha_type   = hatype.upper()
+        is_substr = False
+        st_xyz    = gemmi.read_structure ( xyzpath )
+        if os.path.exists(hapath):
+            st_ha = gemmi.read_structure ( hapath  )
+            if len(st_ha)>0:
+                for chain in st_ha[0]:
+                    chain.name = "Z"
+                    for res in chain:
+                        #res.name     = ha_type
+                        res.het_flag = "H"
+                        for atom in res:
+                            is_substr = True
+                            atom.name    = ha_type
+                            atom.element = gemmi.Element ( ha_type )
+                    st_xyz[0].add_chain ( chain )
+        st_xyz.write_pdb ( outpath )
+        return is_substr
 
     # ------------------------------------------------------------------------
 
@@ -78,8 +102,9 @@ class Refmac(basic.TaskDriver):
 
         # Prepare refmac input
         # fetch input data
-        hkl     = self.makeClass ( self.input_data.data.hkl    [0] )
-        istruct = self.makeClass ( self.input_data.data.istruct[0] )
+        revision = self.makeClass ( self.input_data.data.revision[0] )
+        hkl      = self.makeClass ( self.input_data.data.hkl     [0] )
+        istruct  = self.makeClass ( self.input_data.data.istruct [0] )
 
         hmodel  = None
         if hasattr(self.input_data.data,"hmodel"):
@@ -320,7 +345,10 @@ class Refmac(basic.TaskDriver):
                                                structure )
             """
 
-            structure = self.formStructure ( xyzout,libin,hkl,istruct,
+            substructure = None
+
+            structure = self.formStructure ( xyzout,None,self.getMTZOFName(),
+                                             libin,hkl,istruct,
                                              "FWT,PHWT,DELFWT,PHDELWT",True )
             if structure:
                 self.putStructureWidget ( "structure_btn",
@@ -329,8 +357,38 @@ class Refmac(basic.TaskDriver):
 
                 # make anomolous ED map widget
                 if hkl.isAnomalous() and str(hkl.useHKLSet)!="TI":
-                    self.putMessage ( "<h3>Structure with anomolous maps</h3>")
-                    struct_ano = self.formStructure ( xyzout,libin,hkl,istruct,
+
+                    mapfname = self.calcCCP4Maps ( self.getMTZOFName(),
+                                        "refmac_ano",source_key="refmac_anom" )
+                    hatype   = revision.ASU.ha_type
+                    if not hatype:
+                        hatype = "AX"
+
+                    self.open_stdin()
+                    self.write_stdin ([
+                        "residue " + hatype,
+                        "atname " + hatype,
+                        "numpeaks 100",
+                        "threshold rms 4",
+                        "output pdb",
+                        "end"
+                    ])
+                    self.close_stdin()
+                    subfile = "substructure.pdb"
+                    self.runApp ( "peakmax",[
+                        "mapin" ,mapfname[0],
+                        "xyzout",subfile
+                    ],logType="Service" )
+                    for fname in mapfname:
+                        if os.path.exists(fname):
+                            os.remove ( fname )
+
+                    xyz_merged = "refmac_merged.pdb"
+                    is_substr  = self.merge_sites ( xyzout,subfile,hatype,xyz_merged )
+
+                    self.putMessage ( "<h3>Structure, substructure and anomolous maps</h3>")
+                    struct_ano = self.formStructure ( xyz_merged,None,self.getMTZOFName(),
+                                                      libin,hkl,istruct,
                                                       "FAN,PHAN,DELFAN,PHDELAN",
                                                       False )
                     if struct_ano:
@@ -338,15 +396,25 @@ class Refmac(basic.TaskDriver):
                         nlst[0] += " (anom maps)"
                         struct_ano.dname = " /".join(nlst)
                         self.putStructureWidget ( "struct_ano_btn",
-                                    "Structure and anomalous maps",struct_ano )
+                                    "Structure, substructure and anomalous maps",struct_ano )
+
+                        if is_substr:
+                            substructure = self.formStructure ( None,subfile,
+                                    structure.getMTZFilePath(self.outputDir()),
+                                    libin,hkl,istruct,"FWT,PHWT,DELFWT,PHDELWT",
+                                    False )
+                            if not substructure:
+                                self.putMessage ( "<i>Substructure could not be " +\
+                                                  "formed (possible bug)</i>" )
+
                     else:
                         self.putMessage ( "<i>Structure with anomalous maps " +\
                                           "could not be formed (possible bug)</i>" )
 
                 # update structure revision
-                revision = self.makeClass ( self.input_data.data.revision[0] )
-                revision.setStructureData ( structure )
-                self.registerRevision     ( revision  )
+                revision.setStructureData ( substructure )
+                revision.setStructureData ( structure    )
+                self.registerRevision     ( revision     )
                 have_results = True
 
                 rvrow0 = self.rvrow
