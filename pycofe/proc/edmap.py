@@ -87,7 +87,7 @@ def calcCCP4Maps ( mtzin,output_file_prefix,job_dir,file_stdout,file_stderr,
         file_stderr.write ( "Error calling FFT(1): " + rc.msg + "\n" )
 
     #   Sigmaa style mfo-dfc map
-    if source_key in ["refmac","acorn-map"]:
+    if source_key in ["refmac","acorn-map","refmac_anom"]:
         # Start cfft
         rc = command.call ( "cfft",
                   ["-mtzin" ,mtzin,

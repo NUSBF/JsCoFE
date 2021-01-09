@@ -5,13 +5,13 @@
 #
 # ============================================================================
 #
-#    14.05.20   <--  Date of Last Modification.
+#    09.01.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  GENERATE STRUCTURE QUALITY REPORT
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2020
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2020-2021
 #
 # ============================================================================
 #
@@ -193,7 +193,8 @@ def put_molprobity_section ( body,revision ):
 
     coot_script = "molprobity_coot.py"
     if os.path.isfile(coot_script):
-        coot_spath = body.stampFileName ( body.dataSerialNo,body.getOFName(".coot.py") )
+        coot_spath = body.stampFileName ( body.dataSerialNo+1,body.getOFName(".coot.py") )
+        body.dataSerialNo += 2
         molp_spath = body.stampFileName ( body.dataSerialNo,body.getOFName(".probe.txt") )
         os.rename ( coot_script,os.path.join(body.outputDir(),coot_spath) )
         os.rename ( "molprobity_probe.txt",os.path.join(body.outputDir(),molp_spath) )

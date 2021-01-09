@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    08.01.21   <--  Date of Last Modification.
+#    09.01.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -28,7 +28,7 @@
 
 #  python native imports
 import os
-#import shutil
+import shutil
 
 import gemmi
 
@@ -56,19 +56,31 @@ class Buster(basic.TaskDriver):
         except:
             return None
 
+    def check_substructure ( self,hapath ):
+        if os.path.exists(hapath):
+            st_ha = gemmi.read_structure ( hapath )
+            if len(st_ha)>0:
+                for chain in st_ha[0]:
+                    if len(chain)>0:
+                        return True
+        return False
+
+
     def merge_sites ( self,xyzpath,hapath,hatype,outpath ):
         ha_type = hatype.upper()
         st_xyz  = gemmi.read_structure ( xyzpath )
-        st_ha   = gemmi.read_structure ( hapath  )
-        for chain in st_ha[0]:
-            chain.name = "Z"
-            for res in chain:
-                #res.name     = ha_type
-                res.het_flag = "H"
-                for atom in res:
-                    atom.name    = ha_type
-                    atom.element = gemmi.Element ( ha_type )
-            st_xyz[0].add_chain ( chain )
+        if os.path.exists(hapath):
+            st_ha = gemmi.read_structure ( hapath  )
+            if len(st_ha)>0:
+                for chain in st_ha[0]:
+                    chain.name = "Z"
+                    for res in chain:
+                        #res.name     = ha_type
+                        res.het_flag = "H"
+                        for atom in res:
+                            atom.name    = ha_type
+                            atom.element = gemmi.Element ( ha_type )
+                    st_xyz[0].add_chain ( chain )
         st_xyz.write_pdb ( outpath )
         return
 
@@ -84,9 +96,9 @@ class Buster(basic.TaskDriver):
         # Prepare buster job
 
         # fetch input data
-        irevision = self.makeClass ( self.input_data.data.revision[0] )
-        hkl       = self.makeClass ( self.input_data.data.hkl     [0] )
-        istruct   = self.makeClass ( self.input_data.data.istruct [0] )
+        revision = self.makeClass ( self.input_data.data.revision[0] )
+        hkl      = self.makeClass ( self.input_data.data.hkl     [0] )
+        istruct  = self.makeClass ( self.input_data.data.istruct [0] )
 
         cmd     = [ "-m",hkl.getHKLFilePath(self.inputDir()),
                     "-p",istruct.getXYZFilePath(self.inputDir()),
@@ -244,25 +256,13 @@ class Buster(basic.TaskDriver):
                             plot_rms["y"][0]["values"].append ( vrms[1] )
                             plot_rms["y"][1]["values"].append ( vrms[2] )
 
-                        """
-                        x = float ( vals[0] )
-                        plot_ref["x"]   ["values"].append ( x )
-                        plot_ref["y"][0]["values"].append ( self.get_float(vals[3]) )
-                        plot_ref["y"][1]["values"].append ( self.get_float(vals[4]) )
-                        if vals[0]!="0":
-                            plot_llg["x"]   ["values"].append ( x )
-                            plot_llg["y"][0]["values"].append ( self.get_float(vals[5]) )
-                            plot_llg["y"][1]["values"].append ( self.get_float(vals[6]) )
-                        plot_rms["x"]   ["values"].append ( x )
-                        plot_rms["y"][0]["values"].append ( self.get_float(vals[8]) )
-                        plot_rms["y"][1]["values"].append ( self.get_float(vals[9]) )
-                        """
                 elif "best refinement in BUSTER reached for" in line:
                     vals = line.split()[-1].split("/")
                     self.generic_parser_summary["buster"] = {
                         "R_factor" : vals[0],
                         "R_free"   : vals[1]
                     }
+
             f.close()
 
             # continue writing to stdout
@@ -296,6 +296,7 @@ class Buster(basic.TaskDriver):
                                                structure )
 
                 # make anomolous ED map widget
+                substructure = None
                 if hkl.isAnomalous():
 
                     anodir = "anofft"
@@ -311,7 +312,9 @@ class Buster(basic.TaskDriver):
                     ],logType="Service" )
 
                     mapfile = os.path.join ( anodir,"ano.ANO.map" )
-                    if os.path.exists(mapfile):
+                    subfile = os.path.join ( anodir,"ano.ANO.pdb" )
+                    if os.path.exists(mapfile) and self.check_substructure(subfile):
+
                         anomtz = "anomtz.mtz"
                         self.open_stdin()
                         self.write_stdin ([
@@ -327,24 +330,21 @@ class Buster(basic.TaskDriver):
                         os.remove ( mapfile )
 
                         xyz_merged = "refine_merged.pdb"
-                        hatype     = irevision.ASU.ha_type
+                        hatype     = revision.ASU.ha_type
                         if not hatype:
                             hatype = "AX"
-                        self.merge_sites (
-                            xyzout, os.path.join(anodir,"ano.ANO.pdb"),hatype,
-                            xyz_merged )
+                        self.merge_sites ( xyzout,subfile,hatype,xyz_merged )
 
-                        self.putMessage ( "<h3>Structure with anomolous maps</h3>")
+                        self.putMessage ( "<h3>Structure, substructure and anomolous maps</h3>")
                         struct_ano = self.registerStructure ( xyz_merged,None,anomtz,
                                     None,None,libin,leadKey=1,
                                     map_labels="FAN,PHAN",
-                                    copy_files=False )
+                                    copy_files=True )
                         if struct_ano:
                             struct_ano.copyAssociations   ( istruct )
                             struct_ano.addDataAssociation ( hkl.dataId     )
                             struct_ano.addDataAssociation ( istruct.dataId )  # ???
-                            struct_ano.setBusterLabels    ( hkl )
-                            struct_ano.copySubtype        ( istruct )
+                            #struct_ano.setBusterLabels    ( hkl )
                             struct_ano.copyLigands        ( istruct )
                             struct_ano.addPhasesSubtype   ()
 
@@ -352,19 +352,38 @@ class Buster(basic.TaskDriver):
                             nlst[0] += " (anom maps)"
                             struct_ano.dname = " /".join(nlst)
                             self.putStructureWidget ( "struct_ano_btn",
-                                        "Structure and anomalous maps",struct_ano )
+                                        "Structure, substructure and anomalous maps",struct_ano )
+
+                            substructure = self.registerStructure (
+                                            None,subfile,
+                                            structure.getMTZFilePath(self.outputDir()),
+                                            None,None,None,
+                                            leadKey=2,copy_files=False,
+                                            map_labels="2FOFCWT,PH2FOFCWT,FOFCWT,PHFOFCWT" )
+
+                            if substructure:
+                                self.stderrln ( " >>>>>> substructure")
+                                substructure.copyAssociations   ( istruct )
+                                substructure.addDataAssociation ( hkl.dataId     )
+                                substructure.addDataAssociation ( istruct.dataId )  # ???
+                                substructure.setBusterLabels    ( hkl )
+                                substructure.addPhasesSubtype()
+                            else:
+                                self.putMessage ( "<i>Substructure could not be " +\
+                                                  "formed (possible bug)</i>" )
 
                         else:
                             self.putMessage ( "<i>Structure with anomalous map " +\
                                               "could not be formed (possible bug)</i>" )
+
                     else:
                         self.putMessage ( "<i>Anomalous map was not calculated " +\
                                           "could not be formed (possible bug)</i>" )
 
                 # update structure revision
-                revision = self.makeClass ( self.input_data.data.revision[0] )
-                revision.setStructureData ( structure )
-                self.registerRevision     ( revision  )
+                revision.setStructureData ( substructure )
+                revision.setStructureData ( structure    )
+                self.registerRevision     ( revision     )
                 have_results = True
 
                 rvrow0 = self.rvrow
@@ -375,7 +394,7 @@ class Buster(basic.TaskDriver):
                     self.rvrow = rvrow0
 
         # remove this because it contains soft links not good for copying
-        #shutil.rmtree ( self.buster_dir() )
+        shutil.rmtree ( self.buster_dir() )
         for root, dirs, files in os.walk(self.buster_dir()):
             for name in files:
                 fpath = os.path.join ( root,name )
