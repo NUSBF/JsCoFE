@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    02.10.20   <--  Date of Last Modification.
+ *    10.01.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Common Client/Server Modules -- Structure Revision Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2020
+ *  (C) E. Krissinel, A. Lebedev 2016-2021
  *
  *  ==========================================================================
  *
@@ -69,7 +69,8 @@ function DataRevision()  {
     //'fixedmodel_cbx'    : true,           // for mr-phases
     //'fitindensity_cbx'  : false,          // for mr-phases
     'ncsmodel_sel'      : 'do-not-use',   // for parrot
-    'seqNo'             : 0               // selected sequence number (not used?)
+    'seqNo'             : 0,              // selected sequence number (not used?)
+    'load_all'          : false           // for Coot-MB
   };
 
   this.backtrace      = false;  // take data only from the latest job
@@ -389,24 +390,6 @@ if (!__template)  {
         ['only for fit in density'              ,'edfit'            ]
       ];
 
-      /*
-      customGrid.setLabel ( 'Structure:',row,0,1,1 )
-                .setFontItalic(true).setNoWrap();
-      customGrid.setCellSize ( '5%','',row,0 );
-      customGrid.setLabel ( this.Structure.dname,row++,1,1,1 ).setNoWrap();
-      customGrid.setLabel ( 'will be used as fixed model.',row,1,1,1 )
-                .setFontItalic(true).setNoWrap();
-      customGrid.setCellSize ( '95%','',row++,1 );
-      customGrid.fitInDensity = customGrid.setCheckbox (
-                            'Fit MR model in electron density of current structure',
-                            this.Options.fitindensity_cbx,row++,0,1,2 );
-      customGrid.setLabel ( ' ',row,0,1,1 ).setHeight_px ( 8 );
-
-      use current structure: as fixed model
-                             for fit in density and as a fixed model
-                             only for fit in density
-      */
-
     } else if (this.Options.leading_structure=='substructure')  {
 
       customGrid.setLabel ( 'MR model will be fit in electron density of ' +
@@ -420,14 +403,6 @@ if (!__template)  {
         ];
       else if (sep_bool)
         customGrid.setLabel ( ' ',row,0,1,1 ).setHeight_px ( 8 );
-
-      /*
-      if (this.Structure)
-        customGrid.useFixedModel = customGrid.setCheckbox (
-                            'Use current structure as fixed model',
-                            this.Options.fixedmodel_cbx,row++,0,1,3 );
-      customGrid.setLabel ( ' ',row,0,1,1 ).setHeight_px ( 8 );
-      */
 
     }
 
@@ -523,20 +498,7 @@ if (!__template)  {
       else
         customGrid.setLabel ( '<b>absent (can be in error)</b>',row++,1,1,4 )
                   .setFontItalic(true).setNoWrap();
-
-      //dropdown.layCustom = 'phaser-mr-fixed';
     }
-    /* else if (this.subtype.indexOf(structure_subtype.XYZ)>=0)  {
-      customGrid.setLabel ( '<b>Fixed structure</b>:',row,0,1,1 )
-                .setFontItalic(true).setNoWrap();
-      customGrid.setLabel ( '<b>' + this.Structure.dname + '</b>',row++,1,1,4 )
-                .setNoWrap();
-      customGrid.setLabel ( '<b>Phaser solution metadata:</b>',row,0,1,1 )
-                .setFontItalic(true).setNoWrap();
-      customGrid.setLabel ( '<b><i>annulled</i></b>',row++,1,1,4 ).setNoWrap();
-      dropdown.layCustom = 'phaser-mr-fixed';
-    }
-    */
 
     for (var i=row0;i<row;i++)  {
       customGrid.setCellSize ( '','12pt',i,0 );
@@ -614,6 +576,22 @@ if (!__template)  {
   }
 
 
+  DataRevision.prototype._layCDI_CootMB = function ( dropdown )  {
+  var customGrid = dropdown.customGrid;
+  var row        = customGrid.getNRows();
+    if (this.Structure && this.Substructure)  {
+      if (!('load_all' in this.Options))
+        this.Options.load_all = false;
+      var label = 'Load HA substructure';
+      if (this.Options.leading_structure=='substructure')
+        label = 'Load structure';
+      customGrid.load_all_cbx = customGrid.setCheckbox ( label,
+                                            this.Options.load_all,row,0, 1,1 );
+      customGrid.setLabel ( ' ',++row,0,1,1 ).setHeight_px ( 8 );
+    }
+  }
+
+
   DataRevision.prototype.layCustomDropdownInput = function ( dropdown )  {
 
     switch (dropdown.layCustom)  {
@@ -672,6 +650,9 @@ if (!__template)  {
               this.Structure.layCustomDropdownInput ( dropdown );
             else if (this.Substructure)
                 this.Substructure.layCustomDropdownInput ( dropdown );
+          break;
+      case 'coot-mb'    :
+            this._layCDI_CootMB ( dropdown );
           break;
       default : ;
     }
@@ -797,6 +778,11 @@ if (!__template)  {
             this.Structure.collectCustomDropdownInput ( dropdown );
           else if (this.Substructure)
             this.Substructure.collectCustomDropdownInput ( dropdown );
+        break;
+
+      case 'coot-mb' :
+          if ('load_all_cbx' in dropdown.customGrid)
+            this.Options.load_all = dropdown.customGrid.load_all_cbx.getValue();
         break;
 
       case 'cell-info' :

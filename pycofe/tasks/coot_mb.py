@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    04.01.21   <--  Date of Last Modification.
+#    10.01.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -121,14 +121,20 @@ class Coot(coot_ce.CootCE):
         coot_backup_dir = self.makeBackupDirectory()
 
         # fetch input data
-        data_list = [self.input_data.data.istruct[0]]
+        revision  = self.makeClass ( self.input_data.data.revision[0] )
+        istruct   = self.makeClass ( self.input_data.data.istruct [0] )
+        mtzfile   = istruct.getMTZFilePath ( self.inputDir() )
+        lead_key  = istruct.leadKey
+
+        istruct2 = None
+        if hasattr(self.input_data.data,"istruct2"):
+            istruct2 = self.makeClass ( self.input_data.data.istruct2[0] )
+
+        data_list = []
         if hasattr(self.input_data.data,"aux_struct"):
             data_list += self.input_data.data.aux_struct
         for i in range(len(data_list)):
             data_list[i] = self.makeClass ( data_list[i] )
-        istruct  = data_list[0]
-        mtzfile  = istruct.getMTZFilePath ( self.inputDir() )
-        lead_key = istruct.leadKey
 
         ligand  = None
         ligCode = None
@@ -144,6 +150,38 @@ class Coot(coot_ce.CootCE):
 
         # make command line arguments
         args = []
+        pdbpath = istruct.getXYZFilePath ( self.inputDir() )
+        if not pdbpath:
+            pdbpath = istruct.getSubFilePath ( self.inputDir() )
+        if pdbpath:
+            args += ["--pdb",pdbpath]
+        mtzpath = istruct.getMTZFilePath ( self.inputDir() )
+        if mtzpath:
+            args += ["--auto",mtzpath]
+
+        if istruct2:
+            pdbpath = istruct2.getXYZFilePath ( self.inputDir() )
+            if not pdbpath:
+                pdbpath = istruct2.getSubFilePath ( self.inputDir() )
+            if pdbpath and pdbpath not in args:
+                args += ["--pdb",pdbpath]
+            mtzpath = istruct2.getMTZFilePath ( self.inputDir() )
+            if mtzpath and mtzpath not in args:
+                args += ["--auto",mtzpath]
+
+        for s in data_list:
+            pdbpath = s.getXYZFilePath ( self.inputDir() )
+            if pdbpath and pdbpath not in args:
+                args += ["--pdb",pdbpath]
+            if s._type=="DataStructure":
+                pdbpath = s.getSubFilePath ( self.inputDir() )
+                if pdbpath and pdbpath not in args:
+                    args += ["--pdb",pdbpath]
+                mtzpath = s.getMTZFilePath ( self.inputDir() )
+                if mtzpath and mtzpath not in args:
+                    args += ["--auto",mtzpath]
+
+        """
         for s in data_list:
             if s.getXYZFileName():
                 pdbpath = s.getXYZFilePath(self.inputDir())
@@ -157,7 +195,7 @@ class Coot(coot_ce.CootCE):
                 mtzpath = s.getMTZFilePath(self.inputDir())
                 if mtzpath not in args:
                     args += ["--auto",mtzpath]
-
+        """
 
         if libPath:
             args += ["--dictionary",libPath]
@@ -375,8 +413,8 @@ class Coot(coot_ce.CootCE):
                 # create output data widget in the report page
                 self.putTitle ( "Output Structure" )
                 self.putStructureWidget ( "structure_btn","Output Structure",struct )
+
                 # update structure revision
-                revision = self.makeClass ( self.input_data.data.revision[0] )
                 revision.setStructureData ( struct   )
                 if ligand:
                     revision.addLigandData ( ligand      )

@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    05.01.21   <--  Date of Last Modification.
+ *    10.01.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -36,7 +36,7 @@ function Dock ( parent,onClick_func,onRightClick_func,addTask_func )  {
     'padding-left'     : '20px',
     'padding-bottom'   : '4px',
     'padding-right'    : '20px',
-    'background-color' : 'rgba(242,242,242,0.5)', // '#F3F3F3',
+    'background-color' : 'rgba(242,242,242,0.67)', // '#F3F3F3',
     //'background-color' : '#F3F3F3',
     //'opacity'          : '0.5',
     'border'           : '1px solid gray',
