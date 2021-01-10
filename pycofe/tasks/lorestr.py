@@ -174,6 +174,10 @@ class Lorestr(basic.TaskDriver):
                         "xyzmeta" : structure.xyzmeta
                     }
                     verdict_lorestr.putVerdictWidget ( self,verdict_meta,verdict_row )
+                    self.generic_parser_summary["lorestr"] = {
+                        "R_factor" : str(verdict_meta['lorestr']["rfact"][1]),
+                        "R_free"   : str(verdict_meta['lorestr']["rfree"][1])
+                    }
 
         else:
             self.putTitle ( "No Output Generated" )
