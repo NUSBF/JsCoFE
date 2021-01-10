@@ -2164,6 +2164,7 @@ if (!dbx)  {
             case 'cbuccaneer' : S += 'Compl=' + d.percentage + '% ';
                         break;
             case 'buster'   :
+            case 'lorestr'  :
             case 'refmac'   : S += 'R=' + d.R_factor + ' R<sub>free</sub>=' +
                                           d.R_free   + ' ';
                         break;
