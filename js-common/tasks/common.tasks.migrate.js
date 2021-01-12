@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    28.12.20   <--  Date of Last Modification.
+ *    12.01.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Import Structure Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2020
+ *  (C) E. Krissinel, A. Lebedev 2020-2021
  *
  *  =================================================================
  *
@@ -35,12 +35,12 @@ function TaskMigrate()  {
 
   if (__template)  {
     __template.TaskTemplate.call ( this );
-    this.name  = 'migrate to ' + __cmd.appName().toLowerCase();
-    this.title = 'Migrate to ' + __cmd.appName();
+    this.name  = 'hop in ' + __cmd.appName().toLowerCase();
+    this.title = 'Hop in ' + __cmd.appName();
   } else  {
     TaskTemplate.call ( this );
-    this.name  = 'migrate to ' + appName().toLowerCase();
-    this.title = 'Migrate to ' + appName();
+    this.name  = 'hop in ' + appName().toLowerCase();
+    this.title = 'Hop in ' + appName();
   }
 
   this._type = 'TaskMigrate';

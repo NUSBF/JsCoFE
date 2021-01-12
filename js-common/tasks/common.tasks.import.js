@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    28.12.20   <--  Date of Last Modification.
+ *    12.01.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Import Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2020
+ *  (C) E. Krissinel, A. Lebedev 2016-2021
  *
  *  ==========================================================================
  *
@@ -34,9 +34,9 @@ function TaskImport()  {
              else  TaskTemplate.call ( this );
 
   this._type     = 'TaskImport';
-  this.name      = 'data import';
+  this.name      = 'file import';
   this.oname     = '*';   // asterisk here means do not use
-  this.title     = 'Data Import';
+  this.title     = 'File(s) Upload and Import';
   //this.helpURL   = './html/jscofe_task_import.html';
   this.fasttrack = true;  // enforces immediate execution
 
