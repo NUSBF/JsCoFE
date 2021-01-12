@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    09.06.20   <--  Date of Last Modification.
+ *    12.01.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Facility Import Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2018-2020
+ *  (C) E. Krissinel, A. Lebedev 2018-2021
  *
  *  =================================================================
  *
@@ -34,9 +34,9 @@ function TaskCloudImport()  {
              else  TaskTemplate.call ( this );
 
   this._type       = 'TaskCloudImport';
-  this.name        = 'cloud import';
+  this.name        = 'import from cloud storage';
   this.oname       = '*';   // asterisk here means do not use
-  this.title       = 'Cloud Import';
+  this.title       = 'Import from Cloud Storage';
   this.currentCloudPath = '';
   this.file_mod    = {'rename':{},'annotation':[]}; // file modification and annotation
   this.fasttrack   = true;  // enforces immediate execution
