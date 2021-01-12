@@ -315,31 +315,37 @@ class Buster(basic.TaskDriver):
                     subfile = os.path.join ( anodir,"ano.ANO.pdb" )
                     if os.path.exists(mapfile) and self.check_substructure(subfile):
 
-                        anomtz = "anomtz.mtz"
-                        self.open_stdin()
-                        self.write_stdin ([
-                            "mode sfcalc mapin",
-                            "labout FC=FAN PHIC=PHAN",
-                            "end"
-                        ])
-                        self.close_stdin()
-                        self.runApp ( "sfall",[
-                            "mapin" ,mapfile,
-                            "hklout",anomtz
-                        ],logType="Service" )
-                        os.remove ( mapfile )
+                        struct_ano = None
+                        try:
+                            anomtz = "anomtz.mtz"
+                            self.open_stdin()
+                            self.write_stdin ([
+                                "mode sfcalc mapin",
+                                "symm '" + hkl.getSpaceGroup() + "'",
+                                "labout FC=FAN PHIC=PHAN",
+                                "end"
+                            ])
+                            self.close_stdin()
+                            self.runApp ( "sfall",[
+                                "mapin" ,mapfile,
+                                "hklout",anomtz
+                            ],logType="Service" )
+                            os.remove ( mapfile )
 
-                        xyz_merged = "refine_merged.pdb"
-                        hatype     = revision.ASU.ha_type
-                        if not hatype:
-                            hatype = "AX"
-                        self.merge_sites ( xyzout,subfile,hatype,xyz_merged )
+                            xyz_merged = "refine_merged.pdb"
+                            hatype     = revision.ASU.ha_type
+                            if not hatype:
+                                hatype = "AX"
+                            self.merge_sites ( xyzout,subfile,hatype,xyz_merged )
 
-                        self.putMessage ( "<h3>Structure, substructure and anomolous maps</h3>")
-                        struct_ano = self.registerStructure ( xyz_merged,None,anomtz,
-                                    None,None,libin,leadKey=1,
-                                    map_labels="FAN,PHAN",
-                                    copy_files=True )
+                            self.putMessage ( "<h3>Structure, substructure and anomolous maps</h3>")
+                            struct_ano = self.registerStructure ( xyz_merged,None,anomtz,
+                                        None,None,libin,leadKey=1,
+                                        map_labels="FAN,PHAN",
+                                        copy_files=True )
+                        except:
+                            pass
+
                         if struct_ano:
                             struct_ano.copyAssociations   ( istruct )
                             struct_ano.addDataAssociation ( hkl.dataId     )
