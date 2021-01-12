@@ -79,8 +79,16 @@ def verifyLORESTR(driver):
     if (compl == ''):
         print('*** Verification: could not find completion statement after LORESTR run')
     else:
-        print('*** Verification: LORESTR completion statement is "%s" (expecting "completed.") ' % compl)
-    assert compl == 'completed.'
+        match = re.search('R=(0\.\d*) Rfree=(0\.\d*)', compl)
+        if match:
+            rWork = float(match.group(1))
+            rFree = float(match.group(2))
+            print('*** Verification: LORESTR Rwork=%0.3f, Rfree=%0.3f (expecting <0.18, <0.21) ' % (rWork, rFree))
+            assert rWork < 0.18
+            assert  rFree < 0.21
+        else:
+            print('*** Verification: LORESTR completion statement is "%s" (expecting "completed.") ' % compl)
+            assert compl == 'completed.'
 
     sf.doubleClickTaskInTaskTree(driver, '\[0004\]')
     #  CHANGING iframe!!! As it is separate HTML file with separate search!
