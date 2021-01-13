@@ -472,20 +472,27 @@ JobDialog.prototype.makeToolBar = function()  {
   (function(dlg){
     var hot_list = dlg.task.hotButtons();
     var gap      = false;
+    var dBox     = null;
+//    var branch_task_list = self.tree.getAllAncestors ( tree.getSelectedTask() );
     for (var i=0;i<hot_list.length;i++)  {
       var task_obj  = eval ( 'new ' + hot_list[i].task + '()' );
       var avail_key = task_obj.isTaskAvailable();
-      if (avail_key[0]=='ok')
-        (function(task){
-          var hbtn = dlg.addToolBarButton ( gap,task_obj.icon(),hot_list[i].tooltip )
-                        .addOnClickListener ( function(){
-                          //dlg.onDlgSignal_func ( dlg.task.id,
-                          dlg.onDlgSignal_func ( dlg,job_dialog_reason.run_job,
-                                                 task );
-                        });
-          gap = true;
-          dlg.hot_btn.push ( hbtn );
-        }(task_obj))
+      if (avail_key[0]=='ok')  {
+        if (!dBox)
+          dBox = dlg.tree.harvestTaskData ( 1,[] );
+        if (dBox.getDataSummary(task_obj).status>0)  {
+          (function(task){
+            var hbtn = dlg.addToolBarButton ( gap,task_obj.icon(),hot_list[i].tooltip )
+                          .addOnClickListener ( function(){
+                            //dlg.onDlgSignal_func ( dlg.task.id,
+                            dlg.onDlgSignal_func ( dlg,job_dialog_reason.run_job,
+                                                   task );
+                          });
+            gap = true;
+            dlg.hot_btn.push ( hbtn );
+          }(task_obj))
+        }
+      }
     }
     dlg.addjob_btn = dlg.addToolBarButton ( gap,'add','Add next job' )
                         .addOnClickListener ( function(){
