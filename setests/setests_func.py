@@ -202,7 +202,7 @@ def importFromCloud_rnase(driver, waitShort):
     clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Data Import')
     time.sleep(1)
 
-    clickByXpath(driver, "//*[normalize-space()='%s']" % 'Cloud Import')
+    clickByXpath(driver, "//*[contains(text(), '%s') and contains(text(), '%s')]" % ('Import', 'Cloud'))
     time.sleep(1)
 
     textEl2 = driver.find_elements_by_xpath("//a[normalize-space()='%s']" % 'test-data')
