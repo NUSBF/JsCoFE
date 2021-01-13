@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    20.08.20   <--  Date of Last Modification.
+ *    13.01.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Login page
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2020
+ *  (C) E. Krissinel, A. Lebedev 2016-2021
  *
  *  =================================================================
  *
@@ -98,7 +98,7 @@ function LoginPage ( sceneId )  {
        .setNoWrap();
   panel.setHorizontalAlignment  ( row++ ,0,'center' );
   panel.setWidget               ( this.makeSetupNamePanel(), row++,0,1,2 );
-  panel.setCellSize             ( '','20pt',row++,0 );
+  panel.setCellSize             ( '','10pt',row++,0 );
 
   panel.setWidget               ( login_lbl,row  ,0,1,1 );
   panel.setWidget               ( pwd_lbl  ,row+1,0,1,1 );
@@ -109,9 +109,9 @@ function LoginPage ( sceneId )  {
   panel.setWidget               ( vis_btn  ,row  ,2,1,1 );
   panel.setVerticalAlignment    ( row++,2,'middle' );
 
-  panel.setCellSize             ( '','12pt',row++,0 );
+  panel.setCellSize             ( '','4pt',row++,0 );
   panel.setWidget               ( new HLine('3pt'), row++,0,1,3 );
-  panel.setCellSize             ( '','1pt',row++,0 );
+  //panel.setCellSize             ( '','1pt',row++,0 );
 
   var login_btn = new Button    ( 'Login',image_path('login') );
   var pwd_btn   = new Button    ( 'Forgotten password',image_path('reminder') );
@@ -125,8 +125,11 @@ function LoginPage ( sceneId )  {
   panel.setWidget               ( pwd_btn  ,row++,0,1,3 );
   panel.setWidget               ( reg_btn  ,row++,0,1,3 );
 
+  //panel.setLabel                ( '&nbsp;',row++,0,1,3 )
+  panel.setCellSize             ( '','6pt',row++,0 );
+
   if (__any_mobile_device)
-    panel.setLabel              ( '&nbsp;<br><center><i>Please note that some ' +
+    panel.setLabel              ( '<center><i>Please note that some ' +
                                   'tasks, such as interactive<br>model building ' +
                                   'with Coot, interactive image<br>processing and ' +
                                   'some others, are not available<br>when CCP4 ' +
@@ -140,6 +143,7 @@ function LoginPage ( sceneId )  {
                                 )
          .setNoWrap();
 
+  /*
   else if (!__local_service)
     panel.setLabel              ( '&nbsp;<br><center><i>For best experience, access ' +
                                   'this web site via<br>' + appName() + ' Client, ' +
@@ -149,19 +153,31 @@ function LoginPage ( sceneId )  {
                                   '<br>(look for icon with wireless sign after ' +
                                   'installation)</i></center>',
                                   row++,0,1,3 )
-          .setTooltip           ( appName() + ' Client is necessary for running ' +
-                                  'interactive graphical software, such as image ' +
-                                  'processing (DUI, Mosflm, XDSGUI), Coot and ' +
-                                  'some others.'
-                                )
-          .setNoWrap();
+  */
+  else if (!__local_service)
+    panel.setLabel              ( '<div style="min-width:440px"><center><i>' +
+                                  '<b>NOTE:</b> In order to use CCP4 graphical ' +
+                                  'applications, such as <span style="color:maroon">' +
+                                  '<b>Coot, DUI, iMosflm</b></span> and similar, with ' +
+                                  appName() + ', install<br><a href="javascript:_ccp4_download()">' +
+                                  'the CCP4 Software Suite</a> and ' +
+                                  'start with this icon:<br>' +
+                                  '<img src="images_com/ccp4cloud_remote.png" ' +
+                                  'style="height:36px;width:36px;padding-top:6px;"/>' +
+                                  '</i></center></div>',
+                                  row++,0,1,3 );
+//          .setTooltip           ( appName() + ' Client is necessary for running ' +
+//                                  'interactive graphical software, such as image ' +
+//                                  'processing (DUI, Mosflm, XDSGUI), Coot and ' +
+//                                  'some others.'
+//                                );
+//          .setNoWrap();
 
-  panel.setLabel                ( '&nbsp;<br><center><i>' +
-                                  appName() +
+  panel.setLabel                ( '<center><i>Check ' + appName() +
                                   ' <a target="_blank" href="html/tutorials.html">' +
                                   'roadmap<a></i> for new users</center>',
                                   row++,0,1,3 );
-  panel.setLabel                ( '&nbsp;<br><center><i>' +
+  panel.setLabel                ( '<center style="padding-top:6px;"><i>' +
                                   '<a href="javascript:_privacyStatement()">' +
                                   'Privacy Statement<a></i></center>',
                                   row++,0,1,3 );
