@@ -17,57 +17,6 @@ import setests_func as sf
 d = sf.driverHandler()
 
 
-
-def importFromCloud_mdm2(driver, waitShort):
-    print ('Importing mdm2 from the Cloud Import')
-
-    # Clicking "Cloud Import"
-    sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Cloud Import')
-    time.sleep(1)
-
-    textEl2 = driver.find_elements_by_xpath("//a[normalize-space()='%s']" % 'test-data')
-    if len(textEl2) < 1:
-        textEl2 = driver.find_elements_by_xpath("//a[normalize-space()='%s']" % 'CCP4 examples')
-    if len(textEl2) < 1:
-        print('Cant locate neither "test-data" nor "CCP4 examples"; terminating.')
-        sys.exit(1)
-    ActionChains(driver).move_to_element(textEl2[-1]).double_click(textEl2[-1]).perform()
-    time.sleep(1)
-
-    listOfTextsToDoubleClick = [('a','mdm2_nolig'),
-                                ('a','4hg7.mtz'),
-                                ('button','Select more files'),
-                                ('a', '4hg7_nolig.pdb'),
-                                ('button', 'Select more files'),
-                                ('a', '4hg7.fasta'),
-                                ('button', 'Apply & Upload'),
-                                ('button', 'Finish import')]
-
-    for textToDoubleClick in listOfTextsToDoubleClick:
-        textElements = driver.find_elements_by_xpath("//%s[normalize-space()='%s']" % (textToDoubleClick[0], textToDoubleClick[1]))
-        # It finds several elements with the same file name -> last one is the one we need
-        driver.execute_script("arguments[0].scrollIntoView();", textElements[-1])
-        ActionChains(driver).move_to_element(textElements[-1]).double_click(textElements[-1]).perform()
-        time.sleep(1)
-
-#    taskWindowTitle = driver.find_element(By.XPATH,"//*[@class='ui-dialog-title' and contains(text(), '[0001]')]")
-    try:
-        wait = WebDriverWait(driver, waitShort)
-        # Waiting for the text 'completed' in the ui-dialog-title of the task [0001]
-        wait.until(EC.presence_of_element_located
-                   ((By.XPATH,"//*[@class='ui-dialog-title' and contains(text(), 'completed') and contains(text(), '[0001]')]")))
-    except:
-        print('Apparently tha task import gere SAD has not been completed in time; terminating')
-        sys.exit(1)
-
-    # presing Close button
-    closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
-    closeButton.click()
-    time.sleep(1)
-
-    return ()
-
-
 def editRevisionStructure_mdm2(driver, waitShort):
     print('Making structure revision')
 
@@ -495,7 +444,7 @@ def test_1ligandsImportandRefmac(browser,
         sf.removeProject(d.driver, d.testName)
         sf.makeTestProject(d.driver, d.testName, d.testName)
         sf.enterProject(d.driver, d.testName)
-        importFromCloud_mdm2(d.driver, d.waitShort) # 1
+        sf.importFromCloud_mdm2(d.driver, d.waitShort) # 1
         sf.asymmetricUnitContentsAfterCloudImport(d.driver, d.waitShort) # 2
         editRevisionStructure_mdm2(d.driver, d.waitShort) # 3
         refmac_0004(d.driver) # 4
