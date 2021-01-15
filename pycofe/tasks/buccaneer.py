@@ -302,6 +302,10 @@ class Buccaneer(basic.TaskDriver):
                 self.registerRevision      ( revision  )
                 have_results = True
 
+                #self.copyTaskMetrics ( "refmac","R_factor","rfactor" )
+                #self.copyTaskMetrics ( "refmac","R_free"  ,"rfree"   )
+                #self.copyTaskMetrics ( "cbuccaneer","percentage","model_completeness" )
+
                 rvrow0 = self.rvrow
                 try:
                     qualrep.quality_report ( self,revision )

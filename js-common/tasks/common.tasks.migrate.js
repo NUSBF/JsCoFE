@@ -2,15 +2,15 @@
 /*
  *  =================================================================
  *
- *    12.01.21   <--  Date of Last Modification.
+ *    14.01.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
- *  **** Module  :  js-common/cofe.tasks.importstructure.js
+ *  **** Module  :  js-common/cofe.tasks.migrate.js
  *       ~~~~~~~~~
  *  **** Project :  jsCoFE - javascript-based Cloud Front End
  *       ~~~~~~~~~
- *  **** Content :  Import Structure Task Class
+ *  **** Content :  Migration Task Class
  *       ~~~~~~~~~
  *
  *  (C) E. Krissinel, A. Lebedev 2020-2021
@@ -44,8 +44,8 @@ function TaskMigrate()  {
   }
 
   this._type = 'TaskMigrate';
-  this.setOName ( 'migrated' );  // default output file name template
-  //this.oname     = '*';   // asterisk here means do not use
+  //this.setOName ( 'migrated' );  // default output file name template
+  this.oname     = '*';   // asterisk here means do not use
   this.fasttrack = true;  // enforces immediate execution
 
   this.input_dtypes = [1];  // settings for "on project top only", managed in TaskList
@@ -120,32 +120,38 @@ if (!__template)  {
 
     div.upload_files = [];
 
-    div.grid.setLabel ( '<h2>Input Data</h2>',0,0,1,4 ).setFontItalic(true).setNoWrap();
-    var row = 1;
+    var row   = div.grid.getNRows();
+    var title = '';
+    if (row==0)  title = '<h2>Input Data</h2>';
+           else  title = '&nbsp;<br><h3>Data to import and replace in revision</h3>';
+    div.grid.setLabel ( title,row++,0,1,5 ).setFontItalic(true).setNoWrap();
+
+    div.grid1 = div.grid.setGrid ( '',row,0,1,5 );
+    row = 0;
 
     function setLabel ( rowNo,text,tooltip )  {
-      var lbl = div.grid.setLabel ( text,rowNo,0,1,1 ).setTooltip(tooltip)
-                        .setFontItalic(true).setFontBold(true).setNoWrap();
-      div.grid.setVerticalAlignment ( rowNo,0,'middle' );
+      var lbl = div.grid1.setLabel ( text,rowNo,0,1,1 ).setTooltip(tooltip)
+                         .setFontItalic(true).setFontBold(true).setNoWrap();
+      div.grid1.setVerticalAlignment ( rowNo,0,'middle' );
       return lbl;
     }
 
     function setFileSelect ( rowNo,label,tooltip,accept_str,fname )  {
-      var lbl   = setLabel ( rowNo,label,tooltip );
-      var fsel  = div.grid.setSelectFile ( false,accept_str,rowNo,2,1,1 );
+      var lbl  = setLabel ( rowNo,label,tooltip );
+      var fsel = div.grid1.setSelectFile ( false,accept_str,rowNo,2,1,1 );
       fsel.hide();
-      var btn   = div.grid.addButton ( 'Browse',image_path('open_file'),rowNo,2,1,1 );
+      var btn  = div.grid1.addButton ( 'Browse',image_path('open_file'),rowNo,2,1,1 );
 //                          .setWidth_px ( 86 );
       var filename = fname;
       if (this.state==job_code.new)
         filename = '';
 
-      div.grid.setLabel ( '&nbsp;',rowNo,1,1,1 ).setNoWrap();
-      var itext = div.grid.setInputText ( filename,rowNo,3,1,2 )
-                          .setWidth_px(400).setReadOnly(true).setNoWrap();
-      div.grid.setVerticalAlignment ( rowNo,2,'middle' );
-      div.grid.setVerticalAlignment ( rowNo,3,'middle' );
-      div.grid.setLabel ( '&nbsp;',rowNo,4,1,1 ).setNoWrap();
+      div.grid1.setLabel ( '&nbsp;',rowNo,1,1,1 ).setNoWrap();
+      var itext = div.grid1.setInputText ( filename,rowNo,3,1,2 )
+                           .setWidth_px(400).setReadOnly(true).setNoWrap();
+      div.grid1.setVerticalAlignment ( rowNo,2,'middle' );
+      div.grid1.setVerticalAlignment ( rowNo,3,'middle' );
+      div.grid1.setLabel ( '&nbsp;',rowNo,4,1,1 ).setNoWrap();
       btn.addOnClickListener ( function(){
         fsel.click();
       });
@@ -187,13 +193,13 @@ if (!__template)  {
 
     this.layParameters ( div.grid,div.grid.getNRows()+1,0 );
 
-    var ncols = div.grid.getNCols();
+    var ncols = div.grid1.getNCols();
     for (var i=1;i<ncols;i++)  {
-      div.grid.setLabel    ( ' ',row,i,1,1   ).setHeight_px(8);
-      div.grid.setCellSize ( 'auto','',row,i );
+      div.grid1.setLabel    ( ' ',row,i,1,1   ).setHeight_px(8);
+      div.grid1.setCellSize ( 'auto','',row,i );
     }
-    div.grid.setLabel    ( ' ',row,ncols,1,1  ).setHeight_px(8);
-    div.grid.setCellSize ( '95%','',row,ncols );
+    div.grid1.setLabel    ( ' ',row,ncols,1,1  ).setHeight_px(8);
+    div.grid1.setCellSize ( '95%','',row,ncols );
 
     return div;
 
@@ -258,8 +264,8 @@ if (!__template)  {
     }
 
     if (files.length<0)  {
-      new MessageBox ( 'Stop run','Task cannot be run as no structure<br>' +
-                                  'data are given' );
+      new MessageBox ( 'Stop run','Task cannot be run as no data are<br>' +
+                                  'given for upload' );
     } else  {
       new UploadDialog ( 'Upload data',files,inputPanel.customData,true,
                           function(returnCode){

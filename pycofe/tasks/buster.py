@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    09.01.21   <--  Date of Last Modification.
+#    14.01.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -262,6 +262,8 @@ class Buster(basic.TaskDriver):
                         "R_factor" : vals[0],
                         "R_free"   : vals[1]
                     }
+                    #self.putTaskMetrics ( "rfactor",vals[0] )
+                    #self.putTaskMetrics ( "rfree"  ,vals[1] )
 
             f.close()
 

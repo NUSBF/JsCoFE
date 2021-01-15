@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    27.12.20   <--  Date of Last Modification.
+ *    14.01.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Task List Dialog
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2020
+ *  (C) E. Krissinel, A. Lebedev 2016-2021
  *
  *  =================================================================
  *
@@ -352,6 +352,7 @@ var row      = 0;
 
   if (__user_role==role_code.developer)
     this.makeSection ( 'Tasks in Development',[
+      new TaskImportReplace(),
       new TaskDocDev       (),
       //new TaskSheetbend    (),  // excluded also from the bootstrap html
       new TaskJLigand      (),

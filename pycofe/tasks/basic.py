@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    09.01.21   <--  Date of Last Modification.
+#    14.01.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -1966,6 +1966,18 @@ class TaskDriver(object):
 
         else:
             return None
+
+    #def putTaskMetrics ( self,name,value ):
+    #    if self.task:
+    #        if not hasattr(self.task,"metrics"):
+    #            self.task.metrics = {}
+    #        self.task.metrics[name] = str(value)
+    #    return
+
+    #def copyTaskMetrics ( self,pgm,name,metrics_name ):
+    #    if pgm in self.generic_parser_summary:
+    #        self.putTaskMetrics ( metrics_name,self.generic_parser_summary[pgm][name] )
+    #    return
 
 
     # ============================================================================

@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    02.01.21   <--  Date of Last Modification.
+ *    14.01.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -------------------------------------------------------------------------
  *
@@ -60,6 +60,7 @@ function ProjectDesc()  {
   this.njobs        = 0;    // over all project history
   this.dateCreated  = '';   // year/mm/dd
   this.dateLastUsed = '';   // year/mm/dd
+  this.metrics      = {};   // for statistics and searches
 }
 
 function isProjectAccessible ( login,projectDesc )  {
