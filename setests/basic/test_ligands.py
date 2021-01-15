@@ -444,7 +444,7 @@ def test_1ligandsImportandRefmac(browser,
         sf.removeProject(d.driver, d.testName)
         sf.makeTestProject(d.driver, d.testName, d.testName)
         sf.enterProject(d.driver, d.testName)
-        sf.importFromCloud_mdm2(d.driver, d.waitShort) # 1
+        sf.importFromCloud_mdm2NoLigand(d.driver, d.waitShort) # 1
         sf.asymmetricUnitContentsAfterCloudImport(d.driver, d.waitShort) # 2
         editRevisionStructure_mdm2(d.driver, d.waitShort) # 3
         refmac_0004(d.driver) # 4
