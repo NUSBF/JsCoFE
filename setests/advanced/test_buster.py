@@ -1,4 +1,5 @@
 
+
 from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.action_chains import ActionChains
@@ -16,47 +17,48 @@ import setests_func as sf
 d = sf.driverHandler()
 
 
-def validateCrank2run(driver, waitLong):
+def startBusterAfterRevision(driver, waitLong):
+    print('Starting BUSTER')
 
-    rWork = 1.0
-    rFree = 1.0
-    targetRwork = 0.33
-    targetRfree = 0.38
-
-    print ('CRANK2 verification - starting pulling job every minute')
-
+    addButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/add.png')]")
+    addButton.click()
     time.sleep(1)
-    startTime = time.time()
 
-    while (True):
-        ttts = sf.tasksTreeTexts(driver)
-        for taskText in ttts:
-            # Job number as string
-            match = re.search(r'^\[0003\] EP with Crank2 \(SAD\) -- R=(0\.\d*) Rfree=(0\.\d*)', taskText)
-            if match:
-                rWork = float(match.group(1))
-                rFree = float(match.group(2))
-                break
-        if (rWork != 1.0) or (rFree != 1.0):
-            break
-        curTime = time.time()
-        if curTime > startTime + float(waitLong):
-            print('*** Timeout for CRANK2 results! Waited for 50 minutes plus %d seconds.' % waitLong)
-            break
-        time.sleep(60)
+    sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list')
+    time.sleep(1)
 
-    if (rWork == 1.0) or (rFree == 1.0):
-        print('*** Verification: could not find Rwork or Rfree value after CRANK2 run')
-    else:
-        print('*** Verification: CRANK2 Rwork is %0.4f (expecting <%0.2f), Rfree is %0.4f (expecting <%0.2f)' % (
-            rWork, targetRwork, rFree, targetRfree))
-    assert rWork < targetRwork
-    assert rFree < targetRfree
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Refinement and Model Building')
+    time.sleep(1)
+
+    sf.clickByXpath(driver, "//div[normalize-space()='%s']" % 'Buster Refinement')
+    time.sleep(2)
+
+    sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Auto TLS')
+    time.sleep(1)
+
+    sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Enhance Ligand Density')
+    time.sleep(1)
+
+
+    # There are several forms - active and inactive. We need one displayed.
+    buttonsRun = driver.find_elements_by_xpath("//button[contains(@style, 'images_png/runjob.png')]" )
+    for buttonRun in buttonsRun:
+        if buttonRun.is_displayed():
+            buttonRun.click()
+            break
+
+    time.sleep(2)
+
+    # presing Close button
+    closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
+    closeButton.click()
+    time.sleep(1)
 
     return ()
 
 
-def test_9Crank2validation(browser,
+
+def test_1BusterBasic(browser,
                 cloud,
                 nologin,
                 login,
@@ -72,7 +74,8 @@ def test_9Crank2validation(browser,
     d.remote = remote
     d.login = login
 
-    d.testName = 'crank2Test'
+    d.testName = 'busterTest'
+
 
     try:
         print('Opening URL: %s' % cloud)
@@ -80,12 +83,17 @@ def test_9Crank2validation(browser,
         assert "CCP4 Cloud" in d.driver.title
 
         if not nologin:
-            sf.loginToCloud(d.driver, d.login, d.password)
+            sf.loginToCloud(d.driver, login, password)
 
+        sf.removeProject(d.driver, d.testName)
+        sf.makeTestProject(d.driver, d.testName, d.testName)
         sf.enterProject(d.driver, d.testName)
-        sf.enterProject(d.driver, d.testName)
-        validateCrank2run(d.driver, 3000)
-        sf.renameProject(d.driver, d.testName)
+        sf.importFromPDB_2fx0(d.driver, d.waitShort)
+        sf.asymmetricUnitContents_2fx0(d.driver, d.waitShort)
+        sf.editRevisionStructure_2fx0(d.driver, d.waitShort)
+
+        startBusterAfterRevision(d.driver, 1800)
+
         d.driver.quit()
 
     except:
@@ -106,7 +114,7 @@ if __name__ == "__main__":
 
     parameters = parser.parse_args(sys.argv[1:])
 
-    test_9Crank2validation(browser=parameters.browser,  # or 'Chrome'
+    test_1BusterBasic(browser=parameters.browser,  # or 'Chrome'
                cloud=parameters.cloud,
                nologin=parameters.nologin,  # True for Cloud Desktop (no login page), False for remote server that requires login.
                login=parameters.login,  # Used to login into remote Cloud

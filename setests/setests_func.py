@@ -636,6 +636,153 @@ def editRevisionStructure_rnase(driver, waitShort):
     return ()
 
 
+def editRevisionStructure_2fx0(driver, waitShort):
+    print('Making structure revision 2fx0')
+
+    # Add button
+    addButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/add.png')]")
+    addButton.click()
+    time.sleep(1)
+
+    clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list')
+    time.sleep(1)
+
+    clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Asymmetric Unit and Structure Revision')
+    time.sleep(1)
+
+    clickByXpath(driver, "//div[normalize-space()='%s']" % 'Edit Structure Revision')
+    time.sleep(1)
+
+    clickByXpathMultiple(driver, "//span[normalize-space()='%s']" % '[do not change]', 6) # 6 = 3*2, I have no idea why there are two times more elements
+    time.sleep(1)
+
+    clickByXpath(driver, "//div[contains(text(), '%s') and contains(text(), '%s')]" % ('2fx0', 'xyz'))
+    time.sleep(1)
+
+    # There are several forms - active and inactive. We need one displayed.
+    buttonsRun = driver.find_elements_by_xpath("//button[contains(@style, 'images_png/runjob.png')]" )
+    for buttonRun in buttonsRun:
+        if buttonRun.is_displayed():
+            buttonRun.click()
+            break
+
+    try:
+        wait = WebDriverWait(driver, waitShort) # allowing 15 seconds to the task to finish
+        # Waiting for the text 'completed' in the ui-dialog-title of the task [0003]
+        wait.until(EC.presence_of_element_located
+                   ((By.XPATH,"//*[@class='ui-dialog-title' and contains(text(), 'completed') and contains(text(), '[0003]')]")))
+    except:
+        print('Apparently tha task editRevisionStructure has not been completed in time; terminating')
+        sys.exit(1)
+
+    # presing Close button
+    time.sleep(2)
+    clickByXpath(driver, "//button[contains(@style, 'images_png/close.png')]")
+    time.sleep(1)
+
+    return ()
+
+
+def importFromPDB_2fx0(driver, waitShort):
+    print ('Importing 2fx0 from the PDB')
+
+    clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list')
+    time.sleep(1)
+
+    clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Data Import')
+    time.sleep(1)
+
+    clickByXpath(driver, "//div[normalize-space()='%s']" % 'Import from PDB')
+    time.sleep(1)
+
+    # 2FX0
+    time.sleep(2)
+    inputPDB = driver.find_element_by_xpath("//input[@title='Comma-separated list of PDB codes to import data from']")
+    inputPDB.clear()
+    inputPDB.send_keys('2fx0')
+    time.sleep(2)
+
+    clickByXpath(driver, "//*[normalize-space()='%s']" % 'reflection data')
+    time.sleep(2)
+
+    clickByXpath(driver, "//*[normalize-space()='%s']" % 'sequences')
+    time.sleep(2)
+
+    clickByXpath(driver, "//*[normalize-space()='%s']" % 'structure revision')
+    time.sleep(1)
+
+    # There are several forms - active and inactive. We need one displayed.
+    buttonsRun = driver.find_elements_by_xpath("//button[contains(@style, 'images_png/runjob.png')]" )
+    for buttonRun in buttonsRun:
+        if buttonRun.is_displayed():
+            buttonRun.click()
+            break
+
+    try:
+        wait = WebDriverWait(driver, waitShort) # allowing 15 seconds to the task to finish
+        # Waiting for the text 'completed' in the ui-dialog-title of the task [0003]
+        wait.until(EC.presence_of_element_located
+                   ((By.XPATH,"//*[@class='ui-dialog-title' and contains(text(), 'completed') and contains(text(), '[0001]')]")))
+    except:
+        print('Apparently tha task importFromPDB has not been completed in time; terminating')
+        sys.exit(1)
+
+    # presing Close button
+    closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
+    closeButton.click()
+    time.sleep(1)
+
+    return ()
+
+
+def asymmetricUnitContents_2fx0(driver, waitShort):
+    print ('Making Asymmetric Unit Contents after PDB Import')
+
+    # presing Add button
+    addButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/add.png')]")
+    addButton.click()
+    time.sleep(1)
+
+    clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Full list')
+    time.sleep(1)
+
+    clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Asymmetric Unit and Structure Revision')
+    time.sleep(1)
+
+    clickByXpath(driver, "//*[normalize-space()='%s']" % 'Asymmetric Unit Contents') # looking by text
+    time.sleep(1)
+
+    # Se is main scatterer
+    inputScaterer = driver.find_element_by_xpath("//input[@title='Specify atom type of dominant anomalous scatterer (e.g., S, SE etc.), or leave blank if uncertain.']")
+    inputScaterer.click()
+    inputScaterer.clear()
+    inputScaterer.send_keys('Se')
+    time.sleep(1)
+
+    # There are several forms - active and inactive. We need one displayed.
+    buttonsRun = driver.find_elements_by_xpath("//button[contains(@style, 'images_png/runjob.png')]" )
+    for buttonRun in buttonsRun:
+        if buttonRun.is_displayed():
+            buttonRun.click()
+            break
+
+    try:
+        wait = WebDriverWait(driver, waitShort) # allowing 15 seconds to the task to finish
+        # Waiting for the text 'completed' in the ui-dialog-title of the task [0002]
+        wait.until(EC.presence_of_element_located
+                   ((By.XPATH,"//*[@class='ui-dialog-title' and contains(text(), 'completed') and contains(text(), '[0002]')]")))
+    except:
+        print('Apparently tha task asymmetricUnitContentsAfterPDBImport has not been completed in time; terminating')
+        sys.exit(1)
+
+    # presing Close button
+    closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
+    closeButton.click()
+    time.sleep(1)
+
+    return()
+
+
 def renameProject(driver, testName):
     print('Renaming succesfull test project')
     menuButton = driver.find_element(By.XPATH, "//div[contains(@style, 'images_png/menu.png')]")

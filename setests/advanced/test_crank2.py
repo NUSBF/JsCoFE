@@ -15,105 +15,6 @@ import setests_func as sf
 
 d = sf.driverHandler()
 
-def importFromPDB(driver, waitShort):
-    print ('Importing 2fx0 from the PDB')
-
-    sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list')
-    time.sleep(1)
-
-    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Data Import')
-    time.sleep(1)
-
-    sf.clickByXpath(driver, "//div[normalize-space()='%s']" % 'Import from PDB')
-    time.sleep(1)
-
-    # 2FX0
-    time.sleep(2)
-    inputPDB = driver.find_element_by_xpath("//input[@title='Comma-separated list of PDB codes to import data from']")
-    inputPDB.clear()
-    inputPDB.send_keys('2fx0')
-    time.sleep(2)
-
-    sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'reflection data')
-    time.sleep(2)
-
-    sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'sequences')
-    time.sleep(2)
-
-    sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'structure revision')
-    time.sleep(1)
-
-    # There are several forms - active and inactive. We need one displayed.
-    buttonsRun = driver.find_elements_by_xpath("//button[contains(@style, 'images_png/runjob.png')]" )
-    for buttonRun in buttonsRun:
-        if buttonRun.is_displayed():
-            buttonRun.click()
-            break
-
-    try:
-        wait = WebDriverWait(driver, waitShort) # allowing 15 seconds to the task to finish
-        # Waiting for the text 'completed' in the ui-dialog-title of the task [0003]
-        wait.until(EC.presence_of_element_located
-                   ((By.XPATH,"//*[@class='ui-dialog-title' and contains(text(), 'completed') and contains(text(), '[0001]')]")))
-    except:
-        print('Apparently tha task importFromPDB has not been completed in time; terminating')
-        sys.exit(1)
-
-    # presing Close button
-    closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
-    closeButton.click()
-    time.sleep(1)
-
-    return ()
-
-
-def asymmetricUnitContentsAfterPDBImport(driver, waitShort):
-    print ('Making Asymmetric Unit Contents after PDB Import')
-
-    # presing Add button
-    addButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/add.png')]")
-    addButton.click()
-    time.sleep(1)
-
-    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Full list')
-    time.sleep(1)
-
-    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Asymmetric Unit and Structure Revision')
-    time.sleep(1)
-
-    sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Asymmetric Unit Contents') # looking by text
-    time.sleep(1)
-
-    # Se is main scatterer
-    inputScaterer = driver.find_element_by_xpath("//input[@title='Specify atom type of dominant anomalous scatterer (e.g., S, SE etc.), or leave blank if uncertain.']")
-    inputScaterer.click()
-    inputScaterer.clear()
-    inputScaterer.send_keys('Se')
-    time.sleep(1)
-
-    # There are several forms - active and inactive. We need one displayed.
-    buttonsRun = driver.find_elements_by_xpath("//button[contains(@style, 'images_png/runjob.png')]" )
-    for buttonRun in buttonsRun:
-        if buttonRun.is_displayed():
-            buttonRun.click()
-            break
-
-    try:
-        wait = WebDriverWait(driver, waitShort) # allowing 15 seconds to the task to finish
-        # Waiting for the text 'completed' in the ui-dialog-title of the task [0002]
-        wait.until(EC.presence_of_element_located
-                   ((By.XPATH,"//*[@class='ui-dialog-title' and contains(text(), 'completed') and contains(text(), '[0002]')]")))
-    except:
-        print('Apparently tha task asymmetricUnitContentsAfterPDBImport has not been completed in time; terminating')
-        sys.exit(1)
-
-    # presing Close button
-    closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
-    closeButton.click()
-    time.sleep(1)
-
-    return()
-
 
 def startCrank2(driver):
     print('Starting CRANK2 for experimental phasing')
@@ -196,8 +97,8 @@ def test_1Crank2start(browser,
         sf.removeProject(d.driver, d.testName)
         sf.makeTestProject(d.driver, d.testName, d.testName)
         sf.enterProject(d.driver, d.testName)
-        importFromPDB(d.driver, d.waitShort)
-        asymmetricUnitContentsAfterPDBImport(d.driver, d.waitShort)
+        sf.importFromPDB_2fx0(d.driver, d.waitShort)
+        sf.asymmetricUnitContents_2fx0(d.driver, d.waitShort)
         startCrank2(d.driver)
 
         # Logging off as Selenium become unstable with long connections
