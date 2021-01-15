@@ -178,6 +178,8 @@ class Lorestr(basic.TaskDriver):
                         "R_factor" : str(verdict_meta['lorestr']["rfact"][1]),
                         "R_free"   : str(verdict_meta['lorestr']["rfree"][1])
                     }
+                    #self.copyTaskMetrics ( "lorestr","R_factor","rfactor" )
+                    #self.copyTaskMetrics ( "lorestr","R_free"  ,"rfree"   )
 
         else:
             self.putTitle ( "No Output Generated" )

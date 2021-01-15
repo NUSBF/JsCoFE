@@ -2,7 +2,7 @@
 /*
 *  ==========================================================================
  *
- *    06.12.20   <--  Date of Last Modification.
+ *    14.01.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -------------------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Task Template Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2020
+ *  (C) E. Krissinel, A. Lebedev 2016-2021
  *
  *  ==========================================================================
  *
@@ -38,7 +38,8 @@ var job_code = {
   remdet    : 'remdet',    // detached remark node
   remdoc    : 'remdoc',    // remark node converted from documentation import
   retired   : 'retired'    // indicates that the task should not appear in task list
-}
+};
+
 
 // ---------------------------------------------------------------------------
 // variables to be exported

@@ -309,6 +309,9 @@ class Refmac(basic.TaskDriver):
         have_results = False
         if os.path.isfile(xyzout):
 
+            #self.copyTaskMetrics ( "refmac","R_factor","rfactor" )
+            #self.copyTaskMetrics ( "refmac","R_free"  ,"rfree"   )
+
             verdict_row = self.rvrow
             self.rvrow += 4
 
