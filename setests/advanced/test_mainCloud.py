@@ -122,6 +122,8 @@ def startSimbad(driver):
 def verifySimbad(driver, waitLong):
 
     solv = 0.0
+    rWork = 1.0
+    rFree = 1.0
     print('SIMBAD verification')
 
     time.sleep(1.05)
@@ -130,9 +132,14 @@ def verifySimbad(driver, waitLong):
     while (True):
         ttts = sf.tasksTreeTexts(driver)
         for taskText in ttts:
-            match = re.search('\[0007\] simbad -- Solv=(.*)\%', taskText)
+            match = re.search('\[0007\] simbad --(.*)Solv=(.*)\%', taskText)
             if match:
-                solv = float(match.group(1))
+                # coudl be different SIMBAD output on different Cloud version, cet us comply to both
+                solv = float(match.group(2))
+                match2 = re.search('.*R=(0\.\d*) Rfree=(0\.\d*)', match.group(1))
+                if match2:
+                    rWork = float(match2.group(1))
+                    rFree = float(match2.group(2))
                 break
 
         if (solv != 0.0):
@@ -147,9 +154,15 @@ def verifySimbad(driver, waitLong):
         print('*** Verification: could not find Solv value after SIMBAD run')
     else:
         print('*** Verification: SIMBAD ' \
-              'Solv is %0.1f %%(expecting >45.0 and <50.0), '  % (solv))
-    assert solv < 50.0
+              'Solv is %0.1f %%(expecting >45.0 and <60.0), '  % (solv))
+    assert solv < 60.0
     assert solv > 45.0
+
+    if (rWork != 1.0) and (rFree != 1.0):
+        print('*** Verification: SIMBAD ' \
+              'Rwork/Rfree is %0.4f / %0.4f (expecting < 0.29 and < 0.3 ), '  % (rWork, rFree))
+        assert rWork < 0.29
+        assert rFree < 0.3
 
     return ()
 
