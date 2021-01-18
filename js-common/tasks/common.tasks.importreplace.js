@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    14.01.21   <--  Date of Last Modification.
+ *    16.01.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -36,9 +36,9 @@ function TaskImportReplace()  {
   this._type = 'TaskImportReplace';
   this.name  = 'import-n-replace';
   this.title = 'Import & Replace';
-  //this.setOName ( 'migrated' );  // default output file name template
-  //this.oname     = '*';   // asterisk here means do not use
-  //this.fasttrack = true;  // enforces immediate execution
+  //this.setOName ( 'replaced' );  // default output file name template
+  this.oname     = '*';   // asterisk here means do not use
+  this.fasttrack = true;  // enforces immediate execution
 
   this.input_dtypes = [{  // input data types
       data_type   : {'DataRevision':[]}, // data type(s) and subtype(s)
@@ -75,67 +75,57 @@ TaskImportReplace.prototype.currentVersion = function()  {
   else  return  version + TaskMigrate.prototype.currentVersion.call ( this );
 }
 
-/*
 // export such that it could be used in both node and a browser
 if (!__template)  {
   // for client side
 
-  //  This function is called when task is finally sent to FE to run. Should
-  // execute function given as argument, or issue an error message if run
-  // should not be done.
-  TaskImportReplace.prototype.doRun = function ( inputPanel,run_func )  {
-  var files = [];
-  var file_hkl = inputPanel.select_hkl['fsel'].getFiles();
-  var file_mtz = inputPanel.select_mtz['fsel'].getFiles();
-  var file_xyz = inputPanel.select_xyz['fsel'].getFiles();
-  var file_lib = inputPanel.select_lib['fsel'].getFiles();
+  // reserved function name
+  TaskImportReplace.prototype.collectInput = function ( inputPanel )  {
+    // collects data from input widgets, created in makeInputPanel() and
+    // stores it in internal fields
+    var msg = '';  // Ok if stays empty
+    var file_hkl = inputPanel.select_hkl['fsel'].getFiles();
+    var file_mtz = inputPanel.select_mtz['fsel'].getFiles();
+    var file_xyz = inputPanel.select_xyz['fsel'].getFiles();
+    var file_lib = inputPanel.select_lib['fsel'].getFiles();
 
-    if (file_hkl.length<=0)  {
-      files.push ( file_hkl );
-      this.file_hkl = file_hkl[0].name;
-    }
-    if (file_mtz.length>0)  {
-      files.push ( file_mtz );
-      this.file_mtz = file_mtz[0].name;
-    }
-    if (file_xyz.length>0)  {
-      files.push ( file_xyz );
-      this.file_xyz = file_xyz[0].name;
-    }
-    if (file_lib.length>0)  {
-      files.push ( file_lib );
-      this.file_lib = file_lib[0].name;
-    }
+    if ((file_hkl.length<=0) && (file_mtz.length<=0) &&
+        (file_xyz.length<=0) && (file_lib.length<=0))
+      msg += '<b><i>no data is given for import</i></b>';
 
-    if (files.length<0)  {
-      new MessageBox ( 'Stop run','Task cannot be run as no structure<br>' +
-                                  'data are given' );
-    } else  {
-      new UploadDialog ( 'Upload data',files,inputPanel.customData,true,
-                          function(returnCode){
-        if (!returnCode)
-          run_func();
-        else
-          new MessageBox ( 'Stop run','Task cannot be run due to upload ' +
-                                'errors:<p><b><i>' + returnCode + '</i></b>' );
-      });
-    }
+    TaskTemplate.prototype.collectInput.call ( this,inputPanel );
+
+    return  msg;
 
   }
-
-  // reserved function name
-  TaskImportReplace.prototype.runButtonName = function()  { return 'Import'; }
 
 } else  {
   // for server side
 
   var conf = require('../../js-server/server.configuration');
 
+  TaskImportReplace.prototype.makeInputData = function ( loginData,jobDir )  {
+
+    // put hkl and structure data in input databox for copying their files in
+    // job's 'input' directory
+
+    if ('revision' in this.input_data.data)  {
+      var revision = this.input_data.data['revision'][0];
+      this.input_data.data['ihkl'] = [revision.HKL];
+      if (revision.Structure)
+        this.input_data.data['istruct'] = [revision.Structure];
+      if (revision.Substructure)
+        this.input_data.data['isub'] = [revision.Substructure];
+    }
+
+    __template.TaskMigrate.prototype.makeInputData.call ( this,loginData,jobDir );
+
+  }
+
   TaskImportReplace.prototype.getCommandLine = function ( jobManager,jobDir )  {
-    return [conf.pythonName(), '-m', 'pycofe.tasks.migrate', jobManager, jobDir, this.id];
+    return [conf.pythonName(), '-m', 'pycofe.tasks.import_replace', jobManager, jobDir, this.id];
   }
 
   module.exports.TaskImportReplace = TaskImportReplace;
 
 }
-*/

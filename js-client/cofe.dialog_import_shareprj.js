@@ -171,6 +171,7 @@ ImportSharedProjectDialog.prototype.makeProjectSelectPage = function (
               window.setTimeout ( checkReady,2000 );
 
             },null,'persist' );
+
       });
     }(this))
 

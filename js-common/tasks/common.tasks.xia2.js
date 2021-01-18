@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    22.12.20   <--  Date of Last Modification.
+ *    18.01.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Xia-2 Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2020
+ *  (C) E. Krissinel, A. Lebedev 2016-2021
  *
  *  =================================================================
  *
@@ -704,10 +704,13 @@ if (!__template)  {
 
     msg += TaskTemplate.prototype.collectInput.call ( this,inputPanel );
 
-    if (this.parameters.sec1.contains.PROJECT.value &&
-        (!(/^[A-Za-z][A-Za-z0-9\\-\\._-]+$/.test(this.parameters.sec1.contains.PROJECT.value))))
-      msg += '<b><i>Project name should contain only latin letters, numbers, ' +
+    var pname = this.parameters.sec1.contains.PROJECT.value;
+    if (pname && (!(/^[A-Za-z]([A-Za-z0-9\\-\\._-]{0,})$/.test(pname))))
+//        (!(/^[a-z_]([a-z0-9_-]{0,31}|[a-z0-9_-]{0,30}\$)$/.test(this.parameters.sec1.contains.PROJECT.value))))
+//        (!(/^[A-Za-z][A-Za-z0-9\\-\\._-]+$/.test(this.parameters.sec1.contains.PROJECT.value))))
+      msg += '<b><i>Parameters/Project name should contain only latin letters, numbers, ' +
              'undescores,<br>dashes and dots, and must start with a letter</i></b>';
+
 
     if (startsWith(this.parameters.sec2.contains.PIPELINE.value,'3d'))  {
       // check XDS availability

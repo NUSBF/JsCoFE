@@ -1272,6 +1272,7 @@ RadioSet.prototype.addButton = function ( text,btnId,tooltip,checked_bool )  {
   var button = new Widget ( 'input' );
   button.element.setAttribute ( 'type','radio' );
   button.setId ( _id );
+  button.radioID = btnId;
   button.element.setAttribute ( 'name',this.name );
   if (checked_bool)  {
     button.element.setAttribute ( 'checked','checked' );
@@ -1280,9 +1281,11 @@ RadioSet.prototype.addButton = function ( text,btnId,tooltip,checked_bool )  {
   this.addWidget ( button );
 
   return this;  // for chaining
+
 }
 
 RadioSet.prototype.make = function (  onClick_func  )  {
+
   (function(rs){
     function onClick()  {
       for (var i=0;i<rs.child.length;i++)
@@ -1296,13 +1299,34 @@ RadioSet.prototype.make = function (  onClick_func  )  {
     }
     for (var i=0;i<rs.child.length;i++)
       if (rs.child[i].type=='input')
-        rs.child[i].addOnClickListener ( onClick );
+        rs.child[i].element.addEventListener('click',function(e){
+          onClick();
+        });
   }(this));
 
-//  $( 'input[name="' + this.name + '"]' ).checkboxradio();
-//  $(this.element).buttonset();
+  //  $( 'input[name="' + this.name + '"]' ).checkboxradio();
+  //$(this.element).buttonset();
   $(this.element).controlgroup();
+  //$(this.element).checkboxradio();
+
+  //this.addOnClickListener ( function(){
+  //   alert ('click');
+  //  } );
+
+/*
+  for (var i=0;i<this.child.length;i++)
+    if (this.child[i].type=='input')  {
+      (function(btn){
+        btn.addOnClickListener ( function(){
+          $(btn.element).click();
+//                  onClick_func ( btn.radioID );
+        });
+      }(this.child[i]))
+    }
+*/
+
   return this;
+
 }
 
 RadioSet.prototype.selectButton = function ( btnId )  {

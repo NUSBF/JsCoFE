@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    18.01.21   <--  Date of Last Modification.
+#    08.06.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -14,7 +14,7 @@
 #  **** Content :  MTZ HANDLING UTILS
 #      ~~~~~~~~~
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2021
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2020
 #
 # ============================================================================
 #
@@ -110,6 +110,7 @@ class mtz_dataset(object):
         # print [block_name(b, merge=True) for b in abcd_list]
 
         self.ABCD = tuple(abcd_list)
+        self.FwPhi = tuple(fwtphi_list)
 
         columns = dict()
         for ctype, label in clist:
@@ -126,7 +127,10 @@ class mtz_dataset(object):
         phi_list = columns.get('P')
         fom_list = columns.get('W')
         if phi_list and fom_list and len(phi_list) == 1 and len(fom_list) == 1:
-            phifom_list.append((phi_list.pop(), fom_list.pop()))
+            phifom_list.append((phi_list[0], fom_list[0]))
+
+        if phifom_list:
+            self.PhiFOM = tuple(phifom_list)
 
         for ctype in 'K', 'M', 'G', 'L':
             labs = columns.pop(ctype, None)
@@ -182,22 +186,6 @@ class mtz_dataset(object):
                 if len(vslabs) == 1:
                     vlab, slab = vslabs[0]
                     setattr(self, tag, measured(vlab, slab))
-
-        calc_list = ('FC', 'PHIC'), ('FC_ALL', 'PHIC_ALL'), ('FC_ALL_LS', 'PHIC_ALL_LS')
-        calc_for_fom = 2
-        std_refmac = bool(fom_list) and len(fom_list) == 1 and fom_list[0] == 'FOM'
-        for calc in calc_list:
-            std_refmac &= (calc in fwtphi_list)
-
-        if std_refmac:
-            calc = calc_list[calc_for_fom]
-#           fwtphi_list.remove(calc)
-            phifom = calc[1], fom_list.pop()
-            phifom_list.append(phifom)
-
-        self.PhiFOM = tuple(phifom_list)
-        self.FwPhi = tuple(fwtphi_list)
-
 
     def prn(self):
         print('MTZ =', self.MTZ)

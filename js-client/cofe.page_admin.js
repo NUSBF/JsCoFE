@@ -160,7 +160,9 @@ function AdminPage ( sceneId )  {
       new AnnounceDialog();
     });
 
-    refresh_btn.addOnClickListener ( function(){ self.refresh(); } );
+    refresh_btn.addOnClickListener ( function(){
+      self.refresh();
+    });
 
   }(this))
 

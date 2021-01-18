@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    14.01.21   <--  Date of Last Modification.
+ *    18.01.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -352,7 +352,6 @@ var row      = 0;
 
   if (__user_role==role_code.developer)
     this.makeSection ( 'Tasks in Development',[
-      new TaskImportReplace(),
       new TaskDocDev       (),
       //new TaskSheetbend    (),  // excluded also from the bootstrap html
       new TaskJLigand      (),
@@ -365,6 +364,7 @@ var row      = 0;
     new TaskImport        (),
     new TaskImportSeqCP   (),
     new TaskImportPDB     (),
+    new TaskImportReplace (),
     new TaskMigrate       ()
     //new TaskFacilityImport()
   ];
@@ -475,6 +475,12 @@ var row      = 0;
     new TaskCombStructure()
   ]);
 
+
+  this.makeSection ( 'Coot',[
+    new TaskCootMB(),
+    new TaskCootCE(),
+  ]);
+
   this.makeSection ( 'Ligands',[
     new TaskMakeLigand(),
     new TaskFitLigand (),
@@ -494,7 +500,6 @@ var row      = 0;
     new TaskCrosSec (),
     'Coordinate data tools',
     new TaskXyzUtils(),
-    new TaskCootCE  (),
     new TaskGemmi   (),
     'Alignment and comparison tools',
     new TaskGesamt  (),

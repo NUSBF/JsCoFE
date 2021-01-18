@@ -315,7 +315,7 @@ class Crank2(basic.TaskDriver):
                 self.getKWItem ( self.sec6.COMB_PHDMMB_MAXBIGCYC          ) +\
                 self.getKWItem ( self.sec6.COMB_PHDMMB_NCS_DET            ) +\
                 self.getKWItem ( self.sec6.COMB_PHDMMB_NCS_DET_MR         ) +\
-                " num_parallel::6 mb buccaneer" +\
+                " num_parallel::5 mb buccaneer" +\
                 self.getKWItem ( self.sec6.COMB_PHDMMB_DMFULL_DM_PROGRAM  )
             )
         return
@@ -674,8 +674,10 @@ class Crank2(basic.TaskDriver):
         self.flush()
         crank2_meta = {
             "help_btn_template" : self.hotHelpLink ( "Crank-2 Glossary",
-                        "doc.task.Crank2",tooltip="what is this?",
-                        chapter="html-taskref" )
+                                                    "doc.task.Crank2",
+                                                    tooltip="what is this?",
+                                                    chapter="html-taskref" ),
+            "stop_file"         : self.jobEndFName
         }
         self.storeReportDocument ( json.dumps(crank2_meta) )
 
