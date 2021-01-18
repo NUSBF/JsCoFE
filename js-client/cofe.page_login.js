@@ -204,6 +204,7 @@ function LoginPage ( sceneId )  {
         '<p>In order to register as a new user, please contact ' + appName() +
         '<br>admin or maintainer in your organisation.' );
   });
+
   pwd_btn.addOnClickListener ( function(){
     if (__regMode=='email')
       makeForgottenLoginPage(sceneId);

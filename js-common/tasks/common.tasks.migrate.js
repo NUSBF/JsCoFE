@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    14.01.21   <--  Date of Last Modification.
+ *    16.01.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -171,7 +171,7 @@ if (!__template)  {
     );
 
     div.select_mtz = setFileSelect ( row++,
-      'Density maps',
+      'Phases',
       'Navigate to MTZ file with electron density maps',
       '.mtz',
       this.file_mtz
@@ -225,10 +225,17 @@ if (!__template)  {
     var file_mtz = inputPanel.select_mtz['fsel'].getFiles();
     var file_xyz = inputPanel.select_xyz['fsel'].getFiles();
 
+    if (file_hkl.length<=0)
+      msg += '<b><i>Reflection data must be given</i></b>';
+    if ((file_mtz.length<=0) && (file_xyz.length<=0))
+      msg += '<b><i>Either phases or atomic coordinates, or both, must be given</i></b>';
+
+    /*
     if ((file_hkl.length<=0) && (file_mtz.length<=0))
       msg += '<b><i>Either reflection data or density maps, or both, must be given</i></b>';
     if ((file_mtz.length<=0) && (file_xyz.length<=0))
       msg += '<b><i>Either density maps or atomic coordinates, or both, must be given</i></b>';
+    */
 
     TaskTemplate.prototype.collectInput.call ( this,inputPanel );
 

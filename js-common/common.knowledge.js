@@ -37,6 +37,8 @@ var _taskIndex = {
   // suggest CCP4go only after Root
   'A'  : { type: 'TaskCCP4go'          , after: ['0'] },
   'A1' : { type: 'TaskMigrate'         , after: ['0'] },
+  // do not suggest by default:
+  'A2' : { type: 'TaskImportReplace'   , after: [] },
 
   'B'  : { type: 'TaskImport'          , after: ['0','B','B1','C','D','E','m'] },
   'B1' : { type: 'TaskImportSeqCP'     , after: ['0','B','B1','C','D','E','m'] },

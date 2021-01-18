@@ -5,13 +5,13 @@
 #
 # ============================================================================
 #
-#    23.12.20   <--  Date of Last Modification.
+#    18.01.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  MERGED MTZ DATA IMPORT FUNCTIONS
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2020
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2021
 #
 # ============================================================================
 #
@@ -122,9 +122,11 @@ def makeHKLTable ( body,tableId,holderId,original_data,new_data,
 
 def run ( body,   # body is reference to the main Import class
           sectionTitle="Reflection datasets created",
-          sectionOpen=False,        # to keep result section closed if several datasets
-          importPhases="phases-ds", # "","phases-ds","phases-split" all optional
-          freeRflag=True            # will be run if necessary
+          sectionOpen =False,       # to keep result section closed if several datasets
+          importPhases="phases-ds", # "","phases-ds","phases-split" all optional;
+                                    # "phases-ds only" "phases-split only"
+                                    # will ignore HKL
+          freeRflag   =True         # will be run if necessary
         ):
 
     hkl_imported = []
@@ -154,7 +156,7 @@ def run ( body,   # body is reference to the main Import class
     k = 0
     for f_orig, f_fmt in files_mtz:
 
-        p_orig  = os.path.join(body.importDir(), f_orig)
+        p_orig  = os.path.join ( body.importDir(),f_orig )
         p_mtzin = p_orig
 
         if f_fmt==import_filetype.ftype_CIFMerged():
@@ -283,179 +285,184 @@ def run ( body,   # body is reference to the main Import class
                     hkl.makeDName ( body.dataSerialNo )
                     datasetName = ""
 
-                    if k==0:
-                        if sectionTitle:
-                            pyrvapi.rvapi_add_section ( mtzSecId,sectionTitle,
-                                                body.report_page_id(),body.rvrow,
-                                                0,1,1,sectionOpen )
-                        else:
-                            pyrvapi.rvapi_add_section ( mtzSecId,
-                                    "Reflection dataset created: " + hkl.dname,
-                                    body.report_page_id(),body.rvrow,
-                                    0,1,1,sectionOpen )
-
                     subSecId = mtzSecId
-                    if len(files_mtz)>1 or len(mf)>1:
-                        subSecId = body.getWidgetId ( "mtz_subsec" )
-                        pyrvapi.rvapi_add_section ( subSecId,hkl.dname,
-                                                    mtzSecId,k,0,1,1,False )
-                        #pyrvapi.rvapi_add_section ( subSecId,
-                        #            f_orig + " / " + hkl.getDataSetName(),
-                        #            mtzSecId,k,0,1,1,False )
+                    if not importPhases.endswith("only"):
+                        if k==0:
+                            if sectionTitle:
+                                pyrvapi.rvapi_add_section ( mtzSecId,sectionTitle,
+                                                    body.report_page_id(),body.rvrow,
+                                                    0,1,1,sectionOpen )
+                            else:
+                                pyrvapi.rvapi_add_section ( mtzSecId,
+                                        "Reflection dataset created: " + hkl.dname,
+                                        body.report_page_id(),body.rvrow,
+                                        0,1,1,sectionOpen )
 
-                    # run crtruncate
-                    outFileName = os.path.join(body.outputDir(),hkl.dataId+".mtz")
-                    outXmlName  = os.path.join("ctruncate"+hkl.dataId+".xml")
-                    cmd = ["-hklin",p_mtzout,"-hklout",outFileName]
-                    amplitudes = ""
+                        #subSecId = mtzSecId
+                        if len(files_mtz)>1 or len(mf)>1:
+                            subSecId = body.getWidgetId ( "mtz_subsec" )
+                            pyrvapi.rvapi_add_section ( subSecId,hkl.dname,
+                                                        mtzSecId,k,0,1,1,False )
+                            #pyrvapi.rvapi_add_section ( subSecId,
+                            #            f_orig + " / " + hkl.getDataSetName(),
+                            #            mtzSecId,k,0,1,1,False )
 
-                    meanCols = hkl.getMeanColumns()
-                    if meanCols[2] != "X":
-                        cols = "/*/*/["
-                        if meanCols[1] != None:
-                            cols = cols + meanCols[0] + "," + meanCols[1]
-                        else:
-                            cols = cols + meanCols[0]
-                        if meanCols[2] == "F":
-                            amplitudes = "-amplitudes"
-                        cmd += ["-colin",cols+"]"]
+                        # run crtruncate
+                        outFileName = os.path.join(body.outputDir(),hkl.dataId+".mtz")
+                        outXmlName  = os.path.join("ctruncate"+hkl.dataId+".xml")
+                        cmd = ["-hklin",p_mtzout,"-hklout",outFileName]
+                        amplitudes = ""
 
-                    anomCols  = hkl.getAnomalousColumns()
-                    anomalous = False
-                    if anomCols[4] != "X":
-                        anomalous = True
-                        cols = "/*/*/["
-                        for i in range(0,4):
-                            if anomCols[i] != None:
-                                if i > 0:
-                                    cols = cols + ","
-                                cols = cols + anomCols[i]
-                        if anomCols[4] == "F":
-                            amplitudes = "-amplitudes"
-                        cmd += ["-colano",cols+"]"]
+                        meanCols = hkl.getMeanColumns()
+                        if meanCols[2] != "X":
+                            cols = "/*/*/["
+                            if meanCols[1] != None:
+                                cols = cols + meanCols[0] + "," + meanCols[1]
+                            else:
+                                cols = cols + meanCols[0]
+                            if meanCols[2] == "F":
+                                amplitudes = "-amplitudes"
+                            cmd += ["-colin",cols+"]"]
 
-                    if amplitudes:
-                        cmd += [amplitudes]
+                        anomCols  = hkl.getAnomalousColumns()
+                        anomalous = False
+                        if anomCols[4] != "X":
+                            anomalous = True
+                            cols = "/*/*/["
+                            for i in range(0,4):
+                                if anomCols[i] != None:
+                                    if i > 0:
+                                        cols = cols + ","
+                                    cols = cols + anomCols[i]
+                            if anomCols[4] == "F":
+                                amplitudes = "-amplitudes"
+                            cmd += ["-colano",cols+"]"]
 
-                    cmd += ["-xmlout", outXmlName]
-                    cmd += ["-freein", "/*/*/[" + mf.FREE + "]" ]
+                        if amplitudes:
+                            cmd += [amplitudes]
 
-                    pyrvapi.rvapi_set_text ( "&nbsp;<p><h2>Data analysis (CTruncate)</h2>",
-                                             subSecId,1,0,1,1 )
-                    reportPanelId = body.getWidgetId ( "log_panel" )
-                    pyrvapi.rvapi_add_panel ( reportPanelId,subSecId,2,0,1,1 )
+                        cmd += ["-xmlout", outXmlName]
+                        cmd += ["-freein", "/*/*/[" + mf.FREE + "]" ]
 
-                    body.file_stdin = None  # not clear why this is not None at
-                                            # this point and needs to be forced,
-                                            # or else runApp looks for input script
-                    body.setGenericLogParser ( reportPanelId,False,False,False )
-                    body.runApp ( "ctruncate",cmd )
+                        pyrvapi.rvapi_set_text ( "&nbsp;<p><h2>Data analysis (CTruncate)</h2>",
+                                                 subSecId,1,0,1,1 )
+                        reportPanelId = body.getWidgetId ( "log_panel" )
+                        pyrvapi.rvapi_add_panel ( reportPanelId,subSecId,2,0,1,1 )
 
-                    body.file_stdout.flush()
+                        body.file_stdin = None  # not clear why this is not None at
+                                                # this point and needs to be forced,
+                                                # or else runApp looks for input script
+                        body.setGenericLogParser ( reportPanelId,False,False,False )
+                        body.runApp ( "ctruncate",cmd )
 
-                    mtzTableId = body.getWidgetId ( "mtz_table" )
+                        body.file_stdout.flush()
 
-                    last_imported = None
-                    if rc.msg:
-                        msg = "\n\n CTruncate failed with message:\n\n" + \
-                              rc.msg + \
-                              "\n\n Dataset " + hkl.dname + \
-                              " cannot be used.\n\n"
-                        body.file_stdout.write ( msg )
-                        body.file_stderr.write ( msg )
-                        makeHKLTable ( body,mtzTableId,subSecId,hkl,hkl,-1,msg,0 )
-                        datasetName = hkl.dname
+                        mtzTableId = body.getWidgetId ( "mtz_table" )
 
-                    elif not os.path.exists(outFileName):
-                        body.file_stdout.write ( "\n\n +++ Dataset " + hkl.dname + \
-                            "\n was not truncated and will be used as is\n\n" )
-                        hkl.makeUniqueFNames ( body.outputDir() )
-                        body.outputDataBox.add_data ( hkl )
-                        hkl_imported.append ( hkl )
-                        last_imported = hkl
-                        makeHKLTable ( body,mtzTableId,subSecId,hkl,hkl,0,"",0 )
-                        datasetName = hkl.dname
+                        last_imported = None
+                        if rc.msg:
+                            msg = "\n\n CTruncate failed with message:\n\n" + \
+                                  rc.msg + \
+                                  "\n\n Dataset " + hkl.dname + \
+                                  " cannot be used.\n\n"
+                            body.file_stdout.write ( msg )
+                            body.file_stderr.write ( msg )
+                            makeHKLTable ( body,mtzTableId,subSecId,hkl,hkl,-1,msg,0 )
+                            datasetName = hkl.dname
 
-                        row = 3
-                        #srf.putSRFDiagram ( body,hkl,body.outputDir(),
-                        #                    body.reportDir(),subSecId,
-                        #                    3,0,1,1, body.file_stdout,
-                        #                    body.file_stderr, None )
-                        #  row += 1
-                        patterson.putPattersonMap (
-                                            body,hkl,body.outputDir(),
-                                            body.reportDir(),subSecId,
-                                            row,0,1,1, body.file_stdout,
-                                            body.file_stderr, None )
-
-                        pyrvapi.rvapi_set_text (
-                                "&nbsp;<br><hr/><h3>Created Reflection Data Set (merged)</h3>" + \
-                                "<b>Assigned name:</b>&nbsp;&nbsp;" + datasetName + "<br>&nbsp;",
-                                subSecId,row+1,0,1,1 )
-                        pyrvapi.rvapi_add_data ( body.getWidgetId("hkl_data_"+str(body.dataSerialNo)),
-                                 "Merged reflections",
-                                 # always relative to job_dir from job_dir/html
-                                 "/".join([ "..",body.outputDir(),hkl.getHKLFileName()]),
-                                 "hkl:hkl",subSecId,row+2,0,1,1,-1 )
-                        body.addCitation ( 'viewhkl' )
-
-                    else:
-                        body.file_stdout.write ( "\n\n ... Dataset " + hkl.dname + \
-                            "\n was truncated and will substitute the " + \
-                            "original one\n\n" )
-                        mtzf = mtz.mtz_file ( outFileName )
-                        # ctruncate should create a single dataset here
-                        for dset in mtzf:
-                            dset.MTZ = os.path.basename(outFileName)
-                            hkl_data = dtype_hkl.DType ( body.job_id )
-                            hkl_data.importMTZDataset ( dset )
-                            hkl_data.dname  = hkl.dname
-                            hkl_data.dataId = hkl.dataId
-                            hkl_data.makeUniqueFNames ( body.outputDir() )
-                            body.outputDataBox.add_data ( hkl_data )
-                            hkl_imported.append ( hkl_data )
-                            last_imported = hkl_data
-                            makeHKLTable ( body,mtzTableId,subSecId,hkl,hkl_data,1,"",0 )
-                            datasetName = hkl_data.dname
+                        elif not os.path.exists(outFileName):
+                            body.file_stdout.write ( "\n\n +++ Dataset " + hkl.dname + \
+                                "\n was not truncated and will be used as is\n\n" )
+                            hkl.makeUniqueFNames ( body.outputDir() )
+                            body.outputDataBox.add_data ( hkl )
+                            hkl_imported.append ( hkl )
+                            last_imported = hkl
+                            makeHKLTable ( body,mtzTableId,subSecId,hkl,hkl,0,"",0 )
+                            datasetName = hkl.dname
 
                             row = 3
-                            #srf.putSRFDiagram ( body,hkl_data,body.outputDir(),
+                            #srf.putSRFDiagram ( body,hkl,body.outputDir(),
                             #                    body.reportDir(),subSecId,
                             #                    3,0,1,1, body.file_stdout,
                             #                    body.file_stderr, None )
-                            # row += 1
+                            #  row += 1
                             patterson.putPattersonMap (
-                                                body,hkl_data,body.outputDir(),
+                                                body,hkl,body.outputDir(),
                                                 body.reportDir(),subSecId,
                                                 row,0,1,1, body.file_stdout,
                                                 body.file_stderr, None )
 
                             pyrvapi.rvapi_set_text (
-                                "&nbsp;<br><hr/><h3>Created Reflection Data Set (merged)</h3>" + \
-                                "<b>Assigned name:</b>&nbsp;&nbsp;" + datasetName + "<br>&nbsp;",
-                                subSecId,row+1,0,1,1 )
+                                    "&nbsp;<br><hr/><h3>Created Reflection Data Set (merged)</h3>" + \
+                                    "<b>Assigned name:</b>&nbsp;&nbsp;" + datasetName + "<br>&nbsp;",
+                                    subSecId,row+1,0,1,1 )
                             pyrvapi.rvapi_add_data ( body.getWidgetId("hkl_data_"+str(body.dataSerialNo)),
-                                 "Merged reflections",
-                                 # always relative to job_dir from job_dir/html
-                                 "/".join([ "..",body.outputDir(),hkl_data.getHKLFileName()]),
-                                 "hkl:hkl",subSecId,row+2,0,1,1,-1 )
+                                     "Merged reflections",
+                                     # always relative to job_dir from job_dir/html
+                                     "/".join([ "..",body.outputDir(),hkl.getHKLFileName()]),
+                                     "hkl:hkl",subSecId,row+2,0,1,1,-1 )
                             body.addCitation ( 'viewhkl' )
 
-                    if body.summary_row_0<0:
-                        body.putSummaryLine ( body.get_cloud_import_path(f_orig),"HKL",datasetName )
+                        else:
+                            body.file_stdout.write ( "\n\n ... Dataset " + hkl.dname + \
+                                "\n was truncated and will substitute the " + \
+                                "original one\n\n" )
+                            mtzf = mtz.mtz_file ( outFileName )
+                            # ctruncate should create a single dataset here
+                            for dset in mtzf:
+                                dset.MTZ = os.path.basename(outFileName)
+                                hkl_data = dtype_hkl.DType ( body.job_id )
+                                hkl_data.importMTZDataset ( dset )
+                                hkl_data.dname  = hkl.dname
+                                hkl_data.dataId = hkl.dataId
+                                hkl_data.makeUniqueFNames ( body.outputDir() )
+                                body.outputDataBox.add_data ( hkl_data )
+                                hkl_imported.append ( hkl_data )
+                                last_imported = hkl_data
+                                makeHKLTable ( body,mtzTableId,subSecId,hkl,hkl_data,1,"",0 )
+                                datasetName = hkl_data.dname
+
+                                row = 3
+                                #srf.putSRFDiagram ( body,hkl_data,body.outputDir(),
+                                #                    body.reportDir(),subSecId,
+                                #                    3,0,1,1, body.file_stdout,
+                                #                    body.file_stderr, None )
+                                # row += 1
+                                patterson.putPattersonMap (
+                                                    body,hkl_data,body.outputDir(),
+                                                    body.reportDir(),subSecId,
+                                                    row,0,1,1, body.file_stdout,
+                                                    body.file_stderr, None )
+
+                                pyrvapi.rvapi_set_text (
+                                    "&nbsp;<br><hr/><h3>Created Reflection Data Set (merged)</h3>" + \
+                                    "<b>Assigned name:</b>&nbsp;&nbsp;" + datasetName + "<br>&nbsp;",
+                                    subSecId,row+1,0,1,1 )
+                                pyrvapi.rvapi_add_data ( body.getWidgetId("hkl_data_"+str(body.dataSerialNo)),
+                                     "Merged reflections",
+                                     # always relative to job_dir from job_dir/html
+                                     "/".join([ "..",body.outputDir(),hkl_data.getHKLFileName()]),
+                                     "hkl:hkl",subSecId,row+2,0,1,1,-1 )
+                                body.addCitation ( 'viewhkl' )
+
+                        if body.summary_row_0<0:
+                            body.putSummaryLine ( body.get_cloud_import_path(f_orig),"HKL",datasetName )
+                        else:
+                            body.addSummaryLine ( "HKL",datasetName )
+                        k += 1
+                        pyrvapi.rvapi_flush()
+
                     else:
-                        body.addSummaryLine ( "HKL",datasetName )
-                    k += 1
-                    pyrvapi.rvapi_flush()
+                        last_imported = hkl
 
                     if importPhases and last_imported and (ds.PhiFOM or ds.ABCD or ds.FwPhi):
-                        cou0 = 7
-                        dset = last_imported.dataset
-                        mtzin = os.path.join(body.outputDir(),dset.MTZ)
+                        cou0   = 7
+                        dset   = last_imported.dataset
+                        mtzin  = os.path.join(body.outputDir(),dset.MTZ)
                         f_sigf = dset.Fmean.value, dset.Fmean.sigma
                         phaseBlocks = []
                         cou = cou0
-                        if importPhases=="phases-ds":
+                        if importPhases.startswith("phases-ds"):
                             # simply make structure with all relevant labels
                             body.stdoutln ( " *** ABCD   " + str(ds.ABCD)   )
                             body.stdoutln ( " *** PhiFOM " + str(ds.PhiFOM) )
@@ -481,10 +488,10 @@ def run ( body,   # body is reference to the main Import class
                                     -1, cou, 1 )
                                 if body.summary_row_0<0:
                                     body.putSummaryLine ( body.get_cloud_import_path(f_orig),
-                                                          "MAPS",structure.dname )
+                                                          "PHASES",structure.dname )
                                 else:
-                                    body.addSummaryLine ( "MAPS",structure.dname )
-                        elif importPhases=="phases-split":
+                                    body.addSummaryLine ( "PHASES",structure.dname )
+                        elif importPhases.startswith("phases-split"):
                             if ds.PhiFOM:
                                 phaseBlocks.extend(ds.PhiFOM)
                             if ds.ABCD:
@@ -497,10 +504,10 @@ def run ( body,   # body is reference to the main Import class
                             assert len(phBlock) in (2,4)
                             blockname = os.path.splitext(f_orig)[0] + '-' + mtz.block_name(phBlock)
                             mtztmp = blockname + '_tmp.mtz'
-                            args = []
-                            args += ["HKLIN1",mtzin]
+                            args  = []
+                            args += ["HKLIN1",mtzin   ]
                             args += ["HKLIN2",p_mtzout]
-                            args += ["HKLOUT",mtztmp]
+                            args += ["HKLOUT",mtztmp  ]
                             body.open_stdin()
                             body.write_stdin ( "LABIN FILE 1 E1=%s E2=%s\n" %f_sigf )
                             body.write_stdin ( "LABIN FILE 2" )
@@ -546,7 +553,7 @@ def run ( body,   # body is reference to the main Import class
                             elif len(phBlock) == 2:
                                 phset.ABCD = None
 
-                            mapout = os.path.join(body.outputDir(),blockname + '.map')
+                            mapout = os.path.join(body.outputDir(),blockname + ".map")
                             assert len(phBlock) in (2,4)
                             rc = command.call (
                                 "cfft",

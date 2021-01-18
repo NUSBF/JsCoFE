@@ -506,6 +506,7 @@ JobDialog.prototype.makeToolBar = function()  {
                           //dlg.onDlgSignal_func ( dlg.task.id,
                           dlg.onDlgSignal_func ( dlg,job_dialog_reason.clone_job,
                                                  null );
+                          return false;  // preent default
                         });
   }(this))
 

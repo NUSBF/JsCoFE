@@ -95,7 +95,9 @@ function ImportDemoProjectDialog ( onSuccess_func )  {
         return 1;  // do close browser window
 
       },null );
+
     });
+
   }(this))
 
 //  w = 3*$(window).width()/5 + 'px';

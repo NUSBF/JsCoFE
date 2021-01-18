@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    26.12.20   <--  Date of Last Modification.
+#    16.01.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -21,7 +21,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2020
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2020-2021
 #
 # ============================================================================
 #
@@ -61,7 +61,8 @@ class Migrate(import_task.Import):
         # together with maps and phases, importe them separately
 
         self.resetFileImport()
-        if self.task.file_hkl and (self.task.file_hkl!=self.task.file_mtz):
+        #if self.task.file_hkl and (self.task.file_hkl!=self.task.file_mtz):
+        if self.task.file_hkl:
             self.addFileImport ( self.task.file_hkl,baseDirPath=self.importDir() )
         self.hkl_imported = import_merged.run ( self,importPhases="" )
 
@@ -72,7 +73,7 @@ class Migrate(import_task.Import):
             self.addFileImport ( self.task.file_xyz,baseDirPath=self.importDir() )
         if self.task.file_lib:
             self.addFileImport ( self.task.file_lib,baseDirPath=self.importDir() )
-        self.mtz_imported = import_merged.run ( self,importPhases="phases-ds" )
+        self.mtz_imported = import_merged.run ( self,importPhases="phases-ds only" )
         self.xyz_imported = import_xyz   .run ( self )
         self.lib_imported = import_ligand.run ( self )
 
@@ -118,7 +119,7 @@ class Migrate(import_task.Import):
             msg.append ( "coordinates or map/phases" )
 
         if len(msg)>0:
-            self.putTitle ( "Migration to " + self.appName() + " not possible" )
+            self.putTitle ( "Hop in " + self.appName() + " not possible" )
             self.putMessage (
                 "Missing data:<ul><li>" +\
                 msg.join("</li><li>")   + "</li></ul>"
@@ -155,7 +156,7 @@ class Migrate(import_task.Import):
             if not compatible:
                 break
         if not compatible:
-            self.putTitle ( "Migration to " + self.appName() + " not possible" )
+            self.putTitle ( "Hop in to " + self.appName() + " not possible" )
             self.putMessage ( "Too distant cell parameters found." )
             # close execution logs and quit
             self.generic_parser_summary["migrate"] = {
@@ -215,13 +216,13 @@ class Migrate(import_task.Import):
                 nstruct = 1
 
         if nstruct>0:
-            sec_title = "Migrated Structure"
+            sec_title = "Created Structure"
             if nstruct>1:
                 sec_title += "s"
             self.putTitle ( sec_title +\
                             self.hotHelpLink ( "Structure","jscofe_qna.structure") )
         else:
-            self.putTitle   ( "Migration to " + self.appName() + " failed" )
+            self.putTitle   ( "Hop in " + self.appName() + " failed" )
             self.putMessage ( "No structure could be formed.<br>" +
                               "<i>Check your data</i>" )
             # close execution logs and quit

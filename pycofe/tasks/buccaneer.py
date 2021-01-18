@@ -86,6 +86,8 @@ class Buccaneer(basic.TaskDriver):
         else:
             ixyz = istruct
 
+        self.stderrln ( istruct.to_JSON() )
+
 
         # prepare input MTZ file by putting original reflection data into
         # phases MTZ

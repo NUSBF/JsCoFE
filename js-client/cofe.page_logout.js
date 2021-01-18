@@ -81,7 +81,7 @@ function LogoutPage ( sceneId,reason_key )  {
     var back_btn = new Button   ( 'Back to User Login',image_path('login') );
     panel.setWidget             ( back_btn ,row++,0,1,1 );
     back_btn  .setWidth         ( '100%' );
-    back_btn.addOnClickListener ( function(){ makeLoginPage(sceneId); } );
+    back_btn.addOnClickListener ( function(){ makeLoginPage(sceneId); });
     setDefaultButton            ( back_btn,this.grid );
   }
 
