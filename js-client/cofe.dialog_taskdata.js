@@ -165,13 +165,13 @@ function TaskDataDialog ( dataSummary,task,avail_key )  {
           row++;
         }
 
-      var foont_family = '"Trebuchet MS", Arial, Helvetica, sans-serif';
+      var font_family = '"Trebuchet MS", Arial, Helvetica, sans-serif';
       for (var i=0;i<row;i++)  {
         table.setNoWrap              ( i,0 );
-        table.setHorizontalAlignment ( i,0,'left'   ).setFontFamily(i,0,foont_family);
+        table.setHorizontalAlignment ( i,0,'left'   ).setFontFamily(i,0,font_family);
         table.setHorizontalAlignment ( i,1,'center' );
-        table.setHorizontalAlignment ( i,2,'right'  ).setFontFamily(i,2,foont_family);
-        table.setHorizontalAlignment ( i,3,'right'  ).setFontFamily(i,3,foont_family);
+        table.setHorizontalAlignment ( i,2,'right'  ).setFontFamily(i,2,font_family);
+        table.setHorizontalAlignment ( i,3,'right'  ).setFontFamily(i,3,font_family);
         table.setVerticalAlignment   ( i,0,'middle' );
         table.setVerticalAlignment   ( i,1,'middle' );
         table.setVerticalAlignment   ( i,2,'middle' );

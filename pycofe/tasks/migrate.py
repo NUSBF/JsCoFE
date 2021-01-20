@@ -121,8 +121,7 @@ class Migrate(import_task.Import):
         if len(msg)>0:
             self.putTitle ( "Hop in " + self.appName() + " not possible" )
             self.putMessage (
-                "Missing data:<ul><li>" +\
-                msg.join("</li><li>")   + "</li></ul>"
+                "Missing data:<ul><li>" + "</li><li>".join(msg)   + "</li></ul>"
             )
             # close execution logs and quit
             self.generic_parser_summary["migrate"] = {

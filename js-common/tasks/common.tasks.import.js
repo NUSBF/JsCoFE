@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    12.01.21   <--  Date of Last Modification.
+ *    20.01.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -37,7 +37,6 @@ function TaskImport()  {
   this.name      = 'file import';
   this.oname     = '*';   // asterisk here means do not use
   this.title     = 'File(s) Upload and Import';
-  //this.helpURL   = './html/jscofe_task_import.html';
   this.fasttrack = true;  // enforces immediate execution
 
   this.file_mod     = {'rename':{},'annotation':[]}; // file modification and annotation
@@ -163,7 +162,7 @@ if (!__template)  {
                                  panel.upload.upload_files,onReady_func );
         },
         null,
-        /*  --  commenting this removes PDB import button
+        /*  --  commenting this removes the PDB import button
         function(){
           new ImportPDBDialog ( function(pdb_list){
             pdb_spec_list = [];
@@ -326,10 +325,34 @@ if (!__template)  {
 
     } else  {
 
+      // look for sequence files
+
       var p         = pos;
       var isSeqFile = false;
       var new_name  = '';
 
+      // this loop always goes to files.length, check recursion in _check_sequence
+      while ((!isSeqFile) && (p<files.length))  {
+        var ns = files[p].name.split('.');
+        if (ns[ns.length-1].toLowerCase()=='txt')
+          ns.pop();
+        var ext = ns.pop().toLowerCase();
+        isSeqFile = (ns.length>0) && (['seq','fasta','pir'].indexOf(ext)>=0);
+        if (!isSeqFile)  {
+          new_name = _import_renameFile ( files[p].name,uploaded_files );
+          if (new_name!=files[p].name)
+            file_mod.rename[files[p].name] = new_name;
+          if (ext=='sca')  {
+            // Scalepack file, request wavelength from user
+            if (!('scalepack' in file_mod))
+              file_mod.scalepack = {};
+            file_mod.scalepack[new_name] = { wavelength : '' };
+          }
+          p++;
+        }
+      }
+
+      /*
       while ((!isSeqFile) && (p<files.length))  {
         var ns = files[p].name.split('.');
         if (ns[ns.length-1].toLowerCase()=='txt')
@@ -343,6 +366,7 @@ if (!__template)  {
           p++;
         }
       }
+      */
 
       if (isSeqFile)  {
 
@@ -396,8 +420,9 @@ if (!__template)  {
       _import_scanFiles ( sel_files,0,file_mod,upl_files,function(file_mod){
         //alert ( ' annot=' + JSON.stringify(file_mod) );
         var nannot = file_mod.annotation.length;
-        if ((nannot>0) && (file_mod.annotation[nannot-1].items[0].type=='none'))
-          new ImportAnnotationDialog ( file_mod.annotation,onReady_func );
+        if ((('scalepack' in file_mod) && (!jQuery.isEmptyObject(file_mod.scalepack))) ||
+            ((nannot>0) && (file_mod.annotation[nannot-1].items[0].type=='none')))
+          new ImportAnnotationDialog ( file_mod,onReady_func );
         else
           onReady_func();
       });

@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    14.01.21   <--  Date of Last Modification.
+#    20.01.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -745,15 +745,28 @@ class TaskDriver(object):
             fpath = zutils.gunzip ( filePath,baseDirPath=baseDirPath )
 
         if fpath.lower().endswith(".sca"):  # convert to mtz
-            fpath1 = os.path.splitext(fpath)[0] + ".mtz"
-            self.open_stdin()
-            self.write_stdin ( "WAVE 1\nEND\n" )
-            self.close_stdin()
-            self.runApp ( "scalepack2mtz",[
-                    "HKLIN" ,os.path.join(baseDirPath,fpath),
-                    "HKLOUT",os.path.join(baseDirPath,fpath1)
-                ],logType="Service" )
-            fpath = fpath1
+            scalepack = None;
+            try:
+                f = open ( 'annotation.json','r' )
+                scalepack = jsonut.jObject ( f.read() ).scalepack
+            except:
+                pass
+            if scalepack:
+                self.stderrln ( fpath )
+                self.stderrln ( scalepack.to_JSON() )
+                fpath1 = os.path.splitext(fpath)[0] + ".mtz"
+                self.open_stdin()
+                self.write_stdin ( "WAVE " +\
+                                   getattr(scalepack,fpath,None).wavelength +\
+                                   "\nEND\n" )
+                self.close_stdin()
+                self.runApp ( "scalepack2mtz",[
+                        "HKLIN" ,os.path.join(baseDirPath,fpath),
+                        "HKLOUT",os.path.join(baseDirPath,fpath1)
+                    ],logType="Service" )
+                fpath = fpath1
+            else:
+                self.stderrln ( " *** scalepack annotation file not found at import" )
 
         self.files_all.append ( fpath )
         if ftype:
