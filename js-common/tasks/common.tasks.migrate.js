@@ -157,8 +157,22 @@ if (!__template)  {
       });
       fsel.addOnChangeListener ( function(){
         var files = fsel.getFiles();
-        if (files.length>0)
-          itext.setValue ( files[0].name );
+        if (files.length>0)  {
+          // The next line is necessary for annotating just this upload.
+          // If sequences also need to be uploaded. file_mod should be cleared
+          // the 'annotation' field when seq file is being uploaded
+          var file_mod = {'rename':{},'annotation':[]}; // file modification and annotation
+          if (files[0].name.toLowerCase().endsWith('.sca'))  {
+            _import_checkFiles ( files,file_mod,div.upload_files,function(){
+              if ('scalepack' in file_mod)
+                div.customData.file_mod.scalepack = file_mod.scalepack;
+              itext.setValue ( files[0].name );
+                    //wset['itext'].setValue ( files[0].name );
+                    //setSeqControls();
+            });
+          } else
+            itext.setValue ( files[0].name );
+        }
       });
       return { 'label':lbl, 'fsel':fsel, 'browse':btn, 'itext':itext };
     }
