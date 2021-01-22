@@ -254,7 +254,7 @@ class Migrate(import_task.Import):
                         r = dtype_revision.DType ( -1 )
                         r.makeDataId ( revisionSerialNo )
                         r.setReflectionData ( hkls[i] )
-                        r.setASUData ( [],0,0.0,0,1.0,50.0,0.0 )
+                        r.setASUData ( self.job_id,[],0,0.0,0,1.0,50.0,0.0 )
                         r.setStructureData ( structures[j] )
                         self.registerRevision ( r,serialNo=revisionSerialNo,
                                                   title=None,message="" )
@@ -268,7 +268,7 @@ class Migrate(import_task.Import):
                     r = dtype_revision.DType ( -1 )
                     r.makeDataId ( revisionSerialNo )
                     r.setReflectionData ( self.hkl[j] )
-                    r.setASUData ( [],0,0.0,0,1.0,50.0,0.0 )
+                    r.setASUData ( self.job_id,[],0,0.0,0,1.0,50.0,0.0 )
                     r.setStructureData ( structures[j] )
                     self.registerRevision ( r,serialNo=revisionSerialNo,
                                               title=None,message="" )

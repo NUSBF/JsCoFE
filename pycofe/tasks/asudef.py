@@ -351,7 +351,7 @@ def makeRevision ( base,hkl,seq,composition,altEstimateKey,altNRes,
         if not revision:
             revision = dtype_revision.DType ( -1 )
         revision.setReflectionData ( hkl )
-        revision.setASUData ( seq,nRes,molWeight,dataKey,mc1,sol1,prb1 )
+        revision.setASUData ( base.job_id,seq,nRes,molWeight,dataKey,mc1,sol1,prb1 )
 
         #makeAsuFitMessage ( base,nc0,sol0 )
 

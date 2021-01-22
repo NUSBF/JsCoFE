@@ -195,8 +195,8 @@ class EditRevision(asudef.ASUDef):
         # --------------------------------------------------------------------
 
         revision = None
-
-        if "hkl" in change_list or "seq" in change_list:
+        rev      = None
+        if (("hkl" in change_list) and (revision0.isASUData())) or ("seq" in change_list):
             #  redefine HKL and ASU
             self.putTitle ( "New Asummetric Unit Composition" )
             rev = asudef.makeRevision ( self,hkl,seq, "P","NR",1,1.0,"",
@@ -280,7 +280,8 @@ class EditRevision(asudef.ASUDef):
                 if summary_line:
                     summary_line += "; "
                 summary_line += ", ".join(remove_list) + " removed"
-            if "hkl" in change_list or "seq" in change_list:
+            #if "hkl" in change_list or "seq" in change_list:
+            if rev:
                 summary_line += "; asu recalculated:"
             self.generic_parser_summary["editrevision_struct"] = {
               "summary_line" : summary_line
