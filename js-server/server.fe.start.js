@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    03.03.20   <--  Date of Last Modification.
+ *    21.01.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Front End Server
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2020
+ *  (C) E. Krissinel, A. Lebedev 2016-2021
  *
  *  =================================================================
  *
@@ -21,6 +21,7 @@
 
 //  load system modules
 var http    = require('http');
+var path    = require('path');
 var request = require('request');
 
 //  load application modules
@@ -32,6 +33,7 @@ var rj    = require('./server.fe.run_job');
 var comm  = require('./server.fe.communicate');
 var rh    = require('./server.fe.request_handler');
 var uh    = require('./server.fe.upload_handler');
+var utils = require('./server.utils');
 var cmd   = require('../js-common/common.commands');
 
 //  prepare log
@@ -149,6 +151,13 @@ function start ( callback_func )  {
 
         case cmd.fe_command.checkSession :
             pp.processPOSTData ( server_request,server_response,user.checkSession );
+          break;
+
+        case cmd.fe_command.checkAnnouncement :
+            var message = utils.readString ( path.join('message_templates','announcement.html') );
+            if ((!message) || message.startsWith('!#off'))
+              message = '';
+            cmd.sendResponse ( server_response,cmd.fe_retcode.ok,message,'' );
           break;
 
         case cmd.fe_command.stop :

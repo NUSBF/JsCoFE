@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    16.01.21   <--  Date of Last Modification.
+#    22.01.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -119,7 +119,7 @@ class Migrate(import_task.Import):
             msg.append ( "coordinates or map/phases" )
 
         if len(msg)>0:
-            self.putTitle ( "Hop in " + self.appName() + " not possible" )
+            self.putTitle ( "Hop on " + self.appName() + " not possible" )
             self.putMessage (
                 "Missing data:<ul><li>" + "</li><li>".join(msg)   + "</li></ul>"
             )
@@ -155,7 +155,7 @@ class Migrate(import_task.Import):
             if not compatible:
                 break
         if not compatible:
-            self.putTitle ( "Hop in to " + self.appName() + " not possible" )
+            self.putTitle ( "Hop on " + self.appName() + " not possible" )
             self.putMessage ( "Too distant cell parameters found." )
             # close execution logs and quit
             self.generic_parser_summary["migrate"] = {
@@ -221,7 +221,7 @@ class Migrate(import_task.Import):
             self.putTitle ( sec_title +\
                             self.hotHelpLink ( "Structure","jscofe_qna.structure") )
         else:
-            self.putTitle   ( "Hop in " + self.appName() + " failed" )
+            self.putTitle   ( "Hop on " + self.appName() + " failed" )
             self.putMessage ( "No structure could be formed.<br>" +
                               "<i>Check your data</i>" )
             # close execution logs and quit

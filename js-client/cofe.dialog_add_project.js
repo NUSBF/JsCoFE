@@ -55,7 +55,7 @@ function AddProjectDialog ( projectList,onclose_fnc )  {
                                         projectList.startmode==start_mode.auto );
   var expert_rbt    = new RadioButton ( 'Expert',
                                         projectList.startmode==start_mode.expert );
-  var migrate_rbt   = new RadioButton ( 'Hop in',
+  var migrate_rbt   = new RadioButton ( 'Hop on',
                                         projectList.startmode==start_mode.migrate );
 
   autosolve_rbt.setSize ( '100px','50px' );

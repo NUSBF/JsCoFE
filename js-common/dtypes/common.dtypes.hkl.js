@@ -594,6 +594,8 @@ if (!__template)  {
                    (dropdown.serialNo+1) + '</b> wrong format of f\'' );
       this.f11   = readF ( customGrid.f11,this.f11,true,'<b>hkl dataset #' +
                    (dropdown.serialNo+1) + '</b> wrong format of f"' );
+      if (isFloat(this.f11) && (parseFloat(this.f11)<0.0))
+        msg += '<b><i>f" must be positive</i></b>';
       if (this.wtype=='choose-one')
         msg += '<b><i>Wavelength type must be chosen</i></b>';
     }
@@ -648,6 +650,8 @@ if (!__template)  {
                            '<b>wrong format (empty field?) of f\'</b>' );
         this.f11 = readF ( customGrid.f11,this.f11,false,
                            '<b>wrong format (empty field?) of f"</b>' );
+        if (isFloat(this.f11) && (parseFloat(this.f11)<0.0))
+          msg += '<b><i>f" must be positive</i></b>';
       }
     }
 

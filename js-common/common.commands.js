@@ -2,7 +2,7 @@
 /*
  *  ===========================================================================
  *
- *    20.01.21   <--  Date of Last Modification.
+ *    22.01.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  ---------------------------------------------------------------------------
  *
@@ -25,7 +25,7 @@
 
 function appName()  { return 'CCP4 Cloud' }  // application name for reporting
 
-var jsCoFE_version = '1.6.019 [20.01.2021]';
+var jsCoFE_version = '1.6.019 [22.01.2021]';
 
 function appVersion()  {
   return jsCoFE_version;
@@ -71,22 +71,23 @@ var endJobFName    = '__end_job';    // signal file name to end job gracefully
 // be logged in.
 
 var fe_command = {
-  cofe           : 'cofe',           // load jsCoFE login page
-  ignore         : 'ignore',         // special return code from Communicate module
-  stop           : 'stop',           // quit the server
-  whoareyou      : 'whoareyou',      // request server id
-  getInfo        : '=getinfo',       // request server metadata
-  getClientInfo  : '=getclientinfo', // request client server metadata
-  register       : '=register',      // register a new user
-  login          : '=login',         // register a new user
-  recoverLogin   : '=recover_login', // recover login details
-  request        : '=request',       // general request to server
-  upload         : '=upload',        // upload request, hard-coded in gui.upload.js
-  jobFinished    : '=job_finished',  // request to accept data from finished job
-  checkSession   : '=check_session', // request to check facility update
-  authResponse   : '=auth_response', // process from software authorisation server
-  getFEProxyInfo : '=getfeproxyinfo' // get FE Proxy config and other info
-}
+  cofe              : 'cofe',            // load jsCoFE login page
+  ignore            : 'ignore',          // special return code from Communicate module
+  stop              : 'stop',            // quit the server
+  whoareyou         : 'whoareyou',       // request server id
+  getInfo           : '=getinfo',        // request server metadata
+  getClientInfo     : '=getclientinfo',  // request client server metadata
+  register          : '=register',       // register a new user
+  login             : '=login',          // register a new user
+  recoverLogin      : '=recover_login',  // recover login details
+  request           : '=request',        // general request to server
+  upload            : '=upload',         // upload request, hard-coded in gui.upload.js
+  jobFinished       : '=job_finished',   // request to accept data from finished job
+  checkSession      : '=check_session',  // request to check facility update
+  authResponse      : '=auth_response',  // process from software authorisation server
+  getFEProxyInfo    : '=getfeproxyinfo', // get FE Proxy config and other info
+  checkAnnouncement : '=checkannouncement' // get service announcements
+};
 
 
 // ============================================================================
@@ -145,7 +146,7 @@ var fe_reqtype = {
   getCloudFileTree  : '-getCloudFileTree',  // request for cloud file tree metadata
   updateFacility    : '-updateFacility',    // request to update facility metadata
   checkFclUpdate    : '-checkFclUpdate'     // request to check facility update
-}
+};
 
 
 // ============================================================================
@@ -184,7 +185,7 @@ var fe_retcode = {
   wrongJobToken  : 'wrongJobToken',  // unrecognised job token received
   proxyError     : 'proxyError',     // fe-proxy error
   projectAccess  : 'projectAccess'   // project access denied
-}
+};
 
 
 // ============================================================================
@@ -202,7 +203,7 @@ var nc_command = {
   runRVAPIApp    : '-runRVAPIApp',    // run RVAPI helper application (local service)
   runClientJob   : '-runClientJob',   // run client job (local service)
   getNCInfo      : '-getNCInfo'       // get NC config and other info
-}
+};
 
 
 // ============================================================================
@@ -220,7 +221,7 @@ var nc_retcode = {
   wrongRequest   : 'wrongRequest',   // incomplete or malformed request
   jobNotFound    : 'jobNotFound',    // job token not found in registry
   pidNotFound    : 'pidNotFound'     // job's pid not found in registry
-}
+};
 
 // ============================================================================
 // Image loader

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    16.01.21   <--  Date of Last Modification.
+ *    22.01.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -35,17 +35,17 @@ function TaskMigrate()  {
 
   if (__template)  {
     __template.TaskTemplate.call ( this );
-    this.name  = 'hop in ' + __cmd.appName().toLowerCase();
-    this.title = 'Hop in ' + __cmd.appName();
+    this.name  = 'hop on ' + __cmd.appName().toLowerCase();
+    this.title = 'Hop on ' + __cmd.appName();
   } else  {
     TaskTemplate.call ( this );
-    this.name  = 'hop in ' + appName().toLowerCase();
-    this.title = 'Hop in ' + appName();
+    this.name  = 'hop on ' + appName().toLowerCase();
+    this.title = 'Hop on ' + appName();
   }
 
   this._type = 'TaskMigrate';
-  //this.setOName ( 'migrated' );  // default output file name template
-  this.oname     = '*';   // asterisk here means do not use
+  this.setOName ( 'hop-on' );  // default output file name template
+  //this.oname     = '*';   // asterisk here means do not use
   this.fasttrack = true;  // enforces immediate execution
 
   this.input_dtypes = [1];  // settings for "on project top only", managed in TaskList
