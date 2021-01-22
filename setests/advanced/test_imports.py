@@ -442,6 +442,19 @@ def importReplace_p9(driver, dirName, waitShort=90):
     closeButton.click()
     time.sleep(1)
 
+    taskText = ''
+    ttts = sf.tasksTreeTexts(driver)
+    for task in ttts:
+        match = re.search('\[0007\] imported and set\/replaced\: (.*)', task)
+        if match:
+            taskText = match.group(1)
+            break
+    if taskText == '':
+        print('*** Verification: could not find text result value after deposition run')
+    else:
+        print('*** Verification: deposition result is "%s" (expecting "HKL, XYZ, Phases")' % taskText)
+        assert taskText.strip() == 'HKL, XYZ, Phases'
+
     return()
 
 
