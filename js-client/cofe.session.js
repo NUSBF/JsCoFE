@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    04.01.21   <--  Date of Last Modification.
+ *    21.01.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -26,6 +26,8 @@ function startSession ( sceneId,dev_switch )  {
 
   // set jsrview path, which is used in jsrview iframes
   _jsrview_uri = 'js-lib/jsrview/';
+
+  checkAnnouncement();
 
   checkLocalService ( function(rc){
 
@@ -101,6 +103,26 @@ function startSession ( sceneId,dev_switch )  {
     }
 
   });
+
+}
+
+
+function checkAnnouncement()  {
+
+  serverCommand ( fe_command.checkAnnouncement,{},'Announcement',
+    function(rdata){ // successful reply
+      if (rdata.message)  {
+        if (startsWith(rdata.message,'!#'))
+          rdata.message = rdata.message.split('\n').slice(1).join('\n');
+        if (rdata.message)
+          new MessageBox ( 'Announcement','<div style="width:500px;">' +
+                                          rdata.message + '</div>' );
+      }
+      return true;
+    },
+    function(){}, // always do nothing
+    function(){}  // do nothing on fail
+  );
 
 }
 
