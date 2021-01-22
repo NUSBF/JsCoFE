@@ -5,13 +5,13 @@
 #
 # ============================================================================
 #
-#    28.12.20   <--  Date of Last Modification.
+#    22.01.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  STRUCTURE DATA TYPE
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2020
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2021
 #
 # ============================================================================
 #
@@ -344,7 +344,7 @@ class DType(dtype_xyz.DType):
                 self.DELFWT,self.PHDELWT,self.HLA,self.HLB,self.HLC,self.HLD ]
         labels = []
         for l in lbl:
-            if len(l)>0:
+            if (len(l)>0) and (l not in labels):
                 labels.append ( l )
         return labels
 

@@ -325,7 +325,7 @@ class CCP4go(import_task.Import):
                 self.revision_asu = dtype_revision.DType ( -1 )
                 self.revision_asu.makeDataId ( self.revisionSerialNo )
                 self.revision_asu.setReflectionData ( self.hkl )
-                self.revision_asu.setASUData ( self.seq,meta["nres"],
+                self.revision_asu.setASUData ( self.job_id,self.seq,meta["nres"],
                                       meta["weight"],len(self.seq),
                                       meta["matthews"],meta["solvent"],
                                       meta["mprob"] )

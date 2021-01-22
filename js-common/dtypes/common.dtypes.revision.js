@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    10.01.21   <--  Date of Last Modification.
+ *    22.01.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -51,6 +51,7 @@ function DataRevision()  {
   this.leadKey        = 0;      // data lead key: 0: undefined, 1: coordinates, 2: phases
   this.HKL            = null;
   this.ASU            = {};     // Asymmetric Unit Data
+  this.ASU.jobNo      = 0;      // producing job number
   this.ASU.seq        = [];
   this.ASU.ha_type    = '';     // heavy atom type
   this.ASU.ndisulph   = '';     // number of disulphides
@@ -132,7 +133,11 @@ if (!__template)  {
 
     var dsp = new DataSummaryPage ( this );
 
-    dsp.trow = 1;
+    if (('jobNo' in this.ASU) && (this.ASU.jobNo>0))  {
+      dsp.trow = 0;
+      dsp.makeRow ( 'Producing job number',this.ASU.jobNo.toString(),'Id of job produced this dataset' );
+    } else
+      dsp.trow = 1;
     dsp.makeRow ( 'Total residues',this.ASU.nRes.toString(),'Total number of residues' );
     dsp.makeRow ( 'Total weight'  ,round(this.ASU.molWeight,0).toString(),'Total macromolecular weight' );
     dsp.makeRow ( 'Solvent %%'    ,round(this.ASU.solvent,1).toString(),'Solvent content' );

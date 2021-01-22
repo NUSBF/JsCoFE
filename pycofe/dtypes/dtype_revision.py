@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    09.01.21   <--  Date of Last Modification.
+#    22.01.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -65,6 +65,7 @@ class DType(dtype_template.DType):
             self.version       += 5   # versioning increments from parent to children
             self.HKL            = None
             self.ASU            = jsonut.jObject()  # asymetric unit data
+            self.ASU.jobNo      = 0                 # producing job number
             self.ASU.seq        = []
             self.ASU.ha_type    = ""                # heavy atom type
             self.ASU.ndisulph   = ""                # number of disulphides
@@ -204,8 +205,9 @@ class DType(dtype_template.DType):
             self.removeSubtype ( dtype_template.subtypeAnomalous() )
         return
 
-    def setASUData ( self,seq,nRes,molWeight,dataKey,mc1,sol1,prb1 ):
-        self.ASU.seq = seq     # list of sequences, may be empty []?
+    def setASUData ( self,jobId,seq,nRes,molWeight,dataKey,mc1,sol1,prb1 ):
+        self.ASU.jobNo = jobId
+        self.ASU.seq   = seq     # list of sequences, may be empty []?
         self.addSubtype ( dtype_template.subtypeASU() )
         if len(seq)>0:
                 self.addSubtype ( dtype_template.subtypeSequence() )
@@ -220,6 +222,9 @@ class DType(dtype_template.DType):
         self.ASU.solvent    = sol1    # solvent percent (0-100) for 1 copy in ASU
         self.ASU.prob_matth = prb1    # Matthews probability for 1 copy in ASU
         return
+
+    def isASUData ( self ):
+        return (len(self.ASU.seq)>0) or (self.ASU.nRes>0) or (self.ASU.molWeight>0.0)
 
     def getNofASUMonomers ( self ):
         n = 0
