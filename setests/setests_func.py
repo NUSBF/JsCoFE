@@ -192,6 +192,62 @@ def enterProject(driver, projectId):
     return()
 
 
+def importLocal_P9(driver, dirName, waitShort=90):
+    print ('Importing P9 from local disk. Dir name: %s' % (dirName))
+
+    clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list')
+    time.sleep(1)
+
+    clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Data Import')
+    time.sleep(1)
+
+    clickByXpath(driver, "//*[contains(text(), '%s') and contains(text(), '%s')]" % ('Upload', 'Import'))
+    time.sleep(1)
+
+    scaFileName = os.path.join(dirName, 'p9_sca', 'p9.sca')
+    seqFileName = os.path.join(dirName, 'p9_sca', 'p9.seq')
+
+    projectInputs = driver.find_elements_by_xpath("//input[contains(@id,'input') and @type='file' and contains(@name,'uploads[]')]")
+    projectInputs[-1].send_keys(seqFileName)
+    time.sleep(2)
+
+    clickByXpath(driver, "//button[normalize-space()='Apply & Upload']")
+    time.sleep(5)
+    clickByXpath(driver, "//button[normalize-space()='Upload more files']")
+    time.sleep(2)
+
+    projectInputs = driver.find_elements_by_xpath("//input[contains(@id,'input') and @type='file' and contains(@name,'uploads[]')]")
+    projectInputs[-1].send_keys(scaFileName)
+    time.sleep(2)
+    inputWaveLength = driver.find_elements_by_xpath("//input[@type='text']")
+    inputWaveLength[-1].click()
+    inputWaveLength[-1].clear()
+    inputWaveLength[-1].send_keys('1.2')
+    time.sleep(1)
+
+    clickByXpath(driver, "//button[normalize-space()='Apply & Upload']")
+    time.sleep(5)
+    clickByXpath(driver, "//button[normalize-space()='Finish import']")
+    time.sleep(2)
+
+    try:
+        wait = WebDriverWait(driver, waitShort)
+        # Waiting for the text 'completed' in the ui-dialog-title of the task [0001]
+        wait.until(EC.presence_of_element_located
+                   ((By.XPATH,"//*[@class='ui-dialog-title' and contains(text(), 'completed') and contains(text(), '[0001]')]")))
+    except:
+        print('Apparently tha task importFromFiles has not been completed in time; terminating')
+        sys.exit(1)
+
+    # presing Close button
+    closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
+    closeButton.click()
+    time.sleep(1)
+
+
+    return()
+
+
 def importFromCloud_rnase(driver, waitShort):
     print ('Importing "rnase" project from the Cloud Import')
     time.sleep(1)
@@ -973,6 +1029,74 @@ def verifyRefmac(driver, waitLong, jobNumber, targetRwork, targetRfree):
             rWork, targetRwork, rFree, targetRfree))
     assert rWork < targetRwork
     assert rFree < targetRfree
+
+
+def startBuccaneer(driver):
+    print('Running Buccaneer')
+
+    addButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/add.png')]")
+    addButton.click()
+    time.sleep(1)
+
+    clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list')
+    time.sleep(1)
+
+    clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Refinement and Model Building')
+    time.sleep(1)
+
+    clickByXpath(driver, "//div[normalize-space()='%s']" % 'Automatic Model Building with Buccaneer')
+    time.sleep(1)
+
+    # There are several forms - active and inactive. We need one displayed.
+    buttonsRun = driver.find_elements_by_xpath("//button[contains(@style, 'images_png/runjob.png')]" )
+    for buttonRun in buttonsRun:
+        if buttonRun.is_displayed():
+            buttonRun.click()
+            break
+    time.sleep(1)
+
+    # pressing Close button
+    closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
+    closeButton.click()
+    time.sleep(1)
+
+    return ()
+
+
+def verifyBuccaneer(driver, waitLong, jobNumber, targetRwork, targetRfree):
+    rWork = 1.0
+    rFree = 1.0
+    print('Buccaneer verification, job ' + jobNumber)
+
+    time.sleep(1)
+    startTime = time.time()
+
+    while (True):
+        ttts = tasksTreeTexts(driver)
+        for taskText in ttts:
+            # Job number as string
+            match = re.search('\[' + jobNumber + '\].*R=(0\.\d*) Rfree=(0\.\d*)', taskText)
+            if match:
+                rWork = float(match.group(1))
+                rFree = float(match.group(2))
+                break
+        if (rWork != 1.0) or (rFree != 1.0):
+            break
+        curTime = time.time()
+        if curTime > startTime + float(waitLong):
+            print('*** Timeout for Buccaneer results! Waited for %d seconds.' % waitLong)
+            break
+        time.sleep(10)
+
+    if (rWork == 1.0) or (rFree == 1.0):
+        print('*** Verification: could not find Rwork or Rfree value after Buccaneer run')
+    else:
+        print('*** Verification: Buccaneer Rwork is %0.4f (expecting <%0.2f), Rfree is %0.4f (expecting <%0.2f)' % (
+            rWork, targetRwork, rFree, targetRfree))
+    assert rWork < targetRwork
+    assert rFree < targetRfree
+
+    return ()
 
 
 class driverHandler:
