@@ -30,7 +30,7 @@ def pytest_generate_tests(metafunc):
 
             if os.path.exists(fileName):
                 f = open(fileName, 'r')
-                password = base64.b64decode(f.readline().decode('utf-8').strip() + '=')
+                password = base64.b64decode(f.readline().strip() + '=').decode('utf-8')
                 f.close()
         except:
             print('Something happend during attempt to read password from the pwd file')
