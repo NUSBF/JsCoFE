@@ -153,7 +153,7 @@ if (!__template)  {
     var task = this;
     //(function(task){
       div.select_btn.addOnClickListener ( function(){
-        new CloudFileBrowser ( div,task,4,function(items){
+        new CloudFileBrowser ( div,task,4,[],function(items){
           task.setSelectedCloudFiles ( div,items,function(new_items){
             if (new_items.length>0)  {
               div.select_btn.setText ( 'Upload more files' );

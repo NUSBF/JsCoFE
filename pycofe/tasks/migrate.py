@@ -50,6 +50,14 @@ class Migrate(import_task.Import):
 
     # ------------------------------------------------------------------------
 
+    def _addFileImport ( self,fname ):
+        if fname.startswith("cloudstorage::"):
+            self.addFileImport ( fname.split("/")[-1],baseDirPath=self.importDir() )
+        else:
+            self.addFileImport ( fname,baseDirPath=self.importDir() )
+        return
+
+
     def importData(self):
 
         # -------------------------------------------------------------------
@@ -63,16 +71,16 @@ class Migrate(import_task.Import):
         self.resetFileImport()
         #if self.task.file_hkl and (self.task.file_hkl!=self.task.file_mtz):
         if self.task.file_hkl:
-            self.addFileImport ( self.task.file_hkl,baseDirPath=self.importDir() )
+            self._addFileImport ( self.task.file_hkl )
         self.hkl_imported = import_merged.run ( self,importPhases="" )
 
         self.resetFileImport()
         if self.task.file_mtz:
-            self.addFileImport ( self.task.file_mtz,baseDirPath=self.importDir() )
+            self._addFileImport ( self.task.file_mtz )
         if self.task.file_xyz:
-            self.addFileImport ( self.task.file_xyz,baseDirPath=self.importDir() )
+            self._addFileImport ( self.task.file_xyz )
         if self.task.file_lib:
-            self.addFileImport ( self.task.file_lib,baseDirPath=self.importDir() )
+            self._addFileImport ( self.task.file_lib )
         self.mtz_imported = import_merged.run ( self,importPhases="phases-ds only" )
         self.xyz_imported = import_xyz   .run ( self )
         self.lib_imported = import_ligand.run ( self )

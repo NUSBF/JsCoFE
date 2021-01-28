@@ -2,9 +2,9 @@
 /*
  *  ===========================================================================
  *
- *    22.01.21   <--  Date of Last Modification.
+ *    28.01.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- *  ---------------------------------------------------------------------------
+ *  --------------------------------------------------------------------------
  *
  *  **** Module  :  js-common/tasks/common.commands.js
  *       ~~~~~~~~~
@@ -25,7 +25,7 @@
 
 function appName()  { return 'CCP4 Cloud' }  // application name for reporting
 
-var jsCoFE_version = '1.6.019 [22.01.2021]';
+var jsCoFE_version = '1.6.019 [28.01.2021]';
 
 function appVersion()  {
   return jsCoFE_version;
