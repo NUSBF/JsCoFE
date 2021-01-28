@@ -301,6 +301,7 @@ StorageTree.prototype.customIcon = function() {
 
 var icon_ext = {
   'mtz'       : 'file_mtz',
+  'sca'       : 'file_mtz',
   'h5'        : 'file_hdf',
   'ccp4_demo' : 'file_ccp4demo',
   'pdb'       : 'file_pdb',
@@ -321,18 +322,28 @@ var icon_ext = {
 
 var importable_ext = [
   'mtz', 'pdb', 'ent', 'mmcif', 'jpg', 'jpeg', 'png', 'gif', 'html',
-  'txt', 'pdf', 'seq', 'fasta', 'pir', 'hhr'
+  'txt', 'pdf', 'seq', 'fasta', 'pir', 'hhr' , 'sca'
 ];
 
 
 
 StorageTree.prototype.readStorageData = function ( page_title,
+                                                   extFilter,
                                                    onLoaded_func,
                                                    onRightClick_func,
                                                    onDblClick_func,
                                                    onSelect_func )  {
 
-  this.item_map = {};  // map[nodeId]==item of all items in the tree
+  this.item_map   = {};  // map[nodeId]==item of all items in the tree
+  if (extFilter && (extFilter.length>0))  {
+    this.ext_filter = [];
+    for (var i=0;i<extFilter.length;i++)  {
+      var ext = extFilter[i].toLowerCase().replace(/^./,'');
+      if (importable_ext.indexOf(ext)>=0)
+        this.ext_filter.push(ext);
+    }
+  } else
+    this.ext_filter = importable_ext;
 
   var meta = {
     'type' : this.tree_type,
@@ -404,7 +415,8 @@ StorageTree.prototype.readStorageData = function ( page_title,
             base = base.join('.').toLowerCase();
             var show = (tree.file_key!=2);
             if (tree.file_key==4)
-              show = (importable_ext.indexOf(ext)>=0);
+              show = (tree.ext_filter.indexOf(ext)>=0);
+              //show = (importable_ext.indexOf(ext)>=0);
             else if (tree.file_key==5)
               show = (ext=='ccp4_demo');
 
@@ -426,6 +438,9 @@ StorageTree.prototype.readStorageData = function ( page_title,
             if (show)  {
               var fnode = tree.addRootNode ( name,image_path(icon),tree.customIcon() );
               tree.item_map[fnode.id] = sfile;
+            } else  {
+              var fnode = tree.addRootNode ( '<span style="color:gray">' + name + '</span>',image_path(icon),tree.customIcon() );
+              //tree.item_map[fnode.id] = sfile;
             }
 
           }

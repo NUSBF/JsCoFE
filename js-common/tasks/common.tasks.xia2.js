@@ -469,7 +469,7 @@ if (!__template)  {
 
           } else if (inputPanel.datatype=='images')  {
 
-            new CloudFileBrowser ( inputPanel,task,2,
+            new CloudFileBrowser ( inputPanel,task,2,[],
               function(dirmeta){
                 //alert ( JSON.stringify(dirmeta) );
                 task.collectRangesInput ( inputPanel );
@@ -488,7 +488,7 @@ if (!__template)  {
 
           } else  {
 
-            new CloudFileBrowser ( inputPanel,task,0,
+            new CloudFileBrowser ( inputPanel,task,0,[],
               function(file_items){
                 //alert ( JSON.stringify(file_items) );
                 if (file_items.length>0)  {

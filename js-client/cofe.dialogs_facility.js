@@ -456,7 +456,7 @@ FacilityBrowser.prototype.updateItem = function ( askpwd )  {
 // ===========================================================================
 // Cloud File Browser
 
-function CloudFileBrowser ( inputPanel,task,fileKey,onSelect_func,onClose_func )  {
+function CloudFileBrowser ( inputPanel,task,fileKey,extFilter,onSelect_func,onClose_func )  {
 
   this.inputPanel = inputPanel;  // input panel from facility import dialog
   this.tree_type  = 'files';     // cloud file tree type specificator
@@ -469,6 +469,8 @@ function CloudFileBrowser ( inputPanel,task,fileKey,onSelect_func,onClose_func )
                                  // 3: browse directories, show all files
                                  // 4: show only importable files
                                  // 5: show only ccp4_demo files
+  this.ext_filter = extFilter;   // []: take all files, otherwise list of
+                                 //     acceptable extensions in lower case
   this.onSelect_func = onSelect_func;
 
   this.uid = '';
@@ -547,7 +549,7 @@ CloudFileBrowser.prototype.loadStorageTree = function ( cloudPath )  {
     storageTree.element.style.paddingBottom = '25px';
     storageTree.element.style.paddingLeft   = '10px';
     storageTree.element.style.paddingRight  = '40px';
-    storageTree.readStorageData ( 'Cloud File Storage',
+    storageTree.readStorageData ( 'Cloud File Storage',browser.ext_filter,
       function(){
         if (storageTree.storageList)  {
           if (storageTree.storageList.size>=0)  {
@@ -664,7 +666,7 @@ CloudFileBrowser.prototype.getStorageList = function ( path,callback_func )  {
 
     var storageTree = new StorageTree ( 'files',path,this.file_key,this.dir_desc );
     storageTree.tree_type = this.tree_type;
-    storageTree.readStorageData ( 'Cloud File Storage',
+    storageTree.readStorageData ( 'Cloud File Storage',this.ext_filter,
       function(){
         if (storageTree.storageList)  {
           callback_func ( storageTree.storageList );

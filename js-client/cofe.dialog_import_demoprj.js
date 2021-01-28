@@ -52,14 +52,11 @@ function ImportDemoProjectDialog ( onSuccess_func )  {
   this.currentCloudPath = __demo_projects;
   (function(task){
     select_btn.addOnClickListener ( function(){
-      new CloudFileBrowser ( null,task,5,function(items){
-        //alert ( JSON.stringify(items) );
+      new CloudFileBrowser ( null,task,5,[],function(items){
         serverRequest ( fe_reqtype.startDemoImport,{
                             'cloudpath' : task.currentCloudPath,
                             'demoprj'   : items[0]
                         },'Demo Project Import',function(data){
-
-          //alert ( JSON.stringify(data));
 
           select_btn.hide();
           msgLabel.setText ( 'The project is being imported, please wait ... ' );

@@ -83,17 +83,14 @@ if (!__template)  {
   TaskImportReplace.prototype.collectInput = function ( inputPanel )  {
     // collects data from input widgets, created in makeInputPanel() and
     // stores it in internal fields
+
+    TaskMigrate.prototype.collectInput.call ( this,inputPanel );
+
     var msg = '';  // Ok if stays empty
-    var file_hkl = inputPanel.select_hkl['fsel'].getFiles();
-    var file_mtz = inputPanel.select_mtz['fsel'].getFiles();
-    var file_xyz = inputPanel.select_xyz['fsel'].getFiles();
-    var file_lib = inputPanel.select_lib['fsel'].getFiles();
 
-    if ((file_hkl.length<=0) && (file_mtz.length<=0) &&
-        (file_xyz.length<=0) && (file_lib.length<=0))
+    if (this.file_hkl.length + this.file_mtz.length +
+        this.file_xyz.length + this.file_lib.length <= 0)
       msg += '<b><i>no data is given for import</i></b>';
-
-    TaskTemplate.prototype.collectInput.call ( this,inputPanel );
 
     return  msg;
 

@@ -53,7 +53,7 @@ function ExportFromSafeDialog ( onSuccess_func )  {
   this.tree_type        = 'jobs_safe';  // will use special cloud storage mount
   (function(task){
     select_btn.addOnClickListener ( function(){
-      new CloudFileBrowser ( null,task,3,function(items){
+      new CloudFileBrowser ( null,task,3,[],function(items){
         //alert ( JSON.stringify(items) );
         new ExportFailedJobDialog ( items.path );
         //var exportDirPath = items.path;
