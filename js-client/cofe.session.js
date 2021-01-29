@@ -27,6 +27,7 @@ function startSession ( sceneId,dev_switch )  {
   // set jsrview path, which is used in jsrview iframes
   _jsrview_uri = 'js-lib/jsrview/';
 
+  checkBrowser();
   checkAnnouncement();
 
   checkLocalService ( function(rc){

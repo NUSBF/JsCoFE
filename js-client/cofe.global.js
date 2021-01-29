@@ -61,7 +61,7 @@ var __iOS_device    = (/iPad|iPhone|iPod/.test(navigator.userAgent) && !window.M
 var __any_mobile_device = __mobile_device || __iOS_device;
 //var iOS = !!navigator.platform && /iPad|iPhone|iPod/.test(navigator.platform);
 
-
+/*
 if ((navigator.userAgent.indexOf('Version/14')>=0) &&
     (navigator.userAgent.indexOf('Safari')>=0))
   window.setTimeout ( function(){
@@ -69,11 +69,27 @@ if ((navigator.userAgent.indexOf('Version/14')>=0) &&
     //        'well with ' + appName() + '. Please use another browser, such as ' +
     //        'Opera, Chrome, Firefox.' );
     new MessageBox ( 'Unsuitable browser',
-        'You are using Mac OSX Safari Version 14, which is known not to work ' +
-        'well with ' + appName() + '. Please use another browser, such as ' +
-        'Opera, Chrome, Firefox.'
+        '<div style="width:450px">You are using Mac OSX Safari Version 14, ' +
+        'which is known not to work well with ' + appName() +
+        '. Please use another browser, such as Opera, Chrome, Firefox.</div>'
     );
   },500);
+*/
+
+function checkBrowser()  {
+  if ((navigator.userAgent.indexOf('Version/14')>=0) &&
+      (navigator.userAgent.indexOf('Safari')>=0))
+    window.setTimeout ( function(){
+      //alert ( 'You are using Mac OSX Safari Version 14, which is known not to work ' +
+      //        'well with ' + appName() + '. Please use another browser, such as ' +
+      //        'Opera, Chrome, Firefox.' );
+      new MessageBox ( 'Unsuitable browser',
+          '<div style="width:450px">You are using Mac OSX Safari Version 14, ' +
+          'which is known not to work well with ' + appName() +
+          '. Please use another browser, such as Opera, Chrome, Firefox.</div>'
+      );
+    },500);
+}
 
 // ===========================================================================
 
