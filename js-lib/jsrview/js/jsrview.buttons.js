@@ -1,7 +1,7 @@
 //
 //  =================================================================
 //
-//    18.11.20   <--  Date of Last Modification.
+//    03.02.21   <--  Date of Last Modification.
 //                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  -----------------------------------------------------------------
 //
@@ -12,7 +12,7 @@
 //  **** Content :  RVAPI javascript layer's button module
 //       ~~~~~~~~~
 //
-//  (C) E. Krissinel 2013-2020
+//  (C) E. Krissinel 2013-2021
 //
 //  =================================================================
 //
@@ -71,8 +71,10 @@ function addButtonGrid ( btnId,title,command,data,rvOnly,holderId,
             "\" class=\"button-common\" value=\"" + title + "\"/>")
            .appendTo(cell);
         } else  {
-          $("<input id=\""+btnId+"\" type=\"button\"  onclick=\"buttonClicked('" + command +
-            "','" + data + "');\" class=\"button-common\" value=\"" + title + "\"/>")
+          var rdata = "'" + data.split('"').join("' + String.fromCharCode(34) + '") + "'";
+          $("<input id=\"" + btnId + "\" type=\"button\"  onclick=\"buttonClicked('"
+            + command + "'," + rdata + ");\" class=\"button-common\" value=\""
+            + title + "\"/>")
            .appendTo(cell);
         }
       } else if (command=="{function}")  {
@@ -121,8 +123,9 @@ function addButton ( btnId,title,command,data,rvOnly,holderId )  {
         "\" class='button-common'>" + title + "</button>")
        .appendTo ( $("#"+holderId) );
     } else  {
+      var rdata = "'" + data.split('"').join("' + String.fromCharCode(34) + '") + "'";
       $("<button id=\""+btnId+"\" onclick=\"buttonClicked('" + command +
-        "','" + data + "')\" class='button-common'>" + title + "</button>")
+        "'," + rdata + ")\" class='button-common'>" + title + "</button>")
        .appendTo ( $("#"+holderId) );
     }
     if (__rvapi_local_service==2)  {

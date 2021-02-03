@@ -2,32 +2,74 @@
 /*
  *  =================================================================
  *
- *    07.11.20   <--  Date of Last Modification.
+ *    01.02.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
- *  **** Module  :  js-utils/makeuser.js
+ *  **** Module  :  js-utils/cloudctl.js
  *       ~~~~~~~~~
  *  **** Project :  jsCoFE - javascript-based Cloud Front End
  *       ~~~~~~~~~
  *  **** Content :  User making utility
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2020
+ *  (C) E. Krissinel, A. Lebedev 2021
  *
  *  =================================================================
  *
  * Invocation:
  *
- *    node js-utils/makeuser.js config.json
+ *    node js-utils/cloudctl.js [commands] config.json
  *
- * where config.json is the Front End configuration file. User name, e-mail,
- * login ID and applicable licence are asked interactively.
+ * where config.json is the Front End configuration file.
  *
- * Note: all new users are assigned the "user" role. This can be changed later
- * by the CCP4 Cloud administrator. First administrator is created by using the
- * reserved login ID: "admin". It is recommended to create administrative
- * account with this login ID immediately after initial setup.
+ * Commands:
+ *
+ *    deactivate N P : deactivate Nth server, using protocol P (see below).
+ *                        N = 'all'  all nodes
+ *                        N = 0      Front End
+ *                        N = 1      Number cruncher #1
+ *                        N = 2      Number cruncher #2
+ *                        etc.
+ *
+ *    stop N P       : stop Nth server, using protocol P (see below); N is
+ *                     defined as above
+ *
+ *    activate N     : activate Nth server, N is defined as above
+ *
+ *  Deactivated Front-End can still accept jobs from Number Crunchers, but
+ *  wont send new jobs to them. If a user tries to submit a job to a deactivated
+ *  FE, the action gets rejected with sending back the message from deacivation
+ *  protocol.
+ *
+ *  Deactivated Number Cruncher will not send finished jobs back to FE and wont
+ *  accept the new ones. The jobs will continue to run, and finished jobs will
+ *  be sent to FE once the Number Cruncher is activated.
+ *
+ *  Deactivation Protocols
+ *  ~~~~~~~~~~~~~~~~~~~~~~
+ *
+ *  They are optional and described in FE configuration file:
+ *
+ *  "Protocols" : {
+ *     "A" :  { "lapse"   : 600,   // seconds
+ *              "message" : "temporary shutdown"
+ *            },
+ *     "B" :  { "lapse"   : 900,   // seconds
+ *              "message" : "closing for maintenance"
+ *            }
+ *  }
+ *
+ *  For the above configuration, protocol parameter 'P' may be either 'A' or 'B'.
+ *  If protocols are not configured, 'P' may take any value and will be ignored.
+ *
+ *  In protocol description:
+ *
+ *     lapse      is used only in 'stop' command. Command 'stop' first deactivates
+ *                server, then waits specified number of seconds, and then
+ *                terminates it. By default, lapse=300 seconds
+ *
+ *     message    is message a user will see if FE is deactivated
  *
  */
 

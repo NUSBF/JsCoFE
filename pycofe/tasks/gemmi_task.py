@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    16.09.20   <--  Date of Last Modification.
+#    02.02.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -21,7 +21,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2020
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2020-2021
 #
 # ============================================================================
 #
@@ -215,7 +215,7 @@ class Gemmi(basic.TaskDriver):
                 seq = None
                 if struct0.sequence:
                     seq = self.makeClass ( struct0.sequence )
-                ensemble = self.registerEnsemble ( seq,xyzout,checkout=True )
+                ensemble = self.registerEnsemble ( seq,outfname,checkout=True )
                 if ensemble:
                     if seq:
                         ensemble.addDataAssociation ( seq.dataId )
@@ -252,7 +252,7 @@ class Gemmi(basic.TaskDriver):
                                 "Model Data was not formed" )
 
             elif struct0._type=="DataXYZ":
-                oxyz = self.registerXYZ ( xyzout,checkout=True )
+                oxyz = self.registerXYZ ( outfname,checkout=True )
                 if oxyz:
                     oxyz.putXYZMeta  ( self.outputDir(),self.file_stdout,self.file_stderr,None )
                     self.putMessage (

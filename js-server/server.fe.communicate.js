@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    05.01.21   <--  Date of Last Modification.
+ *    03.02.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -108,7 +108,7 @@ function Communicate ( server_request )  {
 
   if ((this.command=='') || (this.command==cmd.fe_command.cofe))
         this.filePath = this.fe_server.bootstrapHTML;
-  else  this.filePath = url_path;
+  else  this.filePath = decodeURI(url_path);
 //console.log ( "filePath " + this.filePath );
 
   if (this.command.startsWith(cmd.fe_command.jobFinished))  {
