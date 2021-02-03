@@ -172,7 +172,7 @@ class TaskDriver(object):
 
     #   This needs to be obtained from the jscofe config-file.
     #maintainerEmail = None
-    maintainerEmail = "my.name@gmail.com"
+    maintainerEmail = "ccp4@ccp4.ac.uk"
 
     # ========================================================================
     # initiaisation
