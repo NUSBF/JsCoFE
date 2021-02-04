@@ -153,6 +153,12 @@ function start ( callback_func )  {
             pp.processPOSTData ( server_request,server_response,user.checkSession );
           break;
 
+        case cmd.fe_command.control :
+            pp.processPOSTData ( server_request,server_response,function(data){
+              cmd.sendResponse ( server_response,cmd.fe_retcode.ok,JSON.stringify(data),'' );              
+            });
+          break;
+
         case cmd.fe_command.checkAnnouncement :
             var message = utils.readString ( path.join('message_templates','announcement.html') );
             if ((!message) || message.startsWith('!#off'))

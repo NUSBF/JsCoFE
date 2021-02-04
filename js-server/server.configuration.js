@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    05.12.21   <--  Date of Last Modification.
+ *    03.02.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -76,7 +76,8 @@ function ServerConfig ( type )  {
   this.exclude_tasks = [];   // tasks that should not run on given server
   this.only_tasks    = [];   // tasks that server can only run
   this.storage       = null;
-  this.update_rcode  = 0;    // can be bde detected by launcher script to do the needful
+  this.update_rcode  = 0;    // can be be detected by launcher script to do the needful
+  this.state         = 'active';  // server state: 'active', 'inactive'
   this.startDate     = new Date(Date.now()).toUTCString();
   this.logflow       = {};
   this.logflow.chunk_length = 10000; // number of jobs to advance log file counters
