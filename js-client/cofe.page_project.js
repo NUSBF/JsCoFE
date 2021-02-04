@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    05.01.20   <--  Date of Last Modification.
+ *    04.02.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Project page
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2020
+ *  (C) E. Krissinel, A. Lebedev 2016-2021
  *
  *  ==========================================================================
  *
@@ -234,12 +234,13 @@ function ProjectPage ( sceneId )  {
       var can_add = (!__dormant) && ((task.state==job_code.finished)  ||
                                      (is_remark && add_enabled));
       self.add_btn.setEnabled ( can_add );
-      self.dock  .setEnabled  ( can_add );
-      clone_btn  .setEnabled ( (!__dormant) && dsel && task.canClone(node,jobTree) );
-      moveup_btn .setEnabled ( (!__dormant) && task.canMove(node,jobTree) );
-      stop_btn   .setEnabled ( dsel && ((task.state==job_code.running) ||
-                                        (task.state==job_code.ending)) );
-      add_rem_btn.setEnabled ( (!__dormant) && (!has_remark) && (!is_remark) );
+      self.dock   .setEnabled ( can_add );
+      clone_btn   .setEnabled ( (!__dormant) && dsel && task.canClone(node,jobTree) );
+      if (moveup_btn)
+        moveup_btn.setEnabled ( (!__dormant) && task.canMove(node,jobTree) );
+      stop_btn    .setEnabled ( dsel && ((task.state==job_code.running) ||
+                                         (task.state==job_code.ending)) );
+      add_rem_btn .setEnabled ( (!__dormant) && (!has_remark) && (!is_remark) );
       if (is_remark)
             self.del_btn.setTooltip ( 'Delete remark' );
       else  self.del_btn.setTooltip ( 'Delete job' );
@@ -247,7 +248,8 @@ function ProjectPage ( sceneId )  {
       self.add_btn.setEnabled ( !__dormant );
       self.dock   .setEnabled ( !__dormant );
       clone_btn   .setEnabled ( false );  // dsel ???
-      moveup_btn  .setEnabled ( false );
+      if (moveup_btn)
+        moveup_btn.setEnabled ( false );
       stop_btn    .setEnabled ( false );
       add_rem_btn .setEnabled ( (!__dormant) && (!has_remark) );
     }
@@ -295,7 +297,7 @@ function ProjectPage ( sceneId )  {
         };
     }
 
-    if (!$(moveup_btn.element).button('option','disabled'))  {
+    if (moveup_btn && (!$(moveup_btn.element).button('option','disabled')))  {
       items.moveJobUpItem = { // The "Add job" menu item
         label : "Move job up the tree",
         icon  : image_path('moveup'),
@@ -400,7 +402,8 @@ function ProjectPage ( sceneId )  {
 
     // add button listeners
     self.add_btn.addOnClickListener ( addJob      );
-    moveup_btn  .addOnClickListener ( moveJobUp   );
+    if (moveup_btn)
+      moveup_btn.addOnClickListener ( moveJobUp   );
     self.del_btn.addOnClickListener ( deleteJob   );
     archive_btn .addOnClickListener ( archiveJobs );
     open_btn    .addOnClickListener ( openJob     );
@@ -590,7 +593,8 @@ function ProjectPage ( sceneId )  {
   // make the toolbar
   var cnt = 0;
   this.add_btn = toolbar.setButton ( '',image_path('add')      ,cnt++,0,1,1 );
-  moveup_btn   = toolbar.setButton ( '',image_path('moveup')   ,cnt++,0,1,1 );
+  // temporary switch off
+  //moveup_btn   = toolbar.setButton ( '',image_path('moveup')   ,cnt++,0,1,1 );
   clone_btn    = toolbar.setButton ( '',image_path('clonejob') ,cnt++,0,1,1 );
   this.del_btn = toolbar.setButton ( '',image_path('remove')   ,cnt++,0,1,1 );
   archive_btn  = toolbar.setButton ( '',image_path('folder_jobtree'),cnt++,0,1,1 );
@@ -615,7 +619,8 @@ function ProjectPage ( sceneId )  {
 
   this.add_btn.setSize('40px','40px').setTooltip('Add job'   ).setDisabled(true);
   this.dock   .setDisabled ( true );
-  moveup_btn  .setSize('40px','40px').setTooltip(
+  if (moveup_btn)
+    moveup_btn.setSize('40px','40px').setTooltip(
                    'Move job one position up the tree branch').setDisabled(true);
   this.del_btn.setSize('40px','40px').setTooltip('Delete job').setDisabled(true);
   archive_btn .setSize('40px','40px').setTooltip(

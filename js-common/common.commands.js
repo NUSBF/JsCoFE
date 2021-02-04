@@ -2,7 +2,7 @@
 /*
  *  ===========================================================================
  *
- *    28.01.21   <--  Date of Last Modification.
+ *    04.02.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -25,7 +25,7 @@
 
 function appName()  { return 'CCP4 Cloud' }  // application name for reporting
 
-var jsCoFE_version = '1.6.019 [28.01.2021]';
+var jsCoFE_version = '1.6.019 [04.02.2021]';
 
 function appVersion()  {
   return jsCoFE_version;
@@ -86,7 +86,8 @@ var fe_command = {
   checkSession      : '=check_session',  // request to check facility update
   authResponse      : '=auth_response',  // process from software authorisation server
   getFEProxyInfo    : '=getfeproxyinfo', // get FE Proxy config and other info
-  checkAnnouncement : '=checkannouncement' // get service announcements
+  checkAnnouncement : '=checkannouncement', // get service announcements
+  control           : '=control'         // group of server service functions
 };
 
 

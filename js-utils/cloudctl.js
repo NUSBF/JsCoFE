@@ -175,24 +175,44 @@ function getUserData()  {
 
 // ==========================================================================
 
-if (process.argv.length<3)  {
+var cmdline   = (process.argv.length==5) || (process.argv.length==6);
+var operation = '';
+var node      = '';
+
+if (cmdline)  {
+  operation = process.argv[2];
+  switch (operation)  {
+    case 'deactivate' :
+    case 'stop'       : cmdline = (process.argv.length==6);
+                        node    = process.argv[3];
+                        break;
+    case 'activate'   : cmdline = (process.argv.length==5);
+                        break;
+    default           : cmdline = false;
+  }
+  if (cmdline && node && (node!='all'))
+    cmdline = (parseInt(node)>=0);
+}
+
+if (!cmdline)  {
   console.log (
     '\nUsage:\n'   +
     '~~~~~~\n\n' +
-    'node js-utils/makeuser.js /path/to/config.json\n\n' +
-    'where config.json is the FE configuration file. User name, e-mail, login ID\n' +
-    'and applicable licence are asked interactively.\n\n' +
-    'Note: all new users are assigned the "user" role. This can be changed later\n' +
-    'by the CCP4 Cloud administrator. First administrator is created by using the\n' +
-    'reserved login ID: "admin". It is recommended to create administrative\n' +
-    'account with this login ID immediately after initial setup.\n'
+    '(1) node js-utils/cloudctl.js deactivate N P /path/to/config.json\n\n' +
+    '(2) node js-utils/cloudctl.js stop N P /path/to/config.json\n\n' +
+    '(3) node js-utils/cloudctl.js activate N /path/to/config.json\n\n' +
+    'where config.json is the FE configuration file; N specifies Cloud\'s server:\n' +
+    '       N = all   - all servers\n' +
+    '       N = 0     - Front End server\n' +
+    '       N = n     - (n=1,2,...) Number Cruncher #n;\n' +
+    'P is deactivation protocol, described in FE configuration file.\n'
   );
   process.exit();
 }
 
 conf.set_python_check ( false );
 
-var cfgfpath = process.argv[2];
+var cfgfpath = process.argv[process.argv.length-1];
 var msg = conf.readConfiguration ( cfgfpath,'FE' );
 if (msg)  {
   console.log ( ' *** FE configuration failed (wrong configuration file?). Stop.' );
@@ -200,4 +220,4 @@ if (msg)  {
   process.exit();
 }
 
-getUserData();
+//getUserData();
