@@ -79,13 +79,13 @@ if ((navigator.userAgent.indexOf('Version/14')>=0) &&
 function checkBrowser()  {
   if ((navigator.userAgent.indexOf('Version/14')>=0) &&
       (navigator.userAgent.indexOf('Safari')>=0))
-    window.setTimeout ( function(){
+//    window.setTimeout ( function(){
       new MessageBox ( 'Unsuitable browser',
           '<div style="width:450px">You are using Mac OSX Safari Version 14, ' +
           'which is known not to work well with ' + appName() +
           '. Please use another browser, such as Opera, Chrome, Firefox.</div>'
       );
-    },500);
+//    },500);
 }
 
 // ===========================================================================
