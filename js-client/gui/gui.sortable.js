@@ -88,6 +88,7 @@ Sortable.prototype.addItem = function ( icon_uri,tooltip,itemId )  {
   item.itemId   = itemId;
   item.tooltip  = tooltip;
   item.icon_uri = icon_uri;
+  button.item   = item;
 
   return button;
 

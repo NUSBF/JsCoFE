@@ -1,0 +1,30 @@
+
+/*
+ *  =================================================================
+ *
+ *    05.02.21   <--  Date of Last Modification.
+ *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ *  -----------------------------------------------------------------
+ *
+ *  **** Module  :  css/gui/gui.sortable.css
+ *       ~~~~~~~~~
+ *  **** Project :  jsCoFE - javascript-based Cloud Front End
+ *       ~~~~~~~~~
+ *  **** Content :  CSS definitions for Sortable widgets
+ *       ~~~~~~~~~
+ *
+ *  (C) E. Krissinel, A. Lebedev 2021
+ *
+ *  =================================================================
+ *
+ */
+
+.sortable-button {
+  border           : 1px solid transparent;
+}
+
+.sortable-button:hover, .sortable-button:focus {
+  background-color : #e7e7e7;
+  border           : 1px solid lightgray;
+  border-radius    : 4px;
+}

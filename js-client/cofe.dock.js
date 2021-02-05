@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    10.01.21   <--  Date of Last Modification.
+ *    05.02.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -108,16 +108,56 @@ Dock.prototype.loadDockData = function()  {
 }
 
 
+Dock.prototype._add_button = function ( icon,title,task )  {
+  var button = this.sortable.addItem ( image_path(icon),title,task );
+  if (button)  {
+    $(button.item.element).addClass ( 'sortable-button' );
+    $(button.item.element).css({
+      'margin'  : '1px 0px 1px 6px',
+      'padding' : '3px',
+      'float'   : 'left'
+    });
+    this.saveDockData();
+  }
+}
+
 Dock.prototype.addTask = function ( taskData )  {
-  if (taskData)
-    this.sortable.addItem ( image_path(taskData.icon),taskData.title,
-                            taskData.task );
+  if (taskData)  {
+    this._add_button ( taskData.icon,taskData.title,taskData.task );
+    /*
+    var button = this.sortable.addItem ( image_path(taskData.icon),
+                                         taskData.title,taskData.task );
+    if (button)  {
+      $(button.item.element).addClass ( 'sortable-button' );
+      $(button.item.element).css({
+        'margin'  : '1px 1px 1px 1px',
+        'padding' : '3px',
+        'float'   : 'left'
+      });
+      this.saveDockData();
+    }
+    */
+  }
 }
 
 
 Dock.prototype.addTaskClass = function ( task )  {
-  if (task)
-    this.sortable.addItem ( image_path(task.icon()),task.title,task._type );
+  if (task)  {
+    this._add_button ( task.icon(),task.title,task._type );
+    /*
+    var button = this.sortable.addItem ( image_path(task.icon()),
+                                         task.title,task._type );
+    if (button)  {
+      $(button.item.element).addClass ( 'sortable-button' );
+      $(button.item.element).css({
+        'margin'  : '1px 1px 1px 1px',
+        'padding' : '3px',
+        'float'   : 'left'
+      });
+      this.saveDockData();
+    }
+    */
+  }
 }
 
 
