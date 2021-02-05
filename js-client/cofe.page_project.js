@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    04.02.21   <--  Date of Last Modification.
+ *    05.02.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -491,8 +491,12 @@ function ProjectPage ( sceneId )  {
           jobTree .openJobs ( dlg_task_parameters,self );
         }
         jobTree.selectTask ( selTask );
-        if (rdata)
+        if (rdata)  {
           self.updateUserRationDisplay ( rdata );
+          if ('completed_map' in rdata)
+            for (var key in rdata.completed_map)
+              jobTree.startChainTask ( rdata.completed_map[key],null );
+        }
       }
     },onTreeContextMenu,openJob,onTreeItemSelect );
   }
@@ -886,8 +890,6 @@ ProjectPage.prototype.makeDock = function()  {
       }
 
     );
-
-    //self.dock.toggle();  // hide
 
     dock_btn.addOnClickListener ( function(){
       self.dock.toggle();

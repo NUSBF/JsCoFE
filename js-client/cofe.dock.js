@@ -24,7 +24,8 @@
 
 function Dock ( parent,onClick_func,onRightClick_func,addTask_func )  {
 
-  this.dock = new Widget('div');
+  this.opened = false;
+  this.dock   = new Widget('div');
 
   $(this.dock.element).css({
     //'width'            : '300px',
@@ -92,18 +93,21 @@ Dock.prototype.constructor = Dock;
 
 Dock.prototype.loadDockData = function()  {
   (function(self){
-    serverRequest ( fe_reqtype.getDockData,{},'Task Dock',function(data){
-      if (('_type' in data) && (data._type=='DockData'))  {
-        for (var i=0;i<data.tasks.length;i++)
-          self.addTask ( data.tasks[i] );
-      }
-      self.dock.addOnRightClickListener ( function(){
-        self.addTask ( self.addTask_func() );
-      });
-      self.opened = data.opened;
-      self.dock.setVisible ( data.opened );
-    },function(){
-    },'persist');
+    window.setTimeout ( function(){
+      serverRequest ( fe_reqtype.getDockData,{},'Task Dock',function(data){
+        if (('_type' in data) && (data._type=='DockData'))  {
+          self.opened = data.opened;
+          for (var i=0;i<data.tasks.length;i++)
+            self._add_button ( data.tasks[i].icon,data.tasks[i].title,
+                               data.tasks[i].task );
+        }
+        self.dock.addOnRightClickListener ( function(){
+          self.addTask ( self.addTask_func() );
+        });
+        self.dock.setVisible ( data.opened );
+      },function(){
+      },'persist');
+    },1);
   }(this));
 }
 
@@ -122,44 +126,14 @@ Dock.prototype._add_button = function ( icon,title,task )  {
 }
 
 Dock.prototype.addTask = function ( taskData )  {
-  if (taskData)  {
+  if (taskData)
     this._add_button ( taskData.icon,taskData.title,taskData.task );
-    /*
-    var button = this.sortable.addItem ( image_path(taskData.icon),
-                                         taskData.title,taskData.task );
-    if (button)  {
-      $(button.item.element).addClass ( 'sortable-button' );
-      $(button.item.element).css({
-        'margin'  : '1px 1px 1px 1px',
-        'padding' : '3px',
-        'float'   : 'left'
-      });
-      this.saveDockData();
-    }
-    */
-  }
 }
-
 
 Dock.prototype.addTaskClass = function ( task )  {
-  if (task)  {
+  if (task)
     this._add_button ( task.icon(),task.title,task._type );
-    /*
-    var button = this.sortable.addItem ( image_path(task.icon()),
-                                         task.title,task._type );
-    if (button)  {
-      $(button.item.element).addClass ( 'sortable-button' );
-      $(button.item.element).css({
-        'margin'  : '1px 1px 1px 1px',
-        'padding' : '3px',
-        'float'   : 'left'
-      });
-      this.saveDockData();
-    }
-    */
-  }
 }
-
 
 Dock.prototype.removeTask = function ( taskId )  {  // taskId == task._type
   this.sortable.removeItem ( taskId );

@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    27.12.20   <--  Date of Last Modification.
+ *    05.02.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Job Tree
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2020
+ *  (C) E. Krissinel, A. Lebedev 2016-2021
  *
  *  ==========================================================================
  *
@@ -861,7 +861,14 @@ JobTree.prototype.startChainTask = function ( task,nodeId )  {
   if (task.state!=job_code.finished)
     return;
 
-  this.selectSingleById ( nodeId );
+  var nid = nodeId;
+  if (!nid)  {
+    nid = this.getTaskNodeId ( task.id );
+    if (!nid)
+      return;
+  }
+
+  this.selectSingleById ( nid );
   var newtask = eval ( 'new ' + task.task_chain[0] + '()' );
   if (task.task_chain.length>1)  {
     newtask.task_chain = [];

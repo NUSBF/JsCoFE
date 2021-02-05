@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    06.01.21   <--  Date of Last Modification.
+ *    05.02.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -405,7 +405,6 @@ var response = null;  // must become a cmd.Response object to return
   else  response = new cmd.Response ( cmd.fe_retcode.readError,
                                       '[00015] Project list cannot be read.','' );
   return response;
-
 }
 
 
@@ -463,7 +462,7 @@ var knowledge = {};
   if (utils.fileExists(userKnowledgePath))
     knowledge = utils.readObject ( userKnowledgePath );
 
-  response  = new cmd.Response ( cmd.fe_retcode.ok,'',knowledge );
+  response = new cmd.Response ( cmd.fe_retcode.ok,'',knowledge );
 
   return response;
 
@@ -714,6 +713,8 @@ var response = null;  // must become a cmd.Response object to return
         response = new cmd.Response ( cmd.fe_retcode.ok,'','' );
   else  response = new cmd.Response ( cmd.fe_retcode.writeError,
                           '[00201] Dock data cannot be written.','' );
+
+  return response;
 
 }
 
@@ -966,7 +967,7 @@ function checkTimestamps ( loginData,projectDesc )  {
 
 
 function advanceJobCounter ( loginData,data )  {
-  var response    = null;
+  //var response    = null;
   var projectDesc = data.meta;
   var rdata       = checkTimestamps ( loginData,projectDesc );
   rdata.project_missing = false;
@@ -984,8 +985,7 @@ function advanceJobCounter ( loginData,data )  {
 
 
 function saveProjectData ( loginData,data )  {
-  var response = null;
-
+  var response    = null;
   var projectData = data.meta;
   var projectDesc = projectData.desc;
   var projectName = projectDesc.name;
@@ -1234,6 +1234,7 @@ var projectDataPath = getProjectDataPath ( loginData,projectName );
   return response;
 
 }
+
 
 // ===========================================================================
 
@@ -1557,8 +1558,7 @@ function finishProjectImport ( loginData,data )  {
 // ===========================================================================
 
 function saveJobData ( loginData,data )  {
-  var response = null;
-
+  var response    = null;
   var projectName = data.meta.project;
   var jobId       = data.meta.id;
 

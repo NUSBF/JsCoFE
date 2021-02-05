@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    18.01.21   <--  Date of Last Modification.
+ *    05.02.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -350,15 +350,30 @@ var row      = 0;
     ]);
   var section1 = section0;
 
-  if (__user_role==role_code.developer)
+  if (__user_role==role_code.developer)  {
+
+    var ccp4go2_task = new TaskCCP4go2();
+    if (this.dataBox.isEmpty())
+      ccp4go2_task.input_dtypes = [1]; // force 'at root mode' for the task
+    /*
+    if (ccp4go2_task.isTaskAvailable()[0]=='ok')
+      this.makeSection ( 'Combined Automated Solver <i>"CCP4 Go-2"</i>',[
+        'Recommended as first attempt or in easy cases',
+        ccp4go2_task
+      ]);
+    */
+
     this.makeSection ( 'Tasks in Development',[
       new TaskDocDev       (),
+      ccp4go2_task,
       //new TaskSheetbend    (),  // excluded also from the bootstrap html
       new TaskJLigand      (),
       new TaskFragon       (),
       new TaskMergeData    (),
       new TaskHelloWorld   ()
     ]);
+
+  }
 
   var data_import_tasks = [
     new TaskImport        (),
