@@ -3,9 +3,41 @@ CCP4 Cloud Version Log
 ======================
 
 
+**Version 1.6.019**
+
+    *Released on --.--.2021 with CCP4 7.1.011*
+
+    **Changes and new features**
+
+    #. Added ``Import & Replace`` task, combining generic import and revision editing
+
+    #. Specification of wavelength made compulsory on .sca file import
+
+    #. Minor changes in task names and re-arangements in Task List
+
+    #. ``Coot`` task now loads revision's heavy-atom substructure automatically
+
+    #. Anomalous maps are calculated automatically in ``Refmac`` and ``Buster`` tasks
+
+    #. Projects may be shared from Project List, without opening the Project
+
+    #. ``Hop on`` and ``Import & Replace`` tasks can import from Cloud storage
+
+    #. Fixed bug in ``Gemmi`` task blocking writing results in output file at certain circumstances
+
+    #. Fixed bug in ``Pisa`` task blocking visualisation of NCS-mates in UglyMol
+
+    #. Jobs cannot be moved up the Job Tree now
+
+    #. Fixed bug blocking auto-launch of ``Refmac`` after ``Coot`` finishes via *Exit and refine*
+
+    #. Fixed bugs in Task Dock which were causing instability 
+
+
+
 **Version 1.6.018**
 
-    *Released on --.--.--- with CCP4 7.1.010*
+    *Released on 15.01.2021 with CCP4 7.1.010*
 
     **Changes and new features**
 
@@ -29,7 +61,7 @@ CCP4 Cloud Version Log
 
     #. Fixed bug in unjoining shared projects
 
-    #. Fixed bug causing duplication of imput data supplied to Coot in certain circumstances
+    #. Fixed bug causing duplication of input data supplied to Coot in certain circumstances
 
     #. Introduced configurable task dock for favourite tasks
 

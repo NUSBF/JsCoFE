@@ -995,15 +995,11 @@ function checkJobs ( loginData,data )  {
   rdata.completed_map = completed_map;
   rdata.reload        = 0;
 
-//  if (!empty)  // save on reading files if nothing changes
-//    rdata.ration = ration.getUserRation(loginData).clearJobs();
-
   if ((!empty) || data.shared)  {
     var pDesc = prj.readProjectDesc ( loginData,projectName );
     if (pDesc)  {
       rdata.pdesc = pDesc;
       if ((data.shared) && (pDesc.timestamp>data.timestamp))  {
-//      if (pDesc.timestamp>data.timestamp)  {
         if (pDesc.project_version>data.project_version)
               rdata.reload = 2;  // project changed considerably, reload client
         else  rdata.reload = 1;  // on-client data should be safe
