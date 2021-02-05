@@ -167,7 +167,6 @@ def getNSym ( spaceGroup ):
     return nsym
 
 
-
 class input_spcgrp(object):
 
   input_sg_defined = False
@@ -183,6 +182,7 @@ class input_spcgrp(object):
       perm_op = op.replace('-', '').split(',')
       perm_rec = zip(*sorted(zip(perm_op, tuple('hkl'))))[1]
       self._sg2 = 'P %s %s %s' %zip(*sorted(zip(perm_rec, axes.groups())))[1]
+
 
 class spacegroup(object):
   # A lazy solution, avoiding transformations where possible
@@ -250,6 +250,7 @@ class spacegroup(object):
 
   def __str__(self):
     return self._sep.join((self.sg, self.op))
+
 
 def point_symm_selector(e0):
   tt1 = '''
@@ -412,6 +413,7 @@ def point_symm_selector(e0):
 # assert sgin.input_sg_defined # pointless forget the input sg if tests higher pg
   return w1
 
+
 def point_symm_datasets(xml_path, format='unknown'):
   e0 = ET.parse(xml_path).getroot()
   symm_selector = point_symm_selector(e0)
@@ -441,6 +443,7 @@ def point_symm_datasets(xml_path, format='unknown'):
       runs.append(sweep)
 
   return dset_list
+
 
 def combine_runs(dset_runs, runs):
     initial = set()
@@ -489,6 +492,7 @@ def combine_runs(dset_runs, runs):
       run_list.append((first, last))
 
     return run_list, no_selected
+
 
 def get_point_script(symm_select, mtzref, plist, mtzout, xmlout, separate_merge=False):
   dset_run_list = list()
@@ -567,6 +571,7 @@ def get_point_script(symm_select, mtzref, plist, mtzout, xmlout, separate_merge=
   stdi_list.append('\n'.join(stdi))
   return stdi_list
 
+
 def test_ranges(runs):
   n = 3
   range_list = ['0-100', '10001-10100']
@@ -582,6 +587,7 @@ def test_ranges(runs):
         range_list.insert(0, ' %d- %d' %(k0 + 4, k1 + 2))
 
   return ','.join(range_list)
+
 
 class test_container(object):
   pass
