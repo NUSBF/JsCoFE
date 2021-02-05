@@ -1,15 +1,15 @@
-##!/usr/bin/python
+#!/usr/bin/env ccp4-python
 
 #
 # ============================================================================
 #
-#    28.11.19   <--  Date of Last Modification.
+#    03.02.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  CCP4go Combined Auto-Solver Simbad stages 1 (L) and 2 (C) class
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2019
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev, Oleg Kovalevskiy 2017-2021
 #
 # ============================================================================
 #
@@ -21,14 +21,18 @@ import json
 #  ccp4-python imports
 #import pyrvapi
 
-import ccp4go_dimple
+import ccp4go_base
 import asucomp
 
 # ============================================================================
 
-class Simbad12(ccp4go_dimple.Dimple):
+class Simbad12(ccp4go_base.Base):
+    parent_branch_id = None
 
-    def simbad12_dir(self): return "simbad12_results"
+    def simbad12_dir(self): return os.path.join(self.currentData.startingParameters.workdir, "simbad12_results")
+
+    def set_parent_branch_id(self, parent_branch_id):
+        self.parent_branch_id = parent_branch_id
 
     # ----------------------------------------------------------------------
 
@@ -40,81 +44,82 @@ class Simbad12(ccp4go_dimple.Dimple):
                 lines = f.readlines()
                 f.close()
                 if len(lines)>=2:
-                    return [float(lines[1].strip().split(",")[3]),
-                            float(lines[1].strip().split(",")[4])]
-        return [10.0,10.0]
+                    return [float(lines[1].strip().split(",")[4]),
+                            float(lines[1].strip().split(",")[5])]
+        return [1.0,1.0]
 
     # ----------------------------------------------------------------------
 
-    def simbad12 ( self,parent_branch_id ):
+    def run (self):
 
-        if not self.trySimbad12:
-            self.file_stdout.write ( "\n *** use of Simbad-LC is switched off\n" )
-            return ""
-
-        self.file_stdout.write ( "\n ... run Simbad-LC\n" )
+        self.stdout ( "Simbad Lattice and Contaminants search... " )
+        self.flush()
         #self.putMessage       ( "&nbsp;" )
         self.putWaitMessageLF ( "<b>" + str(self.stage_no+1) +
                                 ". Lattice and Contaminant Searches</b>" )
         self.page_cursor[1] -= 1
 
-        branch_data = self.start_branch ( "DB Searches",
+        if not os.path.isdir(self.simbad12_dir()):
+            os.mkdir ( self.simbad12_dir() )
+
+        self.branch_data = self.start_branch ( "SIMBAD Database Searches",
                         "CCP4go Automated Structure Solver: Lattice and " +
                         "Contaminant Searches",
-                        self.simbad12_dir(),parent_branch_id,"summary_tab" )
+                        self.simbad12_dir(),self.parent_branch_id,"summary_tab" )
+
+
+        simbad_meta = self.runSimbad()
+        quit_message = self.collectRunStatistics(simbad_meta)
+
+        self.stdout (self.cleanhtml(quit_message) + '\n', mainLog=True)
+        self.flush()
+
+        self.quit_branch ( self.branch_data, self.simbad12_dir(),
+                           "Lattice and Contaminant Searches (Simbad): " +
+                           quit_message )
+
+        #return  self.branch_data["pageId"]
+        return
+
+
+    def runSimbad(self):
 
         # store document before making command line, because document name
         # can be changed by the framework
-        self.storeReportDocument ( branch_data["logTabId"] )
+        self.storeReportDocument (self.simbad12_dir(), self.branch_data["logTabId"] )
         self.flush()
 
-        # Prepare simbad input -- script file
-
+        # actually running simbad
         cmd = []
         if "TMPDIR" in os.environ:
-            cmd  = [ "-tmp_dir",os.environ["TMPDIR"] ]
+            cmd = ["-tmp_dir", os.environ["TMPDIR"]]
         if "PDB_DIR" in os.environ:
-            cmd += [ "-pdb_db",os.environ["PDB_DIR"] ]
+            cmd += ["-pdb_db", os.environ["PDB_DIR"]]
 
-        cmd += [ "-nproc"              ,str(int(self.nSubJobs) + 1),
-                 "-max_lattice_results","5",
-                 "-max_penalty_score"  ,"4",
-                 "-F"                  ,self.hkl.Fmean.value,
-                 "-SIGF"               ,self.hkl.Fmean.sigma,
-                 "-FREE"               ,self.hkl.FREE,
-                 "--display_gui"       ,
-                 "--cleanup"           ,
-                 "-webserver_uri"      ,"jsrview",
-                 "-work_dir"           ,"./",
-                 "-rvapi_document"     ,self.rvapi_doc_path,
-                 self.mtzpath
-               ]
+        cmd += ["-nproc", str(int(self.currentData.startingParameters.nSubJobs) + 1),
+                "-max_lattice_results", "5",
+                "-max_penalty_score", "4",
+                "-F", self.currentData.hkl.Fmean.value,
+                "-SIGF", self.currentData.hkl.Fmean.sigma,
+                "-FREE", self.currentData.hkl.FREE,
+                "--display_gui",
+                "--cleanup",
+                "-webserver_uri", "jsrview",
+                "-work_dir", '.'+ os.sep,
+                "-rvapi_document", self.currentData.startingParameters.rvapi_doc_path,
+                self.currentData.mtzpath
+                ]
 
-        # run simbad
         if sys.platform.startswith("win"):
-            self.runApp ( "simbad.bat",cmd )
+            self.runApp("simbad.bat", cmd)
         else:
-            self.runApp ( "simbad",cmd )
-        self.setOutputPage ( branch_data["cursor1"] )
+            self.runApp("simbad", cmd)
+
+        # after run, getiing info from the RVAPI meta data
+        self.setOutputPage (self.branch_data["cursor1"])
         rvapi_meta = self.restoreReportDocument()
-
-        """
-        { "nResults": 1,
-          "results": [
-            { "mtz": "../latt/mr_lattice/1DTX/mr/molrep/refine/1DTX_refinement_output.mtz",
-              "source": "latt",
-              "dmap": "../latt/mr_lattice/1DTX/mr/molrep/refine/1DTX_refmac_fofcwt.map",
-              "best": true,
-              "map": "../latt/mr_lattice/1DTX/mr/molrep/refine/1DTX_refmac_2fofcwt.map",
-              "pdb": "../latt/mr_lattice/1DTX/mr/molrep/refine/1DTX_refinement_output.pdb",
-              "rank": 1,
-              "name": "1DTX"
-             }
-          ]
-        }
-        """
-
         simbad_meta = None
+
         if rvapi_meta:
             try:
                 simbad_meta = json.loads ( rvapi_meta )
@@ -122,40 +127,66 @@ class Simbad12(ccp4go_dimple.Dimple):
                 self.putMessage ( "<b>Program error:</b> <i>unparseable metadata from Simbad</i>" +
                                   "<p>'" + rvapi_meta + "'" )
                 self.page_cursor[1] -= 1
+                self.stderr(" *** Program error: unparseable metadata from Simbad.\n", mainLog=True)
+                self.output_meta["error"] = "[03-001] cant parse SIMBAD data"
+                self.write_meta()
+                self.end_branch(self.branch_data, self.simbad12_dir(),
+                                "Program error: unparseable metadata from Simbad",
+                                "cant parse SIMBAD data")
+
         else:
             self.putMessage ( "<b>Program error:</b> <i>no metadata from Simbad</i>" )
             self.page_cursor[1] -= 1
+            self.stderr(" *** Program error: no metadata from Simbad.\n", mainLog=True)
+            self.output_meta["error"] = "[03-002] no metadata from Simbad"
+            self.write_meta()
+            self.end_branch(self.branch_data, self.simbad12_dir(),
+                            "Program error: no metadata from Simbad",
+                            "no metadata from Simbad")
 
-        r1 = self.get_rfactors ( "latt","lattice_mr.csv" )
-        r2 = self.get_rfactors ( "cont","cont_mr.csv" )
-        rfree   = r1[1]
-        rfactor = r1[0]
-        if r2[1]<rfree:
-            rfree   = r2[1]
-            rfactor = r2[0]
+        return simbad_meta
+
+
+    def collectRunStatistics(self, simbad_meta):
+        (rWorkLattice, rFreeLattice) = self.get_rfactors ( os.path.join(self.simbad12_dir(), "latt"),"lattice_mr.csv" )
+        (rWorkContaminant, rFreeContaminant) = self.get_rfactors ( os.path.join(self.simbad12_dir(), "cont"),"cont_mr.csv" )
+        if rFreeLattice <= rFreeContaminant:
+            rfree = rFreeLattice
+            rfactor = rWorkLattice
+        else:
+            rfree = rFreeContaminant
+            rfactor = rWorkContaminant
 
         nResults   = 0
         resultName = "xxxx"
         fpath_xyz  = ""
         fpath_mtz  = ""
-        fpath_map  = ""
-        fpath_dmap = ""
         asuComp    = {}
-        spg_info   = { "spg":self.hkl.HM, "hkl":"" }
+        spg_info   = { "spg":self.currentData.hkl.HM, "hkl":"" }
         if simbad_meta:
             nResults = simbad_meta["nResults"]
             meta     = simbad_meta["results"][0]
             #self.file_stdout.write ( json.dumps ( meta,indent=2 ))
             resultName = meta["name"]
             if nResults>0:
-                fpath_xyz  = os.path.join(self.reportdir,meta["pdb"])
+                # IMPORTANT!!! HOT POINT!!!
+                # Potential source of problems - relative path to the output PDB file
+                # must be correct!
+
+                # print (str(simbad_meta))
+                # print self.currentData.startingParameters.rvapi_doc_path
+                # print
+                # print os.path.dirname(self.currentData.startingParameters.rvapi_doc_path)
+                # print meta["pdb"][3:]
+
+                fpath_xyz  = os.path.join(os.path.dirname(self.currentData.startingParameters.rvapi_doc_path), meta["pdb"][3:])
                 if os.path.isfile(fpath_xyz):
-                    fpath_mtz  = os.path.join(self.reportdir,meta["mtz"])
-                    #fpath_map  = os.path.join(self.reportdir,meta["map"])
-                    #fpath_dmap = os.path.join(self.reportdir,meta["dmap"])
-                    asuComp    = asucomp.getASUComp1 ( fpath_xyz,self.seqpath )
-                    #self.file_stdout.write ( json.dumps ( asuComp,indent=2 ))
-                    spg_info   = self.checkSpaceGroup ( self.hkl.HM,fpath_xyz )
+                    # IMPORTANT!!! HOT POINT!!!
+                    # Potential source of problems - relative path to the output MTZ file
+                    # must be correct!
+                    fpath_mtz  = os.path.join(os.path.dirname(self.currentData.startingParameters.rvapi_doc_path), meta["mtz"][3:])
+                    asuComp    = asucomp.getASUComp1 ( fpath_xyz,self.currentData.startingParameters.seqpath )
+                    spg_info   = self.reindexHKLifSpaceGroupChanged (self.currentData.hkl.HM, fpath_xyz)
                 else:
                     nResults   = 0
                     fpath_xyz  = ""
@@ -163,31 +194,34 @@ class Simbad12(ccp4go_dimple.Dimple):
             nResults = -1  # indication of an error
 
         columns = {
-          "F"       : self.hkl.Fmean.value,
-          "SIGF"    : self.hkl.Fmean.sigma,
-          "FREE"    : self.hkl.FREE,
+          "F"       : self.currentData.hkl.Fmean.value,
+          "SIGF"    : self.currentData.hkl.Fmean.sigma,
+          "FREE"    : self.currentData.hkl.FREE,
           "PHI"     : "PHIC_ALL_LS",
           "FOM"     : "FOM",
           "DELFWT"  : "DELFWT",
           "PHDELWT" : "PHDELWT"
         }
 
-        quit_message = self.saveResults ( "Simbad-LC [" + resultName + "]",
-                self.simbad12_dir(),nResults,rfree,rfactor,
-                "simbad_"+resultName,fpath_xyz,fpath_mtz,fpath_map,fpath_dmap,
-                None,None,columns,spg_info )
+        quit_message = self.saveResults ( name = "Simbad-LC [" + resultName + "]",
+                                          dirname = self.simbad12_dir(),
+                                          nResults = nResults,
+                                          rfree = rfree,
+                                          rfactor = rfactor,
+                                          resfname = "simbad_"+resultName,
+                                          fpath_xyz = fpath_xyz,
+                                          fpath_mtz = fpath_mtz,
+                                          columns = columns,
+                                          spg_info = spg_info )
 
         self.output_meta["results"][self.simbad12_dir()]["pdbcode"] = resultName
         self.output_meta["results"][self.simbad12_dir()]["asucomp"] = asuComp
 
         #if self.output_meta["retcode"] != "not solved" and self.seqpath:
         #    if asuComp["retcode"] == 1:
-        #        self.output_meta["retcode"] = "sequence problem"
+        #        self.output_meta["error"] = "sequence problem"
         #    elif asuComp["minseqid"]<0.7:
-        #        self.output_meta["retcode"] = "sequence mismatch"
+        #        self.output_meta["error"] = "sequence mismatch"
 
-        self.quit_branch ( branch_data,self.simbad12_dir(),
-                           "Lattice and Contaminant Searches (Simbad): " +
-                           quit_message )
 
-        return  branch_data["pageId"]
+        return quit_message

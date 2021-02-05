@@ -394,6 +394,8 @@ def mtz_file(fname, vstream=None):
 
     if header_dict:
         return mtz_dataset_list(fname, header_dict, vstream)
+    else:
+        return []
 
 rec_xds = re.compile('(?:%s|%s)' %(
   "^!FORMAT=XDS_ASCII +MERGE=(TRUE|FALSE) +FRIEDEL'S_LAW=(?:TRUE|FALSE)",
