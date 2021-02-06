@@ -477,6 +477,8 @@ def run ( body,   # body is reference to the main Import class
                             if structure:
                                 structure.addPhasesSubtype ()
                                 structure.addDataAssociation ( last_imported.dataId )
+                                #body.stderrln ( " >>>>> " + str(ds.PhiFOM) )
+                                #body.stderrln ( " >>>>> " + str(ds.FwPhi) )
                                 structure.setImportMergedData ( ds )
                                 pyrvapi.rvapi_set_text (
                                     "<h2>Associated ED Maps</h2>",
