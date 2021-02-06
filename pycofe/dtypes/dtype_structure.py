@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    22.01.21   <--  Date of Last Modification.
+#    06.02.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -114,9 +114,17 @@ class DType(dtype_xyz.DType):
             self.HLA, self.HLB, self.HLC, self.HLD = dataset.ABCD[-1]
 
         if dataset.FwPhi and len(dataset.FwPhi) > 0:
-            self.FWT, self.PHWT = dataset.FwPhi[-1]
-            if len(dataset.FwPhi) > 1:
-                self.DELFWT, self.PHDELWT = dataset.FwPhi[-2]
+            for i in range(len(dataset.FwPhi)):
+                f,p = dataset.FwPhi[i]
+                if f in ["FWT","2FOFCWT","parrot.F_phi.F","acorn.FWT","REFM_FWT"]:
+                    self.FWT  = f
+                    self.PHWT = p
+                elif f in ["DELFWT","FOFCWT","REFM_DELFWT"]:
+                    self.DELFWT  = f
+                    self.PHDELWT = p
+            #self.FWT, self.PHWT = dataset.FwPhi[-1]
+            #if len(dataset.FwPhi) > 1:
+            #    self.DELFWT, self.PHDELWT = dataset.FwPhi[-2]
 
         a, b, c, al, be, ga = dataset.DCELL
         self.xyzmeta = dict(
