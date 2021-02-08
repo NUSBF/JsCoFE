@@ -486,10 +486,12 @@ function ProjectListPage ( sceneId )  {
           info += '</table><table class="table-rations">' +
                      '<tr><td colspan="2">&nbsp;<br><b><i>Project data</i></b></td></tr>' +
                      '<tr><td colspan="2"><hr/></td></tr>';
-          add_info ( 'Space group'      ,pDesc.metrics.SG       );
-          add_info ( 'High resolution'  ,round(pDesc.metrics.res_high,2) + ' &Aring;' );
-          if (pDesc.metrics.Solvent>0)
-            add_info ( 'Solvent content',round(pDesc.metrics.Solvent,1) + '%' );
+          add_info ( 'Space group',pDesc.metrics.SG       );
+          add_info ( 'High resolution&nbsp;&nbsp;&nbsp;',
+                     round(pDesc.metrics.res_high,2) + ' &Aring;' );
+          if (pDesc.metrics.Solvent>0.0)
+            add_info ( 'Solvent content&nbsp;&nbsp;&nbsp;',
+                       round(pDesc.metrics.Solvent,1) + '%' );
           if (pDesc.metrics.MolWeight>0.0)
             add_info ( 'ASU Molecular weight',round(pDesc.metrics.MolWeight,1) );
           if (pDesc.metrics.nRes_ASU>0)
