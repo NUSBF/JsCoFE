@@ -311,24 +311,21 @@ function readProjectList ( loginData )  {
     pList.projects = [];
     if (!('startmode' in pList))
       pList.startmode = pd.start_mode.auto;
-    var update = false;
     for (var i=0;i<pdescs.length;i++)  {
       var pdesc = pdescs[i];
       if (checkProjectDescData(pdesc,loginData))  {
-        update = true;
         var pData = readProjectData ( loginData,pdesc.name );
         writeProjectData ( loginData,pData,true );
       }
-      if (pdesc.owner.share.length>0)  // the project could have been changed
-        pdesc = readProjectDesc ( loginData,pdescs[i].name );
+      //if (pdesc.owner.share.length>0)  // the project could have been changed
+      pdesc = readProjectDesc ( loginData,pdescs[i].name );
       if (pdesc && (pdesc.owner.login!=loginData.login) &&
                    (!pd.isProjectAccessible(loginData.login,pdesc)))
         pdesc = null;
       if (pdesc)
         pList.projects.push ( pdesc );
     }
-    if (update)
-      writeProjectList ( loginData,pList );
+    writeProjectList ( loginData,pList );
   }
   return pList;
 }

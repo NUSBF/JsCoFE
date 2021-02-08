@@ -68,7 +68,7 @@ function Upload ( customData,upl_data,onSelect_func,onSelectPDB_func,onReady_fun
   grid.setCellSize ( '50%','',0,col++ );
   this.addWidget ( grid );
 
-  this.returnCode = 'in progress';
+  this.returnCode   = 'in progress';
 
   this.upload_files = [];     // list of uploaded files
   this.accept_gzip  = false;  // no check for '.ext.gz' will be made, and all
