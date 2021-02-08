@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    05.02.21   <--  Date of Last Modification.
+ *    06.02.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -50,6 +50,7 @@
  *      function selectArchiveJobs();
  *      function addJob          ( insert_bool,parent_page,onAdd_func );
  *      function moveJobUp       ();
+ *      function calcMetrics     ();
  *      function deleteJob       ( onDelete_func );
  *      function closeAllJobDialogs();
  *      function stopJob         ( nodeId,gracefully_bool );
@@ -285,6 +286,8 @@ JobTree.prototype.readProjectData = function ( page_title,
             else if (!tree.task_map[key].job_dialog_data.viewed)
               tree.setStyle ( tree.node_map[key],__notViewedStyle,0 );
           }
+          if (!('R_free' in tree.projectData.desc.metrics))
+            tree.calcMetrics();
           onLoaded_func();
         },onRightClick_func,onDblClick_func,onSelect_func );
 
@@ -436,6 +439,7 @@ JobTree.prototype.__checkTaskLoop = function()  {
                 tree.node_map[nodeId].setCustomIconVisible ( false );
                 tree.setNodeIcon    ( nodeId,false );
                 completed_list.push ( task );
+                update_project_metrics ( task,tree.projectData.desc.metrics );
               }
 
               if (key in tree.dlg_map)  {
@@ -994,6 +998,13 @@ JobTree.prototype.moveJobUp = function()  {
 }
 
 
+JobTree.prototype.calcMetrics = function() {
+  this.projectData.desc.metrics = {};
+  for (var key in this.task_map)
+    update_project_metrics ( this.task_map[key],this.projectData.desc.metrics );
+}
+
+
 JobTree.prototype.deleteJob = function ( onDelete_func ) {
 
   if (this.selected_node_id)  {
@@ -1124,6 +1135,8 @@ JobTree.prototype.deleteJob = function ( onDelete_func ) {
           if (tree.run_map[key] in tree.node_map)  // running task was deleted
             run_map[key] = tree.run_map[key];
         tree.run_map = run_map;
+
+        tree.calcMetrics();
 
         tree.saveProjectData ( [],tasks_del,true, function(rdata){
           if (tree.checkReload(tree,rdata,'delete the job(s)<br>'))  {

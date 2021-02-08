@@ -1,8 +1,8 @@
 
 /*
-*  ==========================================================================
+ *  ==========================================================================
  *
- *    14.01.21   <--  Date of Last Modification.
+ *    06.02.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -------------------------------------------------------------------------
  *
@@ -2148,7 +2148,7 @@ if (!dbx)  {
     if ('scores' in this)  {
       S = '';
       for (var key in this.scores)  {
-        d = this.scores[key];
+        var d = this.scores[key];
         if (d.hasOwnProperty('summary_line'))
           S += d.summary_line + ' ';
         else
@@ -2185,6 +2185,56 @@ if (!dbx)  {
 //        S = '-- <font style="font-size:80%">' + S + '</font>';
     }
     return S.trim();
+  }
+
+  function update_project_metrics ( task,metrics )  {
+    /* add: MR/EP, Space group, solvent, residues in ASU, residues in model */
+    if (task)  {
+      if (!('R_free' in metrics))  {
+        metrics.R_free   = 2.0;
+        metrics.R_factor = 2.0;
+      }
+      var r = null;  // revision
+      if (('output_data' in task) && ('DataRevision' in task.output_data.data))
+        r = task.output_data.data.DataRevision[0];
+      if ('scores' in task)
+        for (var key in task.scores)  {
+          var d = task.scores[key];
+          if ('R_free' in d)  {
+            var rfree = parseFloat(d.R_free);
+            if (d.R_free<metrics.R_free)  {
+              metrics.R_free   = rfree;
+              metrics.R_factor = parseFloat(d.R_factor);
+              if (r)  {
+                metrics.SG        = r.HKL.dataset.HM;
+                metrics.res_high  = r.HKL.dataset.RESO[1];
+                metrics.res_low   = r.HKL.dataset.RESO[0];
+                metrics.Solvent   = r.ASU.solvent;
+                metrics.MolWeight = r.ASU.molWeight;
+                metrics.nRes_ASU  = r.ASU.nRes;
+                if ('ha_type' in r.ASU)  metrics.ha_type = r.ASU.ha_type;
+                                   else  metrics.ha_type = '';
+                var nunits = 0;
+                for (var i=0;i<r.ASU.seq.length;i++)
+                  nunits += r.ASU.seq[i].ncopies;
+                metrics.nUnits_ASU  = nunits;
+                if (('Structure' in r) && (r.Structure))  {
+                  var nr     = 0;
+                  var models = r.Structure.xyzmeta.xyz;
+                  if (models.length>0)
+                    for (var i=0;i<models[0].chains.length;i++)
+                      nr += models[0].chains[i].size;
+                  metrics.nRes_Model   = nr;
+                  metrics.nUnits_Model = models[0].chains.length;
+                } else  {
+                  metrics.nRes_Model   = 0;
+                  metrics.nUnits_Model = 0;
+                }
+              }
+            }
+          }
+        }
+    }
   }
 
   TaskTemplate.prototype.result_indicator = function() {

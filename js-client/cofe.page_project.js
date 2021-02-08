@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    05.02.21   <--  Date of Last Modification.
+ *    06.02.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -494,8 +494,11 @@ function ProjectPage ( sceneId )  {
         if (rdata)  {
           self.updateUserRationDisplay ( rdata );
           if ('completed_map' in rdata)
-            for (var key in rdata.completed_map)
+            for (var key in rdata.completed_map)  {
               jobTree.startChainTask ( rdata.completed_map[key],null );
+              update_project_metrics ( rdata.completed_map[key],
+                                       jobTree.projectData.desc.metrics );
+            }
         }
       }
     },onTreeContextMenu,openJob,onTreeItemSelect );

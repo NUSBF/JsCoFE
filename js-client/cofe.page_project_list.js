@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    06.01.21   <--  Date of Last Modification.
+ *    06.02.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -380,6 +380,7 @@ function ProjectListPage ( sceneId )  {
     self.tablesort_tbl = new TableSort();
     self.tablesort_tbl.setHeaders ([
         'ID','Name',
+        '<center>R<sub>free</sub></center>',
         '<center>Disk<br>(MBytes)</center>',
         '<center>CPU<br>(hours)</center>',
         '<center>Date<br>Created</center>',
@@ -414,6 +415,7 @@ function ProjectListPage ( sceneId )  {
       __current_project = null;
 
       var trow = self.tablesort_tbl.addRow();
+      trow.addCell ( '' );
       trow.addCell ( '' );
       trow.addCell ( '' );
       trow.addCell ( '' );
@@ -465,6 +467,41 @@ function ProjectListPage ( sceneId )  {
         }
         trow.addCell ( pName  ).setNoWrap();
         trow.addCell ( pDesc.title ).insertWidget ( contextMenu,0 );
+        if (('metrics' in pDesc) && ('R_free' in pDesc.metrics)
+                                 && (pDesc.metrics.R_free<'1.0'))  {
+          var info = '<table class="table-rations">' +
+                     '<tr><td colspan="2"><b><i>Best scores</i></b></td></tr>' +
+                     '<tr><td colspan="2"><hr/></td></tr>';
+          function add_info ( title,value )  {
+            info += '<tr><td>' + title + '</td><td>' + value + '</td></tr>';
+          }
+          add_info ( 'R-free/R-factor','<b>' + round(pDesc.metrics.R_free,4) +
+                     '</b> / ' + round(pDesc.metrics.R_factor,4) );
+          add_info ( 'Residues/Units modelled&nbsp;&nbsp;&nbsp;',
+                     '<b>' + pDesc.metrics.nRes_Model   + '</b> / ' +
+                     '<b>' + pDesc.metrics.nUnits_Model + '</b>' );
+          //add_info ( 'R-free'  ,round(pDesc.metrics.R_free,4)   );
+          //add_info ( 'R-factor',round(pDesc.metrics.R_factor,4) );
+          //add_info ( 'Residues modelled',pDesc.metrics.nRes_Model );
+          info += '</table><table class="table-rations">' +
+                     '<tr><td colspan="2">&nbsp;<br><b><i>Project data</i></b></td></tr>' +
+                     '<tr><td colspan="2"><hr/></td></tr>';
+          add_info ( 'Space group'      ,pDesc.metrics.SG       );
+          add_info ( 'High resolution'  ,round(pDesc.metrics.res_high,2) + ' &Aring;' );
+          if (pDesc.metrics.Solvent>0)
+            add_info ( 'Solvent content',round(pDesc.metrics.Solvent,1) + '%' );
+          if (pDesc.metrics.MolWeight>0.0)
+            add_info ( 'ASU Molecular weight',round(pDesc.metrics.MolWeight,1) );
+          if (pDesc.metrics.nRes_ASU>0)
+            add_info ( 'Residues/Units expected&nbsp;&nbsp;&nbsp;',
+                       '<b>' + pDesc.metrics.nRes_ASU   + '</b> / ' +
+                       '<b>' + pDesc.metrics.nUnits_ASU + '</b>' );
+          if (('ha_type' in pDesc.metrics) && (pDesc.metrics.ha_type.length>0))
+            add_info ( 'HA type',pDesc.metrics.ha_type );
+          trow.addCell ( pDesc.metrics.R_free ).setNoWrap()
+              .setTooltip1(info + '</table>','show',false,20000);
+        } else
+          trow.addCell ( '' );
         if (pDesc.hasOwnProperty('disk_space'))
               trow.addCell ( joined[0]+round(pDesc.disk_space,1)+joined[1] )
                   .setNoWrap().setTooltip(joined[2]);
@@ -503,11 +540,12 @@ function ProjectListPage ( sceneId )  {
 
     self.tablesort_tbl.setHeaderNoWrap   ( -1      );
     self.tablesort_tbl.setHeaderColWidth ( 0,'5%'  );
-    self.tablesort_tbl.setHeaderColWidth ( 1,'75%' );
+    self.tablesort_tbl.setHeaderColWidth ( 1,'70%' );
     self.tablesort_tbl.setHeaderColWidth ( 2,'5%'  );
     self.tablesort_tbl.setHeaderColWidth ( 3,'5%'  );
     self.tablesort_tbl.setHeaderColWidth ( 4,'5%'  );
     self.tablesort_tbl.setHeaderColWidth ( 5,'5%'  );
+    self.tablesort_tbl.setHeaderColWidth ( 6,'5%'  );
 
     self.tablesort_tbl.setHeaderFontSize ( '100%' );
     self.onResize ( window.innerWidth,window.innerHeight );
