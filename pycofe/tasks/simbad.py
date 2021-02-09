@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    01.12.20   <--  Date of Last Modification.
+#    09.02.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -32,7 +32,7 @@
 #               even if job is run by SGE, so it should be checked upon using
 #               comman line length
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2020
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2021
 #
 # ============================================================================
 #
@@ -302,7 +302,9 @@ class Simbad(asudef.ASUDef):
                         self.generic_parser_summary["simbad"] = {
                             "summary_line" : "LLG=" + LLG + " TFZ=" + TFZ +\
                                              " R=" + Rfactor +\
-                                             " R<sub>free</sub>=" + Rfree
+                                             " R<sub>free</sub>=" + Rfree,
+                            "R_factor"     : Rfactor,
+                            "R_free"       : Rfree
                         }
 
                 else:
