@@ -2205,6 +2205,7 @@ if (!dbx)  {
             if (d.R_free<metrics.R_free)  {
               metrics.R_free   = rfree;
               metrics.R_factor = parseFloat(d.R_factor);
+              metrics.jobId    = task.id;
               if (r)  {
                 metrics.SG        = r.HKL.dataset.HM;
                 metrics.res_high  = r.HKL.dataset.RESO[1];
