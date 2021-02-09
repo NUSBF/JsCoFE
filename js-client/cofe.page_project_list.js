@@ -470,7 +470,8 @@ function ProjectListPage ( sceneId )  {
         if (('metrics' in pDesc) && ('R_free' in pDesc.metrics)
                                  && (pDesc.metrics.R_free<'1.0'))  {
           var info = '<table class="table-rations">' +
-                     '<tr><td colspan="2"><b><i>Best scores</i></b></td></tr>' +
+                     '<tr><td colspan="2"><b><i>Best scores (job ' +
+                     padDigits(pDesc.metrics.jobId,4) + ')</i></b></td></tr>' +
                      '<tr><td colspan="2"><hr/></td></tr>';
           function add_info ( title,value )  {
             info += '<tr><td>' + title + '</td><td>' + value + '</td></tr>';

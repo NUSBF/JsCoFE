@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    10.05.20   <--  Date of Last Modification.
+ *    09.02.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Ensemble Preparation from Coordinates Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2020
+ *  (C) E. Krissinel, A. Lebedev 2016-2021
  *
  *  =================================================================
  *
@@ -80,7 +80,7 @@ function TaskEnsemblePrepXYZ()  {
       customInput : 'chain-sel-protein', // lay custom fields next to the selection
                                  // enforce protein chains because of using MrBump
                                  // for this task
-      min         : 1,           // minimum acceptable number of data instances
+      min         : 2,           // minimum acceptable number of data instances
       max         : 1000         // maximum acceptable number of data instances
     }
   ];

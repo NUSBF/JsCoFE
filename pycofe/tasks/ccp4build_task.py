@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    19.11.20   <--  Date of Last Modification.
+#    09.02.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -21,7 +21,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2019-2020
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2019-2021
 #
 # ============================================================================
 #
@@ -509,7 +509,9 @@ class CCP4Build(basic.TaskDriver):
                     self.generic_parser_summary["ccp4build"] = {
                       "summary_line" : "Compl=" + str(m0["res_compl"]) +\
                                        "% R="   + str(m0["R_factor"])  +\
-                                       " R<sub>free</sub>=" + str(m0["R_free"])
+                                       " R<sub>free</sub>=" + str(m0["R_free"]),
+                      "R_factor"     : str(m0["R_factor"]),
+                      "R_free"       : str(m0["R_free"])
                     }
                     #self.generic_parser_summary["refmac"]     = meta["refmac"]
                     #self.generic_parser_summary["cbuccaneer"] = meta["cbuccaneer"]
