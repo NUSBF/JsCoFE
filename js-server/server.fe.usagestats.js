@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    17.12.20   <--  Date of Last Modification.
+ *    10.02.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Front End Server -- User Support Module
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2019-2020
+ *  (C) E. Krissinel, A. Lebedev 2019-2021
  *
  *  =================================================================
  *
@@ -68,7 +68,7 @@ function UsageStats()  {
 UsageStats.prototype.registerJob = function ( job_class )  {
 // returns true if 24-hour period was counted
 
-  if ('disk_free_projects' in this)  {
+  if ('disk_free_projects' in this)  {  // backward compatibility, to delete
     // reshape object
     this.volumes = {
       '***'       : { 'free'      : this.disk_free_projects,
@@ -163,6 +163,12 @@ var generate_report = false;
   if (!usageStats)  {
     usageStats = utils.readClass ( statsFilePath );
     if (!usageStats)  {
+      if (utils.fileExists(statsFilePath))  {
+        var statsFilePath1 = statsFilePath + '.sav';
+        utils.copyFile ( statsFilePath,statsFilePath1 );
+        log.warning ( 1,'usage stats reading error; ' + statsFilePath +
+                      '\n               retained as ' + statsFilePath1  );
+      }
       log.standard ( 1,'usage stats initialised' );
       if (!utils.dirExists(statsDirPath))
         utils.mkDir ( statsDirPath );
@@ -196,6 +202,48 @@ var generate_report = false;
   utils.writeObject ( statsFilePath,usageStats );
 
   if (generate_report)  {
+
+    // generate usage report once in 24 hours
+
+    log.standard ( 2,'generate usage stats report ...' );
+    var cmd_params = [ '-m', 'pycofe.proc.usagestats',
+                       statsFilePath,
+                       statsDirPath,
+                       'user_data', fe_config.userDataPath,
+                       'storage',   fe_config.storage
+                     ];
+    for (var fsname in fe_config.projectsPath)  {
+      cmd_params.push ( fsname );
+      cmd_params.push ( fe_config.projectsPath[fsname].path );
+    }
+
+    //console.log ( conf.pythonName() + ' ' + cmd_params.join(' ') );
+
+    var job = utils.spawn ( conf.pythonName(),cmd_params,{} );
+    // make stdout and stderr catchers for debugging purposes
+    var stdout = '';
+    var stderr = '';
+    job.stdout.on('data',function(buf){
+      stdout += buf;
+    });
+    job.stderr.on('data',function(buf){
+      stderr += buf;
+    });
+    job.on ( 'close',function(code){
+      if (code)  {
+        log.standard ( 3,'failed to generate usage report, code=' + code +
+                         '\n    stdout=\n' + stdout );
+        log.error    ( 3,'failed to generate usage report, code=' + code +
+                         '\n    stderr=\n' + stderr );
+      } else  {
+        var ustats = utils.readClass ( statsFilePath );
+        if (ustats)  {
+          usageStats = ustats;
+          log.standard ( 2,'usage stats report generated' );
+        } else
+          log.warning ( 2,'cannot read usage stats report at ' + statsFilePath );
+      }
+    });
 
     //  check for ccp4 updates once in 24 hours
 
@@ -236,42 +284,6 @@ var generate_report = false;
              });
     } else
       log.standard ( 23,'cannot check CCP4 updates, no CCP4 path in the environment' );
-
-    // generate usage report once in 24 hours
-
-    log.standard ( 2,'generate usage stats report ...' );
-    var cmd_params = [ '-m', 'pycofe.proc.usagestats',
-                       statsFilePath,
-                       statsDirPath,
-                       'user_data', fe_config.userDataPath,
-                       'storage',   fe_config.storage
-                     ];
-    for (var fsname in fe_config.projectsPath)  {
-      cmd_params.push ( fsname );
-      cmd_params.push ( fe_config.projectsPath[fsname].path );
-    }
-
-    //console.log ( conf.pythonName() + ' ' + cmd_params.join(' ') );
-
-    var job = utils.spawn ( conf.pythonName(),cmd_params,{} );
-    // make stdout and stderr catchers for debugging purposes
-    var stdout = '';
-    var stderr = '';
-    job.stdout.on('data',function(buf){
-      stdout += buf;
-    });
-    job.stderr.on('data',function(buf){
-      stderr += buf;
-    });
-    job.on ( 'close',function(code){
-      if (code)  {
-        log.standard ( 3,'failed to generate usage report, code=' + code +
-                         '\n    stdout=\n' + stdout );
-        log.error    ( 3,'failed to generate usage report, code=' + code +
-                         '\n    stderr=\n' + stderr );
-      } else
-        usageStats = utils.readClass ( statsFilePath );
-    });
 
   }
 
