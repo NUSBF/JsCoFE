@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    21.01.21   <--  Date of Last Modification.
+ *    10.02.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -76,7 +76,7 @@ function start ( callback_func )  {
 
   // read job register
   rj.readFEJobRegister ();
-  rj.cleanFEJobRegister();
+  //rj.cleanFEJobRegister();
 
   //  instantiate the server
   var server = http.createServer();
@@ -155,7 +155,7 @@ function start ( callback_func )  {
 
         case cmd.fe_command.control :
             pp.processPOSTData ( server_request,server_response,function(data){
-              cmd.sendResponse ( server_response,cmd.fe_retcode.ok,JSON.stringify(data),'' );              
+              cmd.sendResponse ( server_response,cmd.fe_retcode.ok,JSON.stringify(data),'' );
             });
           break;
 
@@ -236,6 +236,10 @@ function start ( callback_func )  {
     else
       log.standard ( 5,'front-end started, listening to ' +
                      feConfig.url() + ' (non-exclusive)' );
+
+    setTimeout ( function(){
+      rj.cleanFEJobRegister ( 5 );  // 5 attempts
+    },10000);
 
     if (callback_func)
       callback_func();

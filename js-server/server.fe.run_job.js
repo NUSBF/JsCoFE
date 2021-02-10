@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    13.12.20   <--  Date of Last Modification.
+ *    10.02.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Front End Server -- Job Run Module
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2020
+ *  (C) E. Krissinel, A. Lebedev 2016-2021
  *
  *  ==========================================================================
  *
@@ -185,7 +185,7 @@ var fpath = getJobRegisterPath();
 
 }
 
-function cleanFEJobRegister()  {
+function cleanFEJobRegister ( nattempts )  {
 
   if (!feJobRegister)
     readFEJobRegister();
@@ -200,9 +200,18 @@ function cleanFEJobRegister()  {
   }
 
   if (dead_tokens.length>0)  {
-    for (var i=0;i<dead_tokens.length;i++)
-      feJobRegister.removeJob ( dead_tokens[i] );
-    writeFEJobRegister();
+    if (nattempts>0)  {
+      // additional attempts are given in order to compensate possible NFS lag
+      setTimeout ( function(){
+        cleanFEJobRegister ( nattempts-1 );
+      },10000);
+      log.standard ( 51,dead_tokens.length + ' dead entries in FE job registry found' );
+      return;
+    } else  {
+      for (var i=0;i<dead_tokens.length;i++)
+        feJobRegister.removeJob ( dead_tokens[i] );
+      writeFEJobRegister();
+    }
   }
 
   log.standard ( 50,dead_tokens.length + ' dead entries in FE job registry removed' );
