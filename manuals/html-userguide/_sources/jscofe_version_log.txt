@@ -29,9 +29,13 @@ CCP4 Cloud Version Log
 
     #. Jobs cannot be moved up the Job Tree now
 
-    #. Fixed bug blocking auto-launch of ``Refmac`` after ``Coot`` finishes via *Exit and refine*
+    #. Fixed bug blocking auto-launch of ``Refmac`` after ``Coot`` finishes via *Exit and refine* in shared projects
 
-    #. Fixed bugs in Task Dock which were causing instability 
+    #. Fixed bugs in Task Dock which were causing instability
+
+    #. Fixed bug in import of phases, causing misinterpretation of direct and difference maps
+
+    #. Project summaries and scores added in the *List of Projects*
 
 
 

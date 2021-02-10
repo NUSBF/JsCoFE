@@ -130,10 +130,43 @@ def main():
 
     #usageStats = jsonut.readjObject ( statsFile )
 
+    vuse = {}
+    for vname in volumes:
+        vuse[vname] = getDiskUsage ( volumes[vname] )
+
     usageStats = None
     try:
-        with open(statsFile) as json_file:
+        with open(statsFile,"r") as json_file:
             usageStats = json.load(json_file)
+
+        """
+        for vname in volumes:
+            du = getDiskUsage ( volumes[vname] )
+            if vname in usageStats["volumes"]:
+                usageStats["volumes"][vname]["free"][-1] = du[0]
+                usageStats["volumes"][vname]["total"]    = du[1]
+            else:
+                usageStats["volumes"][vname] = {
+                    "free"      : [du[0]]*ndays,
+                    "total"     :  du[1],
+                    "committed" : [du[1]]*ndays
+                }
+        """
+
+        for vname in volumes:
+            if vname in usageStats["volumes"]:
+                usageStats["volumes"][vname]["free"][-1] = vuse[vname][0]
+                usageStats["volumes"][vname]["total"]    = vuse[vname][1]
+            else:
+                usageStats["volumes"][vname] = {
+                    "free"      : [vuse[vname][0]]*ndays,
+                    "total"     :  vuse[vname][1],
+                    "committed" : [vuse[vname][1]]*ndays
+                }
+
+        with open(statsFile,"w+") as outfile:
+            json.dump ( usageStats,outfile,indent=2 )
+
     except:
         pass
 
@@ -190,6 +223,7 @@ def main():
                      row,2, width=550,height=400 )
     row += 2
 
+    """
     for vname in volumes:
         du = getDiskUsage ( volumes[vname] )
         if vname in usageStats["volumes"]:
@@ -202,36 +236,10 @@ def main():
                 "committed" : [du[1]]*ndays
             }
 
-    """
-    disk_projects = getDiskUsage ( projectDataPath )
-    disk_users    = getDiskUsage ( userDataPath    )
-    usageStats.disk_free_projects[-1] = disk_projects[0]  # free
-    usageStats.disk_free_users   [-1] = disk_users   [0]  # free
-    usageStats.disk_total_projects    = disk_projects[1]  # total
-    usageStats.disk_total_users       = disk_users   [1]  # total
-    """
-
     #usageStats.currentDate = int(time.time()*1000.0)
     #jsonut.writejObject ( usageStats,statsFile )
     with open(statsFile,'w') as outfile:
         json.dump ( usageStats,outfile,indent=2 )
-
-    """
-    disk_total_projects = []
-    disk_total_users    = []
-    for i in range(ndays):
-        disk_total_projects.append ( usageStats.disk_total_projects )
-        disk_total_users   .append ( usageStats.disk_total_users    )
-
-    putGraphWidget ( "disk_projects_graph",
-                     "&nbsp;<br>&nbsp;<h2>Disk space for project data</h2>",
-                     days,[usageStats.disk_free_projects,disk_total_projects],
-                     "Day","Disk space (GBytes)",["available","total"],["normal","thin"],
-                     row,0, width=700,height=400 )
-    putGraphWidget ( "disk_users_graph","&nbsp;<br>&nbsp;<h2>Disk space for user data</h2>",
-                     days,[usageStats.disk_free_users,disk_total_users],
-                     "Day","Disk space (GBytes)",["available","total"],["normal","thin"],
-                     row,2, width=550,height=400 )
 
     """
 
