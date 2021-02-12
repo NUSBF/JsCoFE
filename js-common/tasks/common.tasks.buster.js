@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    26.03.20   <--  Date of Last Modification.
+ *    12.02.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Buster Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2020
+ *  (C) E. Krissinel, A. Lebedev 2020-2021
  *
  *  =================================================================
  *
@@ -180,7 +180,37 @@ function TaskBuster()  {
                         position : [7,0,1,10]
                       }
              }
+           },
+
+    sec2 : { type     : 'section',
+             title    : 'Gelly parameters',
+             open     : false,  // true for the section to be initially open
+             position : [1,0,1,5],
+             contains : {
+               LABEL : {
+                 type     : 'label',
+                 keyword  : 'none',
+                 width    : 800,
+                 label    : '<div style="font-size:14px;">' +
+                            'Set Gelly options (or copy-paste the content of .gelly file) ' +
+                            'in the input field below (consult ' +
+                            '<a href="https://www.globalphasing.com/buster/manual/gelly/manual/gelly0.html" ' +
+                            'target="_blank"><i>Gelly reference</i></a> for more details).' +
+                            '<sub>&nbsp;</sub></div>',
+                 position : [0,0,1,5]
+               },
+               GELLY : {
+                   type     : 'aceditor_',  // can be also 'textarea'
+                   keyword  : 'none',       // optional
+                   tooltip  : '',           // mandatory
+                   iwidth   : 800,          // optional
+                   iheight  : 320,          // optional
+                   value    : '',           // mandatory
+                   position : [1,0,1,5]     // mandatory
+               }
+             }
            }
+
   };
 
 }
