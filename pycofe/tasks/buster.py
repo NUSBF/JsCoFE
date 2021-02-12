@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    14.01.21   <--  Date of Last Modification.
+#    12.02.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -100,15 +100,18 @@ class Buster(basic.TaskDriver):
         hkl      = self.makeClass ( self.input_data.data.hkl     [0] )
         istruct  = self.makeClass ( self.input_data.data.istruct [0] )
 
-        cmd     = [ "-m",hkl.getHKLFilePath(self.inputDir()),
-                    "-p",istruct.getXYZFilePath(self.inputDir()),
-                    "-d",self.buster_dir() ]
+        cmd      = [ "-m",hkl.getHKLFilePath(self.inputDir()),
+                     "-p",istruct.getXYZFilePath(self.inputDir()),
+                     "-d",self.buster_dir() ]
 
         libin = istruct.getLibFilePath ( self.inputDir() )
         if libin:
             cmd += ["-l",libin]
 
         sec1 = self.task.parameters.sec1.contains
+        sec2 = None
+        if hasattr(self.task.parameters,"sec2"):
+            sec2 = self.task.parameters.sec2.contains
 
         if hkl.res_high or hkl.res_high:
             cmd.append ( "-R" )
@@ -154,6 +157,14 @@ class Buster(basic.TaskDriver):
                 cmd.append ( "-sim_swap_equiv_plus" )
 
         #cmd.append ( "UsePdbchk=no" )
+
+        if sec2:
+            gelly = self.getParameter(sec2.GELLY).strip();
+            if gelly:
+                gelly_fname = "_buster.gelly"
+                with open(gelly_fname,"w") as f:
+                    f.write ( gelly )
+                cmd += ["-Gelly",gelly_fname]
 
         """
         -R <reslow> <reshigh>         : low- and high-resolution limits for refinement (default is all data)

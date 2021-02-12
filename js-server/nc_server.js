@@ -127,7 +127,7 @@ function start()  {
   // resume job management
 
   jm.readNCJobRegister ( 0 );
-  jm.cleanNC ( false );
+  //jm.cleanNC ( false );
 
   // --------------------------------------------------------------------------
 
@@ -294,6 +294,11 @@ function start()  {
       log.standard ( 7,'number cruncher #'  + nc_number +
                      ' started, listening to ' +
                      srvConfig.url() + ' (non-exclusive)' );
+
+    setTimeout ( function(){
+      jm.cleanNC ( false );
+    },10000);
+
   });
 
 }
