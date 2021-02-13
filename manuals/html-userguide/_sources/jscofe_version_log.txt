@@ -37,6 +37,8 @@ CCP4 Cloud Version Log
 
     #. Project summaries and scores added in the *List of Projects*
 
+    #. Gelly options added to ``Buster`` task
+
 
 
 **Version 1.6.018**

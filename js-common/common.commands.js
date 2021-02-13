@@ -185,7 +185,8 @@ var fe_retcode = {
   regFailed      : 'regFailed',      // user registration failed
   wrongJobToken  : 'wrongJobToken',  // unrecognised job token received
   proxyError     : 'proxyError',     // fe-proxy error
-  projectAccess  : 'projectAccess'   // project access denied
+  projectAccess  : 'projectAccess',  // project access denied
+  serverInactive : 'serverInactive'  // project access denied
 };
 
 

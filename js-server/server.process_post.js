@@ -30,9 +30,14 @@
 
 // ==========================================================================
 
-function processPOSTData ( server_request,server_response,process_data_function ) {
+function processPOSTData ( server_request,server_response,process_data_function,
+                           server_state ) {
 
-  if (server_request.method=='POST') {
+  if (server_state!='active')  {
+
+    cmd.sendResponse ( server_response,cmd.fe_retcode.serverInactive,'','' );
+
+  } else if (server_request.method=='POST')  {
 
     var data = '';
     server_request.on ( 'data', function(d) {

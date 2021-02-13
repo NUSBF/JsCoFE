@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    10.02.21   <--  Date of Last Modification.
+ *    13.02.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -114,31 +114,31 @@ function start ( callback_func )  {
       switch (c.command)  {
 
         case cmd.fe_command.getInfo :
-            pp.processPOSTData ( server_request,server_response,user.getInfo );
+            pp.processPOSTData ( server_request,server_response,user.getInfo,'active' );
           break;
 
         case cmd.fe_command.getClientInfo :
-            pp.processPOSTData ( server_request,server_response,conf.getClientInfo );
+            pp.processPOSTData ( server_request,server_response,conf.getClientInfo,'active' );
           break;
 
         case cmd.fe_command.getFEProxyInfo :
-            pp.processPOSTData ( server_request,server_response,conf.getFEProxyInfo );
+            pp.processPOSTData ( server_request,server_response,conf.getFEProxyInfo,'active' );
           break;
 
         case cmd.fe_command.login :
-            pp.processPOSTData ( server_request,server_response,user.userLogin );
+            pp.processPOSTData ( server_request,server_response,user.userLogin,feConfig.state );
           break;
 
         case cmd.fe_command.register :
-            pp.processPOSTData ( server_request,server_response,user.makeNewUser );
+            pp.processPOSTData ( server_request,server_response,user.makeNewUser,feConfig.state );
           break;
 
         case cmd.fe_command.recoverLogin :
-            pp.processPOSTData ( server_request,server_response,user.recoverUserLogin );
+            pp.processPOSTData ( server_request,server_response,user.recoverUserLogin,feConfig.state );
           break;
 
         case cmd.fe_command.request :
-            pp.processPOSTData ( server_request,server_response,rh.requestHandler );
+            pp.processPOSTData ( server_request,server_response,rh.requestHandler,'active' );
           break;
 
         case cmd.fe_command.upload :
@@ -150,13 +150,13 @@ function start ( callback_func )  {
           break;
 
         case cmd.fe_command.checkSession :
-            pp.processPOSTData ( server_request,server_response,user.checkSession );
+            pp.processPOSTData ( server_request,server_response,user.checkSession,feConfig.state );
           break;
 
         case cmd.fe_command.control :
             pp.processPOSTData ( server_request,server_response,function(data){
               cmd.sendResponse ( server_response,cmd.fe_retcode.ok,JSON.stringify(data),'' );
-            });
+            },'active' );
           break;
 
         case cmd.fe_command.checkAnnouncement :
@@ -179,9 +179,9 @@ function start ( callback_func )  {
 
         case cmd.fe_command.whoareyou :
             cmd.sendResponseMessage ( server_response,
-                            cmd.appName() + ' FE ' + cmd.appVersion() +
-                            ' CCP4-' + conf.CCP4Version(),
-                            'text/plain' );
+                        cmd.appName() + ' FE ' + cmd.appVersion() +
+                        ' CCP4-' + conf.CCP4Version() + ' ' + feConfig.state,
+                        'text/plain' );
           break;
 
         case cmd.fe_command.authResponse :
