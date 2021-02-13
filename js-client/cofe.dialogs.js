@@ -194,6 +194,14 @@ function MessageProjectAccess ( title )  {
     '<p>If problem persists, please report to ccp4@stfc.ac.uk.' );
 }
 
+function MessageServerInactive()  {
+  new MessageBox ( 'Server Inactive',
+    '<div style="width:500px"><h2>' + appName() + ' Inactive</h2>' +
+    '<p>' + appName() + ' is inactive, which may be because of ' +
+    'starting up, shutting down or being temporary suspended for maintenance.' +
+    '<p>Please come back later.</div>' );
+}
+
 function MessageUnknownError ( title,message )  {
   new MessageBox ( 'Registration',
     '<b>Unknown error.</b> The server replied with:<p>' +
