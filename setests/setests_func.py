@@ -502,6 +502,8 @@ def importFromCloud_rnaseHHPRED(driver, waitShort):
     time.sleep(1)
 
     listOfTextsToDoubleClick = [('a', 'rnase'),
+                                ('a', '1sar.pdb'),
+                                ('button', 'Select more files'),
                                 ('a', 'rnase_model.pdb'),
                                 ('button', 'Select more files'),
                                 ('a', 'rnase.hhr'),
