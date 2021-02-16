@@ -118,6 +118,9 @@ ProjectList.prototype.addProject = function ( name_str,title_str,
     pDesc.dateCreated  = time_str;
     pDesc.dateLastUsed = time_str;
     pDesc.startmode    = startmode;
+    if (pDesc.startmode==start_mode.expert)
+          pDesc.tasklistmode = tasklist_mode.full;
+    else  pDesc.tasklistmode = tasklist_mode.basic;
     this.projects.unshift ( pDesc );  // put new project at beginning
     this.current       = name_str;
     this.startmode     = startmode;

@@ -74,124 +74,40 @@
  */
 
 //  load system modules
-var prompt = require('prompt');
+var request = require('request'   );
 
 //  load application modules
 var conf   = require('../js-server/server.configuration');
-var ud     = require('../js-common/common.data_user');
-var user   = require('../js-server/server.fe.user');
+var cmd    = require('../js-common/common.commands');
 
-
-//  prepare log
-//var log = require('../js-server/server.log').newLog(26);
-
-// ==========================================================================
-
-function makeUser ( idata )  {
-
-  var userData = new ud.UserData();
-  userData.name  = idata.username;
-  userData.email = idata.email;
-  userData.login = idata.login;
-  switch (idata.licence.toLowerCase())  {
-    default:
-    case 'a' :
-    case 'academic'   : userData.licence = ud.licence_code.academic;   break;
-    case 'c' :
-    case 'commercial' : userData.licence = ud.licence_code.commercial; break;
-  }
-  /*
-  switch (idata.role.toLowerCase())  {
-    default:
-    case 'u' :  case 'user'      : userData.role = ud.role_code.user;      break;
-    case 'a' :  case 'admin'     : userData.role = ud.role_code.admin;     break;
-    case 'd' :  case 'developer' : userData.role = ud.role_code.developer; break;
-  }
-  userData.action = ud.userdata_action.chpwd;
-  */
-
-  //console.log ( userData);
-  console.log ( ' --- make new user' );
-
-  user.makeNewUser ( userData,function(response){});
-
-}
-
-
-function getUserData()  {
-
-  prompt.message = '';
-
-  prompt.start();
-
-  const properties = [
-    {
-      name     : 'username',
-      message  : 'User name (e.g., John Smith)',
-      validator: /^[\w'\-,.][^0-9_!¡?÷?¿/\\+=@#$%ˆ&*(){}|~<>;:[\]]{2,}$/,
-      warning  : 'User name should only contain latin letters, dots, dashes and spaces'
-    }, {
-      name     : 'email',
-      message  : 'User email (e.g., john@uni.ac.uk)',
-      validator: /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/,
-      warning  : 'Should be a valid e-mail address'
-    }, {
-      name     : 'login',
-      message  : 'User login ID (e.g., johnsmith15)',
-      validator: /^[A-Za-z0-9\\-\\._]+$/,
-      warning  : 'User login ID should only contain letters, numbers, ' +
-                 'underscores, periods and dashes'
-    /*
-    }, {
-      name     : 'role',
-      message  : 'User role ([u]ser|[a]dmin|[d]eveloper)',
-      validator: /(u|user|a|admin|d|developer)/,
-      warning  : 'User role can be only [u]ser, [a]dmin or [d]eveloper'
-    */
-    }, {
-      name     : 'licence',
-      message  : 'Licence ([a]cademic|[c]ommercial)',
-      validator: /(a|academic|c|commercial)/,
-      warning  : 'Licence can be only [a]cademic or [c]ommercial'
-  //    }, {
-  //        name: 'password',
-  //        hidden: true
-    }
-  ];
-
-  prompt.start();
-
-  prompt.get ( properties, function(err,result){
-    if (err)  {
-      console.log ( err );
-      return 1;
-    } else  {
-      makeUser ( result );
-      return 0;
-    }
-  });
-
-}
 
 // ==========================================================================
 
 var cmdline   = (process.argv.length==5) || (process.argv.length==6);
 var operation = '';
 var node      = '';
+var protocol  = '';
+var cfgfpath  = '';
 
 if (cmdline)  {
   operation = process.argv[2];
   switch (operation)  {
     case 'deactivate' :
-    case 'stop'       : cmdline = (process.argv.length==6);
-                        node    = process.argv[3];
+    case 'stop'       : cmdline  = (process.argv.length==6);
+                        node     = process.argv[3];
+                        protocol = process.argv[4];
+                        cfgfpath = process.argv[5];
                         break;
-    case 'activate'   : cmdline = (process.argv.length==5);
+    case 'activate'   : cmdline  = (process.argv.length==5);
+                        node     = process.argv[3];
+                        cfgfpath = process.argv[4];
                         break;
     default           : cmdline = false;
   }
-  if (cmdline && node && (node!='all'))
-    cmdline = (parseInt(node)>=0);
+  if (cmdline && node && (node!='all'))  {
+    node    = parseInt(node);
+    cmdline = (node>=0);
+  }
 }
 
 if (!cmdline)  {
@@ -212,7 +128,6 @@ if (!cmdline)  {
 
 conf.set_python_check ( false );
 
-var cfgfpath = process.argv[process.argv.length-1];
 var msg = conf.readConfiguration ( cfgfpath,'FE' );
 if (msg)  {
   console.log ( ' *** FE configuration failed (wrong configuration file?). Stop.' );
@@ -220,4 +135,40 @@ if (msg)  {
   process.exit();
 }
 
-//getUserData();
+var config = null;
+if ((node=='all') || (node==0))
+  config = conf.getFEConfig();
+else if (node<=conf.getNCConfigs())
+  config = conf.getNCConfig(node-1);
+
+if (config)  {
+
+  request.post ({
+      url      : serverURL + '/' + cmd.fe_command.control,
+      formData : {}
+    },function(err,httpResponse,response) {
+
+      if (err) {
+        console.log ( ' *** request failed: ' + err );
+      } else  {
+        console.log ( ' response: ' + response );
+        /*
+        try {
+          var resp = JSON.parse ( response );
+          if (resp.status==cmd.fe_retcode.ok)  {
+            log.detailed ( 1,'directory ' + dirPath +
+                             ' has been received at ' + serverURL );
+        } catch(err)  {
+          onErr_func ( 4,response );  // '4' means unrecognised response
+        }
+        */
+      }
+
+    });
+
+} else  {
+
+  console.log ( ' *** wrong NC number: ' + node );
+  console.log ( ' *** ' + conf.getNCConfigs() + ' NC(s) configured' );
+
+}

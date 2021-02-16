@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    22.01.21   <--  Date of Last Modification.
+#    15.02.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -103,9 +103,9 @@ class Migrate(import_task.Import):
             self.xyz = self.outputDataBox.data["DataXYZ"][0]
 
         if "DataLibrary" in self.outputDataBox.data:
-            self.lib = self.outputDataBox.data["DataLibrary"]
+            self.lib = self.outputDataBox.data["DataLibrary"][0]
         elif "DataLigand" in self.outputDataBox.data:
-            self.lib = self.outputDataBox.data["DataLigand"]
+            self.lib = self.outputDataBox.data["DataLigand"][0]
 
         return
 
