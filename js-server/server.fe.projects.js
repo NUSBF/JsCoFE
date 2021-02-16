@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    05.02.21   <--  Date of Last Modification.
+ *    16.02.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -1204,28 +1204,21 @@ var unknown  = [];
 
 function renameProject ( loginData,data )  {  // data must contain new title
 var response = null;
-var projectName = data.name;
-var projectDataPath = getProjectDataPath ( loginData,projectName );
+var pData    = readProjectData ( loginData,data.name );
 
-  if (utils.fileExists(projectDataPath))  {
-    var pData = utils.readObject ( projectDataPath );
-    if (pData)  {
-      pData.desc.title = data.title;
-      if (!utils.writeObject(projectDataPath,pData))  {
-        response = new cmd.Response ( cmd.fe_retcode.writeError,
-                                 '[00030] Project metadata cannot be written.','' );
-      } else  {
-        var rdata  = {};
-        rdata.meta = pData;
-        response   = new cmd.Response ( cmd.fe_retcode.ok,'',rdata );
-      }
+  if (pData)  {
+    pData.desc.title = data.title;
+    if (!writeProjectData(loginData,pData,true))  {
+      response = new cmd.Response ( cmd.fe_retcode.writeError,
+                               '[00030] Project metadata cannot be written.','' );
     } else  {
-      response = new cmd.Response ( cmd.fe_retcode.readError,
-                               '[00031] Project metadata cannot be read.','' );
+      var rdata  = {};
+      rdata.meta = pData;
+      response   = new cmd.Response ( cmd.fe_retcode.ok,'',rdata );
     }
   } else  {
-    response  = new cmd.Response ( cmd.fe_retcode.readError,
-                                   '[00032] Project metadata does not exist.','' );
+    response = new cmd.Response ( cmd.fe_retcode.readError,
+                             '[00031] Project metadata cannot be read.','' );
   }
 
   return response;
