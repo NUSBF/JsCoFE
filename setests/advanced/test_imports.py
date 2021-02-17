@@ -366,29 +366,27 @@ def runParrot(driver, job, inverted=False):
 
 def verifyParrots(driver):
     parrotPass = False
-    completed = ''
-    fom = 0.0
-    fcorr = 0.0
+    completed = []
+    fom = []
+    fcorr = []
 
     ttts = sf.tasksTreeTexts(driver)
     for taskText in ttts:
         match = re.search('.*parrot DM --\s(.*)', taskText)
         if match:
-            completed = match.group(1)
+            completed.append(match.group(1))
             match2 = re.search('FOM=(\d\.\d*) Fcorr=(\d\.\d*)', match.group(1))
             if match2:
-                fom = float(match2.group(1))
-                fcorr = float(match2.group(2))
-            break
-    if completed == '':
-        print('*** Verification: could not find completed value after Parrot run')
-        assert completed == 'completed.'
-    elif (completed != '') and (fom == 0.0) and (fcorr == 0.0):
-        print('*** Verification: Parrot completion message in %s (expecting "completed.")' % (completed))
-        assert completed == 'completed.'
-    if (fom != 0.0) and (fcorr != 0.0):
-        if fom > 0.5:
-            print('*** Verification: FOM from one of the hands %0.3f (expecting >0.5)' % (fom))
+                fom.append(float(match2.group(1)))
+                fcorr.append(float(match2.group(2)))
+
+    for c in completed:
+        print('*** Verification: parrot completion message: %s' % c)
+
+    for f in fom:
+        print('*** Verification: parrot FOM: %0.3f' % f)
+        if f >= 0.48:
+            print('*** Verification: FOM from one of the hands %0.3f (expecting >=0.48)' % (f))
             parrotPass = True
 
     assert parrotPass
