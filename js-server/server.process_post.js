@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    09.10.19   <--  Date of Last Modification.
+ *    17.02.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  POST Processing Module
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2019
+ *  (C) E. Krissinel, A. Lebedev 2016-2021
  *
  *  =================================================================
  *
@@ -35,7 +35,7 @@ function processPOSTData ( server_request,server_response,process_data_function,
 
   if (server_state!='active')  {
 
-    cmd.sendResponse ( server_response,cmd.fe_retcode.serverInactive,'','' );
+    cmd.sendResponse ( server_response,cmd.fe_retcode.serverInactive,'Server deactivated','' );
 
   } else if (server_request.method=='POST')  {
 
@@ -75,9 +75,10 @@ function processPOSTData ( server_request,server_response,process_data_function,
           process_data_function ( data_obj,function(response){
             response.send ( server_response );
           });
-      } else
+      } else  {
         cmd.sendResponse ( server_response, cmd.fe_retcode.corruptDO,
                            'corrupt data object found','' );
+      }
 
     });
 

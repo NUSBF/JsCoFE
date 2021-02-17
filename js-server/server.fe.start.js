@@ -81,25 +81,40 @@ function start ( callback_func )  {
   //  instantiate the server
   var server = http.createServer();
 
-  function stopServer ( nc_number,final_callback_function )  {
+  function commandServer ( nc_number,final_callback_function,command )  {
     if (nc_number<ncConfigs.length)  {
-      if (ncConfigs[nc_number].stoppable)  {
+      /*
+      if ((ncConfigs[nc_number].type!='FEProxy') &&
+          (ncConfigs[nc_number].exeType!='CLIENT') &&
+          ((ncConfigs[nc_number].stoppable || (command!=cmd.nc_command.stop))  {
+      */
+      if (((ncConfigs[nc_number].type!='FEProxy') &&
+           (ncConfigs[nc_number].exeType!='CLIENT')) ||
+          feConfig.localSetup) {
         request.post({
-          url      : ncConfigs[nc_number].url() + '/' + cmd.nc_command.stop,
-          formData : {}
+          url  : ncConfigs[nc_number].url() + '/' + command,
+          body : {},
+          json : true
         }, function(err,httpResponse,response) {
-          stopServer ( nc_number+1,final_callback_function );
+          if (final_callback_function)
+            commandServer ( nc_number+1,final_callback_function,command );
         });
-      } else
-        stopServer ( nc_number+1,final_callback_function );
-    } else  {
-      setTimeout ( function(){
-        server.close();
-        if (final_callback_function)
-          final_callback_function();
-        process.exit();
-      },500);
-    }
+      } else if (final_callback_function)
+        commandServer ( nc_number+1,final_callback_function,command );
+    } else if (final_callback_function)
+      setTimeout ( final_callback_function,500);
+  }
+
+  function controlSignal ( options )  {
+    var operation = options.operation;
+    var protocol  = options.protocol;
+    var node      = options.node;
+
+    log.standard ( 7,'control signal received: <' + operation + ' ' +
+                     protocol + ' ' + node + '>' );
+
+    return {};
+
   }
 
   //  set up request listener
@@ -155,7 +170,8 @@ function start ( callback_func )  {
 
         case cmd.fe_command.control :
             pp.processPOSTData ( server_request,server_response,function(data){
-              cmd.sendResponse ( server_response,cmd.fe_retcode.ok,JSON.stringify(data),'' );
+              //console.log ( ' >>>> control ' + JSON.stringify(data) );
+              cmd.sendResponse ( server_response,cmd.fe_retcode.ok,controlSignal(data),'' );
             },'active' );
           break;
 
@@ -169,9 +185,11 @@ function start ( callback_func )  {
         case cmd.fe_command.stop :
             if (conf.getFEConfig().stoppable)  {
               log.standard ( 6,'stopping' );
-              stopServer ( 0,function(){
+              commandServer ( 0,function(){
+                server.close();
                 cmd.sendResponse ( server_response,cmd.fe_retcode.ok,'','' );
-              });
+                process.exit();
+              },cmd.nc_command.stop);
             } else {
               log.standard ( 6,'stop command issued -- ignored according configuration' );
             }

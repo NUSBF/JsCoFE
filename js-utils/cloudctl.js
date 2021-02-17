@@ -138,20 +138,28 @@ if (msg)  {
 var config = null;
 if ((node=='all') || (node==0))
   config = conf.getFEConfig();
-else if (node<=conf.getNCConfigs())
+else if (node<=conf.getNumberOfNCs())
   config = conf.getNCConfig(node-1);
 
 if (config)  {
 
   request.post ({
-      url      : serverURL + '/' + cmd.fe_command.control,
-      formData : {}
+      url  : config.externalURL + '/' + cmd.fe_command.control,
+      body : {
+        operation : operation,
+        protocol  : protocol,
+        node      : node
+      },
+      json : true
     },function(err,httpResponse,response) {
 
       if (err) {
         console.log ( ' *** request failed: ' + err );
       } else  {
-        console.log ( ' response: ' + response );
+        console.log ( ' response: ' + JSON.stringify(response) );
+
+// response: {"_type":"Response","version":"1.6.019 [16.02.2021]","status":"ok","message":"{\"operation\":\"activate\",\"protocol\":\"\",\"node\":0}","data":"
+
         /*
         try {
           var resp = JSON.parse ( response );
@@ -169,6 +177,6 @@ if (config)  {
 } else  {
 
   console.log ( ' *** wrong NC number: ' + node );
-  console.log ( ' *** ' + conf.getNCConfigs() + ' NC(s) configured' );
+  console.log ( ' *** ' + conf.getNumberOfNCs() + ' NC(s) configured' );
 
 }
