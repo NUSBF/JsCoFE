@@ -364,6 +364,7 @@ var row      = 0;
     */
 
     this.makeSection ( 'Tasks in Development',[
+      new TaskArcimboldo (),
       new TaskDocDev       (),
       ccp4go2_task,
       //new TaskSheetbend    (),  // excluded also from the bootstrap html

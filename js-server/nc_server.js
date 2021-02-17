@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    11.10.20   <--  Date of Last Modification.
+ *    17.02.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Number Cruncher Server
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2020
+ *  (C) E. Krissinel, A. Lebedev 2016-2021
  *
  *  =================================================================
  *
@@ -99,6 +99,7 @@ function start()  {
                    conf.getNCConfig(nc_number).exeType +
                    ' url=' + conf.getNCConfig(nc_number).url() );
   log.standard ( 2,'Emailer: ' + conf.getEmailerConfig().type );
+  log.standard ( 2,'State:   ' + conf.getNCConfig(nc_number).state );
 
   // --------------------------------------------------------------------------
 
@@ -201,9 +202,9 @@ function start()  {
             break;
 
           case cmd.fe_command.whoareyou :
-              var cfg = conf.getServerConfig();
+              //var cfg = conf.getServerConfig();
               cmd.sendResponseMessage ( server_response,
-                  cmd.appName() + ' NC-' + cfg.serNo + ' (' + cfg.name + ') ' +
+                  cmd.appName() + ' NC-' + srvConfig.serNo + ' (' + srvConfig.name + ') ' +
                   cmd.appVersion() + ' ' + browserCount,'text/plain' );
             break;
 
@@ -216,31 +217,31 @@ function start()  {
             break;
 
           case cmd.nc_command.stopJob :
-              pp.processPOSTData ( server_request,server_response,jm.ncStopJob );
+              pp.processPOSTData ( server_request,server_response,jm.ncStopJob,'active' );
             break;
 
           case cmd.nc_command.wakeZombiJobs :
-              pp.processPOSTData ( server_request,server_response,jm.ncWakeZombiJobs );
+              pp.processPOSTData ( server_request,server_response,jm.ncWakeZombiJobs,'active' );
             break;
 
           case cmd.nc_command.selectDir :
-              pp.processPOSTData ( server_request,server_response,rm.ncSelectDir );
+              pp.processPOSTData ( server_request,server_response,rm.ncSelectDir,'active' );
             break;
 
           case cmd.nc_command.selectFile :
-              pp.processPOSTData ( server_request,server_response,rm.ncSelectFile );
+              pp.processPOSTData ( server_request,server_response,rm.ncSelectFile,'active' );
             break;
 
           case cmd.nc_command.selectImageDir :
-              pp.processPOSTData ( server_request,server_response,rm.ncSelectImageDir );
+              pp.processPOSTData ( server_request,server_response,rm.ncSelectImageDir,'active' );
             break;
 
           case cmd.nc_command.runRVAPIApp :
-              pp.processPOSTData ( server_request,server_response,jm.ncRunRVAPIApp );
+              pp.processPOSTData ( server_request,server_response,jm.ncRunRVAPIApp,srvConfig.state );
             break;
 
           case cmd.nc_command.runClientJob :
-              pp.processPOSTData ( server_request,server_response,jm.ncRunClientJob );
+              pp.processPOSTData ( server_request,server_response,jm.ncRunClientJob,srvConfig.state );
             break;
 
           default:

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    28.12.20   <--  Date of Last Modification.
+ *    17.02.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Job Dialog
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2020
+ *  (C) E. Krissinel, A. Lebedev 2016-2021
  *
  *  =================================================================
  *
@@ -702,7 +702,8 @@ JobDialog.prototype.makeLayout = function ( onRun_func )  {
                           if (response.status!=nc_retcode.ok)  {
                             new MessageBox ( 'Run Client Job',
                               '<p>Launching local application ' + dlg.task.name +
-                              ' failed due to:<p><i>' + response.message + '</i><p>' +
+                              ' failed due to:<p><i>' + response.message +
+                              ' (code="' + response.status + '")</i><p>' +
                               'Please report this as possible bug to <a href="mailto:' +
                               __maintainerEmail + '">' + __maintainerEmail + '</a>' );
                           } else  {

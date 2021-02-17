@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    13.02.21   <--  Date of Last Modification.
+ *    17.02.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -77,7 +77,9 @@ function ServerConfig ( type )  {
   this.only_tasks    = [];   // tasks that server can only run
   this.storage       = null;
   this.update_rcode  = 0;    // can be be detected by launcher script to do the needful
-  this.state         = 'active';  // server state: 'active', 'inactive'
+  if (type=='FEProxy')
+        this.state = 'active';  // server state: 'active', 'inactive'
+  else  this.state = 'active';  // server state: 'active', 'inactive'
   this.startDate     = new Date(Date.now()).toUTCString();
   this.logflow       = {};
   this.logflow.chunk_length = 10000; // number of jobs to advance log file counters
@@ -710,6 +712,7 @@ function readConfiguration ( confFilePath,serverType )  {
       nc_servers.push ( nc_server );
       if (nc_server.exeType=='CLIENT')  {
         client_server = nc_server;
+        client_server.state = 'active';  // server state: 'active', 'inactive'
         if (fe_proxy && (!fe_proxy.storage))
           fe_proxy.storage = client_server.storage;
       }
