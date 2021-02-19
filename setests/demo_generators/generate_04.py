@@ -42,7 +42,7 @@ def importREADME(driver, waitShort):
     time.sleep(2)
 
     # Clicking "Cloud Import"
-    sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Cloud Import')
+    sf.clickByXpath(driver, "//*[contains(text(), '%s') and contains(text(), '%s')]" % ('Import', 'Cloud'))
     time.sleep(1)
 
     textEl2 = driver.find_elements_by_xpath("//a[normalize-space()='%s']" % 'ccp4-examples')
@@ -90,7 +90,7 @@ def importFromCloud(driver, waitShort):
     time.sleep(2)
 
     # Clicking "Cloud Import"
-    sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Cloud Import')
+    sf.clickByXpath(driver, "//*[contains(text(), '%s') and contains(text(), '%s')]" % ('Import', 'Cloud'))
     time.sleep(1)
 
     textEl2 = driver.find_elements_by_xpath("//a[normalize-space()='%s']" % 'ccp4-examples')
@@ -358,6 +358,49 @@ def prepareEnsemble_0008(driver, waitShort):
     time.sleep(1)
 
     return ()
+
+
+def prepareMRmodelCOORD_0008(driver, waitShort):
+    print('Preparing MR model from coordinate 0008')
+
+    # Add button
+    addButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/add.png')]")
+    addButton.click()
+    time.sleep(1)
+
+    sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list')
+    time.sleep(1)
+
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Molecular Replacement')
+    time.sleep(1)
+
+    sf.clickByXpath(driver, "//div[normalize-space()='%s']" % 'Prepare MR Model(s) from Coordinate data')
+    time.sleep(1)
+
+    # There are several forms - active and inactive. We need one displayed.
+    buttonsRun = driver.find_elements_by_xpath("//button[contains(@style, 'images_png/runjob.png')]" )
+    for buttonRun in buttonsRun:
+        if buttonRun.is_displayed():
+            buttonRun.click()
+            break
+
+    try:
+        wait = WebDriverWait(driver, waitShort) # allowing 15 seconds to the task to finish
+        # Waiting for the text 'completed' in the ui-dialog-title of the task [0003]
+        wait.until(EC.presence_of_element_located
+                   ((By.XPATH,"//*[@class='ui-dialog-title' and contains(text(), 'completed') and contains(text(), '[0008]')]")))
+    except:
+        print('Apparently tha task prepareMRmodelCOORD has not been completed in time; terminating')
+        sys.exit(1)
+
+    # presing Close button
+    closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
+    closeButton.click()
+    time.sleep(1)
+
+    return ()
+
+
 
 
 def makingLigand_0009(driver, waitLong):
@@ -1218,7 +1261,7 @@ def generate_04(browser,
         sf.clickTaskInTaskTree(d.driver, '\[0003\]')
         aimless_0006(d.driver, d.waitLong)  # 6
         addRemark(d.driver, 'Prepare MR model and ligand descriptoions', '')  # 7
-        prepareEnsemble_0008(d.driver, d.waitShort) # 8
+        prepareMRmodelCOORD_0008(d.driver, d.waitShort) # 8
         makingLigand_0009(d.driver, d.waitLong) # 9
         asymmetricUnitContents_0010(d.driver, d.waitShort) # 10
         molrep_0011(d.driver, d.waitLong) # 11
