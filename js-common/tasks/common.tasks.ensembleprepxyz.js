@@ -87,7 +87,7 @@ function TaskEnsemblePrepXYZ()  {
 
   this.parameters = { // input parameters
 
-    sec1 :  {  type     : 'section',
+    sec1 :  { type     : 'section',
               title    : 'Model modification',
               open     : true,  // true for the section to be initially open
               position : [0,0,1,5],

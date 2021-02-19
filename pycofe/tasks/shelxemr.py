@@ -87,6 +87,11 @@ class ShelxEMR(basic.TaskDriver):
                               self.shelxe_wrk_pda() )
 
         # use mtz2various to prepare the reflection file
+        self.mtz2hkl ( self.shelxe_wrk_mtz(),
+                       [istruct.FP,istruct.SigFP,istruct.FreeR_flag],
+                       self.shelxe_wrk_hkl() )
+
+        """
         cmd = [ "HKLIN" ,self.shelxe_wrk_mtz(),
                 "HKLOUT",self.shelxe_wrk_hkl() ]
 
@@ -102,6 +107,7 @@ class ShelxEMR(basic.TaskDriver):
 
         # run mtz-to-hkl converter
         self.runApp ( "mtz2various",cmd,logType="Service" )
+        """
 
         # Prepare command line for shelxe
 
@@ -219,7 +225,7 @@ class ShelxEMR(basic.TaskDriver):
             #self.stdoutln ( " ****** " + str(CC) )
             #self.stdoutln ( " ****** " + str(nResBuilt) )
 
-            # Convert output to an mtz file
+            # Convert output to mtz file
             cryst = istruct.xyzmeta.cryst
             self.open_stdin  ()
             self.write_stdin (
