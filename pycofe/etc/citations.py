@@ -5,13 +5,13 @@
 #
 # ============================================================================
 #
-#    28.12.20   <--  Date of Last Modification.
+#    19.02.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  Citation Framework Functions
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2018-2020
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2018-2021
 #
 # ============================================================================
 #
@@ -624,6 +624,20 @@ citations = {
                         }]
                   },
 
+    'ARCIMBOLDO_LITE' : {
+                    'name'     : 'Arcimboldo-Lite',
+                    'category' : 'primary',
+                    'refs'     : [{
+                            'authors' : 'Sammito, M., Millan, C.,Frieske, D., Rodriguez-Freire, E., Borges, R. J., Uson, I.',
+                            'title'   : 'ARCIMBOLDO-LITE: single-workstation implementation and use',
+                            'journal' : 'Acta Cryst.',
+                            'volume'  : 'D71',
+                            'year'    : '2015',
+                            'pages'   : '1921-1939',
+                            'doi'     : '10.1107/S1399004715010846'
+                        }]
+                  },
+
     'gesamt' :    { 'name'     : 'GESAMT',
                     'category' : 'primary',
                     'refs'     : [{
@@ -704,7 +718,15 @@ citations = {
 
     'shelxe'    : { 'name'     : 'SHELXE',
                     'category' : 'primary',
-                    'copy'     : [['shelx',-1]]  # -1 means copy all
+                    'refs'     : [{
+                            'authors' : 'Uson, I., Sheldrick, G.M.',
+                            'title'   : 'An introduction to experimental phasing of macromolecules illustrated by SHELX; new autotracing features',
+                            'journal' : 'Acta Cryst.',
+                            'volume'  : 'D74',
+                            'year'    : '2018',
+                            'pages'   : '106-116',
+                            'doi'     : '10.1107/S2059798317015121'
+                        }]
                   },
 
     'shelxd' :    { 'name'     : 'SHELXD',

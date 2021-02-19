@@ -139,7 +139,7 @@ function TaskGesamt()  {
                                    // is a valid value for the associated keyword,
                                    // and 'text' is displayed as an option in the
                                    // combobox.
-                        value    : '-nortmal',
+                        value    : '-normal',
                         position : [6,0,1,3]
                       },
                 R0  : { type     : 'real_',

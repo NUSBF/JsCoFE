@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    20.01.21   <--  Date of Last Modification.
+#    18.02.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -1240,6 +1240,29 @@ class TaskDriver(object):
 
         self.runApp ( "cad",[ "HKLIN1",mtzInPath,"HKLOUT",mtzOutPath ],
                             logType="Service" )
+
+        return
+
+
+    def mtz2hkl ( self,mtzInPath,labels,hklOutPath ):
+        # labels = [FP,SigFP,FreeR_flag]
+
+        # use mtz2various to prepare the reflection file
+        cmd = [ "HKLIN" ,mtzInPath,
+                "HKLOUT",hklOutPath ]
+
+        self.open_stdin  ()
+        self.write_stdin (
+            "LABIN   FP="    + labels[0] + " SIGFP=" + labels[1] +\
+                                           " FREE="  + labels[2] +\
+            "\nOUTPUT SHELX" +\
+            #"\nFSQUARED"     +\
+            "\nEND\n"
+        )
+        self.close_stdin()
+
+        # run mtz-to-hkl converter
+        self.runApp ( "mtz2various",cmd,logType="Service" )
 
         return
 

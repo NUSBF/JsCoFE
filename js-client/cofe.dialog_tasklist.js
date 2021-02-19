@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    05.02.21   <--  Date of Last Modification.
+ *    19.02.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -364,7 +364,6 @@ var row      = 0;
     */
 
     this.makeSection ( 'Tasks in Development',[
-      new TaskArcimboldo (),
       new TaskDocDev       (),
       ccp4go2_task,
       //new TaskSheetbend    (),  // excluded also from the bootstrap html
@@ -445,6 +444,7 @@ var row      = 0;
     new TaskBalbes(),
     'No-sequence methods',
     new TaskSimbad(),
+    new TaskArcimboldo(),
     'No-model methods',
     new TaskAmple ()
   ]);

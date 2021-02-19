@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    06.02.21   <--  Date of Last Modification.
+ *    18.02.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -811,21 +811,23 @@ JobTree.prototype._copy_task_cloud_path = function ( task,branch_task_list )  {
 
 
 JobTree.prototype.addJob = function ( insert_bool,copy_params,parent_page,onAdd_func )  {
-  (function(tree){
-    var dataBox = tree.harvestTaskData ( 1,[] );
-    var branch_task_list = tree.getAllAncestors ( tree.getSelectedTask() );
-    new TaskListDialog ( dataBox,branch_task_list,tree.projectData.desc,
-        function(task,tasklistmode){
-          if (tasklistmode)
-            tree.projectData.desc.tasklistmode = tasklistmode;
-          if (task)  {  // task chosen
-            if (copy_params)
-              tree._copy_task_parameters ( task,branch_task_list );
-            tree._copy_task_cloud_path ( task,branch_task_list );
-            tree._add_job ( insert_bool,task,dataBox, parent_page,onAdd_func );
-          } // else "Cancel" was pressed
-        });
-  }(this));
+  if (this.projectData)  {
+    (function(tree){
+      var dataBox = tree.harvestTaskData ( 1,[] );
+      var branch_task_list = tree.getAllAncestors ( tree.getSelectedTask() );
+      new TaskListDialog ( dataBox,branch_task_list,tree.projectData.desc,
+          function(task,tasklistmode){
+            if (tasklistmode)
+              tree.projectData.desc.tasklistmode = tasklistmode;
+            if (task)  {  // task chosen
+              if (copy_params)
+                tree._copy_task_parameters ( task,branch_task_list );
+              tree._copy_task_cloud_path ( task,branch_task_list );
+              tree._add_job ( insert_bool,task,dataBox, parent_page,onAdd_func );
+            } // else "Cancel" was pressed
+          });
+    }(this));
+  }
 }
 
 
