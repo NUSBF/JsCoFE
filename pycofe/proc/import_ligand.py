@@ -3,13 +3,13 @@
 #
 # ============================================================================
 #
-#    04.10.20   <--  Date of Last Modification.
+#    20.02.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  LIGAND DATA IMPORT FUNCTION
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2018-2020
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2018-2021
 #
 # ============================================================================
 #
@@ -145,8 +145,8 @@ def run ( body ):  # body is reference to the main Import class
             library = body.registerLibrary ( fin,copy_files=False )
             if library:
                 library.codes = []
-                for i in range(len(comp)):
-                    library.codes.append ( comp[i] )
+                for i in range(len(comp_id)):
+                    library.codes.append ( comp_id[i] )
                 if not libSecId:
                     libSecId = body.getWidgetId ( "_lib_sec_" )
                     pyrvapi.rvapi_add_section ( libSecId,"Libraries",body.report_page_id(),
