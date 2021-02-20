@@ -68,7 +68,7 @@ var _taskIndex = {
   // themselves (user should branch/clone instead)
   'J'  : { type: 'TaskMorda'           , after: ['H'] },
   'K'  : { type: 'TaskBalbes'          , after: ['H'] },
-  'L'  : { type: 'TaskMrBump'          , after: ['H']
+  'L'  : { type: 'TaskMrBump'          , after: ['H'] },
 
   // do not suggest CPU-intensive tasks by default
   'L1' : { type: 'TaskAmple'           , after: [] },
