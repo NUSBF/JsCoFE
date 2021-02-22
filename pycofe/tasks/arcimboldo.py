@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    19.02.21   <--  Date of Last Modification.
+#    22.02.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -83,10 +83,10 @@ class Arcimboldo(basic.TaskDriver):
         if distribute_computing != "multiprocessing":
             setup_bor_path = "setup.bor"   # auxiliar .bor file with the grid information.
 
-        name_job    = self.arcimboldoDir() # string             #Should be the same as the
-
-        coiled_coil = (self.getParameter(self.sec1.COIL_COILED_CBX)=="True")
-        rmsd        = float(self.getParameter(self.sec1.RMSD))
+        name_job       = self.arcimboldoDir() # string             #Should be the same as the
+        number_of_cpus = 3
+        coiled_coil    = (self.getParameter(self.sec1.COIL_COILED_CBX)=="True")
+        rmsd           = float(self.getParameter(self.sec1.RMSD))
 
         number_of_component = 1      # integer
         molecular_weight    = float(self.revision.ASU.molWeight) # float
@@ -143,6 +143,7 @@ class Arcimboldo(basic.TaskDriver):
 
         f_bor.write('[ARCIMBOLDO]\n')
         f_bor.write('name_job = %s\n' % (name_job) )
+        f_bor.write('force_core = %d\n' % (number_of_cpus) )
         f_bor.write('f_label = %s\n' % (f_label))
         f_bor.write('sigf_label = %s\n' % (sigf_label))
         #f_bor.write('i_label = %s\n' % (i_label))
