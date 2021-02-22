@@ -376,8 +376,8 @@ class Arcimboldo(basic.TaskDriver):
         # unless cleaned up, symbolic links inside this directory will not let
         # it to be sent back to FE.
         dlist = os.listdir ( self.arcimboldoDir() )
-        for d in dlist:
-            fpath = os.path.join ( self.arcimboldoDir() )
+        for dname in dlist:
+            fpath = os.path.join ( self.arcimboldoDir(),dname )
             if os.path.isdir(fpath):
                 shutil.rmtree ( fpath )
 
