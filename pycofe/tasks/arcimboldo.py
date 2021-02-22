@@ -233,6 +233,22 @@ class Arcimboldo(basic.TaskDriver):
                 f.read()
             )
 
+        # seed Arcimboldo's html report
+        with (open(os.path.join(self.arcimboldoDir(),"arcimboldo.html"),"w")) as f:
+            f.write (
+                "<html><head><title>Report is being generated</title>" +\
+                "<meta http-equiv=\"refresh\" content=\"90\" /></head>" +\
+                "<body class=\"main-page\">&nbsp;<p><h2><i>Report is being generated ....</i></h2>" +\
+                "</body></html>"
+            )
+        self.insertTab   ( "arcimboldo_report","Arcimboldo Report",None,True )
+        self.putMessage1 (
+            "arcimboldo_report",
+            "<iframe src=\"../" + self.arcimboldoDir() + "/arcimboldo.html\" " +\
+            "style=\"border:none;position:absolute;top:50px;left:0;width:100%;height:90%;\"></iframe>",
+            0 )
+        self.flush()
+
         # run arcimboldo
         self.runApp ( "ARCIMBOLDO_LITE",
                       [os.path.join(self.arcimboldoDir(),"setup.bor")],
@@ -240,26 +256,13 @@ class Arcimboldo(basic.TaskDriver):
 
         self.addCitations ( ['phaser','shelxe'] )
 
-        """
-        ARCIMBOLDO-LITE: single-workstation implementation and use.
-        Sammito, M., Millan, C.,Frieske, D., Rodriguez-Freire, E., Borges, R. J., & Uson, I.
-        (2015) Acta Cryst. D71, 1921-1939.
-
-        Phaser crystallographic software.
-        McCoy, A. J., Grosse-Kunstleve, R. W., Adams, P. D., Winn, M. D., Storoni, L. C. & Read, R. J.
-        (2007) J Appl Cryst. 40, 658-674.
-
-        An introduction to experimental phasing of macromolecules illustrated by SHELX; new autotracing features.
-        Uson, I. & Sheldrick, G. M.
-        (2018) Acta Cryst. D74, 106-116.
-        """
-
         have_results = False
 
         phs_out      = os.path.join ( self.arcimboldoDir(),"best.phs" )
         pdb_out      = os.path.join ( self.arcimboldoDir(),"best.pdb" )
-        html_report  = os.path.join ( self.arcimboldoDir(),"arcimboldo.html" )
+        #html_report  = os.path.join ( self.arcimboldoDir(),"arcimboldo.html" )
 
+        """
         if os.path.isfile(html_report):
             # Add Arcimboldo's own html report
             os.rename ( html_report,"arcimboldo.html")
@@ -267,7 +270,7 @@ class Arcimboldo(basic.TaskDriver):
             self.putMessage1 ( "arcimboldo_report","<iframe src=\"../arcimboldo.html\" " +\
                 "style=\"border:none;position:absolute;top:50px;left:0;width:100%;height:90%;\"></iframe>",
                 0 )
-
+        """
 
         if os.path.isfile(phs_out) and os.path.isfile(pdb_out):
 
@@ -331,8 +334,7 @@ class Arcimboldo(basic.TaskDriver):
 
             arcimboldo_xyz = self.getXYZOFName()
             if arcimboldo_xyz!=pdb_out:
-                os.rename ( pdb_out,arcimboldo_xyz )
-
+                shutil.copy2.rename ( pdb_out,arcimboldo_xyz )
 
             structure = self.registerStructure ( arcimboldo_xyz,None,arcimboldo_mtz,
                                                  None,None,None,leadKey=1,
@@ -371,10 +373,15 @@ class Arcimboldo(basic.TaskDriver):
         else:
             self.putTitle ( "No Solution Found" )
 
-
-        # unless deleted, symbolic links inside this directory will not let
+        # unless cleaned up, symbolic links inside this directory will not let
         # it to be sent back to FE.
-        shutil.rmtree ( self.arcimboldoDir() )
+        dlist = os.listdir ( self.arcimboldoDir() )
+        for d in dlist:
+            fpath = os.path.join ( self.arcimboldoDir() )
+            if os.path.isdir(fpath):
+                shutil.rmtree ( fpath )
+
+        #shutil.rmtree ( self.arcimboldoDir() )
 
         # close execution logs and quit
         self.success ( have_results )

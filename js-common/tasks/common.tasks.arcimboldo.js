@@ -84,7 +84,7 @@ function TaskArcimboldo()  {
                           type     : 'checkbox',
                           label    : 'Run in coil coiled mode',
                           tooltip  : 'Check to run in coil coiled mode',
-                          value    : true,
+                          value    : false,
                           iwidth   : 200,
                           position : [1,0,1,8]
                         },
