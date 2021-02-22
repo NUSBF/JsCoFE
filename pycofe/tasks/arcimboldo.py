@@ -334,7 +334,7 @@ class Arcimboldo(basic.TaskDriver):
 
             arcimboldo_xyz = self.getXYZOFName()
             if arcimboldo_xyz!=pdb_out:
-                shutil.copy2.rename ( pdb_out,arcimboldo_xyz )
+                shutil.copy2 ( pdb_out,arcimboldo_xyz )
 
             structure = self.registerStructure ( arcimboldo_xyz,None,arcimboldo_mtz,
                                                  None,None,None,leadKey=1,
