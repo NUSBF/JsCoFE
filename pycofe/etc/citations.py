@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    19.02.21   <--  Date of Last Modification.
+#    21.02.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -87,6 +87,19 @@ citations = {
                             'year'    : '2011',
                             'pages'   : '282-292',
                             'doi'     : '10.1107/S090744491003982X'
+                        }]
+                  },
+
+    'mtz2sca' :   { 'name'     : 'mtz2sca',
+                    'category' : 'service',
+                    'refs'     : [{
+                            'authors' : 'Grune, T.',
+                            'title'   : 'mtz2sca and mtz2hkl: facilitated transition from CCP4 to the SHELX program suite',
+                            'journal' : 'J. Appl. Cryst.',
+                            'volume'  : '41',
+                            'year'    : '2008',
+                            'pages'   : '217-218',
+                            'doi'     : '10.1107/S0021889807050054'
                         }]
                   },
 
