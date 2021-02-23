@@ -123,7 +123,7 @@ class Arcimboldo(basic.TaskDriver):
         elif search_model == "CUSTOMS":
             list_customs = [] #List of paths to a .pdb list_customs
             for i in range(len(self.xyz)):
-                self.xyz[i].getXYZFilePath ( self.inputDir() )
+                list_customs.append ( self.xyz[i].getXYZFilePath(self.inputDir()) )
 
         #pdbout_path = "./best.pdb"
         #logfile     = "./arcimboldo_out.log"
