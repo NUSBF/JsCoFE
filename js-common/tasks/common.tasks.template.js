@@ -2353,7 +2353,7 @@ if (!dbx)  {
             }
           }
         } else {
-          console.log ( ' *** empty data object in TaskTemplate.makeInputData ,dtype=' + dtype );
+          console.log ( ' *** empty data object in ' + this._type + '.makeInputData,dtype=' + dtype );
         }
     }
     var dboxPath = path.join ( jobDir,'input','databox.meta' );

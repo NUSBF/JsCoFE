@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    24.11.20   <--  Date of Last Modification.
+#    25.02.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -21,7 +21,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2020
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2021
 #
 # ============================================================================
 #
@@ -146,8 +146,23 @@ class EnsemblePrepXYZ(basic.TaskDriver):
             seq = self.makeClass ( self.input_data.data.seq[0] )
 
         xyz = self.input_data.data.xyz
+        nmodels = 0
         for i in range(len(xyz)):
-            xyz[i] = self.makeClass ( xyz[i] )
+            xyz[i]  = self.makeClass ( xyz[i] )
+            nmodels = max ( nmodels,len(xyz[i].xyzmeta.xyz) )
+
+        if nmodels>1:
+            self.putTitle   ( "Unsuitable coordinate data" )
+            self.putMessage ( "<i>One or more coordinate objects contains "   +\
+                              "several models, which is not suitable. Split " +\
+                              "objects into individual chains, using the <b>" +\
+                              "Coordinate Utilities<b> task), and repeat "    +\
+                              "ensemble making.</i>" )
+            self.generic_parser_summary["ensembleprepxyz"] = {
+              "summary_line" : "no ensembles generated"
+            }
+            self.fail ( "","Unsuitable coordinate data" )
+            return
 
         # Just in case (of repeated run) remove ensemble output xyz file. When
         # ensembler succeeds, this file is created.
