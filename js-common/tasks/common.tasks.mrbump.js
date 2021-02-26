@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    10.10.19   <--  Date of Last Modification.
+ *    26.02.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  MrBUMP Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2019
+ *  (C) E. Krissinel, A. Lebedev 2016-2021
  *
  *  =================================================================
  *
@@ -61,17 +61,29 @@ function TaskMrBump()  {
   ];
 
   this.parameters = { // input parameters
-    SEP_LBL      : {
+    SEP1_LBL      : {
             type     : 'label',
             label    : '<hr/>',
             position : [0,0,1,5]
+          },
+    ALTGROUPS_CBX : {
+            type     : 'checkbox',
+            label    : 'Check alternative space groups',
+            tooltip  : 'Check to explore compatible space groups',
+            value    : false,
+            position : [1,0,1,3]
+          },
+    SEP2_LBL      : {
+            type     : 'label',
+            label    : '&nbsp;<br>* <font style="font-size:80%">Development option -- not for regular use</font>',
+            position : [2,0,1,3]
           },
     DEVMODE_CBX  : {
           type      : 'checkbox',
           label     : 'Development mode',
           tooltip   : 'Switches on experimental features -- use at own risk.',
           value     : false,
-          position  : [1,0,1,3]
+          position  : [3,0,1,3]
         }
   };
 

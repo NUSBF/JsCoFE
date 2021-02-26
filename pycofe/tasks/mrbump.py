@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    24.11.20   <--  Date of Last Modification.
+#    26.02.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -21,7 +21,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2020
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2021
 #
 # ============================================================================
 #
@@ -37,6 +37,7 @@ import pyrvapi
 
 #  application imports
 from . import basic
+from   pycofe.proc    import xyzmeta
 
 
 # ============================================================================
@@ -52,16 +53,20 @@ class MrBump(basic.TaskDriver):
     def mrbump_report  (self):  return "mrbump_report"
     def refmac_report  (self):  return "refmac_report"
 
+    # the following will provide for import of generated HKL dataset(s)
+    def importDir        (self):  return "./"   # import from working directory
+    def import_summary_id(self):  return None   # don't make summary table
+
     # ------------------------------------------------------------------------
 
     def run(self):
 
         # Check the existence of PDB archive
         pdbLine   = ""
-        checkLine = "CHECK True\n"
+        checkLine = "CHECK True"
         if self.checkPDB(False):
             pdbLine   = "PDBLOCAL " + os.environ["PDB_DIR"] + "\n"
-            checkLine = "CHECK False\n"
+            checkLine = "CHECK False"
         elif not self.have_internet():
             self.fail ( "<h3>No internet connection.</h3>" +\
                     "This task requires access to PDB archive, which is not " +\
@@ -81,6 +86,8 @@ class MrBump(basic.TaskDriver):
         # make a file with input script
         self.open_stdin()
 
+        sgmode  = self.getCheckbox ( self.task.parameters.ALTGROUPS_CBX,
+                                     checkVisible=True )
         devmode = self.getCheckbox ( self.task.parameters.DEVMODE_CBX,
                                      checkVisible=True )
 
@@ -90,7 +97,7 @@ class MrBump(basic.TaskDriver):
                     "JOBID " + self.outdir_name(),
                     "rlevel 100",
                     "mrnum 100",
-                    "sgall true",
+                    "sgall " + str(sgmode),
                     "mdlc true",
                     "mdls false",
                     "mdlm false",
@@ -101,71 +108,73 @@ class MrBump(basic.TaskDriver):
                     "mrprog phaser",
                     "pjobs 10",
                     "debug true",
-                    pdbLine,
+                    pdbLine +\
                     #"pdblocal /data1/opt/db/pdb",
                     "end",
                 ])
 
             else:
-                self.write_stdin (
-                    "JOBID " + self.outdir_name() + "\n" + \
-                    "MDLS False\n" + \
-                    "MDLC True\n" + \
-                    "MDLD False\n" + \
-                    "MDLP False\n" + \
-                    "MDLM False\n" + \
-                    "MDLU False\n" + \
-                    "MRPROG molrep phaser\n" + \
-                    "SHELX False\n" + \
-                    "BUCC True\n" + \
-                    "BCYC 5\n" + \
-                    "ARPW False\n" + \
-                    checkLine + \
-                    "UPDATE False\n" + \
-                    "PICKLE False\n" + \
-                    "MRNUM 10\n" + \
-                    "USEE True\n" + \
-                    "SCOP False\n" + \
-                    "DEBUG True\n" + \
-                    "RLEVEL 100\n" + \
-                    "GESE True\n" + \
-                    "GEST False\n" + \
-                    "AMPT False\n" + \
+                self.write_stdin ([
+                    "JOBID " + self.outdir_name(),
+                    "MDLS False",
+                    "MDLC True",
+                    "MDLD False",
+                    "MDLP False",
+                    "MDLM False",
+                    "MDLU False",
+                    "MRPROG molrep phaser",
+                    "SHELX False",
+                    "BUCC True",
+                    "BCYC 5",
+                    "ARPW False",
+                    checkLine,
+                    "UPDATE False",
+                    "PICKLE False",
+                    "MRNUM 10",
+                    "SGALL " + str(sgmode),
+                    "USEE True",
+                    "SCOP False",
+                    "DEBUG True",
+                    "RLEVEL 100",
+                    "GESE True",
+                    "GEST False",
+                    "AMPT False",
                     pdbLine + \
                     "LABIN F=" + hkl.dataset.Fmean.value + \
                       " SIGF=" + hkl.dataset.Fmean.sigma + \
-                      " FreeR_flag=" + hkl.dataset.FREE + "\n" + \
-                    "LITE True\n" + \
-                    "END\n"
-                )
+                      " FreeR_flag=" + hkl.dataset.FREE,
+                    "LITE True",
+                    "END"
+                ])
 
         else:
-            self.write_stdin (
-                "JOBID " + self.outdir_name() + "\n" + \
-                "MDLS False\n" + \
-                "MDLC True\n" + \
-                "MDLD False\n" + \
-                "MDLP False\n" + \
-                "MDLM False\n" + \
-                "MDLU False\n" + \
-                checkLine + \
-                "UPDATE False\n" + \
-                "PICKLE False\n" + \
-                "MRNUM 5\n" + \
-                "USEE True\n" + \
-                "SCOP False\n" + \
-                "DEBUG False\n" + \
-                "RLEVEL 100\n" + \
-                "GESE True\n" + \
-                "GEST True\n" + \
-                "AMPT False\n" + \
-                "IGNORE 5tha\n" + \
-                "DOPHMMER True\n" + \
-                pdbLine + \
-                "DOHHPRED False\n" + \
-                "LITE True\n" + \
-                "END\n"
-            )
+            self.write_stdin ([
+                "JOBID " + self.outdir_name(),
+                "MDLS False",
+                "MDLC True",
+                "MDLD False",
+                "MDLP False",
+                "MDLM False",
+                "MDLU False",
+                checkLine,
+                "UPDATE False",
+                "PICKLE False",
+                "MRNUM 5",
+                "SGALL " + str(sgmode),
+                "USEE True",
+                "SCOP False",
+                "DEBUG False",
+                "RLEVEL 100",
+                "GESE True",
+                "GEST True",
+                "AMPT False",
+                "IGNORE 5tha",
+                "DOPHMMER True",
+                pdbLine +\
+                "DOHHPRED False",
+                "LITE True",
+                "END"
+            ])
 
         self.close_stdin()
 
@@ -196,18 +205,103 @@ class MrBump(basic.TaskDriver):
         if os.path.isdir(search_dir):
 
             if hkl:
+
+                xyzfile = "mrbump_" + self.outdir_name() + ".pdb"
+                mtzfile = "mrbump_" + self.outdir_name() + ".mtz"
+
+                if os.path.isfile(xyzfile) and os.path.isfile(mtzfile):
+
+                    # solution found; firstly, check whether the space group has changed
+
+                    self.putMessage ( "&nbsp;" )
+
+                    sol_hkl = hkl
+
+                    meta = xyzmeta.getXYZMeta ( xyzfile,self.file_stdout,
+                                                self.file_stderr )
+
+                    if "cryst" in meta:
+                        sol_spg    = meta["cryst"]["spaceGroup"]
+                        spg_change = self.checkSpaceGroupChanged ( sol_spg,hkl,mtzfile )
+                        if spg_change:
+                            mtzfile = spg_change[0]
+                            sol_hkl = spg_change[1]
+
+                    # ================================================================
+                    # make output structure and register it
+
+                    structure = self.finaliseStructure ( xyzfile,self.outputFName,
+                                                         sol_hkl,None,[seq],0,
+                                                         leadKey=1,openState_bool=False )
+                    if structure:
+                        # update structure revision
+                        revision = self.makeClass  ( self.input_data.data.revision[0] )
+                        revision.setReflectionData ( sol_hkl   )
+                        revision.setStructureData  ( structure )
+                        self.registerRevision      ( revision  )
+                        have_results = True
+                    else:
+                        self.putMessage ( "<h3>Structure cannot be formed</h3>" )
+
+                else:
+                    self.putTitle ( "No solution found" )
+
+
+                """
                 xyzfile = None
+                mtzfile = None
+
                 result_file = os.path.join ( search_dir,"results","data","results.txt" )
                 if not os.path.isfile(result_file):
                     result_file = os.path.join ( search_dir,"results","results.txt" )
                 if os.path.isfile(result_file):
                     lines = [line.strip() for line in open(result_file)]
                     for i in range(len(lines)):
+                        self.stderrln ( " >>> " + lines[i] )
                         if lines[i].startswith("Refmac PDBOUT:"):
                             xyzfile = lines[i+1]
                         elif lines[i].startswith("Buccaneer PDBOUT:"):
                             xyzfile = lines[i+1]
+                        if lines[i].startswith("Refmac MTZOUT:"):
+                            mtzfile = lines[i+1]
+                        elif lines[i].startswith("Buccaneer MTZOUT:"):
+                            mtzfile = lines[i+1]
+
                     if xyzfile:
+
+                        self.stderrln ( " >>> xyzfile " + xyzfile )
+                        self.stderrln ( " >>> mtzfile " + mtzfile )
+
+                        # solution found; firstly, check whether the space group has changed
+
+                        #mtzfile = os.path.join ( self.outputDir(),out_mtz )
+                        sol_hkl = hkl
+
+                        meta = xyzmeta.getXYZMeta ( xyzfile,self.file_stdout,
+                                                    self.file_stderr )
+                        if "cryst" in meta:
+                            sol_spg    = meta["cryst"]["spaceGroup"]
+                            spg_change = self.checkSpaceGroupChanged ( sol_spg,hkl,mtzfile )
+                            if spg_change:
+                                mtzfile = spg_change[0]
+                                sol_hkl = spg_change[1]
+
+                        # ================================================================
+                        # make output structure and register it
+
+                        structure = self.finaliseStructure ( xyzfile,self.outputFName,
+                                                             sol_hkl,None,seq,0,
+                                                             leadKey=1,openState_bool=False )
+                        if structure:
+                            # update structure revision
+                            revision = self.makeClass  ( self.input_data.data.revision[0] )
+                            revision.setReflectionData ( sol_hkl   )
+                            revision.setStructureData  ( structure )
+                            self.registerRevision      ( revision  )
+                            have_results = True
+                        else:
+                            self.putMessage ( "<h3>Structure cannot be formed</h3>" )
+
                         structure = self.finaliseStructure ( xyzfile,"mrbump",hkl,
                                                              None,[seq],0,
                                                              leadKey=1,
@@ -222,36 +316,7 @@ class MrBump(basic.TaskDriver):
 
                 if not xyzfile:
                     self.putTitle ( "No solution found" )
-
-                    """
-                    #  old mrbump
-                    molrep_dir = os.path.join ( search_dir,"results","solution",
-                                                           "mr","molrep","refine" )
-
-                    if os.path.isdir(molrep_dir):
-                        dirlist = os.listdir(molrep_dir)
-                        xyzfile = None
-                        #mtzfile = None
-                        for filename in dirlist:
-                            if filename.startswith("refmac"):
-                                if filename.endswith(".pdb"):
-                                    xyzfile = os.path.join(molrep_dir,filename)
-                                #if filename.endswith(".mtz"):
-                                    #mtzfile = os.path.join(molrep_dir,filename)
-
-                        structure = self.finaliseStructure ( xyzfile,"mrbump",hkl,
-                                                             None,[seq],0,
-                                                             leadKey=1,
-                                                             openState_bool=False )
-                        if structure:
-                            # update structure revision
-                            revision = self.makeClass ( self.input_data.data.revision[0] )
-                            revision.setStructureData ( structure )
-                            self.registerRevision     ( revision  )
-
-                    else:
-                        self.putTitle ( "No solution found" )
-                    """
+                """
 
             else:
                 models_found    = False;

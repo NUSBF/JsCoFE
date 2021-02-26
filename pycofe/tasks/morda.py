@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    16.09.20   <--  Date of Last Modification.
+#    26.02.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -34,7 +34,7 @@
 #               even if job is run by SGE, so it should be checked upon using
 #               comman line length
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2020
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2021
 #
 # ============================================================================
 #
@@ -198,6 +198,8 @@ class Morda(basic.TaskDriver):
                 revision.setStructureData  ( structure )
                 self.registerRevision      ( revision  )
                 have_results = True
+            else:
+                self.putMessage ( "<h3>Structure cannot be formed</h3>" )
 
         # close execution logs and quit
         self.success ( have_results )

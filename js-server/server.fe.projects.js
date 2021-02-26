@@ -834,22 +834,27 @@ function getFailedJobExportNames ( fjdata )  {
 
 function prepareFailedJobExport ( loginData,fjdata )  {
 
-  log.standard ( 19,'export failed job "' + fjdata.path + '", login ' + loginData.login );
+  if ('path' in fjdata)  {
 
-  var exp_names   = getFailedJobExportNames ( fjdata );
-  var exportName  = exp_names[0];
-  var jobDirPath  = exp_names[1];
-  var archivePath = exp_names[2];
-  utils.removeFile ( archivePath );  // just in case
+    log.standard ( 19,'export failed job "' + fjdata.path + '", login ' + loginData.login );
 
-  send_dir.packDir ( jobDirPath,'*',archivePath,function(code,jobballSize){
-    if (code)  {
-      log.error ( 20,'errors at packing ' + jobDirPath + ' for export' );
-      utils.removeFile ( archivePath );  // export will never get ready!
-    }
-  });
+    var exp_names   = getFailedJobExportNames ( fjdata );
+    var exportName  = exp_names[0];
+    var jobDirPath  = exp_names[1];
+    var archivePath = exp_names[2];
+    utils.removeFile ( archivePath );  // just in case
 
-  return new cmd.Response ( cmd.fe_retcode.ok,'',exp_names[3] );
+    send_dir.packDir ( jobDirPath,'*',archivePath,function(code,jobballSize){
+      if (code)  {
+        log.error ( 20,'errors at packing ' + jobDirPath + ' for export' );
+        utils.removeFile ( archivePath );  // export will never get ready!
+      }
+    });
+
+    return new cmd.Response ( cmd.fe_retcode.ok,'',exp_names[3] );
+
+  } else
+    return new cmd.Response ( cmd.fe_retcode.ok,'','no_exp_names' );
 
 }
 
