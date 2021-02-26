@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    13.12.20   <--  Date of Last Modification.
+ *    25.02.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Admin page
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2020
+ *  (C) E. Krissinel, A. Lebedev 2016-2021
  *
  *  =================================================================
  *
@@ -206,9 +206,17 @@ AdminPage.prototype.refresh = function()  {
           lines.push ( lines.shift() );
           lines.push ( lines.shift() );
         }
-        //self.jobStats  .setText ( '<hr style="height:2px;"/><pre>' +
-        //    data.jobsStat.split(/\r\n|\r|\n/).reverse().join('\n') + '</pre>' );
-        self.jobStats  .setText ( '<pre>' + lines.reverse().join('\n') + '</pre>' );
+        var nJobsToday = 0;
+        var today_template = new Date(Date.now()).toUTCString().split(' ');
+        today_template = '[' + today_template[0] + ' ' + today_template[1] +
+                         ' ' + today_template[2] + ' ' + today_template[3];
+        for (var i=lines.length-1;i>=0;i--)
+          if (('0'<=lines[i][0]) && (lines[i][0]<='9'))  {
+            if (lines[i].indexOf(today_template)>=0) nJobsToday++;
+                                                else break;
+          }
+        self.jobStats.setText ( '<pre>Jobs today: ' + nJobsToday + ' ' + '\n' +
+                                lines.reverse().join('\n') + '</pre>' );
         /*
         window.setTimeout ( function(){
           $(self.jobsTab.element).scrollTop($(self.jobsTab.element).height()
