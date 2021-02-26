@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    21.02.21   <--  Date of Last Modification.
+#    26.02.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -186,6 +186,12 @@ citations = {
                         }]
                   },
 
+    'refmac' :    { 'name'     : 'Refmac',
+                    'category' : 'primary',
+                    'copy'     : [['refmac5',-1]]
+                  },
+
+
     'refmac5-srv' : { 'name'   : 'Refmac',
                     'category' : 'service',
                     'copy'     : [['refmac5',-1]]
@@ -212,6 +218,20 @@ citations = {
     #                        'pages'   : '119-124',
     #                        'doi'     : '10.1107/S0907444907037195'
     #                    }]
+                  },
+
+    'phmmer' :    { 'name'     : 'PHMMER',
+                    'category' : 'service',
+                    'refs'     : [{
+                            'authors' : 'Durbin, R., Eddy, S. R., Krogh, A., and Mitchison, G. J.',
+                            'title'   : 'Biological Sequence Analysis: Probabilistic Models of Proteins and Nucleic Acids',
+                            'journal' : 'Cambridge University Press',
+                            'volume'  : '',
+                            'year'    : '1998',
+                            'pages'   : '',
+                            'doi'     : '10.1017/CBO9780511790492'
+                        }]
+
                   },
 
     'morda'  :    { 'name'     : 'MoRDa',
