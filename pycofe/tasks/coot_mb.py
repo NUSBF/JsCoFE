@@ -263,7 +263,7 @@ class Coot(coot_ce.CootCE):
         # is not cross-platform compatible (includes colons on Linux which are
         # illegal in Windows)
         #   This also prevents creating 'backup_dir' item in coot_meta dictionary
-        # below in putCootMeta call. Note that backup_dir if functonally disabled
+        # below in putCootMeta call. Note that backup_dir is functonally disabled
         # in TaskCootMB.makeInputData().
         #shutil.rmtree ( "coot-backup", ignore_errors=True, onerror=None )
 
@@ -336,6 +336,8 @@ class Coot(coot_ce.CootCE):
         if not fname:  # try to get the latest backup file
             fname = self.getLastBackupFile ( coot_backup_dir )
             restored = fname is not None
+
+        shutil.rmtree ( "coot-backup", ignore_errors=True, onerror=None )
 
         if fname:
 

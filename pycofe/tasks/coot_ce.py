@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    04.01.21   <--  Date of Last Modification.
+#    26.02.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -168,6 +168,8 @@ class CootCE(basic.TaskDriver):
                 mt       = os.path.getmtime(fname)
                 fdic[mt] = fname
                 mlist.append ( mt )
+
+        shutil.rmtree ( "coot-backup", ignore_errors=True, onerror=None )
 
         if len(mlist)>0:
 

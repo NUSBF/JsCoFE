@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    08.05.20   <--  Date of Last Modification.
+#    26.02.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -21,7 +21,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2019-2020
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2019-2021
 #
 # ============================================================================
 #
@@ -31,6 +31,7 @@ import os
 import sys
 import uuid
 import math
+import shutil
 
 import gemmi
 
@@ -410,6 +411,8 @@ class CombStructure(basic.TaskDriver):
 
         else:
             self.putTitle ( "No Output Generated" )
+
+        shutil.rmtree ( "coot-backup", ignore_errors=True, onerror=None )
 
         # close execution logs and quit
         self.success ( have_results )

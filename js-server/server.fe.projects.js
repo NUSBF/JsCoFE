@@ -728,6 +728,10 @@ function prepareProjectExport ( loginData,projectList )  {
                                    projectList.current + cmd.projectFileExt );
   utils.removeFile ( archivePath );  // just in case
 
+  // nasty patch, remove coot backups because they use .gz files -- and they
+  // make projects not importable on Windows
+  utils.cleanDirExt ( projectDirPath,'.gz' );
+
   send_dir.packDir ( projectDirPath,'*',null,function(code,jobballSize){
     var jobballPath = send_dir.getJobballPath ( projectDirPath );
     if (code)  {

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    26.10.20   <--  Date of Last Modification.
+ *    26.02.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Server-side utility functions
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2020
+ *  (C) E. Krissinel, A. Lebedev 2016-2021
  *
  *  =================================================================
  *
@@ -394,7 +394,7 @@ function removePath ( dir_path ) {
 
 
 function cleanDir ( dir_path ) {
-  // removes everything in the directory, but doe not remove it
+  // removes everything in the directory, but does not remove it
   var rc = true;
   if (fileExists(dir_path))  {
     fs.readdirSync(dir_path).forEach(function(file,index){
@@ -406,6 +406,29 @@ function cleanDir ( dir_path ) {
           fs.unlinkSync ( curPath );
         } catch (e)  {
           log.error ( 81,'cannot remove file ' + curPath );
+          rc = false;
+        }
+      }
+    });
+  }
+  return rc;  // false if there were errors
+}
+
+
+function cleanDirExt ( dir_path,fext )  {
+  // removes all files with given extension recursively in the directory,
+  // but does not remove any directories, even if they are empty
+  var rc = true;
+  if (fileExists(dir_path))  {
+    fs.readdirSync(dir_path).forEach(function(file,index){
+      var curPath = path.join ( dir_path,file );
+      if (fs.lstatSync(curPath).isDirectory()) { // recurse
+        cleanDirExt ( curPath,fext );
+      } else if (curPath.endsWith(fext)) { // delete file
+        try {
+          fs.unlinkSync ( curPath );
+        } catch (e)  {
+          log.error ( 82,'cannot remove file ' + curPath );
           rc = false;
         }
       }
@@ -760,6 +783,7 @@ module.exports.copyDirAsync          = copyDirAsync;
 module.exports.mkDir                 = mkDir;
 module.exports.mkDir_anchor          = mkDir_anchor;
 module.exports.cleanDir              = cleanDir;
+module.exports.cleanDirExt           = cleanDirExt;
 module.exports.removePath            = removePath;
 module.exports.getDirectorySize      = getDirectorySize;
 module.exports.removeFiles           = removeFiles;
