@@ -340,6 +340,10 @@ class EnsemblePrepSeq(basic.TaskDriver):
 
         time.sleep(1)
 
+        # unless deleted, symbolic links inside this directory will not let
+        # it to be sent back to FE.
+        shutil.rmtree ( search_dir )
+
         # this will go in the project tree job's line
         if ensNo>0:
             self.generic_parser_summary["ensembleprepseq"] = {

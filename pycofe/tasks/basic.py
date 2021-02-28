@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    18.02.21   <--  Date of Last Modification.
+#    27.02.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -393,6 +393,9 @@ class TaskDriver(object):
 
     def getMMCIFOFName ( self,modifier=-1 ):
         return self.getOFName ( ".mmcif",modifier )
+
+    def getReflMMCIFOFName ( self,modifier=-1 ):
+        return self.getOFName ( ".refl.mmcif",modifier )
 
     def getXYZOFName ( self,modifier=-1 ):
         return self.getOFName ( ".pdb",modifier )
