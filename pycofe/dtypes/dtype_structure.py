@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    06.02.21   <--  Date of Last Modification.
+#    27.02.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -493,6 +493,9 @@ class DType(dtype_xyz.DType):
     def getMMCIFFileName(self):
         return self.getFileName ( dtype_template.file_key["mmcif"] )
 
+    def getReflMMCIFFileName(self):
+        return self.getFileName ( dtype_template.file_key["refl-mmcif"] )
+
     def getSolFileName(self):
         return self.getFileName ( dtype_template.file_key["sol"] )
 
@@ -537,6 +540,9 @@ class DType(dtype_xyz.DType):
 
     def getMMCIFFilePath ( self,dirPath ):
         return self.getFilePath ( dirPath,dtype_template.file_key["mmcif"] )
+
+    def getReflMMCIFFilePath ( self,dirPath ):
+        return self.getFilePath ( dirPath,dtype_template.file_key["refl-mmcif"] )
 
     def getSubFilePath ( self,dirPath ):
         return self.getFilePath ( dirPath,dtype_template.file_key["sub"] )

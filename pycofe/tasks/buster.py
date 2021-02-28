@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    12.02.21   <--  Date of Last Modification.
+#    28.02.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -55,6 +55,12 @@ class Buster(basic.TaskDriver):
             return [float(s1),float(s2),float(s3)]
         except:
             return None
+
+    def indexof ( self,vlist,value ):
+        try:
+            return vlist.index(value)
+        except ValueError:
+            return -1
 
     def check_substructure ( self,hapath ):
         if os.path.exists(hapath):
@@ -215,7 +221,26 @@ class Buster(basic.TaskDriver):
             f = open ( self.file_stdout_path(),"r" )
             #f = open ( "/Users/eugene/Downloads/job_1598535717656/_stdout.log","r" )
             for line in f:
-                if "Ncyc       Total        Grms       Rfact       Rfree         LLG     LLGfree  Geom_Funct     rmsBOND    rmsANGLE" in line:
+                vals = line.split()
+                pCyc = self.indexof ( vals,"Ncyc" )
+                if pCyc>=0:
+                    pRfact   = self.indexof ( vals,"Rxpctfact" )
+                    pRfree   = self.indexof ( vals,"Rxpctfree" )
+                    if pRfact<0:
+                        pRfact = self.indexof ( vals,"Rfact" )
+                        pRfree = self.indexof ( vals,"Rfree" )
+                    pLLG     = self.indexof ( vals,"LLG"      )
+                    pLLGfree = self.indexof ( vals,"LLGfree"  )
+                    pBOND    = self.indexof ( vals,"rmsBOND"  )
+                    pANGLE   = self.indexof ( vals,"rmsANGLE" )
+                else:
+                    pRfact   = -1
+                    pRfree   = -1
+                    pLLG     = -1
+                    pLLGfree = -1
+                    pBOND    = -1
+                    pANGLE   = -1
+                if pRfact>=0 and pRfree>=0 and pLLG>=0 and pLLGfree>=0 and pBOND>=0 and pANGLE>=0:
                     iter = "Iteration #" + str(len(graphData[0]["plots"])+1) + ": "
                     plot_ref = {
                         "name"   : iter + "R-factors",
@@ -230,19 +255,26 @@ class Buster(basic.TaskDriver):
                         "xtitle" : "Cycle No.",
                         "ytitle" : "LLG scores",
                         "x"      : {  "name":"Cycle No.", "values": [] },
-                        "y"      : [{ "name":"LLG"     , "values": [] },
-                                    { "name":"LLG-free", "values": [] }]
+                        "y"      : [{ "name":"LLG"      , "values": [] },
+                                    { "name":"LLG-free" , "values": [] }]
                     }
                     plot_rms = {
-                        "name"   : iter + "LLG scores",
+                        "name"   : iter + "RMS scores",
                         "xtitle" : "Cycle No.",
                         "ytitle" : "RMS scores",
                         "x"      : {  "name":"Cycle No.", "values": [] },
-                        "y"      : [{ "name":"rmsBOND" , "values": [] },
-                                    { "name":"rmsANGLE", "values": [] }]
+                        "y"      : [{ "name":"rmsBOND"  , "values": [] },
+                                    { "name":"rmsANGLE" , "values": [] }]
                     }
+                    iCyc     = pCyc
+                    iRfact   = pRfact
+                    iRfree   = pRfree
+                    iLLG     = pLLG
+                    iLLGfree = pLLGfree
+                    iBOND    = pBOND
+                    iANGLE   = pANGLE
+
                 elif plot_ref:
-                    vals = line.split()
                     if len(vals)<10:
                         graphData[0]["plots"].append ( plot_ref )
                         graphData[1]["plots"].append ( plot_llg )
@@ -251,9 +283,9 @@ class Buster(basic.TaskDriver):
                         plot_llg = None
                         plot_rms = None
                     else:
-                        vref = self.get_floats ( vals[0],vals[3],vals[4] )
-                        vllg = self.get_floats ( vals[0],vals[5],vals[6] )
-                        vrms = self.get_floats ( vals[0],vals[8],vals[9] )
+                        vref = self.get_floats ( vals[iCyc],vals[iRfact],vals[iRfree]   )
+                        vllg = self.get_floats ( vals[iCyc],vals[iLLG]  ,vals[iLLGfree] )
+                        vrms = self.get_floats ( vals[iCyc],vals[iBOND] ,vals[iANGLE]   )
                         if vref:
                             plot_ref["x"]   ["values"].append ( vref[0] )
                             plot_ref["y"][0]["values"].append ( vref[1] )
@@ -281,7 +313,7 @@ class Buster(basic.TaskDriver):
             # continue writing to stdout
             self.file_stdout = open ( self.file_stdout_path(),"a" )
 
-            #self.stdoutln ( str(plots) )
+            self.stderrln ( str(graphData) )
 
             self.putLogGraphWidget ( self.getWidgetId("graph"),graphData )
 
@@ -300,6 +332,16 @@ class Buster(basic.TaskDriver):
                 structure.addDataAssociation ( hkl.dataId     )
                 structure.addDataAssociation ( istruct.dataId )  # ???
                 structure.setBusterLabels    ( hkl )
+                bustercif = os.path.join ( self.buster_dir(),"BUSTER_model.cif" )
+                if os.path.isfile(bustercif):
+                    mmcifout = self.getMMCIFOFName()
+                    os.rename ( bustercif,mmcifout )
+                    structure.add_file ( mmcifout,self.outputDir(),"mmcif",copy_bool=False )
+                bust_rcif = os.path.join ( self.buster_dir(),"BUSTER_refln.cif" )
+                if os.path.isfile(bust_rcif):
+                    rmmcifout = self.getReflMMCIFOFName()
+                    os.rename ( bust_rcif,rmmcifout )
+                    structure.add_file ( rmmcifout,self.outputDir(),"refl-mmcif",copy_bool=False )
                 structure.copySubtype        ( istruct )
                 structure.copyLigands        ( istruct )
                 structure.addPhasesSubtype   ()
@@ -413,6 +455,10 @@ class Buster(basic.TaskDriver):
                     self.rvrow = rvrow0
 
         # remove this because it contains soft links not good for copying
+
+        #shutil.copy2 ( os.path.join(self.buster_dir(),"BUSTER_model.cif"),"BUSTER_model.cif" )
+        #shutil.copy2 ( os.path.join(self.buster_dir(),"BUSTER_refln.cif"),"BUSTER_refln.cif" )
+
         shutil.rmtree ( self.buster_dir() )
         for root, dirs, files in os.walk(self.buster_dir()):
             for name in files:

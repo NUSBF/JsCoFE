@@ -59,6 +59,7 @@ citations = {
     'ccp4go'          : { 'name' : 'CCP4go'       , 'category' : 'primary', 'refs' : [] },
     'ccp4build'       : { 'name' : 'CCP4Build'    , 'category' : 'primary', 'refs' : [] },
     'scalepack2mtz'   : { 'name' : 'Scalepack2MTZ', 'category' : 'service', 'refs' : [] },
+    'sfall'           : { 'name' : 'SFAlll'       , 'category' : 'service', 'refs' : [] },
 
     'ps2pdf'          : { 'name' : '', 'category' : 'system' , 'refs' : [] },  # empty name means "Ignore"
     'ccp4-python'     : { 'name' : '', 'category' : 'system' , 'refs' : [] },
@@ -68,6 +69,7 @@ citations = {
     'find-blobs'      : { 'name' : '', 'category' : 'service', 'refs' : [] },
     'f2mtz'           : { 'name' : '', 'category' : 'service', 'refs' : [] },
     'auto_tracing'    : { 'name' : '', 'category' : 'service', 'refs' : [] },
+    'diff_fourier'    : { 'name' : '', 'category' : 'service', 'refs' : [] },
 
     'pointless' : { 'name'     : 'Pointless',
                     'category' : 'primary',

@@ -115,17 +115,6 @@ class EnsemblePrepXYZ(basic.TaskDriver):
         st.write_pdb ( fpath_out )
         return
 
-    """
-    def read_models ( self ):
-        mjson            = modelout.Json()
-        modelsJsonFile   = os.path.join("search_" + self.outdir_name(), "logs", "models.json")
-        model_dictionary = mjson.readJson(modelsJsonFile)
-        models           = []
-        for model in model_dictionary.keys():
-            models.append ( model_dictionary[model] )
-        return models
-    """
-
     def read_models ( self ):
         model_xyz = []
         with open(os.path.join("search_"+self.outdir_name(),"logs","models.json")) as json_file:
@@ -279,7 +268,9 @@ class EnsemblePrepXYZ(basic.TaskDriver):
         #if modSel=="S": self.addCitations ( ['sculptor'] )
         #if modSel=="P": self.addCitations ( ['chainsaw'] )
 
-        with open(os.path.join("search_"+self.outdir_name(),"logs","programs.json")) as json_file:
+        search_dir = "search_" + self.outdir_name()
+
+        with open(os.path.join(search_dir,"logs","programs.json")) as json_file:
             self.addCitations ( json.loads(json_file.read()) )
 
         have_results = False
@@ -287,14 +278,6 @@ class EnsemblePrepXYZ(basic.TaskDriver):
 
         if len(xyz)<=1:
             #  single file output
-
-            """
-            model_xyz  = []
-            models_dir = os.path.join ( "search_" + self.outdir_name(),"models","domain_1" )
-            if os.path.isdir(models_dir):
-                model_xyz = [fn for fn in os.listdir(models_dir)
-                             if any(fn.endswith(ext) for ext in [".pdb"])]
-            """
 
             model_xyz = self.read_models()
 
@@ -394,7 +377,7 @@ class EnsemblePrepXYZ(basic.TaskDriver):
             file_order      = ["BaseAlignment","100.0","75.0","50.0","25.0"]
 
             model_xyz  = []
-            models_dir = os.path.join ( "search_" + self.outdir_name(),"models","domain_1","ensembles" )
+            models_dir = os.path.join ( search_dir,"models","domain_1","ensembles" )
             if os.path.isdir(models_dir):
                 model_xyz = [fn for fn in os.listdir(models_dir)
                              if any(fn.endswith(ext) for ext in [".pdb"])]
@@ -488,6 +471,10 @@ class EnsemblePrepXYZ(basic.TaskDriver):
             self.generic_parser_summary["ensembleprepxyz"] = {
               "summary_line" : str(ensNo) + " ensemble(s) generated " + protocol
             }
+
+        # unless deleted, symbolic links inside this directory will not let
+        # it to be sent back to FE.
+        shutil.rmtree ( search_dir )
 
         self.success ( have_results )
         return
