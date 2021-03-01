@@ -67,7 +67,12 @@ def getFileType ( fname,importDir,file_stdout ):
         fpath = os.path.join ( importDir,fname )
         ftype = ftype_Unknown()
         try:
-            doc = cif.read ( fpath )
+            #doc = cif.read ( fpath )
+            doc = cif.Document()
+            doc.source = fpath
+            doc.parse_file ( fpath )
+            doc.check_for_missing_values()
+            #doc.check_for_duplicates()  <-- DO NOT CHECK HERE
             for block in doc:
                 if block.find_values("_atom_site.label_asym_id"):
                     ftype = ftype_XYZ()
