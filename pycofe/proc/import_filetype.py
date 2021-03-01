@@ -3,13 +3,13 @@
 #
 # ============================================================================
 #
-#    11.03.20   <--  Date of Last Modification.
+#    01.03.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  FILE TYPE DETECTION FUNCTION
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2018-2020
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2018-2021
 #
 # ============================================================================
 #
@@ -65,21 +65,23 @@ def getFileType ( fname,importDir,file_stdout ):
 
     if fext=='.cif':
         fpath = os.path.join ( importDir,fname )
-        doc   = cif.read ( fpath )
-        ftype = None
-        for block in doc:
-            if block.find_values("_atom_site.label_asym_id"):
-                ftype = ftype_XYZ()
-                break
-            elif block.find_values("_refln.index_h"):
-                ftype = ftype_CIFMerged()
-                break
-        if not ftype:
-            ftype = ftype_Unknown()
+        ftype = ftype_Unknown()
+        try:
+            doc = cif.read ( fpath )
             for block in doc:
-                if block.find_values("_chem_comp_atom.type_energy"):
-                    ftype = ftype_Ligand()
+                if block.find_values("_atom_site.label_asym_id"):
+                    ftype = ftype_XYZ()
                     break
+                elif block.find_values("_refln.index_h"):
+                    ftype = ftype_CIFMerged()
+                    break
+            if ftype==ftype_Unknown():
+                for block in doc:
+                    if block.find_values("_chem_comp_atom.type_energy"):
+                        ftype = ftype_Ligand()
+                        break
+        except:
+            pass
         return ftype
 
     if fext=='.lib':  return ftype_Ligand()
