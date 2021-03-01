@@ -3,9 +3,29 @@ CCP4 Cloud Version Log
 ======================
 
 
+**Version 1.6.020**
+
+    *Released on --.--.2021 with CCP4 7.1.012*
+
+    **Changes and new features**
+
+    #. Added ``Arcimboldo`` task for Fragment-based Molecuar Replacement
+
+    #. Multiple GUI bugs fixed
+
+    #. Fixed a bug breaking import of certain project files on MS Windows systems
+
+    #. Buster 2.10.4 adopted
+
+    #. Fixed a bug causing CCP4 Cloud to stall after running MR ensemble preparation tasks under certain circumstances
+
+    #. Ligand libraries with duplicate component lists (old bugs elsewhere) can now be imported
+
+
+
 **Version 1.6.019**
 
-    *Released on --.--.2021 with CCP4 7.1.011*
+    *Released on 19.02.2021 with CCP4 7.1.011*
 
     **Changes and new features**
 

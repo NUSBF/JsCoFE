@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    20.02.21   <--  Date of Last Modification.
+#    01.03.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -58,8 +58,13 @@ def run ( body ):  # body is reference to the main Import class
     k        = 0
     for f in files_lig:
 
-        fin       = os.path.join ( body.importDir(),f )
-        doc       = cif.read ( fin )
+        fin = os.path.join ( body.importDir(),f )
+        #doc = cif.read ( fin )
+        doc = cif.Document()
+        doc.source = fin
+        doc.parse_file ( fin )
+        doc.check_for_missing_values()
+        #doc.check_for_duplicates()  <-- DO NOT CHECK HERE
         comp_list = doc["comp_list"]
         comp_id   = None
         if comp_list:
