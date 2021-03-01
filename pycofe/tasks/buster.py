@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    28.02.21   <--  Date of Last Modification.
+#    01.03.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -224,11 +224,13 @@ class Buster(basic.TaskDriver):
                 vals = line.split()
                 pCyc = self.indexof ( vals,"Ncyc" )
                 if pCyc>=0:
-                    pRfact   = self.indexof ( vals,"Rxpctfact" )
-                    pRfree   = self.indexof ( vals,"Rxpctfree" )
-                    if pRfact<0:
-                        pRfact = self.indexof ( vals,"Rfact" )
-                        pRfree = self.indexof ( vals,"Rfree" )
+                    pRfact = self.indexof ( vals,"Rfact" )
+                    pRfree = self.indexof ( vals,"Rfree" )
+                    # pRfact   = self.indexof ( vals,"Rxpctfact" )
+                    # pRfree   = self.indexof ( vals,"Rxpctfree" )
+                    # if pRfact<0:
+                    #     pRfact = self.indexof ( vals,"Rfact" )
+                    #     pRfree = self.indexof ( vals,"Rfree" )
                     pLLG     = self.indexof ( vals,"LLG"      )
                     pLLGfree = self.indexof ( vals,"LLGfree"  )
                     pBOND    = self.indexof ( vals,"rmsBOND"  )
@@ -460,11 +462,12 @@ class Buster(basic.TaskDriver):
         #shutil.copy2 ( os.path.join(self.buster_dir(),"BUSTER_refln.cif"),"BUSTER_refln.cif" )
 
         shutil.rmtree ( self.buster_dir() )
-        for root, dirs, files in os.walk(self.buster_dir()):
-            for name in files:
-                fpath = os.path.join ( root,name )
-                if os.path.islink(fpath):
-                    os.unlink ( fpath )
+
+        # for root, dirs, files in os.walk(self.buster_dir()):
+        #     for name in files:
+        #         fpath = os.path.join ( root,name )
+        #         if os.path.islink(fpath):
+        #             os.unlink ( fpath )
 
         # close execution logs and quit
         self.success ( have_results )

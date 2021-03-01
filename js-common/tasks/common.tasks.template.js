@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    06.02.21   <--  Date of Last Modification.
+ *    01.03.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -------------------------------------------------------------------------
  *
@@ -2394,6 +2394,9 @@ if (!dbx)  {
                                  '.seq.txt','.fasta.txt','.pir.txt',
                                  '.cif','.mmcif','.ent','.pdbx',
                                  'rvapi_document'] );
+    utils.removePath   ( 'search_a'      );  // old MrBump's sins
+    utils.removePath   ( 'coot-backup'   );  // old Coot's sins
+    utils.removePath   ( 'coot-download' );  // old Coot's sins
   }
 
 
