@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    15.01.21   <--  Date of Last Modification.
+ *    01.03.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -1324,14 +1324,18 @@ if (!__template)  {
       //}
       switch (revision.Options.phasing_sel)  {
         case 'substructure'     :
-                this.input_data.data['substructure'] = [revision.Substructure];
+                if (revision.Substructure)
+                  this.input_data.data['substructure'] = [revision.Substructure];
                 break;
         case 'model'            :
-                this.input_data.data['pmodel']       = [revision.Structure];
+                if (revision.Structure)
+                  this.input_data.data['pmodel']       = [revision.Structure];
                 break;
         case 'model-and-substr' :
-                this.input_data.data['substructure'] = [revision.Substructure];
-                this.input_data.data['pmodel']       = [revision.Structure];
+                if (revision.Substructure)
+                  this.input_data.data['substructure'] = [revision.Substructure];
+                if (revision.Structure)
+                  this.input_data.data['pmodel']       = [revision.Structure];
         default : ;
       }
       this.input_data.data['seq'] = revision.ASU.seq;

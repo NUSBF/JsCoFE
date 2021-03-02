@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    20.11.20   <--  Date of Last Modification.
+ *    01.03.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Number Cruncher Server -- Job Manager
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2020
+ *  (C) E. Krissinel, A. Lebedev 2016-2021
  *
  *  =================================================================
  *
@@ -80,6 +80,7 @@ var maxSendTrials = conf.getServerConfig().maxSendTrials;
     jobDir     : jobDir,
     jobStatus  : task_t.job_code.new,
     sendTrials : maxSendTrials,
+    startTime  : Date.now(),
     endTime    : null,
     exeType    : '',    // SHELL, SGE or SCRIPT
     pid        : 0      // job pid is added separately
@@ -95,6 +96,7 @@ var maxSendTrials = conf.getServerConfig().maxSendTrials;
     jobDir     : jobDir,
     jobStatus  : task_t.job_code.new,
     sendTrials : maxSendTrials,
+    startTime  : Date.now(),
     endTime    : null,
     exeType    : '',    // SHELL or SGE
     pid        : 0      // job pid is added separately
@@ -286,18 +288,30 @@ function cleanNC ( cleanDeadJobs_bool )  {
   // 3. Check for and remove directories and registry entries for dead jobs
 
   if (cleanDeadJobs_bool)  {
+    var t = Date.now()/86400000.0;
     var n = 0;
     for (var job_token in ncJobRegister.job_map)  {
-      var jobEntry = ncJobRegister.job_map[job_token];
-      try {
-        process.kill ( jobEntry.pid,0 );
-      } catch (e) {
+      var jobEntry  = ncJobRegister.job_map[job_token];
+      var startTime = t - 2.0;
+      if ('startTime' in jobEntry)
+        startTime = jobEntry.startTime/86400000.0;
+      if ((jobEntry.pid<=0) && (t-startTime>1.0))  {  // did not manage to start in 1 day
         // process not found, schedule job for deletion
+        n++;
         log.standard ( 34,'dead job scheduled for deletion, job token: ' + job_token );
         _stop_job ( jobEntry );
+      } else if (t-startTime>30.0)  {  // running for month or more (should be configured)
+        n++;
+        try {
+          process.kill ( jobEntry.pid,0 );
+        } catch (e) {
+          // process not found, schedule job for deletion
+          log.standard ( 35,'long job scheduled for timeout, job token: ' + job_token );
+          _stop_job ( jobEntry );
+        }
       }
     }
-    log.standard ( 31,'total dead jobs scheduled for deletion: ' + n );
+    log.standard ( 31,'total dead/timeout jobs scheduled for deletion: ' + n );
   }
 
   // start job check loop
@@ -527,7 +541,7 @@ var capacity = ncConfig.capacity;  // total number of jobs the number cruncher
 
     default       :
     case 'CLIENT' :
-    case 'SHELL'  : capacity -= Object.keys(ncJobRegister.job_map).length;
+    case 'SHELL'  : capacity -= Math.max(Object.keys(ncJobRegister.job_map).length-1,0);
                     onFinish_func ( capacity );
                break;
 
@@ -1121,43 +1135,47 @@ function _stop_job ( jobEntry )  {
   // invoked by checkJobsOnTimer(), which is universal for all exeTypes.
   jobEntry.jobStatus = task_t.job_code.stopped;
 
-  // now kill the job itself; different approaches are taken for Unix
-  // and Windows platforms, as well as for SHELL and SGE execution types
-  switch (jobEntry.exeType)  {
+  if (jobEntry.pid)  {
 
-    default       :
-    case 'CLIENT' :
-    case 'SHELL'  : //var isWindows = /^win/.test(process.platform);
-                    if(!conf.isWindows()) {
-                      psTree ( jobEntry.pid, function (err,children){
-                        var pids = ['-9',jobEntry.pid].concat (
-                                children.map(function(p){ return p.PID; }));
-                        child_process.spawn ( 'kill',pids );
-                      });
-                    } else {
-                      child_process.exec ( 'taskkill /PID ' + jobEntry.pid +
-                                  ' /T /F',function(error,stdout,stderr){});
-                    }
-              break;
+    // now kill the job itself; different approaches are taken for Unix
+    // and Windows platforms, as well as for SHELL and SGE execution types
+    switch (jobEntry.exeType)  {
 
-    case 'SGE'    : var pids = [jobEntry.pid];
-                    var subjobs = utils.readString (
-                                    path.join(jobEntry.jobDir,'subjobs'));
-                    if (subjobs)
-                      pids = pids.concat ( subjobs
-                                     .replace(/(\r\n|\n|\r)/gm,' ')
-                                     .replace(/\s\s+/g,' ').split(' ') );
-                    utils.spawn ( 'qdel',pids,{} );
-              break;
+      default       :
+      case 'CLIENT' :
+      case 'SHELL'  : //var isWindows = /^win/.test(process.platform);
+                      if(!conf.isWindows()) {
+                        psTree ( jobEntry.pid, function (err,children){
+                          var pids = ['-9',jobEntry.pid].concat (
+                                  children.map(function(p){ return p.PID; }));
+                          child_process.spawn ( 'kill',pids );
+                        });
+                      } else {
+                        child_process.exec ( 'taskkill /PID ' + jobEntry.pid +
+                                    ' /T /F',function(error,stdout,stderr){});
+                      }
+                break;
 
-    case 'SCRIPT' : var pids = ['kill',jobEntry.pid];
-                    var subjobs = utils.readString (
-                                    path.join(jobEntry.jobDir,'subjobs'));
-                    if (subjobs)
-                      pids = pids.concat ( subjobs
-                                     .replace(/(\r\n|\n|\r)/gm,' ')
-                                     .replace(/\s\s+/g,' ').split(' ') );
-                    utils.spawn ( conf.getServerConfig().exeData,pids,{} );
+      case 'SGE'    : var pids = [jobEntry.pid];
+                      var subjobs = utils.readString (
+                                      path.join(jobEntry.jobDir,'subjobs'));
+                      if (subjobs)
+                        pids = pids.concat ( subjobs
+                                       .replace(/(\r\n|\n|\r)/gm,' ')
+                                       .replace(/\s\s+/g,' ').split(' ') );
+                      utils.spawn ( 'qdel',pids,{} );
+                break;
+
+      case 'SCRIPT' : var pids = ['kill',jobEntry.pid];
+                      var subjobs = utils.readString (
+                                      path.join(jobEntry.jobDir,'subjobs'));
+                      if (subjobs)
+                        pids = pids.concat ( subjobs
+                                       .replace(/(\r\n|\n|\r)/gm,' ')
+                                       .replace(/\s\s+/g,' ').split(' ') );
+                      utils.spawn ( conf.getServerConfig().exeData,pids,{} );
+
+    }
 
   }
 
@@ -1169,7 +1187,7 @@ var response = null;
 
   log.detailed ( 10,'stop object ' + JSON.stringify(post_data_obj) );
 
-  console.log ( ' ################# ' + JSON.stringify(post_data_obj) );
+  //console.log ( ' ################# ' + JSON.stringify(post_data_obj) );
 
   if (post_data_obj.hasOwnProperty('job_token'))  {
 
