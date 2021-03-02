@@ -297,7 +297,7 @@ function start()  {
                      srvConfig.url() + ' (non-exclusive)' );
 
     setTimeout ( function(){
-      jm.cleanNC ( false );
+      jm.cleanNC ( true );
     },10000);
 
   });

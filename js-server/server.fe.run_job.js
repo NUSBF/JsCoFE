@@ -234,7 +234,7 @@ var n          = last_number_cruncher;
 var maxcap0    = Number.MIN_SAFE_INTEGER;
 var n0         = -1;
 
-  if ('nc_number' in task)  {
+  if ('nc_number' in task)  {  // developer's option
     last_number_cruncher = task.nc_number;
     return task.nc_number;
   }
@@ -260,7 +260,7 @@ var n0         = -1;
            ( (nc_servers[n].only_tasks.length<=0) ||
              (nc_servers[n].only_tasks.indexOf(task._type)>=0) ) )  {
 
-        //  fasttrack==2 means a fast-track dedicted server
+        //  fasttrack==2 means a fast-track dedicated server
         if ((nc_servers[n].fasttrack==2) && (nc_servers[n].current_capacity>0))  {
           nc_number = n;
         } else if (nc_servers[n].fasttrack==1)  {
@@ -321,10 +321,10 @@ var n0         = -1;
   }
 
 
-  if (nc_number<0)
-    nc_number = n0;
+  if (nc_number<0)  // all NCs are busy with negative current capacity,
+    nc_number = n0;  // choose the least busy one
 
-  if (nc_number>=0)
+  if (nc_number>=0)  // make sure that NCs work on rota basis
     last_number_cruncher = nc_number;
 
   return nc_number;
@@ -935,6 +935,12 @@ function getJobResults ( job_token,server_request,server_response )  {
           ustats.registerJob ( jobClass );
           if ('tokens' in meta)
             feJobRegister.cleanup ( job_token,meta.tokens.split(',') );
+          if ('capacity' in meta)  {
+            var nc_servers = conf.getNCConfigs();
+            if (jobEntry.nc_number<nc_servers.length)
+              nc_servers[jobEntry.nc_number].current_capacity = meta.capacity;
+            //console.log ( ' >>>>> capacity = ' + meta.capacity + ' ' + jobEntry.nc_number );
+          }
           feJobRegister.removeJob ( job_token );
           feJobRegister.n_jobs++;
           writeFEJobRegister();

@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    24.11.20   <--  Date of Last Modification.
+#    02.03.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -21,7 +21,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2019
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2021
 #
 # ============================================================================
 #
@@ -31,6 +31,7 @@ import os
 import sys
 import json
 import time
+import shutil
 
 #  ccp4-python imports
 import pyrvapi
