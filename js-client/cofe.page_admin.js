@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    25.02.21   <--  Date of Last Modification.
+ *    02.03.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -373,7 +373,8 @@ AdminPage.prototype.makeNodesInfoTab = function ( ndata )  {
       'State',
       'Jobs<br>done',
       'Job<br>capacity',
-      'Jobs<br>running'
+      'Jobs<br>running',
+      'Zombie<br>jobs',
     ],[
       'Server node',
       'Node name',
@@ -386,9 +387,14 @@ AdminPage.prototype.makeNodesInfoTab = function ( ndata )  {
       'Current node state',
       'Total number of jobs executed on the node',
       'Estimated job capacity of the node',
-      'Current number of jobs running on the node'
+      'Current number of jobs running on the node',
+      'Current number of stalled or zombie jobs on the node'
     ]
   );
+
+  function small_font ( S )  {
+    return '<font style="font-size:80%">' + S + '</font>';
+  }
 
   var row = 1;
 
@@ -411,8 +417,8 @@ AdminPage.prototype.makeNodesInfoTab = function ( ndata )  {
   if ('jscofe_version' in ndata)
     app_version = ndata.jscofe_version;
   this.nodeListTable.setRow ( 'Front End','Front End Server',
-    [ FEname,fe_url,'FE',ndata.FEconfig.startDate,
-      ndata.ccp4_version,app_version,'N/A','running','N/A','N/A','N/A' ],
+    [ FEname,fe_url,'FE',small_font(ndata.FEconfig.startDate),
+      ndata.ccp4_version,app_version,'N/A','running','N/A','N/A','N/A','N/A' ],
     row,(row & 1)==1 );
   row++;
 
@@ -421,9 +427,9 @@ AdminPage.prototype.makeNodesInfoTab = function ( ndata )  {
                                       else  app_version = 'unspecified';
     this.nodeListTable.setRow ( 'FE Proxy','Front End Proxy Server',
       [ 'Local proxy',ndata.FEProxy.proxy_config.externalURL,'FE-PROXY',
-        ndata.FEProxy.proxy_config.startDate,
+        small_font(ndata.FEProxy.proxy_config.startDate),
         ndata.FEProxy.ccp4_version,app_version,
-        'N/A','running','N/A','N/A','N/A'
+        'N/A','running','N/A','N/A','N/A','N/A'
       ], row,(row & 1)==1 );
     row++;
   }
@@ -437,16 +443,18 @@ AdminPage.prototype.makeNodesInfoTab = function ( ndata )  {
       if (!nci.config.fasttrack)
         fasttrack = '-';
       var njobs     = 0;
+      var nzombies  = 0;
       var njdone    = 0;
       var state     = 'running';
       var startDate = 'N/A';
       if (!nci.config.in_use)
         state = 'not in use';
       else if (nci.jobRegister)  {
-        njdone = nci.jobRegister.launch_count;
+        njdone  = nci.jobRegister.launch_count;
         for (var item in nci.jobRegister.job_map)
-          njobs++;
-        startDate = nci.config.startDate;
+          if (nci.jobRegister.job_map[item].endTime)  nzombies++;
+                                                else  njobs++;
+        startDate = small_font(nci.config.startDate);
       } else  {
         state = 'dead';
       }
@@ -458,7 +466,7 @@ AdminPage.prototype.makeNodesInfoTab = function ( ndata )  {
       this.nodeListTable.setRow ( 'NC-' + ncn,'Number Cruncher #' + ncn,
         [nci.config.name,nci.config.externalURL,nc_name,
          startDate,nci.ccp4_version,app_version,fasttrack,state,
-         njdone,nci.config.capacity,njobs],row,(row & 1)==1 );
+         njdone,nci.config.capacity,njobs,nzombies],row,(row & 1)==1 );
       row++;
       ncn++;
     }

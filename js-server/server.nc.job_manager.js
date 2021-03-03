@@ -288,30 +288,47 @@ function cleanNC ( cleanDeadJobs_bool )  {
   // 3. Check for and remove directories and registry entries for dead jobs
 
   if (cleanDeadJobs_bool)  {
-    var t = Date.now()/86400000.0;
+    var _day = 86400000.0;
+    var srvConfig = conf.getServerConfig();
+    var _false_start = srvConfig.jobFalseStart;   // days; should come from config
+    var _timeout     = srvConfig.jobTimeout;      // days; should come from config
+    var _zombie_life = srvConfig.zombieLifeTime;  // days
+    var t = Date.now()/_day;
     var n = 0;
+    var nzombies = 0;
     for (var job_token in ncJobRegister.job_map)  {
-      var jobEntry  = ncJobRegister.job_map[job_token];
-      var startTime = t - 2.0;
+      var jobEntry = ncJobRegister.job_map[job_token];
+      var endTime  = ncJobRegister.job_map[job_token];
+      if (endTime)  {
+        endTime /= _day;
+        nzombies++;
+      }
+      var startTime = t;
       if ('startTime' in jobEntry)
-        startTime = jobEntry.startTime/86400000.0;
-      if ((jobEntry.pid<=0) && (t-startTime>1.0))  {  // did not manage to start in 1 day
+            startTime = jobEntry.startTime/_day;
+      else  jobEntry.startTime = t*_day;
+      if ((jobEntry.pid<=0) && (t-startTime>_false_start))  {  // did not manage to start
         // process not found, schedule job for deletion
         n++;
         log.standard ( 34,'dead job scheduled for deletion, job token: ' + job_token );
         _stop_job ( jobEntry );
-      } else if (t-startTime>30.0)  {  // running for month or more (should be configured)
+      } else if (endTime && (t-endTime>_zombie_life))  { // old zombie
+        n++;
+        log.standard ( 35,'zombie job scheduled for deletion, job token: ' + job_token );
+        _stop_job ( jobEntry );
+      } else if ((!endTime) && (t-startTime>_timeout))  { // timeout
         n++;
         try {
           process.kill ( jobEntry.pid,0 );
         } catch (e) {
           // process not found, schedule job for deletion
-          log.standard ( 35,'long job scheduled for timeout, job token: ' + job_token );
+          log.standard ( 36,'long job scheduled for timeout, job token: ' + job_token );
           _stop_job ( jobEntry );
         }
       }
     }
-    log.standard ( 31,'total dead/timeout jobs scheduled for deletion: ' + n );
+    log.standard ( 37,'total dead/zombie/timeout jobs scheduled for deletion: ' + n );
+    log.standard ( 38,'total zombie jobs: ' + nzombies );
   }
 
   // start job check loop
@@ -362,14 +379,14 @@ function checkJobsOnTimer()  {
   ncJobRegister.timer = null;  // indicate that job check loop is suspended
                                // (this is paranoid)
   var crTime = Date.now();
-  var zombiExpireTimeout = 86400000*conf.getServerConfig().zombiExpireTimeout;
+  var zombieLifeTime = 86400000*conf.getServerConfig().zombieLifeTime;
 
   // loop over all entries in job registry
   for (var job_token in ncJobRegister.job_map)  {
 
     var jobEntry = ncJobRegister.job_map[job_token];
 
-    if (jobEntry.endTime && (crTime-jobEntry.endTime>zombiExpireTimeout))  {
+    if (jobEntry.endTime && (crTime-jobEntry.endTime>zombieLifeTime))  {
       // job was not sent to FE for long time -- delete it now
 
       removeJobDelayed ( job_token,task_t.job_code.finished );
@@ -537,11 +554,18 @@ function calcCapacity ( onFinish_func )  {
 var ncConfig = conf.getServerConfig();
 var capacity = ncConfig.capacity;  // total number of jobs the number cruncher
                                    // can accept without stretching
+var nRegJobs = 0;  // number of jobs listed as active in registry
+
+  for (var item in ncJobRegister.job_map)
+    if (!ncJobRegister.job_map[item].endTime)
+      nRegJobs++;
+
   switch (ncConfig.exeType)  {
 
     default       :
     case 'CLIENT' :
-    case 'SHELL'  : capacity -= Math.max(Object.keys(ncJobRegister.job_map).length-1,0);
+    case 'SHELL'  : //capacity -= Math.max(Object.keys(ncJobRegister.job_map).length-1,0);
+                    capacity -= nRegJobs;
                     onFinish_func ( capacity );
                break;
 
@@ -553,8 +577,9 @@ var capacity = ncConfig.capacity;  // total number of jobs the number cruncher
                     job.on('close', function(code) {
                       var regExp = new RegExp('  qw  ','gi');
                       var n = (qstat_output.match(regExp) || []).length;
-                      if (n>0)  capacity = -n;
-                          else  capacity -= Object.keys(ncJobRegister.job_map).length;
+                      if (n>0)  capacity  = -n;
+                          else  capacity -= nRegJobs;
+                      //    else  capacity -= Object.keys(ncJobRegister.job_map).length;
                       onFinish_func ( capacity );
                     });
                 break;
@@ -574,8 +599,9 @@ var capacity = ncConfig.capacity;  // total number of jobs the number cruncher
                         log.error ( 31,'error parsing NC capacity: "' +
                                        job_output + '"' );
                       }
-                      if (n>0)  capacity = -n;
-                          else  capacity -= Object.keys(ncJobRegister.job_map).length;
+                      if (n>0)  capacity  = -n;
+                          else  capacity -= nRegJobs;
+                      //    else  capacity -= Object.keys(ncJobRegister.job_map).length;
                       onFinish_func ( capacity );
                     });
                 break;

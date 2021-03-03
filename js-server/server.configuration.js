@@ -489,7 +489,9 @@ var version = '';
       "sendDataWaitTime"   : 1000,
       "maxSendTrials"      : 10,
       "jobRemoveTimeout"   : 10000,  // milliseconds
-      "zombiExpireTimeout" : 30,     // days
+      "jobFalseStart"      : 1,      // days
+      "jobTimeout"         : 30,     // days
+      "zombieLifeTime"     : 30,     // days
       "maxRestarts"        : 100,
       "fileCapSize"        : 500000,
       "logflow" : {   // optional item
@@ -520,6 +522,9 @@ var version = '';
       "sendDataWaitTime" : 1000,
       "maxSendTrials"    : 10,
       "jobRemoveTimeout" : 10000,
+      "jobFalseStart"    : 1,      // days
+      "jobTimeout"       : 30,     // days
+      "zombieLifeTime"   : 30,     // days
       "maxRestarts"      : 100,
       "fileCapSize"      : 500000,
       "logflow" : {   // optional item
@@ -716,10 +721,16 @@ function readConfiguration ( confFilePath,serverType )  {
         if (fe_proxy && (!fe_proxy.storage))
           fe_proxy.storage = client_server.storage;
       }
+      if (!nc_server.hasOwnProperty('jobCheckPeriod'))
+        nc_server.jobCheckPeriod = 2000;
       if (!nc_server.hasOwnProperty('jobManager'))
         nc_server.jobManager = nc_server.exeType;
-      if (!nc_server.hasOwnProperty('zombiExpireTimeout'))
-        nc_server.zombiExpireTimeout = 30;  // days
+      if (!nc_server.hasOwnProperty('zombieLifeTime'))
+        nc_server.zombieLifeTime = 30;  // days
+      if (!nc_server.hasOwnProperty('jobTimeout'))
+        nc_server.jobTimeout = 30;  // days
+      if (!nc_server.hasOwnProperty('jobFalseStart'))
+        nc_server.jobFalseStart = 1;  // days
     }
   } else
     return 'number cruncher(s) configuration is missing in file ' + confFilePath;
