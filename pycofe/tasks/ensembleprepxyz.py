@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    25.02.21   <--  Date of Last Modification.
+#    03.03.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -31,6 +31,7 @@ import os
 import sys
 import json
 import time
+import shutil
 
 #  ccp4-python imports
 import pyrvapi

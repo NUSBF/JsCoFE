@@ -166,7 +166,7 @@ if (!__template)  {
 
   TaskCootMB.prototype.getCommandLine = function ( jobManager,jobDir )  {
     return [conf.pythonName(), '-m', 'pycofe.tasks.coot_mb', jobManager, jobDir,
-            this.id, 'expire='+conf.getClientNCConfig().zombiExpireTimeout ];
+            this.id, 'expire='+conf.getClientNCConfig().zombieLifeTime ];
   }
 
   // -------------------------------------------------------------------------
