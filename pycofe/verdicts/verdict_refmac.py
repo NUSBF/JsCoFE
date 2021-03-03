@@ -167,10 +167,13 @@ def parseRefmacLog ( logpath ):
                   Data line--- END
                 """
 
-
-
-
     return meta
+
+
+def calculateWeightRatio(distRatio):
+    # this nice empirical equation was figured out by analysis of 600 REFMAC5 (5.8.0267 - 24/08/20) runs
+    # at different resolutions, curve fitting in Excel (R^2 = 0.998) and praising the Lord
+    return 0.99 * (distRatio ** 1.46)
 
 
 #  2. Verdict message generation (not framed as a function, but ideally
@@ -322,6 +325,7 @@ def calculate ( meta ) :
     tls              = meta["params"]["refmac"]["tls"       ]  # whether TLS refinement was used or not
     anisotropicBfact = meta["params"]["refmac"]["anisoBfact"]  # Whether anisotropic B-factors were used
     hydrogens        = meta["params"]["refmac"]["hydrogens" ]  # Whether hydrogens were used for refinement
+    vdw_val          = meta["params"]["refmac"]["vdw_val" ]    # Whether vdw_val were used for refinement
     #
     # End of initialisation. Below operating with these values only
 
@@ -334,6 +338,7 @@ def calculate ( meta ) :
     ramaOutliers = float(meta['molprobity']['rama_outliers'])
     suggestChangingGeomWeight = False
     suggestIncreasingGeomWeight = False
+    suggestVDW = False
     # End of analysis
 
     # Suggested parameters for the next REFMAC run (structure matches actual REFMAC interface parameters tree)
@@ -384,7 +389,7 @@ def calculate ( meta ) :
                            "but could be further improved"
     elif verdict_score>=34:
         verdict_message += "Fair enough. Overall quality of the structure could be better, "+\
-                           "some bits are probably missing"
+                           "either part of structure is missing or geometrical quality is poor"
     else:
         verdict_message += "Not good enough. Overall quality of the structure is low. " \
                            "Most likely, significant parts of the structure are missing"
@@ -478,47 +483,65 @@ def calculate ( meta ) :
 
     # 5. High clash score. Normally resolved by increasing weight of VDW repulsion and adding hydrogens
     if clashScore > (medianClash + 10.0):
+        if vdw_val:
+            oldVdwVal = float(vdw_val)
+            newVdwVal = '%0.1f' % (oldVdwVal * 2.0)
+        else:
+            newVdwVal = '2.0'
         bottomline += "MolProbity clash score of %0.1f for the structure seems quite high " % clashScore +\
                       "(median clash score for your resolution is %0.1f). "  % medianClash +\
                       "We recommend to switch on option for " +\
                       "generation of hydrogen atoms during refinement. Also, please increase " +\
-                      "the weight for the VDW repulsion by setting up 2.0 for the " +\
+                      "the weight for the VDW repulsion by setting up 2.0 or higher (we recommend %s) for the " % newVdwVal +\
                       "'VDW repulsion weight' parameter. Value for the " +\
                       "restraints weight is subject to optimisation.<p>"
-        suggestedParameters['sec1']['contains']['VDW_VAL'] = {'value': '2.0'}
+        suggestVDW = True
+        suggestedParameters['sec1']['contains']['VDW_VAL'] = {'value': newVdwVal}
         suggestedParameters['sec1']['contains']['MKHYDR'] = {'value': 'Yes'}
     elif clashScore > (medianClash + (medianClash * 0.25)):
+        if vdw_val:
+            oldVdwVal = float(vdw_val)
+            newVdwVal = '%0.1f' % (oldVdwVal * 1.5)
+        else:
+            newVdwVal = '2.0'
         bottomline += "MolProbity clash score of %0.1f for the structure seems a bit higher than optimal " % clashScore +\
                       "(median clash score for your resolution is %0.1f). "  % medianClash +\
                       "You can try to switch on option for " +\
                       "generation of hydrogen atoms during refinement. Also, you can try to " +\
-                      "increase the weight for the VDW repulsion by setting up 2.0 " +\
+                      "increase the weight for the VDW repulsion by setting up 2.0 or higher (we recommend %s) " % newVdwVal +\
                       "for the 'VDW repulsion weight' parameter. Value for the " +\
                       "restraints weight is subject to optimisation.<p>"
-        suggestedParameters['sec1']['contains']['VDW_VAL'] = {'value': '2.0'}
+        suggestVDW = True
+        suggestedParameters['sec1']['contains']['VDW_VAL'] = {'value': newVdwVal}
         suggestedParameters['sec1']['contains']['MKHYDR'] = {'value': 'Yes'}
 
     # 6. Bond lengths (distances) deviation (regardless of resolution)
     if rmsBondDistance > 0.02:
+        suggestChangingGeomWeight = True
+        suggestIncreasingGeomWeight = False
+        if suggestVDW:
+            distRatio = 0.01 / rmsBondDistance
+        else:
+            distRatio = 0.015 / rmsBondDistance
+        newWeight = weight * calculateWeightRatio(distRatio)
         bottomline += "RMS deviation of bond lengths for the structure is too high " +\
                       "(%0.4f, while optimal range is between 0.01 and 0.02). " % rmsBondDistance +\
                       "We recommend to tighten up the geometry by reducing the " +\
-                      "'Overall data-geometry weight' parameter.<p>"
-        suggestChangingGeomWeight = True
-        suggestIncreasingGeomWeight = False
-        distDiff = rmsBondDistance - 0.02
-        newWeight = weight * 0.75 # for now
+                      "'Overall data-geometry weight' parameter (for example, to %0.4f).<p>" % newWeight
         suggestedParameters['sec1']['contains']['WAUTO_YES'] = {'value': 'Fixed'}
         suggestedParameters['sec1']['contains']['WAUTO_VAL'] = {'value': str(newWeight)}
     if rmsBondDistance < 0.01:
+        suggestChangingGeomWeight = True
+        suggestIncreasingGeomWeight = True
+        if suggestVDW:
+            distRatio = 0.01 / rmsBondDistance
+        else:
+            distRatio = 0.015 / rmsBondDistance
+        newWeight = weight * calculateWeightRatio(distRatio)
         bottomline += "RMS deviation of bond lengths for the structure is too low " +\
                       "(%0.4f, while optimal range is between 0.01 and 0.02). " % rmsBondDistance +\
                       "We recommend to loose the geometry by increasing the " +\
-                      "'Overall data-geometry weight' parameter.<p>"
-        suggestChangingGeomWeight = True
-        suggestIncreasingGeomWeight = True
-        distDiff = 0.01 - rmsBondDistance
-        newWeight = weight * 1.25 # for now
+                      "'Overall data-geometry weight' parameter (for example, to %0.4f).<p>" % newWeight
         suggestedParameters['sec1']['contains']['WAUTO_YES'] = {'value': 'Fixed'}
         suggestedParameters['sec1']['contains']['WAUTO_VAL'] = {'value': str(newWeight)}
 

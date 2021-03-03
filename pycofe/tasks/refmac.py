@@ -191,7 +191,7 @@ class Refmac(basic.TaskDriver):
         else:
             stdin.append ( 'WEIGHT MATRIX ' + str(sec1.WAUTO_VAL.value) )
 
-
+        vdwrestraints = ''
         if hasattr(sec1,"VDW_VAL"):
             vdwrestraints = self.getParameter(sec1.VDW_VAL)
             if vdwrestraints:
@@ -439,7 +439,8 @@ class Refmac(basic.TaskDriver):
                                 "ncsRestr"   : str(sec3.NCSR.value) == 'yes',
                                 "tls"        : str(sec2.TLS.value) != 'none',
                                 "anisoBfact" : str(sec2.BFAC.value) == "ANIS",
-                                "hydrogens"  : str(sec1.MKHYDR.value) == "YES"
+                                "hydrogens"  : str(sec1.MKHYDR.value) == "YES",
+                                "vdw_val"    : vdwrestraints
                             }
                         },
                         "molprobity" : meta,
