@@ -5,13 +5,13 @@
 #
 # ============================================================================
 #
-#    07.12.20   <--  Date of Last Modification.
+#    03.03.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  VERDICT FUNCTION FOR REFMAC
 #
-#  Copyright (C) Oleg Kovalevskiy, Eugene Krissinel, Andrey Lebedev 2020
+#  Copyright (C) Oleg Kovalevskiy, Eugene Krissinel, Andrey Lebedev 2020-2021
 #
 # ============================================================================
 #
@@ -20,61 +20,58 @@ import os, math, json
 
 from pycofe.proc import verdict
 
+# #  1. Verdict score function
+#
+# import math, sys
+#
+# def calcVerdictScore (data,score_type ):
+#
+#     def score_direct ( x,d ):
+#         n = len(d)-1
+#         for j in range(n):
+#             if d[j]<=x and x<=d[j+1]:
+#                 return (j+(x-d[j])/(d[j+1]-d[j]))/n
+#         return 1.0
+#
+#     def score_reverse ( x,d ):
+#         n = len(d)-1
+#         for j in range(n):
+#             if d[j+1]<=x and x<=d[j]:
+#                 return (j+(x-d[j])/(d[j+1]-d[j]))/n
+#         return 1.0
+#
+#     score  = 0.0
+#     weight = 0.0
+#     for key in data:
+#         v  = data[key]["value"]
+#         g  = data[key]["good"]
+#         b  = data[key]["bad"]
+#         w  = data[key]["weight"]
+#         ds = -1.0
+#         if g[-1]>b[-1]:  # direct order
+#             if v>=g[0]:
+#                 ds = 1.0 + score_direct(v,g)
+#             else:
+#                 ds = 1.0 - score_reverse(v,b)
+#         else:   # reverese order
+#             if v<=g[0]:
+#                 ds = 1.0 + score_reverse(v,g)
+#             else:
+#                 ds = 1.0 - score_direct(v,b)
+#
+#         if score_type==1:
+#             if ds<1.0e-12:
+#                 return 0.0
+#             score += w*math.log(ds/2.0)
+#         else:
+#             score += w*ds
+#         weight += w
+#
+#     if score_type==1:
+#         return 100.0*math.exp ( score/weight )
+#     else:
+#         return 50.0*score/weight
 
-
-"""
-#  1. Verdict score function
-
-import math, sys
-
-def calcVerdictScore (data,score_type ):
-
-    def score_direct ( x,d ):
-        n = len(d)-1
-        for j in range(n):
-            if d[j]<=x and x<=d[j+1]:
-                return (j+(x-d[j])/(d[j+1]-d[j]))/n
-        return 1.0
-
-    def score_reverse ( x,d ):
-        n = len(d)-1
-        for j in range(n):
-            if d[j+1]<=x and x<=d[j]:
-                return (j+(x-d[j])/(d[j+1]-d[j]))/n
-        return 1.0
-
-    score  = 0.0
-    weight = 0.0
-    for key in data:
-        v  = data[key]["value"]
-        g  = data[key]["good"]
-        b  = data[key]["bad"]
-        w  = data[key]["weight"]
-        ds = -1.0
-        if g[-1]>b[-1]:  # direct order
-            if v>=g[0]:
-                ds = 1.0 + score_direct(v,g)
-            else:
-                ds = 1.0 - score_reverse(v,b)
-        else:   # reverese order
-            if v<=g[0]:
-                ds = 1.0 + score_reverse(v,g)
-            else:
-                ds = 1.0 - score_direct(v,b)
-
-        if score_type==1:
-            if ds<1.0e-12:
-                return 0.0
-            score += w*math.log(ds/2.0)
-        else:
-            score += w*ds
-        weight += w
-
-    if score_type==1:
-        return 100.0*math.exp ( score/weight )
-    else:
-        return 50.0*score/weight
-"""
 
 def parseRefmacLog ( logpath ):
 
@@ -143,29 +140,26 @@ def parseRefmacLog ( logpath ):
                 elif "$TEXT:Result: $$ Final results $$" in line:
                     key = 1
 
-                """
-
-                "twinning"   : False,
-                "jellyBody"  : False,
-                "ncsRestr"   : False,
-                "tls"        : False,
-
-                "anisoBfact" : False,
-                "hydrogens"  : False
-
-                Data line--- LABIN FP=F SIGFP=SIGF FREE=FreeR_flag
-                  Data line--- NCYC 40
-                  Data line--- WEIGHT AUTO
-                  Data line--- MAKE HYDR NO
-                  Data line--- REFI BREF ISOT
-                  Data line--- SCALE TYPE SIMPLE
-                  Data line--- SOLVENT YES
-                  Data line--- NCSR LOCAL
-                  Data line--- REFI RESO 61.93 1.25
-                  Data line--- MAKE NEWLIGAND EXIT
-                  Data line--- Pdbout keep true
-                  Data line--- END
-                """
+                # "twinning"   : False,
+                # "jellyBody"  : False,
+                # "ncsRestr"   : False,
+                # "tls"        : False,
+                #
+                # "anisoBfact" : False,
+                # "hydrogens"  : False
+                #
+                # Data line--- LABIN FP=F SIGFP=SIGF FREE=FreeR_flag
+                #   Data line--- NCYC 40
+                #   Data line--- WEIGHT AUTO
+                #   Data line--- MAKE HYDR NO
+                #   Data line--- REFI BREF ISOT
+                #   Data line--- SCALE TYPE SIMPLE
+                #   Data line--- SOLVENT YES
+                #   Data line--- NCSR LOCAL
+                #   Data line--- REFI RESO 61.93 1.25
+                #   Data line--- MAKE NEWLIGAND EXIT
+                #   Data line--- Pdbout keep true
+                #   Data line--- END
 
     return meta
 
@@ -343,13 +337,13 @@ def calculate ( meta ) :
 
     # Suggested parameters for the next REFMAC run (structure matches actual REFMAC interface parameters tree)
     # actual parameters sit in the 'contains' dictionary in the different sections
-    suggestedParameters = {
-        'sec1': {'contains': {} },
-        'sec2': {'contains': {} },
-        'sec3': {'contains': {} },
-        'sec4': {'contains': {} },
-        'sec5': {'contains': {} }
-    }
+    suggestedParameters = {}
+    #     'sec1': {'contains': {} },
+    #     'sec2': {'contains': {} },
+    #     'sec3': {'contains': {} },
+    #     'sec4': {'contains': {} },
+    #     'sec5': {'contains': {} }
+    # }
 
     # Figuring out statistical values for evaluation of the current case
     resBin = assignResolutionBin ( res,statInResolutionBins )
@@ -433,12 +427,12 @@ def calculate ( meta ) :
             bottomline += "While the overall quality of the structure is below " +\
                           "deposition standards, " +\
                           "we recommend running at least 10 refinement cycles"
-            suggestedParameters['sec1']['contains']['NCYC'] = {'value': '10'}
+            suggestedParameters['NCYC'] = '10'
             if res >= 3.0:
                 bottomline += " at moderate and high resolution (higher than 3&Aring). " +\
                               "At lower resolution: up to 20 cycles; if you are using restraints from homologues, " +\
                               "up to 40 cycles"
-                suggestedParameters['sec1']['contains']['NCYC'] = {'value' : '20'}
+                suggestedParameters['NCYC'] = '20'
             bottomline += ".<p>"
 
     # 2. Checking that Rfree reached plateau
@@ -448,13 +442,13 @@ def calculate ( meta ) :
             if abs(allCyclesRfree[-4] - allCyclesRfree[-1]) > 0.003:
                 bottomline += "It looks like <i>R<sub>free</sub></i> did not reach the plateau. " +\
                               "We recommend running more refinement cycles.<p>"
-                if suggestedParameters['sec1']['contains'].has_key('NCYC'):
+                if suggestedParameters.has_key('NCYC'):
                     # giving 50% more cycles
-                    if math.ceil(ncyc * 1.5) > int(suggestedParameters['sec1']['contains']['NCYC']['value']):
+                    if math.ceil(ncyc * 1.5) > int(suggestedParameters['NCYC']):
                         # giving 50% more cycles
-                        suggestedParameters['sec1']['contains']['NCYC']['value'] = str(math.ceil(ncyc * 1.5))
+                        suggestedParameters['NCYC'] = str(math.ceil(ncyc * 1.5))
                 else:
-                    suggestedParameters['sec1']['contains']['NCYC'] = {'value' : str(math.ceil(ncyc * 1.5))}
+                    suggestedParameters['NCYC'] = str(math.ceil(ncyc * 1.5))
 
     # 3. Twinning. We need to discuss with Andrey best way of handling twinning across whole system (puit in metadata?)
     # PROPER IMPLEMENTATION LEFT FOR LATER
@@ -473,12 +467,12 @@ def calculate ( meta ) :
                       "or building missing parts of the model. In the second case, if your model is " +\
                       "straight after molecular replacement, please try running 50-200 refinement cycles"
         # questionable, should check for MR job upstream (distinguish between incomplete solution and full badly fitted case)
-        suggestedParameters['sec1']['contains']['NCYC'] = {'value' : '50'}
+        suggestedParameters['NCYC'] = '50'
         if res > 3.0:
             bottomline += " with jelly-body restraints on"
-            suggestedParameters['sec3']['contains']['JELLY'] = {'value' : 'Yes'}
-            suggestedParameters['sec3']['contains']['JELLY_SIGMA'] = {'value': '0.01'}
-            suggestedParameters['sec3']['contains']['JELLY_DMAX'] = {'value': '4.2'}
+            suggestedParameters['JELLY'      ] = 'Yes'
+            suggestedParameters['JELLY_SIGMA'] = '0.01'
+            suggestedParameters['JELLY_DMAX' ] = '4.2'
         bottomline += ".<p>"
 
     # 5. High clash score. Normally resolved by increasing weight of VDW repulsion and adding hydrogens
@@ -496,8 +490,8 @@ def calculate ( meta ) :
                       "'VDW repulsion weight' parameter. Value for the " +\
                       "restraints weight is subject to optimisation.<p>"
         suggestVDW = True
-        suggestedParameters['sec1']['contains']['VDW_VAL'] = {'value': newVdwVal}
-        suggestedParameters['sec1']['contains']['MKHYDR'] = {'value': 'Yes'}
+        suggestedParameters['VDW_VAL'] = newVdwVal
+        suggestedParameters['MKHYDR' ] = 'Yes'
     elif clashScore > (medianClash + (medianClash * 0.25)):
         if vdw_val:
             oldVdwVal = float(vdw_val)
@@ -512,8 +506,8 @@ def calculate ( meta ) :
                       "for the 'VDW repulsion weight' parameter. Value for the " +\
                       "restraints weight is subject to optimisation.<p>"
         suggestVDW = True
-        suggestedParameters['sec1']['contains']['VDW_VAL'] = {'value': newVdwVal}
-        suggestedParameters['sec1']['contains']['MKHYDR'] = {'value': 'Yes'}
+        suggestedParameters['VDW_VAL'] = newVdwVal
+        suggestedParameters['MKHYDR' ] = 'Yes'
 
     # 6. Bond lengths (distances) deviation (regardless of resolution)
     if rmsBondDistance > 0.02:
@@ -528,8 +522,8 @@ def calculate ( meta ) :
                       "(%0.4f, while optimal range is between 0.01 and 0.02). " % rmsBondDistance +\
                       "We recommend to tighten up the geometry by reducing the " +\
                       "'Overall data-geometry weight' parameter (for example, to %0.4f).<p>" % newWeight
-        suggestedParameters['sec1']['contains']['WAUTO_YES'] = {'value': 'Fixed'}
-        suggestedParameters['sec1']['contains']['WAUTO_VAL'] = {'value': str(newWeight)}
+        suggestedParameters['WAUTO_YES'] = 'Fixed'
+        suggestedParameters['WAUTO_VAL'] = str(newWeight)
     if rmsBondDistance < 0.01:
         suggestChangingGeomWeight = True
         suggestIncreasingGeomWeight = True
@@ -542,8 +536,8 @@ def calculate ( meta ) :
                       "(%0.4f, while optimal range is between 0.01 and 0.02). " % rmsBondDistance +\
                       "We recommend to loose the geometry by increasing the " +\
                       "'Overall data-geometry weight' parameter (for example, to %0.4f).<p>" % newWeight
-        suggestedParameters['sec1']['contains']['WAUTO_YES'] = {'value': 'Fixed'}
-        suggestedParameters['sec1']['contains']['WAUTO_VAL'] = {'value': str(newWeight)}
+        suggestedParameters['WAUTO_YES'] = 'Fixed'
+        suggestedParameters['WAUTO_VAL'] = str(newWeight)
 
 
     # 7. Ramachandran and other geometry
@@ -580,9 +574,9 @@ def calculate ( meta ) :
                     bottomline += "Please consider jelly-body refinement (Restraints -> Use jelly-body restraints). " + \
                               "You can also reduce overfitting by tightening up " + \
                               "geometry via decreasing 'Overall data-geometry weight' parameter.<p>"
-            suggestedParameters['sec3']['contains']['JELLY'] = {'value': 'Yes'}
-            suggestedParameters['sec3']['contains']['JELLY_SIGMA'] = {'value': '0.01'}
-            suggestedParameters['sec3']['contains']['JELLY_DMAX'] = {'value': '4.2'}
+            suggestedParameters['JELLY'      ] = 'Yes'
+            suggestedParameters['JELLY_SIGMA'] = '0.01'
+            suggestedParameters['JELLY_DMAX' ] = '4.2'
         else:
             if (not suggestChangingGeomWeight) or (not suggestIncreasingGeomWeight):
                 bottomline += "You can reduce overfitting by tightening up " +\
@@ -598,14 +592,14 @@ def calculate ( meta ) :
                 if isNCSpresent:
                     bottomline += "Try introducing NCS restraints as you seem to have several " +\
                                   "identical subunits in the asymmetric unit. "
-                    suggestedParameters['sec3']['contains']['NCSR'] = {'value': 'Yes'}
+                    suggestedParameters['NCSR'] = 'Yes'
             else:
                 bottomline += "Try changing type of NCS restraints (between local and global). "
             if not jellyBody:
                 bottomline += "Try jelly-body refinement. "
-                suggestedParameters['sec3']['contains']['JELLY'] = {'value': 'Yes'}
-                suggestedParameters['sec3']['contains']['JELLY_SIGMA'] = {'value': '0.01'}
-                suggestedParameters['sec3']['contains']['JELLY_DMAX'] = {'value': '4.2'}
+                suggestedParameters['JELLY'      ] = 'Yes'
+                suggestedParameters['JELLY_SIGMA'] = '0.01'
+                suggestedParameters['JELLY_DMAX' ] = '4.2'
             # Apparently scaling parameters are not available in Cloud interface now
             bottomline += "Try optimising solvent and scaling parameters. <p>"
         elif (rFree >= (meanRfree + (2.0*sigRfree))) and (rFree <= 0.4):
@@ -616,15 +610,15 @@ def calculate ( meta ) :
                 if isNCSpresent:
                     bottomline += "Try introducing NCS restraints as you seem to have several " +\
                                   "identical subunits in the asymmetric unit. "
-                    suggestedParameters['sec3']['contains']['NCSR'] = {'value': 'Yes'}
+                    suggestedParameters['NCSR'] = 'Yes'
             else:
                 bottomline += "Try changing type of NCS restraints (between local and global). "
             if not jellyBody:
                 bottomline += "Try 20-50 cycles of jelly-body refinement. "
-                suggestedParameters['sec1']['contains']['NCYC'] = {'value': '50'}
-                suggestedParameters['sec3']['contains']['JELLY'] = {'value': 'Yes'}
-                suggestedParameters['sec3']['contains']['JELLY_SIGMA'] = {'value': '0.01'}
-                suggestedParameters['sec3']['contains']['JELLY_DMAX'] = {'value': '4.2'}
+                suggestedParameters['NCYC'       ] = '50'
+                suggestedParameters['JELLY'      ] = 'Yes'
+                suggestedParameters['JELLY_SIGMA'] = '0.01'
+                suggestedParameters['JELLY_DMAX' ] = '4.2'
             bottomline += "Try LORESTR for automated refinement with restraints from homologous structures. <p>"
 
 
@@ -639,16 +633,16 @@ def calculate ( meta ) :
                 if isNCSpresent:
                     bottomline += "Try introducing NCS restraints as you seem to have several " +\
                                   "identical subunits in the asymmetric unit. "
-                    suggestedParameters['sec3']['contains']['NCSR'] = {'value': 'Yes'}
+                    suggestedParameters['NCSR'] = 'Yes'
             else:
                 bottomline += "If NCS restraints don't positively contribute to your refinement, try switching them off. "
-                suggestedParameters['sec3']['contains']['NCSR'] = {'value': 'No'}
+                suggestedParameters['NCSR'] = 'No'
 
             if not tls:
                 bottomline += "Try TLS refinement. "
-                suggestedParameters['sec2']['contains']['TLS'] = {'value': 'Automatic'}
-                suggestedParameters['sec2']['contains']['TLS_CYCLES'] = {'value': '10'}
-                suggestedParameters['sec2']['contains']['RESET_B'] = {'value': 'No'}
+                suggestedParameters['TLS'       ] = 'Automatic'
+                suggestedParameters['TLS_CYCLES'] = '10'
+                suggestedParameters['RESET_B'   ] = 'No'
             # Apparently scaling parameters are not available in Cloud interface now
             bottomline += "Try optimising solvent and scaling parameters. <p>"
         elif (rFree >= (meanRfree + (2.0*sigRfree))) and (rFree <= 0.4):
@@ -659,7 +653,7 @@ def calculate ( meta ) :
                 if isNCSpresent:
                     bottomline += "Try introducing NCS restraints as you seem to have several " +\
                                   "identical subunits in the asymmetric unit. "
-                    suggestedParameters['sec3']['contains']['NCSR'] = {'value': 'Yes'}
+                    suggestedParameters['NCSR'] = 'Yes'
             bottomline += "<p>"
 
     # 11. Problems specific to higher resolution. Advices for higher Rfree
@@ -670,9 +664,9 @@ def calculate ( meta ) :
                           "Try building more residues/ligands/waters/metals. "
             if not tls:
                 bottomline += "Try TLS refinement. "
-                suggestedParameters['sec2']['contains']['TLS'] = {'value': 'Automatic'}
-                suggestedParameters['sec2']['contains']['TLS_CYCLES'] = {'value': '10'}
-                suggestedParameters['sec2']['contains']['RESET_B'] = {'value': 'No'}
+                suggestedParameters['TLS'       ] = 'Automatic'
+                suggestedParameters['TLS_CYCLES'] = '10'
+                suggestedParameters['RESET_B'   ] = 'No'
             # Apparently scaling parameters are not available in Cloud interface now
             bottomline += "Try optimising solvent and scaling parameters. <p>"
         elif (rFree >= (meanRfree + (2.0*sigRfree))) and (rFree <= 0.4):
@@ -688,11 +682,11 @@ def calculate ( meta ) :
                           "Try building more residues/ligands/waters/metals/alternative conformations. "
             if not anisotropicBfact:
                 bottomline += "Try anisotropic B-factors. "
-                suggestedParameters['sec2']['contains']['BFAC'] = {'value': 'Anisotropic'}
+                suggestedParameters['BFAC'] = 'Anisotropic'
             if not hydrogens:
                 bottomline += "Try adding hydrogens. "
-                suggestedParameters['sec1']['contains']['MKHYDR'] = {'value': 'Yes'}
-                suggestedParameters['sec4']['contains']['RIDING_HYDROGENS'] = {'value': 'Yes'}
+                suggestedParameters['MKHYDR'] = 'Yes'
+                suggestedParameters['RIDING_HYDROGENS'] = 'Yes'
             # Apparently scaling parameters are not available in Cloud interface now
             bottomline += "Try optimising solvent and scaling parameters. <p>"
         elif (rFree >= (meanRfree + (2.0*sigRfree))) and (rFree <= 0.4):
@@ -702,7 +696,7 @@ def calculate ( meta ) :
 
 #    suggestedJSON = json.dumps(suggestedParameters, indent = 4)
 #    bottomline += suggestedJSON
-    return (verdict_score,verdict_message,bottomline,meanRfree,medianClash,ramaOutliers)
+    return (verdict_score,verdict_message,bottomline,meanRfree,medianClash,ramaOutliers,suggestedParameters)
 
 
 def putVerdictWidget ( base,verdict_meta,verdict_row,refmac_log=None ):
@@ -719,7 +713,7 @@ def putVerdictWidget ( base,verdict_meta,verdict_row,refmac_log=None ):
     if not verdict_meta["params"]:
         verdict_meta["params"] = verdict_meta["refmac"]["params"]
 
-    verdict_score, verdict_message, bottomline, meanRfree, medianClash, ramaOutliers = calculate ( verdict_meta )
+    verdict_score, verdict_message, bottomline, meanRfree, medianClash, ramaOutliers, suggestedParameters = calculate ( verdict_meta )
 
     base.putMessage1 ( base.report_page_id(),"&nbsp;",verdict_row )  # just a spacer
 
@@ -770,7 +764,7 @@ def putVerdictWidget ( base,verdict_meta,verdict_row,refmac_log=None ):
         ]
     },verdict_score,verdict_message,bottomline,row=verdict_row+1 )
 
-    return
+    return suggestedParameters
 
 
 

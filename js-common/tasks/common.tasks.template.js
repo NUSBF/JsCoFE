@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    01.03.21   <--  Date of Last Modification.
+ *    04.03.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -------------------------------------------------------------------------
  *
@@ -2136,10 +2136,26 @@ if (!dbx)  {
     run_func();
   }
 
+  // recursion for substituting suggested parameters in depth
+  TaskTemplate.prototype._clone_suggested = function ( parameters,suggestedParameters )  {
+    for (var item in parameters)
+      if (item in suggestedParameters)  {
+        parameters[item].value = suggestedParameters[item];
+        if ('label' in parameters[item])
+          parameters[item].label = '<font style=\'color:darkblue\'><i>' +
+                                   parameters[item].label + '</i></font>';
+        if ('label2' in parameters[item])
+          parameters[item].label2 = '<font style=\'color:darkblue\'><i>' +
+                                    parameters[item].label2 + '</i></font>';
+      } else if (isObject(parameters[item]))
+        this._clone_suggested ( parameters[item],suggestedParameters );
+  }
 
   // This function is called at cloning jobs and should do copying of all
   // custom class fields not found in the Template class
-  TaskTemplate.prototype.customDataClone = function ( task )  {
+  TaskTemplate.prototype.customDataClone = function ( cloneMode,task )  {
+    if ((cloneMode=='copy_suggested') && ('suggestedParameters' in task))
+      this._clone_suggested ( this.parameters,task.suggestedParameters );
     return;
   }
 

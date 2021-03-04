@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    18.02.21   <--  Date of Last Modification.
+ *    03.03.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -1450,7 +1450,7 @@ JobTree.prototype.openJob = function ( dataBox,parent_page )  {
                         });
                       break;
               case job_dialog_reason.clone_job :
-                        dlg.tree.cloneJob ( dlg.parent_page,function(){
+                        dlg.tree.cloneJob ( 'clone',dlg.parent_page,function(){
                           dlg.close();
                         });
                       break;
@@ -1494,10 +1494,7 @@ JobTree.prototype.openJob = function ( dataBox,parent_page )  {
 }
 
 
-
-
-
-JobTree.prototype._clone_job = function ( parent_page,onAdd_func )  {
+JobTree.prototype._clone_job = function ( cloneMode,parent_page,onAdd_func )  {
 
   (function(tree){
 
@@ -1526,7 +1523,7 @@ JobTree.prototype._clone_job = function ( parent_page,onAdd_func )  {
       for (var i=0;i<task0.harvestedTaskIds.length;i++)
         task.harvestedTaskIds.push ( task1.harvestedTaskIds[i] );
 
-      task.customDataClone ( task1 );
+      task.customDataClone ( cloneMode,task1 );
       task.project    = tree.projectData.desc.name;
       task.id         = tree.projectData.desc.jobCount;
       task.submitter  = __login_id;
@@ -1565,18 +1562,18 @@ JobTree.prototype._clone_job = function ( parent_page,onAdd_func )  {
 }
 
 
-JobTree.prototype.cloneJob = function ( parent_page,onAdd_func )  {
+JobTree.prototype.cloneJob = function ( cloneMode,parent_page,onAdd_func )  {
   if (this.selected_node_id)  {
     this.forceSingleSelection();
     if (this.projectData.desc.owner.share.length>0)  {
       // shared project, request job counter from server
       this.advanceJobCounter ( function(tree,rdata){
-        tree._clone_job ( parent_page,onAdd_func );
+        tree._clone_job ( cloneMode,parent_page,onAdd_func );
       });
     } else  {
       // not a shared project, use local job counter
       this.projectData.desc.jobCount++;
-      this._clone_job ( parent_page,onAdd_func );
+      this._clone_job ( cloneMode,parent_page,onAdd_func );
     }
   } else {
     alert ( ' no selection in the tree! ' );

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    18.01.21   <--  Date of Last Modification.
+ *    03.03.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -729,7 +729,7 @@ if (!__template)  {
 
   // This function is called at cloning jobs and should do copying of all
   // custom class fields not found in the Template class
-  TaskXia2.prototype.customDataClone = function ( task )  {
+  TaskXia2.prototype.customDataClone = function ( cloneMode,task )  {
     this.currentCloudPath = task.currentCloudPath;
     this.imageDirMeta     = [];       // paths, ranges and sectors
     for (var i=0;i<task.imageDirMeta.length;i++)

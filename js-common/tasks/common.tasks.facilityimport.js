@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    05.12.20   <--  Date of Last Modification.
+ *    03.03.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Facility Import Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2020
+ *  (C) E. Krissinel, A. Lebedev 2016-2021
  *
  *  =================================================================
  *
@@ -68,7 +68,7 @@ TaskFacilityImport.prototype.currentVersion = function()  {
 if (!__template)  {
   // for client side
 
-  TaskFacilityImport.prototype.customDataClone = function ( task )  {
+  TaskFacilityImport.prototype.customDataClone = function ( cloneMode,task )  {
     this.uname = '';
     return;
   }

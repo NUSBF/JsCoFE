@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    05.02.21   <--  Date of Last Modification.
+ *    03.03.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -635,7 +635,7 @@ if (!__template)  {
 
   // This function is called at cloning jobs and should do copying of all
   // custom class fields not found in the Template class
-  TaskCCP4go2.prototype.customDataClone = function ( task )  {
+  TaskCCP4go2.prototype.customDataClone = function ( cloneMode,task )  {
     //this.ha_type = task.ha_type;
     this.ligands = [];
     for (var i=0;i<task.ligands.length;i++)

@@ -2,7 +2,7 @@
 /*
  *  ===========================================================================
  *
- *    04.11.20   <--  Date of Last Modification.
+ *    03.03.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  ---------------------------------------------------------------------------
  *
@@ -15,7 +15,7 @@
  *                  FacilityBrowser
  *                  CloudFileBrowser
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2020
+ *  (C) E. Krissinel, A. Lebedev 2016-2021
  *
  *  ===========================================================================
  *
@@ -730,7 +730,7 @@ CloudFileBrowser.prototype.onTreeItemSelect = function()  {
       } else
         n_files++;
     if (this.file_key==3)  {
-      var disable = (n_dirs!=1) && (n_files==0);
+      var disable = (n_dirs!=1) || (n_files>0);
       this.disableButton  ( 0,disable );
       this.disableButton  ( 1,disable || parent_dir );
     } else if (this.file_key==2)  {

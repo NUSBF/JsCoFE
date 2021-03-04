@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.01.21   <--  Date of Last Modification.
+ *    03.03.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -85,7 +85,7 @@ if (!__template)  {
 
   // This function is called at cloning jobs and should do copying of all
   // custom class fields not found in the Template class
-  TaskCloudImport.prototype.customDataClone = function ( task )  {
+  TaskCloudImport.prototype.customDataClone = function ( cloneMode,task )  {
     this.uname            = '';
     this.currentCloudPath = task.currentCloudPath;
     this.selected_items   = [];

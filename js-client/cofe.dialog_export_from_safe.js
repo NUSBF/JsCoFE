@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    01.03.20   <--  Date of Last Modification.
+ *    03.03.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -57,9 +57,7 @@ function ExportFromSafeDialog ( onSuccess_func )  {
         //alert ( JSON.stringify(items) );
         new ExportFailedJobDialog ( items.path );
         //var exportDirPath = items.path;
-
         return 1;  // do close browser window
-
       },null );
     });
   }(this))
