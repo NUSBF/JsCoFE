@@ -935,7 +935,7 @@ function getJobResults ( job_token,server_request,server_response )  {
           ustats.registerJob ( jobClass );
           if ('tokens' in meta)
             feJobRegister.cleanup ( job_token,meta.tokens.split(',') );
-          if ('capacity' in meta)  {
+          if (('capacity' in meta) && (jobEntry.nc_number>=0))  {
             var nc_servers = conf.getNCConfigs();
             if (jobEntry.nc_number<nc_servers.length)  {
               nc_servers[jobEntry.nc_number].current_capacity = meta.capacity;
