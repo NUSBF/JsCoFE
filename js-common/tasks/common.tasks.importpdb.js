@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    26.03.20   <--  Date of Last Modification.
+ *    03.03.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Import Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2019-2020
+ *  (C) E. Krissinel, A. Lebedev 2019-2021
  *
  *  ==========================================================================
  *
@@ -162,7 +162,7 @@ TaskImportPDB.prototype.currentVersion = function()  {
 if (!__template)  {
   // for client side
 
-  TaskImportPDB.prototype.customDataClone = function ( task )  {
+  TaskImportPDB.prototype.customDataClone = function ( cloneMode,task )  {
     this.uname = '';
     return;
   }

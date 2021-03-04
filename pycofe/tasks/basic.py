@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    27.02.21   <--  Date of Last Modification.
+#    04.03.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -1451,8 +1451,6 @@ class TaskDriver(object):
     # ============================================================================
 
     def putInspectButton ( self,dataObject,title,gridId,row,col ):
-        #buttonId = "inspect_data_" + str(self.widget_no)
-        #self.widget_no += 1
         buttonId = self.getWidgetId ( "inspect_data" )
         pyrvapi.rvapi_add_button ( buttonId,title,"{function}",
                 "if (window.parent.rvapi_inspectData) " +\
@@ -1462,10 +1460,21 @@ class TaskDriver(object):
                 False,gridId, row,col,1,1 )
         return
 
+    def putCloneJobButton ( self,title,gridId,row,col ):
+        buttonId = self.getWidgetId ( "inspect_data" )
+        pyrvapi.rvapi_add_button ( buttonId,title,"{function}",
+                "if (window.parent.rvapi_cloneJob) " +\
+                "window.parent.rvapi_cloneJob(" + self.job_id + "); else " +\
+                "alert('This function is not supported in detached reports');",
+                False,gridId, row,col,1,1 )
+        pyrvapi.rvapi_add_text ( "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" +\
+                                 "<font style=\"color:darkblue\"><i>" +\
+                                 "suggested parameters will be shown in italic blue" +\
+                                 "</i></font>",
+                                 gridId,row,col,1,1 )
+        return
 
     def putRSViewerButton ( self,rlpFilePath,mapFilePath,title,text_btn,gridId,row,col ):
-        #buttonId = "rsviewer_" + str(self.widget_no)
-        #self.widget_no += 1
         buttonId = self.getWidgetId ( "rsviewer" )
         pyrvapi.rvapi_add_button ( buttonId,text_btn,"{function}",
                     "window.parent.rvapi_rsviewer(" + self.job_id +\

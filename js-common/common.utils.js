@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    18.05.20   <--  Date of Last Modification.
+ *    04.03.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -84,7 +84,8 @@ function isFloat ( value_str ) {
 }
 
 function isObject(obj) {
-  return obj === Object(obj);
+  return (Object.prototype.toString.call(obj).indexOf(' Object]')>=0);
+//  return obj === Object(obj);
 }
 
 function shallowCopy ( object )  {

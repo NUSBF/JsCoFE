@@ -826,14 +826,17 @@ function finishJobExport ( loginData,task )  {
 
 function getFailedJobExportNames ( fjdata )  {
   //var path_list   = fjdata.path.split('/');
-  var path_list   = fjdata.path.split('\\').pop().split('/');
-  var exportName  = path_list[path_list.length-1] + '.zip';
-  var jobDirPath  = conf.getFEConfig().getJobsSafePath();
-  for (var i=1;i<path_list.length;i++)
-    jobDirPath  = path.join ( jobDirPath,path_list[i] );
-  var archivePath = path.join ( conf.getFEConfig().getJobsSafePath(),exportName );
-  var url         = cmd.__special_fjsafe_tag + '/' + exportName;
-  return [ exportName,jobDirPath,archivePath,url ];
+  if ('path' in fjdata)  {
+    var path_list   = fjdata.path.split('\\').pop().split('/');
+    var exportName  = path_list[path_list.length-1] + '.zip';
+    var jobDirPath  = conf.getFEConfig().getJobsSafePath();
+    for (var i=1;i<path_list.length;i++)
+      jobDirPath  = path.join ( jobDirPath,path_list[i] );
+    var archivePath = path.join ( conf.getFEConfig().getJobsSafePath(),exportName );
+    var url         = cmd.__special_fjsafe_tag + '/' + exportName;
+    return [ exportName,jobDirPath,archivePath,url ];
+  } else
+    return [ '','','','' ];
 }
 
 function prepareFailedJobExport ( loginData,fjdata )  {
@@ -865,7 +868,7 @@ function prepareFailedJobExport ( loginData,fjdata )  {
 function checkFailedJobExport ( loginData,fjdata )  {
   var archivePath = getFailedJobExportNames(fjdata)[2];
   rdata = {};
-  if (utils.fileExists(archivePath))
+  if (archivePath && utils.fileExists(archivePath))
         rdata.size = utils.fileSize(archivePath);
   else  rdata.size = -1;
   return new cmd.Response ( cmd.fe_retcode.ok,'',rdata );
@@ -873,7 +876,8 @@ function checkFailedJobExport ( loginData,fjdata )  {
 
 function finishFailedJobExport ( loginData,fjdata )  {
   var archivePath = getFailedJobExportNames(fjdata)[2];
-  utils.removeFile ( archivePath );
+  if (archivePath)
+    utils.removeFile ( archivePath );
   return new cmd.Response ( cmd.fe_retcode.ok,'','' );
 }
 

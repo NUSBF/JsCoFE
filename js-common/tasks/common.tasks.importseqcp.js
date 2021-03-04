@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    08.06.20   <--  Date of Last Modification.
+ *    03.03.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  ImportSeqCP Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2020
+ *  (C) E. Krissinel, A. Lebedev 2020-2021
  *
  *  =================================================================
  *
@@ -101,7 +101,7 @@ if (!__template)  {
 
   //  for client side
 
-  TaskImportSeqCP.prototype.customDataClone = function ( task )  {
+  TaskImportSeqCP.prototype.customDataClone = function ( cloneMode,task )  {
     this.uname = '';
     return;
   }

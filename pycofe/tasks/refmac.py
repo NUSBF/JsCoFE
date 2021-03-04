@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    30.12.20   <--  Date of Last Modification.
+#    03.03.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -22,7 +22,7 @@
 #      jobDir/report  : directory receiving HTML report
 #
 #  Copyright (C) Eugene Krissinel, Andrey Lebedev, Robert Nicholls,
-#                Oleg Kovalevskyi 2017-2020
+#                Oleg Kovalevskyi 2017-2021
 #
 # ============================================================================
 #
@@ -313,7 +313,7 @@ class Refmac(basic.TaskDriver):
             #self.copyTaskMetrics ( "refmac","R_free"  ,"rfree"   )
 
             verdict_row = self.rvrow
-            self.rvrow += 4
+            self.rvrow += 5
 
             self.putTitle ( "Output Structure" +\
                         self.hotHelpLink ( "Structure","jscofe_qna.structure") )
@@ -323,30 +323,6 @@ class Refmac(basic.TaskDriver):
 
             # register output data from temporary location (files will be moved
             # to output directory by the registration procedure)
-
-            """
-            structure = self.registerStructure ( xyzout,None,
-                                                 self.getMTZOFName(),
-                                                 None,None,libin,
-                                                 #fnames[0],fnames[1],libin,  -- not needed for new UglyMol
-                                                 leadKey=1,map_labels="FWT,PHWT,DELFWT,PHDELWT" )
-            if structure:
-
-                mmcifout = self.getMMCIFOFName()
-                if os.path.isfile(mmcifout):
-                    structure.add_file ( mmcifout,self.outputDir(),"mmcif",copy_bool=False )
-
-                structure.copyAssociations   ( istruct )
-                structure.addDataAssociation ( hkl.dataId     )
-                structure.addDataAssociation ( istruct.dataId )  # ???
-                structure.setRefmacLabels    ( None if str(hkl.useHKLSet) in ["Fpm","TI"] else hkl )
-                structure.copySubtype        ( istruct )
-                structure.copyLigands        ( istruct )
-                structure.addPhasesSubtype   ()
-                self.putStructureWidget      ( "structure_btn",
-                                               "Structure and electron density",
-                                               structure )
-            """
 
             substructure = None
 
@@ -446,7 +422,12 @@ class Refmac(basic.TaskDriver):
                         "molprobity" : meta,
                         "xyzmeta" : structure.xyzmeta
                     }
-                    verdict_refmac.putVerdictWidget ( self,verdict_meta,verdict_row )
+                    suggestedParameters = verdict_refmac.putVerdictWidget (
+                                                self,verdict_meta,verdict_row )
+                    if suggestedParameters:
+                        self.task.suggestedParameters = suggestedParameters
+                        self.putCloneJobButton ( "Clone job with suggested parameters",
+                                                 self.report_page_id(),verdict_row+3,0 )
 
         else:
             self.putTitle ( "No Output Generated" )

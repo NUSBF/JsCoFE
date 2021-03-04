@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    20.01.21   <--  Date of Last Modification.
+ *    03.03.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -81,7 +81,7 @@ if (!__template)  {
     return [AsuDefHotButton()];
   }
 
-  TaskImport.prototype.customDataClone = function ( task )  {
+  TaskImport.prototype.customDataClone = function ( cloneMode,task )  {
     this.uname        = '';
     this.file_mod     = {'rename':{},'annotation':[]}; // file modification and annotation
     this.upload_files = [];

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    28.01.21   <--  Date of Last Modification.
+ *    03.03.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -98,7 +98,7 @@ if (!__template)  {
   }
 
 
-  TaskMigrate.prototype.customDataClone = function ( task )  {
+  TaskMigrate.prototype.customDataClone = function ( cloneMode,task )  {
 
     this.uname       = '';
     this.file_system = task.file_system;
@@ -384,19 +384,6 @@ if (!__template)  {
       run_func();
 
   }
-
-  /*
-  // This function is called at cloning jobs and should do copying of all
-  // custom class fields not found in the Template class
-  TaskMigrate.prototype.customDataClone = function ( task )  {
-    //this.ha_type = task.ha_type;
-    this.ligands = [];
-    for (var i=0;i<task.ligands.length;i++)
-      this.ligands.push ( { 'source' : task.ligands[i].source,
-                            'smiles' : task.ligands[i].smiles,
-                            'code'   : task.ligands[i].code } );
-  }
-  */
 
   // reserved function name
   TaskMigrate.prototype.runButtonName = function()  { return 'Import'; }

@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    06.02.21   <--  Date of Last Modification.
+ *    04.03.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -190,7 +190,7 @@ function ProjectPage ( sceneId )  {
   }
 
   function cloneJob() {
-    jobTree.cloneJob ( self,function(){ self.del_btn.setDisabled ( false ); });
+    jobTree.cloneJob ( 'clone',self,function(){ self.del_btn.setDisabled ( false ); });
   }
 
   function setSelMode ( mode )  {
@@ -924,6 +924,31 @@ ProjectPage.prototype.onResize = function ( width,height )  {
 
 ProjectPage.prototype.getJobTree = function()  {
   return this.job_tree;
+}
+
+ProjectPage.prototype.cloneJobWithSuggestedParameters = function ( jobId ) {
+  (function(self){
+    self.job_tree.cloneJob ( 'copy_suggested',self,function(){
+      self.del_btn.setDisabled ( false );
+      if (jobId in self.job_tree.dlg_map)
+        self.job_tree.dlg_map[jobId].close();
+    });
+  }(this))
+}
+
+
+function rvapi_cloneJob ( jobId )  {
+
+  if (!__current_page)  {
+    new MessageBox ( 'Page not found','Project Page not found. This is a bug, ' +
+                     'please contact ' + appName() + ' developer.' );
+  } else if (__current_page._type!='ProjectPage')  {
+    new MessageBox ( 'Wrong page type','Wrong Project Page type encountered. ' +
+                     'This is a bug, please contact ' + appName() + ' developer.' );
+  } else  {
+    __current_page.cloneJobWithSuggestedParameters ( jobId );
+  }
+
 }
 
 

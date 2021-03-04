@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    28.12.20   <--  Date of Last Modification.
+ *    03.03.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  CCP4go Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2020
+ *  (C) E. Krissinel, A. Lebedev 2016-2021
  *
  *  =================================================================
  *
@@ -635,7 +635,7 @@ if (!__template)  {
 
   // This function is called at cloning jobs and should do copying of all
   // custom class fields not found in the Template class
-  TaskCCP4go.prototype.customDataClone = function ( task )  {
+  TaskCCP4go.prototype.customDataClone = function ( cloneMode,task )  {
     //this.ha_type = task.ha_type;
     this.ligands = [];
     for (var i=0;i<task.ligands.length;i++)
