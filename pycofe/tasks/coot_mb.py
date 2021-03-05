@@ -228,9 +228,12 @@ class Coot(coot_ce.CootCE):
             .replace ( "$selfile.py",os.path.join (
                             os.path.dirname(os.path.abspath(__file__)),
                             "..","varut","selectfile.py"
-                       )
+                       ).replace("\\","\\\\")
                      ) \
-            .replace ( "$backup_dir",os.path.join(coot_backup_dir,"..") )
+            .replace ( "$backup_dir",os.path.join(
+                            coot_backup_dir,".."
+                       ).replace("\\","\\\\")
+                     )
         f.close()
         if not coot_scr:
             coot_scr = "__coot_script.py"
@@ -251,6 +254,12 @@ class Coot(coot_ce.CootCE):
         if sys.platform.startswith("win"):
             coot_bat = os.path.join(os.environ["CCP4"], "libexec", "coot.bat")
             rc = self.runApp ( coot_bat,args,logType="Main",quitOnError=False )
+            try:
+                if os.path.isdir("coot-backup"):
+                    shutil.rmtree ( coot_backup_dir, ignore_errors=True, onerror=None )
+                    shutil.move   ( "coot-backup"  , coot_backup_dir )
+            except:
+                self.stderrln ( " *** backup copy failed " + coot_backup_dir )
         else:
             rc = self.runApp ( "coot",args,logType="Main",quitOnError=False )
 
@@ -336,8 +345,6 @@ class Coot(coot_ce.CootCE):
         if not fname:  # try to get the latest backup file
             fname = self.getLastBackupFile ( coot_backup_dir )
             restored = fname is not None
-
-        shutil.rmtree ( "coot-backup", ignore_errors=True, onerror=None )
 
         if fname:
 
