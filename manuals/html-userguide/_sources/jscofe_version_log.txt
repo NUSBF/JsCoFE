@@ -21,6 +21,8 @@ CCP4 Cloud Version Log
 
     #. Ligand libraries with duplicate component lists (old bugs elsewhere) can now be imported
 
+    #. ``Crank-2`` has new parameter "parallel model building depth" to balance between model building efficiency and speed
+
 
 
 **Version 1.6.019**

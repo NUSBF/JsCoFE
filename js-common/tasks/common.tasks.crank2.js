@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    01.03.21   <--  Date of Last Modification.
+ *    05.03.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -540,13 +540,30 @@ function TaskCrank2()  {
                                   hkl   :[2,3,4]
                                 }
                   },
+              BUILD_LEVEL : {
+                    type      : 'combobox',
+                    keyword   : 'num_parallel::',
+                    label     : 'Parallel model building depth',
+                    lwidth    : 250,
+                    tooltip   : 'The level of thoroughness of the model building ' +
+                                'algorithm. Higher levels may deliver better ' +
+                                'results as a trade-off for speed.',
+                    range     : ['1|Basic',
+                                 '3|Hightened',
+                                 '6|Advanced',
+                                 '10|Enforced',
+                                 '15|Superior'
+                                ],
+                    value     : '1',
+                    position  : [1,0,1,1]
+                  },
 
               //  =========== PARAMETERS FOR ITERATIVE MODEL BUILDING =========
 
               TITLE1 : {
                     type      : 'label',  // just a separator
                     label     : '<h3>Parameters for iterative model building</h3>',
-                    position  : [1,0,1,4],
+                    position  : [2,0,1,4],
                     showon    : { _:'||',
                                   COMB_PHDMMB_DO:[false],
                                   native:[1],
@@ -566,7 +583,7 @@ function TaskCrank2()  {
                                  'shelxe|ShelXE'
                                 ],
                     value     : '_blank_',
-                    position  : [3,0,1,1],
+                    position  : [4,0,1,1],
                     showon    : { _:'&&',sec1:['crank2'],
                                   comb: { _:'||',
                                           COMB_PHDMMB_DO:[false],
@@ -598,7 +615,7 @@ function TaskCrank2()  {
                                             //   [min,'*']  : limited from bottom
                                             //   [min,max]  : limited from top and bottom
                     value     : '',         // value to be paired with the keyword
-                    position  : [5,0,1,1],  // [row,col,rowSpan,colSpan]
+                    position  : [6,0,1,1],  // [row,col,rowSpan,colSpan]
                     showon    : { _:'||',
                                   COMB_PHDMMB_DO:[false],
                                   native:[1],
@@ -616,7 +633,7 @@ function TaskCrank2()  {
                                  'False|No',
                                 ],
                     value     : '_blank_',
-                    position  : [7,0,1,1],
+                    position  : [8,0,1,1],
                     showon    : { _:'||',
                                   COMB_PHDMMB_DO:[false],
                                   native:[1],
@@ -630,7 +647,7 @@ function TaskCrank2()  {
               TITLE2 : {
                     type      : 'label',  // just a separator
                     label     : '<h3>Parameters for combined model building</h3>',
-                    position  : [2,0,1,4],
+                    position  : [3,0,1,4],
                     hideon    : { _:'||',
                                   COMB_PHDMMB_DO:[false],
                                   native:[1],
@@ -648,7 +665,7 @@ function TaskCrank2()  {
                                  'solomon|Solomon'
                                 ],
                     value     : '_blank_',
-                    position  : [4,0,1,1],
+                    position  : [5,0,1,1],
                     showon    : {sec1:['crank2']},
                     hideon    : { _:'||',
                                   COMB_PHDMMB_DO:[false],
@@ -671,7 +688,7 @@ function TaskCrank2()  {
                                  'False|No',
                                 ],
                     value     : '_blank_',
-                    position  : [6,0,1,1],
+                    position  : [7,0,1,1],
                     showon    : {sec1:['crank2']},
                     hideon    : { _:'||',
                                   COMB_PHDMMB_DO:[false],
@@ -694,7 +711,7 @@ function TaskCrank2()  {
                                             //   [min,'*']  : limited from bottom
                                             //   [min,max]  : limited from top and bottom
                     value     : '',         // value to be paired with the keyword
-                    position  : [8,0,1,1],  // [row,col,rowSpan,colSpan]
+                    position  : [9,0,1,1],  // [row,col,rowSpan,colSpan]
                     showon    : {sec1:['crank2']},
                     hideon    : { _:'||',
                                   COMB_PHDMMB_DO:[false],
@@ -715,7 +732,7 @@ function TaskCrank2()  {
                                             //   [min,'*']  : limited from bottom
                                             //   [min,max]  : limited from top and bottom
                     value     : '',         // value to be paired with the keyword
-                    position  : [10,0,1,1],  // [row,col,rowSpan,colSpan]
+                    position  : [11,0,1,1],  // [row,col,rowSpan,colSpan]
                     showon    : {sec1:['crank2']},
                     hideon    : { _:'||',
                                   COMB_PHDMMB_DO:[false],
@@ -737,7 +754,7 @@ function TaskCrank2()  {
                                  'False|No',
                                 ],
                     value     : '_blank_',
-                    position  : [12,0,1,1],
+                    position  : [13,0,1,1],
                     showon    : {sec1:['crank2']},
                     hideon    : { _:'||',
                                   COMB_PHDMMB_DO:[false],
@@ -761,7 +778,7 @@ function TaskCrank2()  {
                                  'False|No',
                                 ],
                     value     : '_blank_',
-                    position  : [14,0,1,1],
+                    position  : [15,0,1,1],
                     showon    : {sec1:['crank2']},
                     hideon    : { _:'||',
                                   COMB_PHDMMB_DO:[false],
@@ -780,7 +797,7 @@ function TaskCrank2()  {
                                  'never|never'
                                 ],
                     value     : '_blank_',
-                    position  : [16,0,1,1],
+                    position  : [17,0,1,1],
                     showon    : {sec1:['crank2']},
                     hideon    : { _:'||',
                                   COMB_PHDMMB_DO:[false],
@@ -802,7 +819,7 @@ function TaskCrank2()  {
                                  'False|No',
                                 ],
                     value     : '_blank_',
-                    position  : [18,0,1,1],
+                    position  : [19,0,1,1],
                     showon    : {sec1:['crank2']},
                     hideon    : { _:'||',
                                   COMB_PHDMMB_DMFULL_DM_PROGRAM:['solomon'],
@@ -821,7 +838,7 @@ function TaskCrank2()  {
                                 'Requires a reasonably good input partial model.',
                     value     : false,
                     translate : ['False','True'], // needed for getKWItem() in basic.py
-                    position  : [18,4,1,1],
+                    position  : [20,4,1,1],
                     showon    : {sec1:['crank2']},
                     hideon    : { _:'||',
                                   COMB_PHDMMB_DMFULL_DM_PROGRAM:['solomon'],

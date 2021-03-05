@@ -315,9 +315,11 @@ class Crank2(basic.TaskDriver):
                 self.getKWItem ( self.sec6.COMB_PHDMMB_MAXBIGCYC          ) +\
                 self.getKWItem ( self.sec6.COMB_PHDMMB_NCS_DET            ) +\
                 self.getKWItem ( self.sec6.COMB_PHDMMB_NCS_DET_MR         ) +\
-                " num_parallel::5 mb buccaneer" +\
+                self.getKWItem ( self.sec6.BUILD_LEVEL                    ) +\
+                " mb buccaneer" +\
                 self.getKWItem ( self.sec6.COMB_PHDMMB_DMFULL_DM_PROGRAM  )
             )
+            #                " num_parallel::" + " mb buccaneer" +\
         return
 
 
