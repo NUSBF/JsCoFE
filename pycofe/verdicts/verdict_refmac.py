@@ -91,7 +91,8 @@ def parseRefmacLog ( logpath ):
                 "ncsRestr"   : False,
                 "tls"        : False,
                 "anisoBfact" : False,
-                "hydrogens"  : False
+                "hydrogens"  : False,
+                "vdw_val"    : ''
             }
         }
     }
@@ -134,6 +135,8 @@ def parseRefmacLog ( logpath ):
                         meta["params"]["refmac"]["anisoBfact"] = (lst[-1]=="ANIS")
                     elif "HYDR" in uline:
                         meta["params"]["refmac"]["hydrogens"] = (lst[-1]=="YES")
+                    elif "VDWRESTRAINTS" in uline:
+                        meta["params"]["refmac"]["vdw_val"] = lst[-1]
                 elif line.startswith("Free R factor                        ="):
                     lst = line.split()
                     meta["rfree_cycles"].append ( float(lst[-1]) )
@@ -444,11 +447,11 @@ def calculate ( meta ) :
                               "We recommend running more refinement cycles.<p>"
                 if suggestedParameters.has_key('NCYC'):
                     # giving 50% more cycles
-                    if math.ceil(ncyc * 1.5) > int(suggestedParameters['NCYC']):
+                    if int(math.ceil(ncyc * 1.5)) > int(suggestedParameters['NCYC']):
                         # giving 50% more cycles
-                        suggestedParameters['NCYC'] = str(math.ceil(ncyc * 1.5))
+                        suggestedParameters['NCYC'] = str(int(math.ceil(ncyc * 1.5)))
                 else:
-                    suggestedParameters['NCYC'] = str(math.ceil(ncyc * 1.5))
+                    suggestedParameters['NCYC'] = str(int(math.ceil(ncyc * 1.5)))
 
     # 3. Twinning. We need to discuss with Andrey best way of handling twinning across whole system (puit in metadata?)
     # PROPER IMPLEMENTATION LEFT FOR LATER
@@ -470,7 +473,7 @@ def calculate ( meta ) :
         suggestedParameters['NCYC'] = '50'
         if res > 3.0:
             bottomline += " with jelly-body restraints on"
-            suggestedParameters['JELLY'      ] = 'Yes'
+            suggestedParameters['JELLY'      ] = 'yes'
             suggestedParameters['JELLY_SIGMA'] = '0.01'
             suggestedParameters['JELLY_DMAX' ] = '4.2'
         bottomline += ".<p>"
@@ -491,7 +494,7 @@ def calculate ( meta ) :
                       "restraints weight is subject to optimisation.<p>"
         suggestVDW = True
         suggestedParameters['VDW_VAL'] = newVdwVal
-        suggestedParameters['MKHYDR' ] = 'Yes'
+        suggestedParameters['MKHYDR' ] = 'ALL'
     elif clashScore > (medianClash + (medianClash * 0.25)):
         if vdw_val:
             oldVdwVal = float(vdw_val)
@@ -507,7 +510,7 @@ def calculate ( meta ) :
                       "restraints weight is subject to optimisation.<p>"
         suggestVDW = True
         suggestedParameters['VDW_VAL'] = newVdwVal
-        suggestedParameters['MKHYDR' ] = 'Yes'
+        suggestedParameters['MKHYDR' ] = 'ALL'
 
     # 6. Bond lengths (distances) deviation (regardless of resolution)
     if rmsBondDistance > 0.02:
@@ -522,7 +525,7 @@ def calculate ( meta ) :
                       "(%0.4f, while optimal range is between 0.01 and 0.02). " % rmsBondDistance +\
                       "We recommend to tighten up the geometry by reducing the " +\
                       "'Overall data-geometry weight' parameter (for example, to %0.4f).<p>" % newWeight
-        suggestedParameters['WAUTO_YES'] = 'Fixed'
+        suggestedParameters['WAUTO_YES'] = 'no'
         suggestedParameters['WAUTO_VAL'] = str(newWeight)
     if rmsBondDistance < 0.01:
         suggestChangingGeomWeight = True
@@ -536,7 +539,7 @@ def calculate ( meta ) :
                       "(%0.4f, while optimal range is between 0.01 and 0.02). " % rmsBondDistance +\
                       "We recommend to loose the geometry by increasing the " +\
                       "'Overall data-geometry weight' parameter (for example, to %0.4f).<p>" % newWeight
-        suggestedParameters['WAUTO_YES'] = 'Fixed'
+        suggestedParameters['WAUTO_YES'] = 'no'
         suggestedParameters['WAUTO_VAL'] = str(newWeight)
 
 
@@ -574,7 +577,7 @@ def calculate ( meta ) :
                     bottomline += "Please consider jelly-body refinement (Restraints -> Use jelly-body restraints). " + \
                               "You can also reduce overfitting by tightening up " + \
                               "geometry via decreasing 'Overall data-geometry weight' parameter.<p>"
-            suggestedParameters['JELLY'      ] = 'Yes'
+            suggestedParameters['JELLY'      ] = 'yes'
             suggestedParameters['JELLY_SIGMA'] = '0.01'
             suggestedParameters['JELLY_DMAX' ] = '4.2'
         else:
@@ -584,7 +587,7 @@ def calculate ( meta ) :
 
     # 9. Problems specific to low resolution. Advices for higher Rfree.
     if res >= 3.0:
-        if (rFree > meanRfree) and (rFree < (meanRfree + (2.0*sigRfree))):
+        if (rFree > (meanRfree+0.002)) and (rFree < (meanRfree + (2.0*sigRfree))):
             bottomline += "Your <i>R<sub>free</sub></i> is a bit higher than expected " +\
                           "(%0.3f, while mean value for this resolution is %0.3f). " % (rFree, meanRfree) +\
                           "Try building more residues/ligands. "
@@ -592,12 +595,12 @@ def calculate ( meta ) :
                 if isNCSpresent:
                     bottomline += "Try introducing NCS restraints as you seem to have several " +\
                                   "identical subunits in the asymmetric unit. "
-                    suggestedParameters['NCSR'] = 'Yes'
+                    suggestedParameters['NCSR'] = 'yes'
             else:
                 bottomline += "Try changing type of NCS restraints (between local and global). "
             if not jellyBody:
                 bottomline += "Try jelly-body refinement. "
-                suggestedParameters['JELLY'      ] = 'Yes'
+                suggestedParameters['JELLY'      ] = 'yes'
                 suggestedParameters['JELLY_SIGMA'] = '0.01'
                 suggestedParameters['JELLY_DMAX' ] = '4.2'
             # Apparently scaling parameters are not available in Cloud interface now
@@ -610,13 +613,13 @@ def calculate ( meta ) :
                 if isNCSpresent:
                     bottomline += "Try introducing NCS restraints as you seem to have several " +\
                                   "identical subunits in the asymmetric unit. "
-                    suggestedParameters['NCSR'] = 'Yes'
+                    suggestedParameters['NCSR'] = 'yes'
             else:
                 bottomline += "Try changing type of NCS restraints (between local and global). "
             if not jellyBody:
                 bottomline += "Try 20-50 cycles of jelly-body refinement. "
                 suggestedParameters['NCYC'       ] = '50'
-                suggestedParameters['JELLY'      ] = 'Yes'
+                suggestedParameters['JELLY'      ] = 'yes'
                 suggestedParameters['JELLY_SIGMA'] = '0.01'
                 suggestedParameters['JELLY_DMAX' ] = '4.2'
             bottomline += "Try LORESTR for automated refinement with restraints from homologous structures. <p>"
@@ -624,7 +627,7 @@ def calculate ( meta ) :
 
     # 10. Problems specific to medium resolution. Advices for higher Rfree
     elif res >= 2.0:
-        if (rFree > meanRfree) and (rFree < (meanRfree + (2.0*sigRfree))):
+        if (rFree > meanRfree+0.002) and (rFree < (meanRfree + (2.0*sigRfree))):
             bottomline += "Your <i>R<sub>free</sub></i> is a bit higher than expected " +\
                           "(%0.3f, while mean value for this resolution is %0.3f). " % (rFree, meanRfree) +\
                           "Try building more residues/ligands/waters/metals. "
@@ -633,16 +636,16 @@ def calculate ( meta ) :
                 if isNCSpresent:
                     bottomline += "Try introducing NCS restraints as you seem to have several " +\
                                   "identical subunits in the asymmetric unit. "
-                    suggestedParameters['NCSR'] = 'Yes'
+                    suggestedParameters['NCSR'] = 'yes'
             else:
                 bottomline += "If NCS restraints don't positively contribute to your refinement, try switching them off. "
-                suggestedParameters['NCSR'] = 'No'
+                suggestedParameters['NCSR'] = 'no'
 
-            if not tls:
+            if not tls and not suggestedParameters.has_key('NCYC') and not suggestChangingGeomWeight:
                 bottomline += "Try TLS refinement. "
-                suggestedParameters['TLS'       ] = 'Automatic'
-                suggestedParameters['TLS_CYCLES'] = '10'
-                suggestedParameters['RESET_B'   ] = 'No'
+                suggestedParameters['TLS'       ] = 'auto'
+                suggestedParameters['TLS_CYCLES'] = '5'
+                suggestedParameters['RESET_B'   ] = 'no'
             # Apparently scaling parameters are not available in Cloud interface now
             bottomline += "Try optimising solvent and scaling parameters. <p>"
         elif (rFree >= (meanRfree + (2.0*sigRfree))) and (rFree <= 0.4):
@@ -653,20 +656,20 @@ def calculate ( meta ) :
                 if isNCSpresent:
                     bottomline += "Try introducing NCS restraints as you seem to have several " +\
                                   "identical subunits in the asymmetric unit. "
-                    suggestedParameters['NCSR'] = 'Yes'
+                    suggestedParameters['NCSR'] = 'yes'
             bottomline += "<p>"
 
     # 11. Problems specific to higher resolution. Advices for higher Rfree
     elif res >= 1.6:
-        if (rFree > meanRfree) and (rFree < (meanRfree + (2.0*sigRfree))):
+        if (rFree > meanRfree+0.002) and (rFree < (meanRfree + (2.0*sigRfree))):
             bottomline += "Your <i>R<sub>free</sub></i> is a bit higher than expected " +\
                           "(%0.3f, while mean value for this resolution is %0.3f). " % (rFree, meanRfree) +\
                           "Try building more residues/ligands/waters/metals. "
-            if not tls:
+            if not tls and not suggestedParameters.has_key('NCYC') and not suggestChangingGeomWeight:
                 bottomline += "Try TLS refinement. "
-                suggestedParameters['TLS'       ] = 'Automatic'
-                suggestedParameters['TLS_CYCLES'] = '10'
-                suggestedParameters['RESET_B'   ] = 'No'
+                suggestedParameters['TLS'       ] = 'auto'
+                suggestedParameters['TLS_CYCLES'] = '5'
+                suggestedParameters['RESET_B'   ] = 'no'
             # Apparently scaling parameters are not available in Cloud interface now
             bottomline += "Try optimising solvent and scaling parameters. <p>"
         elif (rFree >= (meanRfree + (2.0*sigRfree))) and (rFree <= 0.4):
@@ -676,17 +679,17 @@ def calculate ( meta ) :
 
     # 12. Problems specific to subatomic and atomic resolution. Advices for higher Rfree
     else:
-        if (rFree > meanRfree) and (rFree < (meanRfree + (2.0*sigRfree))):
+        if (rFree > meanRfree+0.002) and (rFree < (meanRfree + (2.0*sigRfree))):
             bottomline += "Your <i>R<sub>free</sub></i> is a bit higher than expected " +\
                           "(%0.3f, while mean value for this resolution is %0.3f). " % (rFree, meanRfree) +\
                           "Try building more residues/ligands/waters/metals/alternative conformations. "
             if not anisotropicBfact:
                 bottomline += "Try anisotropic B-factors. "
-                suggestedParameters['BFAC'] = 'Anisotropic'
+                suggestedParameters['BFAC'] = 'ANIS'
             if not hydrogens:
                 bottomline += "Try adding hydrogens. "
-                suggestedParameters['MKHYDR'] = 'Yes'
-                suggestedParameters['RIDING_HYDROGENS'] = 'Yes'
+                suggestedParameters['MKHYDR'] = 'ALL'
+                suggestedParameters['RIDING_HYDROGENS'] = 'YES'
             # Apparently scaling parameters are not available in Cloud interface now
             bottomline += "Try optimising solvent and scaling parameters. <p>"
         elif (rFree >= (meanRfree + (2.0*sigRfree))) and (rFree <= 0.4):
