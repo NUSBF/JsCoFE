@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    26.02.21   <--  Date of Last Modification.
+#    05.03.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -54,7 +54,7 @@ class CootCE(basic.TaskDriver):
 
         #  remove expired backup directories
 
-        coot_backups_dir = os.path.join ( "..","..","backups" )
+        coot_backups_dir = os.path.abspath ( os.path.join("..","..","backups") )
         if os.path.exists(coot_backups_dir):
             expire = self.getCommandLineParameter ( "expire" )
             if not expire:
@@ -73,7 +73,7 @@ class CootCE(basic.TaskDriver):
 
         #  make new backup directory
 
-        coot_backup_dir = os.path.join ( "..","..","backups",
+        coot_backup_dir = os.path.join ( coot_backups_dir,
                                   self.task.project + "_" + str(self.task.id) )
         if not os.path.exists(coot_backup_dir):
             os.makedirs ( coot_backup_dir )
@@ -144,6 +144,12 @@ class CootCE(basic.TaskDriver):
         if sys.platform.startswith("win"):
             coot_bat = os.path.join(os.environ["CCP4"], "libexec", "coot.bat")
             rc = self.runApp ( coot_bat,args,logType="Main",quitOnError=False )
+            try:
+                if os.path.isdir("coot-backup"):
+                    shutil.rmtree ( coot_backup_dir, ignore_errors=True, onerror=None )
+                    shutil.move   ( "coot-backup"  , coot_backup_dir )
+            except:
+                self.stderrln ( " *** backup copy failed " + coot_backup_dir )
         else:
             rc = self.runApp ( "coot",args,logType="Main",quitOnError=False )
 
@@ -168,8 +174,6 @@ class CootCE(basic.TaskDriver):
                 mt       = os.path.getmtime(fname)
                 fdic[mt] = fname
                 mlist.append ( mt )
-
-        shutil.rmtree ( "coot-backup", ignore_errors=True, onerror=None )
 
         if len(mlist)>0:
 

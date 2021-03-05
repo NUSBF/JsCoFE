@@ -71,8 +71,13 @@ if (have_coot_python):
             return
 
         def load_backup_copy():
+
+            ccp4_python = "ccp4-python"
+            if sys.platform.startswith("win"):
+                ccp4_python = "ccp4-python.bat"
+
             process = subprocess.Popen ([
-                    "ccp4-python",
+                    ccp4_python,
                     select_file_dialog,
                     "Select Coot backup file",
                     "Coot backup files (*.pdb.gz)",
