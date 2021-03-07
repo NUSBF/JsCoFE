@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    23.07.20   <--  Date of Last Modification.
+#    07.03.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -21,7 +21,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2020
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2021
 #
 # ============================================================================
 #
@@ -252,17 +252,21 @@ class Deposition(basic.TaskDriver):
             "    xml_file     = " + str(aimless_meta) + "\n"
         )
 
-        worked = run_process ( input_mmcif  = xyzout_cif,
-                               output_mmcif = deposition_cif,
-                               fasta_file   = deposition_fasta,
-                               #sf_file      = sfCIF,
-                               xml_file     = aimless_meta )
+        try:
+            worked = run_process ( input_mmcif  = xyzout_cif,
+                                   output_mmcif = deposition_cif,
+                                   fasta_file   = deposition_fasta,
+                                   #sf_file      = sfCIF,
+                                   xml_file     = aimless_meta )
+        except:
+            worked = False
+            shutil.copy2 ( xyzout_cif,deposition_cif )
 
-        if not worked:
-            self.putTitle ( "Errors" )
-            self.fail ( "<b><i>Failed to create coordinate model file for deposition</i></b>",
-                        "Failed to create coordinate model file for deposition" )
-            return
+        # if not worked:
+        #     self.putTitle ( "Errors" )
+        #     self.fail ( "<b><i>Failed to create coordinate model file for deposition</i></b>",
+        #                 "Failed to create coordinate model file for deposition" )
+        #     return
 
         self.file_stdout.write (
             " =============================================================\n\n" )
