@@ -108,7 +108,7 @@ if (have_coot_python):
             else:
                 label = menu_child.get_label()
                 if label in remove_list:
-                    menu.remove(menu_child)
+                    menu.remove ( menu_child )
 
         if not select_file_dialog.startswith("$") and not cloud_backup_dir.startswith("$"):
             add_simple_coot_menu_menuitem_with_icon (

@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    03.03.21   <--  Date of Last Modification.
+#    07.03.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -354,41 +354,44 @@ class Refmac(basic.TaskDriver):
                     ])
                     self.close_stdin()
                     subfile = "substructure.pdb"
-                    self.runApp ( "peakmax",[
-                        "mapin" ,mapfname[0],
-                        "xyzout",subfile
-                    ],logType="Service" )
-                    for fname in mapfname:
-                        if os.path.exists(fname):
-                            os.remove ( fname )
+                    try:
+                        self.runApp ( "peakmax",[
+                            "mapin" ,mapfname[0],
+                            "xyzout",subfile
+                        ],logType="Service" )
+                        for fname in mapfname:
+                            if os.path.exists(fname):
+                                os.remove ( fname )
 
-                    xyz_merged = "refmac_merged.pdb"
-                    is_substr  = self.merge_sites ( xyzout,subfile,hatype,xyz_merged )
+                        xyz_merged = self.getOFName ( "_ha.pdb" )
+                        is_substr  = self.merge_sites ( xyzout,subfile,hatype,xyz_merged )
 
-                    self.putMessage ( "<h3>Structure, substructure and anomolous maps</h3>")
-                    struct_ano = self.formStructure ( xyz_merged,None,self.getMTZOFName(),
-                                                      libin,hkl,istruct,
-                                                      "FAN,PHAN,DELFAN,PHDELAN",
-                                                      False )
-                    if struct_ano:
-                        nlst = struct_ano.dname.split ( " /" )
-                        nlst[0] += " (anom maps)"
-                        struct_ano.dname = " /".join(nlst)
-                        self.putStructureWidget ( "struct_ano_btn",
-                                    "Structure, substructure and anomalous maps",struct_ano )
-
-                        if is_substr:
-                            substructure = self.formStructure ( None,subfile,
-                                    structure.getMTZFilePath(self.outputDir()),
-                                    libin,hkl,istruct,"FWT,PHWT,DELFWT,PHDELWT",
-                                    False )
-                            if not substructure:
-                                self.putMessage ( "<i>Substructure could not be " +\
-                                                  "formed (possible bug)</i>" )
-
-                    else:
+                        self.putMessage ( "<h3>Structure, substructure and anomolous maps</h3>")
+                        struct_ano = self.formStructure ( xyz_merged,None,self.getMTZOFName(),
+                                                          libin,hkl,istruct,
+                                                          "FAN,PHAN,DELFAN,PHDELAN",
+                                                          False )
+                        if struct_ano:
+                            nlst = struct_ano.dname.split ( " /" )
+                            nlst[0] += " (anom maps)"
+                            struct_ano.dname = " /".join(nlst)
+                            self.putStructureWidget ( "struct_ano_btn",
+                                        "Structure, substructure and anomalous maps",struct_ano )
+                            if is_substr:
+                                substructure = self.formStructure ( None,subfile,
+                                        structure.getMTZFilePath(self.outputDir()),
+                                        libin,hkl,istruct,"FWT,PHWT,DELFWT,PHDELWT",
+                                        False )
+                                if not substructure:
+                                    self.putMessage ( "<i>Substructure could not be " +\
+                                                      "formed (possible bug)</i>" )
+                        else:
+                            self.putMessage ( "<i>Structure with anomalous maps " +\
+                                              "could not be formed (possible bug)</i>" )
+                    except:
                         self.putMessage ( "<i>Structure with anomalous maps " +\
-                                          "could not be formed (possible bug)</i>" )
+                                          "could not be formed due to exception " +\
+                                          " (possible bug)</i>" )
 
                 # update structure revision
                 revision.setStructureData ( substructure )
