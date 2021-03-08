@@ -23,6 +23,12 @@ CCP4 Cloud Version Log
 
     #. ``Crank-2`` has new parameter "parallel model building depth" to balance between model building efficiency and speed
 
+    #. Fixed a bug in ``Coot`` task on Windows causing the loss of backup copies
+
+    #. ``Deposition`` task can now work with Buster output directly
+
+    #. Fixed a bug due to which CCP4 Cloud erroneously asked for CPU quota in desktop mode
+
 
 
 **Version 1.6.019**
