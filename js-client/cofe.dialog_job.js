@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    17.02.21   <--  Date of Last Modification.
+ *    08.03.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -632,7 +632,7 @@ JobDialog.prototype.makeLayout = function ( onRun_func )  {
               dlg.parent_page.ration = ration;
               dlg.parent_page.displayUserRation ( pdesc );
 
-              if (ration)  {
+              if (ration && (!__local_setup))  {
                 if ((ration.storage>0.0) && (ration.storage_used>=ration.storage))  {
                   new MessageBox ( 'Disk Quota Exceeded',
                       'The job cannot be run because disk quota is up. ' +
