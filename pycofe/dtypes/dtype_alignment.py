@@ -52,6 +52,8 @@ def parseHHRFile ( fpath,parse_alignments=False ):
         align_meta["msg"] = "File format is not recognised"
         return align_meta
 
+    queryName = lines[0].split()[1]
+
     align_meta["type"] = "hhpred"
 
     hits = []
@@ -80,6 +82,7 @@ def parseHHRFile ( fpath,parse_alignments=False ):
         i = i0
         while i<len(lines):
             if lines[i].startswith(">"):
+                targetName = lines[i][1:].split()[0]
                 alignment = { "seqid" : 0, "Q" : "", "T" : "" }
                 lst = lines[i+1].split(" ")
                 for j in range(len(lst)):
@@ -89,12 +92,11 @@ def parseHHRFile ( fpath,parse_alignments=False ):
                 while i<len(lines):
                     if lines[i].startswith(">"):
                         break
-                    if lines[i].startswith("Q "):
-                        alignment["Q"] += lines[i+1][22:].split(" ")[0]
-                        alignment["T"] += lines[i+5][22:].split(" ")[0]
-                        i += 8
-                    else:
-                        i += 1
+                    if lines[i].startswith("Q " + queryName):
+                        alignment["Q"] += lines[i][22:].split(" ")[0]
+                    elif lines[i].startswith("T " + targetName):
+                        alignment["T"] += lines[i][22:].split(" ")[0]
+                    i += 1
                 alignments.append(alignment)
             else:
                 i += 1
