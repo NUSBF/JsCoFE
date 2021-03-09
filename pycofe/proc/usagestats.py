@@ -168,7 +168,7 @@ def main():
             json.dump ( usageStats,outfile,indent=2 )
 
     except:
-        pass
+        usageStats = None
 
     if usageStats is None:
         pyrvapi.rvapi_set_text (
