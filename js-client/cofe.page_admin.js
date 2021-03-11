@@ -98,7 +98,7 @@ function AdminPage ( sceneId )  {
                                  .setTooltip('Identify and mark dormant users');
   var announce_btn = this.uaPanel.setButton ( '',image_path('announce'),0,col++,1,1 )
                                  .setSize('30px','30px')
-                                 .setTooltip('Send announcement to all users');
+                                 .setTooltip('Send e-mail announcement to all users');
   for (var i=1;i<col;i++)
     this.uaPanel.setCellSize ( 'auto','32px',0,i );
 
