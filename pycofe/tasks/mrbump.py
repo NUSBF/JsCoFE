@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    26.02.21   <--  Date of Last Modification.
+#    11.03.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -206,8 +206,8 @@ class MrBump(basic.TaskDriver):
 
             if hkl:
 
-                xyzfile = "mrbump_" + self.outdir_name() + ".pdb"
-                mtzfile = "mrbump_" + self.outdir_name() + ".mtz"
+                xyzfile = "output_" + self.outdir_name() + ".pdb"
+                mtzfile = "output_" + self.outdir_name() + ".mtz"
 
                 if os.path.isfile(xyzfile) and os.path.isfile(mtzfile):
 
