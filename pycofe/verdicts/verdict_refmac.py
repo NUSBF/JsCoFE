@@ -172,6 +172,36 @@ def calculateWeightRatio(distRatio):
     # at different resolutions, curve fitting in Excel (R^2 = 0.998) and praising the Lord
     return 0.99 * (distRatio ** 1.46)
 
+def plateauReached(rFreeList):
+    # returns True or False. Rule is a bit arbitrary - subject to optimisation in the future
+    # if Rfree for the last 4 cycles changes more than 0.3% - no plateau
+    if len(rFreeList) >=5:
+        if abs(rFreeList[-4] - rFreeList[-1]) > 0.003:
+            return False
+        else:
+            return True
+    elif len(rFreeList) >= 2:
+        if abs(rFreeList[0] - rFreeList[-1]) > 0.003:
+            return False
+        else:
+            return True
+    else:
+        # You don't reach plateau in one cycle
+        return False
+
+
+def getNcyclesToPlateau(rFreeList):
+    # returns number of cycles that required to reach plateau
+    if not plateauReached(rFreeList):
+        return len(rFreeList) + 5
+    else:
+        ncycsToPlateau = 0
+        for i in range(len(rFreeList), 1, -1): # backwards with step of -1
+            if not plateauReached(rFreeList[0:i]):
+                ncycsToPlateau = i + 1
+                break
+        return ncycsToPlateau
+
 
 #  2. Verdict message generation (not framed as a function, but ideally
 #     it should be, feel free to suggest)
@@ -441,8 +471,7 @@ def calculate ( meta ) :
     # 2. Checking that Rfree reached plateau
     if verdict_score < 83.0: # on the latest stages of refinement we allow users 1-2 cycles to recalculate map
         if len(allCyclesRfree) >= 5:
-            # a bit arbitrary - if Rfree for the last 4 cycles changes more than 0.3%
-            if abs(allCyclesRfree[-4] - allCyclesRfree[-1]) > 0.003:
+            if not plateauReached(allCyclesRfree):
                 bottomline += "It looks like <i>R<sub>free</sub></i> did not reach the plateau. " +\
                               "We recommend running more refinement cycles.<p>"
                 if suggestedParameters.has_key('NCYC'):
@@ -696,6 +725,27 @@ def calculate ( meta ) :
             bottomline += "Your <i>R<sub>free</sub></i> is substantially higher than expected " +\
                           "(%0.3f, while mean value for this resolution is %0.3f). " % (rFree, meanRfree) +\
                           "Try building more residues/ligands/waters/metals. Check your data for twinning. <p>"
+
+    # 13. Combing some parameters at the end
+
+    # Do we need to drop down number of cycles for the next run ?
+    if not suggestedParameters.has_key('NCYC'):
+        if res < 3.0 :
+            if ncyc > 10:
+                suggestedNcyc = getNcyclesToPlateau(allCyclesRfree)
+                if suggestedNcyc <= 8:
+                    suggestedParameters['NCYC'] = '10'
+                else:
+                    suggestedParameters['NCYC'] = str(suggestedNcyc + 3)
+        else:
+            # resolution >= 3.0
+            if ncyc > 20:
+                suggestedNcyc = getNcyclesToPlateau(allCyclesRfree)
+                if suggestedNcyc <= 18:
+                    suggestedParameters['NCYC'] = '20'
+                else:
+                    suggestedParameters['NCYC'] = str(suggestedNcyc + 3)
+
 
 #    suggestedJSON = json.dumps(suggestedParameters, indent = 4)
 #    bottomline += suggestedJSON
