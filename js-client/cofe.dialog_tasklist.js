@@ -487,7 +487,7 @@ var row      = 0;
     new TaskArpWarp  (),
     new TaskNautilus (),
     new TaskDimple   (),
-    new TaskCootMB   (),
+    //new TaskCootMB   (),
     new TaskCombStructure()
   ]);
 

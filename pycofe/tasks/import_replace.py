@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    16.01.21   <--  Date of Last Modification.
+#    11.03.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -140,7 +140,7 @@ class ImportReplace(migrate.Migrate):
 
         libPath = None
         if self.lib:
-            libPath = self.lib[0].getLibFilePath ( self.outputDir() )
+            libPath = self.lib.getLibFilePath ( self.outputDir() )
 
         # -------------------------------------------------------------------
         # form structure(s) to set or replace
