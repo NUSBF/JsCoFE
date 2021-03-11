@@ -359,7 +359,7 @@ class Deposition(basic.TaskDriver):
                     self.putMessage ( "&nbsp;<p><b><i> -- failed to download</i></b>" )
 
             except:
-                self.putMessage ( "&nbsp;<p><b><i> -- errors in pbtaining the PDB Validation Report</i></b>" )
+                self.putMessage ( "&nbsp;<p><b><i> -- errors in obtaining the PDB Validation Report</i></b>" )
 
 
         self._add_citations ( citations.citation_list )
