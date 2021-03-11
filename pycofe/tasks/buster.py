@@ -315,7 +315,7 @@ class Buster(basic.TaskDriver):
             # continue writing to stdout
             self.file_stdout = open ( self.file_stdout_path(),"a" )
 
-            self.stderrln ( str(graphData) )
+            #self.stderrln ( str(graphData) )
 
             self.putLogGraphWidget ( self.getWidgetId("graph"),graphData )
 
@@ -337,7 +337,20 @@ class Buster(basic.TaskDriver):
                 bustercif = os.path.join ( self.buster_dir(),"BUSTER_model.cif" )
                 if os.path.isfile(bustercif):
                     mmcifout = self.getMMCIFOFName()
-                    os.rename ( bustercif,mmcifout )
+                    if libin:
+                        with open(mmcifout,"w") as outfile:
+                            with open(bustercif,"r") as infile:
+                                wrt = True
+                                for line in infile:
+                                    if wrt and line.startswith("data_comp_list"):
+                                        wrt = False
+                                    elif not wrt and line.startswith("data_"):
+                                        wrt = True
+                                    if wrt:
+                                        outfile.write ( line )
+                    else:
+                        os.rename ( bustercif,mmcifout )
+                    #os.rename ( bustercif,mmcifout )
                     structure.add_file ( mmcifout,self.outputDir(),"mmcif",copy_bool=False )
                 bust_rcif = os.path.join ( self.buster_dir(),"BUSTER_refln.cif" )
                 if os.path.isfile(bust_rcif):
@@ -425,7 +438,6 @@ class Buster(basic.TaskDriver):
                                             map_labels="2FOFCWT,PH2FOFCWT,FOFCWT,PHFOFCWT" )
 
                             if substructure:
-                                self.stderrln ( " >>>>>> substructure")
                                 substructure.copyAssociations   ( istruct )
                                 substructure.addDataAssociation ( hkl.dataId     )
                                 substructure.addDataAssociation ( istruct.dataId )  # ???

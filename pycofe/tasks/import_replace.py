@@ -297,7 +297,7 @@ class ImportReplace(migrate.Migrate):
 
             outFName = self.outputFName
             if len(self.hkl_imported)<=0:
-                implist = ["HKL"] + implist
+                #implist = ["HKL"] + implist
                 r = self.makeClass ( self.input_data.data.revision[0] )
                 r.setStructureData ( sub  )
                 r.setStructureData ( sxyz )
