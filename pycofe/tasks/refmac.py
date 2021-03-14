@@ -366,7 +366,7 @@ class Refmac(basic.TaskDriver):
                         xyz_merged = self.getOFName ( "_ha.pdb" )
                         is_substr  = self.merge_sites ( xyzout,subfile,hatype,xyz_merged )
 
-                        self.putMessage ( "<h3>Structure, substructure and anomolous maps</h3>")
+                        self.putMessage ( "<h3>Structure, substructure and anomolous maps</h3>" )
                         struct_ano = self.formStructure ( xyz_merged,None,self.getMTZOFName(),
                                                           libin,hkl,istruct,
                                                           "FAN,PHAN,DELFAN,PHDELAN",

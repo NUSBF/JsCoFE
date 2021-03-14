@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    10.02.21   <--  Date of Last Modification.
+ *    13.03.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -400,7 +400,15 @@ function runJob ( loginData,data, callback_func )  {
   var rdata = {};  // response data structure
   rdata.timestamp = projectData.desc.timestamp;
 
+  var jobDir = prj.getJobDirPath ( loginData,task.project,task.id );
+  if (!utils.dirExists(jobDir))  {
+    callback_func ( new cmd.Response ( cmd.fe_retcode.writeError,
+                '[00005] Job directory does not exist (job deleted?).',rdata ) );
+    return;
+  }
+
   var jobDataPath = prj.getJobDataPath ( loginData,task.project,task.id );
+
   task.state      = task_t.job_code.running;
   var job_token   = crypto.randomBytes(20).toString('hex');
   if (task.nc_type=='client')
@@ -413,9 +421,6 @@ function runJob ( loginData,data, callback_func )  {
                               '[00005] Job metadata cannot be written.',rdata ) );
     return;
   }
-
-
-  var jobDir = prj.getJobDirPath ( loginData,task.project,task.id );
 
   if (task.nc_type=='client')  {
     // job for client NC, just pack the job directory and inform client

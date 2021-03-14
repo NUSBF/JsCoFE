@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    03.03.21   <--  Date of Last Modification.
+ *    14.03.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -758,12 +758,19 @@ JobTree.prototype._add_job_0 = function ( insert_bool,task,dataBox,
     }
 
     tree.saveProjectData ( [task],[],true, function(rdata){
+      if ((!shared) || tree.checkReload(tree,rdata,'add the job'))
+        complete();
+    });
+
+    /*
+    tree.saveProjectData ( [task],[],true, function(rdata){
       if (shared && tree.checkReload(tree,rdata,'add the job'))
         complete();
     });
 
     if (!shared)
       complete();
+    */
 
   }(this))
 
@@ -1445,16 +1452,19 @@ JobTree.prototype.openJob = function ( dataBox,parent_page )  {
                         dlg.tree.emitSignal ( cofe_signals.treeUpdated,{} );
                       break;
               case job_dialog_reason.add_job :
+                        dlg.tree.selectSingle ( dlg.tree.node_map[dlg.nodeId] );
                         dlg.tree.addJob ( false,false,dlg.parent_page,function(){
                           dlg.close();
                         });
                       break;
               case job_dialog_reason.clone_job :
+                        dlg.tree.selectSingle ( dlg.tree.node_map[dlg.nodeId] );
                         dlg.tree.cloneJob ( 'clone',dlg.parent_page,function(){
                           dlg.close();
                         });
                       break;
               case job_dialog_reason.run_job :
+                        dlg.tree.selectSingle ( dlg.tree.node_map[dlg.nodeId] );
                         var dataBox          = dlg.tree.harvestTaskData ( 1,[] );
                         var branch_task_list = dlg.tree.getAllAncestors ( dlg.tree.getSelectedTask() );
                         dlg.tree._copy_task_cloud_path ( options,branch_task_list );
@@ -1470,7 +1480,6 @@ JobTree.prototype.openJob = function ( dataBox,parent_page )  {
                         }
                         dlg.tree._add_job ( false,options,dataBox,dlg.parent_page,function(){
                           dlg.close();
-                          //tree.dlg_map[options.id].run_btn.click();
                         });
                       break;
               default : ;
