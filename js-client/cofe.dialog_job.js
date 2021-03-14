@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    08.03.21   <--  Date of Last Modification.
+ *    14.03.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -484,7 +484,6 @@ JobDialog.prototype.makeToolBar = function()  {
           (function(task){
             var hbtn = dlg.addToolBarButton ( gap,task_obj.icon(),hot_list[i].tooltip )
                           .addOnClickListener ( function(){
-                            //dlg.onDlgSignal_func ( dlg.task.id,
                             dlg.onDlgSignal_func ( dlg,job_dialog_reason.run_job,
                                                    task );
                           });
@@ -496,14 +495,12 @@ JobDialog.prototype.makeToolBar = function()  {
     }
     dlg.addjob_btn = dlg.addToolBarButton ( gap,'add','Add next job' )
                         .addOnClickListener ( function(){
-                          //dlg.onDlgSignal_func ( dlg.task.id,
                           dlg.onDlgSignal_func ( dlg,job_dialog_reason.add_job,
                                                  null );
                         });
     gap = true;
     dlg.clone_btn  = dlg.addToolBarButton ( gap,'clonejob','Clone job' )
                         .addOnClickListener ( function(){
-                          //dlg.onDlgSignal_func ( dlg.task.id,
                           dlg.onDlgSignal_func ( dlg,job_dialog_reason.clone_job,
                                                  null );
                           return false;  // preent default
