@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    26.02.21   <--  Date of Last Modification.
+ *    15.03.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -186,6 +186,8 @@ function getJobDataPath ( loginData,projectName,jobId )  {
 // ===========================================================================
 
 function writeProjectData ( loginData,projectData,putTimeStamp )  {
+  if (!projectData)
+    return false;
   if (putTimeStamp)
     projectData.desc.timestamp = Date.now();
   utils.writeObject ( getProjectDescPath(loginData,projectData.desc.name),
@@ -315,7 +317,12 @@ function readProjectList ( loginData )  {
       var pdesc = pdescs[i];
       if (checkProjectDescData(pdesc,loginData))  {
         var pData = readProjectData ( loginData,pdesc.name );
-        writeProjectData ( loginData,pData,true );
+        if (pData)  {
+          writeProjectData ( loginData,pData,true );
+        } else  {
+          log.error ( 70,'project data not found at ' +
+                         getProjectDataPath(loginData,pdesc.name) );
+        }
       }
       //if (pdesc.owner.share.length>0)  // the project could have been changed
       pdesc = readProjectDesc ( loginData,pdescs[i].name );
