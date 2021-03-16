@@ -315,22 +315,25 @@ function readProjectList ( loginData )  {
       pList.startmode = pd.start_mode.auto;
     for (var i=0;i<pdescs.length;i++)  {
       var pdesc = pdescs[i];
-      if (checkProjectDescData(pdesc,loginData))  {
+      if (pdesc && checkProjectDescData(pdesc,loginData))  {
         var pData = readProjectData ( loginData,pdesc.name );
         if (pData)  {
           writeProjectData ( loginData,pData,true );
         } else  {
           log.error ( 70,'project data not found at ' +
                          getProjectDataPath(loginData,pdesc.name) );
+          pdesc = null;
         }
       }
       //if (pdesc.owner.share.length>0)  // the project could have been changed
-      pdesc = readProjectDesc ( loginData,pdescs[i].name );
-      if (pdesc && (pdesc.owner.login!=loginData.login) &&
-                   (!pd.isProjectAccessible(loginData.login,pdesc)))
-        pdesc = null;
-      if (pdesc)
-        pList.projects.push ( pdesc );
+      if (pdesc)  {
+        pdesc = readProjectDesc ( loginData,pdescs[i].name );
+        if (pdesc && (pdesc.owner.login!=loginData.login) &&
+                     (!pd.isProjectAccessible(loginData.login,pdesc)))
+          pdesc = null;
+        if (pdesc)
+          pList.projects.push ( pdesc );
+      }
     }
     writeProjectList ( loginData,pList );
   }
