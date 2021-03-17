@@ -1,16 +1,37 @@
 #!/usr/bin/env ccp4-python
 
-import sys, os
+import sys, os, shutil
 import copy
+import itertools
 
 curPath = os.path.abspath(os.path.join(os.path.dirname( __file__ )))
 if curPath not in sys.path:
     sys.path.insert(0, curPath)
 
-def merge_two_dicts(x, y):
-    z = x.copy()
-    z.update(y)
-    return z
+
+def merge_two_dicts(a, b, path=None):
+    "merges b into a"
+    if path is None: path = []
+    for key in b:
+        if key in a:
+            if isinstance(a[key], dict) and isinstance(b[key], dict):
+                merge_two_dicts(a[key], b[key], path + [str(key)])
+            elif isinstance(a[key], list) and isinstance(b[key], list):
+                a[key] += b[key]
+                a[key] = removeDuplicatesFromList(a[key])
+            else:
+                a[key] = b[key]
+        else:
+            a[key] = b[key]
+    return a
+
+
+def removeDuplicatesFromList(seq):
+    seen = set()
+    seen_add = seen.add
+    return [x for x in seq if not (x in seen or seen_add(x))]
+
+
 
 class StartingParameters:
     trySimbad12   = True
@@ -39,8 +60,8 @@ class StartingParameters:
 class CurrentData:
     startingParameters = None
     modelPresent = False
-    mtzPresent = False
     anomalousPresent = False
+    ligandPresent = False
 
 
     hkl = None # mtz.mtz_dataset object with loads of useful info on MTZ from self.mtzpath
@@ -54,12 +75,14 @@ class CurrentData:
         if self.startingParameters.xyzpath is not None:
             if os.path.exists(self.startingParameters.xyzpath):
                 self.modelPresent = True
-        if self.startingParameters.hklpath is not None:
-            if os.path.exists(self.startingParameters.hklpath) and \
-                os.path.splitext(self.startingParameters.hklpath)[1].lower() == '.mtz':
-                self.mtzPresent = True
-        if self.startingParameters.ha_type != '': # ideally check for valid ha type
+        # if self.startingParameters.hklpath is not None:
+        #     if os.path.exists(self.startingParameters.hklpath) and \
+        #         os.path.splitext(self.startingParameters.hklpath)[1].lower() == '.mtz':
+        #         self.mtzPresent = True
+        if self.startingParameters.ha_type != '': # check for valid ha type
             self.anomalousPresent = True
+        if len(self.startingParameters.ligands) > 0: # validity check
+            self.ligandPresent = True
 
         return
 
@@ -166,9 +189,6 @@ def getRunParameters(args):
             parameters.rvapi_doc_path = os.path.join(parameters.workdir, "rvapi_document")
     parameters.rvapi_doc_path = os.path.abspath(parameters.rvapi_doc_path)
 
-
-
-
     currentData = CurrentData(parameters) # main data structure passed between CCP4go components
     return currentData
 
@@ -182,28 +202,28 @@ class CCP4go(ccp4go_base.Base):
         if self.currentData.startingParameters.hklpath is None:
             self.stderr ('HKLPATH has not been supplied; CCP4go requires diffraction data\n')
             self.stderr ( " *** reflection file not given -- stop.\n" )
-            self.output_meta["retcode"] = "[02-001] hkl file not given"
+            self.output_meta["error"] = "[02-001] hkl file not given"
             self.write_meta()
             self.finish()
 
         if self.currentData.startingParameters.seqpath is None:
             sys.stderr.write('SEQPATH has not been supplied; CCP4go requires sequence\n')
             self.stderr ( " *** sequence file not given -- stop.\n" )
-            self.output_meta["retcode"] = "[02-002] hkl file not found"
+            self.output_meta["error"] = "[02-002] hkl file not found"
             self.write_meta()
             self.finish()
 
         if not os.path.exists(self.currentData.startingParameters.hklpath):
             self.stderr ('HKLPATH %s does not exist; CCP4go requires diffraction data\n' % self.currentData.startingParameters.hklpath)
             self.stderr ( " *** reflection file does not exist -- stop.\n" )
-            self.output_meta["retcode"] = "[02-002] hkl file not found"
+            self.output_meta["error"] = "[02-002] hkl file not found"
             self.write_meta()
             self.finish()
 
         if not os.path.exists(self.currentData.startingParameters.seqpath):
             sys.stderr.write('SEQPATH %s does not exist; CCP4go requires sequence\n' % self.currentData.startingParameters.seqpath)
             self.stderr ( " *** sequence file does not exist -- stop.\n" )
-            self.output_meta["retcode"] = "[02-002] hkl file not found"
+            self.output_meta["error"] = "[02-002] hkl file not found"
             self.write_meta()
             self.finish()
 
@@ -217,17 +237,43 @@ class CCP4go(ccp4go_base.Base):
 
         self.checkBasicInput() # checking whether input files are present
 
-        if self.currentData.mtzPresent:
-            import ccp4go_mtz
-            self.stdout('\nMTZ file supplied: checking data...\n')
-            mtz = ccp4go_mtz.PrepareMTZ(currentData=self.currentData)
-            mtz.set_parent_branch_id('')  # root task
-            mtz.prepare_mtz() # merge if unmerged
-            self.currentData = copy.deepcopy(mtz.currentData) # updating current data
-            self.output_meta = merge_two_dicts(self.output_meta, mtz.output_meta) # updating meta data
-            if mtz.output_meta["error"]:
-                return False # fail
-            # for RVAPI report: mtz.branch_data["pageId"]
+        # converting input data into acceptable CCP4-compatible format via CCP4Cloud build-in routines
+        # self.currentData is updated to contain new filenames with converted data
+        # However, unmerged data is not merged yet
+        import ccp4go_imports
+        imp = ccp4go_imports.CCP4GoImporter(currentData=self.currentData)
+        imp.importFiles()
+        self.currentData = copy.deepcopy(imp.currentData)  # updating current data
+        if imp.output_meta["error"]:
+            return False  # fail
+
+        import ccp4go_mtz
+        self.stdout('\nMTZ file supplied: checking data...\n')
+        mtz = ccp4go_mtz.PrepareMTZ(currentData=self.currentData)
+        mtz.output_meta = copy.deepcopy(self.output_meta)
+        mtz.set_parent_branch_id('')  # root task
+        mtz.prepare_mtz() # merge if unmerged
+        self.currentData = copy.deepcopy(mtz.currentData) # updating current data
+        self.output_meta = copy.deepcopy(mtz.output_meta) # updating meta data
+        if mtz.output_meta["error"]:
+            return False # fail
+        # for RVAPI report: mtz.branch_data["pageId"]
+
+        # Once data is ready, let us make ASU guess
+        import ccp4go_asu
+        self.stdout('\nGenerating ASU definition:\n')
+        asu = ccp4go_asu.PrepareASU(currentData=self.currentData)
+        asu.output_meta = copy.deepcopy(self.output_meta)
+        asu.set_parent_branch_id('')  # root task
+        asu.prepare_asu()
+        self.currentData = copy.deepcopy(asu.currentData) # updating current data
+        self.output_meta = copy.deepcopy(asu.output_meta) # updating meta data
+        if asu.output_meta["error"]:
+            return False # fail
+        if asu.output_meta["results"][self.currentData.asu_dir]['nResults'] < 1:
+            return False # fail - could not figure out ASU composition
+        # for RVAPI report: asu.branch_data["pageId"]
+
 
         # figure out anomalous signal somewhere
 
@@ -246,24 +292,14 @@ class CCP4go(ccp4go_base.Base):
         import ccp4go_simbad12
         self.stdout('\nRunning SIMBAD:\n')
         simbad = ccp4go_simbad12.Simbad12(currentData=self.currentData)
+        simbad.output_meta = copy.deepcopy(self.output_meta)
         simbad.set_parent_branch_id('') # root task
         simbad.run()
         self.currentData = copy.deepcopy(simbad.currentData) # updating current data
-        self.output_meta = merge_two_dicts(self.output_meta, simbad.output_meta)  # updating meta data
+        self.output_meta = copy.deepcopy(simbad.output_meta)  # updating meta data
         if simbad.output_meta["error"]:
             return False  # fail
-        # for RVAPI report: mtz.branch_data["pageId"]
-
-        # if simbad.output_meta["retcode"] == "sequence problem":
-        #     self.putMessage("<h3><i>---- Sequence data does not match " +
-        #                     "solution (too many sequences given). SIMBAD could not find solution.</i></h3>")
-        #     self.write_meta()
-        #     return False # not solved
-        # elif simbad.output_meta["retcode"] == "sequence mismatch":
-        #     self.putMessage("<h3><i>---- Sequence data does not match " +
-        #                     "solution (too low homology). SIMBAD could not find solution.</i></h3>")
-        #     self.write_meta()
-        #     return False # not solved
+        # for RVAPI report: simbad.branch_data["pageId"]
 
         return True # Solved!
 
@@ -277,22 +313,53 @@ class CCP4go(ccp4go_base.Base):
 
 
     def autoBuild(self):
-        # Shall do ligand fitting if present
-        # model building or rebuilding after MR?
+        import ccp4go_ccp4build
+        self.stdout('\nRunning auto-builder CCP4Build:\n')
+        ccp4build = ccp4go_ccp4build.CCP4Build(currentData=self.currentData)
+        ccp4build.output_meta = copy.deepcopy(self.output_meta)
+        ccp4build.set_parent_branch_id('') # root task
+        ccp4build.run()
+        self.currentData = copy.deepcopy(ccp4build.currentData) # updating current data
+        self.output_meta = copy.deepcopy(ccp4build.output_meta)  # updating meta data
+        # for RVAPI report: ccp4build.branch_data["pageId"]
+
+        if not ccp4build.output_meta["error"]:
+            # add checking for success of building
+            if self.currentData.ligandPresent:
+                self.fitLigand()
+
+        # add waters?
+        # refine with LORESTR at low resolution?
+
+        # autoBuild don't return anything as self.finish() always called after it
+        # (auto-building is the last step in the pipeline anyway)
+        return
+
+
+    def fitLigand(self):
 
         return
+
 
     def finish(self):
         # Shall treat correctly case when EP substructure found but nothing else built
         # Shall treat correctly situation when structure is solved by both EP and MR and return best
+        # shall save meta with self.write_meta()
+
+        self.write_meta()
 
         if self.output_meta["error"]:
-            self.write_meta()
             self.stderr('\n', mainLog=True)
             self.stderr(self.output_meta["error"], mainLog=True)
+            self.stderr('\n', mainLog=True)
+            self.stderr('Return code: ' + str(self.output_meta['retcode']), mainLog=True)
             self.stderr('\n\n', mainLog=True)
             os.chdir(self.startingDirectory)
             sys.exit(1)
+
+        self.stdout('\nStructure solution workflow completed.\n\n')
+        self.putMessage ( "<h3><i>---- Structure solution workflow " +
+                          "completed.</i></h3>" )
 
         os.chdir(self.startingDirectory)
         sys.exit(0)
@@ -308,25 +375,23 @@ class CCP4go(ccp4go_base.Base):
             solvedWithModel = self.solveWithModel()
             if solvedWithModel:
                 self.autoBuild()
-                self.finish() # finish pipeline with either success or error or unsolved
-            else:
-                self.finish() # finish pipeline with either success or error or unsolved
+            self.finish() # finish pipeline with either success or error or unsolved
 
         solvedWithSimbad = self.solveWithSimbad()
         if solvedWithSimbad:
             self.autoBuild()
-            self.finish()  # finish pipeline with either success or error or unsolved
+            self.finish()
 
         if self.currentData.anomalousPresent:
             solvedEP = self.solveEP()
             if solvedEP:
-                self.autoBuild()
-                self.finish()  # finish pipeline with either success or error or unsolved
+                self.fitLigand()
+                self.finish()
 
         solvedMR = self.solveMR()
         if solvedMR:
             self.autoBuild()
-            self.finish()  # finish pipeline with either success or error or unsolved
+            self.finish()
 
         self.finish()
 

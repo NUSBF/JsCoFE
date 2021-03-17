@@ -18,7 +18,7 @@ import os
 import sys
 import json
 import shutil
-import re
+import re, copy
 from collections import namedtuple
 try:
     import http.client
@@ -41,34 +41,6 @@ import gemmi
 # ============================================================================
 
 class Base(object):
-    currentData = None
-    rvapiManager = None
-
-    stage_no       = 0          # stage number for headers
-    summaryTabId   = "ccp4go_summary_page"     # summary tab Id
-    #strow          = 0          # summary tab output row number
-    navTreeId      = "ccp4go_navigation_tree"  # navigation tree Id
-
-    output_meta    = {}  # output meta json file written in current directory on
-                          # termination
-
-    stdout_path     = None
-    stderr_path     = None
-    file_stdout     = sys.stdout
-    file_stderr     = sys.stderr
-
-    script_path     = ""
-    script_file     = None
-
-    page_cursor     = ["",0]
-
-    log_parser      = None
-    log_parser_cnt  = 0  # for generating parser's panel ids
-    generic_parser_summary = {}
-
-    rvapi_version   = [1,0,15]   # for tree layout, put [1,0,15]
-    layout          = 4          # tabbed layout (for debugging)
-
     def tree_id         (self): return "workflow_tree_id"
     def file_stdout_path(self): return "_stdout.log" # reserved name
     def file_stderr_path(self): return "_stderr.log"
@@ -76,7 +48,34 @@ class Base(object):
 
     # ----------------------------------------------------------------------
     def __init__(self, currentData=None):
+
         self.currentData = currentData
+        self.rvapiManager = None
+
+        self.stage_no = 0  # stage number for headers
+        self.summaryTabId = "ccp4go_summary_page"  # summary tab Id
+        # strow          = 0          # summary tab output row number
+        self.navTreeId = "ccp4go_navigation_tree"  # navigation tree Id
+
+        self.output_meta = {}  # output meta json file written in current directory on
+        # termination
+
+        self.stdout_path = None
+        self.stderr_path = None
+        self.file_stdout = sys.stdout
+        self.file_stderr = sys.stderr
+
+        self.script_path = ""
+        self.script_file = None
+
+        self.page_cursor = ["", 0]
+
+        self.log_parser = None
+        self.log_parser_cnt = 0  # for generating parser's panel ids
+        self.generic_parser_summary = {}
+
+        self.rvapi_version = [1, 0, 15]  # for tree layout, put [1,0,15]
+        self.layout = 4  # tabbed layout (for debugging)
 
         # old retcodes - all of them:
         # "[01-001] unknown command line parameter"
@@ -115,6 +114,19 @@ class Base(object):
         return
 
     # ----------------------------------------------------------------------
+
+    def getResultsWithMinimalRfree(self):
+        resultToReturn = {'rfree' : 1.0}
+        resultDirectory = ''
+
+        for result in self.output_meta['results'].keys():
+            if 'rfree' in self.output_meta['results'][result]:
+                if self.output_meta['results'][result]['rfree'] < resultToReturn['rfree']:
+                    resultToReturn = copy.deepcopy(self.output_meta['results'][result])
+                    resultDirectory = result
+
+        return (resultDirectory, resultToReturn)
+
 
     def initRVAPI(self):
         if self.currentData.startingParameters is not None:
