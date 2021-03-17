@@ -185,7 +185,7 @@ class Simbad12(ccp4go_base.Base):
                     # Potential source of problems - relative path to the output MTZ file
                     # must be correct!
                     fpath_mtz  = os.path.join(os.path.dirname(self.currentData.startingParameters.rvapi_doc_path), meta["mtz"][3:])
-                    asuComp    = asucomp.getASUComp1 ( fpath_xyz,self.currentData.startingParameters.seqpath )
+                    asuComp    = asucomp.getASUComp1 ( fpath_xyz, self.currentData.startingParameters.seqpath )
                     spg_info   = self.reindexHKLifSpaceGroupChanged (self.currentData.hkl.HM, fpath_xyz)
                 else:
                     nResults   = 0
@@ -217,11 +217,19 @@ class Simbad12(ccp4go_base.Base):
         self.output_meta["results"][self.simbad12_dir()]["pdbcode"] = resultName
         self.output_meta["results"][self.simbad12_dir()]["asucomp"] = asuComp
 
-        #if self.output_meta["retcode"] != "not solved" and self.seqpath:
-        #    if asuComp["retcode"] == 1:
-        #        self.output_meta["error"] = "sequence problem"
-        #    elif asuComp["minseqid"]<0.7:
-        #        self.output_meta["error"] = "sequence mismatch"
-
+        # print (str(asuComp))
+        # if self.output_meta["retcode"] != "not solved" and self.currentData.startingParameters.seqpath:
+        #     if asuComp["retcode"] == 1:
+        #         self.output_meta["error"] = "ASU checking: sequence problem"
+        #         self.putMessage("<h3><i>---- Sequence data does not match " +
+        #                         "solution (too many sequences given). SIMBAD could not find solution.</i></h3>")
+        #         self.stderr('Sequence data does not match solution (too many sequences given). ' +
+        #                     'SIMBAD could not find solution', mainLog=True)
+        #     elif asuComp["minseqid"]<0.7:
+        #         self.output_meta["error"] = "ASU checking: sequence mismatch"
+        #         self.putMessage("<h3><i>---- Sequence data does not match " +
+        #                         "solution (too low homology). SIMBAD could not find solution.</i></h3>")
+        #         self.stderr('Sequence data does not match solution (too low homology). ' +
+        #                     'SIMBAD could not find solution.', mainLog=True)
 
         return quit_message
