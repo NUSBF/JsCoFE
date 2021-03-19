@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    01.03.21   <--  Date of Last Modification.
+ *    19.03.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -76,14 +76,15 @@ NCJobRegister.prototype.addJob = function ( jobDir )  {
 var job_token     = crypto.randomBytes(20).toString('hex');
 var maxSendTrials = conf.getServerConfig().maxSendTrials;
   this.job_map[job_token] = {
-    feURL      : '',
-    jobDir     : jobDir,
-    jobStatus  : task_t.job_code.new,
-    sendTrials : maxSendTrials,
-    startTime  : Date.now(),
-    endTime    : null,
-    exeType    : '',    // SHELL, SGE or SCRIPT
-    pid        : 0      // job pid is added separately
+    feURL       : '',
+    jobDir      : jobDir,
+    jobStatus   : task_t.job_code.new,
+    return_data : true,
+    sendTrials  : maxSendTrials,
+    startTime   : Date.now(),
+    endTime     : null,
+    exeType     : '',    // SHELL, SGE or SCRIPT
+    pid         : 0      // job pid is added separately
   };
   return job_token;
 }
@@ -734,9 +735,9 @@ function ncJobFinished ( job_token,code )  {
 
   task.job_dialog_data.viewed = false;
 
-  if (!task.informFE)  {
-    // FE need not to be informed of job status (RVAPI application), just
-    // remove the job and quit
+  if ((!task.informFE) || (!jobEntry.return_data))  {
+    // FE need not to be informed of job status (RVAPI application or kill),
+    // just remove the job and quit
     ncJobRegister.removeJob ( job_token );
     writeNCJobRegister      ();
     return;
@@ -1221,30 +1222,44 @@ var response = null;
 
     if (jobEntry)  {
 
+      if (post_data_obj.hasOwnProperty('return_data') && (!post_data_obj.return_data))  {
+        jobEntry.return_data = post_data_obj.return_data;
+        writeNCJobRegister();
+      }
+
       if (post_data_obj.gracefully)  {
 
         log.standard ( 60,'attempt to gracefully end the job ' +
                           post_data_obj.job_token + ' pid=' + jobEntry.pid );
         utils.writeString (  path.join(jobEntry.jobDir,cmd.endJobFName),'end' );
         response = new cmd.Response ( cmd.nc_retcode.ok,
-                                      '[00109] Job scheduled for graceful stop',{} );
+          '[00109] Job scheduled for graceful stop, token=' + post_data_obj.job_token,
+          {} );
 
       } else  {
 
         if (jobEntry.pid>0)  {
-          //log.detailed ( 11,'attempt to kill pid=' + jobEntry.pid );
 
-          log.standard ( 62,'attempt to terminate the job ' +
-                            post_data_obj.job_token + ' pid=' + jobEntry.pid );
+          if (jobEntry.return_data)  {
+            log.standard ( 61,'attempt to stop job ' +
+                               post_data_obj.job_token + ' pid=' + jobEntry.pid );
+            response = new cmd.Response ( cmd.nc_retcode.ok,
+                '[00110] Job scheduled for stopping, token=' + post_data_obj.job_token,
+                {} );
+          } else  {
+            log.standard ( 62,'attempt to kill job ' +
+                               post_data_obj.job_token + ' pid=' + jobEntry.pid );
+            response = new cmd.Response ( cmd.nc_retcode.ok,
+                '[00111] Job scheduled for stopping, token=' + post_data_obj.job_token,
+                {} );
+          }
           _stop_job ( jobEntry );
-
-          response = new cmd.Response ( cmd.nc_retcode.ok,
-                                        '[00110] Job scheduled for stopping',{} );
 
         } else  {
           log.detailed ( 12,'attempt to kill a process without a pid' );
           response = new cmd.Response ( cmd.nc_retcode.pidNotFound,
-                                '[00111] Job\'s PID not found; just stopped?',{} );
+              '[00112] Job\'s PID not found; just stopped? token=' + post_data_obj.job_token,
+              {} );
         }
 
       }
@@ -1253,14 +1268,16 @@ var response = null;
       log.error ( 13,'attempt to kill/end failed no token found: ' +
                      post_data_obj.job_token );
       response = new cmd.Response ( cmd.nc_retcode.jobNotFound,
-                                    '[00112] Job not found; just stopped?',{} );
+          '[00113] Job not found; just stopped? token=' + post_data_obj.job_token,
+          {} );
     }
 
   } else  {
     log.error ( 14,'wrong request to kill/end post_data="' +
                          JSON.stringify(post_data_obj) + '"' );
     response = new cmd.Response ( cmd.nc_retcode.wrongRequest,
-                                  '[00113] Wrong request data',{} );
+        '[00114] Wrong request data, token=' + post_data_obj.job_token,
+        {} );
   }
 
   callback_func ( response );

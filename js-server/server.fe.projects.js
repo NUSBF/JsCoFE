@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    15.03.21   <--  Date of Last Modification.
+ *    19.03.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -20,8 +20,8 @@
  */
 
 //  load system modules
-var fs       = require('fs-extra');
-var path     = require('path');
+var fs        = require('fs-extra');
+var path      = require('path');
 //var child_process = require('child_process');
 //var archiver      = require('archiver');
 
@@ -34,6 +34,7 @@ var ration    = require('./server.fe.ration');
 var fcl       = require('./server.fe.facilities');
 var user      = require('./server.fe.user');
 var class_map = require('./server.class_map');
+var rj        = require('./server.fe.run_job');
 var pd        = require('../js-common/common.data_project');
 var cmd       = require('../js-common/common.commands');
 var task_t    = require('../js-common/tasks/common.tasks.template');
@@ -1063,8 +1064,10 @@ function saveProjectData ( loginData,data )  {
 
       // remove job directories from the 'delete' list
       var ndel_own = 0;
-      for (var i=0;i<data.tasks_del.length;i++)
+      for (var i=0;i<data.tasks_del.length;i++)  {
+        rj.killJob ( loginData,projectName,data.tasks_del[i][0] );
         utils.removePath ( getJobDirPath(loginData,projectName,data.tasks_del[i][0]) );
+      }
 
       // add job directories from the 'add' list
       for (var i=0;i<data.tasks_add.length;i++)  {

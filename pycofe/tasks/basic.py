@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    04.03.21   <--  Date of Last Modification.
+#    19.03.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -247,6 +247,8 @@ class TaskDriver(object):
         self.file_stdout  = open ( self.file_stdout_path (),'w' )
         self.file_stdout1 = open ( self.file_stdout1_path(),'w' )
         self.file_stderr  = open ( self.file_stderr_path (),'w' )
+
+        sys.stderr = self.file_stderr
 
         # fetch task data
         self.task = jsonut.readjObject  ( "job.meta" )

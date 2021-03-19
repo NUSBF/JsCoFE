@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    13.03.21   <--  Date of Last Modification.
+ *    19.03.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -125,7 +125,8 @@ FEJobRegister.prototype.cleanup = function ( job_token,token_list )  {
     this.removeJob ( job_token );
     for (var token in this.job_map)
       if ((this.job_map.nc_number==nc_number) && (token_list.indexOf(token)<0))
-        removeJob ( token );
+        this.removeJob ( token );
+        //removeJob ( token );
   }
 }
 
@@ -422,6 +423,8 @@ function runJob ( loginData,data, callback_func )  {
     return;
   }
 
+//  utils.setLock ( jobDir,100 );  // to prevent deletion during data transmission
+
   if (task.nc_type=='client')  {
     // job for client NC, just pack the job directory and inform client
 
@@ -434,6 +437,8 @@ function runJob ( loginData,data, callback_func )  {
     task.makeInputData ( loginData,jobDir );
 
     send_dir.packDir ( jobDir,'*',null, function(code,jobballSize){
+
+//      utils.removeLock ( jobDir );
 
       if (!code)  {
 
@@ -492,6 +497,7 @@ function runJob ( loginData,data, callback_func )  {
         utils.writeJobReportMessage ( jobDir,msg,false );
         task.state = task_t.job_code.failed;
         utils.writeObject ( jobDataPath,task );
+//        utils.removeLock  ( jobDir );
 
       } else  {
 
@@ -531,6 +537,7 @@ function runJob ( loginData,data, callback_func )  {
             feJobRegister.addJob ( rdata.job_token,nc_number,ownerLoginData,
                                    task.project,task.id,shared_logins );
             writeFEJobRegister();
+//            utils.removeLock ( jobDir );
 
             // update the user ration state
             //ration.updateUserRation_bookJob ( ownerLoginData,task );
@@ -562,8 +569,9 @@ function runJob ( loginData,data, callback_func )  {
 
             task.state = task_t.job_code.failed;
             utils.writeObject ( jobDataPath,task );
+//            utils.removeLock  ( jobDir );
 
-        });
+          });
 
       }
 
@@ -743,8 +751,10 @@ var response = null;
       uri     : cmd.nc_command.stopJob,
       baseUrl : nc_url,
       method  : 'POST',
-      body    : { job_token  : jobEntry.job_token,
-                  gracefully : data.gracefully },
+      body    : { job_token   : jobEntry.job_token,
+                  gracefully  : data.gracefully,
+                  return_data : true
+                },
       json    : true
     },function(error,response,body){
         if (!error && (response.statusCode==200)) {
@@ -781,6 +791,41 @@ var response = null;
   }
 
   return response;
+
+}
+
+
+function killJob ( loginData,projectName,taskId )  {
+// Request to stop a running job immediately and do not return data.
+
+  var jobEntry = getEFJobEntry ( loginData,projectName,taskId );
+
+  if (jobEntry)  {
+
+    // send stop request to number cruncher
+    var nc_url = conf.getNCConfig(jobEntry.nc_number).externalURL;
+    log.standard ( 91,'request to kill job ' + taskId + ' at ' + nc_url );
+
+    request({
+      uri     : cmd.nc_command.stopJob,
+      baseUrl : nc_url,
+      method  : 'POST',
+      body    : { job_token   : jobEntry.job_token,
+                  gracefully  : false,
+                  return_data : false
+                },
+      json    : true
+    },function(error,response,body){
+        if (!error && (response.statusCode==200)) {
+          log.standard ( 101,body.message );
+        }
+      }
+    );
+
+    feJobRegister.removeJob ( jobEntry.job_token );
+    writeFEJobRegister();
+
+  }
 
 }
 
@@ -922,6 +967,7 @@ function getJobResults ( job_token,server_request,server_response )  {
 
     var jobDir = prj.getJobDirPath ( jobEntry.loginData,jobEntry.project,
                                      jobEntry.jobId );
+//    utils.setLock ( jobDir,100 );
 
     send_dir.receiveDir ( jobDir,conf.getFETmpDir(),server_request,
       function(code,errs,meta){
@@ -978,6 +1024,9 @@ function getJobResults ( job_token,server_request,server_response )  {
           cmd.sendResponse ( server_response, cmd.nc_retcode.unpackErrors,
                             '[00016] Unspecified unpacking errors' );
         }
+
+//        utils.removeLock ( jobDir );
+
       });
 
   } else  { // job token not recognised, return Ok
@@ -1090,6 +1139,7 @@ module.exports.runJob             = runJob;
 module.exports.replayJob          = replayJob;
 module.exports.readJobStats       = readJobStats;
 module.exports.stopJob            = stopJob;
+module.exports.killJob            = killJob;
 module.exports.getJobResults      = getJobResults;
 module.exports.checkJobs          = checkJobs;
 module.exports.wakeZombiJobs      = wakeZombiJobs;

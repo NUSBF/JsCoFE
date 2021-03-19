@@ -231,16 +231,19 @@ function __after_unzip ( unpack_dir,dirPath,tmpDir,jobballPath,
   if (remove_jobball_bool)
     utils.removeFile ( jobballPath )
   if (cleanTmpDir)  {
-     // replace destination with temporary directory used for unpacking;
-     // as all directories are on the same device (see above), the
-     // replace should be done within this thread and, therefore, safe
-     // for concurrent access from client
-     utils.moveDir ( dirPath   ,tmpDir+'_1', true );
-     utils.moveDir ( unpack_dir,dirPath    , true );
-     setTimeout ( function(){  // postpone for speed
-       utils.removePath ( tmpDir+'_1' );
-       utils.removePath ( tmpDir      );
-     },0 );
+    // replace destination with temporary directory used for unpacking;
+    // as all directories are on the same device (see above), the
+    // replace should be done within this thread and, therefore, safe
+    // for concurrent access from client
+    if (utils.fileExists(dirPath))  {
+      utils.moveDir ( dirPath   ,tmpDir+'_1', true );
+      utils.moveDir ( unpack_dir,dirPath    , true );
+      setTimeout ( function(){  // postpone for speed
+        utils.removePath ( tmpDir+'_1' );
+        utils.removePath ( tmpDir      );
+      },0 );
+    } else
+      log.error ( 25,'expected directory "' + dirPath + '" not found' );
   }
 }
 
