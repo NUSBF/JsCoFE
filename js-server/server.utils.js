@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    26.02.21   <--  Date of Last Modification.
+ *    18.03.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -364,6 +364,8 @@ function removePath ( dir_path ) {
   var rc   = true;
   var stat = fileExists(dir_path);
 
+//  removeLock ( dir_path );
+
   if (stat && stat.isSymbolicLink())  {
     fs.unlinkSync ( dir_path );
   } else if (stat)  {
@@ -391,6 +393,21 @@ function removePath ( dir_path ) {
   return rc;  // false if there were errors
 
 }
+
+
+// function removeLockedPath ( dir_path ) {
+//   if (fileExists(dir_path))  {
+//     var n = checkLock ( dir_path );
+//     if (n<=0)
+//       removePath ( dir_path );
+//     else  {
+//       setLock ( dir_path,n-1 );
+//       setTimeout ( function(){
+//         removeLockedPath ( dir_path );
+//       },60000);
+//     }
+//   }
+// }
 
 
 function cleanDir ( dir_path ) {
@@ -554,6 +571,24 @@ var signal = readString ( path.join(jobDir,signal_file_name) );
   return code;
 }
 
+// ===========================================================================
+
+// var lock_map = {};
+//
+// function setLock ( lockName,value )  {
+//   lock_map[lockName] = true;
+// }
+//
+// function checkLock ( lockName )  {
+//   if (lockName in lock_map)
+//     return lock_map[lockName];
+//   return 0;
+// }
+//
+// function removeLock ( lockName )  {
+//   if (lockName in lock_map)
+//     delete lock_map[lockName];
+// }
 
 // ===========================================================================
 
@@ -785,6 +820,7 @@ module.exports.mkDir_anchor          = mkDir_anchor;
 module.exports.cleanDir              = cleanDir;
 module.exports.cleanDirExt           = cleanDirExt;
 module.exports.removePath            = removePath;
+// module.exports.removeLockedPath      = removeLockedPath;
 module.exports.getDirectorySize      = getDirectorySize;
 module.exports.removeFiles           = removeFiles;
 module.exports.writeJobReportMessage = writeJobReportMessage;
@@ -799,3 +835,6 @@ module.exports.send_file             = send_file;
 module.exports.killProcess           = killProcess;
 module.exports.spawn                 = spawn;
 module.exports.padDigits             = padDigits;
+// module.exports.setLock               = setLock;
+// module.exports.checkLock             = checkLock;
+// module.exports.removeLock            = removeLock;

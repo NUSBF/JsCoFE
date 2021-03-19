@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    07.03.21   <--  Date of Last Modification.
+#    19.03.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -213,8 +213,14 @@ class Deposition(basic.TaskDriver):
                            "end\n" )
         self.close_stdin()
 
-        sfCIF = os.path.join ( self.outputDir(),self.getOFName("_sf.cif") )
-        cmd   = ["HKLIN",hkl.getFilePath(self.inputDir(),dtype_template.file_key["mtz"]), "HKLOUT",sfCIF]
+        #sfCIF = os.path.join ( self.outputDir(),self.getOFName("_sf.cif") )
+        self.dataSerialNo = 1
+        sfCIF = os.path.join ( self.outputDir(), self.task.project + "_" +\
+                    dtype_template.makeFileName ( self.job_id,self.dataSerialNo,
+                                                  self.getOFName("_sf.cif")) )
+
+        cmd   = [ "HKLIN",hkl.getFilePath(self.inputDir(),dtype_template.file_key["mtz"]),
+                  "HKLOUT",sfCIF]
 
         # Start mtz2various
         self.runApp ( "mtz2various",cmd,logType="Main" )
@@ -240,7 +246,11 @@ class Deposition(basic.TaskDriver):
 
         deposition_fasta = self.getOFName ( ".fasta" )
         dtype_sequence.writeMultiSeqFile1 ( deposition_fasta,seq,self.inputDir() )
-        deposition_cif   = os.path.join ( self.outputDir(),self.getOFName(".cif") )
+        # deposition_cif   = os.path.join ( self.outputDir(),self.getOFName(".cif") )
+
+        deposition_cif = os.path.join ( self.outputDir(),self.task.project + "_" +\
+                    dtype_template.makeFileName ( self.job_id,self.dataSerialNo,
+                                                  self.getOFName(".cif") ) )
 
         self.file_stdout.write ( "\n" +\
             " =============================================================\n" +\

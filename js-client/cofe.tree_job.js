@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    14.03.21   <--  Date of Last Modification.
+ *    19.03.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -1060,7 +1060,7 @@ JobTree.prototype.deleteJob = function ( onDelete_func ) {
       delNodeId.sort ( function(a,b){return b-a;} );
 
       // indicate deleted jobs in the tree and identify running jobs
-      var isRunning = false;
+      //var isRunning = false;
       var delBranch = [];
       var nDel      = 0;
       for (var i=0;i<delNodeId.length;i++)  {
@@ -1071,40 +1071,43 @@ JobTree.prototype.deleteJob = function ( onDelete_func ) {
         tree.setStyle ( tree.node_map[delNodeId[i]],__deleteStyle,propagate );
         nDel++;
         if (propagate)  {
-          if (tree.hasRunningJobs(delNodeId[i]))
-            isRunning = true;
+          // if (tree.hasRunningJobs(delNodeId[i]))
+          //   isRunning = true;
           nDel += tree.node_map[delNodeId[i]].children.length;
         }
         delBranch.push ( propagate );
       }
 
-      var message;
+      var message = '';
       if (nDel==1)  {
         var jobId = '';
         if (tree.selected_node_id in tree.task_map)
           jobId = tree.makeNodeId ( tree.task_map[tree.selected_node_id].id );
-        if (isRunning)
-          message = 'Selected job ' + jobId +
-                    ' is running and should not be removed from<br>' +
-                    'the project before stopping. Deleting running jobs may<br>' +
-                    'corrupt your project, and should be exercised only<br>' +
-                    'when absolutely necessary.<p>' +
-                    'Are you certain to proceed? Alternatively, try to stop<br>' +
-                    'the job first and delete it after it is reported as<br>' +
-                    'terminated.';
-        else
-          message = 'Selected job ' + jobId + ' will be deleted.<br>' +
-                    'Are you sure?';
-      } else if (isRunning)
-        message = 'Deleting the selected job(s) will also delete all jobs<br>' +
-                  'associated with them and/or found in descending branches of<br>' +
-                  'the project (shown in the tree). Some of these jobs are still<br>' +
-                  'running. Deleting running jobs may corrupt your project and<br>' +
-                  'should be exercised only when absolutely necessary.<p>' +
-                  'Please press "No" and try to stop all running jobs, scheduled<br>' +
-                  'for deletion. If this does not work, proceed with deleting them<br>' +
-                  'in running state at risk of possible project corruption.';
-      else
+        // if (isRunning)
+        //   message = 'Selected job ' + jobId +
+        //             ' is running and should not be removed from<br>' +
+        //             'the project before stopping. Deleting running jobs may<br>' +
+        //             'corrupt your project, and should be exercised only<br>' +
+        //             'when absolutely necessary.<p>' +
+        //             'Are you certain to proceed? Alternatively, try to stop<br>' +
+        //             'the job first and delete it after it is reported as<br>' +
+        //             'terminated.';
+        // else
+        //   message = 'Selected job ' + jobId + ' will be deleted.<br>' +
+        //             'Are you sure?';
+        message = 'Selected job ' + jobId + ' will be deleted.<br>' +
+                  'Are you sure?';
+      // } else if (isRunning)
+      //   message = 'Deleting the selected job(s) will also delete all jobs<br>' +
+      //             'associated with them and/or found in descending branches of<br>' +
+      //             'the project (shown in the tree). Some of these jobs are still<br>' +
+      //             'running. Deleting running jobs may corrupt your project and<br>' +
+      //             'should be exercised only when absolutely necessary.<p>' +
+      //             'Please press "No" and try to stop all running jobs, scheduled<br>' +
+      //             'for deletion. If this does not work, proceed with deleting them<br>' +
+      //             'in running state at risk of possible project corruption.';
+      // else
+      } else
         message = 'Selected job(s), indicated in the job tree, will be deleted.<br>' +
                   'Are you sure?';
 
