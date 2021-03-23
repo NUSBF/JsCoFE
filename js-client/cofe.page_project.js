@@ -270,7 +270,8 @@ function ProjectPage ( sceneId )  {
         if (desc)  {
           jobTree.projectData.desc = desc;
           jobTree.saveProjectData ( [],[],false,function(rdata){} );
-          if (jobTree.projectData.desc.owner.share.length>0)
+          //if (jobTree.projectData.desc.owner.share.length>0)
+          if (jobTree.isShared())
             jobTree.startTaskLoop();
         }
       });

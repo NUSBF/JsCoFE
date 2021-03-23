@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.01.20   <--  Date of Last Modification.
+ *    23.03.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Class extension functions
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2020
+ *  (C) E. Krissinel, A. Lebedev 2016-2021
  *
  *  =================================================================
  *
@@ -84,7 +84,15 @@ function makeClass ( classObject )  {
   return getClassInstance ( JSON.stringify(classObject) );
 }
 
+function makeTaskClass ( classType )  {
+  var className = getClassName ( classType,4,'../js-common/tasks/common.tasks.' );
+  if (className.length>0)
+    return eval ( 'new ' + className + '()' );
+  return null;
+}
+
 // ==========================================================================
 // export for use in node
+module.exports.makeTaskClass    = makeTaskClass;
 module.exports.getClassInstance = getClassInstance;
 module.exports.makeClass        = makeClass;

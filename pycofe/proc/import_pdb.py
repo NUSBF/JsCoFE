@@ -5,13 +5,13 @@
 #
 # ============================================================================
 #
-#    18.12.20   <--  Date of Last Modification.
+#    22.03.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  PDB DATA IMPORT FUNCTION
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2018-2020
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2018-2021
 #
 # ============================================================================
 #
@@ -182,8 +182,8 @@ def run ( body,pdb_list,
                       }
                     ]}
                     annotation["annotation"].append ( annot )
-                    if seqdesc[i]["type"]=="protein":  nAA += 1
-                    if seqdesc[i]["type"]=="dna"    :  nNA += 1
+                    # if seqdesc[i]["type"]=="protein":  nAA += 1
+                    # if seqdesc[i]["type"]=="dna"    :  nNA += 1
 
                 #body.stdoutln ( str(annotation) )
                 f = open ( "annotation.json","w" )

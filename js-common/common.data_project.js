@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    14.01.21   <--  Date of Last Modification.
+ *    23.03.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -------------------------------------------------------------------------
  *
@@ -49,8 +49,9 @@ function ProjectDesc()  {
     email  : '',
     share  : []    // list of login share objects
   };
-  this.jobCount     = 0;    // job count
-  this.timestamp    = 0;    // Date.now();
+  this.jobCount     = 0;      // job count
+  this.timestamp    = 0;      // Date.now();
+  this.autorun      = false;  // true if a task in autorun mode is runnng
   this.startmode    = start_mode.expert;  // will be overwritten when
                                           // project is created
   this.tasklistmode = tasklist_mode.full;
@@ -169,20 +170,25 @@ function ProjectData()  {
   this.settings.prefix     = '';
 }
 
+if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
 
-// ===========================================================================
+  function findProjectNode ( node,dataId )  {
+    if (node.dataId==dataId)
+      return node;
+    var nd = null;
+    for (var i=0;(i<node.children.length) && (!nd);i++)
+      nd = findProjectNode ( node.children[i],dataId );
+    return nd;
+  }
 
-/*
-function ProjectAuxData ( projectData )  {
-  this._type     = 'ProjectAuxData';
-  this.desc      = projectData.desc;       // project description
-  this.jobCount  = projectData.jobCount;   // job count
-  this.timestamp = projectData.timestamp;  // Date.now();
+  function getProjectNode ( projectData,dataId )  {
+    var node = null;
+    for (var i=0;(i<projectData.tree.length) && (!node);i++)
+      node = findProjectNode ( projectData.tree[i],dataId );
+    return node;
+  }
+
 }
-
-//ProjectAuxData.prototype.constructor = ProjectAuxData;
-*/
-
 
 // ===========================================================================
 
@@ -224,12 +230,13 @@ function DockData()  {
 
 // export such that it could be used in both node and a browser
 if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
-  module.exports.start_mode    = start_mode;
-  module.exports.tasklist_mode = tasklist_mode;
-  module.exports.ProjectDesc   = ProjectDesc;
-  module.exports.ProjectList   = ProjectList;
-  module.exports.ProjectData   = ProjectData;
-  module.exports.ProjectShare  = ProjectShare;
-  module.exports.DockData      = DockData;
+  module.exports.start_mode     = start_mode;
+  module.exports.tasklist_mode  = tasklist_mode;
+  module.exports.ProjectDesc    = ProjectDesc;
+  module.exports.ProjectList    = ProjectList;
+  module.exports.ProjectData    = ProjectData;
+  module.exports.getProjectNode = getProjectNode;
+  module.exports.ProjectShare   = ProjectShare;
+  module.exports.DockData       = DockData;
   module.exports.isProjectAccessible = isProjectAccessible;
 }

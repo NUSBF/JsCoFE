@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    14.03.21   <--  Date of Last Modification.
+ *    23.03.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -70,6 +70,7 @@ function JobDialog ( params,          // data and task projections up the tree b
   this.inputPanel  = null;
   this.outputPanel = null;
   this.run_btn     = null;
+  this.autorun_cbx = null;
   this.run_image   = null;
   this.ind_timer   = null;
   this.hot_btn     = [];
@@ -225,6 +226,10 @@ JobDialog.prototype.setDlgState = function()  {
     this.run_btn.setVisible  ( isNew     );
     this.run_btn.setDisabled ( __dormant );
   }
+  if (this.autorun_cbx)  {
+    this.autorun_cbx.setVisible  ( isNew     );
+    this.autorun_cbx.setDisabled ( __dormant );
+  }
 
   if (this.ind_timer)
     window.clearTimeout ( this.ind_timer );
@@ -378,6 +383,11 @@ JobDialog.prototype.collectTaskData = function ( ignore_bool )  {
     if ((this.task.state==job_code.new) && (input_msg.length>0))
       this.job_edited = true;
   }
+  if (this.autorun_cbx)  {
+    if (this.autorun_cbx.getValue())
+          this.task.autoRunId = 'auto';
+    else  this.task.autoRunId = '';
+  }
   return (input_msg.length<=0);
 }
 
@@ -386,9 +396,11 @@ JobDialog.prototype.requestServer = function ( request,callback_ok )  {
   var data  = {};
   data.meta = this.task;
   data.ancestors = [];
-  if (this.parent_page.job_tree.projectData)
-        data.is_shared = (this.parent_page.job_tree.projectData.desc.owner.share.length>0);
-  else  data.is_shared = false;
+  if (this.parent_page.job_tree.projectData)  {
+    //data.is_shared = (this.parent_page.job_tree.projectData.desc.owner.share.length>0);
+    data.is_shared = this.parent_page.job_tree.isShared();
+  } else
+    data.is_shared = false;
   for (var i=1;i<this.ancestors.length;i++)
     data.ancestors.push ( this.ancestors[i]._type );
   if (!this.task.job_dialog_data.viewed)  {
@@ -417,6 +429,8 @@ JobDialog.prototype.makeToolBar = function()  {
 
   this.toolBar = new Grid('');
 
+  this.col = 2;
+
   if (this.task.runButtonName())  {
     this.radioSet = this.toolBar.setRadioSet(0,0,1,1)
             .addButton('Input' ,'input' ,'',this.task.job_dialog_data.panel=='input' )
@@ -441,16 +455,22 @@ JobDialog.prototype.makeToolBar = function()  {
     }(this));
     this.radioSet.setSize ( '220px','' );
 
-    if (!this.inputPanel.fullVersionMismatch)
+    if (!this.inputPanel.fullVersionMismatch)  {
       this.run_btn  = this.toolBar.setButton ( this.task.runButtonName(),
-                                               image_path('runjob'), 0,2, 1,1 )
+                                               image_path('runjob'), 0,this.col++, 1,1 )
                                   .setTooltip  ( 'Start job' )
                                   .setDisabled ( __dormant   );
+      if (this.task.canRunInAutoMode())
+        this.autorun_cbx = this.toolBar.setCheckbox ( 'Auto',(this.task.autoRunId.length>0),
+                                                      0,this.col++, 1,1 )
+                               .setTooltip  ( 'Check to start an automatic workflow' )
+                               .setDisabled ( __dormant   );
+    }
+
   }
 
   this.toolBar.setCellSize ( '35%','',0,1 );
 
-  this.col = 3;
   this.run_image  = this.toolBar.setImage  ( './images_com/activity.gif',
                                              '36px','36px', 0,this.col++, 1,1 );
   if (this.task.canEndGracefully())
@@ -547,20 +567,20 @@ JobDialog.prototype.makeLayout = function ( onRun_func )  {
   } else  {
     this.outputPanel.setFramePosition ( '16px','8px','100%','100%' );
 
-    this.inputPanel = null;
-    this.toolBar    = null;
-    this.toolBarSep = null;
-    this.radioSet   = null;
-    this.run_btn    = null;
-    this.run_image  = null;
-    this.stop_btn   = null;
-    this.end_btn    = null;
-    //this.status_lbl = null;
-    this.newtab_btn = null;
-    this.export_btn = null;
-    this.ref_btn    = null;
-    this.help_btn   = null;
-    this.close_btn  = null;
+    this.inputPanel  = null;
+    this.toolBar     = null;
+    this.toolBarSep  = null;
+    this.radioSet    = null;
+    this.run_btn     = null;
+    this.autorun_cbx = null;
+    this.run_image   = null;
+    this.stop_btn    = null;
+    this.end_btn     = null;
+    this.newtab_btn  = null;
+    this.export_btn  = null;
+    this.ref_btn     = null;
+    this.help_btn    = null;
+    this.close_btn   = null;
 
     this.addWidget ( this.outputPanel );
     (function(dlg){
@@ -586,19 +606,29 @@ JobDialog.prototype.makeLayout = function ( onRun_func )  {
       dlg.inputPanel.element.addEventListener(cofe_signals.taskReady,function(e){
         //alert ( ' run_btn=' + e.detail + ' l=' + e.detail.length );
         if (e.detail.length<=0)  {
-          dlg.run_btn  .setEnabled ( !__dormant );
+          dlg.run_btn.setEnabled ( !__dormant );
+          if (dlg.autorun_cbx)
+            dlg.autorun_cbx.setEnabled ( !__dormant );
           dlg.close_btn.setEnabled ( true );
         } else if (e.detail=='hide_run_button')  {
-          dlg.run_btn  .setEnabled ( false );
+          dlg.run_btn.setEnabled ( false );
+          if (dlg.autorun_cbx)
+            dlg.autorun_cbx.setEnabled ( false );
           dlg.close_btn.setEnabled ( true  );
         } else if (e.detail=='upload_started')  {
-          dlg.run_btn  .setEnabled ( false );
+          dlg.run_btn.setEnabled ( false );
+          if (dlg.autorun_cbx)
+            dlg.autorun_cbx.setEnabled ( false );
           dlg.close_btn.setEnabled ( false );
         } else if (e.detail=='upload_finished')  {
-          dlg.run_btn  .setEnabled ( !__dormant );
+          dlg.run_btn.setEnabled ( !__dormant );
+          if (dlg.autorun_cbx)
+            dlg.autorun_cbx.setEnabled ( !__dormant );
           dlg.close_btn.setEnabled ( true );
         } else  {
-          dlg.run_btn  .setEnabled ( false );
+          dlg.run_btn.setEnabled ( false );
+          if (dlg.autorun_cbx)
+            dlg.autorun_cbx.setEnabled ( false );
           dlg.close_btn.setEnabled ( true  );
         }
       },false );
@@ -673,6 +703,9 @@ JobDialog.prototype.makeLayout = function ( onRun_func )  {
               }
 
               if (dlg.collectTaskData(false))  {
+
+                if (dlg.task.autoRunId)
+                  dlg.parent_page.job_tree.projectData.desc.autorun = true;
 
                 dlg.task.doRun ( dlg.inputPanel,function(){
 
