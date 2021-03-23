@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    03.03.21   <--  Date of Last Modification.
+ *    23.03.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -214,6 +214,8 @@ TaskCCP4go2.prototype.constructor = TaskCCP4go2;
 // ===========================================================================
 
 TaskCCP4go2.prototype.icon = function()  { return 'task_ccp4go'; }
+
+TaskCCP4go2.prototype.canRunInAutoMode = function() { return true; }
 
 // task.platforms() identifies suitable platforms:
 //   'W"  : Windows
@@ -439,7 +441,7 @@ if (!__template)  {
 
 
     function setCoorFileSelect ( rowNo,fname )  {
-      var wset = setFileSelect ( rowNo,'Structure',
+      var wset = setFileSelect ( rowNo,'Structure homologue',
              '[Optional] Provide a path to a PDB or mmCIF file with ' +
              'known (and close) structural homologue, or an apo structure.',
              '.pdb, .ent, .mmcif, .pdbx, .cif',fname );
@@ -654,7 +656,9 @@ if (!__template)  {
   var conf = require('../../js-server/server.configuration');
 
   TaskCCP4go2.prototype.getCommandLine = function ( jobManager,jobDir )  {
-    return [conf.pythonName(), '-m', 'pycofe.tasks.ccp4go2_task', jobManager, jobDir, this.id];
+    if (this.autoRunId.length>0)
+          return [conf.pythonName(), '-m', 'pycofe.tasks.import_autorun', jobManager, jobDir, this.id];
+    else  return [conf.pythonName(), '-m', 'pycofe.tasks.ccp4go2_task'  , jobManager, jobDir, this.id];
   }
 
   module.exports.TaskCCP4go2 = TaskCCP4go2;

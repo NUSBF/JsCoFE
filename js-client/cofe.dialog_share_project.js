@@ -112,9 +112,6 @@ function shareProject ( projectDesc,callback_func )  {
                           new MessageBox ( 'Share Project [' + data.desc.name + ']',msg );
                         //});
                         callback_func ( data.desc );
-                        //projectDesc = data.desc;
-                        //if (jobTree.projectData.desc.owner.share.length>0)
-                        // jobTree.startTaskLoop();
                       } else  {
                         new MessageBox ( 'Share Project [' + data.desc.name + ']',
                               '<h2>Sharing request denied</h2>' +

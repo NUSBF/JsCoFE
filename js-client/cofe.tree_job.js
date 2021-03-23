@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    19.03.21   <--  Date of Last Modification.
+ *    23.03.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -28,6 +28,7 @@
  *      function isProjectMode   ();
  *      function isReplayMode    ();
  *      function isSelectMode    ();
+ *      function isShared        ();
  *      function customIcon      ();
  *      function getTaskByNodeId ( nodeId );
  *      function getTask         ( taskId );
@@ -75,14 +76,14 @@ function JobTree()  {
 
   Tree.call ( this,'___' );
 
-  this.projectData = null;
-  this.task_map    = {};  // map[nodeId]==task of all tasks in the tree
-  this.run_map     = {};  // map[taskId]==nodeId of all running tasks
-  this.dlg_map     = {};  // map[taskId]==dialog of open job dialogs
+  this.projectData  = null;
+  this.task_map     = {};  // map[nodeId]==task of all tasks in the tree
+  this.run_map      = {};  // map[taskId]==nodeId of all running tasks
+  this.dlg_map      = {};  // map[taskId]==dialog of open job dialogs
 
   this.checkTimeout = null;  // timeout timer Id
 
-  this.mode        = 'project';  //  'replay', 'select'
+  this.mode         = 'project';  //  'replay', 'select'
 //  this.replay_mode  = false;  // works with the replay project if true
 
 }
@@ -403,7 +404,8 @@ JobTree.prototype.__checkTaskLoop = function()  {
 
       var request_data = {};
       request_data.project   = tree.projectData.desc.name;
-      request_data.shared    = (tree.projectData.desc.owner.share.length>0);
+      //request_data.shared    = (tree.projectData.desc.owner.share.length>0);
+      request_data.shared    = tree.isShared();
       request_data.timestamp = tree.projectData.desc.timestamp;
       request_data.run_map   = tree.run_map;
 
@@ -467,16 +469,21 @@ JobTree.prototype.__checkTaskLoop = function()  {
 
         },function(){  // always check on job and resume the task loop as necessary
 
-          /*
-          if ((Object.keys(tree.run_map).length>0) &&  // there are jobs to check on
-              tree.checkTimeout)  // and loop was not terminated
-                tree.__checkTaskLoop();     // resume the loop then
-          else  tree.checkTimeout = null;   // otherwise, terminate and mark terminated
-          */
+          // if (tree.projectData.desc.autorun)  {
+          //   tree.projectData.desc.autorun = false;
+          //   for (var tid in tree.run_map)
+          //     if (tree.run_map[tid].autoRunId.length>0)  {
+          //       tree.projectData.desc.autorun = true;
+          //       break;
+          //     }
+          //   if (!tree.projectData.desc.autorun)
+          //     tree.saveProjectData ( [],[],true, function(rdata){} );
+          // }
 
           if (tree.checkTimeout &&   // task loop was not terminated, and
               ((Object.keys(tree.run_map).length>0) ||  // there are jobs to check on
-               (tree.projectData.desc.owner.share.length>0)  // or project is shared
+               (tree.isShared())  // or project is shared
+               //(tree.projectData.desc.owner.share.length>0)  // or project is shared
               )
              )
                 tree.__checkTaskLoop();
@@ -499,7 +506,8 @@ JobTree.prototype.startTaskLoop = function()  {
   if ((!this.checkTimeout) &&   // otherwise the loop is running already
       this.projectData     &&   // works in case of shared projects
       ((Object.keys(this.run_map).length>0) ||  // there are jobs to check on
-       (this.projectData.desc.owner.share.length>0)  // or project is shared
+       (this.isShared())  // or project is shared
+       //(this.projectData.desc.owner.share.length>0)  // or project is shared
       )
      )
     this.__checkTaskLoop();
@@ -741,7 +749,8 @@ JobTree.prototype._add_job_0 = function ( insert_bool,task,dataBox,
 
   (function(tree){
 
-    var shared = (tree.projectData.desc.owner.share.length>0);
+    //var shared = (tree.projectData.desc.owner.share.length>0);
+    var shared = tree.isShared();
 
     function complete()  {
       if (onAdd_func)
@@ -781,7 +790,8 @@ JobTree.prototype._add_job = function ( insert_bool,task,dataBox,
                                         parent_page,onAdd_func )  {
   if (this.selected_node_id)  {
     //this.forceSingleSelection();
-    if (this.projectData.desc.owner.share.length>0)  {
+//    if (this.projectData.desc.owner.share.length>0)  {
+    if (this.isShared())  {
       // shared project, request job counter from server
       this.advanceJobCounter ( function(tree,rdata){
         tree._add_job_0 ( insert_bool,task,dataBox,parent_page,onAdd_func );
@@ -1506,6 +1516,15 @@ JobTree.prototype.openJob = function ( dataBox,parent_page )  {
 }
 
 
+JobTree.prototype.isShared = function()  {
+  if (this.projectData)
+    return (this.projectData.desc.owner.share.length>0) ||
+            this.projectData.desc.autorun;  // autorun framework uses sharing
+                                            // mechanism for tree updates
+  return false;
+}
+
+
 JobTree.prototype._clone_job = function ( cloneMode,parent_page,onAdd_func )  {
 
   (function(tree){
@@ -1530,6 +1549,7 @@ JobTree.prototype._clone_job = function ( cloneMode,parent_page,onAdd_func )  {
       task.uname      = task1.uname;
       task.uoname     = task1.uoname;
       task.cloned_id  = task1.id;
+      task.autoRunId  = task1.autoRunId;
       task.input_data = $.extend ( true,{},task1.input_data );
       task.parameters = $.extend ( true,{},task1.parameters );
       for (var i=0;i<task0.harvestedTaskIds.length;i++)
@@ -1549,7 +1569,7 @@ JobTree.prototype._clone_job = function ( cloneMode,parent_page,onAdd_func )  {
       // now set the new node name
       tree.setText ( node,tree.makeNodeName(task) );
 
-      var shared = (tree.projectData.desc.owner.share.length>0);
+      var shared = tree.isShared(); //(tree.projectData.desc.owner.share.length>0);
 
       function complete()  {
         if (onAdd_func)
@@ -1577,7 +1597,8 @@ JobTree.prototype._clone_job = function ( cloneMode,parent_page,onAdd_func )  {
 JobTree.prototype.cloneJob = function ( cloneMode,parent_page,onAdd_func )  {
   if (this.selected_node_id)  {
     this.forceSingleSelection();
-    if (this.projectData.desc.owner.share.length>0)  {
+    //if (this.projectData.desc.owner.share.length>0)  {
+    if (this.isShared())  {
       // shared project, request job counter from server
       this.advanceJobCounter ( function(tree,rdata){
         tree._clone_job ( cloneMode,parent_page,onAdd_func );

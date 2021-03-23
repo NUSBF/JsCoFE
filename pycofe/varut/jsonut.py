@@ -22,6 +22,7 @@ class __jobj__(object):
 
     def __init__(self, d=None):
         self.parse_json ( d )
+        return
 
     def parse_json ( self,d ):
         if d:
@@ -30,6 +31,14 @@ class __jobj__(object):
                    setattr(self, a, [__jobj__(x) if isinstance(x, dict) else x for x in b])
                 else:
                    setattr(self, a, __jobj__(b) if isinstance(b, dict) else b)
+        return
+
+    def set_field ( self,name,value ):
+        setattr ( self,name,value )
+        return
+
+    def get_field ( self,name ):
+        return getattr ( self,name,None )
 
     def to_JSON(self):
         return json.dumps(self, default=lambda o: o.__dict__, sort_keys=True, indent=2)
@@ -39,10 +48,12 @@ class jObject(__jobj__):
 
     def __init__(self,json_str=""):
         self.read_json ( json_str )
+        return
 
     def read_json ( self,json_str ):
         if json_str:
             super(jObject,self).parse_json ( json.loads(json_str) )
+        return
 
 
 

@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    04.12.20   <--  Date of Last Modification.
+#    22.03.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -21,7 +21,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2020
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2021
 #
 # ============================================================================
 #
@@ -124,6 +124,31 @@ class PhaserMR(basic.TaskDriver):
                 hkl_labels = ( hkl.dataset.Fmean.value, hkl.dataset.Fmean.sigma )
                 hkl_labin  =  "\nLABIN  F=" + hkl_labels[0] + " SIGF=" + hkl_labels[1]
             hklfile = hkl.getHKLFilePath ( self.inputDir() )
+
+
+        # try:
+        #     hkl_labels = ( hkl.dataset.Imean.value, hkl.dataset.Imean.sigma )
+        #     hkl_labin  =  "\nLABIN  I=" + hkl_labels[0] + " SIGI=" + hkl_labels[1]
+        # except:
+        #     hkl_labels = ( hkl.dataset.Fmean.value, hkl.dataset.Fmean.sigma )
+        #     hkl_labin  =  "\nLABIN  F=" + hkl_labels[0] + " SIGF=" + hkl_labels[1]
+        # if phases:
+        #     phases_mtz = phases.getMTZFilePath(self.inputDir())
+        #     phases_labels = ( phases.FWT, phases.PHWT )
+        #     self.open_stdin()
+        #     self.write_stdin ( "LABIN FILE 1 E1=%s E2=%s\n" %hkl_labels    )
+        #     self.write_stdin ( "LABIN FILE 2 E1=%s E2=%s\n" %phases_labels )
+        #     self.write_stdin ( "END\n" )
+        #     self.close_stdin()
+        #     cmd = [ "HKLIN1", hkl   .getHKLFilePath(self.inputDir()),
+        #             "HKLIN2", phases.getMTZFilePath(self.inputDir()),
+        #             "HKLOUT", self  .cad_mtz() ]
+        #     self.runApp ( "cad",cmd,logType="Service" )
+        #     hklfile   = self.cad_mtz()
+        #     hkl_labin = hkl_labin + " FWT=" + phases_labels[0] + " PHWT=" + phases_labels[1]
+        # else:
+        #     hklfile = hkl.getHKLFilePath ( self.inputDir() )
+
 
 
         # make a file with input script

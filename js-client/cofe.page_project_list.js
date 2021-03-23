@@ -84,8 +84,8 @@ function ProjectListPage ( sceneId )  {
     var pdesc = getCurrentProjectDesc();
     if (pdesc)
       return (pdesc.owner.share.length>0);
+      //return (pdesc.owner.share.length>0);
     return false;
-//    return (self.tablesort_tbl.selectedRow.child[0].text.indexOf(']:</b>')>=0);
   }
 
   function isCurrentProjectOwned ( check_author )  {
@@ -153,78 +153,6 @@ function ProjectListPage ( sceneId )  {
       }
     });
   }
-
-  /*
-  var addProject = function() {
-    var inputBox  = new InputBox  ( 'Add New Project' );
-    var ibx_grid  = new Grid      ( '' );
-    var name_inp  = new InputText ( '' );
-    var title_inp = new InputText ( '' );
-    //name_inp. setStyle ( 'text',"^[A-Za-z0-9\\-\\._]+$",'project_001',
-    //                     'Project ID should contain only latin ' +
-    //                     'letters, numbers, undescores, dashes ' +
-    //                     'and dots, and must start with a letter' );
-    //title_inp.setStyle ( 'text','','Example project',
-    //                     'Project Name is used to give a short description ' +
-    //                     'to aid identification of the project' );
-    name_inp. setStyle ( 'text',"^[A-Za-z0-9\\-\\._]+$",'e.g., project_001','' );
-    title_inp.setStyle ( 'text','','Put a descriptive title here','' );
-    name_inp .setFontItalic        ( true    );
-    title_inp.setFontItalic        ( true    );
-    name_inp .setWidth             ( '400pt' );
-    title_inp.setWidth             ( '400pt' );
-    ibx_grid .setWidget            ( new Label('Project ID:'  ),0,0,1,1 );
-    ibx_grid .setWidget            ( new Label('Project Name:'),1,0,1,1 );
-    ibx_grid .setNoWrap            ( 0,0 );
-    ibx_grid .setNoWrap            ( 1,0 );
-    ibx_grid .setWidget            ( name_inp ,0,1,1,1 );
-    ibx_grid .setWidget            ( title_inp,1,1,1,1 );
-    inputBox .addWidget            ( ibx_grid     );
-    ibx_grid .setVerticalAlignment ( 0,0,'middle' );
-    ibx_grid .setVerticalAlignment ( 1,0,'middle' );
-
-    inputBox.launch ( 'Add',function(){
-      var msg = [];
-
-      if (name_inp.getValue().length<=0)
-        msg.push ( '<b>Project ID</b> must be provided.' );
-      else if (name_inp.element.validity.patternMismatch)
-        msg.push ( '<b>Project ID</b> should contain only latin letters, ' +
-                   'numbers, undescores,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' +
-                   '&nbsp;&nbsp;&nbsp;&nbsp;dashes and dots, and must start ' +
-                   'with a letter.' );
-
-      if (title_inp.getValue().length<=0)
-        msg.push ( '<b>Project Name</b> must be provided.<p>' );
-
-      if (msg.length>0)  {
-        new MessageBox ( 'Incomplete data',
-                 'New project cannot be created due to the following:<p>' +
-                  msg.join('<br>') +
-                  '<p>Please provide all needful data in correct format<br>' +
-                  'and try again' );
-        return false;
-      }
-
-      if (projectList.addProject(name_inp.getValue(),
-                                 title_inp.getValue(),getDateString()))  {
-        projectList.current = name_inp.getValue();
-        saveProjectList ( function(data){
-          projectList.current = name_inp.getValue();
-          makeProjectListTable   ();
-          welcome_lbl.setVisible ( (projectList.projects.length<1) );
-        });
-        return true;  // close dialog
-      } else  {
-        new MessageBox ( 'Duplicate Project ID',
-            'The Project ID chosen (<b>'+name_inp.getValue()+'</b>)<br>' +
-            'is already in the list. Please choose a different Project ID.' );
-        return false;  // keep dialog
-      }
-
-    });
-  }
-  */
 
   // function to rename selected Project
   var renameProject = function() {
@@ -315,24 +243,7 @@ function ProjectListPage ( sceneId )  {
       btnName    = 'Unjoin';
       dlgTitle   = 'Unjoin Project';
     }
-    /*
-    if (isCurrentProjectShared())  {
-      delMessage = '<h2>Unjoin Project</h2>' +
-                   'Project, shared with you: <b>' + delName +
-                   '</b><p>will be unjoined, and you will be no ' +
-                   'longer able to access it<br>until joined again.' +
-                   '<p>Please confirm your choice.';
-      btnName    = 'Unjoin';
-      dlgTitle   = 'Unjoin Project';
-    } else  {
-      delMessage = '<h2>Delete Project</h2>' +
-                   'Project: <b>' + delName +
-                   '</b><p>will be deleted. All project ' +
-                   'structure and data will be lost.' +
-                   '<p>Please confirm your choice.';
-    }
-    */
-    var inputBox   = new InputBox ( dlgTitle );
+    var inputBox = new InputBox ( dlgTitle );
     inputBox.setText ( delMessage );
     inputBox.launch ( btnName,function(){
       projectList.deleteProject ( delName );

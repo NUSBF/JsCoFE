@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    19.03.21   <--  Date of Last Modification.
+#    23.03.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -862,7 +862,7 @@ class TaskDriver(object):
 
 
     def getParameter ( self,item,checkVisible=True ):
-        if item.visible or not checkVisible:
+        if getattr(item,"visible",True) or not checkVisible:
             return str(item.value)
         return ""
         """
@@ -876,12 +876,12 @@ class TaskDriver(object):
         """
 
     def getParameterN ( self,item,name,checkVisible=True ):
-        return self.getParameter ( getattr(item,name) )
+        return self.getParameter ( getattr(item,name),checkVisible )
 
 
     def getCheckbox ( self,item,checkVisible=True ):
-        if  item.type=="checkbox" and (item.visible or not checkVisible):
-            if hasattr(item,'translate'):
+        if item.type=="checkbox" and (getattr(item,"visible",True) or not checkVisible):
+            if hasattr(item,"translate"):
                 if item.value:
                     return str(item.translate[1])
                 else:

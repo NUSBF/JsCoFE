@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    01.12.20   <--  Date of Last Modification.
+#    23.03.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -21,7 +21,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2020
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2021
 #
 # ============================================================================
 #
@@ -41,6 +41,7 @@ from   pycofe.dtypes   import dtype_revision, dtype_sequence
 from   pycofe.proc     import import_filetype, import_sequence, asucomp
 from   pycofe.varut    import rvapi_utils
 from   pycofe.verdicts import verdict_asudef
+from   pycofe.auto     import auto
 
 
 # ============================================================================
@@ -549,6 +550,9 @@ class ASUDef(basic.TaskDriver):
             revision[0].addSubtypes ( hkl.subtype )
             self.registerRevision ( revision[0],revisionName=revName )
             have_results = True
+            auto.makeNextTask ( self.task,{
+                "revision" : revision[0]
+            })
 
         # close execution logs and quit
         self.success ( have_results )

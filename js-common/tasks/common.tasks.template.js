@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    04.03.21   <--  Date of Last Modification.
+ *    23.03.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -------------------------------------------------------------------------
  *
@@ -58,9 +58,12 @@ var keyEnvironment = ['CCP4','BALBES_ROOT','ROSETTA_DIR','warpbin','BDG_home',
                       'Xia2_durin'
                      ];
 
-var dbx = null;
-if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
-  dbx = require('../dtypes/common.dtypes.box');
+var dbx   = null;
+var comut = null;
+if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
+  dbx   = require('../dtypes/common.dtypes.box');
+  comut = require('../common.utils');
+}
 
 
 // ===========================================================================
@@ -82,6 +85,7 @@ function TaskTemplate()  {
   //this.helpURL      = null;   // (relative) url to help file, null will hide the help button
   this.nc_type      = 'ordinary'; // required Number Cruncher type
   this.fasttrack    = false;  // no fasttrack requirements
+  this.autoRunId    = '';     // automatic workflow Id
   this.informFE     = true;   // end of job and results are sent back to FE
 
   this.upload_files = [];   // list of uploaded files
@@ -146,6 +150,7 @@ TaskTemplate.prototype.doNotPackSuffixes   = function() { return ['.map']; }
 TaskTemplate.prototype.doPackSuffixes      = function() { return [''];     }
 
 TaskTemplate.prototype.canEndGracefully    = function() { return false;    }
+TaskTemplate.prototype.canRunInAutoMode    = function() { return false;    }
 
 TaskTemplate.prototype.getHelpURL = function()  {
   return __task_reference_base_url + 'doc.task.' + this._type.substr(4) + '.html';
@@ -183,6 +188,25 @@ TaskTemplate.prototype.isComplete = function()  {
 // estimated cpu cost of the job, in hours
 TaskTemplate.prototype.cpu_credit = function()  {
   return 0.02;
+}
+
+
+// recursion for substituting suggested parameters in depth
+TaskTemplate.prototype._clone_suggested = function ( parameters,suggestedParameters )  {
+  for (var item in parameters)
+    if (item in suggestedParameters)  {
+      parameters[item].value = suggestedParameters[item];
+      if ('label' in parameters[item])
+        parameters[item].label = '<font style=\'color:darkblue\'><i>' +
+                                 parameters[item].label + '</i></font>';
+      if ('label2' in parameters[item])
+        parameters[item].label2 = '<font style=\'color:darkblue\'><i>' +
+                                  parameters[item].label2 + '</i></font>';
+    } else if (comut)  {
+      if (comut.isObject(parameters[item]))
+        this._clone_suggested ( parameters[item],suggestedParameters );
+    } else if (isObject(parameters[item]))
+      this._clone_suggested ( parameters[item],suggestedParameters );
 }
 
 
@@ -2134,21 +2158,6 @@ if (!dbx)  {
   // run should not be done.
   TaskTemplate.prototype.doRun = function ( inputPanel,run_func )  {
     run_func();
-  }
-
-  // recursion for substituting suggested parameters in depth
-  TaskTemplate.prototype._clone_suggested = function ( parameters,suggestedParameters )  {
-    for (var item in parameters)
-      if (item in suggestedParameters)  {
-        parameters[item].value = suggestedParameters[item];
-        if ('label' in parameters[item])
-          parameters[item].label = '<font style=\'color:darkblue\'><i>' +
-                                   parameters[item].label + '</i></font>';
-        if ('label2' in parameters[item])
-          parameters[item].label2 = '<font style=\'color:darkblue\'><i>' +
-                                    parameters[item].label2 + '</i></font>';
-      } else if (isObject(parameters[item]))
-        this._clone_suggested ( parameters[item],suggestedParameters );
   }
 
   // This function is called at cloning jobs and should do copying of all

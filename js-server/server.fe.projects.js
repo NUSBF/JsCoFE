@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    19.03.21   <--  Date of Last Modification.
+ *    23.03.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -239,6 +239,10 @@ function checkProjectDescData ( projectDesc,loginData )  {
   }
   if ('is_shared' in projectDesc.owner)  {
     delete projectDesc.owner.is_shared;
+    update = true;
+  }
+  if (!('autorun' in projectDesc))  {
+    projectDesc.autorun = false;
     update = true;
   }
   if (!projectDesc.hasOwnProperty('startmode'))
@@ -971,7 +975,7 @@ function checkTimestamps ( loginData,projectDesc )  {
                      //  1: reload is needed but current operation may continue
                      //  2: reload is mandatory, current operation must terminate
   rdata.pdesc  = null;
-  if (projectDesc.owner.share.length>0)  {  // the project is shared
+  if ((projectDesc.owner.share.length>0) || projectDesc.autorun)  {  // the project is shared
     rdata.pdesc = readProjectDesc ( loginData,projectDesc.name );
     if (rdata.pdesc)  {
       if (rdata.pdesc.timestamp>projectDesc.timestamp)  {
@@ -1137,7 +1141,7 @@ function saveProjectData ( loginData,data )  {
                             '[00026] Project metadata cannot be written.','' );
     }
 
-  } else if (projectData.desc.owner.share.length>0)  {
+  } else if ((projectData.desc.owner.share.length>0) || projectData.desc.autorun)  {
     rdata.reload = -11111;
     response = new cmd.Response ( cmd.fe_retcode.ok,
                                '[00027] Project metadata does not exist.',rdata );
