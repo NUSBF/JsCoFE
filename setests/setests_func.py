@@ -599,6 +599,67 @@ def importFromCloud_rnaseNochains(driver, waitShort):
     return ()
 
 
+def importFromCloud_twin(driver, waitShort):
+    print ('Importing "twin" project from the Cloud Import')
+
+    # Clicking "Cloud Import"
+    clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list')
+    time.sleep(1)
+
+    clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Data Import')
+    time.sleep(1)
+
+    clickByXpath(driver, "//*[contains(text(), '%s') and contains(text(), '%s')]" % ('Import', 'Cloud'))
+    time.sleep(1)
+
+    textEl2 = driver.find_elements_by_xpath("//a[normalize-space()='%s']" % 'test-data')
+    if len(textEl2) < 1:
+        textEl2 = driver.find_elements_by_xpath("//a[normalize-space()='%s']" % 'ccp4-examples')
+        namesTestData = False
+    if len(textEl2) < 1:
+        textEl2 = driver.find_elements_by_xpath("//a[normalize-space()='%s']" % 'CCP4 examples')
+        namesTestData = False
+    if len(textEl2) < 1:
+        print('Cant locate neither "test-data", nor "CCP4 examples" nor "ccp4-examples"; terminating.')
+        sys.exit(1)
+    ActionChains(driver).move_to_element(textEl2[-1]).double_click(textEl2[-1]).perform()
+    time.sleep(1)
+
+    listOfTextsToDoubleClick = [('a', 'twin'),
+                                ('a', 'twin.pdb'),
+                                ('button', 'Select more files'),
+                                ('a', 'twin.mtz'),
+                                ('button', 'Select more files'),
+                                ('a', 'twin.fasta'),
+                                ('button', 'Apply & Upload'),
+                                ('button', 'Finish import')]
+
+    for textToDoubleClick in listOfTextsToDoubleClick:
+        textElements = driver.find_elements_by_xpath("//%s[normalize-space()='%s']" % (textToDoubleClick[0], textToDoubleClick[1]))
+        # It finds several elements with the same file name -> last one is the one we need
+        driver.execute_script("arguments[0].scrollIntoView();", textElements[-1])
+        ActionChains(driver).move_to_element(textElements[-1]).double_click(textElements[-1]).perform()
+        time.sleep(1)
+
+#    taskWindowTitle = driver.find_element(By.XPATH,"//*[@class='ui-dialog-title' and contains(text(), '[0001]')]")
+    try:
+        wait = WebDriverWait(driver, waitShort)
+        # Waiting for the text 'completed' in the ui-dialog-title of the task [0001]
+        wait.until(EC.presence_of_element_located
+                   ((By.XPATH,"//*[@class='ui-dialog-title' and contains(text(), 'completed') and contains(text(), '[0001]')]")))
+    except:
+        print('Apparently tha task importFromCloudWithTaskListOnScreen has not been completed in time; terminating')
+        sys.exit(1)
+
+    # presing Close button
+    closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
+    closeButton.click()
+    time.sleep(1)
+
+    return ()
+
+
+
 def asymmetricUnitContentsAfterCloudImport(driver, waitShort, task='0002'):
     print ('Making Asymmetric Unit Contents after Cloud Import')
 
@@ -668,6 +729,53 @@ def editRevisionStructure_rnase(driver, waitShort):
     time.sleep(1)
 
     clickByXpath(driver, "//div[contains(text(), '%s') and contains(text(), '%s')]" % ('rnase', 'xyz'))
+    time.sleep(1)
+
+    # There are several forms - active and inactive. We need one displayed.
+    buttonsRun = driver.find_elements_by_xpath("//button[contains(@style, 'images_png/runjob.png')]" )
+    for buttonRun in buttonsRun:
+        if buttonRun.is_displayed():
+            buttonRun.click()
+            break
+
+    try:
+        wait = WebDriverWait(driver, waitShort) # allowing 15 seconds to the task to finish
+        # Waiting for the text 'completed' in the ui-dialog-title of the task [0003]
+        wait.until(EC.presence_of_element_located
+                   ((By.XPATH,"//*[@class='ui-dialog-title' and contains(text(), 'completed') and contains(text(), '[0003]')]")))
+    except:
+        print('Apparently tha task editRevisionStructure has not been completed in time; terminating')
+        sys.exit(1)
+
+    # presing Close button
+    time.sleep(2)
+    clickByXpath(driver, "//button[contains(@style, 'images_png/close.png')]")
+    time.sleep(1)
+
+    return ()
+
+
+def editRevisionStructure_any(driver, waitShort, name=''):
+    print('Making structure revision')
+
+    # Add button
+    addButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/add.png')]")
+    addButton.click()
+    time.sleep(1)
+
+    clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list')
+    time.sleep(1)
+
+    clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Asymmetric Unit and Structure Revision')
+    time.sleep(1)
+
+    clickByXpath(driver, "//div[normalize-space()='%s']" % 'Edit Structure Revision')
+    time.sleep(1)
+
+    clickByXpathMultiple(driver, "//span[normalize-space()='%s']" % '[do not change]', 6) # 6 = 3*2, I have no idea why there are two times more elements
+    time.sleep(1)
+
+    clickByXpath(driver, "//div[contains(text(), '%s') and contains(text(), '%s')]" % (name, 'xyz'))
     time.sleep(1)
 
     # There are several forms - active and inactive. We need one displayed.
