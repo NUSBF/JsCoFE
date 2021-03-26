@@ -370,12 +370,15 @@ function ProjectPage ( sceneId )  {
       };
     }
 
-    if (node.parentId)
-      items.addToDockItem = {
-        label : "Add task to dock",
-        icon  : image_path('dock_small'),
-        action: addToDock
-      };
+    if (node.parentId)  {
+      var crTask = jobTree.task_map[node.id];
+      if (crTask && (crTask.state!=job_code.remark))
+        items.addToDockItem = {
+          label : "Add task to dock",
+          icon  : image_path('dock_small'),
+          action: addToDock
+        };
+    }
 
     return items;
 

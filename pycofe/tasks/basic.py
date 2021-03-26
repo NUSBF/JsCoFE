@@ -795,7 +795,7 @@ class TaskDriver(object):
     # ============================================================================
 
     def writeKWParameter ( self,item ):
-        if item.visible:
+        if getattr(item,"visible",True):
             if (item.type  == "integer" or item.type == "real"):
                 self.file_stdin.write ( item.keyword + " " + str(item.value) + "\n" )
             elif (item.type == "integer_" or item.type == "real_") and (item.value != ""):
@@ -810,7 +810,7 @@ class TaskDriver(object):
         return
 
     def putKWParameter ( self,item ):
-        if item.visible:
+        if getattr(item,"visible",True):
             if item.type=="checkbox":
                 if item.value:
                     return item.keyword + "\n"
@@ -823,7 +823,7 @@ class TaskDriver(object):
 
 
     def getKWParameter ( self,keyword,item ):
-        if item.visible:
+        if getattr(item,"visible",True):
             if item.type=="checkbox":
                 if item.value:
                     return " " + keyword
@@ -840,7 +840,7 @@ class TaskDriver(object):
             return ""
 
     def getKWItem ( self,item ):
-        if item.visible:
+        if getattr(item,"visible",True):
             if item.type=="checkbox":
                 if hasattr(item,"translate"):
                     if item.value:

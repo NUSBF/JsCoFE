@@ -32,8 +32,8 @@ import sys
 
 #  application imports
 from . import basic
-from   proc  import coor
-
+from   pycofe.proc  import coor
+from   pycofe.auto  import auto
 
 # ============================================================================
 # Make Refmac driver
@@ -159,6 +159,10 @@ class FitLigand(basic.TaskDriver):
                 revision.addLigandData    ( ligand    )
                 self.registerRevision     ( revision  )
                 have_results = True
+                auto.makeNextTask ( self.task,{
+                    "revision" : revision,
+                    "nfitted"  : str(nligs)
+                })
 
         else:
             self.putTitle ( "Ligand " + ligand.code + " could not be fit in density" )

@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    23.03.21   <--  Date of Last Modification.
+ *    24.03.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -924,7 +924,7 @@ function killJob ( loginData,projectName,taskId )  {
 
   var jobEntry = getEFJobEntry ( loginData,projectName,taskId );
 
-  if (jobEntry)  {
+  if (jobEntry && (jobEntry.nc_number>=0))  {
 
     // send stop request to number cruncher
     var nc_url = conf.getNCConfig(jobEntry.nc_number).externalURL;
@@ -1060,8 +1060,11 @@ function writeJobStats ( jobEntry )  {
     utils.appendString ( fpath,S );
 
     jobClass.end_time = Date.now();
-    utils.writeObject ( jobDataPath,jobClass );
 
+    if (jobClass.autoRunId)
+      jobClass.job_dialog_data.panel = 'output';
+
+    utils.writeObject ( jobDataPath,jobClass );
 
   } else  {
 
@@ -1098,55 +1101,70 @@ function addJobAuto ( jobEntry,jobClass )  {
                      loginData.login );
     } else  {
 
+      if (!('_root' in auto_meta.context.job_register))
+        auto_meta.context.job_register._root = jobEntry.jobId;
+
       var shared_logins  = projectData.desc.owner.share;
       var ownerLoginData = loginData;
       if (projectData.desc.owner.login!=loginData.login)
         ownerLoginData = user.getUserLoginData ( projectData.desc.owner.login );
 
       // get job tree node
-      var pnode = pd.getProjectNode ( projectData,jobEntry.jobId );
-      var ipath = path.parse ( pnode.icon );
+      //var pnode = pd.getProjectNode ( projectData,jobEntry.jobId );
+      //var ipath = path.parse ( pnode.icon );
+      //var pnode_json = JSON.stringify ( pnode );
+
       var tasks = [];
-      var pnode_json = JSON.stringify ( pnode );
-      //console.log ( ' >>>>> ' + JSON.stringify(pnode) );
 
-      for (key in auto_meta)  {
+      for (key in auto_meta)
+        if (key!='context')  {
 
-        projectData.desc.jobCount++;
+          var task = class_map.makeTaskClass ( auto_meta[key]._type );
 
-        var task = class_map.makeTaskClass ( auto_meta[key]._type );
-        if (!task)  {
-          log.error ( 21,'wrong task class name ' + auto_meta[key]._type );
-        } else  {
+          if (!task)  {
+            log.error ( 21,'wrong task class name ' + auto_meta[key]._type );
+          } else  {
 
-          // form task
+            // form task
 
-          task.project          = projectName;
-          task.id               = projectData.desc.jobCount;
-          // task.harvestedTaskIds = dataBox.harvestedTaskIds;
-          task.autoRunId        = jobClass.autoRunId;
-          task.submitter        = loginData.login;
-          task.input_data.data  = auto_meta[key].data;
-          // console.log ( ' >>>>> ' + JSON.stringify(auto_meta[key].data) );
-          task.state            = task_t.job_code.running;
-          task.start_time       = Date.now();
+            task.project          = projectName;
+            task.id               = ++projectData.desc.jobCount;
+            task.name             = '<b>ccp4go:</b>' + task.name;
+            task.autoRunName      = key;
+            // task.harvestedTaskIds = dataBox.harvestedTaskIds;
+            task.autoRunId        = jobClass.autoRunId;
+            task.submitter        = loginData.login;
+            task.input_data.data  = auto_meta[key].data;
+            task.state            = task_t.job_code.running;
+            task.start_time       = Date.now();
 
-          task._clone_suggested ( task.parameters,auto_meta[key].parameters );
-          tasks.push ( task );
+            task._clone_suggested ( task.parameters,auto_meta[key].parameters );
+            tasks.push ( task );
 
-          // place job tree node
+            // place job tree node
 
-          var cnode = JSON.parse ( pnode_json );
-          cnode.id       = pnode.id + '_' + key;
-          cnode.parentId = pnode.id;
-          cnode.dataId   = task.id;
-          cnode.icon     = path.join ( ipath.dir,task.icon()+ipath.ext );
-          cnode.text     = task.name;
-          cnode.text0    = task.name;
-          pnode.children.push ( cnode );
+            pid = jobEntry.jobId;
+            if (auto_meta[key].parentName in auto_meta.context.job_register)
+              pid = auto_meta.context.job_register[auto_meta[key].parentName];
 
+            var pnode = pd.getProjectNode ( projectData,pid );
+            var ipath = path.parse ( pnode.icon );
+            var pnode_json = JSON.stringify ( pnode );
+
+            var cnode = JSON.parse ( pnode_json );
+            cnode.id       = pnode.id + '_' + key;
+            cnode.parentId = pnode.id;
+            cnode.dataId   = task.id;
+            cnode.icon     = path.join ( ipath.dir,task.icon()+ipath.ext );
+            cnode.text     = '[' + com_utils.padDigits(task.id,4) + '] ' + task.name;
+            cnode.text0    = cnode.text;
+            cnode.children = [];
+            pnode.children.push ( cnode );
+
+            auto_meta.context.job_register[key] = task.id;
+
+          }
         }
-      }
 
       prj.writeProjectData ( loginData,projectData,true );
 
@@ -1157,13 +1175,19 @@ function addJobAuto ( jobEntry,jobClass )  {
         // prepare job directory
 
         var jobDirPath = prj.getJobDirPath ( loginData,projectName,task.id );
+
         if (!utils.mkDir(jobDirPath)) {
           log.error ( 22,'cannot create job directory at ' + jobDirPath );
         } else  {
+
           var jobDataPath = prj.getJobDataPath ( loginData,projectName,task.id );
+
           if (!utils.writeObject(jobDataPath,task))  {
             log.error ( 23,'cannot write job metadata at ' + jobDataPath );
           } else  {
+
+            utils.writeObject ( path.join(jobDirPath,"auto.context"),auto_meta.context );
+
             // create report directory
             utils.mkDir_anchor ( prj.getJobReportDirPath(loginData,projectName,task.id) );
             // create input directory (used only for sending data to NC)

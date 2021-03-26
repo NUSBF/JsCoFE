@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    11.03.21   <--  Date of Last Modification.
+#    25.03.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -38,7 +38,7 @@ import pyrvapi
 #  application imports
 from . import basic
 from   pycofe.proc    import xyzmeta
-
+from   pycofe.auto    import auto
 
 # ============================================================================
 # Make MrBump driver
@@ -198,8 +198,6 @@ class MrBump(basic.TaskDriver):
         search_dir = "search_" + self.outdir_name()
 
         with open(os.path.join(search_dir,"logs","programs.json")) as json_file:
-            #self.stdoutln ( " >>>>>>>>>>>>>>> " + json_file.read() )
-            #self.stdoutln ( " >>>>>>>>>>>>>>> " + str(json.loads(json_file.read())) )
             self.addCitations ( json.loads(json_file.read()) )
 
         if os.path.isdir(search_dir):
@@ -240,6 +238,11 @@ class MrBump(basic.TaskDriver):
                         revision.setStructureData  ( structure )
                         self.registerRevision      ( revision  )
                         have_results = True
+                        auto.makeNextTask ( self.task,{
+                            "revision" : revision,
+                            "Rfactor"  : self.generic_parser_summary["refmac"]["R_factor"],
+                            "Rfree"    : self.generic_parser_summary["refmac"]["R_free"]
+                        })
                     else:
                         self.putMessage ( "<h3>Structure cannot be formed</h3>" )
 

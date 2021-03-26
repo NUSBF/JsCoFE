@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    19.02.21   <--  Date of Last Modification.
+ *    24.02.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -210,8 +210,10 @@ TaskListDialog.prototype.makeLayout = function()  {
 
   var tab_suggested = this.tabs.addTab ( 'Suggested',true  );
   var tab_fulllist  = this.tabs.addTab ( 'Full list',false );
+  var tab_workflows = this.tabs.addTab ( 'Workflows',false );
   this.makeSuggestedList ( tab_suggested.grid );
   this.makeFullList      ( tab_fulllist .grid );
+  this.makeWorkflowsList ( tab_workflows.grid );
 
 
 }
@@ -269,6 +271,38 @@ var r = 0;  // grid row
   return r;  // indicates whether the tab is empty or not
 
 }
+
+
+TaskListDialog.prototype.makeWorkflowsList = function ( grid )  {
+var r = 0;  // grid row
+
+  grid.setLabel ( '<h2>CCP4go Workflows</h2>',r++,0,1,3 );
+
+  var ccp4go_autoMR = new TaskCCP4goAutoMR();
+  if (this.dataBox.isEmpty())
+    ccp4go_autoMR.input_dtypes = [1]; // force 'at root mode' for the task
+
+  var task_list = [
+    ccp4go_autoMR
+  ];
+
+  for (var i=0;i<task_list.length;i++)
+    if (typeof task_list[i] === 'string' || task_list[i] instanceof String) {
+      grid.setLabel ( '&nbsp;',r++,0,1,3 ).setHeight_px(4);
+      grid.setLabel ( '<hr/>',r,0,1,1 );
+      var grid1 = grid.setGrid ( '',r++,1,1,2 );
+      grid1.setLabel ( '&nbsp;' + task_list[i] + '&nbsp;',0,0,1,1 )
+           .setFontItalic(true).setFontBold(true).setNoWrap();
+      grid1.setLabel ( '<hr/>',0,1,1,1 );
+      grid1.setCellSize ( '10%','8px',0,0 );
+      grid1.setCellSize ( '90%','8px',0,1 );
+    } else if (this.setTask(task_list[i],grid,r,true))
+      r++;
+
+  return r;  // indicates whether the tab is empty or not
+
+}
+
 
 TaskListDialog.prototype.makeSuggestedList = function ( grid )  {
 var knowledge = getWfKnowledge ( this.branch_tasks[2],this.branch_tasks[1],

@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    18.12.20   <--  Date of Last Modification.
+#    25.03.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -21,7 +21,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2020
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2021
 #
 # ============================================================================
 #
@@ -38,6 +38,7 @@ import pyrvapi
 from . import basic
 from  pycofe.dtypes    import  dtype_template
 from  pycofe.proc      import  datred_utils, import_filetype, import_merged
+from  pycofe.auto      import  auto
 
 # ============================================================================
 # Make Aimless driver
@@ -116,6 +117,7 @@ class Aimless(basic.TaskDriver):
         else:
             mtzRef = ds0.getHKLFilePath ( self.inputDir() )
         symm_select = ds0.symm_select if ds0._type=="DataUnmerged" else None
+        self.stderrln ( " >>>> " + str(ds0.symm_select) )
 
         plist = [[ds.dataset,ds.getUnmergedFilePath(self.inputDir()),ds.runs] for ds in unmerged]
         format_list = [getattr(ds.dataset,'original_format','unknown') for ds in unmerged]
@@ -260,11 +262,17 @@ class Aimless(basic.TaskDriver):
                                        " R<sub>meas_ano</sub>=" + str(dsum["R_meas_ano"])   +\
                                        " Res=" + str(dsum["res_high"])  + "-" + str(dsum["res_low"]) +\
                                        " SpG=" + dsum["Space_group"] ;
+            auto.makeNextTask ( self.task,{
+                "hkl" : hkl
+            })
             self.success ( True )
         else:
             self.file_stdout.write ( "Aimless failed, see above." )
             self.fail ( "<p>&nbsp;Aimless failed, see Log and Error tabs for details",
                         "Aimless_Failed" )
+
+        return
+
 
 # ============================================================================
 

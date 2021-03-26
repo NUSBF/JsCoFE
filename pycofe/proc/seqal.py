@@ -3,13 +3,13 @@
 #
 # ============================================================================
 #
-#    01.05.20   <--  Date of Last Modification.
+#    24.03.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  SEQAL (SEQUENCE ALIGNMENT) MODULE
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2020
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2020-2021
 #
 # ============================================================================
 #
@@ -65,7 +65,7 @@ def run ( body,seqdata,fpath_align ):
                         cid = "/" + str(s.xyzmeta.xyz[i].model) + "/" + c.id
                     else:
                         cid = c.id
-                    if s.chainSel=="(all)" or s.chainSel==cid:
+                    if s.chainSel=="(all)" or s.chainSel==cid or not s.chainSel:
                         nseq   += 1
                         seqname = "s" + str(nseq).zfill(3)
                         smap[seqname] = {}

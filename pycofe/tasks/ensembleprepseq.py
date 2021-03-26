@@ -39,6 +39,7 @@ import pyrvapi
 #  application imports
 from . import basic
 from   pycofe.proc   import analyse_ensemble
+from   pycofe.auto   import auto
 
 
 # ============================================================================
@@ -225,6 +226,12 @@ class EnsemblePrepSeq(basic.TaskDriver):
                                                 "Coordinates",ensemble,-1,secrow+5,1 )
                                             have_results = True
                                             ensNo += 1
+
+                                            if ensNo==1:
+                                                auto.makeNextTask ( self.task,{
+                                                    "model" : ensemble
+                                                })
+
 
                                         else:
                                             self.putMessage1 ( secId,

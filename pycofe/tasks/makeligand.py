@@ -37,7 +37,7 @@ from   gemmi   import  cif
 
 #  application imports
 from . import basic
-
+from  pycofe.auto  import auto
 
 # ============================================================================
 # Make Refmac driver
@@ -135,7 +135,11 @@ class MakeLigand(basic.TaskDriver):
                 # copy ORIGINAL restraints in place
                 shutil.copyfile ( lig_path,cifPath )
 
-            self.finaliseLigand ( code,xyzPath,cifPath )
+            ligand = self.finaliseLigand ( code,xyzPath,cifPath )
+
+            auto.makeNextTask ( self.task,{
+                "ligand" : ligand
+            })
 
             self.generic_parser_summary["makeligand"] = {
                 "summary_line" : "ligand \"" + code + "\" prepared"

@@ -550,6 +550,7 @@ class ASUDef(basic.TaskDriver):
             revision[0].addSubtypes ( hkl.subtype )
             self.registerRevision ( revision[0],revisionName=revName )
             have_results = True
+            
             auto.makeNextTask ( self.task,{
                 "revision" : revision[0]
             })

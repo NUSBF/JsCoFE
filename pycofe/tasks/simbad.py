@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    09.02.21   <--  Date of Last Modification.
+#    25.03.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -49,6 +49,7 @@ import pyrvapi
 from   pycofe.tasks    import asudef
 from   pycofe.dtypes   import dtype_revision, dtype_sequence
 from   pycofe.verdicts import verdict_simbad
+from   pycofe.auto     import auto
 
 
 # ============================================================================
@@ -102,8 +103,8 @@ class Simbad(asudef.ASUDef):
         sec1       = self.task.parameters.sec1.contains
         maxnlatt   = self.getParameter(sec1.MAXNLATTICES)
         maxpenalty = self.getParameter(sec1.MAXPENALTY)
-        if not maxpenalty:
-            maxpenalty = "12"
+        if not maxnlatt:    maxnlatt   = "5"
+        if not maxpenalty:  maxpenalty = "12"
 
         if hkl:
             level = self.getParameter(sec1.SEARCH_SEL)
@@ -182,7 +183,7 @@ class Simbad(asudef.ASUDef):
         self.storeReportDocument ( self.log_page_id() )
 
         # run simbad
-        self.runApp ( app,cmd,logType="Main" )
+        self.runApp ( app,cmd,logType="Main",quitOnError=False )
         self.restoreReportDocument()
 
         #f = open ( 'xxx.json','w' )
@@ -211,8 +212,9 @@ class Simbad(asudef.ASUDef):
             try:
                 simbad_meta = json.loads ( rvapi_meta )
             except:
-                self.putMessage ( "<b>Program error:</b> <i>unparseable metadata from Simbad</i>" +
-                                  "<p>'" + rvapi_meta + "'" )
+                self.putMessage ( "<b>Program error:</b> <i>unparseable metadata from Simbad</i>" )
+                self.stderrln   ( "\n ***** unparseable metadata from Simbad:\n\n   '" +\
+                                  str(rvapi_meta) + "'\n\n" )
                 simbad_meta = None
 
         if not simbad_meta:
@@ -307,6 +309,14 @@ class Simbad(asudef.ASUDef):
                             "R_free"       : Rfree
                         }
 
+                    auto.makeNextTask ( self.task,{
+                        "revision" : revision,
+                        "Rfactor"  : Rfactor,
+                        "Rfree"    : Rfree,
+                        "LLG"      : LLG,
+                        "TFZ"      : TFZ
+                    })
+
                 else:
                     self.putMessage ( "Structure Revision cannot be formed (probably a bug)" )
 
@@ -315,6 +325,15 @@ class Simbad(asudef.ASUDef):
 
         elif hkl:
             self.putTitle ( "No Suitable Models Found" )
+
+        if not have_results:
+            auto.makeNextTask ( self.task,{
+                "revision" : None,
+                "Rfactor"  : "1",
+                "Rfree"    : "1",
+                "LLG"      : "0",
+                "TFZ"      : "0"
+            })
 
         # close execution logs and quit
         self.success ( have_results )

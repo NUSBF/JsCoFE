@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    07.03.21   <--  Date of Last Modification.
+#    25.03.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -40,6 +40,7 @@ from . import basic
 from   pycofe.dtypes    import dtype_template
 from   pycofe.proc      import qualrep
 from   pycofe.verdicts  import verdict_refmac
+from   pycofe.auto      import auto
 
 # ============================================================================
 # Make Refmac driver
@@ -412,7 +413,7 @@ class Refmac(basic.TaskDriver):
                         "data"   : { "resolution" : hkl.getHighResolution(raw=True) },
                         "params" : {
                             "refmac" : {
-                                "ncycles"    : sec1.NCYC.value,
+                                "ncycles"    : int(sec1.NCYC.value),
                                 "twinning"   : isTwinning,
                                 "jellyBody"  : str(sec3.JELLY.value) == 'yes',
                                 "ncsRestr"   : str(sec3.NCSR.value) == 'yes',
@@ -431,6 +432,14 @@ class Refmac(basic.TaskDriver):
                         self.task.suggestedParameters = suggestedParameters
                         self.putCloneJobButton ( "Clone job with suggested parameters",
                                                  self.report_page_id(),verdict_row+3,0 )
+
+                    auto.makeNextTask ( self.task,{
+                        "revision" : revision,
+                        "Rfactor"  : self.generic_parser_summary["refmac"]["R_factor"],
+                        "Rfree"    : self.generic_parser_summary["refmac"]["R_free"],
+                        "suggestedParameters" : suggestedParameters
+                    })
+
 
         else:
             self.putTitle ( "No Output Generated" )

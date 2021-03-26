@@ -85,9 +85,11 @@ function makeClass ( classObject )  {
 }
 
 function makeTaskClass ( classType )  {
-  var className = getClassName ( classType,4,'../js-common/tasks/common.tasks.' );
-  if (className.length>0)
-    return eval ( 'new ' + className + '()' );
+  if (classType)  {
+    var className = getClassName ( classType,4,'../js-common/tasks/common.tasks.' );
+    if (className.length>0)
+      return eval ( 'new ' + className + '()' );
+  }
   return null;
 }
 

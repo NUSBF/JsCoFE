@@ -505,7 +505,7 @@ class CCP4Build(basic.TaskDriver):
 
                 try:
                     # this is only for displayig stats in job tree
-                    m0 = meta["metrics"][index[0]]
+                    m0 = meta["metrics"][index[1]]  #  0: edcc  1: rfree
                     self.generic_parser_summary["ccp4build"] = {
                       "summary_line" : "Compl=" + str(m0["res_compl"]) +\
                                        "% R="   + str(m0["R_factor"])  +\

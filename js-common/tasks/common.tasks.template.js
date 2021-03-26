@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    23.03.21   <--  Date of Last Modification.
+ *    25.03.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -------------------------------------------------------------------------
  *
@@ -85,6 +85,7 @@ function TaskTemplate()  {
   //this.helpURL      = null;   // (relative) url to help file, null will hide the help button
   this.nc_type      = 'ordinary'; // required Number Cruncher type
   this.fasttrack    = false;  // no fasttrack requirements
+  this.autoRunName  = '';     // job id in automatic workflow
   this.autoRunId    = '';     // automatic workflow Id
   this.informFE     = true;   // end of job and results are sent back to FE
 
@@ -150,7 +151,7 @@ TaskTemplate.prototype.doNotPackSuffixes   = function() { return ['.map']; }
 TaskTemplate.prototype.doPackSuffixes      = function() { return [''];     }
 
 TaskTemplate.prototype.canEndGracefully    = function() { return false;    }
-TaskTemplate.prototype.canRunInAutoMode    = function() { return false;    }
+// TaskTemplate.prototype.canRunInAutoMode    = function() { return false;    }
 
 TaskTemplate.prototype.getHelpURL = function()  {
   return __task_reference_base_url + 'doc.task.' + this._type.substr(4) + '.html';

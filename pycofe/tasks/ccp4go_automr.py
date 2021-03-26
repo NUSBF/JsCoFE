@@ -1,0 +1,193 @@
+##!/usr/bin/python
+
+# not python-3 ready
+
+#
+# ============================================================================
+#
+#    23.03.21   <--  Date of Last Modification.
+#                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# ----------------------------------------------------------------------------
+#
+#  CCP4go EXECUTABLE MODULE
+#
+#  Command-line:
+#     ccp4-python -m pycofe.tasks.ccp4go2 jobManager jobDir jobId
+#
+#  where:
+#    jobManager  is either SHELL, SGE or SCRIPT
+#    jobDir   is path to job directory, having:
+#      jobDir/output  : directory receiving output files with metadata of
+#                       all successful imports
+#      jobDir/report  : directory receiving HTML report
+#
+#  Copyright (C) Eugene Krissinel, Oleg Kovalevskyi, Andrey Lebedev 2021
+#
+# ============================================================================
+#
+
+#  python native imports
+import os
+
+#  application imports
+from   pycofe.tasks  import import_task
+from   pycofe.auto   import auto
+
+# ============================================================================
+# Make CCP4go driver
+
+class ImportAutoRun(import_task.Import):
+
+    # ------------------------------------------------------------------------
+
+    def importData(self):
+        #  works with uploaded data from the top of the project
+
+        super ( ImportAutoRun,self ).import_all()
+
+        # -------------------------------------------------------------------
+        # fetch data for CCP4go pipeline
+
+        if "DataUnmerged" in self.outputDataBox.data:
+            self.unm = self.outputDataBox.data["DataUnmerged"]
+
+        if "DataHKL" in self.outputDataBox.data:
+            self.hkl = self.outputDataBox.data["DataHKL"]
+            # maxres = 10000.0
+            # for i in range(len(self.outputDataBox.data["DataHKL"])):
+            #     res = self.outputDataBox.data["DataHKL"][i].getHighResolution(True)
+            #     if res<maxres:
+            #         maxres   = res
+            #         self.hkl = self.outputDataBox.data["DataHKL"][i]
+
+        if "DataSequence" in self.outputDataBox.data:
+            self.seq = self.outputDataBox.data["DataSequence"]
+
+        if "DataXYZ" in self.outputDataBox.data:
+            self.xyz = self.outputDataBox.data["DataXYZ"]
+
+        self.ligdesc = []
+        ldesc = getattr ( self.task,"ligands",[] )
+        for i in range(len(ldesc)):
+            if ldesc[i].source!='none':
+                self.ligdesc.append ( ldesc[i] )
+
+        return
+
+
+    def prepareData(self):
+        #  works with imported data from the project
+
+        if self.input_data.data.hkldata[0]._type=="DataUnmerged":
+            self.unm = self.input_data.data.hkldata
+        else:
+            self.hkl = self.input_data.data.hkldata
+
+        if hasattr(self.input_data.data,"seq"):  # optional data parameter
+            self.seq = self.input_data.data.seq
+            # for i in range(len(self.input_data.data.seq)):
+            #     self.seq.append ( self.makeClass(self.input_data.data.seq[i]) )
+
+        if hasattr(self.input_data.data,"xyz"):  # optional data parameter
+            self.xyz = self.input_data.data.xyz
+
+        if hasattr(self.input_data.data,"ligand"):  # optional data parameter
+            self.lig = self.input_data.data.ligand
+
+            # for i in range(len(self.input_data.data.ligand)):
+            #     self.ligands.append ( self.makeClass(self.input_data.data.ligand[i]) )
+
+        return
+
+    # ------------------------------------------------------------------------
+
+    def run(self):
+
+        self.unm = []  # unmerged dataset
+        self.hkl = []  # selected merged dataset
+        self.seq = []  # list of sequence objects
+        self.xyz = []  # coordinates (model/apo)
+        self.lig = []  # not used in this function but must be initialised
+        self.ligdesc = []
+
+        summary_line = ""
+        ilist = []
+
+        fileDir = self.outputDir()
+        if hasattr(self.input_data.data,"hkldata"):
+            fileDir = self.inputDir()
+            self.prepareData()  #  pre-imported data provided
+            summary_line = "received "
+        else:
+            self.importData()   #  data was uploaded
+            summary_line = "imported "
+
+        if self.unm:
+            ilist.append ( "Unmerged" )
+        if len(self.hkl)>0:
+            ilist.append ( "HKL (" + str(len(self.hkl)) + ")" )
+        if len(self.seq)>0:
+            ilist.append ( "Sequences (" + str(len(self.seq)) + ")" )
+        if len(self.xyz)>0:
+            ilist.append ( "XYZ (" + str(len(self.xyz)) + ")" )
+        nligs = len(self.lig) + len(self.ligdesc)
+        if nligs>0:
+            ilist.append ( "Ligands (" + str(nligs) + ")" )
+        if len(ilist)>0:
+            summary_line += ", ".join(ilist) + "; "
+
+        if hasattr(self.task.parameters,"HATOM"):
+            self.ha_type = self.getParameter ( self.task.parameters.HATOM )
+        else:
+            self.ha_type = ""
+
+        mr_engine = self.getParameter ( self.task.parameters.MR_ENGINE )
+        mb_engine = self.getParameter ( self.task.parameters.MB_ENGINE )
+
+        if mr_engine=="mrbump":
+            self.putMessage ( "Will use MrBump for auto-MR" )
+        else:
+            self.putMessage ( "Will use MoRDa for auto-MR" )
+
+        if mb_engine=="ccp4build":
+            self.putMessage ( "Will use CCP4Build for auto model building" )
+        else:
+            self.putMessage ( "Will use Buccaneer for auto model building" )
+
+        #self.putMessage ( "&nbsp;" )
+        self.flush()
+
+        have_results = True
+
+        if ((len(self.unm)>0) or (len(self.hkl)>0)) and (len(self.seq)>0):
+            self.putTitle ( "Automated MR Workflow started" )
+            self.task.autoRunId = "autoMR"
+            auto.makeNextTask ( self.task,{
+                "unm"       : self.unm,
+                "hkl"       : self.hkl,
+                "seq"       : self.seq,
+                "lig"       : self.lig,
+                "ligdesc"   : self.ligdesc,
+                "mr_engine" : mr_engine,
+                "mb_engine" : mb_engine
+            })
+            summary_line += "workflow started"
+        else:
+            summary_line += "insufficient input"
+
+
+        self.generic_parser_summary["import_autorun"] = {
+          "summary_line" : summary_line
+        }
+
+        # close execution logs and quit
+        self.success ( have_results )
+        return
+
+
+# ============================================================================
+
+if __name__ == "__main__":
+
+    drv = ImportAutoRun ( "",os.path.basename(__file__),{} )
+    drv.start()
