@@ -36,7 +36,7 @@ from . import basic
 from   pycofe.dtypes  import dtype_template
 from   varut          import signal
 from   pycofe.proc    import qualrep
-
+from   pycofe.auto    import auto
 
 # ============================================================================
 # Make Buccaneer driver
@@ -314,6 +314,13 @@ class Buccaneer(basic.TaskDriver):
                 except:
                     self.stderr ( " *** molprobity failure" )
                     self.rvrow = rvrow0
+
+                auto.makeNextTask ( self.task,{
+                    "revision" : revision,
+                    "Rfactor"  : self.generic_parser_summary["refmac"]["R_factor"],
+                    "Rfree"    : self.generic_parser_summary["refmac"]["R_free"]
+                })
+
 
         else:
             self.putTitle ( "No Output Generated" )

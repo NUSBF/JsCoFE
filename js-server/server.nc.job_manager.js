@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    19.03.21   <--  Date of Last Modification.
+ *    25.03.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -93,14 +93,15 @@ var maxSendTrials = conf.getServerConfig().maxSendTrials;
 NCJobRegister.prototype.addJob1 = function ( jobDir,job_token )  {
 var maxSendTrials = conf.getServerConfig().maxSendTrials;
   this.job_map[job_token] = {
-    feURL      : '',
-    jobDir     : jobDir,
-    jobStatus  : task_t.job_code.new,
-    sendTrials : maxSendTrials,
-    startTime  : Date.now(),
-    endTime    : null,
-    exeType    : '',    // SHELL or SGE
-    pid        : 0      // job pid is added separately
+    feURL       : '',
+    jobDir      : jobDir,
+    jobStatus   : task_t.job_code.new,
+    return_data : true,
+    sendTrials  : maxSendTrials,
+    startTime   : Date.now(),
+    endTime     : null,
+    exeType     : '',    // SHELL or SGE
+    pid         : 0      // job pid is added separately
   };
   return job_token;
 }

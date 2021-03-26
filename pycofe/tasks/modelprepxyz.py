@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    07.12.20   <--  Date of Last Modification.
+#    24.03.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -21,7 +21,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2020
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2020-2021
 #
 # ============================================================================
 #
@@ -37,6 +37,7 @@ import gemmi
 #  application imports
 from . import basic
 from   pycofe.proc   import seqal
+from   pycofe.auto   import auto
 
 # ============================================================================
 # Model preparation driver
@@ -46,7 +47,7 @@ class ModelPrepXYZ(basic.TaskDriver):
     # ------------------------------------------------------------------------
 
     def fetch_chain ( self, chainSel,fpath_in,resrange=None ):
-        if chainSel=="(all)":
+        if chainSel=="(all)" or not chainSel:
             return fpath_in
         st = gemmi.read_structure ( fpath_in )
         if chainSel.startswith("/"):
@@ -197,11 +198,21 @@ class ModelPrepXYZ(basic.TaskDriver):
     def make_models ( self,seq,xyz,modSel,sclpSel,csMode ):
 
         fpath_seq = seq.getSeqFilePath ( self.inputDir() )
-        ensNo     = 0
+        # ensNo     = 0
         ensOk     = False
+        models    = []
 
         for i in range(len(xyz)):
+
             chainSel = xyz[i].chainSel
+            if not chainSel:
+                chains = xyz[i].xyzmeta.xyz[0].chains
+                for j in range(len(chains)):
+                    if len(chains[j].seq)>0:
+                        chainSel = chains[j].id
+                        xyz[i].chainSel = chainSel
+                        break
+
             if chainSel.startswith("/"):
                 chainSel = chainSel[1:].replace("/","_")  # split("/")[-1]
             fpath_in = self.fetch_chain ( xyz[i].chainSel, # this is correct
@@ -258,15 +269,16 @@ class ModelPrepXYZ(basic.TaskDriver):
             else:
                 model = self.registerModel ( seq,fpath_out,checkout=True )
                 if model:
-                    if ensNo<1:
+                    #if ensNo<1:
+                    if len(models)<1:
                         self.putMessage ( "<i><b>Prepared models are associated " +\
                                           "with sequence:&nbsp;" + seq.dname + "</b></i>" )
                         self.putTitle ( "Results" )
                     else:
                         self.putMessage ( "&nbsp;" )
-                    ensNo += 1
+                    #ensNo += 1
                     ensOk  = True
-                    self.putMessage ( "<h3>Model #" + str(ensNo) + ": " + model.dname + "</h3>" )
+                    self.putMessage ( "<h3>Model #" + str(len(models)+1) + ": " + model.dname + "</h3>" )
                     model.addDataAssociation ( seq.dataId )
                     model.meta  = { "rmsd" : "", "seqId" : sid }
                     model.seqId = model.meta["seqId"]
@@ -277,6 +289,7 @@ class ModelPrepXYZ(basic.TaskDriver):
 
                     self.putModelWidget ( self.getWidgetId("model_btn"),
                                           "Coordinates",model )
+                    models.append ( model )
 
                 else:
                     if ensOk:
@@ -285,7 +298,7 @@ class ModelPrepXYZ(basic.TaskDriver):
                                       xyz[i].dname + "</h3>" )
                     ensOk = False
 
-        return ensNo
+        return models
 
 
     # ------------------------------------------------------------------------
@@ -306,10 +319,10 @@ class ModelPrepXYZ(basic.TaskDriver):
         for i in range(len(xyz)):
             xyz[i] = self.makeClass ( xyz[i] )
 
-        ensNo = self.make_models ( seq,xyz,modSel,sclpSel,csMode )
+        models = self.make_models ( seq,xyz,modSel,sclpSel,csMode )
 
         # this will go in the project tree job's line
-        if ensNo>0:
+        if len(models)>0:
 
             protocol = "(unmodified)"
             if modSel=="D":
@@ -327,10 +340,15 @@ class ModelPrepXYZ(basic.TaskDriver):
                 protocol = "(reduced to polyalanine)"
 
             self.generic_parser_summary["modelprepxyz"] = {
-              "summary_line" : str(ensNo) + " model(s) generated " + protocol
+              "summary_line" : str(len(models)) + " model(s) generated " + protocol
             }
 
-        self.success ( (ensNo>0) )
+            auto.makeNextTask ( self.task,{
+                "model" : models[0]
+            })
+
+
+        self.success ( (len(models)>0) )
         return
 
 

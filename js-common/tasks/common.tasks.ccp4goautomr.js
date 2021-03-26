@@ -2,11 +2,11 @@
 /*
  *  =================================================================
  *
- *    23.03.21   <--  Date of Last Modification.
+ *    24.03.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
- *  **** Module  :  js-common/cofe.tasks.ccp4go2.js
+ *  **** Module  :  js-common/cofe.tasks.ccp4goautomr.js
  *       ~~~~~~~~~
  *  **** Project :  jsCoFE - javascript-based Cloud Front End
  *       ~~~~~~~~~
@@ -28,20 +28,21 @@ if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
 
 // ===========================================================================
 
-function TaskCCP4go2()  {
+function TaskCCP4goAutoMR()  {
 
   if (__template)  __template.TaskTemplate.call ( this );
              else  TaskTemplate.call ( this );
 
-  this._type   = 'TaskCCP4go2';
-  this.name    = 'ccp4go2';
-  this.setOName ( 'ccp4go2' );  // default output file name template
-  this.title   = 'CCP4go2 auto-solver (experimental)';
+  this._type     = 'TaskCCP4goAutoMR';
+  this.name      = '<b>ccp4go:</b>auto-MR';
+  this.setOName ( 'ccp4go_automr' );  // default output file name template
+  this.title     = 'CCP4go: Automated Molecular Replacement';
+  this.autoRunId = 'autoMR';
 
   this.files   = ['','',''];
   //this.ha_type = '';
   this.ligands = [];
-  for (var i=0;i<10;i++)
+  for (var i=0;i<5;i++)
     this.ligands.push ( { 'source':'none', 'smiles':'', 'code':'' } );
 
 //  this.input_dtypes = [1];  // settings for "on project top only", managed in TaskList
@@ -66,6 +67,7 @@ function TaskCCP4go2()  {
                                    // be selected
       min         : 0,             // minimum acceptable number of data instances
       max         : 10             // maximum acceptable number of data instances
+    /*
     },{
       data_type   : {'DataModel':[],'DataXYZ':[]},  // data type(s) and subtype(s)
       label       : 'Structure homologue',   // label for input dialog
@@ -75,13 +77,14 @@ function TaskCCP4go2()  {
       //customInput : 'chain-sel-poly', // lay custom fields next to the selection
       min         : 0,           // minimum acceptable number of data instances
       max         : 1            // maximum acceptable number of data instances
+    */
     },{
       data_type   : {'DataLigand':[]},  // data type(s) and subtype(s)
       label       : 'Ligand data', // label for input dialog
       tooltip     : '(Optional) Specify ligands to be fit in electron density.',
       inputId     : 'ligand',      // input Id for referencing input fields
       min         : 0,             // minimum acceptable number of data instances
-      max         : 5              // maximum acceptable number of data instances
+      max         : this.ligands.length // maximum acceptable number of data instances
     },{
       // require brunching from data import, so no revision must be there
       data_type   : {'DataRevision':[]}, // data type(s) and subtype(s)
@@ -93,6 +96,33 @@ function TaskCCP4go2()  {
     }
   ];
 
+  this.parameters = { // input parameters
+    MR_ENGINE : { type     : 'combobox',
+                  keyword  : '',
+                  label    : '<b><i>Auto-MR solver</i></b>',
+                  tooltip  : 'Choose between MrBump and MoRDa auto-MR pipelines ' +
+                             'to use. If MoRDa is not available, MrBump will be used.',
+                  range    : ['mrbump|MrBump',
+                              'morda|MoRDa'
+                             ],
+                  value    : 'mrbump',
+                  iwidth   : 140,
+                  position : [0,0,1,3]
+                },
+    MB_ENGINE : { type     : 'combobox',
+                  keyword  : '',
+                  label    : '<b><i>Model builder</i></b>',
+                  tooltip  : 'Choose between CCP4Build and Buccaneer for model ' +
+                             'building steps.',
+                  range    : ['ccp4build|CCP4Build',
+                              'buccaneer|Buccaneer'
+                             ],
+                  value    : 'ccp4build',
+                  iwidth   : 140,
+                  position : [1,0,1,3]
+                }
+  };
+  /*
   this.parameters = { // input parameters
     HATOM : { type      : 'string_',   // empty string allowed
               keyword   : 'atomtype=',
@@ -116,43 +146,6 @@ function TaskCCP4go2()  {
               open     : false,  // true for the section to be initially open
               position : [2,0,1,8],
               contains : {
-                /*
-                DATASET_SEL : {
-                        type     : 'combobox',
-                        keyword  : 'dataset',
-                        label    : 'Reflection dataset to use',
-                        //lwidth   : 60,        // label width in px
-                        //reportas : 'Down-weighting model',
-                        tooltip  : 'If input reflection file contains several ' +
-                                   'dataset, you may specify the desired ' +
-                                   'dataset number, or allow for automatic ' +
-                                   'choice.',
-                        range    : ['A|choose automatically',
-                                    'G|take dataset number'],
-                        value    : 'A',
-                        position : [0,0,1,1]
-                      },
-                DATASET_NO : {
-                        type      : 'integer',
-                        keyword   : 'dataset-no',
-                        label     : '',
-                        iwidth    : 40,
-                        tooltip   : 'Give dataset number (dataset with base ' +
-                                    'H,K,L columns has number 0).',
-                        range     : [1,100],
-                        value     : '1',
-                        default   : '1',
-                        position  : [0,3,1,1],
-                        showon    : {'DATASET_SEL':['G']}
-                      },
-                TITLE1 : {
-                        type      : 'label',  // just a separator
-                        label     : '<h3>Components control</h3><i>Uncheck ' +
-                                    'components which <u>should not</u> ' +
-                                    'be used:</i><sub>&nbsp;</sub>',
-                        position : [1,0,1,5],
-                      },
-                      */
                 TITLE1 : {
                         type      : 'label',  // just a separator
                         label     : '<i>Uncheck components which <u>should not</u> ' +
@@ -202,29 +195,30 @@ function TaskCCP4go2()  {
               }
             }
   };
+  */
 
 }
 
 if (__template)
-      TaskCCP4go2.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskCCP4go2.prototype = Object.create ( TaskTemplate.prototype );
-TaskCCP4go2.prototype.constructor = TaskCCP4go2;
+      TaskCCP4goAutoMR.prototype = Object.create ( __template.TaskTemplate.prototype );
+else  TaskCCP4goAutoMR.prototype = Object.create ( TaskTemplate.prototype );
+TaskCCP4goAutoMR.prototype.constructor = TaskCCP4goAutoMR;
 
 
 // ===========================================================================
 
-TaskCCP4go2.prototype.icon = function()  { return 'task_ccp4go'; }
+TaskCCP4goAutoMR.prototype.icon = function()  { return 'task_ccp4go'; }
 
-// TaskCCP4go2.prototype.canRunInAutoMode = function() { return true; }
+//TaskCCP4goAutoMR.prototype.canRunInAutoMode = function() { return true; }
 
 // task.platforms() identifies suitable platforms:
 //   'W"  : Windows
 //   'L'  : Linux
 //   'M'  : Mac
 //   'U'  : Unix ( = Linux + Mac)
-//TaskCCP4go2.prototype.platforms = function()  { return 'LMU'; }  // UNIX only
+//TaskCCP4goAutoMR.prototype.platforms = function()  { return 'LMU'; }  // UNIX only
 
-TaskCCP4go2.prototype.currentVersion = function()  {
+TaskCCP4goAutoMR.prototype.currentVersion = function()  {
   var version = 0;
   if (__template)
         return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );
@@ -236,7 +230,7 @@ if (!__template)  {
   // for client side
 
   // reserved function name
-  TaskCCP4go2.prototype.makeInputPanel = function ( dataBox )  {
+  TaskCCP4goAutoMR.prototype.makeInputPanel = function ( dataBox )  {
     if (dataBox.isEmpty())  {
       this.input_dtypes = [1];  // indicates the data upload interface
       return this._makeInputPanel ( dataBox );
@@ -244,21 +238,21 @@ if (!__template)  {
     return  TaskTemplate.prototype.makeInputPanel.call ( this,dataBox );
   }
 
-  TaskCCP4go2.prototype.collectInput = function ( inputPanel )  {
+  TaskCCP4goAutoMR.prototype.collectInput = function ( inputPanel )  {
     if (this.input_dtypes==1)  // upload interface mode
       return this._collectInput ( inputPanel );
     return  TaskTemplate.prototype.collectInput.call ( this,inputPanel );
   }
 
-  TaskCCP4go2.prototype.doRun = function ( inputPanel,run_func )  {
+  TaskCCP4goAutoMR.prototype.doRun = function ( inputPanel,run_func )  {
     if (this.input_dtypes==1)  // upload interface mode
       return this._doRun ( inputPanel,run_func );
     return  TaskTemplate.prototype.doRun.call ( this,inputPanel,run_func );
   }
 
 
-  TaskCCP4go2.prototype._makeInputPanel = function ( dataBox )  {
-  // makes input panel for Import task; dataBox is not used as import task
+  TaskCCP4goAutoMR.prototype._makeInputPanel = function ( dataBox )  {
+  // makes input panel; dataBox is not used as import task
   // does not have any input data from the project
   var nSeqInputs = 1;
 
@@ -318,21 +312,8 @@ if (!__template)  {
         if (files.length>0)
           wset['itext'].setValue ( files[0].name );
       });
-      /*
-      wset['fsel'].addOnChangeListener ( function(){
-        var files = wset['fsel'].getFiles();
-        if (files.length>0)  {
-          new UploadDialog ( 'Upload ' + files[0].name,files,div.customData,false,
-                              function(returnCode){
-            if (!returnCode)
-              wset['itext'].setValue ( files[0].name );
-          });
-        }
-      });
-      */
       return wset;
     }
-
 
     div.grid.setLabel ( '&nbsp;',row,1,1,1 ).setNoWrap();
     div.mtz_select = setMTZFileSelect ( row,this.files[0] );
@@ -352,7 +333,6 @@ if (!__template)  {
         div.seq_select[lastShown]['remove'].show();
       return lastShown;
     }
-
 
     function setSeqFileSelect ( rowNo,fname,seqNo )  {
 
@@ -414,23 +394,6 @@ if (!__template)  {
           });
       });
 
-      /*
-      wset['fsel'].addOnChangeListener ( function(){
-        var files = wset['fsel'].getFiles();
-        if (files.length>0)  {
-          new UploadDialog ( 'Upload ' + files[0].name,files,div.customData,false,
-                              function(returnCode){
-            if (!returnCode)
-              _import_checkFiles ( files,div.customData.file_mod,
-                                   div.upload_files,function(){
-                  wset['itext'].setValue ( files[0].name );
-                  setSeqControls();
-              });
-          });
-        }
-      });
-      */
-
       return wset;
 
     }
@@ -438,7 +401,6 @@ if (!__template)  {
     div.seq_select = [];
     for (var i=0;i<nSeqInputs;i++)
       div.seq_select.push ( setSeqFileSelect ( row++,this.files[1],i ) );
-
 
     function setCoorFileSelect ( rowNo,fname )  {
       var wset = setFileSelect ( rowNo,'Structure homologue',
@@ -453,17 +415,13 @@ if (!__template)  {
       return wset;
     }
 
-    div.coor_select = setCoorFileSelect ( row++,this.files[2] );
     var row0 = row;
-    div.grid.setLabel ( '',row++,0,1,1 ).setHeight_px(8);
-
-    /*
-    setLabel ( row,'Heavy atom type','[Optional] Provide chemical element of ' +
-                   'anomalous scatterers if anomalous signal is observed, ' +
-                   'and leave blank otherwise.' );
-    div.ha_type = div.grid.setInputText ( this.ha_type, row++,2,1,1 )
-                          .setMaxInputLength ( 2 ).setWidth_px ( 40 );
-    */
+    if (this._type!='TaskCCP4goAutoMR')  {
+      div.coor_select = setCoorFileSelect ( row++,this.files[2] );
+      row0 = row;
+      div.grid.setLabel ( '',row++,0,1,1 ).setHeight_px(8);
+    } else
+      div.coor_select = null;
 
     div.grid.setLabel ( '&nbsp;',row++,0,1,1 ).setHeight_px(8);
 
@@ -492,10 +450,10 @@ if (!__template)  {
         var source  = div.ligands[i].selection.getValue();
         div.ligands[i].label    .setVisible ( visible );
         div.ligands[i].selection.setVisible ( visible );
-        div.ligands[i].smiles   .setVisible ( visible && (source=='smiles') );
+        div.ligands[i].smiles   .setVisible ( visible && (source=='S') );
         div.ligands[i].code     .setVisible ( visible && (source!='none')   );
-        if (source=='smiles')  smiles = true;
-        if (source!='none')    code   = true;
+        if (source=='S')    smiles = true;
+        if (source!='none') code   = true;
       }
       div.code_lbl  .setVisible ( code   );
       div.smiles_lbl.setVisible ( smiles );
@@ -510,16 +468,16 @@ if (!__template)  {
       var sel = new Dropdown();
       sel.setWidth ( '120px' );
       div.grid.setWidget ( sel,row,2,1,1 );
-      sel.addItem ( 'None'  ,'','none'  ,this.ligands[i].source=='none'   );
-      sel.addItem ( 'SMILES','','smiles',this.ligands[i].source=='smiles' );
-      sel.addItem ( 'Code'  ,'','code'  ,this.ligands[i].source=='code'   );
+      sel.addItem ( 'None'  ,'','none',this.ligands[i].source=='none' );
+      sel.addItem ( 'SMILES','','S'   ,this.ligands[i].source=='S'    );
+      sel.addItem ( 'Code'  ,'','M'   ,this.ligands[i].source=='M'    );
       sel.make();
       var code   = div.grid.setInputText ( this.ligands[i].code,row,3,1,1 )
                            .setWidth_px(50).setNoWrap().setMaxInputLength(3)
-                           .setVisible(this.ligands[i].source=='code');
+                           .setVisible(this.ligands[i].source=='M');
       var smiles = div.grid.setInputText ( this.ligands[i].smiles,row,4,1,1 )
                            .setWidth_px(600).setNoWrap()
-                           .setVisible(this.ligands[i].source=='smiles');
+                           .setVisible(this.ligands[i].source=='S');
       div.grid.setVerticalAlignment ( row,2,'middle' );
       div.grid.setVerticalAlignment ( row,3,'middle' );
       div.grid.setVerticalAlignment ( row,4,'middle' );
@@ -527,7 +485,7 @@ if (!__template)  {
       sel.sno = i;
       sel.addOnChangeListener ( function(text,value){
         div.ligands[this.sno].code  .setVisible ( value!='none'   );
-        div.ligands[this.sno].smiles.setVisible ( value=='smiles' );
+        div.ligands[this.sno].smiles.setVisible ( value=='S' );
         showLigands();
       });
       row++;
@@ -549,20 +507,8 @@ if (!__template)  {
 
   }
 
-  /*
-  TaskCCP4go2.prototype.disableInputWidgets = function ( widget,disable_bool ) {
-    TaskTemplate.prototype.disableInputWidgets.call ( this,widget,disable_bool );
-    if (widget.hasOwnProperty('upload'))  {
-      widget.upload.button.setDisabled ( disable_bool );
-      if (widget.upload.link_button)
-        widget.upload.link_button.setDisabled ( disable_bool );
-    }
-  }
-  */
-
-
   // reserved function name
-  TaskCCP4go2.prototype._collectInput = function ( inputPanel )  {
+  TaskCCP4goAutoMR.prototype._collectInput = function ( inputPanel )  {
     // collects data from input widgets, created in makeInputPanel() and
     // stores it in internal fields
     var msg   = '';  // Ok if stays empty
@@ -575,7 +521,7 @@ if (!__template)  {
       if (this.ligands[i].source!='none')  {
         if (!this.ligands[i].code)
           msg += '<b><i>Code for ligand #' + (i+1) + ' is not given</i></b>';
-        if ((this.ligands[i].source=='smiles') && (!this.ligands[i].smiles))
+        if ((this.ligands[i].source=='S') && (!this.ligands[i].smiles))
           msg += '<b><i>SMILES string for ligand #' + (i+1) + ' is not given</i></b>';
       }
     }
@@ -601,10 +547,9 @@ if (!__template)  {
   //  This function is called when task is finally sent to FE to run. Should
   // execute function given as argument, or issue an error message if run
   // should not be done.
-  TaskCCP4go2.prototype._doRun = function ( inputPanel,run_func )  {
+  TaskCCP4goAutoMR.prototype._doRun = function ( inputPanel,run_func )  {
   var files  = [inputPanel.mtz_select  ['fsel'].getFiles()];
   var sfiles = inputPanel.seq_select[0]['fsel'].getFiles();
-  var cfiles = inputPanel.coor_select  ['fsel'].getFiles();
 
     this.files = ['','',''];
     if (files.length>0)
@@ -613,14 +558,17 @@ if (!__template)  {
       files.push ( sfiles );
       this.files[1] = sfiles[0].name;
     }
-    if (cfiles.length>0)  {
-      files.push ( cfiles );
-      this.files[2] = cfiles[0].name;
+
+    if (inputPanel.coor_select)  {
+      var cfiles = inputPanel.coor_select['fsel'].getFiles();
+      if (cfiles.length>0)  {
+        files.push ( cfiles );
+        this.files[2] = cfiles[0].name;
+      }
     }
 
     if (files[0].length<0)  {
-      new MessageBox ( 'Stop run','Task cannot be run as no reflection<br>' +
-                                  'data are given' );
+      new MessageBox ( 'Stop run','Task cannot be run without reflection data<br>' );
     } else  {
       new UploadDialog ( 'Upload data',files,inputPanel.customData,true,
                           function(returnCode){
@@ -637,7 +585,7 @@ if (!__template)  {
 
   // This function is called at cloning jobs and should do copying of all
   // custom class fields not found in the Template class
-  TaskCCP4go2.prototype.customDataClone = function ( cloneMode,task )  {
+  TaskCCP4goAutoMR.prototype.customDataClone = function ( cloneMode,task )  {
     //this.ha_type = task.ha_type;
     this.ligands = [];
     for (var i=0;i<task.ligands.length;i++)
@@ -648,19 +596,17 @@ if (!__template)  {
 
 
   // reserved function name
-  //TaskCCP4go2.prototype.runButtonName = function()  { return 'Import'; }
+  //TaskCCP4goAutoMR.prototype.runButtonName = function()  { return 'Import'; }
 
 } else  {
   // for server side
 
   var conf = require('../../js-server/server.configuration');
 
-  TaskCCP4go2.prototype.getCommandLine = function ( jobManager,jobDir )  {
-    if (this.autoRunId.length>0)
-          return [conf.pythonName(), '-m', 'pycofe.tasks.import_autorun', jobManager, jobDir, this.id];
-    else  return [conf.pythonName(), '-m', 'pycofe.tasks.ccp4go2_task'  , jobManager, jobDir, this.id];
+  TaskCCP4goAutoMR.prototype.getCommandLine = function ( jobManager,jobDir )  {
+    return [conf.pythonName(), '-m', 'pycofe.tasks.ccp4go_automr', jobManager, jobDir, this.id];
   }
 
-  module.exports.TaskCCP4go2 = TaskCCP4go2;
+  module.exports.TaskCCP4goAutoMR = TaskCCP4goAutoMR;
 
 }

@@ -1,5 +1,7 @@
 ##!/usr/bin/python
 
+#  !!!!!   DRAFT DRFAT DRAFT TO BE REMOVED  !!!!!
+
 # not python-3 ready
 
 #
@@ -129,10 +131,12 @@ class ImportAutoRun(import_task.Import):
             # prepare data for ASU definition task
 
             self.task.autoRunId = "autoMR"  #  this is only for demonstration
+            self.task.autoRunId = "MR"      #  this is only for demonstration
 
             auto.makeNextTask ( self.task,{
                 "hkl" : self.hkl,
-                "seq" : self.seq
+                "seq" : self.seq,
+                "xyz" : self.xyz
             })
 
             # auto_api.addTask     ( "asu","TaskASUDef" )

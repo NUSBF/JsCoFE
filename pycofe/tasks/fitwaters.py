@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    02.10.20   <--  Date of Last Modification.
+#    25.03.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -21,7 +21,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2020
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2021
 #
 # ============================================================================
 #
@@ -34,7 +34,7 @@ import sys
 from . import basic
 from   pycofe.proc   import coor
 from   pycofe.dtypes import dtype_revision
-
+from   pycofe.auto   import auto
 
 # ============================================================================
 # Make Refmac driver
@@ -116,6 +116,10 @@ class FitWaters(basic.TaskDriver):
                 revision.setStructureData ( structure )
                 self.registerRevision     ( revision  )
                 have_results = True
+                auto.makeNextTask ( self.task,{
+                    "revision" : revision,
+                    "nwaters"  : str(nwaters)
+                })
 
         else:
             self.putTitle ( "No water molecules were found and fitted." )

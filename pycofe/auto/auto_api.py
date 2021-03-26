@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    22.03.21   <--  Date of Last Modification.
+#    25.03.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -16,24 +16,56 @@
 # ============================================================================
 #
 
-#import json
+import os
+import json
+
 from   pycofe.varut  import jsonut
 
 # ============================================================================
 # Service functions
 
-def auto_meta_fname():  return "auto.meta"
+def auto_meta_fname   ():  return "auto.meta"
+def auto_context_fname():  return "auto.context"
 
 auto_meta = None
 
-def addTask ( taskName,taskClassName ):
+def initAutoMeta():
+    global auto_meta
+    auto_meta = jsonut.jObject()
+    try:
+        if os.path.isfile(auto_context_fname()):
+            auto_meta.context = jsonut.readjObject ( auto_context_fname() )
+        else:
+            auto_meta.context = None
+    except:
+        auto_meta.context = None
+    if not auto_meta.context:
+        auto_meta.context = jsonut.jObject()
+        auto_meta.context.custom = jsonut.jObject()
+        auto_meta.context.job_register = jsonut.jObject()
+    return
+
+
+# ----------------------------------------------------------------------------
+
+def addTask ( taskName,taskClassName,parentName ):
     global auto_meta
     task = jsonut.jObject()
     task._type      = taskClassName
     task.data       = jsonut.jObject()
     task.parameters = jsonut.jObject()
-    auto_meta = jsonut.jObject()
+    task.parentName = parentName
     auto_meta.set_field ( taskName,task )
+    return
+
+def addTaskData ( taskName,inputId,dataClass ):
+    global auto_meta
+    task = auto_meta.get_field ( taskName )
+    if task:
+        if not hasattr(task.data,inputId):
+            task.data.set_field ( inputId,[] )
+        #dataClass.visible = True
+        task.data.get_field(inputId).append ( dataClass )
     return
 
 def addTaskParameter ( taskName,parameterName,parameterValue ):
@@ -43,14 +75,29 @@ def addTaskParameter ( taskName,parameterName,parameterValue ):
         task.parameters.set_field ( parameterName,parameterValue )
     return
 
-def addTaskData ( taskName,inputId,dataClass ):
+def addContext ( contextName,context ):
     global auto_meta
-    task = auto_meta.get_field ( taskName )
-    if task:
-        if not hasattr(task.data,inputId):
-            task.data.set_field ( inputId,[] )
-        task.data.get_field(inputId).append ( dataClass )
+    auto_meta.context.custom.set_field ( contextName,context )
     return
+
+def getContext ( contextName ):
+    global auto_meta
+    return auto_meta.context.custom.get_field ( contextName );
+
+# def loadContext():
+#     global auto_meta
+#     try:
+#         if os.path.isfile(auto_context_fname()):
+#             auto_meta.context = jsonut.readjObject ( auto_context_fname() )
+#         else:
+#             auto_meta.context = None
+#     except:
+#         auto_meta.context = None
+#     if not auto_meta.context:
+#         auto_meta.context = jsonut.jObject()
+#         auto_meta.context.custom = jsonut.jObject()
+#         auto_meta.context.job_register = jsonut.jObject()
+#     return
 
 def writeAutoMeta():
     global auto_meta

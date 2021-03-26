@@ -46,7 +46,8 @@ import shutil
 
 #  application imports
 from . import basic
-from   pycofe.proc    import xyzmeta
+from   pycofe.proc  import xyzmeta
+from   pycofe.auto  import auto
 
 # ============================================================================
 # Make Morda driver
@@ -197,6 +198,11 @@ class Morda(basic.TaskDriver):
                 revision.setStructureData  ( structure )
                 self.registerRevision      ( revision  )
                 have_results = True
+                auto.makeNextTask ( self.task,{
+                    "revision" : revision,
+                    "Rfactor"  : self.generic_parser_summary["refmac"]["R_factor"],
+                    "Rfree"    : self.generic_parser_summary["refmac"]["R_free"]
+                })
             else:
                 self.putMessage ( "<h3>Structure cannot be formed</h3>" )
 

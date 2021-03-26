@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    23.03.21   <--  Date of Last Modification.
+ *    24.03.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -1089,6 +1089,10 @@ function saveProjectData ( loginData,data )  {
           if (('cloned_id' in data.tasks_add[i]) && data.tasks_add[i].cloned_id)  {
             var taski      = class_map.makeClass ( data.tasks_add[i] );
             var cloneItems = taski.cloneItems();
+            if (data.tasks_add[i].autoRunId)  {
+              cloneItems.push ( 'auto.context' );
+              cloneItems.push ( 'auto.meta'    );
+            }
             if (cloneItems.length>0)  {
               // We copy items into cloned directory asynchronously without
               // making sure that copy completes before response is sent back
@@ -1097,16 +1101,18 @@ function saveProjectData ( loginData,data )  {
               var jobDirPath0 = getJobDirPath ( loginData,projectName,taski.cloned_id );
               for (var j=0;j<cloneItems.length;j++)  {
                 var item_src  = path.join ( jobDirPath0,cloneItems[j] );
-                var item_dest = path.join ( jobDirPath ,cloneItems[j] );
-                fs.copy ( item_src,item_dest,function(err)  {
-                  if (err)  {
-                    log.error ( 30,'error copying item ' + item_src  );
-                    log.error ( 30,'                to ' + item_dest );
-                    log.error ( 30,'error: ' + err );
-                  }
-                  //log.standard ( 31,'copied item ' + item_src  );
-                  //log.standard ( 31,'         to ' + item_dest );
-                });
+                if (utils.fileExists(item_src))  {
+                  var item_dest = path.join ( jobDirPath ,cloneItems[j] );
+                  fs.copy ( item_src,item_dest,function(err)  {
+                    if (err)  {
+                      log.error ( 30,'error copying item ' + item_src  );
+                      log.error ( 30,'                to ' + item_dest );
+                      log.error ( 30,'error: ' + err );
+                    }
+                    //log.standard ( 31,'copied item ' + item_src  );
+                    //log.standard ( 31,'         to ' + item_dest );
+                  });
+                }
               }
             }
           }

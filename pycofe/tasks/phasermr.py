@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    22.03.21   <--  Date of Last Modification.
+#    24.03.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -249,11 +249,21 @@ class PhaserMR(basic.TaskDriver):
         sec2 = self.task.parameters.sec2.contains
         sec3 = self.task.parameters.sec3.contains
 
+        # if sec0.RF_TARGET_SEL.value != "FAST":
+        #     self.writeKWParameter ( sec0.RF_TARGET_SEL )
+        # if sec0.RF_ANGLE_SEL.visible:
+        #     self.write_stdin ( "ROTATE VOLUME " + sec0.RF_ANGLE_SEL.value )
+        #     if sec0.RF_ALPHA.visible:
+        #         self.write_stdin ( self.getKWParameter("EULER",sec0.RF_ALPHA) +\
+        #                            self.getKWParameter(""     ,sec0.RF_BETA)  +\
+        #                            self.getKWParameter(""     ,sec0.RF_GAMMA) +\
+        #                            self.getKWParameter("RANGE",sec0.RF_RANGE) )
+        #     self.write_stdin ( "\n" )
+
         if sec0.RF_TARGET_SEL.value != "FAST":
             self.writeKWParameter ( sec0.RF_TARGET_SEL )
-        if sec0.RF_ANGLE_SEL.visible:
             self.write_stdin ( "ROTATE VOLUME " + sec0.RF_ANGLE_SEL.value )
-            if sec0.RF_ALPHA.visible:
+            if sec0.RF_ANGLE_SEL.value=="AROUND":
                 self.write_stdin ( self.getKWParameter("EULER",sec0.RF_ALPHA) +\
                                    self.getKWParameter(""     ,sec0.RF_BETA)  +\
                                    self.getKWParameter(""     ,sec0.RF_GAMMA) +\
@@ -262,15 +272,13 @@ class PhaserMR(basic.TaskDriver):
 
 
         if phases:
-            self.write_stdin ( "HKLOUT OFF\n" )                          # bypassing a bug in phaser 2.8.2(ccp4)
+            self.write_stdin ( "HKLOUT OFF\n" )  # bypassing a bug in phaser 2.8.2(ccp4)
             self.write_stdin ( "TARGET TRA PHASED\n" )
 
         elif sec0.TF_TARGET_SEL.value != "FAST":
             self.writeKWParameter ( sec0.TF_TARGET_SEL )
-
-        if sec0.TF_POINT_SEL.visible:
             self.write_stdin ( "TRANSLATE VOLUME " + sec0.TF_POINT_SEL.value )
-            if sec0.TF_X.visible:
+            if sec0.TF_POINT_SEL.value=="AROUND":
                 self.write_stdin ( self.getKWParameter("POINT",sec0.TF_X) +\
                                    self.getKWParameter(""     ,sec0.TF_Y)  +\
                                    self.getKWParameter(""     ,sec0.TF_Z) +\
@@ -279,6 +287,19 @@ class PhaserMR(basic.TaskDriver):
                 self.writeKWParameter ( sec0.TF_SPACE_SEL )
             else:
                 self.write_stdin ( "\n" )
+
+
+        # if sec0.TF_POINT_SEL.visible:
+        #     self.write_stdin ( "TRANSLATE VOLUME " + sec0.TF_POINT_SEL.value )
+        #     if sec0.TF_X.visible:
+        #         self.write_stdin ( self.getKWParameter("POINT",sec0.TF_X) +\
+        #                            self.getKWParameter(""     ,sec0.TF_Y)  +\
+        #                            self.getKWParameter(""     ,sec0.TF_Z) +\
+        #                            self.getKWParameter("RANGE",sec0.TF_RANGE) )
+        #         self.write_stdin ( "\n" )
+        #         self.writeKWParameter ( sec0.TF_SPACE_SEL )
+        #     else:
+        #         self.write_stdin ( "\n" )
 
 
         self.writeKWParameter ( sec1.TNCS_SEL            )
