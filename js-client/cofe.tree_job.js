@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    23.03.21   <--  Date of Last Modification.
+ *    26.03.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -179,6 +179,7 @@ JobTree.prototype.__compare_node = function ( node0,node1 )  {
   return diff;
 }
 
+
 JobTree.prototype.compare = function ( job_tree )  {
 // Compares 'this' tree and job_tree. Returns null if trees are structurally
 // different. If trees compare, the function returns list of job_tree's nodes
@@ -202,15 +203,16 @@ var tree1 = job_tree.tree;
 
 }
 
+
 JobTree.prototype.readProjectData = function ( page_title,
                                                onLoaded_func,
                                                onRightClick_func,
                                                onDblClick_func,
                                                onSelect_func )  {
 
-  this.task_map = {};  // map[nodeId]==task of all tasks in the tree
-  this.run_map  = {};  // map[taskId]==nodeId of all running tasks
-  this.dlg_map  = {};  // map[taskId]==dialog of open job dialogs
+  // this.task_map = {};  // map[nodeId]==task of all tasks in the tree
+  // this.run_map  = {};  // map[taskId]==nodeId of all running tasks
+  // this.dlg_map  = {};  // map[taskId]==dialog of open job dialogs
 
   this.stopTaskLoop();
 
@@ -235,8 +237,13 @@ JobTree.prototype.readProjectData = function ( page_title,
 
       } else  {
 
+        tree.task_map = {};  // map[nodeId]==task of all tasks in the tree
+        tree.run_map  = {};  // map[taskId]==nodeId of all running tasks
+        tree.dlg_map  = {};  // map[taskId]==dialog of open job dialogs
+
         tree.projectData = jQuery.extend ( true, new ProjectData(),data.meta );
         tree.projectData.desc.dateLastUsed = getDateString();
+        tree.projectData.desc.autorun = false;
 
         var author = tree.projectData.desc.owner.login;
         if ('author' in tree.projectData.desc.owner)
@@ -271,6 +278,8 @@ JobTree.prototype.readProjectData = function ( page_title,
                   (tree.task_map[key].state==job_code.ending)  ||
                   (tree.task_map[key].state==job_code.exiting))  {
                 tree.run_map [dataId] = key;
+                if (tree.task_map[key].autoRunId)
+                  tree.projectData.desc.autorun = true;
                 tree.node_map[key].setCustomIconVisible ( true );
               } else  {
                 tree.setNodeName ( key,false );
