@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    23.01.20   <--  Date of Last Modification.
+ *    27.03.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Task Data Dialog (shows data availability for given task)
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2020
+ *  (C) E. Krissinel, A. Lebedev 2016-2021
  *
  *  =================================================================
  *
@@ -37,7 +37,8 @@ function TaskDataDialog ( dataSummary,task,avail_key )  {
 
   var drow = 0;
 
-  if ((task.input_dtypes.length==1) && (task.input_dtypes[0]==1))  {
+  //if ((task.input_dtypes.length==1) && (task.input_dtypes[0]==1))  {
+  if (task.getInputMode()==input_mode.root)  {
 
     this.grid.setLabel ( 'This task:<h3>' + task.title +
                          '</h3>can be run only on top of Project.<p><hr/>' +

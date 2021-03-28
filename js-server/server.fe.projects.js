@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    24.03.21   <--  Date of Last Modification.
+ *    27.03.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -1089,10 +1089,8 @@ function saveProjectData ( loginData,data )  {
           if (('cloned_id' in data.tasks_add[i]) && data.tasks_add[i].cloned_id)  {
             var taski      = class_map.makeClass ( data.tasks_add[i] );
             var cloneItems = taski.cloneItems();
-            if (data.tasks_add[i].autoRunId)  {
-              cloneItems.push ( 'auto.context' );
-              cloneItems.push ( 'auto.meta'    );
-            }
+            cloneItems.push ( 'auto.context' );
+            cloneItems.push ( 'auto.meta'    );
             if (cloneItems.length>0)  {
               // We copy items into cloned directory asynchronously without
               // making sure that copy completes before response is sent back
@@ -1103,15 +1101,25 @@ function saveProjectData ( loginData,data )  {
                 var item_src  = path.join ( jobDirPath0,cloneItems[j] );
                 if (utils.fileExists(item_src))  {
                   var item_dest = path.join ( jobDirPath ,cloneItems[j] );
-                  fs.copy ( item_src,item_dest,function(err)  {
-                    if (err)  {
-                      log.error ( 30,'error copying item ' + item_src  );
-                      log.error ( 30,'                to ' + item_dest );
-                      log.error ( 30,'error: ' + err );
+                  if (cloneItems[j]=='auto.context')  {
+                    var context = utils.readObject ( item_src );
+                    if (context)  {
+                      for (var key in context.job_register)
+                        if (context.job_register[key]==data.tasks_add[i].cloned_id)
+                          context.job_register[key] = taski.id;
+                      utils.writeObject ( item_dest,context );
                     }
-                    //log.standard ( 31,'copied item ' + item_src  );
-                    //log.standard ( 31,'         to ' + item_dest );
-                  });
+                  } else  {
+                    fs.copy ( item_src,item_dest,function(err)  {
+                      if (err)  {
+                        log.error ( 30,'error copying item ' + item_src  );
+                        log.error ( 30,'                to ' + item_dest );
+                        log.error ( 30,'error: ' + err );
+                      }
+                      //log.standard ( 31,'copied item ' + item_src  );
+                      //log.standard ( 31,'         to ' + item_dest );
+                    });
+                  }
                 }
               }
             }

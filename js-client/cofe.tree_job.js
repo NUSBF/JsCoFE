@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    26.03.21   <--  Date of Last Modification.
+ *    27.03.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -1555,12 +1555,28 @@ JobTree.prototype._clone_job = function ( cloneMode,parent_page,onAdd_func )  {
         '"<i>Add Job</i>" button from the<br>control bar.' );
     } else  {
 
-      task.uname      = task1.uname;
-      task.uoname     = task1.uoname;
-      task.cloned_id  = task1.id;
-      task.autoRunId  = task1.autoRunId;
-      task.input_data = $.extend ( true,{},task1.input_data );
-      task.parameters = $.extend ( true,{},task1.parameters );
+      task.uname       = task1.uname;
+      task.uoname      = task1.uoname;
+      task.cloned_id   = task1.id;
+      task.autoRunId   = task1.autoRunId;
+      if ('autoRunId0' in task1)
+        task.autoRunId0 = task1.autoRunId0;
+      else if (task.autoRunId.length>0)
+        task.autoRunId0 = task1.autoRunId;
+      task.autoRunName = task1.autoRunName;
+      task.inputMode   = task1.inputMode;
+
+      task.file_select = [];
+      for (var i=0;i<task1.file_select.length;i++)
+        task.file_select.push ( $.extend(true,{},task1.file_select[i]) );
+
+      task.input_ligands = [];
+      for (var i=0;i<task1.input_ligands.length;i++)
+        task.input_ligands.push ( $.extend(true,{},task1.input_ligands[i]) );
+
+      task.input_data  = $.extend ( true,{},task1.input_data  );
+      task.parameters  = $.extend ( true,{},task1.parameters  );
+
       for (var i=0;i<task0.harvestedTaskIds.length;i++)
         task.harvestedTaskIds.push ( task1.harvestedTaskIds[i] );
 

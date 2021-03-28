@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    03.03.21   <--  Date of Last Modification.
+ *    27.03.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -236,20 +236,24 @@ if (!__template)  {
   // reserved function name
   TaskCCP4go.prototype.makeInputPanel = function ( dataBox )  {
     if (dataBox.isEmpty())  {
-      this.input_dtypes = [1];  // indicates the data upload interface
+      //this.input_dtypes = [1];  // indicates the data upload interface
+      this.input_mode = input_mode.root;  // indicates the data upload interface
+                                          // which is used in root input mode
       return this._makeInputPanel ( dataBox );
     }
     return  TaskTemplate.prototype.makeInputPanel.call ( this,dataBox );
   }
 
   TaskCCP4go.prototype.collectInput = function ( inputPanel )  {
-    if (this.input_dtypes==1)  // upload interface mode
+    // if (this.input_dtypes==1)  // upload interface mode
+    if (this.getInputMode()==input_mode.upload)  // upload interface mode
       return this._collectInput ( inputPanel );
     return  TaskTemplate.prototype.collectInput.call ( this,inputPanel );
   }
 
   TaskCCP4go.prototype.doRun = function ( inputPanel,run_func )  {
-    if (this.input_dtypes==1)  // upload interface mode
+    //if (this.input_dtypes==1)  // upload interface mode
+    if (this.getInputMode()==input_mode.upload)  // upload interface mode
       return this._doRun ( inputPanel,run_func );
     return  TaskTemplate.prototype.doRun.call ( this,inputPanel,run_func );
   }

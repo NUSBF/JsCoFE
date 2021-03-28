@@ -2,6 +2,8 @@
 Phaser
 ======
 
+.. _phaser_go:
+
 `Phaser <https://journals.iucr.org/j/issues/2007/04/00/he5368/index.html>`_ is a program
 for phasing macromolecular crystal structures by both molecular replacement
 and experimental phasing methods.

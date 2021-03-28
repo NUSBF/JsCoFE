@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    24.02.21   <--  Date of Last Modification.
+ *    28.02.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -278,15 +278,18 @@ var r = 0;  // grid row
 
   grid.setLabel ( '<h2>CCP4go Workflows</h2>',r++,0,1,3 );
 
-  var ccp4go_autoMR = new TaskCCP4goAutoMR();
-  if (this.dataBox.isEmpty())
-    ccp4go_autoMR.input_dtypes = [1]; // force 'at root mode' for the task
+  // var ccp4go_autoMR = new TaskCCP4goAutoMR();
+  // if (this.dataBox.isEmpty())
+  //   ccp4go_autoMR.inputMode = 'root'; // force 'at root mode' for the task
 
   var task_list = [
-    ccp4go_autoMR
+    new TaskCCP4goAutoMR(),
+    new TaskCCP4goAutoEP()
   ];
 
-  for (var i=0;i<task_list.length;i++)
+  for (var i=0;i<task_list.length;i++)  {
+    if (this.dataBox.isEmpty())
+      task_list[i].inputMode = 'root'; // force 'at root mode' for the task
     if (typeof task_list[i] === 'string' || task_list[i] instanceof String) {
       grid.setLabel ( '&nbsp;',r++,0,1,3 ).setHeight_px(4);
       grid.setLabel ( '<hr/>',r,0,1,1 );
@@ -298,6 +301,7 @@ var r = 0;  // grid row
       grid1.setCellSize ( '90%','8px',0,1 );
     } else if (this.setTask(task_list[i],grid,r,true))
       r++;
+  }
 
   return r;  // indicates whether the tab is empty or not
 
@@ -376,7 +380,8 @@ var row      = 0;
 
   var ccp4go_task = new TaskCCP4go();
   if (this.dataBox.isEmpty())
-    ccp4go_task.input_dtypes = [1]; // force 'at root mode' for the task
+    ccp4go_task.inputMode = input_mode.root; // force 'at root mode' for the task
+//    ccp4go_task.input_dtypes = [1]; // force 'at root mode' for the task
   if (ccp4go_task.isTaskAvailable()[0]=='ok')
     this.makeSection ( 'Combined Automated Solver <i>"CCP4 Go"</i>',[
       'Recommended as first attempt or in easy cases',
@@ -388,7 +393,8 @@ var row      = 0;
 
     var ccp4go2_task = new TaskCCP4go2();
     if (this.dataBox.isEmpty())
-      ccp4go2_task.input_dtypes = [1]; // force 'at root mode' for the task
+      ccp4go2_task.inputMode = input_mode.root; // force 'at root mode' for the task
+    //  ccp4go2_task.input_dtypes = [1]; // force 'at root mode' for the task
     /*
     if (ccp4go2_task.isTaskAvailable()[0]=='ok')
       this.makeSection ( 'Combined Automated Solver <i>"CCP4 Go-2"</i>',[

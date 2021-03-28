@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    27.03.21   <--  Date of Last Modification.
+ *    28.03.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -28,24 +28,22 @@ if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
 
 // ===========================================================================
 
-function TaskCCP4goAutoMR()  {
+function TaskCCP4goAutoEP()  {
 
   if (__template)  __template.TaskTemplate.call ( this );
              else  TaskTemplate.call ( this );
 
-  this._type       = 'TaskCCP4goAutoMR';
-  this.name        = '<b>ccp4go:</b>auto-MR';
-  this.setOName ( 'ccp4go_automr' );  // default output file name template
-  this.title       = 'CCP4go: Automated Molecular Replacement with MrBump or MoRDa';
-  this.autoRunId   = 'autoMR';
-
-  //this.ha_type = '';
+  this._type       = 'TaskCCP4goAutoEP';
+  this.name        = '<b>ccp4go:</b>auto-EP';
+  this.setOName ( 'ccp4go_autoep' );  // default output file name template
+  this.title       = 'CCP4go: Automated Experimental Phasing with Crank-2';
+  this.autoRunId   = 'autoEP';
 
   this.file_select = [{
       file_types  : '.mtz,.sca', // data type(s) and subtype(s)
       label       : 'Reflection Data', // label for input dialog
       tooltip     : '[Mandatory] Provide a path to MTZ file with merged or unmerged ' +
-                    'reflections.',
+                    'reflections. Anomalous data should be present.',
       inputId     : 'fhkldata',  // input Id for referencing input fields
       annotate    : false,
       path        : '',
@@ -66,7 +64,7 @@ function TaskCCP4goAutoMR()  {
   this.input_ligands = [{ 'source':'none', 'smiles':'', 'code':'' }];
 
   this.input_dtypes = [{    // input data types
-      data_type   : {'DataUnmerged':[],'DataHKL':[]}, // data type(s) and subtype(s)
+      data_type   : {'DataUnmerged':[],'DataHKL':['anomalous']}, // data type(s) and subtype(s)
       label       : 'Reflection Data', // label for input dialog
       inputId     : 'hkldata',  // input Id for referencing input fields
       version     : 0,          // minimum data version allowed
@@ -104,54 +102,66 @@ function TaskCCP4goAutoMR()  {
   ];
 
   this.parameters = { // input parameters
-    MR_ENGINE : { type     : 'combobox',
-                  keyword  : '',
-                  label    : '<b><i>Auto-MR solver</i></b>',
-                  tooltip  : 'Choose between MrBump and MoRDa auto-MR pipelines ' +
-                             'to use. If MoRDa is not available, MrBump will be used.',
-                  range    : ['mrbump|MrBump',
-                              'morda|MoRDa'
-                             ],
-                  value    : 'mrbump',
-                  iwidth   : 140,
-                  position : [0,0,1,3]
-                },
-    MB_ENGINE : { type     : 'combobox',
-                  keyword  : '',
-                  label    : '<b><i>Model builder</i></b>',
-                  tooltip  : 'Choose between CCP4Build and Buccaneer for model ' +
-                             'building steps.',
-                  range    : ['ccp4build|CCP4Build',
-                              'buccaneer|Buccaneer'
-                             ],
-                  value    : 'ccp4build',
-                  iwidth   : 140,
-                  position : [1,0,1,3]
+
+    HATOM :     { type      : 'string',   // empty string not allowed
+                  keyword   : 'hatom',
+                  label     : '<b><i>Main anomalous<br>scatterer</i></b>',
+                  reportas  : '<b><i>Main anomalous scatterer</i></b>',
+                  tooltip   : 'Specify atom type of dominant anomalous scatterer ' +
+                              '(e.g., S, SE etc.), or leave blank if uncertain.',
+                  iwidth    : 40,
+                  value     : '',
+                  maxlength : 2,       // maximum input length
+                  position  : [0,0,1,1]
                 }
+    // MR_ENGINE : { type     : 'combobox',
+    //               keyword  : '',
+    //               label    : '<b><i>Auto-MR solver</i></b>',
+    //               tooltip  : 'Choose between MrBump and MoRDa auto-MR pipelines ' +
+    //                          'to use. If MoRDa is not available, MrBump will be used.',
+    //               range    : ['mrbump|MrBump',
+    //                           'morda|MoRDa'
+    //                          ],
+    //               value    : 'mrbump',
+    //               iwidth   : 140,
+    //               position : [1,0,1,3]
+    //             },
+    // MB_ENGINE : { type     : 'combobox',
+    //               keyword  : '',
+    //               label    : '<b><i>Model builder</i></b>',
+    //               tooltip  : 'Choose between CCP4Build and Buccaneer for model ' +
+    //                          'building steps.',
+    //               range    : ['ccp4build|CCP4Build',
+    //                           'buccaneer|Buccaneer'
+    //                          ],
+    //               value    : 'ccp4build',
+    //               iwidth   : 140,
+    //               position : [2,0,1,3]
+    //             }
   };
 
 }
 
 if (__template)
-      TaskCCP4goAutoMR.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskCCP4goAutoMR.prototype = Object.create ( TaskTemplate.prototype );
-TaskCCP4goAutoMR.prototype.constructor = TaskCCP4goAutoMR;
+      TaskCCP4goAutoEP.prototype = Object.create ( __template.TaskTemplate.prototype );
+else  TaskCCP4goAutoEP.prototype = Object.create ( TaskTemplate.prototype );
+TaskCCP4goAutoEP.prototype.constructor = TaskCCP4goAutoEP;
 
 
 // ===========================================================================
 
-TaskCCP4goAutoMR.prototype.icon = function()  { return 'task_ccp4goautomr'; }
+TaskCCP4goAutoEP.prototype.icon = function()  { return 'task_ccp4goautoep'; }
 
-//TaskCCP4goAutoMR.prototype.canRunInAutoMode = function() { return true; }
+//TaskCCP4goAutoEP.prototype.canRunInAutoMode = function() { return true; }
 
 // task.platforms() identifies suitable platforms:
 //   'W"  : Windows
 //   'L'  : Linux
 //   'M'  : Mac
 //   'U'  : Unix ( = Linux + Mac)
-//TaskCCP4goAutoMR.prototype.platforms = function()  { return 'LMU'; }  // UNIX only
+//TaskCCP4goAutoEP.prototype.platforms = function()  { return 'LMU'; }  // UNIX only
 
-TaskCCP4goAutoMR.prototype.currentVersion = function()  {
+TaskCCP4goAutoEP.prototype.currentVersion = function()  {
   var version = 0;
   if (__template)
         return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );
@@ -164,23 +174,22 @@ if (!__template)  {
 
   // This function is called at cloning jobs and should do copying of all
   // custom class fields not found in the Template class
-  TaskCCP4goAutoMR.prototype.customDataClone = function ( cloneMode,task )  {
+  TaskCCP4goAutoEP.prototype.customDataClone = function ( cloneMode,task )  {
     this.autoRunId0 = '';   // for Job Dialog
-    //this.ha_type = task.ha_type;
   }
 
   // reserved function name
-  //TaskCCP4goAutoMR.prototype.runButtonName = function()  { return 'Import'; }
+  //TaskCCP4goAutoEP.prototype.runButtonName = function()  { return 'Import'; }
 
 } else  {
   // for server side
 
   var conf = require('../../js-server/server.configuration');
 
-  TaskCCP4goAutoMR.prototype.getCommandLine = function ( jobManager,jobDir )  {
-    return [conf.pythonName(), '-m', 'pycofe.tasks.ccp4go_automr', jobManager, jobDir, this.id];
+  TaskCCP4goAutoEP.prototype.getCommandLine = function ( jobManager,jobDir )  {
+    return [conf.pythonName(), '-m', 'pycofe.tasks.ccp4go_autoep', jobManager, jobDir, this.id];
   }
 
-  module.exports.TaskCCP4goAutoMR = TaskCCP4goAutoMR;
+  module.exports.TaskCCP4goAutoEP = TaskCCP4goAutoEP;
 
 }

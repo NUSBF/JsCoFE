@@ -869,7 +869,10 @@ var response = null;
 
     // send stop request to number cruncher
     var nc_url = conf.getNCConfig(jobEntry.nc_number).externalURL;
-    log.standard ( 9,'request to stop job ' + task.id + ' at ' + nc_url );
+    if (data.gracefully)
+          log.standard ( 9,'request to stop job ' + task.id + ' at ' + nc_url +
+                           ' gracefully' );
+    else  log.standard ( 9,'request to stop job ' + task.id + ' at ' + nc_url );
 
     request({
       uri     : cmd.nc_command.stopJob,
@@ -1240,7 +1243,7 @@ function getJobResults ( job_token,server_request,server_response )  {
 
           var jobClass = writeJobStats ( jobEntry );
 
-          if (jobClass.autoRunId)
+          if (jobClass.autoRunId && jobClass.isSuccessful())
             addJobAuto ( jobEntry,jobClass );
 
           ustats.registerJob ( jobClass );
