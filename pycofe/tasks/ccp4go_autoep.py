@@ -5,14 +5,14 @@
 #
 # ============================================================================
 #
-#    27.03.21   <--  Date of Last Modification.
+#    28.03.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  CCP4go EXECUTABLE MODULE
 #
 #  Command-line:
-#     ccp4-python -m pycofe.tasks.ccp4go2 jobManager jobDir jobId
+#     ccp4-python -m pycofe.tasks.ccp4go_automr jobManager jobDir jobId
 #
 #  where:
 #    jobManager  is either SHELL, SGE or SCRIPT
@@ -36,14 +36,14 @@ from   pycofe.auto   import auto
 # ============================================================================
 # Make CCP4go driver
 
-class ImportAutoRun(import_task.Import):
+class CCP4goAutoEP(import_task.Import):
 
     # ------------------------------------------------------------------------
 
     def importData(self):
         #  works with uploaded data from the top of the project
 
-        super ( ImportAutoRun,self ).import_all()
+        super ( CCP4goAutoEP,self ).import_all()
 
         # -------------------------------------------------------------------
         # fetch data for CCP4go pipeline
@@ -137,45 +137,40 @@ class ImportAutoRun(import_task.Import):
         if len(ilist)>0:
             summary_line += ", ".join(ilist) + "; "
 
-        if hasattr(self.task.parameters,"HATOM"):
-            self.ha_type = self.getParameter ( self.task.parameters.HATOM )
-        else:
-            self.ha_type = ""
+        ha_type = self.getParameter ( self.task.parameters.HATOM )
 
-        mr_engine = self.getParameter ( self.task.parameters.MR_ENGINE )
-        mb_engine = self.getParameter ( self.task.parameters.MB_ENGINE )
-
-        if mr_engine=="mrbump":
-            self.putMessage ( "Automatic MR solver: <b>MrBump</b>" )
-        else:
-            self.putMessage ( "Automatic MR solver: <b>MoRDa</b>" )
-
-        if mb_engine=="ccp4build":
-            self.putMessage ( "Automatic model builder: <b>CCP4Build</b>" )
-        else:
-            self.putMessage ( "Automatic model builder: <b>Buccaneer</b>" )
+        # mr_engine = self.getParameter ( self.task.parameters.MR_ENGINE )
+        # mb_engine = self.getParameter ( self.task.parameters.MB_ENGINE )
+        #
+        # if mr_engine=="mrbump":
+        #     self.putMessage ( "Automatic MR solver: <b>MrBump</b>" )
+        # else:
+        #     self.putMessage ( "Automatic MR solver: <b>MoRDa</b>" )
+        #
+        # if mb_engine=="ccp4build":
+        #     self.putMessage ( "Automatic model builder: <b>CCP4Build</b>" )
+        # else:
+        #     self.putMessage ( "Automatic model builder: <b>Buccaneer</b>" )
 
         self.flush()
 
         have_results = True
 
         if ((len(self.unm)>0) or (len(self.hkl)>0)) and (len(self.seq)>0):
-            self.putMessage ( "<h3>Automatic Molecular Replacement workflow started</hr>" )
+            self.putMessage ( "<h3>Automatic Experimental Phasing (SAD) workflow started</hr>" )
             self.task.autoRunName = "_root"
-            self.task.autoRunId   = "autoMR"
+            self.task.autoRunId   = "autoEP"
             auto.makeNextTask ( self.task,{
                 "unm"       : self.unm,
                 "hkl"       : self.hkl,
                 "seq"       : self.seq,
                 "lig"       : self.lig,
                 "ligdesc"   : self.ligdesc,
-                "mr_engine" : mr_engine,
-                "mb_engine" : mb_engine
+                "hatom"     : ha_type
             })
             summary_line += "workflow started"
         else:
             summary_line += "insufficient input"
-
 
         self.generic_parser_summary["import_autorun"] = {
           "summary_line" : summary_line
@@ -190,5 +185,5 @@ class ImportAutoRun(import_task.Import):
 
 if __name__ == "__main__":
 
-    drv = ImportAutoRun ( "",os.path.basename(__file__),{} )
+    drv = CCP4goAutoEP ( "",os.path.basename(__file__),{} )
     drv.start()

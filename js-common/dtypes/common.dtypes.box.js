@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    07.12.20   <--  Date of Last Modification.
+ *    27.03.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Common Client/Server Modules -- Data Box
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2020
+ *  (C) E. Krissinel, A. Lebedev 2016-2021
  *
  *  =================================================================
  *
@@ -305,7 +305,8 @@ DataBox.prototype.getDataSummary = function ( task )  {
                                   //  1: amber, ambiguous data, needs choice
                                   //  0: some or all data missing
 
-  if ((task.input_dtypes.length==1) && (task.input_dtypes[0]==1))  {
+  // if ((task.input_dtypes.length==1) && (task.input_dtypes[0]==1))  {
+  if (task.getInputMode()==input_mode.root)  {
     var ndata = 0;
     for (var dtype in this.data)
       if (dtype!='undefined')

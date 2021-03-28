@@ -1,3 +1,5 @@
+.. _shelx:
+
 The programs `SHELXC, SHELXD and SHELXE <https://journals.iucr.org/a/issues/2008/01/00/sc5010/index.html>`_ are designed to provide experimental phasing of macromolecules by the *MAD* (multi-wavelength anomalous dispersion), *SAD* (single-wavelength anomalous dispersion), *SIR* (single isomorphous replacement), *SIRAS* (combined SAD and SIR) and *RIP* (phasing based on radiation-induced changes in the structure) methods.
 
 **SHELXC** is designed to provide a simple and fast way of setting up the files for the programs `SHELXD <https://doi.org/10.1107/S0907444902011678>`_ (heavy atom location) and `SHELXE <https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3817699/>`_ (phasing and density modification).

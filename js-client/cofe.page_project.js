@@ -442,7 +442,8 @@ function ProjectPage ( sceneId )  {
       switch (jobTree.projectData.desc.startmode)  {
         case start_mode.auto    :
                 var ccp4go = new TaskCCP4go();
-                ccp4go.input_dtypes = [1];  // force "at root" mode
+                ccp4go.inputMode = input_mode.root;  // force "at root" mode
+                // ccp4go.input_dtypes = [1];  // force "at root" mode
                 jobTree.addTask ( ccp4go,false,false,self,function(){
                    self.del_btn.setDisabled ( false );
                 });

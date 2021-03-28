@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    25.03.21   <--  Date of Last Modification.
+ *    27.03.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -------------------------------------------------------------------------
  *
@@ -38,6 +38,11 @@ var job_code = {
   remdet    : 'remdet',    // detached remark node
   remdoc    : 'remdoc',    // remark node converted from documentation import
   retired   : 'retired'    // indicates that the task should not appear in task list
+};
+
+var input_mode = {
+  standard  : 'standard',  // standard input panel mode
+  root      : 'root'       // root input panel mode
 };
 
 
@@ -82,9 +87,9 @@ function TaskTemplate()  {
   this.setOName ( 'template' );  // default output file name template
   this.uoname       = '';        // output file name template given by user
   this.state        = job_code.new;  // 'new', 'running', 'finished'
-  //this.helpURL      = null;   // (relative) url to help file, null will hide the help button
   this.nc_type      = 'ordinary'; // required Number Cruncher type
   this.fasttrack    = false;  // no fasttrack requirements
+  this.inputMode    = input_mode.standard;  // 'standard', 'root'
   this.autoRunName  = '';     // job id in automatic workflow
   this.autoRunId    = '';     // automatic workflow Id
   this.informFE     = true;   // end of job and results are sent back to FE
@@ -93,6 +98,10 @@ function TaskTemplate()  {
   this.input_dtypes = [];   // input data type definitions; []: any input data is allowed;
                             // [1]: no data is required but the task is allowed only
                             // on the topmost level of job tree
+
+  this.file_select   = [];  // list of file select widgets
+  this.input_ligands = [];  // list of ligand description widgets
+
   if (dbx)  {
     this.input_data  = new dbx.DataBox(); // actual input data, represented by DataBox
     this.output_data = new dbx.DataBox(); // actual output data, represented by DataBox
@@ -157,6 +166,15 @@ TaskTemplate.prototype.getHelpURL = function()  {
   return __task_reference_base_url + 'doc.task.' + this._type.substr(4) + '.html';
 }
 
+TaskTemplate.prototype.getInputMode = function()  {
+  if ('inputMode' in this)
+    return this.inputMode;
+  if ((this.input_dtypes.length==1) && (this.input_dtypes[0]==1))
+        this.inputMode = input_mode.root;
+  else  this.inputMode = input_mode.standard;
+  return this.inputMode;
+}
+
 // cloneItems return list of files and directories in job directory which need
 // to be cloned when task is cloned
 TaskTemplate.prototype.cloneItems = function() { return []; }
@@ -185,6 +203,16 @@ TaskTemplate.prototype.isComplete = function()  {
   return ((this.state!=job_code.new) && (this.state!=job_code.running) &&
           (this.state!=job_code.ending) &&(this.state!=job_code.exiting));
 }
+
+TaskTemplate.prototype.isSuccessful = function()  {
+// true if can attach next job
+  return ((this.state!=job_code.new) && (this.state!=job_code.running) &&
+          (this.state!=job_code.ending) &&(this.state!=job_code.exiting) &&
+          (this.state!=job_code.failed) &&(this.state!=job_code.stopped) &&
+          (this.state!=job_code.retired)
+         );
+}
+
 
 // estimated cpu cost of the job, in hours
 TaskTemplate.prototype.cpu_credit = function()  {
@@ -241,6 +269,7 @@ if (!dbx)  {
     } else
       this.oname = base_name;
   }
+
 
   TaskTemplate.prototype.compareEnvironment = function ( reqEnv,env )  {
     var ok = true;
@@ -598,8 +627,14 @@ if (!dbx)  {
     // effects; the grid will be made visible in this.layParameters()
     div.grid.setVisible ( false );
 
-    this.setInputDataFields ( div.grid,0,dataBox,this );
-    this.layParameters      ( div.grid,div.grid.getNRows()+1,0 );
+    if (this.inputMode==input_mode.root)  {
+      if (this.file_select.length>0)
+        this.makeFileSelectLayout ( div );
+      if (this.input_ligands.length>0)
+        this.makeLigandsLayout ( div );
+    } else
+      this.setInputDataFields ( div.grid,0,dataBox,this );
+    this.layParameters ( div.grid,div.grid.getNRows()+1,0 );
 
     return div;
 
@@ -630,10 +665,18 @@ if (!dbx)  {
         this.uoname = inputPanel.header.uoname_inp.getValue();
     }
 
-    msg = this.collectInputData ( inputPanel );
+    if (this.inputMode==input_mode.root)  {
+      if (this.file_select.length>0)
+        msg = this.collectFileSelects ( inputPanel );
+      if (this.input_ligands.length>0)
+        msg += this.collectInputLigands ( inputPanel );
+    } else
+        msg = this.collectInputData ( inputPanel );
+
     if (msg.length>0)
       msg += '<br>';
     msg += this.collectParameterValues ( inputPanel );
+
     return msg;
 
   }
@@ -668,6 +711,169 @@ if (!dbx)  {
     return;
   }
   */
+
+
+  TaskTemplate.prototype.makeFileSelectLayout = function ( div )  {
+
+    div.customData = {};
+    div.customData.login_token = __login_token;
+    div.customData.project     = this.project;
+    div.customData.job_id      = this.id;
+    div.customData.file_mod    = {'rename':{},'annotation':[]}; // file modification and annotation
+
+    div.upload_files = [];
+
+    var row = div.grid.getNRows();
+    for (var i=0;i<this.file_select.length;i++)  {
+
+      var fsdesc = this.file_select[i];
+
+      var lbl = div.grid.setLabel ( fsdesc.label,row,0,1,1 )
+                        .setTooltip ( fsdesc.tooltip )
+                        .setFontItalic(true).setFontBold(true).setNoWrap();
+      div.grid.setVerticalAlignment ( row,0,'middle' );
+
+      var fsel = div.grid.setSelectFile ( false,fsdesc.file_types,row,2,1,1 );
+      fsel.hide();
+      var btn  = div.grid.addButton ( 'Browse',image_path('open_file'),row,2,1,1 );
+      var filename = fsdesc.path;
+      if (this.state==job_code.new)
+        filename = '';
+      var itext = div.grid.setInputText ( filename,row,3,1,2 )
+                          .setWidth_px(300).setReadOnly(true).setNoWrap();
+      div.grid.setVerticalAlignment ( row,2,'middle' );
+      div.grid.setVerticalAlignment ( row,3,'middle' );
+      (function(b,f,t,a){
+        b.addOnClickListener ( function(){
+          f.click();
+        });
+        if (a)  {
+          f.addOnChangeListener ( function(){
+            div.customData.file_mod = {'rename':{},'annotation':[]};
+            var files = f.getFiles();
+            if (files.length>0)
+              _import_checkFiles ( files,div.customData.file_mod,
+                                   div.upload_files,function(){
+                  t.setValue ( files[0].name );
+              });
+          });
+        } else  {
+          f.addOnChangeListener ( function(){
+            var files = f.getFiles();
+            if (files.length>0)
+              t.setValue ( files[0].name );
+          });
+        }
+      }(btn,fsel,itext,fsdesc.annotate))
+      div[fsdesc.inputId] = fsel;
+
+      row++;
+
+    }
+
+    div.grid.setLabel ( '&nbsp;',row++,0,1,1 ).setHeight_px(8);
+
+  }
+
+
+  TaskTemplate.prototype.makeLigandsLayout = function ( div )  {
+
+    var row  = div.grid.getNRows();
+    var row0 = row;
+
+    div.code_lbl   = div.grid.setLabel ( '<b><i>Code</i></b>',row,3,1,1 )
+                        .setTooltip ( '3-letter code to identify the ligand. ' +
+                          'If no SMILES string is given, the code must match ' +
+                          'one from RCSB Compound dictionary. However, if ' +
+                          'SMILES string is provided, the code must not match ' +
+                          'any of known ligands, e.g., "DRG".' );
+    div.smiles_lbl = div.grid.setLabel ( '<b><i>SMILES String</i></b>',row++,4,1,1 )
+                        .setTooltip ( 'SMILES string describing ligands ' +
+                          'structure.' );
+
+    // list of ligands (self-expanding)
+    div.ligands = [];
+
+    function showLigands()  {
+      var n = -1;
+      for (var i=0;i<div.ligands.length;i++)
+        if (div.ligands[i].selection.getValue()!='none')
+          n = i;
+      var code   = false;
+      var smiles = false;
+      for (var i=0;i<div.ligands.length;i++)  {
+        var visible = (i<=n+1);
+        var source  = div.ligands[i].selection.getValue();
+        div.ligands[i].label    .setVisible ( visible );
+        div.ligands[i].selection.setVisible ( visible );
+        div.ligands[i].smiles   .setVisible ( visible && (source=='S') );
+        div.ligands[i].code     .setVisible ( visible && (source!='none')   );
+        if (source=='S')    smiles = true;
+        if (source!='none') code   = true;
+      }
+      div.code_lbl  .setVisible ( code   );
+      div.smiles_lbl.setVisible ( smiles );
+    }
+
+    var tooltip = '[Optional] Provide description of ligand to fit in electron ' +
+                  'density, using either a SMILES string or 3-letter code. ' +
+                  'It is advised not to specify the 3-letter code when SMILES ' +
+                  'string is used; if left empty, a vacant code will be chosen ' +
+                  'automatically.';
+    if (this.input_ligands.length>1)
+      tooltip += ' Up to ' + this.input_ligands.length + ' ligands may be specified.'
+
+    for (var i=0;i<this.input_ligands.length;i++)  {
+
+      var label = 'Ligand';
+      if (i>0)
+        label += ' #' + (i+1);
+      var lbl = div.grid.setLabel ( label,row,0,1,1 )
+                        .setTooltip ( tooltip )
+                        .setFontItalic(true).setFontBold(true).setNoWrap();
+      div.grid.setVerticalAlignment ( row,0,'middle' );
+
+      var sel = new Dropdown();
+      sel.setWidth ( '120px' ).setTooltip ( tooltip );
+      div.grid.setWidget ( sel,row,2,1,1 );
+      sel.addItem ( 'None'  ,'','none',this.input_ligands[i].source=='none' );
+      sel.addItem ( 'SMILES','','S'   ,this.input_ligands[i].source=='S'    );
+      sel.addItem ( 'Code'  ,'','M'   ,this.input_ligands[i].source=='M'    );
+      sel.make();
+      var code   = div.grid.setInputText ( this.input_ligands[i].code,row,3,1,1 )
+                           .setWidth_px(50).setNoWrap().setMaxInputLength(3)
+                           .setTooltip ( tooltip )
+                           .setVisible(this.input_ligands[i].source=='M');
+      var smiles = div.grid.setInputText ( this.input_ligands[i].smiles,row,4,1,1 )
+                           .setWidth_px(600).setNoWrap()
+                           .setTooltip ( tooltip )
+                           .setVisible(this.input_ligands[i].source=='S');
+      div.grid.setVerticalAlignment ( row,2,'middle' );
+      div.grid.setVerticalAlignment ( row,3,'middle' );
+      div.grid.setVerticalAlignment ( row,4,'middle' );
+      div.ligands.push ( {'label':lbl, 'selection':sel, 'smiles':smiles, 'code':code} );
+      sel.sno = i;
+      sel.addOnChangeListener ( function(text,value){
+        div.ligands[this.sno].code  .setVisible ( value!='none'   );
+        div.ligands[this.sno].smiles.setVisible ( value=='S' );
+        showLigands();
+      });
+      row++;
+    }
+
+    div.grid.setLabel ( '&nbsp;',row++,0,1,1 ).setHeight_px(8);
+
+    showLigands();
+
+    var ncols = div.grid.getNCols();
+    for (var i=1;i<ncols;i++)  {
+      div.grid.setLabel    ( ' ',row0,i,1,1   ).setHeight_px(8);
+      div.grid.setCellSize ( 'auto','',row0,i );
+    }
+    div.grid.setLabel    ( ' ',row0,ncols,1,1  ).setHeight_px(8);
+    div.grid.setCellSize ( '95%','',row0,ncols );
+
+  }
 
 
   TaskTemplate.prototype.setInputDataFields = function ( grid,row,dataBox ) {
@@ -720,7 +926,8 @@ if (!dbx)  {
     }
 
     // do  nothing if input data fields section is not required
-    if ((this.input_dtypes.length==1) && (this.input_dtypes[0]==1))
+    //if ((this.input_dtypes.length==1) && (this.input_dtypes[0]==1))
+    if (this.getInputMode()==input_mode.root)
       return;
 
     dataBox.extendData();
@@ -1239,6 +1446,54 @@ if (!dbx)  {
       }
 
     }
+
+  }
+
+
+  TaskTemplate.prototype.collectFileSelects = function ( inputPanel )  {
+    var msg = '';  // Ok if stays empty
+
+    for (var i=0;i<this.file_select.length;i++)  {
+      var files = inputPanel[this.file_select[i].inputId].getFiles();
+      if (files.length>0)
+        this.file_select[i].path = files[0].name;
+      else if (files.length<this.file_select[i].min)
+        msg += '<b><i>' + this.file_select[i].label + ' file is not specified</i></b>';
+    }
+
+    return  msg;
+
+  }
+
+
+  TaskTemplate.prototype.collectInputLigands = function ( inputPanel )  {
+    var msg = '';  // Ok if stays empty
+
+    for (var i=0;i<this.input_ligands.length;i++)  {
+      this.input_ligands[i].source = inputPanel.ligands[i].selection.getValue();
+      this.input_ligands[i].smiles = inputPanel.ligands[i].smiles.getValue();
+      this.input_ligands[i].code   = inputPanel.ligands[i].code.getValue();
+      if (this.input_ligands[i].source!='none')  {
+        if ((this.input_ligands[i].source=='M') && (!this.input_ligands[i].code))
+          msg += '<b><i>Code for ligand #' + (i+1) + ' is not given</i></b>';
+        if ((this.input_ligands[i].source=='S') && (!this.input_ligands[i].smiles))
+          msg += '<b><i>SMILES string for ligand #' + (i+1) + ' is not given</i></b>';
+      }
+    }
+
+    var unique = true;
+    for (var i=0;(i<this.input_ligands.length) && unique;i++)
+      if ((this.input_ligands[i].source!='none') && (this.input_ligands[i].code))  {
+        for (var j=i+1;(j<this.input_ligands.length) && unique;j++)
+          if ((this.input_ligands[j].source!='none') &&
+              (this.input_ligands[i].code==this.input_ligands[j].code))  {
+            unique = false;
+            msg += '<b><i>Repeat use of ligand code ' + this.input_ligands[i].code +
+                   '</i></b>';
+          }
+      }
+
+    return  msg;
 
   }
 
@@ -2158,8 +2413,27 @@ if (!dbx)  {
   // It should execute function given as argument, or issue an error message if
   // run should not be done.
   TaskTemplate.prototype.doRun = function ( inputPanel,run_func )  {
-    run_func();
+
+    if (this.file_select.length>0)  {
+      var files = [];
+
+      for (var i=0;i<this.file_select.length;i++)
+        files.push ( inputPanel[this.file_select[i].inputId].getFiles() );
+
+      new UploadDialog ( 'Upload data',files,inputPanel.customData,true,
+                          function(returnCode){
+        if (!returnCode)
+          run_func();
+        else
+          new MessageBox ( 'Stop run','Task cannot be run due to upload ' +
+                                'errors:<p><b><i>' + returnCode + '</i></b>' );
+      });
+
+    } else
+      run_func();
+
   }
+
 
   // This function is called at cloning jobs and should do copying of all
   // custom class fields not found in the Template class

@@ -70,7 +70,7 @@ function JobDialog ( params,          // data and task projections up the tree b
   this.inputPanel  = null;
   this.outputPanel = null;
   this.run_btn     = null;
-  // this.autorun_cbx = null;
+  this.autorun_cbx = null;
   this.run_image   = null;
   this.ind_timer   = null;
   this.hot_btn     = [];
@@ -226,10 +226,10 @@ JobDialog.prototype.setDlgState = function()  {
     this.run_btn.setVisible  ( isNew     );
     this.run_btn.setDisabled ( __dormant );
   }
-  // if (this.autorun_cbx)  {
-  //   this.autorun_cbx.setVisible  ( isNew     );
-  //   this.autorun_cbx.setDisabled ( __dormant );
-  // }
+  if (this.autorun_cbx)  {
+    this.autorun_cbx.setVisible  ( isNew     );
+    this.autorun_cbx.setDisabled ( __dormant );
+  }
 
   if (this.ind_timer)
     window.clearTimeout ( this.ind_timer );
@@ -383,11 +383,11 @@ JobDialog.prototype.collectTaskData = function ( ignore_bool )  {
     if ((this.task.state==job_code.new) && (input_msg.length>0))
       this.job_edited = true;
   }
-  // if (this.autorun_cbx)  {
-  //   if (this.autorun_cbx.getValue())
-  //         this.task.autoRunId = 'auto';
-  //   else  this.task.autoRunId = '';
-  // }
+  if (this.autorun_cbx)  {
+    if (this.autorun_cbx.getValue())
+          this.task.autoRunId = this.task.autoRunId0;
+    else  this.task.autoRunId = '';
+  }
   return (input_msg.length<=0);
 }
 
@@ -461,10 +461,11 @@ JobDialog.prototype.makeToolBar = function()  {
                                   .setTooltip  ( 'Start job' )
                                   .setDisabled ( __dormant   );
       // if (this.task.canRunInAutoMode())
-      //   this.autorun_cbx = this.toolBar.setCheckbox ( 'Auto',(this.task.autoRunId.length>0),
-      //                                                 0,this.col++, 1,1 )
-      //                          .setTooltip  ( 'Check to start an automatic workflow' )
-      //                          .setDisabled ( __dormant   );
+      if (('autoRunId0' in this.task) && (this.task.autoRunId0.length>0))
+        this.autorun_cbx = this.toolBar.setCheckbox ( 'Keep auto',
+                                    (this.task.autoRunId.length>0),0,this.col++, 1,1 )
+                               .setTooltip  ( 'Check to start an automatic workflow' )
+                               .setDisabled ( __dormant   );
     }
 
   }
@@ -572,7 +573,7 @@ JobDialog.prototype.makeLayout = function ( onRun_func )  {
     this.toolBarSep  = null;
     this.radioSet    = null;
     this.run_btn     = null;
-    // this.autorun_cbx = null;
+    this.autorun_cbx = null;
     this.run_image   = null;
     this.stop_btn    = null;
     this.end_btn     = null;
@@ -607,28 +608,28 @@ JobDialog.prototype.makeLayout = function ( onRun_func )  {
         //alert ( ' run_btn=' + e.detail + ' l=' + e.detail.length );
         if (e.detail.length<=0)  {
           dlg.run_btn.setEnabled ( !__dormant );
-          // if (dlg.autorun_cbx)
-          //   dlg.autorun_cbx.setEnabled ( !__dormant );
+          if (dlg.autorun_cbx)
+            dlg.autorun_cbx.setEnabled ( !__dormant );
           dlg.close_btn.setEnabled ( true );
         } else if (e.detail=='hide_run_button')  {
           dlg.run_btn.setEnabled ( false );
-          // if (dlg.autorun_cbx)
-          //   dlg.autorun_cbx.setEnabled ( false );
+          if (dlg.autorun_cbx)
+            dlg.autorun_cbx.setEnabled ( false );
           dlg.close_btn.setEnabled ( true  );
         } else if (e.detail=='upload_started')  {
           dlg.run_btn.setEnabled ( false );
-          // if (dlg.autorun_cbx)
-          //   dlg.autorun_cbx.setEnabled ( false );
+          if (dlg.autorun_cbx)
+            dlg.autorun_cbx.setEnabled ( false );
           dlg.close_btn.setEnabled ( false );
         } else if (e.detail=='upload_finished')  {
           dlg.run_btn.setEnabled ( !__dormant );
-          // if (dlg.autorun_cbx)
-          //   dlg.autorun_cbx.setEnabled ( !__dormant );
+          if (dlg.autorun_cbx)
+            dlg.autorun_cbx.setEnabled ( !__dormant );
           dlg.close_btn.setEnabled ( true );
         } else  {
           dlg.run_btn.setEnabled ( false );
-          // if (dlg.autorun_cbx)
-          //   dlg.autorun_cbx.setEnabled ( false );
+          if (dlg.autorun_cbx)
+            dlg.autorun_cbx.setEnabled ( false );
           dlg.close_btn.setEnabled ( true  );
         }
       },false );

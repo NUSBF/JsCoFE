@@ -35,7 +35,6 @@ function TaskChangeReso()  {
   this.name      = 'change dataset resolution';  // short name for job tree
   this.setOName ( 'ChangeRes' );  // default output file name template
   this.title     = 'Change Dataset Resolution';  // full title
-  //this.helpURL   = './html/jscofe_task_changereso.html';
   this.fasttrack = true;  // enforces immediate execution
 
   /* ===== left here for showing how an 'ASU' version of the task can be done
