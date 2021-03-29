@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    23.03.21   <--  Date of Last Modification.
+ *    29.03.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -461,11 +461,21 @@ JobDialog.prototype.makeToolBar = function()  {
                                   .setTooltip  ( 'Start job' )
                                   .setDisabled ( __dormant   );
       // if (this.task.canRunInAutoMode())
-      if (('autoRunId0' in this.task) && (this.task.autoRunId0.length>0))
+      if (('autoRunId0' in this.task) && (this.task.autoRunId0.length>0))  {
         this.autorun_cbx = this.toolBar.setCheckbox ( 'Keep auto',
                                     (this.task.autoRunId.length>0),0,this.col++, 1,1 )
                                .setTooltip  ( 'Check to start an automatic workflow' )
                                .setDisabled ( __dormant   );
+        (function(dlg){
+          dlg.autorun_cbx.addOnClickListener ( function(){
+            if (dlg.autorun_cbx.getValue())
+                  dlg.task.autoRunId = dlg.task.autoRunId0;
+            else  dlg.task.autoRunId = '';
+            dlg.inputPanel.emitSignal ( cofe_signals.jobDlgSignal,
+                                        job_dialog_reason.rename_node );
+          });
+        }(this));
+      }
     }
 
   }

@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    23.10.20   <--  Date of Last Modification.
+#    29.03.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -21,7 +21,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2020
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2021
 #
 # ============================================================================
 #
@@ -315,11 +315,14 @@ class Buccaneer(basic.TaskDriver):
                     self.stderr ( " *** molprobity failure" )
                     self.rvrow = rvrow0
 
-                auto.makeNextTask ( self.task,{
-                    "revision" : revision,
-                    "Rfactor"  : self.generic_parser_summary["refmac"]["R_factor"],
-                    "Rfree"    : self.generic_parser_summary["refmac"]["R_free"]
-                })
+                try:
+                    auto.makeNextTask ( self.task,{
+                        "revision" : revision,
+                        "Rfactor"  : self.generic_parser_summary["refmac"]["R_factor"],
+                        "Rfree"    : self.generic_parser_summary["refmac"]["R_free"]
+                    })
+                except:
+                    self.putMessage ( "<i>automatic workflow excepted</i>" )
 
 
         else:

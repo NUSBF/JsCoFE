@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    27.03.21   <--  Date of Last Modification.
+ *    29.03.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -------------------------------------------------------------------------
  *
@@ -2414,7 +2414,7 @@ if (!dbx)  {
   // run should not be done.
   TaskTemplate.prototype.doRun = function ( inputPanel,run_func )  {
 
-    if (this.file_select.length>0)  {
+    if ((this.inputMode==input_mode.root) && (this.file_select.length>0))  {
       var files = [];
 
       for (var i=0;i<this.file_select.length;i++)

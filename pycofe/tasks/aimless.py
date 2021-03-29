@@ -261,10 +261,13 @@ class Aimless(basic.TaskDriver):
                                        " R<sub>meas_all</sub>=" + str(dsum["R_meas_all"])   +\
                                        " R<sub>meas_ano</sub>=" + str(dsum["R_meas_ano"])   +\
                                        " Res=" + str(dsum["res_high"])  + "-" + str(dsum["res_low"]) +\
-                                       " SpG=" + dsum["Space_group"] ;
-            auto.makeNextTask ( self.task,{
-                "hkl" : hkl
-            })
+                                       " SpG=" + dsum["Space_group"]
+            try:
+                auto.makeNextTask ( self.task,{
+                    "hkl" : hkl
+                })
+            except:
+                self.putMessage ( "<i>automatic workflow excepted</i>" )
             self.success ( True )
         else:
             self.file_stdout.write ( "Aimless failed, see above." )
