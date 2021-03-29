@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    27.03.21   <--  Date of Last Modification.
+ *    29.03.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -326,14 +326,19 @@ JobTree.prototype.makeNodeName = function ( task )  {
 
   if (!task)  return 'no task!';
 
-  var node_name = '';
+  var node_name = task.autoRunId;
   if (('submitter' in task) && task.submitter)  {
     var author = this.projectData.desc.owner.login;
     if ('author' in this.projectData.desc.owner)
       author = this.projectData.desc.owner.author;
-    if (task.submitter!=author)
-      node_name = '<b>' + task.submitter + ':</b>';
+    if (task.submitter!=author)  {
+      if (node_name)
+        node_name += ':';
+      node_name = task.submitter;
+    }
   }
+  if (node_name)
+    node_name = '<b>' + node_name + ':</b>';
   node_name += this.makeNodeId(task.id) + ' ';
 
   if (task.harvestedTaskIds.length>0)  {

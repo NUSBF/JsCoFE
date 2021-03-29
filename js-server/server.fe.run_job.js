@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    24.03.21   <--  Date of Last Modification.
+ *    29.03.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -1142,7 +1142,7 @@ function addJobAuto ( jobEntry,jobClass )  {
 
             task.project          = projectName;
             task.id               = ++projectData.desc.jobCount;
-            task.name             = '<b>ccp4go:</b>' + task.name;
+            task.name             = task.name;
             task.autoRunName      = key;
             // task.harvestedTaskIds = dataBox.harvestedTaskIds;
             task.autoRunId        = jobClass.autoRunId;
@@ -1169,7 +1169,8 @@ function addJobAuto ( jobEntry,jobClass )  {
             cnode.parentId = pnode.id;
             cnode.dataId   = task.id;
             cnode.icon     = path.join ( ipath.dir,task.icon()+ipath.ext );
-            cnode.text     = '[' + com_utils.padDigits(task.id,4) + '] ' + task.name;
+            cnode.text     = '<b>' + task.autoRunId + ':</b>[' +
+                             com_utils.padDigits(task.id,4) + '] ' + task.name;
             cnode.text0    = cnode.text;
             cnode.children = [];
             pnode.children.push ( cnode );
@@ -1213,6 +1214,7 @@ function addJobAuto ( jobEntry,jobClass )  {
 
             // Run the job
             var job_token = crypto.randomBytes(20).toString('hex');
+            task.job_dialog_data.panel = 'output';
             _run_job ( loginData,task,job_token,ownerLoginData,shared_logins, function(){} );
 
           }
@@ -1253,8 +1255,10 @@ function getJobResults ( job_token,server_request,server_response )  {
 
           var jobClass = writeJobStats ( jobEntry );
 
-          if (jobClass.autoRunId && jobClass.isSuccessful())
+          if (jobClass.autoRunId && jobClass.isSuccessful())  {
+            console.log ( ' !!!! autostart from job ' + jobClass.id );
             addJobAuto ( jobEntry,jobClass );
+          }
 
           ustats.registerJob ( jobClass );
           if ('tokens' in meta)

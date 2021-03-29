@@ -27,7 +27,19 @@ from   pycofe.varut  import jsonut
 def auto_meta_fname   ():  return "auto.meta"
 def auto_context_fname():  return "auto.context"
 
-auto_meta = None
+auto_meta  = None
+log_stream = None
+
+def setLog ( log ):
+    global log_stream
+    log_stream = log
+    return
+
+def log ( message ):
+    global log_stream
+    if log_stream:
+        log_stream.write ( " >>> auto-workflow: " + message + "\n" )
+    return
 
 def initAutoMeta():
     global auto_meta
@@ -102,6 +114,7 @@ def getContext ( contextName ):
 def writeAutoMeta():
     global auto_meta
     if auto_meta:
-        with open(auto_meta_fname(),"w") as f:
-            f.write ( auto_meta.to_JSON() )
+        f = open ( auto_meta_fname(),"w" )
+        f.write ( auto_meta.to_JSON() )
+        f.close()
     return

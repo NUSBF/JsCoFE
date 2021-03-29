@@ -278,13 +278,13 @@ var r = 0;  // grid row
 
   grid.setLabel ( '<h2>CCP4go Workflows</h2>',r++,0,1,3 );
 
-  // var ccp4go_autoMR = new TaskCCP4goAutoMR();
+  // var ccp4go_autoMR = new TaskWFlowAMR();
   // if (this.dataBox.isEmpty())
   //   ccp4go_autoMR.inputMode = 'root'; // force 'at root mode' for the task
 
   var task_list = [
-    new TaskCCP4goAutoMR(),
-    new TaskCCP4goAutoEP()
+    new TaskWFlowAMR(),
+    new TaskWFlowAEP()
   ];
 
   for (var i=0;i<task_list.length;i++)  {

@@ -29,7 +29,7 @@ from   pycofe.auto   import  auto_api
 
 def makeNextTask ( crTask,data ):
 
-    if crTask._type=="TaskCCP4goAutoMR":
+    if crTask._type=="TaskWFlowAMR":
         auto_api.addContext ( "mr_engine",data["mr_engine"] )
         auto_api.addContext ( "mb_engine",data["mb_engine"] )
         auto_tasks.store ( data["unm"],data["hkl"],data["seq"],data["lig"],data["ligdesc"] )

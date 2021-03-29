@@ -5,14 +5,14 @@
 #
 # ============================================================================
 #
-#    27.03.21   <--  Date of Last Modification.
+#    29.03.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  CCP4go EXECUTABLE MODULE
 #
 #  Command-line:
-#     ccp4-python -m pycofe.tasks.ccp4go2 jobManager jobDir jobId
+#     ccp4-python -m pycofe.tasks.wflow_amr jobManager jobDir jobId
 #
 #  where:
 #    jobManager  is either SHELL, SGE or SCRIPT
@@ -36,14 +36,14 @@ from   pycofe.auto   import auto
 # ============================================================================
 # Make CCP4go driver
 
-class ImportAutoRun(import_task.Import):
+class WFlowAMR(import_task.Import):
 
     # ------------------------------------------------------------------------
 
     def importData(self):
         #  works with uploaded data from the top of the project
 
-        super ( ImportAutoRun,self ).import_all()
+        super ( WFlowAMR,self ).import_all()
 
         # -------------------------------------------------------------------
         # fetch data for CCP4go pipeline
@@ -160,19 +160,22 @@ class ImportAutoRun(import_task.Import):
         have_results = True
 
         if ((len(self.unm)>0) or (len(self.hkl)>0)) and (len(self.seq)>0):
-            self.putMessage ( "<h3>Automatic Molecular Replacement workflow started</hr>" )
             self.task.autoRunName = "_root"
-            self.task.autoRunId   = "autoMR"
-            auto.makeNextTask ( self.task,{
-                "unm"       : self.unm,
-                "hkl"       : self.hkl,
-                "seq"       : self.seq,
-                "lig"       : self.lig,
-                "ligdesc"   : self.ligdesc,
-                "mr_engine" : mr_engine,
-                "mb_engine" : mb_engine
-            })
-            summary_line += "workflow started"
+            try:
+                auto.makeNextTask ( self.task,{
+                    "unm"       : self.unm,
+                    "hkl"       : self.hkl,
+                    "seq"       : self.seq,
+                    "lig"       : self.lig,
+                    "ligdesc"   : self.ligdesc,
+                    "mr_engine" : mr_engine,
+                    "mb_engine" : mb_engine
+                },self.file_stderr)
+                summary_line += "workflow started"
+                self.putMessage ( "<h3>Automatic Molecular Replacement workflow started</hr>" )
+            except:
+                self.putMessage ( "<i>automatic workflow excepted</i>" )
+                summary_line += "workflow start failed"
         else:
             summary_line += "insufficient input"
 
@@ -190,5 +193,5 @@ class ImportAutoRun(import_task.Import):
 
 if __name__ == "__main__":
 
-    drv = ImportAutoRun ( "",os.path.basename(__file__),{} )
+    drv = WFlowAMR ( "",os.path.basename(__file__),{} )
     drv.start()

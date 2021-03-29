@@ -5,14 +5,14 @@
 #
 # ============================================================================
 #
-#    28.03.21   <--  Date of Last Modification.
+#    29.03.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  CCP4go EXECUTABLE MODULE
 #
 #  Command-line:
-#     ccp4-python -m pycofe.tasks.ccp4go_automr jobManager jobDir jobId
+#     ccp4-python -m pycofe.tasks.autowf_mr jobManager jobDir jobId
 #
 #  where:
 #    jobManager  is either SHELL, SGE or SCRIPT
@@ -36,14 +36,14 @@ from   pycofe.auto   import auto
 # ============================================================================
 # Make CCP4go driver
 
-class CCP4goAutoEP(import_task.Import):
+class WFlowAEP(import_task.Import):
 
     # ------------------------------------------------------------------------
 
     def importData(self):
         #  works with uploaded data from the top of the project
 
-        super ( CCP4goAutoEP,self ).import_all()
+        super ( WFlowAEP,self ).import_all()
 
         # -------------------------------------------------------------------
         # fetch data for CCP4go pipeline
@@ -159,16 +159,19 @@ class CCP4goAutoEP(import_task.Import):
         if ((len(self.unm)>0) or (len(self.hkl)>0)) and (len(self.seq)>0):
             self.putMessage ( "<h3>Automatic Experimental Phasing (SAD) workflow started</hr>" )
             self.task.autoRunName = "_root"
-            self.task.autoRunId   = "autoEP"
-            auto.makeNextTask ( self.task,{
-                "unm"       : self.unm,
-                "hkl"       : self.hkl,
-                "seq"       : self.seq,
-                "lig"       : self.lig,
-                "ligdesc"   : self.ligdesc,
-                "hatom"     : ha_type
-            })
-            summary_line += "workflow started"
+            try:
+                auto.makeNextTask ( self.task,{
+                    "unm"       : self.unm,
+                    "hkl"       : self.hkl,
+                    "seq"       : self.seq,
+                    "lig"       : self.lig,
+                    "ligdesc"   : self.ligdesc,
+                    "hatom"     : ha_type
+                })
+                summary_line += "workflow started"
+            except:
+                self.putMessage ( "<i>automatic workflow excepted</i>" )
+                summary_line += "workflow start failed"
         else:
             summary_line += "insufficient input"
 
@@ -185,5 +188,5 @@ class CCP4goAutoEP(import_task.Import):
 
 if __name__ == "__main__":
 
-    drv = CCP4goAutoEP ( "",os.path.basename(__file__),{} )
+    drv = WFlowAEP ( "",os.path.basename(__file__),{} )
     drv.start()

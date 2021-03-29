@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    24.03.21   <--  Date of Last Modification.
+#    29.03.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -28,20 +28,18 @@ from   pycofe.auto   import auto_api
 # ============================================================================
 # Main function
 
-def makeNextTask ( crTask,data ):
+def makeNextTask ( crTask,data,log=None ):
+# for 'log',  self.file_stderr would normally do (debug option)
 
+    auto_api.setLog ( log )
     auto_api.initAutoMeta()
 
-    if crTask.autoRunId=="autoMR":
+    # auto_api.log ( " --- " + str(data) )
+
+    if crTask.autoRunId=="auto-MR":
         template_autoMR.makeNextTask ( crTask,data )
-    elif crTask.autoRunId=="autoEP":
+    elif crTask.autoRunId=="auto-EP":
         template_autoEP.makeNextTask ( crTask,data )
-
-    # elif crTask.autoRunId=="MR":
-    #     template_MR.makeNextTask ( crTask._type,data )
-
-    # elif crTask.autoRunId=="autoEP":
-    #    etc etc
 
     auto_api.writeAutoMeta()
 

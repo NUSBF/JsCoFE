@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    02.12.20   <--  Date of Last Modification.
+#    29.03.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -22,7 +22,7 @@
 #      jobDir/report  : directory receiving HTML report
 #
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2020
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2021
 #
 # ============================================================================
 #
@@ -42,7 +42,7 @@ import pyrvapi
 from . import basic
 from   pycofe.proc   import edmap, xyzmeta, verdict
 from   pycofe.dtypes import dtype_template, dtype_revision, dtype_sequence
-
+from   pycofe.auto   import auto
 
 # ============================================================================
 # Make Crank2 driver
@@ -450,8 +450,9 @@ class Crank2(basic.TaskDriver):
             if not structure:
                 self.structure = self.registerStructure1 (
                                             xyzout,subout,self.hklout_fpath,
-                                            self.hklout_fpath + ".map",
-                                            self.hklout_fpath + "_diff.map",
+                                            None,None,
+                                            # self.hklout_fpath + ".map",
+                                            # self.hklout_fpath + "_diff.map",
                                             None,
                                             self.outputFName,leadKey=1 )
 
@@ -756,6 +757,16 @@ class Crank2(basic.TaskDriver):
         #pyrvapi.rvapi_reset_task()
 
         revisions = self.finalise()
+
+        if len(revisions)>0:
+            try:
+                auto.makeNextTask ( self.task,{
+                    "revision" : revisions[0],
+                    "Rfactor"  : self.generic_parser_summary["refmac"]["R_factor"],
+                    "Rfree"    : self.generic_parser_summary["refmac"]["R_free"]
+                }, self.file_stderr )
+            except:
+                self.putMessage ( "<i>automatic workflow excepted</i>" )
 
         # close execution logs and quit
         self.success ( (len(revisions)>0) )
