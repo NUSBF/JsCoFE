@@ -1194,6 +1194,9 @@ function addJobAuto ( jobEntry,jobClass )  {
           log.error ( 22,'cannot create job directory at ' + jobDirPath );
         } else  {
 
+          task.state = task_t.job_code.running;
+          task.job_dialog_data.panel = 'output';
+
           var jobDataPath = prj.getJobDataPath ( loginData,projectName,task.id );
 
           if (!utils.writeObject(jobDataPath,task))  {
@@ -1214,7 +1217,6 @@ function addJobAuto ( jobEntry,jobClass )  {
 
             // Run the job
             var job_token = crypto.randomBytes(20).toString('hex');
-            task.job_dialog_data.panel = 'output';
             _run_job ( loginData,task,job_token,ownerLoginData,shared_logins, function(){} );
 
           }
