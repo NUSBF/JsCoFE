@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    25.03.21   <--  Date of Last Modification.
+#    29.03.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -117,7 +117,7 @@ class Aimless(basic.TaskDriver):
         else:
             mtzRef = ds0.getHKLFilePath ( self.inputDir() )
         symm_select = ds0.symm_select if ds0._type=="DataUnmerged" else None
-        self.stderrln ( " >>>> " + str(ds0.symm_select) )
+        #self.stderrln ( " >>>> " + str(ds0.symm_select) )
 
         plist = [[ds.dataset,ds.getUnmergedFilePath(self.inputDir()),ds.runs] for ds in unmerged]
         format_list = [getattr(ds.dataset,'original_format','unknown') for ds in unmerged]

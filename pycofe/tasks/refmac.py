@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    25.03.21   <--  Date of Last Modification.
+#    29.03.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -162,7 +162,7 @@ class Refmac(basic.TaskDriver):
         if (str(hkl.useHKLSet) == 'F') or (str(hkl.useHKLSet) == 'TF'):
             hkl_labels = ( hkl.dataset.Fmean.value, hkl.dataset.Fmean.sigma )
             hkl_labin  =  "LABIN FP=" + hkl_labels[0] + " SIGFP=" + hkl_labels[1]
-            if hkl.isAnomalous():
+            if hkl.isAnomalous() and (str(hkl.useHKLSet)!='TF'):
                 hkl_labin += " F+="    + hkl.dataset.Fpm.plus.value  +\
                              " SIGF+=" + hkl.dataset.Fpm.plus.sigma  +\
                              " F-="    + hkl.dataset.Fpm.minus.value +\

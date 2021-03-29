@@ -32,7 +32,11 @@ def makeNextTask ( crTask,data ):
 
     if crTask._type=="TaskCCP4goAutoEP":
         auto_api.addContext ( "hatom",data["hatom"] )
-        auto_tasks.store ( data["unm"],data["hkl"],data["seq"],data["lig"],data["ligdesc"] )
+        hkl = data["hkl"]
+        for i in range(len(hkl)):
+            hkl[i].wtype   = "peak"
+            hkl[i].ha_type = data["hatom"]
+        auto_tasks.store ( data["unm"],hkl,data["seq"],data["lig"],data["ligdesc"] )
         if not auto_tasks.make_ligand ( "mkligand",crTask.autoRunName ):
             if not auto_tasks.aimless ( "aimless",crTask.autoRunName ):
                 auto_tasks.simbad ( "simbad","L",crTask.autoRunName,"simbad" )
@@ -47,6 +51,8 @@ def makeNextTask ( crTask,data ):
 
     elif crTask._type=="TaskAimless":
         if len(data["hkl"])>0:
+            data["hkl"][0].wtype   = "peak"
+            data["hkl"][0].ha_type = data["hatom"]
             auto_api.addContext ( "hkl",data["hkl"][0] )
             auto_tasks.simbad ( "simbad","L",crTask.autoRunName,"simbad" )
 
@@ -57,14 +63,13 @@ def makeNextTask ( crTask,data ):
             auto_tasks.build ( "simbad_mb",data["revision"],crTask.autoRunName )
 
     elif crTask._type=="TaskASUDef":
-        auto_api.addTask          ( "crank2","TaskCrank2",crTask.autoRunName )
-        auto_api.addTaskData      ( "crank2","revision",data["revision"] )
-        auto_api.addTaskParameter ( "crank2","ALTGROUPS_CBX",True )
+        auto_api.addTask     ( "crank2","TaskCrank2",crTask.autoRunName )
+        auto_api.addTaskData ( "crank2","revision",data["revision"] )
 
-    elif crTask._type in ["TaskCCP4Build","TaskBuccaneer","TaskCrank2"]:
+    elif crTask._type in ["TaskCCP4Build","TaskBuccaneer"]:
         if (auto_api.getContext("branch")=="simbad") and\
            (not data["revision"] or (float(data["Rfree"])>0.3)):
-            auto_tasks.asu ( "asu",crTask.autoRunName,"autoEP" )
+            auto_tasks.asu ( "asu",auto_api.getContext("hkl_node"),"autoEP" )
         if data["revision"] and (float(data["Rfree"])<0.4):
             if not auto_tasks.fit_ligand("fitligand",data["revision"],crTask.autoRunName):
                 auto_tasks.refmac_jelly ( "refmac-jelly",data["revision"],crTask.autoRunName )

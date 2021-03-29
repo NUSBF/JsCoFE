@@ -20,6 +20,7 @@
 #from   pycofe.varut  import jsonut
 
 from   pycofe.auto   import template_autoMR
+from   pycofe.auto   import template_autoEP
 #from   pycofe.auto   import template_MR
 from   pycofe.auto   import auto_api
 
@@ -33,6 +34,8 @@ def makeNextTask ( crTask,data ):
 
     if crTask.autoRunId=="autoMR":
         template_autoMR.makeNextTask ( crTask,data )
+    elif crTask.autoRunId=="autoEP":
+        template_autoEP.makeNextTask ( crTask,data )
 
     # elif crTask.autoRunId=="MR":
     #     template_MR.makeNextTask ( crTask._type,data )

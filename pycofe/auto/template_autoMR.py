@@ -24,65 +24,7 @@ from   pycofe.varut  import  jsonut
 from   pycofe.auto   import  auto_tasks
 from   pycofe.auto   import  auto_api
 
-
 # ============================================================================
-
-
-# def start_aimless ( unm,parentName ):
-#     auto_api.addTask     ( "aimless","TaskAimless",parentName )
-#     auto_api.addTaskData ( "aimless","unmerged",unm )
-#     auto_api.addTaskData ( "aimless","ds0"     ,unm )
-#     auto_api.addContext  ( "hkl_node","aimless" )
-#     return
-#
-# def start_simbad ( searchType,parentNode ):
-#     auto_api.addTask          ( "simbad" ,"TaskSimbad",parentNode )
-#     auto_api.addTaskData      ( "simbad" ,"hkl",auto_api.getContext("hkl") )
-#     auto_api.addTaskParameter ( "simbad" ,"SEARCH_SEL",searchType )
-#     auto_api.addContext       ( "branch" ,"simbad"     )
-#     auto_api.addContext       ( "hkl_node",parentNode )
-#     return
-#
-# def start_asu ( parentName ):
-#     auto_api.addTask     ( "asu","TaskASUDef",parentName )
-#     auto_api.addTaskData ( "asu","hkl",auto_api.getContext("hkl") )
-#     auto_api.addTaskData ( "asu","seq",auto_api.getContext("seq") )
-#     auto_api.addContext  ( "branch","autoMR" )
-#     return;
-#
-# def start_mb ( name,revision,parentName ):
-#     if auto_api.getContext("mb_engine")=="ccp4build":
-#         auto_api.addTask     ( name,"TaskCCP4Build",parentName  )
-#         auto_api.addTaskData ( name,"revision",revision )
-#     else:
-#         auto_api.addTask     ( name,"TaskBuccaneer",parentName  )
-#         auto_api.addTaskData ( name,"revision",revision )
-#     return
-#
-# def start_mkligand ( name,ligdesc,parentName ):
-#     auto_api.addTask          ( name,"TaskMakeLigand",parentName )
-#     auto_api.addTaskParameter ( name,"SOURCE_SEL",ligdesc.source )
-#     auto_api.addTaskParameter ( name,"SMILES"    ,ligdesc.smiles )
-#     auto_api.addTaskParameter ( name,"CODE"      ,ligdesc.code   )
-#     auto_api.addTaskParameter ( name,"CODE3"     ,ligdesc.code   )
-#     return
-#
-# def start_refmac_jelly ( name,revision,parentName ):
-#     auto_api.addTask          ( name,"TaskRefmac",parentName )
-#     auto_api.addTaskData      ( name,"revision",revision )
-#     auto_api.addTaskParameter ( name,"NCYC" ,"50"  )
-#     auto_api.addTaskParameter ( name,"JELLY","yes" )
-#     return
-#
-# def start_ligand_fitting ( revision,ligand,parentName ):
-#     auto_api.addTask          ( "fitligand","TaskFitLigand",parentName )
-#     auto_api.addTaskData      ( "fitligand","revision",revision )
-#     auto_api.addTaskData      ( "fitligand","ligand"  ,ligand )
-#     auto_api.addTaskParameter ( "fitligand","SAMPLES" ,"750"  )
-
-
-
-# ----------------------------------------------------------------------------
 # Main function
 
 def makeNextTask ( crTask,data ):

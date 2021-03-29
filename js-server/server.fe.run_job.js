@@ -397,6 +397,9 @@ function _run_job ( loginData,task,job_token,ownerLoginData,shared_logins, callb
       utils.writeObject ( jobDataPath,task );
 //        utils.removeLock  ( jobDir );
 
+      if (callback_func)
+        callback_func();
+
     } else  {
 
       log.standard ( 6,'sending job ' + task.id + ' to ' +
@@ -440,6 +443,9 @@ function _run_job ( loginData,task,job_token,ownerLoginData,shared_logins, callb
           // update the user ration state
           //ration.updateUserRation_bookJob ( ownerLoginData,task );
 
+          if (callback_func)
+            callback_func();
+
         },function(stageNo,code){  // send failed
 
           switch (stageNo)  {
@@ -469,18 +475,22 @@ function _run_job ( loginData,task,job_token,ownerLoginData,shared_logins, callb
           utils.writeObject ( jobDataPath,task );
 //            utils.removeLock  ( jobDir );
 
+          if (callback_func)
+            callback_func();
+
         });
 
     }
 
-    if (callback_func)
-      callback_func();
+    // if (callback_func)
+    //   callback_func();
 //    callback_func ( new cmd.Response(cmd.fe_retcode.ok,'',rdata) );
 
   });
 
 
 }
+
 
 function runJob ( loginData,data, callback_func )  {
 
