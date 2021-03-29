@@ -59,9 +59,12 @@ def asu ( name,parentName,branchName ):
     hkl = auto_api.getContext("hkl")
     seq = auto_api.getContext("seq")
     if hkl and seq:
-        auto_api.addTask     ( "asu","TaskASUDef",parentName )
-        auto_api.addTaskData ( "asu","hkl",hkl )
-        auto_api.addTaskData ( "asu","seq",seq )
+        auto_api.addTask     ( name,"TaskASUDef",parentName )
+        auto_api.addTaskData ( name,"hkl",hkl )
+        auto_api.addTaskData ( name,"seq",seq )
+        ha_type = auto_api.getContext("hatom")
+        if ha_type:
+            auto_api.addTaskParameter ( name,"HATOM",ha_type )
         auto_api.addContext  ( "branch",branchName )
     return
 
