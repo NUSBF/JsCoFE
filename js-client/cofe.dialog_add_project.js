@@ -54,7 +54,9 @@ function AddProjectDialog ( projectList,onclose_fnc )  {
   var autosolve_rbt = new RadioButton ( 'Autostart',
                                         projectList.startmode==start_mode.auto     );
   var expert_rbt    = new RadioButton ( 'Standard',
-                                        projectList.startmode==start_mode.standard );
+                                        (projectList.startmode==start_mode.standard) ||
+                                        (projectList.startmode==start_mode.expert) // legacy
+                                      );
   var migrate_rbt   = new RadioButton ( 'Hop on',
                                         projectList.startmode==start_mode.migrate  );
 
@@ -65,10 +67,10 @@ function AddProjectDialog ( projectList,onclose_fnc )  {
   grid.setWidget ( autosolve_rbt,row++,0,1,2 );
   grid.setWidget ( autosolve_rbt,row,0,1,1 );
   grid.setLabel  (
-    'Simplified mode, offering automatically progressing workflows for ' +
-    'typical structure solution scenarios in ' + appName() + ', and ' +
-    'optimised list of tasks, most frequently used for structure completion (' +
-    'which can be switched to the full list).',
+    'Simplified mode for starting with one of automatic workflows for typical ' +
+    'structure solution scenarios in ' + appName() + ', and optimised list of ' +
+    'tasks, essential for structure completion (which can be switched to the ' +
+    'full list).',
     row++,1,1,1 ).setFontSize('90%').setFontItalic(true);
 
   grid.setWidget ( expert_rbt,row,0,1,1 );
@@ -79,16 +81,14 @@ function AddProjectDialog ( projectList,onclose_fnc )  {
 
   grid.setWidget ( migrate_rbt,row,0,1,1 );
   grid.setLabel  (
-    'Quick start from phased (possibly partially built and refined) structure ' +
-    'or heavy-atom substructure, for further refinement and model building. ' +
-    'Requires MTZ file with phases and, optionally, .mtz with reflection ' +
-    'dataset, .pdb with atomic coordinates and .cif with ligand description ' +
-    'library for upload.',
+    'Quick start from phased (possibly partially built and refined) elsewhere ' +
+    'structure or heavy-atom substructure, for further refinement and model ' +
+    'building.',
     row++,1,1,1 ).setFontSize('90%').setFontItalic(true);
 
   $(this.element).dialog({
     resizable : false,
-    height    : 'auto',
+    hseight    : 'auto',
     maxHeight : 500,
     width     : 750,
     modal     : true,

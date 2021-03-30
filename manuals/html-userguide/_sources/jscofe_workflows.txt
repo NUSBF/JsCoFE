@@ -1,0 +1,7 @@
+.. _workflows:
+
+===================
+Automatic workflows
+===================
+
+Automatic workflows feature structure solution scenarios, such as Molecular Replacement or Experimental Phasing, which include several elemntary tasks. A workflow can start with data import and then attempt phasing, model building, refinement, ligand fitting, solvent modelling and preparing resuts for PDB deposition.

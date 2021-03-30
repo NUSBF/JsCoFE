@@ -1,5 +1,8 @@
 
 /*
+ *
+ *   !!!  RETIRED  30.03.2021, left in for consistency  !!!
+ *
  *  =================================================================
  *
  *    27.03.21   <--  Date of Last Modification.
@@ -37,6 +40,7 @@ function TaskCCP4go()  {
   this.name    = 'ccp4go';
   this.setOName ( 'ccp4go' );  // default output file name template
   this.title   = 'CCP4go auto-solver (experimental)';
+  this.state   = job_code.retired;  // do not include in task lists
 
   this.files   = ['','',''];
   //this.ha_type = '';

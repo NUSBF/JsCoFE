@@ -3,9 +3,24 @@ CCP4 Cloud Version Log
 ======================
 
 
-**Version 1.6.020**
+
+**Version 1.6.021**
 
     *Released on --.--.2021 with CCP4 7.1.012*
+
+    **Changes and new features**
+
+    #. Deleting running jobs made made a safe regular operation
+
+    #. Improved stability of the PDB deposition task
+
+    #. Fixed bug in importing expected sequences from the PDB (sequences in imported PDB headers)
+
+
+
+**Version 1.6.020**
+
+    *Released on 15.03.2021 with CCP4 7.1.012*
 
     **Changes and new features**
 
@@ -28,6 +43,8 @@ CCP4 Cloud Version Log
     #. ``Deposition`` task can now work with Buster output directly
 
     #. Fixed a bug due to which CCP4 Cloud erroneously asked for CPU quota in desktop mode
+
+    #. Fixed bug in parsing newer HHPRED files (affected the ``Model preparation from alignment`` task)
 
 
 
