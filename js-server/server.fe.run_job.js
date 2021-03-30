@@ -1148,8 +1148,10 @@ function addJobAuto ( jobEntry,jobClass )  {
             task.autoRunId        = jobClass.autoRunId;
             task.submitter        = loginData.login;
             task.input_data.data  = auto_meta[key].data;
-            task.state            = task_t.job_code.running;
             task.start_time       = Date.now();
+
+            for (var field in auto_meta[key].fields)
+              task[field] = auto_meta[key].fields[field];
 
             task._clone_suggested ( task.parameters,auto_meta[key].parameters );
             tasks.push ( task );
@@ -1201,7 +1203,7 @@ function addJobAuto ( jobEntry,jobClass )  {
 
           if (!utils.writeObject(jobDataPath,task))  {
             log.error ( 23,'cannot write job metadata at ' + jobDataPath );
-          } else  {
+          } else if (task.state==task_t.job_code.new)  {
 
             utils.writeObject ( path.join(jobDirPath,"auto.context"),auto_meta.context );
 

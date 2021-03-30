@@ -92,4 +92,7 @@ def makeNextTask ( crTask,data ):
         else:
             auto_tasks.deposition ( "deposition",data["revision"],crTask.autoRunName )
 
+    elif crTask._type=="TaskDeposition":
+        auto_tasks.remark ( "rem_deposition","The End",6,"",crTask.autoRunName )
+
     return

@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    19.03.21   <--  Date of Last Modification.
+#    29.03.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -41,15 +41,12 @@ import json
 #from   gemmi import cif
 from  adding_stats_to_mmcif import run_process
 
-#from ccp4mg import mmdb2
-
-
 #  application imports
 from . import basic
 from   pycofe.dtypes import dtype_template, dtype_sequence
 from   pycofe.proc   import valrep
 from   pycofe.etc    import citations
-
+from   pycofe.auto   import auto
 
 # ============================================================================
 # Make Deposition driver
@@ -379,6 +376,10 @@ class Deposition(basic.TaskDriver):
             self.putMessage ( html )
         citations.citation_list = []
 
+        try:
+            auto.makeNextTask ( self.task,{}, self.file_stderr )
+        except:
+            self.putMessage ( "<i>automatic workflow excepted</i>" )
 
         # this will go in the project tree line
         self.generic_parser_summary["deposition"] = {

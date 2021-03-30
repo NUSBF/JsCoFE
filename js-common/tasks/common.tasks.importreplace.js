@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    16.01.21   <--  Date of Last Modification.
+ *    30.03.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -38,6 +38,7 @@ function TaskImportReplace()  {
   this.title = 'Import & Replace';
   //this.setOName ( 'replaced' );  // default output file name template
   this.oname     = '*';   // asterisk here means do not use
+  this.inputMode = input_mode.standard;  // can be used anywhere in the Tree
   this.fasttrack = true;  // enforces immediate execution
 
   this.input_dtypes = [{  // input data types
