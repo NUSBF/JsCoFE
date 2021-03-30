@@ -50,11 +50,11 @@ function TaskListDialog ( dataBox,branch_task_list,projectDesc,onSelect_func ) {
      )  {
     this.combobox = new Combobox();
     this.combobox
-        .addItem  ( 'Basic set','basic',projectDesc.tasklistmode==tasklist_mode.basic )
-        .addItem  ( 'Full set','full',projectDesc.tasklistmode==tasklist_mode.full  )
-        .setWidth ( '140px' );
-    this.page_basic.setVisible ( projectDesc.tasklistmode==tasklist_mode.basic );
-    this.tabs.setVisible ( projectDesc.tasklistmode==tasklist_mode.full );
+        .addItem  ( 'Autostart set','basic',projectDesc.tasklistmode==tasklist_mode.basic )
+        .addItem  ( 'Standard set' ,'full',projectDesc.tasklistmode==tasklist_mode.full  )
+        .setWidth ( '160px' );
+    this.tabs_basic.setVisible ( projectDesc.tasklistmode==tasklist_mode.basic );
+    this.tabs_full.setVisible ( projectDesc.tasklistmode==tasklist_mode.full );
   }
 
   var w = window.innerWidth;
@@ -110,18 +110,21 @@ function TaskListDialog ( dataBox,branch_task_list,projectDesc,onSelect_func ) {
 
     if (self.combobox)  {
       self.combobox.addOnChangeListener ( function(value,text){
-        self.page_basic.setVisible ( value==tasklist_mode.basic );
-        self.tabs.setVisible ( value==tasklist_mode.full );
-        if (value=='full')
-          self.tabs.refresh();
+        self.tabs_basic.setVisible ( value==tasklist_mode.basic );
+        self.tabs_full.setVisible ( value==tasklist_mode.full );
+        if (value=='full')  self.tabs_full.refresh();
+                      else  self.tabs_basic.refresh();
       });
     }
 
   }(this));
 
-  //$(this.element).css ( 'width:100%' );
-  $(this.tabs.element).height ( this.element.innerHeight-16 );
-  this.tabs.refresh();
+  $(this.element).css ( 'width:100%' );
+  $(this.tabs_basic.element).height ( this.element.innerHeight-16 );
+  this.tabs_basic.refresh();
+
+  $(this.tabs_full.element).height ( this.element.innerHeight-16 );
+  this.tabs_full.refresh();
 
   //launchHelpBox ( '','./html/jscofe_tasklist.html',doNotShowAgain,1000 );
 
@@ -156,7 +159,7 @@ TaskListDialog.prototype.setTask = function ( task_obj,grid,row,setall )  {
   var btn = grid.setButton  ( '',image_path(task_obj.icon()),row,0,1,1 )
                 .setSize_px ( 54,40 );
   grid.setLabel             ( ' ', row,1,1,1 );
-  var title = task_obj.title;
+  var title = task_obj.title.replace ( 'Workflow: ','' );
   if (avail_key[0]!='ok')
     title += '<br><i><span style="font-size:14px;">** ' + avail_key[1] + '</i></span>';
     //title += '<br><i><font size="-1">** ' + avail_key[1] + '</font></i>';
@@ -202,21 +205,23 @@ TaskListDialog.prototype.setTask = function ( task_obj,grid,row,setall )  {
 
 TaskListDialog.prototype.makeLayout = function()  {
 
-  this.page_basic = new Grid('-compact');
-  this.addWidget ( this.page_basic );
-  this.makeBasicList ( this.page_basic );
-  this.page_basic.hide();
+  this.tabs_basic = new Tabs();
+  this.addWidget ( this.tabs_basic );
 
-  this.tabs = new Tabs();
-  this.addWidget ( this.tabs );
+  var tabb_workflows = this.tabs_basic.addTab ( 'Workflows',true );
+  var tabb_shortlist = this.tabs_basic.addTab ( 'Essential tasks',false );
+  this.makeWorkflowsList ( tabb_workflows.grid );
+  this.makeBasicList     ( tabb_shortlist.grid );
 
-  var tab_suggested = this.tabs.addTab ( 'Suggested',true  );
-  var tab_fulllist  = this.tabs.addTab ( 'Full list',false );
-  var tab_workflows = this.tabs.addTab ( 'Workflows',false );
-  this.makeSuggestedList ( tab_suggested.grid );
-  this.makeFullList      ( tab_fulllist .grid );
-  this.makeWorkflowsList ( tab_workflows.grid );
+  this.tabs_full = new Tabs();
+  this.addWidget ( this.tabs_full );
 
+  var tabf_suggested = this.tabs_full.addTab ( 'Suggested tasks',true  );
+  var tabf_fulllist  = this.tabs_full.addTab ( 'All tasks',false );
+  var tabf_workflows = this.tabs_full.addTab ( 'Workflows',false );
+  this.makeSuggestedList ( tabf_suggested.grid );
+  this.makeFullList      ( tabf_fulllist .grid );
+  this.makeWorkflowsList ( tabf_workflows.grid );
 
 }
 
@@ -224,9 +229,21 @@ TaskListDialog.prototype.makeLayout = function()  {
 TaskListDialog.prototype.makeBasicList = function ( grid )  {
 var r = 0;  // grid row
 
-  grid.setLabel ( '<h2>Basic tasks</h2>',r++,0,1,3 );
+  //grid.setLabel ( '<h2>Basic tasks</h2>',r++,0,1,3 );
   //grid.setLabel ( 'Switch to full set for more tasks',r++,0,1,3 )
   //    .setFontItalic(true).setFontSize('85%');
+
+
+  grid.setLabel ( 'Essential Tasks',r++,0,1,3 )
+      .setFontSize('140%').setFontBold(true);
+  grid.setLabel ( '&nbsp;',r++,0,1,3 ).setFontSize('40%');
+  grid.setLabel ( '<i>This list contains ' + appName() +
+                  ' tasks commonly used for structure completion ' +
+                  'after successful run of structure solution workflows. For ' +
+                  'full set of tasks, switch to </i>"Standard set"<i> below.</i>',
+                  r++,0,1,3 )
+      .setFontSize('90%');
+  grid.setLabel ( '&nbsp;',r++,0,1,3 ).setFontSize('20%');
 
   var task_list = [
 
@@ -242,8 +259,9 @@ var r = 0;  // grid row
     new TaskFitWaters (),
 
     "Import Additional Data",
-    new TaskImport     (),
-    new TaskImportSeqCP(),
+    new TaskImportReplace (),
+    //new TaskImport     (),
+    //new TaskImportSeqCP(),
 
     "Model Building",
     new TaskParrot   (),
@@ -278,7 +296,18 @@ var r = 0;  // grid row
 TaskListDialog.prototype.makeWorkflowsList = function ( grid )  {
 var r = 0;  // grid row
 
-  grid.setLabel ( '<h2>CCP4go Workflows</h2>',r++,0,1,3 );
+  grid.setLabel ( 'Automatic Workflows',r++,0,1,3 )
+      .setFontSize('140%').setFontBold(true);
+  grid.setLabel ( '&nbsp;',r++,0,1,3 ).setFontSize('40%');
+  grid.setLabel ( 'Each workflow will run a series of tasks, see details ' +
+                  '<a href="javascript:launchHelpBox(\'Automatic Workflows\',' +
+                  '\'' + __user_guide_base_url +
+                  'jscofe_workflows.html\',null,10)">here</a>.<hr/>',r++,0,1,3 )
+      .setFontSize('90%').setFontItalic(true);
+  grid.setLabel ( '&nbsp;',r++,0,1,3 ).setFontSize('40%');
+
+
+//'manuals/html-userguide/jscofe_workflows.html'
 
   // var ccp4go_autoMR = new TaskWFlowAMR();
   // if (this.dataBox.isEmpty())
@@ -379,35 +408,34 @@ var row      = 0;
     }
   }
 
-
-  var ccp4go_task = new TaskCCP4go();
-  if (this.dataBox.isEmpty())
-    ccp4go_task.inputMode = input_mode.root; // force 'at root mode' for the task
-//    ccp4go_task.input_dtypes = [1]; // force 'at root mode' for the task
-  if (ccp4go_task.isTaskAvailable()[0]=='ok')
-    this.makeSection ( 'Combined Automated Solver <i>"CCP4 Go"</i>',[
-      'Recommended as first attempt or in easy cases',
-      ccp4go_task
-    ]);
+//   var ccp4go_task = new TaskCCP4go();
+//   if (this.dataBox.isEmpty())
+//     ccp4go_task.inputMode = input_mode.root; // force 'at root mode' for the task
+// //    ccp4go_task.input_dtypes = [1]; // force 'at root mode' for the task
+//   if (ccp4go_task.isTaskAvailable()[0]=='ok')
+//     this.makeSection ( 'Combined Automated Solver <i>"CCP4 Go"</i>',[
+//       'Recommended as first attempt or in easy cases',
+//       ccp4go_task
+//     ]);
   var section1 = section0;
 
   if (__user_role==role_code.developer)  {
 
-    var ccp4go2_task = new TaskCCP4go2();
-    if (this.dataBox.isEmpty())
-      ccp4go2_task.inputMode = input_mode.root; // force 'at root mode' for the task
-    //  ccp4go2_task.input_dtypes = [1]; // force 'at root mode' for the task
-    /*
-    if (ccp4go2_task.isTaskAvailable()[0]=='ok')
-      this.makeSection ( 'Combined Automated Solver <i>"CCP4 Go-2"</i>',[
-        'Recommended as first attempt or in easy cases',
-        ccp4go2_task
-      ]);
-    */
+    // var ccp4go2_task = new TaskCCP4go2();
+    // if (this.dataBox.isEmpty())
+    //   ccp4go2_task.inputMode = input_mode.root; // force 'at root mode' for the task
+    // //  ccp4go2_task.input_dtypes = [1]; // force 'at root mode' for the task
+    // /*
+    // if (ccp4go2_task.isTaskAvailable()[0]=='ok')
+    //   this.makeSection ( 'Combined Automated Solver <i>"CCP4 Go-2"</i>',[
+    //     'Recommended as first attempt or in easy cases',
+    //     ccp4go2_task
+    //   ]);
+    // */
 
     this.makeSection ( 'Tasks in Development',[
       new TaskDocDev       (),
-      ccp4go2_task,
+      // ccp4go2_task,
       //new TaskSheetbend    (),  // excluded also from the bootstrap html
       new TaskJLigand      (),
       new TaskFragon       (),

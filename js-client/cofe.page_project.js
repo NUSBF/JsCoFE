@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    04.03.21   <--  Date of Last Modification.
+ *    30.03.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -441,12 +441,13 @@ function ProjectPage ( sceneId )  {
       // enter empty project: first task to run or choose
       switch (jobTree.projectData.desc.startmode)  {
         case start_mode.auto    :
-                var ccp4go = new TaskCCP4go();
-                ccp4go.inputMode = input_mode.root;  // force "at root" mode
-                // ccp4go.input_dtypes = [1];  // force "at root" mode
-                jobTree.addTask ( ccp4go,false,false,self,function(){
-                   self.del_btn.setDisabled ( false );
-                });
+                addJob();
+                // var ccp4go = new TaskCCP4go();
+                // ccp4go.inputMode = input_mode.root;  // force "at root" mode
+                // // ccp4go.input_dtypes = [1];  // force "at root" mode
+                // jobTree.addTask ( ccp4go,false,false,self,function(){
+                //    self.del_btn.setDisabled ( false );
+                // });
               break;
         case start_mode.migrate :
                 jobTree.addTask ( new TaskMigrate(),false,false,self,function(){
