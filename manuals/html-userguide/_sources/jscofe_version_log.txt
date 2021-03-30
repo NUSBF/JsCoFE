@@ -6,7 +6,7 @@ CCP4 Cloud Version Log
 
 **Version 1.6.021**
 
-    *Released on --.--.2021 with CCP4 7.1.012*
+    *Released on --.--.2021 with CCP4 7.1.013*
 
     **Changes and new features**
 
@@ -15,6 +15,14 @@ CCP4 Cloud Version Log
     #. Improved stability of the PDB deposition task
 
     #. Fixed bug in importing expected sequences from the PDB (sequences in imported PDB headers)
+
+    #. CCP4go task is retired 
+
+    #. Autosolve project mode converted to Autostart mode, and Expert mode converted to Standard mode 
+
+    #. Introduced Automatic Workflows
+
+    #. Documentation updates
 
 
 
