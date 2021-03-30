@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    29.03.21   <--  Date of Last Modification.
+ *    30.03.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -1196,14 +1196,18 @@ function addJobAuto ( jobEntry,jobClass )  {
           log.error ( 22,'cannot create job directory at ' + jobDirPath );
         } else  {
 
-          task.state = task_t.job_code.running;
-          task.job_dialog_data.panel = 'output';
+          // handle remarks and other pseudo-jobs here
+          var task_state = task.state;
+          if (task_state==task_t.job_code.new)  {
+            task.state = task_t.job_code.running;
+            task.job_dialog_data.panel = 'output';
+          }
 
           var jobDataPath = prj.getJobDataPath ( loginData,projectName,task.id );
 
           if (!utils.writeObject(jobDataPath,task))  {
             log.error ( 23,'cannot write job metadata at ' + jobDataPath );
-          } else if (task.state==task_t.job_code.new)  {
+          } else if (task_state==task_t.job_code.new)  {
 
             utils.writeObject ( path.join(jobDirPath,"auto.context"),auto_meta.context );
 
