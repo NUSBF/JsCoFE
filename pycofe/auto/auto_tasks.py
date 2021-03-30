@@ -116,3 +116,10 @@ def deposition ( name,revision,parentName ):
     auto_api.addTask     ( name,"TaskDeposition",parentName )
     auto_api.addTaskData ( name,"revision",revision )
     return
+
+def remark ( name,text,themeNo,description,parentName ):
+    auto_api.addTask          ( name,"TaskRemark" ,parentName  )
+    auto_api.addTaskField     ( name,"name"       ,text        )
+    auto_api.addTaskField     ( name,"theme_no"   ,themeNo     )
+    auto_api.addTaskParameter ( name,"DESCRIPTION",description )
+    return

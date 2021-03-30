@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    25.03.21   <--  Date of Last Modification.
+#    29.03.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -66,6 +66,7 @@ def addTask ( taskName,taskClassName,parentName ):
     task._type      = taskClassName
     task.data       = jsonut.jObject()
     task.parameters = jsonut.jObject()
+    task.fields     = jsonut.jObject()
     task.parentName = parentName
     auto_meta.set_field ( taskName,task )
     return
@@ -85,6 +86,13 @@ def addTaskParameter ( taskName,parameterName,parameterValue ):
     task = auto_meta.get_field ( taskName )
     if task:
         task.parameters.set_field ( parameterName,parameterValue )
+    return
+
+def addTaskField ( taskName,fieldName,fieldValue ):
+    global auto_meta
+    task = auto_meta.get_field ( taskName )
+    if task:
+        task.fields.set_field ( fieldName,fieldValue )
     return
 
 def addContext ( contextName,context ):
