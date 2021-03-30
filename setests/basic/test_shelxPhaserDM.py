@@ -539,7 +539,7 @@ def test_4acorn():
         startBuccaneer(d.driver)  # 9
 
         verifyBuccaneer(d.driver, 420, '0007', 0.29, 0.31)
-        verifyBuccaneer(d.driver, 420, '0009', 0.29, 0.31)
+        verifyBuccaneer(d.driver, 420, '0009', 0.34, 0.36)
         verifyShelxDM(d.driver)
 
         sf.renameProject(d.driver, d.testName)
