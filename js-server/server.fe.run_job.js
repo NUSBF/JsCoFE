@@ -1260,7 +1260,7 @@ function getJobResults ( job_token,server_request,server_response )  {
           var jobClass = writeJobStats ( jobEntry );
 
           if (jobClass.autoRunId && jobClass.isSuccessful())  {
-            console.log ( ' !!!! autostart from job ' + jobClass.id );
+            //console.log ( ' !!!! autostart from job ' + jobClass.id );
             addJobAuto ( jobEntry,jobClass );
           }
 
