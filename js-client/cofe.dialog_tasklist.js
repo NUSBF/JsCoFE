@@ -42,12 +42,11 @@ function TaskListDialog ( dataBox,branch_task_list,projectDesc,onSelect_func ) {
   this.onSelect_func = onSelect_func;
   this.selected_task = null;  // will receive new task template or null if canceled
 
-  this.makeLayout();
-
   this.combobox = null;
   if ((projectDesc.startmode!=start_mode.standard) &&
       (projectDesc.startmode!=start_mode.expert)  // legacy
      )  {
+    this.makeLayout ( 2 );
     this.combobox = new Combobox();
     this.combobox
         .addItem  ( 'Autostart set','basic',projectDesc.tasklistmode==tasklist_mode.basic )
@@ -55,7 +54,8 @@ function TaskListDialog ( dataBox,branch_task_list,projectDesc,onSelect_func ) {
         .setWidth ( '160px' );
     this.tabs_basic.setVisible ( projectDesc.tasklistmode==tasklist_mode.basic );
     this.tabs_full.setVisible ( projectDesc.tasklistmode==tasklist_mode.full );
-  }
+  } else
+    this.makeLayout ( 1 );
 
   var w = window.innerWidth;
   var w = Math.min ( Math.max(700,4*w/9),6*w/8 );
@@ -120,8 +120,11 @@ function TaskListDialog ( dataBox,branch_task_list,projectDesc,onSelect_func ) {
   }(this));
 
   $(this.element).css ( 'width:100%' );
-  $(this.tabs_basic.element).height ( this.element.innerHeight-16 );
-  this.tabs_basic.refresh();
+
+  if (this.combobox)  {
+    $(this.tabs_basic.element).height ( this.element.innerHeight-16 );
+    this.tabs_basic.refresh();
+  }
 
   $(this.tabs_full.element).height ( this.element.innerHeight-16 );
   this.tabs_full.refresh();
@@ -203,19 +206,19 @@ TaskListDialog.prototype.setTask = function ( task_obj,grid,row,setall )  {
 }
 
 
-TaskListDialog.prototype.makeLayout = function()  {
+TaskListDialog.prototype.makeLayout = function ( key )  {
 
-  this.tabs_basic = new Tabs();
-  this.addWidget ( this.tabs_basic );
-
-  var tabb_workflows = this.tabs_basic.addTab ( 'Workflows',true );
-  var tabb_shortlist = this.tabs_basic.addTab ( 'Essential tasks',false );
-  this.makeWorkflowsList ( tabb_workflows.grid );
-  this.makeBasicList     ( tabb_shortlist.grid );
+  if (key>1)  {
+    this.tabs_basic = new Tabs();
+    this.addWidget ( this.tabs_basic );
+    var tabb_workflows = this.tabs_basic.addTab ( 'Workflows',true );
+    var tabb_shortlist = this.tabs_basic.addTab ( 'Essential tasks',false );
+    this.makeWorkflowsList ( tabb_workflows.grid );
+    this.makeBasicList     ( tabb_shortlist.grid );
+  }
 
   this.tabs_full = new Tabs();
   this.addWidget ( this.tabs_full );
-
   var tabf_suggested = this.tabs_full.addTab ( 'Suggested tasks',true  );
   var tabf_fulllist  = this.tabs_full.addTab ( 'All tasks',false );
   var tabf_workflows = this.tabs_full.addTab ( 'Workflows',false );
