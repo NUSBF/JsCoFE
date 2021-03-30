@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    29.03.21   <--  Date of Last Modification.
+ *    30.03.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -------------------------------------------------------------------------
  *
@@ -2703,6 +2703,7 @@ if (!dbx)  {
   // -------------------------------------------------------------------------
 
   module.exports.job_code          = job_code;
+  module.exports.input_mode        = input_mode;
   module.exports.jobDataFName      = jobDataFName;
   module.exports.jobReportDirName  = jobReportDirName;
   module.exports.jobInputDirName   = jobInputDirName;

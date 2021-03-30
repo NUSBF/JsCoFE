@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.01.21   <--  Date of Last Modification.
+ *    30.03.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -51,43 +51,40 @@ function AddProjectDialog ( projectList,onclose_fnc )  {
 
   grid.setLabel ( '<h3>Initialisation mode</h3>',row++,0,1,2 );
 
-  var autosolve_rbt = new RadioButton ( 'Autosolve',
-                                        projectList.startmode==start_mode.auto );
-  var expert_rbt    = new RadioButton ( 'Expert',
-                                        projectList.startmode==start_mode.expert );
+  var autosolve_rbt = new RadioButton ( 'Autostart',
+                                        projectList.startmode==start_mode.auto     );
+  var expert_rbt    = new RadioButton ( 'Standard',
+                                        projectList.startmode==start_mode.standard );
   var migrate_rbt   = new RadioButton ( 'Hop on',
-                                        projectList.startmode==start_mode.migrate );
+                                        projectList.startmode==start_mode.migrate  );
 
-  autosolve_rbt.setSize ( '100px','50px' );
-  expert_rbt   .setSize ( '100px','50px' );
-  migrate_rbt  .setSize ( '100px','50px' );
+  autosolve_rbt.setSize ( '100px','40px' );
+  expert_rbt   .setSize ( '100px','40px' );
+  migrate_rbt  .setSize ( '100px','40px' );
 
   grid.setWidget ( autosolve_rbt,row++,0,1,2 );
   grid.setWidget ( autosolve_rbt,row,0,1,1 );
   grid.setLabel  (
-    '<u>Currently experimental</u>. ' +
-    'Simple start in standard cases using automated phasing (MR and EP/SAD), ' +
-    'model building and optional ligand fitting. Results can be further ' +
-    'refined with Refmac and Coot, and few other pre-selected tools. You ' +
-    'should have merged or unmerged reflection dataset, sequence file and ' +
-    'optional structural homolog ready for upload.<br>&nbsp;',
-    row++,1,1,1 ).setFontSize('85%').setFontItalic(true);
+    'Simplified mode, offering automatically progressing workflows for ' +
+    'typical structure solution scenarios in ' + appName() + ', and ' +
+    'optimised list of tasks, most frequently used for structure completion (' +
+    'which can be switched to the full list).',
+    row++,1,1,1 ).setFontSize('90%').setFontItalic(true);
 
   grid.setWidget ( expert_rbt,row,0,1,1 );
   grid.setLabel  (
-    'Suitable for more experienced ' + appName() + ' users when fine-grained ' +
-    'control of all structure solution stages is required, or for running ' +
-    'standalone tasks outside the structure solution context (e.g., GESAMT or ' +
-    'PISA).<br>&nbsp;<br>&nbsp;',
-    row++,1,1,1 ).setFontSize('85%').setFontItalic(true);
+    'Standard mode for operating all ' + appName() + ' tasks manually, with ' +
+    'access to the full list of tasks by default.',
+    row++,1,1,1 ).setFontSize('90%').setFontItalic(true);
 
   grid.setWidget ( migrate_rbt,row,0,1,1 );
   grid.setLabel  (
     'Quick start from phased (possibly partially built and refined) structure ' +
     'or heavy-atom substructure, for further refinement and model building. ' +
-    'MTZ file with phases and optional reflection dataset, atomic coordinates ' +
-    'and ligand description library will be needed for upload.',
-    row++,1,1,1 ).setFontSize('85%').setFontItalic(true);
+    'Requires MTZ file with phases and, optionally, .mtz with reflection ' +
+    'dataset, .pdb with atomic coordinates and .cif with ligand description ' +
+    'library for upload.',
+    row++,1,1,1 ).setFontSize('90%').setFontItalic(true);
 
   $(this.element).dialog({
     resizable : false,
@@ -129,7 +126,7 @@ function AddProjectDialog ( projectList,onclose_fnc )  {
             };
 
             if (autosolve_rbt.getValue())   pspecs.startmode = start_mode.auto;
-            else if (expert_rbt.getValue()) pspecs.startmode = start_mode.expert;
+            else if (expert_rbt.getValue()) pspecs.startmode = start_mode.standard;
                                        else pspecs.startmode = start_mode.migrate;
 
             if (onclose_fnc(pspecs))

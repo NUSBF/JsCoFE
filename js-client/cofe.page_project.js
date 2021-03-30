@@ -453,7 +453,8 @@ function ProjectPage ( sceneId )  {
                    self.del_btn.setDisabled ( false );
                 });
               break;
-        case start_mode.expert  :
+        case start_mode.standard :
+        case start_mode.expert   :  // legacy
         default : addJob();
       }
     }

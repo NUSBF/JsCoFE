@@ -27,9 +27,10 @@
 // ===========================================================================
 
 var start_mode = {
-  auto    : 'auto',
-  expert  : 'expert',
-  migrate : 'migrate'
+  auto     : 'auto',
+  standard : 'standard',
+  expert   : 'expert',    // legacy
+  migrate  : 'migrate'
 };
 
 var tasklist_mode = {
@@ -52,8 +53,8 @@ function ProjectDesc()  {
   this.jobCount     = 0;      // job count
   this.timestamp    = 0;      // Date.now();
   this.autorun      = false;  // true if a task in autorun mode is runnng
-  this.startmode    = start_mode.expert;  // will be overwritten when
-                                          // project is created
+  this.startmode    = start_mode.standard;  // will be overwritten when
+                                            // project is created
   this.tasklistmode = tasklist_mode.full;
   this.project_version = 0;  // possible completely redundant
   this.disk_space   = 0.0;  // in MBs, corresponds to current project state
@@ -119,7 +120,8 @@ ProjectList.prototype.addProject = function ( name_str,title_str,
     pDesc.dateCreated  = time_str;
     pDesc.dateLastUsed = time_str;
     pDesc.startmode    = startmode;
-    if (pDesc.startmode==start_mode.expert)
+    if ((pDesc.startmode==start_mode.standard) ||
+        (pDesc.startmode==start_mode.expert))  // legacy
           pDesc.tasklistmode = tasklist_mode.full;
     else  pDesc.tasklistmode = tasklist_mode.basic;
     this.projects.unshift ( pDesc );  // put new project at beginning

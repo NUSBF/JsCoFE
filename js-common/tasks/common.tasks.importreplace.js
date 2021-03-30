@@ -19,26 +19,30 @@
  *
  */
 
-
 var __template = null;
+var __migrate  = null;
 
-if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
-  __template = require ( './common.tasks.migrate' );
+if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
+  __template = require ( './common.tasks.template' );
+  __migrate  = require ( './common.tasks.migrate'  );
+}
 
 
 // ===========================================================================
 
 function TaskImportReplace()  {
 
-  if (__template)  __template.TaskMigrate.call ( this );
-             else  TaskMigrate.call ( this );
+  if (__migrate)  __migrate.TaskMigrate.call ( this );
+            else  TaskMigrate.call ( this );
 
   this._type = 'TaskImportReplace';
   this.name  = 'import-n-replace';
   this.title = 'Import & Replace';
   //this.setOName ( 'replaced' );  // default output file name template
   this.oname     = '*';   // asterisk here means do not use
-  this.inputMode = input_mode.standard;  // can be used anywhere in the Tree
+  if (__template)
+        this.inputMode = __template.input_mode.standard;  // can be used anywhere in the Tree
+  else  this.inputMode = input_mode.standard;  // can be used anywhere in the Tree
   this.fasttrack = true;  // enforces immediate execution
 
   this.input_dtypes = [{  // input data types
@@ -52,8 +56,8 @@ function TaskImportReplace()  {
 
 }
 
-if (__template)
-      TaskImportReplace.prototype = Object.create ( __template.TaskMigrate.prototype );
+if (__migrate)
+      TaskImportReplace.prototype = Object.create ( __migrate.TaskMigrate.prototype );
 else  TaskImportReplace.prototype = Object.create ( TaskMigrate.prototype );
 TaskImportReplace.prototype.constructor = TaskImportReplace;
 
@@ -71,8 +75,8 @@ TaskImportReplace.prototype.icon = function()  { return 'task_migrate'; }
 
 TaskImportReplace.prototype.currentVersion = function()  {
   var version = 0;
-  if (__template)
-        return  version + __template.TaskMigrate.prototype.currentVersion.call ( this );
+  if (__migrate)
+        return  version + __migrate.TaskMigrate.prototype.currentVersion.call ( this );
   else  return  version + TaskMigrate.prototype.currentVersion.call ( this );
 }
 
@@ -116,7 +120,7 @@ if (!__template)  {
         this.input_data.data['isub'] = [revision.Substructure];
     }
 
-    __template.TaskMigrate.prototype.makeInputData.call ( this,loginData,jobDir );
+    __migrate.TaskMigrate.prototype.makeInputData.call ( this,loginData,jobDir );
 
   }
 

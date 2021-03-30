@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    28.02.21   <--  Date of Last Modification.
+ *    30.03.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -45,7 +45,9 @@ function TaskListDialog ( dataBox,branch_task_list,projectDesc,onSelect_func ) {
   this.makeLayout();
 
   this.combobox = null;
-  if (projectDesc.startmode!=start_mode.expert)  {
+  if ((projectDesc.startmode!=start_mode.standard) &&
+      (projectDesc.startmode!=start_mode.expert)  // legacy
+     )  {
     this.combobox = new Combobox();
     this.combobox
         .addItem  ( 'Basic set','basic',projectDesc.tasklistmode==tasklist_mode.basic )
