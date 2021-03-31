@@ -67,7 +67,7 @@ function AddProjectDialog ( projectList,onclose_fnc )  {
   grid.setWidget ( autosolve_rbt,row++,0,1,2 );
   grid.setWidget ( autosolve_rbt,row,0,1,1 );
   grid.setLabel  (
-    'Simplified mode for starting with one of automatic workflows for typical ' +
+    'Simplified mode for starting with one of automatic workflows featuring ' +
     'structure solution scenarios in ' + appName() + ', and optimised list of ' +
     'tasks, essential for structure completion (which can be switched to the ' +
     'full list).',
@@ -81,9 +81,10 @@ function AddProjectDialog ( projectList,onclose_fnc )  {
 
   grid.setWidget ( migrate_rbt,row,0,1,1 );
   grid.setLabel  (
-    'Quick start from phased (possibly partially built and refined) elsewhere ' +
+    'Quick start from phased (possibly partially built and refined) ' +
     'structure or heavy-atom substructure, for further refinement and model ' +
-    'building.',
+    'building, with the optimised list of tasks, essential for structure ' +
+    'completion (can be switched to the full list).',
     row++,1,1,1 ).setFontSize('90%').setFontItalic(true);
 
   $(this.element).dialog({
