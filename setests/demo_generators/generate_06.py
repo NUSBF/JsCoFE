@@ -33,7 +33,8 @@ def importData(driver, waitShort):
     addButton.click()
     time.sleep(1)
 
-    sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list')
+    if not sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list'):
+        sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'All tasks')
     time.sleep(1)
 
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Data Import')
@@ -87,7 +88,8 @@ def asymmetricUnitContentsAfterCloudImport(driver, waitShort, task='0003'):
     addButton.click()
     time.sleep(1)
 
-    sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list')
+    if not sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list'):
+        sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'All tasks')
     time.sleep(1)
 
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Asymmetric Unit and Structure Revision')
@@ -134,7 +136,8 @@ def startSHELXcd(driver):
     addButton.click()
     time.sleep(1)
 
-    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Full list')
+    if not sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list'):
+        sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'All tasks')
     time.sleep(1)
 
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Experimental Phasing')
@@ -207,7 +210,8 @@ def phaserEP_06(driver):
     addButton.click()
     time.sleep(1)
 
-    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Full list')
+    if not sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list'):
+        sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'All tasks')
     time.sleep(1)
 
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Experimental Phasing')
@@ -259,8 +263,9 @@ def runParrot(driver, job, inverted=False):
     addButton.click()
     time.sleep(2)
 
-    sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list')
-    time.sleep(2)
+    if not sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list'):
+        sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'All tasks')
+    time.sleep(1)
 
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Density Modification')
     time.sleep(2)
@@ -330,7 +335,8 @@ def startBuccaneer(driver):
     addButton.click()
     time.sleep(1)
 
-    sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list')
+    if not sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list'):
+        sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'All tasks')
     time.sleep(1)
 
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Refinement and Model Building')
@@ -418,7 +424,8 @@ def startCCP4Build(driver, inverted=False):
     addButton.click()
     time.sleep(1)
 
-    sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list')
+    if not sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list'):
+        sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'All tasks')
     time.sleep(1)
 
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Refinement and Model Building')
@@ -510,7 +517,8 @@ def fitWaters(driver, wait):
     addButton.click()
     time.sleep(1)
 
-    sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list')
+    if not sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list'):
+        sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'All tasks')
     time.sleep(1)
 
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Ligands')
@@ -563,7 +571,8 @@ def refmac_0015(driver):
     addButton.click()
     time.sleep(1)
 
-    sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list')
+    if not sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list'):
+        sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'All tasks')
     time.sleep(1)
 
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Refinement and Model Building')
@@ -625,7 +634,8 @@ def depositionAfterRefmac(driver):
     addButton.click()
     time.sleep(1)
 
-    sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list')
+    if not sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list'):
+        sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'All tasks')
     time.sleep(1)
 
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Validation, Analysis and Deposition')
@@ -745,7 +755,8 @@ def prepareMRmodelCOORD(driver, waitShort):
     addButton.click()
     time.sleep(1)
 
-    sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list')
+    if not sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list'):
+        sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'All tasks')
     time.sleep(1)
 
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Molecular Replacement')
@@ -785,7 +796,8 @@ def startPhaser(driver):
     addButton.click()
     time.sleep(1)
 
-    sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list')
+    if not sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list'):
+        sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'All tasks')
     time.sleep(1)
 
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Molecular Replacement')
@@ -863,7 +875,8 @@ def refmac_0022(driver):
     addButton.click()
     time.sleep(1)
 
-    sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list')
+    if not sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list'):
+        sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'All tasks')
     time.sleep(1)
 
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Refinement and Model Building')
@@ -926,7 +939,8 @@ def phaserEP_29(driver):
     addButton.click()
     time.sleep(1)
 
-    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Full list')
+    if not sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list'):
+        sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'All tasks')
     time.sleep(1)
 
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Experimental Phasing')

@@ -28,7 +28,8 @@ GPLGSSQIPASEQETLVRPKPLLLKLLKSVGAQKDTYTMKEVLFYLGQYIMTKRLYDAAQQHIVYCSNDLLGDLFGVPSF
     addButton.click()
     time.sleep(1)
 
-    sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list')
+    if not sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list'):
+        sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'All tasks')
     time.sleep(1)
 
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Data Import')
@@ -79,7 +80,8 @@ def aimless(driver, waitLong):
     addButton.click()
     time.sleep(1)
 
-    sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list')
+    if not sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list'):
+        sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'All tasks')
     time.sleep(1)
 
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Data Processing')
@@ -159,7 +161,8 @@ def changeASUsg(driver, waitShort):
     time.sleep(1)
 
 
-    sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list')
+    if not sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list'):
+        sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'All tasks')
     time.sleep(1)
 
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Data Processing')
@@ -215,7 +218,8 @@ def changeReso(driver, waitShort):
     time.sleep(1)
 
 
-    sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list')
+    if not sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list'):
+        sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'All tasks')
     time.sleep(1)
 
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Data Processing')
@@ -285,7 +289,8 @@ def freeRflag(driver, waitShort):
     time.sleep(1)
 
 
-    sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list')
+    if not sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list'):
+        sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'All tasks')
     time.sleep(1)
 
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Data Processing')
@@ -332,7 +337,8 @@ def editRevisionStructure_08(driver, waitShort):
     addButton.click()
     time.sleep(1)
 
-    sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list')
+    if not sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list'):
+        sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'All tasks')
     time.sleep(1)
 
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Asymmetric Unit and Structure Revision')

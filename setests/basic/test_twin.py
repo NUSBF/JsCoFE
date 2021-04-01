@@ -24,7 +24,8 @@ def refmacTwin_fsigf(driver, waitLong):
     addButton.click()
     time.sleep(1)
 
-    sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list')
+    if not sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list'):
+        sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'All tasks')
     time.sleep(1)
 
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Refinement and Model Building')
@@ -88,7 +89,8 @@ def refmacTwin_isigi(driver, waitLong):
     addButton.click()
     time.sleep(1)
 
-    sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list')
+    if not sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list'):
+        sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'All tasks')
     time.sleep(1)
 
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Refinement and Model Building')

@@ -165,7 +165,8 @@ def mordaAfterASU(driver):
     addButton.click()
     time.sleep(1)
 
-    sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list')
+    if not sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list'):
+        sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'All tasks')
     time.sleep(1)
 
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Automated Molecular Replacement')
@@ -223,7 +224,8 @@ def sequenceAlignment(driver, wait):
     addButton.click()
     time.sleep(1)
 
-    sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list')
+    if not sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list'):
+        sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'All tasks')
     time.sleep(1)
 
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Toolbox')
@@ -276,7 +278,8 @@ def fitWaters(driver, wait):
     addButton.click()
     time.sleep(1)
 
-    sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list')
+    if not sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list'):
+        sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'All tasks')
     time.sleep(1)
 
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Ligands')
@@ -329,7 +332,8 @@ def refmac_09(driver, waitLong):
     addButton.click()
     time.sleep(1)
 
-    sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list')
+    if not sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list'):
+        sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'All tasks')
     time.sleep(1)
 
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Refinement and Model Building')
@@ -385,7 +389,8 @@ def depositionAfterRefmac_10(driver):
     addButton.click()
     time.sleep(1)
 
-    sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list')
+    if not sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list'):
+        sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'All tasks')
     time.sleep(1)
 
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Validation, Analysis and Deposition')
@@ -438,7 +443,8 @@ def comb_12(driver):
     addButton.click()
     time.sleep(1)
 
-    sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list')
+    if not sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list'):
+        sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'All tasks')
     time.sleep(1)
 
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Refinement and Model Building')
@@ -512,7 +518,8 @@ def refmac_14(driver, waitLong):
     addButton.click()
     time.sleep(1)
 
-    sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list')
+    if not sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list'):
+        sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'All tasks')
     time.sleep(1)
 
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Refinement and Model Building')
@@ -589,7 +596,8 @@ def depositionAfterRefmac_15(driver):
     addButton.click()
     time.sleep(1)
 
-    sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list')
+    if not sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list'):
+        sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'All tasks')
     time.sleep(1)
 
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Validation, Analysis and Deposition')
