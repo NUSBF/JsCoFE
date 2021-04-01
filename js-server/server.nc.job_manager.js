@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    25.03.21   <--  Date of Last Modification.
+ *    01.04.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -716,8 +716,8 @@ function ncJobFinished ( job_token,code )  {
   }
 
   if (conf.getServerConfig().checkLogChunks(
-     ncJobRegister.launch_count-ncJobRegister.logflow.njob0,
-     ncJobRegister.logflow.logno))  {
+                      ncJobRegister.launch_count-ncJobRegister.logflow.njob0,
+                      ncJobRegister.logflow.logno))  {
     ncJobRegister.logflow.logno++;
     ncJobRegister.logflow.njob0 = ncJobRegister.launch_count;
   }
@@ -833,7 +833,7 @@ function ncJobFinished ( job_token,code )  {
 
         } else if (comut.isObject(errcode) &&
                    (errcode.status==cmd.fe_retcode.wrongJobToken))  {
-          // the job cannot be retrieved to FE, task was deleted by user.
+          // the job cannot be accepted by FE, e.g., if task was deleted by user.
 
           removeJobDelayed ( job_token,task_t.job_code.finished );
           log.error ( 4,'cannot send job ' + job_token + ' back to FE. TASK DELETED.' );
@@ -964,7 +964,8 @@ function ncRunJob ( job_token,meta )  {
 //                          if ((code!=0) && (code!=203) && (code!=204))
                           if (code && (code!=203) && (code!=204))
                             writeJobDriverFailureMessage ( code,stdout,stderr,jobDir );
-                          ncJobFinished ( job_token,code );
+                          if (jobEntry.jobStatus!=task_t.job_code.exiting)
+                            ncJobFinished ( job_token,code );
                         }
 
                       });
