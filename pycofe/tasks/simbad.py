@@ -257,6 +257,9 @@ class Simbad(asudef.ASUDef):
             # continue writing to stdout
             self.file_stdout = open ( self.file_stdout_path(),"a" )
 
+            if not LLG.replace(".","",1).isdigit():  LLG = ""
+            if not TFZ.replace(".","",1).isdigit():  TFZ = ""
+
             self.putMessage ( "<h3>Best model found: " + result0["name"] + "</h3>" )
 
             # register structure data
@@ -286,36 +289,49 @@ class Simbad(asudef.ASUDef):
                                                           make_verdict=False )
                 if revision:
 
-                    have_results = True
+                    have_results = True  # may be continued manually
 
                     # Verdict section
 
-                    verdict_meta = {
-                        "sol"        : revision.ASU.solvent,
-                        "resolution" : revision.HKL.getHighResolution(raw=True),
-                        "nasu"       : revision.getNofASUMonomers(),
-                        "fllg"       : float ( LLG   ),
-                        "ftfz"       : float ( TFZ   ),
-                        "rfree"      : float ( Rfree )
-                    }
-                    verdict_simbad.putVerdictWidget ( self,verdict_meta,self.rvrow-6,secId="0" )
-
-                    if Rfree:
-                        self.generic_parser_summary["simbad"] = {
-                            "summary_line" : "LLG=" + LLG + " TFZ=" + TFZ +\
-                                             " R=" + Rfactor +\
-                                             " R<sub>free</sub>=" + Rfree,
-                            "R_factor"     : Rfactor,
-                            "R_free"       : Rfree
+                    if LLG and TFZ:
+                        verdict_meta = {
+                            "sol"        : revision.ASU.solvent,
+                            "resolution" : revision.HKL.getHighResolution(raw=True),
+                            "nasu"       : revision.getNofASUMonomers(),
+                            "fllg"       : float ( LLG   ),
+                            "ftfz"       : float ( TFZ   ),
+                            "rfree"      : float ( Rfree )
                         }
+                        verdict_simbad.putVerdictWidget ( self,verdict_meta,self.rvrow-6,secId="0" )
 
-                    auto.makeNextTask ( self.task,{
-                        "revision" : revision,
-                        "Rfactor"  : Rfactor,
-                        "Rfree"    : Rfree,
-                        "LLG"      : LLG,
-                        "TFZ"      : TFZ
-                    })
+                        if Rfree:
+                            self.generic_parser_summary["simbad"] = {
+                                "summary_line" : "LLG=" + LLG + " TFZ=" + TFZ +\
+                                                 " R=" + Rfactor +\
+                                                 " R<sub>free</sub>=" + Rfree,
+                                "R_factor"     : Rfactor,
+                                "R_free"       : Rfree
+                            }
+
+                        auto.makeNextTask ( self.task,{
+                            "revision" : revision,
+                            "Rfactor"  : Rfactor,
+                            "Rfree"    : Rfree,
+                            "LLG"      : LLG,
+                            "TFZ"      : TFZ
+                        })
+
+                    else:  # cannot be continued in a workflow
+                        self.generic_parser_summary["simbad"] = {
+                            "summary_line" : "solution not found"
+                        }
+                        auto.makeNextTask ( self.task,{
+                            "revision" : None,
+                            "Rfactor"  : "1",
+                            "Rfree"    : "1",
+                            "LLG"      : "0",
+                            "TFZ"      : "0"
+                        })
 
                 else:
                     self.putMessage ( "Structure Revision cannot be formed (probably a bug)" )

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    30.03.21   <--  Date of Last Modification.
+ *    01.04.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -42,20 +42,30 @@ function TaskListDialog ( dataBox,branch_task_list,projectDesc,onSelect_func ) {
   this.onSelect_func = onSelect_func;
   this.selected_task = null;  // will receive new task template or null if canceled
 
-  this.combobox = null;
-  if ((projectDesc.startmode!=start_mode.standard) &&
-      (projectDesc.startmode!=start_mode.expert)  // legacy
-     )  {
+  this.tabs_basic = null;
+  this.tabs_full  = null;
+  this.combobox   = null;
+  if (projectDesc.startmode!=start_mode.migrate)  {
+    this.makeLayout ( 3 );
+    this.combobox = new Combobox();
+    this.combobox
+        .addItem  ( 'Hop-on mode'  ,'basic',projectDesc.tasklistmode==tasklist_mode.basic )
+        .addItem  ( 'Standard mode','full',projectDesc.tasklistmode==tasklist_mode.full  )
+        .setWidth ( '180px' );
+  } else if (projectDesc.startmode==start_mode.auto)  {
     this.makeLayout ( 2 );
     this.combobox = new Combobox();
     this.combobox
-        .addItem  ( 'Autostart set','basic',projectDesc.tasklistmode==tasklist_mode.basic )
-        .addItem  ( 'Standard set' ,'full',projectDesc.tasklistmode==tasklist_mode.full  )
-        .setWidth ( '160px' );
-    this.tabs_basic.setVisible ( projectDesc.tasklistmode==tasklist_mode.basic );
-    this.tabs_full.setVisible ( projectDesc.tasklistmode==tasklist_mode.full );
+        .addItem  ( 'Autostart mode','basic',projectDesc.tasklistmode==tasklist_mode.basic )
+        .addItem  ( 'Standard mode' ,'full',projectDesc.tasklistmode==tasklist_mode.full  )
+        .setWidth ( '180px' );
   } else
     this.makeLayout ( 1 );
+
+  if (this.tabs_basic)  {
+    this.tabs_basic.setVisible ( projectDesc.tasklistmode==tasklist_mode.basic );
+    this.tabs_full .setVisible ( projectDesc.tasklistmode==tasklist_mode.full );
+  }
 
   var w = window.innerWidth;
   var w = Math.min ( Math.max(700,4*w/9),6*w/8 );
@@ -211,9 +221,11 @@ TaskListDialog.prototype.makeLayout = function ( key )  {
   if (key>1)  {
     this.tabs_basic = new Tabs();
     this.addWidget ( this.tabs_basic );
-    var tabb_workflows = this.tabs_basic.addTab ( 'Workflows',true );
+    if (key>2)  {
+      var tabb_workflows = this.tabs_basic.addTab ( 'Workflows',true );
+      this.makeWorkflowsList ( tabb_workflows.grid );
+    }
     var tabb_shortlist = this.tabs_basic.addTab ( 'Essential tasks',false );
-    this.makeWorkflowsList ( tabb_workflows.grid );
     this.makeBasicList     ( tabb_shortlist.grid );
   }
 
