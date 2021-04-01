@@ -54,7 +54,6 @@ function TaskWFlowAEP()  {
       tooltip     : '[Desired] Provide a path to sequence file in .fasta or .pir ' +
                     'format. For importing several sequences put them all in a ' +
                     'single file.',
-      annotate    : true,
       inputId     : 'fseq',   // input Id for referencing input fields
       path        : '',
       min         : 1         // minimum acceptable number of data instances

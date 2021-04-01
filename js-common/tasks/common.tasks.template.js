@@ -719,7 +719,12 @@ if (!dbx)  {
     div.customData.login_token = __login_token;
     div.customData.project     = this.project;
     div.customData.job_id      = this.id;
-    div.customData.file_mod    = {'rename':{},'annotation':[]}; // file modification and annotation
+
+    if (!('file_system' in this))  {
+      this.file_system      = 'local';  //  local/cloud for file upload
+      this.currentCloudPath = '';
+    }
+    div.customData.file_mod = {'rename':{},'annotation':[]}; // file modification and annotation
 
     div.upload_files = [];
 
@@ -743,28 +748,38 @@ if (!dbx)  {
                           .setWidth_px(300).setReadOnly(true).setNoWrap();
       div.grid.setVerticalAlignment ( row,2,'middle' );
       div.grid.setVerticalAlignment ( row,3,'middle' );
-      (function(b,f,t,a){
+      (function(b,f,t){
         b.addOnClickListener ( function(){
           f.click();
         });
-        if (a)  {
-          f.addOnChangeListener ( function(){
-            div.customData.file_mod = {'rename':{},'annotation':[]};
-            var files = f.getFiles();
-            if (files.length>0)
-              _import_checkFiles ( files,div.customData.file_mod,
-                                   div.upload_files,function(){
-                  t.setValue ( files[0].name );
+        f.addOnChangeListener ( function(){
+          var files = f.getFiles();
+          if (files.length>0)  {
+            // The next line is necessary for annotating just this upload.
+            // If sequences also need to be uploaded. file_mod should be cleared
+            // the 'annotation' field when seq file is being uploaded
+            var file_mod = {'rename':{},'annotation':[]}; // file modification and annotation
+            var fname = files[0].name;
+            var fext  = fname.slice((fname.lastIndexOf(".") - 1 >>> 0) + 1)
+                             .toLowerCase();
+            if (['.sca','.seq','.pir','.fasta'].indexOf(fext)>=0)  {
+              _import_checkFiles ( files,file_mod,div.upload_files,function(){
+                if ('scalepack' in file_mod)
+                  div.customData.file_mod.scalepack  = file_mod.scalepack;
+                else  {
+                  div.customData.file_mod.rename     = file_mod.rename;
+                  div.customData.file_mod.annotation = file_mod.annotation;
+                }
+                t.setValue ( files[0].name );
+                      //wset['itext'].setValue ( files[0].name );
+                      //setSeqControls();
               });
-          });
-        } else  {
-          f.addOnChangeListener ( function(){
-            var files = f.getFiles();
-            if (files.length>0)
+            } else
               t.setValue ( files[0].name );
-          });
-        }
-      }(btn,fsel,itext,fsdesc.annotate))
+          }
+
+        });
+      }(btn,fsel,itext))
       div[fsdesc.inputId] = fsel;
 
       row++;
