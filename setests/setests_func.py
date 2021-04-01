@@ -17,7 +17,9 @@ def clickByXpath(driver, xpath):
         if textEl.is_displayed():
             driver.execute_script("arguments[0].scrollIntoView();", textEl)
             ActionChains(driver).move_to_element(textEl).click(textEl).perform()
-            break
+            return True
+
+    return False
 
 
 def clickByXpathMultiple(driver, xpath, n):
@@ -142,8 +144,11 @@ def makeTestProject(driver, testProjectID, testProjectName):
     projectInputs[1].send_keys(testProjectName)
     time.sleep(1)
 
-    clickByXpath(driver, "//*[normalize-space()='%s']" % 'Expert')
+    if not clickByXpath(driver, "//*[normalize-space()='%s']" % 'Expert'):
+        time.sleep(1)
+        clickByXpath(driver, "//*[normalize-space()='%s']" % 'Standard')
     time.sleep(1)
+
 
     # Now there are two 'Add' buttons and we want to click second one
     addButtons = driver.find_elements_by_xpath("//button[contains(text(),'Add')]")
@@ -195,7 +200,9 @@ def enterProject(driver, projectId):
 def importLocal_P9(driver, dirName, waitShort=90):
     print ('Importing P9 from local disk. Dir name: %s' % (dirName))
 
-    clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list')
+
+    if not clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list'):
+        clickByXpath(driver, "//*[normalize-space()='%s']" % 'All tasks')
     time.sleep(1)
 
     clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Data Import')
@@ -252,8 +259,10 @@ def importFromCloud_rnase(driver, waitShort):
     print ('Importing "rnase" project from the Cloud Import')
     time.sleep(1)
 
-    clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list')
+    if not clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list'):
+        clickByXpath(driver, "//*[normalize-space()='%s']" % 'All tasks')
     time.sleep(1)
+
 
     clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Data Import')
     time.sleep(1)
@@ -312,7 +321,8 @@ def importFromCloud_insulin(driver, waitShort):
     print ('Importing insulin from the Cloud Import')
 
     # Clicking "Cloud Import"
-    clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list')
+    if not clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list'):
+        clickByXpath(driver, "//*[normalize-space()='%s']" % 'All tasks')
     time.sleep(1)
 
     clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Data Import')
@@ -366,7 +376,8 @@ def importFromCloud_mdm2(driver, waitShort):
     print ('Importing mdm2 from the Cloud Import')
 
     # Clicking "Cloud Import"
-    clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list')
+    if not clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list'):
+        clickByXpath(driver, "//*[normalize-space()='%s']" % 'All tasks')
     time.sleep(1)
 
     clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Data Import')
@@ -422,7 +433,8 @@ def importFromCloud_mdm2NoLigand(driver, waitShort):
     print ('Importing mdm2 from the Cloud Import')
 
     # Clicking "Cloud Import"
-    clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list')
+    if not clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list'):
+        clickByXpath(driver, "//*[normalize-space()='%s']" % 'All tasks')
     time.sleep(1)
 
     clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Data Import')
@@ -478,7 +490,8 @@ def importFromCloud_rnaseHHPRED(driver, waitShort):
     print ('Importing "rnase" project from the Cloud Import')
 
     # Clicking "Cloud Import"
-    clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list')
+    if not clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list'):
+        clickByXpath(driver, "//*[normalize-space()='%s']" % 'All tasks')
     time.sleep(1)
 
     clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Data Import')
@@ -543,7 +556,8 @@ def importFromCloud_rnaseNochains(driver, waitShort):
     print ('Importing "rnase" project from the Cloud Import')
 
     # Clicking "Cloud Import"
-    clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list')
+    if not clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list'):
+        clickByXpath(driver, "//*[normalize-space()='%s']" % 'All tasks')
     time.sleep(1)
 
     clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Data Import')
@@ -603,7 +617,8 @@ def importFromCloud_twin(driver, waitShort):
     print ('Importing "twin" project from the Cloud Import')
 
     # Clicking "Cloud Import"
-    clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list')
+    if not clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list'):
+        clickByXpath(driver, "//*[normalize-space()='%s']" % 'All tasks')
     time.sleep(1)
 
     clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Data Import')
@@ -668,7 +683,8 @@ def asymmetricUnitContentsAfterCloudImport(driver, waitShort, task='0002'):
     addButton.click()
     time.sleep(1)
 
-    clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list')
+    if not clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list'):
+        clickByXpath(driver, "//*[normalize-space()='%s']" % 'All tasks')
     time.sleep(1)
 
     clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Asymmetric Unit and Structure Revision')
@@ -716,7 +732,8 @@ def editRevisionStructure_rnase(driver, waitShort):
     addButton.click()
     time.sleep(1)
 
-    clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list')
+    if not clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list'):
+        clickByXpath(driver, "//*[normalize-space()='%s']" % 'All tasks')
     time.sleep(1)
 
     clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Asymmetric Unit and Structure Revision')
@@ -763,7 +780,8 @@ def editRevisionStructure_any(driver, waitShort, name=''):
     addButton.click()
     time.sleep(1)
 
-    clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list')
+    if not clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list'):
+        clickByXpath(driver, "//*[normalize-space()='%s']" % 'All tasks')
     time.sleep(1)
 
     clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Asymmetric Unit and Structure Revision')
@@ -810,7 +828,8 @@ def editRevisionStructure_2fx0(driver, waitShort):
     addButton.click()
     time.sleep(1)
 
-    clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list')
+    if not clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list'):
+        clickByXpath(driver, "//*[normalize-space()='%s']" % 'All tasks')
     time.sleep(1)
 
     clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Asymmetric Unit and Structure Revision')
@@ -852,7 +871,8 @@ def editRevisionStructure_2fx0(driver, waitShort):
 def importFromPDB_2fx0(driver, waitShort):
     print ('Importing 2fx0 from the PDB')
 
-    clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list')
+    if not clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list'):
+        clickByXpath(driver, "//*[normalize-space()='%s']" % 'All tasks')
     time.sleep(1)
 
     clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Data Import')
@@ -909,7 +929,8 @@ def asymmetricUnitContents_2fx0(driver, waitShort):
     addButton.click()
     time.sleep(1)
 
-    clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Full list')
+    if not clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list'):
+        clickByXpath(driver, "//*[normalize-space()='%s']" % 'All tasks')
     time.sleep(1)
 
     clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Asymmetric Unit and Structure Revision')
@@ -1082,8 +1103,9 @@ def startRefmac(driver, waitLong):
     addButton.click()
     time.sleep(1.05)
 
-    clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list')
-    time.sleep(1.05)
+    if not clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list'):
+        clickByXpath(driver, "//*[normalize-space()='%s']" % 'All tasks')
+    time.sleep(1)
 
     clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Refinement and Model Building')
     time.sleep(1.05)
@@ -1148,7 +1170,8 @@ def startBuccaneer(driver):
     addButton.click()
     time.sleep(1)
 
-    clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list')
+    if not clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list'):
+        clickByXpath(driver, "//*[normalize-space()='%s']" % 'All tasks')
     time.sleep(1)
 
     clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Refinement and Model Building')
