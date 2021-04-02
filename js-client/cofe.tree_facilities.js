@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    04.04.20   <--  Date of Last Modification.
+ *    02.04.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  FacilityTree
  *       ~~~~~~~~~  StorageTree
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2020
+ *  (C) E. Krissinel, A. Lebedev 2016-2021
  *
  *  =================================================================
  *
@@ -322,7 +322,7 @@ var icon_ext = {
 
 var importable_ext = [
   'mtz', 'pdb', 'ent', 'mmcif', 'jpg', 'jpeg', 'png', 'gif', 'html',
-  'txt', 'pdf', 'seq', 'fasta', 'pir', 'hhr' , 'sca'
+  'txt', 'pdf', 'seq', 'fasta', 'pir', 'hhr' , 'sca', 'cif', 'lib'
 ];
 
 

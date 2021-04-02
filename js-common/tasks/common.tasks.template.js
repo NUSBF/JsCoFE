@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    30.03.21   <--  Date of Last Modification.
+ *    02.04.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -------------------------------------------------------------------------
  *
@@ -713,6 +713,33 @@ if (!dbx)  {
   */
 
 
+  TaskTemplate.prototype.__set_selected_files = function ( files,t,div )  {
+    if (files.length>0)  {
+      // The next line is necessary for annotating just this upload.
+      // If sequences also need to be uploaded. file_mod should be cleared
+      // the 'annotation' field when seq file is being uploaded
+      var file_mod = {'rename':{},'annotation':[]}; // file modification and annotation
+      var fname = files[0].name;
+      if (div.file_system=='cloud')  //  local/cloud for file upload
+        fname = 'cloudstorage::/' + this.currentCloudPath + '/' + fname;
+      var fext = fname.slice((fname.lastIndexOf(".") - 1 >>> 0) + 1)
+                      .toLowerCase();
+      if (['.sca','.seq','.pir','.fasta'].indexOf(fext)>=0)  {
+        _import_checkFiles ( files,file_mod,div.upload_files,function(){
+          if ('scalepack' in file_mod)
+            div.customData.file_mod.scalepack  = file_mod.scalepack;
+          else  {
+            div.customData.file_mod.rename     = file_mod.rename;
+            div.customData.file_mod.annotation = file_mod.annotation;
+          }
+          t.setValue ( fname );
+        });
+      } else
+        t.setValue ( fname );
+    }
+  }
+
+
   TaskTemplate.prototype.makeFileSelectLayout = function ( div )  {
 
     div.customData = {};
@@ -724,13 +751,34 @@ if (!dbx)  {
       this.file_system      = 'local';  //  local/cloud for file upload
       this.currentCloudPath = '';
     }
-    div.customData.file_mod = {'rename':{},'annotation':[]}; // file modification and annotation
-
+    div.file_system = this.file_system;   //  local/cloud
+    if ('file_mod' in this)  // file modification and annotation
+          div.customData.file_mod = this.file_mod;
+    else  div.customData.file_mod = {'rename':{},'annotation':[]};
     div.upload_files = [];
 
     var row = div.grid.getNRows();
-    for (var i=0;i<this.file_select.length;i++)  {
 
+    var lbl = div.grid.setLabel ( 'Import data from',row,0,1,1 )
+                      .setTooltip ( 'Specify data location' )
+                      .setFontItalic(true).setFontBold(true).setNoWrap();
+    div.itext = [];
+    div.source_select_ddn = new Dropdown();
+    div.grid.addWidget ( div.source_select_ddn,row,2,1,2 );
+    div.source_select_ddn.addItem ( 'local file system','','local',div.file_system=='local' );
+    div.source_select_ddn.addItem ( 'cloud storage'    ,'','cloud',div.file_system=='cloud' );
+    div.source_select_ddn.make();
+    div.source_select_ddn.addOnChangeListener ( function(text,value){
+      div.file_system = value;
+      for (var i=0;i<div.itext.length;i++)
+        div.itext[i].setValue ( '' );
+    });
+    div.source_select_ddn.setWidth ( '180px' );
+
+    div.grid.setVerticalAlignment ( row++,0,'middle' );
+    div.grid.setLabel ( '&nbsp;',row++,0,1,1 ).setHeight_px(8);
+
+    for (var i=0;i<this.file_select.length;i++)  {
       var fsdesc = this.file_select[i];
 
       var lbl = div.grid.setLabel ( fsdesc.label,row,0,1,1 )
@@ -742,44 +790,30 @@ if (!dbx)  {
       fsel.hide();
       var btn  = div.grid.addButton ( 'Browse',image_path('open_file'),row,2,1,1 );
       var filename = fsdesc.path;
-      if (this.state==job_code.new)
+      if ((this.state==job_code.new) && (this.file_system!='cloud'))
         filename = '';
       var itext = div.grid.setInputText ( filename,row,3,1,2 )
                           .setWidth_px(300).setReadOnly(true).setNoWrap();
+      div.itext.push ( itext );
       div.grid.setVerticalAlignment ( row,2,'middle' );
       div.grid.setVerticalAlignment ( row,3,'middle' );
-      (function(b,f,t){
+      (function(b,f,fd,t,self){
         b.addOnClickListener ( function(){
-          f.click();
+          if (div.file_system=='local')
+            f.click();
+          else  {
+            // new CloudFileBrowser ( div,div.task,4,fd.file_types.split(','),function(items){
+            new CloudFileBrowser ( div,self,4,fd.file_types.split(','),function(items){
+              self.__set_selected_files ( items,t,div );
+              return 1;  // close browser window
+            },null );
+          }
         });
         f.addOnChangeListener ( function(){
           var files = f.getFiles();
-          if (files.length>0)  {
-            // The next line is necessary for annotating just this upload.
-            // If sequences also need to be uploaded. file_mod should be cleared
-            // the 'annotation' field when seq file is being uploaded
-            var file_mod = {'rename':{},'annotation':[]}; // file modification and annotation
-            var fname = files[0].name;
-            var fext  = fname.slice((fname.lastIndexOf(".") - 1 >>> 0) + 1)
-                             .toLowerCase();
-            if (['.sca','.seq','.pir','.fasta'].indexOf(fext)>=0)  {
-              _import_checkFiles ( files,file_mod,div.upload_files,function(){
-                if ('scalepack' in file_mod)
-                  div.customData.file_mod.scalepack  = file_mod.scalepack;
-                else  {
-                  div.customData.file_mod.rename     = file_mod.rename;
-                  div.customData.file_mod.annotation = file_mod.annotation;
-                }
-                t.setValue ( files[0].name );
-                      //wset['itext'].setValue ( files[0].name );
-                      //setSeqControls();
-              });
-            } else
-              t.setValue ( files[0].name );
-          }
-
+          self.__set_selected_files ( files,t,div );
         });
-      }(btn,fsel,itext))
+      }(btn,fsel,fsdesc,itext,this))
       div[fsdesc.inputId] = fsel;
 
       row++;
@@ -1469,12 +1503,19 @@ if (!dbx)  {
     var msg = '';  // Ok if stays empty
 
     for (var i=0;i<this.file_select.length;i++)  {
-      var files = inputPanel[this.file_select[i].inputId].getFiles();
-      if (files.length>0)
-        this.file_select[i].path = files[0].name;
-      else if (files.length<this.file_select[i].min)
+      this.file_select[i].path = '';
+      if (inputPanel.file_system=='local')  {
+        var files = inputPanel[this.file_select[i].inputId].getFiles();
+        if (files.length>0)
+          this.file_select[i].path = files[0].name;
+      } else
+        this.file_select[i].path = inputPanel.itext[i].getValue();
+      if ((this.file_select[i].path.length<=0) && (this.file_select[i].min>0))
         msg += '<b><i>' + this.file_select[i].label + ' file is not specified</i></b>';
     }
+
+    this.file_system = inputPanel.file_system;
+    this.file_mod    = inputPanel.customData.file_mod;
 
     return  msg;
 
@@ -2449,7 +2490,6 @@ if (!dbx)  {
 
   }
 
-
   // This function is called at cloning jobs and should do copying of all
   // custom class fields not found in the Template class
   TaskTemplate.prototype.customDataClone = function ( cloneMode,task )  {
@@ -2593,6 +2633,9 @@ if (!dbx)  {
   var utils = require('../../js-server/server.utils');
   var prj   = require('../../js-server/server.fe.projects');
   var conf  = require('../../js-server/server.configuration');
+  var uh    = require('../../js-server/server.fe.upload_handler');
+  var fcl   = require('../../js-server/server.fe.facilities');
+
 
   TaskTemplate.prototype.setOName = function ( base_name )  {
     this.oname = base_name;
@@ -2628,7 +2671,71 @@ if (!dbx)  {
   }
 
 
-  TaskTemplate.prototype.makeInputData = function ( loginData,jobDir )  {
+  TaskTemplate.prototype.__prepare_file = function ( fpath,cloudMounts,uploads_dir )  {
+    //console.log ( ' >>>>> file ' + fpath );
+    if (fpath.length>0)  {
+      var lst = fpath.split('/');
+      if (lst.length>2)  {
+        if (lst[0]=='cloudstorage::')  {
+          var cfpath = null;
+          for (var j=0;(j<cloudMounts.length) && (!cfpath);j++)
+            if (cloudMounts[j][0]==lst[1])
+              cfpath = path.join ( cloudMounts[j][1],lst.slice(2).join('/') );
+          if (cfpath)  {
+            var dest_file = path.join ( uploads_dir,lst[lst.length-1] );
+            try {
+              //console.log ( ' >>>>> copy ' + cfpath + ' to ' + dest_file );
+              fs.copySync ( cfpath,dest_file );
+            } catch (err) {
+              console.log ( ' ***** cannot copy file ' + cfpath +
+                            '\n                   to ' + dest_file );
+              console.log ( '       error: ' + err) ;
+            }
+          } else {
+            console.log ( ' ***** path ' + fpath + ' not found' );
+          }
+        }
+      }
+    }
+  }
+
+
+  TaskTemplate.prototype.__make_input_data_root = function ( loginData,jobDir )  {
+
+    if (this.file_system=='cloud')  {
+
+      var uploads_dir = path.join ( jobDir,uh.uploadDir() );
+
+      if (!utils.writeObject(path.join(jobDir,'annotation.json'),this.file_mod))
+        console.log ( ' ***** cannot write "annotation.json" in ' + uploads_dir );
+
+      if (!utils.fileExists(uploads_dir))  {
+        if (!utils.mkDir( uploads_dir))
+          console.log ( ' ***** cannot create directory ' + uploads_dir );
+      }
+
+      var cloudMounts = fcl.getUserCloudMounts ( loginData );
+
+      for (var i=0;i<this.file_select.length;i++)
+          this.__prepare_file ( this.file_select[i].path,cloudMounts,uploads_dir );
+
+      for (var i=0;i<this.file_mod.annotation.length;i++)  {
+        utils.removeFile ( path.join(uploads_dir,this.file_mod.annotation[i].file) );
+        //redundant_files.push ( file_mod.annotation[i].file );
+        for (var j=0;j<this.file_mod.annotation[i].items.length;j++)  {
+          var fname = this.file_mod.annotation[i].items[j].rename;
+          utils.writeString ( path.join(uploads_dir,fname),
+                              this.file_mod.annotation[i].items[j].contents );
+          //fdata.files.push ( fname );
+        }
+      }
+
+    }
+
+  }
+
+
+  TaskTemplate.prototype.__make_input_data_standard = function ( loginData,jobDir )  {
   // Collects all input files, listed in this.input_data, from other job
   // directories and places them in jobDir/input. Simultaneously, creates
   // the correspondong dataBox structure with input metadata, and writes
@@ -2671,10 +2778,17 @@ if (!dbx)  {
           console.log ( ' *** empty data object in ' + this._type + '.makeInputData,dtype=' + dtype );
         }
     }
+    // var dboxPath = path.join ( jobDir,'input','databox.meta' );
+    // utils.writeObject ( dboxPath,this.input_data );
+  }
+
+  TaskTemplate.prototype.makeInputData = function ( loginData,jobDir )  {
+    if (this.inputMode==input_mode.root)
+          this.__make_input_data_root     ( loginData,jobDir );
+    else  this.__make_input_data_standard ( loginData,jobDir );
     var dboxPath = path.join ( jobDir,'input','databox.meta' );
     utils.writeObject ( dboxPath,this.input_data );
   }
-
 
   TaskTemplate.prototype.makeOutputData = function ( jobDir )  {
   // This function is run after job completion with the purpose of

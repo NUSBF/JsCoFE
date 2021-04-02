@@ -38,6 +38,9 @@ from   pycofe.auto   import auto
 
 class WFlowAMR(import_task.Import):
 
+    import_dir = "uploads"
+    def importDir(self):  return self.import_dir       # import directory
+
     # ------------------------------------------------------------------------
 
     def importData(self):

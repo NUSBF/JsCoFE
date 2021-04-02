@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    01.04.21   <--  Date of Last Modification.
+ *    02.04.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -45,7 +45,7 @@ function TaskListDialog ( dataBox,branch_task_list,projectDesc,onSelect_func ) {
   this.tabs_basic = null;
   this.tabs_full  = null;
   this.combobox   = null;
-  if (projectDesc.startmode!=start_mode.migrate)  {
+  if (projectDesc.startmode==start_mode.migrate)  {
     this.makeLayout ( 3 );
     this.combobox = new Combobox();
     this.combobox
@@ -221,12 +221,12 @@ TaskListDialog.prototype.makeLayout = function ( key )  {
   if (key>1)  {
     this.tabs_basic = new Tabs();
     this.addWidget ( this.tabs_basic );
-    if (key>2)  {
+    if (key<3)  {
       var tabb_workflows = this.tabs_basic.addTab ( 'Workflows',true );
       this.makeWorkflowsList ( tabb_workflows.grid );
     }
-    var tabb_shortlist = this.tabs_basic.addTab ( 'Essential tasks',false );
-    this.makeBasicList     ( tabb_shortlist.grid );
+    var tabb_shortlist = this.tabs_basic.addTab ( 'Essential tasks',(key==3) );
+    this.makeBasicList ( tabb_shortlist.grid,key );
   }
 
   this.tabs_full = new Tabs();
@@ -241,7 +241,7 @@ TaskListDialog.prototype.makeLayout = function ( key )  {
 }
 
 
-TaskListDialog.prototype.makeBasicList = function ( grid )  {
+TaskListDialog.prototype.makeBasicList = function ( grid,key )  {
 var r = 0;  // grid row
 
   //grid.setLabel ( '<h2>Basic tasks</h2>',r++,0,1,3 );
@@ -252,12 +252,16 @@ var r = 0;  // grid row
   grid.setLabel ( 'Essential Tasks',r++,0,1,3 )
       .setFontSize('140%').setFontBold(true);
   grid.setLabel ( '&nbsp;',r++,0,1,3 ).setFontSize('40%');
-  grid.setLabel ( '<i>This list contains ' + appName() +
-                  ' tasks commonly used for structure completion ' +
-                  'after successful run of structure solution workflows. For ' +
-                  'full set of tasks, switch to </i>"Standard set"<i> below.</i>',
-                  r++,0,1,3 )
-      .setFontSize('90%');
+  var infotip = '<i>This list contains ' + appName() +
+                ' tasks commonly used for structure completion after running ' +
+                'structure solution workflows. For full set of tasks, switch ' +
+                'to </i>"Standard set"<i> below.</i>';
+  if (key==3)
+    infotip = '<i>This list contains ' + appName() +
+              ' tasks commonly used for structure completion after importing ' +
+              'partially solved structures. For full set of tasks, switch to ' +
+              '</i>"Standard set"<i> below.</i>';
+  grid.setLabel ( infotip,r++,0,1,3 ).setFontSize('90%');
   grid.setLabel ( '&nbsp;',r++,0,1,3 ).setFontSize('20%');
 
   var task_list = [
@@ -275,6 +279,12 @@ var r = 0;  // grid row
 
     "Import Additional Data",
     new TaskImportReplace (),
+  ];
+
+  if (key==3)
+    task_list.push ( new TaskMigrate() );
+
+  task_list = task_list.concat ([
     //new TaskImport     (),
     //new TaskImportSeqCP(),
 
@@ -288,7 +298,7 @@ var r = 0;  // grid row
     "Deposition",
     new TaskDeposition()
 
-  ];
+  ]);
 
   for (var i=0;i<task_list.length;i++)
     if (typeof task_list[i] === 'string' || task_list[i] instanceof String) {

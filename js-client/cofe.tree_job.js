@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    29.03.21   <--  Date of Last Modification.
+ *    02.04.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -863,9 +863,13 @@ JobTree.prototype.addJob = function ( insert_bool,copy_params,parent_page,onAdd_
 
 
 JobTree.prototype.addTask = function ( task,insert_bool,copy_params,parent_page,onAdd_func )  {
-var dataBox     = this.harvestTaskData ( 1,[] );
-var avail_key   = task.isTaskAvailable();
-var dataSummary = dataBox.getDataSummary ( task );
+var dataBox = this.harvestTaskData ( 1,[] );
+
+  if (dataBox.isEmpty())
+    task.inputMode = input_mode.root;
+
+  var avail_key   = task.isTaskAvailable();
+  var dataSummary = dataBox.getDataSummary ( task );
 
   if (task.state==job_code.retired)
     dataSummary.status = -2;
@@ -1579,11 +1583,18 @@ JobTree.prototype._clone_job = function ( cloneMode,parent_page,onAdd_func )  {
       for (var i=0;i<task1.input_ligands.length;i++)
         task.input_ligands.push ( $.extend(true,{},task1.input_ligands[i]) );
 
-      task.input_data  = $.extend ( true,{},task1.input_data  );
-      task.parameters  = $.extend ( true,{},task1.parameters  );
+      task.input_data = $.extend ( true,{},task1.input_data  );
+      task.parameters = $.extend ( true,{},task1.parameters  );
 
       for (var i=0;i<task0.harvestedTaskIds.length;i++)
         task.harvestedTaskIds.push ( task1.harvestedTaskIds[i] );
+
+      if ('file_system' in task1)  {
+        task.file_system      = task1.file_system;
+        task.currentCloudPath = task1.currentCloudPath;
+        if (('file_mod' in task1) && (task.file_system=='cloud'))
+          task.file_mod = task1.file_mod;
+      }
 
       task.customDataClone ( cloneMode,task1 );
       task.project    = tree.projectData.desc.name;
