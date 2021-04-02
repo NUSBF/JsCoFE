@@ -793,7 +793,7 @@ if (!dbx)  {
       if ((this.state==job_code.new) && (this.file_system!='cloud'))
         filename = '';
       var itext = div.grid.setInputText ( filename,row,3,1,2 )
-                          .setWidth_px(300).setReadOnly(true).setNoWrap();
+                          .setWidth_px(500).setReadOnly(true).setNoWrap();
       div.itext.push ( itext );
       div.grid.setVerticalAlignment ( row,2,'middle' );
       div.grid.setVerticalAlignment ( row,3,'middle' );
