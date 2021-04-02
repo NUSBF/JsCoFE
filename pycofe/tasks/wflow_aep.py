@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    29.03.21   <--  Date of Last Modification.
+#    02.04.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -152,28 +152,50 @@ class WFlowAEP(import_task.Import):
         # else:
         #     self.putMessage ( "Automatic model builder: <b>Buccaneer</b>" )
 
+        have_results = False
         self.flush()
 
-        have_results = True
-
         if ((len(self.unm)>0) or (len(self.hkl)>0)) and (len(self.seq)>0):
-            self.putMessage ( "<h3>Automatic Experimental Phasing (SAD) workflow started</hr>" )
-            self.task.autoRunName = "_root"
-            try:
-                auto.makeNextTask ( self.task,{
-                    "unm"       : self.unm,
-                    "hkl"       : self.hkl,
-                    "seq"       : self.seq,
-                    "lig"       : self.lig,
-                    "ligdesc"   : self.ligdesc,
-                    "hatom"     : ha_type
-                })
-                summary_line += "workflow started"
-            except:
-                self.putMessage ( "<i>automatic workflow excepted</i>" )
-                summary_line += "workflow start failed"
+
+            suitable = (len(self.unm)>0)
+            if not suitable:
+                n = -1
+                for i in range(len(self.hkl)):
+                    if self.hkl[i].isAnomalous() and (not suitable or "peak" in self.hkl[i].dname.lower()):
+                        n = i
+                        suitable = True
+                if n>0:
+                    hkl0 = self.hkl[0]
+                    self.hkl[0] = self.hkl[n]
+                    self.hkl[n] = hkl0
+
+            if suitable:
+
+                self.putMessage ( "<h3>Automatic Experimental Phasing (SAD) workflow started</h3>" )
+                self.task.autoRunName = "_root"
+                try:
+                    auto.makeNextTask ( self.task,{
+                        "unm"       : self.unm,
+                        "hkl"       : self.hkl,
+                        "seq"       : self.seq,
+                        "lig"       : self.lig,
+                        "ligdesc"   : self.ligdesc,
+                        "hatom"     : ha_type
+                    })
+                    summary_line += "workflow started"
+                    have_results  = True
+                except:
+                    self.putMessage ( "<i>automatic workflow excepted</i>" )
+                    summary_line += "workflow start failed"
+
+            else:
+                summary_line += "no anomalous signal"
+                self.putMessage ( "<h3>No anomalous signal found</h3>" )
+                self.putMessage ( "<i>Experimental Phasing cannot be performed.</i>" )
+
         else:
             summary_line += "insufficient input"
+
 
         self.generic_parser_summary["import_autorun"] = {
           "summary_line" : summary_line
