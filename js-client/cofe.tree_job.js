@@ -566,12 +566,20 @@ JobTree.prototype.updateRation = function ( data )  {
 
 JobTree.prototype.checkReload = function ( self,rdata,details )  {
   if (rdata.reload>0)  {
-    new MessageBoxF ( 'Shared project update',
-        '<h2>Shared Project Update</h2>' +
-        'It appears that somebody else is working on this ' +
-        '<b>shared</b><br>project, and they may have done changes ' +
-        'that require<br>update of the project in your browser <b>now</b>.' +
-        '<p>Simply click "Update" button and try to ' + details + ' again.',
+    var msg =
+      '<h2>Project Update Required</h2>' +
+      'Requested operation cannot be performed because the Project was ' +
+      'just updated ';
+    if ((this.projectData.desc.owner.share.length>0) && (this.projectData.desc.autorun))
+      msg += 'by either a user, with whom this Project is shared, or automatic ' +
+             'workflow running, or both.';
+    else if (this.projectData.desc.owner.share.length>0)
+      msg += 'by user, with whom this Project is shared.';
+    else
+      msg += 'by automatic workflow running.';
+    new MessageBoxF ( 'Project update required',
+        '<h2>Project Update Required</h2>' + msg +
+        '<p>Click "Update" button and try to ' + details + ' again.',
         'Update',function(){
           self.emitSignal ( cofe_signals.reloadTree,rdata );
         },true );
