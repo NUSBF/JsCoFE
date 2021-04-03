@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    17.02.21   <--  Date of Last Modification.
+ *    03.04.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -340,9 +340,11 @@ function getEmailerConfig()  {
 function CCP4Version()  {
 var version = '';
   if (process.env.hasOwnProperty('CCP4'))  {
-    var s = utils.readString ( path.join(process.env.CCP4,'lib','ccp4','MAJOR_MINOR') );
-    if (s)
-      version = s.split(/,?\s+/)[0];
+    if ('CCP4' in process.env)  {
+      var s = utils.readString ( path.join(process.env.CCP4,'lib','ccp4','MAJOR_MINOR') );
+      if (s)
+        version = s.split(/,?\s+/)[0];
+    }
   }
   return version;
 }
@@ -379,6 +381,7 @@ var version = '';
     "fsmount"          : "/",
     "localSetup"       : true,  // optional, overrides automatic definition
     "update_rcode"     : 212, // optional
+    "update_notifications" : false,  // optional notification on CCP4 updates
     "userDataPath"     : "./cofe-users",
     "storage"          : "./cofe-projects",  // for logs, stats, pids, tmp etc.
     "projectsPath"     : "./cofe-projects",  // old version; in this case, "storage" may be omitted
@@ -608,8 +611,8 @@ function readConfiguration ( confFilePath,serverType )  {
     // assign default values
     fe_server.sessionCheckPeriod     = 2000;  // ms
     fe_server.auth_software          = null;
-    fe_server.malicious_attempts_max = -1;  // around 100; <0 means do not use
-
+    fe_server.malicious_attempts_max = -1;    // around 100; <0 means do not use
+    fe_server.update_notifications   = false; // optional notification on CCP4 updates
 
     // read configuration file
     for (var key in confObj.FrontEnd)
@@ -1107,6 +1110,20 @@ var excluded = [];
 
 }
 
+function checkOnUpdate ( callback_func )  {
+  if ('CCP4' in process.env)  {
+    var ccp4um = path.join ( process.env.CCP4,'libexec','ccp4um-bin' );
+    var job    = utils.spawn ( ccp4um,['-check-silent'],{} );
+    job.on ( 'close',function(code){
+      callback_func ( code );  // <254:  number of updates available
+                               //  254:  CCP4 release
+                               //  255:  no connection
+      // console.log ( ' >>>> code=' + code );
+    });
+  }
+}
+
+
 // ==========================================================================
 // export for use in node
 module.exports.getDesktopConfig   = getDesktopConfig;
@@ -1144,3 +1161,4 @@ module.exports.isWindows          = isWindows;
 module.exports.windows_drives     = windows_drives;
 module.exports.set_python_check   = set_python_check;
 module.exports.getExcludedTasks   = getExcludedTasks;
+module.exports.checkOnUpdate      = checkOnUpdate;

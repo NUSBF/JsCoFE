@@ -180,6 +180,32 @@ var generate_report = false;
   if (usageStats.registerJob(job_class))
     generate_report = true;
 
+  var emailer_conf = conf.getEmailerConfig();
+  if (emailer_conf.type!='desktop')  {
+    conf.checkOnUpdate ( function(code){
+      if ((code>=0) && (code<255))  {
+        userData = new ud.UserData();
+        userData.name  = cmd.appName() + ' Mainteiner';
+        userData.email = emailer_conf.maintainerEmail;
+        if (code==254)  {
+          log.standard ( 20,'New CCP4 series released, please upgrade' );
+          emailer.sendTemplateMessage ( userData,
+                       cmd.appName() + ': New CCP4 Series','ccp4_release',{} );
+        } else  {
+          log.standard ( 21,code + ' CCP4 updates available, please apply' );
+          var txt = 'CCP4 Update is ';
+          if (code>1)
+            txt = code + ' CCP4 Updates are '
+          emailer.sendTemplateMessage ( userData,
+                cmd.appName() + ': CCP4 Update','ccp4_update',{
+                    'text' : txt
+                  } );
+        }
+      }
+    });
+  }
+
+
   if (generate_report)  {
 
     for (var vname in usageStats.volumes)  {
@@ -197,6 +223,7 @@ var generate_report = false;
         committed[committed.length-1] += c/1024.0;  // from MB to GB
       }
     }
+
   }
 
   utils.writeObject ( statsFilePath,usageStats );
@@ -247,6 +274,7 @@ var generate_report = false;
 
     //  check for ccp4 updates once in 24 hours
 
+    /*
     if (process.env.hasOwnProperty('CCP4'))  {
       var ccp4um_path = path.join ( process.env.CCP4,'libexec','ccp4um-bin' );
       if (utils.fileExists())
@@ -284,6 +312,7 @@ var generate_report = false;
              });
     } else
       log.standard ( 23,'cannot check CCP4 updates, no CCP4 path in the environment' );
+    */
 
   }
 
