@@ -472,7 +472,8 @@ function ProjectPage ( sceneId )  {
 
   function reloadTree ( blink,multisel,rdata )  {
     // blink==true will force page blinking, for purely aesthatic reasons
-    var selTask   = jobTree.getSelectedTask();
+    //var selTask   = jobTree.getSelectedTask();
+    var selTasks  = jobTree.getSelectedTasks();
     var scrollPos = jobTree.parent.getScrollPosition();
     var job_tree  = jobTree;
     jobTree.stopTaskLoop();
@@ -497,7 +498,8 @@ function ProjectPage ( sceneId )  {
           job_tree.closeAllJobDialogs();
           jobTree .openJobs ( dlg_task_parameters,self );
         }
-        jobTree.selectTask ( selTask );
+        // jobTree.selectTask ( selTask );
+        jobTree.selectTasks ( selTasks );
         if (rdata)  {
           self.updateUserRationDisplay ( rdata );
           if ('completed_map' in rdata)

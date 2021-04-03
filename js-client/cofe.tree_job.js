@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    02.04.21   <--  Date of Last Modification.
+ *    03.04.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -46,6 +46,9 @@
  *      function startTaskLoop   ();
  *      function stopTaskLoop    ();
  *      function getSelectedTask ();
+ *      function getSelectedTasks();
+ *      function selectTask      ( task );
+ *      function selectTasks     ( task_lst );
  *      function saveProjectData ( tasks_add,tasks_del,onDone_func );
  *      function hasRunningJobs  ( nodeId );
  *      function selectArchiveJobs();
@@ -548,10 +551,34 @@ JobTree.prototype.getSelectedTask = function()  {
 }
 
 
+JobTree.prototype.getSelectedTasks = function()  {
+// returns tasks in reversed order
+var sel_lst   = this.calcSelectedNodeIds()
+var sel_tasks = [];
+  for (var i=0;i<sel_lst.length;i++)
+    if (sel_lst[i] in this.task_map)
+      sel_tasks.push ( this.task_map[sel_lst[i]] );
+  if (sel_tasks.length<=0)  {
+    var task = this.getSelectedTask();
+    if (task)
+      sel_tasks.push ( task );
+  }
+  return sel_tasks;
+}
+
+
 JobTree.prototype.selectTask = function ( task )  {
 var nodeId = this.getTaskNodeId ( task.id );
   if (nodeId)
     this.selectSingleById ( nodeId );
+}
+
+JobTree.prototype.selectTasks = function ( task_lst )  {
+  for (var i=task_lst.length-1;i>=0;i--)  {
+    var nodeId = this.getTaskNodeId ( task_lst[i].id );
+    if (nodeId)
+      this.selectMultipleById ( nodeId );
+  }
 }
 
 
