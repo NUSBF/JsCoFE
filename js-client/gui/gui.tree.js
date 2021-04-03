@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    05.12.20   <--  Date of Last Modification.
+ *    03.04.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Generic tree class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2020
+ *  (C) E. Krissinel, A. Lebedev 2016-2021
  *
  *  ==========================================================================
  *
@@ -51,34 +51,36 @@
  *
  *      constructor Tree ( rootName );
  *
- *      function addRootNode      ( text,icon_uri,treeNodeCustomIcon );
- *      function addNode          ( parent_node,text,icon_uri,treeNodeCustomIcon );
- *      function insertNode       ( parent_node,text,icon_uri,treeNodeCustomIcon );
- *      function getNodePosition  ( node );
- *      function moveNodeUp       ( node );
- *      function getChildNodes    ( node );
- *      function setNodes         ( nodes );
- *      function getNumberOfNodes ();
- *      function selectNode       ( node,single_bool );
- *      function selectSingle     ( node );
- *      function deselectNode     ( node );
- *      function deselectNodeById ( nodeId );
- *      function selectSingleById ( nodeId );
+ *      function addRootNode        ( text,icon_uri,treeNodeCustomIcon );
+ *      function addNode            ( parent_node,text,icon_uri,treeNodeCustomIcon );
+ *      function insertNode         ( parent_node,text,icon_uri,treeNodeCustomIcon );
+ *      function getNodePosition    ( node );
+ *      function moveNodeUp         ( node );
+ *      function getChildNodes      ( node );
+ *      function setNodes           ( nodes );
+ *      function getNumberOfNodes   ();
+ *      function selectNode         ( node,single_bool );
+ *      function selectSingle       ( node );
+ *      function selectMultiple     ( node );
+ *      function deselectNode       ( node );
+ *      function deselectNodeById   ( nodeId );
+ *      function selectSingleById   ( nodeId );
+ *      function selectMultipleById ( nodeId );
  *      function forceSingleSelection ();
- *      function setText              ( node,text );
- *      function setIcon              ( node,icon_uri );
- *      function setStyle             ( treeNode,style_str,propagate_int );
+ *      function setText            ( node,text );
+ *      function setIcon            ( node,icon_uri );
+ *      function setStyle           ( treeNode,style_str,propagate_int );
  *      function confirmCustomIconsVisibility();
- *      function deleteNode           ( node );
- *      function deleteBranch         ( node );
- *      function createTree           ( onReady_func   ,onContextMenu_func,
- *                                      onDblClick_func,onSelect_func );
- *      function refresh              ();
- *      function calcSelectedNodeIds   ();
- *      function getSelectedNodeId    ();
- *      function calcSelectedNode     ();
- *      function getSelectedNode      ();
- *      function addNodeToSelected    ( text,icon_uri,treeNodeCustomIcon );
+ *      function deleteNode         ( node );
+ *      function deleteBranch       ( node );
+ *      function createTree         ( onReady_func   ,onContextMenu_func,
+ *                                    onDblClick_func,onSelect_func );
+ *      function refresh            ();
+ *      function calcSelectedNodeIds();
+ *      function getSelectedNodeId  ();
+ *      function calcSelectedNode   ();
+ *      function getSelectedNode    ();
+ *      function addNodeToSelected  ( text,icon_uri,treeNodeCustomIcon );
  *      function insertNodeAfterSelected ( text,icon_uri,treeNodeCustomIcon );
  *      function addSiblingToSelected ( text,icon_uri,treeNodeCustomIcon );
  *      function deleteSelectedNode   ();
@@ -553,6 +555,11 @@ Tree.prototype.deselectNodeById = function ( nodeId )  {
 Tree.prototype.selectSingleById = function ( nodeId )  {
   if (nodeId in this.node_map)
     this.selectSingle ( this.node_map[nodeId] );
+}
+
+Tree.prototype.selectMultipleById = function ( nodeId )  {
+  if (nodeId in this.node_map)
+    this.selectMultiple ( this.node_map[nodeId] );
 }
 
 
