@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    24.06.20   <--  Date of Last Modification.
+ *    05.04.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Various message dialogs
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2020
+ *  (C) E. Krissinel, A. Lebedev 2016-2021
  *
  *  =================================================================
  *
@@ -149,12 +149,12 @@ function MessageNotLoggedIn ( title )  {
   if (__current_page && (['LogoutPage','LoginPage'].indexOf(__current_page._type)>=0))
     return;
   new MessageBox ( title,
-    '<b>User Not Logged In.</b>' +
+    '<div style="width:400px"><b>User Not Logged In.</b>' +
     '<p>This may result from duplicate logging (either explicitly in another ' +
     'browser<br>or machine, or implicitly by, e.g., copy/pasting URL in another ' +
     'browser tab<br>or window), or using forward/back/reload buttons in your ' +
     'browser.<p>Please log in again.' +
-    '<p>If problem persists, please report to ccp4@stfc.ac.uk.' );
+    '<p>If problem persists, please report to ccp4@stfc.ac.uk.</div>' );
   return;
 }
 
@@ -169,12 +169,12 @@ var msg = '<b>General failure: upload errors.</b>';
 
 function MessageNoJobDir ( title )  {
   new MessageBox ( title,
-    '<b>Job directory not found on server.</b>' +
+    '<div style="width:400px"><b>Job directory not found on server.</b>' +
     '<p>This may result from duplicate logging (either explicitly in another ' +
     'browser or machine, or implicitly by, e.g., copy/pasting URL in another' +
     'browser tab or window), or using forward/back/reload buttons in your ' +
     'browser.<p>Please log in again and repeat your actions.' +
-    '<p>If problem persists, please report to ccp4@stfc.ac.uk.' );
+    '<p>If problem persists, please report to ccp4@stfc.ac.uk.</div>' );
 }
 
 function MessageProxyError ( title )  {

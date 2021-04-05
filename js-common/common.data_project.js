@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    23.03.21   <--  Date of Last Modification.
+ *    05.04.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -------------------------------------------------------------------------
  *
@@ -56,7 +56,7 @@ function ProjectDesc()  {
   this.startmode    = start_mode.standard;  // will be overwritten when
                                             // project is created
   this.tasklistmode = tasklist_mode.full;
-  this.project_version = 0;  // possible completely redundant
+  // this.project_version = 0;  // possibly, completely redundant and may be deleted
   this.disk_space   = 0.0;  // in MBs, corresponds to current project state
   this.cpu_time     = 0.0;  // in hours, accumulated over all project history
   this.njobs        = 0;    // over all project history
@@ -174,20 +174,39 @@ function ProjectData()  {
 
 if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
 
-  function findProjectNode ( node,dataId )  {
+  function __find_project_node ( node,dataId )  {
     if (node.dataId==dataId)
       return node;
     var nd = null;
     for (var i=0;(i<node.children.length) && (!nd);i++)
-      nd = findProjectNode ( node.children[i],dataId );
+      nd = __find_project_node ( node.children[i],dataId );
     return nd;
   }
 
   function getProjectNode ( projectData,dataId )  {
     var node = null;
     for (var i=0;(i<projectData.tree.length) && (!node);i++)
-      node = findProjectNode ( projectData.tree[i],dataId );
+      node = __find_project_node ( projectData.tree[i],dataId );
     return node;
+  }
+
+
+  function __find_project_node_branch ( node,dataId )  {
+    if (node.dataId==dataId)
+      return [node];
+    var nd = [];
+    for (var i=0;(i<node.children.length) && (nd.length<=0);i++)
+      nd = __find_project_node_branch ( node.children[i],dataId );
+    if (nd.length>0)
+      nd.push ( node );
+    return nd;
+  }
+
+  function getProjectNodeBranch ( projectData,dataId )  {
+    var node_lst = [];
+    for (var i=0;(i<projectData.tree.length) && (node_lst.length<=0);i++)
+      node_lst = __find_project_node_branch ( projectData.tree[i],dataId );
+    return node_lst;
   }
 
 }
@@ -232,13 +251,14 @@ function DockData()  {
 
 // export such that it could be used in both node and a browser
 if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
-  module.exports.start_mode     = start_mode;
-  module.exports.tasklist_mode  = tasklist_mode;
-  module.exports.ProjectDesc    = ProjectDesc;
-  module.exports.ProjectList    = ProjectList;
-  module.exports.ProjectData    = ProjectData;
-  module.exports.getProjectNode = getProjectNode;
-  module.exports.ProjectShare   = ProjectShare;
-  module.exports.DockData       = DockData;
-  module.exports.isProjectAccessible = isProjectAccessible;
+  module.exports.start_mode           = start_mode;
+  module.exports.tasklist_mode        = tasklist_mode;
+  module.exports.ProjectDesc          = ProjectDesc;
+  module.exports.ProjectList          = ProjectList;
+  module.exports.ProjectData          = ProjectData;
+  module.exports.getProjectNode       = getProjectNode;
+  module.exports.getProjectNodeBranch = getProjectNodeBranch;
+  module.exports.ProjectShare         = ProjectShare;
+  module.exports.DockData             = DockData;
+  module.exports.isProjectAccessible  = isProjectAccessible;
 }

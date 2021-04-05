@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    27.03.21   <--  Date of Last Modification.
+ *    05.04.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -37,6 +37,7 @@ var class_map = require('./server.class_map');
 var rj        = require('./server.fe.run_job');
 var pd        = require('../js-common/common.data_project');
 var cmd       = require('../js-common/common.commands');
+var com_utils = require('../js-common/common.utils');
 var task_t    = require('../js-common/tasks/common.tasks.template');
 
 //  prepare log
@@ -969,7 +970,7 @@ function checkTimestamps ( loginData,projectDesc )  {
 // therefore, timestamp on server side may be either equal or ahead of
 // timestamp in 'projectDesc'.
   var rdata    = {};  // response data object
-  rdata.pdesc  = projectDesc;
+//  rdata.pdesc  = projectDesc;
   rdata.reload = 0;  // project reload codes for client:
                      //  0: no reload is needed
                      //  1: reload is needed but current operation may continue
@@ -981,9 +982,10 @@ function checkTimestamps ( loginData,projectDesc )  {
       if (rdata.pdesc.timestamp>projectDesc.timestamp)  {
         // client timestamp is behind server project timestamp; request
         // update on client side
-        if (rdata.pdesc.project_version>projectDesc.project_version)
-              rdata.reload = 2;  // project changed considerably, reload client
-        else  rdata.reload = 1;  // on-client data should be safe
+        rdata.reload = 2;  // project changed considerably, reload client
+        // if (rdata.pdesc.project_version>projectDesc.project_version)
+        //       rdata.reload = 2;  // project changed considerably, reload client
+        // else  rdata.reload = 1;  // on-client data should be safe
       }
     }
   }
@@ -991,22 +993,63 @@ function checkTimestamps ( loginData,projectDesc )  {
 }
 
 
-function advanceJobCounter ( loginData,data )  {
-  //var response    = null;
-  var projectDesc = data.meta;
-  var rdata       = checkTimestamps ( loginData,projectDesc );
-  rdata.project_missing = false;
-  if (!rdata.reload)  {
-    var projectData = readProjectData ( loginData,projectDesc.name );
-    if (projectData)  {
-      projectData.desc.jobCount++;
-      writeProjectData ( loginData,projectData,false );  // do not change the timestamp
-      rdata.pdesc = projectData.desc;
-    } else if (projectDesc.owner.share.length>0)
-      rdata.project_missing = true;
-  }
-  return new cmd.Response ( cmd.fe_retcode.ok,'',rdata );
-}
+// function checkSharedProject ( loginData,projectData )  {
+// // 'projectData' comes from the client. Client does not change timestamps,
+// // therefore, timestamp on server side may be either equal or ahead of
+// // timestamp in 'projectData.desc'.
+//   var checkData   = {};
+//   checkData.pdata = projectData;  // synced Project Data
+//   checkData.rdata = {};           // response data object
+//   checkData.rdata.reload = 0;  // project reload codes for client:
+//                      //  0: no reload is needed
+//                      //  1: reload is needed but current operation may continue
+//                      //  2: reload is mandatory, current operation must terminate
+//   checkData.rdata.pdesc = null;
+//   var pdesc = projectData.desc;
+//   if ((pdesc.owner.share.length>0) || pdesc.autorun)  {  // the project is shared
+//     var pData = readProjectData ( loginData,pdesc.name );
+//     if (pData)  {
+//       checkData.rdata.pdesc = pData.desc;
+//       if (pData.desc.timestamp>pdesc.timestamp)  {
+//         // client timestamp is behind on-server project's timestamp; try to merge
+//         // projects
+//         // request update on client side
+//         if (rdata.pdesc.project_version>projectDesc.project_version)
+//               rdata.reload = 2;  // project changed considerably, reload client
+//         else  rdata.reload = 1;  // on-client data should be safe
+//       }
+//     }
+//   }
+//   return checkData;
+// }
+
+
+// function advanceJobCounter ( loginData,data )  {
+//   //var response    = null;
+//   var projectDesc = data.meta;
+//   var rdata       = checkTimestamps ( loginData,projectDesc );
+//   rdata.project_missing = false;
+//   if (!rdata.reload)  {
+//     var projectData = readProjectData ( loginData,projectDesc.name );
+//     if (projectData)  {
+//       projectData.desc.jobCount++;
+//       writeProjectData ( loginData,projectData,false );  // do not change the timestamp
+//       rdata.pdesc = projectData.desc;
+//     } else if (projectDesc.owner.share.length>0)
+//       rdata.project_missing = true;
+//   }
+//   return new cmd.Response ( cmd.fe_retcode.ok,'',rdata );
+// }
+
+// function getTreeNodeByTaskId ( projectTree,taskId )  {
+//   var node = null;
+//   for (var i=0;(i<projectTree.length) && (!node);i++)
+//     if (projectTree[i].dataId==taskId)
+//       node = projectTree[i];
+//     else if (projectTree[i].children.length>0)
+//       node = getTreeNodeByTaskId ( projectTree[i].children,taskId );
+//   return node;
+// }
 
 
 function saveProjectData ( loginData,data )  {
@@ -1014,14 +1057,54 @@ function saveProjectData ( loginData,data )  {
   var projectData = data.meta;
   var projectDesc = projectData.desc;
   var projectName = projectDesc.name;
-//  console.log ( ' >>>>>>>>>> write current project data (' + projectName +
-//                '), login ' + loginData.login + ' timestamp ' + projectData.desc.timestamp );
 
   // Check timestamps for shared projects
-  var rdata = checkTimestamps ( loginData,projectData.desc );
+  // var rdata = checkTimestamps ( loginData,projectDesc );
 
-  if (rdata.reload>0)
-    return new cmd.Response ( cmd.fe_retcode.ok,'',rdata );
+  var rdata    = {}; // response data object
+  rdata.reload = 0;  // project reload codes for client:
+                     //  0: no reload is needed
+                     //  1: reload is needed but current operation may continue
+                     //  2: reload is mandatory, current operation must terminate
+  rdata.pdesc  = null;
+  if ((projectDesc.owner.share.length>0) || projectDesc.autorun)  {  // the project is shared
+    rdata.pdesc = readProjectDesc ( loginData,projectDesc.name );
+    if (rdata.pdesc)  {
+      if (rdata.pdesc.timestamp>projectDesc.timestamp)  {
+        // client timestamp is behind server project timestamp; check whether
+
+        rdata.reload = 1;  // client should reload the project anyway
+        // check that trees are compatible
+        var pData = readProjectData ( loginData,projectDesc.name );
+        for (var i=0;(i<data.tasks_add.length) && (rdata.reload==1);i++)  {
+          // simply check that all needful jobs are retained in the actual project
+          // check that all harvested tasks are there in pData
+          var hids = data.tasks_add[i].harvestedTaskIds;
+          for (var j=0;(j<hids.length) && (rdata.reload==1);j++)
+            if (!pd.getProjectNode(pData,hids[j]))
+              rdata.reload = 2;
+          if (rdata.reload==1)  {
+            // check that the parent node is there in pData
+            var node_lst = pd.getProjectNodeBranch ( projectData,data.tasks_add[i].id );
+            if (node_lst.length>1)  {
+              var pnode = pd.getProjectNode ( pData,node_lst[1].dataId );
+              if (pnode)  // node found, copy the added node over
+                    pnode.children.push ( node_lst[0] );
+              else  rdata.reload = 2;
+            } else
+              rdata.reload = 2;
+          }
+        }
+
+        if (rdata.reload>1)  // no way, client must update the project
+          return new cmd.Response ( cmd.fe_retcode.ok,'',rdata );
+
+        projectData = pData;  // further on, will work on the actual Project
+
+      }
+    }
+  }
+
 
   // Get users' projects list file name
   var projectDataPath = getProjectDataPath ( loginData,projectName );
@@ -1054,11 +1137,23 @@ function saveProjectData ( loginData,data )  {
     var update_time_stamp = data.update || (data.tasks_del.length>0) ||
                                            (data.tasks_add.length>0);
 
-//console.log ( ' >>>> update_time_stamp='+ update_time_stamp );
+    rdata.jobCount = [];
+    for (var i=0;i<data.tasks_add.length;i++)  {
+      projectData.desc.jobCount++;
+      rdata.jobCount.push ( projectData.desc.jobCount );
+      var node = pd.getProjectNode ( projectData,data.tasks_add[i].id );
+      if (node)  {
+        data.tasks_add[i].id = projectData.desc.jobCount;
+        node.dataId = data.tasks_add[i].id;
+        node.text   = '[' + com_utils.padDigits(data.tasks_add[i].id,4) +
+                            node.text.substr(Math.max(0,node.text.indexOf(']')));
+        node.text0  = node.text;
+      } else
+        log.error ( 30,'no tree node found ' + loginData.login + ':' +
+                       projectName + ':' + data.tasks_add[i].id );
+    }
 
     if (writeProjectData(loginData,projectData,update_time_stamp))  {
-
-//console.log ( ' >>>> timestamp='+ projectData.desc.timestamp );
 
       if (data.tasks_del.length>0)  // save on reading files ration does not change
         rdata.ration = ration.getUserRation(loginData).clearJobs();
@@ -1112,12 +1207,10 @@ function saveProjectData ( loginData,data )  {
                   } else  {
                     fs.copy ( item_src,item_dest,function(err)  {
                       if (err)  {
-                        log.error ( 30,'error copying item ' + item_src  );
-                        log.error ( 30,'                to ' + item_dest );
-                        log.error ( 30,'error: ' + err );
+                        log.error ( 31,'error copying item ' + item_src  );
+                        log.error ( 31,'                to ' + item_dest );
+                        log.error ( 31,'error: ' + err );
                       }
-                      //log.standard ( 31,'copied item ' + item_src  );
-                      //log.standard ( 31,'         to ' + item_dest );
                     });
                   }
                 }
@@ -1680,7 +1773,7 @@ module.exports.prepareFailedJobExport = prepareFailedJobExport;
 module.exports.checkFailedJobExport   = checkFailedJobExport;
 module.exports.finishFailedJobExport  = finishFailedJobExport;
 module.exports.getProjectData         = getProjectData;
-module.exports.advanceJobCounter      = advanceJobCounter;
+// module.exports.advanceJobCounter      = advanceJobCounter;
 module.exports.saveProjectData        = saveProjectData;
 module.exports.shareProject           = shareProject;
 module.exports.renameProject          = renameProject;

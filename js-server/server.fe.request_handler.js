@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.01.21   <--  Date of Last Modification.
+ *    05.04.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -118,9 +118,9 @@ var response = null;
           response = prj.renameProject ( loginData,data );
        break;
 
-    case cmd.fe_reqtype.advanceJobCounter :
-          response = prj.advanceJobCounter ( loginData,data );
-       break;
+    // case cmd.fe_reqtype.advanceJobCounter :
+    //       response = prj.advanceJobCounter ( loginData,data );
+    //    break;
 
     case cmd.fe_reqtype.saveProjectData :
           response = prj.saveProjectData ( loginData,data );
