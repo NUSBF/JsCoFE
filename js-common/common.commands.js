@@ -2,7 +2,7 @@
 /*
  *  ===========================================================================
  *
- *    03.04.21   <--  Date of Last Modification.
+ *    05.04.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -25,7 +25,7 @@
 
 function appName()  { return 'CCP4 Cloud' }  // application name for reporting
 
-var jsCoFE_version = '1.6.021 [03.04.2021]';
+var jsCoFE_version = '1.6.021 [05.04.2021]';
 
 function appVersion()  {
   return jsCoFE_version;
@@ -115,7 +115,7 @@ var fe_reqtype = {
   saveProjectList   : '-saveProjectList',   // request to save project list
   saveDockData      : '-saveDockData',      // request to save dock data
   getProjectData    : '-getProjectData',    // request for project data
-  advanceJobCounter : '-advanceJobCounter', // request to advance job counter
+  // advanceJobCounter : '-advanceJobCounter', // request to advance job counter
   saveProjectData   : '-saveProjectData',   // request to save project data
   preparePrjExport  : '-preparePrjExport',  // request to prepare project for export
   checkPrjExport    : '-checkPrjExport',    // request to check project export state

@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    03.04.21   <--  Date of Last Modification.
+ *    05.04.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -60,6 +60,7 @@
  *      function setNodes           ( nodes );
  *      function getNumberOfNodes   ();
  *      function selectNode         ( node,single_bool );
+ *      function selectNodeById     ( nodeId,single_bool );
  *      function selectSingle       ( node );
  *      function selectMultiple     ( node );
  *      function deselectNode       ( node );
@@ -528,6 +529,14 @@ Tree.prototype.selectNode = function ( node,single_bool )  {
 
 }
 
+Tree.prototype.selectNodeById = function ( nodeId,single_bool )  {
+  if (nodeId in this.node_map)  {
+    this.selectNode ( this.node_map[nodeId],single_bool );
+    return true;
+  }
+  return false;
+}
+
 
 Tree.prototype.selectSingle = function ( node )  {
 // This function will select given node and deselect all others
@@ -553,13 +562,19 @@ Tree.prototype.deselectNodeById = function ( nodeId )  {
 
 
 Tree.prototype.selectSingleById = function ( nodeId )  {
-  if (nodeId in this.node_map)
+  if (nodeId in this.node_map)  {
     this.selectSingle ( this.node_map[nodeId] );
+    return true;
+  }
+  return false;
 }
 
 Tree.prototype.selectMultipleById = function ( nodeId )  {
-  if (nodeId in this.node_map)
+  if (nodeId in this.node_map)  {
     this.selectMultiple ( this.node_map[nodeId] );
+    return true;
+  }
+  return false;
 }
 
 

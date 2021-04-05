@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    03.04.21   <--  Date of Last Modification.
+ *    05.04.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -574,10 +574,11 @@ var nodeId = this.getTaskNodeId ( task.id );
 }
 
 JobTree.prototype.selectTasks = function ( task_lst )  {
+  var single = true;
   for (var i=task_lst.length-1;i>=0;i--)  {
     var nodeId = this.getTaskNodeId ( task_lst[i].id );
-    if (nodeId)
-      this.selectMultipleById ( nodeId );
+    if (nodeId && this.selectNodeById(nodeId,single))
+      single = false;
   }
 }
 
@@ -592,7 +593,7 @@ JobTree.prototype.updateRation = function ( data )  {
 }
 
 JobTree.prototype.checkReload = function ( self,rdata,details )  {
-  if (rdata.reload>0)  {
+  if (rdata.reload>1)  {
     var msg =
       '<h2>Project Update Required</h2>' +
       'Requested operation cannot be performed because the Project was ' +
@@ -626,25 +627,25 @@ JobTree.prototype.missingProject = function()  {
   this.emitSignal ( cofe_signals.makeProjectList,{} );
 }
 
-JobTree.prototype.advanceJobCounter = function ( onDone_func )  {
-  if (this.projectData)  {
-    var data  = {};
-    data.meta = this.projectData.desc;
-    (function(tree){
-      serverRequest ( fe_reqtype.advanceJobCounter,data,'Project',
-        function(rdata){
-          if (rdata.project_missing)  {
-            tree.missingProject();
-          } else if (tree.checkReload(tree,rdata,'add the job'))  {
-            tree.projectData.desc.timestamp = rdata.pdesc.timestamp;
-            tree.projectData.desc.jobCount  = rdata.pdesc.jobCount;
-            if (onDone_func)
-              onDone_func(tree,rdata);
-          }
-        },null,'persist' );
-    }(this))
-  }
-}
+// JobTree.prototype.advanceJobCounter = function ( onDone_func )  {
+//   if (this.projectData)  {
+//     var data  = {};
+//     data.meta = this.projectData.desc;
+//     (function(tree){
+//       serverRequest ( fe_reqtype.advanceJobCounter,data,'Project',
+//         function(rdata){
+//           if (rdata.project_missing)  {
+//             tree.missingProject();
+//           } else if (tree.checkReload(tree,rdata,'add the job'))  {
+//             tree.projectData.desc.timestamp = rdata.pdesc.timestamp;
+//             tree.projectData.desc.jobCount  = rdata.pdesc.jobCount;
+//             if (onDone_func)
+//               onDone_func(tree,rdata);
+//           }
+//         },null,'persist' );
+//     }(this))
+//   }
+// }
 
 
 JobTree.prototype.saveProjectData = function ( tasks_add,tasks_del,update_bool,
@@ -760,99 +761,159 @@ var sel_lst = this.calcSelectedNodeIds();
 }
 
 
-JobTree.prototype._add_job_0 = function ( insert_bool,task,dataBox,
-                                          parent_page,onAdd_func )  {
+// JobTree.prototype._add_job_0 = function ( insert_bool,task,dataBox,
+//                                           parent_page,onAdd_func )  {
+//
+//   task.project          = this.projectData.desc.name;
+//   task.id               = this.projectData.desc.jobCount;
+//   task.harvestedTaskIds = dataBox.harvestedTaskIds;
+//   task.submitter        = __login_id;
+//
+//   var node;
+//   // do not give node name at this stage, because, in case of data merging
+//   // across branches, calculation of node name includes tree searches,
+//   // which are not possible before node is placed in the tree
+//   if (insert_bool)
+//         node = this.insertNodeAfterSelected ( '',
+//                             image_path(task.icon()),this.customIcon() );
+//   else  node = this.addNodeToSelected ( '',
+//                             image_path(task.icon()),this.customIcon() );
+//
+//   this.task_map[node.id] = task;
+//   task.treeItemId        = node.id;
+//   node.dataId            = task.id;
+//   // now set the new node name
+//   this.setText ( node,this.makeNodeName(task) );
+//
+//   if (task.isRemark())
+//     this.setStyle ( node,__remarkStyle,0 );
+//
+//   /*
+//   // make harvest data links
+//   for (var i=0;i<task.harvestedTaskIds.length;i++)  {
+//     var taski = tree.getTask ( task.harvestedTaskIds[i] );
+//     if (taski
+//       taski.addHarvestLink ( task.id )
+//   }
+//   */
+//
+//   (function(tree){
+//
+//     //var shared = (tree.projectData.desc.owner.share.length>0);
+//     var shared = tree.isShared();
+//
+//     function complete()  {
+//       if (onAdd_func)
+//         onAdd_func();
+//       tree.openJob ( dataBox,parent_page );
+//       if (insert_bool)
+//         window.setTimeout ( function(){
+//           for (var key in tree.node_map)  {
+//             var tnode = tree.node_map[key];
+//             if (tnode)
+//               tree.resetNodeName ( tnode.id );
+//           }
+//         },100 );
+//     }
+//
+//     tree.saveProjectData ( [task],[],true, function(rdata){
+//       if ((!shared) || tree.checkReload(tree,rdata,'add the job'))
+//         complete();
+//     });
+//
+//     /*
+//     tree.saveProjectData ( [task],[],true, function(rdata){
+//       if (shared && tree.checkReload(tree,rdata,'add the job'))
+//         complete();
+//     });
+//
+//     if (!shared)
+//       complete();
+//     */
+//
+//   }(this))
+//
+// }
 
-  task.project          = this.projectData.desc.name;
-  task.id               = this.projectData.desc.jobCount;
-  task.harvestedTaskIds = dataBox.harvestedTaskIds;
-  task.submitter        = __login_id;
-
-  var node;
-  // do not give node name at this stage, because, in case of data merging
-  // across branches, calculation of node name includes tree searches,
-  // which are not possible before node is placed in the tree
-  if (insert_bool)
-        node = this.insertNodeAfterSelected ( '',
-                            image_path(task.icon()),this.customIcon() );
-  else  node = this.addNodeToSelected ( '',
-                            image_path(task.icon()),this.customIcon() );
-
-  this.task_map[node.id] = task;
-  task.treeItemId        = node.id;
-  node.dataId            = task.id;
-  // now set the new node name
-  this.setText ( node,this.makeNodeName(task) );
-
-  if (task.isRemark())
-    this.setStyle ( node,__remarkStyle,0 );
-
-  /*
-  // make harvest data links
-  for (var i=0;i<task.harvestedTaskIds.length;i++)  {
-    var taski = tree.getTask ( task.harvestedTaskIds[i] );
-    if (taski
-      taski.addHarvestLink ( task.id )
-  }
-  */
-
-  (function(tree){
-
-    //var shared = (tree.projectData.desc.owner.share.length>0);
-    var shared = tree.isShared();
-
-    function complete()  {
-      if (onAdd_func)
-        onAdd_func();
-      tree.openJob ( dataBox,parent_page );
-      if (insert_bool)
-        window.setTimeout ( function(){
-          for (var key in tree.node_map)  {
-            var tnode = tree.node_map[key];
-            if (tnode)
-              tree.resetNodeName ( tnode.id );
-          }
-        },100 );
-    }
-
-    tree.saveProjectData ( [task],[],true, function(rdata){
-      if ((!shared) || tree.checkReload(tree,rdata,'add the job'))
-        complete();
-    });
-
-    /*
-    tree.saveProjectData ( [task],[],true, function(rdata){
-      if (shared && tree.checkReload(tree,rdata,'add the job'))
-        complete();
-    });
-
-    if (!shared)
-      complete();
-    */
-
-  }(this))
-
-}
+// JobTree.prototype._add_job = function ( insert_bool,task,dataBox,
+//                                         parent_page,onAdd_func )  {
+//   if (this.selected_node_id)  {
+//     //this.forceSingleSelection();
+// //    if (this.projectData.desc.owner.share.length>0)  {
+//     if (this.isShared())  {
+//       // shared project, request job counter from server
+//       this.advanceJobCounter ( function(tree,rdata){
+//         tree._add_job_0 ( insert_bool,task,dataBox,parent_page,onAdd_func );
+//       });
+//     } else  {
+//       // not a shared project, use local job counter
+//       this.projectData.desc.jobCount++;
+//       this._add_job_0 ( insert_bool,task,dataBox,parent_page,onAdd_func );
+//     }
+//   } else
+//     alert ( ' no selection in the tree! ' );
+// }
 
 
 JobTree.prototype._add_job = function ( insert_bool,task,dataBox,
                                         parent_page,onAdd_func )  {
   if (this.selected_node_id)  {
-    //this.forceSingleSelection();
-//    if (this.projectData.desc.owner.share.length>0)  {
-    if (this.isShared())  {
-      // shared project, request job counter from server
-      this.advanceJobCounter ( function(tree,rdata){
-        tree._add_job_0 ( insert_bool,task,dataBox,parent_page,onAdd_func );
+
+    // prepare task metadata
+    task.project          = this.projectData.desc.name;
+    task.id               = this.projectData.desc.jobCount + 1;
+    task.harvestedTaskIds = dataBox.harvestedTaskIds;
+    task.submitter        = __login_id;
+
+    // make tree node
+    var node;
+    // do not give node name at this stage, because, in case of data merging
+    // across branches, calculation of node name includes tree searches,
+    // which are not possible before node is placed in the tree
+    if (insert_bool)
+          node = this.insertNodeAfterSelected ( '',
+                              image_path(task.icon()),this.customIcon() );
+    else  node = this.addNodeToSelected ( '',
+                              image_path(task.icon()),this.customIcon() );
+
+    this.task_map[node.id] = task;
+    task.treeItemId        = node.id;
+    node.dataId            = task.id;
+    // now set the new node name
+    this.setText ( node,this.makeNodeName(task) );
+
+    if (task.isRemark())
+      this.setStyle ( node,__remarkStyle,0 );
+
+    (function(tree){
+
+      tree.saveProjectData ( [task],[],true, function(rdata){
+//        if ((!tree.isShared()) || tree.checkReload(tree,rdata,'add the job'))  {
+        if (tree.checkReload(tree,rdata,'add the job'))  {
+          task.id     = rdata.jobCount[0];
+          node.dataId = task.id;
+          tree.projectData.desc.jobCount = task.id;
+          tree.setText ( node,tree.makeNodeName(task) );
+          if (onAdd_func)
+            onAdd_func();
+          tree.openJob ( dataBox,parent_page );
+          if (insert_bool)
+            window.setTimeout ( function(){
+              for (var key in tree.node_map)  {
+                var tnode = tree.node_map[key];
+                if (tnode)
+                  tree.resetNodeName ( tnode.id );
+              }
+            },100 );
+        }
       });
-    } else  {
-      // not a shared project, use local job counter
-      this.projectData.desc.jobCount++;
-      this._add_job_0 ( insert_bool,task,dataBox,parent_page,onAdd_func );
-    }
+
+    }(this))
+
   } else
     alert ( ' no selection in the tree! ' );
 }
+
 
 JobTree.prototype._copy_task_parameters = function ( task,branch_task_list )  {
   var reftask = null;
@@ -1578,20 +1639,130 @@ JobTree.prototype.isShared = function()  {
 }
 
 
-JobTree.prototype._clone_job = function ( cloneMode,parent_page,onAdd_func )  {
+// JobTree.prototype._clone_job = function ( cloneMode,parent_page,onAdd_func )  {
+//
+//   (function(tree){
+//
+//     // identify task to be cloned
+//     var nodeId = tree.selected_node_id;
+//     var task0  = tree.task_map[nodeId];
+//     var task1  = task0;
+//     //if (task0.state==job_code.remark)  // then take remark's parent
+//     //  task1 = tree.task_map[tree.node_map[nodeId].parentId];
+//
+//     // create an instance of selected task with default parameters
+//     var task   = eval ( 'new ' + task1._type + '()' );
+//     if (task1.version<task.currentVersion())  {
+//       new MessageBox ( 'Cannot clone',
+//         '<b>This job cannot be cloned.</b><p>' +
+//         'The job was created with a lower version of ' + appName() + ' and cannot ' +
+//         'be cloned.<br>Please create the job as a new one, using ' +
+//         '"<i>Add Job</i>" button from the<br>control bar.' );
+//     } else  {
+//
+//       task.uname       = task1.uname;
+//       task.uoname      = task1.uoname;
+//       task.cloned_id   = task1.id;
+//       task.autoRunId   = task1.autoRunId;
+//       if ('autoRunId0' in task1)
+//         task.autoRunId0 = task1.autoRunId0;
+//       else if (task.autoRunId.length>0)
+//         task.autoRunId0 = task1.autoRunId;
+//       task.autoRunName = task1.autoRunName;
+//       task.inputMode   = task1.inputMode;
+//
+//       task.file_select = [];
+//       for (var i=0;i<task1.file_select.length;i++)
+//         task.file_select.push ( $.extend(true,{},task1.file_select[i]) );
+//
+//       task.input_ligands = [];
+//       for (var i=0;i<task1.input_ligands.length;i++)
+//         task.input_ligands.push ( $.extend(true,{},task1.input_ligands[i]) );
+//
+//       task.input_data = $.extend ( true,{},task1.input_data  );
+//       task.parameters = $.extend ( true,{},task1.parameters  );
+//
+//       for (var i=0;i<task0.harvestedTaskIds.length;i++)
+//         task.harvestedTaskIds.push ( task1.harvestedTaskIds[i] );
+//
+//       if ('file_system' in task1)  {
+//         task.file_system      = task1.file_system;
+//         task.currentCloudPath = task1.currentCloudPath;
+//         if (('file_mod' in task1) && (task.file_system=='cloud'))
+//           task.file_mod = task1.file_mod;
+//       }
+//
+//       task.customDataClone ( cloneMode,task1 );
+//       task.project    = tree.projectData.desc.name;
+//       task.id         = tree.projectData.desc.jobCount;
+//       task.submitter  = __login_id;
+//
+//       var node = tree.addSiblingToSelected ( '',image_path(task.icon()),
+//                                                 tree.customIcon() );
+//
+//       tree.task_map[node.id] = task;
+//       task.treeItemId        = node.id;
+//       node.dataId            = task.id;
+//       // now set the new node name
+//       tree.setText ( node,tree.makeNodeName(task) );
+//
+//       var shared = tree.isShared(); //(tree.projectData.desc.owner.share.length>0);
+//
+//       function complete()  {
+//         if (onAdd_func)
+//           onAdd_func();
+//         tree.openJob ( null,parent_page );
+//         if (task.isRemark())
+//           tree.setStyle ( node,__remarkStyle,0 );
+//       }
+//
+//       tree.saveProjectData ( [task],[],true, function(rdata){
+//         if (shared && tree.checkReload(tree,rdata,'clone the job'))
+//           complete();
+//       });
+//
+//       if (!shared)
+//         complete();
+//
+//     }
+//
+//   }(this));
+//
+// }
+//
+//
+// JobTree.prototype.cloneJob = function ( cloneMode,parent_page,onAdd_func )  {
+//   if (this.selected_node_id)  {
+//     this.forceSingleSelection();
+//     //if (this.projectData.desc.owner.share.length>0)  {
+//     if (this.isShared())  {
+//       // shared project, request job counter from server
+//       this.advanceJobCounter ( function(tree,rdata){
+//         tree._clone_job ( cloneMode,parent_page,onAdd_func );
+//       });
+//     } else  {
+//       // not a shared project, use local job counter
+//       this.projectData.desc.jobCount++;
+//       this._clone_job ( cloneMode,parent_page,onAdd_func );
+//     }
+//   } else {
+//     alert ( ' no selection in the tree! ' );
+//   }
+// }
 
-  (function(tree){
 
-    // identify task to be cloned
-    var nodeId = tree.selected_node_id;
-    var task0  = tree.task_map[nodeId];
-    var task1  = task0;
-    //if (task0.state==job_code.remark)  // then take remark's parent
-    //  task1 = tree.task_map[tree.node_map[nodeId].parentId];
+JobTree.prototype.cloneJob = function ( cloneMode,parent_page,onAdd_func )  {
+
+  if (this.selected_node_id)  {
+
+    this.forceSingleSelection();
+
+    var nodeId = this.selected_node_id;
+    var task0  = this.task_map[nodeId];
 
     // create an instance of selected task with default parameters
-    var task   = eval ( 'new ' + task1._type + '()' );
-    if (task1.version<task.currentVersion())  {
+    var task   = eval ( 'new ' + task0._type + '()' );
+    if (task0.version<task.currentVersion())  {
       new MessageBox ( 'Cannot clone',
         '<b>This job cannot be cloned.</b><p>' +
         'The job was created with a lower version of ' + appName() + ' and cannot ' +
@@ -1599,94 +1770,73 @@ JobTree.prototype._clone_job = function ( cloneMode,parent_page,onAdd_func )  {
         '"<i>Add Job</i>" button from the<br>control bar.' );
     } else  {
 
-      task.uname       = task1.uname;
-      task.uoname      = task1.uoname;
-      task.cloned_id   = task1.id;
-      task.autoRunId   = task1.autoRunId;
-      if ('autoRunId0' in task1)
-        task.autoRunId0 = task1.autoRunId0;
+      task.uname       = task0.uname;
+      task.uoname      = task0.uoname;
+      task.cloned_id   = task0.id;
+      task.autoRunId   = task0.autoRunId;
+      if ('autoRunId0' in task0)
+        task.autoRunId0 = task0.autoRunId0;
       else if (task.autoRunId.length>0)
-        task.autoRunId0 = task1.autoRunId;
-      task.autoRunName = task1.autoRunName;
-      task.inputMode   = task1.inputMode;
+        task.autoRunId0 = task0.autoRunId;
+      task.autoRunName = task0.autoRunName;
+      task.inputMode   = task0.inputMode;
 
       task.file_select = [];
-      for (var i=0;i<task1.file_select.length;i++)
-        task.file_select.push ( $.extend(true,{},task1.file_select[i]) );
+      for (var i=0;i<task0.file_select.length;i++)
+        task.file_select.push ( $.extend(true,{},task0.file_select[i]) );
 
       task.input_ligands = [];
-      for (var i=0;i<task1.input_ligands.length;i++)
-        task.input_ligands.push ( $.extend(true,{},task1.input_ligands[i]) );
+      for (var i=0;i<task0.input_ligands.length;i++)
+        task.input_ligands.push ( $.extend(true,{},task0.input_ligands[i]) );
 
-      task.input_data = $.extend ( true,{},task1.input_data  );
-      task.parameters = $.extend ( true,{},task1.parameters  );
+      task.input_data = $.extend ( true,{},task0.input_data  );
+      task.parameters = $.extend ( true,{},task0.parameters  );
 
       for (var i=0;i<task0.harvestedTaskIds.length;i++)
-        task.harvestedTaskIds.push ( task1.harvestedTaskIds[i] );
+        task.harvestedTaskIds.push ( task0.harvestedTaskIds[i] );
 
-      if ('file_system' in task1)  {
-        task.file_system      = task1.file_system;
-        task.currentCloudPath = task1.currentCloudPath;
-        if (('file_mod' in task1) && (task.file_system=='cloud'))
-          task.file_mod = task1.file_mod;
+      if ('file_system' in task0)  {
+        task.file_system      = task0.file_system;
+        task.currentCloudPath = task0.currentCloudPath;
+        if (('file_mod' in task0) && (task.file_system=='cloud'))
+          task.file_mod = task0.file_mod;
       }
 
-      task.customDataClone ( cloneMode,task1 );
-      task.project    = tree.projectData.desc.name;
-      task.id         = tree.projectData.desc.jobCount;
+      task.customDataClone ( cloneMode,task0 );
+      task.project    = this.projectData.desc.name;
+      task.id         = this.projectData.desc.jobCount + 1;
       task.submitter  = __login_id;
 
-      var node = tree.addSiblingToSelected ( '',image_path(task.icon()),
-                                                tree.customIcon() );
+      var node = this.addSiblingToSelected ( '',image_path(task.icon()),
+                                                this.customIcon() );
 
-      tree.task_map[node.id] = task;
+      this.task_map[node.id] = task;
       task.treeItemId        = node.id;
       node.dataId            = task.id;
       // now set the new node name
-      tree.setText ( node,tree.makeNodeName(task) );
+      this.setText ( node,this.makeNodeName(task) );
 
-      var shared = tree.isShared(); //(tree.projectData.desc.owner.share.length>0);
-
-      function complete()  {
-        if (onAdd_func)
-          onAdd_func();
-        tree.openJob ( null,parent_page );
-        if (task.isRemark())
-          tree.setStyle ( node,__remarkStyle,0 );
-      }
-
-      tree.saveProjectData ( [task],[],true, function(rdata){
-        if (shared && tree.checkReload(tree,rdata,'clone the job'))
-          complete();
-      });
-
-      if (!shared)
-        complete();
+      (function(tree){
+        tree.saveProjectData ( [task],[],true, function(rdata){
+          if (tree.checkReload(tree,rdata,'add the job'))  {
+            task.id     = rdata.jobCount[0];
+            node.dataId = task.id;
+            tree.projectData.desc.jobCount = task.id;
+            tree.setText ( node,tree.makeNodeName(task) );
+            if (onAdd_func)
+              onAdd_func();
+            tree.openJob ( null,parent_page );
+            if (task.isRemark())
+              tree.setStyle ( node,__remarkStyle,0 );
+          }
+        });
+      }(this));
 
     }
 
-  }(this));
-
-}
-
-
-JobTree.prototype.cloneJob = function ( cloneMode,parent_page,onAdd_func )  {
-  if (this.selected_node_id)  {
-    this.forceSingleSelection();
-    //if (this.projectData.desc.owner.share.length>0)  {
-    if (this.isShared())  {
-      // shared project, request job counter from server
-      this.advanceJobCounter ( function(tree,rdata){
-        tree._clone_job ( cloneMode,parent_page,onAdd_func );
-      });
-    } else  {
-      // not a shared project, use local job counter
-      this.projectData.desc.jobCount++;
-      this._clone_job ( cloneMode,parent_page,onAdd_func );
-    }
-  } else {
+  } else
     alert ( ' no selection in the tree! ' );
-  }
+
 }
 
 

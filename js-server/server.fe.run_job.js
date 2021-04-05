@@ -1355,9 +1355,10 @@ function checkJobs ( loginData,data )  {
     if (pDesc)  {
       rdata.pdesc = pDesc;
       if ((data.shared) && (pDesc.timestamp>data.timestamp))  {
-        if (pDesc.project_version>data.project_version)
-              rdata.reload = 2;  // project changed considerably, reload client
-        else  rdata.reload = 1;  // on-client data should be safe
+        rdata.reload = 1;  // on-client data should be safe
+        // if (pDesc.project_version>data.project_version)
+        //       rdata.reload = 2;  // project changed considerably, reload client
+        // else  rdata.reload = 1;  // on-client data should be safe
       }
       if (((!empty) && (pDesc.owner.login==loginData.login)) || (rdata.reload>0))  {
         // save on reading files if nothing changes
