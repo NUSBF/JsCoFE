@@ -1,3 +1,5 @@
+.. _ligands_built:
+
 =======================	
 Make Ligand with Acedrg
 =======================

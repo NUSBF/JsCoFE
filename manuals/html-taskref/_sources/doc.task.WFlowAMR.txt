@@ -2,13 +2,18 @@
 Automatic Molecular Replacement Workflow
 ========================================
 
-This task imports and prepares input data for solving structure with an Automatic Molecular Replacement solver (MrBump or MoRDa), and starts the corresponding *Workflow*. Once started, *Workflow* develops automatically, adding new tasks and branches in *Project Tree* as necessary, until arriving at the solution, or being stopped by user, or failing because of being unable to solve the structure. Read more about *Workflows* here. 
+This task imports and prepares input data for solving structure with an Automatic Molecular Replacement solver (MrBump or MoRDa), and starts the corresponding *Workflow*. Once started, *Workflow* develops automatically, adding new tasks and branches in *Project Tree* as necessary, until arriving at the solution, or being stopped by user, or failing because of being unable to solve the structure. Read more about *workflows_guide* here. 
 
 The *Automatic MR Workflow* includes the following stages:
 
 - import of reflection dataset, target sequence and, optionally, ligand description
-- checking PDB for identical lattice parameters with *Simbad*; 
-- preparation of Asymmetric Unit
-- Molecular Replacement with either *MrBump* or *MorDA*
-- if a solution is found, either by *Simbad*, *MrBump* or *MoRDa*, the structure is built with *CCP4Build* or *Buccaneer*, refined, ligand is fit (if given), solvent modelled and deposition package prepared.
+- checking PDB for identical lattice parameters with :ref:`Simbad <simbad_doc>`; 
+- preparation of :ref:`Asymmetric Unit <ASUDef>`
+- Molecular Replacement with either :ref:`MrBump <mrbump_doc>` or :ref:`MorDA <morda_doc>`
+- if a solution is found, either by *Simbad*, *MrBump* or *MoRDa*:
+    - model building with *CCP4Build* or *Buccaneer*
+    - structure refinement
+    - :ref:`ligand fitting <ligands_built>` (if ligand is given)
+    - solvent modelling
+    - deposition package preparation
  

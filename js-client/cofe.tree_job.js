@@ -595,7 +595,7 @@ JobTree.prototype.updateRation = function ( data )  {
 JobTree.prototype.checkReload = function ( self,rdata,details )  {
   if (rdata.reload>1)  {
     var msg =
-      '<h2>Project Update Required</h2>' +
+      '<div style="width:400px;"><h2>Project Update Required</h2>' +
       'Requested operation cannot be performed because the Project was ' +
       'just updated ';
     if ((this.projectData.desc.owner.share.length>0) && (this.projectData.desc.autorun))
@@ -606,8 +606,7 @@ JobTree.prototype.checkReload = function ( self,rdata,details )  {
     else
       msg += 'by automatic workflow running.';
     new MessageBoxF ( 'Project update required',
-        '<h2>Project Update Required</h2>' + msg +
-        '<p>Click "Update" button and try to ' + details + ' again.',
+        msg + '<p>Click "Update" button and try to ' + details + ' again.</div>',
         'Update',function(){
           self.emitSignal ( cofe_signals.reloadTree,rdata );
         },true );
