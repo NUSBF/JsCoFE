@@ -1,3 +1,5 @@
+.. mrbump_doc:
+
 ======
 MrBump
 ======

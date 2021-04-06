@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Automatic Molecular Replacement Workflow &#8212; CCP4 Cloud 1.6 documentation</title>
+    <title>1.2. Automatic Molecular Replacement Workflow &#8212; CCP4 Cloud 1.6 documentation</title>
     
     <link rel="stylesheet" href="_static/haiku.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -28,17 +28,24 @@
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="top" title="CCP4 Cloud 1.6 documentation" href="index.html" /> 
+    <link rel="top" title="CCP4 Cloud 1.6 documentation" href="index.html" />
+    <link rel="up" title="1. Automatic workflows" href="Workflows.html" />
+    <link rel="next" title="2. Data Import" href="Data_Import.html" />
+    <link rel="prev" title="1.1. Automatic Experimental Phasing Workflow" href="doc.task.WFlowAEP.html" /> 
   </head>
   <body role="document">
       <div class="header" role="banner"><h1 class="heading"><a href="index.html">
           <span>CCP4 Cloud 1.6 documentation</span></a></h1>
-        <h2 class="heading"><span>Automatic Molecular Replacement Workflow</span></h2>
+        <h2 class="heading"><span>1.2. Automatic Molecular Replacement Workflow</span></h2>
       </div>
       <div class="topnav" role="navigation" aria-label="top navigation">
       
         <p>
+        «&#160;&#160;<a href="doc.task.WFlowAEP.html">1.1. Automatic Experimental Phasing Workflow</a>
+        &#160;&#160;::&#160;&#160;
         <a class="uplink" href="index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="Data_Import.html">2. Data Import</a>&#160;&#160;»
         </p>
 
       </div>
@@ -46,15 +53,30 @@
         
         
   <div class="section" id="automatic-molecular-replacement-workflow">
-<h1>Automatic Molecular Replacement Workflow<a class="headerlink" href="#automatic-molecular-replacement-workflow" title="Permalink to this headline">¶</a></h1>
-<p>This task imports and prepares input data for solving structure with an Automatic Molecular Replacement solver (MrBump or MoRDa), and starts the corresponding <em>Workflow</em>. Once started, <em>Workflow</em> develops automatically, adding new tasks and branches in <em>Project Tree</em> as necessary, until arriving at the solution, or being stopped by user, or failing because of being unable to solve the structure. Read more about <em>Workflows</em> here.</p>
+<h1>1.2. Automatic Molecular Replacement Workflow<a class="headerlink" href="#automatic-molecular-replacement-workflow" title="Permalink to this headline">¶</a></h1>
+<p>This task imports and prepares input data for solving structure with an Automatic Molecular Replacement solver (MrBump or MoRDa), and starts the corresponding <em>Workflow</em>. Once started, <em>Workflow</em> develops automatically, adding new tasks and branches in <em>Project Tree</em> as necessary, until arriving at the solution, or being stopped by user, or failing because of being unable to solve the structure. Read more about <em>workflows_guide</em> here.</p>
 <p>The <em>Automatic MR Workflow</em> includes the following stages:</p>
-<ul class="simple">
-<li>import of reflection dataset, target sequence and, optionally, ligand description</li>
-<li>checking PDB for identical lattice parameters with <em>Simbad</em>;</li>
-<li>preparation of Asymmetric Unit</li>
-<li>Molecular Replacement with either <em>MrBump</em> or <em>MorDA</em></li>
-<li>if a solution is found, either by <em>Simbad</em>, <em>MrBump</em> or <em>MoRDa</em>, the structure is built with <em>CCP4Build</em> or <em>Buccaneer</em>, refined, ligand is fit (if given), solvent modelled and deposition package prepared.</li>
+<ul>
+<li><p class="first">import of reflection dataset, target sequence and, optionally, ligand description</p>
+</li>
+<li><p class="first">checking PDB for identical lattice parameters with <a class="reference internal" href="doc.task.Simbad.html#simbad-doc"><span class="std std-ref">Simbad</span></a>;</p>
+</li>
+<li><p class="first">preparation of <a class="reference internal" href="doc.task.ASUDef.html#asudef"><span class="std std-ref">Asymmetric Unit</span></a></p>
+</li>
+<li><p class="first">Molecular Replacement with either <span class="xref std std-ref">MrBump</span> or <a class="reference internal" href="doc.task.Morda.html#morda-doc"><span class="std std-ref">MorDA</span></a></p>
+</li>
+<li><dl class="first docutils">
+<dt>if a solution is found, either by <em>Simbad</em>, <em>MrBump</em> or <em>MoRDa</em>:</dt>
+<dd><ul class="first last simple">
+<li>model building with <em>CCP4Build</em> or <em>Buccaneer</em></li>
+<li>structure refinement</li>
+<li><a class="reference internal" href="doc.task.MakeLigand.html#ligands-built"><span class="std std-ref">ligand fitting</span></a> (if ligand is given)</li>
+<li>solvent modelling</li>
+<li>deposition package preparation</li>
+</ul>
+</dd>
+</dl>
+</li>
 </ul>
 </div>
 
@@ -63,7 +85,11 @@
       <div class="bottomnav" role="navigation" aria-label="bottom navigation">
       
         <p>
+        «&#160;&#160;<a href="doc.task.WFlowAEP.html">1.1. Automatic Experimental Phasing Workflow</a>
+        &#160;&#160;::&#160;&#160;
         <a class="uplink" href="index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="Data_Import.html">2. Data Import</a>&#160;&#160;»
         </p>
 
       </div>

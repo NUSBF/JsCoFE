@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>5.1. Molecular Replacement Models and Ensembles &#8212; CCP4 Cloud 1.6 documentation</title>
+    <title>6.1. Molecular Replacement Models and Ensembles &#8212; CCP4 Cloud 1.6 documentation</title>
     
     <link rel="stylesheet" href="_static/haiku.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -29,23 +29,23 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="top" title="CCP4 Cloud 1.6 documentation" href="index.html" />
-    <link rel="up" title="5. Molecular Replacement" href="Molecular_Replacement.html" />
-    <link rel="next" title="5.2. Phaser" href="doc.task.Phaser.html" />
-    <link rel="prev" title="5. Molecular Replacement" href="Molecular_Replacement.html" /> 
+    <link rel="up" title="6. Molecular Replacement" href="Molecular_Replacement.html" />
+    <link rel="next" title="6.2. Phaser" href="doc.task.Phaser.html" />
+    <link rel="prev" title="6. Molecular Replacement" href="Molecular_Replacement.html" /> 
   </head>
   <body role="document">
       <div class="header" role="banner"><h1 class="heading"><a href="index.html">
           <span>CCP4 Cloud 1.6 documentation</span></a></h1>
-        <h2 class="heading"><span>5.1. Molecular Replacement Models and Ensembles</span></h2>
+        <h2 class="heading"><span>6.1. Molecular Replacement Models and Ensembles</span></h2>
       </div>
       <div class="topnav" role="navigation" aria-label="top navigation">
       
         <p>
-        «&#160;&#160;<a href="Molecular_Replacement.html">5. Molecular Replacement</a>
+        «&#160;&#160;<a href="Molecular_Replacement.html">6. Molecular Replacement</a>
         &#160;&#160;::&#160;&#160;
         <a class="uplink" href="index.html">Contents</a>
         &#160;&#160;::&#160;&#160;
-        <a href="doc.task.Phaser.html">5.2. Phaser</a>&#160;&#160;»
+        <a href="doc.task.Phaser.html">6.2. Phaser</a>&#160;&#160;»
         </p>
 
       </div>
@@ -53,12 +53,12 @@
         
         
   <div class="section" id="molecular-replacement-models-and-ensembles">
-<h1>5.1. Molecular Replacement Models and Ensembles<a class="headerlink" href="#molecular-replacement-models-and-ensembles" title="Permalink to this headline">¶</a></h1>
+<h1>6.1. Molecular Replacement Models and Ensembles<a class="headerlink" href="#molecular-replacement-models-and-ensembles" title="Permalink to this headline">¶</a></h1>
 <p><strong>MR Search Models</strong> are structural templates prepared for the use by molecular replacement programs (Phaser and Molrep). MR model may coincide with the homologous structure, however, in many cases it is represented by a selected part of it, which is expected to be most close to target molecule. In CCP4 Cloud, MR search model is associated with sequence it represents.</p>
 <p><strong>MR Ensembles</strong> are superposed sets of sufficiently similar MR models, corresponding to the same target sequence, the use of which often leads to a higher success rate comparing to the use of MR Search Models. In CCP4 Cloud, MR ensemble is associated with tartget sequence it represents.</p>
 <p>MR Search Model(s) and/or MR Ensemble(s) must be prepared before molecular replacement with either Phaser or Molrep. CCP4 Cloud contains several tasks for this purpose.</p>
 <div class="section" id="mr-model-preparation-from-atomic-coordinates">
-<h2>5.1.1. MR Model preparation from atomic coordinates<a class="headerlink" href="#mr-model-preparation-from-atomic-coordinates" title="Permalink to this headline">¶</a></h2>
+<h2>6.1.1. MR Model preparation from atomic coordinates<a class="headerlink" href="#mr-model-preparation-from-atomic-coordinates" title="Permalink to this headline">¶</a></h2>
 <p>This task constructs MR Model as a combination of target sequence and atomic coordinates. The coordinates are usually modified (pruned) in order to remove parts that do not correspond to target sequence. A few modification protocols are available:</p>
 <blockquote>
 <div><ul class="simple">
@@ -76,16 +76,16 @@
 <p>The resulting models can be used in both <code class="docutils literal"><span class="pre">Phaser</span></code> and <code class="docutils literal"><span class="pre">Molrep</span></code> tasks, but the outcome may be different, especially in difficult cases.</p>
 </div>
 <div class="section" id="mr-model-preparation-from-hhpred-alignment">
-<h2>5.1.2. MR Model preparation from HHPRED alignment<a class="headerlink" href="#mr-model-preparation-from-hhpred-alignment" title="Permalink to this headline">¶</a></h2>
+<h2>6.1.2. MR Model preparation from HHPRED alignment<a class="headerlink" href="#mr-model-preparation-from-hhpred-alignment" title="Permalink to this headline">¶</a></h2>
 </div>
 <div class="section" id="mr-ensemble-preparation-from-a-set-of-mr-models">
-<h2>5.1.3. MR Ensemble preparation from a set of MR Models<a class="headerlink" href="#mr-ensemble-preparation-from-a-set-of-mr-models" title="Permalink to this headline">¶</a></h2>
+<h2>6.1.3. MR Ensemble preparation from a set of MR Models<a class="headerlink" href="#mr-ensemble-preparation-from-a-set-of-mr-models" title="Permalink to this headline">¶</a></h2>
 </div>
 <div class="section" id="mr-ensemble-preparation-from-a-set-of-atomic-coordinates">
-<h2>5.1.4. MR Ensemble preparation from a set of atomic coordinates<a class="headerlink" href="#mr-ensemble-preparation-from-a-set-of-atomic-coordinates" title="Permalink to this headline">¶</a></h2>
+<h2>6.1.4. MR Ensemble preparation from a set of atomic coordinates<a class="headerlink" href="#mr-ensemble-preparation-from-a-set-of-atomic-coordinates" title="Permalink to this headline">¶</a></h2>
 </div>
 <div class="section" id="interactive-mr-ensemble-preparation-with-ccp4-mg">
-<h2>5.1.5. Interactive MR Ensemble preparation with CCP4 MG<a class="headerlink" href="#interactive-mr-ensemble-preparation-with-ccp4-mg" title="Permalink to this headline">¶</a></h2>
+<h2>6.1.5. Interactive MR Ensemble preparation with CCP4 MG<a class="headerlink" href="#interactive-mr-ensemble-preparation-with-ccp4-mg" title="Permalink to this headline">¶</a></h2>
 <p>This task starts CCP4 MG graphical viewer on your computer in a special mode, which allows you to find structural
 homologs to your target system, trim and ensemble them interactively with full visual control in real time. Details
 may be found <a class="reference external" href="https://journals.iucr.org/d/issues/2018/03/00/rr5152/">here</a></p>
@@ -103,11 +103,11 @@ may be found <a class="reference external" href="https://journals.iucr.org/d/iss
       <div class="bottomnav" role="navigation" aria-label="bottom navigation">
       
         <p>
-        «&#160;&#160;<a href="Molecular_Replacement.html">5. Molecular Replacement</a>
+        «&#160;&#160;<a href="Molecular_Replacement.html">6. Molecular Replacement</a>
         &#160;&#160;::&#160;&#160;
         <a class="uplink" href="index.html">Contents</a>
         &#160;&#160;::&#160;&#160;
-        <a href="doc.task.Phaser.html">5.2. Phaser</a>&#160;&#160;»
+        <a href="doc.task.Phaser.html">6.2. Phaser</a>&#160;&#160;»
         </p>
 
       </div>

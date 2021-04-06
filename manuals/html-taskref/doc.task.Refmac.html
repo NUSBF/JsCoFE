@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>8.1. REFMAC5 &#8212; CCP4 Cloud 1.6 documentation</title>
+    <title>9.1. REFMAC5 &#8212; CCP4 Cloud 1.6 documentation</title>
     
     <link rel="stylesheet" href="_static/haiku.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -29,23 +29,23 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="top" title="CCP4 Cloud 1.6 documentation" href="index.html" />
-    <link rel="up" title="8. Refinement and Model Building" href="Refinement_and_Model_Building.html" />
-    <link rel="next" title="8.2. Buster Refinement" href="doc.task.Buster.html" />
-    <link rel="prev" title="8. Refinement and Model Building" href="Refinement_and_Model_Building.html" /> 
+    <link rel="up" title="9. Refinement and Model Building" href="Refinement_and_Model_Building.html" />
+    <link rel="next" title="9.2. Buster Refinement" href="doc.task.Buster.html" />
+    <link rel="prev" title="9. Refinement and Model Building" href="Refinement_and_Model_Building.html" /> 
   </head>
   <body role="document">
       <div class="header" role="banner"><h1 class="heading"><a href="index.html">
           <span>CCP4 Cloud 1.6 documentation</span></a></h1>
-        <h2 class="heading"><span>8.1. REFMAC5</span></h2>
+        <h2 class="heading"><span>9.1. REFMAC5</span></h2>
       </div>
       <div class="topnav" role="navigation" aria-label="top navigation">
       
         <p>
-        «&#160;&#160;<a href="Refinement_and_Model_Building.html">8. Refinement and Model Building</a>
+        «&#160;&#160;<a href="Refinement_and_Model_Building.html">9. Refinement and Model Building</a>
         &#160;&#160;::&#160;&#160;
         <a class="uplink" href="index.html">Contents</a>
         &#160;&#160;::&#160;&#160;
-        <a href="doc.task.Buster.html">8.2. Buster Refinement</a>&#160;&#160;»
+        <a href="doc.task.Buster.html">9.2. Buster Refinement</a>&#160;&#160;»
         </p>
 
       </div>
@@ -53,11 +53,11 @@
         
         
   <div class="section" id="refmac5">
-<h1>8.1. REFMAC5<a class="headerlink" href="#refmac5" title="Permalink to this headline">¶</a></h1>
+<h1>9.1. REFMAC5<a class="headerlink" href="#refmac5" title="Permalink to this headline">¶</a></h1>
 <p><a class="reference external" href="https://journals.iucr.org/d/issues/2011/04/00/ba5152/index.html">REFMAC5</a> is a program designed for REFinement of MACromolecular structures. It’s final step in the process of solving a macromolecular crystal (MX) structure, refinement is carried out to maximize the agreement between the model and the X-ray data. Model parameters that are optimized in the refinement process include atomic coordinates, atomic displacement parameters (ADPs), scale factors and, in the presence of twinning, twin fraction(s).  It uses Maximum likelihood and some elements of Bayesian Statististics.</p>
 <p><em>Although refinement procedures are typically designed for the final stages of MX analysis, they are also often used to improve partial models and to calculate the `best&#8217; electron-density maps for further model (re)building.</em></p>
 <div class="section" id="basic-principles-of-refinement">
-<h2>8.1.1. Basic principles of refinement<a class="headerlink" href="#basic-principles-of-refinement" title="Permalink to this headline">¶</a></h2>
+<h2>9.1.1. Basic principles of refinement<a class="headerlink" href="#basic-principles-of-refinement" title="Permalink to this headline">¶</a></h2>
 <p>refinement is a process of fitting the atomic model into observed X-ray crystallographic data. Allows the atomic model to be visualized, criticized and analyzed direct relation between model quality and phase quality. We need to Iteratively improve the model to optimize the agreement between <strong>F</strong> <sub>obs</sub> and <strong>F</strong> <sub>calc</sub></p>
 <p>We work with two types of maps:</p>
 <ul class="simple">
@@ -71,7 +71,7 @@
 <p><em>Before applying bulk solvent scaling and including all low resolution data, check your distribution of &lt;F&gt; looks sensible. This is the raw material for all overall scaling algorithms. A good way to check this is to look at a &lt;Fsq&gt; plot against resolution.</em></p>
 </div>
 <div class="section" id="stages-of-model-building">
-<h2>8.1.2. Stages of model building<a class="headerlink" href="#stages-of-model-building" title="Permalink to this headline">¶</a></h2>
+<h2>9.1.2. Stages of model building<a class="headerlink" href="#stages-of-model-building" title="Permalink to this headline">¶</a></h2>
 <p><strong>Early stages (e.g. straight after MR)</strong></p>
 <ul class="simple">
 <li>Run many cycles (up to 200 with jelly body restraints) of refinement</li>
@@ -96,9 +96,9 @@
 </ul>
 </div>
 <div class="section" id="model-parameterisation">
-<h2>8.1.3. Model Parameterisation<a class="headerlink" href="#model-parameterisation" title="Permalink to this headline">¶</a></h2>
+<h2>9.1.3. Model Parameterisation<a class="headerlink" href="#model-parameterisation" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="b-factors">
-<h3>8.1.3.1. B-factors<a class="headerlink" href="#b-factors" title="Permalink to this headline">¶</a></h3>
+<h3>9.1.3.1. B-factors<a class="headerlink" href="#b-factors" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><strong>describe relative positional uncertainty</strong></div></blockquote>
 <p>Atomic displacement parameters, or B-values, are an integral part of atomic models. They reﬂect the mobility of atoms.</p>
@@ -129,7 +129,7 @@
 </div></blockquote>
 </div>
 <div class="section" id="tls-groups">
-<h3>8.1.3.2. TLS Groups<a class="headerlink" href="#tls-groups" title="Permalink to this headline">¶</a></h3>
+<h3>9.1.3.2. TLS Groups<a class="headerlink" href="#tls-groups" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><strong>describe anisotropic motion</strong></div></blockquote>
 <p><a class="reference external" href="http://skuld.bmsc.washington.edu/~tlsmd/">TLS Motion Determination (TLSMD)</a> analyzes a macromolecular crystal structure for evidence of flexibility, e.g. local or inter-domain motions. It does this by partitioning individual chains into multiple segments that are modeled as rigid bodies undergoing TLS (Translation/Libration/Screw) vibrational (anisotropic) motion. It generates all possible partitions up to a maximum number of segments. Each trial partition is scored by how well it explains the observed atomic displacement parameters (<strong>B values</strong>) that came out of crystallographic refinement.</p>
@@ -156,7 +156,7 @@ Per group (20 parameters):</p>
 </div></blockquote>
 </div>
 <div class="section" id="solvent-model">
-<h3>8.1.3.3. Solvent model<a class="headerlink" href="#solvent-model" title="Permalink to this headline">¶</a></h3>
+<h3>9.1.3.3. Solvent model<a class="headerlink" href="#solvent-model" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><strong>estimation of the bulk solvent contribution to the diffraction</strong></div></blockquote>
 <p>Typically, a significant part of a macromolecular crystal is occupied by disordered (bulk) solvent, whose contribution to low resolution reflections is quite significant. An atomic model of a macromolecule without the contribution of the bulk solvent cannot describe these low resolution diffraction data correctly.</p>
@@ -189,7 +189,7 @@ Per group (20 parameters):</p>
 </div>
 </div>
 <div class="section" id="restraints">
-<h2>8.1.4. Restraints<a class="headerlink" href="#restraints" title="Permalink to this headline">¶</a></h2>
+<h2>9.1.4. Restraints<a class="headerlink" href="#restraints" title="Permalink to this headline">¶</a></h2>
 <p>Standard restraints (used by default) include:</p>
 <ul class="simple">
 <li>Bond lengths</li>
@@ -204,7 +204,7 @@ Per group (20 parameters):</p>
 <blockquote>
 <div><em>we generally deal with restraints, not constraints.</em></div></blockquote>
 <div class="section" id="ncs-non-crystallographic-symmetry-restraints">
-<h3>8.1.4.1. NCS (Non-Crystallographic Symmetry Restraints)<a class="headerlink" href="#ncs-non-crystallographic-symmetry-restraints" title="Permalink to this headline">¶</a></h3>
+<h3>9.1.4.1. NCS (Non-Crystallographic Symmetry Restraints)<a class="headerlink" href="#ncs-non-crystallographic-symmetry-restraints" title="Permalink to this headline">¶</a></h3>
 <p><em>Used if there are two copies of the same molecule present.</em></p>
 <ul>
 <li><p class="first"><strong>Local NCS restraints</strong></p>
@@ -229,7 +229,7 @@ Per group (20 parameters):</p>
 </ul>
 </div>
 <div class="section" id="jelly-body-restraints">
-<h3>8.1.4.2. Jelly-body restraints<a class="headerlink" href="#jelly-body-restraints" title="Permalink to this headline">¶</a></h3>
+<h3>9.1.4.2. Jelly-body restraints<a class="headerlink" href="#jelly-body-restraints" title="Permalink to this headline">¶</a></h3>
 <p>The effect of &#8220;jelly-body&#8221; restraints is the implicit parameterization between the rigid body and individual atoms.</p>
 <dl class="docutils">
 <dt>Jelly-body restraints</dt>
@@ -257,7 +257,7 @@ domains) to move in a concerted fashion. This helps to avoid local minima, incre
 </div>
 </div>
 <div class="section" id="fourier-shell-correlation-fsc">
-<h3>8.1.4.3. Fourier Shell Correlation (FSC)<a class="headerlink" href="#fourier-shell-correlation-fsc" title="Permalink to this headline">¶</a></h3>
+<h3>9.1.4.3. Fourier Shell Correlation (FSC)<a class="headerlink" href="#fourier-shell-correlation-fsc" title="Permalink to this headline">¶</a></h3>
 <p>Fourier shell correlation measures the normalised cross-correlation coefficient between two 3-dimensional volumes over corresponding shells in Fourier space.  FSC calculated over all structure factors.</p>
 <p>The main idea:</p>
 <blockquote>
@@ -295,11 +295,11 @@ domains) to move in a concerted fashion. This helps to avoid local minima, incre
       <div class="bottomnav" role="navigation" aria-label="bottom navigation">
       
         <p>
-        «&#160;&#160;<a href="Refinement_and_Model_Building.html">8. Refinement and Model Building</a>
+        «&#160;&#160;<a href="Refinement_and_Model_Building.html">9. Refinement and Model Building</a>
         &#160;&#160;::&#160;&#160;
         <a class="uplink" href="index.html">Contents</a>
         &#160;&#160;::&#160;&#160;
-        <a href="doc.task.Buster.html">8.2. Buster Refinement</a>&#160;&#160;»
+        <a href="doc.task.Buster.html">9.2. Buster Refinement</a>&#160;&#160;»
         </p>
 
       </div>

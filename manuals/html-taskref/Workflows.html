@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>6. Automatic workflows &#8212; CCP4 Cloud 1.6 documentation</title>
+    <title>1. Automatic workflows &#8212; CCP4 Cloud 1.6 documentation</title>
     
     <link rel="stylesheet" href="_static/haiku.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -29,22 +29,22 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="top" title="CCP4 Cloud 1.6 documentation" href="index.html" />
-    <link rel="next" title="7. Questions and Answers" href="jscofe_QnA.html" />
-    <link rel="prev" title="5. CCP4 Cloud education capabilities" href="jscofe_CloudED.html" /> 
+    <link rel="next" title="1.1. Automatic Experimental Phasing Workflow" href="doc.task.WFlowAEP.html" />
+    <link rel="prev" title="Task Reference" href="index.html" /> 
   </head>
   <body role="document">
       <div class="header" role="banner"><h1 class="heading"><a href="index.html">
           <span>CCP4 Cloud 1.6 documentation</span></a></h1>
-        <h2 class="heading"><span>6. Automatic workflows</span></h2>
+        <h2 class="heading"><span>1. Automatic workflows</span></h2>
       </div>
       <div class="topnav" role="navigation" aria-label="top navigation">
       
         <p>
-        «&#160;&#160;<a href="jscofe_CloudED.html">5. CCP4 Cloud education capabilities</a>
+        «&#160;&#160;<a href="index.html">Task Reference</a>
         &#160;&#160;::&#160;&#160;
         <a class="uplink" href="index.html">Contents</a>
         &#160;&#160;::&#160;&#160;
-        <a href="jscofe_QnA.html">7. Questions and Answers</a>&#160;&#160;»
+        <a href="doc.task.WFlowAEP.html">1.1. Automatic Experimental Phasing Workflow</a>&#160;&#160;»
         </p>
 
       </div>
@@ -52,19 +52,14 @@
         
         
   <div class="section" id="automatic-workflows">
-<span id="workflows-guide"></span><h1>6. Automatic workflows<a class="headerlink" href="#automatic-workflows" title="Permalink to this headline">¶</a></h1>
+<h1>1. Automatic workflows<a class="headerlink" href="#automatic-workflows" title="Permalink to this headline">¶</a></h1>
 <p>Automatic workflows feature structure solution scenarios, such as Molecular Replacement or Experimental Phasing, which include several elemntary tasks. A workflow can start with data import and then attempt phasing, model building, refinement, ligand fitting, solvent modelling and preparing resuts for PDB deposition.</p>
 <p>A workflow will develop the <em>Project Tree</em> and perform all elementary steps automatically, exploring different ways of structure solution and using varios tasks as appropriate. For data of sufficiently high resolution, completeness and quality (no crystal pathologies), automatic workflow can produce a reasonable approximation to final structure. The result may be further improved with elementary task in manual mode, allowing a finer control over tasks&#8217; parameters.</p>
 <p>Not only the workflows can reduced chore, but they may also be used for better understanding the structure solution strategy.</p>
-<div class="section" id="using-automatic-workflows">
-<h2>6.1. Using Automatic Workflows<a class="headerlink" href="#using-automatic-workflows" title="Permalink to this headline">¶</a></h2>
-<p>Automatic Workflow runs tasks as if it were a user of a shared project. If a workflow task fails or does not produced useable results, the follow-up task is not formed and <em>Project branch</em> terminates. Depending on the workflow logics, it may attempt another approach (<em>Project branch</em>) or stop.</p>
-<p>A user can:</p>
-<ul class="simple">
-<li>inspect any workflow job at any time without waiting for the workflow and job to finish</li>
-<li>stop any workflow job, which will stop the corresponding workflow branch</li>
-<li>clone a workflow job, whether running, finished, failed or terminated, modify its parameters and re-run. <em>Such cloned job may be run as part of the workflow (forming a new workflow branch), or in the standard (one-off, manual) mode</em></li>
-<li>use results of any workflow job for further development of the structure solution <em>Project</em>, irrespectively of whether the workflow has run to the last step or not, and in parallel to workflow running.</li>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="doc.task.WFlowAEP.html">1.1. Automatic Experimental Phasing Workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="doc.task.WFlowAMR.html">1.2. Automatic Molecular Replacement Workflow</a></li>
 </ul>
 </div>
 </div>
@@ -74,11 +69,11 @@
       <div class="bottomnav" role="navigation" aria-label="bottom navigation">
       
         <p>
-        «&#160;&#160;<a href="jscofe_CloudED.html">5. CCP4 Cloud education capabilities</a>
+        «&#160;&#160;<a href="index.html">Task Reference</a>
         &#160;&#160;::&#160;&#160;
         <a class="uplink" href="index.html">Contents</a>
         &#160;&#160;::&#160;&#160;
-        <a href="jscofe_QnA.html">7. Questions and Answers</a>&#160;&#160;»
+        <a href="doc.task.WFlowAEP.html">1.1. Automatic Experimental Phasing Workflow</a>&#160;&#160;»
         </p>
 
       </div>

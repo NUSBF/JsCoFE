@@ -9,8 +9,9 @@ Task Reference
 
 .. toctree::
    :numbered:
-   :maxdepth: 3
+   :maxdepth: 2
 
+   Workflows
    Data_Import
    Data_Processing
    Asymmetric_Unit_and_Structure_Revision

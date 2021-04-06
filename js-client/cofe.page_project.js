@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    30.03.21   <--  Date of Last Modification.
+ *    06.04.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -269,7 +269,7 @@ function ProjectPage ( sceneId )  {
       shareProject ( jobTree.projectData.desc,function(desc){
         if (desc)  {
           jobTree.projectData.desc = desc;
-          jobTree.saveProjectData ( [],[],false,function(rdata){} );
+          jobTree.saveProjectData ( [],[],true,function(rdata){} );
           //if (jobTree.projectData.desc.owner.share.length>0)
           if (jobTree.isShared())
             jobTree.startTaskLoop();

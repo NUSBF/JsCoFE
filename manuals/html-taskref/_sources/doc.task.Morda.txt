@@ -1,3 +1,5 @@
+.. _morda_doc:
+
 =====
 Morda
 =====

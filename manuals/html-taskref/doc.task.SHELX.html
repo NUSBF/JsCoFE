@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>6.2. SHELXCD &#8212; CCP4 Cloud 1.6 documentation</title>
+    <title>7.2. SHELXCD &#8212; CCP4 Cloud 1.6 documentation</title>
     
     <link rel="stylesheet" href="_static/haiku.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -29,23 +29,23 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="top" title="CCP4 Cloud 1.6 documentation" href="index.html" />
-    <link rel="up" title="6. Experimental Phasing" href="Experimental_Phasing.html" />
-    <link rel="next" title="7. Density Modification" href="Density_Modification.html" />
-    <link rel="prev" title="6.1. Crank-2" href="doc.task.Crank2.html" /> 
+    <link rel="up" title="7. Experimental Phasing" href="Experimental_Phasing.html" />
+    <link rel="next" title="8. Density Modification" href="Density_Modification.html" />
+    <link rel="prev" title="7.1. Crank-2" href="doc.task.Crank2.html" /> 
   </head>
   <body role="document">
       <div class="header" role="banner"><h1 class="heading"><a href="index.html">
           <span>CCP4 Cloud 1.6 documentation</span></a></h1>
-        <h2 class="heading"><span>6.2. SHELXCD</span></h2>
+        <h2 class="heading"><span>7.2. SHELXCD</span></h2>
       </div>
       <div class="topnav" role="navigation" aria-label="top navigation">
       
         <p>
-        «&#160;&#160;<a href="doc.task.Crank2.html">6.1. Crank-2</a>
+        «&#160;&#160;<a href="doc.task.Crank2.html">7.1. Crank-2</a>
         &#160;&#160;::&#160;&#160;
         <a class="uplink" href="index.html">Contents</a>
         &#160;&#160;::&#160;&#160;
-        <a href="Density_Modification.html">7. Density Modification</a>&#160;&#160;»
+        <a href="Density_Modification.html">8. Density Modification</a>&#160;&#160;»
         </p>
 
       </div>
@@ -55,7 +55,7 @@
   <p id="shelx">The programs <a class="reference external" href="https://journals.iucr.org/a/issues/2008/01/00/sc5010/index.html">SHELXC, SHELXD and SHELXE</a> are designed to provide experimental phasing of macromolecules by the <em>MAD</em> (multi-wavelength anomalous dispersion), <em>SAD</em> (single-wavelength anomalous dispersion), <em>SIR</em> (single isomorphous replacement), <em>SIRAS</em> (combined SAD and SIR) and <em>RIP</em> (phasing based on radiation-induced changes in the structure) methods.</p>
 <p><strong>SHELXC</strong> is designed to provide a simple and fast way of setting up the files for the programs <a class="reference external" href="https://doi.org/10.1107/S0907444902011678">SHELXD</a> (heavy atom location) and <a class="reference external" href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3817699/">SHELXE</a> (phasing and density modification).</p>
 <div class="section" id="shelxcd">
-<h1>6.2. SHELXCD<a class="headerlink" href="#shelxcd" title="Permalink to this headline">¶</a></h1>
+<h1>7.2. SHELXCD<a class="headerlink" href="#shelxcd" title="Permalink to this headline">¶</a></h1>
 <p>The program SHELXC provides a statistical analysis of the input data, estimates the marker-atom structure factors F<sub>A</sub>and the phase shifts α and sets up the files for SHELXD wich used for solving the substructure (i.e. locating the marker atoms).</p>
 <p>SHELXC outputs a file <code class="docutils literal"><span class="pre">_fa.hkl</span></code> containing h, k, l, F<sub>A</sub>, σ(FA) and the phase shift α for use by SHELXD for substructure solution and by SHELXE for calculating starting phases for the density modification and a file <code class="docutils literal"><span class="pre">_fa.ins</span></code> containing the crystal data and instructions for running SHELXD. <code class="docutils literal"><span class="pre">The</span> <span class="pre">α</span> <span class="pre">estimates</span> <span class="pre">are</span> <span class="pre">only</span> <span class="pre">required</span> <span class="pre">for</span> <span class="pre">SHELXE</span></code>. SHELXD writes a <code class="docutils literal"><span class="pre">_fa.res</span></code> file in SHELX format for the best substructure solution, which in turn is read by SHELXE. <em>Content of outputs files you can find at</em> <code class="docutils literal"><span class="pre">Main</span> <span class="pre">Log</span></code> <em>window.</em></p>
 <p>In general the critical parameters for locating heavy atoms with SHELXD are:</p>
@@ -72,7 +72,7 @@
 <p>more information you can find <a class="reference external" href="https://strucbio.biologie.uni-konstanz.de/ccp4wiki/index.php?title=SHELX_C/D/E#SHELXD">here</a></p>
 </div>
 <div class="section" id="id1">
-<h1>6.3. SHELXE<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h1>
+<h1>7.3. SHELXE<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h1>
 <p>The program <a class="reference external" href="https://journals.iucr.org/a/issues/2008/01/00/sc5010/index.html">SHELXE</a> was originally designed for the experimental phasing of macromolecules. SHELXE employs the sphere-of-influence algorithm for density modification to improve these phases <a class="reference external" href="https://www.degruyter.com/view/journals/zkri/217/12/article-p644.xml">[Sheldrick, 2002]</a>. It can also prove useful for expanding a small protein fragment to an almost complete polyalanine trace of the structure</p>
 <p>SHELXE autotracing algorithm is primarily designed to obtain a toehold in maps with very poor starting phases, e.g. with a mean phase error greater than 60°. The tracing of a polyalanine backbone, combining the phases from the trace with the experimental phases and repeating the density modification iteratively. The tracing proceeds as follows.</p>
 <blockquote>
@@ -106,11 +106,11 @@
       <div class="bottomnav" role="navigation" aria-label="bottom navigation">
       
         <p>
-        «&#160;&#160;<a href="doc.task.Crank2.html">6.1. Crank-2</a>
+        «&#160;&#160;<a href="doc.task.Crank2.html">7.1. Crank-2</a>
         &#160;&#160;::&#160;&#160;
         <a class="uplink" href="index.html">Contents</a>
         &#160;&#160;::&#160;&#160;
-        <a href="Density_Modification.html">7. Density Modification</a>&#160;&#160;»
+        <a href="Density_Modification.html">8. Density Modification</a>&#160;&#160;»
         </p>
 
       </div>

@@ -14,6 +14,12 @@ There is two main barriers for *ab initio* phasing: structure size and resolutio
 
     *All-helical structures are favourable cases for phasing with ARCIMBOLDO.*
 
+.. Note::
+        This task performs ARCIMBOLDO_LITE only.
+        
+        ARCIMBOLDO_BORGES and ARCIMBOLDO_SHEDDER tasks and tasks documentation is coming soon
+
+
 
 -----
 Input
@@ -102,7 +108,6 @@ A search and expansion tables shows:
     **CC more than 25%  indicates the solution is found**
 
 **CC** calculated on all data is reliable when atomic resolution data are available but at lower resolution, all random collections of a large enough number of unconstrained atoms show equally high CC values.
-
 
 
 

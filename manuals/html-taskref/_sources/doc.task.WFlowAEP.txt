@@ -1,0 +1,14 @@
+=======================================
+Automatic Experimental Phasing Workflow
+=======================================
+
+This task imports and prepares input data for solving structure with Automatic Experimental Phasing solver (Crank-2), and starts the corresponding *Workflow*. Once started, *Workflow* develops automatically, adding new tasks and branches in *Project Tree* as necessary, until arriving at the solution, or being stopped by user, or failing because of being unable to solve the structure. Read more about *Workflows* :ref:`here<workflows_guide>`. 
+
+The *Automatic EP Workflow* includes the following stages:
+
+- import of reflection dataset, target sequence and, optionally, ligand description
+- preparation of :ref:`Asymmetric Unit <ASUDef>`
+- Experimental Phasing with :ref:`Crank-2 <crank_doc>`
+- :ref:`ligand fitting <ligands_built>` (if given on input) 
+- solvent modelling
+- deposition package preparation.

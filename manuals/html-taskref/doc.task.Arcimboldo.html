@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>4.5. Fragment Molecular Replacement with Arcimboldo &#8212; CCP4 Cloud 1.6 documentation</title>
+    <title>5.5. Fragment Molecular Replacement with Arcimboldo &#8212; CCP4 Cloud 1.6 documentation</title>
     
     <link rel="stylesheet" href="_static/haiku.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -29,23 +29,23 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="top" title="CCP4 Cloud 1.6 documentation" href="index.html" />
-    <link rel="up" title="4. Automated Molecular Replacement" href="Automated_Molecular_Replacement.html" />
-    <link rel="next" title="4.6. Ample" href="doc.task.Ample.html" />
-    <link rel="prev" title="4.4. Simbad" href="doc.task.Simbad.html" /> 
+    <link rel="up" title="5. Automated Molecular Replacement" href="Automated_Molecular_Replacement.html" />
+    <link rel="next" title="5.6. Ample" href="doc.task.Ample.html" />
+    <link rel="prev" title="5.4. Simbad" href="doc.task.Simbad.html" /> 
   </head>
   <body role="document">
       <div class="header" role="banner"><h1 class="heading"><a href="index.html">
           <span>CCP4 Cloud 1.6 documentation</span></a></h1>
-        <h2 class="heading"><span>4.5. Fragment Molecular Replacement with Arcimboldo</span></h2>
+        <h2 class="heading"><span>5.5. Fragment Molecular Replacement with Arcimboldo</span></h2>
       </div>
       <div class="topnav" role="navigation" aria-label="top navigation">
       
         <p>
-        «&#160;&#160;<a href="doc.task.Simbad.html">4.4. Simbad</a>
+        «&#160;&#160;<a href="doc.task.Simbad.html">5.4. Simbad</a>
         &#160;&#160;::&#160;&#160;
         <a class="uplink" href="index.html">Contents</a>
         &#160;&#160;::&#160;&#160;
-        <a href="doc.task.Ample.html">4.6. Ample</a>&#160;&#160;»
+        <a href="doc.task.Ample.html">5.6. Ample</a>&#160;&#160;»
         </p>
 
       </div>
@@ -53,7 +53,7 @@
         
         
   <div class="section" id="fragment-molecular-replacement-with-arcimboldo">
-<h1>4.5. Fragment Molecular Replacement with Arcimboldo<a class="headerlink" href="#fragment-molecular-replacement-with-arcimboldo" title="Permalink to this headline">¶</a></h1>
+<h1>5.5. Fragment Molecular Replacement with Arcimboldo<a class="headerlink" href="#fragment-molecular-replacement-with-arcimboldo" title="Permalink to this headline">¶</a></h1>
 <p><a class="reference external" href="http://journals.iucr.org/m/issues/2015/01/00/lz5004/">ARCIMBOLDO</a>, originally conceived for <em>ab initio</em> phasing of macromolecular structures.</p>
 <p>There is two main barriers for <em>ab initio</em> phasing: structure size and resolution of the data. <strong>ARCIMBOLDO</strong> constitutes a general method for 2Å data, based on combination of small α-helices with <a class="reference internal" href="doc.task.Phaser.html#phaser-go"><span class="std std-ref">PHASER</span></a> ( to locate of small model fragments) and <a class="reference internal" href="doc.task.SHELX.html#shelx"><span class="std std-ref">SHELXE</span></a> (density modification with and autotracing). The method has been named after the Italian painter Giuseppe Arcimboldo, best known for creating compose portraits out of  fruits, vegetables, flowers, fish, and books.</p>
 <p><code class="docutils literal"><span class="pre">ARCIMBOLDO_LITE</span></code> performs <em>ab initio</em> phasing using polyalanine helices or other single search fragments. (<a class="reference external" href="http://chango.ibmb.csic.es/">http://chango.ibmb.csic.es/</a>)</p>
@@ -61,15 +61,20 @@
 <p><code class="docutils literal"><span class="pre">ARCIMBOLDO_SHREDDER</span></code> uses fragments derived from a distant homologue template. (<a class="reference external" href="http://chango.ibmb.csic.es/shredder">http://chango.ibmb.csic.es/shredder</a>)</p>
 <blockquote>
 <div><em>All-helical structures are favourable cases for phasing with ARCIMBOLDO.</em></div></blockquote>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>This task performs ARCIMBOLDO_LITE only.</p>
+<p class="last">ARCIMBOLDO_BORGES and ARCIMBOLDO_SHEDDER tasks and tasks documentation is coming soon</p>
+</div>
 <div class="section" id="input">
-<h2>4.5.1. Input<a class="headerlink" href="#input" title="Permalink to this headline">¶</a></h2>
+<h2>5.5.1. Input<a class="headerlink" href="#input" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li>The default value of the rmsd for model helices is 0.2 Å (this value can be increased).</li>
 <li>It is mandatory to define the number of helices to search and their length (length needs to be specified according to secondary-structure prediction or previous knowledge about the target structure).</li>
 <li>The molecular weight, number of components and estimated rmsd should be defined for the PHASER search.</li>
 </ul>
 <div class="section" id="coil-coiled-mode">
-<h3>4.5.1.1. Coil coiled mode<a class="headerlink" href="#coil-coiled-mode" title="Permalink to this headline">¶</a></h3>
+<h3>5.5.1.1. Coil coiled mode<a class="headerlink" href="#coil-coiled-mode" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><em>represent a search algorithm to probe and verify alternative helix directions</em></div></blockquote>
 <p>Coil coiled mode entails:*</p>
@@ -91,7 +96,7 @@
 </div>
 </div>
 <div class="section" id="output">
-<h2>4.5.2. Output<a class="headerlink" href="#output" title="Permalink to this headline">¶</a></h2>
+<h2>5.5.2. Output<a class="headerlink" href="#output" title="Permalink to this headline">¶</a></h2>
 <p>Arcimboldo report window summarizes your job results. A search and expansion tables updated in real time and can help to judge parameterization.</p>
 <p>A search and expansion tables shows:</p>
 <dl class="docutils">
@@ -154,11 +159,11 @@
       <div class="bottomnav" role="navigation" aria-label="bottom navigation">
       
         <p>
-        «&#160;&#160;<a href="doc.task.Simbad.html">4.4. Simbad</a>
+        «&#160;&#160;<a href="doc.task.Simbad.html">5.4. Simbad</a>
         &#160;&#160;::&#160;&#160;
         <a class="uplink" href="index.html">Contents</a>
         &#160;&#160;::&#160;&#160;
-        <a href="doc.task.Ample.html">4.6. Ample</a>&#160;&#160;»
+        <a href="doc.task.Ample.html">5.6. Ample</a>&#160;&#160;»
         </p>
 
       </div>
