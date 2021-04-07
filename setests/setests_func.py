@@ -1047,20 +1047,28 @@ def doubleClickTaskInTaskTree(driver, taskName):
 
 
 def tasksTreeTexts(driver):
+
+    # hack with try/except to make many attempts in the case page was 'refreshed' - tests fail with this nonsense regularly
+
+    c = 1
+    treeRead = False
     realTexts = []
-    tasksText = driver.find_elements(By.XPATH,
-                                     "//a[contains(@id,'treenode') and contains(@class, 'jstree-anchor')]")
-    try:
-        for t in tasksText:
-            realTexts.append(t.text)
-    # ugly hack with try/except to make second attempt in the case page was 'refreshed' - test fail with this nonsense regularly
-    except:
-        time.sleep(1.7)
-        realTexts = []
-        tasksText = driver.find_elements(By.XPATH,
-                                         "//a[contains(@id,'treenode') and contains(@class, 'jstree-anchor')]")
-        for t in tasksText:
-            realTexts.append(t.text)
+
+    while not treeRead and c <= 5:
+        try:
+            time.sleep(0.2)
+            realTexts = []
+            tasksText = driver.find_elements(By.XPATH,
+                                             "//a[contains(@id,'treenode') and contains(@class, 'jstree-anchor')]")
+            for t in tasksText:
+                realTexts.append(t.text)
+
+            treeRead = True
+
+        except:
+            c += 1
+
+    print ('tasksTreeTexts: %d attempts' % c)
 
     return realTexts
 
