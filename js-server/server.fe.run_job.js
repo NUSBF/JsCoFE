@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    30.03.21   <--  Date of Last Modification.
+ *    07.04.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -1138,24 +1138,6 @@ function addJobAuto ( jobEntry,jobClass )  {
             log.error ( 21,'wrong task class name ' + auto_meta[key]._type );
           } else  {
 
-            // form task
-
-            task.project          = projectName;
-            task.id               = ++projectData.desc.jobCount;
-            task.name             = task.name;
-            task.autoRunName      = key;
-            // task.harvestedTaskIds = dataBox.harvestedTaskIds;
-            task.autoRunId        = jobClass.autoRunId;
-            task.submitter        = loginData.login;
-            task.input_data.data  = auto_meta[key].data;
-            task.start_time       = Date.now();
-
-            for (var field in auto_meta[key].fields)
-              task[field] = auto_meta[key].fields[field];
-
-            task._clone_suggested ( task.parameters,auto_meta[key].parameters );
-            tasks.push ( task );
-
             // place job tree node
 
             pid = jobEntry.jobId;
@@ -1163,21 +1145,43 @@ function addJobAuto ( jobEntry,jobClass )  {
               pid = auto_meta.context.job_register[auto_meta[key].parentName];
 
             var pnode = pd.getProjectNode ( projectData,pid );
-            var ipath = path.parse ( pnode.icon );
-            var pnode_json = JSON.stringify ( pnode );
+            if (pnode)  {
 
-            var cnode = JSON.parse ( pnode_json );
-            cnode.id       = pnode.id + '_' + key;
-            cnode.parentId = pnode.id;
-            cnode.dataId   = task.id;
-            cnode.icon     = path.join ( ipath.dir,task.icon()+ipath.ext );
-            cnode.text     = '<b>' + task.autoRunId + ':</b>[' +
-                             com_utils.padDigits(task.id,4) + '] ' + task.name;
-            cnode.text0    = cnode.text;
-            cnode.children = [];
-            pnode.children.push ( cnode );
+              // form task
 
-            auto_meta.context.job_register[key] = task.id;
+              task.project          = projectName;
+              task.id               = ++projectData.desc.jobCount;
+              task.name             = task.name;
+              task.autoRunName      = key;
+              // task.harvestedTaskIds = dataBox.harvestedTaskIds;
+              task.autoRunId        = jobClass.autoRunId;
+              task.submitter        = loginData.login;
+              task.input_data.data  = auto_meta[key].data;
+              task.start_time       = Date.now();
+
+              for (var field in auto_meta[key].fields)
+                task[field] = auto_meta[key].fields[field];
+
+              task._clone_suggested ( task.parameters,auto_meta[key].parameters );
+              tasks.push ( task );
+
+              var ipath = path.parse ( pnode.icon );
+              var pnode_json = JSON.stringify ( pnode );
+
+              var cnode = JSON.parse ( pnode_json );
+              cnode.id       = pnode.id + '_' + key;
+              cnode.parentId = pnode.id;
+              cnode.dataId   = task.id;
+              cnode.icon     = path.join ( ipath.dir,task.icon()+ipath.ext );
+              cnode.text     = '<b>' + task.autoRunId + ':</b>[' +
+                               com_utils.padDigits(task.id,4) + '] ' + task.name;
+              cnode.text0    = cnode.text;
+              cnode.children = [];
+              pnode.children.push ( cnode );
+
+              auto_meta.context.job_register[key] = task.id;
+
+            }
 
           }
         }
