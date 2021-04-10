@@ -1,39 +1,26 @@
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
     <title>3.3. Interactive Image Processing with iMosflm &#8212; CCP4 Cloud 1.6 documentation</title>
-    
     <link rel="stylesheet" href="_static/haiku.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="_static/contentui.css" type="text/css" />
-    
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    './',
-        VERSION:     '1.6',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
-      };
-    </script>
+    <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
     <script type="text/javascript" src="_static/contentui.js"></script>
-    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="top" title="CCP4 Cloud 1.6 documentation" href="index.html" />
-    <link rel="up" title="3. Data Processing" href="Data_Processing.html" />
     <link rel="next" title="3.4. Data Reduction with Aimless" href="doc.task.Aimless.html" />
     <link rel="prev" title="3.2. Interactive Image Processing with DIALS/DUI" href="doc.task.DUI.html" /> 
-  </head>
-  <body role="document">
+  </head><body>
       <div class="header" role="banner"><h1 class="heading"><a href="index.html">
           <span>CCP4 Cloud 1.6 documentation</span></a></h1>
         <h2 class="heading"><span>3.3. Interactive Image Processing with iMosflm</span></h2>
@@ -60,16 +47,16 @@ MOSFLM  is a program to process diffraction data collected using the oscillation
 <p><strong>Images</strong>, <strong>Indexing</strong>, <strong>Strategy</strong>, <strong>Cell Refinement</strong>, <strong>Integration</strong>, <strong>History</strong></p>
 <div class="admonition tip">
 <p class="first admonition-title">Tip</p>
-<p class="last"><code class="docutils literal"><span class="pre">By</span> <span class="pre">clicking</span> <span class="pre">on</span> <span class="pre">&quot;User</span> <span class="pre">Guide&quot;</span> <span class="pre">you</span> <span class="pre">will</span> <span class="pre">guide</span> <span class="pre">to</span> <span class="pre">iMOSFILM</span> <span class="pre">user</span> <span class="pre">guide</span> <span class="pre">sections.</span></code></p>
+<p class="last"><code class="docutils literal notranslate"><span class="pre">By</span> <span class="pre">clicking</span> <span class="pre">on</span> <span class="pre">&quot;User</span> <span class="pre">Guide&quot;</span> <span class="pre">you</span> <span class="pre">will</span> <span class="pre">guide</span> <span class="pre">to</span> <span class="pre">iMOSFILM</span> <span class="pre">user</span> <span class="pre">guide</span> <span class="pre">sections.</span></code></p>
 </div>
 <div class="section" id="images">
 <h2>3.3.1. Images<a class="headerlink" href="#images" title="Permalink to this headline">¶</a></h2>
 <p><a class="reference external" href="https://www.mrc-lmb.cam.ac.uk/harry/imosflm/ver730/documentation/tutorial.html#mozTocId486119">User Guide</a></p>
 <div class="admonition tip">
 <p class="first admonition-title">Tip</p>
-<p class="last"><code class="docutils literal"><span class="pre">There</span> <span class="pre">is</span> <span class="pre">no</span> <span class="pre">need</span> <span class="pre">to</span> <span class="pre">select</span> <span class="pre">all</span> <span class="pre">the</span> <span class="pre">images</span> <span class="pre">in</span> <span class="pre">the</span> <span class="pre">dataset</span> <span class="pre">-</span> <span class="pre">iMosflm</span> <span class="pre">assumes</span> <span class="pre">that</span> <span class="pre">(normally)</span> <span class="pre">you</span> <span class="pre">will</span> <span class="pre">want</span> <span class="pre">to</span> <span class="pre">load</span> <span class="pre">a</span> <span class="pre">complete</span> <span class="pre">dataset,</span> <span class="pre">so</span> <span class="pre">it</span> <span class="pre">finds</span> <span class="pre">all</span> <span class="pre">images</span> <span class="pre">that</span> <span class="pre">fit</span> <span class="pre">the</span> <span class="pre">&quot;image</span> <span class="pre">template&quot;</span> <span class="pre">if</span> <span class="pre">you</span> <span class="pre">pick</span> <span class="pre">any</span> <span class="pre">file</span> <span class="pre">in</span> <span class="pre">the</span> <span class="pre">dataset</span> <span class="pre">and</span> <span class="pre">the</span> <span class="pre">displayed</span> <span class="pre">image</span> <span class="pre">will</span> <span class="pre">the</span> <span class="pre">one</span> <span class="pre">you</span> <span class="pre">chose.</span></code></p>
+<p class="last"><code class="docutils literal notranslate"><span class="pre">There</span> <span class="pre">is</span> <span class="pre">no</span> <span class="pre">need</span> <span class="pre">to</span> <span class="pre">select</span> <span class="pre">all</span> <span class="pre">the</span> <span class="pre">images</span> <span class="pre">in</span> <span class="pre">the</span> <span class="pre">dataset</span> <span class="pre">-</span> <span class="pre">iMosflm</span> <span class="pre">assumes</span> <span class="pre">that</span> <span class="pre">(normally)</span> <span class="pre">you</span> <span class="pre">will</span> <span class="pre">want</span> <span class="pre">to</span> <span class="pre">load</span> <span class="pre">a</span> <span class="pre">complete</span> <span class="pre">dataset,</span> <span class="pre">so</span> <span class="pre">it</span> <span class="pre">finds</span> <span class="pre">all</span> <span class="pre">images</span> <span class="pre">that</span> <span class="pre">fit</span> <span class="pre">the</span> <span class="pre">&quot;image</span> <span class="pre">template&quot;</span> <span class="pre">if</span> <span class="pre">you</span> <span class="pre">pick</span> <span class="pre">any</span> <span class="pre">file</span> <span class="pre">in</span> <span class="pre">the</span> <span class="pre">dataset</span> <span class="pre">and</span> <span class="pre">the</span> <span class="pre">displayed</span> <span class="pre">image</span> <span class="pre">will</span> <span class="pre">the</span> <span class="pre">one</span> <span class="pre">you</span> <span class="pre">chose.</span></code></p>
 </div>
-<p>Images collected using the Dectris Eiger detector are not written as a single file per image, but multiple images are written to a single file in <strong>HDF5</strong> format. iMosflm will read <strong>HDF5 &#8220;master&#8221; files</strong> (Not NeXus files). The program has been tested on HDF5 files produced at Diamond Light Source and ESRF. However, at present, there is no well defined standard for the way in which the experimental information is stored in the HDF5 files (wavelength, detector distance, beam coordinates, rotation angles etc), and so this information may be incomplete or incorrect.  It may therefore be necessary to enter or correct this data in iMosflm before attempting to process the images (see the <a class="reference external" href="https://www.mrc-lmb.cam.ac.uk/harry/imosflm/ver730/documentation/tutorial.html#mozTocId215473">iMosflm tutorial</a> ).</p>
+<p>Images collected using the Dectris Eiger detector are not written as a single file per image, but multiple images are written to a single file in <strong>HDF5</strong> format. iMosflm will read <strong>HDF5 “master” files</strong> (Not NeXus files). The program has been tested on HDF5 files produced at Diamond Light Source and ESRF. However, at present, there is no well defined standard for the way in which the experimental information is stored in the HDF5 files (wavelength, detector distance, beam coordinates, rotation angles etc), and so this information may be incomplete or incorrect.  It may therefore be necessary to enter or correct this data in iMosflm before attempting to process the images (see the <a class="reference external" href="https://www.mrc-lmb.cam.ac.uk/harry/imosflm/ver730/documentation/tutorial.html#mozTocId215473">iMosflm tutorial</a> ).</p>
 </div>
 <div class="section" id="indexing">
 <h2>3.3.2. Indexing<a class="headerlink" href="#indexing" title="Permalink to this headline">¶</a></h2>
@@ -93,7 +80,7 @@ MOSFLM  is a program to process diffraction data collected using the oscillation
 </li>
 <li><p class="first">Estimate mosaic spread</p>
 <blockquote>
-<div><p><code class="docutils literal"><span class="pre">indexing</span> <span class="pre">only</span> <span class="pre">gives</span> <span class="pre">an</span> <span class="pre">approximate</span> <span class="pre">solution;</span> <span class="pre">we</span> <span class="pre">hope</span> <span class="pre">it</span> <span class="pre">will</span> <span class="pre">be</span> <span class="pre">good</span> <span class="pre">enough</span> <span class="pre">to</span> <span class="pre">proceed.</span></code></p>
+<div><p><code class="docutils literal notranslate"><span class="pre">indexing</span> <span class="pre">only</span> <span class="pre">gives</span> <span class="pre">an</span> <span class="pre">approximate</span> <span class="pre">solution;</span> <span class="pre">we</span> <span class="pre">hope</span> <span class="pre">it</span> <span class="pre">will</span> <span class="pre">be</span> <span class="pre">good</span> <span class="pre">enough</span> <span class="pre">to</span> <span class="pre">proceed.</span></code></p>
 </div></blockquote>
 </li>
 </ul>
@@ -105,7 +92,7 @@ correspond to lattice points):</p>
 <p>Here, <strong>D</strong> is the crystal to detector distance, <strong>X</strong> <sub>d</sub> and <strong>Y</strong> <sub>d</sub> are the spot co-ordinates relative to the beam centre on the image, and <strong>r</strong> is derived above (usually these are all in mm). In this calculation, <strong>s</strong> is in dimensionless reciprocal lattice units and the radius of the Ewald sphere is unity.</p>
 <p><strong>wavelength, crystal to detector distance and beam centre must all be known</strong></p>
 <blockquote>
-<div><code class="docutils literal"><span class="pre">All</span> <span class="pre">the</span> <span class="pre">spots</span> <span class="pre">that</span> <span class="pre">are</span> <span class="pre">visible</span> <span class="pre">on</span> <span class="pre">the</span> <span class="pre">image</span> <span class="pre">correspond</span> <span class="pre">to</span> <span class="pre">reciprocal</span> <span class="pre">lattice</span> <span class="pre">points</span> <span class="pre">that</span> <span class="pre">are</span> <span class="pre">on</span> <span class="pre">the</span> <span class="pre">Ewald</span> <span class="pre">sphere</span> <span class="pre">at</span> <span class="pre">some</span> <span class="pre">point</span> <span class="pre">during</span> <span class="pre">this</span> <span class="pre">individual</span> <span class="pre">exposure</span></code></div></blockquote>
+<div><code class="docutils literal notranslate"><span class="pre">All</span> <span class="pre">the</span> <span class="pre">spots</span> <span class="pre">that</span> <span class="pre">are</span> <span class="pre">visible</span> <span class="pre">on</span> <span class="pre">the</span> <span class="pre">image</span> <span class="pre">correspond</span> <span class="pre">to</span> <span class="pre">reciprocal</span> <span class="pre">lattice</span> <span class="pre">points</span> <span class="pre">that</span> <span class="pre">are</span> <span class="pre">on</span> <span class="pre">the</span> <span class="pre">Ewald</span> <span class="pre">sphere</span> <span class="pre">at</span> <span class="pre">some</span> <span class="pre">point</span> <span class="pre">during</span> <span class="pre">this</span> <span class="pre">individual</span> <span class="pre">exposure</span></code></div></blockquote>
 <p>The default autoindexing in Mosflm operates with spots found on a single image; although each can include spots from multiple images. Mosflm works best with spots from a series of non-contiguous images, which are well separated in φ; by default, iMosflm will use spots from two images that are as close as possible to 90° apart in φ. It assigns the midpoint of the rotation range of each image as the value for the reflection in the autoindexing procedure, so if contiguous images are used, different parts of a single reflection may be found on consecutive images, and each part of the same reflection will be assigned a different φ; autoindexing is likely to fail.</p>
 <p>Indexing itself within Mosflm uses a “real-space” method (i.e. the real space unit cell dimensions are obtained directly, rather than via the reciprocal space unit cell) using an <a class="reference external" href="http://journals.iucr.org/d/issues/1999/10/00/ba0024/ba0024.pdf">FFT-based method</a>. For reciprocal lattice planes that have a simple relationship to each other, the projected vectors will also have a simple relationship. For example, the vectors corresponding to the 1kl, 2kl, 3kl planes will have lengths in the ratio 1:2:3. The projections which have more contributing planes will have more regularly spaced peaks, and so give rise to Fourier Transforms with peaks which are more distinct from the background. The indexing in Mosflm calculates several hundred projections, regularly spaced around a hemisphere of reciprocal space and applies a Fast Fourier Transform (FFT) to each. Although in principle, we only need to find the 3 FFTs corresponding to the three principal cell axes, they may not all be present (e.g. if the crystal orientation does not allow it), or we may find vectors corresponding to edges in a non-reduced cell. In practice, 30 FFTs produced which have the largest peaks are selected to determine which can be combined to give a real space unit cell which accounts for the majority of the reflections.</p>
 </div>
@@ -128,7 +115,7 @@ correspond to lattice points):</p>
 <ul>
 <li><p class="first">uses the spot positions on each image, so it can be done for each image without reference to the others. Both fully and partially recorded reflections can be used.</p>
 <blockquote>
-<div><p><code class="docutils literal"><span class="pre">Positional</span> <span class="pre">refinement</span> <span class="pre">can</span> <span class="pre">be</span> <span class="pre">done</span> <span class="pre">on</span> <span class="pre">an</span> <span class="pre">image-by-image</span> <span class="pre">basis,</span> <span class="pre">since</span> <span class="pre">all</span> <span class="pre">the</span> <span class="pre">information</span> <span class="pre">required</span> <span class="pre">is</span> <span class="pre">present</span> <span class="pre">on</span> <span class="pre">each</span> <span class="pre">image;</span> <span class="pre">all</span> <span class="pre">integration</span> <span class="pre">programs</span> <span class="pre">allow</span> <span class="pre">this</span></code></p>
+<div><p><code class="docutils literal notranslate"><span class="pre">Positional</span> <span class="pre">refinement</span> <span class="pre">can</span> <span class="pre">be</span> <span class="pre">done</span> <span class="pre">on</span> <span class="pre">an</span> <span class="pre">image-by-image</span> <span class="pre">basis,</span> <span class="pre">since</span> <span class="pre">all</span> <span class="pre">the</span> <span class="pre">information</span> <span class="pre">required</span> <span class="pre">is</span> <span class="pre">present</span> <span class="pre">on</span> <span class="pre">each</span> <span class="pre">image;</span> <span class="pre">all</span> <span class="pre">integration</span> <span class="pre">programs</span> <span class="pre">allow</span> <span class="pre">this</span></code></p>
 </div></blockquote>
 </li>
 </ul>
@@ -177,7 +164,7 @@ correspond to lattice points):</p>
 <p><strong>References</strong></p>
 <p>Arndt, U. W. &amp; Wonacott, A. J. (1977). Editors. The Rotation Method in Crystallography Amsterdam: North-Holland</p>
 <p><strong>ACKNOWLEDGEMENTS</strong></p>
-<p>This article uses materials from Dr. Harry Powell lecture  &#8220;Integration and Scaling&#8221;.   We wish to thank  Dr. Harry Powell, Dr. Andrew Leslie, Dr. Owen Johnson for an amazing <a class="reference external" href="https://www.mrc-lmb.cam.ac.uk/harry/imosflm/ver730/documentation/tutorial.html">iMosflm Tutorial</a>.</p>
+<p>This article uses materials from Dr. Harry Powell lecture  “Integration and Scaling”.   We wish to thank  Dr. Harry Powell, Dr. Andrew Leslie, Dr. Owen Johnson for an amazing <a class="reference external" href="https://www.mrc-lmb.cam.ac.uk/harry/imosflm/ver730/documentation/tutorial.html">iMosflm Tutorial</a>.</p>
 </div>
 </div>
 
@@ -196,7 +183,7 @@ correspond to lattice points):</p>
       </div>
 
     <div class="footer" role="contentinfo">
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.8.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.5.
     </div>
   </body>
 </html>

@@ -1,37 +1,25 @@
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
     <title>9. CCP4 Cloud Version Log &#8212; CCP4 Cloud 1.6 documentation</title>
-    
     <link rel="stylesheet" href="_static/haiku.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="_static/contentui.css" type="text/css" />
-    
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    './',
-        VERSION:     '1.6',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
-      };
-    </script>
+    <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
     <script type="text/javascript" src="_static/contentui.js"></script>
-    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="top" title="CCP4 Cloud 1.6 documentation" href="index.html" />
     <link rel="prev" title="8. Troubleshooting" href="jscofe_troubleshooting.html" /> 
-  </head>
-  <body role="document">
+  </head><body>
       <div class="header" role="banner"><h1 class="heading"><a href="index.html">
           <span>CCP4 Cloud 1.6 documentation</span></a></h1>
         <h2 class="heading"><span>9. CCP4 Cloud Version Log</span></h2>
@@ -52,7 +40,7 @@
 <h1>9. CCP4 Cloud Version Log<a class="headerlink" href="#ccp4-cloud-version-log" title="Permalink to this headline">¶</a></h1>
 <p><strong>Version 1.6.021</strong></p>
 <blockquote>
-<div><p><em>Released on &#8211;.&#8211;.2021 with CCP4 7.1.013</em></p>
+<div><p><em>Released on –.–.2021 with CCP4 7.1.013</em></p>
 <p><strong>Changes and new features</strong></p>
 <ol class="arabic simple">
 <li>Deleting running jobs made made a safe regular operation</li>
@@ -69,17 +57,17 @@
 <div><p><em>Released on 15.03.2021 with CCP4 7.1.012</em></p>
 <p><strong>Changes and new features</strong></p>
 <ol class="arabic simple">
-<li>Added <code class="docutils literal"><span class="pre">Arcimboldo</span></code> task for Fragment-based Molecuar Replacement</li>
+<li>Added <code class="docutils literal notranslate"><span class="pre">Arcimboldo</span></code> task for Fragment-based Molecuar Replacement</li>
 <li>Multiple GUI bugs fixed</li>
 <li>Fixed a bug breaking import of certain project files on MS Windows systems</li>
 <li>Buster 2.10.4 adopted</li>
 <li>Fixed a bug causing CCP4 Cloud to stall after running MR ensemble preparation tasks under certain circumstances</li>
 <li>Ligand libraries with duplicate component lists (old bugs elsewhere) can now be imported</li>
-<li><code class="docutils literal"><span class="pre">Crank-2</span></code> has new parameter &#8220;parallel model building depth&#8221; to balance between model building efficiency and speed</li>
-<li>Fixed a bug in <code class="docutils literal"><span class="pre">Coot</span></code> task on Windows causing the loss of backup copies</li>
-<li><code class="docutils literal"><span class="pre">Deposition</span></code> task can now work with Buster output directly</li>
+<li><code class="docutils literal notranslate"><span class="pre">Crank-2</span></code> has new parameter “parallel model building depth” to balance between model building efficiency and speed</li>
+<li>Fixed a bug in <code class="docutils literal notranslate"><span class="pre">Coot</span></code> task on Windows causing the loss of backup copies</li>
+<li><code class="docutils literal notranslate"><span class="pre">Deposition</span></code> task can now work with Buster output directly</li>
 <li>Fixed a bug due to which CCP4 Cloud erroneously asked for CPU quota in desktop mode</li>
-<li>Fixed bug in parsing newer HHPRED files (affected the <code class="docutils literal"><span class="pre">Model</span> <span class="pre">preparation</span> <span class="pre">from</span> <span class="pre">alignment</span></code> task)</li>
+<li>Fixed bug in parsing newer HHPRED files (affected the <code class="docutils literal notranslate"><span class="pre">Model</span> <span class="pre">preparation</span> <span class="pre">from</span> <span class="pre">alignment</span></code> task)</li>
 </ol>
 </div></blockquote>
 <p><strong>Version 1.6.019</strong></p>
@@ -87,21 +75,21 @@
 <div><p><em>Released on 19.02.2021 with CCP4 7.1.011</em></p>
 <p><strong>Changes and new features</strong></p>
 <ol class="arabic simple">
-<li>Added <code class="docutils literal"><span class="pre">Import</span> <span class="pre">&amp;</span> <span class="pre">Replace</span></code> task, combining generic import and revision editing</li>
+<li>Added <code class="docutils literal notranslate"><span class="pre">Import</span> <span class="pre">&amp;</span> <span class="pre">Replace</span></code> task, combining generic import and revision editing</li>
 <li>Specification of wavelength made compulsory on .sca file import</li>
 <li>Minor changes in task names and re-arangements in Task List</li>
-<li><code class="docutils literal"><span class="pre">Coot</span></code> task now loads revision&#8217;s heavy-atom substructure automatically</li>
-<li>Anomalous maps are calculated automatically in <code class="docutils literal"><span class="pre">Refmac</span></code> and <code class="docutils literal"><span class="pre">Buster</span></code> tasks</li>
+<li><code class="docutils literal notranslate"><span class="pre">Coot</span></code> task now loads revision’s heavy-atom substructure automatically</li>
+<li>Anomalous maps are calculated automatically in <code class="docutils literal notranslate"><span class="pre">Refmac</span></code> and <code class="docutils literal notranslate"><span class="pre">Buster</span></code> tasks</li>
 <li>Projects may be shared from Project List, without opening the Project</li>
-<li><code class="docutils literal"><span class="pre">Hop</span> <span class="pre">on</span></code> and <code class="docutils literal"><span class="pre">Import</span> <span class="pre">&amp;</span> <span class="pre">Replace</span></code> tasks can import from Cloud storage</li>
-<li>Fixed bug in <code class="docutils literal"><span class="pre">Gemmi</span></code> task blocking writing results in output file at certain circumstances</li>
-<li>Fixed bug in <code class="docutils literal"><span class="pre">Pisa</span></code> task blocking visualisation of NCS-mates in UglyMol</li>
+<li><code class="docutils literal notranslate"><span class="pre">Hop</span> <span class="pre">on</span></code> and <code class="docutils literal notranslate"><span class="pre">Import</span> <span class="pre">&amp;</span> <span class="pre">Replace</span></code> tasks can import from Cloud storage</li>
+<li>Fixed bug in <code class="docutils literal notranslate"><span class="pre">Gemmi</span></code> task blocking writing results in output file at certain circumstances</li>
+<li>Fixed bug in <code class="docutils literal notranslate"><span class="pre">Pisa</span></code> task blocking visualisation of NCS-mates in UglyMol</li>
 <li>Jobs cannot be moved up the Job Tree now</li>
-<li>Fixed bug blocking auto-launch of <code class="docutils literal"><span class="pre">Refmac</span></code> after <code class="docutils literal"><span class="pre">Coot</span></code> finishes via <em>Exit and refine</em> in shared projects</li>
+<li>Fixed bug blocking auto-launch of <code class="docutils literal notranslate"><span class="pre">Refmac</span></code> after <code class="docutils literal notranslate"><span class="pre">Coot</span></code> finishes via <em>Exit and refine</em> in shared projects</li>
 <li>Fixed bugs in Task Dock which were causing instability</li>
 <li>Fixed bug in import of phases, causing misinterpretation of direct and difference maps</li>
 <li>Project summaries and scores added in the <em>List of Projects</em></li>
-<li>Gelly options added to <code class="docutils literal"><span class="pre">Buster</span></code> task</li>
+<li>Gelly options added to <code class="docutils literal notranslate"><span class="pre">Buster</span></code> task</li>
 </ol>
 </div></blockquote>
 <p><strong>Version 1.6.018</strong></p>
@@ -109,12 +97,12 @@
 <div><p><em>Released on 15.01.2021 with CCP4 7.1.010</em></p>
 <p><strong>Changes and new features</strong></p>
 <ol class="arabic simple">
-<li>Verdict section added to <code class="docutils literal"><span class="pre">Simbad</span></code> task</li>
+<li>Verdict section added to <code class="docutils literal notranslate"><span class="pre">Simbad</span></code> task</li>
 <li>Fixed a bug causing loss of running jobs at server restart</li>
 <li>Added a toolbar button for switching between single and multiple selection in project tree</li>
-<li>Fixed a bug in <code class="docutils literal"><span class="pre">Phaser-MR</span></code> task, causing incorrect specification of Space Group in report pages</li>
-<li>Fixed a bug in <code class="docutils literal"><span class="pre">Make</span> <span class="pre">Ligand</span></code> task, causing failure if structure revision is produced in the task-contained branch</li>
-<li>Fixed a bug in <code class="docutils literal"><span class="pre">Prepare</span> <span class="pre">MR</span> <span class="pre">Model</span> <span class="pre">from</span> <span class="pre">XYZ</span></code> task, causing incorrect identification of sequence identity for nucleic acid models</li>
+<li>Fixed a bug in <code class="docutils literal notranslate"><span class="pre">Phaser-MR</span></code> task, causing incorrect specification of Space Group in report pages</li>
+<li>Fixed a bug in <code class="docutils literal notranslate"><span class="pre">Make</span> <span class="pre">Ligand</span></code> task, causing failure if structure revision is produced in the task-contained branch</li>
+<li>Fixed a bug in <code class="docutils literal notranslate"><span class="pre">Prepare</span> <span class="pre">MR</span> <span class="pre">Model</span> <span class="pre">from</span> <span class="pre">XYZ</span></code> task, causing incorrect identification of sequence identity for nucleic acid models</li>
 <li>Added import Scalepack files (.sca)</li>
 <li>Fixed a bug in preparing DNA/RNA MR models, affecting sequence identity calculations</li>
 <li>Guided data import made optional, may be switched on/off in the <em>Preferences</em> section of the <em>My Account</em> page</li>
@@ -129,12 +117,12 @@
 <div><p><em>Released on 08.12.2020 with CCP4 7.1.009</em></p>
 <p><strong>Changes and new features</strong></p>
 <ol class="arabic simple">
-<li>Fixed a bug blocking addition of new tasks after placing <code class="docutils literal"><span class="pre">Remark</span></code> at project&#8217;s top</li>
-<li><code class="docutils literal"><span class="pre">Change</span> <span class="pre">Resolution</span></code> task fixed to allow the subsequent job tree development</li>
-<li>Fixed a bug in <code class="docutils literal"><span class="pre">Phaser-MR</span></code> task, causing the task to fail under certain circumstances</li>
-<li><code class="docutils literal"><span class="pre">Import</span> <span class="pre">from</span> <span class="pre">PDB</span></code> and <code class="docutils literal"><span class="pre">Model</span> <span class="pre">Preparation</span> <span class="pre">from</span> <span class="pre">Alignment</span> <span class="pre">Data</span></code> tasks will now switch to downloading CIF-formatted files from the PDB if PDB format for the requested PDB entry is not available (typical for large structures with 2-character chain IDs)</li>
+<li>Fixed a bug blocking addition of new tasks after placing <code class="docutils literal notranslate"><span class="pre">Remark</span></code> at project’s top</li>
+<li><code class="docutils literal notranslate"><span class="pre">Change</span> <span class="pre">Resolution</span></code> task fixed to allow the subsequent job tree development</li>
+<li>Fixed a bug in <code class="docutils literal notranslate"><span class="pre">Phaser-MR</span></code> task, causing the task to fail under certain circumstances</li>
+<li><code class="docutils literal notranslate"><span class="pre">Import</span> <span class="pre">from</span> <span class="pre">PDB</span></code> and <code class="docutils literal notranslate"><span class="pre">Model</span> <span class="pre">Preparation</span> <span class="pre">from</span> <span class="pre">Alignment</span> <span class="pre">Data</span></code> tasks will now switch to downloading CIF-formatted files from the PDB if PDB format for the requested PDB entry is not available (typical for large structures with 2-character chain IDs)</li>
 <li>CCP4mg buttons in task reports are now hidden when no CCP4 Cloud Client is running</li>
-<li><code class="docutils literal"><span class="pre">CCP4Build</span></code> task can be stopped gracefully, without losing already calculated results</li>
+<li><code class="docutils literal notranslate"><span class="pre">CCP4Build</span></code> task can be stopped gracefully, without losing already calculated results</li>
 <li>Excessively long branches may be archived as folders for convenience</li>
 <li>Documentation updates</li>
 </ol>
@@ -144,18 +132,18 @@
 <div><p><em>Released on 12.11.2020 with CCP4 7.1.008</em></p>
 <p><strong>Changes and new features</strong></p>
 <ol class="arabic simple">
-<li>VDW repulsion weight parameter added in <code class="docutils literal"><span class="pre">Refmac</span></code> task</li>
-<li><code class="docutils literal"><span class="pre">Refmac</span></code> verdict section updated</li>
-<li>Map selection added in <code class="docutils literal"><span class="pre">FitLigand</span></code> and <code class="docutils literal"><span class="pre">FitWaters</span></code> tasks</li>
+<li>VDW repulsion weight parameter added in <code class="docutils literal notranslate"><span class="pre">Refmac</span></code> task</li>
+<li><code class="docutils literal notranslate"><span class="pre">Refmac</span></code> verdict section updated</li>
+<li>Map selection added in <code class="docutils literal notranslate"><span class="pre">FitLigand</span></code> and <code class="docutils literal notranslate"><span class="pre">FitWaters</span></code> tasks</li>
 <li>New user preferences: login into last project, default window sizes for job dialogs and viewers</li>
 <li>Stalled jobs can be now pushed with button <em>Refresh</em> in the project page toolbar</li>
-<li><code class="docutils literal"><span class="pre">Coot</span></code> task uses the last backup copy if user forgets to save coordinates</li>
-<li>New menu item: Load from Cloud backup, introduced in <code class="docutils literal"><span class="pre">Coot</span></code>, which allows a user to restore from backup copy if previous Coot Cloud task finished unsuccessfully</li>
-<li>Fixed bug in <code class="docutils literal"><span class="pre">Buster</span></code>, because of which the task did not pass ligand information on descendants</li>
-<li>Small bug fixes in <code class="docutils literal"><span class="pre">Edit</span> <span class="pre">Revision</span></code></li>
-<li>Automatic clean-up of Front-End&#8217;s Job Register added</li>
-<li><code class="docutils literal"><span class="pre">CCP4go</span></code> task is back to functional state, a set of bugs fixed; the task can now use pre-imported data</li>
-<li>Documentation updates ( Low-Resolution Refinement with <code class="docutils literal"><span class="pre">Lorestr</span></code>, <code class="docutils literal"><span class="pre">REFMAC5</span></code>)</li>
+<li><code class="docutils literal notranslate"><span class="pre">Coot</span></code> task uses the last backup copy if user forgets to save coordinates</li>
+<li>New menu item: Load from Cloud backup, introduced in <code class="docutils literal notranslate"><span class="pre">Coot</span></code>, which allows a user to restore from backup copy if previous Coot Cloud task finished unsuccessfully</li>
+<li>Fixed bug in <code class="docutils literal notranslate"><span class="pre">Buster</span></code>, because of which the task did not pass ligand information on descendants</li>
+<li>Small bug fixes in <code class="docutils literal notranslate"><span class="pre">Edit</span> <span class="pre">Revision</span></code></li>
+<li>Automatic clean-up of Front-End’s Job Register added</li>
+<li><code class="docutils literal notranslate"><span class="pre">CCP4go</span></code> task is back to functional state, a set of bugs fixed; the task can now use pre-imported data</li>
+<li>Documentation updates ( Low-Resolution Refinement with <code class="docutils literal notranslate"><span class="pre">Lorestr</span></code>, <code class="docutils literal notranslate"><span class="pre">REFMAC5</span></code>)</li>
 </ol>
 </div></blockquote>
 <p><strong>Version 1.6.015</strong></p>
@@ -163,10 +151,10 @@
 <div><p><em>Released on 14.10.2020 with CCP4 7.1.005</em></p>
 <p><strong>Changes and new features</strong></p>
 <ol class="arabic simple">
-<li><code class="docutils literal"><span class="pre">Gemmi</span></code> task added for custom manipulation with atomic coordinates</li>
-<li><code class="docutils literal"><span class="pre">Refmac</span></code> verdict section updated</li>
-<li>ED fit analysis improvements in <code class="docutils literal"><span class="pre">CCP4Build</span></code>, leading to more stable convergence</li>
-<li>Documentation updates (DM with <code class="docutils literal"><span class="pre">Acorn</span></code>)</li>
+<li><code class="docutils literal notranslate"><span class="pre">Gemmi</span></code> task added for custom manipulation with atomic coordinates</li>
+<li><code class="docutils literal notranslate"><span class="pre">Refmac</span></code> verdict section updated</li>
+<li>ED fit analysis improvements in <code class="docutils literal notranslate"><span class="pre">CCP4Build</span></code>, leading to more stable convergence</li>
+<li>Documentation updates (DM with <code class="docutils literal notranslate"><span class="pre">Acorn</span></code>)</li>
 <li>Crank-2 report updated and documented</li>
 </ol>
 </div></blockquote>
@@ -175,17 +163,17 @@
 <div><p><em>Released on 14.09.2020 with CCP4 7.1.004</em></p>
 <p><strong>Changes and new features</strong></p>
 <ol class="arabic simple">
-<li><code class="docutils literal"><span class="pre">Lorestr</span></code> can now work with partially fragmented models (<em>e.g.,</em> after automatic model building)</li>
-<li>Verdict sections aded to <code class="docutils literal"><span class="pre">Lorestr</span></code> and <code class="docutils literal"><span class="pre">Dimple</span></code> reports</li>
-<li>Fixed a bug in <code class="docutils literal"><span class="pre">MrBump</span></code>, which was causing report page corruption</li>
-<li>Fixed a bug in <code class="docutils literal"><span class="pre">CCP4Build</span></code> causing stop at mtz files with rare format features</li>
+<li><code class="docutils literal notranslate"><span class="pre">Lorestr</span></code> can now work with partially fragmented models (<em>e.g.,</em> after automatic model building)</li>
+<li>Verdict sections aded to <code class="docutils literal notranslate"><span class="pre">Lorestr</span></code> and <code class="docutils literal notranslate"><span class="pre">Dimple</span></code> reports</li>
+<li>Fixed a bug in <code class="docutils literal notranslate"><span class="pre">MrBump</span></code>, which was causing report page corruption</li>
+<li>Fixed a bug in <code class="docutils literal notranslate"><span class="pre">CCP4Build</span></code> causing stop at mtz files with rare format features</li>
 <li>Resolved the cross-origin conflict with local client, causing corruption in report pages of tasks
-running on user devices, such as <code class="docutils literal"><span class="pre">Arp/wArp</span></code></li>
-<li>Fixed bugs in <code class="docutils literal"><span class="pre">Buster</span></code> task, which caused task failures under specific conditions</li>
+running on user devices, such as <code class="docutils literal notranslate"><span class="pre">Arp/wArp</span></code></li>
+<li>Fixed bugs in <code class="docutils literal notranslate"><span class="pre">Buster</span></code> task, which caused task failures under specific conditions</li>
 <li>Option for removing coordinates added to edit revision tasks</li>
 <li>Video tutorials added in Documentation</li>
 <li>Port numbers for CCP4 Cloud Client made stable, which allows password management in users browsers</li>
-<li>Documentation updated ( Density modification, DM with <code class="docutils literal"><span class="pre">Parrot</span></code>)</li>
+<li>Documentation updated ( Density modification, DM with <code class="docutils literal notranslate"><span class="pre">Parrot</span></code>)</li>
 </ol>
 </div></blockquote>
 <p><strong>Version 1.6.013</strong></p>
@@ -198,17 +186,17 @@ all users, who share a project, are working on the same copy of it.
 Simultaneous work of several users on shared projects is supported.
 Only project owners can share, delete or rename their project, other users can
 join or unjoin them in their <em>Project Lists</em>.</li>
-<li>Documentation updated (<code class="docutils literal"><span class="pre">DIMPLE</span></code>, Automatic Image Processing with <code class="docutils literal"><span class="pre">Xia-2</span></code>,
-Structure Superposition with <code class="docutils literal"><span class="pre">LsqKab</span></code>)</li>
-<li><code class="docutils literal"><span class="pre">DIMPLE</span></code> task optimised by eliminating the trailing zero-cycle run of
-<code class="docutils literal"><span class="pre">Refmac</span></code>.</li>
+<li>Documentation updated (<code class="docutils literal notranslate"><span class="pre">DIMPLE</span></code>, Automatic Image Processing with <code class="docutils literal notranslate"><span class="pre">Xia-2</span></code>,
+Structure Superposition with <code class="docutils literal notranslate"><span class="pre">LsqKab</span></code>)</li>
+<li><code class="docutils literal notranslate"><span class="pre">DIMPLE</span></code> task optimised by eliminating the trailing zero-cycle run of
+<code class="docutils literal notranslate"><span class="pre">Refmac</span></code>.</li>
 <li>Import of sequences from the PDB now produces sequences from both atomic
 coordinates (may be used for automatic construction of the corresponding
 structure revision) and from header annotation (more suitable for making
 MR search models).</li>
-<li><code class="docutils literal"><span class="pre">XYZ</span> <span class="pre">Utils</span></code> can now import sequences from atomic coordinates, task
+<li><code class="docutils literal notranslate"><span class="pre">XYZ</span> <span class="pre">Utils</span></code> can now import sequences from atomic coordinates, task
 interface changed</li>
-<li><code class="docutils literal"><span class="pre">Lorestr</span></code> can now work on structures with ligand molecules</li>
+<li><code class="docutils literal notranslate"><span class="pre">Lorestr</span></code> can now work on structures with ligand molecules</li>
 </ol>
 </div></blockquote>
 <p><strong>Version 1.6.012</strong></p>
@@ -255,7 +243,7 @@ files and ligand dictionaries</li>
       </div>
 
     <div class="footer" role="contentinfo">
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.8.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.5.
     </div>
   </body>
 </html>

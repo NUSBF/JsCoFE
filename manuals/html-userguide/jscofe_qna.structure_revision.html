@@ -1,39 +1,26 @@
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
     <title>7.2. What is Structure Revision? &#8212; CCP4 Cloud 1.6 documentation</title>
-    
     <link rel="stylesheet" href="_static/haiku.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="_static/contentui.css" type="text/css" />
-    
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    './',
-        VERSION:     '1.6',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
-      };
-    </script>
+    <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
     <script type="text/javascript" src="_static/contentui.js"></script>
-    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="top" title="CCP4 Cloud 1.6 documentation" href="index.html" />
-    <link rel="up" title="7. Questions and Answers" href="jscofe_QnA.html" />
     <link rel="next" title="8. Troubleshooting" href="jscofe_troubleshooting.html" />
     <link rel="prev" title="7.1. What is Structure?" href="jscofe_qna.structure.html" /> 
-  </head>
-  <body role="document">
+  </head><body>
       <div class="header" role="banner"><h1 class="heading"><a href="index.html">
           <span>CCP4 Cloud 1.6 documentation</span></a></h1>
         <h2 class="heading"><span>7.2. What is Structure Revision?</span></h2>
@@ -66,7 +53,7 @@ passed to PDB Deposition task, which generates files necessry for the deposition
 of solved structure in the Protein Data Bank.</p>
 <div class="section" id="scope-of-visibility-and-project-development">
 <h2>7.2.1. Scope of visibility and Project development<a class="headerlink" href="#scope-of-visibility-and-project-development" title="Permalink to this headline">¶</a></h2>
-<p>Unlike other data entities in CCP4 Cloud, <code class="docutils literal"><span class="pre">Structure</span> <span class="pre">Revision</span> <span class="pre">is</span> <span class="pre">seen</span> <span class="pre">only</span> <span class="pre">immediately</span> <span class="pre">after</span> <span class="pre">the</span> <span class="pre">job</span> <span class="pre">where</span> <span class="pre">it</span> <span class="pre">was</span> <span class="pre">created.</span></code> This means, that tasks  can access <em>Structure Revisions</em> created by their &#8220;parents&#8221;, but not &#8220;grand-parents&#8221;.  This rule does not apply to import tasks, which are &#8220;transparent&#8221; for <em>Structure Revisions</em> created upstream.</p>
+<p>Unlike other data entities in CCP4 Cloud, <code class="docutils literal notranslate"><span class="pre">Structure</span> <span class="pre">Revision</span> <span class="pre">is</span> <span class="pre">seen</span> <span class="pre">only</span> <span class="pre">immediately</span> <span class="pre">after</span> <span class="pre">the</span> <span class="pre">job</span> <span class="pre">where</span> <span class="pre">it</span> <span class="pre">was</span> <span class="pre">created.</span></code> This means, that tasks  can access <em>Structure Revisions</em> created by their “parents”, but not “grand-parents”.  This rule does not apply to import tasks, which are “transparent” for <em>Structure Revisions</em> created upstream.</p>
 <p>CCP4 Cloud tasks can accept only one <em>Structure Revision</em> on input, and most of
 them create a single <em>Structure Revision</em> on output. Therefore, due to the limited
 scope of visibility, only one <em>Structure Revision</em> appears as a choice on input
@@ -78,22 +65,22 @@ input, and user should exercise attention in these cases.</p>
 <div class="section" id="structure-revision-naming">
 <h2>7.2.2. Structure Revision naming<a class="headerlink" href="#structure-revision-naming" title="Permalink to this headline">¶</a></h2>
 <p><em>Structure Revisions</em> are named as in the following example:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">R0258</span><span class="o">.</span><span class="mi">01</span><span class="p">:</span> <span class="n">refmac</span> <span class="p">(</span><span class="n">protein</span><span class="p">)</span><span class="o">/</span><span class="n">xyz</span><span class="p">,</span><span class="n">phases</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">R0258</span><span class="o">.</span><span class="mi">01</span><span class="p">:</span> <span class="n">refmac</span> <span class="p">(</span><span class="n">protein</span><span class="p">)</span><span class="o">/</span><span class="n">xyz</span><span class="p">,</span><span class="n">phases</span>
 </pre></div>
 </div>
-<p>where <code class="docutils literal"><span class="pre">R</span></code> stands for &#8220;Revision&#8221;, <code class="docutils literal"><span class="pre">0258</span></code> is serial number of job, which
-created the revision, <code class="docutils literal"><span class="pre">01</span></code> is serial number of output revision in that job,
-<code class="docutils literal"><span class="pre">refmac</span></code> is task name of the job (either generic or user-provided),
+<p>where <code class="docutils literal notranslate"><span class="pre">R</span></code> stands for “Revision”, <code class="docutils literal notranslate"><span class="pre">0258</span></code> is serial number of job, which
+created the revision, <code class="docutils literal notranslate"><span class="pre">01</span></code> is serial number of output revision in that job,
+<code class="docutils literal notranslate"><span class="pre">refmac</span></code> is task name of the job (either generic or user-provided),
 and the rest is a variable list of descriptors. In the above example, the
 revision describes crystal with protein content, for which some atomic coordinates
-and phases are calculated. If <code class="docutils literal"><span class="pre">xyz</span></code> prepends <code class="docutils literal"><span class="pre">phases</span></code>, then the latter were
+and phases are calculated. If <code class="docutils literal notranslate"><span class="pre">xyz</span></code> prepends <code class="docutils literal notranslate"><span class="pre">phases</span></code>, then the latter were
 calculated using the former (e.g., as in molecular replacement).</p>
 </div>
 <div class="section" id="content-inspection">
 <h2>7.2.3. Content inspection<a class="headerlink" href="#content-inspection" title="Permalink to this headline">¶</a></h2>
 <p>The content of <em>Structure Revision</em> may be inspected in both input and output
 pages. In input pages, use button with magnifying glass on the left from
-the <em>Structure Revision</em> selection widget. In output pages, use <em>&#8220;Inspect&#8221;</em>
+the <em>Structure Revision</em> selection widget. In output pages, use <em>“Inspect”</em>
 button on the left from the revision specification.</p>
 </div>
 <div class="section" id="what-is-the-difference-between-struture-and-structure-revision">
@@ -121,7 +108,7 @@ includes <em>Structure</em> as one of its items.</p>
       </div>
 
     <div class="footer" role="contentinfo">
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.8.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.5.
     </div>
   </body>
 </html>

@@ -421,6 +421,12 @@ Widget.prototype.addOnClickListener = function ( listener_func )  {
     e.preventDefault();
     listener_func(e);
   });
+  // $(this.element).on( 'click', function() {
+  //   listener_func();
+  // });
+  // this.element.onclick = function() {
+  //   listener_func();
+  // };
   return this;
 }
 
