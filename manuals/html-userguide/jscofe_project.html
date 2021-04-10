@@ -1,38 +1,26 @@
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
     <title>2. Project Management &#8212; CCP4 Cloud 1.6 documentation</title>
-    
     <link rel="stylesheet" href="_static/haiku.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="_static/contentui.css" type="text/css" />
-    
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    './',
-        VERSION:     '1.6',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
-      };
-    </script>
+    <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
     <script type="text/javascript" src="_static/contentui.js"></script>
-    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="top" title="CCP4 Cloud 1.6 documentation" href="index.html" />
     <link rel="next" title="3. Task List" href="jscofe_tasklist.html" />
     <link rel="prev" title="1. My Projects" href="jscofe_myprojects.html" /> 
-  </head>
-  <body role="document">
+  </head><body>
       <div class="header" role="banner"><h1 class="heading"><a href="index.html">
           <span>CCP4 Cloud 1.6 documentation</span></a></h1>
         <h2 class="heading"><span>2. Project Management</span></h2>
@@ -67,10 +55,10 @@
 <p class="first admonition-title">Note</p>
 <p class="last">the context menu also offers the addition of a job with parameters set in the previous invocation of that type of job up the <em>Project Tree</em>. You may find this particularly useful in the model building and refinement stage, when a number of similar-type jobs need to be run in multiple successions</p>
 </div>
-<p><a class="reference internal" href="_images/moveup.png"><img alt="moveup" src="_images/moveup.png" style="width: 18px; height: 18px;" /></a> <strong>Move job up the tree</strong>. The currently selected job will move one position up the <em>ProjectTree</em>. This is only possible if all job&#8217;s input data is generated above the new job position. If this is not the case, the job cannot be moved and the move button is greyed. Moving jobs may be useful for restructuring of the <em>Project Tree</em> in order to make job results visible in several branches (for which the job should be moved to above the branching point).</p>
+<p><a class="reference internal" href="_images/moveup.png"><img alt="moveup" src="_images/moveup.png" style="width: 18px; height: 18px;" /></a> <strong>Move job up the tree</strong>. The currently selected job will move one position up the <em>ProjectTree</em>. This is only possible if all job’s input data is generated above the new job position. If this is not the case, the job cannot be moved and the move button is greyed. Moving jobs may be useful for restructuring of the <em>Project Tree</em> in order to make job results visible in several branches (for which the job should be moved to above the branching point).</p>
 <div class="admonition warning">
 <p class="first admonition-title">Warning</p>
-<p class="last">moving jobs up the tree preserves project&#8217;s consisitency in terms of data flows, however, it is not always reversible and may lead to unobvious configuration of the <em>Tree</em>. Allow yourself to making a few mistakes before understanding the effects of job moves.</p>
+<p class="last">moving jobs up the tree preserves project’s consisitency in terms of data flows, however, it is not always reversible and may lead to unobvious configuration of the <em>Tree</em>. Allow yourself to making a few mistakes before understanding the effects of job moves.</p>
 </div>
 <p><a class="reference internal" href="_images/clonejob.png"><img alt="clonejob" src="_images/clonejob.png" style="width: 18px; height: 18px;" /></a> <strong>Clone job</strong>. The new job will be added as a sibling to one currently selected in the <em>Tree</em>, initialised with the same data and input parameters. Job dialog for the cloned job will be opened automatically, and you can change the input before running the job.</p>
 <p><a class="reference internal" href="_images/delete.png"><img alt="delete" src="_images/delete.png" style="width: 18px; height: 18px;" /></a> <strong>Delete job</strong>. The currently selected job and all jobs found in the tree branch descending from it will be deleted after confirmation.</p>
@@ -104,7 +92,7 @@
 <div class="section" id="managing-the-jobs">
 <h2>2.2. Managing the jobs<a class="headerlink" href="#managing-the-jobs" title="Permalink to this headline">¶</a></h2>
 <p>The following buttons in the toolbar <strong>do not change the Project Tree</strong>:</p>
-<p><a class="reference internal" href="_images/openjob.png"><img alt="openjob" src="_images/openjob.png" style="width: 18px; height: 18px;" /></a> <strong>Open Job</strong> dialog for the currently selected job. Alternatively, double click the corresponding line in the <em>Project Tree</em>. Job dialogs are used for setting job&#8217;s input data and parameters, and for running them.</p>
+<p><a class="reference internal" href="_images/openjob.png"><img alt="openjob" src="_images/openjob.png" style="width: 18px; height: 18px;" /></a> <strong>Open Job</strong> dialog for the currently selected job. Alternatively, double click the corresponding line in the <em>Project Tree</em>. Job dialogs are used for setting job’s input data and parameters, and for running them.</p>
 <p><a class="reference internal" href="_images/stop.png"><img alt="stop" src="_images/stop.png" style="width: 18px; height: 18px;" /></a> <strong>Stop</strong> the currently selected job. This button is active only when job is running. <strong>Once stopped, jobs cannot be resumed or restarted. However, you can clone job that was stopped and run the clone</strong>.</p>
 </div>
 <div class="section" id="branch-highlighting">
@@ -116,13 +104,13 @@
 <p>Nobody and nothing are perfect, and sometimes the Project Page may stop working for you due to intermittent connection errors or a hidden bug. Should this unlikely event happen, click the <a class="reference internal" href="_images/refresh.png"><img alt="refresh" src="_images/refresh.png" style="width: 16px; height: 16px;" /></a> button to refresh the Project Page. <a class="reference internal" href="_images/refresh.png"><img alt="refresh" src="_images/refresh.png" style="width: 16px; height: 16px;" /></a> simply reloads the project data and re-initialises internal page functions.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">this action is different from that of the browser&#8217;s Refresh button; the latter will log you out.</p>
+<p class="last">this action is different from that of the browser’s Refresh button; the latter will log you out.</p>
 </div>
 </div>
 <div class="section" id="project-development">
 <h2>2.5. Project development<a class="headerlink" href="#project-development" title="Permalink to this headline">¶</a></h2>
-<p>You can start developing your first Project right after creating it. In most cases, you should start with a task from the &#8220;Data Import&#8221; section of the <em>Task List</em> at the root of the <em>Project Tree</em> in order to import available data (reflection datasets, sequences, structure homologues, ligand descriptions <em>etc.</em>), and then add computational jobs which use the imported data, as appropriate.</p>
-<p><em>You can create and run any number of jobs simultaneously, however, a child job cannot use its parent&#8217;s job output until the parent job is completed.</em></p>
+<p>You can start developing your first Project right after creating it. In most cases, you should start with a task from the “Data Import” section of the <em>Task List</em> at the root of the <em>Project Tree</em> in order to import available data (reflection datasets, sequences, structure homologues, ligand descriptions <em>etc.</em>), and then add computational jobs which use the imported data, as appropriate.</p>
+<p><em>You can create and run any number of jobs simultaneously, however, a child job cannot use its parent’s job output until the parent job is completed.</em></p>
 <p>CCP4 Cloud is not prescriptive about how you should grow and branch your <em>Project Tree</em>. <strong>It is highly advisable, though, to understand the principles of data management in CCP4 Cloud in order to avoid most common mistakes and confusions.</strong>
 <strong>Please read the corresponding documentation.</strong></p>
 </div>
@@ -143,7 +131,7 @@
       </div>
 
     <div class="footer" role="contentinfo">
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.8.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.5.
     </div>
   </body>
 </html>

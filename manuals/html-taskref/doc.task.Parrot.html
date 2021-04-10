@@ -1,39 +1,26 @@
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
     <title>8.1. Density Modification with Parrot &#8212; CCP4 Cloud 1.6 documentation</title>
-    
     <link rel="stylesheet" href="_static/haiku.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="_static/contentui.css" type="text/css" />
-    
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    './',
-        VERSION:     '1.6',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
-      };
-    </script>
+    <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
     <script type="text/javascript" src="_static/contentui.js"></script>
-    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="top" title="CCP4 Cloud 1.6 documentation" href="index.html" />
-    <link rel="up" title="8. Density Modification" href="Density_Modification.html" />
     <link rel="next" title="8.2. Phase Refinement and Dynamic Density Modification with ACORN" href="doc.task.Acorn.html" />
     <link rel="prev" title="8. Density Modification" href="Density_Modification.html" /> 
-  </head>
-  <body role="document">
+  </head><body>
       <div class="header" role="banner"><h1 class="heading"><a href="index.html">
           <span>CCP4 Cloud 1.6 documentation</span></a></h1>
         <h2 class="heading"><span>8.1. Density Modification with Parrot</span></h2>
@@ -151,8 +138,8 @@
 </div>
 <div class="section" id="basic-options">
 <h2>8.1.3. Basic options<a class="headerlink" href="#basic-options" title="Permalink to this headline">¶</a></h2>
-<p>The most important option is the number of cycles of density modification to perform. <code class="docutils literal"><span class="pre">By</span> <span class="pre">default</span></code>, a conservative value of <code class="docutils literal"><span class="pre">3</span> <span class="pre">cycles</span></code> is chosen to limit the bias which is introduced by running too many cycles.</p>
-<p>Parrot can optionally perform non-crystallographic symmetry (<strong>NCS</strong>) averaging. The <strong>NCS rotations and translations</strong> are be determined from a set of atomic coordinates. These may be from the coordinates of the anomalous scatters or heavy atoms in the case of experimental phasing, or from an initial molecular replacement model or incomplete partial model in the case of either molecular replacement or experimental phasing. To use <strong>NCS averaging</strong>, select <code class="docutils literal"><span class="pre">Model</span> <span class="pre">for</span> <span class="pre">NCS</span> <span class="pre">detection</span></code> =&gt; <code class="docutils literal"><span class="pre">Macromolecular</span> <span class="pre">model</span></code>. When <strong>NCS</strong> is being used (or occasionally when the solvent content is very high) bias is less of a problem and <strong>more cycles may be performed</strong>.</p>
+<p>The most important option is the number of cycles of density modification to perform. <code class="docutils literal notranslate"><span class="pre">By</span> <span class="pre">default</span></code>, a conservative value of <code class="docutils literal notranslate"><span class="pre">3</span> <span class="pre">cycles</span></code> is chosen to limit the bias which is introduced by running too many cycles.</p>
+<p>Parrot can optionally perform non-crystallographic symmetry (<strong>NCS</strong>) averaging. The <strong>NCS rotations and translations</strong> are be determined from a set of atomic coordinates. These may be from the coordinates of the anomalous scatters or heavy atoms in the case of experimental phasing, or from an initial molecular replacement model or incomplete partial model in the case of either molecular replacement or experimental phasing. To use <strong>NCS averaging</strong>, select <code class="docutils literal notranslate"><span class="pre">Model</span> <span class="pre">for</span> <span class="pre">NCS</span> <span class="pre">detection</span></code> =&gt; <code class="docutils literal notranslate"><span class="pre">Macromolecular</span> <span class="pre">model</span></code>. When <strong>NCS</strong> is being used (or occasionally when the solvent content is very high) bias is less of a problem and <strong>more cycles may be performed</strong>.</p>
 <p><strong>References</strong></p>
 <p><a class="reference external" href="https://doi.org/10.1107/S0021889802013420">Cowtan, K. (2002). J. Appl. Cryst. 35, 655-663.</a></p>
 <p><a class="reference external" href="https://doi.org/10.1107/S0907444995008754">Abrahams, J. P. &amp; Leslie, A. G. W. (1996). Acta Cryst. D52, 30–42.</a></p>
@@ -175,7 +162,7 @@
       </div>
 
     <div class="footer" role="contentinfo">
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.8.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.5.
     </div>
   </body>
 </html>

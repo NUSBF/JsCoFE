@@ -1,39 +1,26 @@
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
     <title>6.3. Molrep &#8212; CCP4 Cloud 1.6 documentation</title>
-    
     <link rel="stylesheet" href="_static/haiku.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="_static/contentui.css" type="text/css" />
-    
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    './',
-        VERSION:     '1.6',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
-      };
-    </script>
+    <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
     <script type="text/javascript" src="_static/contentui.js"></script>
-    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="top" title="CCP4 Cloud 1.6 documentation" href="index.html" />
-    <link rel="up" title="6. Molecular Replacement" href="Molecular_Replacement.html" />
     <link rel="next" title="7. Experimental Phasing" href="Experimental_Phasing.html" />
     <link rel="prev" title="6.2. Phaser" href="doc.task.Phaser.html" /> 
-  </head>
-  <body role="document">
+  </head><body>
       <div class="header" role="banner"><h1 class="heading"><a href="index.html">
           <span>CCP4 Cloud 1.6 documentation</span></a></h1>
         <h2 class="heading"><span>6.3. Molrep</span></h2>
@@ -55,7 +42,7 @@
   <div class="section" id="molrep">
 <h1>6.3. Molrep<a class="headerlink" href="#molrep" title="Permalink to this headline">¶</a></h1>
 <p><a class="reference external" href="http://scripts.iucr.org/cgi-bin/paper?S0907444909042589">Molrep</a> is the program for molecular replacement witch can be used in those cases where a homologous structure has already been identified.</p>
-<p><strong>Molecular Replacement (MR)</strong> is a method for approximating initial <em>phases</em> by positioning a suitable structure homolog (MR search model) such as to achieve best agreement between calculated and observed structure factors <em>moduli</em>. Phase components of thus calculated structure factors may be then taken as an approximation of &#8220;true&#8221; phases.</p>
+<p><strong>Molecular Replacement (MR)</strong> is a method for approximating initial <em>phases</em> by positioning a suitable structure homolog (MR search model) such as to achieve best agreement between calculated and observed structure factors <em>moduli</em>. Phase components of thus calculated structure factors may be then taken as an approximation of “true” phases.</p>
 <p><strong>Molrep</strong> performs molecular replacement in two steps:</p>
 <blockquote>
 <div><ol class="arabic simple">
@@ -71,15 +58,15 @@
 <blockquote>
 <div><ol class="arabic simple">
 <li>The <strong>Patterson map</strong> has peaks at end points of vectors u equal to vectors between atoms in the real cell.</li>
-<li>For every pair of atoms in the real cell, there exists a unique peak in the Patterson map. This is the interatomic vector map. We can generate a vector map of a molecule by putting each atom at the origin and marking the position of all other atoms. By doing so we&#8217;ve got 2 types of vector (<strong>intramolecular (self) vectors</strong> are used for <strong>Rotation function</strong> and <strong>intermolecular (cross-)vectors</strong> are used for <strong>Translation function</strong>.</li>
+<li>For every pair of atoms in the real cell, there exists a unique peak in the Patterson map. This is the interatomic vector map. We can generate a vector map of a molecule by putting each atom at the origin and marking the position of all other atoms. By doing so we’ve got 2 types of vector (<strong>intramolecular (self) vectors</strong> are used for <strong>Rotation function</strong> and <strong>intermolecular (cross-)vectors</strong> are used for <strong>Translation function</strong>.</li>
 <li>A Patterson map is always centrosymmetric.</li>
 </ol>
 </div></blockquote>
 <p>The <strong>number of copies</strong> in the asymmetric unit estimated through <a class="reference external" href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2323984/">Matthews Coefficient</a></p>
-<p>The result of the <strong>Rotation function</strong> depends on the radius of a spherical domain in the centre of the Patterson function (the so-called cut-off radius). This radius must be chosen so as to <strong>maximize the ratio between the number of inter- and intramolecular vectors</strong>. The program chooses the value of this radius as twice the radius of gyration, but can also use an input value. Anisotropic correction of data before computing RF can be useful for data with high anisotropy. MOLREP use Crowther Fast Rotation Function. <code class="docutils literal"><span class="pre">The</span> <span class="pre">program</span> <span class="pre">can</span> <span class="pre">compute</span> <span class="pre">the</span> <span class="pre">Rotation</span> <span class="pre">Function</span> <span class="pre">for</span> <span class="pre">three</span> <span class="pre">different</span> <span class="pre">orientations</span> <span class="pre">of</span> <span class="pre">model</span> <span class="pre">and</span> <span class="pre">average</span> <span class="pre">them.</span></code> That reduces the noise of Rotation function.</p>
+<p>The result of the <strong>Rotation function</strong> depends on the radius of a spherical domain in the centre of the Patterson function (the so-called cut-off radius). This radius must be chosen so as to <strong>maximize the ratio between the number of inter- and intramolecular vectors</strong>. The program chooses the value of this radius as twice the radius of gyration, but can also use an input value. Anisotropic correction of data before computing RF can be useful for data with high anisotropy. MOLREP use Crowther Fast Rotation Function. <code class="docutils literal notranslate"><span class="pre">The</span> <span class="pre">program</span> <span class="pre">can</span> <span class="pre">compute</span> <span class="pre">the</span> <span class="pre">Rotation</span> <span class="pre">Function</span> <span class="pre">for</span> <span class="pre">three</span> <span class="pre">different</span> <span class="pre">orientations</span> <span class="pre">of</span> <span class="pre">model</span> <span class="pre">and</span> <span class="pre">average</span> <span class="pre">them.</span></code> That reduces the noise of Rotation function.</p>
 <p>The <strong>Translation function</strong> can check several peaks of the rotation function by computing a correlation coefficient for each peak and sorting the result. For scaling observed and calculated structure factors, the program uses the scaling by the origin peak of Patterson, but for data with high anisotropy the program can use anisotropic scaling. The Translation function can take into account the fixed model and also, if the number of monomers is known, MOLREP can position the input number of monomers in a simple run. Also in this case, the possibility to choose from symmetry-related models closest to which was found before is useful.</p>
 <p><strong>Locked rotation function</strong> helps restrict dimensionality in an exhaustive search.</p>
-<p>The program can detect and use <strong>pseudo-translation vectors</strong>. In this case, the pseudo-translation related copy will be added to the final model. <code class="docutils literal"><span class="pre">Peaks</span> <span class="pre">with</span> <span class="pre">height</span> <span class="pre">comparable</span> <span class="pre">with</span> <span class="pre">origin</span> <span class="pre">(in</span> <span class="pre">MOLREP</span> <span class="pre">0.15</span> <span class="pre">of</span> <span class="pre">origin)</span> <span class="pre">are</span> <span class="pre">indicative</span> <span class="pre">of</span> <span class="pre">pseudotranslation</span> <span class="pre">which</span> <span class="pre">often</span> <span class="pre">complicates</span> <span class="pre">MR</span> <span class="pre">–</span> <span class="pre">can</span> <span class="pre">give</span> <span class="pre">unreasonably</span> <span class="pre">high</span> <span class="pre">correlation</span> <span class="pre">coefficient</span> <span class="pre">(CC)</span> <span class="pre">for</span> <span class="pre">the</span> <span class="pre">wrong</span> <span class="pre">solution.</span></code></p>
+<p>The program can detect and use <strong>pseudo-translation vectors</strong>. In this case, the pseudo-translation related copy will be added to the final model. <code class="docutils literal notranslate"><span class="pre">Peaks</span> <span class="pre">with</span> <span class="pre">height</span> <span class="pre">comparable</span> <span class="pre">with</span> <span class="pre">origin</span> <span class="pre">(in</span> <span class="pre">MOLREP</span> <span class="pre">0.15</span> <span class="pre">of</span> <span class="pre">origin)</span> <span class="pre">are</span> <span class="pre">indicative</span> <span class="pre">of</span> <span class="pre">pseudotranslation</span> <span class="pre">which</span> <span class="pre">often</span> <span class="pre">complicates</span> <span class="pre">MR</span> <span class="pre">–</span> <span class="pre">can</span> <span class="pre">give</span> <span class="pre">unreasonably</span> <span class="pre">high</span> <span class="pre">correlation</span> <span class="pre">coefficient</span> <span class="pre">(CC)</span> <span class="pre">for</span> <span class="pre">the</span> <span class="pre">wrong</span> <span class="pre">solution.</span></code></p>
 </div>
 <div class="section" id="experimental-data">
 <h2>6.3.2. Experimental data<a class="headerlink" href="#experimental-data" title="Permalink to this headline">¶</a></h2>
@@ -130,7 +117,7 @@
       </div>
 
     <div class="footer" role="contentinfo">
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.8.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.5.
     </div>
   </body>
 </html>

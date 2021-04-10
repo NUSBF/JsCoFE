@@ -1,38 +1,26 @@
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
     <title>8. Density Modification &#8212; CCP4 Cloud 1.6 documentation</title>
-    
     <link rel="stylesheet" href="_static/haiku.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="_static/contentui.css" type="text/css" />
-    
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    './',
-        VERSION:     '1.6',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
-      };
-    </script>
+    <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
     <script type="text/javascript" src="_static/contentui.js"></script>
-    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="top" title="CCP4 Cloud 1.6 documentation" href="index.html" />
     <link rel="next" title="8.1. Density Modification with Parrot" href="doc.task.Parrot.html" />
     <link rel="prev" title="7.2. SHELXCD" href="doc.task.SHELX.html" /> 
-  </head>
-  <body role="document">
+  </head><body>
       <div class="header" role="banner"><h1 class="heading"><a href="index.html">
           <span>CCP4 Cloud 1.6 documentation</span></a></h1>
         <h2 class="heading"><span>8. Density Modification</span></h2>
@@ -54,14 +42,14 @@
   <div class="section" id="density-modification">
 <h1>8. Density Modification<a class="headerlink" href="#density-modification" title="Permalink to this headline">¶</a></h1>
 <p>The electron density map is generally calculated from amplitudes measured experimentally and obtained phases. Density modification (DM) methods is necessary to improve the phases in order to obtain an interpretable map. DM has the effect of selecting the correct phase from the two phase possibilities. Thus, in the case of SAD and SIR the improvements in the map can be very dramatic. It may also be applied after molecular replacement to reduce bias towards the search model. Phase improvement is performed using solvent flattening, histogram matching, and optionally non-crystallographic symmetry averaging.</p>
-<p>There are two families of approaches to density modification: <code class="docutils literal"><span class="pre">classical</span></code> methods and <code class="docutils literal"><span class="pre">statistical</span></code> methods.</p>
-<p><code class="docutils literal"><span class="pre">Classical</span> <span class="pre">method</span></code> includes two major steps:</p>
+<p>There are two families of approaches to density modification: <code class="docutils literal notranslate"><span class="pre">classical</span></code> methods and <code class="docutils literal notranslate"><span class="pre">statistical</span></code> methods.</p>
+<p><code class="docutils literal notranslate"><span class="pre">Classical</span> <span class="pre">method</span></code> includes two major steps:</p>
 <ul class="simple">
 <li>density modification to impose a physical constraint in real space</li>
 <li>structure factor merging to combine the resulting information with the experimental data in reciprocal space.</li>
 </ul>
 <p>The result of these iterations can be used to redetermine input parameters, such as heavy atom positions, molecular envelopes, and noncrystallography symmetry operators. These parameters will then lead to a new set of initial phases, which in tum are improved by density modification, defming a larger cycle ofiterations.</p>
-<p><code class="docutils literal"><span class="pre">Statistical</span> <span class="pre">methods</span></code> provide a more sound theoretical basis to the problem of phase improvement and as a result reduce the problems of bias associated with classical density-modification methods. This improvement is achieved by:</p>
+<p><code class="docutils literal notranslate"><span class="pre">Statistical</span> <span class="pre">methods</span></code> provide a more sound theoretical basis to the problem of phase improvement and as a result reduce the problems of bias associated with classical density-modification methods. This improvement is achieved by:</p>
 <ul class="simple">
 <li>the expression of the additional information to be introduced to the electron-density map in terms of probability distributions and then carrying those distributions into reciprocal space, rather than working with a single map representing a single sample from the phase probability distributions.</li>
 <li>weakening the link between the additional information to be introduced and the initial phases, thus reducing the bias introduced in a single cycle of phase improvement. The phase probability distributions from which the centroid map is derived are not directly included in the new phase information incorporated during a single density-modification cycle. The only way in which the current phases are used is in the classification of the asymmetric unit into regions of different density types, e.g. solvent and protein.</li>
@@ -102,7 +90,7 @@
       </div>
 
     <div class="footer" role="contentinfo">
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.8.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.5.
     </div>
   </body>
 </html>

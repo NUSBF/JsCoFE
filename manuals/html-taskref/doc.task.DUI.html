@@ -1,39 +1,26 @@
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
     <title>3.2. Interactive Image Processing with DIALS/DUI &#8212; CCP4 Cloud 1.6 documentation</title>
-    
     <link rel="stylesheet" href="_static/haiku.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="_static/contentui.css" type="text/css" />
-    
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    './',
-        VERSION:     '1.6',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
-      };
-    </script>
+    <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
     <script type="text/javascript" src="_static/contentui.js"></script>
-    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="top" title="CCP4 Cloud 1.6 documentation" href="index.html" />
-    <link rel="up" title="3. Data Processing" href="Data_Processing.html" />
     <link rel="next" title="3.3. Interactive Image Processing with iMosflm" href="doc.task.iMosflm.html" />
     <link rel="prev" title="3.1. Automatic Image Processing with Xia-2" href="doc.task.Xia2.html" /> 
-  </head>
-  <body role="document">
+  </head><body>
       <div class="header" role="banner"><h1 class="heading"><a href="index.html">
           <span>CCP4 Cloud 1.6 documentation</span></a></h1>
         <h2 class="heading"><span>3.2. Interactive Image Processing with DIALS/DUI</span></h2>
@@ -70,10 +57,10 @@
 <p>The first “real” task in any processing using DIALS is the spot finding. This program tries to find strong spots on a sequence of images. Spot finding will be done against each logically grouped set of images given. Strong pixels will be found on each image and spots will be formed from connected components.</p>
 <p>Spot-finding, like most of the other processing steps in DUI, presents user parameters at two levels of detail. The <strong>“Simple”</strong> tab contains the basic parameters that are the most commonly changed. The <strong>“Advanced”</strong> tab contains all of those again, plus other parameters that may be required for expert use with challenging data sets. Once the job is finished, the image viewer will display small blue boxes around the pixels that have been marked as strong.</p>
 <blockquote>
-<div><code class="docutils literal"><span class="pre">It</span> <span class="pre">is</span> <span class="pre">also</span> <span class="pre">useful</span> <span class="pre">to</span> <span class="pre">click</span> <span class="pre">on</span> <span class="pre">the</span> <span class="pre">“Report</span> <span class="pre">View”</span> <span class="pre">tab</span> <span class="pre">and</span> <span class="pre">scroll</span> <span class="pre">down</span> <span class="pre">to</span> <span class="pre">the</span> <span class="pre">“Analysis</span> <span class="pre">of</span> <span class="pre">strong</span> <span class="pre">reflections”.</span> <span class="pre">This</span> <span class="pre">shows</span> <span class="pre">a</span> <span class="pre">graph</span> <span class="pre">of</span> <span class="pre">the</span> <span class="pre">number</span> <span class="pre">of</span> <span class="pre">strong</span> <span class="pre">spots</span> <span class="pre">found</span> <span class="pre">per</span> <span class="pre">image.</span></code></div></blockquote>
+<div><code class="docutils literal notranslate"><span class="pre">It</span> <span class="pre">is</span> <span class="pre">also</span> <span class="pre">useful</span> <span class="pre">to</span> <span class="pre">click</span> <span class="pre">on</span> <span class="pre">the</span> <span class="pre">“Report</span> <span class="pre">View”</span> <span class="pre">tab</span> <span class="pre">and</span> <span class="pre">scroll</span> <span class="pre">down</span> <span class="pre">to</span> <span class="pre">the</span> <span class="pre">“Analysis</span> <span class="pre">of</span> <span class="pre">strong</span> <span class="pre">reflections”.</span> <span class="pre">This</span> <span class="pre">shows</span> <span class="pre">a</span> <span class="pre">graph</span> <span class="pre">of</span> <span class="pre">the</span> <span class="pre">number</span> <span class="pre">of</span> <span class="pre">strong</span> <span class="pre">spots</span> <span class="pre">found</span> <span class="pre">per</span> <span class="pre">image.</span></code></div></blockquote>
 <p><em>If you see the number of strong spots drop off over the dataset, or otherwise show large variability, we may start to worry about issues such as radiation damage or a poorly-centered crystal.</em></p>
 <blockquote>
-<div><p><code class="docutils literal"><span class="pre">If</span> <span class="pre">you</span> <span class="pre">have</span> <span class="pre">a</span> <span class="pre">case</span> <span class="pre">where</span> <span class="pre">spot-finding</span> <span class="pre">has</span> <span class="pre">gone</span> <span class="pre">badly,</span> <span class="pre">it</span> <span class="pre">may</span> <span class="pre">be</span> <span class="pre">helpful</span> <span class="pre">to</span> <span class="pre">debug</span> <span class="pre">using</span> <span class="pre">the</span> <span class="pre">&quot;image</span> <span class="pre">viewer&quot;</span> <span class="pre">and</span> <span class="pre">&quot;reciprocal</span> <span class="pre">lattice</span> <span class="pre">viewer&quot;,</span> <span class="pre">which</span> <span class="pre">can</span> <span class="pre">be</span> <span class="pre">launched</span> <span class="pre">via</span> <span class="pre">buttons</span> <span class="pre">shown</span> <span class="pre">on</span> <span class="pre">the</span> <span class="pre">“Tools”</span> <span class="pre">tab.</span></code></p>
+<div><p><code class="docutils literal notranslate"><span class="pre">If</span> <span class="pre">you</span> <span class="pre">have</span> <span class="pre">a</span> <span class="pre">case</span> <span class="pre">where</span> <span class="pre">spot-finding</span> <span class="pre">has</span> <span class="pre">gone</span> <span class="pre">badly,</span> <span class="pre">it</span> <span class="pre">may</span> <span class="pre">be</span> <span class="pre">helpful</span> <span class="pre">to</span> <span class="pre">debug</span> <span class="pre">using</span> <span class="pre">the</span> <span class="pre">&quot;image</span> <span class="pre">viewer&quot;</span> <span class="pre">and</span> <span class="pre">&quot;reciprocal</span> <span class="pre">lattice</span> <span class="pre">viewer&quot;,</span> <span class="pre">which</span> <span class="pre">can</span> <span class="pre">be</span> <span class="pre">launched</span> <span class="pre">via</span> <span class="pre">buttons</span> <span class="pre">shown</span> <span class="pre">on</span> <span class="pre">the</span> <span class="pre">“Tools”</span> <span class="pre">tab.</span></code></p>
 <blockquote>
 <div><p class="toggle-header"><strong>more about reciprocal lattice viewer</strong></p>
 <div class="toggle-content container">
@@ -123,7 +110,7 @@
 <p>This program is used to integrate the reflections on the diffraction images. The program will output a set of integrated reflections and an experiment list with additional profile model data.</p>
 <p><em>Mostly, the default parameters are fine for Pilatus data, which will perform XDS-like 3D profile fitting while using a generalized linear model in order to fit a Poisson-distributed background model.</em></p>
 <blockquote>
-<div><code class="docutils literal"><span class="pre">It</span> <span class="pre">possible</span> <span class="pre">to</span> <span class="pre">have</span> <span class="pre">adjusted</span> <span class="pre">the</span> <span class="pre">resolution</span> <span class="pre">limits</span> <span class="pre">using</span> <span class="pre">arameters</span> <span class="pre">d_min</span> <span class="pre">and</span> <span class="pre">d_max</span> <span class="pre">under</span> <span class="pre">prediction</span> <span class="pre">in</span> <span class="pre">the</span> <span class="pre">**“Advanced”**</span> <span class="pre">parameters</span> <span class="pre">tab.</span></code></div></blockquote>
+<div><code class="docutils literal notranslate"><span class="pre">It</span> <span class="pre">possible</span> <span class="pre">to</span> <span class="pre">have</span> <span class="pre">adjusted</span> <span class="pre">the</span> <span class="pre">resolution</span> <span class="pre">limits</span> <span class="pre">using</span> <span class="pre">arameters</span> <span class="pre">d_min</span> <span class="pre">and</span> <span class="pre">d_max</span> <span class="pre">under</span> <span class="pre">prediction</span> <span class="pre">in</span> <span class="pre">the</span> <span class="pre">**“Advanced”**</span> <span class="pre">parameters</span> <span class="pre">tab.</span></code></div></blockquote>
 <p>After these jobs are finished, the reflections are ‘post-processed’, which includes the application of the LP correction to the intensities. Then summary tables are printed giving quality statistics first by frame, and then by resolution bin.</p>
 <blockquote>
 <div></div></blockquote>
@@ -134,10 +121,10 @@
 The program takes as input a set of one or more integrated experiments and reflections.</p>
 <p><strong>Stages of space group determination in POINTLESS</strong> :</p>
 <ol class="arabic simple">
-<li>from the cell dimensions, determine the maximum possible lattice symmetry, with some tolerance ( <code class="docutils literal"><span class="pre">ignoring</span> <span class="pre">any</span> <span class="pre">input</span> <span class="pre">symmetry</span></code> )</li>
-<li>for each possible rotation operator, score potentially related observations pairs for agreement ( <code class="docutils literal"><span class="pre">correlation</span> <span class="pre">coefficients</span> <span class="pre">and</span> <span class="pre">R-factor</span></code> )</li>
-<li>score all possible combinations of operators to determine the point group ( <code class="docutils literal"><span class="pre">point</span> <span class="pre">groups</span> <span class="pre">from</span> <span class="pre">the</span> <span class="pre">maximum</span> <span class="pre">down</span> <span class="pre">to</span> <span class="pre">P1</span></code> )</li>
-<li>score axial systematic absences to detect screw axes, hence space group ( <code class="docutils literal"><span class="pre">axial</span> <span class="pre">observations</span> <span class="pre">are</span> <span class="pre">sometimes</span> <span class="pre">unobserved</span></code> )</li>
+<li>from the cell dimensions, determine the maximum possible lattice symmetry, with some tolerance ( <code class="docutils literal notranslate"><span class="pre">ignoring</span> <span class="pre">any</span> <span class="pre">input</span> <span class="pre">symmetry</span></code> )</li>
+<li>for each possible rotation operator, score potentially related observations pairs for agreement ( <code class="docutils literal notranslate"><span class="pre">correlation</span> <span class="pre">coefficients</span> <span class="pre">and</span> <span class="pre">R-factor</span></code> )</li>
+<li>score all possible combinations of operators to determine the point group ( <code class="docutils literal notranslate"><span class="pre">point</span> <span class="pre">groups</span> <span class="pre">from</span> <span class="pre">the</span> <span class="pre">maximum</span> <span class="pre">down</span> <span class="pre">to</span> <span class="pre">P1</span></code> )</li>
+<li>score axial systematic absences to detect screw axes, hence space group ( <code class="docutils literal notranslate"><span class="pre">axial</span> <span class="pre">observations</span> <span class="pre">are</span> <span class="pre">sometimes</span> <span class="pre">unobserved</span></code> )</li>
 </ol>
 <p><strong>Symmetry determination with POINTLESS</strong> :</p>
 <ol class="arabic">
@@ -152,7 +139,7 @@ The program takes as input a set of one or more integrated experiments and refle
 <li><p class="first"><strong>space group from axial systematic absences</strong></p>
 </li>
 </ol>
-<p>Once the job is finished, check the <strong>“Log Text”</strong> output. <code class="docutils literal"><span class="pre">The</span> <span class="pre">most</span> <span class="pre">important</span> <span class="pre">part</span> <span class="pre">here</span> <span class="pre">is</span> <span class="pre">the</span> <span class="pre">table</span> <span class="pre">printed</span> <span class="pre">at</span> <span class="pre">the</span> <span class="pre">end.</span></code></p>
+<p>Once the job is finished, check the <strong>“Log Text”</strong> output. <code class="docutils literal notranslate"><span class="pre">The</span> <span class="pre">most</span> <span class="pre">important</span> <span class="pre">part</span> <span class="pre">here</span> <span class="pre">is</span> <span class="pre">the</span> <span class="pre">table</span> <span class="pre">printed</span> <span class="pre">at</span> <span class="pre">the</span> <span class="pre">end.</span></code></p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">space group is only a hypothesis until the structure has been determined and satisfactorily refined</p>
@@ -203,7 +190,7 @@ By default, a physically motivated scaling model is used, with a scale, decay (B
       </div>
 
     <div class="footer" role="contentinfo">
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.8.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.5.
     </div>
   </body>
 </html>

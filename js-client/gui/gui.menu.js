@@ -90,7 +90,6 @@ document.onclick = function(event)  {
   return true;
 }
 
-
 // -------------------------------------------------------------------------
 // Menu class
 
@@ -112,7 +111,7 @@ function Menu ( text,icon_uri )  {
     }
     this.addWidget ( this.button );
     (function(menu){
-      menu.button.addOnClickListener ( function(){
+      menu.button.addOnClickListener ( function(e){
       //menu.addOnClickListener ( function(){
         __close_all_menus();
         if (!menu.disabled)  {

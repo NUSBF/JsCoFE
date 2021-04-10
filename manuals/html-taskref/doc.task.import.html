@@ -1,39 +1,26 @@
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
     <title>2.1. Data Import &#8212; CCP4 Cloud 1.6 documentation</title>
-    
     <link rel="stylesheet" href="_static/haiku.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="_static/contentui.css" type="text/css" />
-    
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    './',
-        VERSION:     '1.6',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
-      };
-    </script>
+    <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
     <script type="text/javascript" src="_static/contentui.js"></script>
-    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="top" title="CCP4 Cloud 1.6 documentation" href="index.html" />
-    <link rel="up" title="2. Data Import" href="Data_Import.html" />
     <link rel="next" title="2.2. Import Sequence(s) by Copy-Paste" href="doc.task.ImportSeqCP.html" />
     <link rel="prev" title="2. Data Import" href="Data_Import.html" /> 
-  </head>
-  <body role="document">
+  </head><body>
       <div class="header" role="banner"><h1 class="heading"><a href="index.html">
           <span>CCP4 Cloud 1.6 documentation</span></a></h1>
         <h2 class="heading"><span>2.1. Data Import</span></h2>
@@ -55,15 +42,15 @@
   <div class="section" id="data-import">
 <h1>2.1. Data Import<a class="headerlink" href="#data-import" title="Permalink to this headline">¶</a></h1>
 <p>Data import is almost always the first task in any Project (only the <strong>Make Ligand</strong> task may be run without any data imported). There may be as many data imports in projects as necessary, however, it is usually a good idea to import all available experimental data, sequences and molecular coordinates in the very beginning.</p>
-<p><em>From user&#8217;s perspective, CCP4 Cloud operates with data objects, rather than raw files. There are only 2 points where a user deals with actual files: (1) importing and (2) exporting data to/from CCP4 Cloud Project. Data objects correspond to entities that are passed from task to task as a whole. Therefore, for all tasks, except Data Import, require choice of data objects, rather than raw files. This is done in form of drop-down selectors, pre-filled with data objects, relevant to particular task and input field only</em></p>
+<p><em>From user’s perspective, CCP4 Cloud operates with data objects, rather than raw files. There are only 2 points where a user deals with actual files: (1) importing and (2) exporting data to/from CCP4 Cloud Project. Data objects correspond to entities that are passed from task to task as a whole. Therefore, for all tasks, except Data Import, require choice of data objects, rather than raw files. This is done in form of drop-down selectors, pre-filled with data objects, relevant to particular task and input field only</em></p>
 <div class="section" id="ccp4-cloud-data-managment">
 <h2>2.1.1. CCP4 Cloud Data Managment<a class="headerlink" href="#ccp4-cloud-data-managment" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="data-object-naming">
 <h3>2.1.1.1. Data Object Naming<a class="headerlink" href="#data-object-naming" title="Permalink to this headline">¶</a></h3>
 <blockquote>
-<div><strong>From user&#8217;s perspective, CCP4 Cloud operates with data objects, rather than raw files. There are only 2 points where a user deals with actual files: (1) importing and (2) exporting data to/from CCP4 Cloud Project. Data objects correspond to entities that are passed from task to task as a whole.</strong></div></blockquote>
+<div><strong>From user’s perspective, CCP4 Cloud operates with data objects, rather than raw files. There are only 2 points where a user deals with actual files: (1) importing and (2) exporting data to/from CCP4 Cloud Project. Data objects correspond to entities that are passed from task to task as a whole.</strong></div></blockquote>
 <p>All data objects are named according to the following template:
-<code class="docutils literal"><span class="pre">[NNNN-MM]</span> <span class="pre">name</span> <span class="pre">/type/subtype(s)</span></code></p>
+<code class="docutils literal notranslate"><span class="pre">[NNNN-MM]</span> <span class="pre">name</span> <span class="pre">/type/subtype(s)</span></code></p>
 <p>where:</p>
 <table border="1" class="docutils">
 <colgroup>
@@ -100,7 +87,7 @@ If you may need to use data from different branches in a subsequent job. For exa
 <blockquote>
 <div><a class="reference internal image-reference" href="_images/doc.task.import2.png"><img alt="_images/doc.task.import2.png" src="_images/doc.task.import2.png" style="width: 536.0px; height: 455.0px;" /></a>
 </div></blockquote>
-<p>Choosing &#8220;Add job&#8221; from the dropdown menu will bring up the Task List Dialog, from which the &#8220;Structural comparison with Gesamt&#8221; task can be chosen. The new job will be added as a child to the right-clicked job ([0008] in the above Figure) and will see only data produced in jobs selected.</p>
+<p>Choosing “Add job” from the dropdown menu will bring up the Task List Dialog, from which the “Structural comparison with Gesamt” task can be chosen. The new job will be added as a child to the right-clicked job ([0008] in the above Figure) and will see only data produced in jobs selected.</p>
 </div>
 <div class="section" id="data-objects-and-project-branching">
 <h3>2.1.1.3. Data Objects and Project Branching<a class="headerlink" href="#data-objects-and-project-branching" title="Permalink to this headline">¶</a></h3>
@@ -124,7 +111,7 @@ If you may need to use data from different branches in a subsequent job. For exa
 <div class="section" id="file-formats">
 <h2>2.1.2. File formats<a class="headerlink" href="#file-formats" title="Permalink to this headline">¶</a></h2>
 <p>CCP4 Cloud operates with data objects, rather than raw files. There are only 2 points where a user deals with actual files: (1) importing and (2) exporting data to/from CCP4 Cloud Project.
-Import procedure automatically identifies the type of uploaded data and converts it into CCP4 Cloud&#8217;s Data Objects</p>
+Import procedure automatically identifies the type of uploaded data and converts it into CCP4 Cloud’s Data Objects</p>
 <table border="1" class="docutils">
 <colgroup>
 <col width="5%" />
@@ -223,7 +210,7 @@ Cell dimensions (these are identical for all datasets belonging to the same crys
 <dd>ID of dataset
 Wavelength (Real) for dataset.</dd>
 <dt>BATCH</dt>
-<dd>Batch Serial Number for each batch present. This line is only present in &#8216;multi-record&#8217; files</dd>
+<dd>Batch Serial Number for each batch present. This line is only present in ‘multi-record’ files</dd>
 </dl>
 </div></blockquote>
 </div>
@@ -231,7 +218,7 @@ Wavelength (Real) for dataset.</dd>
 </div>
 <div class="section" id="the-hkl-file">
 <h2>2.1.4. The HKL file<a class="headerlink" href="#the-hkl-file" title="Permalink to this headline">¶</a></h2>
-<p>A HKL file consists of x-ray reflections related to reflection planes (hkl) of the crystal lattice. Each of these planes obeys Bragg&#8217;s equation. The experimental reflections are characterized by the indices h k l, a measured intensity I and its error sigma(I).</p>
+<p>A HKL file consists of x-ray reflections related to reflection planes (hkl) of the crystal lattice. Each of these planes obeys Bragg’s equation. The experimental reflections are characterized by the indices h k l, a measured intensity I and its error sigma(I).</p>
 </div>
 </div>
 
@@ -250,7 +237,7 @@ Wavelength (Real) for dataset.</dd>
       </div>
 
     <div class="footer" role="contentinfo">
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.8.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.5.
     </div>
   </body>
 </html>

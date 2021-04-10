@@ -1,38 +1,26 @@
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
     <title>3. CCP4 Cloud Configuration &#8212; CCP4 Cloud 1.6 documentation</title>
-    
     <link rel="stylesheet" href="_static/haiku.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="_static/contentui.css" type="text/css" />
-    
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    './',
-        VERSION:     '1.6',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
-      };
-    </script>
+    <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
     <script type="text/javascript" src="_static/contentui.js"></script>
-    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="top" title="CCP4 Cloud 1.6 documentation" href="index.html" />
     <link rel="next" title="4. Task Interface Description" href="interface_desc.html" />
     <link rel="prev" title="2. CCP4 Cloud Launch Scripts" href="launchers.html" /> 
-  </head>
-  <body role="document">
+  </head><body>
       <div class="header" role="banner"><h1 class="heading"><a href="index.html">
           <span>CCP4 Cloud 1.6 documentation</span></a></h1>
         <h2 class="heading"><span>3. CCP4 Cloud Configuration</span></h2>
@@ -56,7 +44,7 @@
 <div class="section" id="configuration-file-structure">
 <h2>3.1. Configuration file structure<a class="headerlink" href="#configuration-file-structure" title="Permalink to this headline">¶</a></h2>
 <p>CCP4 Cloud Configuration File is a json document with the following components:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="p">{</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="s2">&quot;FrontEnd&quot;</span> <span class="p">:</span> <span class="p">{</span> <span class="o">...........</span> <span class="p">},</span>
   <span class="s2">&quot;FEProxy&quot;</span>  <span class="p">:</span> <span class="p">{</span> <span class="o">...........</span> <span class="p">},</span>
   <span class="s2">&quot;NumberCrunchers&quot;</span> <span class="p">:</span> <span class="p">[</span>
@@ -70,11 +58,11 @@
 </pre></div>
 </div>
 <p>Not all components are required for all severs.</p>
-<p><em>Front End Server</em>  requires <code class="docutils literal"><span class="pre">&quot;FrontEnd&quot;</span></code>, all <code class="docutils literal"><span class="pre">&quot;NumberCrunchers&quot;</span></code> and
-<code class="docutils literal"><span class="pre">&quot;Emailer&quot;</span></code>.</p>
-<p><em>Front End Proxy Server</em> requires <code class="docutils literal"><span class="pre">&quot;FrontEnd&quot;</span></code>, <code class="docutils literal"><span class="pre">&quot;FEProxy&quot;</span></code> and one item
-of <code class="docutils literal"><span class="pre">&quot;NumberCrunchers&quot;</span></code> list, which relates to (optional) client server.</p>
-<p><em>Number Cruncher Server</em> requires only one item of <code class="docutils literal"><span class="pre">`&quot;NumberCrunchers&quot;</span></code>
+<p><em>Front End Server</em>  requires <code class="docutils literal notranslate"><span class="pre">&quot;FrontEnd&quot;</span></code>, all <code class="docutils literal notranslate"><span class="pre">&quot;NumberCrunchers&quot;</span></code> and
+<code class="docutils literal notranslate"><span class="pre">&quot;Emailer&quot;</span></code>.</p>
+<p><em>Front End Proxy Server</em> requires <code class="docutils literal notranslate"><span class="pre">&quot;FrontEnd&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;FEProxy&quot;</span></code> and one item
+of <code class="docutils literal notranslate"><span class="pre">&quot;NumberCrunchers&quot;</span></code> list, which relates to (optional) client server.</p>
+<p><em>Number Cruncher Server</em> requires only one item of <code class="docutils literal notranslate"><span class="pre">`&quot;NumberCrunchers&quot;</span></code>
 list, which relates to that server.</p>
 <p>A single configuration file with description of all Cloud components, may be
 used for all servers in the setup. However, maintenance of individual number
@@ -85,7 +73,7 @@ other components.</p>
 <div class="section" id="configuration-of-the-front-end-server">
 <h2>3.2. Configuration of the Front End Server<a class="headerlink" href="#configuration-of-the-front-end-server" title="Permalink to this headline">¶</a></h2>
 <p>Front End Server configuration has the following structure:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="s2">&quot;FrontEnd&quot;</span> <span class="p">:</span> <span class="p">{</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="s2">&quot;FrontEnd&quot;</span> <span class="p">:</span> <span class="p">{</span>
   <span class="s2">&quot;description&quot;</span>      <span class="p">:</span> <span class="p">{</span>
     <span class="s2">&quot;id&quot;</span>   <span class="p">:</span> <span class="s2">&quot;ccp4&quot;</span><span class="p">,</span>
     <span class="s2">&quot;name&quot;</span> <span class="p">:</span> <span class="s2">&quot;CCP4-Harwell&quot;</span><span class="p">,</span>
@@ -172,10 +160,10 @@ other components.</p>
 </div>
 <div class="section" id="fe-server-configuration-items">
 <h3>3.2.1. FE Server Configuration Items<a class="headerlink" href="#fe-server-configuration-items" title="Permalink to this headline">¶</a></h3>
-<p><strong>&#8220;description&#8221;</strong></p>
+<p><strong>“description”</strong></p>
 <blockquote>
 <div><p>This is an optional object with the following items:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="s2">&quot;description&quot;</span> <span class="p">:</span> <span class="p">{</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="s2">&quot;description&quot;</span> <span class="p">:</span> <span class="p">{</span>
     <span class="s2">&quot;id&quot;</span>   <span class="p">:</span> <span class="s2">&quot;ccp4&quot;</span><span class="p">,</span>
     <span class="s2">&quot;name&quot;</span> <span class="p">:</span> <span class="s2">&quot;CCP4-Harwell&quot;</span><span class="p">,</span>
     <span class="s2">&quot;icon&quot;</span> <span class="p">:</span> <span class="s2">&quot;images_com/ccp4-harwell.png&quot;</span>
@@ -186,125 +174,125 @@ other components.</p>
 Parameters:</p>
 <blockquote>
 <div><dl class="docutils">
-<dt><em>&#8220;id&#8221;</em></dt>
+<dt><em>“id”</em></dt>
 <dd>Unix-type id, which must be globally unique. This id allows for
 discrimination between CCP4 Cloud setups in different geographic locations.
 The id is used internally and is not exposed to end user.</dd>
-<dt><em>&#8220;name&#8221;</em></dt>
+<dt><em>“name”</em></dt>
 <dd>Arbitrary name of CCP4 Cloud instance, which is used for reporting
 to end users. The name may contain HTML formatting</dd>
-<dt><em>&#8220;icon&#8221;</em></dt>
+<dt><em>“icon”</em></dt>
 <dd>Path to icon associated with CCP4 Cloud instance. Both absolute
-and relative paths may be used. Relative path originates from <code class="docutils literal"><span class="pre">jscofe</span></code>
-directory (the current directory for setver&#8217;s <em>node</em> process).</dd>
+and relative paths may be used. Relative path originates from <code class="docutils literal notranslate"><span class="pre">jscofe</span></code>
+directory (the current directory for setver’s <em>node</em> process).</dd>
 </dl>
 </div></blockquote>
 </div></blockquote>
-<p><strong>&#8220;protocol&#8221;, &#8220;host&#8221;, &#8220;port&#8221;</strong></p>
+<p><strong>“protocol”, “host”, “port”</strong></p>
 <blockquote>
 <div><p>These are mandatory items. Typically, all CCP4 Cloud Servers listen to
 localhost ports, which may receive
 external requests through redirection from Apache or any other web-server
 of choice. Therefore values other than:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="s2">&quot;protocol&quot;</span> <span class="p">:</span> <span class="s2">&quot;http&quot;</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="s2">&quot;protocol&quot;</span> <span class="p">:</span> <span class="s2">&quot;http&quot;</span>
 <span class="s2">&quot;host&quot;</span>     <span class="p">:</span> <span class="s2">&quot;localhost&quot;</span>
 </pre></div>
 </div>
 <p>should not be used other than for development purposes.</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="s2">&quot;port&quot;</span> <span class="p">:</span> <span class="mi">8081</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="s2">&quot;port&quot;</span> <span class="p">:</span> <span class="mi">8081</span>
 </pre></div>
 </div>
 <p>should be chosen separately for each configured server from the
 appropriate range of available port numbers</p>
 </div></blockquote>
-<p><strong>&#8220;externalURL&#8221;</strong></p>
+<p><strong>“externalURL”</strong></p>
 <blockquote>
 <div><p>This is the URL, under which the server is visible to the outside world.
 If left blank, its value will be calculated as
-<code class="docutils literal"><span class="pre">protocol://host:port</span></code>. However, when chosen port receives redirection
-from Apache, <em>&#8220;externalURL&#8221;</em> should be set to address used for redirection,
+<code class="docutils literal notranslate"><span class="pre">protocol://host:port</span></code>. However, when chosen port receives redirection
+from Apache, <em>“externalURL”</em> should be set to address used for redirection,
 e.g.,</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="s2">&quot;externalURL&quot;</span> <span class="p">:</span> <span class="s2">&quot;https://my.web.server.com/ccp4cloud&quot;</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="s2">&quot;externalURL&quot;</span> <span class="p">:</span> <span class="s2">&quot;https://my.web.server.com/ccp4cloud&quot;</span>
 </pre></div>
 </div>
 </div></blockquote>
-<p><strong>&#8220;reportURL&#8221;</strong></p>
+<p><strong>“reportURL”</strong></p>
 <blockquote>
-<div><p>This optional item specifies server&#8217;s URL for reporting to end user in the login
+<div><p>This optional item specifies server’s URL for reporting to end user in the login
 page and a few other places. The purpose of this item is to indicate real Front
 End URL to user when FE Server is accessed via Front End Proxy (FE Proxy runs
-on local host, therefore, web-address in user&#8217;s browser will be always
-<code class="docutils literal"><span class="pre">&quot;http://localhost:port&quot;</span></code> even if data is sent over to remote server. In such
-situations, specification of <em>&#8220;reportURL&#8221;</em> allows to inform the user of the actual
+on local host, therefore, web-address in user’s browser will be always
+<code class="docutils literal notranslate"><span class="pre">&quot;http://localhost:port&quot;</span></code> even if data is sent over to remote server. In such
+situations, specification of <em>“reportURL”</em> allows to inform the user of the actual
 connection address:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="s2">&quot;reportURL&quot;</span> <span class="p">:</span> <span class="s2">&quot;https://my.web.server.com/ccp4cloud&quot;</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="s2">&quot;reportURL&quot;</span> <span class="p">:</span> <span class="s2">&quot;https://my.web.server.com/ccp4cloud&quot;</span>
 </pre></div>
 </div>
 </div></blockquote>
-<p><strong>&#8220;exclusive&#8221;</strong></p>
+<p><strong>“exclusive”</strong></p>
 <blockquote>
-<div><p>Specifies whether <em>&#8220;port&#8221;</em> is exclusively allocated to the server or not. There
+<div><p>Specifies whether <em>“port”</em> is exclusively allocated to the server or not. There
 are few reasons to use value other than</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="s2">&quot;exclusive&quot;</span> <span class="p">:</span> <span class="n">true</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="s2">&quot;exclusive&quot;</span> <span class="p">:</span> <span class="n">true</span>
 </pre></div>
 </div>
 </div></blockquote>
-<p><strong>&#8220;stoppable&#8221;</strong></p>
+<p><strong>“stoppable”</strong></p>
 <blockquote>
-<div><p>Specifies whether the server may be stopped by user by executing server&#8217;s URL
-with <em>/stop</em> appended to it, in browser. This is a developer&#8217;s option, and
+<div><p>Specifies whether the server may be stopped by user by executing server’s URL
+with <em>/stop</em> appended to it, in browser. This is a developer’s option, and
 there is no reason to use value other than</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="s2">&quot;stoppable&quot;</span> <span class="p">:</span> <span class="n">false</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="s2">&quot;stoppable&quot;</span> <span class="p">:</span> <span class="n">false</span>
 </pre></div>
 </div>
 <p>in production systems.</p>
 </div></blockquote>
-<p><strong>&#8220;exclude_tasks&#8221;</strong></p>
+<p><strong>“exclude_tasks”</strong></p>
 <blockquote>
 <div><p>Optional list of tasks that can be excluded from the list of available tasks.
 The tasks are specified by the names of the corresponding Javascript task
 classes, for example,</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="s2">&quot;exclude_tasks&quot;</span> <span class="p">:</span> <span class="p">[</span><span class="s2">&quot;TaskAmple&quot;</span><span class="p">,</span><span class="s2">&quot;TaskBalbes&quot;</span><span class="p">]</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="s2">&quot;exclude_tasks&quot;</span> <span class="p">:</span> <span class="p">[</span><span class="s2">&quot;TaskAmple&quot;</span><span class="p">,</span><span class="s2">&quot;TaskBalbes&quot;</span><span class="p">]</span>
 </pre></div>
 </div>
 <p>Task classes are collected in js-common/tasks source code directory.</p>
 </div></blockquote>
-<p><strong>&#8220;fsmount&#8221;</strong></p>
+<p><strong>“fsmount”</strong></p>
 <blockquote>
 <div><p>File system mount common for communicating servers (Front End and Number
 Cruncher). Configuration:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="s2">&quot;fsmount&quot;</span> <span class="p">:</span> <span class="n">null</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="s2">&quot;fsmount&quot;</span> <span class="p">:</span> <span class="n">null</span>
 </pre></div>
 </div>
 <p>causes all data to be transmitted solely via http(s), even within localhost.
 If a common file mount is specified, e.g.,</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="s2">&quot;fsmount&quot;</span> <span class="p">:</span> <span class="s2">&quot;/&quot;</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="s2">&quot;fsmount&quot;</span> <span class="p">:</span> <span class="s2">&quot;/&quot;</span>
 </pre></div>
 </div>
 <p>then data are transmitted using direct file copy, and only metadata is
 exchanged via http(s).</p>
 </div></blockquote>
-<p><strong>&#8220;localSetup&#8221;</strong></p>
+<p><strong>“localSetup”</strong></p>
 <blockquote>
 <div><p>This optional configuration overrides automatic identification of local and
 remote setups. Local setup is one with all servers running on the same
 hardware host, which is identified by using localhosts for communication.
 In few particular cases, such identification may fail, which may be
 corrected by using</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="s2">&quot;localSetup&quot;</span> <span class="p">:</span> <span class="n">false</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="s2">&quot;localSetup&quot;</span> <span class="p">:</span> <span class="n">false</span>
 </pre></div>
 </div>
 </div></blockquote>
-<p><strong>&#8220;update_rcode&#8221;</strong></p>
+<p><strong>“update_rcode”</strong></p>
 <blockquote>
 <div><p>Optional code (1-255) which is returned when administrators requests update
-of servers by pressing <em>&#8220;Update&#8221;</em> button in <em>Administrator Page</em>, tab <em>Nodes</em>.
+of servers by pressing <em>“Update”</em> button in <em>Administrator Page</em>, tab <em>Nodes</em>.
 See launcher script for further details. Example:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="s2">&quot;update_rcode&quot;</span> <span class="p">:</span> <span class="mi">212</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="s2">&quot;update_rcode&quot;</span> <span class="p">:</span> <span class="mi">212</span>
 </pre></div>
 </div>
 </div></blockquote>
-<p><strong>&#8220;userDataPath&#8221;</strong></p>
+<p><strong>“userDataPath”</strong></p>
 <blockquote>
 <div>Path to directory, which will keep user metadata. Usually, no more than a
 few KBytes of data per user should be stored. Both absolute and relative
@@ -312,22 +300,22 @@ paths can be used. Relative path is calculated from directory containing
 <em>jscofe</em> codes: <em>js-client</em>, <em>js-common</em>, <em>js-server</em>, <em>pycofe</em> and others.
 The directory must exist before starting server for first time, or server
 will not start.</div></blockquote>
-<p><strong>&#8220;storage&#8221;</strong></p>
+<p><strong>“storage”</strong></p>
 <blockquote>
 <div>Path to directory to keep various data files such as logs, usage stats etc.
 The directory must exist before starting server for first time, or server
 will not start.</div></blockquote>
-<p><strong>&#8220;projectsPath&#8221;</strong></p>
+<p><strong>“projectsPath”</strong></p>
 <blockquote>
-<div><p>Description of file system area allocated for users&#8217; projects and data.
+<div><p>Description of file system area allocated for users’ projects and data.
 In simplest case, it may be just a path to a directory on a file system
-with sufficient disk space (extimated as number of users times user&#8217;s
-disk quota, see <em>&#8220;ration&#8221;</em> configuration below). Also in this case,
-<em>&#8220;storage&#8221;</em> configuration may be omitted. However, this type of
+with sufficient disk space (extimated as number of users times user’s
+disk quota, see <em>“ration”</em> configuration below). Also in this case,
+<em>“storage”</em> configuration may be omitted. However, this type of
 description is deprecated and should not be used.</p>
-<p>In all new setups, <em>&#8220;projectsPath&#8221;</em> should be configured as the following
+<p>In all new setups, <em>“projectsPath”</em> should be configured as the following
 object:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="s2">&quot;projectsPath&quot;</span> <span class="p">:</span> <span class="p">{</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="s2">&quot;projectsPath&quot;</span> <span class="p">:</span> <span class="p">{</span>
     <span class="s2">&quot;fs01&quot;</span> <span class="p">:</span> <span class="p">{</span> <span class="s2">&quot;path&quot;</span>        <span class="p">:</span> <span class="s2">&quot;/path01&quot;</span><span class="p">,</span>
                <span class="s2">&quot;type&quot;</span>        <span class="p">:</span> <span class="s2">&quot;volume&quot;</span><span class="p">,</span>
                <span class="s2">&quot;diskReserve&quot;</span> <span class="p">:</span> <span class="mi">10000</span><span class="p">,</span>
@@ -348,42 +336,42 @@ object:</p>
 </pre></div>
 </div>
 <p>This configuration allows to place user projects on several file systems
-(disks), which is useful if users&#8217; data does not fit single file system.</p>
+(disks), which is useful if users’ data does not fit single file system.</p>
 <p>Here,</p>
 <blockquote>
 <div><dl class="docutils">
-<dt><em>&#8220;fsXX&#8221;</em></dt>
+<dt><em>“fsXX”</em></dt>
 <dd>is an arbitrary chosen identifier for file system; at least
 one file system should be configured in the object.</dd>
-<dt><em>&#8220;path&#8221;</em></dt>
+<dt><em>“path”</em></dt>
 <dd>is path to projects directory on related file system</dd>
-<dt><em>&#8220;type&#8221;</em></dt>
+<dt><em>“type”</em></dt>
 <dd><p class="first">is file system type. Two options are available:</p>
 <blockquote class="last">
-<div><p><em>&#8220;volume&#8221;</em> : means ordinary system, projects will be placed in path given</p>
-<p><em>&#8220;home&#8221;</em> : indicates that projects are placed in user&#8217;s home directories;
+<div><p><em>“volume”</em> : means ordinary system, projects will be placed in path given</p>
+<p><em>“home”</em> : indicates that projects are placed in user’s home directories;
 in this, case, the actual directory path is calculated as
-<code class="docutils literal"><span class="pre">/path/login/dirName</span></code> (must exist) where <code class="docutils literal"><span class="pre">login</span></code> is user&#8217;s loginname,
-and <code class="docutils literal"><span class="pre">dirName</span></code> is given below</p>
+<code class="docutils literal notranslate"><span class="pre">/path/login/dirName</span></code> (must exist) where <code class="docutils literal notranslate"><span class="pre">login</span></code> is user’s loginname,
+and <code class="docutils literal notranslate"><span class="pre">dirName</span></code> is given below</p>
 </div></blockquote>
 </dd>
-<dt><em>&#8220;diskReserve&#8221;</em></dt>
+<dt><em>“diskReserve”</em></dt>
 <dd>(MBytes) specifies free disk space threshold; if free disk space
 falls below this value, new user projects will not be allocated on
 the related file system</dd>
-<dt><em>&#8220;dirName&#8221;</em></dt>
-<dd>specifies custom directory name for <em>&#8220;home&#8221;</em> type of
-file systems (ignored for <em>&#8220;volume&#8221;</em> type)</dd>
+<dt><em>“dirName”</em></dt>
+<dd>specifies custom directory name for <em>“home”</em> type of
+file systems (ignored for <em>“volume”</em> type)</dd>
 </dl>
 </div></blockquote>
 </div></blockquote>
-<p><strong>&#8220;jobs_safe&#8221;</strong></p>
+<p><strong>“jobs_safe”</strong></p>
 <p>Description of a safe for failed jobs. Users may choose a type of feedback
 agreement, including retention of failed jobs, alnog with input data, in
 CP4 Cloud safe for further investigation by developers. The safe is a directory
 in file system shared between the Front End and <em>all</em> Number Crunchers. Safe
 description is the following object:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="s2">&quot;jobs_safe&quot;</span> <span class="p">:</span> <span class="p">{</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="s2">&quot;jobs_safe&quot;</span> <span class="p">:</span> <span class="p">{</span>
     <span class="s2">&quot;path&quot;</span> <span class="p">:</span> <span class="s2">&quot;/path/to/jobs/safe&quot;</span><span class="p">,</span>
     <span class="s2">&quot;capacity&quot;</span> <span class="p">:</span> <span class="mi">10</span>
 <span class="p">}</span>
@@ -392,40 +380,40 @@ description is the following object:</p>
 <p>Here,</p>
 <blockquote>
 <div><dl class="docutils">
-<dt><em>&#8220;path&#8221;</em></dt>
+<dt><em>“path”</em></dt>
 <dd>should point to safe directory as it is seen on the Front End server</dd>
-<dt><em>&#8220;capacity&#8221;</em></dt>
+<dt><em>“capacity”</em></dt>
 <dd>is the maximum number of failed jobs of particular type that is retained
-in the safe (so that only last <code class="docutils literal"><span class="pre">capacity</span></code> jobs will be available for
+in the safe (so that only last <code class="docutils literal notranslate"><span class="pre">capacity</span></code> jobs will be available for
 investigation)</dd>
 </dl>
 </div></blockquote>
-<p><strong>&#8220;facilitiesPath&#8221;</strong></p>
+<p><strong>“facilitiesPath”</strong></p>
 <blockquote>
 <div>Path to directory to keep cache of files obtained from facilities like
 external file servers, synchrotrons and similar. The directory must exist
 before starting server for first time, or server will not start.</div></blockquote>
-<p><strong>&#8220;ICAT_wdsl&#8221;</strong></p>
+<p><strong>“ICAT_wdsl”</strong></p>
 <blockquote>
 <div><p>URL of the WDSL service of STFC/SCD iCAT facility:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="s2">&quot;https://icat02.diamond.ac.uk/ICATService/ICAT?wsdl&quot;</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="s2">&quot;https://icat02.diamond.ac.uk/ICATService/ICAT?wsdl&quot;</span>
 </pre></div>
 </div>
 </div></blockquote>
-<p><strong>&#8220;ICAT_ids&#8221;</strong></p>
+<p><strong>“ICAT_ids”</strong></p>
 <blockquote>
 <div><p>URL of the IDS service of STFC/SCD iCAT facility:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="s2">&quot;https://ids01.diamond.ac.uk/ids&quot;</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="s2">&quot;https://ids01.diamond.ac.uk/ids&quot;</span>
 </pre></div>
 </div>
 </div></blockquote>
-<p><strong>&#8220;auth_software&#8221;</strong></p>
+<p><strong>“auth_software”</strong></p>
 <blockquote>
 <div><p>This is an optional item, which may be null or missing if not used.
 Otherwise, the item provides description of 3rd-party software, use of
 which requires user authorisation. The item represents an object with
 the following structure:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="s2">&quot;auth_software&quot;</span>    <span class="p">:</span> <span class="p">{</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="s2">&quot;auth_software&quot;</span>    <span class="p">:</span> <span class="p">{</span>
     <span class="s2">&quot;arpwarp&quot;</span> <span class="p">:</span> <span class="p">{</span>
         <span class="s2">&quot;desc_software&quot;</span> <span class="p">:</span> <span class="s2">&quot;Arp/wArp Model Building Software from EMBL-Hamburg&quot;</span><span class="p">,</span>
         <span class="s2">&quot;icon_software&quot;</span> <span class="p">:</span> <span class="s2">&quot;task_arpwarp&quot;</span><span class="p">,</span>
@@ -443,68 +431,68 @@ the following structure:</p>
 <span class="p">}</span>
 </pre></div>
 </div>
-<p>In the above example, keys &#8220;arpwarp&#8221; and &#8220;gphl-buster&#8221; are authorisation
-Ids, defined in the corresponding task classes. &#8220;auth_url&#8221; are URLs of
+<p>In the above example, keys “arpwarp” and “gphl-buster” are authorisation
+Ids, defined in the corresponding task classes. “auth_url” are URLs of
 authorisation servers. Parameter part of these URLs, which follows after
 question mark, are chosen on agreement with developers of respective
 authorisation servers.</p>
 <p>Configuration of authorisation software results in the appearance of the
-corresponding entry in user account settings, available in &#8220;My Account&#8221;
+corresponding entry in user account settings, available in “My Account”
 page. In that section, a user can request authorisation to use software
 from the software provider. Upon request, user is redirected to the
 authorisation server web-page with license agreement and other
 information, collected by the provider. After completion of the
 authorisation request, user is redirected back to CCP4 Cloud, and the
-corresponding authorisation record is added in user&#8217;s account
+corresponding authorisation record is added in user’s account
 automatically. This record enables task, which use authorised software,
 for the user.</p>
 </div></blockquote>
-<p><strong>&#8220;bootstrapHTML&#8221;</strong></p>
+<p><strong>“bootstrapHTML”</strong></p>
 <blockquote>
 <div><p>Path (relative or absolute) to HTML bootrstrap file:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="s2">&quot;bootstrap/jscofe.html&quot;</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="s2">&quot;bootstrap/jscofe.html&quot;</span>
 </pre></div>
 </div>
 <p>Alernative bootstrap files can be used for debug pyrposes or quick change
 of source code directories.</p>
 </div></blockquote>
-<p><strong>&#8220;maxRestarts&#8221;</strong></p>
+<p><strong>“maxRestarts”</strong></p>
 <blockquote>
 <div>CCP4 Cloud Front End can automatically restart after certain type of
 errors. This parameter limits the maximal number of restarts in order
 to avoid infinite restart loops.</div></blockquote>
-<p><strong>&#8220;fileCapSize&#8221;</strong></p>
+<p><strong>“fileCapSize”</strong></p>
 <blockquote>
 <div>Limit size of log file of <em>running</em> jobs delivered to client device, in
 bytes. If log file exceed this limit, extra content is removed from the
 middle of the file. Log files of <em>finished</em> jobs are delivered to client
 device full, without modifications, irrespective of their size.</div></blockquote>
-<p><strong>&#8220;regMode&#8221;</strong></p>
+<p><strong>“regMode”</strong></p>
 <blockquote>
 <div><p>User registration mode. Configuration</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="s2">&quot;regMode&quot;</span> <span class="p">:</span> <span class="s2">&quot;admin&quot;</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="s2">&quot;regMode&quot;</span> <span class="p">:</span> <span class="s2">&quot;admin&quot;</span>
 </pre></div>
 </div>
 <p>specifies administrative registration mode, when a new user can be registared
 only by server admin (a user with administrative privileges).
 Configuration</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="s2">&quot;regMode&quot;</span> <span class="p">:</span> <span class="s2">&quot;email&quot;</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="s2">&quot;regMode&quot;</span> <span class="p">:</span> <span class="s2">&quot;email&quot;</span>
 </pre></div>
 </div>
 <p>allows users to register themselves, in addition to registration by admin.
 In all cases, users are sent temporary password by e-mail.</p>
 </div></blockquote>
-<p><strong>&#8220;sessionCheckPeriod&#8221;</strong></p>
+<p><strong>“sessionCheckPeriod”</strong></p>
 <blockquote>
 <div>Time period, in milliseconds, for checking session status and connection
 between user device and the Front-End server. This period should be
 reasonably short such that duplicate sessions are forced to close before
 a user performs any action (CCP4 Cloud does not support multiple logins);
 2000 ms is a reasonable value.</div></blockquote>
-<p><strong>&#8220;ration&#8221;</strong></p>
+<p><strong>“ration”</strong></p>
 <blockquote>
 <div><p>This configuration object sets default quotas for new users:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="s2">&quot;ration&quot;</span> <span class="p">:</span> <span class="p">{</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="s2">&quot;ration&quot;</span> <span class="p">:</span> <span class="p">{</span>
     <span class="s2">&quot;storage&quot;</span>   <span class="p">:</span> <span class="mi">10000</span><span class="p">,</span>
     <span class="s2">&quot;cpu_day&quot;</span>   <span class="p">:</span> <span class="mi">24</span><span class="p">,</span>
     <span class="s2">&quot;cpu_month&quot;</span> <span class="p">:</span> <span class="mi">240</span>
@@ -514,11 +502,11 @@ a user performs any action (CCP4 Cloud does not support multiple logins);
 <p>where</p>
 <blockquote>
 <div><dl class="docutils">
-<dt><em>&#8220;storage&#8221;</em></dt>
+<dt><em>“storage”</em></dt>
 <dd>is disk quota, in MBytes</dd>
-<dt><em>&#8220;cpu_day&#8221;</em></dt>
+<dt><em>“cpu_day”</em></dt>
 <dd>is CPU quota per day, in hours</dd>
-<dt><em>&#8220;cpu_month&#8221;</em></dt>
+<dt><em>“cpu_month”</em></dt>
 <dd>is CPU quota per month, in hours</dd>
 </dl>
 </div></blockquote>
@@ -529,11 +517,11 @@ given <em>cpu_month</em> CPU-hours in last 30-day time period.</p>
 <p>User quotas may be adjusted individually by users with administrative
 privileges via CCP4 Cloud Administration Facility.</p>
 </div></blockquote>
-<p><strong>&#8220;cloud_mounts&#8221;</strong></p>
+<p><strong>“cloud_mounts”</strong></p>
 <blockquote>
 <div><p>This optional configuration object specify directories on Front End server,
 available to users for reading, for example:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="s2">&quot;cloud_mounts&quot;</span> <span class="p">:</span> <span class="p">{</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="s2">&quot;cloud_mounts&quot;</span> <span class="p">:</span> <span class="p">{</span>
     <span class="s2">&quot;My Computer&quot;</span>    <span class="p">:</span> <span class="s2">&quot;/&quot;</span><span class="p">,</span>
     <span class="s2">&quot;Home&quot;</span>           <span class="p">:</span> <span class="p">[</span><span class="s2">&quot;$HOME&quot;</span><span class="p">,</span><span class="s2">&quot;$USERPROFILE&quot;</span><span class="p">],</span>
     <span class="s2">&quot;CCP4 examples&quot;</span>  <span class="p">:</span> <span class="s2">&quot;$CCP4/share/ccp4i2/demo_data&quot;</span><span class="p">,</span>
@@ -542,29 +530,29 @@ available to users for reading, for example:</p>
 <span class="p">}</span>
 </pre></div>
 </div>
-<p>Mount <em>&#8220;Demo projects&#8221;</em> is reserved for keeping CCP4 Cloud Demo Projects,
+<p>Mount <em>“Demo projects”</em> is reserved for keeping CCP4 Cloud Demo Projects,
 which can be imported by using the <em>Demo projects</em> button found above
-user&#8217;s List of Projects. Other mounts can be used in dedicated import
+user’s List of Projects. Other mounts can be used in dedicated import
 task (<em>Cloud Import</em>) and in few tasks that use direct access to local and
 Cloud-based dircetories (e.g. <em>Xia-2</em> may process images from a directory
 mounted in this way). Cloud mount names may be chosen arbitrarily; the
-appearance of words <em>&#8220;My&#8221;</em>, <em>&#8220;Home&#8221;</em>, <em>&#8220;CCP4&#8221;</em> in mount name will
+appearance of words <em>“My”</em>, <em>“Home”</em>, <em>“CCP4”</em> in mount name will
 decorate the mount with the corresponding icon in Cloud File Browser.</p>
 <p>Directory paths may be both absolute and relative, and they may contain
-environmental variables as in the above example. Variable <code class="docutils literal"><span class="pre">$LOGIN</span></code> will
-be replaced with user&#8217;s Cloud login name, which may be used for
+environmental variables as in the above example. Variable <code class="docutils literal notranslate"><span class="pre">$LOGIN</span></code> will
+be replaced with user’s Cloud login name, which may be used for
 cloud storage mapping on per-user basis. When a list of paths is given
 (<em>cf.</em> above example), the first existing path from the list will be
 mounted.</p>
 </div></blockquote>
-<p><strong>&#8220;logflow&#8221;</strong></p>
+<p><strong>“logflow”</strong></p>
 <blockquote>
 <div><p>This is optional item, which control automatic renumbering of FE log
-files. FE server writes <code class="docutils literal"><span class="pre">stderr</span></code> and <code class="docutils literal"><span class="pre">stdout</span></code> log files, with names
+files. FE server writes <code class="docutils literal notranslate"><span class="pre">stderr</span></code> and <code class="docutils literal notranslate"><span class="pre">stdout</span></code> log files, with names
 given in FE launch script. This files may grow uncompfortably large, and,
 ideally, should be split in manageable chunks for long-term bookkeeping.
 This may be achieved using the following configuration object:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="s2">&quot;logflow&quot;</span> <span class="p">:</span> <span class="p">{</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="s2">&quot;logflow&quot;</span> <span class="p">:</span> <span class="p">{</span>
     <span class="s2">&quot;chunk_length&quot;</span> <span class="p">:</span> <span class="mi">10000</span><span class="p">,</span>
     <span class="s2">&quot;log_file&quot;</span>     <span class="p">:</span> <span class="s2">&quot;/path/to/node_fe&quot;</span>
 <span class="p">}</span>
@@ -573,15 +561,15 @@ This may be achieved using the following configuration object:</p>
 <p>where</p>
 <blockquote>
 <div><dl class="docutils">
-<dt><em>&#8220;log_file&#8221;</em></dt>
-<dd>is template path to log files. For example, tempate <code class="docutils literal"><span class="pre">/path/to/npde_fe</span></code>
+<dt><em>“log_file”</em></dt>
+<dd>is template path to log files. For example, tempate <code class="docutils literal notranslate"><span class="pre">/path/to/npde_fe</span></code>
 means that launch script defines log files with paths
-<code class="docutils literal"><span class="pre">/path/to/node_fe.log</span></code> and <code class="docutils literal"><span class="pre">/path/to/node_fe.err</span></code></dd>
-<dt><em>&#8220;chunk_lenhgth&#8221;</em></dt>
+<code class="docutils literal notranslate"><span class="pre">/path/to/node_fe.log</span></code> and <code class="docutils literal notranslate"><span class="pre">/path/to/node_fe.err</span></code></dd>
+<dt><em>“chunk_lenhgth”</em></dt>
 <dd>is the number of job launch records in a chunk. When specified number
 of jobs is launched, current log files are renamed as
-<code class="docutils literal"><span class="pre">/path/to/node_fe.NN.log</span></code> and <code class="docutils literal"><span class="pre">/path/to/node_fe.NN.err</span></code>, where
-<code class="docutils literal"><span class="pre">NN</span></code> is chunk number, and new log files with tempate names are
+<code class="docutils literal notranslate"><span class="pre">/path/to/node_fe.NN.log</span></code> and <code class="docutils literal notranslate"><span class="pre">/path/to/node_fe.NN.err</span></code>, where
+<code class="docutils literal notranslate"><span class="pre">NN</span></code> is chunk number, and new log files with tempate names are
 initialised</dd>
 </dl>
 </div></blockquote>
@@ -591,7 +579,7 @@ initialised</dd>
 <div class="section" id="configuration-of-the-client-proxy-server">
 <h2>3.3. Configuration of the Client Proxy Server<a class="headerlink" href="#configuration-of-the-client-proxy-server" title="Permalink to this headline">¶</a></h2>
 <p>Client Proxy Server configuration has the following structure:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="s2">&quot;FEProxy&quot;</span> <span class="p">:</span> <span class="p">{</span>  <span class="o">//</span> <span class="n">optional</span> <span class="n">proxy</span> <span class="n">configuration</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="s2">&quot;FEProxy&quot;</span> <span class="p">:</span> <span class="p">{</span>  <span class="o">//</span> <span class="n">optional</span> <span class="n">proxy</span> <span class="n">configuration</span>
   <span class="s2">&quot;protocol&quot;</span>         <span class="p">:</span> <span class="s2">&quot;http&quot;</span><span class="p">,</span>
   <span class="s2">&quot;host&quot;</span>             <span class="p">:</span> <span class="s2">&quot;localhost&quot;</span><span class="p">,</span>
   <span class="s2">&quot;port&quot;</span>             <span class="p">:</span> <span class="mi">8082</span><span class="p">,</span>
@@ -607,50 +595,50 @@ initialised</dd>
 </div>
 <div class="section" id="client-proxy-server-configuration-items">
 <h3>3.3.1. Client Proxy Server Configuration Items<a class="headerlink" href="#client-proxy-server-configuration-items" title="Permalink to this headline">¶</a></h3>
-<p><strong>&#8220;protocol&#8221;, &#8220;host&#8221;, &#8220;port&#8221;</strong></p>
+<p><strong>“protocol”, “host”, “port”</strong></p>
 <blockquote>
 <div><p>These are mandatory items. Client Proxy server always runs on localhost,
 therefore, values other than:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="s2">&quot;protocol&quot;</span> <span class="p">:</span> <span class="s2">&quot;http&quot;</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="s2">&quot;protocol&quot;</span> <span class="p">:</span> <span class="s2">&quot;http&quot;</span>
 <span class="s2">&quot;host&quot;</span>     <span class="p">:</span> <span class="s2">&quot;localhost&quot;</span>
 </pre></div>
 </div>
 <p>should not be used other than for development purposes.</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="s2">&quot;port&quot;</span> <span class="p">:</span> <span class="mi">8082</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="s2">&quot;port&quot;</span> <span class="p">:</span> <span class="mi">8082</span>
 </pre></div>
 </div>
 <p>should be chosen separately from the appropriate range of available port
 numbers</p>
 </div></blockquote>
-<p><strong>&#8220;externalURL&#8221;</strong></p>
+<p><strong>“externalURL”</strong></p>
 <blockquote>
 <div><p>This is the URL, under which the Client Proxy server is visible to the
 browser and Client Server (local Number Cruncher). If left blank, its
-value will be calculated as <code class="docutils literal"><span class="pre">protocol://host:port</span></code>. Values other than
+value will be calculated as <code class="docutils literal notranslate"><span class="pre">protocol://host:port</span></code>. Values other than
 this should not be used other than for development purposes:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="s2">&quot;externalURL&quot;</span> <span class="p">:</span> <span class="s2">&quot;http://localhost:8082&quot;</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="s2">&quot;externalURL&quot;</span> <span class="p">:</span> <span class="s2">&quot;http://localhost:8082&quot;</span>
 </pre></div>
 </div>
 </div></blockquote>
-<p><strong>&#8220;exclusive&#8221;</strong></p>
+<p><strong>“exclusive”</strong></p>
 <blockquote>
-<div><p>Specifies whether <em>&#8220;port&#8221;</em> is exclusively allocated to the server or not.
+<div><p>Specifies whether <em>“port”</em> is exclusively allocated to the server or not.
 There are few reasons to use value other than</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="s2">&quot;exclusive&quot;</span> <span class="p">:</span> <span class="n">true</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="s2">&quot;exclusive&quot;</span> <span class="p">:</span> <span class="n">true</span>
 </pre></div>
 </div>
 </div></blockquote>
-<p><strong>&#8220;stoppable&#8221;</strong></p>
+<p><strong>“stoppable”</strong></p>
 <blockquote>
-<div><p>Specifies whether the server may be stopped by user by executing server&#8217;s URL
-with <em>/stop</em> appended to it, in browser. This is a developer&#8217;s option, and
+<div><p>Specifies whether the server may be stopped by user by executing server’s URL
+with <em>/stop</em> appended to it, in browser. This is a developer’s option, and
 there is no reason to use value other than</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="s2">&quot;stoppable&quot;</span> <span class="p">:</span> <span class="n">false</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="s2">&quot;stoppable&quot;</span> <span class="p">:</span> <span class="n">false</span>
 </pre></div>
 </div>
 <p>in production systems.</p>
 </div></blockquote>
-<p><strong>&#8220;localisation&#8221;</strong></p>
+<p><strong>“localisation”</strong></p>
 <blockquote>
 <div><p>Client Proxy Server may be configured to read certain CCP4 Cloud source
 files from local CCP4 setup, rather than load them from remote server.
@@ -659,15 +647,15 @@ visualisation defects in case of version mismatch between local and
 remote CCP4 setups.</p>
 <blockquote>
 <div><dl class="docutils">
-<dt><em>&#8220;localisation&#8221; : 0</em></dt>
+<dt><em>“localisation” : 0</em></dt>
 <dd>all source files are obtained from remote server</dd>
-<dt><em>&#8220;localisation&#8221; : 1</em></dt>
+<dt><em>“localisation” : 1</em></dt>
 <dd>image files, icons and documentation, are
 obtained from local CCP4 setup. This is the recommended option</dd>
-<dt><em>&#8220;localisation&#8221; : 2</em></dt>
+<dt><em>“localisation” : 2</em></dt>
 <dd>image files, icons, documentation, and standard javascript
 librarries are obtained from local CCP4 setup</dd>
-<dt><em>&#8220;localisation&#8221; : 3</em></dt>
+<dt><em>“localisation” : 3</em></dt>
 <dd>all CCP4 Cloud source files are obtained from local CCP4 setup</dd>
 </dl>
 </div></blockquote>
@@ -691,7 +679,7 @@ librarries are obtained from local CCP4 setup</dd>
       </div>
 
     <div class="footer" role="contentinfo">
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.8.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.5.
     </div>
   </body>
 </html>

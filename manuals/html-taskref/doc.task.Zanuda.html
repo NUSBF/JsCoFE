@@ -1,39 +1,26 @@
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
     <title>11.1. Space Group Validation with Zanuda &#8212; CCP4 Cloud 1.6 documentation</title>
-    
     <link rel="stylesheet" href="_static/haiku.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="_static/contentui.css" type="text/css" />
-    
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    './',
-        VERSION:     '1.6',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
-      };
-    </script>
+    <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
     <script type="text/javascript" src="_static/contentui.js"></script>
-    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="top" title="CCP4 Cloud 1.6 documentation" href="index.html" />
-    <link rel="up" title="11. Validation, Analysis and Deposition" href="Validation_Analysis_and_Deposition.html" />
     <link rel="next" title="11.2. Surface, Interfaces and Assembly Analysis with PISA" href="doc.task.PISA.html" />
     <link rel="prev" title="11. Validation, Analysis and Deposition" href="Validation_Analysis_and_Deposition.html" /> 
-  </head>
-  <body role="document">
+  </head><body>
       <div class="header" role="banner"><h1 class="heading"><a href="index.html">
           <span>CCP4 Cloud 1.6 documentation</span></a></h1>
         <h2 class="heading"><span>11.1. Space Group Validation with Zanuda</span></h2>
@@ -55,12 +42,12 @@
   <div class="section" id="space-group-validation-with-zanuda">
 <h1>11.1. Space Group Validation with Zanuda<a class="headerlink" href="#space-group-validation-with-zanuda" title="Permalink to this headline">¶</a></h1>
 <p><a class="reference external" href="http://scripts.iucr.org/cgi-bin/paper?S1399004714014795">Zanuda</a>  was developed to automate the validation of space group in case of the presence of pseudosymmetry and twinning. The program can be used to restore the correct space group in structures which were intentionally solved in low symmetry space groups including P1 (highest symmetry =  the smallest cell volume). The validation is based on the results of a series of refinements in space groups, which are compatible with the observed unit cell parameters.</p>
-<p>If the pseudosymmetry is very close to an exact crystallographic symmetry, the structure can be solved and partially refined in the <strong>wrong space group</strong>. Typically in such false structures all or some of the <em>pseudosymmetry operations are treated as crystallographic symmetry operations and vice versa</em>. Such misassignment is not uncommon when the structure is solved by molecular replacement (MR) and <code class="docutils literal"><span class="pre">it</span> <span class="pre">becomes</span> <span class="pre">apparent,</span> <span class="pre">when</span> <span class="pre">the</span> <span class="pre">R-free</span> <span class="pre">ceases</span> <span class="pre">to</span> <span class="pre">decrease</span> <span class="pre">at</span> <span class="pre">about</span> <span class="pre">35%</span> <span class="pre">or</span> <span class="pre">even</span> <span class="pre">at</span> <span class="pre">a</span> <span class="pre">higher</span> <span class="pre">value,</span> <span class="pre">and</span> <span class="pre">no</span> <span class="pre">further</span> <span class="pre">model</span> <span class="pre">rebuilding</span> <span class="pre">and</span> <span class="pre">refinement</span> <span class="pre">can</span> <span class="pre">improve</span> <span class="pre">it.</span></code> At this point the electron density map remains imperfect (breaks in the main chain electron density, poor solvent peaks) while does not suggest any particular ways of model improvement.</p>
+<p>If the pseudosymmetry is very close to an exact crystallographic symmetry, the structure can be solved and partially refined in the <strong>wrong space group</strong>. Typically in such false structures all or some of the <em>pseudosymmetry operations are treated as crystallographic symmetry operations and vice versa</em>. Such misassignment is not uncommon when the structure is solved by molecular replacement (MR) and <code class="docutils literal notranslate"><span class="pre">it</span> <span class="pre">becomes</span> <span class="pre">apparent,</span> <span class="pre">when</span> <span class="pre">the</span> <span class="pre">R-free</span> <span class="pre">ceases</span> <span class="pre">to</span> <span class="pre">decrease</span> <span class="pre">at</span> <span class="pre">about</span> <span class="pre">35%</span> <span class="pre">or</span> <span class="pre">even</span> <span class="pre">at</span> <span class="pre">a</span> <span class="pre">higher</span> <span class="pre">value,</span> <span class="pre">and</span> <span class="pre">no</span> <span class="pre">further</span> <span class="pre">model</span> <span class="pre">rebuilding</span> <span class="pre">and</span> <span class="pre">refinement</span> <span class="pre">can</span> <span class="pre">improve</span> <span class="pre">it.</span></code> At this point the electron density map remains imperfect (breaks in the main chain electron density, poor solvent peaks) while does not suggest any particular ways of model improvement.</p>
 <p>In case of space group validation with Zanuda was made the next assumptions:</p>
 <blockquote>
 <div><ul class="simple">
 <li>The pseudosymmetry operations, if any, are close enough to exact symmetry operations and, therefore, refinement converges to the global minimum when wrong symmetry constraints are removed and correct constraints are imposed.</li>
-<li>The errors in individual macromolecules do not hinder the difference between pseudosymmetry and crystallographic symmetry, i.e. the model is already refined well enough (R-free around or below 40%). <code class="docutils literal"><span class="pre">However</span> <span class="pre">it</span> <span class="pre">is</span> <span class="pre">not</span> <span class="pre">assumed</span> <span class="pre">that</span> <span class="pre">this</span> <span class="pre">refinement</span> <span class="pre">has</span> <span class="pre">been</span> <span class="pre">performed</span> <span class="pre">in</span> <span class="pre">the</span> <span class="pre">true</span> <span class="pre">space</span> <span class="pre">group</span></code>.</li>
+<li>The errors in individual macromolecules do not hinder the difference between pseudosymmetry and crystallographic symmetry, i.e. the model is already refined well enough (R-free around or below 40%). <code class="docutils literal notranslate"><span class="pre">However</span> <span class="pre">it</span> <span class="pre">is</span> <span class="pre">not</span> <span class="pre">assumed</span> <span class="pre">that</span> <span class="pre">this</span> <span class="pre">refinement</span> <span class="pre">has</span> <span class="pre">been</span> <span class="pre">performed</span> <span class="pre">in</span> <span class="pre">the</span> <span class="pre">true</span> <span class="pre">space</span> <span class="pre">group</span></code>.</li>
 </ul>
 </div></blockquote>
 <p>The search for a minimum free energy and, as a consequence, the regular packing of molecules in a crystal lattice often leads to a symmetric relationship between the molecules. A characteristic of a crystal is that it has unit translations in three dimensions, also called three-dimensional translational symmetry, corresponding to the repetition of the unit cells. Application of the symmetry operators, such as rotation, reflection, or inversion, leaves the entire crystal unchanged if the space group was chosen right. There are 230 different ways to combine the allowed symmetry operations in a crystal, leading to 230 space groups. They can be found in the <a class="reference external" href="https://it.iucr.org/Ac/">International Tables for Crystallography</a>
@@ -81,7 +68,7 @@ Only 65 space groups are “biological”. The reason is that in protein crystal
 </ul>
 <div class="section" id="point-group">
 <h2>11.1.1. Point Group<a class="headerlink" href="#point-group" title="Permalink to this headline">¶</a></h2>
-<p>In three dimensional objects, such as crystals, symmetry elements may be present in several different combinations.  In fact, in crystals there are 32 possible combinations of symmetry elements.  These operations can be thus combined to form a group of symmetry operations. These groups of operations are called <strong>point groups</strong> because the symmetry elements of these operations all pass through a single point of the object.Examples for point group symmetry operations are <strong>rotation axes</strong>, <strong>inversion axes</strong>, and <strong>mirror planes</strong>. <code class="docutils literal"><span class="pre">In</span> <span class="pre">case</span> <span class="pre">of</span> <span class="pre">point</span> <span class="pre">group</span> <span class="pre">you</span> <span class="pre">have</span> <span class="pre">a</span> <span class="pre">point</span> <span class="pre">to</span> <span class="pre">which</span> <span class="pre">all</span> <span class="pre">symmetry</span> <span class="pre">operations</span> <span class="pre">go</span> <span class="pre">through</span></code> with a net result that the actual molecule does not change.</p>
+<p>In three dimensional objects, such as crystals, symmetry elements may be present in several different combinations.  In fact, in crystals there are 32 possible combinations of symmetry elements.  These operations can be thus combined to form a group of symmetry operations. These groups of operations are called <strong>point groups</strong> because the symmetry elements of these operations all pass through a single point of the object.Examples for point group symmetry operations are <strong>rotation axes</strong>, <strong>inversion axes</strong>, and <strong>mirror planes</strong>. <code class="docutils literal notranslate"><span class="pre">In</span> <span class="pre">case</span> <span class="pre">of</span> <span class="pre">point</span> <span class="pre">group</span> <span class="pre">you</span> <span class="pre">have</span> <span class="pre">a</span> <span class="pre">point</span> <span class="pre">to</span> <span class="pre">which</span> <span class="pre">all</span> <span class="pre">symmetry</span> <span class="pre">operations</span> <span class="pre">go</span> <span class="pre">through</span></code> with a net result that the actual molecule does not change.</p>
 <p>More about <strong>Symmetry in Crystallography</strong> you can find <a class="reference external" href="http://xrayweb.chem.ou.edu/notes/symmetry.html">here</a></p>
 </div>
 <div class="section" id="pseudosymmetry">
@@ -121,7 +108,7 @@ Symmetry operator defines a rotation and a translation of the crystal such that 
       </div>
 
     <div class="footer" role="contentinfo">
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.8.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.5.
     </div>
   </body>
 </html>
