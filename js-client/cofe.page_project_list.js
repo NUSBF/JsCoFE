@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    06.02.21   <--  Date of Last Modification.
+ *    13.04.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -246,12 +246,17 @@ function ProjectListPage ( sceneId )  {
     var inputBox = new InputBox ( dlgTitle );
     inputBox.setText ( delMessage );
     inputBox.launch ( btnName,function(){
-      projectList.deleteProject ( delName );
-      saveProjectList ( function(data){
-        makeProjectListTable   ();
-        welcome_lbl.setVisible ( (projectList.projects.length<1) );
-        self.getUserRation();
-      });
+      serverRequest ( fe_reqtype.deleteProject,delName,'Delete Project',
+        function(data){
+          loadProjectList1();
+          // self.updateUserRationDisplay ( data );
+        },null,'persist' );
+      // projectList.deleteProject ( delName );
+      // saveProjectList ( function(data){
+      //   makeProjectListTable   ();
+      //   welcome_lbl.setVisible ( (projectList.projects.length<1) );
+      //   self.getUserRation();
+      // });
       return true;  // close dialog
     });
   }

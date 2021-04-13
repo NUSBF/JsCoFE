@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    04.03.20   <--  Date of Last Modification.
+ *    12.04.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Common Utils
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2020
+ *  (C) E. Krissinel, A. Lebedev 2016-2021
  *
  *  =================================================================
  *
@@ -123,6 +123,15 @@ function getBasename ( path )  {
   return path.split(/[\\/]/).pop();
 }
 
+function getDateString()  {
+  var d = new Date();
+  var date_str = d.getDate().toString();
+  if (date_str.length<2)  date_str = '0' + date_str;
+  date_str = (d.getMonth()+1) + '-' + date_str;
+  if (date_str.length<5)  date_str = '0' + date_str;
+  return d.getFullYear() + '-' + date_str;
+}
+
 // ===========================================================================
 
 // export such that it could be used in both node and a browser
@@ -139,4 +148,5 @@ if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
   module.exports.replaceAll     = replaceAll;
   module.exports.startsWith     = startsWith;
   module.exports.round          = round;
+  module.exports.getDateString  = getDateString;
 }

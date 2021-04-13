@@ -98,7 +98,7 @@ function Menu ( text,icon_uri )  {
   this.addClass ( 'menu-dropdown' );
   this.disabled = false;
   if ((text!='') || (icon_uri!=''))  {
-    this.button = new IconLabel ( text,icon_uri );
+    this.button = new IconLabel ( '',icon_uri );
     this.button.setNoWrap();
     //this.button.element.setAttribute ( 'class','menu-dropbtn' );
     this.button.addClass ( 'menu-dropbtn' );

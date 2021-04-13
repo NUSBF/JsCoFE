@@ -305,15 +305,17 @@ function checkSession ( sceneId )  {
 
 }
 
-function makeSessionCheck ( sceneId )  {
-  __session_check_timer = setTimeout ( function(){
-    checkSession ( sceneId );
-  },__check_session_period);
-}
 
 function stopSessionChecks()  {
   if (__session_check_timer)  {
     clearTimeout ( __session_check_timer );
     __session_check_timer = null;
   }
+}
+
+function makeSessionCheck ( sceneId )  {
+  stopSessionChecks();
+  __session_check_timer = setTimeout ( function(){
+    checkSession ( sceneId );
+  },__check_session_period);
 }

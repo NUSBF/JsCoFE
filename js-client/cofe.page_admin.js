@@ -61,6 +61,7 @@ function AdminPage ( sceneId )  {
 
   // make tabs
   this.tabs = new Tabs();
+  // this.tabs.setVisible ( false );
   this.usersTab = this.tabs.addTab ( 'Users',true  );
   this.nodesTab = this.tabs.addTab ( 'Nodes',false );
   this.usageTab = this.tabs.addTab ( 'Usage',false );
@@ -181,20 +182,26 @@ AdminPage.prototype.destructor = function ( function_ready )  {
 */
 
 AdminPage.prototype.loadUsageStats = function()  {
-  if ((this.tabs.getActiveTabNo()==2) && (!this.usageStats._loaded))  {
+  if ((!this.usageStats._loaded) && (this.tabs.getActiveTabNo()==2))  {
     this.usageStats.loadPage ( this.usageStats._url );
     this.usageStats._loaded = true;
   }
 }
 
 AdminPage.prototype.refresh = function()  {
+
   (function(self){
+
     serverRequest ( fe_reqtype.getAdminData,0,'Admin Page',function(data){
+
       if (!data.served)  {
+
         self.jobsTitle .setText ( data.jobsStat );
         self.usersTitle.setText ( data.jobsStat );
         self.nodesTitle.setText ( data.jobsStat );
+
       } else  {
+
         self.jobsTitle .setText ( '<h2>Jobs Log</h2>' );
         var lines = data.jobsStat.split(/\r\n|\r|\n/);
         if ((lines.length>0) && startsWith(lines[0],'--------'))  {
@@ -217,15 +224,13 @@ AdminPage.prototype.refresh = function()  {
           }
         self.jobStats.setText ( '<pre>Jobs today: ' + nJobsToday + ' ' + '\n' +
                                 lines.reverse().join('\n') + '</pre>' );
-        /*
-        window.setTimeout ( function(){
-          $(self.jobsTab.element).scrollTop($(self.jobsTab.element).height()
-        },3000);
-        */
+
         self.usageStats._url    = data.usageReportURL;
         self.usageStats._loaded = false;
         self.loadUsageStats();
+
         self.makeUsersInfoTab ( data.usersInfo,data.nodesInfo.FEconfig );
+
         serverCommand ( fe_command.getFEProxyInfo,{},'FE Proxy Info Request',
           function(rsp){
             if (rsp)  {
@@ -253,12 +258,16 @@ AdminPage.prototype.refresh = function()  {
                   return (response!=null);
                 });
             }
+            self.tabs.refresh();
             return (rsp!=null);
           });
       }
-      self.tabs.refresh();
+
+      // self.tabs.refresh();
     },null,'persist');
+
   }(this))
+
 }
 
 AdminPage.prototype.onResize = function ( width,height )  {
@@ -292,7 +301,7 @@ AdminPage.prototype.makeUsersInfoTab = function ( udata,FEconfig )  {
     trow.addCell ( i+1         ).setNoWrap().setHorizontalAlignment('right');
     trow.addCell ( uDesc.name  ).setNoWrap();
     trow.addCell ( uDesc.login ).setNoWrap();
-    var online = '';
+    var online = '&nbsp;';
     for (var token in loggedUsers)
       if (loggedUsers[token].login==uDesc.login)  {
         online = '&check;';
@@ -346,6 +355,8 @@ AdminPage.prototype.makeUsersInfoTab = function ( udata,FEconfig )  {
   this.userListTable.setHeaderColWidth ( 12,'4%'   );  // Last seen
 
   this.userListTable.setHeaderFontSize ( '100%' );
+
+//  this.usersTab.grid.setWidget ( this.userListTable,1,0,1,2 );
 
 }
 
@@ -476,6 +487,8 @@ AdminPage.prototype.makeNodesInfoTab = function ( ndata )  {
     'vertical-align' : 'middle',
     'white-space'    : 'nowrap'
   },1,1 );
+
+//  this.nodesTab.grid.setWidget ( this.nodeListTable,1,0,1,2 );
 
 }
 

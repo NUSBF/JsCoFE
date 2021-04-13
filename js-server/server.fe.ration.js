@@ -278,9 +278,9 @@ function updateProjectStats ( loginData,projectName,cpu_change,
 
 
 function calculateUserDiskSpace ( loginData )  {
-  var pList  = prj.readProjectList ( loginData );
-  var rfpath = getUserRationFPath ( loginData );
-  var r      = getUserRation      ( loginData );
+var pList  = prj.readProjectList ( loginData );
+var rfpath = getUserRationFPath ( loginData );
+var r      = getUserRation      ( loginData );
   if (r && pList)  {
     var disk_space_total = 0.0;
     for (var i=0;i<pList.projects.length;i++)  {

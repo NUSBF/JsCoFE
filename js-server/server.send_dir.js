@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    11.10.20   <--  Date of Last Modification.
+ *    12.04.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Send Directory Module
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2020
+ *  (C) E. Krissinel, A. Lebedev 2016-2021
  *
  *  =================================================================
  *
@@ -137,14 +137,7 @@ var sender_cfg = conf.getServerConfig();
     //}
     */
 
-    request.post ( post_options,
-      /*
-    {
-      url      : serverURL + '/' + command,
-      formData : formData
-    },
-    */
-    function(err,httpResponse,response) {
+    request.post ( post_options,function(err,httpResponse,response) {
 
       if (jobballPath)  {
         if (!utils.removeFile(jobballPath))
@@ -432,6 +425,9 @@ function receiveDir ( jobDir,tmpDir,server_request,onFinish_func )  {
     form.parse ( server_request );
   } catch(err) {
     errs += 'error: ' + err.name + '\nmessage: ' + err.message + '\n';
+    log.error ( 9,'receive directory parse errors: ' + err );
+    if (onFinish_func)
+      onFinish_func ( 'err_parsing',errs,upload_meta );  // file renaming errors
   }
 
 }

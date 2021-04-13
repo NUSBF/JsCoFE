@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    05.04.21   <--  Date of Last Modification.
+ *    12.04.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -314,6 +314,7 @@ function writeProjectList ( loginData,projectList )  {
 function readProjectList ( loginData )  {
   var userProjectsListPath = getUserProjectListPath ( loginData );
   var pList = utils.readObject ( userProjectsListPath );
+  /*
   if (pList)  {
     var pdescs = pList.projects;
     pList.projects = [];
@@ -341,6 +342,32 @@ function readProjectList ( loginData )  {
           pList.projects.push ( pdesc );
       }
     }
+    writeProjectList ( loginData,pList );
+  }
+  */
+  if (pList)  {
+    pList.projects = [];
+    if (!('startmode' in pList))
+      pList.startmode = pd.start_mode.auto;
+    var dirlist = fs.readdirSync ( getUserProjectsDirPath(loginData) );
+    for (var i=0;i<dirlist.length;i++)
+      if (dirlist[i].endsWith(projectExt))  {
+        var pname = path.parse(dirlist[i]).name;
+        var pdesc = readProjectDesc ( loginData,pname );
+        if (pdesc && checkProjectDescData(pdesc,loginData))  {
+          var pData = readProjectData ( loginData,pdesc.name );
+          if (pData)  {
+            writeProjectData ( loginData,pData,true );
+            pdesc = pData.desc;
+          } else  {
+            log.error ( 70,'project data not found at ' +
+                           getProjectDataPath(loginData,pdesc.name) );
+            pdesc = null;
+          }
+        }
+        if (pdesc)
+          pList.projects.push ( pdesc );
+      }
     writeProjectList ( loginData,pList );
   }
   return pList;
@@ -541,7 +568,8 @@ var response = null;  // must become a cmd.Response object to return
 
 function deleteProject ( loginData,projectName )  {
 var response = null;  // must become a cmd.Response object to return
-var erc = '';
+var rdata    = {};    // response data
+var erc      = '';
 
   log.standard ( 7,'delete project ' + projectName + ', login ' + loginData.login );
 
@@ -579,20 +607,24 @@ var erc = '';
                 'Detected removePath failure at deleting project directory, ' +
                 'please investigate.' );
 
+    rdata.ration = ration.calculateUserDiskSpace(loginData).clearJobs();
+    // clearJobs() only to decrease the amount of transmitted data
+    //rdata.ration = ration.getUserRation(loginData).clearJobs();
+
   } else if (pData && (pData.desc.owner.login!=loginData.login))  {
     log.error ( 60,'attempt to delete project ' + pData.desc.owner.login +
                    ':' + projectName + ' by non-owner ' + loginData.login );
     response = new cmd.Response ( cmd.fe_retcode.projectAccess,
-                        'Attempt to delete project without ownership',erc );
+                        'Attempt to delete project without ownership',rdata );
   } else  {
     log.error ( 61,'project ' + loginData.login + ':' + projectName +
                    ' attempted for deletion, but was not found' );
     response = new cmd.Response ( cmd.fe_retcode.noProjectData,
-                                  'Project not found',erc );
+                                  'Project not found',rdata );
   }
 
   if (!response)
-    response = new cmd.Response ( cmd.fe_retcode.ok,'',erc );
+    response = new cmd.Response ( cmd.fe_retcode.ok,erc,rdata );
 
   return response;
 
@@ -616,56 +648,56 @@ var response = null;  // must become a cmd.Response object to return
   if (pList)  {
 
     // delete missing projects
-    var disk_space_change = 0.0;
-    var del_lst = [];
-    for (var i=0;i<pList.projects.length;i++)  {
-      var pDesc  = pList.projects[i];
-      var pName  = pDesc.name;
-      var jfound = -1;
-      for (var j=0;(j<newProjectList.projects.length) && (jfound<0);j++)
-        if (pName==newProjectList.projects[j].name)
-          jfound = j;
-      if (jfound<0)
-        del_lst.push ( [pName,pDesc] );
-      else  {
-        if (pDesc.owner.login==loginData.login)
-          pDesc.title = newProjectList.projects[jfound].title; // if it was renamed
-        newProjectList.projects[jfound] = pDesc;
-      }
-    }
-
-    /*
-    for (var i=0;i<del_lst.length;i++)  {
-      var pName = del_lst[i][0];
-      var pDesc = del_lst[i][1];
-      var rsp   = deleteProject ( loginData,pName );
-      if (rsp.status!=cmd.fe_retcode.ok)
-        response = rsp;
-      else if (('owner' in pDesc) && (pDesc.owner.login==loginData.login))  {
-        // monitor disk space only if own projects are deleted; deleting
-        // a shared project is a logical, rather than physical, operation,
-        // which does not release disk space
-        if ('disk_space' in pList.projects[i])  // backward compatibility 05.06.2018
-          disk_space_change -= pList.projects[i].disk_space;
-      }
-    }
-    */
-
-    for (var i=0;i<del_lst.length;i++)  {
-      var pName = del_lst[i][0];
-      var pDesc = del_lst[i][1];
-      if (('owner' in pDesc) && (pDesc.owner.login!=loginData.login))  {
-        // monitor disk space only if own projects are deleted; deleting
-        // a shared project is a logical, rather than physical, operation,
-        // which does not release disk space
-        if ('disk_space' in pList.projects[i])  // backward compatibility 05.06.2018
-          disk_space_change -= pList.projects[i].disk_space;
-      } else  {
-        var rsp = deleteProject ( loginData,pName );
-        if (rsp.status!=cmd.fe_retcode.ok)
-          response = rsp;
-      }
-    }
+    // var disk_space_change = 0.0;
+    // var del_lst = [];
+    // for (var i=0;i<pList.projects.length;i++)  {
+    //   var pDesc  = pList.projects[i];
+    //   var pName  = pDesc.name;
+    //   var jfound = -1;
+    //   for (var j=0;(j<newProjectList.projects.length) && (jfound<0);j++)
+    //     if (pName==newProjectList.projects[j].name)
+    //       jfound = j;
+    //   if (jfound<0)
+    //     del_lst.push ( [pName,pDesc] );
+    //   else  {
+    //     if (pDesc.owner.login==loginData.login)
+    //       pDesc.title = newProjectList.projects[jfound].title; // if it was renamed
+    //     newProjectList.projects[jfound] = pDesc;
+    //   }
+    // }
+    //
+    // /*
+    // for (var i=0;i<del_lst.length;i++)  {
+    //   var pName = del_lst[i][0];
+    //   var pDesc = del_lst[i][1];
+    //   var rsp   = deleteProject ( loginData,pName );
+    //   if (rsp.status!=cmd.fe_retcode.ok)
+    //     response = rsp;
+    //   else if (('owner' in pDesc) && (pDesc.owner.login==loginData.login))  {
+    //     // monitor disk space only if own projects are deleted; deleting
+    //     // a shared project is a logical, rather than physical, operation,
+    //     // which does not release disk space
+    //     if ('disk_space' in pList.projects[i])  // backward compatibility 05.06.2018
+    //       disk_space_change -= pList.projects[i].disk_space;
+    //   }
+    // }
+    // */
+    //
+    // for (var i=0;i<del_lst.length;i++)  {
+    //   var pName = del_lst[i][0];
+    //   var pDesc = del_lst[i][1];
+    //   if (('owner' in pDesc) && (pDesc.owner.login!=loginData.login))  {
+    //     // monitor disk space only if own projects are deleted; deleting
+    //     // a shared project is a logical, rather than physical, operation,
+    //     // which does not release disk space
+    //     if ('disk_space' in pList.projects[i])  // backward compatibility 05.06.2018
+    //       disk_space_change -= pList.projects[i].disk_space;
+    //   } else  {
+    //     var rsp = deleteProject ( loginData,pName );
+    //     if (rsp.status!=cmd.fe_retcode.ok)
+    //       response = rsp;
+    //   }
+    // }
 
     // create new projects
     for (var i=0;i<newProjectList.projects.length;i++)
@@ -685,23 +717,23 @@ var response = null;  // must become a cmd.Response object to return
       //var userProjectsListPath = getUserProjectListPath ( loginData );
       //if (utils.writeObject ( userProjectsListPath,newProjectList ))  {
       if (writeProjectList(loginData,newProjectList))  {
-        var rdata = {};
-        if (disk_space_change!=0.0)  {
-          // save on reading files if ration does not change; see related
-          // comments above
-          rdata.ration = ration.calculateUserDiskSpace(loginData).clearJobs();
-          // clearJobs() only to decrease the amount of transmitted data
-          //rdata.ration = ration.getUserRation(loginData).clearJobs();
-        }
-        response = new cmd.Response ( cmd.fe_retcode.ok,'',rdata );
+        // var rdata = {};
+        // if (disk_space_change!=0.0)  {
+        //   // save on reading files if ration does not change; see related
+        //   // comments above
+        //   rdata.ration = ration.calculateUserDiskSpace(loginData).clearJobs();
+        //   // clearJobs() only to decrease the amount of transmitted data
+        //   //rdata.ration = ration.getUserRation(loginData).clearJobs();
+        // }
+        response = new cmd.Response ( cmd.fe_retcode.ok,'',{} );
       } else
         response = new cmd.Response ( cmd.fe_retcode.writeError,
-                              '[00020] Project list cannot be written.','' );
+                              '[00020] Project list cannot be written.',{} );
     }
 
   } else  {
     response = new cmd.Response ( cmd.fe_retcode.readError,
-                                 '[00019] Project list cannot be read.','' );
+                                 '[00019] Project list cannot be read.',{} );
   }
 
   /*
@@ -1760,6 +1792,7 @@ module.exports.readProjectDesc        = readProjectDesc;
 module.exports.readProjectList        = readProjectList;
 module.exports.writeProjectList       = writeProjectList;
 module.exports.saveProjectList        = saveProjectList;
+module.exports.deleteProject          = deleteProject;
 module.exports.saveDockData           = saveDockData;
 module.exports.prepareProjectExport   = prepareProjectExport;
 module.exports.checkProjectExport     = checkProjectExport;
@@ -1774,6 +1807,7 @@ module.exports.checkFailedJobExport   = checkFailedJobExport;
 module.exports.finishFailedJobExport  = finishFailedJobExport;
 module.exports.getProjectData         = getProjectData;
 // module.exports.advanceJobCounter      = advanceJobCounter;
+module.exports.makeNewProject         = makeNewProject;
 module.exports.saveProjectData        = saveProjectData;
 module.exports.shareProject           = shareProject;
 module.exports.renameProject          = renameProject;
