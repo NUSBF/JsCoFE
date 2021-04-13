@@ -106,6 +106,10 @@ var response = null;
           response = prj.saveProjectList ( loginData,data );
        break;
 
+    case cmd.fe_reqtype.deleteProject :
+          response = prj.deleteProject ( loginData,data );
+       break;
+
     case cmd.fe_reqtype.saveDockData :
           response = prj.saveDockData ( loginData,data );
        break;

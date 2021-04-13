@@ -21,17 +21,19 @@
 
 .menu-dropbtn {
 /*    background-color: #4CAF50;  */
-    background-color : #5080AF;
-    color     : white;
-    padding   : 16px;
-    font-size : 16px;
-    border    : none;
-    cursor    : pointer;
+  background-color : #5080AF;
+  color     : white;
+  border    : none;
+  padding   : 16px;
+  font-size : 16px;
+  cursor    : pointer;
 }
 
+/*
 .menu-dropbtn:hover, .menu-dropbtn:focus {
     background-color : #3e8e41;
 }
+*/
 
 .menu-dropdown {
     position : relative;

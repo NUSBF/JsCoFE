@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    07.04.21   <--  Date of Last Modification.
+ *    12.04.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -1418,6 +1418,88 @@ var nc_servers = conf.getNCConfigs();
 
 }
 
+function cloudRun ( server_request,server_response )  {
+// This function receives data from js-utils/cloudrun.js script, and runs the
+// requested job. New project is created if necessary.
+
+  // 1. Receive data and metadata
+
+  var tmpDir    = conf.getTmpFile();
+  var tmpJobDir = conf.getTmpFile();
+
+  if ((!utils.mkDir(tmpDir)) || (!utils.mkDir(tmpJobDir)))  {
+    log.error ( 16,'cannot make temporary directory for cloud run' );
+    utils.removePath ( tmpDir    );
+    utils.removePath ( tmpJobDir );
+    cmd.sendResponse ( server_response, cmd.fe_retcode.mkDirError,
+                      'cannot make temporary directory to receive files','' );
+    return;
+  }
+
+  send_dir.receiveDir ( tmpJobDir,tmpDir,server_request,
+    function(code,errs,meta){
+
+      var response = null;
+
+      // remove temporary directory
+      utils.removePath ( tmpDir );
+
+      if (code)  {
+        // upload errors, directory with data was not received
+        log.error ( 11,'receive directory errors: code=' + code + '; desc=' + errs );
+        response = new cmd.Response ( cmd.fe_retcode.uploadErrors,
+                                      'errors: code='+code+'; desc='+errs,{} );
+      } else  {
+
+        // directory with data in 'uploads' subdirectory received safely
+        //   meta.user     - user login
+        //   meta.project  - project Id
+        //   meta.title    - project title (for new projects)
+        //   meta.task     - task code
+
+        // 2. Check that user exists and make loginData structure
+
+        var loginData = user.getUserLoginData ( meta.user );
+        if (!loginData)  {
+          log.standard ( 60,'cloudrun request for unknown user ('+meta.user+') -- ignored' );
+          response = new cmd.Response ( cmd.fe_retcode.wrongLogin,'unknown user',{} );
+        } else  {
+
+          // 3. Check project Id and make new project if necessary
+
+          var pData = prj.readProjectData ( loginData,meta.project );
+          if (!pData)  {
+            var pDesc = new pd.ProjectDesc();
+            pDesc.init ( meta.project,meta.title,pd.start_mode.standard,
+                         com_utils.getDateString() );
+            response = prj.makeNewProject ( loginData,pDesc );
+            if (response.status==cmd.fe_retcode.ok)  {
+              pData = prj.readProjectData ( loginData,meta.project );
+              if (!pData)
+                response = new cmd.Response ( cmd.fe_retcode.noProjectData,
+                                              'error creating new project',{} );
+            }
+          }
+
+          if (pData)  {
+            console.log ( meta );
+            response = new cmd.Response ( cmd.fe_retcode.ok,'files received rc='+code,{} );
+          }
+
+        }
+
+      }
+
+      // remove uploaded job directory if it was not used
+      if (tmpJobDir)
+        utils.removePath ( tmpJobDir );
+
+      // send response to sender
+      response.send ( server_response );
+
+    });
+
+}
 
 // ==========================================================================
 // export for use in node
@@ -1431,5 +1513,6 @@ module.exports.readJobStats       = readJobStats;
 module.exports.stopJob            = stopJob;
 module.exports.killJob            = killJob;
 module.exports.getJobResults      = getJobResults;
+module.exports.cloudRun           = cloudRun;
 module.exports.checkJobs          = checkJobs;
 module.exports.wakeZombiJobs      = wakeZombiJobs;

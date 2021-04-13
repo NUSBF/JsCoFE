@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    05.04.21   <--  Date of Last Modification.
+ *    12.04.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -------------------------------------------------------------------------
  *
@@ -65,6 +65,19 @@ function ProjectDesc()  {
   this.metrics      = {};   // for statistics and searches
 }
 
+ProjectDesc.prototype.init = function ( name_str,title_str,startmode,time_str )  {
+  this.name         = name_str;
+  this.title        = title_str;
+  this.dateCreated  = time_str;
+  this.dateLastUsed = time_str;
+  this.startmode    = startmode;
+  if ((this.startmode==start_mode.standard) ||
+      (this.startmode==start_mode.expert))  // legacy
+        this.tasklistmode = tasklist_mode.full;
+  else  this.tasklistmode = tasklist_mode.basic;
+}
+
+
 function isProjectAccessible ( login,projectDesc )  {
   if (!('owner' in projectDesc))        return true;
   if (!('login' in projectDesc.owner))  return true;
@@ -114,16 +127,19 @@ ProjectList.prototype.getProject = function ( name_str )  {
 ProjectList.prototype.addProject = function ( name_str,title_str,
                                               startmode,time_str )  {
   if (!this.isProject(name_str))  {
-    var pDesc          = new ProjectDesc();
-    pDesc.name         = name_str;
-    pDesc.title        = title_str;
-    pDesc.dateCreated  = time_str;
-    pDesc.dateLastUsed = time_str;
-    pDesc.startmode    = startmode;
-    if ((pDesc.startmode==start_mode.standard) ||
-        (pDesc.startmode==start_mode.expert))  // legacy
-          pDesc.tasklistmode = tasklist_mode.full;
-    else  pDesc.tasklistmode = tasklist_mode.basic;
+    var pDesc = new ProjectDesc();
+    pDesc.init ( name_str,title_str,startmode,time_str );
+
+    // pDesc.name         = name_str;
+    // pDesc.title        = title_str;
+    // pDesc.dateCreated  = time_str;
+    // pDesc.dateLastUsed = time_str;
+    // pDesc.startmode    = startmode;
+    // if ((pDesc.startmode==start_mode.standard) ||
+    //     (pDesc.startmode==start_mode.expert))  // legacy
+    //       pDesc.tasklistmode = tasklist_mode.full;
+    // else  pDesc.tasklistmode = tasklist_mode.basic;
+
     this.projects.unshift ( pDesc );  // put new project at beginning
     this.current       = name_str;
     this.startmode     = startmode;

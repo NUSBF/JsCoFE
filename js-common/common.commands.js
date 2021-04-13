@@ -2,7 +2,7 @@
 /*
  *  ===========================================================================
  *
- *    08.04.21   <--  Date of Last Modification.
+ *    13.04.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -25,7 +25,7 @@
 
 function appName()  { return 'CCP4 Cloud' }  // application name for reporting
 
-var jsCoFE_version = '1.6.021 [08.04.2021]';
+var jsCoFE_version = '1.6.021 [13.04.2021]';
 
 function appVersion()  {
   return jsCoFE_version;
@@ -83,6 +83,7 @@ var fe_command = {
   request           : '=request',        // general request to server
   upload            : '=upload',         // upload request, hard-coded in gui.upload.js
   jobFinished       : '=job_finished',   // request to accept data from finished job
+  cloudRun          : '=cloud_run',      // run job from command prompt on client
   checkSession      : '=check_session',  // request to check facility update
   authResponse      : '=auth_response',  // process from software authorisation server
   getFEProxyInfo    : '=getfeproxyinfo', // get FE Proxy config and other info
@@ -112,6 +113,7 @@ var fe_reqtype = {
   getProjectList    : '-getProjectList',    // request for projects list
   getDockData       : '-getDockData',       // request for dock data
   getSharedPrjList  : '-getSharedPrjList',  // request for shared projects list
+  deleteProject     : '-deleteProject',     // request to save delete project
   saveProjectList   : '-saveProjectList',   // request to save project list
   saveDockData      : '-saveDockData',      // request to save dock data
   getProjectData    : '-getProjectData',    // request for project data

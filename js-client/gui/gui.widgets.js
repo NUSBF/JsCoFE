@@ -2,7 +2,7 @@
 /*
  *  ========================================================================
  *
- *    01.01.21   <--  Date of Last Modification.
+ *    10.04.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------------
  *
@@ -80,7 +80,8 @@ Widget.prototype.removeAttribute = function ( attr )  {
 }
 
 Widget.prototype.setText = function ( text )  {
-  this.element.innerHTML = text;
+  if (text)  this.element.innerHTML = text;
+       else  this.element.innerHTML = ' ';  // Safari 14 fix
   return this;
 }
 
@@ -502,7 +503,7 @@ Grid.prototype = Object.create ( Widget.prototype );
 Grid.prototype.constructor = Grid;
 
 Grid.prototype.clear = function()  {
-  this.element.innerHTML = '';
+  this.element.innerHTML = ' ';  // Safari 14 fix
 }
 
 Grid.prototype.setStyle = function ( style )  {
@@ -841,7 +842,8 @@ var cell = this.getCell ( row,col );
 function Fieldset ( title )  {
   Widget.call ( this,'fieldset' );
   this.legend = new Widget ( 'legend' );
-  this.legend.element.innerHTML = title;
+  this.legend.setText ( title );
+  // this.legend.element.innerHTML = title;
   this.addWidget ( this.legend );
 }
 
@@ -854,16 +856,17 @@ Fieldset.prototype.constructor = Fieldset;
 
 function Label ( text )  {
   Widget.call ( this,'div' );
-  this.element.innerHTML = text;
+  this.setText ( text );
+//  this.element.innerHTML = text;
 }
 
 Label.prototype = Object.create ( Widget.prototype );
 Label.prototype.constructor = Label;
 
-Label.prototype.setText = function ( text )  {
-  this.element.innerHTML = text;
-  return this;
-}
+// Label.prototype.setText = function ( text )  {
+//   this.element.innerHTML = text;
+//   return this;
+// }
 
 Label.prototype.setDocFromURL = function ( url )  {
   this.element.innerHTML = '<object type="text/html" data="' + url + '" ></object>';
@@ -887,7 +890,9 @@ IconLabel.prototype = Object.create ( Widget.prototype );
 IconLabel.prototype.constructor = IconLabel;
 
 IconLabel.prototype.setIconLabel = function ( text,icon_uri )  {
-  this.element.innerHTML = text;
+//  this.setText ( text );
+  if (text)  this.element.innerHTML = text;
+       else  this.element.innerHTML = '&nbsp;';  // Safari 14 fix, ' ' does not work
   if (icon_uri.length>0)  {
     $(this.element).css({
       'text-align':'center',
@@ -1129,7 +1134,8 @@ Button.prototype = Object.create ( Widget.prototype );
 Button.prototype.constructor = Button;
 
 Button.prototype._set_button = function ( text,icon_uri )  {
-  this.div.innerHTML = text;
+  if (text)  this.div.innerHTML = text;
+       else  this.div.innerHTML = ' ';  // Safari 14 fix
   if (icon_uri.length>0)  {
     $(this.div).css({'text-align':'center',
                      'margin-left':'1.2em'});
@@ -1270,7 +1276,8 @@ RadioSet.prototype.addButton = function ( text,btnId,tooltip,checked_bool )  {
 
   var label = new Widget ( 'label' );
   label.element.setAttribute ( 'for',_id );
-  label.element.innerHTML = text;
+  if (text)  label.element.innerHTML = text;
+       else  label.element.innerHTML = ' ';  // Safari 14 fix
   this.addWidget ( label );
   if (tooltip)
     label.setTooltip ( tooltip );
@@ -1595,7 +1602,8 @@ Combobox.prototype.addItem = function ( text,itemId,selected_bool )  {
     this.selected_value = itemId;
     this.selected_text  = text;
   }
-  item.element.innerHTML = text;
+  if (text)  item.element.innerHTML = text;
+       else  item.element.innerHTML = ' ';  // Safari 14 fix
   this.addWidget ( item );
   return this;  // for chaining
 }
@@ -1648,7 +1656,9 @@ function Checkbox ( label_txt,checked_bool )  {
   var _id = 'cbx-' + this.id;
 
   this.element.htmlFor   = _id;
-  this.element.innerHTML = label_txt;
+  if (label_txt)
+        this.element.innerHTML = label_txt;
+  else  this.element.innerHTML = ' ';
   $(this.element).css({'white-space':'nowrap','text-align':'left'});
 
   this.checkbox = document.createElement ( 'input' );
@@ -1698,7 +1708,8 @@ function RadioButton ( label_txt,checked_bool )  {
   var _id = 'cbx-' + this.id;
 
   this.element.htmlFor   = _id;
-  this.element.innerHTML = label_txt;
+  if (label_txt)  this.element.innerHTML = label_txt;
+            else  this.element.innerHTML = ' ';  // Safari 14 fix
   $(this.element).css({'white-space':'nowrap'});
 
   this.radio = document.createElement ( 'input' );

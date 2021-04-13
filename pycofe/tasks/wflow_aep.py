@@ -82,6 +82,8 @@ class WFlowAEP(import_task.Import):
             self.unm = self.input_data.data.hkldata
         else:
             self.hkl = self.input_data.data.hkldata
+            for i in range(len(self.hkl)):
+                self.hkl[i] = self.makeClass ( self.hkl[i] )
 
         if hasattr(self.input_data.data,"seq"):  # optional data parameter
             self.seq = self.input_data.data.seq

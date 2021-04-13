@@ -121,7 +121,8 @@ Table.prototype.setAllColumnCSS = function ( css,start_row,start_col )  {
 
 function TableCell ( text )  {
   Widget.call ( this,'td' );
-  this.element.innerHTML = text;
+  this.setText ( text );
+//  this.element.innerHTML = text;
   this.text = text;
   this.css0 = null;
 }
@@ -140,7 +141,8 @@ TableCell.prototype.setNoWrap = function()  {
 
 function TableHeaderCell ( text )  {
   Widget.call ( this,'th' );
-  this.element.innerHTML = text;
+  this.setText ( text );
+//  this.element.innerHTML = text;
 }
 
 TableHeaderCell.prototype = Object.create ( Widget.prototype );
@@ -225,7 +227,8 @@ function TableScroll ( topCaption,bottomCaption,header_list,tooltip_list )  {
   }
   if (topCaption)  {
     this.topLegend = new Widget ( 'caption' );
-    caption.innerHTML = topCaption;
+    //caption.innerHTML = topCaption;
+    this.topLegend.setText ( topCaption );
     this.table.addWidget ( this.topLegend );
   }
 

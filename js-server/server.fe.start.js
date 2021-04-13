@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    13.02.21   <--  Date of Last Modification.
+ *    12.04.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -162,6 +162,10 @@ function start ( callback_func )  {
 
         case cmd.fe_command.jobFinished :
             rj.getJobResults ( c.job_token,server_request,server_response );
+          break;
+
+        case cmd.fe_command.cloudRun :
+            rj.cloudRun ( server_request,server_response );
           break;
 
         case cmd.fe_command.checkSession :

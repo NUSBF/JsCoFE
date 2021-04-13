@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    06.12.20   <--  Date of Last Modification.
+ *    12.04.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Global variables
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2020
+ *  (C) E. Krissinel, A. Lebedev 2016-2021
  *
  *  ==========================================================================
  *
@@ -195,15 +195,6 @@ var __dev_reference_base_url  = './manuals/html-dev/';
 
 // ===========================================================================
 // miscellaneous functions
-
-function getDateString()  {
-  var d = new Date();
-  var date_str = d.getDate().toString();
-  if (date_str.length<2)  date_str = '0' + date_str;
-  date_str = (d.getMonth()+1) + '-' + date_str;
-  if (date_str.length<5)  date_str = '0' + date_str;
-  return d.getFullYear() + '-' + date_str;
-}
 
 // auxiliary function for getObjectInstance(), not to be used by itself
 function __object_to_instance ( key,value ) {
