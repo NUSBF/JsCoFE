@@ -272,7 +272,7 @@ AdminPage.prototype.refresh = function()  {
 
 AdminPage.prototype.onResize = function ( width,height )  {
   this.tabs.setWidth_px  ( width -50  );
-  this.tabs.setHeight_px ( height-100 );
+  this.tabs.setHeight_px ( height-116 );
   this.usageStats.setFramePosition ( '0px','50px','100%',(height-148)+'px' );
   this.tabs.refresh();
 }
