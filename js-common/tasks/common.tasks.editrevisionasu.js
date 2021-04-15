@@ -3,7 +3,7 @@
 /*
  *  =================================================================
  *
- *    26.03.20   <--  Date of Last Modification.
+ *    15.04.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -31,8 +31,13 @@ if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
 
 function TaskEditRevisionASU()  {
 
-  if (__template)  __template.TaskTemplate.call ( this );
-             else  TaskTemplate.call ( this );
+  if (__template)  {
+    __template.TaskTemplate.call ( this );
+    this.state = __template.job_code.retired;  // do not include in task lists
+  } else  {
+    TaskTemplate.call ( this );
+    this.state = job_code.retired;  // do not include in task lists
+  }
 
   this._type     = 'TaskEditRevisionASU';
   this.name      = 'edit revision asu';
@@ -40,7 +45,6 @@ function TaskEditRevisionASU()  {
   this.title     = 'Edit Revision: Asymmetric Unit';
   //this.helpURL   = './html/jscofe_task_editrevision_asu.html';
   this.fasttrack = true;  // enforces immediate execution
-  this.state     = job_code.retired;  // do not include in task lists
 
   this.input_dtypes = [{   // input data types
       data_type   : {'DataRevision':[]},   // data type(s) and subtype(s)

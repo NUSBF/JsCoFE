@@ -218,7 +218,16 @@ var generate_report = false;
       cmd_params.push ( fe_config.projectsPath[fsname].path );
     }
 
-    //console.log ( conf.pythonName() + ' ' + cmd_params.join(' ') );
+    // console.log ( conf.pythonName() + ' ' + cmd_params.join(' ') );
+
+    // ccp4-python -m
+    //              pycofe.proc.usagestats
+    //              cofe-projects/usage_stats/stats.json
+    //              cofe-projects/usage_stats
+    //              user_data ./cofe-users
+    //              storage ./cofe-projects
+    //              *** ./cofe-projects
+    //              disk1 ./cofe-projects-1
 
     var job = utils.spawn ( conf.pythonName(),cmd_params,{} );
     // make stdout and stderr catchers for debugging purposes

@@ -2,7 +2,7 @@
 /*
  *  ===========================================================================
  *
- *    13.04.21   <--  Date of Last Modification.
+ *    15.04.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -25,7 +25,7 @@
 
 function appName()  { return 'CCP4 Cloud' }  // application name for reporting
 
-var jsCoFE_version = '1.6.021 [13.04.2021]';
+var jsCoFE_version = '1.6.022 [15.04.2021]';
 
 function appVersion()  {
   return jsCoFE_version;
@@ -188,7 +188,8 @@ var fe_retcode = {
   wrongJobToken  : 'wrongJobToken',  // unrecognised job token received
   proxyError     : 'proxyError',     // fe-proxy error
   projectAccess  : 'projectAccess',  // project access denied
-  serverInactive : 'serverInactive'  // project access denied
+  serverInactive : 'serverInactive', // project access denied
+  errors         : 'errors'          // common errors
 };
 
 
@@ -237,6 +238,10 @@ function image_path ( image_basename )  {
         return './images_svg/' + image_basename + '.svg';
   else  return './images_png/' + image_basename + '.png';
   */
+}
+
+function activityIcon()  {
+  return './images_com/activity.gif';
 }
 
 // ============================================================================
@@ -288,6 +293,7 @@ if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
   module.exports.appVersion           = appVersion;
   module.exports.localhost_name       = localhost_name;
   module.exports.image_path           = image_path;
+  module.exports.activityIcon         = activityIcon;
   module.exports.fe_command           = fe_command;
   module.exports.fe_reqtype           = fe_reqtype;
   module.exports.fe_retcode           = fe_retcode;

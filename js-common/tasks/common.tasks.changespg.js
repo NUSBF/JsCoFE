@@ -8,7 +8,7 @@
 /*
  *  =================================================================
  *
- *    26.03.20   <--  Date of Last Modification.
+ *    15.04.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -34,8 +34,13 @@ if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
 
 function TaskChangeSpG()  {
 
-  if (__template)  __template.TaskTemplate.call ( this );
-             else  TaskTemplate.call ( this );
+  if (__template)  {
+    __template.TaskTemplate.call ( this );
+    this.state = __template.job_code.retired;  // do not include in task lists
+  } else  {
+    TaskTemplate.call ( this );
+    this.state = job_code.retired;  // do not include in task lists
+  }
 
   this._type     = 'TaskChangeSpG';
   this.name      = 'change space group';  // short name for job tree
@@ -43,7 +48,6 @@ function TaskChangeSpG()  {
   this.title     = 'Change Space Group';  // full title
   //this.helpURL   = './html/jscofe_task_changespg.html';
   this.fasttrack = true;  // enforces immediate execution
-  this.state     = job_code.retired;  // do not include in task lists
 
   this.input_dtypes = [{    // input data types
       data_type   : {'DataRevision':['~xyz','~substructure','~phases'],

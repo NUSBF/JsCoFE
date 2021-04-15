@@ -5,7 +5,7 @@
  *
  *  =================================================================
  *
- *    01.02.21   <--  Date of Last Modification.
+ *    14.04.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -59,8 +59,14 @@ var path    = require('path');
 var zl      = require('zip-lib');
 
 //  load application modules
-var utils   = require('../js-server/server.utils');
-var cmd     = require('../js-common/common.commands');
+var send_dir = require('../js-server/server.send_dir');
+var utils    = require('../js-server/server.utils');
+var cmd      = require('../js-common/common.commands');
+
+var task_t        = require('../js-common/tasks/common.tasks.template');
+var task_import   = require('../js-common/tasks/common.tasks.import');
+var task_wflowamr = require('../js-common/tasks/common.tasks.wflowamr');
+var task_wflowaep = require('../js-common/tasks/common.tasks.wflowaep');
 
 // var conf   = require('../js-server/server.configuration');
 // var cmd    = require('../js-common/common.commands');
@@ -82,6 +88,16 @@ function printInstructions()  {
   process.exit();
 }
 
+function pickFile ( fnames,extList )  {
+  for (var i=0;i<fnames.length;i++)  {
+    var fext = path.parse(fnames[i]).ext.toLowerCase();
+    if (extList.indexOf(fext)>=0)
+      return [fnames[i]];
+  }
+  return [];
+}
+
+
 function sendData ( filePath,metaData )  {
 
   var formData = {};
@@ -95,7 +111,7 @@ function sendData ( filePath,metaData )  {
     formData : formData
   };
 
-  console.log ( post_options );
+  // console.log ( post_options );
   console.log ( ' ... sending' );
 
   request.post ( post_options, function(err,httpResponse,response){
@@ -154,10 +170,37 @@ var files = {
   ligand      : []
 };
 
+var annotation = {
+  rename     : {},
+  annotation : []
+//  scalepack  : []
+};
+
+// {
+//   "rename": {},
+//   "annotation": [
+//     {
+//       "file": "seq.fasta",
+//       "rename": "seq.fasta",
+//       "items": [
+//         {
+//           "rename": "seq.fasta",
+//           "contents": ">p9\nLVLKWVMSTKYVEAGELKEGSYVVIDGEPCRVVEIEKSKTGKHGSAKARIVAVGVFDGGKRTLSLPVDAQVEVPIIEKFT\nAQILSVSGDVIQLMDMRDYKTIEVPMKYVEEEAKGRLAPGAEVEVWQILDRYKIIRVKG",
+//           "type": "protein"
+//         }
+//       ]
+//     }
+//   ],
+//   "scalepack": {
+//     "p9.sca": {
+//       "wavelength": "0.98"
+//     }
+//   }
+// }
 
 var commands = input.trim().split('\n');
 var ok       = true;
-var nfiles   = 0;
+var fnames   = [];
 console.log ( ' ========== COMMANDS:' );
 for (var i=0;i<commands.length;i++)  {
   commands[i] = commands[i].trim();
@@ -171,7 +214,35 @@ for (var i=0;i<commands.length;i++)  {
         meta[key] = val;
       else if (key in files)  {
         files[key].push ( val );
-        nfiles++;
+        var fext  = path.parse(val).ext;
+        var fname = path.parse(val).name;
+        if (['.seq','.fasta','.pir'].indexOf(fext.toLowerCase())>=0)  {
+          var annot = {
+            file   : fname + fext,
+            rename : fname + fext,
+            items  : []
+          };
+          var content = utils.readString ( val.trim() ).split('>')
+                             .filter(function(k){return k});
+          for (var j=0;j<content.length;j++)  {
+            content[j] = content[j].trim();
+            if (content[j])  {
+              var sfname = fname + fext;
+              if (content.length>1)
+                sfname = fname + '_' + (j+1) + fext;
+              if (key.toLowerCase()=='file')
+                    stype = 'protein';
+              else  stype = key.toLowerCase().split('_').pop();
+              annot.items.push ({
+                rename   : sfname,
+                contents : '>' + content[j],
+                type     : stype
+              });
+            }
+          }
+          annotation.annotation.push ( annot );
+        }
+        fnames.push ( fname + fext );
       } else  {
         console.log ( '   ^^^^ unknown key' );
         ok = false;
@@ -199,10 +270,40 @@ for (var key in meta)
     console.log ( ' *** ' + key.toUpperCase() + ' not specified' );
   }
 
-if (nfiles<=0)
+if (['import','auto-mr','auto-ep','hop-on'].indexOf(meta.task)<0)  {
+  ok = false;
+  console.log ( ' *** task key ' + meta.task + ' is not valid' );
+}
+
+if (fnames.length<=0)
   console.log ( ' *** no files given for upload' );
 
-if ((!ok) ||(nfiles<=0))  {
+
+if (files.hkl.length<=0)
+  files.hkl = pickFile ( files.file,['.mtz'] );
+
+if (files.seq_protein.length>0)
+  files.seq = files.seq_protein;
+else if (files.seq_dna.length>0)
+  files.seq = files.seq_dna;
+else if (files.seq_rna.length>0)
+  files.seq = files.seq_rna;
+else
+  files.seq = pickFile ( files.file,['.seq','.fasta','.pir'] );
+
+if (meta.task!='import')  {
+  if (files.hkl.length<=0)  {
+    ok = false;
+    console.log ( ' *** reflection data is not provided' );
+  }
+  if ((meta.task!='hop-on') && (files.seq.length<=0))  {
+    ok = false;
+    console.log ( ' *** sequence data is not provided' );
+  }
+}
+
+
+if ((!ok) ||(fnames.length<=0))  {
   console.log ( '\n  *** STOP DUE TO INSUFFICIENT INPUT' );
   process.exit();
 }
@@ -228,13 +329,45 @@ for (var key in files)  {
   }
 }
 
+utils.writeObject ( path.join(dirPath,'annotation.json'),annotation );
+
 console.log ( ' ... files copied to temporary location' );
+
+// --------------------------------------------------------------------------
+// Make task object
+
+var task = null;
+
+switch (meta.task)  {
+  default :
+  case 'import'  : task = new task_import.TaskImport  ();
+                   task.upload_files = fnames;
+                 break;
+  case 'auto-mr' : task = new task_wflowamr.TaskWFlowAMR();
+                   task.inputMode = task_t.input_mode.root;
+                   task.file_select[0].path = path.parse(files.hkl[0]).base;
+                   task.file_select[1].path = path.parse(files.seq[0]).base;
+                 break;
+  case 'auto-ep' : task = new task_wflowaep.TaskWFlowAEP();
+                   task.inputMode = task_t.input_mode.root;
+                   task.file_select[0].path = path.parse(files.hkl[0]).base;
+                   task.file_select[1].path = path.parse(files.seq[0]).base;
+                 break;
+  case 'hop-on'  : task = new task_import.TaskImport  ();
+                 break;
+}
+
+task.file_mod   = annotation; // file modification and annotation
+task.project    = meta.project;
+task.treeItemId = 'treeItemId';  // should not be empty
+
+utils.writeObject ( path.join(dirPath,task_t.jobDataFName),task );
 
 
 // --------------------------------------------------------------------------
 // Make archive for upload
 
-var archivePath = path.resolve ( '__dir.zip' );
+var archivePath = path.resolve ( send_dir.jobballName );
 utils.removeFile ( archivePath );  // just in case
 
 zl.archiveFolder ( dirPath,archivePath,{ followSymlinks : true } )

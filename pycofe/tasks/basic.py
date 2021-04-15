@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    23.03.21   <--  Date of Last Modification.
+#    14.04.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -449,7 +449,7 @@ class TaskDriver(object):
     # ============================================================================
 
     def checkPDB ( self,stop=True ):
-        if "PDB_DIR" not in os.environ:
+        if "PDB_DIR" not in os.environ or not os.path.isdir(os.environ["PDB_DIR"]):
             if stop:
                 pyrvapi.rvapi_set_text (
                     "<b>Error: " + self.appName() + " is not configured to work with PDB archive.</b><p>" + \

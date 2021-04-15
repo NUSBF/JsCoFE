@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.04.21   <--  Date of Last Modification.
+ *    14.04.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -49,7 +49,7 @@ FacilityTree.prototype.constructor = FacilityTree;
 // -------------------------------------------------------------------------
 
 FacilityTree.prototype.customIcon = function() {
-  var ci = new TreeNodeCustomIcon ( './images_com/activity.gif','22px','22px','hidden' );
+  var ci = new TreeNodeCustomIcon ( activityIcon(),'22px','22px','hidden' );
   return ci;
 }
 
@@ -286,7 +286,7 @@ StorageTree.prototype.constructor = StorageTree;
 // -------------------------------------------------------------------------
 
 StorageTree.prototype.customIcon = function() {
-  var ci = new TreeNodeCustomIcon ( './images_com/activity.gif','22px','22px','hidden' );
+  var ci = new TreeNodeCustomIcon ( activityIcon(),'22px','22px','hidden' );
   return ci;
 }
 

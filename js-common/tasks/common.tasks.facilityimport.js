@@ -1,8 +1,12 @@
 
+//  LEGACY CODE, ONLY BE USED FOR COMPLIANCY WITH OLD PROJECTS
+//  RETIRED ON 03.03.21
+
+
 /*
  *  =================================================================
  *
- *    03.03.21   <--  Date of Last Modification.
+ *    15.04.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -30,17 +34,20 @@ if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
 
 function TaskFacilityImport()  {
 
-  if (__template)  __template.TaskTemplate.call ( this );
-             else  TaskTemplate.call ( this );
+  if (__template)  {
+    __template.TaskTemplate.call ( this );
+    this.state = __template.job_code.retired;  // do not include in task lists
+  } else  {
+    TaskTemplate.call ( this );
+    this.state = job_code.retired;  // do not include in task lists
+  }
 
   this._type      = 'TaskFacilityImport';
   this.name       = 'facility import';
   this.oname      = '*';   // asterisk here means do not use
   this.title      = 'Facility Import';
-  //this.helpURL    = './html/jscofe_task_fimport.html';
   this.fasttrack  = true;  // enforces immediate execution
   this.inprogress = 0;     // indicates whether facility request is in progress
-  this.state      = job_code.retired;  // do not include in task lists
 
   this.upload_files = [];  // list of uploaded files
 

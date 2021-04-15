@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    29.03.21   <--  Date of Last Modification.
+ *    14.04.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -482,8 +482,8 @@ JobDialog.prototype.makeToolBar = function()  {
 
   this.toolBar.setCellSize ( '35%','',0,1 );
 
-  this.run_image  = this.toolBar.setImage  ( './images_com/activity.gif',
-                                             '36px','36px', 0,this.col++, 1,1 );
+  this.run_image  = this.toolBar.setImage  ( activityIcon(),'36px','36px',
+                                             0,this.col++, 1,1 );
   if (this.task.canEndGracefully())
     this.end_btn = this.toolBar.setButton ( 'End',image_path('endjob'),
                                            0,this.col++, 1,1 )

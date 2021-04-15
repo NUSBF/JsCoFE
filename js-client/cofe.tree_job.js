@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    05.04.21   <--  Date of Last Modification.
+ *    14.04.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -124,7 +124,7 @@ JobTree.prototype.isSelectMode = function()  {
 }
 
 JobTree.prototype.customIcon = function() {
-  var ci = new TreeNodeCustomIcon ( './images_com/activity.gif','22px','22px','hidden' );
+  var ci = new TreeNodeCustomIcon ( activityIcon(),'22px','22px','hidden' );
   return ci;
 }
 
