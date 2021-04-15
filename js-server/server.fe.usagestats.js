@@ -55,7 +55,7 @@ function UsageStats()  {
   this.cpu         = [0];  // cpu[n] is number of cpu hours booked in nth day since start
   this.volumes     = {};
   this.tasks       = {};   // task[TaskTitle].icon        is path to task's icon
-                           // task[TaskTitle]._type       is task's type
+                           // task[TaskTitle].type        is task's type
                            // task[TaskTitle].nuses       is number of uses since start
                            // task[TaskTitle].nfails      is number of failures since start
                            // task[TaskTitle].nterms      is number of terminations since start
@@ -109,7 +109,7 @@ UsageStats.prototype.registerJob = function ( job_class )  {
     if (!this.tasks.hasOwnProperty(job_class.title))
       this.tasks[job_class.title] = {
         'icon'        : cmd.image_path(job_class.icon()),
-        '_type'       : job_class._type, //title.split('(')[0],
+        'type'        : job_class._type, //title.split('(')[0],
         'nuses'       : 0,
         'nfails'      : 0,
         'nterms'      : 0,
