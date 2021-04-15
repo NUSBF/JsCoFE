@@ -1442,6 +1442,7 @@ function cloudRun ( server_request,server_response )  {
     function(code,errs,meta){
 
       var response = null;
+      var message  = '';
 
       // remove temporary directory
       utils.removePath ( tmpDir );
@@ -1482,6 +1483,7 @@ function cloudRun ( server_request,server_response )  {
                 response = new cmd.Response ( cmd.fe_retcode.noProjectData,
                                               'error creating new project',{} );
               } else  {
+                message = 'project "' + meta.project + '" created, ';
                 pData.tree.push({
                   id          : 'treenode_06062',
                   parentId    : null,
@@ -1526,10 +1528,10 @@ function cloudRun ( server_request,server_response )  {
 
               // 5. Prepare task object
 
-              task.project          = meta.project;
-              task.id               = ++pData.desc.jobCount;
-              task.submitter        = loginData.login;
-              task.start_time       = Date.now();
+              task.project    = meta.project;
+              task.id         = ++pData.desc.jobCount;
+              task.submitter  = loginData.login;
+              task.start_time = Date.now();
 
               var jobDirPath = prj.getJobDirPath ( loginData,meta.project,task.id );
               utils.moveDir ( tmpJobDir,jobDirPath,true );
@@ -1569,13 +1571,14 @@ function cloudRun ( server_request,server_response )  {
                 cnode.children = [];
                 pnode.children.push ( cnode );
 
-                prj.writeProjectData ( loginData,pData );
+                prj.writeProjectData ( loginData,pData,true );
 
                 // Run the job
                 var job_token = crypto.randomBytes(20).toString('hex');
                 _run_job ( loginData,task,job_token,loginData,[], function(){} );
 
-                response = new cmd.Response ( cmd.fe_retcode.ok,'files received rc='+code,{} );
+                response = new cmd.Response ( cmd.fe_retcode.ok,
+                  message + 'files uploaded, ' + meta.task + ' started',{} );
 
               }
 
@@ -1602,110 +1605,6 @@ function cloudRun ( server_request,server_response )  {
     });
 
 }
-
-/*
-
-pid = jobEntry.jobId;
-if (auto_meta[key].parentName in auto_meta.context.job_register)
-  pid = auto_meta.context.job_register[auto_meta[key].parentName];
-
-var pnode = pd.getProjectNode ( projectData,pid );
-if (pnode)  {
-
-  // form task
-
-  task.project          = projectName;
-  task.id               = ++projectData.desc.jobCount;
-  task.name             = task.name;
-  task.autoRunName      = key;
-  // task.harvestedTaskIds = dataBox.harvestedTaskIds;
-  task.autoRunId        = jobClass.autoRunId;
-  task.submitter        = loginData.login;
-  task.input_data.data  = auto_meta[key].data;
-  task.start_time       = Date.now();
-
-  for (var field in auto_meta[key].fields)
-    task[field] = auto_meta[key].fields[field];
-
-  task._clone_suggested ( task.parameters,auto_meta[key].parameters );
-  tasks.push ( task );
-
-  var ipath = path.parse ( pnode.icon );
-  var pnode_json = JSON.stringify ( pnode );
-
-  var cnode = JSON.parse ( pnode_json );
-  cnode.id       = pnode.id + '_' + key;
-  cnode.parentId = pnode.id;
-  cnode.dataId   = task.id;
-  // cnode.icon     = path.join ( ipath.dir,task.icon()+ipath.ext );
-  cnode.icon     = ipath.dir + '/' + task.icon() + ipath.ext;
-  cnode.text     = '<b>' + task.autoRunId + ':</b>[' +
-                   com_utils.padDigits(task.id,4) + '] ' + task.name;
-  cnode.text0    = cnode.text;
-  cnode.children = [];
-  pnode.children.push ( cnode );
-
-  auto_meta.context.job_register[key] = task.id;
-
-}
-
-}
-}
-
-prj.writeProjectData ( loginData,projectData,true );
-
-for (var i=0;i<tasks.length;i++)  {
-
-var task = tasks[i];
-
-// prepare job directory
-
-var jobDirPath = prj.getJobDirPath ( loginData,projectName,task.id );
-
-if (!utils.mkDir(jobDirPath)) {
-log.error ( 22,'cannot create job directory at ' + jobDirPath );
-} else  {
-
-// handle remarks and other pseudo-jobs here
-var task_state = task.state;
-if (task_state==task_t.job_code.new)  {
-task.state = task_t.job_code.running;
-task.job_dialog_data.panel = 'output';
-}
-
-var jobDataPath = prj.getJobDataPath ( loginData,projectName,task.id );
-
-if (!utils.writeObject(jobDataPath,task))  {
-log.error ( 23,'cannot write job metadata at ' + jobDataPath );
-} else if (task_state==task_t.job_code.new)  {
-
-utils.writeObject ( path.join(jobDirPath,"auto.context"),auto_meta.context );
-
-// create report directory
-utils.mkDir_anchor ( prj.getJobReportDirPath(loginData,projectName,task.id) );
-// create input directory (used only for sending data to NC)
-utils.mkDir_anchor ( prj.getJobInputDirPath(loginData,projectName,task.id) );
-// create output directory (used for hosting output data)
-utils.mkDir_anchor ( prj.getJobOutputDirPath(loginData,projectName,task.id) );
-// write out the self-updating html starting page, which will last
-// only until it gets replaced by real report's bootstrap
-utils.writeJobReportMessage ( jobDirPath,'<h1>Idle</h1>',true );
-
-// Run the job
-var job_token = crypto.randomBytes(20).toString('hex');
-_run_job ( loginData,task,job_token,ownerLoginData,shared_logins, function(){} );
-
-}
-}
-
-}
-
-
-*/
-
-
-
-
 
 
 // ==========================================================================

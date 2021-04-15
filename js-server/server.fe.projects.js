@@ -1099,7 +1099,8 @@ function saveProjectData ( loginData,data )  {
                      //  1: reload is needed but current operation may continue
                      //  2: reload is mandatory, current operation must terminate
   rdata.pdesc  = null;
-  if ((projectDesc.owner.share.length>0) || projectDesc.autorun)  {  // the project is shared
+//  commenting this out is essential for re-using projects in the cloudrun framework
+//  if ((projectDesc.owner.share.length>0) || projectDesc.autorun)  {  // the project is shared
     rdata.pdesc = readProjectDesc ( loginData,projectDesc.name );
     if (rdata.pdesc)  {
       if (rdata.pdesc.timestamp>projectDesc.timestamp)  {
@@ -1135,7 +1136,7 @@ function saveProjectData ( loginData,data )  {
 
       }
     }
-  }
+//  }
 
 
   // Get users' projects list file name
