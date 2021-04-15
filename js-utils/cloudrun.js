@@ -5,7 +5,7 @@
  *
  *  =================================================================
  *
- *    14.04.21   <--  Date of Last Modification.
+ *    15.04.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -37,6 +37,7 @@
  *   PROJECT     project_id                  (mandatory)
  *   TITLE       Optional Project Title
  *   TASK        [import|auto-mr|auto-ep|hop-on]  (import if not given)
+ *   HA_TYPE     Se
  *   FILE        /path/to/file.[mtz|pdb|seq|fasta|pir|cif]
  *   HKL         /path/to/file.mtz
  *   PHASES      /path/to/file.mtz
@@ -121,7 +122,7 @@ function sendData ( filePath,metaData )  {
       try {
         var resp = JSON.parse ( response );
         if (resp.status==cmd.fe_retcode.ok)  {
-          console.log ( ' ... received safely' );
+          console.log ( ' ... server replied: ' + resp.message );
         } else  {
           console.log ( ' *** cloud run initiation failed, rc=' + resp.status +
                         '\n *** ' + resp.message );
@@ -157,6 +158,10 @@ var meta = {
   project : '',
   title   : '*',
   task    : 'import'
+};
+
+var options = {
+  ha_type : ''
 };
 
 var files = {
@@ -212,6 +217,8 @@ for (var i=0;i<commands.length;i++)  {
       var val = lst.slice(1).join(' ').trim();
       if (key in meta)
         meta[key] = val;
+      else if (key in options)
+        options[key] = val;
       else if (key in files)  {
         files[key].push ( val );
         var fext  = path.parse(val).ext;
