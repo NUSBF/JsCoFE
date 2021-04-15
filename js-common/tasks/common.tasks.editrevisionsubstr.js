@@ -3,7 +3,7 @@
 /*
  *  =================================================================
  *
- *    27.08.20   <--  Date of Last Modification.
+ *    15.04.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -14,7 +14,7 @@
  *  **** Content :  Substructure Editing Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2019-2020
+ *  (C) E. Krissinel, A. Lebedev 2019-2021
  *
  *  =================================================================
  *
@@ -31,8 +31,13 @@ if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
 
 function TaskEditRevisionSubstr()  {
 
-  if (__template)  __template.TaskEditRevisionASU.call ( this );
-             else  TaskEditRevisionASU.call ( this );
+  if (__template)  {
+    __template.TaskEditRevisionASU.call ( this );
+    this.state = __template.job_code.retired;  // do not include in task lists
+  } else  {
+    TaskEditRevisionASU.call ( this );
+    this.state = job_code.retired;  // do not include in task lists
+  }
 
   this._type     = 'TaskEditRevisionSubstr';
   this.name      = 'edit revision substructure';
@@ -40,7 +45,6 @@ function TaskEditRevisionSubstr()  {
   this.title     = 'Edit Revision: Substructure';
   //this.helpURL   = './html/jscofe_task_editrevision_substr.html';
   this.fasttrack = true;  // enforces immediate execution
-  this.state     = job_code.retired;  // do not include in task lists
 
   this.input_dtypes = [{   // input data types
       data_type   : {'DataRevision':['!substructure']}, // data type(s) and subtype(s)

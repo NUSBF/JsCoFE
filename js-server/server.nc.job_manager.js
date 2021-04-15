@@ -966,6 +966,8 @@ function ncRunJob ( job_token,meta )  {
                             writeJobDriverFailureMessage ( code,stdout,stderr,jobDir );
                           if (jobEntry.jobStatus!=task_t.job_code.exiting)
                             ncJobFinished ( job_token,code );
+                        } else  {
+                          
                         }
 
                       });

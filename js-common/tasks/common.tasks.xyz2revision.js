@@ -1,4 +1,7 @@
 
+//  LEGACY CODE, ONLY BE USED FOR COMPLIANCY WITH OLD PROJECTS
+//  RETIRED ON 26.03.21
+
 /*
  *  =================================================================
  *
@@ -28,15 +31,18 @@ if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
 
 function TaskXyz2Revision()  {
 
-  if (__template)  __template.TaskDimple.call ( this );
-             else  TaskDimple.call ( this );
+  if (__template)  {
+    __template.TaskDimple.call ( this );
+    this.state = __template.job_code.retired;  // do not include in task lists
+  } else  {
+    TaskDimple.call ( this );
+    this.state = job_code.retired;  // do not include in task lists
+  }
 
   this._type   = 'TaskXyz2Revision';
   this.name    = 'link xyz and hkl';
   this.oname   = '*'; // asterisk means do not use (XYZ name will be used)
   this.title   = 'Link Coordinates and Reflections';
-  //this.helpURL = './html/jscofe_task_xyz2revision.html';
-  this.state   = job_code.retired;  // do not include in task lists
 
   this.input_dtypes = [{  // input data types
       data_type   : {'DataHKL':[]}, // data type(s) and subtype(s)

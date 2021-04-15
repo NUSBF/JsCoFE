@@ -5,7 +5,7 @@
  *
  *  =================================================================
  *
- *    27.03.21   <--  Date of Last Modification.
+ *    15.04.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -33,14 +33,18 @@ if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
 
 function TaskCCP4go()  {
 
-  if (__template)  __template.TaskTemplate.call ( this );
-             else  TaskTemplate.call ( this );
+  if (__template)  {
+    __template.TaskTemplate.call ( this );
+    this.state = __template.job_code.retired;  // do not include in task lists
+  } else  {
+    TaskTemplate.call ( this );
+    this.state = job_code.retired;  // do not include in task lists
+  }
 
   this._type   = 'TaskCCP4go';
   this.name    = 'ccp4go';
   this.setOName ( 'ccp4go' );  // default output file name template
   this.title   = 'CCP4go auto-solver (experimental)';
-  this.state   = job_code.retired;  // do not include in task lists
 
   this.files   = ['','',''];
   //this.ha_type = '';
