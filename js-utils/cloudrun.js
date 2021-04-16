@@ -22,32 +22,45 @@
  *
  * Invocation:
  *
- *    node js-utils/cloudrun.js task_file
+ *    node js-utils/cloudrun.js -c command_file
  *
  * where task_file may be also the standard input:
  *
- *    node js-utils/cloudrun.js <<eof
+ *    node js-utils/cloudrun.js -i <<eof
  *    ..commands..
  *    eof
  *
- * Commands:
+ * Generate template command files (prints to console):
  *
- *   URL         https://ccp4cloud.server    (mandatory)
- *   USER        user_login                  (mandatory)
- *   PROJECT     project_id                  (mandatory)
- *   TITLE       Optional Project Title
- *   TASK        [import|auto-mr|auto-ep|hop-on]  (import if not given)
- *   HA_TYPE     Se
- *   FILE        /path/to/file.[mtz|pdb|seq|fasta|pir|cif]
- *   HKL         /path/to/file.mtz
- *   PHASES      /path/to/file.mtz
+ *    node js-utils/cloudrun.js -t task
+ *
+ * Obtaining help:
+ *
+ *    node js-utils/cloudrun.js
+ *    node js-utils/cloudrun.js -h
+ *
+ * where task is one of import, auto-mr, auto-ep or hop-on.
+ *
+ * Commands (hash # may be used for comments, anything on the right from # is
+ * ignored):
+ *
+ *   URL         https://ccp4cloud.server    # mandatory
+ *   USER        user_login                  # mandatory
+ *   PROJECT     project_id                  # mandatory
+ *   TITLE       Optional Project Title      # used only if project is created
+ *   TASK        [import|auto-mr|auto-ep|hop-on]  # import if not given
+ *   HA_TYPE     Se                               # used only for auto-ep
+ *   FILE        /path/to/file.[mtz|pdb|seq|fasta|pir|cif]  # generic import
+ *   HKL         /path/to/file.mtz   # the file should be used as hkl in hop-on
+ *   PHASES      /path/to/file.mtz   # the file should be used as phases in op-on
  *   SEQ_PROTEIN /path/to/file.[seq|fasta|pir]
  *   SEQ_DNA     /path/to/file.[seq|fasta|pir]
  *   SEQ_RNA     /path/to/file.[seq|fasta|pir]
  *   XYZ         /path/to/file.pdb
- *   LIGAND      /path/to/file.cif
+ *   LIGAND      /path/to/file.cif   # ML or ligand library file
  *
  *  Notes:
+ *    - if sequence file is given by the FILE keyword, protein sequence is assumed
  *    - if project does not exist, it will be created
  *    - requested task will be always placed at project root
  *
@@ -65,9 +78,10 @@ var utils    = require('../js-server/server.utils');
 var cmd      = require('../js-common/common.commands');
 
 var task_t        = require('../js-common/tasks/common.tasks.template');
-var task_import   = require('../js-common/tasks/common.tasks.import');
+var task_import   = require('../js-common/tasks/common.tasks.import'  );
 var task_wflowamr = require('../js-common/tasks/common.tasks.wflowamr');
 var task_wflowaep = require('../js-common/tasks/common.tasks.wflowaep');
+var task_hopon    = require('../js-common/tasks/common.tasks.migrate' );
 
 // var conf   = require('../js-server/server.configuration');
 // var cmd    = require('../js-common/common.commands');
@@ -76,17 +90,157 @@ var task_wflowaep = require('../js-common/tasks/common.tasks.wflowaep');
 // ==========================================================================
 
 function printInstructions()  {
+  var msg = [
+    '',
+    '========',
+    'CloudRun',
+    '========',
+    '',
+    'CCP4 Cloud project initiation, data upload and running task from command prompt.',
+    '',
+    'Usage:',
+    '~~~~~~',
+    '',
+    '    node js-utils/cloudrun.js -c command_file',
+    '',
+    'where "command_file" is path to file with keyworded instructions. Alternatively,',
+    'instructions can be read from standard input:',
+    '',
+    '    node js-utils/cloudrun.js -i <<eof',
+    '    ..commands..',
+    '    eof',
+    '',
+    'Template command files can be generated as follows:',
+    '',
+    '    node js-utils/cloudrun.js -t task',
+    '',
+    'where "task" is one of import, auto-mr, auto-ep or hop-on.',
+    '',
+    '    node js-utils/cloudrun.js -h',
+    '',
+    'prints these instructions.',
+    '',
+    '________________________________________________________',
+    'Authors: E. Krissinel, A. Lebedev, O. Kovalevskyi (2021)',
+    'Contact: eugene.krissinel@stfc.ac.uk',
+    ''
+  ];
+  console.log ( msg.join('\n') );
+  process.exit();
+}
+
+
+function printTemplate ( task )  {
+  var msg = [
+    '#',
+    '# Notes: a) hash indicates a comment b) line order is insignificant',
+    '#        c) CloudRun tasks are added at Project\'s root.',
+    '#',
+    'URL         https://ccp4cloud.server    # mandatory',
+    'USER        user_login                  # mandatory',
+    'PROJECT     project_id                  # mandatory',
+    'TITLE       Optional Project Title      # used only if project is created',
+    'TASK        ' + task + '                      # mandatory',
+    '#'
+  ];
+
+  switch (task)  {
+
+    default :
+        msg = [
+          'Task code "' + task + '" is invalid. Acceptable tasks include:',
+          '   "import"  : generic data import',
+          '   "auto-mr" : auto-MR workflow',
+          '   "auto-ep" : auto-EP workflow',
+          '   "hop-on"  : project initiation from pphased structure'
+        ];
+        console.log (
+          msg.join('\n')
+        );
+        process.exit();
+      break;
+
+    case 'import'  :
+        msg = [
+          '# The task uploads files specified, creates CCP4 Cloud Project (if it',
+          '# does not exist already) and runs the "File Import" task.'
+        ].concat(msg);
+        msg = msg.concat([
+          'FILE  /path/to/file.[ext]  # generic file import',
+          '#',
+          '# Provide as many "FILE" lines as necessary. Acceptable file extensions',
+          '# include .pdb, .ent, .seq, .fasta, .pir, .mtz, .sca, .cif, .mmcif, .doc,',
+          '# .docx, .pdf, .txt, .jpg, .jpeg, .gif, .png, .html, .htm, .hkl, .hhr.',
+          '#',
+          '# Note that sequences will be automatically annotated as protein chains.',
+          '# You may override this annotation by using the following statements:',
+          '#',
+          'SEQ_PROTEIN /path/to/file.[seq|fasta|pir]  # import protein sequence',
+          'SEQ_DNA     /path/to/file.[seq|fasta|pir]  # import dna sequence',
+          'SEQ_RNA     /path/to/file.[seq|fasta|pir]  # import rna sequence'
+        ]);
+      break;
+
+    case 'auto-mr' :
+        msg = [
+          '# The task uploads files specified, creates CCP4 Cloud Project (if it',
+          '# does not exist already) and starts the "Auto-MR" workflow.'
+        ].concat(msg);
+        msg = msg.concat([
+          'HKL         /path/to/hkl.mtz  # import reflection data',
+          '#',
+          '# use one or more of the following sequence upload statements as',
+          '# appropriate',
+          '#',
+          'SEQ_PROTEIN /path/to/file.[seq|fasta|pir]  # import protein sequence',
+          '#SEQ_DNA     /path/to/file.[seq|fasta|pir]  # import dna sequence',
+          '#SEQ_RNA     /path/to/file.[seq|fasta|pir]  # import rna sequence'
+        ]);
+      break;
+
+    case 'auto-ep' :
+        msg = [
+          '# The task uploads files specified, creates CCP4 Cloud Project (if it',
+          '# does not exist already) and starts the "Auto-EP" workflow.'
+        ].concat(msg);
+        msg = msg.concat([
+          'HA_TYPE     Se                # atom type of main anomalous scatterer',
+          'HKL         /path/to/hkl.mtz  # import reflection data',
+          '#',
+          '# use one or more of the following sequence upload statements as',
+          '# appropriate',
+          '#',
+          'SEQ_PROTEIN /path/to/file.[seq|fasta|pir]  # import protein sequence',
+          '#SEQ_DNA     /path/to/file.[seq|fasta|pir]  # import dna sequence',
+          '#SEQ_RNA     /path/to/file.[seq|fasta|pir]  # import rna sequence'
+        ]);
+      break;
+
+    case 'hop-on'  :
+        msg = [
+          '# The task uploads files specified, creates CCP4 Cloud Project (if it',
+          '# does not exist already) and runs the "Hop-On Import" task (project',
+          'initiation from phased structure).'
+        ].concat(msg);
+        msg = msg.concat([
+          'HKL         /path/to/hkl.mtz      # import reflection data',
+          'PHASES      /path/to/phases.mtz   # import phases',
+          'XYZ         /path/to/phases.pdb   # import model',
+          'LIGAND      /path/to/file.cif     # import ligands (if present in model)',
+          '#',
+          '# Note: HKL and PHASES may be presented with the same file (e.g. after',
+          '# Refmac); either XYZ or PHASES, or both must be given.'
+        ]);
+      break;
+
+  }
+
   console.log (
-    '\nUsage:\n'   +
-    '~~~~~~\n\n' +
-    '(1) node js-utils/cloudrun.js command_file\n\n' +
-    'where "command_file" is path to file with run instructions. If this file is\n' +
-    'omitted, then instructions are read from standard input:\n\n' +
-    '(2) node js-utils/cloudrun.js <<eof\n' +
-    '    ..commands..\n' +
-    '    eof\n\n'
+    '# CloudRun template command file for ' + task + ' task.\n#\n' +
+    msg.join('\n')
   );
   process.exit();
+
 }
 
 function pickFile ( fnames,extList )  {
@@ -141,12 +295,17 @@ function sendData ( filePath,metaData )  {
 
 var input = '';
 
-if (process.argv.length==3)  {
-  // command file given
-  input = utils.readString(process.argv[2]);
-} else if (process.argv.length==2)  {
+if (process.argv.length==4)  {
+
+  if (process.argv[2].toLowerCase()=='-c')   // command file given
+    input = utils.readString(process.argv[3]);
+  else if (process.argv[2].toLowerCase()=='-t')  // print command file template
+    printTemplate ( process.argv[3].toLowerCase() );
+
+} else if (process.argv.length==3)  {
   // read from standard input
-  input = utils.readString(0);  // fs.readFileSync(0); // STDIN_FILENO = 0
+  if (process.argv[2].toLowerCase()=='-i')
+    input = utils.readString(0);  // fs.readFileSync(0); // STDIN_FILENO = 0
 }
 
 if (!input)
@@ -208,10 +367,10 @@ var ok       = true;
 var fnames   = [];
 console.log ( ' ========== COMMANDS:' );
 for (var i=0;i<commands.length;i++)  {
-  commands[i] = commands[i].trim();
   console.log ( ' \$ ' + commands[i] );
-  if (commands[i] && (!commands[i].startsWith('#')))  {
-    var lst = commands[i].split(' ');
+  var command = commands[i].split('#')[0].trim();
+  if (command)  {
+    var lst = command.split(' ');
     if (lst.length>1)  {
       var key = lst[0].toLowerCase();
       var val = lst.slice(1).join(' ').trim();
@@ -298,15 +457,32 @@ else if (files.seq_rna.length>0)
 else
   files.seq = pickFile ( files.file,['.seq','.fasta','.pir'] );
 
-if (meta.task!='import')  {
+if (meta.task=='hop-on')  {
+
+  if ((files.phases.length<=0) && (file.hkl.length<=0))  {
+    ok = false;
+    console.log ( ' *** no reflection data is provided' );
+  }
+  if ((files.phases.length<=0) && (file.xyz.length<=0))  {
+    ok = false;
+    console.log ( ' *** no phase data or atomic model is not provided' );
+  }
+
+} else if (meta.task!='import')  {
+
   if (files.hkl.length<=0)  {
     ok = false;
     console.log ( ' *** reflection data is not provided' );
+  }
+  if ((meta.task=='auto-ep') && (!options.ha_type))  {
+    ok = false;
+    console.log ( ' *** main anomalous scaterrer is not specified' );
   }
   if ((meta.task!='hop-on') && (files.seq.length<=0))  {
     ok = false;
     console.log ( ' *** sequence data is not provided' );
   }
+
 }
 
 
@@ -346,22 +522,38 @@ console.log ( ' ... files copied to temporary location' );
 var task = null;
 
 switch (meta.task)  {
+
   default :
   case 'import'  : task = new task_import.TaskImport  ();
                    task.upload_files = fnames;
                  break;
+
   case 'auto-mr' : task = new task_wflowamr.TaskWFlowAMR();
                    task.inputMode = task_t.input_mode.root;
                    task.file_select[0].path = path.parse(files.hkl[0]).base;
                    task.file_select[1].path = path.parse(files.seq[0]).base;
                  break;
+
   case 'auto-ep' : task = new task_wflowaep.TaskWFlowAEP();
                    task.inputMode = task_t.input_mode.root;
                    task.file_select[0].path = path.parse(files.hkl[0]).base;
                    task.file_select[1].path = path.parse(files.seq[0]).base;
+                   task.parameters.HATOM.value = options.ha_type;
                  break;
-  case 'hop-on'  : task = new task_import.TaskImport  ();
+
+  case 'hop-on'  : task = new task_hopon.TaskMigrate();
+                   task.inputMode = task_t.input_mode.root;
+                   task.upload_files = fnames;
+                   if (files.hkl[0].length>0)
+                     task.file_hkl = path.parse(files.hkl[0]).base;
+                   if (files.phases[0].length>0)
+                     task.file_mtz = path.parse(files.phases[0]).base;
+                   if (files.xyz[0].length>0)
+                     task.file_xyz = path.parse(files.xyz[0]).base;
+                   if (files.ligand[0].length>0)
+                     task.file_lib = path.parse(files.ligand[0]).base;
                  break;
+
 }
 
 task.file_mod   = annotation; // file modification and annotation
