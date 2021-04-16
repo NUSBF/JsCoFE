@@ -135,7 +135,7 @@ UsageStats.prototype.registerJob = function ( job_class )  {
 
   }
 
-  return true;
+  // return true;
   return (n1>=n0);
 
 }
