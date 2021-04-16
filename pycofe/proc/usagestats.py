@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    30.11.20   <--  Date of Last Modification.
+#    16.04.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -13,7 +13,7 @@
 #
 #  ccp4-python -m pycofe.proc.usagestats projectDataPath userDataPath statsFile.json reportDir
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2019-2020
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2019-2021
 #
 # ============================================================================
 #
@@ -23,8 +23,6 @@ import sys
 import json
 
 import pyrvapi
-#from   pycofe.varut  import jsonut
-
 
 # ============================================================================
 
@@ -135,29 +133,20 @@ def main():
         vuse[vname] = getDiskUsage ( volumes[vname] )
 
     usageStats = None
+
     try:
+
         with open(statsFile,"r") as json_file:
             usageStats = json.load(json_file)
 
-        """
-        for vname in volumes:
-            du = getDiskUsage ( volumes[vname] )
-            if vname in usageStats["volumes"]:
-                usageStats["volumes"][vname]["free"][-1] = du[0]
-                usageStats["volumes"][vname]["total"]    = du[1]
-            else:
-                usageStats["volumes"][vname] = {
-                    "free"      : [du[0]]*ndays,
-                    "total"     :  du[1],
-                    "committed" : [du[1]]*ndays
-                }
-        """
+        ndays = len(usageStats["njobs"])
 
         for vname in volumes:
             if vname in usageStats["volumes"]:
                 usageStats["volumes"][vname]["free"][-1] = vuse[vname][0]
                 usageStats["volumes"][vname]["total"]    = vuse[vname][1]
             else:
+                print ( " >>> p3 " + str(usageStats["volumes"])  )
                 usageStats["volumes"][vname] = {
                     "free"      : [vuse[vname][0]]*ndays,
                     "total"     :  vuse[vname][1],
@@ -183,7 +172,6 @@ def main():
             reportPage(), 0,0,1,1 )
     row = 1
 
-    ndays = len(usageStats["njobs"])
     days  = list(range(ndays))
 
     njobs_total = [usageStats["njobs"][0]]
@@ -222,26 +210,6 @@ def main():
                      days,[cpu_total],"Day","CPU (hours)",["cpu hours"],["normal"],
                      row,2, width=550,height=400 )
     row += 2
-
-    """
-    for vname in volumes:
-        du = getDiskUsage ( volumes[vname] )
-        if vname in usageStats["volumes"]:
-            usageStats["volumes"][vname]["free"][-1] = du[0]
-            usageStats["volumes"][vname]["total"]    = du[1]
-        else:
-            usageStats["volumes"][vname] = {
-                "free"      : [du[0]]*ndays,
-                "total"     :  du[1],
-                "committed" : [du[1]]*ndays
-            }
-
-    #usageStats.currentDate = int(time.time()*1000.0)
-    #jsonut.writejObject ( usageStats,statsFile )
-    with open(statsFile,'w') as outfile:
-        json.dump ( usageStats,outfile,indent=2 )
-
-    """
 
     gdata  = []
     names  = []
