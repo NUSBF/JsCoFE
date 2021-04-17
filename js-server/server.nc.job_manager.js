@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    01.04.21   <--  Date of Last Modification.
+ *    17.04.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -312,11 +312,11 @@ function cleanNC ( cleanDeadJobs_bool )  {
       if ((jobEntry.pid<=0) && (t-startTime>_false_start))  {  // did not manage to start
         // process not found, schedule job for deletion
         n++;
-        log.standard ( 34,'dead job scheduled for deletion, job token: ' + job_token );
+        log.standard ( 34,'dead job scheduled for deletion, token:' + job_token );
         _stop_job ( jobEntry );
       } else if (endTime && (t-endTime>_zombie_life))  { // old zombie
         n++;
-        log.standard ( 35,'zombie job scheduled for deletion, job token: ' + job_token );
+        log.standard ( 35,'zombie job scheduled for deletion, token:' + job_token );
         _stop_job ( jobEntry );
       } else if ((!endTime) && (t-startTime>_timeout))  { // timeout
         n++;
@@ -324,7 +324,7 @@ function cleanNC ( cleanDeadJobs_bool )  {
           process.kill ( jobEntry.pid,0 );
         } catch (e) {
           // process not found, schedule job for deletion
-          log.standard ( 36,'long job scheduled for timeout, job token: ' + job_token );
+          log.standard ( 36,'long job scheduled for timeout, token:' + job_token );
           _stop_job ( jobEntry );
         }
       }
@@ -392,7 +392,7 @@ function checkJobsOnTimer()  {
       // job was not sent to FE for long time -- delete it now
 
       removeJobDelayed ( job_token,task_t.job_code.finished );
-      log.error ( 4,'zombi job deleted, job token ' + job_token );
+      log.error ( 4,'zombi job deleted, token:' + job_token );
 
     } else if ([task_t.job_code.running,task_t.job_code.stopped]
                                            .indexOf(jobEntry.jobStatus)>=0)  {
@@ -816,7 +816,7 @@ function ncJobFinished ( job_token,code )  {
         // just remove the job; do it in a separate thread and delayed,
         // which is useful for debugging etc.
 
-        log.standard ( 103,'task ' + task.id + ' sent back to FE, job token ' +
+        log.standard ( 103,'task ' + task.id + ' sent back to FE, token:' +
                            job_token );
         removeJobDelayed ( job_token,task_t.job_code.finished );
 
@@ -846,7 +846,7 @@ function ncJobFinished ( job_token,code )  {
           //              ' back to FE. TASK DELETED.' );
           // ****
 
-          log.error ( 5,'job ' + task.id + ' is put in zombi state, job token ' +
+          log.error ( 5,'job ' + task.id + ' is put in zombi state, token:' +
                          job_token );
 
         }
@@ -927,7 +927,7 @@ function ncRunJob ( job_token,meta )  {
                       jobEntry.pid = job.pid;
 
                       log.standard ( 5,'task ' + task.id + ' started, pid=' +
-                                       jobEntry.pid + ', job token ' + job_token );
+                                       jobEntry.pid + ', token:' + job_token );
 
                       // make stdout and stderr catchers for debugging purposes
                       var stdout = '';
@@ -967,7 +967,7 @@ function ncRunJob ( job_token,meta )  {
                           if (jobEntry.jobStatus!=task_t.job_code.exiting)
                             ncJobFinished ( job_token,code );
                         } else  {
-                          
+
                         }
 
                       });
@@ -1001,7 +1001,7 @@ function ncRunJob ( job_token,meta )  {
                         log.standard ( 6,'task '  + task.id + ' qsubbed, '  +
                                          'name='  + jname   +
                                          ', pid=' + jobEntry.pid +
-                                         ', job token ' + job_token );
+                                         ', token:' + job_token );
                       });
 
                       // indicate queuing to please the user
@@ -1039,7 +1039,7 @@ function ncRunJob ( job_token,meta )  {
                           log.standard ( 7,'task '  + task.id + ' submitted, ' +
                                            'name='  + jname   +
                                            ', pid=' + jobEntry.pid +
-                                           ', job token ' + job_token );
+                                           ', token:' + job_token );
                         }
                         catch(err) {
                           jobEntry.pid = 0;

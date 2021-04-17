@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    15.04.21   <--  Date of Last Modification.
+ *    17.04.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -403,7 +403,7 @@ function _run_job ( loginData,task,job_token,ownerLoginData,shared_logins, callb
     } else  {
 
       log.standard ( 6,'sending job ' + task.id + ' to ' +
-                       conf.getNCConfig(nc_number).name + ', job token ' +
+                       conf.getNCConfig(nc_number).name + ', token:' +
                        job_token );
 
       utils.writeJobReportMessage ( jobDir,'<h1>Preparing ...</h1>',true );
@@ -556,7 +556,7 @@ function runJob ( loginData,data, callback_func )  {
   if (task.nc_type=='client')  {
     // job for client NC, just pack the job directory and inform client
 
-    log.standard ( 5,'sending job ' + task.id + ' to client service, job token ' +
+    log.standard ( 5,'sending job ' + task.id + ' to client service, token:' +
                      job_token );
 
     utils.writeJobReportMessage ( jobDir,'<h1>Preparing ...</h1>',true );
@@ -1575,6 +1575,8 @@ function cloudRun ( server_request,server_response )  {
 
                 // Run the job
                 var job_token = crypto.randomBytes(20).toString('hex');
+                log.standard ( 6,'cloudrun job ' + task.id + ' formed, login:' +
+                                 loginData.login + ', token:' + job_token );
                 _run_job ( loginData,task,job_token,loginData,[], function(){} );
 
                 response = new cmd.Response ( cmd.fe_retcode.ok,
