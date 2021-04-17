@@ -5,7 +5,7 @@
  *
  *  =================================================================
  *
- *    15.04.21   <--  Date of Last Modification.
+ *    17.04.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -220,16 +220,17 @@ function printTemplate ( task )  {
         msg = [
           '# The task uploads files specified, creates CCP4 Cloud Project (if it',
           '# does not exist already) and runs the "Hop-On Import" task (project',
-          'initiation from phased structure).'
+          '# initiation from phased structure).'
         ].concat(msg);
         msg = msg.concat([
-          'HKL         /path/to/hkl.mtz      # import reflection data',
-          'PHASES      /path/to/phases.mtz   # import phases',
-          'XYZ         /path/to/phases.pdb   # import model',
-          'LIGAND      /path/to/file.cif     # import ligands (if present in model)',
+          'HKL         /path/to/hkl.mtz         # reflection data (mandatory)',
+          'PHASES      /path/to/phases.mtz      # phases',
+          'XYZ         /path/to/phases.pdb      # model',
+          'LIGAND      /path/to/file.[cif|lib]  # ligand(s) (if present in model)',
           '#',
-          '# Note: HKL and PHASES may be presented with the same file (e.g. after',
-          '# Refmac); either XYZ or PHASES, or both must be given.'
+          '# Note: HKL and PHASES may be presented with the same file (e.g. one',
+          '#       produced by Refmac); either XYZ or PHASES, or both, must be',
+          '#       given.'
         ]);
       break;
 
@@ -379,36 +380,46 @@ for (var i=0;i<commands.length;i++)  {
       else if (key in options)
         options[key] = val;
       else if (key in files)  {
-        files[key].push ( val );
-        var fext  = path.parse(val).ext;
-        var fname = path.parse(val).name;
-        if (['.seq','.fasta','.pir'].indexOf(fext.toLowerCase())>=0)  {
-          var annot = {
-            file   : fname + fext,
-            rename : fname + fext,
-            items  : []
-          };
-          var content = utils.readString ( val.trim() ).split('>')
-                             .filter(function(k){return k});
-          for (var j=0;j<content.length;j++)  {
-            content[j] = content[j].trim();
-            if (content[j])  {
-              var sfname = fname + fext;
-              if (content.length>1)
-                sfname = fname + '_' + (j+1) + fext;
-              if (key.toLowerCase()=='file')
-                    stype = 'protein';
-              else  stype = key.toLowerCase().split('_').pop();
-              annot.items.push ({
-                rename   : sfname,
-                contents : '>' + content[j],
-                type     : stype
-              });
+        if (utils.fileExists(val))  {
+          files[key].push ( val );
+          var fext  = path.parse(val).ext;
+          var fname = path.parse(val).name;
+          fnames.push ( fname + fext );
+          if (['.seq','.fasta','.pir'].indexOf(fext.toLowerCase())>=0)  {
+            var fdata = utils.readString ( val );
+            if (fdata)  {
+              var annot = {
+                file   : fname + fext,
+                rename : fname + fext,
+                items  : []
+              };
+              var content = fdata.split('>').filter(function(k){return k});
+              for (var j=0;j<content.length;j++)  {
+                content[j] = content[j].trim();
+                if (content[j])  {
+                  var sfname = fname + fext;
+                  if (content.length>1)
+                    sfname = fname + '_' + (j+1) + fext;
+                  if (key.toLowerCase()=='file')
+                        stype = 'protein';
+                  else  stype = key.toLowerCase().split('_').pop();
+                  annot.items.push ({
+                    rename   : sfname,
+                    contents : '>' + content[j],
+                    type     : stype
+                  });
+                }
+              }
+              annotation.annotation.push ( annot );
+            } else  {
+              console.log ( '   ^^^^ file read errors' );
+              ok = false;
             }
           }
-          annotation.annotation.push ( annot );
+        } else  {
+          console.log ( '   ^^^^ file not found (' + val + ')' );
+          ok = false;
         }
-        fnames.push ( fname + fext );
       } else  {
         console.log ( '   ^^^^ unknown key' );
         ok = false;

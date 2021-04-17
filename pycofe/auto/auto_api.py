@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    29.03.21   <--  Date of Last Modification.
+#    17.04.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -70,6 +70,24 @@ def addTask ( taskName,taskClassName,parentName ):
     task.parentName = parentName
     auto_meta.set_field ( taskName,task )
     return
+
+def cloneTask ( clonedTaskName,originalTaskName ):
+    global auto_meta
+    originalTask = auto_meta.get_field ( originalTaskName )
+    if originalTask:
+        task = jsonut.jObject()
+        task._type      = originalTask._type
+        task.data       = originalTask.data  # data is not supposed to change in cloned task
+        task.parameters = jsonut.jObject()
+        for key in originalTask.parameters.keys():
+            task.parameters.set_field ( key,originalTask.parameters.get_field(key) )
+        task.fields     = jsonut.jObject()
+        for key in originalTask.fields.keys():
+            task.fields.set_field ( key,originalTask.fields.get_field(key) )
+        task.parentName = originalTask.parentName
+        auto_meta.set_field ( clonedTaskName,task )
+        return True
+    return False
 
 def addTaskData ( taskName,inputId,dataClass ):
     global auto_meta
