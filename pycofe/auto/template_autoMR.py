@@ -53,20 +53,27 @@ def makeNextTask ( crTask,data ):
     elif crTask._type=="TaskSimbad":
         if not data["revision"] or (float(data["Rfree"])>0.45):
             auto_tasks.asu ( "asu",auto_api.getContext("hkl_node"),"autoMR" )
+            auto_api.noteTask ( "asu","asu_noted" ) # to-be-cloned tasks should be noted with unique name
         else:
             auto_tasks.build ( "simbad_mb",data["revision"],crTask.autoRunName )
 
-    elif crTask._type=="TaskASUDef":
-        if (auto_api.getContext("mr_engine")=="morda") and \
-           (os.path.isfile(os.path.join(os.environ["CCP4"],"share","mrd_data","VERSION")) or\
-            os.path.isfile(os.path.join(os.environ["CCP4"],"lib","py2","morda","LINKED"))):
-            auto_api.addTask          ( "morda","TaskMorda",crTask.autoRunName )
-            auto_api.addTaskData      ( "morda","revision",data["revision"] )
-            auto_api.addTaskParameter ( "morda","ALTGROUPS_CBX",True )
+    elif crTask._type=="TaskASUDef":  # could be elif crTask.autoRunName.startsWith("asu")
+        if crTask.autoRunName=="asu":
+            # only clone the noted ASU task into "asu2", do not start MR solver after task "asu"
+            auto_api.cloneTask ( "asu2","asu_noted" )
+            # now you can set parameters for task name "asu2"
         else:
-            auto_api.addTask          ( "mrbump","TaskMrBump",crTask.autoRunName )
-            auto_api.addTaskData      ( "mrbump","revision",data["revision"] )
-            auto_api.addTaskParameter ( "mrbump","ALTGROUPS_CBX",True )
+            # start MR solver from cloned ASU task "asu2"
+            if (auto_api.getContext("mr_engine")=="morda") and \
+               (os.path.isfile(os.path.join(os.environ["CCP4"],"share","mrd_data","VERSION")) or\
+                os.path.isfile(os.path.join(os.environ["CCP4"],"lib","py2","morda","LINKED"))):
+                auto_api.addTask          ( "morda","TaskMorda",crTask.autoRunName )
+                auto_api.addTaskData      ( "morda","revision",data["revision"] )
+                auto_api.addTaskParameter ( "morda","ALTGROUPS_CBX",True )
+            else:
+                auto_api.addTask          ( "mrbump","TaskMrBump",crTask.autoRunName )
+                auto_api.addTaskData      ( "mrbump","revision",data["revision"] )
+                auto_api.addTaskParameter ( "mrbump","ALTGROUPS_CBX",True )
 
     elif crTask._type=="TaskMorda":
         auto_tasks.build ( "morda_mb",data["revision"],crTask.autoRunName )

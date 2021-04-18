@@ -54,6 +54,7 @@ def initAutoMeta():
     if not auto_meta.context:
         auto_meta.context = jsonut.jObject()
         auto_meta.context.custom = jsonut.jObject()
+        auto_meta.context.tasks  = jsonut.jObject()
         auto_meta.context.job_register = jsonut.jObject()
     return
 
@@ -71,18 +72,26 @@ def addTask ( taskName,taskClassName,parentName ):
     auto_meta.set_field ( taskName,task )
     return
 
-def cloneTask ( clonedTaskName,originalTaskName ):
+def noteTask ( taskName,notedName ):
+    task = auto_meta.get_field ( taskName )
+    if task:
+        auto_meta.context.tasks.set_field ( notedName,task )
+        return True
+    return False
+
+def cloneTask ( clonedTaskName,notedName ):
     global auto_meta
-    originalTask = auto_meta.get_field ( originalTaskName )
+    # originalTask = auto_meta.get_field ( originalTaskName )
+    originalTask = auto_meta.context.tasks.get_field ( notedName )
     if originalTask:
         task = jsonut.jObject()
         task._type      = originalTask._type
         task.data       = originalTask.data  # data is not supposed to change in cloned task
         task.parameters = jsonut.jObject()
-        for key in originalTask.parameters.keys():
+        for key in vars(originalTask.parameters):
             task.parameters.set_field ( key,originalTask.parameters.get_field(key) )
         task.fields     = jsonut.jObject()
-        for key in originalTask.fields.keys():
+        for key in vars(originalTask.fields):
             task.fields.set_field ( key,originalTask.fields.get_field(key) )
         task.parentName = originalTask.parentName
         auto_meta.set_field ( clonedTaskName,task )
