@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    13.01.21   <--  Date of Last Modification.
+ *    21.04.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -43,16 +43,156 @@ function LoginPage ( sceneId )  {
   BasePage.call ( this,sceneId,'-full','LoginPage' );
 
   // adjust scene grid attributes such that login panel is centered
-  this.grid.setCellSize          ( '45%','',0,0,1,1 );
-  this.grid.setVerticalAlignment ( 0,1,'middle' );
-  this.grid.setCellSize          ( '10%','',0,1,1,1 );
-  this.grid.setCellSize          ( '45%','',0,2,1,1 );
-  this.makeLogoPanel             ( 1,0,3 );
+
+  var __display_tips = false;
 
   // make login panel
   var panel = new Grid('');
-  panel.setWidth      ( '300pt' );
-  this.grid.setWidget ( panel,0,1,1,1 );
+  panel.setWidth ( '300pt' );
+
+  // this.grid.setCellSize          ( '45%','',0,0,1,1 );
+  // this.grid.setWidget            ( panel,0,1,1,1 );
+  // this.grid.setVerticalAlignment ( 0,1,'middle' );
+  // this.grid.setCellSize          ( '10%','',0,1,1,1 );
+  // this.grid.setCellSize          ( '45%','',0,2,1,1 );
+  // this.makeLogoPanel             ( 1,0,3 );
+
+  if (__display_tips)  {
+
+    /*
+    tip_panel = new Label ( '' );
+
+    $(tip_panel.element).css({
+      //'width'            : '250px',
+      //'height'           : '150px',
+      'position'         : 'absolute',
+      'left'             : '0px',
+      'top'              : '0px',
+      'padding-top'      : '8px',
+      'padding-left'     : '16px',
+      'padding-bottom'   : '8px',
+      'padding-right'    : '8px',
+      // 'background-color' : 'rgba(242,242,242,0.67)', // '#F3F3F3',
+      'background-color' : 'rgba(250,250,250,0.67)', // '#F3F3F3',
+      //'background-color' : '#F3F3F3',
+      //'opacity'          : '0.8',
+      // 'border'           : '1px solid lightgray',
+      // 'box-shadow'       : '5px 5px 6px #BBBBBB',
+      // 'border-radius'    : '8px',
+      'font-family'      : 'Garamond'
+      // 'white-space'      : 'nowrap'
+    });
+
+    $(tip_panel.element).appendTo(this.element);
+
+    tip_panel.setText (
+      // '<center style="font-family:Georgia;font-size:110%;">' +
+      // '<i>Tip of the Day</i></center>' +
+      '<i style="color:gray">Tip of the day: ' +
+      'crashed Coot task does not mean that ' +
+      'your work is lost!</i>' +
+      '<br><i>Read ' +
+      '<a href="https://www.google.co.uk" target="_blank">here</a>.</i>'
+    );
+
+    // tip_panel.setText (
+    //   '<div style="width:250px"><center>' +
+    //   '' +
+    //   '<span style="font-family:Georgia;font-size:125%;">' +
+    //   '<i>Tip of the Day</i></span></center>' +
+    //   '<span style="font-family:Garamond;font-size:100%"><i>' +
+    //   '<p>Did you know that crashed Coot task does not mean that ' +
+    //   'your work is lost?' +
+    //   '<p>Learn how to recover from Coot failures in CCP4 Cloud ' +
+    //   '<a href="https://www.google.co.uk" target="_blank">here</a>.' +
+    //   '</i></span></div>'
+    // );
+
+    // tip_panel.setText (
+    //   '<div style="width:250">Tip of the Day' +
+    //   '<p>Did you know that crashed Coot task does not mean that ' +
+    //   'your work is lost?' +
+    //   '<p>Learn how to recover from Coot failures in CCP4 Cloud ' +
+    //   '<a href="https://www.google.co.uk" target="_blank">here</a>.</div>'
+    // );
+
+    tip_panel.setWidth_px ( 250 );
+    */
+
+    this.grid.setCellSize          ( '45%','',0,0,1,1 );
+    this.grid.setCellSize          ( '','15px',0,0,1,3 );
+    this.grid.setWidget            ( panel,1,1,1,1 );
+    this.grid.setVerticalAlignment ( 1,1,'middle' );
+    this.grid.setCellSize          ( '10%','',1,1,1,1 );
+    this.grid.setCellSize          ( '45%','',1,2,1,1 );
+
+    this.grid.setLabel (
+      '<center><i style="font-style:Garamond;color:#666666;">Did you know? ' +
+      'Crashed Coot task does not mean that ' +
+      'your work is lost!' +
+      ' Read ' +
+      '<a href="https://www.google.co.uk" target="_blank">here</a>.</i></center>',
+    2,0,1,3 );
+    this.grid.setCellSize          ( '','12px',2,0,1,3 );
+    this.grid.setCellSize          ( '','3px',3,0,1,3 );
+
+    this.makeLogoPanel             ( 4,0,3 );
+
+  } else  {
+    this.grid.setCellSize          ( '45%','',0,0,1,1 );
+    this.grid.setWidget            ( panel,0,1,1,1 );
+    this.grid.setVerticalAlignment ( 0,1,'middle' );
+    this.grid.setCellSize          ( '10%','',0,1,1,1 );
+    this.grid.setCellSize          ( '45%','',0,2,1,1 );
+    this.makeLogoPanel             ( 1,0,3 );
+  }
+
+/*
+  if (!__display_tips)  {
+    this.grid.setCellSize          ( '45%','',0,0,1,1 );
+    this.grid.setWidget            ( panel,0,1,1,1 );
+    this.grid.setVerticalAlignment ( 0,1,'middle' );
+    this.grid.setCellSize          ( '10%','',0,1,1,1 );
+    this.grid.setCellSize          ( '45%','',0,2,1,1 );
+    this.makeLogoPanel             ( 1,0,3 );
+  } else  {
+
+//     var tip_panel = new Grid('');
+// //    tip_panel.setWidth ( '300pt' );
+//     var image = tip_panel.setImage  ( 'images_png/tip_coot.png','360px','360px',0,0, 1,4 );
+//     $(image.element).css ({'box-shadow':'8px 8px 18px #888888'});
+//     tip_panel.setLabel ( '&nbsp;',1,0,1,4 );
+
+    // tip_panel.setLabel    ( '&nbsp;',1,0,1,1 ).setWidth('90px');
+    // tip_panel.setButton   ( '<b><<</b>','',1,1,1,1 ).setWidth('90px');
+    // tip_panel.setButton   ( '<b>>></b>','',1,2,1,1 ).setWidth('90px');
+    // tip_panel.setLabel    ( '&nbsp;',1,3,1,1 ).setWidth('90px');
+
+    var daytip =
+      '<div style="width:300px"><center>' +
+      '&nbsp;<p>' +
+      '<span style="font-family:Georgia;font-size:125%">' +
+      '<i>Tip of the Day</i></span></center>' +
+      '<span style="font-family:Garamond;font-size:100%"><i>' +
+      '<p>Did you know that crashed Coot task does not mean that ' +
+      'your work is lost?' +
+      '<p>Learn how to recover from Coot failures in CCP4 Cloud ' +
+      '<a href="https://www.google.co.uk" target="_blank">here</a>.' +
+      '</i></span><p>&nbsp;</div>';
+
+    this.grid.setCellSize          ( '20%','',0,0,1,1 );
+    // this.grid.setWidget            ( tip_panel,0,1,1,1 );
+    this.grid.setVerticalAlignment ( 0,1,'middle' );
+    this.grid.setLabel             ( daytip,0,1,1,1 );
+    this.grid.setCellSize          ( '10%','',0,1,1,1 );
+    this.grid.setCellSize          ( '20%','',0,2,1,1 );
+    this.grid.setWidget            ( panel,0,3,1,1 );
+    this.grid.setVerticalAlignment ( 0,3,'middle' );
+    this.grid.setCellSize          ( '10%','',0,3,1,1 );
+    this.grid.setCellSize          ( '40%','',0,4,1,1 );
+    this.makeLogoPanel             ( 1,0,5 );
+  }
+*/
 
   /*
   var connected_lbl = null;
@@ -93,11 +233,11 @@ function LoginPage ( sceneId )  {
   pwd_inp  .setWidth            ( '95%'  );
 
   var row = 0;
-  panel.setLabel ( appName() + ' Login', row,0,1,2 )
+  panel.setLabel ( appName() + ' Login', row,0,1,3 )
        .setFont  ( 'times','40px',true,true )
        .setNoWrap();
   panel.setHorizontalAlignment  ( row++ ,0,'center' );
-  panel.setWidget               ( this.makeSetupNamePanel(), row++,0,1,2 );
+  panel.setWidget               ( this.makeSetupNamePanel(), row++,0,1,3 );
   panel.setCellSize             ( '','10pt',row++,0 );
 
   panel.setWidget               ( login_lbl,row  ,0,1,1 );

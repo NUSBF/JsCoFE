@@ -685,7 +685,7 @@ ProjectListPage.prototype.onResize = function ( width,height )  {
 //  this.tablesort_tbl.table_div.element.style.height = h;
   if (this.tablesort_tbl)  {
     this.tablesort_tbl.fixHeader();
-    this.tablesort_tbl.setTableHeight ( height-80 );
+    this.tablesort_tbl.setTableHeight ( height-72 );
   }
 }
 
