@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    06.04.21   <--  Date of Last Modification.
+ *    21.04.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -913,7 +913,7 @@ ProjectPage.prototype.makeDock = function()  {
 
 
 ProjectPage.prototype.onResize = function ( width,height )  {
-  var h = (height - 116) + 'px';
+  var h = (height - 108) + 'px';
   var w = (width  - 110) + 'px';
   this.toolbar_div.element.style.height = h;
   this.tree_div.element.style.height    = h;

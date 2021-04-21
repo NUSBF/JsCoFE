@@ -23,7 +23,7 @@ export DOCREPO=/Users/eugene/Projects/jsCoFE/trunk-doc
 export Xia2_durin=/path/to/durin-plugin.so
 
 # comment out if buster is not installed
-source /Applications/GPhL/buster/setup.sh
+source /Applications/GPhL/Buster/setup.sh
 
 cd $server_dir
 

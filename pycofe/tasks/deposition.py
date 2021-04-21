@@ -259,6 +259,10 @@ class Deposition(basic.TaskDriver):
             "    xml_file     = " + str(aimless_meta) + "\n"
         )
 
+        self.flush()
+        shutil.copy2 ( xyzout_cif,xyzout_cif + ".sav" )
+        shutil.copy2 ( sfCIF,sfCIF + ".sav" )
+
         try:
             worked = run_process ( input_mmcif  = xyzout_cif,
                                    output_mmcif = deposition_cif,
@@ -267,17 +271,22 @@ class Deposition(basic.TaskDriver):
                                    xml_file     = aimless_meta )
         except:
             worked = False
-            shutil.copy2 ( xyzout_cif,deposition_cif )
+        #     self.stderr ( " *** EBI deposition script failed" )
+        #     shutil.copy2 ( xyzout_cif,deposition_cif )
 
-        # if not worked:
-        #     self.putTitle ( "Errors" )
-        #     self.fail ( "<b><i>Failed to create coordinate model file for deposition</i></b>",
-        #                 "Failed to create coordinate model file for deposition" )
+        if not worked:
+            self.putMessage (
+                "<hr/><h3>Errors</h3>" +
+                "<i>Failed to create coordinate model file for deposition</i>" +
+                "<hr/>" )
+            self.stderr ( " *** EBI deposition script failed" )
+            shutil.copy2 ( xyzout_cif,deposition_cif )
+            # self.fail ( "<b><i>Failed to create coordinate model file for deposition</i></b>",
+            #             "Failed to create coordinate model file for deposition" )
         #     return
 
         self.file_stdout.write (
             " =============================================================\n\n" )
-
 
         # 4. Put download widgets
 

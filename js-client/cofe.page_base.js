@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    31.12.20   <--  Date of Last Modification.
+ *    21.04.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Base page class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2020
+ *  (C) E. Krissinel, A. Lebedev 2016-2021
  *
  *  =================================================================
  *
@@ -125,9 +125,9 @@ BasePage.prototype.makeLogoPanel = function ( row,col,colSpan )  {
 
   var logoPanel = this.grid.setGrid ( '',row,col,1,colSpan );
   var c = 0;
-  logoPanel.setLabel ( 'Powered by CCP4 v.' + __ccp4_version,0,c,1,1 )
+  logoPanel.setLabel ( '&nbsp;Powered by CCP4 v.' + __ccp4_version,0,c,1,1 )
                      .setFontSize ( '75%' ).setNoWrap()
-                     .setVerticalAlignment('bottom');
+                     .setVerticalAlignment('middle');
   logoPanel.setCellSize ( '50%','', 0,c++ );
   var spacer = Math.max ( 20,40-5*(__setup_desc.partners.length-2) ) + 'px';
   for (var i=0;i<__setup_desc.partners.length;i++)  {
@@ -155,13 +155,20 @@ BasePage.prototype.makeLogoPanel = function ( row,col,colSpan )  {
   */
   logoPanel.setLabel ( appName() + ' v.' + appVersion() + '&nbsp;&nbsp;&nbsp;&nbsp;',0,c,1,1 )
                      .setFontSize ( '75%' ).setNoWrap()
-                     .setVerticalAlignment('bottom');
-  logoPanel.setVerticalAlignment   ( 0,0,'bottom'  );
+                     .setVerticalAlignment('middle');
+  logoPanel.setVerticalAlignment   ( 0,0,'middle'  );
   logoPanel.setCellSize            ( '50%','', 0,c );
   logoPanel.setHorizontalAlignment ( 0,c,'right'   );
-  logoPanel.setVerticalAlignment   ( 0,c,'bottom'  );
-  this.grid.setVerticalAlignment   ( row,col,'bottom'   );
+  logoPanel.setVerticalAlignment   ( 0,c,'middle'  );
+  this.grid.setVerticalAlignment   ( row,col,'middle'   );
   this.grid.setCellSize            ( '','30px', row,col );
+  $(logoPanel.element).css ({
+    'position'         : 'absolute',
+    'left'             : '0px',
+    'bottom'           : '0px',
+    'border'           : '1px solid lightgray',
+    'background-color' : 'rgba(240,250,255,0.67)'
+  });
 }
 
 
