@@ -180,10 +180,13 @@ function start ( callback_func )  {
           break;
 
         case cmd.fe_command.checkAnnouncement :
-            var message = utils.readString ( path.join('message_templates','announcement.html') );
-            if ((!message) || message.startsWith('!#off'))
-              message = '';
-            cmd.sendResponse ( server_response,cmd.fe_retcode.ok,message,'' );
+            var rdata = {
+              message : utils.readString ( path.join('message_templates','announcement.html') ),
+              tips    : utils.readString ( path.join('manuals','tips.json') )
+            }
+            if ((!rdata.message) || rdata.message.startsWith('!#off'))
+              rdata.message = '';
+            cmd.sendResponse ( server_response,cmd.fe_retcode.ok,'',rdata );
           break;
 
         case cmd.fe_command.stop :

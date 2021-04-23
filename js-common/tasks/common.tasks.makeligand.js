@@ -196,6 +196,7 @@ if (!__template)  {
 
   // -------------------------------------------------------------------------
 
-  module.exports.TaskMakeLigand = TaskMakeLigand;
+  module.exports.TaskMakeLigand        = TaskMakeLigand;
+  module.exports.__coot_reserved_codes = __coot_reserved_codes;
 
 }

@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    25.03.21   <--  Date of Last Modification.
+#    23.04.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -313,7 +313,7 @@ class Simbad(asudef.ASUDef):
                                 "R_free"       : Rfree
                             }
 
-                        auto.makeNextTask ( self.task,{
+                        auto.makeNextTask ( self,{
                             "revision" : revision,
                             "Rfactor"  : Rfactor,
                             "Rfree"    : Rfree,
@@ -325,7 +325,7 @@ class Simbad(asudef.ASUDef):
                         self.generic_parser_summary["simbad"] = {
                             "summary_line" : "solution not found"
                         }
-                        auto.makeNextTask ( self.task,{
+                        auto.makeNextTask ( self,{
                             "revision" : None,
                             "Rfactor"  : "1",
                             "Rfree"    : "1",
@@ -343,7 +343,7 @@ class Simbad(asudef.ASUDef):
             self.putTitle ( "No Suitable Models Found" )
 
         if not have_results:
-            auto.makeNextTask ( self.task,{
+            auto.makeNextTask ( self,{
                 "revision" : None,
                 "Rfactor"  : "1",
                 "Rfree"    : "1",

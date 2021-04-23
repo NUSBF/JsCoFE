@@ -49,6 +49,8 @@ var __user_authorisation = null;  // user authorisation data
 var __environ_server  = [];     // list of key environmental variables on NCs
 var __environ_client  = [];     // list of key environmental variables on Client
 
+var __tips = null;  // tips loaded from FE (optional), used in login page
+
 //var __mobile_device = ('ontouchstart' in document.documentElement);
 // the following will also include desktops with touch screens:
 //var __mobile_device = (navigator.maxTouchPoints || 'ontouchstart' in document.documentElement);

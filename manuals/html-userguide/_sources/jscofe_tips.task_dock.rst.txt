@@ -1,0 +1,19 @@
+=========
+Task Dock
+=========
+
+Task Dock is a small panel located in the top-right corner of the *Project Page*, which can be toggled by clicking on the red-encircled icon on the top of the Project Page:
+
+     .. image:: images/jscofe_tips.task_dock.png
+         :scale: 50 %
+         :align: center 
+
+Task Dock keeps shortcuts to frequently used tasks; in the above picture, those are Refmac, Coot, and File Import. Whenever you wish to add a task to the selected item in the Project Tree, you can do it by clicking on task icon in the Task Dock, which is so much quicker than going via the Task List Dialog!
+
+The dock may be configured to your personal choice and liking. Adding tasks to the Dock is easy: simply, right-click on the task in the Project Tree, and choose *"Add task to dock"* from the drop down menu: 
+
+     .. image:: images/jscofe_tips.task_dock_add.png
+         :scale: 50 %
+         :align: center 
+
+Likewise, a task can be removed from the Dock by right-clicking on its icon (in the Dock). Even more, you can re-order tasks in dock by merely dragging icons with your mouse.

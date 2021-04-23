@@ -28,24 +28,33 @@ from   pycofe.auto   import auto_api
 # ============================================================================
 # Main function
 
-def makeNextTask ( crTask,data,log=None ):
+def makeNextTask ( body,data,log=None ):
 # for 'log',  self.file_stderr would normally do (debug option)
 
-    auto_api.setLog ( log )
-    auto_api.initAutoMeta()
+    try:
 
-    # auto_api.log ( " --- " + str(data) )
+        if body.task.autoRunId:
 
-    if crTask.autoRunId=="auto-MR":
-        template_autoMR.makeNextTask ( crTask,data )
-    elif crTask.autoRunId=="auto-EP":
-        template_autoEP.makeNextTask ( crTask,data )
-    elif crTask.autoRunId=="auto-REL":
-        template_autoREL.makeNextTask ( crTask,data )
+            auto_api.setLog ( log )
+            auto_api.initAutoMeta()
 
-    else:
-        raise ValueError('From auto.py:makeNextTask got unknown crTask.autoRunId: %s .' % crTask.autoRunId)
+            # auto_api.log ( " --- " + str(data) )
 
-    auto_api.writeAutoMeta()
+            if body.task.autoRunId=="auto-MR":
+                template_autoMR.makeNextTask ( body.task,data )
+            elif body.task.autoRunId=="auto-EP":
+                template_autoEP.makeNextTask ( body.task,data )
+            elif body.task.autoRunId=="auto-REL":
+                template_autoREL.makeNextTask ( body.task,data )
 
-    return
+            else:
+                raise ValueError('From auto.py:makeNextTask got unknown crTask.autoRunId: %s .' \
+                                  % body.task.autoRunId)
+
+            auto_api.writeAutoMeta()
+            return True
+
+    except:
+        body.putMessage ( "<i>automatic workflow excepted</i>" )
+
+    return False

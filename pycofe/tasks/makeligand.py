@@ -137,19 +137,16 @@ class MakeLigand(basic.TaskDriver):
 
             ligand = self.finaliseLigand ( code,xyzPath,cifPath )
 
-            try:
-                revNext = None
-                if len(revisions) > 0:
-                    revNext = revisions[0]
-                elif hasattr(self.input_data.data,"revision"):
-                    revNext = self.makeClass(self.input_data.data.revision[0])
+            revNext = None
+            if len(revisions) > 0:
+                revNext = revisions[0]
+            elif hasattr(self.input_data.data,"revision"):
+                revNext = self.makeClass(self.input_data.data.revision[0])
 
-                auto.makeNextTask ( self.task,{
-                    "ligand" : ligand,
-                    'revision' : revNext
-                })
-            except:
-                self.putMessage("<i>automatic workflow excepted</i>")
+            auto.makeNextTask ( self,{
+                "ligand" : ligand,
+                'revision' : revNext
+            })
 
             self.generic_parser_summary["makeligand"] = {
                 "summary_line" : "ligand \"" + code + "\" prepared"

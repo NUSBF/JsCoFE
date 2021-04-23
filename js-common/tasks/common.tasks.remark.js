@@ -93,9 +93,11 @@ if (!__template)  {
   // only on client
 
   TaskRemark.prototype.icon = function()  {
-    if (this.state==job_code.remark)
-      return __remark_icon[this.theme_no][0] + '_s';
     return __remark_icon[this.theme_no][0];
+    // *** sticlky feature
+    // if (this.state==job_code.remark)
+    //   return __remark_icon[this.theme_no][0] + '_s';
+    // return __remark_icon[this.theme_no][0];
   }
 
   // This function is called at cloning jobs and should do copying of all
@@ -111,9 +113,10 @@ if (!__template)  {
     inputPanel.header.icon_menu.button.setBackground (
         image_path(__remark_icon[this.theme_no][0])
     );
-    inputPanel.header.icon_menu_s.button.setBackground (
-        image_path(__remark_icon[this.theme_no][0]+'_s')
-    );
+    // *** sticky feature
+    // inputPanel.header.icon_menu_s.button.setBackground (
+    //     image_path(__remark_icon[this.theme_no][0]+'_s')
+    // );
     inputPanel.emitSignal ( cofe_signals.jobDlgSignal,
                             job_dialog_reason.set_node_icon );
   }
@@ -149,34 +152,39 @@ if (!__template)  {
 
     var div = TaskTemplate.prototype.makeInputPanel.call ( this,dataBox );
 
-    div.fix_cbx = new Checkbox ( 'Sticky',(this.state==job_code.remark) );
-    div.header.insertWidget ( div.fix_cbx,1,0,1,1 );
-    div.fix_cbx.setWidth_px ( 70 );
-    div.fix_cbx.setTooltip  ( 'If checked, the remark is fixed to the above ' +
-                              'item of job tree.' );
+    // *** sticky feature
+    // div.fix_cbx = new Checkbox ( 'Sticky',(this.state==job_code.remark) );
+    // div.header.insertWidget ( div.fix_cbx,1,0,1,1 );
+    // div.fix_cbx.setWidth_px ( 70 );
+    // div.fix_cbx.setTooltip  ( 'If checked, the remark is fixed to the above ' +
+    //                           'item of job tree.' );
 
     div.header.uname_lbl.setText ( 'Remark title:&nbsp;&nbsp;' );
 
     div.header.icon_menu = this.makeThemeMenu ( '',div );
     div.header.setWidget ( div.header.icon_menu,0,0,3,1 );
-    div.header.icon_menu.setVisible ( this.state!=job_code.remark );
-    div.header.icon_menu_s = this.makeThemeMenu ( '_s',div );
-    div.header.addWidget ( div.header.icon_menu_s,0,0,3,1 );
-    div.header.icon_menu_s.setVisible ( this.state==job_code.remark );
+
+    // *** sticky feature
+    // div.header.icon_menu.setVisible ( this.state!=job_code.remark );
+    // div.header.icon_menu_s = this.makeThemeMenu ( '_s',div );
+    // div.header.addWidget ( div.header.icon_menu_s,0,0,3,1 );
+    // div.header.icon_menu_s.setVisible ( this.state==job_code.remark );
+
     div.header.setCellSize  ( '','84px', 0,0 );
 
-    (function(self){
-      div.fix_cbx.addOnClickListener ( function(){
-        if (self.state==job_code.remark)
-              self.state = job_code.remdet;
-        else  self.state = job_code.remark;
-        div.emitSignal ( cofe_signals.jobDlgSignal,job_dialog_reason.set_node_icon );
-        div.emitSignal ( cofe_signals.jobDlgSignal,job_dialog_reason.tree_updated  );
-        //div.header.icon_menu.setMenuIcon ( image_path(self.icon()) );
-        div.header.icon_menu  .setVisible ( self.state!=job_code.remark );
-        div.header.icon_menu_s.setVisible ( self.state==job_code.remark );
-      });
-    }(this))
+    // *** sticky feature
+    // (function(self){
+    //   div.fix_cbx.addOnClickListener ( function(){
+    //     if (self.state==job_code.remark)
+    //           self.state = job_code.remdet;
+    //     else  self.state = job_code.remark;
+    //     div.emitSignal ( cofe_signals.jobDlgSignal,job_dialog_reason.set_node_icon );
+    //     div.emitSignal ( cofe_signals.jobDlgSignal,job_dialog_reason.tree_updated  );
+    //     //div.header.icon_menu.setMenuIcon ( image_path(self.icon()) );
+    //     div.header.icon_menu  .setVisible ( self.state!=job_code.remark );
+    //     div.header.icon_menu_s.setVisible ( self.state==job_code.remark );
+    //   });
+    // }(this))
 
     div.header.setHLine ( 1, 3,0,1,5 );
 
@@ -189,7 +197,9 @@ if (!__template)  {
 TaskRemark.prototype.cleanJobDir   = function ( jobDir )  {}
 TaskRemark.prototype.runButtonName = function() { return ''; }  // removes Run Button and I/O panel switch
 TaskRemark.prototype.canMove       = function ( node,jobTree )  {
-  return (this.state!=job_code.remark);
+  return false;
+  // *** sticky feature
+  // return (this.state!=job_code.remark);
 }
 
 TaskRemark.prototype.currentVersion = function()  {
@@ -204,8 +214,9 @@ if (__template)  {
   //  for server side
 
   TaskRemark.prototype.icon = function()  {
-    if (this.state==__template.job_code.remark)
-      return __remark_icon[this.theme_no][0] + '_s';
+    // *** sticky feature
+    // if (this.state==__template.job_code.remark)
+    //   return __remark_icon[this.theme_no][0] + '_s';
     return __remark_icon[this.theme_no][0];
   }
 

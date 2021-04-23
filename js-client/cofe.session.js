@@ -112,12 +112,19 @@ function checkAnnouncement()  {
 
   serverCommand ( fe_command.checkAnnouncement,{},'Announcement',
     function(rdata){ // successful reply
-      if (rdata.message)  {
-        if (startsWith(rdata.message,'!#'))
-          rdata.message = rdata.message.split('\n').slice(1).join('\n');
+      if (rdata.data.message)  {
+        if (startsWith(rdata.data.message,'!#'))
+          rdata.data.message = rdata.data.message.split('\n').slice(1).join('\n');
         if (rdata.message)
           new MessageBox ( 'Announcement','<div style="width:500px;">' +
-                                          rdata.message + '</div>' );
+                                          rdata.data.message + '</div>' );
+      }
+      if (rdata.data.tips)  {
+        try {
+          __tips = JSON.parse ( rdata.data.tips );
+        } catch (e)  {
+          __tips = null;
+        }
       }
       return true;
     },

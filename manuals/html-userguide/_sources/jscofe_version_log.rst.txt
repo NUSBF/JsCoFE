@@ -4,9 +4,23 @@ CCP4 Cloud Version Log
 
 
 
+
+**Version 1.6.022**
+
+    *Released on --.--.2021 with CCP4 7.1.014*
+
+    **Changes and new features**
+
+    #. ``cloudrun`` utility for making projects, uploading data and starting tasks from command prompt
+
+    #. Fixed bug in stats bookkeeping
+
+    #. Documentation updates
+
+
 **Version 1.6.021**
 
-    *Released on --.--.2021 with CCP4 7.1.013*
+    *Released on 15.04.2021 with CCP4 7.1.013*
 
     **Changes and new features**
 

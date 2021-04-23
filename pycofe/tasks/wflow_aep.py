@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    02.04.21   <--  Date of Last Modification.
+#    23.04.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -175,19 +175,17 @@ class WFlowAEP(import_task.Import):
 
                 self.putMessage ( "<h3>Automatic Experimental Phasing (SAD) workflow started</h3>" )
                 self.task.autoRunName = "_root"
-                try:
-                    auto.makeNextTask ( self.task,{
-                        "unm"       : self.unm,
-                        "hkl"       : self.hkl,
-                        "seq"       : self.seq,
-                        "lig"       : self.lig,
-                        "ligdesc"   : self.ligdesc,
-                        "hatom"     : ha_type
-                    })
+                if auto.makeNextTask ( self,{
+                    "unm"       : self.unm,
+                    "hkl"       : self.hkl,
+                    "seq"       : self.seq,
+                    "lig"       : self.lig,
+                    "ligdesc"   : self.ligdesc,
+                    "hatom"     : ha_type
+                  }):
                     summary_line += "workflow started"
                     have_results  = True
-                except:
-                    self.putMessage ( "<i>automatic workflow excepted</i>" )
+                else:
                     summary_line += "workflow start failed"
 
             else:

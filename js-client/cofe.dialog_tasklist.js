@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.04.21   <--  Date of Last Modification.
+ *    23.04.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -345,7 +345,7 @@ var r = 0;  // grid row
   ];
 
   for (var i=0;i<task_list.length;i++)  {
-    if (this.dataBox.isEmpty())
+    if (this.dataBox.isEmpty() && (task_list[i].file_select.length>0))
       task_list[i].inputMode = 'root'; // force 'at root mode' for the task
     if (typeof task_list[i] === 'string' || task_list[i] instanceof String) {
       grid.setLabel ( '&nbsp;',r++,0,1,3 ).setHeight_px(4);

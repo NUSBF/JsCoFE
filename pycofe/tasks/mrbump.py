@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    28.03.21   <--  Date of Last Modification.
+#    23.04.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -238,14 +238,11 @@ class MrBump(basic.TaskDriver):
                         revision.setStructureData  ( structure )
                         self.registerRevision      ( revision  )
                         have_results = True
-                        try:
-                            auto.makeNextTask ( self.task,{
-                                "revision" : revision,
-                                "Rfactor"  : self.generic_parser_summary["refmac"]["R_factor"],
-                                "Rfree"    : self.generic_parser_summary["refmac"]["R_free"]
-                            })
-                        except:
-                            self.putMessage ( "<i>automatic workflow excepted</i>" )
+                        auto.makeNextTask ( self,{
+                            "revision" : revision,
+                            "Rfactor"  : self.generic_parser_summary["refmac"]["R_factor"],
+                            "Rfree"    : self.generic_parser_summary["refmac"]["R_free"]
+                        })
                     else:
                         self.putMessage ( "<h3>Structure cannot be formed</h3>" )
 

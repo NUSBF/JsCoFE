@@ -73,7 +73,7 @@ class WFlowREL(basic.TaskDriver):
             if ldesc.SOURCE_SEL.value == 'S':
                 newLig =ligandCarrier(ldesc.SOURCE_SEL.value, ldesc.SMILES.value, ldesc.CODE.value)
                 ligMessage = 'Workflow will generate ligand from SMILES string: ' + str(newLig.smiles)
-            else:
+            elif ldesc.SOURCE_SEL.value == 'M':
                 newLig =ligandCarrier(ldesc.SOURCE_SEL.value, ldesc.SMILES.value, ldesc.CODE3.value)
                 ligMessage = 'Workflow will use ligand from monomer library: ' + str(newLig.code)
             self.ligdesc.append ( newLig )
@@ -96,16 +96,14 @@ class WFlowREL(basic.TaskDriver):
 
         self.task.autoRunName = "_root"
         have_results = False
-        try:
-            auto.makeNextTask(self.task, {
-                'revision': revision,
-                "lig": self.lig,
-                "ligdesc": self.ligdesc
-            })
+        if auto.makeNextTask ( self, {
+             "revision" : revision,
+             "lig"      : self.lig,
+             "ligdesc"  : self.ligdesc
+           }):
             summary_line += "workflow started"
             have_results = True
-        except:
-            self.putMessage("<i>automatic workflow excepted</i>")
+        else:
             summary_line += "workflow start failed"
 
         self.generic_parser_summary["import_autorun"] = {

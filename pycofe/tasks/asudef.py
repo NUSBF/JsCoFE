@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    29.03.21   <--  Date of Last Modification.
+#    23.04.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -551,12 +551,9 @@ class ASUDef(basic.TaskDriver):
             self.registerRevision ( revision[0],revisionName=revName )
             have_results = True
 
-            try:
-                auto.makeNextTask ( self.task,{
-                    "revision" : revision[0]
-                })
-            except:
-                self.putMessage ( "<i>automatic workflow excepted</i>" )
+            auto.makeNextTask ( self,{
+                "revision" : revision[0]
+            })
 
         # close execution logs and quit
         self.success ( have_results )

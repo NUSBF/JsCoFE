@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    24.03.21   <--  Date of Last Modification.
+#    23.04.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -343,7 +343,7 @@ class ModelPrepXYZ(basic.TaskDriver):
               "summary_line" : str(len(models)) + " model(s) generated " + protocol
             }
 
-            auto.makeNextTask ( self.task,{
+            auto.makeNextTask ( self,{
                 "model" : models[0]
             })
 
