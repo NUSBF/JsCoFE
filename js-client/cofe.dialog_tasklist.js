@@ -340,7 +340,8 @@ var r = 0;  // grid row
 
   var task_list = [
     new TaskWFlowAMR(),
-    new TaskWFlowAEP()
+    new TaskWFlowAEP(),
+    new TaskWFlowREL()
   ];
 
   for (var i=0;i<task_list.length;i++)  {

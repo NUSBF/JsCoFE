@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    27.07.20   <--  Date of Last Modification.
+#    23.04.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -21,7 +21,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2020
+#  Copyright (C) Eugene Krissinel, Oleg Kovalevskiy, Andrey Lebedev 2017-2021
 #
 # ============================================================================
 #
@@ -35,6 +35,7 @@ import json
 from . import basic
 from   pycofe.proc   import qualrep
 from   pycofe.verdicts  import verdict_lorestr
+from   pycofe.auto   import auto
 
 
 # ============================================================================
@@ -180,6 +181,15 @@ class Lorestr(basic.TaskDriver):
                     }
                     #self.copyTaskMetrics ( "lorestr","R_factor","rfactor" )
                     #self.copyTaskMetrics ( "lorestr","R_free"  ,"rfree"   )
+
+                    try:
+                        auto.makeNextTask(self.task, {
+                            "revision": revision,
+                            "R_factor": str(verdict_meta['lorestr']["rfact"][1]),
+                            "R_free": str(verdict_meta['lorestr']["rfree"][1])
+                        }, self.file_stderr)
+                    except:
+                        self.putMessage("<i>automatic workflow excepted</i>")
 
         else:
             self.putTitle ( "No Output Generated" )
