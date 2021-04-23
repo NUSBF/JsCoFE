@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    03.03.21   <--  Date of Last Modification.
+#    23.04.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -502,9 +502,10 @@ def calculate ( meta ) :
         suggestedParameters['NCYC'] = '50'
         if res > 3.0:
             bottomline += " with jelly-body restraints on"
-            suggestedParameters['JELLY'      ] = 'yes'
-            suggestedParameters['JELLY_SIGMA'] = '0.01'
-            suggestedParameters['JELLY_DMAX' ] = '4.2'
+            if not jellyBody:
+                suggestedParameters['JELLY'      ] = 'yes'
+                suggestedParameters['JELLY_SIGMA'] = '0.01'
+                suggestedParameters['JELLY_DMAX' ] = '4.2'
         bottomline += ".<p>"
 
     # 5. High clash score. Normally resolved by increasing weight of VDW repulsion and adding hydrogens
@@ -549,13 +550,17 @@ def calculate ( meta ) :
             distRatio = 0.01 / rmsBondDistance
         else:
             distRatio = 0.015 / rmsBondDistance
-        newWeight = weight * calculateWeightRatio(distRatio)
+        if distRatio != 0.0:
+            newWeight = weight * calculateWeightRatio(distRatio)
+        else:
+            newWeight = weight * 0.8
         bottomline += "RMS deviation of bond lengths for the structure is too high " +\
                       "(%0.4f, while optimal range is between 0.01 and 0.02). " % rmsBondDistance +\
                       "We recommend to tighten up the geometry by reducing the " +\
                       "'Overall data-geometry weight' parameter (for example, to %0.4f).<p>" % newWeight
         suggestedParameters['WAUTO_YES'] = 'no'
-        suggestedParameters['WAUTO_VAL'] = str(newWeight)
+        if newWeight != 0.0:
+            suggestedParameters['WAUTO_VAL'] = str(newWeight)
     if rmsBondDistance < 0.01:
         suggestChangingGeomWeight = True
         suggestIncreasingGeomWeight = True
@@ -563,13 +568,17 @@ def calculate ( meta ) :
             distRatio = 0.01 / rmsBondDistance
         else:
             distRatio = 0.015 / rmsBondDistance
-        newWeight = weight * calculateWeightRatio(distRatio)
+        if distRatio != 0.0:
+            newWeight = weight * calculateWeightRatio(distRatio)
+        else:
+            newWeight = weight * 1.2
         bottomline += "RMS deviation of bond lengths for the structure is too low " +\
                       "(%0.4f, while optimal range is between 0.01 and 0.02). " % rmsBondDistance +\
                       "We recommend to loose the geometry by increasing the " +\
                       "'Overall data-geometry weight' parameter (for example, to %0.4f).<p>" % newWeight
         suggestedParameters['WAUTO_YES'] = 'no'
-        suggestedParameters['WAUTO_VAL'] = str(newWeight)
+        if newWeight != 0.0:
+            suggestedParameters['WAUTO_VAL'] = str(newWeight)
 
 
     # 7. Ramachandran and other geometry
@@ -606,9 +615,10 @@ def calculate ( meta ) :
                     bottomline += "Please consider jelly-body refinement (Restraints -> Use jelly-body restraints). " + \
                               "You can also reduce overfitting by tightening up " + \
                               "geometry via decreasing 'Overall data-geometry weight' parameter.<p>"
-            suggestedParameters['JELLY'      ] = 'yes'
-            suggestedParameters['JELLY_SIGMA'] = '0.01'
-            suggestedParameters['JELLY_DMAX' ] = '4.2'
+            if not jellyBody:
+                suggestedParameters['JELLY'      ] = 'yes'
+                suggestedParameters['JELLY_SIGMA'] = '0.01'
+                suggestedParameters['JELLY_DMAX' ] = '4.2'
         else:
             if (not suggestChangingGeomWeight) or (not suggestIncreasingGeomWeight):
                 bottomline += "You can reduce overfitting by tightening up " +\
@@ -668,7 +678,8 @@ def calculate ( meta ) :
                     suggestedParameters['NCSR'] = 'yes'
             else:
                 bottomline += "If NCS restraints don't positively contribute to your refinement, try switching them off. "
-                suggestedParameters['NCSR'] = 'no'
+                # avoiding infinite loop - need proper non-Markov decision making here
+                # suggestedParameters['NCSR'] = 'no'
 
             if not tls and not suggestedParameters.has_key('NCYC') and not suggestChangingGeomWeight:
                 bottomline += "Try TLS refinement. "
@@ -708,7 +719,7 @@ def calculate ( meta ) :
 
     # 12. Problems specific to subatomic and atomic resolution. Advices for higher Rfree
     else:
-        if (rFree > meanRfree+0.002) and (rFree < (meanRfree + (2.0*sigRfree))):
+        if (rFree > meanRfree+0.002) and (rFree < (meanRfree + (3.0*sigRfree))):
             bottomline += "Your <i>R<sub>free</sub></i> is a bit higher than expected " +\
                           "(%0.3f, while mean value for this resolution is %0.3f). " % (rFree, meanRfree) +\
                           "Try building more residues/ligands/waters/metals/alternative conformations. "
@@ -721,7 +732,7 @@ def calculate ( meta ) :
                 suggestedParameters['RIDING_HYDROGENS'] = 'YES'
             # Apparently scaling parameters are not available in Cloud interface now
             bottomline += "Try optimising solvent and scaling parameters. <p>"
-        elif (rFree >= (meanRfree + (2.0*sigRfree))) and (rFree <= 0.4):
+        elif (rFree >= (meanRfree + (3.0*sigRfree))) and (rFree <= 0.4):
             bottomline += "Your <i>R<sub>free</sub></i> is substantially higher than expected " +\
                           "(%0.3f, while mean value for this resolution is %0.3f). " % (rFree, meanRfree) +\
                           "Try building more residues/ligands/waters/metals. Check your data for twinning. <p>"

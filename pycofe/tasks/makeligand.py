@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    23.10.20   <--  Date of Last Modification.
+#    23.04.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -52,13 +52,13 @@ class MakeLigand(basic.TaskDriver):
 
         # copy pre-existing revisions into output first
         nrevisions0 = 0
-        revision    = []
+        revisions    = []
         if hasattr(self.input_data.data,"void1"):
-            revision    = self.input_data.data.void1
-            nrevisions0 = len(revision)
-            for i in range(len(revision)):
-                revision[i] = self.makeClass ( revision[i] )
-                revision[i].register ( self.outputDataBox )
+            revisions    = self.input_data.data.void1
+            nrevisions0 = len(revisions)
+            for i in range(len(revisions)):
+                revisions[i] = self.makeClass ( revisions[i] )
+                revisions[i].register ( self.outputDataBox )
 
         # Prepare makeligand input
         # fetch input data
@@ -75,8 +75,8 @@ class MakeLigand(basic.TaskDriver):
 
             if not code:
                 exclude_list = []
-                for i in range(len(revision)):
-                    ligands = revision[i].Ligands
+                for i in range(len(revisions)):
+                    ligands = revisions[i].Ligands
                     for j in range(len(ligands)):
                         exclude_list.append ( ligands[i]["code"] )
                 code = self.get_ligand_code ( exclude_list )
@@ -137,9 +137,19 @@ class MakeLigand(basic.TaskDriver):
 
             ligand = self.finaliseLigand ( code,xyzPath,cifPath )
 
-            auto.makeNextTask ( self.task,{
-                "ligand" : ligand
-            })
+            try:
+                revNext = None
+                if len(revisions) > 0:
+                    revNext = revisions[0]
+                elif hasattr(self.input_data.data,"revision"):
+                    revNext = self.makeClass(self.input_data.data.revision[0])
+
+                auto.makeNextTask ( self.task,{
+                    "ligand" : ligand,
+                    'revision' : revNext
+                })
+            except:
+                self.putMessage("<i>automatic workflow excepted</i>")
 
             self.generic_parser_summary["makeligand"] = {
                 "summary_line" : "ligand \"" + code + "\" prepared"

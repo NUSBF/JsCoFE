@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    29.03.21   <--  Date of Last Modification.
+#    23.04.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -22,7 +22,7 @@
 #      jobDir/report  : directory receiving HTML report
 #
 #  Copyright (C) Eugene Krissinel, Andrey Lebedev, Robert Nicholls,
-#                Oleg Kovalevskyi 2017-2021
+#                Oleg Kovalevskiy 2017-2021
 #
 # ============================================================================
 #
@@ -438,7 +438,7 @@ class Refmac(basic.TaskDriver):
                             "Rfactor"  : self.generic_parser_summary["refmac"]["R_factor"],
                             "Rfree"    : self.generic_parser_summary["refmac"]["R_free"],
                             "suggestedParameters" : suggestedParameters
-                        })
+                        }, log=self.file_stderr)
                     except:
                         self.putMessage ( "<i>automatic workflow excepted</i>" )
 

@@ -41,6 +41,7 @@ from . import basic
 from   pycofe.dtypes   import dtype_template, dtype_revision
 from   pycofe.proc     import qualrep
 from   pycofe.verdicts import verdict_ccp4build
+from   pycofe.auto    import auto
 
 
 # ============================================================================
@@ -515,6 +516,16 @@ class CCP4Build(basic.TaskDriver):
                     }
                     #self.generic_parser_summary["refmac"]     = meta["refmac"]
                     #self.generic_parser_summary["cbuccaneer"] = meta["cbuccaneer"]
+                    try:
+                        auto.makeNextTask ( self.task,{
+                            "revision" : revision,
+                            "Rfactor"  : str(m0["R_factor"]),
+                            "Rfree"    : str(m0["R_free"])
+                        })
+                    except:
+                        self.putMessage ( "<i>automatic workflow excepted</i>" )
+
+
                 except:
                     pass
 

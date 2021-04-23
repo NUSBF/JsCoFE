@@ -5,13 +5,13 @@
 #
 # ============================================================================
 #
-#    29.03.21   <--  Date of Last Modification.
+#    23.04.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  AUTOMATIC WORKFLOW FRAMEWORK API
 #
-#  Copyright (C) Eugene Krissinel, Oleg Kovalevskyi, Andrey Lebedev 2021
+#  Copyright (C) Eugene Krissinel, Oleg Kovalevskiy, Andrey Lebedev 2021
 #
 # ============================================================================
 #
@@ -21,7 +21,7 @@
 
 from   pycofe.auto   import template_autoMR
 from   pycofe.auto   import template_autoEP
-#from   pycofe.auto   import template_MR
+from   pycofe.auto   import template_autoREL
 from   pycofe.auto   import auto_api
 
 
@@ -40,6 +40,11 @@ def makeNextTask ( crTask,data,log=None ):
         template_autoMR.makeNextTask ( crTask,data )
     elif crTask.autoRunId=="auto-EP":
         template_autoEP.makeNextTask ( crTask,data )
+    elif crTask.autoRunId=="auto-REL":
+        template_autoREL.makeNextTask ( crTask,data )
+
+    else:
+        raise ValueError('From auto.py:makeNextTask got unknown crTask.autoRunId: %s .' % crTask.autoRunId)
 
     auto_api.writeAutoMeta()
 
