@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    29.03.21   <--  Date of Last Modification.
+#    23.04.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -759,14 +759,11 @@ class Crank2(basic.TaskDriver):
         revisions = self.finalise()
 
         if len(revisions)>0:
-            try:
-                auto.makeNextTask ( self.task,{
-                    "revision" : revisions[0],
-                    "Rfactor"  : self.generic_parser_summary["refmac"]["R_factor"],
-                    "Rfree"    : self.generic_parser_summary["refmac"]["R_free"]
-                }, self.file_stderr )
-            except:
-                self.putMessage ( "<i>automatic workflow excepted</i>" )
+            auto.makeNextTask ( self,{
+                "revision" : revisions[0],
+                "Rfactor"  : self.generic_parser_summary["refmac"]["R_factor"],
+                "Rfree"    : self.generic_parser_summary["refmac"]["R_free"]
+            }, self.file_stderr )
 
         # close execution logs and quit
         self.success ( (len(revisions)>0) )

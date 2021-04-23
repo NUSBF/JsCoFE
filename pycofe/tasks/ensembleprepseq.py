@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    02.03.21   <--  Date of Last Modification.
+#    23.04.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -228,7 +228,7 @@ class EnsemblePrepSeq(basic.TaskDriver):
                                             ensNo += 1
 
                                             if ensNo==1:
-                                                auto.makeNextTask ( self.task,{
+                                                auto.makeNextTask ( self,{
                                                     "model" : ensemble
                                                 })
 

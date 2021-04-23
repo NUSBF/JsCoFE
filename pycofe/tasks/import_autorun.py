@@ -7,7 +7,7 @@
 #
 # ============================================================================
 #
-#    23.03.21   <--  Date of Last Modification.
+#    23.04.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -133,24 +133,11 @@ class ImportAutoRun(import_task.Import):
             self.task.autoRunId = "autoMR"  #  this is only for demonstration
             self.task.autoRunId = "MR"      #  this is only for demonstration
 
-            auto.makeNextTask ( self.task,{
+            auto.makeNextTask ( self,{
                 "hkl" : self.hkl,
                 "seq" : self.seq,
                 "xyz" : self.xyz
             })
-
-            # auto_api.addTask     ( "asu","TaskASUDef" )
-            # auto_api.addTaskData ( "asu","hkl",self.hkl )
-            # for i in range(len(self.seq)):
-            #     auto_api.addTaskData ( "asu","seq",self.seq[i] )
-            # #auto_api.addTaskParameter ( "asu",parameterName,parameterValue ):
-            #
-            # auto_api.addTask     ( "asu1","TaskASUDef" )
-            # auto_api.addTaskData ( "asu1","hkl",self.hkl )
-            # for i in range(len(self.seq)):
-            #     auto_api.addTaskData ( "asu1","seq",self.seq[i] )
-            # #auto_api.addTaskParameter ( "asu",parameterName,parameterValue ):
-            # auto_api.writeAutoMeta()
 
         # close execution logs and quit
         self.success ( have_results )

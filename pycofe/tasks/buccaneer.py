@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    29.03.21   <--  Date of Last Modification.
+#    23.04.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -315,15 +315,11 @@ class Buccaneer(basic.TaskDriver):
                     self.stderr ( " *** molprobity failure" )
                     self.rvrow = rvrow0
 
-                try:
-                    auto.makeNextTask ( self.task,{
-                        "revision" : revision,
-                        "Rfactor"  : self.generic_parser_summary["refmac"]["R_factor"],
-                        "Rfree"    : self.generic_parser_summary["refmac"]["R_free"]
-                    })
-                except:
-                    self.putMessage ( "<i>automatic workflow excepted</i>" )
-
+                auto.makeNextTask ( self,{
+                    "revision" : revision,
+                    "Rfactor"  : self.generic_parser_summary["refmac"]["R_factor"],
+                    "Rfree"    : self.generic_parser_summary["refmac"]["R_free"]
+                })
 
         else:
             self.putTitle ( "No Output Generated" )

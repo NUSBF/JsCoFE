@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    09.02.21   <--  Date of Last Modification.
+#    23.04.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -516,15 +516,11 @@ class CCP4Build(basic.TaskDriver):
                     }
                     #self.generic_parser_summary["refmac"]     = meta["refmac"]
                     #self.generic_parser_summary["cbuccaneer"] = meta["cbuccaneer"]
-                    try:
-                        auto.makeNextTask ( self.task,{
-                            "revision" : revision,
-                            "Rfactor"  : str(m0["R_factor"]),
-                            "Rfree"    : str(m0["R_free"])
-                        })
-                    except:
-                        self.putMessage ( "<i>automatic workflow excepted</i>" )
-
+                    auto.makeNextTask ( self,{
+                        "revision" : revision,
+                        "Rfactor"  : str(m0["R_factor"]),
+                        "Rfree"    : str(m0["R_free"])
+                    })
 
                 except:
                     pass

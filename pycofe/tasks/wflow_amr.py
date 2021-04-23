@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    29.03.21   <--  Date of Last Modification.
+#    23.04.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -164,8 +164,7 @@ class WFlowAMR(import_task.Import):
 
         if ((len(self.unm)>0) or (len(self.hkl)>0)) and (len(self.seq)>0):
             self.task.autoRunName = "_root"
-            try:
-                auto.makeNextTask ( self.task,{
+            if auto.makeNextTask ( self,{
                     "unm"       : self.unm,
                     "hkl"       : self.hkl,
                     "seq"       : self.seq,
@@ -173,15 +172,13 @@ class WFlowAMR(import_task.Import):
                     "ligdesc"   : self.ligdesc,
                     "mr_engine" : mr_engine,
                     "mb_engine" : mb_engine
-                },self.file_stderr)
+               },self.file_stderr):
                 summary_line += "workflow started"
                 self.putMessage ( "<h3>Automatic Molecular Replacement workflow started</hr>" )
-            except:
-                self.putMessage ( "<i>automatic workflow excepted</i>" )
+            else:
                 summary_line += "workflow start failed"
         else:
             summary_line += "insufficient input"
-
 
         self.generic_parser_summary["import_autorun"] = {
           "summary_line" : summary_line

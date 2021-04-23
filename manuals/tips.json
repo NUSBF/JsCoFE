@@ -1,0 +1,20 @@
+{
+  "use_tips" : true,
+  "tips" : [
+    { "summary" : "Did you know? Crashed Coot task does not mean that your work is lost! Read <a>here</a>.",
+      "title"   : "Recover from Coot crash",
+      "doc"     : "manuals/html-userguide",
+      "link"    : "jscofe_tips.coot_crash.html"
+    },{
+      "summary" : "Are you using the Task Dock yet? Read <a>here</a> about it.",
+      "title"   : "Task Dock",
+      "doc"     : "manuals/html-userguide",
+      "link"    : "jscofe_tips.task_dock.html"
+    },{
+      "summary" : "Are you sure you know everything about Remarks? Have a quick look <a>here</a>.",
+      "title"   : "Project Remarks",
+      "doc"     : "manuals/html-userguide",
+      "link"    : "jscofe_tips.remarks.html"
+    }
+  ]
+}

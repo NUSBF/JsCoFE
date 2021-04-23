@@ -182,14 +182,11 @@ class Lorestr(basic.TaskDriver):
                     #self.copyTaskMetrics ( "lorestr","R_factor","rfactor" )
                     #self.copyTaskMetrics ( "lorestr","R_free"  ,"rfree"   )
 
-                    try:
-                        auto.makeNextTask(self.task, {
-                            "revision": revision,
-                            "R_factor": str(verdict_meta['lorestr']["rfact"][1]),
-                            "R_free": str(verdict_meta['lorestr']["rfree"][1])
-                        }, self.file_stderr)
-                    except:
-                        self.putMessage("<i>automatic workflow excepted</i>")
+                    auto.makeNextTask ( self, {
+                        "revision": revision,
+                        "R_factor": str(verdict_meta['lorestr']["rfact"][1]),
+                        "R_free": str(verdict_meta['lorestr']["rfree"][1])
+                    }, self.file_stderr)
 
         else:
             self.putTitle ( "No Output Generated" )

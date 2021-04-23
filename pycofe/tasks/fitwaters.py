@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    25.03.21   <--  Date of Last Modification.
+#    23.04.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -116,10 +116,11 @@ class FitWaters(basic.TaskDriver):
                 revision.setStructureData ( structure )
                 self.registerRevision     ( revision  )
                 have_results = True
-                auto.makeNextTask ( self.task,{
+                auto.makeNextTask ( self,{
                     "revision" : revision,
                     "nwaters"  : str(nwaters)
                 })
+
 
         else:
             self.putTitle ( "No water molecules were found and fitted." )

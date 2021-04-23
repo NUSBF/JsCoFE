@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    29.03.21   <--  Date of Last Modification.
+#    23.04.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -385,10 +385,7 @@ class Deposition(basic.TaskDriver):
             self.putMessage ( html )
         citations.citation_list = []
 
-        try:
-            auto.makeNextTask ( self.task,{}, self.file_stderr )
-        except:
-            self.putMessage ( "<i>automatic workflow excepted</i>" )
+        auto.makeNextTask ( self,{}, self.file_stderr )
 
         # this will go in the project tree line
         self.generic_parser_summary["deposition"] = {

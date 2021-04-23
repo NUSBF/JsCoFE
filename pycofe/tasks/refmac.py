@@ -432,15 +432,12 @@ class Refmac(basic.TaskDriver):
                         self.task.suggestedParameters = suggestedParameters
                         self.putCloneJobButton ( "Clone job with suggested parameters",
                                                  self.report_page_id(),verdict_row+3,0 )
-                    try:
-                        auto.makeNextTask ( self.task,{
-                            "revision" : revision,
-                            "Rfactor"  : self.generic_parser_summary["refmac"]["R_factor"],
-                            "Rfree"    : self.generic_parser_summary["refmac"]["R_free"],
-                            "suggestedParameters" : suggestedParameters
-                        }, log=self.file_stderr)
-                    except:
-                        self.putMessage ( "<i>automatic workflow excepted</i>" )
+                    auto.makeNextTask ( self,{
+                        "revision" : revision,
+                        "Rfactor"  : self.generic_parser_summary["refmac"]["R_factor"],
+                        "Rfree"    : self.generic_parser_summary["refmac"]["R_free"],
+                        "suggestedParameters" : suggestedParameters
+                    }, log=self.file_stderr)
 
         else:
             self.putTitle ( "No Output Generated" )

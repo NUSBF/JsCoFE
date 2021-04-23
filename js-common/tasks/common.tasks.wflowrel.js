@@ -19,18 +19,15 @@
 
 
 var __template = null;
+var __make_lig = null;
 
-if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
-  __template = require ( './common.tasks.template' );
+if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
+  __template = require ( './common.tasks.template'   );
+  __make_lig = require ( './common.tasks.makeligand' );
+}
 
 
 // ===========================================================================
-
-var __coot_reserved_codes = [
-  "XXX","LIG","DRG","INH","LG0","LG1","LG2","LG3","LG4","LG5","LG6",
-  "LG7","LG8","LG9"
-];
-
 
 function TaskWFlowREL()  {
 
@@ -58,25 +55,39 @@ function TaskWFlowREL()  {
       label       : 'Ligand data', // label for input dialog
       tooltip     : '(Optional) Specify ligands to be fit in electron density.',
       inputId     : 'ligand',      // input Id for referencing input fields
+      force       : 1,             // force selecting ligand if found in Project
       min         : 0,             // minimum acceptable number of data instances
       max         : this.input_ligands.length // maximum acceptable number of data instances
     }
-    ];
+  ];
+
+  var __coot_codes = null;
+  if (__make_lig)  __coot_codes = __make_lig.__coot_reserved_codes;
+             else  __coot_codes = __coot_reserved_codes;
+
 
   this.parameters = { // input parameters
+    LIGAND_LBL : {
+            type     : 'label',
+            label    : '&nbsp;',
+            position : [0,0,1,5],
+            showon   : {'ligand':[0,-1]}, // from this and input data section
+          },
     sec1  : { type     : 'section',
-              title    : 'Parameters',
+              title    : '',
               open     : true,  // true for the section to be initially open
-              position : [0,0,1,5],
+              position : [1,0,1,5],
+              showon   : {'ligand':[0,-1]}, // from this and input data section
               contains : {
                         SOURCE_SEL : {
                                 type     : 'combobox',
-                                label    : '<b>Use</b>',
+                                label    : '<b><i>Make Ligand</i></b>',
                                 tooltip  : 'Source of data for making a ligand',
-                                range    : ['S|SMILES string',
-                                            'M|Monomer library'
+                                range    : ['N|No',
+                                            'S|using SMILES string',
+                                            'M|from Monomer library entry'
                                            ],
-                                value    : 'S',
+                                value    : 'N',
                                 position : [0,0,1,5]
                               },
                         SMILES : {
@@ -121,14 +132,15 @@ function TaskWFlowREL()  {
                           INFO2_LBL : {
                               type     : 'label',
                               label    : '&nbsp;<br><span style="font-size:85%;color:maroon;"><i>Codes ' +
-                                           __coot_reserved_codes.join(', ') +
+                                           __coot_codes.join(', ') +
                                          '<br>are reserved by Coot for own purposes and cannot' +
                                          ' be used here.</i></span>',
-                              position : [4,4,1,5]
+                              position : [4,4,1,5],
+                              hideon    : {SOURCE_SEL:['N']}
                             }
 
                         }
-}
+    }
 
   };
 
@@ -143,7 +155,7 @@ TaskWFlowREL.prototype.constructor = TaskWFlowREL;
 
 // ===========================================================================
 
-TaskWFlowREL.prototype.icon = function()  { return 'task_wflowaep'; }
+TaskWFlowREL.prototype.icon = function()  { return 'task_wflowrel'; }
 
 //TaskWFlowREL.prototype.canRunInAutoMode = function() { return true; }
 

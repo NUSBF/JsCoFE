@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    02.10.20   <--  Date of Last Modification.
+#    23.04.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -21,7 +21,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2020
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2021
 #
 # ============================================================================
 #
@@ -159,7 +159,7 @@ class FitLigand(basic.TaskDriver):
                 revision.addLigandData    ( ligand    )
                 self.registerRevision     ( revision  )
                 have_results = True
-                auto.makeNextTask ( self.task,{
+                auto.makeNextTask ( self,{
                     "revision" : revision,
                     "nfitted"  : str(nligs)
                 })
