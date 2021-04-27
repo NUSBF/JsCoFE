@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    27.03.21   <--  Date of Last Modification.
+ *    27.04.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  CCP4go Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, O. Kovalevskyi, A. Lebedev 2021
+ *  (C) E. Krissinel, O. Kovalevskiy, A. Lebedev 2021
  *
  *  =================================================================
  *
@@ -102,31 +102,31 @@ function TaskWFlowAMR()  {
     }
   ];
 
-  this.parameters = { // input parameters
-    MR_ENGINE : { type     : 'combobox',
-                  keyword  : '',
-                  label    : '<b><i>Auto-MR solver</i></b>',
-                  tooltip  : 'Choose between MrBump and MoRDa auto-MR pipelines ' +
-                             'to use. If MoRDa is not available, MrBump will be used.',
-                  range    : ['mrbump|MrBump',
-                              'morda|MoRDa'
-                             ],
-                  value    : 'mrbump',
-                  iwidth   : 140,
-                  position : [0,0,1,3]
-                },
-    MB_ENGINE : { type     : 'combobox',
-                  keyword  : '',
-                  label    : '<b><i>Model builder</i></b>',
-                  tooltip  : 'Choose between CCP4Build and Buccaneer for model ' +
-                             'building steps.',
-                  range    : ['ccp4build|CCP4Build',
-                              'buccaneer|Buccaneer'
-                             ],
-                  value    : 'ccp4build',
-                  iwidth   : 140,
-                  position : [1,0,1,3]
-                }
+  this.parameters = { // no input parameters to mak user's life easier
+//    MR_ENGINE : { type     : 'combobox',
+//                  keyword  : '',
+//                  label    : '<b><i>Auto-MR solver</i></b>',
+//                  tooltip  : 'Choose between MrBump and MoRDa auto-MR pipelines ' +
+//                             'to use. If MoRDa is not available, MrBump will be used.',
+//                  range    : ['mrbump|MrBump',
+//                              'morda|MoRDa'
+//                             ],
+//                  value    : 'mrbump',
+//                  iwidth   : 140,
+//                  position : [0,0,1,3]
+//                },
+//    MB_ENGINE : { type     : 'combobox',
+//                  keyword  : '',
+//                  label    : '<b><i>Model builder</i></b>',
+//                  tooltip  : 'Choose between CCP4Build and Buccaneer for model ' +
+//                             'building steps.',
+//                  range    : ['ccp4build|CCP4Build',
+//                              'buccaneer|Buccaneer'
+//                             ],
+//                  value    : 'ccp4build',
+//                  iwidth   : 140,
+//                  position : [1,0,1,3]
+//                }
   };
 
 }

@@ -68,13 +68,17 @@ def asu ( name,parentName ):
         # auto_api.addContext  ( "branch",branchName )
     return
 
-def build ( name,revision,parentName ):
-    if auto_api.getContext("mb_engine")=="ccp4build":
-        auto_api.addTask ( name,"TaskCCP4Build",parentName  )
-    else:
-        auto_api.addTask ( name,"TaskBuccaneer",parentName  )
+def buccaneer ( name,revision,parentName ):
+    auto_api.addTask ( name,"TaskBuccaneer",parentName  )
     auto_api.addTaskData ( name,"revision",revision )
     return
+
+
+def ccp4build ( name,revision,parentName ):
+    auto_api.addTask ( name,"TaskCCP4Build",parentName  )
+    auto_api.addTaskData ( name,"revision",revision )
+    return
+
 
 def make_ligand ( name, ligdesc, revision, parentName ):
     auto_api.addTask          ( name,"TaskMakeLigand",parentName )
@@ -85,12 +89,14 @@ def make_ligand ( name, ligdesc, revision, parentName ):
     auto_api.addTaskParameter ( name,"CODE3"     ,ligdesc.code   )
     return
 
+
 def refmac_jelly ( name,revision,parentName ):
     auto_api.addTask          ( name,"TaskRefmac",parentName )
     auto_api.addTaskData      ( name,"revision",revision )
     auto_api.addTaskParameter ( name,"NCYC" ,"50"  )
     auto_api.addTaskParameter ( name,"JELLY","yes" )
     return
+
 
 def refmac_vdw ( name,revision,parentName ):
     auto_api.addTask          ( name,"TaskRefmac",parentName )
@@ -107,10 +113,12 @@ def fit_ligand ( name, ligand, revision,parentName ):
     auto_api.addTaskParameter ( name,"SAMPLES" ,"750"  )
     return
 
+
 def refmac ( name,revision,parentName ):
     auto_api.addTask     ( name,"TaskRefmac",parentName )
     auto_api.addTaskData ( name,"revision",revision )
     return
+
 
 def fit_waters ( name,revision,parentName ):
     auto_api.addTask     ( name,"TaskFitWaters",parentName )
@@ -118,10 +126,12 @@ def fit_waters ( name,revision,parentName ):
     auto_api.addTaskParameter(name, 'SIGMA', '3.0')
     return
 
+
 def deposition ( name,revision,parentName ):
     auto_api.addTask     ( name,"TaskDeposition",parentName )
     auto_api.addTaskData ( name,"revision",revision )
     return
+
 
 def remark ( name,text,themeNo,description,parentName ):
     auto_api.addTask          ( name,"TaskRemark" ,parentName  )
@@ -155,6 +165,7 @@ def refmacSuggested ( name, revision, suggested ):
     auto_api.noteTask    ( actualName,"refmac_noted" )  # for the next run cloning current task
 
     return
+
 
 def lorestr ( name,revision,parentName ):
     auto_api.addTask     ( name,"TaskLorestr",parentName )
