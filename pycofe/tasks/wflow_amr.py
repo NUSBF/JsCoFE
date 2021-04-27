@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    23.04.21   <--  Date of Last Modification.
+#    27.04.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -21,7 +21,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Oleg Kovalevskyi, Andrey Lebedev 2021
+#  Copyright (C) Eugene Krissinel, Oleg Kovalevskiy, Andrey Lebedev 2021
 #
 # ============================================================================
 #
@@ -140,23 +140,19 @@ class WFlowAMR(import_task.Import):
         if len(ilist)>0:
             summary_line += ", ".join(ilist) + "; "
 
-        if hasattr(self.task.parameters,"HATOM"):
-            self.ha_type = self.getParameter ( self.task.parameters.HATOM )
-        else:
-            self.ha_type = ""
-
-        mr_engine = self.getParameter ( self.task.parameters.MR_ENGINE )
-        mb_engine = self.getParameter ( self.task.parameters.MB_ENGINE )
-
-        if mr_engine=="mrbump":
-            self.putMessage ( "Automatic MR solver: <b>MrBump</b>" )
-        else:
-            self.putMessage ( "Automatic MR solver: <b>MoRDa</b>" )
-
-        if mb_engine=="ccp4build":
-            self.putMessage ( "Automatic model builder: <b>CCP4Build</b>" )
-        else:
-            self.putMessage ( "Automatic model builder: <b>Buccaneer</b>" )
+        # less parameters - less headache user have
+        # mr_engine = self.getParameter ( self.task.parameters.MR_ENGINE )
+        # mb_engine = self.getParameter ( self.task.parameters.MB_ENGINE )
+        #
+        # if mr_engine=="mrbump":
+        #     self.putMessage ( "Automatic MR solver: <b>MrBump</b>" )
+        # else:
+        #     self.putMessage ( "Automatic MR solver: <b>MoRDa</b>" )
+        #
+        # if mb_engine=="ccp4build":
+        #     self.putMessage ( "Automatic model builder: <b>CCP4Build</b>" )
+        # else:
+        #     self.putMessage ( "Automatic model builder: <b>Buccaneer</b>" )
 
         self.flush()
 
@@ -169,9 +165,9 @@ class WFlowAMR(import_task.Import):
                     "hkl"       : self.hkl,
                     "seq"       : self.seq,
                     "lig"       : self.lig,
-                    "ligdesc"   : self.ligdesc,
-                    "mr_engine" : mr_engine,
-                    "mb_engine" : mb_engine
+                    "ligdesc"   : self.ligdesc
+                    # "mr_engine" : mr_engine,
+                    # "mb_engine" : mb_engine
                },self.file_stderr):
                 summary_line += "workflow started"
                 self.putMessage ( "<h3>Automatic Molecular Replacement workflow started</hr>" )
