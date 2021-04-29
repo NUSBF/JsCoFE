@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    17.04.21   <--  Date of Last Modification.
+ *    29.04.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -1099,6 +1099,7 @@ function readJobStats()  {
 
 // ===========================================================================
 
+
 function addJobAuto ( jobEntry,jobClass )  {
   var loginData   = jobEntry.loginData;
   var projectName = jobEntry.project;
@@ -1114,6 +1115,8 @@ function addJobAuto ( jobEntry,jobClass )  {
                      loginData.login );
     } else  {
 
+// pd.printProjectTree ( ' >>>auto-1',projectData );
+
       if (!('_root' in auto_meta.context.job_register))
         auto_meta.context.job_register._root = jobEntry.jobId;
 
@@ -1121,11 +1124,6 @@ function addJobAuto ( jobEntry,jobClass )  {
       var ownerLoginData = loginData;
       if (projectData.desc.owner.login!=loginData.login)
         ownerLoginData = user.getUserLoginData ( projectData.desc.owner.login );
-
-      // get job tree node
-      //var pnode = pd.getProjectNode ( projectData,jobEntry.jobId );
-      //var ipath = path.parse ( pnode.icon );
-      //var pnode_json = JSON.stringify ( pnode );
 
       var tasks = [];
 
@@ -1151,7 +1149,6 @@ function addJobAuto ( jobEntry,jobClass )  {
 
               task.project          = projectName;
               task.id               = ++projectData.desc.jobCount;
-              // task.name             = task.name;
               task.autoRunName      = key;
               // task.harvestedTaskIds = dataBox.harvestedTaskIds;
               task.autoRunId        = jobClass.autoRunId;
@@ -1165,22 +1162,31 @@ function addJobAuto ( jobEntry,jobClass )  {
               task._clone_suggested ( task.parameters,auto_meta[key].parameters );
               tasks.push ( task );
 
-              var ipath = path.parse ( pnode.icon );
               var pnode_json = JSON.stringify ( pnode );
 
               var cnode = JSON.parse ( pnode_json );
               cnode.id       = pnode.id + '_' + key;
               cnode.parentId = pnode.id;
               cnode.dataId   = task.id;
-              // cnode.icon     = path.join ( ipath.dir,task.icon()+ipath.ext );
               cnode.icon     = cmd.image_path ( task.icon() );
-              cnode.text     = '<b>' + task.autoRunId + ':</b>[' +
-                               com_utils.padDigits(task.id,4) + '] ' + task.name;
+              // cnode.text     = '<b>' + task.autoRunId + ':</b>[' +
+              //                  com_utils.padDigits(task.id,4) + '] ' + task.name;
+              cnode.text     = prj.makeNodeName ( task,task.name );
               cnode.text0    = cnode.text;
+              cnode.state.selected = false;
               cnode.children = [];
               pnode.children.push ( cnode );
 
               auto_meta.context.job_register[key] = task.id;
+
+// console.log ( ' >>>>> jobEntry.jobId = ' + jobEntry.jobId );
+// console.log ( ' >>>>> pid            = ' + pid );
+// console.log ( ' >>>>> parentName     = ' + auto_meta[key].parentName );
+// console.log ( ' >>>>> pnode.dataId   = ' + pnode.dataId );
+// console.log ( ' >>>>> pnode.text     = ' + pnode.text   );
+// console.log ( ' >>>>> task.id        = ' + task.id );
+// console.log ( ' >>>>> cnode.text     = ' + cnode.text   );
+// console.log ( ' >>>>> jobCount       = ' + projectData.desc.jobCount );
 
             }
 
@@ -1188,6 +1194,7 @@ function addJobAuto ( jobEntry,jobClass )  {
         }
 
       prj.writeProjectData ( loginData,projectData,true );
+// pd.printProjectTree ( ' >>>auto-2',projectData );
 
       for (var i=0;i<tasks.length;i++)  {
 
@@ -1240,6 +1247,167 @@ function addJobAuto ( jobEntry,jobClass )  {
   }
 
 }
+
+
+/*
+function addJobAuto ( jobEntry,jobClass )  {
+var loginData   = jobEntry.loginData;
+var projectName = jobEntry.project;
+var pJobDir     = prj.getJobDirPath ( loginData,projectName,jobEntry.jobId );
+var auto_meta   = utils.readObject  ( path.join(pJobDir,'auto.meta') );
+
+  if (auto_meta)  {
+
+    var projectData = prj.readProjectData ( loginData,projectName );
+
+    if (!projectData)  {
+      log.error ( 20,'project data ' + projectName + ' not found, login ' +
+                     loginData.login );
+    } else  {
+
+      if (!('_root' in auto_meta.context.job_register))
+        auto_meta.context.job_register._root = jobEntry.jobId;
+
+      var shared_logins  = projectData.desc.owner.share;
+      var ownerLoginData = loginData;
+      if (projectData.desc.owner.login!=loginData.login)
+        ownerLoginData = user.getUserLoginData ( projectData.desc.owner.login );
+
+      // get job tree node
+      //var pnode = pd.getProjectNode ( projectData,jobEntry.jobId );
+      //var ipath = path.parse ( pnode.icon );
+      //var pnode_json = JSON.stringify ( pnode );
+
+      var tasks = [];
+
+      for (key in auto_meta)
+        if (key!='context')  {
+
+          var task = class_map.makeTaskClass ( auto_meta[key]._type );
+
+          if (!task)  {
+            log.error ( 21,'wrong task class name ' + auto_meta[key]._type );
+          } else  {
+
+            // place job tree node
+
+            pid = jobEntry.jobId;
+            if (auto_meta[key].parentName in auto_meta.context.job_register)
+              pid = auto_meta.context.job_register[auto_meta[key].parentName];
+
+            var pnode = pd.getProjectNode ( projectData,pid );
+
+console.log ( ' >>>>> jobEntry.jobId = ' + jobEntry.jobId );
+console.log ( ' >>>>> parentName     = ' + auto_meta[key].parentName );
+console.log ( ' >>>>> pid            = ' + pid );
+console.log ( ' >>>>> pnode.dataId   = ' + pnode.dataId );
+console.log ( ' >>>>> pnode.text     = ' + pnode.text   );
+console.log ( ' >>>>> jobCount       = ' + projectData.desc.jobCount );
+
+            if (pnode)  {
+
+              // form task
+
+              task.project          = projectName;
+              task.id               = ++projectData.desc.jobCount;
+              task.autoRunName      = key;
+              // task.harvestedTaskIds = dataBox.harvestedTaskIds;
+              task.autoRunId        = jobClass.autoRunId;
+              task.submitter        = loginData.login;
+              task.input_data.data  = auto_meta[key].data;
+              task.start_time       = Date.now();
+
+              for (var field in auto_meta[key].fields)
+                task[field] = auto_meta[key].fields[field];
+
+              task._clone_suggested ( task.parameters,auto_meta[key].parameters );
+
+              var jobDirPath = prj.getJobDirPath ( loginData,projectName,task.id );
+
+              if (!utils.mkDir(jobDirPath)) {
+                log.error ( 22,'cannot create job directory at ' + jobDirPath );
+              } else  {
+
+                // handle remarks and other pseudo-jobs here
+                var task_state = task.state;
+                if (task_state==task_t.job_code.new)  {
+                  task.state = task_t.job_code.running;
+                  task.job_dialog_data.panel = 'output';
+                }
+
+                var jobDataPath = prj.getJobDataPath ( loginData,projectName,task.id );
+
+                if (!utils.writeObject(jobDataPath,task))  {
+                  log.error ( 23,'cannot write job metadata at ' + jobDataPath );
+                } else if (task_state==task_t.job_code.new)  {
+
+                  utils.writeObject ( path.join(jobDirPath,"auto.context"),auto_meta.context );
+
+                  // create report directory
+                  utils.mkDir_anchor ( prj.getJobReportDirPath(loginData,projectName,task.id) );
+                  // create input directory (used only for sending data to NC)
+                  utils.mkDir_anchor ( prj.getJobInputDirPath(loginData,projectName,task.id) );
+                  // create output directory (used for hosting output data)
+                  utils.mkDir_anchor ( prj.getJobOutputDirPath(loginData,projectName,task.id) );
+                  // write out the self-updating html starting page, which will last
+                  // only until it gets replaced by real report's bootstrap
+                  utils.writeJobReportMessage ( jobDirPath,'<h1>Idle</h1>',true );
+
+                  //  make job tree entry
+
+                  tasks.push ( task );
+
+                  var pnode_json = JSON.stringify ( pnode );
+
+                  var cnode = JSON.parse ( pnode_json );
+                  cnode.id       = pnode.id + '_' + key;
+                  cnode.parentId = pnode.id;
+                  cnode.dataId   = task.id;
+                  cnode.icon     = cmd.image_path ( task.icon() );
+                  cnode.text     = '<b>' + task.autoRunId + ':</b>[' +
+                                   com_utils.padDigits(task.id,4) + '] ' + task.name;
+                  cnode.text0    = cnode.text;
+                  // cnode.state          = {};
+                  // cnode.state.opened   = true;           // is the node open
+                  // cnode.state.disabled = false;          // is the node disabled
+                  // cnode.state.selected = false;          // is the node selected
+                  // cnode.children       = [];             // array of strings or objects
+                  // cnode.li_attr        = {};             // attributes for the generated LI node
+                  // cnode.a_attr         = {};             // attributes for the generated A
+                  cnode.state.selected = false;
+                  cnode.children = [];
+                  pnode.children.push ( cnode );
+
+console.log ( ' >>>>> cnode.dataId   = ' + cnode.dataId );
+console.log ( ' >>>>> cnode.text     = ' + cnode.text   );
+
+                  auto_meta.context.job_register[key] = task.id;
+
+                }
+              }
+
+            }
+
+          }
+        }
+
+      prj.writeProjectData ( loginData,projectData,true );
+      pd.printProjectTree ( ' >>>auto',projectData );
+
+      // Run jobs
+
+      for (var i=0;i<tasks.length;i++)
+        _run_job ( loginData,tasks[i],
+                   crypto.randomBytes(20).toString('hex'),
+                   ownerLoginData,shared_logins, function(){} );
+
+    }
+
+  }
+
+}
+*/
+
 
 // ===========================================================================
 
@@ -1566,7 +1734,8 @@ function cloudRun ( server_request,server_response )  {
                 cnode.dataId   = task.id;
                 cnode.icon     = cmd.image_path ( task.icon() );
 
-                cnode.text     = '[' + com_utils.padDigits(task.id,4) + '] ' + task.name;
+                // cnode.text     = '[' + com_utils.padDigits(task.id,4) + '] ' + task.name;
+                cnode.text     = prj.makeNodeName ( task,task.name );
                 cnode.text0    = cnode.text;
                 cnode.children = [];
                 pnode.children.push ( cnode );

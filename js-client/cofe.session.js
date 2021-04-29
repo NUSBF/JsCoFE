@@ -119,13 +119,7 @@ function checkAnnouncement()  {
           new MessageBox ( 'Announcement','<div style="width:500px;">' +
                                           rdata.data.message + '</div>' );
       }
-      if (rdata.data.tips)  {
-        try {
-          __tips = JSON.parse ( rdata.data.tips );
-        } catch (e)  {
-          __tips = null;
-        }
-      }
+      __tips = rdata.data.tips;  // may be null
       return true;
     },
     function(){}, // always do nothing

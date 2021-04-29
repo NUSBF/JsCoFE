@@ -34,3 +34,5 @@ With Coot, the situation is much worse. If Coot Task fails (for example, due to 
 After successful recovery, the failed Coot Task may be deleted in order to regain your disk space in CCP4 Cloud and keep your Project tidy.
 
 Happy Cooting!
+
+:doc:`All CCP4 Cloud tips <jscofe_tips>` 

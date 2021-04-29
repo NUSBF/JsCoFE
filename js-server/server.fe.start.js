@@ -42,6 +42,7 @@ var log = require('./server.log').newLog(0);
 // ==========================================================================
 
 var ncrash = 0;
+var tipNo  = 0;
 
 function start ( callback_func )  {
 
@@ -182,8 +183,10 @@ function start ( callback_func )  {
         case cmd.fe_command.checkAnnouncement :
             var rdata = {
               message : utils.readString ( path.join('message_templates','announcement.html') ),
-              tips    : utils.readString ( path.join('manuals','tips.json') )
+              tips    : utils.readObject ( path.join('manuals','tips.json') )
             }
+            if (rdata.tips)
+              rdata.tips.tipNo = tipNo++;
             if ((!rdata.message) || rdata.message.startsWith('!#off'))
               rdata.message = '';
             cmd.sendResponse ( server_response,cmd.fe_retcode.ok,'',rdata );

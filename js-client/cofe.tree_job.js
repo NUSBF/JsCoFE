@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    14.04.21   <--  Date of Last Modification.
+ *    29.04.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -174,7 +174,7 @@ JobTree.prototype.__compare_node = function ( node0,node1 )  {
   var diff = [];
   if (!this.compare(node2))
     diff = [node2.dataId];
-  for (var i=0;(i<node1.length) && diff;i++)  {
+  for (var i=0;(i<node1.children.length) && diff;i++)  {
     var df = this.__compare_node ( node1.children[i],node2.children[i] );
     if (df)  diff = diff.concat ( df );
        else  diff = null;
@@ -248,6 +248,8 @@ JobTree.prototype.readProjectData = function ( page_title,
         tree.projectData.desc.dateLastUsed = getDateString();
         tree.projectData.desc.autorun = false;
 
+//printProjectTree ( ' >>>getProjectData',tree.projectData );
+
         var author = tree.projectData.desc.owner.login;
         if ('author' in tree.projectData.desc.owner)
           author = tree.projectData.desc.owner.author;
@@ -266,7 +268,9 @@ JobTree.prototype.readProjectData = function ( page_title,
           // enforce title of root node just in case it was renamed
           tree.projectData.tree[0].text = root_title;
 
-          tree.setNodes ( tree.projectData.tree );
+          //tree.setNodes ( tree.projectData.tree );
+          tree.setNodes ( data.meta.tree );
+
           var t_map = {};
           for (var i=0;i<data.tasks_add.length;i++)
             t_map[data.tasks_add[i].id] = data.tasks_add[i];
@@ -283,6 +287,7 @@ JobTree.prototype.readProjectData = function ( page_title,
                 tree.run_map [dataId] = key;
                 if (tree.task_map[key].autoRunId)
                   tree.projectData.desc.autorun = true;
+                tree.setNodeName ( key,false );
                 tree.node_map[key].setCustomIconVisible ( true );
               } else  {
                 tree.setNodeName ( key,false );
@@ -307,6 +312,8 @@ JobTree.prototype.readProjectData = function ( page_title,
         var rdata = {};
         rdata.pdesc = tree.projectData.desc;
         tree.emitSignal ( cofe_signals.rationUpdated,rdata );
+
+// printProjectTree ( ' >>>getProjectData-4',tree.projectData );
 
       }
 
@@ -558,11 +565,15 @@ var sel_tasks = [];
   for (var i=0;i<sel_lst.length;i++)
     if (sel_lst[i] in this.task_map)
       sel_tasks.push ( this.task_map[sel_lst[i]] );
+    else if ((sel_lst[i] in this.node_map) && (!this.node_map[sel_lst[i]].parentId))
+      sel_tasks.push ( {id:-1} );  // root selected
   if (sel_tasks.length<=0)  {
     var task = this.getSelectedTask();
     if (task)
       sel_tasks.push ( task );
   }
+// for (var i=0;i<sel_tasks.length;i++)
+//   console.log ( ' >>>> selected taskId=' + sel_tasks[i].id );
   return sel_tasks;
 }
 
@@ -576,9 +587,17 @@ var nodeId = this.getTaskNodeId ( task.id );
 JobTree.prototype.selectTasks = function ( task_lst )  {
   var single = true;
   for (var i=task_lst.length-1;i>=0;i--)  {
-    var nodeId = this.getTaskNodeId ( task_lst[i].id );
-    if (nodeId && this.selectNodeById(nodeId,single))
+    var node = null;
+    if (task_lst[i].id>=0)  {
+      nodeId = this.getTaskNodeId ( task_lst[i].id );
+      if (nodeId && this.selectNodeById(nodeId,single))
+        single = false;
+    } else  {
+      // root selected
+      this.selectNodeById ( this.root_nodes[0].id,single );
       single = false;
+    }
+// console.log ( ' >>>>> selTaskId=' + task_lst[i].id + '  single=' + single  );
   }
 }
 
@@ -657,6 +676,7 @@ JobTree.prototype.saveProjectData = function ( tasks_add,tasks_del,update_bool,
     data.tasks_add = tasks_add;   // array
     data.tasks_del = tasks_del;   // array
     data.update    = update_bool; // forces update of shared projects
+// printProjectTree ( ' >>>saveProjectData',this.projectData );
     (function(tree){
       serverRequest ( fe_reqtype.saveProjectData,data,'Project',
         function(rdata){
@@ -889,7 +909,7 @@ JobTree.prototype._add_job = function ( insert_bool,task,dataBox,
       tree.saveProjectData ( [task],[],true, function(rdata){
 //        if ((!tree.isShared()) || tree.checkReload(tree,rdata,'add the job'))  {
         if (tree.checkReload(tree,rdata,'add the job'))  {
-          task.id     = rdata.jobCount[0];
+          task.id     = rdata.jobIds[0];
           node.dataId = task.id;
           tree.projectData.desc.jobCount = task.id;
           tree.setText ( node,tree.makeNodeName(task) );
@@ -1818,7 +1838,7 @@ JobTree.prototype.cloneJob = function ( cloneMode,parent_page,onAdd_func )  {
       (function(tree){
         tree.saveProjectData ( [task],[],true, function(rdata){
           if (tree.checkReload(tree,rdata,'add the job'))  {
-            task.id     = rdata.jobCount[0];
+            task.id     = rdata.jobIds[0];
             node.dataId = task.id;
             tree.projectData.desc.jobCount = task.id;
             tree.setText ( node,tree.makeNodeName(task) );

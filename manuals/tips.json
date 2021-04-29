@@ -15,6 +15,16 @@
       "title"   : "Project Remarks",
       "doc"     : "manuals/html-userguide",
       "link"    : "jscofe_tips.remarks.html"
+    },{
+      "summary" : "Did you know that Projects may be shared between users? See <a>how</a>.",
+      "title"   : "Project Sharing",
+      "doc"     : "manuals/html-userguide",
+      "link"    : "jscofe_tips.sharing.html"
+    },{
+      "summary" : "Did you know that you can save a click by login straight into your last Project? See <a>how</a>.",
+      "title"   : "Login in Project",
+      "doc"     : "manuals/html-userguide",
+      "link"    : "jscofe_tips.login_project.html"
     }
   ]
 }

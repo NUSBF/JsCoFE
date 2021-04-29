@@ -140,20 +140,6 @@ class WFlowAMR(import_task.Import):
         if len(ilist)>0:
             summary_line += ", ".join(ilist) + "; "
 
-        # less parameters - less headache user have
-        # mr_engine = self.getParameter ( self.task.parameters.MR_ENGINE )
-        # mb_engine = self.getParameter ( self.task.parameters.MB_ENGINE )
-        #
-        # if mr_engine=="mrbump":
-        #     self.putMessage ( "Automatic MR solver: <b>MrBump</b>" )
-        # else:
-        #     self.putMessage ( "Automatic MR solver: <b>MoRDa</b>" )
-        #
-        # if mb_engine=="ccp4build":
-        #     self.putMessage ( "Automatic model builder: <b>CCP4Build</b>" )
-        # else:
-        #     self.putMessage ( "Automatic model builder: <b>Buccaneer</b>" )
-
         self.flush()
 
         have_results = True
@@ -179,6 +165,9 @@ class WFlowAMR(import_task.Import):
         self.generic_parser_summary["import_autorun"] = {
           "summary_line" : summary_line
         }
+
+        # import time
+        # time.sleep ( 1 )
 
         # close execution logs and quit
         self.success ( have_results )

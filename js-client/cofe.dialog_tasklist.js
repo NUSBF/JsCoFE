@@ -327,7 +327,7 @@ var r = 0;  // grid row
   grid.setLabel ( 'Each workflow will run a series of tasks, see details ' +
                   '<a href="javascript:launchHelpBox(\'Automatic Workflows\',' +
                   '\'' + __user_guide_base_url +
-                  'jscofe_workflows.html\',null,10)">here</a>.<hr/>',r++,0,1,3 )
+                  'jscofe_workflows.html\',null,10)">here</a>.',r++,0,1,3 )
       .setFontSize('90%').setFontItalic(true);
   grid.setLabel ( '&nbsp;',r++,0,1,3 ).setFontSize('40%');
 
@@ -339,14 +339,14 @@ var r = 0;  // grid row
   //   ccp4go_autoMR.inputMode = 'root'; // force 'at root mode' for the task
 
   var task_list = [
+    "Workflows for starting a Project",
     new TaskWFlowAMR(),
     new TaskWFlowAEP(),
+    "Workflows for using within a Project",
     new TaskWFlowREL()
   ];
 
   for (var i=0;i<task_list.length;i++)  {
-    if (this.dataBox.isEmpty() && (task_list[i].file_select.length>0))
-      task_list[i].inputMode = 'root'; // force 'at root mode' for the task
     if (typeof task_list[i] === 'string' || task_list[i] instanceof String) {
       grid.setLabel ( '&nbsp;',r++,0,1,3 ).setHeight_px(4);
       grid.setLabel ( '<hr/>',r,0,1,1 );
@@ -356,8 +356,12 @@ var r = 0;  // grid row
       grid1.setLabel ( '<hr/>',0,1,1,1 );
       grid1.setCellSize ( '10%','8px',0,0 );
       grid1.setCellSize ( '90%','8px',0,1 );
-    } else if (this.setTask(task_list[i],grid,r,true))
+    } else {
+      if (this.dataBox.isEmpty() && (task_list[i].file_select.length>0))
+        task_list[i].inputMode = 'root'; // force 'at root mode' for the task
+      if (this.setTask(task_list[i],grid,r,true))
       r++;
+    }
   }
 
   return r;  // indicates whether the tab is empty or not

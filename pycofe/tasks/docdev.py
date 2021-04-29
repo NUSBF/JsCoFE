@@ -62,7 +62,7 @@ class DocDev(basic.TaskDriver):
             copytasks = "\nmv tasks/* .\nrm -rf tasks"
         elif doctype=="userguide":
             self.putMessage ( "<h3>Generating User Guide</h3>" )
-            #copytasks = "\nmv tasks/* .\nrm -rf tasks"
+            copytasks = "\nmv tips/* .\nrm -rf tips"
 
         #self.putMessage ( os.path.realpath ( os.path.dirname ( __file__ ) ) )
         #self.putMessage ( self.jscofe_dir )

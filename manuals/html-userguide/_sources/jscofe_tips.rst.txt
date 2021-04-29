@@ -8,4 +8,6 @@ Tips and Tricks
     jscofe_tips.coot_crash
     jscofe_tips.task_dock
     jscofe_tips.remarks
+    jscofe_tips.sharing
+    jscofe_tips.login_project
 
