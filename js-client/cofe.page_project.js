@@ -326,7 +326,7 @@ function ProjectPage ( sceneId )  {
     }
 
     if (!$(open_btn.element).button('option','disabled'))  {
-      items.runJobItem = { // The "Open job" menu item
+      items.openJobItem = { // The "Open job" menu item
         label : "Open job dialog",
         icon  : image_path('openjob'),
         action: openJob

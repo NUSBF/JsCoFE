@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    15.04.21   <--  Date of Last Modification.
+ *    29.04.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -194,6 +194,9 @@ function writeProjectData ( loginData,projectData,putTimeStamp )  {
     projectData.desc.timestamp = Date.now();
   utils.writeObject ( getProjectDescPath(loginData,projectData.desc.name),
                       projectData.desc );
+
+// pd.printProjectTree ( ' >>>write_project_data',projectData );
+
   return utils.writeObject ( getProjectDataPath(loginData,projectData.desc.name),
                              projectData );
 }
@@ -288,6 +291,7 @@ function readProjectData ( loginData,projectName )  {
   if (projectData)  {
     if (checkProjectData(projectData,loginData))
       writeProjectData ( loginData,projectData,true );
+// pd.printProjectTree ( ' >>>read_project_data',projectData );
   }
   return projectData;
 }
@@ -1083,12 +1087,19 @@ function checkTimestamps ( loginData,projectDesc )  {
 //   return node;
 // }
 
+function makeNodeName ( task,title )  {
+var text = '[';
+  if (task.autoRunId)
+    text = '<b>' + task.autoRunId + ':</b>[';
+  text += com_utils.padDigits(task.id,4) + '] ' + title;
+  return text;
+}
 
 function saveProjectData ( loginData,data )  {
-  var response    = null;
-  var projectData = data.meta;
-  var projectDesc = projectData.desc;
-  var projectName = projectDesc.name;
+var response    = null;
+var projectData = data.meta;
+var projectDesc = projectData.desc;
+var projectName = projectDesc.name;
 
   // Check timestamps for shared projects
   // var rdata = checkTimestamps ( loginData,projectDesc );
@@ -1099,6 +1110,11 @@ function saveProjectData ( loginData,data )  {
                      //  1: reload is needed but current operation may continue
                      //  2: reload is mandatory, current operation must terminate
   rdata.pdesc  = null;
+  rdata.jobIds = [];
+  for (var i=0;i<data.tasks_add.length;i++)
+    rdata.jobIds.push ( data.tasks_add[i].id );  // this will be returned to
+                                                 // client modified or not
+
 //  commenting this out is essential for re-using projects in the cloudrun framework
 //  if ((projectDesc.owner.share.length>0) || projectDesc.autorun)  {  // the project is shared
     rdata.pdesc = readProjectDesc ( loginData,projectDesc.name );
@@ -1117,17 +1133,55 @@ function saveProjectData ( loginData,data )  {
             if (!pd.getProjectNode(pData,hids[j]))
               rdata.reload = 2;
           if (rdata.reload==1)  {
-            // check that the parent node is there in pData
+
+            // Check that suggested new task id does not clash with what is
+            // already there in the project
+            var tnode = pd.getProjectNode ( pData,data.tasks_add[i].id );
+            if (tnode)  {
+              // there is a clash, resolve
+              var node = pd.getProjectNode ( projectData,data.tasks_add[i].id );
+              if (node)  { // must be always so, but put "if" for server stability
+                rdata.jobIds[i] = ++pData.desc.jobCount;
+                data.tasks_add[i].id = pData.desc.jobCount;
+                node.dataId = data.tasks_add[i].id;
+                node.text   = makeNodeName ( data.tasks_add[i],
+                          node.text.substr(Math.max(0,node.text.indexOf(']'))) );
+                node.text0  = node.text;
+              } else
+                log.error ( 30,'no tree node found ' + loginData.login + ':' +
+                               projectName + ':' + data.tasks_add[i].id );
+            }
+
+            // Check that the parent node for added task is there in pData;
+            // if found than projects can be merged without general reload of
+            // the client.
+            // Find the whole branch in the submitted project
             var node_lst = pd.getProjectNodeBranch ( projectData,data.tasks_add[i].id );
-            if (node_lst.length>1)  {
-              var pnode = pd.getProjectNode ( pData,node_lst[1].dataId );
+
+            // and find parent task id (skip remarks and folders)
+            var pDataId = '';
+            for (var j=1;(j<node_lst.length) && (!pDataId);j++)
+              pDataId = node_lst[j].dataId;
+
+// var _msg = ' >>>>branch[' + data.tasks_add[i].id + ']:';
+// for (var j=0;j<node_lst.length;j++)
+//   _msg += ' "' + node_lst[j].dataId + '"';
+// console.log ( _msg );
+
+            if (pDataId)  {
+              var pnode = pd.getProjectNode ( pData,pDataId );
               if (pnode)  // node found, copy the added node over
                     pnode.children.push ( node_lst[0] );
               else  rdata.reload = 2;
-            } else
+            } else if (node_lst.length>1)  {
+              // task to be added at root, always allow, may ba a problem with remarks
+              pData.tree[0].children.push ( node_lst[0] );
+            } else // have to update, something's wrong -- should never be here
               rdata.reload = 2;
           }
         }
+
+// console.log ( ' >>>>reload='+rdata.reload );
 
         if (rdata.reload>1)  // no way, client must update the project
           return new cmd.Response ( cmd.fe_retcode.ok,'',rdata );
@@ -1170,21 +1224,24 @@ function saveProjectData ( loginData,data )  {
     var update_time_stamp = data.update || (data.tasks_del.length>0) ||
                                            (data.tasks_add.length>0);
 
-    rdata.jobCount = [];
-    for (var i=0;i<data.tasks_add.length;i++)  {
-      projectData.desc.jobCount++;
-      rdata.jobCount.push ( projectData.desc.jobCount );
-      var node = pd.getProjectNode ( projectData,data.tasks_add[i].id );
-      if (node)  {
-        data.tasks_add[i].id = projectData.desc.jobCount;
-        node.dataId = data.tasks_add[i].id;
-        node.text   = '[' + com_utils.padDigits(data.tasks_add[i].id,4) +
-                            node.text.substr(Math.max(0,node.text.indexOf(']')));
-        node.text0  = node.text;
-      } else
-        log.error ( 30,'no tree node found ' + loginData.login + ':' +
-                       projectName + ':' + data.tasks_add[i].id );
-    }
+    for (var i=0;i<data.tasks_add.length;i++)
+      projectData.desc.jobCount = Math.max (
+                              projectData.desc.jobCount,data.tasks_add[i].id );
+
+    // for (var i=0;i<data.tasks_add.length;i++)  {
+    //   projectData.desc.jobCount++;
+    //   rdata.jobCount.push ( projectData.desc.jobCount );
+    //   var node = pd.getProjectNode ( projectData,data.tasks_add[i].id );
+    //   if (node)  {
+    //     data.tasks_add[i].id = projectData.desc.jobCount;
+    //     node.dataId = data.tasks_add[i].id;
+    //     node.text   = '[' + com_utils.padDigits(data.tasks_add[i].id,4) +
+    //                         node.text.substr(Math.max(0,node.text.indexOf(']')));
+    //     node.text0  = node.text;
+    //   } else
+    //     log.error ( 31,'no tree node found ' + loginData.login + ':' +
+    //                    projectName + ':' + data.tasks_add[i].id );
+    // }
 
     if (writeProjectData(loginData,projectData,update_time_stamp))  {
 
@@ -1273,6 +1330,8 @@ function saveProjectData ( loginData,data )  {
                       'please investigate.' )
               );
         }
+
+// pd.printProjectTree ( ' >>>saveProjectData--addJob',projectData );
 
       }
 
@@ -1718,9 +1777,9 @@ function finishProjectImport ( loginData,data )  {
 // ===========================================================================
 
 function saveJobData ( loginData,data )  {
-  var response    = null;
-  var projectName = data.meta.project;
-  var jobId       = data.meta.id;
+var response    = null;
+var projectName = data.meta.project;
+var jobId       = data.meta.id;
 
   if (data.update_tree)  {
     var pData = readProjectData ( loginData,projectName );
@@ -1809,6 +1868,7 @@ module.exports.finishFailedJobExport  = finishFailedJobExport;
 module.exports.getProjectData         = getProjectData;
 // module.exports.advanceJobCounter      = advanceJobCounter;
 module.exports.makeNewProject         = makeNewProject;
+module.exports.makeNodeName           = makeNodeName;
 module.exports.saveProjectData        = saveProjectData;
 module.exports.shareProject           = shareProject;
 module.exports.renameProject          = renameProject;

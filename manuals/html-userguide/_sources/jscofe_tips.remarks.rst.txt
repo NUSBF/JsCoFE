@@ -2,24 +2,25 @@
 Using Remarks
 =============
 
-Remarks are a great tool for keeping your Projects annotated. Adding a remark is easy, just click on the Remark button in the vertical toolbar in the Project Page, or right-click on job to be annotated and choose "Add remark" from the drop-down menu.
+Remarks are a great tool for keeping your Projects annotated, which helps understanding them after a period of time. Adding a remark is easy, just click on the Remark button in the vertical toolbar in the Project Page, or right-click on job to be annotated and choose "Add remark" from the drop-down menu.
 
 Remarks may look like jobs in the Project Tree, but there are a few differences to bear in mind about them:
 
 - remarks are transparent for the data flows in the Project Tree, they take no data and produce no data 
 - it is possible to add a task to remark; however, the task will be actually added to job annotated by the remark 
 - attemtpt to add a task to job annotated by a remark will result in adding the task to the remark; there is no difference between adding a task to job or to remark annotating that job 
-- it is not possible to add a remark after another remark
+- it is not possible to add a remark to another remark
 - it is possible to add a remark to a job in the middle of already developed Project Tree
 - remarks may deleted just as if the were jobs; however, in difference of deleting jobs, deleting a remark *does not* cause deletion of all the descending branch of the Project Tree
 - not only remark title, displayed in the Project Tree, but also remark's content, may be changed or corrected at any time
 - remark's colour may be changed: open Remark Dialog by double-clicking on the remark, and click on Remark icon in the Dialog to choose the colour 
-- remarks may be cloned, and this is the only way to attach more than one remark to a job. This feature is useful for the annotation of branching Projects as in the following picture (remark 0009 obtained by cloning remark 0005):
+- remarks may be cloned, and this is the only way to attach more than one remark to a job. This feature is useful for the annotation of branching Projects as in the following picture (remark 0009 obtained by cloning and editing remark 0005):
 
      .. image:: images/jscofe_tips.remarks.png
          :scale: 50 %
          :align: center 
 
 
+:doc:`All CCP4 Cloud tips <jscofe_tips>` 
 
  

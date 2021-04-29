@@ -1,0 +1,15 @@
+====================================
+Login in Project or List of Projects
+====================================
+
+By default, after login procedure you find yourself in your List of Projects ("My Projects"), from where you'd typically go to the Project that you were developing the day before.
+
+Instead, you may configure CCP4 Cloud such that it brings you to your last Project upon login automatically:
+
+- go to "My Account" (using Main Menu button in the top-left corner of the screen)
+- choose "last project" in the "Preferences/On login"
+- type your password in "My Account" settings and push buton "Save changes"
+
+You can restore default behaviour at any time using the same procedure.
+
+:doc:`All CCP4 Cloud tips <jscofe_tips>` 

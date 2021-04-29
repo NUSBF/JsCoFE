@@ -57,7 +57,10 @@ function LoginPage ( sceneId )  {
     this.grid.setCellSize          ( '10%','',1,1,1,1 );
     this.grid.setCellSize          ( '45%','',1,2,1,1 );
 
-    var tipNo = round(Date.now()/1000,0) % __tips.tips.length;
+    var tipNo = 0;
+    if ('tipNo' in __tips)  tipNo = __tips.tipNo;
+                      else  tipNo = round(Date.now()/5000,0);
+    tipNo = tipNo % __tips.tips.length;
     var tipLink = '<a href="javascript:' +
                       'launchHelpBox(\'' + __tips.tips[tipNo].title + '\',' +
                                     '\'' + __tips.tips[tipNo].doc   + '/'   +

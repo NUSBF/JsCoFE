@@ -17,3 +17,5 @@ The dock may be configured to your personal choice and liking. Adding tasks to t
          :align: center 
 
 Likewise, a task can be removed from the Dock by right-clicking on its icon (in the Dock). Even more, you can re-order tasks in dock by merely dragging icons with your mouse.
+
+:doc:`All CCP4 Cloud tips <jscofe_tips>` 

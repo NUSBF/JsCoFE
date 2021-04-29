@@ -227,6 +227,20 @@ if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
 
 }
 
+function __print_project_tree ( node,indent )  {
+  console.log ( indent + '[' + node.dataId + '] ' + node.text );
+  for (var i=0;i<node.children.length;i++)
+    __print_project_tree ( node.children[i],'--' + indent );
+}
+
+function printProjectTree ( legend,projectData )  {
+  console.log ( ' \n' + legend + '\njobCount=' + projectData.desc.jobCount );
+  for (var i=0;i<projectData.tree.length;i++)
+    __print_project_tree ( projectData.tree[i],'--' );
+  console.log ( ' ' );
+}
+
+
 // ===========================================================================
 
 function ProjectShare()  {
@@ -273,6 +287,7 @@ if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
   module.exports.ProjectList          = ProjectList;
   module.exports.ProjectData          = ProjectData;
   module.exports.getProjectNode       = getProjectNode;
+  module.exports.printProjectTree     = printProjectTree;
   module.exports.getProjectNodeBranch = getProjectNodeBranch;
   module.exports.ProjectShare         = ProjectShare;
   module.exports.DockData             = DockData;
