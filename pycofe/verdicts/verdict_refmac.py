@@ -499,7 +499,8 @@ def calculate ( meta ) :
                       "or building missing parts of the model. In the second case, if your model is " +\
                       "straight after molecular replacement, please try running 50-200 refinement cycles"
         # questionable, should check for MR job upstream (distinguish between incomplete solution and full badly fitted case)
-        suggestedParameters['NCYC'] = '50'
+        if ncyc < 50:
+            suggestedParameters['NCYC'] = '50'
         if res > 3.0:
             bottomline += " with jelly-body restraints on"
             if not jellyBody:
@@ -558,9 +559,10 @@ def calculate ( meta ) :
                       "(%0.4f, while optimal range is between 0.01 and 0.02). " % rmsBondDistance +\
                       "We recommend to tighten up the geometry by reducing the " +\
                       "'Overall data-geometry weight' parameter (for example, to %0.4f).<p>" % newWeight
-        suggestedParameters['WAUTO_YES'] = 'no'
         if newWeight != 0.0:
+            suggestedParameters['WAUTO_YES'] = 'no'
             suggestedParameters['WAUTO_VAL'] = str(newWeight)
+
     if rmsBondDistance < 0.01:
         suggestChangingGeomWeight = True
         suggestIncreasingGeomWeight = True
@@ -576,8 +578,8 @@ def calculate ( meta ) :
                       "(%0.4f, while optimal range is between 0.01 and 0.02). " % rmsBondDistance +\
                       "We recommend to loose the geometry by increasing the " +\
                       "'Overall data-geometry weight' parameter (for example, to %0.4f).<p>" % newWeight
-        suggestedParameters['WAUTO_YES'] = 'no'
         if newWeight != 0.0:
+            suggestedParameters['WAUTO_YES'] = 'no'
             suggestedParameters['WAUTO_VAL'] = str(newWeight)
 
 
