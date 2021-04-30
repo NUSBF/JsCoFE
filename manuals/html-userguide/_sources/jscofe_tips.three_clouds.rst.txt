@@ -1,0 +1,87 @@
+===========================
+Working modes of CCP4 Cloud
+===========================
+
+At times you may think that something is wrong and you may be working with at least 3 different CCP4 Clouds. This is partially true, and if you feel confused, read this article.
+
+Much of this confusion comes from the fact that CCP4 Cloud is designed to run "somewhere" in the Web, and also, completely or partially, on your device that you use for surfing the web, provided that that device: 
+
+    - is not a mobile phone or tablet
+    - has CCP4 version 7.1 or higher installed 
+
+Therefore, there are 3 working modes of CCP4 Cloud:
+
+    #. Web-only 
+    #. Remote  (partially in the Web and partically on your computer)
+    #. Desktop (only on your computer)
+
+Why such a complication and what are the differences between these modes? Two main reasons:
+
+    a) Because not all CCP4 applications can be run on remote server "somewhere" in the Web. While this may, potentially, change in future, but at the time being we have no choice other than to use your own machine for running such applications. Examples include:
+
+        - Coot (interactive model building)
+        - All graphical interfaces to data processing packages: iMosflm, DUI, XDSGui 
+        - CCP4 MG (molecular graphics viewer)
+        - ViewHKL (reflection data viewer)
+        - Arp/wArp (automatic model builder) 
+
+    b) Because sending data to the Web may be disapproved by IT security protocols in your organisation, so that you must be sure that all software is running on your machine(s) and data does not leave your place of work.
+
+**CCP4 Cloud modes summary**
+
+.. list-table:: 
+   :widths: 25 25 25 25
+   :header-rows: 1
+
+   * - Mode
+     - Web-only
+     - Remote
+     - Desktop
+   * - Compatible device
+     - Windows, Mac, Linux, iOS, Android
+     - Windows, Mac, Linux
+     - Windows, Mac, Linux
+   * - CCP4 setup required
+     - No
+     - Yes
+     - Yes
+   * - How to connect
+     - Using direct web-link (*e.g.*, https://cloud.ccp4.ac.uk) in browser
+     - Using *Cloud-remote* CCP4 icon in CCP4 Setup
+     - Using *Cloud-desktop* CCP4 icon in CCP4 Setup
+   * - User account required
+     - Yes
+     - Yes
+     - No
+   * - Functionality
+     - Some programs excluded (Coot and some others)
+     - Full
+     - Full
+   * - CPU and disk usage
+     - Rationed
+     - Rationed
+     - Limited only by user device capacity
+   * - Where computations are done
+     - In the Web
+     - In the Web and on user's device
+     - Only on user's device
+   * - Where projects and data are stored
+     - In the Web
+     - In the Web
+     - Only on user's device
+
+
+.. Note::
+    *Web-only* and *Remote* modes share same projects, while the *Desktop* mode has own set of projects. Desktop projects are not synced with Web-only/Remote projects. The only way to exchange projects between *Desktop* and *Web-only/Remote* modes is through the explicit Export/Import procedure.
+
+**In brief** 
+
+- if you work from a tablet or smartphone, your only choice is the **Web-only** mode. You won't be able to use Coot and interactive data processing 
+- if you work from an ordinary laptop/computer but are not allowed to transmit your data to remote web-sites, your only choice is the **Desktop** mode. All computations will be done on your computer and you may need a decently powerful device. 
+- in all other cases, the recommended choice is the **Remote* mode. You will need only a budget-category computer to run all CCP4 programs, including the most demanding ones, connecting and disconnecting from CCP4 Cloud as frequently as you wish for doing other tasks.
+
+.. Note::
+    The *Desktop* mode may be conveniently used for collecting projects finished in *Web-only*/*Remote* modes. After transferring projects to the *Desktop* mode, they may be deleted in *Web-only/Remote* area in order to release disk space for new tasks.
+
+
+:doc:`All CCP4 Cloud tips <jscofe_tips>` 

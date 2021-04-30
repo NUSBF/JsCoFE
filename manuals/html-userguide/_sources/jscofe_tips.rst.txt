@@ -10,4 +10,5 @@ Tips and Tricks
     jscofe_tips.remarks
     jscofe_tips.sharing
     jscofe_tips.login_project
+    jscofe_tips.three_clouds
 
