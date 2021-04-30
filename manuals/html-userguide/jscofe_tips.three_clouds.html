@@ -1,0 +1,171 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>7.6. Working modes of CCP4 Cloud &#8212; CCP4 Cloud 1.6 documentation</title>
+    <link rel="stylesheet" href="_static/haiku.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <script type="text/javascript" src="_static/contentui.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="8. Questions and Answers" href="jscofe_QnA.html" />
+    <link rel="prev" title="7.5. Login in Project or List of Projects" href="jscofe_tips.login_project.html" /> 
+  </head><body>
+      <div class="header" role="banner"><h1 class="heading"><a href="index.html">
+          <span>CCP4 Cloud 1.6 documentation</span></a></h1>
+        <h2 class="heading"><span>7.6. Working modes of CCP4 Cloud</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        «&#160;&#160;<a href="jscofe_tips.login_project.html">7.5. Login in Project or List of Projects</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="jscofe_QnA.html">8. Questions and Answers</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content">
+        
+        
+  <div class="section" id="working-modes-of-ccp4-cloud">
+<h1>7.6. Working modes of CCP4 Cloud<a class="headerlink" href="#working-modes-of-ccp4-cloud" title="Permalink to this headline">¶</a></h1>
+<p>At times you may think that something is wrong and you may be working with at least 3 different CCP4 Clouds. This is partially true, and if you feel confused, read this article.</p>
+<p>Much of this confusion comes from the fact that CCP4 Cloud is designed to run “somewhere” in the Web, and also, completely or partially, on your device that you use for surfing the web, provided that that device:</p>
+<blockquote>
+<div><ul class="simple">
+<li>is not a mobile phone or tablet</li>
+<li>has CCP4 version 7.1 or higher installed</li>
+</ul>
+</div></blockquote>
+<p>Therefore, there are 3 working modes of CCP4 Cloud:</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li>Web-only</li>
+<li>Remote  (partially in the Web and partically on your computer)</li>
+<li>Desktop (only on your computer)</li>
+</ol>
+</div></blockquote>
+<p>Why such a complication and what are the differences between these modes? Two main reasons:</p>
+<blockquote>
+<div><ol class="loweralpha">
+<li><p class="first">Because not all CCP4 applications can be run on remote server “somewhere” in the Web. While this may, potentially, change in future, but at the time being we have no choice other than to use your own machine for running such applications. Examples include:</p>
+<blockquote>
+<div><ul class="simple">
+<li>Coot (interactive model building)</li>
+<li>All graphical interfaces to data processing packages: iMosflm, DUI, XDSGui</li>
+<li>CCP4 MG (molecular graphics viewer)</li>
+<li>ViewHKL (reflection data viewer)</li>
+<li>Arp/wArp (automatic model builder)</li>
+</ul>
+</div></blockquote>
+</li>
+<li><p class="first">Because sending data to the Web may be disapproved by IT security protocols in your organisation, so that you must be sure that all software is running on your machine(s) and data does not leave your place of work.</p>
+</li>
+</ol>
+</div></blockquote>
+<p><strong>CCP4 Cloud modes summary</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="25%" />
+<col width="25%" />
+<col width="25%" />
+<col width="25%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Mode</th>
+<th class="head">Web-only</th>
+<th class="head">Remote</th>
+<th class="head">Desktop</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Compatible device</td>
+<td>Windows, Mac, Linux, iOS, Android</td>
+<td>Windows, Mac, Linux</td>
+<td>Windows, Mac, Linux</td>
+</tr>
+<tr class="row-odd"><td>CCP4 setup required</td>
+<td>No</td>
+<td>Yes</td>
+<td>Yes</td>
+</tr>
+<tr class="row-even"><td>How to connect</td>
+<td>Using direct web-link (<em>e.g.</em>, <a class="reference external" href="https://cloud.ccp4.ac.uk">https://cloud.ccp4.ac.uk</a>) in browser</td>
+<td>Using <em>Cloud-remote</em> CCP4 icon in CCP4 Setup</td>
+<td>Using <em>Cloud-desktop</em> CCP4 icon in CCP4 Setup</td>
+</tr>
+<tr class="row-odd"><td>User account required</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>No</td>
+</tr>
+<tr class="row-even"><td>Functionality</td>
+<td>Some programs excluded (Coot and some others)</td>
+<td>Full</td>
+<td>Full</td>
+</tr>
+<tr class="row-odd"><td>CPU and disk usage</td>
+<td>Rationed</td>
+<td>Rationed</td>
+<td>Limited only by user device capacity</td>
+</tr>
+<tr class="row-even"><td>Where computations are done</td>
+<td>In the Web</td>
+<td>In the Web and on user’s device</td>
+<td>Only on user’s device</td>
+</tr>
+<tr class="row-odd"><td>Where projects and data are stored</td>
+<td>In the Web</td>
+<td>In the Web</td>
+<td>Only on user’s device</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last"><em>Web-only</em> and <em>Remote</em> modes share same projects, while the <em>Desktop</em> mode has own set of projects. Desktop projects are not synced with Web-only/Remote projects. The only way to exchange projects between <em>Desktop</em> and <em>Web-only/Remote</em> modes is through the explicit Export/Import procedure.</p>
+</div>
+<p><strong>In brief</strong></p>
+<ul class="simple">
+<li>if you work from a tablet or smartphone, your only choice is the <strong>Web-only</strong> mode. You won’t be able to use Coot and interactive data processing</li>
+<li>if you work from an ordinary laptop/computer but are not allowed to transmit your data to remote web-sites, your only choice is the <strong>Desktop</strong> mode. All computations will be done on your computer and you may need a decently powerful device.</li>
+<li>in all other cases, the recommended choice is the <a href="#id1"><span class="problematic" id="id2">**</span></a>Remote* mode. You will need only a budget-category computer to run all CCP4 programs, including the most demanding ones, connecting and disconnecting from CCP4 Cloud as frequently as you wish for doing other tasks.</li>
+</ul>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The <em>Desktop</em> mode may be conveniently used for collecting projects finished in <em>Web-only</em>/<em>Remote</em> modes. After transferring projects to the <em>Desktop</em> mode, they may be deleted in <em>Web-only/Remote</em> area in order to release disk space for new tasks.</p>
+</div>
+<p><a class="reference internal" href="jscofe_tips.html"><span class="doc">All CCP4 Cloud tips</span></a></p>
+</div>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        «&#160;&#160;<a href="jscofe_tips.login_project.html">7.5. Login in Project or List of Projects</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="jscofe_QnA.html">8. Questions and Answers</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.5.
+    </div>
+  </body>
+</html>

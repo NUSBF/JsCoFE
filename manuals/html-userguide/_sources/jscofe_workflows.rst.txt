@@ -14,7 +14,7 @@ Not only the workflows can reduced chore, but they may also be used for better u
 Using Automatic Workflows
 -------------------------
 
-Automatic Workflow runs tasks as if it were a user of a shared project. If a workflow task fails or does not produced useable results, the follow-up task is not formed and *Project branch* terminates. Depending on the workflow logics, it may attempt another approach (*Project branch*) or stop.
+Automatic Workflows progress automatically, creating and running new tasks and branching as necessary. If a workflow task fails or does not produced useable results, the follow-up task is not formed and the corresponding *Project branch* terminates. Depending on the workflow logics, the algorithm attempt another approach (by starting another *Project branch*) or stop.
 
 A user can:
 

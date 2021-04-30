@@ -25,6 +25,11 @@
       "title"   : "Login in Project",
       "doc"     : "manuals/html-userguide",
       "link"    : "jscofe_tips.login_project.html"
+    },{
+      "summary" : "Do you know the 3 working modes of CCP4 Cloud and differences between them? Read <a>here</a>.",
+      "title"   : "Login in Project",
+      "doc"     : "manuals/html-userguide",
+      "link"    : "jscofe_tips.three_clouds.html"
     }
   ]
 }

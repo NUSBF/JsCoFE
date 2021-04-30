@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.03.21   <--  Date of Last Modification.
+ *    30.04.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -214,15 +214,22 @@ AdminPage.prototype.refresh = function()  {
           lines.push ( lines.shift() );
         }
         var nJobsToday = 0;
+        var usersToday = [];
         var today_template = new Date(Date.now()).toUTCString().split(' ');
         today_template = '[' + today_template[0] + ' ' + today_template[1] +
                          ' ' + today_template[2] + ' ' + today_template[3];
         for (var i=lines.length-1;i>=0;i--)
           if (('0'<=lines[i][0]) && (lines[i][0]<='9'))  {
-            if (lines[i].indexOf(today_template)>=0) nJobsToday++;
-                                                else break;
+            if (lines[i].indexOf(today_template)>=0) {
+              nJobsToday++;
+              var user = lines[i].split(' (')[0].split(' ').pop();
+              if (usersToday.indexOf(user)<0)
+                usersToday.push ( user );
+            } else
+              break;
           }
-        self.jobStats.setText ( '<pre>Jobs today: ' + nJobsToday + ' ' + '\n' +
+        self.jobStats.setText ( '<pre>Jobs today: total ' + nJobsToday + ' from ' +
+                                usersToday.length + ' users\n' +
                                 lines.reverse().join('\n') + '</pre>' );
 
         self.usageStats._url    = data.usageReportURL;

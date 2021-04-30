@@ -10,6 +10,6 @@ Instead, you may configure CCP4 Cloud such that it brings you to your last Proje
 - choose "last project" in the "Preferences/On login"
 - type your password in "My Account" settings and push buton "Save changes"
 
-You can restore default behaviour at any time using the same procedure.
+You can restore the default behaviour at any time using the same procedure.
 
 :doc:`All CCP4 Cloud tips <jscofe_tips>` 
