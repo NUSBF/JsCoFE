@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    03.05.21   <--  Date of Last Modification.
+#    04.05.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -233,10 +233,8 @@ class Arcimboldo(basic.TaskDriver):
         # 	custom_library = "/path/to/folder"	#user selected folder
 
 
-rotation_model_refinement = "On"	#Empty, On or Off #Switch Phaser GYRE option
-gimble = "On"						#Empty, On or Off #Switch Phaser GIMBLE option
-									# I think, the best way to implement this is with a checkbox that enables the
-									# variable, then, the user can select On or Off (True or False)
+        rotation_model_refinement = self.getParameter ( self.sec1.GYRE_SEL )
+        gimble = self.getParameter ( self.sec1.GIMBLE_SEL )
 
         #pdbout_path = "./best.pdb"
         #logfile     = "./arcimboldo_out.log"
@@ -252,16 +250,15 @@ gimble = "On"						#Empty, On or Off #Switch Phaser GIMBLE option
         f_bor.write('mtz_path = %s\n' % (self.mtzinpath) )
         f_bor.write('hkl_path = %s\n' % (self.input_hkl()) )
 
-        f_bor.write('molecular_weight = %10.2f\n' % (self.molecular_weight) )
-        f_bor.write('number_of_component = %d\n' % (self.number_of_component) )
-
-        f_bor.write('[ARCIMBOLDO]\n')
+        f_bor.write('[ARCIMBOLDO-BORGES]\n')
         f_bor.write('name_job = %s\n' % (self.arcimboldoDir()) )
         f_bor.write('force_core = %d\n' % (self.number_of_cpus) )
         f_bor.write('f_label = %s\n' % (self.f_label))
         f_bor.write('sigf_label = %s\n' % (self.sigf_label))
         #f_bor.write('i_label = %s\n' % (i_label))
         #f_bor.write('sigi_label = %s\n' % (sigi_label))
+        f_bor.write('molecular_weight = %10.2f\n' % (self.molecular_weight) )
+        f_bor.write('number_of_component = %d\n' % (self.number_of_component) )
 
 
         if borges_library ==  'CUSTOM':
@@ -271,12 +268,11 @@ gimble = "On"						#Empty, On or Off #Switch Phaser GIMBLE option
         	lib_path = os.path.join(ccp4_master_home,'BORGES_LIBS',borges_library.__str__())
         	f_bor.write('library_path = %s\n' % (lib_path))
 
-if rotation_model_refinement != "":
-	f_bor.write('rotation_model_refinement = %s\n' % ("both" if rotation_model_refinement == "On" else "no_gyre"))
+        if rotation_model_refinement != "auto":
+        	f_bor.write('rotation_model_refinement = %s\n' % ("both" if rotation_model_refinement == "On" else "no_gyre"))
 
-if gimble != "":
-	f_bor.write('gimble = %s\n' % ("True" if gimble == "On" else "False"))
-
+        if gimble != "auto":
+        	f_bor.write('gimble = %s\n' % ("True" if gimble == "On" else "False"))
 
         f_bor.write('[LOCAL]\n')
         f_bor.write('path_local_phaser = %s/bin/phaser\n' % (self.ccp4_home))
@@ -324,7 +320,13 @@ if gimble != "":
 
         if not os.path.isdir(self.arcimboldoDir()):
             os.mkdir ( self.arcimboldoDir() )
-        self.make_setup_lite()
+
+        run_module = "ARCIMBOLDO_LITE"
+        if self.task._type=="TaskArcimboldo":
+            self.make_setup_lite()
+        else:
+            run_module = "ARCIMBOLDO_BORGES"
+            self.make_setup_borges()
 
         with open(os.path.join(self.arcimboldoDir(),"setup.bor"),"r") as f:
             self.stdoutln (
@@ -350,7 +352,7 @@ if gimble != "":
         self.flush()
 
         # run arcimboldo
-        self.runApp ( "ARCIMBOLDO_LITE",
+        self.runApp ( run_module,
                       [os.path.join(self.arcimboldoDir(),"setup.bor")],
                       logType="Main" )
 
