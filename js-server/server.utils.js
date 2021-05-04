@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    18.03.21   <--  Date of Last Modification.
+ *    03.05.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -455,6 +455,29 @@ function cleanDirExt ( dir_path,fext )  {
 }
 
 
+function removeSymLinks ( dir_path )  {
+// removes all symbolic links recursively in the directory
+  var rc = true;
+  if (fileExists(dir_path))  {
+    fs.readdirSync(dir_path).forEach(function(file,index){
+      var curPath = path.join ( dir_path,file );
+      var stat = fs.lstatSync(curPath); // || fs.lstatSync(path);
+      if (stat.isDirectory()) { // recurse
+        removeSymLinks ( curPath );
+      } else if (stat && stat.isSymbolicLink())
+        try {
+          fs.unlinkSync ( curPath );
+        } catch (e)  {
+          log.error ( 88,'cannot remove symlink ' + curPath );
+          rc = false;
+        }
+    });
+  }
+  return rc;  // false if there were errors
+}
+
+
+
 function getDirectorySize ( dir_path )  {
   var size = 0.0;
   try {
@@ -819,6 +842,7 @@ module.exports.mkDir                 = mkDir;
 module.exports.mkDir_anchor          = mkDir_anchor;
 module.exports.cleanDir              = cleanDir;
 module.exports.cleanDirExt           = cleanDirExt;
+module.exports.removeSymLinks        = removeSymLinks;
 module.exports.removePath            = removePath;
 // module.exports.removeLockedPath      = removeLockedPath;
 module.exports.getDirectorySize      = getDirectorySize;

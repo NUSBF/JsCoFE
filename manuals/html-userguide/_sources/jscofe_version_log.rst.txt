@@ -20,6 +20,10 @@ CCP4 Cloud Version Log
 
     #. Introduced hot tips in front page
 
+    #. Fixed bug causing task running spinner to keep going after task was terminated for certain type of tasks
+
+    #. Multiple target sequences are allowed in ``MrBump`` auto-MR pipeline, as well as ``auto-MR`` and ``auto-EP`` workflows
+
     #. Documentation updates
 
 

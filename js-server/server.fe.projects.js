@@ -1186,7 +1186,8 @@ var projectName = projectDesc.name;
         if (rdata.reload>1)  // no way, client must update the project
           return new cmd.Response ( cmd.fe_retcode.ok,'',rdata );
 
-        projectData = pData;  // further on, will work on the actual Project
+        // further on, will work on the actual Project
+        projectData = pData;
 
       }
     }
@@ -1256,6 +1257,8 @@ var projectName = projectDesc.name;
       for (var i=0;i<data.tasks_del.length;i++)  {
         rj.killJob ( loginData,projectName,data.tasks_del[i][0] );
         utils.removePath ( getJobDirPath(loginData,projectName,data.tasks_del[i][0]) );
+        if (rdata.reload>0)  // in case reload==1, project tree contains non-deleted nodes
+          pd.deleteProjectNode ( projectData,data.tasks_del[i][0] );
       }
 
       // add job directories from the 'add' list

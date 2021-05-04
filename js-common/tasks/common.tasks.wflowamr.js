@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    27.04.21   <--  Date of Last Modification.
+ *    04.05.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -79,10 +79,10 @@ function TaskWFlowAMR()  {
       inputId     : 'seq',         // input Id for referencing input fields
       //customInput : 'stoichiometry-wauto', // lay custom fields below the dropdown
       version     : 0,             // minimum data version allowed
-      force       : 1,             // meaning choose, by default, 1 sequence if
+      force       : 10,            // meaning choose, by default, n<=1 sequences if
                                    // available; otherwise, 0 (== do not use) will
                                    // be selected
-      min         : 0,             // minimum acceptable number of data instances
+      min         : 1,             // minimum acceptable number of data instances
       max         : 10             // maximum acceptable number of data instances
     },{
       data_type   : {'DataLigand':[]},  // data type(s) and subtype(s)
@@ -92,7 +92,7 @@ function TaskWFlowAMR()  {
       min         : 0,             // minimum acceptable number of data instances
       max         : this.input_ligands.length // maximum acceptable number of data instances
     },{
-      // require brunching from data import, so no revision must be there
+      // request brunching from data import, so no revision must be there
       data_type   : {'DataRevision':[]}, // data type(s) and subtype(s)
       label       : 'Structure revision', // label for input dialog
       inputId     : 'revision', // input Id for referencing input fields

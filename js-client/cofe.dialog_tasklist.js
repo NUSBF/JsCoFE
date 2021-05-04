@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    23.04.21   <--  Date of Last Modification.
+ *    03.05.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -545,6 +545,7 @@ var row      = 0;
     'No-sequence methods',
     new TaskSimbad(),
     new TaskArcimboldo(),
+    // new TaskArcimboldoBorges(),
     'No-model methods',
     new TaskAmple ()
   ]);

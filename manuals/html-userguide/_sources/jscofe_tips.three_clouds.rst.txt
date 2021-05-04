@@ -78,7 +78,7 @@ Why such a complication and what are the differences between these modes? Two ma
 
 - if you work from a tablet or smartphone, your only choice is the **Web-only** mode. You won't be able to use Coot and interactive data processing 
 - if you work from an ordinary laptop/computer but are not allowed to transmit your data to remote web-sites, your only choice is the **Desktop** mode. All computations will be done on your computer and you may need a decently powerful device. 
-- in all other cases, the recommended choice is the **Remote* mode. You will need only a budget-category computer to run all CCP4 programs, including the most demanding ones, connecting and disconnecting from CCP4 Cloud as frequently as you wish for doing other tasks.
+- in all other cases, the recommended choice is the **Remote** mode. You will need only a budget-category computer to run all CCP4 programs, including the most demanding ones, connecting and disconnecting from CCP4 Cloud as frequently as you wish for doing other tasks.
 
 .. Note::
     The *Desktop* mode may be conveniently used for collecting projects finished in *Web-only*/*Remote* modes. After transferring projects to the *Desktop* mode, they may be deleted in *Web-only/Remote* area in order to release disk space for new tasks.

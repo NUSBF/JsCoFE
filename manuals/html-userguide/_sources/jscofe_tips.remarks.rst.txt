@@ -8,7 +8,7 @@ Remarks may look like jobs in the Project Tree, but there are a few differences 
 
 - remarks are transparent for the data flows in the Project Tree, they take no data and produce no data 
 - it is possible to add a task to remark; however, the task will be actually added to job annotated by the remark 
-- attemtpt to add a task to job annotated by a remark will result in adding the task to the remark; there is no difference between adding a task to job or to remark annotating that job 
+- attempt to add a task to job annotated by a remark will result in adding the task to the remark; there is no difference between adding a task to job or to remark annotating that job 
 - it is not possible to add a remark to another remark
 - it is possible to add a remark to a job in the middle of already developed Project Tree
 - remarks may deleted just as if the were jobs; however, in difference of deleting jobs, deleting a remark *does not* cause deletion of all the descending branch of the Project Tree

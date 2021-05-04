@@ -29,7 +29,7 @@ def store ( unm,hkl,seq,lig,ligdesc ):
     if len(hkl)>0:
         auto_api.addContext  ( "hkl",hkl[0] )
     if len(seq)>0:
-        auto_api.addContext  ( "seq",seq[0] )
+        auto_api.addContext  ( "seq",seq    )
     if len(lig)>0:
         auto_api.addContext  ( "lig",lig[0] )
     if len(ligdesc)>0:

@@ -9,10 +9,10 @@ Structure solution projects may be shared between several users, which can work 
 1. From the List of Projects ("My Projects"):
     - right-click on Project line
     - choose "Share" from the drop-down menu
-    - type comma-separated list of login names of uwsers, with whom the Project should be shared, where prompted.
+    - type comma-separated list of login names of users, with whom the Project should be shared, where prompted.
 
 2. From the Project Page: 
-    - click on Main Menu icon
+    - click on "Main Menu" icon
     - choose "Share Project" from the drop-down menu
     - type comma-separated list of login names of users, with whom the Project should be shared, where prompted.
 

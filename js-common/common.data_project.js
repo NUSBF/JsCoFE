@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    12.04.21   <--  Date of Last Modification.
+ *    04.05.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -------------------------------------------------------------------------
  *
@@ -207,6 +207,22 @@ if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
   }
 
 
+  function __delete_project_node ( nodes,dataId )  {
+    var nodes1 = [];
+    for (var i=0;i<nodes.length;i++)
+      if (nodes[i].dataId!=dataId)  {
+        nodes1.push ( nodes[i] );
+        nodes1[i].children = __delete_project_node ( nodes[i].children,dataId );
+      }
+    return nodes1;
+  }
+
+  function deleteProjectNode ( projectData,dataId )  {
+    projectData.tree = __delete_project_node ( projectData.tree,dataId );
+    return deleted;
+  }
+
+
   function __find_project_node_branch ( node,dataId )  {
     if (node.dataId==dataId)
       return [node];
@@ -287,6 +303,7 @@ if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
   module.exports.ProjectList          = ProjectList;
   module.exports.ProjectData          = ProjectData;
   module.exports.getProjectNode       = getProjectNode;
+  module.exports.deleteProjectNode    = deleteProjectNode;
   module.exports.printProjectTree     = printProjectTree;
   module.exports.getProjectNodeBranch = getProjectNodeBranch;
   module.exports.ProjectShare         = ProjectShare;
