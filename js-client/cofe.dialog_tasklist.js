@@ -545,7 +545,7 @@ var row      = 0;
     'No-sequence methods',
     new TaskSimbad(),
     new TaskArcimboldo(),
-    // new TaskArcimboldoBorges(),
+    new TaskArcimboldoBorges(),
     'No-model methods',
     new TaskAmple ()
   ]);

@@ -211,8 +211,8 @@ if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
     var nodes1 = [];
     for (var i=0;i<nodes.length;i++)
       if (nodes[i].dataId!=dataId)  {
+        nodes[i].children = __delete_project_node ( nodes[i].children,dataId );
         nodes1.push ( nodes[i] );
-        nodes1[i].children = __delete_project_node ( nodes[i].children,dataId );
       }
     return nodes1;
   }

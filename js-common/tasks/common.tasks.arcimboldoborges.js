@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    03.05.21   <--  Date of Last Modification.
+ *    04.05.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -78,21 +78,31 @@ function TaskArcimboldoBorges()  {
                           position : [0,0,1,1]
                           //showon   : {'xyz':[-1,0]} // from input data section
                         },
-                GYRE_CBX : {
-                          type     : 'checkbox',
-                          label    : 'Use Phaser GYRE option',
-                          tooltip  : 'Check to activate Phaser\'s GYRE option',
-                          value    : false,
-                          iwidth   : 220,
-                          position : [1,0,1,4]
+                GYRE_SEL : {
+                          type     : 'combobox',
+                          keyword  : 'GYRE',
+                          label    : 'Phaser GYRE option:',
+                          tooltip  : 'Choose GYRE option mode',
+                          range    : ['auto|Auto',
+                                      'On|On',
+                                      'Off|Off'
+                                    ],
+                          value    : 'On',
+                          iwidth   : 100,
+                          position : [1,0,1,1]
                         },
-                GIMBLE_CBX : {
-                          type     : 'checkbox',
-                          label    : 'Use Phaser GIMBLE option',
-                          tooltip  : 'Check to activate Phaser\'s GIMBLE option',
-                          value    : false,
-                          iwidth   : 220,
-                          position : [2,0,1,4]
+                GIMBLE_SEL : {
+                          type     : 'combobox',
+                          keyword  : 'GIMBLE',
+                          label    : 'Phaser GIMBLE option:',
+                          tooltip  : 'Choose GIMBLE option mode',
+                          range    : ['auto|Auto',
+                                      'On|On',
+                                      'Off|Off'
+                                    ],
+                          value    : 'On',
+                          iwidth   : 100,
+                          position : [2,0,1,1]
                         }
               }
             }

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    29.04.21   <--  Date of Last Modification.
+ *    04.05.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -1186,7 +1186,8 @@ var projectName = projectDesc.name;
         if (rdata.reload>1)  // no way, client must update the project
           return new cmd.Response ( cmd.fe_retcode.ok,'',rdata );
 
-        // further on, will work on the actual Project
+        // further on, will work on the actual Project, but mind that the tree
+        // may return deleted nodes, see below
         projectData = pData;
 
       }
