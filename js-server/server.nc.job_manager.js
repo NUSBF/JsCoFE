@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    17.04.21   <--  Date of Last Modification.
+ *    03.05.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -804,6 +804,11 @@ function ncJobFinished ( job_token,code )  {
 // *** for debugging
 //if (__use_fake_fe_url) feURL = 'http://localhost:54321';
 
+    if (code==1001)  {
+      // console.log ( '  >>> was stopped ');
+      utils.removeSymLinks ( jobEntry.jobDir );
+    }
+
     send_dir.sendDir ( jobEntry.jobDir,'*',
                        feURL,
                        cmd.fe_command.jobFinished + job_token, {
@@ -966,8 +971,6 @@ function ncRunJob ( job_token,meta )  {
                             writeJobDriverFailureMessage ( code,stdout,stderr,jobDir );
                           if (jobEntry.jobStatus!=task_t.job_code.exiting)
                             ncJobFinished ( job_token,code );
-                        } else  {
-
                         }
 
                       });

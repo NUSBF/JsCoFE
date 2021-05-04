@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    17.04.21   <--  Date of Last Modification.
+#    04.05.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -105,7 +105,11 @@ def addTaskData ( taskName,inputId,dataClass ):
         if not hasattr(task.data,inputId):
             task.data.set_field ( inputId,[] )
         #dataClass.visible = True
-        task.data.get_field(inputId).append ( dataClass )
+        if type(dataClass) in [list,tuple]:
+            for i in range(len(dataClass)):
+                task.data.get_field(inputId).append ( dataClass[i] )
+        else:
+            task.data.get_field(inputId).append ( dataClass )
     return
 
 def addTaskParameter ( taskName,parameterName,parameterValue ):

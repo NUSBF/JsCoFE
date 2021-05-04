@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    22.02.21   <--  Date of Last Modification.
+#    03.05.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -51,45 +51,77 @@ class Arcimboldo(basic.TaskDriver):
     # ------------------------------------------------------------------------
 
     def arcimboldoDir(self):  return "arcimboldo"
+    def input_hkl    (self):  return "_input.hkl"
 
     # ------------------------------------------------------------------------
 
-    def make_setup ( self ):
+    def prepare_setup ( self ):
 
-        # list all input files with names for the quickest example in your set
-        #mtzinpath = "datasets/4AEQ.mtz"   # I will adjust this line as necessary
-        #hklinpath = "datasets/4AEQ.hkl"   # It is possible to convert it from the .mtz
+        self.mtzinpath = self.hkl.getHKLFilePath ( self.inputDir() )
 
-        mtzinpath  = self.hkl.getHKLFilePath ( self.inputDir() )
-        hklinpath  = "_input.hkl"
-
-        labels     = self.hkl.getMeanF()
-        f_label    = labels[0] #selected reflections, use the variable accordingly.
-        sigf_label = labels[1] #selected reflections, use the variable accordingly.
+        labels = self.hkl.getMeanF()
+        self.f_label    = labels[0] #selected reflections, use the variable accordingly.
+        self.sigf_label = labels[1] #selected reflections, use the variable accordingly.
         #i_label = #selected reflections, use the variable accordingly.
         #sigi_label = #selected reflections, use the variable accordingly.
 
-        self.mtz2hkl ( mtzinpath,
-                       [f_label,sigf_label,self.hkl.getFreeRColumn()],
-                       hklinpath )
+        self.mtz2hkl ( self.mtzinpath,
+                       [self.f_label,self.sigf_label,self.hkl.getFreeRColumn()],
+                       self.input_hkl() )
 
-        working_directory = self.arcimboldoDir()
-
-        distribute_computing = "multiprocessing" #select between three options:
+        self.distribute_computing = "multiprocessing" #select between three options:
         #multiprocessing
         #local_grid
         #remote_grid
 
-        if distribute_computing != "multiprocessing":
-            setup_bor_path = "setup.bor"   # auxiliar .bor file with the grid information.
+        if self.distribute_computing != "multiprocessing":
+            self.setup_bor_path = "setup.bor"   # auxiliar .bor file with the grid information.
 
-        name_job       = self.arcimboldoDir() # string             #Should be the same as the
-        number_of_cpus = 3
+        self.number_of_cpus = 3
+
+        self.number_of_component = 1      # integer
+        self.molecular_weight    = float(self.revision.ASU.molWeight) # float
+
+        self.ccp4_home = os.environ.get ( "CCP4", "not_set" )
+
+        return
+
+
+    def make_setup_lite ( self ):
+
+        self.prepare_setup()
+
+        # mtzinpath  = self.hkl.getHKLFilePath ( self.inputDir() )
+        # hklinpath  = "_input.hkl"
+        #
+        # labels     = self.hkl.getMeanF()
+        # f_label    = labels[0] #selected reflections, use the variable accordingly.
+        # sigf_label = labels[1] #selected reflections, use the variable accordingly.
+        # #i_label = #selected reflections, use the variable accordingly.
+        # #sigi_label = #selected reflections, use the variable accordingly.
+        #
+        # self.mtz2hkl ( mtzinpath,
+        #                [f_label,sigf_label,self.hkl.getFreeRColumn()],
+        #                hklinpath )
+        #
+        # working_directory = self.arcimboldoDir()
+        #
+        # distribute_computing = "multiprocessing" #select between three options:
+        # #multiprocessing
+        # #local_grid
+        # #remote_grid
+        #
+        # if distribute_computing != "multiprocessing":
+        #     setup_bor_path = "setup.bor"   # auxiliar .bor file with the grid information.
+        #
+        # name_job       = self.arcimboldoDir() # string             #Should be the same as the
+        # number_of_cpus = 3
+
         coiled_coil    = (self.getParameter(self.sec1.COIL_COILED_CBX)=="True")
         rmsd           = float(self.getParameter(self.sec1.RMSD))
 
-        number_of_component = 1      # integer
-        molecular_weight    = float(self.revision.ASU.molWeight) # float
+        # number_of_component = 1      # integer
+        # molecular_weight    = float(self.revision.ASU.molWeight) # float
 
         search_model = "HELIX" #select between four options:
         # one or more copies of a helix (HELIX)
@@ -128,31 +160,29 @@ class Arcimboldo(basic.TaskDriver):
         #pdbout_path = "./best.pdb"
         #logfile     = "./arcimboldo_out.log"
 
-        ccp4_home = os.environ.get ( "CCP4", "not_set" )
-
-        f_bor = open(os.path.join(working_directory,'setup.bor'),'w')
+        f_bor = open(os.path.join(self.arcimboldoDir(),'setup.bor'),'w')
         f_bor.write('[CONNECTION]\n')
-        f_bor.write('distribute_computing = %s\n' % (distribute_computing) )
-        if distribute_computing != "multiprocessing":
-            f_bor.write('setup_bor_path = %s\n' % (setup_bor_path) )
+        f_bor.write('distribute_computing = %s\n' % (self.distribute_computing) )
+        if self.distribute_computing != "multiprocessing":
+            f_bor.write('setup_bor_path = %s\n' % (self.setup_bor_path) )
 
         f_bor.write('[GENERAL]\n')
-        f_bor.write('working_directory = %s\n' % (working_directory) )
-        f_bor.write('mtz_path = %s\n' % (mtzinpath) )
-        f_bor.write('hkl_path = %s\n' % (hklinpath) )
+        f_bor.write('working_directory = %s\n' % (self.arcimboldoDir()) )
+        f_bor.write('mtz_path = %s\n' % (self.mtzinpath) )
+        f_bor.write('hkl_path = %s\n' % (self.input_hkl()) )
 
         f_bor.write('[ARCIMBOLDO]\n')
-        f_bor.write('name_job = %s\n' % (name_job) )
-        f_bor.write('force_core = %d\n' % (number_of_cpus) )
-        f_bor.write('f_label = %s\n' % (f_label))
-        f_bor.write('sigf_label = %s\n' % (sigf_label))
+        f_bor.write('name_job = %s\n' % (self.arcimboldoDir()) )
+        f_bor.write('force_core = %d\n' % (self.number_of_cpus) )
+        f_bor.write('f_label = %s\n' % (self.f_label))
+        f_bor.write('sigf_label = %s\n' % (self.sigf_label))
         #f_bor.write('i_label = %s\n' % (i_label))
         #f_bor.write('sigi_label = %s\n' % (sigi_label))
 
         f_bor.write('coiled_coil = %s\n' % (coiled_coil) )
         f_bor.write('rmsd = %6.2f\n' % (rmsd) )
-        f_bor.write('molecular_weight = %10.2f\n' % (molecular_weight) )
-        f_bor.write('number_of_component = %d\n' % (number_of_component) )
+        f_bor.write('molecular_weight = %10.2f\n' % (self.molecular_weight) )
+        f_bor.write('number_of_component = %d\n' % (self.number_of_component) )
 
         if search_model == "HELIX":
             f_bor.write('fragment_to_search = %d\n' % (fragment_to_search) )
@@ -179,8 +209,78 @@ class Arcimboldo(basic.TaskDriver):
                 i += 1
 
         f_bor.write('[LOCAL]\n')
-        f_bor.write('path_local_phaser = %s/bin/phaser\n' % (ccp4_home))
-        f_bor.write('path_local_shelxe = %s/bin/shelxe\n' % (ccp4_home))
+        f_bor.write('path_local_phaser = %s/bin/phaser\n' % (self.ccp4_home))
+        f_bor.write('path_local_shelxe = %s/bin/shelxe\n' % (self.ccp4_home))
+
+        return
+
+
+    def make_setup_borges ( self ):
+
+        self.prepare_setup()
+
+        custom_library = ""
+        borges_library = self.getParameter ( self.sec1.LIBRARY_SEL )
+        									#HELI_lib_uu: helices uu
+        									#HELI_lib_ud: helices ud
+        									#BETA_lib_udu: strands udu
+        									#BETA_lib_uud: strands uud
+        									#BETA_lib_uuu: strands uuu
+        									#BETA_lib_uuuu: strands uuuu
+        									#BETA_lib_udud: strands udud
+
+        # if borges_library == "CUSTOM":
+        # 	custom_library = "/path/to/folder"	#user selected folder
+
+
+rotation_model_refinement = "On"	#Empty, On or Off #Switch Phaser GYRE option
+gimble = "On"						#Empty, On or Off #Switch Phaser GIMBLE option
+									# I think, the best way to implement this is with a checkbox that enables the
+									# variable, then, the user can select On or Off (True or False)
+
+        #pdbout_path = "./best.pdb"
+        #logfile     = "./arcimboldo_out.log"
+
+        f_bor = open(os.path.join(self.arcimboldoDir(),'setup.bor'),'w')
+        f_bor.write('[CONNECTION]\n')
+        f_bor.write('distribute_computing = %s\n' % (self.distribute_computing) )
+        if self.distribute_computing != "multiprocessing":
+            f_bor.write('setup_bor_path = %s\n' % (self.setup_bor_path) )
+
+        f_bor.write('[GENERAL]\n')
+        f_bor.write('working_directory = %s\n' % (self.arcimboldoDir()) )
+        f_bor.write('mtz_path = %s\n' % (self.mtzinpath) )
+        f_bor.write('hkl_path = %s\n' % (self.input_hkl()) )
+
+        f_bor.write('molecular_weight = %10.2f\n' % (self.molecular_weight) )
+        f_bor.write('number_of_component = %d\n' % (self.number_of_component) )
+
+        f_bor.write('[ARCIMBOLDO]\n')
+        f_bor.write('name_job = %s\n' % (self.arcimboldoDir()) )
+        f_bor.write('force_core = %d\n' % (self.number_of_cpus) )
+        f_bor.write('f_label = %s\n' % (self.f_label))
+        f_bor.write('sigf_label = %s\n' % (self.sigf_label))
+        #f_bor.write('i_label = %s\n' % (i_label))
+        #f_bor.write('sigi_label = %s\n' % (sigi_label))
+
+
+        if borges_library ==  'CUSTOM':
+        	f_bor.write('library_path = %s\n' % (custom_library))
+        else:
+        	ccp4_master_home = os.environ.get ( 'CCP4_MASTER', 'not_set' )
+        	lib_path = os.path.join(ccp4_master_home,'BORGES_LIBS',borges_library.__str__())
+        	f_bor.write('library_path = %s\n' % (lib_path))
+
+if rotation_model_refinement != "":
+	f_bor.write('rotation_model_refinement = %s\n' % ("both" if rotation_model_refinement == "On" else "no_gyre"))
+
+if gimble != "":
+	f_bor.write('gimble = %s\n' % ("True" if gimble == "On" else "False"))
+
+
+        f_bor.write('[LOCAL]\n')
+        f_bor.write('path_local_phaser = %s/bin/phaser\n' % (self.ccp4_home))
+        f_bor.write('path_local_shelxe = %s/bin/shelxe\n' % (self.ccp4_home))
 
         return
 
@@ -224,7 +324,7 @@ class Arcimboldo(basic.TaskDriver):
 
         if not os.path.isdir(self.arcimboldoDir()):
             os.mkdir ( self.arcimboldoDir() )
-        self.make_setup()
+        self.make_setup_lite()
 
         with open(os.path.join(self.arcimboldoDir(),"setup.bor"),"r") as f:
             self.stdoutln (
