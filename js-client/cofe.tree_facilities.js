@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    14.04.21   <--  Date of Last Modification.
+ *    04.05.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -317,12 +317,14 @@ var icon_ext = {
   'seq'       : 'file_seq',
   'fasta'     : 'file_seq',
   'pir'       : 'file_seq',
-  'hhr'       : 'file_hhpred'
+  'hhr'       : 'file_hhpred',
+  'borges'    : 'file_borges'
 };
 
 var importable_ext = [
   'mtz', 'pdb', 'ent', 'mmcif', 'jpg', 'jpeg', 'png', 'gif', 'html',
-  'txt', 'pdf', 'seq', 'fasta', 'pir', 'hhr' , 'sca', 'cif', 'lib'
+  'txt', 'pdf', 'seq', 'fasta', 'pir', 'hhr' , 'sca', 'cif', 'lib',
+  'borges'
 ];
 
 

@@ -60,7 +60,7 @@ var keyEnvironment = ['CCP4','BALBES_ROOT','ROSETTA_DIR','warpbin','BDG_home',
                       'XDS_home','XDSGUI_home','DOCREPO',
                       '$CCP4/bin/shelxe','$CCP4/bin/shelxe.exe',
                       '$CCP4/share/mrd_data/VERSION','$CCP4/lib/py2/morda/LINKED',
-                      'Xia2_durin'
+                      'Xia2_durin','$CCP4_MASTER/BORGES_LIBS'
                      ];
 
 var dbx   = null;

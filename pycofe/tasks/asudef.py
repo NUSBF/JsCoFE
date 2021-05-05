@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    23.04.21   <--  Date of Last Modification.
+#    05.05.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -201,10 +201,11 @@ def makeRevision ( base,hkl,seq,composition,altEstimateKey,altNRes,
         dataKey = -1
         if composition == "P":
             cnt = " aminoacid residues"
+            molWeight = nRes*110 + 18
         elif composition == "C":
             cnt = " aminoacid and nucleic acid residues"
         else:
-            cnt = " nucleis acid residues"
+            cnt = " nucleic acid residues"
         base.putMessage ( "<b>Content unit:</b> one or several molecules " +\
                           "having " + str(nRes) + cnt + " in total" )
 
@@ -213,11 +214,12 @@ def makeRevision ( base,hkl,seq,composition,altEstimateKey,altNRes,
         base.write_stdin ( "MOLWEIGHT " + str(molWeight) + "\n" )
         datakey = -2
         if composition == "P":
-            cnt = " protein"
+            cnt  = " protein"
+            nRes = (molWeight-18)/110
         elif composition == "C":
             cnt = " protein and polynucletide"
         else:
-            cnt = " polynucletide"
+            cnt = " polynucleotide"
         base.putMessage ( "<b>Content unit:</b> one or several " + cnt +\
                           " molecules with the combined molecular weight of " +\
                           str(molWeight) + " Daltons" )

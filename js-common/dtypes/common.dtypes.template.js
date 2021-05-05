@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    11.03.20   <--  Date of Last Modification.
+ *    04.05.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -23,18 +23,19 @@
  // ===========================================================================
 
   var file_key = {
-    'xyz'   : 'xyz',     // atomic coordinates
-    'mmcif' : 'mmcif',   // atomic coordinates in mmCIF format
-    'sol'   : 'sol',     // phaser's sol file
-    'sub'   : 'sub',     // heavy atom (substructure) coordinates
-    'seq'   : 'seq',     // sequence file
-    'mtz'   : 'mtz',     // .mtz file with hkl and/or phases
-    'map'   : 'map',     // map file
-    'dmap'  : 'dmap',    // difference map file
-    'lib'   : 'lib',     // ligand dictionary
-    'coot'  : 'coot',    // Coot python script
-    'molp'  : 'molp',    // molprobity_probe.txt file
-    'hhr'   : 'hhr'      // hhpred alignment file
+    'xyz'    : 'xyz',     // atomic coordinates
+    'mmcif'  : 'mmcif',   // atomic coordinates in mmCIF format
+    'sol'    : 'sol',     // phaser's sol file
+    'sub'    : 'sub',     // heavy atom (substructure) coordinates
+    'seq'    : 'seq',     // sequence file
+    'mtz'    : 'mtz',     // .mtz file with hkl and/or phases
+    'map'    : 'map',     // map file
+    'dmap'   : 'dmap',    // difference map file
+    'lib'    : 'lib',     // ligand dictionary
+    'coot'   : 'coot',    // Coot python script
+    'molp'   : 'molp',    // molprobity_probe.txt file
+    'hhr'    : 'hhr',     // hhpred alignment file
+    'borges' : 'borges'   // borges library file
  }
 
 // ===========================================================================

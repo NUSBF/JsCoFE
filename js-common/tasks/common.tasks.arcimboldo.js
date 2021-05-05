@@ -242,6 +242,13 @@ TaskArcimboldo.prototype.currentVersion = function()  {
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
 }
 
+// task.platforms() identifies suitable platforms:
+//   'W"  : Windows
+//   'L'  : Linux
+//   'M'  : Mac
+//   'U'  : Unix ( = Linux + Mac)
+TaskArcimboldo.prototype.platforms = function()  { return 'LMU'; }  // UNIX only
+
 if (__template)  {
   //  for server side
 

@@ -37,12 +37,12 @@ import pyrvapi
 from . import basic
 from proc import (import_xrayimages, import_unmerged, import_merged,
                   import_xyz, import_ligand, import_sequence, import_doc,
-                  import_alignment)
+                  import_alignment,import_borges)
 from proc import import_pdb, import_seqcp
 
 importers = [import_xrayimages, import_unmerged, import_merged,
              import_xyz, import_ligand, import_sequence, import_doc,
-             import_alignment]
+             import_alignment,import_borges]
 
 # import_map can fail if the mrcfile package is not available. Once mrcfile is
 # properly included in CCP4 builds, this can be changed to a normal import.
