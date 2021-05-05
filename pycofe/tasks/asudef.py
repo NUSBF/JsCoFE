@@ -196,7 +196,7 @@ def makeRevision ( base,hkl,seq,composition,altEstimateKey,altNRes,
         base.rvrow += 1
 
     elif altEstimateKey == "NR":
-        nRes = altNRes
+        nRes = int(altNRes)
         base.write_stdin ( "NRES " + str(nRes) + "\n" )
         dataKey = -1
         if composition == "P":
@@ -210,12 +210,12 @@ def makeRevision ( base,hkl,seq,composition,altEstimateKey,altNRes,
                           "having " + str(nRes) + cnt + " in total" )
 
     else:
-        molWeight = altMolWeight
+        molWeight = float(altMolWeight)
         base.write_stdin ( "MOLWEIGHT " + str(molWeight) + "\n" )
         datakey = -2
         if composition == "P":
             cnt  = " protein"
-            nRes = (molWeight-18)/110
+            nRes = int((molWeight-18)/110)
         elif composition == "C":
             cnt = " protein and polynucletide"
         else:
