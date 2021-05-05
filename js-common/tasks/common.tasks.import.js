@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    03.03.21   <--  Date of Last Modification.
+ *    04.05.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -153,7 +153,7 @@ if (!__template)  {
       panel.upload = new Upload ( panel.customData,
         { 'type'   : 'project_data',
           'accept' : '.pdb,.ent,.seq,.fasta,.pir,.mtz,.sca,.cif,.mmcif,.doc,.docx,' +
-                     '.pdf,.txt,.jpg,.jpeg,.gif,.png,.html,.htm,.hkl,.hhr',
+                     '.pdf,.txt,.jpg,.jpeg,.gif,.png,.html,.htm,.hkl,.hhr,.borges',
           'gzip'   : true
         },
         function(e,onReady_func) {

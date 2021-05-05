@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    04.05.21   <--  Date of Last Modification.
+ *    05.05.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -43,6 +43,14 @@ function TaskArcimboldoBorges()  {
       version     : 0,           // minimum data version allowed
       min         : 1,           // minimum acceptable number of data instances
       max         : 1            // maximum acceptable number of data instances
+    },{
+      data_type   : {'DataBorges':[]}, // data type(s) and subtype(s)
+      label       : 'Fragment library', // label for input dialog
+      inputId     : 'fragments', // input Id for referencing input fields
+      tooltip     : 'Custom fragment library (optional)',
+      version     : 0,           // minimum data version allowed
+      min         : 0,           // minimum acceptable number of data instances
+      max         : 1            // maximum acceptable number of data instances
     }
   ];
 
@@ -73,10 +81,10 @@ function TaskArcimboldoBorges()  {
                                       'BETA_lib_udud|strands udud'
                                     ],
                           value    : 'HELI_lib_uu',
-                          iwidth   : 160,
+                          iwidth  : 160,
                           label2   : 'topology: u: up, d: down',
-                          position : [0,0,1,1]
-                          //showon   : {'xyz':[-1,0]} // from input data section
+                          position : [0,0,1,1],
+                          showon   : {'fragments':[-1,0]} // from input data section
                         },
                 GYRE_SEL : {
                           type     : 'combobox',
@@ -87,7 +95,7 @@ function TaskArcimboldoBorges()  {
                                       'On|On',
                                       'Off|Off'
                                     ],
-                          value    : 'On',
+                          value    : 'auto',
                           iwidth   : 100,
                           position : [1,0,1,1]
                         },
@@ -100,7 +108,7 @@ function TaskArcimboldoBorges()  {
                                       'On|On',
                                       'Off|Off'
                                     ],
-                          value    : 'On',
+                          value    : 'auto',
                           iwidth   : 100,
                           position : [2,0,1,1]
                         }
@@ -128,6 +136,16 @@ TaskArcimboldoBorges.prototype.currentVersion = function()  {
   if (__template)
         return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
+}
+
+// task.platforms() identifies suitable platforms:
+//   'W"  : Windows
+//   'L'  : Linux
+//   'M'  : Mac
+//   'U'  : Unix ( = Linux + Mac)
+TaskArcimboldoBorges.prototype.platforms = function()  { return 'LMU'; }  // UNIX only
+TaskArcimboldoBorges.prototype.requiredEnvironment = function() {
+  return ['CCP4',['$CCP4_MASTER/BORGES_LIBS']];
 }
 
 if (__template)  {

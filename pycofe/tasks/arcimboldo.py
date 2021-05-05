@@ -33,6 +33,7 @@ import os
 #import sys
 import shutil
 #import json
+import zipfile
 import xml.etree.ElementTree as ET
 
 #  ccp4-python imports
@@ -52,6 +53,7 @@ class Arcimboldo(basic.TaskDriver):
 
     def arcimboldoDir(self):  return "arcimboldo"
     def input_hkl    (self):  return "_input.hkl"
+    def fragmentsDir (self):  return "fragments"
 
     # ------------------------------------------------------------------------
 
@@ -219,19 +221,41 @@ class Arcimboldo(basic.TaskDriver):
 
         self.prepare_setup()
 
-        custom_library = ""
-        borges_library = self.getParameter ( self.sec1.LIBRARY_SEL )
-        									#HELI_lib_uu: helices uu
-        									#HELI_lib_ud: helices ud
-        									#BETA_lib_udu: strands udu
-        									#BETA_lib_uud: strands uud
-        									#BETA_lib_uuu: strands uuu
-        									#BETA_lib_uuuu: strands uuuu
-        									#BETA_lib_udud: strands udud
+        custom_library = None
+        if self.fragments:
+            borges_library = "CUSTOM"
+            custom_library = self.fragmentsDir()
+            os.mkdir ( "_tmp" )
+            os.mkdir ( custom_library )
+            self.stdoutln (
+                "## Unpacking fragments library:\n" +\
+                "-----------------------------------------------------------"
+            )
+            with zipfile.ZipFile(self.fragments.getBorgesFilePath(self.inputDir()),"r") as zip_ref:
+                zip_ref.extractall ( "_tmp" )
+            nfile = 0
+            for (dirpath, dirnames, filenames) in os.walk("_tmp"):
+                for fname in filenames:
+                    if not fname.startswith(".") and fname.lower().endswith(".pdb"):
+                        os.rename ( os.path.join(dirpath,fname),os.path.join(custom_library,fname) )
+                        nfile = nfile + 1
+                        self.stdoutln ( str(nfile).rjust(4," ") + ".   " + fname )
+            self.stdoutln (
+                "===========================================================\n "
+            )
+            shutil.rmtree ( "_tmp" )
+        else:
+            borges_library = self.getParameter ( self.sec1.LIBRARY_SEL )
+            									#HELI_lib_uu: helices uu
+            									#HELI_lib_ud: helices ud
+            									#BETA_lib_udu: strands udu
+            									#BETA_lib_uud: strands uud
+            									#BETA_lib_uuu: strands uuu
+            									#BETA_lib_uuuu: strands uuuu
+            									#BETA_lib_udud: strands udud
 
         # if borges_library == "CUSTOM":
         # 	custom_library = "/path/to/folder"	#user selected folder
-
 
         rotation_model_refinement = self.getParameter ( self.sec1.GYRE_SEL )
         gimble = self.getParameter ( self.sec1.GIMBLE_SEL )
@@ -307,6 +331,10 @@ class Arcimboldo(basic.TaskDriver):
             for i in range(len(self.input_data.data.xyz)):
                 if self.input_data.data.xyz[i]:
                     self.xyz.append ( self.makeClass(self.input_data.data.xyz[i]) )
+
+        self.fragments = None
+        if hasattr(self.input_data.data,"fragments"):
+            self.fragments = self.makeClass ( self.input_data.data.fragments[0] )
 
         self.sec1 = self.task.parameters.sec1.contains
 

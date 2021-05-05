@@ -5,13 +5,13 @@
 #
 # ============================================================================
 #
-#    27.02.20   <--  Date of Last Modification.
+#    04.05.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  BASE (TEMPLATE) DATA TYPE
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2020
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2021
 #
 # ============================================================================
 #
@@ -59,7 +59,8 @@ file_key = {
     'lib'        : 'lib',        # ligand dictionary
     'coot'       : 'coot',       # Coot python script
     'molp'       : 'molp',       # molprobity_probe.txt file
-    'hhr'        : 'hhr'         # hhpred alignment file
+    'hhr'        : 'hhr',        # hhpred alignment file
+    'borges'     : 'borges'      # library file for arcimboldo-borges
 }
 
 

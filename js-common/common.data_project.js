@@ -219,7 +219,6 @@ if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
 
   function deleteProjectNode ( projectData,dataId )  {
     projectData.tree = __delete_project_node ( projectData.tree,dataId );
-    return deleted;
   }
 
 

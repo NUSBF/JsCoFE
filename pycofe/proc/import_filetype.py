@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    01.03.21   <--  Date of Last Modification.
+#    04.05.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -37,6 +37,7 @@ def ftype_XYZ          ():  return "xyz"
 def ftype_Ligand       ():  return "ligand"
 def ftype_Sequence     ():  return "sequence"
 def ftype_Alignment    ():  return "alignment"
+def ftype_Borges       ():  return "borges"
 def ftype_HTML         ():  return "html"
 def ftype_PDF          ():  return "pdf"
 def ftype_TEXT         ():  return "text"
@@ -94,7 +95,8 @@ def getFileType ( fname,importDir,file_stdout ):
     if fext in ('.map','.mrc'):           return ftype_Map()
     if fext in ('.pdb','.mmcif','.ent'):  return ftype_XYZ()
     if fext in ('.seq','.fasta','.pir'):  return ftype_Sequence()
-    if fext=='.hhr':                      return ftype_Alignment()
+    if fext=='.hhr'   :                   return ftype_Alignment()
+    if fext=='.borges':                   return ftype_Borges()
 
     if fext=='.txt' :
         fn1,fext1 = os.path.splitext(fn.lower())
