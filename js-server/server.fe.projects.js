@@ -575,13 +575,13 @@ var response = null;  // must become a cmd.Response object to return
 var rdata    = {};    // response data
 var erc      = '';
 
-  log.standard ( 7,'delete project ' + projectName + ', login ' + loginData.login );
-
   // maintain share lists
   var pData = readProjectData ( loginData,projectName );
   if (pData && (pData.desc.owner.login==loginData.login))  {
     // project can be deleted only by owner or keeper; shared projects can be only
     // unjoined
+
+    log.standard ( 7,'delete project ' + projectName + ', login ' + loginData.login );
 
     // remove it from all shares
     var share = pData.desc.owner.share;
@@ -616,10 +616,23 @@ var erc      = '';
     //rdata.ration = ration.getUserRation(loginData).clearJobs();
 
   } else if (pData && (pData.desc.owner.login!=loginData.login))  {
-    log.error ( 60,'attempt to delete project ' + pData.desc.owner.login +
-                   ':' + projectName + ' by non-owner ' + loginData.login );
-    response = new cmd.Response ( cmd.fe_retcode.projectAccess,
-                        'Attempt to delete project without ownership',rdata );
+
+    log.standard ( 7,'unjoin project ' + projectName + ', login ' + loginData.login );
+
+    var projectDirPath = getProjectDirPath ( loginData,projectName );
+
+    if (utils.isSymbolicLink(projectDirPath))  {
+      // unjoin project
+      utils.removePath ( projectDirPath );  // will only unlink as this is a link
+      rdata.ration = ration.calculateUserDiskSpace(loginData).clearJobs();  // just in case
+    } else  {
+      // error
+      log.error ( 60,'attempt to delete project ' + pData.desc.owner.login +
+                     ':' + projectName + ' by non-owner ' + loginData.login );
+      response = new cmd.Response ( cmd.fe_retcode.projectAccess,
+                          'Attempt to delete project without ownership',rdata );
+    }
+
   } else  {
     log.error ( 61,'project ' + loginData.login + ':' + projectName +
                    ' attempted for deletion, but was not found' );
