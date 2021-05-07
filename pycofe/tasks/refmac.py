@@ -419,7 +419,7 @@ class Refmac(basic.TaskDriver):
                                 "ncsRestr"   : str(sec3.NCSR.value) == 'yes',
                                 "tls"        : str(sec2.TLS.value) != 'none',
                                 "anisoBfact" : str(sec2.BFAC.value) == "ANIS",
-                                "hydrogens"  : str(sec1.MKHYDR.value) == "YES",
+                                "hydrogens"  : str(sec1.MKHYDR.value) == "ALL",
                                 "vdw_val"    : vdwrestraints
                             }
                         },
