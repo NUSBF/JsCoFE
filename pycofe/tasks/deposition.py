@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    23.04.21   <--  Date of Last Modification.
+#    08.05.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -276,8 +276,9 @@ class Deposition(basic.TaskDriver):
 
         if not worked:
             self.putMessage (
-                "<hr/><h3>Errors</h3>" +
-                "<i>Failed to create coordinate model file for deposition</i>" +
+                "<hr/><h3>Note:</h3>" +\
+                "<i>Coordinate model was not added with sequence data. Provide " +\
+                "target sequence(s) at the depositon web-site when asked.</i>" +\
                 "<hr/>" )
             self.stderr ( " *** EBI deposition script failed" )
             shutil.copy2 ( xyzout_cif,deposition_cif )
