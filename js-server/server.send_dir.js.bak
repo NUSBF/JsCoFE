@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    08.05.21   <--  Date of Last Modification.
+ *    12.04.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -220,7 +220,7 @@ var sender_cfg = conf.getServerConfig();
 // ==========================================================================
 
 function __after_unzip ( unpack_dir,dirPath,tmpDir,jobballPath,
-                         cleanTmpDir,remove_jobball_bool,callback_func )  {
+                         cleanTmpDir,remove_jobball_bool,err )  {
   if (remove_jobball_bool)
     utils.removeFile ( jobballPath )
   if (cleanTmpDir)  {
@@ -229,14 +229,15 @@ function __after_unzip ( unpack_dir,dirPath,tmpDir,jobballPath,
     // replace should be done within this thread and, therefore, safe
     // for concurrent access from client
     if (utils.fileExists(dirPath))  {
-      utils.moveDirAsync ( unpack_dir,dirPath,true,callback_func );
-      utils.removePath   ( tmpDir );
-    } else  {
+      utils.moveDir ( dirPath   ,tmpDir+'_1', true );
+      utils.moveDir ( unpack_dir,dirPath    , true );
+      setTimeout ( function(){  // postpone for speed
+        utils.removePath ( tmpDir+'_1' );
+        utils.removePath ( tmpDir      );
+      },0 );
+    } else
       log.error ( 25,'expected directory "' + dirPath + '" not found' );
-      callback_func ( 1111 );
-    }
-  } else
-    callback_func ( 2222 );
+  }
 }
 
 function unpackDir1 ( dirPath,jobballPath,cleanTmpDir,remove_jobball_bool,onReady_func )  {
@@ -261,16 +262,14 @@ function unpackDir1 ( dirPath,jobballPath,cleanTmpDir,remove_jobball_bool,onRead
       .then(function() {
         setTimeout ( function(){  // dedicated thread required on Windows
           __after_unzip ( unpack_dir,dirPath,tmpDir,jobballPath,
-                          cleanTmpDir,remove_jobball_bool,function(e){
-            onReady_func ( 0,jobballSize );
-          });
+                          cleanTmpDir,remove_jobball_bool );
+          onReady_func ( 0,jobballSize );
         },0 );
       }, function (err) {
         setTimeout ( function(){  // dedicated thread required on Windows
           __after_unzip ( unpack_dir,dirPath,tmpDir,jobballPath,
-                          cleanTmpDir,remove_jobball_bool,function(e){
-            onReady_func ( err,jobballSize );
-          });
+                          cleanTmpDir,remove_jobball_bool );
+          onReady_func ( err,jobballSize );
         },0 );
       });
 
@@ -289,12 +288,11 @@ function unpackDir1 ( dirPath,jobballPath,cleanTmpDir,remove_jobball_bool,onRead
     zip.on('close', function(code){
       setTimeout ( function(){  // dedicated thread required on Windows
         __after_unzip ( unpack_dir,dirPath,tmpDir,jobballPath,
-                        cleanTmpDir,remove_jobball_bool,function(e){
-          if (errs)
-            onReady_func ( errs,jobballSize );
-          else
-            onReady_func ( code,jobballSize );
-        });
+                        cleanTmpDir,remove_jobball_bool );
+        if (errs)
+          onReady_func ( errs,jobballSize );
+        else
+          onReady_func ( code,jobballSize );
       },0 );
     });
 
