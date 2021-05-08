@@ -325,6 +325,30 @@ function moveDir ( old_path,new_path,overwrite_bool )  {
   }
 }
 
+function moveDirAsync ( old_path,new_path,overwrite_bool,callback_func )  {
+  try {
+    if (_is_windows && overwrite_bool && fileExists(new_path))
+      fs.removePath ( new_path );
+  } catch (e) {
+    log.error ( 50,'cannot remove directory ' + new_path );
+    log.error ( 50,'error: ' + JSON.stringify(e) );
+    console.error(e);
+  }
+  fs.move ( old_path,new_path,{'overwrite':overwrite_bool},function(err){
+    if (err)  {
+      var old_exist = '(non-existing)';
+      var new_exist = '(non-existing)';
+      if (fileExists(old_path))  old_exist = '(existing)';
+      if (fileExists(new_path))  new_exist = '(existing)';
+      log.error ( 51,'cannot move ' + old_exist + ' directory ' + old_path +
+                     ' to ' + new_exist + ' ' + new_path );
+      log.error ( 51,'error: ' + JSON.stringify(err) );
+      console.error(err);
+    }
+    callback_func(err);
+  });
+}
+
 function copyDirAsync ( old_path,new_path,overwrite_bool,callback_func )  {
   fs.copy ( old_path,new_path,{
     'overwrite'          : overwrite_bool,
@@ -837,6 +861,7 @@ module.exports.writeObject           = writeObject;
 module.exports.copyFile              = copyFile;
 module.exports.moveFile              = moveFile;
 module.exports.moveDir               = moveDir;
+module.exports.moveDirAsync          = moveDirAsync;
 module.exports.copyDirAsync          = copyDirAsync;
 module.exports.mkDir                 = mkDir;
 module.exports.mkDir_anchor          = mkDir_anchor;
