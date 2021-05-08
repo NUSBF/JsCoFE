@@ -125,7 +125,7 @@ function start ( callback_func )  {
 
       var c = new comm.Communicate ( server_request,server_response );
 
-      //console.log ( '  command=' + c.command );
+// console.log ( ' >>>>  command=' + c.command );
 
       switch (c.command)  {
 
