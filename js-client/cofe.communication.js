@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    13.02.21   <--  Date of Last Modification.
+ *    08.05.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -180,36 +180,58 @@ function checkVersionMatch ( response,localServer_bool )  {
 }
 
 
+function makeJSONString ( data_obj )  {
+var json = null;
+  try {
+    json = JSON.stringify ( data_obj );
+  } catch(e) {
+    new MessageBox ( 'Unsuitable data',
+      '<div style="width:500px"><h2>Unsuitable data</h2>' +
+      '<p>Unsuitable data encountered when sending data to ' + appName() +
+      ' server. Usually this is caused by using symbols from a non-Latin ' +
+      'alphabet or rare special characters.' +
+      '<p>Try repeating your actions making sure that your keyboard is on ' +
+      'English register. If this does not help, close this page or tab in ' +
+      'your browser and log on ' + appName + ' again. Ultimately, contact ' +
+      appName() + ' support.</div>' );
+  }
+  return json;
+}
+
+
 function serverCommand ( cmd,data_obj,page_title,function_response,
                          function_always,function_fail )  {
 // used when no user is logged in
 
-  $.ajax ({
-    url     : cmd,
-    async   : true,
-    type    : 'POST',
-    data    : JSON.stringify(data_obj),
-    dataType: 'text'
-  })
-  .done ( function(rdata) {
+  var json = makeJSONString ( data_obj );
 
-    var rsp = jQuery.parseJSON ( rdata );
-    if (checkVersionMatch(rsp,false))  {
-      var response = jQuery.extend ( true, new Response(), rsp );
-      if (!function_response(response))
-        makeCommErrorMessage ( page_title,response );
-    }
+  if (json)
+    $.ajax ({
+      url      : cmd,
+      async    : true,
+      type     : 'POST',
+      data     : json,
+      dataType : 'text'
+    })
+    .done ( function(rdata) {
 
-  })
-  .always ( function(){
-    if (function_always)
-      function_always();
-  })
-  .fail ( function(xhr,err){
-    if (function_fail)
-          function_fail();
-    else  MessageAJAXFailure(page_title,xhr,err);
-  });
+      var rsp = jQuery.parseJSON ( rdata );
+      if (checkVersionMatch(rsp,false))  {
+        var response = jQuery.extend ( true, new Response(), rsp );
+        if (!function_response(response))
+          makeCommErrorMessage ( page_title,response );
+      }
+
+    })
+    .always ( function(){
+      if (function_always)
+        function_always();
+    })
+    .fail ( function(xhr,err){
+      if (function_fail)
+            function_fail();
+      else  MessageAJAXFailure(page_title,xhr,err);
+    });
 
 }
 
@@ -218,17 +240,17 @@ function serverRequest ( request_type,data_obj,page_title,function_ok,
                          function_always,function_fail )  {
 // used when a user is logged in
 
-  //var request = new Request ( request_type,__login_token.getValue(),data_obj );
   var request = new Request ( request_type,__login_token,data_obj );
+  var json = makeJSONString ( request );
 
   function execute_ajax ( attemptNo )  {
 
     $.ajax ({
-      url     : fe_command.request,
-      async   : true,
-      type    : 'POST',
-      data    : JSON.stringify(request),
-      dataType: 'text'
+      url      : fe_command.request,
+      async    : true,
+      type     : 'POST',
+      data     : json,
+      dataType : 'text'
     })
     .done ( function(rdata) {
 
@@ -285,7 +307,8 @@ if ((typeof function_fail === 'string' || function_fail instanceof String) &&
 
   }
 
-  execute_ajax ( __persistence_level );
+  if (json)
+    execute_ajax ( __persistence_level );
 
 }
 
@@ -302,41 +325,32 @@ function localCommand ( cmd,data_obj,command_title,function_response )  {
 //                      in case something is wrong, in which case a
 //                      communication error message box is displayed.
 
-  if (!__local_service)
-    return;
+  var json = makeJSONString ( data_obj );
 
-//console.log ( ' url=' + __local_service + "/" + cmd );
-//alert ( ' url=' + __local_service + "/" + cmd );
+  if (__local_service && json)
+    $.ajax ({
+      url      : __local_service + '/' + cmd,
+      async    : true,
+      type     : 'POST',
+      data     : json,
+      dataType : 'text',
+      crossDomain: true,
+      timeout  : 0  // in ms; '0' means no timeout
+    })
+    .done ( function(rdata) {
+      var rsp = jQuery.parseJSON ( rdata );
+      if (checkVersionMatch(rsp,true))  {
+        var response = jQuery.extend ( true,new Response(),rsp );
+        if (function_response && (!function_response(response)))
+          makeCommErrorMessage ( command_title,response );
+      }
 
-  $.ajax ({
-    url     : __local_service + '/' + cmd,
-    async   : true,
-    type    : 'POST',
-    data    : JSON.stringify(data_obj),
-    dataType: 'text',
-    crossDomain: true,
-    timeout : 0  // in ms; '0' means no timeout
-  })
-  .done ( function(rdata) {
-
-//    alert ( ' done rdata=' + rdata );
-//console.log ( ' rdata=' + rdata );
-
-    var rsp = jQuery.parseJSON ( rdata );
-    if (checkVersionMatch(rsp,true))  {
-      var response = jQuery.extend ( true,new Response(),rsp );
-      if (function_response && (!function_response(response)))
-        makeCommErrorMessage ( command_title,response );
-    }
-
-  })
-  .always ( function(){} )
-  .fail   ( function(xhr,err){
-//console.log ( ' local request to ' + __local_service + '/' + cmd + ' failed ' + err );
-//console.log ( xhr );
-    if (function_response && (!function_response(null)))
-      MessageAJAXFailure(command_title,xhr,err);
-  });
+    })
+    .always ( function(){} )
+    .fail   ( function(xhr,err){
+      if (function_response && (!function_response(null)))
+        MessageAJAXFailure(command_title,xhr,err);
+    });
 
 }
 

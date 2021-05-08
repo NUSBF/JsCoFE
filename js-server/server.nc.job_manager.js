@@ -1104,7 +1104,6 @@ function ncMakeJob ( server_request,server_response )  {
                        conf.getServerConfig().serNo,'' );
     ncJobRegister.removeJob ( job_token );
     writeNCJobRegister      ();
-
     return null;
   }
 
