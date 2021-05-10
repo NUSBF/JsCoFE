@@ -352,7 +352,7 @@ var msg = '<h1><i>Job Driver Failure</i></h1>' + 'Failure code: ' + code;
   if (stderr)
     msg += '<p>Catched stderr:<pre>' + stderr + '</pre>';
 
-  msg += '<p>This is an internal error, which may be caused by different ' +
+  msg += '<p>This is an internal error, which may be caused by various ' +
          'sort of hardware and network malfunction, but most probably due ' +
          'to a bug or not anticipated properties of input data.' +
          '<p>You may contribute to the improvement of ' + cmd.appName() + ' by sending this ' +
