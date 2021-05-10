@@ -264,14 +264,15 @@ class Deposition(basic.TaskDriver):
         shutil.copy2 ( sfCIF,sfCIF + ".sav" )
 
         worked = False
-        # try:
-        #     worked = run_process ( input_mmcif  = xyzout_cif,
-        #                            output_mmcif = deposition_cif,
-        #                            fasta_file   = deposition_fasta,
-        #                            #sf_file      = sfCIF,
-        #                            xml_file     = aimless_meta )
-        # except:
-        #     worked = False
+        if istruct.refiner!="buster":
+            try:
+                worked = run_process ( input_mmcif  = xyzout_cif,
+                                       output_mmcif = deposition_cif,
+                                       fasta_file   = deposition_fasta,
+                                       #sf_file      = sfCIF,
+                                       xml_file     = aimless_meta )
+            except:
+                worked = False
 
         if not worked:
             self.putMessage (

@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    01.03.21   <--  Date of Last Modification.
+#    10.05.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -334,6 +334,7 @@ class Buster(basic.TaskDriver):
                 structure.addDataAssociation ( hkl.dataId     )
                 structure.addDataAssociation ( istruct.dataId )  # ???
                 structure.setBusterLabels    ( hkl )
+                structure.refiner = "buster"
                 bustercif = os.path.join ( self.buster_dir(),"BUSTER_model.cif" )
                 if os.path.isfile(bustercif):
                     mmcifout = self.getMMCIFOFName()
@@ -423,6 +424,7 @@ class Buster(basic.TaskDriver):
                             #struct_ano.setBusterLabels    ( hkl )
                             struct_ano.copyLigands        ( istruct )
                             struct_ano.addPhasesSubtype   ()
+                            struct_ano.refiner = "buster"
 
                             nlst = struct_ano.dname.split ( " /" )
                             nlst[0] += " (anom maps)"
@@ -443,6 +445,7 @@ class Buster(basic.TaskDriver):
                                 substructure.addDataAssociation ( istruct.dataId )  # ???
                                 substructure.setBusterLabels    ( hkl )
                                 substructure.addPhasesSubtype()
+                                substructure.refiner = "buster"
                             else:
                                 self.putMessage ( "<i>Substructure could not be " +\
                                                   "formed (possible bug)</i>" )
