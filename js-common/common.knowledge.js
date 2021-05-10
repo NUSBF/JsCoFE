@@ -72,7 +72,7 @@ var _taskIndex = {
 
   // do not suggest CPU-intensive tasks by default
   'L1' : { type: 'TaskAmple'           , after: [] },
-  'L2' : { type: 'TaskArcimboldo'      , after: [] },
+  'L2' : { type: 'TaskArcimboldoLite'      , after: [] },
 
   // suggest Phaser-MR and Molrep after ASUDef; do suggest them after
   // themselves (in case of domain-after domain phasing); do not suggest them

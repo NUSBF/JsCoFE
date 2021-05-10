@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    04.05.21   <--  Date of Last Modification.
+#    10.05.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -305,6 +305,82 @@ class Arcimboldo(basic.TaskDriver):
         return
 
 
+    def make_setup_shredder ( self ):
+
+        self.prepare_setup()
+
+        model_file = self.xyz[0].getXYZFilePath ( self.inputDir() )
+
+        rmsd_shredder   = float(self.getParameter(self.sec1.RMSD))
+        trim_to_polyala = self.getParameter ( self.sec1.POLYALA_SEL  )
+        bfacnorm        = self.getParameter ( self.sec1.BFACTORS_SEL )
+        shred_method    = self.getParameter ( self.sec1.SHRMODE_SEL  )
+
+        if shred_method == "spherical":
+            fragment_size  = self.getParameter ( self.sec2.FRAGMENT_SIZE )
+            maintain_coil  = self.getParameter ( self.sec1.COIL_SEL   )
+            perform_gyre   = self.getParameter ( self.sec1.GYRE_SEL   )
+            perform_gimble = self.getParameter ( self.sec1.GIMBLE_SEL )
+            perform_llg    = self.getParameter ( self.sec1.LLG_SEL    )
+            combine_phases = self.getParameter ( self.sec1.PHASES_SEL )
+
+
+        f_bor = open(os.path.join(self.arcimboldoDir(),'setup.bor'),'w')
+        f_bor.write('[CONNECTION]\n')
+        f_bor.write('distribute_computing = %s\n' % (self.distribute_computing) )
+        if self.distribute_computing != "multiprocessing":
+            f_bor.write('setup_bor_path = %s\n' % (self.setup_bor_path) )
+
+        f_bor.write('[GENERAL]\n')
+        f_bor.write('working_directory = %s\n' % (self.arcimboldoDir()) )
+        f_bor.write('mtz_path = %s\n' % (self.mtzinpath) )
+        f_bor.write('hkl_path = %s\n' % (self.input_hkl()) )
+
+        f_bor.write('[ARCIMBOLDO-SHREDDER]\n')
+        f_bor.write('name_job = %s\n' % (self.arcimboldoDir()) )
+        f_bor.write('force_core = %d\n' % (self.number_of_cpus) )
+        f_bor.write('f_label = %s\n' % (self.f_label))
+        f_bor.write('sigf_label = %s\n' % (self.sigf_label))
+        #f_bor.write('i_label = %s\n' % (i_label))
+        #f_bor.write('sigi_label = %s\n' % (sigi_label))
+
+        f_bor.write('molecular_weight = %10.2f\n' % (self.molecular_weight) )
+        f_bor.write('number_of_component = %d\n' % (self.number_of_component) )
+
+        f_bor.write('shred_method: = %s\n' % (shred_method) )
+
+        f_bor.write('model_file = %s\n' % (model_file) )
+        f_bor.write('rmsd_shredder = %6.2f\n' % (rmsd_shredder) )
+        if trim_to_polyala != "auto":
+            f_bor.write('trim_to_polyala = %s\n' % ("True" if trim_to_polyala == "On" else "False"))
+        if bfacnorm != "auto":
+            f_bor.write('bfacnorm = %s\n' % ("True" if bfacnorm == "On" else "False"))
+
+        if shred_method == "spherical":
+            if fragment_size != "":
+                fragment_size = str(fragment_size)
+            else:
+                fragment_size = "default"
+            if maintain_coil != "auto":
+                f_bor.write('sphere_definition = %s 1 %s 7 4 0.45 0.3\n' % (fragment_size, "maintain_coil" if perform_gimble == "On" else "remove_coil"))
+            elif fragment_size != "default":
+                f_bor.write('sphere_definition = %s 1 remove_coil 7 4 0.45 0.3\n' % (fragment_size))
+            if perform_gyre != "auto":
+                f_bor.write('rotation_model_refinement = %s\n' % ("both" if perform_gyre == "On" else "no_gyre"))
+            if perform_gimble != "auto":
+                f_bor.write('gimble = %s\n' % ("True" if perform_gimble == "On" else "False"))
+            if perform_llg != "auto":
+                f_bor.write('occ = %s\n' % ("True" if perform_llg == "On" else "False"))
+            if combine_phases != "auto":
+                f_bor.write('alixe = %s\n' % ("True" if combine_phases == "On" else "False"))
+
+        f_bor.write('[LOCAL]\n')
+        f_bor.write('path_local_phaser = %s/bin/phaser\n' % (self.ccp4_home))
+        f_bor.write('path_local_shelxe = %s/bin/shelxe\n' % (self.ccp4_home))
+
+        return
+
+
     # ------------------------------------------------------------------------
 
     def run(self):
@@ -350,11 +426,15 @@ class Arcimboldo(basic.TaskDriver):
             os.mkdir ( self.arcimboldoDir() )
 
         run_module = "ARCIMBOLDO_LITE"
-        if self.task._type=="TaskArcimboldo":
-            self.make_setup_lite()
-        else:
+        if self.task._type=="TaskArcimboldoBorges":
             run_module = "ARCIMBOLDO_BORGES"
             self.make_setup_borges()
+        elif self.task._type=="TaskArcimboldoShredder":
+            run_module = "ARCIMBOLDO_SHREDDER"
+            self.sec2 = self.task.parameters.sec2.contains
+            self.make_setup_shredder()
+        else:
+            self.make_setup_lite()
 
         with open(os.path.join(self.arcimboldoDir(),"setup.bor"),"r") as f:
             self.stdoutln (
