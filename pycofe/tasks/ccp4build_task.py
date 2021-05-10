@@ -517,7 +517,7 @@ class CCP4Build(basic.TaskDriver):
                     #self.generic_parser_summary["refmac"]     = meta["refmac"]
                     #self.generic_parser_summary["cbuccaneer"] = meta["cbuccaneer"]
                     auto.makeNextTask ( self,{
-                        "revision" : revision,
+                        "revision" : revisions[0],
                         "Rfactor"  : str(m0["R_factor"]),
                         "Rfree"    : str(m0["R_free"])
                     })

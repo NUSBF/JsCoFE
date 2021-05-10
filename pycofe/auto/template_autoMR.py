@@ -34,8 +34,10 @@ from   pycofe.auto   import  template_autoREL
 # Rfree after MRBUMP
 # auto_api.addContext("mrbump_rfree", data["Rfree"])
 
-# Parent task for the build tasks
+# Parent task and revision for the build tasks
 # auto_api.addContext("build_parent", crTask.autoRunName)
+# auto_api.addContext("build_revision"
+
 
 # After Buccaneer
 # auto_api.addContext("buccaneer_rfree", data["Rfree"])
@@ -90,6 +92,7 @@ def makeNextTask ( crTask,data ):
                           'Please carefully examine SIMBAD report to make sure you are currently not solving structure of some contaminant protein.\n'
                 auto_tasks.remark("rem_sorry4", strTree, 7, strText, crTask.autoRunName)  # 7 - Gold - yellow
                 auto_api.addContext("build_parent", crTask.autoRunName)
+                auto_api.addContext("build_revision", data["revision"])
                 auto_tasks.buccaneer("buccAfterSimbad", data["revision"], crTask.autoRunName)
                 return
             else:
@@ -104,6 +107,7 @@ def makeNextTask ( crTask,data ):
                               'You can also try to solve the structure manually using MOLREP or Phaser via carefully crafted search model or ensemle of models.\n'
                     auto_tasks.remark("rem_sorry5", strTree, 9, strText, crTask.autoRunName)  # 9 - Red
                     auto_api.addContext("build_parent", crTask.autoRunName)
+                    auto_api.addContext("build_revision", data["revision"])
                     auto_tasks.buccaneer("buccAfterSimbad", data["revision"], crTask.autoRunName)
                     return
                 else:
@@ -122,6 +126,7 @@ def makeNextTask ( crTask,data ):
                 return
             else:
                 auto_api.addContext("build_parent", crTask.autoRunName)
+                auto_api.addContext("build_revision", data["revision"])
                 auto_tasks.buccaneer ( "buccAfterSimbad",data["revision"],crTask.autoRunName )
                 return
 
@@ -131,7 +136,7 @@ def makeNextTask ( crTask,data ):
         auto_api.addContext("buccaneer_rfree", data["Rfree"])
         auto_api.addContext("buccaneer_taskName", crTask.autoRunName)
         auto_api.addContext("buccaneer_revision", data["revision"])
-        auto_tasks.ccp4build ( "ccp4Build",data["revision"],auto_api.getContext("build_parent") )
+        auto_tasks.ccp4build ( "ccp4Build",auto_api.getContext("build_revision"),auto_api.getContext("build_parent") )
         return
 
 
@@ -142,10 +147,6 @@ def makeNextTask ( crTask,data ):
         else:
             parentTask = crTask.autoRunName
             revision = data["revision"]
-
-        auto_api.log(str(auto_api.getContext("buccaneer_rfree")))
-        auto_api.log(str(auto_api.getContext("buccaneer_taskName")))
-        auto_api.log(str(auto_api.getContext("buccaneer_revision")))
 
         resHi = float(data["revision"].HKL.dataset.RESO[1]) # RESO[0] is low res limit
         if resHi > 3.0:
@@ -188,6 +189,7 @@ def makeNextTask ( crTask,data ):
                                   'You can also try to solve the structure manually using MOLREP or Phaser via carefully crafted search model or ensemle of models.\n'
                         auto_tasks.remark("rem_sorry1", strTree, 9, strText, crTask.autoRunName)  # 9 - Red
                         auto_api.addContext("build_parent", crTask.autoRunName)
+                        auto_api.addContext("build_revision", data["revision"])
                         auto_tasks.buccaneer("buccAfterMRBUMP_noMorda", data["revision"], crTask.autoRunName)
                         return
                     else:
@@ -219,6 +221,7 @@ def makeNextTask ( crTask,data ):
         if crTask.autoRunName == 'jellyAfterMorda':
             if float(data["Rfree"])<0.4:
                 auto_api.addContext("build_parent", crTask.autoRunName)
+                auto_api.addContext("build_revision", data["revision"])
                 auto_tasks.buccaneer("buccAfterMorda", data["revision"], crTask.autoRunName)
                 return
             elif float(data["Rfree"]) > 0.5:
@@ -237,6 +240,7 @@ def makeNextTask ( crTask,data ):
                               'You can also try to solve the structure manually using MOLREP or Phaser via carefully crafted search model or ensemle of models.\n'
                     auto_tasks.remark("rem_sorry2", strTree, 9, strText, crTask.autoRunName)  # 9 - Red
                     auto_api.addContext("build_parent", crTask.autoRunName)
+                    auto_api.addContext("build_revision", data["revision"])
                     auto_tasks.buccaneer("buccAfterMorda", data["revision"], crTask.autoRunName)
                     return
                 else:
