@@ -264,7 +264,7 @@ class Deposition(basic.TaskDriver):
         shutil.copy2 ( sfCIF,sfCIF + ".sav" )
 
         worked = False
-        if istruct.refiner!="buster":
+        if not hasattr(istruct,"refiner") or istruct.refiner!="buster":
             try:
                 worked = run_process ( input_mmcif  = xyzout_cif,
                                        output_mmcif = deposition_cif,
