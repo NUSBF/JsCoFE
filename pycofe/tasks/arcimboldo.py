@@ -448,7 +448,7 @@ class Arcimboldo(basic.TaskDriver):
             f.write (
                 "<html><head><title>Report is being generated</title>" +\
                 "<meta http-equiv=\"refresh\" content=\"90\" /></head>" +\
-                "<body class=\"main-page\">&nbsp;<p><h2><i>Report is being generated ....</i></h2>" +\
+                "<body class=\"main-page\">  &nbsp;  <p><h2><i>Report is being generated ....</i></h2>" +\
                 "</body></html>"
             )
         self.insertTab   ( "arcimboldo_report","Arcimboldo Report",None,True )
