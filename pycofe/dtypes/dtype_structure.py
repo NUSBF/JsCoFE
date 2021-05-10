@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    27.02.21   <--  Date of Last Modification.
+#    10.05.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -80,6 +80,8 @@ class DType(dtype_xyz.DType):
             self.links          = []     # List of links without description
 
             self.mapLabels      = None;  # used in UglyMol widgets
+
+            self.refiner        = ""     # refinement program used
 
         return
 

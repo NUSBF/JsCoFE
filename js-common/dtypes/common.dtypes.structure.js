@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.10.20   <--  Date of Last Modification.
+ *    10.05.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Common Client/Server Modules -- Structure Data Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2020
+ *  (C) E. Krissinel, A. Lebedev 2016-2021
  *
  *  =================================================================
  *
@@ -82,6 +82,8 @@ function DataStructure()  {
   this.links          = [];    // list of LINK records
 
   this.mapLabels      = null;  // used in UglyMol widgets
+
+  this.refiner        = '';    // refinement program used
 
 }
 
