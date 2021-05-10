@@ -2071,7 +2071,7 @@ class TaskDriver(object):
         msg = '<h2><i>Job Driver Failure</i></h2>'
         msg += '<p>Catched error:<pre>' + trace + '</pre>'
         msg += """
-        <p>This is an internal error, which may be caused by different
+        <p>This is an internal error, which may be caused by various
         sort of hardware and network malfunction, but most probably due
         to a bug or not anticipated properties of input data.
         """
