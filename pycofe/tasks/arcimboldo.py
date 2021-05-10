@@ -347,7 +347,7 @@ class Arcimboldo(basic.TaskDriver):
         f_bor.write('molecular_weight = %10.2f\n' % (self.molecular_weight) )
         f_bor.write('number_of_component = %d\n' % (self.number_of_component) )
 
-        f_bor.write('shred_method: = %s\n' % (shred_method) )
+        f_bor.write('shred_method = %s\n' % (shred_method) )
 
         f_bor.write('model_file = %s\n' % (model_file) )
         f_bor.write('rmsd_shredder = %6.2f\n' % (rmsd_shredder) )
