@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    03.05.21   <--  Date of Last Modification.
+ *    10.05.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -544,8 +544,6 @@ var row      = 0;
     new TaskBalbes(),
     'No-sequence methods',
     new TaskSimbad(),
-    new TaskArcimboldo(),
-    new TaskArcimboldoBorges(),
     'No-model methods',
     new TaskAmple ()
   ]);
@@ -561,6 +559,12 @@ var row      = 0;
     'Fundamental MR',
     new TaskPhaserMR(),
     new TaskMolrep  ()
+  ]);
+
+  this.makeSection ( 'Fragment-Based Molecular Replacement',[
+    new TaskArcimboldoLite(),
+    new TaskArcimboldoBorges(),
+    new TaskArcimboldoShredder()
   ]);
 
   this.makeSection ( 'Experimental Phasing',[
