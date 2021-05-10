@@ -215,17 +215,7 @@ def importLocal_P9(driver, dirName, waitShort=90):
     seqFileName = os.path.join(dirName, 'p9_sca', 'p9.seq')
 
     projectInputs = driver.find_elements_by_xpath("//input[contains(@id,'input') and @type='file' and contains(@name,'uploads[]')]")
-    projectInputs[-1].send_keys(seqFileName)
-    time.sleep(2)
-
-    clickByXpath(driver, "//button[normalize-space()='Apply & Upload']")
-    time.sleep(5)
-    clickByXpath(driver, "//button[normalize-space()='Upload more files']")
-    time.sleep(2)
-
-    projectInputs = driver.find_elements_by_xpath("//input[contains(@id,'input') and @type='file' and contains(@name,'uploads[]')]")
     projectInputs[-1].send_keys(scaFileName)
-    time.sleep(2)
     inputWaveLength = driver.find_elements_by_xpath("//input[@type='text']")
     inputWaveLength[-1].click()
     inputWaveLength[-1].clear()
@@ -234,6 +224,20 @@ def importLocal_P9(driver, dirName, waitShort=90):
 
     clickByXpath(driver, "//button[normalize-space()='Apply & Upload']")
     time.sleep(5)
+    clickByXpath(driver, "//button[normalize-space()='Upload more files']")
+    time.sleep(2)
+
+    projectInputs = driver.find_elements_by_xpath("//input[contains(@id,'input') and @type='file' and contains(@name,'uploads[]')]")
+    projectInputs[-1].send_keys(seqFileName)
+    inputWaveLength = driver.find_elements_by_xpath("//input[@type='text']")
+    inputWaveLength[-1].click()
+    inputWaveLength[-1].clear()
+    inputWaveLength[-1].send_keys('1.2')
+    time.sleep(1)
+    clickByXpath(driver, "//button[normalize-space()='Apply & Upload']")
+    time.sleep(5)
+    time.sleep(2)
+
     clickByXpath(driver, "//button[normalize-space()='Finish import']")
     time.sleep(2)
 
