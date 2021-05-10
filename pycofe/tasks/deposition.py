@@ -277,8 +277,9 @@ class Deposition(basic.TaskDriver):
         if not worked:
             self.putMessage (
                 "<hr/><h3>Note:</h3>" +\
-                "<i>Coordinate model was not added with sequence data. Provide " +\
-                "target sequence(s) at the depositon web-site when asked.</i>" +\
+                "<i>Coordinate model was not added with sequence data due to " +\
+                "a technical issue. Provide target sequence(s) at depositon "  +\
+                "when asked.</i>" +\
                 "<hr/>" )
             self.stderr ( " *** EBI deposition script failed" )
             shutil.copy2 ( xyzout_cif,deposition_cif )
