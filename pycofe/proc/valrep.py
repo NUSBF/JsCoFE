@@ -21,65 +21,69 @@ def getValidationReport ( modelFilePath,sfFilePath,repFilePath,logfile ):
     # Given:
     # modelFilePath contains the path to the model file
     # sfFilePath contains the path to the structure factor file
-    val = Validate ( apiUrl=__apiUrl__ )
-    rD  = val.newSession()
-    rc  = checkStatus ( rD,logfile )
-    msg = ""
-    if not rc:
-
-        logfile.write (
-            "\n =================================================================="
-            "\n OBTAIN VALIDATION REPORT FROM WWPDB"
-            "\n =================================================================="
-            "\n"
-            "\n Session ID        : " + str(rD['session_id']) +
-            "\n Model             : " + modelFilePath +
-            "\n Structure Factors : " + sfFilePath +
-            "\n \n"
-        )
-        logfile.flush()
-
-        rD = val.inputModelXyzFile(modelFilePath)
-        rc = checkStatus ( rD,logfile )
+    try:
+        val = Validate ( apiUrl=__apiUrl__ )
+        rD  = val.newSession()
+        rc  = checkStatus ( rD,logfile )
+        msg = ""
         if not rc:
-            rD = val.inputStructureFactorFile ( sfFilePath )
+
+            logfile.write (
+                "\n =================================================================="
+                "\n OBTAIN VALIDATION REPORT FROM WWPDB"
+                "\n =================================================================="
+                "\n"
+                "\n Session ID        : " + str(rD['session_id']) +
+                "\n Model             : " + modelFilePath +
+                "\n Structure Factors : " + sfFilePath +
+                "\n \n"
+            )
+            logfile.flush()
+
+            rD = val.inputModelXyzFile(modelFilePath)
             rc = checkStatus ( rD,logfile )
             if not rc:
-                rD = val.run()
+                rD = val.inputStructureFactorFile ( sfFilePath )
                 rc = checkStatus ( rD,logfile )
                 if not rc:
-                    #
-                    #   Poll for service completion -
-                    #
-                    it = 0
-                    sl = 2
-                    while (True):
-                        #    Pause -
-                        it += 1
-                        pause = it * it * sl
-                        time.sleep(pause)
-                        rD = val.getStatus()
-                        if rD['status'] in ['completed', 'failed']:
-                            break
-                        logfile.write ( "[%4d] Pausing for %4d (seconds)\n" % (it, pause) )
-                        logfile.flush()
-
-                    #lt = time.strftime("%Y%m%d%H%M%S", time.localtime())
-                    #fnR = "xray-report-%s.pdf" % lt
-                    #rD = val.getReport(fnR)
-                    rD = val.getReport ( repFilePath )
+                    rD = val.run()
                     rc = checkStatus ( rD,logfile )
                     if not rc:
-                        msg = " --- success"
+                        #
+                        #   Poll for service completion -
+                        #
+                        it = 0
+                        sl = 2
+                        while (True):
+                            #    Pause -
+                            it += 1
+                            pause = it * it * sl
+                            time.sleep(pause)
+                            rD = val.getStatus()
+                            if rD['status'] in ['completed', 'failed']:
+                                break
+                            logfile.write ( "[%4d] Pausing for %4d (seconds)\n" % (it, pause) )
+                            logfile.flush()
 
+                        #lt = time.strftime("%Y%m%d%H%M%S", time.localtime())
+                        #fnR = "xray-report-%s.pdf" % lt
+                        #rD = val.getReport(fnR)
+                        rD = val.getReport ( repFilePath )
+                        rc = checkStatus ( rD,logfile )
+                        if not rc:
+                            msg = " --- success"
+
+                    else:
+                        msg = " *** validation run failed"
                 else:
-                    msg = " *** validation run failed"
+                    msg = " *** structure factors upload failed"
             else:
-                msg = " *** structure factors upload failed"
+                msg = " *** model upload failed"
         else:
-            msg = " *** model upload failed"
-    else:
-        msg = " *** cannot create validation session"
+            msg = " *** cannot create validation session"
+    except:
+        msg = " *** exception thrown"
+        rc  = 11111
 
     if not rc:
         logfile.write ( " --- success\n" )
