@@ -274,6 +274,13 @@ class Deposition(basic.TaskDriver):
             except:
                 worked = False
 
+        # worked = run_process ( input_mmcif  = xyzout_cif,
+        #                        output_mmcif = deposition_cif,
+        #                        fasta_file   = deposition_fasta,
+        #                        #sf_file      = sfCIF,
+        #                        xml_file     = aimless_meta )
+
+
         if not worked:
             self.putMessage (
                 "<hr/><h3>Note:</h3>" +\

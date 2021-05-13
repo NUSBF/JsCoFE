@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    23.10.20   <--  Date of Last Modification.
+ *    13.05.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  ASU Definition Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2019-2020
+ *  (C) E. Krissinel, A. Lebedev 2019-2021
  *
  *  =================================================================
  *
@@ -260,15 +260,19 @@ if (!__template)  {
 
     __template.TaskTemplate.prototype.makeOutputData.call ( this,jobDir );
 
-    var revision = this.input_data.data['revision'][0];
+    if (('revision' in this.input_data.data) && (this.input_data.data['revision']>0))  {
+      var revision = this.input_data.data['revision'][0];
 
-    this.input_data.addData ( revision.HKL );
-    if (revision.ASU.seq.length>0)
-      this.input_data.addData ( revision.ASU.seq[0] );
-    if (revision.Structure)
-      this.input_data.addData ( revision.Structure );
-    if (revision.Substructure)
-      this.input_data.addData ( revision.Substructure );
+      this.input_data.addData ( revision.HKL );
+      if (revision.ASU.seq.length>0)
+        this.input_data.addData ( revision.ASU.seq[0] );
+      if (revision.Structure)
+        this.input_data.addData ( revision.Structure );
+      if (revision.Substructure)
+        this.input_data.addData ( revision.Substructure );
+
+    } else
+      console.log ( ' **** ' + this._type + ': no revision in input data -- fatal' );
 
   }
 
