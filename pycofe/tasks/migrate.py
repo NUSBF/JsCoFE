@@ -230,7 +230,7 @@ class Migrate(import_task.Import):
                             self.hotHelpLink ( "Structure","jscofe_qna.structure") )
         else:
             self.putTitle   ( "Hop on " + self.appName() + " failed" )
-            self.putMessage ( "No structure could be formed.<br>" +
+            self.putMessage ( "No structure could be formed.<br>" +\
                               "<i>Check your data</i>" )
             # close execution logs and quit
             self.success ( have_results )
