@@ -1,7 +1,7 @@
 /*
  *  ========================================================================
  *
- *    19.02.21   <--  Date of Last Modification.
+ *    13.05.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  ------------------------------------------------------------------------
  *
@@ -71,8 +71,10 @@ var _taskIndex = {
   'L'  : { type: 'TaskMrBump'          , after: ['H'] },
 
   // do not suggest CPU-intensive tasks by default
-  'L1' : { type: 'TaskAmple'           , after: [] },
-  'L2' : { type: 'TaskArcimboldoLite'      , after: [] },
+  'L1' : { type: 'TaskAmple'             , after: [] },
+  'L2' : { type: 'TaskArcimboldoLite'    , after: [] },
+  'L3' : { type: 'TaskArcimboldoBorges'  , after: [] },
+  'L4' : { type: 'TaskArcimboldoShredder', after: [] },
 
   // suggest Phaser-MR and Molrep after ASUDef; do suggest them after
   // themselves (in case of domain-after domain phasing); do not suggest them
