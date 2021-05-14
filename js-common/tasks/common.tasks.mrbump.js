@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    26.02.21   <--  Date of Last Modification.
+ *    14.05.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -61,30 +61,63 @@ function TaskMrBump()  {
   ];
 
   this.parameters = { // input parameters
-    SEP1_LBL      : {
-            type     : 'label',
-            label    : '<hr/>',
-            position : [0,0,1,5]
-          },
-    ALTGROUPS_CBX : {
-            type     : 'checkbox',
-            label    : 'Check alternative space groups',
-            tooltip  : 'Check to explore compatible space groups',
-            value    : false,
-            position : [1,0,1,3]
-          },
-    SEP2_LBL      : {
-            type     : 'label',
-            label    : '&nbsp;<br>* <font style="font-size:80%">Development option -- not for regular use</font>',
-            position : [2,0,1,3]
-          },
-    DEVMODE_CBX  : {
-          type      : 'checkbox',
-          label     : 'Development mode',
-          tooltip   : 'Switches on experimental features -- use at own risk.',
-          value     : false,
-          position  : [3,0,1,3]
-        }
+    SEP_LBL : {
+              type     : 'label',
+              label    : '&nbsp;',
+              position : [0,0,1,5]
+            },
+    sec1 :  { type     : 'section',
+              title    : 'Parameters',
+              open     : true,  // true for the section to be initially open
+              position : [1,0,1,5],
+              contains : {
+                // SEP1_LBL      : {
+                //         type     : 'label',
+                //         label    : '<hr/>',
+                //         position : [0,0,1,5]
+                //       },
+                ALTGROUPS_CBX : {
+                        type     : 'checkbox',
+                        label    : 'Check alternative space groups',
+                        tooltip  : 'Check to explore compatible space groups',
+                        value    : false,
+                        position : [0,0,1,3]
+                      },
+                RLEVEL_SEL : {
+                        type     : 'combobox',
+                        keyword  : 'RLEVEL',
+                        label    : 'Redundancy level',
+                        tooltip  : 'Choose appropriate redundancy level for ' +
+                                   'keeping hits in the list of matches. ',
+                        range    : ['ALL|All','100|100%','95|95%','90|90%','70|70%','50|50%'],
+                        value    : '100',
+                        iwidth   : 100,
+                        position : [1,0,1,1]
+                      },
+                 MRNUM : {
+                        type     : 'integer',
+                        keyword  : 'MRNUM',
+                        label    : 'Maximum no. of models to test',
+                        tooltip  : 'Maximum number of search models to test',
+                        range    : [1,'*'],
+                        value    : 20,
+                        iwidth   : 40,
+                        position : [2,0,1,1]
+                      }
+                // SEP2_LBL      : {
+                //         type     : 'label',
+                //         label    : '&nbsp;<br>* <font style="font-size:80%">Development option -- not for regular use</font>',
+                //         position : [2,0,1,3]
+                //       },
+                // DEVMODE_CBX  : {
+                //       type      : 'checkbox',
+                //       label     : 'Development mode',
+                //       tooltip   : 'Switches on experimental features -- use at own risk.',
+                //       value     : false,
+                //       position  : [3,0,1,3]
+                //     }
+              }
+            }
   };
 
 

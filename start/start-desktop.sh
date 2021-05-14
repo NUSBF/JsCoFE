@@ -12,7 +12,8 @@ xdsgui_dir=/usr/local/bin
 
 source $ccp4_dir/bin/ccp4.setup-sh
 #source $morda_dir/morda_env_osx_sh
-export PDB_DIR=$pdb_dir
+
+# export PDB_DIR=$pdb_dir
 export GESAMT_ARCHIVE=$gesamt_dir
 #export JSPISA_CFG=$CCP4/share/pisa/jspisa.cfg
 export XDS_home=$xds_dir

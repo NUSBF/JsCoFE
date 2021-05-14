@@ -1052,6 +1052,10 @@ function writeJobStats ( jobEntry )  {
           '--------------------------------\n';
     }
 
+    var wfId = jobClass.autoRunId;
+    if (wfId)
+      wfId = '[' + wfId + ']:';
+
     S += com_utils.padDigits ( feJobRegister.n_jobs+1,6 ) + ' ' +
 
          '['   + new Date(t).toUTCString() +
@@ -1064,11 +1068,11 @@ function writeJobStats ( jobEntry )  {
          com_utils.padDigits ( ds,2 ) + ' ' +
 
          com_utils.padDigits ( jobEntry.nc_number.toString(),3 ) + ' ' +
-         com_utils.padStringRight ( jobClass.state,' ',8 )       + ' ' +
+         com_utils.padStringRight ( jobClass.state,' ',-8 )      + ' ' +
 
          com_utils.padStringRight ( jobEntry.loginData.login +
                 ' (' + userRation.jobs_total + ')',' ',20 ) +
-                    ' ' + jobClass.title + '\n';
+                    ' ' + wfId + jobClass.title + '\n';
 
     utils.appendString ( fpath,S );
 

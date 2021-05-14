@@ -22,17 +22,9 @@ def getValidationReport ( modelFilePath,sfFilePath,repFilePath,logfile ):
     # modelFilePath contains the path to the model file
     # sfFilePath contains the path to the structure factor file
     try:
-        logfile.write ( 'p1\n' )
-        logfile.flush()
         val = Validate ( apiUrl=__apiUrl__ )
-        logfile.write ( 'p2\n' )
-        logfile.flush()
         rD  = val.newSession()
-        logfile.write ( 'p3\n' )
-        logfile.flush()
         rc  = checkStatus ( rD,logfile )
-        logfile.write ( 'p4\n' )
-        logfile.flush()
         msg = ""
         if not rc:
 
