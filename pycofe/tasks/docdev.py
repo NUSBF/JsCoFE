@@ -69,6 +69,8 @@ class DocDev(basic.TaskDriver):
 
         self.stdoutln ( "PYTHONPATH="+os.environ["PYTHONPATH"] )
 
+        # os.environ["PYTHONPATH"] = ""
+
         theme = self.getParameter ( self.task.parameters.THEME_SEL )
 
         script = "#!/bin/bash" +\
