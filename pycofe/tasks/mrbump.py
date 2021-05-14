@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    04.05.21   <--  Date of Last Modification.
+#    14.05.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -94,11 +94,12 @@ class MrBump(basic.TaskDriver):
         # make a file with input script
         self.open_stdin()
 
-        sgmode  = self.getCheckbox ( self.task.parameters.ALTGROUPS_CBX,
-                                     checkVisible=True )
-        devmode = self.getCheckbox ( self.task.parameters.DEVMODE_CBX,
-                                     checkVisible=True )
+        sec1 = self.task.parameters.sec1.contains
 
+        sgmode  = self.getCheckbox ( sec1.ALTGROUPS_CBX,checkVisible=True )
+        # devmode = self.getCheckbox ( self.task.parameters.DEVMODE_CBX,
+        #                              checkVisible=True )
+        devmode = False
         if devmode:
             self.write_stdin ([
                 "JOBID " + self.outdir_name(),
@@ -131,21 +132,23 @@ class MrBump(basic.TaskDriver):
                 "MDLU False",
                 "MRPROG molrep phaser",
                 "SHELX False",
-                "BUCC True",
+                "BUCC False",
                 "BCYC 5",
                 "ARPW False",
                 checkLine,
                 "UPDATE False",
                 "PICKLE False",
-                "MRNUM 10",
+                "MRNUM " + self.getParameter ( sec1.MRNUM ),
                 "SGALL " + str(sgmode),
-                "USEE True",
+                "USEE False",
                 "SCOP False",
-                "DEBUG True",
-                "RLEVEL 100",
-                "GESE True",
+                "DEBUG False",
+                "RLEVEL " + self.getParameter ( sec1.RLEVEL_SEL ),
+                "GESE False",
                 "GEST False",
                 "AMPT False",
+                "PHAQ True",
+                "PJOBS 1",
                 pdbLine + \
                 "LABIN F=" + hkl.dataset.Fmean.value + \
                   " SIGF=" + hkl.dataset.Fmean.sigma + \

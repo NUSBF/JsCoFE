@@ -64,9 +64,12 @@ var L = S;
 }
 
 function padStringRight ( S,char,n ) {
-var L = S;
-  while (L.length<n)
+var L  = S;
+var an = Math.abs(n)
+  while (L.length<an)
     L += char;
+  if ((n<0) && (L.length>an))
+    return L.substring(0,an);
   return L;
 }
 
