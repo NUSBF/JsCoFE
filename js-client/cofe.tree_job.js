@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    29.04.21   <--  Date of Last Modification.
+ *    15.05.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -256,7 +256,8 @@ JobTree.prototype.readProjectData = function ( page_title,
         if (author==__login_id)  author  = '';
                            else  author += ':';
         var root_title =
-                '<b>' + author + '[' + tree.projectData.desc.name  + ']</b> ' +
+                '<b style="color:blue;">' + author +
+                '[' + tree.projectData.desc.name  + ']</b> ' +
                 '<i>' + tree.projectData.desc.title + '</i>'
 
         if (tree.projectData.tree.length<=0)  {
@@ -266,7 +267,8 @@ JobTree.prototype.readProjectData = function ( page_title,
         } else  {
 
           // enforce title of root node just in case it was renamed
-          tree.projectData.tree[0].text = root_title;
+          // tree.projectData.tree[0].text = root_title;
+          data.meta.tree[0].text = root_title;
 
           //tree.setNodes ( tree.projectData.tree );
           tree.setNodes ( data.meta.tree );

@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    08.05.21   <--  Date of Last Modification.
+#    15.05.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -89,17 +89,16 @@ class Deposition(basic.TaskDriver):
             eol_tasks = eol_dict["list"]
 
 
-        # 1. Use zero cycles of Refmac just to produce the final CIF file
-
-        xyzout_cif    = istruct.getMMCIFFilePath ( self.inputDir() )
-        pdbdep_header = "<h3><i>1. PDB Deposition</i></h3>"
+        header_cnt = 1
+        xyzout_cif = istruct.getMMCIFFilePath ( self.inputDir() )
 
         if not xyzout_cif:
+            #  Use zero cycles of Refmac just to produce the final CIF file
             #  this branch is deprecated
 
-            pdbdep_header = "&nbsp;<h3><i>PDB Deposition</i></h3>"
-
-            self.putMessage ( "<h3><i>1. Prepare Deposition Files</i></h3>" )
+            self.putMessage ( "<h3><i>" + str(header_cnt) +\
+                ". Prepare Coordinate Deposition File in mmCIF Format</i></h3>" )
+            header_cnt = header_cnt + 1
 
             self.open_stdin()
             self.write_stdin ( "pdbout format mmcif\n" +\
@@ -188,6 +187,7 @@ class Deposition(basic.TaskDriver):
                 self.putStructureWidget   ( "structure_btn_",
                                             "Structure and electron density",
                                             structure )
+            self.putMessage ( "&nbsp;" )
 
         # 2. Prepare CIF with structure factors
 
@@ -241,31 +241,42 @@ class Deposition(basic.TaskDriver):
             self.file_stdout.write ( "aimles meta NOT found\n" )
         #aimless_meta = None  #  to be removed when EBI deposition module is fixed
 
-        deposition_fasta = self.getOFName ( ".fasta" )
-        dtype_sequence.writeMultiSeqFile1 ( deposition_fasta,seq,self.inputDir() )
-        # deposition_cif   = os.path.join ( self.outputDir(),self.getOFName(".cif") )
-
         deposition_cif = os.path.join ( self.outputDir(),self.task.project + "_" +\
                     dtype_template.makeFileName ( self.job_id,self.dataSerialNo,
                                                   self.getOFName(".cif") ) )
 
-        self.file_stdout.write ( "\n" +\
-            " =============================================================\n" +\
-            " RUNNING DATA PREPARATION SCRIPT FROM EBI\n" +\
-            "    input_mmcif  = " + xyzout_cif + "\n" +\
-            "    output_mmcif = " + deposition_cif + "\n" +\
-            "    fasta_file   = " + deposition_fasta + "\n" +\
-            "    sf_file      = " + sfCIF + "\n" +\
-            "    xml_file     = " + str(aimless_meta) + "\n"
-        )
-
-        self.flush()
-        shutil.copy2 ( xyzout_cif,xyzout_cif + ".sav" )
-        shutil.copy2 ( sfCIF,sfCIF + ".sav" )
+        deposition_fasta = self.getOFName ( ".fasta" )
+        if len(seq)>0:
+            dtype_sequence.writeMultiSeqFile1 ( deposition_fasta,seq,self.inputDir() )
+        elif hasattr(self.task.parameters,"SEQUENCE_TA"):
+            s = self.getParameter(self.task.parameters.SEQUENCE_TA).strip()
+            self.stdoutln ( " >>>>>> " + s )
+            if s:
+                with open(deposition_fasta,"w") as f:
+                    f.write ( s )
+            else:
+                deposition_fasta = None
+        else:
+            deposition_fasta = None
 
         worked = False
-        if not hasattr(istruct,"refiner") or istruct.refiner!="buster":
+        if (not hasattr(istruct,"refiner") or istruct.refiner!="buster") and deposition_fasta:
             try:
+
+                self.file_stdout.write ( "\n" +\
+                    " =============================================================\n" +\
+                    " RUNNING DATA PREPARATION SCRIPT FROM EBI\n" +\
+                    "    input_mmcif  = " + xyzout_cif + "\n" +\
+                    "    output_mmcif = " + deposition_cif + "\n" +\
+                    "    fasta_file   = " + deposition_fasta + "\n" +\
+                    "    sf_file      = " + sfCIF + "\n" +\
+                    "    xml_file     = " + str(aimless_meta) + "\n"
+                )
+
+                self.flush()
+                shutil.copy2 ( xyzout_cif,xyzout_cif + ".sav" )
+                shutil.copy2 ( sfCIF,sfCIF + ".sav" )
+
                 worked = run_process ( input_mmcif  = xyzout_cif,
                                        output_mmcif = deposition_cif,
                                        fasta_file   = deposition_fasta,
@@ -282,12 +293,20 @@ class Deposition(basic.TaskDriver):
 
 
         if not worked:
-            self.putMessage (
-                "<hr/><h3>Note:</h3>" +\
-                "<i>Coordinate model was not added with sequence data due to " +\
-                "a technical issue. Provide target sequence(s) at depositon "  +\
-                "when asked.</i>" +\
-                "<hr/>" )
+            if deposition_fasta:
+                self.putMessage (
+                    "<hr/><h3>Note:</h3>" +\
+                    "<i>Coordinate model was not added with sequence data due to " +\
+                    "a technical issue.<br>Provide target sequence(s) at depositon "  +\
+                    "when asked.</i>" +\
+                    "<hr/>" )
+            else:
+                self.putMessage (
+                    "<hr/><h3>Note:</h3>" +\
+                    "<i>Coordinate model was not added with sequence data because " +\
+                    "it was not found in project and was not given on input.<br>" +\
+                    "Provide target sequence(s) at depositon when asked.</i>" +\
+                    "<hr/>" )
             self.stderr ( " *** EBI deposition script failed" )
             shutil.copy2 ( xyzout_cif,deposition_cif )
             # self.fail ( "<b><i>Failed to create coordinate model file for deposition</i></b>",
@@ -299,7 +318,10 @@ class Deposition(basic.TaskDriver):
 
         # 4. Put download widgets
 
-        self.putMessage ( pdbdep_header + "<b>a) Download the following files:<br><hr/>" )
+        self.putMessage ( "<h3><i>" + str(header_cnt) + ". PDB Deposition</i></h3>" )
+        header_cnt = header_cnt + 1
+
+        self.putMessage ( "<b>a) Download the following files:<br><hr/>" )
 
         grid_id = self.getWidgetId ( self.dep_grid() )
         self.putGrid ( grid_id )
@@ -321,7 +343,8 @@ class Deposition(basic.TaskDriver):
 
         # 5. Obtain validation report from the PDB
 
-        self.putMessage ( "&nbsp;<p><h3><i>2. Validation Report</i></h3>" )
+        self.putMessage ( "&nbsp;<p><h3><i>" + str(header_cnt) +
+                          ". Validation Report</i></h3>" )
         self.flush()
 
         if not self.have_internet():

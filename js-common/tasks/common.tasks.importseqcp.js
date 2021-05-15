@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    03.03.21   <--  Date of Last Modification.
+ *    15.05.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -110,7 +110,7 @@ if (!__template)  {
 
     var input_msg = TaskTemplate.prototype.collectInput.call ( this,inputPanel );
 
-    var msg = []
+    var msg = [];
     if (this.parameters.SEQTYPE_SEL.value=='none')
       msg.push ( 'Sequence type must be chosen' );
 
@@ -118,7 +118,7 @@ if (!__template)  {
     if (!s)
       msg.push ( 'Sequence data is not given' );
     else if (!startsWith(s,'>'))
-      msg.push ( 'Sequence data is not valid' );
+      msg.push ( 'Sequence data format is not valid' );
 
     if (msg.length>0)  {
       if (input_msg)
