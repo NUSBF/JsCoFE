@@ -173,9 +173,19 @@ TaskListDialog.prototype.setTask = function ( task_obj,grid,row,setall )  {
                 .setSize_px ( 54,40 );
   grid.setLabel             ( ' ', row,1,1,1 );
   var title = task_obj.title.replace ( 'Workflow: ','' );
-  if (avail_key[0]!='ok')
-    title += '<br><i><span style="font-size:14px;">** ' + avail_key[1] + '</i></span>';
-    //title += '<br><i><font size="-1">** ' + avail_key[1] + '</font></i>';
+  if (avail_key[0]!='ok')  {
+    // title += '<br><span style="font-size:14px;"><i>** ' + avail_key[1] + '</i></span>';
+    // title += '<br><i><font size="-1">** ' + avail_key[1] + '</font></i>';
+    title = '<div style="line-height:16px;">' + title  +
+            '<br><span style="font-size:13px;"><i>** ' + avail_key[1] +
+            '</i></span></div>';
+  } else  {
+    var desc_title = task_obj.desc_title();
+    if (desc_title)
+      title = '<div style="line-height:16px;padding-top:4px;">' + title  +
+              '<br><span style="font-size:13px;color:gray;">&nbsp;&nbsp;<i>-- ' + desc_title +
+              '</i></span></div>';
+  }
   var lbl = grid.setLabel   ( title,row,2,1,1 );
   grid.setNoWrap            ( row,2 );
   grid.setVerticalAlignment ( row,2,'middle' );

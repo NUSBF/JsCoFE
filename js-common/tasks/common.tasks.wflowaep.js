@@ -150,6 +150,9 @@ TaskWFlowAEP.prototype.constructor = TaskWFlowAEP;
 // ===========================================================================
 
 TaskWFlowAEP.prototype.icon = function()  { return 'task_wflowaep'; }
+TaskWFlowAEP.prototype.desc_title = function()  {
+  return 'data import, ASU definition, automatic EP, refinement, ligand fitting and PDB deposition';
+}
 
 //TaskWFlowAEP.prototype.canRunInAutoMode = function() { return true; }
 
