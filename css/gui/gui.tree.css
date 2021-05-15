@@ -46,6 +46,22 @@
   background-size: 24px 24px !important;
 }
 
+
+.jstree-leaf {
+ font-size: 16px;
+ height: 28px;
+}
+
+/*
+.jstree-leaf a.jstree-hovered {
+ height: 30px;
+}
+
+.jstree-leaf a.jstree-clicked {
+ height: 30px;
+}
+*/
+
 /* .context-menu-item{font-family:Times New Roman;line-height:12px;}
 
 .tree-default-context {

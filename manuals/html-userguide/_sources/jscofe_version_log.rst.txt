@@ -24,7 +24,13 @@ CCP4 Cloud Version Log
 
     #. Multiple target sequences are allowed in ``MrBump`` auto-MR pipeline, as well as ``auto-MR`` and ``auto-EP`` workflows
 
-    #. Documentation updates
+    #. Documentation updates 
+
+    #. Fixed bug which did not allow to unjoin shared projects
+
+    #. ``MrBump`` task modified
+
+    #. Fixed bug in making PDB deposition package from ``Buster`` data
 
 
 **Version 1.6.021**

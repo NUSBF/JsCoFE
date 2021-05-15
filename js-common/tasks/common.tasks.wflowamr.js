@@ -140,6 +140,9 @@ TaskWFlowAMR.prototype.constructor = TaskWFlowAMR;
 // ===========================================================================
 
 TaskWFlowAMR.prototype.icon = function()  { return 'task_wflowamr'; }
+TaskWFlowAMR.prototype.desc_title = function()  {
+  return 'data import, ASU definition, automatic MR, refinement, ligand fitting and PDB deposition';
+}
 
 //TaskWFlowAMR.prototype.canRunInAutoMode = function() { return true; }
 

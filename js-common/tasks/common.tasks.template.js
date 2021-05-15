@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    02.04.21   <--  Date of Last Modification.
+ *    15.05.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -------------------------------------------------------------------------
  *
@@ -144,6 +144,9 @@ function TaskTemplate()  {
 // ===========================================================================
 
 TaskTemplate.prototype.icon = function()  { return 'process'; }
+TaskTemplate.prototype.desc_title = function()  {
+  return '';  //'this appears under task title in the task list';
+}
 
 // task.platforms() identifies suitable platforms:
 //   'W"  : Windows

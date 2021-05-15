@@ -156,6 +156,9 @@ TaskWFlowREL.prototype.constructor = TaskWFlowREL;
 // ===========================================================================
 
 TaskWFlowREL.prototype.icon = function()  { return 'task_wflowrel'; }
+TaskWFlowREL.prototype.desc_title = function()  {
+  return 'refinement, ligand fitting and PDB deposition, starting from a phased structure';
+}
 
 //TaskWFlowREL.prototype.canRunInAutoMode = function() { return true; }
 
