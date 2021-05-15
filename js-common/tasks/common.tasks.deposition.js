@@ -38,7 +38,7 @@ function TaskDeposition()  {
   //this.helpURL = './html/jscofe_task_deposition.html';
 
   this.input_dtypes = [{  // input data types
-      data_type : {'DataRevision':['!xyz','!seq']}, // data type(s) and subtype(s)
+      data_type : {'DataRevision':['!xyz']}, // data type(s) and subtype(s)
       label     : 'Structure revision',     // label for input dialog
       inputId   : 'revision', // input Id for referencing input fields
       version   : 4,          // minimum data version allowed
@@ -46,6 +46,48 @@ function TaskDeposition()  {
       max       : 1           // maximum acceptable number of data instances
     }
   ];
+
+  this.parameters = {
+    _label : {
+          type        : 'label',
+          label       : '<b><i>Target sequence(s):<br>&nbsp;<br>&nbsp;<br>&nbsp;' +
+                        '<br>&nbsp;<br>&nbsp;<br>&nbsp;<br>&nbsp;<br>&nbsp;' +
+                        '<br>&nbsp;<br>&nbsp;<br>&nbsp;<br>&nbsp;<br>&nbsp;',
+          position    : [0,0,1,1],
+          showon      : {'revision.subtype:seq':[0,-1]} // from this and input data section
+        },
+    SEQUENCE_TA: {
+          type        : 'textarea_',
+          //keyword     : 'keyword',
+          tooltip     : '',
+          reportas    : 'Sequence(s)',
+          placeholder : 'Copy-paste your sequence(s) here, including title line(s).\n\n' +
+                        'More than one sequences of the same type (protein/dna/na)\n' +
+                        'can be given one after another. Example:\n\n' +
+                        '>rnase_A\n' +
+                        'DVSGTVCLSALPPEATDTLNLIASDGPFPYSQDGVVFQNRESVLPTQSYGYYHEYTVITPGARTRGTRRIICGE\n' +
+                        'ATQEDYYTGDHYATFSLIDQTC\n\n' +
+                        '>1dtx_A\n' +
+                        'QPRRKLCILHRNPGRCYDKIPAFYYNQKKKQCERFDWSGCGGNSNRFKTIEECRRTCIG',
+          nrows       : 15,
+          ncols       : 160,
+          iwidth      : 700,
+          value       : '',
+          position    : [0,2,1,3],
+          showon      : {'revision.subtype:seq':[0,-1]} // from this and input data section
+        }
+
+    // SEQUENCE : {
+    //     type        : 'aceditor_',  // can be also 'textarea'
+    //     keyword     : 'none',       // optional
+    //     tooltip     : '',           // mandatory
+    //     iwidth      : 800,          // optional
+    //     iheight     : 320,          // optional
+    //     value       : '',           // mandatory
+    //     position    : [1,0,1,5],    // mandatory
+    //     showon      : {'revision.subtype:seq':[0,-1]} // from this and input data section
+    // }
+  };
 
 }
 
@@ -71,7 +113,31 @@ TaskDeposition.prototype.currentVersion = function()  {
 }
 
 
-if (__template)  {
+if (!__template)  {
+
+  TaskDeposition.prototype.collectInput = function ( inputPanel )  {
+
+    var input_msg = TaskTemplate.prototype.collectInput.call ( this,inputPanel );
+
+    var msg = [];
+    var s   = this.parameters.SEQUENCE_TA.value.trim()
+    // if (!s)
+    //   msg.push ( 'Sequence data is not given' );
+    // else
+    if ((s.length>0) && (!startsWith(s,'>')))
+      msg.push ( 'Sequence data format is not valid' );
+
+    if (msg.length>0)  {
+      if (input_msg)
+        input_msg += '<br>';
+      input_msg += '<b>' + msg.join('</b><br><b>') + '</b>';
+    }
+
+    return input_msg;
+
+  }
+
+} else  {
   //  for server side
 
   var fs     = require('fs-extra');

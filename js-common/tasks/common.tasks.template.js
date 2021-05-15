@@ -2061,7 +2061,11 @@ if (!dbx)  {
                               var textarea = grid.setTextArea ( item.value,
                                         placeholder, nrows,ncols, r,c, rs,cs );
                               textarea.setTooltip ( item.tooltip );
-                              $(textarea.element).css ( {'resize':'none'} );
+                              $(textarea.element).css ({
+                                'box-shadow'  : '6px 6px lightgray',
+                                'resize'      : 'none',
+                                'font-family' : 'monospace'
+                              });
                               if (item.hasOwnProperty('iwidth'))  {
 //                                if (item.iwidth.toString().endsWith('%'))
                                 if (endsWith(item.iwidth.toString(),'%'))
