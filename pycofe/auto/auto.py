@@ -22,7 +22,10 @@
 from   pycofe.auto   import template_autoMR
 from   pycofe.auto   import template_autoEP
 from   pycofe.auto   import template_autoREL
+from   pycofe.auto   import template_autoDPL
 from   pycofe.auto   import auto_api
+import traceback
+
 
 
 # ============================================================================
@@ -46,6 +49,8 @@ def makeNextTask ( body,data,log=None ):
                 template_autoEP.makeNextTask ( body.task,data )
             elif body.task.autoRunId=="auto-REL":
                 template_autoREL.makeNextTask ( body.task,data )
+            elif body.task.autoRunId=="auto-DPL":
+                template_autoDPL.makeNextTask ( body.task,data )
 
             else:
                 raise ValueError('From auto.py:makeNextTask got unknown crTask.autoRunId: %s .' \
@@ -54,7 +59,16 @@ def makeNextTask ( body,data,log=None ):
             auto_api.writeAutoMeta()
             return True
 
-    except:
+    # except:
+    #     body.putMessage("<i>automatic workflow excepted</i>")
+
+
+    except Exception as inst:
+        body.putMessage(str(type(inst)))  # the exception instance
+        body.putMessage(str(inst.args))  # arguments stored in .args
+        body.putMessage(str(inst))  # __str__ allows args to be printed directly,
+        tb = traceback.format_exc()
+        body.putMessage(str(tb))
         body.putMessage ( "<i>automatic workflow excepted</i>" )
 
     return False

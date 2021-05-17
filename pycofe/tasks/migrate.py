@@ -27,7 +27,7 @@
 #
 
 #  python native imports
-import os
+import os, copy
 
 #  ccp4-python imports
 import pyrvapi
@@ -59,7 +59,6 @@ class Migrate(import_task.Import):
 
 
     def importData(self):
-
         # -------------------------------------------------------------------
         # import uploaded data
 
@@ -109,17 +108,10 @@ class Migrate(import_task.Import):
 
         return
 
-    # ------------------------------------------------------------------------
 
-    def run(self):
-
-        have_results = False
-        self.importData()
-        self.flush()
-
+    def checkData(self):
         # -------------------------------------------------------------------
         # check uploaded data
-
         msg = []
         if len(self.hkl)<=0:
             msg.append ( "reflection dataset(s)" )
@@ -135,20 +127,11 @@ class Migrate(import_task.Import):
             self.generic_parser_summary["migrate"] = {
                 "summary_line" : "insufficient data"
             }
-            self.success ( have_results )
-            return
+            self.success ( self.have_results )
+            return False
 
-        hkls = self.hkl_imported
-        if len(self.hkl_imported)<=0:
-            self.putMessage (
-                "&nbsp;<p><span style=\"font-size:100%;color:maroon;\">" +\
-                "<b>WARNING:</b> original reflection dataset(s) not provided; " +\
-                "Structure factor moduli will be used instead</span>"
-            )
-            hkls = self.hkl
 
         #  check cell compatibility
-
         compatible = True
         sp0  = self.hkl[0].getCellParameters()  #  reference cell parameters
         cset = self.hkl + self.map
@@ -169,9 +152,26 @@ class Migrate(import_task.Import):
             self.generic_parser_summary["migrate"] = {
                 "summary_line" : "too distant cell parameters"
             }
-            self.success ( have_results )
-            return
+            self.success ( self.have_results )
+            return False
 
+
+        return True
+
+
+    def makeStructures(self):
+
+        if hasattr(self, 'hkl_imported'):
+            hkls = self.hkl_imported
+            if len(self.hkl_imported)<=0:
+                self.putMessage (
+                    "&nbsp;<p><span style=\"font-size:100%;color:maroon;\">" +\
+                    "<b>WARNING:</b> original reflection dataset(s) not provided; " +\
+                    "Structure factor moduli will be used instead</span>"
+                )
+                hkls = self.hkl
+        else:
+            hkls = self.hkl
         # -------------------------------------------------------------------
         # form output data
 
@@ -186,8 +186,10 @@ class Migrate(import_task.Import):
                 leadKey = 2
 
         xyzid = ""  # used in revision naming
-        if self.task.file_xyz:
-            xyzid = " " + os.path.splitext(self.task.file_xyz)[0]
+        if hasattr(self, 'task'):
+            if hasattr(self.task, 'file_xyz'):
+                if self.task.file_xyz:
+                    xyzid = " " + os.path.splitext(self.task.file_xyz)[0]
 
         libPath = None
         if self.lib:
@@ -233,7 +235,7 @@ class Migrate(import_task.Import):
             self.putMessage ( "No structure could be formed.<br>" +\
                               "<i>Check your data</i>" )
             # close execution logs and quit
-            self.success ( have_results )
+            self.success ( self.have_results )
             return
 
 
@@ -244,8 +246,9 @@ class Migrate(import_task.Import):
                                           structures[i] )
 
         sec_title = "Structure Revision"
-        if (nstruct>1) or (len(self.hkl_imported)>1):
-            sec_title += "s"
+        if hasattr(self, 'hkl_imported'):
+            if (nstruct>1) or (len(self.hkl_imported)>1):
+                sec_title += "s"
 
         self.putTitle ( sec_title +\
                 self.hotHelpLink ( "Structure Revision",
@@ -253,6 +256,8 @@ class Migrate(import_task.Import):
 
         outFName = self.outputFName
         revisionSerialNo = 1
+        revision = None
+
         if len(hkls)>0:
             for i in range(len(hkls)):
                 for j in range(len(structures)):
@@ -267,7 +272,9 @@ class Migrate(import_task.Import):
                         self.registerRevision ( r,serialNo=revisionSerialNo,
                                                   title=None,message="" )
                         revisionSerialNo += 1
-                        have_results = True
+                        self.have_results = True
+                        if not revision:
+                            revision = copy.deepcopy(r)
         else:
             for j in range(len(structures)):
                 if structures[j]:
@@ -281,9 +288,25 @@ class Migrate(import_task.Import):
                     self.registerRevision ( r,serialNo=revisionSerialNo,
                                               title=None,message="" )
                     revisionSerialNo += 1
-                    have_results = True
+                    self.have_results = True
+                    if not revision:
+                        revision = copy.deepcopy(r)
 
         self.outputFName = outFName
+        return (revisionSerialNo, revision)
+
+
+    def run(self):
+
+        self.have_results = False
+        self.importData()
+        self.flush()
+
+        successfullDataCheck =  self.checkData()
+        if not successfullDataCheck:
+            return # all preparations already done in the upstream code
+
+        (revisionSerialNo, revision) = self.makeStructures()
 
         if revisionSerialNo>1:
             if revisionSerialNo==2:
@@ -295,7 +318,7 @@ class Migrate(import_task.Import):
             }
 
         # close execution logs and quit
-        self.success ( have_results )
+        self.success ( self.have_results )
         return
 
 
