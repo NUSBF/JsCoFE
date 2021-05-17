@@ -1051,14 +1051,12 @@ def doubleClickTaskInTaskTree(driver, taskName):
 
 
 def tasksTreeTexts(driver):
-
     # hack with try/except to make many attempts in the case page was 'refreshed' - tests fail with this nonsense regularly
-
     c = 1
     treeRead = False
     realTexts = []
 
-    while not treeRead and c <= 5:
+    while not treeRead and c <= 5: # 5 attempts
         try:
             time.sleep(0.2)
             realTexts = []
@@ -1071,8 +1069,6 @@ def tasksTreeTexts(driver):
 
         except:
             c += 1
-
-    print ('tasksTreeTexts: %d attempts' % c)
 
     return realTexts
 

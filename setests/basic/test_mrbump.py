@@ -31,7 +31,14 @@ def mrbumpAfterASU(driver, waitLong):
     time.sleep(1)
 
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'MrBump: Model Search & Preparation')
-    time.sleep(1)
+    time.sleep(2)
+
+    inputNMod = driver.find_element_by_xpath("//input[@title='Maximum number of search models to test']")
+    if inputNMod:
+        inputNMod.click()
+        inputNMod.clear()
+        inputNMod.send_keys('3')
+        time.sleep(2)
 
     # There are several forms - active and inactive. We need one displayed.
     buttonsRun = driver.find_elements_by_xpath("//button[contains(@style, 'images_png/runjob.png')]" )
@@ -56,25 +63,22 @@ def mrbumpAfterASU(driver, waitLong):
 
     rWork = 1.0
     rFree = 1.0
-    compl = 0.0
+    # compl = 0.0
     ttts = sf.tasksTreeTexts(driver)
     for taskText in ttts:
-        match = re.search('\[0003\] mrbump -- Compl=(.*)\% R=(0\.\d*) Rfree=(0\.\d*)', taskText)
+        match = re.search('\[0003\] mrbump --.*R=(0\.\d*) Rfree=(0\.\d*)', taskText)
         if match:
-            compl = float(match.group(1))
-            rWork = float(match.group(2))
-            rFree = float(match.group(3))
+#            compl = float(match.group(1))
+            rWork = float(match.group(1))
+            rFree = float(match.group(2))
             break
-    if (rWork == 1.0) or (rFree == 1.0) or (compl == 0.0):
+    if (rWork == 1.0) or (rFree == 1.0):
         print('*** Verification: could not find compl or Rwork or Rfree value after MrBUMP run')
     else:
-        print('*** Verification: MrBUMP ' \
-              'Compl is %0.1f %%(expecting >90.0), ' \
-              'Rwork is %0.4f (expecting <0.28), ' \
-              'Rfree is %0.4f (expecing <0.31)' % (compl, rWork, rFree))
+        print('*** Verification: MrBUMP Rwork is %0.4f (expecting <0.28), Rfree is %0.4f (expecing <0.31)' % (rWork, rFree))
     assert rWork < 0.28
     assert rFree < 0.31
-    assert compl > 90.0
+#    assert compl > 90.0
 
     return ()
 
