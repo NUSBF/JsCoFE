@@ -127,23 +127,6 @@ class WFlowDPL(migrate.Migrate):
 
         (revisionSerialNo, revision) = self.makeStructures()
 
-        ligMessage = ''
-
-        if hasattr(self.input_data.data,"ligand"):  # optional data parameter
-            self.lig = self.input_data.data.ligand
-            ligMessage = 'Workflow will use previously generated ligand ' + str(self.lig[0].code)
-
-
-        # ldesc = getattr ( self.task.parameters.sec1,"contains")
-        # if ldesc.SMILES.value or ldesc.CODE3.value:
-        #     if ldesc.SOURCE_SEL.value == 'S':
-        #         newLig =ligandCarrier(ldesc.SOURCE_SEL.value, ldesc.SMILES.value, ldesc.CODE.value)
-        #         ligMessage = 'Workflow will generate ligand from SMILES string: ' + str(newLig.smiles)
-        #     elif ldesc.SOURCE_SEL.value == 'M':
-        #         newLig =ligandCarrier(ldesc.SOURCE_SEL.value, ldesc.SMILES.value, ldesc.CODE3.value)
-        #         ligMessage = 'Workflow will use ligand from monomer library: ' + str(newLig.code)
-        #     self.ligdesc.append ( newLig )
-
 
         summary_line = ""
         ilist = []
@@ -155,8 +138,8 @@ class WFlowDPL(migrate.Migrate):
             summary_line += ", ".join(ilist) + "; "
 
         self.putMessage("<h3>Starting Automatic Refinement and Ligand Fitting Workflow</h3>")
-        if ligMessage:
-            self.putMessage("<i>" + ligMessage + "</i>")
+        if nligs>0:
+            self.putMessage("<i>%d ligand(s) supplied, Workflow will try to fit it</i>" % nligs)
         else:
             self.putMessage("<i>No ligands supplied, Workflow will just refine the structure and fit waters</i>")
 

@@ -45,12 +45,35 @@ def makeNextTask ( crTask,data ):
             auto_api.addContext("lig", data["lig"][0])
         if len(data["ligdesc"]) > 0:
             auto_api.addContext("ligdesc", data["ligdesc"][0])
-        auto_tasks.refligWF("refligWF_", data["revision"], crTask.autoRunName)
+        auto_tasks.dimple("dimple", data["revision"], crTask.autoRunName)
         return
 
+    elif crTask._type=="TaskDimple":
+        rFree = float(data["Rfree"])
+        if rFree > 0.35:
+            strTree = 'Sorry, Rfree is only %0.3f, could not proceed with ligand and waters (look inside for comments)' % rFree
+            strText = 'Rfree is too high; most likely substantial parts of the structure are missing.\n' + \
+                      'Please build as many aminoacid residues (and nucleic acid part, if present) as possible ' + \
+                      'before proceeding with ligand fitting and adding waters.\n'
+            auto_tasks.remark("rem_sorry2", strTree, 9, strText, crTask.autoRunName)  # 9 - Red
+            return
+        else:
+            # ligand already made? Let us fit it!
+            ligand = auto_api.getContext("lig")
+            if ligand:
+                auto_tasks.fit_ligand("fitligand1", ligand, data["revision"], crTask.autoRunName)
+                return
+            # ligand description present? we shall make a ligand
+            else:
+                ligdesc = auto_api.getContext("ligdesc")
+                if ligdesc:
+                    auto_tasks.make_ligand('makeLigand1', ligdesc, data["revision"], crTask.autoRunName)
+                    return
+                else:  # no ligand at all
+                    auto_tasks.fit_waters("fitwaters", data["revision"], crTask.autoRunName)
+                    return
 
     elif crTask._type=="TaskRefmac":
-
         # many different REFMACs. Difference by task name
         if crTask.autoRunName == 'refmacAfterLigand':
             auto_tasks.fit_waters("fitwaters", data["revision"], crTask.autoRunName)
