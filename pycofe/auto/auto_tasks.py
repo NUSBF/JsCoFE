@@ -68,6 +68,16 @@ def asu ( name,parentName ):
         # auto_api.addContext  ( "branch",branchName )
     return
 
+def dimple ( name,revision,parentName ):
+    auto_api.addTask ( name,"TaskDimple",parentName  )
+    auto_api.addTaskData ( name,"revision",revision )
+    auto_api.addTaskParameter(name, "NJELLY", '0')
+    auto_api.addTaskParameter(name, "NRESTR", '20')
+    auto_api.addTaskParameter(name, "MRTHRESHOLD", '0.4')
+    auto_api.addTaskParameter(name, "MRRESO", '3.25')
+    auto_api.addTaskParameter(name, "MRPROG", 'phaser')
+    return
+
 def buccaneer ( name,revision,parentName ):
     auto_api.addTask ( name,"TaskBuccaneer",parentName  )
     auto_api.addTaskData ( name,"revision",revision )

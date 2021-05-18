@@ -523,9 +523,10 @@ def calculate ( meta ) :
                       "the weight for the VDW repulsion by setting up 2.0 or higher (we recommend %s) for the " % newVdwVal +\
                       "'VDW repulsion weight' parameter. Value for the " +\
                       "restraints weight is subject to optimisation.<p>"
-        suggestVDW = True
-        suggestedParameters['VDW_VAL'] = newVdwVal
-        suggestedParameters['MKHYDR' ] = 'ALL'
+        if float(newVdwVal) < 5.0:
+            suggestVDW = True
+            suggestedParameters['VDW_VAL'] = newVdwVal
+            suggestedParameters['MKHYDR' ] = 'ALL'
     elif clashScore > (medianClash + (medianClash * 0.25)):
         if vdw_val:
             oldVdwVal = float(vdw_val)
@@ -539,9 +540,10 @@ def calculate ( meta ) :
                       "increase the weight for the VDW repulsion by setting up 2.0 or higher (we recommend %s) " % newVdwVal +\
                       "for the 'VDW repulsion weight' parameter. Value for the " +\
                       "restraints weight is subject to optimisation.<p>"
-        suggestVDW = True
-        suggestedParameters['VDW_VAL'] = newVdwVal
-        suggestedParameters['MKHYDR' ] = 'ALL'
+        if float(newVdwVal) < 5.0:
+            suggestVDW = True
+            suggestedParameters['VDW_VAL'] = newVdwVal
+            suggestedParameters['MKHYDR' ] = 'ALL'
 
     # 6. Bond lengths (distances) deviation (regardless of resolution)
     if rmsBondDistance > 0.02:

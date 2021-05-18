@@ -37,6 +37,7 @@ from . import basic
 from   pycofe.dtypes    import dtype_structure
 from   pycofe.proc      import qualrep
 from   pycofe.verdicts  import verdict_refmac
+from   pycofe.auto      import auto
 
 
 # ============================================================================
@@ -214,8 +215,15 @@ class Dimple(basic.TaskDriver):
                     "molprobity" : meta,
                     "xyzmeta"    : structure.xyzmeta
                 }
-                verdict_refmac.putVerdictWidget ( self,verdict_meta,self.verdict_row,
+                suggestedParameters = verdict_refmac.putVerdictWidget ( self,verdict_meta,self.verdict_row,
                                                   refmac_log=self.refmac_log )
+
+                auto.makeNextTask(self, {
+                    "revision": revision,
+                    "Rfactor": self.generic_parser_summary["refmac"]["R_factor"],
+                    "Rfree": self.generic_parser_summary["refmac"]["R_free"],
+                    "suggestedParameters": suggestedParameters
+                }, log=self.file_stderr)
 
         # close execution logs and quit
         self.success ( have_results )
