@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    15.05.21   <--  Date of Last Modification.
+ *    16.05.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -1208,11 +1208,14 @@ JobTree.prototype.deleteJob = function ( onDelete_func ) {
       //var isRunning = false;
       var delBranch = [];
       var nDel      = 0;
+      var nRem      = 0;
       for (var i=0;i<delNodeId.length;i++)  {
         var task = tree.task_map[delNodeId[i]];
         var propagate = 1;
-        if (task && task.isRemark())
+        if (task && task.isRemark())  {
           propagate = 0;
+          nRem++;
+        }
         tree.setStyle ( tree.node_map[delNodeId[i]],__deleteStyle,propagate );
         nDel++;
         if (propagate)  {
@@ -1240,8 +1243,10 @@ JobTree.prototype.deleteJob = function ( onDelete_func ) {
         // else
         //   message = 'Selected job ' + jobId + ' will be deleted.<br>' +
         //             'Are you sure?';
-        message = 'Selected job ' + jobId + ' will be deleted.<br>' +
-                  'Are you sure?';
+        if (tree.task_map[tree.selected_node_id].isRemark())
+              message = 'Selected remark ';
+        else  message = 'Selected job ';
+        message += jobId + ' will be deleted.<br>Are you sure?';
       // } else if (isRunning)
       //   message = 'Deleting the selected job(s) will also delete all jobs<br>' +
       //             'associated with them and/or found in descending branches of<br>' +
@@ -1252,9 +1257,12 @@ JobTree.prototype.deleteJob = function ( onDelete_func ) {
       //             'for deletion. If this does not work, proceed with deleting them<br>' +
       //             'in running state at risk of possible project corruption.';
       // else
-      } else
-        message = 'Selected job(s), indicated in the job tree, will be deleted.<br>' +
-                  'Are you sure?';
+      } else  {
+        if (nRem==nDel)   message = 'Selected remarks';
+        else if (nRem>0)  message = 'Selected job(s) and remark(s)';
+                    else  message = 'Selected jobs';
+        message += ', indicated in the job tree, will be deleted.<br>Are you sure?';
+      }
 
       new QuestionBox ( 'Delete Job',message, 'Yes',function(){
 

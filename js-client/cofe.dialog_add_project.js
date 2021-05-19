@@ -69,7 +69,7 @@ function AddProjectDialog ( projectList,onclose_fnc )  {
   grid.setLabel  (
     'Simplified mode for starting with one of automatic workflows featuring ' +
     'structure solution scenarios in ' + appName() + ', and optimised list of ' +
-    'tasks, essential for structure completion (which can be switched to the ' +
+    'essential tasks for structure completion (can be switched to the ' +
     'full list).',
     row++,1,1,1 ).setFontSize('90%').setFontItalic(true);
 
@@ -83,7 +83,7 @@ function AddProjectDialog ( projectList,onclose_fnc )  {
   grid.setLabel  (
     'Quick start from phased (possibly partially built and refined) ' +
     'structure or heavy-atom substructure, for further refinement and model ' +
-    'building, with the optimised list of tasks, essential for structure ' +
+    'building, with the optimised list of essential tasks for structure ' +
     'completion (can be switched to the full list).',
     row++,1,1,1 ).setFontSize('90%').setFontItalic(true);
 
