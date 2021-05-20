@@ -201,7 +201,7 @@ TaskWFlowDPL.prototype.constructor = TaskWFlowDPL;
 
 // ===========================================================================
 
-TaskWFlowDPL.prototype.icon = function()  { return 'task_wflowaep'; }
+TaskWFlowDPL.prototype.icon = function()  { return 'task_wflowdpl'; }
 TaskWFlowDPL.prototype.desc_title = function()  {
   return 'data import, Dimple pipeline, ligand fitting, refinement and PDB deposition';
 }
