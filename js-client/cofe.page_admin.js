@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    30.04.21   <--  Date of Last Modification.
+ *    19.05.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -344,7 +344,7 @@ AdminPage.prototype.makeUsersInfoTab = function ( udata,FEconfig )  {
     });
   }(this))
 
-  this.userListTable.createTable();
+  this.userListTable.createTable ( null );
 
   this.userListTable.setHeaderNoWrap   ( -1       );
   this.userListTable.setHeaderColWidth ( 0 ,'3%'   );  // Number

@@ -3,7 +3,6 @@ CCP4 Cloud Version Log
 ======================
 
 
-
 **Version 1.6.022**
 
     *Released on --.--.2021 with CCP4 7.1.014*
@@ -31,6 +30,12 @@ CCP4 Cloud Version Log
     #. ``MrBump`` task modified
 
     #. Fixed bug in making PDB deposition package from ``Buster`` data
+
+    #. ``Deposition`` task will now ask for target sequence if it was not given in the Project.
+
+    #. Sort order of List of Projects now persists.
+
+    #. It is now possible to specify image range and block size at working with HDF5 files in ``Xia-2`` task
 
 
 **Version 1.6.021**

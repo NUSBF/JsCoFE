@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    13.12.20   <--  Date of Last Modification.
+ *    19.05.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -14,7 +14,7 @@
  *       ~~~~~~~~~  TableScroll  - table with scrollable body
  *                  TableSort    - table with sortable columns
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2020
+ *  (C) E. Krissinel, A. Lebedev 2016-2021
  *
  *  =================================================================
  *
@@ -343,6 +343,7 @@ function TableSort()  {
   this.spacer.setWidth_px ( 1 );
   this.head_top    = 0;
   this.head_height = 0;
+  this.onsorted    = null;
 }
 
 TableSort.prototype = Object.create ( Widget.prototype );
@@ -436,13 +437,21 @@ TableSort.prototype.clear = function()  {
   this.table.element.appendChild ( this.body.element );
 }
 
-TableSort.prototype.createTable = function()  {
+TableSort.prototype.createTable = function ( onSorted_func )  {
 //  alert ( this.parent.element.innerHTML );
 
-  $(this.table.element).tablesorter({
-    theme   : 'blue',
-    widgets : ['zebra']
-  });
+  this.onsorted = onSorted_func;
+
+  (function(self){
+    $(self.table.element).tablesorter({
+      theme   : 'blue',
+      widgets : ['zebra']
+    })
+    .bind("sortEnd",function(e, t) {
+      if (self.onsorted)
+        self.onsorted();
+    });
+  }(this))
 
 /*
   $(this.element).tablesorter({
@@ -456,6 +465,24 @@ TableSort.prototype.createTable = function()  {
       stickyHeaders_addCaption: true
     }
   });
+
+
+    $("table")
+      .tablesorter({
+        theme: 'blue',
+        showProcessing : true
+      })
+
+      // assign the sortStart event
+      .bind("sortStart",function(e, t) {
+        start = e.timeStamp;
+        $("#display").append('<li>Sort Started</li>').find('li:first').remove();
+      })
+
+      .bind("sortEnd",function(e, t) {
+        $("#display").append('<li>Sort Ended after ' + ( (e.timeStamp - start)/1000 ).toFixed(2) + ' seconds</li>').find('li:first').remove();
+      });
+
 */
 
   var child = this.body.child;
@@ -520,6 +547,10 @@ TableSort.prototype.getSortList = function()  {
   return $(this.table.element)[0].config.sortList;
 }
 
-TableSort.prototype.applySortList = function ( sortList )  {
+TableSort.prototype.applySortList = function ( sortList,block_callback )  {
+var onSorted_func = this.onsorted;
+  if (block_callback)
+    this.onsorted = null;
   $(this.table.element).trigger("sorton",[sortList]);
+  this.onsorted = onSorted_func;
 }

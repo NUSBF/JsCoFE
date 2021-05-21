@@ -1228,35 +1228,14 @@ JobTree.prototype.deleteJob = function ( onDelete_func ) {
 
       var message = '';
       if (nDel==1)  {
-        var jobId = '';
-        if (tree.selected_node_id in tree.task_map)
+        var jobId = 'Selected node';
+        if (tree.selected_node_id in tree.task_map)  {
           jobId = tree.makeNodeId ( tree.task_map[tree.selected_node_id].id );
-        // if (isRunning)
-        //   message = 'Selected job ' + jobId +
-        //             ' is running and should not be removed from<br>' +
-        //             'the project before stopping. Deleting running jobs may<br>' +
-        //             'corrupt your project, and should be exercised only<br>' +
-        //             'when absolutely necessary.<p>' +
-        //             'Are you certain to proceed? Alternatively, try to stop<br>' +
-        //             'the job first and delete it after it is reported as<br>' +
-        //             'terminated.';
-        // else
-        //   message = 'Selected job ' + jobId + ' will be deleted.<br>' +
-        //             'Are you sure?';
-        if (tree.task_map[tree.selected_node_id].isRemark())
-              message = 'Selected remark ';
-        else  message = 'Selected job ';
+          if (tree.task_map[tree.selected_node_id].isRemark())
+                message = 'Selected remark ';
+          else  message = 'Selected job ';
+        }
         message += jobId + ' will be deleted.<br>Are you sure?';
-      // } else if (isRunning)
-      //   message = 'Deleting the selected job(s) will also delete all jobs<br>' +
-      //             'associated with them and/or found in descending branches of<br>' +
-      //             'the project (shown in the tree). Some of these jobs are still<br>' +
-      //             'running. Deleting running jobs may corrupt your project and<br>' +
-      //             'should be exercised only when absolutely necessary.<p>' +
-      //             'Please press "No" and try to stop all running jobs, scheduled<br>' +
-      //             'for deletion. If this does not work, proceed with deleting them<br>' +
-      //             'in running state at risk of possible project corruption.';
-      // else
       } else  {
         if (nRem==nDel)   message = 'Selected remarks';
         else if (nRem>0)  message = 'Selected job(s) and remark(s)';

@@ -1,21 +1,20 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
     <title>3.1. Automatic Image Processing with Xia-2 &#8212; CCP4 Cloud 1.6 documentation</title>
-    <link rel="stylesheet" href="_static/haiku.css" type="text/css" />
-    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/haiku.css" />
     <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
-    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-    <script type="text/javascript" src="_static/jquery.js"></script>
-    <script type="text/javascript" src="_static/underscore.js"></script>
-    <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="_static/language_data.js"></script>
-    <script type="text/javascript" src="_static/contentui.js"></script>
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/contentui.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="3.2. Interactive Image Processing with DIALS/DUI" href="doc.task.DUI.html" />
@@ -28,35 +27,31 @@
       <div class="topnav" role="navigation" aria-label="top navigation">
       
         <p>
-        «&#160;&#160;<a href="Data_Processing.html">3. Data Processing</a>
+        «&#160;&#160;<a href="Data_Processing.html"><span class="section-number">3. </span>Data Processing</a>
         &#160;&#160;::&#160;&#160;
         <a class="uplink" href="index.html">Contents</a>
         &#160;&#160;::&#160;&#160;
-        <a href="doc.task.DUI.html">3.2. Interactive Image Processing with DIALS/DUI</a>&#160;&#160;»
+        <a href="doc.task.DUI.html"><span class="section-number">3.2. </span>Interactive Image Processing with DIALS/DUI</a>&#160;&#160;»
         </p>
 
       </div>
-      <div class="content">
+      <div class="content" role="main">
         
         
-  <div class="section" id="automatic-image-processing-with-xia-2">
-<h1>3.1. Automatic Image Processing with Xia-2<a class="headerlink" href="#automatic-image-processing-with-xia-2" title="Permalink to this headline">¶</a></h1>
+  <section id="automatic-image-processing-with-xia-2">
+<h1><span class="section-number">3.1. </span>Automatic Image Processing with Xia-2<a class="headerlink" href="#automatic-image-processing-with-xia-2" title="Permalink to this headline">¶</a></h1>
 <p><a class="reference external" href="https://doi.org/10.1107/S0021889809045701">Xia-2</a> is a system for macromolecular crystallography data reduction is presented, which builds on existing software to automate the complete data reduction process from images to merged structure factor amplitudes. This can automatically identify multi-wedge, multi-pass and multiwavelength data sets and includes explicit procedures to test for crystallographic special cases.</p>
 <p>Although Xia-2 can operate in a completely automatic way, there is an options user can find at input page. This can be used to specify the data set and sweep names, define
 reference reflection files,choose the heavy atom type if exists, limit the extent of data used and <strong>select the processing pipeline</strong> to use (press on <strong>Contents</strong> to find information about CCP4 Cloud tasks you can select).</p>
-<div class="section" id="output">
-<h2>3.1.1. Output<a class="headerlink" href="#output" title="Permalink to this headline">¶</a></h2>
+<section id="output">
+<h2><span class="section-number">3.1.1. </span>Output<a class="headerlink" href="#output" title="Permalink to this headline">¶</a></h2>
 <p>In the output, you can find Xia-2 processing report which depends in regard to processing pipeline you choose.</p>
 <ul>
-<li><p class="first">Check graphs - they should vary smoothly without obvious discontinuities. If there are discontinuities in the graphs, they often occur around the same images for different graphs. Look at any images in the region of the discontinuities and see if there is anything obviously wrong with them</p>
-</li>
-<li><p class="first">I/sigma(I) at (high resolution limit-~0.2Å) should be ≳1. If the graphs corresponding to I/sigma(I) fall gradually to lower values towards the end of the dataset, it is usually an indication that the crystal is exhibiting radiation damage.</p>
-</li>
-<li><p class="first">Check half-dataset correlation coefficient: <strong>CC1/2</strong> represents split observations for each reflection randomly into 2 halves, and calculate the correlation coefficient between them (or equivalent calculation). Not dependent on σ(I). <strong>CC1/2</strong> = 1 is perfect, <strong>CC1/2</strong> = 0 is no correlation. <code class="docutils literal notranslate"><span class="pre">Common</span> <span class="pre">value</span> <span class="pre">for</span> <span class="pre">cutoff</span> <span class="pre">is</span> <span class="pre">0.3</span> <span class="pre">or</span> <span class="pre">0.5.</span></code></p>
-</li>
-<li><p class="first">Signal/noise estimates: <strong>I/sig(I)</strong>  it relies on σ(I), which is not entirely reliable. Cut resolution at &lt;I/σ(I)&gt; after averaging Mn(I/sd) = 1 – 2</p>
-</li>
-<li><p class="first"><strong>R-factors (Rmerge, Rpim, Rmeas)</strong> Shouldn’t be used to determine resolution cutoffs. Historically used, so useful to compare to previous practises.</p>
+<li><p>Check graphs - they should vary smoothly without obvious discontinuities. If there are discontinuities in the graphs, they often occur around the same images for different graphs. Look at any images in the region of the discontinuities and see if there is anything obviously wrong with them</p></li>
+<li><p>I/sigma(I) at (high resolution limit-~0.2Å) should be ≳1. If the graphs corresponding to I/sigma(I) fall gradually to lower values towards the end of the dataset, it is usually an indication that the crystal is exhibiting radiation damage.</p></li>
+<li><p>Check half-dataset correlation coefficient: <strong>CC1/2</strong> represents split observations for each reflection randomly into 2 halves, and calculate the correlation coefficient between them (or equivalent calculation). Not dependent on σ(I). <strong>CC1/2</strong> = 1 is perfect, <strong>CC1/2</strong> = 0 is no correlation. <code class="docutils literal notranslate"><span class="pre">Common</span> <span class="pre">value</span> <span class="pre">for</span> <span class="pre">cutoff</span> <span class="pre">is</span> <span class="pre">0.3</span> <span class="pre">or</span> <span class="pre">0.5.</span></code></p></li>
+<li><p>Signal/noise estimates: <strong>I/sig(I)</strong>  it relies on σ(I), which is not entirely reliable. Cut resolution at &lt;I/σ(I)&gt; after averaging Mn(I/sd) = 1 – 2</p></li>
+<li><p><strong>R-factors (Rmerge, Rpim, Rmeas)</strong> Shouldn’t be used to determine resolution cutoffs. Historically used, so useful to compare to previous practises.</p>
 <blockquote>
 <div><p><strong>Rmerge</strong> : traditional overall measures of quality, but increases with multiplicity although the data improves (tends to infinity as data gets weaker). Should be relatively stable <strong>Rmerge</strong> across all batches. <strong>Rmerge</strong> is always large for small intensities. <code class="docutils literal notranslate"><span class="pre">For</span> <span class="pre">large</span> <span class="pre">intensities</span> <span class="pre">it</span> <span class="pre">should</span> <span class="pre">be</span> <span class="pre">in</span> <span class="pre">the</span> <span class="pre">range</span> <span class="pre">0.01</span> <span class="pre">to</span> <span class="pre">0.04</span> <span class="pre">for</span> <span class="pre">good</span> <span class="pre">data</span></code> . Larger values suggest that there are systematic errors.</p>
 <p><strong>Rpim</strong> : “Precision-indicating R-factor” gets better (smaller) with increasing multiplicity, ie it estimates the precision of the merged &lt;I&gt;.</p>
@@ -69,25 +64,25 @@ reference reflection files,choose the heavy atom type if exists, limit the exten
 <p><a class="reference external" href="https://doi.org/10.1107/S0021889809045701">Winn, M. D. et al. (2011) Acta Cryst. D67, 235-242.</a></p>
 <p><a class="reference external" href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4684713/">Karplus, A. and Diederichs, K. (2015) Curr Opin Struct Biol. 34, 60–68.</a></p>
 <p>Find out more at Xia-2 official page <a class="reference external" href="https://xia2.github.io/using_xia2.html">here</a> and Xia-2 blog page <a class="reference external" href="http://xia2.blogspot.com/">here</a></p>
-</div>
-</div>
+</section>
+</section>
 
 
       </div>
       <div class="bottomnav" role="navigation" aria-label="bottom navigation">
       
         <p>
-        «&#160;&#160;<a href="Data_Processing.html">3. Data Processing</a>
+        «&#160;&#160;<a href="Data_Processing.html"><span class="section-number">3. </span>Data Processing</a>
         &#160;&#160;::&#160;&#160;
         <a class="uplink" href="index.html">Contents</a>
         &#160;&#160;::&#160;&#160;
-        <a href="doc.task.DUI.html">3.2. Interactive Image Processing with DIALS/DUI</a>&#160;&#160;»
+        <a href="doc.task.DUI.html"><span class="section-number">3.2. </span>Interactive Image Processing with DIALS/DUI</a>&#160;&#160;»
         </p>
 
       </div>
 
     <div class="footer" role="contentinfo">
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.5.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.0.1.
     </div>
   </body>
 </html>

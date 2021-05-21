@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    18.12.20   <--  Date of Last Modification.
+#    21.05.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -21,7 +21,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2020
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2021
 #
 # ============================================================================
 #
@@ -144,6 +144,8 @@ class Xia2(basic.TaskDriver):
                         for k in range(len(ranges_sel)):
                             cmd.append ( "image=" + dirpath + ":" + str(ranges_sel[k][0]) +\
                                                               ":" + str(ranges_sel[k][1]) )
+        elif self.task.hdf5_range:
+            cmd.append ( "image=" + imageDirMeta[0]["path"] + ":" + self.task.hdf5_range )
         else:
             cmd.append ( "image=" + imageDirMeta[0]["path"] )
 
