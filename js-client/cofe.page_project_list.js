@@ -290,8 +290,9 @@ function ProjectListPage ( sceneId )  {
   function makeProjectListTable()  {
 
     if (self.tablesort_tbl)
-          projectList.sortList = self.tablesort_tbl.getSortList();
-    else  projectList.sortList = [[5,1]];
+      projectList.sortList = self.tablesort_tbl.getSortList();
+    else if (!('sortList' in projectList))
+      projectList.sortList = [[5,1]];
 
     self.tablesort_tbl = new TableSort();
     self.tablesort_tbl.setHeaders ([
@@ -338,7 +339,7 @@ function ProjectListPage ( sceneId )  {
       trow.addCell ( '' );
       trow.addCell ( '' );
       trow.addCell ( '' );
-      self.tablesort_tbl.createTable();
+      self.tablesort_tbl.createTable ( null );
       open_btn  .setDisabled ( true  );
       add_btn   .setDisabled ( (__dormant!=0) ); // for strange reason Firefox wants this!
       rename_btn.setDisabled ( true  );
@@ -432,17 +433,20 @@ function ProjectListPage ( sceneId )  {
         else  trow.addCell ( joined[0]+'-:-'+joined[1] )
                   .setNoWrap().setTooltip(joined[2]);
         trow.addCell ( pDesc.dateCreated ).setNoWrap().setHorizontalAlignment('center');
-        trow.addCell ( pDesc.dateLastUsed).setNoWrap().setHorizontalAlignment('center');
+        // trow.addCell ( pDesc.dateLastUsed + 'T' + (1000+i) // '<span style="visibility:hidden;font-size:1px;">' + (1000+i) + '</span>'
+        trow.addCell ( pDesc.dateLastUsed ).setNoWrap().setHorizontalAlignment('center');
         //tablesort_tbl.addRow ( trow );
         if ((i==0) || (pDesc.name==projectList.current))
           selectedRow = trow;
 
       }
 
-      self.tablesort_tbl.createTable();
+      self.tablesort_tbl.createTable ( function(){  // onSorted callback
+        saveProjectList ( null );
+      });
       if (projectList.sortList)
         window.setTimeout ( function(){
-          self.tablesort_tbl.applySortList ( projectList.sortList );
+          self.tablesort_tbl.applySortList ( projectList.sortList,true );
         },10 );
       self.tablesort_tbl.selectRow ( selectedRow );
       open_btn  .setDisabled ( false );

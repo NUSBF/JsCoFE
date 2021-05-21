@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    04.05.21   <--  Date of Last Modification.
+ *    21.05.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -1130,83 +1130,79 @@ var projectName = projectDesc.name;
 
 //  commenting this out is essential for re-using projects in the cloudrun framework
 //  if ((projectDesc.owner.share.length>0) || projectDesc.autorun)  {  // the project is shared
-    rdata.pdesc = readProjectDesc ( loginData,projectDesc.name );
-    if (rdata.pdesc)  {
-      if (rdata.pdesc.timestamp>projectDesc.timestamp)  {
-        // client timestamp is behind server project timestamp; check whether
 
-        rdata.reload = 1;  // client should reload the project anyway
-        // check that trees are compatible
-        var pData = readProjectData ( loginData,projectDesc.name );
-        for (var i=0;(i<data.tasks_add.length) && (rdata.reload==1);i++)  {
-          // simply check that all needful jobs are retained in the actual project
-          // check that all harvested tasks are there in pData
-          var hids = data.tasks_add[i].harvestedTaskIds;
-          for (var j=0;(j<hids.length) && (rdata.reload==1);j++)
-            if (!pd.getProjectNode(pData,hids[j]))
-              rdata.reload = 2;
-          if (rdata.reload==1)  {
+  rdata.pdesc = readProjectDesc ( loginData,projectName );
+  if (rdata.pdesc && (rdata.pdesc.timestamp>projectDesc.timestamp))  {
+    // client timestamp is behind server project timestamp; check whether
 
-            // Check that suggested new task id does not clash with what is
-            // already there in the project
-            var tnode = pd.getProjectNode ( pData,data.tasks_add[i].id );
-            if (tnode)  {
-              // there is a clash, resolve
-              var node = pd.getProjectNode ( projectData,data.tasks_add[i].id );
-              if (node)  { // must be always so, but put "if" for server stability
-                rdata.jobIds[i] = ++pData.desc.jobCount;
-                data.tasks_add[i].id = pData.desc.jobCount;
-                node.dataId = data.tasks_add[i].id;
-                node.text   = makeNodeName ( data.tasks_add[i],
-                          node.text.substr(Math.max(0,node.text.indexOf(']'))) );
-                node.text0  = node.text;
-              } else
-                log.error ( 30,'no tree node found ' + loginData.login + ':' +
-                               projectName + ':' + data.tasks_add[i].id );
-            }
+    rdata.reload = 1;  // client should reload the project anyway
+    // check that trees are compatible
+    var pData = readProjectData ( loginData,projectName );
+    for (var i=0;(i<data.tasks_add.length) && (rdata.reload==1);i++)  {
+      // simply check that all needful jobs are retained in the actual project
+      // check that all harvested tasks are there in pData
+      var hids = data.tasks_add[i].harvestedTaskIds;
+      for (var j=0;(j<hids.length) && (rdata.reload==1);j++)
+        if (!pd.getProjectNode(pData,hids[j]))
+          rdata.reload = 2;
 
-            // Check that the parent node for added task is there in pData;
-            // if found than projects can be merged without general reload of
-            // the client.
-            // Find the whole branch in the submitted project
-            var node_lst = pd.getProjectNodeBranch ( projectData,data.tasks_add[i].id );
+      if (rdata.reload==1)  {
 
-            // and find parent task id (skip remarks and folders)
-            var pDataId = '';
-            for (var j=1;(j<node_lst.length) && (!pDataId);j++)
-              pDataId = node_lst[j].dataId;
-
-// var _msg = ' >>>>branch[' + data.tasks_add[i].id + ']:';
-// for (var j=0;j<node_lst.length;j++)
-//   _msg += ' "' + node_lst[j].dataId + '"';
-// console.log ( _msg );
-
-            if (pDataId)  {
-              var pnode = pd.getProjectNode ( pData,pDataId );
-              if (pnode)  // node found, copy the added node over
-                    pnode.children.push ( node_lst[0] );
-              else  rdata.reload = 2;
-            } else if (node_lst.length>1)  {
-              // task to be added at root, always allow, may ba a problem with remarks
-              pData.tree[0].children.push ( node_lst[0] );
-            } else // have to update, something's wrong -- should never be here
-              rdata.reload = 2;
-          }
+        // Check that suggested new task id does not clash with what is
+        // already there in the project
+        var tnode = pd.getProjectNode ( pData,data.tasks_add[i].id );
+        if (tnode)  {
+          // there is a clash, resolve
+          var node = pd.getProjectNode ( projectData,data.tasks_add[i].id );
+          if (node)  { // must be always so, but put "if" for server stability
+            rdata.jobIds[i] = ++pData.desc.jobCount;
+            data.tasks_add[i].id = pData.desc.jobCount;
+            node.dataId = data.tasks_add[i].id;
+            node.text   = makeNodeName ( data.tasks_add[i],
+                      node.text.substr(Math.max(0,node.text.indexOf(']'))) );
+            node.text0  = node.text;
+          } else
+            log.error ( 30,'no tree node found ' + loginData.login + ':' +
+                           projectName + ':' + data.tasks_add[i].id );
         }
 
-// console.log ( ' >>>>reload='+rdata.reload );
+        // Check that the parent node for added task is there in pData;
+        // if found than projects can be merged without general reload of
+        // the client.
+        // Find the whole branch in the submitted project
+        var node_lst = pd.getProjectNodeBranch ( projectData,data.tasks_add[i].id );
 
-        if (rdata.reload>1)  // no way, client must update the project
-          return new cmd.Response ( cmd.fe_retcode.ok,'',rdata );
+        // and find parent task id (skip remarks and folders)
+        var pDataId = '';
+        for (var j=1;(j<node_lst.length) && (!pDataId);j++)
+          pDataId = node_lst[j].dataId;
 
-        // further on, will work on the actual Project, but mind that the tree
-        // may return deleted nodes, see below
-        projectData = pData;
+        if (pDataId)  {
+          var pnode = pd.getProjectNode ( pData,pDataId );
+          if (pnode)  // node found, copy the added node over
+                pnode.children.push ( node_lst[0] );
+          else  rdata.reload = 2;
+        } else if (node_lst.length>1)  {
+          // task to be added at root, always allow, may ba a problem with remarks
+          pData.tree[0].children.push ( node_lst[0] );
+        } else // have to update, something's wrong -- should never be here
+          rdata.reload = 2;
 
       }
-    }
-//  }
 
+    }
+
+    if (rdata.reload>1)  // no way, client must update the project
+      return new cmd.Response ( cmd.fe_retcode.ok,'',rdata );
+
+    // further on, will work on the actual Project, but mind that the tree
+    // may return deleted nodes, see below
+    projectData = pData;
+    projectDesc = projectData.desc;
+
+  }
+
+//  }
 
   // Get users' projects list file name
   var projectDataPath = getProjectDataPath ( loginData,projectName );
@@ -1224,7 +1220,7 @@ var projectName = projectDesc.name;
       projectDesc.cpu_time    = 0.0;   // should be eventually removed
     }
 
-    checkProjectData ( projectData,loginData );
+    // checkProjectData ( projectData,loginData );   21.05.2021
 
     if (disk_space_change!=0.0)  {
       // disk space change is booked to project owner inside this function
@@ -1240,8 +1236,7 @@ var projectName = projectDesc.name;
                                            (data.tasks_add.length>0);
 
     for (var i=0;i<data.tasks_add.length;i++)
-      projectData.desc.jobCount = Math.max (
-                              projectData.desc.jobCount,data.tasks_add[i].id );
+      projectDesc.jobCount = Math.max ( projectDesc.jobCount,data.tasks_add[i].id );
 
     // for (var i=0;i<data.tasks_add.length;i++)  {
     //   projectData.desc.jobCount++;
@@ -1284,6 +1279,7 @@ var projectName = projectDesc.name;
 
           var jobDataPath = getJobDataPath(loginData,projectName,data.tasks_add[i].id );
           if (!utils.writeObject(jobDataPath,data.tasks_add[i])) {
+            log.error ( 31,'cannot write job meta at ' + jobDataPath );
             response = new cmd.Response ( cmd.fe_retcode.writeError,
                                 '[00024] Job metadata cannot be written.','' );
           }
@@ -1314,9 +1310,9 @@ var projectName = projectDesc.name;
                   } else  {
                     fs.copy ( item_src,item_dest,function(err)  {
                       if (err)  {
-                        log.error ( 31,'error copying item ' + item_src  );
-                        log.error ( 31,'                to ' + item_dest );
-                        log.error ( 31,'error: ' + err );
+                        log.error ( 32,'error copying item ' + item_src  );
+                        log.error ( 32,'                to ' + item_dest );
+                        log.error ( 32,'error: ' + err );
                       }
                     });
                   }
@@ -1339,6 +1335,7 @@ var projectName = projectDesc.name;
           utils.writeJobReportMessage ( jobDirPath,'<h1>Idle</h1>',true );
 
         } else  {
+          log.error ( 33,'cannot create job directory at ' + jobDirPath );
           response = new cmd.Response ( cmd.fe_retcode.mkDirError,
                   '[00025] Cannot create Job Directory',
                   emailer.send ( conf.getEmailerConfig().maintainerEmail,
@@ -1347,23 +1344,25 @@ var projectName = projectDesc.name;
                       'please investigate.' )
               );
         }
-
 // pd.printProjectTree ( ' >>>saveProjectData--addJob',projectData );
 
       }
 
     } else  {
+      log.error ( 34,'project metadata cannot be written at ' + projectDataPath );
       response = new cmd.Response ( cmd.fe_retcode.writeError,
                             '[00026] Project metadata cannot be written.','' );
     }
 
   } else if ((projectData.desc.owner.share.length>0) || projectData.desc.autorun)  {
+    log.error ( 35,'shared project metadata does not exist at ' + projectDataPath );
     rdata.reload = -11111;
     response = new cmd.Response ( cmd.fe_retcode.ok,
                                '[00027] Project metadata does not exist.',rdata );
   } else  {
+    log.error ( 36,'project metadata does not exist at ' + projectDataPath );
     response = new cmd.Response ( cmd.fe_retcode.noProjectData,
-                               '[00027] Project metadata does not exist.','' );
+                               '[00028] Project metadata does not exist.','' );
   }
 
   return response;

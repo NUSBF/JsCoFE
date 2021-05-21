@@ -129,17 +129,6 @@ ProjectList.prototype.addProject = function ( name_str,title_str,
   if (!this.isProject(name_str))  {
     var pDesc = new ProjectDesc();
     pDesc.init ( name_str,title_str,startmode,time_str );
-
-    // pDesc.name         = name_str;
-    // pDesc.title        = title_str;
-    // pDesc.dateCreated  = time_str;
-    // pDesc.dateLastUsed = time_str;
-    // pDesc.startmode    = startmode;
-    // if ((pDesc.startmode==start_mode.standard) ||
-    //     (pDesc.startmode==start_mode.expert))  // legacy
-    //       pDesc.tasklistmode = tasklist_mode.full;
-    // else  pDesc.tasklistmode = tasklist_mode.basic;
-
     this.projects.unshift ( pDesc );  // put new project at beginning
     this.current       = name_str;
     this.startmode     = startmode;

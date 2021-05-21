@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    03.03.21   <--  Date of Last Modification.
+ *    21.05.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -41,6 +41,7 @@ function TaskXia2()  {
                                     // ordinary NC if cloud storage is there
 
   this.imageDirMeta = [];       // paths, ranges and sectors
+  this.hdf5_range   = '';       // for processing HDF5 files in blocks
   this.datatype     = 'images'; //  images/hdf5
   this.file_system  = 'local';  //  local/cloud
 
@@ -280,6 +281,13 @@ if (!__template)  {
 
   TaskXia2.prototype.layDirLine = function ( inputPanel,dirNo,row )  {
     var dir_input = {};
+    var dirpath   = '';
+
+    if (dirNo<inputPanel.imageDirMeta.length)
+      dirpath = inputPanel.imageDirMeta[dirNo].path;
+
+    if (!dirpath)
+      this.hdf5_range = '';
 
     if (inputPanel.datatype=='images')  {
       var dlabel = 'directory';
@@ -294,16 +302,22 @@ if (!__template)  {
             'Master HDF5 file:&nbsp;&nbsp;',row,0,1,1 )
                 .setTooltip('Path to master file of HDF5 set of diffraction images')
                 .setFontItalic(true).setFontBold(true).setNoWrap();
-
+      if (dirpath)  {
+        inputPanel.grid1.setLabel (
+            'Image range and block size:',row+1,0,1,2 )
+                  .setTooltip('Optional specification of image range and block size')
+                  .setFontItalic(true).setFontBold(true).setNoWrap();
+        dir_input.hdf5_range = inputPanel.grid1.setInputText ( this.hdf5_range,row+1,1,1,1 )
+                 .setStyle ( 'text','','e.g., 1:9600:1200 or leave blank',
+                             'Use processing in blocks if the dataset is ' +
+                             'excessively large. Format:  start:end:block' )
+                 .setWidth('400px').setNoWrap();
+      }
     }
 
     dir_input.browse_btn = inputPanel.grid1.setButton (
                                 'Browse',image_path('open_file'), row,1,1,1 )
                                           .setWidth ( '120px' );
-
-    var dirpath = '';
-    if (dirNo<inputPanel.imageDirMeta.length)
-      dirpath = inputPanel.imageDirMeta[dirNo].path;
     dir_input.dir_path = inputPanel.grid1.setInputText ( dirpath,row,2,1,1 )
                             .setWidth('100%').setReadOnly(true).setNoWrap();
 
@@ -693,6 +707,13 @@ if (!__template)  {
       } else if (inputPanel.imageDirMeta.length>0)  {
         //  HDF5 master
         this.imageDirMeta = [ inputPanel.imageDirMeta[0] ];
+        this.hdf5_range   = inputPanel.dir_input[0].hdf5_range.getValue();
+        if (this.hdf5_range)  {
+          var lst = this.hdf5_range.split(':');
+          if ((lst.length!=3) ||
+              (!isInteger(lst[0])) || (!isInteger(lst[1])) || (!isInteger(lst[2])))
+            msg += '<b><i>Image range and block size specification misformatted</i></b>';
+        }
       }
 
       if (this.imageDirMeta.length<=0)
@@ -736,6 +757,7 @@ if (!__template)  {
       this.imageDirMeta.push ( $.extend(true,{},task.imageDirMeta[i]) );
     this.file_system  = task.file_system;  //  local/cloud
     this.datatype     = task.datatype;     //  local/cloud
+    this.hdf5_range   = task.hdf5_range;
     this.uname = '';
     return;
   }

@@ -1,21 +1,20 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
     <title>8.2. Phase Refinement and Dynamic Density Modification with ACORN &#8212; CCP4 Cloud 1.6 documentation</title>
-    <link rel="stylesheet" href="_static/haiku.css" type="text/css" />
-    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/haiku.css" />
     <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
-    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-    <script type="text/javascript" src="_static/jquery.js"></script>
-    <script type="text/javascript" src="_static/underscore.js"></script>
-    <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="_static/language_data.js"></script>
-    <script type="text/javascript" src="_static/contentui.js"></script>
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/contentui.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="9. Refinement and Model Building" href="Refinement_and_Model_Building.html" />
@@ -28,65 +27,67 @@
       <div class="topnav" role="navigation" aria-label="top navigation">
       
         <p>
-        «&#160;&#160;<a href="doc.task.Parrot.html">8.1. Density Modification with Parrot</a>
+        «&#160;&#160;<a href="doc.task.Parrot.html"><span class="section-number">8.1. </span>Density Modification with Parrot</a>
         &#160;&#160;::&#160;&#160;
         <a class="uplink" href="index.html">Contents</a>
         &#160;&#160;::&#160;&#160;
-        <a href="Refinement_and_Model_Building.html">9. Refinement and Model Building</a>&#160;&#160;»
+        <a href="Refinement_and_Model_Building.html"><span class="section-number">9. </span>Refinement and Model Building</a>&#160;&#160;»
         </p>
 
       </div>
-      <div class="content">
+      <div class="content" role="main">
         
         
-  <div class="section" id="phase-refinement-and-dynamic-density-modification-with-acorn">
-<h1>8.2. Phase Refinement and Dynamic Density Modification with ACORN<a class="headerlink" href="#phase-refinement-and-dynamic-density-modification-with-acorn" title="Permalink to this headline">¶</a></h1>
+  <section id="phase-refinement-and-dynamic-density-modification-with-acorn">
+<h1><span class="section-number">8.2. </span>Phase Refinement and Dynamic Density Modification with ACORN<a class="headerlink" href="#phase-refinement-and-dynamic-density-modification-with-acorn" title="Permalink to this headline">¶</a></h1>
 <p>The ACORN system was originally developed as a means of <em>ab initio</em> solution of protein structures when atomic resolution data were available.</p>
 <p>At the heart of ACORN lies a density modification method called DDM (Dynamic Density Modification). DDM operates on any density map containing a minimum of information. Its action is to progressively enhance positive features of the map and to reduce, at the same time, undesired noise and bias towards very small values. In essence, this is a Fourier recycling process whose main engine is density modification. An initial set of phases is used to generate a map for DDM using only the strong reflections, i.e. those with <strong>E (normalized structure factors)</strong>  &gt; 1.2, which is then Fourier transformed to produce a new set of phases. The initial set of phases can go through a process which employs a Patterson sum function. The quality of the new set of phases derived by DDM is judged by a correlation coefficient, CC. The cycling process will end when CC stops increasing or the magnitude of the average phase change between two consecutive cycles is less than 0.5 degrees. <strong>CC</strong> <strong>greater than 0.150 usually indicates a successful refinement</strong>. Sometimes the process gets trapped in loops where CC does not increase and the average phase shift is still large. In such cases the whole set of phases is shaken up by going through one cycle of a real-space version of the Sayre equation.</p>
-<div class="section" id="the-general-structure-of-acorn">
-<h2>8.2.1. The general structure of ACORN<a class="headerlink" href="#the-general-structure-of-acorn" title="Permalink to this headline">¶</a></h2>
+<section id="the-general-structure-of-acorn">
+<h2><span class="section-number">8.2.1. </span>The general structure of ACORN<a class="headerlink" href="#the-general-structure-of-acorn" title="Permalink to this headline">¶</a></h2>
 <p>The refections are divided into three groups (strong, medium and weak) according to their normalized structure-factor (E) values. In the process of phase refinement, the maps are calculated just with terms corresponding to the largest E values, typically with E &gt; 1.2, but with a lower limit if more E values are needed.</p>
 <p><strong>The strong reflections (E &gt; 1.2)</strong> are used in the phase refinement by the dynamic density modification (DDM) and Patterson superposition procedures and both strong.</p>
 <p><strong>The medium refections (0.1 &lt; E &lt; 1.2)</strong> are used to calculate a correlation coefficient (CC) for each potential solution of DDM. These groups are default settings and can be changed by the user.</p>
 <p><strong>The weak refections (E &lt; 0.1)</strong> are used in Sayre-equation refinement (SER).</p>
 <p>An important feature of ACORN is that the phase-refinement procedure is automatic and requires no user intervention. It is therefore necessary to have some check that the refinement procedure is actually producing better phases and also to know when the refinement process has terminated. To this end, ACORN uses a simple but amazingly efficient monitor of progress, namely CCs, the calculation of the correlation coefficient for the small-amplitude E values.</p>
-</div>
-<div class="section" id="dynamic-density-modification-ddm">
-<h2>8.2.2. Dynamic density modification (DDM)<a class="headerlink" href="#dynamic-density-modification-ddm" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="dynamic-density-modification-ddm">
+<h2><span class="section-number">8.2.2. </span>Dynamic density modification (DDM)<a class="headerlink" href="#dynamic-density-modification-ddm" title="Permalink to this headline">¶</a></h2>
 <blockquote>
-<div><em>eliminates the negative densities, and truncates the highest density</em></div></blockquote>
+<div><p><em>eliminates the negative densities, and truncates the highest density</em></p>
+</div></blockquote>
 <p>Each cycle of DDM starts from a set of phases with weights and calculates a weighted E map with the strong E values. The map is modified and back-transformed by FFT to obtain a new set of structure factors. At the end of one cycle a new set of phases with weights is calculated for the next cycle and the CC is calculated for medium reflections to check if a solution has been found.</p>
 <p>The DDM process is based on the simple premise that, outside the region occupied by the fragment, the higher the map density the greater the probability that the position is occupied by true electron density from the structure.</p>
-</div>
-<div class="section" id="sayre-equation-refinement">
-<h2>8.2.3. Sayre equation refinement<a class="headerlink" href="#sayre-equation-refinement" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="sayre-equation-refinement">
+<h2><span class="section-number">8.2.3. </span>Sayre equation refinement<a class="headerlink" href="#sayre-equation-refinement" title="Permalink to this headline">¶</a></h2>
 <blockquote>
-<div><em>is carried out in real space using Fast Fourier Transforms instead of working directly with the phase relationships</em></div></blockquote>
+<div><p><em>is carried out in real space using Fast Fourier Transforms instead of working directly with the phase relationships</em></p>
+</div></blockquote>
 <p>When the CC for the medium-strength reflections no longer increases, or the phases change little on use of DDM, then one or two cycles of SER can be employed. In fact, the application of SER sometimes makes the CC lower, but thereafter DDM can lead to a higher CC than previously. SER is a real-space procedure carried out using the fast Fourier transform (FFT) and inverse FFT. No phase relationships are involved, so there is no practical limit to the number of reflections that can be included.</p>
 <p><strong>References</strong></p>
 <p><a class="reference external" href="https://doi.org/10.1107/S090744490000932X">Foadi J., Woolfson M.M., Dodson E.J., Wilson K.S., Yao Jia-xing and Zheng Chao-de (2000) Acta. Cryst. D56, 1137-1147.</a></p>
 <p><a class="reference external" href="https://doi.org/10.1107/S0567739481001460">Yao Jia-xing (2002) Acta. Cryst. D58, 1941-1947.</a></p>
 <p><a class="reference external" href="https://doi.org/10.1080/0889311031000069777">J. Foadi (2003) General concepts underlying ACORN, a computer program for the solution of protein structures, Crystallography Reviews, 9:1, 43-65,</a></p>
 <p><a class="reference external" href="https://doi.org/10.1107/S0907444906008122">Yao JX, Dodson EJ, Wilson KS, Woolfson MM. ACORN: a review. Acta Crystallogr D Biol Crystallogr. 2006;62:901–908.</a></p>
-</div>
-</div>
+</section>
+</section>
 
 
       </div>
       <div class="bottomnav" role="navigation" aria-label="bottom navigation">
       
         <p>
-        «&#160;&#160;<a href="doc.task.Parrot.html">8.1. Density Modification with Parrot</a>
+        «&#160;&#160;<a href="doc.task.Parrot.html"><span class="section-number">8.1. </span>Density Modification with Parrot</a>
         &#160;&#160;::&#160;&#160;
         <a class="uplink" href="index.html">Contents</a>
         &#160;&#160;::&#160;&#160;
-        <a href="Refinement_and_Model_Building.html">9. Refinement and Model Building</a>&#160;&#160;»
+        <a href="Refinement_and_Model_Building.html"><span class="section-number">9. </span>Refinement and Model Building</a>&#160;&#160;»
         </p>
 
       </div>
 
     <div class="footer" role="contentinfo">
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.5.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.0.1.
     </div>
   </body>
 </html>

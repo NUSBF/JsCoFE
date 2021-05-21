@@ -98,7 +98,15 @@ class DocDev(basic.TaskDriver):
 
         os.chmod ( scriptf, stat.S_IRUSR  | stat.S_IXUSR )
 
-        rc = self.runApp ( "/bin/bash",["-c","./"+scriptf],logType="Main",quitOnError=False )
+        rc = self.runApp ( "env",[
+                                "-i",
+                                "HOME=" + os.environ["HOME"],
+                                "/bin/bash","-l","-c","./"+scriptf
+                            ],logType="Main",quitOnError=False )
+
+        # rc = self.runApp ( "/bin/bash",["-l","-c","./"+scriptf],logType="Main",quitOnError=False )
+
+        # env HOME="$HOME" bash -l -c
 
         if not rc.msg:
 
