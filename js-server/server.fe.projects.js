@@ -1232,9 +1232,6 @@ var projectName = projectDesc.name;
                                   0.0,disk_space_change,0,true );
     }
 
-    var update_time_stamp = data.update || (data.tasks_del.length>0) ||
-                                           (data.tasks_add.length>0);
-
     for (var i=0;i<data.tasks_add.length;i++)
       projectDesc.jobCount = Math.max ( projectDesc.jobCount,data.tasks_add[i].id );
 
@@ -1253,22 +1250,28 @@ var projectName = projectDesc.name;
     //                    projectName + ':' + data.tasks_add[i].id );
     // }
 
+    if (data.tasks_del.length>0)  // save on reading files ration does not change
+      rdata.ration = ration.getUserRation(loginData).clearJobs();
+    rdata.pdesc = projectData.desc;
+
+    // this loop is here in order to minimise time for writing project tree in file
+    if (rdata.reload>0)  // in case reload==1, project tree contains non-deleted nodes
+      for (var i=0;i<data.tasks_del.length;i++)
+        pd.deleteProjectNode ( projectData,data.tasks_del[i][0] );
+
+    var update_time_stamp = data.update || (rdata.reload>0) ||
+                                           (data.tasks_del.length>0) ||
+                                           (data.tasks_add.length>0);
+
     if (writeProjectData(loginData,projectData,update_time_stamp))  {
 
-      if (data.tasks_del.length>0)  // save on reading files ration does not change
-        rdata.ration = ration.getUserRation(loginData).clearJobs();
-      rdata.pdesc = projectData.desc;
-
-      response = new cmd.Response ( cmd.fe_retcode.ok,'',rdata );
-
       // remove job directories from the 'delete' list
-      var ndel_own = 0;
       for (var i=0;i<data.tasks_del.length;i++)  {
         rj.killJob ( loginData,projectName,data.tasks_del[i][0] );
         utils.removePath ( getJobDirPath(loginData,projectName,data.tasks_del[i][0]) );
-        if (rdata.reload>0)  // in case reload==1, project tree contains non-deleted nodes
-          pd.deleteProjectNode ( projectData,data.tasks_del[i][0] );
       }
+
+      response = new cmd.Response ( cmd.fe_retcode.ok,'',rdata );
 
       // add job directories from the 'add' list
       for (var i=0;i<data.tasks_add.length;i++)  {
@@ -1354,7 +1357,7 @@ var projectName = projectDesc.name;
                             '[00026] Project metadata cannot be written.','' );
     }
 
-  } else if ((projectData.desc.owner.share.length>0) || projectData.desc.autorun)  {
+  } else if ((projectDesc.owner.share.length>0) || projectDesc.autorun)  {
     log.error ( 35,'shared project metadata does not exist at ' + projectDataPath );
     rdata.reload = -11111;
     response = new cmd.Response ( cmd.fe_retcode.ok,
