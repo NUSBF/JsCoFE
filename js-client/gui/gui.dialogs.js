@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    04.11.20   <--  Date of Last Modification.
+ *    23.05.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -26,7 +26,7 @@
  *                                          btn2_name,onButton2_func )
  *           function InputBox      ( title )
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2020
+ *  (C) E. Krissinel, A. Lebedev 2016-2021
  *
  *  =================================================================
  *
@@ -270,11 +270,11 @@ function HelpBox ( title,helpURL,onDoNotShowAgain_func )  {
       dlg.delete();
     });
 
+    window.setTimeout ( function(){
+      dlg.display.loadPage ( helpURL );
+    },0);
+
   }(this))
-
-
-
-  this.display.loadPage ( helpURL );
 
 }
 
