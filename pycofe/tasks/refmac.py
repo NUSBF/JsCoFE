@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    23.04.21   <--  Date of Last Modification.
+#    23.05.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -56,7 +56,8 @@ class Refmac(basic.TaskDriver):
         structure = self.registerStructure ( xyzout,subfile,mtzout,
                                              None,None,libin,leadKey=1,
                                              map_labels=maplabels,
-                                             copy_files=copyfiles )
+                                             copy_files=copyfiles,
+                                             refiner="refmac" )
         if structure:
             structure.copyAssociations   ( istruct )
             structure.addDataAssociation ( hkl.dataId     )

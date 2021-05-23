@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    02.02.21   <--  Date of Last Modification.
+#    22.05.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -161,7 +161,8 @@ class Gemmi(basic.TaskDriver):
                                      st0.getDMapFilePath(self.inputDir()),
                                      libPath=st0.getLibFilePath(self.inputDir()),
                                      leadKey=st0.leadKey,copy_files=True,
-                                     map_labels=st0.mapLabels )
+                                     map_labels=st0.mapLabels,
+                                     refiner=st0.refiner )
                 if xyz:
                     xyz.copyAssociations   ( st0 )
                     xyz.addDataAssociation ( st0.dataId )  # ???
@@ -194,7 +195,8 @@ class Gemmi(basic.TaskDriver):
                                      struct0.getDMapFilePath(self.inputDir()),
                                      libPath=struct0.getLibFilePath(self.inputDir()),
                                      leadKey=struct0.leadKey,copy_files=True,
-                                     map_labels=struct0.mapLabels )
+                                     map_labels=struct0.mapLabels,
+                                     refiner=struct0.refiner )
                 if xyz:
                     xyz.copyAssociations   ( struct0 )
                     xyz.addDataAssociation ( struct0.dataId )  # ???

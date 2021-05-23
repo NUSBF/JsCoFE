@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    11.03.21   <--  Date of Last Modification.
+#    22.05.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -186,9 +186,15 @@ class ImportReplace(migrate.Migrate):
                     self.success ( have_results )
                     return
 
+                refiner = ""
+                if istruct:
+                    refiner = istruct.refiner
+                elif isub:
+                    refiner = isub.refiner
+
                 sxyz = self.registerStructure1 ( xyz_path,None,mtz_path,
                                                  None,None,lib_path,self.outputFName,
-                                                 leadKey=leadKey )
+                                                 leadKey=leadKey,refiner=refiner )
                 if sxyz:
                     if mtzPath:
                         sxyz.copyAssociations ( self.map[0] )
@@ -248,14 +254,16 @@ class ImportReplace(migrate.Migrate):
             mtz_path = mtzPath
             doc_link = self.hotHelpLink ( "Substructure","jscofe_qna.structure" )
             if sub_path or mtz_path:
+                refiner = ""
                 if isub:
                     if not sub_path:
                         sub_path = isub.getSubFilePath ( self.inputDir() )
                     if not mtz_path:
                         mtz_path = isub.getMTZFilePath ( self.inputDir() )
+                    refiner = isub.refiner
                 sub = self.registerStructure1 ( None,sub_path,mtz_path,
                                                 None,None,None,self.outputFName,
-                                                leadKey=2 )
+                                                leadKey=2,refiner=refiner )
                 if sub:
                     if mtzPath:
                         sub.copyAssociations ( self.map[0] )

@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    23.04.21   <--  Date of Last Modification.
+#    22.05.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -411,7 +411,7 @@ class CCP4Build(basic.TaskDriver):
                                         None, #os.path.join(self.outputDir(),fname + ".diff.map"),
                                         None,
                                         self.outputFName,leadKey=istruct.leadKey,
-                                        copy_files=False )
+                                        copy_files=False,refiner="refmac" )
 
                         if structure:
 

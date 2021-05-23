@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    15.05.21   <--  Date of Last Modification.
+#    22.05.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -176,9 +176,9 @@ class Deposition(basic.TaskDriver):
                 shutil.copyfile ( libin,libout )
 
             # create output structure and visualisation widget
-            #structure = self.registerStructure ( xyzout,None,mtzout,mapout,dmapout,libout,
             structure = self.registerStructure ( xyzout,None,mtzout,None,None,libout,
-                                                 leadKey=istruct.leadKey )
+                                                 leadKey=istruct.leadKey,
+                                                 refiner="refmac" )
             if structure:
                 structure.copyAssociations ( istruct )
                 structure.copyLabels       ( istruct )

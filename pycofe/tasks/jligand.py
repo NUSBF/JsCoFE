@@ -84,7 +84,8 @@ class JLigand(basic.TaskDriver):
                             istruct.getXYZFilePath(self.inputDir()),
                             istruct.getSubFilePath(self.inputDir()),
                             istruct.getMTZFilePath(self.inputDir()),
-                            None,None,libPath=cifout,leadKey=istruct.leadKey )
+                            None,None,libPath=cifout,leadKey=istruct.leadKey,
+                            refiner=istruct.refiner )
 
             if struct:
                 struct.copyAssociations ( istruct )

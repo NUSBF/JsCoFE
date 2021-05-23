@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    23.04.21   <--  Date of Last Modification.
+#    22.05.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -454,7 +454,8 @@ class Crank2(basic.TaskDriver):
                                             # self.hklout_fpath + ".map",
                                             # self.hklout_fpath + "_diff.map",
                                             None,
-                                            self.outputFName,leadKey=1 )
+                                            self.outputFName,leadKey=1,
+                                            refiner="refmac" )
 
             if self.structure:
 

@@ -7,7 +7,7 @@
 #
 # ============================================================================
 #
-#    26.08.20   <--  Date of Last Modification.
+#    22.05.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -112,6 +112,11 @@ class EditRevisionSubstr(basic.TaskDriver):
         if phases:
             self.putMessage ( "<b>Phases to be taken from:&nbsp;&nbsp;&nbsp;&nbsp;</b> " + phases.dname  )
 
+        refiner = ""
+        if substr0:
+            refiner = substr0.refiner
+        elif sub:
+            refiner = sub.refiner
         substructure = self.registerStructure1 (
                         xyz_fpath ,
                         sub_fpath ,
@@ -121,7 +126,8 @@ class EditRevisionSubstr(basic.TaskDriver):
                         lib_fpath ,
                         self.outputFName,
                         leadKey=2,
-                        copy_files=False )
+                        copy_files=False,
+                        refiner=refiner )
         if substructure:
             if phases:
                 substructure.addSubtypes ( phases.getSubtypes() )

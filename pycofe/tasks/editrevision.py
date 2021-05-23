@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    23.10.20   <--  Date of Last Modification.
+#    22.05.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -219,6 +219,9 @@ class EditRevision(asudef.ASUDef):
                 if ("phases" in change_list) or (phases and not struct0.getXYZFileName()):
                     lead_key = 2  #  Phase lead (EP phases)
 
+                refiner = ""
+                if struct0:
+                    refiner = struct0.refiner
                 structure = self.registerStructure1 (
                                 xyz_fpath ,
                                 sub_fpath ,
@@ -229,7 +232,8 @@ class EditRevision(asudef.ASUDef):
                                 self.outputFName,
                                 leadKey=lead_key,
                                 #leadKey=2 if "phases" in change_list else 1,
-                                copy_files=False )
+                                copy_files=False,
+                                refiner=refiner )
                 if structure:
                     if lig_codes:
                         structure.setLigands  ( lig_codes )

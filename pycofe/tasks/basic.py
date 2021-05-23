@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    14.04.21   <--  Date of Last Modification.
+#    23.05.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -1331,11 +1331,11 @@ class TaskDriver(object):
             if structureType==1:
                 structure = self.registerStructure (
                                 None,fnames[0],fnames[1],fnames[2],fnames[3],libPath,
-                                leadKey=leadKey )
+                                leadKey=leadKey,refiner="refmac" )
             else:
                 structure = self.registerStructure (
                                 fnames[0],None,fnames[1],fnames[2],fnames[3],libPath,
-                                leadKey=leadKey )
+                                leadKey=leadKey,refiner="refmac" )
             if structure:
                 structure.addDataAssociation ( hkl.dataId )
                 structure.setRefmacLabels    ( hkl )
@@ -1400,7 +1400,8 @@ class TaskDriver(object):
         fnames = self.calcAnomEDMap ( xyzPath,hkl,anom_form,name_pattern )
 
         anom_structure = self.registerStructure (
-                            None,fnames[0],fnames[1],fnames[2],fnames[3],None )
+                            None,fnames[0],fnames[1],fnames[2],fnames[3],None,
+                            refiner="refmac" )
         if anom_structure:
             anom_structure.addDataAssociation ( hkl.dataId )
             anom_structure.setRefmacLabels    ( hkl )
@@ -1581,7 +1582,8 @@ class TaskDriver(object):
 
 
     def registerStructure ( self,xyzPath,subPath,mtzPath,mapPath,dmapPath,
-                            libPath=None,leadKey=1,copy_files=False,map_labels=None ):
+                            libPath=None,leadKey=1,copy_files=False,map_labels=None,
+                            refiner="" ):
         self.dataSerialNo += 1
 
         #self.file_stderr.write ( "  xyzPath=" + str(xyzPath) + "\n" )
@@ -1595,7 +1597,8 @@ class TaskDriver(object):
                                     xyzPath,subPath,mtzPath,mapPath,dmapPath,libPath,
                                     self.dataSerialNo ,self.job_id,leadKey,
                                     self.outputDataBox,self.outputDir(),
-                                    copy_files=copy_files,map_labels=map_labels )
+                                    copy_files=copy_files,map_labels=map_labels,
+                                    refiner=refiner )
         if not structure:
             self.file_stderr.write ( "  NONE STRUCTURE" )
             self.file_stderr.flush()
@@ -1621,12 +1624,13 @@ class TaskDriver(object):
 
     def registerStructure1 ( self,xyzPath,subPath,mtzPath,mapPath,dmapPath,
                                   libPath,regName,leadKey=1,copy_files=False,
-                                  map_labels=None ):
+                                  map_labels=None,refiner="" ):
         self.dataSerialNo += 1
         structure = dtype_structure.register1 (
                                 xyzPath,subPath,mtzPath,mapPath,dmapPath,libPath,
                                 regName,self.dataSerialNo,self.job_id,leadKey,
-                                self.outputDataBox,map_labels=map_labels )
+                                self.outputDataBox,map_labels=map_labels,
+                                refiner=refiner )
         if not structure:
             self.file_stderr.write ( "  NONE STRUCTURE\n" )
             self.file_stderr.flush()

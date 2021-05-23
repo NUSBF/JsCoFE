@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    23.04.21   <--  Date of Last Modification.
+#    23.05.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -269,7 +269,8 @@ class Simbad(asudef.ASUDef):
                             os.path.join(self.reportDir(),result0["mtz"]),
                             #os.path.join(self.reportDir(),result0["map"]),
                             #os.path.join(self.reportDir(),result0["dmap"]),
-                            None,None,None,leadKey=1,copy_files=True )
+                            None,None,None,leadKey=1,copy_files=True,
+                            refiner="refmac" )
 
             if structure:
 

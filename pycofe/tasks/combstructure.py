@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    26.02.21   <--  Date of Last Modification.
+#    22.05.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -385,7 +385,7 @@ class CombStructure(basic.TaskDriver):
             structure = self.registerStructure ( self.getXYZOFName(),None,
                                                  self.getMTZOFName(),
                                                  None,None,libin,
-                                                 leadKey=1 )
+                                                 leadKey=1,refiner="refmac" )
             if structure:
                 structure.copyAssociations   ( istruct )
                 structure.addDataAssociation ( hkl.dataId     )

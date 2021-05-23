@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    23.07.20   <--  Date of Last Modification.
+#    22.05.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -157,7 +157,8 @@ class Dimple(basic.TaskDriver):
 
             structure = self.registerStructure ( self.getXYZOFName(),None,
                                                  self.getMTZOFName(),None,
-                                                 None,libin, leadKey=1 )
+                                                 None,libin, leadKey=1,
+                                                 refiner="refmac" )
 
             if structure:
                 structure.addDataAssociation ( hkl.dataId )

@@ -1,7 +1,7 @@
 /*
  *  ========================================================================
  *
- *    13.05.21   <--  Date of Last Modification.
+ *    22.05.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  ------------------------------------------------------------------------
  *
@@ -51,6 +51,9 @@ var _taskIndex = {
   // suggest Make Ligand after Import and Model Preparation
   'E'  : { type: 'TaskMakeLigand'      , after: ['B','B1','C','D','E','m'] },
   'E1' : { type: 'TaskCrosSec'         , after: ['B','m'] },
+  'E2' : { type: 'TaskWFlowAMR'        , after: ['0','B'] },
+  'E3' : { type: 'TaskWFlowAEP'        , after: ['0','B'] },
+  'E4' : { type: 'TaskWFlowDPL'        , after: ['0','B'] },
 
   // suggest Aimless, Simbad and ASUDef after Import or Model Preparation in
   // the specified order; do not suggest them after themselves (user should
@@ -111,6 +114,9 @@ var _taskIndex = {
 
   // suggest Buster after both elementary MR, auto-EP, Buccaneer
   'V1' : { type: 'TaskBuster'          , after: ['M','N','O','P','Q','U','U1','j','r'] },
+
+  // suggest REL Workflow after both elementary MR, auto-EP, Buccaneer
+  'V2' : { type: 'TaskWFlowREL'        , after: ['M','N','O','P','Q','U','U1','j','r'] },
 
   // suggest Lorester after Buccaneer and Refmac; not after itself
   'W'  : { type: 'TaskLorestr'         , after: ['U','V','r'] },

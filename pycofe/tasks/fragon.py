@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    12.06.20   <--  Date of Last Modification.
+#    22.05.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -21,7 +21,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2020
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2020-2021
 #
 # ============================================================================
 #
@@ -339,7 +339,7 @@ class Fragon(basic.TaskDriver):
 
                     structure = self.registerStructure (
                         fragon_xyz,None,tmp_mtz,None,None,None,
-                        leadKey=2 ) # ,map_labels=cols[0] + ",acorn.PHI" )
+                        leadKey=2,refiner="refmac" ) # ,map_labels=cols[0] + ",acorn.PHI" )
 
                     if structure:
                         #structure.copyAssociations ( istruct )
@@ -361,193 +361,6 @@ class Fragon(basic.TaskDriver):
                            message="<b><i>New structure revision name:</i></b>",
                            gridId = "", revisionName=None )
                         have_results = True
-
-                    """
-                    ofname = self.getOFName ( "",i+1 )
-                    structure = self.finaliseStructure ( fragon_xyz,
-                                    ofname,sol_hkl,None,seq,0,
-                                    leadKey=1,openState_bool=False,
-                                    title=None,reserveRows=0 )
-                    if structure:
-                        rev = dtype_revision.DType ( -1 )
-                        rev.copy ( revision )
-                        rev.setReflectionData ( sol_hkl   )
-                        rev.setStructureData  ( structure )
-
-                        #rev.makeRevDName  ( self.job_id,i+1,self.outputFName )
-                        #self.putRevisionWidget ( gridId,i,
-                        #    "New structure revision name:",rev )
-
-                        #rev.register ( self.outputDataBox )
-
-                        self.registerRevision ( rev,i+1,title="",
-                           message="<b><i>New structure revision name:</i></b>",
-                           gridId = "", revisionName=None )
-                        have_results = True
-                    """
-
-
-
-        """
-                "file_f " + hkl.getHKLFilePath(self.inputDir()) + "\n" + \
-                "labin F=" + hkl.dataset.Fmean.value + " SIGF=" + hkl.dataset.Fmean.sigma + "\n"
-
-
-        istruct  = self.makeClass ( self.input_data.data.istruct [0] )
-
-        sec1     = self.task.parameters.sec1.contains
-
-        seq = None
-        if hasattr(self.input_data.data,"seq"):  # optional data parameter
-            seq = self.input_data.data.seq
-            self.makeFullASUSequenceFile ( seq,"prepared_for_fragon",self.fragon_seq() )
-            #combseq = ""
-            #for s in seq:
-            #    seqstring = self.makeClass(s).getSequence ( self.inputDir() )
-            #    for i in range(s.ncopies):
-            #        combseq += seqstring
-            #dtype_sequence.writeSeqFile ( self.fragon_seq(),"prepared_for_fragon",
-            #                              combseq )
-
-        ncs_struct = None
-        if hasattr(self.input_data.data,"ncs_struct"):  # optional data parameter
-            ncs_struct = self.makeClass ( self.input_data.data.ncs_struct[0] )
-
-        refname = os.path.join ( os.environ["CCP4"],"lib","data",
-            "reference_structures",
-            "reference-" + sec1.REFMDL_SEL.value )
-
-        self.open_stdin()
-        self.write_stdin (
-            "title Job "   + self.job_id.zfill(4) + \
-            "\npdbin-ref " + refname + ".pdb" + \
-            "\nmtzin-ref " + refname + ".mtz" + \
-            "\ncolin-ref-fo FP.F_sigF.F,FP.F_sigF.sigF" + \
-            "\ncolin-ref-hl FC.ABCD.A,FC.ABCD.B,FC.ABCD.C,FC.ABCD.D"
-        )
-
-        if seq:
-            self.write_stdin ( "\nseqin-wrk " + self.fragon_seq() )
-
-        self.write_stdin (
-            "\nmtzin-wrk " + istruct.getMTZFilePath(self.inputDir()) + \
-            "\ncolin-wrk-fo /*/*/["     + istruct.FP  + "," + istruct.SigFP + "]"
-        )
-
-        if istruct.HLA!="":
-            self.write_stdin (
-                "\ncolin-wrk-hl /*/*/[" + istruct.HLA + "," + istruct.HLB + \
-                                    "," + istruct.HLC + "," + istruct.HLD + "]" +\
-                "\ncolin-wrk-fc /*/*/["     + istruct.FWT + "," + istruct.PHWT + "]"
-            )
-        else:
-            self.write_stdin (
-                "\ncolin-wrk-phifom /*/*/[" + istruct.PHI + "," + istruct.FOM  + "]" + \
-                "\ncolin-wrk-fc /*/*/["     + istruct.FWT + "," + istruct.PHWT + "]"
-            )
-
-        if istruct.FreeR_flag!="":
-            self.write_stdin (
-                "\ncolin-wrk-free /*/*/["   + istruct.FreeR_flag + "]"
-            )
-
-        ncs_xyz = None
-        ncs_kwd = None
-        ncycles = "3"
-        if ncs_struct:
-            if ncs_struct.hasSubSubtype():
-                ncs_xyz = ncs_struct.getSubFilePath ( self.inputDir() )
-                ncs_kwd = "pdbin-wrk-ha"
-            elif ncs_struct.hasXYZSubtype():
-                ncs_xyz = ncs_struct.getXYZFilePath ( self.inputDir() )
-                ncs_kwd = "pdbin-wrk-mr"
-            ncycles = "10"
-        if ncs_kwd:
-            self.write_stdin( "\n" + ncs_kwd + " " + ncs_xyz )
-        if sec1.NCYCLES.value:
-            ncycles = str(sec1.NCYCLES.value)
-
-        solcont = float( revision.ASU.solvent )
-        if solcont > 1.0:
-            solcont /= 100.0
-
-        output_file = self.getMTZOFName()
-        self.write_stdin (
-            "\nmtzout " + output_file + \
-            "\ncolout fragon"  +\
-            "\nncs-average"  +\
-            "\nsolvent-content " + str( solcont ) + "\n"  +\
-            "\ncycles " + ncycles + "\n" +
-            self.putKWParameter ( sec1.SOLVENT_CBX   ) + \
-            self.putKWParameter ( sec1.HISTOGRAM_CBX ) + \
-            #self.putKWParameter ( sec1.NCSAVER_CBX   ) + \
-            self.putKWParameter ( sec1.ANISO_CBX     ) + \
-            #self.putKWParameter ( sec1.NCYCLES       ) + \
-            self.putKWParameter ( sec1.RESMIN        ) + \
-            self.putKWParameter ( sec1.NCSRAD        )
-            #self.putKWParameter ( sec1.contains.SOLVCONT      )
-        )
-
-        self.close_stdin()
-        """
-
-        """
-        # check solution and register data
-        have_results = False
-        if os.path.isfile(output_file):
-
-            self.runApp ( "chltofom",[
-                "-mtzin" ,output_file,
-                "-mtzout","__tmp.mtz",
-                "-colin-hl","/*/*/[fragon.ABCD.A,fragon.ABCD.B,fragon.ABCD.C,fragon.ABCD.D]",
-                "-colout"  ,"fragon"
-            ],logType="Service" )
-
-            os.rename ( "__tmp.mtz",output_file )
-
-            self.putTitle ( "Results" )
-
-            # calculate maps for UglyMol using final mtz from temporary location
-            #fnames = self.calcCCP4Maps ( output_file,self.outputFName,"fragon" )
-
-            # register output data from temporary location (files will be moved
-            # to output directory by the registration procedure)
-
-            fragon_xyz = None
-            fragon_sub = None
-            if istruct.getXYZFileName():
-                fragon_xyz = self.getXYZOFName()
-                shutil.copyfile ( istruct.getXYZFilePath(self.inputDir()),fragon_xyz )
-            if istruct.getSubFileName():
-                fragon_sub = self.getOFName ( ".ha.pdb" )
-                shutil.copyfile ( istruct.getSubFilePath(self.inputDir()),fragon_sub )
-            #if istruct.getDMapFileName():
-            #    shutil.copyfile ( istruct.getDMapFilePath(self.inputDir()),
-            #                      fnames[1] )
-
-            structure = self.registerStructure (
-                    #fragon_xyz,fragon_sub,output_file,fnames[0],None,None,leadKey=2,
-                    fragon_xyz,fragon_sub,output_file,None,None,None,leadKey=2,
-                    map_labels="fragon.F_phi.F,fragon.F_phi.phi" )
-
-            if structure:
-                structure.copyAssociations ( istruct )
-                structure.copySubtype      ( istruct )
-                structure.copyLabels       ( istruct )
-                structure.copyLigands      ( istruct )
-                structure.setFragonLabels  ()
-                self.putStructureWidget    ( "structure_btn",
-                                             "Structure and electron density",
-                                             structure )
-                # update structure revision
-                revision = self.makeClass  ( self.input_data.data.revision[0] )
-                revision.setStructureData  ( structure )
-                self.registerRevision      ( revision  )
-                have_results = True
-
-        else:
-            self.putTitle ( "No Output Generated" )
-        """
 
         # close execution logs and quit
         self.success ( have_results )
