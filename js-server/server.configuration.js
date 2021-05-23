@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    03.04.21   <--  Date of Last Modification.
+ *    21.05.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -495,6 +495,7 @@ var version = '';
       "jobFalseStart"      : 1,      // days
       "jobTimeout"         : 30,     // days
       "zombieLifeTime"     : 30,     // days
+      "pulseLifeTime"      : 1,      // days
       "maxRestarts"        : 100,
       "fileCapSize"        : 500000,
       "logflow" : {   // optional item
@@ -528,6 +529,7 @@ var version = '';
       "jobFalseStart"    : 1,      // days
       "jobTimeout"       : 30,     // days
       "zombieLifeTime"   : 30,     // days
+      "pulseLifeTime"    : 1,      // days
       "maxRestarts"      : 100,
       "fileCapSize"      : 500000,
       "logflow" : {   // optional item
@@ -730,6 +732,8 @@ function readConfiguration ( confFilePath,serverType )  {
         nc_server.jobManager = nc_server.exeType;
       if (!nc_server.hasOwnProperty('zombieLifeTime'))
         nc_server.zombieLifeTime = 30;  // days
+      if (!nc_server.hasOwnProperty('pulseLifeTime'))
+        nc_server.pulseLifeTime = 1;  // days
       if (!nc_server.hasOwnProperty('jobTimeout'))
         nc_server.jobTimeout = 30;  // days
       if (!nc_server.hasOwnProperty('jobFalseStart'))

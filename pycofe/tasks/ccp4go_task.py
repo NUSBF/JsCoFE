@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    18.12.20   <--  Date of Last Modification.
+#    22.05.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -21,7 +21,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2020
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2021
 #
 # ============================================================================
 #
@@ -397,7 +397,8 @@ class CCP4go(import_task.Import):
                 structure = self.registerStructure ( meta["pdb"],None,meta["mtz"],
                                                      None,None,
                                                      #meta["map"],meta["dmap"],
-                                                     libPath=libPath,copy_files=True )
+                                                     libPath=libPath,copy_files=True,
+                                                     refiner="refmac" )
 
                 if structure:
 

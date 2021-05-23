@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    10.05.21   <--  Date of Last Modification.
+#    22.05.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -327,14 +327,14 @@ class Buster(basic.TaskDriver):
             structure = self.registerStructure ( xyzout,None,mtzout,
                                 None,None,libin,leadKey=1,
                                 map_labels="2FOFCWT,PH2FOFCWT,FOFCWT,PHFOFCWT",
-                                copy_files=True )
+                                copy_files=True,refiner="buster" )
 
             if structure:
                 structure.copyAssociations   ( istruct )
                 structure.addDataAssociation ( hkl.dataId     )
                 structure.addDataAssociation ( istruct.dataId )  # ???
                 structure.setBusterLabels    ( hkl )
-                structure.refiner = "buster"
+                # structure.refiner = "buster"
                 bustercif = os.path.join ( self.buster_dir(),"BUSTER_model.cif" )
                 if os.path.isfile(bustercif):
                     mmcifout = self.getMMCIFOFName()
@@ -413,7 +413,8 @@ class Buster(basic.TaskDriver):
                             struct_ano = self.registerStructure ( xyz_merged,None,anomtz,
                                         None,None,libin,leadKey=1,
                                         map_labels="FAN,PHAN",
-                                        copy_files=True )
+                                        copy_files=True,
+                                        refiner="buster" )
                         except:
                             pass
 
@@ -424,7 +425,7 @@ class Buster(basic.TaskDriver):
                             #struct_ano.setBusterLabels    ( hkl )
                             struct_ano.copyLigands        ( istruct )
                             struct_ano.addPhasesSubtype   ()
-                            struct_ano.refiner = "buster"
+                            # struct_ano.refiner = "buster"
 
                             nlst = struct_ano.dname.split ( " /" )
                             nlst[0] += " (anom maps)"
@@ -437,7 +438,8 @@ class Buster(basic.TaskDriver):
                                             structure.getMTZFilePath(self.outputDir()),
                                             None,None,None,
                                             leadKey=2,copy_files=False,
-                                            map_labels="2FOFCWT,PH2FOFCWT,FOFCWT,PHFOFCWT" )
+                                            map_labels="2FOFCWT,PH2FOFCWT,FOFCWT,PHFOFCWT",
+                                            refiner="buster" )
 
                             if substructure:
                                 substructure.copyAssociations   ( istruct )
@@ -445,7 +447,7 @@ class Buster(basic.TaskDriver):
                                 substructure.addDataAssociation ( istruct.dataId )  # ???
                                 substructure.setBusterLabels    ( hkl )
                                 substructure.addPhasesSubtype()
-                                substructure.refiner = "buster"
+                                # substructure.refiner = "buster"
                             else:
                                 self.putMessage ( "<i>Substructure could not be " +\
                                                   "formed (possible bug)</i>" )

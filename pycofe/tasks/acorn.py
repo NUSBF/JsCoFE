@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    09.02.20   <--  Date of Last Modification.
+#    22.05.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -23,7 +23,7 @@
 #    jobId      is job id assigned by jsCoFE (normally an integer but should
 #               be treated as a string with no assumptions)
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2019
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2021
 #
 # ============================================================================
 #
@@ -280,18 +280,11 @@ class Acorn(basic.TaskDriver):
                     acorn_sub = self.getOFName ( ".ha.pdb" )
                     shutil.copyfile ( istruct.getSubFilePath(self.inputDir()),acorn_sub )
 
-                #structure = self.registerStructure (
-                #        acorn_xyz,acorn_sub,acorn_map,fnames[0],fnames[1],None,
-                #        leadKey=2,copy_files=True )
-
                 structure = self.registerStructure (
                         acorn_xyz,acorn_sub,acorn_map,None,None,None,
                         leadKey=2,copy_files=True,
-                        map_labels="acorn.EO.FWT,acorn.PHI,acorn.EC.FWT,acorn.PHI" )
-
-                #    def registerStructure ( self,xyzPath,subPath,mtzPath,mapPath,dmapPath,
-                #                            libPath=None,leadKey=1,copy_files=False,map_labels=None ):
-
+                        map_labels="acorn.EO.FWT,acorn.PHI,acorn.EC.FWT,acorn.PHI",
+                        refiner=istruct.refiner )
 
                 self.putStructureWidget ( "sharpened_map","Sharpened Map",structure )
 
@@ -313,17 +306,10 @@ class Acorn(basic.TaskDriver):
             self.close_stdin()
             self.runApp ( "sftools",[],logType="Service" )
 
-            #fnames = self.calcCCP4Maps ( output_file,self.outputFName,
-            #                             "acorn:" + cols[0] )
-
-            #structure = self.registerStructure (
-            #        acorn_xyz,acorn_sub,output_file,fnames[0],None,None,
-            #        leadKey=2 )
-
             structure = self.registerStructure (
                     acorn_xyz,acorn_sub,output_file,None,None,None,
-                    leadKey=2,map_labels=cols[0] + ",acorn.PHI" )
-
+                    leadKey=2,map_labels=cols[0] + ",acorn.PHI",
+                    refiner=istruct.refiner )
 
             if structure:
                 structure.copyAssociations ( istruct )

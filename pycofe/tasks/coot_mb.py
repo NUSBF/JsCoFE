@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    26.02.21   <--  Date of Last Modification.
+#    22.05.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -400,9 +400,9 @@ class Coot(coot_ce.CootCE):
 
             struct = self.registerStructure ( coot_xyz,None,coot_mtz,
                                               None,None,libPath=libPath,
-                                              leadKey=lead_key )
+                                              leadKey=lead_key,
+                                              refiner=istruct.refiner )
 
-            #                                  istruct.getLibFilePath(self.inputDir()) )
             if struct:
                 struct.copyAssociations ( istruct )
                 struct.copySubtype      ( istruct )

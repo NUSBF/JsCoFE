@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    03.05.21   <--  Date of Last Modification.
+ *    21.05.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -75,16 +75,19 @@ function NCJobRegister()  {
 NCJobRegister.prototype.addJob = function ( jobDir )  {
 var job_token     = crypto.randomBytes(20).toString('hex');
 var maxSendTrials = conf.getServerConfig().maxSendTrials;
+var crTime        = Date.now();
   this.job_map[job_token] = {
     feURL       : '',
     jobDir      : jobDir,
     jobStatus   : task_t.job_code.new,
     return_data : true,
     sendTrials  : maxSendTrials,
-    startTime   : Date.now(),
+    startTime   : crTime,
     endTime     : null,
-    exeType     : '',    // SHELL, SGE or SCRIPT
-    pid         : 0      // job pid is added separately
+    progress    : 0,      // progress measure
+    lastAlive   : crTime, // last time when job was alive
+    exeType     : '',     // SHELL, SGE or SCRIPT
+    pid         : 0       // job pid is added separately
   };
   return job_token;
 }
@@ -92,16 +95,19 @@ var maxSendTrials = conf.getServerConfig().maxSendTrials;
 
 NCJobRegister.prototype.addJob1 = function ( jobDir,job_token )  {
 var maxSendTrials = conf.getServerConfig().maxSendTrials;
+var crTime        = Date.now();
   this.job_map[job_token] = {
     feURL       : '',
     jobDir      : jobDir,
     jobStatus   : task_t.job_code.new,
     return_data : true,
     sendTrials  : maxSendTrials,
-    startTime   : Date.now(),
+    startTime   : crTime,
     endTime     : null,
-    exeType     : '',    // SHELL or SGE
-    pid         : 0      // job pid is added separately
+    progress    : 0,      // progress measure
+    lastAlive   : crTime, // last time when job was alive
+    exeType     : '',     // SHELL or SGE
+    pid         : 0       // job pid is added separately
   };
   return job_token;
 }
@@ -190,6 +196,10 @@ function readNCJobRegister ( readKey )  {
             }
             if (!ncJobRegister.job_map[job_token].hasOwnProperty('endTime'))
               ncJobRegister.job_map[job_token].endTime = null;
+            if (!ncJobRegister.job_map[job_token].hasOwnProperty('progress'))  {
+              ncJobRegister.job_map[job_token].progress  = 0;
+              ncJobRegister.job_map[job_token].lastAlive = null;
+            }
           }
       }
 
@@ -242,6 +252,7 @@ function removeJobDelayed ( job_token,jobStatus )  {
   }
 }
 
+var __day_ms = 86400000;
 
 function cleanNC ( cleanDeadJobs_bool )  {
 
@@ -290,25 +301,25 @@ function cleanNC ( cleanDeadJobs_bool )  {
   // 3. Check for and remove directories and registry entries for dead jobs
 
   if (cleanDeadJobs_bool)  {
-    var _day = 86400000.0;
+    // var _day = __day_ms; // 86400000.0;
     var srvConfig = conf.getServerConfig();
     var _false_start = srvConfig.jobFalseStart;   // days; should come from config
     var _timeout     = srvConfig.jobTimeout;      // days; should come from config
     var _zombie_life = srvConfig.zombieLifeTime;  // days
-    var t = Date.now()/_day;
+    var t = Date.now()/__day_ms;
     var n = 0;
     var nzombies = 0;
     for (var job_token in ncJobRegister.job_map)  {
       var jobEntry = ncJobRegister.job_map[job_token];
       var endTime  = ncJobRegister.job_map[job_token];
       if (endTime)  {
-        endTime /= _day;
+        endTime /= __day_ms;
         nzombies++;
       }
       var startTime = t;
       if ('startTime' in jobEntry)
-            startTime = jobEntry.startTime/_day;
-      else  jobEntry.startTime = t*_day;
+            startTime = jobEntry.startTime/__day_ms;
+      else  jobEntry.startTime = t*__day_ms;
       if ((jobEntry.pid<=0) && (t-startTime>_false_start))  {  // did not manage to start
         // process not found, schedule job for deletion
         n++;
@@ -381,7 +392,8 @@ function checkJobsOnTimer()  {
   ncJobRegister.timer = null;  // indicate that job check loop is suspended
                                // (this is paranoid)
   var crTime = Date.now();
-  var zombieLifeTime = 86400000*conf.getServerConfig().zombieLifeTime;
+  var zombieLifeTime = __day_ms*conf.getServerConfig().zombieLifeTime;
+  var pulseLifeTime  = __day_ms*conf.getServerConfig().pulseLifeTime;
 
   // loop over all entries in job registry
   for (var job_token in ncJobRegister.job_map)  {
@@ -392,7 +404,7 @@ function checkJobsOnTimer()  {
       // job was not sent to FE for long time -- delete it now
 
       removeJobDelayed ( job_token,task_t.job_code.finished );
-      log.error ( 4,'zombi job deleted, token:' + job_token );
+      log.error ( 60,'zombi job deleted, token:' + job_token );
 
     } else if ([task_t.job_code.running,task_t.job_code.stopped]
                                            .indexOf(jobEntry.jobStatus)>=0)  {
@@ -428,6 +440,17 @@ function checkJobsOnTimer()  {
         var code = utils.getJobSignalCode ( jobEntry.jobDir );
         // whichever the code is, wrap-up the job
         ncJobFinished ( job_token,code );
+      } else if (crTime-jobEntry.startTime>pulseLifeTime)  {
+        // check pulse
+        var progress = utils.fileSize ( path.join(jobEntry.jobDir,'_stdout.log') );
+        if (progress>jobEntry.progress)  {
+          jobEntry.progress  = progress;
+          jobEntry.lastAlive = crTime;
+        } else if (crTime-jobEntry.lastAlive>pulseLifeTime)  {
+          // job looks dead -- kill it now
+          log.error ( 61,'attempt to kill silent job ' + job_token + ' pid=' + jobEntry.pid );
+          _stop_job ( jobEntry );
+        }
       }
 
     }

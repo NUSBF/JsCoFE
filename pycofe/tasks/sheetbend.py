@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    14.11.20   <--  Date of Last Modification.
+#    23.05.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -22,7 +22,7 @@
 #      jobDir/report  : directory receiving HTML report
 #
 #  Copyright (C) Eugene Krissinel, Andrey Lebedev, Robert Nicholls,
-#                Oleg Kovalevskyi 2017-2020
+#                Oleg Kovalevskyi 2017-2021
 #
 # ============================================================================
 #
@@ -100,7 +100,8 @@ class Sheetbend(basic.TaskDriver):
                 None,None,
                 istruct.getLibFilePath(self.inputDir()),
                 leadKey=istruct.leadKey,
-                map_labels=istruct.mapLabels
+                map_labels=istruct.mapLabels,
+                refiner=istruct.refiner
             )
             if structure:
 

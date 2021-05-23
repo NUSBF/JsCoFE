@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    23.04.21   <--  Date of Last Modification.
+#    22.05.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -98,7 +98,8 @@ class FitWaters(basic.TaskDriver):
                             istruct.getMapFilePath (self.inputDir()),
                             istruct.getDMapFilePath(self.inputDir()),
                             istruct.getLibFilePath (self.inputDir()),
-                            leadKey=istruct.leadKey )
+                            leadKey=istruct.leadKey,
+                            refiner=istruct.refiner )
             if structure:
                 structure.copyAssociations ( istruct )
                 structure.copySubtype      ( istruct )

@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    09.02.20   <--  Date of Last Modification.
+#    23.05.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -21,7 +21,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2020
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2021
 #
 # ============================================================================
 #
@@ -295,7 +295,8 @@ class ShelxEMR(basic.TaskDriver):
                 structure = self.registerStructure1 (
                                 self.shelxe_pdb(),None,self.shelxe_mtz(),
                                 None,None,None,self.outputFName,leadKey=2,
-                                map_labels="FWT,PHWT" )
+                                map_labels="FWT,PHWT",
+                                refiner="" )
                                 #fnames[0],None,None,self.outputFName,leadKey=2 )
             elif istruct.hasXYZSubtype():
                 structure = self.registerStructure1 (
@@ -303,7 +304,8 @@ class ShelxEMR(basic.TaskDriver):
                                 None,self.shelxe_mtz(),None,None,None,
                                 #None,self.shelxe_mtz(),fnames[0],None,None,
                                 self.outputFName,leadKey=2,
-                                map_labels="FWT,PHWT" )
+                                map_labels="FWT,PHWT",
+                                refiner=istruct.refiner )
 
             if structure:
                 structure.copyAssociations ( istruct )
@@ -328,7 +330,8 @@ class ShelxEMR(basic.TaskDriver):
                                 #self.shelxe_mtz(),fnames[0],None,None,
                                 self.shelxe_mtz(),None,None,None,
                                 self.outputFName,leadKey=2,
-                                map_labels="FWT,PHWT" )
+                                map_labels="FWT,PHWT",
+                                refiner=istruct.refiner )
                 if substructure:
                     substructure.copyAssociations ( istruct )
                     substructure.copyLabels       ( istruct )

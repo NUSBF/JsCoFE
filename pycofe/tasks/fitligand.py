@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    23.04.21   <--  Date of Last Modification.
+#    22.05.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -140,7 +140,8 @@ class FitLigand(basic.TaskDriver):
             structure = self.registerStructure ( pdbout,None,mtzin,
                                 istruct.getMapFilePath (self.inputDir()),
                                 istruct.getDMapFilePath(self.inputDir()),
-                                libadd,leadKey=istruct.leadKey )
+                                libadd,leadKey=istruct.leadKey,
+                                refiner=istruct.refiner )
             if structure:
                 structure.copyAssociations ( istruct )
                 structure.copySubtype      ( istruct )

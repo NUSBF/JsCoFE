@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    01.05.20   <--  Date of Last Modification.
+#    23.05.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -275,7 +275,7 @@ class Nautilus(basic.TaskDriver):
                                     self.nautilus_xyz(),None,self.nautilus_mtz(),
                                     None,None,None,
                                     #fnames[0],fnames[1],None,  -- not needed for new UglyMol
-                                    leadKey=1 )
+                                    leadKey=1,refiner="refmac" )
             if structure:
                 structure.copyAssociations ( istruct )
                 structure.copySubtype      ( istruct )

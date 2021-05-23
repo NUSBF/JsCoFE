@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    10.05.21   <--  Date of Last Modification.
+#    22.05.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -606,7 +606,7 @@ def getValidFileName ( xyzFilePath,subFilePath,mtzFilePath,mapFilePath ):
 
 def register ( xyzFilePath,subFilePath,mtzFilePath,mapFilePath,dmapFilePath,libFilePath,
                dataSerialNo,job_id,leadKey,outDataBox,outputDir,copy_files=False,
-               map_labels=None ):
+               map_labels=None,refiner="" ):
     fname0 = getValidFileName ( xyzFilePath,subFilePath,mtzFilePath,mapFilePath )
     if fname0 and os.path.isfile(fname0):
         structure = DType   ( job_id )
@@ -629,6 +629,7 @@ def register ( xyzFilePath,subFilePath,mtzFilePath,mapFilePath,dmapFilePath,libF
             outDataBox.add_data ( structure )
         structure.adjust_dname()
         structure.mapLabels = map_labels
+        structure.refiner   = refiner
         return structure
 
     else:
@@ -646,7 +647,8 @@ def basename ( fpath ):
 #  register1() assumes that all files are in output directory and named
 #  properly -- so just checks them in
 def register1 ( xyzFilePath,subFilePath,mtzFilePath,mapFilePath,dmapFilePath,libFilePath,
-                regName,dataSerialNo,job_id,leadKey,outDataBox,map_labels=None ):
+                regName,dataSerialNo,job_id,leadKey,outDataBox,map_labels=None,
+                refiner="" ):
 
     fname0 = getValidFileName ( xyzFilePath,subFilePath,mtzFilePath,mapFilePath )
     if fname0 and os.path.isfile(fname0):
@@ -669,6 +671,7 @@ def register1 ( xyzFilePath,subFilePath,mtzFilePath,mapFilePath,dmapFilePath,lib
             outDataBox.add_data ( structure )
         structure.adjust_dname()
         structure.mapLabels = map_labels
+        structure.refiner   = refiner
         return structure
 
     else:

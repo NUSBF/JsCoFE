@@ -7,7 +7,7 @@
 #
 # ============================================================================
 #
-#    27.08.20   <--  Date of Last Modification.
+#    22.05.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -23,7 +23,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2020
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2021
 #
 # ============================================================================
 #
@@ -137,6 +137,9 @@ class EditRevisionStruct(basic.TaskDriver):
         if phases:
             self.putMessage ( "<b>Phases to be taken from:&nbsp;&nbsp;&nbsp;&nbsp;</b> " + phases.dname  )
 
+        refiner = ""
+        if struct0:
+            refiner = struct0.refiner
         structure = self.registerStructure1 (
                         xyz_fpath ,
                         sub_fpath ,
@@ -146,7 +149,8 @@ class EditRevisionStruct(basic.TaskDriver):
                         lib_fpath ,
                         self.outputFName,
                         leadKey=1 if phases is struct0 else 2,
-                        copy_files=False )
+                        copy_files=False,
+                        refiner=refiner )
         if structure:
             if lig_codes:
                 structure.setLigands  ( lig_codes )

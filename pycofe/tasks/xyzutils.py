@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    20.07.20   <--  Date of Last Modification.
+#    23.05.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -21,7 +21,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2020
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2020-2021
 #
 # ============================================================================
 #
@@ -312,7 +312,8 @@ class XyzUtils(basic.TaskDriver):
                                              ixyz.getDMapFilePath(self.inputDir()),
                                              libPath=ixyz.getLibFilePath(self.inputDir()),
                                              leadKey=ixyz.leadKey,copy_files=False,
-                                             map_labels=ixyz.mapLabels )
+                                             map_labels=ixyz.mapLabels,
+                                             refiner=ixyz.refiner )
                         if oxyz:
                             oxyz.copyAssociations   ( ixyz )
                             oxyz.addDataAssociation ( ixyz.dataId )  # ???

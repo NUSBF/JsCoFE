@@ -1572,27 +1572,10 @@ class TaskDriver(object):
         return grid_id
 
 
-
-    #def registerRevision1 ( self,revision,serialNo,pageId,row,title="Structure Revision" ):
-    #    revision.makeRevDName ( self.job_id,serialNo,self.outputFName )
-    #    revision.register     ( self.outputDataBox )
-    #    self.putTitle1   ( pageId,title,row,1 )
-    #    self.putMessage1 ( pageId,"<b><i>New structure revision name:</i></b> " +\
-    #                      "<font size='+1'>\"" + revision.dname + "\"</font>",
-    #                      row+1 )
-    #    return
-
-
     def registerStructure ( self,xyzPath,subPath,mtzPath,mapPath,dmapPath,
-                            libPath=None,leadKey=1,copy_files=False,map_labels=None ):
+                            libPath=None,leadKey=1,copy_files=False,
+                            map_labels=None ):
         self.dataSerialNo += 1
-
-        #self.file_stderr.write ( "  xyzPath=" + str(xyzPath) + "\n" )
-        #self.file_stderr.write ( "  cwd=" + os.getcwd() + "\n" )
-        #if os.path.isfile(xyzPath):
-        #    self.file_stderr.write ( "  exists\n" )
-        #else:
-        #    self.file_stderr.write ( "  does not exists\n" )
 
         structure = dtype_structure.register (
                                     xyzPath,subPath,mtzPath,mapPath,dmapPath,libPath,
@@ -1606,7 +1589,6 @@ class TaskDriver(object):
             structure.putXYZMeta ( self.outputDir(),self.file_stdout1,
                                    self.file_stderr,None )
 
-        #self.stdoutln ( str(structure.files) )
         return structure
 
 

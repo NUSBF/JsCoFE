@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    02.12.20   <--  Date of Last Modification.
+#    23.05.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -21,7 +21,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2020
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2021
 #
 # ============================================================================
 #
@@ -128,7 +128,8 @@ class PhaserEP(basic.TaskDriver):
                                 #None,pdbfile,mtzfile,protein_map,None,None,
                                 #None,pdbfile,mtzfile,None,None,None,
                                 None,pdbfile,mtzfile,None,None,None,
-                                leadKey=2,copy_files=True,map_labels="FWT,PHWT" )
+                                leadKey=2,copy_files=True,map_labels="FWT,PHWT",
+                                refiner="" )
 
                 if structure:
                     if seq:
@@ -152,7 +153,8 @@ class PhaserEP(basic.TaskDriver):
                                 #None,pdbfile,llgmapsfile,protein_map,fnames[0],None,
                                 None,pdbfile,llgmapsfile,None,None,None,
                                 leadKey=2,copy_files=True,
-                                map_labels="FWT,PHWT,FLLG_"+stype+",PHLLG_"+stype )
+                                map_labels="FWT,PHWT,FLLG_"+stype+",PHLLG_"+stype,
+                                refiner="" )
                         if anom_struct:
                             self.putStructureWidget ( "structure_btn_"+stype,
                                                       "Substructure and electron density",

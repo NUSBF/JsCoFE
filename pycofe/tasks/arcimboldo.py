@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    10.05.21   <--  Date of Last Modification.
+#    22.05.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -550,7 +550,8 @@ class Arcimboldo(basic.TaskDriver):
             structure = self.registerStructure ( arcimboldo_xyz,None,arcimboldo_mtz,
                                                  None,None,None,leadKey=1,
                                                  map_labels="FWT,PHWT",
-                                                 copy_files=True )
+                                                 copy_files=True,
+                                                 refiner="" )
             if structure:
                 structure.copyAssociations ( self.hkl )
                 #structure.copyLabels       ( istruct )
@@ -558,12 +559,6 @@ class Arcimboldo(basic.TaskDriver):
                 structure.FreeR_flag = self.hkl.getFreeRColumn()
                 structure.addPhasesSubtype()
 
-                #structure.copySubtype      ( istruct )
-                #structure.mergeSubtypes    ( istruct,exclude_types=[
-                #  dtype_template.subtypeXYZ(),
-                #  dtype_template.subtypeSubstructure(),
-                #  dtype_template.subtypeAnomSubstr()
-                #])
                 self.putStructureWidget   ( "structure_btn",
                                             "Structure and electron density",
                                             structure )

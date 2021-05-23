@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    23.04.21   <--  Date of Last Modification.
+#    22.05.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -279,7 +279,7 @@ class Buccaneer(basic.TaskDriver):
                                     self.buccaneer_xyz(),None,self.buccaneer_mtz(),
                                     None,None,None,
                                     #fnames[0],fnames[1],None,  -- not needed for new UglyMol
-                                    leadKey=1 )
+                                    leadKey=1,refiner="refmac" )
             if structure:
                 structure.copyAssociations ( istruct )
                 structure.addSubtypes      ( istruct.subtype )

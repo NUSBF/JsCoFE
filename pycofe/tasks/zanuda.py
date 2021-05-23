@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    09.02.20   <--  Date of Last Modification.
+#    23.05.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -21,7 +21,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2020
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2021
 #
 # ============================================================================
 #
@@ -125,7 +125,7 @@ class Zanuda(basic.TaskDriver):
             structure = self.registerStructure ( self.getXYZOFName(),None,mtzfile,
                                                  None,None,None,
                                                  #fnames[0],fnames[1],None,  -- not needed for new UglyMol
-                                                 leadKey=1 )
+                                                 leadKey=1,refiner="refmac" )
             if structure:
 
                 self.putTitle ( "Output Structure" )

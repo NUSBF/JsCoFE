@@ -205,7 +205,7 @@ class Migrate(import_task.Import):
                 s = self.registerStructure1 ( xyzPath,subPath,
                                     self.map[i].getMTZFilePath(self.outputDir()),
                                     None,None,libPath,self.outputFName,
-                                    leadKey=leadKey )
+                                    leadKey=leadKey,refiner="" )
                 if s:
                     s.copyAssociations ( self.map[i] )
                     s.addSubtypes      ( self.map[i].subtype )
@@ -218,7 +218,7 @@ class Migrate(import_task.Import):
         else:
             s = self.registerStructure1 ( xyzPath,subPath,None,
                                           None,None,libPath,self.outputFName,
-                                          leadKey=leadKey )
+                                          leadKey=leadKey,refiner="" )
             if s:
                 #s.setXYZSubtype   ()
                 structures.append ( s )

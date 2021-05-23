@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    23.04.21   <--  Date of Last Modification.
+#    23.05.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -142,7 +142,7 @@ class Lorestr(basic.TaskDriver):
                                                  self.getMTZOFName(),
                                                  None,None,None,
                                                  #fnames[0],fnames[1],None,  -- not needed for new UglyMol
-                                                 leadKey=1 )
+                                                 leadKey=1,refiner="refmac" )
             if structure:
                 structure.copyAssociations   ( istruct )
                 structure.addDataAssociation ( hkl.dataId     )
