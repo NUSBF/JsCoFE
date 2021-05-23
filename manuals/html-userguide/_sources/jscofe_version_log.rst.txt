@@ -37,6 +37,8 @@ CCP4 Cloud Version Log
 
     #. It is now possible to specify image range and block size at working with HDF5 files in ``Xia-2`` task
 
+    #. Refinement with ``Buster`` no longer requires a preliminary ``Refmac`` run for producing a suitable PDB file
+
 
 **Version 1.6.021**
 

@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    22.05.21   <--  Date of Last Modification.
+#    23.05.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -106,11 +106,21 @@ class Buster(basic.TaskDriver):
         hkl      = self.makeClass ( self.input_data.data.hkl     [0] )
         istruct  = self.makeClass ( self.input_data.data.istruct [0] )
 
-        cmd      = [ "-m",hkl.getHKLFilePath(self.inputDir()),
-                     "-p",istruct.getXYZFilePath(self.inputDir()),
-                     "-d",self.buster_dir() ]
+        libin    = istruct.getLibFilePath ( self.inputDir() )
+        xyzin    = istruct.getXYZFilePath ( self.inputDir() )
+        if istruct.refiner not in ["refmac","buster"]:
+            self.stdoutln (
+                "=========================================\n" +\
+                "## Using Refmac to prepare input PDB file\n"
+                "=========================================\n"
+            )
+            fnames = self.calcEDMap ( xyzin,hkl,libin,"_xyzin_corrected",self.inputDir() )
+            xyzin  = fnames[0]
 
-        libin = istruct.getLibFilePath ( self.inputDir() )
+        cmd = [ "-m",hkl.getHKLFilePath(self.inputDir()),
+                "-p",xyzin,
+                "-d",self.buster_dir() ]
+
         if libin:
             cmd += ["-l",libin]
 
