@@ -174,7 +174,7 @@ function HelpBox ( title,helpURL,onDoNotShowAgain_func )  {
         this.element.setAttribute ( 'title',title );
 //        this.element.setAttribute ( 'title','Online Help -- ' + title );
   else  this.element.setAttribute ( 'title','Online Help' );
-  this.display = new IFrame ( '' );  // always initially empty
+  this.display = new IFrame ( '<html><body>&nbsp;</body></html>' );  // always initially empty
   $(this.display.element).css({'overflow':'hidden'});
   this.addWidget ( this.display );
   $(this.element).css({'overflow':'hidden'});
