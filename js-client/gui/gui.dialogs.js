@@ -175,7 +175,6 @@ function HelpBox ( title,helpURL,onDoNotShowAgain_func )  {
 //        this.element.setAttribute ( 'title','Online Help -- ' + title );
   else  this.element.setAttribute ( 'title','Online Help' );
   this.display = new IFrame ( '' );  // always initially empty
-  this.display.setHTML ( '<html><body><h2>Loading ...</h2></body></html>' );
   $(this.display.element).css({'overflow':'hidden'});
   this.addWidget ( this.display );
   $(this.element).css({'overflow':'hidden'});
@@ -238,7 +237,6 @@ function HelpBox ( title,helpURL,onDoNotShowAgain_func )  {
     ]);
   }
 
-
   var body = this.display.element.contentWindow.document.querySelector('body');
   body.style.fontSize = '16px';
 
@@ -249,6 +247,7 @@ function HelpBox ( title,helpURL,onDoNotShowAgain_func )  {
 
   (function(dlg){
     dlg.options.create = function(event,ui) {
+      dlg.display.setHTML ( '<html><body><h2>Loading ...</h2></body></html>' );
       dlg.resizeDisplay ( w0,h0 );
     }
   }(this))
@@ -290,13 +289,13 @@ function HelpBox ( title,helpURL,onDoNotShowAgain_func )  {
       dlg.delete();
     });
 
-    // window.setTimeout ( function(){
-    //   dlg.display.loadPage ( helpURL );
-    // },0);
+    window.setTimeout ( function(){
+      dlg.display.loadPage ( helpURL );
+    },0);
 
   }(this))
 
-  this.display.loadPage ( helpURL );
+  // this.display.loadPage ( helpURL );
 
 }
 
