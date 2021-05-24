@@ -247,6 +247,12 @@ function HelpBox ( title,helpURL,onDoNotShowAgain_func )  {
     this.options.height = h0 + 116;
   }
 
+  (function(dlg){
+    dlg.options.create = function(event,ui) {
+      dlg.resizeDisplay ( w0,h0 );
+    }
+  }(this))
+
   var dialog = $(this.element).dialog ( this.options );
   if (__any_mobile_device)
     dialog.siblings('.ui-dialog-titlebar').remove();
