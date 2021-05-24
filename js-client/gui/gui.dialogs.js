@@ -174,7 +174,8 @@ function HelpBox ( title,helpURL,onDoNotShowAgain_func )  {
         this.element.setAttribute ( 'title',title );
 //        this.element.setAttribute ( 'title','Online Help -- ' + title );
   else  this.element.setAttribute ( 'title','Online Help' );
-  this.display = new IFrame ( '<html><body>&nbsp;</body></html>' );  // always initially empty
+  this.display = new IFrame ( '' );  // always initially empty
+  this.display.setHTML ( '<html><body><h2>Loading ...</h2></body></html>' );
   $(this.display.element).css({'overflow':'hidden'});
   this.addWidget ( this.display );
   $(this.element).css({'overflow':'hidden'});
@@ -237,6 +238,19 @@ function HelpBox ( title,helpURL,onDoNotShowAgain_func )  {
     ]);
   }
 
+
+  var body = this.display.element.contentWindow.document.querySelector('body');
+  body.style.fontSize = '16px';
+
+  if (!__any_mobile_device)  {
+    this.options.width  = w0;
+    this.options.height = h0 + 116;
+  }
+
+  var dialog = $(this.element).dialog ( this.options );
+  if (__any_mobile_device)
+    dialog.siblings('.ui-dialog-titlebar').remove();
+
   (function(dlg){
 
     dlg.options.buttons[0].click = function() {
@@ -249,17 +263,17 @@ function HelpBox ( title,helpURL,onDoNotShowAgain_func )  {
 
     $(dlg.display.element).on('load',function(){
 
-      var body = dlg.display.element.contentWindow.document.querySelector('body');
-      body.style.fontSize = '16px';
-
-      if (!__any_mobile_device)  {
-        dlg.options.width  = w0;
-        dlg.options.height = h0 + 116;
-      }
-
-      var dialog = $(dlg.element).dialog ( dlg.options );
-      if (__any_mobile_device)
-        dialog.siblings('.ui-dialog-titlebar').remove();
+      // var body = dlg.display.element.contentWindow.document.querySelector('body');
+      // body.style.fontSize = '16px';
+      //
+      // if (!__any_mobile_device)  {
+      //   dlg.options.width  = w0;
+      //   dlg.options.height = h0 + 116;
+      // }
+      //
+      // var dialog = $(dlg.element).dialog ( dlg.options );
+      // if (__any_mobile_device)
+      //   dialog.siblings('.ui-dialog-titlebar').remove();
 
       dlg.resizeDisplay ( w0,h0 );
 
@@ -270,11 +284,13 @@ function HelpBox ( title,helpURL,onDoNotShowAgain_func )  {
       dlg.delete();
     });
 
-    window.setTimeout ( function(){
-      dlg.display.loadPage ( helpURL );
-    },0);
+    // window.setTimeout ( function(){
+    //   dlg.display.loadPage ( helpURL );
+    // },0);
 
   }(this))
+
+  this.display.loadPage ( helpURL );
 
 }
 
