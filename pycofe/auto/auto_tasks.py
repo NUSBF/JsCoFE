@@ -68,6 +68,14 @@ def asu ( name,parentName ):
         # auto_api.addContext  ( "branch",branchName )
     return
 
+# def editrevision ( name, revision, parentName ):
+#     xyz = auto_api.getContext("xyz")
+#     if xyz:
+#         auto_api.addTask     ( name,"TaskEditRevision",parentName )
+#         auto_api.addTaskData ( name, "xyz", xyz)
+#         auto_api.addTaskData(name, "revision", revision)
+#     return
+
 def dimple ( name,revision,parentName ):
     auto_api.addTask ( name,"TaskDimple",parentName  )
     auto_api.addTaskData ( name,"revision",revision )
