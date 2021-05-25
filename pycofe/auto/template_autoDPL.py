@@ -41,12 +41,31 @@ from   pycofe.auto   import  auto_api
 def makeNextTask ( crTask,data ):
 
     if crTask._type=="TaskWFlowDPL":
-        if len(data["lig"]) > 0:
-            auto_api.addContext("lig", data["lig"][0])
-        if len(data["ligdesc"]) > 0:
-            auto_api.addContext("ligdesc", data["ligdesc"][0])
+        auto_tasks.store(data["unm"], data["hkl"], data["seq"], data["lig"], data["ligdesc"])
         auto_tasks.dimple("dimple", data["revision"], crTask.autoRunName)
         return
+        # if len(data["unm"]) > 0:
+        #     auto_tasks.aimless ( "aimless", crTask.autoRunName )
+        #     return
+        # else:
+        #     auto_tasks.dimple("dimple", data["revision"], crTask.autoRunName)
+        #     return
+
+    # elif crTask._type=="TaskAimless":
+    #     auto_api.addContext ( "hkl",data["hkl"][0] )
+    #     auto_tasks.asu("asu", crTask.autoRunName)  # auto_api.getContext("hkl_node"),"autoEP" )
+    #     return
+    #
+    #
+    # elif crTask._type=="TaskASUDef":
+    #     auto_tasks.editrevision('editrevision', data["revision"], crTask.autoRunName)
+    #     return
+    #
+    #
+    # elif crTask._type=="TaskEditRevision":
+    #     auto_tasks.dimple("dimple", data["revision"], crTask.autoRunName)
+    #     return
+
 
     elif crTask._type=="TaskDimple":
         rFree = float(data["Rfree"])

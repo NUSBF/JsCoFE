@@ -32,7 +32,6 @@ import os
 #  application imports
 from . import migrate
 from   pycofe.auto   import auto
-from   proc          import import_merged, import_xyz, import_ligand
 
 
 # ============================================================================
@@ -65,15 +64,10 @@ class WFlowDPL(migrate.Migrate):
         self.xyz = None  # coordinates
         self.map = []    # maps/phases
         self.lib = None  # ligand descriptions
+        self.unm = []
 
         if "DataUnmerged" in self.outputDataBox.data:
-            self.putMessage("<h3>Dimple Workflow requires merged diffraction data; terminating</h3>")
-            self.generic_parser_summary["wflowdpl"] = {
-                "summary_line" : "please supply merged data"
-            }
-            self.have_results = False
-            self.success ( self.have_results )
-            return False
+            self.unm = self.outputDataBox.data["DataUnmerged"]
 
         if "DataSequence" in self.outputDataBox.data:
             self.seq = self.outputDataBox.data["DataSequence"]
@@ -81,25 +75,40 @@ class WFlowDPL(migrate.Migrate):
         if "DataHKL" in self.outputDataBox.data:
             self.hkl = self.outputDataBox.data["DataHKL"]
 
-        hasI = False
-        ids = None
-        for dd in self.hkl:
-            if dd.hasIntensities():
-                hasI = True
-                ids = dd
-        if hasI:
-            self.hkl = [ids]
+        if len(self.unm)<1:
+            hasI = False
+            ids = None
+            for dd in self.hkl:
+                if dd.hasIntensities():
+                    hasI = True
+                    ids = dd
+            if hasI:
+                self.hkl = [ids]
+            else:
+                self.putMessage("<h3>Dimple Workflow requires intensities present in the diffraction data; terminating</h3>")
+                self.generic_parser_summary["wflowdpl"] = {
+                    "summary_line" : "no intensities in the data"
+                }
+                self.have_results = False
+                self.success ( self.have_results )
+                return False
         else:
-            self.putMessage("<h3>Dimple Workflow requires intensities present in the diffraction data; terminating</h3>")
+            self.putMessage(
+                "<h3>Dimple Workflow requires merged diffraction data; terminating</h3>")
             self.generic_parser_summary["wflowdpl"] = {
-                "summary_line" : "no intensities in the data"
+                "summary_line": "merged data required"
             }
             self.have_results = False
-            self.success ( self.have_results )
+            self.success(self.have_results)
             return False
 
         if "DataXYZ" in self.outputDataBox.data:
             self.xyz = self.outputDataBox.data["DataXYZ"][0]
+
+        if "DataLibrary" in self.outputDataBox.data:
+            self.lib = self.outputDataBox.data["DataLibrary"][0]
+        elif "DataLigand" in self.outputDataBox.data:
+            self.lib = self.outputDataBox.data["DataLigand"][0]
 
         self.ligdesc = []
         ldesc = getattr ( self.task,"input_ligands",[] )
@@ -127,10 +136,22 @@ class WFlowDPL(migrate.Migrate):
 
         (revisionSerialNo, revision) = self.makeStructures()
 
-
         summary_line = ""
         ilist = []
 
+        # ligand library CIF has been provided
+        if self.lib:
+            ligand = self.makeClass(self.lib)
+            self.lig.append(ligand)
+
+        if self.unm:
+            ilist.append ( "Unmerged" )
+        if len(self.hkl)>0:
+            ilist.append ( "HKL (" + str(len(self.hkl)) + ")" )
+        if len(self.seq)>0:
+            ilist.append ( "Sequences (" + str(len(self.seq)) + ")" )
+        if self.xyz:
+            ilist.append ( "XYZ (1)" )
         nligs = len(self.lig) + len(self.ligdesc)
         if nligs>0:
             ilist.append ( "Ligands (" + str(nligs) + ")" )
@@ -146,7 +167,8 @@ class WFlowDPL(migrate.Migrate):
         self.task.autoRunName = "_root"
         self.have_results = False
         if auto.makeNextTask ( self, {
-             "revision" : revision,
+            "unm": self.unm,
+            "revision" : revision,
              "hkl": self.hkl,
              "seq": self.seq,
              "lig": self.lig,
