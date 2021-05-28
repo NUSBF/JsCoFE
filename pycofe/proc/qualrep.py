@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    27.05.21   <--  Date of Last Modification.
+#    28.05.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -327,7 +327,7 @@ def quality_report ( body,revision,title="Quality Assessment" ):
             body.putTitle ( title )
 
         put_bfactors_section ( body,revision.Structure )
-        # put_edstats_section  ( body,revision )
+        put_edstats_section  ( body,revision )
         meta = put_molprobity_section ( body,revision  )
         put_ramaplot_section ( body,revision.Structure )
 
