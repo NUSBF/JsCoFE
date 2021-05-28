@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    26.02.21   <--  Date of Last Modification.
+#    28.05.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -59,7 +59,8 @@ citations = {
     'ccp4go'          : { 'name' : 'CCP4go'       , 'category' : 'primary', 'refs' : [] },
     'ccp4build'       : { 'name' : 'CCP4Build'    , 'category' : 'primary', 'refs' : [] },
     'scalepack2mtz'   : { 'name' : 'Scalepack2MTZ', 'category' : 'service', 'refs' : [] },
-    'sfall'           : { 'name' : 'SFAlll'       , 'category' : 'service', 'refs' : [] },
+    'sfall'           : { 'name' : 'SFAll'        , 'category' : 'service', 'refs' : [] },
+    'baverage'        : { 'name' : 'BAverage'     , 'category' : 'primary', 'refs' : [] },
 
     'ps2pdf'          : { 'name' : '', 'category' : 'system' , 'refs' : [] },  # empty name means "Ignore"
     'ccp4-python'     : { 'name' : '', 'category' : 'system' , 'refs' : [] },

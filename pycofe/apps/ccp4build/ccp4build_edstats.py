@@ -139,7 +139,7 @@ class EDStats(ccp4build_findwaters.FindWaters):
             "resl=" + self.input_data["res_low"],
             "resh=" + self.input_data["res_high"],
             "main=resi",
-            "side=resi",
+            "side=resi"
         ])
         self.close_script()
 

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    15.05.21   <--  Date of Last Modification.
+ *    28.05.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -352,7 +352,7 @@ var r = 0;  // grid row
     "Workflows for starting a Project",
     new TaskWFlowAMR(),
     new TaskWFlowAEP(),
-    // new TaskWFlowDPL(),
+    new TaskWFlowDPL(),
     "Workflows for using within a Project",
     new TaskWFlowREL()
   ];

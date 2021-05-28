@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    09.01.21   <--  Date of Last Modification.
+#    27.05.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,10 +19,124 @@
 import os
 import sys
 
+#  ccp4-python imports
+import pyrvapi
+
 #from   pycofe.etc  import pyrama
 from   pycofe.varut  import jsonut
 
 # ============================================================================
+
+def put_bfactors_section ( body,structure ):
+    if structure:
+
+        sec_id  = body.getWidgetId ( "bfactors" )
+        # grid_id = body.getWidgetId ( "ramagrid" )
+
+        body.putSection ( sec_id,"B-Factors and RMS Analyses",openState_bool=False )
+        # body.putGrid1   ( grid_id,sec_id,False,0 )
+        # body.putMessage1 ( sec_id,"&nbsp;<p><h3>B-Factors Analysis</h3>",0,col=0 )
+
+        body.open_stdin()
+        body.write_stdin ( ["END"] )
+        body.close_stdin ()
+
+        # Prepare report parser
+        reportPanelId = body.getWidgetId ( "baverage_report" )
+        pyrvapi.rvapi_add_panel  ( reportPanelId,sec_id,0,0,1,1 )
+        body.setGenericLogParser ( reportPanelId,False,graphTables=False,makePanel=False )
+        body.runApp ( "baverage",[
+                        "XYZIN" ,structure.getXYZFilePath ( body.outputDir() ),
+                        "RMSTAB","_rmstab.tab",
+                        "XYZOUT","_baverage.pdb"
+                    ],logType="Main" )
+        body.unsetLogParser()
+
+    return
+
+
+def put_edstats_section ( body,revision ):
+    if revision.Structure:
+
+        struct = revision.Structure
+        sec_id = body.getWidgetId ( "edstats" )
+        body.putSection ( sec_id,"Electron Density Fit Analysis",openState_bool=False )
+
+        hkl = body.makeClass ( revision.HKL )
+        lowres = hkl.getLowResolution ( raw=True )
+        hires  = hkl.getHighResolution( raw=True )
+        if not lowres:  lowres = 40.0
+        if not hires:   hires  = 1.0
+
+        body.open_stdin()
+        body.write_stdin ([
+            "TITLE Sigmaa style 2mfo-dfc map calculated with refmac coefficients",
+            "LABI  F1=" + struct.FWT + " PHI=" + struct.PHWT,
+            "RESO  " + str(hires) + " " + str(lowres),
+            "XYZL  ASU",
+            "GRID  SAMP 4.5",
+            "END"
+        ])
+        body.close_stdin()
+
+        mtzin  = struct.getMTZFilePath ( body.outputDir() )
+        fo_map = "fo_map.map"
+        body.runApp ( "fft",[
+                "HKLIN" ,mtzin,
+                "MAPOUT",fo_map
+            ],logType="Service" )
+
+        # calculate mfo-dfc difference map assuming refmac's mtz on input
+
+        body.open_stdin()
+        body.write_stdin ([
+            "TITLE Sigmaa style mfo-dfc map calculated with refmac coefficients",
+            "LABI  F1=" + struct.DELFWT + " PHI=" + struct.PHDELWT,
+            "RESO  " + str(hires) + " " + str(lowres),
+            "XYZL  ASU",
+            "GRID  SAMP 4.5",
+            "END"
+        ])
+        body.close_stdin()
+
+        df_map = "df_map.map"
+        body.runApp ( "fft",[
+                "HKLIN" ,mtzin,
+                "MAPOUT",df_map
+            ],logType="Service" )
+
+        #  run edstats
+
+        body.open_stdin()
+        body.write_stdin ([
+            "resl=" + str(lowres),
+            "resh=" + str(hires),
+            "main=resi",
+            "side=resi"
+        ])
+        body.close_stdin()
+
+        edstats_out = "edstats.out"
+        xyzout      = "edstats.pdb"
+
+        # Prepare report parser
+        reportPanelId = body.getWidgetId ( "edstats_report" )
+        pyrvapi.rvapi_add_panel  ( reportPanelId,sec_id,0,0,1,1 )
+        body.setGenericLogParser ( reportPanelId,False,graphTables=False,makePanel=False )
+        body.runApp ( "edstats",[
+                "XYZIN" ,struct.getXYZFilePath ( body.outputDir() ),
+                "MAPIN1",fo_map,
+                "MAPIN2",df_map,
+                "XYZOUT",xyzout
+                # "OUT"   ,edstats_out
+            ],logType="Service" )
+        body.unsetLogParser()
+
+        os.remove ( fo_map )   #  save space
+        os.remove ( df_map )   #  save space
+
+    return
+
 
 def put_ramaplot_section ( body,structure ):
 
@@ -212,7 +326,9 @@ def quality_report ( body,revision,title="Quality Assessment" ):
         if title:
             body.putTitle ( title )
 
-        meta = put_molprobity_section ( body,revision )
-        put_ramaplot_section   ( body,revision.Structure )
+        put_bfactors_section ( body,revision.Structure )
+        # put_edstats_section  ( body,revision )
+        meta = put_molprobity_section ( body,revision  )
+        put_ramaplot_section ( body,revision.Structure )
 
     return meta

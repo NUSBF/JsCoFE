@@ -402,6 +402,7 @@ class Refmac(basic.TaskDriver):
                 have_results = True
 
                 rvrow0 = self.rvrow
+                # meta = qualrep.quality_report ( self,revision )
                 try:
                     meta = qualrep.quality_report ( self,revision )
                 except:
