@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    22.03.21   <--  Date of Last Modification.
+#    28.05.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -244,6 +244,10 @@ def run ( body,pdb_list,
                     body.outputFName = "*"
 
             body.resetReportPage()
+
+        else:
+            body.stdoutln ( " ***** PDB entry " + code + " does not exist" )
+            body.putSummaryLine_red ( code,"PDB Code","Wrong code, ignored" )
 
         body.generic_parser_summary = {}  # depress showing R-factors from refmac
 

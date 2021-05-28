@@ -3,13 +3,13 @@
 #
 # ============================================================================
 #
-#    05.07.17   <--  Date of Last Modification.
+#    26.05.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  APPLICATION CALL ROUTINES
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2021
 #
 # ============================================================================
 #
@@ -20,6 +20,11 @@ import time
 import subprocess
 import traceback
 import platform
+
+try:
+    from time import process_time
+except ImportError:
+    from time import clock as process_time
 
 try:
     from pycofe.etc import citations
@@ -99,7 +104,7 @@ def call ( executable,command_line,job_dir,stdin_fname,file_stdout,
     rc = comrc()
     try:
         iswindows = sys.platform.startswith("win")
-        if iswindows:  t1 = time.clock()
+        if iswindows:  t1 = process_time()
         p = subprocess.Popen ( [executable] + command_line,
                           shell=False,
                           stdin=file_stdin,
@@ -109,7 +114,7 @@ def call ( executable,command_line,job_dir,stdin_fname,file_stdout,
             log_parser.parse_stream ( p.stdout,file_stdout )
 
         if iswindows:
-            rc = comrc ( [0,p.wait()],time.clock()-t1 )
+            rc = comrc ( [0,p.wait()],process_time()-t1 )
         else:
             rc = comrc ( os.wait4(p.pid,0) )
 

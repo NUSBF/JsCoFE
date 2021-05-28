@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    05.05.21   <--  Date of Last Modification.
+#    27.05.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -373,6 +373,7 @@ def makeRevision ( base,hkl,seq,composition,altEstimateKey,altNRes,
 
         if revision:
             base.generic_parser_summary["z02"] = {
+                "Ncopies"        : ncopies1,
                 "SolventPercent" : int(10*sol1)/10.0
             }
 
