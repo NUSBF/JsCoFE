@@ -111,14 +111,14 @@ function TaskShelxEMR()  {
                     label    : 'Number of autotracing cycles',
                     align    : 'left',
                     iwidth   : 50,
-                    default  : '15',      // to be displayed in grey
+                    default  : '10',      // to be displayed in grey
                     tooltip  : 'The total number of global autotracing cycles',
                     range    : [0,'*'],  // may be absent (no limits) or must
                                           // be one of the following:
                                           //   ['*',max]  : limited from top
                                           //   [min,'*']  : limited from bottom
                                           //   [min,max]  : limited from top and bottom
-                    value    : '15',      // value to be paired with the keyword
+                    value    : '10',      // value to be paired with the keyword
                     position : [3,0,1,1],  // [row,col,rowSpan,colSpan]
                     hideon   : {AUTOTRACE_CBX:[false]}
                   },
@@ -162,11 +162,11 @@ function TaskShelxEMR()  {
             contains : {
               TIME_FACTOR : {
                     type     : 'real',  // '_' means blank value is allowed
-                    keyword  : '-m',       //  parameter keyword
+                    keyword  : '-t',       //  parameter keyword
                     label    : 'Time factor for peptide searches',
                     align    : 'left',
                     iwidth   : 50,
-                    default  : '4',      // to be displayed in grey
+                    default  : '1',      // to be displayed in grey
                     tooltip  : 'Time factor for peptides searches (increase if ' +
                                'difficult)',
                     range    : [1,'*'],  // may be absent (no limits) or must
@@ -174,7 +174,7 @@ function TaskShelxEMR()  {
                                           //   ['*',max]  : limited from top
                                           //   [min,'*']  : limited from bottom
                                           //   [min,max]  : limited from top and bottom
-                    value    : '4',      // value to be paired with the keyword
+                    value    : '1',      // value to be paired with the keyword
                     position : [2,0,1,1]  // [row,col,rowSpan,colSpan]
                   }
             }
