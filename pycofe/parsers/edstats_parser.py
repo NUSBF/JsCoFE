@@ -138,24 +138,22 @@ and < 1*sigma for the residue ZO metrics."""
         self.liveLineZOS = API.plot_line(self.livePLT4, self.liveGraph, self.liveResiduetN, self.ZOS)
 
       resNum = int(groups[2])
+      self.liveResiduetN.add_datum(resNum)
 
       zoM = float(groups[11]) # numeration starts from 0 (so -1 relative to regexp group numbering)
       zdmM = float(groups[13])
       zdpM = float(groups[14])
-
-      zoS = float(groups[23]) # numeration starts from 0 (so -1 relative to regexp group numbering)
-      zdmS = float(groups[25])
-      zdpS = float(groups[26])
-
       self.ZOM.add_datum(zoM)
       self.ZDmM.add_datum(zdmM)
       self.ZDpM.add_datum(zdpM)
 
+      zoS = float(groups[23]) # numeration starts from 0 (so -1 relative to regexp group numbering)
+      zdmS = float(groups[25])
+      zdpS = float(groups[26])
       self.ZOS.add_datum(zoS)
       self.ZDmS.add_datum(zdmS)
       self.ZDpS.add_datum(zdpS)
 
-      self.liveResiduetN.add_datum(resNum)
 
     except:
       pass
