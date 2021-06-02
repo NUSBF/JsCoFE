@@ -6,9 +6,17 @@
 
 import re
 import pyrvapi_ext as API
+import pyrvapi
 from pyrvapi_ext.parsers import regex_tree as RT
 import time, sys
+import traceback
 
+def isfloat(value):
+  try:
+    float(value)
+    return True
+  except ValueError:
+    return False
 
 class edstats_parser(object):
 
@@ -124,39 +132,83 @@ and < 1*sigma for the residue ZO metrics."""
         self.liveResiduetN = API.graph_dataset(self.liveGraph, 'Residue Number', '', True)
 
         self.livePLT = API.graph_plot(self.widget, 'Main Chain ZD+/- Scores', 'Residue number', '')
-        self.liveLineZDmM = API.plot_line(self.livePLT, self.liveGraph, self.liveResiduetN, self.ZDmM)
         self.liveLineZDpM = API.plot_line(self.livePLT, self.liveGraph, self.liveResiduetN, self.ZDpM)
+        self.liveLineZDmM = API.plot_line(self.livePLT, self.liveGraph, self.liveResiduetN, self.ZDmM)
 
         self.livePLT2 = API.graph_plot(self.widget, 'Main Chain ZO Scores', 'Residue number', '')
         self.liveLineZOM = API.plot_line(self.livePLT2, self.liveGraph, self.liveResiduetN, self.ZOM)
 
         self.livePLT3 = API.graph_plot(self.widget, 'Side Chain ZD+/- Scores', 'Residue number', '')
-        self.liveLineZDmS = API.plot_line(self.livePLT3, self.liveGraph, self.liveResiduetN, self.ZDmS)
         self.liveLineZDpS = API.plot_line(self.livePLT3, self.liveGraph, self.liveResiduetN, self.ZDpS)
+        self.liveLineZDmS = API.plot_line(self.livePLT3, self.liveGraph, self.liveResiduetN, self.ZDmS)
 
         self.livePLT4 = API.graph_plot(self.widget, 'Side Chain ZO Scores', 'Residue number', '')
         self.liveLineZOS = API.plot_line(self.livePLT4, self.liveGraph, self.liveResiduetN, self.ZOS)
 
+        pyrvapi.rvapi_set_line_options(self.ZDpM.id, self.livePLT.id, self.liveGraph.id, self.widget.id, "green", "bars",
+                                 "off", 15.0, True)
+        pyrvapi.rvapi_set_line_options(self.ZDmM.id, self.livePLT.id, self.liveGraph.id, self.widget.id, "red", "bars",
+                                 "off", 15.0, True)
+        pyrvapi.rvapi_set_line_options(self.ZOM.id, self.livePLT2.id, self.liveGraph.id, self.widget.id, "black", "bars",
+                                 "off", 15.0, True)
+
+        pyrvapi.rvapi_set_line_options(self.ZDpS.id, self.livePLT3.id, self.liveGraph.id, self.widget.id, "green", "bars",
+                                 "off", 15.0, True)
+        pyrvapi.rvapi_set_line_options(self.ZDmS.id, self.livePLT3.id, self.liveGraph.id, self.widget.id, "red", "bars",
+                                 "off", 15.0, True)
+        pyrvapi.rvapi_set_line_options(self.ZOS.id, self.livePLT4.id, self.liveGraph.id, self.widget.id, "black", "bars",
+                                 "off", 15.0, True)
+
       resNum = int(groups[2])
       self.liveResiduetN.add_datum(resNum)
 
-      zoM = float(groups[11]) # numeration starts from 0 (so -1 relative to regexp group numbering)
-      zdmM = float(groups[13])
-      zdpM = float(groups[14])
+      if isfloat(groups[11]):
+        zoM = float(groups[11]) # numeration starts from 0 (so -1 relative to regexp group numbering)
+      else:
+        zoM = 0.0
+
+      if isfloat(groups[13]):
+        zdmM = float(groups[13])
+      else:
+        zdmM = 0.0
+
+      if isfloat(groups[14]):
+        zdpM = float(groups[14])
+      else:
+        zdpM = 0.0
+
       self.ZOM.add_datum(zoM)
       self.ZDmM.add_datum(zdmM)
       self.ZDpM.add_datum(zdpM)
 
-      zoS = float(groups[23]) # numeration starts from 0 (so -1 relative to regexp group numbering)
-      zdmS = float(groups[25])
-      zdpS = float(groups[26])
+      if isfloat(groups[23]):
+        zoS = float(groups[23]) # numeration starts from 0 (so -1 relative to regexp group numbering)
+      else:
+        zoS = 0.0
+
+      if isfloat(groups[25]):
+        zdmS = float(groups[25])
+      else:
+        zdmS = 0.0
+
+      if isfloat(groups[26]):
+        zdpS = float(groups[26])
+      else:
+        zdpS = 0.0
+
       self.ZOS.add_datum(zoS)
       self.ZDmS.add_datum(zdmS)
       self.ZDpS.add_datum(zdpS)
 
-
     except:
       pass
+
+    # except Exception as inst:
+    #   sys.stderr.write(str(type(inst)) + '\n')  # the exception instance
+    #   sys.stderr.write(str(inst.args) + '\n')  # arguments stored in .args
+    #   sys.stderr.write(str(inst) + '\n')  # __str__ allows args to be printed directly,
+    #   tb = traceback.format_exc()
+    #   sys.stderr.write(str(tb) + '\n\n')
 
     return
 
