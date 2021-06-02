@@ -407,7 +407,7 @@ class Refmac(basic.TaskDriver):
                     meta = qualrep.quality_report ( self,revision )
                 except:
                     meta = None
-                    self.stderr ( " *** molprobity failure" )
+                    self.stderr ( " *** validation tools or molprobity failure" )
                     self.rvrow = rvrow0 + 4
 
                 if meta:
