@@ -54,7 +54,7 @@ import datetime
 #  ccp4-python imports
 import pyrvapi
 import pyrvapi_ext.parsers
-from pycofe.parsers import refmac_parser
+from pycofe.parsers import refmac_parser, edstats_parser
 
 # pycofe imports
 from pycofe.dtypes import dtype_template, dtype_xyz,   dtype_structure, databox
@@ -962,6 +962,22 @@ class TaskDriver(object):
         self.flush()
         #pyrvapi.rvapi_flush()
         return
+
+
+    def setEdstatsLogParser ( self,panel_id,split_sections_bool,
+                              graphTables=False,makePanel=True ):
+        #return
+        if makePanel:
+            self.putPanel ( panel_id )
+        self.log_parser = edstats_parser.edstats_parser (
+                                         panel_id,split_sections_bool,
+                                         hide_refs=True,
+                                         summary=self.generic_parser_summary,
+                                         graph_tables=graphTables)
+        self.flush()
+        #pyrvapi.rvapi_flush()
+        return
+
 
     def setMolrepLogParser ( self,panel_id ):
         #return

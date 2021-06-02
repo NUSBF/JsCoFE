@@ -122,7 +122,7 @@ def put_edstats_section ( body,revision ):
         # Prepare report parser
         reportPanelId = body.getWidgetId ( "edstats_report" )
         pyrvapi.rvapi_add_panel  ( reportPanelId,sec_id,0,0,1,1 )
-        body.setGenericLogParser ( reportPanelId,False,graphTables=False,makePanel=False )
+        body.setEdstatsLogParser ( reportPanelId,False,graphTables=False,makePanel=False )
         body.runApp ( "edstats",[
                 "XYZIN" ,struct.getXYZFilePath ( body.outputDir() ),
                 "MAPIN1",fo_map,
