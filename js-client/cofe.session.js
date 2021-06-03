@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    03.02.21   <--  Date of Last Modification.
+ *    03.06.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -115,7 +115,7 @@ function checkAnnouncement()  {
       if (rdata.data.message)  {
         if (startsWith(rdata.data.message,'!#'))
           rdata.data.message = rdata.data.message.split('\n').slice(1).join('\n');
-        if (rdata.message)
+        if (rdata.data.message)
           new MessageBox ( 'Announcement','<div style="width:500px;">' +
                                           rdata.data.message + '</div>' );
       }

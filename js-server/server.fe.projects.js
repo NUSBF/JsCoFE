@@ -548,7 +548,7 @@ var response = null;  // must become a cmd.Response object to return
       }
     }
     if (!response)
-     response = new cmd.Response ( cmd.fe_retcode.writeError,
+      response = new cmd.Response ( cmd.fe_retcode.writeError,
                                    '[00017] Project data cannot be written.','' );
 
   } else  {

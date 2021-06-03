@@ -478,6 +478,7 @@ var row      = 0;
       new TaskDocDev       (),
       // ccp4go2_task,
       //new TaskSheetbend    (),  // excluded also from the bootstrap html
+      new TaskPrivateer    (),
       new TaskJLigand      (),
       new TaskFragon       (),
       new TaskMergeData    (),
@@ -554,9 +555,9 @@ var row      = 0;
     new TaskMrBump(),
     new TaskBalbes(),
     'No-sequence methods',
-    new TaskSimbad(),
-    'No-model methods',
-    new TaskAmple ()
+    new TaskSimbad() //,
+    // 'No-model methods',
+    // new TaskAmple ()
   ]);
 
   this.makeSection ( 'Molecular Replacement',[

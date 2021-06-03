@@ -5,13 +5,13 @@
 #
 # ============================================================================
 #
-#    11.02.20   <--  Date of Last Modification.
+#    03.06.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  HKL DATA TYPE
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2020
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2021
 #
 # ============================================================================
 #
@@ -50,7 +50,11 @@ class DType(dtype_template.DType):
             self.spg_alt       = ""     # alternative space groups for Phaser
             self.freeRds       = None   # reference to freeR dataset
             self.useHKLSet     = "F"    # if given, forces use of F,Fpm,TI,TF (Refmac)
-            self.aimless_meta  = {"jobId":0,"file":None}  # reference to aimless xml file
+            self.aimless_meta  = {
+                "jobId"    : 0,
+                "file_xml" : None,   # reference to aimless xml file
+                "file_unm" : None    # reference to aimless unmerged file
+            }
         return
 
 

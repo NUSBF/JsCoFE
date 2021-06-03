@@ -1,7 +1,7 @@
 //
 //  =================================================================
 //
-//    01.09.20   <--  Date of Last Modification.
+//    03.06.21   <--  Date of Last Modification.
 //                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  -----------------------------------------------------------------
 //
@@ -12,7 +12,7 @@
 //  **** Content :  RVAPI javascript layer's graph module
 //       ~~~~~~~~~
 //
-//  (C) E. Krissinel 2013-2020
+//  (C) E. Krissinel 2013-2021
 //
 //  =================================================================
 //
@@ -516,6 +516,15 @@ var umin0,umax0,vmin0,vmax0;
       umax0 = umax;
       vmin0 = vmin;
       vmax0 = vmax;
+    }
+    if (('rendererOptions' in plotOptions.series[i]) &&
+        ('barMargin' in plotOptions.series[i].rendererOptions))  {
+      // plotOptions.series[i].rendererOptions.barPadding   = 0;
+      plotOptions.series[i].rendererOptions.barMargin    = 1;
+      // plotOptions.series[i].rendererOptions.barWidth     = 1.0;
+      plotOptions.series[i].rendererOptions.shadowOffset = 0;
+      plotOptions.series[i].rendererOptions.shadowDepth  = 1;
+      plotOptions.series[i].rendererOptions.shadowAlpha  = 0.5;
     }
   }
 
