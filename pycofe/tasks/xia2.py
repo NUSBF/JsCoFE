@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    21.05.20   <--  Date of Last Modification.
+#    03.06.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -203,12 +203,13 @@ class Xia2(basic.TaskDriver):
             if len(hkl_imported)>0 and len(aimless_xml_names)>0:
                 aimless_xml  = max(aimless_xml_names)
                 aimless_meta = {
-                    "jobId" : self.job_id,
-                    "file"  : dtype_template.makeFileName ( self.job_id,
-                                                self.dataSerialNo,aimless_xml )
+                    "jobId"    : self.job_id,
+                    "file_xml" : dtype_template.makeFileName ( self.job_id,
+                                                 self.dataSerialNo,aimless_xml ),
+                    "file_unm" : None
                 }
-                shutil.copyfile ( os.path.join(scaleDir,aimless_xml),
-                                  os.path.join(self.outputDir(),aimless_meta["file"]) )
+                os.rename ( os.path.join(scaleDir,aimless_xml),
+                            os.path.join(self.outputDir(),aimless_meta["file_xml"]) )
                 for i in range(len(hkl_imported)):
                     hkl_imported[i].aimless_meta = aimless_meta
                     hkl_imported[i].ha_type      = hatom

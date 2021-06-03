@@ -141,6 +141,7 @@ function printTemplate ( task )  {
     'PROJECT     project_id                  # mandatory',
     'TITLE       Optional Project Title      # used only if project is created',
     'TASK        ' + task + '                      # mandatory',
+    'TASK_NAME   Optional Task Name          # if not given, default name is used',
     '#'
   ];
 
@@ -313,11 +314,12 @@ if (!input)
   printInstructions();
 
 var meta = {
-  url     : '',
-  user    : '',
-  project : '',
-  title   : '*',
-  task    : 'import'
+  url       : '',
+  user      : '',
+  project   : '',
+  title     : '*',
+  task      : 'import',
+  task_name : '*'
 };
 
 var options = {
@@ -455,7 +457,6 @@ if (['import','auto-mr','auto-ep','hop-on'].indexOf(meta.task)<0)  {
 if (fnames.length<=0)
   console.log ( ' *** no files given for upload' );
 
-
 if (files.hkl.length<=0)
   files.hkl = pickFile ( files.file,['.mtz'] );
 
@@ -570,6 +571,9 @@ switch (meta.task)  {
 task.file_mod   = annotation; // file modification and annotation
 task.project    = meta.project;
 task.treeItemId = 'treeItemId';  // should not be empty
+
+if (meta.task_name!='*')
+  task.uname = meta.task_name;
 
 utils.writeObject ( path.join(dirPath,task_t.jobDataFName),task );
 

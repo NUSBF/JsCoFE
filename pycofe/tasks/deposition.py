@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    22.05.21   <--  Date of Last Modification.
+#    03.06.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -225,21 +225,13 @@ class Deposition(basic.TaskDriver):
 
         # 3. Prepare the combined coordinate-sequence CIF
 
-        aimless_meta = None
-        if hkl.aimless_meta.file:
-            aimless_meta = os.path.join ( self.inputDir(),hkl.aimless_meta.file )
-            #self.file_stdout.write ( aimless_meta )
-            """
-            if os.path.isfile(aimless_meta):
-                self.file_stdout.write ( " -- found\n" )
-                with open(aimless_meta, 'r') as fin:
-                    self.file_stdout.write ( fin.read() )
-            else:
-                self.file_stdout.write ( " -- NOT found\n" )
-            """
+        aimless_xml = None
+        if hasattr(hkl.aimless_meta,"file_xml"):
+            aimless_xml = os.path.join ( self.inputDir(),hkl.aimless_meta.file_xml )
+        elif hasattr(hkl.aimless_meta,"file"):
+            aimless_xml = os.path.join ( self.inputDir(),hkl.aimless_meta.file )
         else:
             self.file_stdout.write ( "aimles meta NOT found\n" )
-        #aimless_meta = None  #  to be removed when EBI deposition module is fixed
 
         deposition_cif = os.path.join ( self.outputDir(),self.task.project + "_" +\
                     dtype_template.makeFileName ( self.job_id,self.dataSerialNo,
@@ -270,7 +262,7 @@ class Deposition(basic.TaskDriver):
                     "    output_mmcif = " + deposition_cif + "\n" +\
                     "    fasta_file   = " + deposition_fasta + "\n" +\
                     "    sf_file      = " + sfCIF + "\n" +\
-                    "    xml_file     = " + str(aimless_meta) + "\n"
+                    "    xml_file     = " + str(aimless_xml) + "\n"
                 )
 
                 self.flush()
@@ -281,7 +273,7 @@ class Deposition(basic.TaskDriver):
                                        output_mmcif = deposition_cif,
                                        fasta_file   = deposition_fasta,
                                        #sf_file      = sfCIF,
-                                       xml_file     = aimless_meta )
+                                       xml_file     = aimless_xml )
             except:
                 worked = False
 
@@ -289,7 +281,7 @@ class Deposition(basic.TaskDriver):
         #                        output_mmcif = deposition_cif,
         #                        fasta_file   = deposition_fasta,
         #                        #sf_file      = sfCIF,
-        #                        xml_file     = aimless_meta )
+        #                        xml_file     = aimless_xml )
 
 
         if not worked:

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    23.12.20   <--  Date of Last Modification.
+ *    03.06.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  RefMac Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2020
+ *  (C) E. Krissinel, A. Lebedev 2016-2021
  *
  *  =================================================================
  *
@@ -153,11 +153,19 @@ if (!__template)  {
     // job's 'input' directory
 
     if ('revision' in this.input_data.data)  {
-      var revision = this.input_data.data['revision'][0];
-      if (revision.HKL.aimless_meta["file"])
-        this.addInputFile ( revision.HKL.aimless_meta["jobId"],
-                            revision.HKL.aimless_meta["file"],
-                            jobDir );
+      var revision    = this.input_data.data['revision'][0];
+      var aimless_xml = null;
+      var aimless_unm = null;
+      if (('file_xml' in revision.HKL.aimless_meta) && revision.HKL.aimless_meta.file_xml)  {
+        aimless_xml = revision.HKL.aimless_meta.file_xml;
+        aimless_unm = revision.HKL.aimless_meta.file_unm;
+      } else if (('file' in revision.HKL.aimless_meta) && revision.HKL.aimless_meta.file)  {
+        aimless_xml = revision.HKL.aimless_meta.file;
+      }
+      if (aimless_xml)
+        this.addInputFile ( revision.HKL.aimless_meta.jobId,aimless_xml,jobDir );
+      if (aimless_unm)
+        this.addInputFile ( revision.HKL.aimless_meta.jobId,aimless_unm,jobDir );
       this.input_data.data['hkl']     = [revision.HKL];
       this.input_data.data['istruct'] = [revision.Structure];
       this.input_data.data['seq']     = revision.ASU.seq;

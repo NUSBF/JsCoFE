@@ -106,9 +106,17 @@ function Communicate ( server_request )  {
 //console.log ( "requested " + server_request.url );
 //console.log ( "parsed    " + JSON.stringify(url_parse) );
 
-  if ((this.command=='') || (this.command==cmd.fe_command.cofe))
-        this.filePath = this.fe_server.bootstrapHTML;
-  else  this.filePath = decodeURI(url_path);
+  if ((this.command=='') || (this.command==cmd.fe_command.cofe))  {
+    this.filePath = this.fe_server.bootstrapHTML;
+  } else  {
+    try {
+      this.filePath = decodeURI(url_path);
+    } catch(e)  {
+      this.filePath = '';
+      log.error ( 20,'URI decoding error, URI path "' + url_path + '"' );
+    }
+  }
+
 //console.log ( "filePath " + this.filePath );
 
   if (this.command.startsWith(cmd.fe_command.jobFinished))  {

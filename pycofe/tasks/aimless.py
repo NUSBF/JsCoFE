@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    23.04.21   <--  Date of Last Modification.
+#    03.06.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -53,6 +53,7 @@ class Aimless(basic.TaskDriver):
     def pointless_mtz   (self):  return "pointless.mtz"
     def pointless_report(self):  return "pointless_report"
     def aimless_xml     (self):  return "aimless.xml"
+    def aimless_unmerged(self):  return "aimless_unmerged.mtz"
     def aimless_report  (self):  return "aimless_report"
     def ctruncate_mtz   (self):  return "merged.mtz"
     def ctruncate_report(self):  return "ctruncate_report"
@@ -192,8 +193,12 @@ class Aimless(basic.TaskDriver):
         for line in aimless_lines:
             self.write_stdin ( line + '\n' )
 
-        self.write_stdin ( "XMLOUT " + self.aimless_xml() + "\n" )
-        self.write_stdin ( "END\n" )
+        self.write_stdin ([
+            "XMLOUT      " + self.aimless_xml(),
+            "OUTPUT      UNMERGED",
+            "UNMERGEDOUT " + self.aimless_unmerged(),
+            "END"
+        ])
         self.close_stdin()
 
         self.putMessage ( "<h3>" + str(n+1) + ". Scaling and merging</h3>" )
@@ -233,12 +238,13 @@ class Aimless(basic.TaskDriver):
 
         if (len(hkl)>0) and os.path.isfile(self.aimless_xml()):
             aimless_meta = {
-                "jobId" : self.job_id,
-                "file"  : dtype_template.makeFileName ( self.job_id,
+                "jobId"    : self.job_id,
+                "file_xml" : dtype_template.makeFileName ( self.job_id,
                                     self.dataSerialNo+1,self.aimless_xml() )
             }
-            shutil.copyfile ( self.aimless_xml(),
-                              os.path.join(self.outputDir(),aimless_meta["file"]) )
+            os.rename ( self.aimless_xml(),
+                        os.path.join(self.outputDir(),aimless_meta["file_xml"]) )
+
             res_high = 10000.0
             res_low  = 0.0
             for i in range(len(hkl)):
@@ -250,6 +256,14 @@ class Aimless(basic.TaskDriver):
             if "aimless" in self.generic_parser_summary:
                 self.generic_parser_summary["aimless"]["res_high"] = res_high
                 self.generic_parser_summary["aimless"]["res_low"]  = res_low
+
+        if os.path.isfile(self.aimless_unmerged()):
+            aimless_meta["jobId"]    = self.job_id;
+            aimless_meta["file_unm"] = dtype_template.makeFileName ( self.job_id,
+                                       self.dataSerialNo+1,self.aimless_unmerged() )
+            os.rename ( self.aimless_unmerged(),
+                        os.path.join(self.outputDir(),aimless_meta["file_unm"]) )
+
 
         # close execution logs and quit
 
