@@ -8,7 +8,7 @@ import re
 import pyrvapi_ext as API
 import pyrvapi
 from pyrvapi_ext.parsers import regex_tree as RT
-import time, sys
+import time, sys, copy
 import traceback
 
 def isfloat(value):
@@ -48,12 +48,34 @@ class edstats_parser(object):
     self.text_panel = None
     self.text_cou = -1
 
-    edstatTableLine = r'(\S+)\s+(\S)\s+(\d+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\.*'
+    # secret of these regexps - they parse stream, not lines. Therefore important to include full line.
+    edstatTableLine = '(\S+)\s+(\S).+?(\d+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+).*\n'
     edstat_line = RT.LogDataLine(edstatTableLine)
-    edstat_line.add_next(edstat_line)
+
+    anyLine = '^.*?\n' # ? in .*? means not greedy
+    edstat_any = RT.LogDataLine(anyLine)
+
+    edstatStartTableLine = '\$\$.*?\$\$.*\n'
+    edstat_startTable = RT.LogDataLine(edstatStartTableLine)
+
+    edstatEndTableLine = '\$\$.*\n'
+    edstat_endTable = RT.LogDataLine(edstatEndTableLine)
+
+    edstat_any.add_next(edstat_startTable, edstat_line, edstat_endTable, edstat_any)
+
+    edstat_startTable.add_next(edstat_line)
+    edstat_line.add_next(edstat_line, edstat_endTable)
+    edstat_endTable.add_next(edstat_any)
+
+    edstat_line.add_action(self.displayGraph)
+    edstat_endTable.add_action(self.displayTable)
+
+    self.parser = RT.LogDataParser()
+    self.parser.add_next(edstat_any)
+    self.parser.add_recovery_next(edstat_any)
+    self.parser.add_recovery_action(self.item_reset)
 
     self.widget = API.loggraph(self.sect, 1, 0, 1, 1)
-
     self.liveGraph = None
     self.ZDmM = None
     self.ZDpM = None
@@ -73,6 +95,8 @@ class edstats_parser(object):
     self.livePLT4 = None
     self.liveLineZOS = None
     self.curChain = ''
+    self.mainChainOutliers = []
+    self.sideChainOutliers = []
 
     tipText1 = """<br>The ZD scores are accuracy metrics, i.e. at least in theory they can be<br> 
 improved by adjusting the model (by eliminating the obvious difference density).<br>
@@ -82,24 +106,20 @@ accuracy of that residue there's nothing you can do about the precision, short o
 re-collecting the data.<br>"""
 
     tipText2 = """The advisable rejection limits and indeed default values for this task are 
-< -3*sigma and > 3*sigma for the residue ZD metrics respectively, 
-and < 1*sigma for the residue ZO metrics."""
+&lt; -3*sigma and &gt; 3*sigma for the residue ZD metrics respectively, 
+and &lt; 1*sigma for the residue ZO metrics."""
     self.show_text(':EDSTATS Output:', tipText1, tipText2)
 
     self.flush()
 
-    edstat_line.add_action(self.displayGraph)
 
-    self.parser = RT.LogDataParser()
-    self.parser.add_next(edstat_line)
-    self.parser.add_recovery_next(edstat_line)
-    self.parser.add_recovery_action(self.item_reset)
 
     return
 
 
   def parse_stream(self, istream, ostream=None, verbose=False, pause=0, patches=None):
-    self.parser.parse_stream(istream, ostream, verbose, pause, patches)
+    # self.parser.parse_stream(istream, ostream, verbose, pause, patches)
+    self.parser.parse_stream(istream, ostream, True, pause, patches)
     if self.sect is not self.grid:
       self.sect.set_state(False)
 
@@ -112,6 +132,51 @@ and < 1*sigma for the residue ZO metrics."""
     # del self.item_body_parts[:]
     self.item_kind = None
     self.graph_kind = None
+
+
+  def displayTable(self, groups):
+    # Data in the dictionary
+    # rec = {'resN': resNum,
+    #        'res': groups[0].strip(),
+    #        'chain': groups[1].strip(),
+    #        'zo': zoS,
+    #        'zdm': zdmS,
+    #        'zdp': zdpS
+    #        }
+
+    self.table_mainchain_outliers_panel = API.panel(self.sect, 2, 0, 1, 1)
+    self.table_mainchain_outliers = API.pyrvapi_table(self.table_mainchain_outliers_panel, 2, 0, 1, 1, 'Main chain outliers', 1)
+    self.table_mainchain_outliers.col_title(0, 'Chain')
+    self.table_mainchain_outliers.col_title(1, 'Name')
+    self.table_mainchain_outliers.col_title(2, 'Number')
+    self.table_mainchain_outliers.col_title(3, 'ZO')
+    self.table_mainchain_outliers.col_title(4, 'ZD+')
+    self.table_mainchain_outliers.col_title(5, 'ZD-')
+    for i in range(len(self.mainChainOutliers)):
+      self.table_mainchain_outliers.body_cell(i, 0, self.mainChainOutliers[i]['chain'])
+      self.table_mainchain_outliers.body_cell(i, 1, self.mainChainOutliers[i]['res'])
+      self.table_mainchain_outliers.body_cell(i, 2, self.mainChainOutliers[i]['resN'])
+      self.table_mainchain_outliers.body_cell(i, 3, self.mainChainOutliers[i]['zo'])
+      self.table_mainchain_outliers.body_cell(i, 4, self.mainChainOutliers[i]['zdp'])
+      self.table_mainchain_outliers.body_cell(i, 5, self.mainChainOutliers[i]['zdm'])
+
+    self.table_sidechain_outliers_panel = API.panel(self.sect, 3, 0, 1, 1)
+    self.table_sidechain_outliers = API.pyrvapi_table(self.table_sidechain_outliers_panel, 3, 0, 1, 1, 'Side chain outliers', 1)
+    self.table_sidechain_outliers.col_title(0, 'Chain')
+    self.table_sidechain_outliers.col_title(1, 'Name')
+    self.table_sidechain_outliers.col_title(2, 'Number')
+    self.table_sidechain_outliers.col_title(3, 'ZO')
+    self.table_sidechain_outliers.col_title(4, 'ZD+')
+    self.table_sidechain_outliers.col_title(5, 'ZD-')
+    for i in range(len(self.sideChainOutliers)):
+      self.table_sidechain_outliers.body_cell(i, 0, self.sideChainOutliers[i]['chain'])
+      self.table_sidechain_outliers.body_cell(i, 1, self.sideChainOutliers[i]['res'])
+      self.table_sidechain_outliers.body_cell(i, 2, self.sideChainOutliers[i]['resN'])
+      self.table_sidechain_outliers.body_cell(i, 3, self.sideChainOutliers[i]['zo'])
+      self.table_sidechain_outliers.body_cell(i, 4, self.sideChainOutliers[i]['zdp'])
+      self.table_sidechain_outliers.body_cell(i, 5, self.sideChainOutliers[i]['zdm'])
+
+    self.flush()
 
 
   def displayGraph(self, groups):
@@ -181,6 +246,17 @@ and < 1*sigma for the residue ZO metrics."""
       self.ZDmM.add_datum(zdmM)
       self.ZDpM.add_datum(zdpM)
 
+      if (zoM <= 1.0) or (zdmM <= -3.0) or (zdpM >= 3.0):
+        if (zoM + zdmM + zdpM) != 0.0:
+          rec = {'resN' : resNum,
+                 'res' : groups[0].strip(),
+                 'chain': groups[1].strip(),
+                 'zo' : zoM,
+                 'zdm' : zdmM,
+                 'zdp' : zdpM
+                }
+          self.mainChainOutliers.append(copy.deepcopy(rec))
+
       if isfloat(groups[23]):
         zoS = float(groups[23]) # numeration starts from 0 (so -1 relative to regexp group numbering)
       else:
@@ -200,15 +276,26 @@ and < 1*sigma for the residue ZO metrics."""
       self.ZDmS.add_datum(zdmS)
       self.ZDpS.add_datum(zdpS)
 
-    except:
-      pass
+      if (zoS <= 1.0) or (zdmS <= -3.0) or (zdpS >= 3.0):
+        if (zoS + zdmS + zdpS) != 0.0:
+          rec = {'resN' : resNum,
+                 'res' : groups[0].strip(),
+                 'chain': groups[1].strip(),
+                 'zo' : zoS,
+                 'zdm' : zdmS,
+                 'zdp' : zdpS
+                }
+          self.sideChainOutliers.append(copy.deepcopy(rec))
 
-    # except Exception as inst:
-    #   sys.stderr.write(str(type(inst)) + '\n')  # the exception instance
-    #   sys.stderr.write(str(inst.args) + '\n')  # arguments stored in .args
-    #   sys.stderr.write(str(inst) + '\n')  # __str__ allows args to be printed directly,
-    #   tb = traceback.format_exc()
-    #   sys.stderr.write(str(tb) + '\n\n')
+    # except:
+    #   pass
+
+    except Exception as inst:
+      sys.stderr.write(str(type(inst)) + '\n')  # the exception instance
+      sys.stderr.write(str(inst.args) + '\n')  # arguments stored in .args
+      sys.stderr.write(str(inst) + '\n')  # __str__ allows args to be printed directly,
+      tb = traceback.format_exc()
+      sys.stderr.write(str(tb) + '\n\n')
 
     return
 
