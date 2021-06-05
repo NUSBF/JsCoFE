@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    22.05.21   <--  Date of Last Modification.
+#    03.06.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -54,25 +54,56 @@ class Dimple(basic.TaskDriver):
 
         sec1 = self.task.parameters.sec1.contains
 
-        if not hkl.hasMeanIntensities():
+        # if not hkl.hasMeanIntensities():
+        #     self.putTitle   ( "Unsuitable Data" )
+        #     self.putMessage ( "Dimple requires reflection data with mean intensities, " +\
+        #                       "which is not found in this case." )
+        #     # this will go in the project tree line
+        #     self.generic_parser_summary["editrevision_asu"] = {
+        #       "summary_line" : "no mean intensity data, therefore stop"
+        #     }
+        #     # close execution logs and quit
+        #     self.success ( False )
+        #     return
+
+        cols = hkl.getMeanColumns()
+        if cols[2]=="X":
             self.putTitle   ( "Unsuitable Data" )
-            self.putMessage ( "Dimple requires reflection data with mean intensities, " +\
-                              "which is not found in this case." )
+            self.putMessage ( "No mean intensities or amplitudes found in " +\
+                              "the reflection dataset." )
             # this will go in the project tree line
-            self.generic_parser_summary["editrevision_asu"] = {
+            self.generic_parser_summary["dimple"] = {
               "summary_line" : "no mean intensity data, therefore stop"
             }
             # close execution logs and quit
             self.success ( False )
             return
 
+        dimple_mtz = "_dimple.mtz"
+
+        self.open_stdin()
+        self.write_stdin ([
+            "LABIN  FILE 1 E1=" + cols[0] + " E2=" + cols[1] + " E3=" + hkl.getFreeRColumn()
+        ])
+        if cols[2]=="F":
+            self.write_stdin ([
+                "LABOUT FILE 1 E1=F E2=SIGF E3=" + hkl.getFreeRColumn()
+            ])
+        self.close_stdin()
+
+        self.runApp ( "cad",[
+                "HKLIN1",hkl.getHKLFilePath(self.inputDir()),
+                "HKLOUT",dimple_mtz
+            ],logType="Service" )
+
         # make command-line parameters for dimple
         cmd = [
-            hkl.getHKLFilePath(self.inputDir()),
+            # hkl.getHKLFilePath(self.inputDir()),
+            dimple_mtz,
             istruct.getXYZFilePath(self.inputDir()),
             "./",
             "--free-r-flags","-",
-             "--freecolumn",hkl.getMeta("FREE","")
+            "--freecolumn",hkl.getMeta("FREE","")
         ]
 
         reflevel = self.getParameter ( sec1.REFLEVEL )
@@ -118,6 +149,8 @@ class Dimple(basic.TaskDriver):
             self.runApp ( "dimple.bat",cmd,logType="Main" )
         else:
             self.runApp ( "dimple",cmd,logType="Main" )
+
+        os.rename ( dimple_mtz,os.path.join(self.outputDir(),dimple_mtz) )
 
         self.file_stdout.close()
         self.file_stdout = open ( self.file_stdout_path(),'r' )

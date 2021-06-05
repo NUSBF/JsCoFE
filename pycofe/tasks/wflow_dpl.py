@@ -75,24 +75,34 @@ class WFlowDPL(migrate.Migrate):
         if "DataHKL" in self.outputDataBox.data:
             self.hkl = self.outputDataBox.data["DataHKL"]
 
-        if len(self.unm)<1:
-            hasI = False
-            ids = None
-            for dd in self.hkl:
-                if dd.hasIntensities():
-                    hasI = True
-                    ids = dd
-            if hasI:
-                self.hkl = [ids]
-            else:
-                self.putMessage("<h3>Dimple Workflow requires intensities present in the diffraction data; terminating</h3>")
-                self.generic_parser_summary["wflowdpl"] = {
-                    "summary_line" : "no intensities in the data"
-                }
-                self.have_results = False
-                self.success ( self.have_results )
-                return False
-        else:
+        # if len(self.unm)<1:
+        #     hasI = False
+        #     ids = None
+        #     for dd in self.hkl:
+        #         if dd.hasIntensities():
+        #             hasI = True
+        #             ids = dd
+        #     if hasI:
+        #         self.hkl = [ids]
+        #     else:
+        #         self.putMessage("<h3>Dimple Workflow requires intensities present in the diffraction data; terminating</h3>")
+        #         self.generic_parser_summary["wflowdpl"] = {
+        #             "summary_line" : "no intensities in the data"
+        #         }
+        #         self.have_results = False
+        #         self.success ( self.have_results )
+        #         return False
+        # else:
+        #     self.putMessage(
+        #         "<h3>Dimple Workflow requires merged diffraction data; terminating</h3>")
+        #     self.generic_parser_summary["wflowdpl"] = {
+        #         "summary_line": "merged data required"
+        #     }
+        #     self.have_results = False
+        #     self.success(self.have_results)
+        #     return False
+
+        if len(self.unm):
             self.putMessage(
                 "<h3>Dimple Workflow requires merged diffraction data; terminating</h3>")
             self.generic_parser_summary["wflowdpl"] = {
@@ -130,9 +140,9 @@ class WFlowDPL(migrate.Migrate):
         if not importSuccess:
             return # all output and registrations already done in the upstream code
 
-        successfullDataCheck =  self.checkData()
-        if not successfullDataCheck:
-            return # all preparations already done in the upstream code
+        # successfullDataCheck =  self.checkData()
+        # if not successfullDataCheck:
+        #     return # all preparations already done in the upstream code
 
         (revisionSerialNo, revision) = self.makeStructures()
 

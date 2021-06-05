@@ -5,7 +5,7 @@
  *
  *  =================================================================
  *
- *    17.04.21   <--  Date of Last Modification.
+ *    04.06.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -48,11 +48,11 @@
  *   USER        user_login                  # mandatory
  *   PROJECT     project_id                  # mandatory
  *   TITLE       Optional Project Title      # used only if project is created
- *   TASK        [import|auto-mr|auto-ep|hop-on]  # import if not given
- *   HA_TYPE     Se                               # used only for auto-ep
+ *   TASK        [import|auto-mr|auto-ep|hop-on|dimple]  # import if not given
+ *   HA_TYPE     Se                          # used only for auto-ep
  *   FILE        /path/to/file.[mtz|pdb|seq|fasta|pir|cif]  # generic import
  *   HKL         /path/to/file.mtz   # the file should be used as hkl in hop-on
- *   PHASES      /path/to/file.mtz   # the file should be used as phases in op-on
+ *   PHASES      /path/to/file.mtz   # the file should be used as phases in hop-on
  *   SEQ_PROTEIN /path/to/file.[seq|fasta|pir]
  *   SEQ_DNA     /path/to/file.[seq|fasta|pir]
  *   SEQ_RNA     /path/to/file.[seq|fasta|pir]
@@ -81,6 +81,7 @@ var task_t        = require('../js-common/tasks/common.tasks.template');
 var task_import   = require('../js-common/tasks/common.tasks.import'  );
 var task_wflowamr = require('../js-common/tasks/common.tasks.wflowamr');
 var task_wflowaep = require('../js-common/tasks/common.tasks.wflowaep');
+var task_wflowdpl = require('../js-common/tasks/common.tasks.wflowdpl');
 var task_hopon    = require('../js-common/tasks/common.tasks.migrate' );
 
 // var conf   = require('../js-server/server.configuration');
@@ -114,7 +115,7 @@ function printInstructions()  {
     '',
     '    node js-utils/cloudrun.js -t task',
     '',
-    'where "task" is one of import, auto-mr, auto-ep or hop-on.',
+    'where "task" is one of import, auto-mr, auto-ep, hop-on or dimple.',
     '',
     '    node js-utils/cloudrun.js -h',
     '',
@@ -153,7 +154,8 @@ function printTemplate ( task )  {
           '   "import"  : generic data import',
           '   "auto-mr" : auto-MR workflow',
           '   "auto-ep" : auto-EP workflow',
-          '   "hop-on"  : project initiation from pphased structure'
+          '   "hop-on"  : project initiation from phased structure',
+          '   "dimple"  : fast phasing with 100% homolog for ligand blob identification'
         ];
         console.log (
           msg.join('\n')
@@ -235,6 +237,28 @@ function printTemplate ( task )  {
         ]);
       break;
 
+      case 'dimple'  :
+          msg = [
+            '# The task uploads files specified, creates CCP4 Cloud Project (if it',
+            '# does not exist already) and runs "Dimple" workflow (fast MR with',
+            '# 100% homologue for ligand blob identification and fitting).'
+          ].concat(msg);
+          msg = msg.concat([
+            'HKL         /path/to/hkl.mtz      # reflection data (mandatory)',
+            'XYZ         /path/to/apo.pdb      # model',
+            'LIGAND      /path/to/file.cif     # ligand (optional)',
+            '#',
+            '# providing sequence is optional and may be used if a close, but',
+            '# not 100% struture homologue is used, in which case the resulting',
+            '# structure will be rebuilt. Use one or more of the following',
+            '# sequence upload statements asappropriate',
+            '#',
+            'SEQ_PROTEIN /path/to/file.[seq|fasta|pir]  # import protein sequence',
+            '#SEQ_DNA     /path/to/file.[seq|fasta|pir]  # import dna sequence',
+            '#SEQ_RNA     /path/to/file.[seq|fasta|pir]  # import rna sequence'
+          ]);
+        break;
+
   }
 
   console.log (
@@ -278,7 +302,9 @@ function sendData ( filePath,metaData )  {
       try {
         var resp = JSON.parse ( response );
         if (resp.status==cmd.fe_retcode.ok)  {
-          console.log ( ' ... server replied: ' + resp.message );
+          console.log ( ' ... server replied: ' + resp.message + '\n' );
+          console.log ( 'Note: list of projects and/or project will not update automatically\n' +
+                        '      in your browser, reload/refresh them manually if required.' );
         } else  {
           console.log ( ' *** cloud run initiation failed, rc=' + resp.status +
                         '\n *** ' + resp.message );
@@ -449,7 +475,7 @@ for (var key in meta)
     console.log ( ' *** ' + key.toUpperCase() + ' not specified' );
   }
 
-if (['import','auto-mr','auto-ep','hop-on'].indexOf(meta.task)<0)  {
+if (['import','auto-mr','auto-ep','hop-on','dimple'].indexOf(meta.task)<0)  {
   ok = false;
   console.log ( ' *** task key ' + meta.task + ' is not valid' );
 }
@@ -471,14 +497,31 @@ else
 
 if (meta.task=='hop-on')  {
 
-  if ((files.phases.length<=0) && (file.hkl.length<=0))  {
+  if ((files.phases.length<=0) && (files.hkl.length<=0))  {
     ok = false;
-    console.log ( ' *** no reflection data is provided' );
+    console.log ( ' *** no reflection data provided' );
   }
-  if ((files.phases.length<=0) && (file.xyz.length<=0))  {
+  if ((files.phases.length<=0) && (files.xyz.length<=0))  {
     ok = false;
-    console.log ( ' *** no phase data or atomic model is not provided' );
+    console.log ( ' *** no phase data or atomic model provided' );
   }
+
+} else if (meta.task=='dimple')  {
+
+    if (files.hkl.length<=0)  {
+      ok = false;
+      console.log ( ' *** no reflection data provided' );
+    } else if (files.hkl.length>1)  {
+      ok = false;
+      console.log ( ' *** multiple reflection datasets not aceptable for dimple workflow' );
+    }
+    if (files.xyz.length<=0)  {
+      ok = false;
+      console.log ( ' *** no structure homologue provided' );
+    } else if (files.xyz.length>1)  {
+      ok = false;
+      console.log ( ' *** multiple structure homologues not aceptable for dimple workflow' );
+    }
 
 } else if (meta.task!='import')  {
 
@@ -490,7 +533,8 @@ if (meta.task=='hop-on')  {
     ok = false;
     console.log ( ' *** main anomalous scaterrer is not specified' );
   }
-  if ((meta.task!='hop-on') && (files.seq.length<=0))  {
+  // if ((meta.task!='hop-on') && (files.seq.length<=0))  {
+  if (files.seq.length<=0)  {
     ok = false;
     console.log ( ' *** sequence data is not provided' );
   }
@@ -536,35 +580,45 @@ var task = null;
 switch (meta.task)  {
 
   default :
-  case 'import'  : task = new task_import.TaskImport  ();
-                   task.upload_files = fnames;
-                 break;
+  case 'import'   : task = new task_import.TaskImport  ();
+                    task.upload_files = fnames;
+                  break;
 
-  case 'auto-mr' : task = new task_wflowamr.TaskWFlowAMR();
-                   task.inputMode = task_t.input_mode.root;
-                   task.file_select[0].path = path.parse(files.hkl[0]).base;
-                   task.file_select[1].path = path.parse(files.seq[0]).base;
-                 break;
+  case 'auto-mr'  : task = new task_wflowamr.TaskWFlowAMR();
+                    task.inputMode = task_t.input_mode.root;
+                    task.file_select[0].path = path.parse(files.hkl[0]).base;
+                    task.file_select[1].path = path.parse(files.seq[0]).base;
+                  break;
 
-  case 'auto-ep' : task = new task_wflowaep.TaskWFlowAEP();
-                   task.inputMode = task_t.input_mode.root;
-                   task.file_select[0].path = path.parse(files.hkl[0]).base;
-                   task.file_select[1].path = path.parse(files.seq[0]).base;
-                   task.parameters.HATOM.value = options.ha_type;
-                 break;
+  case 'auto-ep'  : task = new task_wflowaep.TaskWFlowAEP();
+                    task.inputMode = task_t.input_mode.root;
+                    task.file_select[0].path = path.parse(files.hkl[0]).base;
+                    task.file_select[1].path = path.parse(files.seq[0]).base;
+                    task.parameters.HATOM.value = options.ha_type;
+                  break;
 
-  case 'hop-on'  : task = new task_hopon.TaskMigrate();
-                   task.inputMode = task_t.input_mode.root;
-                   task.upload_files = fnames;
-                   if (files.hkl[0].length>0)
-                     task.file_hkl = path.parse(files.hkl[0]).base;
-                   if (files.phases[0].length>0)
-                     task.file_mtz = path.parse(files.phases[0]).base;
-                   if (files.xyz[0].length>0)
-                     task.file_xyz = path.parse(files.xyz[0]).base;
-                   if (files.ligand[0].length>0)
-                     task.file_lib = path.parse(files.ligand[0]).base;
-                 break;
+  case 'hop-on'   : task = new task_hopon.TaskMigrate();
+                    task.inputMode = task_t.input_mode.root;
+                    task.upload_files = fnames;
+                    if (files.hkl.length>0)
+                      task.file_hkl = path.parse(files.hkl[0]).base;
+                    if (files.phases.length>0)
+                      task.file_mtz = path.parse(files.phases[0]).base;
+                    if (files.xyz.length>0)
+                      task.file_xyz = path.parse(files.xyz[0]).base;
+                    if (files.ligand.length>0)
+                      task.file_lib = path.parse(files.ligand[0]).base;
+                  break;
+
+  case 'dimple'   : task = new task_wflowdpl.TaskWFlowDPL();
+                    task.inputMode = task_t.input_mode.root;
+                    task.file_select[0].path = path.parse(files.hkl[0]).base;
+                    task.file_select[1].path = path.parse(files.xyz[0]).base;
+                    if (files.ligand.length>0)
+                      task.file_select[2].path = path.parse(files.ligand[0]).base;
+                    if (files.seq.length>0)
+                      task.file_select[3].path = path.parse(files.seq[0]).base;
+                  break;
 
 }
 

@@ -226,6 +226,7 @@ if (!__template)  {
     return [CootMBHotButton()];
   }
 
+/*
   TaskDimple.prototype.collectInput = function ( inputPanel )  {
     var input_msg = TaskTemplate.prototype.collectInput.call ( this,inputPanel );
     var hkl = null;
@@ -252,6 +253,7 @@ if (!__template)  {
     return input_msg;
 
   }
+*/
 
 } else  {
   //  for server side
