@@ -106,7 +106,7 @@ TaskDeposition.prototype.icon = function()  { return 'task_deposition'; }
 TaskDeposition.prototype.cleanJobDir = function ( jobDir )  {}
 
 TaskDeposition.prototype.currentVersion = function()  {
-  var version = 1;
+  var version = 2;
   if (__template)
         return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );

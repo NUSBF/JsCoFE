@@ -81,12 +81,14 @@ class Deposition(basic.TaskDriver):
         eol_dict  = None
         eol_tasks = []
         try:
-            with open(os.path.join(self.inputDir(),"all_tasks.json")) as f:
+            with open(os.path.join(self.inputDir(),"all_tasks.json"),"r") as f:
                 eol_dict = json.load(f)
         except:
             pass
         if eol_dict:
             eol_tasks = eol_dict["list"]
+            # for i in range(len(eol_tasks)):
+            #     eol_tasks[i] = str(eol_tasks[i])
 
 
         header_cnt = 1
@@ -226,9 +228,9 @@ class Deposition(basic.TaskDriver):
         # 3. Prepare the combined coordinate-sequence CIF
 
         aimless_xml = None
-        if hasattr(hkl.aimless_meta,"file_xml"):
+        if hasattr(hkl.aimless_meta,"file_xml") and hkl.aimless_meta.file_xml:
             aimless_xml = os.path.join ( self.inputDir(),hkl.aimless_meta.file_xml )
-        elif hasattr(hkl.aimless_meta,"file"):
+        elif hasattr(hkl.aimless_meta,"file") and hkl.aimless_meta.file:
             aimless_xml = os.path.join ( self.inputDir(),hkl.aimless_meta.file )
         else:
             self.file_stdout.write ( "aimles meta NOT found\n" )
@@ -242,7 +244,6 @@ class Deposition(basic.TaskDriver):
             dtype_sequence.writeMultiSeqFile1 ( deposition_fasta,seq,self.inputDir() )
         elif hasattr(self.task.parameters,"SEQUENCE_TA"):
             s = self.getParameter(self.task.parameters.SEQUENCE_TA).strip()
-            self.stdoutln ( " >>>>>> " + s )
             if s:
                 with open(deposition_fasta,"w") as f:
                     f.write ( s )
@@ -359,11 +360,13 @@ class Deposition(basic.TaskDriver):
 
                 msg  = "."
                 ntry = 0
-                while msg and (ntry<25):
+                nattempts = 1
+                # while msg and (ntry<25):
+                while msg and (ntry<nattempts):
                     self.file_stdout.write ( "\n -- attempt " + str(ntry+1) + "\n" )
                     self.file_stdout.flush ()
                     msg = valrep.getValidationReport ( deposition_cif,sfCIF,repFilePath,self.file_stdout )
-                    if msg and (ntry<25):
+                    if msg and (ntry<nattempts):
                         self.file_stdout.write ( "\n -- server replied: " + msg + "\n" )
                         ntry += 1
                         time.sleep ( 10 )
@@ -400,7 +403,6 @@ class Deposition(basic.TaskDriver):
 
             except:
                 self.putMessage ( "&nbsp;<p><b><i> -- errors in obtaining the PDB Validation Report</i></b>" )
-
 
         self._add_citations ( citations.citation_list )
         if self.citation_list:

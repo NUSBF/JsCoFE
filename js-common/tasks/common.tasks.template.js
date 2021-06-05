@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    27.05.21   <--  Date of Last Modification.
+ *    05.06.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -------------------------------------------------------------------------
  *
@@ -2533,8 +2533,13 @@ if (!dbx)  {
                         break;
             case 'z01'      : S += '<u>SpG=' + d.SpaceGroup  + '</u> ';
                         break;
-            case 'z02'      : if ('Ncopies' in d)
-                                S += d.Ncopies + ' molecules in ASU, ';
+            case 'z02'      : if ('Ncopies' in d)  {
+                                if (S.length>0)
+                                     S += ', ';
+                                if (d.Ncopies==1)
+                                     S += '1 molecule in ASU, ';
+                                else S += d.Ncopies + ' molecules in ASU, ';
+                              }
                               S += 'Solv=' + d.SolventPercent + '% ';
                         break;
             case 'shelxemr' : if ((d.bestCC==0.0) && (d.pseudoCC>0.0))

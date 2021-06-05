@@ -395,6 +395,9 @@ class Refmac(basic.TaskDriver):
                                           "could not be formed due to exception " +\
                                           " (possible bug)</i>" )
 
+                self.stdoutln ( " >>>>> 5 " + str(revision.citations) )
+                self.stdoutln ( " >>>>> 6 " + str(self.citation_list) )
+
                 # update structure revision
                 revision.setStructureData ( substructure )
                 revision.setStructureData ( structure    )
@@ -434,6 +437,7 @@ class Refmac(basic.TaskDriver):
                         self.task.suggestedParameters = suggestedParameters
                         self.putCloneJobButton ( "Clone job with suggested parameters",
                                                  self.report_page_id(),verdict_row+3,0 )
+
                     auto.makeNextTask ( self,{
                         "revision" : revision,
                         "Rfactor"  : self.generic_parser_summary["refmac"]["R_factor"],
