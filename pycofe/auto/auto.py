@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    23.04.21   <--  Date of Last Modification.
+#    05.06.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -25,7 +25,7 @@ from   pycofe.auto   import template_autoREL
 from   pycofe.auto   import template_autoDPL
 from   pycofe.auto   import auto_api
 import traceback
-
+from   pycofe.etc    import citations
 
 
 # ============================================================================
@@ -37,6 +37,15 @@ def makeNextTask ( body,data,log=None ):
     try:
 
         if body.task.autoRunId:
+
+            # prepare citation lists for passing down the project tree; this
+            # must be done here because in general framework, citations are
+            # put in place when task finishes
+
+            body._add_citations ( citations.citation_list )
+            for key in data:
+                if hasattr(data[key],"citations"):
+                    data[key].citations = body.citation_list
 
             auto_api.setLog ( log )
             auto_api.initAutoMeta()
