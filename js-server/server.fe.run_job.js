@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    29.04.21   <--  Date of Last Modification.
+ *    03.06.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -1440,12 +1440,14 @@ function getJobResults ( job_token,server_request,server_response )  {
 
           var jobClass = writeJobStats ( jobEntry );
 
-          if (jobClass.autoRunId && jobClass.isSuccessful())  {
-            // console.log ( ' !!!! autostart from job ' + jobClass.id );
-            addJobAuto ( jobEntry,jobClass );
+          if (jobClass)  {
+            if (jobClass.autoRunId && jobClass.isSuccessful())  {
+              // console.log ( ' !!!! autostart from job ' + jobClass.id );
+              addJobAuto ( jobEntry,jobClass );
+            }
+            ustats.registerJob ( jobClass );
           }
 
-          ustats.registerJob ( jobClass );
           if ('tokens' in meta)
             feJobRegister.cleanup ( job_token,meta.tokens.split(',') );
           if (('capacity' in meta) && (jobEntry.nc_number>=0))  {

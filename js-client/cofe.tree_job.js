@@ -240,6 +240,8 @@ JobTree.prototype.readProjectData = function ( page_title,
 
       } else  {
 
+// console.log ( 'loaded' );
+
         tree.task_map = {};  // map[nodeId]==task of all tasks in the tree
         tree.run_map  = {};  // map[taskId]==nodeId of all running tasks
         tree.dlg_map  = {};  // map[taskId]==dialog of open job dialogs
@@ -440,9 +442,13 @@ JobTree.prototype.__checkTaskLoop = function()  {
 
           if (data.reload)  {
 
+            // console.log ( 'reload at check');
+
             tree.emitSignal ( cofe_signals.reloadTree,data );
 
           } else  {
+
+            // console.log ( 'process check');
 
             var completedJobs  = data.completed_map;
             var completed_list = [];
