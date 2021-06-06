@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    21.05.21   <--  Date of Last Modification.
+ *    06.06.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -432,9 +432,10 @@ var version = '';
                                    // 'admin': all users are registration by admin
     "sessionCheckPeriod" : 2000,
     "ration"           : {
-        "storage"   : 3000,
-        "cpu_day"   : 24,
-        "cpu_month" : 240
+        "storage"     : 3000,
+        "cpu_day"     : 24,
+        "cpu_month"   : 240,
+        "cloudrun_day" : 100   // number of cloudruns/day, 0 for unlimited
     },
     "cloud_mounts"     : {  // optional item
       "My Computer"    : "/",
@@ -676,6 +677,16 @@ function readConfiguration ( confFilePath,serverType )  {
     if (fe_server.storage)
           fe_server.storage = _make_path ( fe_server.storage,null );
     else  fe_server.storage = storagePath;
+
+    if (!('ration' in fe_server))  {
+      fe_server.ration = {  // 0: unlimited
+        'storage'     : 0.0,
+        'cpu_day'     : 0.0,
+        'cpu_month'   : 0.0,
+        'cloudrun_day' : 100
+      };
+    } else if (!('cloudrun_day' in fe_server.ration))
+      fe_server.ration.cloudrun_day = 100;
 
     if (isWindows())
       listWindowsDrives ( function(){
