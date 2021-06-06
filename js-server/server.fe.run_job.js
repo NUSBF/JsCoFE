@@ -395,10 +395,9 @@ function _run_job ( loginData,task,job_token,ownerLoginData,shared_logins, callb
       utils.writeJobReportMessage ( jobDir,msg,false );
       task.state = task_t.job_code.failed;
       utils.writeObject ( jobDataPath,task );
-//        utils.removeLock  ( jobDir );
 
       if (callback_func)
-        callback_func();
+        callback_func ( 0 );
 
     } else  {
 
@@ -438,13 +437,9 @@ function _run_job ( loginData,task,job_token,ownerLoginData,shared_logins, callb
           feJobRegister.addJob ( retdata.job_token,nc_number,ownerLoginData,
                                  task.project,task.id,shared_logins );
           writeFEJobRegister();
-//            utils.removeLock ( jobDir );
-
-          // update the user ration state
-          //ration.updateUserRation_bookJob ( ownerLoginData,task );
 
           if (callback_func)
-            callback_func();
+            callback_func ( retdata.job_token );
 
         },function(stageNo,code){  // send failed
 
@@ -473,18 +468,13 @@ function _run_job ( loginData,task,job_token,ownerLoginData,shared_logins, callb
 
           task.state = task_t.job_code.failed;
           utils.writeObject ( jobDataPath,task );
-//            utils.removeLock  ( jobDir );
 
           if (callback_func)
-            callback_func();
+            callback_func ( 0 );
 
         });
 
     }
-
-    // if (callback_func)
-    //   callback_func();
-//    callback_func ( new cmd.Response(cmd.fe_retcode.ok,'',rdata) );
 
   });
 
@@ -566,8 +556,6 @@ function runJob ( loginData,data, callback_func )  {
 
     send_dir.packDir ( jobDir,'*',null, function(code,jobballSize){
 
-//      utils.removeLock ( jobDir );
-
       if (!code)  {
 
         utils.writeJobReportMessage ( jobDir,'<h1>Running on client ...</h1>' +
@@ -579,13 +567,9 @@ function runJob ( loginData,data, callback_func )  {
         feJobRegister.getJobEntryByToken(job_token).nc_type = task.nc_type;
         writeFEJobRegister();
 
-        // update the user ration state
-        //ration.updateUserRation_bookJob ( ownerLoginData,task );
-
         rdata.job_token   = job_token;
         rdata.jobballName = send_dir.jobballName;
 
-//        rdata.check_tokens = feJobRegister.getListOfTokens ( -1 );
         callback_func ( new cmd.Response(cmd.fe_retcode.ok,'',rdata) );
         log.standard ( 11,'created jobball for client, dir=' + jobDir + ', size=' + jobballSize );
 
@@ -601,117 +585,10 @@ function runJob ( loginData,data, callback_func )  {
   } else  {
     // job for ordinary NC, pack and send all job directory to number cruncher
 
-    _run_job ( loginData,task,job_token,ownerLoginData,shared_logins, function(){
-      callback_func ( new cmd.Response(cmd.fe_retcode.ok,'',rdata) );
-    });
-
-    /*
-    ncSelectAndCheck ( conf.getNumberOfNCs(),task,function(nc_number){
-
-      if (nc_number<0)  {
-
-        var msg = '<h1>Task cannot be proccessed</h1>';
-
-        if (nc_number==-101)  {
-          msg += 'Configuration data cannot be obtained. This is internal '   +
-                 'server error, caused by misconfiguration or a bug. Please ' +
-                 'report to server maintainer.';
-        } else if (nc_number==-102)  {
-          msg += 'Computational server(s) cannot be reached. Please report '  +
-                 'to server maintainer.';
-        } else  {
-          msg += 'No computational server has agreed to accept the task. This may ' +
-                 'be due to the lack of available servers for given task type, or ' +
-                 'because of the high number of tasks queued. Please try submitting ' +
-                 'this task later on.';
-        }
-
-        utils.writeJobReportMessage ( jobDir,msg,false );
-        task.state = task_t.job_code.failed;
-        utils.writeObject ( jobDataPath,task );
-//        utils.removeLock  ( jobDir );
-
-      } else  {
-
-        log.standard ( 6,'sending job ' + task.id + ' to ' +
-                         conf.getNCConfig(nc_number).name + ', job token ' +
-                         job_token );
-
-        utils.writeJobReportMessage ( jobDir,'<h1>Preparing ...</h1>',true );
-
-        // prepare input data
-        task.makeInputData ( loginData,jobDir );
-
-        var nc_url = conf.getNCConfig(nc_number).externalURL;
-        var uData  = user.readUserData ( loginData );
-        var meta   = {};
-        meta.setup_id  = conf.getSetupID();
-        meta.nc_name   = conf.getNCConfig(nc_number).name;
-        meta.user_id   = loginData.login;
-        meta.feedback  = ud.feedback_code.decline;
-        meta.user_name = '';
-        meta.email     = '';
-        if (uData)  {
-          meta.feedback = uData.feedback;
-          if (uData.feedback==ud.feedback_code.agree2)  {
-            meta.user_name = uData.name;
-            meta.email     = uData.email;
-          }
-        }
-
-        send_dir.sendDir ( jobDir,'*',nc_url,cmd.nc_command.runJob,meta,
-
-          function ( rdata,jobballSize ){  // send successful
-
-            // The number cruncher will start dealing with the job automatically.
-            // On FE end, register job as engaged for further communication with
-            // NC and client.
-            feJobRegister.addJob ( rdata.job_token,nc_number,ownerLoginData,
-                                   task.project,task.id,shared_logins );
-            writeFEJobRegister();
-//            utils.removeLock ( jobDir );
-
-            // update the user ration state
-            //ration.updateUserRation_bookJob ( ownerLoginData,task );
-
-          },function(stageNo,code){  // send failed
-
-            switch (stageNo)  {
-
-              case 1: utils.writeJobReportMessage ( jobDir,
-                      '<h1>[00002] Failed: data preparation error (' + code + ').</h1>',
-                      false );
-                    break;
-
-              case 2: utils.writeJobReportMessage ( jobDir,
-                      '<h1>[00003] Failed: data transmission errors.</h1>' +
-                      '<p><i>Return: ' + code + '</i>',false );
-                      log.error ( 6,'[00003] Cannot send data to NC at ' + nc_url + ' please try again' );
-                      emailer.send ( conf.getEmailerConfig().maintainerEmail,
-                        'Cannot send job to NC',
-                        'Detected data transmision errors while communicating to NC at '  + nc_url +
-                        '.\nPossible NC failure, please investigate.' );
-                    break;
-
-              default: utils.writeJobReportMessage ( jobDir,
-                       '<h1>[00004] Failed: number cruncher errors, please try again.</h1>' +
-                       '<p><i>Return: ' + code.message + '</i>',false );
-
-            }
-
-            task.state = task_t.job_code.failed;
-            utils.writeObject ( jobDataPath,task );
-//            utils.removeLock  ( jobDir );
-
-          });
-
-      }
-
-      callback_func ( new cmd.Response(cmd.fe_retcode.ok,'',rdata) );
-
-    });
-
-    */
+    _run_job ( loginData,task,job_token,ownerLoginData,shared_logins,
+      function(jtoken){
+        callback_func ( new cmd.Response(cmd.fe_retcode.ok,'',rdata) );
+      });
 
   }
 
@@ -773,7 +650,6 @@ function replayJob ( loginData,data, callback_func )  {
 
       send_dir.packDir ( jobDir,'*',null, function(code,jobballSize){
 
-//        if (code==0)  {
         if (!code)  {
 
           utils.writeJobReportMessage ( jobDir,'<h1>Running on client ...</h1>' +
@@ -785,9 +661,6 @@ function replayJob ( loginData,data, callback_func )  {
                                  task.project,task.id,[] );
           feJobRegister.getJobEntryByToken(job_token).nc_type = task.nc_type;
           writeFEJobRegister();
-
-          // update the user ration state
-          //ration.updateUserRation_bookJob ( loginData,task );
 
           rdata = {};
           rdata.job_token   = job_token;
@@ -821,9 +694,6 @@ function replayJob ( loginData,data, callback_func )  {
           feJobRegister.addJob ( rdata.job_token,nc_number,loginData,
                                  task.project,task.id,[] );
           writeFEJobRegister();
-
-          // update the user ration state
-          //ration.updateUserRation_bookJob ( loginData,task );
 
         },function(stageNo,code){  // send failed
 
@@ -1015,8 +885,8 @@ function writeJobStats ( jobEntry )  {
 
     // update records in user's ration book
     // jobEntry.loginData corresponds to the project owner account
-    //var userRation = ration.updateUserRation_bookJob ( jobEntry.loginData,jobClass );
-    var userRation = ration.bookJob ( jobEntry.loginData,jobClass );
+    var userRation = ration.bookJob ( jobEntry.loginData,jobClass,
+                                      ('cloudrun' in jobEntry) );
 
     ration.updateProjectStats ( jobEntry.loginData,jobClass.project,
                                 jobClass.cpu_time,jobClass.disk_space,1,false );
@@ -1129,119 +999,126 @@ function addJobAuto ( jobEntry,jobClass )  {
       if (projectData.desc.owner.login!=loginData.login)
         ownerLoginData = user.getUserLoginData ( projectData.desc.owner.login );
 
-      var tasks = [];
+      var check_list = ration.checkUserRation ( ownerLoginData,false );
+      if (check_list.length<=0)  {
 
-      for (key in auto_meta)
-        if (key!='context')  {
+        var tasks = [];
 
-          var task = class_map.makeTaskClass ( auto_meta[key]._type );
+        for (key in auto_meta)
+          if (key!='context')  {
 
-          if (!task)  {
-            log.error ( 21,'wrong task class name ' + auto_meta[key]._type );
+            var task = class_map.makeTaskClass ( auto_meta[key]._type );
+
+            if (!task)  {
+              log.error ( 21,'wrong task class name ' + auto_meta[key]._type );
+            } else  {
+
+              // place job tree node
+
+              pid = jobEntry.jobId;
+              if (auto_meta[key].parentName in auto_meta.context.job_register)
+                pid = auto_meta.context.job_register[auto_meta[key].parentName];
+
+              var pnode = pd.getProjectNode ( projectData,pid );
+              if (pnode)  {
+
+                // form task
+
+                task.project          = projectName;
+                task.id               = ++projectData.desc.jobCount;
+                task.autoRunName      = key;
+                // task.harvestedTaskIds = dataBox.harvestedTaskIds;
+                task.autoRunId        = jobClass.autoRunId;
+                task.submitter        = loginData.login;
+                task.input_data.data  = auto_meta[key].data;
+                task.start_time       = Date.now();
+
+                for (var field in auto_meta[key].fields)
+                  task[field] = auto_meta[key].fields[field];
+
+                task._clone_suggested ( task.parameters,auto_meta[key].parameters );
+                tasks.push ( task );
+
+                var pnode_json = JSON.stringify ( pnode );
+
+                var cnode = JSON.parse ( pnode_json );
+                cnode.id       = pnode.id + '_' + key;
+                cnode.parentId = pnode.id;
+                cnode.dataId   = task.id;
+                cnode.icon     = cmd.image_path ( task.icon() );
+                // cnode.text     = '<b>' + task.autoRunId + ':</b>[' +
+                //                  com_utils.padDigits(task.id,4) + '] ' + task.name;
+                cnode.text     = prj.makeNodeName ( task,task.name );
+                cnode.text0    = cnode.text;
+                cnode.state.selected = false;
+                cnode.children = [];
+                pnode.children.push ( cnode );
+
+                auto_meta.context.job_register[key] = task.id;
+
+  // console.log ( ' >>>>> jobEntry.jobId = ' + jobEntry.jobId );
+  // console.log ( ' >>>>> pid            = ' + pid );
+  // console.log ( ' >>>>> parentName     = ' + auto_meta[key].parentName );
+  // console.log ( ' >>>>> pnode.dataId   = ' + pnode.dataId );
+  // console.log ( ' >>>>> pnode.text     = ' + pnode.text   );
+  // console.log ( ' >>>>> task.id        = ' + task.id );
+  // console.log ( ' >>>>> cnode.text     = ' + cnode.text   );
+  // console.log ( ' >>>>> jobCount       = ' + projectData.desc.jobCount );
+
+              }
+
+            }
+          }
+
+        prj.writeProjectData ( loginData,projectData,true );
+  // pd.printProjectTree ( ' >>>auto-2',projectData );
+
+        for (var i=0;i<tasks.length;i++)  {
+
+          var task = tasks[i];
+
+          // prepare job directory
+
+          var jobDirPath = prj.getJobDirPath ( loginData,projectName,task.id );
+
+          if (!utils.mkDir(jobDirPath)) {
+            log.error ( 22,'cannot create job directory at ' + jobDirPath );
           } else  {
 
-            // place job tree node
+            // handle remarks and other pseudo-jobs here
+            var task_state = task.state;
+            if (task_state==task_t.job_code.new)  {
+              task.state = task_t.job_code.running;
+              task.job_dialog_data.panel = 'output';
+            }
 
-            pid = jobEntry.jobId;
-            if (auto_meta[key].parentName in auto_meta.context.job_register)
-              pid = auto_meta.context.job_register[auto_meta[key].parentName];
+            var jobDataPath = prj.getJobDataPath ( loginData,projectName,task.id );
 
-            var pnode = pd.getProjectNode ( projectData,pid );
-            if (pnode)  {
+            if (!utils.writeObject(jobDataPath,task))  {
+              log.error ( 23,'cannot write job metadata at ' + jobDataPath );
+            } else if (task_state==task_t.job_code.new)  {
 
-              // form task
+              utils.writeObject ( path.join(jobDirPath,"auto.context"),auto_meta.context );
 
-              task.project          = projectName;
-              task.id               = ++projectData.desc.jobCount;
-              task.autoRunName      = key;
-              // task.harvestedTaskIds = dataBox.harvestedTaskIds;
-              task.autoRunId        = jobClass.autoRunId;
-              task.submitter        = loginData.login;
-              task.input_data.data  = auto_meta[key].data;
-              task.start_time       = Date.now();
+              // create report directory
+              utils.mkDir_anchor ( prj.getJobReportDirPath(loginData,projectName,task.id) );
+              // create input directory (used only for sending data to NC)
+              utils.mkDir_anchor ( prj.getJobInputDirPath(loginData,projectName,task.id) );
+              // create output directory (used for hosting output data)
+              utils.mkDir_anchor ( prj.getJobOutputDirPath(loginData,projectName,task.id) );
+              // write out the self-updating html starting page, which will last
+              // only until it gets replaced by real report's bootstrap
+              utils.writeJobReportMessage ( jobDirPath,'<h1>Idle</h1>',true );
 
-              for (var field in auto_meta[key].fields)
-                task[field] = auto_meta[key].fields[field];
-
-              task._clone_suggested ( task.parameters,auto_meta[key].parameters );
-              tasks.push ( task );
-
-              var pnode_json = JSON.stringify ( pnode );
-
-              var cnode = JSON.parse ( pnode_json );
-              cnode.id       = pnode.id + '_' + key;
-              cnode.parentId = pnode.id;
-              cnode.dataId   = task.id;
-              cnode.icon     = cmd.image_path ( task.icon() );
-              // cnode.text     = '<b>' + task.autoRunId + ':</b>[' +
-              //                  com_utils.padDigits(task.id,4) + '] ' + task.name;
-              cnode.text     = prj.makeNodeName ( task,task.name );
-              cnode.text0    = cnode.text;
-              cnode.state.selected = false;
-              cnode.children = [];
-              pnode.children.push ( cnode );
-
-              auto_meta.context.job_register[key] = task.id;
-
-// console.log ( ' >>>>> jobEntry.jobId = ' + jobEntry.jobId );
-// console.log ( ' >>>>> pid            = ' + pid );
-// console.log ( ' >>>>> parentName     = ' + auto_meta[key].parentName );
-// console.log ( ' >>>>> pnode.dataId   = ' + pnode.dataId );
-// console.log ( ' >>>>> pnode.text     = ' + pnode.text   );
-// console.log ( ' >>>>> task.id        = ' + task.id );
-// console.log ( ' >>>>> cnode.text     = ' + cnode.text   );
-// console.log ( ' >>>>> jobCount       = ' + projectData.desc.jobCount );
+              // Run the job
+              var job_token = crypto.randomBytes(20).toString('hex');
+              _run_job ( loginData,task,job_token,ownerLoginData,shared_logins,
+                         function(jtoken){} );
 
             }
 
           }
-        }
 
-      prj.writeProjectData ( loginData,projectData,true );
-// pd.printProjectTree ( ' >>>auto-2',projectData );
-
-      for (var i=0;i<tasks.length;i++)  {
-
-        var task = tasks[i];
-
-        // prepare job directory
-
-        var jobDirPath = prj.getJobDirPath ( loginData,projectName,task.id );
-
-        if (!utils.mkDir(jobDirPath)) {
-          log.error ( 22,'cannot create job directory at ' + jobDirPath );
-        } else  {
-
-          // handle remarks and other pseudo-jobs here
-          var task_state = task.state;
-          if (task_state==task_t.job_code.new)  {
-            task.state = task_t.job_code.running;
-            task.job_dialog_data.panel = 'output';
-          }
-
-          var jobDataPath = prj.getJobDataPath ( loginData,projectName,task.id );
-
-          if (!utils.writeObject(jobDataPath,task))  {
-            log.error ( 23,'cannot write job metadata at ' + jobDataPath );
-          } else if (task_state==task_t.job_code.new)  {
-
-            utils.writeObject ( path.join(jobDirPath,"auto.context"),auto_meta.context );
-
-            // create report directory
-            utils.mkDir_anchor ( prj.getJobReportDirPath(loginData,projectName,task.id) );
-            // create input directory (used only for sending data to NC)
-            utils.mkDir_anchor ( prj.getJobInputDirPath(loginData,projectName,task.id) );
-            // create output directory (used for hosting output data)
-            utils.mkDir_anchor ( prj.getJobOutputDirPath(loginData,projectName,task.id) );
-            // write out the self-updating html starting page, which will last
-            // only until it gets replaced by real report's bootstrap
-            utils.writeJobReportMessage ( jobDirPath,'<h1>Idle</h1>',true );
-
-            // Run the job
-            var job_token = crypto.randomBytes(20).toString('hex');
-            _run_job ( loginData,task,job_token,ownerLoginData,shared_logins, function(){} );
-
-          }
         }
 
       }
@@ -1251,166 +1128,6 @@ function addJobAuto ( jobEntry,jobClass )  {
   }
 
 }
-
-
-/*
-function addJobAuto ( jobEntry,jobClass )  {
-var loginData   = jobEntry.loginData;
-var projectName = jobEntry.project;
-var pJobDir     = prj.getJobDirPath ( loginData,projectName,jobEntry.jobId );
-var auto_meta   = utils.readObject  ( path.join(pJobDir,'auto.meta') );
-
-  if (auto_meta)  {
-
-    var projectData = prj.readProjectData ( loginData,projectName );
-
-    if (!projectData)  {
-      log.error ( 20,'project data ' + projectName + ' not found, login ' +
-                     loginData.login );
-    } else  {
-
-      if (!('_root' in auto_meta.context.job_register))
-        auto_meta.context.job_register._root = jobEntry.jobId;
-
-      var shared_logins  = projectData.desc.owner.share;
-      var ownerLoginData = loginData;
-      if (projectData.desc.owner.login!=loginData.login)
-        ownerLoginData = user.getUserLoginData ( projectData.desc.owner.login );
-
-      // get job tree node
-      //var pnode = pd.getProjectNode ( projectData,jobEntry.jobId );
-      //var ipath = path.parse ( pnode.icon );
-      //var pnode_json = JSON.stringify ( pnode );
-
-      var tasks = [];
-
-      for (key in auto_meta)
-        if (key!='context')  {
-
-          var task = class_map.makeTaskClass ( auto_meta[key]._type );
-
-          if (!task)  {
-            log.error ( 21,'wrong task class name ' + auto_meta[key]._type );
-          } else  {
-
-            // place job tree node
-
-            pid = jobEntry.jobId;
-            if (auto_meta[key].parentName in auto_meta.context.job_register)
-              pid = auto_meta.context.job_register[auto_meta[key].parentName];
-
-            var pnode = pd.getProjectNode ( projectData,pid );
-
-console.log ( ' >>>>> jobEntry.jobId = ' + jobEntry.jobId );
-console.log ( ' >>>>> parentName     = ' + auto_meta[key].parentName );
-console.log ( ' >>>>> pid            = ' + pid );
-console.log ( ' >>>>> pnode.dataId   = ' + pnode.dataId );
-console.log ( ' >>>>> pnode.text     = ' + pnode.text   );
-console.log ( ' >>>>> jobCount       = ' + projectData.desc.jobCount );
-
-            if (pnode)  {
-
-              // form task
-
-              task.project          = projectName;
-              task.id               = ++projectData.desc.jobCount;
-              task.autoRunName      = key;
-              // task.harvestedTaskIds = dataBox.harvestedTaskIds;
-              task.autoRunId        = jobClass.autoRunId;
-              task.submitter        = loginData.login;
-              task.input_data.data  = auto_meta[key].data;
-              task.start_time       = Date.now();
-
-              for (var field in auto_meta[key].fields)
-                task[field] = auto_meta[key].fields[field];
-
-              task._clone_suggested ( task.parameters,auto_meta[key].parameters );
-
-              var jobDirPath = prj.getJobDirPath ( loginData,projectName,task.id );
-
-              if (!utils.mkDir(jobDirPath)) {
-                log.error ( 22,'cannot create job directory at ' + jobDirPath );
-              } else  {
-
-                // handle remarks and other pseudo-jobs here
-                var task_state = task.state;
-                if (task_state==task_t.job_code.new)  {
-                  task.state = task_t.job_code.running;
-                  task.job_dialog_data.panel = 'output';
-                }
-
-                var jobDataPath = prj.getJobDataPath ( loginData,projectName,task.id );
-
-                if (!utils.writeObject(jobDataPath,task))  {
-                  log.error ( 23,'cannot write job metadata at ' + jobDataPath );
-                } else if (task_state==task_t.job_code.new)  {
-
-                  utils.writeObject ( path.join(jobDirPath,"auto.context"),auto_meta.context );
-
-                  // create report directory
-                  utils.mkDir_anchor ( prj.getJobReportDirPath(loginData,projectName,task.id) );
-                  // create input directory (used only for sending data to NC)
-                  utils.mkDir_anchor ( prj.getJobInputDirPath(loginData,projectName,task.id) );
-                  // create output directory (used for hosting output data)
-                  utils.mkDir_anchor ( prj.getJobOutputDirPath(loginData,projectName,task.id) );
-                  // write out the self-updating html starting page, which will last
-                  // only until it gets replaced by real report's bootstrap
-                  utils.writeJobReportMessage ( jobDirPath,'<h1>Idle</h1>',true );
-
-                  //  make job tree entry
-
-                  tasks.push ( task );
-
-                  var pnode_json = JSON.stringify ( pnode );
-
-                  var cnode = JSON.parse ( pnode_json );
-                  cnode.id       = pnode.id + '_' + key;
-                  cnode.parentId = pnode.id;
-                  cnode.dataId   = task.id;
-                  cnode.icon     = cmd.image_path ( task.icon() );
-                  cnode.text     = '<b>' + task.autoRunId + ':</b>[' +
-                                   com_utils.padDigits(task.id,4) + '] ' + task.name;
-                  cnode.text0    = cnode.text;
-                  // cnode.state          = {};
-                  // cnode.state.opened   = true;           // is the node open
-                  // cnode.state.disabled = false;          // is the node disabled
-                  // cnode.state.selected = false;          // is the node selected
-                  // cnode.children       = [];             // array of strings or objects
-                  // cnode.li_attr        = {};             // attributes for the generated LI node
-                  // cnode.a_attr         = {};             // attributes for the generated A
-                  cnode.state.selected = false;
-                  cnode.children = [];
-                  pnode.children.push ( cnode );
-
-console.log ( ' >>>>> cnode.dataId   = ' + cnode.dataId );
-console.log ( ' >>>>> cnode.text     = ' + cnode.text   );
-
-                  auto_meta.context.job_register[key] = task.id;
-
-                }
-              }
-
-            }
-
-          }
-        }
-
-      prj.writeProjectData ( loginData,projectData,true );
-      pd.printProjectTree ( ' >>>auto',projectData );
-
-      // Run jobs
-
-      for (var i=0;i<tasks.length;i++)
-        _run_job ( loginData,tasks[i],
-                   crypto.randomBytes(20).toString('hex'),
-                   ownerLoginData,shared_logins, function(){} );
-
-    }
-
-  }
-
-}
-*/
 
 
 // ===========================================================================
@@ -1642,120 +1359,141 @@ function cloudRun ( server_request,server_response )  {
           response = new cmd.Response ( cmd.fe_retcode.wrongLogin,'unknown user',{} );
         } else  {
 
-          // 3. Check project Id and make new project if necessary
+          var check_list = ration.checkUserRation ( loginData,true );
+          if (check_list.length>0)  {
 
-          var pData = prj.readProjectData ( loginData,meta.project );
-          if (!pData)  {
-            var pDesc = new pd.ProjectDesc();
-            pDesc.init ( meta.project,meta.title,pd.start_mode.standard,
-                         com_utils.getDateString() );
-            response = prj.makeNewProject ( loginData,pDesc );
-            if (response.status==cmd.fe_retcode.ok)  {
-              pData = prj.readProjectData ( loginData,meta.project );
-              if (!pData)  {
-                log.error ( 12,'error creating new project for cloudRun: login ' + loginData.login );
+            log.standard ( 61,'cloudrun rejected for user ('+meta.user+'): ' +
+                               check_list.join(', ') );
+            response = new cmd.Response ( cmd.fe_retcode.errors,
+              'cloudrun rejected: ' + check_list.join(', ') + ' quota is up',{} );
+
+          } else  {
+
+            // 3. Check project Id and make new project if necessary
+
+            var pData = prj.readProjectData ( loginData,meta.project );
+            if (!pData)  {
+              var pDesc = new pd.ProjectDesc();
+              pDesc.init ( meta.project,meta.title,pd.start_mode.standard,
+                           com_utils.getDateString() );
+              response = prj.makeNewProject ( loginData,pDesc );
+              if (response.status==cmd.fe_retcode.ok)  {
+                pData = prj.readProjectData ( loginData,meta.project );
+                if (!pData)  {
+                  log.error ( 12,'error creating new project for cloudRun: login ' + loginData.login );
+                  response = new cmd.Response ( cmd.fe_retcode.noProjectData,
+                                                'error creating new project',{} );
+                } else  {
+                  message = 'project "' + meta.project + '" created, ';
+                  pData.tree.push({
+                    id          : 'treenode_06062',
+                    parentId    : null,
+                    folderId    : null,
+                    fchildren   : [],
+                    text        : '<b>[' + meta.project + ']</b> <i>' + meta.title + '</i>',
+                    text0       : '',
+                    highlightId : 0,
+                    icon        : cmd.image_path('project'),
+                    data : {
+                      customIcon : cmd.activityIcon(),
+                      ci_width   : '22px',
+                      ci_height  : '22px',
+                      ci_state   : 'hidden'
+                    },
+                    state : {
+                      opened   : true,
+                      disabled : false,
+                      selected : false
+                    },
+                    children : [],
+                    li_attr  : {},
+                    a_attr   : {},
+                    dataId   : ''
+                  });
+                }
+              }
+            }
+
+            if (pData)  {
+              // console.log ( meta );
+
+              // 4. The project is either created or retrieved. Prepare task and run it
+
+              var task = utils.readClass ( path.join(tmpJobDir,task_t.jobDataFName) );
+              if (!task)  {
+                log.error ( 13,'error reading task meta in cloudRun: login ' +
+                               loginData.login + ', project ' + meta.project );
                 response = new cmd.Response ( cmd.fe_retcode.noProjectData,
                                               'error creating new project',{} );
               } else  {
-                message = 'project "' + meta.project + '" created, ';
-                pData.tree.push({
-                  id          : 'treenode_06062',
-                  parentId    : null,
-                  folderId    : null,
-                  fchildren   : [],
-                  text        : '<b>[' + meta.project + ']</b> <i>' + meta.title + '</i>',
-                  text0       : '',
-                  highlightId : 0,
-                  icon        : cmd.image_path('project'),
-                  data : {
-                    customIcon : cmd.activityIcon(),
-                    ci_width   : '22px',
-                    ci_height  : '22px',
-                    ci_state   : 'hidden'
-                  },
-                  state : {
-                    opened   : true,
-                    disabled : false,
-                    selected : false
-                  },
-                  children : [],
-                  li_attr  : {},
-                  a_attr   : {},
-                  dataId   : ''
-                });
-              }
-            }
-          }
 
-          if (pData)  {
-            // console.log ( meta );
+                // 5. Prepare task object
 
-            // 4. The project is either created or retrieved. Prepare task and run it
+                task.project    = meta.project;
+                task.id         = ++pData.desc.jobCount;
+                task.submitter  = loginData.login;
+                task.start_time = Date.now();
 
-            var task = utils.readClass ( path.join(tmpJobDir,task_t.jobDataFName) );
-            if (!task)  {
-              log.error ( 13,'error reading task meta in cloudRun: login ' +
-                             loginData.login + ', project ' + meta.project );
-              response = new cmd.Response ( cmd.fe_retcode.noProjectData,
-                                            'error creating new project',{} );
-            } else  {
+                var jobDirPath = prj.getJobDirPath ( loginData,meta.project,task.id );
+                utils.moveDir ( tmpJobDir,jobDirPath,true );
+                tmpJobDir = null;  // essential
 
-              // 5. Prepare task object
+                var jobDataPath = prj.getJobDataPath ( loginData,meta.project,task.id );
 
-              task.project    = meta.project;
-              task.id         = ++pData.desc.jobCount;
-              task.submitter  = loginData.login;
-              task.start_time = Date.now();
+                if (!utils.writeObject(jobDataPath,task))  {
+                  log.error ( 14,'cannot write job metadata at ' + jobDataPath );
+                } else  {
 
-              var jobDirPath = prj.getJobDirPath ( loginData,meta.project,task.id );
-              utils.moveDir ( tmpJobDir,jobDirPath,true );
-              tmpJobDir = null;  // essential
+                  // 6. Shape job getDirectory
 
-              var jobDataPath = prj.getJobDataPath ( loginData,meta.project,task.id );
+                  // create report directory
+                  utils.mkDir_anchor ( prj.getJobReportDirPath(loginData,meta.project,task.id) );
+                  // create input directory (used only for sending data to NC)
+                  utils.mkDir_anchor ( prj.getJobInputDirPath(loginData,meta.project,task.id) );
+                  // create output directory (used for hosting output data)
+                  utils.mkDir_anchor ( prj.getJobOutputDirPath(loginData,meta.project,task.id) );
+                  // write out the self-updating html starting page, which will last
+                  // only until it gets replaced by real report's bootstrap
+                  utils.writeJobReportMessage ( jobDirPath,'<h1>Idle</h1>',true );
 
-              if (!utils.writeObject(jobDataPath,task))  {
-                log.error ( 14,'cannot write job metadata at ' + jobDataPath );
-              } else  {
+                  // 7. Make project tree node
 
-                // 6. Shape job getDirectory
+                  var pnode = pData.tree[0];
+                  var pnode_json = JSON.stringify ( pnode );
 
-                // create report directory
-                utils.mkDir_anchor ( prj.getJobReportDirPath(loginData,meta.project,task.id) );
-                // create input directory (used only for sending data to NC)
-                utils.mkDir_anchor ( prj.getJobInputDirPath(loginData,meta.project,task.id) );
-                // create output directory (used for hosting output data)
-                utils.mkDir_anchor ( prj.getJobOutputDirPath(loginData,meta.project,task.id) );
-                // write out the self-updating html starting page, which will last
-                // only until it gets replaced by real report's bootstrap
-                utils.writeJobReportMessage ( jobDirPath,'<h1>Idle</h1>',true );
+                  var cnode = JSON.parse ( pnode_json );
+                  cnode.id       = pnode.id + '_' + key;
+                  cnode.parentId = pnode.id;
+                  cnode.dataId   = task.id;
+                  cnode.icon     = cmd.image_path ( task.icon() );
 
-                // 7. Make project tree node
+                  // cnode.text     = '[' + com_utils.padDigits(task.id,4) + '] ' + task.name;
+                  cnode.text     = prj.makeNodeName ( task,task.name );
+                  cnode.text0    = cnode.text;
+                  cnode.children = [];
+                  pnode.children.push ( cnode );
 
-                var pnode = pData.tree[0];
-                var pnode_json = JSON.stringify ( pnode );
+                  prj.writeProjectData ( loginData,pData,true );
 
-                var cnode = JSON.parse ( pnode_json );
-                cnode.id       = pnode.id + '_' + key;
-                cnode.parentId = pnode.id;
-                cnode.dataId   = task.id;
-                cnode.icon     = cmd.image_path ( task.icon() );
+                  // Run the job
+                  var job_token = crypto.randomBytes(20).toString('hex');
+                  log.standard ( 6,'cloudrun job ' + task.id + ' formed, login:' +
+                                   loginData.login + ', token:' + job_token );
+                  _run_job ( loginData,task,job_token,loginData,[],
+                             function(jtoken){
+                    var jobEntry = feJobRegister.getJobEntryByToken ( jtoken );
+                    if (jobEntry)  {
+                      jobEntry.cloudrun = true;
+                      // we do not save job register here, which is a small sin
+                      // (may lead only to miscalculation of cloudrun quota for)
+                      // the user), but one disk write less :)
+                    }
+                  });
 
-                // cnode.text     = '[' + com_utils.padDigits(task.id,4) + '] ' + task.name;
-                cnode.text     = prj.makeNodeName ( task,task.name );
-                cnode.text0    = cnode.text;
-                cnode.children = [];
-                pnode.children.push ( cnode );
+                  response = new cmd.Response ( cmd.fe_retcode.ok,
+                    message + 'files uploaded, ' + meta.task + ' started',{} );
 
-                prj.writeProjectData ( loginData,pData,true );
-
-                // Run the job
-                var job_token = crypto.randomBytes(20).toString('hex');
-                log.standard ( 6,'cloudrun job ' + task.id + ' formed, login:' +
-                                 loginData.login + ', token:' + job_token );
-                _run_job ( loginData,task,job_token,loginData,[], function(){} );
-
-                response = new cmd.Response ( cmd.fe_retcode.ok,
-                  message + 'files uploaded, ' + meta.task + ' started',{} );
+                }
 
               }
 

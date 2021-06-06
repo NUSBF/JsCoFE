@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    04.01.21   <--  Date of Last Modification.
+ *    06.06.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -786,25 +786,28 @@ var userFilePath = getUserDataFName ( loginData );
 
         if (uData && uRation)  {
 
-          var storage   = Number(userData.ration.storage);
-          var cpu_day   = Number(userData.ration.cpu_day);
-          var cpu_month = Number(userData.ration.cpu_month);
+          var storage      = Number(userData.ration.storage);
+          var cpu_day      = Number(userData.ration.cpu_day);
+          var cpu_month    = Number(userData.ration.cpu_month);
+          var cloudrun_day = Number(userData.ration.cloudrun_day);
 
           var feedback  = '';
           if (userData.hasOwnProperty('feedback'))
               feedback = userData.feedback;
 
-          if ((uRation.storage   != storage  ) ||
-              (uRation.cpu_day   != cpu_day  ) ||
-              (uRation.cpu_month != cpu_month) ||
-              (uData.role        != userData.role   ) ||
-              (uData.licence     != userData.licence) ||
-              (uData.dormant     != userData.dormant) ||
-              (uData.feedback    != feedback ))  {
+          if ((uRation.storage      != storage      )    ||
+              (uRation.cpu_day      != cpu_day      )    ||
+              (uRation.cpu_month    != cpu_month    )    ||
+              (uRation.cloudrun_day != cloudrun_day )    ||
+              (uData.role           != userData.role   ) ||
+              (uData.licence        != userData.licence) ||
+              (uData.dormant        != userData.dormant) ||
+              (uData.feedback       != feedback ))  {
 
-            uRation.storage   = storage;
-            uRation.cpu_day   = cpu_day;
-            uRation.cpu_month = cpu_month;
+            uRation.storage      = storage;
+            uRation.cpu_day      = cpu_day;
+            uRation.cpu_month    = cpu_month;
+            uRation.cloudrun_day = cloudrun_day;
 
             ration.saveUserRation ( userData,uRation );
 
@@ -821,7 +824,8 @@ var userFilePath = getUserDataFName ( loginData );
                             'userProfile'  : uData.role,
                             'userStorage'  : uRation.storage,
                             'userCPUDay'   : uRation.cpu_day,
-                            'userCPUMonth' : uRation.cpu_month
+                            'userCPUMonth' : uRation.cpu_month,
+                            'userCRunDay'  : uRation.cloudrun_day
                           })
               );
             } else  {

@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    13.12.20   <--  Date of Last Modification.
+ *    06.06.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Front End Server -- Projects Handler Functions
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2020
+ *  (C) E. Krissinel, A. Lebedev 2016-2021
  *
  *  ==========================================================================
  *
@@ -64,8 +64,17 @@ var r     = utils.readClass ( fpath );
       cfg_ration = cfg.ration;
     r = new urat.UserRation(cfg_ration);
     utils.writeObject ( fpath,r );
-  } else if (r.calculateTimeRation())
-    utils.writeObject ( fpath,r );
+  } else  {
+    if (!('cloudrun_day' in r))  {
+      var cfg = conf.getFEConfig();
+      if (cfg.hasOwnProperty('ration'))
+            r.cloudrun_day = cfg.ration.cloudrun_day;
+      else  r.cloudrun_day = 100;
+      r.cloudrun_day_used = 0;
+    }
+    if (r.calculateTimeRation())
+      utils.writeObject ( fpath,r );
+  }
   return r;
 }
 
@@ -73,6 +82,20 @@ var r     = utils.readClass ( fpath );
 function saveUserRation ( loginData,user_ration )  {
 var fpath = getUserRationFPath ( loginData );
   utils.writeObject ( fpath,user_ration );
+}
+
+function checkUserRation ( loginData,include_cloudrun )  {
+var r = getUserRation ( loginData );
+var check_list = [];
+  if (r.storage_used>r.storage)
+    check_list.push ( 'Disk space' );
+  if (r.cpu_day_used>r.cpu_day)
+    check_list.push ( 'CPU daily' );
+  if (r.cpu_month_used>r.cpu_month)
+    check_list.push ( 'CPU monthly' );
+  if (include_cloudrun && (r.cloudrun_day_used>r.cloudrun_day))
+    check_list.push ( 'CloudRun daily' );
+  return check_list;
 }
 
 
@@ -217,10 +240,10 @@ function changeProjectDiskSpace ( loginData,projectName,disk_space_change,
 }
 */
 
-function bookJob ( loginData,job_class )  {
+function bookJob ( loginData,job_class,cloudrun_bool )  {
 // this function is called when job has landed in FE
 var r = getUserRation ( loginData );
-  if (r && r.bookJob(job_class))  {
+  if (r && r.bookJob(job_class,cloudrun_bool))  {
     var rfpath = getUserRationFPath ( loginData );
     if (!utils.writeObject(rfpath,r))
       log.error ( 10,'cannot write ration file at ' + rfpath );
@@ -299,32 +322,6 @@ var r      = getUserRation      ( loginData );
   return r;
 }
 
-
-/*
-function updateUserRation_bookJob ( loginData,job_class )  {
-var r = getUserRation ( loginData );
-  if (job_class)  {
-    utils.appendString ( 'ration.log',
-      '\n **** login='  + loginData.login +
-      ' job_state='     + job_class.state +
-      ' job_type='      + job_class._type +
-      '\nstorage_used=' + r.storage_used
-    );
-    r.bookJob ( job_class );
-    var rfpath = getUserRationFPath ( loginData );
-    if (!utils.writeObject(rfpath,r))
-      log.error ( 10,'cannot write ration file at ' + rfpath );
-    if (job_class.isComplete())
-      updateResourceStats ( loginData,job_class,true );
-    utils.appendString ( 'ration.log',
-      '\nstorage_used=' + r.storage_used +
-      '\n---------------------------------------------------------------------' );
-  }
-  return r;
-}
-*/
-
-
 function maskProject ( loginData,projectName )  {
 var r = getUserRation ( loginData );
   r.maskProject ( projectName );
@@ -340,11 +337,7 @@ var r = getUserRation ( loginData );
 module.exports.getUserRationFPath       = getUserRationFPath;
 module.exports.getUserRation            = getUserRation;
 module.exports.saveUserRation           = saveUserRation;
-//module.exports.updateUserRation_bookJob = updateUserRation_bookJob;
-//module.exports.changeUserDiskSpace      = changeUserDiskSpace;
-//module.exports.changeProjectDiskSpace   = changeProjectDiskSpace;
-
-
+module.exports.checkUserRation          = checkUserRation;
 module.exports.bookJob                  = bookJob;
 module.exports.updateProjectStats       = updateProjectStats;
 module.exports.calculateUserDiskSpace   = calculateUserDiskSpace;

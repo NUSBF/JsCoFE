@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    29.08.20   <--  Date of Last Modification.
+ *    06.06.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Manage User Dialog
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2020
+ *  (C) E. Krissinel, A. Lebedev 2016-2021
  *
  *  =================================================================
  *
@@ -70,9 +70,10 @@ function ManageUserDialog ( userData,FEconfig,onExit_func )  {
             } else
               dlg.userData.dormant = 0;
             var volume  = dlg.diskNames[dlg.volume.getValue()];
-            dlg.userData.ration.storage   = dlg.storage.getValue();
-            dlg.userData.ration.cpu_day   = dlg.cpu_day.getValue();
-            dlg.userData.ration.cpu_month = dlg.cpu_month.getValue();
+            dlg.userData.ration.storage      = dlg.storage.getValue();
+            dlg.userData.ration.cpu_day      = dlg.cpu_day.getValue();
+            dlg.userData.ration.cpu_month    = dlg.cpu_month.getValue();
+            dlg.userData.ration.cloudrun_day = dlg.cloudrun_day.getValue();
 
             var msgv = '';
             if (volume!=dlg.userData.volume)
@@ -215,11 +216,13 @@ ManageUserDialog.prototype.constructor = ManageUserDialog;
                   "storage"        : 30000,
                   "cpu_day"        : 24,
                   "cpu_month"      : 240,
+                  "cloudrun_day"   : 100,
                   "jobs"           : [],
                   "storage_used"   : 7194.2757387161255,
                   "cpu_day_used"   : 2.9339583080555554,
                   "cpu_month_used" : 27.34012433444445,
                   "cpu_total_used" : 75.92459110972308,
+                  "cloudrun_day_used" : 0,
                   "jobs_total"     : 2264
                 }
   }
@@ -251,7 +254,7 @@ ManageUserDialog.prototype.putLine = function ( label,value,maxvalue,row,key )  
             break;
 
     //case 4 :  this.grid.setInputText(value,row,1,1,1).setReadOnly(true).setWidth_px(80);
-    case 4 :  this.grid.setLabel ( value,row,1,1,1 ).setFontItalic(true).setWidth_px(80);
+    case 4 :  this.grid.setLabel ( ''+value,row,1,1,1 ).setFontItalic(true).setWidth_px(80);
               this.grid.setLabel ( '&nbsp;of&nbsp;',row,2,1,1 ).setWidth_px(30);
               w = this.grid.setInputText(maxvalue,row,3,1,1).setWidth_px(80);
               this.grid.setLabel ( '&nbsp;allocated',row,4,1,1 ).setWidth_px(60);
@@ -331,6 +334,9 @@ ManageUserDialog.prototype.makeLayout = function()  {
   this.cpu_month = this.putLine ( 'CPU-hours used (month):',
                                   round(this.userData.ration.cpu_month_used,2),
                                   this.userData.ration.cpu_month,row++,4 );
+  this.cloudrun_day = this.putLine ( 'CloudRun tasks (day):',
+                                round(this.userData.ration.cloudrun_day_used,2),
+                                this.userData.ration.cloudrun_day,row++,4 );
   this.putLine ( 'Total jobs run:'      ,this.userData.ration.jobs_total,0,row++,5 );
   this.putLine ( 'Total CPU-hours used:',round(this.userData.ration.cpu_total_used,2),
                                          0,row,5 );

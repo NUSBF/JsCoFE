@@ -5,7 +5,7 @@
  *
  *  =================================================================
  *
- *    04.06.21   <--  Date of Last Modification.
+ *    06.06.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -305,6 +305,8 @@ function sendData ( filePath,metaData )  {
           console.log ( ' ... server replied: ' + resp.message + '\n' );
           console.log ( 'Note: list of projects and/or project will not update automatically\n' +
                         '      in your browser, reload/refresh them manually if required.' );
+        } else if (resp.message.indexOf('quota')>=0)  {
+          console.log ( ' *** ' + resp.message );
         } else  {
           console.log ( ' *** cloud run initiation failed, rc=' + resp.status +
                         '\n *** ' + resp.message );

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    21.04.21   <--  Date of Last Modification.
+ *    06.06.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -376,15 +376,25 @@ BasePage.prototype.displayUserRation = function ( pdesc )  {
         '<tr><th>Resource</th><th>Used&nbsp;</th><th>Quota&nbsp;</th><th>%%</th></tr>' +
         '<tr><td colspan="4"><hr/></td></tr>' +
         '<tr><td>Storage&nbsp;(MBytes)&nbsp;</td><td>&nbsp;' + round(this.ration.storage_used,1) +
-                '&nbsp;</td><td>&nbsp;'   + round(this.ration.storage,1) +
-                '&nbsp;</td><td>&nbsp;'   + storage_pp + '</td></tr>' +
+                '&nbsp;</td><td>&nbsp;' + round(this.ration.storage,1) +
+                '&nbsp;</td><td>&nbsp;' + storage_pp + '</td></tr>' +
         '<tr><td>CPU 24h (hours)</td><td>&nbsp;' + round(this.ration.cpu_day_used,4) +
-                '&nbsp;</td><td>&nbsp;'   + round(this.ration.cpu_day,2) +
-                '&nbsp;</td><td>&nbsp;'   + cpu_day_pp + '</td></tr>' +
+                '&nbsp;</td><td>&nbsp;' + round(this.ration.cpu_day,2) +
+                '&nbsp;</td><td>&nbsp;' + cpu_day_pp + '</td></tr>' +
         '<tr><td>CPU 30d (hours)</td><td>&nbsp;' + round(this.ration.cpu_month_used,4) +
-                '&nbsp;</td><td>&nbsp;'   + round(this.ration.cpu_month,2) +
-                '&nbsp;</td><td>&nbsp;'   + cpu_month_pp + '</td></tr>' +
-        '<tr><td colspan="4"><hr/></td></tr>';
+                '&nbsp;</td><td>&nbsp;' + round(this.ration.cpu_month,2) +
+                '&nbsp;</td><td>&nbsp;' + cpu_month_pp + '</td></tr>';
+
+      if ((this.ration.cloudrun_day>0) && (this.ration.cloudrun_day_used>0))  {
+        var cloudrun_day_pp = getPercentLine ( this.ration.cloudrun_day_used,
+                                               this.ration.cloudrun_day );
+        stats +=
+          '<tr><td>CloudRun 24h (jobs)</td><td>&nbsp;' + this.ration.cloudrun_day_used +
+                  '&nbsp;</td><td>&nbsp;' + this.ration.cloudrun_day +
+                  '&nbsp;</td><td>&nbsp;' + cloudrun_day_pp + '</td></tr>';
+      }
+
+      stats += '<tr><td colspan="4"><hr/></td></tr>';
 
       if (pdesc)  {
         if ('disk_space' in pdesc)
