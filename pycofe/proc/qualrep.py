@@ -44,7 +44,7 @@ def put_bfactors_section ( body,structure ):
         # Prepare report parser
         reportPanelId = body.getWidgetId ( "baverage_report" )
         pyrvapi.rvapi_add_panel  ( reportPanelId,sec_id,0,0,1,1 )
-        body.setGenericLogParser ( reportPanelId,False,graphTables=False,makePanel=False )
+        body.setBaverLogParser ( reportPanelId,False,graphTables=False,makePanel=False )
         body.runApp ( "baverage",[
                         "XYZIN" ,structure.getXYZFilePath ( body.outputDir() ),
                         "RMSTAB","_rmstab.tab",

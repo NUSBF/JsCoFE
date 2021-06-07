@@ -118,8 +118,7 @@ and &lt; 1*sigma for the residue ZO metrics."""
 
 
   def parse_stream(self, istream, ostream=None, verbose=False, pause=0, patches=None):
-    # self.parser.parse_stream(istream, ostream, verbose, pause, patches)
-    self.parser.parse_stream(istream, ostream, True, pause, patches)
+    self.parser.parse_stream(istream, ostream, verbose, pause, patches)
     if self.sect is not self.grid:
       self.sect.set_state(False)
 
