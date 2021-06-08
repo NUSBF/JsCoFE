@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    28.05.21   <--  Date of Last Modification.
+ *    07.06.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -26,13 +26,16 @@
 // -------------------------------------------------------------------------
 // TaskListDialog class
 
-function TaskListDialog ( dataBox,branch_task_list,projectDesc,onSelect_func ) {
+function TaskListDialog ( dataBox,branch_task_list,tree,onSelect_func ) {
 
   Widget.call ( this,'div' );
   this.element.setAttribute ( 'title','Task List' );
   document.body.appendChild ( this.element );
 
-  this.branch_tasks  = [];
+  var projectDesc = tree.projectData.desc;
+  // console.log ( ' ntasks=' + tree.countTasks() );
+
+  this.branch_tasks = [];
   for (var i=0;i<branch_task_list.length;i++)
     if (!branch_task_list[i].isRemark())
       this.branch_tasks.push ( branch_task_list[i] );
@@ -41,6 +44,15 @@ function TaskListDialog ( dataBox,branch_task_list,projectDesc,onSelect_func ) {
   this.task          = this.branch_tasks[0];
   this.onSelect_func = onSelect_func;
   this.selected_task = null;  // will receive new task template or null if canceled
+
+  // console.log ( ' jobs=' + projectData.tree[0].children.length );
+
+  // if (dataBox.isEmpty())
+  //   console.log ( 'empty' );
+  // else {
+  //   console.log ( 'not empty');
+  // }
+  // console.log ( '  l=' + branch_task_list.length );
 
   this.tabs_basic = null;
   this.tabs_full  = null;

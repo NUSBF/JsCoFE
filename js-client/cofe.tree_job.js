@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    16.05.21   <--  Date of Last Modification.
+ *    07.06.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -33,6 +33,7 @@
  *      function getTaskByNodeId ( nodeId );
  *      function getTask         ( taskId );
  *      function getTaskNodeId   ( taskId );
+ *      function countTasks      ();
  *      function getChildTasks   ( node   );
  *      function readProjectData ( page_title,
  *                                 onLoaded_func  ,onRightClick_func,
@@ -133,6 +134,15 @@ JobTree.prototype.getTaskByNodeId = function ( nodeId )  {
   if (nodeId in this.task_map)
     return this.task_map[nodeId];
   return null;
+}
+
+
+JobTree.prototype.countTasks = function()  {
+var nTasks = 0;
+  for (var nodeId in this.task_map)
+    if (!this.task_map[nodeId].isRemark())
+      nTasks++;
+  return nTasks;
 }
 
 
@@ -969,7 +979,7 @@ JobTree.prototype.addJob = function ( insert_bool,copy_params,parent_page,onAdd_
     (function(tree){
       var dataBox = tree.harvestTaskData ( 1,[] );
       var branch_task_list = tree.getAllAncestors ( tree.getSelectedTask() );
-      new TaskListDialog ( dataBox,branch_task_list,tree.projectData.desc,
+      new TaskListDialog ( dataBox,branch_task_list,tree,
           function(task,tasklistmode){
             if (tasklistmode)
               tree.projectData.desc.tasklistmode = tasklistmode;
