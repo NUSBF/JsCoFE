@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    03.06.21   <--  Date of Last Modification.
+#    08.06.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -79,27 +79,28 @@ class Dimple(basic.TaskDriver):
             self.success ( False )
             return
 
-        dimple_mtz = "_dimple.mtz"
-
-        self.open_stdin()
-        self.write_stdin ([
-            "LABIN  FILE 1 E1=" + cols[0] + " E2=" + cols[1] + " E3=" + hkl.getFreeRColumn()
-        ])
+        reflections_mtz = "__reflections.mtz"
         if cols[2]=="F":
+            self.open_stdin()
             self.write_stdin ([
-                "LABOUT FILE 1 E1=F E2=SIGF E3=" + hkl.getFreeRColumn()
+                "LABIN  FILE 1 E1=" + cols[0] + " E2=" + cols[1] + " E3=" + hkl.getFreeRColumn()
             ])
-        self.close_stdin()
+            self.write_stdin ([
+                "LABOUT FILE 1 E1=FP E2=SIGFP E3=" + hkl.getFreeRColumn()
+            ])
+            self.close_stdin()
 
-        self.runApp ( "cad",[
-                "HKLIN1",hkl.getHKLFilePath(self.inputDir()),
-                "HKLOUT",dimple_mtz
-            ],logType="Service" )
+            self.runApp ( "cad",[
+                    "HKLIN1",hkl.getHKLFilePath(self.inputDir()),
+                    "HKLOUT",reflections_mtz
+                ],logType="Service" )
+        else:
+            reflections_mtz = hkl.getHKLFilePath ( self.inputDir() )
 
         # make command-line parameters for dimple
         cmd = [
             # hkl.getHKLFilePath(self.inputDir()),
-            dimple_mtz,
+            reflections_mtz,
             istruct.getXYZFilePath(self.inputDir()),
             "./",
             "--free-r-flags","-",
@@ -150,7 +151,7 @@ class Dimple(basic.TaskDriver):
         else:
             self.runApp ( "dimple",cmd,logType="Main" )
 
-        os.rename ( dimple_mtz,os.path.join(self.outputDir(),dimple_mtz) )
+        # os.rename ( reflections_mtz,os.path.join(self.outputDir(),reflections_mtz) )
 
         self.file_stdout.close()
         self.file_stdout = open ( self.file_stdout_path(),'r' )
