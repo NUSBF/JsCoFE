@@ -89,7 +89,7 @@ function AddProjectDialog ( projectList,onclose_fnc )  {
 
   $(this.element).dialog({
     resizable : false,
-    hseight    : 'auto',
+    height    : 'auto',
     maxHeight : 500,
     width     : 750,
     modal     : true,
