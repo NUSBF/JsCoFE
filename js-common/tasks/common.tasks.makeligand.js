@@ -133,8 +133,7 @@ function TaskMakeLigand()  {
           type     : 'label',
           label    : '&nbsp;<br><span style="font-size:85%;color:maroon;"><i>Codes ' +
                        __coot_reserved_codes.join(', ') +
-                     '<br>are reserved by Coot for own purposes and cannot' +
-                     ' be used here.</i></span>',
+                     '<br>are reserved by Coot and cannot be used here.</i></span>',
           position : [4,4,1,5]
         }
 

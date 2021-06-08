@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    07.06.21   <--  Date of Last Modification.
+ *    08.06.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -54,6 +54,11 @@ function TaskListDialog ( dataBox,branch_task_list,tree,onSelect_func ) {
   // }
   // console.log ( '  l=' + branch_task_list.length );
 
+  this.dlg_width  = window.innerWidth;
+  this.dlg_width  = Math.min ( Math.max(700,4*this.dlg_width/9),6*this.dlg_width/8 );
+  this.dlg_height = 6*window.innerHeight/8;
+
+  this.tabs       = null;
   this.tabs_basic = null;
   this.tabs_full  = null;
   this.combobox   = null;
@@ -65,12 +70,15 @@ function TaskListDialog ( dataBox,branch_task_list,tree,onSelect_func ) {
         .addItem  ( 'Standard mode','full',projectDesc.tasklistmode==tasklist_mode.full  )
         .setWidth ( '180px' );
   } else if (projectDesc.startmode==start_mode.auto)  {
-    this.makeLayout ( 2 );
-    this.combobox = new Combobox();
-    this.combobox
-        .addItem  ( 'Autostart mode','basic',projectDesc.tasklistmode==tasklist_mode.basic )
-        .addItem  ( 'Standard mode' ,'full',projectDesc.tasklistmode==tasklist_mode.full  )
-        .setWidth ( '180px' );
+    if (tree.countTasks()>0)  {
+      this.makeLayout ( 2 );
+      this.combobox = new Combobox();
+      this.combobox
+          .addItem  ( 'Autostart mode','basic',projectDesc.tasklistmode==tasklist_mode.basic )
+          .addItem  ( 'Standard mode' ,'full',projectDesc.tasklistmode==tasklist_mode.full  )
+          .setWidth ( '180px' );
+    } else
+      this.makeLayout ( 20 );
   } else
     this.makeLayout ( 1 );
 
@@ -79,16 +87,12 @@ function TaskListDialog ( dataBox,branch_task_list,tree,onSelect_func ) {
     this.tabs_full .setVisible ( projectDesc.tasklistmode==tasklist_mode.full );
   }
 
-  var w = window.innerWidth;
-  var w = Math.min ( Math.max(700,4*w/9),6*w/8 );
-  var h = 6*window.innerHeight/8;
-
   (function(self){
 
     $(self.element).dialog({
       resizable : true,
-      height    : h,
-      width     : w,
+      height    : self.dlg_height,
+      width     : self.dlg_width,
       maxHeight : $(window).height()-20,
       modal     : true,
       create    : function (e, ui) {
@@ -124,11 +128,13 @@ function TaskListDialog ( dataBox,branch_task_list,tree,onSelect_func ) {
     });
 
 
-    $(self.element).on( "dialogresize", function(event,ui){
-      //self.onResize();
-      $(self.tabs.element).height ( self.element.innerHeight-16 );
-      self.tabs.refresh();
-    });
+    if (self.tabs)  {
+      $(self.element).on( "dialogresize", function(event,ui){
+        //self.onResize();
+        $(self.tabs.element).height ( self.element.innerHeight-16 );
+        self.tabs.refresh();
+      });
+    }
 
     if (self.combobox)  {
       self.combobox.addOnChangeListener ( function(value,text){
@@ -148,8 +154,10 @@ function TaskListDialog ( dataBox,branch_task_list,tree,onSelect_func ) {
     this.tabs_basic.refresh();
   }
 
-  $(this.tabs_full.element).height ( this.element.innerHeight-16 );
-  this.tabs_full.refresh();
+  if (this.tabs_full)  {
+    $(this.tabs_full.element).height ( this.element.innerHeight-16 );
+    this.tabs_full.refresh();
+  }
 
   //launchHelpBox ( '','./html/jscofe_tasklist.html',doNotShowAgain,1000 );
 
@@ -239,6 +247,16 @@ TaskListDialog.prototype.setTask = function ( task_obj,grid,row,setall )  {
 
 
 TaskListDialog.prototype.makeLayout = function ( key )  {
+
+  if (key==20)  {
+    // initial choice for autostart
+    this.element.setAttribute ( 'title','Autostart' );
+    var grid = new Grid ( '-compact' );
+    this.addWidget ( grid );
+    this.makeAutostartList ( grid );
+    this.dlg_height = 'auto';
+    return;
+  }
 
   if (key>1)  {
     this.tabs_basic = new Tabs();
@@ -334,6 +352,49 @@ var r = 0;  // grid row
       grid1.setCellSize ( '90%','8px',0,1 );
     } else if (this.setTask(task_list[i],grid,r,true))
       r++;
+
+  return r;  // indicates whether the tab is empty or not
+
+}
+
+
+TaskListDialog.prototype.makeAutostartList = function ( grid )  {
+var r = 0;  // grid row
+
+  // grid.setLabel ( 'Autostart Project',r++,0,1,3 )
+  //     .setFontSize('140%').setFontBold(true);
+  // grid.setLabel ( '&nbsp;',r++,0,1,3 ).setFontSize('40%');
+  // grid.setLabel ( 'Choose starting workflow that matches your project best, ' +
+  //                 'see details ' +
+  //                 '<a href="javascript:launchHelpBox(\'Automatic Workflows\',' +
+  //                 '\'' + __user_guide_base_url +
+  //                 'jscofe_workflows.html\',null,10)">here</a>.',r++,0,1,3 )
+  //     .setFontSize('90%').setFontItalic(true);
+  // grid.setLabel ( '&nbsp;',r++,0,1,3 ).setFontSize('40%');
+
+  grid.setLabel ( '<h3>Choose project template from options below that matches ' +
+                  'your data best:</h3>',r++,0,1,3 );
+
+  var task_list = [
+    new TaskWFlowAMR(),
+    new TaskWFlowAEP(),
+    new TaskWFlowDPL(),
+  ];
+
+  for (var i=0;i<task_list.length;i++)  {
+    if (task_list[i].file_select.length>0)
+      task_list[i].inputMode = 'root'; // force 'at root mode' for the task
+    if (this.setTask(task_list[i],grid,r,true))
+    r++;
+  }
+
+  grid.setLabel ( '&nbsp;<br><hr/>After data upload and starting, the project ' +
+                  'tree unfolds automatically. More jobs from Task List can be ' +
+                  'added to the project tree at any time, using the green plus ' +
+                  'button.',r++,0,1,3 )
+      .setFontSize('90%').setFontItalic(true);
+
+
 
   return r;  // indicates whether the tab is empty or not
 

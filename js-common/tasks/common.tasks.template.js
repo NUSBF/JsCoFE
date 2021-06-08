@@ -865,6 +865,7 @@ if (!dbx)  {
       }
       div.code_lbl  .setVisible ( code   );
       div.smiles_lbl.setVisible ( smiles );
+      div.lig_lbl   .setVisible ( code || smiles );
     }
 
     var tooltip = '[Optional] Provide description of ligand to fit in electron ' +
@@ -897,7 +898,7 @@ if (!dbx)  {
                            .setTooltip ( tooltip )
                            .setVisible(this.input_ligands[i].source=='M');
       var smiles = div.grid.setInputText ( this.input_ligands[i].smiles,row,4,1,1 )
-                           .setWidth_px(600).setNoWrap()
+                           .setWidth_px(500).setNoWrap()
                            .setTooltip ( tooltip )
                            .setVisible(this.input_ligands[i].source=='S');
       div.grid.setVerticalAlignment ( row,2,'middle' );
@@ -912,6 +913,12 @@ if (!dbx)  {
       });
       row++;
     }
+
+    if (this.input_ligands.length>0)
+      div.lig_lbl = div.grid.setLabel (
+          '&nbsp;<br><i>Codes ' + __coot_reserved_codes.join(', ') +
+          ' are reserved by Coot and cannot be used here.</i>',
+        row++,3,1,2 ).setFontColor('maroon').setVisible(false);
 
     div.grid.setLabel ( '&nbsp;',row++,0,1,1 ).setHeight_px(8);
 
