@@ -9,7 +9,7 @@
 #
 #  COORDINATE FILE HANDLING ROUTINES
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev, Oleg Kovalevskyi 2017-2021
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev, Oleg Kovalevskiy 2017-2021
 #
 # ============================================================================
 #
@@ -49,7 +49,10 @@ def mergeLigands ( mmFile, ligFiles, chainId, outFile ):
         chain = st[0].find_last_chain(chainId) or st[0].add_chain(chainId)
 
     if len(chain) > 0:
-        resNum = chain[-1].seqid.num + 1
+        resNumbers = []
+        for res in chain:
+            resNumbers.append(res.seqid.num)
+        resNum = max(resNumbers) + 1
     else:
         resNum = 1
 
