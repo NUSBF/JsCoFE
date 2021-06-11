@@ -52,7 +52,7 @@ function DataHKL()  {
   this.wavelength    = '';     // wavelength (Phaser-EP)
   this.useForPhasing = false;  // flag for native dataset in SAD/MAD (Crank-2)
   this.new_spg       = '';     // new space group for reindexing
-  this.spg_alt       = '';     // alternative space groups for Phaser
+  this.spg_alt       = 'ALL';  // alternative space groups for Phaser
   this.freeRds       = null;   // reference to freeR dataset meta
   this.useHKLSet     = 'F';    // if given, forces use of F,Fpm,TI,TF (Refmac)
   this.aimless_meta  = {

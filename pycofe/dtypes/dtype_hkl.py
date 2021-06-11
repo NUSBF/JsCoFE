@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    03.06.21   <--  Date of Last Modification.
+#    11.06.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -48,7 +48,7 @@ class DType(dtype_template.DType):
             self.wavelength    = ""     # wavelength (Phaser-EP)
             self.useForPhasing = False  # flag for native dataset in SAD/MAD (Crank-2)
             self.new_spg       = ""     # new space group for reindexing
-            self.spg_alt       = ""     # alternative space groups for Phaser
+            self.spg_alt       = "ALL"  # alternative space groups for Phaser
             self.freeRds       = None   # reference to freeR dataset
             self.useHKLSet     = "F"    # if given, forces use of F,Fpm,TI,TF (Refmac)
             self.aimless_meta  = {
