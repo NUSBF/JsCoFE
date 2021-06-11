@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    08.06.21   <--  Date of Last Modification.
+ *    11.06.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -63,7 +63,7 @@ function TaskListDialog ( dataBox,branch_task_list,tree,onSelect_func ) {
   this.tabs_full  = null;
   this.combobox   = null;
   if (projectDesc.startmode==start_mode.migrate)  {
-    this.makeLayout ( 3 );
+    this.makeLayout ( 30 );
     this.combobox = new Combobox();
     this.combobox
         .addItem  ( 'Hop-on mode'  ,'basic',projectDesc.tasklistmode==tasklist_mode.basic )
@@ -71,7 +71,9 @@ function TaskListDialog ( dataBox,branch_task_list,tree,onSelect_func ) {
         .setWidth ( '180px' );
   } else if (projectDesc.startmode==start_mode.auto)  {
     if (tree.countTasks()>0)  {
-      this.makeLayout ( 2 );
+      if (branch_task_list.length<1)
+            this.makeLayout ( 21 );
+      else  this.makeLayout ( 22 );
       this.combobox = new Combobox();
       this.combobox
           .addItem  ( 'Autostart mode','basic',projectDesc.tasklistmode==tasklist_mode.basic )
@@ -80,7 +82,7 @@ function TaskListDialog ( dataBox,branch_task_list,tree,onSelect_func ) {
     } else
       this.makeLayout ( 20 );
   } else
-    this.makeLayout ( 1 );
+    this.makeLayout ( 10 );
 
   if (this.tabs_basic)  {
     this.tabs_basic.setVisible ( projectDesc.tasklistmode==tasklist_mode.basic );
@@ -258,15 +260,31 @@ TaskListDialog.prototype.makeLayout = function ( key )  {
     return;
   }
 
-  if (key>1)  {
+  if (key>10)  {
     this.tabs_basic = new Tabs();
     this.addWidget ( this.tabs_basic );
-    if (key<3)  {
-      var tabb_workflows = this.tabs_basic.addTab ( 'Workflows',true );
-      this.makeWorkflowsList ( tabb_workflows.grid );
-    }
-    var tabb_shortlist = this.tabs_basic.addTab ( 'Essential tasks',(key==3) );
+    var tabb_workflows = null;
+    var tabb_shortlist = null;
+    if (key==21)  {
+      tabb_workflows = this.tabs_basic.addTab ( 'Workflows',true );
+      tabb_shortlist = this.tabs_basic.addTab ( 'Essential tasks',false );
+    } else if (key=22)  {
+      tabb_shortlist = this.tabs_basic.addTab ( 'Essential tasks',true );
+      tabb_workflows = this.tabs_basic.addTab ( 'Workflows',false );
+    } else
+      tabb_shortlist = this.tabs_basic.addTab ( 'Essential tasks',true );
+
     this.makeBasicList ( tabb_shortlist.grid,key );
+    if (tabb_workflows)
+      this.makeWorkflowsList ( tabb_workflows.grid );
+
+    // if (key<30)  {
+    //   var tabb_workflows = this.tabs_basic.addTab ( 'Workflows',true );
+    //   this.makeWorkflowsList ( tabb_workflows.grid );
+    // }
+    // var tabb_shortlist = this.tabs_basic.addTab ( 'Essential tasks',(key==30) );
+    // this.makeBasicList ( tabb_shortlist.grid,key );
+
   }
 
   this.tabs_full = new Tabs();
@@ -296,7 +314,7 @@ var r = 0;  // grid row
                 ' tasks commonly used for structure completion after running ' +
                 'structure solution workflows. For full set of tasks, switch ' +
                 'to </i>"Standard set"<i> below.</i>';
-  if (key==3)
+  if (key==30)
     infotip = '<i>This list contains ' + appName() +
               ' tasks commonly used for structure completion after importing ' +
               'partially solved structures. For full set of tasks, switch to ' +
@@ -321,7 +339,7 @@ var r = 0;  // grid row
     new TaskImportReplace (),
   ];
 
-  if (key==3)
+  if (key==30)
     task_list.push ( new TaskMigrate() );
 
   task_list = task_list.concat ([
