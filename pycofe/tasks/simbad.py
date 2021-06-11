@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    23.05.21   <--  Date of Last Modification.
+#    11.06.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -32,7 +32,7 @@
 #               even if job is run by SGE, so it should be checked upon using
 #               comman line length
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2021
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev, Oleg Kovalevskyi 2017-2021
 #
 # ============================================================================
 #

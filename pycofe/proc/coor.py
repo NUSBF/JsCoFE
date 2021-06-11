@@ -3,13 +3,13 @@
 #
 # ============================================================================
 #
-#    19.07.19   <--  Date of Last Modification.
+#    11.06.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  COORDINATE FILE HANDLING ROUTINES
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2019
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev, Oleg Kovalevskyi 2017-2021
 #
 # ============================================================================
 #
