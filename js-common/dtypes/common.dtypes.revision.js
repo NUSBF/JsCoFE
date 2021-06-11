@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    22.01.21   <--  Date of Last Modification.
+ *    11.06.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -705,7 +705,7 @@ if (!__template)  {
               this.ASU.ha_type = dropdown.customGrid.ha_type.getValue();
           break;
 
-      case 'reindex'    :  case 'refmac'     :  case 'ccp4build' :
+      case 'reindex'    :  case 'refmac' :  case 'ccp4build' :
       case 'changereso' :
           msg = this.HKL.collectCustomDropdownInput ( dropdown );
         break;

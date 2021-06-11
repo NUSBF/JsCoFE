@@ -111,10 +111,17 @@ class Simbad(asudef.ASUDef):
         if hkl:
             level = self.getParameter(sec1.SEARCH_SEL)
 
-            if self.getParameter(sec1.SGALL) == 'A':
+            # if self.getParameter(sec1.SGALL) == 'A':
+            #     sgall = 'all'
+            # elif self.getParameter(sec1.SGALL) == 'E':
+            #     sgall = 'enant'
+
+            if hkl.spg_alt=='ALL':
                 sgall = 'all'
-            elif self.getParameter(sec1.SGALL) == 'E':
-                sgall = 'enant'
+            else:
+                splist = hkl.spg_alt.split ( ";" )
+                if (len(splist)>1) and (not splist[0].startswith("I")):
+                    sgall = 'enant'
 
             app = ""
             if level == 'L':
@@ -295,18 +302,18 @@ class Simbad(asudef.ASUDef):
 
             if structure:
 
-                structure.addDataAssociation ( hkl.dataId )
-                structure.setRefmacLabels ( hkl )
+                structure.addDataAssociation ( sol_hkl.dataId )
+                structure.setRefmacLabels ( sol_hkl )
                 structure.setXYZSubtype   ()
                 structure.addPhasesSubtype()
 
                 self.putStructureWidget ( "structure_btn_",
-                          result0["name"] + " structure and electron density",
-                          structure )
+                        result0["name"] + " structure and electron density",
+                        structure )
 
                 # secId="0" activates drawing of the GaugeWidget on the
                 # activation of 0th (the leftmost) tab
-                revision = asudef.revisionFromStructure ( self,hkl,structure,
+                revision = asudef.revisionFromStructure ( self,sol_hkl,structure,
                                                           result0["name"],secId="0",
                                                           make_verdict=False )
                 if revision:
