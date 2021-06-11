@@ -18,6 +18,7 @@
 
 #  python native imports
 import os
+import xml.etree.ElementTree as ET
 
 #  application imports
 from . import dtype_template
@@ -69,6 +70,11 @@ class DType(dtype_template.DType):
         else:
             self.subtype = [subtypeAnomalous()]
 
+        return
+
+    def readAimlessStats ( self,aimless_xml ):
+        tree = ET.parse ( aimless_xml )
+        root = tree.getroot()
         return
 
     def isAnomalous(self):
