@@ -41,6 +41,7 @@
 import os
 import sys
 import json
+import shutil
 
 #  ccp4-python imports
 import pyrvapi
@@ -116,16 +117,12 @@ class Simbad(asudef.ASUDef):
             # elif self.getParameter(sec1.SGALL) == 'E':
             #     sgall = 'enant'
 
-            self.stdoutln ( " >>>>> " + str(hkl.spg_alt))
-
             if hkl.spg_alt=='ALL':
                 sgall = 'all'
             else:
                 splist = hkl.spg_alt.split ( ";" )
                 if (len(splist)>1) and (not splist[0].startswith("I")):
                     sgall = 'enant'
-                self.stdoutln ( ' >>>>> ' + str(splist) )
-            self.stdoutln ( ' >>>>> ' + str(sgall) )
 
             app = ""
             if level == 'L':
@@ -253,6 +250,8 @@ class Simbad(asudef.ASUDef):
 
             result0 = simbad_meta["results"][0]
 
+            # self.stdoutln ( " >>>>> " + str(result0) )
+
             self.flush()
             self.file_stdout.close()
             f = open ( self.file_stdout_path(),"r" )
@@ -283,22 +282,24 @@ class Simbad(asudef.ASUDef):
 
             self.putMessage ( "<h3>Best model found: " + result0["name"] + "</h3>" )
 
+            mtzfile = self.getMTZOFName()
+            shutil.copy2 ( os.path.join(self.reportDir(),result0["mtz"]),mtzfile )
+
+            pdbfile = self.getXYZOFName()
+            shutil.copy2 ( os.path.join(self.reportDir(),result0["pdb"]),pdbfile )
 
             sol_hkl = hkl
-            meta = xyzmeta.getXYZMeta ( os.path.join(self.reportDir(),result0["pdb"]), self.file_stdout,
-                                        self.file_stderr )
+            meta    = xyzmeta.getXYZMeta ( pdbfile,self.file_stdout,self.file_stderr )
             if "cryst" in meta:
                 sol_spg    = meta["cryst"]["spaceGroup"]
-                spg_change = self.checkSpaceGroupChanged ( sol_spg,hkl,os.path.join(self.reportDir(),result0["mtz"]))
+                spg_change = self.checkSpaceGroupChanged ( sol_spg,hkl,mtzfile )
                 if spg_change:
                     mtzfile = spg_change[0]
                     sol_hkl = spg_change[1]
 
             # register structure data
             structure = self.registerStructure (
-                            os.path.join(self.reportDir(),result0["pdb"]),
-                            None,
-                            os.path.join(self.reportDir(),result0["mtz"]),
+                            pdbfile,None,mtzfile,
                             #os.path.join(self.reportDir(),result0["map"]),
                             #os.path.join(self.reportDir(),result0["dmap"]),
                             None,None,None,leadKey=1,copy_files=True,
@@ -323,7 +324,7 @@ class Simbad(asudef.ASUDef):
                 if revision:
 
                     have_results = True  # may be continued manually
-                    revision.setReflectionData(sol_hkl)
+                    revision.setReflectionData ( sol_hkl )
 
                     # Verdict section
 
