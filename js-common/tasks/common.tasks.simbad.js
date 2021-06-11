@@ -179,6 +179,19 @@ function TaskSimbad()  {
                       position  : [1,2,1,5],
                       showon    : { SEARCH_SEL : ['S','LCS'] }
                     },
+                SGALL : {
+                      type      : 'combobox',  // the real keyword for job input stream
+                      keyword   : 'sga',
+                      label     : 'Search all spacegroups',
+                      tooltip   : 'Search all space groups or enantiomorphs only ',
+                      range     : ['N|None',
+                                   'A|All',
+                                   'E|Enantiomorphs'
+                                  ],
+                      value     : 'N',
+                      emitting  : false,    // allow to emit signals on change
+                      position  : [2,0,1,1],
+                    },
                 MAXNLATTICES  : {
                       type     : 'integer_',
                       keyword  : 'none',
@@ -189,7 +202,7 @@ function TaskSimbad()  {
                       range    : [1,100],
                       value    : '',
                       default  : '5',
-                      position : [2,0,1,1],
+                      position : [3,0,1,1],
                       showon   : {_:'||','SEARCH_SEL':['L','LC'],'hkl':[0,-1],'hkl.type:DataXYZ':[1]}
                     },
                 MAXPENALTY : {
@@ -202,7 +215,7 @@ function TaskSimbad()  {
                       range    : [0,12],
                       value    : '',
                       default  : '4',
-                      position : [3,0,1,1],
+                      position : [4,0,1,1],
                       showon   : {_:'||','SEARCH_SEL':['L','LC'],'hkl':[0,-1],'hkl.type:DataXYZ':[1]}
                     }
               }

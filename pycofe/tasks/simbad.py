@@ -105,9 +105,15 @@ class Simbad(asudef.ASUDef):
         maxpenalty = self.getParameter(sec1.MAXPENALTY)
         if not maxnlatt:    maxnlatt   = "5"
         if not maxpenalty:  maxpenalty = "12"
+        sgall = ''
 
         if hkl:
             level = self.getParameter(sec1.SEARCH_SEL)
+
+            if self.getParameter(sec1.SGALL) == 'A':
+                sgall = 'all'
+            elif self.getParameter(sec1.SGALL) == 'E':
+                sgall = 'enant'
 
             app = ""
             if level == 'L':
@@ -160,6 +166,9 @@ class Simbad(asudef.ASUDef):
                      "-max_lattice_results",maxnlatt ]
             if "PDB_DIR" in os.environ:
                 cmd += [ "-pdb_db",os.environ["PDB_DIR"] ]
+
+        if len(sgall) > 0:
+            cmd += ["-sga", sgall]
 
         """
         else:
