@@ -50,6 +50,7 @@ from   pycofe.tasks    import asudef
 from   pycofe.dtypes   import dtype_revision, dtype_sequence
 from   pycofe.verdicts import verdict_simbad
 from   pycofe.auto     import auto
+from   pycofe.proc     import xyzmeta
 
 
 # ============================================================================
@@ -271,6 +272,17 @@ class Simbad(asudef.ASUDef):
 
             self.putMessage ( "<h3>Best model found: " + result0["name"] + "</h3>" )
 
+
+            sol_hkl = hkl
+            meta = xyzmeta.getXYZMeta ( os.path.join(self.reportDir(),result0["pdb"]), self.file_stdout,
+                                        self.file_stderr )
+            if "cryst" in meta:
+                sol_spg    = meta["cryst"]["spaceGroup"]
+                spg_change = self.checkSpaceGroupChanged ( sol_spg,hkl,os.path.join(self.reportDir(),result0["mtz"]))
+                if spg_change:
+                    mtzfile = spg_change[0]
+                    sol_hkl = spg_change[1]
+
             # register structure data
             structure = self.registerStructure (
                             os.path.join(self.reportDir(),result0["pdb"]),
@@ -300,6 +312,7 @@ class Simbad(asudef.ASUDef):
                 if revision:
 
                     have_results = True  # may be continued manually
+                    revision.setReflectionData(sol_hkl)
 
                     # Verdict section
 
