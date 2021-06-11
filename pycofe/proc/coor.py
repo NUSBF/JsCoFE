@@ -47,12 +47,22 @@ def mergeLigands ( mmFile, ligFiles, chainId, outFile ):
         chain = st[0].find_last_chain(chainId) or st[0].add_chain(gemmi.Chain(chainId))
     except:
         chain = st[0].find_last_chain(chainId) or st[0].add_chain(chainId)
+
+    if len(chain) > 0:
+        resNum = chain[-1].seqid.num + 1
+    else:
+        resNum = 1
+
     for lf in ligFiles:
         lig = gemmi.read_structure ( lf )
         for lig_chain in lig[0]:
             residues = list ( lig_chain )
-            chain.append_residues ( residues, min_sep=1 )
-            nligs += len(residues)
+            for res in residues:
+                chain.append_residues([res])
+                chain[-1].seqid.num = resNum
+                resNum += 1
+                nligs += 1
+
     st.write_pdb ( outFile )
     return nligs
 
