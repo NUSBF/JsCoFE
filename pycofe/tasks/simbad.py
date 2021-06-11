@@ -116,12 +116,16 @@ class Simbad(asudef.ASUDef):
             # elif self.getParameter(sec1.SGALL) == 'E':
             #     sgall = 'enant'
 
+            self.stdoutln ( " >>>>> " + str(hkl.spg_alt))
+
             if hkl.spg_alt=='ALL':
                 sgall = 'all'
             else:
                 splist = hkl.spg_alt.split ( ";" )
                 if (len(splist)>1) and (not splist[0].startswith("I")):
                     sgall = 'enant'
+                self.stdoutln ( ' >>>>> ' + str(splist) )
+            self.stdoutln ( ' >>>>> ' + str(sgall) )
 
             app = ""
             if level == 'L':
