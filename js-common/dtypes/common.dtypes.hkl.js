@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    03.06.21   <--  Date of Last Modification.
+ *    11.06.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -317,7 +317,7 @@ if (!__template)  {
 
     this.spgLayout = function()  {
 
-      setLabel ( 'Try Space Group(s):&nbsp;',++r,0 );
+      setLabel ( 'Try space group(s):&nbsp;',++r,0 );
       customGrid.spaceGroup = new Dropdown();
       //customGrid.spaceGroup.setWidth ( '125%' );
       customGrid.spaceGroup.setWidth ( '300px' );
@@ -413,6 +413,12 @@ if (!__template)  {
       setLabel ( 'Wavelength (&Aring;):&nbsp;',++r,0 );
       customGrid.wavelength = makeRealInput ( this.wavelength,wavelength,
           'Set wavelength value, or leave blank for automatic choice.',r,1 );
+    }
+
+    this.simbadLayout = function()  {
+      this.spgLayout     ();
+      r++;
+      this.cellInfoLayout();
     }
 
     this.phaserMRLayout = function()  {
@@ -555,6 +561,7 @@ if (!__template)  {
       case 'anomData-Shelx'  :  this.setWType         ();  break;
       case 'native'          :  this.nativeLayout     ();  break;
       case 'unmerged-ref'    :  this.unmergedRefLayout();  break;
+      case 'simbad'          :  this.simbadLayout     ();  break;
       case 'cell-info'       :  this.cellInfoLayout   ();  break;
       case 'reindex'         :  this.reindexLayout    ();  break;
       case 'changereso'      :  this.makeResolutionLimits ( '' );     break;
@@ -722,6 +729,7 @@ if (!__template)  {
       case 'changereso'      : this.collectChangeReso();  break;
       case 'nautilus'        : this.collectResoLimits();  break;
       case 'buster'          : this.collectResoLimits();  break;
+      case 'simbad'          : this.collectSpG       ();  break;
       case 'phaser-mr'       : this.collectSpG       (); // should be no break here!
       case 'phaser-mr-fixed' : this.collectPhaserMR  ();  break;
       case 'phaser-ep'       : this.collectPhaserEP  ();  break;
