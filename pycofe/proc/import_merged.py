@@ -375,6 +375,8 @@ def run ( body,   # body is reference to the main Import class
                                 "\n was not truncated and will be used as is\n\n" )
                             hkl.makeUniqueFNames ( body.outputDir() )
                             body.outputDataBox.add_data ( hkl )
+                            if os.path.exists(outXmlName):
+                                hkl.readCtruncateInfoTab1(outXmlName)
                             hkl_imported.append ( hkl )
                             last_imported = hkl
                             makeHKLTable ( body,mtzTableId,subSecId,hkl,hkl,0,"",0 )
@@ -417,6 +419,8 @@ def run ( body,   # body is reference to the main Import class
                                 hkl_data.dataId = hkl.dataId
                                 hkl_data.makeUniqueFNames ( body.outputDir() )
                                 body.outputDataBox.add_data ( hkl_data )
+                                if os.path.exists(outXmlName):
+                                    hkl_data.readCtruncateInfoTab1(outXmlName)
                                 hkl_imported.append ( hkl_data )
                                 last_imported = hkl_data
                                 makeHKLTable ( body,mtzTableId,subSecId,hkl,hkl_data,1,"",0 )

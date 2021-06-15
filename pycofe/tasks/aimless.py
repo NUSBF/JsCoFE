@@ -253,6 +253,9 @@ class Aimless(basic.TaskDriver):
                 hkl[i].aimless_meta = aimless_meta
                 res_high = min ( res_high,float(hkl[i].getHighResolution()) )
                 res_low  = max ( res_low ,float(hkl[i].getLowResolution ()) )
+                hkl[i].readAimlessInfoTab1(os.path.join(self.outputDir(),aimless_meta["file_xml"]))
+                self.stderr('\n\n' + str(hkl[i].infoTab1) + '\n\n')
+
             if "aimless" in self.generic_parser_summary:
                 self.generic_parser_summary["aimless"]["res_high"] = res_high
                 self.generic_parser_summary["aimless"]["res_low"]  = res_low
