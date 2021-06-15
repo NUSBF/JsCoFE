@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    03.06.21   <--  Date of Last Modification.
+#    15.06.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -21,7 +21,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2021
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev, Oleg Kovalevskyi 2017-2021
 #
 # ============================================================================
 #
@@ -242,8 +242,8 @@ class Aimless(basic.TaskDriver):
                 "file_xml" : dtype_template.makeFileName ( self.job_id,
                                     self.dataSerialNo+1,self.aimless_xml() )
             }
-            os.rename ( self.aimless_xml(),
-                        os.path.join(self.outputDir(),aimless_meta["file_xml"]) )
+            aimless_xml_path = os.path.join(self.outputDir(),aimless_meta["file_xml"])
+            os.rename ( self.aimless_xml(),aimless_xml_path )
 
             res_high = 10000.0
             res_low  = 0.0
@@ -253,7 +253,7 @@ class Aimless(basic.TaskDriver):
                 hkl[i].aimless_meta = aimless_meta
                 res_high = min ( res_high,float(hkl[i].getHighResolution()) )
                 res_low  = max ( res_low ,float(hkl[i].getLowResolution ()) )
-                hkl[i].readAimlessInfoTab1(os.path.join(self.outputDir(),aimless_meta["file_xml"]))
+                hkl[i].readAimlessInfoTab1 ( aimless_xml_path )
                 self.stderr('\n\n' + str(hkl[i].infoTab1) + '\n\n')
 
             if "aimless" in self.generic_parser_summary:

@@ -52,7 +52,7 @@ class DType(dtype_template.DType):
             self.spg_alt       = "ALL"  # alternative space groups for Phaser
             self.freeRds       = None   # reference to freeR dataset
             self.useHKLSet     = "F"    # if given, forces use of F,Fpm,TI,TF (Refmac)
-            self.infoTab1      = {}   # if not None, contains dictionary with info for Table 1
+            self.infoTab1      = None   # if not None, contains dictionary with info for Table 1
             self.aimless_meta  = {
                 "jobId"    : 0,
                 "file_xml" : None,   # reference to aimless xml file
@@ -268,7 +268,7 @@ class DType(dtype_template.DType):
         # WilsonB comes from ctruncate
 
         try:
-            if not type(self.infoTab1) is dict:
+            if not self.infoTab1:
                 self.infoTab1 = {}
             xmlRoot = ET.parse(aimless_xml).getroot()
             dataset = xmlRoot.find('Result').find('Dataset')
@@ -324,7 +324,7 @@ class DType(dtype_template.DType):
         # ctruncate initialisation will be run first during import of the merged dataset even from aimless task
         # WilsonB comes from ctruncate
         try:
-            if not type(self.infoTab1) is dict:
+            if not self.infoTab1:
                 self.infoTab1 = {}
             xmlRoot = ET.parse(ctruncate_xml).getroot()
 
