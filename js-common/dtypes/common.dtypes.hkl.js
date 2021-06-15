@@ -55,7 +55,7 @@ function DataHKL()  {
   this.spg_alt       = 'ALL';  // alternative space groups for Phaser
   this.freeRds       = null;   // reference to freeR dataset meta
   this.useHKLSet     = 'F';    // if given, forces use of F,Fpm,TI,TF (Refmac)
-  this.infoTab1      =  {};  // if not null, contains dictionary with info for Table 1
+  this.infoTab1      = null;   // if not null, contains dictionary with info for Table 1
   this.aimless_meta  = {
     'jobId'    : 0,
     'file_xml' : null,   // reference to aimless xml file

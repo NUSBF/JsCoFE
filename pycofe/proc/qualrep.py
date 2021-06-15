@@ -353,11 +353,17 @@ def put_Tab1_section ( body, revision, meta, refmacResults ):
         body.putTableString(table_id, '%0.3f' % wavelength, 'Wavelength', tableRow, 0, rowSpan=1, colSpan=1)
         tableRow += 1
 
-        if type(hkl.infoTab1) is dict:
-            if 'ResolutionLow' in hkl.infoTab1.keys():
+        if hasattr(hkl,"infoTab1") and hkl.infoTab1:
+            body.stderrln ( ' >>>>> infoTab found' )
+            if hasattr(hkl.infoTab1,"ResolutionLow"):
+                body.stderrln ( ' >>>>> infoTab.ResolutionLow found' )
                 body.setTableVertHeader(table_id, tableRow, 'Resolution range', '')
-                body.putTableString(table_id, str(revision.HKL.infoTab1) , '', tableRow, 0, rowSpan=1, colSpan=1)
+                # body.putTableString(table_id, str(revision.HKL.infoTab1) , '', tableRow, 0, rowSpan=1, colSpan=1)
                 tableRow += 1
+            else:
+                body.stderrln ( ' >>>>> infoTab.ResolutionLow not found' )
+        else:
+            body.stderrln ( ' >>>>> infoTab not found' )
 
         # meta["rama_outliers"] = float(lst[-2])
         # meta["rama_favored"] = float(lst[-2])
@@ -545,4 +551,3 @@ class RefmacXMLLog:
 
   def getFinalRefinementStatistics(self):
     return self.cycles[self.ncyc]
-
