@@ -514,12 +514,14 @@ function ProjectPage ( sceneId )  {
   }
 
   function wakeZombiJobs()  {
-    var request_data = {};
-    request_data.project = jobTree.projectData.desc.name;
-    serverRequest ( fe_reqtype.wakeZombiJobs,request_data,'Project Page',
-                    function(data){},function(key,data){},function(){} );
-    localCommand  ( nc_command.wakeZombiJobs,{job_tokens:['*']},
-                    'Wake Zombi Jobs',function(response){ return true; } );
+    if (jobTree.projectData)  {
+      var request_data = {};
+      request_data.project = jobTree.projectData.desc.name;
+      serverRequest ( fe_reqtype.wakeZombiJobs,request_data,'Project Page',
+                      function(data){},function(key,data){},function(){} );
+      localCommand  ( nc_command.wakeZombiJobs,{job_tokens:['*']},
+                      'Wake Zombi Jobs',function(response){ return true; } );
+    }
   }
 
   function onLogout ( logout_func )  {

@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    05.06.21   <--  Date of Last Modification.
+ *    14.06.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -------------------------------------------------------------------------
  *
@@ -146,6 +146,11 @@ function TaskTemplate()  {
 TaskTemplate.prototype.icon = function()  { return 'process'; }
 TaskTemplate.prototype.desc_title = function()  {
   return '';  //'this appears under task title in the task list';
+}
+
+TaskTemplate.prototype.taskDescription = function()  {
+  return ''; //'this appears under task title in the Task Dialog';
+  // return 'Task description in small font which will appear under the task title in Task Dialog';
 }
 
 // task.platforms() identifies suitable platforms:
@@ -539,15 +544,26 @@ if (!dbx)  {
       return inp;
     }
 
+    var taskDesc = this.taskDescription();
+    var iconRows = 3;
+    var iconSize = '80px';
+    if (taskDesc)  {
+      iconRows = 4;
+      iconSize = '100px';
+    }
     var header = new Grid ( '' );
-    header.task_icon = header.setImage ( image_path(this.icon()),'','80px', 0,0, 3,1 );
-    header.setLabel ( ' ', 0,1, 3,1 ).setWidth_px(20).setHeight ( '0.5em' );
+    header.task_icon = header.setImage ( image_path(this.icon()),'',
+                                         iconSize, 0,0, iconRows,1 );
+    header.setLabel ( ' ', 0,1, iconRows,1 ).setWidth_px(20).setHeight ( '0.5em' );
     var row = 0;
     var t   = this.title;
     if (this.oname=='*')
       t += '<sup>&nbsp;</sup>'
     header.title = header.setLabel ( '<b>' + t + '</b>',row++,2, 1,2 )
                          .setFontSize ( '150%' ).setNoWrap();
+    if (taskDesc)
+      header.desc_lbl = header.setLabel ( taskDesc,row++,0, 1,2 )
+                              .setFontSize('85%').setFontItalic(true).setNoWrap();
 
     header.uname_lbl = putLabel ( 'job description:&nbsp;',row,0 );
     header.setVerticalAlignment ( row,0,'middle' );
@@ -569,7 +585,10 @@ if (!dbx)  {
                                       'tasks' );
     }
 
-    header.setHLine ( 1, 3,0,1,4 );
+    header.setHLine ( 1, iconRows,0,1,4 );
+    // header.setLabel ( 'Task sillabus in small font Task sillabus in small font Task sillabus in small font Task sillabus in small font',4,0,1,4 )
+    //       .setFontItalic(true).setFontSize('85%');
+    // header.setHLine ( 1, 5,0,1,4 );
 
     return header;
 

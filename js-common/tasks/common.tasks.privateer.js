@@ -78,6 +78,8 @@ if (__template)  {
 
   var conf = require('../../js-server/server.configuration');
 
+  TaskPrivateer.prototype.cleanJobDir = function ( jobDir )  {}
+
   TaskPrivateer.prototype.makeInputData = function ( loginData,jobDir )  {
 
     // put hkl and structure data in input databox for copying their files in
@@ -85,8 +87,8 @@ if (__template)  {
 
     if ('revision' in this.input_data.data)  {
       var revision = this.input_data.data['revision'][0];
-      this.input_data.data['hkl']    = [revision.HKL];
-      this.input_data.data['struct'] = [revision.Structure];
+      this.input_data.data['hkl']     = [revision.HKL];
+      this.input_data.data['istruct'] = [revision.Structure];
     }
 
     __template.TaskTemplate.prototype.makeInputData.call ( this,loginData,jobDir );
