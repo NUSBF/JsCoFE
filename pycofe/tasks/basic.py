@@ -417,7 +417,6 @@ class TaskDriver(object):
     def getXMLOFName ( self,modifier=-1 ):
         return self.getOFName ( ".xml",modifier )
 
-
     def despaceFileNames ( self,flist,dirPath ):
         flist_out = []
         for f in flist:
@@ -1269,12 +1268,16 @@ class TaskDriver(object):
 
         return
 
-    def sliceMTZ ( self,mtzInPath,label_list,mtzOutPath ):
+    def sliceMTZ ( self,mtzInPath,label_list,mtzOutPath,labelout_list=[] ):
 
         self.open_stdin()
         self.write_stdin ( "LABIN  FILE 1" )
         for i in range(len(label_list)):
             self.write_stdin ( " E%d=%s" % (i+1,label_list[i]) )
+        if len(labelout_list)==len(label_list):
+            self.write_stdin ( "\nLABOUT FILE 1" )
+            for i in range(len(labelout_list)):
+                self.write_stdin ( " E%d=%s" % (i+1,labelout_list[i]) )
         self.write_stdin ( "\n" )
         self.close_stdin()
 

@@ -81,19 +81,25 @@ class Dimple(basic.TaskDriver):
 
         reflections_mtz = "__reflections.mtz"
         if cols[2]=="F":
-            self.open_stdin()
-            self.write_stdin ([
-                "LABIN  FILE 1 E1=" + cols[0] + " E2=" + cols[1] + " E3=" + hkl.getFreeRColumn()
-            ])
-            self.write_stdin ([
-                "LABOUT FILE 1 E1=FP E2=SIGFP E3=" + hkl.getFreeRColumn()
-            ])
-            self.close_stdin()
+            # self.open_stdin()
+            # self.write_stdin ([
+            #     "LABIN  FILE 1 E1=" + cols[0] + " E2=" + cols[1] + " E3=" + hkl.getFreeRColumn()
+            # ])
+            # self.write_stdin ([
+            #     "LABOUT FILE 1 E1=FP E2=SIGFP E3=" + hkl.getFreeRColumn()
+            # ])
+            # self.close_stdin()
+            #
+            # self.runApp ( "cad",[
+            #         "HKLIN1",hkl.getHKLFilePath(self.inputDir()),
+            #         "HKLOUT",reflections_mtz
+            #     ],logType="Service" )
+            FreeRColumn = hkl.getFreeRColumn()
+            self.sliceMTZ ( hkl.getHKLFilePath(self.inputDir()),
+                            [cols[0],cols[1],FreeRColumn],
+                            reflections_mtz,
+                            ["FP","SIGFP",FreeRColumn] )
 
-            self.runApp ( "cad",[
-                    "HKLIN1",hkl.getHKLFilePath(self.inputDir()),
-                    "HKLOUT",reflections_mtz
-                ],logType="Service" )
         else:
             reflections_mtz = hkl.getHKLFilePath ( self.inputDir() )
 
