@@ -414,6 +414,10 @@ class TaskDriver(object):
     def getDMapOFName ( self,modifier=-1 ):
         return self.getOFName ( ".diff.map",modifier )
 
+    def getXMLOFName ( self,modifier=-1 ):
+        return self.getOFName ( ".xml",modifier )
+
+
     def despaceFileNames ( self,flist,dirPath ):
         flist_out = []
         for f in flist:

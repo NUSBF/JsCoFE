@@ -284,10 +284,12 @@ class Refmac(basic.TaskDriver):
         # make command-line parameters for bare morda run on a SHELL-type node
         xyzin  = istruct.getXYZFilePath ( self.inputDir() )
         xyzout = self.getXYZOFName()
+        xmlOutRefmac = self.getXMLOFName()
         cmd = [ "hklin" ,hkl.getHKLFilePath(self.inputDir()),
                 "xyzin" ,xyzin,
                 "hklout",self.getMTZOFName(),
                 "xyzout",xyzout,
+                "xmlout", xmlOutRefmac,
                 "scrref",os.path.join(os.environ["CCP4_SCR"],uuid.uuid4().hex) ]
 
         libin = istruct.getLibFilePath ( self.inputDir() )
@@ -407,7 +409,7 @@ class Refmac(basic.TaskDriver):
                 rvrow0 = self.rvrow
                 # meta = qualrep.quality_report ( self,revision )
                 try:
-                    meta = qualrep.quality_report ( self,revision )
+                    meta = qualrep.quality_report ( self,revision, refmacXML = xmlOutRefmac )
                 except:
                     meta = None
                     self.stderr ( " *** validation tools or molprobity failure" )

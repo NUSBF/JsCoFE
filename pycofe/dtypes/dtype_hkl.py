@@ -19,6 +19,7 @@
 #  python native imports
 import os
 import xml.etree.ElementTree as ET
+import traceback
 
 #  application imports
 from . import dtype_template
@@ -51,6 +52,7 @@ class DType(dtype_template.DType):
             self.spg_alt       = "ALL"  # alternative space groups for Phaser
             self.freeRds       = None   # reference to freeR dataset
             self.useHKLSet     = "F"    # if given, forces use of F,Fpm,TI,TF (Refmac)
+            self.infoTab1      = {}   # if not None, contains dictionary with info for Table 1
             self.aimless_meta  = {
                 "jobId"    : 0,
                 "file_xml" : None,   # reference to aimless xml file
@@ -258,6 +260,146 @@ class DType(dtype_template.DType):
 
     def getHKLFilePath ( self,dirPath ):
         return  self.getFilePath ( dirPath,dtype_template.file_key["mtz"] )
+
+
+    def readAimlessInfoTab1(self, aimless_xml):
+        # initialises self.infoTab1 with aimless data.
+        # ctruncate initialisation will be run first during import of the merged dataset even from aimless task
+        # WilsonB comes from ctruncate
+
+        try:
+            if not type(self.infoTab1) is dict:
+                self.infoTab1 = {}
+            xmlRoot = ET.parse(aimless_xml).getroot()
+            dataset = xmlRoot.find('Result').find('Dataset')
+            self.infoTab1['ResolutionLow'] = float(dataset.find('ResolutionLow').find('Overall').text.strip())
+            self.infoTab1['ResolutionHigh'] = float(dataset.find('ResolutionHigh').find('Overall').text.strip())
+
+            self.infoTab1['ResolutionLowO'] = float(dataset.find('ResolutionLow').find('Outer').text.strip())
+            self.infoTab1['ResolutionHighO'] = float(dataset.find('ResolutionHigh').find('Outer').text.strip())
+
+            self.infoTab1['TotalReflections'] = int(dataset.find('NumberObservations').find('Overall').text.strip())
+            self.infoTab1['TotalReflectionsO'] = int(dataset.find('NumberObservations').find('Outer').text.strip())
+
+            self.infoTab1['UniqueReflections'] = int(dataset.find('NumberReflections').find('Overall').text.strip())
+            self.infoTab1['UniqueReflectionsO'] = int(dataset.find('NumberReflections').find('Outer').text.strip())
+
+            self.infoTab1['Multiplicity'] = float(dataset.find('Multiplicity').find('Overall').text.strip())
+            self.infoTab1['MultiplicityO'] = float(dataset.find('Multiplicity').find('Outer').text.strip())
+
+            self.infoTab1['Completeness'] = float(dataset.find('Completeness').find('Overall').text.strip())
+            self.infoTab1['CompletenessO'] = float(dataset.find('Completeness').find('Outer').text.strip())
+
+            self.infoTab1['meanIsigI'] = float(dataset.find('MeanIoverSD').find('Overall').text.strip())
+            self.infoTab1['meanIsigIO'] = float(dataset.find('MeanIoverSD').find('Outer').text.strip())
+
+            self.infoTab1['Rmerge'] = float(dataset.find('RmergeOverall').find('Overall').text.strip())
+            self.infoTab1['RmergeO'] = float(dataset.find('RmergeOverall').find('Outer').text.strip())
+
+            self.infoTab1['Rmeas'] = float(dataset.find('RmeasOverall').find('Overall').text.strip())
+            self.infoTab1['RmeasO'] = float(dataset.find('RmeasOverall').find('Outer').text.strip())
+
+            self.infoTab1['Rpim'] = float(dataset.find('RpimOverall').find('Overall').text.strip())
+            self.infoTab1['RpimO'] = float(dataset.find('RpimOverall').find('Outer').text.strip())
+
+            self.infoTab1['CChalf'] = float(dataset.find('CChalf').find('Overall').text.strip())
+            self.infoTab1['CChalfO'] = float(dataset.find('CChalf').find('Outer').text.strip())
+
+            self.infoTab1['Wavelength'] = float(xmlRoot.find('ReflectionData').find('Dataset').find('Wavelength').text.strip())
+
+        except Exception as inst:
+            return
+            # if not type(self.infoTab1) is dict:
+            #     self.infoTab1 = {}
+            # self.infoTab1['error'] = (str(type(inst))+ '\n')  # the exception instance
+            # self.infoTab1['error'] += (str(inst.args)+ '\n')  # arguments stored in .args
+            # self.infoTab1['error'] += (str(inst)+ '\n')  # __str__ allows args to be printed directly,
+            # tb = traceback.format_exc()
+            # self.infoTab1['error'] += tb + '\n\n'
+
+        return
+
+    def readCtruncateInfoTab1(self, ctruncate_xml):
+        # initialises self.infoFig1
+        # ctruncate initialisation will be run first during import of the merged dataset even from aimless task
+        # WilsonB comes from ctruncate
+        try:
+            if not type(self.infoTab1) is dict:
+                self.infoTab1 = {}
+            xmlRoot = ET.parse(ctruncate_xml).getroot()
+
+            if 'WilsonB' not in self.infoTab1.keys():
+                self.infoTab1['WilsonB'] = float(xmlRoot.findall('DataStatistics')[2].find('WilsonB').text.strip())
+
+            if 'ResolutionLow' not in self.infoTab1.keys():
+                self.infoTab1['ResolutionLow'] = float(xmlRoot.find('ReflectionData').find('ResolutionLow').text.strip())
+            if 'ResolutionHigh' not in self.infoTab1.keys():
+                self.infoTab1['ResolutionHigh'] = float(xmlRoot.find('ReflectionData').find('ResolutionHigh').text.strip())
+
+            if 'ResolutionLowO' not in self.infoTab1.keys():
+                self.infoTab1['ResolutionLowO'] = 0.0
+            if 'ResolutionHighO' not in self.infoTab1.keys():
+                self.infoTab1['ResolutionHighO'] = 0.0
+
+            if 'TotalReflections' not in self.infoTab1.keys():
+                self.infoTab1['TotalReflections'] = int(xmlRoot.find('ReflectionData').find('NumberObservations').text.strip())
+            if 'TotalReflectionsO' not in self.infoTab1.keys():
+                self.infoTab1['TotalReflectionsO'] = 0
+
+            if 'UniqueReflections' not in self.infoTab1.keys():
+                self.infoTab1['UniqueReflections'] = int(xmlRoot.find('ReflectionData').find('NumberReflections').text.strip())
+            if 'UniqueReflectionsO' not in self.infoTab1.keys():
+                self.infoTab1['UniqueReflectionsO'] = 0
+
+            if 'Multiplicity' not in self.infoTab1.keys():
+                self.infoTab1['Multiplicity'] = 0.0
+            if 'MultiplicityO' not in self.infoTab1.keys():
+                self.infoTab1['MultiplicityO'] = 0.0
+
+            if 'Completeness' not in self.infoTab1.keys():
+                self.infoTab1['Completeness'] = 0.0
+            if 'CompletenessO' not in self.infoTab1.keys():
+                self.infoTab1['CompletenessO'] = 0.0
+
+            if 'meanIsigI' not in self.infoTab1.keys():
+                self.infoTab1['meanIsigI'] = 0.0
+            if 'meanIsigIO' not in self.infoTab1.keys():
+                self.infoTab1['meanIsigIO'] = 0.0
+
+            if 'Rmerge' not in self.infoTab1.keys():
+                self.infoTab1['Rmerge'] = 0.0
+            if 'RmergeO' not in self.infoTab1.keys():
+                self.infoTab1['RmergeO'] = 0.0
+
+            if 'Rmeas' not in self.infoTab1.keys():
+                self.infoTab1['Rmeas'] = 0.0
+            if 'RmeasO' not in self.infoTab1.keys():
+                self.infoTab1['RmeasO'] = 0.0
+
+            if 'Rpim' not in self.infoTab1.keys():
+                self.infoTab1['Rpim'] = 0.0
+            if 'RpimO' not in self.infoTab1.keys():
+                self.infoTab1['RpimO'] = 0.0
+
+            if 'CChalf' not in self.infoTab1.keys():
+                self.infoTab1['CChalf'] = 0.0
+            if 'CChalfO' not in self.infoTab1.keys():
+                self.infoTab1['CChalfO'] = 0.0
+
+            if 'Wavelength' not in self.infoTab1.keys():
+                self.infoTab1['Wavelength'] = 0.0
+
+        except Exception as inst:
+            if not type(self.infoTab1) is dict:
+                self.infoTab1 = {}
+            self.infoTab1['error'] = (str(type(inst))+ '\n')  # the exception instance
+            self.infoTab1['error'] += (str(inst.args)+ '\n')  # arguments stored in .args
+            self.infoTab1['error'] += (str(inst)+ '\n')  # __str__ allows args to be printed directly,
+            tb = traceback.format_exc()
+            self.infoTab1['error'] += tb + '\n\n'
+
+        return
+
 
 
 def register ( mtzFilePath,dataSerialNo,job_id,outDataBox,outputDir ):

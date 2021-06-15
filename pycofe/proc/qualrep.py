@@ -17,7 +17,8 @@
 #
 
 import os
-import sys
+import sys, copy
+import xml.etree.ElementTree as ET
 
 #  ccp4-python imports
 import pyrvapi
@@ -33,7 +34,7 @@ def put_bfactors_section ( body,structure ):
         sec_id  = body.getWidgetId ( "bfactors" )
         # grid_id = body.getWidgetId ( "ramagrid" )
 
-        body.putSection ( sec_id,"B-Factors and RMS Analyses",openState_bool=False )
+        body.putSection ( sec_id,"B-Factors Analysis",openState_bool=False )
         # body.putGrid1   ( grid_id,sec_id,False,0 )
         # body.putMessage1 ( sec_id,"&nbsp;<p><h3>B-Factors Analysis</h3>",0,col=0 )
 
@@ -318,11 +319,104 @@ def put_molprobity_section ( body,revision ):
     return meta
 
 
-def quality_report ( body,revision,title="Quality Assessment" ):
+def put_Tab1_section ( body, revision, meta, refmacResults ):
+    if revision:
+
+        hkl = body.makeClass(revision.HKL)
+        wavelength = 0.0
+        try:
+            wavelength = float(hkl.wavelength)
+        except:
+            try:
+                wavelength = float(hkl.infoTab1['wavelength'])
+            except:
+                pass
+
+        sec_id  = body.getWidgetId ( "tableOne_widget" )
+        body.putSection ( sec_id,"Table 1 - crystallographic statistics for publication",openState_bool=False )
+
+        # body.open_stdin()
+        # body.write_stdin ( ["END"] )
+        # body.close_stdin ()
+
+        # Prepare report parser
+        reportPanelId = body.getWidgetId ( "tableOne_report" )
+        pyrvapi.rvapi_add_panel  ( reportPanelId,sec_id,0,0,1,1 )
+        # body.putMessage1(sec_id, "&nbsp;<p><h3>Table 1</h3>", 0, col=0)
+        table_id = body.getWidgetId ( "tableOne_table" )
+        body.putTable(table_id, 'Table 1', reportPanelId, 0, 0, 1)
+
+        tableRow = 0
+
+        body.setTableVertHeader(table_id, tableRow, 'Wavelength', 'Wavelength')
+        # body.putTableString(table_id, 'Wavelength', 'Wavelength', 1, 0, rowSpan=1, colSpan=1)
+        body.putTableString(table_id, '%0.3f' % wavelength, 'Wavelength', tableRow, 0, rowSpan=1, colSpan=1)
+        tableRow += 1
+
+        if type(hkl.infoTab1) is dict:
+            if 'ResolutionLow' in hkl.infoTab1.keys():
+                body.setTableVertHeader(table_id, tableRow, 'Resolution range', '')
+                body.putTableString(table_id, str(revision.HKL.infoTab1) , '', tableRow, 0, rowSpan=1, colSpan=1)
+                tableRow += 1
+
+        # meta["rama_outliers"] = float(lst[-2])
+        # meta["rama_favored"] = float(lst[-2])
+        # meta["rota_outliers"] = float(lst[-2])
+        # meta["cbeta_deviations"] = float(lst[-1])
+        # meta["clashscore"] = float(lst[2])
+        # meta["rms_bonds"] = float(lst[-1])
+        # meta["rms_angles"] = float(lst[-1])
+        # meta["molp_score"] = float(lst[3])
+
+        if ('rms_bonds' in meta.keys()):
+            body.setTableVertHeader(table_id, tableRow, 'RMSD bonds', '')
+            body.putTableString(table_id, '%0.4f' % meta['rms_bonds'] , '', tableRow, 0, rowSpan=1, colSpan=1)
+            tableRow += 1
+
+        if ('rms_angles' in meta.keys()):
+            body.setTableVertHeader(table_id, tableRow, 'RMSD angles', '')
+            body.putTableString(table_id, '%0.4f' % meta['rms_angles'] , '', tableRow, 0, rowSpan=1, colSpan=1)
+            tableRow += 1
+
+        if ('rama_favored' in meta.keys()) and ('rama_outliers' in meta.keys()):
+            body.setTableVertHeader(table_id, tableRow, 'Ramachandran favoured (%)', '')
+            body.putTableString(table_id, '%0.1f' % meta['rama_favored'] , '', tableRow, 0, rowSpan=1, colSpan=1)
+            tableRow += 1
+
+            body.setTableVertHeader(table_id, tableRow, 'Ramachandran allowed (%)', '')
+            try:
+                allowed = 100.0 - (float(meta['rama_favored']) +  meta['rama_outliers'])
+            except:
+                allowed = 0.0
+            body.putTableString(table_id, '%0.1f' % allowed , '', tableRow, 0, rowSpan=1, colSpan=1)
+            tableRow += 1
+
+            body.setTableVertHeader(table_id, tableRow, 'Ramachandran outliers (%)', '')
+            body.putTableString(table_id, '%0.1f' % meta['rama_outliers'] , '', tableRow, 0, rowSpan=1, colSpan=1)
+            tableRow += 1
+
+        if ('rota_outliers' in meta.keys()):
+            body.setTableVertHeader(table_id, tableRow, 'Rotamer outliers (%)', '')
+            body.putTableString(table_id, '%0.1f' % meta['rota_outliers'] , '', tableRow, 0, rowSpan=1, colSpan=1)
+            tableRow += 1
+
+        if ('clashscore' in meta.keys()):
+            body.setTableVertHeader(table_id, tableRow, 'Clash score', '')
+            body.putTableString(table_id, '%0.1f' % meta['clashscore'] , '', tableRow, 0, rowSpan=1, colSpan=1)
+            tableRow += 1
+
+
+
+    return
+
+
+
+def quality_report ( body,revision,title="Quality Assessment",refmacXML=None ):
 
     meta = None
-    if revision.Structure and revision.Structure.hasXYZSubtype():
+    refmacResults = None
 
+    if revision.Structure and revision.Structure.hasXYZSubtype():
         if title:
             body.putTitle ( title )
 
@@ -331,4 +425,124 @@ def quality_report ( body,revision,title="Quality Assessment" ):
         meta = put_molprobity_section ( body,revision  )
         put_ramaplot_section ( body,revision.Structure )
 
+        if refmacXML:
+            if os.path.exists(refmacXML):
+                refmacResults = RefmacXMLLog(refmacXML)
+        put_Tab1_section(body, revision, meta, refmacResults)
+
     return meta
+
+
+# REFMAC XML log parser
+class RefmacXMLLog:
+  def __init__(self, fileName):
+    self.successfullyLoaded = False
+    self.ncyc = 0
+    self.successfullyRefined = False
+    self.twin = False
+    self.cycles = []
+
+    try:
+      xmlRoot = ET.parse(fileName).getroot()
+
+      if int(xmlRoot.find('twin_info').find('ntwin_domain').text.strip()) > 1:
+        self.twin = True
+
+      for cycles in xmlRoot.find('Overall_stats').find('stats_vs_cycle'):
+        cycle = {
+          'Ncyc': int(cycles.find('cycle').text.strip()),
+          'Rfact': float(cycles.find('r_factor').text.strip()),
+          'Rfree': float(cycles.find('r_free').text.strip())
+          }
+
+        if cycles.find('rmsBOND').text.strip()[0] != '*':
+          cycle['rmsBOND'] = float(cycles.find('rmsBOND').text.strip())
+        else:
+          cycle['rmsBOND'] = 0
+        cycle['rmsANGL'] = float(cycles.find('rmsANGLE').text.strip())
+        cycle['rmsCHIRAL'] = float(cycles.find('rmsCHIRAL').text.strip())
+        if cycle['Rfree'] <= 0.0 or cycle['Rfree'] >= 0.9: # Rfree flag is missing; using Rwork instead
+          cycle['Rfree'] = cycle['Rfact']
+        # FSC Average may not be present in the older REFMAC versions
+        try:
+          cycle['fscAver'] = float(cycles.find('fscAver').text.strip())
+        except:
+          cycle['fscAver'] = 0.0
+
+        self.cycles.append(copy.deepcopy(cycle))
+
+    except:
+      return
+
+    self.ncyc = int(len(self.cycles) - 1)
+    self.successfullyLoaded = True
+    if self.cycles[0]['Rfree'] > self.cycles[self.ncyc]['Rfree']:
+      self.successfullyRefined = True
+    else:
+      self.successfullyRefined = False
+
+    return
+
+  def getAllRfree(self):
+    rfrees = []
+    for cycle in self.cycles:
+      rfrees.append(cycle['Rfree'])
+    return rfrees
+
+  def getStartRfact(self):
+    return self.cycles[0]['Rfact']
+
+  def getStartRfree(self):
+    return self.cycles[0]['Rfree']
+
+  def getStartFSCaver(self):
+    return self.cycles[0]['fscAver']
+
+  def getStartrmsBOND(self):
+    return self.cycles[0]['rmsBOND']
+
+  def getStartrmsANGL(self):
+    return self.cycles[0]['rmsANGL']
+
+  def getStartrmsCHIRAL(self):
+    return self.cycles[0]['rmsCHIRAL']
+
+  def getFinalRfact(self):
+    return self.cycles[self.ncyc]['Rfact']
+
+  def getFinalRfree(self):
+    return self.cycles[self.ncyc]['Rfree']
+
+  def getFinalFSCaver(self):
+    return self.cycles[self.ncyc]['fscAver']
+
+  def getFinalrmsBOND(self):
+    return self.cycles[self.ncyc]['rmsBOND']
+
+  def getFinalrmsANGL(self):
+    return self.cycles[self.ncyc]['rmsANGL']
+
+  def getFinalrmsCHIRAL(self):
+    return self.cycles[self.ncyc]['rmsCHIRAL']
+
+  def getRefinementRfactChange(self):
+    return self.cycles[self.ncyc]['Rfact'] - self.cycles[0]['Rfact']
+
+  def getRefinementRfreeChange(self):
+    return self.cycles[self.ncyc]['Rfree'] - self.cycles[0]['Rfree']
+
+  def getRefinementrmsBONDChange(self):
+    return self.cycles[self.ncyc]['rmsBOND'] - self.cycles[0]['rmsBOND']
+
+  def getRefinementrmsANGLChange(self):
+    return self.cycles[self.ncyc]['rmsANGL'] - self.cycles[0]['rmsANGL']
+
+  def getRefinementrmsCHIRALChange(self):
+    return self.cycles[self.ncyc]['rmsCHIRAL'] - self.cycles[0]['rmsCHIRAL']
+
+  def getStartingRefinementStatistics(self):
+    return self.cycles[0]
+
+  def getFinalRefinementStatistics(self):
+    return self.cycles[self.ncyc]
+
