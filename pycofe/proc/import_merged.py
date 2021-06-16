@@ -376,7 +376,7 @@ def run ( body,   # body is reference to the main Import class
                             hkl.makeUniqueFNames ( body.outputDir() )
                             body.outputDataBox.add_data ( hkl )
                             if os.path.exists(outXmlName):
-                                hkl.readCtruncateInfoTab1(outXmlName)
+                                hkl.readCtruncateDataStats(outXmlName)
                             hkl_imported.append ( hkl )
                             last_imported = hkl
                             makeHKLTable ( body,mtzTableId,subSecId,hkl,hkl,0,"",0 )
@@ -420,7 +420,7 @@ def run ( body,   # body is reference to the main Import class
                                 hkl_data.makeUniqueFNames ( body.outputDir() )
                                 body.outputDataBox.add_data ( hkl_data )
                                 if os.path.exists(outXmlName):
-                                    hkl_data.readCtruncateInfoTab1(outXmlName)
+                                    hkl_data.readCtruncateDataStats(outXmlName)
                                 hkl_imported.append ( hkl_data )
                                 last_imported = hkl_data
                                 makeHKLTable ( body,mtzTableId,subSecId,hkl,hkl_data,1,"",0 )
