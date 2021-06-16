@@ -458,7 +458,7 @@ def put_Tab1_section ( body, revision, meta, refmacResults ):
             tableDict['rows'].append({'header': {'label': 'mean(I) / sig(I)', 'tooltip': ''},
                                       'data': ['%0.2f (%0.2f)' % (table1['meanIsigI'], table1['meanIsigIO'])]})
 
-        if "WilsonB" in table1.keys() in table1.keys():
+        if "WilsonB" in table1.keys():
             tableDict['rows'].append({'header': {'label': 'Wilson B-factor', 'tooltip': ''},
                                       'data': ['%0.2f' % (table1['WilsonB'])]})
 
