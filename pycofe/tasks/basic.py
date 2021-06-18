@@ -1973,13 +1973,15 @@ class TaskDriver(object):
             os.rename ( mtzfilepath,newHKLFPath )
             self.resetFileImport()
             self.addFileImport ( newHKLFPath,import_filetype.ftype_MTZMerged() )
-            import_merged.run ( self,"New reflection dataset details",importPhases="" )
+            sol_hkl = import_merged.run ( self,"New reflection dataset details",importPhases="" )
 
-            if dtype_hkl.dtype() in self.outputDataBox.data:
-                sol_hkl = self.outputDataBox.data[dtype_hkl.dtype()][0]
-                sol_hkl.aimless_meta = hkl.aimless_meta
+            # if dtype_hkl.dtype() in self.outputDataBox.data:
+            if len(sol_hkl)>0:
+                # sol_hkl = self.outputDataBox.data[dtype_hkl.dtype()][0]
+                sol_hkl[0].dataStats    = hkl.dataStats
+                sol_hkl[0].aimless_meta = hkl.aimless_meta
                 pyrvapi.rvapi_set_text ( "<b>New reflection dataset created:</b> " +\
-                        sol_hkl.dname,self.report_page_id(),rvrow0,0,1,1 )
+                        sol_hkl[0].dname,self.report_page_id(),rvrow0,0,1,1 )
 
                 self.putMessage (
                     "<p><i>Consider re-merging your original dataset using " +\
@@ -1989,10 +1991,10 @@ class TaskDriver(object):
                 # Refmac job(s) (e.g. as part of self.finaliseStructure()). The
                 # job needs reflection data for calculating Rfree, other stats
                 # and density maps.
-                shutil.copy2 ( sol_hkl.getHKLFilePath(self.outputDir()),
+                shutil.copy2 ( sol_hkl[0].getHKLFilePath(self.outputDir()),
                                self.inputDir() )
 
-                return (newHKLFPath,sol_hkl)
+                return (newHKLFPath,sol_hkl[0])
 
             else:
                 self.putMessage (
@@ -2049,6 +2051,7 @@ class TaskDriver(object):
 
             hkls = import_merged.run ( self,"New reflection datasets",importPhases="" )
             for i in range(len(index)):
+                hkls[i].dataStats    = hkl_list[index[i]].dataStats
                 hkls[i].aimless_meta = hkl_list[index[i]].aimless_meta
 
             return self.outputDataBox.data[hkl_list[0]._type]

@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    18.12.20   <--  Date of Last Modification.
+#    17.06.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -21,7 +21,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2020
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev, Oleg Kovalevskyi 2017-2021
 #
 # ============================================================================
 #
@@ -96,21 +96,29 @@ class ChangeSpG(basic.TaskDriver):
             # make list of files to import
             self.resetFileImport()
             self.addFileImport ( outputMTZFName,import_filetype.ftype_MTZMerged() )
-            import_merged.run ( self,"Reflection dataset",importPhases="" )
-            have_results = True
 
-            # update structure revision
-            if revision:
-                #revision = self.makeClass  ( self.input_data.data.revision[0] )
-                new_hkl  = self.outputDataBox.data[hkl._type][0]
-                new_hkl.new_spg      = hkl.new_spg.replace(" ","")
-                new_hkl.aimless_meta = hkl.aimless_meta
-                revision.setReflectionData ( new_hkl  )
-                self.registerRevision      ( revision )
-            self.generic_parser_summary["z01"] = {'SpaceGroup':hkl.new_spg}
+            new_hkl = import_merged.run ( self,"Reflection dataset",importPhases="" )
+            # new_hkl  = self.outputDataBox.data[hkl._type][0]
 
-        else:
+            if len(new_hkl)>0:
+
+                have_results = True
+
+                for i in range(len(new_hkl)):
+                    new_hkl[i].new_spg      = hkl.new_spg.replace(" ","")
+                    new_hkl[i].dataStats    = hkl.dataStats
+                    new_hkl[i].aimless_meta = hkl.aimless_meta
+
+                # update structure revision
+                if revision:
+                    #revision = self.makeClass  ( self.input_data.data.revision[0] )
+                    revision.setReflectionData ( new_hkl[0] )
+                    self.registerRevision      ( revision   )
+                self.generic_parser_summary["z01"] = {'SpaceGroup':hkl.new_spg}
+
+        if not have_results:
             self.putTitle ( "No Output Generated" )
+            summary_line = "failed"
 
         # close execution logs and quit
         self.success ( have_results )

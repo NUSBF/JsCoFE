@@ -19,7 +19,7 @@
 
 var gwHeight       = 400;
 var gwTreeWidth    = 300;
-var gwPlotWidth    = 505;
+var gwPlotWidth    = 605;
 var _nGSliderSteps = 100;
 var _GSliderPage   = 5;
 
@@ -113,11 +113,11 @@ var graphId = gwdId + "-plot";
 var div     = document.getElementById ( graphId );
 
   if (!div)  {
-    div = element ( "div","id",graphId,"" );
-    div.setAttribute  ( "style","height: "    + gwHeight    +
-                                "px; width: " + gwPlotWidth + "px;" +
-                                "margin-left: 6px;" );
-    setGridItem       ( gwdId,div,0,1,2,1 );
+    div = element    ( "div","id",graphId,"" );
+    div.setAttribute ( "style","height: "    + gwHeight    +
+                               "px; width: " + gwPlotWidth + "px;" +
+                               "margin-left: 6px;" );
+    setGridItem      ( gwdId,div,0,1,3,1 );
   }
 
   if (data==null)  {
@@ -131,32 +131,6 @@ var div     = document.getElementById ( graphId );
   }
 
 }
-
-
-/*
-function drawLogGraph ( gwdId,data,options )  {
-var graphId = gwdId + "-plot";
-
-  removeElement ( graphId );
-  var div = element ( "div","id",graphId,"" );
-  div.setAttribute  ( "style","height: "    + gwHeight    +
-                              "px; width: " + gwPlotWidth + "px;" +
-                              "margin-left: 6px;" );
-  setGridItem       ( gwdId,div,0,1,2,1 );
-
-  if (data==null)  {
-    var node = $("#"+gwdId+"-tree").tree('getSelectedNode');
-    if (node)  {
-      r = _draw_graph ( graphId,node.plotOptions,node.plotData );
-      node.plotOptions = r['options'];
-    }
-  } else  {
-    _draw_graph ( graphId,options,data );
-  }
-
-}
-*/
-
 
 function zoomAxis ( curax )  {
 var newmin,newmax,tickV,R;
@@ -789,6 +763,9 @@ function getOpenNodeIds ( node,openNodesIds )  {
 function addLogGraph ( gwdId,holderId, treeData,
                        row,col,rowSpan,colSpan )  {
 
+  if (!treeData)
+    return;
+
   if (!document.getElementById(holderId+"-grid"))
     return;
 
@@ -799,7 +776,21 @@ function addLogGraph ( gwdId,holderId, treeData,
 
     processFile ( treeData,"post",true,
       function(data)  {
-        dataArray = eval ( "(" + data + ")" );
+        // console.log ( "treeData=\""+ treeData+"\"" );
+        // var pp = data.indexOf("<");
+        // console.log ( " pp=" + pp);
+        // if (pp>0)
+        //   console.log ( " str=\"" + data.substring(pp-20,pp+20) + "\"");
+        // dataArray = eval (
+        //   "(" +
+        //   data.replace(new RegExp('<>','g'),"") +
+        //   ")"
+        // );
+        dataArray = eval (
+          "("  +
+          data +
+          ")"
+        );
         _add_log_graph ( gwdId,holderId, dataArray,
                          row,col,rowSpan,colSpan );
       },
@@ -822,170 +813,8 @@ function addLogGraph ( gwdId,holderId, treeData,
 }
 
 
-/*
 function _add_log_graph ( gwdId,holderId, dataArray,
-                         row,col,rowSpan,colSpan )  {
-
-var cell         = getGridCell ( holderId,row,col );
-var selNodeId    = "";
-var openNodesIds = new Array();
-var graphTree;
-var node,created;
-
-  if (cell)  {
-
-    if (gwdId in logGraphHash)  {
-      openNodesIds = logGraphHash[gwdId]['nodes'];
-      selNodeId    = logGraphHash[gwdId]['selid'];
-    } else  {
-      logGraphHash[gwdId] = new Object();
-      logGraphHash[gwdId]['nodes'] = openNodesIds;
-      logGraphHash[gwdId]['selid'] = selNodeId;
-    }
-
-    if (!document.getElementById(gwdId+"-grid"))  {
-      // make new graph widget, with tree data and plots
-
-      created = 1;
-
-      cell.rowSpan = rowSpan;
-      cell.colSpan = colSpan;
-      cell.height  = gwHeight;
-
-      $( "<table id='" +gwdId + "-grid' " +
-         "class='grid-layout-compact'>" +
-         "</table>" )
-       .appendTo ( cell );
-
-      var table = element ( "table","class","graphwidget-table","" );
-      table.setAttribute ( "id",gwdId+"_panel-grid" );
-      $( "<thead><tr><th>Graph Data</th></tr></thead>" ).appendTo ( table );
-      $( "<tbody style='height:" + (gwHeight-80) +
-         "px;width:" + gwTreeWidth + "px;display:inline-block;overflow:auto;'>" +
-         "<tr><td style='width:"   + gwTreeWidth + "px;height:" + (gwHeight-84) +
-         "px;'><div style='width:" + (gwTreeWidth-44) + "px;' id='" + gwdId +
-         "-tree'></div></td></tr></tbody>" ).appendTo ( table );
-
-      setGridItem ( gwdId,table,0,0,1,1 );
-
-      addButtonGrid ( gwdId+"-print","Print","{print-gwd}",
-                      gwdId,false,gwdId,1,0,1,1 );
-      getGridCell   ( gwdId,1,0 ).setAttribute ( "style",
-                              "text-align: right; margin-top: 2px;" );
-
-      if (cell.style.display!="block")
-        graphWidgetList[gwdId] = 'loggraph';
-
-    } else  {
-      // modify existing graph widget with new tree and/or data
-      created   = 0;
-
-      //graphTree = $("#"+gwdId+"-tree");
-
-      removeElement ( gwdId+"-tree" );
-      $( "<div id='"+gwdId+"-tree'></div>" )
-            .appendTo ( getGridCell(gwdId+"_panel",1,0) );
-
-    }
-
-    var div = document.getElementById ( gwdId+"-tree" );
-    div.setAttribute ( "class","graphwidget-box" );
-
-    graphTree = $("#"+gwdId+"-tree");
-    graphTree.tree({
-        data: dataArray,
-        onCanSelectNode: function(node) {
-          return (node.children.length == 0); // can select if true
-        }
-    });
-    graphTree.bind (
-      'tree.click',
-      function(event) {
-        var node = event.node; // the clicked node
-        var oni  = new Array();
-        getOpenNodeIds ( graphTree.tree('getTree'),oni );
-        logGraphHash[gwdId]['nodes'] = oni;
-        if ($(this).tree('isNodeSelected',node))  {
-          logGraphHash[gwdId]['selid'] = node.id;
-          event.preventDefault();
-        }
-    });
-    graphTree.bind (
-      'tree.open',
-      function(event) {
-        var node = event.node; // the clicked node
-        var oni  = new Array();
-        getOpenNodeIds ( graphTree.tree('getTree'),oni );
-        logGraphHash[gwdId]['nodes'] = oni;
-    });
-    graphTree.bind (
-      'tree.close',
-      function(event) {
-        var node = event.node; // the clicked node
-        var oni  = new Array();
-        getOpenNodeIds ( graphTree.tree('getTree'),oni );
-        logGraphHash[gwdId]['nodes'] = oni;
-    });
-    graphTree.bind(
-      'tree.select',
-      function(event) {
-        var node = event.node; // the selected node
-        var oni  = new Array();
-        getOpenNodeIds ( graphTree.tree('getTree'),oni );
-        logGraphHash[gwdId]['nodes'] = oni;
-        if (node)  {
-          logGraphHash[gwdId]['selid'] = node.id;
-          drawLogGraph ( gwdId,node.plotData,event.node.plotOptions );
-        }
-    });
-
-    if (created == 1)  {
-      // the tree is newly created, select first node
-
-      node = graphTree.tree('getTree');
-      if (selNodeId == "")  {
-
-        while (node!=null)
-          if (node.plotData!=null)  {
-            graphTree.tree( 'selectNode',node );
-            node = null;
-          } else if (node.children.length>0)
-            node = node.children[0];
-          else
-            node = null;
-
-        getOpenNodeIds ( graphTree.tree('getTree'),openNodesIds );
-        logGraphHash[gwdId]['nodes'] = openNodesIds;
-        logGraphHash[gwdId]['selid'] = graphTree.tree('getSelectedNode').id;
-      }
-
-    }
-
-    if (selNodeId != "")  {
-      // the tree was modified, set old state
-
-//      setTimeout(function(){
-
-        for (var i=0;i<openNodesIds.length;i++)  {
-          node = graphTree.tree ( 'getNodeById',openNodesIds[i] );
-          if (node!=null)
-            graphTree.tree ( 'openNode',node,false );
-        }
-
-        graphTree.tree ( 'selectNode',
-                         graphTree.tree('getNodeById',selNodeId) );
-//      }, 0);
-
-    }
-
-  }
-
-}
-*/
-
-
-function _add_log_graph ( gwdId,holderId, dataArray,
-                         row,col,rowSpan,colSpan )  {
+                          row,col,rowSpan,colSpan )  {
 
 var cell         = getGridCell ( holderId,row,col );
 var selNodeId    = "";
@@ -1049,7 +878,6 @@ var node,created;
         $( "<div id='"+gwdId+"-tree'></div>" )
             .appendTo ( getGridCell(gwdId+"_panel",1,0) );
       }
-
 
     }
 
