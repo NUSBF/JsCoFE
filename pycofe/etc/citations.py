@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    28.05.21   <--  Date of Last Modification.
+#    18.06.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -485,6 +485,28 @@ citations = {
                             'doi'     : '10.1107/S2052252514019290'
                         }]
                   },
+
+    'privateer' : { 'name'     : 'Privateer',
+                    'category' : 'primary',
+                    'refs'     : [{
+                            'authors' : 'Agirre J., Fernandez-Iglesias J., Rovira C., Davies G.J., Wilson K.S. and Cowtan K.D.',
+                            'title'   : 'Privateer: software for the conformational validation of carbohydrate structures',
+                            'journal' : 'Nature Structural & Molecular Biology',
+                            'volume'  : '22(11)',
+                            'year'    : '2015',
+                            'pages'   : '833-834',
+                            'doi'     : '10.1038/nsmb.3115'
+                        },{
+                            'authors' : 'Agirre J., Davies G.J., Wilson K.S. and Cowtan K.D.',
+                            'title'   : 'Carbohydrate anomalies in the PDB',
+                            'journal' : 'Nature Chemical Biology',
+                            'volume'  : '11(5)',
+                            'year'    : '2015',
+                            'pages'   : '303',
+                            'doi'     : '10.1038/nchembio.1798'
+                        }]
+                  },
+
 
     #'solomon' :   { 'name'     : 'SOLOMON',
     #                'category' : 'primary',
