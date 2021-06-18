@@ -108,7 +108,7 @@ function TaskRefmac()  {
                        label    : 'Generate H-atoms for refinement',
                        tooltip  : 'Select how to represent hydrogen atoms in refinement',
                        range    : ['NO|No','YES|Yes if in input file','ALL|Yes'],
-                       value    : 'NO',
+                       value    : 'ALL',
                        position : [3,0,1,3]
                 }  /*,
                 TWIN : { type : 'combobox',
@@ -140,6 +140,7 @@ function TaskRefmac()  {
               tooltip  : 'Translation-Libration-Screw parameterisation',
               range    : ['none|None','auto|Automatic'],
               value    : 'none',
+              showon   : {'BFAC':['ISOT']},
               position : [1,0,1,1]
            },
            TLS_CYCLES : { type   : 'integer',
