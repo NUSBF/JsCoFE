@@ -1265,6 +1265,42 @@ class TaskDriver(object):
 
         return
 
+    def makeMTZ ( self,mtzlbl,mtzOut ):
+    # mtzlbl = [
+    #     { "path"   : "/path/file.mtz",
+    #       "labin"  : [l1,l2,...]
+    #       "labout" : [l1,l2,...]
+    #     }, {
+    #       "path"   : "/path/file.mtz",
+    #       "labin"  : [l1,l2,...]
+    #       "labout" : [l1,l2,...]
+    #     }
+    # ]
+
+        cmd = []
+        self.open_stdin()
+        for i in range(len(mtzlbl)):
+            cmd.append ( "HKLIN"+str(i+1)  )
+            cmd.append ( mtzlbl[i]["path"] )
+            labin = mtzlbl[i]["labin"]
+            self.write_stdin ( "LABIN  FILE " + str(i+1) )
+            for j in range(len(labin)):
+                self.write_stdin ( " E%d=%s" % (j+1,labin[j]) )
+            labout = mtzlbl[i]["labout"]
+            self.write_stdin ( "\nLABOUT FILE " + str(i+1) )
+            for j in range(len(labout)):
+                self.write_stdin ( " E%d=%s" % (j+1,labout[j]) )
+            self.write_stdin ( "\n" )
+
+        self.close_stdin()
+        cmd.append ( "HKLOUT" )
+        cmd.append ( mtzOut   )
+
+        self.runApp ( "cad",cmd,logType="Service" )
+
+        return
+
+
     def sliceMTZ ( self,mtzInPath,label_list,mtzOutPath,labelout_list=[] ):
 
         self.open_stdin()
