@@ -733,7 +733,7 @@ def calculate ( meta ) :
             if not hydrogens:
                 bottomline += "Try adding hydrogens. "
                 suggestedParameters['MKHYDR'] = 'ALL'
-                suggestedParameters['RIDING_HYDROGENS'] = 'YES'
+                # suggestedParameters['RIDING_HYDROGENS'] = 'YES' # Removed as requested by Arnaud
             # Apparently scaling parameters are not available in Cloud interface now
             bottomline += "Try optimising solvent and scaling parameters. <p>"
         elif (rFree >= (meanRfree + (3.0*sigRfree))) and (rFree <= 0.4):
