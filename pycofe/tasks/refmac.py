@@ -415,6 +415,7 @@ class Refmac(basic.TaskDriver):
                     self.stderr ( " *** validation tools or molprobity failure" )
                     self.rvrow = rvrow0 + 4
 
+                """
                 if meta:
                     verdict_meta = {
                         "data"   : { "resolution" : hkl.getHighResolution(raw=True) },
@@ -446,6 +447,8 @@ class Refmac(basic.TaskDriver):
                         "Rfree"    : self.generic_parser_summary["refmac"]["R_free"],
                         "suggestedParameters" : suggestedParameters
                     }, log=self.file_stderr)
+
+                """
 
         else:
             self.putTitle ( "No Output Generated" )
