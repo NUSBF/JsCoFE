@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    27.03.21   <--  Date of Last Modification.
+ *    19.06.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -75,6 +75,16 @@ TaskMigrate.prototype.constructor = TaskMigrate;
 // ===========================================================================
 
 TaskMigrate.prototype.icon = function()  { return 'task_migrate'; }
+
+TaskMigrate.prototype.desc_title = function()  {
+// this appears under task title in the task list
+  return 'import phased structure (have reflection data, phases and/or coordinates)';
+}
+
+TaskMigrate.prototype.taskDescription = function()  {
+// this appears under task title in the Task Dialog
+  return 'Import phased structure';
+}
 
 // task.platforms() identifies suitable platforms:
 //   'W"  : Windows

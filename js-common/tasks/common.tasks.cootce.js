@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    26.03.20   <--  Date of Last Modification.
+ *    19.06.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Coot Coorinate Editor Task Class (for local server)
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2018-2020
+ *  (C) E. Krissinel, A. Lebedev 2018-2021
  *
  *  =================================================================
  *
@@ -80,7 +80,18 @@ TaskCootCE.prototype.constructor = TaskCootCE;
 // ===========================================================================
 // export such that it could be used in both node and a browser
 
-TaskCootCE.prototype.icon = function()  { return 'task_coot'; }
+TaskCootCE.prototype.icon = function()  { return 'task_cootce'; }
+
+TaskCootCE.prototype.desc_title = function()  {
+// this appears under task title in the task list
+  return 'use for editing structure models without electron density (e.g., MR models)';
+}
+
+TaskCootCE.prototype.taskDescription = function()  {
+// this appears under task title in the Task Dialog
+  return 'Edit structure models without electron density';
+}
+
 
 TaskCootCE.prototype.lowestClientVersion = function() { return '1.6.001 [01.01.2019]'; }
 

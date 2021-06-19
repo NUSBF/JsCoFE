@@ -108,7 +108,6 @@ class Privateer(basic.TaskDriver):
 
         if os.path.isfile(fphiout_mtz) and os.path.isfile(omitfphiout_mtz):
 
-
             self.flush()
             self.file_stdout.close()
 
@@ -126,16 +125,19 @@ class Privateer(basic.TaskDriver):
                 words = fstd.read().split(" ")
             self.file_stdout = open ( self.file_stdout_path(),'a' )
 
+            nSugars = self.value ( words,"sugars",-1 )
+            nIssues = self.value ( words,"sugars",-6 )
+
             tdict = {
                 "title": "Summary",
                 "state": 0, "class": "table-blue", "css": "text-align:right;",
                 "horzHeaders" :  [],
                 "rows" : [
                   { "header": { "label": "Total sugars", "tooltip": "" },
-                    "data"  : [ self.value(words,"sugars",-1) ]
+                    "data"  : [ nSugars ]
                   },
                   { "header": { "label": "Total issues", "tooltip": "" },
-                    "data"  : [ self.value(words,"sugars",-6) ]
+                    "data"  : [ nIssues ]
                   },
                   { "header": { "label": "Total affected", "tooltip": "" },
                     "data"  : [ self.value(words,"sugars",-3) ]
@@ -160,6 +162,34 @@ class Privateer(basic.TaskDriver):
                                     self.rvrow,0,1,1 )
             self.rvrow = self.rvrow + 1
 
+            libpath = "privateer-lib.cif"
+            if not os.path.isfile(libpath):
+                libpath = istruct.getLibFilePath ( self.inputDir() )
+            else:
+                self.putMessage (
+                    "&nbsp;<br><i><b>New ligand dictionary was generated and " +\
+                    "replaced in Structure Revision. It will be used in " +\
+                    "subsequent refinement(s).</b></i>"
+                )
+
+            keywords = ""
+            keywords_file = "keywords_refmac5.txt"
+            if os.path.isfile(keywords_file):
+                with open(keywords_file,"r") as kf:
+                    keywords = kf.read().strip();
+            if keywords:
+                self.putMessage (
+                    "&nbsp;<br><i><b>Use the following custom Refmac keywords " +\
+                    "in subsequent refinement(s):</b><br>" +\
+                    "<span style=\"font-size:85%\">(copy-paste them in the " +\
+                                  "\"Advanced\" section of the Refmac task)" +\
+                    "</span></i><p>" +\
+                    "<div style=\"border:1px solid gray;font-family:monospace;" +\
+                                 "width:500px;white-space:nowrap;padding:12px;" +\
+                                 "background:khaki;box-shadow:5px 5px 6px #888888;\">" +\
+                    keywords + "</div>"
+                )
+
             mtzout = "_out.mtz"
             self.makeMTZ ([
               { "path"   : hklin,
@@ -182,8 +212,7 @@ class Privateer(basic.TaskDriver):
             structure = self.registerStructure (
                                     xyzin,
                                     istruct.getSubFilePath(self.inputDir()),
-                                    mtzout,None,None,
-                                    istruct.getLibFilePath(self.inputDir()),
+                                    mtzout,None,None,libpath,
                                     leadKey=istruct.leadKey,
                                     map_labels="FWT,PHWT,DELFWT,PHDELWT",
                                     copy_files=True,
@@ -223,9 +252,13 @@ class Privateer(basic.TaskDriver):
                 #     "Rfree"    : self.generic_parser_summary["refmac"]["R_free"]
                 # })
 
+                # this will go in the project tree line
+                self.generic_parser_summary["privateer"] = {
+                  "summary_line" : nSugars + " sugars, " + nIssues + " issues found"
+                }
+
         else:
             self.putTitle ( "No Output Generated" )
-
 
         # close execution logs and quit
         self.success ( have_results )

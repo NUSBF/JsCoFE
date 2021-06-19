@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    10.01.21   <--  Date of Last Modification.
+ *    19.06.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -84,7 +84,17 @@ TaskCootMB.prototype.constructor = TaskCootMB;
 // ===========================================================================
 // export such that it could be used in both node and a browser
 
-TaskCootMB.prototype.icon = function()  { return 'task_coot'; }
+TaskCootMB.prototype.icon = function()  { return 'task_cootmb'; }
+
+TaskCootMB.prototype.desc_title = function()  {
+// this appears under task title in the task list
+  return 'fit atoms and new ligands in electron density, validate and explore';
+}
+
+TaskCootMB.prototype.taskDescription = function()  {
+// this appears under task title in the Task Dialog
+  return 'Fit atoms and new ligands in electron density, validate and explore';
+}
 
 TaskCootMB.prototype.lowestClientVersion = function() { return '1.6.001 [01.01.2019]'; }
 

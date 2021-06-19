@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    30.03.21   <--  Date of Last Modification.
+ *    19.06.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -65,6 +65,16 @@ TaskImportReplace.prototype.constructor = TaskImportReplace;
 // ===========================================================================
 
 TaskImportReplace.prototype.icon = function()  { return 'task_migrate'; }
+
+TaskImportReplace.prototype.desc_title = function()  {
+// this appears under task title in the task list
+  return 'import and replace data in Structure Revision';
+}
+
+TaskImportReplace.prototype.taskDescription = function()  {
+// this appears under task title in the Task Dialog
+  return 'Import and replace data in Structure Revision';
+}
 
 // task.platforms() identifies suitable platforms:
 //   'W"  : Windows
