@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    06.06.21   <--  Date of Last Modification.
+ *    19.06.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -316,7 +316,9 @@ function getFEProxyConfig()  {
 }
 
 function getNCConfig ( ncNumber )  {
-  return nc_servers[ncNumber];
+  if ((0<=ncNumber) && (ncNumber<nc_servers.length))
+    return nc_servers[ncNumber];
+  return null;
 }
 
 function getNCConfigs()  {

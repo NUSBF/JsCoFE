@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    21.05.21   <--  Date of Last Modification.
+ *    19.06.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -752,13 +752,6 @@ var response = null;  // must become a cmd.Response object to return
     response = new cmd.Response ( cmd.fe_retcode.readError,
                                  '[00019] Project list cannot be read.',{} );
   }
-
-  /*
-  } else  {
-    response  = new cmd.Response ( cmd.fe_retcode.readError,
-                                   '[00020] Project list does not exist.','' );
-  }
-  */
 
   return response;
 
@@ -1817,7 +1810,7 @@ var jobId       = data.meta.id;
                                     { 'project_missing':true } );
     if (!response)
       response = new cmd.Response ( cmd.fe_retcode.writeError,
-                                    '[00028] Job metadata cannot be written.',
+                                    '[00029] Job metadata cannot be written.',
                                     { 'project_missing':null } );
   }
 
@@ -1846,7 +1839,7 @@ function getJobFile ( loginData,data )  {
     response = new cmd.Response ( cmd.fe_retcode.ok,'',data );
   } else  {
     response = new cmd.Response ( cmd.fe_retcode.writeError,
-                               '[00029] Requested file not found.','' );
+                               '[00032] Requested file not found.','' );
   }
 
   return response;

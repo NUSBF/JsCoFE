@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    04.05.21   <--  Date of Last Modification.
+ *    19.06.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -63,6 +63,16 @@ TaskImport.prototype.constructor = TaskImport;
 
 
 // ===========================================================================
+
+TaskImport.prototype.desc_title = function()  {
+// this appears under task title in the task list
+  return 'upload and import various files from your device';
+}
+
+TaskImport.prototype.taskDescription = function()  {
+// this appears under task title in the Task Dialog
+  return 'Upload and import various files from your device';
+}
 
 TaskImport.prototype.currentVersion = function()  {
   var version = 0;

@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    03.06.21   <--  Date of Last Modification.
+ *    19.06.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -748,29 +748,35 @@ var response = null;
   if (jobEntry)  {
 
     // send stop request to number cruncher
-    var nc_url = conf.getNCConfig(jobEntry.nc_number).externalURL;
-    if (data.gracefully)
-          log.standard ( 9,'request to stop job ' + task.id + ' at ' + nc_url +
-                           ' gracefully' );
-    else  log.standard ( 9,'request to stop job ' + task.id + ' at ' + nc_url );
+    var ncCfg  = conf.getNCConfig ( jobEntry.nc_number );
+    if (ncCfg)  {
+      var nc_url = ncCfg.externalURL;
+      if (data.gracefully)
+            log.standard ( 9,'request to stop job ' + task.id + ' at ' + nc_url +
+                             ' gracefully' );
+      else  log.standard ( 9,'request to stop job ' + task.id + ' at ' + nc_url );
 
-    request({
-      uri     : cmd.nc_command.stopJob,
-      baseUrl : nc_url,
-      method  : 'POST',
-      body    : { job_token   : jobEntry.job_token,
-                  gracefully  : data.gracefully,
-                  return_data : true
-                },
-      json    : true
-    },function(error,response,body){
-        if (!error && (response.statusCode==200)) {
-          log.standard ( 10,body.message );
+      request({
+        uri     : cmd.nc_command.stopJob,
+        baseUrl : nc_url,
+        method  : 'POST',
+        body    : { job_token   : jobEntry.job_token,
+                    gracefully  : data.gracefully,
+                    return_data : true
+                  },
+        json    : true
+      },function(error,response,body){
+          if (!error && (response.statusCode==200)) {
+            log.standard ( 10,body.message );
+          }
         }
-      }
-    );
+      );
 
-    response = new cmd.Response ( cmd.fe_retcode.ok,'',task );
+      response = new cmd.Response ( cmd.fe_retcode.ok,'',task );
+
+    } else
+      response = new cmd.Response ( cmd.fe_retcode.ok,
+                                    '[00011] Number cruncher not found',jobData );
 
   } else  {  // repair job metadata
 
@@ -793,7 +799,7 @@ var response = null;
     utils.writeObject ( jobDataPath,jobData );
 
     response = new cmd.Response ( cmd.fe_retcode.ok,
-                                  '[00011] Job was not running',jobData );
+                                  '[00034] Job was not running',jobData );
 
   }
 
@@ -807,30 +813,36 @@ function killJob ( loginData,projectName,taskId )  {
 
   var jobEntry = getEFJobEntry ( loginData,projectName,taskId );
 
-  if (jobEntry && (jobEntry.nc_number>=0))  {
+  if (jobEntry)  {
 
     // send stop request to number cruncher
-    var nc_url = conf.getNCConfig(jobEntry.nc_number).externalURL;
-    log.standard ( 91,'request to kill job ' + taskId + ' at ' + nc_url );
+    var ncCfg  = conf.getNCConfig ( jobEntry.nc_number );
+    if (ncCfg)  {
 
-    request({
-      uri     : cmd.nc_command.stopJob,
-      baseUrl : nc_url,
-      method  : 'POST',
-      body    : { job_token   : jobEntry.job_token,
-                  gracefully  : false,
-                  return_data : false
-                },
-      json    : true
-    },function(error,response,body){
-        if (!error && (response.statusCode==200)) {
-          log.standard ( 101,body.message );
+      var nc_url = ncCfg.externalURL;
+
+      log.standard ( 91,'request to kill job ' + taskId + ' at ' + nc_url );
+
+      request({
+        uri     : cmd.nc_command.stopJob,
+        baseUrl : nc_url,
+        method  : 'POST',
+        body    : { job_token   : jobEntry.job_token,
+                    gracefully  : false,
+                    return_data : false
+                  },
+        json    : true
+      },function(error,response,body){
+          if (!error && (response.statusCode==200)) {
+            log.standard ( 101,body.message );
+          }
         }
-      }
-    );
+      );
 
-    feJobRegister.removeJob ( jobEntry.job_token );
-    writeFEJobRegister();
+      feJobRegister.removeJob ( jobEntry.job_token );
+      writeFEJobRegister();
+
+    }
 
   }
 
