@@ -167,6 +167,11 @@ class TaskDriver(object):
 
     jobEndFName   = "__end_job"   # signal file name to end job gracefully
 
+    ligand_exclude_list = [
+        "XXX", "LIG", "DRG", "INH", "LG0", "LG1", "LG2", "LG3", "LG4", "LG5", "LG6",
+        "LG7", "LG8", "LG9"
+    ]
+
     # ========================================================================
     # cofe config
 
@@ -1347,10 +1352,8 @@ class TaskDriver(object):
 
     def get_ligand_code ( self,exclude_list ):
         alphabet  = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-        excl_list = exclude_list + [
-            "XXX","LIG","DRG","INH","LG0","LG1","LG2","LG3","LG4","LG5","LG6",
-            "LG7","LG8","LG9"
-        ]
+        excl_list = exclude_list + self.ligand_exclude_list
+
         for L1 in alphabet:
             dirpath = os.path.join ( os.environ["CCP4"],"lib","data","monomers",L1.lower() )
             dirSet  = set ( os.listdir(dirpath) )

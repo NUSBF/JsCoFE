@@ -71,7 +71,15 @@ class WFlowREL(basic.TaskDriver):
         ldesc = getattr ( self.task.parameters.sec1,"contains")
         if ldesc.SMILES.value or ldesc.CODE3.value:
             if ldesc.SOURCE_SEL.value == 'S':
-                newLig =ligandCarrier(ldesc.SOURCE_SEL.value, ldesc.SMILES.value, ldesc.CODE.value)
+                code = ldesc.CODE.value.strip().upper()
+                if (not code) or (code in self.ligand_exclude_list):
+                    exclude_list = []
+                    ligands = revision.Ligands
+                    for j in range(len(ligands)):
+                        exclude_list.append(ligands[j]["code"])
+                    code = self.get_ligand_code(exclude_list)
+
+                newLig =ligandCarrier(ldesc.SOURCE_SEL.value, ldesc.SMILES.value, code)
                 ligMessage = 'Workflow will generate ligand from SMILES string: ' + str(newLig.smiles)
             elif ldesc.SOURCE_SEL.value == 'M':
                 newLig =ligandCarrier(ldesc.SOURCE_SEL.value, ldesc.SMILES.value, ldesc.CODE3.value)

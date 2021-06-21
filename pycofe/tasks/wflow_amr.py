@@ -75,6 +75,12 @@ class WFlowAMR(import_task.Import):
             if ldesc[i].source!='none':
                 self.ligdesc.append ( ldesc[i] )
 
+        # checking whether ligand codes were provided
+        for i in range(len(self.ligdesc)):
+            code = self.ligdesc[i].code.strip().upper()
+            if (not code) or (code in self.ligand_exclude_list):
+                self.ligdesc[i].code = self.get_ligand_code([])
+
         return
 
 
