@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    28.05.21   <--  Date of Last Modification.
+#    21.06.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -27,6 +27,7 @@ import pyrvapi
 #from   pycofe.etc  import pyrama
 from   pycofe.varut  import jsonut
 from   pycofe.varut  import rvapi_utils
+from   pycofe.dtypes import dtype_template
 
 # ============================================================================
 
@@ -404,7 +405,7 @@ def put_Tab1_section ( body, revision, meta, refmacResults ):
         tableDict['rows'].append({'header': {'label': 'Space group', 'tooltip': ''},
                               'data': [str(hkl.dataset.HM)]})
         if len(hkl.dataset.DCELL) >= 6:
-            unitcell = 'a=%0.2f, b=%0.2f, c=%0.2f, <br>alpha=%0.2f, beta=%0.2f, gamma=%0.2f' % \
+            unitcell = 'a=%0.2f, b=%0.2f, c=%0.2f, <br>&alpha;=%0.2f, &beta;=%0.2f, &gamma;=%0.2f' % \
             (hkl.dataset.DCELL[0], hkl.dataset.DCELL[1], hkl.dataset.DCELL[2],
              hkl.dataset.DCELL[3], hkl.dataset.DCELL[4], hkl.dataset.DCELL[5])
         else:
@@ -548,9 +549,22 @@ def put_Tab1_section ( body, revision, meta, refmacResults ):
 
         rvapi_utils.makeTable(tableDict, table_id, reportPanelId, 0, 0, 1, 1)
         body.putMessage1 ( reportPanelId,"&nbsp;<p>Statistics for the last shell is given in parentheses</p>",1,col=0 )
-        csvTable = rvapi_utils.makeCSVTable(tableDict)
+
+        csvTable = rvapi_utils.makeCSVTable ( tableDict ) \
+                              .replace("&alpha;","alpha")  \
+                              .replace("&beta;" ,"beta")  \
+                              .replace("&gamma;","gamma")
         # csvTable is a string, containing CSV output (lines are separated via proper OS line separator)
         # body.stderr(csvTable)
+
+        csvOutFPath = os.path.join ( body.outputDir(),
+                                dtype_template.makeFileName ( body.job_id,
+                                    body.dataSerialNo,body.getOFName(".csv")) )
+        with open(csvOutFPath,"w") as of:
+            of.write ( csvTable )
+
+        body.putDownloadButton ( csvOutFPath,"Download in CSV format",
+                                 reportPanelId,2,0 )
 
     return
 
