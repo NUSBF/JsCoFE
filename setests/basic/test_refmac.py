@@ -67,9 +67,9 @@ def refmacAfterRevision(driver, waitLong):
     if (rWork == 1.0) or (rFree == 1.0):
         print('*** Verification: could not find Rwork or Rfree value after REFMAC5 run')
     else:
-        print('*** Verification: REFMAC5 Rwork is %0.4f (expecting <0.16), Rfree is %0.4f (expecing <0.19)' % (rWork, rFree))
-    assert rWork < 0.16
-    assert rFree < 0.19
+        print('*** Verification: REFMAC5 Rwork is %0.4f (expecting <0.17), Rfree is %0.4f (expecing <0.20)' % (rWork, rFree))
+    assert rWork < 0.17
+    assert rFree < 0.20
 
     return ()
 
