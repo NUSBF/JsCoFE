@@ -14,7 +14,7 @@
 # ============================================================================
 #
 
-import pyrvapi
+import pyrvapi, os, re
 
 # ============================================================================
 
@@ -23,6 +23,12 @@ def __get_item ( itemName,dictionary,defValue ):
     if itemName in dictionary:
         return dictionary[itemName]
     return defValue
+
+
+def cleanhtml(raw_html):
+  cleanr = re.compile('<.*?>')
+  cleantext = re.sub(cleanr, '', raw_html)
+  return cleantext
 
 
 def makeTable ( tableDict, tableId,holderId, row,col,rowSpan,colSpan ):
@@ -74,3 +80,58 @@ def makeTable ( tableDict, tableId,holderId, row,col,rowSpan,colSpan ):
                 pyrvapi.rvapi_put_table_string ( tableId,data[j],i,j )
 
     return
+
+
+def makeCSVTable ( tableDict ):
+#
+#   Table dictionary example:
+#
+#   { title: "Table Title",        # empty string by default
+#     state: 0,                    # -1,0,1, -100,100
+#     class: "table-blue",         # "table-blue" by default
+#     css  : "text-align:right;",  # "text-align:rigt;" by default
+#     horzHeaders :  [  # either empty list or full header structures for all columns
+#       { label: "Size"  , tooltip: "" },
+#       { label: "Weight", tooltip: "" },
+#       .....
+#     ],
+#     rows : [
+#       { header: { label: "1st row", tooltip: "" }, # header may be missing
+#         data  : [ "string1","string2", ... ]
+#       },
+#       ......
+#     ]
+#   }
+#
+
+    csvTable = ''
+    csvRecord = ''
+
+
+    if "horzHeaders" in tableDict:
+        if len(tableDict["horzHeaders"]) > 0:
+            for i in range(len(tableDict["horzHeaders"])):
+                header = tableDict["horzHeaders"][i]
+                csvRecord += '"%s",' % header
+            csvRecord = csvRecord[:-1] # removing last comma
+            csvRecord += os.linesep
+            csvTable += csvRecord
+
+
+    if "rows" in tableDict:
+        for i in range(len(tableDict["rows"])):
+            trow = tableDict["rows"][i]
+            if "header" in trow:
+                csvRecord = '"%s",' % cleanhtml(trow["header"]['label'])
+            else:
+                csvRecord = ''
+
+            data = trow["data"]
+            for j in range(len(data)):
+                csvRecord += '"%s",' % cleanhtml(data[j])
+            csvRecord = csvRecord[:-1] # removing last comma
+            csvRecord += os.linesep
+            csvTable += csvRecord
+
+
+    return csvTable

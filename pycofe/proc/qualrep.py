@@ -546,12 +546,11 @@ def put_Tab1_section ( body, revision, meta, refmacResults ):
             tableDict['rows'].append({'header': {'label': '   for solvent', 'tooltip': ''},
                                       'data': ['%0.1f' % meta['bfac_water']]})
 
-
         rvapi_utils.makeTable(tableDict, table_id, reportPanelId, 0, 0, 1, 1)
         body.putMessage1 ( reportPanelId,"&nbsp;<p>Statistics for the last shell is given in parentheses</p>",1,col=0 )
-
-
-
+        csvTable = rvapi_utils.makeCSVTable(tableDict)
+        # csvTable is a string, containing CSV output (lines are separated via proper OS line separator)
+        # body.stderr(csvTable)
 
     return
 
