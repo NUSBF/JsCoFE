@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    14.05.21   <--  Date of Last Modification.
+ *    20.06.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -35,7 +35,7 @@ function TaskMrBump()  {
   this._type   = 'TaskMrBump';
   this.name    = 'mrbump';
   this.setOName ( 'mrbump' ); // default output file name template
-  this.title   = 'MrBump: Model Search & Preparation + MR + Model Building';
+  this.title   = 'Auto-MR with MrBump';
   this.helpURL = './html/jscofe_task_mrbump.html';
 
   this.input_dtypes = [{  // input data types
@@ -145,6 +145,16 @@ TaskMrBump.prototype.currentVersion = function()  {
 
 if (!__template)  {
   //  for client side
+
+  TaskMrBump.prototype.desc_title = function()  {
+  // this appears under task title in the task list
+    return 'finds sequence homologs, prepares search models and performs MR';
+  }
+
+  TaskMrBump.prototype.taskDescription = function()  {
+  // this appears under task title in the Task Dialog
+    return 'Finds sequence homologs, prepares search models and performs MR';
+  }
 
   // hotButtons return list of buttons added in JobDialog's toolBar.
   TaskMrBump.prototype.hotButtons = function() {

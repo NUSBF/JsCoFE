@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    19.06.21   <--  Date of Last Modification.
+ *    20.06.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -66,16 +66,6 @@ TaskImportReplace.prototype.constructor = TaskImportReplace;
 
 TaskImportReplace.prototype.icon = function()  { return 'task_migrate'; }
 
-TaskImportReplace.prototype.desc_title = function()  {
-// this appears under task title in the task list
-  return 'import and replace data in Structure Revision';
-}
-
-TaskImportReplace.prototype.taskDescription = function()  {
-// this appears under task title in the Task Dialog
-  return 'Import and replace data in Structure Revision';
-}
-
 // task.platforms() identifies suitable platforms:
 //   'W"  : Windows
 //   'L'  : Linux
@@ -93,6 +83,18 @@ TaskImportReplace.prototype.currentVersion = function()  {
 // export such that it could be used in both node and a browser
 if (!__template)  {
   // for client side
+
+  TaskImportReplace.prototype.desc_title = function()  {
+  // this appears under task title in the task list
+    return 'import data from your device or ' + appName() +
+           ' storage and replace it in Structure Revision';
+  }
+
+  TaskImportReplace.prototype.taskDescription = function()  {
+  // this appears under task title in the Task Dialog
+    return 'Import data from your device or ' + appName() +
+           ' storage and replace it in Structure Revision';
+  }
 
   // reserved function name
   TaskImportReplace.prototype.collectInput = function ( inputPanel )  {

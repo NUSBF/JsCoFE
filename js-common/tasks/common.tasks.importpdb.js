@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    03.03.21   <--  Date of Last Modification.
+ *    20.06.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -149,6 +149,16 @@ TaskImportPDB.prototype.constructor = TaskImportPDB;
 // ===========================================================================
 
 TaskImportPDB.prototype.icon = function()  { return 'task_importpdb'; }
+
+TaskImportPDB.prototype.desc_title = function()  {
+// this appears under task title in the task list
+  return 'fetch coordinates, sequences and reflection data for given PDB code(s)';
+}
+
+TaskImportPDB.prototype.taskDescription = function()  {
+// this appears under task title in the Task Dialog
+  return 'Fetch coordinates, sequences and reflection data for given PDB code(s)';
+}
 
 TaskImportPDB.prototype.currentVersion = function()  {
   var version = 0;

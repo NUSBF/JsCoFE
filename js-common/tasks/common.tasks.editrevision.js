@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    13.05.21   <--  Date of Last Modification.
+ *    20.06.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -140,6 +140,16 @@ TaskEditRevision.prototype.currentVersion = function()  {
 
 if (!__template)  {
   //  for client side
+
+  TaskEditRevision.prototype.desc_title = function()  {
+  // this appears under task title in the task list
+    return 'Replaces reflection data, sequences, model, phases or ligand descriptions';
+  }
+
+  TaskEditRevision.prototype.taskDescription = function()  {
+  // this appears under task title in the Task Dialog
+    return 'Replaces reflection data, sequences, model, phases or ligand descriptions';
+  }
 
   TaskEditRevision.prototype.inputChanged = function ( inpParamRef,emitterId,emitterValue )  {
 

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    26.03.20   <--  Date of Last Modification.
+ *    20.06.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  BALBES Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2020
+ *  (C) E. Krissinel, A. Lebedev 2016-2021
  *
  *  =================================================================
  *
@@ -34,7 +34,7 @@ function TaskBalbes()  {
   this._type   = 'TaskBalbes';
   this.name    = 'balbes';
   this.setOName ( 'balbes' );  // default output file name template
-  this.title   = 'Balbes: Model Search & Preparation + MR';
+  this.title   = 'Auto-MR with Balbes';
   //this.helpURL = './html/jscofe_task_balbes.html';
 
   this.input_dtypes = [{    // input data types
@@ -98,6 +98,16 @@ TaskBalbes.prototype.currentVersion = function()  {
 
 if (!__template)  {
   //  for client side
+
+  TaskBalbes.prototype.desc_title = function()  {
+  // this appears under task title in the task list
+    return 'finds sequence homologs, prepares search models and performs MR';
+  }
+
+  TaskBalbes.prototype.taskDescription = function()  {
+  // this appears under task title in the Task Dialog
+    return 'Finds sequence homologs, prepares search models and performs MR';
+  }
 
   // hotButtons return list of buttons added in JobDialog's toolBar.
   TaskBalbes.prototype.hotButtons = function() {

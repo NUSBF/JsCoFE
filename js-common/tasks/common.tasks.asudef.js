@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    04.05.20   <--  Date of Last Modification.
+ *    20.06.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  ASU Definition Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2020
+ *  (C) E. Krissinel, A. Lebedev 2016-2021
  *
  *  =================================================================
  *
@@ -212,6 +212,16 @@ TaskASUDef.prototype.currentVersion = function()  {
 
 if (!__template)  {
   //  for client side
+
+  TaskASUDef.prototype.desc_title = function()  {
+  // this appears under task title in the task list
+    return 'sets anticipated number of chains in ASU and forms initial Structure Revision';
+  }
+
+  TaskASUDef.prototype.taskDescription = function()  {
+  // this appears under task title in the Task Dialog
+    return 'Sets anticipated number of chains in ASU and forms initial Structure Revision';
+  }
 
   // hotButtons return list of buttons added in JobDialog's toolBar.
   function AsuDefHotButton()  {

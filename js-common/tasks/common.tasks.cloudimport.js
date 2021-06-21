@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    03.03.21   <--  Date of Last Modification.
+ *    20.06.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -81,6 +81,17 @@ if (!__template)  {
     if (this.state==job_code.remdoc)
           return 'task_remdoc';
     else  return 'task_cimport';
+  }
+
+  TaskCloudImport.prototype.desc_title = function()  {
+  // this appears under task title in the task list
+    return 'browse ' + appName() + ' storage and import various files from it';
+  }
+
+  TaskCloudImport.prototype.taskDescription = function()  {
+  // this appears under task title in the Task Dialog
+    return 'Browse ' + appName() + ' storage and import various files from it';
+    // return 'Task description in small font which will appear under the task title in Task Dialog';
   }
 
   // This function is called at cloning jobs and should do copying of all
