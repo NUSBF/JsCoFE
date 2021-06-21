@@ -154,6 +154,16 @@ class WFlowDPL(migrate.Migrate):
             ligand = self.makeClass(self.lib)
             self.lig.append(ligand)
 
+        # checking whether ligand codes were provided
+        for i in range(len(self.ligdesc)):
+            code = self.ligdesc[i].code.strip().upper()
+            if (not code) or (code in self.ligand_exclude_list):
+                exclude_list = []
+                ligands = revision.Ligands
+                for j in range(len(ligands)):
+                    exclude_list.append(ligands[j]["code"])
+                self.ligdesc[i].code = self.get_ligand_code(exclude_list)
+
         if self.unm:
             ilist.append ( "Unmerged" )
         if len(self.hkl)>0:
