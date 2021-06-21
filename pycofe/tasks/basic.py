@@ -1575,13 +1575,13 @@ class TaskDriver(object):
         return
 
 
-    def putDownloadButton ( self,dnlFilePath,text_btn,gridId,row,col ):
+    def putDownloadButton ( self,dnlFilePath,text_btn,gridId,row,col,colSpan=1 ):
         #buttonId = "download_" + str(self.widget_no)
         #self.widget_no += 1
         buttonId = self.getWidgetId ( "download" )
         pyrvapi.rvapi_add_button ( buttonId,text_btn,"{function}",
                     "window.parent.downloadJobFile(" + self.job_id +\
-                    ",'" + dnlFilePath + "')",False,gridId, row,col,1,1 )
+                    ",'" + dnlFilePath + "')",False,gridId, row,col,1,colSpan )
         return
 
 
