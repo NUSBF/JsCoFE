@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    14.03.20   <--  Date of Last Modification.
+ *    20.06.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  MoRDa Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2020
+ *  (C) E. Krissinel, A. Lebedev 2016-2021
  *
  *  =================================================================
  *
@@ -34,7 +34,7 @@ function TaskMorda()  {
   this._type   = 'TaskMorda';
   this.name    = 'morda';
   this.setOName ( 'morda' );  // default output file name template
-  this.title   = 'Morda: Model Search & Preparation + MR';
+  this.title   = 'Auto-MR with MoRDa';
   this.helpURL = './html/jscofe_task_morda.html';
 
   this.input_dtypes = [{    // input data types
@@ -112,6 +112,16 @@ TaskMorda.prototype.currentVersion = function()  {
 
 if (!__template)  {
   //  for client side
+
+  TaskMorda.prototype.desc_title = function()  {
+  // this appears under task title in the task list
+    return 'finds sequence homologs, prepares search models and performs MR';
+  }
+
+  TaskMorda.prototype.taskDescription = function()  {
+  // this appears under task title in the Task Dialog
+    return 'Finds sequence homologs, prepares search models and performs MR';
+  }
 
   // hotButtons return list of buttons added in JobDialog's toolBar.
   TaskMorda.prototype.hotButtons = function() {
