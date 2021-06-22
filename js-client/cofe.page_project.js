@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    21.04.21   <--  Date of Last Modification.
+ *    22.04.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -198,8 +198,10 @@ function ProjectPage ( sceneId )  {
     //        1:  single
     //        2:  multiple
     if ((mode==0) || ((mode==1) && jobTree.multiple) ||
-                     ((mode==2) && (!jobTree.multiple)))
-      reloadTree ( false,!jobTree.multiple,null );
+                     ((mode==2) && (!jobTree.multiple)))  {
+      jobTree.multiple = !jobTree.multiple;
+      reloadTree ( false,null );
+    }
   }
 
   function addToDock() {
@@ -207,7 +209,7 @@ function ProjectPage ( sceneId )  {
     self.dock.show();
   }
 
-  function setButtonState() {
+  function _set_button_state() {
     var dsel = false;
     var task = jobTree.getSelectedTask();
     var node = jobTree.getSelectedNode();
@@ -262,6 +264,16 @@ function ProjectPage ( sceneId )  {
     //}
     // *******************************
 
+  }
+
+  var setButtonState_timer = null;
+  function setButtonState() {
+    if (setButtonState_timer)
+      window.clearTimeout ( setButtonState_timer );
+    setButtonState_timer = window.setTimeout ( function(){
+      setButtonState_timer = null;
+      _set_button_state();
+    },10 );
   }
 
   function share_project()  {
@@ -430,7 +442,7 @@ function ProjectPage ( sceneId )  {
       setButtonState();
     });
     jobTree.addSignalHandler ( cofe_signals.reloadTree,function(rdata){
-      reloadTree ( false,false,rdata );
+      reloadTree ( false,rdata );  // multiple = false?
     });
     jobTree.addSignalHandler ( cofe_signals.makeProjectList,function(rdata){
       makeProjectListPage ( sceneId );
@@ -470,7 +482,7 @@ function ProjectPage ( sceneId )  {
     setButtonState();
   }
 
-  function reloadTree ( blink,multisel,rdata )  {
+  function reloadTree ( blink,rdata )  {
     // blink==true will force page blinking, for purely aesthatic reasons
     //var selTask   = jobTree.getSelectedTask();
     var selTasks  = jobTree.getSelectedTasks();
@@ -479,7 +491,8 @@ function ProjectPage ( sceneId )  {
     jobTree.stopTaskLoop();
     var dlg_task_parameters = jobTree.getJobDialogTaskParameters();
     jobTree = self.makeJobTree();
-    jobTree.multiple = multisel;
+    // jobTree.multiple = job_tree.multisel;
+    jobTree.multiple = job_tree.multiple;
     if (blink)  {
       job_tree.closeAllJobDialogs();
       job_tree.delete();
@@ -487,6 +500,7 @@ function ProjectPage ( sceneId )  {
       jobTree.hide();
     job_tree.parent.addWidget ( jobTree );
     jobTree.readProjectData ( 'Project',function(){
+      jobTree.multiple = job_tree.multiple;
       if (onTreeLoaded())  {
         jobTree.parent.setScrollPosition ( scrollPos );
         if (!blink)  {
@@ -498,7 +512,6 @@ function ProjectPage ( sceneId )  {
           job_tree.closeAllJobDialogs();
           jobTree .openJobs ( dlg_task_parameters,self );
         }
-        // jobTree.selectTask ( selTask );
         jobTree.selectTasks ( selTasks );
         if (rdata)  {
           self.updateUserRationDisplay ( rdata );
@@ -752,7 +765,7 @@ function ProjectPage ( sceneId )  {
 
   refresh_btn.addOnClickListener ( function(){
     wakeZombiJobs();  // must go before reloadTree
-    reloadTree ( true,false,null );
+    reloadTree ( true,null );  // multiple = false?
   });
 
   this.makeLogoPanel ( 2,0,3 );
@@ -804,24 +817,27 @@ ProjectPage.prototype.makeJobTree = function()  {
 }
 
 
-ProjectPage.prototype.makeReplayJobTree = function()  {
-// set the job tree
-  var jobTree = new JobTree();
-  jobTree.setReplayMode();
-  jobTree.element.style.paddingTop    = '0px';
-  jobTree.element.style.paddingBottom = '25px';
-  jobTree.element.style.paddingRight  = '40px';
-  // ***** development code, dormant
-  //this.replay_job_tree = null;  // for internal and external references,
-                                  // lock before tree is loaded
-  // *******************************
-  (function(self){
-    jobTree.addSignalHandler ( cofe_signals.rationUpdated,function(data){
-      self.updateUserRationDisplay ( data );
-    });
-  }(this))
-  return jobTree;
-}
+// ***** development code, dormant
+// ProjectPage.prototype.makeReplayJobTree = function()  {
+// // set the job tree
+//   var jobTree = new JobTree();
+//   jobTree.setReplayMode();
+//   jobTree.element.style.paddingTop    = '0px';
+//   jobTree.element.style.paddingBottom = '25px';
+//   jobTree.element.style.paddingRight  = '40px';
+//   // ***** development code, dormant
+//   //this.replay_job_tree = null;  // for internal and external references,
+//                                   // lock before tree is loaded
+//   // *******************************
+//   (function(self){
+//     jobTree.addSignalHandler ( cofe_signals.rationUpdated,function(data){
+//       self.updateUserRationDisplay ( data );
+//     });
+//   }(this))
+//   return jobTree;
+// }
+// *******************************
+
 
 ProjectPage.prototype.selectRemark = function()  {
   var node        = this.job_tree.getSelectedNode();
