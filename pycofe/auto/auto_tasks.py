@@ -178,7 +178,7 @@ def refmacSuggested ( name, revision, suggested ):
     auto_api.cloneTask   ( actualName, "refmac_noted" )
     # seems to be critical not to add task data for cloned tasks
     # auto_api.addTaskData ( actualName,"revision",revision )
-    for k in suggested.keys():
+    for k in suggested:
         auto_api.addTaskParameter(actualName, k, suggested[k])
     auto_api.noteTask    ( actualName,"refmac_noted" )  # for the next run cloning current task
 

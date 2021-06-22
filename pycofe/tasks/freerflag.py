@@ -197,7 +197,7 @@ class FreeRFlag(basic.TaskDriver):
                                    str(hkl[i].getHighResolution(True)) +\
                                    "\nEND\n" )
                 self.close_stdin()
-                outFName = filter ( None,hkl[i].dname.split(" ") )[1]
+                outFName = list(filter ( None,hkl[i].dname.split(" ")))[1]
                 if not outFName.endswith(".freer"):
                     outFName += ".freer"
                 outFName += ".mtz"
