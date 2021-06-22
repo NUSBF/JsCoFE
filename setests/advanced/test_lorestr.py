@@ -24,14 +24,14 @@ def startLORESTRAfterRevision(driver):
     addButton.click()
     time.sleep(1)
 
-    if not sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list'):
-        sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'All tasks')
+    if not sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Full list'):
+        sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'All tasks')
     time.sleep(1)
 
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Refinement and Model Building')
     time.sleep(1)
 
-    sf.clickByXpath(driver, "//div[normalize-space()='%s']" % 'Low-Resolution Refinement with Lorestr')
+    sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Low-Resolution Refinement with Lorestr')
     time.sleep(2)
 
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Add structural homologues from the PDB')

@@ -38,7 +38,7 @@ def xia2Processing(driver, isLocal):
     addButton.click()
     time.sleep(1)
 
-    sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list')
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Full list')
     time.sleep(1)
 
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Data Processing')
@@ -142,13 +142,13 @@ def importSequence(driver, waitShort):
     addButton.click()
     time.sleep(1)
 
-    sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list')
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Full list')
     time.sleep(1)
 
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Data Import')
     time.sleep(1)
 
-    sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Cloud Import')
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Cloud Import')
     time.sleep(1)
 
 
@@ -190,13 +190,13 @@ def asymmetricUnitContentsAfterCloudImport(driver, waitShort, task='0004'):
     addButton.click()
     time.sleep(1)
 
-    sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list')
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Full list')
     time.sleep(1)
 
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Asymmetric Unit and Structure Revision')
     time.sleep(1)
 
-    sf.clickByXpath(driver, "//div[normalize-space()='%s']" % 'Asymmetric Unit Contents') # looking by text
+    sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Asymmetric Unit Contents') # looking by text
     time.sleep(2)
 
     inputASU = driver.find_elements_by_xpath("//input[@title='Specify stoichiometric coefficent for given sequence in the crystal']")
@@ -334,13 +334,13 @@ def changeASUsg(driver, waitShort):
     addButton.click()
     time.sleep(1)
 
-    sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list')
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Full list')
     time.sleep(1)
 
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Asymmetric Unit and Structure Revision')
     time.sleep(1)
 
-    sf.clickByXpath(driver, "//div[normalize-space()='%s']" % 'Change ASU Space Group')
+    sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Change ASU Space Group')
     time.sleep(1)
 
     # There are several forms - active and inactive. We need one displayed.
@@ -441,13 +441,13 @@ def runParrot(driver, job):
     addButton.click()
     time.sleep(2)
 
-    sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list')
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Full list')
     time.sleep(2)
 
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Density Modification')
     time.sleep(2)
 
-    sf.clickByXpath(driver, "//div[normalize-space()='%s']" % 'Density Modification with Parrot')
+    sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Density Modification with Parrot')
     time.sleep(2)
 
     # There are several forms - active and inactive. We need one displayed.
@@ -493,13 +493,13 @@ def runParrotInverted(driver, job):
     addButton.click()
     time.sleep(2)
 
-    sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list')
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Full list')
     time.sleep(2)
 
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Density Modification')
     time.sleep(2)
 
-    sf.clickByXpath(driver, "//div[normalize-space()='%s']" % 'Density Modification with Parrot')
+    sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Density Modification with Parrot')
     time.sleep(2)
 
     sf.clickByXpath(driver, "//*[contains(text(), '%s')]" % 'original_hand')
@@ -551,13 +551,13 @@ def startBuccaneer(driver):
     addButton.click()
     time.sleep(1)
 
-    sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list')
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Full list')
     time.sleep(1)
 
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Refinement and Model Building')
     time.sleep(1)
 
-    sf.clickByXpath(driver, "//div[normalize-space()='%s']" % 'Automatic Model Building with Buccaneer')
+    sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Automatic Model Building with Buccaneer')
     time.sleep(2)
 
     sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Options')
@@ -638,7 +638,7 @@ def fitWaters(driver, wait):
     addButton.click()
     time.sleep(1)
 
-    sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list')
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Full list')
     time.sleep(1)
 
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Ligands')
@@ -691,13 +691,13 @@ def refmac_0015(driver):
     addButton.click()
     time.sleep(1)
 
-    sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list')
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Full list')
     time.sleep(1)
 
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Refinement and Model Building')
     time.sleep(1)
 
-    sf.clickByXpath(driver, "//div[normalize-space()='%s']" % 'Refinement with Refmac')
+    sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Refinement with Refmac')
     time.sleep(1)
 
     inputASU = driver.find_element_by_xpath("//input[@title='Number of refinement cycles']")
@@ -753,13 +753,13 @@ def depositionAfterRefmac(driver):
     addButton.click()
     time.sleep(1)
 
-    sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list')
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Full list')
     time.sleep(1)
 
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Validation, Analysis and Deposition')
     time.sleep(1)
 
-    sf.clickByXpath(driver, "//div[normalize-space()='%s']" % 'Prepare data for deposition')
+    sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Prepare data for deposition')
     time.sleep(1)
 
     # There are several forms - active and inactive. We need one displayed.

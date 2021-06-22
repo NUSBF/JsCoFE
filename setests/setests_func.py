@@ -201,8 +201,8 @@ def importLocal_P9(driver, dirName, waitShort=90):
     print ('Importing P9 from local disk. Dir name: %s' % (dirName))
 
 
-    if not clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list'):
-        clickByXpath(driver, "//*[normalize-space()='%s']" % 'All tasks')
+    if not clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Full list'):
+        clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'All tasks')
     time.sleep(1)
 
     clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Data Import')
@@ -263,8 +263,8 @@ def importFromCloud_rnase(driver, waitShort):
     print ('Importing "rnase" project from the Cloud Import')
     time.sleep(1)
 
-    if not clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list'):
-        clickByXpath(driver, "//*[normalize-space()='%s']" % 'All tasks')
+    if not clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Full list'):
+        clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'All tasks')
     time.sleep(1)
 
 
@@ -694,7 +694,7 @@ def asymmetricUnitContentsAfterCloudImport(driver, waitShort, task='0002'):
     clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Asymmetric Unit and Structure Revision')
     time.sleep(1)
 
-    clickByXpath(driver, "//div[normalize-space()='%s']" % 'Asymmetric Unit Contents') # looking by text
+    clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Asymmetric Unit Contents') # looking by text
     time.sleep(1)
 
     # 2 molecules in the ASU
@@ -736,14 +736,14 @@ def editRevisionStructure_rnase(driver, waitShort):
     addButton.click()
     time.sleep(1)
 
-    if not clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list'):
-        clickByXpath(driver, "//*[normalize-space()='%s']" % 'All tasks')
+    if not clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Full list'):
+        clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'All tasks')
     time.sleep(1)
 
     clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Asymmetric Unit and Structure Revision')
     time.sleep(1)
 
-    clickByXpath(driver, "//div[normalize-space()='%s']" % 'Edit Structure Revision')
+    clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Edit Structure Revision')
     time.sleep(1)
 
     clickByXpathMultiple(driver, "//span[normalize-space()='%s']" % '[do not change]', 6) # 6 = 3*2, I have no idea why there are two times more elements
@@ -784,14 +784,14 @@ def editRevisionStructure_any(driver, waitShort, name=''):
     addButton.click()
     time.sleep(1)
 
-    if not clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list'):
-        clickByXpath(driver, "//*[normalize-space()='%s']" % 'All tasks')
+    if not clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Full list'):
+        clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'All tasks')
     time.sleep(1)
 
     clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Asymmetric Unit and Structure Revision')
     time.sleep(1)
 
-    clickByXpath(driver, "//div[normalize-space()='%s']" % 'Edit Structure Revision')
+    clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Edit Structure Revision')
     time.sleep(1)
 
     clickByXpathMultiple(driver, "//span[normalize-space()='%s']" % '[do not change]', 6) # 6 = 3*2, I have no idea why there are two times more elements
@@ -832,14 +832,14 @@ def editRevisionStructure_2fx0(driver, waitShort):
     addButton.click()
     time.sleep(1)
 
-    if not clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list'):
-        clickByXpath(driver, "//*[normalize-space()='%s']" % 'All tasks')
+    if not clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Full list'):
+        clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'All tasks')
     time.sleep(1)
 
     clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Asymmetric Unit and Structure Revision')
     time.sleep(1)
 
-    clickByXpath(driver, "//div[normalize-space()='%s']" % 'Edit Structure Revision')
+    clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Edit Structure Revision')
     time.sleep(1)
 
     clickByXpathMultiple(driver, "//span[normalize-space()='%s']" % '[do not change]', 6) # 6 = 3*2, I have no idea why there are two times more elements
@@ -875,14 +875,14 @@ def editRevisionStructure_2fx0(driver, waitShort):
 def importFromPDB_2fx0(driver, waitShort):
     print ('Importing 2fx0 from the PDB')
 
-    if not clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list'):
-        clickByXpath(driver, "//*[normalize-space()='%s']" % 'All tasks')
+    if not clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Full list'):
+        clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'All tasks')
     time.sleep(1)
 
     clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Data Import')
     time.sleep(1)
 
-    clickByXpath(driver, "//div[normalize-space()='%s']" % 'Import from PDB')
+    clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Import from PDB')
     time.sleep(1)
 
     # 2FX0
@@ -892,13 +892,13 @@ def importFromPDB_2fx0(driver, waitShort):
     inputPDB.send_keys('2fx0')
     time.sleep(2)
 
-    clickByXpath(driver, "//*[normalize-space()='%s']" % 'reflection data')
+    clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'reflection data')
     time.sleep(2)
 
-    clickByXpath(driver, "//*[normalize-space()='%s']" % 'sequences')
+    clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'sequences')
     time.sleep(2)
 
-    clickByXpath(driver, "//*[normalize-space()='%s']" % 'structure revision')
+    clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'structure revision')
     time.sleep(1)
 
     # There are several forms - active and inactive. We need one displayed.
@@ -933,14 +933,14 @@ def asymmetricUnitContents_2fx0(driver, waitShort):
     addButton.click()
     time.sleep(1)
 
-    if not clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list'):
-        clickByXpath(driver, "//*[normalize-space()='%s']" % 'All tasks')
+    if not clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Full list'):
+        clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'All tasks')
     time.sleep(1)
 
     clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Asymmetric Unit and Structure Revision')
     time.sleep(1)
 
-    clickByXpath(driver, "//*[normalize-space()='%s']" % 'Asymmetric Unit Contents') # looking by text
+    clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Asymmetric Unit Contents') # looking by text
     time.sleep(1)
 
     # Se is main scatterer
@@ -1111,14 +1111,14 @@ def startRefmac(driver, waitLong):
     addButton.click()
     time.sleep(1.05)
 
-    if not clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list'):
-        clickByXpath(driver, "//*[normalize-space()='%s']" % 'All tasks')
+    if not clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Full list'):
+        clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'All tasks')
     time.sleep(1)
 
     clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Refinement and Model Building')
     time.sleep(1.05)
 
-    clickByXpath(driver, "//div[normalize-space()='%s']" % 'Refinement with Refmac')
+    clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Refinement with Refmac')
     time.sleep(1.05)
 
     # There are several forms - active and inactive. We need one displayed.
@@ -1178,14 +1178,14 @@ def startBuccaneer(driver):
     addButton.click()
     time.sleep(1)
 
-    if not clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list'):
-        clickByXpath(driver, "//*[normalize-space()='%s']" % 'All tasks')
+    if not clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Full list'):
+        clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'All tasks')
     time.sleep(1)
 
     clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Refinement and Model Building')
     time.sleep(1)
 
-    clickByXpath(driver, "//div[normalize-space()='%s']" % 'Automatic Model Building with Buccaneer')
+    clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Automatic Model Building with Buccaneer')
     time.sleep(1)
 
     # There are several forms - active and inactive. We need one displayed.

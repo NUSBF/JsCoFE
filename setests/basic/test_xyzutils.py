@@ -23,22 +23,22 @@ def xyzutilsAfterImport(driver, waitLong):
     addButton.click()
     time.sleep(1)
 
-    if not sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list'):
-        sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'All tasks')
+    if not sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Full list'):
+        sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'All tasks')
     time.sleep(1)
 
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Toolbox')
     time.sleep(1)
 
-    sf.clickByXpath(driver, "//div[normalize-space()='%s']" % 'Coordinate Utilities')
+    sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Coordinate Utilities')
     time.sleep(1)
 
 
-    sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Transform structure')
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Transform structure')
     time.sleep(1)
 
 
-    sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Extract sequences')
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Extract sequences')
     time.sleep(1)
 
 
