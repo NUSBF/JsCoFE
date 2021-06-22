@@ -474,7 +474,7 @@ def calculate ( meta ) :
             if not plateauReached(allCyclesRfree):
                 bottomline += "It looks like <i>R<sub>free</sub></i> did not reach the plateau. " +\
                               "We recommend running more refinement cycles.<p>"
-                if suggestedParameters.has_key('NCYC'):
+                if 'NCYC' in suggestedParameters :
                     # giving 50% more cycles
                     if int(math.ceil(ncyc * 1.5)) > int(suggestedParameters['NCYC']):
                         # giving 50% more cycles
@@ -685,7 +685,7 @@ def calculate ( meta ) :
                 # avoiding infinite loop - need proper non-Markov decision making here
                 # suggestedParameters['NCSR'] = 'no'
 
-            if not tls and not suggestedParameters.has_key('NCYC') and not suggestChangingGeomWeight:
+            if not tls and not ('NCYC' in suggestedParameters ) and not suggestChangingGeomWeight:
                 bottomline += "Try TLS refinement. "
                 suggestedParameters['TLS'       ] = 'auto'
                 suggestedParameters['TLS_CYCLES'] = '5'
@@ -709,7 +709,7 @@ def calculate ( meta ) :
             bottomline += "Your <i>R<sub>free</sub></i> is a bit higher than expected " +\
                           "(%0.3f, while mean value for this resolution is %0.3f). " % (rFree, meanRfree) +\
                           "Try building more residues/ligands/waters/metals. "
-            if not tls and not suggestedParameters.has_key('NCYC') and not suggestChangingGeomWeight:
+            if not tls and not ('NCYC' in suggestedParameters) and not suggestChangingGeomWeight:
                 bottomline += "Try TLS refinement. "
                 suggestedParameters['TLS'       ] = 'auto'
                 suggestedParameters['TLS_CYCLES'] = '5'
@@ -744,7 +744,7 @@ def calculate ( meta ) :
     # 13. Combing some parameters at the end
 
     # Do we need to drop down number of cycles for the next run ?
-    if not suggestedParameters.has_key('NCYC'):
+    if not ('NCYC' in suggestedParameters):
         if res < 3.0 :
             if ncyc > 10:
                 suggestedNcyc = getNcyclesToPlateau(allCyclesRfree)

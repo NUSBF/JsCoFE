@@ -114,12 +114,12 @@ class ModelPrepAlgn(modelprepxyz.ModelPrepXYZ):
         ensNo     = self.make_models  ( seq,xyz,modSel,sclpSel,csMode )
 
         # this will go in the project tree job's line
-        if ensNo>0:
+        if len(ensNo)>0:
             self.generic_parser_summary["modelprepxyz"] = {
               "summary_line" : str(ensNo) + " model(s) generated"
             }
 
-        self.success ( (ensNo>0) )
+        self.success ( (len(ensNo)>0) )
         return
 
 

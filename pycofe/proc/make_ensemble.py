@@ -161,7 +161,7 @@ def run ( body, panelId, models,fpath_out, # body is reference to the basic clas
             rmsd = sorted(rmsd)
             for i in range(len(trims)):
                 if trims[i]<100:
-                    rmsd0 = rmsd[trims[i]*(len(rmsd)-1)/100]
+                    rmsd0 = rmsd[int(trims[i]*(len(rmsd)-1)/100)]
                     st = gemmi.read_structure ( fpath_out )
                     nres = []
                     for j in range(nmodels):

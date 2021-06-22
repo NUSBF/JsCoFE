@@ -328,7 +328,7 @@ class DType(dtype_template.DType):
                 self.dataStats = {}
             xmlRoot = ET.parse(ctruncate_xml).getroot()
 
-            if 'WilsonB' not in self.dataStats.keys():
+            if 'WilsonB' not in self.dataStats:
                 try:
                     for item in xmlRoot.findall('DataStatistics'):
                         if item.find('WilsonB') is not None:
@@ -337,15 +337,15 @@ class DType(dtype_template.DType):
                 except:
                     pass
 
-            if 'ResolutionLow' not in self.dataStats.keys():
+            if 'ResolutionLow' not in self.dataStats:
                 self.dataStats['ResolutionLow'] = float(xmlRoot.find('ReflectionData').find('ResolutionLow').text.strip())
-            if 'ResolutionHigh' not in self.dataStats.keys():
+            if 'ResolutionHigh' not in self.dataStats:
                 self.dataStats['ResolutionHigh'] = float(xmlRoot.find('ReflectionData').find('ResolutionHigh').text.strip())
 
-            if 'TotalReflections' not in self.dataStats.keys():
+            if 'TotalReflections' not in self.dataStats:
                 self.dataStats['TotalReflections'] = int(xmlRoot.find('ReflectionData').find('NumberObservations').text.strip())
 
-            if 'UniqueReflections' not in self.dataStats.keys():
+            if 'UniqueReflections' not in self.dataStats:
                 self.dataStats['UniqueReflections'] = int(xmlRoot.find('ReflectionData').find('NumberReflections').text.strip())
 
 

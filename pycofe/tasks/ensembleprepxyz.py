@@ -39,7 +39,7 @@ import gemmi
 #from   mrbump.output import modelout
 
 #  application imports
-import basic
+from   pycofe.tasks  import basic
 from   pycofe.proc   import analyse_ensemble
 from   pycofe.dtypes import dtype_template, dtype_sequence
 
